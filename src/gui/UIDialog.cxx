@@ -53,7 +53,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Size& ds = instance().frameBuffer().desktopSize();
 
   // Set real dimensions
-  _w = 37 * fontWidth + 10;
+  _w = 39 * fontWidth + 10 * 2;
   _h = 10 * (lineHeight + 4) + VBORDER + _th;
 
   // The tab widget
@@ -78,38 +78,25 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    items, "Theme (*) ", lwidth);
   wid.push_back(myPalettePopup);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + 4 * 4;
 
   // Delay between quick-selecting characters in ListWidget
-  items.clear();
-  VarList::push_back(items, "Disabled", "0");
-  VarList::push_back(items, "300 ms", "300");
-  VarList::push_back(items, "400 ms", "400");
-  VarList::push_back(items, "500 ms", "500");
-  VarList::push_back(items, "600 ms", "600");
-  VarList::push_back(items, "700 ms", "700");
-  VarList::push_back(items, "800 ms", "800");
-  VarList::push_back(items, "900 ms", "900");
-  VarList::push_back(items, "1 second", "1000");
-  myListDelayPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "List input delay ", lwidth);
+  int swidth = myPalettePopup->getWidth() - lwidth;
+  myListDelayPopup = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
+                                      "List input delay   ", 0, kListDelay,
+                                      font.getStringWidth("1 second"));
+  myListDelayPopup->setMinValue(0);
+  myListDelayPopup->setMaxValue(1000);
+  myListDelayPopup->setStepValue(50);
   wid.push_back(myListDelayPopup);
   ypos += lineHeight + 4;
 
   // Number of lines a mouse wheel will scroll
-  items.clear();
-  VarList::push_back(items, "1 line", "1");
-  VarList::push_back(items, "2 lines", "2");
-  VarList::push_back(items, "3 lines", "3");
-  VarList::push_back(items, "4 lines", "4");
-  VarList::push_back(items, "5 lines", "5");
-  VarList::push_back(items, "6 lines", "6");
-  VarList::push_back(items, "7 lines", "7");
-  VarList::push_back(items, "8 lines", "8");
-  VarList::push_back(items, "9 lines", "9");
-  VarList::push_back(items, "10 lines", "10");
-  myWheelLinesPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      items, "Mouse wheel scroll ", lwidth);
+  myWheelLinesPopup = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
+                                      "Mouse wheel scroll ", 0, kMouseWheel,
+                                       font.getStringWidth("10 lines"));
+  myWheelLinesPopup->setMinValue(1);
+  myWheelLinesPopup->setMaxValue(10);
   wid.push_back(myWheelLinesPopup);
 
   // Add message concerning usage
@@ -226,12 +213,12 @@ void UIDialog::loadConfig()
   myPalettePopup->setSelected(pal, "standard");
 
   // Listwidget quick delay
-  const string& delay = instance().settings().getString("listdelay");
-  myListDelayPopup->setSelected(delay, "300");
+  int delay = instance().settings().getInt("listdelay");
+  myListDelayPopup->setValue(delay);
 
   // Mouse wheel lines
-  const string& mw = instance().settings().getString("mwheel");
-  myWheelLinesPopup->setSelected(mw, "1");
+  int mw = instance().settings().getInt("mwheel");
+  myWheelLinesPopup->setValue(mw);
 
   myTab->loadConfig();
 }
@@ -260,14 +247,12 @@ void UIDialog::saveConfig()
     myPalettePopup->getSelectedTag().toString());
 
   // Listwidget quick delay
-  instance().settings().setValue("listdelay",
-    myListDelayPopup->getSelectedTag().toString());
-  ListWidget::setQuickSelectDelay(myListDelayPopup->getSelectedTag().toInt());
+  instance().settings().setValue("listdelay", myListDelayPopup->getValue());
+  ListWidget::setQuickSelectDelay(myListDelayPopup->getValue());
 
   // Mouse wheel lines
-  instance().settings().setValue("mwheel",
-    myWheelLinesPopup->getSelectedTag().toString());
-  ScrollBarWidget::setWheelLines(myWheelLinesPopup->getSelectedTag().toInt());
+  instance().settings().setValue("mwheel", myWheelLinesPopup->getValue());
+  ScrollBarWidget::setWheelLines(myWheelLinesPopup->getValue());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -289,8 +274,8 @@ void UIDialog::setDefaults()
 
     case 1:  // Misc. options
       myPalettePopup->setSelected("standard");
-      myListDelayPopup->setSelected("300");
-      myWheelLinesPopup->setSelected("4");
+      myListDelayPopup->setValue(300);
+      myWheelLinesPopup->setValue(4);
       break;
 
     default:
@@ -312,6 +297,29 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case GuiObject::kDefaultsCmd:
       setDefaults();
+      break;
+
+    case kListDelay:
+      if(myListDelayPopup->getValue() == 0)
+      {
+        myListDelayPopup->setValueLabel("Off");
+        myListDelayPopup->setValueUnit("");
+      }
+      else if(myListDelayPopup->getValue() == 1000)
+      {
+        myListDelayPopup->setValueLabel("1");
+        myListDelayPopup->setValueUnit(" second");
+      }
+      else
+      {
+        myListDelayPopup->setValueUnit(" ms");
+      }
+      break;
+    case kMouseWheel:
+      if(myWheelLinesPopup->getValue() == 1)
+        myWheelLinesPopup->setValueUnit(" line");
+      else
+        myWheelLinesPopup->setValueUnit(" lines");
       break;
 
     default:

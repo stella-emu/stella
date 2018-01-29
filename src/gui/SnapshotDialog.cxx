@@ -21,7 +21,6 @@
 #include "FSNode.hxx"
 #include "Font.hxx"
 #include "LauncherDialog.hxx"
-#include "PopUpWidget.hxx"
 #include "Settings.hxx"
 #include "SnapshotDialog.hxx"
 
@@ -39,7 +38,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
             fontWidth    = font.getMaxCharWidth(),
             buttonWidth  = font.getStringWidth("Save path" + ELLIPSIS) + 20,
             buttonHeight = font.getLineHeight() + 4;
-  int xpos, ypos, lwidth, fwidth;
+  int xpos, ypos, fwidth;
   WidgetArray wid;
   ButtonWidget* b;
 
@@ -70,25 +69,14 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // Snapshot naming
   xpos = HBORDER;  ypos += buttonHeight + V_GAP * 4;
-  VariantList items;
-  lwidth = font.getStringWidth("Continuous snapshot interval ");
   fwidth = font.getStringWidth("10 seconds");
 
   // Snapshot interval (continuous mode)
-  items.clear();
-  VarList::push_back(items, "1 second", "1");
-  VarList::push_back(items, "2 seconds", "2");
-  VarList::push_back(items, "3 seconds", "3");
-  VarList::push_back(items, "4 seconds", "4");
-  VarList::push_back(items, "5 seconds", "5");
-  VarList::push_back(items, "6 seconds", "6");
-  VarList::push_back(items, "7 seconds", "7");
-  VarList::push_back(items, "8 seconds", "8");
-  VarList::push_back(items, "9 seconds", "9");
-  VarList::push_back(items, "10 seconds", "10");
-  mySnapInterval =
-    new PopUpWidget(this, font, xpos, ypos, fwidth, lineHeight, items,
-                    "Continuous snapshot interval ", lwidth);
+  mySnapInterval = new SliderWidget(this, font, xpos, ypos,
+                                    "Continuous snapshot interval ", 0, kSnapshotInterval,
+                                    font.getStringWidth("10 seconds"));
+  mySnapInterval->setMinValue(1);
+  mySnapInterval->setMaxValue(10);
   wid.push_back(mySnapInterval);
 
   // Booleans for saving snapshots
@@ -99,12 +87,11 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // Snapshot single or multiple saves
   xpos += INDENT;  ypos += lineHeight + V_GAP;
-  mySnapName = new CheckboxWidget(this, font, xpos, ypos, "Use actualy ROM name");
+  mySnapName = new CheckboxWidget(this, font, xpos, ypos, "Use actual ROM name");
   wid.push_back(mySnapName);
   ypos += lineHeight + V_GAP;
 
-  mySnapSingle = new CheckboxWidget(this, font, xpos, ypos,
-                                    "Overwrite existing files");
+  mySnapSingle = new CheckboxWidget(this, font, xpos, ypos, "Overwrite existing files");
   wid.push_back(mySnapSingle);
 
   // Snapshot in 1x mode (ignore scaling)
@@ -130,8 +117,8 @@ void SnapshotDialog::loadConfig()
   const Settings& settings = instance().settings();
   mySnapSavePath->setText(settings.getString("snapsavedir"));
   mySnapLoadPath->setText(settings.getString("snaploaddir"));
+  mySnapInterval->setValue(instance().settings().getInt("ssinterval"));
   mySnapName->setState(instance().settings().getString("snapname") == "rom");
-  mySnapInterval->setSelected(instance().settings().getString("ssinterval"), "2");
   mySnapSingle->setState(settings.getBool("sssingle"));
   mySnap1x->setState(settings.getBool("ss1x"));
 }
@@ -141,11 +128,10 @@ void SnapshotDialog::saveConfig()
 {
   instance().settings().setValue("snapsavedir", mySnapSavePath->getText());
   instance().settings().setValue("snaploaddir", mySnapLoadPath->getText());
+  instance().settings().setValue("ssinterval", mySnapInterval->getValue());
   instance().settings().setValue("snapname", mySnapName->getState() ? "rom" : "int");
   instance().settings().setValue("sssingle", mySnapSingle->getState());
   instance().settings().setValue("ss1x", mySnap1x->getState());
-  instance().settings().setValue("ssinterval",
-    mySnapInterval->getSelectedTag().toString());
 
   // Flush changes to disk and inform the OSystem
   instance().saveConfig();
@@ -157,10 +143,10 @@ void SnapshotDialog::setDefaults()
 {
   mySnapSavePath->setText(instance().defaultSaveDir());
   mySnapLoadPath->setText(instance().defaultLoadDir());
-
+  mySnapInterval->setValue(2);
+  mySnapName->setState(false);
   mySnapSingle->setState(false);
   mySnap1x->setState(false);
-  mySnapInterval->setSelected("2", "2");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -200,6 +186,13 @@ void SnapshotDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSnapLoadDirChosenCmd:
       mySnapLoadPath->setText(myBrowser->getResult().getShortPath());
+      break;
+
+    case kSnapshotInterval:
+      if(mySnapInterval->getValue() == 1)
+        mySnapInterval->setValueUnit(" second");
+      else
+        mySnapInterval->setValueUnit(" seconds");
       break;
 
     default:
