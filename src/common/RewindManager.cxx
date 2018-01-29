@@ -71,8 +71,8 @@ void RewindManager::setup()
     // horizon not reachable?
     if(myFactor == MAX_FACTOR)
       break;
-    // sum up interval cycles (first and last state are not compressed)
-    for(uInt32 i = myUncompressed + 1; i < mySize - 1; ++i)
+    // sum up interval cycles (first state is not compressed)
+    for(uInt32 i = myUncompressed + 1; i < mySize; ++i)
     {
       interval *= myFactor;
       cycleSum += interval;
