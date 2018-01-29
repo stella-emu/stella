@@ -43,6 +43,7 @@ MODULE_OBJS := \
 	src/gui/SnapshotDialog.o \
 	src/gui/StringListWidget.o \
 	src/gui/TabWidget.o \
+	src/gui/TimeLineWidget.o \
 	src/gui/TimeMachineDialog.o \
 	src/gui/TimeMachine.o \
 	src/gui/UIDialog.o \

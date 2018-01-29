@@ -21,6 +21,7 @@
 class CommandSender;
 class DialogContainer;
 class OSystem;
+class TimeLineWidget;
 
 #include "Dialog.hxx"
 
@@ -32,6 +33,7 @@ class TimeMachineDialog : public Dialog
 
   private:
     void loadConfig() override;
+    void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
@@ -45,7 +47,7 @@ class TimeMachineDialog : public Dialog
   private:
     enum
     {
-      kPause     = 'TMps',
+      kTimeline  = 'TMtl',
       kPlay      = 'TMpl',
       kRewindAll = 'TMra',
       kRewind10  = 'TMr1',
@@ -55,7 +57,8 @@ class TimeMachineDialog : public Dialog
       kUnwind1   = 'TMun',
     };
 
-    // FIXME ButtonWidget* myPauseWidget;
+    TimeLineWidget* myTimeline;
+
     ButtonWidget* myPlayWidget;
     ButtonWidget* myRewindAllWidget;
     ButtonWidget* myRewind10Widget;

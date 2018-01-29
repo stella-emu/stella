@@ -38,6 +38,9 @@ class StateManager;
   to the end of the list (aka, all future states) are removed, and the internal
   iterator moves to the insertion point of the data (the end of the list).
 
+  If the list is full, states are either removed at the beginning (compression
+  off) or at selective positions (compression on).
+
   @author  Stephen Anthony
 */
 class RewindManager
@@ -106,22 +109,32 @@ class RewindManager
     bool addState(const string& message, bool timeMachine = false);
 
     /**
-      Rewind one level of the state list, and display the message associated
+      Rewind numStates levels of the state list, and display the message associated
       with that state.
 
       @param numStates  Number of states to rewind
       @return           Number of states to rewinded
     */
-    uInt32 rewindState(uInt32 numStates = 1);
+    uInt32 rewindStates(uInt32 numStates = 1);
 
     /**
-      Unwind one level of the state list, and display the message associated
+      Unwind numStates levels of the state list, and display the message associated
       with that state.
 
       @param numStates  Number of states to unwind
       @return           Number of states to unwinded
     */
-    uInt32 unwindState(uInt32 numStates = 1);
+    uInt32 unwindStates(uInt32 numStates = 1);
+
+    /**
+      Rewind/unwind numStates levels of the state list, and display the message associated
+      with that state.
+
+      @param numStates  Number of states to wind
+      @param unwind     unwind or rewind
+      @return           Number of states to winded
+    */
+    uInt32 windStates(uInt32 numStates, bool unwind);
 
     bool atFirst() const { return myStateList.atFirst(); }
     bool atLast() const  { return myStateList.atLast();  }
@@ -136,9 +149,15 @@ class RewindManager
     uInt32 getCurrentIdx() { return myStateList.currentIdx(); }
     uInt32 getLastIdx() { return myStateList.size(); }
 
-    uInt32 getFirstCycles();
-    uInt32 getCurrentCycles();
-    uInt32 getLastCycles();
+    uInt32 getFirstCycles() const;
+    uInt32 getCurrentCycles() const;
+    uInt32 getLastCycles() const;
+
+    /**
+      Get a collection of cycle timestamps, offset from the first one in
+      the list.  This also determines the number of states in the list.
+    */
+    IntArray cyclesList() const;
 
   private:
     OSystem& myOSystem;

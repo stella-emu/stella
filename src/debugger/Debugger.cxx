@@ -538,7 +538,7 @@ uInt16 Debugger::windStates(uInt16 numStates, bool unwind, string& message)
   unlockBankswitchState();
 
   uInt64 startCycles = myOSystem.console().tia().cycles();
-  uInt16 winds = unwind ? r.unwindState(numStates) : r.rewindState(numStates);
+  uInt16 winds = r.windStates(numStates, unwind);
   message = r.getUnitString(myOSystem.console().tia().cycles() - startCycles);
 
   lockBankswitchState();
@@ -620,7 +620,8 @@ void Debugger::setStartState()
   // Save initial state and add it to the rewind list (except when in currently rewinding)
   RewindManager& r = myOSystem.state().rewindManager();
   // avoid invalidating future states when entering the debugger e.g. during rewind
-  if(myOSystem.eventHandler().state() == EventHandlerState::EMULATION)
+  if(r.atLast() && (myOSystem.eventHandler().state() != EventHandlerState::TIMEMACHINE
+     || myOSystem.state().mode() == StateManager::Mode::Off))
     addState("enter debugger");
   else
     updateRewindbuttons(r);
