@@ -19,8 +19,9 @@
 #define TIA_AUDIO_CHANNEL_HXX
 
 #include "bspf.hxx"
+#include "Serializable.hxx"
 
-class AudioChannel
+class AudioChannel : public Serializable
 {
   public:
     AudioChannel();
@@ -36,6 +37,13 @@ class AudioChannel
     void audf(uInt8 value);
 
     void audv(uInt8 value);
+
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override;
 
   private:
     uInt8 myAudc;

@@ -114,3 +114,51 @@ AudioChannel& Audio::channel1()
 {
   return myChannel1;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Audio::name() const
+{
+  return "TIA_Audio";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Audio::save(Serializer& out) const
+{
+  try
+  {
+    out.putString(name());
+
+    out.putInt(myCounter);
+
+    if (!myChannel0.save(out)) return false;
+    if (!myChannel1.save(out)) return false;
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Audio::save" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Audio::load(Serializer& in)
+{
+  try
+  {
+    if (in.getString() != name()) return false;
+
+    myCounter = in.getInt();
+
+    if (!myChannel0.load(in)) return false;
+    if (!myChannel1.load(in)) return false;
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_Audio::load" << endl;
+    return false;
+  }
+
+  return true;
+}

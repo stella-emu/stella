@@ -240,6 +240,7 @@ bool TIA::save(Serializer& out) const
     if(!myPlayer0.save(out))    return false;
     if(!myPlayer1.save(out))    return false;
     if(!myBall.save(out))       return false;
+    if(!myAudio.save(out))      return false;
 
     for (const PaddleReader& paddleReader : myPaddleReaders)
       if(!paddleReader.save(out)) return false;
@@ -309,6 +310,7 @@ bool TIA::load(Serializer& in)
     if(!myPlayer0.load(in))    return false;
     if(!myPlayer1.load(in))    return false;
     if(!myBall.load(in))       return false;
+    if(!myAudio.load(in))       return false;
 
     for (PaddleReader& paddleReader : myPaddleReaders)
       if(!paddleReader.load(in)) return false;

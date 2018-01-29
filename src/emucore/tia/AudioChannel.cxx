@@ -141,3 +141,67 @@ void AudioChannel::audf(uInt8 value)
 {
   myAudf = value & 0x1f;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string AudioChannel::name() const
+{
+  return "TIA_AudioChannel";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AudioChannel::save(Serializer& out) const
+{
+  try
+  {
+    out.putString(name());
+
+    out.putInt(myAudc);
+    out.putInt(myAudv);
+    out.putInt(myAudf);
+
+    out.putBool(myClockEnable);
+    out.putBool(myNoiseFeedback);
+    out.putBool(myNoiseCounterBit4);
+    out.putBool(myPulseCounterHold);
+
+    out.putInt(myDivCounter);
+    out.putInt(myPulseCounter);
+    out.putInt(myNoiseCounter);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_AudioChannel::save" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AudioChannel::load(Serializer& in)
+{
+  try
+  {
+    if (in.getString() != name()) return false;
+
+    myAudc = in.getInt();
+    myAudv = in.getInt();
+    myAudf = in.getInt();
+
+    myClockEnable = in.getBool();
+    myNoiseFeedback = in.getBool();
+    myNoiseCounterBit4 = in.getBool();
+    myPulseCounterHold = in.getBool();
+
+    myDivCounter = in.getInt();
+    myPulseCounter = in.getInt();
+    myNoiseCounter = in.getInt();
+  }
+  catch(...)
+  {
+    cerr << "ERROR: TIA_AudioChannel::load" << endl;
+    return false;
+  }
+
+  return true;
+}

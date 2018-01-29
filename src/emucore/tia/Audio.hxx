@@ -20,10 +20,11 @@
 
 #include "bspf.hxx"
 #include "AudioChannel.hxx"
+#include "Serializable.hxx"
 
 class AudioQueue;
 
-class Audio
+class Audio : public Serializable
 {
   public:
     Audio();
@@ -37,6 +38,13 @@ class Audio
     AudioChannel& channel0();
 
     AudioChannel& channel1();
+
+    /**
+      Serializable methods (see that class for more information).
+    */
+    bool save(Serializer& out) const override;
+    bool load(Serializer& in) override;
+    string name() const override;
 
   private:
     void phase1();
