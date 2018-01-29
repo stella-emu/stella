@@ -727,7 +727,7 @@ void SliderWidget::handleMouseMoved(int x, int y)
   // TODO: when the mouse is dragged outside the widget, the slider should
   // snap back to the old value.
   if(isEnabled() && _isDragging &&
-     x >= int(_labelWidth) && x <= int(_w - _valueLabelGap - _valueLabelWidth))
+     x >= int(_labelWidth - 4) && x <= int(_w - _valueLabelGap - _valueLabelWidth + 4))
     setValue(posToValue(x - _labelWidth));
 }
 
