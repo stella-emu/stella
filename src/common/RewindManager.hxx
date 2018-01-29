@@ -38,6 +38,9 @@ class StateManager;
   to the end of the list (aka, all future states) are removed, and the internal
   iterator moves to the insertion point of the data (the end of the list).
 
+  If the list is full, states are either removed at the beginning (compression
+  off) or at selective positions (compression on).
+
   @author  Stephen Anthony
 */
 class RewindManager

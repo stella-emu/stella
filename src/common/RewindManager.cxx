@@ -56,7 +56,7 @@ void RewindManager::setup()
     if(HOR_SETTINGS[i] == myOSystem.settings().getString(prefix + "tm.horizon"))
       myHorizon = HORIZON_CYCLES[i];
 
-  // calc interval growth factor
+  // calc interval growth factor for compression
   // this factor defines the backward horizon
   const double MAX_FACTOR = 1E8;
   double minFactor = 0, maxFactor = MAX_FACTOR;
@@ -88,7 +88,6 @@ void RewindManager::setup()
     else
       maxFactor = myFactor;
   }
-//cerr << "factor " << myFactor << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -226,38 +225,32 @@ void RewindManager::compressStates()
   double expectedCycles = myInterval * myFactor * (1 + myFactor);
   double maxError = 1.5;
   uInt32 idx = myStateList.size() - 2;
-  //uInt32 removeIdx = 0;
   // in case maxError is <= 1.5 remove first state by default:
   Common::LinkedObjectPool<RewindState>::const_iter removeIter = myStateList.first();
-  if(myUncompressed < mySize)
+  /*if(myUncompressed < mySize)
     //  if compression is enabled, the first but one state is removed by default:
-    removeIter++;
+    removeIter++;*/
 
-  //cerr << "idx: " << idx << endl;
   // iterate from last but one to first but one
   for(auto it = myStateList.previous(myStateList.last()); it != myStateList.first(); --it)
   {
     if(idx < mySize - myUncompressed)
     {
-//cerr << *it << endl << endl;  // debug code
       expectedCycles *= myFactor;
 
       uInt64 prevCycles = myStateList.previous(it)->cycles;
       uInt64 nextCycles = myStateList.next(it)->cycles;
       double error = expectedCycles / (nextCycles - prevCycles);
-//cerr << "prevCycles: " << prevCycles << ", nextCycles: " << nextCycles << ", error: " << error << endl;
 
       if(error > maxError)
       {
         maxError = error;
         removeIter = it;
-        //removeIdx = idx;
       }
     }
     --idx;
   }
    myStateList.remove(removeIter); // remove
-//cerr << "remove " << removeIdx << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -305,7 +298,7 @@ string RewindManager::getUnitString(Int64 cycles)
   {
     // use the lower unit up to twice the nextCycles unit, except for an exact match of the nextCycles unit
     // TODO: does the latter make sense, e.g. for ROMs with changing scanlines?
-    if(cycles < UNIT_CYCLES[i + 1] * 2 && cycles % UNIT_CYCLES[i + 1] != 0)
+    if(cycles == 0 || cycles < UNIT_CYCLES[i + 1] * 2 && cycles % UNIT_CYCLES[i + 1] != 0)
       break;
   }
   result << cycles / UNIT_CYCLES[i] << " " << UNIT_NAMES[i];
