@@ -30,7 +30,7 @@
    size: 95
    ascent: 8
    descent: 2
-   first char: 32 (0x20)
+   first char: 29 (0x1d)
    last char: 126 (0x7e)
    default char: 32 (0x20)
    proportional: no
@@ -41,6 +41,90 @@ namespace GUI {
 
 // Font character bitmap data.
 static const uInt16 stella_font_bits[] = {
+
+  /* Character 29 (0x1d):
+  width 6
+  bbx ( 6, 10, 0, -2 )
+
+  +------+
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |* * * |
+  |      |
+  |      |
+  +------+
+  */
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0b1010100000000000,
+  0x0000,
+  0x0000,
+
+  /* Character 30 (0x1e):
+  width 6
+  bbx ( 6, 10, 0, -2 )
+
+  +------+
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  +------+
+  */
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+
+  /* Character 31 (0x1f):
+  width 6
+  bbx ( 6, 10, 0, -2 )
+
+  +------+
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  |      |
+  +------+
+  */
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
 
 /* Character 32 (0x20):
    width 6
@@ -445,9 +529,9 @@ static const uInt16 stella_font_bits[] = {
    |      |
    |      |
    |      |
-   |  *   |
-   | ***  |
-   |  *   |
+   |      |
+   | **   |
+   |      |
    |      |
    +------+
 */
@@ -457,9 +541,9 @@ static const uInt16 stella_font_bits[] = {
 0x0000,
 0x0000,
 0x0000,
-0x2000,
-0x7000,
-0x2000,
+0x0000,
+0x6000,
+0x0000,
 0x0000,
 
 /* Character 47 (0x2f):
@@ -777,25 +861,25 @@ static const uInt16 stella_font_bits[] = {
    +------+
    |      |
    |      |
-   |  *   |
-   | ***  |
-   |  *   |
    |      |
-   |  *   |
-   | ***  |
-   |  *   |
+   | **   |
+   |      |
+   |      |
+   |      |
+   | **   |
+   |      |
    |      |
    +------+
 */
 0x0000,
 0x0000,
-0x2000,
-0x7000,
-0x2000,
 0x0000,
-0x2000,
-0x7000,
-0x2000,
+0x6000,
+0x0000,
+0x0000,
+0x0000,
+0x6000,
+0x0000,
 0x0000,
 
 /* Character 59 (0x3b):
@@ -805,9 +889,9 @@ static const uInt16 stella_font_bits[] = {
    +------+
    |      |
    |      |
-   |  *   |
-   | ***  |
-   |  *   |
+   |      |
+   |  **  |
+   |      |
    |      |
    |  **  |
    |  *   |
@@ -817,9 +901,9 @@ static const uInt16 stella_font_bits[] = {
 */
 0x0000,
 0x0000,
-0x2000,
-0x7000,
-0x2000,
+0x0000,
+0x3000,
+0x0000,
 0x0000,
 0x3000,
 0x2000,
@@ -2710,8 +2794,8 @@ static const FontDesc stellaDesc = {
   10,
   6, 10, 0, -2,
   8,
-  32,
-  95,
+  29,
+  98,
   stella_font_bits,
   nullptr,  /* no encode table*/
   nullptr,  /* fixed width*/

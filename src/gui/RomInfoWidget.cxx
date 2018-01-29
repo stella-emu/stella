@@ -118,17 +118,17 @@ void RomInfoWidget::parseProperties()
     mySurface->setVisible(mySurfaceIsValid);
 
   // Now add some info for the message box below the image
-  myRomInfo.push_back("Name:  " + myProperties.get(Cartridge_Name));
-  myRomInfo.push_back("Manufacturer:  " + myProperties.get(Cartridge_Manufacturer));
-  myRomInfo.push_back("Model:  " + myProperties.get(Cartridge_ModelNo));
-  myRomInfo.push_back("Rarity:  " + myProperties.get(Cartridge_Rarity));
-  myRomInfo.push_back("Note:  " + myProperties.get(Cartridge_Note));
+  myRomInfo.push_back("Name: " + myProperties.get(Cartridge_Name));
+  myRomInfo.push_back("Manufacturer: " + myProperties.get(Cartridge_Manufacturer));
+  myRomInfo.push_back("Model: " + myProperties.get(Cartridge_ModelNo));
+  myRomInfo.push_back("Rarity: " + myProperties.get(Cartridge_Rarity));
+  myRomInfo.push_back("Note: " + myProperties.get(Cartridge_Note));
   bool swappedPorts = myProperties.get(Console_SwapPorts) == "YES";
-  myRomInfo.push_back("Controllers:  " + (!swappedPorts
+  myRomInfo.push_back("Controllers: " + (!swappedPorts
     ? myProperties.get(Controller_Left) + " (left), " + myProperties.get(Controller_Right) + " (right)"
     : myProperties.get(Controller_Right) + " (left), " + myProperties.get(Controller_Left) + " (right)"));
 #if 0
-  myRomInfo.push_back("YStart/Height:  " + myProperties.get(Display_YStart) +
+  myRomInfo.push_back("YStart/Height: " + myProperties.get(Display_YStart) +
                       "    " + myProperties.get(Display_Height));
 #endif
 
@@ -142,9 +142,9 @@ void RomInfoWidget::drawWidget(bool hilite)
 
   const int yoff = myAvail.h + 10;
 
-  s.fillRect(_x+2, _y+2, _w-4, _h-4, kWidColor);
-  s.box(_x, _y, _w, _h, kColor, kShadowColor);
-  s.box(_x, _y+yoff, _w, _h-yoff, kColor, kShadowColor);
+  s.fillRect(_x+2, _y+2, _w-4, _h-4, kDlgColor);
+  s.frameRect(_x, _y, _w, _h, kColor);
+  s.frameRect(_x, _y+yoff, _w, _h-yoff, kColor);
 
   if(!myHaveProperties) return;
 
@@ -167,10 +167,10 @@ void RomInfoWidget::drawWidget(bool hilite)
     s.drawString(font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
 
-  int xpos = _x + 5, ypos = _y + yoff + 10;
+  int xpos = _x + 8, ypos = _y + yoff + 10;
   for(const auto& info: myRomInfo)
   {
-    s.drawString(_font, info, xpos, ypos, _w - 10, _textcolor);
+    s.drawString(_font, info, xpos, ypos, _w - 16, _textcolor);
     ypos += _font.getLineHeight();
   }
 }

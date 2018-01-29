@@ -30,9 +30,9 @@
    size: 95
    ascent: 14
    descent: 4
-   first char: 30 (0x1e)
+   first char: 29 (0x1d)
    last char: 126 (0x7e)
-   default char: 30 (0x1e)
+   default char: 32 (0x20)
    proportional: no
    Public domain font.  Share and enjoy.
 */

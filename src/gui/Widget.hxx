@@ -32,6 +32,7 @@ namespace GUI {
 #include "bspf.hxx"
 #include "Event.hxx"
 #include "GuiObject.hxx"
+#include "Font.hxx"
 
 enum {
   WIDGET_ENABLED       = 1 << 0,
@@ -111,6 +112,7 @@ class Widget : public GuiObject
     void setTextColorHi(uInt32 color) { _textcolorhi = color; }
     void setBGColor(uInt32 color)     { _bgcolor = color;     }
     void setBGColorHi(uInt32 color)   { _bgcolorhi = color;   }
+    void setShadowColor(uInt32 color) { _shadowcolor = color; }
 
     virtual void loadConfig() { }
 
@@ -141,6 +143,7 @@ class Widget : public GuiObject
     uInt32     _bgcolorhi;
     uInt32     _textcolor;
     uInt32     _textcolorhi;
+    uInt32     _shadowcolor;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
@@ -176,10 +179,12 @@ class StaticTextWidget : public Widget
   public:
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
-                     const string& text, TextAlign align = TextAlign::Left);
+                     const string& text = "", TextAlign align = TextAlign::Left,
+                     uInt32 shadowColor = 0);
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y,
-                     const string& text, TextAlign align = TextAlign::Left);
+                     const string& text = "", TextAlign align = TextAlign::Left,
+                     uInt32 shadowColor = 0);
     void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlign align) { _align = align; }
@@ -301,18 +306,27 @@ class SliderWidget : public ButtonWidget
 {
   public:
     SliderWidget(GuiObject* boss, const GUI::Font& font,
-                 int x, int y, int w, int h, const string& label = "",
-                 int labelWidth = 0, int cmd = 0);
+                 int x, int y, int w, int h,
+                 const string& label = "", int labelWidth = 0, int cmd = 0,
+                 int valueLabelWidth = 0, const string& valueUnit = "", int valueLabelGap = 4);
+    SliderWidget(GuiObject* boss, const GUI::Font& font,
+                 int x, int y,
+                 const string& label = "", int labelWidth = 0, int cmd = 0,
+                 int valueLabelWidth = 0, const string& valueUnit = "", int valueLabelGap = 4);
 
     void setValue(int value);
-    int getValue() const      { return _value; }
+    int getValue() const { return _value; }
 
     void setMinValue(int value);
-    int  getMinValue() const      { return _valueMin; }
+    int  getMinValue() const { return _valueMin; }
     void setMaxValue(int value);
-    int  getMaxValue() const      { return _valueMax; }
+    int  getMaxValue() const { return _valueMax; }
     void setStepValue(int value);
-    int  getStepValue() const     { return _stepValue; }
+    int  getStepValue() const { return _stepValue; }
+    void setValueLabel(const string& valueLabel);
+    void setValueLabel(int value);
+    const string& getValueLabel() const { return _valueLabel; }
+    void setValueUnit(const string& valueUnit);
 
   protected:
     void handleMouseMoved(int x, int y) override;
@@ -327,10 +341,14 @@ class SliderWidget : public ButtonWidget
     int posToValue(int pos);
 
   protected:
-    int  _value, _stepValue;
-    int  _valueMin, _valueMax;
-    bool _isDragging;
-    int  _labelWidth;
+    int    _value, _stepValue;
+    int    _valueMin, _valueMax;
+    bool   _isDragging;
+    int    _labelWidth;
+    string _valueLabel;
+    string _valueUnit;
+    int    _valueLabelWidth;
+    int    _valueLabelGap;
 
   private:
     // Following constructors and assignment operators not supported

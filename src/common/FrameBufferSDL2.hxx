@@ -48,11 +48,11 @@ class FrameBufferSDL2 : public FrameBuffer
     //////////////////////////////////////////////////////////////////////
 
     /**
-      Updates window title
+      Updates window title.
 
-      @param title   The title of the application / window
+      @param title  The title of the application / window
     */
-    void setTitle(const string& title);
+    void setTitle(const string& title) override;
 
     /**
       Shows or hides the cursor based on the given boolean value.

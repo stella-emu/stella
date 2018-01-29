@@ -37,12 +37,15 @@ class CheckListWidget : public ListWidget
                     int x, int y, int w, int h);
     virtual ~CheckListWidget() = default;
 
-    void setStyle(CheckStyle style);
     void setList(const StringList& list, const BoolArray& state);
     void setLine(int line, const string& str, const bool& state);
 
     bool getState(int line);
     bool getSelectedState() { return getState(_selectedItem); }
+
+  protected:
+    void handleMouseEntered() override;
+    void handleMouseLeft() override;
 
   private:
     bool handleEvent(Event::Type e) override;

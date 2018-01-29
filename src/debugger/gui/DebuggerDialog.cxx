@@ -93,11 +93,39 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
   else if(key == KBDK_F12)
   {
     instance().debugger().parser().run("savesnap");
+    return;
+  }
+  else if(StellaModTest::isAlt(mod) && !StellaModTest::isControl(mod))
+  {
+    switch(key)
+    {
+      case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
+        if(StellaModTest::isShift(mod))
+          doRewind10();
+        else
+          doRewind();
+        return;
+      case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
+        if(StellaModTest::isShift(mod))
+          doUnwind10();
+        else
+          doUnwind();
+        return;
+      case KBDK_DOWN:  // Alt-down rewinds to start of list
+        doRewindAll();
+        return;
+      case KBDK_UP:  // Alt-up rewinds to end of list
+        doUnwindAll();
+        return;
+      default:
+        break;
+    }
   }
   else if(StellaModTest::isControl(mod))
   {
     switch(key)
     {
+#if 0
       case KBDK_R:
         if(StellaModTest::isAlt(mod))
           doRewindAll();
@@ -105,7 +133,7 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
           doRewind10();
         else
           doRewind();
-        break;
+        return;
       case KBDK_Y:
         if(StellaModTest::isAlt(mod))
           doUnwindAll();
@@ -113,19 +141,20 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
           doUnwind10();
         else
           doUnwind();
-        break;
+        return;
+#endif
       case KBDK_S:
         doStep();
-        break;
+        return;
       case KBDK_T:
         doTrace();
-        break;
+        return;
       case KBDK_L:
         doScanlineAdvance();
-        break;
+        return;
       case KBDK_F:
         doAdvance();
-        break;
+        return;
       default:
         break;
     }
@@ -322,7 +351,7 @@ void DebuggerDialog::createFont()
 void DebuggerDialog::showFatalMessage(const string& msg)
 {
   myFatalError = make_unique<GUI::MessageBox>(this, *myLFont, msg, _w/2, _h/2,
-                          kDDExitFatalCmd, "Exit ROM", "Continue");
+                          kDDExitFatalCmd, "Exit ROM", "Continue", "Fatal error");
   myFatalError->show();
 }
 
@@ -353,15 +382,9 @@ void DebuggerDialog::addTabArea()
   int tabID;
 
   // The Prompt/console tab
-#ifndef FLAT_UI
-  tabID = myTab->addTab(" Prompt ");
-  myPrompt = new PromptWidget(myTab, *myNFont,
-                              2, 2, widWidth, widHeight);
-#else
   tabID = myTab->addTab("Prompt");
   myPrompt = new PromptWidget(myTab, *myNFont,
                               2, 2, widWidth - 4, widHeight);
-#endif
   myTab->setParentWidget(tabID, myPrompt);
   addToFocusList(myPrompt->getFocusList(), myTab, tabID);
 
@@ -448,24 +471,32 @@ void DebuggerDialog::addRomArea()
   const GUI::Rect& r = getRomBounds();
   const int VBORDER = 4;
   const string ELLIPSIS = "\x1d";
+  WidgetArray wid1, wid2;
+  ButtonWidget* b;
 
   int bwidth  = myLFont->getStringWidth("Frame +1 "),
       bheight = myLFont->getLineHeight() + 2;
   int buttonX = r.right - bwidth - 5, buttonY = r.top + 5;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Step", kDDStepCmd);
+
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Step", kDDStepCmd);
+  wid2.push_back(b);
   buttonY += bheight + 4;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Trace", kDDTraceCmd);
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Trace", kDDTraceCmd);
+  wid2.push_back(b);
   buttonY += bheight + 4;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Scan +1", kDDSAdvCmd);
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Scan +1", kDDSAdvCmd);
+  wid2.push_back(b);
   buttonY += bheight + 4;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Frame +1", kDDAdvCmd);
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Frame +1", kDDAdvCmd);
+  wid2.push_back(b);
   buttonY += bheight + 4;
-  new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                   bwidth, bheight, "Exit", kDDExitCmd);
+  b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
+                       bwidth, bheight, "Exit", kDDExitCmd);
+  wid2.push_back(b);
 
   bwidth = bheight; // 7 + 12;
   bheight = bheight * 3 + 4 * 2;
@@ -475,7 +506,6 @@ void DebuggerDialog::addRomArea()
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
                      bwidth, bheight, LEFT_ARROW, 7, 11, kDDRewindCmd);
-
   myRewindButton->clearFlags(WIDGET_ENABLED);
 
   buttonY += bheight + 4;
@@ -491,7 +521,11 @@ void DebuggerDialog::addRomArea()
   bwidth = myLFont->getStringWidth("Options " + ELLIPSIS);
   bheight = myLFont->getLineHeight() + 2;
 
-  new ButtonWidget(this, *myLFont, xpos, r.top + 5, bwidth, bheight, "Options" + ELLIPSIS, kDDOptionsCmd);
+  b = new ButtonWidget(this, *myLFont, xpos, r.top + 5, bwidth, bheight,
+                       "Options" + ELLIPSIS, kDDOptionsCmd);
+  wid1.push_back(b);
+  wid1.push_back(myRewindButton);
+  wid1.push_back(myUnwindButton);
 
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
 
@@ -499,6 +533,9 @@ void DebuggerDialog::addRomArea()
   xpos = r.left + 10;  ypos = 10;
   myCpu = new CpuWidget(this, *myLFont, *myNFont, xpos, ypos, max_w);
   addToFocusList(myCpu->getFocusList());
+
+  addToFocusList(wid1);
+  addToFocusList(wid2);
 
   xpos = r.left + 10;  ypos += myCpu->getHeight() + 10;
   myRam = new RiotRamWidget(this, *myLFont, *myNFont, xpos, ypos, r.width() - 10);

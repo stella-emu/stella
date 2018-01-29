@@ -27,6 +27,10 @@
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"
+
+#include "ContextMenu.hxx"
+#include "PopUpWidget.hxx"
+
 #include "Vec.hxx"
 
 /*
@@ -38,9 +42,34 @@
  * ...
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font, const string& title,
+               int x, int y, int w, int h)
+  : GuiObject(instance, parent, *this, x, y, w, h),
+    _font(&font),
+    _title(title),
+    _th(0),
+    _mouseWidget(nullptr),
+    _focusedWidget(nullptr),
+    _dragWidget(nullptr),
+    _okWidget(nullptr),
+    _cancelWidget(nullptr),
+    _visible(false),
+    _processCancel(false),
+    _surface(nullptr),
+    _tabID(0),
+    _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
+{
+  initTitle(font, title);
+}
+
 Dialog::Dialog(OSystem& instance, DialogContainer& parent,
                int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
+    _font(nullptr),
+    _title(""),
+    _th(0),
+    _fh(0),
     _mouseWidget(nullptr),
     _focusedWidget(nullptr),
     _dragWidget(nullptr),
@@ -100,6 +129,29 @@ void Dialog::close(bool refresh)
   _visible = false;
 
   parent().removeDialog();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::initTitle(const GUI::Font& font, const string& title)
+{
+  _font = &font;
+  _fh = font.getLineHeight();
+  setTitle(title);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::setTitle(const string& title)
+{
+  if(_font != nullptr)
+  {
+    _title = title;
+    _h -= _th;
+    if(title.empty())
+      _th = 0;
+    else
+      _th = _fh + 4;
+    _h += _th;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -270,15 +322,26 @@ void Dialog::drawDialog()
 
   if(_dirty)
   {
+    // dialog is still on top if e.g a ContextMenu is opened
+    bool onTop = parent().myDialogStack.top() == this
+      || parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
+      && !parent().myDialogStack.top()->hasTitle();
+
     if(_flags & WIDGET_CLEARBG)
+    {
       //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-      s.fillRect(_x, _y, _w, _h, kDlgColor);
+      s.fillRect(_x, _y + _th, _w, _h - _th, onTop ? kDlgColor : kBGColorLo);
+      if(_th)
+      {
+        s.fillRect(_x, _y, _w, _th, onTop ? kColorTitleBar : kColorTitleBarLo);
+        s.drawString(*_font, _title, _x + 10, _y + 2 + 1, _font->getStringWidth(_title),
+                     onTop ? kColorTitleText : kColorTitleTextLo);
+      }
+    }
+    else
+      s.invalidate();
     if(_flags & WIDGET_BORDER)
-#ifndef FLAT_UI
-      s.box(_x, _y, _w, _h, kColor, kShadowColor);
-#else
-      s.frameRect(_x, _y, _w, _h, kColor);
-#endif // !FLAT_UI
+      s.frameRect(_x, _y, _w, _h, onTop ? kColor : kShadowColor);
 
     // Make all child widget dirty
     Widget* w = _firstWidget;
@@ -662,23 +725,28 @@ Widget* Dialog::findWidget(int x, int y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                const string& okText, const string& cancelText,
-                               bool focusOKButton)
+                               bool focusOKButton, int buttonWidth)
 {
-  int buttonWidth = std::max(font.getStringWidth("Cancel"),
-                    std::max(font.getStringWidth(okText),
-                    font.getStringWidth(okText))) + 15;
+  const int HBORDER = 10;
+  const int VBORDER = 10;
+  const int BTN_BORDER = 20;
+  const int BUTTON_GAP = 8;
+  buttonWidth = std::max(buttonWidth,
+                         std::max(font.getStringWidth("Defaults"),
+                         std::max(font.getStringWidth(okText),
+                         font.getStringWidth(cancelText))) + BTN_BORDER);
   int buttonHeight = font.getLineHeight() + 4;
 
 #ifndef BSPF_MAC_OSX
-  addOKWidget(new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7),
-      _h - buttonHeight - 10, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
-  addCancelWidget(new ButtonWidget(this, font, _w - (buttonWidth + 10),
-      _h - buttonHeight - 10, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
+  addOKWidget(new ButtonWidget(this, font, _w - 2 * buttonWidth - HBORDER - BUTTON_GAP,
+      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
+  addCancelWidget(new ButtonWidget(this, font, _w - (buttonWidth + HBORDER),
+      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
 #else
-  addCancelWidget(new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7),
-      _h - buttonHeight - 10, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
-  addOKWidget(new ButtonWidget(this, font, _w - (buttonWidth + 10),
-      _h - buttonHeight - 10, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
+  addCancelWidget(new ButtonWidget(this, font, _w - 2 * buttonWidth - HBORDER - BUTTON_GAP,
+      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, cancelText, GuiObject::kCloseCmd));
+  addOKWidget(new ButtonWidget(this, font, _w - (buttonWidth + HBORDER),
+      _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
 #endif
 
   // Note that 'focusOKButton' only takes effect when there are no other UI
@@ -695,6 +763,25 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
     wid.push_back(_cancelWidget);
     wid.push_back(_okWidget);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
+                                       const string& okText, const string& cancelText,
+                                       const string& defaultsText,
+                                       bool focusOKButton)
+{
+  const int HBORDER = 10;
+  const int VBORDER = 10;
+  const int BTN_BORDER = 20;
+  int buttonWidth = font.getStringWidth(defaultsText) + BTN_BORDER;
+  int buttonHeight = font.getLineHeight() + 4;
+
+  addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
+                   buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
+  wid.push_back(_defaultWidget);
+
+  addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

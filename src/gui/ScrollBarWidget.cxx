@@ -32,26 +32,26 @@
 
 // Up arrow
 static uInt32 up_arrow[8] = {
-  0b00011000,
-  0b00011000,
-  0b00111100,
-  0b00111100,
-  0b01111110,
-  0b01111110,
-  0b11111111,
-  0b11111111
+  0b00000000,
+  0b00010000,
+  0b00111000,
+  0b01111100,
+  0b11101110,
+  0b11000110,
+  0b10000010,
+  0b00000000
 };
 
 // Down arrow
 static uInt32 down_arrow[8] = {
-  0b11111111,
-  0b11111111,
-  0b01111110,
-  0b01111110,
-  0b00111100,
-  0b00111100,
-  0b00011000,
-  0b00011000
+  0b00000000,
+  0b10000010,
+  0b11000110,
+  0b11101110,
+  0b01111100,
+  0b00111000,
+  0b00010000,
+  0b00000000
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,11 +101,11 @@ void ScrollBarWidget::handleMouseDown(int x, int y, MouseButton b,
   }
   else if(y < _sliderPos)
   {
-    _currentPos -= _entriesPerPage;
+    _currentPos -= _entriesPerPage - 1;
   }
   else if(y >= _sliderPos + _sliderHeight)
   {
-    _currentPos += _entriesPerPage;
+    _currentPos += _entriesPerPage - 1;
   }
   else
   {
@@ -209,6 +209,7 @@ void ScrollBarWidget::checkBounds(int old_pos)
 void ScrollBarWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,6 +217,7 @@ void ScrollBarWidget::handleMouseLeft()
 {
   _part = kNoPart;
   clearFlags(WIDGET_HILITED);
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -250,31 +252,28 @@ void ScrollBarWidget::drawWidget(bool hilite)
   int bottomY = _y + _h;
   bool isSinglePage = (_numEntries <= _entriesPerPage);
 
-  s.frameRect(_x, _y, _w, _h, kShadowColor);
+  s.frameRect(_x, _y, _w, _h, hilite ? kWidColorHi : kColor);
 
   if(_draggingPart != kNoPart)
     _part = _draggingPart;
 
   // Up arrow
-  s.frameRect(_x, _y, _w, UP_DOWN_BOX_HEIGHT, kColor);
-  s.drawBitmap(up_arrow, _x+3, _y+5, isSinglePage ? kColor :
-               (hilite && _part == kUpArrowPart) ? kScrollColorHi : kScrollColor, 8);
+  if(hilite && _part == kUpArrowPart)
+    s.fillRect(_x + 1, _y + 1, _w - 2, UP_DOWN_BOX_HEIGHT - 2, kScrollColor);
+  s.drawBitmap(up_arrow, _x+4, _y+5, isSinglePage ? kColor :
+               (hilite && _part == kUpArrowPart) ? kWidColor : kTextColor, 8);
 
   // Down arrow
-  s.frameRect(_x, bottomY - UP_DOWN_BOX_HEIGHT, _w, UP_DOWN_BOX_HEIGHT, kColor);
-  s.drawBitmap(down_arrow, _x+3, bottomY - UP_DOWN_BOX_HEIGHT + 5, isSinglePage ? kColor :
-               (hilite && _part == kDownArrowPart) ? kScrollColorHi : kScrollColor, 8);
+  if(hilite && _part == kDownArrowPart)
+    s.fillRect(_x + 1, bottomY - UP_DOWN_BOX_HEIGHT + 1, _w - 2, UP_DOWN_BOX_HEIGHT - 2, kScrollColor);
+  s.drawBitmap(down_arrow, _x+4, bottomY - UP_DOWN_BOX_HEIGHT + 5, isSinglePage ? kColor :
+               (hilite && _part == kDownArrowPart) ? kWidColor : kTextColor, 8);
 
   // Slider
   if(!isSinglePage)
   {
-    s.fillRect(_x, _y + _sliderPos, _w, _sliderHeight,
+    s.fillRect(_x + 1, _y + _sliderPos - 1, _w - 2, _sliderHeight + 2,
               (hilite && _part == kSliderPart) ? kScrollColorHi : kScrollColor);
-    s.frameRect(_x, _y + _sliderPos, _w, _sliderHeight, kColor);
-    int y = _y + _sliderPos + _sliderHeight / 2;
-    s.hLine(_x + 2, y - 2, _x + _w - 3, kWidColor);
-    s.hLine(_x + 2, y,     _x + _w - 3, kWidColor);
-    s.hLine(_x + 2, y + 2, _x + _w - 3, kWidColor);
   }
 }
 

@@ -72,14 +72,25 @@ class StateManager
     void setRewindMode(Mode mode) { myActiveMode = mode; }
 
     /**
-      Rewinds one state; this uses the RewindManager for its functionality.
+      Optionally adds one extra state when entering the Time Machine dialog;
+      this uses the RewindManager for its functionality.
     */
-    bool rewindState(uInt32 numStates = 1);
+    bool addExtraState(const string& message);
 
     /**
-      Unwinds one state; this uses the RewindManager for its functionality.
+      Rewinds states; this uses the RewindManager for its functionality.
     */
-    bool unwindState(uInt32 numStates = 1);
+    bool rewindStates(uInt32 numStates = 1);
+
+    /**
+      Unwinds states; this uses the RewindManager for its functionality.
+    */
+    bool unwindStates(uInt32 numStates = 1);
+
+    /**
+      Rewinds/unwinds states; this uses the RewindManager for its functionality.
+    */
+    bool windStates(uInt32 numStates, bool unwind);
 
     /**
       Updates the state of the system based on the currently active mode.

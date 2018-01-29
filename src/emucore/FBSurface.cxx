@@ -154,8 +154,15 @@ void FBSurface::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
-                         uInt32 tx, uInt32 ty, uInt32 color)
+                         uInt32 tx, uInt32 ty, uInt32 color, uInt32 shadowColor)
 {
+  if(shadowColor != 0)
+  {
+    drawChar(font, chr, tx + 1, ty + 0, shadowColor);
+    drawChar(font, chr, tx + 0, ty + 1, shadowColor);
+    drawChar(font, chr, tx + 1, ty + 1, shadowColor);
+  }
+
   const FontDesc& desc = font.desc();
 
   // If this character is not included in the font, use the default char.
@@ -263,24 +270,6 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
     case FrameStyle::Dashed:
       uInt32 i, skip, lwidth = 1;
 
-#ifndef FLAT_UI
-      for(i = x, skip = 1; i < x+w-1; i=i+lwidth+1, ++skip)
-      {
-        if(skip % 2)
-        {
-          hLine(i, y,         i + lwidth, color);
-          hLine(i, y + h - 1, i + lwidth, color);
-        }
-      }
-      for(i = y, skip = 1; i < y+h-1; i=i+lwidth+1, ++skip)
-      {
-        if(skip % 2)
-        {
-          vLine(x,         i, i + lwidth, color);
-          vLine(x + w - 1, i, i + lwidth, color);
-        }
-      }
-#else
       for(i = x; i < x + w; i += 2)
       {
         hLine(i, y, i, color);
@@ -291,7 +280,6 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
         vLine(x, i, i, color);
         vLine(x + w - 1, i, i, color);
       }
-#endif
       break;
   }
 }
@@ -300,7 +288,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 void FBSurface::drawString(const GUI::Font& font, const string& s,
                            int x, int y, int w,
                            uInt32 color, TextAlign align,
-                           int deltax, bool useEllipsis)
+                           int deltax, bool useEllipsis, uInt32 shadowColor)
 {
   const string ELLIPSIS = "\x1d"; // "..."
   const int leftX = x, rightX = x + w;
@@ -313,42 +301,21 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     // String is too wide. So we shorten it "intelligently", by replacing
     // parts of it by an ellipsis ("..."). There are three possibilities
     // for this: replace the start, the end, or the middle of the string.
-    // What is best really depends on the context; but unless we want to
-    // make this configurable, replacing the middle probably is a good
-    // compromise.
-    const int ellipsisWidth = font.getStringWidth(ELLIPSIS);
+    // What is best really depends on the context; but most applications
+    // replace the end. So we use that too.
+    int w2 = font.getStringWidth(ELLIPSIS);
 
-    // SLOW algorithm to remove enough of the middle. But it is good enough for now.
-    const int halfWidth = (w - ellipsisWidth) / 2;
-    int w2 = 0;
-
+    // SLOW algorithm to find the acceptable length. But it is good enough for now.
     for(i = 0; i < s.size(); ++i)
     {
       int charWidth = font.getCharWidth(s[i]);
-      if(w2 + charWidth > halfWidth)
+      if(w2 + charWidth > w)
         break;
 
       w2 += charWidth;
       str += s[i];
     }
-
-    // At this point we know that the first 'i' chars are together 'w2'
-    // pixels wide. We took the first i-1, and add "..." to them.
     str += ELLIPSIS;
-
-    // The original string is width wide. Of those we already skipped past
-    // w2 pixels, which means (width - w2) remain.
-    // The new str is (w2+ellipsisWidth) wide, so we can accomodate about
-    // (w - (w2+ellipsisWidth)) more pixels.
-    // Thus we skip ((width - w2) - (w - (w2+ellipsisWidth))) =
-    // (width + ellipsisWidth - w)
-    int skip = width + ellipsisWidth - w;
-    for(; i < s.size() && skip > 0; ++i)
-      skip -= font.getCharWidth(s[i]);
-
-    // Append the remaining chars, if any
-    for(; i < s.size(); ++i)
-      str += s[i];
 
     width = font.getStringWidth(str);
   }
@@ -367,7 +334,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     if(x+w > rightX)
       break;
     if(x >= leftX)
-      drawChar(font, str[i], x, y, color);
+      drawChar(font, str[i], x, y, color, shadowColor);
 
     x += w;
   }

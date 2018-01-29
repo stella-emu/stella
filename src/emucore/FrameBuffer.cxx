@@ -46,10 +46,12 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
   : myOSystem(osystem),
     myInitializedCount(0),
     myPausedCount(0),
-    myCurrentModeList(nullptr)
+    myStatsEnabled(false),
+    myLastFrameRate(60),
+    myCurrentModeList(nullptr),
+    myTotalTime(0),
+    myTotalFrames(0)
 {
-  myMsg.surface = myStatsMsg.surface = nullptr;
-  myStatsEnabled = myMsg.enabled = myStatsMsg.enabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,8 +231,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kColorInfo;
-  myStatsMsg.w = infoFont().getMaxCharWidth() * 24 + 2;
-  myStatsMsg.h = (infoFont().getFontHeight() + 2) * 2;
+  myStatsMsg.w = font().getMaxCharWidth() * 30 + 3;
+  myStatsMsg.h = (font().getFontHeight() + 2) * 2;
 
   if(!myStatsMsg.surface)
   {
@@ -285,36 +287,10 @@ void FrameBuffer::update()
 
       // Show frame statistics
       if(myStatsMsg.enabled)
-      {
-        const ConsoleInfo& info = myOSystem.console().about();
-        char msg[30];
-        std::snprintf(msg, 30, "%3u @ %3.2ffps => %s",
-                myOSystem.console().tia().scanlinesLastFrame(),
-                myOSystem.console().getFramerate(), info.DisplayFormat.c_str());
-        myStatsMsg.surface->invalidate();
-        string bsinfo = info.BankSwitch +
-          (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "| Player");
-        // draw shadowed text
-        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 1, 1 + 0,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 0, 1 + 1,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), msg, 1 + 1, 1 + 1,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), msg, 1, 1,
-                                       myStatsMsg.w, myStatsMsg.color);
-        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 1, 15 + 0,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 0, 15 + 1,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1 + 1, 15 + 1,
-                                       myStatsMsg.w, kBGColor);
-        myStatsMsg.surface->drawString(infoFont(), bsinfo, 1, 15,
-                                       myStatsMsg.w, myStatsMsg.color);
-        myStatsMsg.surface->setDirty();
-        myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
-        myStatsMsg.surface->render();
-      }
+        drawFrameStats();
+      else
+        myLastFrameRate = myOSystem.console().getFramerate();
+      myLastScanlines = myOSystem.console().tia().scanlinesLastFrame();
       myPausedCount = 0;
       break;  // EventHandlerState::EMULATION
     }
@@ -398,6 +374,66 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   myMsg.surface->setDstSize(myMsg.w, myMsg.h);
   myMsg.position = position;
   myMsg.enabled = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::drawFrameStats()
+{
+  const ConsoleInfo& info = myOSystem.console().about();
+  char msg[30];
+  uInt32 color;
+  const int XPOS = 2, YPOS = 0;
+  int xPos = XPOS;
+
+  myStatsMsg.surface->invalidate();
+  string bsinfo = info.BankSwitch +
+    (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "| Player");
+  // draw shadowed text
+  color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ? kDbgColorRed : myStatsMsg.color;
+  std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
+  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
+                                 myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+  xPos += font().getStringWidth(msg);
+
+  std::snprintf(msg, 30, " => %s", info.DisplayFormat.c_str());
+  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
+                                 myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+  xPos += font().getStringWidth(msg);
+
+  // draw framerate
+  float frameRate;
+  /*if(myOSystem.settings().getInt("framerate") == 0)
+  {
+    // if 'Auto' is selected, draw the calculated framerate
+    frameRate = myOSystem.console().getFramerate();
+  }
+  else*/
+  {
+    // if 'Auto' is not selected, draw the effective framerate
+    const TimingInfo& ti = myOSystem.timingInfo();
+    if(ti.totalFrames - myTotalFrames >= myLastFrameRate)
+    {
+      frameRate = 1000000.0 * (ti.totalFrames - myTotalFrames) / (ti.totalTime - myTotalTime);
+      if(frameRate > myOSystem.console().getFramerate() + 1)
+        frameRate = 1;
+      myTotalFrames = ti.totalFrames;
+      myTotalTime = ti.totalTime;
+    }
+    else
+      frameRate = myLastFrameRate;
+  }
+  myLastFrameRate = frameRate;
+  std::snprintf(msg, 30, " @ %5.2ffps", frameRate);
+  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
+                                 myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+
+  myStatsMsg.surface->drawString(font(), bsinfo, XPOS, YPOS + font().getFontHeight(),
+                                 myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+
+  myStatsMsg.surface->setDirty();
+  myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
+  myStatsMsg.surface->render();
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -490,11 +526,7 @@ inline void FrameBuffer::drawMessage()
 
   myMsg.surface->setDstPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
   myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
-#ifndef FLAT_UI
-  myMsg.surface->box(0, 0, myMsg.w, myMsg.h, kColor, kShadowColor);
-#else
   myMsg.surface->frameRect(0, 0, myMsg.w, myMsg.h, kColor);
-#endif
   myMsg.surface->drawString(font(), myMsg.text, 5, 4,
                             myMsg.w, myMsg.color, TextAlign::Left);
 
@@ -957,14 +989,17 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     kTextColor        Normal text color
     kTextColorHi      Highlighted text color
     kTextColorEm      Emphasized text color
-    kTextColorSel     Color for selected text
+    kTextColorInv     Color for selected text
     *** UI elements (dialog and widgets) ***
     kDlgColor         Dialog background
     kWidColor         Widget background
+    kWidColorHi       Widget highlight color
     kWidFrameColor    Border for currently selected widget
     *** Button colors ***
     kBtnColor         Normal button background
     kBtnColorHi       Highlighted button background
+    kBtnBorderColor,
+    kBtnBorderColorHi,
     kBtnTextColor     Normal button font color
     kBtnTextColorHi   Highlighted button font color
     *** Checkbox colors ***
@@ -975,47 +1010,53 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     *** Slider colors ***
     kSliderColor,
     kSliderColorHi
+    kSliderBGColor
+    kSliderBGColorHi
+    kSliderBGColorLo,
     *** Debugger colors ***
     kDbgChangedColor      Background color for changed cells
     kDbgChangedTextColor  Text color for changed cells
     kDbgColorHi           Highlighted color in debugger data cells
     kDbgColorRed          Red color in debugger
-    *** Info color ***
-    kColorinfo
+    *** Other colors ***
+    kColorInfo            TIA output position color
+    kColorTitleBar        Title bar color
+    kColorTitleText       Title text color
+    kColorTitleBarLo      Disabled title bar color
+    kColorTitleTextLo     Disabled title text color
 */
 uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
   // Standard
-  { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040,
-    0x000000, 0x62a108, 0x9f0000, 0x000000,
-    0xc9af7c, 0xf0f0cf, 0xc80000,
-    0xac3410, 0xd55941, 0xffffff, 0xffd652,
-    0xac3410,
-    0xac3410, 0xd55941,
-    0xac3410, 0xd55941,
-    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,
-    0xffffff
+  { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040,           // base
+    0x000000, 0xac3410, 0x9f0000, 0xf0f0cf,                     // text
+    0xc9af7c, 0xf0f0cf, 0xd55941, 0xc80000,                     // UI elements
+    0xac3410, 0xd55941, 0x686868, 0xdccfa5, 0xf0f0cf, 0xf0f0cf, // buttons
+    0xac3410,                                                   // checkbox
+    0xac3410, 0xd55941,                                         // scrollbar
+    0xac3410, 0xd55941, 0xdccfa5, 0xf0f0cf, 0xa38c61,           // slider
+    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
+    0xffffff, 0xac3410, 0xf0f0cf, 0x686868, 0xdccfa5            // other
   },
   // Classic
-  { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040,
-    0x20a020, 0x00ff00, 0xc80000, 0x20a020,
-    0x000000, 0x000000, 0xc80000,
-    0x000000, 0x000000, 0x20a020, 0x00ff00,
-    0x20a020,
-    0x20a020, 0x00ff00,
-    0x20a020, 0x00ff00,
-    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,
-    0x20a020
+  { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040,           // base
+    0x20a020, 0x00ff00, 0xc80000, 0x000000,                     // text
+    0x000000, 0x000000, 0x00ff00, 0xc80000,                     // UI elements
+    0x000000, 0x000000, 0x686868, 0x00ff00, 0x20a020, 0x00ff00, // buttons
+    0x20a020,                                                   // checkbox
+    0x20a020, 0x00ff00,                                         // scrollbar
+    0x20a020, 0x00ff00, 0x404040, 0x686868, 0x404040,           // slider
+    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
+    0x20a020, 0x20a020, 0x000000, 0x686868, 0x404040            // other
   },
   // Light
-  {
-    0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333, // base
-    0x000000, 0x0078d7, 0x0078d7, 0xffffff,           // text
-    0xf0f0f0, 0xffffff, 0x0f0f0f,                     // elements
-    0xe1e1e1, 0xe5f1fb, 0x000000, 0x000000,           // buttons
-    0x333333,                                         // checkbox
-    0x808080, 0x0078d7,                               // scrollbar
-    0x333333, 0x0078d7,                               // slider
-    0xffc0c0, 0x000000, 0xe00000, 0xc00000,           // debugger
-    0xffffff                                          // info
+  { 0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333,           // base
+    0x000000, 0xBDDEF9, 0x0078d7, 0x000000,                     // text
+    0xf0f0f0, 0xffffff, 0x0078d7, 0x0f0f0f,                     // UI elements
+    0xe1e1e1, 0xe5f1fb, 0x808080, 0x0078d7, 0x000000, 0x000000, // buttons
+    0x333333,                                                   // checkbox
+    0xc0c0c0, 0x808080,                                         // scrollbar
+    0x333333, 0x0078d7, 0xc0c0c0, 0x808080, 0xe1e1e1,           // slider
+    0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
+    0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other
   }
 };

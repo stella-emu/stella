@@ -115,9 +115,9 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myTimWrite);
 
   // Timer registers (RO)
-  const char* const readNames[] = { "INTIM", "TIMINT", "Total Clks", "INTIM Clks" };
-  xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight;
-  for(int row = 0; row < 4; ++row)
+  const char* const readNames[] = { "INTIM", "TIMINT", "Total Clks", "INTIM Clks", "Divider" };
+  xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight / 2;
+  for(int row = 0; row < 5; ++row)
   {
     t = new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
                              10*fontWidth, fontHeight, readNames[row], TextAlign::Left);
@@ -126,6 +126,11 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 32, Common::Base::F_16);
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
+
+  ypos += myTimRead->getHeight() - 1;
+  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 32, Common::Base::F_10_4);
+  myTimDivider->setTarget(this);
+  myTimDivider->setEditable(false);
 
   // Controller ports
   const RiotDebug& riot = instance().debugger().riotDebug();
@@ -314,6 +319,11 @@ void RiotWidget::loadConfig()
   alist.push_back(0);  vlist.push_back(state.INTIMCLKS);
     changed.push_back(state.INTIMCLKS != oldstate.INTIMCLKS);
   myTimRead->setList(alist, vlist, changed);
+
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);  vlist.push_back(state.TIMDIV);
+    changed.push_back(state.TIMDIV != oldstate.TIMDIV);
+  myTimDivider->setList(alist, vlist, changed);
 
   // Console switches (inverted, since 'selected' in the UI
   // means 'grounded' in the system)

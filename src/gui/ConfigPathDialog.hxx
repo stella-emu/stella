@@ -40,7 +40,7 @@ class ConfigPathDialog : public Dialog, public CommandSender
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void createBrowser();
+    void createBrowser(const string& title);
 
     void loadConfig() override;
     void saveConfig() override;

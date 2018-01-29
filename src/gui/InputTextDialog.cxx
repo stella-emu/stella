@@ -29,8 +29,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
-                                 const StringList& labels)
-  : Dialog(boss->instance(), boss->parent()),
+                                 const StringList& labels, const string& title)
+  : Dialog(boss->instance(), boss->parent(), font, title),
     CommandSender(boss),
     myEnableCenter(false),
     myErrorFlag(false),
@@ -43,8 +43,8 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                                  const GUI::Font& nfont,
-                                 const StringList& labels)
-  : Dialog(boss->instance(), boss->parent()),
+                                 const StringList& labels, const string& title)
+  : Dialog(boss->instance(), boss->parent(), lfont, title),
     CommandSender(boss),
     myEnableCenter(false),
     myErrorFlag(false),
@@ -66,7 +66,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
 
   // Calculate real dimensions
   _w = fontWidth * 41;
-  _h = lineHeight * 4 + int(labels.size()) * (lineHeight + 5);
+  _h = lineHeight * 4 + int(labels.size()) * (lineHeight + 5) + _th;
 
   // Determine longest label
   for(i = 0; i < labels.size(); ++i)
@@ -80,7 +80,7 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   lwidth = lfont.getStringWidth(labels[maxIdx]);
 
   // Create editboxes for all labels
-  ypos = lineHeight;
+  ypos = lineHeight + _th;
   for(i = 0; i < labels.size(); ++i)
   {
     xpos = 10;
@@ -98,9 +98,9 @@ void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
   }
 
   xpos = 10;
-  myTitle = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2*xpos, fontHeight,
+  myMessage = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2*xpos, fontHeight,
                                  "", TextAlign::Left);
-  myTitle->setTextColor(kTextColorEm);
+  myMessage->setTextColor(kTextColorEm);
 
   addToFocusList(wid);
 
@@ -148,9 +148,9 @@ void InputTextDialog::center()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::setTitle(const string& title)
+void InputTextDialog::setMessage(const string& title)
 {
-  myTitle->setLabel(title);
+  myMessage->setLabel(title);
   myErrorFlag = true;
 }
 
@@ -207,7 +207,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       // Erase the invalid message once editing is restarted
       if(myErrorFlag)
       {
-        myTitle->setLabel("");
+        myMessage->setLabel("");
         myErrorFlag = false;
       }
       break;
@@ -215,7 +215,6 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
     case EditableWidget::kCancelCmd:
       Dialog::handleCommand(sender, GuiObject::kCloseCmd, data, id);
       break;
-
 
     default:
       Dialog::handleCommand(sender, cmd, data, id);

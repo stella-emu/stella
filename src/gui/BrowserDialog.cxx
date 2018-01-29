@@ -33,8 +33,8 @@
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
-                             int max_w, int max_h)
-  : Dialog(boss->instance(), boss->parent()),
+                             int max_w, int max_h, const string& title)
+  : Dialog(boss->instance(), boss->parent(), font, title),
     CommandSender(boss),
     _cmd(0),
     _mode(FileSave)
@@ -46,38 +46,31 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   const int lineHeight   = font.getLineHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4,
-            selectHeight = lineHeight + 8;
+            selectHeight = lineHeight + 12;
   int xpos, ypos;
   ButtonWidget* b;
 
-  xpos = 10;  ypos = 4;
-  _title = new StaticTextWidget(this, font, xpos, ypos,
-                                _w - 2 * xpos, lineHeight,
-                                "", TextAlign::Center);
+  xpos = 10;  ypos = 4 + _th;
 
   // Current path - TODO: handle long paths ?
-  ypos += lineHeight + 4;
-  _currentPath = new StaticTextWidget(this, font, xpos, ypos,
-                                       _w - 2 * xpos, lineHeight,
-                                      "", TextAlign::Left);
-
+  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Pfad ");
+  _currentPath = new EditTextWidget(this, font, xpos + t->getWidth(), ypos,
+                                    _w - t->getWidth() - 2 * xpos, lineHeight);
+  _currentPath->setEditable(false);
   // Add file list
-  ypos += lineHeight + 4;
+  ypos += lineHeight + 8;
   _fileList = new FileListWidget(this, font, xpos, ypos, _w - 2 * xpos,
                                  _h - selectHeight - buttonHeight - ypos - 20);
   _fileList->setEditable(false);
   addFocusWidget(_fileList);
 
   // Add currently selected item
-  ypos += _fileList->getHeight() + 4;
+  ypos += _fileList->getHeight() + 8;
 
-  _type = new StaticTextWidget(this, font, xpos, ypos+2,
-                               font.getStringWidth("Name "), lineHeight,
-                               "Name", TextAlign::Center);
+  _type = new StaticTextWidget(this, font, xpos, ypos + 2, "Name ");
   _selected = new EditTextWidget(this, font, xpos + _type->getWidth(), ypos,
                                  _w - _type->getWidth() - 2 * xpos, lineHeight, "");
   _selected->setEditable(false);
-  addFocusWidget(_selected);
 
   // Buttons
   _goUpButton = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
@@ -111,11 +104,10 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::show(const string& title, const string& startpath,
+void BrowserDialog::show(const string& startpath,
                          BrowserDialog::ListMode mode, int cmd,
                          const string& ext)
 {
-  _title->setLabel(title);
   _cmd = cmd;
   _mode = mode;
 
@@ -125,17 +117,23 @@ void BrowserDialog::show(const string& title, const string& startpath,
       _fileList->setFileListMode(FilesystemNode::kListAll);
       _fileList->setFileExtension(ext);
       _selected->setEditable(false);
+      _selected->clearFlags(WIDGET_INVISIBLE);
+      _type->clearFlags(WIDGET_INVISIBLE);
       break;
 
     case FileSave:
       _fileList->setFileListMode(FilesystemNode::kListAll);
       _fileList->setFileExtension(ext);
       _selected->setEditable(false);  // FIXME - disable user input for now
+      _selected->clearFlags(WIDGET_INVISIBLE);
+      _type->clearFlags(WIDGET_INVISIBLE);
       break;
 
     case Directories:
       _fileList->setFileListMode(FilesystemNode::kListDirectoriesOnly);
       _selected->setEditable(false);
+      _selected->setFlags(WIDGET_INVISIBLE);
+      _type->setFlags(WIDGET_INVISIBLE);
       break;
   }
 
@@ -164,7 +162,7 @@ void BrowserDialog::updateUI()
   _goUpButton->setEnabled(_fileList->currentDir().hasParent());
 
   // Update the path display
-  _currentPath->setLabel(_fileList->currentDir().getShortPath());
+  _currentPath->setText(_fileList->currentDir().getShortPath());
 
   // Enable/disable OK button based on current mode
   bool enable = _mode == Directories || !_fileList->selected().isDirectory();

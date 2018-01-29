@@ -21,63 +21,6 @@
 #include "RadioButtonWidget.hxx"
 
 /*  Radiobutton bitmaps */
-#ifndef FLAT_UI
-static uInt32 radio_img_outercircle[14] =
-{
-  0b00001111110000,
-  0b00111111111100,
-  0b01110000001110,
-  0b01100000000110,
-  0b11000000000011,
-  0b11000000000011,
-  0b11000000000011,
-  0b11000000000011,
-  0b11000000000011,
-  0b11000000000011,
-  0b01100000000110,
-  0b01110000001110,
-  0b00111111111100,
-  0b00001111110000
-};
-
-static uInt32 radio_img_innercircle[10] =
-{
-  0b0011111100,
-  0b0111111110,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b0111111110,
-  0b0011111100
-};
-
-static uInt32 radio_img_active[8] =
-{
-  0b00111100,
-  0b01111110,
-  0b11111111,
-  0b11111111,
-  0b11111111,
-  0b11111111,
-  0b01111110,
-  0b00111100
-};
-
-static uInt32 radio_img_inactive[8] =
-{
-  0b00111100,
-  0b01111110,
-  0b11100111,
-  0b11000011,
-  0b11000011,
-  0b11100111,
-  0b01111110,
-  0b00111100
-};
-#else
 static uInt32 radio_img_outercircle[14] =
 {
   0b00001111110000,
@@ -139,7 +82,6 @@ static uInt32 radio_img_inactive[10] =
   0b0111111110,
   0b0011111100
 };
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
@@ -217,19 +159,8 @@ void RadioButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-#ifndef FLAT_UI
   // Draw the outer bounding circle
-  s.drawBitmap(radio_img_outercircle, _x, _y + _boxY, kShadowColor, 14, 14);
-
-  // Draw the inner bounding circle with enabled color
-  s.drawBitmap(radio_img_innercircle, _x + 2, _y + _boxY + 2, isEnabled() ? _bgcolor : kColor, 10, 10);
-
-  // draw state
-  if(_state)
-    s.drawBitmap(_img, _x + 3, _y + _boxY + 3, isEnabled() ? kCheckColor : kShadowColor);
-#else
-  // Draw the outer bounding circle
-  s.drawBitmap(radio_img_outercircle, _x, _y + _boxY, hilite ? kScrollColorHi : kShadowColor, 14, 14);
+  s.drawBitmap(radio_img_outercircle, _x, _y + _boxY, hilite ? kWidColorHi : kColor, 14, 14);
 
   // Draw the inner bounding circle with enabled color
   s.drawBitmap(radio_img_innercircle, _x + 1, _y + _boxY + 1, isEnabled()
@@ -238,9 +169,8 @@ void RadioButtonWidget::drawWidget(bool hilite)
   // draw state
   if(_state)
     s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled()
-                 ? hilite ? kScrollColorHi : kCheckColor
-                 : kShadowColor, 10);
-#endif
+                 ? hilite ? kWidColorHi : kCheckColor
+                 : kColor, 10);
 
   // Finally draw the label
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,

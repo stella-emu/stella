@@ -22,7 +22,6 @@ class OSystem;
 class GuiObject;
 class DialogContainer;
 class CheckboxWidget;
-class PopUpWidget;
 class EditTextWidget;
 class SliderWidget;
 class StaticTextWidget;
@@ -44,14 +43,15 @@ class SnapshotDialog : public Dialog
     void setDefaults() override;
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void createBrowser();
+    void createBrowser(const string& title);
 
   private:
     enum {
       kChooseSnapSaveDirCmd = 'LOss', // snapshot dir (save files)
       kChooseSnapLoadDirCmd = 'LOsl', // snapshot dir (load files)
       kSnapSaveDirChosenCmd = 'snsc', // snap chosen (save files)
-      kSnapLoadDirChosenCmd = 'snlc'  // snap chosen (load files)
+      kSnapLoadDirChosenCmd = 'snlc', // snap chosen (load files)
+      kSnapshotInterval     = 'SnIn'  // snap chosen (load files)
     };
 
     const GUI::Font& myFont;
@@ -60,8 +60,8 @@ class SnapshotDialog : public Dialog
     EditTextWidget* mySnapSavePath;
     EditTextWidget* mySnapLoadPath;
 
-    PopUpWidget* mySnapName;
-    PopUpWidget* mySnapInterval;
+    CheckboxWidget* mySnapName;
+    SliderWidget* mySnapInterval;
 
     CheckboxWidget* mySnapSingle;
     CheckboxWidget* mySnap1x;

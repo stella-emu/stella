@@ -23,19 +23,7 @@
 #include "DialogContainer.hxx"
 #include "PopUpWidget.hxx"
 
-// Little up/down arrow
-#ifndef FLAT_UI
-static uInt32 up_down_arrows[8] = {
-  0b00000000,
-  0b00001000,
-  0b00011100,
-  0b00111110,
-  0b00000000,
-  0b00111110,
-  0b00011100,
-  0b00001000,
-};
-#else
+// Little down arrow
 static uInt32 down_arrow[8] = {
   0b100000001,
   0b110000011,
@@ -46,7 +34,6 @@ static uInt32 down_arrow[8] = {
   0b000010000,
   0b000000000
 };
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
@@ -67,11 +54,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   if(!_label.empty() && _labelWidth == 0)
     _labelWidth = _font.getStringWidth(_label);
 
-#ifndef FLAT_UI
-  _w = w + _labelWidth + 15;
-#else
   _w = w + _labelWidth + 23;
-#endif
 
   // vertically center the arrows and text
   myTextY   = (_h - _font.getFontHeight()) / 2;
@@ -157,7 +140,6 @@ void PopUpWidget::handleMouseWheel(int x, int y, int direction)
   }
 }
 
-#ifdef FLAT_UI
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleMouseEntered()
 {
@@ -171,7 +153,6 @@ void PopUpWidget::handleMouseLeft()
   clearFlags(WIDGET_HILITED);
   setDirty();
 }
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PopUpWidget::handleEvent(Event::Type e)
@@ -221,32 +202,14 @@ void PopUpWidget::drawWidget(bool hilite)
   int x = _x + _labelWidth;
   int w = _w - _labelWidth;
 
-#ifndef FLAT_UI
-  // Draw the label, if any
-  if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
-                 isEnabled() ? _textcolor : uInt32(kColor), TextAlign::Right);
-
-  // Draw a thin frame around us.
-  s.hLine(x, _y, x + w - 1, kColor);
-  s.hLine(x, _y +_h-1, x + w - 1, kShadowColor);
-  s.vLine(x, _y, _y+_h-1, kColor);
-  s.vLine(x + w - 1, _y, _y +_h - 1, kShadowColor);
-
-  // Fill the background
-  s.fillRect(x + 1, _y + 1, w - 2, _h - 2, _changed ? kDbgChangedColor : kWidColor);
-  // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
-  s.drawBitmap(up_down_arrows, x + w - 10, _y + myArrowsY,
-               !isEnabled() ? kColor : hilite ? kTextColorHi : kTextColor);
-#else
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
                  isEnabled() ? _textcolor : uInt32(kColor), TextAlign::Left);
 
   // Draw a thin frame around us.
-  s.frameRect(x, _y, w, _h, kColor);
-  s.frameRect(x + w - 16, _y + 1, 15, _h - 2, isEnabled() && hilite ? kTextColorHi : kBGColorLo);
+  s.frameRect(x, _y, w, _h, isEnabled() && hilite ? kWidColorHi : kColor);
+  s.frameRect(x + w - 16, _y + 1, 15, _h - 2, isEnabled() && hilite ? kWidColorHi : kBGColorLo);
 
   // Fill the background
   s.fillRect(x + 1, _y + 1, w - 17, _h - 2, _changed ? kDbgChangedColor : kWidColor);
@@ -254,7 +217,6 @@ void PopUpWidget::drawWidget(bool hilite)
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   s.drawBitmap(down_arrow, x + w - 13, _y + myArrowsY + 1,
                !isEnabled() ? kColor : kTextColor, 9u, 8u);
-#endif
 
   // Draw the selected entry, if any
   const string& name = myMenu->getSelectedName();

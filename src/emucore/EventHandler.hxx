@@ -24,7 +24,6 @@ class Console;
 class OSystem;
 class MouseControl;
 class DialogContainer;
-class EventMappingWidget;
 
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
@@ -137,6 +136,7 @@ class EventHandler
     void leaveMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
+    void enterTimeMachineMenuMode(uInt32 numWinds, bool unwind);
     void takeSnapshot(uInt32 number = 0);
 
     /**
@@ -473,7 +473,6 @@ class EventHandler
       The following methods take care of assigning action mappings.
     */
     void setActionMappings(EventMode mode);
-    void setKeyNames();
     void setKeymap();
     void setDefaultKeymap(Event::Type, EventMode mode);
     void setDefaultJoymap(Event::Type, EventMode mode);

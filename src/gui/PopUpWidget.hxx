@@ -64,10 +64,8 @@ class PopUpWidget : public Widget, public CommandSender
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
-#ifdef FLAT_UI
     void handleMouseEntered() override;
     void handleMouseLeft() override;
-#endif
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void drawWidget(bool hilite) override;

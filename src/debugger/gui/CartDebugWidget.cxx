@@ -78,7 +78,7 @@ int CartDebugWidget::addBaseInformation(int bytes, const string& manufacturer,
                fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);
   myDesc->setList(sl);
-  addFocusWidget(myDesc);
+
   y += myDesc->getHeight() + 4;
 
   return y;

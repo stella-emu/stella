@@ -50,8 +50,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _opsWidget(nullptr),
     _scrollBar(nullptr)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_WANTS_RAWDATA;
+  _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS | WIDGET_WANTS_RAWDATA;
   _editMode = false;
 
   // The item is selected, thus _bgcolor is used to draw the caret and
@@ -248,6 +247,20 @@ void DataGridWidget::setRange(int lower, int upper)
 {
   _lowerBound = std::max(0, lower);
   _upperBound = std::min(1 << _bits, upper);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::handleMouseEntered()
+{
+  setFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::handleMouseLeft()
+{
+  clearFlags(WIDGET_HILITED);
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -582,25 +595,16 @@ void DataGridWidget::drawWidget(bool hilite)
   FBSurface& s = _boss->dialog().surface();
   int row, col;
 
+  s.fillRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? _bgcolorhi : _bgcolor);
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
-#ifndef FLAT_UI
-  for (row = 0; row <= _rows; row++)
-    s.hLine(_x, _y + (row * _rowHeight), _x + linewidth, kColor);
-  int lineheight = _rows * _rowHeight;
-  for (col = 0; col <= _cols; col++)
-    s.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
-#else
-  s.frameRect(_x, _y, _w, _h, kColor);
+  s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
   for(row = 1; row <= _rows-1; row++)
     s.hLine(_x+1, _y + (row * _rowHeight), _x + linewidth-1, kBGColorLo);
 
   int lineheight = _rows * _rowHeight;
   for(col = 1; col <= _cols-1; col++)
     s.vLine(_x + (col * _colWidth), _y+1, _y + lineheight-1, kBGColorLo);
-#endif
-
-
 
   // Draw the list items
   for (row = 0; row < _rows; row++)

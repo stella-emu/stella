@@ -633,7 +633,7 @@ void OSystem::mainLoop()
       // for that and reset the timers when appropriate
       if((myTimingInfo.virt - myTimingInfo.current) > (myTimePerFrame << 1))
       {
-        myTimingInfo.start = myTimingInfo.current = myTimingInfo.virt = getTicks();
+        myTimingInfo.current = myTimingInfo.virt = getTicks();
       }
 
       if(myTimingInfo.current < myTimingInfo.virt)

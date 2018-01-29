@@ -142,17 +142,35 @@ void StateManager::toggleTimeMachine()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::rewindState(uInt32 numStates)
+bool StateManager::addExtraState(const string& message)
 {
-  RewindManager& r = myOSystem.state().rewindManager();
-  return r.rewindState(numStates);
+  if(myActiveMode == Mode::TimeMachine)
+  {
+    RewindManager& r = myOSystem.state().rewindManager();
+    return r.addState(message);
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StateManager::unwindState(uInt32 numStates)
+bool StateManager::rewindStates(uInt32 numStates)
 {
   RewindManager& r = myOSystem.state().rewindManager();
-  return r.unwindState(numStates);
+  return r.rewindStates(numStates);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::unwindStates(uInt32 numStates)
+{
+  RewindManager& r = myOSystem.state().rewindManager();
+  return r.unwindStates(numStates);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::windStates(uInt32 numStates, bool unwind)
+{
+  RewindManager& r = myOSystem.state().rewindManager();
+  return r.windStates(numStates, unwind);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

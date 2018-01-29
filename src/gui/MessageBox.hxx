@@ -37,10 +37,12 @@ class MessageBox : public Dialog, public CommandSender
     MessageBox(GuiObject* boss, const GUI::Font& font, const StringList& text,
                int max_w, int max_h, int cmd = 0,
                const string& okText = "OK", const string& cancelText = "Cancel",
+               const string& title = "",
                bool focusOKButton = true);
     MessageBox(GuiObject* boss, const GUI::Font& font, const string& text,
                int max_w, int max_h, int cmd = 0,
                const string& okText = "OK", const string& cancelText = "Cancel",
+               const string& title = "",
                bool focusOKButton = true);
     virtual ~MessageBox() = default;
 

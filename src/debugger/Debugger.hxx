@@ -240,6 +240,12 @@ class Debugger : public DialogContainer
     void lockBankswitchState();
     void unlockBankswitchState();
 
+    /**
+      Answers whether the debugger can be exited.  Currently this only
+      happens when no other dialogs are active.
+    */
+    bool canExit() const;
+
   private:
     /**
       Save state of each debugger subsystem and, by default, mark all

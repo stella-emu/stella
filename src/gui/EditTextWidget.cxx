@@ -41,6 +41,20 @@ void EditTextWidget::setText(const string& str, bool changed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditTextWidget::handleMouseEntered()
+{
+  setFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditTextWidget::handleMouseLeft()
+{
+  clearFlags(WIDGET_HILITED);
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   if(!isEditable())
@@ -71,21 +85,10 @@ void EditTextWidget::drawWidget(bool hilite)
   if(_changed)
     s.fillRect(_x, _y, _w, _h, kDbgChangedColor);
   else if(!isEditable())
-#ifndef FLAT_UI
-    s.fillRect(_x, _y, _w, _h, kBGColorHi);
-#else
     s.fillRect(_x, _y, _w, _h, kDlgColor);
-#endif
 
   // Draw a thin frame around us.
-#ifndef FLAT_UI
-  s.hLine(_x, _y, _x + _w - 1, kColor);
-  s.hLine(_x, _y + _h - 1, _x +_w - 1, kShadowColor);
-  s.vLine(_x, _y, _y + _h - 1, kColor);
-  s.vLine(_x + _w - 1, _y, _y + _h - 1, kShadowColor);
-#else
-  s.frameRect(_x, _y, _w, _h, kColor);
-#endif
+  s.frameRect(_x, _y, _w, _h, hilite && isEditable() && isEnabled() ? kWidColorHi : kColor);
 
   // Draw the text
   adjustOffset();

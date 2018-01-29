@@ -73,7 +73,7 @@ class InputDialog : public Dialog
     EventMappingWidget* myEmulEventMapper;
     EventMappingWidget* myMenuEventMapper;
 
-    PopUpWidget* mySAPort;
+    CheckboxWidget* mySAPort;
     PopUpWidget* myMouseControl;
     PopUpWidget* myCursorState;
 

@@ -51,14 +51,17 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     myMode(mode)
 {
   const GUI::Font& font = instance().frameBuffer().font();
-  const int buttonWidth = font.getStringWidth("Developer Settings" + ELLIPSIS) + 20,
+  initTitle(font, "Options");
+
+  const int buttonWidth = font.getStringWidth("Game Properties" + ELLIPSIS) + 20,
             buttonHeight = font.getLineHeight() + 6,
             rowHeight = font.getLineHeight() + 10;
+  const int VBORDER = 10 + _th;
 
   _w = 2 * buttonWidth + 30;
-  _h = 7 * rowHeight + 15;
+  _h = 7 * rowHeight + 15 + _th;
 
-  int xoffset = 10, yoffset = 10;
+  int xoffset = 10, yoffset = VBORDER;
   WidgetArray wid;
   ButtonWidget* b = nullptr;
 
@@ -70,46 +73,47 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     return bw;
   };
 
-  b = ADD_OD_BUTTON("Video Settings" + ELLIPSIS, kVidCmd);
+  b = ADD_OD_BUTTON("Video" + ELLIPSIS, kVidCmd);
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Audio Settings" + ELLIPSIS, kAudCmd);
+  b = ADD_OD_BUTTON("Audio" + ELLIPSIS, kAudCmd);
 #ifndef SOUND_SUPPORT
   b->clearFlags(WIDGET_ENABLED);
 #endif
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Input Settings" + ELLIPSIS, kInptCmd);
+  b = ADD_OD_BUTTON("Input" + ELLIPSIS, kInptCmd);
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("UI Settings" + ELLIPSIS, kUsrIfaceCmd);
+  b = ADD_OD_BUTTON("User Interface" + ELLIPSIS, kUsrIfaceCmd);
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Snapshot Settings" + ELLIPSIS, kSnapCmd);
+  b = ADD_OD_BUTTON("Snapshots" + ELLIPSIS, kSnapCmd);
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Config Paths" + ELLIPSIS, kCfgPathsCmd);
+  b = ADD_OD_BUTTON("Paths" + ELLIPSIS, kCfgPathsCmd);
   wid.push_back(b);
 
-  myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, kAuditCmd);
-  wid.push_back(myRomAuditButton);
+  b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd);
+  wid.push_back(b);
+
 
   // Move to second column
-  xoffset += buttonWidth + 10;  yoffset = 10;
+  xoffset += buttonWidth + 10;  yoffset = VBORDER;
 
   myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd);
   wid.push_back(myGameInfoButton);
 
-  myCheatCodeButton = ADD_OD_BUTTON("Cheat Code" + ELLIPSIS, kCheatCmd);
+  myCheatCodeButton = ADD_OD_BUTTON("Cheat Codes" + ELLIPSIS, kCheatCmd);
 #ifndef CHEATCODE_SUPPORT
   myCheatCodeButton->clearFlags(WIDGET_ENABLED);
 #endif
   wid.push_back(myCheatCodeButton);
 
-  b = ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd);
-  wid.push_back(b);
+  myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, kAuditCmd);
+  wid.push_back(myRomAuditButton);
 
-  b = ADD_OD_BUTTON("Developer Settings" + ELLIPSIS, kDevelopCmd);
+  b = ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd);
   wid.push_back(b);
 
   b = ADD_OD_BUTTON("Help" + ELLIPSIS, kHelpCmd);
@@ -118,7 +122,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd);
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Exit Menu", kExitCmd);
+  b = ADD_OD_BUTTON("Close", kExitCmd);
   wid.push_back(b);
   addCancelWidget(b);
 

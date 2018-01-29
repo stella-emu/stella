@@ -36,7 +36,7 @@ class RiotState : public DebuggerState
     BoolArray swbcntBits;
 
     uInt8 TIM1T, TIM8T, TIM64T, T1024T, INTIM, TIMINT;
-    Int32 TIMCLKS, INTIMCLKS;
+    Int32 TIMCLKS, INTIMCLKS, TIMDIV;
 
     // These are actually from the TIA, but are I/O related
     uInt8 INPT0, INPT1, INPT2, INPT3, INPT4, INPT5;
@@ -74,6 +74,7 @@ class RiotDebug : public DebuggerSystem
     uInt8 timint() const;
     Int32 timClocks() const;
     Int32 intimClocks() const;
+    Int32 timDivider() const;
 
     /* Controller ports */
     Controller& controller(Controller::Jack jack) const;

@@ -35,13 +35,13 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent),
+  : Dialog(osystem, parent, font, "Audit ROMs"),
     myConfirmMsg(nullptr),
     myMaxWidth(max_w),
     myMaxHeight(max_h)
 {
-  const int vBorder = 10;
-  const int hBorder = 10;
+  const int VBORDER = 10 + _th;
+  const int HBORDER = 10;
 
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -49,48 +49,48 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
             buttonWidth  = font.getStringWidth("Audit path" + ELLIPSIS) + 20,
             buttonHeight = font.getLineHeight() + 4,
             lwidth = font.getStringWidth("ROMs without properties (skipped) ");
-  int xpos, ypos = vBorder;
+  int xpos, ypos = VBORDER;
   WidgetArray wid;
 
   // Set real dimensions
-  _w = 54 * fontWidth + 10;
-  _h = 7 * (lineHeight + 4) + 10;
+  _w = 64 * fontWidth + HBORDER * 2;
+  _h = 7 * (lineHeight + 4) + VBORDER;
 
   // Audit path
   ButtonWidget* romButton =
-    new ButtonWidget(this, font, hBorder, ypos, buttonWidth, buttonHeight,
+    new ButtonWidget(this, font, HBORDER, ypos, buttonWidth, buttonHeight,
                      "Audit path" + ELLIPSIS, kChooseAuditDirCmd);
   wid.push_back(romButton);
-  xpos = hBorder + buttonWidth + 10;
-  myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                 _w - xpos - hBorder, lineHeight, "");
+  xpos = HBORDER + buttonWidth + 8;
+  myRomPath = new EditTextWidget(this, font, xpos, ypos + 1,
+                                 _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(myRomPath);
 
   // Show results of ROM audit
   ypos += buttonHeight + 16;
-  new StaticTextWidget(this, font, hBorder, ypos, lwidth, fontHeight,
+  new StaticTextWidget(this, font, HBORDER, ypos, lwidth, fontHeight,
                        "ROMs with properties (renamed) ", TextAlign::Left);
-  myResults1 = new EditTextWidget(this, font, hBorder + lwidth, ypos - 2,
-                                  _w - hBorder*2 - lwidth, lineHeight, "");
+  myResults1 = new EditTextWidget(this, font, HBORDER + lwidth, ypos - 2,
+                                  fontWidth * 6, lineHeight, "");
   myResults1->setEditable(false, true);
   ypos += buttonHeight;
-  new StaticTextWidget(this, font, hBorder, ypos, lwidth, fontHeight,
+  new StaticTextWidget(this, font, HBORDER, ypos, lwidth, fontHeight,
                        "ROMs without properties (skipped) ", TextAlign::Left);
-  myResults2 = new EditTextWidget(this, font, hBorder + lwidth, ypos - 2,
-                                  _w - hBorder*2 - lwidth, lineHeight, "");
+  myResults2 = new EditTextWidget(this, font, HBORDER + lwidth, ypos - 2,
+                                  fontWidth * 6, lineHeight, "");
   myResults2->setEditable(false, true);
 
   ypos += buttonHeight + 8;
-  new StaticTextWidget(this, font, hBorder, ypos, _w - 20, fontHeight,
-                       "(*) WARNING: operation cannot be undone!",
+  new StaticTextWidget(this, font, HBORDER, ypos, _w - 20, fontHeight,
+                       "(*) WARNING: Operation cannot be undone!",
                        TextAlign::Left);
 
   // Add OK and Cancel buttons
-  addOKCancelBGroup(wid, font, "Audit", "Done");
+  addOKCancelBGroup(wid, font, "Audit", "Close");
   addBGroupToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = make_unique<BrowserDialog>(this, font, myMaxWidth, myMaxHeight);
+  myBrowser = make_unique<BrowserDialog>(this, font, myMaxWidth, myMaxHeight, "Select ROM directory to audit");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -189,7 +189,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         myConfirmMsg = make_unique<GUI::MessageBox>
                           (this, instance().frameBuffer().font(), msg,
                           myMaxWidth, myMaxHeight, kConfirmAuditCmd,
-                           "OK", "Cancel", false);
+                           "OK", "Cancel", "ROM Audit", false);
       }
       myConfirmMsg->show();
       break;
@@ -200,7 +200,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseAuditDirCmd:
-      myBrowser->show("Select ROM directory to audit", myRomPath->getText(),
+      myBrowser->show(myRomPath->getText(),
                       BrowserDialog::Directories, kAuditDirChosenCmd);
       break;
 

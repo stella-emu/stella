@@ -33,46 +33,48 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
                                  const GUI::Font& font)
-  : Dialog(osystem, parent)
+  : Dialog(osystem, parent, font, "Cheat codes")
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
+  const int HBORDER = 10;
+  const int VBORDER = 10 + _th;
   int xpos, ypos;
   WidgetArray wid;
   ButtonWidget* b;
 
   // Set real dimensions
-  _w = 46 * fontWidth + 10;
-  _h = 11 * (lineHeight + 4) + 10;
+  _w = 45 * fontWidth + HBORDER * 2;
+  _h = 11 * (lineHeight + 4) + VBORDER;
 
   // List of cheats, with checkboxes to enable/disable
-  xpos = 10;  ypos = 10;
+  xpos = HBORDER;  ypos = VBORDER;
   myCheatList =
-    new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - 25,
-                        _h - 2*buttonHeight - 10);
+    new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - HBORDER * 2 - 8,
+                        _h - 2*buttonHeight - VBORDER);
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
-  xpos += myCheatList->getWidth() + 5;  ypos = 15;
+  xpos += myCheatList->getWidth() + 8; ypos = VBORDER;
 
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "Add" + ELLIPSIS, kAddCheatCmd);
   wid.push_back(b);
-  ypos += lineHeight + 10;
+  ypos += lineHeight + 8;
 
   myEditButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Edit" + ELLIPSIS, kEditCheatCmd);
   wid.push_back(myEditButton);
-  ypos += lineHeight + 10;
+  ypos += lineHeight + 8;
 
   myRemoveButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Remove", kRemCheatCmd);
   wid.push_back(myRemoveButton);
-  ypos += lineHeight + 10;
+  ypos += lineHeight + 8 * 3;
 
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "One shot" + ELLIPSIS, kAddOneShotCmd);
@@ -82,7 +84,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem& osystem, DialogContainer& parent,
   StringList labels;
   labels.push_back("Name       ");
   labels.push_back("Code (hex) ");
-  myCheatInput = make_unique<InputTextDialog>(this, font, labels);
+  myCheatInput = make_unique<InputTextDialog>(this, font, labels, "Cheat code");
   myCheatInput->setTarget(this);
 
   // Add filtering for each textfield
@@ -154,7 +156,7 @@ void CheatCodeDialog::addCheat()
   myCheatInput->show();    // Center input dialog over entire screen
   myCheatInput->setText("", 0);
   myCheatInput->setText("", 1);
-  myCheatInput->setTitle("");
+  myCheatInput->setMessage("");
   myCheatInput->setFocus(0);
   myCheatInput->setEmitSignal(kCheatAdded);
 }
@@ -173,7 +175,7 @@ void CheatCodeDialog::editCheat()
   myCheatInput->show();    // Center input dialog over entire screen
   myCheatInput->setText(name, 0);
   myCheatInput->setText(code, 1);
-  myCheatInput->setTitle("");
+  myCheatInput->setMessage("");
   myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kCheatEdited);
 }
@@ -191,7 +193,7 @@ void CheatCodeDialog::addOneShotCheat()
   myCheatInput->show();    // Center input dialog over entire screen
   myCheatInput->setText("One-shot cheat", 0);
   myCheatInput->setText("", 1);
-  myCheatInput->setTitle("");
+  myCheatInput->setMessage("");
   myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kOneShotCheatAdded);
 }
@@ -234,7 +236,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
         loadConfig();  // show changes onscreen
       }
       else
-        myCheatInput->setTitle("Invalid code");
+        myCheatInput->setMessage("Invalid code");
       break;
     }
 
@@ -251,7 +253,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
         loadConfig();  // show changes onscreen
       }
       else
-        myCheatInput->setTitle("Invalid code");
+        myCheatInput->setMessage("Invalid code");
       break;
     }
 
@@ -273,7 +275,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
         instance().cheat().addOneShot(name, code);
       }
       else
-        myCheatInput->setTitle("Invalid code");
+        myCheatInput->setMessage("Invalid code");
       break;
     }
 

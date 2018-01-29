@@ -25,7 +25,7 @@ class GuiObject;
 #include "bspf.hxx"
 
 enum {
-  kScrollBarWidth = 14
+  kScrollBarWidth = 15
 };
 
 class ScrollBarWidget : public Widget, public CommandSender

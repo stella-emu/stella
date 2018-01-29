@@ -60,11 +60,7 @@ void ContextMenu::addItems(const VariantList& items)
     maxwidth = std::max(maxwidth, _font.getStringWidth(e.first));
 
   _x = _y = 0;
-#ifndef FLAT_UI
-  _w = maxwidth + 15;
-#else
   _w = maxwidth + 23;
-#endif
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
@@ -106,18 +102,18 @@ void ContextMenu::recalc(const GUI::Rect& image)
 {
   // Now is the time to adjust the height
   // If it's higher than the screen, we need to scroll through
-  uInt32 maxentries = std::min(18u, (image.height() - 4) / _rowHeight);
+  uInt32 maxentries = std::min(18u, (image.height() - 2) / _rowHeight);
   if(_entries.size() > maxentries)
   {
     // We show two less than the max, so we have room for two scroll buttons
     _numEntries = maxentries - 2;
-    _h = maxentries * _rowHeight + 4;
+    _h = maxentries * _rowHeight + 2;
     _showScroll = true;
   }
   else
   {
     _numEntries = int(_entries.size());
-    _h = int(_entries.size()) * _rowHeight + 4;
+    _h = int(_entries.size()) * _rowHeight + 2;
     _showScroll = false;
   }
   _isScrolling = false;
@@ -555,23 +551,16 @@ void ContextMenu::drawDialog()
   {
     // Draw menu border and background
     s.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
-#ifndef FLAT_UI
-    s.box(_x, _y, _w, _h, kColor, kShadowColor);
-
-    // Draw the entries, taking scroll buttons into account
-    int x = _x + 2, y = _y + 2, w = _w - 4;
-#else
     s.frameRect(_x, _y, _w, _h, kTextColor);
 
     // Draw the entries, taking scroll buttons into account
     int x = _x + 1, y = _y + 1, w = _w - 2;
-#endif
 
     // Show top scroll area
     int offset = _selectedOffset;
     if(_showScroll)
     {
-      s.hLine(x, y+_rowHeight-1, w+2, kShadowColor);
+      s.hLine(x, y+_rowHeight-1, w+2, kColor);
       s.drawBitmap(up_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, 8);
       y += _rowHeight;
       offset--;
@@ -582,14 +571,14 @@ void ContextMenu::drawDialog()
       bool hilite = offset == current;
       if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
       s.drawString(_font, _entries[i].first, x + 1, y + 2, w,
-                   !hilite ? kTextColor : kWidColor);
+                   !hilite ? kTextColor : kTextColorInv);
       y += _rowHeight;
     }
 
     // Show bottom scroll area
     if(_showScroll)
     {
-      s.hLine(x, y, w+2, kShadowColor);
+      s.hLine(x, y, w+2, kColor);
       s.drawBitmap(down_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, 8);
     }
 

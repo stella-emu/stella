@@ -44,26 +44,25 @@ class UIDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
+    enum
+    {
+      kListDelay  = 'UILd',
+      kMouseWheel = 'UIMw',
+    };
+
     TabWidget* myTab;
 
     // Launcher options
     SliderWidget*     myLauncherWidthSlider;
-    StaticTextWidget* myLauncherWidthLabel;
     SliderWidget*     myLauncherHeightSlider;
-    StaticTextWidget* myLauncherHeightLabel;
-    PopUpWidget*      myLauncherExitPopup;
+    CheckboxWidget*   myLauncherExitWidget;
     PopUpWidget*      myLauncherFontPopup;
     PopUpWidget*      myRomViewerPopup;
 
     // Misc options
     PopUpWidget*      myPalettePopup;
-    PopUpWidget*      myListDelayPopup;
-    PopUpWidget*      myWheelLinesPopup;
-
-    enum {
-      kLWidthChanged  = 'UIlw',
-      kLHeightChanged = 'UIlh',
-    };
+    SliderWidget*      myListDelayPopup;
+    SliderWidget*      myWheelLinesPopup;
 
   private:
     // Following constructors and assignment operators not supported

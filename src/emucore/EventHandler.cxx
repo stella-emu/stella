@@ -294,33 +294,25 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
     {
       myOSystem.frameBuffer().toggleFullscreen();
     }
-    // state rewinding must work in pause mode too
+    // State rewinding must work in pause mode too
     else if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
     {
       switch(key)
       {
         case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
-          myOSystem.frameBuffer().setPauseDelay();
-          setEventState(EventHandlerState::PAUSE);
-          myOSystem.state().rewindState((StellaModTest::isShift(mod) && state) ? 10 : 1);
+          enterTimeMachineMenuMode((StellaModTest::isShift(mod) && state) ? 10 : 1, false);
           break;
 
         case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
-          myOSystem.frameBuffer().setPauseDelay();
-          setEventState(EventHandlerState::PAUSE);
-          myOSystem.state().unwindState((StellaModTest::isShift(mod) && state) ? 10 : 1);
+          enterTimeMachineMenuMode((StellaModTest::isShift(mod) && state) ? 10 : 1, true);
           break;
 
         case KBDK_DOWN:  // Alt-down rewinds to start of list
-          myOSystem.frameBuffer().setPauseDelay();
-          setEventState(EventHandlerState::PAUSE);
-          myOSystem.state().rewindState(1000);
+          enterTimeMachineMenuMode(1000, false);
           break;
 
         case KBDK_UP:  // Alt-up rewinds to end of list
-          myOSystem.frameBuffer().setPauseDelay();
-          setEventState(EventHandlerState::PAUSE);
-          myOSystem.state().unwindState(1000);
+          enterTimeMachineMenuMode(1000, true);
           break;
 
         default:
@@ -329,7 +321,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
       }
     }
     // These only work when in emulation mode
-    if(!handled && myState == EventHandlerState::EMULATION)
+    if(!handled && (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE))
     {
       handled = true;
       switch(key)
@@ -539,7 +531,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
       handleEvent(Event::Quit, 1);
     }
     // These only work when in emulation mode
-    else if(myState == EventHandlerState::EMULATION)
+    else if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
     {
       switch(key)
       {
@@ -614,11 +606,34 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
   // Don't pass the key on if we've already taken care of it
   if(handled) return;
 
-  // Handle keys which switch eventhandler state
   // Arrange the logic to take advantage of short-circuit evaluation
-  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)) &&
-      !state && eventStateChange(myKeyTable[key][kEmulationMode]))
-    return;
+  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
+  {
+    // special handling for Escape key
+    if(state && key == KBDK_ESCAPE)
+    {
+      if(myState == EventHandlerState::PAUSE)
+      {
+        setEventState(EventHandlerState::EMULATION);
+        return;
+      }
+      else if(myState == EventHandlerState::CMDMENU ||
+              myState == EventHandlerState::TIMEMACHINE)
+      {
+        leaveMenuMode();
+        return;
+      }
+      else if(myState == EventHandlerState::DEBUGGER && myOSystem.debugger().canExit())
+      {
+        leaveDebugMode();
+        return;
+      }
+    }
+
+    // Handle keys which switch eventhandler state
+    if(!state && eventStateChange(myKeyTable[key][kEmulationMode]))
+      return;
+  }
 
   // Otherwise, let the event handler deal with it
   switch(myState)
@@ -919,7 +934,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleEvent(Event::Type event, int state)
+void EventHandler::handleEvent(Event::Type event, Int32 state)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
@@ -1223,14 +1238,14 @@ bool EventHandler::eventStateChange(Event::Type type)
       break;
 
     case Event::OptionsMenuMode:
-      if(myState == EventHandlerState::EMULATION)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterMenuMode(EventHandlerState::OPTIONSMENU);
       else
         handled = false;
       break;
 
     case Event::CmdMenuMode:
-      if(myState == EventHandlerState::EMULATION)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterMenuMode(EventHandlerState::CMDMENU);
       else if(myState == EventHandlerState::CMDMENU)
         leaveMenuMode();
@@ -1239,8 +1254,8 @@ bool EventHandler::eventStateChange(Event::Type type)
       break;
 
     case Event::TimeMachineMode:
-      if(myState == EventHandlerState::EMULATION)
-        enterMenuMode(EventHandlerState::TIMEMACHINE);
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+        enterTimeMachineMenuMode(0, false);
       else if(myState == EventHandlerState::TIMEMACHINE)
         leaveMenuMode();
       else
@@ -1248,9 +1263,10 @@ bool EventHandler::eventStateChange(Event::Type type)
       break;
 
     case Event::DebuggerMode:
-      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
+         || myState == EventHandlerState::TIMEMACHINE)
         enterDebugMode();
-      else if(myState == EventHandlerState::DEBUGGER)
+      else if(myState == EventHandlerState::DEBUGGER && myOSystem.debugger().canExit())
         leaveDebugMode();
       else
         handled = false;
@@ -2137,6 +2153,17 @@ void EventHandler::leaveDebugMode()
   myOSystem.createFrameBuffer();
   myOSystem.sound().mute(false);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
+{
+  // add one extra state if we are in Time Machine mode
+  // TODO: maybe remove this state if we leave the menu at this new state
+  myOSystem.state().addExtraState("enter Time Machine dialog"); // force new state
+
+  // TODO: display last wind message (numWinds != 0) in time machine dialog
+  enterMenuMode(EventHandlerState::TIMEMACHINE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

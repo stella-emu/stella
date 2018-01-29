@@ -29,8 +29,9 @@ namespace GUI {
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                        const StringList& text, int max_w, int max_h, int cmd,
                        const string& okText, const string& cancelText,
+                       const string& title,
                        bool focusOKButton)
-  : Dialog(boss->instance(), boss->parent(), 0, 0, max_w, max_h),
+  : Dialog(boss->instance(), boss->parent(), font, title, 0, 0, max_w, max_h),
     CommandSender(boss),
     myCmd(cmd)
 {
@@ -45,9 +46,10 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                        const string& text, int max_w, int max_h, int cmd,
                        const string& okText, const string& cancelText,
+                       const string& title,
                        bool focusOKButton)
   : MessageBox(boss, font, StringParser(text).stringList(), max_w, max_h,
-               cmd, okText, cancelText, focusOKButton)
+               cmd, okText, cancelText, title, focusOKButton)
 {
 }
 
@@ -64,9 +66,9 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
   for(const auto& s: text)
     str_w = std::max(int(s.length()), str_w);
   _w = std::min(str_w * fontWidth + 20, _w);
-  _h = std::min(uInt32((text.size() + 2) * lineHeight + 20), uInt32(_h));
+  _h = std::min(uInt32((text.size() + 2) * lineHeight + 20 + _th), uInt32(_h));
 
-  xpos = 10;  ypos = 10;
+  xpos = 10;  ypos = 10 + _th;
   for(const auto& s: text)
   {
     new StaticTextWidget(this, font, xpos, ypos, _w - 20,

@@ -30,7 +30,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
-  : Dialog(boss->instance(), boss->parent()),
+  : Dialog(boss->instance(), boss->parent(), font, "Power-on options"),
     CommandSender(boss)
 {
   const int lineHeight   = font.getLineHeight(),
@@ -47,9 +47,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Set real dimensions
   _w = lwidth + pwidth + fontWidth*3 + 15;
-  _h = 17 * (lineHeight + 4) + buttonHeight + 20;
+  _h = 17 * (lineHeight + 4) + buttonHeight + 20 + _th;
 
-  xpos = 10;  ypos = 10;
+  xpos = 10;  ypos = 10 + _th;
 
   // Bankswitch type
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
@@ -133,11 +133,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
     "    further ROMs until clicking 'Defaults'", TextAlign::Left);
 
   // Add Defaults, OK and Cancel buttons
-  ButtonWidget* b;
-  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", GuiObject::kDefaultsCmd);
-  wid.push_back(b);
-  addOKCancelBGroup(wid, font, "Load ROM", "Close");
+  addDefaultsOKCancelBGroup(wid, font, "Load ROM", "Close");
 
   addToFocusList(wid);
 }

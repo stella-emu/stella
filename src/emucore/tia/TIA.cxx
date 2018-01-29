@@ -815,10 +815,9 @@ void TIA::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableColorLoss(bool enabled)
 {
-  if (consoleTiming() != ConsoleTiming::pal)
-    return false;
+  bool allowColorLoss = consoleTiming() == ConsoleTiming::pal;
 
-  if(enabled)
+  if(allowColorLoss && enabled)
   {
     myColorLossEnabled = true;
     myColorLossActive = myFrameManager->scanlinesLastFrame() & 0x1;
@@ -836,7 +835,7 @@ bool TIA::enableColorLoss(bool enabled)
     myBackground.applyColorLoss();
   }
 
-  return true;
+  return allowColorLoss;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

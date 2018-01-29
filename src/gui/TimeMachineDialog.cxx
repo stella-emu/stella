@@ -24,17 +24,15 @@
 #include "Widget.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
-
+#include "TimeLineWidget.hxx"
 
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "System.hxx"
 
-
 #include "TimeMachineDialog.hxx"
 #include "Base.hxx"
 using Common::Base;
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
@@ -43,23 +41,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 {
   const int BUTTON_W = 16, BUTTON_H = 14;
 
-  /*static uInt32 PAUSE[BUTTON_H] =
-  {
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000,
-    0b0001111001111000
-  };*/
   static uInt32 PLAY[BUTTON_H] =
   {
     0b0110000000000000,
@@ -181,79 +162,80 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   };
 
   const GUI::Font& font = instance().frameBuffer().font();
-  const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4, V_GAP = 4;
+  const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4;
   const int buttonWidth = BUTTON_W + 8,
             buttonHeight = BUTTON_H + 10,
             rowHeight = font.getLineHeight();
 
-  WidgetArray wid;
   int xpos, ypos;
 
   // Set real dimensions
   _w = 20 * (buttonWidth + BUTTON_GAP) + 20;
   _h = V_BORDER * 2 + rowHeight + buttonHeight + 2;
 
-  //this->clearFlags(WIDGET_CLEARBG); // does only work combined with blending!
-  //this->clearFlags(WIDGET_BORDER);
+  this->clearFlags(WIDGET_CLEARBG); // does only work combined with blending (0..100)!
+  this->clearFlags(WIDGET_BORDER);
 
   xpos = H_BORDER;
   ypos = V_BORDER;
 
   // Add index info
-  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "    ");
+  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "    ", TextAlign::Left, kBGColor);
+  myCurrentIdxWidget->setTextColor(kColorInfo);
   myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("8888"), ypos,
-                                         "    ", TextAlign::Right);
+                                         "    ", TextAlign::Right, kBGColor);
+  myLastIdxWidget->setTextColor(kColorInfo);
+
+  // Add timeline
+  const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2,
+               tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
+               tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2,
+               tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
+  myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
+  myTimeline->setMinValue(0);
   ypos += rowHeight;
 
   // Add time info
-  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "04:32 59");
-  //myCurrentTimeWidget->setFlags(WIDGET_CLEARBG);
+  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "04:32 59", TextAlign::Left, kBGColor);
+  myCurrentTimeWidget->setTextColor(kColorInfo);
   myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("XX:XX XX"), ypos + 3,
-                                          "12:25 59");
+                                          "12:25 59", TextAlign::Right, kBGColor);
+  myLastTimeWidget->setTextColor(kColorInfo);
   xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
 
   // Add buttons
   myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_ALL,
                                        BUTTON_W, BUTTON_H, kRewindAll);
-  wid.push_back(myRewindAllWidget);
   xpos += buttonWidth + BUTTON_GAP;
 
   myRewind10Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_10,
                                       BUTTON_W, BUTTON_H, kRewind10);
-  wid.push_back(myRewind10Widget);
   xpos += buttonWidth + BUTTON_GAP;
 
   myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_1,
                                      BUTTON_W, BUTTON_H, kRewind1);
-  wid.push_back(myRewind1Widget);
   xpos += buttonWidth + BUTTON_GAP*2;
 
-  /*myPauseWidget = new ButtonWidget(this, font, xpos, ypos - 2, buttonWidth + 4, buttonHeight + 4, PAUSE,
-                                   BUTTON_W, BUTTON_H, kPause);
-  wid.push_back(myPauseWidget);
-  myPauseWidget->clearFlags(WIDGET_ENABLED);*/
   myPlayWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, PLAY,
                                   BUTTON_W, BUTTON_H, kPlay);
-  wid.push_back(myPlayWidget);
   xpos += buttonWidth + BUTTON_GAP*2;
 
   myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_1,
                                      BUTTON_W, BUTTON_H, kUnwind1);
-  wid.push_back(myUnwind1Widget);
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwind10Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_10,
                                       BUTTON_W, BUTTON_H, kUnwind10);
-  wid.push_back(myUnwind10Widget);
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_ALL,
                                        BUTTON_W, BUTTON_H, kUnwindAll);
-  wid.push_back(myUnwindAllWidget);
   xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 3;
 
   // Add message
-  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ");
+  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ",
+                                         TextAlign::Left, kBGColor);
+  myMessageWidget->setTextColor(kColorInfo);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -268,21 +250,75 @@ void TimeMachineDialog::center()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::loadConfig()
 {
-  surface().attributes().blending = true;
-  surface().attributes().blendalpha = 80;
-  surface().applyAttributes();
+  RewindManager& r = instance().state().rewindManager();
+  IntArray cycles = r.cyclesList();
+
+  // Set range and intervals for timeline
+  myTimeline->setMaxValue(cycles.size() - 1);
+  myTimeline->setStepValues(cycles);
+
+  // Enable blending (only once is necessary)
+  if(!surface().attributes().blending)
+  {
+    surface().attributes().blending = true;
+    surface().attributes().blendalpha = 80;
+    surface().applyAttributes();
+  }
 
   handleWinds();
   myMessageWidget->setLabel("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod)
+{
+  // The following 'Alt' shortcuts duplicate the shortcuts in EventHandler
+  // It is best to keep them the same, so changes in EventHandler mean we
+  // need to update the logic here too
+  if(StellaModTest::isAlt(mod))
+  {
+    switch(key)
+    {
+      case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
+        handleCommand(nullptr, StellaModTest::isShift(mod) ? kRewind10 : kRewind1, 0, 0);
+        break;
+
+      case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
+        handleCommand(nullptr, StellaModTest::isShift(mod) ? kUnwind10 : kUnwind1, 0, 0);
+        break;
+
+      case KBDK_DOWN:  // Alt-down rewinds to start of list
+        handleCommand(nullptr, kRewindAll, 0, 0);
+        break;
+
+      case KBDK_UP:  // Alt-up rewinds to end of list
+        handleCommand(nullptr, kUnwindAll, 0, 0);
+        break;
+
+      default:
+        Dialog::handleKeyDown(key, mod);
+    }
+  }
+  else if(key == KBDK_SPACE || key == KBDK_ESCAPE)
+    handleCommand(nullptr, kPlay, 0, 0);
+  else
+    Dialog::handleKeyDown(key, mod);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
                                       int data, int id)
 {
-//cerr << cmd << endl;
   switch(cmd)
   {
+    case kTimeline:
+    {
+      Int32 winds = myTimeline->getValue() -
+          instance().state().rewindManager().getCurrentIdx() + 1;
+      handleWinds(winds);
+      break;
+    }
+
     case kPlay:
       instance().eventHandler().leaveMenuMode();
       break;
@@ -316,12 +352,13 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TimeMachineDialog::getTimeString(uInt64 cycles)
 {
   const Int32 scanlines = std::max(instance().console().tia().scanlinesLastFrame(), 240u);
   const bool isNTSC = scanlines <= 287;
   const Int32 NTSC_FREQ = 1193182; // ~76*262*60
-  const Int32 PAL_FREQ = 1182298; // ~76*312*50
+  const Int32 PAL_FREQ  = 1182298; // ~76*312*50
   const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
   uInt32 minutes = cycles / (freq * 60);
@@ -331,9 +368,9 @@ string TimeMachineDialog::getTimeString(uInt64 cycles)
   uInt32 frames = cycles / (scanlines * 76);
 
   stringstream time;
-  time << Common::Base::toString(minutes, Common::Base::F_10_2) << ":";
-  time << Common::Base::toString(seconds, Common::Base::F_10_2) << ".";
-  time << Common::Base::toString(frames, Common::Base::F_10_2);
+  time << Common::Base::toString(minutes, Common::Base::F_10_02) << ":";
+  time << Common::Base::toString(seconds, Common::Base::F_10_02) << ".";
+  time << Common::Base::toString(frames, Common::Base::F_10_02);
 
   return time.str();
 }
@@ -346,18 +383,26 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   if(numWinds)
   {
     uInt64 startCycles = instance().console().tia().cycles();
-    uInt32 winds = numWinds < 0 ? r.rewindState(-numWinds) : r.unwindState(numWinds);
-    string message = r.getUnitString(instance().console().tia().cycles() - startCycles);
+    if(numWinds < 0)      r.rewindStates(-numWinds);
+    else if(numWinds > 0) r.unwindStates(numWinds);
 
-    myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");
+    uInt64 elapsed = instance().console().tia().cycles() - startCycles;
+    if(elapsed > 0)
+    {
+      string message = r.getUnitString(elapsed);
+
+      // TODO: add message text from addState()
+      myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");
+    }
   }
   // Update time
   myCurrentTimeWidget->setLabel(getTimeString(r.getCurrentCycles() - r.getFirstCycles()));
   myLastTimeWidget->setLabel(getTimeString(r.getLastCycles() - r.getFirstCycles()));
+  myTimeline->setValue(r.getCurrentIdx()-1);
   // Update index
   myCurrentIdxWidget->setValue(r.getCurrentIdx());
   myLastIdxWidget->setValue(r.getLastIdx());
-  // enable/disable buttons
+  // Enable/disable buttons
   myRewindAllWidget->setEnabled(!r.atFirst());
   myRewind10Widget->setEnabled(!r.atFirst());
   myRewind1Widget->setEnabled(!r.atFirst());

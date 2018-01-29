@@ -46,6 +46,8 @@ class Dialog : public GuiObject
   public:
     Dialog(OSystem& instance, DialogContainer& parent,
            int x = 0, int y = 0, int w = 0, int h = 0);
+    Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font, const string& title,
+           int x = 0, int y = 0, int w = 0, int h = 0);
 
     virtual ~Dialog();
 
@@ -65,6 +67,7 @@ class Dialog : public GuiObject
     void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
     void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
     void addTabWidget(TabWidget* w);
+    void addDefaultWidget(Widget* w) { _defaultWidget = w; }
     void addOKWidget(Widget* w)     { _okWidget = w;     }
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
@@ -82,6 +85,9 @@ class Dialog : public GuiObject
     void setFlags(int flags) { _flags |= flags;  setDirty(); }
     void clearFlags(int flags) { _flags &= ~flags; setDirty(); }
     int  getFlags() const { return _flags; }
+
+    void setTitle(const string& title);
+    bool hasTitle() { return !_title.empty(); }
 
   protected:
     virtual void draw() override { }
@@ -106,7 +112,14 @@ class Dialog : public GuiObject
     void addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                            const string& okText = "OK",
                            const string& cancelText = "Cancel",
-                           bool focusOKButton = true);
+                           bool focusOKButton = true,
+                           int buttonWidth = 0);
+
+    void addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
+                                   const string& okText = "OK",
+                                   const string& cancelText = "Cancel",
+                                   const string& defaultsText = "Defaults",
+                                   bool focusOKButton = true);
 
     void processCancelWithoutWidget(bool state) { _processCancel = state; }
 
@@ -114,6 +127,8 @@ class Dialog : public GuiObject
         Returns whether or not a large font can be used within these bounds.
     */
     bool getResizableBounds(uInt32& w, uInt32& h) const;
+
+    void initTitle(const GUI::Font& font, const string& title);
 
   private:
     void buildCurrentFocusList(int tabID = -1);
@@ -125,10 +140,15 @@ class Dialog : public GuiObject
     Widget* _mouseWidget;
     Widget* _focusedWidget;
     Widget* _dragWidget;
+    Widget* _defaultWidget;
     Widget* _okWidget;
     Widget* _cancelWidget;
     bool    _visible;
     bool    _processCancel;
+    string  _title;
+    int     _th;
+    const GUI::Font* _font;
+    int     _fh;
 
     Common::FixedStack<shared_ptr<FBSurface>> mySurfaceStack;
 

@@ -130,6 +130,12 @@ class LinkedObjectPool
     const_iter next(const_iter i) const { return std::next(i, 1); }
 
     /**
+      Canonical iterators from C++ STL.
+    */
+    const_iter cbegin() const { return myList.cbegin(); }
+    const_iter cend() const   { return myList.cend();   }
+
+    /**
       Answer whether 'current' is at the specified iterator.
     */
     bool atFirst() const { return myCurrent == first(); }

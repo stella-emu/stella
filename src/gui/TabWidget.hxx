@@ -90,22 +90,12 @@ class TabWidget : public Widget, public CommandSender
     bool    _firstTime;
 
     enum {
-#ifndef FLAT_UI
-      kTabLeftOffset = 4,
-      kTabSpacing = 2,
-      kTabPadding = 3
-#else
       kTabLeftOffset = 0,
       kTabSpacing = 1,
       kTabPadding = 4
-#endif
     };
 
   private:
-#ifndef FLAT_UI
-    void box(int x, int y, int width, int height,
-             uInt32 colorA, uInt32 colorB, bool omitBottom);
-#endif
     void updateActiveTab();
 
   private:

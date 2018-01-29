@@ -458,6 +458,9 @@ class FrameBuffer
     string myScreenTitle;
 
   private:
+    // Draws the frame stats overlay
+    void drawFrameStats();
+
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount;
 
@@ -506,10 +509,14 @@ class FrameBuffer
       uInt32 color;
       shared_ptr<FBSurface> surface;
       bool enabled;
+
+      Message() : counter(0), x(0), y(0), w(0), h(0), color(0), enabled(false) { }
     };
     Message myMsg;
     Message myStatsMsg;
     bool myStatsEnabled;
+    uInt32 myLastScanlines;
+    float myLastFrameRate;
 
     bool myGrabMouse;
 
@@ -529,6 +536,9 @@ class FrameBuffer
 
     // Holds UI palette data (standard and classic colours)
     static uInt32 ourGUIColors[3][kNumColors-256];
+
+    uInt64 myTotalTime;
+    uInt64 myTotalFrames;
 
   private:
     // Following constructors and assignment operators not supported

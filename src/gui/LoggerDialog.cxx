@@ -33,7 +33,7 @@
 LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
                            const GUI::Font& font, int max_w, int max_h,
                            bool uselargefont)
-  : Dialog(osystem, parent),
+  : Dialog(osystem, parent, font, "System logs"),
     myLogInfo(nullptr)
 {
   const int lineHeight   = font.getLineHeight(),
@@ -48,7 +48,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   _h = max_h;
 
   // Test listing of the log output
-  xpos = 10;  ypos = 10;
+  xpos = 10;  ypos = 10 + _th;
   myLogInfo = new StringListWidget(this, uselargefont ? font :
                   instance().frameBuffer().infoFont(), xpos, ypos, _w - 2 * xpos,
                   _h - buttonHeight - ypos - 20 - 2 * lineHeight, false);
@@ -57,7 +57,6 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   ypos += myLogInfo->getHeight() + 8;
 
   // Level of logging (how much info to print)
-  xpos += 20;
   VariantList items;
   VarList::push_back(items, "None", "0");
   VarList::push_back(items, "Basic", "1");
@@ -69,11 +68,11 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myLogLevel);
 
   // Should log output also be shown on the console?
-  xpos += myLogLevel->getWidth() + 30;
-  myLogToConsole = new CheckboxWidget(this, font, xpos, ypos, "Print to console");
+  xpos += myLogLevel->getWidth() + 32;
+  myLogToConsole = new CheckboxWidget(this, font, xpos, ypos + 1, "Print to console");
   wid.push_back(myLogToConsole);
 
-  // Add Defaults, OK and Cancel buttons
+  // Add Save, OK and Cancel buttons
   ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "Save log to disk",

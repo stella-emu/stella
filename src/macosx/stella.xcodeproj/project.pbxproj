@@ -568,6 +568,8 @@
 		DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */; };
 		DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */; };
 		DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE8B1861E7E03B300189864 /* FrameLayout.hxx */; };
+		DCE9158B201543B900960CC0 /* TimeLineWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE91589201543B900960CC0 /* TimeLineWidget.cxx */; };
+		DCE9158C201543B900960CC0 /* TimeLineWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9158A201543B900960CC0 /* TimeLineWidget.hxx */; };
 		DCEC58581E945125002F0246 /* DelayQueueWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEC58561E945125002F0246 /* DelayQueueWidget.cxx */; };
 		DCEC58591E945125002F0246 /* DelayQueueWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */; };
 		DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEC585B1E945175002F0246 /* DelayQueueIterator.hxx */; };
@@ -1240,6 +1242,8 @@
 		DCE5CDE11BA10024005CD08A /* RiotRamWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RiotRamWidget.cxx; sourceTree = "<group>"; };
 		DCE5CDE21BA10024005CD08A /* RiotRamWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RiotRamWidget.hxx; sourceTree = "<group>"; };
 		DCE8B1861E7E03B300189864 /* FrameLayout.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameLayout.hxx; sourceTree = "<group>"; };
+		DCE91589201543B900960CC0 /* TimeLineWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeLineWidget.cxx; sourceTree = "<group>"; };
+		DCE9158A201543B900960CC0 /* TimeLineWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeLineWidget.hxx; sourceTree = "<group>"; };
 		DCEC58561E945125002F0246 /* DelayQueueWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DelayQueueWidget.cxx; sourceTree = "<group>"; };
 		DCEC58571E945125002F0246 /* DelayQueueWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueWidget.hxx; sourceTree = "<group>"; };
 		DCEC585B1E945175002F0246 /* DelayQueueIterator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueIterator.hxx; sourceTree = "<group>"; };
@@ -1908,6 +1912,8 @@
 				2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */,
 				2DDBEAD0084578BF00812C11 /* TabWidget.cxx */,
 				2DDBEAD1084578BF00812C11 /* TabWidget.hxx */,
+				DCE91589201543B900960CC0 /* TimeLineWidget.cxx */,
+				DCE9158A201543B900960CC0 /* TimeLineWidget.hxx */,
 				DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */,
 				DCA82C6E1FEB4E780059340F /* TimeMachine.hxx */,
 				DCA82C6F1FEB4E780059340F /* TimeMachineDialog.cxx */,
@@ -2180,6 +2186,7 @@
 				2D91740509BA90380026E9FF /* DialogContainer.hxx in Headers */,
 				DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */,
 				2D91740609BA90380026E9FF /* GameInfoDialog.hxx in Headers */,
+				DCE9158C201543B900960CC0 /* TimeLineWidget.hxx in Headers */,
 				2D91740709BA90380026E9FF /* GameList.hxx in Headers */,
 				2D91740809BA90380026E9FF /* GuiObject.hxx in Headers */,
 				DC73BD861915E5B1003FAFAD /* FBSurfaceSDL2.hxx in Headers */,
@@ -2592,6 +2599,7 @@
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
 				DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */,
+				DCE9158B201543B900960CC0 /* TimeLineWidget.cxx in Sources */,
 				DCE5CDE31BA10024005CD08A /* RiotRamWidget.cxx in Sources */,
 				2D9174B909BA90380026E9FF /* ProgressDialog.cxx in Sources */,
 				2D9174BA09BA90380026E9FF /* ScrollBarWidget.cxx in Sources */,

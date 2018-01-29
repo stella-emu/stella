@@ -68,8 +68,12 @@ string Base::toString(int value, Common::Base::Format outputBase)
         std::snprintf(vToS_buf, 6, "%5d", value);
       break;
 
-    case Base::F_10_2:  // base 10: 2 digits
+    case Base::F_10_02:  // base 10: 2 digits (with leading zero)
       std::snprintf(vToS_buf, 3, "%02d", value);
+      break;
+
+    case Base::F_10_4:  // base 10: 4 digits
+      std::snprintf(vToS_buf, 5, "%4d", value);
       break;
 
     case Base::F_16_1:  // base 16: 1 byte wide

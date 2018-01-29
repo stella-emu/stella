@@ -21,7 +21,6 @@
 class OSystem;
 class GuiObject;
 class TabWidget;
-class EventMappingWidget;
 class CheckboxWidget;
 class EditTextWidget;
 class PopUpWidget;
@@ -75,8 +74,6 @@ class DeveloperDialog : public Dialog
       kPFColourChangedCmd   = 'GOpf',
       kBLColourChangedCmd   = 'GObl',
   #ifdef DEBUGGER_SUPPORT
-      kDWidthChanged        = 'UIdw',
-      kDHeightChanged       = 'UIdh',
       kDFontSizeChanged     = 'UIfs',
       kGhostReads           = 'Dbgh'
   #endif
@@ -105,6 +102,7 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*     myRandomizeCPUWidget[5];
     CheckboxWidget*     myUndrivenPinsWidget;
     CheckboxWidget*     myThumbExceptionWidget;
+    CheckboxWidget*     myEEPROMAccessWidget;
 
     // Video widgets
     RadioButtonGroup*   mySettingsGroup1;
@@ -120,18 +118,14 @@ class DeveloperDialog : public Dialog
     RadioButtonGroup*   mySettingsGroup2;
     CheckboxWidget*     myTimeMachineWidget;
     SliderWidget*       myStateSizeWidget;
-    StaticTextWidget*   myStateSizeLabelWidget;
     SliderWidget*       myUncompressedWidget;
-    StaticTextWidget*   myUncompressedLabelWidget;
     PopUpWidget*        myStateIntervalWidget;
     PopUpWidget*        myStateHorizonWidget;
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
     SliderWidget*       myDebuggerWidthSlider;
-    StaticTextWidget*   myDebuggerWidthLabel;
     SliderWidget*       myDebuggerHeightSlider;
-    StaticTextWidget*   myDebuggerHeightLabel;
     PopUpWidget*        myDebuggerFontSize;
     PopUpWidget*        myDebuggerFontStyle;
     CheckboxWidget*     myGhostReadsTrapWidget;
@@ -150,6 +144,7 @@ class DeveloperDialog : public Dialog
     bool    myDebugColors[2];
     bool    myUndrivenPins[2];
     bool    myThumbException[2];
+    bool    myEEPROMAccess[2];
     // States sets
     bool    myTimeMachine[2];
     int     myStateSize[2];
@@ -162,8 +157,6 @@ class DeveloperDialog : public Dialog
     void addTimeMachineTab(const GUI::Font& font);
     void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
-    // Add Defaults, OK and Cancel buttons
-    void addDefaultOKCancelButtons(const GUI::Font& font);
 
     void loadSettings(SettingsSet set);
     void saveSettings(SettingsSet set);

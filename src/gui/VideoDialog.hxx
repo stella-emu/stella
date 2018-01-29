@@ -52,18 +52,16 @@ class VideoDialog : public Dialog
 
     // General options
     PopUpWidget*      myRenderer;
-    PopUpWidget*      myTIAZoom;
+    PopUpWidget*      myTIAZoom; // TODO: SliderWidget
     PopUpWidget*      myTIAPalette;
-    PopUpWidget*      myFrameTiming;
-    PopUpWidget*      myTIAInterpolate;
+    CheckboxWidget*   myFrameTiming;
+    CheckboxWidget*   myTIAInterpolate;
     SliderWidget*     myNAspectRatio;
-    StaticTextWidget* myNAspectRatioLabel;
     SliderWidget*     myPAspectRatio;
-    StaticTextWidget* myPAspectRatioLabel;
-
     SliderWidget*     myFrameRate;
-    StaticTextWidget* myFrameRateLabel;
+
     CheckboxWidget*   myFullscreen;
+    //PopUpWidget*      myFullScreenMode;
     CheckboxWidget*   myUseStretch;
     CheckboxWidget*   myUseVSync;
     CheckboxWidget*   myUIMessages;
@@ -74,35 +72,23 @@ class VideoDialog : public Dialog
     // TV effects adjustables (custom mode)
     PopUpWidget*      myTVMode;
     SliderWidget*     myTVSharp;
-    StaticTextWidget* myTVSharpLabel;
     SliderWidget*     myTVHue;
-    StaticTextWidget* myTVHueLabel;
     SliderWidget*     myTVRes;
-    StaticTextWidget* myTVResLabel;
     SliderWidget*     myTVArtifacts;
-    StaticTextWidget* myTVArtifactsLabel;
     SliderWidget*     myTVFringe;
-    StaticTextWidget* myTVFringeLabel;
     SliderWidget*     myTVBleed;
-    StaticTextWidget* myTVBleedLabel;
     SliderWidget*     myTVBright;
-    StaticTextWidget* myTVBrightLabel;
     SliderWidget*     myTVContrast;
-    StaticTextWidget* myTVContrastLabel;
     SliderWidget*     myTVSatur;
-    StaticTextWidget* myTVSaturLabel;
     SliderWidget*     myTVGamma;
-    StaticTextWidget* myTVGammaLabel;
 
     // TV phosphor effect
-    PopUpWidget*      myTVPhosphor;
+    CheckboxWidget*   myTVPhosphor;
     SliderWidget*     myTVPhosLevel;
-    StaticTextWidget* myTVPhosLevelLabel;
 
     // TV scanline intensity and interpolation
     StaticTextWidget* myTVScanLabel;
     SliderWidget*     myTVScanIntense;
-    StaticTextWidget* myTVScanIntenseLabel;
     CheckboxWidget*   myTVScanInterpolate;
 
     // TV effects adjustables presets (custom mode)
@@ -113,24 +99,9 @@ class VideoDialog : public Dialog
     ButtonWidget*     myCloneCustom;
 
     enum {
-      kNAspectRatioChanged = 'VDan',
-      kPAspectRatioChanged = 'VDap',
       kFrameRateChanged    = 'VDfr',
 
       kTVModeChanged       = 'VDtv',
-      kTVSharpChanged      = 'TVsh',
-      kTVHueChanged        = 'TVhu',
-      kTVResChanged        = 'TVrs',
-      kTVArtifactsChanged  = 'TVar',
-      kTVFringeChanged     = 'TVfr',
-      kTVBleedChanged      = 'TVbl',
-      kTVBrightChanged     = 'TVbr',
-      kTVContrastChanged   = 'TVct',
-      kTVSaturChanged      = 'TVsa',
-      kTVGammaChanged      = 'TVga',
-      kTVScanIntenseChanged= 'TVsc',
-
-      kTVPhosLevelChanged  = 'TVpl',
 
       kCloneCompositeCmd   = 'CLcp',
       kCloneSvideoCmd      = 'CLsv',
