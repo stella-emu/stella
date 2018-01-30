@@ -81,16 +81,21 @@ void TimeLineWidget::setMaxValue(int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeLineWidget::setStepValues(const IntArray& steps)
 {
-  // Try to allocate as infrequently as possible
-  if(steps.size() > _stepValue.capacity())
-    _stepValue.reserve(2 * steps.size());
   _stepValue.clear();
 
-  double scale = (_w - _labelWidth - 4) / double(steps.back());
+  // If no steps are defined, just use the maximum value
+  if(steps.size() > 0)
+  {
+    // Try to allocate as infrequently as possible
+    if(steps.size() > _stepValue.capacity())
+      _stepValue.reserve(2 * steps.size());
 
-  // Skip the very last value; we take care of it outside the end of the loop
-  for(uInt32 i = 0; i < steps.size() - 1; ++i)
-    _stepValue.push_back(int(steps[i] * scale));
+    double scale = (_w - _labelWidth - 4) / double(steps.back());
+
+    // Skip the very last value; we take care of it outside the end of the loop
+    for(uInt32 i = 0; i < steps.size() - 1; ++i)
+      _stepValue.push_back(int(steps[i] * scale));
+  }
 
   // Due to integer <-> double conversion, the last value is sometimes
   // slightly less than the maximum value; we assign it manually to fix this
