@@ -261,7 +261,7 @@ void TimeMachineDialog::loadConfig()
   if(!surface().attributes().blending)
   {
     surface().attributes().blending = true;
-    surface().attributes().blendalpha = 80;
+    surface().attributes().blendalpha = 92;
     surface().applyAttributes();
   }
 
