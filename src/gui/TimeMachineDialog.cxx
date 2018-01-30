@@ -395,6 +395,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
       myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");
     }
   }
+
   // Update time
   myCurrentTimeWidget->setLabel(getTimeString(r.getCurrentCycles() - r.getFirstCycles()));
   myLastTimeWidget->setLabel(getTimeString(r.getLastCycles() - r.getFirstCycles()));
