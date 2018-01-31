@@ -199,7 +199,7 @@ class TIA : public Device
       desired frame rate to update the TIA.  Invoking this method will update
       the graphics buffer and generate the corresponding audio samples.
     */
-    void update();
+    uInt64 update();
 
     /**
       Returns a pointer to the internal frame buffer.
@@ -748,11 +748,9 @@ class TIA : public Device
     uInt8 myColorHBlank;
 
     /**
-     * The total number of color clocks since emulation started. This is a
-     * double a) to avoid overflows and b) as it will enter floating point
-     * expressions in the paddle readout simulation anyway.
+     * The total number of color clocks since emulation started.
      */
-    double myTimestamp;
+    uInt64 myTimestamp;
 
     /**
      * The "shadow registers" track the last written register value for the

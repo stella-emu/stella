@@ -26,7 +26,7 @@ PaddleReader::PaddleReader()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::reset(double timestamp)
+void PaddleReader::reset(uInt64 timestamp)
 {
   myU = 0;
   myIsDumped = false;
@@ -38,7 +38,7 @@ void PaddleReader::reset(double timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::vblank(uInt8 value, double timestamp)
+void PaddleReader::vblank(uInt8 value, uInt64 timestamp)
 {
   bool oldIsDumped = myIsDumped;
 
@@ -53,7 +53,7 @@ void PaddleReader::vblank(uInt8 value, double timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 PaddleReader::inpt(double timestamp)
+uInt8 PaddleReader::inpt(uInt64 timestamp)
 {
   updateCharge(timestamp);
 
@@ -63,7 +63,7 @@ uInt8 PaddleReader::inpt(double timestamp)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::update(double value, double timestamp, ConsoleTiming consoleTiming)
+void PaddleReader::update(double value, uInt64 timestamp, ConsoleTiming consoleTiming)
 {
   if (consoleTiming != myConsoleTiming) {
     setConsoleTiming(consoleTiming);
@@ -94,13 +94,13 @@ void PaddleReader::setConsoleTiming(ConsoleTiming consoleTiming)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaddleReader::updateCharge(double timestamp)
+void PaddleReader::updateCharge(uInt64 timestamp)
 {
   if (myIsDumped) return;
 
   if (myValue >= 0)
     myU = USUPP * (1 - (1 - myU / USUPP) *
-      exp(-(timestamp - myTimestamp) / (myValue * RPOT + R0) / C / myClockFreq));
+      exp(-static_cast<double>(timestamp - myTimestamp) / (myValue * RPOT + R0) / C / myClockFreq));
 
   myTimestamp = timestamp;
 }

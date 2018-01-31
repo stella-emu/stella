@@ -809,9 +809,14 @@ bool TIA::loadDisplay(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::update()
+uInt64 TIA::update()
 {
+  uInt64 timestampOld = myTimestamp;
+
   mySystem->m6502().execute(25000);
+
+  updateEmulation();
+  return (myTimestamp - timestampOld) / 3;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

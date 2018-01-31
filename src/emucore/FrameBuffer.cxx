@@ -261,11 +261,13 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::update()
+Int64 FrameBuffer::update()
 {
   // Determine which mode we are in (from the EventHandler)
   // Take care of S_EMULATE mode here, otherwise let the GUI
   // figure out what to draw
+
+  Int64 cycles = -1;
 
   invalidate();
   switch(myOSystem.eventHandler().state())
@@ -275,7 +277,7 @@ void FrameBuffer::update()
       // Run the console for one frame
       // Note that the debugger can cause a breakpoint to occur, which changes
       // the EventHandler state 'behind our back' - we need to check for that
-      myOSystem.console().tia().update();
+      cycles = myOSystem.console().tia().update();
   #ifdef DEBUGGER_SUPPORT
       if(myOSystem.eventHandler().state() != EventHandlerState::EMULATION) break;
   #endif
@@ -344,7 +346,7 @@ void FrameBuffer::update()
     }
 
     case EventHandlerState::NONE:
-      return;
+      return -1;
   }
 
   // Draw any pending messages
@@ -353,6 +355,8 @@ void FrameBuffer::update()
 
   // Do any post-frame stuff
   postFrameUpdate();
+
+  return cycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

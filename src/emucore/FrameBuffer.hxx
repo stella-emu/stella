@@ -113,9 +113,10 @@ class FrameBuffer
 
     /**
       Updates the display, which depending on the current mode could mean
-      drawing the TIA, any pending menus, etc.
+      drawing the TIA, any pending menus, etc. Returns the numbers of CPU cycles
+      spent during emulation, or -1 if not applicable.
     */
-    void update();
+    Int64 update();
 
     /**
       Shows a message onscreen.
