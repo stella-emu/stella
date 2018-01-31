@@ -238,7 +238,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   {
     myStatsMsg.surface = allocateSurface(myStatsMsg.w, myStatsMsg.h);
     myStatsMsg.surface->attributes().blending = true;
-    //myStatsMsg.surface->attributes().blendalpha = 80;
+    myStatsMsg.surface->attributes().blendalpha = 92; //aligned with TimeMachineDialog
     myStatsMsg.surface->applyAttributes();
   }
 
@@ -382,7 +382,7 @@ void FrameBuffer::drawFrameStats()
   const ConsoleInfo& info = myOSystem.console().about();
   char msg[30];
   uInt32 color;
-  const int XPOS = 2, YPOS = 0;
+  const int XPOS = 0, YPOS = 0;
 
   myStatsMsg.surface->invalidate();
 
@@ -423,9 +423,8 @@ void FrameBuffer::drawFrameStats()
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   myStatsMsg.surface->setDirty();
-  myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
+  myStatsMsg.surface->setDstPos(myImageRect.x() + 10, myImageRect.y() + 8);
   myStatsMsg.surface->render();
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
