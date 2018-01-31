@@ -26,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
-                               const GUI::Font& font)
+                               const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Snapshot settings"),
     myFont(font)
 {
@@ -43,7 +43,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   ButtonWidget* b;
 
   // Set real dimensions
-  _w = 64 * fontWidth + HBORDER * 2;
+  _w = std::min(max_w, 64 * fontWidth + HBORDER * 2);
   _h = 10 * (lineHeight + 4) + VBORDER + _th;
 
   xpos = HBORDER;  ypos = VBORDER + _th;

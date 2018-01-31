@@ -37,6 +37,7 @@
 #include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
 #include "Launcher.hxx"
+#include "Settings.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatCodeDialog.hxx"
@@ -48,7 +49,8 @@
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
                              GuiObject* boss, int max_w, int max_h, stellaMode mode)
   : Dialog(osystem, parent),
-    myMode(mode)
+    myMode(mode),
+    _boss(boss)
 {
   const GUI::Font& font = instance().frameBuffer().font();
   initTitle(font, "Options");
@@ -131,8 +133,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   myAudioDialog    = make_unique<AudioDialog>(osystem, parent, font);
   myInputDialog    = make_unique<InputDialog>(osystem, parent, font, max_w, max_h);
   myUIDialog       = make_unique<UIDialog>(osystem, parent, font);
-  mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, font);
-  myConfigPathDialog = make_unique<ConfigPathDialog>(osystem, parent, font, boss);
+  mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, font, max_w, max_h);
+  myConfigPathDialog = make_unique<ConfigPathDialog>(osystem, parent, font, boss, max_w, max_h);
   myRomAuditDialog = make_unique<RomAuditDialog>(osystem, parent, font, max_w, max_h);
   myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, font, this);
 #ifdef CHEATCODE_SUPPORT
@@ -190,6 +192,15 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case kVidCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      if(myMode != launcher)
+      {
+        uInt32 w = 0, h = 0;
+
+        getResizableBounds(w, h);
+        myVideoDialog = make_unique<VideoDialog>(instance(), parent(), instance().frameBuffer().font(), w, h);
+      }
       myVideoDialog->open();
       break;
 
@@ -206,10 +217,29 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kSnapCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      if(myMode != launcher)
+      {
+        uInt32 w = 0, h = 0;
+
+        getResizableBounds(w, h);
+        mySnapshotDialog = make_unique<SnapshotDialog>(instance(), parent(), instance().frameBuffer().font(), w, h);
+      }
       mySnapshotDialog->open();
       break;
 
     case kCfgPathsCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      if(myMode != launcher)
+      {
+        uInt32 w = 0, h = 0;
+
+        getResizableBounds(w, h);
+        myConfigPathDialog = make_unique<ConfigPathDialog>(instance(), parent(),
+                                                         instance().frameBuffer().font(), _boss, w, h);
+      }
       myConfigPathDialog->open();
       break;
 

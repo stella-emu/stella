@@ -28,7 +28,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ConfigPathDialog::ConfigPathDialog(
       OSystem& osystem, DialogContainer& parent,
-      const GUI::Font& font, GuiObject* boss)
+      const GUI::Font& font, GuiObject* boss, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Configure paths"),
     CommandSender(boss),
     myFont(font),
@@ -48,7 +48,7 @@ ConfigPathDialog::ConfigPathDialog(
   ButtonWidget* b;
 
   // Set real dimensions
-  _w = 64 * fontWidth + HBORDER*2;
+  _w = std::min(64 * fontWidth + HBORDER*2, max_w);
   _h = 9 * (lineHeight + V_GAP) + VBORDER;
 
   xpos = HBORDER;  ypos = VBORDER;
