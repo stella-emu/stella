@@ -47,10 +47,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myInitializedCount(0),
     myPausedCount(0),
     myStatsEnabled(false),
-    myLastFrameRate(60),
-    myCurrentModeList(nullptr),
-    myTotalTime(0),
-    myTotalFrames(0)
+    myCurrentModeList(nullptr)
 {
 }
 
@@ -290,8 +287,7 @@ Int64 FrameBuffer::update()
       // Show frame statistics
       if(myStatsMsg.enabled)
         drawFrameStats();
-      else
-        myLastFrameRate = myOSystem.console().getFramerate();
+
       myLastScanlines = myOSystem.console().tia().scanlinesLastFrame();
       myPausedCount = 0;
       break;  // EventHandlerState::EMULATION
@@ -404,30 +400,7 @@ void FrameBuffer::drawFrameStats()
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
   xPos += font().getStringWidth(msg);
 
-  // draw framerate
-  float frameRate;
-  /*if(myOSystem.settings().getInt("framerate") == 0)
-  {
-    // if 'Auto' is selected, draw the calculated framerate
-    frameRate = myOSystem.console().getFramerate();
-  }
-  else*/
-  {
-    // if 'Auto' is not selected, draw the effective framerate
-    const TimingInfo& ti = myOSystem.timingInfo();
-    if(ti.totalFrames - myTotalFrames >= myLastFrameRate)
-    {
-      frameRate = 1000000.0 * (ti.totalFrames - myTotalFrames) / (ti.totalTime - myTotalTime);
-      if(frameRate > myOSystem.console().getFramerate() + 1)
-        frameRate = 1;
-      myTotalFrames = ti.totalFrames;
-      myTotalTime = ti.totalTime;
-    }
-    else
-      frameRate = myLastFrameRate;
-  }
-  myLastFrameRate = frameRate;
-  std::snprintf(msg, 30, " @ %5.2ffps", frameRate);
+  std::snprintf(msg, 30, " @ %5.2ffps", myOSystem.console().getFramerate());
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 

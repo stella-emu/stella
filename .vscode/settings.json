@@ -41,6 +41,7 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "stdexcept": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "__locale": "cpp"
     }
 }

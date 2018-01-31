@@ -237,6 +237,8 @@ class TIA : public Device
     */
     void enableAutoFrame(bool enabled) { myAutoFrameEnabled = enabled; }
 
+    float frameRate() const { return myFrameManager ? myFrameManager->frameRate() : 0; }
+
     /**
       Enables/disables color-loss for PAL modes only.
 

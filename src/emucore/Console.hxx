@@ -272,7 +272,7 @@ class Console : public Serializable
       Returns the framerate based on a number of factors
       (whether 'framerate' is set, what display format is in use, etc)
     */
-    float getFramerate() const { return myFramerate; }
+    float getFramerate() const;
 
     /**
       Toggles the TIA bit specified in the method name.

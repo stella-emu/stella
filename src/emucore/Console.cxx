@@ -988,6 +988,12 @@ void Console::setFramerate(float framerate)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float Console::getFramerate() const
+{
+  return myTIA->frameRate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleTIABit(TIABit bit, const string& bitname, bool show) const
 {
   bool result = myTIA->toggleBit(bit);

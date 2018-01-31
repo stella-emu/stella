@@ -35,6 +35,8 @@
   #include "CheatManager.hxx"
 #endif
 
+#include <chrono>
+
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "Cart.hxx"
@@ -57,6 +59,8 @@
 #include "Version.hxx"
 
 #include "OSystem.hxx"
+
+using namespace std::chrono;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
@@ -615,51 +619,35 @@ uInt64 OSystem::getTicks() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::mainLoop()
 {
-  if(mySettings->getString("timing") == "sleep")
-  {
-    // Sleep-based wait: good for CPU, bad for graphical sync
-    for(;;)
-    {
-      myTimingInfo.start = getTicks();
-      myEventHandler->poll(myTimingInfo.start);
-      if(myQuitLoop) break;  // Exit if the user wants to quit
-      myFrameBuffer->update();
-      myTimingInfo.current = getTicks();
-      myTimingInfo.virt += myTimePerFrame;
+  // Sleep-based wait: good for CPU, bad for graphical sync
+  bool busyWait = mySettings->getString("timing") != "sleep";
+  time_point<high_resolution_clock> virtualTime = high_resolution_clock::now();
 
-      // Timestamps may periodically go out of sync, particularly on systems
-      // that can have 'negative time' (ie, when the time seems to go backwards)
-      // This normally results in having a very large delay time, so we check
-      // for that and reset the timers when appropriate
-      if((myTimingInfo.virt - myTimingInfo.current) > (myTimePerFrame << 1))
-      {
-        myTimingInfo.current = myTimingInfo.virt = getTicks();
+  for(;;)
+  {
+    myEventHandler->poll(myTimingInfo.start);
+    if(myQuitLoop) break;  // Exit if the user wants to quit
+
+    Int64 cycles = myFrameBuffer->update();
+    duration<double> timeslice (
+      (cycles >= 0) ?
+      static_cast<double>(cycles) / static_cast<double>(76 * ((myConsole->timing() == ConsoleTiming::ntsc) ? (262 * 60) : (312 * 50))) :
+      1. / 30.
+     );
+
+    virtualTime += duration_cast<high_resolution_clock::duration>(timeslice);
+    time_point<high_resolution_clock> now = high_resolution_clock::now();
+
+    if (duration_cast<duration<double>>(now - virtualTime).count() > 0.5)
+      virtualTime = now;
+    else if (virtualTime > now) {
+      if (busyWait && cycles >= 0) {
+        while (high_resolution_clock::now() < virtualTime);
       }
-
-      if(myTimingInfo.current < myTimingInfo.virt)
-        SDL_Delay(uInt32(myTimingInfo.virt - myTimingInfo.current) / 1000);
-
-      myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
-      myTimingInfo.totalFrames++;
+      else std::this_thread::sleep_until(virtualTime);
     }
-  }
-  else
-  {
-    // Busy-wait: bad for CPU, good for graphical sync
-    for(;;)
-    {
-      myTimingInfo.start = getTicks();
-      myEventHandler->poll(myTimingInfo.start);
-      if(myQuitLoop) break;  // Exit if the user wants to quit
-      myFrameBuffer->update();
-      myTimingInfo.virt += myTimePerFrame;
 
-      while(getTicks() < myTimingInfo.virt)
-        ;  // busy-wait
-
-      myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
-      myTimingInfo.totalFrames++;
-    }
+    myTimingInfo.totalFrames++;
   }
 
   // Cleanup time
