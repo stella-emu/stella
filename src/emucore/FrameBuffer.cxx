@@ -383,16 +383,24 @@ void FrameBuffer::drawFrameStats()
   char msg[30];
   uInt32 color;
   const int XPOS = 0, YPOS = 0;
+  int xPos = XPOS;
 
   myStatsMsg.surface->invalidate();
 
-  // draw shadowed text
+  myStatsMsg.surface->invalidate();
   string bsinfo = info.BankSwitch +
     (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "");
+  // draw shadowed text
   color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ? kDbgColorRed : myStatsMsg.color;
   std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
-  myStatsMsg.surface->drawString(font(), msg, XPOS, YPOS,
+  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
+  xPos += font().getStringWidth(msg);
+
+  std::snprintf(msg, 30, " => %s", info.DisplayFormat.c_str());
+  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
+                                 myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+  xPos += font().getStringWidth(msg);
 
   // draw the effective framerate
   float frameRate;
@@ -408,17 +416,12 @@ void FrameBuffer::drawFrameStats()
   }
   else
     frameRate = myLastFrameRate;
-
   myLastFrameRate = frameRate;
-  std::snprintf(msg, 30, "@%6.2ffps", frameRate);
-  myStatsMsg.surface->drawString(font(), msg, XPOS + font().getStringWidth("262 "), YPOS,
+  std::snprintf(msg, 30, " @%6.2ffps", frameRate);
+  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   // draw bankswitching type
-  std::snprintf(msg, 30, "=> %s", info.DisplayFormat.c_str());
-  myStatsMsg.surface->drawString(font(), msg, XPOS + font().getStringWidth("262 @ 60.00fps "), YPOS,
-                                 myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
-
   myStatsMsg.surface->drawString(font(), bsinfo, XPOS, YPOS + font().getFontHeight(),
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
