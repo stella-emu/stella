@@ -185,7 +185,7 @@ int TimeLineWidget::posToValue(int pos)
   // it is closest to
   for(uInt32 i = 0; i < _stepValue.size() - 1; ++i)
     if(pos >= _stepValue[i] && pos <= _stepValue[i+1])
-      return (_stepValue[i+1] - pos) < (_stepValue[i] - pos) ? i+1 : i;
+      return (_stepValue[i+1] - pos) < (pos - _stepValue[i]) ? i+1 : i;
 
   return _valueMax;
 }
