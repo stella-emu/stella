@@ -94,6 +94,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   SliderWidget* s = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
                                      "TIA zoom", lwidth, 0, fontWidth * 4, "%");
   s->setMinValue(200); s->setMaxValue(500);
+  s->setTickmarkInterval(3); // just for testing now; TODO: remove or redefine
   wid.push_back(s);
   ypos += lineHeight + VGAP;
 

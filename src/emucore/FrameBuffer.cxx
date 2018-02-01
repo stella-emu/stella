@@ -1008,11 +1008,11 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     kScrollColor      Normal scrollbar color
     kScrollColorHi    Highlighted scrollbar color
     *** Slider colors ***
-    kSliderColor,
-    kSliderColorHi
-    kSliderBGColor
-    kSliderBGColorHi
-    kSliderBGColorLo,
+    kSliderColor          Enabled slider
+    kSliderColorHi        Focussed slider
+    kSliderBGColor        Enabled slider background
+    kSliderBGColorHi      Focussed slider background
+    kSliderBGColorLo      Disabled slider background
     *** Debugger colors ***
     kDbgChangedColor      Background color for changed cells
     kDbgChangedTextColor  Text color for changed cells
@@ -1055,7 +1055,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xe1e1e1, 0xe5f1fb, 0x808080, 0x0078d7, 0x000000, 0x000000, // buttons
     0x333333,                                                   // checkbox
     0xc0c0c0, 0x808080,                                         // scrollbar
-    0x333333, 0x0078d7, 0xc0c0c0, 0x808080, 0xe1e1e1,           // slider
+    0x333333, 0x0078d7, 0xc0c0c0, 0xffffff, 0xc0c0c0,           // slider 0xBDDEF9| 0xe1e1e1 | 0xffffff
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
     0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other
   }

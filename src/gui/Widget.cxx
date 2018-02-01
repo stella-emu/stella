@@ -638,7 +638,8 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _valueLabelGap(valueLabelGap),
     _valueLabelWidth(valueLabelWidth),
     _valueLabel(""),
-    _valueUnit(valueUnit)
+    _valueUnit(valueUnit),
+    _numIntervals(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;
   _bgcolor = kDlgColor;
@@ -718,6 +719,13 @@ void SliderWidget::setValueLabel(int value)
 void SliderWidget::setValueUnit(const string& valueUnit)
 {
   _valueUnit = valueUnit;
+  setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::setTickmarkInterval(int numIntervals)
+{
+  _numIntervals = numIntervals;
   setDirty();
 }
 
@@ -816,6 +824,30 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the 'bar'
   s.fillRect(x, y, p, h,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
+
+  // Draw the 'tickmarks'
+  for(int i = 1; i < _numIntervals; ++i)
+  {
+    int xt = x + (_w - _labelWidth - _valueLabelGap - _valueLabelWidth) * i / _numIntervals - 1;
+    uInt32 color;
+
+    if(isEnabled())
+    {
+      if(xt > x + p)
+        color = hilite ? kSliderColorHi : kSliderColor;
+      else
+        color = hilite ? kSliderBGColorHi : kSliderBGColor;
+    }
+    else
+    {
+      if(xt > x + p)
+        color = kColor;
+      else
+        color = kSliderBGColorLo;
+    }
+    s.vLine(xt, y + h / 2, y + h - 1, color);
+  }
+
   // Draw the 'handle'
   s.fillRect(x + p, y - 2, 2, h + 4,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);

@@ -205,6 +205,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
                                          myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
                                          "Recovery ", 0, kTVJitterChanged);
   myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
+  myTVJitterRecWidget->setTickmarkInterval(5);
   wid.push_back(myTVJitterRecWidget);
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
                                                   myTVJitterRecWidget->getRight() + 4,
