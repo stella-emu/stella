@@ -46,7 +46,6 @@ class TimeLineWidget : public ButtonWidget
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseWheel(int x, int y, int direction) override;
-    bool handleEvent(Event::Type event) override;
 
     void drawWidget(bool hilite) override;
 
@@ -54,7 +53,7 @@ class TimeLineWidget : public ButtonWidget
     int posToValue(int pos);
 
   protected:
-    int  _value, _stepValue__;
+    int  _value;
     int  _valueMin, _valueMax;
     bool _isDragging;
     int  _labelWidth;
