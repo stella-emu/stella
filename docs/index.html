@@ -1622,32 +1622,38 @@
     </tr>
 
     <tr>
-      <td>Rewind by one state (pauses emulation)</td>
+      <td>Enter/Exit the <a href="#TimeMachine"><b>Time Machine</b></a> dialog</td>
+      <td>t/Escape</td>
+      <td>t/Escape</td>
+    </tr>
+
+    <tr>
+      <td>Rewind by one state (enters the <a href="#TimeMachine"><b>Time Machine</b></a> dialog)</td>
       <td>Alt + Left arrow</td>
       <td>Cmd + Left arrow</td>
     </tr>
     <tr>
-      <td>Rewind by 10 states (pauses emulation)</td>
+      <td>Rewind by 10 states (enters the <a href="#TimeMachine"><b>Time Machine</b></a> dialog)</td>
       <td>Shift-Alt + Left arrow</td>
       <td>Shift-Cmd + Left arrow</td>
     </tr>
     <tr>
-      <td>Rewind all states (pauses emulation)</td>
+      <td>Rewind all states (enters the <a href="#TimeMachine"><b>Time Machine</b></a> dialog)</td>
       <td>Alt + Down arrow</td>
       <td>Cmd + Down arrow</td>
     </tr>
     <tr>
-      <td>Unwind by one state (pauses emulation)</td>
+      <td>Unwind by one state (enters the <a href="#TimeMachine"><b>Time Machine</b></a> dialog)</td>
       <td>Alt + Right arrow</td>
       <td>Cmd + Right arrow</td>
     </tr>
     <tr>
-      <td>Unwind by 10 states (pauses emulation)</td>
+      <td>Unwind by 10 states (enters the <a href="#TimeMachine"><b>Time Machine</b></a> dialog)</td>
       <td>Shift-Alt + Right arrow</td>
       <td>Shift-Cmd + Right arrow</td>
     </tr>
     <tr>
-      <td>Unwind all states (pauses emulation)</td>
+      <td>Unwind all states (enters the <a href="#TimeMachine"><b>Time Machine</b></a> dialog)</td>
       <td>Alt + Up arrow</td>
       <td>Cmd + Up arrow</td>
     </tr>
@@ -1794,36 +1800,42 @@
   <a name="TimeMachine">Stella's 'Time Machine'</a></h2>
 
   <p>A special feature of Stella is the 'Time Machine' mode. In this mode, Stella
-  automatically creates savestates in regular, user-defined intervals. You can then
-  interrupt the current emulation and navigate back and forth within the timeline.
+  automatically creates savestates in regular, user-defined intervals. At any time,
+  the user can interrupt the current emulation and navigate back and forth
+  within the saved timeline.
   This can be done either by using the Time Machine hotkeys described in
   <a href="#Hotkeys"><b>Hotkeys</b> - Other Keys</a> or by using the Time Machine
-  dialog. To enter this dialog, either use one of the hotkeys or press 'T'.</p>
+  dialog. This dialog is automatically entered when using one of the Time Machine
+  hotkeys. The hotkeys continue to function within the dialog.</p>
 
   <p><b>Time Machine</b> dialog:</p>
-  <table border="5" cellpadding="2" frame="box" rules="none">
-    <tr>
-      <td>TODO: Screenshot</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td valign="top">
-        <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>Description</th></tr>
-          <tr><td>Button</td><td>TODO</td></tr>
-          <tr><td>Button</td><td></td></tr>
-          <tr><td>Button</td><td></td></tr>
-          <tr><td>Button</td><td></td></tr>
-          <tr><td>Button</td><td></td></tr>
-          <tr><td>Button</td><td></td></tr>
-          <tr><td>Button</td><td></td></tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+  <td><img src="graphics/timemachine.png"></td>
+
+  <p>The dialog items are explained in the following two tables.</p>
+
+  <p><b>Top row (left to right)</b></p>
+	<table border="1" cellpadding="4">
+	  <tr><th>Item</th><th>Description</th></tr>
+	  <tr><td>Current state</td><td>Shows the currently loaded state</td></tr>
+	  <tr><td>'Time Line' slider</td><td>Shows the position of the current state in the recorded timeline. You can drag the slider with the mouse to select a state.</td></tr>
+	  <tr><td>Total states</td><td>Shows the total number of save states in the Time Machine</td></tr>
+	</table>
+  <p><b>Bottom row (left to right)</b></p>
+	<table border="1" cellpadding="4">
+	  <tr><th>Item</th><th>Description</th></tr>
+	  <tr><td>Current time</td><td>Shows the time of the currently selected status, relative to the first one</td></tr>
+	  <tr><td>'Rewind All' button</td><td>Navigates back to the begin of the timeline</td></tr>
+	  <tr><td>'Rewind One' button</td><td>Navigates back by one state</td></tr>
+	  <tr><td>'Continue' button</td><td>Exits the dialog and continues emulation.</td></tr>
+	  <tr><td>Navigation info</td><td>Informs about the interval of the user's last Time Machine navigation. The interval can vary if the timeline is compressed.</td></tr>
+	  <tr><td>'Unwind One' button</td><td>Navigates forward by one state</td></tr>
+	  <tr><td>'Unwind All' button</td><td>Navigates forward to the end of the timeline</td></tr>
+	  <tr><td>Total time</td><td>Shows the total time covered by the save states (aka 'Horizon')</td></tr>
+	</table>
   <br>
 
-
   <p>The 'Time Machine' mode can be configured by the user. For details see
-  <a href="#Debugger"><b>Developer Options</b> - Time Machine dialog</a></h2>.</p>
+  <a href="#Debugger"><b>Developer Options</b> - Time Machine</a></h2> tab.</p>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
   <br><br>

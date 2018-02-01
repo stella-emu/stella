@@ -75,23 +75,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
     0b0110000110000110,
     0
   };
-  static uInt32 REWIND_10[BUTTON_H] =
-  {
-    0,
-    0b0000010000100110,
-    0b0000110001100110,
-    0b0001110011100110,
-    0b0011110111100110,
-    0b0111111111100110,
-    0b1111111111100110,
-    0b1111111111100110,
-    0b0111111111100110,
-    0b0011110111100110,
-    0b0001110011100110,
-    0b0000110001100110,
-    0b0000010000100110,
-    0
-  };
   static uInt32 REWIND_1[BUTTON_H] =
   {
     0,
@@ -124,23 +107,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
     0b0011100011110000,
     0b0011100011100000,
     0b0011100011000000,
-    0
-  };
-  static uInt32 UNWIND_10[BUTTON_H] =
-  {
-    0,
-    0b0110010000100000,
-    0b0110011000110000,
-    0b0110011100111000,
-    0b0110011110111100,
-    0b0110011111111110,
-    0b0110011111111111,
-    0b0110011111111111,
-    0b0110011111111110,
-    0b0110011110111100,
-    0b0110011100111000,
-    0b0110011000110000,
-    0b0110010000100000,
     0
   };
   static uInt32 UNWIND_ALL[BUTTON_H] =
@@ -208,10 +174,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                        BUTTON_W, BUTTON_H, kRewindAll);
   xpos += buttonWidth + BUTTON_GAP;
 
-  myRewind10Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_10,
-                                      BUTTON_W, BUTTON_H, kRewind10);
-  xpos += buttonWidth + BUTTON_GAP;
-
   myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_1,
                                      BUTTON_W, BUTTON_H, kRewind1);
   xpos += buttonWidth + BUTTON_GAP*2;
@@ -222,10 +184,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_1,
                                      BUTTON_W, BUTTON_H, kUnwind1);
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myUnwind10Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_10,
-                                      BUTTON_W, BUTTON_H, kUnwind10);
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_ALL,
@@ -405,9 +363,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   myLastIdxWidget->setValue(r.getLastIdx());
   // Enable/disable buttons
   myRewindAllWidget->setEnabled(!r.atFirst());
-  myRewind10Widget->setEnabled(!r.atFirst());
   myRewind1Widget->setEnabled(!r.atFirst());
   myUnwindAllWidget->setEnabled(!r.atLast());
-  myUnwind10Widget->setEnabled(!r.atLast());
   myUnwind1Widget->setEnabled(!r.atLast());
 }

@@ -61,10 +61,8 @@ class TimeMachineDialog : public Dialog
 
     ButtonWidget* myPlayWidget;
     ButtonWidget* myRewindAllWidget;
-    ButtonWidget* myRewind10Widget;
     ButtonWidget* myRewind1Widget;
     ButtonWidget* myUnwind1Widget;
-    ButtonWidget* myUnwind10Widget;
     ButtonWidget* myUnwindAllWidget;
 
     StaticTextWidget* myCurrentTimeWidget;
