@@ -91,8 +91,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("Config Paths" + ELLIPSIS, kCfgPathsCmd);
   wid.push_back(b);
 
-  myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, kAuditCmd);
-  wid.push_back(myRomAuditButton);
+  b = ADD_OD_BUTTON("Developer Settings" + ELLIPSIS, kDevelopCmd);
+  wid.push_back(b);
 
   // Move to second column
   xoffset += buttonWidth + 10;  yoffset = 10;
@@ -106,10 +106,10 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 #endif
   wid.push_back(myCheatCodeButton);
 
-  b = ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd);
-  wid.push_back(b);
+  myRomAuditButton = ADD_OD_BUTTON("Audit ROMs" + ELLIPSIS, kAuditCmd);
+  wid.push_back(myRomAuditButton);
 
-  b = ADD_OD_BUTTON("Developer Settings" + ELLIPSIS, kDevelopCmd);
+  b = ADD_OD_BUTTON("System Logs" + ELLIPSIS, kLoggerCmd);
   wid.push_back(b);
 
   b = ADD_OD_BUTTON("Help" + ELLIPSIS, kHelpCmd);
