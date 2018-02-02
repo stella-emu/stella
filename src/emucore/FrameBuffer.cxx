@@ -150,7 +150,6 @@ bool FrameBuffer::initialize()
   FBSurface::setPalette(myPalette);
 
   myGrabMouse = myOSystem.settings().getBool("grabmouse");
-  myZoomMode = myOSystem.settings().getInt("tia.zoom");
 
   // Create a TIA surface; we need it for rendering TIA images
   myTIASurface = make_unique<TIASurface>(myOSystem);
@@ -652,7 +651,7 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
 
     resetSurfaces();
     showMessage(mode.description);
-    myZoomMode = mode.zoom;
+    myOSystem.settings().setValue("tia.zoom", mode.zoom);
     return true;
   }
 #endif
@@ -811,15 +810,9 @@ const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
   if(state == EventHandlerState::DEBUGGER || state == EventHandlerState::LAUNCHER)
     myCurrentModeList->setZoom(1);
   else
-    myCurrentModeList->setZoom(myZoomMode);
+    myCurrentModeList->setZoom(myOSystem.settings().getInt("tia.zoom"));
 
   return myCurrentModeList->current();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setZoomMode(uInt32 mode)
-{
-  myZoomMode = mode;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
