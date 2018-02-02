@@ -155,7 +155,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add timeline
   const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2,
                tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
-               tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2,
+               tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2 - 1,
                tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
   myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
   myTimeline->setMinValue(0);

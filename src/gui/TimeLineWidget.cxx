@@ -86,7 +86,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
     if(steps.size() > _stepValue.capacity())
       _stepValue.reserve(2 * steps.size());
 
-    double scale = (_w - _labelWidth - 4) / double(steps.back());
+    double scale = (_w - _labelWidth - 2) / double(steps.back());
 
     // Skip the very last value; we take care of it outside the end of the loop
     for(uInt32 i = 0; i < steps.size() - 1; ++i)
@@ -95,7 +95,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
 
   // Due to integer <-> double conversion, the last value is sometimes
   // slightly less than the maximum value; we assign it manually to fix this
-  _stepValue.push_back(_w - _labelWidth - 4);
+  _stepValue.push_back(_w - _labelWidth - 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -148,13 +148,26 @@ void TimeLineWidget::drawWidget(bool hilite)
                  isEnabled() ? kTextColor : kColor, TextAlign::Right);
 
   // Draw the box
-  s.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);
+  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor);
   // Fill the box
-  s.fillRect(_x + _labelWidth + 2, _y + 2, _w - _labelWidth - 4, _h - 4,
+  s.fillRect(_x + _labelWidth + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
              !isEnabled() ? kBGColorHi : kWidColor);
   // Draw the 'bar'
-  s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
+  int vp = valueToPos(_value);
+  s.fillRect(_x + _labelWidth + 1, _y + 1, vp, _h - 2,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
+
+  // add 4 tickmarks for 5 intervals
+  int numTicks = std::min(5, int(_stepValue.size()));
+  for(int i = 1; i < numTicks; ++i)
+  {
+    int idx = (_stepValue.size() * i + numTicks / 2) / numTicks;
+    if(idx > 1)
+    {
+      int tp = valueToPos(idx - 1);
+      s.vLine(_x + _labelWidth + tp, _y + _h / 2, _y + _h - 2, tp > vp ? kSliderColor : kWidColor);
+    }
+  }
 #else
   // Draw the label, if any
   if(_labelWidth > 0)
