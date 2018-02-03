@@ -220,6 +220,18 @@ void SoundSDL2::adjustVolume(Int8 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 SoundSDL2::getFragmentSize() const
+{
+  return myHardwareSpec.size;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 SoundSDL2::getSampleRate() const
+{
+  return myHardwareSpec.freq;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::processFragment(Int16* stream, uInt32 length)
 {
   if (myUnderrun && myAudioQueue->size() > 0) {

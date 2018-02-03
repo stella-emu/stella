@@ -72,7 +72,6 @@
 
 namespace {
   constexpr uInt8 YSTART_EXTRA = 2;
-  constexpr uInt8 AUDIO_QUEUE_CAPACITY_FRAGMENTS = 30;
   constexpr uInt8 AUDIO_QUEUE_HALF_FRAMES_PER_FRAGMENT = 1;
 }
 
@@ -722,9 +721,11 @@ void Console::createAudioQueue()
       throw runtime_error("invalid console timing");
   }
 
+  uInt32 queueSize = (2 * myOSystem.sound().getFragmentSize() * sampleRate) / (myOSystem.sound().getSampleRate() * fragmentSize);
+
   myAudioQueue = make_shared<AudioQueue>(
     fragmentSize,
-    AUDIO_QUEUE_CAPACITY_FRAGMENTS,
+    queueSize > 0 ? queueSize : 1,
     myProperties.get(Cartridge_Sound) == "STEREO",
     sampleRate
   );

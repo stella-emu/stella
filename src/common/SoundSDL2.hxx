@@ -96,6 +96,10 @@ class SoundSDL2 : public Sound
     */
     void adjustVolume(Int8 direction) override;
 
+    uInt32 getFragmentSize() const override;
+
+    uInt32 getSampleRate() const override;
+
   protected:
     /**
       Invoked by the sound callback to process the next sound fragment.

@@ -67,6 +67,16 @@ class Sound
     virtual void mute(bool state) = 0;
 
     /**
+      Get the fragment size.
+    */
+    virtual uInt32 getFragmentSize() const = 0;
+
+    /**
+      Get the sample rate.
+    */
+    virtual uInt32 getSampleRate() const = 0;
+
+    /**
       Reset the sound device.
     */
     virtual void reset() = 0;

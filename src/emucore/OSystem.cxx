@@ -600,7 +600,7 @@ void OSystem::mainLoop()
     virtualTime += duration_cast<high_resolution_clock::duration>(timeslice);
     time_point<high_resolution_clock> now = high_resolution_clock::now();
 
-    if (duration_cast<duration<double>>(now - virtualTime).count() > 0.5)
+    if (duration_cast<duration<double>>(now - virtualTime).count() > 0)
       virtualTime = now;
     else if (virtualTime > now) {
       if (busyWait && cycles >= 0) {
