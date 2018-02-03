@@ -40,7 +40,7 @@ void TimeMachine::requestResize()
   if(w < FrameBuffer::kFBMinW)
     newWidth = w;
   else if(myBaseDialog->getWidth() != 0.8 * w)
-    newWidth = 0.8 * w;
+    newWidth = uInt32(0.8 * w);
 
   // Only re-create when absolutely necessary
   if(myWidth != newWidth)
