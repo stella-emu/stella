@@ -72,7 +72,7 @@
 
 namespace {
   constexpr uInt8 YSTART_EXTRA = 2;
-  constexpr uInt8 AUDIO_QUEUE_CAPACITY_FRAGMENTS = 20;
+  constexpr uInt8 AUDIO_QUEUE_CAPACITY_FRAGMENTS = 30;
   constexpr uInt8 AUDIO_QUEUE_HALF_FRAMES_PER_FRAGMENT = 1;
 }
 
@@ -84,7 +84,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myProperties(props),
     myCart(std::move(cart)),
     myDisplayFormat(""),  // Unknown TV format @ start
-    myFramerate(0.0),     // Unknown framerate @ start
     myCurrentFormat(0),   // Unknown format @ start,
     myAutodetectedYstart(0),
     myUserPaletteDefined(false),
@@ -149,7 +148,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Note that this can be overridden if a format is forced
   //   For example, if a PAL ROM is forced to be NTSC, it will use NTSC-like
   //   properties (60Hz, 262 scanlines, etc), but likely result in flicker
-  // The TIA will self-adjust the framerate if necessary
   setTIAProperties();
   if(myDisplayFormat == "NTSC")
   {
@@ -551,39 +549,14 @@ FBInitStatus Console::initializeVideo(bool full)
   }
   setPalette(myOSystem.settings().getString("palette"));
 
-  // Set the correct framerate based on the format of the ROM
-  // This can be overridden by changing the framerate in the
-  // VideoDialog box or on the commandline, but it can't be saved
-  // (ie, framerate is now determined based on number of scanlines).
-  int framerate = myOSystem.settings().getInt("framerate");
-  if(framerate > 0) myFramerate = float(framerate);
-  myOSystem.setFramerate(myFramerate);
-
-  // Make sure auto-frame calculation is only enabled when necessary
-  myTIA->enableAutoFrame(framerate <= 0);
-
   return fbstatus;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::initializeAudio()
 {
-  // Initialize the sound interface.
-  // The # of channels can be overridden in the AudioDialog box or on
-  // the commandline, but it can't be saved.
-  int framerate = myOSystem.settings().getInt("framerate");
-  if(framerate > 0) myFramerate = float(framerate);
-
   myOSystem.sound().close();
-
-  // SND_TODO Communicate channels to TIA
-  // const string& sound = myProperties.get(Cartridge_Sound);
-  // myOSystem.sound().setChannels(sound == "STEREO" ? 2 : 1);
-
   myOSystem.sound().open(myAudioQueue);
-
-  // Make sure auto-frame calculation is only enabled when necessary
-  myTIA->enableAutoFrame(framerate <= 0);
 }
 
 /* Original frying research and code by Fred Quimby.
@@ -713,16 +686,11 @@ void Console::setTIAProperties()
      myDisplayFormat == "SECAM60")
   {
     // Assume we've got ~262 scanlines (NTSC-like format)
-    myFramerate = 60.0;
-    myConsoleInfo.InitialFrameRate = "60";
     myTIA->setLayout(FrameLayout::ntsc);
   }
   else
   {
     // Assume we've got ~312 scanlines (PAL-like format)
-    myFramerate = 50.0;
-    myConsoleInfo.InitialFrameRate = "50";
-
     // PAL ROMs normally need at least 250 lines
     if (height != 0) height = std::max(height, 250u);
 
@@ -977,14 +945,6 @@ void Console::generateColorLossPalette()
       palette[i][(j<<1)+1] = (sum << 16) + (sum << 8) + sum;
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setFramerate(float framerate)
-{
-  myFramerate = framerate;
-  myOSystem.setFramerate(framerate);
-  // myOSystem.sound().setFrameRate(framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

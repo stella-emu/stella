@@ -144,7 +144,6 @@ void TIA::reset()
   myCollisionMask = 0;
   myLinesSinceChange = 0;
   myCollisionUpdateRequired = false;
-  myAutoFrameEnabled = false;
   myColorLossEnabled = myColorLossActive = false;
   myColorHBlank = 0;
   myLastCycle = 0;
@@ -190,7 +189,6 @@ void TIA::reset()
 void TIA::frameReset()
 {
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
-  myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
   enableColorLoss(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss");
 }
 
@@ -277,8 +275,6 @@ bool TIA::save(Serializer& out) const
 
     out.putDouble(myTimestamp);
 
-    out.putBool(myAutoFrameEnabled);
-
     out.putByteArray(myShadowRegisters, 64);
 
     out.putLong(myCyclesAtFrameStart);
@@ -346,8 +342,6 @@ bool TIA::load(Serializer& in)
     myColorHBlank = in.getByte();
 
     myTimestamp = in.getDouble();
-
-    myAutoFrameEnabled = in.getBool();
 
     in.getByteArray(myShadowRegisters, 64);
 
@@ -1157,10 +1151,6 @@ void TIA::onFrameComplete()
   const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
     memset(myFramebuffer + 160 * myFrameManager->getY(), 0, missingScanlines * 160);
-
-  // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
-  if(myAutoFrameEnabled)
-    myConsole.setFramerate(myFrameManager->frameRate());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

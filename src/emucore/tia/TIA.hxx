@@ -229,14 +229,6 @@ class TIA : public Device
     */
     ConsoleTiming consoleTiming() const { return myConsole.timing(); }
 
-    /**
-      Enables/disables auto-frame calculation.  If enabled, the TIA
-      re-adjusts the framerate at regular intervals.
-
-      @param enabled  Whether to enable or disable all auto-frame calculation
-    */
-    void enableAutoFrame(bool enabled) { myAutoFrameEnabled = enabled; }
-
     float frameRate() const { return myFrameManager ? myFrameManager->frameRate() : 0; }
 
     /**
@@ -759,11 +751,6 @@ class TIA : public Device
      * debugger.
      */
     uInt8 myShadowRegisters[64];
-
-    /**
-     * Automatic framerate correction based on number of scanlines.
-     */
-    bool myAutoFrameEnabled;
 
     /**
      * Indicates if color loss should be enabled or disabled.  Color loss

@@ -222,7 +222,7 @@ void SoundSDL2::adjustVolume(Int8 direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::processFragment(Int16* stream, uInt32 length)
 {
-  if (myUnderrun && myAudioQueue->size() > myFragmentBufferSize) {
+  if (myUnderrun && myAudioQueue->size() > 0) {
     myUnderrun = false;
     myCurrentFragment = myAudioQueue->dequeue(myCurrentFragment);
     myFragmentIndex = 0;

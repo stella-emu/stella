@@ -410,9 +410,7 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("framerate", f);
   if(instance().hasConsole())
   {
-    // Make sure auto-frame calculation is only enabled when necessary
-    instance().console().tia().enableAutoFrame(f <= 0);
-    instance().console().setFramerate(float(f));
+  //  instance().console().setFramerate(float(f));
   }
 
   // Fullscreen

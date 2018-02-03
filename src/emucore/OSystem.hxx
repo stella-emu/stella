@@ -44,14 +44,6 @@ class VideoDialog;
 #include "EventHandlerConstants.hxx"
 #include "bspf.hxx"
 
-struct TimingInfo {
-  uInt64 start;
-  uInt64 current;
-  uInt64 virt;
-  uInt64 totalTime;
-  uInt64 totalFrames;
-};
-
 /**
   This class provides an interface for accessing operating system specific
   functions.  It also comprises an overall parent object, to which all the
@@ -208,24 +200,9 @@ class OSystem
 #endif
 
     /**
-      Set the framerate for the video system.  It's placed in this class since
-      the mainLoop() method is defined here.
-
-      @param framerate  The video framerate to use
-    */
-    virtual void setFramerate(float framerate);
-
-    /**
       Set all config file paths for the OSystem.
     */
     void setConfigPaths();
-
-    /**
-      Get the current framerate for the video system.
-
-      @return  The video framerate currently in use
-    */
-    float frameRate() const { return myDisplayFrameRate; }
 
     /**
       Return the default full/complete directory name for storing data.
@@ -377,12 +354,6 @@ class OSystem
     */
     const string& logMessages() const { return myLogMessages; }
 
-    /**
-      Return timing information (start time of console, current
-      number of frames rendered, etc.
-    */
-    const TimingInfo& timingInfo() const { return myTimingInfo; }
-
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in
@@ -399,6 +370,8 @@ class OSystem
       @return Current time in microseconds.
     */
     virtual uInt64 getTicks() const;
+
+    float frameRate() const;
 
     /**
       This method runs the main loop.  Since different platforms
@@ -492,15 +465,6 @@ class OSystem
     // The list of log messages
     string myLogMessages;
 
-    // Number of times per second to iterate through the main loop
-    float myDisplayFrameRate;
-
-    // Time per frame for a video update, based on the current framerate
-    uInt32 myTimePerFrame;
-
-    // The time (in milliseconds) from the UNIX epoch when the application starts
-    uInt32 myMillisAtStart;
-
     // Indicates whether to stop the main loop
     bool myQuitLoop;
 
@@ -522,9 +486,6 @@ class OSystem
 
     string myFeatures;
     string myBuildInfo;
-
-    // Indicates whether the main processing loop should proceed
-    TimingInfo myTimingInfo;
 
   private:
     /**
@@ -576,12 +537,6 @@ class OSystem
       @return  Some information about this console
     */
     string getROMInfo(const Console& console);
-
-    /**
-      Initializes the timing so that the mainloop is reset to its
-      initial values.
-    */
-    void resetLoopTiming();
 
     /**
       Validate the directory name, and create it if necessary.

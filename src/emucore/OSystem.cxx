@@ -17,11 +17,6 @@
 
 #include <cassert>
 
-#include <ctime>
-#ifdef HAVE_GETTIMEOFDAY
-  #include <sys/time.h>
-#endif
-
 #include "bspf.hxx"
 
 #include "MediaFactory.hxx"
@@ -67,9 +62,6 @@ OSystem::OSystem()
   : myLauncherUsed(false),
     myQuitLoop(false)
 {
-  // Calculate startup time
-  myMillisAtStart = uInt32(time(nullptr) * 1000);
-
   // Get built-in features
   #ifdef SOUND_SUPPORT
     myFeatures += "Sound ";
@@ -238,16 +230,6 @@ void OSystem::setConfigFile(const string& file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setFramerate(float framerate)
-{
-  if(framerate > 0.0)
-  {
-    myDisplayFrameRate = framerate;
-    myTimePerFrame = uInt32(1000000.0 / myDisplayFrameRate);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus OSystem::createFrameBuffer()
 {
   // Re-initialize the framebuffer to current settings
@@ -362,9 +344,6 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
         << getROMInfo(*myConsole) << endl;
     logMessage(buf.str(), 1);
 
-    // Update the timing info for a new console run
-    resetLoopTiming();
-
     myFrameBuffer->setCursorState();
 
     // Also check if certain virtual buttons should be held down
@@ -404,8 +383,6 @@ bool OSystem::createLauncher(const string& startdir)
     myLauncher->reStack();
     myFrameBuffer->setCursorState();
 
-    setFramerate(30);
-    resetLoopTiming();
     status = true;
   }
   else
@@ -576,15 +553,6 @@ string OSystem::getROMInfo(const Console& console)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::resetLoopTiming()
-{
-  myTimingInfo.start = myTimingInfo.virt = getTicks();
-  myTimingInfo.current = 0;
-  myTimingInfo.totalTime = 0;
-  myTimingInfo.totalFrames = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::validatePath(string& path, const string& setting,
                            const string& defaultpath)
 {
@@ -601,19 +569,13 @@ void OSystem::validatePath(string& path, const string& setting,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 OSystem::getTicks() const
 {
-#ifdef HAVE_GETTIMEOFDAY
-  // Gettimeofday natively refers to the UNIX epoch (a set time in the past)
-  timeval now;
-  gettimeofday(&now, nullptr);
+  return duration_cast<duration<uInt64, std::ratio<1, 1000000> > >(system_clock::now().time_since_epoch()).count();
+}
 
-  return uInt64(now.tv_sec) * 1000000 + now.tv_usec;
-#else
-  // We use SDL_GetTicks, but add in the time when the application was
-  // initialized.  This is necessary, since SDL_GetTicks only measures how
-  // long SDL has been running, which can be the same between multiple runs
-  // of the application.
-  return uInt64(SDL_GetTicks() + myMillisAtStart) * 1000;
-#endif
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float OSystem::frameRate() const
+{
+  return myConsole ? myConsole->getFramerate() : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -625,7 +587,7 @@ void OSystem::mainLoop()
 
   for(;;)
   {
-    myEventHandler->poll(myTimingInfo.start);
+    myEventHandler->poll(getTicks());
     if(myQuitLoop) break;  // Exit if the user wants to quit
 
     Int64 cycles = myFrameBuffer->update();
@@ -646,8 +608,6 @@ void OSystem::mainLoop()
       }
       else std::this_thread::sleep_until(virtualTime);
     }
-
-    myTimingInfo.totalFrames++;
   }
 
   // Cleanup time

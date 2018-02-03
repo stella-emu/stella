@@ -50,7 +50,6 @@ struct ConsoleInfo
   string Control0;
   string Control1;
   string DisplayFormat;
-  string InitialFrameRate;
 };
 
 /**
@@ -263,14 +262,7 @@ class Console : public Serializable
     void changeHeight(int direction);
 
     /**
-      Sets the framerate of the console, which in turn communicates
-      this to all applicable subsystems.
-    */
-    void setFramerate(float framerate);
-
-    /**
-      Returns the framerate based on a number of factors
-      (whether 'framerate' is set, what display format is in use, etc)
+      Returns the current framerate.
     */
     float getFramerate() const;
 
@@ -405,9 +397,6 @@ class Console : public Serializable
     // The currently defined display format (NTSC/PAL/SECAM)
     string myDisplayFormat;
 
-    // The currently defined display framerate
-    float myFramerate;
-
     // Display format currently in use
     uInt32 myCurrentFormat;
 
@@ -423,6 +412,8 @@ class Console : public Serializable
 
     // Contains timing information for this console
     ConsoleTiming myConsoleTiming;
+
+    uInt32 myFramerate;
 
     // Table of RGB values for NTSC, PAL and SECAM
     static uInt32 ourNTSCPalette[256];
