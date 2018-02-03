@@ -1,4 +1,4 @@
-5.0.2 to 5.1: (January xx, 2018)
+5.0.2 to 5.1: (February 4, 2018)
 
   * Thumbulator support is not conditional any more.
 

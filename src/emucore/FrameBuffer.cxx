@@ -390,7 +390,8 @@ void FrameBuffer::drawFrameStats()
   string bsinfo = info.BankSwitch +
     (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "");
   // draw shadowed text
-  color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ? kDbgColorRed : myStatsMsg.color;
+  color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ?
+      uInt32(kDbgColorRed) : myStatsMsg.color;
   std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);

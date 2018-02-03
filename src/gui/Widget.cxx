@@ -656,8 +656,8 @@ void CheckboxWidget::drawWidget(bool hilite)
   if(_drawBox)
     s.box(_x, _y + _boxY, 14, 14, kColor, kShadowColor);
   // Do we draw a square or cross?
-  s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, _changed ? kDbgChangedColor
-             : isEnabled() ? _bgcolor : kColor);
+  s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, _changed ? uInt32(kDbgChangedColor)
+             : isEnabled() ? _bgcolor : uInt32(kColor));
   if(_state)
     s.drawBitmap(_img, _x + 3, _y + _boxY + 3, isEnabled() ? kCheckColor : kShadowColor);
 #else
