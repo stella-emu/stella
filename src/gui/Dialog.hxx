@@ -72,16 +72,23 @@ class Dialog : public GuiObject
     /** Returns the base surface associated with this dialog. */
     FBSurface& surface() const { return *_surface; }
 
-    /** Adds a surface to this dialog, which is rendered on top of the
-        base surface whenever the base surface is re-rendered.  Since
-        the surface render() call will always occur in such a case, the
-        surface should call setVisible() to enable/disable its output.
+    /**
+      Adds a surface to this dialog, which is rendered on top of the
+      base surface whenever the base surface is re-rendered.  Since
+      the surface render() call will always occur in such a case, the
+      surface should call setVisible() to enable/disable its output.
     */
     void addSurface(shared_ptr<FBSurface> surface);
 
     void setFlags(int flags) { _flags |= flags;  setDirty(); }
     void clearFlags(int flags) { _flags &= ~flags; setDirty(); }
     int  getFlags() const { return _flags; }
+
+    /**
+      Determine the maximum bounds based on the given width and height.
+      Returns whether or not a large font can be used within these bounds.
+    */
+    bool getResizableBounds(uInt32& w, uInt32& h) const;
 
   protected:
     virtual void draw() override { }
@@ -109,11 +116,6 @@ class Dialog : public GuiObject
                            bool focusOKButton = true);
 
     void processCancelWithoutWidget(bool state) { _processCancel = state; }
-
-    /** Determine the maximum bounds based on the given width and height
-        Returns whether or not a large font can be used within these bounds.
-    */
-    bool getResizableBounds(uInt32& w, uInt32& h) const;
 
   private:
     void buildCurrentFocusList(int tabID = -1);

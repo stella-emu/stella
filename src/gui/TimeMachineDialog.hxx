@@ -28,7 +28,7 @@ class TimeLineWidget;
 class TimeMachineDialog : public Dialog
 {
   public:
-    TimeMachineDialog(OSystem& osystem, DialogContainer& parent, int max_w, int max_h);
+    TimeMachineDialog(OSystem& osystem, DialogContainer& parent, int width);
     virtual ~TimeMachineDialog() = default;
 
   private:

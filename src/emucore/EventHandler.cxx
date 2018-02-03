@@ -2181,6 +2181,7 @@ void EventHandler::setEventState(EventHandlerState state)
       break;
 
     case EventHandlerState::TIMEMACHINE:
+      myOSystem.timeMachine().requestResize();
       myOverlay = &myOSystem.timeMachine();
       enableTextEvents(true);
       break;

@@ -134,6 +134,14 @@ class DialogContainer
     */
     const Dialog* baseDialog() const { return myBaseDialog; }
 
+    /**
+      Inform the container that it should resize according to the current
+      screen dimensions.  We make this virtual, since the container may or
+      may not choose to do a resize, and even if it does, *how* it does it
+      is determined by the specific container.
+    */
+    virtual void requestResize() { }
+
   private:
     void reset();
 

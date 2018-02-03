@@ -27,6 +27,8 @@
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"
+#include "Settings.hxx"
+#include "Console.hxx"
 #include "Vec.hxx"
 
 /*
@@ -728,16 +730,25 @@ Widget* Dialog::TabFocus::getNewFocus()
 bool Dialog::getResizableBounds(uInt32& w, uInt32& h) const
 {
   const GUI::Rect& r = instance().frameBuffer().imageRect();
+
+  double scaleFactor = 0.8;
+  if(instance().hasConsole())
+  {
+    bool ntsc = instance().console().about().InitialFrameRate == "60";
+    uInt32 aspect = instance().settings().getInt(ntsc ?"tia.aspectn" : "tia.aspectp");
+    scaleFactor = aspect / 100.0;
+  }
+
   if(r.width() <= FrameBuffer::kFBMinW || r.height() <= FrameBuffer::kFBMinH)
   {
-    w = uInt32(0.8 * FrameBuffer::kTIAMinW) * 2;
+    w = uInt32(scaleFactor * FrameBuffer::kTIAMinW) * 2;
     h = FrameBuffer::kTIAMinH * 2;
     return false;
   }
   else
   {
-    w = std::max(uInt32(0.8 * r.width()), uInt32(FrameBuffer::kFBMinW));
-    h = std::max(uInt32(0.8 * r.height()), uInt32(FrameBuffer::kFBMinH));
+    w = std::max(uInt32(scaleFactor * r.width()), uInt32(FrameBuffer::kFBMinW));
+    h = std::max(uInt32(scaleFactor * r.height()), uInt32(FrameBuffer::kFBMinH));
     return true;
   }
 }

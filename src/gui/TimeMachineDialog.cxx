@@ -36,7 +36,7 @@ using Common::Base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
-                                     int max_w, int max_h)
+                                     int width)
   : Dialog(osystem, parent)
 {
   const int BUTTON_W = 16, BUTTON_H = 14;
@@ -136,7 +136,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos;
 
   // Set real dimensions
-  _w = 20 * (buttonWidth + BUTTON_GAP) + 20;
+  _w = width;  // Parent determines our width (based on window size)
   _h = V_BORDER * 2 + rowHeight + buttonHeight + 2;
 
   this->clearFlags(WIDGET_CLEARBG); // does only work combined with blending (0..100)!

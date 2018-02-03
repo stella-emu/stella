@@ -33,6 +33,15 @@ class TimeMachine : public DialogContainer
     TimeMachine(OSystem& osystem);
     virtual ~TimeMachine() = default;
 
+    /**
+      This dialog has an adjustable size.  We need to make sure the
+      dialog can fit within the given bounds.
+    */
+    void requestResize() override;
+
+  private:
+    int myWidth;
+
   private:
     // Following constructors and assignment operators not supported
     TimeMachine() = delete;
