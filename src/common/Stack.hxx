@@ -49,6 +49,15 @@ class FixedStack
     T pop() { return std::move(_stack[--_size]); }
     uInt32 size() const { return _size; }
 
+    void replace(const T& oldItem, const T& newItem) {
+      for(uInt32 i = 0; i < _size; ++i) {
+        if(_stack[i] == oldItem) {
+          _stack[i] = newItem;
+          return;
+        }
+      }
+    }
+
     // Apply the given function to every item in the stack
     // We do it this way so the stack API can be preserved,
     // and no access to individual elements is allowed outside

@@ -22,8 +22,37 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachine::TimeMachine(OSystem& osystem)
-  : DialogContainer(osystem)
+  : DialogContainer(osystem),
+    myWidth(FrameBuffer::kFBMinW)
 {
-  myBaseDialog = new TimeMachineDialog(myOSystem, *this,
-      FrameBuffer::kFBMinW, FrameBuffer::kFBMinH);
+  myBaseDialog = new TimeMachineDialog(myOSystem, *this, myWidth);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeMachine::requestResize()
+{
+  uInt32 w, h;
+  myBaseDialog->getResizableBounds(w, h);
+
+  // If dialog is too large for given area, we need to resize it
+  // Otherwise, make it 80% of the allowable width
+  int newWidth = myWidth;
+  if(w < FrameBuffer::kFBMinW)
+    newWidth = w;
+  else if(myBaseDialog->getWidth() != 0.8 * w)
+    newWidth = uInt32(0.8 * w);
+
+  // Only re-create when absolutely necessary
+  if(myWidth != newWidth)
+  {
+    myWidth = newWidth;
+    Dialog* oldPtr = myBaseDialog;
+    delete myBaseDialog;
+    myBaseDialog = new TimeMachineDialog(myOSystem, *this, myWidth);
+    Dialog* newPtr = myBaseDialog;
+
+    // Update the container stack; it may contain a reference to the old pointer
+    if(oldPtr != newPtr)
+      myDialogStack.replace(oldPtr, newPtr);
+  }
 }

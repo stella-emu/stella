@@ -301,19 +301,19 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
       {
         case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
           enterTimeMachineMenuMode((StellaModTest::isShift(mod) && state) ? 10 : 1, false);
-          break;
+          return;
 
         case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
           enterTimeMachineMenuMode((StellaModTest::isShift(mod) && state) ? 10 : 1, true);
-          break;
+          return;
 
         case KBDK_DOWN:  // Alt-down rewinds to start of list
           enterTimeMachineMenuMode(1000, false);
-          break;
+          return;
 
         case KBDK_UP:  // Alt-up rewinds to end of list
           enterTimeMachineMenuMode(1000, true);
-          break;
+          return;
 
         // These can work in pause mode too
         case KBDK_EQUALS:
@@ -2151,6 +2151,8 @@ void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
   // add one extra state if we are in Time Machine mode
   // TODO: maybe remove this state if we leave the menu at this new state
   myOSystem.state().addExtraState("enter Time Machine dialog"); // force new state
+  if(numWinds)
+    myOSystem.state().windStates(numWinds, unwind);
 
   if(numWinds)
     myOSystem.state().windStates(numWinds, unwind);
@@ -2197,6 +2199,7 @@ void EventHandler::setEventState(EventHandlerState state)
       break;
 
     case EventHandlerState::TIMEMACHINE:
+      myOSystem.timeMachine().requestResize();
       myOverlay = &myOSystem.timeMachine();
       enableTextEvents(true);
       break;

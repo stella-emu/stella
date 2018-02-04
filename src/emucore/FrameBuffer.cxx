@@ -150,7 +150,6 @@ bool FrameBuffer::initialize()
   FBSurface::setPalette(myPalette);
 
   myGrabMouse = myOSystem.settings().getBool("grabmouse");
-  myZoomMode = myOSystem.settings().getInt("tia.zoom");
 
   // Create a TIA surface; we need it for rendering TIA images
   myTIASurface = make_unique<TIASurface>(myOSystem);
@@ -238,7 +237,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   {
     myStatsMsg.surface = allocateSurface(myStatsMsg.w, myStatsMsg.h);
     myStatsMsg.surface->attributes().blending = true;
-    //myStatsMsg.surface->attributes().blendalpha = 80;
+    myStatsMsg.surface->attributes().blendalpha = 92; //aligned with TimeMachineDialog
     myStatsMsg.surface->applyAttributes();
   }
 
@@ -387,9 +386,10 @@ void FrameBuffer::drawFrameStats()
 
   myStatsMsg.surface->invalidate();
   string bsinfo = info.BankSwitch +
-    (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "| Player");
+    (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "");
   // draw shadowed text
-  color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ? kDbgColorRed : myStatsMsg.color;
+  color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ?
+      uInt32(kDbgColorRed) : myStatsMsg.color;
   std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
@@ -404,8 +404,11 @@ void FrameBuffer::drawFrameStats()
   float frameRate;
   /*if(myOSystem.settings().getInt("framerate") == 0)
   {
-    // if 'Auto' is selected, draw the calculated framerate
-    frameRate = myOSystem.console().getFramerate();
+    frameRate = 1000000.0 * (ti.totalFrames - myTotalFrames) / (ti.totalTime - myTotalTime);
+    if(frameRate > myOSystem.console().getFramerate() + 1)
+      frameRate = 1; // check soon again
+    myTotalFrames = ti.totalFrames;
+    myTotalTime = ti.totalTime;
   }
   else*/
   {
@@ -427,13 +430,13 @@ void FrameBuffer::drawFrameStats()
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
+  // draw bankswitching type
   myStatsMsg.surface->drawString(font(), bsinfo, XPOS, YPOS + font().getFontHeight(),
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   myStatsMsg.surface->setDirty();
-  myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
+  myStatsMsg.surface->setDstPos(myImageRect.x() + 10, myImageRect.y() + 8);
   myStatsMsg.surface->render();
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -654,7 +657,7 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
 
     resetSurfaces();
     showMessage(mode.description);
-    myZoomMode = mode.zoom;
+    myOSystem.settings().setValue("tia.zoom", mode.zoom);
     return true;
   }
 #endif
@@ -813,15 +816,9 @@ const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
   if(state == EventHandlerState::DEBUGGER || state == EventHandlerState::LAUNCHER)
     myCurrentModeList->setZoom(1);
   else
-    myCurrentModeList->setZoom(myZoomMode);
+    myCurrentModeList->setZoom(myOSystem.settings().getInt("tia.zoom"));
 
   return myCurrentModeList->current();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setZoomMode(uInt32 mode)
-{
-  myZoomMode = mode;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

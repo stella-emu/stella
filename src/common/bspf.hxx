@@ -76,6 +76,7 @@ using std::memcpy;
 
 // Common array types
 using IntArray = std::vector<Int32>;
+using uIntArray = std::vector<uInt32>;
 using BoolArray = std::vector<bool>;
 using ByteArray = std::vector<uInt8>;
 using ShortArray = std::vector<uInt16>;

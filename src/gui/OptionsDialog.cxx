@@ -99,7 +99,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd);
   wid.push_back(b);
 
-
   // Move to second column
   xoffset += buttonWidth + 10;  yoffset = VBORDER;
 

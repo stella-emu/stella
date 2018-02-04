@@ -36,7 +36,7 @@ using Common::Base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
-                                     int max_w, int max_h)
+                                     int width)
   : Dialog(osystem, parent)
 {
   const int BUTTON_W = 16, BUTTON_H = 14;
@@ -75,23 +75,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
     0b0110000110000110,
     0
   };
-  static uInt32 REWIND_10[BUTTON_H] =
-  {
-    0,
-    0b0000010000100110,
-    0b0000110001100110,
-    0b0001110011100110,
-    0b0011110111100110,
-    0b0111111111100110,
-    0b1111111111100110,
-    0b1111111111100110,
-    0b0111111111100110,
-    0b0011110111100110,
-    0b0001110011100110,
-    0b0000110001100110,
-    0b0000010000100110,
-    0
-  };
   static uInt32 REWIND_1[BUTTON_H] =
   {
     0,
@@ -126,23 +109,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
     0b0011100011000000,
     0
   };
-  static uInt32 UNWIND_10[BUTTON_H] =
-  {
-    0,
-    0b0110010000100000,
-    0b0110011000110000,
-    0b0110011100111000,
-    0b0110011110111100,
-    0b0110011111111110,
-    0b0110011111111111,
-    0b0110011111111111,
-    0b0110011111111110,
-    0b0110011110111100,
-    0b0110011100111000,
-    0b0110011000110000,
-    0b0110010000100000,
-    0
-  };
   static uInt32 UNWIND_ALL[BUTTON_H] =
   {
     0,
@@ -170,7 +136,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos;
 
   // Set real dimensions
-  _w = 20 * (buttonWidth + BUTTON_GAP) + 20;
+  _w = width;  // Parent determines our width (based on window size)
   _h = V_BORDER * 2 + rowHeight + buttonHeight + 2;
 
   this->clearFlags(WIDGET_CLEARBG); // does only work combined with blending (0..100)!
@@ -189,7 +155,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   // Add timeline
   const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2,
                tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
-               tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2,
+               tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2 - 1,
                tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
   myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
   myTimeline->setMinValue(0);
@@ -208,10 +174,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                        BUTTON_W, BUTTON_H, kRewindAll);
   xpos += buttonWidth + BUTTON_GAP;
 
-  myRewind10Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_10,
-                                      BUTTON_W, BUTTON_H, kRewind10);
-  xpos += buttonWidth + BUTTON_GAP;
-
   myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_1,
                                      BUTTON_W, BUTTON_H, kRewind1);
   xpos += buttonWidth + BUTTON_GAP*2;
@@ -222,10 +184,6 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_1,
                                      BUTTON_W, BUTTON_H, kUnwind1);
-  xpos += buttonWidth + BUTTON_GAP;
-
-  myUnwind10Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_10,
-                                      BUTTON_W, BUTTON_H, kUnwind10);
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_ALL,
@@ -254,14 +212,15 @@ void TimeMachineDialog::loadConfig()
   IntArray cycles = r.cyclesList();
 
   // Set range and intervals for timeline
-  myTimeline->setMaxValue(cycles.size() - 1);
+  uInt32 maxValue = cycles.size() > 1 ? uInt32(cycles.size() - 1) : 0;
+  myTimeline->setMaxValue(maxValue);
   myTimeline->setStepValues(cycles);
 
   // Enable blending (only once is necessary)
   if(!surface().attributes().blending)
   {
     surface().attributes().blending = true;
-    surface().attributes().blendalpha = 80;
+    surface().attributes().blendalpha = 92;
     surface().applyAttributes();
   }
 
@@ -361,11 +320,11 @@ string TimeMachineDialog::getTimeString(uInt64 cycles)
   const Int32 PAL_FREQ  = 1182298; // ~76*312*50
   const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
-  uInt32 minutes = cycles / (freq * 60);
+  uInt32 minutes = uInt32(cycles / (freq * 60));
   cycles -= minutes * (freq * 60);
-  uInt32 seconds = cycles / freq;
+  uInt32 seconds = uInt32(cycles / freq);
   cycles -= seconds * freq;
-  uInt32 frames = cycles / (scanlines * 76);
+  uInt32 frames = uInt32(cycles / (scanlines * 76));
 
   stringstream time;
   time << Common::Base::toString(minutes, Common::Base::F_10_02) << ":";
@@ -395,6 +354,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
       myMessageWidget->setLabel((numWinds < 0 ? "(-" : "(+") + message + ")");
     }
   }
+
   // Update time
   myCurrentTimeWidget->setLabel(getTimeString(r.getCurrentCycles() - r.getFirstCycles()));
   myLastTimeWidget->setLabel(getTimeString(r.getLastCycles() - r.getFirstCycles()));
@@ -404,9 +364,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   myLastIdxWidget->setValue(r.getLastIdx());
   // Enable/disable buttons
   myRewindAllWidget->setEnabled(!r.atFirst());
-  myRewind10Widget->setEnabled(!r.atFirst());
   myRewind1Widget->setEnabled(!r.atFirst());
   myUnwindAllWidget->setEnabled(!r.atLast());
-  myUnwind10Widget->setEnabled(!r.atLast());
   myUnwind1Widget->setEnabled(!r.atLast());
 }
