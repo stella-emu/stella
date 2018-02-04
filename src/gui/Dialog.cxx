@@ -30,6 +30,8 @@
 
 #include "ContextMenu.hxx"
 #include "PopUpWidget.hxx"
+#include "Settings.hxx"
+#include "Console.hxx"
 
 #include "Vec.hxx"
 
@@ -813,16 +815,20 @@ Widget* Dialog::TabFocus::getNewFocus()
 bool Dialog::getResizableBounds(uInt32& w, uInt32& h) const
 {
   const GUI::Rect& r = instance().frameBuffer().imageRect();
+
+  bool ntsc = instance().console().about().InitialFrameRate == "60";
+  uInt32 aspect = instance().settings().getInt(ntsc ?"tia.aspectn" : "tia.aspectp");
+
   if(r.width() <= FrameBuffer::kFBMinW || r.height() <= FrameBuffer::kFBMinH)
   {
-    w = uInt32(0.8 * FrameBuffer::kTIAMinW) * 2;
+    w = uInt32(aspect * FrameBuffer::kTIAMinW) * 2 / 100;
     h = FrameBuffer::kTIAMinH * 2;
     return false;
   }
   else
   {
-    w = std::max(uInt32(0.8 * r.width()), uInt32(FrameBuffer::kFBMinW));
-    h = std::max(uInt32(0.8 * r.height()), uInt32(FrameBuffer::kFBMinH));
+    w = std::max(uInt32(aspect * r.width() / 100), uInt32(FrameBuffer::kFBMinW));
+    h = std::max(uInt32(aspect * r.height() / 100), uInt32(FrameBuffer::kFBMinH));
     return true;
   }
 }

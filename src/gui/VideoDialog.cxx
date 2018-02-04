@@ -55,8 +55,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = std::min(57 * fontWidth + HBORDER * 2, max_w);
-  _h = std::min((16-2) * (lineHeight + VGAP) + 14 + _th, max_h);
+  _w = std::min(55 * fontWidth + HBORDER * 2 + 8, max_w);
+  _h = std::min(14 * (lineHeight + VGAP) + 14 + _th, max_h);
 
   // The tab widget
   xpos = 2;  ypos = 4;
@@ -94,6 +94,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   SliderWidget* s = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
                                      "TIA zoom", lwidth, 0, fontWidth * 4, "%");
   s->setMinValue(200); s->setMaxValue(500);
+  s->setTickmarkInterval(3); // just for testing now; TODO: remove or redefine
   wid.push_back(s);
   ypos += lineHeight + VGAP;
 
@@ -141,7 +142,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                        "(*) Requires application restart");
 
   // Move over to the next column
-  xpos += myFrameRate->getWidth() + 28;
+  xpos += myFrameRate->getWidth() + 16;
   ypos = VBORDER;
 
   // Fullscreen
@@ -236,7 +237,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ");
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ");
 
-  xpos += myTVContrast->getWidth() + 40;
+  xpos += myTVContrast->getWidth() + 30;
   ypos = VBORDER;
 
   lwidth = font.getStringWidth("Intensity ");
@@ -389,7 +390,6 @@ void VideoDialog::saveConfig()
   // TIA Filter
   instance().settings().setValue("tia.zoom",
     myTIAZoom->getSelectedTag().toString());
-  instance().frameBuffer().setZoomMode(instance().settings().getInt("tia.zoom"));
 
   // TIA Palette
   instance().settings().setValue("palette",

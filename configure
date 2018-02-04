@@ -348,22 +348,26 @@ esac
 # Determine the C++ compiler
 #
 echo_n "Looking for C++ compiler... "
-if test -n "$_host"; then
-	compilers="$CXX $_host_prefix-g++ $_host_prefix-c++ $_host_cpu-$_host_os-g++ $_host_cpu-$_host_os-c++"
+if test -n "$CXX"; then
+	echo $CXX
 else
-	compilers="$CXX g++ c++"
-fi
-
-for compiler in $compilers; do
-	if test_compiler "$compiler -std=c++14"; then
-		CXX=$compiler
-		echo $CXX
-		break
+	if test -n "$_host"; then
+		compilers="$_host_prefix-g++ $_host_prefix-c++ $_host_cpu-$_host_os-g++ $_host_cpu-$_host_os-c++"
+	else
+		compilers="g++ c++"
 	fi
-done
-if test -z $CXX; then
-	echo "none found!"
-	exit 1
+
+	for compiler in $compilers; do
+		if test_compiler "$compiler -std=c++14"; then
+			CXX=$compiler
+			echo $CXX
+			break
+		fi
+	done
+	if test -z "$CXX"; then
+		echo "none found!"
+		exit 1
+	fi
 fi
 
 #

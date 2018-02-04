@@ -1,8 +1,8 @@
 ﻿/* Localized versions of Info.plist keys */
 
 CFBundleName = "Stella";
-CFBundleShortVersionString = "Stella version 5.0.2";
-CFBundleGetInfoString = "Stella version 5.0.2";
+CFBundleShortVersionString = "Stella version 5.1";
+CFBundleGetInfoString = "Stella version 5.1";
 NSHumanReadableCopyright = "Stella MacOS X version by Stephen Anthony and Mark Grebe.";
 
 "Atari 2600 Cartridge File" = "Atari 2600 Cartridge File";

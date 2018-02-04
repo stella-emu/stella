@@ -147,7 +147,6 @@ bool FrameBuffer::initialize()
   FBSurface::setPalette(myPalette);
 
   myGrabMouse = myOSystem.settings().getBool("grabmouse");
-  myZoomMode = myOSystem.settings().getInt("tia.zoom");
 
   // Create a TIA surface; we need it for rendering TIA images
   myTIASurface = make_unique<TIASurface>(myOSystem);
@@ -235,7 +234,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   {
     myStatsMsg.surface = allocateSurface(myStatsMsg.w, myStatsMsg.h);
     myStatsMsg.surface->attributes().blending = true;
-    //myStatsMsg.surface->attributes().blendalpha = 80;
+    myStatsMsg.surface->attributes().blendalpha = 92; //aligned with TimeMachineDialog
     myStatsMsg.surface->applyAttributes();
   }
 
@@ -387,9 +386,10 @@ void FrameBuffer::drawFrameStats()
 
   myStatsMsg.surface->invalidate();
   string bsinfo = info.BankSwitch +
-    (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "| Player");
+    (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "");
   // draw shadowed text
-  color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ? kDbgColorRed : myStatsMsg.color;
+  color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ?
+      uInt32(kDbgColorRed) : myStatsMsg.color;
   std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
@@ -404,13 +404,13 @@ void FrameBuffer::drawFrameStats()
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
+  // draw bankswitching type
   myStatsMsg.surface->drawString(font(), bsinfo, XPOS, YPOS + font().getFontHeight(),
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   myStatsMsg.surface->setDirty();
-  myStatsMsg.surface->setDstPos(myImageRect.x() + 1, myImageRect.y() + 1);
+  myStatsMsg.surface->setDstPos(myImageRect.x() + 10, myImageRect.y() + 8);
   myStatsMsg.surface->render();
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -631,7 +631,7 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
 
     resetSurfaces();
     showMessage(mode.description);
-    myZoomMode = mode.zoom;
+    myOSystem.settings().setValue("tia.zoom", mode.zoom);
     return true;
   }
 #endif
@@ -789,15 +789,9 @@ const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
   if(state == EventHandlerState::DEBUGGER || state == EventHandlerState::LAUNCHER)
     myCurrentModeList->setZoom(1);
   else
-    myCurrentModeList->setZoom(myZoomMode);
+    myCurrentModeList->setZoom(myOSystem.settings().getInt("tia.zoom"));
 
   return myCurrentModeList->current();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setZoomMode(uInt32 mode)
-{
-  myZoomMode = mode;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -984,11 +978,11 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     kScrollColor      Normal scrollbar color
     kScrollColorHi    Highlighted scrollbar color
     *** Slider colors ***
-    kSliderColor,
-    kSliderColorHi
-    kSliderBGColor
-    kSliderBGColorHi
-    kSliderBGColorLo,
+    kSliderColor          Enabled slider
+    kSliderColorHi        Focussed slider
+    kSliderBGColor        Enabled slider background
+    kSliderBGColorHi      Focussed slider background
+    kSliderBGColorLo      Disabled slider background
     *** Debugger colors ***
     kDbgChangedColor      Background color for changed cells
     kDbgChangedTextColor  Text color for changed cells
@@ -1031,7 +1025,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xe1e1e1, 0xe5f1fb, 0x808080, 0x0078d7, 0x000000, 0x000000, // buttons
     0x333333,                                                   // checkbox
     0xc0c0c0, 0x808080,                                         // scrollbar
-    0x333333, 0x0078d7, 0xc0c0c0, 0x808080, 0xe1e1e1,           // slider
+    0x333333, 0x0078d7, 0xc0c0c0, 0xffffff, 0xc0c0c0,           // slider 0xBDDEF9| 0xe1e1e1 | 0xffffff
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
     0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other
   }

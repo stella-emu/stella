@@ -28,7 +28,7 @@ class TimeLineWidget;
 class TimeMachineDialog : public Dialog
 {
   public:
-    TimeMachineDialog(OSystem& osystem, DialogContainer& parent, int max_w, int max_h);
+    TimeMachineDialog(OSystem& osystem, DialogContainer& parent, int width);
     virtual ~TimeMachineDialog() = default;
 
   private:
@@ -61,10 +61,8 @@ class TimeMachineDialog : public Dialog
 
     ButtonWidget* myPlayWidget;
     ButtonWidget* myRewindAllWidget;
-    ButtonWidget* myRewind10Widget;
     ButtonWidget* myRewind1Widget;
     ButtonWidget* myUnwind1Widget;
-    ButtonWidget* myUnwind10Widget;
     ButtonWidget* myUnwindAllWidget;
 
     StaticTextWidget* myCurrentTimeWidget;

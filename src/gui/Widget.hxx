@@ -328,6 +328,8 @@ class SliderWidget : public ButtonWidget
     const string& getValueLabel() const { return _valueLabel; }
     void setValueUnit(const string& valueUnit);
 
+    void setTickmarkInterval(int numIntervals);
+
   protected:
     void handleMouseMoved(int x, int y) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
@@ -349,6 +351,7 @@ class SliderWidget : public ButtonWidget
     string _valueUnit;
     int    _valueLabelWidth;
     int    _valueLabelGap;
+    int    _numIntervals;
 
   private:
     // Following constructors and assignment operators not supported

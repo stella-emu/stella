@@ -78,6 +78,9 @@ class LinkedObjectPool
       SLOW, but only required for messages
     */
     uInt32 currentIdx() const {
+      if(empty())
+        return 0;
+
       iter it = myCurrent;
       uInt32 idx = 1;
 

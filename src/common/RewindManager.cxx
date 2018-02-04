@@ -284,7 +284,6 @@ string RewindManager::getUnitString(Int64 cycles)
   const Int32 PAL_FREQ = 1182298; // ~76*312*50
   const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
-  // TODO: do we need hours here? don't think so
   const Int32 NUM_UNITS = 5;
   const string UNIT_NAMES[NUM_UNITS] = { "cycle", "scanline", "frame", "second", "minute" };
   const Int64 UNIT_CYCLES[NUM_UNITS + 1] = { 1, 76, 76 * scanlines, freq, freq * 60, Int64(1) << 62 };
@@ -298,7 +297,7 @@ string RewindManager::getUnitString(Int64 cycles)
   {
     // use the lower unit up to twice the nextCycles unit, except for an exact match of the nextCycles unit
     // TODO: does the latter make sense, e.g. for ROMs with changing scanlines?
-    if(cycles == 0 || cycles < UNIT_CYCLES[i + 1] * 2 && cycles % UNIT_CYCLES[i + 1] != 0)
+    if(cycles == 0 || (cycles < UNIT_CYCLES[i + 1] * 2 && cycles % UNIT_CYCLES[i + 1] != 0))
       break;
   }
   result << cycles / UNIT_CYCLES[i] << " " << UNIT_NAMES[i];
@@ -309,14 +308,13 @@ string RewindManager::getUnitString(Int64 cycles)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::getFirstCycles() const
+uInt64 RewindManager::getFirstCycles() const
 {
-  // TODO: check if valid
-  return Common::LinkedObjectPool<RewindState>::const_iter(myStateList.first())->cycles;
+  return !myStateList.empty() ? myStateList.first()->cycles : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::getCurrentCycles() const
+uInt64 RewindManager::getCurrentCycles() const
 {
   if(myStateList.currentIsValid())
     return myStateList.current().cycles;
@@ -325,10 +323,9 @@ uInt32 RewindManager::getCurrentCycles() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::getLastCycles() const
+uInt64 RewindManager::getLastCycles() const
 {
-  // TODO: check if valid
-  return Common::LinkedObjectPool<RewindState>::const_iter(myStateList.last())->cycles;
+  return !myStateList.empty() ? myStateList.last()->cycles : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
