@@ -149,9 +149,9 @@ class RewindManager
     uInt32 getCurrentIdx() { return myStateList.currentIdx(); }
     uInt32 getLastIdx() { return myStateList.size(); }
 
-    uInt32 getFirstCycles() const;
-    uInt32 getCurrentCycles() const;
-    uInt32 getLastCycles() const;
+    uInt64 getFirstCycles() const;
+    uInt64 getCurrentCycles() const;
+    uInt64 getLastCycles() const;
 
     /**
       Get a collection of cycle timestamps, offset from the first one in

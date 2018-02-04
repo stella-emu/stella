@@ -161,7 +161,7 @@ void TimeLineWidget::drawWidget(bool hilite)
   int numTicks = std::min(5, int(_stepValue.size()));
   for(int i = 1; i < numTicks; ++i)
   {
-    int idx = (_stepValue.size() * i + numTicks / 2) / numTicks;
+    int idx = int((_stepValue.size() * i + numTicks / 2) / numTicks);
     if(idx > 1)
     {
       int tp = valueToPos(idx - 1);

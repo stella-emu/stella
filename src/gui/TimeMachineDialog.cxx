@@ -212,7 +212,7 @@ void TimeMachineDialog::loadConfig()
   IntArray cycles = r.cyclesList();
 
   // Set range and intervals for timeline
-  myTimeline->setMaxValue(cycles.size() - 1);
+  myTimeline->setMaxValue(int(cycles.size()) - 1);
   myTimeline->setStepValues(cycles);
 
   // Enable blending (only once is necessary)
@@ -319,11 +319,11 @@ string TimeMachineDialog::getTimeString(uInt64 cycles)
   const Int32 PAL_FREQ  = 1182298; // ~76*312*50
   const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
-  uInt32 minutes = cycles / (freq * 60);
+  uInt32 minutes = uInt32(cycles / (freq * 60));
   cycles -= minutes * (freq * 60);
-  uInt32 seconds = cycles / freq;
+  uInt32 seconds = uInt32(cycles / freq);
   cycles -= seconds * freq;
-  uInt32 frames = cycles / (scanlines * 76);
+  uInt32 frames = uInt32(cycles / (scanlines * 76));
 
   ostringstream time;
   time << Common::Base::toString(minutes, Common::Base::F_10_2) << ":";

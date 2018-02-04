@@ -308,13 +308,13 @@ string RewindManager::getUnitString(Int64 cycles)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::getFirstCycles() const
+uInt64 RewindManager::getFirstCycles() const
 {
   return !myStateList.empty() ? myStateList.first()->cycles : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::getCurrentCycles() const
+uInt64 RewindManager::getCurrentCycles() const
 {
   if(myStateList.currentIsValid())
     return myStateList.current().cycles;
@@ -323,7 +323,7 @@ uInt32 RewindManager::getCurrentCycles() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 RewindManager::getLastCycles() const
+uInt64 RewindManager::getLastCycles() const
 {
   return !myStateList.empty() ? myStateList.last()->cycles : 0;
 }
