@@ -212,7 +212,7 @@ void TimeMachineDialog::loadConfig()
   IntArray cycles = r.cyclesList();
 
   // Set range and intervals for timeline
-  myTimeline->setMaxValue(int(cycles.size()) - 1);
+  myTimeline->setMaxValue(cycles.size() > 1 ? cycles.size() - 1 : 0);
   myTimeline->setStepValues(cycles);
 
   // Enable blending (only once is necessary)

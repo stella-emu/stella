@@ -28,11 +28,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h,
-                               const string& label, int labelWidth, int cmd)
+                               const string& label, uInt32 labelWidth, int cmd)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
     _value(0),
     _valueMin(0),
-    _valueMax(100),
+    _valueMax(0),
     _isDragging(false),
     _labelWidth(labelWidth)
 {
@@ -45,14 +45,13 @@ TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
 
   _w = w + _labelWidth;
 
-  _stepValue.reserve(_valueMax);
+  _stepValue.reserve(100);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeLineWidget::setValue(int value)
+void TimeLineWidget::setValue(uInt32 value)
 {
-  if(value < _valueMin)      value = _valueMin;
-  else if(value > _valueMax) value = _valueMax;
+  value = BSPF::clamp(value, _valueMin, _valueMax);
 
   if(value != _value)
   {
@@ -63,13 +62,13 @@ void TimeLineWidget::setValue(int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeLineWidget::setMinValue(int value)
+void TimeLineWidget::setMinValue(uInt32 value)
 {
   _valueMin = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeLineWidget::setMaxValue(int value)
+void TimeLineWidget::setMaxValue(uInt32 value)
 {
   _valueMax = value;
 }
@@ -129,9 +128,9 @@ void TimeLineWidget::handleMouseWheel(int x, int y, int direction)
 {
   if(isEnabled())
   {
-    if(direction < 0)
+    if(direction < 0 && _value < _valueMax)
       setValue(_value + 1);
-    else if(direction > 0)
+    else if(direction > 0 && _value > _valueMin)
       setValue(_value - 1);
   }
 }
@@ -186,16 +185,13 @@ void TimeLineWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TimeLineWidget::valueToPos(int value)
+uInt32 TimeLineWidget::valueToPos(uInt32 value)
 {
-  if(_valueMax >= 0)
-    return _stepValue[BSPF::clamp(value, _valueMin, _valueMax)];
-  else
-    return 0;
+  return _stepValue[BSPF::clamp(value, _valueMin, _valueMax)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TimeLineWidget::posToValue(int pos)
+uInt32 TimeLineWidget::posToValue(uInt32 pos)
 {
   // Find the interval in which 'pos' falls, and then the endpoint which
   // it is closest to

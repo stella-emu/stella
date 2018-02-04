@@ -25,15 +25,15 @@ class TimeLineWidget : public ButtonWidget
   public:
     TimeLineWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& label = "",
-                   int labelWidth = 0, int cmd = 0);
+                   uInt32 labelWidth = 0, int cmd = 0);
 
-    void setValue(int value);
-    int getValue() const      { return _value; }
+    void setValue(uInt32 value);
+    uInt32 getValue() const      { return _value; }
 
-    void setMinValue(int value);
-    int  getMinValue() const      { return _valueMin; }
-    void setMaxValue(int value);
-    int  getMaxValue() const      { return _valueMax; }
+    void setMinValue(uInt32 value);
+    uInt32  getMinValue() const      { return _valueMin; }
+    void setMaxValue(uInt32 value);
+    uInt32  getMaxValue() const      { return _valueMax; }
 
     /**
       Steps are not necessarily linear in a timeline, so we need info
@@ -49,16 +49,16 @@ class TimeLineWidget : public ButtonWidget
 
     void drawWidget(bool hilite) override;
 
-    int valueToPos(int value);
-    int posToValue(int pos);
+    uInt32 valueToPos(uInt32 value);
+    uInt32 posToValue(uInt32 pos);
 
   protected:
-    int  _value;
-    int  _valueMin, _valueMax;
-    bool _isDragging;
-    int  _labelWidth;
+    uInt32  _value;
+    uInt32  _valueMin, _valueMax;
+    bool    _isDragging;
+    uInt32  _labelWidth;
 
-    IntArray _stepValue;
+    uIntArray _stepValue;
 
   private:
     // Following constructors and assignment operators not supported
