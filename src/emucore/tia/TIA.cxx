@@ -1229,6 +1229,8 @@ void TIA::tickHblank()
       if (myExtendedHblank) myHstate = HState::frame;
       break;
   }
+
+  if (myExtendedHblank && myHctr > 67) myPlayfield.tick(myHctr - 68 - myHctrDelta);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1269,6 +1271,7 @@ void TIA::nextLine()
     cloneLastLine();
   }
 
+  myPlayfield.tick(0);
   myHctr = 0;
 
   if (!myMovementInProgress && myLinesSinceChange < 2) myLinesSinceChange++;
