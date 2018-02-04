@@ -1,18 +1,8 @@
 5.0.2 to 5.1: (February 4, 2018)
 
-  * Thumbulator support is not conditional any more.
-
-  * Don't trap write accesses to the datastream pointers in CDF  and BUS.
-    This fixes -dev.thumb.trapfatal 1.
-
-  * Complete rework of TV mode and ystart autodetection. The new
-    implementation is more robust and reduces startup time.
-
-  * Add two "grace lines" of black to the top of the frame when
-    autodetecting ystart.
-
-  * Support UNIX style builds (configure / make) on OSX with both
-    XCode / clang and g++.
+  * Added "Time Machine" mode, which automatically creates save states
+    in user-defined intervals.  The user can navigate back and forth within
+    these states inside the emulator and the debugger.
 
   * Huge improvements to the disassembly view in the debugger and
     disassembly files created:
@@ -23,9 +13,30 @@
     - improved cycle count (page penalties, sums created in disassembly)
     - improved handling of instruction masking opcodes (e.g. BIT)
 
-  * Added "Time Machine" mode, which automatically creates save states
-    in user-defined intervals.  The user can navigate back and forth within
-    these states inside the emulator and the debugger.
+  * Fixed change tracking bug during rewind; changes were accumulated
+    instead of being displayed only for the last rewind step.
+
+  * Extended 'rewind' to take a second parameter which allows rewinding
+    multiple states.
+
+  * Added 'unwind' command, which undoes the latest rewind(s)
+
+  * Added '<' (unwind) button to debugger.
+
+  * Thumbulator support is not conditional any more.
+
+  * Moved various developer related settings in new Developer Settings
+    dialog. These settings now come in two groups (player/developer) and
+    allow switching all settings at once.
+
+  * Don't trap write accesses to the datastream pointers in CDF and BUS.
+    This fixes -dev.thumb.trapfatal 1.
+
+  * Complete rework of TV mode and ystart autodetection. The new
+    implementation is more robust and reduces startup time.
+
+  * Add two "grace lines" of black to the top of the frame when
+    autodetecting ystart.
 
   * Fixed Genesis controller autodetect (Stay Frosty 2, Scramble, etc).
 
@@ -47,9 +58,6 @@
     a default, user-visible directory (see the documentation for more
     information).  In the case of 'saveses', the filename is now named
     based on the date and time of when the command was entered.
-
-  * Fixed change tracking bug during rewind; changes were accumulated
-    instead of being displayed only for the last rewind step.
 
   * Fixed bug with saving snapshots in 1x mode; there was graphical
     corruption in some cases.  Such snapshots also now include any TV
@@ -74,25 +82,14 @@
 
   * Access to the AtariVox/SaveKey can be signaled with a message.
 
-  * Moved various developer related settings in new Developer Settings
-    dialog. These settings now come in two groups (player/developer) and
-    allow switching all settings at once.
-
-  * Added new interface palette 'Light'
+  * Added new interface palette 'Light'.
 
   * Frame stats display made transparent. Also it now displays the real
     frame rate and if the developer settings group is enabled.
 
-  * Improved tab auto-complete in debugger
+  * Improved tab auto-complete in debugger.
 
-  * Added conditional traps and savestate creation to debugger
-
-  * Extended 'rewind' to take a second parameter which allows rewinding
-    multiple states.
-
-  * Added 'unwind' command, which undoes the latest rewind(s)
-
-  * Added '<' (unwind) button to debugger.
+  * Added conditional traps and savestate creation to debugger.
 
   * Added 'Options...' button to debugger which gives access to the options
     menu during debugging.
@@ -112,7 +109,7 @@
   * Improved change tracking; more values are tracked and change tracking
     now works in case of a break too.
 
-  * Added widgets for trackball and SaveKey/AtariVox controllers
+  * Added widgets for trackball and SaveKey/AtariVox controllers.
 
   * Improved emulation of 'FE' bankswitch scheme (no user-visible changes,
     but internally the emulation is much more accurate compared to the
@@ -126,6 +123,9 @@
 
   * Added ROM properties for 'Zippy the Porcupine' ROMs, and updated
     info for all "Chris Spry (Sprybug)" ROMs.
+
+  * Support UNIX style builds (configure / make) on OSX with both
+    XCode / clang and g++.
 
   * Fixed error when building with uClibc-ng for ARM (thanks to Sergio
     Prado).
