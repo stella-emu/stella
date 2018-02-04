@@ -2557,10 +2557,14 @@
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;thumb.trapfatal &lt;1|0&gt;</pre></td>
       <td>The default of true allows the Thumb ARM emulation to
-      throw an exception and enter the debugger on fatal errors. When disabled, such
-      fatal errors are simply logged, and emulation continues. Do not use this
-      unless you know exactly what you're doing, as it changes the behaviour as compared
-      to real hardware.</td>
+        throw an exception and enter the debugger on fatal errors. When disabled, such
+        fatal errors are simply logged, and emulation continues. Do not use this
+        unless you know exactly what you're doing, as it changes the behaviour as
+        compared to real hardware.</td>
+    </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;eepromaccess &lt;1|0&gt;</pre></td>
+      <td>When enabled, each read or write access to the AtariVox/SaveKey EEPROM is
+        signalled by a message.</td>
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;tv.jitter &lt;1|0&gt;</pre></td>
       <td>Enable TV jitter/roll effect, when there are too many or too few scanlines
@@ -3135,6 +3139,7 @@
             <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>
             <td><span style="white-space:nowrap">-plr.thumb.trapfatal<br/>-dev.thumb.trapfatal</span></td>
           </tr>
+          <tr><td>Display AtariVox...</td><td>Display a message when the AtariVox/SaveKey EEPROM is read or written</td><td>-plr.eepromaccess<br/>-dev.eepromaccess</td></tr>
         </table>
       </td>
     </tr>
