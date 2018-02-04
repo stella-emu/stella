@@ -188,7 +188,10 @@ void TimeLineWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int TimeLineWidget::valueToPos(int value)
 {
-  return _stepValue[BSPF::clamp(value, _valueMin, _valueMax)];
+  if(_valueMax >= 0)
+    return _stepValue[BSPF::clamp(value, _valueMin, _valueMax)];
+  else
+    return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
