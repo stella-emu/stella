@@ -315,17 +315,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           enterTimeMachineMenuMode(1000, true);
           break;
 
-        default:
-          handled = false;
-          break;
-      }
-    }
-    // These only work when in emulation mode
-    if(!handled && (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE))
-    {
-      handled = true;
-      switch(key)
-      {
+        // These can work in pause mode too
         case KBDK_EQUALS:
           myOSystem.frameBuffer().changeWindowedVidMode(+1);
           break;
@@ -390,10 +380,10 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           {
             if(mod & KBDM_SHIFT)
               myOSystem.frameBuffer().showMessage(
-                  myOSystem.frameBuffer().tiaSurface().ntsc().setPreviousAdjustable());
+                myOSystem.frameBuffer().tiaSurface().ntsc().setPreviousAdjustable());
             else
               myOSystem.frameBuffer().showMessage(
-                  myOSystem.frameBuffer().tiaSurface().ntsc().setNextAdjustable());
+                myOSystem.frameBuffer().tiaSurface().ntsc().setNextAdjustable());
           }
           break;
 
@@ -402,10 +392,10 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           {
             if(mod & KBDM_SHIFT)
               myOSystem.frameBuffer().showMessage(
-                  myOSystem.frameBuffer().tiaSurface().ntsc().decreaseAdjustable());
+                myOSystem.frameBuffer().tiaSurface().ntsc().decreaseAdjustable());
             else
               myOSystem.frameBuffer().showMessage(
-                  myOSystem.frameBuffer().tiaSurface().ntsc().increaseAdjustable());
+                myOSystem.frameBuffer().tiaSurface().ntsc().increaseAdjustable());
           }
           break;
 
@@ -420,7 +410,7 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           if(mod & KBDM_SHIFT)
             myOSystem.console().toggleP1Collision();
           else
-              myOSystem.console().toggleP1Bit();
+            myOSystem.console().toggleP1Bit();
           break;
 
         case KBDK_C:
@@ -508,8 +498,8 @@ void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
           {
             ostringstream buf;
             buf << "Disabling snapshots, generated "
-                << (myContSnapshotCounter / myContSnapshotInterval)
-                << " files";
+              << (myContSnapshotCounter / myContSnapshotInterval)
+              << " files";
             myOSystem.frameBuffer().showMessage(buf.str());
             setContinuousSnapshots(0);
           }
@@ -2161,6 +2151,9 @@ void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
   // add one extra state if we are in Time Machine mode
   // TODO: maybe remove this state if we leave the menu at this new state
   myOSystem.state().addExtraState("enter Time Machine dialog"); // force new state
+
+  if(numWinds)
+    myOSystem.state().windStates(numWinds, unwind);
 
   // TODO: display last wind message (numWinds != 0) in time machine dialog
   enterMenuMode(EventHandlerState::TIMEMACHINE);
