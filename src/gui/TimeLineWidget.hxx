@@ -28,12 +28,12 @@ class TimeLineWidget : public ButtonWidget
                    uInt32 labelWidth = 0, int cmd = 0);
 
     void setValue(uInt32 value);
-    uInt32 getValue() const      { return _value; }
+    uInt32 getValue() const { return _value; }
 
     void setMinValue(uInt32 value);
-    uInt32  getMinValue() const      { return _valueMin; }
     void setMaxValue(uInt32 value);
-    uInt32  getMaxValue() const      { return _valueMax; }
+    uInt32 getMinValue() const { return _valueMin; }
+    uInt32 getMaxValue() const { return _valueMax; }
 
     /**
       Steps are not necessarily linear in a timeline, so we need info

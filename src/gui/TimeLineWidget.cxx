@@ -90,11 +90,13 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
     // Skip the very last value; we take care of it outside the end of the loop
     for(uInt32 i = 0; i < steps.size() - 1; ++i)
       _stepValue.push_back(int(steps[i] * scale));
-  }
 
-  // Due to integer <-> double conversion, the last value is sometimes
-  // slightly less than the maximum value; we assign it manually to fix this
-  _stepValue.push_back(_w - _labelWidth - 2);
+    // Due to integer <-> double conversion, the last value is sometimes
+    // slightly less than the maximum value; we assign it manually to fix this
+    _stepValue.push_back(_w - _labelWidth - 2);
+  }
+  else
+    _stepValue.push_back(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
