@@ -385,9 +385,8 @@ void FrameBuffer::drawFrameStats()
   int xPos = XPOS;
 
   myStatsMsg.surface->invalidate();
-  string bsinfo = info.BankSwitch +
-    (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "");
-  // draw shadowed text
+
+  // draw scanlines
   color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ?
       uInt32(kDbgColorRed) : myStatsMsg.color;
   std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
@@ -395,42 +394,33 @@ void FrameBuffer::drawFrameStats()
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   xPos += font().getStringWidth(msg);
 
+  // draw frequency
   std::snprintf(msg, 30, " => %s", info.DisplayFormat.c_str());
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
   xPos += font().getStringWidth(msg);
 
-  // draw framerate
+  // draw the effective framerate
   float frameRate;
-  /*if(myOSystem.settings().getInt("framerate") == 0)
+  const TimingInfo& ti = myOSystem.timingInfo();
+  if(ti.totalFrames - myTotalFrames >= myLastFrameRate)
   {
     frameRate = 1000000.0 * (ti.totalFrames - myTotalFrames) / (ti.totalTime - myTotalTime);
     if(frameRate > myOSystem.console().getFramerate() + 1)
-      frameRate = 1; // check soon again
+      frameRate = 1;
     myTotalFrames = ti.totalFrames;
     myTotalTime = ti.totalTime;
   }
-  else*/
-  {
-    // if 'Auto' is not selected, draw the effective framerate
-    const TimingInfo& ti = myOSystem.timingInfo();
-    if(ti.totalFrames - myTotalFrames >= myLastFrameRate)
-    {
-      frameRate = 1000000.0 * (ti.totalFrames - myTotalFrames) / (ti.totalTime - myTotalTime);
-      if(frameRate > myOSystem.console().getFramerate() + 1)
-        frameRate = 1;
-      myTotalFrames = ti.totalFrames;
-      myTotalTime = ti.totalTime;
-    }
-    else
-      frameRate = myLastFrameRate;
-  }
-  myLastFrameRate = frameRate;
+  else
+    frameRate = myLastFrameRate;
   std::snprintf(msg, 30, " @ %5.2ffps", frameRate);
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+  myLastFrameRate = frameRate;
 
   // draw bankswitching type
+  string bsinfo = info.BankSwitch +
+    (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "");
   myStatsMsg.surface->drawString(font(), bsinfo, XPOS, YPOS + font().getFontHeight(),
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
