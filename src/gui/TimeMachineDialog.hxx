@@ -31,6 +31,10 @@ class TimeMachineDialog : public Dialog
     TimeMachineDialog(OSystem& osystem, DialogContainer& parent, int width);
     virtual ~TimeMachineDialog() = default;
 
+    /** set/get number of winds when entering the dialog */
+    void setEnterWinds(Int32 numWinds) { _enterWinds = numWinds; };
+    Int32 getEnterWinds() { return _enterWinds; };
+
   private:
     void loadConfig() override;
     void handleKeyDown(StellaKey key, StellaMod mod) override;
@@ -71,6 +75,8 @@ class TimeMachineDialog : public Dialog
     StaticTextWidget* myCurrentIdxWidget;
     StaticTextWidget* myLastIdxWidget;
     StaticTextWidget* myMessageWidget;
+
+    Int32 _enterWinds;
 
   private:
     // Following constructors and assignment operators not supported

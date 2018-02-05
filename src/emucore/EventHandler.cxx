@@ -2153,9 +2153,9 @@ void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
   myOSystem.state().addExtraState("enter Time Machine dialog"); // force new state
 
   if(numWinds)
-    myOSystem.state().windStates(numWinds, unwind);
+    // hande winds and display wind message (numWinds != 0) in time machine dialog
+    myOSystem.timeMachine().setEnterWinds(unwind ? numWinds : -numWinds);
 
-  // TODO: display last wind message (numWinds != 0) in time machine dialog
   enterMenuMode(EventHandlerState::TIMEMACHINE);
 }
 

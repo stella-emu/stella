@@ -37,7 +37,8 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                      int width)
-  : Dialog(osystem, parent)
+  : Dialog(osystem, parent),
+    _enterWinds(0)
 {
   const int BUTTON_W = 16, BUTTON_H = 14;
 
@@ -224,8 +225,9 @@ void TimeMachineDialog::loadConfig()
     surface().applyAttributes();
   }
 
-  handleWinds();
   myMessageWidget->setLabel("");
+  handleWinds(_enterWinds);
+  _enterWinds = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
