@@ -269,7 +269,7 @@ void TimeMachineDialog::loadConfig()
   myMessageWidget->setLabel("");
   handleWinds(_enterWinds);
   _enterWinds = 0;
-  handleToogle();
+  handleToggle();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -324,7 +324,7 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kToggle:
       instance().state().toggleTimeMachine();
-      handleToogle();
+      handleToggle();
       break;
 
     case kPlay:
@@ -419,7 +419,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeMachineDialog::handleToogle()
+void TimeMachineDialog::handleToggle()
 {
   myToggleWidget->setBitmap(instance().state().mode() == StateManager::Mode::Off ? RECORD : STOP,
                             BUTTON_W, BUTTON_H);

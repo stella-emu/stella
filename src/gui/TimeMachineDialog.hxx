@@ -48,7 +48,7 @@ class TimeMachineDialog : public Dialog
     /** re/unwind and update display */
     void handleWinds(Int32 numWinds = 0);
     /** toggle Time Machine mode */
-    void handleToogle();
+    void handleToggle();
 
   private:
     enum
