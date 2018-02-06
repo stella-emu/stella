@@ -644,10 +644,10 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _valueMax(100),
     _isDragging(false),
     _labelWidth(labelWidth),
-    _valueLabelGap(valueLabelGap),
-    _valueLabelWidth(valueLabelWidth),
     _valueLabel(""),
     _valueUnit(valueUnit),
+    _valueLabelGap(valueLabelGap),
+    _valueLabelWidth(valueLabelWidth),
     _numIntervals(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;

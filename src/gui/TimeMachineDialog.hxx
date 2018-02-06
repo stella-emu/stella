@@ -32,8 +32,8 @@ class TimeMachineDialog : public Dialog
     virtual ~TimeMachineDialog() = default;
 
     /** set/get number of winds when entering the dialog */
-    void setEnterWinds(Int32 numWinds) { _enterWinds = numWinds; };
-    Int32 getEnterWinds() { return _enterWinds; };
+    void setEnterWinds(Int32 numWinds) { _enterWinds = numWinds; }
+    Int32 getEnterWinds() { return _enterWinds; }
 
   private:
     void loadConfig() override;

@@ -351,8 +351,8 @@ class SliderWidget : public ButtonWidget
     int    _labelWidth;
     string _valueLabel;
     string _valueUnit;
-    int    _valueLabelWidth;
     int    _valueLabelGap;
+    int    _valueLabelWidth;
     int    _numIntervals;
 
   private:

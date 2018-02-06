@@ -48,9 +48,6 @@
 Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font, const string& title,
                int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
-    _font(&font),
-    _title(title),
-    _th(0),
     _mouseWidget(nullptr),
     _focusedWidget(nullptr),
     _dragWidget(nullptr),
@@ -58,6 +55,9 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _cancelWidget(nullptr),
     _visible(false),
     _processCancel(false),
+    _title(title),
+    _th(0),
+    _font(&font),
     _surface(nullptr),
     _tabID(0),
     _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
@@ -68,10 +68,6 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
 Dialog::Dialog(OSystem& instance, DialogContainer& parent,
                int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
-    _font(nullptr),
-    _title(""),
-    _th(0),
-    _fh(0),
     _mouseWidget(nullptr),
     _focusedWidget(nullptr),
     _dragWidget(nullptr),
@@ -79,6 +75,10 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent,
     _cancelWidget(nullptr),
     _visible(false),
     _processCancel(false),
+    _title(""),
+    _th(0),
+    _font(nullptr),
+    _fh(0),
     _surface(nullptr),
     _tabID(0),
     _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
@@ -326,8 +326,8 @@ void Dialog::drawDialog()
   {
     // dialog is still on top if e.g a ContextMenu is opened
     bool onTop = parent().myDialogStack.top() == this
-      || parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
-      && !parent().myDialogStack.top()->hasTitle();
+      || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
+      && !parent().myDialogStack.top()->hasTitle());
 
     if(_flags & WIDGET_CLEARBG)
     {

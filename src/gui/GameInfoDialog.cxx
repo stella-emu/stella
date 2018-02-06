@@ -47,7 +47,6 @@ GameInfoDialog::GameInfoDialog(
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 8;
   const int hBorder = 8;

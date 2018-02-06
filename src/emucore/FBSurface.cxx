@@ -268,14 +268,12 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
       break;
 
     case FrameStyle::Dashed:
-      uInt32 i, skip, lwidth = 1;
-
-      for(i = x; i < x + w; i += 2)
+      for(uInt32 i = x; i < x + w; i += 2)
       {
         hLine(i, y, i, color);
         hLine(i, y + h - 1, i, color);
       }
-      for(i = y; i < y + h; i += 2)
+      for(uInt32 i = y; i < y + h; i += 2)
       {
         vLine(x, i, i, color);
         vLine(x + w - 1, i, i, color);

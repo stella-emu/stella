@@ -263,11 +263,6 @@ void TabWidget::drawWidget(bool hilite)
 
   FBSurface& s = dialog().surface();
 
-  const int left1  = _x + 1;
-  const int right1 = _x + kTabLeftOffset + _activeTab * (_tabWidth + kTabSpacing);
-  const int left2  = right1 + _tabWidth;
-  const int right2 = _x + _w - 2;
-
   // Iterate over all tabs and draw them
   int i, x = _x + kTabLeftOffset;
   for (i = 0; i < int(_tabs.size()); ++i)
