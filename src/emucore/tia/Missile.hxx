@@ -52,6 +52,8 @@ class Missile : public Serializable
 
     void tick(uInt8 hclock);
 
+    void nextLine();
+
     void setColor(uInt8 color);
 
     void setDebugColor(uInt8 color);
@@ -103,6 +105,7 @@ class Missile : public Serializable
     uInt8 myLastMovementTick;
 
     bool myIsRendering;
+    bool myIsVisible;
     Int8 myRenderCounter;
 
     const uInt8* myDecodes;

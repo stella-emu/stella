@@ -47,6 +47,7 @@ void Missile::reset()
   myWidth = 1;
   myEffectiveWidth = 1;
   myIsRendering = false;
+  myIsVisible = false;
   myRenderCounter = 0;
   myColor = myObjectColor = myDebugColor = 0;
   myDebugEnabled = false;
@@ -62,9 +63,14 @@ void Missile::enam(uInt8 value)
 
   myEnam = (value & 0x02) > 0;
 
-  if (oldEnam != myEnam) myTIA->flushLineCache();
+  if (oldEnam != myEnam) {
+    myTIA->flushLineCache();
 
-  updateEnabled();
+    updateEnabled();
+
+    collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    myTIA->updateCollision();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,12 +180,11 @@ bool Missile::movementTick(uInt8 clock, uInt8 hclock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::tick(uInt8 hclock)
 {
-  const bool render =
+  myIsVisible =
     myIsRendering &&
-    (myRenderCounter >= 0 || (myIsMoving && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3))) &&
-    myIsEnabled;
+    (myRenderCounter >= 0 || (myIsMoving && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
 
-  collision = render ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
   if (myDecodes[myCounter] && !myResmp) {
     myIsRendering = true;
@@ -208,6 +213,13 @@ void Missile::tick(uInt8 hclock)
   }
 
   if (++myCounter >= 160) myCounter = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::nextLine()
+{
+  myIsVisible = myIsRendering && (myRenderCounter >= 0);
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

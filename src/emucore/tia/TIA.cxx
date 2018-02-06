@@ -1280,6 +1280,11 @@ void TIA::nextLine()
   myHctrDelta = 0;
 
   myFrameManager->nextLine();
+  myMissile0.nextLine();
+  myMissile1.nextLine();
+  myPlayer0.nextLine();
+  myPlayer1.nextLine();
+  myBall.nextLine();
 
   if (myFrameManager->isRendering() && myFrameManager->getY() == 0) flushLineCache();
 

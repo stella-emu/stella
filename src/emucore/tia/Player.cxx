@@ -67,6 +67,11 @@ void Player::grp(uInt8 pattern)
   if (!myIsDelaying && myPatternNew != oldPatternNew) {
     myTIA->flushLineCache();
     updatePattern();
+
+    if (myIsRendering && myRenderCounter >= myRenderCounterTripPoint) {
+      collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+      myTIA->updateCollision();
+    }
   }
 }
 
@@ -307,6 +312,15 @@ void Player::tick()
   }
 
   if (++myCounter >= 160) myCounter = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::nextLine()
+{
+  if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
+    collision = myCollisionMaskDisabled;
+  else
+    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

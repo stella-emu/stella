@@ -415,6 +415,11 @@ class TIA : public Device
     void flushLineCache();
 
     /**
+     * Update the collision bitfield.
+     */
+    void updateCollision();
+
+    /**
       Create a new delayQueueIterator for the debugger.
     */
     shared_ptr<DelayQueueIterator> delayQueueIterator() const;
@@ -509,11 +514,6 @@ class TIA : public Device
      * Execute a RSYNC.
      */
     void applyRsync();
-
-    /**
-     * Update the collision bitfield.
-     */
-    void updateCollision();
 
     /**
      * Render the current pixel into the framebuffer.

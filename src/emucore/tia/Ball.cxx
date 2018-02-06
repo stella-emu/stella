@@ -40,6 +40,7 @@ void Ball::reset()
   myIsEnabledNew = false;
   myIsEnabled = false;
   myIsDelaying = false;
+  myIsVisible = false;
   myHmmClocks = 0;
   myCounter = 0;
   myIsMoving = false;
@@ -62,7 +63,11 @@ void Ball::enabl(uInt8 value)
 
   if (myIsEnabledNew != enabledNewOldValue && !myIsDelaying) {
     myTIA->flushLineCache();
+
     updateEnabled();
+
+    collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    myTIA->updateCollision();
   }
 }
 
@@ -173,9 +178,8 @@ bool Ball::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::tick(bool isReceivingMclock)
 {
-  collision = (myIsRendering && myRenderCounter >= 0 && myIsEnabled) ?
-    myCollisionMaskEnabled :
-    myCollisionMaskDisabled;
+  myIsVisible = myIsRendering && myRenderCounter >= 0;
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
   bool starfieldEffect = myIsMoving && isReceivingMclock;
 
@@ -205,6 +209,13 @@ void Ball::tick(bool isReceivingMclock)
 
   if (++myCounter >= 160)
       myCounter = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::nextLine()
+{
+  myIsVisible = myIsRendering && myRenderCounter >= 0;
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
