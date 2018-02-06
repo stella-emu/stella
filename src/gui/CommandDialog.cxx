@@ -27,13 +27,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
-  : Dialog(osystem, parent)
+  : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
-  const GUI::Font& font = instance().frameBuffer().font();
-  initTitle(font, "Commands");
-
-  const int buttonWidth = font.getStringWidth("Right Diff B") + 20,
-            buttonHeight = font.getLineHeight() + 6,
+  const int buttonWidth = _font.getStringWidth("Right Diff B") + 20,
+            buttonHeight = _font.getLineHeight() + 6,
             rowHeight = buttonHeight + 8;
 
   // Set real dimensions
@@ -46,7 +43,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 
   auto ADD_CD_BUTTON = [&](const string& label, int cmd)
   {
-    ButtonWidget* bw = new ButtonWidget(this, font, xoffset, yoffset,
+    ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);
     xoffset += buttonWidth + 8;
     return bw;

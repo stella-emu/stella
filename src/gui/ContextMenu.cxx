@@ -28,7 +28,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
                          const VariantList& items, int cmd, int width)
-  : Dialog(boss->instance(), boss->parent()),
+  : Dialog(boss->instance(), boss->parent(), font),
     CommandSender(boss),
     _rowHeight(font.getLineHeight()),
     _firstEntry(0),
@@ -39,7 +39,6 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _isScrolling(false),
     _scrollUpColor(kColor),
     _scrollDnColor(kColor),
-    _font(font),
     _cmd(cmd),
     _xorig(0),
     _yorig(0),

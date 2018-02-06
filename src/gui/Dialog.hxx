@@ -46,8 +46,8 @@ class Dialog : public GuiObject
   public:
     Dialog(OSystem& instance, DialogContainer& parent,
            int x = 0, int y = 0, int w = 0, int h = 0);
-    Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font, const string& title,
-           int x = 0, int y = 0, int w = 0, int h = 0);
+    Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
+           const string& title = "", int x = 0, int y = 0, int w = 0, int h = 0);
 
     virtual ~Dialog();
 
@@ -129,8 +129,6 @@ class Dialog : public GuiObject
 
     void processCancelWithoutWidget(bool state) { _processCancel = state; }
 
-    void initTitle(const GUI::Font& font, const string& title);
-
   private:
     void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e);
@@ -138,18 +136,19 @@ class Dialog : public GuiObject
     bool cycleTab(int direction);
 
   protected:
+    const GUI::Font& _font;
+
     Widget* _mouseWidget;
     Widget* _focusedWidget;
     Widget* _dragWidget;
     Widget* _defaultWidget;
     Widget* _okWidget;
     Widget* _cancelWidget;
+
     bool    _visible;
     bool    _processCancel;
     string  _title;
     int     _th;
-    const GUI::Font* _font;
-    int     _fh;
 
     Common::FixedStack<shared_ptr<FBSurface>> mySurfaceStack;
 
