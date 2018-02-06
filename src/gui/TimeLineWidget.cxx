@@ -142,20 +142,21 @@ void TimeLineWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-#ifndef FLAT_UI
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                 isEnabled() ? kTextColor : kColor, TextAlign::Right);
+                 isEnabled() ? kTextColor : kColor, TextAlign::Left);
+
+  int p = valueToPos(_value),
+    x = _x + _labelWidth;
 
   // Draw the box
-  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor);
+  s.frameRect(x, _y, _w - _labelWidth, _h, isEnabled() && hilite ? kScrollColor : kColor);
   // Fill the box
-  s.fillRect(_x + _labelWidth + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
-             !isEnabled() ? kBGColorHi : kWidColor);
+  s.fillRect(x + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
+             !isEnabled() ? kSliderBGColorLo : hilite ? kSliderBGColorHi : kSliderBGColor);
   // Draw the 'bar'
-  int vp = valueToPos(_value);
-  s.fillRect(_x + _labelWidth + 1, _y + 1, vp, _h - 2,
+  s.fillRect(x + 1, _y + 1, p, _h - 2,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
   // add 4 tickmarks for 5 intervals
@@ -165,25 +166,26 @@ void TimeLineWidget::drawWidget(bool hilite)
     int idx = int((_stepValue.size() * i + numTicks / 2) / numTicks);
     if(idx > 1)
     {
-      int tp = valueToPos(idx - 1);
-      s.vLine(_x + _labelWidth + tp, _y + _h / 2, _y + _h - 2, tp > vp ? kSliderColor : kWidColor);
+      int xt = x + valueToPos(idx - 1);
+      uInt32 color;
+
+      if(isEnabled())
+      {
+        if(xt > x + p)
+          color = hilite ? kSliderColorHi : kSliderColor;
+        else
+          color = hilite ? kSliderBGColorHi : kSliderBGColor;
+      }
+      else
+      {
+        if(xt > x + p)
+          color = kColor;
+        else
+          color = kSliderBGColorLo;
+      }
+      s.vLine(xt, _y + _h / 2, _y + _h - 2, color);
     }
   }
-#else
-  // Draw the label, if any
-  if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                 isEnabled() ? kTextColor : kColor, TextAlign::Left);
-
-  // Draw the box
-  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, isEnabled() && hilite ? kSliderColorHi : kShadowColor);
-  // Fill the box
-  s.fillRect(_x + _labelWidth + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
-             !isEnabled() ? kBGColorHi : kWidColor);
-  // Draw the 'bar'
-  s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
-             !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

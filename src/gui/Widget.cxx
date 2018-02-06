@@ -436,6 +436,15 @@ void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::setBitmap(uInt32* bitmap, int bmw, int bmh)
+{
+  _bitmap = bitmap;
+  _bmh = bmh;
+  _bmw = bmw;
+  _useBitmap = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();

@@ -47,11 +47,14 @@ class TimeMachineDialog : public Dialog
     string getTimeString(uInt64 cycles);
     /** re/unwind and update display */
     void handleWinds(Int32 numWinds = 0);
+    /** toggle Time Machine mode */
+    void handleToogle();
 
   private:
     enum
     {
       kTimeline  = 'TMtl',
+      kToggle    = 'TMtg',
       kPlay      = 'TMpl',
       kRewindAll = 'TMra',
       kRewind10  = 'TMr1',
@@ -63,6 +66,7 @@ class TimeMachineDialog : public Dialog
 
     TimeLineWidget* myTimeline;
 
+    ButtonWidget* myToggleWidget;
     ButtonWidget* myPlayWidget;
     ButtonWidget* myRewindAllWidget;
     ButtonWidget* myRewind1Widget;

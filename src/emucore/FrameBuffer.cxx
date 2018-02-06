@@ -1033,7 +1033,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0x20a020, 0x00ff00,                                         // scrollbar
     0x20a020, 0x00ff00, 0x404040, 0x686868, 0x404040,           // slider
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
-    0x20a020, 0x20a020, 0x000000, 0x686868, 0x404040            // other
+    0x00ff00, 0x20a020, 0x000000, 0x686868, 0x404040            // other
   },
   // Light
   { 0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333,           // base
