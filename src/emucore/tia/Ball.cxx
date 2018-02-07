@@ -50,8 +50,7 @@ void Ball::reset()
   myIsRendering = false;
   myDebugEnabled = false;
   myRenderCounter = 0;
-
-  updateEnabled();
+  myIsEnabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,7 +64,6 @@ void Ball::enabl(uInt8 value)
     myTIA->flushLineCache();
 
     updateEnabled();
-
     collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
     myTIA->updateCollision();
   }
@@ -244,6 +242,9 @@ void Ball::shuffleStatus()
 void Ball::updateEnabled()
 {
   myIsEnabled = !myIsSuppressed && (myIsDelaying ? myIsEnabledOld : myIsEnabledNew);
+
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+  myTIA->updateCollision();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

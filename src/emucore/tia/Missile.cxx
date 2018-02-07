@@ -52,8 +52,7 @@ void Missile::reset()
   myColor = myObjectColor = myDebugColor = 0;
   myDebugEnabled = false;
   collision = myCollisionMaskDisabled;
-
-  updateEnabled();
+  myIsEnabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,9 +66,6 @@ void Missile::enam(uInt8 value)
     myTIA->flushLineCache();
 
     updateEnabled();
-
-    collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-    myTIA->updateCollision();
   }
 }
 
@@ -258,6 +254,9 @@ void Missile::applyColorLoss()
 void Missile::updateEnabled()
 {
   myIsEnabled = !myIsSuppressed && myEnam && !myResmp;
+
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+  myTIA->updateCollision();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
