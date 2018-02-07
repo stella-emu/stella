@@ -25,6 +25,9 @@
 
 #include "TimeLineWidget.hxx"
 
+const int HANDLE_W = 3;
+const int HANDLE_H = 3; // size above/below the slider
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h,
@@ -85,7 +88,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
     if(steps.size() > _stepValue.capacity())
       _stepValue.reserve(2 * steps.size());
 
-    double scale = (_w - _labelWidth - 2) / double(steps.back());
+    double scale = (_w - _labelWidth - 2 - HANDLE_W*0) / double(steps.back());
 
     // Skip the very last value; we take care of it outside the end of the loop
     for(uInt32 i = 0; i < steps.size() - 1; ++i)
@@ -93,7 +96,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
 
     // Due to integer <-> double conversion, the last value is sometimes
     // slightly less than the maximum value; we assign it manually to fix this
-    _stepValue.push_back(_w - _labelWidth - 2);
+    _stepValue.push_back(_w - _labelWidth - 2 - HANDLE_W*0);
   }
   else
     _stepValue.push_back(0);
@@ -148,18 +151,29 @@ void TimeLineWidget::drawWidget(bool hilite)
                  isEnabled() ? kTextColor : kColor, TextAlign::Left);
 
   int p = valueToPos(_value),
-    x = _x + _labelWidth;
+    x = _x + _labelWidth,
+    w = _w - _labelWidth;
 
-  // Draw the box
-  s.frameRect(x, _y, _w - _labelWidth, _h, isEnabled() && hilite ? kScrollColor : kColor);
+  // Frame the handle
+  const int HANDLE_W2 = (HANDLE_W + 1) / 2;
+  s.hLine(x + p - HANDLE_W2, _y + 0, x + p - HANDLE_W2 + HANDLE_W, kColorInfo);
+  s.vLine(x + p - HANDLE_W2, _y + 1, _y + _h - 2, kColorInfo);
+  s.hLine(x + p - HANDLE_W2 + 1, _y + _h - 1, x + p - HANDLE_W2 + 1 + HANDLE_W, kBGColor);
+  s.vLine(x + p - HANDLE_W2 + 1 + HANDLE_W, _y + 1, _y + _h - 2, kBGColor);
+  // Frame the box
+  s.hLine(x, _y + HANDLE_H, x + w - 2, kColorInfo);
+  s.vLine(x, _y + HANDLE_H, _y + _h - 2 - HANDLE_H, kColorInfo);
+  s.hLine(x + 1, _y + _h - 1 - HANDLE_H, x + w - 1, kBGColor);
+  s.vLine(x + w - 1, _y + 1 + HANDLE_H, _y + _h - 2 - HANDLE_H, kBGColor);
+
   // Fill the box
-  s.fillRect(x + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
+  s.fillRect(x + 1, _y + 1 + HANDLE_H, w - 2, _h - 2 - HANDLE_H * 2,
              !isEnabled() ? kSliderBGColorLo : hilite ? kSliderBGColorHi : kSliderBGColor);
   // Draw the 'bar'
-  s.fillRect(x + 1, _y + 1, p, _h - 2,
+  s.fillRect(x + 1, _y + 1 + HANDLE_H, p, _h - 2 - HANDLE_H * 2,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
-  // add 4 tickmarks for 5 intervals
+  // Add 4 tickmarks for 5 intervals
   int numTicks = std::min(5, int(_stepValue.size()));
   for(int i = 1; i < numTicks; ++i)
   {
@@ -183,9 +197,12 @@ void TimeLineWidget::drawWidget(bool hilite)
         else
           color = kSliderBGColorLo;
       }
-      s.vLine(xt, _y + _h / 2, _y + _h - 2, color);
+      s.vLine(xt, _y + _h / 2, _y + _h - 2 - HANDLE_H, color);
     }
   }
+  // Draw the handle
+  s.fillRect(x + p + 1 - HANDLE_W2, _y + 1, HANDLE_W, _h - 2,
+             !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

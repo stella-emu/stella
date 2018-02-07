@@ -184,17 +184,17 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   ypos = V_BORDER;
 
   // Add index info
-  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "    ", TextAlign::Left, kBGColor);
+  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
-  myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("8888"), ypos,
-                                         "    ", TextAlign::Right, kBGColor);
+  myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("1000"), ypos,
+                                         "1000", TextAlign::Right, kBGColor);
   myLastIdxWidget->setTextColor(kColorInfo);
 
   // Add timeline
-  const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2,
-               tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
-               tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2 - 1,
-               tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
+  const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2 + 6,
+    tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
+    tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2 - 1,
+    tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
   myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
   myTimeline->setMinValue(0);
   ypos += rowHeight;
