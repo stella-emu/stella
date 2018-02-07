@@ -52,9 +52,9 @@ void Player::reset()
   mySampleCounter = 0;
   myDividerPending = 0;
   myDividerChangeCounter = -1;
+  myPattern = 0;
 
   setDivider(1);
-  updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,11 +67,6 @@ void Player::grp(uInt8 pattern)
   if (!myIsDelaying && myPatternNew != oldPatternNew) {
     myTIA->flushLineCache();
     updatePattern();
-
-    if (myIsRendering && myRenderCounter >= myRenderCounterTripPoint) {
-      collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-      myTIA->updateCollision();
-    }
   }
 }
 
@@ -385,6 +380,11 @@ void Player::updatePattern()
       ((myPattern & 0x40) >> 5) |
       ((myPattern & 0x80) >> 7)
     );
+  }
+
+  if (myIsRendering && myRenderCounter >= myRenderCounterTripPoint) {
+    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    myTIA->updateCollision();
   }
 }
 
