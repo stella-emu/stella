@@ -168,17 +168,17 @@ bool Missile::movementTick(uInt8 clock, uInt8 hclock, bool apply)
 
   if (clock == myHmmClocks) myIsMoving = false;
 
-  if (myIsMoving && apply) tick(hclock);
+  if (myIsMoving && apply) tick(hclock, false);
 
   return myIsMoving;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::tick(uInt8 hclock)
+void Missile::tick(uInt8 hclock, bool isReceivingMclock)
 {
   myIsVisible =
     myIsRendering &&
-    (myRenderCounter >= 0 || (myIsMoving && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
+    (myRenderCounter >= 0 || (myIsMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
 
   collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
@@ -187,21 +187,24 @@ void Missile::tick(uInt8 hclock)
     myRenderCounter = Count::renderCounterOffset;
   } else if (myIsRendering) {
 
-      if (myIsMoving && myRenderCounter == -1) {
+      if (myRenderCounter == -1) {
+        if (myIsMoving && isReceivingMclock) {
+          switch ((hclock + 1) % 4) {
+            case 3:
+              myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
+              if (myWidth < 4) myRenderCounter++;
+              break;
 
-        switch ((hclock + 1) % 4) {
-          case 3:
-            myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
-            if (myWidth < 4) myRenderCounter++;
-            break;
+            case 2:
+              myEffectiveWidth = 0;
+              break;
 
-          case 2:
-            myEffectiveWidth = 0;
-            break;
-
-          default:
-            myEffectiveWidth = myWidth;
-            break;
+            default:
+              myEffectiveWidth = myWidth;
+              break;
+          }
+        } else {
+          myEffectiveWidth = myWidth;
         }
       }
 

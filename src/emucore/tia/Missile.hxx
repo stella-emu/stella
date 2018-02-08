@@ -50,7 +50,7 @@ class Missile : public Serializable
 
     bool movementTick(uInt8 clock, uInt8 hclock, bool apply);
 
-    void tick(uInt8 hclock);
+    void tick(uInt8 hclock, bool isReceivingMclock = true);
 
     void nextLine();
 
