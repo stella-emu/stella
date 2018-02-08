@@ -205,6 +205,12 @@ void Playfield::tick(uInt32 x)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Playfield::nextLine()
+{
+  collision = myCollisionMaskDisabled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::applyColors()
 {
   if (myDebugEnabled)

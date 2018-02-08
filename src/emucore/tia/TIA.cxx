@@ -1271,7 +1271,6 @@ void TIA::nextLine()
     cloneLastLine();
   }
 
-  myPlayfield.tick(0);
   myHctr = 0;
 
   if (!myMovementInProgress && myLinesSinceChange < 2) myLinesSinceChange++;
@@ -1285,6 +1284,7 @@ void TIA::nextLine()
   myPlayer0.nextLine();
   myPlayer1.nextLine();
   myBall.nextLine();
+  myPlayfield.nextLine();
 
   if (myFrameManager->isRendering() && myFrameManager->getY() == 0) flushLineCache();
 
