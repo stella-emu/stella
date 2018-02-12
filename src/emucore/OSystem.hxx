@@ -115,7 +115,13 @@ class OSystem
 
       @return The properties set object
     */
-    PropertiesSet& propSet() const { return *myPropSet; }
+    PropertiesSet& propSet(const string& md5 = EmptyString);
+    PropertiesSet& propSet(const string& md5, const FilesystemNode& node);
+
+    /**
+      Save the game specific property file.
+    */
+    void saveGamePropSet(const string& md5);
 
     /**
       Get the console of the system.  The console won't always exist,
@@ -454,6 +460,12 @@ class OSystem
     // Pointer to the PropertiesSet object
     unique_ptr<PropertiesSet> myPropSet;
 
+    // Pointer to the game's PropertiesSet object
+    unique_ptr<PropertiesSet> myGamePropSet;
+
+    // MD5 of the currently loaded  game PropertiesSet object
+    string myGamePropSetMD5;
+
     // Pointer to the (currently defined) Console object
     unique_ptr<Console> myConsole;
 
@@ -516,6 +528,7 @@ class OSystem
     string myConfigFile;
     string myPaletteFile;
     string myPropertiesFile;
+    string myGamePropertiesFile;
 
     FilesystemNode myRomFile;
     string myRomMD5;
