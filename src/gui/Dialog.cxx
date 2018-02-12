@@ -791,7 +791,7 @@ bool Dialog::getResizableBounds(uInt32& w, uInt32& h) const
 {
   const GUI::Rect& r = instance().frameBuffer().imageRect();
 
-  bool ntsc = instance().console().about().InitialFrameRate == "60";
+  bool ntsc = instance().console().timing() == ConsoleTiming::ntsc;
   uInt32 aspect = instance().settings().getInt(ntsc ?"tia.aspectn" : "tia.aspectp");
 
   if(r.width() <= FrameBuffer::kFBMinW || r.height() <= FrameBuffer::kFBMinH)
