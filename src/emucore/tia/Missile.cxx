@@ -322,6 +322,7 @@ bool Missile::save(Serializer& out) const
     out.putByte(myEffectiveWidth);
     out.putByte(myLastMovementTick);
 
+    out.putBool(myIsVisible);
     out.putBool(myIsRendering);
     out.putByte(myRenderCounter);
 
@@ -364,6 +365,7 @@ bool Missile::load(Serializer& in)
     myEffectiveWidth = in.getByte();
     myLastMovementTick = in.getByte();
 
+    myIsVisible = in.getBool();
     myIsRendering = in.getBool();
     myRenderCounter = in.getByte();
 

@@ -305,6 +305,7 @@ bool Ball::save(Serializer& out) const
     out.putBool(myIsEnabled);
     out.putBool(myIsSuppressed);
     out.putBool(myIsDelaying);
+    out.putBool(myIsVisible);
 
     out.putByte(myHmmClocks);
     out.putByte(myCounter);
@@ -347,6 +348,7 @@ bool Ball::load(Serializer& in)
     myIsEnabled = in.getBool();
     myIsSuppressed = in.getBool();
     myIsDelaying = in.getBool();
+    myIsVisible = in.getBool();
 
     myHmmClocks = in.getByte();
     myCounter = in.getByte();
