@@ -62,6 +62,9 @@ class Player : public Serializable
     bool movementTick(uInt32 clock, bool apply);
 
     void tick();
+
+    void nextLine();
+
     uInt8 getClock() const { return myCounter; }
 
     bool isOn() const { return (collision & 0x8000); }

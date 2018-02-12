@@ -229,6 +229,8 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
 
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
+    /* Sets/changes the button's bitmap **/
+    void setBitmap(uInt32* bitmap, int bmw, int bmh);
 
   protected:
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
@@ -349,8 +351,8 @@ class SliderWidget : public ButtonWidget
     int    _labelWidth;
     string _valueLabel;
     string _valueUnit;
-    int    _valueLabelWidth;
     int    _valueLabelGap;
+    int    _valueLabelWidth;
     int    _numIntervals;
 
   private:

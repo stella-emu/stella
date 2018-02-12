@@ -62,6 +62,8 @@ class Ball : public Serializable
 
     void tick(bool isReceivingMclock = true);
 
+    void nextLine();
+
     bool isOn() const { return (collision & 0x8000); }
     uInt8 getColor() const { return myColor; }
 
@@ -105,6 +107,7 @@ class Ball : public Serializable
     bool myIsEnabled;
     bool myIsSuppressed;
     bool myIsDelaying;
+    bool myIsVisible;
 
     uInt8 myHmmClocks;
     uInt8 myCounter;

@@ -34,102 +34,140 @@
 #include "Base.hxx"
 using Common::Base;
 
+
+const int BUTTON_W = 14, BUTTON_H = 14;
+
+static uInt32 RECORD[BUTTON_H] =
+{
+  0b00000111100000,
+  0b00011111111000,
+  0b00111111111100,
+  0b01111111111110,
+  0b01111111111110,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b01111111111110,
+  0b01111111111110,
+  0b00111111111100,
+  0b00011111111000,
+  0b00000111100000
+};
+
+static uInt32 STOP[BUTTON_H] =
+{
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111
+};
+
+static uInt32 PLAY[BUTTON_H] =
+{
+  0b11000000000000,
+  0b11110000000000,
+  0b11111100000000,
+  0b11111111000000,
+  0b11111111110000,
+  0b11111111111100,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111100,
+  0b11111111110000,
+  0b11111111000000,
+  0b11111100000000,
+  0b11110000000000,
+  0b11000000000000
+};
+static uInt32 REWIND_ALL[BUTTON_H] =
+{
+  0,
+  0b11000011000011,
+  0b11000111000111,
+  0b11001111001111,
+  0b11011111011111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11011111011111,
+  0b11001111001111,
+  0b11000111000111,
+  0b11000011000011,
+  0
+};
+static uInt32 REWIND_1[BUTTON_H] =
+{
+  0,
+  0b00000110001110,
+  0b00001110001110,
+  0b00011110001110,
+  0b00111110001110,
+  0b01111110001110,
+  0b11111110001110,
+  0b11111110001110,
+  0b01111110001110,
+  0b00111110001110,
+  0b00011110001110,
+  0b00001110001110,
+  0b00000110001110,
+  0
+};
+static uInt32 UNWIND_1[BUTTON_H] =
+{
+  0,
+  0b01110001100000,
+  0b01110001110000,
+  0b01110001111000,
+  0b01110001111100,
+  0b01110001111110,
+  0b01110001111111,
+  0b01110001111111,
+  0b01110001111110,
+  0b01110001111100,
+  0b01110001111000,
+  0b01110001110000,
+  0b01110001100000,
+  0
+};
+static uInt32 UNWIND_ALL[BUTTON_H] =
+{
+  0,
+  0b11000011000011,
+  0b11100011100011,
+  0b11110011110011,
+  0b11111011111011,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111111111111,
+  0b11111011111011,
+  0b11110011110011,
+  0b11100011100011,
+  0b11000011000011,
+  0
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                      int width)
-  : Dialog(osystem, parent)
+  : Dialog(osystem, parent),
+    _enterWinds(0)
 {
-  const int BUTTON_W = 16, BUTTON_H = 14;
-
-  static uInt32 PLAY[BUTTON_H] =
-  {
-    0b0110000000000000,
-    0b0111100000000000,
-    0b0111111000000000,
-    0b0111111110000000,
-    0b0111111111100000,
-    0b0111111111111000,
-    0b0111111111111110,
-    0b0111111111111110,
-    0b0111111111111000,
-    0b0111111111100000,
-    0b0111111110000000,
-    0b0111111000000000,
-    0b0111100000000000,
-    0b0110000000000000
-  };
-  static uInt32 REWIND_ALL[BUTTON_H] =
-  {
-    0,
-    0b0110000110000110,
-    0b0110001110001110,
-    0b0110011110011110,
-    0b0110111110111110,
-    0b0111111111111110,
-    0b0111111111111110,
-    0b0111111111111110,
-    0b0111111111111110,
-    0b0110111110111110,
-    0b0110011110011110,
-    0b0110001110001110,
-    0b0110000110000110,
-    0
-  };
-  static uInt32 REWIND_1[BUTTON_H] =
-  {
-    0,
-    0b0000001100011100,
-    0b0000011100011100,
-    0b0000111100011100,
-    0b0001111100011100,
-    0b0011111100011100,
-    0b0111111100011100,
-    0b0111111100011100,
-    0b0011111100011100,
-    0b0001111100011100,
-    0b0000111100011100,
-    0b0000011100011100,
-    0b0000001100011100,
-    0
-  };
-  static uInt32 UNWIND_1[BUTTON_H] =
-  {
-    0,
-    0b0011100011000000,
-    0b0011100011100000,
-    0b0011100011110000,
-    0b0011100011111000,
-    0b0011100011111100,
-    0b0011100011111110,
-    0b0011100011111110,
-    0b0011100011111100,
-    0b0011100011111000,
-    0b0011100011110000,
-    0b0011100011100000,
-    0b0011100011000000,
-    0
-  };
-  static uInt32 UNWIND_ALL[BUTTON_H] =
-  {
-    0,
-    0b0110000110000110,
-    0b0111000111000110,
-    0b0111100111100110,
-    0b0111110111110110,
-    0b0111111111111110,
-    0b0111111111111110,
-    0b0111111111111110,
-    0b0111111111111110,
-    0b0111110111110110,
-    0b0111100111100110,
-    0b0111000111000110,
-    0b0110000110000110,
-    0
-  };
-
   const GUI::Font& font = instance().frameBuffer().font();
   const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4;
-  const int buttonWidth = BUTTON_W + 8,
+  const int buttonWidth = BUTTON_W + 10,
             buttonHeight = BUTTON_H + 10,
             rowHeight = font.getLineHeight();
 
@@ -146,41 +184,45 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   ypos = V_BORDER;
 
   // Add index info
-  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "    ", TextAlign::Left, kBGColor);
+  myCurrentIdxWidget = new StaticTextWidget(this, font, xpos, ypos, "1000", TextAlign::Left, kBGColor);
   myCurrentIdxWidget->setTextColor(kColorInfo);
-  myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("8888"), ypos,
-                                         "    ", TextAlign::Right, kBGColor);
+  myLastIdxWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("1000"), ypos,
+                                         "1000", TextAlign::Right, kBGColor);
   myLastIdxWidget->setTextColor(kColorInfo);
 
   // Add timeline
-  const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2,
-               tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
-               tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2 - 1,
-               tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
+  const uInt32 tl_h = myCurrentIdxWidget->getHeight() / 2 + 6,
+    tl_x = xpos + myCurrentIdxWidget->getWidth() + 8,
+    tl_y = ypos + (myCurrentIdxWidget->getHeight() - tl_h) / 2 - 1,
+    tl_w = myLastIdxWidget->getAbsX() - tl_x - 8;
   myTimeline = new TimeLineWidget(this, font, tl_x, tl_y, tl_w, tl_h, "", 0, kTimeline);
   myTimeline->setMinValue(0);
   ypos += rowHeight;
 
   // Add time info
-  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "04:32 59", TextAlign::Left, kBGColor);
+  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "00:00.00", TextAlign::Left, kBGColor);
   myCurrentTimeWidget->setTextColor(kColorInfo);
-  myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("XX:XX XX"), ypos + 3,
-                                          "12:25 59", TextAlign::Right, kBGColor);
+  myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("00:00.00"), ypos + 3,
+                                          "00:00.00", TextAlign::Right, kBGColor);
   myLastTimeWidget->setTextColor(kColorInfo);
   xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
 
   // Add buttons
+  myToggleWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, STOP,
+                                    BUTTON_W, BUTTON_H, kToggle);
+  xpos += buttonWidth + BUTTON_GAP;
+
+  myPlayWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, PLAY,
+                                  BUTTON_W, BUTTON_H, kPlay);
+  xpos += buttonWidth + BUTTON_GAP * 4;
+
   myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_ALL,
                                        BUTTON_W, BUTTON_H, kRewindAll);
   xpos += buttonWidth + BUTTON_GAP;
 
   myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_1,
                                      BUTTON_W, BUTTON_H, kRewind1);
-  xpos += buttonWidth + BUTTON_GAP*2;
-
-  myPlayWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, PLAY,
-                                  BUTTON_W, BUTTON_H, kPlay);
-  xpos += buttonWidth + BUTTON_GAP*2;
+  xpos += buttonWidth + BUTTON_GAP;
 
   myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_1,
                                      BUTTON_W, BUTTON_H, kUnwind1);
@@ -188,7 +230,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_ALL,
                                        BUTTON_W, BUTTON_H, kUnwindAll);
-  xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 3;
+  xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 4;
 
   // Add message
   myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ",
@@ -224,8 +266,10 @@ void TimeMachineDialog::loadConfig()
     surface().applyAttributes();
   }
 
-  handleWinds();
   myMessageWidget->setLabel("");
+  handleWinds(_enterWinds);
+  _enterWinds = 0;
+  handleToggle();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,6 +321,11 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
       handleWinds(winds);
       break;
     }
+
+    case kToggle:
+      instance().state().toggleTimeMachine();
+      handleToggle();
+      break;
 
     case kPlay:
       instance().eventHandler().leaveMenuMode();
@@ -368,3 +417,11 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   myUnwindAllWidget->setEnabled(!r.atLast());
   myUnwind1Widget->setEnabled(!r.atLast());
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeMachineDialog::handleToggle()
+{
+  myToggleWidget->setBitmap(instance().state().mode() == StateManager::Mode::Off ? RECORD : STOP,
+                            BUTTON_W, BUTTON_H);
+}
+

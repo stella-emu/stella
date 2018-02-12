@@ -25,6 +25,9 @@
 
 #include "TimeLineWidget.hxx"
 
+const int HANDLE_W = 3;
+const int HANDLE_H = 3; // size above/below the slider
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h,
@@ -85,7 +88,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
     if(steps.size() > _stepValue.capacity())
       _stepValue.reserve(2 * steps.size());
 
-    double scale = (_w - _labelWidth - 2) / double(steps.back());
+    double scale = (_w - _labelWidth - 2 - HANDLE_W*0) / double(steps.back());
 
     // Skip the very last value; we take care of it outside the end of the loop
     for(uInt32 i = 0; i < steps.size() - 1; ++i)
@@ -93,7 +96,7 @@ void TimeLineWidget::setStepValues(const IntArray& steps)
 
     // Due to integer <-> double conversion, the last value is sometimes
     // slightly less than the maximum value; we assign it manually to fix this
-    _stepValue.push_back(_w - _labelWidth - 2);
+    _stepValue.push_back(_w - _labelWidth - 2 - HANDLE_W*0);
   }
   else
     _stepValue.push_back(0);
@@ -142,48 +145,64 @@ void TimeLineWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
 
-#ifndef FLAT_UI
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                 isEnabled() ? kTextColor : kColor, TextAlign::Right);
+                 isEnabled() ? kTextColor : kColor, TextAlign::Left);
 
-  // Draw the box
-  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor);
+  int p = valueToPos(_value),
+    x = _x + _labelWidth,
+    w = _w - _labelWidth;
+
+  // Frame the handle
+  const int HANDLE_W2 = (HANDLE_W + 1) / 2;
+  s.hLine(x + p - HANDLE_W2, _y + 0, x + p - HANDLE_W2 + HANDLE_W, kColorInfo);
+  s.vLine(x + p - HANDLE_W2, _y + 1, _y + _h - 2, kColorInfo);
+  s.hLine(x + p - HANDLE_W2 + 1, _y + _h - 1, x + p - HANDLE_W2 + 1 + HANDLE_W, kBGColor);
+  s.vLine(x + p - HANDLE_W2 + 1 + HANDLE_W, _y + 1, _y + _h - 2, kBGColor);
+  // Frame the box
+  s.hLine(x, _y + HANDLE_H, x + w - 2, kColorInfo);
+  s.vLine(x, _y + HANDLE_H, _y + _h - 2 - HANDLE_H, kColorInfo);
+  s.hLine(x + 1, _y + _h - 1 - HANDLE_H, x + w - 1, kBGColor);
+  s.vLine(x + w - 1, _y + 1 + HANDLE_H, _y + _h - 2 - HANDLE_H, kBGColor);
+
   // Fill the box
-  s.fillRect(_x + _labelWidth + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
-             !isEnabled() ? kBGColorHi : kWidColor);
+  s.fillRect(x + 1, _y + 1 + HANDLE_H, w - 2, _h - 2 - HANDLE_H * 2,
+             !isEnabled() ? kSliderBGColorLo : hilite ? kSliderBGColorHi : kSliderBGColor);
   // Draw the 'bar'
-  int vp = valueToPos(_value);
-  s.fillRect(_x + _labelWidth + 1, _y + 1, vp, _h - 2,
+  s.fillRect(x + 1, _y + 1 + HANDLE_H, p, _h - 2 - HANDLE_H * 2,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
 
-  // add 4 tickmarks for 5 intervals
+  // Add 4 tickmarks for 5 intervals
   int numTicks = std::min(5, int(_stepValue.size()));
   for(int i = 1; i < numTicks; ++i)
   {
     int idx = int((_stepValue.size() * i + numTicks / 2) / numTicks);
     if(idx > 1)
     {
-      int tp = valueToPos(idx - 1);
-      s.vLine(_x + _labelWidth + tp, _y + _h / 2, _y + _h - 2, tp > vp ? kSliderColor : kWidColor);
+      int xt = x + valueToPos(idx - 1);
+      uInt32 color;
+
+      if(isEnabled())
+      {
+        if(xt > x + p)
+          color = hilite ? kSliderColorHi : kSliderColor;
+        else
+          color = hilite ? kSliderBGColorHi : kSliderBGColor;
+      }
+      else
+      {
+        if(xt > x + p)
+          color = kColor;
+        else
+          color = kSliderBGColorLo;
+      }
+      s.vLine(xt, _y + _h / 2, _y + _h - 2 - HANDLE_H, color);
     }
   }
-#else
-  // Draw the label, if any
-  if(_labelWidth > 0)
-    s.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                 isEnabled() ? kTextColor : kColor, TextAlign::Left);
-
-  // Draw the box
-  s.frameRect(_x + _labelWidth, _y, _w - _labelWidth, _h, isEnabled() && hilite ? kSliderColorHi : kShadowColor);
-  // Fill the box
-  s.fillRect(_x + _labelWidth + 1, _y + 1, _w - _labelWidth - 2, _h - 2,
-             !isEnabled() ? kBGColorHi : kWidColor);
-  // Draw the 'bar'
-  s.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
+  // Draw the handle
+  s.fillRect(x + p + 1 - HANDLE_W2, _y + 1, HANDLE_W, _h - 2,
              !isEnabled() ? kColor : hilite ? kSliderColorHi : kSliderColor);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

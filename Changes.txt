@@ -1,3 +1,12 @@
+5.1 to 5.2: (MMM d, 2018)
+
+  * Extra functionality for Time Machine dialog (start/stop recording;
+    minor fixes; TODO button and initial key repeats...)
+
+  * Fixes for collision corner cases (during HBlank)
+
+  * UI modernization (new widget look, dialog titles added, dialogs refactored)
+
 5.0.2 to 5.1: (February 4, 2018)
 
   * Added "Time Machine" mode, which automatically creates save states

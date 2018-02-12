@@ -120,7 +120,6 @@ class ContextMenu : public Dialog, public CommandSender
     bool _isScrolling;
     uInt32 _scrollUpColor, _scrollDnColor;
 
-    const GUI::Font& _font;
     int _cmd;
 
     uInt32 _xorig, _yorig;

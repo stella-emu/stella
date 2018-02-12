@@ -48,16 +48,13 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
                              GuiObject* boss, int max_w, int max_h, stellaMode mode)
-  : Dialog(osystem, parent),
+  : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
     myMode(mode),
     _boss(boss)
 {
-  const GUI::Font& font = instance().frameBuffer().font();
-  initTitle(font, "Options");
-
-  const int buttonWidth = font.getStringWidth("Game Properties" + ELLIPSIS) + 20,
-            buttonHeight = font.getLineHeight() + 6,
-            rowHeight = font.getLineHeight() + 10;
+  const int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + 20,
+            buttonHeight = _font.getLineHeight() + 6,
+            rowHeight = _font.getLineHeight() + 10;
   const int VBORDER = 10 + _th;
 
   _w = 2 * buttonWidth + 30;
@@ -69,7 +66,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   auto ADD_OD_BUTTON = [&](const string& label, int cmd)
   {
-    ButtonWidget* bw = new ButtonWidget(this, font, xoffset, yoffset,
+    ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);
     yoffset += rowHeight;
     return bw;
@@ -128,21 +125,21 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, font, max_w, max_h);
-  myAudioDialog    = make_unique<AudioDialog>(osystem, parent, font);
-  myInputDialog    = make_unique<InputDialog>(osystem, parent, font, max_w, max_h);
-  myUIDialog       = make_unique<UIDialog>(osystem, parent, font);
-  mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, font, max_w, max_h);
-  myConfigPathDialog = make_unique<ConfigPathDialog>(osystem, parent, font, boss, max_w, max_h);
-  myRomAuditDialog = make_unique<RomAuditDialog>(osystem, parent, font, max_w, max_h);
-  myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, font, this);
+  myVideoDialog    = make_unique<VideoDialog>(osystem, parent, _font, max_w, max_h);
+  myAudioDialog    = make_unique<AudioDialog>(osystem, parent, _font);
+  myInputDialog    = make_unique<InputDialog>(osystem, parent, _font, max_w, max_h);
+  myUIDialog       = make_unique<UIDialog>(osystem, parent, _font);
+  mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, _font, max_w, max_h);
+  myConfigPathDialog = make_unique<ConfigPathDialog>(osystem, parent, _font, boss, max_w, max_h);
+  myRomAuditDialog = make_unique<RomAuditDialog>(osystem, parent, _font, max_w, max_h);
+  myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, _font, this);
 #ifdef CHEATCODE_SUPPORT
-  myCheatCodeDialog = make_unique<CheatCodeDialog>(osystem, parent, font);
+  myCheatCodeDialog = make_unique<CheatCodeDialog>(osystem, parent, _font);
 #endif
-  myLoggerDialog    = make_unique<LoggerDialog>(osystem, parent, font, max_w, max_h);
-  myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, font, max_w, max_h);
-  myHelpDialog      = make_unique<HelpDialog>(osystem, parent, font);
-  myAboutDialog     = make_unique<AboutDialog>(osystem, parent, font);
+  myLoggerDialog    = make_unique<LoggerDialog>(osystem, parent, _font, max_w, max_h);
+  myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, _font, max_w, max_h);
+  myHelpDialog      = make_unique<HelpDialog>(osystem, parent, _font);
+  myAboutDialog     = make_unique<AboutDialog>(osystem, parent, _font);
 
   addToFocusList(wid);
 

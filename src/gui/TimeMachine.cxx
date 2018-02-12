@@ -47,12 +47,25 @@ void TimeMachine::requestResize()
   {
     myWidth = newWidth;
     Dialog* oldPtr = myBaseDialog;
+    Int32 enterWinds = static_cast<TimeMachineDialog*>(myBaseDialog)->getEnterWinds();
     delete myBaseDialog;
     myBaseDialog = new TimeMachineDialog(myOSystem, *this, myWidth);
+    setEnterWinds(enterWinds);
     Dialog* newPtr = myBaseDialog;
 
     // Update the container stack; it may contain a reference to the old pointer
     if(oldPtr != newPtr)
-      myDialogStack.replace(oldPtr, newPtr);
+    {
+      myDialogStack.applyAll([&oldPtr,&newPtr](Dialog*& d){
+        if(d == oldPtr)
+          d = newPtr;
+        });
+    }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeMachine::setEnterWinds(Int32 numWinds)
+{
+  static_cast<TimeMachineDialog*>(myBaseDialog)->setEnterWinds(numWinds);
 }

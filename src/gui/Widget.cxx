@@ -436,6 +436,15 @@ void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::setBitmap(uInt32* bitmap, int bmw, int bmh)
+{
+  _bitmap = bitmap;
+  _bmh = bmh;
+  _bmw = bmw;
+  _useBitmap = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
@@ -635,10 +644,10 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _valueMax(100),
     _isDragging(false),
     _labelWidth(labelWidth),
-    _valueLabelGap(valueLabelGap),
-    _valueLabelWidth(valueLabelWidth),
     _valueLabel(""),
     _valueUnit(valueUnit),
+    _valueLabelGap(valueLabelGap),
+    _valueLabelWidth(valueLabelWidth),
     _numIntervals(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;

@@ -39,6 +39,11 @@ class TimeMachine : public DialogContainer
     */
     void requestResize() override;
 
+    /**
+      Set number of winds when entering the dialog.
+    */
+    void setEnterWinds(Int32 numWinds);
+
   private:
     int myWidth;
 

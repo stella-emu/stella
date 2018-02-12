@@ -40,6 +40,7 @@ void Ball::reset()
   myIsEnabledNew = false;
   myIsEnabled = false;
   myIsDelaying = false;
+  myIsVisible = false;
   myHmmClocks = 0;
   myCounter = 0;
   myIsMoving = false;
@@ -49,8 +50,7 @@ void Ball::reset()
   myIsRendering = false;
   myDebugEnabled = false;
   myRenderCounter = 0;
-
-  updateEnabled();
+  myIsEnabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -62,7 +62,10 @@ void Ball::enabl(uInt8 value)
 
   if (myIsEnabledNew != enabledNewOldValue && !myIsDelaying) {
     myTIA->flushLineCache();
+
     updateEnabled();
+    collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    myTIA->updateCollision();
   }
 }
 
@@ -173,9 +176,8 @@ bool Ball::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::tick(bool isReceivingMclock)
 {
-  collision = (myIsRendering && myRenderCounter >= 0 && myIsEnabled) ?
-    myCollisionMaskEnabled :
-    myCollisionMaskDisabled;
+  myIsVisible = myIsRendering && myRenderCounter >= 0;
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
   bool starfieldEffect = myIsMoving && isReceivingMclock;
 
@@ -208,6 +210,13 @@ void Ball::tick(bool isReceivingMclock)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::nextLine()
+{
+  myIsVisible = myIsRendering && myRenderCounter >= 0;
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::setENABLOld(bool enabled)
 {
   myTIA->flushLineCache();
@@ -233,6 +242,9 @@ void Ball::shuffleStatus()
 void Ball::updateEnabled()
 {
   myIsEnabled = !myIsSuppressed && (myIsDelaying ? myIsEnabledOld : myIsEnabledNew);
+
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+  myTIA->updateCollision();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -293,6 +305,7 @@ bool Ball::save(Serializer& out) const
     out.putBool(myIsEnabled);
     out.putBool(myIsSuppressed);
     out.putBool(myIsDelaying);
+    out.putBool(myIsVisible);
 
     out.putByte(myHmmClocks);
     out.putByte(myCounter);
@@ -335,6 +348,7 @@ bool Ball::load(Serializer& in)
     myIsEnabled = in.getBool();
     myIsSuppressed = in.getBool();
     myIsDelaying = in.getBool();
+    myIsVisible = in.getBool();
 
     myHmmClocks = in.getByte();
     myCounter = in.getByte();

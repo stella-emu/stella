@@ -214,6 +214,56 @@ void OSystem::setConfigPaths()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PropertiesSet& OSystem::propSet(const string& md5)
+{
+  FilesystemNode node = FilesystemNode();
+
+  return propSet(md5, node);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PropertiesSet& OSystem::propSet(const string& md5, const FilesystemNode& node)
+{
+  if(md5 == EmptyString)
+    return *myPropSet;
+  else if(md5 == myGamePropSetMD5)
+    return *myGamePropSet;
+  else if (!node.exists())
+    return *myPropSet;
+
+  // Get a valid set of game specific properties
+  Properties props;
+  string path = myBaseDir + node.getNameWithExt(".pro");
+
+  // Create a properties set based on ROM name
+  FilesystemNode propNode = FilesystemNode(path);
+  myGamePropertiesFile = propNode.getPath();
+
+  myGamePropSet = make_unique<PropertiesSet>(myGamePropertiesFile);
+
+  // Check if game specific property file exists and has matching md5
+  if(myGamePropSet->size() && myGamePropSet->getMD5(md5, props))
+  {
+    myGamePropSetMD5 = md5;
+    return *myGamePropSet;
+  }
+  else
+  {
+    myGamePropSetMD5 = "";
+    return *myPropSet;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::saveGamePropSet(const string& md5)
+{
+  if(myGamePropSet->size() && md5 == myGamePropSetMD5)
+  {
+    myGamePropSet->save(myGamePropertiesFile);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setBaseDir(const string& basedir)
 {
   FilesystemNode node(basedir);
@@ -428,8 +478,7 @@ void OSystem::logMessage(const string& message, uInt8 level)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Console>
-OSystem::openConsole(const FilesystemNode& romfile, string& md5)
+unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& md5)
 {
   unique_ptr<Console> console;
 
@@ -441,8 +490,15 @@ OSystem::openConsole(const FilesystemNode& romfile, string& md5)
     // Get a valid set of properties, including any entered on the commandline
     // For initial creation of the Cart, we're only concerned with the BS type
     Properties props;
-    myPropSet->getMD5(md5, props);
 
+    // Load and use game specific props if existing
+    FilesystemNode node = FilesystemNode(romfile);
+
+    string path = myBaseDir + node.getNameWithExt(".pro");
+    PropertiesSet& propset = propSet(md5, romfile);
+    propset.getMD5(md5, props);
+
+    // Local helper method
     auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropertyType prop)
     {
       const string& s = mySettings->getString(name);
@@ -462,12 +518,12 @@ OSystem::openConsole(const FilesystemNode& romfile, string& md5)
     // and that the md5 (and hence the cart) has changed
     if(props.get(Cartridge_MD5) != cartmd5)
     {
-      if(!myPropSet->getMD5(cartmd5, props))
+      if(!propset.getMD5(cartmd5, props))
       {
         // Cart md5 wasn't found, so we create a new props for it
         props.set(Cartridge_MD5, cartmd5);
         props.set(Cartridge_Name, props.get(Cartridge_Name)+cart->multiCartID());
-        myPropSet->insert(props, false);
+        propset.insert(props, false);
       }
     }
 

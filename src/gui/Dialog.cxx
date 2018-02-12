@@ -44,13 +44,10 @@
  * ...
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font, const string& title,
-               int x, int y, int w, int h)
+Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font,
+               const string& title, int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
-    _font(&font),
-    _title(title),
-    _th(0),
+    _font(font),
     _mouseWidget(nullptr),
     _focusedWidget(nullptr),
     _dragWidget(nullptr),
@@ -58,30 +55,19 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _cancelWidget(nullptr),
     _visible(false),
     _processCancel(false),
+    _title(title),
+    _th(0),
     _surface(nullptr),
     _tabID(0),
     _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
 {
-  initTitle(font, title);
+  setTitle(title);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem& instance, DialogContainer& parent,
                int x, int y, int w, int h)
-  : GuiObject(instance, parent, *this, x, y, w, h),
-    _font(nullptr),
-    _title(""),
-    _th(0),
-    _fh(0),
-    _mouseWidget(nullptr),
-    _focusedWidget(nullptr),
-    _dragWidget(nullptr),
-    _okWidget(nullptr),
-    _cancelWidget(nullptr),
-    _visible(false),
-    _processCancel(false),
-    _surface(nullptr),
-    _tabID(0),
-    _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
+  : Dialog(instance, parent, instance.frameBuffer().font(), "", x, y, w, h)
 {
 }
 
@@ -134,26 +120,15 @@ void Dialog::close(bool refresh)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::initTitle(const GUI::Font& font, const string& title)
-{
-  _font = &font;
-  _fh = font.getLineHeight();
-  setTitle(title);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::setTitle(const string& title)
 {
-  if(_font != nullptr)
-  {
-    _title = title;
-    _h -= _th;
-    if(title.empty())
-      _th = 0;
-    else
-      _th = _fh + 4;
-    _h += _th;
-  }
+  _title = title;
+  _h -= _th;
+  if(title.empty())
+    _th = 0;
+  else
+    _th = _font.getLineHeight() + 4;
+  _h += _th;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -326,8 +301,8 @@ void Dialog::drawDialog()
   {
     // dialog is still on top if e.g a ContextMenu is opened
     bool onTop = parent().myDialogStack.top() == this
-      || parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
-      && !parent().myDialogStack.top()->hasTitle();
+      || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
+      && !parent().myDialogStack.top()->hasTitle());
 
     if(_flags & WIDGET_CLEARBG)
     {
@@ -336,7 +311,7 @@ void Dialog::drawDialog()
       if(_th)
       {
         s.fillRect(_x, _y, _w, _th, onTop ? kColorTitleBar : kColorTitleBarLo);
-        s.drawString(*_font, _title, _x + 10, _y + 2 + 1, _font->getStringWidth(_title),
+        s.drawString(_font, _title, _x + 10, _y + 2 + 1, _font.getStringWidth(_title),
                      onTop ? kColorTitleText : kColorTitleTextLo);
       }
     }

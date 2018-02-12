@@ -26,8 +26,7 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
   bool leftport = isLeftPort();
   const string& label = getHeader();
 
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
+  const int fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Paddles)");
 

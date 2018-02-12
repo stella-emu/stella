@@ -52,9 +52,9 @@ void Player::reset()
   mySampleCounter = 0;
   myDividerPending = 0;
   myDividerChangeCounter = -1;
+  myPattern = 0;
 
   setDivider(1);
-  updatePattern();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,6 +310,15 @@ void Player::tick()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::nextLine()
+{
+  if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
+    collision = myCollisionMaskDisabled;
+  else
+    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::shufflePatterns()
 {
   const uInt8 oldPatternOld = myPatternOld;
@@ -371,6 +380,11 @@ void Player::updatePattern()
       ((myPattern & 0x40) >> 5) |
       ((myPattern & 0x80) >> 7)
     );
+  }
+
+  if (myIsRendering && myRenderCounter >= myRenderCounterTripPoint) {
+    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    myTIA->updateCollision();
   }
 }
 

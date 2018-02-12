@@ -33,10 +33,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
     myComboEvent(Event::NoType)
 {
   const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Defaults") + 20,
-            buttonHeight = font.getLineHeight() + 4;
+            fontWidth    = font.getMaxCharWidth();
   int xpos, ypos;
   WidgetArray wid;
 

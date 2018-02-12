@@ -47,7 +47,6 @@ GameInfoDialog::GameInfoDialog(
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 8;
   const int hBorder = 8;
@@ -349,7 +348,7 @@ void GameInfoDialog::loadConfig()
     const string& md5 = instance().launcher().selectedRomMD5();
     if(md5 != "")
     {
-      instance().propSet().getMD5(md5, myGameProperties);
+      instance().propSet(md5).getMD5(md5, myGameProperties);
       myPropertiesLoaded = true;
       loadView();
     }
@@ -487,10 +486,13 @@ void GameInfoDialog::saveConfig()
                        myPPBlend->getValueLabel());
 
   // Determine whether to add or remove an entry from the properties set
+  const string& md5 = myGameProperties.get(Cartridge_MD5);
   if(myDefaultsSelected)
-    instance().propSet().removeMD5(myGameProperties.get(Cartridge_MD5));
+    instance().propSet(md5).removeMD5(myGameProperties.get(Cartridge_MD5));
   else
-    instance().propSet().insert(myGameProperties);
+    instance().propSet(md5).insert(myGameProperties);
+
+  instance().saveGamePropSet(myGameProperties.get(Cartridge_MD5));
 
   // In any event, inform the Console
   if(instance().hasConsole())
@@ -502,7 +504,7 @@ void GameInfoDialog::setDefaults()
 {
   // Load the default properties
   string md5 = myGameProperties.get(Cartridge_MD5);
-  instance().propSet().getMD5(md5, myGameProperties, true);
+  instance().propSet(md5).getMD5(md5, myGameProperties, true);
 
   // Reload the current dialog
   loadView();

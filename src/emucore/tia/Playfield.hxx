@@ -59,6 +59,8 @@ class Playfield : public Serializable
 
     void tick(uInt32 x);
 
+    void nextLine();
+
     bool isOn() const { return (collision & 0x8000); }
     uInt8 getColor() const;
 

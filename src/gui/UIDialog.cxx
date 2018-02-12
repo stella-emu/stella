@@ -41,7 +41,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int VBORDER = 8;
   const int HBORDER = 10;
@@ -49,7 +48,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   int lwidth, pwidth = font.getStringWidth("Standard");
   WidgetArray wid;
   VariantList items;
-  ButtonWidget* b;
   const GUI::Size& ds = instance().frameBuffer().desktopSize();
 
   // Set real dimensions
