@@ -48,7 +48,7 @@ void AudioChannel::phase0()
         break;
 
       case 0x03:
-        myPulseCounterHold = myNoiseCounterBit4;
+        myPulseCounterHold = !myNoiseCounterBit4;
         break;
     }
 
