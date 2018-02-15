@@ -226,9 +226,9 @@ const string Debugger::invIfChanged(int reg, int oldReg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::reset()
 {
-  unlockBankswitchState();
+  unlockSystem();
   mySystem.reset();
-  lockBankswitchState();
+  lockSystem();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -253,21 +253,21 @@ string Debugger::setRAM(IntArray& args)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::saveState(int state)
 {
-  mySystem.clearDirtyPages();
-
-  unlockBankswitchState();
+  // Saving a state is implicitly a read-only operation, so we keep the
+  // system locked, so no changes can occur
   myOSystem.state().saveState(state);
-  lockBankswitchState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::loadState(int state)
 {
+  // We're loading a new state, so we start with a clean slate
   mySystem.clearDirtyPages();
 
-  unlockBankswitchState();
+  // State loading could initiate a bankswitch, so we allow it temporarily
+  unlockSystem();
   myOSystem.state().loadState(state);
-  lockBankswitchState();
+  lockSystem();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,9 +277,9 @@ int Debugger::step()
 
   uInt64 startCycle = mySystem.cycles();
 
-  unlockBankswitchState();
+  unlockSystem();
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
-  lockBankswitchState();
+  lockSystem();
 
   addState("step");
   return int(mySystem.cycles() - startCycle);
@@ -305,9 +305,9 @@ int Debugger::trace()
     uInt64 startCycle = mySystem.cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
 
-    unlockBankswitchState();
+    unlockSystem();
     myOSystem.console().tia().updateScanlineByTrace(targetPC).flushLineCache();
-    lockBankswitchState();
+    lockSystem();
 
     addState("trace");
     return int(mySystem.cycles() - startCycle);
@@ -490,13 +490,13 @@ void Debugger::nextScanline(int lines)
 
   saveOldState();
 
-  unlockBankswitchState();
+  unlockSystem();
   while(lines)
   {
     myOSystem.console().tia().updateScanline();
     --lines;
   }
-  lockBankswitchState();
+  lockSystem();
 
   addState(buf.str());
   myOSystem.console().tia().flushLineCache();
@@ -510,13 +510,13 @@ void Debugger::nextFrame(int frames)
 
   saveOldState();
 
-  unlockBankswitchState();
+  unlockSystem();
   while(frames)
   {
     myOSystem.console().tia().update();
     --frames;
   }
-  lockBankswitchState();
+  lockSystem();
 
   addState(buf.str());
 }
@@ -535,13 +535,13 @@ uInt16 Debugger::windStates(uInt16 numStates, bool unwind, string& message)
 
   saveOldState();
 
-  unlockBankswitchState();
+  unlockSystem();
 
   uInt64 startCycles = myOSystem.console().tia().cycles();
   uInt16 winds = r.windStates(numStates, unwind);
   message = r.getUnitString(myOSystem.console().tia().cycles() - startCycles);
 
-  lockBankswitchState();
+  lockSystem();
 
   updateRewindbuttons(r);
   return winds;
@@ -593,13 +593,15 @@ bool Debugger::patchROM(uInt16 addr, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::saveOldState(bool clearDirtyPages)
 {
-  if (clearDirtyPages)
+  if(clearDirtyPages)
     mySystem.clearDirtyPages();
 
+  lockSystem();
   myCartDebug->saveOldState();
   myCpuDebug->saveOldState();
   myRiotDebug->saveOldState();
   myTiaDebug->saveOldState();
+  unlockSystem();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -615,7 +617,7 @@ void Debugger::addState(string rewindMsg)
 void Debugger::setStartState()
 {
   // Lock the bus each time the debugger is entered, so we don't disturb anything
-  lockBankswitchState();
+  lockSystem();
 
   // Save initial state and add it to the rewind list (except when in currently rewinding)
   RewindManager& r = myOSystem.state().rewindManager();
@@ -636,7 +638,7 @@ void Debugger::setQuitState()
   saveOldState();
 
   // Bus must be unlocked for normal operation when leaving debugger mode
-  unlockBankswitchState();
+  unlockSystem();
 
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
@@ -771,14 +773,14 @@ void Debugger::getCompletions(const char* in, StringList& list) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::lockBankswitchState()
+void Debugger::lockSystem()
 {
   mySystem.lockDataBus();
   myConsole.cartridge().lockBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::unlockBankswitchState()
+void Debugger::unlockSystem()
 {
   mySystem.unlockDataBus();
   myConsole.cartridge().unlockBank();

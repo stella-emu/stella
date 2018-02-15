@@ -231,14 +231,13 @@ class Debugger : public DialogContainer
 
     /**
       Normally, accessing RAM or ROM during emulation can possibly trigger
-      bankswitching.  However, when we're in the debugger, we'd like to
-      inspect values without actually triggering bankswitches.  The
+      bankswitching or other inadvertent changes.  However, when we're in
+      the debugger, we'd like to inspect values without restriction.  The
       read/write state must therefore be locked before accessing values,
       and unlocked for normal emulation to occur.
-      (takes mediasource into account)
     */
-    void lockBankswitchState();
-    void unlockBankswitchState();
+    void lockSystem();
+    void unlockSystem();
 
   private:
     /**
