@@ -237,6 +237,21 @@ bool M6502::execute(uInt32 number)
   return status;
 }
 
+bool M6502::startDebugger(const string& message, int address, bool read) {
+  handleHalt();
+
+  mySystem->tia().updateEmulation();
+  mySystem->m6532().updateEmulation();
+
+  #ifndef DEBUGGER_SUPPORT
+    return false;
+  #endif
+
+  if (!myDebugger) return false;
+
+  return myDebugger->start(message, address, read);
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline bool M6502::_execute(uInt32 number)
 {
@@ -258,23 +273,19 @@ inline bool M6502::_execute(uInt32 number)
       {
         bool read = myJustHitReadTrapFlag;
         myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
-        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, read))
-        {
-          return true;
-        }
+
+        if (startDebugger(myHitTrapInfo.message, myHitTrapInfo.address, read)) return true;
       }
 
-      if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC))
-        if(myDebugger && myDebugger->start("BP: ", PC))
-          return true;
+      if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC) && startDebugger("BP: ", PC))
+        return true;
 
       int cond = evalCondBreaks();
       if(cond > -1)
       {
         stringstream msg;
         msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
-        if(myDebugger && myDebugger->start(msg.str()))
-          return true;
+        if (startDebugger(msg.str())) return true;
       }
 
       cond = evalCondSaveStates();
