@@ -99,7 +99,7 @@ class DialogContainer
       @param button  The joystick button
       @param state   The state (pressed or released)
     */
-    void handleJoyEvent(int stick, int button, uInt8 state);
+    void handleJoyBtnEvent(int stick, int button, uInt8 state);
 
     /**
       Handle a joystick axis event.

@@ -20,6 +20,7 @@
 
 #include "SDL_lib.hxx"
 #include "EventHandler.hxx"
+#include "PhysicalJoystick.hxx"
 
 /**
   This class handles event collection from the point of view of the specific
@@ -58,9 +59,9 @@ class EventHandlerSDL2 : public EventHandler
   private:
     SDL_Event myEvent;
 
-    // A thin wrapper around a basic StellaJoystick, holding the pointer to
-    // the underlying SDL stick.
-    class JoystickSDL2 : public StellaJoystick
+    // A thin wrapper around a basic PhysicalJoystick, holding the pointer to
+    // the underlying SDL joystick device.
+    class JoystickSDL2 : public PhysicalJoystick
     {
       public:
         JoystickSDL2(int idx);

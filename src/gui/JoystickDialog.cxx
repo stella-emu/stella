@@ -75,7 +75,7 @@ void JoystickDialog::loadConfig()
   myJoyIDs.clear();
 
   StringList sticks;
-  for(const auto& i: instance().eventHandler().joystickDatabase())
+  for(const auto& i: instance().eventHandler().physicalJoystickDatabase())
   {
     sticks.push_back(i.first);
     myJoyIDs.push_back(i.second.toInt());
@@ -99,7 +99,8 @@ void JoystickDialog::handleCommand(CommandSender* sender, int cmd, int data, int
       break;
 
     case kRemoveCmd:
-      instance().eventHandler().removeJoystickFromDatabase(myJoyList->getSelectedString());
+      instance().eventHandler().removePhysicalJoystickFromDatabase(
+          myJoyList->getSelectedString());
       loadConfig();
       break;
 

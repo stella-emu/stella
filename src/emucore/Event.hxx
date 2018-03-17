@@ -22,7 +22,7 @@
 #include "StellaKeys.hxx"
 
 /**
-  @author  Bradford W. Mott
+  @author  Bradford W. Mott, Stephen Anthony
 */
 class Event
 {
@@ -82,23 +82,23 @@ class Event
 
   public:
     /**
-      Create a new event object
+      Create a new event object.
     */
     Event() { clear(); }
 
   public:
     /**
-      Get the value associated with the event of the specified type
+      Get the value associated with the event of the specified type.
     */
     Int32 get(Type type) const { return myValues[type]; }
 
     /**
-      Set the value associated with the event of the specified type
+      Set the value associated with the event of the specified type.
     */
     void set(Type type, Int32 value) { myValues[type] = value; }
 
     /**
-      Clears the event array (resets to initial state)
+      Clears the event array (resets to initial state).
     */
     void clear()
     {
@@ -110,14 +110,31 @@ class Event
     }
 
     /**
-      Get the keytable associated with this event
+      Get the keytable associated with this event.
     */
     const bool* getKeys() const { return myKeyTable; }
 
     /**
-      Set the value associated with the event of the specified type
+      Set the value associated with the event of the specified type.
     */
     void setKey(StellaKey key, bool state) { myKeyTable[key] = state; }
+
+    /**
+      Tests if a given event represents continuous or analog values.
+    */
+    static bool isAnalog(Type type)
+    {
+      switch(type)
+      {
+        case Event::PaddleZeroAnalog:
+        case Event::PaddleOneAnalog:
+        case Event::PaddleTwoAnalog:
+        case Event::PaddleThreeAnalog:
+          return true;
+        default:
+          return false;
+      }
+    }
 
   private:
     // Array of values associated with each event type
