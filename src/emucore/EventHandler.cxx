@@ -1701,18 +1701,7 @@ bool EventHandler::controllerIsAnalog(Controller::Jack jack) const
   const Controller& controller = jack == Controller::Left ?
       myOSystem.console().leftController() : myOSystem.console().rightController();
 
-  switch(controller.type())
-  {
-    case Controller::Paddles:
-    case Controller::Driving:
-    case Controller::AmigaMouse:
-    case Controller::AtariMouse:
-    case Controller::TrakBall:
-    case Controller::MindLink:
-      return true;
-    default:
-      return false;
-  }
+  return controller.isAnalog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

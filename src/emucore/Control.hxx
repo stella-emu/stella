@@ -172,6 +172,12 @@ class Controller : public Serializable
     virtual void update() = 0;
 
     /**
+      Answers whether the controller is intrinsically an analog controller.
+      Specific controllers should override and implement this method.
+    */
+    virtual bool isAnalog() const { return false; }
+
+    /**
       Notification method invoked by the system after its reset method has
       been called.  It may be necessary to override this method for
       controllers that need to know a reset has occurred.
