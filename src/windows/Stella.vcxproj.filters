@@ -744,9 +744,6 @@
     <ClCompile Include="..\debugger\gui\CartMDMWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\EventJoyHandler.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\main.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -893,6 +890,12 @@
     </ClCompile>
     <ClCompile Include="..\gui\TimeLineWidget.cxx">
       <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\PhysicalJoystick.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\PJoystickHandler.cxx">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1828,6 +1831,12 @@
     </ClInclude>
     <ClInclude Include="..\gui\TimeLineWidget.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\PhysicalJoystick.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\PJoystickHandler.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
