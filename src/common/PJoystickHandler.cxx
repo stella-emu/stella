@@ -50,13 +50,6 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystickHandler::~PhysicalJoystickHandler()
-{
-  for(const auto& i: myDatabase)
-    delete i.second.joy;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::printDatabase() const
 {
   cerr << "---------------------------------------------------------" << endl
@@ -72,7 +65,7 @@ void PhysicalJoystickHandler::printDatabase() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PhysicalJoystickHandler::add(PhysicalJoystick* stick)
+int PhysicalJoystickHandler::add(PhysicalJoystickPtr stick)
 {
   // Skip if we couldn't open it for any reason
   if(stick->ID < 0)
@@ -167,7 +160,7 @@ bool PhysicalJoystickHandler::remove(int id)
   // So we use the 'active' joystick list to access them
   try
   {
-    PhysicalJoystick* stick = mySticks.at(id);
+    PhysicalJoystickPtr stick = mySticks.at(id);
 
     auto it = myDatabase.find(stick->name);
     if(it != myDatabase.end() && it->second.joy == stick)
@@ -179,7 +172,7 @@ bool PhysicalJoystickHandler::remove(int id)
 
       // Remove joystick, but remember mapping
       it->second.mapping = stick->getMap();
-      delete it->second.joy;  it->second.joy = nullptr;
+      it->second.joy = nullptr;
       mySticks.erase(id);
 
       return true;
@@ -389,7 +382,7 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
   for(const auto& s: mySticks)
   {
     uInt32 stick = s.first;
-    const PhysicalJoystick* j = s.second;
+    const PhysicalJoystickPtr j = s.second;
     if(!j)  continue;
 
     // Joystick button mapping/labeling
@@ -455,7 +448,7 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
 bool PhysicalJoystickHandler::addAxisMapping(Event::Type event, EventMode mode,
     int stick, int axis, int value)
 {
-  const PhysicalJoystick* j = joy(stick);
+  const PhysicalJoystickPtr j = joy(stick);
   if(j)
   {
     if(axis >= 0 && axis < j->numAxes && event < Event::LastType)
@@ -484,7 +477,7 @@ bool PhysicalJoystickHandler::addAxisMapping(Event::Type event, EventMode mode,
 bool PhysicalJoystickHandler::addBtnMapping(Event::Type event, EventMode mode,
     int stick, int button)
 {
-  const PhysicalJoystick* j = joy(stick);
+  const PhysicalJoystickPtr j = joy(stick);
   if(j)
   {
     if(button >= 0 && button < j->numButtons && event < Event::LastType)
@@ -500,7 +493,7 @@ bool PhysicalJoystickHandler::addBtnMapping(Event::Type event, EventMode mode,
 bool PhysicalJoystickHandler::addHatMapping(Event::Type event, EventMode mode,
     int stick, int hat, JoyHat value)
 {
-  const PhysicalJoystick* j = joy(stick);
+  const PhysicalJoystickPtr j = joy(stick);
   if(j)
   {
     if(hat >= 0 && hat < j->numHats && event < Event::LastType &&
@@ -516,7 +509,7 @@ bool PhysicalJoystickHandler::addHatMapping(Event::Type event, EventMode mode,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 {
-  const PhysicalJoystick* j = joy(stick);
+  const PhysicalJoystickPtr j = joy(stick);
   if(!j)  return;
 
   // Stelladaptors handle axis differently than regular joysticks
@@ -623,7 +616,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, uInt8 state)
 {
-  const PhysicalJoystick* j = joy(stick);
+  const PhysicalJoystickPtr j = joy(stick);
   if(!j)  return;
 
   // Stelladaptors handle buttons differently than regular joysticks
@@ -688,7 +681,7 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
   // when we get a diagonal hat event
   if(myHandler.state() == EventHandlerState::EMULATION)
   {
-    const PhysicalJoystick* j = joy(stick);
+    const PhysicalJoystickPtr j = joy(stick);
     if(!j)  return;
 
     myHandler.handleEvent(j->hatTable[hat][int(JoyHat::UP)][kEmulationMode],

@@ -29,6 +29,8 @@ class Event;
 #include "PhysicalJoystick.hxx"
 #include "Variant.hxx"
 
+using PhysicalJoystickPtr = shared_ptr<PhysicalJoystick>;
+
 /**
   This class handles all physical joystick-related operations in Stella.
 
@@ -46,11 +48,11 @@ class PhysicalJoystickHandler
   private:
     struct StickInfo
     {
-      StickInfo(const string& map = EmptyString, PhysicalJoystick* stick = nullptr)
+      StickInfo(const string& map = EmptyString, PhysicalJoystickPtr stick = nullptr)
         : mapping(map), joy(stick) {}
 
       string mapping;
-      PhysicalJoystick* joy;
+      PhysicalJoystickPtr joy;
 
       friend ostream& operator<<(ostream& os, const StickInfo& si) {
         os << "  joy: " << si.joy << endl << "  map: " << si.mapping;
@@ -59,14 +61,10 @@ class PhysicalJoystickHandler
     };
 
   public:
-    using StickDatabase = std::map<string,StickInfo>;
-    using StickList = std::map<int, PhysicalJoystick*>;
-
     PhysicalJoystickHandler(OSystem& system, EventHandler& handler, Event& event);
-    ~PhysicalJoystickHandler();
 
     /** Return stick ID on success, -1 on failure. */
-    int add(PhysicalJoystick* stick);
+    int add(PhysicalJoystickPtr stick);
     bool remove(int id);
     bool remove(const string& name);
     void mapStelladaptors(const string& saport);
@@ -86,21 +84,24 @@ class PhysicalJoystickHandler
     void handleHatEvent(int stick, int hat, int value);
 
     Event::Type eventForAxis(int stick, int axis, int value, EventMode mode) const {
-      const PhysicalJoystick* j = joy(stick);
+      const PhysicalJoystickPtr j = joy(stick);
       return j ? j->axisTable[axis][(value > 0)][mode] : Event::NoType;
     }
     Event::Type eventForButton(int stick, int button, EventMode mode) const {
-      const PhysicalJoystick* j = joy(stick);
+      const PhysicalJoystickPtr j = joy(stick);
       return j ? j->btnTable[button][mode] : Event::NoType;
     }
     Event::Type eventForHat(int stick, int hat, JoyHat value, EventMode mode) const {
-      const PhysicalJoystick* j = joy(stick);
+      const PhysicalJoystickPtr j = joy(stick);
       return j ? j->hatTable[hat][int(value)][mode] : Event::NoType;
     }
 
     VariantList database() const;
 
   private:
+    using StickDatabase = std::map<string,StickInfo>;
+    using StickList = std::map<int, PhysicalJoystickPtr>;
+
     OSystem& myOSystem;
     EventHandler& myHandler;
     Event& myEvent;
@@ -113,7 +114,7 @@ class PhysicalJoystickHandler
 
     // Get joystick corresponding to given id (or nullptr if it doesn't exist)
     // Make this inline so it's as fast as possible
-    const PhysicalJoystick* joy(int id) const {
+    const PhysicalJoystickPtr joy(int id) const {
       const auto& i = mySticks.find(id);
       return i != mySticks.cend() ? i->second : nullptr;
     }

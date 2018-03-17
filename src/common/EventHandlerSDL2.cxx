@@ -127,7 +127,7 @@ void EventHandlerSDL2::pollEvent()
 
       case SDL_JOYDEVICEADDED:
       {
-        addPhysicalJoystick(new JoystickSDL2(myEvent.jdevice.which));
+        addPhysicalJoystick(make_shared<JoystickSDL2>(myEvent.jdevice.which));
         break;  // SDL_JOYDEVICEADDED
       }
       case SDL_JOYDEVICEREMOVED:

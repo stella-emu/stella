@@ -366,7 +366,7 @@ class EventHandler
     /**
       Add the given joystick to the list of physical joysticks available to the handler.
     */
-    void addPhysicalJoystick(PhysicalJoystick* stick);
+    void addPhysicalJoystick(PhysicalJoystickPtr stick);
 
     /**
       Remove physical joystick at the current index.
