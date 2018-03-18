@@ -662,8 +662,8 @@ void FrameBuffer::setCursorState()
   bool emulation =
       myOSystem.eventHandler().state() == EventHandlerState::EMULATION;
   bool analog = myOSystem.hasConsole() ?
-      (myOSystem.eventHandler().controllerIsAnalog(Controller::Left) ||
-       myOSystem.eventHandler().controllerIsAnalog(Controller::Right)) : false;
+      (myOSystem.console().controller(Controller::Left).isAnalog() ||
+       myOSystem.console().controller(Controller::Right).isAnalog()) : false;
   bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
 
   grabMouse(emulation && (analog || alwaysUseMouse) && myGrabMouse);

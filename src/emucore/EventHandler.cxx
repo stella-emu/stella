@@ -1696,15 +1696,6 @@ void EventHandler::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::controllerIsAnalog(Controller::Jack jack) const
-{
-  const Controller& controller = jack == Controller::Left ?
-      myOSystem.console().leftController() : myOSystem.console().rightController();
-
-  return controller.isAnalog();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setMouseControllerMode(const string& enable)
 {
   if(myOSystem.hasConsole())
@@ -1716,8 +1707,8 @@ void EventHandler::setMouseControllerMode(const string& enable)
       usemouse = false;
     else  // 'analog'
     {
-      usemouse = controllerIsAnalog(Controller::Left) ||
-                 controllerIsAnalog(Controller::Right);
+      usemouse = myOSystem.console().controller(Controller::Left).isAnalog() ||
+                 myOSystem.console().controller(Controller::Right).isAnalog();
     }
 
     const string& control = usemouse ?
