@@ -50,21 +50,6 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::printDatabase() const
-{
-  cerr << "---------------------------------------------------------" << endl
-       << "joy database:"  << endl;
-  for(const auto& i: myDatabase)
-    cerr << i.first << endl << i.second << endl << endl;
-
-  cerr << "---------------------" << endl
-       << "joy active:"  << endl;
-  for(const auto& i: mySticks)
-    cerr << i.first << ": " << *i.second << endl;
-  cerr << "---------------------------------------------------------" << endl << endl << endl;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int PhysicalJoystickHandler::add(PhysicalJoystickPtr stick)
 {
   // Skip if we couldn't open it for any reason
@@ -719,6 +704,24 @@ VariantList PhysicalJoystickHandler::database() const
     VarList::push_back(db, i.first, i.second.joy ? i.second.joy->ID : -1);
 
   return db;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
+{
+  os << "---------------------------------------------------------" << endl
+     << "joy database:"  << endl;
+  for(const auto& i: jh.myDatabase)
+    os << i.first << endl << i.second << endl << endl;
+
+  os << "---------------------" << endl
+     << "joy active:"  << endl;
+  for(const auto& i: jh.mySticks)
+    os << i.first << ": " << *i.second << endl;
+  os << "---------------------------------------------------------"
+     << endl << endl << endl;
+
+  return os;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

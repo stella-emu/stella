@@ -96,6 +96,7 @@ class PhysicalJoystickHandler
       return j ? j->hatTable[hat][int(value)][mode] : Event::NoType;
     }
 
+    /** Returns a list of pairs consisting of joystick name and associated ID. */
     VariantList database() const;
 
   private:
@@ -119,8 +120,10 @@ class PhysicalJoystickHandler
       return i != mySticks.cend() ? i->second : nullptr;
     }
 
+    // Set default mapping for given joystick when no mappings already exist
     void setStickDefaultMapping(int stick, Event::Type type, EventMode mode);
-    void printDatabase() const;
+
+    friend ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh);
 
     // Static lookup tables for Stelladaptor/2600-daptor axis/button support
     static const Event::Type SA_Axis[2][2];
