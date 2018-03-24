@@ -46,6 +46,13 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
+#ifdef BSPF_WINDOWS
+  // TODO - remove the following code once we convert to the new sound
+  //        core, and use 32-bit floating point samples and do
+  //        our own resampling
+  SDL_setenv("SDL_AUDIODRIVER", "directsound", true);
+#endif
+
   // The sound system is opened only once per program run, to eliminate
   // issues with opening and closing it multiple times
   // This fixes a bug most prevalent with ATI video cards in Windows,

@@ -23,6 +23,8 @@
 
   * Fixed bug in UI navigation with joystick hat movement.
 
+  * Updated version of SDL included with the Windows build to 2.0.8.
+
 -Have fun!
 
 
