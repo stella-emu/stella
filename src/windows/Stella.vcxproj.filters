@@ -897,6 +897,9 @@
     <ClCompile Include="..\common\PJoystickHandler.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\PKeyboardHandler.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1836,6 +1839,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\PJoystickHandler.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\PKeyboardHandler.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
