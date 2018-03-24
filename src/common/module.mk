@@ -10,6 +10,7 @@ MODULE_OBJS := \
 	src/common/MouseControl.o \
 	src/common/PhysicalJoystick.o \
 	src/common/PJoystickHandler.o \
+	src/common/PKeyboardHandler.o \
 	src/common/PNGLibrary.o \
 	src/common/RewindManager.o \
 	src/common/SoundSDL2.o \

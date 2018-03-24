@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef STELLA_JOYSTICK_HXX
-#define STELLA_JOYSTICK_HXX
+#ifndef PHYSICAL_JOYSTICK_HXX
+#define PHYSICAL_JOYSTICK_HXX
 
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"

@@ -28,6 +28,7 @@
 #include "Settings.hxx"
 #include "FSNode.hxx"
 #include "OSystem.hxx"
+#include "PNGLibrary.hxx"
 #include "System.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -132,7 +133,7 @@ int main(int argc, char* argv[])
     {
       theOSystem->logMessage("Taking snapshots with 'takesnapshot' ...", 2);
       for(int i = 0; i < 30; ++i)  theOSystem->frameBuffer().update();
-      theOSystem->eventHandler().takeSnapshot();
+      theOSystem->png().takeSnapshot();
       return Cleanup();
     }
 

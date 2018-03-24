@@ -609,7 +609,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, uInt8 state)
   {
     case PhysicalJoystick::JT_REGULAR:
       // Handle buttons which switch eventhandler state
-      if(state && myHandler.eventStateChange(j->btnTable[button][kEmulationMode]))
+      if(state && myHandler.changeStateByEvent(j->btnTable[button][kEmulationMode]))
         return;
 
       // Determine which mode we're in, then send the event to the appropriate place

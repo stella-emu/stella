@@ -18,14 +18,21 @@
 #include <cmath>
 
 #include "bspf.hxx"
+#include "OSystem.hxx"
+#include "Console.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "Props.hxx"
+#include "Settings.hxx"
+#include "TIASurface.hxx"
+#include "Version.hxx"
 #include "PNGLibrary.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PNGLibrary::PNGLibrary(const FrameBuffer& fb)
-  : myFB(fb)
+PNGLibrary::PNGLibrary(OSystem& osystem)
+  : myOSystem(osystem),
+    mySnapInterval(0),
+    mySnapCounter(0)
 {
 }
 
@@ -121,12 +128,13 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
   if(!out.is_open())
     throw runtime_error("ERROR: Couldn't create snapshot file");
 
-  const GUI::Rect& rect = myFB.imageRect();
+  const FrameBuffer& fb = myOSystem.frameBuffer();
+  const GUI::Rect& rect = fb.imageRect();
   png_uint_32 width = rect.width(), height = rect.height();
 
   // Get framebuffer pixel data (we get ABGR format)
   unique_ptr<png_byte[]> buffer = make_unique<png_byte[]>(width * height * 4);
-  myFB.readPixels(buffer.get(), width*4, rect);
+  fb.readPixels(buffer.get(), width*4, rect);
 
   // Set up pointers into "buffer" byte array
   unique_ptr<png_bytep[]> rows = make_unique<png_bytep[]>(height);
@@ -228,6 +236,146 @@ done:
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PNGLibrary::updateTime(uInt64 time)
+{
+  if(++mySnapCounter % mySnapInterval == 0)
+    takeSnapshot(uInt32(time) >> 10);  // not quite milliseconds, but close enough
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PNGLibrary::toggleContinuousSnapshots(bool perFrame)
+{
+  if(mySnapInterval == 0)
+  {
+    ostringstream buf;
+    uInt32 interval = myOSystem.settings().getInt("ssinterval");
+    if(perFrame)
+    {
+      buf << "Enabling snapshots every frame";
+      interval = 1;
+    }
+    else
+    {
+      buf << "Enabling snapshots in " << interval << " second intervals";
+      interval *= uInt32(myOSystem.frameRate());
+    }
+    myOSystem.frameBuffer().showMessage(buf.str());
+    setContinuousSnapInterval(interval);
+  }
+  else
+  {
+    ostringstream buf;
+    buf << "Disabling snapshots, generated "
+      << (mySnapCounter / mySnapInterval)
+      << " files";
+    myOSystem.frameBuffer().showMessage(buf.str());
+    setContinuousSnapInterval(0);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PNGLibrary::setContinuousSnapInterval(uInt32 interval)
+{
+  mySnapInterval = interval;
+  mySnapCounter = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PNGLibrary::takeSnapshot(uInt32 number)
+{
+  if(!myOSystem.hasConsole())
+    return;
+
+  // Figure out the correct snapshot name
+  string filename;
+  bool showmessage = number == 0;
+  string sspath = myOSystem.snapshotSaveDir() +
+      (myOSystem.settings().getString("snapname") != "int" ?
+          myOSystem.romFile().getNameWithExt("")
+        : myOSystem.console().properties().get(Cartridge_Name));
+
+  // Check whether we want multiple snapshots created
+  if(number > 0)
+  {
+    ostringstream buf;
+    buf << sspath << "_" << std::hex << std::setw(8) << std::setfill('0')
+        << number << ".png";
+    filename = buf.str();
+  }
+  else if(!myOSystem.settings().getBool("sssingle"))
+  {
+    // Determine if the file already exists, checking each successive filename
+    // until one doesn't exist
+    filename = sspath + ".png";
+    FilesystemNode node(filename);
+    if(node.exists())
+    {
+      ostringstream buf;
+      for(uInt32 i = 1; ;++i)
+      {
+        buf.str("");
+        buf << sspath << "_" << i << ".png";
+        FilesystemNode next(buf.str());
+        if(!next.exists())
+          break;
+      }
+      filename = buf.str();
+    }
+  }
+  else
+    filename = sspath + ".png";
+
+  // Some text fields to add to the PNG snapshot
+  VariantList comments;
+  ostringstream version;
+  version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
+          << BSPF::ARCH << "]";
+  VarList::push_back(comments, "Software", version.str());
+  VarList::push_back(comments, "ROM Name", myOSystem.console().properties().get(Cartridge_Name));
+  VarList::push_back(comments, "ROM MD5", myOSystem.console().properties().get(Cartridge_MD5));
+  VarList::push_back(comments, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
+
+  // Now create a PNG snapshot
+  if(myOSystem.settings().getBool("ss1x"))
+  {
+    string message = "Snapshot saved";
+    try
+    {
+      GUI::Rect rect;
+      const FBSurface& surface = myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
+      myOSystem.png().saveImage(filename, surface, rect, comments);
+    }
+    catch(const runtime_error& e)
+    {
+      message = e.what();
+    }
+    if(showmessage)
+      myOSystem.frameBuffer().showMessage(message);
+  }
+  else
+  {
+    // Make sure we have a 'clean' image, with no onscreen messages
+    myOSystem.frameBuffer().enableMessages(false);
+    myOSystem.frameBuffer().tiaSurface().reRender();
+
+    string message = "Snapshot saved";
+    try
+    {
+      myOSystem.png().saveImage(filename, comments);
+    }
+    catch(const runtime_error& e)
+    {
+      message = e.what();
+    }
+
+    // Re-enable old messages
+    myOSystem.frameBuffer().enableMessages(true);
+    if(showmessage)
+      myOSystem.frameBuffer().showMessage(message);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PNGLibrary::allocateStorage(png_uint_32 w, png_uint_32 h)
 {
   // Create space for the entire image (3 bytes per pixel in RGB format)
@@ -276,12 +424,13 @@ void PNGLibrary::loadImagetoSurface(FBSurface& surface)
   uInt8* i_buf = ReadInfo.buffer.get();
   uInt32 i_pitch = ReadInfo.pitch;
 
+  const FrameBuffer& fb = myOSystem.frameBuffer();
   for(uInt32 irow = 0; irow < ih; ++irow, i_buf += i_pitch, s_buf += s_pitch)
   {
     uInt8*  i_ptr = i_buf;
     uInt32* s_ptr = s_buf;
     for(uInt32 icol = 0; icol < ReadInfo.width; ++icol, i_ptr += 3)
-      *s_ptr++ = myFB.mapRGB(*i_ptr, *(i_ptr+1), *(i_ptr+2));
+      *s_ptr++ = fb.mapRGB(*i_ptr, *(i_ptr+1), *(i_ptr+2));
   }
 }
 

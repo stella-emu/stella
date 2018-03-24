@@ -158,7 +158,7 @@ bool OSystem::create()
   myRandom->initSeed();
 
   // Create PNG handler
-  myPNGLib = make_unique<PNGLibrary>(*myFrameBuffer);
+  myPNGLib = make_unique<PNGLibrary>(*this);
 
   return true;
 }

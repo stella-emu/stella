@@ -26,7 +26,6 @@
 #include "DialogContainer.hxx"
 #include "Event.hxx"
 #include "FrameBuffer.hxx"
-#include "TIASurface.hxx"
 #include "FSNode.hxx"
 #include "Launcher.hxx"
 #include "TimeMachine.hxx"
@@ -46,7 +45,6 @@
 #include "M6532.hxx"
 #include "MouseControl.hxx"
 #include "PNGLibrary.hxx"
-#include "Version.hxx"
 
 #include "EventHandler.hxx"
 
@@ -65,25 +63,19 @@ EventHandler::EventHandler(OSystem& osystem)
     myState(EventHandlerState::NONE),
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
-    myUseCtrlKeyFlag(true),
     mySkipMouseMotion(true),
-    myIs7800(false),
-    myAltKeyCounter(0),
-    myContSnapshotInterval(0),
-    myContSnapshotCounter(0)
+    myIs7800(false)
 {
-  // Erase the key mapping array
-  for(int i = 0; i < KBDK_LAST; ++i)
-    for(int m = 0; m < kNumModes; ++m)
-      myKeyTable[i][m] = Event::NoType;
+  // Create keyboard handler (to handle all physical keyboard functionality)
+  myPKeyHandler = make_unique<PhysicalKeyboardHandler>(osystem, *this, myEvent);
+
+  // Create joystick handler (to handle all physical joystick functionality)
+  myPJoyHandler = make_unique<PhysicalJoystickHandler>(osystem, *this, myEvent);
 
   // Erase the 'combo' array
   for(int i = 0; i < kComboSize; ++i)
     for(int j = 0; j < kEventsPerCombo; ++j)
       myComboTable[i][j] = Event::NoType;
-
-  // Create joystick handler (to handle all physical joystick functionality)
-  myPJoyHandler = make_unique<PhysicalJoystickHandler>(osystem, *this, myEvent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -96,12 +88,9 @@ void EventHandler::initialize()
 {
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
-  setKeymap();
   setComboMap();
   setActionMappings(kEmulationMode);
   setActionMappings(kMenuMode);
-
-  myUseCtrlKeyFlag = myOSystem.settings().getBool("ctrlcombo");
 
   Joystick::setDeadZone(myOSystem.settings().getInt("joydeadzone"));
   Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
@@ -128,10 +117,9 @@ void EventHandler::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::reset(EventHandlerState state)
 {
-  setEventState(state);
+  setState(state);
   myOSystem.state().reset();
-
-  setContinuousSnapshots(0);
+  myOSystem.png().setContinuousSnapInterval(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,6 +184,13 @@ void EventHandler::set7800Mode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleMouseControl()
+{
+  if(myMouseControl)
+    myOSystem.frameBuffer().showMessage(myMouseControl->next());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt64 time)
 {
   // Process events from the underlying hardware
@@ -218,9 +213,8 @@ void EventHandler::poll(uInt64 time)
   #endif
 
     // Handle continuous snapshots
-    if(myContSnapshotInterval > 0 &&
-      (++myContSnapshotCounter % myContSnapshotInterval == 0))
-      takeSnapshot(uInt32(time) >> 10);  // not quite milliseconds, but close enough
+    if(myOSystem.png().continuousSnapEnabled())
+      myOSystem.png().updateTime(time);
   }
   else if(myOverlay)
   {
@@ -241,404 +235,6 @@ void EventHandler::handleTextEvent(char text)
   // Text events are only used in GUI mode
   if(myOverlay)
     myOverlay->handleTextEvent(text);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
-{
-  // Swallow KBDK_TAB under certain conditions
-  // See commments on 'myAltKeyCounter' for more information
-#ifdef BSPF_UNIX
-  if(myAltKeyCounter > 1 && key == KBDK_TAB)
-  {
-    myAltKeyCounter = false;
-    return;
-  }
-#endif
-
-  bool handled = true;
-
-  // Immediately store the key state
-  myEvent.setKey(key, state);
-
-  // An attempt to speed up event processing; we quickly check for
-  // Control or Alt/Cmd combos first
-  if(StellaModTest::isAlt(mod) && state)
-  {
-#ifdef BSPF_MAC_OSX
-    // These keys work in all states
-    if(key == KBDK_Q)
-    {
-      handleEvent(Event::Quit, 1);
-    }
-    else
-#endif
-    if(key == KBDK_TAB)
-    {
-      // Swallow Alt-Tab, but remember that it happened
-      myAltKeyCounter = 1;
-      return;
-    }
-    else if(key == KBDK_RETURN)
-    {
-      myOSystem.frameBuffer().toggleFullscreen();
-    }
-    // State rewinding must work in pause mode too
-    else if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
-    {
-      switch(key)
-      {
-        case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
-          enterTimeMachineMenuMode((StellaModTest::isShift(mod) && state) ? 10 : 1, false);
-          break;
-
-        case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
-          enterTimeMachineMenuMode((StellaModTest::isShift(mod) && state) ? 10 : 1, true);
-          break;
-
-        case KBDK_DOWN:  // Alt-down rewinds to start of list
-          enterTimeMachineMenuMode(1000, false);
-          break;
-
-        case KBDK_UP:  // Alt-up rewinds to end of list
-          enterTimeMachineMenuMode(1000, true);
-          break;
-
-        // These can work in pause mode too
-        case KBDK_EQUALS:
-          myOSystem.frameBuffer().changeWindowedVidMode(+1);
-          break;
-
-        case KBDK_MINUS:
-          myOSystem.frameBuffer().changeWindowedVidMode(-1);
-          break;
-
-        case KBDK_LEFTBRACKET:
-          myOSystem.sound().adjustVolume(-1);
-          break;
-
-        case KBDK_RIGHTBRACKET:
-          myOSystem.sound().adjustVolume(+1);
-          break;
-
-        case KBDK_PAGEUP:    // Alt-PageUp increases YStart
-          myOSystem.console().changeYStart(+1);
-          break;
-
-        case KBDK_PAGEDOWN:  // Alt-PageDown decreases YStart
-          myOSystem.console().changeYStart(-1);
-          break;
-
-        case KBDK_1:  // Alt-1 turns off NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_OFF);
-          break;
-
-        case KBDK_2:  // Alt-2 turns on 'composite' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_COMPOSITE);
-          break;
-
-        case KBDK_3:  // Alt-3 turns on 'svideo' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_SVIDEO);
-          break;
-
-        case KBDK_4:  // Alt-4 turns on 'rgb' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_RGB);
-          break;
-
-        case KBDK_5:  // Alt-5 turns on 'bad' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_BAD);
-          break;
-
-        case KBDK_6:  // Alt-6 turns on 'custom' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_CUSTOM);
-          break;
-
-        case KBDK_7:  // Alt-7 changes scanline intensity for NTSC filtering
-          if(mod & KBDM_SHIFT)
-            myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-5);
-          else
-            myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+5);
-          break;
-
-        case KBDK_8:  // Alt-8 turns toggles scanline interpolation
-          myOSystem.frameBuffer().tiaSurface().toggleScanlineInterpolation();
-          break;
-
-        case KBDK_9:  // Alt-9 selects various custom adjustables for NTSC filtering
-          if(myOSystem.frameBuffer().tiaSurface().ntscEnabled())
-          {
-            if(mod & KBDM_SHIFT)
-              myOSystem.frameBuffer().showMessage(
-                myOSystem.frameBuffer().tiaSurface().ntsc().setPreviousAdjustable());
-            else
-              myOSystem.frameBuffer().showMessage(
-                myOSystem.frameBuffer().tiaSurface().ntsc().setNextAdjustable());
-          }
-          break;
-
-        case KBDK_0:  // Alt-0 changes custom adjustables for NTSC filtering
-          if(myOSystem.frameBuffer().tiaSurface().ntscEnabled())
-          {
-            if(mod & KBDM_SHIFT)
-              myOSystem.frameBuffer().showMessage(
-                myOSystem.frameBuffer().tiaSurface().ntsc().decreaseAdjustable());
-            else
-              myOSystem.frameBuffer().showMessage(
-                myOSystem.frameBuffer().tiaSurface().ntsc().increaseAdjustable());
-          }
-          break;
-
-        case KBDK_Z:
-          if(mod & KBDM_SHIFT)
-            myOSystem.console().toggleP0Collision();
-          else
-            myOSystem.console().toggleP0Bit();
-          break;
-
-        case KBDK_X:
-          if(mod & KBDM_SHIFT)
-            myOSystem.console().toggleP1Collision();
-          else
-            myOSystem.console().toggleP1Bit();
-          break;
-
-        case KBDK_C:
-          if(mod & KBDM_SHIFT)
-            myOSystem.console().toggleM0Collision();
-          else
-            myOSystem.console().toggleM0Bit();
-          break;
-
-        case KBDK_V:
-          if(mod & KBDM_SHIFT)
-            myOSystem.console().toggleM1Collision();
-          else
-            myOSystem.console().toggleM1Bit();
-          break;
-
-        case KBDK_B:
-          if(mod & KBDM_SHIFT)
-            myOSystem.console().toggleBLCollision();
-          else
-            myOSystem.console().toggleBLBit();
-          break;
-
-        case KBDK_N:
-          if(mod & KBDM_SHIFT)
-            myOSystem.console().togglePFCollision();
-          else
-            myOSystem.console().togglePFBit();
-          break;
-
-        case KBDK_COMMA:
-          myOSystem.console().toggleFixedColors();
-          break;
-
-        case KBDK_PERIOD:
-          if(mod & KBDM_SHIFT)
-            myOSystem.console().toggleCollisions();
-          else
-            myOSystem.console().toggleBits();
-          break;
-
-        case KBDK_I:  // Alt-i decreases phosphor blend
-          myOSystem.console().changePhosphor(-1);
-          break;
-
-        case KBDK_O:  // Alt-o increases phosphor blend
-          myOSystem.console().changePhosphor(+1);
-          break;
-
-        case KBDK_P:  // Alt-p toggles phosphor effect
-          myOSystem.console().togglePhosphor();
-          break;
-
-        case KBDK_J:  // Alt-j toggles scanline jitter
-          myOSystem.console().toggleJitter();
-          break;
-
-        case KBDK_L:
-          myOSystem.frameBuffer().toggleFrameStats();
-          break;
-
-        case KBDK_T:  // Alt-t toggles Time Machine
-          myOSystem.state().toggleTimeMachine();
-          break;
-
-        case KBDK_S:
-          if(myContSnapshotInterval == 0)
-          {
-            ostringstream buf;
-            uInt32 interval = myOSystem.settings().getInt("ssinterval");
-            if(mod & KBDM_SHIFT)
-            {
-              buf << "Enabling snapshots every frame";
-              interval = 1;
-            }
-            else
-            {
-              buf << "Enabling snapshots in " << interval << " second intervals";
-              interval *= uInt32(myOSystem.frameRate());
-            }
-            myOSystem.frameBuffer().showMessage(buf.str());
-            setContinuousSnapshots(interval);
-          }
-          else
-          {
-            ostringstream buf;
-            buf << "Disabling snapshots, generated "
-              << (myContSnapshotCounter / myContSnapshotInterval)
-              << " files";
-            myOSystem.frameBuffer().showMessage(buf.str());
-            setContinuousSnapshots(0);
-          }
-          break;
-
-        default:
-          handled = false;
-          break;
-      }
-    }
-    else
-      handled = false;
-  }
-  else if(StellaModTest::isControl(mod) && state && myUseCtrlKeyFlag)
-  {
-    // These keys work in all states
-    if(key == KBDK_Q)
-    {
-      handleEvent(Event::Quit, 1);
-    }
-    // These only work when in emulation mode
-    else if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
-    {
-      switch(key)
-      {
-        case KBDK_0:  // Ctrl-0 switches between mouse control modes
-          if(myMouseControl)
-            myOSystem.frameBuffer().showMessage(myMouseControl->next());
-          break;
-
-        case KBDK_1:  // Ctrl-1 swaps Stelladaptor/2600-daptor ports
-          toggleSAPortOrder();
-          break;
-
-        case KBDK_F:  // (Shift) Ctrl-f toggles NTSC/PAL/SECAM mode
-          myOSystem.console().toggleFormat(mod & KBDM_SHIFT ? -1 : 1);
-          break;
-
-        case KBDK_G:  // Ctrl-g (un)grabs mouse
-          if(!myOSystem.frameBuffer().fullScreen())
-          {
-            myOSystem.frameBuffer().toggleGrabMouse();
-            myOSystem.frameBuffer().showMessage(myOSystem.frameBuffer().grabMouseEnabled()
-                                                ? "Grab mouse enabled" : "Grab mouse disabled");
-          }
-          break;
-
-        case KBDK_L:  // Ctrl-l toggles PAL color-loss effect
-          myOSystem.console().toggleColorLoss();
-          break;
-
-        case KBDK_P:  // Ctrl-p toggles different palettes
-          myOSystem.console().togglePalette();
-          break;
-
-        case KBDK_R:  // Ctrl-r reloads the currently loaded ROM
-          myOSystem.reloadConsole();
-          break;
-
-        case KBDK_PAGEUP:    // Ctrl-PageUp increases Height
-          myOSystem.console().changeHeight(+1);
-          break;
-
-        case KBDK_PAGEDOWN:  // Ctrl-PageDown decreases Height
-          myOSystem.console().changeHeight(-1);
-          break;
-
-        case KBDK_S:         // Ctrl-s saves properties to a file
-        {
-          string filename = myOSystem.baseDir() +
-              myOSystem.console().properties().get(Cartridge_Name) + ".pro";
-          ofstream out(filename);
-          if(out)
-          {
-            out << myOSystem.console().properties();
-            myOSystem.frameBuffer().showMessage("Properties saved");
-          }
-          else
-            myOSystem.frameBuffer().showMessage("Error saving properties");
-          break;
-        }
-
-        default:
-          handled = false;
-          break;
-      }
-    }
-    else
-      handled = false;
-  }
-  else
-    handled = false;
-
-  // Don't pass the key on if we've already taken care of it
-  if(handled) return;
-
-  // Arrange the logic to take advantage of short-circuit evaluation
-  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
-  {
-    // special handling for Escape key
-    if(state && key == KBDK_ESCAPE)
-    {
-      if(myState == EventHandlerState::PAUSE)
-      {
-        setEventState(EventHandlerState::EMULATION);
-        return;
-      }
-      else if(myState == EventHandlerState::CMDMENU ||
-              myState == EventHandlerState::TIMEMACHINE)
-      {
-        leaveMenuMode();
-        return;
-      }
-      else if(myState == EventHandlerState::DEBUGGER && myOSystem.debugger().canExit())
-      {
-        leaveDebugMode();
-        return;
-      }
-    }
-
-    // Handle keys which switch eventhandler state
-    if(!state && eventStateChange(myKeyTable[key][kEmulationMode]))
-      return;
-  }
-
-  // Otherwise, let the event handler deal with it
-  switch(myState)
-  {
-    case EventHandlerState::EMULATION:
-      handleEvent(myKeyTable[key][kEmulationMode], state);
-      break;
-
-    case EventHandlerState::PAUSE:
-      switch(myKeyTable[key][kEmulationMode])
-      {
-        case Event::TakeSnapshot:
-        case Event::DebuggerMode:
-          handleEvent(myKeyTable[key][kEmulationMode], state);
-          break;
-
-        default:
-          break;
-      }
-      break;
-
-    default:
-      if(myOverlay)
-        myOverlay->handleKeyEvent(key, mod, state);
-      break;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -693,8 +289,8 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
     case SystemEvent::WINDOW_FOCUS_GAINED:
       // Used to handle Alt-x key combos; sometimes the key associated with
       // Alt gets 'stuck'  and is passed to the core for processing
-      if(myAltKeyCounter > 0)
-        myAltKeyCounter = 2;
+      if(myPKeyHandler->altKeyCount() > 0)
+        myPKeyHandler->altKeyCount() = 2;
       break;
 #if 0
     case SystemEvent::WINDOW_MINIMIZED:
@@ -758,7 +354,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
     ////////////////////////////////////////////////////////////////////////
 
     case Event::Fry:
-      if(myUseCtrlKeyFlag) myFryingFlag = bool(state);
+      if(myPKeyHandler->useCtrlKey()) myFryingFlag = bool(state);
       return;
 
     case Event::VolumeDecrease:
@@ -782,7 +378,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       return;
 
     case Event::TakeSnapshot:
-      if(state) takeSnapshot();
+      if(state) myOSystem.png().takeSnapshot();
       return;
 
     case Event::LauncherMode:
@@ -996,7 +592,7 @@ void EventHandler::handleConsoleStartupEvents()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::eventStateChange(Event::Type type)
+bool EventHandler::changeStateByEvent(Event::Type type)
 {
   bool handled = true;
 
@@ -1004,9 +600,9 @@ bool EventHandler::eventStateChange(Event::Type type)
   {
     case Event::PauseMode:
       if(myState == EventHandlerState::EMULATION)
-        setEventState(EventHandlerState::PAUSE);
+        setState(EventHandlerState::PAUSE);
       else if(myState == EventHandlerState::PAUSE)
-        setEventState(EventHandlerState::EMULATION);
+        setState(EventHandlerState::EMULATION);
       else
         handled = false;
       break;
@@ -1078,17 +674,7 @@ void EventHandler::setActionMappings(EventMode mode)
   {
     Event::Type event = list[i].event;
     list[i].key = "None";
-    string key = "";
-    for(int j = 0; j < KBDK_LAST; ++j)   // key mapping
-    {
-      if(myKeyTable[j][mode] == event)
-      {
-        if(key == "")
-          key = key + nameForKey(StellaKey(j));
-        else
-          key = key + ", " + nameForKey(StellaKey(j));
-      }
-    }
+    string key = myPKeyHandler->getMappingDesc(event, mode);
 
 #ifdef JOYSTICK_SUPPORT
     string joydesc = myPJoyHandler->getMappingDesc(event, mode);
@@ -1121,42 +707,6 @@ void EventHandler::setActionMappings(EventMode mode)
 
     if(key != "")
       list[i].key = key;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setKeymap()
-{
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
-  string list = myOSystem.settings().getString("keymap");
-  replace(list.begin(), list.end(), ':', ' ');
-  istringstream buf(list);
-
-  IntArray map;
-  int value;
-  Event::Type event;
-
-  // Get event count, which should be the first int in the list
-  buf >> value;
-  event = Event::Type(value);
-  if(event == Event::LastType)
-    while(buf >> value)
-      map.push_back(value);
-
-  // Only fill the key mapping array if the data is valid
-  if(event == Event::LastType && map.size() == KBDK_LAST * kNumModes)
-  {
-    // Fill the keymap table with events
-    auto e = map.cbegin();
-    for(int mode = 0; mode < kNumModes; ++mode)
-      for(int i = 0; i < KBDK_LAST; ++i)
-        myKeyTable[i][mode] = Event::Type(*e++);
-  }
-  else
-  {
-    setDefaultKeymap(Event::NoType, kEmulationMode);
-    setDefaultKeymap(Event::NoType, kMenuMode);
   }
 }
 
@@ -1214,16 +764,11 @@ void EventHandler::removePhysicalJoystickFromDatabase(const string& name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, StellaKey key)
 {
-  // These keys cannot be remapped
-  if(key == KBDK_TAB || Event::isAnalog(event))
-    return false;
-  else
-  {
-    myKeyTable[key][mode] = event;
+  bool mapped = myPKeyHandler->addMapping(event, mode, key);
+  if(mapped)
     setActionMappings(mode);
 
-    return true;
-  }
+  return mapped;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1277,10 +822,8 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::eraseMapping(Event::Type event, EventMode mode)
 {
-  // Erase the KeyEvent arrays
-  for(int i = 0; i < KBDK_LAST; ++i)
-    if(myKeyTable[i][mode] == event && i != KBDK_TAB)
-      myKeyTable[i][mode] = Event::NoType;
+  // Erase the KeyEvent array
+  myPKeyHandler->eraseMapping(event, mode);
 
 #ifdef JOYSTICK_SUPPORT
   // Erase the joystick mapping arrays
@@ -1300,110 +843,7 @@ void EventHandler::setDefaultMapping(Event::Type event, EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
 {
-  // If event is 'NoType', erase and reset all mappings
-  // Otherwise, only reset the given event
-  bool eraseAll = (event == Event::NoType);
-  if(eraseAll)
-  {
-    // Erase all mappings
-    for(int i = 0; i < KBDK_LAST; ++i)
-      myKeyTable[i][mode] = Event::NoType;
-  }
-
-  auto setDefaultKey = [&](StellaKey key, Event::Type k_event)
-  {
-    if(eraseAll || k_event == event)
-      myKeyTable[key][mode] = k_event;
-  };
-
-  switch(mode)
-  {
-    case kEmulationMode:
-      setDefaultKey( KBDK_1,         Event::KeyboardZero1     );
-      setDefaultKey( KBDK_2,         Event::KeyboardZero2     );
-      setDefaultKey( KBDK_3,         Event::KeyboardZero3     );
-      setDefaultKey( KBDK_Q,         Event::KeyboardZero4     );
-      setDefaultKey( KBDK_W,         Event::KeyboardZero5     );
-      setDefaultKey( KBDK_E,         Event::KeyboardZero6     );
-      setDefaultKey( KBDK_A,         Event::KeyboardZero7     );
-      setDefaultKey( KBDK_S,         Event::KeyboardZero8     );
-      setDefaultKey( KBDK_D,         Event::KeyboardZero9     );
-      setDefaultKey( KBDK_Z,         Event::KeyboardZeroStar  );
-      setDefaultKey( KBDK_X,         Event::KeyboardZero0     );
-      setDefaultKey( KBDK_C,         Event::KeyboardZeroPound );
-
-      setDefaultKey( KBDK_8,         Event::KeyboardOne1      );
-      setDefaultKey( KBDK_9,         Event::KeyboardOne2      );
-      setDefaultKey( KBDK_0,         Event::KeyboardOne3      );
-      setDefaultKey( KBDK_I,         Event::KeyboardOne4      );
-      setDefaultKey( KBDK_O,         Event::KeyboardOne5      );
-      setDefaultKey( KBDK_P,         Event::KeyboardOne6      );
-      setDefaultKey( KBDK_K,         Event::KeyboardOne7      );
-      setDefaultKey( KBDK_L,         Event::KeyboardOne8      );
-      setDefaultKey( KBDK_SEMICOLON, Event::KeyboardOne9      );
-      setDefaultKey( KBDK_COMMA,     Event::KeyboardOneStar   );
-      setDefaultKey( KBDK_PERIOD,    Event::KeyboardOne0      );
-      setDefaultKey( KBDK_SLASH,     Event::KeyboardOnePound  );
-
-      setDefaultKey( KBDK_UP,        Event::JoystickZeroUp    );
-      setDefaultKey( KBDK_DOWN,      Event::JoystickZeroDown  );
-      setDefaultKey( KBDK_LEFT,      Event::JoystickZeroLeft  );
-      setDefaultKey( KBDK_RIGHT,     Event::JoystickZeroRight );
-      setDefaultKey( KBDK_SPACE,     Event::JoystickZeroFire  );
-      setDefaultKey( KBDK_LCTRL,     Event::JoystickZeroFire  );
-      setDefaultKey( KBDK_4,         Event::JoystickZeroFire5 );
-      setDefaultKey( KBDK_5,         Event::JoystickZeroFire9 );
-
-      setDefaultKey( KBDK_Y,         Event::JoystickOneUp     );
-      setDefaultKey( KBDK_H,         Event::JoystickOneDown   );
-      setDefaultKey( KBDK_G,         Event::JoystickOneLeft   );
-      setDefaultKey( KBDK_J,         Event::JoystickOneRight  );
-      setDefaultKey( KBDK_F,         Event::JoystickOneFire   );
-      setDefaultKey( KBDK_6,         Event::JoystickOneFire5  );
-      setDefaultKey( KBDK_7,         Event::JoystickOneFire9  );
-
-
-      setDefaultKey( KBDK_F1,        Event::ConsoleSelect     );
-      setDefaultKey( KBDK_F2,        Event::ConsoleReset      );
-      setDefaultKey( KBDK_F3,        Event::ConsoleColor      );
-      setDefaultKey( KBDK_F4,        Event::ConsoleBlackWhite );
-      setDefaultKey( KBDK_F5,        Event::ConsoleLeftDiffA  );
-      setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffB  );
-      setDefaultKey( KBDK_F7,        Event::ConsoleRightDiffA );
-      setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffB );
-      setDefaultKey( KBDK_F9,        Event::SaveState         );
-      setDefaultKey( KBDK_F10,       Event::ChangeState       );
-      setDefaultKey( KBDK_F11,       Event::LoadState         );
-      setDefaultKey( KBDK_F12,       Event::TakeSnapshot      );
-      setDefaultKey( KBDK_BACKSPACE, Event::Fry               );
-      setDefaultKey( KBDK_PAUSE,     Event::PauseMode         );
-      setDefaultKey( KBDK_TAB,       Event::OptionsMenuMode   );
-      setDefaultKey( KBDK_BACKSLASH, Event::CmdMenuMode       );
-      setDefaultKey( KBDK_T,         Event::TimeMachineMode   );
-      setDefaultKey( KBDK_GRAVE,     Event::DebuggerMode      );
-      setDefaultKey( KBDK_ESCAPE,    Event::LauncherMode      );
-      break;
-
-    case kMenuMode:
-      setDefaultKey( KBDK_UP,        Event::UIUp      );
-      setDefaultKey( KBDK_DOWN,      Event::UIDown    );
-      setDefaultKey( KBDK_LEFT,      Event::UILeft    );
-      setDefaultKey( KBDK_RIGHT,     Event::UIRight   );
-
-      setDefaultKey( KBDK_HOME,      Event::UIHome    );
-      setDefaultKey( KBDK_END,       Event::UIEnd     );
-      setDefaultKey( KBDK_PAGEUP,    Event::UIPgUp    );
-      setDefaultKey( KBDK_PAGEDOWN,  Event::UIPgDown  );
-
-      setDefaultKey( KBDK_RETURN,    Event::UISelect  );
-      setDefaultKey( KBDK_ESCAPE,    Event::UICancel  );
-
-      setDefaultKey( KBDK_BACKSPACE, Event::UIPrevDir );
-      break;
-
-    default:
-      return;
-  }
+  myPKeyHandler->setDefaultMapping(event, mode);
   setActionMappings(mode);
 }
 
@@ -1419,15 +859,7 @@ void EventHandler::setDefaultJoymap(Event::Type event, EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::saveKeyMapping()
 {
-  // Iterate through the keymap table and create a colon-separated list
-  // Prepend the event count, so we can check it on next load
-  ostringstream keybuf;
-  keybuf << Event::LastType;
-  for(int mode = 0; mode < kNumModes; ++mode)
-    for(int i = 0; i < KBDK_LAST; ++i)
-      keybuf << ":" << myKeyTable[i][mode];
-
-  myOSystem.settings().setValue("keymap", keybuf.str());
+  myPKeyHandler->saveMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1604,98 +1036,6 @@ string EventHandler::keyAtIndex(int idx, EventMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::takeSnapshot(uInt32 number)
-{
-  // Figure out the correct snapshot name
-  string filename;
-  bool showmessage = number == 0;
-  string sspath = myOSystem.snapshotSaveDir() +
-      (myOSystem.settings().getString("snapname") != "int" ?
-          myOSystem.romFile().getNameWithExt("")
-        : myOSystem.console().properties().get(Cartridge_Name));
-
-  // Check whether we want multiple snapshots created
-  if(number > 0)
-  {
-    ostringstream buf;
-    buf << sspath << "_" << std::hex << std::setw(8) << std::setfill('0')
-        << number << ".png";
-    filename = buf.str();
-  }
-  else if(!myOSystem.settings().getBool("sssingle"))
-  {
-    // Determine if the file already exists, checking each successive filename
-    // until one doesn't exist
-    filename = sspath + ".png";
-    FilesystemNode node(filename);
-    if(node.exists())
-    {
-      ostringstream buf;
-      for(uInt32 i = 1; ;++i)
-      {
-        buf.str("");
-        buf << sspath << "_" << i << ".png";
-        FilesystemNode next(buf.str());
-        if(!next.exists())
-          break;
-      }
-      filename = buf.str();
-    }
-  }
-  else
-    filename = sspath + ".png";
-
-  // Some text fields to add to the PNG snapshot
-  VariantList comments;
-  ostringstream version;
-  version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
-          << BSPF::ARCH << "]";
-  VarList::push_back(comments, "Software", version.str());
-  VarList::push_back(comments, "ROM Name", myOSystem.console().properties().get(Cartridge_Name));
-  VarList::push_back(comments, "ROM MD5", myOSystem.console().properties().get(Cartridge_MD5));
-  VarList::push_back(comments, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
-
-  // Now create a PNG snapshot
-  if(myOSystem.settings().getBool("ss1x"))
-  {
-    string message = "Snapshot saved";
-    try
-    {
-      GUI::Rect rect;
-      const FBSurface& surface = myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
-      myOSystem.png().saveImage(filename, surface, rect, comments);
-    }
-    catch(const runtime_error& e)
-    {
-      message = e.what();
-    }
-    if(showmessage)
-      myOSystem.frameBuffer().showMessage(message);
-  }
-  else
-  {
-    // Make sure we have a 'clean' image, with no onscreen messages
-    myOSystem.frameBuffer().enableMessages(false);
-    myOSystem.frameBuffer().tiaSurface().reRender();
-
-    string message = "Snapshot saved";
-    try
-    {
-      myOSystem.png().saveImage(filename, comments);
-    }
-    catch(const runtime_error& e)
-    {
-      message = e.what();
-    }
-
-    // Re-enable old messages
-    myOSystem.frameBuffer().enableMessages(true);
-    if(showmessage)
-      myOSystem.frameBuffer().showMessage(message);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setMouseControllerMode(const string& enable)
 {
   if(myOSystem.hasConsole())
@@ -1720,16 +1060,9 @@ void EventHandler::setMouseControllerMode(const string& enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setContinuousSnapshots(uInt32 interval)
-{
-  myContSnapshotInterval = interval;
-  myContSnapshotCounter = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::enterMenuMode(EventHandlerState state)
 {
-  setEventState(state);
+  setState(state);
   myOverlay->reStack();
   myOSystem.sound().mute(true);
 }
@@ -1737,7 +1070,7 @@ void EventHandler::enterMenuMode(EventHandlerState state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveMenuMode()
 {
-  setEventState(EventHandlerState::EMULATION);
+  setState(EventHandlerState::EMULATION);
   myOSystem.sound().mute(false);
 }
 
@@ -1753,13 +1086,13 @@ bool EventHandler::enterDebugMode()
   // mode, since it takes care of locking the debugger state, which will
   // probably be modified below
   myOSystem.debugger().setStartState();
-  setEventState(EventHandlerState::DEBUGGER);
+  setState(EventHandlerState::DEBUGGER);
 
   FBInitStatus fbstatus = myOSystem.createFrameBuffer();
   if(fbstatus != FBInitStatus::Success)
   {
     myOSystem.debugger().setQuitState();
-    setEventState(EventHandlerState::EMULATION);
+    setState(EventHandlerState::EMULATION);
     if(fbstatus == FBInitStatus::FailTooLarge)
       myOSystem.frameBuffer().showMessage("Debugger window too large for screen",
                                           MessagePosition::BottomCenter, true);
@@ -1786,7 +1119,7 @@ void EventHandler::leaveDebugMode()
   // Make sure debugger quits in a consistent state
   myOSystem.debugger().setQuitState();
 
-  setEventState(EventHandlerState::EMULATION);
+  setState(EventHandlerState::EMULATION);
   myOSystem.createFrameBuffer();
   myOSystem.sound().mute(false);
 #endif
@@ -1807,13 +1140,13 @@ void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setEventState(EventHandlerState state)
+void EventHandler::setState(EventHandlerState state)
 {
   myState = state;
 
   // Normally, the usage of Control key is determined by 'ctrlcombo'
   // For certain ROMs it may be forced off, whatever the setting
-  myUseCtrlKeyFlag = myOSystem.settings().getBool("ctrlcombo");
+  myPKeyHandler->useCtrlKey() = myOSystem.settings().getBool("ctrlcombo");
 
   // Only enable text input in GUI modes, since in emulation mode the
   // keyboard acts as one large joystick with many (single) buttons
@@ -1824,7 +1157,7 @@ void EventHandler::setEventState(EventHandlerState state)
       myOSystem.sound().mute(false);
       enableTextEvents(false);
       if(myOSystem.console().leftController().type() == Controller::CompuMate)
-        myUseCtrlKeyFlag = false;
+        myPKeyHandler->useCtrlKey() = false;
       break;
 
     case EventHandlerState::PAUSE:
