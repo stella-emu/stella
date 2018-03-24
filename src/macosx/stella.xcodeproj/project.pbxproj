@@ -235,6 +235,8 @@
 		DC1B2EC41E50036100F62837 /* AmigaMouse.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */; };
 		DC1B2EC61E50036100F62837 /* AtariMouse.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EC01E50036100F62837 /* AtariMouse.hxx */; };
 		DC1B2EC81E50036100F62837 /* TrakBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EC21E50036100F62837 /* TrakBall.hxx */; };
+		DC1BC6662066B4390076F74A /* PKeyboardHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1BC6642066B4390076F74A /* PKeyboardHandler.cxx */; };
+		DC1BC6672066B4390076F74A /* PKeyboardHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */; };
 		DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */; };
 		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
 		DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2874061F8F2278004BF21A /* TrapArray.hxx */; };
@@ -907,6 +909,8 @@
 		DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AmigaMouse.hxx; sourceTree = "<group>"; };
 		DC1B2EC01E50036100F62837 /* AtariMouse.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AtariMouse.hxx; sourceTree = "<group>"; };
 		DC1B2EC21E50036100F62837 /* TrakBall.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrakBall.hxx; sourceTree = "<group>"; };
+		DC1BC6642066B4390076F74A /* PKeyboardHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PKeyboardHandler.cxx; sourceTree = "<group>"; };
+		DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PKeyboardHandler.hxx; sourceTree = "<group>"; };
 		DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOSX.cxx; sourceTree = "<group>"; };
 		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
 		DC2874061F8F2278004BF21A /* TrapArray.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrapArray.hxx; sourceTree = "<group>"; };
@@ -1595,6 +1599,8 @@
 				DC6DC91B205DB879004A5FC3 /* PhysicalJoystick.hxx */,
 				DC6DC91C205DB879004A5FC3 /* PJoystickHandler.cxx */,
 				DC6DC91D205DB879004A5FC3 /* PJoystickHandler.hxx */,
+				DC1BC6642066B4390076F74A /* PKeyboardHandler.cxx */,
+				DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */,
 				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
 				DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */,
 				DCDDEAC01F5DBF0400C67366 /* RewindManager.cxx */,
@@ -2262,6 +2268,7 @@
 				2D91746209BA90380026E9FF /* ToggleWidget.hxx in Headers */,
 				2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */,
 				2D91746509BA90380026E9FF /* TIASnd.hxx in Headers */,
+				DC1BC6672066B4390076F74A /* PKeyboardHandler.hxx in Headers */,
 				2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */,
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
 				2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */,
@@ -2741,6 +2748,7 @@
 				DC9616301F817830008A2206 /* FlashWidget.cxx in Sources */,
 				DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */,
 				DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */,
+				DC1BC6662066B4390076F74A /* PKeyboardHandler.cxx in Sources */,
 				DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */,
 				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
 				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
