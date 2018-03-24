@@ -273,8 +273,6 @@ class CartridgeCDF : public Cartridge
     // *and* the next two bytes in ROM are 00 00
     uInt16 myJMPoperandAddress;
 
-    TIA* myTIA;
-
     uInt8 myFastJumpActive;
 
     // version of CDF

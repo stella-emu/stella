@@ -505,7 +505,9 @@ class FrameBuffer
       shared_ptr<FBSurface> surface;
       bool enabled;
 
-      Message() : counter(0), x(0), y(0), w(0), h(0), color(0), enabled(false) { }
+      Message()
+        : counter(0), x(0), y(0), w(0), h(0), position(MessagePosition::BottomCenter),
+          color(0), enabled(false) { }
     };
     Message myMsg;
     Message myStatsMsg;

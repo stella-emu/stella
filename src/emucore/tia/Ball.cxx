@@ -26,7 +26,8 @@ enum Count: Int8 {
 Ball::Ball(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
     myCollisionMaskEnabled(0xFFFF),
-    myIsSuppressed(false)
+    myIsSuppressed(false),
+    myTIA(nullptr)
 {
   reset();
 }

@@ -34,7 +34,9 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h)
   : Widget(boss, font, x, y, w - kScrollBarWidth, h),
     CommandSender(boss),
+    _historySize(0),
     _historyIndex(0),
+    _historyLine(0),
     _makeDirty(false),
     _firstTime(true),
     _exitedEarly(false)

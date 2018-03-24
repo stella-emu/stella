@@ -47,7 +47,9 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myInitializedCount(0),
     myPausedCount(0),
     myStatsEnabled(false),
+    myLastScanlines(0),
     myLastFrameRate(60),
+    myGrabMouse(false),
     myCurrentModeList(nullptr),
     myTotalTime(0),
     myTotalFrames(0)

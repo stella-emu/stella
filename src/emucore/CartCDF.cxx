@@ -105,6 +105,7 @@ void CartridgeCDF::setInitialState()
   // need to confirm with Chris
   myMode = 0xFF;
 
+  myBankOffset = myLDAimmediateOperandAddress = myJMPoperandAddress = 0;
   myFastJumpActive = 0;
 }
 

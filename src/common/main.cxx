@@ -131,9 +131,13 @@ int main(int argc, char* argv[])
 
     if(theOSystem->settings().getBool("takesnapshot"))
     {
-      theOSystem->logMessage("Taking snapshots with 'takesnapshot' ...", 2);
-      for(int i = 0; i < 30; ++i)  theOSystem->frameBuffer().update();
-      theOSystem->png().takeSnapshot();
+      try {
+        theOSystem->logMessage("Taking snapshots with 'takesnapshot' ...", 2);
+        for(int i = 0; i < 30; ++i)  theOSystem->frameBuffer().update();
+        theOSystem->png().takeSnapshot();
+      } catch(const runtime_error& e) {
+        cout << e.what() << endl;
+      }
       return Cleanup();
     }
 

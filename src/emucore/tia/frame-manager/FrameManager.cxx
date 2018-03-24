@@ -35,9 +35,21 @@ enum Metrics: uInt32 {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameManager::FrameManager() :
-  myHeight(0),
-  myYStart(0)
+FrameManager::FrameManager()
+  : myState(State::waitForVsyncStart),
+    myLineInState(0),
+    myVsyncLines(0),
+    myY(0), myLastY(0),
+    myVblankLines(0),
+    myKernelLines(0),
+    myOverscanLines(0),
+    myFrameLines(0),
+    myHeight(0),
+    myFixedHeight(0),
+    myYStart(0),
+    myJitterEnabled(false),
+    myStableFrameLines(-1),
+    myStableFrameHeightCountdown(0)
 {
   onLayoutChange();
 }

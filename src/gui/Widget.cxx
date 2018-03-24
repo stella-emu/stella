@@ -39,7 +39,8 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
     _bgcolor(kWidColor),
     _bgcolorhi(kWidColor),
     _textcolor(kTextColor),
-    _textcolorhi(kTextColorHi)
+    _textcolorhi(kTextColorHi),
+    _shadowcolor(kShadowColor)
 {
   // Insert into the widget list of the boss
   _next = _boss->_firstWidget;
@@ -354,7 +355,10 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
   : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
     CommandSender(boss),
     _cmd(cmd),
-    _useBitmap(false)
+    _useBitmap(false),
+    _bitmap(nullptr),
+    _bmw(0),
+    _bmh(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _bgcolor = kBtnColor;

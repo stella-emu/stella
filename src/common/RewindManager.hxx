@@ -177,7 +177,7 @@ class RewindManager
 
       // We do nothing on object instantiation or copy
       // The goal of LinkedObjectPool is to not do any allocations at all
-      RewindState() { }
+      RewindState() : cycles(0) { }
       RewindState(const RewindState&) { }
 
       // Output object info; used for debugging only

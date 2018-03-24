@@ -58,6 +58,7 @@ using std::right;
 DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
   : debugger(d),
     settings(s),
+    myCommand(0),
     argCount(0),
     execDepth(0),
     execPrefix("")
@@ -1459,13 +1460,10 @@ void DebuggerParser::executeListfunctions()
 void DebuggerParser::executeListsavestateifs()
 {
   ostringstream buf;
-  int count = 0;
 
   StringList conds = debugger.m6502().getCondSaveStateNames();
   if(conds.size() > 0)
   {
-    if(count)
-      commandResult << endl;
     commandResult << "savestateif:" << endl;
     for(uInt32 i = 0; i < conds.size(); i++)
     {

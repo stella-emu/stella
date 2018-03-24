@@ -23,7 +23,8 @@ CartridgeMNetwork::CartridgeMNetwork(const BytePtr& image, uInt32 size,
                                      const Settings& settings)
   : Cartridge(settings),
     mySize(size),
-    myCurrentRAM(0)
+    myCurrentRAM(0),
+    myRAMSlice(0)
 {
 }
 

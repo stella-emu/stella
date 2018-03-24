@@ -89,7 +89,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
                                      RadioButtonGroup* group,
                                      int cmd)
   : CheckboxWidget(boss, font, x, y, label, cmd),
-  myGroup(group)
+    myGroup(group)
 {
   _flags = WIDGET_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;

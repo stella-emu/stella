@@ -26,8 +26,11 @@ CartridgeMNetworkWidget::CartridgeMNetworkWidget(
     int x, int y, int w, int h,
     CartridgeMNetwork& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
-{}
+    myCart(cart),
+    myLower2K(nullptr),
+    myUpper256B(nullptr)
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMNetworkWidget::initialize(GuiObject* boss, CartridgeMNetwork& cart, ostringstream& info)
