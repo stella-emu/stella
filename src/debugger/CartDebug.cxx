@@ -735,7 +735,7 @@ string CartDebug::loadListFile()
 
     getline(in, line);
 
-    if(line.length() == 0 || line[0] == '-')
+    if(!in.good() || line == "" || line[0] == '-')
       continue;
     else  // Search for constants
     {
@@ -798,6 +798,7 @@ string CartDebug::loadSymbolFile()
     int value = -1;
 
     getline(in, label);
+    if(!in.good())  continue;
     stringstream buf(label);
     buf >> label >> hex >> value;
 

@@ -125,19 +125,22 @@ int main(int argc, char* argv[])
   }
   else
   {
-    const string& result = theOSystem->createConsole(romnode);
-    if(result != EmptyString)
-      return Cleanup();
-
-    if(theOSystem->settings().getBool("takesnapshot"))
+    try
     {
-      try {
-        theOSystem->logMessage("Taking snapshots with 'takesnapshot' ...", 2);
+      const string& result = theOSystem->createConsole(romnode);
+      if(result != EmptyString)
+        return Cleanup();
+
+      if(theOSystem->settings().getBool("takesnapshot"))
+      {
         for(int i = 0; i < 30; ++i)  theOSystem->frameBuffer().update();
         theOSystem->png().takeSnapshot();
-      } catch(const runtime_error& e) {
-        cout << e.what() << endl;
+        return Cleanup();
       }
+    }
+    catch(const runtime_error& e)
+    {
+      theOSystem->logMessage(e.what(), 0);
       return Cleanup();
     }
 

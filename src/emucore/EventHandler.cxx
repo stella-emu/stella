@@ -719,35 +719,42 @@ void EventHandler::setComboMap()
   replace(list.begin(), list.end(), ':', ' ');
   istringstream buf(list);
 
-  // Get combo count, which should be the first int in the list
-  // If it isn't, then we treat the entire list as invalid
-  string key;
-  buf >> key;
-  if(atoi(key.c_str()) == kComboSize)
-  {
-    // Fill the combomap table with events for as long as they exist
-    int combocount = 0;
-    while(buf >> key && combocount < kComboSize)
-    {
-      // Each event in a comboevent is separated by a comma
-      replace(key.begin(), key.end(), ',', ' ');
-      istringstream buf2(key);
-
-      int eventcount = 0;
-      while(buf2 >> key && eventcount < kEventsPerCombo)
-      {
-        myComboTable[combocount][eventcount] = Event::Type(atoi(key.c_str()));
-        ++eventcount;
-      }
-      ++combocount;
-    }
-  }
-  else
-  {
-    // Erase the 'combo' array
+  // Erase the 'combo' array
+  auto ERASE_ALL = [&]() {
     for(int i = 0; i < kComboSize; ++i)
       for(int j = 0; j < kEventsPerCombo; ++j)
         myComboTable[i][j] = Event::NoType;
+  };
+
+  // Get combo count, which should be the first int in the list
+  // If it isn't, then we treat the entire list as invalid
+  if(!buf.good())
+    ERASE_ALL();
+  else
+  {
+    string key;
+    buf >> key;
+    if(atoi(key.c_str()) == kComboSize)
+    {
+      // Fill the combomap table with events for as long as they exist
+      int combocount = 0;
+      while(buf >> key && combocount < kComboSize)
+      {
+        // Each event in a comboevent is separated by a comma
+        replace(key.begin(), key.end(), ',', ' ');
+        istringstream buf2(key);
+
+        int eventcount = 0;
+        while(buf2 >> key && eventcount < kEventsPerCombo)
+        {
+          myComboTable[combocount][eventcount] = Event::Type(atoi(key.c_str()));
+          ++eventcount;
+        }
+        ++combocount;
+      }
+    }
+    else
+      ERASE_ALL();
   }
 
   saveComboMapping();

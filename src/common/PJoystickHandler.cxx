@@ -420,7 +420,7 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
             case JoyHat::DOWN:  buf << "/down";  break;
             case JoyHat::LEFT:  buf << "/left";  break;
             case JoyHat::RIGHT: buf << "/right"; break;
-            case JoyHat::CENTER:                 break;
+            default:                             break;
           }
         }
       }
