@@ -83,7 +83,7 @@ void DelayQueue<length, capacity>::push(uInt8 address, uInt8 value, uInt8 delay)
 
   uInt8 currentIndex = myIndices[address];
 
-  if (currentIndex < 0xFF)
+  if (currentIndex < length)
     myMembers[currentIndex].remove(address);
 
   uInt8 index = smartmod<length>(myIndex + delay);
