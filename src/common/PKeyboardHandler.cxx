@@ -25,6 +25,7 @@
 #include "StellaKeys.hxx"
 #include "TIASurface.hxx"
 #include "PNGLibrary.hxx"
+#include "DialogContainer.hxx"
 #include "PKeyboardHandler.hxx"
 
 #ifdef DEBUGGER_SUPPORT

@@ -208,15 +208,6 @@ inline void M6502::handleHalt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::updateStepStateByInstruction()
-{
-  // Currently only used in debugger mode
-#ifdef DEBUGGER_SUPPORT
-  myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() || myTrapConds.size();
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::execute(uInt32 number)
 {
   const bool status = _execute(number);
@@ -235,21 +226,6 @@ bool M6502::execute(uInt32 number)
 #endif
 
   return status;
-}
-
-bool M6502::startDebugger(const string& message, int address, bool read) {
-  handleHalt();
-
-  mySystem->tia().updateEmulation();
-  mySystem->m6532().updateEmulation();
-
-  #ifndef DEBUGGER_SUPPORT
-    return false;
-  #endif
-
-  if (!myDebugger) return false;
-
-  return myDebugger->start(message, address, read);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -622,4 +598,23 @@ const StringList& M6502::getCondTrapNames() const
 {
   return myTrapCondNames;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::updateStepStateByInstruction()
+{
+  myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() ||
+                             myTrapConds.size();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool M6502::startDebugger(const string& message, int address, bool read)
+{
+  handleHalt();
+
+  mySystem->tia().updateEmulation();
+  mySystem->m6532().updateEmulation();
+
+  return myDebugger->start(message, address, read);
+}
+
 #endif  // DEBUGGER_SUPPORT

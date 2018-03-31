@@ -633,6 +633,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       break;
 
     case Event::DebuggerMode:
+  #ifdef DEBUGGER_SUPPORT
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
          || myState == EventHandlerState::TIMEMACHINE)
         enterDebugMode();
@@ -640,6 +641,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
         leaveDebugMode();
       else
         handled = false;
+  #endif
       break;
 
     default:

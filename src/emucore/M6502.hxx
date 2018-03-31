@@ -315,22 +315,24 @@ class M6502 : public Serializable
     void handleHalt();
 
     /**
+      This is the actual dispatch function that does the grunt work. M6502::execute
+      wraps it and makes sure that any pending halt is processed before returning.
+    */
+    bool _execute(uInt32 number);
+
+#ifdef DEBUGGER_SUPPORT
+    /**
       Check whether we are required to update hardware (TIA + RIOT) in lockstep
       with the CPU and update the flag accordingly.
     */
     void updateStepStateByInstruction();
 
     /**
-      This is the actual dispatch function that does the grunt work. M6502::execute
-      wraps it and makes sure that any pending halt is processed before returning.
-    */
-    bool _execute(uInt32 number);
-
-    /**
       Make sure that the current hardware state is up to date (TIA & RIOT) and dispatch
       debugger.
     */
     bool startDebugger(const string& message = "", int address = -1, bool read = true);
+#endif  // DEBUGGER_SUPPORT
 
   private:
     /**
