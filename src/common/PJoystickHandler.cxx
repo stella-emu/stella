@@ -61,18 +61,18 @@ int PhysicalJoystickHandler::add(PhysicalJoystickPtr stick)
 
   if(BSPF::containsIgnoreCase(stick->name, "2600-daptor"))
   {
-    // 2600-daptorII devices have 3 axes and 12 buttons, and the value of the z-axis
-    // determines how those 12 buttons are used (not all buttons are used in all modes)
-    if(stick->numAxes == 3)
+    specialAdaptor = true;
+    if(stick->numAxes == 4)
     {
-      // TODO - stubbed out for now, until we find a way to reliably get info
-      //        from the Z axis
+      // TODO - detect controller type based on z-axis
+      stick->name = "2600-daptor D9";
+    }
+    else if(stick->numAxes == 3)
+    {
       stick->name = "2600-daptor II";
     }
     else
       stick->name = "2600-daptor";
-
-    specialAdaptor = true;
   }
   else if(BSPF::containsIgnoreCase(stick->name, "Stelladaptor"))
   {
@@ -578,21 +578,15 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
     // These events don't have to pass through handleEvent, since
     // they can never be remapped
     case PhysicalJoystick::JT_STELLADAPTOR_LEFT:
-    case PhysicalJoystick::JT_STELLADAPTOR_RIGHT:
-      // The 'type-2' here refers to the fact that 'PhysicalJoystick::JT_STELLADAPTOR_LEFT'
-      // and 'PhysicalJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
-      // enum; subtracting two gives us Controller 0 and 1
-      if(axis < 2)
-        myEvent.set(SA_Axis[j->type-2][axis], value);
-      break;  // Stelladaptor axis
     case PhysicalJoystick::JT_2600DAPTOR_LEFT:
-    case PhysicalJoystick::JT_2600DAPTOR_RIGHT:
-      // The 'type-4' here refers to the fact that 'PhysicalJoystick::JT_2600DAPTOR_LEFT'
-      // and 'PhysicalJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
-      // enum; subtracting four gives us Controller 0 and 1
       if(axis < 2)
-        myEvent.set(SA_Axis[j->type-4][axis], value);
-      break;  // 2600-daptor axis
+        myEvent.set(SA_Axis[0][axis], value);
+      break;  // axis on left controller (0)
+    case PhysicalJoystick::JT_STELLADAPTOR_RIGHT:
+    case PhysicalJoystick::JT_2600DAPTOR_RIGHT:
+      if(axis < 2)
+        myEvent.set(SA_Axis[1][axis], value);
+      break;  // axis on right controller (1)
     default:
       break;
   }
