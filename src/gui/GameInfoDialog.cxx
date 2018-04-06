@@ -176,32 +176,38 @@ GameInfoDialog::GameInfoDialog(
   tabID = myTab->addTab("Controller");
 
   ypos = vBorder;
-  pwidth = font.getStringWidth("Paddles_IAxis");
+  pwidth = font.getStringWidth("BoosterGrip A");
   myP0Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P0 controller    ");
   ctrls.clear();
-  VarList::push_back(ctrls, "Joystick",      "JOYSTICK"     );
-  VarList::push_back(ctrls, "Paddles",       "PADDLES"      );
-  VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
-  VarList::push_back(ctrls, "Paddles_IDir",  "PADDLES_IDIR" );
-  VarList::push_back(ctrls, "Paddles_IAxDr", "PADDLES_IAXDR");
-  VarList::push_back(ctrls, "BoosterGrip",   "BOOSTERGRIP"  );
-  VarList::push_back(ctrls, "Driving",       "DRIVING"      );
-  VarList::push_back(ctrls, "Keyboard",      "KEYBOARD"     );
-  VarList::push_back(ctrls, "AmigaMouse",    "AMIGAMOUSE"   );
-  VarList::push_back(ctrls, "AtariMouse",    "ATARIMOUSE"   );
-  VarList::push_back(ctrls, "Trakball",      "TRAKBALL"     );
-  VarList::push_back(ctrls, "AtariVox",      "ATARIVOX"     );
-  VarList::push_back(ctrls, "SaveKey",       "SAVEKEY"      );
-  VarList::push_back(ctrls, "Sega Genesis",  "GENESIS"      );
-//  VarList::push_back(ctrls, "KidVid",        "KIDVID"      );
-  VarList::push_back(ctrls, "MindLink",      "MINDLINK"     );
+  VarList::push_back(ctrls, "Joystick A", "JOYSTICK_A");
+  VarList::push_back(ctrls, "Joystick B", "JOYSTICK_B");
+  VarList::push_back(ctrls, "Paddles A", "PADDLES_A");
+  VarList::push_back(ctrls, "Paddles B", "PADDLES_B");
+  //VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
+  //VarList::push_back(ctrls, "Paddles_IDir", "PADDLES_IDIR");
+  //VarList::push_back(ctrls, "Paddles_IAxDr", "PADDLES_IAXDR");
+  VarList::push_back(ctrls, "BoosterGrip A", "BOOSTERGRIP_A");
+  VarList::push_back(ctrls, "BoosterGrip B", "BOOSTERGRIP_B");
+  VarList::push_back(ctrls, "Driving A", "DRIVING_A");
+  VarList::push_back(ctrls, "Driving B", "DRIVING_B");
+  VarList::push_back(ctrls, "Keyboard A", "KEYBOARD_A");
+  VarList::push_back(ctrls, "Keyboard B", "KEYBOARD_B");
+  VarList::push_back(ctrls, "AmigaMouse", "AMIGAMOUSE");
+  VarList::push_back(ctrls, "AtariMouse", "ATARIMOUSE");
+  VarList::push_back(ctrls, "TrakBall", "TRAKBALL");
+  VarList::push_back(ctrls, "AtariVox", "ATARIVOX");
+  VarList::push_back(ctrls, "SaveKey", "SAVEKEY");
+  VarList::push_back(ctrls, "Sega Genesis A", "GENESIS_A");
+  VarList::push_back(ctrls, "Sega Genesis B", "GENESIS_B");
+  //  VarList::push_back(ctrls, "KidVid",        "KIDVID"      );
+  VarList::push_back(ctrls, "MindLink", "MINDLINK");
 
   myP0Controller = new PopUpWidget(myTab, font, myP0Label->getRight(), myP0Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myP0Controller);
 
   ypos += lineHeight + VGAP;
-  pwidth = font.getStringWidth("Paddles_IAxis");
+  pwidth = font.getStringWidth("BoosterGrip A");
   myP1Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P1 controller    ");
   myP1Controller = new PopUpWidget(myTab, font, myP1Label->getRight(), myP1Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
