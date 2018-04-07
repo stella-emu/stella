@@ -52,7 +52,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
             buttonHeight = font.getLineHeight() + 4;
   const int HBORDER = 8;
   const int VBORDER = 8;
-  int xpos = HBORDER, ypos = VBORDER;
+  //int xpos = HBORDER, ypos = VBORDER;
+  int xpos = x, ypos = y;
 
   myActionsList = new StringListWidget(boss, font, xpos, ypos,
                                        _w - buttonWidth - HBORDER * 2 - 8, _h - 3*lineHeight - VBORDER);
@@ -107,7 +108,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myComboButton = nullptr;
 
   // Show message for currently selected event
-  xpos = HBORDER;  ypos = VBORDER + myActionsList->getHeight() + 8;
+  //xpos = HBORDER;  ypos = VBORDER + myActionsList->getHeight() + 8;
+  xpos = x;  ypos = y + myActionsList->getHeight() + 8;
   StaticTextWidget* t;
   t = new StaticTextWidget(boss, font, xpos, ypos+2, font.getStringWidth("Action"),
                            fontHeight, "Action", TextAlign::Left);
@@ -116,6 +118,12 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                     _w - xpos - t->getWidth() - 8 - HBORDER, lineHeight, "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(WIDGET_RETAIN_FOCUS);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingWidget::setActionList(const StringList& actions)
+{
+  myActionsList->setList(actions);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

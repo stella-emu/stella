@@ -48,6 +48,8 @@ class EventMappingWidget : public Widget, public CommandSender
 
     void setDefaults();
 
+    void setActionList(const StringList& actions);
+
   private:
     enum {
       kStartMapCmd = 'map ',

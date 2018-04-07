@@ -46,7 +46,8 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             buttonHeight = font.getLineHeight() + 4;
-  const int vBorder = 4;
+  const int HBORDER = 10;
+  const int VBORDER = 8;
   int xpos, ypos, tabID;
   StringList actions;
 
@@ -55,24 +56,17 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   _h = std::min(16 * (lineHeight + 4) + 16 + _th, max_h);
 
   // The tab widget
-  xpos = 2; ypos = vBorder + _th;
+  xpos = 2; ypos = VBORDER + _th;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h -_th - buttonHeight - 20);
   addTabWidget(myTab);
 
   // 1) Event mapper for emulation actions
-  tabID = myTab->addTab("Emul. Events");
-  actions = instance().eventHandler().getActionList(kEmulationMode);
-  myEmulEventMapper = new EventMappingWidget(myTab, font, 2, 2,
-                                             myTab->getWidth(),
-                                             myTab->getHeight() - 4,
-                                             actions, kEmulationMode);
-  myTab->setParentWidget(tabID, myEmulEventMapper);
-  addToFocusList(myEmulEventMapper->getFocusList(), myTab, tabID);
+  addEmulMappingTab(font);
 
   // 2) Event mapper for UI actions
   tabID = myTab->addTab("UI Events");
   actions = instance().eventHandler().getActionList(kMenuMode);
-  myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
+  myMenuEventMapper = new EventMappingWidget(myTab, font, HBORDER, VBORDER,
                                              myTab->getWidth(),
                                              myTab->getHeight() - 4,
                                              actions, kMenuMode);
@@ -96,6 +90,60 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 InputDialog::~InputDialog()
 {
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::addEmulMappingTab(const GUI::Font& font)
+{
+  const int lineHeight = font.getLineHeight(),
+    fontWidth = font.getMaxCharWidth(),
+    fontHeight = font.getFontHeight();
+  int xpos, ypos, lwidth, pwidth, tabID;
+  WidgetArray wid;
+  VariantList items;
+  StringList actions;
+  const int VGAP = 4;
+  const int VBORDER = 10;
+  const int HBORDER = 8;
+
+  tabID = myTab->addTab("Emul. Events");
+
+  xpos = HBORDER;
+  ypos = VBORDER;
+
+  //StaticTextWidget* t = new StaticTextWidget(myTab, font, xpos, ypos + 1, 24, lineHeight, "");
+
+  pwidth = font.getStringWidth("Booster-Grip A");
+  items.clear();
+  VarList::push_back(items, "Joystick A", "JOYSTICK_A");
+  VarList::push_back(items, "Joystick B", "JOYSTICK_B");
+  VarList::push_back(items, "Paddles A", "PADDLES_A");
+  VarList::push_back(items, "Paddles B", "PADDLES_B");
+  VarList::push_back(items, "Driving A", "DRIVING_A");
+  VarList::push_back(items, "Driving B", "DRIVING_B");
+  VarList::push_back(items, "Keyboard A", "KEYBOARD_A");
+  VarList::push_back(items, "Keyboard B", "KEYBOARD_B");
+  VarList::push_back(items, "Booster-Grip A", "BOOSTERGRIP_A");
+  VarList::push_back(items, "Booster-Grip B", "BOOSTERGRIP_B");
+  VarList::push_back(items, "Sega Genesis A", "GENESIS_A");
+  VarList::push_back(items, "Sega Genesis B", "GENESIS_B");
+
+  myMapping = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+                              "Mapping ", 0, kMappingChanged);
+  wid.push_back(myMapping);
+  ypos += lineHeight + VGAP;
+
+  actions = instance().eventHandler().getActionList(kEmulationMode);
+  myEmulEventMapper = new EventMappingWidget(myTab, font, xpos, ypos,
+                                             myTab->getWidth(),
+                                             myTab->getHeight() - 2 - ypos,
+                                             actions, kEmulationMode);
+
+  wid.push_back(myEmulEventMapper);
+
+  // Add items for virtual device ports
+  addToFocusList(wid, myTab, tabID);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::addDevicePortTab(const GUI::Font& font)
@@ -295,6 +343,9 @@ void InputDialog::loadConfig()
   // Enable/disable control key-combos
   myCtrlCombo->setState(instance().settings().getBool("ctrlcombo"));
 
+  myMapping->setSelectedIndex(0);
+  mappingChanged();
+
   myTab->loadConfig();
 }
 
@@ -492,6 +543,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
+    case kMappingChanged:
+      mappingChanged();
+      break;
+
     case kDeadzoneChanged:
       myDeadzoneLabel->setValue(3200 + 1000*myDeadzone->getValue());
       break;
@@ -543,5 +598,47 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::mappingChanged()
+{
+  const string& mapping = myMapping->getSelectedTag().toString();
+
+  if(mapping == "JOYSTICK_A" || mapping == "JOYSTICK_B")
+  {
+    StringList actions = { "Left", "Right", "Up", "Down", "Fire" };
+    myEmulEventMapper->setActionList(actions);
+  }
+
+  if(mapping == "BOOSTERGRIP_A" || mapping == "BOOSTERGRIP_B")
+  {
+    StringList actions = { "Left", "Right", "Up", "Down", "Fire", "Top Trigger", "Handle Grip" };
+    myEmulEventMapper->setActionList(actions);
+  }
+
+  if(mapping == "GENESIS_A" || mapping == "GENESIS_B")
+  {
+    StringList actions = { "Left", "Right", "Up", "Down", "Fire", "Fire 2" };
+    myEmulEventMapper->setActionList(actions);
+  }
+
+  if(mapping == "PADDLES_A" || mapping == "PADDLES_B")
+  {
+    StringList actions = { "Clockwise", "Counter-Clockwise", "Fire" };
+    myEmulEventMapper->setActionList(actions);
+  }
+
+  if(mapping == "DRIVING_A" || mapping == "DRIVING_B")
+  {
+    StringList actions = { "Clockwise", "Counter-Clockwise", "Fire" };
+    myEmulEventMapper->setActionList(actions);
+  }
+
+  if(mapping == "KEYBOARD_A" || mapping == "KEYBOARD_B")
+  {
+    StringList actions = { "1", "2", "3", "4", "5", "6", "7", "8", "9" , "*" , "0" , "#" };
+    myEmulEventMapper->setActionList(actions);
   }
 }

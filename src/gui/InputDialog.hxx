@@ -53,12 +53,16 @@ class InputDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
+    void addEmulMappingTab(const GUI::Font& font);
     void addDevicePortTab(const GUI::Font& font);
+
+    void mappingChanged();
 
     void eraseEEPROM();
 
   private:
     enum {
+      kMappingChanged    = 'MPch',
       kDeadzoneChanged   = 'DZch',
       kDPSpeedChanged    = 'PDch',
       kMPSpeedChanged    = 'PMch',
@@ -70,6 +74,7 @@ class InputDialog : public Dialog
 
     TabWidget* myTab;
 
+    PopUpWidget* myMapping;
     EventMappingWidget* myEmulEventMapper;
     EventMappingWidget* myMenuEventMapper;
 
