@@ -114,6 +114,10 @@ void InputDialog::addEmulMappingTab(const GUI::Font& font)
 
   pwidth = font.getStringWidth("Booster-Grip A");
   items.clear();
+  VarList::push_back(items, "Emulator", "EMULATOR_A"); // this might be better place in UI Events tab
+  //VarList::push_back(items, "Emulator B", "EMULATOR_B"); // not sure why this might be useful :)
+  VarList::push_back(items, "Console A", "CONSOLE_A");
+  VarList::push_back(items, "Console B", "CONSOLE_B"); // a separate mapping might make sense e.g. for games which use the switches a lot
   VarList::push_back(items, "Joystick A", "JOYSTICK_A");
   VarList::push_back(items, "Joystick B", "JOYSTICK_B");
   VarList::push_back(items, "Paddles A", "PADDLES_A");
@@ -606,37 +610,58 @@ void InputDialog::mappingChanged()
 {
   const string& mapping = myMapping->getSelectedTag().toString();
 
-  if(mapping == "JOYSTICK_A" || mapping == "JOYSTICK_B")
+  if(mapping.rfind("EMULATOR_", 0) == 0)
+  {
+    // Note: It seems a good idea to list the current keys in the list too.
+    StringList actions = {
+      "Save State                        F9",
+      "Change State                     F10",
+      "Load State                       F11",
+      "Snapshot                         F12",
+      "Fry Cartridge              Backspace",
+      "etc." };
+    myEmulEventMapper->setActionList(actions);
+  }
+
+  if(mapping.rfind("CONSOLE_", 0) == 0)
+  {
+    StringList actions = { "Select", "Reset", "Color TV", "Black & White TV", "Swap Color / B&W TV", "7800 Pause Key",
+      "P0 Diffculty A", "P0 Diffculty B", "P0 Swap Diffculty", "P1 Diffculty A", "P1 Diffculty B", "P1 Swap Diffculty"};
+    myEmulEventMapper->setActionList(actions);
+  }
+
+  if(mapping.rfind("JOYSTICK_", 0) == 0)
   {
     StringList actions = { "Left", "Right", "Up", "Down", "Fire" };
     myEmulEventMapper->setActionList(actions);
   }
 
-  if(mapping == "BOOSTERGRIP_A" || mapping == "BOOSTERGRIP_B")
+  if(mapping.rfind("BOOSTERGRIP_", 0) == 0)
   {
     StringList actions = { "Left", "Right", "Up", "Down", "Fire", "Top Trigger", "Handle Grip" };
+    // TODO: align extra button names with doc
     myEmulEventMapper->setActionList(actions);
   }
 
-  if(mapping == "GENESIS_A" || mapping == "GENESIS_B")
+  if(mapping.rfind("GENESIS_", 0 ) == 0)
   {
-    StringList actions = { "Left", "Right", "Up", "Down", "Fire", "Fire 2" };
+    StringList actions = { "Left", "Right", "Up", "Down", "Button B", "Button C" };
     myEmulEventMapper->setActionList(actions);
   }
 
-  if(mapping == "PADDLES_A" || mapping == "PADDLES_B")
-  {
-    StringList actions = { "Clockwise", "Counter-Clockwise", "Fire" };
-    myEmulEventMapper->setActionList(actions);
-  }
-
-  if(mapping == "DRIVING_A" || mapping == "DRIVING_B")
+  if(mapping.rfind("PADDLES_", 0) == 0)
   {
     StringList actions = { "Clockwise", "Counter-Clockwise", "Fire" };
     myEmulEventMapper->setActionList(actions);
   }
 
-  if(mapping == "KEYBOARD_A" || mapping == "KEYBOARD_B")
+  if(mapping.rfind("DRIVING_", 0) == 0)
+  {
+    StringList actions = { "Clockwise", "Counter-Clockwise", "Fire" };
+    myEmulEventMapper->setActionList(actions);
+  }
+
+  if(mapping.rfind("KEYBOARD_", 0) == 0)
   {
     StringList actions = { "1", "2", "3", "4", "5", "6", "7", "8", "9" , "*" , "0" , "#" };
     myEmulEventMapper->setActionList(actions);
