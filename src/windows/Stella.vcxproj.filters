@@ -342,9 +342,6 @@
     <ClCompile Include="..\gui\CheckListWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\gui\ComboDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\gui\CommandDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -1227,9 +1224,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\CheckListWidget.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\gui\ComboDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\Command.hxx">

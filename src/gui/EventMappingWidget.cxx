@@ -26,7 +26,6 @@
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
-#include "ComboDialog.hxx"
 #include "Variant.hxx"
 #include "EventMappingWidget.hxx"
 
@@ -36,7 +35,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                        const StringList& actions, EventMode mode)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    myComboDialog(nullptr),
     myEventMode(mode),
     myActionSelected(-1),
     myRemapStatus(false),
@@ -91,21 +89,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                    "Reset", kResetCmd);
   myResetButton->setTarget(this);
   addFocusWidget(myResetButton);
-
-  if(mode == kEmulationMode)
-  {
-    ypos += lineHeight + 20;
-    myComboButton = new ButtonWidget(boss, font, xpos, ypos,
-                                     buttonWidth, buttonHeight,
-                                     "Combo" + ELLIPSIS, kComboCmd);
-    myComboButton->setTarget(this);
-    addFocusWidget(myComboButton);
-
-    VariantList combolist = instance().eventHandler().getComboList(mode);
-    myComboDialog = new ComboDialog(boss, font, combolist);
-  }
-  else
-    myComboButton = nullptr;
 
   // Show message for currently selected event
   //xpos = HBORDER;  ypos = VBORDER + myActionsList->getHeight() + 8;
@@ -244,13 +227,6 @@ void EventMappingWidget::enableButtons(bool state)
   myCancelMapButton->setEnabled(!state);
   myEraseButton->setEnabled(state);
   myResetButton->setEnabled(state);
-  if(myComboButton)
-  {
-    Event::Type e =
-      instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
-
-    myComboButton->setEnabled(state && e >= Event::Combo1 && e <= Event::Combo16);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -388,13 +364,6 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
 
     case kResetCmd:
       resetRemapping();
-      break;
-
-    case kComboCmd:
-      if(myComboDialog)
-        myComboDialog->show(
-          instance().eventHandler().eventAtIndex(myActionSelected, myEventMode),
-          instance().eventHandler().actionAtIndex(myActionSelected, myEventMode));
       break;
   }
 }

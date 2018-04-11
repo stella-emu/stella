@@ -26,7 +26,6 @@ class StaticTextWidget;
 class StringListWidget;
 class PopUpWidget;
 class GuiObject;
-class ComboDialog;
 class InputDialog;
 
 #include "Widget.hxx"
@@ -55,8 +54,7 @@ class EventMappingWidget : public Widget, public CommandSender
       kStartMapCmd = 'map ',
       kStopMapCmd  = 'smap',
       kEraseCmd    = 'eras',
-      kResetCmd    = 'rest',
-      kComboCmd    = 'cmbo'
+      kResetCmd    = 'rest'
     };
 
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
@@ -82,11 +80,8 @@ class EventMappingWidget : public Widget, public CommandSender
     ButtonWidget*     myCancelMapButton;
     ButtonWidget*     myEraseButton;
     ButtonWidget*     myResetButton;
-    ButtonWidget*     myComboButton;
     StringListWidget* myActionsList;
     EditTextWidget*   myKeyMapping;
-
-    ComboDialog* myComboDialog;
 
     // Since this widget can be used for different collections of events,
     // we need to specify exactly which group of events we are remapping

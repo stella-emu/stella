@@ -71,11 +71,6 @@ EventHandler::EventHandler(OSystem& osystem)
 
   // Create joystick handler (to handle all physical joystick functionality)
   myPJoyHandler = make_unique<PhysicalJoystickHandler>(osystem, *this, myEvent);
-
-  // Erase the 'combo' array
-  for(int i = 0; i < kComboSize; ++i)
-    for(int j = 0; j < kEventsPerCombo; ++j)
-      myComboTable[i][j] = Event::NoType;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,7 +83,6 @@ void EventHandler::initialize()
 {
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
-  setComboMap();
   setActionMappings(kEmulationMode);
   setActionMappings(kMenuMode);
 
@@ -404,31 +398,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       return;
 
     ////////////////////////////////////////////////////////////////////////
-    // A combo event is simply multiple calls to handleEvent, once for
-    // each event it contains
-    case Event::Combo1:
-    case Event::Combo2:
-    case Event::Combo3:
-    case Event::Combo4:
-    case Event::Combo5:
-    case Event::Combo6:
-    case Event::Combo7:
-    case Event::Combo8:
-    case Event::Combo9:
-    case Event::Combo10:
-    case Event::Combo11:
-    case Event::Combo12:
-    case Event::Combo13:
-    case Event::Combo14:
-    case Event::Combo15:
-    case Event::Combo16:
-      for(int i = 0, combo = event - Event::Combo1; i < kEventsPerCombo; ++i)
-        if(myComboTable[combo][i] != Event::NoType)
-          handleEvent(myComboTable[combo][i], state);
-      return;
-    ////////////////////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////////
     // Events which relate to switches()
     case Event::ConsoleColor:
       if(state && !myIs7800)
@@ -713,56 +682,6 @@ void EventHandler::setActionMappings(EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setComboMap()
-{
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
-  string list = myOSystem.settings().getString("combomap");
-  replace(list.begin(), list.end(), ':', ' ');
-  istringstream buf(list);
-
-  // Erase the 'combo' array
-  auto ERASE_ALL = [&]() {
-    for(int i = 0; i < kComboSize; ++i)
-      for(int j = 0; j < kEventsPerCombo; ++j)
-        myComboTable[i][j] = Event::NoType;
-  };
-
-  // Get combo count, which should be the first int in the list
-  // If it isn't, then we treat the entire list as invalid
-  if(!buf.good())
-    ERASE_ALL();
-  else
-  {
-    string key;
-    buf >> key;
-    if(atoi(key.c_str()) == kComboSize)
-    {
-      // Fill the combomap table with events for as long as they exist
-      int combocount = 0;
-      while(buf >> key && combocount < kComboSize)
-      {
-        // Each event in a comboevent is separated by a comma
-        replace(key.begin(), key.end(), ',', ' ');
-        istringstream buf2(key);
-
-        int eventcount = 0;
-        while(buf2 >> key && eventcount < kEventsPerCombo)
-        {
-          myComboTable[combocount][eventcount] = Event::Type(atoi(key.c_str()));
-          ++eventcount;
-        }
-        ++combocount;
-      }
-    }
-    else
-      ERASE_ALL();
-  }
-
-  saveComboMapping();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::removePhysicalJoystickFromDatabase(const string& name)
 {
 #ifdef JOYSTICK_SUPPORT
@@ -880,23 +799,6 @@ void EventHandler::saveJoyMapping()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::saveComboMapping()
-{
-  // Iterate through the combomap table and create a colon-separated list
-  // For each combo event, create a comma-separated list of its events
-  // Prepend the event count, so we can check it on next load
-  ostringstream buf;
-  buf << kComboSize;
-  for(int i = 0; i < kComboSize; ++i)
-  {
-    buf << ":" << myComboTable[i][0];
-    for(int j = 1; j < kEventsPerCombo; ++j)
-      buf << "," << myComboTable[i][j];
-  }
-  myOSystem.settings().setValue("combomap", buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StringList EventHandler::getActionList(EventMode mode) const
 {
   StringList l;
@@ -914,74 +816,6 @@ StringList EventHandler::getActionList(EventMode mode) const
       break;
   }
   return l;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VariantList EventHandler::getComboList(EventMode /**/) const
-{
-  // For now, this only works in emulation mode
-  VariantList l;
-  ostringstream buf;
-
-  VarList::push_back(l, "None", "-1");
-  for(uInt32 i = 0; i < kEmulActionListSize; ++i)
-  {
-    if(EventHandler::ourEmulActionList[i].allow_combo)
-    {
-      buf << i;
-      VarList::push_back(l, EventHandler::ourEmulActionList[i].action, buf.str());
-      buf.str("");
-    }
-  }
-  return l;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getComboListForEvent(Event::Type event) const
-{
-  StringList l;
-  ostringstream buf;
-  if(event >= Event::Combo1 && event <= Event::Combo16)
-  {
-    int combo = event - Event::Combo1;
-    for(uInt32 i = 0; i < kEventsPerCombo; ++i)
-    {
-      Event::Type e = myComboTable[combo][i];
-      for(uInt32 j = 0; j < kEmulActionListSize; ++j)
-      {
-        if(EventHandler::ourEmulActionList[j].event == e &&
-           EventHandler::ourEmulActionList[j].allow_combo)
-        {
-          buf << j;
-          l.push_back(buf.str());
-          buf.str("");
-        }
-      }
-      // Make sure entries are 1-to-1, using '-1' to indicate Event::NoType
-      if(i == l.size())
-        l.push_back("-1");
-    }
-  }
-  return l;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setComboListForEvent(Event::Type event, const StringList& events)
-{
-  if(event >= Event::Combo1 && event <= Event::Combo16)
-  {
-    assert(events.size() == 8);
-    int combo = event - Event::Combo1;
-    for(int i = 0; i < 8; ++i)
-    {
-      int idx = atoi(events[i].c_str());
-      if(idx >=0 && idx < kEmulActionListSize)
-        myComboTable[combo][i] = EventHandler::ourEmulActionList[idx].event;
-      else
-        myComboTable[combo][i] = Event::NoType;
-    }
-    saveComboMapping();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1308,24 +1142,7 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::KeyboardOne9,        "P1 Keyboard 9",               "", true  },
   { Event::KeyboardOneStar,     "P1 Keyboard *",               "", true  },
   { Event::KeyboardOne0,        "P1 Keyboard 0",               "", true  },
-  { Event::KeyboardOnePound,    "P1 Keyboard #",               "", true  },
-
-  { Event::Combo1,              "Combo 1",                     "", false },
-  { Event::Combo2,              "Combo 2",                     "", false },
-  { Event::Combo3,              "Combo 3",                     "", false },
-  { Event::Combo4,              "Combo 4",                     "", false },
-  { Event::Combo5,              "Combo 5",                     "", false },
-  { Event::Combo6,              "Combo 6",                     "", false },
-  { Event::Combo7,              "Combo 7",                     "", false },
-  { Event::Combo8,              "Combo 8",                     "", false },
-  { Event::Combo9,              "Combo 9",                     "", false },
-  { Event::Combo10,             "Combo 10",                    "", false },
-  { Event::Combo11,             "Combo 11",                    "", false },
-  { Event::Combo12,             "Combo 12",                    "", false },
-  { Event::Combo13,             "Combo 13",                    "", false },
-  { Event::Combo14,             "Combo 14",                    "", false },
-  { Event::Combo15,             "Combo 15",                    "", false },
-  { Event::Combo16,             "Combo 16",                    "", false }
+  { Event::KeyboardOnePound,    "P1 Keyboard #",               "", true  }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -6,7 +6,6 @@ MODULE_OBJS := \
 	src/gui/BrowserDialog.o \
 	src/gui/CheckListWidget.o \
 	src/gui/ColorWidget.o \
-	src/gui/ComboDialog.o \
 	src/gui/CommandDialog.o \
 	src/gui/CommandMenu.o \
 	src/gui/ConfigPathDialog.o \

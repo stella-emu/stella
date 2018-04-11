@@ -445,7 +445,6 @@
     <ClCompile Include="..\gui\AudioDialog.cxx" />
     <ClCompile Include="..\gui\BrowserDialog.cxx" />
     <ClCompile Include="..\gui\CheckListWidget.cxx" />
-    <ClCompile Include="..\gui\ComboDialog.cxx" />
     <ClCompile Include="..\gui\CommandDialog.cxx" />
     <ClCompile Include="..\gui\CommandMenu.cxx" />
     <ClCompile Include="..\gui\ContextMenu.cxx" />
@@ -772,7 +771,6 @@
     <ClInclude Include="..\gui\AudioDialog.hxx" />
     <ClInclude Include="..\gui\BrowserDialog.hxx" />
     <ClInclude Include="..\gui\CheckListWidget.hxx" />
-    <ClInclude Include="..\gui\ComboDialog.hxx" />
     <ClInclude Include="..\gui\Command.hxx" />
     <ClInclude Include="..\gui\CommandDialog.hxx" />
     <ClInclude Include="..\gui\CommandMenu.hxx" />

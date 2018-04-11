@@ -77,7 +77,6 @@ Settings::Settings(OSystem& osystem)
   // Input event options
   setInternal("keymap", "");
   setInternal("joymap", "");
-  setInternal("combomap", "");
   setInternal("joydeadzone", "13");
   setInternal("joyallow4", "false");
   setInternal("usemouse", "analog");

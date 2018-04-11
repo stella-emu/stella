@@ -151,11 +151,6 @@ class EventHandler
     bool frying() const { return myFryingFlag; }
 
     StringList getActionList(EventMode mode) const;
-    VariantList getComboList(EventMode mode) const;
-
-    /** Used to access the list of events assigned to a specific combo event. */
-    StringList getComboListForEvent(Event::Type event) const;
-    void setComboListForEvent(Event::Type event, const StringList& events);
 
     /** Convert keys and physical joystick events into Stella events. */
     Event::Type eventForKey(StellaKey key, EventMode mode) const {
@@ -248,11 +243,6 @@ class EventHandler
       @param mode   The mode for which the defaults are set
     */
     void setDefaultMapping(Event::Type event, EventMode mode);
-
-    /**
-      Sets the combo event mappings to those in the 'combomap' setting
-    */
-    void setComboMap();
 
     /**
       Joystick emulates 'impossible' directions (ie, left & right
@@ -361,9 +351,7 @@ class EventHandler
 
   private:
     enum {
-      kComboSize          = 16,
-      kEventsPerCombo     = 8,
-      kEmulActionListSize = 80 + kComboSize,
+      kEmulActionListSize = 80,
       kMenuActionListSize = 14
     };
 
@@ -375,7 +363,6 @@ class EventHandler
     void setDefaultJoymap(Event::Type, EventMode mode);
     void saveKeyMapping();
     void saveJoyMapping();
-    void saveComboMapping();
 
   private:
     // Structure used for action menu items
@@ -401,9 +388,6 @@ class EventHandler
     // MouseControl object, which takes care of switching the mouse between
     // all possible controller modes
     unique_ptr<MouseControl> myMouseControl;
-
-    // The event(s) assigned to each combination event
-    Event::Type myComboTable[kComboSize][kEventsPerCombo];
 
     // Indicates the current state of the system (ie, which mode is current)
     EventHandlerState myState;
