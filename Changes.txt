@@ -23,6 +23,9 @@
 
   * Fixed bug in UI navigation with joystick hat movement.
 
+  * The Linux builds now use the system-installed PNG and ZLIB libraries
+    by default.
+
   * Updated version of SDL included with the Windows build to 2.0.8.
 
 -Have fun!
