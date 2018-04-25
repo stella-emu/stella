@@ -127,7 +127,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
                          2*fontWidth, fontHeight,
                          rowLabel[row], TextAlign::Left);
 
-    for(uInt32 col = 0; col < 5 - row; ++col)
+    for(uInt32 col = 0; col < 5 - row; ++col, ++idx)
     {
       myCollision[idx] = new CheckboxWidget(boss, lfont, collX, collY, "", CheckboxWidget::kCheckActionCmd);
       myCollision[idx]->setTarget(this);
@@ -149,7 +149,6 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
                            colLabel[col], TextAlign::Left);
 
       collX += myCollision[idx]->getWidth() + 10;
-      idx++;
     }
     collX = xpos + lwidth + 5;
     collY += lineHeight+3;

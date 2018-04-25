@@ -102,6 +102,11 @@ void CartridgeBUS::setInitialState()
   // Assuming mode starts out with Fast Fetch off and 3-Voice music,
   // need to confirm with Chris
   myMode = 0xFF;
+
+  myBankOffset = myBusOverdriveAddress =
+    mySTYZeroPageAddress = myJMPoperandAddress = 0;
+
+  myFastJumpActive = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

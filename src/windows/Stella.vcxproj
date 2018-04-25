@@ -236,6 +236,9 @@
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\main.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
+    <ClCompile Include="..\common\PhysicalJoystick.cxx" />
+    <ClCompile Include="..\common\PJoystickHandler.cxx" />
+    <ClCompile Include="..\common\PKeyboardHandler.cxx" />
     <ClCompile Include="..\common\RewindManager.cxx" />
     <ClCompile Include="..\common\StateManager.cxx" />
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
@@ -321,7 +324,6 @@
     <ClCompile Include="..\emucore\CartE78K.cxx" />
     <ClCompile Include="..\emucore\CartWD.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
-    <ClCompile Include="..\emucore\EventJoyHandler.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\emucore\PointingDevice.cxx" />
@@ -522,6 +524,9 @@
     <ClInclude Include="..\common\LinkedObjectPool.hxx" />
     <ClInclude Include="..\common\MediaFactory.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
+    <ClInclude Include="..\common\PhysicalJoystick.hxx" />
+    <ClInclude Include="..\common\PJoystickHandler.hxx" />
+    <ClInclude Include="..\common\PKeyboardHandler.hxx" />
     <ClInclude Include="..\common\RewindManager.hxx" />
     <ClInclude Include="..\common\StateManager.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />

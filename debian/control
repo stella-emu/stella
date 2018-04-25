@@ -3,7 +3,7 @@ Section: games
 Priority: optional
 Maintainer: Stephen Anthony <sa666666@gmail.com>
 Standards-Version: 3.7.2
-Build-Depends: debhelper (>= 5.0.0), libsdl2-dev
+Build-Depends: debhelper (>= 5.0.0), libsdl2-dev, libpng-dev
 
 Package: stella
 Architecture: any

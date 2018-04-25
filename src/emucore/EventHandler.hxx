@@ -24,11 +24,14 @@ class Console;
 class OSystem;
 class MouseControl;
 class DialogContainer;
+class PhysicalJoystick;
 
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "Control.hxx"
 #include "StellaKeys.hxx"
+#include "PKeyboardHandler.hxx"
+#include "PJoystickHandler.hxx"
 #include "Variant.hxx"
 #include "bspf.hxx"
 
@@ -95,11 +98,12 @@ class EventHandler
     void poll(uInt64 time);
 
     /**
-      Returns the current state of the EventHandler
+      Get/set the current state of the EventHandler
 
       @return The EventHandlerState type
     */
     EventHandlerState state() const { return myState; }
+    void setState(EventHandlerState state);
 
     /**
       Resets the state machine of the EventHandler to the defaults
@@ -123,21 +127,11 @@ class EventHandler
     */
     void setMouseControllerMode(const string& enable);
 
-    /**
-      Set the number of seconds between taking a snapshot in
-      continuous snapshot mode.  Setting an interval of 0 disables
-      continuous snapshots.
-
-      @param interval  Interval in seconds between snapshots
-    */
-    void setContinuousSnapshots(uInt32 interval);
-
     void enterMenuMode(EventHandlerState state);
     void leaveMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
     void enterTimeMachineMenuMode(uInt32 numWinds, bool unwind);
-    void takeSnapshot(uInt32 number = 0);
 
     /**
       Send an event directly to the event handler.
@@ -163,19 +157,18 @@ class EventHandler
     StringList getComboListForEvent(Event::Type event) const;
     void setComboListForEvent(Event::Type event, const StringList& events);
 
-    Event::Type eventForKey(StellaKey key, EventMode mode) const
-      { return myKeyTable[key][mode]; }
+    /** Convert keys and physical joystick events into Stella events. */
+    Event::Type eventForKey(StellaKey key, EventMode mode) const {
+      return myPKeyHandler->eventForKey(key, mode);
+    }
     Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const {
-      const StellaJoystick* joy = myJoyHandler->joy(stick);
-      return joy ? joy->axisTable[axis][(value > 0)][mode] : Event::NoType;
+      return myPJoyHandler->eventForAxis(stick, axis, value, mode);
     }
     Event::Type eventForJoyButton(int stick, int button, EventMode mode) const {
-      const StellaJoystick* joy = myJoyHandler->joy(stick);
-      return joy ? joy->btnTable[button][mode] : Event::NoType;
+      return myPJoyHandler->eventForButton(stick, button, mode);
     }
     Event::Type eventForJoyHat(int stick, int hat, JoyHat value, EventMode mode) const {
-      const StellaJoystick* joy = myJoyHandler->joy(stick);
-      return joy ? joy->hatTable[hat][int(value)][mode] : Event::NoType;
+      return myPJoyHandler->eventForHat(stick, hat, value, mode);
     }
 
     Event::Type eventAtIndex(int idx, EventMode mode) const;
@@ -192,7 +185,7 @@ class EventHandler
     bool addKeyMapping(Event::Type event, EventMode mode, StellaKey key);
 
     /**
-      Bind a joystick axis direction to an event/action and regenerate
+      Bind a physical joystick axis direction to an event/action and regenerate
       the mapping array(s).
 
       @param event  The event we are remapping
@@ -209,7 +202,7 @@ class EventHandler
                            bool updateMenus = true);
 
     /**
-      Bind a joystick button to an event/action and regenerate the
+      Bind a physical joystick button to an event/action and regenerate the
       mapping array(s).
 
       @param event  The event we are remapping
@@ -224,7 +217,7 @@ class EventHandler
                              bool updateMenus = true);
 
     /**
-      Bind a joystick hat direction to an event/action and regenerate
+      Bind a physical joystick hat direction to an event/action and regenerate
       the mapping array(s).
 
       @param event  The event we are remapping
@@ -270,29 +263,45 @@ class EventHandler
     void allowAllDirections(bool allow) { myAllowAllDirectionsFlag = allow; }
 
     /**
-      Determines whether the given controller must use the mouse (aka,
-      whether the controller generates analog output).
+      Changes to a new state based on the current state and the given event.
 
-      @param jack  The controller to query
+      @param type  The event
+      @return      True if the state changed, else false
     */
-    bool controllerIsAnalog(Controller::Jack jack) const;
+    bool changeStateByEvent(Event::Type type);
 
     /**
-      Return a list of all joysticks currently in the internal database
+      Get the current overlay in use.  The overlay won't always exist,
+      so we should test if it's available.
+
+      @return The overlay object
+    */
+    DialogContainer& overlay() const  { return *myOverlay; }
+    bool hasOverlay() const { return myOverlay != nullptr; }
+
+    /**
+      Return a list of all physical joysticks currently in the internal database
       (first part of variant) and its internal ID (second part of variant).
     */
-    VariantList joystickDatabase() const;
+    VariantList physicalJoystickDatabase() const {
+      return myPJoyHandler->database();
+    }
 
     /**
-      Remove the joystick identified by 'name' from the joystick database,
-      only if it is not currently active.
+      Remove the physical joystick identified by 'name' from the joystick
+      database, only if it is not currently active.
     */
-    void removeJoystickFromDatabase(const string& name);
+    void removePhysicalJoystickFromDatabase(const string& name);
 
     /**
       Enable/disable text events (distinct from single-key events).
     */
     virtual void enableTextEvents(bool enable) = 0;
+
+    /**
+      Handle changing mouse modes.
+    */
+    void handleMouseControl();
 
   protected:
     // Global OSystem object
@@ -303,18 +312,20 @@ class EventHandler
       of input.
     */
     void handleTextEvent(char text);
-    void handleKeyEvent(StellaKey key, StellaMod mod, bool state);
     void handleMouseMotionEvent(int x, int y, int xrel, int yrel);
     void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y);
-    void handleJoyEvent(int stick, int button, uInt8 state);
-    void handleJoyAxisEvent(int stick, int axis, int value);
-    void handleJoyHatEvent(int stick, int hat, int value);
-
-    /**
-      Returns the human-readable name for a StellaKey.
-    */
-    virtual const char* const nameForKey(StellaKey key) const
-      { return EmptyString.c_str(); }
+    void handleKeyEvent(StellaKey key, StellaMod mod, bool state) {
+      myPKeyHandler->handleEvent(key, mod, state);
+    }
+    void handleJoyBtnEvent(int stick, int button, uInt8 state) {
+      myPJoyHandler->handleBtnEvent(stick, button, state);
+    }
+    void handleJoyAxisEvent(int stick, int axis, int value) {
+      myPJoyHandler->handleAxisEvent(stick, axis, value);
+    }
+    void handleJoyHatEvent(int stick, int hat, int value) {
+      myPJoyHandler->handleHatEvent(stick, hat, value);
+    }
 
     /**
       Collects and dispatches any pending events.
@@ -338,120 +349,15 @@ class EventHandler
     };
     void handleSystemEvent(SystemEvent e, int data1 = 0, int data2 = 0);
 
-    // An abstraction of a joystick in Stella.
-    // A StellaJoystick holds its own event mapping information, space for
-    // which is dynamically allocated based on the actual number of buttons,
-    // axes, etc that the device contains.
-    // Specific backend class(es) will inherit from this class, and implement
-    // functionality specific to the device.
-    class StellaJoystick
-    {
-      friend class EventHandler;
-
-      public:
-        StellaJoystick();
-        virtual ~StellaJoystick();
-
-        string getMap() const;
-        bool setMap(const string& map);
-        void eraseMap(EventMode mode);
-        void eraseEvent(Event::Type event, EventMode mode);
-        string about() const;
-
-      protected:
-        void initialize(int index, const string& desc,
-                        int axes, int buttons, int hats, int balls);
-
-      private:
-        enum JoyType {
-          JT_NONE               = 0,
-          JT_REGULAR            = 1,
-          JT_STELLADAPTOR_LEFT  = 2,
-          JT_STELLADAPTOR_RIGHT = 3,
-          JT_2600DAPTOR_LEFT    = 4,
-          JT_2600DAPTOR_RIGHT   = 5
-        };
-
-        JoyType type;
-        int ID;
-        string name;
-        int numAxes, numButtons, numHats;
-        Event::Type (*axisTable)[2][kNumModes];
-        Event::Type (*btnTable)[kNumModes];
-        Event::Type (*hatTable)[4][kNumModes];
-        int* axisLastValue;
-
-      private:
-        void getValues(const string& list, IntArray& map) const;
-
-        friend ostream& operator<<(ostream& os, const StellaJoystick& s) {
-          os << "  ID: " << s.ID << ", name: " << s.name << ", numaxis: " << s.numAxes
-             << ", numbtns: " << s.numButtons << ", numhats: " << s.numHats;
-          return os;
-        }
-    };
-
-    class JoystickHandler
-    {
-      private:
-        struct StickInfo
-        {
-          StickInfo(const string& map = EmptyString, StellaJoystick* stick = nullptr)
-            : mapping(map), joy(stick) {}
-
-          string mapping;
-          StellaJoystick* joy;
-
-          friend ostream& operator<<(ostream& os, const StickInfo& si) {
-            os << "  joy: " << si.joy << endl << "  map: " << si.mapping;
-            return os;
-          }
-        };
-
-      public:
-        using StickDatabase = std::map<string,StickInfo>;
-        using StickList = std::map<int, StellaJoystick*>;
-
-        JoystickHandler(OSystem& system);
-        ~JoystickHandler();
-
-        bool add(StellaJoystick* stick);
-        bool remove(int id);
-        bool remove(const string& name);
-        void mapStelladaptors(const string& saport);
-        void setDefaultMapping(Event::Type type, EventMode mode);
-        void eraseMapping(Event::Type event, EventMode mode);
-        void saveMapping();
-
-        const StellaJoystick* joy(int id) const {
-          const auto& i = mySticks.find(id);
-          return i != mySticks.cend() ? i->second : nullptr;
-        }
-        const StickDatabase& database() const { return myDatabase; }
-        const StickList& sticks() const { return mySticks; }
-
-      private:
-        OSystem& myOSystem;
-
-        // Contains all joysticks that Stella knows about, indexed by name
-        StickDatabase myDatabase;
-
-        // Contains only joysticks that are currently available, indexed by id
-        StickList mySticks;
-
-        void setStickDefaultMapping(int stick, Event::Type type, EventMode mode);
-        void printDatabase() const;
-    };
+    /**
+      Add the given joystick to the list of physical joysticks available to the handler.
+    */
+    void addPhysicalJoystick(PhysicalJoystickPtr stick);
 
     /**
-      Add the given joystick to the list of sticks available to the handler.
+      Remove physical joystick at the current index.
     */
-    void addJoystick(StellaJoystick* stick);
-
-    /**
-      Remove joystick at the current index.
-    */
-    void removeJoystick(int index);
+    void removePhysicalJoystick(int index);
 
   private:
     enum {
@@ -462,33 +368,14 @@ class EventHandler
     };
 
     /**
-      Detects and changes the eventhandler state
-
-      @param type  The event
-      @return      True if the state changed, else false
-    */
-    bool eventStateChange(Event::Type type);
-
-    /**
       The following methods take care of assigning action mappings.
     */
     void setActionMappings(EventMode mode);
-    void setKeymap();
     void setDefaultKeymap(Event::Type, EventMode mode);
     void setDefaultJoymap(Event::Type, EventMode mode);
     void saveKeyMapping();
     void saveJoyMapping();
     void saveComboMapping();
-
-    /**
-      Tests if a given event should use continuous/analog values.
-
-      @param event  The event to test for analog processing
-      @return       True if analog, else false
-    */
-    bool eventIsAnalog(Event::Type event) const;
-
-    void setEventState(EventHandlerState state);
 
   private:
     // Structure used for action menu items
@@ -505,12 +392,15 @@ class EventHandler
     // Indicates current overlay object
     DialogContainer* myOverlay;
 
+    // Handler for all keyboard-related events
+    unique_ptr<PhysicalKeyboardHandler> myPKeyHandler;
+
+    // Handler for all joystick addition/removal/mapping
+    unique_ptr<PhysicalJoystickHandler> myPJoyHandler;
+
     // MouseControl object, which takes care of switching the mouse between
     // all possible controller modes
     unique_ptr<MouseControl> myMouseControl;
-
-    // Array of key events, indexed by StellaKey
-    Event::Type myKeyTable[KBDK_LAST][kNumModes];
 
     // The event(s) assigned to each combination event
     Event::Type myComboTable[kComboSize][kEventsPerCombo];
@@ -518,17 +408,11 @@ class EventHandler
     // Indicates the current state of the system (ie, which mode is current)
     EventHandlerState myState;
 
-    // Indicates whether the joystick emulates 'impossible' directions
+    // Indicates whether the virtual joystick emulates 'impossible' directions
     bool myAllowAllDirectionsFlag;
 
     // Indicates whether or not we're in frying mode
     bool myFryingFlag;
-
-    // Indicates whether the key-combos tied to the Control key are
-    // being used or not (since Ctrl by default is the fire button,
-    // pressing it with a movement key could inadvertantly activate
-    // a Ctrl combo when it isn't wanted)
-    bool myUseCtrlKeyFlag;
 
     // Sometimes an extraneous mouse motion event occurs after a video
     // state change; we detect when this happens and discard the event
@@ -538,34 +422,9 @@ class EventHandler
     // of the 7800 (for now, only the switches are notified)
     bool myIs7800;
 
-    // Sometimes key combos with the Alt key become 'stuck' after the
-    // window changes state, and we want to ignore that event
-    // For example, press Alt-Tab and then upon re-entering the window,
-    // the app receives 'tab'; obviously the 'tab' shouldn't be happening
-    // So we keep track of the cases that matter (for now, Alt-Tab)
-    // and swallow the event afterwards
-    // Basically, the initial event sets the variable to 1, and upon
-    // returning to the app (ie, receiving EVENT_WINDOW_FOCUS_GAINED),
-    // the count is updated to 2, but only if it was already updated to 1
-    // TODO - This may be a bug in SDL, and might be removed in the future
-    //        It only seems to be an issue in Linux
-    uInt8 myAltKeyCounter;
-
-    // Used for continuous snapshot mode
-    uInt32 myContSnapshotInterval;
-    uInt32 myContSnapshotCounter;
-
     // Holds static strings for the remap menu (emulation and menu events)
     static ActionList ourEmulActionList[kEmulActionListSize];
     static ActionList ourMenuActionList[kMenuActionListSize];
-
-    // Static lookup tables for Stelladaptor/2600-daptor axis/button support
-    static const Event::Type SA_Axis[2][2];
-    static const Event::Type SA_Button[2][4];
-    static const Event::Type SA_Key[2][12];
-
-    // Handler for all joystick addition/removal/mapping
-    unique_ptr<JoystickHandler> myJoyHandler;
 
     // Following constructors and assignment operators not supported
     EventHandler() = delete;

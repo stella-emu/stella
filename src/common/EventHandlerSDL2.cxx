@@ -96,8 +96,8 @@ void EventHandlerSDL2::pollEvent()
       case SDL_JOYBUTTONUP:
       case SDL_JOYBUTTONDOWN:
       {
-        handleJoyEvent(myEvent.jbutton.which, myEvent.jbutton.button,
-                       myEvent.jbutton.state == SDL_PRESSED ? 1 : 0);
+        handleJoyBtnEvent(myEvent.jbutton.which, myEvent.jbutton.button,
+                          myEvent.jbutton.state == SDL_PRESSED ? 1 : 0);
         break;
       }
 
@@ -111,7 +111,7 @@ void EventHandlerSDL2::pollEvent()
       case SDL_JOYHATMOTION:
       {
         int v = myEvent.jhat.value, value = 0;
-        if(v & SDL_HAT_CENTERED)
+        if(v == SDL_HAT_CENTERED)
           value  = EVENT_HATCENTER_M;
         else
         {
@@ -127,12 +127,12 @@ void EventHandlerSDL2::pollEvent()
 
       case SDL_JOYDEVICEADDED:
       {
-        addJoystick(new JoystickSDL2(myEvent.jdevice.which));
+        addPhysicalJoystick(make_shared<JoystickSDL2>(myEvent.jdevice.which));
         break;  // SDL_JOYDEVICEADDED
       }
       case SDL_JOYDEVICEREMOVED:
       {
-        removeJoystick(myEvent.jdevice.which);
+        removePhysicalJoystick(myEvent.jdevice.which);
         break;  // SDL_JOYDEVICEREMOVED
       }
   #endif

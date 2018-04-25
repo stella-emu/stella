@@ -28,7 +28,8 @@ Player::Player(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
     myCollisionMaskEnabled(0xFFFF),
     myIsSuppressed(false),
-    myDecodesOffset(0)
+    myDecodesOffset(0),
+    myTIA(nullptr)
 {
   reset();
 }

@@ -89,7 +89,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
                                      RadioButtonGroup* group,
                                      int cmd)
   : CheckboxWidget(boss, font, x, y, label, cmd),
-  myGroup(group)
+    myGroup(group)
 {
   _flags = WIDGET_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
@@ -164,7 +164,7 @@ void RadioButtonWidget::drawWidget(bool hilite)
 
   // Draw the inner bounding circle with enabled color
   s.drawBitmap(radio_img_innercircle, _x + 1, _y + _boxY + 1, isEnabled()
-               ? _bgcolor : kColor, 12, 12);
+               ? _bgcolor : uInt32(kColor), 12, 12);
 
   // draw state
   if(_state)

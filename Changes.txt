@@ -1,4 +1,18 @@
-5.1 to 5.2: (MMM d, 2018)
+===========================================================================
+
+     SSSS    tt          lll  lll
+    SS  SS   tt           ll   ll
+    SS     tttttt  eeee   ll   ll   aaaa
+     SSSS    tt   ee  ee  ll   ll      aa
+        SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+    SS  SS   tt   ee      ll   ll  aa  aa
+     SSSS     ttt  eeeee llll llll  aaaaa
+
+===========================================================================
+                              Release History
+===========================================================================
+
+5.1.1 to 5.2: (MMM d, 2018)
 
   * Extra functionality for Time Machine dialog (start/stop recording;
     minor fixes; TODO button and initial key repeats...)
@@ -6,6 +20,21 @@
   * Fixes for collision corner cases (during HBlank)
 
   * UI modernization (new widget look, dialog titles added, dialogs refactored)
+
+  * Fixed bug in UI navigation with joystick hat movement.
+
+  * The Linux builds now use the system-installed PNG and ZLIB libraries
+    by default.
+
+  * Updated version of SDL included with the Windows build to 2.0.8.
+
+-Have fun!
+
+
+5.1 to 5.1.1: (February 21, 2018)
+
+  * Fixed bug in Stargunner ROM starting with a blank screen.
+
 
 5.0.2 to 5.1: (February 4, 2018)
 
@@ -140,8 +169,6 @@
     Prado).
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 5.0.1 to 5.0.2: (August 20, 2017)

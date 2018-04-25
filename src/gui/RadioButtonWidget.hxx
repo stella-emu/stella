@@ -56,7 +56,7 @@ class RadioButtonWidget : public CheckboxWidget
 class RadioButtonGroup
 {
   public:
-    RadioButtonGroup() = default;
+    RadioButtonGroup() : mySelected(0) { }
 
     // add widget to group
     void addWidget(RadioButtonWidget* widget);

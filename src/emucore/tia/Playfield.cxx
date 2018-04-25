@@ -22,7 +22,8 @@
 Playfield::Playfield(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
     myCollisionMaskEnabled(0xFFFF),
-    myIsSuppressed(false)
+    myIsSuppressed(false),
+    myTIA(nullptr)
 {
   reset();
 }
@@ -38,9 +39,11 @@ void Playfield::reset()
   myPf1 = 0;
   myPf2 = 0;
 
+  myX = 0;
+
   myObjectColor = myDebugColor = 0;
-  myColorP0 = 0;
-  myColorP1 = 0;
+  myColorLeft = myColorRight = 0;
+  myColorP0 = myColorP1 = 0;
   myColorMode = ColorMode::normal;
   myDebugEnabled = false;
 

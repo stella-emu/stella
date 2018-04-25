@@ -20,6 +20,7 @@
 
 #include "SDL_lib.hxx"
 #include "EventHandler.hxx"
+#include "PhysicalJoystick.hxx"
 
 /**
   This class handles event collection from the point of view of the specific
@@ -44,13 +45,6 @@ class EventHandlerSDL2 : public EventHandler
     void enableTextEvents(bool enable) override;
 
     /**
-      Returns the human-readable name for a StellaKey.
-    */
-    const char* const nameForKey(StellaKey key) const override {
-      return SDL_GetScancodeName(SDL_Scancode(key));
-    }
-
-    /**
       Collects and dispatches any pending SDL2 events.
     */
     void pollEvent() override;
@@ -58,9 +52,9 @@ class EventHandlerSDL2 : public EventHandler
   private:
     SDL_Event myEvent;
 
-    // A thin wrapper around a basic StellaJoystick, holding the pointer to
-    // the underlying SDL stick.
-    class JoystickSDL2 : public StellaJoystick
+    // A thin wrapper around a basic PhysicalJoystick, holding the pointer to
+    // the underlying SDL joystick device.
+    class JoystickSDL2 : public PhysicalJoystick
     {
       public:
         JoystickSDL2(int idx);

@@ -271,7 +271,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
+void DialogContainer::handleJoyBtnEvent(int stick, int button, uInt8 state)
 {
   if(myDialogStack.empty())
     return;

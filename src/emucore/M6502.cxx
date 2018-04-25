@@ -208,15 +208,6 @@ inline void M6502::handleHalt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::updateStepStateByInstruction()
-{
-  // Currently only used in debugger mode
-#ifdef DEBUGGER_SUPPORT
-  myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() || myTrapConds.size();
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::execute(uInt32 number)
 {
   const bool status = _execute(number);
@@ -258,23 +249,19 @@ inline bool M6502::_execute(uInt32 number)
       {
         bool read = myJustHitReadTrapFlag;
         myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
-        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address, read))
-        {
-          return true;
-        }
+
+        if (startDebugger(myHitTrapInfo.message, myHitTrapInfo.address, read)) return true;
       }
 
-      if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC))
-        if(myDebugger && myDebugger->start("BP: ", PC))
-          return true;
+      if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC) && startDebugger("BP: ", PC))
+        return true;
 
       int cond = evalCondBreaks();
       if(cond > -1)
       {
         stringstream msg;
         msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
-        if(myDebugger && myDebugger->start(msg.str()))
-          return true;
+        if (startDebugger(msg.str())) return true;
       }
 
       cond = evalCondSaveStates();
@@ -611,4 +598,23 @@ const StringList& M6502::getCondTrapNames() const
 {
   return myTrapCondNames;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::updateStepStateByInstruction()
+{
+  myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() ||
+                             myTrapConds.size();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool M6502::startDebugger(const string& message, int address, bool read)
+{
+  handleHalt();
+
+  mySystem->tia().updateEmulation();
+  mySystem->m6532().updateEmulation();
+
+  return myDebugger->start(message, address, read);
+}
+
 #endif  // DEBUGGER_SUPPORT

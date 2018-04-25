@@ -34,10 +34,10 @@ class CartridgeMNetworkWidget : public CartDebugWidget
     virtual ~CartridgeMNetworkWidget() = default;
 
   protected:
-    PopUpWidget *myLower2K, *myUpper256B;
-
     //CartridgeE7& myCart;
     CartridgeMNetwork& myCart;
+
+    PopUpWidget *myLower2K, *myUpper256B;
 
     struct CartState
     {

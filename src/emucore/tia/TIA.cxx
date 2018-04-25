@@ -170,11 +170,13 @@ void TIA::reset()
 
   myDelayQueue.reset();
 
-  if (myFrameManager) myFrameManager->reset();
-
   myCyclesAtFrameStart = 0;
 
-  frameReset();  // Recalculate the size of the display
+  if (myFrameManager)
+  {
+    myFrameManager->reset();
+    frameReset();  // Recalculate the size of the display
+  }
 
   // Must be done last, after all other items have reset
   enableFixedColors(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.debugcolors" : "plr.debugcolors"));

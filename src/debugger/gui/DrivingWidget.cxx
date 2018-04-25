@@ -64,11 +64,15 @@ void DrivingWidget::loadConfig()
   if(myController.read(Controller::Two)) gray += 2;
 
   for(myGrayIndex = 0; myGrayIndex < 4; ++myGrayIndex)
+  {
     if(ourGrayTable[myGrayIndex] == gray)
+    {
+      setValue(myGrayIndex);
       break;
+    }
+  }
 
   myFire->setState(!myController.read(Controller::Six));
-  setValue();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -81,13 +85,13 @@ void DrivingWidget::handleCommand(
       myGrayIndex = (myGrayIndex + 1) % 4;
       myController.set(Controller::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
       myController.set(Controller::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
-      setValue();
+      setValue(myGrayIndex);
       break;
     case kGrayDownCmd:
       myGrayIndex = myGrayIndex == 0 ? 3 : myGrayIndex - 1;
       myController.set(Controller::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
       myController.set(Controller::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
-      setValue();
+      setValue(myGrayIndex);
       break;
     case kFireCmd:
       myController.set(Controller::Six, !myFire->getState());
@@ -96,9 +100,9 @@ void DrivingWidget::handleCommand(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DrivingWidget::setValue()
+void DrivingWidget::setValue(int idx)
 {
-  int grayCode = ourGrayTable[myGrayIndex];
+  int grayCode = ourGrayTable[idx];
   // FIXME  * 8 = a nasty hack, because the DataGridWidget does not support 2 digit binary output
   myGrayValue->setList(0, (grayCode & 0b01) + (grayCode & 0b10) * 8);
 }

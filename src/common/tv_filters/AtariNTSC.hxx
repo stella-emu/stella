@@ -184,6 +184,8 @@ class AtariNTSC
       float artifacts;
       float fringing;
       float kernel [rescale_out * kernel_size * 2];
+
+      init_t() : contrast(0.0), brightness(0.0), artifacts(0.0), fringing(0.0) { }
     };
     init_t myImpl;
 

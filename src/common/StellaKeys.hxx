@@ -435,4 +435,12 @@ namespace StellaModTest
   }
 };
 
+namespace StellaKeyName
+{
+  inline const char* const forKey(StellaKey key)
+  {
+    return SDL_GetScancodeName(SDL_Scancode(key));
+  }
+};
+
 #endif /* StellaKeys */

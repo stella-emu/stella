@@ -51,6 +51,7 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _mouseWidget(nullptr),
     _focusedWidget(nullptr),
     _dragWidget(nullptr),
+    _defaultWidget(nullptr),
     _okWidget(nullptr),
     _cancelWidget(nullptr),
     _visible(false),

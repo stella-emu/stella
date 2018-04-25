@@ -20,6 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Background::Background()
+  : myTIA(nullptr)
 {
   reset();
 }

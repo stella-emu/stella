@@ -48,6 +48,11 @@ class Driving : public Controller
     void update() override;
 
     /**
+      Answers whether the controller is intrinsically an analog controller.
+    */
+    bool isAnalog() const override { return true; }
+
+    /**
       Determines how this controller will treat values received from the
       X/Y axis and left/right buttons of the mouse.  Since not all controllers
       use the mouse the same way (or at all), it's up to the specific class to

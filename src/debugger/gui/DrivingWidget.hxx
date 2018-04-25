@@ -50,7 +50,7 @@ class DrivingWidget : public ControllerWidget
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-    void setValue();
+    void setValue(int idx);
 
     // Following constructors and assignment operators not supported
     DrivingWidget() = delete;

@@ -22,7 +22,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, Controller& controller)
-  : ControllerWidget(boss, font, x, y, controller)
+  : ControllerWidget(boss, font, x, y, controller),
+    myEEPROMEraseCurrent(nullptr)
 {
 }
 
@@ -34,7 +35,7 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
   int xpos = x, ypos = y;
 
   new StaticTextWidget(boss, font, xpos, ypos + 2, getHeader());
-  
+
   ypos += lineHeight + 6;
 
   new StaticTextWidget(boss, ifont, xpos, ypos, "Pages/Ranges used:");

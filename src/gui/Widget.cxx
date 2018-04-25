@@ -39,7 +39,8 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
     _bgcolor(kWidColor),
     _bgcolorhi(kWidColor),
     _textcolor(kTextColor),
-    _textcolorhi(kTextColorHi)
+    _textcolorhi(kTextColorHi),
+    _shadowcolor(kShadowColor)
 {
   // Insert into the widget list of the boss
   _next = _boss->_firstWidget;
@@ -354,7 +355,10 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
   : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
     CommandSender(boss),
     _cmd(cmd),
-    _useBitmap(false)
+    _useBitmap(false),
+    _bitmap(nullptr),
+    _bmw(0),
+    _bmh(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _bgcolor = kBtnColor;
@@ -621,8 +625,8 @@ void CheckboxWidget::drawWidget(bool hilite)
   if(_drawBox)
     s.frameRect(_x, _y + _boxY, 14, 14, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
   // Do we draw a square or cross?
-  s.fillRect(_x + 1, _y + _boxY + 1, 12, 12, _changed ? kDbgChangedColor
-             : isEnabled() ? _bgcolor : kColor);
+  s.fillRect(_x + 1, _y + _boxY + 1, 12, 12, _changed ? uInt32(kDbgChangedColor)
+             : isEnabled() ? _bgcolor : uInt32(kColor));
   if(_state)
     s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
                  : kColor, 10);

@@ -94,6 +94,9 @@ class Console : public Serializable
     */
     Controller& leftController() const  { return *myLeftControl;  }
     Controller& rightController() const { return *myRightControl; }
+    Controller& controller(Controller::Jack jack) const {
+      return jack == Controller::Left ? leftController() : rightController();
+    }
 
     /**
       Get the TIA for this console
