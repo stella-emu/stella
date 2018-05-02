@@ -47,7 +47,7 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt8 capacity, bool isStereo, uInt1
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioQueue::~AudioQueue()
 {
-  delete[]myFragmentBuffer;
+  delete[] myFragmentBuffer;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

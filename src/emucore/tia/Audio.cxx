@@ -38,7 +38,7 @@ Audio::Audio()
   : myAudioQueue(0),
     myCurrentFragment(0)
 {
-  for (uInt8 i = 0; i <= 0x1e; i++) myMixingTableSum[i]= mixingTableEntry(i, 0x1e);
+  for (uInt8 i = 0; i <= 0x1e; i++) myMixingTableSum[i] = mixingTableEntry(i, 0x1e);
   for (uInt8 i = 0; i <= 0x0f; i++) myMixingTableIndividual[i] = mixingTableEntry(i, 0x0f);
 
   reset();
@@ -129,6 +129,9 @@ bool Audio::save(Serializer& out) const
     out.putString(name());
 
     out.putInt(myCounter);
+
+    // The queue starts out pristine after loading, so we don't need to save
+    // any other parts of our state
 
     if (!myChannel0.save(out)) return false;
     if (!myChannel1.save(out)) return false;

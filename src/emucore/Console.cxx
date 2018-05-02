@@ -179,9 +179,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myConsoleTiming = ConsoleTiming::secam;
   }
 
-  createAudioQueue();
-  myTIA->setAudioQueue(myAudioQueue);
-
   bool joyallow4 = myOSystem.settings().getBool("joyallow4");
   myOSystem.eventHandler().allowAllDirections(joyallow4);
 
@@ -555,6 +552,10 @@ FBInitStatus Console::initializeVideo(bool full)
 void Console::initializeAudio()
 {
   myOSystem.sound().close();
+
+  createAudioQueue();
+  myTIA->setAudioQueue(myAudioQueue);
+
   myOSystem.sound().open(myAudioQueue);
 }
 
@@ -721,7 +722,8 @@ void Console::createAudioQueue()
       throw runtime_error("invalid console timing");
   }
 
-  uInt32 queueSize = (2 * myOSystem.sound().getFragmentSize() * sampleRate) / (myOSystem.sound().getSampleRate() * fragmentSize);
+  uInt32 queueSize =
+    (2 * myOSystem.sound().getFragmentSize() * sampleRate) / (fragmentSize * myOSystem.sound().getSampleRate());
 
   myAudioQueue = make_shared<AudioQueue>(
     fragmentSize,
