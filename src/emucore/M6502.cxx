@@ -218,12 +218,13 @@ bool M6502::execute(uInt32 number)
   // the halt to take effect). This is safe because as we know that the next cycle will be a read
   // cycle anyway.
   handleHalt();
+#endif
 
   // Make sure that the hardware state matches the current system clock. This is necessary
-  // to maintain a consistent state for the debugger after stepping.
+  // to maintain a consistent state for the debugger after stepping and to make sure
+  // that audio samples are generated for the whole timeslice.
   mySystem->tia().updateEmulation();
   mySystem->m6532().updateEmulation();
-#endif
 
   return status;
 }
