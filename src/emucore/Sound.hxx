@@ -20,6 +20,7 @@
 
 class OSystem;
 class AudioQueue;
+class EmulationTiming;
 
 #include "bspf.hxx"
 
@@ -51,7 +52,7 @@ class Sound
       Start the sound system, initializing it if necessary.  This must be
       called before any calls are made to derived methods.
     */
-    virtual void open(shared_ptr<AudioQueue> audioQueue) = 0;
+    virtual void open(shared_ptr<AudioQueue>, EmulationTiming*) = 0;
 
     /**
       Should be called to stop the sound system.  Once called the sound

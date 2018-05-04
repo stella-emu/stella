@@ -110,10 +110,12 @@ class M6502 : public Serializable
       is executed, someone stops execution, or an error occurs.  Answers
       true iff execution stops normally.
 
-      @param number Indicates the number of instructions to execute
+      @param number Indicates the number of cycles to execute. Not that the actual
+                    granularity of the CPU is instructions, so this is only accurate up to
+                    a couple of cycles
       @return true iff execution stops normally
     */
-    bool execute(uInt32 number);
+    bool execute(uInt32 cycles);
 
     /**
       Tell the processor to stop executing instructions.  Invoking this
@@ -318,7 +320,7 @@ class M6502 : public Serializable
       This is the actual dispatch function that does the grunt work. M6502::execute
       wraps it and makes sure that any pending halt is processed before returning.
     */
-    bool _execute(uInt32 number);
+    bool _execute(uInt32 cycles);
 
 #ifdef DEBUGGER_SUPPORT
     /**

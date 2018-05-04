@@ -646,10 +646,21 @@ void OSystem::mainLoop()
     myEventHandler->poll(getTicks());
     if(myQuitLoop) break;  // Exit if the user wants to quit
 
-    Int64 cycles = myFrameBuffer->update();
+    Int64 totalCycles = 0;
+    const Int64 minCycles = myConsole ? myConsole->emulationTiming().minCyclesPerTimeslice() : 50000;
+    const Int64 maxCycles = myConsole ? myConsole->emulationTiming().maxCyclesPerTimeslice() : 0;
+    const uInt32 cyclesPerSecond = myConsole ? myConsole->emulationTiming().cyclesPerSecond() : 1;
+
+    do {
+      Int64 cycles = myFrameBuffer->update(totalCycles > 0 ? minCycles - totalCycles : maxCycles);
+      if (cycles < 0) break;
+
+      totalCycles += cycles;
+    } while (totalCycles < minCycles);
+
     duration<double> timeslice (
-      (cycles >= 0) ?
-      static_cast<double>(cycles) / static_cast<double>(76 * ((myConsole->timing() == ConsoleTiming::ntsc) ? (262 * 60) : (312 * 50))) :
+      (totalCycles > 0) ?
+      static_cast<double>(totalCycles) / static_cast<double>(cyclesPerSecond) :
       1. / 30.
      );
 
@@ -659,7 +670,7 @@ void OSystem::mainLoop()
     if (duration_cast<duration<double>>(now - virtualTime).count() > 0)
       virtualTime = now;
     else if (virtualTime > now) {
-      if (busyWait && cycles >= 0) {
+      if (busyWait && totalCycles > 0) {
         while (high_resolution_clock::now() < virtualTime);
       }
       else std::this_thread::sleep_until(virtualTime);

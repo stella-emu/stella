@@ -21,6 +21,8 @@
 #include "bspf.hxx"
 #include "Sound.hxx"
 #include "OSystem.hxx"
+#include "AudioQueue.hxx"
+#include "EmulationTiming.hxx"
 
 /**
   This class implements a Null sound object, where-by sound generation
@@ -57,7 +59,7 @@ class SoundNull : public Sound
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
     */
-    void open() override { }
+    void open(shared_ptr<AudioQueue>, EmulationTiming*) override { }
 
     /**
       Should be called to close the sound device.  Once called the sound

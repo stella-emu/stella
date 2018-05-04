@@ -45,7 +45,7 @@ class AudioQueue
        @param isStereo          Whether samples are stereo or mono.
        @param sampleRate        The sample rate. This is not used, but can be queried.
      */
-    AudioQueue(uInt32 fragmentSize, uInt8 capacity, bool isStereo, uInt16 sampleRate);
+    AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, uInt16 sampleRate);
 
     /**
        We need a destructor to deallocate the individual fragment buffers.
@@ -55,12 +55,12 @@ class AudioQueue
     /**
        Capacity getter.
      */
-    uInt8 capacity() const;
+    uInt32 capacity() const;
 
     /**
       Size getter.
      */
-    uInt8 size();
+    uInt32 size();
 
     /**
       Stereo / mono getter.
@@ -122,10 +122,10 @@ class AudioQueue
     Int16* myFragmentBuffer;
 
     // The nubmer if queued fragments
-    uInt8 mySize;
+    uInt32 mySize;
 
     // The next fragment.
-    uInt8 myNextFragment;
+    uInt32 myNextFragment;
 
     // We need a mutex for thread safety.
     std::mutex myMutex;

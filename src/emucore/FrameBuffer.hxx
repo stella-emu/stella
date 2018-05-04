@@ -116,7 +116,7 @@ class FrameBuffer
       drawing the TIA, any pending menus, etc. Returns the numbers of CPU cycles
       spent during emulation, or -1 if not applicable.
     */
-    Int64 update();
+    Int64 update(uInt32 maxCycles = 50000);
 
     /**
       Shows a message onscreen.

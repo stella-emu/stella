@@ -72,7 +72,6 @@
 
 namespace {
   constexpr uInt8 YSTART_EXTRA = 2;
-  constexpr uInt8 AUDIO_QUEUE_HALF_FRAMES_PER_FRAGMENT = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -358,6 +357,7 @@ void Console::toggleFormat(int direction)
   setTIAProperties();
   myTIA->frameReset();
   initializeVideo();  // takes care of refreshing the screen
+  initializeAudio(); // ensure that audio synthesis is set up to match emulation speed
 
   myOSystem.frameBuffer().showMessage(message);
 
@@ -556,7 +556,7 @@ void Console::initializeAudio()
   createAudioQueue();
   myTIA->setAudioQueue(myAudioQueue);
 
-  myOSystem.sound().open(myAudioQueue);
+  myOSystem.sound().open(myAudioQueue, &myEmulationTiming);
 }
 
 /* Original frying research and code by Fred Quimby.
@@ -699,37 +699,18 @@ void Console::setTIAProperties()
 
   myTIA->setYStart(ystart != 0 ? ystart : myAutodetectedYstart);
   myTIA->setHeight(height);
+
+  myEmulationTiming.updateFrameLayout(myTIA->frameLayout());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::createAudioQueue()
 {
-  uInt32 fragmentSize, sampleRate;
-
-  switch (myConsoleTiming) {
-    case ConsoleTiming::ntsc:
-      fragmentSize = 262 * AUDIO_QUEUE_HALF_FRAMES_PER_FRAGMENT;
-      sampleRate = 2 * 262 * 60;
-      break;
-
-    case ConsoleTiming::pal:
-    case ConsoleTiming::secam:
-      fragmentSize = 312 * AUDIO_QUEUE_HALF_FRAMES_PER_FRAGMENT;
-      sampleRate = 2 * 312 * 50;
-      break;
-
-    default:
-      throw runtime_error("invalid console timing");
-  }
-
-  uInt32 queueSize =
-    (2 * myOSystem.sound().getFragmentSize() * sampleRate) / (fragmentSize * myOSystem.sound().getSampleRate());
-
   myAudioQueue = make_shared<AudioQueue>(
-    fragmentSize,
-    queueSize > 0 ? queueSize : 1,
+    myEmulationTiming.audioFragmentSize(),
+    myEmulationTiming.audioQueueCapacity(myOSystem.sound().getSampleRate(), myOSystem.sound().getFragmentSize()),
     myProperties.get(Cartridge_Sound) == "STEREO",
-    sampleRate
+    myEmulationTiming.audioSampleRate()
   );
 }
 

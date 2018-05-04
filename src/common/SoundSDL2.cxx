@@ -29,6 +29,7 @@
 #include "Console.hxx"
 #include "SoundSDL2.hxx"
 #include "AudioQueue.hxx"
+#include "EmulationTiming.hxx"
 
 namespace {
   inline Int16 applyVolume(Int16 sample, Int32 volumeFactor)
@@ -116,8 +117,10 @@ void SoundSDL2::setEnabled(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue)
+void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue, EmulationTiming* emulationTiming)
 {
+  this->emulationTiming = emulationTiming;
+
   myOSystem.logMessage("SoundSDL2::open started ...", 2);
   mute(true);
 
@@ -241,7 +244,7 @@ uInt32 SoundSDL2::getSampleRate() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::processFragment(Int16* stream, uInt32 length)
 {
-  if (myUnderrun && myAudioQueue->size() > 0) {
+  if (myUnderrun && myAudioQueue->size() > emulationTiming->prebufferFragmentCount()) {
     myUnderrun = false;
     myCurrentFragment = myAudioQueue->dequeue(myCurrentFragment);
     myFragmentIndex = 0;
@@ -273,8 +276,10 @@ void SoundSDL2::processFragment(Int16* stream, uInt32 length)
       Int16* nextFragment = myAudioQueue->dequeue(myCurrentFragment);
       if (nextFragment)
         myCurrentFragment = nextFragment;
-      else
+      else {
         myUnderrun = true;
+        (cout << "audio underrun!\n").flush();
+      }
     }
 
     if (isStereo) {

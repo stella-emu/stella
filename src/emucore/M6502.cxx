@@ -229,7 +229,7 @@ bool M6502::execute(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline bool M6502::_execute(uInt32 number)
+inline bool M6502::_execute(uInt32 cycles)
 {
   // Clear all of the execution status bits except for the fatal error bit
   myExecutionStatus &= FatalErrorBit;
@@ -239,10 +239,12 @@ inline bool M6502::_execute(uInt32 number)
   M6532& riot = mySystem->m6532();
 #endif
 
+  uInt32 currentCycles = 0;
+
   // Loop until execution is stopped or a fatal error occurs
   for(;;)
   {
-    for(; !myExecutionStatus && (number != 0); --number)
+    for(; !myExecutionStatus && (currentCycles < cycles * SYSTEM_CYCLES_PER_CPU); currentCycles += SYSTEM_CYCLES_PER_CPU)
     {
   #ifdef DEBUGGER_SUPPORT
       if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
@@ -329,7 +331,7 @@ inline bool M6502::_execute(uInt32 number)
     }
 
     // See if we've executed the specified number of instructions
-    if(number == 0)
+    if (currentCycles >= cycles * SYSTEM_CYCLES_PER_CPU)
     {
       // Yes, so answer that everything finished fine
       return true;

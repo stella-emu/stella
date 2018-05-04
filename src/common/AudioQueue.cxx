@@ -21,7 +21,7 @@ using std::mutex;
 using std::lock_guard;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioQueue::AudioQueue(uInt32 fragmentSize, uInt8 capacity, bool isStereo, uInt16 sampleRate)
+AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, uInt16 sampleRate)
   : myFragmentSize(fragmentSize),
     myIsStereo(isStereo),
     mySampleRate(sampleRate),
@@ -34,7 +34,7 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt8 capacity, bool isStereo, uInt1
 
   myFragmentBuffer = new Int16[myFragmentSize * sampleSize * (capacity + 2)];
 
-  for (uInt8 i = 0; i < capacity; i++)
+  for (uInt32 i = 0; i < capacity; i++)
     myFragmentQueue[i] = myAllFragments[i] = myFragmentBuffer + i * sampleSize * myFragmentSize;
 
   myAllFragments[capacity] = myFirstFragmentForEnqueue =
@@ -51,13 +51,13 @@ AudioQueue::~AudioQueue()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 AudioQueue::capacity() const
+uInt32 AudioQueue::capacity() const
 {
   return myFragmentQueue.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 AudioQueue::size()
+uInt32 AudioQueue::size()
 {
   lock_guard<mutex> guard(myMutex);
 

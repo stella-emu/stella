@@ -805,11 +805,11 @@ bool TIA::loadDisplay(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 TIA::update()
+uInt64 TIA::update(uInt32 maxCycles)
 {
   uInt64 timestampOld = myTimestamp;
 
-  mySystem->m6502().execute(25000);
+  mySystem->m6502().execute(maxCycles);
 
   updateEmulation();
   return (myTimestamp - timestampOld) / 3;

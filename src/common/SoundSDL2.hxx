@@ -22,6 +22,7 @@
 
 class OSystem;
 class AudioQueue;
+class EmulationTiming;
 
 #include "SDL_lib.hxx"
 
@@ -59,7 +60,7 @@ class SoundSDL2 : public Sound
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
     */
-    void open(shared_ptr<AudioQueue> audioQueue) override;
+    void open(shared_ptr<AudioQueue> audioQueue, EmulationTiming* emulationTiming) override;
 
     /**
       Should be called to close the sound device.  Once called the sound
@@ -123,6 +124,8 @@ class SoundSDL2 : public Sound
     SDL_AudioSpec myHardwareSpec;
 
     shared_ptr<AudioQueue> myAudioQueue;
+
+    EmulationTiming* emulationTiming;
 
     Int16* myCurrentFragment;
     uInt32 myTimeIndex;

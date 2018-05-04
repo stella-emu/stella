@@ -37,6 +37,7 @@ class AudioQueue;
 #include "Serializable.hxx"
 #include "EventHandlerConstants.hxx"
 #include "NTSCFilter.hxx"
+#include "EmulationTiming.hxx"
 #include "frame-manager/AbstractFrameManager.hxx"
 
 /**
@@ -189,6 +190,11 @@ class Console : public Serializable
       Informs the Console of a change in EventHandler state.
     */
     void stateChanged(EventHandlerState state);
+
+    /**
+      Retrieve emulation timing provider.
+     */
+    EmulationTiming& emulationTiming() { return myEmulationTiming; }
 
   public:
     /**
@@ -416,7 +422,9 @@ class Console : public Serializable
     // Contains timing information for this console
     ConsoleTiming myConsoleTiming;
 
-    uInt32 myFramerate;
+    // Emulation timing provider. This ties together the timing of the core emulation loop
+    // and the audio synthesis parameters
+    EmulationTiming myEmulationTiming;
 
     // Table of RGB values for NTSC, PAL and SECAM
     static uInt32 ourNTSCPalette[256];

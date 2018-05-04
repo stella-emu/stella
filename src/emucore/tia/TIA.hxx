@@ -199,7 +199,7 @@ class TIA : public Device
       desired frame rate to update the TIA.  Invoking this method will update
       the graphics buffer and generate the corresponding audio samples.
     */
-    uInt64 update();
+    uInt64 update(uInt32 maxCycles = 50000);
 
     /**
       Returns a pointer to the internal frame buffer.
