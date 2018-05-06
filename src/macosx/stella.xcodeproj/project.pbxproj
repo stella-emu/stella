@@ -622,6 +622,8 @@
 		E0306E0F1F93E916003DDD52 /* JitterEmulation.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0306E091F93E915003DDD52 /* JitterEmulation.cxx */; };
 		E0306E101F93E916003DDD52 /* FrameLayoutDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0306E0A1F93E916003DDD52 /* FrameLayoutDetector.cxx */; };
 		E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */; };
+		E034A5EE209FB25D00C89E9E /* EmulationTiming.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */; };
+		E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */; };
 		E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */; };
 		E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */; };
 		E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4139201E901C004A3391 /* AudioQueue.hxx */; };
@@ -1301,6 +1303,8 @@
 		E0306E091F93E915003DDD52 /* JitterEmulation.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JitterEmulation.cxx; sourceTree = "<group>"; };
 		E0306E0A1F93E916003DDD52 /* FrameLayoutDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameLayoutDetector.cxx; sourceTree = "<group>"; };
 		E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JitterEmulation.hxx; sourceTree = "<group>"; };
+		E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmulationTiming.cxx; sourceTree = "<group>"; };
+		E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EmulationTiming.hxx; sourceTree = "<group>"; };
 		E09F4139201E901C004A3391 /* AudioQueue.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioQueue.hxx; sourceTree = "<group>"; };
 		E09F413A201E901D004A3391 /* AudioQueue.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioQueue.cxx; sourceTree = "<group>"; };
 		E09F413D201E904F004A3391 /* Audio.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Audio.hxx; sourceTree = "<group>"; };
@@ -1658,6 +1662,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */,
+				E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */,
 				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
@@ -2139,6 +2145,7 @@
 				2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */,
 				2D9173CF09BA90380026E9FF /* Cart3F.hxx in Headers */,
 				DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */,
+				E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */,
 				DC3EE86A1E2C0E6D00905161 /* trees.h in Headers */,
 				2D9173D009BA90380026E9FF /* Cart4K.hxx in Headers */,
 				2D9173D109BA90380026E9FF /* CartAR.hxx in Headers */,
@@ -2561,6 +2568,7 @@
 				DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */,
 				2D91747609BA90380026E9FF /* Cart.cxx in Sources */,
 				2D91747709BA90380026E9FF /* Cart2K.cxx in Sources */,
+				E034A5EE209FB25D00C89E9E /* EmulationTiming.cxx in Sources */,
 				2D91747809BA90380026E9FF /* Cart3F.cxx in Sources */,
 				2D91747909BA90380026E9FF /* Cart4K.cxx in Sources */,
 				2D91747A09BA90380026E9FF /* CartAR.cxx in Sources */,
