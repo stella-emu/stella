@@ -1,7 +1,3 @@
-# Verify
-
- * Verify that FPS are still measured correctly
-
 # Missing features
 
  * Reimplement target FPS mode
