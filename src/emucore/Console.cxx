@@ -553,6 +553,9 @@ void Console::initializeAudio()
 {
   myOSystem.sound().close();
 
+  myEmulationTiming.updatePlaybackPeriod(myOSystem.sound().getSampleRate());
+  myEmulationTiming.updatePlaybackPeriod(myOSystem.sound().getFragmentSize());
+
   createAudioQueue();
   myTIA->setAudioQueue(myAudioQueue);
 
@@ -708,7 +711,7 @@ void Console::createAudioQueue()
 {
   myAudioQueue = make_shared<AudioQueue>(
     myEmulationTiming.audioFragmentSize(),
-    myEmulationTiming.audioQueueCapacity(myOSystem.sound().getSampleRate(), myOSystem.sound().getFragmentSize()),
+    myEmulationTiming.audioQueueCapacity(),
     myProperties.get(Cartridge_Sound) == "STEREO",
     myEmulationTiming.audioSampleRate()
   );

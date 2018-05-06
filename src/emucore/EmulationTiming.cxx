@@ -24,26 +24,46 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EmulationTiming::EmulationTiming(FrameLayout frameLayout) : frameLayout(frameLayout) {}
+EmulationTiming::EmulationTiming(FrameLayout frameLayout) :
+  myFrameLayout(frameLayout),
+  myPlaybackRate(44100),
+  myPlaybackPeriod(512)
+{}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EmulationTiming::updateFrameLayout(FrameLayout frameLayout) {
-  this->frameLayout = frameLayout;
+void EmulationTiming::updateFrameLayout(FrameLayout frameLayout)
+{
+  myFrameLayout = frameLayout;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::maxCyclesPerTimeslice() const {
-  return (3 * cyclesPerFrame()) / 2;
+void EmulationTiming::updatePlaybackRate(uInt32 playbackRate)
+{
+  myPlaybackRate = playbackRate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::minCyclesPerTimeslice() const {
+void EmulationTiming::updatePlaybackPeriod(uInt32 playbackPeriod)
+{
+  myPlaybackPeriod = playbackPeriod;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::maxCyclesPerTimeslice() const
+{
+  return 2 * cyclesPerFrame();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::minCyclesPerTimeslice() const
+{
   return cyclesPerFrame() / 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::linesPerFrame() const {
-  switch (frameLayout) {
+uInt32 EmulationTiming::linesPerFrame() const
+{
+  switch (myFrameLayout) {
     case FrameLayout::ntsc:
       return 262;
 
@@ -56,13 +76,15 @@ uInt32 EmulationTiming::linesPerFrame() const {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::cyclesPerFrame() const {
+uInt32 EmulationTiming::cyclesPerFrame() const
+{
   return 76 * linesPerFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::framesPerSecond() const {
-  switch (frameLayout) {
+uInt32 EmulationTiming::framesPerSecond() const
+{
+  switch (myFrameLayout) {
     case FrameLayout::ntsc:
       return 60;
 
@@ -75,29 +97,34 @@ uInt32 EmulationTiming::framesPerSecond() const {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::cyclesPerSecond() const {
+uInt32 EmulationTiming::cyclesPerSecond() const
+{
   return cyclesPerFrame() * framesPerSecond();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::audioFragmentSize() const {
+uInt32 EmulationTiming::audioFragmentSize() const
+{
   return AUDIO_HALF_FRAMES_PER_FRAGMENT * linesPerFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::audioSampleRate() const {
+uInt32 EmulationTiming::audioSampleRate() const
+{
   return 2 * linesPerFrame() * framesPerSecond();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::audioQueueCapacity(uInt32 playbackRate, uInt32 playbackFragmentSize) const {
-  uInt32 capacity = (playbackFragmentSize * audioSampleRate()) / (audioFragmentSize() * playbackRate) + 1;
+uInt32 EmulationTiming::audioQueueCapacity() const
+{
+  uInt32 capacity = (myPlaybackPeriod * audioSampleRate()) / (audioFragmentSize() * myPlaybackRate) + 1;
   uInt32 minCapacity = (maxCyclesPerTimeslice() * audioSampleRate()) / (audioFragmentSize() * cyclesPerSecond()) + 1;
 
   return std::max(prebufferFragmentCount() + 1, QUEUE_CAPACITY_SAFETY_FACTOR * std::max(capacity, minCapacity));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::prebufferFragmentCount() const {
-  return PREBUFFER_FRAGMENT_COUNT;
+uInt32 EmulationTiming::prebufferFragmentCount() const
+{
+  return (myPlaybackPeriod * audioSampleRate()) / (audioFragmentSize() * myPlaybackRate) + PREBUFFER_FRAGMENT_COUNT;
 }

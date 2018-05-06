@@ -28,6 +28,10 @@ class EmulationTiming {
 
     void updateFrameLayout(FrameLayout frameLayout);
 
+    void updatePlaybackRate(uInt32 playbackRate);
+
+    void updatePlaybackPeriod(uInt32 period);
+
     uInt32 maxCyclesPerTimeslice() const;
 
     uInt32 minCyclesPerTimeslice() const;
@@ -44,13 +48,17 @@ class EmulationTiming {
 
     uInt32 audioSampleRate() const;
 
-    uInt32 audioQueueCapacity(uInt32 playbackRate, uInt32 playbackFragmentSize) const;
+    uInt32 audioQueueCapacity() const;
 
     uInt32 prebufferFragmentCount() const;
 
   private:
 
-    FrameLayout frameLayout;
+    FrameLayout myFrameLayout;
+
+    uInt32 myPlaybackRate;
+
+    uInt32 myPlaybackPeriod;
 
 };
 
