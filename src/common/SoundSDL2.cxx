@@ -62,8 +62,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
   // This fixes a bug most prevalent with ATI video cards in Windows,
   // whereby sound stopped working after the first video change
   SDL_AudioSpec desired;
-  // desired.freq   = myOSystem.settings().getInt("freq");
-  desired.freq = 48000;
+  desired.freq   = myOSystem.settings().getInt("freq");
   desired.format = AUDIO_S16SYS;
   desired.channels = 2;
   desired.samples  = myOSystem.settings().getInt("fragsize");
