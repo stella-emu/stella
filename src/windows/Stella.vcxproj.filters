@@ -55,6 +55,12 @@
     <Filter Include="Source Files\emucore\tia">
       <UniqueIdentifier>{ffa3642d-aa8a-43a5-8ac5-acd8878dd091}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\audio">
+      <UniqueIdentifier>{49d8ea64-20c1-45f1-9dc9-b39c17d7cabd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\audio">
+      <UniqueIdentifier>{000e4a6b-8cd6-43db-8253-8255c7efa706}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\FrameBufferSDL2.cxx">
@@ -908,6 +914,9 @@
     </ClCompile>
     <ClCompile Include="..\emucore\EmulationTiming.cxx">
       <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\audio\SimpleResampler.cxx">
+      <Filter>Source Files\audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1861,6 +1870,12 @@
     </ClInclude>
     <ClInclude Include="..\emucore\EmulationTiming.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\audio\Resampler.hxx">
+      <Filter>Header Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\audio\SimpleResampler.hxx">
+      <Filter>Header Files\audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

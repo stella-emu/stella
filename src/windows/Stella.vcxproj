@@ -229,6 +229,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\AudioQueue.cxx" />
+    <ClCompile Include="..\common\audio\SimpleResampler.cxx" />
     <ClCompile Include="..\common\Base.cxx" />
     <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
@@ -515,6 +516,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\AudioQueue.hxx" />
+    <ClInclude Include="..\common\audio\Resampler.hxx" />
+    <ClInclude Include="..\common\audio\SimpleResampler.hxx" />
     <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\EventHandlerSDL2.hxx" />
