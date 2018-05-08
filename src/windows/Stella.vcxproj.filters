@@ -893,6 +893,7 @@
     </ClCompile>
     <ClCompile Include="..\emucore\tia\Audio.cxx">
       <Filter>Source Files\emucore\tia</Filter>
+	</ClCompile>
     <ClCompile Include="..\gui\TimeLineWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
