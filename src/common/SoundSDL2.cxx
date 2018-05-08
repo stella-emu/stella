@@ -30,6 +30,7 @@
 #include "SoundSDL2.hxx"
 #include "AudioQueue.hxx"
 #include "EmulationTiming.hxx"
+#include "audio/SimpleResampler.hxx"
 
 namespace {
   inline Int16 applyVolume(Int16 sample, Int32 volumeFactor)
@@ -45,8 +46,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
     myVolume(100),
     myVolumeFactor(0xffff),
     myAudioQueue(0),
-    myCurrentFragment(0),
-    myFragmentBufferSize(0)
+    myCurrentFragment(0)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
@@ -132,14 +132,6 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue, EmulationTiming* emulati
   myAudioQueue = audioQueue;
   myUnderrun = true;
   myCurrentFragment = 0;
-  myTimeIndex = 0;
-  myFragmentIndex = 0;
-  myFragmentBufferSize = static_cast<uInt32>(
-    ceil(
-      1.5 * static_cast<double>(myHardwareSpec.samples) / static_cast<double>(myAudioQueue->fragmentSize())
-          * static_cast<double>(myAudioQueue->sampleRate()) / static_cast<double>(myHardwareSpec.freq)
-    )
-  );
 
   // Adjust volume to that defined in settings
   setVolume(myOSystem.settings().getInt("volume"));
@@ -153,6 +145,8 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue, EmulationTiming* emulati
       << "  Channels:    " << uInt32(myHardwareSpec.channels)
       << endl;
   myOSystem.logMessage(buf.str(), 1);
+
+  initResampler();
 
   // And start the SDL sound subsystem ...
   mute(false);
@@ -243,62 +237,33 @@ uInt32 SoundSDL2::getSampleRate() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::processFragment(Int16* stream, uInt32 length)
 {
-  if (myUnderrun && myAudioQueue->size() > emulationTiming->prebufferFragmentCount()) {
-    myUnderrun = false;
-    myCurrentFragment = myAudioQueue->dequeue(myCurrentFragment);
-    myFragmentIndex = 0;
-  }
+  myResampler->fillFragment(stream, length);
 
-  if (!myCurrentFragment) {
-    memset(stream, 0, 2 * length);
-    return;
-  }
+  for (uInt32 i = 0; i < length; i++) stream[i] = applyVolume(stream[i], myVolumeFactor);
+}
 
-  const bool isStereoTIA = myAudioQueue->isStereo();
-  const bool isStereo = myHardwareSpec.channels == 2;
-  const uInt32 sampleRateTIA = myAudioQueue->sampleRate();
-  const uInt32 sampleRate = myHardwareSpec.freq;
-  const uInt32 fragmentSize = myAudioQueue->fragmentSize();
-  const uInt32 outputSamples = isStereo ? (length >> 1) : length;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SoundSDL2::initResampler()
+{
+  Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
+    Int16* nextFragment = 0;
 
-  for (uInt32 i = 0; i < outputSamples; i++) {
-    myTimeIndex += sampleRateTIA;
+    if (myUnderrun)
+      nextFragment = myAudioQueue->size() > emulationTiming->prebufferFragmentCount() ? myAudioQueue->dequeue(myCurrentFragment) : 0;
+    else
+      nextFragment = myAudioQueue->dequeue(myCurrentFragment);
 
-    if (myTimeIndex >= sampleRate) {
-      myFragmentIndex += myTimeIndex / sampleRate;
-      myTimeIndex %= sampleRate;
-    }
+    myUnderrun = nextFragment == 0;
+    if (nextFragment) myCurrentFragment = nextFragment;
 
-    if (myFragmentIndex >= fragmentSize) {
-      myFragmentIndex %= fragmentSize;
+    return nextFragment;
+  };
 
-      Int16* nextFragment = myAudioQueue->dequeue(myCurrentFragment);
-      if (nextFragment)
-        myCurrentFragment = nextFragment;
-      else {
-        myUnderrun = true;
-        (cout << "audio underrun!\n").flush();
-      }
-    }
-
-    if (isStereo) {
-      if (isStereoTIA) {
-        stream[2*i]     = applyVolume(myCurrentFragment[2*myFragmentIndex], myVolumeFactor);
-        stream[2*i + 1] = applyVolume(myCurrentFragment[2*myFragmentIndex + 1], myVolumeFactor);
-      } else {
-        stream[2*i] = stream[2*i + 1] = applyVolume(myCurrentFragment[myFragmentIndex], myVolumeFactor);
-      }
-    } else {
-      if (isStereoTIA) {
-        stream[i] = applyVolume(
-          (myCurrentFragment[2*myFragmentIndex] / 2) + (myCurrentFragment[2*myFragmentIndex + 1] / 2),
-          myVolumeFactor
-        );
-      } else {
-        stream[i] = applyVolume(myCurrentFragment[myFragmentIndex], myVolumeFactor);
-      }
-    }
-  }
+  myResampler = make_unique<SimpleResampler>(
+    Resampler::Format(myAudioQueue->sampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo()),
+    Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples, myHardwareSpec.channels > 1),
+    nextFragmentCallback
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

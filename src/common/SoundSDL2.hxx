@@ -28,6 +28,7 @@ class EmulationTiming;
 
 #include "bspf.hxx"
 #include "Sound.hxx"
+#include "audio/Resampler.hxx"
 
 /**
   This class implements the sound API for SDL.
@@ -113,6 +114,10 @@ class SoundSDL2 : public Sound
     void processFragment(Int16* stream, uInt32 length);
 
   private:
+
+    void initResampler();
+
+  private:
     // Indicates if the sound device was successfully initialized
     bool myIsInitializedFlag;
 
@@ -128,10 +133,9 @@ class SoundSDL2 : public Sound
     EmulationTiming* emulationTiming;
 
     Int16* myCurrentFragment;
-    uInt32 myTimeIndex;
-    uInt32 myFragmentIndex;
-    uInt32 myFragmentBufferSize;
     bool myUnderrun;
+
+    unique_ptr<Resampler> myResampler;
 
   private:
     // Callback function invoked by the SDL Audio library when it needs data

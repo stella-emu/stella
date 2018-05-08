@@ -60,6 +60,13 @@ class EmulationTiming {
 
     uInt32 myPlaybackPeriod;
 
+  private:
+
+    EmulationTiming(const EmulationTiming&) = delete;
+    EmulationTiming(EmulationTiming&&) = delete;
+    EmulationTiming& operator=(const EmulationTiming&) = delete;
+    EmulationTiming& operator=(EmulationTiming&&) = delete;
+
 };
 
 #endif // EMULATION_TIMING_HXX

@@ -1,0 +1,91 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#include "SimpleResampler.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SimpleResampler::SimpleResampler(
+  Resampler::Format formatFrom,
+  Resampler::Format formatTo,
+  Resampler::NextFragmentCallback nextFragmentCallback)
+:
+  Resampler(formatFrom, formatTo, nextFragmentCallback),
+  myCurrentFragment(0),
+  myTimeIndex(0),
+  myFragmentIndex(0),
+  myIsUnderrun(true)
+{}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SimpleResampler::fillFragment(Int16* fragment, uInt32 length)
+{
+  if (myIsUnderrun) {
+    Int16* nextFragment = myNextFragmentCallback();
+
+    if (nextFragment) {
+      myCurrentFragment = nextFragment;
+      myFragmentIndex = 0;
+      myIsUnderrun = false;
+    }
+  }
+
+  if (!myCurrentFragment) {
+    memset(fragment, 0, 2 * length);
+    return;
+  }
+
+  const uInt32 outputSamples = myFormatTo.stereo ? (length >> 1) : length;
+
+  // For the following math, remember that myTimeIndex = time * myFormatFrom.sampleRate * myFormatTo.sampleRate
+  for (uInt32 i = 0; i < outputSamples; i++) {
+    // time += 1 / myFormatTo.sampleRate
+    myTimeIndex += myFormatFrom.sampleRate;
+
+    // time >= 1 / myFormatFrom.sampleRate
+    if (myTimeIndex >= myFormatTo.sampleRate) {
+      // myFragmentIndex += time * myFormatFrom.sampleRate
+      myFragmentIndex += myTimeIndex / myFormatTo.sampleRate;
+      myTimeIndex %= myFormatTo.sampleRate;
+    }
+
+    if (myFragmentIndex >= myFormatFrom.fragmentSize) {
+      myFragmentIndex %= myFormatFrom.fragmentSize;
+
+      Int16* nextFragment = myNextFragmentCallback();
+      if (nextFragment)
+        myCurrentFragment = nextFragment;
+      else {
+        (cerr << "audio buffer underrun\n").flush();
+        myIsUnderrun = true;
+      }
+    }
+
+    if (myFormatTo.stereo) {
+      if (myFormatFrom.stereo) {
+        fragment[2*i] = myCurrentFragment[2*myFragmentIndex];
+        fragment[2*i + 1] = myCurrentFragment[2*myFragmentIndex + 1];
+      }
+      else
+        fragment[2*i] = fragment[2*i + 1] = myCurrentFragment[myFragmentIndex];
+    } else {
+      if (myFormatFrom.stereo)
+        fragment[i] = (myCurrentFragment[2*myFragmentIndex] / 2) + (myCurrentFragment[2*myFragmentIndex + 1] / 2);
+      else
+        fragment[i] = myCurrentFragment[myFragmentIndex];
+    }
+  }
+}
