@@ -509,6 +509,9 @@
 		DCC527D610B9DA19005E1287 /* System.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CE10B9DA19005E1287 /* System.cxx */; };
 		DCC527D710B9DA19005E1287 /* System.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CF10B9DA19005E1287 /* System.hxx */; };
 		DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527D810B9DA6A005E1287 /* bspf.hxx */; };
+		DCC6A4B120A2622500863C59 /* Resampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC6A4AE20A2622500863C59 /* Resampler.hxx */; };
+		DCC6A4B220A2622500863C59 /* SimpleResampler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC6A4AF20A2622500863C59 /* SimpleResampler.cxx */; };
+		DCC6A4B320A2622500863C59 /* SimpleResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */; };
 		DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCA26B11FA64D5E000EE4D8 /* AbstractFrameManager.hxx */; };
 		DCCA26B41FA64D5E000EE4D8 /* FrameManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCA26B21FA64D5E000EE4D8 /* FrameManager.hxx */; };
 		DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */; };
@@ -1190,6 +1193,9 @@
 		DCC527CE10B9DA19005E1287 /* System.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = System.cxx; sourceTree = "<group>"; };
 		DCC527CF10B9DA19005E1287 /* System.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = System.hxx; sourceTree = "<group>"; };
 		DCC527D810B9DA6A005E1287 /* bspf.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bspf.hxx; sourceTree = "<group>"; };
+		DCC6A4AE20A2622500863C59 /* Resampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Resampler.hxx; path = audio/Resampler.hxx; sourceTree = "<group>"; };
+		DCC6A4AF20A2622500863C59 /* SimpleResampler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SimpleResampler.cxx; path = audio/SimpleResampler.cxx; sourceTree = "<group>"; };
+		DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SimpleResampler.hxx; path = audio/SimpleResampler.hxx; sourceTree = "<group>"; };
 		DCCA26B11FA64D5E000EE4D8 /* AbstractFrameManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AbstractFrameManager.hxx; sourceTree = "<group>"; };
 		DCCA26B21FA64D5E000EE4D8 /* FrameManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameManager.hxx; sourceTree = "<group>"; };
 		DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControllerWidget.hxx; sourceTree = "<group>"; };
@@ -1588,6 +1594,7 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
 				DC79F81017A88D9E00288B91 /* Base.cxx */,
@@ -1662,8 +1669,6 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
-				E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */,
-				E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */,
 				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
@@ -1772,6 +1777,8 @@
 				DCC527C910B9DA19005E1287 /* Device.hxx */,
 				2DE2DF3E0627AE07006BEC99 /* Driving.cxx */,
 				2DE2DF3F0627AE07006BEC99 /* Driving.hxx */,
+				E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */,
+				E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */,
 				2DE2DF410627AE07006BEC99 /* Event.hxx */,
 				2D733D6E062895B2006265D9 /* EventHandler.cxx */,
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
@@ -2031,6 +2038,16 @@
 			path = tv_filters;
 			sourceTree = "<group>";
 		};
+		DCC6A4AD20A2620D00863C59 /* audio */ = {
+			isa = PBXGroup;
+			children = (
+				DCC6A4AE20A2622500863C59 /* Resampler.hxx */,
+				DCC6A4AF20A2622500863C59 /* SimpleResampler.cxx */,
+				DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */,
+			);
+			name = audio;
+			sourceTree = "<group>";
+		};
 		DCCC0C9109C3541E0088BFF1 /* cheat */ = {
 			isa = PBXGroup;
 			children = (
@@ -2265,6 +2282,7 @@
 				2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */,
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
 				2D91745709BA90380026E9FF /* DataGridWidget.hxx in Headers */,
+				DCC6A4B120A2622500863C59 /* Resampler.hxx in Headers */,
 				DCF3A6EC1DFC75E3008A8AF3 /* DelayQueue.hxx in Headers */,
 				DCA078341F8C1B04008EFEE5 /* LinkedObjectPool.hxx in Headers */,
 				2D91745809BA90380026E9FF /* DebuggerDialog.hxx in Headers */,
@@ -2303,6 +2321,7 @@
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
 				DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */,
 				DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */,
+				DCC6A4B320A2622500863C59 /* SimpleResampler.hxx in Headers */,
 				DC6DC91F205DB879004A5FC3 /* PhysicalJoystick.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
 				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
@@ -2794,6 +2813,7 @@
 				DC3EE8601E2C0E6D00905161 /* gzwrite.c in Sources */,
 				DCAAE5D71715887B0080BB82 /* Cart4KWidget.cxx in Sources */,
 				DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */,
+				DCC6A4B220A2622500863C59 /* SimpleResampler.cxx in Sources */,
 				DCAAE5D91715887B0080BB82 /* Cart0840Widget.cxx in Sources */,
 				DCAAE5DB1715887B0080BB82 /* CartCVWidget.cxx in Sources */,
 				DCAAE5DE1715887B0080BB82 /* CartEFSCWidget.cxx in Sources */,
