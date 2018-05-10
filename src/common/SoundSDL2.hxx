@@ -111,7 +111,7 @@ class SoundSDL2 : public Sound
       @param stream  Pointer to the start of the fragment
       @param length  Length of the fragment
     */
-    void processFragment(Int16* stream, uInt32 length);
+    void processFragment(float* stream, uInt32 length);
 
   private:
 
@@ -123,7 +123,7 @@ class SoundSDL2 : public Sound
 
     // Current volume as a percentage (0 - 100)
     uInt32 myVolume;
-    Int32 myVolumeFactor;
+    float myVolumeFactor;
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;

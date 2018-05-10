@@ -55,7 +55,7 @@ class Resampler {
       myNextFragmentCallback(nextFragmentCallback)
     {}
 
-    virtual void fillFragment(Int16* fragment, uInt32 length) = 0;
+    virtual void fillFragment(float* fragment, uInt32 length) = 0;
 
     virtual ~Resampler() {}
 

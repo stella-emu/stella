@@ -28,7 +28,7 @@ class SimpleResampler : public Resampler {
       Resampler::NextFragmentCallback NextFragmentCallback
     );
 
-    virtual void fillFragment(Int16* fragment, uInt32 length);
+    virtual void fillFragment(float* fragment, uInt32 length);
 
   private:
 

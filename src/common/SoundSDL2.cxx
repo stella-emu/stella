@@ -32,13 +32,6 @@
 #include "EmulationTiming.hxx"
 #include "audio/SimpleResampler.hxx"
 
-namespace {
-  inline Int16 applyVolume(Int16 sample, Int32 volumeFactor)
-  {
-    return static_cast<Int16>(static_cast<Int32>(sample) * volumeFactor / 0xffff);
-  }
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::SoundSDL2(OSystem& osystem)
   : Sound(osystem),
@@ -50,20 +43,13 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
-#ifdef BSPF_WINDOWS
-  // TODO - remove the following code once we convert to the new sound
-  //        core, and use 32-bit floating point samples and do
-  //        our own resampling
-  SDL_setenv("SDL_AUDIODRIVER", "directsound", true);
-#endif
-
   // The sound system is opened only once per program run, to eliminate
   // issues with opening and closing it multiple times
   // This fixes a bug most prevalent with ATI video cards in Windows,
   // whereby sound stopped working after the first video change
   SDL_AudioSpec desired;
   desired.freq   = myOSystem.settings().getInt("freq");
-  desired.format = AUDIO_S16SYS;
+  desired.format = AUDIO_F32SYS;
   desired.channels = 2;
   desired.samples  = myOSystem.settings().getInt("fragsize");
   desired.callback = callback;
@@ -191,7 +177,7 @@ void SoundSDL2::setVolume(Int32 percent)
     myVolume = percent;
 
     SDL_LockAudio();
-    myVolumeFactor = static_cast<Int32>(floor(static_cast<double>(0xffff) * static_cast<double>(myVolume) / 100.));
+    myVolumeFactor = std::pow(static_cast<float>(percent) / 100.f, 2.f);
     SDL_UnlockAudio();
   }
 }
@@ -235,11 +221,11 @@ uInt32 SoundSDL2::getSampleRate() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::processFragment(Int16* stream, uInt32 length)
+void SoundSDL2::processFragment(float* stream, uInt32 length)
 {
   myResampler->fillFragment(stream, length);
 
-  for (uInt32 i = 0; i < length; i++) stream[i] = applyVolume(stream[i], myVolumeFactor);
+  for (uInt32 i = 0; i < length; i++) stream[i] = stream[i] * myVolumeFactor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -272,7 +258,7 @@ void SoundSDL2::callback(void* udata, uInt8* stream, int len)
   SoundSDL2* self = static_cast<SoundSDL2*>(udata);
 
   if (self->myAudioQueue)
-    self->processFragment(reinterpret_cast<Int16*>(stream), len >> 1);
+    self->processFragment(reinterpret_cast<float*>(stream), len >> 2);
   else
     SDL_memset(stream, 0, len);
 }

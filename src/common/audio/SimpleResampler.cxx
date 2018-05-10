@@ -31,7 +31,7 @@ SimpleResampler::SimpleResampler(
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SimpleResampler::fillFragment(Int16* fragment, uInt32 length)
+void SimpleResampler::fillFragment(float* fragment, uInt32 length)
 {
   if (myIsUnderrun) {
     Int16* nextFragment = myNextFragmentCallback();
@@ -44,7 +44,7 @@ void SimpleResampler::fillFragment(Int16* fragment, uInt32 length)
   }
 
   if (!myCurrentFragment) {
-    memset(fragment, 0, 2 * length);
+    memset(fragment, 0, sizeof(float) * length);
     return;
   }
 
@@ -74,18 +74,23 @@ void SimpleResampler::fillFragment(Int16* fragment, uInt32 length)
       }
     }
 
-    if (myFormatTo.stereo) {
-      if (myFormatFrom.stereo) {
-        fragment[2*i] = myCurrentFragment[2*myFragmentIndex];
-        fragment[2*i + 1] = myCurrentFragment[2*myFragmentIndex + 1];
+    if (myFormatFrom.stereo) {
+      float sampleL = static_cast<float>(myCurrentFragment[2*myFragmentIndex]) / static_cast<float>(0x7fff);
+      float sampleR = static_cast<float>(myCurrentFragment[2*myFragmentIndex + 1]) / static_cast<float>(0x7fff);
+
+      if (myFormatTo.stereo) {
+        fragment[2*i] = sampleL;
+        fragment[2*i + 1] = sampleR;
       }
       else
-        fragment[2*i] = fragment[2*i + 1] = myCurrentFragment[myFragmentIndex];
+        fragment[i] = (sampleL + sampleR) / 2.f;
     } else {
-      if (myFormatFrom.stereo)
-        fragment[i] = (myCurrentFragment[2*myFragmentIndex] / 2) + (myCurrentFragment[2*myFragmentIndex + 1] / 2);
+      float sample = static_cast<float>(myCurrentFragment[myFragmentIndex] / static_cast<float>(0x7fff));
+
+      if (myFormatTo.stereo)
+        fragment[2*i] = fragment[2*i + 1] = sample;
       else
-        fragment[i] = myCurrentFragment[myFragmentIndex];
+        fragment[i] = sample;
     }
   }
 }
