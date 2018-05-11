@@ -32,22 +32,16 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, uInt
 {
   const uInt8 sampleSize = myIsStereo ? 2 : 1;
 
-  myFragmentBuffer = new Int16[myFragmentSize * sampleSize * (capacity + 2)];
+  myFragmentBuffer = make_unique<Int16[]>(myFragmentSize * sampleSize * (capacity + 2));
 
   for (uInt32 i = 0; i < capacity; i++)
-    myFragmentQueue[i] = myAllFragments[i] = myFragmentBuffer + i * sampleSize * myFragmentSize;
+    myFragmentQueue[i] = myAllFragments[i] = myFragmentBuffer.get() + i * sampleSize * myFragmentSize;
 
   myAllFragments[capacity] = myFirstFragmentForEnqueue =
-    myFragmentBuffer + capacity * sampleSize * myFragmentSize;
+    myFragmentBuffer.get() + capacity * sampleSize * myFragmentSize;
 
   myAllFragments[capacity + 1] = myFirstFragmentForDequeue =
-    myFragmentBuffer + (capacity + 1) * sampleSize * myFragmentSize;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioQueue::~AudioQueue()
-{
-  delete[] myFragmentBuffer;
+    myFragmentBuffer.get() + (capacity + 1) * sampleSize * myFragmentSize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

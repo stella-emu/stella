@@ -34,7 +34,7 @@ class LanczosResampler : public Resampler
 
     virtual void fillFragment(float* fragment, uInt32 length);
 
-    virtual ~LanczosResampler();
+    virtual ~LanczosResampler() = default;
 
   private:
 
@@ -46,14 +46,14 @@ class LanczosResampler : public Resampler
 
     uInt32 myPrecomputedKernelCount;
     uInt32 myKernelSize;
-    float* myPrecomputedKernels;
     uInt32 myCurrentKernelIndex;
+    unique_ptr<float[]> myPrecomputedKernels;
 
     uInt32 myKernelParameter;
 
-    ConvolutionBuffer* myBuffer;
-    ConvolutionBuffer* myBufferL;
-    ConvolutionBuffer* myBufferR;
+    unique_ptr<ConvolutionBuffer> myBuffer;
+    unique_ptr<ConvolutionBuffer> myBufferL;
+    unique_ptr<ConvolutionBuffer> myBufferR;
 
     Int16* myCurrentFragment;
     uInt32 myFragmentIndex;

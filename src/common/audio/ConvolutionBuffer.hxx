@@ -20,12 +20,11 @@
 
 #include "bspf.hxx"
 
-class ConvolutionBuffer {
+class ConvolutionBuffer
+{
   public:
 
     ConvolutionBuffer(uInt32 size);
-
-    ~ConvolutionBuffer();
 
     void shift(float nextValue);
 
@@ -33,7 +32,7 @@ class ConvolutionBuffer {
 
   private:
 
-    float* myData;
+    unique_ptr<float[]> myData;
 
     uInt32 myFirstIndex;
 

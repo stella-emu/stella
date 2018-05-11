@@ -18,16 +18,12 @@
 #include "ConvolutionBuffer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ConvolutionBuffer::ConvolutionBuffer(uInt32 size) : myFirstIndex(0), mySize(size)
+ConvolutionBuffer::ConvolutionBuffer(uInt32 size)
+  : myFirstIndex(0),
+    mySize(size)
 {
-  myData = new float[mySize];
-  memset(myData, 0, mySize * sizeof(float));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ConvolutionBuffer::~ConvolutionBuffer()
-{
-  delete[] myData;
+  myData = make_unique<float[]>(mySize);
+  memset(myData.get(), 0, mySize * sizeof(float));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -48,11 +48,6 @@ class AudioQueue
     AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, uInt16 sampleRate);
 
     /**
-       We need a destructor to deallocate the individual fragment buffers.
-     */
-    ~AudioQueue();
-
-    /**
        Capacity getter.
      */
     uInt32 capacity() const;
@@ -119,7 +114,7 @@ class AudioQueue
     vector<Int16*> myAllFragments;
 
     // We allocate a consecutive slice of memory for the fragments.
-    Int16* myFragmentBuffer;
+    unique_ptr<Int16[]> myFragmentBuffer;
 
     // The nubmer if queued fragments
     uInt32 mySize;

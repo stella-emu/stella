@@ -75,33 +75,22 @@ LanczosResampler::LanczosResampler(
   myKernelSize(2 * kernelParameter),
   myCurrentKernelIndex(0),
   myKernelParameter(kernelParameter),
-  myBuffer(nullptr),
-  myBufferL(nullptr),
-  myBufferR(nullptr),
   myCurrentFragment(nullptr),
   myFragmentIndex(0),
   myIsUnderrun(true),
   myTimeIndex(0)
 {
-  myPrecomputedKernels = new float[myPrecomputedKernelCount * myKernelSize];
+  myPrecomputedKernels = make_unique<float[]>(myPrecomputedKernelCount * myKernelSize);
 
-  if (myFormatFrom.stereo) {
-    myBufferL = new ConvolutionBuffer(myKernelSize);
-    myBufferR = new ConvolutionBuffer(myKernelSize);
+  if (myFormatFrom.stereo)
+  {
+    myBufferL = make_unique<ConvolutionBuffer>(myKernelSize);
+    myBufferR = make_unique<ConvolutionBuffer>(myKernelSize);
   }
   else
-    myBuffer = new ConvolutionBuffer(myKernelSize);
+    myBuffer = make_unique<ConvolutionBuffer>(myKernelSize);
 
   precomputeKernels();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LanczosResampler::~LanczosResampler() {
-  delete[] myPrecomputedKernels;
-
-  if (myBuffer) delete myBuffer;
-  if (myBufferL) delete myBufferL;
-  if (myBufferR) delete myBufferR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -111,7 +100,7 @@ void LanczosResampler::precomputeKernels()
   uInt32 timeIndex = 0;
 
   for (uInt32 i = 0; i < myPrecomputedKernelCount; i++) {
-    float* kernel = myPrecomputedKernels + myKernelSize * i;
+    float* kernel = myPrecomputedKernels.get() + myKernelSize * i;
     // The kernel is normalized such to be evaluate on time * formatFrom.sampleRate
     float center =
       static_cast<float>(timeIndex) / static_cast<float>(myFormatTo.sampleRate);
@@ -155,7 +144,7 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
   const uInt32 outputSamples = myFormatTo.stereo ? (length >> 1) : length;
 
   for (uInt32 i = 0; i < outputSamples; i++) {
-    float* kernel = myPrecomputedKernels + (myCurrentKernelIndex * myKernelSize);
+    float* kernel = myPrecomputedKernels.get() + (myCurrentKernelIndex * myKernelSize);
     myCurrentKernelIndex = (myCurrentKernelIndex + 1) % myPrecomputedKernelCount;
 
     if (myFormatFrom.stereo) {
