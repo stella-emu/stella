@@ -15,37 +15,50 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SIMPLE_RESAMPLER_HXX
-#define SIMPLE_RESAMPLER_HXX
+#ifndef LANCZOS_RESAMPLER_HXX
+#define LANCZOS_RESAMPLER_HXX
 
 #include "bspf.hxx"
 #include "Resampler.hxx"
+#include "ConvolutionBuffer.hxx"
 
-class SimpleResampler : public Resampler {
+class LanczosResampler : public Resampler {
   public:
-    SimpleResampler(
+    LanczosResampler(
       Resampler::Format formatFrom,
       Resampler::Format formatTo,
-      Resampler::NextFragmentCallback NextFragmentCallback
+      Resampler::NextFragmentCallback nextFragmentCallback,
+      uInt32 kernelParameter
     );
 
     virtual void fillFragment(float* fragment, uInt32 length);
 
+    virtual ~LanczosResampler();
+
   private:
 
+    void precomputeKernels();
+
+    void shiftSamples(uInt32 samplesToShift);
+
+  private:
+
+    uInt32 myPrecomputedKernelCount;
+    uInt32 myKernelSize;
+    float* myPrecomputedKernels;
+    uInt32 myCurrentKernelIndex;
+
+    uInt32 myKernelParameter;
+
+    ConvolutionBuffer* myBuffer;
+    ConvolutionBuffer* myBufferL;
+    ConvolutionBuffer* myBufferR;
+
     Int16* myCurrentFragment;
-    uInt32 myTimeIndex;
     uInt32 myFragmentIndex;
     bool myIsUnderrun;
 
-  private:
-
-    SimpleResampler() = delete;
-    SimpleResampler(const SimpleResampler&) = delete;
-    SimpleResampler(SimpleResampler&&) = delete;
-    SimpleResampler& operator=(const SimpleResampler&) = delete;
-    SimpleResampler& operator=(const SimpleResampler&&) = delete;
-
+    uInt32 myTimeIndex;
 };
 
-#endif // SIMPLE_RESAMPLER_HXX
+#endif // LANCZOS_RESAMPLER_HXX

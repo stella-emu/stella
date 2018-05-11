@@ -52,6 +52,25 @@ void SimpleResampler::fillFragment(float* fragment, uInt32 length)
 
   // For the following math, remember that myTimeIndex = time * myFormatFrom.sampleRate * myFormatTo.sampleRate
   for (uInt32 i = 0; i < outputSamples; i++) {
+    if (myFormatFrom.stereo) {
+      float sampleL = static_cast<float>(myCurrentFragment[2*myFragmentIndex]) / static_cast<float>(0x7fff);
+      float sampleR = static_cast<float>(myCurrentFragment[2*myFragmentIndex + 1]) / static_cast<float>(0x7fff);
+
+      if (myFormatTo.stereo) {
+        fragment[2*i] = sampleL;
+        fragment[2*i + 1] = sampleR;
+      }
+      else
+        fragment[i] = (sampleL + sampleR) / 2.f;
+    } else {
+      float sample = static_cast<float>(myCurrentFragment[myFragmentIndex] / static_cast<float>(0x7fff));
+
+      if (myFormatTo.stereo)
+        fragment[2*i] = fragment[2*i + 1] = sample;
+      else
+        fragment[i] = sample;
+    }
+
     // time += 1 / myFormatTo.sampleRate
     myTimeIndex += myFormatFrom.sampleRate;
 
@@ -72,25 +91,6 @@ void SimpleResampler::fillFragment(float* fragment, uInt32 length)
         (cerr << "audio buffer underrun\n").flush();
         myIsUnderrun = true;
       }
-    }
-
-    if (myFormatFrom.stereo) {
-      float sampleL = static_cast<float>(myCurrentFragment[2*myFragmentIndex]) / static_cast<float>(0x7fff);
-      float sampleR = static_cast<float>(myCurrentFragment[2*myFragmentIndex + 1]) / static_cast<float>(0x7fff);
-
-      if (myFormatTo.stereo) {
-        fragment[2*i] = sampleL;
-        fragment[2*i + 1] = sampleR;
-      }
-      else
-        fragment[i] = (sampleL + sampleR) / 2.f;
-    } else {
-      float sample = static_cast<float>(myCurrentFragment[myFragmentIndex] / static_cast<float>(0x7fff));
-
-      if (myFormatTo.stereo)
-        fragment[2*i] = fragment[2*i + 1] = sample;
-      else
-        fragment[i] = sample;
     }
   }
 }

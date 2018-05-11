@@ -31,6 +31,7 @@
 #include "AudioQueue.hxx"
 #include "EmulationTiming.hxx"
 #include "audio/SimpleResampler.hxx"
+#include "audio/LanczosResampler.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::SoundSDL2(OSystem& osystem)
@@ -245,10 +246,11 @@ void SoundSDL2::initResampler()
     return nextFragment;
   };
 
-  myResampler = make_unique<SimpleResampler>(
+  myResampler = make_unique<LanczosResampler>(
     Resampler::Format(myAudioQueue->sampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo()),
     Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples, myHardwareSpec.channels > 1),
-    nextFragmentCallback
+    nextFragmentCallback,
+    2
   );
 }
 

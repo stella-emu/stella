@@ -15,37 +15,38 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SIMPLE_RESAMPLER_HXX
-#define SIMPLE_RESAMPLER_HXX
+#ifndef CONVOLUTION_BUFFER_HXX
+#define CONVOLUTION_BUFFER_HXX
 
 #include "bspf.hxx"
-#include "Resampler.hxx"
 
-class SimpleResampler : public Resampler {
+class ConvolutionBuffer {
   public:
-    SimpleResampler(
-      Resampler::Format formatFrom,
-      Resampler::Format formatTo,
-      Resampler::NextFragmentCallback NextFragmentCallback
-    );
 
-    virtual void fillFragment(float* fragment, uInt32 length);
+    ConvolutionBuffer(uInt32 size);
 
-  private:
+    ~ConvolutionBuffer();
 
-    Int16* myCurrentFragment;
-    uInt32 myTimeIndex;
-    uInt32 myFragmentIndex;
-    bool myIsUnderrun;
+    void shift(float nextValue);
+
+    float convoluteWith(float* kernel) const;
 
   private:
 
-    SimpleResampler() = delete;
-    SimpleResampler(const SimpleResampler&) = delete;
-    SimpleResampler(SimpleResampler&&) = delete;
-    SimpleResampler& operator=(const SimpleResampler&) = delete;
-    SimpleResampler& operator=(const SimpleResampler&&) = delete;
+    float* myData;
+
+    uInt32 myFirstIndex;
+
+    uInt32 mySize;
+
+  private:
+
+    ConvolutionBuffer() = delete;
+    ConvolutionBuffer(const ConvolutionBuffer&) = delete;
+    ConvolutionBuffer(ConvolutionBuffer&&) = delete;
+    ConvolutionBuffer& operator=(const ConvolutionBuffer&) = delete;
+    ConvolutionBuffer& operator=(ConvolutionBuffer&&) = delete;
 
 };
 
-#endif // SIMPLE_RESAMPLER_HXX
+#endif // CONVOLUTION_BUFFER_HXX
