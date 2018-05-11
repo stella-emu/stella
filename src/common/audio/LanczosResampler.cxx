@@ -109,6 +109,7 @@ void LanczosResampler::precomputeKernels()
 
   for (uInt32 i = 0; i < myPrecomputedKernelCount; i++) {
     float* kernel = myPrecomputedKernels + myKernelSize * i;
+    // The kernel is normalized such to be evaluate on time * formatFrom.sampleRate
     float center =
       static_cast<float>(timeIndex) / static_cast<float>(myFormatTo.sampleRate);
 
@@ -120,7 +121,8 @@ void LanczosResampler::precomputeKernels()
 
     // Next step: time += 1 / formatTo.sampleRate
     //
-    // By construction, we limit x in the kernal evaluation to 0 .. 1 / formatFrom.sampleRate
+    // By construction, we limit the argument during kernel evaluation to 0 .. 1, which
+    // corresponds to 0 .. 1 / formatFrom.sampleRate for the time
     //
     // time = N / formatFrom.sampleRate + delta
     //
