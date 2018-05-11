@@ -20,7 +20,7 @@
 namespace {
   constexpr uInt32 AUDIO_HALF_FRAMES_PER_FRAGMENT = 1;
   constexpr uInt32 QUEUE_CAPACITY_SAFETY_FACTOR = 2;
-  constexpr uInt32 PREBUFFER_FRAGMENT_COUNT = 4;
+  constexpr uInt32 PREBUFFER_FRAGMENT_COUNT = 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
