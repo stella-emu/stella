@@ -110,7 +110,7 @@ class M6502 : public Serializable
       is executed, someone stops execution, or an error occurs.  Answers
       true iff execution stops normally.
 
-      @param number Indicates the number of cycles to execute. Not that the actual
+      @param cycles Indicates the number of cycles to execute. Not that the actual
                     granularity of the CPU is instructions, so this is only accurate up to
                     a couple of cycles
       @return true iff execution stops normally

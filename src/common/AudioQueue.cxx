@@ -93,7 +93,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
     if (!myFirstFragmentForEnqueue) throw runtime_error("enqueue called empty");
 
     newFragment = myFirstFragmentForEnqueue;
-    myFirstFragmentForEnqueue = 0;
+    myFirstFragmentForEnqueue = nullptr;
 
     return newFragment;
   }
@@ -115,13 +115,13 @@ Int16* AudioQueue::dequeue(Int16* fragment)
 {
   lock_guard<mutex> guard(myMutex);
 
-  if (mySize == 0) return 0;
+  if (mySize == 0) return nullptr;
 
   if (!fragment) {
     if (!myFirstFragmentForDequeue) throw runtime_error("dequeue called empty");
 
     fragment = myFirstFragmentForDequeue;
-    myFirstFragmentForDequeue = 0;
+    myFirstFragmentForDequeue = nullptr;
   }
 
   Int16* nextFragment = myFragmentQueue.at(myNextFragment);

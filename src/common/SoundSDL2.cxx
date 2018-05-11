@@ -39,8 +39,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
     myIsInitializedFlag(false),
     myVolume(100),
     myVolumeFactor(0xffff),
-    myAudioQueue(0),
-    myCurrentFragment(0)
+    myCurrentFragment(nullptr)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
@@ -99,13 +98,14 @@ void SoundSDL2::setEnabled(bool state)
   myOSystem.settings().setValue("sound", state);
 
   myOSystem.logMessage(state ? "SoundSDL2::setEnabled(true)" :
-                                "SoundSDL2::setEnabled(false)", 2);
+                               "SoundSDL2::setEnabled(false)", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue, EmulationTiming* emulationTiming)
+void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
+                     EmulationTiming* emulationTiming)
 {
-  this->emulationTiming = emulationTiming;
+  myEmulationTiming = emulationTiming;
 
   myOSystem.logMessage("SoundSDL2::open started ...", 2);
   mute(true);
@@ -118,7 +118,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue, EmulationTiming* emulati
 
   myAudioQueue = audioQueue;
   myUnderrun = true;
-  myCurrentFragment = 0;
+  myCurrentFragment = nullptr;
 
   // Adjust volume to that defined in settings
   setVolume(myOSystem.settings().getInt("volume"));
@@ -149,8 +149,8 @@ void SoundSDL2::close()
   mute(true);
 
   if (myAudioQueue) myAudioQueue->closeSink(myCurrentFragment);
-  myAudioQueue = 0;
-  myCurrentFragment = 0;
+  myAudioQueue.reset();
+  myCurrentFragment = nullptr;
 
   myOSystem.logMessage("SoundSDL2::close", 2);
 
@@ -167,7 +167,8 @@ void SoundSDL2::mute(bool state)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::reset()
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setVolume(Int32 percent)
@@ -233,14 +234,15 @@ void SoundSDL2::processFragment(float* stream, uInt32 length)
 void SoundSDL2::initResampler()
 {
   Resampler::NextFragmentCallback nextFragmentCallback = [this] () -> Int16* {
-    Int16* nextFragment = 0;
+    Int16* nextFragment = nullptr;
 
     if (myUnderrun)
-      nextFragment = myAudioQueue->size() > emulationTiming->prebufferFragmentCount() ? myAudioQueue->dequeue(myCurrentFragment) : 0;
+      nextFragment = myAudioQueue->size() > myEmulationTiming->prebufferFragmentCount() ?
+          myAudioQueue->dequeue(myCurrentFragment) : nullptr;
     else
       nextFragment = myAudioQueue->dequeue(myCurrentFragment);
 
-    myUnderrun = nextFragment == 0;
+    myUnderrun = nextFragment == nullptr;
     if (nextFragment) myCurrentFragment = nextFragment;
 
     return nextFragment;

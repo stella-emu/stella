@@ -33,7 +33,7 @@ class EmulationTiming;
 /**
   This class implements the sound API for SDL.
 
-  @author Stephen Anthony and Bradford W. Mott
+  @author Stephen Anthony and Christian Speckner (DirtyHairy)
 */
 class SoundSDL2 : public Sound
 {
@@ -130,7 +130,7 @@ class SoundSDL2 : public Sound
 
     shared_ptr<AudioQueue> myAudioQueue;
 
-    EmulationTiming* emulationTiming;
+    EmulationTiming* myEmulationTiming;
 
     Int16* myCurrentFragment;
     bool myUnderrun;

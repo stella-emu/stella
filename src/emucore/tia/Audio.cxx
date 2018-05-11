@@ -35,8 +35,8 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Audio::Audio()
-  : myAudioQueue(0),
-    myCurrentFragment(0)
+  : myAudioQueue(nullptr),
+    myCurrentFragment(nullptr)
 {
   for (uInt8 i = 0; i <= 0x1e; i++) myMixingTableSum[i] = mixingTableEntry(i, 0x1e);
   for (uInt8 i = 0; i <= 0x0f; i++) myMixingTableIndividual[i] = mixingTableEntry(i, 0x0f);
@@ -65,7 +65,8 @@ void Audio::setAudioQueue(shared_ptr<AudioQueue> queue)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Audio::tick()
-{ switch (myCounter) {
+{
+  switch (myCounter) {
     case 9:
     case 81:
       myChannel0.phase0();

@@ -21,7 +21,8 @@
 #include "bspf.hxx"
 #include "Resampler.hxx"
 
-class SimpleResampler : public Resampler {
+class SimpleResampler : public Resampler
+{
   public:
     SimpleResampler(
       Resampler::Format formatFrom,

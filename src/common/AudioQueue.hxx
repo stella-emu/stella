@@ -23,16 +23,16 @@
 #include "bspf.hxx"
 
 /**
-   This class implements a an audio queue that acts both like a ring buffer
-   and a pool of audio fragments. The TIA emulation core fills a fragment
-   with samples and then returns it to the queue, receiving a new fragment
-   in return. The sound driver removes fragments for playback from the
-   queue and returns the used fragment in this process.
+  This class implements a an audio queue that acts both like a ring buffer
+  and a pool of audio fragments. The TIA emulation core fills a fragment
+  with samples and then returns it to the queue, receiving a new fragment
+  in return. The sound driver removes fragments for playback from the
+  queue and returns the used fragment in this process.
 
-   The queue needs to be threadsafe as the (SDL) audio driver runs on a
-   separate thread. Samples are stored as signed 16 bit integers
-   (platform endian).
- */
+  The queue needs to be threadsafe as the (SDL) audio driver runs on a
+  separate thread. Samples are stored as signed 16 bit integers
+  (platform endian).
+*/
 class AudioQueue
 {
   public:
@@ -40,10 +40,10 @@ class AudioQueue
     /**
        Create a new AudioQueue.
 
-       @param fragmentSize      The size (in stereo / mono samples) of each fragment
-       @param capacaity         The number of fragments that can be queued before wrapping.
-       @param isStereo          Whether samples are stereo or mono.
-       @param sampleRate        The sample rate. This is not used, but can be queried.
+       @param fragmentSize  The size (in stereo / mono samples) of each fragment
+       @param capacity      The number of fragments that can be queued before wrapping.
+       @param isStereo      Whether samples are stereo or mono.
+       @param sampleRate    The sample rate. This is not used, but can be queried.
      */
     AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, uInt16 sampleRate);
 
@@ -83,17 +83,17 @@ class AudioQueue
       @param fragment   The returned fragment. This must be empty on the first call (when
                         there is nothing to return)
      */
-    Int16* enqueue(Int16* fragment = 0);
+    Int16* enqueue(Int16* fragment = nullptr);
 
     /**
-       Dequeue a fragment for playback and return the played fragment. This may
-       return 0 if there is no queued fragment to return (in this case, the returned
-       fragment is not enqueued and must be passed in the next invocation).
+      Dequeue a fragment for playback and return the played fragment. This may
+      return 0 if there is no queued fragment to return (in this case, the returned
+      fragment is not enqueued and must be passed in the next invocation).
 
-       @param fragment  The returned fragment. This must be empty on the first call (when
-                        there is nothing to return).
+      @param fragment  The returned fragment. This must be empty on the first call (when
+                       there is nothing to return).
      */
-    Int16* dequeue(Int16* fragment = 0);
+    Int16* dequeue(Int16* fragment = nullptr);
 
     /**
       Return the currently playing fragment without drawing a new one. This is called

@@ -22,13 +22,13 @@ SimpleResampler::SimpleResampler(
   Resampler::Format formatFrom,
   Resampler::Format formatTo,
   Resampler::NextFragmentCallback nextFragmentCallback)
-:
-  Resampler(formatFrom, formatTo, nextFragmentCallback),
-  myCurrentFragment(0),
-  myTimeIndex(0),
-  myFragmentIndex(0),
-  myIsUnderrun(true)
-{}
+  : Resampler(formatFrom, formatTo, nextFragmentCallback),
+    myCurrentFragment(nullptr),
+    myTimeIndex(0),
+    myFragmentIndex(0),
+    myIsUnderrun(true)
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SimpleResampler::fillFragment(float* fragment, uInt32 length)

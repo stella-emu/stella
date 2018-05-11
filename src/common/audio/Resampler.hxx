@@ -30,10 +30,10 @@ class Resampler {
     class Format {
       public:
 
-        Format(uInt32 sampleRate, uInt32 fragmentSize, bool stereo) :
-          sampleRate(sampleRate),
-          fragmentSize(fragmentSize),
-          stereo(stereo)
+        Format(uInt32 f_sampleRate, uInt32 f_fragmentSize, bool f_stereo) :
+          sampleRate(f_sampleRate),
+          fragmentSize(f_fragmentSize),
+          stereo(f_stereo)
         {}
 
       public:

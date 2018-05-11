@@ -22,7 +22,8 @@
 #include "Resampler.hxx"
 #include "ConvolutionBuffer.hxx"
 
-class LanczosResampler : public Resampler {
+class LanczosResampler : public Resampler
+{
   public:
     LanczosResampler(
       Resampler::Format formatFrom,
