@@ -246,12 +246,30 @@ void SoundSDL2::initResampler()
     return nextFragment;
   };
 
-  myResampler = make_unique<LanczosResampler>(
-    Resampler::Format(myAudioQueue->sampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo()),
-    Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples, myHardwareSpec.channels > 1),
-    nextFragmentCallback,
-    2
-  );
+  Resampler::Format formatFrom =
+    Resampler::Format(myAudioQueue->sampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
+  Resampler::Format formatTo =
+    Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples, myHardwareSpec.channels > 1);
+
+  int quality = myOSystem.settings().getInt("resampling.quality");
+
+  switch (quality) {
+    case 1:
+      myResampler = make_unique<SimpleResampler>(formatFrom, formatTo, nextFragmentCallback);
+      (cerr << "resampling quality 1: using nearest neighbor resampling\n").flush();
+      break;
+
+    default:
+    case 2:
+      (cerr << "resampling quality 2: using nearest Lanczos resampling, a = 2\n").flush();
+      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 2);
+      break;
+
+    case 3:
+      (cerr << "resampling quality 3: using nearest Lanczos resampling, a = 3\n").flush();
+      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 3);
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -71,8 +71,9 @@ Settings::Settings(OSystem& osystem)
   // Sound options
   setInternal("sound", "true");
   setInternal("fragsize", "512");
-  setInternal("freq", "31400");
+  setInternal("freq", "44100");
   setInternal("volume", "100");
+  setInternal("resampling.quality", "2");
 
   // Input event options
   setInternal("keymap", "");
@@ -362,8 +363,10 @@ void Settings::validate()
   i = getInt("volume");
   if(i < 0 || i > 100)  setInternal("volume", "100");
   i = getInt("freq");
-  if(!(i == 11025 || i == 22050 || i == 31400 || i == 44100 || i == 48000))
-    setInternal("freq", "31400");
+  if(!(i == 44100 || i == 48000 || i == 96000))
+    setInternal("freq", "44100");
+  i = getInt("resampling.quality");
+  if (i < 1 || i > 3) setInternal("resampling.quality", 2);
 #endif
 
   i = getInt("joydeadzone");
@@ -443,10 +446,11 @@ void Settings::usage() const
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << endl
   #ifdef SOUND_SUPPORT
-    << "  -sound        <1|0>          Enable sound generation\n"
-    << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
-    << "  -freq         <number>       Set sound sample output frequency (11025|22050|31400|44100|48000)\n"
-    << "  -volume       <number>       Set the volume (0 - 100)\n"
+    << "  -sound              <1|0>          Enable sound generation\n"
+    << "  -fragsize           <number>       The size of sound fragments (must be a power of two)\n"
+    << "  -freq               <number>       Set sound sample output frequency (44100|48000|96000)\n"
+    << "  -resampling.quality <number>       Resampling quality (1 -3), default: 2\n"
+    << "  -volume             <number>       Set the volume (0 - 100)\n"
     << endl
   #endif
     << "  -tia.zoom      <zoom>         Use the specified zoom level (windowed mode) for TIA image\n"

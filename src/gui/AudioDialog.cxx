@@ -85,11 +85,9 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Output frequency
   items.clear();
-  VarList::push_back(items, "11025 Hz", "11025");
-  VarList::push_back(items, "22050 Hz", "22050");
-  VarList::push_back(items, "31400 Hz", "31400");
   VarList::push_back(items, "44100 Hz", "44100");
   VarList::push_back(items, "48000 Hz", "48000");
+  VarList::push_back(items, "96000 Hz", "96000");
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth, lineHeight,
                                 items, "Frequency (*) ", lwidth);
