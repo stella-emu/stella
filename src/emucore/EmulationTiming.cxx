@@ -19,8 +19,13 @@
 
 namespace {
   constexpr uInt32 AUDIO_HALF_FRAMES_PER_FRAGMENT = 1;
-  constexpr uInt32 QUEUE_CAPACITY_SAFETY_FACTOR = 2;
-  constexpr uInt32 PREBUFFER_FRAGMENT_COUNT = 2;
+  constexpr uInt32 QUEUE_CAPACITY_EXTRA_FRAGMENTS = 1;
+  constexpr uInt32 PREBUFFER_EXTRA_FRAGMENT_COUNT = 2;
+
+  uInt32 discreteDivCeil(uInt32 n, uInt32 d)
+  {
+    return n / d + ((n % d == 0) ? 0 : 1);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,14 +122,13 @@ uInt32 EmulationTiming::audioSampleRate() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::audioQueueCapacity() const
 {
-  uInt32 capacity = (myPlaybackPeriod * audioSampleRate()) / (audioFragmentSize() * myPlaybackRate) + 1;
-  uInt32 minCapacity = (maxCyclesPerTimeslice() * audioSampleRate()) / (audioFragmentSize() * cyclesPerSecond()) + 1;
+  uInt32 minCapacity = discreteDivCeil(maxCyclesPerTimeslice() * audioSampleRate(), audioFragmentSize() * cyclesPerSecond());
 
-  return std::max(prebufferFragmentCount() + 1, QUEUE_CAPACITY_SAFETY_FACTOR * std::max(capacity, minCapacity));
+  return std::max(prebufferFragmentCount(), minCapacity) + QUEUE_CAPACITY_EXTRA_FRAGMENTS;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::prebufferFragmentCount() const
 {
-  return (myPlaybackPeriod * audioSampleRate()) / (audioFragmentSize() * myPlaybackRate) + PREBUFFER_FRAGMENT_COUNT;
+  return discreteDivCeil(myPlaybackPeriod * audioSampleRate(), audioFragmentSize() * myPlaybackRate) + PREBUFFER_EXTRA_FRAGMENT_COUNT;
 }
