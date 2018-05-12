@@ -114,11 +114,14 @@ void LanczosResampler::precomputeKernels()
     // Next step: time += 1 / formatTo.sampleRate
     //
     // By construction, we limit the argument during kernel evaluation to 0 .. 1, which
-    // corresponds to 0 .. 1 / formatFrom.sampleRate for the time
+    // corresponds to 0 .. 1 / formatFrom.sampleRate for time. To implement this, we decompose
+    // time as follows:
     //
     // time = N / formatFrom.sampleRate + delta
+    // timeIndex = N * formatTo.sampleRate + delta * formatTo.sampleRate * formatFrom.sampleRate
     //
-    // with max integral N and delta, then time = delta -> modulus
+    // with N integral and delta < 0. From this, it follows that we replace
+    // time with delta, i.e. take the modulus of timeIndex.
     timeIndex = (timeIndex + myFormatFrom.sampleRate) % myFormatTo.sampleRate;
   }
 }

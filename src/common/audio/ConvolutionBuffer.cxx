@@ -29,8 +29,8 @@ ConvolutionBuffer::ConvolutionBuffer(uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ConvolutionBuffer::shift(float nextValue)
 {
+  myData[myFirstIndex] = nextValue;
   myFirstIndex = (myFirstIndex + 1) % mySize;
-  myData[(myFirstIndex + mySize - 1) % mySize] = nextValue;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
