@@ -116,7 +116,7 @@ bool PaddleReader::save(Serializer& out) const
     out.putDouble(myU);
 
     out.putDouble(myValue);
-    out.putDouble(myTimestamp);
+    out.putLong(myTimestamp);
 
     out.putInt(int(myConsoleTiming));
     out.putDouble(myClockFreq);
@@ -144,7 +144,7 @@ bool PaddleReader::load(Serializer& in)
     myU = in.getDouble();
 
     myValue = in.getDouble();
-    myTimestamp = in.getDouble();
+    myTimestamp = in.getLong();
 
     myConsoleTiming = ConsoleTiming(in.getInt());
     myClockFreq = in.getDouble();

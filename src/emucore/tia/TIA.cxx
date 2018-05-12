@@ -275,7 +275,7 @@ bool TIA::save(Serializer& out) const
 
     out.putByte(myColorHBlank);
 
-    out.putDouble(myTimestamp);
+    out.putLong(myTimestamp);
 
     out.putByteArray(myShadowRegisters, 64);
 
@@ -343,7 +343,7 @@ bool TIA::load(Serializer& in)
 
     myColorHBlank = in.getByte();
 
-    myTimestamp = in.getDouble();
+    myTimestamp = in.getLong();
 
     in.getByteArray(myShadowRegisters, 64);
 
