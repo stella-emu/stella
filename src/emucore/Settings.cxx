@@ -70,6 +70,7 @@ Settings::Settings(OSystem& osystem)
 
   // Sound options
   setInternal("sound", "true");
+  setInternal("aud.mode", "balanced");
   setInternal("fragsize", "512");
   setInternal("freq", "44100");
   setInternal("volume", "100");

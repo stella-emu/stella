@@ -44,14 +44,14 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight();
   int xpos, ypos;
-  int lwidth = font.getStringWidth("Sample Size (*) "),
+  int lwidth = font.getStringWidth("Resampling quality "),
       pwidth = font.getStringWidth("512 bytes");
   WidgetArray wid;
   VariantList items;
 
   // Set real dimensions
   _w = 35 * fontWidth + HBORDER * 2;
-  _h = 7 * (lineHeight + 4) + VBORDER + _th;
+  _h = 11 * (lineHeight + 4) + VBORDER + _th;
 
   xpos = HBORDER;  ypos = VBORDER + _th;
 
@@ -64,13 +64,26 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   xpos += INDENT;
 
   // Volume
-  myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 11 * fontWidth + 5, lineHeight,
-                                    "Volume ", lwidth, 0, 4 * fontWidth, "%");
+  myVolumeSlider = new SliderWidget(this, font, xpos, ypos,
+                                    "Volume   ", 0, 0, 4 * fontWidth, "%");
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   wid.push_back(myVolumeSlider);
   ypos += lineHeight + 4;
 
+  //
+  VarList::push_back(items, "Minimal Lag", "minlag");
+  VarList::push_back(items, "Balanced", "balanced");
+  VarList::push_back(items, "Max. Quality", "maxquality");
+  VarList::push_back(items, "Custom", "Custom");
+  myModePopup = new PopUpWidget(this, font, xpos, ypos,
+                                   font.getStringWidth("Max. Quality"), lineHeight,
+                                   items, "Mode (*) ", 0, kModeChanged);
+  wid.push_back(myModePopup);
+  ypos += lineHeight + 4;
+  xpos += INDENT;
+
   // Fragment size
+  items.clear();
   VarList::push_back(items, "128 bytes", "128");
   VarList::push_back(items, "256 bytes", "256");
   VarList::push_back(items, "512 bytes", "512");
@@ -92,13 +105,39 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
                                 pwidth, lineHeight,
                                 items, "Frequency (*) ", lwidth);
   wid.push_back(myFreqPopup);
+  ypos += lineHeight + 4;
+
+
+  // Resampling quality
+  items.clear();
+  VarList::push_back(items, "Low", "low");
+  VarList::push_back(items, "Medium", "medium");
+  VarList::push_back(items, "High", "high");
+  myResamplingPopup = new PopUpWidget(this, font, xpos, ypos,
+                                pwidth, lineHeight,
+                                items, "Resampling quality ", lwidth);
+  wid.push_back(myResamplingPopup);
+  ypos += lineHeight + 4;
+
+  // Param 1
+  myHeadroomSlider = new SliderWidget(this, font, xpos, ypos,
+                                      "Headroom    ");
+  myHeadroomSlider->setMinValue(1); myHeadroomSlider->setMaxValue(10);
+  wid.push_back(myHeadroomSlider);
+  ypos += lineHeight + 4;
+
+  // Param 2
+  myBufferSizeSlider = new SliderWidget(this, font, xpos, ypos,
+                                      "Buffer size ");
+  myBufferSizeSlider->setMinValue(1); myBufferSizeSlider->setMaxValue(10);
+  wid.push_back(myBufferSizeSlider);
 
   // Add message concerning usage
   ypos = _h - fontHeight * 2 - 24;
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  new StaticTextWidget(this, infofont, HBORDER, ypos,
+  new StaticTextWidget(this, infofont, HBORDER, ypos, "(*) Requires application restart");/* ,
         font.getStringWidth("(*) Requires application restart"), fontHeight,
-        "(*) Requires application restart", TextAlign::Left);
+        "(*) Requires application restart", TextAlign::Left);*/
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
@@ -170,9 +209,22 @@ void AudioDialog::setDefaults()
 void AudioDialog::handleSoundEnableChange(bool active)
 {
   myVolumeSlider->setEnabled(active);
-  myFragsizePopup->setEnabled(active);
-  myFreqPopup->setEnabled(active);
+  myModePopup->setEnabled(active);
+  handleModeChange(active);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioDialog::handleModeChange(bool active)
+{
+  bool userMode = active && "Custom" == myModePopup->getSelectedName();
+
+  myFragsizePopup->setEnabled(userMode);
+  myFreqPopup->setEnabled(userMode);
+  myResamplingPopup->setEnabled(userMode);
+  myHeadroomSlider->setEnabled(userMode);
+  myBufferSizeSlider->setEnabled(userMode);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::handleCommand(CommandSender* sender, int cmd,
@@ -191,6 +243,10 @@ void AudioDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSoundEnableChanged:
       handleSoundEnableChange(data == 1);
+      break;
+
+    case kModeChanged:
+      handleModeChange(true);
       break;
 
     default:

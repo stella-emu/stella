@@ -41,17 +41,23 @@ class AudioDialog : public Dialog
     void setDefaults() override;
 
     void handleSoundEnableChange(bool active);
+    void handleModeChange(bool active);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     enum {
-      kSoundEnableChanged = 'ADse'
+      kSoundEnableChanged = 'ADse',
+      kModeChanged = 'ADmc'
     };
 
+    CheckboxWidget*   mySoundEnableCheckbox;
     SliderWidget*     myVolumeSlider;
+    PopUpWidget*      myModePopup;
     PopUpWidget*      myFragsizePopup;
     PopUpWidget*      myFreqPopup;
-    CheckboxWidget*   mySoundEnableCheckbox;
+    PopUpWidget*      myResamplingPopup;
+    SliderWidget*     myHeadroomSlider;
+    SliderWidget*     myBufferSizeSlider;
 
   private:
     // Following constructors and assignment operators not supported
