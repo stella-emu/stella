@@ -164,6 +164,8 @@ void TIA::reset()
   myInput0.reset();
   myInput1.reset();
 
+  myAudio.reset();
+
   myTimestamp = 0;
   for (PaddleReader& paddleReader : myPaddleReaders)
     paddleReader.reset(myTimestamp);
