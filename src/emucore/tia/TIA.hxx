@@ -202,6 +202,16 @@ class TIA : public Device
     uInt64 update(uInt32 maxCycles = 50000);
 
     /**
+      Did we generate a new frame?
+     */
+    bool newFramePending() { return myNewFramePending; }
+
+    /**
+      Clear the flag
+    */
+    void clearNewFramePending() { myNewFramePending = false; }
+
+    /**
       Returns a pointer to the internal frame buffer.
     */
     uInt8* frameBuffer() { return static_cast<uInt8*>(myFramebuffer); }
@@ -656,6 +666,13 @@ class TIA : public Device
 
     // Pointer to the internal color-index-based frame buffer
     uInt8 myFramebuffer[160 * TIAConstants::frameBufferHeight];
+
+    // The frame is rendered to the backbuffer and only copied to the framebuffer
+    // upon completion
+    uInt8 myBackBuffer[160 * TIAConstants::frameBufferHeight];
+
+    // Did we emit a frame?
+    bool myNewFramePending;
 
     /**
      * Setting this to true injects random values into undefined reads.

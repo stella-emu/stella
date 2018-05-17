@@ -180,6 +180,8 @@ void TIA::reset()
     frameReset();  // Recalculate the size of the display
   }
 
+  myNewFramePending = false;
+
   // Must be done last, after all other items have reset
   enableFixedColors(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.debugcolors" : "plr.debugcolors"));
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
@@ -192,6 +194,7 @@ void TIA::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::frameReset()
 {
+  memset(myBackBuffer, 0, 160 * TIAConstants::frameBufferHeight);
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
   enableColorLoss(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss");
 }
@@ -778,7 +781,9 @@ bool TIA::saveDisplay(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myFramebuffer, 160*TIAConstants::frameBufferHeight);
+    out.putByteArray(myFramebuffer, 160* TIAConstants::frameBufferHeight);
+    out.putByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+    out.putBool(myNewFramePending);
   }
   catch(...)
   {
@@ -796,6 +801,8 @@ bool TIA::loadDisplay(Serializer& in)
   {
     // Reset frame buffer pointer and data
     in.getByteArray(myFramebuffer, 160*TIAConstants::frameBufferHeight);
+    in.getByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+    myNewFramePending = in.getBool();
   }
   catch(...)
   {
@@ -1149,12 +1156,15 @@ void TIA::onFrameComplete()
   myCyclesAtFrameStart = mySystem->cycles();
 
   if (myXAtRenderingStart > 0)
-    memset(myFramebuffer, 0, myXAtRenderingStart);
+    memset(myBackBuffer, 0, myXAtRenderingStart);
 
   // Blank out any extra lines not drawn this frame
   const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
-    memset(myFramebuffer + 160 * myFrameManager->getY(), 0, missingScanlines * 160);
+    memset(myBackBuffer + 160 * myFrameManager->getY(), 0, missingScanlines * 160);
+
+  memcpy(&myFramebuffer, &myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+  myNewFramePending = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1265,7 +1275,7 @@ void TIA::applyRsync()
 
   myHctrDelta = 225 - myHctr;
   if (myFrameManager->isRendering())
-    memset(myFramebuffer + myFrameManager->getY() * 160 + x, 0, 160 - x);
+    memset(myBackBuffer + myFrameManager->getY() * 160 + x, 0, 160 - x);
 
   myHctr = 225;
 }
@@ -1304,7 +1314,7 @@ void TIA::cloneLastLine()
 
   if (!myFrameManager->isRendering() || y == 0) return;
 
-  uInt8* buffer = myFramebuffer;
+  uInt8* buffer = myBackBuffer;
 
   memcpy(buffer + y * 160, buffer + (y-1) * 160, 160);
 }
@@ -1377,7 +1387,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
     }
   }
 
-  myFramebuffer[y * 160 + x] = color;
+  myBackBuffer[y * 160 + x] = color;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1403,7 +1413,7 @@ void TIA::flushLineCache()
 void TIA::clearHmoveComb()
 {
   if (myFrameManager->isRendering() && myHstate == HState::blank)
-    memset(myFramebuffer + myFrameManager->getY() * 160, myColorHBlank, 8);
+    memset(myBackBuffer + myFrameManager->getY() * 160, myColorHBlank, 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

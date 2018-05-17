@@ -52,6 +52,7 @@
 #include "SerialPort.hxx"
 #include "StateManager.hxx"
 #include "Version.hxx"
+#include "TIA.hxx"
 
 #include "OSystem.hxx"
 
@@ -646,23 +647,38 @@ void OSystem::mainLoop()
     myEventHandler->poll(getTicks());
     if(myQuitLoop) break;  // Exit if the user wants to quit
 
-    Int64 totalCycles = 0;
-    const Int64 minCycles = myConsole ? myConsole->emulationTiming().minCyclesPerTimeslice() : 50000;
-    const Int64 maxCycles = myConsole ? myConsole->emulationTiming().maxCyclesPerTimeslice() : 0;
-    const uInt32 cyclesPerSecond = myConsole ? myConsole->emulationTiming().cyclesPerSecond() : 1;
+    double timesliceSeconds;
 
-    do {
-      Int64 cycles = myFrameBuffer->update(totalCycles > 0 ? minCycles - totalCycles : maxCycles);
-      if (cycles < 0) break;
+    if (myEventHandler->state() == EventHandlerState::EMULATION) {
+      Int64 totalCycles = 0;
+      const Int64 minCycles = myConsole ? myConsole->emulationTiming().minCyclesPerTimeslice() : 50000;
+      const Int64 maxCycles = myConsole ? myConsole->emulationTiming().maxCyclesPerTimeslice() : 0;
+      const uInt32 cyclesPerSecond = myConsole ? myConsole->emulationTiming().cyclesPerSecond() : 1;
 
-      totalCycles += cycles;
-    } while (totalCycles < minCycles);
+      do {
+        Int64 cycles = myConsole ? myConsole->tia().update(totalCycles > 0 ? minCycles - totalCycles : maxCycles) : 0;
 
-    duration<double> timeslice (
-      (totalCycles > 0) ?
-      static_cast<double>(totalCycles) / static_cast<double>(cyclesPerSecond) :
-      1. / 30.
-     );
+        totalCycles += cycles;
+      } while (myConsole && totalCycles < minCycles && myEventHandler->state() == EventHandlerState::EMULATION);
+
+      if (myEventHandler->state() == EventHandlerState::EMULATION && myEventHandler->frying())
+        myConsole->fry();
+
+      timesliceSeconds = static_cast<double>(totalCycles) / static_cast<double>(cyclesPerSecond);
+    }
+    else
+      timesliceSeconds = 1. / 30.;
+
+    if (myEventHandler->state() == EventHandlerState::EMULATION) {
+      if (myConsole && myConsole->tia().newFramePending()) {
+        myFrameBuffer->update();
+        myConsole->tia().clearNewFramePending();
+      }
+    }
+    else
+      myFrameBuffer->update();
+
+    duration<double> timeslice(timesliceSeconds);
 
     virtualTime += duration_cast<high_resolution_clock::duration>(timeslice);
     time_point<high_resolution_clock> now = high_resolution_clock::now();
@@ -670,7 +686,7 @@ void OSystem::mainLoop()
     if (duration_cast<duration<double>>(now - virtualTime).count() > 0)
       virtualTime = now;
     else if (virtualTime > now) {
-      if (busyWait && totalCycles > 0) {
+      if (busyWait && myEventHandler->state() == EventHandlerState::EMULATION) {
         while (high_resolution_clock::now() < virtualTime);
       }
       else std::this_thread::sleep_until(virtualTime);
