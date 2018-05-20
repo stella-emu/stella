@@ -149,9 +149,6 @@ void MT24LC256::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::systemReset()
 {
-  myCyclesWhenSDASet = myCyclesWhenSCLSet = myCyclesWhenTimerSet =
-    mySystem.cycles();
-
   memset(myPageHit, false, sizeof(myPageHit));
 }
 
@@ -399,8 +396,8 @@ bool MT24LC256::jpee_timercheck(int mode)
   {
     if(myTimerActive)
     {
-      uInt32 elapsed = uInt32(mySystem.cycles() - myCyclesWhenTimerSet);
-      myTimerActive = elapsed < uInt32(5000000.0 / 838.0);
+      uInt64 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
+      myTimerActive = elapsed < uInt64(5000000.0 / 838.0);
     }
     return myTimerActive;
   }
