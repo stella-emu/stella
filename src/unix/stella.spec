@@ -1,5 +1,5 @@
 %define name    stella
-%define version 5.1.1
+%define version 5.1.2
 %define rel     1
 
 %define enable_sound 1
@@ -101,6 +101,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* Sun May 20 2018 Stephen Anthony <stephena@users.sf.net> 5.1.2-1
+- Version 5.1.2 release
+
 * Wed Feb 21 2018 Stephen Anthony <stephena@users.sf.net> 5.1.1-1
 - Version 5.1.1 release
 

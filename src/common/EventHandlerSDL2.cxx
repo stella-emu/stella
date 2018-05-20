@@ -111,7 +111,7 @@ void EventHandlerSDL2::pollEvent()
       case SDL_JOYHATMOTION:
       {
         int v = myEvent.jhat.value, value = 0;
-        if(v & SDL_HAT_CENTERED)
+        if(v == SDL_HAT_CENTERED)
           value  = EVENT_HATCENTER_M;
         else
         {

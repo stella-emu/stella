@@ -12,11 +12,22 @@
 ￼                              Release History
 ￼===========================================================================
 ￼
+5.1.1 to 5.1.2: (May 20, 2018)
+
+  * Fixed bug with SaveKey autodetection; some ROMs were not correctly
+    detecting that a virtual SaveKey device was plugged in.  This notably
+    fixes issues in "Super Cobra" and "Scramble" ROMs.
+
+  * Make previously mentioned ROMs use the SaveKey device by default.
+
+  * Fixed bug in UI navigation with joystick hat movement.
+
+-Have fun!
+
+
 5.1 to 5.1.1: (February 21, 2018)
 
   * Fixed bug in Stargunner ROM starting with a blank screen.
-
--Have fun!
 
 
 5.0.2 to 5.1: (February 4, 2018)
