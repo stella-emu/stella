@@ -240,12 +240,13 @@ inline bool M6502::_execute(uInt32 cycles)
   M6532& riot = mySystem->m6532();
 #endif
 
-  uInt32 currentCycles = 0;
+  uInt64 previousCycles = mySystem->cycles();
+  uInt64 currentCycles = 0;
 
   // Loop until execution is stopped or a fatal error occurs
   for(;;)
   {
-    for(; !myExecutionStatus && (currentCycles < cycles * SYSTEM_CYCLES_PER_CPU); currentCycles += SYSTEM_CYCLES_PER_CPU)
+    while (!myExecutionStatus && currentCycles < cycles * SYSTEM_CYCLES_PER_CPU)
     {
   #ifdef DEBUGGER_SUPPORT
       if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
@@ -296,6 +297,8 @@ inline bool M6502::_execute(uInt32 cycles)
           // Oops, illegal instruction executed so set fatal error flag
           myExecutionStatus |= FatalErrorBit;
       }
+
+      currentCycles = (mySystem->cycles() - previousCycles);
 
   #ifdef DEBUGGER_SUPPORT
       if(myStepStateByInstruction)
