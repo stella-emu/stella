@@ -414,7 +414,7 @@ bool DebuggerParser::validateArgs(int cmd)
   {
     if(required)
     {
-      commandResult.str();
+      void(commandResult.str());
       outputCommandError("missing required argument(s)", cmd);
       return false; // needed args. didn't get 'em.
     }
@@ -513,13 +513,13 @@ cerr << "curCount         = " << curCount << endl
 
   if(curCount < argRequiredCount)
   {
-    commandResult.str();
+    void(commandResult.str());
     outputCommandError("missing required argument(s)", cmd);
     return false;
   }
   else if(argCount > curCount)
   {
-    commandResult.str();
+    void(commandResult.str());
     outputCommandError("too many arguments", cmd);
     return false;
   }

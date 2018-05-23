@@ -2733,6 +2733,7 @@
 "Cartridge.Name" "Scramble (PAL60)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Right" "SAVEKEY"
 "Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
@@ -7146,6 +7147,7 @@
 "Cartridge.Name" "Super Cobra Arcade (PAL60)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Right" "SAVEKEY"
 "Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
@@ -10697,6 +10699,7 @@
 "Cartridge.Name" "Super Cobra Arcade (NTSC)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Right" "SAVEKEY"
 "Display.Phosphor" "YES"
 ""
 
@@ -18507,6 +18510,7 @@
 "Cartridge.Name" "Scramble (NTSC)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Right" "SAVEKEY"
 "Display.Phosphor" "YES"
 ""
 

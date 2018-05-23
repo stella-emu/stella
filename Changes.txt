@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-5.1.1 to 5.2: (MMM d, 2018)
+5.1.2 to 5.2: (MMM d, 2018)
 
   * Extra functionality for Time Machine dialog (start/stop recording;
     minor fixes; TODO button and initial key repeats...)
@@ -21,14 +21,21 @@
 
   * UI modernization (new widget look, dialog titles added, dialogs refactored)
 
-  * Fixed bug in UI navigation with joystick hat movement.
-
   * The Linux builds now use the system-installed PNG and ZLIB libraries
     by default.
 
-  * Updated version of SDL included with the Windows build to 2.0.8.
-
 -Have fun!
+
+
+5.1.1 to 5.1.2: (May 20, 2018)
+
+  * Fixed bug with SaveKey autodetection; some ROMs were not correctly
+    detecting that a virtual SaveKey device was plugged in.  This notably
+    fixes issues in "Super Cobra" and "Scramble" ROMs.
+
+  * Make previously mentioned ROMs use the SaveKey device by default.
+
+  * Fixed bug in UI navigation with joystick hat movement.
 
 
 5.1 to 5.1.1: (February 21, 2018)
