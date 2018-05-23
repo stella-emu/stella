@@ -258,31 +258,34 @@ inline void M6502::_execute(uInt32 cycles, DispatchResult& result)
     while (!myExecutionStatus && currentCycles < cycles * SYSTEM_CYCLES_PER_CPU)
     {
   #ifdef DEBUGGER_SUPPORT
-      if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
-      {
-        bool read = myJustHitReadTrapFlag;
-        myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
+      // Don't break if we haven't actually executed anything yet
+      if (currentCycles > 0) {
+        if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
+        {
+          bool read = myJustHitReadTrapFlag;
+          myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
 
-        result.setDebugger(currentCycles, myHitTrapInfo.message, myHitTrapInfo.address, read);
-        return;
+          result.setDebugger(currentCycles, myHitTrapInfo.message, myHitTrapInfo.address, read);
+          return;
+        }
+
+        if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC)) {
+          result.setDebugger(currentCycles, "BP: ", PC);
+          return;
+        }
+
+        int cond = evalCondBreaks();
+        if(cond > -1)
+        {
+          stringstream msg;
+          msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
+
+          result.setDebugger(currentCycles, msg.str());
+          return;
+        }
       }
 
-      if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC)) {
-        result.setDebugger(currentCycles, "BP: ", PC);
-        return;
-      }
-
-      int cond = evalCondBreaks();
-      if(cond > -1)
-      {
-        stringstream msg;
-        msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
-
-        result.setDebugger(currentCycles, msg.str());
-        return;
-      }
-
-      cond = evalCondSaveStates();
+      int cond = evalCondSaveStates();
       if(cond > -1)
       {
         stringstream msg;
