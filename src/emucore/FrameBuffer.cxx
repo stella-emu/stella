@@ -268,17 +268,8 @@ void FrameBuffer::update()
   switch(myOSystem.eventHandler().state())
   {
     case EventHandlerState::EMULATION:
-    {
-      myTIASurface->render();
-
-      // Show frame statistics
-      if(myStatsMsg.enabled)
-        drawFrameStats();
-
-      myLastScanlines = myOSystem.console().tia().scanlinesLastFrame();
-      myPausedCount = 0;
-      break;  // EventHandlerState::EMULATION
-    }
+      // Do nothing; emulation mode is handled separately (see below)
+      break;
 
     case EventHandlerState::PAUSE:
     {
@@ -331,6 +322,30 @@ void FrameBuffer::update()
     case EventHandlerState::NONE:
       return;
   }
+
+  // Draw any pending messages
+  if(myMsg.enabled)
+    drawMessage();
+
+  // Do any post-frame stuff
+  postFrameUpdate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::updateInEmulationMode()
+{
+  // Determine which mode we are in (from the EventHandler)
+  // Take care of S_EMULATE mode here, otherwise let the GUI
+  // figure out what to draw
+
+  myTIASurface->render();
+
+  // Show frame statistics
+  if(myStatsMsg.enabled)
+    drawFrameStats();
+
+  myLastScanlines = myOSystem.console().tia().scanlinesLastFrame();
+  myPausedCount = 0;
 
   // Draw any pending messages
   if(myMsg.enabled)

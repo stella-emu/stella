@@ -563,6 +563,8 @@ class OSystem
     void validatePath(string& path, const string& setting,
                       const string& defaultpath);
 
+    double dispatchEmulation(uInt32 cyclesPerSecond);
+
     // Following constructors and assignment operators not supported
     OSystem(const OSystem&) = delete;
     OSystem(OSystem&&) = delete;

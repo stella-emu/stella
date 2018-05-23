@@ -119,6 +119,11 @@ class FrameBuffer
     void update();
 
     /**
+      There is a dedicated update method for emulation mode.
+     */
+    void updateInEmulationMode();
+
+    /**
       Shows a message onscreen.
 
       @param message  The message to be shown

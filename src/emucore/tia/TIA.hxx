@@ -41,6 +41,7 @@
 #include "System.hxx"
 
 class AudioQueue;
+class DispatchResult;
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -199,7 +200,9 @@ class TIA : public Device
       desired frame rate to update the TIA.  Invoking this method will update
       the graphics buffer and generate the corresponding audio samples.
     */
-    uInt64 update(uInt32 maxCycles = 50000);
+    void update(DispatchResult& result, uInt32 maxCycles = 50000);
+
+    void update(uInt32 maxCycles = 50000);
 
     /**
       Did we generate a new frame?

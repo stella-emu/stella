@@ -24,6 +24,7 @@
 #include "TIAConstants.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "AudioQueue.hxx"
+#include "DispatchResult.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
@@ -814,14 +815,21 @@ bool TIA::loadDisplay(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 TIA::update(uInt32 maxCycles)
+void TIA::update(DispatchResult& result, uInt32 maxCycles)
 {
   uInt64 timestampOld = myTimestamp;
 
-  mySystem->m6502().execute(maxCycles);
+  mySystem->m6502().execute(maxCycles, result);
 
   updateEmulation();
-  return (myTimestamp - timestampOld) / 3;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::update(uInt32 maxCycles)
+{
+  DispatchResult dispatchResult;
+
+  update(dispatchResult, maxCycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

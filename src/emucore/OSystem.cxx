@@ -53,6 +53,7 @@
 #include "StateManager.hxx"
 #include "Version.hxx"
 #include "TIA.hxx"
+#include "DispatchResult.hxx"
 
 #include "OSystem.hxx"
 
@@ -636,6 +637,30 @@ float OSystem::frameRate() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+double OSystem::dispatchEmulation(uInt32 cyclesPerSecond)
+{
+  if (!myConsole) return 0.;
+
+  Int64 totalCycles = 0;
+  const Int64 minCycles = myConsole->emulationTiming().minCyclesPerTimeslice();
+  const Int64 maxCycles = myConsole->emulationTiming().maxCyclesPerTimeslice();
+  DispatchResult dispatchResult;
+
+  do {
+    myConsole->tia().update(dispatchResult, totalCycles > 0 ? minCycles - totalCycles : maxCycles);
+
+    totalCycles += dispatchResult.getCycles();
+  } while (totalCycles < minCycles && dispatchResult.getStatus() == DispatchResult::Status::ok);
+
+  if (dispatchResult.getStatus() == DispatchResult::Status::debugger) myDebugger->start();
+
+  if (dispatchResult.getStatus() == DispatchResult::Status::ok && myEventHandler->frying())
+    myConsole->fry();
+
+  return static_cast<double>(totalCycles) / static_cast<double>(cyclesPerSecond);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::mainLoop()
 {
   // Sleep-based wait: good for CPU, bad for graphical sync
@@ -650,40 +675,29 @@ void OSystem::mainLoop()
     double timesliceSeconds;
 
     if (myEventHandler->state() == EventHandlerState::EMULATION) {
-      Int64 totalCycles = 0;
-      const Int64 minCycles = myConsole ? myConsole->emulationTiming().minCyclesPerTimeslice() : 50000;
-      const Int64 maxCycles = myConsole ? myConsole->emulationTiming().maxCyclesPerTimeslice() : 0;
-      const uInt32 cyclesPerSecond = myConsole ? myConsole->emulationTiming().cyclesPerSecond() : 1;
+      timesliceSeconds = dispatchEmulation(myConsole ? myConsole->emulationTiming().cyclesPerSecond() : 1);
 
-      do {
-        Int64 cycles = myConsole ? myConsole->tia().update(totalCycles > 0 ? minCycles - totalCycles : maxCycles) : 0;
-
-        totalCycles += cycles;
-      } while (myConsole && totalCycles < minCycles && myEventHandler->state() == EventHandlerState::EMULATION);
-
-      if (myEventHandler->state() == EventHandlerState::EMULATION && myEventHandler->frying())
-        myConsole->fry();
-
-      timesliceSeconds = static_cast<double>(totalCycles) / static_cast<double>(cyclesPerSecond);
-    }
-    else
-      timesliceSeconds = 1. / 30.;
-
-    if (myEventHandler->state() == EventHandlerState::EMULATION) {
       if (myConsole && myConsole->tia().newFramePending()) {
-        myFrameBuffer->update();
+        myFrameBuffer->updateInEmulationMode();
         myConsole->tia().clearNewFramePending();
       }
-    }
-    else
+    } else {
+      timesliceSeconds = 1. / 30.;
       myFrameBuffer->update();
+    }
 
     duration<double> timeslice(timesliceSeconds);
 
     virtualTime += duration_cast<high_resolution_clock::duration>(timeslice);
     time_point<high_resolution_clock> now = high_resolution_clock::now();
+    double maxLag = myConsole
+      ? (
+        static_cast<double>(myConsole->emulationTiming().cyclesPerFrame()) /
+        static_cast<double>(myConsole->emulationTiming().cyclesPerSecond())
+      )
+      : 0;
 
-    if (duration_cast<duration<double>>(now - virtualTime).count() > 0)
+    if (duration_cast<duration<double>>(now - virtualTime).count() > maxLag)
       virtualTime = now;
     else if (virtualTime > now) {
       if (busyWait && myEventHandler->state() == EventHandlerState::EMULATION) {
