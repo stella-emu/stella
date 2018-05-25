@@ -18,7 +18,7 @@
 #ifndef VERSION_HXX
 #define VERSION_HXX
 
-#define STELLA_VERSION "5.2_pre"
+#define STELLA_VERSION "5.2_soundtest-1"
 #define STELLA_BUILD "4138"
 
 #endif

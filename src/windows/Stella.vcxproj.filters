@@ -924,6 +924,9 @@
     <ClCompile Include="..\common\audio\LanczosResampler.cxx">
       <Filter>Source Files\audio</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\DispatchResult.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1888,6 +1891,9 @@
     </ClInclude>
     <ClInclude Include="..\common\audio\LanczosResampler.hxx">
       <Filter>Header Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\DispatchResult.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
