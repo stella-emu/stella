@@ -273,7 +273,7 @@ bool TIA::save(Serializer& out) const
 
     out.putByte(myColorHBlank);
 
-    out.putDouble(myTimestamp);
+    out.putLong(myTimestamp);
 
     out.putBool(myAutoFrameEnabled);
 
@@ -344,7 +344,7 @@ bool TIA::load(Serializer& in)
 
     myColorHBlank = in.getByte();
 
-    myTimestamp = in.getDouble();
+    myTimestamp = in.getLong();
 
     myAutoFrameEnabled = in.getBool();
 

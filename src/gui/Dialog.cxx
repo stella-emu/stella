@@ -791,8 +791,13 @@ Widget* Dialog::TabFocus::getNewFocus()
 bool Dialog::getResizableBounds(uInt32& w, uInt32& h) const
 {
   const GUI::Rect& r = instance().frameBuffer().imageRect();
+  bool ntsc = true;
 
-  bool ntsc = instance().console().about().InitialFrameRate == "60";
+  if(instance().hasConsole())
+  {
+    ntsc = instance().console().about().InitialFrameRate == "60";
+  }
+
   uInt32 aspect = instance().settings().getInt(ntsc ?"tia.aspectn" : "tia.aspectp");
 
   if(r.width() <= FrameBuffer::kFBMinW || r.height() <= FrameBuffer::kFBMinH)

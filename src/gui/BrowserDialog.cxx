@@ -53,7 +53,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   xpos = 10;  ypos = 4 + _th;
 
   // Current path - TODO: handle long paths ?
-  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Pfad ");
+  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Path ");
   _currentPath = new EditTextWidget(this, font, xpos + t->getWidth(), ypos,
                                     _w - t->getWidth() - 2 * xpos, lineHeight);
   _currentPath->setEditable(false);

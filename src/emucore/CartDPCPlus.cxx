@@ -53,10 +53,11 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
   myFrequencyImage = myDisplayImage + 0x1000;
 
   // Create Thumbulator ARM emulator
+  string prefix = settings.getBool("dev.settings") ? "plr." : "dev.";
   myThumbEmulator = make_unique<Thumbulator>
       (reinterpret_cast<uInt16*>(myImage),
        reinterpret_cast<uInt16*>(myDPCRAM),
-       settings.getBool("thumb.trapfatal"),
+       settings.getBool(prefix + "thumb.trapfatal"),
        Thumbulator::ConfigureFor::DPCplus,
        this);
 
