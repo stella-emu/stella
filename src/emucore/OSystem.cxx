@@ -678,8 +678,8 @@ void OSystem::mainLoop()
       timesliceSeconds = dispatchEmulation(myConsole ? myConsole->emulationTiming().cyclesPerSecond() : 1);
 
       if (myConsole && myConsole->tia().newFramePending()) {
+        myConsole->tia().renderToFrameBuffer();
         myFrameBuffer->updateInEmulationMode();
-        myConsole->tia().clearNewFramePending();
       }
     } else {
       timesliceSeconds = 1. / 30.;

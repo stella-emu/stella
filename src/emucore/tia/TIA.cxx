@@ -196,6 +196,7 @@ void TIA::reset()
 void TIA::frameReset()
 {
   memset(myBackBuffer, 0, 160 * TIAConstants::frameBufferHeight);
+  memset(myFrontBuffer, 0, 160 * TIAConstants::frameBufferHeight);
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
   enableColorLoss(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss");
 }
@@ -784,6 +785,7 @@ bool TIA::saveDisplay(Serializer& out) const
   {
     out.putByteArray(myFramebuffer, 160* TIAConstants::frameBufferHeight);
     out.putByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+    out.putByteArray(myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
     out.putBool(myNewFramePending);
   }
   catch(...)
@@ -803,6 +805,7 @@ bool TIA::loadDisplay(Serializer& in)
     // Reset frame buffer pointer and data
     in.getByteArray(myFramebuffer, 160*TIAConstants::frameBufferHeight);
     in.getByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+    in.getByteArray(myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
     myNewFramePending = in.getBool();
   }
   catch(...)
@@ -817,11 +820,17 @@ bool TIA::loadDisplay(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::update(DispatchResult& result, uInt32 maxCycles)
 {
-  uInt64 timestampOld = myTimestamp;
-
   mySystem->m6502().execute(maxCycles, result);
 
   updateEmulation();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::renderToFrameBuffer()
+{
+  if (!myNewFramePending) return;
+
+  memcpy(myFramebuffer, myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1171,7 +1180,7 @@ void TIA::onFrameComplete()
   if (missingScanlines > 0)
     memset(myBackBuffer + 160 * myFrameManager->getY(), 0, missingScanlines * 160);
 
-  memcpy(&myFramebuffer, &myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+  memcpy(myFrontBuffer, myBackBuffer, 160 * TIAConstants::frameBufferHeight);
   myNewFramePending = true;
 }
 

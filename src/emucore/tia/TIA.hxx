@@ -210,9 +210,15 @@ class TIA : public Device
     bool newFramePending() { return myNewFramePending; }
 
     /**
-      Clear the flag
-    */
-    void clearNewFramePending() { myNewFramePending = false; }
+      Render the pending frame to the framebuffer and clear the flag.
+     */
+    void renderToFrameBuffer();
+
+    /**
+      Return the buffer that holds the currently drawing TIA frame
+      (the TIA output widget needs this).
+     */
+    uInt8* outputBuffer() { return myBackBuffer; }
 
     /**
       Returns a pointer to the internal frame buffer.
@@ -673,6 +679,7 @@ class TIA : public Device
     // The frame is rendered to the backbuffer and only copied to the framebuffer
     // upon completion
     uInt8 myBackBuffer[160 * TIAConstants::frameBufferHeight];
+    uInt8 myFrontBuffer[160 * TIAConstants::frameBufferHeight];
 
     // Did we emit a frame?
     bool myNewFramePending;

@@ -43,7 +43,7 @@ class DispatchResult
 
     void setOk(uInt32 cycles);
 
-    void setDebugger(uInt32 cycles, const string& message = "", int address = -1, bool wasReadTrap = -1);
+    void setDebugger(uInt32 cycles, const string& message = "", int address = -1, bool wasReadTrap = false);
 
     void setFatal(uInt32 cycles);
 

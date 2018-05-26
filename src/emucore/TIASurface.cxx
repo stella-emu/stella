@@ -138,10 +138,11 @@ const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIASurface::pixel(uInt32 idx, uInt8 shift)
+uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift)
 {
-  return myPalette[*(myTIA->frameBuffer() + idx) | shift];
+  return myPalette[indexedColor | shift];
 }
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
