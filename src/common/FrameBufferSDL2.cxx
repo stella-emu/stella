@@ -138,10 +138,6 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   // Always recreate renderer (some systems need this)
   if(myRenderer)
   {
-    // Always clear the (double-buffered) renderer surface
-    SDL_RenderClear(myRenderer);
-    SDL_RenderPresent(myRenderer);
-    SDL_RenderClear(myRenderer);
     SDL_DestroyRenderer(myRenderer);
     myRenderer = nullptr;
   }
@@ -228,6 +224,12 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     myOSystem.logMessage(msg, 0);
     return false;
   }
+
+  // Always clear the (double-buffered) renderer surface
+  SDL_RenderClear(myRenderer);
+  SDL_RenderPresent(myRenderer);
+  SDL_RenderClear(myRenderer);
+
   SDL_RendererInfo renderinfo;
   if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
     myOSystem.settings().setValue("video", renderinfo.name);
@@ -235,6 +237,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   return true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::setTitle(const string& title)
 {
   myScreenTitle = title;
