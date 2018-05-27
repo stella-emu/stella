@@ -366,6 +366,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   // Precompute the message coordinates
   myMsg.text    = message;
   myMsg.counter = uInt32(myOSystem.frameRate()) << 1; // Show message for 2 seconds
+  if(myMsg.counter == 0)  myMsg.counter = 60;
   myMsg.color   = kBtnTextColor;
 
   myMsg.w = font().getStringWidth(myMsg.text) + 10;
