@@ -361,7 +361,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
                               bool force)
 {
   // Only show messages if they've been enabled
-  if(myMsg.surface == NULL || !(force || myOSystem.settings().getBool("uimessages")))
+  if(myMsg.surface == nullptr || !(force || myOSystem.settings().getBool("uimessages")))
     return;
 
   // Precompute the message coordinates
