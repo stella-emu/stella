@@ -311,15 +311,26 @@ void Console::toggleFormat(int direction)
   else if(direction == -1)
     myCurrentFormat = myCurrentFormat > 0 ? (myCurrentFormat - 1) : 6;
 
+  setFormat(myCurrentFormat);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::setFormat(int format)
+{
+  string saveformat, message;
+  string autodetected = "";
+
+  myCurrentFormat = format;
   switch(myCurrentFormat)
   {
     case 0:  // auto-detect
       myTIA->update();
       myDisplayFormat = myTIA->frameLayout() == FrameLayout::pal ? "PAL" : "NTSC";
+      autodetected = "*";
       message = "Auto-detect mode: " + myDisplayFormat;
       saveformat = "AUTO";
       myConsoleTiming = myTIA->frameLayout() == FrameLayout::pal ?
-          ConsoleTiming::pal : ConsoleTiming::ntsc;
+        ConsoleTiming::pal : ConsoleTiming::ntsc;
       break;
     case 1:
       saveformat = myDisplayFormat = "NTSC";
@@ -353,6 +364,8 @@ void Console::toggleFormat(int direction)
       break;
   }
   myProperties.set(Display_Format, saveformat);
+
+  myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
   setPalette(myOSystem.settings().getString("palette"));
   setTIAProperties();
