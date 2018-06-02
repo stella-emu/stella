@@ -39,9 +39,7 @@ GameInfoDialog::GameInfoDialog(
       OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
       GuiObject* boss)
   : Dialog(osystem, parent, font, "Game properties"),
-    CommandSender(boss),
-    myPropertiesLoaded(false),
-    myDefaultsSelected(false)
+    CommandSender(boss)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = font.getLineHeight(),
@@ -175,33 +173,32 @@ GameInfoDialog::GameInfoDialog(
   wid.clear();
   tabID = myTab->addTab("Controller");
 
+  ctrls.clear();
+  VarList::push_back(ctrls, "Joystick", "JOYSTICK");
+  VarList::push_back(ctrls, "Paddles", "PADDLES");
+  VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
+  VarList::push_back(ctrls, "Paddles_IDir", "PADDLES_IDIR");
+  VarList::push_back(ctrls, "Paddles_IAxDr", "PADDLES_IAXDR");
+  VarList::push_back(ctrls, "BoosterGrip", "BOOSTERGRIP");
+  VarList::push_back(ctrls, "Driving", "DRIVING");
+  VarList::push_back(ctrls, "Keyboard", "KEYBOARD");
+  VarList::push_back(ctrls, "AmigaMouse", "AMIGAMOUSE");
+  VarList::push_back(ctrls, "AtariMouse", "ATARIMOUSE");
+  VarList::push_back(ctrls, "Trakball", "TRAKBALL");
+  VarList::push_back(ctrls, "AtariVox", "ATARIVOX");
+  VarList::push_back(ctrls, "SaveKey", "SAVEKEY");
+  VarList::push_back(ctrls, "Sega Genesis", "GENESIS");
+  //  VarList::push_back(ctrls, "KidVid",        "KIDVID"      );
+  VarList::push_back(ctrls, "MindLink", "MINDLINK");
+
   ypos = vBorder;
   pwidth = font.getStringWidth("Paddles_IAxis");
   myP0Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P0 controller    ");
-  ctrls.clear();
-  VarList::push_back(ctrls, "Joystick",      "JOYSTICK"     );
-  VarList::push_back(ctrls, "Paddles",       "PADDLES"      );
-  VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
-  VarList::push_back(ctrls, "Paddles_IDir",  "PADDLES_IDIR" );
-  VarList::push_back(ctrls, "Paddles_IAxDr", "PADDLES_IAXDR");
-  VarList::push_back(ctrls, "BoosterGrip",   "BOOSTERGRIP"  );
-  VarList::push_back(ctrls, "Driving",       "DRIVING"      );
-  VarList::push_back(ctrls, "Keyboard",      "KEYBOARD"     );
-  VarList::push_back(ctrls, "AmigaMouse",    "AMIGAMOUSE"   );
-  VarList::push_back(ctrls, "AtariMouse",    "ATARIMOUSE"   );
-  VarList::push_back(ctrls, "Trakball",      "TRAKBALL"     );
-  VarList::push_back(ctrls, "AtariVox",      "ATARIVOX"     );
-  VarList::push_back(ctrls, "SaveKey",       "SAVEKEY"      );
-  VarList::push_back(ctrls, "Sega Genesis",  "GENESIS"      );
-//  VarList::push_back(ctrls, "KidVid",        "KIDVID"      );
-  VarList::push_back(ctrls, "MindLink",      "MINDLINK"     );
-
   myP0Controller = new PopUpWidget(myTab, font, myP0Label->getRight(), myP0Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myP0Controller);
 
   ypos += lineHeight + VGAP;
-  pwidth = font.getStringWidth("Paddles_IAxis");
   myP1Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P1 controller    ");
   myP1Controller = new PopUpWidget(myTab, font, myP1Label->getRight(), myP1Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
@@ -243,7 +240,6 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(items, "MindLink 0", MouseControl::MindLink0);
   VarList::push_back(items, "MindLink 1", MouseControl::MindLink1);
 
-  lwidth = font.getStringWidth("X-Axis is ");
   xpos += 20;
   ypos += lineHeight + VGAP;
   myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
@@ -256,9 +252,8 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myMouseY);
 
   xpos = hSpace; ypos += lineHeight + VGAP;
-  lwidth = font.getStringWidth("Mouse axis range ");
   myMouseRange = new SliderWidget(myTab, font, hSpace, ypos,
-                                  "Mouse axis range ", lwidth, 0, fontWidth * 4, "%");
+                                  "Mouse axes range ", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   wid.push_back(myMouseRange);
 
@@ -334,71 +329,66 @@ GameInfoDialog::GameInfoDialog(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()
 {
-  myPropertiesLoaded = false;
-  myDefaultsSelected = false;
-
   if(instance().hasConsole())
   {
     myGameProperties = instance().console().properties();
-    myPropertiesLoaded = true;
-    loadView();
   }
   else
   {
     const string& md5 = instance().launcher().selectedRomMD5();
-    if(md5 != "")
-    {
-      instance().propSet(md5).getMD5(md5, myGameProperties);
-      myPropertiesLoaded = true;
-      loadView();
-    }
+    instance().propSet(md5).getMD5(md5, myGameProperties);
   }
 
-  updateControllerStates();
+  loadCartridgeProperties(myGameProperties);
+  loadConsoleProperties(myGameProperties);
+  loadControllerProperties(myGameProperties);
+  loadDisplayProperties(myGameProperties);
+
+  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::loadView()
+void GameInfoDialog::loadCartridgeProperties(Properties properties)
 {
-  if(!myPropertiesLoaded)
-    return;
+  myName->setText(properties.get(Cartridge_Name));
+  myMD5->setText(properties.get(Cartridge_MD5));
+  myManufacturer->setText(properties.get(Cartridge_Manufacturer));
+  myModelNo->setText(properties.get(Cartridge_ModelNo));
+  myRarity->setText(properties.get(Cartridge_Rarity));
+  myNote->setText(properties.get(Cartridge_Note));
+  mySound->setState(properties.get(Cartridge_Sound) == "STEREO");
+  myType->setSelected(properties.get(Cartridge_Type), "AUTO");
+}
 
-  // Cartridge properties
-  myName->setText(myGameProperties.get(Cartridge_Name));
-  myMD5->setText(myGameProperties.get(Cartridge_MD5));
-  myManufacturer->setText(myGameProperties.get(Cartridge_Manufacturer));
-  myModelNo->setText(myGameProperties.get(Cartridge_ModelNo));
-  myRarity->setText(myGameProperties.get(Cartridge_Rarity));
-  myNote->setText(myGameProperties.get(Cartridge_Note));
-  mySound->setState(myGameProperties.get(Cartridge_Sound) == "STEREO");
-  myType->setSelected(myGameProperties.get(Cartridge_Type), "AUTO");
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::loadConsoleProperties(Properties properties)
+{
+  myLeftDiffGroup->setSelected(properties.get(Console_LeftDifficulty) == "A" ? 0 : 1);
+  myRightDiffGroup->setSelected(properties.get(Console_RightDifficulty) == "A" ? 0 : 1);
+  myTVTypeGroup->setSelected(properties.get(Console_TelevisionType) == "BW" ? 1 : 0);
+}
 
-  // Console properties
-  myLeftDiffGroup->setSelected(myGameProperties.get(Console_LeftDifficulty) == "A" ? 0 : 1);
-  myRightDiffGroup->setSelected(myGameProperties.get(Console_RightDifficulty) == "A" ? 0 : 1);
-  myTVTypeGroup->setSelected(myGameProperties.get(Console_TelevisionType) == "BW" ? 1 : 0);
-
-  // Controller properties
-  myP0Controller->setSelected(myGameProperties.get(Controller_Left), "JOYSTICK");
-  myP1Controller->setSelected(myGameProperties.get(Controller_Right), "JOYSTICK");
-  mySwapPorts->setState(myGameProperties.get(Console_SwapPorts) == "YES");
-  mySwapPaddles->setState(myGameProperties.get(Controller_SwapPaddles) == "YES");
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::loadControllerProperties(Properties properties)
+{
+  myP0Controller->setSelected(properties.get(Controller_Left), "JOYSTICK");
+  myP1Controller->setSelected(properties.get(Controller_Right), "JOYSTICK");
+  mySwapPorts->setState(properties.get(Console_SwapPorts) == "YES");
+  mySwapPaddles->setState(properties.get(Controller_SwapPaddles) == "YES");
 
   // MouseAxis property (potentially contains 'range' information)
-  istringstream m_axis(myGameProperties.get(Controller_MouseAxis));
+  istringstream m_axis(properties.get(Controller_MouseAxis));
   string m_control, m_range;
   m_axis >> m_control;
   bool autoAxis = BSPF::equalsIgnoreCase(m_control, "AUTO");
   myMouseControl->setState(!autoAxis);
   if(autoAxis)
   {
-    //myMouseControl->setSelectedIndex(0);
     myMouseX->setSelectedIndex(0);
     myMouseY->setSelectedIndex(0);
   }
   else
   {
-    //myMouseControl->setSelectedIndex(1);
     myMouseX->setSelected(m_control[0] - '0');
     myMouseY->setSelected(m_control[1] - '0');
   }
@@ -413,37 +403,37 @@ void GameInfoDialog::loadView()
     myMouseRange->setValue(100);
   }
 
-  // Display properties
-  myFormat->setSelected(myGameProperties.get(Display_Format), "AUTO");
+  updateControllerStates();
+}
 
-  const string& ystart = myGameProperties.get(Display_YStart);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::loadDisplayProperties(Properties properties)
+{
+  myFormat->setSelected(properties.get(Display_Format), "AUTO");
+
+  const string& ystart = properties.get(Display_YStart);
   myYStart->setValue(atoi(ystart.c_str()));
   myYStart->setValueLabel(ystart == "0" ? "Auto" : ystart);
   myYStart->setValueUnit(ystart == "0" ? "" : "px");
 
-  const string& height = myGameProperties.get(Display_Height);
+  const string& height = properties.get(Display_Height);
   myHeight->setValue(atoi(height.c_str()));
   myHeight->setValueLabel(height == "0" ? "Auto" : height);
   myHeight->setValueUnit(height == "0" ? "" : "px");
 
-  bool usePhosphor = myGameProperties.get(Display_Phosphor) == "YES";
+  bool usePhosphor = properties.get(Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
   myPPBlend->setEnabled(usePhosphor);
 
-  const string& blend = myGameProperties.get(Display_PPBlend);
+  const string& blend = properties.get(Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));
   myPPBlend->setValueLabel(blend == "0" ? "Default" : blend);
   myPPBlend->setValueUnit(blend == "0" ? "" : "%");
-
-  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::saveConfig()
 {
-  if(!myPropertiesLoaded)
-    return;
-
   // Cartridge properties
   myGameProperties.set(Cartridge_Name, myName->getText());
   myGameProperties.set(Cartridge_Manufacturer, myManufacturer->getText());
@@ -485,13 +475,9 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Display_PPBlend, myPPBlend->getValueLabel() == "Default" ? "0" :
                        myPPBlend->getValueLabel());
 
-  // Determine whether to add or remove an entry from the properties set
   const string& md5 = myGameProperties.get(Cartridge_MD5);
-  if(myDefaultsSelected)
-    instance().propSet(md5).removeMD5(myGameProperties.get(Cartridge_MD5));
-  else
-    instance().propSet(md5).insert(myGameProperties);
-
+  // always insert, doesn't hurt
+  instance().propSet(md5).insert(myGameProperties);
   instance().saveGamePropSet(myGameProperties.get(Cartridge_MD5));
 
   // In any event, inform the Console
@@ -503,12 +489,32 @@ void GameInfoDialog::saveConfig()
 void GameInfoDialog::setDefaults()
 {
   // Load the default properties
+  Properties defaultProperties;
   string md5 = myGameProperties.get(Cartridge_MD5);
-  instance().propSet(md5).getMD5(md5, myGameProperties, true);
 
-  // Reload the current dialog
-  loadView();
-  myDefaultsSelected = true;
+  instance().propSet(md5).getMD5(md5, defaultProperties, true);
+
+  switch(myTab->getActiveTab())
+  {
+    case 0: // Cartridge properties
+      loadCartridgeProperties(defaultProperties);
+      break;
+
+    case 1: // Console properties
+      loadConsoleProperties(defaultProperties);
+      break;
+
+    case 2: // Controller properties
+      loadControllerProperties(defaultProperties);
+      break;
+
+    case 3: // Display properties
+      loadDisplayProperties(defaultProperties);
+      break;
+
+    default: // make the complier happy
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -643,7 +649,6 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kMCtrlChanged:
     {
-      //bool state = myMouseControl->getSelectedTag() != "AUTO";
       bool state = myMouseControl->getState();
       myMouseX->setEnabled(state);
       myMouseY->setEnabled(state);

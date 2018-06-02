@@ -44,7 +44,15 @@ class GameInfoDialog : public Dialog, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void setDefaults() override;
-    void loadView();
+
+    // load the properties for the 'Cartridge' tab
+    void loadCartridgeProperties(Properties properties);
+    // load the properties for the 'Console' tab
+    void loadConsoleProperties(Properties properties);
+    // load the properties for the 'Controller' tab
+    void loadControllerProperties(Properties properties);
+    // load the properties for the 'Display' tab
+    void loadDisplayProperties(Properties properties);
 
     void updateControllerStates();
     void eraseEEPROM();
@@ -102,12 +110,6 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     // Game properties for currently loaded ROM
     Properties myGameProperties;
-
-    // Indicates that we've got a valid properties entry
-    bool myPropertiesLoaded;
-
-    // Indicates that the default properties have been loaded
-    bool myDefaultsSelected;
 
   private:
     // Following constructors and assignment operators not supported
