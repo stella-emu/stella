@@ -55,11 +55,7 @@ void EditableWidget::setText(const string& str, bool)
     if(_filter(tolower(c)))
       _editString.push_back(c);
 
-  _caretPos = int(_editString.size());
-
-  _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().width()));
-  if (_editScrollOffset < 0)
-    _editScrollOffset = 0;
+  _caretPos = _editScrollOffset = 0;
 
   setDirty();
 }
