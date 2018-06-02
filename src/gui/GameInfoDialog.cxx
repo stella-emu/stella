@@ -46,10 +46,8 @@ GameInfoDialog::GameInfoDialog(
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
             buttonHeight = font.getLineHeight() + 4;
-  const int vBorder = 8;
-  const int hBorder = 8;
-
-  const int hSpace = 10;
+  const int VBORDER = 8;
+  const int HBORDER = 10;
   const int VGAP = 4;
 
   int xpos, ypos, lwidth, fwidth, pwidth, swidth, tabID;
@@ -59,10 +57,9 @@ GameInfoDialog::GameInfoDialog(
 
   // Set real dimensions
   _w = 53 * fontWidth + 8;
-  _h = 9 * (lineHeight + VGAP) + vBorder * 2 + _th + buttonHeight + fontHeight + ifont.getLineHeight() + 20;
+  _h = 9 * (lineHeight + VGAP) + VBORDER * 2 + _th + buttonHeight + fontHeight + ifont.getLineHeight() + 20;
 
   // The tab widget
-  xpos = hBorder; ypos = vBorder;
   myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2 * 2,
                         _h - (_th + buttonHeight + fontHeight + ifont.getLineHeight() + 20));
   addTabWidget(myTab);
@@ -71,9 +68,9 @@ GameInfoDialog::GameInfoDialog(
   // 1) Cartridge properties
   tabID = myTab->addTab("Cartridge");
 
-  xpos = hSpace;
+  xpos = HBORDER; ypos = VBORDER;
   lwidth = font.getStringWidth("Manufacturer ");
-  fwidth = _w - xpos - lwidth - hSpace - hBorder * 2;
+  fwidth = _w - lwidth - HBORDER * 2 - 2;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight, "Name");
   myName = new EditTextWidget(myTab, font, xpos+lwidth, ypos-1,
                               fwidth, lineHeight, "");
@@ -132,7 +129,7 @@ GameInfoDialog::GameInfoDialog(
   wid.clear();
   tabID = myTab->addTab("Console");
 
-  xpos = hSpace; ypos = vBorder;
+  xpos = HBORDER; ypos = VBORDER;
   StaticTextWidget* s = new StaticTextWidget(myTab, font, xpos, ypos+1, "Left difficulty  ");
   myLeftDiffGroup = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
@@ -191,15 +188,15 @@ GameInfoDialog::GameInfoDialog(
   //  VarList::push_back(ctrls, "KidVid",        "KIDVID"      );
   VarList::push_back(ctrls, "MindLink", "MINDLINK");
 
-  ypos = vBorder;
+  ypos = VBORDER;
   pwidth = font.getStringWidth("Paddles_IAxis");
-  myP0Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P0 controller    ");
+  myP0Label = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "P0 controller    ");
   myP0Controller = new PopUpWidget(myTab, font, myP0Label->getRight(), myP0Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myP0Controller);
 
   ypos += lineHeight + VGAP;
-  myP1Label = new StaticTextWidget(myTab, font, hSpace, ypos+1, "P1 controller    ");
+  myP1Label = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "P1 controller    ");
   myP1Controller = new PopUpWidget(myTab, font, myP1Label->getRight(), myP1Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myP1Controller);
@@ -216,7 +213,7 @@ GameInfoDialog::GameInfoDialog(
   // EEPROM erase button for P0/P1
   ypos += lineHeight + VGAP + 4;
   pwidth = myP1Controller->getWidth();   //font.getStringWidth("Erase EEPROM ") + 23;
-  myEraseEEPROMLabel = new StaticTextWidget(myTab, font, hSpace, ypos, "AtariVox/SaveKey ");
+  myEraseEEPROMLabel = new StaticTextWidget(myTab, font, HBORDER, ypos, "AtariVox/SaveKey ");
   myEraseEEPROMButton = new ButtonWidget(myTab, font, myEraseEEPROMLabel->getRight(), ypos - 4,
                                          pwidth, buttonHeight, "Erase EEPROM", kEEButtonPressed);
   wid.push_back(myEraseEEPROMButton);
@@ -251,8 +248,8 @@ GameInfoDialog::GameInfoDialog(
                "Y-Axis is ");
   wid.push_back(myMouseY);
 
-  xpos = hSpace; ypos += lineHeight + VGAP;
-  myMouseRange = new SliderWidget(myTab, font, hSpace, ypos,
+  xpos = HBORDER; ypos += lineHeight + VGAP;
+  myMouseRange = new SliderWidget(myTab, font, HBORDER, ypos,
                                   "Mouse axes range ", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   wid.push_back(myMouseRange);
@@ -265,9 +262,9 @@ GameInfoDialog::GameInfoDialog(
   wid.clear();
   tabID = myTab->addTab("Display");
 
-  ypos = vBorder;
+  ypos = VBORDER;
   pwidth = font.getStringWidth("Auto-detect");
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Format  ");
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Format  ");
   items.clear();
   VarList::push_back(items, "Auto-detect", "AUTO");
   VarList::push_back(items, "NTSC",    "NTSC");
@@ -282,7 +279,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + VGAP;
   swidth = myFormat->getWidth();
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Y-Start ");
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Y-Start ");
   myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
                               "", 0, kYStartChanged, 4 * fontWidth, "px");
   myYStart->setMinValue(TIAConstants::minYStart-1);
@@ -290,7 +287,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myYStart);
 
   ypos += lineHeight + VGAP;
-  t = new StaticTextWidget(myTab, font, hSpace, ypos+1, "Height  ");
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Height  ");
   myHeight = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
                               "", 0, kHeightChanged, 5 * fontWidth, "px");
   myHeight->setMinValue(TIAConstants::minViewableHeight-1);
@@ -299,7 +296,7 @@ GameInfoDialog::GameInfoDialog(
 
   // Phosphor
   ypos += lineHeight + VGAP*4;
-  myPhosphor = new CheckboxWidget(myTab, font, hSpace, ypos+1, "Phosphor", kPhosphorChanged);
+  myPhosphor = new CheckboxWidget(myTab, font, HBORDER, ypos+1, "Phosphor", kPhosphorChanged);
   wid.push_back(myPhosphor);
 
   myPPBlend = new SliderWidget(myTab, font,
@@ -311,13 +308,12 @@ GameInfoDialog::GameInfoDialog(
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
 
-
   // Activate the first tab
   myTab->setActiveTab(0);
 
   // Add message concerning usage
   lwidth = ifont.getStringWidth("(*) Changes to properties require a ROM reload");
-  new StaticTextWidget(this, ifont, hSpace, _h - (buttonHeight + fontHeight + 20),
+  new StaticTextWidget(this, ifont, HBORDER, _h - (buttonHeight + fontHeight + 20),
                        "(*) Changes to properties require a ROM reload");
 
   // Add Defaults, OK and Cancel buttons
