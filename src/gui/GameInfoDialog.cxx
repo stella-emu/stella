@@ -32,6 +32,10 @@
 #include "Widget.hxx"
 #include "Font.hxx"
 
+#include "FrameBuffer.hxx"
+#include "TIASurface.hxx"
+#include "TIA.hxx"
+
 #include "GameInfoDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,7 +65,7 @@ GameInfoDialog::GameInfoDialog(
 
   // The tab widget
   myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2 * 2,
-                        _h - (_th + buttonHeight + fontHeight + ifont.getLineHeight() + 20));
+                        _h - (_th + buttonHeight + 20));
   addTabWidget(myTab);
 
   //////////////////////////////////////////////////////////////////////////////
@@ -121,6 +125,11 @@ GameInfoDialog::GameInfoDialog(
   mySound = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Stereo sound");
   wid.push_back(mySound);
 
+  // Add message concerning usage
+  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
+  new StaticTextWidget(myTab, ifont, xpos, ypos,
+                       "(*) Changes to properties require a ROM reload");
+
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
 
@@ -161,6 +170,11 @@ GameInfoDialog::GameInfoDialog(
   r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
                             "B/W", myTVTypeGroup);
   wid.push_back(r);
+
+  // Add message concerning usage
+  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
+  new StaticTextWidget(myTab, ifont, xpos, ypos,
+                       "(*) Changes to properties require a ROM reload");
 
   // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
@@ -254,6 +268,11 @@ GameInfoDialog::GameInfoDialog(
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   wid.push_back(myMouseRange);
 
+  // Add message concerning usage
+  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
+  new StaticTextWidget(myTab, ifont, xpos, ypos,
+                       "(*) Changes to properties require a ROM reload");
+
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
 
@@ -310,11 +329,6 @@ GameInfoDialog::GameInfoDialog(
 
   // Activate the first tab
   myTab->setActiveTab(0);
-
-  // Add message concerning usage
-  lwidth = ifont.getStringWidth("(*) Changes to properties require a ROM reload");
-  new StaticTextWidget(this, ifont, HBORDER, _h - (buttonHeight + fontHeight + 20),
-                       "(*) Changes to properties require a ROM reload");
 
   // Add Defaults, OK and Cancel buttons
   wid.clear();
@@ -478,7 +492,28 @@ void GameInfoDialog::saveConfig()
 
   // In any event, inform the Console
   if(instance().hasConsole())
+  {
     instance().console().setProperties(myGameProperties);
+
+    // update display immediately
+    bool reset = false;
+    instance().console().setFormat(myFormat->getSelected());
+    if(myYStart->getValue() != TIAConstants::minYStart - 1 &&
+       myYStart->getValue() != instance().console().tia().ystart())
+    {
+      instance().console().tia().setYStart(myYStart->getValue());
+      reset = true;
+    }
+    if(myHeight->getValue() != TIAConstants::minViewableHeight - 1 &&
+       myHeight->getValue() != instance().console().tia().height())
+    {
+      instance().console().tia().setHeight(myHeight->getValue());
+      reset = true;
+    }
+    instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
+    if (reset)
+      instance().console().tia().frameReset();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
