@@ -222,6 +222,9 @@ void TIASurface::enableScanlineInterpolation(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enablePhosphor(bool enable, int blend)
 {
+  if(myUsePhosphor == enable && myPhosphorPercent == blend / 100.0)
+    return;
+
   myUsePhosphor = enable;
   if(blend >= 0)
     myPhosphorPercent = blend / 100.0;

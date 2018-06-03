@@ -305,33 +305,41 @@ bool Console::load(Serializer& in)
 void Console::toggleFormat(int direction)
 {
   string saveformat, message;
+  int format;
 
   if(direction == 1)
-    myCurrentFormat = (myCurrentFormat + 1) % 7;
+    format = (myCurrentFormat + 1) % 7;
   else if(direction == -1)
-    myCurrentFormat = myCurrentFormat > 0 ? (myCurrentFormat - 1) : 6;
+    format = myCurrentFormat > 0 ? (myCurrentFormat - 1) : 6;
 
-  setFormat(myCurrentFormat);
+  setFormat(format);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setFormat(int format)
 {
+  if(myCurrentFormat == format)
+    return;
+
   string saveformat, message;
   string autodetected = "";
+  bool reset = true;
 
   myCurrentFormat = format;
   switch(myCurrentFormat)
   {
     case 0:  // auto-detect
+    {
+      string oldDisplayFormat = myDisplayFormat;
+      autodetectFrameLayout();
       myTIA->update();
-      myDisplayFormat = myTIA->frameLayout() == FrameLayout::pal ? "PAL" : "NTSC";
-      autodetected = "*";
-      message = "Auto-detect mode: " + myDisplayFormat;
+      reset = oldDisplayFormat != myDisplayFormat;
       saveformat = "AUTO";
-      myConsoleTiming = myTIA->frameLayout() == FrameLayout::pal ?
-        ConsoleTiming::pal : ConsoleTiming::ntsc;
+      autodetected = "*";
+      myConsoleTiming = myDisplayFormat == "PAL" ? ConsoleTiming::pal : ConsoleTiming::ntsc;
+      message = "Auto-detect mode: " + myDisplayFormat;
       break;
+    }
     case 1:
       saveformat = myDisplayFormat = "NTSC";
       myConsoleTiming = ConsoleTiming::ntsc;
@@ -367,10 +375,13 @@ void Console::setFormat(int format)
 
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
-  setPalette(myOSystem.settings().getString("palette"));
-  setTIAProperties();
-  myTIA->frameReset();
-  initializeVideo();  // takes care of refreshing the screen
+  if(reset)
+  {
+    setPalette(myOSystem.settings().getString("palette"));
+    setTIAProperties();
+    myTIA->frameReset();
+    initializeVideo();  // takes care of refreshing the screen
+  }
 
   myOSystem.frameBuffer().showMessage(message);
 
