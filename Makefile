@@ -147,7 +147,7 @@ CXX_UPDATE_DEP_FLAG = -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2"
 
 .c.o:
 	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
 	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
 	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
 	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
@@ -162,7 +162,7 @@ else
 
 .c.o:
 	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
 endif
 
 # Include the dependency tracking files. We add /dev/null at the end
