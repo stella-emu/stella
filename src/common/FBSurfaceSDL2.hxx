@@ -88,8 +88,8 @@ class FBSurfaceSDL2 : public FBSurface
     bool myBlendEnabled;  // Blending is enabled
     uInt8 myBlendAlpha;   // Alpha to use in blending mode
 
-    uInt32* myStaticData; // The data to use when the buffer contents are static
-    uInt32 myStaticPitch; // The number of bytes in a row of static data
+    unique_ptr<uInt32[]> myStaticData; // The data to use when the buffer contents are static
+    uInt32 myStaticPitch;              // The number of bytes in a row of static data
 
     GUI::Rect mySrcGUIR, myDstGUIR;
 };
