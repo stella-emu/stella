@@ -203,11 +203,9 @@ void EmulationWorker::handleWakeupFromWaitingForStop(std::unique_lock<std::mutex
 
     case Signal::none:
       if (myWakeupPoint <= high_resolution_clock::now())
+        dispatchEmulation(lock);
+      else
         mySignalCondition.wait_until(lock, myWakeupPoint);
-      else {
-        myState = State::waitingForResume;
-        mySignalCondition.wait(lock);
-      }
 
       break;
 
