@@ -84,7 +84,7 @@ class EmulationWorker
     uInt32 myMinCycles;
     DispatchResult* myDispatchResult;
 
-    std::chrono::time_point<std::chrono::high_resolution_clock> myWakeupPoint;
+    std::chrono::time_point<std::chrono::high_resolution_clock> myVirtualTime;
 };
 
 #endif // EMULATION_WORKER_HXX

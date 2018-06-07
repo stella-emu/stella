@@ -175,6 +175,7 @@ void EmulationWorker::handleWakeupFromWaitingForResume(std::unique_lock<std::mut
   switch (myPendingSignal) {
     case Signal::resume:
       myPendingSignal = Signal::none;
+      myVirtualTime = high_resolution_clock::now();
       dispatchEmulation(lock);
       break;
 
@@ -202,10 +203,10 @@ void EmulationWorker::handleWakeupFromWaitingForStop(std::unique_lock<std::mutex
       break;
 
     case Signal::none:
-      if (myWakeupPoint <= high_resolution_clock::now())
+      if (myVirtualTime <= high_resolution_clock::now())
         dispatchEmulation(lock);
       else
-        mySignalCondition.wait_until(lock, myWakeupPoint);
+        mySignalCondition.wait_until(lock, myVirtualTime);
 
       break;
 
@@ -222,7 +223,6 @@ void EmulationWorker::dispatchEmulation(std::unique_lock<std::mutex>& lock)
 {
   myState = State::running;
 
-  time_point<high_resolution_clock> now = high_resolution_clock::now();
   uInt64 totalCycles = 0;
 
   do {
@@ -232,13 +232,13 @@ void EmulationWorker::dispatchEmulation(std::unique_lock<std::mutex>& lock)
   if (myDispatchResult->getStatus() == DispatchResult::Status::ok) {
     // If emulation finished successfully, we can go for another round
     duration<double> timesliceSeconds(static_cast<double>(totalCycles) / static_cast<double>(myCyclesPerSecond));
-    myWakeupPoint = now + duration_cast<high_resolution_clock::duration>(timesliceSeconds);
+    myVirtualTime += duration_cast<high_resolution_clock::duration>(timesliceSeconds);
 
     myState = State::waitingForStop;
 
-    if (myWakeupPoint > high_resolution_clock::now())
+    if (myVirtualTime > high_resolution_clock::now())
       // If we can keep up with the emulation, we sleep
-      mySignalCondition.wait_until(lock, myWakeupPoint);
+      mySignalCondition.wait_until(lock, myVirtualTime);
     else {
       // If we are already lagging behind, we briefly relinquish control over the mutex
       // and yield to scheduler, to make sure that the main thread has a chance to stop us
