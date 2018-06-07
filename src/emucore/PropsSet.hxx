@@ -115,7 +115,7 @@ class PropertiesSet
     /**
       Return the size of the myExternalProps list
     */
-    uInt32 size() { return myExternalProps.size(); }
+    uInt64 size() const { return myExternalProps.size(); }
 
   private:
     using PropsList = std::map<string, Properties>;
