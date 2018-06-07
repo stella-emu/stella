@@ -47,15 +47,13 @@ class EmulationWorker
 
     ~EmulationWorker();
 
-    void handlePossibleException();
-
     void start(uInt32 cyclesPerSecond, uInt32 maxCycles, uInt32 minCycles, DispatchResult* dispatchResult);
 
     void stop();
 
   private:
 
-    void handleException();
+    void handlePossibleException();
 
     // Passing references into a thread is awkward and requires std::ref -> use pointers here
     void threadMain(std::condition_variable* initializedCondition, std::mutex* initializationMutex);
