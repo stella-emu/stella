@@ -52,6 +52,7 @@
         "new": "cpp",
         "typeinfo": "cpp",
         "__mutex_base": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "condition_variable": "cpp"
     }
 }

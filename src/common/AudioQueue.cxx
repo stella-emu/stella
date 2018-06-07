@@ -101,7 +101,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
   if (mySize < capacity) mySize++;
   else {
     myNextFragment = (myNextFragment + 1) % capacity;
-    (cerr << "audio buffer overflow\n").flush();
+    //(cerr << "audio buffer overflow\n").flush();
   }
 
   return newFragment;

@@ -54,6 +54,7 @@
 #include "Version.hxx"
 #include "TIA.hxx"
 #include "DispatchResult.hxx"
+#include "EmulationWorker.hxx"
 
 #include "OSystem.hxx"
 
@@ -637,27 +638,35 @@ float OSystem::frameRate() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-double OSystem::dispatchEmulation(uInt32 cyclesPerSecond)
+double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
 {
   if (!myConsole) return 0.;
 
-  Int64 totalCycles = 0;
-  const Int64 minCycles = myConsole->emulationTiming().minCyclesPerTimeslice();
-  const Int64 maxCycles = myConsole->emulationTiming().maxCyclesPerTimeslice();
+  TIA& tia(myConsole->tia());
+  EmulationTiming& timing(myConsole->emulationTiming());
   DispatchResult dispatchResult;
 
-  do {
-    myConsole->tia().update(dispatchResult, totalCycles > 0 ? minCycles - totalCycles : maxCycles);
+  bool framePending = tia.newFramePending();
+  if (framePending) tia.renderToFrameBuffer();
 
-    totalCycles += dispatchResult.getCycles();
-  } while (totalCycles < minCycles && dispatchResult.getStatus() == DispatchResult::Status::ok);
+  emulationWorker.start(
+    timing.cyclesPerSecond(),
+    timing.maxCyclesPerTimeslice(),
+    timing.minCyclesPerTimeslice(),
+    &dispatchResult,
+    &tia
+  );
+
+  if (framePending) myFrameBuffer->updateInEmulationMode();
+
+  uInt64 totalCycles = emulationWorker.stop();
 
   if (dispatchResult.getStatus() == DispatchResult::Status::debugger) myDebugger->start();
 
   if (dispatchResult.getStatus() == DispatchResult::Status::ok && myEventHandler->frying())
     myConsole->fry();
 
-  return static_cast<double>(totalCycles) / static_cast<double>(cyclesPerSecond);
+  return static_cast<double>(totalCycles) / static_cast<double>(timing.cyclesPerSecond());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -666,6 +675,7 @@ void OSystem::mainLoop()
   // Sleep-based wait: good for CPU, bad for graphical sync
   bool busyWait = mySettings->getString("timing") != "sleep";
   time_point<high_resolution_clock> virtualTime = high_resolution_clock::now();
+  EmulationWorker emulationWorker;
 
   for(;;)
   {
@@ -674,14 +684,9 @@ void OSystem::mainLoop()
 
     double timesliceSeconds;
 
-    if (myEventHandler->state() == EventHandlerState::EMULATION) {
-      timesliceSeconds = dispatchEmulation(myConsole ? myConsole->emulationTiming().cyclesPerSecond() : 1);
-
-      if (myConsole && myConsole->tia().newFramePending()) {
-        myConsole->tia().renderToFrameBuffer();
-        myFrameBuffer->updateInEmulationMode();
-      }
-    } else {
+    if (myEventHandler->state() == EventHandlerState::EMULATION)
+      timesliceSeconds = dispatchEmulation(emulationWorker);
+    else {
       timesliceSeconds = 1. / 30.;
       myFrameBuffer->update();
     }

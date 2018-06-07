@@ -38,6 +38,7 @@ class Settings;
 class Sound;
 class StateManager;
 class VideoDialog;
+class EmulationWorker;
 
 #include "FSNode.hxx"
 #include "FrameBufferConstants.hxx"
@@ -563,7 +564,7 @@ class OSystem
     void validatePath(string& path, const string& setting,
                       const string& defaultpath);
 
-    double dispatchEmulation(uInt32 cyclesPerSecond);
+    double dispatchEmulation(EmulationWorker& emulationWorker);
 
     // Following constructors and assignment operators not supported
     OSystem(const OSystem&) = delete;

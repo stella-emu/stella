@@ -43,13 +43,13 @@ class EmulationWorker
 
   public:
 
-    EmulationWorker(TIA& tia);
+    EmulationWorker();
 
     ~EmulationWorker();
 
-    void start(uInt32 cyclesPerSecond, uInt32 maxCycles, uInt32 minCycles, DispatchResult* dispatchResult);
+    void start(uInt32 cyclesPerSecond, uInt32 maxCycles, uInt32 minCycles, DispatchResult* dispatchResult, TIA* tia);
 
-    void stop();
+    uInt64 stop();
 
   private:
 
@@ -57,6 +57,12 @@ class EmulationWorker
 
     // Passing references into a thread is awkward and requires std::ref -> use pointers here
     void threadMain(std::condition_variable* initializedCondition, std::mutex* initializationMutex);
+
+    void clearSignal();
+
+    void signalQuit();
+
+    void waitForSignalClear();
 
     void handleWakeup(std::unique_lock<std::mutex>& lock);
 
@@ -66,14 +72,20 @@ class EmulationWorker
 
     void dispatchEmulation(std::unique_lock<std::mutex>& lock);
 
+    void fatal(string message);
+
   private:
 
-    TIA& myTia;
+    TIA* myTia;
 
     std::thread myThread;
 
-    std::condition_variable mySignalCondition;
-    std::mutex myMutex;
+    std::condition_variable myWakeupCondition;
+    std::mutex myWakeupMutex;
+
+    std::condition_variable mySignalChangeCondition;
+    std::mutex mySignalChangeMutex;
+
     std::exception_ptr myPendingException;
     Signal myPendingSignal;
     // The initial access to myState is not synchronized -> make this atomic
@@ -84,7 +96,18 @@ class EmulationWorker
     uInt32 myMinCycles;
     DispatchResult* myDispatchResult;
 
+    uInt64 myTotalCycles;
     std::chrono::time_point<std::chrono::high_resolution_clock> myVirtualTime;
+
+  private:
+
+    EmulationWorker(const EmulationWorker&) = delete;
+
+    EmulationWorker(EmulationWorker&&) = delete;
+
+    EmulationWorker& operator=(const EmulationWorker&) = delete;
+
+    EmulationWorker& operator=(EmulationWorker&&) = delete;
 };
 
 #endif // EMULATION_WORKER_HXX
