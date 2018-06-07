@@ -43,6 +43,15 @@
         "stdexcept": "cpp",
         "fstream": "cpp",
         "__locale": "cpp",
-        "__string": "cpp"
+        "__string": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp",
+        "cstddef": "cpp",
+        "exception": "cpp",
+        "initializer_list": "cpp",
+        "new": "cpp",
+        "typeinfo": "cpp",
+        "__mutex_base": "cpp",
+        "mutex": "cpp"
     }
 }
