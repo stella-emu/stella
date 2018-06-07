@@ -556,6 +556,20 @@ shared_ptr<FBSurface> FrameBuffer::allocateSurface(int w, int h, const uInt32* d
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::freeSurfaces()
+{
+  for(auto& s: mySurfaceList)
+    s->free();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::reloadSurfaces()
+{
+  for(auto& s: mySurfaceList)
+    s->reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::resetSurfaces()
 {
   // Free all resources for each surface, then reload them
@@ -564,10 +578,8 @@ void FrameBuffer::resetSurfaces()
   // Any derived FrameBuffer classes that call this method should be
   // aware of these restrictions, and act accordingly
 
-  for(auto& s: mySurfaceList)
-    s->free();
-  for(auto& s: mySurfaceList)
-    s->reload();
+  freeSurfaces();
+  reloadSurfaces();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

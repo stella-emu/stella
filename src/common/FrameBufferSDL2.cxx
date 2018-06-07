@@ -59,6 +59,12 @@ FrameBufferSDL2::~FrameBufferSDL2()
 
   if(myRenderer)
   {
+    // Make sure to free surfaces/textures before destroying the renderer itself
+    // Most platforms are fine with doing this in either order, but it seems
+    // that OpenBSD in particular crashes when attempting to destroy textures
+    // *after* the renderer is already destroyed
+    freeSurfaces();
+
     SDL_DestroyRenderer(myRenderer);
     myRenderer = nullptr;
   }

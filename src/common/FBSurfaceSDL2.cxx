@@ -37,7 +37,10 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
 FBSurfaceSDL2::~FBSurfaceSDL2()
 {
   if(mySurface)
+  {
     SDL_FreeSurface(mySurface);
+    mySurface = nullptr;
+  }
 
   free();
 }
