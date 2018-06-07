@@ -927,6 +927,9 @@
     <ClCompile Include="..\emucore\DispatchResult.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\EmulationWorker.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1893,6 +1896,9 @@
       <Filter>Header Files\audio</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\DispatchResult.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\EmulationWorker.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
