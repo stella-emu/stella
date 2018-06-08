@@ -181,6 +181,9 @@ void TIA::reset()
     frameReset();  // Recalculate the size of the display
   }
 
+  myFrontBufferFrameRate = myFrameBufferFrameRate = 0;
+  myFrontBufferScanlines = myFrameBufferScanlines = 0;
+
   myNewFramePending = false;
 
   // Must be done last, after all other items have reset
@@ -287,6 +290,11 @@ bool TIA::save(Serializer& out) const
     out.putByteArray(myShadowRegisters, 64);
 
     out.putLong(myCyclesAtFrameStart);
+
+    out.putInt(myFrameBufferScanlines);
+    out.putInt(myFrontBufferScanlines);
+    out.putDouble(myFrameBufferFrameRate);
+    out.putDouble(myFrontBufferFrameRate);
   }
   catch(...)
   {
@@ -355,6 +363,11 @@ bool TIA::load(Serializer& in)
     in.getByteArray(myShadowRegisters, 64);
 
     myCyclesAtFrameStart = in.getLong();
+
+    myFrameBufferScanlines = in.getInt();
+    myFrontBufferScanlines = in.getInt();
+    myFrameBufferFrameRate = in.getDouble();
+    myFrontBufferFrameRate = in.getDouble();
   }
   catch(...)
   {
@@ -831,6 +844,9 @@ void TIA::renderToFrameBuffer()
   if (!myNewFramePending) return;
 
   memcpy(myFramebuffer, myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
+
+  myFrameBufferFrameRate = myFrontBufferFrameRate;
+  myFrameBufferScanlines = myFrontBufferScanlines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1181,6 +1197,10 @@ void TIA::onFrameComplete()
     memset(myBackBuffer + 160 * myFrameManager->getY(), 0, missingScanlines * 160);
 
   memcpy(myFrontBuffer, myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+
+  myFrontBufferFrameRate = frameRate();
+  myFrontBufferScanlines = scanlinesLastFrame();
+
   myNewFramePending = true;
 }
 

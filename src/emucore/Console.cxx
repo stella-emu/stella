@@ -937,7 +937,7 @@ void Console::generateColorLossPalette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float Console::getFramerate() const
 {
-  return myTIA->frameRate();
+  return myTIA->frameBufferFrameRate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

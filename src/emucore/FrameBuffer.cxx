@@ -344,7 +344,7 @@ void FrameBuffer::updateInEmulationMode()
   if(myStatsMsg.enabled)
     drawFrameStats();
 
-  myLastScanlines = myOSystem.console().tia().scanlinesLastFrame();
+  myLastScanlines = myOSystem.console().tia().frameBufferScanlinesLastFrame();
   myPausedCount = 0;
 
   // Draw any pending messages
@@ -389,9 +389,9 @@ void FrameBuffer::drawFrameStats()
   myStatsMsg.surface->invalidate();
 
   // draw scanlines
-  color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ?
+  color = myOSystem.console().tia().frameBufferScanlinesLastFrame() != myLastScanlines ?
       uInt32(kDbgColorRed) : myStatsMsg.color;
-  std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
+  std::snprintf(msg, 30, "%3u", myOSystem.console().tia().frameBufferScanlinesLastFrame());
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   xPos += font().getStringWidth(msg);

@@ -251,6 +251,11 @@ class TIA : public Device
     float frameRate() const { return myFrameManager ? myFrameManager->frameRate() : 0; }
 
     /**
+      The same, but for the frame in the frame buffer.
+     */
+    float frameBufferFrameRate() const { return myFrameBufferFrameRate; }
+
+    /**
       Enables/disables color-loss for PAL modes only.
 
       @param enabled  Whether to enable or disable PAL color-loss mode
@@ -294,6 +299,11 @@ class TIA : public Device
       @return The total number of scanlines generated in the last frame.
     */
     uInt32 scanlinesLastFrame() const { return myFrameManager->scanlinesLastFrame(); }
+
+    /**
+      The same, but for the frame in the frame buffer.
+     */
+    uInt32 frameBufferScanlinesLastFrame() const { return myFrameBufferScanlines; }
 
     /**
       Answers the total system cycles from the start of the emulation.
@@ -680,6 +690,11 @@ class TIA : public Device
     // upon completion
     uInt8 myBackBuffer[160 * TIAConstants::frameBufferHeight];
     uInt8 myFrontBuffer[160 * TIAConstants::frameBufferHeight];
+
+    // We snapshot frame statistics when the back buffer is copied to the front buffer
+    // and when the front buffer is copied to the frame buffer
+    uInt32 myFrontBufferScanlines, myFrameBufferScanlines;
+    float myFrontBufferFrameRate, myFrameBufferFrameRate;
 
     // Did we emit a frame?
     bool myNewFramePending;

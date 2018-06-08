@@ -15,6 +15,26 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+/*
+ * This class is the core of stella's real time scheduling. Scheduling is a two step
+ * process that is shared between the main loop in OSystem and this class.
+ *
+ * In emulation mode (as opposed to debugger, menu, etc.), each iteration of the main loop
+ * instructs the emulation worker to start emulation on a separate thread and then proceeds
+ * to render the last frame produced by the TIA (if any). After the frame has been rendered,
+ * the worker is stopped, and the main thread sleeps until the time allotted to the emulation
+ * timeslice (as calculated from the 6507 cycles that have passed) has been reached. After
+ * that, it iterates.
+ *
+ * The emulation worker contains its own microscheduling. After emulating a timeslice, it sleeps
+ * until either the allotted time is up or it has been signalled to stop. If the time is up
+ * without the signal, the worker will emulate another timeslice, etc.
+ *
+ * In combination, the scheduling in the main loop and the microscheduling in the worker
+ * ensure that the emulation continues to run even if rendering blocks, ensuring the real
+ * time scheduling required for cycle exact audio to work.
+ */
+
 #ifndef EMULATION_WORKER_HXX
 #define EMULATION_WORKER_HXX
 
@@ -47,8 +67,14 @@ class EmulationWorker
 
     ~EmulationWorker();
 
+    /**
+      Wake up the worker and start emulation with the specified parameters.
+     */
     void start(uInt32 cyclesPerSecond, uInt32 maxCycles, uInt32 minCycles, DispatchResult* dispatchResult, TIA* tia);
 
+    /**
+      Stop emulation and return the number of 6507 cycles emulated.
+     */
     uInt64 stop();
 
   private:
@@ -58,12 +84,6 @@ class EmulationWorker
     // Passing references into a thread is awkward and requires std::ref -> use pointers here
     void threadMain(std::condition_variable* initializedCondition, std::mutex* initializationMutex);
 
-    void clearSignal();
-
-    void signalQuit();
-
-    void waitForSignalClear();
-
     void handleWakeup(std::unique_lock<std::mutex>& lock);
 
     void handleWakeupFromWaitingForResume(std::unique_lock<std::mutex>& lock);
@@ -71,6 +91,12 @@ class EmulationWorker
     void handleWakeupFromWaitingForStop(std::unique_lock<std::mutex>& lock);
 
     void dispatchEmulation(std::unique_lock<std::mutex>& lock);
+
+    void clearSignal();
+
+    void signalQuit();
+
+    void waitUntilPendingSignalHasProcessed();
 
     void fatal(string message);
 
@@ -80,8 +106,10 @@ class EmulationWorker
 
     std::thread myThread;
 
+    // Condition variable for waking up the thread
     std::condition_variable myWakeupCondition;
-    std::mutex myWakeupMutex;
+    // THe thread is running while this mutex is locked
+    std::mutex myThreadIsRunningMutex;
 
     std::condition_variable mySignalChangeCondition;
     std::mutex mySignalChangeMutex;

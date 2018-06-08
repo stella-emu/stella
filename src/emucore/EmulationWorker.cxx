@@ -34,7 +34,7 @@ EmulationWorker::EmulationWorker() : myPendingSignal(Signal::none), myState(Stat
     &EmulationWorker::threadMain, this, &threadInitialized, &mutex
   );
 
-  // Wait until the thread has acquired myWakeupMutex and moved on
+  // Wait until the thread has acquired myThreadIsRunningMutex and moved on
   while (myState == State::initializing) threadInitialized.wait(lock);
 }
 
@@ -43,7 +43,7 @@ EmulationWorker::~EmulationWorker()
 {
   // This has to run in a block in order to release the mutex before joining
   {
-    std::unique_lock<std::mutex> lock(myWakeupMutex);
+    std::unique_lock<std::mutex> lock(myThreadIsRunningMutex);
 
     if (myState != State::exception) {
       signalQuit();
@@ -71,27 +71,36 @@ void EmulationWorker::handlePossibleException()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EmulationWorker::start(uInt32 cyclesPerSecond, uInt32 maxCycles, uInt32 minCycles, DispatchResult* dispatchResult, TIA* tia)
 {
-  waitForSignalClear();
+  // Wait until any pending signal has been processed
+  waitUntilPendingSignalHasProcessed();
 
-  // Aquire the mutex -> wait until the thread is suspended
-  std::unique_lock<std::mutex> lock(myWakeupMutex);
+  // Run in a block to release the mutex before notifying; this avoids an unecessary
+  // block that will waste a timeslice
+  {
+    // Aquire the mutex -> wait until the thread is suspended
+    std::unique_lock<std::mutex> lock(myThreadIsRunningMutex);
 
-  // Pass on possible exceptions
-  handlePossibleException();
+    // Pass on possible exceptions
+    handlePossibleException();
 
-  // NB: The thread does not suspend execution in State::initialized
-  if (myState != State::waitingForResume)
-    fatal("start called on running or dead worker");
+    // Make sure that we don't overwrite the exit condition.
+    // This case is hypothetical and cannot happen, but handling it does not hurt, either
+    if (myPendingSignal == Signal::quit) return;
 
-  // Store the parameters for emulation
-  myTia = tia;
-  myCyclesPerSecond = cyclesPerSecond;
-  myMaxCycles = maxCycles;
-  myMinCycles = minCycles;
-  myDispatchResult = dispatchResult;
+    // NB: The thread does not suspend execution in State::initialized
+    if (myState != State::waitingForResume)
+      fatal("start called on running or dead worker");
 
-  // Set the signal...
-  myPendingSignal = Signal::resume;
+    // Store the parameters for emulation
+    myTia = tia;
+    myCyclesPerSecond = cyclesPerSecond;
+    myMaxCycles = maxCycles;
+    myMinCycles = minCycles;
+    myDispatchResult = dispatchResult;
+
+    // Raise the signal...
+    myPendingSignal = Signal::resume;
+  }
 
   // ... and wakeup the thread
   myWakeupCondition.notify_one();
@@ -100,29 +109,40 @@ void EmulationWorker::start(uInt32 cyclesPerSecond, uInt32 maxCycles, uInt32 min
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 EmulationWorker::stop()
 {
-  waitForSignalClear();
+  // See EmulationWorker::start above for the gory details
+  waitUntilPendingSignalHasProcessed();
 
-  std::unique_lock<std::mutex> lock(myWakeupMutex);
-  handlePossibleException();
+  uInt64 totalCycles;
+  {
+    std::unique_lock<std::mutex> lock(myThreadIsRunningMutex);
 
-  // If the worker has stopped on its own, we return
-  if (myState == State::waitingForResume) return 0;
+    // Paranoia: make sure that we don't doublecount an emulation timeslice
+    totalCycles = myTotalCycles;
+    myTotalCycles = 0;
 
-  // NB: The thread does not suspend execution in State::initialized or State::running
-  if (myState != State::waitingForStop)
-    fatal("stop called on a dead worker");
+    handlePossibleException();
 
-  myPendingSignal = Signal::stop;
+    if (myPendingSignal == Signal::quit) return totalCycles;
+
+    // If the worker has stopped on its own, we return
+    if (myState == State::waitingForResume) return totalCycles;
+
+    // NB: The thread does not suspend execution in State::initialized or State::running
+    if (myState != State::waitingForStop)
+      fatal("stop called on a dead worker");
+
+    myPendingSignal = Signal::stop;
+  }
 
   myWakeupCondition.notify_one();
 
-  return myTotalCycles;
+  return totalCycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EmulationWorker::threadMain(std::condition_variable* initializedCondition, std::mutex* initializationMutex)
 {
-  std::unique_lock<std::mutex> lock(myWakeupMutex);
+  std::unique_lock<std::mutex> lock(myThreadIsRunningMutex);
 
   try {
     {
@@ -137,11 +157,18 @@ void EmulationWorker::threadMain(std::condition_variable* initializedCondition, 
       initializedCondition->notify_one();
     }
 
+    // Loop until we have an exit condition
     while (myPendingSignal != Signal::quit) handleWakeup(lock);
   }
   catch (...) {
+    // Store away the exception and the state accordingly
     myPendingException = std::current_exception();
     myState = State::exception;
+
+    // Raising the exit condition is consistent and makes shure that the main thread
+    // will not deadlock if an exception is raised while it is waiting for a signal
+    // to be processed.
+    signalQuit();
   }
 }
 
@@ -150,6 +177,7 @@ void EmulationWorker::handleWakeup(std::unique_lock<std::mutex>& lock)
 {
   switch (myState) {
     case State::initialized:
+      // Enter waitingForResume and sleep after initialization
       myState = State::waitingForResume;
       myWakeupCondition.wait(lock);
       break;
@@ -172,13 +200,19 @@ void EmulationWorker::handleWakeupFromWaitingForResume(std::unique_lock<std::mut
 {
   switch (myPendingSignal) {
     case Signal::resume:
+      // Clear the pending signal and notify the main thread
       clearSignal();
+
+      // Reset virtual clock and cycle counter
       myVirtualTime = high_resolution_clock::now();
       myTotalCycles = 0;
+
+      // Enter emulation. This will emulate a timeslice and set the state upon completion.
       dispatchEmulation(lock);
       break;
 
     case Signal::none:
+      // Reenter sleep on spurious wakeups
       myWakeupCondition.wait(lock);
       break;
 
@@ -195,16 +229,21 @@ void EmulationWorker::handleWakeupFromWaitingForStop(std::unique_lock<std::mutex
 {
   switch (myPendingSignal) {
     case Signal::stop:
-      myState = State::waitingForResume;
+      // Clear the pending signal and notify the main thread
       clearSignal();
 
+      // Enter waiting for resume and sleep
+      myState = State::waitingForResume;
       myWakeupCondition.wait(lock);
       break;
 
     case Signal::none:
       if (myVirtualTime <= high_resolution_clock::now())
+        // The time allotted to the emulation timeslice has passed and we haven't been stopped?
+        // -> go for another emulation timeslice
         dispatchEmulation(lock);
       else
+        // Wakeup was spurious, reenter sleep
         myWakeupCondition.wait_until(lock, myVirtualTime);
 
       break;
@@ -220,6 +259,7 @@ void EmulationWorker::handleWakeupFromWaitingForStop(std::unique_lock<std::mutex
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EmulationWorker::dispatchEmulation(std::unique_lock<std::mutex>& lock)
 {
+  // Technically, we could do without State::running, but it is cleaner and might be useful in the future
   myState = State::running;
 
   uInt64 totalCycles = 0;
@@ -234,18 +274,22 @@ void EmulationWorker::dispatchEmulation(std::unique_lock<std::mutex>& lock)
   bool continueEmulating = false;
 
   if (myDispatchResult->getStatus() == DispatchResult::Status::ok) {
-    // If emulation finished successfully, we can go for another round
+    // If emulation finished successfully, we are free to go for another round
     duration<double> timesliceSeconds(static_cast<double>(totalCycles) / static_cast<double>(myCyclesPerSecond));
     myVirtualTime += duration_cast<high_resolution_clock::duration>(timesliceSeconds);
 
-    myState = State::waitingForStop;
+    // If we aren't fast enough to keep up with the emulation, we stop immediatelly to avoid
+    // starving the system for processing time --- emulation will stutter anyway.
     continueEmulating = myVirtualTime > high_resolution_clock::now();
   }
 
   if (continueEmulating) {
+    // If we are free to continue emulating, we sleep until either the timeslice has passed or we
+    // have been signalled from the main thread
     myState = State::waitingForStop;
     myWakeupCondition.wait_until(lock, myVirtualTime);
   } else {
+    // If can't continue, we just stop and wait to be signalled
     myState = State::waitingForResume;
     myWakeupCondition.wait(lock);
   }
@@ -254,8 +298,10 @@ void EmulationWorker::dispatchEmulation(std::unique_lock<std::mutex>& lock)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EmulationWorker::clearSignal()
 {
-  std::unique_lock<std::mutex> lock(mySignalChangeMutex);
-  myPendingSignal = Signal::none;
+  {
+    std::unique_lock<std::mutex> lock(mySignalChangeMutex);
+    myPendingSignal = Signal::none;
+  }
 
   mySignalChangeCondition.notify_one();
 }
@@ -263,17 +309,20 @@ void EmulationWorker::clearSignal()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EmulationWorker::signalQuit()
 {
-  std::unique_lock<std::mutex> lock(mySignalChangeMutex);
-  myPendingSignal = Signal::quit;
+  {
+    std::unique_lock<std::mutex> lock(mySignalChangeMutex);
+    myPendingSignal = Signal::quit;
+  }
 
   mySignalChangeCondition.notify_one();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EmulationWorker::waitForSignalClear()
+void EmulationWorker::waitUntilPendingSignalHasProcessed()
 {
   std::unique_lock<std::mutex> lock(mySignalChangeMutex);
 
+  // White until there is no pending signal (or the exit condition has been raised)
   while (myPendingSignal != Signal::none && myPendingSignal != Signal::quit)
     mySignalChangeCondition.wait(lock);
 }
