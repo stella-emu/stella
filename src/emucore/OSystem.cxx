@@ -646,9 +646,14 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
   EmulationTiming& timing(myConsole->emulationTiming());
   DispatchResult dispatchResult;
 
+  // Check whether we have a frame pending for rendering...
   bool framePending = tia.newFramePending();
+  // ... and copy it to the frame buffer. It is important to do this before
+  // the worker is started to avoid racing.
   if (framePending) tia.renderToFrameBuffer();
 
+  // Start emulation on a dedicated thread. It will do its own scheduling to sync 6507 and real time
+  // and will run until we stop the worker.
   emulationWorker.start(
     timing.cyclesPerSecond(),
     timing.maxCyclesPerTimeslice(),
@@ -657,15 +662,21 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
     &tia
   );
 
+  // Render the frame. This may block, but emulation will continue to run on the worker, so the
+  // audio pipeline is kept fed :)
   if (framePending) myFrameBuffer->updateInEmulationMode();
 
+  // Stop the worker and wait until it has finished
   uInt64 totalCycles = emulationWorker.stop();
 
+  // Break or trap? -> start debugger
   if (dispatchResult.getStatus() == DispatchResult::Status::debugger) myDebugger->start();
 
+  // Handle frying
   if (dispatchResult.getStatus() == DispatchResult::Status::ok && myEventHandler->frying())
     myConsole->fry();
 
+  // Return the 6507 time used in seconds
   return static_cast<double>(totalCycles) / static_cast<double>(timing.cyclesPerSecond());
 }
 
@@ -674,7 +685,9 @@ void OSystem::mainLoop()
 {
   // Sleep-based wait: good for CPU, bad for graphical sync
   bool busyWait = mySettings->getString("timing") != "sleep";
+  // 6507 time
   time_point<high_resolution_clock> virtualTime = high_resolution_clock::now();
+  // The emulation worker
   EmulationWorker emulationWorker;
 
   for(;;)
@@ -685,16 +698,19 @@ void OSystem::mainLoop()
     double timesliceSeconds;
 
     if (myEventHandler->state() == EventHandlerState::EMULATION)
+      // Dispatch emulation and render frame (if applicable)
       timesliceSeconds = dispatchEmulation(emulationWorker);
     else {
+      // Render the GUI with 30 Hz in all other modes
       timesliceSeconds = 1. / 30.;
       myFrameBuffer->update();
     }
 
     duration<double> timeslice(timesliceSeconds);
-
     virtualTime += duration_cast<high_resolution_clock::duration>(timeslice);
     time_point<high_resolution_clock> now = high_resolution_clock::now();
+
+    // We allow 6507 time to lag behind by one frame max
     double maxLag = myConsole
       ? (
         static_cast<double>(myConsole->emulationTiming().cyclesPerFrame()) /
@@ -703,8 +719,10 @@ void OSystem::mainLoop()
       : 0;
 
     if (duration_cast<duration<double>>(now - virtualTime).count() > maxLag)
+      // If 6507 time is lagging behind more than one frame we reset it to real time
       virtualTime = now;
     else if (virtualTime > now) {
+      // Wait until we have caught up with 6507 time
       if (busyWait && myEventHandler->state() == EventHandlerState::EMULATION) {
         while (high_resolution_clock::now() < virtualTime);
       }
