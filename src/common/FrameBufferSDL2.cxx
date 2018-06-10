@@ -59,6 +59,12 @@ FrameBufferSDL2::~FrameBufferSDL2()
 
   if(myRenderer)
   {
+    // Make sure to free surfaces/textures before destroying the renderer itself
+    // Most platforms are fine with doing this in either order, but it seems
+    // that OpenBSD in particular crashes when attempting to destroy textures
+    // *after* the renderer is already destroyed
+    freeSurfaces();
+
     SDL_DestroyRenderer(myRenderer);
     myRenderer = nullptr;
   }
@@ -317,8 +323,8 @@ void FrameBufferSDL2::setWindowIcon()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<FBSurface> FrameBufferSDL2::createSurface(uInt32 w, uInt32 h,
-                                          const uInt32* data) const
+unique_ptr<FBSurface>
+    FrameBufferSDL2::createSurface(uInt32 w, uInt32 h, const uInt32* data) const
 {
   return make_unique<FBSurfaceSDL2>(const_cast<FrameBufferSDL2&>(*this), w, h, data);
 }

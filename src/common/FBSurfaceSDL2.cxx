@@ -28,8 +28,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
     myTexAccess(SDL_TEXTUREACCESS_STREAMING),
     myInterpolate(false),
     myBlendEnabled(false),
-    myBlendAlpha(255),
-    myStaticData(nullptr)
+    myBlendAlpha(255)
 {
   createSurface(width, height, data);
 }
@@ -38,15 +37,12 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
 FBSurfaceSDL2::~FBSurfaceSDL2()
 {
   if(mySurface)
+  {
     SDL_FreeSurface(mySurface);
+    mySurface = nullptr;
+  }
 
   free();
-
-  if(myStaticData)
-  {
-    delete[] myStaticData;
-    myStaticData = nullptr;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -173,7 +169,7 @@ void FBSurfaceSDL2::reload()
 
   // If the data is static, we only upload it once
   if(myTexAccess == SDL_TEXTUREACCESS_STATIC)
-    SDL_UpdateTexture(myTexture, nullptr, myStaticData, myStaticPitch);
+    SDL_UpdateTexture(myTexture, nullptr, myStaticData.get(), myStaticPitch);
 
   // Blending enabled?
   if(myBlendEnabled)
@@ -225,8 +221,8 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
   {
     myTexAccess = SDL_TEXTUREACCESS_STATIC;
     myStaticPitch = mySurface->w * 4;  // we need pitch in 'bytes'
-    myStaticData = new uInt32[mySurface->w * mySurface->h];
-    SDL_memcpy(myStaticData, data, mySurface->w * mySurface->h * 4);
+    myStaticData = make_unique<uInt32[]>(mySurface->w * mySurface->h);
+    SDL_memcpy(myStaticData.get(), data, mySurface->w * mySurface->h * 4);
   }
 
   applyAttributes(false);

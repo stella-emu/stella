@@ -578,7 +578,7 @@ if test "$_libpng" = auto ; then
 #include <png.h>
 int main(void) { return printf("%s\n", PNG_HEADER_VERSION_STRING); }
 EOF
-	cc_check $LDFLAGS $CXXFLAGS $LIBPNG_CFLAGS $LIBPNG_LIBS -lpng && _libpng=yes
+	cc_check $LDFLAGS $CXXFLAGS $LIBPNG_CFLAGS $LIBPNG_LIBS `pkg-config --libs libpng` && _libpng=yes
 fi
 if test "$_libpng" = yes ; then
   _zlib=auto

@@ -24,6 +24,8 @@
   * The Linux builds now use the system-installed PNG and ZLIB libraries
     by default.
 
+  * Fixed configure/build scripts to work natively under OpenBSD.
+
 -Have fun!
 
 

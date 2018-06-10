@@ -349,8 +349,18 @@ class FrameBuffer
       @param h     The requested height of the new surface.
       @param data  If non-null, use the given data values as a static surface
     */
-    virtual unique_ptr<FBSurface> createSurface(uInt32 w, uInt32 h,
-                                      const uInt32* data) const = 0;
+    virtual unique_ptr<FBSurface>
+        createSurface(uInt32 w, uInt32 h, const uInt32* data) const = 0;
+
+    /**
+      Calls 'free()' on all surfaces that the framebuffer knows about.
+    */
+    void freeSurfaces();
+
+    /**
+      Calls 'reload()' on all surfaces that the framebuffer knows about.
+    */
+    void reloadSurfaces();
 
     /**
       Grabs or ungrabs the mouse based on the given boolean value.
@@ -386,8 +396,7 @@ class FrameBuffer
     void drawMessage();
 
     /**
-      Issues a 'free' and 'reload' instruction to all surfaces that the
-      framebuffer knows about.
+      Frees and reloads all surfaces that the framebuffer knows about.
     */
     void resetSurfaces();
 
