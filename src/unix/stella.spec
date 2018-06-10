@@ -1,5 +1,5 @@
 %define name    stella
-%define version 5.1.2
+%define version 5.1.3
 %define rel     1
 
 %define enable_sound 1
@@ -59,7 +59,6 @@ export CXXFLAGS=$RPM_OPT_FLAGS
 %else
   --enable-shared \
 %endif
-  --force-builtin-libpng \
   --docdir=%{_docdir}/stella
 
 %make
@@ -101,6 +100,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* Sun Jun 10 2018 Stephen Anthony <stephena@users.sf.net> 5.1.3-1
+- Version 5.1.3 release
+
 * Sun May 20 2018 Stephen Anthony <stephena@users.sf.net> 5.1.2-1
 - Version 5.1.2 release
 
