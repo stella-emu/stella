@@ -42,8 +42,8 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
     myFire2Event   = Event::JoystickOneFire5;
   }
 
-  updateAnalogPin(Five, minimumResistance);
-  updateAnalogPin(Nine, minimumResistance);
+  updateAnalogPin(Five, MIN_RESISTANCE);
+  updateAnalogPin(Nine, MIN_RESISTANCE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,9 +61,8 @@ void Genesis::update()
   // in that the logic is inverted
   updateAnalogPin(
     Five,
-    (myEvent.get(myFire2Event) == 0) ? minimumResistance : maximumResistance
+    (myEvent.get(myFire2Event) == 0) ? MIN_RESISTANCE : MAX_RESISTANCE
   );
-  updateAnalogPin(Nine, minimumResistance);
 
   // Mouse motion and button events
   if(myControlID > -1)
@@ -94,7 +93,7 @@ void Genesis::update()
     if(myEvent.get(Event::MouseButtonLeftValue))
       myDigitalPinState[Six] = false;
     if(myEvent.get(Event::MouseButtonRightValue))
-      updateAnalogPin(Five, maximumResistance);
+      updateAnalogPin(Five, MAX_RESISTANCE);
   }
 }
 

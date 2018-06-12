@@ -85,9 +85,9 @@ void BoosterWidget::loadConfig()
   myPins[kJFire]->setState(!myController.read(ourPinNo[kJFire]));
 
   myPins[kJBooster]->setState(
-    myController.read(Controller::Five) == Controller::minimumResistance);
+    myController.read(Controller::Five) == Controller::MIN_RESISTANCE);
   myPins[kJTrigger]->setState(
-    myController.read(Controller::Nine) == Controller::minimumResistance);
+    myController.read(Controller::Nine) == Controller::MIN_RESISTANCE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,13 +107,13 @@ void BoosterWidget::handleCommand(
         break;
       case kJBooster:
         myController.set(Controller::Five,
-          myPins[id]->getState() ? Controller::minimumResistance :
-                                   Controller::maximumResistance);
+          myPins[id]->getState() ? Controller::MIN_RESISTANCE :
+                                   Controller::MAX_RESISTANCE);
         break;
       case kJTrigger:
         myController.set(Controller::Nine,
-          myPins[id]->getState() ? Controller::minimumResistance :
-                                   Controller::maximumResistance);
+          myPins[id]->getState() ? Controller::MIN_RESISTANCE :
+                                   Controller::MAX_RESISTANCE);
         break;
     }
   }

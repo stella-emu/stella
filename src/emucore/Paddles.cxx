@@ -28,8 +28,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 {
   // We must start with minimum resistance; see commit
   // 38b452e1a047a0dca38c5bcce7c271d40f76736e for more information
-  updateAnalogPin(Five, minimumResistance);
-  updateAnalogPin(Nine, minimumResistance);
+  updateAnalogPin(Five, MIN_RESISTANCE);
+  updateAnalogPin(Nine, MIN_RESISTANCE);
 
   // The following logic reflects that mapping paddles to different
   // devices can be extremely complex

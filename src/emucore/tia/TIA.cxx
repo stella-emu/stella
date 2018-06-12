@@ -1542,7 +1542,7 @@ void TIA::updatePaddle(uInt8 idx)
   }
 
   myPaddleReaders[idx].update(
-    (resistance == Controller::maximumResistance) ? -1 : (double(resistance) / Paddles::MAX_RESISTANCE),
+    (resistance == Controller::MAX_RESISTANCE) ? -1 : (double(resistance) / Paddles::MAX_RESISTANCE),
     myTimestamp,
     consoleTiming()
   );

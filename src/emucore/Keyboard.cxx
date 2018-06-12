@@ -68,26 +68,26 @@ void Keyboard::write(DigitalPin pin, bool value)
   if(!myDigitalPinState[Four])
   {
     myDigitalPinState[Six] = (myEvent.get(myPoundEvent) == 0);
-    if(myEvent.get(myZeroEvent) != 0) resistanceFive = maximumResistance;
-    if(myEvent.get(myStarEvent) != 0) resistanceNine = maximumResistance;
+    if(myEvent.get(myZeroEvent) != 0) resistanceFive = MAX_RESISTANCE;
+    if(myEvent.get(myStarEvent) != 0) resistanceNine = MAX_RESISTANCE;
   }
   if(!myDigitalPinState[Three])
   {
     myDigitalPinState[Six] = (myEvent.get(myNineEvent) == 0);
-    if(myEvent.get(myEightEvent) != 0) resistanceFive = maximumResistance;
-    if(myEvent.get(mySevenEvent) != 0) resistanceNine = maximumResistance;
+    if(myEvent.get(myEightEvent) != 0) resistanceFive = MAX_RESISTANCE;
+    if(myEvent.get(mySevenEvent) != 0) resistanceNine = MAX_RESISTANCE;
   }
   if(!myDigitalPinState[Two])
   {
     myDigitalPinState[Six] = (myEvent.get(mySixEvent) == 0);
-    if(myEvent.get(myFiveEvent) != 0) resistanceFive = maximumResistance;
-    if(myEvent.get(myFourEvent) != 0) resistanceNine = maximumResistance;
+    if(myEvent.get(myFiveEvent) != 0) resistanceFive = MAX_RESISTANCE;
+    if(myEvent.get(myFourEvent) != 0) resistanceNine = MAX_RESISTANCE;
   }
   if(!myDigitalPinState[One])
   {
     myDigitalPinState[Six] = (myEvent.get(myThreeEvent) == 0);
-    if(myEvent.get(myTwoEvent) != 0) resistanceFive = maximumResistance;
-    if(myEvent.get(myOneEvent) != 0) resistanceNine = maximumResistance;
+    if(myEvent.get(myTwoEvent) != 0) resistanceFive = MAX_RESISTANCE;
+    if(myEvent.get(myOneEvent) != 0) resistanceNine = MAX_RESISTANCE;
   }
 
   if (resistanceFive != read(Five)) {

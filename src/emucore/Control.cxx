@@ -36,7 +36,7 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
   myDigitalPinState[Six]   = true;
 
   myAnalogPinValue[Five] =
-  myAnalogPinValue[Nine] = maximumResistance;
+  myAnalogPinValue[Nine] = MAX_RESISTANCE;
 
   switch(myType)
   {
