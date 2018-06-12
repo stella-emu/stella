@@ -47,6 +47,7 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
     myXAxisValue   = Event::SARightAxis0Value;
     myYAxisValue   = Event::SARightAxis1Value;
   }
+  updateAnalogPin(Five, maximumResistance);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

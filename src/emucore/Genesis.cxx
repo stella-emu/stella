@@ -42,8 +42,8 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
     myFire2Event   = Event::JoystickOneFire5;
   }
 
-  updateAnalogPin(Five, minimumResistance); // TJ: This code is missing for the Booster Grip, so why is it here?
-  updateAnalogPin(Nine, minimumResistance); // TJ: Do we need this?
+  updateAnalogPin(Five, minimumResistance);
+  updateAnalogPin(Nine, minimumResistance);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
