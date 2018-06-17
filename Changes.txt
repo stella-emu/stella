@@ -21,10 +21,23 @@
 
   * UI modernization (new widget look, dialog titles added, dialogs refactored)
 
+  * Changes in 'Game Properties' dialog
+    - 'Default' button now affects only current tab like in all other dialogs.
+    - 'Display' tab changes are now immediate.
+    - Fixed bug when selecting 'Auto-detect' format for 50Hz ROMs
+
   * Fixed bug in autodetecting Genesis controllers.
 
   * The Linux builds now use the system-installed PNG and ZLIB libraries
     by default.
+
+  * Fixed emulator crash when starting SaveKey ROMs from commandline with
+    SaveKey messages enabled
+
+  * Fixed missing TV format update in frame stats dialog when switching display
+    type
+
+  * Updated PAL palette
 
 -Have fun!
 
