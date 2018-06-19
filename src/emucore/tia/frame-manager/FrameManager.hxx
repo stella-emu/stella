@@ -100,9 +100,6 @@ class FrameManager: public AbstractFrameManager {
 
     bool myJitterEnabled;
 
-    Int32 myStableFrameLines;
-    uInt8 myStableFrameHeightCountdown;
-
     JitterEmulation myJitterEmulation;
 
   private:
