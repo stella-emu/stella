@@ -26,11 +26,15 @@ class EmulationTiming {
 
     EmulationTiming(FrameLayout frameLayout = FrameLayout::ntsc);
 
-    void updateFrameLayout(FrameLayout frameLayout);
+    EmulationTiming& updateFrameLayout(FrameLayout frameLayout);
 
-    void updatePlaybackRate(uInt32 playbackRate);
+    EmulationTiming& updatePlaybackRate(uInt32 playbackRate);
 
-    void updatePlaybackPeriod(uInt32 period);
+    EmulationTiming& updatePlaybackPeriod(uInt32 period);
+
+    EmulationTiming& updateAudioQueueExtraFragments(uInt32 audioQueueExtraFragments);
+
+    EmulationTiming& updateAudioQueueHeadroom(uInt32 audioQueueHeadroom);
 
     uInt32 maxCyclesPerTimeslice() const;
 
@@ -59,6 +63,9 @@ class EmulationTiming {
     uInt32 myPlaybackRate;
 
     uInt32 myPlaybackPeriod;
+
+    uInt32 myAudioQueueExtraFragments;
+    uInt32 myAudioQueueHeadroom;
 
   private:
 

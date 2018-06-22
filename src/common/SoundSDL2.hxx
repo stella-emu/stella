@@ -23,6 +23,7 @@
 class OSystem;
 class AudioQueue;
 class EmulationTiming;
+class AudioSettings;
 
 #include "SDL_lib.hxx"
 
@@ -42,7 +43,7 @@ class SoundSDL2 : public Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundSDL2(OSystem& osystem);
+    SoundSDL2(OSystem& osystem, AudioSettings& audioSettings);
 
     /**
       Destructor
@@ -88,7 +89,7 @@ class SoundSDL2 : public Sound
 
       @param percent  The new volume percentage level for the sound device
     */
-    void setVolume(Int32 percent) override;
+    void setVolume(uInt32 percent) override;
 
     /**
       Adjusts the volume of the sound device based on the given direction.
@@ -136,6 +137,8 @@ class SoundSDL2 : public Sound
     bool myUnderrun;
 
     unique_ptr<Resampler> myResampler;
+
+    AudioSettings& myAudioSettings;
 
   private:
     // Callback function invoked by the SDL Audio library when it needs data

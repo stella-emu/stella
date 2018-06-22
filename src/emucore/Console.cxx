@@ -56,6 +56,7 @@
 #include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
 #include "AudioQueue.hxx"
+#include "AudioSettings.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "frame-manager/FrameLayoutDetector.hxx"
 #include "frame-manager/YStartDetector.hxx"
@@ -76,7 +77,7 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
-                 const Properties& props)
+                 const Properties& props, AudioSettings& audioSettings)
   : myOSystem(osystem),
     myEvent(osystem.eventHandler().event()),
     myProperties(props),
@@ -85,7 +86,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myCurrentFormat(0),   // Unknown format @ start,
     myAutodetectedYstart(0),
     myUserPaletteDefined(false),
-    myConsoleTiming(ConsoleTiming::ntsc)
+    myConsoleTiming(ConsoleTiming::ntsc),
+    myAudioSettings(audioSettings)
 {
   // Load user-defined palette for this ROM
   loadUserPalette();
@@ -553,8 +555,15 @@ void Console::initializeAudio()
 {
   myOSystem.sound().close();
 
-  myEmulationTiming.updatePlaybackPeriod(myOSystem.sound().getSampleRate());
-  myEmulationTiming.updatePlaybackPeriod(myOSystem.sound().getFragmentSize());
+  myEmulationTiming
+    .updatePlaybackRate(myOSystem.sound().getSampleRate())
+    .updatePlaybackPeriod(myOSystem.sound().getFragmentSize())
+    .updateAudioQueueExtraFragments(myAudioSettings.bufferSize())
+    .updateAudioQueueHeadroom(myAudioSettings.headroom());
+
+  (cout << "sample rate: " << myOSystem.sound().getSampleRate() << std::endl).flush();
+  (cout << "fragment size: " << myOSystem.sound().getFragmentSize() << std::endl).flush();
+  (cout << "prebuffer fragment count: " << myEmulationTiming.prebufferFragmentCount() << std::endl).flush();
 
   createAudioQueue();
   myTIA->setAudioQueue(myAudioQueue);

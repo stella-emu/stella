@@ -89,7 +89,7 @@ class Sound
 
       @param percent The new volume percentage level for the sound device
     */
-    virtual void setVolume(Int32 percent) = 0;
+    virtual void setVolume(uInt32 percent) = 0;
 
     /**
       Adjusts the volume of the sound device based on the given direction.

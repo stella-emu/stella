@@ -44,6 +44,7 @@ class EmulationWorker;
 #include "FrameBufferConstants.hxx"
 #include "EventHandlerConstants.hxx"
 #include "bspf.hxx"
+#include "AudioSettings.hxx"
 
 /**
   This class provides an interface for accessing operating system specific
@@ -480,6 +481,9 @@ class OSystem
 
     // Indicates whether to stop the main loop
     bool myQuitLoop;
+
+    // Audio settings
+    AudioSettings myAudioSettings;
 
   private:
     string myBaseDir;

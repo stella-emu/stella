@@ -86,7 +86,7 @@ class SoundNull : public Sound
 
       @param percent The new volume percentage level for the sound device
     */
-    void setVolume(Int32 percent) override { }
+    void setVolume(uInt32 percent) override { }
 
     /**
       Adjusts the volume of the sound device based on the given direction.

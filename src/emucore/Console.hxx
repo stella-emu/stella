@@ -28,6 +28,7 @@ class Cartridge;
 class CompuMate;
 class Debugger;
 class AudioQueue;
+class AudioSettings;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -80,7 +81,7 @@ class Console : public Serializable
       @param props    The properties for the cartridge
     */
     Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
-            const Properties& props);
+            const Properties& props, AudioSettings& audioSettings);
 
     /**
       Destructor
@@ -423,8 +424,11 @@ class Console : public Serializable
     ConsoleTiming myConsoleTiming;
 
     // Emulation timing provider. This ties together the timing of the core emulation loop
-    // and the audio synthesis parameters
+    // and the parameters that govern audio synthesis
     EmulationTiming myEmulationTiming;
+
+    // The audio settings
+    AudioSettings& myAudioSettings;
 
     // Table of RGB values for NTSC, PAL and SECAM
     static uInt32 ourNTSCPalette[256];

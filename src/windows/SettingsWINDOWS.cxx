@@ -20,6 +20,4 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SettingsWINDOWS::SettingsWINDOWS(OSystem& osystem)
   : Settings(osystem)
-{
-  setInternal("fragsize", "1024");
-}
+{}

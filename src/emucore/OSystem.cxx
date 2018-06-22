@@ -90,6 +90,7 @@ OSystem::OSystem()
   myBuildInfo = info.str();
 
   mySettings = MediaFactory::createSettings(*this);
+  myAudioSettings = AudioSettings(mySettings.get());
   myRandom = make_unique<Random>(*this);
 }
 
@@ -321,9 +322,9 @@ FBInitStatus OSystem::createFrameBuffer()
 void OSystem::createSound()
 {
   if(!mySound)
-    mySound = MediaFactory::createAudio(*this);
+    mySound = MediaFactory::createAudio(*this, myAudioSettings);
 #ifndef SOUND_SUPPORT
-  mySettings->setValue("sound", false);
+  myAudioSettings.setEnabled(false);
 #endif
 }
 
@@ -549,7 +550,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
 
     // Finally, create the cart with the correct properties
     if(cart)
-      console = make_unique<Console>(*this, cart, props);
+      console = make_unique<Console>(*this, cart, props, myAudioSettings);
   }
 
   return console;

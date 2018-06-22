@@ -50,6 +50,8 @@
   #include "SoundNull.hxx"
 #endif
 
+class AudioSettings;
+
 /**
   This class deals with the different framebuffer/sound/event
   implementations for the various ports of Stella, and always returns a
@@ -108,10 +110,10 @@ class MediaFactory
       return make_unique<FrameBufferSDL2>(osystem);
     }
 
-    static unique_ptr<Sound> createAudio(OSystem& osystem)
+    static unique_ptr<Sound> createAudio(OSystem& osystem, AudioSettings& audioSettings)
     {
     #ifdef SOUND_SUPPORT
-      return make_unique<SoundSDL2>(osystem);
+      return make_unique<SoundSDL2>(osystem, audioSettings);
     #else
       return make_unique<SoundNull>(osystem);
     #endif

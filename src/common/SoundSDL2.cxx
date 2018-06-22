@@ -30,16 +30,18 @@
 #include "SoundSDL2.hxx"
 #include "AudioQueue.hxx"
 #include "EmulationTiming.hxx"
+#include "AudioSettings.hxx"
 #include "audio/SimpleResampler.hxx"
 #include "audio/LanczosResampler.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SoundSDL2::SoundSDL2(OSystem& osystem)
+SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
   : Sound(osystem),
     myIsInitializedFlag(false),
     myVolume(100),
     myVolumeFactor(0xffff),
-    myCurrentFragment(nullptr)
+    myCurrentFragment(nullptr),
+    myAudioSettings(audioSettings)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
@@ -48,10 +50,10 @@ SoundSDL2::SoundSDL2(OSystem& osystem)
   // This fixes a bug most prevalent with ATI video cards in Windows,
   // whereby sound stopped working after the first video change
   SDL_AudioSpec desired;
-  desired.freq   = myOSystem.settings().getInt("freq");
+  desired.freq   = myAudioSettings.sampleRate();
   desired.format = AUDIO_F32SYS;
   desired.channels = 2;
-  desired.samples  = myOSystem.settings().getInt("fragsize");
+  desired.samples  = myAudioSettings.fragmentSize();
   desired.callback = callback;
   desired.userdata = static_cast<void*>(this);
 
@@ -95,7 +97,7 @@ SoundSDL2::~SoundSDL2()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setEnabled(bool state)
 {
-  myOSystem.settings().setValue("sound", state);
+  myAudioSettings.setEnabled(state);
 
   myOSystem.logMessage(state ? "SoundSDL2::setEnabled(true)" :
                                "SoundSDL2::setEnabled(false)", 2);
@@ -110,7 +112,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   myOSystem.logMessage("SoundSDL2::open started ...", 2);
   mute(true);
 
-  if(!myOSystem.settings().getBool("sound"))
+  if(!myAudioSettings.enabled())
   {
     myOSystem.logMessage("Sound disabled\n", 1);
     return;
@@ -121,7 +123,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   myCurrentFragment = nullptr;
 
   // Adjust volume to that defined in settings
-  setVolume(myOSystem.settings().getInt("volume"));
+  setVolume(myAudioSettings.volume());
 
   // Show some info
   ostringstream buf;
@@ -171,11 +173,11 @@ void SoundSDL2::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::setVolume(Int32 percent)
+void SoundSDL2::setVolume(uInt32 percent)
 {
-  if(myIsInitializedFlag && (percent >= 0) && (percent <= 100))
+  if(myIsInitializedFlag && (percent <= 100))
   {
-    myOSystem.settings().setValue("volume", percent);
+    myAudioSettings.setVolume(percent);
     myVolume = percent;
 
     SDL_LockAudio();
@@ -213,7 +215,7 @@ void SoundSDL2::adjustVolume(Int8 direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 SoundSDL2::getFragmentSize() const
 {
-  return myHardwareSpec.size;
+  return myHardwareSpec.samples;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -253,23 +255,25 @@ void SoundSDL2::initResampler()
   Resampler::Format formatTo =
     Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples, myHardwareSpec.channels > 1);
 
-  int quality = myOSystem.settings().getInt("resampling.quality");
 
-  switch (quality) {
-    case 1:
+  switch (myAudioSettings.resamplingQuality()) {
+    case AudioSettings::ResamplingQuality::nearestNeightbour:
       myResampler = make_unique<SimpleResampler>(formatFrom, formatTo, nextFragmentCallback);
       (cerr << "resampling quality 1: using nearest neighbor resampling\n").flush();
       break;
 
-    default:
-    case 2:
+    case AudioSettings::ResamplingQuality::lanczos_2:
       (cerr << "resampling quality 2: using nearest Lanczos resampling, a = 2\n").flush();
       myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 2);
       break;
 
-    case 3:
+    case AudioSettings::ResamplingQuality::lanczos_3:
       (cerr << "resampling quality 3: using nearest Lanczos resampling, a = 3\n").flush();
       myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 3);
+      break;
+
+    default:
+      throw runtime_error("invalid resampling quality");
       break;
   }
 }

@@ -53,6 +53,11 @@
         "typeinfo": "cpp",
         "__mutex_base": "cpp",
         "mutex": "cpp",
-        "condition_variable": "cpp"
+        "condition_variable": "cpp",
+        "*.ins": "cpp",
+        "cstring": "cpp",
+        "iostream": "cpp",
+        "cstdint": "cpp",
+        "ostream": "cpp"
     }
 }

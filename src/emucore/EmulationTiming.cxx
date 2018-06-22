@@ -19,8 +19,6 @@
 
 namespace {
   constexpr uInt32 AUDIO_HALF_FRAMES_PER_FRAGMENT = 1;
-  constexpr uInt32 QUEUE_CAPACITY_EXTRA_FRAGMENTS = 1;
-  constexpr uInt32 PREBUFFER_EXTRA_FRAGMENT_COUNT = 2;
 
   uInt32 discreteDivCeil(uInt32 n, uInt32 d)
   {
@@ -32,25 +30,44 @@ namespace {
 EmulationTiming::EmulationTiming(FrameLayout frameLayout) :
   myFrameLayout(frameLayout),
   myPlaybackRate(44100),
-  myPlaybackPeriod(512)
+  myPlaybackPeriod(512),
+  myAudioQueueExtraFragments(1),
+  myAudioQueueHeadroom(2)
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EmulationTiming::updateFrameLayout(FrameLayout frameLayout)
+EmulationTiming& EmulationTiming::updateFrameLayout(FrameLayout frameLayout)
 {
   myFrameLayout = frameLayout;
+  return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EmulationTiming::updatePlaybackRate(uInt32 playbackRate)
+EmulationTiming& EmulationTiming::updatePlaybackRate(uInt32 playbackRate)
 {
   myPlaybackRate = playbackRate;
+  return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EmulationTiming::updatePlaybackPeriod(uInt32 playbackPeriod)
+EmulationTiming& EmulationTiming::updatePlaybackPeriod(uInt32 playbackPeriod)
 {
   myPlaybackPeriod = playbackPeriod;
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updateAudioQueueExtraFragments(uInt32 audioQueueExtraFragments)
+{
+  myAudioQueueExtraFragments = audioQueueExtraFragments;
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updateAudioQueueHeadroom(uInt32 audioQueueHeadroom)
+{
+  myAudioQueueHeadroom = audioQueueHeadroom;
+  return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,11 +141,11 @@ uInt32 EmulationTiming::audioQueueCapacity() const
 {
   uInt32 minCapacity = discreteDivCeil(maxCyclesPerTimeslice() * audioSampleRate(), audioFragmentSize() * cyclesPerSecond());
 
-  return std::max(prebufferFragmentCount(), minCapacity) + QUEUE_CAPACITY_EXTRA_FRAGMENTS;
+  return std::max(prebufferFragmentCount(), minCapacity) + myAudioQueueExtraFragments;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::prebufferFragmentCount() const
 {
-  return discreteDivCeil(myPlaybackPeriod * audioSampleRate(), audioFragmentSize() * myPlaybackRate) + PREBUFFER_EXTRA_FRAGMENT_COUNT;
+  return discreteDivCeil(myPlaybackPeriod * audioSampleRate(), audioFragmentSize() * myPlaybackRate) + myAudioQueueHeadroom;
 }
