@@ -206,6 +206,10 @@ Console::~Console()
   // Some smart controllers need to be informed that the console is going away
   myLeftControl->close();
   myRightControl->close();
+
+  // Close audio to prevent invalid access to myConsoleTiming from the audio
+  // callback
+  myOSystem.sound().close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
