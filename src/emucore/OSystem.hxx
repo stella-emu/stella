@@ -127,6 +127,11 @@ class OSystem
     bool hasConsole() const;
 
     /**
+      Get the audio settings ovject.
+     */
+    AudioSettings& audioSettings() { return myAudioSettings; }
+
+    /**
       Get the serial port of the system.
 
       @return The serial port object

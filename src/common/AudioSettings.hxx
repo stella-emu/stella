@@ -58,9 +58,12 @@ class AudioSettings
     static constexpr uInt32 DEFAULT_VOLUME                          = 80;
     static constexpr bool DEFAULT_ENABLED                           = true;
 
+    static constexpr int MAX_BUFFER_SIZE = 10;
+    static constexpr int MAX_HEADROOM    = 10;
+
   public:
 
-    AudioSettings() = default;
+    AudioSettings();
 
     AudioSettings(Settings* mySettings);
 
@@ -100,6 +103,8 @@ class AudioSettings
 
     void setEnabled(bool isEnabled);
 
+    void setPersistent(bool isPersistent);
+
   private:
 
     bool customSettings() const;
@@ -117,6 +122,8 @@ class AudioSettings
     uInt32 myPresetBufferSize;
     uInt32 myPresetHeadroom;
     ResamplingQuality myPresetResamplingQuality;
+
+    bool myIsPersistent;
 };
 
 #endif // AUDIO_PARAMTERS_HXX

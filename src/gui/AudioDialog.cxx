@@ -29,6 +29,7 @@
 #include "Settings.hxx"
 #include "Sound.hxx"
 #include "Widget.hxx"
+#include "AudioSettings.hxx"
 
 #include "AudioDialog.hxx"
 
@@ -50,7 +51,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = 35 * fontWidth + HBORDER * 2;
+  _w = 45 * fontWidth + HBORDER * 2;
   _h = 11 * (lineHeight + 4) + VBORDER + _th;
 
   xpos = HBORDER;  ypos = VBORDER + _th;
@@ -71,12 +72,13 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   //
-  VarList::push_back(items, "Minimal Lag", "minlag");
-  VarList::push_back(items, "Balanced", "balanced");
-  VarList::push_back(items, "Max. Quality", "maxquality");
-  VarList::push_back(items, "Custom", "Custom");
+  VarList::push_back(items, "Low quality, medium lag", static_cast<int>(AudioSettings::Preset::lowQualityMediumLag));
+  VarList::push_back(items, "High quality, medium lag", static_cast<int>(AudioSettings::Preset::highQualityMediumLag));
+  VarList::push_back(items, "High quality, low lag", static_cast<int>(AudioSettings::Preset::highQualityLowLag));
+  VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::veryHighQualityVeryLowLag));
+  VarList::push_back(items, "Custom", static_cast<int>(AudioSettings::Preset::custom));
   myModePopup = new PopUpWidget(this, font, xpos, ypos,
-                                   font.getStringWidth("Max. Quality"), lineHeight,
+                                   font.getStringWidth("Ultry quality, minimal lag "), lineHeight,
                                    items, "Mode (*) ", 0, kModeChanged);
   wid.push_back(myModePopup);
   ypos += lineHeight + 4;
@@ -84,35 +86,34 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Fragment size
   items.clear();
-  VarList::push_back(items, "128 bytes", "128");
-  VarList::push_back(items, "256 bytes", "256");
-  VarList::push_back(items, "512 bytes", "512");
-  VarList::push_back(items, "1 KB", "1024");
-  VarList::push_back(items, "2 KB", "2048");
-  VarList::push_back(items, "4 KB", "4096");
+  VarList::push_back(items, "128 bytes", 128);
+  VarList::push_back(items, "256 bytes", 256);
+  VarList::push_back(items, "512 bytes", 512);
+  VarList::push_back(items, "1 KB", 1024);
+  VarList::push_back(items, "2 KB", 2048);
+  VarList::push_back(items, "4 KB", 4096);
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth, lineHeight,
-                                    items, "Sample size (*) ", lwidth);
+                                    items, "Fragment size (*) ", lwidth);
   wid.push_back(myFragsizePopup);
   ypos += lineHeight + 4;
 
   // Output frequency
   items.clear();
-  VarList::push_back(items, "44100 Hz", "44100");
-  VarList::push_back(items, "48000 Hz", "48000");
-  VarList::push_back(items, "96000 Hz", "96000");
+  VarList::push_back(items, "44100 Hz", 44100);
+  VarList::push_back(items, "48000 Hz", 48000);
+  VarList::push_back(items, "96000 Hz", 96000);
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth, lineHeight,
-                                items, "Frequency (*) ", lwidth);
+                                items, "Sample rate (*) ", lwidth);
   wid.push_back(myFreqPopup);
   ypos += lineHeight + 4;
 
-
   // Resampling quality
   items.clear();
-  VarList::push_back(items, "Low", "low");
-  VarList::push_back(items, "Medium", "medium");
-  VarList::push_back(items, "High", "high");
+  VarList::push_back(items, "Low", static_cast<int>(AudioSettings::ResamplingQuality::nearestNeightbour));
+  VarList::push_back(items, "High", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_2));
+  VarList::push_back(items, "Ultra", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3));
   myResamplingPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth, lineHeight,
                                 items, "Resampling quality ", lwidth);
@@ -121,15 +122,15 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Param 1
   myHeadroomSlider = new SliderWidget(this, font, xpos, ypos,
-                                      "Headroom    ");
-  myHeadroomSlider->setMinValue(1); myHeadroomSlider->setMaxValue(10);
+                                      "Headroom    ", 0, 0, 2 * fontWidth);
+  myHeadroomSlider->setMinValue(1); myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
   wid.push_back(myHeadroomSlider);
   ypos += lineHeight + 4;
 
   // Param 2
   myBufferSizeSlider = new SliderWidget(this, font, xpos, ypos,
-                                      "Buffer size ");
-  myBufferSizeSlider->setMinValue(1); myBufferSizeSlider->setMaxValue(10);
+                                      "Buffer size ", 0, 0, 2 * fontWidth);
+  myBufferSizeSlider->setMinValue(1); myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
   wid.push_back(myBufferSizeSlider);
 
   // Add message concerning usage
@@ -148,40 +149,68 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::loadConfig()
 {
+  AudioSettings& audioSettings = instance().audioSettings();
+
   // Volume
-  myVolumeSlider->setValue(instance().settings().getInt("volume"));
-
-  // Fragsize
-  myFragsizePopup->setSelected(instance().settings().getString("fragsize"), "512");
-
-  // Output frequency
-  myFreqPopup->setSelected(instance().settings().getString("freq"), "31400");
+  myVolumeSlider->setValue(audioSettings.volume());
 
   // Enable sound
-  bool b = instance().settings().getBool("sound");
-  mySoundEnableCheckbox->setState(b);
+  mySoundEnableCheckbox->setState(audioSettings.enabled());
+
+  // Preset / mode
+  myModePopup->setSelected(static_cast<int>(audioSettings.preset()));
+
+  updatePresetSettings(instance().audioSettings());
 
   // Make sure that mutually-exclusive items are not enabled at the same time
-  handleSoundEnableChange(b);
+  handleSoundEnableChange(audioSettings.enabled());
+  handleModeChange(audioSettings.enabled());
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioDialog::updatePresetSettings(AudioSettings& audioSettings)
+{
+  // Fragsize
+  myFragsizePopup->setSelected(audioSettings.fragmentSize());
+
+  // Output frequency
+  myFreqPopup->setSelected(audioSettings.sampleRate());
+
+  // Headroom
+  myHeadroomSlider->setValue(audioSettings.headroom());
+
+  // Buffer size
+  myBufferSizeSlider->setValue(audioSettings.bufferSize());
+
+  // Resampling quality
+  myResamplingPopup->setSelected(static_cast<int>(audioSettings.resamplingQuality()));
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::saveConfig()
 {
-  Settings& settings = instance().settings();
+  AudioSettings audioSettings = instance().audioSettings();
 
   // Volume
-  settings.setValue("volume", myVolumeSlider->getValue());
+  audioSettings.setVolume(myVolumeSlider->getValue());
   instance().sound().setVolume(myVolumeSlider->getValue());
 
-  // Fragsize
-  settings.setValue("fragsize", myFragsizePopup->getSelectedTag().toString());
-
-  // Output frequency
-  settings.setValue("freq", myFreqPopup->getSelectedTag().toString());
-
-  // Enable/disable sound (requires a restart to take effect)
+  audioSettings.setEnabled(mySoundEnableCheckbox->getState());
   instance().sound().setEnabled(mySoundEnableCheckbox->getState());
+
+  AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  audioSettings.setPreset(preset);
+
+  if (preset == AudioSettings::Preset::custom) {
+
+  // Fragsize
+    audioSettings.setFragmentSize(myFragsizePopup->getSelectedTag().toInt());
+    audioSettings.setSampleRate(myFreqPopup->getSelectedTag().toInt());
+    audioSettings.setHeadroom(myHeadroomSlider->getValue());
+    audioSettings.setBufferSize(myBufferSizeSlider->getValue());
+    audioSettings.setResamplingQuality(static_cast<AudioSettings::ResamplingQuality>(myResamplingPopup->getSelectedTag().toInt()));
+  }
 
   // Only force a re-initialization when necessary, since it can
   // be a time-consuming operation
@@ -216,7 +245,17 @@ void AudioDialog::handleSoundEnableChange(bool active)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::handleModeChange(bool active)
 {
-  bool userMode = active && "Custom" == myModePopup->getSelectedName();
+  AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+
+  AudioSettings audioSettings = instance().audioSettings();
+  audioSettings.setPersistent(false);
+  audioSettings.setPreset(preset);
+
+  (cout << "Preset: " << static_cast<int>(preset) << std::endl).flush();
+
+  updatePresetSettings(audioSettings);
+
+  bool userMode = active && preset == AudioSettings::Preset::custom;
 
   myFragsizePopup->setEnabled(userMode);
   myFreqPopup->setEnabled(userMode);

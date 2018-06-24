@@ -26,6 +26,7 @@ class SliderWidget;
 class StaticTextWidget;
 class CheckboxWidget;
 class OSystem;
+class AudioSettings;
 
 #include "bspf.hxx"
 
@@ -58,6 +59,10 @@ class AudioDialog : public Dialog
     PopUpWidget*      myResamplingPopup;
     SliderWidget*     myHeadroomSlider;
     SliderWidget*     myBufferSizeSlider;
+
+  private:
+
+    void updatePresetSettings(AudioSettings&);
 
   private:
     // Following constructors and assignment operators not supported
