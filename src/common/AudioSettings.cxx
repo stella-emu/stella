@@ -172,24 +172,24 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
     case Preset::lowQualityMediumLag:
       myPresetSampleRate = 44100;
       myPresetFragmentSize = 1024;
-      myPresetBufferSize = 4;
-      myPresetHeadroom = 3;
+      myPresetBufferSize = 6;
+      myPresetHeadroom = 5;
       myPresetResamplingQuality = ResamplingQuality::nearestNeightbour;
       break;
 
     case Preset::highQualityMediumLag:
       myPresetSampleRate = 44100;
       myPresetFragmentSize = 1024;
-      myPresetBufferSize = 4;
-      myPresetHeadroom = 3;
+      myPresetBufferSize = 6;
+      myPresetHeadroom = 5;
       myPresetResamplingQuality = ResamplingQuality::lanczos_2;
       break;
 
     case Preset::highQualityLowLag:
       myPresetSampleRate = 48000;
       myPresetFragmentSize = 512;
-      myPresetBufferSize = 2;
-      myPresetHeadroom = 1;
+      myPresetBufferSize = 3;
+      myPresetHeadroom = 2;
       myPresetResamplingQuality = ResamplingQuality::lanczos_2;
       break;
 
