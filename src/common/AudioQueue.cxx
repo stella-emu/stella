@@ -21,10 +21,9 @@ using std::mutex;
 using std::lock_guard;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, uInt16 sampleRate)
+AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
   : myFragmentSize(fragmentSize),
     myIsStereo(isStereo),
-    mySampleRate(sampleRate),
     myFragmentQueue(capacity),
     myAllFragments(capacity + 2),
     mySize(0),
@@ -71,12 +70,6 @@ uInt32 AudioQueue::fragmentSize() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 AudioQueue::sampleRate() const
-{
-  return mySampleRate;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int16* AudioQueue::enqueue(Int16* fragment)
 {
   lock_guard<mutex> guard(myMutex);
@@ -101,7 +94,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
   if (mySize < capacity) mySize++;
   else {
     myNextFragment = (myNextFragment + 1) % capacity;
-    (cerr << "audio buffer overflow\n").flush();
+    if (!myIgnoreOverflows) (cerr << "audio buffer overflow\n").flush();
   }
 
   return newFragment;
@@ -140,4 +133,10 @@ void AudioQueue::closeSink(Int16* fragment)
 
   if (!myFirstFragmentForDequeue)
     myFirstFragmentForDequeue = fragment;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioQueue::ignoreOverflows(bool shouldIgnoreOverflows)
+{
+  myIgnoreOverflows = shouldIgnoreOverflows;
 }

@@ -98,6 +98,7 @@ SoundSDL2::~SoundSDL2()
 void SoundSDL2::setEnabled(bool state)
 {
   myAudioSettings.setEnabled(state);
+  if (myAudioQueue) myAudioQueue->ignoreOverflows(!state);
 
   myOSystem.logMessage(state ? "SoundSDL2::setEnabled(true)" :
                                "SoundSDL2::setEnabled(false)", 2);
@@ -112,6 +113,7 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   myOSystem.logMessage("SoundSDL2::open started ...", 2);
   mute(true);
 
+  audioQueue->ignoreOverflows(!myAudioSettings.enabled());
   if(!myAudioSettings.enabled())
   {
     myOSystem.logMessage("Sound disabled\n", 1);
@@ -251,7 +253,7 @@ void SoundSDL2::initResampler()
   };
 
   Resampler::Format formatFrom =
-    Resampler::Format(myAudioQueue->sampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
+    Resampler::Format(myEmulationTiming->audioSampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
   Resampler::Format formatTo =
     Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples, myHardwareSpec.channels > 1);
 

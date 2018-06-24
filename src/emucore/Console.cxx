@@ -725,8 +725,7 @@ void Console::createAudioQueue()
   myAudioQueue = make_shared<AudioQueue>(
     myEmulationTiming.audioFragmentSize(),
     myEmulationTiming.audioQueueCapacity(),
-    myProperties.get(Cartridge_Sound) == "STEREO",
-    myEmulationTiming.audioSampleRate()
+    myProperties.get(Cartridge_Sound) == "STEREO"
   );
 }
 

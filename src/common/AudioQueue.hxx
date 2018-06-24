@@ -45,7 +45,7 @@ class AudioQueue
        @param isStereo      Whether samples are stereo or mono.
        @param sampleRate    The sample rate. This is not used, but can be queried.
      */
-    AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, uInt16 sampleRate);
+    AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo);
 
     /**
        Capacity getter.
@@ -66,11 +66,6 @@ class AudioQueue
       Fragment size getter.
      */
     uInt32 fragmentSize() const;
-
-    /**
-      Sample rate getter.
-     */
-    uInt16 sampleRate() const;
 
     /**
       Enqueue a new fragment and get a new fragmen to fill.
@@ -96,6 +91,11 @@ class AudioQueue
      */
     void closeSink(Int16* fragment);
 
+    /**
+      Should we ignore overflows?
+     */
+    void ignoreOverflows(bool shouldIgnoreOverflows);
+
   private:
 
     // The size of an individual fragment (in stereo / mono samples)
@@ -103,9 +103,6 @@ class AudioQueue
 
     // Are we using stereo samples?
     bool myIsStereo;
-
-    // The sample rate
-    uInt16 mySampleRate;
 
     // The fragment queue
     vector<Int16*> myFragmentQueue;
@@ -129,6 +126,9 @@ class AudioQueue
     Int16* myFirstFragmentForEnqueue;
     // The first (empty) dequeue call replaces the returned fragment with this fragment.
     Int16* myFirstFragmentForDequeue;
+
+    // Log overflows?
+    bool myIgnoreOverflows;
 
   private:
 
