@@ -101,7 +101,7 @@ void LauncherFilterDialog::parseExts(StringList& list, const string& type)
   // Assume the list is empty before this method is called
   if(type == "allroms")
   {
-    for(uInt32 i = 0; i < 5; ++i)
+    for(uInt32 i = 0; i < 6; ++i)
       list.push_back(ourRomTypes[1][i]);
   }
   else if(type != "allfiles")
@@ -114,7 +114,7 @@ void LauncherFilterDialog::parseExts(StringList& list, const string& type)
 
     while(buf >> ext)
     {
-      for(uInt32 i = 0; i < 5; ++i)
+      for(uInt32 i = 0; i < 6; ++i)
       {
         if(ourRomTypes[1][i] == ext)
         {
@@ -151,7 +151,7 @@ bool LauncherFilterDialog::isValidRomName(const string& name, string& ext)
   {
     const char* e = name.c_str() + idx + 1;
 
-    for(uInt32 i = 0; i < 5; ++i)
+    for(uInt32 i = 0; i < 6; ++i)
     {
       if(BSPF_equalsIgnoreCase(e, ourRomTypes[1][i]))
       {
@@ -178,7 +178,7 @@ void LauncherFilterDialog::saveConfig()
   else
   {
     ostringstream buf;
-    for(uInt32 i = 0; i < 5; ++i)
+    for(uInt32 i = 0; i < 6; ++i)
       if(myRomType[i]->getState())
         buf << ourRomTypes[1][i] << ":";
 
@@ -205,7 +205,7 @@ void LauncherFilterDialog::setDefaults()
 void LauncherFilterDialog::handleFileTypeChange(const string& type)
 {
   bool enable = (type != "allfiles" && type != "allroms");
-  for(uInt32 i = 0; i < 5; ++i)
+  for(uInt32 i = 0; i < 6; ++i)
     myRomType[i]->setEnabled(enable);
 
   if(enable)
@@ -220,7 +220,7 @@ void LauncherFilterDialog::handleFileTypeChange(const string& type)
 
     while(buf >> ext)
     {
-      for(uInt32 i = 0; i < 5; ++i)
+      for(uInt32 i = 0; i < 6; ++i)
       {
         if(ourRomTypes[1][i] == ext)
         {
@@ -260,7 +260,7 @@ void LauncherFilterDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* LauncherFilterDialog::ourRomTypes[2][5] = {
-  { ".a26", ".bin", ".rom", ".zip", ".gz" },
-  { "a26", "bin", "rom", "zip", "gz" }
+const char* LauncherFilterDialog::ourRomTypes[2][6] = {
+  { ".a26", ".bin", ".rom", ".zip", ".gz", ".txt" },
+  { "a26", "bin", "rom", "zip", "gz", "txt" }
 };

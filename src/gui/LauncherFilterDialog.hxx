@@ -70,14 +70,14 @@ class LauncherFilterDialog : public Dialog, public CommandSender
 
   private:
     PopUpWidget*    myFileType;
-    CheckboxWidget* myRomType[5];
+    CheckboxWidget* myRomType[6];
 
     enum {
       kFileTypeChanged = 'LFDc'
     };
 
     // Holds static strings representing ROM types
-    static const char* ourRomTypes[2][5];
+    static const char* ourRomTypes[2][6];
 };
 
 #endif

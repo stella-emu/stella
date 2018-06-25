@@ -33,6 +33,7 @@
 #include "GameList.hxx"
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
+#include "LicenseDialog.hxx"
 #include "GlobalPropsDialog.hxx"
 #include "LauncherFilterDialog.hxx"
 #include "MessageBox.hxx"
@@ -47,7 +48,6 @@
 #include "unzip.h"
 
 #include "LauncherDialog.hxx"
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
@@ -84,9 +84,9 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   lwidth2 = font.getStringWidth("XXXX items found");
   xpos = _w - lwidth2 - 10;
-  myRomCount = new StaticTextWidget(this, font, xpos, ypos,
-                                    lwidth2, fontHeight,
-                                    "", kTextAlignRight);
+  //myRomCount = new StaticTextWidget(this, font, xpos, ypos,
+  //                                  lwidth2, fontHeight,
+  //                                  "", kTextAlignRight);
 
   // Add filter that can narrow the results shown in the listing
   // It has to fit between both labels
@@ -94,8 +94,9 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   {
     fwidth = BSPF_min(15 * fontWidth, xpos - 20 - lwidth);
     xpos -= fwidth + 5;
-    myPattern = new EditTextWidget(this, font, xpos, ypos,
-                                   fwidth, fontHeight, "");
+    //myPattern = new EditTextWidget(this, font, xpos, ypos,
+    //                               fwidth, fontHeight, "");
+    myPattern = NULL;
   }
 
   // Add list with game titles
@@ -138,22 +139,27 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add four buttons at the bottom
   xpos = 10;  ypos += myDir->getHeight() + 4;
+
+  lwidth = font.getStringWidth("HYPERKIN");
+  myLogo = new StaticTextWidget(this, font, (1080) / 4, ypos, lwidth, fontHeight, "HYPERKIN", kTextAlignCenter);
+  myLogo->setTextColor(kTextColorHi);
+
 #ifndef MAC_OSX
-  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Select", kStartCmd);
-  wid.push_back(myStartButton);
+//  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+//                                  "Select", kStartCmd);
+//  wid.push_back(myStartButton);
     xpos += bwidth + 8;
-  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                      "Go Up", kPrevDirCmd);
-  wid.push_back(myPrevDirButton);
+//  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+//                                      "Go Up", kPrevDirCmd);
+//  wid.push_back(myPrevDirButton);
     xpos += bwidth + 8;
-  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd);
-  wid.push_back(myOptionsButton);
+//  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+//                                     "Options", kOptionsCmd);
+//  wid.push_back(myOptionsButton);
     xpos += bwidth + 8;
-  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Quit", kQuitCmd);
-  wid.push_back(myQuitButton);
+//  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+//                                  "Quit", kQuitCmd);
+//  wid.push_back(myQuitButton);
     xpos += bwidth + 8;
 #else
   myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
@@ -177,6 +183,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Create an options dialog, similar to the in-game one
   myOptions = new OptionsDialog(osystem, parent, this, w, h, true);  // not in game mode
+  myLicense = new LicenseDialog(osystem, parent, font, w, h);  // not in game mode
 
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
@@ -206,6 +213,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 LauncherDialog::~LauncherDialog()
 {
   delete myOptions;
+  delete myLicense;
   delete myGameList;
   delete myMenu;
   delete myGlobalProps;
@@ -261,7 +269,7 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list)
   if(myList->getList().isEmpty())
   {
-    myPrevDirButton->setEnabled(false);
+    //myPrevDirButton->setEnabled(false);
     myCurrentNode = FilesystemNode(romdir == "" ? "~" : romdir);
     if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))
       myCurrentNode = FilesystemNode("~");
@@ -277,10 +285,12 @@ void LauncherDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::enableButtons(bool enable)
 {
+#if 0
   myStartButton->setEnabled(enable);
   myPrevDirButton->setEnabled(enable);
   myOptionsButton->setEnabled(enable);
   myQuitButton->setEnabled(enable);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -293,7 +303,7 @@ void LauncherDialog::updateListing(const string& nameToSelect)
   loadDirListing();
 
   // Only hilite the 'up' button if there's a parent directory
-  myPrevDirButton->setEnabled(myCurrentNode.hasParent());
+  //myPrevDirButton->setEnabled(myCurrentNode.hasParent());
 
   // Show current directory
   myDir->setLabel(myCurrentNode.getRelativePath());
@@ -308,7 +318,7 @@ void LauncherDialog::updateListing(const string& nameToSelect)
   // Indicate how many files were found
   ostringstream buf;
   buf << (myGameList->size() - 1) << " items found";
-  myRomCount->setLabel(buf.str());
+  //myRomCount->setLabel(buf.str());
 
   // Restore last selection
   int selected = -1;
@@ -417,6 +427,8 @@ void LauncherDialog::loadDirListing()
       // Skip over those names we've filtered out
       if(!LauncherFilterDialog::isValidRomName(name, myRomExts))
         continue;
+      if(name == "script.bin")
+	continue;
     }
 
     // Skip over files that don't match the pattern in the 'pattern' textbox
@@ -610,6 +622,17 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         int numFilesInArchive = filesInArchive(rom);
         bool isArchive = !myGameList->isDir(item) &&
                          BSPF_endsWithIgnoreCase(rom, ".zip");
+
+	string::size_type idx = rom.find_last_of('.');
+	if(idx != string::npos){
+		const char* e = rom.c_str() + idx + 1;
+		if(BSPF_equalsIgnoreCase(e, "txt")){
+			myLicense->setFilename(rom);
+			parent().addDialog(myLicense);
+			break;
+		}
+	}
+
 
         // Directory's should be selected (ie, enter them and redisplay)
         // Archives should be entered if they contain more than 1 file

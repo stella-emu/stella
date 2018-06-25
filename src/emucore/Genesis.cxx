@@ -57,7 +57,7 @@ Genesis::~Genesis()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Genesis::update()
-{
+{printf("stanley Genesis::update()\n");
   // Digital events (from keyboard or joystick hats & buttons)
   myDigitalPinState[One]   = (myEvent.get(myUpEvent) == 0);
   myDigitalPinState[Two]   = (myEvent.get(myDownEvent) == 0);

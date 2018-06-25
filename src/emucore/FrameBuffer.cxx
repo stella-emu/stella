@@ -743,6 +743,22 @@ void FrameBuffer::setFullscreen(bool enable)
   // Do a mode change to the 'current' mode by not passing a '+1' or '-1'
   // to changeVidMode()
   changeVidMode(0);
+#else
+  myOSystem->settings().setString("fullscreen", enable ? "1" : "0");
+  VideoMode vidmode = myCurrentModeList->current(myOSystem->settings(), fullScreen());
+  cout << "enable=" << (enable ? "1" : "0") << "fullscreen=" << fullScreen() << endl;
+  setVidMode(vidmode);
+  centerAppWindow(vidmode);
+
+  myImageRect.setWidth(vidmode.image_w);
+  myImageRect.setHeight(vidmode.image_h);
+  myImageRect.moveTo(vidmode.image_x, vidmode.image_y);
+
+  myScreenRect.setWidth(vidmode.screen_w);
+  myScreenRect.setHeight(vidmode.screen_h);
+  setCursorState();
+  refresh();
+  //myOSystem->saveConfig();
 #endif
 }
 
@@ -849,7 +865,10 @@ bool FrameBuffer::fullScreen() const
 #ifdef WINDOWED_SUPPORT
   return mySDLFlags & SDL_FULLSCREEN;
 #else
-  return true;
+  if(myOSystem->settings().getString("fullscreen") == "1")
+	return true;
+  else
+	return false;
 #endif
 }
 

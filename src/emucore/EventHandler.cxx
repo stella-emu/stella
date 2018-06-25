@@ -79,6 +79,7 @@ EventHandler::EventHandler(OSystem* osystem)
   for(int i = 0; i < kComboSize; ++i)
     for(int j = 0; j < kEventsPerCombo; ++j)
       myComboTable[i][j] = Event::NoType;
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -653,6 +654,7 @@ void EventHandler::poll(uInt64 time)
 
       case SDL_MOUSEMOTION:
         // Determine which mode we're in, then send the event to the appropriate place
+	printf("SDL_MOUSEMOTION x=%d,y=%d\n", event.motion.xrel, event.motion.yrel);
         if(myState == S_EMULATE)
         {
           if(!mySkipMouseMotion)
@@ -806,6 +808,7 @@ void EventHandler::poll(uInt64 time)
         int axis  = event.jaxis.axis;
         int value = event.jaxis.value;
 
+
         switch(type)
         {
           case StellaJoystick::JT_REGULAR:
@@ -814,26 +817,30 @@ void EventHandler::poll(uInt64 time)
               // Every axis event has two associated values, negative and positive
               Event::Type eventAxisNeg = joy.axisTable[axis][0][kEmulationMode];
               Event::Type eventAxisPos = joy.axisTable[axis][1][kEmulationMode];
-
               // Check for analog events, which are handled differently
               // We'll pass them off as Stelladaptor events, and let the controllers
               // handle it
               switch((int)eventAxisNeg)
               {
                 case Event::PaddleZeroAnalog:
+		printf("event is zero analog\n");
                   myEvent.set(Event::SALeftAxis0Value, value);
                   break;
                 case Event::PaddleOneAnalog:
+		printf("event is one analog\n");
                   myEvent.set(Event::SALeftAxis1Value, value);
                   break;
                 case Event::PaddleTwoAnalog:
+		printf("event is two analog\n");
                   myEvent.set(Event::SARightAxis0Value, value);
                   break;
                 case Event::PaddleThreeAnalog:
+		printf("event is three analog\n");
                   myEvent.set(Event::SARightAxis1Value, value);
                   break;
                 default:
                 {
+		printf("event is digital\n");
                   // Otherwise, we know the event is digital
                   if(value > Joystick::deadzone())
                     handleEvent(eventAxisPos, 1);
@@ -858,6 +865,7 @@ void EventHandler::poll(uInt64 time)
                   break;
                 }
               }
+//		}
             }
             else if(myOverlay != NULL)
             {
@@ -887,6 +895,7 @@ void EventHandler::poll(uInt64 time)
           // they can never be remapped
           case StellaJoystick::JT_STELLADAPTOR_LEFT:
           case StellaJoystick::JT_STELLADAPTOR_RIGHT:
+		printf("JT_STELLADAPTOR_LEFT/RIGHT\n");
             // The 'type-2' here refers to the fact that 'StellaJoystick::JT_STELLADAPTOR_LEFT'
             // and 'StellaJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
             // enum; subtracting two gives us Controller 0 and 1
@@ -895,6 +904,7 @@ void EventHandler::poll(uInt64 time)
             break;  // Stelladaptor axis
           case StellaJoystick::JT_2600DAPTOR_LEFT:
           case StellaJoystick::JT_2600DAPTOR_RIGHT:
+		printf("JT_2600DAPTOR_LEFT/RIGHT\n");
             // The 'type-4' here refers to the fact that 'StellaJoystick::JT_2600DAPTOR_LEFT'
             // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
             // enum; subtracting four gives us Controller 0 and 1

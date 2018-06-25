@@ -49,9 +49,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_vbo", "true");
 
   // Framebuffer-related options
-  setInternal("tia_filter", "zoom2x");
+  setInternal("tia_filter", "zoom3x");
   setInternal("fullscreen", "0");
-  setInternal("fullres", "auto");
+  setInternal("fullres", "1280x720");
   setInternal("center", "false");
   setInternal("grabmouse", "true");
   setInternal("palette", "standard");
@@ -96,19 +96,19 @@ Settings::Settings(OSystem* osystem)
   setInternal("ctrlcombo", "true");
 
   // Snapshot options
-  setInternal("snapdir", "");
+  setInternal("snapdir", "/mnt");
   setInternal("sssingle", "false");
   setInternal("ss1x", "false");
   setInternal("ssinterval", "2");
 
   // Config files and paths
-  setInternal("romdir", "");
-  setInternal("statedir", "");
-  setInternal("cheatfile", "");
-  setInternal("palettefile", "");
-  setInternal("propsfile", "");
-  setInternal("eepromdir", "");
-  setInternal("cfgdir", "");
+  setInternal("romdir", "/mnt");
+  setInternal("statedir", "/mnt/stella/statedir");
+  setInternal("cheatfile", "/mnt/stella/stella.cht");
+  setInternal("palettefile", "/mnt/stella/stella.pal");
+  setInternal("propsfile", "/mnt/stella/stella.pro");
+  setInternal("eepromdir", "/mnt/stella/");
+  setInternal("cfgdir", "/mnt/stella/cfg/");
 
   // ROM browser options
   setInternal("exitlauncher", "false");
@@ -470,6 +470,7 @@ void Settings::usage()
     << endl << flush;
 }
 
+#include <unistd.h>
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
@@ -484,9 +485,8 @@ void Settings::saveConfig()
       break;
     }
   }
-
-  if(!settingsChanged)
-    return;
+  //if(!settingsChanged)
+  //  return;
 
   ofstream out(myOSystem->configFile().c_str());
   if(!out || !out.is_open())
@@ -516,8 +516,9 @@ void Settings::saveConfig()
     out << myInternalSettings[i].key << " = " <<
            myInternalSettings[i].value << endl;
   }
-
+  out.flush();
   out.close();
+  system("/bin/fsync /mnt/stella/stellarc&");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

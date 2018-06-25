@@ -32,6 +32,7 @@ class DialogContainer;
 class GameList;
 class BrowserDialog;
 class OptionsDialog;
+class LicenseDialog;
 class GlobalPropsDialog;
 class LauncherFilterDialog;
 class MessageBox;
@@ -107,11 +108,13 @@ class LauncherDialog : public Dialog
     StringListWidget* myList;
     StaticTextWidget* myDirLabel;
     StaticTextWidget* myDir;
+    StaticTextWidget* myLogo;
     StaticTextWidget* myRomCount;
     EditTextWidget*   myPattern;
     GameList*         myGameList;
 
     OptionsDialog* myOptions;
+    LicenseDialog* myLicense;
     RomInfoWidget* myRomInfoWidget;
 
     ContextMenu*          myMenu;

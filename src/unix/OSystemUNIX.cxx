@@ -40,8 +40,8 @@
 OSystemUNIX::OSystemUNIX()
   : OSystem()
 {
-  setBaseDir("~/.stella");
-  setConfigFile("~/.stella/stellarc");
+  setBaseDir("/mnt/stella");
+  setConfigFile("/mnt/stella/stellarc");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -45,6 +45,12 @@ FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::~FrameBufferSoft()
 {
+
+  SDL_LockSurface(myScreen);
+  SDL_FillRect(myScreen, NULL, 0);
+  SDL_UnlockSurface(myScreen);
+  SDL_UpdateRect(myScreen, 0, 0, 0, 0);
+  myOSystem->logMessage("FrameBufferSoft clear screen done", 0);
   delete myRectList;
 }
 

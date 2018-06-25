@@ -384,7 +384,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myCloneCustom->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
-  myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
+//  myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
   myCenterCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #if !(defined(BSPF_WIN32) || (defined(BSPF_UNIX) && defined(HAVE_X11)))

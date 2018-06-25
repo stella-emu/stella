@@ -179,8 +179,10 @@ void StateManager::loadState(int slot)
     if(slot < 0) slot = myCurrentSlot;
 
     ostringstream buf;
+    string name = myOSystem->console().properties().get(Cartridge_Name).substr(0,8);
+    replace(name.begin(), name.end(), ' ', '_');
     buf << myOSystem->stateDir()
-        << myOSystem->console().properties().get(Cartridge_Name)
+        << name
         << ".st" << slot;
 
     // Make sure the file can be opened in read-only mode
@@ -223,8 +225,10 @@ void StateManager::saveState(int slot)
     if(slot < 0) slot = myCurrentSlot;
 
     ostringstream buf;
+    string name = myOSystem->console().properties().get(Cartridge_Name).substr(0,8);
+    replace(name.begin(), name.end(), ' ', '_');
     buf << myOSystem->stateDir()
-        << myOSystem->console().properties().get(Cartridge_Name)
+        << name
         << ".st" << slot;
 
     // Make sure the file can be opened for writing
@@ -232,7 +236,7 @@ void StateManager::saveState(int slot)
     if(!out.isValid())
     {
       buf.str("");
-      buf << "Can't open/save to state file " << slot;
+      buf << "Can't open/save to state file " << " " << myOSystem->stateDir() << name << ".st" << slot;
       myOSystem->frameBuffer().showMessage(buf.str());
       return;
     }
