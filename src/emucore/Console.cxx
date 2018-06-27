@@ -563,7 +563,8 @@ void Console::initializeAudio()
     .updatePlaybackRate(myOSystem.sound().getSampleRate())
     .updatePlaybackPeriod(myOSystem.sound().getFragmentSize())
     .updateAudioQueueExtraFragments(myAudioSettings.bufferSize())
-    .updateAudioQueueHeadroom(myAudioSettings.headroom());
+    .updateAudioQueueHeadroom(myAudioSettings.headroom())
+    .updateSpeedFactor(myOSystem.settings().getFloat("speed"));
 
   (cout << "sample rate: " << myOSystem.sound().getSampleRate() << std::endl).flush();
   (cout << "fragment size: " << myOSystem.sound().getFragmentSize() << std::endl).flush();

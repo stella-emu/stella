@@ -35,7 +35,7 @@ Settings::Settings(OSystem& osystem)
 {
   // Video-related options
   setInternal("video", "");
-  setInternal("framerate", "0");
+  setInternal("speed", "1.0");
   setInternal("vsync", "true");
   setInternal("fullscreen", "false");
   setInternal("center", "false");
@@ -303,6 +303,10 @@ void Settings::validate()
 {
   string s;
   int i;
+  float f;
+
+  f = getFloat("speed");
+  if (f <= 0) setInternal("speed", "1.0");
 
   s = getString("timing");
   if(s != "sleep" && s != "busy")  setInternal("timing", "sleep");
@@ -439,7 +443,7 @@ void Settings::usage() const
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
     << "                 user>\n"
-    << "  -framerate    <number>       Display the given number of frames per second (0 to auto-calculate)\n"
+    << "  -speed        <number>       Run emulation at the given speed\n"
     << "  -timing       <sleep|busy>   Use the given type of wait between frames\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << endl

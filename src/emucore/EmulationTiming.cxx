@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cmath>
+
 #include "EmulationTiming.hxx"
 
 namespace {
@@ -32,13 +34,18 @@ EmulationTiming::EmulationTiming(FrameLayout frameLayout) :
   myPlaybackRate(44100),
   myPlaybackPeriod(512),
   myAudioQueueExtraFragments(1),
-  myAudioQueueHeadroom(2)
-{}
+  myAudioQueueHeadroom(2),
+  mySpeedFactor(1)
+{
+  recalculate();
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EmulationTiming& EmulationTiming::updateFrameLayout(FrameLayout frameLayout)
 {
   myFrameLayout = frameLayout;
+  recalculate();
+
   return *this;
 }
 
@@ -46,6 +53,8 @@ EmulationTiming& EmulationTiming::updateFrameLayout(FrameLayout frameLayout)
 EmulationTiming& EmulationTiming::updatePlaybackRate(uInt32 playbackRate)
 {
   myPlaybackRate = playbackRate;
+  recalculate();
+
   return *this;
 }
 
@@ -53,6 +62,8 @@ EmulationTiming& EmulationTiming::updatePlaybackRate(uInt32 playbackRate)
 EmulationTiming& EmulationTiming::updatePlaybackPeriod(uInt32 playbackPeriod)
 {
   myPlaybackPeriod = playbackPeriod;
+  recalculate();
+
   return *this;
 }
 
@@ -60,6 +71,8 @@ EmulationTiming& EmulationTiming::updatePlaybackPeriod(uInt32 playbackPeriod)
 EmulationTiming& EmulationTiming::updateAudioQueueExtraFragments(uInt32 audioQueueExtraFragments)
 {
   myAudioQueueExtraFragments = audioQueueExtraFragments;
+  recalculate();
+
   return *this;
 }
 
@@ -67,85 +80,123 @@ EmulationTiming& EmulationTiming::updateAudioQueueExtraFragments(uInt32 audioQue
 EmulationTiming& EmulationTiming::updateAudioQueueHeadroom(uInt32 audioQueueHeadroom)
 {
   myAudioQueueHeadroom = audioQueueHeadroom;
+  recalculate();
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updateSpeedFactor(float speedFactor)
+{
+  mySpeedFactor = speedFactor;
+  recalculate();
+
   return *this;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::maxCyclesPerTimeslice() const
 {
-  return 2 * cyclesPerFrame();
+  return myMaxCyclesPerTimeslice;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::minCyclesPerTimeslice() const
 {
-  return cyclesPerFrame() / 2;
+  return myMinCyclesPerTimeslice;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::linesPerFrame() const
 {
-  switch (myFrameLayout) {
-    case FrameLayout::ntsc:
-      return 262;
-
-    case FrameLayout::pal:
-      return 312;
-
-    default:
-      throw runtime_error("invalid frame layout");
-  }
+  return myLinesPerFrame;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::cyclesPerFrame() const
 {
-  return 76 * linesPerFrame();
+  return myCyclesPerFrame;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::framesPerSecond() const
 {
-  switch (myFrameLayout) {
-    case FrameLayout::ntsc:
-      return 60;
-
-    case FrameLayout::pal:
-      return 50;
-
-    default:
-      throw runtime_error("invalid frame layout");
-  }
+  return myFramesPerSecond;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::cyclesPerSecond() const
 {
-  return cyclesPerFrame() * framesPerSecond();
+  return myCyclesPerSecond;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::audioFragmentSize() const
 {
-  return AUDIO_HALF_FRAMES_PER_FRAGMENT * linesPerFrame();
+  return myAudioFragmentSize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::audioSampleRate() const
 {
-  return 2 * linesPerFrame() * framesPerSecond();
+  return myAudioSampleRate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::audioQueueCapacity() const
 {
-  uInt32 minCapacity = discreteDivCeil(maxCyclesPerTimeslice() * audioSampleRate(), audioFragmentSize() * cyclesPerSecond());
-
-  return std::max(prebufferFragmentCount(), minCapacity) + myAudioQueueExtraFragments;
+  return myAudioQueueCapacity;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::prebufferFragmentCount() const
 {
-  return discreteDivCeil(myPlaybackPeriod * audioSampleRate(), audioFragmentSize() * myPlaybackRate) + myAudioQueueHeadroom;
+  return myPrebufferFragmentCount;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EmulationTiming::recalculate()
+{
+  switch (myFrameLayout) {
+    case FrameLayout::ntsc:
+      myLinesPerFrame = 262;
+      break;
+
+    case FrameLayout::pal:
+      myLinesPerFrame = 312;
+      break;
+
+    default:
+      throw runtime_error("invalid frame layout");
+  }
+
+    switch (myFrameLayout) {
+    case FrameLayout::ntsc:
+      myFramesPerSecond = round(mySpeedFactor * 60);
+      break;
+
+    case FrameLayout::pal:
+      myFramesPerSecond = round(mySpeedFactor * 50);
+      break;
+
+    default:
+      throw runtime_error("invalid frame layout");
+  }
+
+  myCyclesPerFrame = 76 * myLinesPerFrame;
+  myMaxCyclesPerTimeslice = round(mySpeedFactor * myCyclesPerFrame * 2);
+  myMinCyclesPerTimeslice = round(mySpeedFactor * myCyclesPerFrame / 2);
+  myCyclesPerSecond = myCyclesPerFrame * myFramesPerSecond;
+  myAudioFragmentSize = round(mySpeedFactor * AUDIO_HALF_FRAMES_PER_FRAGMENT * myLinesPerFrame);
+  myAudioSampleRate = 2 * myLinesPerFrame * myFramesPerSecond;
+
+  myPrebufferFragmentCount = discreteDivCeil(
+    myPlaybackPeriod * myAudioSampleRate,
+    myAudioFragmentSize * myPlaybackRate
+  ) + myAudioQueueHeadroom;
+
+  myAudioQueueCapacity = std::max(
+    myPrebufferFragmentCount,
+    discreteDivCeil(myMaxCyclesPerTimeslice * myAudioSampleRate, myAudioFragmentSize * myCyclesPerSecond)
+  ) + myAudioQueueExtraFragments;
 }

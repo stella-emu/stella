@@ -36,6 +36,8 @@ class EmulationTiming {
 
     EmulationTiming& updateAudioQueueHeadroom(uInt32 audioQueueHeadroom);
 
+    EmulationTiming& updateSpeedFactor(float speedFactor);
+
     uInt32 maxCyclesPerTimeslice() const;
 
     uInt32 minCyclesPerTimeslice() const;
@@ -58,14 +60,29 @@ class EmulationTiming {
 
   private:
 
+    void recalculate();
+
+  private:
+
     FrameLayout myFrameLayout;
 
     uInt32 myPlaybackRate;
-
     uInt32 myPlaybackPeriod;
-
     uInt32 myAudioQueueExtraFragments;
     uInt32 myAudioQueueHeadroom;
+
+    uInt32 myMaxCyclesPerTimeslice;
+    uInt32 myMinCyclesPerTimeslice;
+    uInt32 myLinesPerFrame;
+    uInt32 myCyclesPerFrame;
+    uInt32 myFramesPerSecond;
+    uInt32 myCyclesPerSecond;
+    uInt32 myAudioFragmentSize;
+    uInt32 myAudioSampleRate;
+    uInt32 myAudioQueueCapacity;
+    uInt32 myPrebufferFragmentCount;
+
+    float mySpeedFactor;
 
   private:
 

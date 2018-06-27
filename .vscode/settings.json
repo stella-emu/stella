@@ -58,6 +58,7 @@
         "cstring": "cpp",
         "iostream": "cpp",
         "cstdint": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "__memory": "cpp"
     }
 }
