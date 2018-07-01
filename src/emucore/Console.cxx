@@ -310,7 +310,7 @@ bool Console::load(Serializer& in)
 void Console::toggleFormat(int direction)
 {
   string saveformat, message;
-  int format;
+  uInt32 format = myCurrentFormat;
 
   if(direction == 1)
     format = (myCurrentFormat + 1) % 7;
@@ -321,7 +321,7 @@ void Console::toggleFormat(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setFormat(int format)
+void Console::setFormat(uInt32 format)
 {
   if(myCurrentFormat == format)
     return;

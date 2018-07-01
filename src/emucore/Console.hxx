@@ -199,7 +199,7 @@ class Console : public Serializable
     /**
       Set NTSC/PAL/SECAM (and variants) display format.
     */
-    void setFormat(int format);
+    void setFormat(uInt32 format);
 
     /**
       Toggle between the available palettes.

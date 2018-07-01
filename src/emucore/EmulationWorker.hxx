@@ -128,7 +128,7 @@ class EmulationWorker
     /**
       Log a fatal error to cerr and throw a runtime exception.
      */
-    void fatal(string message);
+    [[noreturn]] void fatal(string message);
 
   private:
   /**

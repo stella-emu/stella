@@ -498,14 +498,14 @@ void GameInfoDialog::saveConfig()
     // update display immediately
     bool reset = false;
     instance().console().setFormat(myFormat->getSelected());
-    if(myYStart->getValue() != TIAConstants::minYStart - 1 &&
-       myYStart->getValue() != instance().console().tia().ystart())
+    if(uInt32(myYStart->getValue()) != TIAConstants::minYStart - 1 &&
+       uInt32(myYStart->getValue()) != instance().console().tia().ystart())
     {
       instance().console().tia().setYStart(myYStart->getValue());
       reset = true;
     }
-    if(myHeight->getValue() != TIAConstants::minViewableHeight - 1 &&
-       myHeight->getValue() != instance().console().tia().height())
+    if(uInt32(myHeight->getValue()) != TIAConstants::minViewableHeight - 1 &&
+       uInt32(myHeight->getValue()) != instance().console().tia().height())
     {
       instance().console().tia().setHeight(myHeight->getValue());
       reset = true;

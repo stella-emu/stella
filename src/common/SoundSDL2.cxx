@@ -276,7 +276,6 @@ void SoundSDL2::initResampler()
 
     default:
       throw runtime_error("invalid resampling quality");
-      break;
   }
 }
 

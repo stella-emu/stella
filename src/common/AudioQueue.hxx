@@ -43,7 +43,6 @@ class AudioQueue
        @param fragmentSize  The size (in stereo / mono samples) of each fragment
        @param capacity      The number of fragments that can be queued before wrapping.
        @param isStereo      Whether samples are stereo or mono.
-       @param sampleRate    The sample rate. This is not used, but can be queried.
      */
     AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo);
 
