@@ -119,12 +119,6 @@ uInt32 EmulationTiming::cyclesPerFrame() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 EmulationTiming::framesPerSecond() const
-{
-  return myFramesPerSecond;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::cyclesPerSecond() const
 {
   return myCyclesPerSecond;
@@ -170,13 +164,14 @@ void EmulationTiming::recalculate()
       throw runtime_error("invalid frame layout");
   }
 
-    switch (myFrameLayout) {
+  float framesPerSecond;
+  switch (myFrameLayout) {
     case FrameLayout::ntsc:
-      myFramesPerSecond = round(mySpeedFactor * 60);
+      framesPerSecond = mySpeedFactor * 60;
       break;
 
     case FrameLayout::pal:
-      myFramesPerSecond = round(mySpeedFactor * 50);
+      framesPerSecond = mySpeedFactor * 50;
       break;
 
     default:
@@ -186,9 +181,9 @@ void EmulationTiming::recalculate()
   myCyclesPerFrame = 76 * myLinesPerFrame;
   myMaxCyclesPerTimeslice = round(mySpeedFactor * myCyclesPerFrame * 2);
   myMinCyclesPerTimeslice = round(mySpeedFactor * myCyclesPerFrame / 2);
-  myCyclesPerSecond = myCyclesPerFrame * myFramesPerSecond;
+  myCyclesPerSecond = (round(myCyclesPerFrame * framesPerSecond) / 38) * 38;
   myAudioFragmentSize = round(mySpeedFactor * AUDIO_HALF_FRAMES_PER_FRAGMENT * myLinesPerFrame);
-  myAudioSampleRate = 2 * myLinesPerFrame * myFramesPerSecond;
+  myAudioSampleRate = myCyclesPerSecond / 38;
 
   myPrebufferFragmentCount = discreteDivCeil(
     myPlaybackPeriod * myAudioSampleRate,

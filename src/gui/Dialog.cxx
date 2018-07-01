@@ -34,6 +34,7 @@
 #include "Console.hxx"
 
 #include "Vec.hxx"
+#include "TIA.hxx"
 
 /*
  * TODO list
