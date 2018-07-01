@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cmath>
+
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Dialog.hxx"
@@ -31,6 +33,45 @@
 #include "NTSCFilter.hxx"
 #include "TIASurface.hxx"
 #include "VideoDialog.hxx"
+
+namespace {
+  // Emulation speed is a positive float that multiplies the framerate. However, the UI controls
+  // adjust speed in terms of a speedup factor (1/10, 1/9 .. 1/2, 1, 2, 3, .., 10). The following
+  // mapping and formatting functions implement this conversion. The speedup factor is represented
+  // by an integer value between -900 and 900 (0 means no speedup).
+
+  constexpr int MAX_SPEED = 900;
+  constexpr int MIN_SPEED = -900;
+  constexpr int SPEED_STEP = 10;
+
+  int mapSpeed(float speed)
+  {
+    speed = abs(speed);
+
+    return BSPF::clamp(
+      static_cast<int>(round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
+      MIN_SPEED, MAX_SPEED
+    );
+  }
+
+  float unmapSpeed(int speed)
+  {
+    float f_speed = static_cast<float>(speed) / 100;
+
+    return speed < 0 ? -1 / (f_speed - 1) : 1 + f_speed;
+  }
+
+  string formatSpeed(int speed) {
+    stringstream ss;
+
+    ss
+      << (speed >= 0 ? "x " : "/ ")
+      << std::setw(4) << std::fixed << std::setprecision(2)
+      << (1 + static_cast<float>(speed < 0 ? -speed : speed) / 100);
+
+    return ss.str();
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
@@ -121,13 +162,13 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myPAspectRatio);
   ypos += lineHeight + VGAP;
 
-  // Framerate
-  myFrameRate =
+  // Speed
+  mySpeed =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "Frame rate ", lwidth, kFrameRateChanged, fontWidth * 6, "fps");
-  myFrameRate->setMinValue(0); myFrameRate->setMaxValue(900);
-  myFrameRate->setStepValue(10);
-  wid.push_back(myFrameRate);
+                     "Speed ", lwidth, kSpeedupChanged, fontWidth * 8, "");
+  mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
+  mySpeed->setStepValue(SPEED_STEP);
+  wid.push_back(mySpeed);
   ypos += lineHeight + VGAP;
 
   // Use sync to vblank
@@ -141,7 +182,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                        "(*) Requires application restart");
 
   // Move over to the next column
-  xpos += myFrameRate->getWidth() + 16;
+  xpos += mySpeed->getWidth() + 16;
   ypos = VBORDER;
 
   // Fullscreen
@@ -327,12 +368,10 @@ void VideoDialog::loadConfig()
   myNAspectRatio->setValue(instance().settings().getInt("tia.aspectn"));
   myPAspectRatio->setValue(instance().settings().getInt("tia.aspectp"));
 
-  // Framerate (0 or -1 means automatic framerate calculation)
-  int rate = instance().settings().getInt("framerate");
-  myFrameRate->setValue(rate < 0 ? 0 : rate);
-  myFrameRate->setValueLabel(rate <= 0 ? "Auto" :
-                             instance().settings().getString("framerate"));
-  myFrameRate->setValueUnit(rate <= 0 ? "" : "fps");
+  // Emulation speed
+  int speed = mapSpeed(instance().settings().getFloat("speed"));
+  mySpeed->setValue(speed);
+  mySpeed->setValueLabel(formatSpeed(speed));
 
   // Fullscreen
   myFullscreen->setState(instance().settings().getBool("fullscreen"));
@@ -404,15 +443,10 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tia.aspectn", myNAspectRatio->getValueLabel());
   instance().settings().setValue("tia.aspectp", myPAspectRatio->getValueLabel());
 
-  // Framerate
-  int f = myFrameRate->getValue();
-  instance().settings().setValue("framerate", f);
-  if(instance().hasConsole())
-  {
-    // Make sure auto-frame calculation is only enabled when necessary
-    instance().console().tia().enableAutoFrame(f <= 0);
-    instance().console().setFramerate(float(f));
-  }
+  // Speed
+  int speedup = mySpeed->getValue();
+  instance().settings().setValue("speed", unmapSpeed(speedup));
+  if (instance().hasConsole()) instance().console().initializeAudio();
 
   // Fullscreen
   instance().settings().setValue("fullscreen", myFullscreen->getState());
@@ -486,7 +520,7 @@ void VideoDialog::setDefaults()
       myTIAInterpolate->setState(false);
       myNAspectRatio->setValue(91);
       myPAspectRatio->setValue(109);
-      myFrameRate->setValue(0);
+      mySpeed->setValue(0);
 
       myFullscreen->setState(false);
       //myFullScreenMode->setSelectedIndex(0);
@@ -585,10 +619,8 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
-    case kFrameRateChanged:
-      if(myFrameRate->getValue() == 0)
-        myFrameRate->setValueLabel("Auto");
-      myFrameRate->setValueUnit(myFrameRate->getValue() == 0 ? "" : "fps");
+    case kSpeedupChanged:
+      mySpeed->setValueLabel(formatSpeed(mySpeed->getValue()));
       break;
 
     case kTVModeChanged:

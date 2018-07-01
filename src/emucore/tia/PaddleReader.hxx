@@ -30,14 +30,14 @@ class PaddleReader : public Serializable
 
   public:
 
-    void reset(double timestamp);
+    void reset(uInt64 timestamp);
 
-    void vblank(uInt8 value, double timestamp);
+    void vblank(uInt8 value, uInt64 timestamp);
     bool vblankDumped() const { return myIsDumped; }
 
-    uInt8 inpt(double timestamp);
+    uInt8 inpt(uInt64 timestamp);
 
-    void update(double value, double timestamp, ConsoleTiming consoleTiming);
+    void update(double value, uInt64 timestamp, ConsoleTiming consoleTiming);
 
     /**
       Serializable methods (see that class for more information).
@@ -50,7 +50,7 @@ class PaddleReader : public Serializable
 
     void setConsoleTiming(ConsoleTiming timing);
 
-    void updateCharge(double timestamp);
+    void updateCharge(uInt64 timestamp);
 
   private:
 
@@ -58,7 +58,7 @@ class PaddleReader : public Serializable
     double myU;
 
     double myValue;
-    double myTimestamp;
+    uInt64 myTimestamp;
 
     ConsoleTiming myConsoleTiming;
     double myClockFreq;

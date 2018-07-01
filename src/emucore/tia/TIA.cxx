@@ -23,6 +23,8 @@
 #include "DelayQueueIteratorImpl.hxx"
 #include "TIAConstants.hxx"
 #include "frame-manager/FrameManager.hxx"
+#include "AudioQueue.hxx"
+#include "DispatchResult.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartDebug.hxx"
@@ -65,9 +67,8 @@ enum ResxCounter: uInt8 {
 static constexpr uInt8 resxLateHblankThreshold = 73;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(Console& console, Sound& sound, Settings& settings)
+TIA::TIA(Console& console, Settings& settings)
   : myConsole(console),
-    mySound(sound),
     mySettings(settings),
     myFrameManager(nullptr),
     myPlayfield(~CollisionMask::playfield & 0x7FFF),
@@ -117,6 +118,12 @@ void TIA::setFrameManager(AbstractFrameManager *frameManager)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setAudioQueue(shared_ptr<AudioQueue> queue)
+{
+  myAudio.setAudioQueue(queue);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::clearFrameManager()
 {
   if (!myFrameManager) return;
@@ -138,7 +145,6 @@ void TIA::reset()
   myCollisionMask = 0;
   myLinesSinceChange = 0;
   myCollisionUpdateRequired = false;
-  myAutoFrameEnabled = false;
   myColorLossEnabled = myColorLossActive = false;
   myColorHBlank = 0;
   myLastCycle = 0;
@@ -159,11 +165,12 @@ void TIA::reset()
   myInput0.reset();
   myInput1.reset();
 
+  myAudio.reset();
+
   myTimestamp = 0;
   for (PaddleReader& paddleReader : myPaddleReaders)
     paddleReader.reset(myTimestamp);
 
-  mySound.reset();
   myDelayQueue.reset();
 
   myCyclesAtFrameStart = 0;
@@ -173,6 +180,11 @@ void TIA::reset()
     myFrameManager->reset();
     frameReset();  // Recalculate the size of the display
   }
+
+  myFrontBufferFrameRate = myFrameBufferFrameRate = 0;
+  myFrontBufferScanlines = myFrameBufferScanlines = 0;
+
+  myNewFramePending = false;
 
   // Must be done last, after all other items have reset
   enableFixedColors(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.debugcolors" : "plr.debugcolors"));
@@ -186,8 +198,9 @@ void TIA::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::frameReset()
 {
+  memset(myBackBuffer, 0, 160 * TIAConstants::frameBufferHeight);
+  memset(myFrontBuffer, 0, 160 * TIAConstants::frameBufferHeight);
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
-  myAutoFrameEnabled = mySettings.getInt("framerate") <= 0;
   enableColorLoss(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss");
 }
 
@@ -227,8 +240,6 @@ bool TIA::save(Serializer& out) const
   {
     out.putString(name());
 
-    if(!mySound.save(out)) return false;
-
     if(!myDelayQueue.save(out))   return false;
     if(!myFrameManager->save(out)) return false;
 
@@ -239,6 +250,7 @@ bool TIA::save(Serializer& out) const
     if(!myPlayer0.save(out))    return false;
     if(!myPlayer1.save(out))    return false;
     if(!myBall.save(out))       return false;
+    if(!myAudio.save(out))      return false;
 
     for (const PaddleReader& paddleReader : myPaddleReaders)
       if(!paddleReader.save(out)) return false;
@@ -275,11 +287,14 @@ bool TIA::save(Serializer& out) const
 
     out.putLong(myTimestamp);
 
-    out.putBool(myAutoFrameEnabled);
-
     out.putByteArray(myShadowRegisters, 64);
 
     out.putLong(myCyclesAtFrameStart);
+
+    out.putInt(myFrameBufferScanlines);
+    out.putInt(myFrontBufferScanlines);
+    out.putDouble(myFrameBufferFrameRate);
+    out.putDouble(myFrontBufferFrameRate);
   }
   catch(...)
   {
@@ -298,8 +313,6 @@ bool TIA::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    if(!mySound.load(in)) return false;
-
     if(!myDelayQueue.load(in))   return false;
     if(!myFrameManager->load(in)) return false;
 
@@ -310,6 +323,7 @@ bool TIA::load(Serializer& in)
     if(!myPlayer0.load(in))    return false;
     if(!myPlayer1.load(in))    return false;
     if(!myBall.load(in))       return false;
+    if(!myAudio.load(in))       return false;
 
     for (PaddleReader& paddleReader : myPaddleReaders)
       if(!paddleReader.load(in)) return false;
@@ -346,11 +360,14 @@ bool TIA::load(Serializer& in)
 
     myTimestamp = in.getLong();
 
-    myAutoFrameEnabled = in.getBool();
-
     in.getByteArray(myShadowRegisters, 64);
 
     myCyclesAtFrameStart = in.getLong();
+
+    myFrameBufferScanlines = in.getInt();
+    myFrontBufferScanlines = in.getInt();
+    myFrameBufferFrameRate = in.getDouble();
+    myFrontBufferFrameRate = in.getDouble();
   }
   catch(...)
   {
@@ -521,33 +538,35 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
       break;
 
-    ////////////////////////////////////////////////////////////
-    // FIXME - rework this when we add the new sound core
     case AUDV0:
-      mySound.set(address, value, mySystem->cycles());
+      myAudio.channel0().audv(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDV1:
-      mySound.set(address, value, mySystem->cycles());
+      myAudio.channel1().audv(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDF0:
-      mySound.set(address, value, mySystem->cycles());
+      myAudio.channel0().audf(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDF1:
-      mySound.set(address, value, mySystem->cycles());
+      myAudio.channel1().audf(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDC0:
-      mySound.set(address, value, mySystem->cycles());
+      myAudio.channel0().audc(value);
       myShadowRegisters[address] = value;
       break;
+
     case AUDC1:
-      mySound.set(address, value, mySystem->cycles());
+      myAudio.channel1().audc(value);
       myShadowRegisters[address] = value;
       break;
-    ////////////////////////////////////////////////////////////
 
     case HMOVE:
       myDelayQueue.push(HMOVE, value, Delay::hmove);
@@ -777,7 +796,10 @@ bool TIA::saveDisplay(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myFramebuffer, 160*TIAConstants::frameBufferHeight);
+    out.putByteArray(myFramebuffer, 160* TIAConstants::frameBufferHeight);
+    out.putByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+    out.putByteArray(myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
+    out.putBool(myNewFramePending);
   }
   catch(...)
   {
@@ -795,6 +817,9 @@ bool TIA::loadDisplay(Serializer& in)
   {
     // Reset frame buffer pointer and data
     in.getByteArray(myFramebuffer, 160*TIAConstants::frameBufferHeight);
+    in.getByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+    in.getByteArray(myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
+    myNewFramePending = in.getBool();
   }
   catch(...)
   {
@@ -806,9 +831,30 @@ bool TIA::loadDisplay(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::update()
+void TIA::update(DispatchResult& result, uInt32 maxCycles)
 {
-  mySystem->m6502().execute(25000);
+  mySystem->m6502().execute(maxCycles, result);
+
+  updateEmulation();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::renderToFrameBuffer()
+{
+  if (!myNewFramePending) return;
+
+  memcpy(myFramebuffer, myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
+
+  myFrameBufferFrameRate = myFrontBufferFrameRate;
+  myFrameBufferScanlines = myFrontBufferScanlines;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::update(uInt32 maxCycles)
+{
+  DispatchResult dispatchResult;
+
+  update(dispatchResult, maxCycles);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1143,16 +1189,19 @@ void TIA::onFrameComplete()
   myCyclesAtFrameStart = mySystem->cycles();
 
   if (myXAtRenderingStart > 0)
-    memset(myFramebuffer, 0, myXAtRenderingStart);
+    memset(myBackBuffer, 0, myXAtRenderingStart);
 
   // Blank out any extra lines not drawn this frame
   const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
-    memset(myFramebuffer + 160 * myFrameManager->getY(), 0, missingScanlines * 160);
+    memset(myBackBuffer + 160 * myFrameManager->getY(), 0, missingScanlines * 160);
 
-  // Recalculate framerate, attempting to auto-correct for scanline 'jumps'
-  if(myAutoFrameEnabled)
-    myConsole.setFramerate(myFrameManager->frameRate());
+  memcpy(myFrontBuffer, myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+
+  myFrontBufferFrameRate = frameRate();
+  myFrontBufferScanlines = scanlinesLastFrame();
+
+  myNewFramePending = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1187,6 +1236,8 @@ void TIA::cycle(uInt32 colorClocks)
 
     if (++myHctr >= 228)
       nextLine();
+
+    myAudio.tick();
 
     myTimestamp++;
   }
@@ -1261,7 +1312,7 @@ void TIA::applyRsync()
 
   myHctrDelta = 225 - myHctr;
   if (myFrameManager->isRendering())
-    memset(myFramebuffer + myFrameManager->getY() * 160 + x, 0, 160 - x);
+    memset(myBackBuffer + myFrameManager->getY() * 160 + x, 0, 160 - x);
 
   myHctr = 225;
 }
@@ -1300,7 +1351,7 @@ void TIA::cloneLastLine()
 
   if (!myFrameManager->isRendering() || y == 0) return;
 
-  uInt8* buffer = myFramebuffer;
+  uInt8* buffer = myBackBuffer;
 
   memcpy(buffer + y * 160, buffer + (y-1) * 160, 160);
 }
@@ -1373,7 +1424,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
     }
   }
 
-  myFramebuffer[y * 160 + x] = color;
+  myBackBuffer[y * 160 + x] = color;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1399,7 +1450,7 @@ void TIA::flushLineCache()
 void TIA::clearHmoveComb()
 {
   if (myFrameManager->isRendering() && myHstate == HState::blank)
-    memset(myFramebuffer + myFrameManager->getY() * 160, myColorHBlank, 8);
+    memset(myBackBuffer + myFrameManager->getY() * 160, myColorHBlank, 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

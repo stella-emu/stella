@@ -21,17 +21,20 @@
 #define SOUND_SDL2_HXX
 
 class OSystem;
+class AudioQueue;
+class EmulationTiming;
+class AudioSettings;
 
 #include "SDL_lib.hxx"
 
 #include "bspf.hxx"
-#include "TIASnd.hxx"
 #include "Sound.hxx"
+#include "audio/Resampler.hxx"
 
 /**
   This class implements the sound API for SDL.
 
-  @author Stephen Anthony and Bradford W. Mott
+  @author Stephen Anthony and Christian Speckner (DirtyHairy)
 */
 class SoundSDL2 : public Sound
 {
@@ -40,7 +43,7 @@ class SoundSDL2 : public Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundSDL2(OSystem& osystem);
+    SoundSDL2(OSystem& osystem, AudioSettings& audioSettings);
 
     /**
       Destructor
@@ -51,34 +54,15 @@ class SoundSDL2 : public Sound
     /**
       Enables/disables the sound subsystem.
 
-      @param state  True or false, to enable or disable the sound system
+      @param enable  Either true or false, to enable or disable the sound system
     */
-    void setEnabled(bool state) override;
-
-    /**
-      Sets the number of channels (mono or stereo sound).  Note that this
-      determines how the emulation should 'mix' the channels of the TIA sound
-      system (of which there are always two).  It does not specify the actual
-      number of hardware channels that SDL should use; it will always attempt
-      to use two channels in hardware.
-
-      @param channels  The number of channels
-    */
-    void setChannels(uInt32 channels) override;
-
-    /**
-      Sets the display framerate.  Sound generation for NTSC and PAL games
-      depends on the framerate, so we need to set it here.
-
-      @param framerate The base framerate depending on NTSC or PAL ROM
-    */
-    void setFrameRate(float framerate) override;
+    void setEnabled(bool enable) override;
 
     /**
       Initializes the sound device.  This must be called before any
       calls are made to derived methods.
     */
-    void open() override;
+    void open(shared_ptr<AudioQueue> audioQueue, EmulationTiming* emulationTiming) override;
 
     /**
       Should be called to close the sound device.  Once called the sound
@@ -99,22 +83,13 @@ class SoundSDL2 : public Sound
     void reset() override;
 
     /**
-      Sets the sound register to a given value.
-
-      @param addr   The register address
-      @param value  The value to save into the register
-      @param cycle  The system cycle at which the register is being updated
-    */
-    void set(uInt16 addr, uInt8 value, uInt64 cycle) override;
-
-    /**
       Sets the volume of the sound device to the specified level.  The
       volume is given as a percentage from 0 to 100.  Values outside
       this range indicate that the volume shouldn't be changed at all.
 
       @param percent  The new volume percentage level for the sound device
     */
-    void setVolume(Int32 percent) override;
+    void setVolume(uInt32 percent) override;
 
     /**
       Adjusts the volume of the sound device based on the given direction.
@@ -124,29 +99,9 @@ class SoundSDL2 : public Sound
     */
     void adjustVolume(Int8 direction) override;
 
-  public:
-    /**
-      Saves the current state of this device to the given Serializer.
+    uInt32 getFragmentSize() const override;
 
-      @param out  The serializer device to save to.
-      @return  The result of the save.  True on success, false on failure.
-    */
-    bool save(Serializer& out) const override;
-
-    /**
-      Loads the current state of this device from the given Serializer.
-
-      @param in  The Serializer device to load from.
-      @return  The result of the load.  True on success, false on failure.
-    */
-    bool load(Serializer& in) override;
-
-    /**
-      Get a descriptor for this console class (used in error checking).
-
-      @return  The name of the object
-    */
-    string name() const override { return "TIASound"; }
+    uInt32 getSampleRate() const override;
 
   protected:
     /**
@@ -157,124 +112,33 @@ class SoundSDL2 : public Sound
       @param stream  Pointer to the start of the fragment
       @param length  Length of the fragment
     */
-    void processFragment(Int16* stream, uInt32 length);
-
-  protected:
-    // Struct to hold information regarding a TIA sound register write
-    struct RegWrite
-    {
-      uInt16 addr;
-      uInt8 value;
-      double delta;
-
-      RegWrite(uInt16 a = 0, uInt8 v = 0, double d = 0.0)
-        : addr(a), value(v), delta(d) { }
-    };
-
-    /**
-      A queue class used to hold TIA sound register writes before being
-      processed while creating a sound fragment.
-    */
-    class RegWriteQueue
-    {
-      public:
-        /**
-          Create a new queue instance with the specified initial
-          capacity.  If the queue ever reaches its capacity then it will
-          automatically increase its size.
-        */
-        RegWriteQueue(uInt32 capacity = 512);
-
-      public:
-        /**
-          Clear any items stored in the queue.
-        */
-        void clear();
-
-        /**
-          Dequeue the first object in the queue.
-        */
-        void dequeue();
-
-        /**
-          Return the duration of all the items in the queue.
-        */
-        double duration() const;
-
-        /**
-          Enqueue the specified object.
-        */
-        void enqueue(uInt16 addr, uInt8 value, double delta);
-
-        /**
-          Return the item at the front on the queue.
-
-          @return  The item at the front of the queue.
-        */
-        RegWrite& front() const;
-
-        /**
-          Answers the number of items currently in the queue.
-
-          @return  The number of items in the queue.
-        */
-        uInt32 size() const;
-
-      private:
-        // Increase the size of the queue
-        void grow();
-
-      private:
-        unique_ptr<RegWrite[]> myBuffer;
-        uInt32 myCapacity;
-        uInt32 mySize;
-        uInt32 myHead;
-        uInt32 myTail;
-
-      private:
-        // Following constructors and assignment operators not supported
-        RegWriteQueue(const RegWriteQueue&) = delete;
-        RegWriteQueue(RegWriteQueue&&) = delete;
-        RegWriteQueue& operator=(const RegWriteQueue&) = delete;
-        RegWriteQueue& operator=(RegWriteQueue&&) = delete;
-    };
+    void processFragment(float* stream, uInt32 length);
 
   private:
-    // TIASound emulation object
-    TIASound myTIASound;
 
-    // Indicates if the sound subsystem is to be initialized
-    bool myIsEnabled;
+    void initResampler();
 
+  private:
     // Indicates if the sound device was successfully initialized
     bool myIsInitializedFlag;
 
-    // Indicates the cycle when a sound register was last set
-    uInt64 myLastRegisterSetCycle;
-
-    // Indicates the number of channels (mono or stereo)
-    uInt32 myNumChannels;
-
-    // Log base 2 of the selected fragment size
-    double myFragmentSizeLogBase2;
-
-    // The myFragmentSizeLogBase2 variable is used in only two places,
-    // both of which involve an expensive division in the sound
-    // processing callback
-    // These are pre-computed to speed up the callback as much as possible
-    double myFragmentSizeLogDiv1, myFragmentSizeLogDiv2;
-
-    // Indicates if the sound is currently muted
-    bool myIsMuted;
-
     // Current volume as a percentage (0 - 100)
     uInt32 myVolume;
+    float myVolumeFactor;
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
 
-    // Queue of TIA register writes
-    RegWriteQueue myRegWriteQueue;
+    shared_ptr<AudioQueue> myAudioQueue;
+
+    EmulationTiming* myEmulationTiming;
+
+    Int16* myCurrentFragment;
+    bool myUnderrun;
+
+    unique_ptr<Resampler> myResampler;
+
+    AudioSettings& myAudioSettings;
 
   private:
     // Callback function invoked by the SDL Audio library when it needs data

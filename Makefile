@@ -101,7 +101,8 @@ MODULES += \
 	src/emucore/tia/frame-manager \
 	src/gui \
 	src/common \
-	src/common/tv_filters
+	src/common/tv_filters \
+	src/common/audio
 
 ######################################################################
 # The build rules follow - normally you should have no need to

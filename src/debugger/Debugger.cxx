@@ -513,7 +513,7 @@ void Debugger::nextFrame(int frames)
   unlockSystem();
   while(frames)
   {
-    myOSystem.console().tia().update();
+    myOSystem.console().tia().update(myOSystem.console().emulationTiming().maxCyclesPerTimeslice());
     --frames;
   }
   lockSystem();

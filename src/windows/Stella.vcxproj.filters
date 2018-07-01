@@ -55,6 +55,12 @@
     <Filter Include="Source Files\emucore\tia">
       <UniqueIdentifier>{ffa3642d-aa8a-43a5-8ac5-acd8878dd091}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\audio">
+      <UniqueIdentifier>{49d8ea64-20c1-45f1-9dc9-b39c17d7cabd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\audio">
+      <UniqueIdentifier>{000e4a6b-8cd6-43db-8253-8255c7efa706}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\FrameBufferSDL2.cxx">
@@ -235,9 +241,6 @@
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
     <ClCompile Include="..\emucore\Thumbulator.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
-    <ClCompile Include="..\emucore\TIASnd.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
     <ClCompile Include="..\cheat\BankRomCheat.cxx">
@@ -900,6 +903,33 @@
     <ClCompile Include="..\common\PKeyboardHandler.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\tia\Audio.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\tia\AudioChannel.cxx">
+      <Filter>Source Files\emucore\tia</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\AudioQueue.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\EmulationTiming.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\audio\SimpleResampler.cxx">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\audio\ConvolutionBuffer.cxx">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\audio\LanczosResampler.cxx">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\DispatchResult.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\EmulationWorker.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1110,9 +1140,6 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\Thumbulator.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\TIASnd.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\AudioWidget.hxx">
@@ -1843,6 +1870,36 @@
     </ClInclude>
     <ClInclude Include="..\common\PKeyboardHandler.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\Audio.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\tia\AudioChannel.hxx">
+      <Filter>Header Files\emucore\tia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\AudioQueue.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\EmulationTiming.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\audio\Resampler.hxx">
+      <Filter>Header Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\audio\SimpleResampler.hxx">
+      <Filter>Header Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\audio\ConvolutionBuffer.hxx">
+      <Filter>Header Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\audio\LanczosResampler.hxx">
+      <Filter>Header Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\DispatchResult.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\EmulationWorker.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -795,7 +795,7 @@ bool Dialog::getResizableBounds(uInt32& w, uInt32& h) const
 
   if(instance().hasConsole())
   {
-    ntsc = instance().console().about().InitialFrameRate == "60";
+    ntsc = instance().console().tia().frameLayout() == FrameLayout::ntsc;
   }
 
   uInt32 aspect = instance().settings().getInt(ntsc ?"tia.aspectn" : "tia.aspectp");

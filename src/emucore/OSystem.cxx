@@ -17,11 +17,6 @@
 
 #include <cassert>
 
-#include <ctime>
-#ifdef HAVE_GETTIMEOFDAY
-  #include <sys/time.h>
-#endif
-
 #include "bspf.hxx"
 
 #include "MediaFactory.hxx"
@@ -34,6 +29,8 @@
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
 #endif
+
+#include <chrono>
 
 #include "FSNode.hxx"
 #include "MD5.hxx"
@@ -55,17 +52,19 @@
 #include "SerialPort.hxx"
 #include "StateManager.hxx"
 #include "Version.hxx"
+#include "TIA.hxx"
+#include "DispatchResult.hxx"
+#include "EmulationWorker.hxx"
 
 #include "OSystem.hxx"
+
+using namespace std::chrono;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
   : myLauncherUsed(false),
     myQuitLoop(false)
 {
-  // Calculate startup time
-  myMillisAtStart = uInt32(time(nullptr) * 1000);
-
   // Get built-in features
   #ifdef SOUND_SUPPORT
     myFeatures += "Sound ";
@@ -91,6 +90,7 @@ OSystem::OSystem()
   myBuildInfo = info.str();
 
   mySettings = MediaFactory::createSettings(*this);
+  myAudioSettings = AudioSettings(mySettings.get());
   myRandom = make_unique<Random>(*this);
 }
 
@@ -284,16 +284,6 @@ void OSystem::setConfigFile(const string& file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setFramerate(float framerate)
-{
-  if(framerate > 0.0)
-  {
-    myDisplayFrameRate = framerate;
-    myTimePerFrame = uInt32(1000000.0 / myDisplayFrameRate);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus OSystem::createFrameBuffer()
 {
   // Re-initialize the framebuffer to current settings
@@ -332,9 +322,9 @@ FBInitStatus OSystem::createFrameBuffer()
 void OSystem::createSound()
 {
   if(!mySound)
-    mySound = MediaFactory::createAudio(*this);
+    mySound = MediaFactory::createAudio(*this, myAudioSettings);
 #ifndef SOUND_SUPPORT
-  mySettings->setValue("sound", false);
+  myAudioSettings.setEnabled(false);
 #endif
 }
 
@@ -408,9 +398,6 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
         << getROMInfo(*myConsole) << endl;
     logMessage(buf.str(), 1);
 
-    // Update the timing info for a new console run
-    resetLoopTiming();
-
     myFrameBuffer->setCursorState();
 
     // Also check if certain virtual buttons should be held down
@@ -450,8 +437,6 @@ bool OSystem::createLauncher(const string& startdir)
     myLauncher->reStack();
     myFrameBuffer->setCursorState();
 
-    setFramerate(30);
-    resetLoopTiming();
     status = true;
   }
   else
@@ -565,7 +550,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
 
     // Finally, create the cart with the correct properties
     if(cart)
-      console = make_unique<Console>(*this, cart, props);
+      console = make_unique<Console>(*this, cart, props, myAudioSettings);
   }
 
   return console;
@@ -628,15 +613,6 @@ string OSystem::getROMInfo(const Console& console)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::resetLoopTiming()
-{
-  myTimingInfo.start = myTimingInfo.virt = getTicks();
-  myTimingInfo.current = 0;
-  myTimingInfo.totalTime = 0;
-  myTimingInfo.totalFrames = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::validatePath(string& path, const string& setting,
                            const string& defaultpath)
 {
@@ -653,68 +629,105 @@ void OSystem::validatePath(string& path, const string& setting,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 OSystem::getTicks() const
 {
-#ifdef HAVE_GETTIMEOFDAY
-  // Gettimeofday natively refers to the UNIX epoch (a set time in the past)
-  timeval now;
-  gettimeofday(&now, nullptr);
+  return duration_cast<duration<uInt64, std::ratio<1, 1000000> > >(system_clock::now().time_since_epoch()).count();
+}
 
-  return uInt64(now.tv_sec) * 1000000 + now.tv_usec;
-#else
-  // We use SDL_GetTicks, but add in the time when the application was
-  // initialized.  This is necessary, since SDL_GetTicks only measures how
-  // long SDL has been running, which can be the same between multiple runs
-  // of the application.
-  return uInt64(SDL_GetTicks() + myMillisAtStart) * 1000;
-#endif
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float OSystem::frameRate() const
+{
+  return myConsole ? myConsole->getFramerate() : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
+{
+  if (!myConsole) return 0.;
+
+  TIA& tia(myConsole->tia());
+  EmulationTiming& timing(myConsole->emulationTiming());
+  DispatchResult dispatchResult;
+
+  // Check whether we have a frame pending for rendering...
+  bool framePending = tia.newFramePending();
+  // ... and copy it to the frame buffer. It is important to do this before
+  // the worker is started to avoid racing.
+  if (framePending) tia.renderToFrameBuffer();
+
+  // Start emulation on a dedicated thread. It will do its own scheduling to sync 6507 and real time
+  // and will run until we stop the worker.
+  emulationWorker.start(
+    timing.cyclesPerSecond(),
+    timing.maxCyclesPerTimeslice(),
+    timing.minCyclesPerTimeslice(),
+    &dispatchResult,
+    &tia
+  );
+
+  // Render the frame. This may block, but emulation will continue to run on the worker, so the
+  // audio pipeline is kept fed :)
+  if (framePending) myFrameBuffer->updateInEmulationMode();
+
+  // Stop the worker and wait until it has finished
+  uInt64 totalCycles = emulationWorker.stop();
+
+  // Break or trap? -> start debugger
+  if (dispatchResult.getStatus() == DispatchResult::Status::debugger) myDebugger->start();
+
+  // Handle frying
+  if (dispatchResult.getStatus() == DispatchResult::Status::ok && myEventHandler->frying())
+    myConsole->fry();
+
+  // Return the 6507 time used in seconds
+  return static_cast<double>(totalCycles) / static_cast<double>(timing.cyclesPerSecond());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::mainLoop()
 {
-  if(mySettings->getString("timing") == "sleep")
+  // Sleep-based wait: good for CPU, bad for graphical sync
+  bool busyWait = mySettings->getString("timing") != "sleep";
+  // 6507 time
+  time_point<high_resolution_clock> virtualTime = high_resolution_clock::now();
+  // The emulation worker
+  EmulationWorker emulationWorker;
+
+  for(;;)
   {
-    // Sleep-based wait: good for CPU, bad for graphical sync
-    for(;;)
-    {
-      myTimingInfo.start = getTicks();
-      myEventHandler->poll(myTimingInfo.start);
-      if(myQuitLoop) break;  // Exit if the user wants to quit
+    myEventHandler->poll(getTicks());
+    if(myQuitLoop) break;  // Exit if the user wants to quit
+
+    double timesliceSeconds;
+
+    if (myEventHandler->state() == EventHandlerState::EMULATION)
+      // Dispatch emulation and render frame (if applicable)
+      timesliceSeconds = dispatchEmulation(emulationWorker);
+    else {
+      // Render the GUI with 30 Hz in all other modes
+      timesliceSeconds = 1. / 30.;
       myFrameBuffer->update();
-      myTimingInfo.current = getTicks();
-      myTimingInfo.virt += myTimePerFrame;
-
-      // Timestamps may periodically go out of sync, particularly on systems
-      // that can have 'negative time' (ie, when the time seems to go backwards)
-      // This normally results in having a very large delay time, so we check
-      // for that and reset the timers when appropriate
-      if((myTimingInfo.virt - myTimingInfo.current) > (myTimePerFrame << 1))
-      {
-        myTimingInfo.current = myTimingInfo.virt = getTicks();
-      }
-
-      if(myTimingInfo.current < myTimingInfo.virt)
-        SDL_Delay(uInt32(myTimingInfo.virt - myTimingInfo.current) / 1000);
-
-      myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
-      myTimingInfo.totalFrames++;
     }
-  }
-  else
-  {
-    // Busy-wait: bad for CPU, good for graphical sync
-    for(;;)
-    {
-      myTimingInfo.start = getTicks();
-      myEventHandler->poll(myTimingInfo.start);
-      if(myQuitLoop) break;  // Exit if the user wants to quit
-      myFrameBuffer->update();
-      myTimingInfo.virt += myTimePerFrame;
 
-      while(getTicks() < myTimingInfo.virt)
-        ;  // busy-wait
+    duration<double> timeslice(timesliceSeconds);
+    virtualTime += duration_cast<high_resolution_clock::duration>(timeslice);
+    time_point<high_resolution_clock> now = high_resolution_clock::now();
 
-      myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
-      myTimingInfo.totalFrames++;
+    // We allow 6507 time to lag behind by one frame max
+    double maxLag = myConsole
+      ? (
+        static_cast<double>(myConsole->emulationTiming().cyclesPerFrame()) /
+        static_cast<double>(myConsole->emulationTiming().cyclesPerSecond())
+      )
+      : 0;
+
+    if (duration_cast<duration<double>>(now - virtualTime).count() > maxLag)
+      // If 6507 time is lagging behind more than one frame we reset it to real time
+      virtualTime = now;
+    else if (virtualTime > now) {
+      // Wait until we have caught up with 6507 time
+      if (busyWait && myEventHandler->state() == EventHandlerState::EMULATION) {
+        while (high_resolution_clock::now() < virtualTime);
+      }
+      else std::this_thread::sleep_until(virtualTime);
     }
   }
 

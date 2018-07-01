@@ -1,0 +1,202 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#include <cmath>
+
+#include "EmulationTiming.hxx"
+
+namespace {
+  constexpr uInt32 AUDIO_HALF_FRAMES_PER_FRAGMENT = 1;
+
+  uInt32 discreteDivCeil(uInt32 n, uInt32 d)
+  {
+    return n / d + ((n % d == 0) ? 0 : 1);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming::EmulationTiming(FrameLayout frameLayout) :
+  myFrameLayout(frameLayout),
+  myPlaybackRate(44100),
+  myPlaybackPeriod(512),
+  myAudioQueueExtraFragments(1),
+  myAudioQueueHeadroom(2),
+  mySpeedFactor(1)
+{
+  recalculate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updateFrameLayout(FrameLayout frameLayout)
+{
+  myFrameLayout = frameLayout;
+  recalculate();
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updatePlaybackRate(uInt32 playbackRate)
+{
+  myPlaybackRate = playbackRate;
+  recalculate();
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updatePlaybackPeriod(uInt32 playbackPeriod)
+{
+  myPlaybackPeriod = playbackPeriod;
+  recalculate();
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updateAudioQueueExtraFragments(uInt32 audioQueueExtraFragments)
+{
+  myAudioQueueExtraFragments = audioQueueExtraFragments;
+  recalculate();
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updateAudioQueueHeadroom(uInt32 audioQueueHeadroom)
+{
+  myAudioQueueHeadroom = audioQueueHeadroom;
+  recalculate();
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updateSpeedFactor(float speedFactor)
+{
+  mySpeedFactor = speedFactor;
+  recalculate();
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::maxCyclesPerTimeslice() const
+{
+  return myMaxCyclesPerTimeslice;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::minCyclesPerTimeslice() const
+{
+  return myMinCyclesPerTimeslice;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::linesPerFrame() const
+{
+  return myLinesPerFrame;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::cyclesPerFrame() const
+{
+  return myCyclesPerFrame;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::framesPerSecond() const
+{
+  return myFramesPerSecond;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::cyclesPerSecond() const
+{
+  return myCyclesPerSecond;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::audioFragmentSize() const
+{
+  return myAudioFragmentSize;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::audioSampleRate() const
+{
+  return myAudioSampleRate;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::audioQueueCapacity() const
+{
+  return myAudioQueueCapacity;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::prebufferFragmentCount() const
+{
+  return myPrebufferFragmentCount;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EmulationTiming::recalculate()
+{
+  switch (myFrameLayout) {
+    case FrameLayout::ntsc:
+      myLinesPerFrame = 262;
+      break;
+
+    case FrameLayout::pal:
+      myLinesPerFrame = 312;
+      break;
+
+    default:
+      throw runtime_error("invalid frame layout");
+  }
+
+    switch (myFrameLayout) {
+    case FrameLayout::ntsc:
+      myFramesPerSecond = round(mySpeedFactor * 60);
+      break;
+
+    case FrameLayout::pal:
+      myFramesPerSecond = round(mySpeedFactor * 50);
+      break;
+
+    default:
+      throw runtime_error("invalid frame layout");
+  }
+
+  myCyclesPerFrame = 76 * myLinesPerFrame;
+  myMaxCyclesPerTimeslice = round(mySpeedFactor * myCyclesPerFrame * 2);
+  myMinCyclesPerTimeslice = round(mySpeedFactor * myCyclesPerFrame / 2);
+  myCyclesPerSecond = myCyclesPerFrame * myFramesPerSecond;
+  myAudioFragmentSize = round(mySpeedFactor * AUDIO_HALF_FRAMES_PER_FRAGMENT * myLinesPerFrame);
+  myAudioSampleRate = 2 * myLinesPerFrame * myFramesPerSecond;
+
+  myPrebufferFragmentCount = discreteDivCeil(
+    myPlaybackPeriod * myAudioSampleRate,
+    myAudioFragmentSize * myPlaybackRate
+  ) + myAudioQueueHeadroom;
+
+  myAudioQueueCapacity = std::max(
+    myPrebufferFragmentCount,
+    discreteDivCeil(myMaxCyclesPerTimeslice * myAudioSampleRate, myAudioFragmentSize * myCyclesPerSecond)
+  ) + myAudioQueueExtraFragments;
+}

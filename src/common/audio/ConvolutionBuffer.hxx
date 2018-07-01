@@ -15,9 +15,37 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "SettingsWINDOWS.hxx"
+#ifndef CONVOLUTION_BUFFER_HXX
+#define CONVOLUTION_BUFFER_HXX
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsWINDOWS::SettingsWINDOWS(OSystem& osystem)
-  : Settings(osystem)
-{}
+#include "bspf.hxx"
+
+class ConvolutionBuffer
+{
+  public:
+
+    ConvolutionBuffer(uInt32 size);
+
+    void shift(float nextValue);
+
+    float convoluteWith(float* kernel) const;
+
+  private:
+
+    unique_ptr<float[]> myData;
+
+    uInt32 myFirstIndex;
+
+    uInt32 mySize;
+
+  private:
+
+    ConvolutionBuffer() = delete;
+    ConvolutionBuffer(const ConvolutionBuffer&) = delete;
+    ConvolutionBuffer(ConvolutionBuffer&&) = delete;
+    ConvolutionBuffer& operator=(const ConvolutionBuffer&) = delete;
+    ConvolutionBuffer& operator=(ConvolutionBuffer&&) = delete;
+
+};
+
+#endif // CONVOLUTION_BUFFER_HXX

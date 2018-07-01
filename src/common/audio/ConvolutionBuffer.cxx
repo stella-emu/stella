@@ -15,9 +15,32 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "SettingsWINDOWS.hxx"
+#include "ConvolutionBuffer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsWINDOWS::SettingsWINDOWS(OSystem& osystem)
-  : Settings(osystem)
-{}
+ConvolutionBuffer::ConvolutionBuffer(uInt32 size)
+  : myFirstIndex(0),
+    mySize(size)
+{
+  myData = make_unique<float[]>(mySize);
+  memset(myData.get(), 0, mySize * sizeof(float));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ConvolutionBuffer::shift(float nextValue)
+{
+  myData[myFirstIndex] = nextValue;
+  myFirstIndex = (myFirstIndex + 1) % mySize;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float ConvolutionBuffer::convoluteWith(float* kernel) const
+{
+  float result = 0.;
+
+  for (uInt32 i = 0; i < mySize; i++) {
+    result += kernel[i] * myData[(myFirstIndex + i) % mySize];
+  }
+
+  return result;
+}

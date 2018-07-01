@@ -22,6 +22,7 @@
 
 class Settings;
 class System;
+class DispatchResult;
 
 #ifdef DEBUGGER_SUPPORT
   class Debugger;
@@ -110,10 +111,14 @@ class M6502 : public Serializable
       is executed, someone stops execution, or an error occurs.  Answers
       true iff execution stops normally.
 
-      @param number Indicates the number of instructions to execute
-      @return true iff execution stops normally
+      @param cycles Indicates the number of cycles to execute. Not that the actual
+                    granularity of the CPU is instructions, so this is only accurate up to
+                    a couple of cycles
+      @param result A DispatchResult object that will transport the result
     */
-    bool execute(uInt32 number);
+    void execute(uInt32 cycles, DispatchResult& result);
+
+    bool execute(uInt32 cycles);
 
     /**
       Tell the processor to stop executing instructions.  Invoking this
@@ -318,7 +323,7 @@ class M6502 : public Serializable
       This is the actual dispatch function that does the grunt work. M6502::execute
       wraps it and makes sure that any pending halt is processed before returning.
     */
-    bool _execute(uInt32 number);
+    void _execute(uInt32 cycles, DispatchResult& result);
 
 #ifdef DEBUGGER_SUPPORT
     /**
@@ -326,12 +331,6 @@ class M6502 : public Serializable
       with the CPU and update the flag accordingly.
     */
     void updateStepStateByInstruction();
-
-    /**
-      Make sure that the current hardware state is up to date (TIA & RIOT) and dispatch
-      debugger.
-    */
-    bool startDebugger(const string& message = "", int address = -1, bool read = true);
 #endif  // DEBUGGER_SUPPORT
 
   private:

@@ -27,6 +27,8 @@ class M6532;
 class Cartridge;
 class CompuMate;
 class Debugger;
+class AudioQueue;
+class AudioSettings;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -36,6 +38,7 @@ class Debugger;
 #include "Serializable.hxx"
 #include "EventHandlerConstants.hxx"
 #include "NTSCFilter.hxx"
+#include "EmulationTiming.hxx"
 #include "frame-manager/AbstractFrameManager.hxx"
 
 /**
@@ -49,7 +52,6 @@ struct ConsoleInfo
   string Control0;
   string Control1;
   string DisplayFormat;
-  string InitialFrameRate;
 };
 
 /**
@@ -79,7 +81,7 @@ class Console : public Serializable
       @param props    The properties for the cartridge
     */
     Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
-            const Properties& props);
+            const Properties& props, AudioSettings& audioSettings);
 
     /**
       Destructor
@@ -190,6 +192,11 @@ class Console : public Serializable
     */
     void stateChanged(EventHandlerState state);
 
+    /**
+      Retrieve emulation timing provider.
+     */
+    EmulationTiming& emulationTiming() { return myEmulationTiming; }
+
   public:
     /**
       Toggle between NTSC/PAL/SECAM (and variants) display format.
@@ -270,16 +277,9 @@ class Console : public Serializable
     void changeHeight(int direction);
 
     /**
-      Sets the framerate of the console, which in turn communicates
-      this to all applicable subsystems.
+      Returns the current framerate.
     */
-    void setFramerate(float framerate);
-
-    /**
-      Returns the framerate based on a number of factors
-      (whether 'framerate' is set, what display format is in use, etc)
-    */
-    float getFramerate() const { return myFramerate; }
+    float getFramerate() const;
 
     /**
       Toggles the TIA bit specified in the method name.
@@ -329,6 +329,11 @@ class Console : public Serializable
       the current display format.
     */
     void setTIAProperties();
+
+    /**
+      Create the audio queue
+     */
+    void createAudioQueue();
 
     /**
       Adds the left and right controllers to the console.
@@ -389,6 +394,9 @@ class Console : public Serializable
     // The frame manager instance that is used during emulation.
     unique_ptr<AbstractFrameManager> myFrameManager;
 
+    // The audio fragment queue that connects TIA and audio driver
+    shared_ptr<AudioQueue> myAudioQueue;
+
     // Pointer to the Cartridge (the debugger needs it)
     unique_ptr<Cartridge> myCart;
 
@@ -403,9 +411,6 @@ class Console : public Serializable
 
     // The currently defined display format (NTSC/PAL/SECAM)
     string myDisplayFormat;
-
-    // The currently defined display framerate
-    float myFramerate;
 
     // Display format currently in use
     uInt32 myCurrentFormat;
@@ -422,6 +427,13 @@ class Console : public Serializable
 
     // Contains timing information for this console
     ConsoleTiming myConsoleTiming;
+
+    // Emulation timing provider. This ties together the timing of the core emulation loop
+    // and the parameters that govern audio synthesis
+    EmulationTiming myEmulationTiming;
+
+    // The audio settings
+    AudioSettings& myAudioSettings;
 
     // Table of RGB values for NTSC, PAL and SECAM
     static uInt32 ourNTSCPalette[256];

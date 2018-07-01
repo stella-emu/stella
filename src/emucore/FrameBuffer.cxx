@@ -48,13 +48,9 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myPausedCount(0),
     myStatsEnabled(false),
     myLastScanlines(0),
-    myLastFrameRate(60),
     myGrabMouse(false),
-    myCurrentModeList(nullptr),
-    myTotalTime(0),
-    myTotalFrames(0)
-{
-}
+    myCurrentModeList(nullptr)
+{}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()
@@ -272,29 +268,8 @@ void FrameBuffer::update()
   switch(myOSystem.eventHandler().state())
   {
     case EventHandlerState::EMULATION:
-    {
-      // Run the console for one frame
-      // Note that the debugger can cause a breakpoint to occur, which changes
-      // the EventHandler state 'behind our back' - we need to check for that
-      myOSystem.console().tia().update();
-  #ifdef DEBUGGER_SUPPORT
-      if(myOSystem.eventHandler().state() != EventHandlerState::EMULATION) break;
-  #endif
-      if(myOSystem.eventHandler().frying())
-        myOSystem.console().fry();
-
-      // And update the screen
-      myTIASurface->render();
-
-      // Show frame statistics
-      if(myStatsMsg.enabled)
-        drawFrameStats();
-      else
-        myLastFrameRate = myOSystem.console().getFramerate();
-      myLastScanlines = myOSystem.console().tia().scanlinesLastFrame();
-      myPausedCount = 0;
-      break;  // EventHandlerState::EMULATION
-    }
+      // Do nothing; emulation mode is handled separately (see below)
+      break;
 
     case EventHandlerState::PAUSE:
     {
@@ -357,6 +332,30 @@ void FrameBuffer::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::updateInEmulationMode()
+{
+  // Determine which mode we are in (from the EventHandler)
+  // Take care of S_EMULATE mode here, otherwise let the GUI
+  // figure out what to draw
+
+  myTIASurface->render();
+
+  // Show frame statistics
+  if(myStatsMsg.enabled)
+    drawFrameStats();
+
+  myLastScanlines = myOSystem.console().tia().frameBufferScanlinesLastFrame();
+  myPausedCount = 0;
+
+  // Draw any pending messages
+  if(myMsg.enabled)
+    drawMessage();
+
+  // Do any post-frame stuff
+  postFrameUpdate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showMessage(const string& message, MessagePosition position,
                               bool force)
 {
@@ -367,6 +366,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   // Precompute the message coordinates
   myMsg.text    = message;
   myMsg.counter = uInt32(myOSystem.frameRate()) << 1; // Show message for 2 seconds
+  if(myMsg.counter == 0)  myMsg.counter = 60;
   myMsg.color   = kBtnTextColor;
 
   myMsg.w = font().getStringWidth(myMsg.text) + 10;
@@ -389,9 +389,9 @@ void FrameBuffer::drawFrameStats()
   myStatsMsg.surface->invalidate();
 
   // draw scanlines
-  color = myOSystem.console().tia().scanlinesLastFrame() != myLastScanlines ?
+  color = myOSystem.console().tia().frameBufferScanlinesLastFrame() != myLastScanlines ?
       uInt32(kDbgColorRed) : myStatsMsg.color;
-  std::snprintf(msg, 30, "%3u", myOSystem.console().tia().scanlinesLastFrame());
+  std::snprintf(msg, 30, "%3u", myOSystem.console().tia().frameBufferScanlinesLastFrame());
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
   xPos += font().getStringWidth(msg);
@@ -402,23 +402,10 @@ void FrameBuffer::drawFrameStats()
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
   xPos += font().getStringWidth(msg);
 
-  // draw the effective framerate
-  float frameRate;
-  const TimingInfo& ti = myOSystem.timingInfo();
-  if(ti.totalFrames - myTotalFrames >= myLastFrameRate)
-  {
-    frameRate = 1000000.0 * (ti.totalFrames - myTotalFrames) / (ti.totalTime - myTotalTime);
-    if(frameRate > myOSystem.console().getFramerate() + 1)
-      frameRate = 1;
-    myTotalFrames = ti.totalFrames;
-    myTotalTime = ti.totalTime;
-  }
-  else
-    frameRate = myLastFrameRate;
-  std::snprintf(msg, 30, " @ %5.2ffps", frameRate);
+  std::snprintf(msg, 30, " @ %5.2ffps", myOSystem.console().getFramerate());
+
   myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
-  myLastFrameRate = frameRate;
 
   // draw bankswitching type
   string bsinfo = info.BankSwitch +
@@ -751,8 +738,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
                      myDesktopSize.w, myDesktopSize.h);
 
     // Aspect ratio
-    bool ntsc = myOSystem.console().about().InitialFrameRate == "60";
-    uInt32 aspect = myOSystem.settings().getInt(ntsc ?
+    uInt32 aspect = myOSystem.settings().getInt(myOSystem.console().timing() == ConsoleTiming::ntsc ?
                       "tia.aspectn" : "tia.aspectp");
 
     // Figure our the smallest zoom level we can use

@@ -19,8 +19,9 @@
 #define SOUND_HXX
 
 class OSystem;
+class AudioQueue;
+class EmulationTiming;
 
-#include "Serializable.hxx"
 #include "bspf.hxx"
 
 /**
@@ -29,7 +30,7 @@ class OSystem;
 
   @author Stephen Anthony
 */
-class Sound : public Serializable
+class Sound
 {
   public:
     /**
@@ -48,25 +49,10 @@ class Sound : public Serializable
     virtual void setEnabled(bool enable) = 0;
 
     /**
-      Sets the number of channels (mono or stereo sound).
-
-      @param channels The number of channels
-    */
-    virtual void setChannels(uInt32 channels) = 0;
-
-    /**
-      Sets the display framerate.  Sound generation for NTSC and PAL games
-      depends on the framerate, so we need to set it here.
-
-      @param framerate The base framerate depending on NTSC or PAL ROM
-    */
-    virtual void setFrameRate(float framerate) = 0;
-
-    /**
       Start the sound system, initializing it if necessary.  This must be
       called before any calls are made to derived methods.
     */
-    virtual void open() = 0;
+    virtual void open(shared_ptr<AudioQueue>, EmulationTiming*) = 0;
 
     /**
       Should be called to stop the sound system.  Once called the sound
@@ -82,18 +68,19 @@ class Sound : public Serializable
     virtual void mute(bool state) = 0;
 
     /**
+      Get the fragment size.
+    */
+    virtual uInt32 getFragmentSize() const = 0;
+
+    /**
+      Get the sample rate.
+    */
+    virtual uInt32 getSampleRate() const = 0;
+
+    /**
       Reset the sound device.
     */
     virtual void reset() = 0;
-
-    /**
-      Sets the sound register to a given value.
-
-      @param addr  The register address
-      @param value The value to save into the register
-      @param cycle The system cycle at which the register is being updated
-    */
-    virtual void set(uInt16 addr, uInt8 value, uInt64 cycle) = 0;
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -102,7 +89,7 @@ class Sound : public Serializable
 
       @param percent The new volume percentage level for the sound device
     */
-    virtual void setVolume(Int32 percent) = 0;
+    virtual void setVolume(uInt32 percent) = 0;
 
     /**
       Adjusts the volume of the sound device based on the given direction.

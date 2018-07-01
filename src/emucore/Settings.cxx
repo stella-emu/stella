@@ -21,6 +21,7 @@
 
 #include "OSystem.hxx"
 #include "Version.hxx"
+#include "AudioSettings.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
@@ -34,7 +35,7 @@ Settings::Settings(OSystem& osystem)
 {
   // Video-related options
   setInternal("video", "");
-  setInternal("framerate", "0");
+  setInternal("speed", "1.0");
   setInternal("vsync", "true");
   setInternal("fullscreen", "false");
   setInternal("center", "false");
@@ -69,10 +70,14 @@ Settings::Settings(OSystem& osystem)
   setInternal("tv.bleed", "0.0");
 
   // Sound options
-  setInternal("sound", "true");
-  setInternal("fragsize", "512");
-  setInternal("freq", "31400");
-  setInternal("volume", "100");
+  setInternal(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
+  setInternal(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
+  setInternal(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
+  setInternal(AudioSettings::SETTING_FRAGMENT_SIZE, AudioSettings::DEFAULT_FRAGMENT_SIZE);
+  setInternal(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
+  setInternal(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
+  setInternal(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+  setInternal(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
 
   // Input event options
   setInternal("keymap", "");
@@ -298,6 +303,10 @@ void Settings::validate()
 {
   string s;
   int i;
+  float f;
+
+  f = getFloat("speed");
+  if (f <= 0) setInternal("speed", "1.0");
 
   s = getString("timing");
   if(s != "sleep" && s != "busy")  setInternal("timing", "sleep");
@@ -359,11 +368,7 @@ void Settings::validate()
   if(i < 0 || i > 6) setInternal("plr.tm.horizon", 5);*/
 
 #ifdef SOUND_SUPPORT
-  i = getInt("volume");
-  if(i < 0 || i > 100)  setInternal("volume", "100");
-  i = getInt("freq");
-  if(!(i == 11025 || i == 22050 || i == 31400 || i == 44100 || i == 48000))
-    setInternal("freq", "31400");
+  AudioSettings::normalize(*this);
 #endif
 
   i = getInt("joydeadzone");
@@ -438,15 +443,19 @@ void Settings::usage() const
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
     << "                 user>\n"
-    << "  -framerate    <number>       Display the given number of frames per second (0 to auto-calculate)\n"
+    << "  -speed        <number>       Run emulation at the given speed\n"
     << "  -timing       <sleep|busy>   Use the given type of wait between frames\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << endl
   #ifdef SOUND_SUPPORT
-    << "  -sound        <1|0>          Enable sound generation\n"
-    << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
-    << "  -freq         <number>       Set sound sample output frequency (11025|22050|31400|44100|48000)\n"
-    << "  -volume       <number>       Set the volume (0 - 100)\n"
+    << "  -audio.enabled            <1|0>          Enable audio\n"
+    << "  -audio.preset             <1-5>          Audio preset (or 1 for custom)\n"
+    << "  -audio.sample_rate        <number>       Output sample rate (44100|48000|96000)\n"
+    << "  -audio.fragment_size      <number>       Fragment size (128|256|512|1024|2048|4096)\n"
+    << "  -audio.buffer_size        <number>       Max. number of additional half-frames to buffer (0 -- 20)\n"
+    << "  -audio.headroom           <number>       Additional half-frames to prebuffer (0 -- 20)\n"
+    << "  -audio.resampling_quality <1-3>          Resampling quality\n"
+    << "  -audio.volume             <number>       Vokume (0 -- 100)\n"
     << endl
   #endif
     << "  -tia.zoom      <zoom>         Use the specified zoom level (windowed mode) for TIA image\n"

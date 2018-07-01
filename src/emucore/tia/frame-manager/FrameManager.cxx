@@ -47,9 +47,7 @@ FrameManager::FrameManager()
     myHeight(0),
     myFixedHeight(0),
     myYStart(0),
-    myJitterEnabled(false),
-    myStableFrameLines(-1),
-    myStableFrameHeightCountdown(0)
+    myJitterEnabled(false)
 {
   onLayoutChange();
 }
@@ -62,9 +60,6 @@ void FrameManager::onReset()
   myTotalFrames = 0;
   myVsyncLines = 0;
   myY = 0;
-
-  myStableFrameLines = -1;
-  myStableFrameHeightCountdown = 0;
 
   myJitterEmulation.reset();
 }
@@ -230,9 +225,6 @@ bool FrameManager::onSave(Serializer& out) const
 
   out.putBool(myJitterEnabled);
 
-  out.putInt(myStableFrameLines);
-  out.putInt(myStableFrameHeightCountdown);
-
   return true;
 }
 
@@ -256,9 +248,6 @@ bool FrameManager::onLoad(Serializer& in)
   myYStart = in.getInt();
 
   myJitterEnabled = in.getBool();
-
-  myStableFrameLines = in.getInt();
-  myStableFrameHeightCountdown = in.getInt();
 
   return true;
 }

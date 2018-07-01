@@ -47,6 +47,7 @@
 
 #include "System.hxx"
 #include "M6502.hxx"
+#include "DispatchResult.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::M6502(const Settings& settings)
@@ -208,9 +209,9 @@ inline void M6502::handleHalt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6502::execute(uInt32 number)
+void M6502::execute(uInt32 number, DispatchResult& result)
 {
-  const bool status = _execute(number);
+  _execute(number, result);
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger hack: this ensures that stepping a "STA WSYNC" will actually end at the
@@ -218,18 +219,27 @@ bool M6502::execute(uInt32 number)
   // the halt to take effect). This is safe because as we know that the next cycle will be a read
   // cycle anyway.
   handleHalt();
-
-  // Make sure that the hardware state matches the current system clock. This is necessary
-  // to maintain a consistent state for the debugger after stepping.
-  mySystem->tia().updateEmulation();
-  mySystem->m6532().updateEmulation();
 #endif
 
-  return status;
+  // Make sure that the hardware state matches the current system clock. This is necessary
+  // to maintain a consistent state for the debugger after stepping and to make sure
+  // that audio samples are generated for the whole timeslice.
+  mySystem->tia().updateEmulation();
+  mySystem->m6532().updateEmulation();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline bool M6502::_execute(uInt32 number)
+bool M6502::execute(uInt32 number)
+{
+  DispatchResult result;
+
+  _execute(number, result);
+
+  return result.isSuccess();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void M6502::_execute(uInt32 cycles, DispatchResult& result)
 {
   // Clear all of the execution status bits except for the fatal error bit
   myExecutionStatus &= FatalErrorBit;
@@ -239,32 +249,43 @@ inline bool M6502::_execute(uInt32 number)
   M6532& riot = mySystem->m6532();
 #endif
 
+  uInt64 previousCycles = mySystem->cycles();
+  uInt32 currentCycles = 0;
+
   // Loop until execution is stopped or a fatal error occurs
   for(;;)
   {
-    for(; !myExecutionStatus && (number != 0); --number)
+    while (!myExecutionStatus && currentCycles < cycles * SYSTEM_CYCLES_PER_CPU)
     {
   #ifdef DEBUGGER_SUPPORT
-      if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
-      {
-        bool read = myJustHitReadTrapFlag;
-        myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
+      // Don't break if we haven't actually executed anything yet
+      if (currentCycles > 0) {
+        if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
+        {
+          bool read = myJustHitReadTrapFlag;
+          myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
 
-        if (startDebugger(myHitTrapInfo.message, myHitTrapInfo.address, read)) return true;
+          result.setDebugger(currentCycles, myHitTrapInfo.message, myHitTrapInfo.address, read);
+          return;
+        }
+
+        if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC)) {
+          result.setDebugger(currentCycles, "BP: ", PC);
+          return;
+        }
+
+        int cond = evalCondBreaks();
+        if(cond > -1)
+        {
+          stringstream msg;
+          msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
+
+          result.setDebugger(currentCycles, msg.str());
+          return;
+        }
       }
 
-      if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC) && startDebugger("BP: ", PC))
-        return true;
-
-      int cond = evalCondBreaks();
-      if(cond > -1)
-      {
-        stringstream msg;
-        msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
-        if (startDebugger(msg.str())) return true;
-      }
-
-      cond = evalCondSaveStates();
+      int cond = evalCondSaveStates();
       if(cond > -1)
       {
         stringstream msg;
@@ -294,6 +315,8 @@ inline bool M6502::_execute(uInt32 number)
           myExecutionStatus |= FatalErrorBit;
       }
 
+      currentCycles = (mySystem->cycles() - previousCycles);
+
   #ifdef DEBUGGER_SUPPORT
       if(myStepStateByInstruction)
       {
@@ -318,21 +341,24 @@ inline bool M6502::_execute(uInt32 number)
     if(myExecutionStatus & StopExecutionBit)
     {
       // Yes, so answer that everything finished fine
-      return true;
+      result.setOk(currentCycles);
+      return;
     }
 
     // See if a fatal error has occured
     if(myExecutionStatus & FatalErrorBit)
     {
       // Yes, so answer that something when wrong
-      return false;
+      result.setFatal(currentCycles + icycles);
+      return;
     }
 
     // See if we've executed the specified number of instructions
-    if(number == 0)
+    if (currentCycles >= cycles * SYSTEM_CYCLES_PER_CPU)
     {
       // Yes, so answer that everything finished fine
-      return true;
+      result.setOk(currentCycles);
+      return;
     }
   }
 }
@@ -604,17 +630,6 @@ void M6502::updateStepStateByInstruction()
 {
   myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() ||
                              myTrapConds.size();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6502::startDebugger(const string& message, int address, bool read)
-{
-  handleHalt();
-
-  mySystem->tia().updateEmulation();
-  mySystem->m6532().updateEmulation();
-
-  return myDebugger->start(message, address, read);
 }
 
 #endif  // DEBUGGER_SUPPORT

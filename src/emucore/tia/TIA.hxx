@@ -20,7 +20,6 @@
 
 #include "bspf.hxx"
 #include "Console.hxx"
-#include "Sound.hxx"
 #include "Settings.hxx"
 #include "Device.hxx"
 #include "Serializer.hxx"
@@ -29,6 +28,7 @@
 #include "DelayQueueIterator.hxx"
 #include "frame-manager/AbstractFrameManager.hxx"
 #include "FrameLayout.hxx"
+#include "Audio.hxx"
 #include "Background.hxx"
 #include "Playfield.hxx"
 #include "Missile.hxx"
@@ -39,6 +39,9 @@
 #include "DelayQueueIterator.hxx"
 #include "Control.hxx"
 #include "System.hxx"
+
+class AudioQueue;
+class DispatchResult;
 
 /**
   This class is a device that emulates the Television Interface Adaptor
@@ -96,21 +99,26 @@ class TIA : public Device
       Create a new TIA for the specified console
 
       @param console   The console the TIA is associated with
-      @param sound     The sound object the TIA is associated with
       @param settings  The settings object for this TIA device
     */
-    TIA(Console& console, Sound& sound, Settings& settings);
+    TIA(Console& console, Settings& settings);
 
     virtual ~TIA() = default;
 
   public:
     /**
-     * Configure the frame manager.
+      Configure the frame manager.
      */
     void setFrameManager(AbstractFrameManager *frameManager);
 
     /**
-     * Clear the configured frame manager and deteach the lifecycle callbacks.
+      Set the audio queue. This needs to be dynamic as the queue is created after
+      the timing has been determined.
+    */
+    void setAudioQueue(shared_ptr<AudioQueue> audioQueue);
+
+    /**
+      Clear the configured frame manager and deteach the lifecycle callbacks.
      */
     void clearFrameManager();
 
@@ -192,7 +200,25 @@ class TIA : public Device
       desired frame rate to update the TIA.  Invoking this method will update
       the graphics buffer and generate the corresponding audio samples.
     */
-    void update();
+    void update(DispatchResult& result, uInt32 maxCycles = 50000);
+
+    void update(uInt32 maxCycles = 50000);
+
+    /**
+      Did we generate a new frame?
+     */
+    bool newFramePending() { return myNewFramePending; }
+
+    /**
+      Render the pending frame to the framebuffer and clear the flag.
+     */
+    void renderToFrameBuffer();
+
+    /**
+      Return the buffer that holds the currently drawing TIA frame
+      (the TIA output widget needs this).
+     */
+    uInt8* outputBuffer() { return myBackBuffer; }
 
     /**
       Returns a pointer to the internal frame buffer.
@@ -222,13 +248,12 @@ class TIA : public Device
     */
     ConsoleTiming consoleTiming() const { return myConsole.timing(); }
 
-    /**
-      Enables/disables auto-frame calculation.  If enabled, the TIA
-      re-adjusts the framerate at regular intervals.
+    float frameRate() const { return myFrameManager ? myFrameManager->frameRate() : 0; }
 
-      @param enabled  Whether to enable or disable all auto-frame calculation
-    */
-    void enableAutoFrame(bool enabled) { myAutoFrameEnabled = enabled; }
+    /**
+      The same, but for the frame in the frame buffer.
+     */
+    float frameBufferFrameRate() const { return myFrameBufferFrameRate; }
 
     /**
       Enables/disables color-loss for PAL modes only.
@@ -274,6 +299,11 @@ class TIA : public Device
       @return The total number of scanlines generated in the last frame.
     */
     uInt32 scanlinesLastFrame() const { return myFrameManager->scanlinesLastFrame(); }
+
+    /**
+      The same, but for the frame in the frame buffer.
+     */
+    uInt32 frameBufferScanlinesLastFrame() const { return myFrameBufferScanlines; }
 
     /**
       Answers the total system cycles from the start of the emulation.
@@ -604,7 +634,6 @@ class TIA : public Device
   private:
 
     Console& myConsole;
-    Sound& mySound;
     Settings& mySettings;
 
     /**
@@ -641,6 +670,8 @@ class TIA : public Device
     Player myPlayer1;
     Ball myBall;
 
+    Audio myAudio;
+
     /**
      * The paddle readout circuits.
      */
@@ -654,6 +685,19 @@ class TIA : public Device
 
     // Pointer to the internal color-index-based frame buffer
     uInt8 myFramebuffer[160 * TIAConstants::frameBufferHeight];
+
+    // The frame is rendered to the backbuffer and only copied to the framebuffer
+    // upon completion
+    uInt8 myBackBuffer[160 * TIAConstants::frameBufferHeight];
+    uInt8 myFrontBuffer[160 * TIAConstants::frameBufferHeight];
+
+    // We snapshot frame statistics when the back buffer is copied to the front buffer
+    // and when the front buffer is copied to the frame buffer
+    uInt32 myFrontBufferScanlines, myFrameBufferScanlines;
+    float myFrontBufferFrameRate, myFrameBufferFrameRate;
+
+    // Did we emit a frame?
+    bool myNewFramePending;
 
     /**
      * Setting this to true injects random values into undefined reads.
@@ -740,22 +784,15 @@ class TIA : public Device
     uInt8 myColorHBlank;
 
     /**
-     * The total number of color clocks since emulation started. This is a
-     * double a) to avoid overflows and b) as it will enter floating point
-     * expressions in the paddle readout simulation anyway.
+     * The total number of color clocks since emulation started.
      */
-    double myTimestamp;
+    uInt64 myTimestamp;
 
     /**
      * The "shadow registers" track the last written register value for the
      * debugger.
      */
     uInt8 myShadowRegisters[64];
-
-    /**
-     * Automatic framerate correction based on number of scanlines.
-     */
-    bool myAutoFrameEnabled;
 
     /**
      * Indicates if color loss should be enabled or disabled.  Color loss

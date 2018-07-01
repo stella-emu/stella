@@ -104,7 +104,6 @@
 		2D91746109BA90380026E9FF /* TogglePixelWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D20F9FF08C603EC00A73076 /* TogglePixelWidget.hxx */; };
 		2D91746209BA90380026E9FF /* ToggleWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D20FA0108C603EC00A73076 /* ToggleWidget.hxx */; };
 		2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */; };
-		2D91746509BA90380026E9FF /* TIASnd.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE7242E08CE910900C889A8 /* TIASnd.hxx */; };
 		2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D2331900900B5EF00613B1F /* AudioWidget.hxx */; };
 		2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */; };
 		2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF61096E269100A518FE /* InputDialog.hxx */; };
@@ -202,7 +201,6 @@
 		2D91750309BA90380026E9FF /* TogglePixelWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D20F9FE08C603EC00A73076 /* TogglePixelWidget.cxx */; };
 		2D91750409BA90380026E9FF /* ToggleWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D20FA0008C603EC00A73076 /* ToggleWidget.cxx */; };
 		2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */; };
-		2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE7242D08CE910900C889A8 /* TIASnd.cxx */; };
 		2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D23318F0900B5EF00613B1F /* AudioWidget.cxx */; };
 		2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */; };
 		2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF60096E269100A518FE /* InputDialog.cxx */; };
@@ -511,6 +509,9 @@
 		DCC527D610B9DA19005E1287 /* System.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CE10B9DA19005E1287 /* System.cxx */; };
 		DCC527D710B9DA19005E1287 /* System.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CF10B9DA19005E1287 /* System.hxx */; };
 		DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527D810B9DA6A005E1287 /* bspf.hxx */; };
+		DCC6A4B120A2622500863C59 /* Resampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC6A4AE20A2622500863C59 /* Resampler.hxx */; };
+		DCC6A4B220A2622500863C59 /* SimpleResampler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC6A4AF20A2622500863C59 /* SimpleResampler.cxx */; };
+		DCC6A4B320A2622500863C59 /* SimpleResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */; };
 		DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCA26B11FA64D5E000EE4D8 /* AbstractFrameManager.hxx */; };
 		DCCA26B41FA64D5E000EE4D8 /* FrameManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCA26B21FA64D5E000EE4D8 /* FrameManager.hxx */; };
 		DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */; };
@@ -564,6 +565,8 @@
 		DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */; };
 		DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */; };
 		DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */; };
+		DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */; };
+		DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDFF08020B781B0001227C0 /* DispatchResult.hxx */; };
 		DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */; };
 		DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */; };
 		DCE395F016CB0B5F008DB1E5 /* FSNodeZIP.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */; };
@@ -602,7 +605,6 @@
 		DCF3A6FD1DFC75E3008A8AF3 /* Playfield.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */; };
 		DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */; };
 		DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */; };
-		DCF3A7021DFC76BC008A8AF3 /* TIATypes.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */; };
 		DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B40F93993B00B25D7A /* SoundNull.hxx */; };
 		DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467BC0F9399F500B25D7A /* Version.hxx */; };
 		DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF467BE0F939A1400B25D7A /* CartEF.cxx */; };
@@ -615,6 +617,8 @@
 		DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF7B0DB10A762FC007A2870 /* CartFA.cxx */; };
 		DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DC10A762FC007A2870 /* CartFA.hxx */; };
 		DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFB9FAB1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx */; };
+		DCFCDE7220C9E66500915CBE /* EmulationWorker.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFCDE7020C9E66500915CBE /* EmulationWorker.cxx */; };
+		DCFCDE7320C9E66500915CBE /* EmulationWorker.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFCDE7120C9E66500915CBE /* EmulationWorker.hxx */; };
 		DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */; };
 		DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */; };
 		DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */; };
@@ -625,8 +629,20 @@
 		E0306E0F1F93E916003DDD52 /* JitterEmulation.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0306E091F93E915003DDD52 /* JitterEmulation.cxx */; };
 		E0306E101F93E916003DDD52 /* FrameLayoutDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0306E0A1F93E916003DDD52 /* FrameLayoutDetector.cxx */; };
 		E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */; };
+		E034A5EE209FB25D00C89E9E /* EmulationTiming.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */; };
+		E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */; };
 		E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */; };
 		E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */; };
+		E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4139201E901C004A3391 /* AudioQueue.hxx */; };
+		E09F413C201E901D004A3391 /* AudioQueue.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413A201E901D004A3391 /* AudioQueue.cxx */; };
+		E09F4141201E9050004A3391 /* Audio.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F413D201E904F004A3391 /* Audio.hxx */; };
+		E09F4142201E9050004A3391 /* Audio.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413E201E904F004A3391 /* Audio.cxx */; };
+		E09F4143201E9050004A3391 /* AudioChannel.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413F201E904F004A3391 /* AudioChannel.cxx */; };
+		E09F4144201E9050004A3391 /* AudioChannel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4140201E904F004A3391 /* AudioChannel.hxx */; };
+		E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */; };
+		E0DCD3A820A64E96000B614E /* LanczosResampler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */; };
+		E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */; };
+		E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -874,8 +890,6 @@
 		2DE2DF8D0627AE34006BEC99 /* Sound.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Sound.hxx; sourceTree = "<group>"; };
 		2DE2DF8E0627AE34006BEC99 /* Switches.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Switches.cxx; sourceTree = "<group>"; };
 		2DE2DF8F0627AE34006BEC99 /* Switches.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Switches.hxx; sourceTree = "<group>"; };
-		2DE7242D08CE910900C889A8 /* TIASnd.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TIASnd.cxx; sourceTree = "<group>"; };
-		2DE7242E08CE910900C889A8 /* TIASnd.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = TIASnd.hxx; sourceTree = "<group>"; };
 		2DEB3D4C0629BD24007EBBD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		2DEF21F808BC033500B246B4 /* CheckListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CheckListWidget.cxx; sourceTree = "<group>"; };
 		2DEF21F908BC033500B246B4 /* CheckListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CheckListWidget.hxx; sourceTree = "<group>"; };
@@ -1187,6 +1201,9 @@
 		DCC527CE10B9DA19005E1287 /* System.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = System.cxx; sourceTree = "<group>"; };
 		DCC527CF10B9DA19005E1287 /* System.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = System.hxx; sourceTree = "<group>"; };
 		DCC527D810B9DA6A005E1287 /* bspf.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bspf.hxx; sourceTree = "<group>"; };
+		DCC6A4AE20A2622500863C59 /* Resampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Resampler.hxx; path = audio/Resampler.hxx; sourceTree = "<group>"; };
+		DCC6A4AF20A2622500863C59 /* SimpleResampler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SimpleResampler.cxx; path = audio/SimpleResampler.cxx; sourceTree = "<group>"; };
+		DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SimpleResampler.hxx; path = audio/SimpleResampler.hxx; sourceTree = "<group>"; };
 		DCCA26B11FA64D5E000EE4D8 /* AbstractFrameManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AbstractFrameManager.hxx; sourceTree = "<group>"; };
 		DCCA26B21FA64D5E000EE4D8 /* FrameManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameManager.hxx; sourceTree = "<group>"; };
 		DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControllerWidget.hxx; sourceTree = "<group>"; };
@@ -1240,6 +1257,8 @@
 		DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConfigPathDialog.hxx; sourceTree = "<group>"; };
 		DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SnapshotDialog.cxx; sourceTree = "<group>"; };
 		DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SnapshotDialog.hxx; sourceTree = "<group>"; };
+		DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DispatchResult.cxx; sourceTree = "<group>"; };
+		DCDFF08020B781B0001227C0 /* DispatchResult.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DispatchResult.hxx; sourceTree = "<group>"; };
 		DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodePOSIX.hxx; sourceTree = "<group>"; };
 		DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodeFactory.hxx; sourceTree = "<group>"; };
 		DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FSNodeZIP.cxx; sourceTree = "<group>"; };
@@ -1278,7 +1297,6 @@
 		DCF3A6E31DFC75E3008A8AF3 /* Playfield.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Playfield.hxx; sourceTree = "<group>"; };
 		DCF3A6E41DFC75E3008A8AF3 /* TIA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TIA.cxx; sourceTree = "<group>"; };
 		DCF3A6E51DFC75E3008A8AF3 /* TIA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TIA.hxx; sourceTree = "<group>"; };
-		DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TIATypes.hxx; sourceTree = "<group>"; };
 		DCF467B40F93993B00B25D7A /* SoundNull.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoundNull.hxx; sourceTree = "<group>"; };
 		DCF467BC0F9399F500B25D7A /* Version.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Version.hxx; sourceTree = "<group>"; };
 		DCF467BE0F939A1400B25D7A /* CartEF.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartEF.cxx; sourceTree = "<group>"; };
@@ -1291,6 +1309,8 @@
 		DCF7B0DB10A762FC007A2870 /* CartFA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA.cxx; sourceTree = "<group>"; };
 		DCF7B0DC10A762FC007A2870 /* CartFA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFA.hxx; sourceTree = "<group>"; };
 		DCFB9FAB1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueIteratorImpl.hxx; sourceTree = "<group>"; };
+		DCFCDE7020C9E66500915CBE /* EmulationWorker.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmulationWorker.cxx; sourceTree = "<group>"; };
+		DCFCDE7120C9E66500915CBE /* EmulationWorker.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EmulationWorker.hxx; sourceTree = "<group>"; };
 		DCFF14CB18B0260300A20364 /* EventHandlerSDL2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EventHandlerSDL2.cxx; sourceTree = "<group>"; };
 		DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventHandlerSDL2.hxx; sourceTree = "<group>"; };
 		DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComboDialog.cxx; sourceTree = "<group>"; };
@@ -1301,6 +1321,18 @@
 		E0306E091F93E915003DDD52 /* JitterEmulation.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JitterEmulation.cxx; sourceTree = "<group>"; };
 		E0306E0A1F93E916003DDD52 /* FrameLayoutDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameLayoutDetector.cxx; sourceTree = "<group>"; };
 		E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JitterEmulation.hxx; sourceTree = "<group>"; };
+		E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmulationTiming.cxx; sourceTree = "<group>"; };
+		E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EmulationTiming.hxx; sourceTree = "<group>"; };
+		E09F4139201E901C004A3391 /* AudioQueue.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioQueue.hxx; sourceTree = "<group>"; };
+		E09F413A201E901D004A3391 /* AudioQueue.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioQueue.cxx; sourceTree = "<group>"; };
+		E09F413D201E904F004A3391 /* Audio.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Audio.hxx; sourceTree = "<group>"; };
+		E09F413E201E904F004A3391 /* Audio.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Audio.cxx; sourceTree = "<group>"; };
+		E09F413F201E904F004A3391 /* AudioChannel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioChannel.cxx; sourceTree = "<group>"; };
+		E09F4140201E904F004A3391 /* AudioChannel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioChannel.hxx; sourceTree = "<group>"; };
+		E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LanczosResampler.hxx; path = audio/LanczosResampler.hxx; sourceTree = "<group>"; };
+		E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LanczosResampler.cxx; path = audio/LanczosResampler.cxx; sourceTree = "<group>"; };
+		E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConvolutionBuffer.hxx; path = audio/ConvolutionBuffer.hxx; sourceTree = "<group>"; };
+		E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConvolutionBuffer.cxx; path = audio/ConvolutionBuffer.cxx; sourceTree = "<group>"; };
 		E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractFrameManager.cxx; sourceTree = "<group>"; };
 		E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FrameManager.cxx; sourceTree = "<group>"; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
@@ -1578,6 +1610,9 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				DCC6A4AD20A2620D00863C59 /* audio */,
+				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
+				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
 				DC79F81017A88D9E00288B91 /* Base.cxx */,
 				DC79F81117A88D9E00288B91 /* Base.hxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
@@ -1756,8 +1791,14 @@
 				2DE2DF3B0627AE07006BEC99 /* Control.hxx */,
 				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,
 				DCC527C910B9DA19005E1287 /* Device.hxx */,
+				DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */,
+				DCDFF08020B781B0001227C0 /* DispatchResult.hxx */,
 				2DE2DF3E0627AE07006BEC99 /* Driving.cxx */,
 				2DE2DF3F0627AE07006BEC99 /* Driving.hxx */,
+				E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */,
+				E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */,
+				DCFCDE7020C9E66500915CBE /* EmulationWorker.cxx */,
+				DCFCDE7120C9E66500915CBE /* EmulationWorker.hxx */,
 				2DE2DF410627AE07006BEC99 /* Event.hxx */,
 				2D733D6E062895B2006265D9 /* EventHandler.cxx */,
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
@@ -1815,11 +1856,8 @@
 				DCD2839612E39F1200A808DC /* Thumbulator.cxx */,
 				DCD2839712E39F1200A808DC /* Thumbulator.hxx */,
 				DCE903E31DF5DCD10080A7F3 /* tia */,
-				2DE7242D08CE910900C889A8 /* TIASnd.cxx */,
-				2DE7242E08CE910900C889A8 /* TIASnd.hxx */,
 				DC2AADAC194F389C0026C7A4 /* TIASurface.cxx */,
 				DC2AADAD194F389C0026C7A4 /* TIASurface.hxx */,
-				DCF3A7011DFC76BC008A8AF3 /* TIATypes.hxx */,
 				DC1B2EC21E50036100F62837 /* TrakBall.hxx */,
 			);
 			path = emucore;
@@ -2020,6 +2058,20 @@
 			path = tv_filters;
 			sourceTree = "<group>";
 		};
+		DCC6A4AD20A2620D00863C59 /* audio */ = {
+			isa = PBXGroup;
+			children = (
+				E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */,
+				E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */,
+				E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */,
+				E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */,
+				DCC6A4AE20A2622500863C59 /* Resampler.hxx */,
+				DCC6A4AF20A2622500863C59 /* SimpleResampler.cxx */,
+				DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */,
+			);
+			name = audio;
+			sourceTree = "<group>";
+		};
 		DCCC0C9109C3541E0088BFF1 /* cheat */ = {
 			isa = PBXGroup;
 			children = (
@@ -2070,6 +2122,10 @@
 		DCE903E31DF5DCD10080A7F3 /* tia */ = {
 			isa = PBXGroup;
 			children = (
+				E09F413E201E904F004A3391 /* Audio.cxx */,
+				E09F413D201E904F004A3391 /* Audio.hxx */,
+				E09F413F201E904F004A3391 /* AudioChannel.cxx */,
+				E09F4140201E904F004A3391 /* AudioChannel.hxx */,
 				DCF3A6CD1DFC75E3008A8AF3 /* Background.cxx */,
 				DCF3A6CE1DFC75E3008A8AF3 /* Background.hxx */,
 				DCF3A6CF1DFC75E3008A8AF3 /* Ball.cxx */,
@@ -2124,11 +2180,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D9173CB09BA90380026E9FF /* SDLMain.h in Headers */,
+				E09F4141201E9050004A3391 /* Audio.hxx in Headers */,
 				2D9173CC09BA90380026E9FF /* Booster.hxx in Headers */,
 				2D9173CD09BA90380026E9FF /* Cart.hxx in Headers */,
 				2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */,
 				2D9173CF09BA90380026E9FF /* Cart3F.hxx in Headers */,
 				DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */,
+				E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */,
 				DC3EE86A1E2C0E6D00905161 /* trees.h in Headers */,
 				2D9173D009BA90380026E9FF /* Cart4K.hxx in Headers */,
 				2D9173D109BA90380026E9FF /* CartAR.hxx in Headers */,
@@ -2171,6 +2229,7 @@
 				2D9173EE09BA90380026E9FF /* Serializer.hxx in Headers */,
 				2D9173EF09BA90380026E9FF /* Sound.hxx in Headers */,
 				2D9173F009BA90380026E9FF /* Switches.hxx in Headers */,
+				E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */,
 				2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */,
 				2D9173FA09BA90380026E9FF /* FrameBuffer.hxx in Headers */,
 				2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */,
@@ -2186,6 +2245,7 @@
 				2D91740309BA90380026E9FF /* Command.hxx in Headers */,
 				DC3EE85B1E2C0E6D00905161 /* deflate.h in Headers */,
 				2D91740409BA90380026E9FF /* Dialog.hxx in Headers */,
+				E09F4144201E9050004A3391 /* AudioChannel.hxx in Headers */,
 				2D91740509BA90380026E9FF /* DialogContainer.hxx in Headers */,
 				DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */,
 				2D91740609BA90380026E9FF /* GameInfoDialog.hxx in Headers */,
@@ -2223,6 +2283,7 @@
 				DC3EE86F1E2C0E6D00905161 /* zutil.h in Headers */,
 				2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */,
 				DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */,
+				E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */,
 				2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */,
 				2D91742909BA90380026E9FF /* TIADebug.hxx in Headers */,
 				2D91742A09BA90380026E9FF /* YaccParser.hxx in Headers */,
@@ -2246,6 +2307,7 @@
 				2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */,
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
 				2D91745709BA90380026E9FF /* DataGridWidget.hxx in Headers */,
+				DCC6A4B120A2622500863C59 /* Resampler.hxx in Headers */,
 				DCF3A6EC1DFC75E3008A8AF3 /* DelayQueue.hxx in Headers */,
 				DCA078341F8C1B04008EFEE5 /* LinkedObjectPool.hxx in Headers */,
 				2D91745809BA90380026E9FF /* DebuggerDialog.hxx in Headers */,
@@ -2267,7 +2329,6 @@
 				2D91746109BA90380026E9FF /* TogglePixelWidget.hxx in Headers */,
 				2D91746209BA90380026E9FF /* ToggleWidget.hxx in Headers */,
 				2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */,
-				2D91746509BA90380026E9FF /* TIASnd.hxx in Headers */,
 				DC1BC6672066B4390076F74A /* PKeyboardHandler.hxx in Headers */,
 				2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */,
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
@@ -2285,6 +2346,7 @@
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
 				DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */,
 				DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */,
+				DCC6A4B320A2622500863C59 /* SimpleResampler.hxx in Headers */,
 				DC6DC91F205DB879004A5FC3 /* PhysicalJoystick.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
 				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
@@ -2298,6 +2360,7 @@
 				DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */,
 				DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */,
 				DC0DF86A0F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx in Headers */,
+				E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */,
 				DC5D2C520F117CFD004D1660 /* Rect.hxx in Headers */,
 				DC71EAA81FDA070D008827CB /* CartMNetworkWidget.hxx in Headers */,
 				DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */,
@@ -2309,7 +2372,6 @@
 				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
 				DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */,
 				DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */,
-				DCF3A7021DFC76BC008A8AF3 /* TIATypes.hxx in Headers */,
 				DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */,
 				DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */,
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
@@ -2350,6 +2412,7 @@
 				DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */,
 				DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */,
 				DCCA26B41FA64D5E000EE4D8 /* FrameManager.hxx in Headers */,
+				DCFCDE7320C9E66500915CBE /* EmulationWorker.hxx in Headers */,
 				DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */,
 				DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */,
 				DCF3A6FB1DFC75E3008A8AF3 /* Player.hxx in Headers */,
@@ -2386,6 +2449,7 @@
 				DC6DC921205DB879004A5FC3 /* PJoystickHandler.hxx in Headers */,
 				DCAAE5DF1715887B0080BB82 /* CartEFSCWidget.hxx in Headers */,
 				DCAAE5E11715887B0080BB82 /* CartEFWidget.hxx in Headers */,
+				DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */,
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
 				DCAAE5E71715887B0080BB82 /* CartF4Widget.hxx in Headers */,
@@ -2551,6 +2615,7 @@
 				DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */,
 				2D91747609BA90380026E9FF /* Cart.cxx in Sources */,
 				2D91747709BA90380026E9FF /* Cart2K.cxx in Sources */,
+				E034A5EE209FB25D00C89E9E /* EmulationTiming.cxx in Sources */,
 				2D91747809BA90380026E9FF /* Cart3F.cxx in Sources */,
 				2D91747909BA90380026E9FF /* Cart4K.cxx in Sources */,
 				2D91747A09BA90380026E9FF /* CartAR.cxx in Sources */,
@@ -2559,9 +2624,11 @@
 				DCF3A6FC1DFC75E3008A8AF3 /* Playfield.cxx in Sources */,
 				2D91747C09BA90380026E9FF /* CartDPC.cxx in Sources */,
 				2D91747D09BA90380026E9FF /* CartE0.cxx in Sources */,
+				E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */,
 				2D91747E09BA90380026E9FF /* CartE7.cxx in Sources */,
 				DC9616321F817830008A2206 /* PointingDeviceWidget.cxx in Sources */,
 				2D91747F09BA90380026E9FF /* CartF4.cxx in Sources */,
+				DCFCDE7220C9E66500915CBE /* EmulationWorker.cxx in Sources */,
 				2D91748009BA90380026E9FF /* CartF4SC.cxx in Sources */,
 				2D91748109BA90380026E9FF /* CartF6.cxx in Sources */,
 				2D91748209BA90380026E9FF /* CartF6SC.cxx in Sources */,
@@ -2578,6 +2645,7 @@
 				2D91748F09BA90380026E9FF /* Keyboard.cxx in Sources */,
 				2D91749009BA90380026E9FF /* M6532.cxx in Sources */,
 				2D91749109BA90380026E9FF /* MD5.cxx in Sources */,
+				E09F4143201E9050004A3391 /* AudioChannel.cxx in Sources */,
 				DC44019E1F1A5D01008C08F6 /* ColorWidget.cxx in Sources */,
 				2D91749309BA90380026E9FF /* Paddles.cxx in Sources */,
 				2D91749409BA90380026E9FF /* Props.cxx in Sources */,
@@ -2650,6 +2718,7 @@
 				2D9174FA09BA90380026E9FF /* DebuggerDialog.cxx in Sources */,
 				DCF3A6E91DFC75E3008A8AF3 /* Ball.cxx in Sources */,
 				2D9174FB09BA90380026E9FF /* PromptWidget.cxx in Sources */,
+				DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */,
 				2D9174FC09BA90380026E9FF /* RamWidget.cxx in Sources */,
 				DC2AADAE194F389C0026C7A4 /* CartDASH.cxx in Sources */,
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
@@ -2668,7 +2737,7 @@
 				DC71EA9D1FDA06D2008827CB /* CartE78K.cxx in Sources */,
 				DC73BD851915E5B1003FAFAD /* FBSurfaceSDL2.cxx in Sources */,
 				DCDDEAC41F5DBF0400C67366 /* RewindManager.cxx in Sources */,
-				2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */,
+				E09F413C201E901D004A3391 /* AudioQueue.cxx in Sources */,
 				DC71EA9F1FDA06D2008827CB /* CartMNetwork.cxx in Sources */,
 				2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */,
 				2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */,
@@ -2753,6 +2822,7 @@
 				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
 				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
+				E09F4142201E9050004A3391 /* Audio.cxx in Sources */,
 				DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */,
 				DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */,
 				DCCF49B714B7544A00814FAB /* PaddleWidget.cxx in Sources */,
@@ -2774,6 +2844,7 @@
 				DC3EE8601E2C0E6D00905161 /* gzwrite.c in Sources */,
 				DCAAE5D71715887B0080BB82 /* Cart4KWidget.cxx in Sources */,
 				DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */,
+				DCC6A4B220A2622500863C59 /* SimpleResampler.cxx in Sources */,
 				DCAAE5D91715887B0080BB82 /* Cart0840Widget.cxx in Sources */,
 				DCAAE5DB1715887B0080BB82 /* CartCVWidget.cxx in Sources */,
 				DCAAE5DE1715887B0080BB82 /* CartEFSCWidget.cxx in Sources */,
@@ -2802,6 +2873,7 @@
 				DC676A4D1729A0B000E4E73D /* CartDPCWidget.cxx in Sources */,
 				DC676A4F1729A0B000E4E73D /* CartE0Widget.cxx in Sources */,
 				DC676A511729A0B000E4E73D /* CartE7Widget.cxx in Sources */,
+				E0DCD3A820A64E96000B614E /* LanczosResampler.cxx in Sources */,
 				DC676A531729A0B000E4E73D /* CartFA2Widget.cxx in Sources */,
 				DC676A551729A0B000E4E73D /* CartFEWidget.cxx in Sources */,
 				DC676A591729A0B000E4E73D /* CartSBWidget.cxx in Sources */,

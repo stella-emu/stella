@@ -113,9 +113,15 @@ class FrameBuffer
 
     /**
       Updates the display, which depending on the current mode could mean
-      drawing the TIA, any pending menus, etc.
+      drawing the TIA, any pending menus, etc. Returns the numbers of CPU cycles
+      spent during emulation, or -1 if not applicable.
     */
     void update();
+
+    /**
+      There is a dedicated update method for emulation mode.
+     */
+    void updateInEmulationMode();
 
     /**
       Shows a message onscreen.
@@ -522,7 +528,6 @@ class FrameBuffer
     Message myStatsMsg;
     bool myStatsEnabled;
     uInt32 myLastScanlines;
-    float myLastFrameRate;
 
     bool myGrabMouse;
 
@@ -539,9 +544,6 @@ class FrameBuffer
 
     // Holds UI palette data (standard and classic colours)
     static uInt32 ourGUIColors[3][kNumColors-256];
-
-    uInt64 myTotalTime;
-    uInt64 myTotalFrames;
 
   private:
     // Following constructors and assignment operators not supported

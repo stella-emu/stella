@@ -55,6 +55,8 @@
 #include "Version.hxx"
 #include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
+#include "AudioQueue.hxx"
+#include "AudioSettings.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "frame-manager/FrameLayoutDetector.hxx"
 #include "frame-manager/YStartDetector.hxx"
@@ -75,17 +77,17 @@ namespace {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
-                 const Properties& props)
+                 const Properties& props, AudioSettings& audioSettings)
   : myOSystem(osystem),
     myEvent(osystem.eventHandler().event()),
     myProperties(props),
     myCart(std::move(cart)),
     myDisplayFormat(""),  // Unknown TV format @ start
-    myFramerate(0.0),     // Unknown framerate @ start
     myCurrentFormat(0),   // Unknown format @ start,
     myAutodetectedYstart(0),
     myUserPaletteDefined(false),
-    myConsoleTiming(ConsoleTiming::ntsc)
+    myConsoleTiming(ConsoleTiming::ntsc),
+    myAudioSettings(audioSettings)
 {
   // Load user-defined palette for this ROM
   loadUserPalette();
@@ -93,7 +95,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Create subsystems for the console
   my6502 = make_unique<M6502>(myOSystem.settings());
   myRiot = make_unique<M6532>(*this, myOSystem.settings());
-  myTIA  = make_unique<TIA>(*this, myOSystem.sound(), myOSystem.settings());
+  myTIA  = make_unique<TIA>(*this, myOSystem.settings());
   myFrameManager = make_unique<FrameManager>();
   mySwitches = make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
 
@@ -146,7 +148,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Note that this can be overridden if a format is forced
   //   For example, if a PAL ROM is forced to be NTSC, it will use NTSC-like
   //   properties (60Hz, 262 scanlines, etc), but likely result in flicker
-  // The TIA will self-adjust the framerate if necessary
   setTIAProperties();
   if(myDisplayFormat == "NTSC")
   {
@@ -205,6 +206,10 @@ Console::~Console()
   // Some smart controllers need to be informed that the console is going away
   myLeftControl->close();
   myRightControl->close();
+
+  // Close audio to prevent invalid access to myConsoleTiming from the audio
+  // callback
+  myOSystem.sound().close();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -381,6 +386,7 @@ void Console::setFormat(int format)
     setTIAProperties();
     myTIA->frameReset();
     initializeVideo();  // takes care of refreshing the screen
+    initializeAudio(); // ensure that audio synthesis is set up to match emulation speed
   }
 
   myOSystem.frameBuffer().showMessage(message);
@@ -569,37 +575,29 @@ FBInitStatus Console::initializeVideo(bool full)
   }
   setPalette(myOSystem.settings().getString("palette"));
 
-  // Set the correct framerate based on the format of the ROM
-  // This can be overridden by changing the framerate in the
-  // VideoDialog box or on the commandline, but it can't be saved
-  // (ie, framerate is now determined based on number of scanlines).
-  int framerate = myOSystem.settings().getInt("framerate");
-  if(framerate > 0) myFramerate = float(framerate);
-  myOSystem.setFramerate(myFramerate);
-
-  // Make sure auto-frame calculation is only enabled when necessary
-  myTIA->enableAutoFrame(framerate <= 0);
-
   return fbstatus;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::initializeAudio()
 {
-  // Initialize the sound interface.
-  // The # of channels can be overridden in the AudioDialog box or on
-  // the commandline, but it can't be saved.
-  int framerate = myOSystem.settings().getInt("framerate");
-  if(framerate > 0) myFramerate = float(framerate);
-  const string& sound = myProperties.get(Cartridge_Sound);
-
   myOSystem.sound().close();
-  myOSystem.sound().setChannels(sound == "STEREO" ? 2 : 1);
-  myOSystem.sound().setFrameRate(myFramerate);
-  myOSystem.sound().open();
 
-  // Make sure auto-frame calculation is only enabled when necessary
-  myTIA->enableAutoFrame(framerate <= 0);
+  myEmulationTiming
+    .updatePlaybackRate(myOSystem.sound().getSampleRate())
+    .updatePlaybackPeriod(myOSystem.sound().getFragmentSize())
+    .updateAudioQueueExtraFragments(myAudioSettings.bufferSize())
+    .updateAudioQueueHeadroom(myAudioSettings.headroom())
+    .updateSpeedFactor(myOSystem.settings().getFloat("speed"));
+
+  (cout << "sample rate: " << myOSystem.sound().getSampleRate() << std::endl).flush();
+  (cout << "fragment size: " << myOSystem.sound().getFragmentSize() << std::endl).flush();
+  (cout << "prebuffer fragment count: " << myEmulationTiming.prebufferFragmentCount() << std::endl).flush();
+
+  createAudioQueue();
+  myTIA->setAudioQueue(myAudioQueue);
+
+  myOSystem.sound().open(myAudioQueue, &myEmulationTiming);
 }
 
 /* Original frying research and code by Fred Quimby.
@@ -729,16 +727,11 @@ void Console::setTIAProperties()
      myDisplayFormat == "SECAM60")
   {
     // Assume we've got ~262 scanlines (NTSC-like format)
-    myFramerate = 60.0;
-    myConsoleInfo.InitialFrameRate = "60";
     myTIA->setLayout(FrameLayout::ntsc);
   }
   else
   {
     // Assume we've got ~312 scanlines (PAL-like format)
-    myFramerate = 50.0;
-    myConsoleInfo.InitialFrameRate = "50";
-
     // PAL ROMs normally need at least 250 lines
     if (height != 0) height = std::max(height, 250u);
 
@@ -747,6 +740,18 @@ void Console::setTIAProperties()
 
   myTIA->setYStart(ystart != 0 ? ystart : myAutodetectedYstart);
   myTIA->setHeight(height);
+
+  myEmulationTiming.updateFrameLayout(myTIA->frameLayout());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::createAudioQueue()
+{
+  myAudioQueue = make_shared<AudioQueue>(
+    myEmulationTiming.audioFragmentSize(),
+    myEmulationTiming.audioQueueCapacity(),
+    myProperties.get(Cartridge_Sound) == "STEREO"
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -967,11 +972,9 @@ void Console::generateColorLossPalette()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setFramerate(float framerate)
+float Console::getFramerate() const
 {
-  myFramerate = framerate;
-  myOSystem.setFramerate(framerate);
-  myOSystem.sound().setFrameRate(framerate);
+  return myTIA->frameBufferFrameRate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1103,7 +1106,7 @@ uInt32 Console::ourPALPalette[256] = {
   0x001759, 0, 0x00247c, 0, 0x1d469e, 0, 0x3f68c0, 0, // 288 b
   0x618ae2, 0, 0x83acff, 0, 0xa5ceff, 0, 0xc7f0ff, 0,
   0x12006d, 0, 0x34038f, 0, 0x5625b1, 0, 0x7847d3, 0, // 2a0 c
-  0x9a69f5, 0, 0xb48cff, 0, 0xc9adff, 0, 0xe1d1ff, 0, // was ..0xbc8bff, 0xdeadff, 0xffcfff, 
+  0x9a69f5, 0, 0xb48cff, 0, 0xc9adff, 0, 0xe1d1ff, 0, // was ..0xbc8bff, 0xdeadff, 0xffcfff,
   0x000070, 0, 0x161292, 0, 0x3834b4, 0, 0x5a56d6, 0, // 2b8 d
   0x7c78f8, 0, 0x9e9aff, 0, 0xc0bcff, 0, 0xe2deff, 0,
   0x000000, 0, 0x121212, 0, 0x242424, 0, 0x484848, 0, // 2d0 e

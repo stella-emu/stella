@@ -73,10 +73,9 @@ class TIASurface
     const FBSurface& baseSurface(GUI::Rect& rect) const;
 
     /**
-      Get the TIA pixel associated with the given TIA buffer index,
-      shifting by the given offset (for greyscale values).
-    */
-    uInt32 pixel(uInt32 idx, uInt8 shift = 0);
+      Use the palette to map a single indexed pixel color. This is used by the TIA output widget.
+     */
+    uInt32 mapIndexedPixel(uInt8 indexedColor, uInt8 shift = 0);
 
     /**
       Get the NTSCFilter object associated with the framebuffer

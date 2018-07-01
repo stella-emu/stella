@@ -228,6 +228,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\AudioQueue.cxx" />
+    <ClCompile Include="..\common\audio\ConvolutionBuffer.cxx" />
+    <ClCompile Include="..\common\audio\LanczosResampler.cxx" />
+    <ClCompile Include="..\common\audio\SimpleResampler.cxx" />
     <ClCompile Include="..\common\Base.cxx" />
     <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
@@ -323,10 +327,15 @@
     <ClCompile Include="..\emucore\CartE78K.cxx" />
     <ClCompile Include="..\emucore\CartWD.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
+    <ClCompile Include="..\emucore\DispatchResult.cxx" />
+    <ClCompile Include="..\emucore\EmulationTiming.cxx" />
+    <ClCompile Include="..\emucore\EmulationWorker.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\emucore\PointingDevice.cxx" />
     <ClCompile Include="..\emucore\TIASurface.cxx" />
+    <ClCompile Include="..\emucore\tia\Audio.cxx" />
+    <ClCompile Include="..\emucore\tia\AudioChannel.cxx" />
     <ClCompile Include="..\emucore\tia\Background.cxx" />
     <ClCompile Include="..\emucore\tia\Ball.cxx" />
     <ClCompile Include="..\emucore\tia\DrawCounterDecodes.cxx" />
@@ -410,7 +419,6 @@
     <ClCompile Include="..\emucore\Switches.cxx" />
     <ClCompile Include="..\emucore\System.cxx" />
     <ClCompile Include="..\emucore\Thumbulator.cxx" />
-    <ClCompile Include="..\emucore\TIASnd.cxx" />
     <ClCompile Include="..\cheat\BankRomCheat.cxx" />
     <ClCompile Include="..\cheat\CheatCodeDialog.cxx" />
     <ClCompile Include="..\cheat\CheatManager.cxx" />
@@ -511,6 +519,11 @@
     <ClCompile Include="..\libpng\pngwutil.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\AudioQueue.hxx" />
+    <ClInclude Include="..\common\audio\ConvolutionBuffer.hxx" />
+    <ClInclude Include="..\common\audio\LanczosResampler.hxx" />
+    <ClInclude Include="..\common\audio\Resampler.hxx" />
+    <ClInclude Include="..\common\audio\SimpleResampler.hxx" />
     <ClInclude Include="..\common\Base.hxx" />
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\EventHandlerSDL2.hxx" />
@@ -620,12 +633,17 @@
     <ClInclude Include="..\emucore\CartE78K.hxx" />
     <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
+    <ClInclude Include="..\emucore\DispatchResult.hxx" />
+    <ClInclude Include="..\emucore\EmulationTiming.hxx" />
+    <ClInclude Include="..\emucore\EmulationWorker.hxx" />
     <ClInclude Include="..\emucore\EventHandlerConstants.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\FrameBufferConstants.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\emucore\PointingDevice.hxx" />
     <ClInclude Include="..\emucore\TIASurface.hxx" />
+    <ClInclude Include="..\emucore\tia\Audio.hxx" />
+    <ClInclude Include="..\emucore\tia\AudioChannel.hxx" />
     <ClInclude Include="..\emucore\tia\Background.hxx" />
     <ClInclude Include="..\emucore\tia\Ball.hxx" />
     <ClInclude Include="..\emucore\tia\DelayQueue.hxx" />
@@ -733,7 +751,6 @@
     <ClInclude Include="..\emucore\Switches.hxx" />
     <ClInclude Include="..\emucore\System.hxx" />
     <ClInclude Include="..\emucore\Thumbulator.hxx" />
-    <ClInclude Include="..\emucore\TIASnd.hxx" />
     <ClInclude Include="..\debugger\gui\AudioWidget.hxx" />
     <ClInclude Include="..\debugger\CartDebug.hxx" />
     <ClInclude Include="..\debugger\CpuDebug.hxx" />
