@@ -58,7 +58,7 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myTIAInterpolate;
     SliderWidget*     myNAspectRatio;
     SliderWidget*     myPAspectRatio;
-    SliderWidget*     myFrameRate;
+    SliderWidget*     mySpeed;
 
     CheckboxWidget*   myFullscreen;
     //PopUpWidget*      myFullScreenMode;
@@ -99,7 +99,7 @@ class VideoDialog : public Dialog
     ButtonWidget*     myCloneCustom;
 
     enum {
-      kFrameRateChanged    = 'VDfr',
+      kSpeedupChanged    = 'VDSp',
 
       kTVModeChanged       = 'VDtv',
 
