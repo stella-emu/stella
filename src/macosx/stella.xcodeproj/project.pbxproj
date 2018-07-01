@@ -643,6 +643,9 @@
 		E0DCD3A820A64E96000B614E /* LanczosResampler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */; };
 		E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */; };
 		E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */; };
+		E0FABEEB20E9948200EB8E28 /* AudioSettings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */; };
+		E0FABEEC20E9948200EB8E28 /* AudioSettings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */; };
+		E0FABEEE20E994A600EB8E28 /* ConsoleTiming.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -1335,6 +1338,9 @@
 		E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConvolutionBuffer.cxx; path = audio/ConvolutionBuffer.cxx; sourceTree = "<group>"; };
 		E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractFrameManager.cxx; sourceTree = "<group>"; };
 		E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FrameManager.cxx; sourceTree = "<group>"; };
+		E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioSettings.hxx; sourceTree = "<group>"; };
+		E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioSettings.cxx; sourceTree = "<group>"; };
+		E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConsoleTiming.hxx; sourceTree = "<group>"; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -1610,6 +1616,8 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */,
+				E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
@@ -1685,6 +1693,7 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */,
 				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
@@ -2283,11 +2292,13 @@
 				DC3EE86F1E2C0E6D00905161 /* zutil.h in Headers */,
 				2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */,
 				DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */,
+				E0FABEEB20E9948200EB8E28 /* AudioSettings.hxx in Headers */,
 				E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */,
 				2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */,
 				2D91742909BA90380026E9FF /* TIADebug.hxx in Headers */,
 				2D91742A09BA90380026E9FF /* YaccParser.hxx in Headers */,
 				2D91742B09BA90380026E9FF /* Cart3E.hxx in Headers */,
+				E0FABEEE20E994A600EB8E28 /* ConsoleTiming.hxx in Headers */,
 				DCF3A6F61DFC75E3008A8AF3 /* Missile.hxx in Headers */,
 				DC9616351F817830008A2206 /* TrakBallWidget.hxx in Headers */,
 				2D91742C09BA90380026E9FF /* CpuDebug.hxx in Headers */,
@@ -2749,6 +2760,7 @@
 				DC62E6471960E87B007AEF05 /* AtariVoxWidget.cxx in Sources */,
 				DCACBAD41C54298300703A9B /* CartCVPlus.cxx in Sources */,
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
+				E0FABEEC20E9948200EB8E28 /* AudioSettings.cxx in Sources */,
 				DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */,
 				DC96162E1F817830008A2206 /* AtariMouseWidget.cxx in Sources */,
 				DC3EE85E1E2C0E6D00905161 /* gzlib.c in Sources */,
