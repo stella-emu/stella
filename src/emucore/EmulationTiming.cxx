@@ -29,8 +29,9 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EmulationTiming::EmulationTiming(FrameLayout frameLayout) :
+EmulationTiming::EmulationTiming(FrameLayout frameLayout, ConsoleTiming consoleTiming) :
   myFrameLayout(frameLayout),
+  myConsoleTiming(consoleTiming),
   myPlaybackRate(44100),
   myPlaybackPeriod(512),
   myAudioQueueExtraFragments(1),
@@ -44,6 +45,15 @@ EmulationTiming::EmulationTiming(FrameLayout frameLayout) :
 EmulationTiming& EmulationTiming::updateFrameLayout(FrameLayout frameLayout)
 {
   myFrameLayout = frameLayout;
+  recalculate();
+
+  return *this;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EmulationTiming& EmulationTiming::updateConsoleTiming(ConsoleTiming consoleTiming)
+{
+  myConsoleTiming = consoleTiming;
   recalculate();
 
   return *this;
@@ -164,26 +174,26 @@ void EmulationTiming::recalculate()
       throw runtime_error("invalid frame layout");
   }
 
-  float framesPerSecond;
-  switch (myFrameLayout) {
-    case FrameLayout::ntsc:
-      framesPerSecond = mySpeedFactor * 60;
+  switch (myConsoleTiming) {
+    case ConsoleTiming::ntsc:
+      myAudioSampleRate = round(mySpeedFactor * 262 * 76 * 60) / 38;
       break;
 
-    case FrameLayout::pal:
-      framesPerSecond = mySpeedFactor * 50;
+    case ConsoleTiming::pal:
+    case ConsoleTiming::secam:
+      myCyclesPerSecond = round(mySpeedFactor * 312 * 76 * 50) / 38;
       break;
 
     default:
-      throw runtime_error("invalid frame layout");
+      throw runtime_error("invalid console timing");
   }
+
+  myCyclesPerSecond = myAudioSampleRate * 38;
 
   myCyclesPerFrame = 76 * myLinesPerFrame;
   myMaxCyclesPerTimeslice = round(mySpeedFactor * myCyclesPerFrame * 2);
   myMinCyclesPerTimeslice = round(mySpeedFactor * myCyclesPerFrame / 2);
-  myCyclesPerSecond = (round(myCyclesPerFrame * framesPerSecond) / 38) * 38;
   myAudioFragmentSize = round(mySpeedFactor * AUDIO_HALF_FRAMES_PER_FRAGMENT * myLinesPerFrame);
-  myAudioSampleRate = myCyclesPerSecond / 38;
 
   myPrebufferFragmentCount = discreteDivCeil(
     myPlaybackPeriod * myAudioSampleRate,

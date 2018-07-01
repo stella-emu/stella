@@ -20,13 +20,16 @@
 
 #include "bspf.hxx"
 #include "FrameLayout.hxx"
+#include "ConsoleTiming.hxx"
 
 class EmulationTiming {
   public:
 
-    EmulationTiming(FrameLayout frameLayout = FrameLayout::ntsc);
+    EmulationTiming(FrameLayout frameLayout = FrameLayout::ntsc, ConsoleTiming consoleTiming = ConsoleTiming::ntsc);
 
     EmulationTiming& updateFrameLayout(FrameLayout frameLayout);
+
+    EmulationTiming& updateConsoleTiming(ConsoleTiming consoleTiming);
 
     EmulationTiming& updatePlaybackRate(uInt32 playbackRate);
 
@@ -63,6 +66,7 @@ class EmulationTiming {
   private:
 
     FrameLayout myFrameLayout;
+    ConsoleTiming myConsoleTiming;
 
     uInt32 myPlaybackRate;
     uInt32 myPlaybackPeriod;

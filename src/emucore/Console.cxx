@@ -742,6 +742,7 @@ void Console::setTIAProperties()
   myTIA->setHeight(height);
 
   myEmulationTiming.updateFrameLayout(myTIA->frameLayout());
+  myEmulationTiming.updateConsoleTiming(myConsoleTiming);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

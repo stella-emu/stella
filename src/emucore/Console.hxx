@@ -39,6 +39,7 @@ class AudioSettings;
 #include "EventHandlerConstants.hxx"
 #include "NTSCFilter.hxx"
 #include "EmulationTiming.hxx"
+#include "ConsoleTiming.hxx"
 #include "frame-manager/AbstractFrameManager.hxx"
 
 /**
@@ -52,16 +53,6 @@ struct ConsoleInfo
   string Control0;
   string Control1;
   string DisplayFormat;
-};
-
-/**
-  Contains timing information about the specified console.
-*/
-enum class ConsoleTiming
-{
-  ntsc,  // console with CPU running at 1.193182 MHz, NTSC colours
-  pal,   // console with CPU running at 1.182298 MHz, PAL colours
-  secam  // console with CPU running at 1.187500 MHz, SECAM colours
 };
 
 /**
