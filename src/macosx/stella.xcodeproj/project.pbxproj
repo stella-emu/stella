@@ -1616,11 +1616,11 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */,
-				E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
+				E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */,
+				E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */,
 				DC79F81017A88D9E00288B91 /* Base.cxx */,
 				DC79F81117A88D9E00288B91 /* Base.hxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
@@ -1693,7 +1693,6 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
-				E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */,
 				DC1B2EBE1E50036100F62837 /* AmigaMouse.hxx */,
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
@@ -1796,6 +1795,7 @@
 				DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */,
 				2DE2DF380627AE07006BEC99 /* Console.cxx */,
 				2DE2DF390627AE07006BEC99 /* Console.hxx */,
+				E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */,
 				2DE2DF3A0627AE07006BEC99 /* Control.cxx */,
 				2DE2DF3B0627AE07006BEC99 /* Control.hxx */,
 				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,

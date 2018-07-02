@@ -209,7 +209,7 @@ inline void M6502::handleHalt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::execute(uInt32 number, DispatchResult& result)
+void M6502::execute(uInt64 number, DispatchResult& result)
 {
   _execute(number, result);
 
@@ -229,7 +229,7 @@ void M6502::execute(uInt32 number, DispatchResult& result)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6502::execute(uInt32 number)
+bool M6502::execute(uInt64 number)
 {
   DispatchResult result;
 
@@ -239,7 +239,7 @@ bool M6502::execute(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void M6502::_execute(uInt32 cycles, DispatchResult& result)
+inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 {
   // Clear all of the execution status bits except for the fatal error bit
   myExecutionStatus &= FatalErrorBit;
@@ -250,7 +250,7 @@ inline void M6502::_execute(uInt32 cycles, DispatchResult& result)
 #endif
 
   uInt64 previousCycles = mySystem->cycles();
-  uInt32 currentCycles = 0;
+  uInt64 currentCycles = 0;
 
   // Loop until execution is stopped or a fatal error occurs
   for(;;)

@@ -31,7 +31,7 @@ class DispatchResult
 
     Status getStatus() const { return myStatus; }
 
-    uInt32 getCycles() const { return myCycles; }
+    uInt64 getCycles() const { return myCycles; }
 
     const string& getMessage() const { assertStatus(Status::debugger); return myMessage; }
 
@@ -41,11 +41,11 @@ class DispatchResult
 
     bool isSuccess() const;
 
-    void setOk(uInt32 cycles);
+    void setOk(uInt64 cycles);
 
-    void setDebugger(uInt32 cycles, const string& message = "", int address = -1, bool wasReadTrap = false);
+    void setDebugger(uInt64 cycles, const string& message = "", int address = -1, bool wasReadTrap = false);
 
-    void setFatal(uInt32 cycles);
+    void setFatal(uInt64 cycles);
 
   private:
 
@@ -55,7 +55,7 @@ class DispatchResult
 
     Status myStatus;
 
-    uInt32 myCycles;
+    uInt64 myCycles;
 
     string myMessage;
 

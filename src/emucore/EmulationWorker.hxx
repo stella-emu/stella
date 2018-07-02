@@ -67,7 +67,7 @@ class EmulationWorker
     /**
       Wake up the worker and start emulation with the specified parameters.
      */
-    void start(uInt32 cyclesPerSecond, uInt32 maxCycles, uInt32 minCycles, DispatchResult* dispatchResult, TIA* tia);
+    void start(uInt32 cyclesPerSecond, uInt64 maxCycles, uInt64 minCycles, DispatchResult* dispatchResult, TIA* tia);
 
     /**
       Stop emulation and return the number of 6507 cycles emulated.
@@ -189,9 +189,9 @@ class EmulationWorker
 
     // Emulation parameters
     TIA* myTia;
-    uInt32 myCyclesPerSecond;
-    uInt32 myMaxCycles;
-    uInt32 myMinCycles;
+    uInt64 myCyclesPerSecond;
+    uInt64 myMaxCycles;
+    uInt64 myMinCycles;
     DispatchResult* myDispatchResult;
 
     // Total number of cycles during this emulation run

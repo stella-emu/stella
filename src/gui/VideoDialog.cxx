@@ -46,7 +46,7 @@ namespace {
 
   int mapSpeed(float speed)
   {
-    speed = abs(speed);
+    speed = std::abs(speed);
 
     return BSPF::clamp(
       static_cast<int>(round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),

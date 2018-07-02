@@ -30,14 +30,14 @@ bool DispatchResult::isSuccess() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DispatchResult::setOk(uInt32 cycles)
+void DispatchResult::setOk(uInt64 cycles)
 {
   myStatus = Status::ok;
   myCycles = cycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DispatchResult::setDebugger(uInt32 cycles, const string& message, int address, bool wasReadTrap)
+void DispatchResult::setDebugger(uInt64 cycles, const string& message, int address, bool wasReadTrap)
 {
   myStatus = Status::debugger;
   myCycles = cycles;
@@ -47,7 +47,7 @@ void DispatchResult::setDebugger(uInt32 cycles, const string& message, int addre
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DispatchResult::setFatal(uInt32 cycles)
+void DispatchResult::setFatal(uInt64 cycles)
 {
   myCycles = cycles;
 

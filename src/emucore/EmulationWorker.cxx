@@ -69,7 +69,7 @@ void EmulationWorker::handlePossibleException()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EmulationWorker::start(uInt32 cyclesPerSecond, uInt32 maxCycles, uInt32 minCycles, DispatchResult* dispatchResult, TIA* tia)
+void EmulationWorker::start(uInt32 cyclesPerSecond, uInt64 maxCycles, uInt64 minCycles, DispatchResult* dispatchResult, TIA* tia)
 {
   // Wait until any pending signal has been processed
   waitUntilPendingSignalHasProcessed();

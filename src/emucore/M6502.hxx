@@ -116,9 +116,9 @@ class M6502 : public Serializable
                     a couple of cycles
       @param result A DispatchResult object that will transport the result
     */
-    void execute(uInt32 cycles, DispatchResult& result);
+    void execute(uInt64 cycles, DispatchResult& result);
 
-    bool execute(uInt32 cycles);
+    bool execute(uInt64 cycles);
 
     /**
       Tell the processor to stop executing instructions.  Invoking this
@@ -323,7 +323,7 @@ class M6502 : public Serializable
       This is the actual dispatch function that does the grunt work. M6502::execute
       wraps it and makes sure that any pending halt is processed before returning.
     */
-    void _execute(uInt32 cycles, DispatchResult& result);
+    void _execute(uInt64 cycles, DispatchResult& result);
 
 #ifdef DEBUGGER_SUPPORT
     /**

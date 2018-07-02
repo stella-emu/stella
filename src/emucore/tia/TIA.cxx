@@ -816,7 +816,7 @@ bool TIA::loadDisplay(Serializer& in)
   try
   {
     // Reset frame buffer pointer and data
-    in.getByteArray(myFramebuffer, 160*TIAConstants::frameBufferHeight);
+    in.getByteArray(myFramebuffer, 160 * TIAConstants::frameBufferHeight);
     in.getByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
     in.getByteArray(myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
     myNewFramePending = in.getBool();
@@ -831,7 +831,7 @@ bool TIA::loadDisplay(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::update(DispatchResult& result, uInt32 maxCycles)
+void TIA::update(DispatchResult& result, uInt64 maxCycles)
 {
   mySystem->m6502().execute(maxCycles, result);
 
@@ -850,7 +850,7 @@ void TIA::renderToFrameBuffer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::update(uInt32 maxCycles)
+void TIA::update(uInt64 maxCycles)
 {
   DispatchResult dispatchResult;
 
