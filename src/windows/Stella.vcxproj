@@ -229,6 +229,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\AudioQueue.cxx" />
+    <ClCompile Include="..\common\AudioSettings.cxx" />
     <ClCompile Include="..\common\audio\ConvolutionBuffer.cxx" />
     <ClCompile Include="..\common\audio\LanczosResampler.cxx" />
     <ClCompile Include="..\common\audio\SimpleResampler.cxx" />
@@ -520,6 +521,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\AudioQueue.hxx" />
+    <ClInclude Include="..\common\AudioSettings.hxx" />
     <ClInclude Include="..\common\audio\ConvolutionBuffer.hxx" />
     <ClInclude Include="..\common\audio\LanczosResampler.hxx" />
     <ClInclude Include="..\common\audio\Resampler.hxx" />

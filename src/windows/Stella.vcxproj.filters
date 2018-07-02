@@ -930,6 +930,9 @@
     <ClCompile Include="..\emucore\EmulationWorker.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\AudioSettings.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1900,6 +1903,9 @@
     </ClInclude>
     <ClInclude Include="..\emucore\EmulationWorker.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\AudioSettings.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
