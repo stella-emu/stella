@@ -131,13 +131,12 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myTIAZoom);
   ypos += lineHeight + VGAP;
 
-  SliderWidget* s = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
+  /*SliderWidget* s = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
                                      "TIA zoom", lwidth, 0, fontWidth * 4, "%");
   s->setMinValue(200); s->setMaxValue(500);
   s->setTickmarkInterval(3); // just for testing now; TODO: remove or redefine
   wid.push_back(s);
-  ypos += lineHeight + VGAP;
-
+  ypos += lineHeight + VGAP;*/
 
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, font, xpos, ypos + 1, "TIA interpolation ");
