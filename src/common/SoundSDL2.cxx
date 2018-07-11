@@ -183,7 +183,7 @@ void SoundSDL2::setVolume(uInt32 percent)
     myVolume = percent;
 
     SDL_LockAudio();
-    myVolumeFactor = std::pow(static_cast<float>(percent) / 100.f, 2.f);
+    myVolumeFactor = static_cast<float>(percent) / 100.f;
     SDL_UnlockAudio();
   }
 }
