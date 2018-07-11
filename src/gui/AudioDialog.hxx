@@ -41,8 +41,9 @@ class AudioDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
-    void handleSoundEnableChange(bool active);
-    void handleModeChange(bool active);
+    void updatePreset();
+    void updateEnabledState();
+    void updateSettingsWithPreset(AudioSettings&);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -59,10 +60,6 @@ class AudioDialog : public Dialog
     PopUpWidget*      myResamplingPopup;
     SliderWidget*     myHeadroomSlider;
     SliderWidget*     myBufferSizeSlider;
-
-  private:
-
-    void updatePresetSettings(AudioSettings&);
 
   private:
     // Following constructors and assignment operators not supported

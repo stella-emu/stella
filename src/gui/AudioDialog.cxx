@@ -162,15 +162,13 @@ void AudioDialog::loadConfig()
   // Preset / mode
   myModePopup->setSelected(static_cast<int>(audioSettings.preset()));
 
-  updatePresetSettings(instance().audioSettings());
+  updateSettingsWithPreset(instance().audioSettings());
 
-  // Make sure that mutually-exclusive items are not enabled at the same time
-  handleSoundEnableChange(audioSettings.enabled());
-  handleModeChange(audioSettings.enabled());
+  updateEnabledState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioDialog::updatePresetSettings(AudioSettings& audioSettings)
+void AudioDialog::updateSettingsWithPreset(AudioSettings& audioSettings)
 {
   // Fragsize
   myFragsizePopup->setSelected(audioSettings.fragmentSize());
@@ -192,7 +190,7 @@ void AudioDialog::updatePresetSettings(AudioSettings& audioSettings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::saveConfig()
 {
-  AudioSettings audioSettings = instance().audioSettings();
+  AudioSettings& audioSettings = instance().audioSettings();
 
   // Volume
   audioSettings.setVolume(myVolumeSlider->getValue());
@@ -223,47 +221,53 @@ void AudioDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::setDefaults()
 {
-  myVolumeSlider->setValue(100);
+  myResamplingPopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+  myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
+  mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
+  myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
 
-  myFragsizePopup->setSelected("512", "");
-  myFreqPopup->setSelected("31400", "");
+  if (AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
+    myFragsizePopup->setSelected(AudioSettings::DEFAULT_FRAGMENT_SIZE);
+    myFreqPopup->setSelected(AudioSettings::DEFAULT_SAMPLE_RATE);
+    myHeadroomSlider->setValue(AudioSettings::DEFAULT_HEADROOM);
+    myBufferSizeSlider->setValue(AudioSettings::DEFAULT_BUFFER_SIZE);
+  }
+  else updatePreset();
 
-  mySoundEnableCheckbox->setState(true);
-
-  // Make sure that mutually-exclusive items are not enabled at the same time
-  handleSoundEnableChange(true);
+  updateEnabledState();
 
   _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioDialog::handleSoundEnableChange(bool active)
+void AudioDialog::updateEnabledState()
 {
+  bool active = mySoundEnableCheckbox->getState();
+  AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  bool userMode = preset == AudioSettings::Preset::custom;
+
   myVolumeSlider->setEnabled(active);
   myModePopup->setEnabled(active);
-  handleModeChange(active);
+
+  myFragsizePopup->setEnabled(active && userMode);
+  myFreqPopup->setEnabled(active && userMode);
+  myResamplingPopup->setEnabled(active && userMode);
+  myHeadroomSlider->setEnabled(active && userMode);
+  myBufferSizeSlider->setEnabled(active && userMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioDialog::handleModeChange(bool active)
+void AudioDialog::updatePreset()
 {
   AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
 
+  // Make a copy that does not affect the actual settings...
   AudioSettings audioSettings = instance().audioSettings();
   audioSettings.setPersistent(false);
+  // ... and set the requested preset
   audioSettings.setPreset(preset);
 
-  (cout << "Preset: " << static_cast<int>(preset) << std::endl).flush();
-
-  updatePresetSettings(audioSettings);
-
-  bool userMode = active && preset == AudioSettings::Preset::custom;
-
-  myFragsizePopup->setEnabled(userMode);
-  myFreqPopup->setEnabled(userMode);
-  myResamplingPopup->setEnabled(userMode);
-  myHeadroomSlider->setEnabled(userMode);
-  myBufferSizeSlider->setEnabled(userMode);
+  updateSettingsWithPreset(audioSettings);
 }
 
 
@@ -283,11 +287,12 @@ void AudioDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kSoundEnableChanged:
-      handleSoundEnableChange(data == 1);
+      updateEnabledState();
       break;
 
     case kModeChanged:
-      handleModeChange(true);
+      updatePreset();
+      updateEnabledState();
       break;
 
     default:

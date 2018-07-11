@@ -67,8 +67,6 @@ class AudioSettings
 
     AudioSettings(Settings* mySettings);
 
-    static void initialize(Settings& settings);
-
     static void normalize(Settings& settings);
 
     Preset preset();
