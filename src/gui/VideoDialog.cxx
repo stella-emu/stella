@@ -65,9 +65,8 @@ namespace {
     stringstream ss;
 
     ss
-      << std::setw(4) << std::fixed << std::setprecision(2)
-      << (unmapSpeed(speed) * 100)
-      << "%";
+      << std::setw(3) << std::fixed << std::setprecision(0)
+      << (unmapSpeed(speed) * 100);
 
     return ss.str();
   }
@@ -95,7 +94,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = std::min(55 * fontWidth + HBORDER * 2 + 8, max_w);
+  _w = std::min(55 * fontWidth + HBORDER * 2, max_w);
   _h = std::min(14 * (lineHeight + VGAP) + 14 + _th, max_h);
 
   // The tab widget
@@ -164,7 +163,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Speed
   mySpeed =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "Speed ", lwidth, kSpeedupChanged, fontWidth * 8, "");
+                     "Emul. speed ", lwidth, kSpeedupChanged, fontWidth * 5, "%");
   mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
   mySpeed->setStepValue(SPEED_STEP);
   wid.push_back(mySpeed);
@@ -181,7 +180,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                        "(*) Requires application restart");
 
   // Move over to the next column
-  xpos += mySpeed->getWidth() + 16;
+  xpos += mySpeed->getWidth() + 20;
   ypos = VBORDER;
 
   // Fullscreen
