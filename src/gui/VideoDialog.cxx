@@ -65,9 +65,9 @@ namespace {
     stringstream ss;
 
     ss
-      << (speed >= 0 ? "x " : "/ ")
       << std::setw(4) << std::fixed << std::setprecision(2)
-      << (1 + static_cast<float>(speed < 0 ? -speed : speed) / 100);
+      << (unmapSpeed(speed) * 100)
+      << "%";
 
     return ss.str();
   }
