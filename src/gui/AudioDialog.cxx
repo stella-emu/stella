@@ -46,7 +46,8 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
             fontHeight   = font.getFontHeight();
   int xpos, ypos;
   int lwidth = font.getStringWidth("Resampling quality "),
-      pwidth = font.getStringWidth("512 bytes");
+    pwidth = font.getStringWidth("512 bytes");
+      
   WidgetArray wid;
   VariantList items;
 
@@ -121,15 +122,16 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4;
 
   // Param 1
-  myHeadroomSlider = new SliderWidget(this, font, xpos, ypos,
-                                      "Headroom    ", 0, 0, 2 * fontWidth);
+  int swidth = pwidth+23;
+  myHeadroomSlider = new SliderWidget(this, font, xpos, ypos, swidth, lineHeight,
+                                      "Headroom           ", 0, 0, 2 * fontWidth);
   myHeadroomSlider->setMinValue(1); myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
   wid.push_back(myHeadroomSlider);
   ypos += lineHeight + 4;
 
   // Param 2
-  myBufferSizeSlider = new SliderWidget(this, font, xpos, ypos,
-                                      "Buffer size ", 0, 0, 2 * fontWidth);
+  myBufferSizeSlider = new SliderWidget(this, font, xpos, ypos, swidth, lineHeight,
+                                      "Buffer size        ", 0, 0, 2 * fontWidth);
   myBufferSizeSlider->setMinValue(1); myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
   wid.push_back(myBufferSizeSlider);
 
