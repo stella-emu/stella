@@ -54,6 +54,7 @@
 
 #include "TIA.hxx"
 #include "Debugger.hxx"
+#include "DispatchResult.hxx"
 
 Debugger* Debugger::myStaticDebugger = nullptr;
 
@@ -511,9 +512,12 @@ void Debugger::nextFrame(int frames)
   saveOldState();
 
   unlockSystem();
+  DispatchResult dispatchResult;
   while(frames)
   {
-    myOSystem.console().tia().update(myOSystem.console().emulationTiming().maxCyclesPerTimeslice());
+    do
+      myOSystem.console().tia().update(dispatchResult, myOSystem.console().emulationTiming().maxCyclesPerTimeslice());
+    while (dispatchResult.getStatus() == DispatchResult::Status::debugger);
     --frames;
   }
   lockSystem();
