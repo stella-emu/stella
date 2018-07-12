@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2011 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: SoundSDL.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -51,7 +51,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
   // whereby sound stopped working after the first video change
   SDL_AudioSpec desired;
   desired.freq   = myOSystem->settings().getInt("freq");
-  desired.format = AUDIO_U8;
+  desired.format = AUDIO_S16SYS;
   desired.channels = 2;
   desired.samples  = myOSystem->settings().getInt("fragsize");
   desired.callback = callback;
@@ -106,7 +106,7 @@ SoundSDL::~SoundSDL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::setEnabled(bool state)
 {
-  myOSystem->settings().setBool("sound", state);
+  myOSystem->settings().setValue("sound", state);
 
   myOSystem->logMessage(state ? "SoundSDL::setEnabled(true)" : 
                                 "SoundSDL::setEnabled(false)", 2);
@@ -125,14 +125,9 @@ void SoundSDL::open()
   }
 
   // Now initialize the TIASound object which will actually generate sound
-  int tiafreq = myOSystem->settings().getInt("tiafreq");
   myTIASound.outputFrequency(myHardwareSpec.freq);
-  myTIASound.tiaFrequency(tiafreq);
   const string& chanResult =
       myTIASound.channels(myHardwareSpec.channels, myNumChannels == 2);
-
-  bool clipvol = myOSystem->settings().getBool("clipvol");
-  myTIASound.clipVolume(clipvol);
 
   // Adjust volume to that defined in settings
   myVolume = myOSystem->settings().getInt("volume");
@@ -144,11 +139,8 @@ void SoundSDL::open()
       << "  Volume:      " << (int)myVolume << endl
       << "  Frag size:   " << (int)myHardwareSpec.samples << endl
       << "  Frequency:   " << (int)myHardwareSpec.freq << endl
-      << "  Format:      " << (int)myHardwareSpec.format << endl
-      << "  TIA Freq:    " << (int)tiafreq << endl
       << "  Channels:    " << (int)myHardwareSpec.channels
                            << " (" << chanResult << ")" << endl
-      << "  Clip volume: " << (clipvol ? "on" : "off") << endl
       << endl;
   myOSystem->logMessage(buf.str(), 1);
 
@@ -201,7 +193,7 @@ void SoundSDL::setVolume(Int32 percent)
 {
   if(myIsInitializedFlag && (percent >= 0) && (percent <= 100))
   {
-    myOSystem->settings().setInt("volume", percent);
+    myOSystem->settings().setValue("volume", percent);
     SDL_LockAudio();
     myVolume = percent;
     myTIASound.volume(percent);
@@ -262,7 +254,7 @@ void SoundSDL::set(uInt16 addr, uInt8 value, Int32 cycle)
 {
   SDL_LockAudio();
 
-  // First, calulate how many seconds would have past since the last
+  // First, calculate how many seconds would have past since the last
   // register write on a real 2600
   double delta = (((double)(cycle - myLastRegisterSetCycle)) / 
       (1193191.66666667));
@@ -284,7 +276,7 @@ void SoundSDL::set(uInt16 addr, uInt8 value, Int32 cycle)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::processFragment(uInt8* stream, Int32 length)
+void SoundSDL::processFragment(Int16* stream, uInt32 length)
 {
   uInt32 channels = myHardwareSpec.channels;
   length = length / channels;
@@ -311,7 +303,6 @@ void SoundSDL::processFragment(uInt8* stream, Int32 length)
     {
       // There are no more pending TIA sound register updates so we'll
       // use the current settings to finish filling the sound fragment
-//    myTIASound.process(stream + (uInt32)position, length - (uInt32)position);
       myTIASound.process(stream + ((uInt32)position * channels),
           length - (uInt32)position);
 
@@ -341,9 +332,6 @@ void SoundSDL::processFragment(uInt8* stream, Int32 length)
           // Process the fragment upto the next TIA register write.  We
           // round the count passed to process up if needed.
           double samples = (myHardwareSpec.freq * info.delta);
-//        myTIASound.process(stream + (uInt32)position, (uInt32)samples +
-//            (uInt32)(position + samples) - 
-//            ((uInt32)position + (uInt32)samples));
           myTIASound.process(stream + ((uInt32)position * channels),
               (uInt32)samples + (uInt32)(position + samples) - 
               ((uInt32)position + (uInt32)samples));
@@ -359,7 +347,6 @@ void SoundSDL::processFragment(uInt8* stream, Int32 length)
         // The next register update occurs in the next fragment so finish
         // this fragment with the current TIA settings and reduce the register
         // update delay by the corresponding amount of time
-//      myTIASound.process(stream + (uInt32)position, length - (uInt32)position);
         myTIASound.process(stream + ((uInt32)position * channels),
             length - (uInt32)position);
         info.delta -= duration;
@@ -374,7 +361,12 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
 {
   SoundSDL* sound = (SoundSDL*)udata;
   if(sound->myIsEnabled)
-    sound->processFragment(stream, (Int32)len);
+  {
+    // The callback is requesting 8-bit (unsigned) data, but the TIA sound
+    // emulator deals in 16-bit (signed) data
+    // So, we need to convert the pointer and half the length
+    sound->processFragment((Int16*)stream, (uInt32)len >> 1);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

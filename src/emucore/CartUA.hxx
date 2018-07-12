@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: CartUA.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef CARTRIDGEUA_HXX
@@ -23,18 +23,22 @@
 class System;
 
 #include "bspf.hxx"
-#include "System.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartUAWidget.hxx"
+#endif
 
 /**
   Cartridge class used for UA Limited's 8K bankswitched games.  There
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id$
+  @version $Id: CartUA.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class CartridgeUA : public Cartridge
 {
+  friend class CartridgeUAWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -120,6 +124,18 @@ class CartridgeUA : public Cartridge
       @return The name of the object
     */
     string name() const { return "CartridgeUA"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+        const GUI::Font& nfont, int x, int y, int w, int h)
+    {
+      return new CartridgeUAWidget(boss, lfont, nfont, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**

@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: PackedBitArray.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef PACKEDBITARRAY_HXX
@@ -38,9 +38,6 @@ class PackedBitArray
     void toggle(uInt32 bit);
 
   private:
-    // number of bits in the array:
-    uInt32 size;
-
     // number of unsigned ints (size/wordSize):
     uInt32 words;
 

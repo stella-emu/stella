@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Debugger.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -41,11 +41,11 @@ class ButtonWidget;
 #include <map>
 
 #include "Array.hxx"
+#include "Base.hxx"
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
 #include "System.hxx"
-#include "Rect.hxx"
 #include "Stack.hxx"
 #include "bspf.hxx"
 
@@ -68,14 +68,13 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id$
+  @version $Id: Debugger.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class Debugger : public DialogContainer
 {
   // Make these friend classes, to ease communications with the debugger
   // Although it isn't enforced, these classes should use accessor methods
   // directly, and not touch the instance variables
-  friend class DebuggerDialog;
   friend class DebuggerParser;
   friend class EventHandler;
 
@@ -133,6 +132,11 @@ class Debugger : public DialogContainer
     void getCompletions(const char* in, StringList& list) const;
 
     /**
+      The dialog/GUI associated with the debugger
+    */
+    Dialog& dialog() const { return *myDialog; }
+
+    /**
       The debugger subsystem responsible for all CPU state
     */
     CpuDebug& cpuDebug() const { return *myCpuDebug; }
@@ -152,10 +156,14 @@ class Debugger : public DialogContainer
     */
     TIADebug& tiaDebug() const { return *myTiaDebug; }
 
+    const GUI::Font& lfont() const      { return myDialog->lfont();  }
+    const GUI::Font& nlfont() const     { return myDialog->nfont();  }
     DebuggerParser& parser() const      { return *myParser;      }
     PackedBitArray& breakpoints() const { return *myBreakPoints; }
     PackedBitArray& readtraps() const   { return *myReadTraps;   }
     PackedBitArray& writetraps() const  { return *myWriteTraps;  }
+    PromptWidget& prompt() const        { return myDialog->prompt(); }
+    RomWidget& rom() const              { return myDialog->rom();    }
 
     /**
       Run the debugger command and return the result.
@@ -177,7 +185,6 @@ class Debugger : public DialogContainer
     */
     int stringToValue(const string& stringval)
         { return myParser->decipher_arg(stringval); }
-    string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT) const;
 
     /* Convenience methods to get/set bit(s) in an 8-bit register */
     static uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
@@ -220,16 +227,6 @@ class Debugger : public DialogContainer
     */
     static Debugger& debugger() { return *myStaticDebugger; }
 
-    /**
-      Get the dimensions of the various debugger dialog areas
-      (takes mediasource into account)
-    */
-    GUI::Rect getDialogBounds() const;
-    GUI::Rect getTiaBounds() const;
-    GUI::Rect getRomBounds() const;
-    GUI::Rect getStatusBounds() const;
-    GUI::Rect getTabBounds() const;
-
     /* These are now exposed so Expressions can use them. */
     int peek(int addr) { return mySystem.peek(addr); }
     int dpeek(int addr) { return mySystem.peek(addr) | (mySystem.peek(addr+1) << 8); }
@@ -239,8 +236,6 @@ class Debugger : public DialogContainer
       { mySystem.setAccessFlags(addr, flags); }
 
     void setBreakPoint(int bp, bool set);
-
-    string saveROM(const string& filename) const;
 
     bool setBank(int bank);
     bool patchROM(int addr, int value);
@@ -293,9 +288,6 @@ class Debugger : public DialogContainer
 
     void reset();
     void clearAllBreakPoints();
-
-    PromptWidget& prompt() { return myDialog->prompt(); }
-    RomWidget& rom() { return myDialog->rom(); };
 
     void saveState(int state);
     void loadState(int state);

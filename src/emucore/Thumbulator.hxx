@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Thumbulator.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 //============================================================================
@@ -121,16 +121,16 @@ class Thumbulator
   private:
     const uInt16* rom;
     uInt16* ram;
-    Int32 copydata;
+    //Int32 copydata;
 
     uInt32 halfadd;
     uInt32 cpsr;
-    uInt32 reg_usr[16]; //User mode
+    //uInt32 reg_usr[16]; //User mode
     uInt32 reg_sys[16]; //System mode
     uInt32 reg_svc[16]; //Supervisor mode
     //uInt32 reg_abt[16]; //Abort mode
     //uInt32 reg_und[16]; //Undefined mode
-    uInt32 reg_irq[16]; //Interrupt mode
+    //uInt32 reg_irq[16]; //Interrupt mode
     //uInt32 reg_fiq[16]; //Fast Interrupt mode
     uInt32 mamcr;
 
@@ -139,8 +139,6 @@ class Thumbulator
     uInt64 reads;
     uInt64 writes;
 
-    Int32 DBUG; // dump detailed execution trace
-    Int32 DISS; // dump Thumb instruction trace
     ostringstream statusMsg;
 
     static bool trapOnFatal;

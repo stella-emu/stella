@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: DialogContainer.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -108,10 +108,8 @@ void DialogContainer::draw(bool full)
     }
   }
   else if(!myDialogStack.empty())
-  {
     myDialogStack.top()->drawDialog();
   }
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::addDialog(Dialog* d)
@@ -120,22 +118,13 @@ void DialogContainer::addDialog(Dialog* d)
   assert(d->getWidth() <= screen.width() && d->getHeight() <= screen.height());
 
   myDialogStack.push(d);
-  d->open();
-
-  myOSystem->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::removeDialog()
 {
   if(!myDialogStack.empty())
-  {
     myDialogStack.pop();
-
-    // We need to redraw the entire screen contents, since we don't know
-    // what was obscured
-    myOSystem->frameBuffer().refresh();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -143,8 +132,11 @@ void DialogContainer::reStack()
 {
   // Pop all items from the stack, and then add the base menu
   while(!myDialogStack.empty())
-    myDialogStack.pop();
-  addDialog(myBaseDialog);
+    myDialogStack.top()->close(false);  // don't force a refresh
+
+  myBaseDialog->open(false);  // don't force a refresh
+
+  myOSystem->frameBuffer().refresh();
 
   // Reset all continuous events
   reset();

@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: KidVid.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef KIDVID_HXX
@@ -36,7 +36,7 @@
   This code was heavily borrowed from z26.
 
   @author  Stephen Anthony & z26 team
-  @version $Id$
+  @version $Id: KidVid.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class KidVid : public Controller
 {

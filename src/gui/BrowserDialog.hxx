@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: BrowserDialog.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef BROWSER_DIALOG_HXX
@@ -25,9 +22,9 @@
 
 class GuiObject;
 class ButtonWidget;
+class EditTextWidget;
+class FileListWidget;
 class StaticTextWidget;
-class StringListWidget;
-class GameList;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -37,18 +34,26 @@ class GameList;
 class BrowserDialog : public Dialog, public CommandSender
 {
   public:
+    enum ListMode {
+      FileLoad,   // File selector, no input from user
+      FileSave,   // File selector, filename changable by user
+      Directories // Directories only, no input from user
+    };
+
+  public:
     BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
     virtual ~BrowserDialog();
 
-    const FilesystemNode& getResult() { return _node; }
-
     /** Place the browser window onscreen, using the given attributes */
     void show(const string& title, const string& startpath,
-              FilesystemNode::ListMode mode, int cmd);
+              BrowserDialog::ListMode mode, int cmd, const string& ext = "");
+
+    /** Get resulting file node (called after receiving kChooseCmd) */
+    const FilesystemNode& getResult() const;
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void updateListing();
+    void updateUI();
 
   private:
     enum {
@@ -59,16 +64,15 @@ class BrowserDialog : public Dialog, public CommandSender
 
     int	_cmd;
 
-    StringListWidget* _fileList;
+    FileListWidget*   _fileList;
     StaticTextWidget* _currentPath;
     StaticTextWidget* _title;
+    StaticTextWidget* _type;
+    EditTextWidget*   _selected;
     ButtonWidget*     _goUpButton;
     ButtonWidget*     _basedirButton;
 
-    FilesystemNode _node;
-    GameList*      _nodeList;
-
-    FilesystemNode::ListMode _mode;
+    BrowserDialog::ListMode _mode;
 };
 
 #endif

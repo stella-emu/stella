@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: PropsSet.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <fstream>
@@ -32,8 +32,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::PropertiesSet(OSystem* osystem)
-  : myOSystem(osystem),
-    mySize(0)
+  : myOSystem(osystem)
 {
   load(myOSystem->propertiesFile());
 }
@@ -127,7 +126,7 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
     while(low <= high)
     {
       int i = (low + high) / 2;
-      int cmp = BSPF_strncasecmp(md5.c_str(), DefProps[i][Cartridge_MD5], 32);
+      int cmp = BSPF_compareIgnoreCase(md5, DefProps[i][Cartridge_MD5]);
 
       if(cmp == 0)  // found it
       {
@@ -146,6 +145,20 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
   }
 
   return found;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::getMD5WithInsert(const FilesystemNode& rom,
+                                     const string& md5, Properties& properties)
+{
+  if(!getMD5(md5, properties))
+  {
+    properties.set(Cartridge_MD5, md5);
+    // Create a name suitable for using in properties
+    properties.set(Cartridge_Name, rom.getNameWithExt(""));
+
+    insert(properties, false);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

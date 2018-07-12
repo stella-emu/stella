@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: InputTextDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "bspf.hxx"
@@ -41,9 +38,36 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
     myXOrig(0),
     myYOrig(0)
 {
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
+  initialize(font, font, labels);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
+                                 const GUI::Font& nfont,
+                                 const StringList& labels)
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
+    CommandSender(boss),
+    myEnableCenter(false),
+    myErrorFlag(false),
+    myXOrig(0),
+    myYOrig(0)
+{
+  initialize(lfont, nfont, labels);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+InputTextDialog::~InputTextDialog()
+{
+  myInput.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::initialize(const GUI::Font& lfont, const GUI::Font& nfont,
+                                 const StringList& labels)
+{
+  const int fontWidth  = lfont.getMaxCharWidth(),
+            fontHeight = lfont.getFontHeight(),
+            lineHeight = lfont.getLineHeight();
   unsigned int xpos, ypos, i, lwidth = 0, maxIdx = 0;
   WidgetArray wid;
 
@@ -60,19 +84,19 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
       maxIdx = i;
     }
   }
-  lwidth = font.getStringWidth(labels[maxIdx]);
+  lwidth = lfont.getStringWidth(labels[maxIdx]);
 
   // Create editboxes for all labels
   ypos = lineHeight;
   for(i = 0; i < labels.size(); ++i)
   {
     xpos = 10;
-    new StaticTextWidget(this, font, xpos, ypos,
+    new StaticTextWidget(this, lfont, xpos, ypos,
                          lwidth, fontHeight,
                          labels[i], kTextAlignLeft);
 
     xpos += lwidth + fontWidth;
-    EditTextWidget* w = new EditTextWidget(this, font, xpos, ypos,
+    EditTextWidget* w = new EditTextWidget(this, nfont, xpos, ypos,
                                            _w - xpos - 10, lineHeight, "");
     wid.push_back(w);
 
@@ -81,7 +105,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   }
 
   xpos = 10;
-  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 2*xpos, fontHeight,
+  myTitle = new StaticTextWidget(this, lfont, xpos, ypos, _w - 2*xpos, fontHeight,
                                  "", kTextAlignCenter);
   myTitle->setTextColor(kTextColorEm);
 
@@ -89,21 +113,15 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
 
   // Add OK and Cancel buttons
   wid.clear();
-  addOKCancelBGroup(wid, font);
+  addOKCancelBGroup(wid, lfont);
   addBGroupToFocusList(wid);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-InputTextDialog::~InputTextDialog()
-{
-  myInput.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::show()
 {
   myEnableCenter = true;
-  parent().addDialog(this);
+  open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,7 +130,7 @@ void InputTextDialog::show(uInt32 x, uInt32 y)
   myXOrig = x;
   myYOrig = y;
   myEnableCenter = false;
-  parent().addDialog(this);
+  open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -147,16 +165,16 @@ void InputTextDialog::setTitle(const string& title)
 const string& InputTextDialog::getResult(int idx)
 {
   if((unsigned int)idx < myInput.size())
-    return myInput[idx]->getEditString();
+    return myInput[idx]->getText();
   else
     return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::setEditString(const string& str, int idx)
+void InputTextDialog::setText(const string& str, int idx)
 {
   if((unsigned int)idx < myInput.size())
-    myInput[idx]->setEditString(str);
+    myInput[idx]->setText(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -173,7 +191,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case kOKCmd:
-    case kEditAcceptCmd:
+    case EditableWidget::kAcceptCmd:
     {
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
@@ -185,7 +203,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kEditChangedCmd:
+    case EditableWidget::kChangedCmd:
       // Erase the invalid message once editing is restarted
       if(myErrorFlag)
       {
@@ -194,7 +212,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
-    case kEditCancelCmd:
+    case EditableWidget::kCancelCmd:
       Dialog::handleCommand(sender, kCloseCmd, data, id);
       break;
 

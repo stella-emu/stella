@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Debugger.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "bspf.hxx"
@@ -40,6 +40,7 @@
 #include "TIA.hxx"
 
 #include "CartDebug.hxx"
+#include "CartDebugWidget.hxx"
 #include "CpuDebug.hxx"
 #include "RiotDebug.hxx"
 #include "TIADebug.hxx"
@@ -121,12 +122,12 @@ Debugger::Debugger(OSystem& osystem, Console& console)
     myBreakPoints(NULL),
     myReadTraps(NULL),
     myWriteTraps(NULL),
-    myWidth(1050),
-    myHeight(620),
+    myWidth(DebuggerDialog::kSmallFontMinW),
+    myHeight(DebuggerDialog::kSmallFontMinH),
     myRewindManager(NULL)
 {
   // Init parser
-  myParser = new DebuggerParser(this);
+  myParser = new DebuggerParser(*this, osystem.settings());
 
   // Create debugger subsystems
   myCpuDebug  = new CpuDebug(*this, myConsole);
@@ -165,31 +166,26 @@ Debugger::~Debugger()
 void Debugger::initialize()
 {
   // Get the dialog size
-  int w, h;
-  myOSystem->settings().getSize("debuggerres", w, h);
-  myWidth = BSPF_max(w, 0);
-  myHeight = BSPF_max(h, 0);
-  myWidth = BSPF_max(myWidth, 1050u);
-  myHeight = BSPF_max(myHeight, 700u);
-  myOSystem->settings().setSize("debuggerres", myWidth, myHeight);
-
-  const GUI::Rect& r = getDialogBounds();
+  const GUI::Size& size = myOSystem->settings().getSize("dbg.res");
+  myWidth = BSPF_max(size.w, 0);
+  myHeight = BSPF_max(size.h, 0);
+  myWidth = BSPF_max(myWidth, (uInt32)DebuggerDialog::kSmallFontMinW);
+  myHeight = BSPF_max(myHeight, (uInt32)DebuggerDialog::kSmallFontMinH);
+  myOSystem->settings().setValue("dbg.res", GUI::Size(myWidth, myHeight));
 
   delete myBaseDialog;  myBaseDialog = myDialog = NULL;
-  myDialog = new DebuggerDialog(myOSystem, this,
-      r.left, r.top, r.width(), r.height());
+  myDialog = new DebuggerDialog(myOSystem, this, 0, 0, myWidth, myHeight);
   myBaseDialog = myDialog;
 
   myRewindManager = new RewindManager(*myOSystem, myDialog->rewindButton());
+  myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus Debugger::initializeVideo()
 {
-  const GUI::Rect& r = getDialogBounds();
-
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
-  return myOSystem->frameBuffer().initialize(title, r.width(), r.height());
+  return myOSystem->frameBuffer().initialize(title, myWidth, myHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,9 +198,9 @@ bool Debugger::start(const string& message, int address)
     ostringstream buf;
     buf << message;
     if(address > -1)
-      buf << valueToString(address);
+      buf << Common::Base::HEX4 << address;
 
-    myDialog->message().setEditString(buf.str());
+    myDialog->message().setText(buf.str());
     return true;
   }
   return false;
@@ -243,14 +239,7 @@ string Debugger::autoExec()
       << myParser->exec(autoexec) << endl;
 
   // Also, "romname.stella" if present
-  string file = myOSystem->romFile();
-  string::size_type pos;
-  if( (pos = file.find_last_of('.')) != string::npos )
-    file.replace(pos, file.size(), ".stella");
-  else
-    file += ".stella";
-
-  FilesystemNode romname(file);
+  FilesystemNode romname(myOSystem->romFile().getPathWithExt(".stella"));
   buf << myParser->exec(romname) << endl;
 
   // Init builtins
@@ -272,70 +261,13 @@ const string Debugger::run(const string& command)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::valueToString(int value, BaseFormat outputBase) const
-{
-  static char vToS_buf[32];
-
-  if(outputBase == kBASE_DEFAULT)
-    outputBase = myParser->base();
-
-  switch(outputBase)
-  {
-    case kBASE_2:     // base 2:  8 or 16 bits (depending on value)
-    case kBASE_2_8:   // base 2:  1 byte (8 bits) wide
-    case kBASE_2_16:  // base 2:  2 bytes (16 bits) wide
-    {
-      int places = (outputBase == kBASE_2_8 ||
-               (outputBase == kBASE_2 && value < 0x100)) ? 8 : 16;
-      vToS_buf[places] = '\0';
-      int bit = 1;
-      while(--places >= 0) {
-        if(value & bit) vToS_buf[places] = '1';
-        else            vToS_buf[places] = '0';
-        bit <<= 1;
-      }
-      break;
-    }
-
-    case kBASE_10:    // base 10: 3 or 5 bytes (depending on value)
-      if(value < 0x100)
-        BSPF_snprintf(vToS_buf, 4, "%3d", value);
-      else
-        BSPF_snprintf(vToS_buf, 6, "%5d", value);
-      break;
-
-    case kBASE_16_1:  // base 16: 1 byte wide
-      BSPF_snprintf(vToS_buf, 2, "%1X", value);
-      break;
-    case kBASE_16_2:  // base 16: 2 bytes wide
-      BSPF_snprintf(vToS_buf, 3, "%02X", value);
-      break;
-    case kBASE_16_4:  // base 16: 4 bytes wide
-      BSPF_snprintf(vToS_buf, 5, "%04X", value);
-      break;
-
-    case kBASE_16:    // base 16: 2, 4, 8 bytes (depending on value)
-    default:
-      if(value < 0x100)
-        BSPF_snprintf(vToS_buf, 3, "%02X", value);
-      else if(value < 0x10000)
-        BSPF_snprintf(vToS_buf, 5, "%04X", value);
-      else
-        BSPF_snprintf(vToS_buf, 9, "%08X", value);
-      break;
-  }
-
-  return string(vToS_buf);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string Debugger::invIfChanged(int reg, int oldReg)
 {
   string ret;
 
   bool changed = reg != oldReg;
   if(changed) ret += "\177";
-  ret += valueToString(reg);
+  ret += Common::Base::toString(reg, Common::Base::F_16_2);
   if(changed) ret += "\177";
 
   return ret;
@@ -625,74 +557,6 @@ void Debugger::setQuitState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getDialogBounds() const
-{
-  // The dialog bounds are the actual size of the entire dialog container
-  GUI::Rect r(0, 0, myWidth, myHeight);
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getTiaBounds() const
-{
-  // The area showing the TIA image (NTSC and PAL supported, up to 260 lines)
-  GUI::Rect r(0, 0, 320, 260);
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getRomBounds() const
-{
-  // The ROM area is the full area to the right of the tabs
-  const GUI::Rect& dialog = getDialogBounds();
-  const GUI::Rect& status = getStatusBounds();
-
-  int x1 = status.right + 1;
-  int y1 = 0;
-  int x2 = dialog.right;
-  int y2 = dialog.bottom;
-  GUI::Rect r(x1, y1, x2, y2);
-
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getStatusBounds() const
-{
-  // The status area is the full area to the right of the TIA image
-  // extending as far as necessary
-  // 30% of any space above 1030 pixels will be allocated to this area
-  const GUI::Rect& dlg = getDialogBounds();
-  const GUI::Rect& tia = getTiaBounds();
-
-  int x1 = tia.right + 1;
-  int y1 = 0;
-  int x2 = tia.right + 225 + (dlg.width() > 1030 ?
-           (int) (0.35 * (dlg.width() - 1030)) : 0);
-  int y2 = tia.bottom;
-  GUI::Rect r(x1, y1, x2, y2);
-
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Debugger::getTabBounds() const
-{
-  // The tab area is the full area below the TIA image
-  const GUI::Rect& dialog = getDialogBounds();
-  const GUI::Rect& tia    = getTiaBounds();
-  const GUI::Rect& status = getStatusBounds();
-
-  int x1 = 0;
-  int y1 = tia.bottom + 1;
-  int x2 = status.right + 1;
-  int y2 = dialog.bottom;
-  GUI::Rect r(x1, y1, x2, y2);
-
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::addFunction(const string& name, const string& definition,
                            Expression* exp, bool builtin)
 {
@@ -800,26 +664,13 @@ void Debugger::getCompletions(const char* in, StringList& list) const
   for(iter = functions.begin(); iter != functions.end(); ++iter)
   {
     const char* l = iter->first.c_str();
-    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
+    if(BSPF_equalsIgnoreCase(l, in))
       list.push_back(l);
   }
 
   for(int i = 0; pseudo_registers[i][0] != 0; ++i)
-    if(BSPF_strncasecmp(pseudo_registers[i][0], in, strlen(in)) == 0)
+    if(BSPF_equalsIgnoreCase(pseudo_registers[i][0], in))
       list.push_back(pseudo_registers[i][0]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::saveROM(const string& filename) const
-{
-  string path = AbstractFilesystemNode::getAbsolutePath(filename, "~", "a26");
-  FilesystemNode node(path);
-
-  ofstream out(node.getPath().c_str(), ios::out | ios::binary);
-  if(out.is_open() && myConsole.cartridge().save(out))
-    return node.getRelativePath();
-  else
-    return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

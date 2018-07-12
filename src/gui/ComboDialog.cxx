@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: ComboDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -35,7 +35,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
-                         const StringMap& combolist)
+                         const VariantList& combolist)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0),
     myComboEvent(Event::NoType)
 {
@@ -102,7 +102,7 @@ void ComboDialog::show(Event::Type event, const string& name)
   {
     myComboEvent = event;
     myComboName->setLabel("Add events for " + name);
-    parent().addDialog(this);
+    open();
   }
   else
     myComboEvent = Event::NoType;
@@ -129,7 +129,7 @@ void ComboDialog::saveConfig()
 {
   StringList events;
   for(int i = 0; i < 8; ++i)
-    events.push_back(myEvents[i]->getSelectedTag());
+    events.push_back(myEvents[i]->getSelectedTag().toString());
 
   instance().eventHandler().setComboListForEvent(myComboEvent, events);
 }

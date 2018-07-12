@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: FrameBuffer.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <algorithm>
@@ -51,7 +51,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     myPausedCount(0)
 {
   myMsg.surface   = myStatsMsg.surface = NULL;
-  myMsg.surfaceID = myStatsMsg.surfaceID = -1;
   myMsg.enabled   = myStatsMsg.enabled = false;
 
   // Load NTSC filter settings
@@ -153,7 +152,7 @@ FBInitStatus FrameBuffer::initialize(const string& title,
       // Did we get the requested fullscreen state?
       const string& fullscreen = myOSystem->settings().getString("fullscreen");
       if(fullscreen != "-1")
-        myOSystem->settings().setString("fullscreen", fullScreen() ? "1" : "0");
+        myOSystem->settings().setValue("fullscreen", fullScreen() ? "1" : "0");
       setCursorState();
     }
     else
@@ -170,18 +169,18 @@ FBInitStatus FrameBuffer::initialize(const string& title,
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kBtnTextColor;
-  myStatsMsg.w = myOSystem->consoleFont().getMaxCharWidth() * 24 + 2;
-  myStatsMsg.h = (myOSystem->consoleFont().getFontHeight() + 2) * 2;
+  myStatsMsg.w = myOSystem->infoFont().getMaxCharWidth() * 24 + 2;
+  myStatsMsg.h = (myOSystem->infoFont().getFontHeight() + 2) * 2;
 
  if(myStatsMsg.surface == NULL)
   {
-    myStatsMsg.surfaceID = allocateSurface(myStatsMsg.w, myStatsMsg.h);
-    myStatsMsg.surface   = surface(myStatsMsg.surfaceID);
+    uInt32 surfaceID = allocateSurface(myStatsMsg.w, myStatsMsg.h);
+    myStatsMsg.surface = surface(surfaceID);
   }
   if(myMsg.surface == NULL)
   {
-    myMsg.surfaceID = allocateSurface(640, myOSystem->font().getFontHeight()+10);
-    myMsg.surface   = surface(myMsg.surfaceID);
+    uInt32 surfaceID = allocateSurface(640, myOSystem->font().getFontHeight()+10);
+    myMsg.surface = surface(surfaceID);
   }
 
   // Finally, show some information about the framebuffer,
@@ -224,9 +223,9 @@ void FrameBuffer::update()
                 myOSystem->console().tia().scanlines(),
                 myOSystem->console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
-        myStatsMsg.surface->drawString(myOSystem->consoleFont(),
+        myStatsMsg.surface->drawString(myOSystem->infoFont(),
           msg, 1, 1, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
-        myStatsMsg.surface->drawString(myOSystem->consoleFont(),
+        myStatsMsg.surface->drawString(myOSystem->infoFont(),
           info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
         myStatsMsg.surface->setPos(myImageRect.x() + 1, myImageRect.y() + 1);
@@ -336,7 +335,7 @@ void FrameBuffer::toggleFrameStats()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showFrameStats(bool enable)
 {
-  myOSystem->settings().setBool("stats", enable);
+  myOSystem->settings().setValue("stats", enable);
   myStatsMsg.enabled = enable;
   refresh();
 }
@@ -534,7 +533,7 @@ void FrameBuffer::setNTSC(NTSCFilter::Preset preset, bool show)
       const string& mode = myNTSCFilter.setPreset(preset);
       buf << "TV filtering (" << mode << " mode)";
     }
-    myOSystem->settings().setInt("tv_filter", (int)preset);
+    myOSystem->settings().setValue("tv_filter", (int)preset);
   }
   else
     buf << "TV filtering not available in software mode";
@@ -552,7 +551,7 @@ void FrameBuffer::setScanlineIntensity(int amount)
     {
       uInt32 intensity = enableScanlines(amount);
       buf << "Scanline intensity at " << intensity  << "%";
-      myOSystem->settings().setInt("tv_scanlines", intensity);
+      myOSystem->settings().setValue("tv_scanlines", intensity);
     }
     else
       buf << "Scanlines only available in TV filtering mode";
@@ -574,7 +573,7 @@ void FrameBuffer::toggleScanlineInterpolation()
       bool enable = !myOSystem->settings().getBool("tv_scaninter");
       enableScanlineInterpolation(enable);
       buf << "Scanline interpolation " << (enable ? "enabled" : "disabled");
-      myOSystem->settings().setBool("tv_scaninter", enable);
+      myOSystem->settings().setValue("tv_scaninter", enable);
     }
     else
       buf << "Scanlines only available in TV filtering mode";
@@ -586,22 +585,22 @@ void FrameBuffer::toggleScanlineInterpolation()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FrameBuffer::allocateSurface(int w, int h, bool useBase)
+uInt32 FrameBuffer::allocateSurface(int w, int h, bool useBase)
 {
   // Create a new surface
   FBSurface* surface = createSurface(w, h, useBase);
 
   // Add it to the list
-  mySurfaceList.insert(make_pair(int(mySurfaceList.size()), surface));
+  mySurfaceList.insert(make_pair((uInt32)mySurfaceList.size(), surface));
 
   // Return a reference to it
   return mySurfaceList.size() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurface* FrameBuffer::surface(int id) const
+FBSurface* FrameBuffer::surface(uInt32 id) const
 {
-  map<int,FBSurface*>::const_iterator iter = mySurfaceList.find(id);
+  map<uInt32,FBSurface*>::const_iterator iter = mySurfaceList.find(id);
   return iter != mySurfaceList.end() ? iter->second : NULL;
 }
 
@@ -614,7 +613,7 @@ void FrameBuffer::resetSurfaces(FBSurface* tiasurface)
   // Any derived FrameBuffer classes that call this method should be
   // aware of these restrictions, and act accordingly
 
-  map<int,FBSurface*>::iterator iter;
+  map<uInt32,FBSurface*>::iterator iter;
   for(iter = mySurfaceList.begin(); iter != mySurfaceList.end(); ++iter)
     iter->second->free();
   if(tiasurface)
@@ -744,7 +743,7 @@ void FrameBuffer::setFullscreen(bool enable)
   // to changeVidMode()
   changeVidMode(0);
 #else
-  myOSystem->settings().setString("fullscreen", enable ? "1" : "0");
+  myOSystem->settings().setValue("fullscreen", enable ? "1" : "0");
   VideoMode vidmode = myCurrentModeList->current(myOSystem->settings(), fullScreen());
   cout << "enable=" << (enable ? "1" : "0") << "fullscreen=" << fullScreen() << endl;
   setVidMode(vidmode);
@@ -796,7 +795,7 @@ bool FrameBuffer::changeVidMode(int direction)
     // Did we get the requested fullscreen state?
     const string& fullscreen = myOSystem->settings().getString("fullscreen");
     if(fullscreen != "-1")
-      myOSystem->settings().setString("fullscreen", fullScreen() ? "1" : "0");
+      myOSystem->settings().setValue("fullscreen", fullScreen() ? "1" : "0");
     setCursorState();
 
     if(!inUIMode)
@@ -805,7 +804,7 @@ bool FrameBuffer::changeVidMode(int direction)
         showMessage(vidmode.gfxmode.description);
     }
     if(saveModeChange)
-      myOSystem->settings().setString("tia_filter", vidmode.gfxmode.name);
+      myOSystem->settings().setValue("tia_filter", vidmode.gfxmode.name);
 
     refresh();
   }
@@ -843,7 +842,7 @@ void FrameBuffer::setCursorState()
 void FrameBuffer::toggleGrabMouse()
 {
   bool state = myOSystem->settings().getBool("grabmouse");
-  myOSystem->settings().setBool("grabmouse", !state);
+  myOSystem->settings().setValue("grabmouse", !state);
   setCursorState();
 }
 
@@ -949,7 +948,7 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const StringMap& FrameBuffer::supportedTIAFilters(const string& type)
+const VariantList& FrameBuffer::supportedTIAFilters(const string& type)
 {
   uInt32 max_zoom = maxWindowSizeForScreen(320, 210,
                     myOSystem->desktopWidth(), myOSystem->desktopHeight());
@@ -1176,15 +1175,14 @@ const FrameBuffer::VideoMode FrameBuffer::
   if(isFullscreen && !BSPF_equalsIgnoreCase(settings.getString("fullres"), "auto"))
   {
     // Only use 'fullres' if it's *bigger* than the requested mode
-    int w, h;
-    settings.getSize("fullres", w, h);
+    const GUI::Size& s = settings.getSize("fullres");
 
-    if(w != -1 && h != -1 && (uInt32)w >= myModeList[myIdx].screen_w &&
-      (uInt32)h >= myModeList[myIdx].screen_h)
+    if(s.w != -1 && s.h != -1 && (uInt32)s.w >= myModeList[myIdx].screen_w &&
+      (uInt32)s.h >= myModeList[myIdx].screen_h)
     {
       VideoMode mode = myModeList[myIdx];
-      mode.screen_w = w;
-      mode.screen_h = h;
+      mode.screen_w = s.w;
+      mode.screen_h = s.h;
       mode.image_x = (mode.screen_w - mode.image_w) >> 1;
       mode.image_y = (mode.screen_h - mode.image_h) >> 1;
 

@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: DebuggerParser.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -29,26 +29,12 @@ struct Command;
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "FrameBuffer.hxx"
-
-// The base to use for conversion from integers to strings
-// Note that the actual number of places will be determined by
-// the magnitude of the value itself in the general case
-typedef enum {
-  kBASE_16,   // base 16: 2, 4, 8 bytes (depending on value)
-  kBASE_16_1, // base 16: 1 byte wide
-  kBASE_16_2, // base 16: 2 bytes wide
-  kBASE_16_4, // base 16: 4 bytes wide
-  kBASE_10,   // base 10: 3 or 5 bytes (depending on value)
-  kBASE_2,    // base 2:  8 or 16 bits (depending on value)
-  kBASE_2_8,  // base 2:  1 byte (8 bits) wide
-  kBASE_2_16, // base 2:  2 bytes (16 bits) wide
-  kBASE_DEFAULT
-} BaseFormat;
+#include "Settings.hxx"
 
 class DebuggerParser
 {
   public:
-    DebuggerParser(Debugger* debugger);
+    DebuggerParser(Debugger& debugger, Settings& settings);
     ~DebuggerParser();
 
     /** Run the given command, and return the result */
@@ -66,10 +52,6 @@ class DebuggerParser
 
     /** String representation of all watches currently defined */
     string showWatches();
-
-    /** Get/set the number base when parsing numeric values */
-    void setBase(BaseFormat base) { defaultBase = base; }
-    BaseFormat base() const       { return defaultBase; }
 
     static inline string red(const string& msg = "")
     {
@@ -126,8 +108,11 @@ class DebuggerParser
       METHOD executor;
     };
 
-    // Pointer to our debugger object
-    Debugger* debugger;
+    // Reference to our debugger object
+    Debugger& debugger;
+
+    // Reference to settings object (required for saving certain options)
+    Settings& settings;
 
     // The results of the currently running command
     ostringstream commandResult;
@@ -137,7 +122,6 @@ class DebuggerParser
     StringList argStrings;
     int argCount;
 
-    BaseFormat defaultBase;
     StringList watches;
 
     // List of available command methods
@@ -176,7 +160,6 @@ class DebuggerParser
     void executeListtraps();
     void executeLoadconfig();
     void executeLoadstate();
-    void executeLoadsym();
     void executeN();
     void executePc();
     void executePGfx();
@@ -193,11 +176,11 @@ class DebuggerParser
     void executeS();
     void executeSave();
     void executeSaveconfig();
+    void executeSavedisassembly();
     void executeSaverom();
     void executeSaveses();
     void executeSavestate();
     void executeScanline();
-    void executeSkip();
     void executeStep();
     void executeTia();
     void executeTrace();
@@ -205,6 +188,7 @@ class DebuggerParser
     void executeTrapread();
     void executeTrapwrite();
     void executeType();
+    void executeUHex();
     void executeUndef();
     void executeV();
     void executeWatch();

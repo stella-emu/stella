@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: SerialPortWin32.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <windows.h>
@@ -49,7 +49,10 @@ bool SerialPortWin32::openPort(const string& device)
       FillMemory(&dcb, sizeof(dcb), 0);
       dcb.DCBlength = sizeof(dcb);
       if(!BuildCommDCB("19200,n,8,1", &dcb))
+      {
+        closePort();
         return false;
+      }
 
       memset(&dcb, 0, sizeof(DCB));
       dcb.BaudRate = CBR_19200;

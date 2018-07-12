@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: DrivingWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "DataGridWidget.hxx"
@@ -50,7 +50,7 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
 
   xpos += myGreyDown->getWidth() + 10;  ypos -= 10;
   myGreyValue = new DataGridWidget(boss, font, xpos, ypos,
-                                   1, 1, 2, 8, kBASE_16);
+                                   1, 1, 2, 8, Common::Base::F_16);
   myGreyValue->setTarget(this);
   myGreyValue->setEditable(false);
 

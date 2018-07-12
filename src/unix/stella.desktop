@@ -2,7 +2,8 @@
 Name=Stella
 Comment=A multi-platform Atari 2600 emulator
 Exec=stella %f
-Icon=stella.png
+Icon=stella
 Terminal=false
 Type=Application
-Categories=Application;Emulator;Game;
+StartupNotify=true
+Categories=Emulator;Game;

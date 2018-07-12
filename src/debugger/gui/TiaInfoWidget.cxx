@@ -8,18 +8,16 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: TiaInfoWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
+#include "Base.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "Debugger.hxx"
@@ -31,75 +29,81 @@
 #include "TiaInfoWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y)
-  : Widget(boss, font, x, y, 16, 16),
+TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
+                             const GUI::Font& nfont,
+                             int x, int y, int max_w)
+  : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss)
 {
-  _type = kTiaInfoWidget;
+  bool longstr = 34 * lfont.getMaxCharWidth() <= max_w;
 
   x += 5;
-  const int lineHeight = font.getLineHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("F. Cyc:");
+  const int lineHeight = lfont.getLineHeight();
+  int xpos = x, ypos = y;
+  int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle:" : "F. Cycle:");
+  int fwidth = 5 * lfont.getMaxCharWidth() + 4;
 
   // Add frame info
   xpos = x;  ypos = y + 10;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
-                       "Frame:", kTextAlignLeft);
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
+                       longstr ? "Frame Count:" : "Frame:",
+                       kTextAlignLeft);
   xpos += lwidth;
-  myFrameCount = new EditTextWidget(boss, font, xpos, ypos-2, 45, lineHeight, "");
+  myFrameCount = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
   myFrameCount->setEditable(false);
 
   xpos = x;  ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
-                       "F. Cyc:", kTextAlignLeft);
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
+                       longstr ? "Frame Cycle:" : "F. Cycle:",
+                       kTextAlignLeft);
   xpos += lwidth;
-  myFrameCycles = new EditTextWidget(boss, font, xpos, ypos-2, 45, lineHeight, "");
+  myFrameCycles = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
   myFrameCycles->setEditable(false);
 
-  xpos = x + 10;  ypos += lineHeight + 8;
-  myVSync = new CheckboxWidget(boss, font, xpos, ypos-3, "VSync", 0);
+  xpos = x + 20;  ypos += lineHeight + 8;
+  myVSync = new CheckboxWidget(boss, lfont, xpos, ypos-3, "VSync", 0);
   myVSync->setEditable(false);
 
-  xpos = x + 10;  ypos += lineHeight + 5;
-  myVBlank = new CheckboxWidget(boss, font, xpos, ypos-3, "VBlank", 0);
+  xpos = x + 20;  ypos += lineHeight + 5;
+  myVBlank = new CheckboxWidget(boss, lfont, xpos, ypos-3, "VBlank", 0);
   myVBlank->setEditable(false);
 
-  xpos = x + lwidth + myFrameCycles->getWidth() + 5;  ypos = y + 10;
-  lwidth = font.getStringWidth("Pixel Pos:");
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
+  xpos = x + lwidth + myFrameCycles->getWidth() + 8;  ypos = y + 10;
+  lwidth = lfont.getStringWidth(longstr ? "Color Clock:" : "Pixel Pos:");
+  fwidth = 3 * lfont.getMaxCharWidth() + 4;
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        "Scanline:", kTextAlignLeft);
 
-  myScanlineCount = new EditTextWidget(boss, font, xpos+lwidth, ypos-2, 30,
+  myScanlineCount = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myScanlineCount->setEditable(false);
 
   ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
-                       "S. Cyc:", kTextAlignLeft);
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
+                       longstr ? "Scan Cycle:" : "S. Cycle:", kTextAlignLeft);
 
-  myScanlineCycles = new EditTextWidget(boss, font, xpos+lwidth, ypos-2, 30,
+  myScanlineCycles = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                         lineHeight, "");
   myScanlineCycles->setEditable(false);
 
   ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        "Pixel Pos:", kTextAlignLeft);
 
-  myPixelPosition = new EditTextWidget(boss, font, xpos+lwidth, ypos-2, 30,
+  myPixelPosition = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myPixelPosition->setEditable(false);
 
   ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos, lwidth, lineHeight,
-                       "Color Clk:", kTextAlignLeft);
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
+                       longstr ? "Color Clock:" : "Color Clk:", kTextAlignLeft);
 
-  myColorClocks = new EditTextWidget(boss, font, xpos+lwidth, ypos-2, 30,
+  myColorClocks = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                      lineHeight, "");
   myColorClocks->setEditable(false);
 
   // Calculate actual dimensions
-  _w = 100 + 30 + lwidth;
+  _w = myColorClocks->getAbsX() + myColorClocks->getWidth() - x;
   _h = ypos + lineHeight;
 }
 
@@ -125,15 +129,15 @@ void TiaInfoWidget::loadConfig()
   Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
 
-  myFrameCount->setEditString(dbg.valueToString(tia.frameCount(), kBASE_10));
-  myFrameCycles->setEditString(dbg.valueToString(dbg.cycles(), kBASE_10));
+  myFrameCount->setText(Common::Base::toString(tia.frameCount(), Common::Base::F_10));
+  myFrameCycles->setText(Common::Base::toString(dbg.cycles(), Common::Base::F_10));
 
   myVSync->setState(tia.vsync());
   myVBlank->setState(tia.vblank());
 
   int clk = tia.clocksThisLine();
-  myScanlineCount->setEditString(dbg.valueToString(tia.scanlines(), kBASE_10));
-  myScanlineCycles->setEditString(dbg.valueToString(clk/3, kBASE_10));
-  myPixelPosition->setEditString(dbg.valueToString(clk-68, kBASE_10));
-  myColorClocks->setEditString(dbg.valueToString(clk, kBASE_10));
+  myScanlineCount->setText(Common::Base::toString(tia.scanlines(), Common::Base::F_10));
+  myScanlineCycles->setText(Common::Base::toString(clk/3, Common::Base::F_10));
+  myPixelPosition->setText(Common::Base::toString(clk-68, Common::Base::F_10));
+  myColorClocks->setText(Common::Base::toString(clk, Common::Base::F_10));
 }

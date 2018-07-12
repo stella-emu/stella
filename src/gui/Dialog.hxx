@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Dialog.hxx 2838 2014-01-17 23:34:03Z stephena $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,17 +39,11 @@ class TabWidget;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id$
+  @version $Id: Dialog.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class Dialog : public GuiObject
 {
   friend class DialogContainer;
-
-  struct Focus {
-    Widget* focusedWidget;
-    WidgetArray focusList;
-  };
-  typedef Common::Array<Focus> FocusList;
 
   public:
     Dialog(OSystem* instance, DialogContainer* parent,
@@ -57,11 +51,12 @@ class Dialog : public GuiObject
 
     virtual ~Dialog();
 
+    void open(bool refresh = true);
+    void close(bool refresh = true);
+
     bool isVisible() const { return _visible; }
     bool isBase() const    { return _isBase;  }
 
-    virtual void open();
-    virtual void close();
     virtual void center();
     virtual void drawDialog();
     virtual void loadConfig() {}
@@ -69,15 +64,16 @@ class Dialog : public GuiObject
     virtual void setDefaults() {}
 
     void addFocusWidget(Widget* w);
-    void addToFocusList(WidgetArray& list, int id = -1);
-    void addBGroupToFocusList(WidgetArray& list) { _ourButtonGroup = list; }
+    void addToFocusList(WidgetArray& list);
+    void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
+    void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
     void redrawFocus();
-    void addTabWidget(TabWidget* w) { _ourTab = w; }
+    void addTabWidget(TabWidget* w);
     void addOKWidget(Widget* w)     { _okWidget = w; }
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
 
-    FBSurface& surface() { return *_surface; }
+    FBSurface& surface() const { return *_surface; }
 
   protected:
     virtual void draw();
@@ -102,12 +98,13 @@ class Dialog : public GuiObject
                            const string& okText = "",
                            const string& cancelText = "");
 
-    void setResult(int result) { _result = result; }
-    int getResult() const { return _result; }
+    void processCancelWithoutWidget(bool state) { _processCancel = state; }
 
   private:
-    void buildFocusWidgetList(int id);
+    void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e);
+    void getTabIdForWidget(Widget* w);
+    bool cycleTab(int direction);
 
   protected:
     Widget* _mouseWidget;
@@ -117,16 +114,39 @@ class Dialog : public GuiObject
     Widget* _cancelWidget;
     bool    _visible;
     bool    _isBase;
+    bool    _processCancel;
 
   private:
-    FocusList   _ourFocusList;
-    TabWidget*  _ourTab;
-    WidgetArray _ourButtonGroup;
+    struct Focus {
+      Widget* widget;
+      WidgetArray list;
+
+      Focus(Widget* w = 0);
+      virtual ~Focus();
+    };
+    typedef Common::Array<Focus> FocusList;
+
+    struct TabFocus {
+      TabWidget* widget;
+      FocusList focus;
+      uInt32 currentTab;
+
+      TabFocus(TabWidget* w = 0);
+      virtual ~TabFocus();
+
+      void appendFocusList(WidgetArray& list);
+      void saveCurrentFocus(Widget* w);
+      Widget* getNewFocus();
+    };
+    typedef Common::Array<TabFocus> TabFocusList;
+
+    Focus        _myFocus;    // focus for base dialog
+    TabFocusList _myTabList;  // focus for each tab (if any)
+
+    WidgetArray _buttonGroup;
     FBSurface*  _surface;
 
-    int _result;
-    int _focusID;
-    int _surfaceID;
+    int _tabID;
 };
 
 #endif

@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: RomAuditDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "bspf.hxx"
@@ -30,6 +27,7 @@
 #include "ProgressDialog.hxx"
 #include "FSNode.hxx"
 #include "MessageBox.hxx"
+#include "MD5.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "Settings.hxx"
@@ -91,7 +89,6 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
                        kTextAlignLeft);
 
   // Add OK and Cancel buttons
-  wid.clear();
   addOKCancelBGroup(wid, font, "Audit", "Done");
   addBGroupToFocusList(wid);
 
@@ -109,11 +106,11 @@ RomAuditDialog::~RomAuditDialog()
 void RomAuditDialog::loadConfig()
 {
   const string& currentdir =
-    instance().launcher().currentNode().getRelativePath();
+    instance().launcher().currentNode().getShortPath();
   const string& path = currentdir == "" ?
     instance().settings().getString("romdir") : currentdir;
 
-  myRomPath->setEditString(path);
+  myRomPath->setText(path);
   myResults1->setLabel("");
   myResults2->setLabel("");
 }
@@ -121,7 +118,7 @@ void RomAuditDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::auditRoms()
 {
-  const string& auditPath = myRomPath->getEditString();
+  const string& auditPath = myRomPath->getText();
   myResults1->setLabel("");
   myResults2->setLabel("");
 
@@ -143,21 +140,20 @@ void RomAuditDialog::auditRoms()
   {
     string extension;
     if(files[idx].isFile() &&
-       LauncherFilterDialog::isValidRomName(files[idx].getPath(), extension))
+       LauncherFilterDialog::isValidRomName(files[idx], extension))
     {
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)
-      const string& md5 = instance().MD5FromFile(files[idx].getPath());
+      const string& md5 = MD5(files[idx]);
       instance().propSet().getMD5(md5, props);
       const string& name = props.get(Cartridge_Name);
 
       // Only rename the file if we found a valid properties entry
-      if(name != "" && name != files[idx].getDisplayName())
+      if(name != "" && name != files[idx].getName())
       {
         const string& newfile = node.getPath() + name + "." + extension;
 
-        if(files[idx].getPath() != newfile)
-          if(AbstractFilesystemNode::renameFile(files[idx].getPath(), newfile))
+        if(files[idx].getPath() != newfile && files[idx].rename(newfile))
             renamed++;
       }
       else
@@ -191,7 +187,8 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         msg.push_back("If you're sure you want to proceed with the");
         msg.push_back("audit, click 'OK', otherwise click 'Cancel'.");
         myConfirmMsg =
-          new MessageBox(this, instance().font(), msg, myMaxWidth, myMaxHeight,
+          new GUI::MessageBox(this, instance().font(), msg,
+                              myMaxWidth, myMaxHeight,
                          kConfirmAuditCmd);
       }
       myConfirmMsg->show();
@@ -203,14 +200,14 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseAuditDirCmd:
-      myBrowser->show("Select ROM directory to audit:", myRomPath->getEditString(),
-                      FilesystemNode::kListDirectoriesOnly, kAuditDirChosenCmd);
+      myBrowser->show("Select ROM directory to audit:", myRomPath->getText(),
+                      BrowserDialog::Directories, kAuditDirChosenCmd);
       break;
 
     case kAuditDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setEditString(dir.getRelativePath());
+      myRomPath->setText(dir.getShortPath());
       myResults1->setLabel("");
       myResults2->setLabel("");
       break;

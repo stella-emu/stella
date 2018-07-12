@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: TiaOutputWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -43,14 +40,12 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
     myMenu(NULL),
     myZoom(NULL)
 {
-  _type = kTiaOutputWidget;
-
   // Create context menu for commands
-  StringMap l;
+  VariantList l;
   l.push_back("Fill to scanline", "scanline");
   l.push_back("Set breakpoint", "bp");
   l.push_back("Set zoom position", "zoom");
-  l.push_back("Toggle fixed debug colors", "fixed");
+  l.push_back("Toggle fixed debug colors (from beam pos)", "fixed");
   myMenu = new ContextMenu(this, font, l);
 }
 
@@ -87,9 +82,9 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 
   switch(cmd)
   {
-    case kCMenuItemSelectedCmd:
+    case ContextMenu::kItemSelectedCmd:
     {
-      const string& rmb = myMenu->getSelectedTag();
+      const string& rmb = myMenu->getSelectedTag().toString();
 
       if(rmb == "scanline")
       {

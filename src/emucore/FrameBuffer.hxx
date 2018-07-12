@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: FrameBuffer.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -37,6 +37,7 @@ namespace GUI {
 #include "Rect.hxx"
 #include "StringList.hxx"
 #include "NTSCFilter.hxx"
+#include "Variant.hxx"
 #include "bspf.hxx"
 
 // Different types of framebuffer derived objects
@@ -102,7 +103,7 @@ enum {
   into FBSurfaces), are in turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id$
+  @version $Id: FrameBuffer.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class FrameBuffer
 {
@@ -173,7 +174,7 @@ class FrameBuffer
 
       @return  A unique ID used to identify this surface
     */
-    int allocateSurface(int w, int h, bool useBase = false);
+    uInt32 allocateSurface(int w, int h, bool useBase = false);
 
     /**
       Retrieve the surface associated with the given ID.
@@ -181,7 +182,7 @@ class FrameBuffer
       @param id  The ID for the surface to retrieve.
       @return    A pointer to a valid surface object, or NULL.
     */
-    FBSurface* surface(int id) const;
+    FBSurface* surface(uInt32 id) const;
 
     /**
       Returns the current dimensions of the framebuffer image.
@@ -258,7 +259,7 @@ class FrameBuffer
     /**
       Get the supported TIA filters for the given framebuffer type.
     */
-    const StringMap& supportedTIAFilters(const string& type);
+    const VariantList& supportedTIAFilters(const string& type);
 
     /**
       Get the TIA pixel associated with the given TIA buffer index,
@@ -526,7 +527,7 @@ class FrameBuffer
     Uint8 myDefPalette24[256+kNumColors][3];
 
     // Names of the TIA filters that can be used for this framebuffer
-    StringMap myTIAFilters;
+    VariantList myTIAFilters;
 
   private:
     /**
@@ -633,7 +634,6 @@ class FrameBuffer
       MessagePosition position;
       uInt32 color;
       FBSurface* surface;
-      int surfaceID;
       bool enabled;
     };
     Message myMsg;
@@ -645,7 +645,7 @@ class FrameBuffer
     VideoModeList* myCurrentModeList;
 
     // Holds a reference to all the surfaces that have been created
-    map<int,FBSurface*> mySurfaceList;
+    map<uInt32,FBSurface*> mySurfaceList;
 
     // Holds static strings for the remap menu (emulation and menu events)
     static GraphicsMode ourGraphicsModes[GFX_NumModes];
@@ -661,7 +661,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id$
+  @version $Id: FrameBuffer.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

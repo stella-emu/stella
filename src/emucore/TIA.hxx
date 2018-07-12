@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: TIA.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -41,7 +41,7 @@ class Sound;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id$
+  @version $Id: TIA.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class TIA : public Device
 {
@@ -316,6 +316,15 @@ class TIA : public Device
     */
     bool toggleFixedColors(uInt8 mode = 2);
 
+    /**
+      Enable/disable/query state of 'undriven/floating TIA pins'.
+
+      @param mode  1/0 indicates on/off, otherwise return the current state
+
+      @return  Whether the mode was enabled or disabled
+    */
+    bool driveUnusedPinsRandom(uInt8 mode = 2);
+
 #ifdef DEBUGGER_SUPPORT
     /**
       This method should be called to update the TIA with a new scanline.
@@ -356,6 +365,9 @@ class TIA : public Device
 
     // Waste cycles until the current scanline is finished
     void waitHorizontalSync();
+
+    // Reset horizontal sync counter
+    void waitHorizontalRSync();
 
     // Clear both internal TIA buffers to black (palette color 0)
     void clearBuffers();
@@ -456,9 +468,9 @@ class TIA : public Device
 
     uInt8 myPlayfieldPriorityAndScore;
     uInt8 myPriorityEncoder[2][256];
-    uInt32 myColor[8];
-    uInt32 myFixedColor[8];
-    uInt32* myColorPtr;
+    uInt8 myColor[8];
+    uInt8 myFixedColor[8];
+    uInt8* myColorPtr;
 
     uInt8 myCTRLPF;       // Playfield control register
 

@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: FSNode.hxx 2838 2014-01-17 23:34:03Z stephena $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,8 +34,6 @@
  * paths (and it's left to them whether / or \ or : is the path separator :-);
  * but it is also possible to use inodes or vrefs (MacOS 9) or anything else.
  *
- * NOTE: Backends still have to provide a way to extract a path from a FSIntern
- *
  * You may ask now: "isn't this cheating? Why do we go through all this when we use
  * a path in the end anyway?!?".
  * Well, for once as long as we don't provide our own file open/read/write API, we
@@ -49,17 +47,11 @@
  * we can build upon this.
  */
  
-/* 
- * TODO - Instead of starting with getRoot(), we should rather add a getDefaultDir()
- * call that on Unix might return the current dir or the users home dir...
- * i.e. the root dir is usually not the best starting point for browsing.
- */
-
 #include "Array.hxx"
 #include "SharedPtr.hxx"
 
 class FilesystemNode;
-class AbstractFilesystemNode;
+class AbstractFSNode;
 
 /**
  * List of multiple file system nodes. E.g. the contents of a given directory.
@@ -69,29 +61,8 @@ class AbstractFilesystemNode;
 class FSList : public Common::Array<FilesystemNode> { };
 
 /**
- * FilesystemNode provides an abstraction for file paths, allowing for portable
- * file system browsing. To this ends, multiple or single roots have to be supported
- * (compare Unix with a single root, Windows with multiple roots C:, D:, ...).
- *
- * To this end, we abstract away from paths; implementations can be based on
- * paths (and it's left to them whether / or \ or : is the path separator :-);
- * but it is also possible to use inodes or vrefs (MacOS 9) or anything else.
- *
- * NOTE: Backends still have to provide a way to extract a path from a FSIntern
- *
- * You may ask now: "isn't this cheating? Why do we go through all this when we use
- * a path in the end anyway?!?".
- * Well, for once as long as we don't provide our own file open/read/write API, we
- * still have to use fopen(). Since all our targets already support fopen(), it should
- * be possible to get a fopen() compatible string for any file system node.
- *
- * Secondly, with this abstraction layer, we still avoid a lot of complications based on
- * differences in FS roots, different path separators, or even systems with no real
- * paths (MacOS 9 doesn't even have the notion of a "current directory").
- * And if we ever want to support devices with no FS in the classical sense (Palm...),
- * we can build upon this.
- *
- * This class acts as a wrapper around the AbstractFilesystemNode class defined in backends/fs.
+ * This class acts as a wrapper around the AbstractFSNode class defined
+ * in backends/fs.
  */
 class FilesystemNode
 {
@@ -129,10 +100,26 @@ class FilesystemNode
      * Compare the name of this node to the name of another. Directories
      * go before normal files.
      */
-    bool operator<(const FilesystemNode& node) const;
+    inline bool operator<(const FilesystemNode& node) const
+    {
+      if (isDirectory() != node.isDirectory())
+        return isDirectory();
+
+      return BSPF_compareIgnoreCase(getName(), node.getName()) < 0;
+    }
 
     /**
-     * Indicates whether the object referred by this path exists in the filesystem or not.
+     * Compare the name of this node to the name of another, testing for
+     * equality,
+     */
+    inline bool operator==(const FilesystemNode& node) const
+    {
+      return BSPF_compareIgnoreCase(getName(), node.getName()) == 0;
+    }
+
+    /**
+     * Indicates whether the object referred by this path exists in the
+     * filesystem or not.
      *
      * @return bool true if the path exists, false otherwise.
      */
@@ -142,18 +129,11 @@ class FilesystemNode
      * Return a list of child nodes of this directory node. If called on a node
      * that does not represent a directory, false is returned.
      *
-     * @return true if successful, false otherwise (e.g. when the directory does not exist).
+     * @return true if successful, false otherwise (e.g. when the directory
+     *         does not exist).
      */
-    virtual bool getChildren(FSList &fslist, ListMode mode = kListDirectoriesOnly, bool hidden = false) const;
-
-    /**
-     * Return a human readable string for this node, usable for display (e.g.
-     * in the GUI code). Do *not* rely on it being usable for anything else,
-     * like constructing paths!
-     *
-     * @return the display name
-     */
-    virtual const string& getDisplayName() const;
+    virtual bool getChildren(FSList &fslist, ListMode mode = kListDirectoriesOnly,
+                             bool hidden = false) const;
 
     /**
      * Return a string representation of the name of the file. This is can be
@@ -170,9 +150,6 @@ class FilesystemNode
      * This will usually be a 'path' (hence the name of the method), but can
      * be anything that fulfills the above criterions.
      *
-     * @note Do not assume that this string contains (back)slashes or any
-     *       other kind of 'path separators'.
-     *
      * @return the 'path' represented by this filesystem node
      */
     virtual const string& getPath() const;
@@ -182,12 +159,9 @@ class FilesystemNode
      * symbol (if applicable), and is suitable for archiving (i.e. writing
      * to the config file).
      *
-     * @note Do not assume that this string contains (back)slashes or any
-     *       other kind of 'path separators'.
-     *
      * @return the 'path' represented by this filesystem node
      */
-    virtual string getRelativePath() const;
+    virtual string getShortPath() const;
 
     /**
      * Determine whether this node has a parent.
@@ -229,7 +203,8 @@ class FilesystemNode
      * Indicates whether the object referred by this path can be written to or not.
      *
      * If the path refers to a directory, writability implies being able to modify
-     * the directory entry (i.e. rename the directory, remove it or write files inside of it).
+     * the directory entry (i.e. rename the directory, remove it or write files
+     * inside of it).
      *
      * If the path refers to a file, writability implies being able to write data
      * to the file.
@@ -238,9 +213,45 @@ class FilesystemNode
      */
     virtual bool isWritable() const;
 
+    /**
+     * Create a directory from the current node path.
+     *
+     * @return bool true if the directory was created, false otherwise.
+     */
+    virtual bool makeDir();
+
+    /**
+     * Rename the current node path with the new given name.
+     *
+     * @return bool true if the node was renamed, false otherwise.
+     */
+    virtual bool rename(const string& newfile);
+
+    /**
+     * Read data (binary format) into the given buffer.
+     *
+     * @param buffer  The buffer to containing the data
+     *                This will be allocated by the method, and must be
+     *                freed by the caller.
+     * @return  The number of bytes read (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
+     */
+    virtual uInt32 read(uInt8*& buffer) const;
+
+    /**
+     * The following methods are almost exactly the same as the various
+     * getXXXX() methods above.  Internally, they call the respective methods
+     * and replace the extension (if present) with the given one.  If no
+     * extension is present, the given one is appended instead.
+     */
+    string getNameWithExt(const string& ext) const;
+    string getPathWithExt(const string& ext) const;
+    string getShortPathWithExt(const string& ext) const;
+
   private:
-    Common::SharedPtr<AbstractFilesystemNode> _realNode;
-    FilesystemNode(AbstractFilesystemNode* realNode);
+    Common::SharedPtr<AbstractFSNode> _realNode;
+    FilesystemNode(AbstractFSNode* realNode);
 };
 
 
@@ -253,9 +264,9 @@ class FilesystemNode
  * the semantics.
  */
 
-typedef Common::Array<AbstractFilesystemNode *>	AbstractFSList;
+typedef Common::Array<AbstractFSNode *>	AbstractFSList;
 
-class AbstractFilesystemNode
+class AbstractFSNode
 {
   protected:
     friend class FilesystemNode;
@@ -265,10 +276,11 @@ class AbstractFilesystemNode
     /**
      * Destructor.
      */
-    virtual ~AbstractFilesystemNode() {}
+    virtual ~AbstractFSNode() {}
 
     /*
-     * Indicates whether the object referred by this path exists in the filesystem or not.
+     * Indicates whether the object referred by this path exists in the
+     * filesystem or not.
      */
     virtual bool exists() const = 0;
 
@@ -280,16 +292,10 @@ class AbstractFilesystemNode
      * @param mode Mode to use while listing the directory.
      * @param hidden Whether to include hidden files or not in the results.
      *
-     * @return true if succesful, false otherwise (e.g. when the directory does not exist).
+     * @return true if successful, false otherwise (e.g. when the directory
+     *         does not exist).
      */
     virtual bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const = 0;
-
-    /**
-     * Returns a human readable path string.
-     *
-     * @note By default, this method returns the value of getName().
-     */
-    virtual const string& getDisplayName() const { return getName(); }
 
     /**
      * Returns the last component of the path pointed by this FilesystemNode.
@@ -298,7 +304,8 @@ class AbstractFilesystemNode
      *			/foo/bar.txt would return /bar.txt
      *			/foo/bar/    would return /bar/
      *
-     * @note This method is very architecture dependent, please check the concrete implementation for more information.
+     * @note This method is very architecture dependent, please check the concrete
+     *       implementation for more information.
      */
     virtual const string& getName() const = 0;
 
@@ -311,7 +318,7 @@ class AbstractFilesystemNode
      * Returns the 'path' of the current node, containing '~' and for archiving.
      */
 
-    virtual string getRelativePath() const = 0;
+    virtual string getShortPath() const = 0;
 
     /**
      * Indicates whether this path refers to a directory or not.
@@ -340,7 +347,8 @@ class AbstractFilesystemNode
      * Indicates whether the object referred by this path can be written to or not.
      *
      * If the path refers to a directory, writability implies being able to modify
-     * the directory entry (i.e. rename the directory, remove it or write files inside of it).
+     * the directory entry (i.e. rename the directory, remove it or write files
+     * inside of it).
      *
      * If the path refers to a file, writability implies being able to write data
      * to the file.
@@ -350,52 +358,36 @@ class AbstractFilesystemNode
     virtual bool isWritable() const = 0;
 
     /**
-      Create a directory from the given path.
+     * Create a directory from the current node path.
+     *
+     * @return bool true if the directory was created, false otherwise.
      */
-    static bool makeDir(const string& path);
+    virtual bool makeDir() = 0;
 
     /**
-      Rename the given file with a new name.
+     * Rename the current node path with the new given name.
+     *
+     * @return bool true if the node was renamed, false otherwise.
      */
-    static bool renameFile(const string& oldfile, const string& newfile);
+    virtual bool rename(const string& newfile) = 0;
 
     /**
-      Create an absolute pathname from the given path (if it isn't already
-      absolute), pre-pending 'startpath' when necessary.  If the path doesn't
-      have an extension matching 'ext', append it to the path.
+     * Read data (binary format) into the given buffer.
+     *
+     * @param buffer  The buffer to containing the data
+     *                This will be allocated by the method, and must be
+     *                freed by the caller.
+     * @return  The number of bytes read (0 in the case of failure)
+     *          This method can throw exceptions, and should be used inside
+     *          a try-catch block.
      */
-    static string getAbsolutePath(const string& p, const string& startpath,
-                                  const string& ext);
+    virtual uInt32 read(uInt8*& buffer) const { return 0; }
 
-  protected:
     /**
      * The parent node of this directory.
      * The parent of the root is the root itself.
      */
-    virtual AbstractFilesystemNode* getParent() const = 0;
-
-    /**
-     * Construct a node based on a path; the path is in the same format as it
-     * would be for calls to fopen().
-     *
-     * Furthermore getNodeForPath(oldNode.path()) should create a new node
-     * identical to oldNode. Hence, we can use the "path" value for persistent
-     * storage e.g. in the config file.
-     *
-     * @param path The path string to create a FilesystemNode for.
-     */
-    static AbstractFilesystemNode* makeFileNodePath(const string& path);
-
-    // TODO - the following method isn't actually used anywhere in
-    //        the current code (2012-06-14)
-    /**
-     * Returns a special node representing the filesystem root.
-     * The starting point for any file system browsing.
-     *
-     * On Unix, this will be simply the node for / (the root directory).
-     * On Windows, it will be a special node which "contains" all drives (C:, D:, E:).
-     */
-    static AbstractFilesystemNode* makeRootFileNode();
+    virtual AbstractFSNode* getParent() const = 0;
 };
 
 #endif

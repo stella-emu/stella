@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: EventHandler.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -27,9 +27,9 @@ class Console;
 class OSystem;
 class DialogContainer;
 class EventMappingWidget;
-class StringMap;
-class StringList;
 class MouseControl;
+class StringList;
+class VariantList;
 
 #include "Array.hxx"
 #include "Event.hxx"
@@ -72,7 +72,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id$
+  @version $Id: EventHandler.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class EventHandler
 {
@@ -161,8 +161,10 @@ class EventHandler
       the ROM properties, otherwise disable mouse control completely
 
       @param enable  Whether to use the mouse to emulate controllers
+                     Currently, this will be one of the following values:
+                       'always', 'analog', 'never'
     */
-    void setMouseControllerMode(bool enable);
+    void setMouseControllerMode(const string& enable);
 
     /**
       Set the number of seconds between taking a snapshot in
@@ -210,7 +212,7 @@ class EventHandler
     bool frying() const { return myFryingFlag; }
 
     void getActionList(EventMode mode, StringList& list) const;
-    void getComboList(EventMode mode, StringMap& map) const;
+    void getComboList(EventMode mode, VariantList& map) const;
 
     /** Used to access the list of events assigned to a specific combo event. */
     void getComboListForEvent(Event::Type event, StringList& list) const;
@@ -355,6 +357,9 @@ class EventHandler
     bool eventIsAnalog(Event::Type event) const;
 
     void setEventState(State state);
+
+    // Callback function invoked by the event-reset SDL Timer
+    static uInt32 resetEventsCallback(uInt32 interval, void* param);
 
   private:
     // Structure used for action menu items

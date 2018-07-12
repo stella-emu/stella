@@ -8,38 +8,36 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: RomWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef ROM_WIDGET_HXX
 #define ROM_WIDGET_HXX
 
 class GuiObject;
-class DataGridWidget;
 class EditTextWidget;
-class InputTextDialog;
-class PopUpWidget;
-class StringList;
 
-#include "Array.hxx"
-#include "Widget.hxx"
+#include "Base.hxx"
 #include "Command.hxx"
-#include "CartDebug.hxx"
 #include "RomListWidget.hxx"
 
 class RomWidget : public Widget, public CommandSender
 {
   public:
-    RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
+    // This enum needs to be seen outside the class
+    enum {
+      kInvalidateListing  = 'INli'
+    };
+
+  public:
+    RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+              int x, int y, int w, int h);
     virtual ~RomWidget();
 
     void invalidate(bool forcereload = true)
@@ -50,26 +48,17 @@ class RomWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
-    void setBank(uInt16 bank);
     void setBreak(int disasm_line, bool state);
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);
-    void patchROM(int disasm_line, const string& bytes);
-    void saveROM(const string& rom);
+    void patchROM(int disasm_line, const string& bytes,
+                  Common::Base::Format base);
 
   private:
-    enum {
-      kResolveDataChanged = 'ACrd',
-      kRomNameEntered  = 'RWrn'
-    };
-
     RomListWidget*   myRomList;
-    DataGridWidget*  myBank;
-    PopUpWidget*     myResolveData;
-    InputTextDialog* mySaveRom;
+    EditTextWidget*  myBank;
 
     bool myListIsDirty;
-    int  myCurrentBank;
 };
 
 #endif

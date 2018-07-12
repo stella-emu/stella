@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: ToggleWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -38,7 +35,6 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_RAWDATA;
-  _type = kToggleWidget;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,7 +75,7 @@ void ToggleWidget::handleMouseUp(int x, int y, int button, int clickCount)
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
     _changedList[_selectedItem] = !_changedList[_selectedItem];
-    sendCommand(kTWItemDataChangedCmd, _selectedItem, _id);
+    sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
     setDirty(); draw();
   }
 }
@@ -110,6 +106,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   switch(key)
   {
     case KBDK_RETURN:
+    case KBDK_KP_ENTER:
       if (_currentRow >= 0 && _currentCol >= 0)
       {
         dirty = true;
@@ -193,7 +190,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     {
       _stateList[_selectedItem] = !_stateList[_selectedItem];
       _changedList[_selectedItem] = !_changedList[_selectedItem];
-      sendCommand(kTWItemDataChangedCmd, _selectedItem, _id);
+      sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
     }
 
     setDirty(); draw();

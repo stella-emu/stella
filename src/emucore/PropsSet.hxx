@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: PropsSet.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef PROPERTIES_SET_HXX
@@ -23,6 +23,7 @@
 #include <map>
 
 #include "bspf.hxx"
+#include "FSNode.hxx"
 #include "Props.hxx"
 
 class OSystem;
@@ -85,6 +86,21 @@ class PropertiesSet
                 bool useDefaults = false) const;
 
     /**
+      Get the property from the set with the given MD5, at the same time
+      checking if it exists.  If it doesn't, insert a temporary copy into
+      the set.
+
+      @param file        The node representing the 
+      @param md5         The md5 of the property to get
+      @param properties  The properties with the given MD5, or the default
+                         properties if not found
+      @param defaults    Use the built-in defaults, ignoring any properties
+                         from an external file
+    */
+    void getMD5WithInsert(const FilesystemNode& rom, const string& md5,
+                          Properties& properties);
+
+    /**
       Insert the properties into the set.  If a duplicate is inserted
       the old properties are overwritten with the new ones.
 
@@ -118,9 +134,6 @@ class PropertiesSet
     // The properties temporarily inserted by the program, which should
     // be discarded when the program ends
     PropsList myTempProps;
-
-    // The size of the properties bst (i.e. the number of properties in it)
-    uInt32 mySize;
 };
 
 #endif

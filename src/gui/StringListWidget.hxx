@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: StringListWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef STRING_LIST_WIDGET_HXX
@@ -25,29 +22,22 @@
 
 #include "ListWidget.hxx"
 
-enum NumberingMode {
-  kListNumberingOff  = -1,
-  kListNumberingZero = 0,
-  kListNumberingOne  = 1
-};
-
 /** StringListWidget */
 class StringListWidget : public ListWidget
 {
   public:
     StringListWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y, int w, int h);
+                     int x, int y, int w, int h, bool hilite = true);
     virtual ~StringListWidget();
 
     void setList(const StringList& list);
-    void setNumberingMode(NumberingMode numberingMode) { _numberingMode = numberingMode; }
 
   protected:
     void drawWidget(bool hilite);
     GUI::Rect getEditRect() const;
 
   protected:
-    NumberingMode _numberingMode;
+    bool _hilite;
 };
 
 #endif

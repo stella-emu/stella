@@ -8,18 +8,17 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: RomInfoWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
-#include "PNGLibrary.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
 
@@ -109,14 +108,14 @@ void RomInfoWidget::parseProperties()
   myRomInfo.clear();
 
   // Get a valid filename representing a snapshot file for this rom
-  const string& filename = instance().snapshotDir() +
+  const string& filename = instance().snapshotLoadDir() +
       myProperties.get(Cartridge_Name) + ".png";
 
   // Read the PNG file
   try
   {
     mySurfaceIsValid =
-      myPNGLib.readImage(filename, instance().frameBuffer(), *mySurface);
+      instance().png().loadImage(filename, instance().frameBuffer(), *mySurface);
   }
   catch(const char* msg)
   {

@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: CommandDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "Console.hxx"
@@ -35,8 +32,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
-  : Dialog(osystem, parent, 0, 0, 16, 16),
-    mySelectedItem(0)
+  : Dialog(osystem, parent, 0, 0, 16, 16)
 {
   const GUI::Font& font = instance().font();
   const int buttonWidth = font.getStringWidth("Right Diff B") + 20,
@@ -177,8 +173,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kReloadRomCmd:
       instance().eventHandler().leaveMenuMode();
-      instance().deleteConsole();
-      instance().createConsole();
+      instance().reloadConsole();
       break;
 
     case kExitCmd:

@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: OSystemUNIX.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #if defined(HAVE_X11)
@@ -53,27 +53,30 @@ OSystemUNIX::~OSystemUNIX()
 void OSystemUNIX::setAppWindowPos(int x, int y, int, int)
 {
 #if defined(HAVE_X11)
+  // TODO: This functionality is deprecated, since the x/y fields
+  //       of XSizeHints are obsolete.  SDL2 will provide native methods
+  //       for app centering (which is all this is currently used for).
+
   SDL_SysWMinfo sdl_info;
   memset(&sdl_info, 0, sizeof(sdl_info));
 
   SDL_VERSION (&sdl_info.version);
   if(SDL_GetWMInfo(&sdl_info) > 0 && sdl_info.subsystem == SDL_SYSWM_X11)
   {
-    XSizeHints* hints = XAllocSizeHints();
-    if(hints)
-    {
       Display* display = sdl_info.info.x11.display;
       Window window = sdl_info.info.x11.wmwindow;
-      hints->flags |= USPosition;
-      hints->x = x;
-      hints->y = y;
-      XMoveWindow(display, window, hints->x, hints->y);
+    XSizeHints hints;
+    long supplied_return;
+    XGetWMNormalHints(display, window, &hints, &supplied_return);
 
-      /* Flush the resize event so we don't catch it later */
+    // Change X/Y position
+    hints.x = x;
+    hints.y = y;
+    XMoveWindow(display, window, hints.x, hints.y);
+
+    // Flush the resize event so we don't catch it later
       XSync(display, True);
-      XSetWMNormalHints(display, window, hints);
-      XFree(hints);
-    }
+    XSetWMNormalHints(display, window, &hints);
   }
 #endif
 }

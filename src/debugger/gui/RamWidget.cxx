@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: RamWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -34,102 +31,106 @@
 #include "RamWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
-  : Widget(boss, font, x, y, 16, 16),
+RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+                     int x, int y)
+  : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss),
     myUndoAddress(-1),
     myUndoValue(-1),
     myCurrentRamBank(0)
 {
-  _type = kRamWidget;
-
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight(),
-            bwidth  = 44,//font.getStringWidth("Undo  "),
+  const int fontWidth  = lfont.getMaxCharWidth(),
+            fontHeight = lfont.getFontHeight(),
+            lineHeight = lfont.getLineHeight(),
+            bwidth  = lfont.getStringWidth("Compare "),
             bheight = lineHeight + 2;
   int xpos, ypos, lwidth;
 
   // Create a 16x8 grid holding byte values (16 x 8 = 128 RAM bytes) with labels
   // Add a scrollbar, since there may be more than 128 bytes of RAM available
   xpos = x;  ypos = y + lineHeight;  lwidth = 4 * fontWidth;
-  myRamGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos,
-                                 16, 8, 2, 8, kBASE_16, true);
+  myRamGrid = new DataGridWidget(boss, nfont, xpos + lwidth, ypos,
+                                 16, 8, 2, 8, Common::Base::F_16, true);
   myRamGrid->setTarget(this);
   addFocusWidget(myRamGrid);
 
   // Create actions buttons to the left of the RAM grid
   xpos += lwidth + myRamGrid->getWidth() + 4;
-  myUndoButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
+  myUndoButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
                                   "Undo", kUndoCmd);
   myUndoButton->setTarget(this);
 
   ypos += bheight + 4;
-  myRevertButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                    "Rev", kRevertCmd);
+  myRevertButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
+                                    "Revert", kRevertCmd);
   myRevertButton->setTarget(this);
 
   ypos += 2 * bheight + 2;
-  mySearchButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                    "Srch", kSearchCmd);
+  mySearchButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
+                                    "Search", kSearchCmd);
   mySearchButton->setTarget(this);
 
   ypos += bheight + 4;
-  myCompareButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                     "Cmp", kCmpCmd);
+  myCompareButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
+                                     "Compare", kCmpCmd);
   myCompareButton->setTarget(this);
 
   ypos += bheight + 4;
-  myRestartButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                     "Rset", kRestartCmd);
+  myRestartButton = new ButtonWidget(boss, lfont, xpos, ypos, bwidth, bheight,
+                                     "Reset", kRestartCmd);
   myRestartButton->setTarget(this);
+
+  // Remember position of right side of buttons
+  int xpos_r = xpos + bwidth ;
 
   // Labels for RAM grid
   xpos = x;  ypos = y + lineHeight;
   myRamStart =
-    new StaticTextWidget(boss, font, xpos, ypos - lineHeight,
-                         font.getStringWidth("xxxx"), fontHeight,
+    new StaticTextWidget(boss, lfont, xpos, ypos - lineHeight,
+                         lfont.getStringWidth("xxxx"), fontHeight,
                          "00xx", kTextAlignLeft);
 
   for(int col = 0; col < 16; ++col)
   {
-    new StaticTextWidget(boss, font, xpos + col*myRamGrid->colWidth() + lwidth + 8,
+    new StaticTextWidget(boss, lfont, xpos + col*myRamGrid->colWidth() + lwidth + 8,
                          ypos - lineHeight,
                          fontWidth, fontHeight,
-                         instance().debugger().valueToString(col, kBASE_16_1),
+                         Common::Base::toString(col, Common::Base::F_16_1),
                          kTextAlignLeft);
   }
   for(int row = 0; row < 8; ++row)
   {
     myRamLabels[row] =
-      new StaticTextWidget(boss, font, xpos + 8, ypos + row*lineHeight + 2,
+      new StaticTextWidget(boss, lfont, xpos + 8, ypos + row*lineHeight + 2,
                            3*fontWidth, fontHeight, "", kTextAlignLeft);
   }
 
-  xpos = x + 10;  ypos += 9 * lineHeight;
-  new StaticTextWidget(boss, font, xpos, ypos,
-                       6*fontWidth, fontHeight,
-                       "Label:", kTextAlignLeft);
-  xpos += 6*fontWidth + 5;
-  myLabel = new EditTextWidget(boss, font, xpos, ypos-2, 17*fontWidth,
-                               lineHeight, "");
-  myLabel->setEditable(false);
+  ypos += 9 * lineHeight;
 
-  xpos += 17*fontWidth + 20;
-  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+  // We need to define these widgets from right to left since the leftmost
+  // one resizes as much as possible
+  xpos = xpos_r - 13*fontWidth - 5;
+  new StaticTextWidget(boss, lfont, xpos, ypos, 4*fontWidth, fontHeight,
+                       "Bin:", kTextAlignLeft);
+  myBinValue = new EditTextWidget(boss, nfont, xpos + 4*fontWidth + 5,
+                                  ypos-2, 9*fontWidth, lineHeight, "");
+  myBinValue->setEditable(false);
+
+  xpos -= 8*fontWidth + 5 + 20;
+  new StaticTextWidget(boss, lfont, xpos, ypos, 4*fontWidth, fontHeight,
                        "Dec:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
-  myDecValue = new EditTextWidget(boss, font, xpos, ypos-2, 4*fontWidth,
-                                  lineHeight, "");
+  myDecValue = new EditTextWidget(boss, nfont, xpos + 4*fontWidth + 5, ypos-2,
+                                  4*fontWidth, lineHeight, "");
   myDecValue->setEditable(false);
 
-  xpos += 4*fontWidth + 20;
-  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
-                       "Bin:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
-  myBinValue = new EditTextWidget(boss, font, xpos, ypos-2, 9*fontWidth,
+  xpos_r = xpos - 20;
+  xpos = x + 10;
+  new StaticTextWidget(boss, lfont, xpos, ypos, 6*fontWidth, fontHeight,
+                       "Label:", kTextAlignLeft);
+  xpos += 6*fontWidth + 5;
+  myLabel = new EditTextWidget(boss, nfont, xpos, ypos-2, xpos_r-xpos,
                                   lineHeight, "");
-  myBinValue->setEditable(false);
+  myLabel->setEditable(false);
 
   // Calculate real dimensions
   _w = lwidth + myRamGrid->getWidth();
@@ -138,7 +139,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Inputbox which will pop up when searching RAM
   StringList labels;
   labels.push_back("Search: ");
-  myInputBox = new InputTextDialog(boss, font, labels);
+  myInputBox = new InputTextDialog(boss, lfont, nfont, labels);
   myInputBox->setTarget(this);
 
   // Start with these buttons disabled
@@ -164,7 +165,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   const CartState& state = (CartState&) dbg.getState();
   switch(cmd)
   {
-    case kDGItemDataChangedCmd:
+    case DataGridWidget::kItemDataChangedCmd:
     {
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
@@ -182,21 +183,21 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myUndoAddress = addr;
       myUndoValue = oldval;
 
-      myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
-      myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
+      myDecValue->setText(Common::Base::toString(value, Common::Base::F_10));
+      myBinValue->setText(Common::Base::toString(value, Common::Base::F_2));
       myRevertButton->setEnabled(true);
       myUndoButton->setEnabled(true);
       break;
     }
 
-    case kDGSelectionChangedCmd:
+    case DataGridWidget::kSelectionChangedCmd:
     {
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
 
-      myLabel->setEditString(dbg.getLabel(state.rport[addr], true));
-      myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
-      myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
+      myLabel->setText(dbg.getLabel(state.rport[addr], true));
+      myDecValue->setText(Common::Base::toString(value, Common::Base::F_10));
+      myBinValue->setText(Common::Base::toString(value, Common::Base::F_2));
       break;
     }
 
@@ -230,7 +231,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if(result != "")
         myInputBox->setTitle(result);
       else
-        parent().removeDialog();
+        myInputBox->close();
       break;
     }
 
@@ -240,7 +241,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if(result != "")
         myInputBox->setTitle(result);
       else
-        parent().removeDialog();
+        myInputBox->close();
       break;
     }
 
@@ -320,7 +321,7 @@ void RamWidget::showInputBox(int cmd)
   uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
   uInt32 y = getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
   myInputBox->show(x, y);
-  myInputBox->setEditString("");
+  myInputBox->setText("");
   myInputBox->setTitle("");
   myInputBox->setFocus(0);
   myInputBox->setEmitSignal(cmd);

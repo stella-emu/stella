@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Cart.cxx 2839 2014-01-19 19:41:27Z stephena $
 //============================================================================
 
 #include <cassert>
@@ -29,6 +29,7 @@
 #include "Cart3F.hxx"
 #include "Cart4A50.hxx"
 #include "Cart4K.hxx"
+#include "Cart4KSC.hxx"
 #include "CartAR.hxx"
 #include "CartCM.hxx"
 #include "CartCTY.hxx"
@@ -39,6 +40,10 @@
 #include "CartE7.hxx"
 #include "CartEF.hxx"
 #include "CartEFSC.hxx"
+#include "CartBF.hxx"
+#include "CartBFSC.hxx"
+#include "CartDF.hxx"
+#include "CartDFSC.hxx"
 #include "CartF0.hxx"
 #include "CartF4.hxx"
 #include "CartF4SC.hxx"
@@ -184,6 +189,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new Cartridge4A50(image, size, settings);
   else if(type == "4K")
     cartridge = new Cartridge4K(image, size, settings);
+  else if(type == "4KSC")
+    cartridge = new Cartridge4KSC(image, size, settings);
   else if(type == "AR")
     cartridge = new CartridgeAR(image, size, settings);
   else if(type == "CM")
@@ -204,6 +211,14 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeEF(image, size, settings);
   else if(type == "EFSC")
     cartridge = new CartridgeEFSC(image, size, settings);
+  else if(type == "BF")
+    cartridge = new CartridgeBF(image, size, settings);
+  else if(type == "BFSC")
+    cartridge = new CartridgeBFSC(image, size, settings);
+  else if(type == "DF")
+    cartridge = new CartridgeDF(image, size, settings);
+  else if(type == "DFSC")
+    cartridge = new CartridgeDFSC(image, size, settings);
   else if(type == "F0" || type == "MB")
     cartridge = new CartridgeF0(image, size, settings);
   else if(type == "F4")
@@ -233,9 +248,15 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   else if(type == "X07")
     cartridge = new CartridgeX07(image, size, settings);
   else if(dtype == "WRONG_SIZE")
-    cerr << "ERROR: Invalid cartridge size for type " << type << " ..." << endl;
+  {
+    string err = "Invalid cart size for type '" + type + "'";
+    throw err.c_str();
+  }
   else
-    cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
+  {
+    string err = "Invalid cart type '" + type + "'";
+    throw err.c_str();
+  }
 
   if(size < 1024)
     buf << " (" << size << "B) ";
@@ -262,7 +283,7 @@ string Cartridge::createFromMultiCart(const uInt8*& image, uInt32& size,
   id = buf.str();
 
   // Move to the next game the next time this ROM is loaded
-  settings.setInt("romloadcount", (i+1)%numroms);
+  settings.setValue("romloadcount", (i+1)%numroms);
 
   if(size <= 2048)       return "2K";
   else if(size == 4096)  return "4K";
@@ -374,10 +395,19 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   }
   else if(size == 4096)
   {
-    type = isProbablyCV(image, size) ? "CV" : "4K";
+    if(isProbablyCV(image,size))
+      type = "CV";
+    else if(isProbably4KSC(image,size))
+      type = "4KSC";
+    else 
+      type = "4K";
   }
   else if(size == 8*1024)  // 8K
   {
+    // First check for *potential* F8
+    uInt8 signature[] = { 0x8D, 0xF9, 0x1F };  // STA $1FF9
+    bool f8 = searchForBytes(image, size, signature, 3, 2);
+
     if(isProbablySC(image, size))
       type = "F8SC";
     else if(memcmp(image, image + 4096, 4096) == 0)
@@ -390,7 +420,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "3F";
     else if(isProbablyUA(image, size))
       type = "UA";
-    else if(isProbablyFE(image, size))
+    else if(isProbablyFE(image, size) && !f8)
       type = "FE";
     else if(isProbably0840(image, size))
       type = "0840";
@@ -413,8 +443,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "E7";
     else if(isProbably3E(image, size))
       type = "3E";
+  /* no known 16K 3F ROMS
     else if(isProbably3F(image, size))
       type = "3F";
+  */
     else
       type = "F6";
   }
@@ -424,6 +456,9 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   }
   else if(size == 29*1024)  // 29K
   {
+    if(isProbablyARM(image, size))
+      type = "FA2";
+    else /*if(isProbablyDPCplus(image, size))*/
     type = "DPC+";
   }
   else if(size == 32*1024)  // 32K
@@ -438,6 +473,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "DPC+";
     else if(isProbablyCTY(image, size))
       type = "CTY";
+    else if(isProbablyFA2(image, size))
+      type = "FA2";
     else
       type = "F4";
   }
@@ -449,8 +486,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "3F";
     else if(isProbably4A50(image, size))
       type = "4A50";
-    else if(isProbablyEF(image, size))
-      type = isProbablySC(image, size) ? "EFSC" : "EF";
+    else if(isProbablyEF(image, size, type))
+      ; // type has been set directly in the function
     else if(isProbablyX07(image, size))
       type = "X07";
     else
@@ -460,6 +497,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbablyDF(image, size, type))
+      ; // type has been set directly in the function
     else if(isProbably3F(image, size))
       type = "3F";
     else if(isProbably4A50(image, size))
@@ -473,6 +512,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbablyBF(image, size, type))
+      ; // type has been set directly in the function
     else if(isProbably3F(image, size))
       type = "3F";
     else /*if(isProbablySB(image, size))*/
@@ -538,17 +579,50 @@ bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
   return true;
 }
 
+bool Cartridge::isProbably4KSC(const uInt8* image, uInt32 size)
+{
+  // We check if the first 256 bytes are identical *and* if there's
+  // an "SC" signature for one of our larger SC types at 1FFA.
+
+  uInt8 first = image[0];
+  for(uInt32 i = 1; i < 256; ++i)
+      if(image[i] != first)
+        return false;
+
+  if((image[size-6]=='S') && (image[size-5]=='C'))
+      return true;
+
+  return false;
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyARM(const uInt8* image, uInt32 size)
+{
+  // ARM code contains the following 'loader' patterns in the first 1K
+  // Thanks to Thomas Jentzsch of AtariAge for this advice
+  uInt8 signature[2][4] = {
+    { 0xA0, 0xC1, 0x1F, 0xE0 },
+    { 0x00, 0x80, 0x02, 0xE0 }
+  };
+  if(searchForBytes(image, 1024, signature[0], 4, 1))
+    return true;
+  else
+    return searchForBytes(image, 1024, signature[1], 4, 1);
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbably0840(const uInt8* image, uInt32 size)
 {
   // 0840 cart bankswitching is triggered by accessing addresses 0x0800
-  // or 0x0840
-  uInt8 signature1[2][3] = {
+  // or 0x0840 at least twice
+  uInt8 signature1[3][3] = {
     { 0xAD, 0x00, 0x08 },  // LDA $0800
-    { 0xAD, 0x40, 0x08 }   // LDA $0840
+    { 0xAD, 0x40, 0x08 },  // LDA $0840
+    { 0x2C, 0x00, 0x08 }   // BIT $0800
   };
-  for(uInt32 i = 0; i < 2; ++i)
-    if(searchForBytes(image, size, signature1[i], 3, 1))
+  for(uInt32 i = 0; i < 3; ++i)
+    if(searchForBytes(image, size, signature1[i], 3, 2))
       return true;
 
   uInt8 signature2[2][4] = {
@@ -556,7 +630,7 @@ bool Cartridge::isProbably0840(const uInt8* image, uInt32 size)
     { 0x0C, 0xFF, 0x0F, 0x4C }   // NOP $0FFF; JMP ...
   };
   for(uInt32 i = 0; i < 2; ++i)
-    if(searchForBytes(image, size, signature2[i], 4, 1))
+    if(searchForBytes(image, size, signature2[i], 4, 2))
       return true;
 
   return false;
@@ -626,7 +700,7 @@ bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
 bool Cartridge::isProbablyDPCplus(const uInt8* image, uInt32 size)
 {
   // DPC+ ARM code has 2 occurrences of the string DPC+
-  uInt8 signature[] = { 0x44, 0x50, 0x43, 0x2B };  // DPC+
+  uInt8 signature[] = { 'D', 'P', 'C', '+' };
   return searchForBytes(image, size, signature, 4, 2);
 }
 
@@ -682,11 +756,27 @@ bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size)
+bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size, const char*& type)
 {
-  // EF cart bankswitching switches banks by accessing addresses 0xFE0
-  // to 0xFEF, usually with either a NOP or LDA
+  // Newer EF carts store strings 'EFEF' and 'EFSC' starting at address $FFF8
+  // This signature is attributed to "RevEng" of AtariAge
+  uInt8 efef[] = { 'E', 'F', 'E', 'F' };
+  uInt8 efsc[] = { 'E', 'F', 'S', 'C' };
+  if(searchForBytes(image+size-8, 8, efef, 4, 1))
+{
+    type = "EF";
+    return true;
+  }
+  else if(searchForBytes(image+size-8, 8, efsc, 4, 1))
+  {
+    type = "EFSC";
+    return true;
+  }
+
+  // Otherwise, EF cart bankswitching switches banks by accessing addresses
+  // 0xFE0 to 0xFEF, usually with either a NOP or LDA
   // It's likely that the code will switch to bank 0, so that's what is tested
+  bool isEF = false;
   uInt8 signature[4][3] = {
     { 0x0C, 0xE0, 0xFF },  // NOP $FFE0
     { 0xAD, 0xE0, 0xFF },  // LDA $FFE0
@@ -694,10 +784,82 @@ bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size)
     { 0xAD, 0xE0, 0x1F }   // LDA $1FE0
   };
   for(uInt32 i = 0; i < 4; ++i)
+  {
     if(searchForBytes(image, size, signature[i], 3, 1))
-      return true;
+    {
+      isEF = true;
+      break;
+    }
+  }
+
+  // Now that we know that the ROM is EF, we need to check if it's
+  // the SC variant
+  if(isEF)
+  {
+    type = isProbablySC(image, size) ? "EFSC" : "EF";
+    return true;
+  }
 
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyBF(const uInt8* image, uInt32 size, const char*& type)
+{
+  // BF carts store strings 'BFBF' and 'BFSC' starting at address $FFF8
+  // This signature is attributed to "RevEng" of AtariAge
+  uInt8 bf[] = { 'B', 'F', 'B', 'F' };
+  uInt8 bfsc[] = { 'B', 'F', 'S', 'C' };
+  if(searchForBytes(image+size-8, 8, bf, 4, 1))
+  {
+    type = "BF";
+    return true;
+  }
+  else if(searchForBytes(image+size-8, 8, bfsc, 4, 1))
+  {
+    type = "BFSC";
+    return true;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyDF(const uInt8* image, uInt32 size, const char*& type)
+{
+
+  // BF carts store strings 'DFDF' and 'DFSC' starting at address $FFF8
+  // This signature is attributed to "RevEng" of AtariAge
+  uInt8 df[] = { 'D', 'F', 'D', 'F' };
+  uInt8 dfsc[] = { 'D', 'F', 'S', 'C' };
+  if(searchForBytes(image+size-8, 8, df, 4, 1))
+  {
+    type = "DF";
+      return true;
+  }
+  else if(searchForBytes(image+size-8, 8, dfsc, 4, 1))
+  {
+    type = "DFSC";
+    return true;
+  }
+
+  return false;
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyFA2(const uInt8* image, uInt32 size)
+{
+  // This currently tests only the 32K version of FA2; the 24 and 28K
+  // versions are easy, in that they're the only possibility with those
+  // file sizes
+
+  // 32K version has all zeros in 29K-32K area
+  for(uInt32 i = 29*1024; i < 32*1024; ++i)
+    if(image[i] != 0)
+      return false;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -754,12 +916,15 @@ bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
 bool Cartridge::isProbablyX07(const uInt8* image, uInt32 size)
 {
   // X07 bankswitching switches to bank 0, 1, 2, etc by accessing address 0x08xd
-  uInt8 signature[3][3] = {
+  uInt8 signature[6][3] = {
     { 0xAD, 0x0D, 0x08 },  // LDA $080D
     { 0xAD, 0x1D, 0x08 },  // LDA $081D
-    { 0xAD, 0x2D, 0x08 }   // LDA $082D
+    { 0xAD, 0x2D, 0x08 },  // LDA $082D
+    { 0x0C, 0x0D, 0x08 },  // NOP $080D
+    { 0x0C, 0x1D, 0x08 },  // NOP $081D
+    { 0x0C, 0x2D, 0x08 }   // NOP $082D
   };
-  for(uInt32 i = 0; i < 3; ++i)
+  for(uInt32 i = 0; i < 6; ++i)
     if(searchForBytes(image, size, signature[i], 3, 1))
       return true;
 

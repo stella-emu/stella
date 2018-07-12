@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: GameInfoDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "Console.hxx"
@@ -53,7 +50,7 @@ GameInfoDialog::GameInfoDialog(
   const int vBorder = 4;
   int xpos, ypos, lwidth, fwidth, pwidth, tabID;
   WidgetArray wid;
-  StringMap items, ports, ctrls;
+  VariantList items, ports, ctrls;
 
   // Set real dimensions
   _w = 52 * fontWidth + 8;
@@ -70,7 +67,6 @@ GameInfoDialog::GameInfoDialog(
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos,
                         _h - buttonHeight - fontHeight - ifont.getLineHeight() - 20);
   addTabWidget(myTab);
-  addFocusWidget(myTab);
 
   // 1) Cartridge properties
   wid.clear();
@@ -150,9 +146,14 @@ GameInfoDialog::GameInfoDialog(
   items.push_back("3F (512K Tigervision)",       "3F"   );
   items.push_back("4A50 (64K 4A50 + ram)",       "4A50" );
   items.push_back("4K (4K Atari)",               "4K"   );
+  items.push_back("4KSC (CPUWIZ 4K + ram)",      "4KSC"  );
   items.push_back("AR (Supercharger)",           "AR"   );
+  items.push_back("BF (CPUWIZ 256K)",            "BF"    );
+  items.push_back("BFSC (CPUWIZ 256K + ram)",    "BFSC"  );
   items.push_back("CV (Commavid extra ram)",     "CV"   );
   items.push_back("CM (SpectraVideo CompuMate)", "CM"   );
+  items.push_back("DF (CPUWIZ 128K)",            "DF"    );
+  items.push_back("DFSC (CPUWIZ 128K + ram)",    "DFSC"  );
   items.push_back("DPC (Pitfall II)",            "DPC"  );
   items.push_back("DPC+ (Enhanced DPC)",         "DPC+" );
   items.push_back("E0 (8K Parker Bros)",         "E0"   );
@@ -178,7 +179,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myType);
 
   // Add items for tab 0
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
 
   // 2) Console properties
@@ -216,7 +217,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myTVType);
 
   // Add items for tab 1
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
 
   // 3) Controller properties
@@ -305,15 +306,15 @@ GameInfoDialog::GameInfoDialog(
   lwidth = font.getStringWidth("X-Axis is: ");
   pwidth = font.getStringWidth("MindLink 0");
   items.clear();
-  items.push_back("None",       BSPF_toString(MouseControl::NoControl));
-  items.push_back("Paddle 0",   BSPF_toString(MouseControl::Paddle0));
-  items.push_back("Paddle 1",   BSPF_toString(MouseControl::Paddle1));
-  items.push_back("Paddle 2",   BSPF_toString(MouseControl::Paddle2));
-  items.push_back("Paddle 3",   BSPF_toString(MouseControl::Paddle3));
-  items.push_back("Driving 0",  BSPF_toString(MouseControl::Driving0));
-  items.push_back("Driving 1",  BSPF_toString(MouseControl::Driving1));
-  items.push_back("MindLink 0", BSPF_toString(MouseControl::MindLink0));
-  items.push_back("MindLink 1", BSPF_toString(MouseControl::MindLink1));
+  items.push_back("None",       MouseControl::NoControl);
+  items.push_back("Paddle 0",   MouseControl::Paddle0);
+  items.push_back("Paddle 1",   MouseControl::Paddle1);
+  items.push_back("Paddle 2",   MouseControl::Paddle2);
+  items.push_back("Paddle 3",   MouseControl::Paddle3);
+  items.push_back("Driving 0",  MouseControl::Driving0);
+  items.push_back("Driving 1",  MouseControl::Driving1);
+  items.push_back("MindLink 0", MouseControl::MindLink0);
+  items.push_back("MindLink 1", MouseControl::MindLink1);
 
   xpos = 45;  ypos += lineHeight + 4;
   myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
@@ -326,7 +327,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myMouseY);
 
   // Add items for tab 2
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
 
   // 4) Display properties
@@ -389,7 +390,7 @@ GameInfoDialog::GameInfoDialog(
   myPPBlendLabel->setFlags(WIDGET_CLEARBG);
 
   // Add items for tab 3
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
 
   // Activate the first tab
@@ -448,12 +449,12 @@ void GameInfoDialog::loadView()
     return;
 
   // Cartridge properties
-  myName->setEditString(myGameProperties.get(Cartridge_Name));
+  myName->setText(myGameProperties.get(Cartridge_Name));
   myMD5->setLabel(myGameProperties.get(Cartridge_MD5));
-  myManufacturer->setEditString(myGameProperties.get(Cartridge_Manufacturer));
-  myModelNo->setEditString(myGameProperties.get(Cartridge_ModelNo));
-  myRarity->setEditString(myGameProperties.get(Cartridge_Rarity));
-  myNote->setEditString(myGameProperties.get(Cartridge_Note));
+  myManufacturer->setText(myGameProperties.get(Cartridge_Manufacturer));
+  myModelNo->setText(myGameProperties.get(Cartridge_ModelNo));
+  myRarity->setText(myGameProperties.get(Cartridge_Rarity));
+  myNote->setText(myGameProperties.get(Cartridge_Note));
   mySound->setSelected(myGameProperties.get(Cartridge_Sound), "MONO");
   myType->setSelected(myGameProperties.get(Cartridge_Type), "AUTO");
 
@@ -474,23 +475,23 @@ void GameInfoDialog::loadView()
   bool autoAxis = BSPF_equalsIgnoreCase(mcontrol, "auto");
   if(autoAxis)
   {
-    myMouseControl->setSelected(0);
-    myMouseX->setSelected(0);
-    myMouseY->setSelected(0);
+    myMouseControl->setSelectedIndex(0);
+    myMouseX->setSelectedIndex(0);
+    myMouseY->setSelectedIndex(0);
   }
   else
   {
-    myMouseControl->setSelected(1);
-    myMouseX->setSelected(BSPF_toString(mcontrol[0] - '0'), "");
-    myMouseY->setSelected(BSPF_toString(mcontrol[1] - '0'), "");
+    myMouseControl->setSelectedIndex(1);
+    myMouseX->setSelected(mcontrol[0] - '0');
+    myMouseY->setSelected(mcontrol[1] - '0');
   }
   myMouseX->setEnabled(!autoAxis);
   myMouseY->setEnabled(!autoAxis);
 
   // Display properties
   myFormat->setSelected(myGameProperties.get(Display_Format), "AUTO");
-  myYStart->setEditString(myGameProperties.get(Display_YStart));
-  myHeight->setEditString(myGameProperties.get(Display_Height));
+  myYStart->setText(myGameProperties.get(Display_YStart));
+  myHeight->setText(myGameProperties.get(Display_Height));
 
   const string& phos = myGameProperties.get(Display_Phosphor);
   myPhosphor->setSelected(phos, "NO");
@@ -511,35 +512,36 @@ void GameInfoDialog::saveConfig()
     return;
 
   // Cartridge properties
-  myGameProperties.set(Cartridge_Name, myName->getEditString());
-  myGameProperties.set(Cartridge_Manufacturer, myManufacturer->getEditString());
-  myGameProperties.set(Cartridge_ModelNo, myModelNo->getEditString());
-  myGameProperties.set(Cartridge_Rarity, myRarity->getEditString());
-  myGameProperties.set(Cartridge_Note, myNote->getEditString());
-  myGameProperties.set(Cartridge_Sound, mySound->getSelectedTag());
-  myGameProperties.set(Cartridge_Type, myType->getSelectedTag());
+  myGameProperties.set(Cartridge_Name, myName->getText());
+  myGameProperties.set(Cartridge_Manufacturer, myManufacturer->getText());
+  myGameProperties.set(Cartridge_ModelNo, myModelNo->getText());
+  myGameProperties.set(Cartridge_Rarity, myRarity->getText());
+  myGameProperties.set(Cartridge_Note, myNote->getText());
+  myGameProperties.set(Cartridge_Sound, mySound->getSelectedTag().toString());
+  myGameProperties.set(Cartridge_Type, myType->getSelectedTag().toString());
 
   // Console properties
-  myGameProperties.set(Console_LeftDifficulty, myLeftDiff->getSelectedTag());
-  myGameProperties.set(Console_RightDifficulty, myRightDiff->getSelectedTag());
-  myGameProperties.set(Console_TelevisionType, myTVType->getSelectedTag());
+  myGameProperties.set(Console_LeftDifficulty, myLeftDiff->getSelectedTag().toString());
+  myGameProperties.set(Console_RightDifficulty, myRightDiff->getSelectedTag().toString());
+  myGameProperties.set(Console_TelevisionType, myTVType->getSelectedTag().toString());
 
   // Controller properties
-  myGameProperties.set(Controller_Left, myP0Controller->getSelectedTag());
-  myGameProperties.set(Controller_Right, myP1Controller->getSelectedTag());
+  myGameProperties.set(Controller_Left, myP0Controller->getSelectedTag().toString());
+  myGameProperties.set(Controller_Right, myP1Controller->getSelectedTag().toString());
   myGameProperties.set(Console_SwapPorts,
-    myLeftPort->getSelectedTag() == "L" ? "NO" : "YES");
-  myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getSelectedTag());
-  string mcontrol = myMouseControl->getSelectedTag();
+    myLeftPort->getSelectedTag().toString() == "L" ? "NO" : "YES");
+  myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getSelectedTag().toString());
+  string mcontrol = myMouseControl->getSelectedTag().toString();
   if(mcontrol != "auto")
-    mcontrol = myMouseX->getSelectedTag() + myMouseY->getSelectedTag();
+    mcontrol = myMouseX->getSelectedTag().toString() +
+               myMouseY->getSelectedTag().toString();
   myGameProperties.set(Controller_MouseAxis, mcontrol);
 
   // Display properties
-  myGameProperties.set(Display_Format, myFormat->getSelectedTag());
-  myGameProperties.set(Display_YStart, myYStart->getEditString());
-  myGameProperties.set(Display_Height, myHeight->getEditString());
-  myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag());
+  myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
+  myGameProperties.set(Display_YStart, myYStart->getText());
+  myGameProperties.set(Display_Height, myHeight->getText());
+  myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag().toString());
   myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel());
 
   // Determine whether to add or remove an entry from the properties set
@@ -582,18 +584,18 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kLeftCChanged:
-      myRightPort->setSelected(
+      myRightPort->setSelectedIndex(
         myLeftPort->getSelected() == 1 ? 0 : 1);
       break;
 
     case kRightCChanged:
-      myLeftPort->setSelected(
+      myLeftPort->setSelectedIndex(
         myRightPort->getSelected() == 1 ? 0 : 1);
       break;
 
     case kPhosphorChanged:
     {
-      bool status = myPhosphor->getSelectedTag() == "YES";
+      bool status = myPhosphor->getSelectedTag().toString() == "YES";
       myPPBlend->setEnabled(status);
       myPPBlendLabel->setEnabled(status);
       break;
@@ -605,7 +607,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kMCtrlChanged:
     {
-      bool state = myMouseControl->getSelectedTag() != "auto";
+      bool state = myMouseControl->getSelectedTag().toString() != "auto";
       myMouseX->setEnabled(state);
       myMouseY->setEnabled(state);
       break;

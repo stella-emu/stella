@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // This file is derived from the RSA Data Security, Inc. MD5 Message-Digest 
@@ -17,7 +17,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: MD5.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "MD5.hxx"
@@ -344,4 +344,23 @@ string MD5(const uInt8* buffer, uInt32 length)
   }
 
   return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string MD5(const FilesystemNode& node)
+{
+  uInt8* image = 0;
+  uInt32 size = 0;
+  try
+  {
+    size = node.read(image);
+  }
+  catch(...)
+  {
+    return EmptyString;
+  }
+
+  const string& md5 = MD5(image, size);
+  delete[] image;
+  return md5;
 }

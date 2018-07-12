@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: UIDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -25,6 +22,9 @@
 #include "bspf.hxx"
 
 #include "Dialog.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "DebuggerDialog.hxx"
+#endif
 #include "OSystem.hxx"
 #include "ListWidget.hxx"
 #include "PopUpWidget.hxx"
@@ -51,17 +51,17 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   int xpos, ypos, tabID;
   int lwidth, pwidth = font.getStringWidth("Standard");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
+  ButtonWidget* b;
 
   // Set real dimensions
   _w = 37 * fontWidth + 10;
-  _h = 10 * (lineHeight + 4) + 10;
+  _h = 11 * (lineHeight + 4) + 10;
 
   // The tab widget
   xpos = ypos = vBorder;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
-  addFocusWidget(myTab);
 
   //////////////////////////////////////////////////////////
   // 1) Launcher options
@@ -156,22 +156,23 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                        kTextAlignLeft);
 
   // Add items for tab 0
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   //////////////////////////////////////////////////////////
   // 2) Debugger options
   wid.clear();
   tabID = myTab->addTab(" Debugger ");
   lwidth = font.getStringWidth("Debugger Height: ");
-  pwidth = font.getStringWidth("Standard");
   xpos = ypos = vBorder;
 
   // Debugger width and height
   myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                            lineHeight, "Debugger Width: ",
                                            lwidth, kDWidthChanged);
-  myDebuggerWidthSlider->setMinValue(1050);
-  myDebuggerWidthSlider->setMaxValue(1920);
+#ifdef DEBUGGER_SUPPORT
+  myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
+#endif
+  myDebuggerWidthSlider->setMaxValue(osystem->desktopWidth());
   myDebuggerWidthSlider->setStepValue(10);
   wid.push_back(myDebuggerWidthSlider);
   myDebuggerWidthLabel =
@@ -184,8 +185,10 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                             lineHeight, "Debugger Height: ",
                                             lwidth, kDHeightChanged);
-  myDebuggerHeightSlider->setMinValue(700);
-  myDebuggerHeightSlider->setMaxValue(1200);
+#ifdef DEBUGGER_SUPPORT
+  myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
+#endif
+  myDebuggerHeightSlider->setMaxValue(osystem->desktopHeight());
   myDebuggerHeightSlider->setStepValue(10);
   wid.push_back(myDebuggerHeightSlider);
   myDebuggerHeightLabel =
@@ -193,6 +196,36 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                            xpos + myDebuggerHeightSlider->getWidth() + 4,
                            ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
   myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
+
+  // Add minimum window size buttons for different fonts
+  int fbwidth = font.getStringWidth("Set window size for medium font") + 20;
+  xpos = (_w - fbwidth - 2*vBorder)/2;  ypos += 2*lineHeight + 4;
+  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
+      "Set window size for small font", kDSmallSize);
+  wid.push_back(b);
+  ypos += b->getHeight() + 4;
+  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
+      "Set window size for medium font", kDMediumSize);
+  wid.push_back(b);
+  ypos += b->getHeight() + 4;
+  b = new ButtonWidget(myTab, font, xpos, ypos, fbwidth, buttonHeight,
+      "Set window size for large font", kDLargeSize);
+  wid.push_back(b);
+  ypos += b->getHeight() + 12;
+
+  // Font style (bold label vs. text, etc)
+  lwidth = font.getStringWidth("Font Style: ");
+  pwidth = font.getStringWidth("Bold non-labels only");
+  xpos = vBorder;
+  items.clear();
+  items.push_back("All Normal font", "0");
+  items.push_back("Bold labels only", "1");
+  items.push_back("Bold non-labels only", "2");
+  items.push_back("All Bold font", "3");
+  myDebuggerFontStyle =
+    new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
+                    "Font Style: ", lwidth);
+  wid.push_back(myDebuggerFontStyle);
 
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
@@ -211,13 +244,14 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   }
 
   // Add items for tab 1
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   //////////////////////////////////////////////////////////
   // 3) Misc. options
   wid.clear();
   tabID = myTab->addTab(" Misc. ");
   lwidth = font.getStringWidth("Mouse wheel scroll: ");
+  pwidth = font.getStringWidth("Standard");
   xpos = ypos = vBorder;
 
   // UI Palette
@@ -263,14 +297,13 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Add items for tab 2
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   // Activate the first tab
   myTab->setActiveTab(0);
 
   // Add Defaults, OK and Cancel buttons
   wid.clear();
-  ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
@@ -286,10 +319,10 @@ UIDialog::~UIDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::loadConfig()
 {
-  int w, h;
-
   // Launcher size
-  instance().settings().getSize("launcherres", w, h);
+  const GUI::Size& ls = instance().settings().getSize("launcherres");
+  int w = ls.w, h = ls.h;
+
   w = BSPF_max(w, 320);
   h = BSPF_max(h, 240);
   w = BSPF_min(w, 1920);
@@ -314,16 +347,21 @@ void UIDialog::loadConfig()
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
-  instance().settings().getSize("debuggerres", w, h);
-  w = BSPF_max(w, 1050);
-  h = BSPF_max(h, 620);
-  w = BSPF_min(w, 1920);
-  h = BSPF_min(h, 1200);
+  const GUI::Size& ds = instance().settings().getSize("dbg.res");
+  w = ds.w, h = ds.h;
+  w = BSPF_max(w, (int)DebuggerDialog::kSmallFontMinW);
+  h = BSPF_max(h, (int)DebuggerDialog::kSmallFontMinH);
+  w = BSPF_min(w, (int)instance().desktopWidth());
+  h = BSPF_min(h, (int)instance().desktopHeight());
 
   myDebuggerWidthSlider->setValue(w);
   myDebuggerWidthLabel->setValue(w);
   myDebuggerHeightSlider->setValue(h);
   myDebuggerHeightLabel->setValue(h);
+
+  // Debugger font style
+  int style = instance().settings().getInt("dbg.fontstyle");
+  myDebuggerFontStyle->setSelected(style, "0");
 #endif
 
   // UI palette
@@ -345,38 +383,44 @@ void UIDialog::loadConfig()
 void UIDialog::saveConfig()
 {
   // Launcher size
-  instance().settings().setSize("launcherres", 
-    myLauncherWidthSlider->getValue(), myLauncherHeightSlider->getValue());
+  instance().settings().setValue("launcherres",
+    GUI::Size(myLauncherWidthSlider->getValue(),
+              myLauncherHeightSlider->getValue()));
 
   // Launcher font
-  instance().settings().setString("launcherfont",
-    myLauncherFontPopup->getSelectedTag());
+  instance().settings().setValue("launcherfont",
+    myLauncherFontPopup->getSelectedTag().toString());
 
   // ROM launcher info viewer
-  instance().settings().setString("romviewer",
-    myRomViewerPopup->getSelectedTag());
+  instance().settings().setValue("romviewer",
+    myRomViewerPopup->getSelectedTag().toString());
 
   // Exit to Launcher
-  instance().settings().setString("exitlauncher",
-    myLauncherExitPopup->getSelectedTag());
+  instance().settings().setValue("exitlauncher",
+    myLauncherExitPopup->getSelectedTag().toString());
 
   // Debugger size
-  instance().settings().setSize("debuggerres", 
-    myDebuggerWidthSlider->getValue(), myDebuggerHeightSlider->getValue());
+  instance().settings().setValue("dbg.res",
+    GUI::Size(myDebuggerWidthSlider->getValue(),
+              myDebuggerHeightSlider->getValue()));
+
+  // Debugger font style
+  instance().settings().setValue("dbg.fontstyle",
+    myDebuggerFontStyle->getSelectedTag().toString());
 
   // UI palette
-  instance().settings().setString("uipalette",
-    myPalettePopup->getSelectedTag());
+  instance().settings().setValue("uipalette",
+    myPalettePopup->getSelectedTag().toString());
 
   // Listwidget quick delay
-  instance().settings().setString("listdelay",
-    myListDelayPopup->getSelectedTag());
-  ListWidget::setQuickSelectDelay(atoi(myListDelayPopup->getSelectedTag().c_str()));
+  instance().settings().setValue("listdelay",
+    myListDelayPopup->getSelectedTag().toString());
+  ListWidget::setQuickSelectDelay(myListDelayPopup->getSelectedTag().toInt());
 
   // Mouse wheel lines
-  instance().settings().setString("mwheel",
-    myWheelLinesPopup->getSelectedTag());
-  ScrollBarWidget::setWheelLines(atoi(myWheelLinesPopup->getSelectedTag().c_str()));
+  instance().settings().setValue("mwheel",
+    myWheelLinesPopup->getSelectedTag().toString());
+  ScrollBarWidget::setWheelLines(myWheelLinesPopup->getSelectedTag().toInt());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -398,17 +442,24 @@ void UIDialog::setDefaults()
       break;
     }
 
+  #ifdef DEBUGGER_SUPPORT
     case 1:  // Debugger options
-      myDebuggerWidthSlider->setValue(1050);
-      myDebuggerWidthLabel->setValue(1050);
-      myDebuggerHeightSlider->setValue(700);
-      myDebuggerHeightLabel->setValue(700);
+    {
+      int w = BSPF_min(instance().desktopWidth(), (uInt32)DebuggerDialog::kMediumFontMinW);
+      int h = BSPF_min(instance().desktopHeight(), (uInt32)DebuggerDialog::kMediumFontMinH);
+      myDebuggerWidthSlider->setValue(w);
+      myDebuggerWidthLabel->setValue(w);
+      myDebuggerHeightSlider->setValue(h);
+      myDebuggerHeightLabel->setValue(h);
+      myDebuggerFontStyle->setSelected("0");
       break;
+    }
+  #endif
 
     case 2:  // Misc. options
-      myPalettePopup->setSelected("1", "1");
-      myListDelayPopup->setSelected("300", "300");
-      myWheelLinesPopup->setSelected("4", "4");
+      myPalettePopup->setSelected("1");
+      myListDelayPopup->setSelected("300");
+      myWheelLinesPopup->setSelected("4");
       break;
 
     default:
@@ -437,6 +488,33 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kDHeightChanged:
       myDebuggerHeightLabel->setValue(myDebuggerHeightSlider->getValue());
+      break;
+
+    case kDSmallSize:
+  #ifdef DEBUGGER_SUPPORT
+      myDebuggerWidthSlider->setValue(DebuggerDialog::kSmallFontMinW);
+      myDebuggerWidthLabel->setValue(DebuggerDialog::kSmallFontMinW);
+      myDebuggerHeightSlider->setValue(DebuggerDialog::kSmallFontMinH);
+      myDebuggerHeightLabel->setValue(DebuggerDialog::kSmallFontMinH);
+  #endif
+      break;
+
+    case kDMediumSize:
+  #ifdef DEBUGGER_SUPPORT
+      myDebuggerWidthSlider->setValue(DebuggerDialog::kMediumFontMinW);
+      myDebuggerWidthLabel->setValue(DebuggerDialog::kMediumFontMinW);
+      myDebuggerHeightSlider->setValue(DebuggerDialog::kMediumFontMinH);
+      myDebuggerHeightLabel->setValue(DebuggerDialog::kMediumFontMinH);
+  #endif
+      break;
+
+    case kDLargeSize:
+  #ifdef DEBUGGER_SUPPORT
+      myDebuggerWidthSlider->setValue(DebuggerDialog::kLargeFontMinW);
+      myDebuggerWidthLabel->setValue(DebuggerDialog::kLargeFontMinW);
+      myDebuggerHeightSlider->setValue(DebuggerDialog::kLargeFontMinH);
+      myDebuggerHeightLabel->setValue(DebuggerDialog::kLargeFontMinH);
+  #endif
       break;
 
     case kOKCmd:

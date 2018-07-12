@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: ListWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <cctype>
@@ -46,7 +43,6 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
     _quickSelectTime(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kListWidget;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;
@@ -81,11 +77,38 @@ void ListWidget::setSelected(int item)
       abortEditMode();
 
     _selectedItem = item;
-    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
 
     _currentPos = _selectedItem - _rows / 2;
     scrollToSelected();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::setSelected(const string& item)
+{
+  int selected = -1;
+  if(!_list.isEmpty())
+  {
+    if(item == "")
+      selected = 0;
+    else
+    {
+      uInt32 itemToSelect = 0;
+      StringList::const_iterator iter;
+      for(iter = _list.begin(); iter != _list.end(); ++iter, ++itemToSelect)
+      {
+        if(item == *iter)
+        {
+          selected = itemToSelect;
+          break;
+        }
+      }
+      if(itemToSelect > _list.size() || selected == -1)
+        selected = 0;
+    }
+  }
+  setSelected(selected);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -109,6 +132,13 @@ void ListWidget::setHighlighted(int item)
 
     scrollToHighlighted();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& ListWidget::getSelectedString() const
+{
+  return (_selectedItem >= 0 && _selectedItem < (int)_list.size())
+            ? _list[_selectedItem] : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -154,7 +184,7 @@ void ListWidget::scrollBarRecalc()
 {
   _scrollBar->_currentPos = _currentPos;
   _scrollBar->recalc();
-  sendCommand(kListScrolledCmd, _currentPos, _id);
+  sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -166,15 +196,15 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
-  if (newSelectedItem > (int)_list.size() - 1)
-    newSelectedItem = -1;
+  if (newSelectedItem >= (int)_list.size())
+    return;
 
   if (_selectedItem != newSelectedItem)
   {
     if (_editMode)
       abortEditMode();
     _selectedItem = newSelectedItem;
-    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
     setDirty(); draw();
   }
 	
@@ -189,7 +219,7 @@ void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
   // send the double click command
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(kListItemDoubleClickedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kDoubleClickedCmd, _selectedItem, _id);
 
     // Start edit mode
     if(_editable && !_editMode)
@@ -241,8 +271,7 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     int newSelectedItem = 0;
     for (StringList::const_iterator i = _list.begin(); i != _list.end(); ++i)
     {
-      if(BSPF_strncasecmp((*i).c_str(), _quickSelectStr.c_str(),
-         _quickSelectStr.length()) == 0)
+      if(BSPF_startsWithIgnoreCase(*i, _quickSelectStr))
       {
         _selectedItem = newSelectedItem;
         break;
@@ -279,7 +308,7 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     _scrollBar->draw();
     scrollToSelected();
 
-    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
   }
 
   _currentKeyDown = key;
@@ -311,7 +340,7 @@ bool ListWidget::handleEvent(Event::Type e)
         if (_editable)
           startEditMode();
         else
-          sendCommand(kListItemActivatedCmd, _selectedItem, _id);
+          sendCommand(ListWidget::kActivatedCmd, _selectedItem, _id);
       }
       break;
 
@@ -346,7 +375,7 @@ bool ListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIPrevDir:
-      sendCommand(kListPrevDirCmd, _selectedItem, _id);
+      sendCommand(ListWidget::kPrevDirCmd, _selectedItem, _id);
       break;
 
     default:
@@ -358,7 +387,7 @@ bool ListWidget::handleEvent(Event::Type e)
     _scrollBar->draw();
     scrollToSelected();
 
-    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
   }
 
   return handled;
@@ -385,7 +414,7 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         setDirty(); draw();
 
         // Let boss know the list has scrolled
-        sendCommand(kListScrolledCmd, _currentPos, _id);
+        sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
       }
       break;
   }
@@ -418,7 +447,7 @@ void ListWidget::scrollToCurrent(int item)
   setDirty(); draw();
 
   if(oldScrollPos != _currentPos)
-    sendCommand(kListScrolledCmd, _currentPos, _id);
+    sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -427,7 +456,7 @@ void ListWidget::startEditMode()
   if (_editable && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
-    setEditString(_list[_selectedItem]);
+    setText(_list[_selectedItem]);
 
     // Widget gets raw data while editing
     EditableWidget::startEditMode();
@@ -443,7 +472,7 @@ void ListWidget::endEditMode()
   // Send a message that editing finished with a return/enter key press
   _editMode = false;
   _list[_selectedItem] = _editString;
-  sendCommand(kListItemDataChangedCmd, _selectedItem, _id);
+  sendCommand(ListWidget::kDataChangedCmd, _selectedItem, _id);
 
   // Reset to normal data entry
   EditableWidget::endEditMode();

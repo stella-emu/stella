@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: LauncherFilterDialog.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef LAUNCHER_FILTER_DIALOG_HXX
@@ -31,6 +28,7 @@ class OSystem;
 class StringList;
 
 #include "Dialog.hxx"
+#include "FSNode.hxx"
 #include "Settings.hxx"
 #include "bspf.hxx"
 
@@ -55,10 +53,10 @@ class LauncherFilterDialog : public Dialog, public CommandSender
     /**
       Is this a valid ROM filename (does it have a valid extension?).
 
-      @param name  Filename of potential ROM file
+      @param name  File node of potential ROM file
       @param ext   The extension extracted from the given file
      */
-    static bool isValidRomName(const string& name, string& ext);
+    static bool isValidRomName(const FilesystemNode& name, string& ext);
 
   private:
     void loadConfig();
@@ -70,14 +68,14 @@ class LauncherFilterDialog : public Dialog, public CommandSender
 
   private:
     PopUpWidget*    myFileType;
-    CheckboxWidget* myRomType[6];
+    CheckboxWidget* myRomType[5];
 
     enum {
       kFileTypeChanged = 'LFDc'
     };
 
     // Holds static strings representing ROM types
-    static const char* ourRomTypes[2][6];
+    static const char* ourRomTypes[2][5];
 };
 
 #endif

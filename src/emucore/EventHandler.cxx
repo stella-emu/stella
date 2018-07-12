@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: EventHandler.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -24,6 +24,7 @@
 
 #include "bspf.hxx"
 
+#include "Base.hxx"
 #include "CommandMenu.hxx"
 #include "Console.hxx"
 #include "DialogContainer.hxx"
@@ -39,7 +40,6 @@
 #include "ListWidget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Settings.hxx"
-#include "Snapshot.hxx"
 #include "Sound.hxx"
 #include "StateManager.hxx"
 #include "M6532.hxx"
@@ -79,7 +79,6 @@ EventHandler::EventHandler(OSystem* osystem)
   for(int i = 0; i < kComboSize; ++i)
     for(int j = 0; j < kEventsPerCombo; ++j)
       myComboTable[i][j] = Event::NoType;
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,6 +118,9 @@ void EventHandler::initialize()
 
   // Set number of lines a mousewheel will scroll
   ScrollBarWidget::setWheelLines(myOSystem->settings().getInt("mwheel"));
+
+  // Integer to string conversions (for HEX) use upper or lower-case
+  Common::Base::setHexUppercase(myOSystem->settings().getBool("dbg.uhex"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,6 +130,12 @@ void EventHandler::reset(State state)
   myOSystem->state().reset();
 
   setContinuousSnapshots(0);
+
+  // Reset events almost immediately after starting emulation mode
+  // We wait a little while, since 'hold' events may be present, and we want
+  // time for the ROM to process them
+  if(state == S_EMULATE)
+    SDL_AddTimer(500, resetEventsCallback, (void*)this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -276,7 +284,7 @@ void EventHandler::mapStelladaptors(const string& saport)
       }
     }
   }
-  myOSystem->settings().setString("saport", saport);
+  myOSystem->settings().setValue("saport", saport);
 
   // We're potentially swapping out an input device behind the back of
   // the Event system, so we make sure all Stelladaptor-generated events
@@ -595,8 +603,7 @@ void EventHandler::poll(uInt64 time)
                 break;
 
               case KBDK_r:  // Ctrl-r reloads the currently loaded ROM
-                myOSystem->deleteConsole();
-                myOSystem->createConsole();
+                myOSystem->reloadConsole();
                 break;
 
               case KBDK_PAGEUP:    // Ctrl-PageUp increases Height
@@ -654,7 +661,6 @@ void EventHandler::poll(uInt64 time)
 
       case SDL_MOUSEMOTION:
         // Determine which mode we're in, then send the event to the appropriate place
-	printf("SDL_MOUSEMOTION x=%d,y=%d\n", event.motion.xrel, event.motion.yrel);
         if(myState == S_EMULATE)
         {
           if(!mySkipMouseMotion)
@@ -808,7 +814,6 @@ void EventHandler::poll(uInt64 time)
         int axis  = event.jaxis.axis;
         int value = event.jaxis.value;
 
-
         switch(type)
         {
           case StellaJoystick::JT_REGULAR:
@@ -817,30 +822,26 @@ void EventHandler::poll(uInt64 time)
               // Every axis event has two associated values, negative and positive
               Event::Type eventAxisNeg = joy.axisTable[axis][0][kEmulationMode];
               Event::Type eventAxisPos = joy.axisTable[axis][1][kEmulationMode];
+
               // Check for analog events, which are handled differently
               // We'll pass them off as Stelladaptor events, and let the controllers
               // handle it
               switch((int)eventAxisNeg)
               {
                 case Event::PaddleZeroAnalog:
-		printf("event is zero analog\n");
                   myEvent.set(Event::SALeftAxis0Value, value);
                   break;
                 case Event::PaddleOneAnalog:
-		printf("event is one analog\n");
                   myEvent.set(Event::SALeftAxis1Value, value);
                   break;
                 case Event::PaddleTwoAnalog:
-		printf("event is two analog\n");
                   myEvent.set(Event::SARightAxis0Value, value);
                   break;
                 case Event::PaddleThreeAnalog:
-		printf("event is three analog\n");
                   myEvent.set(Event::SARightAxis1Value, value);
                   break;
                 default:
                 {
-		printf("event is digital\n");
                   // Otherwise, we know the event is digital
                   if(value > Joystick::deadzone())
                     handleEvent(eventAxisPos, 1);
@@ -865,7 +866,6 @@ void EventHandler::poll(uInt64 time)
                   break;
                 }
               }
-//		}
             }
             else if(myOverlay != NULL)
             {
@@ -895,7 +895,6 @@ void EventHandler::poll(uInt64 time)
           // they can never be remapped
           case StellaJoystick::JT_STELLADAPTOR_LEFT:
           case StellaJoystick::JT_STELLADAPTOR_RIGHT:
-		printf("JT_STELLADAPTOR_LEFT/RIGHT\n");
             // The 'type-2' here refers to the fact that 'StellaJoystick::JT_STELLADAPTOR_LEFT'
             // and 'StellaJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
             // enum; subtracting two gives us Controller 0 and 1
@@ -904,7 +903,6 @@ void EventHandler::poll(uInt64 time)
             break;  // Stelladaptor axis
           case StellaJoystick::JT_2600DAPTOR_LEFT:
           case StellaJoystick::JT_2600DAPTOR_RIGHT:
-		printf("JT_2600DAPTOR_LEFT/RIGHT\n");
             // The 'type-4' here refers to the fact that 'StellaJoystick::JT_2600DAPTOR_LEFT'
             // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
             // enum; subtracting four gives us Controller 0 and 1
@@ -1093,7 +1091,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
           myOSystem->createLauncher();
         }
         else
-          myOSystem->quit();
+          handleEvent(Event::Quit, 1);
       }
       return;
 
@@ -1733,7 +1731,7 @@ void EventHandler::saveKeyMapping()
     for(int i = 0; i < KBDK_LAST; ++i)
       keybuf << ":" << myKeyTable[i][mode];
 
-  myOSystem->settings().setString("keymap", keybuf.str());
+  myOSystem->settings().setValue("keymap", keybuf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1768,7 +1766,7 @@ void EventHandler::saveJoyMapping()
   for(iter = myJoystickMap.begin(); iter != myJoystickMap.end(); ++iter)
     joybuf << "^" << iter->second;
 
-  myOSystem->settings().setString("joymap", joybuf.str());
+  myOSystem->settings().setValue("joymap", joybuf.str());
 #endif
 }
 
@@ -1786,13 +1784,13 @@ void EventHandler::saveComboMapping()
     for(int j = 1; j < kEventsPerCombo; ++j)
       buf << "," << myComboTable[i][j];
   }
-  myOSystem->settings().setString("combomap", buf.str());
+  myOSystem->settings().setValue("combomap", buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline bool EventHandler::eventIsAnalog(Event::Type event) const
 {
-  switch((int)event)
+  switch(event)
   {
     case Event::PaddleZeroAnalog:
     case Event::PaddleOneAnalog:
@@ -1823,7 +1821,7 @@ void EventHandler::getActionList(EventMode mode, StringList& l) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::getComboList(EventMode, StringMap& l) const
+void EventHandler::getComboList(EventMode, VariantList& l) const
 {
   // For now, this only works in emulation mode
 
@@ -1960,8 +1958,10 @@ void EventHandler::takeSnapshot(uInt32 number)
   // Figure out the correct snapshot name
   string filename;
   bool showmessage = number == 0;
-  string sspath = myOSystem->snapshotDir() +
-      myOSystem->console().properties().get(Cartridge_Name);
+  string sspath = myOSystem->snapshotSaveDir() +
+      (myOSystem->settings().getString("snapname") != "int" ?
+          myOSystem->romFile().getNameWithExt("")
+        : myOSystem->console().properties().get(Cartridge_Name));
 
   // Check whether we want multiple snapshots created
   if(number > 0)
@@ -1996,9 +1996,10 @@ void EventHandler::takeSnapshot(uInt32 number)
   // Now create a PNG snapshot
   if(myOSystem->settings().getBool("ss1x"))
   {
-    string msg = Snapshot::savePNG(myOSystem->frameBuffer(),
+    string msg =
+      myOSystem->png().saveImage(filename, myOSystem->frameBuffer(),
                    myOSystem->console().tia(),
-                   myOSystem->console().properties(), filename);
+                                 myOSystem->console().properties());
     if(showmessage)
       myOSystem->frameBuffer().showMessage(msg);
   }
@@ -2007,8 +2008,9 @@ void EventHandler::takeSnapshot(uInt32 number)
     // Make sure we have a 'clean' image, with no onscreen messages
     myOSystem->frameBuffer().enableMessages(false);
 
-    string msg = Snapshot::savePNG(myOSystem->frameBuffer(),
-                   myOSystem->console().properties(), filename);
+    string msg =
+      myOSystem->png().saveImage(filename, myOSystem->frameBuffer(),
+                                 myOSystem->console().properties());
 
     // Re-enable old messages
     myOSystem->frameBuffer().enableMessages(true);
@@ -2018,13 +2020,48 @@ void EventHandler::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setMouseControllerMode(bool enable)
+void EventHandler::setMouseControllerMode(const string& enable)
 {
   if(&myOSystem->console())
   {
     delete myMouseControl;  myMouseControl = NULL;
 
-    const string& control = enable ?
+    bool usemouse = false;
+    if(BSPF_equalsIgnoreCase(enable, "always"))
+      usemouse = true;
+    else if(BSPF_equalsIgnoreCase(enable, "never"))
+      usemouse = false;
+    else  // 'analog'
+    {
+      switch(myOSystem->console().controller(Controller::Left).type())
+      {
+        case Controller::Paddles:
+        case Controller::Driving:
+        case Controller::TrackBall22:
+        case Controller::TrackBall80:
+        case Controller::AmigaMouse:
+        case Controller::MindLink:
+          usemouse = true;
+          break;
+        default:
+          break;
+      }
+      switch(myOSystem->console().controller(Controller::Right).type())
+      {
+        case Controller::Paddles:
+        case Controller::Driving:
+        case Controller::TrackBall22:
+        case Controller::TrackBall80:
+        case Controller::AmigaMouse:
+        case Controller::MindLink:
+          usemouse = true;
+          break;
+        default:
+          break;
+      }
+    }
+
+    const string& control = usemouse ?
       myOSystem->console().properties().get(Controller_MouseAxis) : "none";
 
     myMouseControl = new MouseControl(myOSystem->console(), control);
@@ -2167,6 +2204,10 @@ void EventHandler::setEventState(State state)
     myOSystem->frameBuffer().stateChanged(myState);
     myOSystem->frameBuffer().setCursorState();
   }
+  if(&myOSystem->console())
+  {
+    myOSystem->console().stateChanged(myState);
+  }
 
   // Always clear any pending events when changing states
   myEvent.clear();
@@ -2174,6 +2215,13 @@ void EventHandler::setEventState(State state)
   // Sometimes an extraneous mouse motion event is generated
   // after a state change, which should be supressed
   mySkipMouseMotion = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EventHandler::resetEventsCallback(uInt32 interval, void* param)
+{
+  ((EventHandler*)param)->myEvent.clear();
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

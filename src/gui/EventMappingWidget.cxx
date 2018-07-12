@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: EventMappingWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -31,7 +28,7 @@
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
 #include "ComboDialog.hxx"
-
+#include "Variant.hxx"
 #include "EventMappingWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,7 +51,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myActionsList = new StringListWidget(boss, font, xpos, ypos,
                                        _w - buttonWidth - 20, _h - 3*lineHeight);
   myActionsList->setTarget(this);
-  myActionsList->setNumberingMode(kListNumberingOff);
   myActionsList->setEditable(false);
   myActionsList->setList(actions);
   addFocusWidget(myActionsList);
@@ -98,7 +94,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myComboButton->setTarget(this);
     addFocusWidget(myComboButton);
 
-    StringMap combolist;
+    VariantList combolist;
     instance().eventHandler().getComboList(mode, combolist);
     myComboDialog = new ComboDialog(boss, font, combolist);
   }
@@ -171,7 +167,7 @@ void EventMappingWidget::startRemapping()
       << instance().eventHandler().actionAtIndex(myActionSelected, myEventMode)
       << "' event";
   myKeyMapping->setTextColor(kTextColorEm);
-  myKeyMapping->setEditString(buf.str());
+  myKeyMapping->setText(buf.str());
 
   // Make sure that this widget receives all raw data, before any
   // pre-processing occurs
@@ -229,7 +225,7 @@ void EventMappingWidget::drawKeyMapping()
   if(myActionSelected >= 0)
   {
     myKeyMapping->setTextColor(kTextColor);
-    myKeyMapping->setEditString(instance().eventHandler().keyAtIndex(myActionSelected, myEventMode));
+    myKeyMapping->setText(instance().eventHandler().keyAtIndex(myActionSelected, myEventMode));
   }
 }
 
@@ -352,7 +348,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kListSelectionChangedCmd:
+    case ListWidget::kSelectionChangedCmd:
       if(myActionsList->getSelected() >= 0)
       {
         myActionSelected = myActionsList->getSelected();
@@ -362,7 +358,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       break;
 
 /*
-    case kListItemDoubleClickedCmd:
+    case ListWidget::kDoubleClickedCmd:
       if(myActionsList->getSelected() >= 0)
       {
         myActionSelected = myActionsList->getSelected();

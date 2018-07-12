@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: TiaInfoWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef TIA_INFO_WIDGET_HXX
@@ -33,7 +30,8 @@ class EditTextWidget;
 class TiaInfoWidget : public Widget, public CommandSender
 {
   public:
-    TiaInfoWidget(GuiObject *boss, const GUI::Font& font, int x, int y);
+    TiaInfoWidget(GuiObject *boss, const GUI::Font& lfont, const GUI::Font& nfont,
+                  int x, int y, int max_w);
     virtual ~TiaInfoWidget();
 
     void loadConfig();

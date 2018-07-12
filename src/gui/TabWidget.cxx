@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: TabWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "bspf.hxx"
@@ -39,8 +36,9 @@ TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
     _activeTab(-1),
     _firstTime(true)
 {
+  _id = 0;  // For dialogs with multiple tab widgets, they should specifically
+            // call ::setID to differentiate among them
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
-  _type = kTabWidget;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
@@ -71,14 +69,7 @@ int TabWidget::getChildY() const
 int TabWidget::addTab(const string& title)
 {
   // Add a new tab page
-  Tab newTab;
-  newTab.title = title;
-  newTab.firstWidget = NULL;
-  newTab.parentWidget = NULL;
-  newTab.enabled = true;
-
-  _tabs.push_back(newTab);
-
+  _tabs.push_back(Tab(title));
   int numTabs = _tabs.size();
 
   // Determine the new tab width
@@ -112,7 +103,7 @@ void TabWidget::setActiveTab(int tabID, bool show)
 
   // Let parent know about the tab change
   if(show)
-    sendCommand(kTabChangedCmd, _activeTab, -1);
+    sendCommand(kTabChangedCmd, _activeTab, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -143,7 +134,7 @@ void TabWidget::updateActiveTab()
 void TabWidget::activateTabs()
 {
   for(unsigned int i = 0; i <_tabs.size(); ++i)
-    sendCommand(kTabChangedCmd, i-1, -1);
+    sendCommand(kTabChangedCmd, i-1, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,7 +187,7 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
   }
 
   // If a tab was clicked, switch to that pane
-  if (tabID >= 0 && tabID != _activeTab)
+  if (tabID >= 0)
   {
     setActiveTab(tabID, true);
     updateActiveTab();

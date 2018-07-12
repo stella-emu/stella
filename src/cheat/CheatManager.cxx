@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: CheatManager.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <fstream>
@@ -300,7 +300,7 @@ void CheatManager::loadCheats(const string& md5sum)
   // (and remove the key from the settings, so they won't get set again)
   const string& cheats = myOSystem->settings().getString("cheat");
   if(cheats != "")
-    myOSystem->settings().setString("cheat", "");
+    myOSystem->settings().setValue("cheat", "");
 
   CheatCodeMap::iterator iter = myCheatMap.find(md5sum);
   if(iter == myCheatMap.end() && cheats == "")

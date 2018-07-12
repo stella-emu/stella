@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: GlobalPropsDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "bspf.hxx"
@@ -29,13 +26,14 @@
 #include "Settings.hxx"
 #include "StringList.hxx"
 #include "Widget.hxx"
+#include "LauncherDialog.hxx"
 
 #include "GlobalPropsDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GlobalPropsDialog::
-  GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
-  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0)
+GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0),
+    CommandSender(boss)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -46,11 +44,12 @@ GlobalPropsDialog::
   int lwidth = font.getStringWidth("Right Difficulty: "),
       pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
+  const GUI::Font& infofont = instance().infoFont();
 
   // Set real dimensions
   _w = lwidth + pwidth + fontWidth*3 + 15;
-  _h = 10 * (lineHeight + 4) + buttonHeight + 10;
+  _h = 17 * (lineHeight + 4) + buttonHeight + 20;
 
   xpos = 10;  ypos = 10;
 
@@ -78,9 +77,14 @@ GlobalPropsDialog::
   items.push_back("3F (512K Tigervision)",       "3F"   );
   items.push_back("4A50 (64K 4A50 + ram)",       "4A50" );
   items.push_back("4K (4K Atari)",               "4K"   );
+  items.push_back("4KSC (CPUWIZ 4K + ram)",      "4KSC"  );
   items.push_back("AR (Supercharger)",           "AR"   );
+  items.push_back("BF (CPUWIZ 256K)",            "BF"    );
+  items.push_back("BFSC (CPUWIZ 256K + ram)",    "BFSC"  );
   items.push_back("CV (Commavid extra ram)",     "CV"   );
   items.push_back("CM (SpectraVideo CompuMate)", "CM"   );
+  items.push_back("DF (CPUWIZ 128K)",            "DF"    );
+  items.push_back("DFSC (CPUWIZ 128K + ram)",    "DFSC"  );
   items.push_back("DPC (Pitfall II)",            "DPC"  );
   items.push_back("DPC+ (Enhanced DPC)",         "DPC+" );
   items.push_back("E0 (8K Parker Bros)",         "E0"   );
@@ -107,7 +111,7 @@ GlobalPropsDialog::
   ypos += lineHeight + 10;
 
   // Left difficulty
-  pwidth = font.getStringWidth("Default");
+  pwidth = font.getStringWidth("Debugger");
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Left Difficulty:", kTextAlignLeft);
   items.clear();
@@ -138,38 +142,51 @@ GlobalPropsDialog::
   myTVType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myTVType);
-  ypos += lineHeight + 5;
+  ypos += lineHeight + 10;
 
-  xpos = 30;  ypos += 10;
+  // Start in debugger mode
+  new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
+                       "Startup Mode:", kTextAlignLeft);
+  items.clear();
+  items.push_back("Console", "false");
+  items.push_back("Debugger", "true");
+  myDebug = new PopUpWidget(this, font, xpos+lwidth, ypos,
+                            pwidth, lineHeight, items, "", 0, 0);
+  wid.push_back(myDebug);
+  ypos += lineHeight + 10;
 
-  // Start with Select held down
-  myHoldSelect = new CheckboxWidget(this, font, xpos, ypos,
-                                    "Hold Select down");
-  wid.push_back(myHoldSelect);
-  ypos += lineHeight + 4;
+  // Start console with buttons held down
+  new StaticTextWidget(this, font, xpos, ypos+1,
+      font.getStringWidth("Start console with the following held down:"),
+      fontHeight, "Start console with the following held down:",
+      kTextAlignLeft);
+  xpos += 10;  ypos += lineHeight;
+  new StaticTextWidget(this, infofont, xpos, ypos+1, _w - 40, infofont.getFontHeight(),
+      "(*) Buttons are automatically released shortly",
+      kTextAlignLeft);
+  ypos += infofont.getLineHeight();
+  new StaticTextWidget(this, infofont, xpos, ypos+1, _w - 40, infofont.getFontHeight(),
+      "    after emulation has started",
+      kTextAlignLeft);
 
-  // Start with Reset held down
-  myHoldReset = new CheckboxWidget(this, font, xpos, ypos,
-                                   "Hold Reset down");
-  wid.push_back(myHoldReset);
-  ypos += lineHeight + 4;
-
-  // Start with joy button 0 held down
-  myHoldButton0 = new CheckboxWidget(this, font, xpos, ypos,
-                                     "Hold Button 0 down");
-  wid.push_back(myHoldButton0);
+  // Start with console joystick direction/buttons held down
+  xpos = 30;  ypos += lineHeight + 10;
+  ypos = addHoldWidgets(font, xpos, ypos, wid);
 
   // Add message concerning usage
-  lwidth = font.getStringWidth("(*) These changes are not saved");
-  new StaticTextWidget(this, font, 10, _h - 2*buttonHeight - 10, lwidth, fontHeight,
-                       "(*) These changes are not saved", kTextAlignLeft);
+  xpos = 10;  ypos += 2 * fontHeight;
+  new StaticTextWidget(this, infofont, xpos, ypos,  _w - 20, infofont.getFontHeight(),
+    "(*) These options are not saved, but apply to all", kTextAlignLeft);
+  ypos += infofont.getLineHeight();
+  new StaticTextWidget(this, infofont, xpos, ypos,  _w - 20, infofont.getFontHeight(),
+    "    further ROMs until clicking 'Defaults'", kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
-  addOKCancelBGroup(wid, font);
+  addOKCancelBGroup(wid, font, "Load ROM", "Close");
 
   addToFocusList(wid);
 }
@@ -177,6 +194,70 @@ GlobalPropsDialog::
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GlobalPropsDialog::~GlobalPropsDialog()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
+                                      WidgetArray& wid)
+{
+  const int fontHeight = font.getFontHeight();
+  int xpos = x, ypos = y;
+
+  // Left joystick
+  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos+2,
+    font.getStringWidth("Left Joy:"), fontHeight, "Left Joy:",
+    kTextAlignLeft);
+  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
+  myJoy[kJ0Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Up);
+  ypos += myJoy[kJ0Up]->getHeight() * 2 + 10;
+  myJoy[kJ0Down] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Down);
+  xpos -= myJoy[kJ0Up]->getWidth() + 5;
+  ypos -= myJoy[kJ0Up]->getHeight() + 5;
+  myJoy[kJ0Left] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Left);
+  xpos += (myJoy[kJ0Up]->getWidth() + 5) * 2;
+  myJoy[kJ0Right] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Right);
+  xpos -= (myJoy[kJ0Up]->getWidth() + 5) * 2;
+  ypos += myJoy[kJ0Down]->getHeight() * 2 + 10;
+  myJoy[kJ0Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ0Fire);
+
+  int final_y = ypos;
+  xpos = _w / 3;  ypos = y;
+
+  // Right joystick
+  t = new StaticTextWidget(this, font, xpos, ypos+2,
+    font.getStringWidth("Right Joy:"), fontHeight, "Right Joy:",
+    kTextAlignLeft);
+  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
+  myJoy[kJ1Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Up);
+  ypos += myJoy[kJ1Up]->getHeight() * 2 + 10;
+  myJoy[kJ1Down] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Down);
+  xpos -= myJoy[kJ1Up]->getWidth() + 5;
+  ypos -= myJoy[kJ1Up]->getHeight() + 5;
+  myJoy[kJ1Left] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Left);
+  xpos += (myJoy[kJ1Up]->getWidth() + 5) * 2;
+  myJoy[kJ1Right] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Right);
+  xpos -= (myJoy[kJ1Up]->getWidth() + 5) * 2;
+  ypos += myJoy[kJ1Down]->getHeight() * 2 + 10;
+  myJoy[kJ1Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ1Fire);
+
+  xpos = 2 * _w / 3;  ypos = y;
+
+  // Console Select/Reset
+  t = new StaticTextWidget(this, font, xpos, ypos+2,
+    font.getStringWidth("Console:"), fontHeight, "Console:",
+    kTextAlignLeft);
+  xpos -= 10;  ypos += t->getHeight() + 10;
+  myHoldSelect = new CheckboxWidget(this, font, xpos, ypos, "Select");
+  ypos += myHoldSelect->getHeight() + 5;
+  myHoldReset = new CheckboxWidget(this, font, xpos, ypos, "Reset");
+
+  for(int i = kJ0Up; i <= kJ1Fire; ++i)
+    wid.push_back(myJoy[i]);
+
+  wid.push_back(myHoldSelect);
+  wid.push_back(myHoldReset);
+
+  return final_y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,10 +269,17 @@ void GlobalPropsDialog::loadConfig()
   myLeftDiff->setSelected(settings.getString("ld"), "DEFAULT");
   myRightDiff->setSelected(settings.getString("rd"), "DEFAULT");
   myTVType->setSelected(settings.getString("tv"), "DEFAULT");
+  myDebug->setSelected(settings.getBool("debug") ? "true" : "false");
+
+  const string& holdjoy0 = settings.getString("holdjoy0");
+  for(int i = kJ0Up; i <= kJ0Fire; ++i)
+    myJoy[i]->setState(BSPF_containsIgnoreCase(holdjoy0, ourJoyState[i]));
+  const string& holdjoy1 = settings.getString("holdjoy1");
+  for(int i = kJ1Up; i <= kJ1Fire; ++i)
+    myJoy[i]->setState(BSPF_containsIgnoreCase(holdjoy1, ourJoyState[i]));
 
   myHoldSelect->setState(settings.getBool("holdselect"));
   myHoldReset->setState(settings.getBool("holdreset"));
-  myHoldButton0->setState(settings.getBool("holdbutton0"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -200,38 +288,51 @@ void GlobalPropsDialog::saveConfig()
   Settings& settings = instance().settings();
   string s;
 
-  s = myBSType->getSelectedTag();
+  s = myBSType->getSelectedTag().toString();
   if(s == "AUTO") s = "";
-  settings.setString("bs", s);
+  settings.setValue("bs", s);
 
-  s = myLeftDiff->getSelectedTag();
+  s = myLeftDiff->getSelectedTag().toString();
   if(s == "DEFAULT") s = "";
-  settings.setString("ld", s);
+  settings.setValue("ld", s);
 
-  s = myRightDiff->getSelectedTag();
+  s = myRightDiff->getSelectedTag().toString();
   if(s == "DEFAULT") s = "";
-  settings.setString("rd", s);
+  settings.setValue("rd", s);
 
-  s = myTVType->getSelectedTag();
+  s = myTVType->getSelectedTag().toString();
   if(s == "DEFAULT") s = "";
-  settings.setString("tv", s);
+  settings.setValue("tv", s);
 
-  settings.setBool("holdselect", myHoldSelect->getState());
-  settings.setBool("holdreset", myHoldReset->getState());
-  settings.setBool("holdbutton0", myHoldButton0->getState());
+  settings.setValue("debug", myDebug->getSelectedTag().toBool());
+
+  s = "";
+  for(int i = kJ0Up; i <= kJ0Fire; ++i)
+    if(myJoy[i]->getState())  s += ourJoyState[i];
+  settings.setValue("holdjoy0", s);
+  s = "";
+  for(int i = kJ1Up; i <= kJ1Fire; ++i)
+    if(myJoy[i]->getState())  s += ourJoyState[i];
+  settings.setValue("holdjoy1", s);
+
+  settings.setValue("holdselect", myHoldSelect->getState());
+  settings.setValue("holdreset", myHoldReset->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GlobalPropsDialog::setDefaults()
 {
-  myBSType->setSelected("AUTO", "");
-  myLeftDiff->setSelected("DEFAULT", "");
-  myRightDiff->setSelected("DEFAULT", "");
-  myTVType->setSelected("DEFAULT", "");
+  myBSType->setSelected("AUTO");
+  myLeftDiff->setSelected("DEFAULT");
+  myRightDiff->setSelected("DEFAULT");
+  myTVType->setSelected("DEFAULT");
+  myDebug->setSelected("false");
+
+  for(int i = kJ0Up; i <= kJ1Fire; ++i)
+    myJoy[i]->setState(false);
 
   myHoldSelect->setState(false);
   myHoldReset->setState(false);
-  myHoldButton0->setState(false);
 
   _dirty = true;
 }
@@ -245,10 +346,13 @@ void GlobalPropsDialog::handleCommand(CommandSender* sender, int cmd,
     case kOKCmd:
       saveConfig();
       close();
+      // Inform parent to load the ROM
+      sendCommand(LauncherDialog::kLoadROMCmd, 0, 0);
       break;
 
     case kDefaultsCmd:
       setDefaults();
+      saveConfig();
       break;
 
     default:
@@ -256,3 +360,8 @@ void GlobalPropsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* GlobalPropsDialog::ourJoyState[10] = {
+  "U", "D", "L", "R", "F", "U", "D", "L", "R", "F"
+};

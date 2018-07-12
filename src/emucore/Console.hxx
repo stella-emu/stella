@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Console.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -55,7 +55,7 @@ struct ConsoleInfo
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id$
+  @version $Id: Console.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class Console : public Serializable
 {
@@ -136,6 +136,14 @@ class Console : public Serializable
     M6532& riot() const { return *myRiot; }
 
     /**
+      Get the CompuMate handler used by the console
+      (only valid for CompuMate ROMs)
+
+      @return The CompuMate handler for this console (if it exists), otherwise 0
+    */
+    CompuMate* compumate() const { return myCMHandler; }
+
+    /**
       Saves the current state of this console class to the given Serializer.
 
       @param out The serializer device to save to.
@@ -169,6 +177,16 @@ class Console : public Serializable
       Query detailed information about this console.
     */
     const ConsoleInfo& about() const { return myConsoleInfo; }
+
+    /**
+      Set up the console to use the debugger.
+    */
+    void addDebugger();
+
+    /**
+      Informs the Console of a change in EventHandler state.
+    */
+    void stateChanged(EventHandler::State state);
 
   public:
     /**

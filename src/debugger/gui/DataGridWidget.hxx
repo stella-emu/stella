@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: DataGridWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef DATA_GRID_WIDGET_HXX
@@ -31,23 +28,26 @@ class ScrollBarWidget;
 #include "Debugger.hxx"
 #include "EditableWidget.hxx"
 #include "Array.hxx"
+#include "Base.hxx"
 #include "Rect.hxx"
-
-// Some special commands
-enum {
-  kDGItemDoubleClickedCmd = 'DGdb',
-  kDGItemActivatedCmd     = 'DGac',
-  kDGItemDataChangedCmd   = 'DGch',
-  kDGSelectionChangedCmd  = 'DGsc'
-};
 
 /* DataGridWidget */
 class DataGridWidget : public EditableWidget
 {
   public:
+    // Commands emitted by this commandsender
+    enum {
+      kItemDoubleClickedCmd = 'DGdb',
+      kItemActivatedCmd     = 'DGac',
+      kItemDataChangedCmd   = 'DGch',
+      kSelectionChangedCmd  = 'DGsc'
+    };
+
+  public:
     DataGridWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int cols, int rows,
-                   int colchars, int bits, BaseFormat format = kBASE_DEFAULT,
+                   int colchars, int bits,
+                   Common::Base::Format format = Common::Base::F_DEFAULT,
                    bool useScrollbar = false);
     virtual ~DataGridWidget();
 
@@ -116,11 +116,10 @@ class DataGridWidget : public EditableWidget
     int  _lowerBound;
     int  _upperBound;
 
-    BaseFormat _base;
+    Common::Base::Format _base;
 
     IntArray    _addrList;
     IntArray    _valueList;
-    StringList  _addrStringList;
     StringList  _valueStringList;
     BoolArray   _changedList;
     BoolArray   _hiliteList;

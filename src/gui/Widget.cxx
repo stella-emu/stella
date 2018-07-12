@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Widget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,7 +37,6 @@
 Widget::Widget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h)
   : GuiObject(boss->instance(), boss->parent(), boss->dialog(), x, y, w, h),
-    _type(0),
     _boss(boss),
     _font(font),
     _id(-1),
@@ -68,15 +67,12 @@ Widget::~Widget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::draw()
 {
-  if(!_dirty)
+  if(!_dirty || !isVisible() || !_boss->isVisible())
     return;
 
   _dirty = false;
   
   FBSurface& s = _boss->dialog().surface();
-
-  if(!isVisible() || !_boss->isVisible())
-    return;
 
   bool hasBorder = _flags & WIDGET_BORDER;
   int oldX = _x, oldY = _y, oldW = _w, oldH = _h;
@@ -296,7 +292,6 @@ StaticTextWidget::StaticTextWidget(GuiObject *boss, const GUI::Font& font,
     _align(align)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
-  _type = kStaticTextWidget;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
@@ -340,7 +335,6 @@ ButtonWidget::ButtonWidget(GuiObject *boss, const GUI::Font& font,
     _cmd(cmd)
 {
   _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
-  _type = kButtonWidget;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;
   _textcolor = kBtnTextColor;
@@ -400,28 +394,40 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* 8x8 checkbox bitmap */
-static unsigned int checked_img_x[8] =
+static unsigned int checked_img_active[8] =
 {
-	0x00000000,
-	0x01000010,
-	0x00100100,
-	0x00011000,
-	0x00011000,
-	0x00100100,
-	0x01000010,
-	0x00000000,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111
 };
 
-static unsigned int checked_img_o[8] =
+static unsigned int checked_img_inactive[8] =
+{
+	0x11111111,
+	0x11111111,
+	0x11100111,
+	0x11000011,
+	0x11000011,
+	0x11100111,
+	0x11111111,
+	0x11111111
+};
+
+static unsigned int checked_img_circle[8] =
 {
 	0x00011000,
-	0x00111100,
+	0x01111110,
 	0x01111110,
 	0x11111111,
 	0x11111111,
 	0x01111110,
-	0x00111100,
-	0x00011000,
+	0x01111110,
+	0x00011000
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -431,14 +437,12 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
   : ButtonWidget(boss, font, x, y, 16, 16, label, cmd),
     _state(false),
     _holdFocus(true),
-    _fillRect(false),
     _drawBox(true),
     _fillColor(kColor),
     _boxY(0),
     _textY(0)
 {
   _flags = WIDGET_ENABLED;
-  _type = kCheckboxWidget;
   _bgcolor = _bgcolorhi = kWidColor;
 
   _editable = true;
@@ -456,6 +460,8 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
     _boxY = (_h - 14) / 2;
   else         // center text
     _textY = (14 - _font.getFontHeight()) / 2;
+
+  setFill(CheckboxWidget::Normal);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -474,6 +480,28 @@ void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
 void CheckboxWidget::setEditable(bool editable)
 {
   _editable = editable;
+  if(!_editable)
+    setFill(CheckboxWidget::Inactive);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::setFill(FillType type)
+{
+  switch(type)
+  {
+    case CheckboxWidget::Normal:
+      _img = checked_img_active;
+      _drawBox = true;
+      break;
+    case CheckboxWidget::Inactive:
+      _img = checked_img_inactive;
+      _drawBox = true;
+      break;
+    case CheckboxWidget::Circle:
+      _img = checked_img_circle;
+      _drawBox = false;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -500,11 +528,7 @@ void CheckboxWidget::drawWidget(bool hilite)
   if(isEnabled())
   {
     if(_state)
-    {
-      uInt32* img  = _fillRect ? checked_img_o : checked_img_x;
-	  uInt32 color = _fillRect ? kWidFrameColor : kCheckColor;
-	  s.drawBitmap(img, _x + 3, _y + _boxY + 3, color);
-    }
+      s.drawBitmap(_img, _x + 3, _y + _boxY + 3, kCheckColor);
   }
   else
     s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, kColor);
@@ -527,7 +551,6 @@ SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
     _labelWidth(labelWidth)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
-  _type = kSliderWidget;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 

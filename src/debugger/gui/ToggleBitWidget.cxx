@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: ToggleBitWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -33,10 +30,18 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int cols, int rows, int colchars)
   : ToggleWidget(boss, font, x, y, cols, rows)
 {
-  _type = kToggleBitWidget;
-
   _rowHeight = font.getLineHeight();
   _colWidth  = colchars * font.getMaxCharWidth() + 8;
+
+  // Make sure all lists contain some default values
+  int size = _rows * _cols;
+  while(size--)
+  {
+    _offList.push_back("0");
+    _onList.push_back("1");
+    _stateList.push_back(false);
+    _changedList.push_back(false);
+  }
 
   // Calculate real dimensions
   _w = _colWidth  * cols + 1;

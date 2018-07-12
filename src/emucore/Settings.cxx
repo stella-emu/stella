@@ -8,22 +8,26 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Settings.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <unistd.h>
 
 #include "bspf.hxx"
 
+#ifdef DEBUGGER_SUPPORT
+  #include "DebuggerDialog.hxx"
+#endif
 #include "OSystem.hxx"
 #include "Version.hxx"
 
@@ -79,9 +83,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("sound", "true");
   setInternal("fragsize", "512");
   setInternal("freq", "31400");
-  setInternal("tiafreq", "31400");
   setInternal("volume", "100");
-  setInternal("clipvol", "true");
 
   // Input event options
   setInternal("keymap", "");
@@ -89,14 +91,16 @@ Settings::Settings(OSystem* osystem)
   setInternal("combomap", "");
   setInternal("joydeadzone", "13");
   setInternal("joyallow4", "false");
-  setInternal("usemouse", "true");
+  setInternal("usemouse", "analog");
   setInternal("dsense", "5");
   setInternal("msense", "7");
   setInternal("saport", "lr");
   setInternal("ctrlcombo", "true");
 
   // Snapshot options
-  setInternal("snapdir", "/mnt");
+  setInternal("snapsavedir", "/mnt");
+  setInternal("snaploaddir", "/mnt");
+  setInternal("snapname", "int");
   setInternal("sssingle", "false");
   setInternal("ss1x", "false");
   setInternal("ssinterval", "2");
@@ -107,19 +111,22 @@ Settings::Settings(OSystem* osystem)
   setInternal("cheatfile", "/mnt/stella/stella.cht");
   setInternal("palettefile", "/mnt/stella/stella.pal");
   setInternal("propsfile", "/mnt/stella/stella.pro");
-  setInternal("eepromdir", "/mnt/stella/");
+  setInternal("nvramdir", "/mnt/stella/");
   setInternal("cfgdir", "/mnt/stella/cfg/");
 
   // ROM browser options
   setInternal("exitlauncher", "false");
-  setInternal("launcherres", "640x480");
+  setInternal("launcherres", GUI::Size(640, 480));
   setInternal("launcherfont", "medium");
   setInternal("launcherexts", "allroms");
   setInternal("romviewer", "0");
   setInternal("lastrom", "");
 
   // UI-related options
-  setInternal("debuggerres", "1030x690");
+#ifdef DEBUGGER_SUPPORT
+  setInternal("dbg.res",
+    GUI::Size(DebuggerDialog::kMediumFontMinW, DebuggerDialog::kMediumFontMinH));
+#endif
   setInternal("uipalette", "0");
   setInternal("listdelay", "300");
   setInternal("mwheel", "4");
@@ -129,6 +136,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("loglevel", "1");
   setInternal("logtoconsole", "0");
   setInternal("tiadriven", "false");
+  setInternal("cpurandom", "true");
   setInternal("ramrandom", "true");
   setInternal("avoxport", "");
   setInternal("stats", "false");
@@ -136,8 +144,10 @@ Settings::Settings(OSystem* osystem)
   setExternal("romloadcount", "0");
   setExternal("maxres", "");
 
-  // Debugger disassembly options
-  setInternal("dis.resolvedata", "auto");
+  // Debugger/disassembly options
+  setInternal("dbg.fontstyle", "0");
+  setInternal("dbg.uhex", "true");
+  setInternal("dis.resolve", "true");
   setInternal("dis.gfxformat", "2");
   setInternal("dis.showaddr", "true");
   setInternal("dis.relocate", "false");
@@ -217,9 +227,10 @@ string Settings::loadCommandLine(int argc, char** argv)
         return "";
       }
 
-      // Take care of arguments without an option
+      // Take care of arguments without an option or ones that shouldn't
+      // be saved to the config file
       if(key == "rominfo" || key == "debug" || key == "holdreset" ||
-         key == "holdselect" || key == "holdbutton0" || key == "takesnapshot")
+         key == "holdselect" || key == "takesnapshot")
       {
         setExternal(key, "true");
         continue;
@@ -286,9 +297,8 @@ void Settings::validate()
   i = getInt("volume");
   if(i < 0 || i > 100)    setInternal("volume", "100");
   i = getInt("freq");
-  if(i < 0 || i > 48000)  setInternal("freq", "31400");
-  i = getInt("tiafreq");
-  if(i < 0 || i > 48000)  setInternal("tiafreq", "31400");
+  if(!(i == 11025 || i == 22050 || i == 31400 || i == 44100 || i == 48000))
+    setInternal("freq", "31400");
 #endif
 
   i = getInt("joydeadzone");
@@ -383,10 +393,8 @@ void Settings::usage()
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
-    << "  -freq         <number>       Set sound sample output frequency (0 - 48000)\n"
-    << "  -tiafreq      <number>       Set sound sample generation frequency (0 - 48000)\n"
+    << "  -freq         <number>       Set sound sample output frequency (11025|22050|31400|44100|48000)\n"
     << "  -volume       <number>       Set the volume (0 - 100)\n"
-    << "  -clipvol      <1|0>          Enable volume clipping (eliminates popping)\n"
     << endl
   #endif
     << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
@@ -394,7 +402,9 @@ void Settings::usage()
     << "  -logtoconsole <1|0>          Log output to console/commandline\n"
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be pressed simultaneously\n"
-    << "  -usemouse     <1|0>          Use mouse as a controller as specified by ROM properties (see manual)\n"
+    << "  -usemouse     <always|\n"
+    << "                 analog|\n"
+    << "                 never>        Use mouse as a controller as specified by ROM properties in given mode(see manual)\n"
     << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-10)\n"
     << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-15)\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple Stelladaptor/2600-daptors\n"
@@ -402,7 +412,9 @@ void Settings::usage()
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -stats        <1|0>          Overlay console info during emulation\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
-    << "  -snapdir      <path>         The directory to save snapshot files to\n"
+    << "  -snapsavedir  <path>         The directory to save snapshot files to\n"
+    << "  -snaploaddir  <path>         The directory to load snapshot files from\n"
+    << "  -snapname     <int|rom>      Name snapshots according to internal database or ROM\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling/effects)\n"
     << "  -ssinterval   <number        Number of seconds between snapshots in continuous snapshot mode\n"
@@ -420,18 +432,20 @@ void Settings::usage()
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
-    << "  -statedir     <dir>          Directory in which to save state files\n"
+    << "  -statedir     <dir>          Directory in which to save/load state files\n"
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
     << "  -palettefile  <file>         Full pathname of user-defined palette file\n"
     << "  -propsfile    <file>         Full pathname of ROM properties file\n"
-    << "  -eepromdir    <dir>          Directory in which to save EEPROM files\n"
+    << "  -nvramdir     <dir>          Directory in which to save/load flash/EEPROM files\n"
     << "  -cfgdir       <dir>          Directory in which to save Distella config files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is connected\n"
     << "  -maxres       <WxH>          Used by developers to force the maximum size of the application window\n"
     << "  -holdreset                   Start the emulator with the Game Reset switch held down\n"
     << "  -holdselect                  Start the emulator with the Game Select switch held down\n"
-    << "  -holdbutton0                 Start the emulator with the left joystick button held down\n"
+    << "  -holdjoy0     <U,D,L,R,F>    Start the emulator with the left joystick direction/fire button held down\n"
+    << "  -holdjoy1     <U,D,L,R,F>    Start the emulator with the right joystick direction/fire button held down\n"
     << "  -tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
+    << "  -cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
     << "  -ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
@@ -439,14 +453,13 @@ void Settings::usage()
     << " The following options are meant for developers\n"
     << " Arguments are more fully explained in the manual\n"
     << endl
-    << "   -dis.resolvedata <never|    Set automatic code vs. data determination in disassembler\n"
-    << "                     always|\n"
-    << "                     auto>\n"
+    << "   -dis.resolve   <1|0>        Attempt to resolve code sections in disassembler\n"
     << "   -dis.gfxformat   <2|16>     Set base to use for displaying GFX sections in disassembler\n"
     << "   -dis.showaddr    <1|0>      Show opcode addresses in disassembler\n"
     << "   -dis.relocate    <1|0>      Relocate calls out of address range in disassembler\n"
     << endl
-    << "   -debuggerres  <WxH>         The resolution to use in debugger mode\n"
+    << "   -dbg.res       <WxH>        The resolution to use in debugger mode\n"
+    << "   -dbg.fontstyle <0-3>        Font style to use in debugger window (bold vs. normal)\n"
     << "   -break        <address>     Set a breakpoint at 'address'\n"
     << "   -debug                      Start in debugger mode\n"
     << endl
@@ -470,7 +483,28 @@ void Settings::usage()
     << endl << flush;
 }
 
-#include <unistd.h>
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Variant& Settings::value(const string& key) const
+{
+  // Try to find the named setting and answer its value
+  int idx = -1;
+  if((idx = getInternalPos(key)) != -1)
+    return myInternalSettings[idx].value;
+  else if((idx = getExternalPos(key)) != -1)
+    return myExternalSettings[idx].value;
+  else
+    return EmptyVariant;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::setValue(const string& key, const Variant& value)
+{
+  if(int idx = getInternalPos(key) != -1)
+    setInternal(key, value, idx);
+  else
+    setExternal(key, value);
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
@@ -485,8 +519,9 @@ void Settings::saveConfig()
       break;
     }
   }
-  //if(!settingsChanged)
-  //  return;
+
+  if(!settingsChanged)
+    return;
 
   ofstream out(myOSystem->configFile().c_str());
   if(!out || !out.is_open())
@@ -516,142 +551,10 @@ void Settings::saveConfig()
     out << myInternalSettings[i].key << " = " <<
            myInternalSettings[i].value << endl;
   }
+
   out.flush();
   out.close();
   system("/bin/fsync /mnt/stella/stellarc&");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setInt(const string& key, const int value)
-{
-  ostringstream stream;
-  stream << value;
-
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, stream.str(), idx);
-  else
-    setExternal(key, stream.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setFloat(const string& key, const float value)
-{
-  ostringstream stream;
-  stream << value;
-
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, stream.str(), idx);
-  else
-    setExternal(key, stream.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setBool(const string& key, const bool value)
-{
-  ostringstream stream;
-  stream << value;
-
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, stream.str(), idx);
-  else
-    setExternal(key, stream.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setString(const string& key, const string& value)
-{
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, value, idx);
-  else
-    setExternal(key, value);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::getSize(const string& key, int& x, int& y) const
-{
-  char c = '\0';
-  x = y = -1;
-  string size = getString(key);
-  istringstream buf(size);
-  buf >> x >> c >> y;
-  if(c != 'x')
-    x = y = -1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::getInt(const string& key) const
-{
-  // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-    return (int) atoi(myInternalSettings[idx].value.c_str());
-  else if((idx = getExternalPos(key)) != -1)
-    return (int) atoi(myExternalSettings[idx].value.c_str());
-  else
-    return -1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float Settings::getFloat(const string& key) const
-{
-  // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-    return (float) atof(myInternalSettings[idx].value.c_str());
-  else if((idx = getExternalPos(key)) != -1)
-    return (float) atof(myExternalSettings[idx].value.c_str());
-  else
-    return -1.0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Settings::getBool(const string& key) const
-{
-  // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-  {
-    const string& value = myInternalSettings[idx].value;
-    if(value == "1" || value == "true")
-      return true;
-    else if(value == "0" || value == "false")
-      return false;
-    else
-      return false;
-  }
-  else if((idx = getExternalPos(key)) != -1)
-  {
-    const string& value = myExternalSettings[idx].value;
-    if(value == "1" || value == "true")
-      return true;
-    else if(value == "0" || value == "false")
-      return false;
-    else
-      return false;
-  }
-  else
-    return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& Settings::getString(const string& key) const
-{
-  // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-    return myInternalSettings[idx].value;
-  else if((idx = getExternalPos(key)) != -1)
-    return myExternalSettings[idx].value;
-  else
-    return EmptyString;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setSize(const string& key, const int value1, const int value2)
-{
-  ostringstream buf;
-  buf << value1 << "x" << value2;
-  setString(key, buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -675,7 +578,7 @@ int Settings::getExternalPos(const string& key) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::setInternal(const string& key, const string& value,
+int Settings::setInternal(const string& key, const Variant& value,
                           int pos, bool useAsInitial)
 {
   int idx = -1;
@@ -730,7 +633,7 @@ int Settings::setInternal(const string& key, const string& value,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::setExternal(const string& key, const string& value,
+int Settings::setExternal(const string& key, const Variant& value,
                           int pos, bool useAsInitial)
 {
   int idx = -1;

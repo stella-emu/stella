@@ -28,6 +28,9 @@ ditto ../../Announce.txt ../../Changes.txt ../../Copyright.txt ../../License.txt
 echo "Copying application ..."
 cp -r build/Deployment/Stella.app "${DISK}"
 
+echo "Updating modification times ..."
+touch "${DISK}"/Stella.app "${DISK}"/*.txt
+
 echo "Ejecting ${DMG} ..."
 hdiutil eject "${DISK}"
 

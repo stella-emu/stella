@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: PromptWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <iostream>
@@ -49,7 +46,6 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_TAB | WIDGET_WANTS_RAWDATA;
-  _type = kPromptWidget;
   _textcolor = kTextColor;
   _bgcolor = kWidColor;
 
@@ -104,7 +100,7 @@ void PromptWidget::drawWidget(bool hilite)
       } else {
         fgcolor = c >> 8;
       }
-      s.drawChar(instance().consoleFont(), c & 0x7f, x, y, fgcolor);
+      s.drawChar(_font, c & 0x7f, x, y, fgcolor);
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;
@@ -150,6 +146,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   switch(key)
   {
     case KBDK_RETURN:
+    case KBDK_KP_ENTER:
     {
       nextLine();
 
@@ -497,6 +494,7 @@ void PromptWidget::loadConfig()
     // Take care of one-time debugger stuff
     print(instance().debugger().autoExec().c_str());
     print(instance().debugger().cartDebug().loadConfigFile() + "\n");
+    print(instance().debugger().cartDebug().loadListFile() + "\n");
     print(instance().debugger().cartDebug().loadSymbolFile() + "\n");
     print(PROMPT);
 
@@ -833,7 +831,7 @@ void PromptWidget::drawCaret()
 
   char c = buffer(_currentPos);
   s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
-  s.drawChar(_boss->instance().consoleFont(), c, x, y + 2, kBGColor);
+  s.drawChar(_font, c, x, y + 2, kBGColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

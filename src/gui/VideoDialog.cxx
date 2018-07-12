@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: VideoDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -56,7 +53,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
       pwidth = font.getStringWidth("1920x1200"),
       fwidth = font.getStringWidth("Renderer: ");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
 
   // Set real dimensions
   _w = BSPF_min(52 * fontWidth + 10, max_w);
@@ -66,7 +63,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   xpos = ypos = 5;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
-  addFocusWidget(myTab);
 
   //////////////////////////////////////////////////////////
   // 1) General options
@@ -236,7 +232,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Add items for tab 0
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   //////////////////////////////////////////////////////////
   // 2) TV effects options
@@ -246,12 +242,12 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // TV Mode
   items.clear();
-  items.push_back("Disabled", BSPF_toString(NTSCFilter::PRESET_OFF));
-  items.push_back("Composite", BSPF_toString(NTSCFilter::PRESET_COMPOSITE));
-  items.push_back("S-Video", BSPF_toString(NTSCFilter::PRESET_SVIDEO));
-  items.push_back("RGB", BSPF_toString(NTSCFilter::PRESET_RGB));
-  items.push_back("Bad adjust", BSPF_toString(NTSCFilter::PRESET_BAD));
-  items.push_back("Custom", BSPF_toString(NTSCFilter::PRESET_CUSTOM));
+  items.push_back("Disabled", NTSCFilter::PRESET_OFF);
+  items.push_back("Composite", NTSCFilter::PRESET_COMPOSITE);
+  items.push_back("S-Video", NTSCFilter::PRESET_SVIDEO);
+  items.push_back("RGB", NTSCFilter::PRESET_RGB);
+  items.push_back("Bad adjust", NTSCFilter::PRESET_BAD);
+  items.push_back("Custom", NTSCFilter::PRESET_CUSTOM);
   lwidth = font.getStringWidth("TV Mode: ");
   pwidth = font.getStringWidth("Bad adjust"),
   myTVMode =
@@ -326,7 +322,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   CREATE_CLONE_BUTTON(Custom, "Revert");
 
   // Add items for tab 2
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   // Activate the first tab
   myTab->setActiveTab(0);
@@ -384,7 +380,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myCloneCustom->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
-//  myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
   myCenterCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #if !(defined(BSPF_WIN32) || (defined(BSPF_UNIX) && defined(HAVE_X11)))
@@ -410,7 +405,7 @@ void VideoDialog::loadConfig()
   // TIA Filter
   // These are dynamically loaded, since they depend on the size of
   // the desktop and which renderer we're using
-  const StringMap& items =
+  const VariantList& items =
     instance().frameBuffer().supportedTIAFilters(gl ? "gl" : "soft");
   myTIAFilterPopup->addItems(items);
   myTIAFilterPopup->setSelected(instance().settings().getString("tia_filter"),
@@ -496,31 +491,36 @@ void VideoDialog::loadConfig()
 void VideoDialog::saveConfig()
 {
   // Renderer setting
-  instance().settings().setString("video", myRendererPopup->getSelectedTag());
+  instance().settings().setValue("video",
+    myRendererPopup->getSelectedTag().toString());
 
   // TIA Filter
-  instance().settings().setString("tia_filter", myTIAFilterPopup->getSelectedTag());
+  instance().settings().setValue("tia_filter",
+    myTIAFilterPopup->getSelectedTag().toString());
 
   // TIA Palette
-  instance().settings().setString("palette", myTIAPalettePopup->getSelectedTag());
+  instance().settings().setValue("palette",
+    myTIAPalettePopup->getSelectedTag().toString());
 
   // Fullscreen resolution
-  instance().settings().setString("fullres", myFSResPopup->getSelectedTag());
+  instance().settings().setValue("fullres",
+    myFSResPopup->getSelectedTag().toString());
 
   // Wait between frames
-  instance().settings().setString("timing", myFrameTimingPopup->getSelectedTag());
+  instance().settings().setValue("timing",
+    myFrameTimingPopup->getSelectedTag().toString());
 
   // GL Filter setting
-  instance().settings().setBool("gl_inter",
-    myGLFilterPopup->getSelectedTag() == "linear" ? true : false);
+  instance().settings().setValue("gl_inter",
+    myGLFilterPopup->getSelectedTag().toString() == "linear" ? true : false);
 
   // GL aspect ratio setting (NTSC and PAL)
-  instance().settings().setString("gl_aspectn", myNAspectRatioLabel->getLabel());
-  instance().settings().setString("gl_aspectp", myPAspectRatioLabel->getLabel());
+  instance().settings().setValue("gl_aspectn", myNAspectRatioLabel->getLabel());
+  instance().settings().setValue("gl_aspectp", myPAspectRatioLabel->getLabel());
 
   // Framerate
   int i = myFrameRateSlider->getValue();
-  instance().settings().setInt("framerate", i);
+  instance().settings().setValue("framerate", i);
   if(&instance().console())
   {
     // Make sure auto-frame calculation is only enabled when necessary
@@ -529,30 +529,32 @@ void VideoDialog::saveConfig()
   }
 
   // Fullscreen
-  instance().settings().setString("fullscreen", myFullscreenPopup->getSelectedTag());
+  instance().settings().setValue("fullscreen",
+    myFullscreenPopup->getSelectedTag().toString());
 
   // PAL color-loss effect
-  instance().settings().setBool("colorloss", myColorLossCheckbox->getState());
+  instance().settings().setValue("colorloss", myColorLossCheckbox->getState());
   if(&instance().console())
     instance().console().toggleColorLoss(myColorLossCheckbox->getState());
 
   // GL stretch setting
-  instance().settings().setBool("gl_fsscale", myGLStretchCheckbox->getState());
+  instance().settings().setValue("gl_fsscale", myGLStretchCheckbox->getState());
 
   // Use sync to vertical blank (GL mode only)
-  instance().settings().setBool("gl_vsync", myUseVSyncCheckbox->getState());
+  instance().settings().setValue("gl_vsync", myUseVSyncCheckbox->getState());
 
   // Show UI messages
-  instance().settings().setBool("uimessages", myUIMessagesCheckbox->getState());
+  instance().settings().setValue("uimessages", myUIMessagesCheckbox->getState());
 
   // Center window
-  instance().settings().setBool("center", myCenterCheckbox->getState());
+  instance().settings().setValue("center", myCenterCheckbox->getState());
 
   // Fast loading of Supercharger BIOS
-  instance().settings().setBool("fastscbios", myFastSCBiosCheckbox->getState());
+  instance().settings().setValue("fastscbios", myFastSCBiosCheckbox->getState());
 
   // TV Mode
-  instance().settings().setString("tv_filter", myTVMode->getSelectedTag());
+  instance().settings().setValue("tv_filter",
+    myTVMode->getSelectedTag().toString());
 
   // TV Custom adjustables
   NTSCFilter::Adjustable adj;
@@ -569,8 +571,8 @@ void VideoDialog::saveConfig()
   instance().frameBuffer().ntsc().setCustomAdjustables(adj);
 
   // TV scanline intensity and interpolation
-  instance().settings().setString("tv_scanlines", myTVScanIntenseLabel->getLabel());
-  instance().settings().setBool("tv_scaninter", myTVScanInterpolate->getState());
+  instance().settings().setValue("tv_scanlines", myTVScanIntenseLabel->getLabel());
+  instance().settings().setValue("tv_scaninter", myTVScanInterpolate->getState());
 
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();
@@ -640,7 +642,7 @@ void VideoDialog::handleFullscreenChange(bool enable)
 void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
 {
   bool enable = true, scanenable = true;
-  if(!instance().frameBuffer().type() == kDoubleBuffer)
+  if(instance().frameBuffer().type() != kDoubleBuffer)
   {
     enable = scanenable = false;
     myTVMode->setEnabled(enable);
@@ -743,11 +745,11 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kFullScrChanged:
-      handleFullscreenChange(myFullscreenPopup->getSelectedTag() != "-1");
+      handleFullscreenChange(myFullscreenPopup->getSelectedTag().toString() != "-1");
       break;
 
     case kTVModeChanged:
-      handleTVModeChange((NTSCFilter::Preset)atoi(myTVMode->getSelectedTag().c_str()));
+      handleTVModeChange((NTSCFilter::Preset)myTVMode->getSelectedTag().toInt());
 
     case kTVSharpChanged:  myTVSharpLabel->setValue(myTVSharp->getValue());
       break;

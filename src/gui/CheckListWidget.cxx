@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: CheckListWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "CheckListWidget.hxx"
@@ -40,6 +37,7 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
   for(int i = 0; i < _rows; ++i)
   {
     t = new CheckboxWidget(boss, font, _x + 2, ypos, "", kCheckActionCmd);
+    t->setTextColor(kTextColor);
     t->setTarget(this);
     t->setID(i);
     ypos += _fontHeight;
@@ -51,26 +49,6 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckListWidget::~CheckListWidget()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::setStyle(CheckStyle style)
-{
-  for(unsigned int i = 0; i < _checkList.size(); ++i)
-  {
-    if(style == kXFill)
-    {
-      _checkList[i]->drawBox(true);
-      _checkList[i]->setFill(false);
-      _checkList[i]->setTextColor(kTextColor);
-    }
-    else if(style == kSolidFill)
-    {
-      _checkList[i]->drawBox(false);
-      _checkList[i]->setFill(true);
-      _checkList[i]->setTextColor(kTextColorEm);
-    }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: TiaWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef TIA_WIDGET_HXX
@@ -35,11 +32,10 @@ class ColorWidget;
 #include "Widget.hxx"
 #include "Command.hxx"
 
-
 class TiaWidget : public Widget, public CommandSender
 {
   public:
-    TiaWidget(GuiObject* boss, const GUI::Font& font,
+    TiaWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
               int x, int y, int w, int h);
     virtual ~TiaWidget();
 
@@ -47,7 +43,6 @@ class TiaWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
-    void fillGrid();
     void changeColorRegs();
 
   private:
@@ -102,6 +97,8 @@ class TiaWidget : public Widget, public CommandSender
     CheckboxWidget* myScorePF;
     CheckboxWidget* myPriorityPF;
 
+    CheckboxWidget* myUndrivenPins;
+
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
     enum {
@@ -128,7 +125,7 @@ class TiaWidget : public Widget, public CommandSender
       kRefPFID,   kScorePFID, kPriorityPFID
     };
 
-    // Strobe button commands
+    // Strobe button and misc commands
     enum {
       kWsyncCmd = 'Swsy',
       kRsyncCmd = 'Srsy',
@@ -139,7 +136,8 @@ class TiaWidget : public Widget, public CommandSender
       kResBLCmd = 'Srbl',
       kHmoveCmd = 'Shmv',
       kHmclrCmd = 'Shmc',
-      kCxclrCmd = 'Scxl'
+      kCxclrCmd = 'Scxl',
+      kPPinCmd  = 'PPin'
     };
 
     // Color registers

@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: mainSDL.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <SDL.h>
@@ -132,10 +132,7 @@ int main(int argc, char* argv[])
   {
     theOSystem->logMessage("Showing output from 'rominfo' ...", 2);
     FilesystemNode romnode(romfile);
-    if(argc > 1 && romnode.exists() && romnode.isFile())
-      theOSystem->logMessage(theOSystem->getROMInfo(romfile), 0);
-    else
-      theOSystem->logMessage("ERROR: ROM doesn't exist", 0);
+    theOSystem->logMessage(theOSystem->getROMInfo(romnode), 0);
 
     return Cleanup();
   }
@@ -175,8 +172,12 @@ int main(int argc, char* argv[])
       return Cleanup();
     }
   }
-  else if(theOSystem->createConsole(romnode.getPath()))
+  else
   {
+    const string& result = theOSystem->createConsole(romnode);
+    if(result != EmptyString)
+      return Cleanup();
+
     if(theOSystem->settings().getBool("takesnapshot"))
     {
       theOSystem->logMessage("Taking snapshots with 'takesnapshot' ...", 2);
@@ -194,15 +195,10 @@ int main(int argc, char* argv[])
       Debugger& dbg = theOSystem->debugger();
       int bp = dbg.stringToValue(initBreak);
       dbg.setBreakPoint(bp, true);
-      theOSystem->settings().setString("break", "");
+      theOSystem->settings().setValue("break", "");
     }
-
-    if(theOSystem->settings().getBool("debug"))
-      theOSystem->eventHandler().enterDebugMode();
 #endif
   }
-  else
-    return Cleanup();
 
   // Swallow any spurious events in the queue
   // These are normally caused by joystick/mouse jitter

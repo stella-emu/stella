@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: ContextMenu.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef CONTEXT_MENU_HXX
@@ -26,10 +23,7 @@
 #include "bspf.hxx"
 #include "Command.hxx"
 #include "Dialog.hxx"
-
-enum {
-  kCMenuItemSelectedCmd = 'CMsl'
-};
+#include "Variant.hxx"
 
 /**
  * Popup context menu which, when clicked, "pop up" a list of items and
@@ -37,25 +31,33 @@ enum {
  *
  * Implementation wise, when the user selects an item, then the given 'cmd'
  * is broadcast, with data being equal to the tag value of the selected entry.
+ *
+ * There are also several utility methods (named as sendSelectionXXX) that
+ * allow to cycle through the current items without actually opening the dialog.
  */
 class ContextMenu : public Dialog, public CommandSender
 {
   public:
+    enum {
+      kItemSelectedCmd = 'CMsl'
+    };
+
+  public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
-                const StringMap& items, int cmd = 0);
+                const VariantList& items, int cmd = 0);
     virtual ~ContextMenu();
 
     /** Add the given items to the widget. */
-    void addItems(const StringMap& items);
+    void addItems(const VariantList& items);
 
     /** Show context menu onscreen at the specified coordinates */
     void show(uInt32 x, uInt32 y, int item = -1);
 
-    /** Select the entry at the given index. */
-    void setSelected(int item);
-	
     /** Select the first entry matching the given tag. */
-    void setSelected(const string& tag, const string& defaultTag);
+    void setSelected(const Variant& tag, const Variant& defaultTag);
+
+    /** Select the entry at the given index. */
+    void setSelectedIndex(int idx);
 
     /** Select the highest/last entry in the internal list. */
     void setSelectedMax();
@@ -66,10 +68,20 @@ class ContextMenu : public Dialog, public CommandSender
     /** Accessor methods for the currently selected item. */
     int getSelected() const;
     const string& getSelectedName() const;
-    const string& getSelectedTag() const;
+    const Variant& getSelectedTag() const;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
     void center();
+
+    /** The following methods are used when we want to select *and*
+        send a command for the new selection.  They are only to be used
+        when the dialog *isn't* open, and are basically a shortcut so
+        that a PopUpWidget has some basic functionality without forcing
+        to open its associated ContextMenu. */
+    bool sendSelectionUp();
+    bool sendSelectionDown();
+    bool sendSelectionFirst();
+    bool sendSelectionLast();
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
@@ -92,12 +104,17 @@ class ContextMenu : public Dialog, public CommandSender
 	
     void moveUp();
     void moveDown();
+    void movePgUp();
+    void movePgDown();
+    void moveToFirst();
+    void moveToLast();
+    void moveToSelected();
     void scrollUp(int distance = 1);
     void scrollDown(int distance = 1);
     void sendSelection();
 
   private:
-    StringMap _entries;
+    VariantList _entries;
 
     int _rowHeight;
     int _firstEntry, _numEntries;

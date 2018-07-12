@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: SoundSDL.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -34,7 +34,7 @@ class OSystem;
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id$
+  @version $Id: SoundSDL.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class SoundSDL : public Sound
 {
@@ -162,11 +162,13 @@ class SoundSDL : public Sound
   protected:
     /**
       Invoked by the sound callback to process the next sound fragment.
+      The stream is 16-bits (even though the callback is 8-bits), since
+      the TIASnd class always generates signed 16-bit stereo samples.
 
       @param stream  Pointer to the start of the fragment
       @param length  Length of the fragment
     */
-    void processFragment(uInt8* stream, Int32 length);
+    void processFragment(Int16* stream, uInt32 length);
 
   protected:
     // Struct to hold information regarding a TIA sound register write

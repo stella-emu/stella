@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: OptionsDialog.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef OPTIONS_DIALOG_HXX
@@ -30,7 +27,8 @@ class VideoDialog;
 class AudioDialog;
 class InputDialog;
 class UIDialog;
-class FileSnapDialog;
+class SnapshotDialog;
+class ConfigPathDialog;
 class RomAuditDialog;
 class GameInfoDialog;
 class CheatCodeDialog;
@@ -58,7 +56,8 @@ class OptionsDialog : public Dialog
     AudioDialog*     myAudioDialog;
     InputDialog*     myInputDialog;
     UIDialog*        myUIDialog;
-    FileSnapDialog*  myFileSnapDialog;
+    SnapshotDialog*   mySnapshotDialog;
+    ConfigPathDialog* myConfigPathDialog;
     RomAuditDialog*  myRomAuditDialog;
     GameInfoDialog*  myGameInfoDialog;
     CheatCodeDialog* myCheatCodeDialog;
@@ -66,16 +65,9 @@ class OptionsDialog : public Dialog
     HelpDialog*      myHelpDialog;
     AboutDialog*     myAboutDialog;
 
-    ButtonWidget* myVideoSettingsButton;
-    ButtonWidget* myAudioSettingsButton;
-    ButtonWidget* myUIButton;
-    ButtonWidget* myFileSnapButton;
     ButtonWidget* myRomAuditButton;
     ButtonWidget* myGameInfoButton;
     ButtonWidget* myCheatCodeButton;
-    ButtonWidget* myLoggerButton;
-    ButtonWidget* myHelpButton;
-    ButtonWidget* myAboutButton;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;
@@ -85,7 +77,8 @@ class OptionsDialog : public Dialog
       kAudCmd      = 'AUDO',
       kInptCmd     = 'INPT',
       kUsrIfaceCmd = 'URIF',
-      kFileSnapCmd = 'FLSN',
+      kSnapCmd     = 'SNAP',
+      kCfgPathsCmd = 'CFGP',
       kAuditCmd    = 'RAUD',
       kInfoCmd     = 'INFO',
       kCheatCmd    = 'CHET',

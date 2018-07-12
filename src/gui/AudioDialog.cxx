@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: AudioDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -51,11 +48,11 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   int lwidth = font.getStringWidth("Sample Size (*): "),
       pwidth = font.getStringWidth("512 bytes");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
 
   // Set real dimensions
   _w = 35 * fontWidth + 10;
-  _h = 8 * (lineHeight + 4) + 10;
+  _h = 7 * (lineHeight + 4) + 10;
 
   // Volume
   xpos = 3 * fontWidth;  ypos = 10;
@@ -95,25 +92,13 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   items.push_back("48000 Hz", "48000");
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
-                                items, "Output freq (*): ", lwidth);
+                                items, "Frequency (*): ", lwidth);
   wid.push_back(myFreqPopup);
   ypos += lineHeight + 4;
 
-  // TIA frequency
-  // ... use same items as above
-  myTiaFreqPopup = new PopUpWidget(this, font, xpos, ypos,
-                                   pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
-                                   items, "TIA freq: ", lwidth);
-  wid.push_back(myTiaFreqPopup);
-  ypos += lineHeight + 4;
-
-  // Clip volume
-  myClipVolumeCheckbox = new CheckboxWidget(this, font, xpos+10, ypos,
-                                            "Clip volume", 0);
-  wid.push_back(myClipVolumeCheckbox);
-  xpos += myClipVolumeCheckbox->getWidth() + 20;
-
   // Enable sound
+  xpos = (_w - (font.getStringWidth("Enable sound") + 10)) / 2;
+  ypos += 4;
   mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                              "Enable sound", kSoundEnableChanged);
   wid.push_back(mySoundEnableCheckbox);
@@ -153,12 +138,6 @@ void AudioDialog::loadConfig()
   // Output frequency
   myFreqPopup->setSelected(instance().settings().getString("freq"), "31400");
 
-  // TIA frequency
-  myTiaFreqPopup->setSelected(instance().settings().getString("tiafreq"), "31400");
-
-  // Clip volume
-  myClipVolumeCheckbox->setState(instance().settings().getBool("clipvol"));
-
   // Enable sound
   bool b = instance().settings().getBool("sound");
   mySoundEnableCheckbox->setState(b);
@@ -173,20 +152,14 @@ void AudioDialog::saveConfig()
   Settings& settings = instance().settings();
 
   // Volume
-  settings.setInt("volume", myVolumeSlider->getValue());
+  settings.setValue("volume", myVolumeSlider->getValue());
   instance().sound().setVolume(myVolumeSlider->getValue());
 
   // Fragsize
-  settings.setString("fragsize", myFragsizePopup->getSelectedTag());
+  settings.setValue("fragsize", myFragsizePopup->getSelectedTag().toString());
 
   // Output frequency
-  settings.setString("freq", myFreqPopup->getSelectedTag());
-
-  // TIA frequency
-  settings.setString("tiafreq", myTiaFreqPopup->getSelectedTag());
-
-  // Enable/disable volume clipping (requires a restart to take effect)
-  settings.setBool("clipvol", myClipVolumeCheckbox->getState());
+  settings.setValue("freq", myFreqPopup->getSelectedTag().toString());
 
   // Enable/disable sound (requires a restart to take effect)
   instance().sound().setEnabled(mySoundEnableCheckbox->getState());
@@ -205,9 +178,7 @@ void AudioDialog::setDefaults()
 
   myFragsizePopup->setSelected("512", "");
   myFreqPopup->setSelected("31400", "");
-  myTiaFreqPopup->setSelected("31400", "");
 
-  myClipVolumeCheckbox->setState(true);
   mySoundEnableCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
@@ -223,8 +194,6 @@ void AudioDialog::handleSoundEnableChange(bool active)
   myVolumeLabel->setEnabled(active);
   myFragsizePopup->setEnabled(active);
   myFreqPopup->setEnabled(active);
-  myTiaFreqPopup->setEnabled(active);
-  myClipVolumeCheckbox->setEnabled(active);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

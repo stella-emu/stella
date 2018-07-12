@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: GameList.hxx 2838 2014-01-17 23:34:03Z stephena $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -35,16 +35,16 @@ class GameList
     GameList();
     ~GameList();
 
-    const string& name(int i) const
-      { return i < (int)myArray.size() ? myArray[i]._name : EmptyString; }
-    const string& path(int i) const
-      { return i < (int)myArray.size() ? myArray[i]._path : EmptyString; }
-    const string& md5(int i) const
-      { return i < (int)myArray.size() ? myArray[i]._md5 : EmptyString; }
-    const bool isDir(int i) const
-      { return i < (int)myArray.size() ? myArray[i]._isdir: false; }
+    const string& name(uInt32 i) const
+      { return i < myArray.size() ? myArray[i]._name : EmptyString; }
+    const string& path(uInt32 i) const
+      { return i < myArray.size() ? myArray[i]._path : EmptyString; }
+    const string& md5(uInt32 i) const
+      { return i < myArray.size() ? myArray[i]._md5 : EmptyString; }
+    const bool isDir(uInt32 i) const
+      { return i < myArray.size() ? myArray[i]._isdir: false; }
 
-    void setMd5(int i, const string& md5)
+    void setMd5(uInt32 i, const string& md5)
       { myArray[i]._md5 = md5; }
 
     int size() const { return myArray.size(); }
@@ -55,12 +55,16 @@ class GameList
     void sortByName();
 
   private:
-    class Entry {
-      public:
+    struct Entry {
         string _name;
         string _path;
         string _md5;
         bool   _isdir;
+
+      Entry(string name, string path, string md5, bool isdir)
+      {
+        _name = name;  _path = path;  _md5 = md5;  _isdir = isdir;
+      }
 
         bool operator < (const Entry& a) const;
     };

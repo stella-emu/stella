@@ -12,6 +12,310 @@
                                Release History
 ===========================================================================
 
+3.9.2 to 3.9.3: (January 20, 2014)
+
+  * Added bankswitch schemes BF, BFSC, DF, DFSC and 4KSC, thanks to
+    RevEng and CPUWIZ of AtariAge.
+
+  * Updated ROM properties for several ROMs, thanks to Omegamatrix of
+    AtariAge.
+
+  * Fixed program crash when specifying a bankswitch type that Stella
+    didn't recognize; an error message is now displayed.
+
+-Have fun!
+
+
+3.9.1 to 3.9.2: (August 31, 2013)
+
+  * Improved parsing of the DASM lst file for the debugger disassembly;
+    it sometimes missed constant declarations.
+
+  * Changed 'usemouse' argument from a true/false option to accept
+    'always', 'analog' and 'never'.  This allows to use the mouse as a
+    controller under more specific circumstances.  The default is
+    'analog', which means the mouse is only used to emulate analog-like
+    devices (paddles, trackball, etc).
+
+  * Added ability to use bold fonts within the debugger window, which can
+    be set with the 'dbg.fontstyle' commandline argument as well as in the
+    debugger UI Settings dialog.  This is useful for those that find the
+    current font too narrow.
+
+  * Renamed 'debuggerres' argument to 'dbg.res'.  All future debugger-
+    specific options will start with 'dbg.'.
+
+  * The TIA 'zoom' area in the debugger now supports scrolling the
+    mouse wheel (currently up/down only, as I don't have a sideways
+    scrolling mouse to test with).
+
+
+3.9 to 3.9.1: (August 21, 2013)
+
+  * Note: because of TIA/6502 changes, the state file format has changed
+          again, and old state files will not work with this release.
+
+  * Several bugfixes and improvements to the debugger:
+      - Improved display of debugger when using larger video modes.  There
+        are now three font sizes, which are automatically selected when
+        the debugger is sized accordingly.  When using larger fonts, the
+        extra space is now used more efficiently.
+
+      - Fixed bug in disassembly when the mirror used for the current
+        PC didn't match the mirror for the current bank.  In this case,
+        the disassembler became confused and didn't properly track the
+        PC address.
+
+      - Fixed bug in display of current TIA frame number in the UI;
+        depending on how breakpoints were set, it was sometimes off by
+        one.
+
+      - Fixed RAM widget Search/Compare textboxes; entering any data and
+        then pressing 'Enter' / clicking 'OK' locked the UI until exiting
+        and re-entering the debugger.
+
+      - Changed display for various TIA position counters to decimal
+        (from hex) in the TIA tab.  Related to this, all data input
+        widgets in the UI now have the ability to enter binary,
+        decimal or hex values by using the proper leading character
+        (\, #, $, respectively).
+
+      - Added 'INTIM Clks' to the 'I/O' tab. which shows the number of
+        clocks between each 'step' of the INTIM timer.
+
+      - Added ability to modify 'tiadriven' commandline argument to the
+        'TIA' tab, and 'ramrandom' to the 'I/O' tab.  These options were
+        available for quite some time, but they weren't exposed in the UI.
+
+      - Added 'cpurandom' commandline argument, and associated UI item
+        to the 'I/O' tab.  This works similar to 'ramrandom', and
+        randomizes the contents of the CPU registers on ROM startup.
+
+      - Added 'uhex' debugger prompt command, which toggles all
+        hexadecimal display between upper/lower case.  This setting is
+        also saved in the settings file as argument 'dbg.uhex'.
+
+      - Removed 'loadsym' command from the debugger prompt, since the
+        DASM symbol file is always loaded anyway, making the command
+        redundant.  Related to this, fixed loading symbols with
+        ###.name convention; the leading number is now stripped.
+
+      - Added support for DASM lst files (created with the -l option).
+        For now, the contents are only partially used, to detect
+        constants vs. symbolic addresses in the symbol file.  Eventually,
+        further information from the lst file may be used.
+
+      - The GRPx and PFx registers in the TIA output now show inactive
+        background pixels as either blanked or with the underlying object
+        colour, instead of always being black.   This gives a more accurate
+        representation of how the registers are actually drawn onscreen.
+        Thanks to Tjoppen of AtariAge for this idea and sample code.
+
+      - The 'Source Address' locations for the CPU registers now show
+        labels where appropriate.
+
+  * Renamed 'Override properties' dialog (accessible from the ROM
+    launcher by a right-mouse-button click) to 'Power-on options', with
+    the following new options:
+      - Set start-up state for both joysticks as well as console select/
+        reset buttons.  Related to this, added 'holdjoy01' and 'holdjoy1'
+        commandline arguments, and removed 'holdbutton0' argument.
+
+      - The ability to load the ROM directly from this dialog, after
+        changing any settings, and also to start in the debugger.
+
+      - Added more detailed information as to how to use this
+        functionality to the UI.
+
+      - Buttons held down are reset approx. 0.5 seconds after starting
+        the ROM, to simulate pressing and releasing the buttons on a
+        real console.
+
+  * Fixed bug when using event remapping; changes were being saved only
+    when launching a ROM from the launcher, not in standalone mode.
+
+  * Improved bankswitch autodetection for newer EF and EFSC ROMs
+    generated by batari Basic, thanks to RevEng of AtariAge.
+
+  * Added properties database info for "Princess Rescue" ROM.
+
+  * For the Linux/UNIX port:
+      - Fixed bug whereby a maximize button was always present in the
+        window title bar.  Stella could not be expanded in this way,
+        so the button was removed.
+
+      - Added Startup notification protocol patch to the .desktop
+        file from Dan Fandrich.
+
+  * Updated included PNG library to latest stable version.
+
+
+3.8.1 to 3.9: (June 27, 2013)
+
+  * Greatly extended functionality of the debugger disassembly:
+      - There is now a new tab which lists information specific to the
+        cartridge bankswitching scheme in use.  This includes the ability
+        to modify internal state even for esoteric ROMs which don't
+        follow the standard layout of 4K per bank.
+
+      - The debugger now generates DASM-compatible disassembled code,
+        which can be saved to an external file.  This disassembly is
+        based on both a static and runtime analysis, and is extremely
+        accurate.  It also automatically differentiates between
+        CODE/PGFX/GFX/DATA/ROW areas, whereas normal Distella
+        only differentiates between CODE/GFX/ROW.  For now, only
+        single-bank (4K and smaller) ROMs are supported; support for
+        multi-bank ROMs will come in a future release.
+
+      - The disassembly now recognizes various TIA/RIOT read/write
+        mirrors, and marks them as such (for example, INPT4|$30 instead
+        of INPT4 for address $3C).  Special thanks to Omegamatrix for
+        sample code and idea for this feature.
+
+      - ROMS less than 2K in size (so called 'Sub2K' ROMs) now show only
+        the actual data in the binary.  This means, for example, that a
+        256 byte ROM will show only 256 bytes in the disassembly, instead
+        of padding duplicated data to 2K boundary.
+
+      - Fixed bug when entering patched bytes; the current number base
+        wasn't being used.
+
+      - Fixed labelling in ROW directives; it wasn't accurately setting
+        a label in the case where it occurred in the middle of the data.
+
+      - Added a new dialog for changing Distella settings, located by
+        right-clicking the disassembly code.
+
+      - The commandline option 'dis.resolvedata' has been renamed to
+        'dis.resolve', with new usage (see manual for further details).
+
+  * Fixed regression in handling ZIP files (as compared to version 3.7.5)
+    created with newer versions of the ZIP program.  Related to this, added
+    better error messages for invalid/missing/unreadable ROM files.
+
+  * Added 'snapname' commandline argument and associated UI item, for
+    specifying whether snapshots should be saved using either the internal
+    ROM database name or the actual ROM filename.  This feature was
+    present in older releases of Stella, and due to popular demand it's
+    now back again.  Related to this, added a new dialog specifically for
+    the numerous snapshot-related items.
+
+  * Fixed bug in Linux/OSX versions when starting Stella for the first
+    time; it was previously creating mislabeled directories to store
+    settings, snapshots, etc.
+
+  * Fixed redundant "New console created" message when entering the same
+    ROM multiple times from the ROM launcher.
+
+  * Updated profile database for "BasketBall" ROMs; the joysticks are now
+    swapped by default, which allows one and two-player games to work
+    correctly.
+
+  * SuperCharger/AR ROMs now ignore the 'ramrandom' setting, and start with
+    RAM containing all zeroes.  This seems to fix issues with Dragonstomper
+    always starting in exactly the same state.
+
+  * Fixed issue when debugging CompuMate ROMs; keystrokes entered while
+    debugging would be interpreted as typing on the CompuMate keyboard.
+
+  * Changed colour of the 'current PC indicator' in the debugger to
+    match the one used for line selection.  This makes it easier to
+    see for those with problems seeing lighter colours.
+
+  * Improved functionality of the various pop-up dialogs and context
+    menus in the UI; they can now be navigated more fully by the keyboard
+    and mouse.
+
+  * Updated internal ROM properties database to ROM-Hunter version 9
+    (thanks go to RomHunter for his tireless research in this area).
+    Related to this, updated the snapshot collection.
+
+  * Updated included PNG and ZLIB libraries to latest stable version.
+
+
+3.8 to 3.8.1: (March 3, 2013)
+
+  * Added support for TIA RSYNC writes, thanks to Omegamatrix of AtariAge.
+    This allows the recently released "Extra Terrestrials" ROM to run, as
+    well as improving emulation of "Fatal Run" and several other test ROMs.
+
+  * Fixed typo in TIA HMOVE writes, thanks to Thomas Jentzsch.  This fixes
+    the constant collision issues in "Kool-Aid Man", and several other
+    homebrew ROMs.
+
+  * Fixed sound issues on OSX PPC machines (all sound was in little-endian
+    format, but PPC is big-endian).
+
+  * The OSX DMG archive now contains proper modification dates.
+
+
+3.7.5 to 3.8: (February 21, 2013)
+
+  * Huge changes to the sound system:
+      - The sound code now uses 16-bit signed samples instead of 8-bit
+        unsigned samples, making it more compatible with a wider variety of
+        systems.
+      - Improved sound output for several ROMs, including "Space Rocks"
+        (the 'heartbeat' sound can now be clearly heard).
+      - The 'volume clipping' option has been removed, since in 16-bit
+        mode it's no longer needed.
+      - The 'Tia freq' option has been removed.
+      - Selecting more common sample rates (other than 31400) now works
+        much better, but there are still a few ROMS (like Quadrun) where
+        31400Hz still works best.
+
+  * Many changes to handling ZIP archives:
+      - Files in multiple levels are now recognized.  This fixes issues
+        in Windows where such files couldn't be loaded at all, and in all
+        systems where ROMs with the same name (but in different
+        directories) weren't being recognized.
+      - ZIP contents are now handled more intelligently.  Archives
+        containing only one ROM are automatically loaded, whereas those
+        with multiple files are treated as directories.
+      - Opening an archive from the commandline now works as in the UI,
+        where opening a multi-ROM archive will pop up the UI and show the
+        archive contents (as a directory).
+      - The ZIP code behind the scenes is now much faster by making use
+        of caching (the old code was actually from 1998!).
+      - This new 'archive' infrastructure may eventually lead to 7-Zip
+        support, as well as 'virtual' formats (such as showing the list
+        of files for 2in1/4in1/8in1/etc within the UI).
+
+  * Improved bankswitch autodetection for FA2 ROMs; 29K and 32K versions
+    (meant for Harmony cart) are now recognized.
+
+  * Improved bankswitch autodetection for X07 ROMs (although there's only
+    two known ROMs in existence, so the detection probably isn't robust).
+
+  * Tweaked bankswitch autodetection for the 0840, F8 and FE schemes;
+    several homebrews that didn't run before now work correctly.
+
+  * Fixed regression in RIOT INTIM reads; at least one known ROM
+    (Mr. Roboto Berzerk hack) wasn't working properly.
+
+  * Fixed bug in the debugger with RIOT INTIM/TIMINT display; reads
+    were being done multiple times, changing the state of the
+    registers and resulting in incorrect emulation.
+
+  * Worked around bug in debugger disassembly of zero-page RAM; for now,
+    the resolving of address vs. data sections is turned off in such a
+    case.  This fixes lockups in 'Meltdown' ROM.
+
+  * Added support for different directories for saving/loading PNG
+    files.  These are set with the 'snapsavedir' and 'snaploaddir'
+    commandline arguments (which replace the old 'snapdir'), and are
+    also available within the UI.
+
+  * Changed 'eepromdir' commandline argument to 'nvramdir', and changed
+    the default location to BASEDIR/nvram (where BASEDIR depends on your
+    OS).  This means all your EEPROM and Flash files will have to be
+    manually moved to this new directory.  This affects developers, and
+    those people playing ROMs with AtariVox/SaveKey support as well as
+    the newer 'Star Castle' FA2 ROMs.
+
+  * Updated included PNG and ZLIB libraries to latest stable version.
+
+
 3.7.4 to 3.7.5: (December 22, 2012)
 
   * Improved regressions in PAL format autodetection, introduced in the
@@ -21,8 +325,6 @@
 
   * Snapshots generated by Stella now include more informative info, such
     as the build number, platform architecture, TV effects in use, etc.
-
--Have fun!
 
 
 3.7.3 to 3.7.4: (October 31, 2012)
@@ -48,8 +350,8 @@
     reading from TIMINT.  Also, D6 of the Interrupt Flag register is now
     properly set on active transition of the PA7 pin.
 
-  * Fixed bug in DPC+ bankswitch scheme; the music in "Stay Frosty 2"
-    wasn't playing correctly.
+  * Fixed bug in DPC+ bankswitch scheme; the music in several ROMS wasn't
+    playing correctly.
 
   * The ROM properties database now uses 'Auto' instead of 'Auto-select'
     everywhere.  This makes for less typing when running from the

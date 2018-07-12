@@ -8,28 +8,25 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: EditableWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "Dialog.hxx"
 #include "EditableWidget.hxx"
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h)
+                               int x, int y, int w, int h, const string& str)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    _editable(true)
+    _editable(true),
+    _editString(str)
 {
   _caretVisible = false;
   _caretTime = 0;
@@ -51,7 +48,7 @@ EditableWidget::~EditableWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::setEditString(const string& str, bool)
+void EditableWidget::setText(const string& str, bool)
 {
   // TODO: We probably should filter the input string here,
   // e.g. using tryInsertChar.
@@ -105,26 +102,27 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   switch(key)
   {
     case KBDK_RETURN:
+    case KBDK_KP_ENTER:
       // confirm edit and exit editmode
       endEditMode();
-      sendCommand(kEditAcceptCmd, 0, _id);
+      sendCommand(EditableWidget::kAcceptCmd, 0, _id);
       dirty = true;
       break;
 
     case KBDK_ESCAPE:
       abortEditMode();
-      sendCommand(kEditCancelCmd, 0, _id);
+      sendCommand(EditableWidget::kCancelCmd, 0, _id);
       dirty = true;
       break;
 
     case KBDK_BACKSPACE:
       dirty = killChar(-1);
-      if(dirty)  sendCommand(kEditChangedCmd, ascii, _id);
+      if(dirty)  sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
     case KBDK_DELETE:
       dirty = killChar(+1);
-      if(dirty)  sendCommand(kEditChangedCmd, ascii, _id);
+      if(dirty)  sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
     case KBDK_LEFT:
@@ -157,7 +155,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
       else if (tryInsertChar(ascii, _caretPos))
       {
         _caretPos++;
-        sendCommand(kEditChangedCmd, ascii, _id);
+        sendCommand(EditableWidget::kChangedCmd, ascii, _id);
         dirty = true;
       }
       else
@@ -202,7 +200,7 @@ void EditableWidget::drawCaret()
   y += _y;
 
   FBSurface& s = _boss->dialog().surface();
-  s.vLine(x, y+2, y + editRect.height() - 3, kTextColorHi);
+  s.vLine(x, y+2, y + editRect.height() - 2, kTextColorHi);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -264,7 +262,7 @@ bool EditableWidget::specialKeys(StellaKey key, char ascii)
 
     case KBDK_c:
       copySelectedText();
-      if(handled) sendCommand(kEditChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
     case KBDK_e:
@@ -273,27 +271,27 @@ bool EditableWidget::specialKeys(StellaKey key, char ascii)
 
     case KBDK_d:
       handled = killChar(+1);
-      if(handled) sendCommand(kEditChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
     case KBDK_k:
       handled = killLine(+1);
-      if(handled) sendCommand(kEditChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
     case KBDK_u:
       handled = killLine(-1);
-      if(handled) sendCommand(kEditChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
     case KBDK_v:
       pasteSelectedText();
-      if(handled) sendCommand(kEditChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
     case KBDK_w:
       handled = killLastWord();
-      if(handled) sendCommand(kEditChangedCmd, ascii, _id);
+      if(handled) sendCommand(EditableWidget::kChangedCmd, ascii, _id);
       break;
 
     case KBDK_LEFT:

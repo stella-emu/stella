@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: EditableWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef EDITABLE_WIDGET_HXX
@@ -26,12 +23,6 @@
 #include "Widget.hxx"
 #include "Rect.hxx"
 
-enum {
-  kEditAcceptCmd  = 'EDac',
-  kEditCancelCmd  = 'EDcl',
-  kEditChangedCmd = 'EDch'
-};
-
 /**
  * Base class for widgets which need to edit text, like ListWidget and
  * EditTextWidget.
@@ -39,12 +30,19 @@ enum {
 class EditableWidget : public Widget, public CommandSender
 {
   public:
+    enum {
+      kAcceptCmd  = 'EDac',
+      kCancelCmd  = 'EDcl',
+      kChangedCmd = 'EDch'
+    };
+
+  public:
     EditableWidget(GuiObject *boss, const GUI::Font& font,
-                   int x, int y, int w, int h);
+                   int x, int y, int w, int h, const string& str = "");
     virtual ~EditableWidget();
 
-    virtual void setEditString(const string& str, bool changed = false);
-    virtual const string& getEditString() const { return _editString; }
+    virtual void setText(const string& str, bool changed = false);
+    virtual const string& getText() const { return _editString; }
 
     bool isEditable() const	 { return _editable; }
     void setEditable(bool editable);

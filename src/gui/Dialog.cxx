@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Dialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,31 +46,27 @@ Dialog::Dialog(OSystem* instance, DialogContainer* parent,
     _cancelWidget(0),
     _visible(false),
     _isBase(isBase),
-    _ourTab(NULL),
-    _surface(NULL),
-    _focusID(0),
-    _surfaceID(-1)
+    _processCancel(false),
+    _surface(0),
+    _tabID(0)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::~Dialog()
 {
-  for(unsigned int i = 0; i < _ourFocusList.size(); ++i)
-    _ourFocusList[i].focusList.clear();
+  _myFocus.list.clear();
+  _myTabList.clear();
 
   delete _firstWidget;
   _firstWidget = NULL;
 
-  _ourButtonGroup.clear();
+  _buttonGroup.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::open()
+void Dialog::open(bool refresh)
 {
-  _result = 0;
-  _visible = true;
-
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
   // dialogs cause drawing to occur within loadConfig()
@@ -80,23 +76,28 @@ void Dialog::open()
   // However, this policy is left entirely to the framebuffer
   // We suggest the hint here, but specific framebuffers are free to
   // ignore it
-  _surface = instance().frameBuffer().surface(_surfaceID);
   if(_surface == NULL)
   {
-    _surfaceID = instance().frameBuffer().allocateSurface(_w, _h, _isBase);
-    _surface   = instance().frameBuffer().surface(_surfaceID);
+    uInt32 surfaceID = instance().frameBuffer().allocateSurface(_w, _h, _isBase);
+    _surface = instance().frameBuffer().surface(surfaceID);
   }
+  parent().addDialog(this);
 
   center();
   loadConfig();
 
   // (Re)-build the focus list to use for the widgets which are currently
   // onscreen
-  buildFocusWidgetList(_focusID);
+  buildCurrentFocusList();
+
+  _visible = true;
+
+  if(refresh)
+    instance().frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::close()
+void Dialog::close(bool refresh)
 {
   if (_mouseWidget)
   {
@@ -105,9 +106,13 @@ void Dialog::close()
   }
 
   releaseFocus();
-  parent().removeDialog();
 
   _visible = false;
+
+  parent().removeDialog();
+
+  if(refresh)
+    instance().frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,43 +140,75 @@ void Dialog::releaseFocus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addFocusWidget(Widget* w)
 {
+  if(!w)
+    return;
+
   // All focusable widgets should retain focus
-  if(w)
     w->setFlags(WIDGET_RETAIN_FOCUS);
 
-  if(_ourFocusList.size() == 0)
-  {
-	Focus f;
-    f.focusedWidget = 0;
-	_ourFocusList.push_back(f);
+  _myFocus.widget = w;
+  _myFocus.list.push_back(w);
   }
-  _ourFocusList[0].focusedWidget = w;
-  _ourFocusList[0].focusList.push_back(w);
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::addToFocusList(WidgetArray& list)
+{
+  // All focusable widgets should retain focus
+  for(uInt32 i = 0; i < list.size(); ++i)
+    list[i]->setFlags(WIDGET_RETAIN_FOCUS);
+
+  _myFocus.list.push_back(list);
+  _focusList = _myFocus.list;
+
+  if(list.size() > 0)
+    _myFocus.widget = list[0];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addToFocusList(WidgetArray& list, int id)
+void Dialog::addToFocusList(WidgetArray& list, TabWidget* w, int tabId)
 {
+  // Only add the list if the tab actually exists
+  if(!w || w->getID() < 0 || (uInt32)w->getID() >= _myTabList.size())
+    return;
+
+  assert(w == _myTabList[w->getID()].widget);
+
   // All focusable widgets should retain focus
-  for(unsigned int i = 0; i < list.size(); ++i)
+  for(uInt32 i = 0; i < list.size(); ++i)
     list[i]->setFlags(WIDGET_RETAIN_FOCUS);
 
-  id++;  // Arrays start at 0, not -1.
+  // First get the appropriate focus list
+  FocusList& focus = _myTabList[w->getID()].focus;
 
-  // Make sure the array is large enough
-  while((int)_ourFocusList.size() <= id)
+  // Now insert in the correct place in that focus list
+  uInt32 id = tabId;
+  if(id < focus.size())
+    focus[id].list.push_back(list);
+  else
   {
-    Focus f;
-    f.focusedWidget = NULL;
-    _ourFocusList.push_back(f);
+    // Make sure the array is large enough
+    while(focus.size() <= id)
+      focus.push_back(Focus());
+
+    focus[id].list.push_back(list);
   }
 
-  _ourFocusList[id].focusList.push_back(list);
-  if(id == 0 && _ourFocusList.size() > 0)
-    _focusList = _ourFocusList[0].focusList;
-
   if(list.size() > 0)
-    _ourFocusList[id].focusedWidget = list[0];
+    focus[id].widget = list[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::addTabWidget(TabWidget* w)
+{
+  if(!w || w->getID() < 0)
+    return;
+
+  // Make sure the array is large enough
+  uInt32 id = w->getID();
+  while(_myTabList.size() < id)
+    _myTabList.push_back(TabFocus());
+
+  _myTabList.push_back(TabFocus(w));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,51 +220,52 @@ void Dialog::setFocus(Widget* w)
   {
     // Redraw widgets for new focus
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
+
+    // Update current tab based on new focused widget
+    getTabIdForWidget(_focusedWidget);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::buildFocusWidgetList(int id)
+void Dialog::buildCurrentFocusList(int tabID)
 {
   // Yes, this is hideously complex.  That's the price we pay for
   // tab navigation ...
-
-  // Remember which item previously had focus, but only if it belongs
-  // to this focus list
-  if(_focusID < (int)_ourFocusList.size() &&
-     Widget::isWidgetInChain(_ourFocusList[_focusID].focusList, _focusedWidget))
-    _ourFocusList[_focusID].focusedWidget = _focusedWidget;
-
-  _focusID = id;
-
-  // Create a focuslist for items currently onscreen
-  // We do this by starting with any dialog focus list (at index 0 in the
-  // focus lists, then appending the list indicated by 'id'.
-  if(_focusID < (int)_ourFocusList.size())
-  {
     _focusList.clear();
-    _focusList.push_back(_ourFocusList[0].focusList);
 
-    // Append extra focus list
-    if(_focusID > 0)
-      _focusList.push_back(_ourFocusList[_focusID].focusList);
+  // Remember which tab item previously had focus, if applicable
+  // This only applies if this method was called for a tab change
+  Widget* tabFocusWidget = 0;
+  if(tabID >= 0 && tabID < (int)_myTabList.size())
+  {
+    // Save focus in previously selected tab column,
+    // and get focus for new tab column
+    TabFocus& tabfocus = _myTabList[tabID];
+    tabfocus.saveCurrentFocus(_focusedWidget);
+    tabFocusWidget = tabfocus.getNewFocus();
+
+    _tabID = tabID;
+  }
+
+  // Add appropriate items from tablist (if present)
+  for(uInt32 id = 0; id < _myTabList.size(); ++id)
+    _myTabList[id].appendFocusList(_focusList);
+
+  // Add remaining items from main focus list
+  _focusList.push_back(_myFocus.list);
 
     // Add button group at end of current focus list
     // We do it this way for TabWidget, so that buttons are scanned
     // *after* the widgets in the current tab
-    if(_ourButtonGroup.size() > 0)
-      _focusList.push_back(_ourButtonGroup);
+  if(_buttonGroup.size() > 0)
+    _focusList.push_back(_buttonGroup);
 
-    // Only update _focusedWidget if it doesn't belong to the main focus list
-    // HACK - figure out how to properly deal with only one focus-able widget
-    // in a tab -- TabWidget is the spawn of the devil
-    if(_focusList.size() == 1)
+  // Finally, the moment we've all been waiting for :)
+  // Set the actual focus widget
+  if(tabFocusWidget)
+    _focusedWidget = tabFocusWidget;
+  else if(!_focusedWidget && _focusList.size() > 0)
       _focusedWidget = _focusList[0];
-    else if(!Widget::isWidgetInChain(_ourFocusList[0].focusList, _focusedWidget))
-      _focusedWidget = _ourFocusList[_focusID].focusedWidget;
-  }
-  else
-    _focusedWidget = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -295,20 +333,14 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
   // not ascii??
   if(instance().eventHandler().kbdShift(mod))
   {
-    if(key == KBDK_LEFT && _ourTab)       // left arrow
-    {
-      _ourTab->cycleTab(-1);
+    if(key == KBDK_LEFT && cycleTab(-1))
       return;
-    }
-    else if(key == KBDK_RIGHT && _ourTab) // right arrow
-    {
-      _ourTab->cycleTab(+1);
+    else if(key == KBDK_RIGHT && cycleTab(+1))
       return;
-    }
-    else if(key == KBDK_TAB)     // tab
+    else if(key == KBDK_TAB)
       e = Event::UINavPrev;
   }
-  else if(key == KBDK_TAB)       // tab
+  else if(key == KBDK_TAB)
     e = Event::UINavNext;
 
   // Check the keytable now, since we might get one of the above events,
@@ -338,22 +370,19 @@ void Dialog::handleKeyUp(StellaKey key, StellaMod mod, char ascii)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
 {
-  Widget* w;
-  w = findWidget(x, y);
+  Widget* w = findWidget(x, y);
 
   _dragWidget = w;
-
   setFocus(w);
 
   if(w)
-    w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
+    w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y),
+                       button, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
 {
-  Widget* w;
-
   if(_focusedWidget)
   {
     // Lose focus on mouseup unless the widget requested to retain the focus
@@ -361,10 +390,10 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
       releaseFocus();
   }
 
-  w = _dragWidget;
-
+  Widget* w = _dragWidget;
   if(w)
-    w->handleMouseUp(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
+    w->handleMouseUp(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y),
+                     button, clickCount);
 
   _dragWidget = 0;
 }
@@ -372,13 +401,11 @@ void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleMouseWheel(int x, int y, int direction)
 {
-  Widget* w;
-
   // This may look a bit backwards, but I think it makes more sense for
   // the mouse wheel to primarily affect the widget the mouse is at than
   // the widget that happens to be focused.
 
-  w = findWidget(x, y);
+  Widget* w = findWidget(x, y);
   if(!w)
     w = _focusedWidget;
   if (w)
@@ -441,7 +468,8 @@ bool Dialog::handleMouseClicks(int x, int y, int button)
   Widget* w = findWidget(x, y);
 
   if(w)
-    return w->handleMouseClicks(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button);
+    return w->handleMouseClicks(x - (w->getAbsX() - _x),
+                                y - (w->getAbsY() - _y), button);
   else
     return false;
 }
@@ -516,6 +544,9 @@ bool Dialog::handleNavEvent(Event::Type e)
       {
         _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
                                                   _focusedWidget, -1);
+        // Update current tab based on new focused widget
+        getTabIdForWidget(_focusedWidget);
+
         return true;
       }
       break;
@@ -525,6 +556,9 @@ bool Dialog::handleNavEvent(Event::Type e)
       {
         _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
                                                   _focusedWidget, +1);
+        // Update current tab based on new focused widget
+        getTabIdForWidget(_focusedWidget);
+
         return true;
       }
       break;
@@ -545,6 +579,13 @@ bool Dialog::handleNavEvent(Event::Type e)
         _cancelWidget->handleEvent(Event::UISelect);
         return true;
       }
+      else if(_processCancel)
+      {
+        // Some dialogs want the ability to cancel without actually having
+        // a corresponding cancel button
+        close();
+        return true;
+      }
       break;
 
     default:
@@ -555,13 +596,40 @@ bool Dialog::handleNavEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::getTabIdForWidget(Widget* w)
+{
+  if(_myTabList.size() == 0 || !w)
+    return;
+
+  for(uInt32 id = 0; id < _myTabList.size(); ++id)
+  {
+    if(w->_boss == _myTabList[id].widget)
+    {
+      _tabID = id;
+      return;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::cycleTab(int direction)
+{
+  if(_tabID >= 0 && _tabID < (int)_myTabList.size())
+  {
+    _myTabList[_tabID].widget->cycleTab(direction);
+    return true;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
     case kTabChangedCmd:
-      // Add this focus list for the given tab to the global focus list
-      buildFocusWidgetList(++data);
+      if(_visible)
+        buildCurrentFocusList(id);
       break;
 
     case kCloseCmd:
@@ -613,4 +681,54 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
   wid.push_back(b);
   addOKWidget(b);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Dialog::Focus::Focus(Widget* w)
+  : widget(w)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Dialog::Focus::~Focus()
+{
+  list.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Dialog::TabFocus::TabFocus(TabWidget* w)
+  : widget(w),
+    currentTab(0)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Dialog::TabFocus::~TabFocus()
+{
+  focus.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::TabFocus::appendFocusList(WidgetArray& list)
+{
+  int active = widget->getActiveTab();
+
+  if(active >= 0 && active < (int)focus.size())
+    list.push_back(focus[active].list);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::TabFocus::saveCurrentFocus(Widget* w)
+{
+  if(currentTab < focus.size() &&
+      Widget::isWidgetInChain(focus[currentTab].list, w))
+    focus[currentTab].widget = w;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Widget* Dialog::TabFocus::getNewFocus()
+{
+  currentTab = widget->getActiveTab();
+
+  return (currentTab < focus.size()) ? focus[currentTab].widget : 0;
 }

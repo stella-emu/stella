@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: OptionsDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -29,7 +26,8 @@
 #include "AudioDialog.hxx"
 #include "InputDialog.hxx"
 #include "UIDialog.hxx"
-#include "FileSnapDialog.hxx"
+#include "SnapshotDialog.hxx"
+#include "ConfigPathDialog.hxx"
 #include "RomAuditDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "LoggerDialog.hxx"
@@ -55,7 +53,8 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myAudioDialog(NULL),
     myInputDialog(NULL),
     myUIDialog(NULL),
-    myFileSnapDialog(NULL),
+    mySnapshotDialog(NULL),
+    myConfigPathDialog(NULL),
     myGameInfoDialog(NULL),
     myCheatCodeDialog(NULL),
     myLoggerDialog(NULL),
@@ -64,34 +63,37 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myIsGlobal(global)
 {
   const GUI::Font& font = instance().font();
-  const int buttonWidth = font.getStringWidth("Game Properties") + 20,
+  const int buttonWidth = font.getStringWidth("Snapshot Settings") + 20,
             buttonHeight = font.getLineHeight() + 6,
             rowHeight = font.getLineHeight() + 10;
 
   _w = 2 * buttonWidth + 30;
-  _h = 6 * rowHeight + 15;
+  _h = 7 * rowHeight + 15;
 
   int xoffset = 10, yoffset = 10;
   WidgetArray wid;
   ButtonWidget* b = NULL;
 
-  myVideoSettingsButton = addODButton("Video Settings", kVidCmd);
-  wid.push_back(myVideoSettingsButton);
+  b = addODButton("Video Settings", kVidCmd);
+  wid.push_back(b);
 
-  myAudioSettingsButton = addODButton("Audio Settings", kAudCmd);
+  b = addODButton("Audio Settings", kAudCmd);
 #ifndef SOUND_SUPPORT
-  myAudioSettingsButton->clearFlags(WIDGET_ENABLED);
+  b->clearFlags(WIDGET_ENABLED);
 #endif
-  wid.push_back(myAudioSettingsButton);
+  wid.push_back(b);
 
   b = addODButton("Input Settings", kInptCmd);
   wid.push_back(b);
 
-  myUIButton = addODButton("UI Settings", kUsrIfaceCmd);
-  wid.push_back(myUIButton);
+  b = addODButton("UI Settings", kUsrIfaceCmd);
+  wid.push_back(b);
 
-  myFileSnapButton = addODButton("Config Paths", kFileSnapCmd);
-  wid.push_back(myFileSnapButton);
+  b = addODButton("Snapshot Settings", kSnapCmd);
+  wid.push_back(b);
+
+  b = addODButton("Config Paths", kCfgPathsCmd);
+  wid.push_back(b);
 
   myRomAuditButton = addODButton("Audit ROMs", kAuditCmd);
   wid.push_back(myRomAuditButton);
@@ -108,14 +110,14 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #endif
   wid.push_back(myCheatCodeButton);
 
-  myLoggerButton = addODButton("System Logs", kLoggerCmd);
-  wid.push_back(myLoggerButton);
+  b = addODButton("System Logs", kLoggerCmd);
+  wid.push_back(b);
 
-  myHelpButton = addODButton("Help", kHelpCmd);
-  wid.push_back(myHelpButton);
+  b = addODButton("Help", kHelpCmd);
+  wid.push_back(b);
 
-  myAboutButton = addODButton("About", kAboutCmd);
-  wid.push_back(myAboutButton);
+  b = addODButton("About", kAboutCmd);
+  wid.push_back(b);
 
   b = addODButton("Exit Menu", kExitCmd);
   wid.push_back(b);
@@ -126,7 +128,8 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   myAudioDialog = new AudioDialog(osystem, parent, font);
   myInputDialog = new InputDialog(osystem, parent, font, max_w, max_h);
   myUIDialog = new UIDialog(osystem, parent, font);
-  myFileSnapDialog = new FileSnapDialog(osystem, parent, font, boss, max_w, max_h);
+  mySnapshotDialog = new SnapshotDialog(osystem, parent, font, boss, max_w, max_h);
+  myConfigPathDialog = new ConfigPathDialog(osystem, parent, font, boss, max_w, max_h);
   myRomAuditDialog = new RomAuditDialog(osystem, parent, font, max_w, max_h);
   myGameInfoDialog = new GameInfoDialog(osystem, parent, font, this);
 #ifdef CHEATCODE_SUPPORT
@@ -147,9 +150,6 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   {
     myRomAuditButton->clearFlags(WIDGET_ENABLED);
   }
-#ifdef _WIN32_WCE
-  myAudioSettingsButton->clearFlags(WIDGET_ENABLED);  // not honored in wince port
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,7 +159,8 @@ OptionsDialog::~OptionsDialog()
   delete myAudioDialog;
   delete myInputDialog;
   delete myUIDialog;
-  delete myFileSnapDialog;
+  delete mySnapshotDialog;
+  delete myConfigPathDialog;
   delete myRomAuditDialog;
   delete myGameInfoDialog;
 #ifdef CHEATCODE_SUPPORT
@@ -199,49 +200,53 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case kVidCmd:
-      parent().addDialog(myVideoDialog);
+      myVideoDialog->open();
       break;
 
     case kAudCmd:
-      parent().addDialog(myAudioDialog);
+      myAudioDialog->open();
       break;
 
     case kInptCmd:
-      parent().addDialog(myInputDialog);
+      myInputDialog->open();
       break;
 
     case kUsrIfaceCmd:
-      parent().addDialog(myUIDialog);
+      myUIDialog->open();
       break;
 
-    case kFileSnapCmd:
-      parent().addDialog(myFileSnapDialog);
+    case kSnapCmd:
+      mySnapshotDialog->open();
+      break;
+
+    case kCfgPathsCmd:
+      myConfigPathDialog->open();
       break;
 
     case kAuditCmd:
-      parent().addDialog(myRomAuditDialog);
+      myRomAuditDialog->open();
       break;
 
     case kInfoCmd:
-      parent().addDialog(myGameInfoDialog);
+      myGameInfoDialog->open();
       break;
 
 #ifdef CHEATCODE_SUPPORT
     case kCheatCmd:
-      parent().addDialog(myCheatCodeDialog);
+      myCheatCodeDialog->open();
       break;
 #endif
 
     case kLoggerCmd:
-      parent().addDialog(myLoggerDialog);
+      myLoggerDialog->open();
       break;
 
     case kHelpCmd:
-      parent().addDialog(myHelpDialog);
+      myHelpDialog->open();
       break;
 
     case kAboutCmd:
-      parent().addDialog(myAboutDialog);
+      myAboutDialog->open();
       break;
 
     case kExitCmd:

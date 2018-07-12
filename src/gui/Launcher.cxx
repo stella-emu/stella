@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Launcher.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "LauncherDialog.hxx"
@@ -31,7 +31,8 @@
 Launcher::Launcher(OSystem* osystem)
   : DialogContainer(osystem)
 {
-  myOSystem->settings().getSize("launcherres", (int&)myWidth, (int&)myHeight);
+  const GUI::Size& s = myOSystem->settings().getSize("launcherres");
+  myWidth = s.w;  myHeight = s.h;
 
   // The launcher dialog is resizable, within certain bounds
   // We check those bounds now
@@ -40,7 +41,8 @@ Launcher::Launcher(OSystem* osystem)
   myWidth  = BSPF_min(myWidth, osystem->desktopWidth());
   myHeight = BSPF_min(myHeight, osystem->desktopHeight());
 
-  myOSystem->settings().setSize("launcherres", myWidth, myHeight);
+  myOSystem->settings().setValue("launcherres",
+                                 GUI::Size(myWidth, myHeight));
 
   myBaseDialog = new LauncherDialog(myOSystem, this, 0, 0, myWidth, myHeight);
 }

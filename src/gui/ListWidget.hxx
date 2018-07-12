@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: ListWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef LIST_WIDGET_HXX
@@ -32,21 +29,20 @@ class StringList;
 #include "ScrollBarWidget.hxx"
 #include "Rect.hxx"
 
-
-// Some special commands
-enum {
-  kListItemDoubleClickedCmd = 'LIdb',  // double click on item - 'data' will be item index
-  kListItemActivatedCmd     = 'LIac',  // item activated by return/enter - 'data' will be item index
-  kListItemDataChangedCmd   = 'LIch',  // item data changed - 'data' will be item index
-  kListItemRClickedCmd      = 'LIrc',  // right click on item - 'data' will be item index
-  kListSelectionChangedCmd  = 'Lsch',  // selection changed - 'data' will be item index
-  kListScrolledCmd          = 'Lscl',  // list scrolled - 'data' will be current position
-  kListPrevDirCmd           = 'Lpdr'   // request to go to parent list, if applicable
-};
-
 /** ListWidget */
 class ListWidget : public EditableWidget
 {
+  public:
+    enum {
+      kDoubleClickedCmd    = 'LIdb',  // double click on item - 'data' will be item index
+      kActivatedCmd        = 'LIac',  // item activated by return/enter - 'data' will be item index
+      kDataChangedCmd      = 'LIch',  // item data changed - 'data' will be item index
+      kRClickedCmd         = 'LIrc',  // right click on item - 'data' will be item index
+      kSelectionChangedCmd = 'Lsch',  // selection changed - 'data' will be item index
+      kScrolledCmd         = 'Lscl',  // list scrolled - 'data' will be current position
+      kPrevDirCmd          = 'Lpdr'   // request to go to parent list, if applicable
+  };
+
   public:
     ListWidget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h, bool quickSelect = true);
@@ -56,13 +52,14 @@ class ListWidget : public EditableWidget
     int currentPos() const  { return _currentPos; }
 
     int getSelected() const        { return _selectedItem; }
-    void setSelected(int item);  // Use '-1' to indicate a redraw of an empty list
+    void setSelected(int item);
+    void setSelected(const string& item);
 
     int getHighlighted() const     { return _highlightedItem; }
     void setHighlighted(int item);
 
     const StringList& getList()	const        { return _list; }
-    const string& getSelectedString() const  { return _list[_selectedItem]; }
+    const string& getSelectedString() const;
 
     void scrollTo(int item);
 

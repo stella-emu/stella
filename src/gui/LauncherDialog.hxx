@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: LauncherDialog.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef LAUNCHER_DIALOG_HXX
@@ -32,10 +29,8 @@ class DialogContainer;
 class GameList;
 class BrowserDialog;
 class OptionsDialog;
-class LicenseDialog;
 class GlobalPropsDialog;
 class LauncherFilterDialog;
-class MessageBox;
 class OSystem;
 class Properties;
 class EditTextWidget;
@@ -47,17 +42,19 @@ class StringListWidget;
 #include "FSNode.hxx"
 #include "StringList.hxx"
 #include "Stack.hxx"
+#include "MessageBox.hxx"
 
+class LauncherDialog : public Dialog
+{
+  public:
 // These must be accessible from dialogs created by this class
 enum {
+      kLoadROMCmd       = 'STRT',  // load currently selected ROM
   kRomDirChosenCmd  = 'romc',  // rom chosen
-  kSnapDirChosenCmd = 'snpc',  // snap chosen
   kReloadRomDirCmd  = 'rdrl',  // reload the current listing
   kReloadFiltersCmd = 'rlfl'   // reload filtering options and current listing
 };
 
-class LauncherDialog : public Dialog
-{
   public:
     LauncherDialog(OSystem* osystem, DialogContainer* parent,
                    int x, int y, int w, int h);
@@ -97,7 +94,6 @@ class LauncherDialog : public Dialog
     void handleContextMenu();
     void setListFilters();
     bool matchPattern(const string& s, const string& pattern) const;
-    int filesInArchive(const string& archive);
 
   private:
     ButtonWidget* myStartButton;
@@ -108,32 +104,27 @@ class LauncherDialog : public Dialog
     StringListWidget* myList;
     StaticTextWidget* myDirLabel;
     StaticTextWidget* myDir;
-    StaticTextWidget* myLogo;
     StaticTextWidget* myRomCount;
     EditTextWidget*   myPattern;
     GameList*         myGameList;
 
     OptionsDialog* myOptions;
-    LicenseDialog* myLicense;
     RomInfoWidget* myRomInfoWidget;
 
     ContextMenu*          myMenu;
     GlobalPropsDialog*    myGlobalProps;
     LauncherFilterDialog* myFilters;
 
-    MessageBox*    myFirstRunMsg;
+    GUI::MessageBox* myFirstRunMsg;
     BrowserDialog* myRomDir;
 
     int mySelectedItem;
-    int myRomInfoSize;
     FilesystemNode myCurrentNode;
     Common::FixedStack<string> myNodeNames;
 
-    bool myShowDirs;
     StringList myRomExts;
 
     enum {
-      kStartCmd   = 'STRT',
       kPrevDirCmd = 'PRVD',
       kOptionsCmd = 'OPTI',
       kQuitCmd    = 'QUIT',

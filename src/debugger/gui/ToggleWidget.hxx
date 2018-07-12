@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: ToggleWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef TOGGLE_WIDGET_HXX
@@ -27,15 +24,16 @@
 #include "Command.hxx"
 #include "Array.hxx"
 
-// Some special commands
-enum {
-  kTWItemDataChangedCmd   = 'TWch',
-  kTWSelectionChangedCmd  = 'TWsc'
-};
-
 /* ToggleWidget */
 class ToggleWidget : public Widget, public CommandSender
 {
+  public:
+    // Commands emitted by this commandsender
+    enum {
+      kItemDataChangedCmd   = 'TWch',
+      kSelectionChangedCmd  = 'TWsc'
+    };
+
   public:
     ToggleWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int cols, int rows);

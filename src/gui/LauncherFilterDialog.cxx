@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: LauncherFilterDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <algorithm>
@@ -48,7 +45,7 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
   int lwidth = font.getStringWidth("Show: "),
       pwidth = font.getStringWidth("ROMs ending with");
   WidgetArray wid;
-  StringMap items;
+  VariantList items;
 
   // Set real dimensions
   _w = 3 * buttonWidth;//lwidth + pwidth + fontWidth*5 + 10;
@@ -101,7 +98,7 @@ void LauncherFilterDialog::parseExts(StringList& list, const string& type)
   // Assume the list is empty before this method is called
   if(type == "allroms")
   {
-    for(uInt32 i = 0; i < 6; ++i)
+    for(uInt32 i = 0; i < 5; ++i)
       list.push_back(ourRomTypes[1][i]);
   }
   else if(type != "allfiles")
@@ -114,7 +111,7 @@ void LauncherFilterDialog::parseExts(StringList& list, const string& type)
 
     while(buf >> ext)
     {
-      for(uInt32 i = 0; i < 6; ++i)
+      for(uInt32 i = 0; i < 5; ++i)
       {
         if(ourRomTypes[1][i] == ext)
         {
@@ -144,14 +141,15 @@ bool LauncherFilterDialog::isValidRomName(const string& name,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherFilterDialog::isValidRomName(const string& name, string& ext)
+bool LauncherFilterDialog::isValidRomName(const FilesystemNode& node, string& ext)
 {
+  const string& name = node.getPath();
   string::size_type idx = name.find_last_of('.');
   if(idx != string::npos)
   {
     const char* e = name.c_str() + idx + 1;
 
-    for(uInt32 i = 0; i < 6; ++i)
+    for(uInt32 i = 0; i < 5; ++i)
     {
       if(BSPF_equalsIgnoreCase(e, ourRomTypes[1][i]))
       {
@@ -172,25 +170,25 @@ void LauncherFilterDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFilterDialog::saveConfig()
 {
-  const string& type = myFileType->getSelectedTag();
+  const string& type = myFileType->getSelectedTag().toString();
   if(type == "allfiles" || type == "allroms")
-    instance().settings().setString("launcherexts", type);
+    instance().settings().setValue("launcherexts", type);
   else
   {
     ostringstream buf;
-    for(uInt32 i = 0; i < 6; ++i)
+    for(uInt32 i = 0; i < 5; ++i)
       if(myRomType[i]->getState())
         buf << ourRomTypes[1][i] << ":";
 
     // No ROMs selected means use all files
     if(buf.str() == "")
-      instance().settings().setString("launcherexts", "allfiles");
+      instance().settings().setValue("launcherexts", "allfiles");
     else
-      instance().settings().setString("launcherexts", buf.str());
+      instance().settings().setValue("launcherexts", buf.str());
   }
 
   // Let parent know about the changes
-  sendCommand(kReloadFiltersCmd, 0, 0);
+  sendCommand(LauncherDialog::kReloadFiltersCmd, 0, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,7 +203,7 @@ void LauncherFilterDialog::setDefaults()
 void LauncherFilterDialog::handleFileTypeChange(const string& type)
 {
   bool enable = (type != "allfiles" && type != "allroms");
-  for(uInt32 i = 0; i < 6; ++i)
+  for(uInt32 i = 0; i < 5; ++i)
     myRomType[i]->setEnabled(enable);
 
   if(enable)
@@ -220,7 +218,7 @@ void LauncherFilterDialog::handleFileTypeChange(const string& type)
 
     while(buf >> ext)
     {
-      for(uInt32 i = 0; i < 6; ++i)
+      for(uInt32 i = 0; i < 5; ++i)
       {
         if(ourRomTypes[1][i] == ext)
         {
@@ -250,7 +248,7 @@ void LauncherFilterDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kFileTypeChanged:
-      handleFileTypeChange(myFileType->getSelectedTag());
+      handleFileTypeChange(myFileType->getSelectedTag().toString());
       break;
 
     default:
@@ -260,7 +258,7 @@ void LauncherFilterDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* LauncherFilterDialog::ourRomTypes[2][6] = {
-  { ".a26", ".bin", ".rom", ".zip", ".gz", ".txt" },
-  { "a26", "bin", "rom", "zip", "gz", "txt" }
+const char* LauncherFilterDialog::ourRomTypes[2][5] = {
+  { ".a26", ".bin", ".rom", ".zip", ".gz" },
+  { "a26", "bin", "rom", "zip", "gz" }
 };

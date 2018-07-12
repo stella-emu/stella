@@ -13,7 +13,9 @@ MODULE_OBJS := \
 	src/gui/EditableWidget.o \
 	src/gui/EditTextWidget.o \
 	src/gui/EventMappingWidget.o \
-	src/gui/FileSnapDialog.o \
+	src/gui/FileListWidget.o \
+	src/gui/ConfigPathDialog.o \
+	src/gui/SnapshotDialog.o \
 	src/gui/Font.o \
 	src/gui/GameInfoDialog.o \
 	src/gui/GameList.o \
@@ -25,7 +27,6 @@ MODULE_OBJS := \
 	src/gui/LauncherDialog.o \
 	src/gui/LauncherFilterDialog.o \
 	src/gui/LoggerDialog.o \
-	src/gui/LicenseDialog.o \
 	src/gui/ListWidget.o \
 	src/gui/Menu.o \
 	src/gui/MessageBox.o \

@@ -8,30 +8,29 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: RomListWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "bspf.hxx"
 #include "Debugger.hxx"
-#include "ContextMenu.hxx"
+#include "DiStella.hxx"
 #include "PackedBitArray.hxx"
 #include "Widget.hxx"
 #include "ScrollBarWidget.hxx"
+#include "RomListSettings.hxx"
 #include "RomListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
+RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
+                             const GUI::Font& nfont,
                              int x, int y, int w, int h)
-  : EditableWidget(boss, font, x, y, 16, 16),
+  : EditableWidget(boss, nfont, x, y, 16, 16),
     myMenu(NULL),
     _rows(0),
     _cols(0),
@@ -42,7 +41,6 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
     _currentKeyDown(KBDK_UNKNOWN)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kRomListWidget;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;
@@ -56,28 +54,18 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   _h = h + 2;
 
   // Create scrollbar and attach to the list
-  myScrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
+  myScrollBar = new ScrollBarWidget(boss, lfont, _x + _w, _y, kScrollBarWidth, _h);
   myScrollBar->setTarget(this);
 
-  // Add context menu
-  StringMap l;
-//  l.push_back("Add bookmark");
-  l.push_back("Save ROM", "saverom");
-  l.push_back("Set PC", "setpc");
-  l.push_back("RunTo PC", "runtopc");
-  l.push_back("-------------------------", "");
-  l.push_back("Toggle PC addresses", "pcaddr");
-  l.push_back("Toggle GFX binary/hex", "gfx");
-  l.push_back("Toggle address relocation", "relocate");
-  l.push_back("Re-disassemble", "disasm");
-  myMenu = new ContextMenu(this, font, l);
+  // Add settings menu
+  myMenu = new RomListSettings(this, lfont);
 
   // Take advantage of a wide debugger window when possible
-  const int fontWidth = font.getMaxCharWidth(),
+  const int fontWidth = lfont.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  _labelWidth = BSPF_max(16, int(0.35 * (numchars - 12))) * fontWidth - 1;
-  _bytesWidth = 10 * fontWidth;
+  _labelWidth = BSPF_max(16, int(0.20 * (numchars - 12))) * fontWidth - 1;
+  _bytesWidth = 12 * fontWidth;
 
   //////////////////////////////////////////////////////
   // Add checkboxes
@@ -92,11 +80,10 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   CheckboxWidget* t;
   for(int i = 0; i < _rows; ++i)
   {
-    t = new CheckboxWidget(boss, font, _x + 2, ypos, "", kCheckActionCmd);
+    t = new CheckboxWidget(boss, lfont, _x + 2, ypos, "", kCheckActionCmd);
     t->setTarget(this);
     t->setID(i);
-    t->drawBox(false);
-    t->setFill(true);
+    t->setFill(CheckboxWidget::Circle);
     t->setTextColor(kTextColorEm);
     ypos += _fontHeight;
 
@@ -171,7 +158,7 @@ void RomListWidget::setHighlighted(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& RomListWidget::getEditString() const
+const string& RomListWidget::getText() const
 {
   if(_selectedItem < -1 || _selectedItem >= (int)myDisasm->list.size())
     return EmptyString;
@@ -245,7 +232,7 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
     // Set selected and add menu at current x,y mouse location
     _selectedItem = findItem(x, y);
     scrollToSelected();
-    myMenu->show(x + getAbsX(), y + getAbsY());
+    myMenu->show(x + getAbsX(), y + getAbsY(), _selectedItem);
   }
   else
   {
@@ -406,7 +393,8 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
     case kCheckActionCmd:
       // We let the parent class handle this
       // Pass it as a kRLBreakpointChangedCmd command, since that's the intent
-      sendCommand(kRLBreakpointChangedCmd, myCheckList[id]->getState(), _currentPos+id);
+      sendCommand(RomListWidget::kBPointChangedCmd, _currentPos+id,
+                  myCheckList[id]->getState());
       break;
 
     case kSetPositionCmd:
@@ -416,6 +404,10 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
         setDirty(); draw();
       }
       break;
+
+    default:
+      // Let the parent class handle all other commands directly
+      sendCommand(cmd, data, id);
   }
 }
 
@@ -465,7 +457,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw highlighted item in a frame
     if (_highlightedItem == pos)
-      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kDbgColorHi);
+      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kTextColorHi);
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos && _hasFocus)
@@ -561,15 +553,34 @@ GUI::Rect RomListWidget::getEditRect() const
 bool RomListWidget::tryInsertChar(char c, int pos)
 {
   // Not sure how efficient this is, or should we even care?
+  bool insert = false;
   c = tolower(c);
-  if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
-     c == '\\' || c == '#' || c == '$' || c == ' ')
+  switch(_base)
   {
-    _editString.insert(pos, 1, c);
-    return true;
+    case Common::Base::F_16:
+    case Common::Base::F_16_1:
+    case Common::Base::F_16_2:
+    case Common::Base::F_16_4:
+    case Common::Base::F_16_8:
+      insert = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == ' ';
+      break;
+    case Common::Base::F_2:
+    case Common::Base::F_2_8:
+    case Common::Base::F_2_16:
+      insert = c == '0' || c == '1' || c == ' ';
+      break;
+    case Common::Base::F_10:
+      if((c >= '0' && c <= '9') || c == ' ')
+        insert = true;
+      break;
+    case Common::Base::F_DEFAULT:
+      break;
   }
-  else
-    return false;
+
+  if(insert)
+    _editString.insert(pos, 1, c);
+
+  return insert;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -582,10 +593,19 @@ void RomListWidget::startEditMode()
       return;
 
     _editMode = true;
+    switch(myDisasm->list[_selectedItem].type)
+    {
+      case CartDebug::GFX:
+      case CartDebug::PGFX:
+        _base = DiStella::settings.gfx_format;
+        break;
+      default:
+        _base = Common::Base::format();
+    }
 
     // Widget gets raw data while editing
     EditableWidget::startEditMode();
-    setEditString(myDisasm->list[_selectedItem].bytes);
+    setText(myDisasm->list[_selectedItem].bytes);
   }
 }
 
@@ -596,9 +616,9 @@ void RomListWidget::endEditMode()
     return;
 
   // Send a message that editing finished with a return/enter key press
-  // The parent then calls getEditString() to get the newly entered data
+  // The parent then calls getText() to get the newly entered data
   _editMode = false;
-  sendCommand(kRLRomChangedCmd, _selectedItem, _id);
+  sendCommand(RomListWidget::kRomChangedCmd, _selectedItem, _base);
 
   // Reset to normal data entry
   EditableWidget::endEditMode();

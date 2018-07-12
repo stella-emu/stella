@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: DialogContainer.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -37,11 +37,12 @@ class OSystem;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id$
+  @version $Id: DialogContainer.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class DialogContainer
 {
   friend class EventHandler;
+  friend class Dialog;
 
   public:
     /**
@@ -125,16 +126,6 @@ class DialogContainer
     void draw(bool full = false);
 
     /**
-      Add a dialog box to the stack.
-    */
-    void addDialog(Dialog* d);
-
-    /**
-      Remove the topmost dialog box from the stack.
-    */
-    void removeDialog();
-
-    /**
       Reset dialog stack to the main configuration menu.
     */
     void reStack();
@@ -146,6 +137,16 @@ class DialogContainer
 
   private:
     void reset();
+
+    /**
+      Add a dialog box to the stack.
+    */
+    void addDialog(Dialog* d);
+
+    /**
+      Remove the topmost dialog box from the stack.
+    */
+    void removeDialog();
 
   protected:
     OSystem* myOSystem;

@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: ContextMenu.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -29,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
-                         const StringMap& items, int cmd)
+                         const VariantList& items, int cmd)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
     _rowHeight(font.getLineHeight()),
@@ -56,7 +53,7 @@ ContextMenu::~ContextMenu()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::addItems(const StringMap& items)
+void ContextMenu::addItems(const VariantList& items)
 {
   _entries.clear();
   _entries = items;
@@ -86,8 +83,9 @@ void ContextMenu::show(uInt32 x, uInt32 y, int item)
   _yorig = y;
 
   recalc(instance().frameBuffer().imageRect());
-  parent().addDialog(this);
-  setSelected(item);
+  open();
+  setSelectedIndex(item);
+  moveToSelected();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,24 +128,24 @@ void ContextMenu::recalc(const GUI::Rect& image)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::setSelected(int item)
+void ContextMenu::setSelectedIndex(int idx)
 {
-  if(item >= 0 && item < (int)_entries.size())
-    _selectedItem = item;
+  if(idx >= 0 && idx < (int)_entries.size())
+    _selectedItem = idx;
   else
     _selectedItem = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::setSelected(const string& tag, const string& defaultTag)
+void ContextMenu::setSelected(const Variant& tag, const Variant& defaultTag)
 {
   if(tag != "")  // indicates that the defaultTag should be used instead
   {
     for(unsigned int item = 0; item < _entries.size(); ++item)
     { 
-      if(BSPF_equalsIgnoreCase(_entries[item].second, tag))
+      if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), tag.toString()))
       {
-        setSelected(item);
+        setSelectedIndex(item);
         return;
       }
     }
@@ -156,9 +154,9 @@ void ContextMenu::setSelected(const string& tag, const string& defaultTag)
   // If we get this far, the value wasn't found; use the default value
   for(unsigned int item = 0; item < _entries.size(); ++item)
   {
-    if(BSPF_equalsIgnoreCase(_entries[item].second, defaultTag))
+    if(BSPF_equalsIgnoreCase(_entries[item].second.toString(), defaultTag.toString()))
     {
-      setSelected(item);
+      setSelectedIndex(item);
       return;
     }
   }
@@ -167,7 +165,7 @@ void ContextMenu::setSelected(const string& tag, const string& defaultTag)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelectedMax()
 {
-  setSelected(_entries.size() - 1);
+  setSelectedIndex(_entries.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -189,9 +187,53 @@ const string& ContextMenu::getSelectedName() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& ContextMenu::getSelectedTag() const
+const Variant& ContextMenu::getSelectedTag() const
 {
-  return (_selectedItem >= 0) ? _entries[_selectedItem].second : EmptyString;
+  return (_selectedItem >= 0) ? _entries[_selectedItem].second : EmptyVariant;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::sendSelectionUp()
+{
+  if(isVisible() || _selectedItem <= 0)
+    return false;
+
+  _selectedItem--;
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::sendSelectionDown()
+{
+  if(isVisible() || _selectedItem >= (int)_entries.size() - 1)
+    return false;
+
+  _selectedItem++;
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::sendSelectionFirst()
+{
+  if(isVisible())
+    return false;
+
+  _selectedItem = 0;
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::sendSelectionLast()
+{
+  if(isVisible())
+    return false;
+
+  _selectedItem = _entries.size() - 1;
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -287,6 +329,18 @@ void ContextMenu::handleEvent(Event::Type e)
     case Event::UIRight:
       moveDown();
       break;
+    case Event::UIPgUp:
+      movePgUp();
+      break;
+    case Event::UIPgDown:
+      movePgDown();
+      break;
+    case Event::UIHome:
+      moveToFirst();
+      break;
+    case Event::UIEnd:
+      moveToLast();
+      break;
     case Event::UICancel:
       close();
       break;
@@ -339,7 +393,7 @@ void ContextMenu::sendSelection()
 
   // Send any command associated with the selection
   _selectedItem = item;
-  sendCommand(_cmd ? _cmd : kCMenuItemSelectedCmd, _selectedItem, -1);
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -383,6 +437,69 @@ void ContextMenu::moveDown()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::movePgUp()
+{
+  if(_firstEntry == 0)
+    moveToFirst();
+  else
+    scrollUp(_numEntries);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::movePgDown()
+{
+  if(_firstEntry == (int)(_entries.size() - _numEntries))
+    moveToLast();
+  else
+    scrollDown(_numEntries);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::moveToFirst()
+{
+  _firstEntry = 0;
+  _scrollUpColor = kColor;
+  _scrollDnColor = kScrollColor;
+
+  drawCurrentSelection(_firstEntry + (_showScroll ? 1 : 0));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::moveToLast()
+{
+  _firstEntry = _entries.size() - _numEntries;
+  _scrollUpColor = kScrollColor;
+  _scrollDnColor = kColor;
+
+  drawCurrentSelection(_numEntries - (_showScroll ? 0 : 1));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::moveToSelected()
+{
+  if(_selectedItem < 0 || _selectedItem >= (int)_entries.size())
+    return;
+
+  // First jump immediately to the item
+  _firstEntry = _selectedItem;
+  int offset = 0;
+
+  // Now check if we've gone past the current 'window' size, and scale
+  // back accordingly
+  int max_offset = _entries.size() - _numEntries;
+  if(_firstEntry > max_offset)
+  {
+    offset = _firstEntry - max_offset;
+    _firstEntry -= offset;
+  }
+
+  _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
+  _scrollDnColor = _firstEntry < max_offset ? kScrollColor : kColor;
+
+  drawCurrentSelection(offset + (_showScroll ? 1 : 0));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::scrollUp(int distance)
 {
   if(_firstEntry == 0)
@@ -404,7 +521,7 @@ void ContextMenu::scrollDown(int distance)
 
   _firstEntry = BSPF_min(_firstEntry + distance, max_offset);
   _scrollUpColor = kScrollColor;
-  _scrollDnColor = (_firstEntry < max_offset) ? kScrollColor : kColor;
+  _scrollDnColor = _firstEntry < max_offset ? kScrollColor : kColor;
 
   setDirty();
 }

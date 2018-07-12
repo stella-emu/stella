@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: CheatCodeDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -59,7 +56,6 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
   myCheatList =
     new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - 25,
                         _h - 2*buttonHeight - 10);
-  myCheatList->setStyle(kXFill);
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
@@ -150,8 +146,8 @@ void CheatCodeDialog::saveConfig()
 void CheatCodeDialog::addCheat()
 {
   myCheatInput->show();    // Center input dialog over entire screen
-  myCheatInput->setEditString("", 0);
-  myCheatInput->setEditString("", 1);
+  myCheatInput->setText("", 0);
+  myCheatInput->setText("", 1);
   myCheatInput->setTitle("");
   myCheatInput->setFocus(0);
   myCheatInput->setEmitSignal(kCheatAdded);
@@ -169,8 +165,8 @@ void CheatCodeDialog::editCheat()
   const string& code = list[idx]->code();
 
   myCheatInput->show();    // Center input dialog over entire screen
-  myCheatInput->setEditString(name, 0);
-  myCheatInput->setEditString(code, 1);
+  myCheatInput->setText(name, 0);
+  myCheatInput->setText(code, 1);
   myCheatInput->setTitle("");
   myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kCheatEdited);
@@ -187,8 +183,8 @@ void CheatCodeDialog::removeCheat()
 void CheatCodeDialog::addOneShotCheat()
 {
   myCheatInput->show();    // Center input dialog over entire screen
-  myCheatInput->setEditString("One-shot cheat", 0);
-  myCheatInput->setEditString("", 1);
+  myCheatInput->setText("One-shot cheat", 0);
+  myCheatInput->setText("", 1);
   myCheatInput->setTitle("");
   myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kOneShotCheatAdded);
@@ -209,7 +205,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       close();
       break;
 
-    case kListItemDoubleClickedCmd:
+    case ListWidget::kDoubleClickedCmd:
       editCheat();
       break;
 

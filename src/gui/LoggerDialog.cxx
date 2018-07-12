@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: LoggerDialog.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <fstream>
@@ -53,17 +53,16 @@ LoggerDialog::LoggerDialog(OSystem* osystem, DialogContainer* parent,
 
   // Test listing of the log output
   xpos = 10;  ypos = 10;
-  myLogInfo = new StringListWidget(this, instance().consoleFont(), xpos, ypos,
+  myLogInfo = new StringListWidget(this, instance().infoFont(), xpos, ypos,
                                    _w - 2 * xpos, _h - buttonHeight - ypos - 20 -
-                                   2 * lineHeight);
-  myLogInfo->setNumberingMode(kListNumberingOff);
+                                   2 * lineHeight, false);
   myLogInfo->setEditable(false);
   wid.push_back(myLogInfo);
   ypos += myLogInfo->getHeight() + 8;
 
   // Level of logging (how much info to print)
   xpos += 20;
-  StringMap items;
+  VariantList items;
   items.clear();
   items.push_back("None", "0");
   items.push_back("Basic", "1");
@@ -108,16 +107,17 @@ void LoggerDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveConfig()
 {
-  instance().settings().setString("loglevel",
-    myLogLevel->getSelectedTag());
-  instance().settings().setBool("logtoconsole", myLogToConsole->getState());
+  instance().settings().setValue("loglevel",
+    myLogLevel->getSelectedTag().toString());
+  instance().settings().setValue("logtoconsole", myLogToConsole->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveLogFile()
 {
-  string path = AbstractFilesystemNode::getAbsolutePath("stella", "~", "log");
-  FilesystemNode node(path);
+  ostringstream path;
+  path << "~" << BSPF_PATH_SEPARATOR << "stella.log";
+  FilesystemNode node(path.str());
 
   ofstream out(node.getPath().c_str(), ios::out);
   if(out.is_open())

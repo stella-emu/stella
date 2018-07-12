@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: EditTextWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -31,22 +28,23 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& text)
-  : EditableWidget(boss, font, x, y - 1, w, h + 2),
+  : EditableWidget(boss, font, x, y, w, h + 2, text),
     _editable(true),
     _changed(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kEditTextWidget;
 
   startEditMode();  // We're always in edit mode
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::setEditString(const string& str, bool changed)
+void EditTextWidget::setText(const string& str, bool changed)
 {
-  EditableWidget::setEditString(str, changed);
+  EditableWidget::setText(str, changed);
   _backupString = str;
   _changed = changed;
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,12 +120,12 @@ void EditTextWidget::startEditMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::endEditMode()
 {
-  EditableWidget::endEditMode();
+  // Editing is always enabled
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::abortEditMode()
 {
-  setEditString(_backupString);
-  EditableWidget::abortEditMode();
+  // Editing is always enabled
+  setText(_backupString);
 }

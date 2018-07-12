@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 3.7.5</b></h4></center>
+  <center><h4><b>Release 3.9.3</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - December 2012</b></center>
+  <center><b>February 1999 - August 2013</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -271,7 +271,8 @@
       <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
       AtariVox</a> device connected to your PC using a USB adaptor</li>
     <li>Supports EEPROM emulation for <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
-      AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers</li>
+      AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers,
+      as well as FLASH support in various cartridge schemes</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
     <li>Supports DPC+ bankswitching scheme from the <a href="http://harmony.atariage.com">Harmony Cart</a>,
       including <a href="http://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
@@ -287,8 +288,9 @@
       both TIA sprites and collisions for each object separately</li>
     <li>Full system state save/load functionality</li>
     <li>Cross-platform UI including a built-in ROM launcher frontend</li>
-    <li>Built-in extensive debugger, including static analysis with the Distella disassembler,
-      and dynamic analysis at runtime by tracking code/graphics/data sections</li>
+    <li>Built-in extensive debugger, including static analysis with the Distella disassembler
+      and dynamic analysis at runtime by tracking code/graphics/data sections, and 
+      generation of DASM-compatible disassembly files</li>
     <li>Emulation of CRT TV systems using <a href="http://slack.net/~ant/libs/ntsc.html">
       Blargg filtering</a>, including presets for several common TV outputs
       (composite, S-video, RGB, etc), and ability to fully customize
@@ -388,52 +390,21 @@
   <h3><b><u>Linux/UNIX</u></b></h3>
   <ul>
     <li><b>Binary DEB</b> (stella-<i>release</i>-1_arch.deb)
-      <ol>
+      <ul>
         <li>Install the binary DEB with the following command:
           <pre>   dpkg -i stella-<i>release</i>-1_arch.deb</pre></li>
-      </ol>
+      </ul>
     </li>
     <li><b>Binary RPM</b> (stella-<i>release</i>-1.arch.rpm)
-      <ol>
+      <ul>
         <li>Install the binary RPM with the following command:
           <pre>   rpm -Uvh stella-<i>release</i>-1.arch.rpm</pre></li>
-      </ol>
+      </ul>
     </li>
-    <li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
+    <li><b>Building and installing from source code</b>
     <ul>
-      <li>Debian-based distributions:
-      <ol>
-        <li>Extract files from the distribution:
-          <pre>   tar zxvf stella-release-src.tar.gz</pre></li>
-        <li>Change directories to the stella-<i>release</i> directory</li>
-        <li>Build the executable with the following command:
-          <pre>   dpkg-buildpackage</pre></li>
-        <li>Install the executable as indicated in the previous section</li>
-      </ol>
-      </li>
-      <li>RPM-based distributions:
-      <ol>
-        <li>Extract files from the distribution:
-          <pre>   tar zxvf stella-release-src.tar.gz</pre></li>
-        <li>Change directories to the stella-<i>release</i>/src/unix directory</li>
-        <li>Build the executable with the following command:
-          <pre>   rpmbuild -ba stella.spec</pre></li>
-        <li>Install the executable as indicated in the previous section</li>
-      </ol>
-      </li>
-      <li>Generic build:
-      <ol>
-        <li>Extract files from the distribution:
-          <pre>   tar zxvf stella-release-src.tar.gz</pre></li>
-        <li>Change directories to the stella-<i>release</i> directory</li>
-        <li>Configure the build with the following command:
-          <pre>   ./configure (--help for list of options)</pre></li>
-        <li>Build the executable with the following command:
-          <pre>   make</pre></li>
-        <li>Install the executable with the following command:
-          <pre>   make install</pre></li>
-      </ol>
-      </li>
+      <li>See the developers build instructions at the
+      <a href="http://stella.sourceforge.net/development.php">Stella Development Page</a>.
     </ul>
     </li>
   </ul>
@@ -442,30 +413,17 @@
   <h3><b><u>Macintosh</u></b></h3>
   <ul>
     <li><b>Binary DMG file</b> (Stella-<i>release</i>-macosx.dmg)
-      <ol>
+      <ul>
         <li>Double-click the disk image, open the 'Stella' folder, then copy the
         <b>Stella.app</b> package to your 'Applications' folder.</li>
-      </ol>
+      </ul>
     </li>
-    <li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
-      <ol>
-        <li>Extract files from the distribution using an archiving program that supports
-          gzipped tar files</li>
-        <li>Open the <b>stella-<i>release</i>/src/macosx/stella.xcodeproj</b>
-          file using Xcode 3.2</li>
-        <li>Make sure you have the SDL runtime library/framework installed in src/macosx (located at
-        <a href="http://www.libsdl.org/download-1.2.php">libsdl.org</a>)</li>
-        <li>Build the 'Stella' project (making sure to select 'Deployment' mode)</li>
-        <li>For installation:
+    <br/>
+    <li><b>Building and installing from source code</b>
         <ul>
-          <li>Run the script <b>Create_build.sh</b>, located in the src/macosx directory.
-            This will create a DMG installation archive on your desktop.</li>
-            &nbsp;&nbsp;&nbsp;<b>OR</b>
-          <li>Copy the <b>Stella.app</b> package to your 'Applications' folder.</li>
+      <li>See the developers build instructions at the
+      <a href="http://stella.sourceforge.net/development.php">Stella Development Page</a>.
         </ul>
-        <li>For compiling the Intel/Snow Leopard version, open the <b>stella-<i>release</i>/src/macosx/stella_intel.xcodeproj</b> file instead, and continue from
-          step 2 above.</li>
-      </ol>
     </li>
   </ul>
 
@@ -477,38 +435,20 @@
         <li>Double-click on the installer and follow the onscreen instructions</li>
       </ol>
     </li>
+    <br/>
     <li><b>Binary ZIP file</b> (stella-<i>release</i>-windows.zip)
       <ol>
         <li>Unzip the binary ZIP file using <b>Winzip</b> or <b>Total Commander</b></li>
         <li>Copy the contents of either 32-bit or 64-bit directory somewhere on your system</li>
       </ol>
     </li>
-    <li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
-      <ol>
-        <li>Make sure you have library and header files installed for SDL for
-          the correct architecture (32-bit, 64-bit or both), and that Visual Studio
-          is properly configured to find them</li>
-        <li>Extract files from the distribution using <b>Winzip</b>,
-          <b>Total Commander</b>, or some other archiving program that supports
-          gzipped tar files</li>
-        <li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
-          file using Visual C++ 2010</li>
-        <li>Build the 'Stella' solution, making sure to correctly select either 'Win32'
-          or 'x64' mode (depending on the version of Windows you have installed)</li>
-        <li>For installation:
+    <br/>
+    <li><b>Building and installing from source code</b>
         <ul>
-          <li>Double-click on <b>Create_builds.bat</b> to generate ZIP and EXE files;
-          you must have the 'flip' and 'zip' applications installed on your system,
-          as well as the InnoSetup application.  This will generate the EXE and ZIP
-          files, which can be installed as explained above</li>
-          &nbsp;&nbsp;&nbsp;<b>OR</b>
-          <li>Manually copy the <b>Stella.exe</b> and <b>SDL.dll</b> files somewhere
-            on your system (they may be located in the 'Release' or 'x64\Release'
-            directories)</li>
+      <li>See the developers build instructions at the
+      <a href="http://stella.sourceforge.net/development.php">Stella Development Page</a>.
         </ul>
         </li>
-      </ol>
-    </li>
   </ul>
   </blockquote>
 
@@ -617,6 +557,7 @@
 
   <p>At this point, you may want to set the locations for snapshots and other
   external paths.  This is described in more detail in
+  <b>Advanced Configuration - <a href="#Snapshots">Snapshot Settings</a></b> and
   <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>.
   These settings are optional, and can be left at the defaults if you won't be using
   snapshots in the ROM launcher.</p>
@@ -1847,7 +1788,7 @@
       <td><pre>-tv_filter &lt;1 - 6&gt;</pre></td>
       <td>OpenGL mode only.  Blargg TV effects, 0 is disabled, next numbers in
         sequence represent presets for 'composite', 's-video', 'RGB', 'bad adjust',
-        and 'custom' modes'.</td>
+        and 'custom' modes.</td>
     </tr>
 
     <tr>
@@ -1995,14 +1936,7 @@
 
     <tr>
       <td><pre>-freq &lt;number&gt;</pre></td>
-      <td>Set sound sample output frequency (0 - 48000).
-        Default is 31400.  Do not change unless you experience sound
-        issues.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tiafreq &lt;number&gt;</pre></td>
-      <td>Set sound sample generation frequency (0 - 48000).
+      <td>Set sound sample output frequency (11025,22050,31400,44100,48000)
         Default is 31400.  Do not change unless you experience sound
         issues.</td>
     </tr>
@@ -2010,12 +1944,6 @@
     <tr>
       <td><pre>-volume &lt;number&gt;</pre></td>
       <td>Set the volume (0 - 100).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-clipvol &lt;1|0&gt;</pre></td>
-      <td>Enable volume clipping (eliminates popping).  Do not change
-        unless you experience sound issues.</td>
     </tr>
 
     <tr>
@@ -2056,8 +1984,10 @@
     </tr>
 
     <tr>
-      <td><pre>-usemouse &lt;1|0&gt;</pre></td>
-      <td>Use mouse as a controller as specified by ROM properties.</td>
+      <td><pre>-usemouse &lt;always|analog|never&gt;</pre></td>
+      <td>Use mouse as a controller as specified by ROM properties in specific case.
+      Always and never are self-explanatory, analog means only for analog-type devices
+      (paddles, trackball, etc).</td>
     </tr>
 
     <tr>
@@ -2108,8 +2038,19 @@
     </tr>
 
     <tr>
-      <td><pre>-snapdir &lt;path&gt;</pre></td>
+      <td><pre>-snapsavedir &lt;path&gt;</pre></td>
       <td>The directory to save snapshot files to.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-snaploaddir &lt;path&gt;</pre></td>
+      <td>The directory to load snapshot files from.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-snapname &lt;int|rom&gt;</pre></td>
+      <td>When saving snapshots, use either the internal database name or
+          the actual ROM filename.</td>
     </tr>
 
     <tr>
@@ -2215,8 +2156,8 @@
     </tr>
 
     <tr>
-      <td><pre>-eepromdir &lt;dir&gt;</pre></td>
-      <td>Set the directory in which to access EEPROM files.</td>
+      <td><pre>-nvramdir &lt;dir&gt;</pre></td>
+      <td>Set the directory in which to access non-volatile (flash/EEPROM) files.</td>
     </tr>
 
     <tr>
@@ -2254,7 +2195,7 @@
     </tr>
 
     <tr>
-      <td><pre>-dis.resolvedata &lt;never|always|auto&gt;</pre></td>
+      <td><pre>-dis.resolve &lt;1|0&gt;</pre></td>
       <td>Try to differentiate between code vs. data sections in the
       disassembler.  See the Debugger section for more information.</td>
     </tr>
@@ -2276,8 +2217,14 @@
     </tr>
 
     <tr>
-      <td><pre>-debuggerres &lt;WxH&gt;</pre></td>
+      <td><pre>-dbg.res &lt;WxH&gt;</pre></td>
       <td>Set the size of the debugger window.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-dbg.fontstyle &lt;0|1|2|3&gt;</pre></td>
+      <td>How to use bold fonts in the debugger window. '0' means all normal font,
+      '1' is bold labels only, '2' is bold non-labels only, '3' is all bold font.</td>
     </tr>
 
     <tr>
@@ -2291,8 +2238,15 @@
     </tr>
 
     <tr>
-      <td><pre>-holdreset</pre></td>
-      <td>Start the emulator with the Game Reset switch held down.</td>
+      <td><pre>-holdjoy0 &lt;U,D,L,R,F&gt;</pre></td>
+      <td>Start the emulator with the left joystick direction/button held down
+        (ie, use 'UF' for up and fire).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-holdjoy1 &lt;U,D,L,R,F&gt;</pre></td>
+      <td>Start the emulator with the right joystick direction/button held down
+        (ie, use 'UF' for up and fire).</td>
     </tr>
 
     <tr>
@@ -2301,8 +2255,8 @@
     </tr>
 
     <tr>
-      <td><pre>-holdbutton0</pre></td>
-      <td>Start the emulator with the left joystick button held down.</td>
+      <td><pre>-holdreset</pre></td>
+      <td>Start the emulator with the Game Reset switch held down.</td>
     </tr>
 
     <tr>
@@ -2494,9 +2448,7 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Volume</td><td>self-explanatory</td><td>-volume</td></tr>
           <tr><td>Sample size (*)</td><td>set size of audio buffers</td><td>-fragsize</td></tr>
-          <tr><td>Output freq (*)</td><td>change sound output frequency (advanced)</td><td>-freq</td></tr>
-          <tr><td>TIA freq</td><td>change TIA output frequency (advanced)</td><td>-tiafreq</td></tr>
-          <tr><td>Clip volume</td><td>Eliminate popping in sound generation (advanced)</td><td>-clipvol</td></tr>
+          <tr><td>Frequency (*)</td><td>change sound output frequency</td><td>-freq</td></tr>
           <tr><td>Enable sound</td><td>self-explanatory</td><td>-sound</td></tr>
         </table>
       </td>
@@ -2530,7 +2482,9 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Debugger Width/Height</td><td>self-explanatory (requires restart)</td><td>-debuggerres</td></tr>
+          <tr><td>Debugger Width/Height</td><td>self-explanatory (requires ROM reload)</td><td>-dbg.res</td></tr>
+          <tr><td>Set window size for ...</td><td>self-explanatory presets (requires ROM reload)</td><td>N/A</td></tr>
+          <tr><td>Font Style</td><td>self-explanatory (requires ROM reload)</td><td>-dbg.fontstyle</td></tr>
         </table>
       </td>
     </tr>
@@ -2551,6 +2505,26 @@
     </tr>
   </table>
   <br>
+  <a name="Snapshots"></a>
+  <p><b>Snapshot Settings</b> dialog:</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/launcher_options_snapshots.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+          <tr><td>Save path</td><td>specifies where to save snapshots</td><td>-snapsavedir</td></tr>
+          <tr><td>Load path</td><td>specifies where to load snapshots</td><td>-snaploaddir</td></tr>
+          <tr><td>Save snapshots according to</td><td>specifies how to name saved snapshots</td><td>-snapname</td></tr>
+          <tr><td>Continuous snapshot interval</td><td>interval (in seconds) between snapshot</td><td>-ssinterval</td></tr>
+          <tr><td>Overwrite existing files</td><td>whether to overwrite old snapshots</td><td>-sssingle</td></tr>
+          <tr><td>Disable image filtering (1x mode)</td><td>save snapshot in 1x mode, without filtering</td><td>-ss1x</td></tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <br>
   <a name="ConfigPaths"></a>
   <p><b>Config Paths</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
@@ -2561,15 +2535,11 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Rom path</td><td>specifies location of ROM files</td><td>-romdir</td></tr>
-          <tr><td>Snapshot path</td><td>specifies where to load/save snapshots</td><td>-snapdir</td></tr>
           <tr><td>Cheat file</td><td>specifies location of cheatfile database</td><td>-cheatfile</td></tr>
           <tr><td>Palette file</td><td>specifies location of user palette</td><td>-palettefile</td></tr>
           <tr><td>Properties file </td><td>specifies location of external stella.pro database</td><td>-propsfile</td></tr>
           <tr><td>State path</td><td>specifies location of state files</td><td>-statedir</td></tr>
-          <tr><td>EEPROM path</td><td>specifies location of EEPROM files</td><td>-eepromdir</td></tr>
-          <tr><td>Overwrite snapshots</td><td>whether to overwrite old snapshots</td><td>-sssingle</td></tr>
-          <tr><td>Snapshot in 1x mode</td><td>save snapshot in 1x mode, without filtering</td><td>-ss1x</td></tr>
-          <tr><td>Continuous snapshot interval</td><td>interval (in seconds) between snapshot</td><td>-ssinterval</td></tr>
+          <tr><td>NVRAM path</td><td>specifies location of NVRAM (flash/EEPROM) files</td><td>-nvramdir</td></tr>
         </table>
       </td>
     </tr>
@@ -2650,14 +2620,14 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
+          <tr><td>Stelladaptor port order</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
+          <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
           <tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
           <tr><td>Joy deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
-          <tr><td>Digital paddle sensitivity</td><td>Sensitvity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
+          <tr><td>Digital paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
           <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
           <tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
           <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode</td><td>-grabmouse</td></tr>
-          <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
         </table>
       </td>
     </tr>
@@ -2720,11 +2690,11 @@
   contains the following items:</p>
 
   <p><ol>
-    <li><p><b>Override properties</b>: Selecting this option shows a dialog whereby
-    ROM properties can be temporarily overriden.  Selecting options from this
-    dialog will cause all ROMs launched after that to use those properties
-    you specify.  Clicking <b>Default</b> will disable its functionality,
-    and use ROM properties as defined by the ROM itself.  The dialog is as
+    <li><p><b>Power-on options</b>: Selecting this option shows a dialog whereby
+    ROM properties can be temporarily overridden, and joystick/console buttons can be
+    temporarily held down.  Selecting options from this dialog will cause all ROMs launched
+    after that to use those properties you specify.  Clicking <b>Defaults</b> will disable
+    its functionality, and use ROM properties as defined by the ROM itself.  The dialog is as
     follows (See <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>
     for more information concerning ROM properties):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
@@ -2738,9 +2708,11 @@
           <tr><td>Left Difficulty</td><td>-ld</td></tr>
           <tr><td>Right Difficulty</td><td>-rd</td></tr>
           <tr><td>TV Type</td><td>-tv</td></tr>
-          <tr><td>Hold Select down</td><td>-holdselect</td></tr>
-          <tr><td>Hold Reset down</td><td>-holdreset</td></tr>
-          <tr><td>Hold Button 0 down</td><td>-holdbutton0</td></tr>
+          <tr><td>Startup Mode</td><td>-debug</td></tr>
+          <tr><td>Left joy items</td><td>-holdjoy0</td></tr>
+          <tr><td>Right joy items</td><td>-holdjoy1</td></tr>
+          <tr><td>Console: Select</td><td>-holdselect</td></tr>
+          <tr><td>Console: Reset</td><td>-holdreset</td></tr>
         </table>
         <p></p>
       </td>
@@ -2864,7 +2836,7 @@
   writing to a real EEPROM many times will eventually wear it out.</p>
 
   <p>The location of the EEPROM files are configurable through the
-  '<i>-eepromdir</i>' commandline argument and within the application itself
+  '<i>-nvramdir</i>' commandline argument and within the application itself
   (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>).
   If the path for these files hasn't been set, the default location will depend on the
   version of Stella, as follows:</p>
@@ -2872,21 +2844,21 @@
   <p><table cellpadding="5" border="1">
     <tr>
       <td><b>Linux/Unix</b></td>
-      <td><i>~/.stella/atarivox_eeprom.dat<br>
-        ~/.stella/savekey_eeprom.dat</i></td>
+      <td><i>~/.stella/nvram/atarivox_eeprom.dat<br>
+        ~/.stella/nvram/savekey_eeprom.dat</i></td>
     </tr>
     <tr>
       <td><b>Macintosh</b></td>
-      <td><i>~/Library/Application Support/Stella/atarivox_eeprom.dat<br>
-        ~/Library/Application Support/Stella/savekey_eeprom.dat</i></td>
+      <td><i>~/Library/Application Support/Stella/nvram/atarivox_eeprom.dat<br>
+        ~/Library/Application Support/Stella/nvram/savekey_eeprom.dat</i></td>
     </tr>
     <tr>
       <td><b>Windows</b></td>
-      <td><i>%APPDATA%\Stella\atarivox_eeprom.dat<br>
-        %APPDATA%\Stella\savekey_eeprom.dat</i>&nbsp;&nbsp;&nbsp;
+      <td><i>%APPDATA%\Stella\nvram\atarivox_eeprom.dat<br>
+        %APPDATA%\Stella\nvram\savekey_eeprom.dat</i>&nbsp;&nbsp;&nbsp;
         <b>OR</b><br>
-        <i>_BASEDIR_\atarivox_eeprom.dat<br>
-          _BASEDIR_\savekey_eeprom.dat<br></i>
+        <i>_BASEDIR_\nvram\atarivox_eeprom.dat<br>
+          _BASEDIR_\nvram\savekey_eeprom.dat<br></i>
           (if a file named 'basedir.txt' exists in the application
           directory containing the full pathname for _BASEDIR_)
       </td>
@@ -3249,9 +3221,14 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>3F </td><td>512K Tigervision </td></tr>
         <tr><td>4A50 </td><td>64K 4A50 + ram </td></tr>
         <tr><td>4K </td><td>4K Atari </td></tr>
+        <tr><td>4KSC </td><td>CPUWIZ 4K + ram </td></tr>
         <tr><td>AR </td><td>Supercharger </td></tr>
+        <tr><td>BF </td><td>CPUWIZ 256K </td></tr>
+        <tr><td>BFSC </td><td>CPUWIZ 256K + ram</td></tr>
         <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td></tr>
         <tr><td>CV </td><td>Commavid extra ram </td></tr>
+        <tr><td>DF </td><td>CPUWIZ 128K </td></tr>
+        <tr><td>DFSC </td><td>CPUWIZ 128K + ram</td></tr>
         <tr><td>DPC </td><td>Pitfall II </td></tr>
         <tr><td>DPC+</td><td>Enhanced DPC </td></tr>
         <tr><td>E0 </td><td>8K Parker Bros </td></tr>

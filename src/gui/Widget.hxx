@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Widget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,43 +50,11 @@ enum {
   WIDGET_WANTS_RAWDATA = 1 << 8
 };
 
-enum {
-  kStaticTextWidget   = 'TEXT',
-  kEditTextWidget     = 'EDIT',
-  kButtonWidget       = 'BTTN',
-  kCheckboxWidget     = 'CHKB',
-  kSliderWidget       = 'SLDE',
-  kListWidget         = 'LIST',
-  kScrollBarWidget    = 'SCRB',
-  kPopUpWidget        = 'POPU',
-  kTabWidget          = 'TABW',
-  kEventMappingWidget = 'EVMP',
-  kEditableWidget     = 'EDLE',
-  kAudioWidget        = 'AUDW',
-  kColorWidget        = 'COLR',
-  kCpuWidget          = 'CPUW',
-  kDataGridOpsWidget  = 'BGRO',
-  kDataGridWidget     = 'BGRI',
-  kPromptWidget       = 'PROM',
-  kRamWidget          = 'RAMW',
-  kRiotWidget         = 'RIOW',
-  kRomListWidget      = 'ROML',
-  kRomWidget          = 'ROMW',
-  kTiaInfoWidget      = 'TIAI',
-  kTiaOutputWidget    = 'TIAO',
-  kTiaWidget          = 'TIAW',
-  kTiaZoomWidget      = 'TIAZ',
-  kToggleBitWidget    = 'TGLB',
-  kTogglePixelWidget  = 'TGLP',
-  kToggleWidget       = 'TOGL',
-  kControllerWidget   = 'CTRL'
-};
-
 /**
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id$
+  @version $Id: Widget.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class Widget : public GuiObject
 {
@@ -159,7 +127,6 @@ class Widget : public GuiObject
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
   protected:
-    int        _type;
     GuiObject* _boss;
     const GUI::Font& _font;
     Widget*    _next;
@@ -242,6 +209,11 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
 class CheckboxWidget : public ButtonWidget
 {
   public:
+    enum FillType {
+      Normal, Inactive, Circle
+    };
+
+  public:
     CheckboxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    const string& label, int cmd = 0);
 
@@ -250,8 +222,7 @@ class CheckboxWidget : public ButtonWidget
     virtual void handleMouseLeft(int button)	{}
 
     void setEditable(bool editable);
-    void setFill(bool fill) { _fillRect = fill; }
-    void drawBox(bool draw) { _drawBox = draw;  }
+    void setFill(FillType type);
 
     void setState(bool state);
     void toggleState()     { setState(!_state); }
@@ -265,9 +236,9 @@ class CheckboxWidget : public ButtonWidget
   protected:
     bool _state;
     bool _holdFocus;
-    bool _fillRect;
     bool _drawBox;
 
+    uInt32* _img;
     uInt32 _fillColor;
 
   private:

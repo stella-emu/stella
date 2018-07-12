@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: MessageBox.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef MESSAGE_BOX_HXX
@@ -26,6 +26,8 @@ class StaticTextWidget;
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "DialogContainer.hxx"
+
+namespace GUI {
 
 /**
  * Show a simple message box containing the given text, with buttons 
@@ -44,7 +46,7 @@ class MessageBox : public Dialog, public CommandSender
     virtual ~MessageBox();
 
     /** Place the input dialog onscreen and center it */
-    void show() { parent().addDialog(this); }
+    void show() { open(); }
 
   private:
     void addText(const GUI::Font& font, const StringList& text);
@@ -53,5 +55,7 @@ class MessageBox : public Dialog, public CommandSender
   private:
     int myCmd;
 };
+
+}  // namespace GUI
 
 #endif

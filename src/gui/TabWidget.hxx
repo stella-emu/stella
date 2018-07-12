@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: TabWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef TAB_WIDGET_HXX
@@ -31,14 +28,6 @@
 
 class TabWidget : public Widget, public CommandSender
 {
-  struct Tab {
-    string title;
-    Widget* firstWidget;
-    Widget* parentWidget;
-    bool enabled;
-  };
-  typedef Common::Array<Tab> TabList;
-
   public:
     TabWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     ~TabWidget();
@@ -77,7 +66,18 @@ class TabWidget : public Widget, public CommandSender
     virtual void drawWidget(bool hilite);
     virtual Widget* findWidget(int x, int y);
 
-  protected:
+  private:
+    struct Tab {
+      string title;
+      Widget* firstWidget;
+      Widget* parentWidget;
+      bool enabled;
+
+      Tab(const string& t = "", Widget* first = 0, Widget* parent = 0, bool e = true)
+        : title(t), firstWidget(first), parentWidget(parent), enabled(e) { }
+    };
+    typedef Common::Array<Tab> TabList;
+
     TabList _tabs;
     int     _tabWidth;
     int     _tabHeight;

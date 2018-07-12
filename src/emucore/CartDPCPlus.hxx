@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: CartDPCPlus.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef CARTRIDGE_DPC_PLUS_HXX
@@ -24,20 +24,29 @@ class System;
 #ifdef THUMB_SUPPORT
 class Thumbulator;
 #endif
+#ifdef DEBUGGER_SUPPORT
+  #include "CartDPCPlusWidget.hxx"
+#endif
 
 #include "bspf.hxx"
 #include "Cart.hxx"
 
 /**
-  Cartridge class used for DPC+.  There are six 4K program banks, a 4K
-  display bank, 1K frequency table and the DPC chip.  For complete details on
-  the DPC chip see David P. Crane's United States Patent Number 4,644,495.
+  Cartridge class used for DPC+, derived from Pitfall II.  There are six 4K
+  program banks, a 4K display bank, 1K frequency table and the DPC chip.
+  DPC chip access is mapped to $1000 - $1080 ($1000 - $103F is read port,
+  $1040 - $107F is write port).
 
-  @author  Darrell Spice Jr, Fred Quimby, Stephen Anthony
-  @version $Id$
+  For complete details on the DPC chip see David P. Crane's United States
+  Patent Number 4,644,495.
+
+  @author  Darrell Spice Jr, Fred Quimby, Stephen Anthony, Bradford W. Mott
+  @version $Id: CartDPCPlus.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class CartridgeDPCPlus : public Cartridge
 {
+  friend class CartridgeDPCPlusWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -129,7 +138,19 @@ class CartridgeDPCPlus : public Cartridge
 
       @return The name of the object
     */
-    string name() const { return "CartridgeDPCPlus"; }
+    string name() const { return "CartridgeDPC+"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+        const GUI::Font& nfont, int x, int y, int w, int h)
+    {
+      return new CartridgeDPCPlusWidget(boss, lfont, nfont, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**

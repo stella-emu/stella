@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: GlobalPropsDialog.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef GLOBAL_PROPS_DIALOG_HXX
@@ -32,13 +29,15 @@ class OSystem;
 #include "Dialog.hxx"
 #include "bspf.hxx"
 
-class GlobalPropsDialog : public Dialog
+class GlobalPropsDialog : public Dialog, public CommandSender
 {
   public:
     GlobalPropsDialog(GuiObject* boss, const GUI::Font& font);
     virtual ~GlobalPropsDialog();
 
   private:
+    int addHoldWidgets(const GUI::Font& font, int x, int y, WidgetArray& wid);
+
     void loadConfig();
     void saveConfig();
     void setDefaults();
@@ -46,14 +45,22 @@ class GlobalPropsDialog : public Dialog
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    enum {
+      kJ0Up, kJ0Down, kJ0Left, kJ0Right, kJ0Fire,
+      kJ1Up, kJ1Down, kJ1Left, kJ1Right, kJ1Fire
+    };
+
     PopUpWidget*    myBSType;
     PopUpWidget*    myLeftDiff;
     PopUpWidget*    myRightDiff;
     PopUpWidget*    myTVType;
+    PopUpWidget* myDebug;
 
+    CheckboxWidget* myJoy[10];
     CheckboxWidget* myHoldSelect;
     CheckboxWidget* myHoldReset;
-    CheckboxWidget* myHoldButton0;
+
+    static const char* ourJoyState[10];
 };
 
 #endif

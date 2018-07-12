@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: CartDPCPlus.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <cassert>
@@ -56,10 +56,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   // If the image is larger than 29K, we assume any excess at the
   // beginning is ARM code, and skip over it
   if(size > 29 * 1024)
-  {
-    int offset = size - 29 * 1024;
-    myProgramImage   += offset;
-  }
+    myProgramImage += (size - 29 * 1024);
 
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
@@ -106,7 +103,7 @@ void CartridgeDPCPlus::setInitialState()
   memcpy(myDisplayImage, myProgramImage + 0x6000, 0x1400);
 
   // Initialize the DPC data fetcher registers
-  for(uInt16 i = 0; i < 8; ++i)
+  for(int i = 0; i < 8; ++i)
     myTops[i] = myBottoms[i] = myCounters[i] = myFractionalIncrements[i] = 
     myFractionalCounters[i] = 0;
 

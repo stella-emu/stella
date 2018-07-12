@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: PopUpWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef POPUP_WIDGET_HXX
@@ -45,7 +42,7 @@ class PopUpWidget : public Widget, public CommandSender
 {
   public:
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                int x, int y, int w, int h, const StringMap& items,
+                int x, int y, int w, int h, const VariantList& items,
                 const string& label, int labelWidth = 0, int cmd = 0);
     ~PopUpWidget();
 
@@ -53,21 +50,23 @@ class PopUpWidget : public Widget, public CommandSender
 
     /** Various selection methods passed directly to the underlying menu
         See ContextMenu.hxx for more information. */
-    void addItems(const StringMap& items) { myMenu->addItems(items);       }
-    void setSelected(int item)            { myMenu->setSelected(item);     }
-    void setSelected(const string& tag,
-                     const string& def)   { myMenu->setSelected(tag, def); }
+    void addItems(const VariantList& items) { myMenu->addItems(items);     }
+    void setSelected(const Variant& tag,
+                     const Variant& def = EmptyVariant)
+                                          { myMenu->setSelected(tag, def); }
+    void setSelectedIndex(int idx)        { myMenu->setSelectedIndex(idx); }
     void setSelectedMax()                 { myMenu->setSelectedMax();      }
     void clearSelection()                 { myMenu->clearSelection();      }
 
     int getSelected() const               { return myMenu->getSelected();     }
     const string& getSelectedName() const { return myMenu->getSelectedName(); }
-    const string& getSelectedTag() const  { return myMenu->getSelectedTag();  }
+    const Variant& getSelectedTag() const { return myMenu->getSelectedTag();  }
 
     bool wantsFocus()  { return true; }
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleMouseWheel(int x, int y, int direction);
     bool handleEvent(Event::Type e);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void drawWidget(bool hilite);

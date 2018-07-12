@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: StateManager.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef STATE_MANAGER_HXX
@@ -30,7 +30,7 @@ class OSystem;
   played back.
 
   @author  Stephen Anthony
-  @version $Id$
+  @version $Id: StateManager.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class StateManager
 {
@@ -131,9 +131,6 @@ class StateManager
 
     // Whether the manager is in record or playback mode
     Mode myActiveMode;
-
-    // Current frame count (write full state every 60 frames)
-    int myFrameCounter;
 
     // MD5 of the currently active ROM (either in movie or rewind mode)
     string myMD5;

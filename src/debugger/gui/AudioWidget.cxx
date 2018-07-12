@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: AudioWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "DataGridWidget.hxx"
@@ -29,34 +26,25 @@
 
 #include "AudioWidget.hxx"
 
-// ID's for the various widgets
-// We need ID's, since there are more than one of several types of widgets
-enum {
-  kAUDFID,
-  kAUDCID,
-  kAUDVID
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
+AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& lfont,
+                         const GUI::Font& nfont,
                          int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w, h),
+  : Widget(boss, lfont, x, y, w, h),
     CommandSender(boss)
 {
-  _type = kAudioWidget;
-
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
-  int xpos = 10, ypos = 25, lwidth = font.getStringWidth("AUDW: ");
+  const int fontWidth  = lfont.getMaxCharWidth(),
+            fontHeight = lfont.getFontHeight(),
+            lineHeight = lfont.getLineHeight();
+  int xpos = 10, ypos = 25, lwidth = lfont.getStringWidth("AUDW: ");
 
   // AudF registers
-  new StaticTextWidget(boss, font, xpos, ypos+2,
+  new StaticTextWidget(boss, lfont, xpos, ypos+2,
                        lwidth, fontHeight,
                        "AUDF:", kTextAlignLeft);
   xpos += lwidth;
-  myAudF = new DataGridWidget(boss, font, xpos, ypos,
-                              2, 1, 2, 5, kBASE_16);
+  myAudF = new DataGridWidget(boss, nfont, xpos, ypos,
+                              2, 1, 2, 5, Common::Base::F_16);
   myAudF->setTarget(this);
   myAudF->setID(kAUDFID);
   myAudF->setEditable(false);
@@ -64,19 +52,19 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
 
   for(int col = 0; col < 2; ++col)
   {
-    new StaticTextWidget(boss, font, xpos + col*myAudF->colWidth() + 7,
+    new StaticTextWidget(boss, lfont, xpos + col*myAudF->colWidth() + 7,
                          ypos - lineHeight, fontWidth, fontHeight,
-                         instance().debugger().valueToString(col, kBASE_16_1),
+                         Common::Base::toString(col, Common::Base::F_16_1),
                          kTextAlignLeft);
   }
 
   // AudC registers
   xpos = 10;  ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
                        "AUDC:", kTextAlignLeft);
   xpos += lwidth;
-  myAudC = new DataGridWidget(boss, font, xpos, ypos,
-                              2, 1, 2, 4, kBASE_16);
+  myAudC = new DataGridWidget(boss, nfont, xpos, ypos,
+                              2, 1, 2, 4, Common::Base::F_16);
   myAudC->setTarget(this);
   myAudC->setID(kAUDCID);
   myAudC->setEditable(false);
@@ -84,11 +72,11 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
 
   // AudV registers
   xpos = 10;  ypos += lineHeight + 5;
-  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos+2, lwidth, fontHeight,
                        "AUDV:", kTextAlignLeft);
   xpos += lwidth;
-  myAudV = new DataGridWidget(boss, font, xpos, ypos,
-                              2, 1, 2, 4, kBASE_16);
+  myAudV = new DataGridWidget(boss, nfont, xpos, ypos,
+                              2, 1, 2, 4, Common::Base::F_16);
   myAudV->setTarget(this);
   myAudV->setID(kAUDVID);
   myAudV->setEditable(false);
@@ -108,13 +96,6 @@ void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::loadConfig()
-{
-//cerr << "AudioWidget::loadConfig()\n";
-  fillGrid();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioWidget::fillGrid()
 {
   IntArray alist;
   IntArray vlist;

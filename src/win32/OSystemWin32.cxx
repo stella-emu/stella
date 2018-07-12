@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: OSystemWin32.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <SDL_syswm.h>
@@ -72,7 +72,7 @@ OSystemWin32::OSystemWin32()
     FilesystemNode appdata(homefinder.getAppDataPath());
     if(appdata.isDirectory())
     {
-      basedir = appdata.getRelativePath();
+      basedir = appdata.getShortPath();
       if(basedir.length() > 1 && basedir[basedir.length()-1] != '\\')
         basedir += '\\';
       basedir += "Stella";
@@ -91,11 +91,17 @@ OSystemWin32::~OSystemWin32()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWin32::defaultSnapDir()
+string OSystemWin32::defaultSnapSaveDir()
 {
   HomeFinder homefinder;
   FilesystemNode desktop(homefinder.getDesktopPath());
-  return desktop.isDirectory() ? desktop.getRelativePath() : "~";
+  return desktop.isDirectory() ? desktop.getShortPath() : "~";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystemWin32::defaultSnapLoadDir()
+{
+  return defaultSnapSaveDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

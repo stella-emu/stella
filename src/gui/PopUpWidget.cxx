@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: PopUpWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include "bspf.hxx"
@@ -44,7 +41,7 @@ static unsigned int up_down_arrows[8] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int x, int y, int w, int h, const StringMap& list,
+                         int x, int y, int w, int h, const VariantList& list,
                          const string& label, int labelWidth, int cmd)
   : Widget(boss, font, x, y - 1, w, h + 2),
     CommandSender(boss),
@@ -52,7 +49,6 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
     _labelWidth(labelWidth)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  _type = kPopUpWidget;
   _bgcolor = kDlgColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;
@@ -92,6 +88,18 @@ void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::handleMouseWheel(int x, int y, int direction)
+{
+  if(isEnabled() && !myMenu->isVisible())
+  {
+    if(direction < 0)
+      myMenu->sendSelectionUp();
+    else
+      myMenu->sendSelectionDown();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PopUpWidget::handleEvent(Event::Type e)
 {
   if(!isEnabled())
@@ -102,6 +110,18 @@ bool PopUpWidget::handleEvent(Event::Type e)
     case Event::UISelect:
       handleMouseDown(0, 0, 1, 0);
       return true;
+    case Event::UIUp:
+    case Event::UILeft:
+    case Event::UIPgUp:
+      return myMenu->sendSelectionUp();
+    case Event::UIDown:
+    case Event::UIRight:
+    case Event::UIPgDown:
+      return myMenu->sendSelectionDown();
+    case Event::UIHome:
+      return myMenu->sendSelectionFirst();
+    case Event::UIEnd:
+      return myMenu->sendSelectionLast();
     default:
       return false;
   }

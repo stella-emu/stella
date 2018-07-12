@@ -8,43 +8,48 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: RomListWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef ROM_LIST_WIDGET_HXX
 #define ROM_LIST_WIDGET_HXX
 
-class ContextMenu;
+class RomListSettings;
 class ScrollBarWidget;
 class PackedBitArray;
 class CheckListWidget;
 
 #include "Array.hxx"
+#include "Base.hxx"
 #include "CartDebug.hxx"
 #include "EditableWidget.hxx"
-
-// Some special commands for this widget
-enum {
-  kRLBreakpointChangedCmd = 'RLbp',  // click on the checkbox for a breakpoint
-  kRLRomChangedCmd        = 'RLpr'   // ROM item data changed - 'data' will be item index
-};
 
 /** RomListWidget */
 class RomListWidget : public EditableWidget
 {
-  friend class RomWidget;
+  public:
+    enum {
+      kBPointChangedCmd  = 'RLbp',  // 'data' will be disassembly line number,
+                                    // 'id' will be the checkbox state
+      kRomChangedCmd     = 'RLpr',  // 'data' will be disassembly line number
+                                    // 'id' will be the Base::Format of the data
+      kSetPCCmd          = 'STpc',  // 'data' will be disassembly line number
+      kRuntoPCCmd        = 'RTpc',  // 'data' will be disassembly line number
+      kDisassembleCmd    = 'REds',
+      kTentativeCodeCmd  = 'TEcd',  // 'data' will be boolean
+      kPCAddressesCmd    = 'PCad',  // 'data' will be boolean
+      kGfxAsBinaryCmd    = 'GFXb',  // 'data' will be boolean
+      kAddrRelocationCmd = 'ADre'   // 'data' will be boolean
+    };
 
   public:
-    RomListWidget(GuiObject* boss, const GUI::Font& font,
+    RomListWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                     int x, int y, int w, int h);
     virtual ~RomListWidget();
 
@@ -55,7 +60,7 @@ class RomListWidget : public EditableWidget
     void setSelected(int item);
     void setHighlighted(int item);
 
-    const string& getEditString() const;
+    const string& getText() const;
     void startEditMode();
     void endEditMode();
 
@@ -86,7 +91,7 @@ class RomListWidget : public EditableWidget
     void scrollToCurrent(int item);
 
   private:
-    ContextMenu*     myMenu;
+    RomListSettings* myMenu;
     ScrollBarWidget* myScrollBar;
 
     int  _labelWidth;
@@ -98,6 +103,7 @@ class RomListWidget : public EditableWidget
     int  _highlightedItem;
     bool _editMode;
     StellaKey  _currentKeyDown;
+    Common::Base::Format _base;  // base used during editing
 
     const CartDebug::Disassembly* myDisasm;
     const PackedBitArray* myBPState;

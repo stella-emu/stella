@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: CartFA2.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <cassert>
@@ -32,6 +32,13 @@ CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osyst
     myRamAccessTimeout(0),
     mySize(size)
 {
+  // 29/32K version of FA2 has valid data @ 1K - 29K
+  if(size >= 29 * 1024)
+  {
+    image += 1024;
+    mySize = 28 * 1024; 
+  }
+
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];
 
@@ -345,7 +352,7 @@ bool CartridgeFA2::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA2::setRomName(const string& name)
 {
-  myFlashFile = myOSystem.eepromDir() + name + "_flash.dat";
+  myFlashFile = myOSystem.nvramDir() + name + "_flash.dat";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -423,5 +430,49 @@ uInt8 CartridgeFA2::ramReadWrite()
     else
       // Bit 6 is 1, busy
       return myImage[(myCurrentBank << 12) + 0xFF4] | 0x40;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFA2::flash(uInt8 operation)
+{
+  Serializer serializer(myFlashFile);
+  if(serializer.isValid())
+  {
+    if(operation == 0)       // erase
+    {
+      try
+      {
+        uInt8 buf[256];
+        memset(buf, 0, 256);
+        serializer.putByteArray(buf, 256);
+      }
+      catch(...)
+      {
+      }
+    }
+    else if(operation == 1)  // read
+    {
+      try
+      {
+        serializer.getByteArray(myRAM, 256);
+      }
+      catch(...)
+      {
+        memset(myRAM, 0, 256);
+      }
+    }
+    else if(operation == 2)  // write
+    {
+      try
+      {
+        serializer.putByteArray(myRAM, 256);
+      }
+      catch(...)
+      {
+        // Maybe add logging here that save failed?
+        cerr << name() << ": ERROR saving score table" << endl;
+      }
+    }
   }
 }

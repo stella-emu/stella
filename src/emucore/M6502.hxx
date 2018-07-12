@@ -8,13 +8,13 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: M6502.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -25,6 +25,7 @@ class Debugger;
 class CpuDebug;
 class Expression;
 class PackedBitArray;
+class Settings;
 
 #include "bspf.hxx"
 #include "System.hxx"
@@ -45,7 +46,7 @@ typedef Common::Array<Expression*> ExpressionList;
   effects and for games which are very time sensitive.
 
   @author  Bradford W. Mott
-  @version $Id$
+  @version $Id: M6502.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class M6502 : public Serializable
 {
@@ -61,7 +62,7 @@ class M6502 : public Serializable
 
       @param systemCyclesPerProcessorCycle The cycle multiplier
     */
-    M6502(uInt32 systemCyclesPerProcessorCycle);
+    M6502(uInt32 systemCyclesPerProcessorCycle, const Settings& settings);
 
     /**
       Destructor
@@ -87,12 +88,12 @@ class M6502 : public Serializable
     /**
       Request a maskable interrupt
     */
-    void irq();
+    void irq() { myExecutionStatus |= MaskableInterruptBit; }
 
     /**
       Request a non-maskable interrupt
     */
-    void nmi();
+    void nmi() { myExecutionStatus |= NonmaskableInterruptBit; }
 
     /**
       Execute instructions until the specified number of instructions
@@ -109,7 +110,7 @@ class M6502 : public Serializable
       method while the processor is executing instructions will stop 
       execution as soon as possible.
     */
-    void stop();
+    void stop() { myExecutionStatus |= StopExecutionBit; }
 
     /**
       Answer true iff a fatal error has occured from which the processor
@@ -159,14 +160,14 @@ class M6502 : public Serializable
     /**                                                                    
       Return the last data address used as part of a peek operation for
       the S/A/X/Y registers.  Note that if an address wasn't used (as in
-      immediate mode), then the address is zero.
+      immediate mode), then the address is -1.
 
-      @return The address of the data used in the last peek, else 0
+      @return The address of the data used in the last peek, else -1
     */
-    uInt16 lastSrcAddressS() const { return myLastSrcAddressS; }
-    uInt16 lastSrcAddressA() const { return myLastSrcAddressA; }
-    uInt16 lastSrcAddressX() const { return myLastSrcAddressX; }
-    uInt16 lastSrcAddressY() const { return myLastSrcAddressY; }
+    Int32 lastSrcAddressS() const { return myLastSrcAddressS; }
+    Int32 lastSrcAddressA() const { return myLastSrcAddressA; }
+    Int32 lastSrcAddressX() const { return myLastSrcAddressX; }
+    Int32 lastSrcAddressY() const { return myLastSrcAddressY; }
 
     /**
       Get the total number of instructions executed so far.
@@ -253,14 +254,34 @@ class M6502 : public Serializable
 
       @return The processor status register
     */
-    uInt8 PS() const;
+    uInt8 PS() const {
+      uInt8 ps = 0x20;
+
+      if(N)     ps |= 0x80;
+      if(V)     ps |= 0x40;
+      if(B)     ps |= 0x10;
+      if(D)     ps |= 0x08;
+      if(I)     ps |= 0x04;
+      if(!notZ) ps |= 0x02;
+      if(C)     ps |= 0x01;
+
+      return ps;
+    }
 
     /**
       Change the Processor Status register to correspond to the given value.
 
       @param ps The value to set the processor status register to
     */
-    void PS(uInt8 ps);
+    void PS(uInt8 ps) {
+      N = ps & 0x80;
+      V = ps & 0x40;
+      B = true;        // B = ps & 0x10;  The 6507's B flag always true
+      D = ps & 0x08;
+      I = ps & 0x04;
+      notZ = !(ps & 0x02);
+      C = ps & 0x01;
+    }
 
     /**
       Called after an interrupt has be requested using irq() or nmi()
@@ -300,6 +321,9 @@ class M6502 : public Serializable
     /// Pointer to the system the processor is installed in or the null pointer
     System* mySystem;
 
+    /// Reference to the settings
+    const Settings& mySettings;
+
     /// Indicates the number of system cycles per processor cycle 
     const uInt32 mySystemCyclesPerProcessorCycle;
 
@@ -324,7 +348,7 @@ class M6502 : public Serializable
 
     /// Indicates the last address used to access data by a peek command
     /// for the CPU registers (S/A/X/Y)
-    uInt16 myLastSrcAddressS, myLastSrcAddressA,
+    Int32 myLastSrcAddressS, myLastSrcAddressA,
            myLastSrcAddressX, myLastSrcAddressY;
 
     /// Indicates the data address used by the last command that performed

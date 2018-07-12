@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: M6532.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef M6532_HXX
@@ -37,7 +37,7 @@ class Settings;
     - A1 to enable/disable interrupt from PA7 to IRQ
 
   @author  Bradford W. Mott and Stephen Anthony
-  @version $Id$
+  @version $Id: M6532.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class M6532 : public Device
 {
@@ -140,11 +140,18 @@ class M6532 : public Device
     bool poke(uInt16 address, uInt8 value);
 
   private:
-    Int32 timerClocks()
+    Int32 timerClocks() const
       { return myTimer - (mySystem->cycles() - myCyclesWhenTimerSet); }
 
     void setTimerRegister(uInt8 data, uInt8 interval);
     void setPinState(bool shcha);
+
+    // The following are used by the debugger to read INTIM/TIMINT
+    // We need separate methods to do this, so the state of the system
+    // isn't changed
+    uInt8 intim() const;
+    uInt8 timint() const;
+    Int32 intimClocks() const;
 
   private:
     // Accessible bits in the interrupt flag register
@@ -163,7 +170,7 @@ class M6532 : public Device
     // An amazing 128 bytes of RAM
     uInt8 myRAM[128];
 
-    // Current value of my Timer
+    // Current value of the timer
     uInt32 myTimer;
 
     // Log base 2 of the number of cycles in a timer interval

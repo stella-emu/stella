@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: TIA.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <cassert>
@@ -39,7 +39,8 @@
 #include "TIA.hxx"
 
 #define HBLANK 68
-#define USE_MMR_LATCHES
+
+#define CLAMP_POS(reg) if(reg < 0) { reg += 160; }  reg %= 160;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(Console& console, Sound& sound, Settings& settings)
@@ -74,6 +75,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
 
   // Zero audio registers
   myAUDV0 = myAUDV1 = myAUDF0 = myAUDF1 = myAUDC0 = myAUDC1 = 0;
+
+  // Should undriven pins be randomly pulled high or low?
+  myTIAPinsDriven = mySettings.getBool("tiadriven");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,17 +139,14 @@ void TIA::reset()
   myDumpDisabledCycle = 0;
   myINPT4 = myINPT5 = 0x80;
 
-  // Should undriven pins be randomly driven high or low?
-  myTIAPinsDriven = mySettings.getBool("tiadriven");
-
   myFrameCounter = myPALFrameCounter = 0;
   myScanlineCountForLastFrame = 0;
 
-  myP0Mask = &TIATables::PxMask[0][0][0][0];
-  myP1Mask = &TIATables::PxMask[0][0][0][0];
-  myM0Mask = &TIATables::MxMask[0][0][0][0];
-  myM1Mask = &TIATables::MxMask[0][0][0][0];
-  myBLMask = &TIATables::BLMask[0][0][0];
+  myP0Mask = &TIATables::PxMask[0][0][0];
+  myP1Mask = &TIATables::PxMask[0][0][0];
+  myM0Mask = &TIATables::MxMask[0][0][0];
+  myM1Mask = &TIATables::MxMask[0][0][0];
+  myBLMask = &TIATables::BLMask[0][0];
   myPFMask = TIATables::PFMask[0];
 
   // Recalculate the size of the display
@@ -172,27 +173,27 @@ void TIA::frameReset()
 
   if(myFramerate > 55.0)  // NTSC
   {
-    myFixedColor[P0Color]     = 0x30303030;
-    myFixedColor[P1Color]     = 0x16161616;
-    myFixedColor[M0Color]     = 0x38383838;
-    myFixedColor[M1Color]     = 0x12121212;
-    myFixedColor[BLColor]     = 0x7e7e7e7e;
-    myFixedColor[PFColor]     = 0x76767676;
-    myFixedColor[BKColor]     = 0x0a0a0a0a;
-    myFixedColor[HBLANKColor] = 0x0e0e0e0e;
+    myFixedColor[P0Color]     = 0x30;
+    myFixedColor[P1Color]     = 0x16;
+    myFixedColor[M0Color]     = 0x38;
+    myFixedColor[M1Color]     = 0x12;
+    myFixedColor[BLColor]     = 0x7e;
+    myFixedColor[PFColor]     = 0x76;
+    myFixedColor[BKColor]     = 0x0a;
+    myFixedColor[HBLANKColor] = 0x0e;
     myColorLossEnabled = false;
     myMaximumNumberOfScanlines = 290;
   }
   else
   {
-    myFixedColor[P0Color]     = 0x62626262;
-    myFixedColor[P1Color]     = 0x26262626;
-    myFixedColor[M0Color]     = 0x68686868;
-    myFixedColor[M1Color]     = 0x2e2e2e2e;
-    myFixedColor[BLColor]     = 0xdededede;
-    myFixedColor[PFColor]     = 0xd8d8d8d8;
-    myFixedColor[BKColor]     = 0x1c1c1c1c;
-    myFixedColor[HBLANKColor] = 0x0e0e0e0e;
+    myFixedColor[P0Color]     = 0x62;
+    myFixedColor[P1Color]     = 0x26;
+    myFixedColor[M0Color]     = 0x68;
+    myFixedColor[M1Color]     = 0x2e;
+    myFixedColor[BLColor]     = 0xde;
+    myFixedColor[PFColor]     = 0xd8;
+    myFixedColor[BKColor]     = 0x1c;
+    myFixedColor[HBLANKColor] = 0x0e;
     myColorLossEnabled = mySettings.getBool("colorloss");
     myMaximumNumberOfScanlines = 342;
   }
@@ -288,7 +289,7 @@ bool TIA::save(Serializer& out) const
     out.putByte(myNUSIZ0);
     out.putByte(myNUSIZ1);
 
-    out.putIntArray(myColor, 8);
+    out.putByteArray(myColor, 8);
 
     out.putByte(myCTRLPF);
     out.putByte(myPlayfieldPriorityAndScore);
@@ -392,7 +393,7 @@ bool TIA::load(Serializer& in)
     myNUSIZ0 = in.getByte();
     myNUSIZ1 = in.getByte();
 
-    in.getIntArray(myColor, 8);
+    in.getByteArray(myColor, 8);
 
     myCTRLPF = in.getByte();
     myPlayfieldPriorityAndScore = in.getByte();
@@ -559,7 +560,7 @@ inline void TIA::startFrame()
   mySystem->resetCycles();
 
   // Setup clocks that'll be used for drawing this frame
-  myClockWhenFrameStarted = -clocks;
+  myClockWhenFrameStarted = -1 * clocks;
   myClockStartDisplay = myClockWhenFrameStarted;
   myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
   myClockAtLastUpdate = myClockStartDisplay;
@@ -575,26 +576,31 @@ inline void TIA::startFrame()
   {
     if(myScanlineCountForLastFrame & 0x01)
     {
-      myColor[P0Color] |= 0x01010101;
-      myColor[P1Color] |= 0x01010101;
-      myColor[PFColor] |= 0x01010101;
-      myColor[BKColor] |= 0x01010101;
-      myColor[M0Color] |= 0x01010101;
-      myColor[M1Color] |= 0x01010101;
-      myColor[BLColor] |= 0x01010101;
+      myColor[P0Color] |= 0x01;
+      myColor[P1Color] |= 0x01;
+      myColor[PFColor] |= 0x01;
+      myColor[BKColor] |= 0x01;
+      myColor[M0Color] |= 0x01;
+      myColor[M1Color] |= 0x01;
+      myColor[BLColor] |= 0x01;
     }
     else
     {
-      myColor[P0Color] &= 0xfefefefe;
-      myColor[P1Color] &= 0xfefefefe;
-      myColor[PFColor] &= 0xfefefefe;
-      myColor[BKColor] &= 0xfefefefe;
-      myColor[M0Color] &= 0xfefefefe;
-      myColor[M1Color] &= 0xfefefefe;
-      myColor[BLColor] &= 0xfefefefe;
+      myColor[P0Color] &= 0xfe;
+      myColor[P1Color] &= 0xfe;
+      myColor[PFColor] &= 0xfe;
+      myColor[BKColor] &= 0xfe;
+      myColor[M0Color] &= 0xfe;
+      myColor[M1Color] &= 0xfe;
+      myColor[BLColor] &= 0xfe;
     }
   }
   myStartScanline = 0;
+
+  // Stats counters
+  myFrameCounter++;
+  if(myScanlineCountForLastFrame >= 287)
+    myPALFrameCounter++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -611,6 +617,7 @@ inline void TIA::endFrame()
   {
     // Skip display of this frame, as if it wasn't generated at all
     startFrame();
+    myFrameCounter--;  // This frame doesn't contribute to frame count
     return;
   }
 
@@ -648,11 +655,6 @@ inline void TIA::endFrame()
     memset(myCurrentFrameBuffer + offset, 0, stride);
     memset(myPreviousFrameBuffer + offset, 1, stride);
   }
-
-  // Stats counters
-  myFrameCounter++;
-  if(myScanlineCountForLastFrame >= 287)
-    myPALFrameCounter++;
 
   // Recalculate framerate. attempting to auto-correct for scanline 'jumps'
   if(myAutoFrameEnabled)
@@ -851,6 +853,19 @@ bool TIA::toggleFixedColors(uInt8 mode)
   return on;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::driveUnusedPinsRandom(uInt8 mode)
+{
+  // If mode is 0 or 1, use it as a boolean (off or on)
+  // Otherwise, return the state
+  if(mode == 0 || mode == 1)
+  {
+    myTIAPinsDriven = bool(mode);
+    mySettings.setValue("tiadriven", myTIAPinsDriven);
+  }
+  return myTIAPinsDriven;
+}
+
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanline()
@@ -953,33 +968,32 @@ void TIA::updateFrame(Int32 clock)
       {
         if(myCurrentHMOVEPos >= 97 && myCurrentHMOVEPos < 157)
         {
-          myPOSP0 -= myMotionClockP0;
-          myPOSP1 -= myMotionClockP1;
-          myPOSM0 -= myMotionClockM0;
-          myPOSM1 -= myMotionClockM1;
-          myPOSBL -= myMotionClockBL;
+          myPOSP0 -= myMotionClockP0;  if(myPOSP0 < 0) myPOSP0 += 160;
+          myPOSP1 -= myMotionClockP1;  if(myPOSP1 < 0) myPOSP1 += 160;
+          myPOSM0 -= myMotionClockM0;  if(myPOSM0 < 0) myPOSM0 += 160;
+          myPOSM1 -= myMotionClockM1;  if(myPOSM1 < 0) myPOSM1 += 160;
+          myPOSBL -= myMotionClockBL;  if(myPOSBL < 0) myPOSBL += 160;
+
           myPreviousHMOVEPos = myCurrentHMOVEPos;
-          posChanged = true;
         }
         // Indicate that the HMOVE has been completed
         myCurrentHMOVEPos = 0x7FFFFFFF;
+        posChanged = true;
       }
-#ifdef USE_MMR_LATCHES
+
       // Apply extra clocks for 'more motion required/mmr'
-      if(myHMP0mmr) { myPOSP0 -= 17; posChanged = true; }
-      if(myHMP1mmr) { myPOSP1 -= 17; posChanged = true; }
-      if(myHMM0mmr) { myPOSM0 -= 17; posChanged = true; }
-      if(myHMM1mmr) { myPOSM1 -= 17; posChanged = true; }
-      if(myHMBLmmr) { myPOSBL -= 17; posChanged = true; }
-#endif
-      // Make sure positions are in range
+      if(myHMP0mmr) { myPOSP0 -= 17;  if(myPOSP0 < 0) myPOSP0 += 160;  posChanged = true; }
+      if(myHMP1mmr) { myPOSP1 -= 17;  if(myPOSP1 < 0) myPOSP1 += 160;  posChanged = true; }
+      if(myHMM0mmr) { myPOSM0 -= 17;  if(myPOSM0 < 0) myPOSM0 += 160;  posChanged = true; }
+      if(myHMM1mmr) { myPOSM1 -= 17;  if(myPOSM1 < 0) myPOSM1 += 160;  posChanged = true; }
+      if(myHMBLmmr) { myPOSBL -= 17;  if(myPOSBL < 0) myPOSBL += 160;  posChanged = true; }
+
+      // Scanline change, so reset PF mask based on current CTRLPF reflection state 
+      myPFMask = TIATables::PFMask[myCTRLPF & 0x01];
+
+      // TODO - handle changes to player timing
       if(posChanged)
       {
-        if(myPOSP0 < 0) { myPOSP0 += 160; }  myPOSP0 %= 160;
-        if(myPOSP1 < 0) { myPOSP1 += 160; }  myPOSP1 %= 160;
-        if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
-        if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
-        if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
       }
     }
 
@@ -1040,12 +1054,12 @@ void TIA::updateFrame(Int32 clock)
       else
       {
         // Update masks
-        myP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
-            [mySuppressP0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-        myP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
-            [mySuppressP1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
-        myBLMask = &TIATables::BLMask[myPOSBL & 0x03]
-            [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
+        myP0Mask = &TIATables::PxMask[mySuppressP0]
+            [myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFF)];
+        myP1Mask = &TIATables::PxMask[mySuppressP1]
+            [myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFF)];
+        myBLMask = &TIATables::BLMask[(myCTRLPF & 0x30) >> 4]
+            [160 - (myPOSBL & 0xFF)];
 
         // TODO - 08-27-2009: Simulate the weird effects of Cosmic Ark and
         // Stay Frosty.  The movement itself is well understood, but there
@@ -1061,24 +1075,22 @@ void TIA::updateFrame(Int32 clock)
             case 3:
               // Stretch this missle so it's 2 pixels wide and shifted one
               // pixel to the left
-              myM0Mask = &TIATables::MxMask[(myPOSM0-1) & 0x03]
-                  [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4)|1]
-                  [160 - ((myPOSM0-1) & 0xFC)];
+              myM0Mask = &TIATables::MxMask[myNUSIZ0 & 0x07]
+                  [((myNUSIZ0 & 0x30) >> 4)|1][160 - ((myPOSM0-1) & 0xFF)];
               break;
             case 2:
               // Missle is disabled on this line
               myM0Mask = &TIATables::DisabledMask[0];
               break;
             default:
-              myM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-                  [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4]
-                  [160 - (myPOSM0 & 0xFC)];
+              myM0Mask = &TIATables::MxMask[myNUSIZ0 & 0x07]
+                  [(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFF)];
               break;
           }
         }
         else
-          myM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-              [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+          myM0Mask = &TIATables::MxMask[myNUSIZ0 & 0x07]
+              [(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFF)];
         if(myHMM1mmr)
         {
           switch(myPOSM1 % 4)
@@ -1086,24 +1098,22 @@ void TIA::updateFrame(Int32 clock)
             case 3:
               // Stretch this missle so it's 2 pixels wide and shifted one
               // pixel to the left
-              myM1Mask = &TIATables::MxMask[(myPOSM1-1) & 0x03]
-                  [myNUSIZ1 & 0x07][((myNUSIZ1 & 0x30) >> 4)|1]
-                  [160 - ((myPOSM1-1) & 0xFC)];
+              myM1Mask = &TIATables::MxMask[myNUSIZ1 & 0x07]
+                  [((myNUSIZ1 & 0x30) >> 4)|1][160 - ((myPOSM1-1) & 0xFF)];
               break;
             case 2:
               // Missle is disabled on this line
               myM1Mask = &TIATables::DisabledMask[0];
               break;
             default:
-              myM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-                  [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4]
-                  [160 - (myPOSM1 & 0xFC)];
+              myM1Mask = &TIATables::MxMask[myNUSIZ1 & 0x07]
+                  [(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFF)];
               break;
           }
         }
         else
-          myM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-              [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+          myM1Mask = &TIATables::MxMask[myNUSIZ1 & 0x07]
+              [(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFF)];
 
         uInt8 enabledObjects = myEnabledObjects & myDisabledObjects;
         uInt32 hpos = clocksFromStartOfScanLine - HBLANK;
@@ -1146,17 +1156,17 @@ void TIA::updateFrame(Int32 clock)
         myHMOVEBlankEnabled = false;
     }
 
+// TODO - this needs to be updated to actually do as the comment suggests
+#if 1
     // See if we're at the end of a scanline
     if(myClocksToEndOfScanLine == 228)
     {
-      // Yes, so set PF mask based on current CTRLPF reflection state 
-      myPFMask = TIATables::PFMask[myCTRLPF & 0x01];
-
       // TODO - 01-21-99: These should be reset right after the first copy
       // of the player has passed.  However, for now we'll just reset at the
       // end of the scanline since the other way would be too slow.
       mySuppressP0 = mySuppressP1 = 0;
     }
+#endif
   }
 }
 
@@ -1168,6 +1178,62 @@ inline void TIA::waitHorizontalSync()
 
   if(cyclesToEndOfLine < 76)
     mySystem->incrementCycles(cyclesToEndOfLine);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void TIA::waitHorizontalRSync()
+{
+  // 02-23-2013: RSYNC has now been updated to work correctly with
+  // Extra-Terrestrials. Fatal Run also uses RSYNC (in its VSYNC routine),
+  // and the NTSC prototype now displays 262 scanlines instead of 261.
+  // What is not emulated correctly is the "real time" effects. For example
+  // the VSYNC signal may not be 3 complete scanlines, although Stella will
+  // now count it as such.
+  //
+  // There are two extreme cases to demonstrate this "real time" variance
+  // effect over a proper three line VSYNC. 3*76 = 228 cycles properly needed:
+  //
+  // ======  SHORT TIME CASE  ======
+  // 
+  //     lda    #3      ;2  @67
+  //     sta    VSYNC   ;3  @70      vsync starts
+  //     sta    RSYNC   ;3  @73  +3
+  //     sta    WSYNC   ;3  @76  +6
+  // ------------------------------
+  //     sta    WSYNC   ;3  @76  +82
+  // ------------------------------
+  //     lda    #0      ;2  @2   +84
+  //     sta    VSYNC                vsync ends
+  //
+  // ======  LONG TIME CASE  ======
+  //
+  //    lda    #3      ;2  @70
+  //    sta    VSYNC   ;3  @73      vsync starts
+  //    sta    RSYNC   ;3  @74  +3
+  //    sta    WSYNC   ;3  @..  +81  2 cycles are added to previous line, and then
+  //                                 WSYNC halts the new line delaying 78 cycles total!
+  //------------------------------
+  //    sta    WSYNC   ;3  @76  +157
+  //------------------------------
+  //    lda    #0      ;2  @2   +159
+  //    sta    VSYNC                vsync ends
+
+  // The significance of the 'magic numbers' below is as follows (thanks to
+  // Eckhard Stolberg and Omegamatrix for explanation and implementation)
+  //
+  // Objects always get positioned three pixels further to the right after a
+  // WSYNC than they do after a RSYNC, but this is to be expected.  Triggering
+  // WSYNC will halt the CPU until the horizontal sync counter wraps around to zero.
+  // Triggering RSYNC will reset the horizontal sync counter to zero immediately.
+  // But the warp-around will actually happen after one more cycle of this counter.
+  // Since the horizontal sync counter counts once every 4 pixels, one more CPU
+  // cycle occurs before the counter warps around to zero. Therefore the positioning
+  // code will hit RESPx one cycle sooner after a RSYNC than after a WSYNC.
+
+  uInt32 cyclesToEndOfLine = 76 - ((mySystem->cycles() - 
+      (myClockWhenFrameStarted / 3)) % 76);
+
+  mySystem->incrementCycles(cyclesToEndOfLine-1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1399,7 +1465,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
 
     case RSYNC:   // Reset horizontal sync counter
     {
-//      cerr << "TIA Poke: " << hex << addr << endl;
+      waitHorizontalRSync();
       break;
     }
 
@@ -1407,6 +1473,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     {
       // TODO - 08-11-2009: determine correct delay instead of always
       //                    using '8' in TIATables::PokeDelay
+      updateFrame(clock + 8);
+
       myNUSIZ0 = value;
       mySuppressP0 = 0;
       break;
@@ -1416,6 +1484,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     {
       // TODO - 08-11-2009: determine correct delay instead of always
       //                    using '8' in TIATables::PokeDelay
+      updateFrame(clock + 8);
+
       myNUSIZ1 = value;
       mySuppressP1 = 0;
       break;
@@ -1423,48 +1493,41 @@ bool TIA::poke(uInt16 addr, uInt8 value)
 
     case COLUP0:  // Color-Luminance Player 0
     {
-      uInt32 color = (uInt32)(value & 0xfe);
+      uInt8 color = value & 0xfe;
       if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
-      {
         color |= 0x01;
-      }
-      myColor[P0Color] = myColor[M0Color] =
-          (((((color << 8) | color) << 8) | color) << 8) | color;
+
+      myColor[P0Color] = myColor[M0Color] = color;
       break;
     }
 
     case COLUP1:  // Color-Luminance Player 1
     {
-      uInt32 color = (uInt32)(value & 0xfe);
+      uInt8 color = value & 0xfe;
       if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
-      {
         color |= 0x01;
-      }
-      myColor[P1Color] = myColor[M1Color] =
-          (((((color << 8) | color) << 8) | color) << 8) | color;
+
+      myColor[P1Color] = myColor[M1Color] = color;
       break;
     }
 
     case COLUPF:  // Color-Luminance Playfield
     {
-      uInt32 color = (uInt32)(value & 0xfe);
+      uInt8 color = value & 0xfe;
       if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
-      {
         color |= 0x01;
-      }
-      myColor[PFColor] = myColor[BLColor] =
-          (((((color << 8) | color) << 8) | color) << 8) | color;
+
+      myColor[PFColor] = myColor[BLColor] = color;
       break;
     }
 
     case COLUBK:  // Color-Luminance Background
     {
-      uInt32 color = (uInt32)(value & 0xfe);
+      uInt8 color = value & 0xfe;
       if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
-      {
         color |= 0x01;
-      }
-      myColor[BKColor] = (((((color << 8) | color) << 8) | color) << 8) | color;
+
+      myColor[BKColor] = color;
       break;
     }
 
@@ -1577,6 +1640,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       }
       if(myPOSP0 != newx)
       {
+        // TODO - update player timing
+
         // Find out under what condition the player is being reset
         delay = TIATables::PxPosResetWhen[myNUSIZ0 & 7][myPOSP0][newx];
 
@@ -1625,6 +1690,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       }
       if(myPOSP1 != newx)
       {
+        // TODO - update player timing
+
         // Find out under what condition the player is being reset
         delay = TIATables::PxPosResetWhen[myNUSIZ1 & 7][myPOSP1][newx];
 
@@ -1951,6 +2018,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         uInt16 middle = 4;
         switch(myNUSIZ0 & 0x07)
         {
+          // 1-pixel delay is taken care of in TIATables::PxMask
           case 0x05: middle = 8;  break;  // double size
           case 0x07: middle = 16; break;  // quad size
         }
@@ -1959,9 +2027,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         {
           myPOSM0 -= (8 - myMotionClockP0);
           myPOSM0 += (8 - myMotionClockM0);
-          if(myPOSM0 < 0)  myPOSM0 += 160;
         }
-        myPOSM0 %= 160;
+        CLAMP_POS(myPOSM0);
       }
       myRESMP0 = value & 0x02;
 
@@ -1980,6 +2047,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         uInt16 middle = 4;
         switch(myNUSIZ1 & 0x07)
         {
+          // 1-pixel delay is taken care of in TIATables::PxMask
           case 0x05: middle = 8;  break;  // double size
           case 0x07: middle = 16; break;  // quad size
         }
@@ -1988,9 +2056,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         {
           myPOSM1 -= (8 - myMotionClockP1);
           myPOSM1 += (8 - myMotionClockM1);
-          if(myPOSM1 < 0)  myPOSM1 += 160;
         }
-        myPOSM1 %= 160;
+        CLAMP_POS(myPOSM1);
       }
       myRESMP1 = value & 0x02;
 
@@ -2010,12 +2077,11 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       myHMOVEBlankEnabled = myAllowHMOVEBlanks ? 
         TIATables::HMOVEBlankEnableCycles[((clock - myClockWhenFrameStarted) % 228) / 3] : false;
 
-#ifdef USE_MMR_LATCHES
       // Do we have to undo some of the already applied cycles from an
       // active graphics latch?
       if(hpos + HBLANK < 17 * 4)
       {
-        Int16 cycle_fix = 17 - ((hpos + VBLANK + 7) / 4);
+        Int16 cycle_fix = 17 - ((hpos + HBLANK + 7) / 4);
         if(myHMP0mmr)  myPOSP0 = (myPOSP0 + cycle_fix) % 160;
         if(myHMP1mmr)  myPOSP1 = (myPOSP1 + cycle_fix) % 160;
         if(myHMM0mmr)  myPOSM0 = (myPOSM0 + cycle_fix) % 160;
@@ -2023,7 +2089,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         if(myHMBLmmr)  myPOSBL = (myPOSBL + cycle_fix) % 160;
       }
       myHMP0mmr = myHMP1mmr = myHMM0mmr = myHMM1mmr = myHMBLmmr = false;
-#endif
+
       // Can HMOVE activities be ignored?
       if(hpos >= -5 && hpos < 97 )
       {
@@ -2080,12 +2146,13 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       }
 
       // Make sure positions are in range
-      if(myPOSP0 < 0) { myPOSP0 += 160; }  myPOSP0 %= 160;
-      if(myPOSP1 < 0) { myPOSP1 += 160; }  myPOSP1 %= 160;
-      if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
-      if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
-      if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
+      CLAMP_POS(myPOSP0);
+      CLAMP_POS(myPOSP1);
+      CLAMP_POS(myPOSM0);
+      CLAMP_POS(myPOSM1);
+      CLAMP_POS(myPOSBL);
 
+      // TODO - handle late HMOVE's
       mySuppressP0 = mySuppressP1 = 0;
       break;
     }
@@ -2170,7 +2237,8 @@ void TIA::pokeHMP0(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMP0mmr = true;
     }
-    if(myPOSP0 < 0) { myPOSP0 += 160; }  myPOSP0 %= 160;
+    CLAMP_POS(myPOSP0);
+    // TODO - adjust player timing
   }
   myHMP0 = value;
 }
@@ -2203,7 +2271,8 @@ void TIA::pokeHMP1(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMP1mmr = true;
     }
-    if(myPOSP1 < 0) { myPOSP1 += 160; }  myPOSP1 %= 160;
+    CLAMP_POS(myPOSP1);
+    // TODO - adjust player timing
   }
   myHMP1 = value;
 }
@@ -2236,7 +2305,7 @@ void TIA::pokeHMM0(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMM0mmr = true;
     }
-    if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
+    CLAMP_POS(myPOSM0);
   }
   myHMM0 = value;
 }
@@ -2269,7 +2338,7 @@ void TIA::pokeHMM1(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMM1mmr = true;
     }
-    if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
+    CLAMP_POS(myPOSM1);
   }
   myHMM1 = value;
 }
@@ -2302,7 +2371,7 @@ void TIA::pokeHMBL(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMBLmmr = true;
     }
-    if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
+    CLAMP_POS(myPOSBL);
   }
   myHMBL = value;
 }

@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: CpuWidget.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #include <sstream>
@@ -35,37 +32,36 @@
 #include "CpuWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
-  : Widget(boss, font, x, y, 16, 16),
+CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
+                     int x, int y, int max_w)
+  : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss)
 {
-  _type = kCpuWidget;
-
-  const int fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
+  const int fontWidth  = lfont.getMaxCharWidth(),
+            fontHeight = lfont.getFontHeight(),
+            lineHeight = lfont.getLineHeight();
   int xpos, ypos, lwidth;
 
   // Create a 1x1 grid with label for the PC register
   xpos = x;  ypos = y;  lwidth = 4 * fontWidth;
-  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth-2, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos+1, lwidth-2, fontHeight,
                        "PC:", kTextAlignLeft);
   myPCGrid =
-    new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 1, 4, 16, kBASE_16);
+    new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::F_16);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
   addFocusWidget(myPCGrid);
 
   // Create a read-only textbox containing the current PC label
   xpos += lwidth + myPCGrid->getWidth() + 10;
-  myPCLabel = new EditTextWidget(boss, font, xpos, ypos, fontWidth*25,
-                                 lineHeight, "");
+  myPCLabel = new EditTextWidget(boss, nfont, xpos, ypos, (max_w - xpos + x) - 10,
+                                 fontHeight+1, "");
   myPCLabel->setEditable(false);
 
   // Create a 1x4 grid with labels for the other CPU registers
   xpos = x + lwidth;  ypos += myPCGrid->getHeight() + 1;
   myCpuGrid =
-    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 2, 8, kBASE_16);
+    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::F_16);
   myCpuGrid->setTarget(this);
   myCpuGrid->setID(kCpuRegID);
   addFocusWidget(myCpuGrid);
@@ -73,38 +69,46 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Create a 1x4 grid with decimal and binary values for the other CPU registers
   xpos = x + lwidth + myPCGrid->getWidth() + 10;
   myCpuGridDecValue = 
-    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 3, 8, kBASE_10);
+    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 3, 8, Common::Base::F_10);
   myCpuGridDecValue->setEditable(false);
   xpos += myCpuGridDecValue->getWidth() + 5;
   myCpuGridBinValue = 
-    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 8, 8, kBASE_2);
+    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 8, Common::Base::F_2);
   myCpuGridBinValue->setEditable(false);
 
-  // Create a label and 1x3 grid showing the source of data for A/X/Y registers
+  // Calculate real dimensions (_y will be calculated at the end)
+  _w = lwidth + myPCGrid->getWidth() + myPCLabel->getWidth() + 20;
+
+  // Create labels showing the source of data for SP/A/X/Y registers
   xpos += myCpuGridBinValue->getWidth() + 20;
-  myCpuDataSrcGrid = 
-    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 4, 16, kBASE_16);
-  myCpuDataSrcGrid->setEditable(false);
-  new StaticTextWidget(boss, font, xpos-font.getMaxCharWidth(),
-                       ypos+myCpuDataSrcGrid->getHeight() + 4,
-                       font.getStringWidth("Src Addr"), fontHeight, "Src Addr",
-                       kTextAlignLeft);
+  int src_y = ypos, src_w = (max_w - xpos + x) - 10;
+  for(int i = 0; i < 4; ++i)
+  {
+    myCpuDataSrc[i] = new EditTextWidget(boss, nfont, xpos, src_y, src_w,
+                                 fontHeight+1, "");
+    myCpuDataSrc[i]->setEditable(false);
+    src_y += fontHeight+2;
+  }
+  int swidth = lfont.getStringWidth("Source Address");
+  new StaticTextWidget(boss, lfont, xpos, src_y + 4, src_w,
+                       fontHeight, swidth <= src_w ? "Source Address" : "Source Addr",
+                       kTextAlignCenter);
 
   // Add labels for other CPU registers
   xpos = x;
   string labels[4] = { "SP:", "A:", "X:", "Y:" };
   for(int row = 0; row < 4; ++row)
   {
-    new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 2,
+    new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 1,
                          lwidth-2, fontHeight,
                          labels[row], kTextAlignLeft);
   }
 
   // Create a bitfield widget for changing the processor status
   xpos = x;  ypos += 4*lineHeight + 2;
-  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth-2, fontHeight,
+  new StaticTextWidget(boss, lfont, xpos, ypos+1, lwidth-2, fontHeight,
                        "PS:", kTextAlignLeft);
-  myPSRegister = new ToggleBitWidget(boss, font, xpos+lwidth, ypos, 8, 1);
+  myPSRegister = new ToggleBitWidget(boss, nfont, xpos+lwidth, ypos, 8, 1);
   myPSRegister->setTarget(this);
   addFocusWidget(myPSRegister);
 
@@ -120,14 +124,19 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   }
   myPSRegister->setList(off, on);
 
-  // Calculate real dimensions
-  _w = lwidth + myPCGrid->getWidth() + myPCLabel->getWidth() + 20;
   _h = ypos + myPSRegister->getHeight() - y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CpuWidget::~CpuWidget()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CpuWidget::setOpsWidget(DataGridOpsWidget* w)
+{
+  myPCGrid->setOpsWidget(w);
+  myCpuGrid->setOpsWidget(w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -138,7 +147,7 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
   switch(cmd)
   {
-    case kDGItemDataChangedCmd:
+    case DataGridWidget::kItemDataChangedCmd:
       switch(id)
       {
         case kPCRegID:
@@ -190,7 +199,7 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kTWItemDataChangedCmd:
+    case ToggleWidget::kItemDataChangedCmd:
     {
       bool state = myPSRegister->getSelectedState();
 
@@ -231,19 +240,6 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuWidget::loadConfig()
 {
-  fillGrid();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CpuWidget::setOpsWidget(DataGridOpsWidget* w)
-{
-  myPCGrid->setOpsWidget(w);
-  myCpuGrid->setOpsWidget(w);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CpuWidget::fillGrid()
-{
   IntArray alist;
   IntArray vlist;
   BoolArray changed;
@@ -251,6 +247,7 @@ void CpuWidget::fillGrid()
   // We push the enumerated items as addresses, and deal with the real
   // address in the callback (handleCommand)
   Debugger& dbg = instance().debugger();
+  CartDebug& cart = dbg.cartDebug();
   CpuDebug& cpu = dbg.cpuDebug();
   const CpuState& state    = (CpuState&) cpu.getState();
   const CpuState& oldstate = (CpuState&) cpu.getOldState();
@@ -286,22 +283,19 @@ void CpuWidget::fillGrid()
   myCpuGridDecValue->setList(alist, vlist, changed);
   myCpuGridBinValue->setList(alist, vlist, changed);
 
-  // Update the data sources for the A/X/Y registers
-  alist.clear(); vlist.clear(); changed.clear();
-  alist.push_back(0);
-  alist.push_back(0);
-  alist.push_back(0);
-
-  vlist.push_back(state.srcS);
-  vlist.push_back(state.srcA);
-  vlist.push_back(state.srcX);
-  vlist.push_back(state.srcY);
-
-  changed.push_back(state.srcS  != oldstate.srcS);
-  changed.push_back(state.srcA  != oldstate.srcA);
-  changed.push_back(state.srcX  != oldstate.srcX);
-  changed.push_back(state.srcY  != oldstate.srcY);
-  myCpuDataSrcGrid->setList(alist, vlist, changed);
+  // Update the data sources for the SP/A/X/Y registers
+  const string& srcS = state.srcS < 0 ? "IMM" : cart.getLabel(state.srcS, true);
+  myCpuDataSrc[0]->setText((srcS != EmptyString ? srcS : Common::Base::toString(state.srcS)),
+                           state.srcS != oldstate.srcS);
+  const string& srcA = state.srcA < 0 ? "IMM" : cart.getLabel(state.srcA, true);
+  myCpuDataSrc[1]->setText((srcA != EmptyString ? srcA : Common::Base::toString(state.srcA)),
+                           state.srcA != oldstate.srcA);
+  const string& srcX = state.srcX < 0 ? "IMM" : cart.getLabel(state.srcX, true);
+  myCpuDataSrc[2]->setText((srcX != EmptyString ? srcX : Common::Base::toString(state.srcX)),
+                           state.srcX != oldstate.srcX);
+  const string& srcY = state.srcY < 0 ? "IMM" : cart.getLabel(state.srcY, true);
+  myCpuDataSrc[3]->setText((srcY != EmptyString ? srcY : Common::Base::toString(state.srcY)),
+                           state.srcY != oldstate.srcY);
 
   // Update the PS register booleans
   changed.clear();
@@ -309,5 +303,5 @@ void CpuWidget::fillGrid()
     changed.push_back(state.PSbits[i] != oldstate.PSbits[i]);
 
   myPSRegister->setState(state.PSbits, changed);
-  myPCLabel->setEditString(dbg.cartDebug().getLabel(state.PC, true));
+  myPCLabel->setText(dbg.cartDebug().getLabel(state.PC, true));
 }

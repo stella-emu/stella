@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: RomAuditDialog.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef ROM_AUDIT_DIALOG_HXX
@@ -29,11 +26,11 @@ class DialogContainer;
 class BrowserDialog;
 class EditTextWidget;
 class StaticTextWidget;
-class MessageBox;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "FSNode.hxx"
+#include "MessageBox.hxx"
 
 class RomAuditDialog : public Dialog
 {
@@ -68,7 +65,7 @@ class RomAuditDialog : public Dialog
     BrowserDialog* myBrowser;
 
     // Show a message about the dangers of using this function
-    MessageBox* myConfirmMsg;
+    GUI::MessageBox* myConfirmMsg;
 
     // Maximum width and height for this dialog
     int myMaxWidth, myMaxHeight;

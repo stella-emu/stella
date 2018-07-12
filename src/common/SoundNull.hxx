@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: SoundNull.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef SOUND_NULL_HXX
@@ -24,13 +24,14 @@ class OSystem;
 
 #include "bspf.hxx"
 #include "Sound.hxx"
+#include "OSystem.hxx"
 
 /**
   This class implements a Null sound object, where-by sound generation
   is completely disabled.
 
   @author Stephen Anthony
-  @version $Id$
+  @version $Id: SoundNull.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class SoundNull : public Sound
 {
@@ -39,7 +40,10 @@ class SoundNull : public Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundNull(OSystem* osystem);
+    SoundNull(OSystem* osystem) : Sound(osystem)
+    {
+      myOSystem->logMessage("Sound disabled.\n", 1);
+    }
  
     /**
       Destructor
@@ -135,7 +139,18 @@ public:
       @param out The serializer device to save to.
       @return The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out) const;
+    bool save(Serializer& out) const
+    {
+      out.putString("TIASound");
+
+      for(int = 0; i < 6; ++i)
+        out.putByte(0);
+
+      // myLastRegisterSetCycle
+      out.putInt(0);
+
+      return true;
+    }
 
     /**
       Loads the current state of this device from the given Serializer.
@@ -143,7 +158,20 @@ public:
       @param in The Serializer device to load from.
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(Serializer& in);
+    bool load(Serializer& in)
+    {
+      if(in.getString() != "TIASound")
+        return false;
+
+      // Read sound registers and discard
+      for(int = 0; i < 6; ++i)
+        in.getByte();
+
+      // myLastRegisterSetCycle
+      in.getInt();
+
+      return true;
+    }
 
     /**
       Get a descriptor for this console class (used in error checking).

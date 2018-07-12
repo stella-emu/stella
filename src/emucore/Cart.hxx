@@ -8,13 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: Cart.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -25,18 +25,19 @@
 
 class Cartridge;
 class Properties;
+class CartDebugWidget;
+class GuiObject;
 
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "Device.hxx"
 #include "Settings.hxx"
+#include "Font.hxx"
 
-#ifdef DEBUGGER_SUPPORT
 struct RamArea {
   uInt16 start;  uInt16 size;  uInt16 roffset;  uInt16 woffset;
 };
 typedef Common::Array<RamArea> RamAreaList;
-#endif
 
 /**
   A cartridge is a device which contains the machine code for a 
@@ -45,7 +46,7 @@ typedef Common::Array<RamArea> RamAreaList;
   0x1000-0x2000 area (or its mirrors).
  
   @author  Bradford W. Mott
-  @version $Id$
+  @version $Id: Cart.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
 class Cartridge : public Device
 {
@@ -57,7 +58,6 @@ class Cartridge : public Device
       @param image    A pointer to the ROM image
       @param size     The size of the ROM image 
       @param md5      The md5sum for the given ROM image (can be updated)
-      @param name     The name of the ROM (can be updated)
       @param dtype    The detected bankswitch type of the ROM image
       @param id       Any extra info about the ROM (currently which part
                       of a multiload game is being accessed
@@ -122,9 +122,7 @@ class Cartridge : public Device
     */
     virtual bool bankChanged();
 
-#ifdef DEBUGGER_SUPPORT
     const RamAreaList& ramAreas() { return myRamAreaList; }
-#endif
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -142,12 +140,17 @@ class Cartridge : public Device
     virtual uInt16 bank() const = 0;
 
     /**
-      Query the number of banks supported by the cartridge.  Note that
-      we're counting the number of 4K 'blocks' that can be swapped into
-      the 4K address space in the 2600.  As such, it's possible to have
-      a ROM that is larger than 4K *but* only consists of 1 bank.
-      Such cases occur when pages of ROM can be swapped in and out,
-      yet the 4K image is considered the same.
+      Query the number of 'banks' supported by the cartridge.  Note that
+      this information is cart-specific, where each cart basically defines
+      what a 'bank' is.
+
+      For the normal Atari-manufactured carts, a standard bank is a 4K
+      block that is directly accessible in the 4K address space.  In other
+      cases where ROMs have 2K blocks in some preset area, the bankCount
+      is the number of such blocks.  Finally, in some esoteric schemes,
+      the number of ways that the addressing can change (multiple ROM and
+      RAM slices at multiple access points) is so complicated that the
+      cart will report having only one 'virtual' bank.
     */
     virtual uInt16 bankCount() const = 0;
 
@@ -198,6 +201,15 @@ class Cartridge : public Device
       @param name  The properties file name of the ROM
     */
     virtual void setRomName(const string& name) { }
+
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.  This will need to be overridden and implemented by
+      each specific cart type, since the bankswitching/inner workings
+      of each cart type can be very different from each other.
+    */
+    virtual CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
+        const GUI::Font& nfont, int x, int y, int w, int h) { return NULL; }
 
   protected:
     /**
@@ -272,6 +284,16 @@ class Cartridge : public Device
     static bool isProbablySC(const uInt8* image, uInt32 size);
 
     /**
+      Returns true if the image is probably a 4K SuperChip (256 bytes RAM)
+    */
+    static bool isProbably4KSC(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image probably contains ARM code in the first 1K
+    */
+    static bool isProbablyARM(const uInt8* image, uInt32 size);
+
+    /**
       Returns true if the image is probably a 0840 bankswitching cartridge
     */
     static bool isProbably0840(const uInt8* image, uInt32 size);
@@ -317,14 +339,28 @@ class Cartridge : public Device
     static bool isProbablyE7(const uInt8* image, uInt32 size);
 
     /**
-      Returns true if the image is probably a EF bankswitching cartridge
+      Returns true if the image is probably an EF/EFSC bankswitching cartridge
     */
-    static bool isProbablyEF(const uInt8* image, uInt32 size);
+    static bool isProbablyEF(const uInt8* image, uInt32 size, const char*& type);
+
+    /**
+      Returns true if the image is probably a BF/BFSC bankswitching cartridge
+    */
+    static bool isProbablyBF(const uInt8* image, uInt32 size, const char*& type);
+    /**
+      Returns true if the image is probably a DF/DFSC bankswitching cartridge
+    */
+    static bool isProbablyDF(const uInt8* image, uInt32 size, const char*& type);
 
     /**
       Returns true if the image is probably an F6 bankswitching cartridge
     */
     static bool isProbablyF6(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably an FA2 bankswitching cartridge
+    */
+    static bool isProbablyFA2(const uInt8* image, uInt32 size);
 
     /**
       Returns true if the image is probably an FE bankswitching cartridge
@@ -361,10 +397,8 @@ class Cartridge : public Device
     uInt8* myCodeAccessBase;
 
   private:
-#ifdef DEBUGGER_SUPPORT
     // Contains RamArea entries for those carts with accessible RAM.
     RamAreaList myRamAreaList;
-#endif
 
     // If myBankLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.

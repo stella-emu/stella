@@ -8,16 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: TogglePixelWidget.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef TOGGLE_PIXEL_WIDGET_HXX
@@ -33,7 +30,12 @@ class TogglePixelWidget : public ToggleWidget
                       int x, int y, int cols, int rows);
     virtual ~TogglePixelWidget();
 
-    void setColor(int color) { _pixelColor = color; }
+    void setColor(int color) {
+      _pixelColor = (color >= 0 && color <= 255) ? color : kDlgColor;
+    }
+    void setBackgroundColor(int color) {
+      _backgroundColor = (color >= 0 && color <= 255) ? color : kDlgColor;
+    }
     void setState(const BoolArray& state);
 
     void setIntState(int value, bool swap);
@@ -43,8 +45,7 @@ class TogglePixelWidget : public ToggleWidget
     void drawWidget(bool hilite);
 
   private:
-    int          _pixelColor;
-    unsigned int _numBits;
+    int  _pixelColor, _backgroundColor;
     bool         _swapBits;
 };
 

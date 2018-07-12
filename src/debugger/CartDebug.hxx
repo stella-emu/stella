@@ -8,19 +8,20 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2014 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id$
+// $Id: CartDebug.hxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
 #ifndef CART_DEBUG_HXX
 #define CART_DEBUG_HXX
 
 class Settings;
+class CartDebugWidget;
 
 #include <map>
 #include <set>
@@ -28,6 +29,7 @@ class Settings;
 
 #include "bspf.hxx"
 #include "Array.hxx"
+#include "Base.hxx"
 #include "Cart.hxx"
 #include "DebuggerSystem.hxx"
 #include "System.hxx"
@@ -45,6 +47,7 @@ class CartState : public DebuggerState
     IntArray ram;    // The actual data values
     IntArray rport;  // Address for reading from RAM
     IntArray wport;  // Address for writing to RAM
+    string bank;     // Current banking layout
 };
 
 class CartDebug : public DebuggerSystem
@@ -55,19 +58,19 @@ class CartDebug : public DebuggerSystem
   public:
     enum DisasmType {
       NONE        = 0,
-      VALID_ENTRY = 1 << 0, /* addresses that can have a label placed in front of it.
+      REFERENCED  = 1 << 0, /* code somewhere in the program references it,
+                               i.e. LDA $F372 referenced $F372 */
+      VALID_ENTRY = 1 << 1, /* addresses that can have a label placed in front of it.
                                A good counterexample would be "FF00: LDA $FE00"; $FF01
                                would be in the middle of a multi-byte instruction, and
                                therefore cannot be labelled. */
-      REFERENCED  = 1 << 1, /* code somewhere in the program references it,
-                               i.e. LDA $F372 referenced $F372 */
 
       // The following correspond to specific types that can be set within the
       // debugger, or specified in a Distella cfg file, and are listed in order
       // of decreasing hierarchy
       //
-      SKIP   = 1 << 7,  // TODO - document this
-      CODE   = 1 << 6,  // disassemble-able code segments
+      CODE   = 1 << 7,  // disassemble-able code segments
+      TCODE  = 1 << 6,  // (tentative) disassemble-able code segments
       GFX    = 1 << 5,  // addresses loaded into GRPx registers
       PGFX   = 1 << 4,  // addresses loaded into PFx registers
       DATA   = 1 << 3,  // addresses loaded into registers other than GRPx / PFx
@@ -83,10 +86,10 @@ class CartDebug : public DebuggerSystem
       bool hllabel;
     };
     typedef Common::Array<DisassemblyTag> DisassemblyList;
-    typedef struct {
+    struct Disassembly {
       DisassemblyList list;
       int fieldwidth;
-    } Disassembly;
+    };
 
   public:
     CartDebug(Debugger& dbg, Console& console, const OSystem& osystem);
@@ -97,6 +100,11 @@ class CartDebug : public DebuggerSystem
 
     void saveOldState();
     string toString();
+
+    // Used to get/set the debug widget, which contains cart-specific
+    // functionality
+    CartDebugWidget* getDebugWidget() const { return myDebugWidget; }
+    void setDebugWidget(CartDebugWidget* w) { myDebugWidget = w; }
 
     // The following assume that the given addresses are using the
     // correct read/write port ranges; no checking will be done to
@@ -134,12 +142,11 @@ class CartDebug : public DebuggerSystem
       Disassemble from the given address using the Distella disassembler
       Address-to-label mappings (and vice-versa) are also determined here
 
-      @param resolvedata Whether to determine code vs data sections
       @param force       Force a re-disassembly, even if the state hasn't changed
 
       @return  True if disassembly changed from previous call, else false
     */
-    bool disassemble(const string& resolvedata, bool force = false);
+    bool disassemble(bool force = false);
 
     /**
       Get the results from the most recent call to disassemble()
@@ -187,17 +194,17 @@ class CartDebug : public DebuggerSystem
     /**
       Get the current bank in use by the cartridge.
     */
-    int getBank();
+    int getBank();  // non-const because of use in YaccParser
 
     /**
       Get the total number of banks supported by the cartridge.
     */
-    int bankCount();
+    int bankCount() const;
 
     /**
       Get the name/type of the cartridge.
     */
-    string getCartType();
+    string getCartType() const;
 
     /**
       Add a label and associated address.
@@ -221,19 +228,31 @@ class CartDebug : public DebuggerSystem
       If places is not -1 and a label hasn't been defined, return a
       formatted hexidecimal address
     */
-    const string& getLabel(uInt16 addr, bool isRead, int places = -1) const;
+    bool getLabel(ostream& buf, uInt16 addr, bool isRead, int places = -1) const;
+    string getLabel(uInt16 addr, bool isRead, int places = -1) const;
     int getAddress(const string& label) const;
 
     /**
-      Load user equates from the given symbol file (as generated by DASM).
+      Load constants from list file (as generated by DASM).
     */
-    string loadSymbolFile(string file = "");
+    string loadListFile();
 
     /**
-      Load/save Distella config file (Distella directives)
+      Load user equates from symbol file (as generated by DASM).
     */
-    string loadConfigFile(string file = "");
-    string saveConfigFile(string file = "");
+    string loadSymbolFile();
+
+    /**
+      Load/save Distella config files (Distella directives)
+    */
+    string loadConfigFile();
+    string saveConfigFile();
+
+    /**
+      Save disassembly and ROM file
+    */
+    string saveDisassembly();
+    string saveRom();
 
     /**
       Show Distella directives (both set by the user and determined by Distella)
@@ -263,39 +282,67 @@ class CartDebug : public DebuggerSystem
     // Determine 'type' of address (ie, what part of the system accessed)
     enum AddrType {
       ADDR_TIA,
-      ADDR_RAM,
-      ADDR_RIOT,
+      ADDR_IO,
+      ADDR_ZPRAM,
       ADDR_ROM
     };
     AddrType addressType(uInt16 addr) const;
 
-    typedef struct {
+    struct DirectiveTag {
       DisasmType type;
       uInt16 start;
       uInt16 end;
-    } DirectiveTag;
+    };
     typedef list<uInt16> AddressList;
     typedef list<DirectiveTag> DirectiveList;
 
-    typedef struct {
+    struct BankInfo {
       uInt16 start;                // start of address space
       uInt16 end;                  // end of address space
       uInt16 offset;               // ORG value
       uInt16 size;                 // size of a bank (in bytes)
       AddressList addressList;     // addresses which PC has hit
       DirectiveList directiveList; // overrides for automatic code determination
-    } BankInfo;
+
+      BankInfo() : start(0), end(0), offset(0), size(0) { }
+#if 0
+      friend ostream& operator<<(ostream& os, const BankInfo& b)
+      {
+        os << "start=$" << HEX4 << b.start << ", end=$" << HEX4 << b.end
+           << ", offset=$" << HEX4 << b.offset << ", size=" << dec << b.size
+           << endl
+           << "addrlist: ";
+        AddressList::const_iterator i;
+        for(i = b.addressList.begin(); i != b.addressList.end(); ++i)
+          os << HEX4 << *i << " ";
+        return os;
+      }
+#endif
+    };
 
     // Address type information determined by Distella
     uInt8 myDisLabels[0x1000], myDisDirectives[0x1000];
 
+    // Information on equates used in the disassembly
+    struct ReservedEquates {
+      bool TIARead[16];
+      bool TIAWrite[64];
+      bool IOReadWrite[24];
+      bool ZPRAM[128];
+      AddrToLabel Label;
+    };
+    ReservedEquates myReserved;
+
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list
-    bool fillDisassemblyList(BankInfo& bankinfo, bool resolvedata, uInt16 search);
+    bool fillDisassemblyList(BankInfo& bankinfo, uInt16 search);
 
     // Analyze of bank of ROM, generating a list of Distella directives
     // based on its disassembly
     void getBankDirectives(ostream& buf, BankInfo& info) const;
+
+    // Get disassembly enum type from 'flags', taking precendence into account
+    DisasmType disasmTypeAbsolute(uInt8 flags) const;
 
     // Convert disassembly enum type to corresponding string and append to buf
     void disasmTypeAsString(ostream& buf, DisasmType type) const;
@@ -310,6 +357,8 @@ class CartDebug : public DebuggerSystem
     CartState myState;
     CartState myOldState;
 
+    CartDebugWidget* myDebugWidget;
+
     // A complete record of relevant diassembly information for each bank
     Common::Array<BankInfo> myBankInfo;
 
@@ -317,12 +366,18 @@ class CartDebug : public DebuggerSystem
     // to corresponding lines of text in that display
     Disassembly myDisassembly;
     map<uInt16, int> myAddrToLineList;
+    bool myAddrToLineIsROM;
 
     // Mappings from label to address (and vice versa) for items
-    // defined by the user (either through a symbol file or manually
+    // defined by the user (either through a DASM symbol file or manually
     // from the commandline in the debugger)
     AddrToLabel myUserLabels;
     LabelToAddr myUserAddresses;
+
+    // Mappings from label to address (and vice versa) for constants
+    // defined through a DASM lst file
+    AddrToLabel myUserCLabels;
+    // LabelToAddr myUserCAddresses;
 
     // Mappings for labels to addresses for system-defined equates
     // Because system equate addresses can have different names
@@ -338,10 +393,14 @@ class CartDebug : public DebuggerSystem
     // The maximum length of all labels currently defined
     uInt16 myLabelLength;
 
+    // Filenames to use for various I/O (currently these are hardcoded)
+    string myListFile, mySymbolFile, myCfgFile, myDisasmFile, myRomFile;
+
     /// Table of instruction mnemonics
     static const char* ourTIAMnemonicR[16];  // read mode
     static const char* ourTIAMnemonicW[64];  // write mode
     static const char* ourIOMnemonic[24];
+    static const char* ourZPMnemonic[128];
 };
 
 #endif
