@@ -134,7 +134,7 @@ find_sdlconfig()
 	echo_n "Looking for sdl-config... "
 	sdlconfigs="$_sdlconfig:sdl-config:sdl11-config:sdl12-config"
 	_sdlconfig=
-	
+
 	IFS="${IFS=   }"; ac_save_ifs="$IFS"; IFS="$SEPARATOR"
 	done=0
 	for path_dir in $_sdlpath; do
@@ -152,9 +152,9 @@ find_sdlconfig()
 			break
 		fi
 	done
-	
+
 	IFS="$ac_save_ifs"
-	
+
 	if test -z "$_sdlconfig"; then
 		echo "none found!"
 		exit 1
@@ -164,8 +164,8 @@ find_sdlconfig()
 #
 # Function to provide echo -n for bourne shells that don't have it
 #
-echo_n() 
-{ 
+echo_n()
+{
 	printf "$@"
 }
 
@@ -319,10 +319,8 @@ case $_host in
 #	_host_os=amigaos
 #	_host_cpu=ppc
 #	;;
-gp2x)
-	_host_os=gp2x
-	_host_cpu=arm
-	_host_prefix=arm-open2x-linux
+retron77)
+	_host_os=retron77
 	;;
 mingw32-cross)
 	_host_os=mingw32msvc
@@ -376,7 +374,7 @@ esac
 #
 echo_n "Looking for C++ compiler... "
 if test -n "$_host"; then
-	compilers="$CXX $_host_prefix-g++ $_host_prefix-c++ $_host_cpu-$_host_os-g++ $_host_cpu-$_host_os-c++"
+	compilers="$CXX g++ c++ $_host_prefix-g++ $_host_prefix-c++ $_host_cpu-$_host_os-g++ $_host_cpu-$_host_os-c++"
 else
 	compilers="$CXX g++ c++"
 fi
@@ -416,7 +414,7 @@ if test "$have_gcc" = yes; then
 			cxx_verc_fail=no
 			;;
 		# whacky beos version strings
-		2.9-beos-991026*|2.9-beos-000224*)	
+		2.9-beos-991026*|2.9-beos-000224*)
 			_cxx_major=2
 			_cxx_minor=95
 			cxx_version="$cxx_version, ok"
@@ -487,7 +485,7 @@ if test "$cxx_verc_fail" = yes ; then
 	echo
 	echo "The version of your compiler is not supported at this time"
 	echo "Please ensure you are using GCC 2.95.x or GCC 3.x"
-	#exit 1	
+	#exit 1
 fi
 
 #
@@ -517,11 +515,18 @@ if test -n "$_host"; then
 #			CXXFLAGS="$CFLAGS -newlib -mstrict-align -mcpu=750 -mtune=7400"
 #			LDFLAGS="$LDFLAGS -newlib"
 #			;;
-		gp2x)
-			echo "Cross-compiling to $_host, forcing static build, and disabling OpenGL."
-			_build_static=yes
+		retron77)
+			echo "Compiling for $_host, disabling windowed and OpenGL modes, debugger and cheats."
 			_build_gl=no
 			_build_windowed=no
+			_build_sound=yes
+			_build_debugger=no
+			_build_snapshot=yes
+			_build_joystick=yes
+			_build_cheats=no
+			_build_thumb=yes
+			_build_static=no
+			_build_profile=no
 			;;
 		mingw32-cross)
 			echo "Cross-compiling for Win32 using MinGW."
@@ -533,7 +538,7 @@ if test -n "$_host"; then
 			exit 1
 			;;
 	esac
-	
+
 else
 	#
 	# Determine build settings
@@ -759,7 +764,7 @@ else
 fi
 
 LIBS="$LIBS `$_sdlconfig $_sdl_conf_libs`"
-LD=$CXX 
+LD=$CXX
 case $_host_os in
 		unix)
 			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
@@ -780,6 +785,11 @@ EOF
 				LIBS="$LIBS -lX11"
 			fi
 			;;
+		retron77)
+			DEFINES="$DEFINES -DBSPF_UNIX -DUNIX -DRETRON77 -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
+			MODULES="$MODULES $SRC/unix $SRC/unix/r77"
+			INCLUDES="$INCLUDES -I$SRC/unix -I$SRC/unix/r77"
+			;;
 		win32)
 			DEFINES="$DEFINES -DBSPF_WIN32 -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/win32"
@@ -792,12 +802,12 @@ EOF
 			DEFINES="$DEFINES -DBSPF_GP2X -DGP2X -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/gp2x"
 			INCLUDES="$INCLUDES -I$SRC/gp2x $ZLIB_CFLAGS"
-			
+
 			_ranlib="arm-linux-ranlib"
 			_ar="arm-linux-ar cru"
 			;;
 		*)
-			echo "WARNING: host system not currenty supported"
+			echo "WARNING: host system not currently supported"
 			exit
 			;;
 esac

@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -40,8 +40,8 @@
 OSystemUNIX::OSystemUNIX()
   : OSystem()
 {
-  setBaseDir("/mnt/stella");
-  setConfigFile("/mnt/stella/stellarc");
+  setBaseDir("~/.stella");
+  setConfigFile("~/.stella/stellarc");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,8 +63,8 @@ void OSystemUNIX::setAppWindowPos(int x, int y, int, int)
   SDL_VERSION (&sdl_info.version);
   if(SDL_GetWMInfo(&sdl_info) > 0 && sdl_info.subsystem == SDL_SYSWM_X11)
   {
-      Display* display = sdl_info.info.x11.display;
-      Window window = sdl_info.info.x11.wmwindow;
+    Display* display = sdl_info.info.x11.display;
+    Window window = sdl_info.info.x11.wmwindow;
     XSizeHints hints;
     long supplied_return;
     XGetWMNormalHints(display, window, &hints, &supplied_return);
@@ -75,7 +75,7 @@ void OSystemUNIX::setAppWindowPos(int x, int y, int, int)
     XMoveWindow(display, window, hints.x, hints.y);
 
     // Flush the resize event so we don't catch it later
-      XSync(display, True);
+    XSync(display, True);
     XSetWMNormalHints(display, window, &hints);
   }
 #endif

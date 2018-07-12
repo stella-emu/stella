@@ -33,8 +33,13 @@
 #include "System.hxx"
 
 #if defined(UNIX)
-  #include "SettingsUNIX.hxx"
-  #include "OSystemUNIX.hxx"
+  #if defined(RETRON77)
+    #include "SettingsR77.hxx"
+    #include "OSystemR77.hxx"
+  #else
+    #include "SettingsUNIX.hxx"
+    #include "OSystemUNIX.hxx"
+  #endif
 #elif defined(WIN32)
   #include "SettingsWin32.hxx"
   #include "OSystemWin32.hxx"
@@ -86,8 +91,13 @@ int main(int argc, char* argv[])
 
   // Create the parent OSystem object and settings
 #if defined(UNIX)
-  theOSystem = new OSystemUNIX();
-  SettingsUNIX settings(theOSystem);
+  #if defined(RETRON77)
+    theOSystem = new OSystemR77();
+    SettingsR77 settings(theOSystem);
+  #else
+    theOSystem = new OSystemUNIX();
+    SettingsUNIX settings(theOSystem);
+  #endif
 #elif defined(WIN32)
   theOSystem = new OSystemWin32();
   SettingsWin32 settings(theOSystem);

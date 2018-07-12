@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -50,8 +50,8 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     myInitializedCount(0),
     myPausedCount(0)
 {
-  myMsg.surface   = myStatsMsg.surface = NULL;
-  myMsg.enabled   = myStatsMsg.enabled = false;
+  myMsg.surface = myStatsMsg.surface = NULL;
+  myMsg.enabled = myStatsMsg.enabled = false;
 
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem->settings());
@@ -122,6 +122,9 @@ FBInitStatus FrameBuffer::initialize(const string& title,
   // where requesting a window that's too large will probably cause a crash
   if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
     return kFailTooLarge;
+
+  // FIXME - it seems that we should just enable SDL_FULLSCREEN directly
+  //flags |= SDL_FULLSCREEN;
 #endif
 
   // Only update the actual flags if no errors were detected
@@ -743,6 +746,8 @@ void FrameBuffer::setFullscreen(bool enable)
   // to changeVidMode()
   changeVidMode(0);
 #else
+  // FIXME - what is this actually doing?
+
   myOSystem->settings().setValue("fullscreen", enable ? "1" : "0");
   VideoMode vidmode = myCurrentModeList->current(myOSystem->settings(), fullScreen());
   cout << "enable=" << (enable ? "1" : "0") << "fullscreen=" << fullScreen() << endl;
@@ -757,7 +762,6 @@ void FrameBuffer::setFullscreen(bool enable)
   myScreenRect.setHeight(vidmode.screen_h);
   setCursorState();
   refresh();
-  //myOSystem->saveConfig();
 #endif
 }
 
@@ -864,10 +868,7 @@ bool FrameBuffer::fullScreen() const
 #ifdef WINDOWED_SUPPORT
   return mySDLFlags & SDL_FULLSCREEN;
 #else
-  if(myOSystem->settings().getString("fullscreen") == "1")
-	return true;
-  else
-	return false;
+  return true;
 #endif
 }
 
@@ -1113,9 +1114,9 @@ void FrameBuffer::centerAppWindow(const VideoMode& mode)
   // Attempt to center the application window in non-fullscreen mode
   if(!fullScreen() && myOSystem->settings().getBool("center"))
   {
-    int x = mode.screen_w >= myOSystem->desktopWidth() ? 0 : 
+    int x = mode.screen_w >= myOSystem->desktopWidth() ? 0 :
       ((myOSystem->desktopWidth() - mode.screen_w) >> 1);
-    int y = mode.screen_h >= myOSystem->desktopHeight() ? 0 : 
+    int y = mode.screen_h >= myOSystem->desktopHeight() ? 0 :
       ((myOSystem->desktopHeight() - mode.screen_h) >> 1);
     myOSystem->setAppWindowPos(x, y, mode.screen_w, mode.screen_h);
   }
@@ -1372,7 +1373,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
   unsigned int i;
   int width = font.getStringWidth(s);
   string str;
-	
+
   if(useEllipsis && width > w)
   {
     // String is too wide. So we shorten it "intelligently", by replacing
@@ -1382,11 +1383,11 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     // make this configurable, replacing the middle probably is a good
     // compromise.
     const int ellipsisWidth = font.getStringWidth("...");
-		
+
     // SLOW algorithm to remove enough of the middle. But it is good enough for now.
     const int halfWidth = (w - ellipsisWidth) / 2;
     int w2 = 0;
-		
+
     for(i = 0; i < s.size(); ++i)
     {
       int charWidth = font.getCharWidth(s[i]);
@@ -1400,7 +1401,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     // At this point we know that the first 'i' chars are together 'w2'
     // pixels wide. We took the first i-1, and add "..." to them.
     str += "...";
-		
+
     // The original string is width wide. Of those we already skipped past
     // w2 pixels, which means (width - w2) remain.
     // The new str is (w2+ellipsisWidth) wide, so we can accomodate about

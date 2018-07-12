@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -21,7 +21,6 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
-#include <unistd.h>
 
 #include "bspf.hxx"
 
@@ -53,9 +52,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_vbo", "true");
 
   // Framebuffer-related options
-  setInternal("tia_filter", "zoom3x");
+  setInternal("tia_filter", "zoom2x");
   setInternal("fullscreen", "0");
-  setInternal("fullres", "1280x720");
+  setInternal("fullres", "auto");
   setInternal("center", "false");
   setInternal("grabmouse", "true");
   setInternal("palette", "standard");
@@ -98,21 +97,21 @@ Settings::Settings(OSystem* osystem)
   setInternal("ctrlcombo", "true");
 
   // Snapshot options
-  setInternal("snapsavedir", "/mnt");
-  setInternal("snaploaddir", "/mnt");
+  setInternal("snapsavedir", "");
+  setInternal("snaploaddir", "");
   setInternal("snapname", "int");
   setInternal("sssingle", "false");
   setInternal("ss1x", "false");
   setInternal("ssinterval", "2");
 
   // Config files and paths
-  setInternal("romdir", "/mnt");
-  setInternal("statedir", "/mnt/stella/statedir");
-  setInternal("cheatfile", "/mnt/stella/stella.cht");
-  setInternal("palettefile", "/mnt/stella/stella.pal");
-  setInternal("propsfile", "/mnt/stella/stella.pro");
-  setInternal("nvramdir", "/mnt/stella/");
-  setInternal("cfgdir", "/mnt/stella/cfg/");
+  setInternal("romdir", "");
+  setInternal("statedir", "");
+  setInternal("cheatfile", "");
+  setInternal("palettefile", "");
+  setInternal("propsfile", "");
+  setInternal("nvramdir", "");
+  setInternal("cfgdir", "");
 
   // ROM browser options
   setInternal("exitlauncher", "false");
@@ -248,7 +247,7 @@ string Settings::loadCommandLine(int argc, char** argv)
       buf.str("");
       buf << "  key = '" << key << "', value = '" << value << "'";
 
-      // Settings read from the commandline must not be saved to 
+      // Settings read from the commandline must not be saved to
       // the rc-file, unless they were previously set
       if(int idx = getInternalPos(key) != -1)
       {
@@ -454,13 +453,13 @@ void Settings::usage()
     << " Arguments are more fully explained in the manual\n"
     << endl
     << "   -dis.resolve   <1|0>        Attempt to resolve code sections in disassembler\n"
-    << "   -dis.gfxformat   <2|16>     Set base to use for displaying GFX sections in disassembler\n"
-    << "   -dis.showaddr    <1|0>      Show opcode addresses in disassembler\n"
-    << "   -dis.relocate    <1|0>      Relocate calls out of address range in disassembler\n"
+    << "   -dis.gfxformat <2|16>       Set base to use for displaying GFX sections in disassembler\n"
+    << "   -dis.showaddr  <1|0>        Show opcode addresses in disassembler\n"
+    << "   -dis.relocate  <1|0>        Relocate calls out of address range in disassembler\n"
     << endl
     << "   -dbg.res       <WxH>        The resolution to use in debugger mode\n"
     << "   -dbg.fontstyle <0-3>        Font style to use in debugger window (bold vs. normal)\n"
-    << "   -break        <address>     Set a breakpoint at 'address'\n"
+    << "   -break         <address>    Set a breakpoint at 'address'\n"
     << "   -debug                      Start in debugger mode\n"
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
@@ -552,9 +551,7 @@ void Settings::saveConfig()
            myInternalSettings[i].value << endl;
   }
 
-  out.flush();
   out.close();
-  system("/bin/fsync /mnt/stella/stellarc&");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

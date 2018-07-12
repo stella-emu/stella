@@ -14,39 +14,32 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx 2838 2014-01-17 23:34:03Z stephena $
+// $Id$
 //============================================================================
 
-#ifndef OSYSTEM_UNIX_HXX
-#define OSYSTEM_UNIX_HXX
-
 #include "bspf.hxx"
+#include "OSystem.hxx"
+#include "OSystemR77.hxx"
 
 /**
-  This class defines UNIX-like OS's (Linux) system specific settings.
+  Each derived class is responsible for calling the following methods
+  in its constructor:
 
-  @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx 2838 2014-01-17 23:34:03Z stephena $
+  setBaseDir()
+  setConfigFile()
+
+  See OSystem.hxx for a further explanation
 */
-class OSystemUNIX : public OSystem
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+OSystemR77::OSystemR77()
+  : OSystem()
 {
-  public:
-    /**
-      Create a new UNIX-specific operating system object
-    */
-    OSystemUNIX();
+  setBaseDir("/mnt/stella");
+  setConfigFile("/mnt/stella/stellarc");
+}
 
-    /**
-      Destructor
-    */
-    virtual ~OSystemUNIX();
-
-  public:
-    /**
-      Move X11 window to given position.  Width and height are not
-      used (or modified).
-    */
-    void setAppWindowPos(int x, int y, /* not used*/ int, int);
-};
-
-#endif
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+OSystemR77::~OSystemR77()
+{
+}

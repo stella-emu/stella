@@ -14,39 +14,39 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx 2838 2014-01-17 23:34:03Z stephena $
+// $Id$
 //============================================================================
 
-#ifndef OSYSTEM_UNIX_HXX
-#define OSYSTEM_UNIX_HXX
+#ifndef SETTINGS_R77_HXX
+#define SETTINGS_R77_HXX
+
+class OSystem;
 
 #include "bspf.hxx"
 
 /**
-  This class defines UNIX-like OS's (Linux) system specific settings.
+  This class is used for the Retron77 system.
+  The Retron77 system is based on an embedded Linux platform.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx 2838 2014-01-17 23:34:03Z stephena $
 */
-class OSystemUNIX : public OSystem
+class SettingsR77 : public Settings
 {
   public:
     /**
-      Create a new UNIX-specific operating system object
+      Create a new R77 settings object
     */
-    OSystemUNIX();
+    SettingsR77(OSystem* osystem);
 
     /**
       Destructor
     */
-    virtual ~OSystemUNIX();
+    virtual ~SettingsR77();
 
-  public:
     /**
-      Move X11 window to given position.  Width and height are not
-      used (or modified).
+      This method will be called to save the current settings to an rc file.
     */
-    void setAppWindowPos(int x, int y, /* not used*/ int, int);
+    void saveConfig();
 };
 
 #endif
