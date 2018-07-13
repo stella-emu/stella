@@ -670,8 +670,10 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
   // Stop the worker and wait until it has finished
   uInt64 totalCycles = emulationWorker.stop();
 
+#ifdef DEBUGGER_SUPPORT
   // Break or trap? -> start debugger
   if (dispatchResult.getStatus() == DispatchResult::Status::debugger) myDebugger->start();
+#endif
 
   // Handle frying
   if (dispatchResult.getStatus() == DispatchResult::Status::ok && myEventHandler->frying())

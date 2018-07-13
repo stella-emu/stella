@@ -45,6 +45,8 @@
 #include "Settings.hxx"
 #include "Vec.hxx"
 
+#include "TIA.hxx"
+#include "M6532.hxx"
 #include "System.hxx"
 #include "M6502.hxx"
 #include "DispatchResult.hxx"
