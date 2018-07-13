@@ -20,9 +20,7 @@
   #include "Expression.hxx"
   #include "CartDebug.hxx"
   #include "PackedBitArray.hxx"
-  #include "TIA.hxx"
   #include "Base.hxx"
-  #include "M6532.hxx"
 
   // Flags for disassembly types
   #define DISASM_CODE  CartDebug::CODE
