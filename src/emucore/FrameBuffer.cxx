@@ -122,9 +122,6 @@ FBInitStatus FrameBuffer::initialize(const string& title,
   // where requesting a window that's too large will probably cause a crash
   if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
     return kFailTooLarge;
-
-  // FIXME - it seems that we should just enable SDL_FULLSCREEN directly
-  //flags |= SDL_FULLSCREEN;
 #endif
 
   // Only update the actual flags if no errors were detected
@@ -731,7 +728,7 @@ void FrameBuffer::toggleFullscreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
-#ifdef WINDOWED_SUPPORT
+#if defined(WINDOWED_SUPPORT)
   // '-1' means fullscreen mode is completely disabled
   if(enable && myOSystem->settings().getString("fullscreen") != "-1" )
     mySDLFlags |= SDL_FULLSCREEN;
@@ -745,9 +742,8 @@ void FrameBuffer::setFullscreen(bool enable)
   // Do a mode change to the 'current' mode by not passing a '+1' or '-1'
   // to changeVidMode()
   changeVidMode(0);
-#else
-  // FIXME - what is this actually doing?
-
+#elif defined(RETRON77)
+  bool isFull = fullScreen();
   myOSystem->settings().setValue("fullscreen", enable ? "1" : "0");
   VideoMode vidmode = myCurrentModeList->current(myOSystem->settings(), fullScreen());
   cout << "enable=" << (enable ? "1" : "0") << "fullscreen=" << fullScreen() << endl;
@@ -762,6 +758,9 @@ void FrameBuffer::setFullscreen(bool enable)
   myScreenRect.setHeight(vidmode.screen_h);
   setCursorState();
   refresh();
+
+  if(isFull != fullScreen())
+    myOSystem->saveConfig();
 #endif
 }
 
@@ -865,8 +864,10 @@ void FrameBuffer::grabMouse(bool grab)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::fullScreen() const
 {
-#ifdef WINDOWED_SUPPORT
+#if defined(WINDOWED_SUPPORT)
   return mySDLFlags & SDL_FULLSCREEN;
+#elif defined(RETRON77)
+  return myOSystem->settings().getString("fullscreen") == "1";
 #else
   return true;
 #endif

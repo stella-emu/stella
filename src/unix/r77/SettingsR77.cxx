@@ -17,7 +17,10 @@
 // $Id$
 //============================================================================
 
+#include <unistd.h>
+
 #include "bspf.hxx"
+#include "OSystem.hxx"
 #include "Settings.hxx"
 #include "SettingsR77.hxx"
 
@@ -32,7 +35,7 @@ SettingsR77::SettingsR77(OSystem* osystem)
 {
   setInternal("video", "soft");
   setInternal("tia_filter", "zoom3x");
-  setInternal("fullscreen", "1");
+  setInternal("fullscreen", "0");
   setInternal("fullres", "1280x720");
 
   setInternal("snapsavedir", "/mnt/stella");
@@ -61,6 +64,21 @@ SettingsR77::~SettingsR77()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SettingsR77::saveConfig()
 {
-  // No settings can ever be changed, so we completely disable saving them.
+  // Almost no settings can be changed, so we completely disable saving them.
   // This may also fix reported issues of the config file becoming corrupt.
+  // There is currently only one setting that can be changed - 'fullscreen'
+  // It determines whether to use 4:3 or 16:9 mode
+
+  ofstream out("/mnt/stella/stellarc");
+  if(!out || !out.is_open())
+  {
+    myOSystem->logMessage("ERROR: Couldn't save settings file", 0);
+    return;
+  }
+
+  out << "fullscreen = " << getString("fullscreen") << endl;
+
+  out.flush();
+  out.close();
+  system("/bin/fsync /mnt/stella/stellarc&");
 }
