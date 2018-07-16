@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -189,7 +189,11 @@ void StateManager::loadState(int slot)
     if(!in.isValid())
     {
       buf.str("");
+  #if !defined(RETRON77)
       buf << "Can't open/load from state file " << slot;
+  #else
+      buf << "Can't open/load from state file";
+  #endif
       myOSystem->frameBuffer().showMessage(buf.str());
       return;
     }
@@ -198,18 +202,33 @@ void StateManager::loadState(int slot)
     // If so, do a complete state load using the Console
     buf.str("");
     if(in.getString() != STATE_HEADER)
+  #if !defined(RETRON77)
       buf << "Incompatible state " << slot << " file";
+  #else
+      buf << "Incompatible state file";
+  #endif
     else
     {
       if(in.getString() == myOSystem->console().cartridge().name())
       {
+    #if !defined(RETRON77)
         if(myOSystem->console().load(in))
           buf << "State " << slot << " loaded";
         else
           buf << "Invalid data in state " << slot << " file";
+    #else
+        if(myOSystem->console().load(in))
+          buf << "State loaded";
+        else
+          buf << "Invalid data in state file";
+    #endif
       }
       else
+    #if !defined(RETRON77)
         buf << "State " << slot << " file doesn't match current ROM";
+    #else
+        buf << "State file doesn't match current ROM";
+    #endif
     }
 
     myOSystem->frameBuffer().showMessage(buf.str());
@@ -251,7 +270,11 @@ void StateManager::saveState(int slot)
     buf.str("");
     if(myOSystem->console().save(out))
     {
+  #if !defined(RETRON77)
       buf << "State " << slot << " saved";
+  #else
+      buf << "State saved";
+  #endif
       if(myOSystem->settings().getBool("autoslot"))
       {
         myCurrentSlot = (slot + 1) % 10;
@@ -259,7 +282,11 @@ void StateManager::saveState(int slot)
       }
     }
     else
+  #if !defined(RETRON77)
       buf << "Error saving state " << slot;
+  #else
+      buf << "Error saving state";
+  #endif
 
     myOSystem->frameBuffer().showMessage(buf.str());
   }

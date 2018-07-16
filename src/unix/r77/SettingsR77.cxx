@@ -26,7 +26,7 @@
 
 /**
   The Retron77 system is a locked-down, set piece of hardware.
-  No configuration of the Stella is possible, since the UI isn't exposed.
+  No configuration of Stella is possible, since the UI isn't exposed.
   So we hardcode the specific settings here.
 */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

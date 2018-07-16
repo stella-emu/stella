@@ -20027,3 +20027,38 @@
 "Controller.Left" "GENESIS"
 "Controller.Right" "GENESIS"
 ""
+
+"Cartridge.MD5" "1c1473bace9bee89379e388302df28af"
+"Cartridge.Name" "WARP_DRIVE_PRGE"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "1f31edf5331934aa68a42d912ff77e53"
+"Cartridge.Name" "kc_proto_SuperCharger"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "bd924ebf49753345c6eec07e1c302050"
+"Cartridge.Name" "Defender_III_v1"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "d9cb8401c34752c5ff8d3e139dabee8c"
+"Cartridge.Name" "Defender_III_Trainer_v1"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "e88eda5c9e0bd2f98d52a1721e4b229f"
+"Cartridge.Name" "SuperCharger_SpaceInvaders_AFP_BETA4"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "efff8df78bf5c2b0add5e4c67119d897"
+"Cartridge.Name" "astronomerV1.0"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "fe15958d2aa18c790e38a4cf2d896662"
+"Cartridge.Name" "NeXioN_3D"
+"Display.Phosphor" "YES"
+""
