@@ -14,7 +14,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DefProps.hxx 2839 2014-01-19 19:41:27Z stephena $
+// $Id$
 //============================================================================
 
 #ifndef DEF_PROPS_HXX
@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3250
+#define DEF_PROPS_SIZE 3257
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -382,6 +382,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "1bc2427ac9b032a52fe527c7b26ce22c", "Intellivision Productions - M Network, Bruce Pedersen, Larry Zwick", "MT5860", "Sea Battle (1983) (M Network)", "High Seas", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "1bef389e3dd2d4ca4f2f60d42c932509", "Dimax - Sinmax", "SM8001", "Space Robot (1983) (Dimax - Sinmax) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "1bf503c724001b09be79c515ecfcbd03", "", "", "Bumper Bash (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "54", "", "", "" }, 
+  { "1c1473bace9bee89379e388302df28af", "", "", "WARP_DRIVE_PRGE", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "1c3f3133a3e5b023c77ecba94fd65995", "CCE", "C-830", "Planet Patrol (1983) (CCE) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "1c5796d277d9e4df3f6648f7012884c4", "Quelle", "715.853 5", "Wachroboter jagt Jupy (Quelle) (PAL)", "AKA Keystone Kapers", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "1c6eb740d3c485766cade566abab8208", "Atari, Michael Kosaka, Peter C. Niday, Robert Vieira", "CX26110", "Crystal Castles (1984) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -418,6 +419,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "1ef04e7e508296a8d9eb61cc7dae2e5d", "SOLID Corp. (D. Scott Williamson)", "CX2655-069", "Star Castle 2600 (SolidCorp) [069]", "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "1f21666b8f78b65051b7a609f1d48608", "K-Tel Vision", "", "Vulture Attack (1982) (K-Tel Vision)", "AKA Condor Attack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "1f2ae0c70a04c980c838c2cdc412cf45", "Atari - GCC", "CX2698", "Rubik's Cube (1984) (Atari)", "AKA Atari Video Cube", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "1f31edf5331934aa68a42d912ff77e53", "", "", "kc_proto_SuperCharger", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "1f349dd41c3f93c4214e5e308dccb056", "", "", "Virtual Pet Demo 2 (CRACKERS) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "1f40eefc7447336ae6cd8ffa5eb325be", "Atari, Chris Crawford", "", "Wizard (1980) (Atari) (Prototype) (4K) [a]", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "1f562b89d081e36d58e6fc943512ec05", "", "", "Hangman Man Biglist2 (Hack)", "Hack of Hangman", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2379,6 +2381,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "bd1bd6f6b928df17a702def0302f46f4", "", "", "Binary To Decimal Routine (2001) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bd39598f067a1193ae81bd6182e756d1", "Telegames", "", "Night Stalker (1989) (Telegames) (PAL)", "AKA Dark Cavern", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bd430c2193045c68d1a20a018a976248", "", "", "Pac Ghost Sprite Demo 2 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "bd924ebf49753345c6eec07e1c302050", "", "", "Defender_III_v1", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "bda1463e02ae3a6e1107ffe1b572efd2", "Atari, Nick 'Sandy Maiwald' Turner", "CX26111", "Snoopy and the Red Baron (1983) (Atari) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bdb4b584ddc90c9d2ec7e21632a236b6", "Atari Freak 1", "", "Nitemare at Sunshine Bowl-a-Rama (Atari Freak 1) (Hack)", "Hack of Pac-Man Jr.", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bdbaeff1f7132358ea64c7be9e46c1ac", "20th Century Fox Video Games, Douglas 'Dallas North' Neubauer", "11105", "Mega Force (1982) (20th Century Fox) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2745,6 +2748,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "d9b49f0678776e04916fa5478685a819", "Activision, John Van Ryzin - Ariola", "EAZ-036-04, EAZ-036-04B, EAZ-036-04I - 711 036-720", "H.E.R.O. (1984) (Activision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "d9bd343533b61389b270c0787210943b", "Atari, Douglas 'Solaris' Neubauer", "CX26134", "Last Starfighter (1984) (Atari) (Prototype)", "Genesis controller (C switches to map mode)", "Hack of Last Starfighter (Solaris prototype)", "", "", "", "", "", "", "GENESIS", "", "", "", "", "", "", "", "" }, 
   { "d9c9cece2e769c7985494b1403a25721", "SOLID Corp. (D. Scott Williamson)", "CX2655*", "Star Castle 2600 (SolidCorp)", "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
+  { "d9cb8401c34752c5ff8d3e139dabee8c", "", "", "Defender_III_Trainer_v1", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "d9da2ae7c7894a29b43b3c6b79f3b7a2", "Atari, Rob Fulop", "CX2633, CX2633P", "Night Driver (1980) (Atari) (PAL) (4K)", "Uses the Paddle Controllers (left only)", "", "", "", "", "", "", "", "PADDLES", "", "", "", "", "", "", "YES", "" }, 
   { "d9fbf1113114fb3a3c97550a0689f10f", "ZiMAG - Emag - Vidco", "713-111 - GN-050", "Pizza Chef (1983) (ZiMAG) (Prototype)", "AKA Pizza Time", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "da0fb2a484d0d2d8f79d6e063c94063d", "", "", "Air Raiders (1982) (Unknown) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2957,6 +2961,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "e823b13751e4388f1f2a375d3560a8d7", "Arcadia Corporation, Stephen Harland Landrum", "AR-4105", "Official Frogger (Preview) (1983) (Arcadia) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "32", "", "", "" }, 
   { "e879b7093ac4cfad74c88d636ca97d00", "", "", "Poker Squares (V0.0f) (2001) (B. Watson)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "e88340f5bd2f03e2e9ce5ecfa9c644f5", "", "", "Lock 'n' Chase (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "e88eda5c9e0bd2f98d52a1721e4b229f", "", "", "SuperCharger_SpaceInvaders_AFP_BETA4", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "e8a3473bf786cf796d1336d2d03a0008", "Parker Brothers, Wilfredo 'Willy' Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart", "", "Star Wars - The Arcade Game (12-05-1983) (Parker Bros) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "e8aa36e3d49e9bfa654c25dcc19c74e6", "Atari, Joe Decuir, Steve Mayer, Larry Wagner", "CX2601, CX2601P", "Combat (1977) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "36", "260", "", "" }, 
   { "e8e7b9bdf4bf04930c2bcaa0278ee637", "", "", "Boring Taz (Hack)", "Hack of Taz", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -3053,6 +3058,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "efb47d70b2965ce689e2c5757616b286", "", "", "Time Test Demo (Eckhard Stolberg) (PAL) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "efd387430a35a659ff569a9a0ec22209", "Atari - GCC", "CX26118", "Millipede (1984) (Atari) (Prototype) (PAL)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "efefc02bbc5258815457f7a5b8d8750a", "CBS Electronics, Richard K. Balaska Jr.", "4L 2520 5000", "Tunnel Runner (1983) (CBS Electronics) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "efff8df78bf5c2b0add5e4c67119d897", "", "", "astronomerV1.0", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "efffafc17b7cb01b9ca35324aa767364", "", "", "Circus Atari (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f02ba8b5292bf3017d10553c9b7b2861", "Atari", "CX26172", "Xenophobe (1990) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f032b2f2d8323404a6b4541f92dd1825", "", "", "Many Blue Bars and Text Demo 3 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -3260,6 +3266,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "fdf6680b2b1e8054293a39700a765692", "", "", "Alpha Demo - The Beta Demo 2 (2000) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fe0b7f27e3ad50bbf9ff468ee56d553d", "", "", "Lines Demo (Eckhard Stolberg) (PAL) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fe0bc4bb92c1c4de7d5706aaa8d8c10d", "", "", "Sprite Demo 2 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "fe15958d2aa18c790e38a4cf2d896662", "", "", "NeXioN_3D", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "fe3b461d4c8b179fe68bc77760294c25", "Atari, Joe Decuir", "CX2621, CX2621P", "Video Olympics (1977) (Atari) (PAL) (4K)", "Uses the Paddle Controllers", "", "", "", "", "", "", "", "PADDLES_IAXDR", "", "YES", "", "", "", "", "", "" }, 
   { "fe67087f9c22655ce519616fc6c6ef4d", "Atari, Randy Bowker", "CX26142", "Crack'ed (11-28-1988) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fe6abc0f63e31e2646c9c600926b5b7f", "Atari", "CX26137", "4 in 1 (02-19-1987) (Atari) (Prototype)", "Home Run, Canyon Bomber, Sky Diver, Night Driver", "Prototype", "", "4IN1", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
