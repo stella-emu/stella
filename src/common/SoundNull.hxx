@@ -75,6 +75,16 @@ class SoundNull : public Sound
     void mute(bool state) override { }
 
     /**
+      Get the fragment size.
+    */
+    uInt32 getFragmentSize() const override { return 512; }
+
+    /**
+      Get the sample rate.
+    */
+    uInt32 getSampleRate() const override { return 31400; }
+
+    /**
       Reset the sound device.
     */
     void reset() override { }
