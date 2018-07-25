@@ -283,7 +283,8 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
   switch(e)
   {
     case SystemEvent::WINDOW_EXPOSED:
-      myOSystem.frameBuffer().update();
+    case SystemEvent::WINDOW_RESIZED:
+      myOSystem.frameBuffer().update(true); // force full update
       break;
 
     case SystemEvent::WINDOW_FOCUS_GAINED:

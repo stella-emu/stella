@@ -206,7 +206,6 @@ uInt32 TIASurface::enableScanlines(int relative, int absolute)
   attr.blendalpha = std::min(100u, attr.blendalpha);
 
   mySLineSurface->applyAttributes();
-  mySLineSurface->setDirty();
 
   return attr.blendalpha;
 }
@@ -217,7 +216,6 @@ void TIASurface::enableScanlineInterpolation(bool enable)
   FBSurface::Attributes& attr = mySLineSurface->attributes();
   attr.smoothing = enable;
   mySLineSurface->applyAttributes();
-  mySLineSurface->setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,8 +229,6 @@ void TIASurface::enablePhosphor(bool enable, int blend)
     myPhosphorPercent = blend / 100.0;
   myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
 
-  myTiaSurface->setDirty();
-  mySLineSurface->setDirty();
   memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
 
   // Precalculate the average colors for the 'phosphor' effect
@@ -283,8 +279,6 @@ void TIASurface::enableNTSC(bool enable)
   sl_attr.blendalpha = myOSystem.settings().getInt("tv.scanlines");
   mySLineSurface->applyAttributes();
 
-  myTiaSurface->setDirty();
-  mySLineSurface->setDirty();
   memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
 }
 
@@ -379,15 +373,11 @@ void TIASurface::render()
   }
 
   // Draw TIA image
-  myTiaSurface->setDirty();
   myTiaSurface->render();
 
   // Draw overlaying scanlines
   if(myScanlinesEnabled)
-  {
-    mySLineSurface->setDirty();
     mySLineSurface->render();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -424,14 +414,10 @@ void TIASurface::reRender()
   if (myUsePhosphor)
   {
     // Draw TIA image
-    myTiaSurface->setDirty();
     myTiaSurface->render();
 
     // Draw overlaying scanlines
     if (myScanlinesEnabled)
-    {
-      mySLineSurface->setDirty();
       mySLineSurface->render();
-    }
   }
 }

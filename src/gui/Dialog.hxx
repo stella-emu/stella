@@ -51,8 +51,8 @@ class Dialog : public GuiObject
 
     virtual ~Dialog();
 
-    void open(bool refresh = true);
-    void close(bool refresh = true);
+    void open();
+    void close();
 
     bool isVisible() const override { return _visible; }
 
@@ -61,6 +61,12 @@ class Dialog : public GuiObject
     virtual void loadConfig()  { }
     virtual void saveConfig()  { }
     virtual void setDefaults() { }
+
+    // A dialog being dirty indicates that its underlying surface needs to be
+    // redrawn and then re-rendered; this is taken care of in ::render()
+    void setDirty() override { _dirty = true; }
+    bool isDirty() const { return _dirty; }
+    bool render();
 
     void addFocusWidget(Widget* w) override;
     void addToFocusList(WidgetArray& list) override;
@@ -190,6 +196,7 @@ class Dialog : public GuiObject
 
     int _tabID;
     int _flags;
+    bool _dirty;
 
   private:
     // Following constructors and assignment operators not supported

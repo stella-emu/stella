@@ -113,10 +113,9 @@ class FrameBuffer
 
     /**
       Updates the display, which depending on the current mode could mean
-      drawing the TIA, any pending menus, etc. Returns the numbers of CPU cycles
-      spent during emulation, or -1 if not applicable.
+      drawing the TIA, any pending menus, etc.
     */
-    void update();
+    void update(bool force = false);
 
     /**
       There is a dedicated update method for emulation mode.
@@ -379,9 +378,10 @@ class FrameBuffer
     virtual void setWindowIcon() = 0;
 
     /**
-      This method is called after any drawing is done (per-frame).
+      This method must be called after all drawing is done, and indicates
+      that the buffers should be pushed to the physical screen.
     */
-    virtual void postFrameUpdate() = 0;
+    virtual void renderToScreen() = 0;
 
     /**
       This method is called to provide information about the FrameBuffer.
@@ -398,8 +398,10 @@ class FrameBuffer
   private:
     /**
       Draw pending messages.
+
+      @return  Indicates whether any changes actually occurred.
     */
-    void drawMessage();
+    bool drawMessage();
 
     /**
       Frees and reloads all surfaces that the framebuffer knows about.
@@ -521,7 +523,7 @@ class FrameBuffer
       bool enabled;
 
       Message()
-        : counter(0), x(0), y(0), w(0), h(0), position(MessagePosition::BottomCenter),
+        : counter(-1), x(0), y(0), w(0), h(0), position(MessagePosition::BottomCenter),
           color(0), enabled(false) { }
     };
     Message myMsg;

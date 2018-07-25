@@ -219,12 +219,6 @@ class FBSurface
         uInt32 color, TextAlign align = TextAlign::Left,
         int deltax = 0, bool useEllipsis = true, uInt32 shadowColor = 0);
 
-    /**
-      This method should be called to indicate that the surface has been
-      modified, and should be redrawn at the next interval.
-    */
-    virtual void setDirty() { }
-
     //////////////////////////////////////////////////////////////////////////
     // Note:  The following methods are FBSurface-specific, and must be
     //        implemented in child classes.
@@ -330,6 +324,13 @@ class FBSurface
     virtual void applyAttributes(bool immediate = true) = 0;
 
     static void setPalette(const uInt32* palette) { myPalette = palette; }
+
+  protected:
+    /**
+      This method must be called to indicate that the surface has been
+      modified, and should be redrawn at the next interval.
+    */
+    virtual void setDirty() = 0;
 
   protected:
     static const uInt32* myPalette;

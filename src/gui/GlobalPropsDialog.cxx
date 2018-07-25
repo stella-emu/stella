@@ -274,8 +274,6 @@ void GlobalPropsDialog::setDefaults()
 
   myHoldSelect->setState(false);
   myHoldReset->setState(false);
-
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -50,7 +50,8 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myLastScanlines(0),
     myGrabMouse(false),
     myCurrentModeList(nullptr)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer()
@@ -258,85 +259,116 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::update()
+void FrameBuffer::update(bool force)
 {
-  // Determine which mode we are in (from the EventHandler)
-  // Take care of S_EMULATE mode here, otherwise let the GUI
-  // figure out what to draw
+  // Onscreen messages are a special case and require different handling than
+  // other objects; they aren't UI dialogs in the normal sense nor are they
+  // TIA images, and they need to be rendered on top of everything
+  // The logic is split in two pieces:
+  //  - at the top of ::update(), to determine whether underlying dialogs
+  //    need to be force-redrawn
+  //  - at the bottom of ::update(), to actually draw them (this must come
+  //    last, since they are always drawn on top of everything else).
 
-  invalidate();
+  // Full rendering is required when messages are enabled
+  force |= myMsg.counter >= 0;
+
+  // Detect when a message has been turned off; one last redraw is required
+  // in this case, to draw over the area that the message occupied
+  if(myMsg.counter == 0)
+    myMsg.counter = -1;
+
   switch(myOSystem.eventHandler().state())
   {
+    case EventHandlerState::NONE:
     case EventHandlerState::EMULATION:
       // Do nothing; emulation mode is handled separately (see below)
-      break;
+      return;
 
     case EventHandlerState::PAUSE:
     {
-      myTIASurface->render();
-
       // Show a pause message immediately and then every 7 seconds
-      if (myPausedCount-- <= 0)
+      if(myPausedCount-- <= 0)
       {
         myPausedCount = uInt32(7 * myOSystem.frameRate());
         showMessage("Paused", MessagePosition::MiddleCenter);
       }
+      if(force)
+        myTIASurface->render();
+
       break;  // EventHandlerState::PAUSE
     }
 
     case EventHandlerState::OPTIONSMENU:
     {
-      myTIASurface->render();
-      myOSystem.menu().draw(true);
+      force |= myOSystem.menu().needsRedraw();
+      if(force)
+      {
+        myTIASurface->render();
+        myOSystem.menu().draw(force);
+      }
       break;  // EventHandlerState::OPTIONSMENU
     }
 
     case EventHandlerState::CMDMENU:
     {
-      myTIASurface->render();
-      myOSystem.commandMenu().draw(true);
+      force |= myOSystem.commandMenu().needsRedraw();
+      if(force)
+      {
+        myTIASurface->render();
+        myOSystem.commandMenu().draw(force);
+      }
       break;  // EventHandlerState::CMDMENU
     }
 
     case EventHandlerState::TIMEMACHINE:
     {
-      myTIASurface->render();
-      myOSystem.timeMachine().draw(true);
+      force |= myOSystem.timeMachine().needsRedraw();
+      if(force)
+      {
+        myTIASurface->render();
+        myOSystem.timeMachine().draw(force);
+      }
       break;  // EventHandlerState::TIMEMACHINE
     }
 
     case EventHandlerState::LAUNCHER:
     {
-      myOSystem.launcher().draw(true);
+      force |= myOSystem.launcher().draw(force);
       break;  // EventHandlerState::LAUNCHER
     }
 
     case EventHandlerState::DEBUGGER:
     {
   #ifdef DEBUGGER_SUPPORT
-      myOSystem.debugger().draw(true);
+      force |= myOSystem.debugger().draw(force);
   #endif
       break;  // EventHandlerState::DEBUGGER
     }
-
-    case EventHandlerState::NONE:
-      return;
   }
 
   // Draw any pending messages
+  // The logic here determines whether to draw the message
+  // If the message is to be disabled, logic inside the draw method
+  // indicates that, and then the code at the top of this method sees
+  // the change and redraws everything
   if(myMsg.enabled)
-    drawMessage();
+    force |= drawMessage();
 
-  // Do any post-frame stuff
-  postFrameUpdate();
+  // Push buffers to screen only when necessary
+  if(force)
+    renderToScreen();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::updateInEmulationMode()
 {
-  // Determine which mode we are in (from the EventHandler)
-  // Take care of S_EMULATE mode here, otherwise let the GUI
-  // figure out what to draw
+  // Update method that is specifically tailored to emulation mode
+  // Typically called from a thread, so it needs to be separate from
+  // the normal update() method
+  //
+  // We don't worry about selective rendering here; the rendering
+  // always happens at the full framerate
 
   myTIASurface->render();
 
@@ -351,8 +383,8 @@ void FrameBuffer::updateInEmulationMode()
   if(myMsg.enabled)
     drawMessage();
 
-  // Do any post-frame stuff
-  postFrameUpdate();
+  // Push buffers to screen
+  renderToScreen();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -413,7 +445,6 @@ void FrameBuffer::drawFrameStats()
   myStatsMsg.surface->drawString(font(), bsinfo, XPOS, YPOS + font().getFontHeight(),
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
-  myStatsMsg.surface->setDirty();
   myStatsMsg.surface->setDstPos(myImageRect.x() + 10, myImageRect.y() + 8);
   myStatsMsg.surface->render();
 }
@@ -448,13 +479,26 @@ void FrameBuffer::enableMessages(bool enable)
     // Erase old messages on the screen
     myMsg.enabled = false;
     myMsg.counter = 0;
-    update();  // Force update immediately
+    update(true);  // Force update immediately
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void FrameBuffer::drawMessage()
+inline bool FrameBuffer::drawMessage()
 {
+  // Either erase the entire message (when time is reached),
+  // or show again this frame
+  if(myMsg.counter == 0)
+  {
+    myMsg.enabled = false;
+    return true;
+  }
+  else if(myMsg.counter < 0)
+  {
+    myMsg.enabled = false;
+    return false;
+  }
+
   // Draw the bounded box and text
   const GUI::Rect& dst = myMsg.surface->dstRect();
 
@@ -511,16 +555,10 @@ inline void FrameBuffer::drawMessage()
   myMsg.surface->frameRect(0, 0, myMsg.w, myMsg.h, kColor);
   myMsg.surface->drawString(font(), myMsg.text, 5, 4,
                             myMsg.w, myMsg.color, TextAlign::Left);
+  myMsg.surface->render();
+  myMsg.counter--;
 
-  // Either erase the entire message (when time is reached),
-  // or show again this frame
-  if(myMsg.counter-- > 0)
-  {
-    myMsg.surface->setDirty();
-    myMsg.surface->render();
-  }
-  else
-    myMsg.enabled = false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -564,6 +602,8 @@ void FrameBuffer::resetSurfaces()
 
   freeSurfaces();
   reloadSurfaces();
+
+  update(true); // force full update
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -589,6 +629,8 @@ void FrameBuffer::stateChanged(EventHandlerState state)
   // Make sure any onscreen messages are removed
   myMsg.enabled = false;
   myMsg.counter = 0;
+
+  update(true); // force full update
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -48,11 +48,11 @@ DialogContainer::~DialogContainer()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::updateTime(uInt64 time)
 {
-  // We only need millisecond precision
-  myTime = time / 1000;
-
   if(myDialogStack.empty())
     return;
+
+  // We only need millisecond precision
+  myTime = time / 1000;
 
   // Check for pending continuous events and send them to the active dialog box
   Dialog* activeDialog = myDialogStack.top();
@@ -98,19 +98,31 @@ void DialogContainer::updateTime(uInt64 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::draw(bool full)
+bool DialogContainer::draw(bool full)
 {
-  // Draw all the dialogs on the stack when we want a full refresh
+  if(myDialogStack.empty())
+    return false;
+
+  // Make the top dialog dirty if a full redraw is requested
   if(full)
-  {
-    myDialogStack.applyAll([](Dialog*& d){
-      d->center();
+    myDialogStack.top()->setDirty();
+
+  // If the top dialog is dirty, then all below it must be redrawn too
+  bool dirty = needsRedraw();
+
+  myDialogStack.applyAll([&](Dialog*& d){
+    if(dirty)
       d->setDirty();
-      d->drawDialog();
-    });
-  }
-  else if(!myDialogStack.empty())
-    myDialogStack.top()->drawDialog();
+    full |= d->render();
+  });
+
+  return full;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DialogContainer::needsRedraw() const
+{
+  return !myDialogStack.empty() ? myDialogStack.top()->isDirty() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -121,14 +133,21 @@ void DialogContainer::addDialog(Dialog* d)
     myOSystem.frameBuffer().showMessage(
         "Unable to show dialog box; FIX THE CODE");
   else
+  {
+    d->setDirty();
     myDialogStack.push(d);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::removeDialog()
 {
   if(!myDialogStack.empty())
+  {
     myDialogStack.pop();
+    if(!myDialogStack.empty())
+      myDialogStack.top()->setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,9 +155,9 @@ void DialogContainer::reStack()
 {
   // Pop all items from the stack, and then add the base menu
   while(!myDialogStack.empty())
-    myDialogStack.top()->close(false);  // don't force a refresh
+    myDialogStack.top()->close();
 
-  myBaseDialog->open(false);  // don't force a refresh
+  myBaseDialog->open();
 
   // Reset all continuous events
   reset();

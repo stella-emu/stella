@@ -82,6 +82,7 @@ class Widget : public GuiObject
     virtual bool handleJoyHat(int stick, int hat, JoyHat value) { return false; }
     virtual bool handleEvent(Event::Type event) { return false; }
 
+    void setDirty() override;
     void draw() override;
     void receivedFocus();
     void lostFocus();
@@ -108,11 +109,11 @@ class Widget : public GuiObject
 
     virtual const GUI::Font& font() const { return _font; }
 
-    void setTextColor(uInt32 color)   { _textcolor = color;   }
-    void setTextColorHi(uInt32 color) { _textcolorhi = color; }
-    void setBGColor(uInt32 color)     { _bgcolor = color;     }
-    void setBGColorHi(uInt32 color)   { _bgcolorhi = color;   }
-    void setShadowColor(uInt32 color) { _shadowcolor = color; }
+    void setTextColor(uInt32 color)   { _textcolor = color;   setDirty(); }
+    void setTextColorHi(uInt32 color) { _textcolorhi = color; setDirty(); }
+    void setBGColor(uInt32 color)     { _bgcolor = color;     setDirty(); }
+    void setBGColorHi(uInt32 color)   { _bgcolorhi = color;   setDirty(); }
+    void setShadowColor(uInt32 color) { _shadowcolor = color; setDirty(); }
 
     virtual void loadConfig() { }
 
@@ -187,7 +188,7 @@ class StaticTextWidget : public Widget
                      uInt32 shadowColor = 0);
     void setValue(int value);
     void setLabel(const string& label);
-    void setAlign(TextAlign align) { _align = align; }
+    void setAlign(TextAlign align) { _align = align; setDirty(); }
     const string& getLabel() const { return _label; }
     bool isEditable() const { return _editable; }
 
@@ -341,8 +342,8 @@ class SliderWidget : public ButtonWidget
 
     void drawWidget(bool hilite) override;
 
-    int valueToPos(int value);
-    int posToValue(int pos);
+    int valueToPos(int value) const;
+    int posToValue(int pos) const;
 
   protected:
     int    _value, _stepValue;

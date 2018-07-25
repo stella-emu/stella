@@ -62,11 +62,10 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setSelected(int item)
 {
+  setDirty();
+
   if(item < 0 || item >= int(_list.size()))
-  {
-    setDirty();  // Simply redraw and exit
     return;
-  }
 
   if(isEnabled())
   {
@@ -180,6 +179,8 @@ void ListWidget::recalc()
 
   // Reset to normal data entry
   abortEditMode();
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

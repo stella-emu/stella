@@ -121,8 +121,15 @@ class DialogContainer
 
     /**
       Draw the stack of menus (full indicates to redraw all items).
+
+      @return  Answers whether any drawing actually occurred.
     */
-    void draw(bool full = false);
+    bool draw(bool full = false);
+
+    /**
+      Answers whether a full redraw is required.
+    */
+    bool needsRedraw() const;
 
     /**
       Reset dialog stack to the main configuration menu.

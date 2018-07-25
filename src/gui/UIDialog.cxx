@@ -279,8 +279,6 @@ void UIDialog::setDefaults()
     default:
       break;
   }
-
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

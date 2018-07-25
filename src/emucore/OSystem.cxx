@@ -704,8 +704,8 @@ void OSystem::mainLoop()
       // Dispatch emulation and render frame (if applicable)
       timesliceSeconds = dispatchEmulation(emulationWorker);
     else {
-      // Render the GUI with 30 Hz in all other modes
-      timesliceSeconds = 1. / 30.;
+      // Render the GUI with 60 Hz in all other modes
+      timesliceSeconds = 1. / 60.;
       myFrameBuffer->update();
     }
 

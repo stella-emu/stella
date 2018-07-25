@@ -47,7 +47,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos;
   int lwidth = font.getStringWidth("Resampling quality "),
     pwidth = font.getStringWidth("512 bytes");
-      
+
   WidgetArray wid;
   VariantList items;
 
@@ -186,7 +186,6 @@ void AudioDialog::updateSettingsWithPreset(AudioSettings& audioSettings)
   myResamplingPopup->setSelected(static_cast<int>(audioSettings.resamplingQuality()));
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::saveConfig()
 {
@@ -235,8 +234,6 @@ void AudioDialog::setDefaults()
   else updatePreset();
 
   updateEnabledState();
-
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

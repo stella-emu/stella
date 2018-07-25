@@ -793,7 +793,7 @@ void Debugger::unlockSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::canExit() const
 {
-  return myDialogStack.top() == baseDialog();
+  return !myDialogStack.empty() && myDialogStack.top() == baseDialog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

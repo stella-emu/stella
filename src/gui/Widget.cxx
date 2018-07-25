@@ -48,6 +48,8 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
 
   _fontWidth  = _font.getMaxCharWidth();
   _fontHeight = _font.getLineHeight();
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,12 +62,18 @@ Widget::~Widget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Widget::setDirty()
+{
+  // A widget being dirty indicates that its parent dialog is dirty
+  // So we inform the parent about it
+  _boss->dialog().setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::draw()
 {
-  if(!_dirty || !isVisible() || !_boss->isVisible())
+  if(!isVisible() || !_boss->isVisible())
     return;
-
-  _dirty = false;
 
   FBSurface& s = _boss->dialog().surface();
 
@@ -119,9 +127,6 @@ void Widget::draw()
     w->draw();
     w = w->_next;
   }
-
-  // Tell the framebuffer this area is dirty
-  s.setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -224,7 +229,6 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
       s.frameRect(x, y, w, h, kDlgColor);
 
       tmp->setDirty();
-      s.setDirty();
     }
   }
 
@@ -278,7 +282,6 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
 
   tmp->setDirty();
-  s.setDirty();
 
   return tmp;
 }
@@ -346,6 +349,8 @@ void StaticTextWidget::drawWidget(bool hilite)
   FBSurface& s = _boss->dialog().surface();
   s.drawString(_font, _label, _x, _y, _w,
                isEnabled() ? _textcolor : uInt32(kColor), _align, 0, true, _shadowcolor);
+
+  _boss->dialog().setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -402,14 +407,12 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 void ButtonWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseLeft()
 {
   clearFlags(WIDGET_HILITED);
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -446,6 +449,8 @@ void ButtonWidget::setBitmap(uInt32* bitmap, int bmw, int bmh)
   _bmh = bmh;
   _bmw = bmw;
   _useBitmap = true;
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -464,6 +469,8 @@ void ButtonWidget::drawWidget(bool hilite)
                  !isEnabled() ? /*hilite ? uInt32(kColor) :*/ uInt32(kBGColorLo) :
                  hilite ? _textcolorhi : _textcolor,
                  _bmw, _bmh);
+
+  _boss->dialog().setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -584,6 +591,7 @@ void CheckboxWidget::setEditable(bool editable)
     _bgcolor = kBGColorHi;
     setFill(CheckboxWidget::Inactive);
   }
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -604,6 +612,7 @@ void CheckboxWidget::setFill(FillType type)
       _drawBox = false;
       break;
   }
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -634,6 +643,8 @@ void CheckboxWidget::drawWidget(bool hilite)
   // Finally draw the label
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,
                isEnabled() ? kTextColor : kColor);
+
+  _boss->dialog().setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -697,18 +708,21 @@ void SliderWidget::setValue(int value)
 void SliderWidget::setMinValue(int value)
 {
   _valueMin = value;
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::setMaxValue(int value)
 {
   _valueMax = value;
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::setStepValue(int value)
 {
   _stepValue = value;
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -868,10 +882,12 @@ void SliderWidget::drawWidget(bool hilite)
   if(_valueLabelWidth > 0)
     s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth, _y + 2,
                  _valueLabelWidth, isEnabled() ? kTextColor : kColor);
+
+  _boss->dialog().setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int SliderWidget::valueToPos(int value)
+int SliderWidget::valueToPos(int value) const
 {
   if(value < _valueMin)      value = _valueMin;
   else if(value > _valueMax) value = _valueMax;
@@ -881,7 +897,7 @@ int SliderWidget::valueToPos(int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int SliderWidget::posToValue(int pos)
+int SliderWidget::posToValue(int pos) const
 {
   int value = (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - _valueLabelGap - _valueLabelWidth - 4) + _valueMin;
 

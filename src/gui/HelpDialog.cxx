@@ -185,8 +185,6 @@ void HelpDialog::displayInfo()
     myKey[i]->setLabel(myKeyStr[i]);
     myDesc[i]->setLabel(myDescStr[i]);
   }
-
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

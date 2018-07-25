@@ -60,7 +60,6 @@ class GuiObject : public CommandReceiver
         myParent(parent),
         myDialog(dialog),
         _x(x), _y(y), _w(w), _h(h),
-        _dirty(false),
         _firstWidget(nullptr) { }
 
     virtual ~GuiObject() = default;
@@ -68,8 +67,6 @@ class GuiObject : public CommandReceiver
     OSystem& instance() const       { return myOSystem; }
     DialogContainer& parent() const { return myParent;  }
     Dialog& dialog() const          { return myDialog;  }
-
-    void setDirty() { _dirty = true; }
 
     virtual int getAbsX() const     { return _x; }
     virtual int getAbsY() const     { return _y; }
@@ -82,6 +79,7 @@ class GuiObject : public CommandReceiver
     virtual void setHeight(int h)   { _h = h; }
 
     virtual bool isVisible() const = 0;
+    virtual void setDirty() = 0;
 
     /** Add given widget(s) to the focus list */
     virtual void addFocusWidget(Widget* w) = 0;
@@ -107,7 +105,6 @@ class GuiObject : public CommandReceiver
 
   protected:
     int _x, _y, _w, _h;
-    bool _dirty;
 
     Widget* _firstWidget;
     WidgetArray _focusList;

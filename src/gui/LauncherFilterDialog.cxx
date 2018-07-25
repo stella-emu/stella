@@ -178,8 +178,6 @@ void LauncherFilterDialog::saveConfig()
 void LauncherFilterDialog::setDefaults()
 {
   handleFileTypeChange("allroms");
-
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

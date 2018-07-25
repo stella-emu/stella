@@ -399,8 +399,6 @@ void InputDialog::setDefaults()
     default:
       break;
   }
-
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

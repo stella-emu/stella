@@ -130,8 +130,6 @@ class DebuggerDialog : public Dialog
     ButtonWidget*    myRewindButton;
     ButtonWidget*    myUnwindButton;
 
-    //ButtonWidget*    myOptionsButton;
-
     unique_ptr<GUI::MessageBox> myFatalError;
     unique_ptr<OptionsDialog> myOptions;
 

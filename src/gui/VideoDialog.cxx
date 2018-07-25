@@ -551,8 +551,6 @@ void VideoDialog::setDefaults()
       break;
     }
   }
-
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -580,8 +578,6 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
   myTVScanLabel->setEnabled(scanenable);
   myTVScanIntense->setEnabled(scanenable);
   myTVScanInterpolate->setEnabled(scanenable);
-
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -164,9 +164,10 @@ class FrameBufferSDL2 : public FrameBuffer
     string about() const override;
 
     /**
-      This method is called after any drawing is done (per-frame).
+      This method must be called after all drawing is done, and indicates
+      that the buffers should be pushed to the physical screen.
     */
-    void postFrameUpdate() override;
+    void renderToScreen() override;
 
   private:
     // The SDL video buffer
@@ -175,9 +176,6 @@ class FrameBufferSDL2 : public FrameBuffer
 
     // Used by mapRGB (when palettes are created)
     SDL_PixelFormat* myPixelFormat;
-
-    // Indicates that the renderer has been modified, and should be redrawn
-    bool myDirtyFlag;
 
   private:
     // Following constructors and assignment operators not supported

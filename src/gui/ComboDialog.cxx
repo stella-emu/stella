@@ -118,7 +118,7 @@ void ComboDialog::setDefaults()
   for(int i = 0; i < 8; ++i)
     myEvents[i]->setSelected("None", "-1");
 
-  _dirty = true;
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

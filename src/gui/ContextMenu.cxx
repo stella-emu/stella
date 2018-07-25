@@ -546,45 +546,38 @@ void ContextMenu::drawDialog()
   // by the ScummVM guys, so I'm not going to mess with it.
   FBSurface& s = surface();
 
-  if(_dirty)
+  // Draw menu border and background
+  s.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
+  s.frameRect(_x, _y, _w, _h, kTextColor);
+
+  // Draw the entries, taking scroll buttons into account
+  int x = _x + 1, y = _y + 1, w = _w - 2;
+
+  // Show top scroll area
+  int offset = _selectedOffset;
+  if(_showScroll)
   {
-    // Draw menu border and background
-    s.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
-    s.frameRect(_x, _y, _w, _h, kTextColor);
-
-    // Draw the entries, taking scroll buttons into account
-    int x = _x + 1, y = _y + 1, w = _w - 2;
-
-    // Show top scroll area
-    int offset = _selectedOffset;
-    if(_showScroll)
-    {
-      s.hLine(x, y+_rowHeight-1, w+2, kColor);
-      s.drawBitmap(up_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, 8);
-      y += _rowHeight;
-      offset--;
-    }
-
-    for(int i = _firstEntry, current = 0; i < _firstEntry + _numEntries; ++i, ++current)
-    {
-      bool hilite = offset == current;
-      if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
-      s.drawString(_font, _entries[i].first, x + 1, y + 2, w,
-                   !hilite ? kTextColor : kTextColorInv);
-      y += _rowHeight;
-    }
-
-    // Show bottom scroll area
-    if(_showScroll)
-    {
-      s.hLine(x, y, w+2, kColor);
-      s.drawBitmap(down_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, 8);
-    }
-
-    s.setDirty();
-    _dirty = false;
+    s.hLine(x, y+_rowHeight-1, w+2, kColor);
+    s.drawBitmap(up_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, 8);
+    y += _rowHeight;
+    offset--;
   }
 
-  // Commit surface changes to screen
-  s.render();
+  for(int i = _firstEntry, current = 0; i < _firstEntry + _numEntries; ++i, ++current)
+  {
+    bool hilite = offset == current;
+    if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
+    s.drawString(_font, _entries[i].first, x + 1, y + 2, w,
+                 !hilite ? kTextColor : kTextColorInv);
+    y += _rowHeight;
+  }
+
+  // Show bottom scroll area
+  if(_showScroll)
+  {
+    s.hLine(x, y, w+2, kColor);
+    s.drawBitmap(down_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, 8);
+  }
+
+  setDirty();
 }

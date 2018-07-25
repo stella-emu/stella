@@ -64,6 +64,7 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
 {
   setTitle(title);
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,7 +87,7 @@ Dialog::~Dialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::open(bool refresh)
+void Dialog::open()
 {
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
@@ -103,10 +104,12 @@ void Dialog::open(bool refresh)
   buildCurrentFocusList();
 
   _visible = true;
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::close(bool refresh)
+void Dialog::close()
 {
   if (_mouseWidget)
   {
@@ -119,6 +122,7 @@ void Dialog::close(bool refresh)
   _visible = false;
 
   parent().removeDialog();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,6 +135,8 @@ void Dialog::setTitle(const string& title)
   else
     _th = _font.getLineHeight() + 4;
   _h += _th;
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -142,6 +148,29 @@ void Dialog::center()
     const GUI::Rect& dst = _surface->dstRect();
     _surface->setDstPos((screen.w - dst.width()) >> 1, (screen.h - dst.height()) >> 1);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::render()
+{
+  if(!_dirty)
+    return false;
+
+  // Draw this dialog
+  center();
+  drawDialog();
+
+  // Update dialog surface; also render any extra surfaces
+  // Extra surfaces must be rendered afterwards, so they are drawn on top
+  if(_surface->render())
+  {
+    mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface){
+      surface->render();
+    });
+  }
+  _dirty = false;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -291,6 +320,7 @@ void Dialog::addSurface(shared_ptr<FBSurface> surface)
   mySurfaceStack.push(surface);
 }
 
+static int COUNT = 1;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::drawDialog()
 {
@@ -299,63 +329,46 @@ void Dialog::drawDialog()
 
   FBSurface& s = surface();
 
-  if(_dirty)
+cerr << COUNT++ << " Dialog::drawDialog()\n";
+  // Dialog is still on top if e.g a ContextMenu is opened
+  bool onTop = parent().myDialogStack.top() == this
+    || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
+    && !parent().myDialogStack.top()->hasTitle());
+
+  if(_flags & WIDGET_CLEARBG)
   {
-    // dialog is still on top if e.g a ContextMenu is opened
-    bool onTop = parent().myDialogStack.top() == this
-      || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
-      && !parent().myDialogStack.top()->hasTitle());
-
-    if(_flags & WIDGET_CLEARBG)
+    //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
+    s.fillRect(_x, _y + _th, _w, _h - _th, onTop ? kDlgColor : kBGColorLo);
+    if(_th)
     {
-      //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-      s.fillRect(_x, _y + _th, _w, _h - _th, onTop ? kDlgColor : kBGColorLo);
-      if(_th)
-      {
-        s.fillRect(_x, _y, _w, _th, onTop ? kColorTitleBar : kColorTitleBarLo);
-        s.drawString(_font, _title, _x + 10, _y + 2 + 1, _font.getStringWidth(_title),
-                     onTop ? kColorTitleText : kColorTitleTextLo);
-      }
+      s.fillRect(_x, _y, _w, _th, onTop ? kColorTitleBar : kColorTitleBarLo);
+      s.drawString(_font, _title, _x + 10, _y + 2 + 1, _font.getStringWidth(_title),
+                   onTop ? kColorTitleText : kColorTitleTextLo);
     }
-    else
-      s.invalidate();
-    if(_flags & WIDGET_BORDER)
-      s.frameRect(_x, _y, _w, _h, onTop ? kColor : kShadowColor);
+  }
+  else
+    s.invalidate();
+  if(_flags & WIDGET_BORDER)
+    s.frameRect(_x, _y, _w, _h, onTop ? kColor : kShadowColor);
 
-    // Make all child widget dirty
-    Widget* w = _firstWidget;
-    Widget::setDirtyInChain(w);
+  // Make all child widget dirty
+  Widget* w = _firstWidget;
+  Widget::setDirtyInChain(w);
 
-    // Draw all children
-    w = _firstWidget;
-    while(w)
-    {
-      w->draw();
-      w = w->_next;
-    }
-
-    // Draw outlines for focused widgets
-    // Don't change focus, since this will trigger lost and received
-    // focus events
-    if(_focusedWidget)
-      _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
-                          _focusedWidget, 0, false);
-
-    // Tell the surface(s) this area is dirty
-    s.setDirty();
-
-    _dirty = false;
+  // Draw all children
+  w = _firstWidget;
+  while(w)
+  {
+    w->draw();
+    w = w->_next;
   }
 
-  // Commit surface changes to screen; also render any extra surfaces
-  // Extra surfaces must be rendered afterwards, so they are drawn on top
-  if(s.render())
-  {
-    mySurfaceStack.applyAll([](shared_ptr<FBSurface>& surface){
-      surface->setDirty();
-      surface->render();
-    });
-  }
+  // Draw outlines for focused widgets
+  // Don't change focus, since this will trigger lost and received
+  // focus events
+  if(_focusedWidget)
+    _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
+                        _focusedWidget, 0, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

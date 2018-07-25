@@ -226,7 +226,7 @@ void AboutDialog::displayInfo()
   }
 
   // Redraw entire dialog
-  _dirty = true;
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

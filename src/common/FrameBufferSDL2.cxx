@@ -32,8 +32,7 @@
 FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   : FrameBuffer(osystem),
     myWindow(nullptr),
-    myRenderer(nullptr),
-    myDirtyFlag(true)
+    myRenderer(nullptr)
 {
   // Initialize SDL2 context
   if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) < 0)
@@ -275,7 +274,6 @@ string FrameBufferSDL2::about() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::invalidate()
 {
-  myDirtyFlag = true;
   SDL_RenderClear(myRenderer);
 }
 
@@ -302,14 +300,10 @@ bool FrameBufferSDL2::fullScreen() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::postFrameUpdate()
+void FrameBufferSDL2::renderToScreen()
 {
-  if(myDirtyFlag)
-  {
-    // Now show all changes made to the renderer
-    SDL_RenderPresent(myRenderer);
-    myDirtyFlag = false;
-  }
+  // Show all changes made to the renderer
+  SDL_RenderPresent(myRenderer);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -347,5 +341,5 @@ void FrameBufferSDL2::readPixels(uInt8* pixels, uInt32 pitch,
 void FrameBufferSDL2::clear()
 {
   invalidate();
-  postFrameUpdate();
+  renderToScreen();
 }
