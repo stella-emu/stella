@@ -35,9 +35,11 @@
     SaveKey messages enabled
 
   * Fixed missing TV format update in frame stats dialog when switching display
-    type
+    type.
 
-  * Updated PAL palette
+  * Updated PAL palette.
+
+  * Updated included PNG library to latest stable version.
 
 -Have fun!
 
