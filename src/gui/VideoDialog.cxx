@@ -215,11 +215,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myCenter);
   ypos += (lineHeight + VGAP) * 2;
 
-  // Timing to use between frames
-  myFrameTiming = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Idle between frames (*)");
-  wid.push_back(myFrameTiming);
-  ypos += lineHeight + VGAP;
-
   // Use multi-threading
   myUseThreads = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Multi-threading");
   wid.push_back(myUseThreads);
@@ -359,9 +354,6 @@ void VideoDialog::loadConfig()
   // TIA interpolation
   myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
 
-  // Wait between frames
-  myFrameTiming->setState(instance().settings().getString("timing") == "sleep");
-
   // Aspect ratio setting (NTSC and PAL)
   myNAspectRatio->setValue(instance().settings().getInt("tia.aspectn"));
   myPAspectRatio->setValue(instance().settings().getInt("tia.aspectp"));
@@ -430,9 +422,6 @@ void VideoDialog::saveConfig()
   // TIA Palette
   instance().settings().setValue("palette",
     myTIAPalette->getSelectedTag().toString());
-
-  // Wait between frames
-  instance().settings().setValue("timing", myFrameTiming->getState() ? "sleep" : "busy");
 
   // TIA interpolation
   instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
@@ -514,7 +503,6 @@ void VideoDialog::setDefaults()
       myRenderer->setSelectedIndex(0);
       myTIAZoom->setSelected("3", "");
       myTIAPalette->setSelected("standard", "");
-      myFrameTiming->setState(true);
       myTIAInterpolate->setState(false);
       myNAspectRatio->setValue(91);
       myPAspectRatio->setValue(109);

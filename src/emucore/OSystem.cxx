@@ -686,8 +686,6 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::mainLoop()
 {
-  // Sleep-based wait: good for CPU, bad for graphical sync
-  bool busyWait = mySettings->getString("timing") != "sleep";
   // 6507 time
   time_point<high_resolution_clock> virtualTime = high_resolution_clock::now();
   // The emulation worker
@@ -726,10 +724,7 @@ void OSystem::mainLoop()
       virtualTime = now;
     else if (virtualTime > now) {
       // Wait until we have caught up with 6507 time
-      if (busyWait && myEventHandler->state() == EventHandlerState::EMULATION) {
-        while (high_resolution_clock::now() < virtualTime);
-      }
-      else std::this_thread::sleep_until(virtualTime);
+      std::this_thread::sleep_until(virtualTime);
     }
   }
 

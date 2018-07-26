@@ -40,7 +40,6 @@ Settings::Settings(OSystem& osystem)
   setInternal("fullscreen", "false");
   setInternal("center", "false");
   setInternal("palette", "standard");
-  setInternal("timing", "sleep");
   setInternal("uimessages", "true");
 
   // TIA specific options
@@ -307,9 +306,6 @@ void Settings::validate()
 
   f = getFloat("speed");
   if (f <= 0) setInternal("speed", "1.0");
-
-  s = getString("timing");
-  if(s != "sleep" && s != "busy")  setInternal("timing", "sleep");
 
   i = getInt("tia.aspectn");
   if(i < 80 || i > 120)  setInternal("tia.aspectn", "90");
