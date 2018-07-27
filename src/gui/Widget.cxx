@@ -350,7 +350,7 @@ void StaticTextWidget::drawWidget(bool hilite)
   s.drawString(_font, _label, _x, _y, _w,
                isEnabled() ? _textcolor : uInt32(kColor), _align, 0, true, _shadowcolor);
 
-  _boss->dialog().setDirty();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -470,7 +470,7 @@ void ButtonWidget::drawWidget(bool hilite)
                  hilite ? _textcolorhi : _textcolor,
                  _bmw, _bmh);
 
-  _boss->dialog().setDirty();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -556,14 +556,12 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
 void CheckboxWidget::handleMouseEntered()
 {
   setFlags(WIDGET_HILITED);
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::handleMouseLeft()
 {
   clearFlags(WIDGET_HILITED);
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -644,7 +642,7 @@ void CheckboxWidget::drawWidget(bool hilite)
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,
                isEnabled() ? kTextColor : kColor);
 
-  _boss->dialog().setDirty();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -883,7 +881,7 @@ void SliderWidget::drawWidget(bool hilite)
     s.drawString(_font, _valueLabel + _valueUnit, _x + _w - _valueLabelWidth, _y + 2,
                  _valueLabelWidth, isEnabled() ? kTextColor : kColor);
 
-  _boss->dialog().setDirty();
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
