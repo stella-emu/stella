@@ -173,14 +173,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myUseVSync = new CheckboxWidget(myTab, font, xpos, ypos + 1, "VSync");
   wid.push_back(myUseVSync);
 
-  // Add message concerning usage
-  const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, infofont, 10, ypos,
-                       "(*) Requires application restart");
-
   // Move over to the next column
-  xpos += mySpeed->getWidth() + 20;
+  xpos += mySpeed->getWidth() + 28;
   ypos = VBORDER;
 
   // Fullscreen
