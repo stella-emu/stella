@@ -83,7 +83,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   const int INDENT = 20;
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos, tabID;
   int lwidth = font.getStringWidth("TIA Palette "),
