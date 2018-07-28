@@ -259,7 +259,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) colors identical for player and developer settings");
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Colors identical for player and developer settings");
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
