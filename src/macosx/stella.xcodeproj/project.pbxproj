@@ -623,6 +623,8 @@
 		DCFF14CE18B0260300A20364 /* EventHandlerSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */; };
 		DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */; };
 		DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */; };
+		E007231E210FBF5E002CF343 /* FpsMeter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E007231C210FBF5C002CF343 /* FpsMeter.hxx */; };
+		E007231F210FBF5E002CF343 /* FpsMeter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E007231D210FBF5D002CF343 /* FpsMeter.cxx */; };
 		E0306E0C1F93E916003DDD52 /* YStartDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0306E061F93E915003DDD52 /* YStartDetector.cxx */; };
 		E0306E0D1F93E916003DDD52 /* FrameLayoutDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0306E071F93E915003DDD52 /* FrameLayoutDetector.hxx */; };
 		E0306E0E1F93E916003DDD52 /* YStartDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0306E081F93E915003DDD52 /* YStartDetector.hxx */; };
@@ -1318,6 +1320,8 @@
 		DCFF14CC18B0260300A20364 /* EventHandlerSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventHandlerSDL2.hxx; sourceTree = "<group>"; };
 		DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ComboDialog.cxx; sourceTree = "<group>"; };
 		DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ComboDialog.hxx; sourceTree = "<group>"; };
+		E007231C210FBF5C002CF343 /* FpsMeter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FpsMeter.hxx; sourceTree = "<group>"; };
+		E007231D210FBF5D002CF343 /* FpsMeter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FpsMeter.cxx; sourceTree = "<group>"; };
 		E0306E061F93E915003DDD52 /* YStartDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YStartDetector.cxx; sourceTree = "<group>"; };
 		E0306E071F93E915003DDD52 /* FrameLayoutDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameLayoutDetector.hxx; sourceTree = "<group>"; };
 		E0306E081F93E915003DDD52 /* YStartDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = YStartDetector.hxx; sourceTree = "<group>"; };
@@ -1616,6 +1620,8 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				E007231D210FBF5D002CF343 /* FpsMeter.cxx */,
+				E007231C210FBF5C002CF343 /* FpsMeter.hxx */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
@@ -2437,6 +2443,7 @@
 				DCCF4AD314B7E6C300814FAB /* NullControlWidget.hxx in Headers */,
 				DCCF4ADD14B9433100814FAB /* GenesisWidget.hxx in Headers */,
 				DCF3A6EA1DFC75E3008A8AF3 /* Ball.hxx in Headers */,
+				E007231E210FBF5E002CF343 /* FpsMeter.hxx in Headers */,
 				DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */,
 				DCCF4B0314BA27EB00814FAB /* DrivingWidget.hxx in Headers */,
 				DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */,
@@ -2732,6 +2739,7 @@
 				DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */,
 				2D9174FC09BA90380026E9FF /* RamWidget.cxx in Sources */,
 				DC2AADAE194F389C0026C7A4 /* CartDASH.cxx in Sources */,
+				E007231F210FBF5E002CF343 /* FpsMeter.cxx in Sources */,
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
 				DCF3A6F81DFC75E3008A8AF3 /* PaddleReader.cxx in Sources */,
 				2D9174FE09BA90380026E9FF /* RomWidget.cxx in Sources */,
