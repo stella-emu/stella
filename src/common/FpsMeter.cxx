@@ -43,7 +43,10 @@ void FpsMeter::render(uInt32 frameCount)
   }
 
   uInt32 queueSize = myQueue.capacity();
-  entry first, last = (entry){.frames = frameCount, .timestamp = high_resolution_clock::now()};
+  entry first, last;
+
+  last.frames = frameCount;
+  last.timestamp = high_resolution_clock::now();
 
   if (myQueue.size() < queueSize) {
     myQueue.push_back(last);
