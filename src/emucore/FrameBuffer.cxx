@@ -852,12 +852,18 @@ void FrameBuffer::toggleGrabMouse()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showCursor(bool show)
 {
+#if !defined(WINDOWED_SUPPORT)
+  show = false;
+#endif
   SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::grabMouse(bool grab)
 {
+#if !defined(WINDOWED_SUPPORT)
+  grab = true;
+#endif
   SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
 }
 
