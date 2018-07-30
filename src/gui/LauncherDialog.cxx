@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -41,6 +41,7 @@
 #include "StringList.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
+#include "Version.hxx"
 
 #include "LauncherDialog.hxx"
 
@@ -54,6 +55,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myOptionsButton(NULL),
     myQuitButton(NULL),
     myList(NULL),
+    myPattern(NULL),
     myGameList(NULL),
     myRomInfoWidget(NULL),
     myMenu(NULL),
@@ -69,12 +71,18 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
             fontHeight = font.getFontHeight(),
             bwidth  = (_w - 2 * 10 - 8 * (4 - 1)) / 4,
             bheight = font.getLineHeight() + 4;
-  int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0, fwidth = 0;
+  int xpos = 10, ypos = 8, lwidth = 0, lwidth2 = 0, fwidth = 0;
   WidgetArray wid;
+
+  // App information
+  ostringstream ver;
+  ver << "Stella " << STELLA_VERSION << " for RetroN 77";
+  new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
+                       ver.str(), kTextAlignCenter);
+  ypos += fontHeight;
 
   // Show game name
   lwidth = font.getStringWidth("Select an item from the list ...");
-  xpos += 10;  ypos += 8;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                        "Select an item from the list ...", kTextAlignLeft);
 
@@ -84,32 +92,21 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                     lwidth2, fontHeight,
                                     "", kTextAlignRight);
 
-  // Add filter that can narrow the results shown in the listing
-  // It has to fit between both labels
-  if(w >= 640)
-  {
-    fwidth = BSPF_min(15 * fontWidth, xpos - 20 - lwidth);
-    xpos -= fwidth + 5;
-    myPattern = new EditTextWidget(this, font, xpos, ypos,
-                                   fwidth, fontHeight, "");
-  }
-
   // Add list with game titles
   // Before we add the list, we need to know the size of the RomInfoWidget
   xpos = 10;  ypos += fontHeight + 5;
   int romWidth = 0;
   int romSize = instance().settings().getInt("romviewer");
-  if(romSize > 1 && w >= 1000 && h >= 760)
+  if(romSize > 1 && w >= 1000 && h >= 720)
     romWidth = 660;
   else if(romSize > 0 && w >= 640 && h >= 480)
     romWidth = 365;
 
   int listWidth = _w - (romWidth > 0 ? romWidth+5 : 0) - 20;
   myList = new StringListWidget(this, font, xpos, ypos,
-                                listWidth, _h - 28 - bheight - 2*fontHeight);
+                                listWidth, _h - 20 - bheight - 2*fontHeight);
   myList->setEditable(false);
   wid.push_back(myList);
-  if(myPattern)  wid.push_back(myPattern);  // Add after the list for tab order
 
   // Add ROM info area (if enabled)
   if(romWidth > 0)
@@ -131,43 +128,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                 _w - xpos - 10, fontHeight,
                                 "", kTextAlignLeft);
 
-  // Add four buttons at the bottom
-  xpos = 10;  ypos += myDir->getHeight() + 4;
-#ifndef MAC_OSX
-  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Select", kLoadROMCmd);
-  wid.push_back(myStartButton);
-    xpos += bwidth + 8;
-  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                      "Go Up", kPrevDirCmd);
-  wid.push_back(myPrevDirButton);
-    xpos += bwidth + 8;
-  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd);
-  wid.push_back(myOptionsButton);
-    xpos += bwidth + 8;
-  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Quit", kQuitCmd);
-  wid.push_back(myQuitButton);
-    xpos += bwidth + 8;
-#else
-  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                  "Quit", kQuitCmd);
-  wid.push_back(myQuitButton);
-    xpos += bwidth + 8;
-  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Options", kOptionsCmd);
-  wid.push_back(myOptionsButton);
-    xpos += bwidth + 8;
-  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                      "Go Up", kPrevDirCmd);
-  wid.push_back(myPrevDirButton);
-    xpos += bwidth + 8;
-  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                   "Select", kLoadROMCmd);
-  wid.push_back(myStartButton);
-    xpos += bwidth + 8;
-#endif
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 
   // Create an options dialog, similar to the in-game one
@@ -257,7 +217,8 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list)
   if(myList->getList().isEmpty())
   {
-    myPrevDirButton->setEnabled(false);
+    if(myPrevDirButton)
+      myPrevDirButton->setEnabled(false);
     myCurrentNode = FilesystemNode(romdir == "" ? "~" : romdir);
     if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))
       myCurrentNode = FilesystemNode("~");
@@ -273,10 +234,6 @@ void LauncherDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::enableButtons(bool enable)
 {
-  myStartButton->setEnabled(enable);
-  myPrevDirButton->setEnabled(enable);
-  myOptionsButton->setEnabled(enable);
-  myQuitButton->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -289,7 +246,8 @@ void LauncherDialog::updateListing(const string& nameToSelect)
   loadDirListing();
 
   // Only hilite the 'up' button if there's a parent directory
-  myPrevDirButton->setEnabled(myCurrentNode.hasParent());
+  if(myPrevDirButton)
+    myPrevDirButton->setEnabled(myCurrentNode.hasParent());
 
   // Show current directory
   myDir->setLabel(myCurrentNode.getShortPath());
