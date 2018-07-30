@@ -441,7 +441,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   ss
     << std::fixed << std::setprecision(1) << framesPerSecond
     << "fps @ "
-    << std::fixed << std::setprecision(2) << 100 * myOSystem.settings().getFloat("speed")
+    << std::fixed << std::setprecision(0) << 100 * myOSystem.settings().getFloat("speed")
     << "% speed";
 
   myStatsMsg.surface->drawString(font(), ss.str(), xPos, yPos,
