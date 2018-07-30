@@ -41,6 +41,9 @@
 
   * Updated included PNG library to latest stable version.
 
+  * For better compatibility, the Windows 32-bit version does not requires SSE2
+    anymore
+
 -Have fun!
 
 
