@@ -933,6 +933,9 @@
     <ClCompile Include="..\common\AudioSettings.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\FpsMeter.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1905,6 +1908,9 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\common\AudioSettings.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\FpsMeter.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
