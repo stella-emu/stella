@@ -978,7 +978,7 @@ void Console::generateColorLossPalette()
 float Console::getFramerate() const
 {
   return
-    static_cast<float>(myEmulationTiming.linesPerSecond()) / myTIA->frameBufferScanlinesLastFrame();
+    (myConsoleTiming == ConsoleTiming::ntsc ? 262. * 60. : 312. * 50.) / myTIA->frameBufferScanlinesLastFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

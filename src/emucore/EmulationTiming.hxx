@@ -49,8 +49,6 @@ class EmulationTiming {
 
     uInt32 cyclesPerFrame() const;
 
-    uInt32 linesPerSecond() const;
-
     uInt32 cyclesPerSecond() const;
 
     uInt32 audioFragmentSize() const;
