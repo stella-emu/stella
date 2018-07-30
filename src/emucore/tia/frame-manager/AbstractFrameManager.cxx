@@ -37,8 +37,6 @@ void AbstractFrameManager::reset()
   myCurrentFrameFinalLines = 0;
   myPreviousFrameFinalLines = 0;
   myTotalFrames = 0;
-  myFrameRate = 0;
-  myFrameRate = 60.0;
 
   onReset();
 }
@@ -101,9 +99,6 @@ void AbstractFrameManager::notifyFrameComplete()
   myTotalFrames++;
 
   if (myOnFrameComplete) myOnFrameComplete();
-
-  myFrameRate = (layout() == FrameLayout::pal ? 15600.0 : 15720.0) /
-    myCurrentFrameFinalLines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,7 +125,6 @@ bool AbstractFrameManager::save(Serializer& out) const
     out.putInt(myPreviousFrameFinalLines);
     out.putInt(myTotalFrames);
     out.putInt(uInt32(myLayout));
-    out.putDouble(myFrameRate);
 
     return onSave(out);
   }
@@ -155,7 +149,6 @@ bool AbstractFrameManager::load(Serializer& in)
     myPreviousFrameFinalLines = in.getInt();
     myTotalFrames = in.getInt();
     myLayout = FrameLayout(in.getInt());
-    myFrameRate = float(in.getDouble());
 
     return onLoad(in);
   }

@@ -207,7 +207,17 @@ class TIA : public Device
     /**
       Did we generate a new frame?
      */
-    bool newFramePending() { return myNewFramePending; }
+    bool newFramePending() { return myFramesSinceLastRender  > 0; }
+
+    /**
+     * Clear any pending frames.
+     */
+    void clearPendingFrame() { myFramesSinceLastRender = 0; }
+
+    /**
+      The number of frames since we did last render to the front buffer.
+     */
+    uInt32 framesSinceLastRender() { return myFramesSinceLastRender; }
 
     /**
       Render the pending frame to the framebuffer and clear the flag.
@@ -247,13 +257,6 @@ class TIA : public Device
       Answers the timing of the console currently in use.
     */
     ConsoleTiming consoleTiming() const { return myConsole.timing(); }
-
-    float frameRate() const { return myFrameManager ? myFrameManager->frameRate() : 0; }
-
-    /**
-      The same, but for the frame in the frame buffer.
-     */
-    float frameBufferFrameRate() const { return myFrameBufferFrameRate; }
 
     /**
       Enables/disables color-loss for PAL modes only.
@@ -694,10 +697,9 @@ class TIA : public Device
     // We snapshot frame statistics when the back buffer is copied to the front buffer
     // and when the front buffer is copied to the frame buffer
     uInt32 myFrontBufferScanlines, myFrameBufferScanlines;
-    float myFrontBufferFrameRate, myFrameBufferFrameRate;
 
-    // Did we emit a frame?
-    bool myNewFramePending;
+    // Frames since the last time a frame was rendered to the render buffer
+    uInt32 myFramesSinceLastRender;
 
     /**
      * Setting this to true injects random values into undefined reads.

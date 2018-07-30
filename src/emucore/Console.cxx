@@ -148,7 +148,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Note that this can be overridden if a format is forced
   //   For example, if a PAL ROM is forced to be NTSC, it will use NTSC-like
   //   properties (60Hz, 262 scanlines, etc), but likely result in flicker
-  setTIAProperties();
   if(myDisplayFormat == "NTSC")
   {
     myCurrentFormat = 1;
@@ -179,6 +178,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myCurrentFormat = 6;
     myConsoleTiming = ConsoleTiming::secam;
   }
+
+  setTIAProperties();
 
   bool joyallow4 = myOSystem.settings().getBool("joyallow4");
   myOSystem.eventHandler().allowAllDirections(joyallow4);
@@ -387,6 +388,7 @@ void Console::setFormat(uInt32 format)
     myTIA->frameReset();
     initializeVideo();  // takes care of refreshing the screen
     initializeAudio(); // ensure that audio synthesis is set up to match emulation speed
+    myOSystem.resetFps(); // Reset FPS measurement
   }
 
   myOSystem.frameBuffer().showMessage(message);
@@ -975,7 +977,8 @@ void Console::generateColorLossPalette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float Console::getFramerate() const
 {
-  return myTIA->frameBufferFrameRate();
+  return
+    static_cast<float>(myEmulationTiming.linesPerSecond()) / myTIA->frameBufferScanlinesLastFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

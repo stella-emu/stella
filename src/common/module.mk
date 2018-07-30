@@ -17,7 +17,8 @@ MODULE_OBJS := \
 	src/common/StateManager.o \
 	src/common/ZipHandler.o \
 	src/common/AudioQueue.o \
-	src/common/AudioSettings.o
+	src/common/AudioSettings.o \
+	src/common/FpsMeter.o
 
 MODULE_DIRS += \
 	src/common

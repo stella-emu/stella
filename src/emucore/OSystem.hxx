@@ -40,9 +40,12 @@ class StateManager;
 class VideoDialog;
 class EmulationWorker;
 
+#include <chrono>
+
 #include "FSNode.hxx"
 #include "FrameBufferConstants.hxx"
 #include "EventHandlerConstants.hxx"
+#include "FpsMeter.hxx"
 #include "bspf.hxx"
 #include "AudioSettings.hxx"
 
@@ -367,6 +370,11 @@ class OSystem
     */
     const string& logMessages() const { return myLogMessages; }
 
+    /**
+      Reset FPS measurement.
+     */
+    void resetFps();
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in
@@ -509,6 +517,8 @@ class OSystem
 
     string myFeatures;
     string myBuildInfo;
+
+    FpsMeter myFpsMeter;
 
   private:
     /**

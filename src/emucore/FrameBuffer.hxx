@@ -120,7 +120,7 @@ class FrameBuffer
     /**
       There is a dedicated update method for emulation mode.
      */
-    void updateInEmulationMode();
+    void updateInEmulationMode(float framesPerSecond);
 
     /**
       Shows a message onscreen.
@@ -471,7 +471,7 @@ class FrameBuffer
 
   private:
     // Draws the frame stats overlay
-    void drawFrameStats();
+    void drawFrameStats(float framesPerSecond);
 
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount;

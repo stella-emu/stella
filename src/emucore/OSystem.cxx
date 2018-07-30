@@ -30,14 +30,13 @@
   #include "CheatManager.hxx"
 #endif
 
-#include <chrono>
-
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "Cart.hxx"
 #include "CartDetector.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
+#include "TIAConstants.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
@@ -60,10 +59,15 @@
 
 using namespace std::chrono;
 
+namespace {
+  constexpr uInt32 FPS_METER_QUEUE_SIZE = 100;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
   : myLauncherUsed(false),
-    myQuitLoop(false)
+    myQuitLoop(false),
+    myFpsMeter(FPS_METER_QUEUE_SIZE)
 {
   // Get built-in features
   #ifdef SOUND_SUPPORT
@@ -482,6 +486,12 @@ void OSystem::logMessage(const string& message, uInt8 level)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::resetFps()
+{
+  myFpsMeter.reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& md5)
 {
   unique_ptr<Console> console;
@@ -651,7 +661,10 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
   bool framePending = tia.newFramePending();
   // ... and copy it to the frame buffer. It is important to do this before
   // the worker is started to avoid racing.
-  if (framePending) tia.renderToFrameBuffer();
+  if (framePending) {
+    myFpsMeter.render(tia.framesSinceLastRender());
+    tia.renderToFrameBuffer();
+  }
 
   // Start emulation on a dedicated thread. It will do its own scheduling to sync 6507 and real time
   // and will run until we stop the worker.
@@ -665,7 +678,7 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
 
   // Render the frame. This may block, but emulation will continue to run on the worker, so the
   // audio pipeline is kept fed :)
-  if (framePending) myFrameBuffer->updateInEmulationMode();
+  if (framePending) myFrameBuffer->updateInEmulationMode(myFpsMeter.fps());
 
   // Stop the worker and wait until it has finished
   uInt64 totalCycles = emulationWorker.stop();
@@ -691,10 +704,19 @@ void OSystem::mainLoop()
   // The emulation worker
   EmulationWorker emulationWorker;
 
+  myFpsMeter.reset(TIAConstants::initialGarbageFrames);
+
   for(;;)
   {
+    bool wasEmulation = myEventHandler->state() == EventHandlerState::EMULATION;
+
     myEventHandler->poll(getTicks());
     if(myQuitLoop) break;  // Exit if the user wants to quit
+
+    if (!wasEmulation && myEventHandler->state() == EventHandlerState::EMULATION) {
+      myFpsMeter.reset();
+      virtualTime = high_resolution_clock::now();
+    }
 
     double timesliceSeconds;
 

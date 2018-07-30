@@ -135,6 +135,12 @@ uInt32 EmulationTiming::cyclesPerSecond() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 EmulationTiming::linesPerSecond() const
+{
+  return myLinesPerSecond;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 EmulationTiming::audioFragmentSize() const
 {
   return myAudioFragmentSize;
@@ -181,7 +187,7 @@ void EmulationTiming::recalculate()
 
     case ConsoleTiming::pal:
     case ConsoleTiming::secam:
-      myCyclesPerSecond = uInt32(round(mySpeedFactor * 312 * 76 * 50) / 38);
+      myAudioSampleRate = uInt32(round(mySpeedFactor * 312 * 76 * 50) / 38);
       break;
 
     default:
@@ -204,4 +210,6 @@ void EmulationTiming::recalculate()
     myPrebufferFragmentCount,
     discreteDivCeil(myMaxCyclesPerTimeslice * myAudioSampleRate, myAudioFragmentSize * myCyclesPerSecond)
   ) + myAudioQueueExtraFragments;
+
+  myLinesPerSecond = myCyclesPerSecond / 76;
 }

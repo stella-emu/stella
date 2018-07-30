@@ -229,8 +229,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kColorInfo;
-  myStatsMsg.w = font().getMaxCharWidth() * 30 + 3;
-  myStatsMsg.h = (font().getFontHeight() + 2) * 2;
+  myStatsMsg.w = font().getMaxCharWidth() * 40 + 3;
+  myStatsMsg.h = (font().getFontHeight() + 2) * 3;
 
   if(!myStatsMsg.surface)
   {
@@ -361,7 +361,7 @@ void FrameBuffer::update(bool force)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::updateInEmulationMode()
+void FrameBuffer::updateInEmulationMode(float framesPerSecond)
 {
   // Update method that is specifically tailored to emulation mode
   // Typically called from a thread, so it needs to be separate from
@@ -374,7 +374,7 @@ void FrameBuffer::updateInEmulationMode()
 
   // Show frame statistics
   if(myStatsMsg.enabled)
-    drawFrameStats();
+    drawFrameStats(framesPerSecond);
 
   myLastScanlines = myOSystem.console().tia().frameBufferScanlinesLastFrame();
   myPausedCount = 0;
@@ -410,39 +410,50 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::drawFrameStats()
+void FrameBuffer::drawFrameStats(float framesPerSecond)
 {
   const ConsoleInfo& info = myOSystem.console().about();
-  char msg[30];
   uInt32 color;
-  const int XPOS = 2, YPOS = 0;
-  int xPos = XPOS;
+  int xPos = 2, yPos = 0;
+  const int dy = font().getFontHeight() + 2;
+
+  ostringstream ss;
 
   myStatsMsg.surface->invalidate();
 
   // draw scanlines
   color = myOSystem.console().tia().frameBufferScanlinesLastFrame() != myLastScanlines ?
       uInt32(kDbgColorRed) : myStatsMsg.color;
-  std::snprintf(msg, 30, "%3u", myOSystem.console().tia().frameBufferScanlinesLastFrame());
-  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
+
+  ss
+    << myOSystem.console().tia().frameBufferScanlinesLastFrame()
+    << " / "
+    << std::fixed << std::setprecision(1) << myOSystem.console().getFramerate()
+    << "Hz => "
+    << info.DisplayFormat;
+
+  myStatsMsg.surface->drawString(font(), ss.str(), xPos, yPos,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
-  xPos += font().getStringWidth(msg);
 
-  // draw frequency
-  std::snprintf(msg, 30, " => %s", info.DisplayFormat.c_str());
-  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
+  yPos += dy;
+  ss.str("");
+
+  ss
+    << std::fixed << std::setprecision(1) << framesPerSecond
+    << "fps @ "
+    << std::fixed << std::setprecision(2) << 100 * myOSystem.settings().getFloat("speed")
+    << "% speed";
+
+  myStatsMsg.surface->drawString(font(), ss.str(), xPos, yPos,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
-  xPos += font().getStringWidth(msg);
 
-  std::snprintf(msg, 30, " @ %5.2ffps", myOSystem.console().getFramerate());
+  yPos += dy;
+  ss.str("");
 
-  myStatsMsg.surface->drawString(font(), msg, xPos, YPOS,
-                                 myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+  ss << info.BankSwitch;
+  if (myOSystem.settings().getBool("dev.settings")) ss << "| Developer";
 
-  // draw bankswitching type
-  string bsinfo = info.BankSwitch +
-    (myOSystem.settings().getBool("dev.settings") ? "| Developer" : "");
-  myStatsMsg.surface->drawString(font(), bsinfo, XPOS, YPOS + font().getFontHeight(),
+  myStatsMsg.surface->drawString(font(), ss.str(), xPos, yPos,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   myStatsMsg.surface->setDstPos(myImageRect.x() + 10, myImageRect.y() + 8);

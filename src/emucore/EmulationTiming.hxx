@@ -49,6 +49,8 @@ class EmulationTiming {
 
     uInt32 cyclesPerFrame() const;
 
+    uInt32 linesPerSecond() const;
+
     uInt32 cyclesPerSecond() const;
 
     uInt32 audioFragmentSize() const;
@@ -82,6 +84,7 @@ class EmulationTiming {
     uInt32 myAudioSampleRate;
     uInt32 myAudioQueueCapacity;
     uInt32 myPrebufferFragmentCount;
+    uInt32 myLinesPerSecond;
 
     float mySpeedFactor;
 

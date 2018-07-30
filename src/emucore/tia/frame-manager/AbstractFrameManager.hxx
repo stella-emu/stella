@@ -108,13 +108,6 @@ class AbstractFrameManager : public Serializable
     FrameLayout layout() const { return myLayout; }
 
     /**
-     * The current frame rate. This is calculated dynamically from the number of
-     * scanlines in the last frames and used to control sleep time in the
-     * dispatch loop.
-     */
-    float frameRate() const { return myFrameRate; }
-
-    /**
      * Save state.
      */
     bool save(Serializer& out) const override;
@@ -288,11 +281,6 @@ class AbstractFrameManager : public Serializable
      * Total frame count.
      */
     uInt32 myTotalFrames;
-
-    /**
-     * Frame rate (see above.)
-     */
-    float myFrameRate;
 
   private:
 

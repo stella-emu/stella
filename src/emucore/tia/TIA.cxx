@@ -181,10 +181,9 @@ void TIA::reset()
     frameReset();  // Recalculate the size of the display
   }
 
-  myFrontBufferFrameRate = myFrameBufferFrameRate = 0;
   myFrontBufferScanlines = myFrameBufferScanlines = 0;
 
-  myNewFramePending = false;
+  myFramesSinceLastRender = 0;
 
   // Must be done last, after all other items have reset
   enableFixedColors(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.debugcolors" : "plr.debugcolors"));
@@ -293,8 +292,6 @@ bool TIA::save(Serializer& out) const
 
     out.putInt(myFrameBufferScanlines);
     out.putInt(myFrontBufferScanlines);
-    out.putDouble(myFrameBufferFrameRate);
-    out.putDouble(myFrontBufferFrameRate);
   }
   catch(...)
   {
@@ -366,8 +363,6 @@ bool TIA::load(Serializer& in)
 
     myFrameBufferScanlines = in.getInt();
     myFrontBufferScanlines = in.getInt();
-    myFrameBufferFrameRate = in.getDouble();
-    myFrontBufferFrameRate = in.getDouble();
   }
   catch(...)
   {
@@ -799,7 +794,7 @@ bool TIA::saveDisplay(Serializer& out) const
     out.putByteArray(myFramebuffer, 160* TIAConstants::frameBufferHeight);
     out.putByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
     out.putByteArray(myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
-    out.putBool(myNewFramePending);
+    out.putInt(myFramesSinceLastRender);
   }
   catch(...)
   {
@@ -819,7 +814,7 @@ bool TIA::loadDisplay(Serializer& in)
     in.getByteArray(myFramebuffer, 160 * TIAConstants::frameBufferHeight);
     in.getByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
     in.getByteArray(myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
-    myNewFramePending = in.getBool();
+    myFramesSinceLastRender = in.getInt();
   }
   catch(...)
   {
@@ -841,11 +836,12 @@ void TIA::update(DispatchResult& result, uInt64 maxCycles)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::renderToFrameBuffer()
 {
-  if (!myNewFramePending) return;
+  if (myFramesSinceLastRender == 0) return;
+
+  myFramesSinceLastRender = 0;
 
   memcpy(myFramebuffer, myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
 
-  myFrameBufferFrameRate = myFrontBufferFrameRate;
   myFrameBufferScanlines = myFrontBufferScanlines;
 }
 
@@ -1198,10 +1194,9 @@ void TIA::onFrameComplete()
 
   memcpy(myFrontBuffer, myBackBuffer, 160 * TIAConstants::frameBufferHeight);
 
-  myFrontBufferFrameRate = frameRate();
   myFrontBufferScanlines = scanlinesLastFrame();
 
-  myNewFramePending = true;
+  myFramesSinceLastRender++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
