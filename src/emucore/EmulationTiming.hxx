@@ -82,7 +82,6 @@ class EmulationTiming {
     uInt32 myAudioSampleRate;
     uInt32 myAudioQueueCapacity;
     uInt32 myPrebufferFragmentCount;
-    uInt32 myLinesPerSecond;
 
     float mySpeedFactor;
 

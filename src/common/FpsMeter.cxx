@@ -42,7 +42,7 @@ void FpsMeter::render(uInt32 frameCount)
     return;
   }
 
-  uInt32 queueSize = myQueue.capacity();
+  size_t queueSize = myQueue.capacity();
   entry first, last;
 
   last.frames = frameCount;
