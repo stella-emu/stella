@@ -49,7 +49,9 @@ class AudioDialog : public Dialog
   private:
     enum {
       kSoundEnableChanged = 'ADse',
-      kModeChanged = 'ADmc'
+      kModeChanged = 'ADmc',
+      kHeadroomChanged = 'ADhc',
+      kBufferSizeChanged = 'ADbc'
     };
 
     CheckboxWidget*   mySoundEnableCheckbox;

@@ -52,7 +52,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = 45 * fontWidth + HBORDER * 2;
+  _w = 46 * fontWidth + HBORDER * 2;
   _h = 11 * (lineHeight + 4) + VBORDER + _th;
 
   xpos = HBORDER;  ypos = VBORDER + _th;
@@ -80,7 +80,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::veryHighQualityVeryLowLag));
   VarList::push_back(items, "Custom", static_cast<int>(AudioSettings::Preset::custom));
   myModePopup = new PopUpWidget(this, font, xpos, ypos,
-                                   font.getStringWidth("Ultry quality, minimal lag "), lineHeight,
+                                   font.getStringWidth("Ultry quality, minimal lag"), lineHeight,
                                    items, "Mode (*) ", 0, kModeChanged);
   wid.push_back(myModePopup);
   ypos += lineHeight + 4;
@@ -125,25 +125,24 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   // Param 1
   int swidth = pwidth+23;
   myHeadroomSlider = new SliderWidget(this, font, xpos, ypos, swidth, lineHeight,
-                                      "Headroom           ", 0, 0, 2 * fontWidth);
+                                      "Headroom           ", 0, kHeadroomChanged, 10 * fontWidth);
   myHeadroomSlider->setMinValue(1); myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
-  myHeadroomSlider->setTickmarkInterval(5);
+  myHeadroomSlider->setTickmarkInterval(3);
+
   wid.push_back(myHeadroomSlider);
   ypos += lineHeight + 4;
 
   // Param 2
   myBufferSizeSlider = new SliderWidget(this, font, xpos, ypos, swidth, lineHeight,
-                                      "Buffer size        ", 0, 0, 2 * fontWidth);
+                                        "Buffer size        ", 0, kBufferSizeChanged, 10 * fontWidth);
   myBufferSizeSlider->setMinValue(1); myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
-  myBufferSizeSlider->setTickmarkInterval(5);
+  myBufferSizeSlider->setTickmarkInterval(3);
   wid.push_back(myBufferSizeSlider);
 
   // Add message concerning usage
   ypos = _h - fontHeight * 2 - 24;
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
-  new StaticTextWidget(this, infofont, HBORDER, ypos, "(*) Requires application restart");/* ,
-        font.getStringWidth("(*) Requires application restart"), fontHeight,
-        "(*) Requires application restart", TextAlign::Left);*/
+  new StaticTextWidget(this, infofont, HBORDER, ypos, "(*) Requires application restart");
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
@@ -294,6 +293,21 @@ void AudioDialog::handleCommand(CommandSender* sender, int cmd,
       updatePreset();
       updateEnabledState();
       break;
+
+    case kHeadroomChanged:
+    {
+      std::ostringstream ss;
+      ss << std::fixed << std::setprecision(1) << (0.5 * myHeadroomSlider->getValue()) << " frames";
+      myHeadroomSlider->setValueLabel(ss.str());
+      break;
+    }
+    case kBufferSizeChanged:
+    {
+      std::ostringstream ss;
+      ss << std::fixed << std::setprecision(1) << (0.5 * myBufferSizeSlider->getValue()) << " frames";
+      myBufferSizeSlider->setValueLabel(ss.str());
+      break;
+    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
