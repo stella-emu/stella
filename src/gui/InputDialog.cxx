@@ -148,6 +148,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myDeadzone = new SliderWidget(myTab, font, HBORDER, ypos,
                                 "Joystick deadzone size ", lwidth, kDeadzoneChanged);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
+  myDeadzone->setTickmarkInterval(4);
   xpos = HBORDER + myDeadzone->getWidth() + 5;
   myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth, lineHeight, "");
   wid.push_back(myDeadzone);
@@ -158,6 +159,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
                                     "Digital paddle sensitivity ",
                                     lwidth, kDPSpeedChanged);
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
+  myDPaddleSpeed->setTickmarkInterval(4);
   xpos = HBORDER + myDPaddleSpeed->getWidth() + 5;
   myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight, "");
   wid.push_back(myDPaddleSpeed);
@@ -168,6 +170,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
                                     "Mouse paddle sensitivity ",
                                     lwidth, kMPSpeedChanged);
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
+  myMPaddleSpeed->setTickmarkInterval(4);
   xpos = HBORDER + myMPaddleSpeed->getWidth() + 5;
   myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight, "");
   wid.push_back(myMPaddleSpeed);
@@ -178,6 +181,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
                                       "Trackball sensitivity ",
                                       lwidth, kTBSpeedChanged);
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
+  myTrackBallSpeed->setTickmarkInterval(4);
   xpos = HBORDER + myTrackBallSpeed->getWidth() + 5;
   myTrackBallLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight, "");
   wid.push_back(myTrackBallSpeed);

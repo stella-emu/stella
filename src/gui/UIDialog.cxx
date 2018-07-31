@@ -86,6 +86,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myListDelayPopup->setMinValue(0);
   myListDelayPopup->setMaxValue(1000);
   myListDelayPopup->setStepValue(50);
+  myListDelayPopup->setTickmarkInterval(5);
   wid.push_back(myListDelayPopup);
   ypos += lineHeight + 4;
 
@@ -95,6 +96,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                                        font.getStringWidth("10 lines"));
   myWheelLinesPopup->setMinValue(1);
   myWheelLinesPopup->setMaxValue(10);
+  myWheelLinesPopup->setTickmarkInterval(3);
   wid.push_back(myWheelLinesPopup);
 
   // Add message concerning usage
@@ -121,6 +123,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
+  myLauncherWidthSlider->setTickmarkInterval(5);
   wid.push_back(myLauncherWidthSlider);
   ypos += lineHeight + 4;
 
@@ -129,6 +132,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
+  myLauncherHeightSlider->setTickmarkInterval(5);
   wid.push_back(myLauncherHeightSlider);
   ypos += lineHeight + 4;
 

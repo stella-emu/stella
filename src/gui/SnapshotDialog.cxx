@@ -77,6 +77,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
                                     font.getStringWidth("10 seconds"));
   mySnapInterval->setMinValue(1);
   mySnapInterval->setMaxValue(10);
+  mySnapInterval->setTickmarkInterval(3);
   wid.push_back(mySnapInterval);
 
   // Booleans for saving snapshots

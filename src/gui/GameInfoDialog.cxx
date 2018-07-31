@@ -266,6 +266,7 @@ GameInfoDialog::GameInfoDialog(
   myMouseRange = new SliderWidget(myTab, font, HBORDER, ypos,
                                   "Mouse axes range ", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
+  myMouseRange->setTickmarkInterval(4);
   wid.push_back(myMouseRange);
 
   // Add message concerning usage
@@ -303,6 +304,7 @@ GameInfoDialog::GameInfoDialog(
                               "", 0, kYStartChanged, 4 * fontWidth, "px");
   myYStart->setMinValue(TIAConstants::minYStart-1);
   myYStart->setMaxValue(TIAConstants::maxYStart);
+  myYStart->setTickmarkInterval(4);
   wid.push_back(myYStart);
 
   ypos += lineHeight + VGAP;
@@ -311,6 +313,7 @@ GameInfoDialog::GameInfoDialog(
                               "", 0, kHeightChanged, 5 * fontWidth, "px");
   myHeight->setMinValue(TIAConstants::minViewableHeight-1);
   myHeight->setMaxValue(TIAConstants::maxViewableHeight);
+  myHeight->setTickmarkInterval(4);
   wid.push_back(myHeight);
 
   // Phosphor
@@ -322,6 +325,7 @@ GameInfoDialog::GameInfoDialog(
                                myPhosphor->getRight() + fontWidth * 3, myPhosphor->getTop()-2,
                                "Blend ", 0, kPPBlendChanged, 7 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
+  myPPBlend->setTickmarkInterval(2);
   wid.push_back(myPPBlend);
 
   // Add items for tab 3

@@ -341,6 +341,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myStateSizeWidget->setMinValue(20);
   myStateSizeWidget->setMaxValue(1000);
   myStateSizeWidget->setStepValue(20);
+  myStateSizeWidget->setTickmarkInterval(5);
   wid.push_back(myStateSizeWidget);
   ypos += lineHeight + VGAP;
 
@@ -349,6 +350,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myUncompressedWidget->setMinValue(0);
   myUncompressedWidget->setMaxValue(1000);
   myUncompressedWidget->setStepValue(20);
+  myUncompressedWidget->setTickmarkInterval(5);
   wid.push_back(myUncompressedWidget);
   ypos += lineHeight + VGAP;
 
@@ -429,6 +431,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
   myDebuggerWidthSlider->setStepValue(10);
+  myDebuggerWidthSlider->setTickmarkInterval(5);
   wid.push_back(myDebuggerWidthSlider);
   ypos += lineHeight + VGAP;
 
@@ -437,6 +440,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
   myDebuggerHeightSlider->setStepValue(10);
+  myDebuggerHeightSlider->setTickmarkInterval(5);
   wid.push_back(myDebuggerHeightSlider);
   ypos += lineHeight + VGAP * 4;
 
