@@ -440,7 +440,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
 
   ss
     << std::fixed << std::setprecision(1) << framesPerSecond
-    << "FPS @ "
+    << "fps @ "
     << std::fixed << std::setprecision(0) << 100 * myOSystem.settings().getFloat("speed")
     << "% speed";
 
