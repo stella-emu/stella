@@ -14,6 +14,17 @@
 
 5.1.3 to 5.2: (MMM d, 2018)
 
+  * New cycle exact audio core based on work by Chris Brenner (crispy); greatly
+    improved audio emulation accuracy (i.e. E.T., Ms. Pacman)
+
+  * Full rewrite of the audio subsystem; resample TIA output to target sample
+    rate directly in Stella
+
+  * Threading: decouple emulation from frame rendering
+
+  * Main loop rewritten; emulating speed and timing is now much more faithful
+    (i.e. speed in Pick'n'Pile)
+
   * Extra functionality for Time Machine dialog (start/stop recording;
     minor fixes; TODO button and initial key repeats...)
 
