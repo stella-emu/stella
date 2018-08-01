@@ -25,6 +25,10 @@
   * Main loop rewritten; emulating speed and timing is now much more faithful
     (i.e. speed in Pick'n'Pile)
 
+  * Audio settings replaced with new audio.xxx settings
+
+  * FPS setting replaced with speed setting for adjusting emulation speed
+
   * Extra functionality for Time Machine dialog (start/stop recording;
     minor fixes; TODO button and initial key repeats...)
 
