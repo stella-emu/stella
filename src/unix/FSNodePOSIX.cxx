@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -16,6 +16,13 @@
 //
 // $Id: FSNodePOSIX.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
+
+#if defined(RETRON77)
+  #define ROOT_DIR "/mnt/games/"
+#else
+  #define ROOT_DIR "/"
+#endif
+
 
 #include "FSNodePOSIX.hxx"
 
@@ -67,7 +74,7 @@ void FilesystemNodePOSIX::setFlags()
 FilesystemNodePOSIX::FilesystemNodePOSIX()
 {
   // The root dir.
-  _path = "/";
+  _path = ROOT_DIR;
   _displayName = _path;
   _isValid = true;
   _isDirectory = true;
@@ -88,7 +95,7 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& p, bool verify)
       _path.replace(0, 1, home);
     }
 
-  // Get absolute path  
+  // Get absolute path
   char buf[MAXPATHLEN];
   if(realpath(_path.c_str(), buf))
     _path = buf;
@@ -207,7 +214,7 @@ bool FilesystemNodePOSIX::makeDir()
 {
   if(mkdir(_path.c_str(), 0777) == 0)
   {
-    // Get absolute path  
+    // Get absolute path
     char buf[MAXPATHLEN];
     if(realpath(_path.c_str(), buf))
       _path = buf;
@@ -232,7 +239,7 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
 {
     _path = newfile;
 
-    // Get absolute path  
+    // Get absolute path
     char buf[MAXPATHLEN];
     if(realpath(_path.c_str(), buf))
       _path = buf;
@@ -243,7 +250,7 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
     // Add a trailing slash, if necessary
     if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
       _path += '/';
-    
+
     return true;
   }
   else
@@ -253,7 +260,7 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNode* FilesystemNodePOSIX::getParent() const
   {
-  if (_path == "/")
+  if (_path == ROOT_DIR)
     return 0;
 
   const char *start = _path.c_str();

@@ -68,8 +68,7 @@ void SettingsR77::saveConfig()
 {
   // Almost no settings can be changed, so we completely disable saving them.
   // This may also fix reported issues of the config file becoming corrupt.
-  // There is currently only one setting that can be changed - 'fullscreen'
-  // It determines whether to use 4:3 or 16:9 mode
+  // As settings are able to be saved for this device, we will add them here.
 
   ofstream out("/mnt/stella/stellarc");
   if(!out || !out.is_open())
@@ -78,7 +77,8 @@ void SettingsR77::saveConfig()
     return;
   }
 
-  out << "fullscreen = " << getString("fullscreen") << endl;
+  out << "fullscreen = " << getString("fullscreen") << endl
+      << "lastrom = " << getString("lastrom") << endl;
 
   out.flush();
   out.close();
