@@ -233,7 +233,7 @@ bool M6502::execute(uInt64 number)
 {
   DispatchResult result;
 
-  _execute(number, result);
+  execute(number, result);
 
   return result.isSuccess();
 }
