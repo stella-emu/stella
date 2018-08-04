@@ -35,6 +35,7 @@
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "TIA.hxx"
+#include "Switches.hxx"
 
 #include "GameInfoDialog.hxx"
 
@@ -139,9 +140,21 @@ GameInfoDialog::GameInfoDialog(
   tabID = myTab->addTab("Console");
 
   xpos = HBORDER; ypos = VBORDER;
-  StaticTextWidget* s = new StaticTextWidget(myTab, font, xpos, ypos+1, "Left difficulty  ");
-  myLeftDiffGroup = new RadioButtonGroup();
+
+  StaticTextWidget* s = new StaticTextWidget(myTab, font, xpos, ypos + 1, "TV type          ");
+  myTVTypeGroup = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
+                            "Color", myTVTypeGroup);
+  wid.push_back(r);
+  ypos += lineHeight;
+  r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
+                            "B/W", myTVTypeGroup);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP * 2;
+
+  s = new StaticTextWidget(myTab, font, xpos, ypos+1, "Left difficulty  ");
+  myLeftDiffGroup = new RadioButtonGroup();
+  r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
                                                "A", myLeftDiffGroup);
   wid.push_back(r);
   ypos += lineHeight;
@@ -159,22 +172,6 @@ GameInfoDialog::GameInfoDialog(
   r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
                             "B", myRightDiffGroup);
   wid.push_back(r);
-  ypos += lineHeight + VGAP * 2;
-
-  s = new StaticTextWidget(myTab, font, xpos, ypos+1, "TV type          ");
-  myTVTypeGroup = new RadioButtonGroup();
-  r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
-                            "Color", myTVTypeGroup);
-  wid.push_back(r);
-  ypos += lineHeight;
-  r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
-                            "B/W", myTVTypeGroup);
-  wid.push_back(r);
-
-  // Add message concerning usage
-  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, ifont, xpos, ypos,
-                       "(*) Changes to properties require a ROM reload");
 
   // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
@@ -499,7 +496,12 @@ void GameInfoDialog::saveConfig()
   {
     instance().console().setProperties(myGameProperties);
 
-    // update display immediately
+    // update 'Console' tab settings immediately
+    instance().console().switches().setTvColor(myTVTypeGroup->getSelected() == 0);
+    instance().console().switches().setLeftDifficultyA(myLeftDiffGroup->getSelected() == 0);
+    instance().console().switches().setRightDifficultyA(myRightDiffGroup->getSelected() == 0);
+
+    // update 'Display' tab settings immediately
     bool reset = false;
     instance().console().setFormat(myFormat->getSelected());
     if(uInt32(myYStart->getValue()) != TIAConstants::minYStart - 1 &&

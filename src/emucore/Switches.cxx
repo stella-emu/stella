@@ -54,7 +54,7 @@ Switches::Switches(const Event& event, const Properties& properties,
     mySwitches &= ~0x08;
   }
 
-  toggle7800Mode(settings);
+  check7800Mode(settings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -121,6 +121,45 @@ void Switches::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Switches::setTvColor(bool setColor)
+{
+  if(setColor)
+  {
+    mySwitches |= 0x08;
+  }
+  else
+  {
+    mySwitches &= ~0x08;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Switches::setLeftDifficultyA(bool setToA)
+{
+  if(setToA)
+  {
+    mySwitches |= 0x40;
+  }
+  else
+  {
+    mySwitches &= ~0x40;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Switches::setRightDifficultyA(bool setToA)
+{
+  if(setToA)
+  {
+    mySwitches |= 0x80;
+  }
+  else
+  {
+    mySwitches &= ~0x80;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Switches::save(Serializer& out) const
 {
   try
@@ -151,7 +190,7 @@ bool Switches::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Switches::toggle7800Mode(const Settings& settings)
+bool Switches::check7800Mode(const Settings& settings)
 {
   bool devSettings = settings.getBool("dev.settings");
   myIs7800 = (settings.getString(devSettings ? "dev.console" : "plr.console") == "7800");

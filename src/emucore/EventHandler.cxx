@@ -178,7 +178,7 @@ void EventHandler::toggleSAPortOrder()
 void EventHandler::set7800Mode()
 {
   if(myOSystem.hasConsole())
-    myIs7800 = myOSystem.console().switches().toggle7800Mode(myOSystem.settings());
+    myIs7800 = myOSystem.console().switches().check7800Mode(myOSystem.settings());
   else
     myIs7800 = false;
 }

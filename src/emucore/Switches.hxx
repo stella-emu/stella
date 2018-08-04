@@ -93,11 +93,21 @@ class Switches : public Serializable
     bool tvColor() const { return mySwitches & 0x08; }
 
     /**
+      Sets 'Console_TelevisionType' switches bit.
+    */
+    void setTvColor(bool setColor);
+
+    /**
       Query the 'Console_LeftDifficulty' switches bit.
 
       @return  True if 'A', false if 'B'
     */
     bool leftDifficultyA() const { return mySwitches & 0x40; }
+
+    /**
+      Sets 'Console_LeftDifficulty' switches bit.
+    */
+    void setLeftDifficultyA(bool setA);
 
     /**
       Query the 'Console_RightDifficulty' switches bit.
@@ -107,11 +117,17 @@ class Switches : public Serializable
     bool rightDifficultyA() const { return mySwitches & 0x80; }
 
     /**
+      Sets 'Console_LeftDifficulty' switches bit.
+    */
+    void setRightDifficultyA(bool setA);
+
+
+    /**
       Toggle between 2600 and 7800 mode depending on settings.
 
       @return  True if 7800 mode enabled, else false
     */
-    bool toggle7800Mode(const Settings& settings);
+    bool check7800Mode(const Settings& settings);
 
   private:
     // Reference to the event object to use
