@@ -113,7 +113,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myNote);
   ypos += lineHeight + VGAP;
 
-  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight, "Type");
+  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight, "Type (*)");
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
   for(int i = 0; i < int(BSType::NumSchemes); ++i)
@@ -129,7 +129,7 @@ GameInfoDialog::GameInfoDialog(
   // Add message concerning usage
   ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
   new StaticTextWidget(myTab, ifont, xpos, ypos,
-                       "(*) Changes to properties require a ROM reload");
+                       "(*) Changes require a ROM reload");
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -495,6 +495,9 @@ void GameInfoDialog::saveConfig()
   if(instance().hasConsole())
   {
     instance().console().setProperties(myGameProperties);
+
+    // update relevant 'Cartridge' tab settings immediately
+    instance().console().initializeAudio();
 
     // update 'Console' tab settings immediately
     instance().console().switches().setTvColor(myTVTypeGroup->getSelected() == 0);
