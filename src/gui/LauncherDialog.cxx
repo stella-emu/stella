@@ -57,17 +57,19 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   const string ELLIPSIS = "\x1d";
   const GUI::Font& font = instance().frameBuffer().launcherFont();
 
+  const int HBORDER = 10;
+  const int BUTTON_GAP = 8;
   const int fontWidth = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
-            bwidth  = (_w - 2 * 10 - 8 * (4 - 1)) / 4,
+            bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1)),
             bheight = lineHeight + 4;
-  int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0;
+  int xpos, ypos = 0, lwidth = 0, lwidth2 = 0;
   WidgetArray wid;
 
   // Show game name
   lwidth = font.getStringWidth("Select a ROM from the list" + ELLIPSIS);
-  xpos += 10;  ypos += 8;
+  xpos = HBORDER;  ypos += 8;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                        "Select a ROM from the list" + ELLIPSIS);
 
@@ -131,35 +133,35 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Add four buttons at the bottom
   xpos = 10;  ypos += myDir->getHeight() + 8;
 #ifndef BSPF_MAC_OSX
-  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+  myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                   "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
-    xpos += bwidth + 8;
-  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                      "Go Up", kPrevDirCmd);
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
+                                     "Go Up", kPrevDirCmd);
   wid.push_back(myPrevDirButton);
-    xpos += bwidth + 8;
-    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
-    xpos += bwidth + 8;
-  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+  myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
                                   "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
 #else
-  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+  myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                   "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
-    xpos += bwidth + 8;
-  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
                                      "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
-    xpos += bwidth + 8;
-  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
                                       "Go Up", kPrevDirCmd);
   wid.push_back(myPrevDirButton);
-    xpos += bwidth + 8;
-  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+  myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
                                    "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
 #endif
