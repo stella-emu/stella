@@ -238,6 +238,21 @@ bool M6502::execute(uInt64 number)
   return result.isSuccess();
 }
 
+bool M6502::startDebugger(const string& message, int address, bool read) {
+  handleHalt();
+
+  mySystem->tia().updateEmulation();
+  mySystem->m6532().updateEmulation();
+
+  #ifndef DEBUGGER_SUPPORT
+    return false;
+  #endif
+
+  if (!myDebugger) return false;
+
+  return myDebugger->start(message, address, read);
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 {

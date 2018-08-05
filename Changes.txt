@@ -136,6 +136,9 @@
 
   * Fixed bug in TIA collision handling; it is now disabled in VBlank.
 
+  * Improve TIA PF collision handling during hblank; this fixes a bug in
+    Thrust ROM.
+
   * Fixed wrong display of HM values in debugger after 'HMCLR' has been
     executed.
 

@@ -333,6 +333,12 @@ class M6502 : public Serializable
     void updateStepStateByInstruction();
 #endif  // DEBUGGER_SUPPORT
 
+    /**
+      Make sure that the current hardware state is up to date (TIA & RIOT) and dispatch
+      debugger.
+    */
+    bool startDebugger(const string& message = "", int address = -1, bool read = true);
+
   private:
     /**
       Bit fields used to indicate that certain conditions need to be
