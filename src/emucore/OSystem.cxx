@@ -95,7 +95,6 @@ OSystem::OSystem()
 
   mySettings = MediaFactory::createSettings(*this);
   myAudioSettings = AudioSettings(mySettings.get());
-  myRandom = make_unique<Random>(*this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -158,8 +157,8 @@ bool OSystem::create()
   // a real serial port on the system
   mySerialPort = MediaFactory::createSerialPort();
 
-  // Re-initialize random seed
-  myRandom->initSeed();
+  // Create random number generator
+  myRandom = make_unique<Random>(getTicks());
 
   // Create PNG handler
   myPNGLib = make_unique<PNGLibrary>(*this);

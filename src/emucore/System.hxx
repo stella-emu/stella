@@ -27,6 +27,7 @@ class NullDevice;
 #include "bspf.hxx"
 #include "Device.hxx"
 #include "NullDev.hxx"
+#include "OSystem.hxx"
 #include "Random.hxx"
 #include "Serializable.hxx"
 
