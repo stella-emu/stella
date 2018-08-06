@@ -685,7 +685,11 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
 
 #ifdef DEBUGGER_SUPPORT
   // Break or trap? -> start debugger
-  if (dispatchResult.getStatus() == DispatchResult::Status::debugger) myDebugger->start();
+  if (dispatchResult.getStatus() == DispatchResult::Status::debugger) myDebugger->start(
+    dispatchResult.getMessage(),
+    dispatchResult.getAddress(),
+    dispatchResult.wasReadTrap()
+  );
 #endif
 
   // Handle frying
