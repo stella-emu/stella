@@ -377,6 +377,9 @@ class M6502 : public Serializable
     /// Indicates the last address which was accessed
     uInt16 myLastAddress;
 
+    /// Last cycle that triggered a breakpoint
+    uInt64 myLastBreakCycle;
+
     /// Indicates the last address which was accessed specifically
     /// by a peek or poke command
     uInt16 myLastPeekAddress, myLastPokeAddress;
