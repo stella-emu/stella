@@ -92,8 +92,6 @@ class FilesystemNode
      */
     explicit FilesystemNode(const string& path);
 
-    virtual ~FilesystemNode() = default;
-
     /**
      * Assignment operators.
      */
@@ -136,7 +134,7 @@ class FilesystemNode
      *
      * @return bool true if the path exists, false otherwise.
      */
-    virtual bool exists() const;
+    bool exists() const;
 
     /**
      * Return a list of child nodes of this directory node. If called on a node
@@ -145,8 +143,8 @@ class FilesystemNode
      * @return true if successful, false otherwise (e.g. when the directory
      *         does not exist).
      */
-    virtual bool getChildren(FSList& fslist, ListMode mode = kListDirectoriesOnly,
-                             bool hidden = false) const;
+    bool getChildren(FSList& fslist, ListMode mode = kListDirectoriesOnly,
+                     bool hidden = false) const;
 
     /**
      * Return a string representation of the name of the file. This is can be
@@ -156,7 +154,7 @@ class FilesystemNode
      *
      * @return the file name
      */
-    virtual const string& getName() const;
+    const string& getName() const;
 
     /**
      * Return a string representation of the file which can be passed to fopen().
@@ -165,7 +163,7 @@ class FilesystemNode
      *
      * @return the 'path' represented by this filesystem node
      */
-    virtual const string& getPath() const;
+    const string& getPath() const;
 
     /**
      * Return a string representation of the file which contains the '~'
@@ -174,7 +172,7 @@ class FilesystemNode
      *
      * @return the 'path' represented by this filesystem node
      */
-    virtual string getShortPath() const;
+    string getShortPath() const;
 
     /**
      * Determine whether this node has a parent.
@@ -190,14 +188,14 @@ class FilesystemNode
     /**
      * Indicates whether the path refers to a directory or not.
      */
-    virtual bool isDirectory() const;
+    bool isDirectory() const;
 
     /**
      * Indicates whether the path refers to a real file or not.
      *
      * Currently, a symlink or pipe is not considered a file.
      */
-    virtual bool isFile() const;
+    bool isFile() const;
 
     /**
      * Indicates whether the object referred by this path can be read from or not.
@@ -210,7 +208,7 @@ class FilesystemNode
      *
      * @return bool true if the object can be read, false otherwise.
      */
-    virtual bool isReadable() const;
+    bool isReadable() const;
 
     /**
      * Indicates whether the object referred by this path can be written to or not.
@@ -224,21 +222,21 @@ class FilesystemNode
      *
      * @return bool true if the object can be written to, false otherwise.
      */
-    virtual bool isWritable() const;
+    bool isWritable() const;
 
     /**
      * Create a directory from the current node path.
      *
      * @return bool true if the directory was created, false otherwise.
      */
-    virtual bool makeDir();
+    bool makeDir();
 
     /**
      * Rename the current node path with the new given name.
      *
      * @return bool true if the node was renamed, false otherwise.
      */
-    virtual bool rename(const string& newfile);
+    bool rename(const string& newfile);
 
     /**
      * Read data (binary format) into the given buffer.
@@ -249,7 +247,7 @@ class FilesystemNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    virtual uInt32 read(BytePtr& buffer) const;
+    uInt32 read(BytePtr& buffer) const;
 
     /**
      * The following methods are almost exactly the same as the various
