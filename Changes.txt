@@ -52,8 +52,11 @@
   * Fixed emulator crash when starting SaveKey ROMs from commandline with
     SaveKey messages enabled.
 
-  * Fixed missing TV format update in frame stats dialog when switching display
-    type.
+  * Fixed missing TV format update in frame stats dialog when switching
+    display type.
+
+  * For UNIX systems: in the ROM launcher, when using symlinks use the
+    symlink pathname instead of the underlying filesystem pathname.
 
   * Updated PAL palette.
 
