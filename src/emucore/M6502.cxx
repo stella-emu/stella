@@ -118,6 +118,8 @@ void M6502::reset()
 
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
+
+  myLastBreakCycle = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -259,17 +261,19 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
     {
   #ifdef DEBUGGER_SUPPORT
       // Don't break if we haven't actually executed anything yet
-      if (currentCycles > 0) {
+      if (myLastBreakCycle != mySystem->cycles()) {
         if(myJustHitReadTrapFlag || myJustHitWriteTrapFlag)
         {
           bool read = myJustHitReadTrapFlag;
           myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
 
+          myLastBreakCycle = mySystem->cycles();
           result.setDebugger(currentCycles, myHitTrapInfo.message, myHitTrapInfo.address, read);
           return;
         }
 
         if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC)) {
+          myLastBreakCycle = mySystem->cycles();
           result.setDebugger(currentCycles, "BP: ", PC);
           return;
         }
@@ -280,6 +284,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           stringstream msg;
           msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
 
+          myLastBreakCycle = mySystem->cycles();
           result.setDebugger(currentCycles, msg.str());
           return;
         }
@@ -432,6 +437,7 @@ bool M6502::save(Serializer& out) const
     out.putBool(myHaltRequested);
     out.putBool(myStepStateByInstruction);
     out.putBool(myGhostReadsTrap);
+    out.putLong(myLastBreakCycle);
   }
   catch(...)
   {
@@ -484,6 +490,8 @@ bool M6502::load(Serializer& in)
     myHaltRequested = in.getBool();
     myStepStateByInstruction = in.getBool();
     myGhostReadsTrap = in.getBool();
+
+    myLastBreakCycle = in.getLong();
   }
   catch(...)
   {
