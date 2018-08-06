@@ -69,7 +69,7 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
     bool rename(const string& newfile) override;
 
     bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const override;
-    AbstractFSNode* getParent() const override;
+    AbstractFSNodePtr getParent() const override;
 
   protected:
     string _displayName;
