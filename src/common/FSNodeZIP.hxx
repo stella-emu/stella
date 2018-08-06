@@ -61,16 +61,16 @@ class FilesystemNodeZIP : public AbstractFSNode
     //////////////////////////////////////////////////////////
 
     bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
-    AbstractFSNode* getParent() const;
+    AbstractFSNodePtr getParent() const;
 
     uInt32 read(BytePtr& image) const;
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualpath,
-        shared_ptr<AbstractFSNode> realnode, bool isdir);
+        AbstractFSNodePtr realnode, bool isdir);
 
     void setFlags(const string& zipfile, const string& virtualpath,
-        shared_ptr<AbstractFSNode> realnode);
+        AbstractFSNodePtr realnode);
 
     friend ostream& operator<<(ostream& os, const FilesystemNodeZIP& node)
     {
@@ -91,7 +91,7 @@ class FilesystemNodeZIP : public AbstractFSNode
       ZIPERR_NO_ROMS
     };
 
-    shared_ptr<AbstractFSNode> _realNode;
+    AbstractFSNodePtr _realNode;
     string _zipFile, _virtualPath;
     string _name, _path, _shortPath;
     zip_error _error;

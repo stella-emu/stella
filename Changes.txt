@@ -12,29 +12,29 @@
                               Release History
 ===========================================================================
 
-5.1.3 to 5.2: (MMM d, 2018)
+5.1.3 to 6.0: (MMM d, 2018)
 
   * New cycle exact audio core based on work by Chris Brenner (crispy); greatly
-    improved audio emulation accuracy (i.e. E.T., Ms. Pacman)
+    improved audio emulation accuracy (i.e. E.T., Ms. Pacman).
 
   * Full rewrite of the audio subsystem; resample TIA output to target sample
-    rate directly in Stella
+    rate directly in Stella.
 
-  * Threading: decouple emulation from frame rendering
+  * Threading: decouple emulation from frame rendering.
 
   * Main loop rewritten; emulating speed and timing is now much more faithful
-    (i.e. speed in Pick'n'Pile)
+    (i.e. speed in Pick'n'Pile).
 
-  * Audio settings replaced with new audio.xxx settings
+  * Audio settings replaced with new 'audio.xxx' settings.
 
-  * FPS setting replaced with speed setting for adjusting emulation speed
+  * FPS setting replaced with speed setting for adjusting emulation speed.
 
   * Extra functionality for Time Machine dialog (start/stop recording;
     minor fixes; TODO button and initial key repeats...)
 
-  * Fixes for collision corner cases (during HBlank)
+  * Fixes for collision corner cases (during HBlank).
 
-  * UI modernization (new widget look, dialog titles added, dialogs refactored)
+  * UI modernization (new widget look, dialog titles added, dialogs refactored).
 
   * Changes in 'Game Properties' dialog
     - 'Default' button now affects only current tab like in all other dialogs.
@@ -46,8 +46,11 @@
   * The Linux builds now use the system-installed PNG and ZLIB libraries
     by default.
 
+  * When starting Stella for the first time, the first ROM selected will
+    determine which path to use by default for subsequent runs.
+
   * Fixed emulator crash when starting SaveKey ROMs from commandline with
-    SaveKey messages enabled
+    SaveKey messages enabled.
 
   * Fixed missing TV format update in frame stats dialog when switching display
     type.
@@ -57,7 +60,7 @@
   * Updated included PNG library to latest stable version.
 
   * For better compatibility, the Windows 32-bit version does not requires SSE2
-    anymore
+    anymore.
 
 -Have fun!
 

@@ -49,6 +49,7 @@
 
 class FilesystemNode;
 class AbstractFSNode;
+using AbstractFSNodePtr = shared_ptr<AbstractFSNode>;
 
 /**
  * List of multiple file system nodes. E.g. the contents of a given directory.
@@ -144,7 +145,7 @@ class FilesystemNode
      * @return true if successful, false otherwise (e.g. when the directory
      *         does not exist).
      */
-    virtual bool getChildren(FSList &fslist, ListMode mode = kListDirectoriesOnly,
+    virtual bool getChildren(FSList& fslist, ListMode mode = kListDirectoriesOnly,
                              bool hidden = false) const;
 
     /**
@@ -261,8 +262,8 @@ class FilesystemNode
     string getShortPathWithExt(const string& ext) const; // FIXME - dead code
 
   private:
-    shared_ptr<AbstractFSNode> _realNode;
-    FilesystemNode(AbstractFSNode* realNode);
+    AbstractFSNodePtr _realNode;
+    FilesystemNode(AbstractFSNodePtr realNode);
 };
 
 
@@ -275,7 +276,7 @@ class FilesystemNode
  * the semantics.
  */
 
-using AbstractFSList = vector<AbstractFSNode*>;
+using AbstractFSList = vector<AbstractFSNodePtr>;
 
 class AbstractFSNode
 {
@@ -403,7 +404,7 @@ class AbstractFSNode
      * The parent node of this directory.
      * The parent of the root is the root itself.
      */
-    virtual AbstractFSNode* getParent() const = 0;
+    virtual AbstractFSNodePtr getParent() const = 0;
 };
 
 #endif

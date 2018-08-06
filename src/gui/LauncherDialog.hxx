@@ -48,7 +48,7 @@ class LauncherDialog : public Dialog
     // These must be accessible from dialogs created by this class
     enum {
       kLoadROMCmd       = 'STRT',  // load currently selected ROM
-      kRomDirChosenCmd  = 'romc',  // rom chosen
+      kRomDirChosenCmd  = 'romc',  // rom dir chosen
       kReloadRomDirCmd  = 'rdrl',  // reload the current listing
       kReloadFiltersCmd = 'rlfl'   // reload filtering options and current listing
     };
@@ -98,7 +98,6 @@ class LauncherDialog : public Dialog
     unique_ptr<GlobalPropsDialog> myGlobalProps;
     unique_ptr<LauncherFilterDialog> myFilters;
     unique_ptr<BrowserDialog> myRomDir;
-    unique_ptr<GUI::MessageBox> myFirstRunMsg;
 
     ButtonWidget* myStartButton;
     ButtonWidget* myPrevDirButton;
@@ -122,10 +121,7 @@ class LauncherDialog : public Dialog
     enum {
       kPrevDirCmd = 'PRVD',
       kOptionsCmd = 'OPTI',
-      kQuitCmd    = 'QUIT',
-
-      kFirstRunMsgChosenCmd   = 'frmc',
-      kStartupRomDirChosenCmd = 'rmsc'
+      kQuitCmd    = 'QUIT'
     };
 
   private:

@@ -55,6 +55,7 @@ class Dialog : public GuiObject
     void close();
 
     bool isVisible() const override { return _visible; }
+    bool isOnTop() { return _onTop;  }
 
     virtual void center();
     virtual void drawDialog();
@@ -152,6 +153,7 @@ class Dialog : public GuiObject
     Widget* _cancelWidget;
 
     bool    _visible;
+    bool    _onTop;
     bool    _processCancel;
     string  _title;
     int     _th;

@@ -296,7 +296,7 @@ bool FilesystemNodeWINDOWS::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNode* FilesystemNodeWINDOWS::getParent() const
+AbstractFSNodePtr FilesystemNodeWINDOWS::getParent() const
 {
   if(_isPseudoRoot)
     return nullptr;
@@ -306,8 +306,8 @@ AbstractFSNode* FilesystemNodeWINDOWS::getParent() const
     const char* start = _path.c_str();
     const char* end = lastPathComponent(_path);
 
-    return new FilesystemNodeWINDOWS(string(start, size_t(end - start)));
+    return make_shared<FilesystemNodeWINDOWS>(string(start, size_t(end - start)));
   }
   else
-    return new FilesystemNodeWINDOWS();
+    return make_shared<FilesystemNodeWINDOWS>();
 }

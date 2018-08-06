@@ -29,7 +29,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
                          const VariantList& combolist)
-  : Dialog(boss->instance(), boss->parent(), font, ""),
+  : Dialog(boss->instance(), boss->parent(), font, "Add..."),
     myComboEvent(Event::NoType)
 {
   const int lineHeight   = font.getLineHeight(),
@@ -38,7 +38,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   WidgetArray wid;
 
   // Set real dimensions
-  _w = 35 * fontWidth + 10;
+  _w = 33 * fontWidth + 10*2;
   _h = 10 * (lineHeight + 4) + 10 + _th;
   xpos = 10;
   ypos = 10 + _th;
@@ -57,7 +57,6 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
     ypos += lineHeight + 4;
   };
 
-  xpos = 10;
   myEvents[0] = nullptr;  ADD_EVENT_POPUP(0, "Event 1 ");
   myEvents[1] = nullptr;  ADD_EVENT_POPUP(1, "Event 2 ");
   myEvents[2] = nullptr;  ADD_EVENT_POPUP(2, "Event 3 ");

@@ -28,7 +28,7 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
     _changed(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-
+  
   startEditMode();  // We're always in edit mode
 }
 
@@ -85,7 +85,10 @@ void EditTextWidget::drawWidget(bool hilite)
   if(_changed)
     s.fillRect(_x, _y, _w, _h, kDbgChangedColor);
   else if(!isEditable())
-    s.fillRect(_x, _y, _w, _h, kDlgColor);
+  {
+    bool onTop = _boss->dialog().isOnTop();
+    s.fillRect(_x, _y, _w, _h, onTop ? kDlgColor : kBGColorLo);
+  }
 
   // Draw a thin frame around us.
   s.frameRect(_x, _y, _w, _h, hilite && isEditable() && isEnabled() ? kWidColorHi : kColor);

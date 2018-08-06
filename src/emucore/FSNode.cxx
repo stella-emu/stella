@@ -30,7 +30,7 @@ FilesystemNode::FilesystemNode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::FilesystemNode(AbstractFSNode *realNode)
+FilesystemNode::FilesystemNode(AbstractFSNodePtr realNode)
   : _realNode(realNode)
 {
 }
@@ -38,15 +38,11 @@ FilesystemNode::FilesystemNode(AbstractFSNode *realNode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const string& p)
 {
-  AbstractFSNode* tmp = nullptr;
-
   // Is this potentially a ZIP archive?
   if(BSPF::containsIgnoreCase(p, ".zip"))
-    tmp = FilesystemNodeFactory::create(p, FilesystemNodeFactory::ZIP);
+    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::ZIP);
   else
-    tmp = FilesystemNodeFactory::create(p, FilesystemNodeFactory::SYSTEM);
-
-  _realNode = shared_ptr<AbstractFSNode>(tmp);
+    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::SYSTEM);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,7 +128,7 @@ FilesystemNode FilesystemNode::getParent() const
   if (_realNode == nullptr)
     return *this;
 
-  AbstractFSNode* node = _realNode->getParent();
+  AbstractFSNodePtr node = _realNode->getParent();
   return node ? FilesystemNode(node) : *this;
 }
 

@@ -97,12 +97,11 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
   assert(_isDirectory);
 
   DIR* dirp = opendir(_path.c_str());
-  struct dirent* dp;
-
   if (dirp == nullptr)
     return false;
 
-  // loop over dir entries using readdir
+  // Loop over dir entries using readdir
+  struct dirent* dp;
   while ((dp = readdir(dirp)) != nullptr)
   {
     // Skip 'invisible' files if necessary
@@ -137,7 +136,6 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
     }
     else
     {
-      entry._isValid = (dp->d_type == DT_DIR) || (dp->d_type == DT_REG) || (dp->d_type == DT_LNK);
       if (dp->d_type == DT_LNK)
       {
         struct stat st;
@@ -157,6 +155,8 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
 
       if (entry._isDirectory)
         entry._path += "/";
+
+      entry._isValid = entry._isDirectory || entry._isFile;
     }
 #endif
 
@@ -226,7 +226,7 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNode* FilesystemNodePOSIX::getParent() const
+AbstractFSNodePtr FilesystemNodePOSIX::getParent() const
 {
   if (_path == "/")
     return nullptr;
@@ -234,5 +234,5 @@ AbstractFSNode* FilesystemNodePOSIX::getParent() const
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
 
-  return new FilesystemNodePOSIX(string(start, size_t(end - start)));
+  return make_unique<FilesystemNodePOSIX>(string(start, size_t(end - start)));
 }

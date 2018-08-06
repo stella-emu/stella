@@ -57,17 +57,19 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   const string ELLIPSIS = "\x1d";
   const GUI::Font& font = instance().frameBuffer().launcherFont();
 
+  const int HBORDER = 10;
+  const int BUTTON_GAP = 8;
   const int fontWidth = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
-            bwidth  = (_w - 2 * 10 - 8 * (4 - 1)) / 4,
+            bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1)),
             bheight = lineHeight + 4;
-  int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0;
+  int xpos, ypos = 0, lwidth = 0, lwidth2 = 0;
   WidgetArray wid;
 
   // Show game name
   lwidth = font.getStringWidth("Select a ROM from the list" + ELLIPSIS);
-  xpos += 10;  ypos += 8;
+  xpos = HBORDER;  ypos += 8;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                        "Select a ROM from the list" + ELLIPSIS);
 
@@ -131,35 +133,35 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Add four buttons at the bottom
   xpos = 10;  ypos += myDir->getHeight() + 8;
 #ifndef BSPF_MAC_OSX
-  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+  myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                   "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
-    xpos += bwidth + 8;
-  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                      "Go Up", kPrevDirCmd);
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
+                                     "Go Up", kPrevDirCmd);
   wid.push_back(myPrevDirButton);
-    xpos += bwidth + 8;
-    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
-    xpos += bwidth + 8;
-  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+  myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
                                   "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
 #else
-  myQuitButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+  myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                   "Quit", kQuitCmd);
   wid.push_back(myQuitButton);
-    xpos += bwidth + 8;
-  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
                                      "Options" + ELLIPSIS, kOptionsCmd);
   wid.push_back(myOptionsButton);
-    xpos += bwidth + 8;
-  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
                                       "Go Up", kPrevDirCmd);
   wid.push_back(myPrevDirButton);
-    xpos += bwidth + 8;
-  myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+  myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
                                    "Select", kLoadROMCmd);
   wid.push_back(myStartButton);
 #endif
@@ -214,30 +216,11 @@ const string& LauncherDialog::selectedRomMD5()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadConfig()
 {
+  // Should we use a temporary directory specified on the commandline, or the
+  // default one specified by the settings?
   const string& tmpromdir = instance().settings().getString("tmpromdir");
   const string& romdir = tmpromdir != "" ? tmpromdir :
       instance().settings().getString("romdir");
-
-  // When romdir hasn't been set, it probably indicates that this is the first
-  // time running Stella; in this case, we should prompt the user
-  if(romdir == "")
-  {
-    if(!myFirstRunMsg)
-    {
-      StringList msg;
-      msg.push_back("This seems to be your first time running Stella.");
-      msg.push_back("Before you can start a game, you need to");
-      msg.push_back("specify where your ROMs are located.");
-      msg.push_back("");
-      msg.push_back("Click 'Default' to select a default ROM directory,");
-      msg.push_back("or 'Browse' to browse the filesystem manually.");
-      myFirstRunMsg = make_unique<GUI::MessageBox>
-                          (this, instance().frameBuffer().font(),
-                          msg, _w, _h, kFirstRunMsgChosenCmd,
-                           "Default", "Browse", "ROM directory");
-    }
-    myFirstRunMsg->show();
-  }
 
   // Assume that if the list is empty, this is the first time that loadConfig()
   // has been called (and we should reload the list)
@@ -486,7 +469,13 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           const string& result =
             instance().createConsole(romnode, myGameList->md5(item));
           if(result == EmptyString)
+          {
             instance().settings().setValue("lastrom", myList->getSelectedString());
+
+            // If romdir has never been set, set it now based on the selected rom
+            if(instance().settings().getString("romdir") == EmptyString)
+              instance().settings().setValue("romdir", romnode.getParent().getShortPath());
+          }
           else
             instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
         }
@@ -513,20 +502,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       instance().eventHandler().quit();
       break;
 
-    case kFirstRunMsgChosenCmd:
-      // Show a file browser, starting from the users' home directory
-      if(!myRomDir)
-        myRomDir = make_unique<BrowserDialog>(this, instance().frameBuffer().font(),
-                                              _w, _h, "Select ROM directory");
-      myRomDir->show("~", BrowserDialog::Directories, kStartupRomDirChosenCmd);
-      break;
-
-    case kStartupRomDirChosenCmd:
-    {
-      FilesystemNode dir(myRomDir->getResult());
-      instance().settings().setValue("romdir", dir.getShortPath());
-      [[fallthrough]];
-    }
     case kRomDirChosenCmd:
       myCurrentNode = FilesystemNode(instance().settings().getString("romdir"));
       if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))

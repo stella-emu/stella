@@ -29,8 +29,6 @@ FilesystemNodeZIP::FilesystemNodeZIP()
     _isDirectory(false),
     _isFile(false)
 {
-  // We need a name, else the node is invalid
-  _realNode = shared_ptr<AbstractFSNode>(nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,9 +90,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   else
     _isDirectory = true;
 
-  AbstractFSNode* tmp =
-    FilesystemNodeFactory::create(_zipFile, FilesystemNodeFactory::SYSTEM);
-  _realNode = shared_ptr<AbstractFSNode>(tmp);
+  _realNode = FilesystemNodeFactory::create(_zipFile, FilesystemNodeFactory::SYSTEM);
 
   setFlags(_zipFile, _virtualPath, _realNode);
 }
@@ -102,7 +98,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP(
     const string& zipfile, const string& virtualpath,
-    shared_ptr<AbstractFSNode> realnode, bool isdir)
+    AbstractFSNodePtr realnode, bool isdir)
   : _error(ZIPERR_NONE),
     _numFiles(0),
     _isDirectory(isdir),
@@ -114,7 +110,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FilesystemNodeZIP::setFlags(const string& zipfile,
                                  const string& virtualpath,
-                                 shared_ptr<AbstractFSNode> realnode)
+                                 AbstractFSNodePtr realnode)
 {
   _zipFile = zipfile;
   _virtualPath = virtualpath;
@@ -195,7 +191,7 @@ uInt32 FilesystemNodeZIP::read(BytePtr& image) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNode* FilesystemNodeZIP::getParent() const
+AbstractFSNodePtr FilesystemNodeZIP::getParent() const
 {
   if(_virtualPath == "")
     return _realNode ? _realNode->getParent() : nullptr;
@@ -203,7 +199,7 @@ AbstractFSNode* FilesystemNodeZIP::getParent() const
   const char* start = _path.c_str();
   const char* end = lastPathComponent(_path);
 
-  return new FilesystemNodeZIP(string(start, end - start - 1));
+  return make_shared<FilesystemNodeZIP>(string(start, end - start - 1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
