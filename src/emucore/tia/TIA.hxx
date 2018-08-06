@@ -448,9 +448,9 @@ class TIA : public Device
     void flushLineCache();
 
     /**
-     * Update the collision bitfield.
+      Schedule a collision update
      */
-    void updateCollision();
+    void scheduleCollisionUpdate();
 
     /**
       Create a new delayQueueIterator for the debugger.
@@ -542,6 +542,11 @@ class TIA : public Device
      * Advance a single clock duing the visible part of the scanline.
      */
     void tickHframe();
+
+    /**
+     * Update the collision bitfield.
+     */
+    void updateCollision();
 
     /**
      * Execute a RSYNC.
@@ -814,6 +819,9 @@ class TIA : public Device
      */
     bool myEnableJitter;
     uInt8 myJitterFactor;
+
+    // Force schedule a collision update
+    bool myCollisionUpdateScheduled;
 
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA

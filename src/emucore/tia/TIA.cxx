@@ -266,6 +266,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(myXAtRenderingStart);
 
     out.putBool(myCollisionUpdateRequired);
+    out.putBool(myCollisionUpdateScheduled);
     out.putInt(myCollisionMask);
 
     out.putInt(myMovementClock);
@@ -337,6 +338,7 @@ bool TIA::load(Serializer& in)
     myXAtRenderingStart = in.getInt();
 
     myCollisionUpdateRequired = in.getBool();
+    myCollisionUpdateScheduled = in.getBool();
     myCollisionMask = in.getInt();
 
     myMovementClock = in.getInt();
@@ -1216,7 +1218,8 @@ void TIA::cycle(uInt32 colorClocks)
       [this] (uInt8 address, uInt8 value) {delayedWrite(address, value);}
     );
 
-    myCollisionUpdateRequired = false;
+    myCollisionUpdateRequired = myCollisionUpdateScheduled;
+    myCollisionUpdateScheduled = false;
 
     if (myLinesSinceChange < 2) {
       tickMovement();
@@ -1349,6 +1352,12 @@ void TIA::cloneLastLine()
   uInt8* buffer = myBackBuffer;
 
   memcpy(buffer + y * 160, buffer + (y-1) * 160, 160);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::scheduleCollisionUpdate()
+{
+  myCollisionUpdateScheduled = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
