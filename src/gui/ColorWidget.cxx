@@ -46,12 +46,13 @@ void ColorWidget::setColor(int color)
 void ColorWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
 
   // Draw a thin frame around us.
   s.frameRect(_x, _y, _w, _h + 1, kColor);
 
   // Show the currently selected color
-  s.fillRect(_x+1, _y+1, _w-2, _h-1, isEnabled() ? _color : kWidColor);
+  s.fillRect(_x+1, _y+1, _w-2, _h-1, onTop ? isEnabled() ? _color : kWidColor : kDlgColor);
 
   // Cross out the grid?
   if(_crossGrid)

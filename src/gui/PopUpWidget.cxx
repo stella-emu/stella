@@ -198,6 +198,7 @@ void PopUpWidget::drawWidget(bool hilite)
 {
 //cerr << "PopUpWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
 
   int x = _x + _labelWidth;
   int w = _w - _labelWidth;
@@ -205,23 +206,23 @@ void PopUpWidget::drawWidget(bool hilite)
   // Draw the label, if any
   if(_labelWidth > 0)
     s.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
-                 isEnabled() ? _textcolor : uInt32(kColor), TextAlign::Left);
+                 isEnabled() && onTop ? _textcolor : uInt32(kColor), TextAlign::Left);
 
   // Draw a thin frame around us.
   s.frameRect(x, _y, w, _h, isEnabled() && hilite ? kWidColorHi : kColor);
   s.frameRect(x + w - 16, _y + 1, 15, _h - 2, isEnabled() && hilite ? kWidColorHi : kBGColorLo);
 
   // Fill the background
-  s.fillRect(x + 1, _y + 1, w - 17, _h - 2, _changed ? kDbgChangedColor : kWidColor);
-  s.fillRect(x + w - 15, _y + 2, 13, _h - 4, isEnabled() && hilite ? kWidColor : kBGColorHi);
+  s.fillRect(x + 1, _y + 1, w - 17, _h - 2, onTop ? _changed ? kDbgChangedColor : kWidColor : kDlgColor);
+  s.fillRect(x + w - 15, _y + 2, 13, _h - 4, onTop ? isEnabled() && hilite ? kWidColor : kBGColorHi : kBGColorLo);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   s.drawBitmap(down_arrow, x + w - 13, _y + myArrowsY + 1,
-               !isEnabled() ? kColor : kTextColor, 9u, 8u);
+               !(isEnabled() && onTop) ? kColor : kTextColor, 9u, 8u);
 
   // Draw the selected entry, if any
   const string& name = myMenu->getSelectedName();
   TextAlign align = (_font.getStringWidth(name) > w-6) ?
                      TextAlign::Right : TextAlign::Left;
   s.drawString(_font, name, x+2, _y+myTextY, w-6,
-               !isEnabled() ? kColor : kTextColor, align);
+               !(isEnabled() && onTop) ? kColor : kTextColor, align);
 }

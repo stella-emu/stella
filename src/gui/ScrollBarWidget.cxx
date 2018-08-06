@@ -249,6 +249,7 @@ void ScrollBarWidget::drawWidget(bool hilite)
 {
 //cerr << "ScrollBarWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
   int bottomY = _y + _h;
   bool isSinglePage = (_numEntries <= _entriesPerPage);
 
@@ -273,7 +274,7 @@ void ScrollBarWidget::drawWidget(bool hilite)
   if(!isSinglePage)
   {
     s.fillRect(_x + 1, _y + _sliderPos - 1, _w - 2, _sliderHeight + 2,
-              (hilite && _part == kSliderPart) ? kScrollColorHi : kScrollColor);
+              onTop ? (hilite && _part == kSliderPart) ? kScrollColorHi : kScrollColor : kColor);
   }
 }
 

@@ -83,7 +83,7 @@ void EditTextWidget::drawWidget(bool hilite)
   bool onTop = _boss->dialog().isOnTop();
 
   // Highlight changes
-  if(_changed)
+  if(_changed && onTop)
     s.fillRect(_x, _y, _w, _h, kDbgChangedColor);
   else if(!isEditable())
     s.fillRect(_x, _y, _w, _h, onTop ? kDlgColor : kBGColorLo);
@@ -94,9 +94,9 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   s.drawString(_font, editString(), _x + 2, _y + 2, getEditRect().width(),
-               !_changed
-               ? onTop ? _textcolor : kColor
-               : uInt32(kDbgChangedTextColor),
+               _changed && onTop
+               ? uInt32(kDbgChangedTextColor)
+               : onTop ? _textcolor : kColor,
                TextAlign::Left, -_editScrollOffset, false);
 
   // Draw the caret

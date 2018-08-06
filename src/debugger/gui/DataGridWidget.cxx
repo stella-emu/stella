@@ -593,9 +593,10 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 void DataGridWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
   int row, col;
 
-  s.fillRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? _bgcolorhi : _bgcolor);
+  s.fillRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? _bgcolorhi : onTop ? _bgcolor : _bgcolorlo);
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
@@ -614,7 +615,7 @@ void DataGridWidget::drawWidget(bool hilite)
       int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;
-      uInt32 textColor = kTextColor;
+      uInt32 textColor = onTop ? kTextColor : kColor;
 
       // Draw the selected item inverted, on a highlighted background.
       if (_currentRow == row && _currentCol == col &&
@@ -634,12 +635,12 @@ void DataGridWidget::drawWidget(bool hilite)
       {
         if(_changedList[pos])
         {
-          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
+          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, onTop ? kDbgChangedColor : _bgcolorlo);
 
           if(_hiliteList[pos])
             textColor = kDbgColorHi;
           else
-            textColor = kDbgChangedTextColor;
+            textColor = onTop ? kDbgChangedTextColor : textColor;
         }
         else if(_hiliteList[pos])
           textColor = kDbgColorHi;
