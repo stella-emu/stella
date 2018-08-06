@@ -158,7 +158,7 @@ bool OSystem::create()
   mySerialPort = MediaFactory::createSerialPort();
 
   // Create random number generator
-  myRandom = make_unique<Random>(getTicks());
+  myRandom = make_unique<Random>(uInt32(getTicks()));
 
   // Create PNG handler
   myPNGLib = make_unique<PNGLibrary>(*this);
