@@ -96,7 +96,7 @@ void EditTextWidget::drawWidget(bool hilite)
   s.drawString(_font, editString(), _x + 2, _y + 2, getEditRect().width(),
                _changed && onTop
                ? uInt32(kDbgChangedTextColor)
-               : onTop ? _textcolor : kColor,
+               : onTop ? _textcolor : uInt32(kColor),
                TextAlign::Left, -_editScrollOffset, false);
 
   // Draw the caret

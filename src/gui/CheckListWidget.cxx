@@ -137,7 +137,8 @@ void CheckListWidget::drawWidget(bool hilite)
                    TextAlign::Left, -_editScrollOffset, false);
     }
     else
-      s.drawString(_font, _list[pos], _x + r.left, y, r.width(), onTop ? textColor : kColor);
+      s.drawString(_font, _list[pos], _x + r.left, y, r.width(),
+                   onTop ? textColor : uInt32(kColor));
   }
 
   // Only draw the caret while editing, and if it's in the current viewport

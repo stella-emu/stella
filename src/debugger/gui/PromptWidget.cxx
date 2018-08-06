@@ -96,7 +96,7 @@ void PromptWidget::drawWidget(bool hilite)
       else
         fgcolor = c >> 8;
 
-      s.drawChar(_font, c & 0x7f, x, y, onTop ? fgcolor : kColor);
+      s.drawChar(_font, c & 0x7f, x, y, onTop ? fgcolor : uInt32(kColor));
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;

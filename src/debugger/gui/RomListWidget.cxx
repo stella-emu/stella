@@ -514,7 +514,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw labels
     s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth,
-                 dlist[pos].hllabel ? textColor : kColor);
+                 dlist[pos].hllabel ? textColor : uInt32(kColor));
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space

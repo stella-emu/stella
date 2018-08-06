@@ -635,12 +635,13 @@ void DataGridWidget::drawWidget(bool hilite)
       {
         if(_changedList[pos])
         {
-          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, onTop ? kDbgChangedColor : _bgcolorlo);
+          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
+                     onTop ? uInt32(kDbgChangedColor) : _bgcolorlo);
 
           if(_hiliteList[pos])
             textColor = kDbgColorHi;
           else
-            textColor = onTop ? kDbgChangedTextColor : textColor;
+            textColor = onTop ? uInt32(kDbgChangedTextColor) : textColor;
         }
         else if(_hiliteList[pos])
           textColor = kDbgColorHi;

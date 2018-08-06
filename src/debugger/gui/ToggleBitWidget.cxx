@@ -115,11 +115,13 @@ void ToggleBitWidget::drawWidget(bool hilite)
         // Highlight changes
         if(_changedList[pos])
         {
-          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, onTop ? kDbgChangedColor : _bgcolorlo);
+          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
+                     onTop ? uInt32(kDbgChangedColor) : _bgcolorlo);
           s.drawString(_font, buffer, x, y, _colWidth, onTop ? kDbgChangedTextColor : kColor);
         }
         else
-          s.drawString(_font, buffer, x, y, _colWidth, onTop ? textColor : kColor);
+          s.drawString(_font, buffer, x, y, _colWidth,
+                       onTop ? textColor : uInt32(kColor));
       }
       else
       {
