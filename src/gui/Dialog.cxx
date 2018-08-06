@@ -56,6 +56,7 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _okWidget(nullptr),
     _cancelWidget(nullptr),
     _visible(false),
+    _onTop(true),
     _processCancel(false),
     _title(title),
     _th(0),
@@ -331,25 +332,25 @@ void Dialog::drawDialog()
 
 cerr << COUNT++ << " Dialog::drawDialog()\n";
   // Dialog is still on top if e.g a ContextMenu is opened
-  bool onTop = parent().myDialogStack.top() == this
+  _onTop = parent().myDialogStack.top() == this
     || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
     && !parent().myDialogStack.top()->hasTitle());
 
   if(_flags & WIDGET_CLEARBG)
   {
     //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
-    s.fillRect(_x, _y + _th, _w, _h - _th, onTop ? kDlgColor : kBGColorLo);
+    s.fillRect(_x, _y + _th, _w, _h - _th, _onTop ? kDlgColor : kBGColorLo);
     if(_th)
     {
-      s.fillRect(_x, _y, _w, _th, onTop ? kColorTitleBar : kColorTitleBarLo);
+      s.fillRect(_x, _y, _w, _th, _onTop ? kColorTitleBar : kColorTitleBarLo);
       s.drawString(_font, _title, _x + 10, _y + 2 + 1, _font.getStringWidth(_title),
-                   onTop ? kColorTitleText : kColorTitleTextLo);
+                   _onTop ? kColorTitleText : kColorTitleTextLo);
     }
   }
   else
     s.invalidate();
-  if(_flags & WIDGET_BORDER)
-    s.frameRect(_x, _y, _w, _h, onTop ? kColor : kShadowColor);
+  if(_flags & WIDGET_BORDER) // currently only used by Dialog itself
+    s.frameRect(_x, _y, _w, _h, _onTop ? kColor : kShadowColor);
 
   // Make all child widget dirty
   Widget* w = _firstWidget;

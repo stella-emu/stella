@@ -39,7 +39,8 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                       GUI::Size(320, TIAConstants::maxViewableHeight))
 {
   _flags = WIDGET_ENABLED;
-  _bgcolor = _bgcolorhi = kWidColor;
+  _bgcolor = kDlgColor;
+  _bgcolorlo = kBGColorLo;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,10 +140,11 @@ void RomInfoWidget::parseProperties()
 void RomInfoWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
 
   const int yoff = myAvail.h + 10;
 
-  s.fillRect(_x+2, _y+2, _w-4, _h-4, kDlgColor);
+  s.fillRect(_x+2, _y+2, _w-4, _h-4, onTop ? _bgcolor : _bgcolorlo);
   s.frameRect(_x, _y, _w, _h, kColor);
   s.frameRect(_x, _y+yoff, _w, _h-yoff, kColor);
 

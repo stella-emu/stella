@@ -142,8 +142,10 @@ class Widget : public GuiObject
     int        _fontHeight;
     uInt32     _bgcolor;
     uInt32     _bgcolorhi;
+    uInt32     _bgcolorlo;
     uInt32     _textcolor;
     uInt32     _textcolorhi;
+    uInt32     _textcolorlo;
     uInt32     _shadowcolor;
 
   public:

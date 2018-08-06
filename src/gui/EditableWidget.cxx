@@ -39,6 +39,7 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
 
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
+  _bgcolorlo = kDlgColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
 

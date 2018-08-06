@@ -38,8 +38,10 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
     _hasFocus(false),
     _bgcolor(kWidColor),
     _bgcolorhi(kWidColor),
+    _bgcolorlo(kBGColorLo),
     _textcolor(kTextColor),
     _textcolorhi(kTextColorHi),
+    _textcolorlo(kBGColorLo),
     _shadowcolor(kShadowColor)
 {
   // Insert into the widget list of the boss
@@ -77,7 +79,9 @@ void Widget::draw()
 
   FBSurface& s = _boss->dialog().surface();
 
-  bool hasBorder = _flags & WIDGET_BORDER;
+  bool onTop = _boss->dialog().isOnTop();
+
+  bool hasBorder = _flags & WIDGET_BORDER; // currently only used by Dialog widget
   int oldX = _x, oldY = _y;
 
   // Account for our relative position in the dialog
@@ -92,13 +96,13 @@ void Widget::draw()
     {
       x++; y++; w-=2; h-=2;
     }
-    s.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
+    s.fillRect(x, y, w, h, !onTop ? _bgcolorlo : (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
   }
 
   // Draw border
   if(hasBorder)
   {
-    s.frameRect(_x, _y, _w, _h, (_flags & WIDGET_HILITED) && isEnabled() ? kWidColorHi : kColor);
+    s.frameRect(_x, _y, _w, _h, !onTop ? kColor : (_flags & WIDGET_HILITED) && isEnabled() ? kWidColorHi : kColor);
     _x += 4;
     _y += 4;
     _w -= 8;
@@ -203,6 +207,8 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   FBSurface& s = boss->dialog().surface();
   int size = int(arr.size()), pos = -1;
   Widget* tmp;
+  bool onTop = boss->dialog().isOnTop();
+
   for(int i = 0; i < size; ++i)
   {
     tmp = arr[i];
@@ -226,7 +232,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
       else
         tmp->_hasFocus = false;
 
-      s.frameRect(x, y, w, h, kDlgColor);
+      s.frameRect(x, y, w, h, onTop ? kDlgColor : kBGColorLo);
 
       tmp->setDirty();
     }
@@ -279,7 +285,8 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
   else
     tmp->_hasFocus = true;
 
-  s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
+  if (onTop)
+      s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
 
   tmp->setDirty();
 
@@ -368,8 +375,10 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;
+  _bgcolorlo = kColor;
   _textcolor = kBtnTextColor;
   _textcolorhi = kBtnTextColorHi;
+  _textcolorlo = kBGColorLo;
 
   _editable = false;
 }
@@ -457,16 +466,17 @@ void ButtonWidget::setBitmap(uInt32* bitmap, int bmw, int bmh)
 void ButtonWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
 
-  s.frameRect(_x, _y, _w, _h, hilite && isEnabled() ? kBtnBorderColorHi : kBtnBorderColor);
+  s.frameRect(_x, _y, _w, _h, !onTop ? kShadowColor : hilite && isEnabled() ? kBtnBorderColorHi : kBtnBorderColor);
 
   if (!_useBitmap)
     s.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
-                 !isEnabled() ? /*hilite ? uInt32(kColor) :*/ uInt32(kBGColorLo) :
+                 !(isEnabled() && onTop) ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor, _align);
   else
     s.drawBitmap(_bitmap, _x + (_w - _bmw) / 2, _y + (_h - _bmh) / 2,
-                 !isEnabled() ? /*hilite ? uInt32(kColor) :*/ uInt32(kBGColorLo) :
+                 !(isEnabled() && onTop) ? _textcolorlo :
                  hilite ? _textcolorhi : _textcolor,
                  _bmw, _bmh);
 
