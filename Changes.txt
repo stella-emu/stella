@@ -14,6 +14,9 @@
 
 5.1.3 to 6.0: (MMM d, 2018)
 
+  * Note: because of major TIA sound changes, the state file format has
+          changed, and old state files will not work with this release.
+
   * New cycle exact audio core based on work by Chris Brenner (crispy); greatly
     improved audio emulation accuracy (i.e. E.T., Ms. Pacman).
 
@@ -34,7 +37,10 @@
 
   * Fixes for collision corner cases (during HBlank).
 
-  * UI modernization (new widget look, dialog titles added, dialogs refactored).
+  * UI modernization (new widget look, dialog titles added, dialogs
+    refactored).
+
+  * Fixed excessive CPU usage while in UI modes (ROM launcher, debugger, etc).
 
   * Changes in 'Game Properties' dialog
     - 'Default' button now affects only current tab like in all other dialogs.
@@ -52,8 +58,11 @@
   * Fixed emulator crash when starting SaveKey ROMs from commandline with
     SaveKey messages enabled.
 
-  * Fixed missing TV format update in frame stats dialog when switching display
-    type.
+  * Fixed missing TV format update in frame stats dialog when switching
+    display type.
+
+  * For UNIX systems: in the ROM launcher, when using symlinks use the
+    symlink pathname instead of the underlying filesystem pathname.
 
   * Updated PAL palette.
 

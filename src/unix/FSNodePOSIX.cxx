@@ -59,14 +59,16 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& p, bool verify)
   if(_path[0] == '~')
   {
     const char* home = getenv("HOME");
-    if (home != nullptr)
+    if(home != nullptr)
       _path.replace(0, 1, home);
   }
-
-  // Get absolute path
-  char buf[MAXPATHLEN];
-  if(realpath(_path.c_str(), buf))
-    _path = buf;
+  // Get absolute path (only used for relative directories)
+  else if(_path[0] == '.')
+  {
+    char buf[MAXPATHLEN];
+    if(realpath(_path.c_str(), buf))
+      _path = buf;
+  }
 
   _displayName = lastPathComponent(_path);
 

@@ -45,6 +45,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
            WIDGET_WANTS_TAB | WIDGET_WANTS_RAWDATA;
   _textcolor = kTextColor;
   _bgcolor = kWidColor;
+  _bgcolorlo = kDlgColor;
 
   _kConsoleCharWidth  = font.getMaxCharWidth();
   _kConsoleCharHeight = font.getFontHeight();
@@ -74,6 +75,7 @@ void PromptWidget::drawWidget(bool hilite)
   uInt32 fgcolor, bgcolor;
 
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
 
   // Draw text
   int start = _scrollLine - _linesPerPage + 1;
@@ -94,7 +96,7 @@ void PromptWidget::drawWidget(bool hilite)
       else
         fgcolor = c >> 8;
 
-      s.drawChar(_font, c & 0x7f, x, y, fgcolor);
+      s.drawChar(_font, c & 0x7f, x, y, onTop ? fgcolor : kColor);
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;

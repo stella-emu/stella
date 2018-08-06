@@ -465,8 +465,10 @@ void RomListWidget::lostFocusWidget()
 void RomListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
   const CartDebug::DisassemblyList& dlist = myDisasm->list;
   int i, pos, xpos, ypos, len = int(dlist.size());
+  uInt32 textColor = onTop ? kTextColor : kColor;
 
   const GUI::Rect& r = getEditRect();
   const GUI::Rect& l = getLineRect();
@@ -487,7 +489,7 @@ void RomListWidget::drawWidget(bool hilite)
   xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
   {
-    uInt32 bytesColor = kTextColor;
+    uInt32 bytesColor = textColor;
 
     // Draw checkboxes for correct lines (takes scrolling into account)
     myCheckList[i]->setState(myBPState->isSet(dlist[pos].address));
@@ -496,7 +498,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw highlighted item in a frame
     if (_highlightedItem == pos)
-      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kWidColorHi);
+      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, onTop ? kWidColorHi : kBGColorLo);
 
     // Draw the selected item inverted, on a highlighted background.
     if(_selectedItem == pos && _hasFocus)
@@ -512,7 +514,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw labels
     s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth,
-                 dlist[pos].hllabel ? kTextColor : kColor);
+                 dlist[pos].hllabel ? textColor : kColor);
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space
@@ -522,14 +524,14 @@ void RomListWidget::drawWidget(bool hilite)
       {
         // Draw mnemonic
         s.drawString(_font, dlist[pos].disasm.substr(0, 7), xpos + _labelWidth, ypos,
-                     7 * _fontWidth, kTextColor);
+                     7 * _fontWidth, textColor);
         // Draw operand
         if (dlist[pos].disasm.length() > 8)
           s.drawString(_font, dlist[pos].disasm.substr(8), xpos + _labelWidth + 7 * _fontWidth, ypos,
-                       codeDisasmW - 7 * _fontWidth, kTextColor);
+                       codeDisasmW - 7 * _fontWidth, textColor);
         // Draw cycle count
         s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + codeDisasmW, ypos,
-                     cycleCountW, kTextColor);
+                     cycleCountW, textColor);
       }
       else
       {
@@ -546,7 +548,7 @@ void RomListWidget::drawWidget(bool hilite)
         if (_selectedItem == pos && _editMode)
         {
           adjustOffset();
-          s.drawString(_font, editString(), _x + r.x(), ypos, r.width(), kTextColor,
+          s.drawString(_font, editString(), _x + r.x(), ypos, r.width(), textColor,
                        TextAlign::Left, -_editScrollOffset, false);
 
           drawCaret();
@@ -561,7 +563,7 @@ void RomListWidget::drawWidget(bool hilite)
     {
       // Draw disassembly, giving it all remaining horizontal space
       s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                   noTypeDisasmW, kTextColor);
+                   noTypeDisasmW, textColor);
     }
   }
 }
