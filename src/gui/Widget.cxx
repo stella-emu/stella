@@ -354,8 +354,9 @@ void StaticTextWidget::setLabel(const string& label)
 void StaticTextWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
   s.drawString(_font, _label, _x, _y, _w,
-               isEnabled() ? _textcolor : uInt32(kColor), _align, 0, true, _shadowcolor);
+               isEnabled() && onTop ? _textcolor : uInt32(kColor), _align, 0, true, _shadowcolor);
 
   setDirty();
 }
@@ -542,6 +543,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
+  _bgcolorlo = kDlgColor;
 
   _editable = true;
 
@@ -638,19 +640,20 @@ void CheckboxWidget::setState(bool state, bool changed)
 void CheckboxWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
 
   if(_drawBox)
-    s.frameRect(_x, _y + _boxY, 14, 14, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
+    s.frameRect(_x, _y + _boxY, 14, 14, onTop && hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
   // Do we draw a square or cross?
   s.fillRect(_x + 1, _y + _boxY + 1, 12, 12, _changed ? uInt32(kDbgChangedColor)
              : isEnabled() ? _bgcolor : uInt32(kColor));
   if(_state)
-    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
+    s.drawBitmap(_img, _x + 2, _y + _boxY + 2, onTop && isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
                  : kColor, 10);
 
   // Finally draw the label
   s.drawString(_font, _label, _x + 20, _y + _textY, _w,
-               isEnabled() ? kTextColor : kColor);
+               onTop && isEnabled() ? kTextColor : kColor);
 
   setDirty();
 }

@@ -166,13 +166,13 @@ void RomInfoWidget::drawWidget(bool hilite)
     const GUI::Font& font = instance().frameBuffer().font();
     uInt32 x = _x + ((_w - font.getStringWidth(mySurfaceErrorMsg)) >> 1);
     uInt32 y = _y + ((yoff - font.getLineHeight()) >> 1);
-    s.drawString(font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
+    s.drawString(font, mySurfaceErrorMsg, x, y, _w - 10, onTop ? _textcolor : _shadowcolor);
   }
 
   int xpos = _x + 8, ypos = _y + yoff + 10;
   for(const auto& info: myRomInfo)
   {
-    s.drawString(_font, info, xpos, ypos, _w - 16, _textcolor);
+    s.drawString(_font, info, xpos, ypos, _w - 16, onTop ? _textcolor : _shadowcolor);
     ypos += _font.getLineHeight();
   }
 }

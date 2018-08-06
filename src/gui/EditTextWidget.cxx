@@ -28,7 +28,7 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
     _changed(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
-  
+
   startEditMode();  // We're always in edit mode
 }
 
@@ -80,6 +80,7 @@ void EditTextWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount
 void EditTextWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
 
   // Highlight changes
   if(_changed)
@@ -96,7 +97,9 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   s.drawString(_font, editString(), _x + 2, _y + 2, getEditRect().width(),
-               !_changed ? _textcolor : uInt32(kDbgChangedTextColor),
+               !_changed
+               ? onTop ? _textcolor : kColor
+               : uInt32(kDbgChangedTextColor),
                TextAlign::Left, -_editScrollOffset, false);
 
   // Draw the caret

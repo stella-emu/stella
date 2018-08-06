@@ -268,7 +268,7 @@ void TabWidget::drawWidget(bool hilite)
   int i, x = _x + kTabLeftOffset;
   for (i = 0; i < int(_tabs.size()); ++i)
   {
-    uInt32 fontcolor = _tabs[i].enabled ? kTextColor : kColor;
+    uInt32 fontcolor = _tabs[i].enabled && onTop? kTextColor : kColor;
     int yOffset = (i == _activeTab) ? 0 : 1;
     s.fillRect(x, _y + 1, _tabWidth, _tabHeight - 1,
               (i == _activeTab)

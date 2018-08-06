@@ -58,6 +58,7 @@ void StringListWidget::handleMouseLeft()
 void StringListWidget::drawWidget(bool hilite)
 {
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
   int i, pos, len = int(_list.size());
 
   // Draw a thin frame around the list.
@@ -67,7 +68,7 @@ void StringListWidget::drawWidget(bool hilite)
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
     const int y = _y + 2 + _fontHeight * i;
-    uInt32 textColor = kTextColor;
+    uInt32 textColor = onTop ? kTextColor : kShadowColor;
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos && _hilite)
