@@ -79,10 +79,7 @@ void StringListWidget::drawWidget(bool hilite)
         textColor = kTextColorInv;
       }
       else
-      {
-        bool onTop = _boss->dialog().isOnTop();
         s.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, onTop ? kWidColorHi : kBGColorLo);
-      }
     }
 
     GUI::Rect r(getEditRect());
