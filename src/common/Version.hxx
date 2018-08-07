@@ -19,6 +19,6 @@
 #define VERSION_HXX
 
 #define STELLA_VERSION "6.0_pre1"
-#define STELLA_BUILD "4430"
+#define STELLA_BUILD "4434"
 
 #endif
