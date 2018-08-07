@@ -52,7 +52,7 @@ void ColorWidget::drawWidget(bool hilite)
   s.frameRect(_x, _y, _w, _h + 1, kColor);
 
   // Show the currently selected color
-  s.fillRect(_x+1, _y+1, _w-2, _h-1, onTop ? isEnabled() ? _color : kWidColor : kDlgColor);
+  s.fillRect(_x+1, _y+1, _w-2, _h-1, onTop ? isEnabled() ? _color : kWidColor : kBGColorLo);
 
   // Cross out the grid?
   if(_crossGrid)

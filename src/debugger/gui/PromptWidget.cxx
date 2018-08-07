@@ -869,6 +869,7 @@ void PromptWidget::drawCaret()
 {
 //cerr << "PromptWidget::drawCaret()\n";
   FBSurface& s = _boss->dialog().surface();
+  bool onTop = _boss->dialog().isOnTop();
 
   int line = _currentPos / _lineWidth;
 
@@ -881,7 +882,7 @@ void PromptWidget::drawCaret()
   int y = _y + displayLine * _kConsoleLineHeight;
 
   char c = buffer(_currentPos);
-  s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
+  s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, onTop ? kTextColor : kColor);
   s.drawChar(_font, c, x, y + 2, kBGColor);
 }
 

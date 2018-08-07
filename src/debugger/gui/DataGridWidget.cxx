@@ -596,7 +596,7 @@ void DataGridWidget::drawWidget(bool hilite)
   bool onTop = _boss->dialog().isOnTop();
   int row, col;
 
-  s.fillRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? _bgcolorhi : onTop ? _bgcolor : _bgcolorlo);
+  s.fillRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? _bgcolorhi : onTop ? _bgcolor : kBGColorHi);
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
   s.frameRect(_x, _y, _w, _h, hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
