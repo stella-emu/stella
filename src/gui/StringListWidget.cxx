@@ -62,7 +62,7 @@ void StringListWidget::drawWidget(bool hilite)
   int i, pos, len = int(_list.size());
 
   // Draw a thin frame around the list.
-  s.frameRect(_x, _y, _w + 1, _h, hilite && _hilite ? kWidColorHi : kColor);
+  s.frameRect(_x, _y, _w + 1, _h, onTop && hilite && _hilite ? kWidColorHi : kColor);
 
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
@@ -71,7 +71,7 @@ void StringListWidget::drawWidget(bool hilite)
     uInt32 textColor = onTop ? kTextColor : kShadowColor;
 
     // Draw the selected item inverted, on a highlighted background.
-    if (_selectedItem == pos && _hilite)
+    if (onTop && _selectedItem == pos && _hilite)
     {
       if(_hasFocus && !_editMode)
       {
