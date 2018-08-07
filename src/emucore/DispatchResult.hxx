@@ -35,7 +35,7 @@ class DispatchResult
 
     const string& getMessage() const { assertStatus(Status::debugger); return myMessage; }
 
-    uInt16 getAddress() const { assertStatus(Status::debugger); return myAddress; }
+    int getAddress() const { assertStatus(Status::debugger); return myAddress; }
 
     bool wasReadTrap() const { assertStatus(Status::debugger); return myWasReadTrap; }
 
