@@ -164,7 +164,7 @@ void RadioButtonWidget::drawWidget(bool hilite)
 
   // Draw the inner bounding circle with enabled color
   s.drawBitmap(radio_img_innercircle, _x + 1, _y + _boxY + 1, isEnabled()
-               ? _bgcolor : uInt32(kColor), 12, 12);
+               ? _bgcolor : kColor, 12, 12);
 
   // draw state
   if(_state)

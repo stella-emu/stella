@@ -109,11 +109,11 @@ class Widget : public GuiObject
 
     virtual const GUI::Font& font() const { return _font; }
 
-    void setTextColor(uInt32 color)   { _textcolor = color;   setDirty(); }
-    void setTextColorHi(uInt32 color) { _textcolorhi = color; setDirty(); }
-    void setBGColor(uInt32 color)     { _bgcolor = color;     setDirty(); }
-    void setBGColorHi(uInt32 color)   { _bgcolorhi = color;   setDirty(); }
-    void setShadowColor(uInt32 color) { _shadowcolor = color; setDirty(); }
+    void setTextColor(ColorId color)   { _textcolor = color;   setDirty(); }
+    void setTextColorHi(ColorId color) { _textcolorhi = color; setDirty(); }
+    void setBGColor(ColorId color)     { _bgcolor = color;     setDirty(); }
+    void setBGColorHi(ColorId color)   { _bgcolorhi = color;   setDirty(); }
+    void setShadowColor(ColorId color) { _shadowcolor = color; setDirty(); }
 
     virtual void loadConfig() { }
 
@@ -140,13 +140,13 @@ class Widget : public GuiObject
     bool       _hasFocus;
     int        _fontWidth;
     int        _fontHeight;
-    uInt32     _bgcolor;
-    uInt32     _bgcolorhi;
-    uInt32     _bgcolorlo;
-    uInt32     _textcolor;
-    uInt32     _textcolorhi;
-    uInt32     _textcolorlo;
-    uInt32     _shadowcolor;
+    ColorId    _bgcolor;
+    ColorId    _bgcolorhi;
+    ColorId    _bgcolorlo;
+    ColorId    _textcolor;
+    ColorId    _textcolorhi;
+    ColorId    _textcolorlo;
+    ColorId    _shadowcolor;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
@@ -183,11 +183,11 @@ class StaticTextWidget : public Widget
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h,
                      const string& text = "", TextAlign align = TextAlign::Left,
-                     uInt32 shadowColor = 0);
+                     ColorId shadowColor = kNone);
     StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y,
                      const string& text = "", TextAlign align = TextAlign::Left,
-                     uInt32 shadowColor = 0);
+                     ColorId shadowColor = kNone);
     void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlign align) { _align = align; setDirty(); }
@@ -293,7 +293,7 @@ class CheckboxWidget : public ButtonWidget
     bool _changed;
 
     uInt32* _img;
-    uInt32  _fillColor;
+    ColorId _fillColor;
     int _boxY;
     int _textY;
 

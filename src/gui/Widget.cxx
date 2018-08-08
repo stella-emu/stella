@@ -307,7 +307,7 @@ void Widget::setDirtyInChain(Widget* start)
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y, int w, int h,
                                    const string& text, TextAlign align,
-                                   uInt32 shadowColor)
+                                   ColorId shadowColor)
   : Widget(boss, font, x, y, w, h),
     _align(align)
 {
@@ -326,7 +326,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    int x, int y,
                                    const string& text, TextAlign align,
-                                   uInt32 shadowColor)
+                                   ColorId shadowColor)
   : StaticTextWidget(boss, font, x, y, font.getStringWidth(text), font.getLineHeight(),
                      text, align, shadowColor)
 {
@@ -356,7 +356,7 @@ void StaticTextWidget::drawWidget(bool hilite)
   FBSurface& s = _boss->dialog().surface();
   bool onTop = _boss->dialog().isOnTop();
   s.drawString(_font, _label, _x, _y, _w,
-               isEnabled() && onTop ? _textcolor : uInt32(kColor), _align, 0, true, _shadowcolor);
+               isEnabled() && onTop ? _textcolor : kColor, _align, 0, true, _shadowcolor);
 
   setDirty();
 }
@@ -646,8 +646,8 @@ void CheckboxWidget::drawWidget(bool hilite)
     s.frameRect(_x, _y + _boxY, 14, 14, onTop && hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
   // Do we draw a square or cross?
   s.fillRect(_x + 1, _y + _boxY + 1, 12, 12,
-      _changed ? onTop ? uInt32(kDbgChangedColor) : uInt32(kDlgColor) :
-      isEnabled() ? onTop ? _bgcolor : uInt32(kDlgColor) : uInt32(kColor));
+      _changed ? onTop ? kDbgChangedColor : kDlgColor :
+      isEnabled() ? onTop ? _bgcolor : kDlgColor : kColor);
   if(_state)
     s.drawBitmap(_img, _x + 2, _y + _boxY + 2, onTop && isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
                  : kColor, 10);
@@ -868,7 +868,7 @@ void SliderWidget::drawWidget(bool hilite)
   for(int i = 1; i < _numIntervals; ++i)
   {
     int xt = x + (_w - _labelWidth - _valueLabelGap - _valueLabelWidth) * i / _numIntervals - 1;
-    uInt32 color;
+    ColorId color = kNone;
 
     if(isEnabled())
     {

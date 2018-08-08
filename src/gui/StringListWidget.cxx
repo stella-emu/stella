@@ -68,7 +68,7 @@ void StringListWidget::drawWidget(bool hilite)
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
     const int y = _y + 2 + _fontHeight * i;
-    uInt32 textColor = onTop ? kTextColor : kShadowColor;
+    ColorId textColor = onTop ? kTextColor : kShadowColor;
 
     // Draw the selected item inverted, on a highlighted background.
     if (onTop && _selectedItem == pos && _hilite)

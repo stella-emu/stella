@@ -72,7 +72,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
 void PromptWidget::drawWidget(bool hilite)
 {
 //cerr << "PromptWidget::drawWidget\n";
-  uInt32 fgcolor, bgcolor;
+  ColorId fgcolor, bgcolor;
 
   FBSurface& s = _boss->dialog().surface();
   bool onTop = _boss->dialog().isOnTop();
@@ -90,13 +90,13 @@ void PromptWidget::drawWidget(bool hilite)
       if(c & (1 << 17))  // inverse video flag
       {
         fgcolor = _bgcolor;
-        bgcolor = (c & 0x1ffff) >> 8;
+        bgcolor = ColorId((c & 0x1ffff) >> 8);
         s.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
       }
       else
-        fgcolor = c >> 8;
+        fgcolor = ColorId(c >> 8);
 
-      s.drawChar(_font, c & 0x7f, x, y, onTop ? fgcolor : uInt32(kColor));
+      s.drawChar(_font, c & 0x7f, x, y, onTop ? fgcolor : kColor);
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;
@@ -833,13 +833,11 @@ void PromptWidget::putcharIntern(int c)
     nextLine();
   else if(c & 0x80) { // set foreground color to TIA color
                       // don't print or advance cursor
-                      // there are only 128 TIA colors, but
-                      // OverlayColor contains 256 of them
-    _textcolor = (c & 0x7f) << 1;
+    _textcolor = ColorId((c & 0x7f) << 1);
   }
   else if(c && c < 0x1e) { // first actual character is large dash
     // More colors (the regular GUI ones)
-    _textcolor = c + 0x100;
+    _textcolor = ColorId(c + 0x100);
   }
   else if(c == 0x7f) { // toggle inverse video (DEL char)
     _inverse = !_inverse;

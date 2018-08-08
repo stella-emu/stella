@@ -169,7 +169,7 @@ void AboutDialog::displayInfo()
   {
     const char* str = myDescStr[i].c_str();
     TextAlign align = TextAlign::Center;
-    uInt32 color  = kTextColor;
+    ColorId color  = kTextColor;
 
     while (str[0] == '\\')
     {

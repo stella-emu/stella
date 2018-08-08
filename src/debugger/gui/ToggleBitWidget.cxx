@@ -94,7 +94,7 @@ void ToggleBitWidget::drawWidget(bool hilite)
   {
     for (col = 0; col < _cols; col++)
     {
-      uInt32 textColor = kTextColor;
+      ColorId textColor = kTextColor;
       int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;

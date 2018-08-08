@@ -518,13 +518,13 @@ class FrameBuffer
       int counter;
       int x, y, w, h;
       MessagePosition position;
-      uInt32 color;
+      ColorId color;
       shared_ptr<FBSurface> surface;
       bool enabled;
 
       Message()
         : counter(-1), x(0), y(0), w(0), h(0), position(MessagePosition::BottomCenter),
-          color(0), enabled(false) { }
+          color(kNone), enabled(false) { }
     };
     Message myMsg;
     Message myStatsMsg;

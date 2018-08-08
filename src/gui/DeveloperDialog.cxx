@@ -1090,7 +1090,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
     return;
   }
 
-  static constexpr int dbg_color[2][DEBUG_COLORS] = {
+  static constexpr ColorId dbg_color[2][DEBUG_COLORS] = {
     {
       TIA::FixedColor::NTSC_RED,
       TIA::FixedColor::NTSC_ORANGE,

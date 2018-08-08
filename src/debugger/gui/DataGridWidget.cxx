@@ -615,7 +615,7 @@ void DataGridWidget::drawWidget(bool hilite)
       int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;
-      uInt32 textColor = onTop ? kTextColor : kColor;
+      ColorId textColor = onTop ? kTextColor : kColor;
 
       // Draw the selected item inverted, on a highlighted background.
       if (_currentRow == row && _currentCol == col &&
@@ -636,12 +636,12 @@ void DataGridWidget::drawWidget(bool hilite)
         if(_changedList[pos])
         {
           s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
-                     onTop ? uInt32(kDbgChangedColor) : _bgcolorlo);
+                     onTop ? kDbgChangedColor : _bgcolorlo);
 
           if(_hiliteList[pos])
             textColor = kDbgColorHi;
           else
-            textColor = onTop ? uInt32(kDbgChangedTextColor) : textColor;
+            textColor = onTop ? kDbgChangedTextColor : textColor;
         }
         else if(_hiliteList[pos])
           textColor = kDbgColorHi;

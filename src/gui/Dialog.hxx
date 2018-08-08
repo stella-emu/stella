@@ -55,7 +55,7 @@ class Dialog : public GuiObject
     void close();
 
     bool isVisible() const override { return _visible; }
-    bool isOnTop() { return _onTop;  }
+    bool isOnTop() const { return _onTop;  }
 
     virtual void center();
     virtual void drawDialog();

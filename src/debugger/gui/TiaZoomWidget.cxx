@@ -273,7 +273,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
     for(x = myXOff, col = 0; x < myNumCols+myXOff; ++x, col += wzoom)
     {
       uInt32 idx = y*width + x;
-      uInt32 color = currentFrame[idx] | (idx > scanoffset ? 1 : 0);
+      ColorId color = ColorId(currentFrame[idx] | (idx > scanoffset ? 1 : 0));
       s.fillRect(_x + col + 1, _y + row + 1, wzoom, hzoom, color);
     }
   }

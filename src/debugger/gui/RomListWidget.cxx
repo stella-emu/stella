@@ -468,7 +468,7 @@ void RomListWidget::drawWidget(bool hilite)
   bool onTop = _boss->dialog().isOnTop();
   const CartDebug::DisassemblyList& dlist = myDisasm->list;
   int i, pos, xpos, ypos, len = int(dlist.size());
-  uInt32 textColor = onTop ? kTextColor : kColor;
+  ColorId textColor = onTop ? kTextColor : kColor;
 
   const GUI::Rect& r = getEditRect();
   const GUI::Rect& l = getLineRect();
@@ -489,7 +489,7 @@ void RomListWidget::drawWidget(bool hilite)
   xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
   {
-    uInt32 bytesColor = textColor;
+    ColorId bytesColor = textColor;
 
     // Draw checkboxes for correct lines (takes scrolling into account)
     myCheckList[i]->setState(myBPState->isSet(dlist[pos].address));
@@ -514,7 +514,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw labels
     s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth,
-                 dlist[pos].hllabel ? textColor : uInt32(kColor));
+                 dlist[pos].hllabel ? textColor : kColor);
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space

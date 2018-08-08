@@ -28,7 +28,7 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, int w, int h, int cmd)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    _color(0),
+    _color(kNone),
     _cmd(cmd),
     _crossGrid(false)
 {
@@ -36,7 +36,7 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ColorWidget::setColor(int color)
+void ColorWidget::setColor(ColorId color)
 {
   _color = color;
   setDirty();
