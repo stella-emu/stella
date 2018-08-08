@@ -984,7 +984,7 @@ bool TIA::enableFixedColors(bool enable)
   myPlayer1.setDebugColor(myFixedColorPalette[layout][FixedObject::P1]);
   myBall.setDebugColor(myFixedColorPalette[layout][FixedObject::BL]);
   myPlayfield.setDebugColor(myFixedColorPalette[layout][FixedObject::PF]);
-  myBackground.setDebugColor(FixedColor::BK_GREY);
+  myBackground.setDebugColor(myFixedColorPalette[layout][FixedObject::BK]);
 
   myMissile0.enableDebugColors(enable);
   myMissile1.enableDebugColors(enable);
@@ -1042,6 +1042,9 @@ bool TIA::setFixedColorPalette(const string& colors)
         break;
     }
   }
+  myFixedColorPalette[0][TIA::BK] = FixedColor::NTSC_GREY;
+  myFixedColorPalette[1][TIA::BK] = FixedColor::PAL_GREY;
+
 
   // If already in fixed debug colours mode, update the current palette
   if(usingFixedColors())

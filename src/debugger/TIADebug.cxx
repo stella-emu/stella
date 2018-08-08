@@ -54,7 +54,7 @@ const DebuggerState& TIADebug::getState()
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::P0]);
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::P1]);
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::PF]);
-  myState.fixedCols.push_back(TIA::FixedColor::BK_GREY);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::BK]);
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::M0]);
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::M1]);
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::BL]);
@@ -1025,7 +1025,7 @@ string TIADebug::debugColors() const
       << " Playfield\n"
       << " " << myTIA.myFixedColorNames[TIA::BL] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::BL])
       << " Ball\n"
-      << " Grey   " << colorSwatch(TIA::FixedColor::BK_GREY)
+      << " Grey   " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::BK])
       << " Background\n"
       << " White  " << colorSwatch(TIA::FixedColor::HBLANK_WHITE)
       << " HMOVE\n";

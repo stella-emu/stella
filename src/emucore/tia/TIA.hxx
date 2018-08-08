@@ -77,8 +77,9 @@ class TIA : public Device
       NTSC_ORANGE = 0x38,
       NTSC_YELLOW = 0x1c,
       NTSC_GREEN  = 0xc4,
-      NTSC_BLUE   = 0x9e,
+      NTSC_BLUE   = 0x9c,
       NTSC_PURPLE = 0x66,
+      NTSC_GREY   = 0x04,
 
       PAL_RED     = 0x62,
       PAL_ORANGE  = 0x4a,
@@ -86,8 +87,8 @@ class TIA : public Device
       PAL_GREEN   = 0x34,
       PAL_BLUE    = 0xbc,
       PAL_PURPLE  = 0xa6,
+      PAL_GREY    = 0x06,
 
-      BK_GREY      = 0x0a,
       HBLANK_WHITE = 0x0e
     };
 
@@ -500,9 +501,9 @@ class TIA : public Device
     /**
      * Palette and indices for fixed debug colors.
      */
-    enum FixedObject { P0, M0, P1, M1, PF, BL };
-    FixedColor myFixedColorPalette[2][6];
-    string myFixedColorNames[6];
+    enum FixedObject { P0, M0, P1, M1, PF, BL, BK };
+    FixedColor myFixedColorPalette[2][7];
+    string myFixedColorNames[7];
 
   private:
 
