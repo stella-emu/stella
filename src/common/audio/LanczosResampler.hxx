@@ -21,6 +21,7 @@
 #include "bspf.hxx"
 #include "Resampler.hxx"
 #include "ConvolutionBuffer.hxx"
+#include "HighPass.hxx"
 
 class LanczosResampler : public Resampler
 {
@@ -58,6 +59,10 @@ class LanczosResampler : public Resampler
     Int16* myCurrentFragment;
     uInt32 myFragmentIndex;
     bool myIsUnderrun;
+
+    HighPass myHighPassL;
+    HighPass myHighPassR;
+    HighPass myHighPass;
 
     uInt32 myTimeIndex;
 };
