@@ -79,9 +79,9 @@ LanczosResampler::LanczosResampler(
   myCurrentFragment(nullptr),
   myFragmentIndex(0),
   myIsUnderrun(true),
-  myHighPassL(HIGH_PASS_CUT_OFF, (float)formatFrom.sampleRate),
-  myHighPassR(HIGH_PASS_CUT_OFF, (float)formatFrom.sampleRate),
-  myHighPass(HIGH_PASS_CUT_OFF, (float)formatFrom.sampleRate),
+  myHighPassL(HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)),
+  myHighPassR(HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)),
+  myHighPass(HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)),
   myTimeIndex(0)
 {
   myPrecomputedKernels = make_unique<float[]>(myPrecomputedKernelCount * myKernelSize);
