@@ -49,15 +49,17 @@ const DebuggerState& TIADebug::getState()
   myState.coluRegs.push_back(coluBK());
 
   // Debug Colors
-  int mode = myTIA.frameLayout() == FrameLayout::ntsc ? 0 : 1;
+  int timing = myTIA.consoleTiming() == ConsoleTiming::ntsc ? 0
+    : myTIA.consoleTiming() == ConsoleTiming::pal ? 1 : 2;
+
   myState.fixedCols.clear();
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::P0]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::P1]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::PF]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::BK]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::M0]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::M1]);
-  myState.fixedCols.push_back(myTIA.myFixedColorPalette[mode][TIA::BL]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::P0]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::P1]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::PF]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::BK]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::M0]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::M1]);
+  myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::BL]);
   myState.fixedCols.push_back(TIA::FixedColor::HBLANK_WHITE);
 
   // Collisions
@@ -1012,20 +1014,22 @@ string TIADebug::debugColors() const
 {
   ostringstream buf;
 
-  int mode = myTIA.frameLayout() == FrameLayout::ntsc ? 0 : 1;
-  buf << " " << myTIA.myFixedColorNames[TIA::P0] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P0])
+  int timing = myTIA.consoleTiming() == ConsoleTiming::ntsc ? 0
+    : myTIA.consoleTiming() == ConsoleTiming::pal ? 1 : 2;
+
+  buf << " " << myTIA.myFixedColorNames[TIA::P0] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::P0])
       << " Player 0\n"
-      << " " << myTIA.myFixedColorNames[TIA::M0] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M0])
+      << " " << myTIA.myFixedColorNames[TIA::M0] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::M0])
       << " Missile 0\n"
-      << " " << myTIA.myFixedColorNames[TIA::P1] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::P1])
+      << " " << myTIA.myFixedColorNames[TIA::P1] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::P1])
       << " Player 1\n"
-      << " " << myTIA.myFixedColorNames[TIA::M1] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::M1])
+      << " " << myTIA.myFixedColorNames[TIA::M1] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::M1])
       << " Missile 1\n"
-      << " " << myTIA.myFixedColorNames[TIA::PF] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::PF])
+      << " " << myTIA.myFixedColorNames[TIA::PF] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::PF])
       << " Playfield\n"
-      << " " << myTIA.myFixedColorNames[TIA::BL] << " " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::BL])
+      << " " << myTIA.myFixedColorNames[TIA::BL] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::BL])
       << " Ball\n"
-      << " Grey   " << colorSwatch(myTIA.myFixedColorPalette[mode][TIA::BK])
+      << " Grey   " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::BK])
       << " Background\n"
       << " White  " << colorSwatch(TIA::FixedColor::HBLANK_WHITE)
       << " HMOVE\n";

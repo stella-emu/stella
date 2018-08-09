@@ -973,7 +973,8 @@ bool TIA::toggleCollisions()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableFixedColors(bool enable)
 {
-  int timing = consoleTiming() == ConsoleTiming::pal ? 1 : 0;
+  int timing = consoleTiming() == ConsoleTiming::ntsc ? 0
+    : consoleTiming() == ConsoleTiming::pal ? 1 : 2;
 
   myMissile0.setDebugColor(myFixedColorPalette[timing][FixedObject::M0]);
   myMissile1.setDebugColor(myFixedColorPalette[timing][FixedObject::M1]);
@@ -1010,38 +1011,44 @@ bool TIA::setFixedColorPalette(const string& colors)
       case 'r':
         myFixedColorPalette[0][i] = FixedColor::NTSC_RED;
         myFixedColorPalette[1][i] = FixedColor::PAL_RED;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_RED;
         myFixedColorNames[i] = "Red   ";
         break;
       case 'o':
         myFixedColorPalette[0][i] = FixedColor::NTSC_ORANGE;
         myFixedColorPalette[1][i] = FixedColor::PAL_ORANGE;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_ORANGE;
         myFixedColorNames[i] = "Orange";
         break;
       case 'y':
         myFixedColorPalette[0][i] = FixedColor::NTSC_YELLOW;
         myFixedColorPalette[1][i] = FixedColor::PAL_YELLOW;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_YELLOW;
         myFixedColorNames[i] = "Yellow";
         break;
       case 'g':
         myFixedColorPalette[0][i] = FixedColor::NTSC_GREEN;
         myFixedColorPalette[1][i] = FixedColor::PAL_GREEN;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_GREEN;
         myFixedColorNames[i] = "Green ";
         break;
       case 'b':
         myFixedColorPalette[0][i] = FixedColor::NTSC_BLUE;
         myFixedColorPalette[1][i] = FixedColor::PAL_BLUE;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_BLUE;
         myFixedColorNames[i] = "Blue  ";
         break;
       case 'p':
         myFixedColorPalette[0][i] = FixedColor::NTSC_PURPLE;
         myFixedColorPalette[1][i] = FixedColor::PAL_PURPLE;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_PURPLE;
         myFixedColorNames[i] = "Purple";
         break;
     }
   }
   myFixedColorPalette[0][TIA::BK] = FixedColor::NTSC_GREY;
   myFixedColorPalette[1][TIA::BK] = FixedColor::PAL_GREY;
-
+  myFixedColorPalette[2][TIA::BK] = FixedColor::SECAM_GREY;
 
   // If already in fixed debug colours mode, update the current palette
   if(usingFixedColors())

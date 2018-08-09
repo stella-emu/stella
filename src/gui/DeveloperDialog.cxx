@@ -1090,7 +1090,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
     return;
   }
 
-  static constexpr ColorId dbg_color[2][DEBUG_COLORS] = {
+  static constexpr ColorId dbg_color[3][DEBUG_COLORS] = {
     {
       TIA::FixedColor::NTSC_RED,
       TIA::FixedColor::NTSC_ORANGE,
@@ -1106,11 +1106,21 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
       TIA::FixedColor::PAL_GREEN,
       TIA::FixedColor::PAL_PURPLE,
       TIA::FixedColor::PAL_BLUE
+    },
+    {
+      TIA::FixedColor::SECAM_RED,
+      TIA::FixedColor::SECAM_ORANGE,
+      TIA::FixedColor::SECAM_YELLOW,
+      TIA::FixedColor::SECAM_GREEN,
+      TIA::FixedColor::SECAM_PURPLE,
+      TIA::FixedColor::SECAM_BLUE
     }
   };
 
-  int mode = instance().console().tia().frameLayout() == FrameLayout::ntsc ? 0 : 1;
-  myDbgColourSwatch[idx]->setColor(dbg_color[mode][color]);
+  int timing = instance().console().tia().consoleTiming() == ConsoleTiming::ntsc ? 0
+    : instance().console().tia().consoleTiming() == ConsoleTiming::pal ? 1 : 2;
+
+  myDbgColourSwatch[idx]->setColor(dbg_color[timing][color]);
   myDbgColour[idx]->setSelectedIndex(color);
 
   // make sure the selected debug colors are all different
@@ -1122,7 +1132,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
     usedCol[i] = false;
     for(int j = 0; j < DEBUG_COLORS; ++j)
     {
-      if(myDbgColourSwatch[j]->getColor() == dbg_color[mode][i])
+      if(myDbgColourSwatch[j]->getColor() == dbg_color[timing][i])
       {
         usedCol[i] = true;
         break;
@@ -1132,14 +1142,14 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
   // check if currently changed color was used somewhere else
   for(int i = 0; i < DEBUG_COLORS; ++i)
   {
-    if (i != idx && myDbgColourSwatch[i]->getColor() == dbg_color[mode][color])
+    if (i != idx && myDbgColourSwatch[i]->getColor() == dbg_color[timing][color])
     {
       // if already used, change the other color to an unused one
       for(int j = 0; j < DEBUG_COLORS; ++j)
       {
         if(!usedCol[j])
         {
-          myDbgColourSwatch[i]->setColor(dbg_color[mode][j]);
+          myDbgColourSwatch[i]->setColor(dbg_color[timing][j]);
           myDbgColour[i]->setSelectedIndex(j);
           break;
         }
@@ -1155,12 +1165,12 @@ void DeveloperDialog::handleDebugColours(const string& colors)
   {
     switch(colors[i])
     {
-      case 'r':  handleDebugColours(i, 0);  break;
-      case 'o':  handleDebugColours(i, 1);  break;
-      case 'y':  handleDebugColours(i, 2);  break;
-      case 'g':  handleDebugColours(i, 3);  break;
-      case 'p':  handleDebugColours(i, 4);  break;
-      case 'b':  handleDebugColours(i, 5);  break;
+      case 'r': handleDebugColours(i, 0);  break;
+      case 'o': handleDebugColours(i, 1);  break;
+      case 'y': handleDebugColours(i, 2);  break;
+      case 'g': handleDebugColours(i, 3);  break;
+      case 'p': handleDebugColours(i, 4);  break;
+      case 'b': handleDebugColours(i, 5);  break;
       default:                              break;
     }
   }

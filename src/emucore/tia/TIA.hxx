@@ -73,23 +73,31 @@ class TIA : public Device
      * Possible palette entries for objects in "fixed debug color mode".
      */
     enum FixedColor {
-      NTSC_RED    = 0x30,
-      NTSC_ORANGE = 0x38,
-      NTSC_YELLOW = 0x1c,
-      NTSC_GREEN  = 0xc4,
-      NTSC_BLUE   = 0x9c,
-      NTSC_PURPLE = 0x66,
-      NTSC_GREY   = 0x04,
+      NTSC_RED      = 0x30,
+      NTSC_ORANGE   = 0x38,
+      NTSC_YELLOW   = 0x1c,
+      NTSC_GREEN    = 0xc4,
+      NTSC_BLUE     = 0x9c,
+      NTSC_PURPLE   = 0x66,
+      NTSC_GREY     = 0x04,
 
-      PAL_RED     = 0x62,
-      PAL_ORANGE  = 0x4a,
-      PAL_YELLOW  = 0x2e,
-      PAL_GREEN   = 0x34,
-      PAL_BLUE    = 0xbc,
-      PAL_PURPLE  = 0xa6,
-      PAL_GREY    = 0x06,
+      PAL_RED       = 0x62,
+      PAL_ORANGE    = 0x4a,
+      PAL_YELLOW    = 0x2e,
+      PAL_GREEN     = 0x34,
+      PAL_BLUE      = 0xbc,
+      PAL_PURPLE    = 0xa6,
+      PAL_GREY      = 0x06,
 
-      HBLANK_WHITE = 0x0e
+      SECAM_RED     = 0x04,
+      SECAM_ORANGE  = 0x06, // purple
+      SECAM_YELLOW  = 0x0c,
+      SECAM_GREEN   = 0x08,
+      SECAM_BLUE    = 0x02,
+      SECAM_PURPLE  = 0x0a, // cyan
+      SECAM_GREY    = 0x00,
+
+      HBLANK_WHITE  = 0x0e
     };
 
   public:
@@ -502,7 +510,7 @@ class TIA : public Device
      * Palette and indices for fixed debug colors.
      */
     enum FixedObject { P0, M0, P1, M1, PF, BL, BK };
-    FixedColor myFixedColorPalette[2][7];
+    FixedColor myFixedColorPalette[3][7];
     string myFixedColorNames[7];
 
   private:
