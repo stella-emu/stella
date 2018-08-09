@@ -91,6 +91,7 @@ SoundSDL2::~SoundSDL2()
   if (!myIsInitializedFlag) return;
 
   SDL_CloseAudioDevice(myDevice);
+  SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
