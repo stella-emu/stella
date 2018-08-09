@@ -129,6 +129,8 @@ class SoundSDL2 : public Sound
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
 
+    SDL_AudioDeviceID myDevice;
+
     shared_ptr<AudioQueue> myAudioQueue;
 
     EmulationTiming* myEmulationTiming;

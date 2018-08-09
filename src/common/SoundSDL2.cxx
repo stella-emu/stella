@@ -45,6 +45,15 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
+  if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
+    ostringstream buf;
+
+    buf << "WARNING: Failed to initialize SDL audio system! " << endl
+        << "         " << SDL_GetError() << endl;
+    myOSystem.logMessage(buf.str(), 0);
+    return;
+  }
+
   // The sound system is opened only once per program run, to eliminate
   // issues with opening and closing it multiple times
   // This fixes a bug most prevalent with ATI video cards in Windows,
@@ -57,25 +66,15 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
   desired.callback = callback;
   desired.userdata = static_cast<void*>(this);
 
-  ostringstream buf;
-  if(SDL_OpenAudio(&desired, &myHardwareSpec) < 0)
+  myDevice = SDL_OpenAudioDevice(0, 0, &desired, &myHardwareSpec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+
+  if(myDevice == 0)
   {
-    buf << "WARNING: Couldn't open SDL audio system! " << endl
+    ostringstream buf;
+
+    buf << "WARNING: Couldn't open SDL audio device! " << endl
         << "         " << SDL_GetError() << endl;
     myOSystem.logMessage(buf.str(), 0);
-    return;
-  }
-
-  // Make sure the sample buffer isn't to big (if it is the sound code
-  // will not work so we'll need to disable the audio support)
-  if((float(myHardwareSpec.samples) / float(myHardwareSpec.freq)) >= 0.25)
-  {
-    buf << "WARNING: Sound device doesn't support realtime audio! Make "
-        << "sure a sound" << endl
-        << "         server isn't running.  Audio is disabled." << endl;
-    myOSystem.logMessage(buf.str(), 0);
-
-    SDL_CloseAudio();
     return;
   }
 
@@ -91,7 +90,7 @@ SoundSDL2::~SoundSDL2()
 {
   if (!myIsInitializedFlag) return;
 
-  SDL_CloseAudio();
+  SDL_CloseAudioDevice(myDevice);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,7 +164,7 @@ void SoundSDL2::mute(bool state)
 {
   if(myIsInitializedFlag)
   {
-    SDL_PauseAudio(state ? 1 : 0);
+    SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
   }
 }
 
@@ -182,9 +181,9 @@ void SoundSDL2::setVolume(uInt32 percent)
     myAudioSettings.setVolume(percent);
     myVolume = percent;
 
-    SDL_LockAudio();
+    SDL_LockAudioDevice(myDevice);
     myVolumeFactor = static_cast<float>(percent) / 100.f;
-    SDL_UnlockAudio();
+    SDL_UnlockAudioDevice(myDevice);
   }
 }
 
@@ -241,7 +240,7 @@ void SoundSDL2::initResampler()
     Int16* nextFragment = nullptr;
 
     if (myUnderrun)
-      nextFragment = myAudioQueue->size() > myEmulationTiming->prebufferFragmentCount() ?
+      nextFragment = myAudioQueue->size() >= myEmulationTiming->prebufferFragmentCount() ?
           myAudioQueue->dequeue(myCurrentFragment) : nullptr;
     else
       nextFragment = myAudioQueue->dequeue(myCurrentFragment);

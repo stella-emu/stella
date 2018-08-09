@@ -204,4 +204,6 @@ void EmulationTiming::recalculate()
     myPrebufferFragmentCount,
     discreteDivCeil(myMaxCyclesPerTimeslice * myAudioSampleRate, myAudioFragmentSize * myCyclesPerSecond)
   ) + myAudioQueueExtraFragments;
+
+  (cout << myAudioQueueCapacity << " " << myPrebufferFragmentCount << std::endl).flush();
 }
