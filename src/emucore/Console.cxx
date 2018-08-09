@@ -491,6 +491,9 @@ void Console::setPalette(const string& type)
      palettes[paletteNum][0];
 
   myOSystem.frameBuffer().setPalette(palette);
+
+  if(myTIA->usingFixedColors())
+    myTIA->enableFixedColors(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

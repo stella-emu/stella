@@ -39,7 +39,7 @@ System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
     mySystemInAutodetect(false)
 {
   // Re-initialize random generator
-  randGenerator().initSeed();
+  randGenerator().initSeed(uInt32(myOSystem.getTicks()));
 
   // Initialize page access table
   PageAccess access(&myNullDevice, System::PA_READ);

@@ -60,7 +60,7 @@ void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) c
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::pixel(uInt32 x, uInt32 y, uInt32 color)
+void FBSurface::pixel(uInt32 x, uInt32 y, ColorId color)
 {
   uInt32* buffer = myPixels + y * myPitch + x;
 
@@ -68,7 +68,7 @@ void FBSurface::pixel(uInt32 x, uInt32 y, uInt32 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, uInt32 color)
+void FBSurface::line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, ColorId color)
 {
   // draw line using Bresenham algorithm
   Int32 dx = (x2 - x);
@@ -127,7 +127,7 @@ void FBSurface::line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, uInt32 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
+void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color)
 {
   uInt32* buffer = myPixels + y * myPitch + x;
   while(x++ <= x2)
@@ -135,7 +135,7 @@ void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
+void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, ColorId color)
 {
   uInt32* buffer = static_cast<uInt32*>(myPixels + y * myPitch + x);
   while(y++ <= y2)
@@ -146,7 +146,7 @@ void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
+void FBSurface::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color)
 {
   while(h--)
     hLine(x, y+h, x+w-1, color);
@@ -154,9 +154,9 @@ void FBSurface::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
-                         uInt32 tx, uInt32 ty, uInt32 color, uInt32 shadowColor)
+                         uInt32 tx, uInt32 ty, ColorId color, ColorId shadowColor)
 {
-  if(shadowColor != 0)
+  if(shadowColor != kNone)
   {
     drawChar(font, chr, tx + 1, ty + 0, shadowColor);
     drawChar(font, chr, tx + 0, ty + 1, shadowColor);
@@ -208,14 +208,14 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
-                           uInt32 color, uInt32 h)
+                           ColorId color, uInt32 h)
 {
   drawBitmap(bitmap, tx, ty, color, h, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
-                           uInt32 color, uInt32 w, uInt32 h)
+                           ColorId color, uInt32 w, uInt32 h)
 {
   uInt32* buffer = myPixels + ty * myPitch + tx;
 
@@ -241,7 +241,7 @@ void FBSurface::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                    uInt32 colorA, uInt32 colorB)
+                    ColorId colorA, ColorId colorB)
 {
   hLine(x + 1, y,     x + w - 2, colorA);
   hLine(x,     y + 1, x + w - 1, colorA);
@@ -256,7 +256,7 @@ void FBSurface::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          uInt32 color, FrameStyle style)
+                          ColorId color, FrameStyle style)
 {
   switch(style)
   {
@@ -285,8 +285,8 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::drawString(const GUI::Font& font, const string& s,
                            int x, int y, int w,
-                           uInt32 color, TextAlign align,
-                           int deltax, bool useEllipsis, uInt32 shadowColor)
+                           ColorId color, TextAlign align,
+                           int deltax, bool useEllipsis, ColorId shadowColor)
 {
   const string ELLIPSIS = "\x1d"; // "..."
   const int leftX = x, rightX = x + w;

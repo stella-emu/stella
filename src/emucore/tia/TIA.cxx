@@ -200,7 +200,7 @@ void TIA::frameReset()
   memset(myBackBuffer, 0, 160 * TIAConstants::frameBufferHeight);
   memset(myFrontBuffer, 0, 160 * TIAConstants::frameBufferHeight);
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
-  enableColorLoss(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss");
+  enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -266,6 +266,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(myXAtRenderingStart);
 
     out.putBool(myCollisionUpdateRequired);
+    out.putBool(myCollisionUpdateScheduled);
     out.putInt(myCollisionMask);
 
     out.putInt(myMovementClock);
@@ -337,6 +338,7 @@ bool TIA::load(Serializer& in)
     myXAtRenderingStart = in.getInt();
 
     myCollisionUpdateRequired = in.getBool();
+    myCollisionUpdateScheduled = in.getBool();
     myCollisionMask = in.getInt();
 
     myMovementClock = in.getInt();
@@ -971,18 +973,16 @@ bool TIA::toggleCollisions()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableFixedColors(bool enable)
 {
-  // This will be called during reset at a point where no frame manager
-  // instance is available, so we guard aginst this here.
-  int layout = 0;
-  if (myFrameManager) layout = myFrameManager->layout() == FrameLayout::pal ? 1 : 0;
+  int timing = consoleTiming() == ConsoleTiming::ntsc ? 0
+    : consoleTiming() == ConsoleTiming::pal ? 1 : 2;
 
-  myMissile0.setDebugColor(myFixedColorPalette[layout][FixedObject::M0]);
-  myMissile1.setDebugColor(myFixedColorPalette[layout][FixedObject::M1]);
-  myPlayer0.setDebugColor(myFixedColorPalette[layout][FixedObject::P0]);
-  myPlayer1.setDebugColor(myFixedColorPalette[layout][FixedObject::P1]);
-  myBall.setDebugColor(myFixedColorPalette[layout][FixedObject::BL]);
-  myPlayfield.setDebugColor(myFixedColorPalette[layout][FixedObject::PF]);
-  myBackground.setDebugColor(FixedColor::BK_GREY);
+  myMissile0.setDebugColor(myFixedColorPalette[timing][FixedObject::M0]);
+  myMissile1.setDebugColor(myFixedColorPalette[timing][FixedObject::M1]);
+  myPlayer0.setDebugColor(myFixedColorPalette[timing][FixedObject::P0]);
+  myPlayer1.setDebugColor(myFixedColorPalette[timing][FixedObject::P1]);
+  myBall.setDebugColor(myFixedColorPalette[timing][FixedObject::BL]);
+  myPlayfield.setDebugColor(myFixedColorPalette[timing][FixedObject::PF]);
+  myBackground.setDebugColor(myFixedColorPalette[timing][FixedObject::BK]);
 
   myMissile0.enableDebugColors(enable);
   myMissile1.enableDebugColors(enable);
@@ -1011,35 +1011,44 @@ bool TIA::setFixedColorPalette(const string& colors)
       case 'r':
         myFixedColorPalette[0][i] = FixedColor::NTSC_RED;
         myFixedColorPalette[1][i] = FixedColor::PAL_RED;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_RED;
         myFixedColorNames[i] = "Red   ";
         break;
       case 'o':
         myFixedColorPalette[0][i] = FixedColor::NTSC_ORANGE;
         myFixedColorPalette[1][i] = FixedColor::PAL_ORANGE;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_ORANGE;
         myFixedColorNames[i] = "Orange";
         break;
       case 'y':
         myFixedColorPalette[0][i] = FixedColor::NTSC_YELLOW;
         myFixedColorPalette[1][i] = FixedColor::PAL_YELLOW;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_YELLOW;
         myFixedColorNames[i] = "Yellow";
         break;
       case 'g':
         myFixedColorPalette[0][i] = FixedColor::NTSC_GREEN;
         myFixedColorPalette[1][i] = FixedColor::PAL_GREEN;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_GREEN;
         myFixedColorNames[i] = "Green ";
         break;
       case 'b':
         myFixedColorPalette[0][i] = FixedColor::NTSC_BLUE;
         myFixedColorPalette[1][i] = FixedColor::PAL_BLUE;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_BLUE;
         myFixedColorNames[i] = "Blue  ";
         break;
       case 'p':
         myFixedColorPalette[0][i] = FixedColor::NTSC_PURPLE;
         myFixedColorPalette[1][i] = FixedColor::PAL_PURPLE;
+        myFixedColorPalette[2][i] = FixedColor::SECAM_PURPLE;
         myFixedColorNames[i] = "Purple";
         break;
     }
   }
+  myFixedColorPalette[0][TIA::BK] = FixedColor::NTSC_GREY;
+  myFixedColorPalette[1][TIA::BK] = FixedColor::PAL_GREY;
+  myFixedColorPalette[2][TIA::BK] = FixedColor::SECAM_GREY;
 
   // If already in fixed debug colours mode, update the current palette
   if(usingFixedColors())
@@ -1216,7 +1225,8 @@ void TIA::cycle(uInt32 colorClocks)
       [this] (uInt8 address, uInt8 value) {delayedWrite(address, value);}
     );
 
-    myCollisionUpdateRequired = false;
+    myCollisionUpdateRequired = myCollisionUpdateScheduled;
+    myCollisionUpdateScheduled = false;
 
     if (myLinesSinceChange < 2) {
       tickMovement();
@@ -1349,6 +1359,12 @@ void TIA::cloneLastLine()
   uInt8* buffer = myBackBuffer;
 
   memcpy(buffer + y * 160, buffer + (y-1) * 160, 160);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::scheduleCollisionUpdate()
+{
+  myCollisionUpdateScheduled = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -233,6 +233,7 @@
     <ClCompile Include="..\common\AudioQueue.cxx" />
     <ClCompile Include="..\common\AudioSettings.cxx" />
     <ClCompile Include="..\common\audio\ConvolutionBuffer.cxx" />
+    <ClCompile Include="..\common\audio\HighPass.cxx" />
     <ClCompile Include="..\common\audio\LanczosResampler.cxx" />
     <ClCompile Include="..\common\audio\SimpleResampler.cxx" />
     <ClCompile Include="..\common\Base.cxx" />
@@ -526,6 +527,7 @@
     <ClInclude Include="..\common\AudioQueue.hxx" />
     <ClInclude Include="..\common\AudioSettings.hxx" />
     <ClInclude Include="..\common\audio\ConvolutionBuffer.hxx" />
+    <ClInclude Include="..\common\audio\HighPass.hxx" />
     <ClInclude Include="..\common\audio\LanczosResampler.hxx" />
     <ClInclude Include="..\common\audio\Resampler.hxx" />
     <ClInclude Include="..\common\audio\SimpleResampler.hxx" />

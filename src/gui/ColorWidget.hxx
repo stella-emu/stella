@@ -39,8 +39,8 @@ class ColorWidget : public Widget, public CommandSender
                 int x, int y, int w, int h, int cmd = 0);
     virtual ~ColorWidget() = default;
 
-    void setColor(int color);
-    int  getColor() const { return _color;  }
+    void setColor(ColorId color);
+    ColorId getColor() const { return _color;  }
 
     void setCrossed(bool enable) { _crossGrid = enable; }
 
@@ -48,7 +48,7 @@ class ColorWidget : public Widget, public CommandSender
     void drawWidget(bool hilite) override;
 
   protected:
-    int _color;
+    ColorId _color;
     int	_cmd;
 
     bool _crossGrid;

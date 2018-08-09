@@ -138,7 +138,7 @@ bool FrameBuffer::initialize()
   else if(myOSystem.settings().getString("uipalette") == "light")
     palID = 2;
 
-  for(int i = 0, j = 256; i < kNumColors-256; ++i, ++j)
+  for(uInt32 i = 0, j = 256; i < kNumColors-256; ++i, ++j)
   {
     uInt8 r = (ourGUIColors[palID][i] >> 16) & 0xff;
     uInt8 g = (ourGUIColors[palID][i] >> 8) & 0xff;
@@ -413,7 +413,6 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 void FrameBuffer::drawFrameStats(float framesPerSecond)
 {
   const ConsoleInfo& info = myOSystem.console().about();
-  uInt32 color;
   int xPos = 2, yPos = 0;
   const int dy = font().getFontHeight() + 2;
 
@@ -422,8 +421,8 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   myStatsMsg.surface->invalidate();
 
   // draw scanlines
-  color = myOSystem.console().tia().frameBufferScanlinesLastFrame() != myLastScanlines ?
-      uInt32(kDbgColorRed) : myStatsMsg.color;
+  ColorId color = myOSystem.console().tia().frameBufferScanlinesLastFrame() != myLastScanlines ?
+      kDbgColorRed : myStatsMsg.color;
 
   ss
     << myOSystem.console().tia().frameBufferScanlinesLastFrame()

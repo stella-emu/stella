@@ -118,7 +118,7 @@ class ContextMenu : public Dialog, public CommandSender
     int _selectedOffset, _selectedItem;
     bool _showScroll;
     bool _isScrolling;
-    uInt32 _scrollUpColor, _scrollDnColor;
+    ColorId _scrollUpColor, _scrollDnColor;
 
     int _cmd;
 

@@ -25,6 +25,7 @@
 namespace {
 
   constexpr float CLIPPING_FACTOR = 0.75;
+  constexpr float HIGH_PASS_CUT_OFF = 10;
 
   uInt32 reducedDenominator(uInt32 n, uInt32 d)
   {
@@ -78,6 +79,9 @@ LanczosResampler::LanczosResampler(
   myCurrentFragment(nullptr),
   myFragmentIndex(0),
   myIsUnderrun(true),
+  myHighPassL(HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)),
+  myHighPassR(HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)),
+  myHighPass(HIGH_PASS_CUT_OFF, float(formatFrom.sampleRate)),
   myTimeIndex(0)
 {
   myPrecomputedKernels = make_unique<float[]>(myPrecomputedKernelCount * myKernelSize);
@@ -184,11 +188,11 @@ inline void LanczosResampler::shiftSamples(uInt32 samplesToShift)
 {
   while (samplesToShift-- > 0) {
     if (myFormatFrom.stereo) {
-      myBufferL->shift(myCurrentFragment[2*myFragmentIndex] / static_cast<float>(0x7fff));
-      myBufferR->shift(myCurrentFragment[2*myFragmentIndex + 1] / static_cast<float>(0x7fff));
+      myBufferL->shift(myHighPassL.apply(myCurrentFragment[2*myFragmentIndex] / static_cast<float>(0x7fff)));
+      myBufferR->shift(myHighPassR.apply(myCurrentFragment[2*myFragmentIndex + 1] / static_cast<float>(0x7fff)));
     }
     else
-      myBuffer->shift(myCurrentFragment[myFragmentIndex] / static_cast<float>(0x7fff));
+      myBuffer->shift(myHighPass.apply(myCurrentFragment[myFragmentIndex] / static_cast<float>(0x7fff)));
 
     myFragmentIndex++;
 

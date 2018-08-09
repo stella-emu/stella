@@ -65,8 +65,6 @@ void Ball::enabl(uInt8 value)
     myTIA->flushLineCache();
 
     updateEnabled();
-    collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-    myTIA->updateCollision();
   }
 }
 
@@ -245,7 +243,7 @@ void Ball::updateEnabled()
   myIsEnabled = !myIsSuppressed && (myIsDelaying ? myIsEnabledOld : myIsEnabledNew);
 
   collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-  myTIA->updateCollision();
+  myTIA->scheduleCollisionUpdate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

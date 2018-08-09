@@ -28,7 +28,7 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, int w, int h, int cmd)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    _color(0),
+    _color(kNone),
     _cmd(cmd),
     _crossGrid(false)
 {
@@ -36,7 +36,7 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ColorWidget::setColor(int color)
+void ColorWidget::setColor(ColorId color)
 {
   _color = color;
   setDirty();
@@ -52,7 +52,7 @@ void ColorWidget::drawWidget(bool hilite)
   s.frameRect(_x, _y, _w, _h + 1, kColor);
 
   // Show the currently selected color
-  s.fillRect(_x+1, _y+1, _w-2, _h-1, onTop ? isEnabled() ? _color : kWidColor : kDlgColor);
+  s.fillRect(_x+1, _y+1, _w-2, _h-1, onTop ? isEnabled() ? _color : kWidColor : kBGColorLo);
 
   // Cross out the grid?
   if(_crossGrid)

@@ -79,7 +79,7 @@ class FBSurface
       @param y      The y coordinate
       @param color  The color of the line
     */
-    virtual void pixel(uInt32 x, uInt32 y, uInt32 color);
+    virtual void pixel(uInt32 x, uInt32 y, ColorId color);
 
     /**
       This method should be called to draw a line.
@@ -90,7 +90,7 @@ class FBSurface
       @param y2     The second y coordinate
       @param color  The color of the line
     */
-    virtual void line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, uInt32 color);
+    virtual void line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, ColorId color);
 
     /**
       This method should be called to draw a horizontal line.
@@ -100,7 +100,7 @@ class FBSurface
       @param x2     The second x coordinate
       @param color  The color of the line
     */
-    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color);
 
     /**
       This method should be called to draw a vertical line.
@@ -110,7 +110,7 @@ class FBSurface
       @param y2     The second y coordinate
       @param color  The color of the line
     */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color);
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, ColorId color);
 
     /**
       This method should be called to draw a filled rectangle.
@@ -122,7 +122,7 @@ class FBSurface
       @param color  The fill color of the rectangle
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          uInt32 color);
+                          ColorId color);
 
     /**
       This method should be called to draw the specified character.
@@ -134,7 +134,7 @@ class FBSurface
       @param color  The color of the character
     */
     virtual void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y,
-                          uInt32 color, uInt32 shadowColor = 0);
+                          ColorId color, ColorId shadowColor = kNone);
 
     /**
       This method should be called to draw the bitmap image.
@@ -145,7 +145,7 @@ class FBSurface
       @param color  The color of the bitmap
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color,
+    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
                             uInt32 h = 8);
 
     /**
@@ -158,7 +158,7 @@ class FBSurface
       @param w      The width of the data image
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color,
+    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
                             uInt32 w, uInt32 h);
 
     /**
@@ -185,7 +185,7 @@ class FBSurface
       @param colorB Darker color for inside line.
     */
     virtual void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                     uInt32 colorA, uInt32 colorB);
+                     ColorId colorA, ColorId colorB);
 
     /**
       This method should be called to draw a framed rectangle with
@@ -199,7 +199,7 @@ class FBSurface
       @param style  The 'FrameStyle' to use for the surrounding frame
     */
     virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                           uInt32 color, FrameStyle style = FrameStyle::Solid);
+                           ColorId color, FrameStyle style = FrameStyle::Solid);
 
     /**
       This method should be called to draw the specified string.
@@ -216,8 +216,8 @@ class FBSurface
     */
     virtual void drawString(
         const GUI::Font& font, const string& s, int x, int y, int w,
-        uInt32 color, TextAlign align = TextAlign::Left,
-        int deltax = 0, bool useEllipsis = true, uInt32 shadowColor = 0);
+        ColorId color, TextAlign align = TextAlign::Left,
+        int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
 
     //////////////////////////////////////////////////////////////////////////
     // Note:  The following methods are FBSurface-specific, and must be

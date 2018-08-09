@@ -38,7 +38,7 @@ void RewindManager::setup()
 {
   myLastTimeMachineAdd = false;
 
-  string prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
+  const string& prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
 
   mySize = myOSystem.settings().getInt(prefix + "tm.size");
   if(mySize != myStateList.capacity())

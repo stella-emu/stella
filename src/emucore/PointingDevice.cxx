@@ -149,7 +149,7 @@ void PointingDevice::updateDirection(int counter, float& counterRemainder,
     scanCount = INT_MAX;
 
     // Define offset factor for first change, move randomly forward by up to 1/8th
-    firstScanOffset = (((firstScanOffset << 3) + rand() %
+    firstScanOffset = (((firstScanOffset << 3) + mySystem.randGenerator().next() %
                       (1 << 12)) >> 3) & ((1 << 12) - 1);
   }
 }

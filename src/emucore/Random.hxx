@@ -19,7 +19,6 @@
 #define RANDOM_HXX
 
 #include "bspf.hxx"
-#include "OSystem.hxx"
 #include "Serializable.hxx"
 
 /**
@@ -35,15 +34,15 @@ class Random : public Serializable
     /**
       Create a new random number generator
     */
-    Random(const OSystem& osystem) : myOSystem(osystem) { initSeed(); }
+    Random(uInt32 seed) { initSeed(seed); }
 
     /**
       Re-initialize the random number generator with a new seed,
       to generate a different set of random numbers.
     */
-    void initSeed()
+    void initSeed(uInt32 seed)
     {
-      myValue = uInt32(myOSystem.getTicks());
+      myValue = seed;
     }
 
     /**
@@ -110,9 +109,6 @@ class Random : public Serializable
     string name() const override { return "Random"; }
 
   private:
-    // Set the OSystem we're using
-    const OSystem& myOSystem;
-
     // Indicates the next random number
     // We make this mutable, since it's not immediately obvious that
     // calling next() should change internal state (ie, the *logical*

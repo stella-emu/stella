@@ -15,10 +15,27 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef VERSION_HXX
-#define VERSION_HXX
-
-#define STELLA_VERSION "6.0_pre1"
-#define STELLA_BUILD "4434"
-
+#include <cmath>
+#ifndef M_PI
+  #define M_PI 3.14159265358979323846f
 #endif
+
+#include "HighPass.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+HighPass::HighPass(float cutOffFrequency, float frequency)
+  : myLastValueIn(0),
+    myLastValueOut(0),
+    myAlpha(1.f / (1.f + 2.f*M_PI*cutOffFrequency/frequency))
+{}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float HighPass::apply(float valueIn)
+{
+  float valueOut = myAlpha * (myLastValueOut + valueIn - myLastValueIn);
+
+  myLastValueIn = valueIn;
+  myLastValueOut = valueOut;
+
+  return valueOut;
+}

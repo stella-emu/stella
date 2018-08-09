@@ -181,7 +181,7 @@ void TimeLineWidget::drawWidget(bool hilite)
     if(idx > 1)
     {
       int xt = x + valueToPos(idx - 1);
-      uInt32 color;
+      ColorId color = kNone;
 
       if(isEnabled())
       {

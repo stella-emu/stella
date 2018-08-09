@@ -38,7 +38,7 @@ class FBSurfaceSDL2 : public FBSurface
     // Most of the surface drawing primitives are implemented in FBSurface;
     // the ones implemented here use SDL-specific code for extra performance
     //
-    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color) override;
+    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color) override;
     // With hardware surfaces, it's faster to just update the entire surface
     void setDirty() override { mySurfaceIsDirty = true; }
 

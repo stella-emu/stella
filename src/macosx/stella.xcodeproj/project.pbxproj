@@ -635,6 +635,8 @@
 		E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */; };
 		E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */; };
 		E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */; };
+		E0893AF2211B9842008B170D /* HighPass.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0893AF0211B9841008B170D /* HighPass.cxx */; };
+		E0893AF3211B9842008B170D /* HighPass.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0893AF1211B9841008B170D /* HighPass.hxx */; };
 		E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4139201E901C004A3391 /* AudioQueue.hxx */; };
 		E09F413C201E901D004A3391 /* AudioQueue.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413A201E901D004A3391 /* AudioQueue.cxx */; };
 		E09F4141201E9050004A3391 /* Audio.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F413D201E904F004A3391 /* Audio.hxx */; };
@@ -1330,6 +1332,8 @@
 		E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JitterEmulation.hxx; sourceTree = "<group>"; };
 		E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmulationTiming.cxx; sourceTree = "<group>"; };
 		E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EmulationTiming.hxx; sourceTree = "<group>"; };
+		E0893AF0211B9841008B170D /* HighPass.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HighPass.cxx; path = audio/HighPass.cxx; sourceTree = "<group>"; };
+		E0893AF1211B9841008B170D /* HighPass.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HighPass.hxx; path = audio/HighPass.hxx; sourceTree = "<group>"; };
 		E09F4139201E901C004A3391 /* AudioQueue.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioQueue.hxx; sourceTree = "<group>"; };
 		E09F413A201E901D004A3391 /* AudioQueue.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioQueue.cxx; sourceTree = "<group>"; };
 		E09F413D201E904F004A3391 /* Audio.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Audio.hxx; sourceTree = "<group>"; };
@@ -2076,6 +2080,8 @@
 		DCC6A4AD20A2620D00863C59 /* audio */ = {
 			isa = PBXGroup;
 			children = (
+				E0893AF0211B9841008B170D /* HighPass.cxx */,
+				E0893AF1211B9841008B170D /* HighPass.hxx */,
 				E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */,
 				E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */,
 				E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */,
@@ -2235,6 +2241,7 @@
 				DCACBAD11C54296300703A9B /* CartCVPlusWidget.hxx in Headers */,
 				DC1B2EC81E50036100F62837 /* TrakBall.hxx in Headers */,
 				2D9173E709BA90380026E9FF /* M6532.hxx in Headers */,
+				E0893AF3211B9842008B170D /* HighPass.hxx in Headers */,
 				2D9173E809BA90380026E9FF /* MD5.hxx in Headers */,
 				2D9173EA09BA90380026E9FF /* Paddles.hxx in Headers */,
 				2D9173EB09BA90380026E9FF /* Props.hxx in Headers */,
@@ -2797,6 +2804,7 @@
 				DCF3A6EF1DFC75E3008A8AF3 /* DrawCounterDecodes.cxx in Sources */,
 				DC5AAC2C1FCB24DF00C420A6 /* RadioButtonWidget.cxx in Sources */,
 				DC9EA8870F729A36000452B5 /* KidVid.cxx in Sources */,
+				E0893AF2211B9842008B170D /* HighPass.cxx in Sources */,
 				DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */,
 				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,

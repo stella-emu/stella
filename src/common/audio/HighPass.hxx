@@ -15,10 +15,28 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef VERSION_HXX
-#define VERSION_HXX
+#ifndef HIGH_PASS_HXX
+#define HIGH_PASS_HXX
 
-#define STELLA_VERSION "6.0_pre1"
-#define STELLA_BUILD "4434"
+class HighPass
+{
+  public:
 
-#endif
+    HighPass(float cutOffFrequency, float frequency);
+
+    float apply(float value);
+
+  private:
+
+    float myLastValueIn;
+
+    float myLastValueOut;
+
+    float myAlpha;
+
+  private:
+
+    HighPass() = delete;
+};
+
+#endif // HIGH_PASS_HXX

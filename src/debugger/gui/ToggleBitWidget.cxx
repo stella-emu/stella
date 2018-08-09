@@ -30,6 +30,7 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
 {
   _rowHeight = font.getLineHeight();
   _colWidth  = colchars * font.getMaxCharWidth() + 8;
+  _bgcolorlo = kDlgColor;
 
   // Make sure all lists contain some default values
   int size = _rows * _cols;
@@ -93,7 +94,7 @@ void ToggleBitWidget::drawWidget(bool hilite)
   {
     for (col = 0; col < _cols; col++)
     {
-      uInt32 textColor = kTextColor;
+      ColorId textColor = kTextColor;
       int x = _x + 4 + (col * _colWidth);
       int y = _y + 2 + (row * _rowHeight);
       int pos = row*_cols + col;
@@ -115,16 +116,18 @@ void ToggleBitWidget::drawWidget(bool hilite)
         // Highlight changes
         if(_changedList[pos])
         {
-          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, onTop ? kDbgChangedColor : _bgcolorlo);
+          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
+                     onTop ? kDbgChangedColor : _bgcolorlo);
           s.drawString(_font, buffer, x, y, _colWidth, onTop ? kDbgChangedTextColor : kColor);
         }
         else
-          s.drawString(_font, buffer, x, y, _colWidth, onTop ? textColor : kColor);
+          s.drawString(_font, buffer, x, y, _colWidth,
+                       onTop ? textColor : kColor);
       }
       else
       {
-        s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kBGColorHi);
-        s.drawString(_font, buffer, x, y, _colWidth, kTextColor);
+        s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, onTop ? kBGColorHi : kDlgColor);
+        s.drawString(_font, buffer, x, y, _colWidth, onTop ? kTextColor : kColor);
       }
     }
   }

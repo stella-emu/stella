@@ -18,6 +18,8 @@
 #ifndef FRAMEBUFFER_CONSTANTS_HXX
 #define FRAMEBUFFER_CONSTANTS_HXX
 
+#include "bspf.hxx"
+
 // Return values for initialization of framebuffer window
 enum class FBInitStatus {
   Success,
@@ -39,47 +41,50 @@ enum class MessagePosition {
   BottomRight
 };
 
-// TODO - make this 'enum class'
 // Colors indices to use for the various GUI elements
-enum {
+// Abstract away what a color actually is, so we can easily change it in
+// the future, if necessary
+using ColorId = uInt32;
+static constexpr ColorId
   kColor = 256,
-  kBGColor,
-  kBGColorLo,
-  kBGColorHi,
-  kShadowColor,
-  kTextColor,
-  kTextColorHi,
-  kTextColorEm,
-  kTextColorInv,
-  kDlgColor,
-  kWidColor,
-  kWidColorHi,
-  kWidFrameColor,
-  kBtnColor,
-  kBtnColorHi,
-  kBtnBorderColor,
-  kBtnBorderColorHi,
-  kBtnTextColor,
-  kBtnTextColorHi,
-  kCheckColor,
-  kScrollColor,
-  kScrollColorHi,
-  kSliderColor,
-  kSliderColorHi,
-  kSliderBGColor,
-  kSliderBGColorHi,
-  kSliderBGColorLo,
-  kDbgChangedColor,
-  kDbgChangedTextColor,
-  kDbgColorHi,
-  kDbgColorRed,
-  kColorInfo,
-  kColorTitleBar,
-  kColorTitleText,
-  kColorTitleBarLo,
-  kColorTitleTextLo,
-  kNumColors
-};
+  kBGColor = 257,
+  kBGColorLo = 258,
+  kBGColorHi = 259,
+  kShadowColor = 260,
+  kTextColor = 261,
+  kTextColorHi = 262,
+  kTextColorEm = 263,
+  kTextColorInv = 264,
+  kDlgColor = 265,
+  kWidColor = 266,
+  kWidColorHi = 267,
+  kWidFrameColor = 268,
+  kBtnColor = 269,
+  kBtnColorHi = 270,
+  kBtnBorderColor = 271,
+  kBtnBorderColorHi = 272,
+  kBtnTextColor = 273,
+  kBtnTextColorHi = 274,
+  kCheckColor = 275,
+  kScrollColor = 276,
+  kScrollColorHi = 277,
+  kSliderColor = 278,
+  kSliderColorHi = 279,
+  kSliderBGColor = 280,
+  kSliderBGColorHi = 281,
+  kSliderBGColorLo = 282,
+  kDbgChangedColor = 283,
+  kDbgChangedTextColor = 284,
+  kDbgColorHi = 285,
+  kDbgColorRed = 286,
+  kColorInfo = 287,
+  kColorTitleBar = 288,
+  kColorTitleText = 289,
+  kColorTitleBarLo = 290,
+  kColorTitleTextLo = 291,
+  kNumColors = 292,
+  kNone = 0  // placeholder to represent default/no color
+;
 
 // Text alignment modes for drawString()
 enum class TextAlign {

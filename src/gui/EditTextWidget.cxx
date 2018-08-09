@@ -95,7 +95,7 @@ void EditTextWidget::drawWidget(bool hilite)
   adjustOffset();
   s.drawString(_font, editString(), _x + 2, _y + 2, getEditRect().width(),
                _changed && onTop
-               ? uInt32(kDbgChangedTextColor)
+               ? kDbgChangedTextColor
                : onTop ? _textcolor : kColor,
                TextAlign::Left, -_editScrollOffset, false);
 

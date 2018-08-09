@@ -28,11 +28,11 @@ class TogglePixelWidget : public ToggleWidget
                       int x, int y, int cols, int rows);
     virtual ~TogglePixelWidget() = default;
 
-    void setColor(int color) {
-      _pixelColor = (color >= 0 && color <= kNumColors) ? color : kDlgColor;
+    void setColor(ColorId color) {
+      _pixelColor = color <= kNumColors ? color : kDlgColor;
     }
-    void setBackgroundColor(int color) {
-      _backgroundColor = (color >= 0 && color <= kNumColors) ? color : kDlgColor;
+    void setBackgroundColor(ColorId color) {
+      _backgroundColor = color <= kNumColors ? color : kDlgColor;
     }
     void setState(const BoolArray& state);
 
@@ -42,7 +42,7 @@ class TogglePixelWidget : public ToggleWidget
     void setCrossed(bool enable) { _crossBits = enable; }
 
   private:
-    int  _pixelColor, _backgroundColor;
+    ColorId  _pixelColor, _backgroundColor;
     bool _swapBits;
     bool _crossBits;
 
