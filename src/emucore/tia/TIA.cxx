@@ -973,18 +973,15 @@ bool TIA::toggleCollisions()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableFixedColors(bool enable)
 {
-  // This will be called during reset at a point where no frame manager
-  // instance is available, so we guard aginst this here.
-  int layout = 0;
-  if (myFrameManager) layout = myFrameManager->layout() == FrameLayout::pal ? 1 : 0;
+  int timing = consoleTiming() == ConsoleTiming::pal ? 1 : 0;
 
-  myMissile0.setDebugColor(myFixedColorPalette[layout][FixedObject::M0]);
-  myMissile1.setDebugColor(myFixedColorPalette[layout][FixedObject::M1]);
-  myPlayer0.setDebugColor(myFixedColorPalette[layout][FixedObject::P0]);
-  myPlayer1.setDebugColor(myFixedColorPalette[layout][FixedObject::P1]);
-  myBall.setDebugColor(myFixedColorPalette[layout][FixedObject::BL]);
-  myPlayfield.setDebugColor(myFixedColorPalette[layout][FixedObject::PF]);
-  myBackground.setDebugColor(myFixedColorPalette[layout][FixedObject::BK]);
+  myMissile0.setDebugColor(myFixedColorPalette[timing][FixedObject::M0]);
+  myMissile1.setDebugColor(myFixedColorPalette[timing][FixedObject::M1]);
+  myPlayer0.setDebugColor(myFixedColorPalette[timing][FixedObject::P0]);
+  myPlayer1.setDebugColor(myFixedColorPalette[timing][FixedObject::P1]);
+  myBall.setDebugColor(myFixedColorPalette[timing][FixedObject::BL]);
+  myPlayfield.setDebugColor(myFixedColorPalette[timing][FixedObject::PF]);
+  myBackground.setDebugColor(myFixedColorPalette[timing][FixedObject::BK]);
 
   myMissile0.enableDebugColors(enable);
   myMissile1.enableDebugColors(enable);
