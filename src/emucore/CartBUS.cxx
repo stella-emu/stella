@@ -64,7 +64,7 @@ CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
   myDisplayImage = myBUSRAM + DSRAM;
 
   // Create Thumbulator ARM emulator
-  string prefix = settings.getBool("dev.settings") ? "plr." : "dev.";
+  const string& prefix = settings.getBool("dev.settings") ? "plr." : "dev.";
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myBUSRAM),
     settings.getBool(prefix + "thumb.trapfatal"), Thumbulator::ConfigureFor::BUS, this

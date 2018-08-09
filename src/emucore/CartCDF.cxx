@@ -67,7 +67,7 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
   setVersion();
 
   // Create Thumbulator ARM emulator
-  string prefix = settings.getBool("dev.settings") ? "plr." : "dev.";
+  const string& prefix = settings.getBool("dev.settings") ? "plr." : "dev.";
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myCDFRAM),
     settings.getBool(prefix + "thumb.trapfatal"), myVersion ?
