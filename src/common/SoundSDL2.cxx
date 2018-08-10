@@ -66,7 +66,8 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
   desired.callback = callback;
   desired.userdata = static_cast<void*>(this);
 
-  myDevice = SDL_OpenAudioDevice(0, 0, &desired, &myHardwareSpec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+  myDevice = SDL_OpenAudioDevice(nullptr, 0, &desired, &myHardwareSpec,
+                                 SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
 
   if(myDevice == 0)
   {
