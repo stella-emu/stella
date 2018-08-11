@@ -44,7 +44,7 @@
 
   * Changes in 'Game Properties' dialog
     - 'Default' button now affects only current tab like in all other dialogs.
-    - 'Display' tab changes are now immediate.
+    - 'Display' and 'Console' tab changes are now immediate.
     - Fixed bug when selecting 'Auto-detect' format for 50Hz ROMs
 
   * Fixed bug in autodetecting Genesis controllers.
@@ -61,6 +61,8 @@
   * Fixed missing TV format update in frame stats dialog when switching
     display type.
 
+  * Fixed missing debug color update when switching display type.
+
   * For UNIX systems: in the ROM launcher, when using symlinks use the
     symlink pathname instead of the underlying filesystem pathname.
 
@@ -68,8 +70,10 @@
 
   * Updated included PNG library to latest stable version.
 
-  * For better compatibility, the Windows 32-bit version does not requires SSE2
+  * For better compatibility, the Windows 32-bit version does not require SSE2
     anymore.
+
+  * Simplified first start, ROM path is now set by first played ROM.
 
 -Have fun!
 
