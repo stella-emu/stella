@@ -121,7 +121,11 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
         ostringstream command;
         int lines = myClickY + ystart;
         if(instance().console().tia().isRendering())
+        {
           lines -= instance().console().tia().scanlines();
+          if(lines < 0)
+            lines += instance().console().tia().scanlinesLastFrame();
+        }
         if(lines > 0)
         {
           command << "scanline #" << lines;
