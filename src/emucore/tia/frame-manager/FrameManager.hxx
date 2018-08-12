@@ -77,9 +77,7 @@ class FrameManager: public AbstractFrameManager {
 
   private:
 
-    void updateAutodetectedLayout();
-
-    void setState(State state);
+  void setState(State state);
 
     void updateIsRendering();
 
