@@ -131,14 +131,27 @@ bool FrameBuffer::initialize()
     VarList::push_back(myTIAZoomLevels, desc.str(), zoom);
   }
 
-  // Set palette for GUI (upper area of array, doesn't change during execution)
+  setUIPalette();
+
+  myGrabMouse = myOSystem.settings().getBool("grabmouse");
+
+  // Create a TIA surface; we need it for rendering TIA images
+  myTIASurface = make_unique<TIASurface>(myOSystem);
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setUIPalette()
+{
+  // Set palette for GUI (upper area of array)
   int palID = 0;
   if(myOSystem.settings().getString("uipalette") == "classic")
     palID = 1;
   else if(myOSystem.settings().getString("uipalette") == "light")
     palID = 2;
 
-  for(uInt32 i = 0, j = 256; i < kNumColors-256; ++i, ++j)
+  for(uInt32 i = 0, j = 256; i < kNumColors - 256; ++i, ++j)
   {
     uInt8 r = (ourGUIColors[palID][i] >> 16) & 0xff;
     uInt8 g = (ourGUIColors[palID][i] >> 8) & 0xff;
@@ -147,13 +160,6 @@ bool FrameBuffer::initialize()
     myPalette[j] = mapRGB(r, g, b);
   }
   FBSurface::setPalette(myPalette);
-
-  myGrabMouse = myOSystem.settings().getBool("grabmouse");
-
-  // Create a TIA surface; we need it for rendering TIA images
-  myTIASurface = make_unique<TIASurface>(myOSystem);
-
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

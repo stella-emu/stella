@@ -100,6 +100,11 @@ class FrameBuffer
     bool initialize();
 
     /**
+      Set palette for user interface
+    */
+    void setUIPalette();
+
+    /**
       (Re)creates the framebuffer display.  This must be called before any
       calls are made to derived methods.
 

@@ -74,7 +74,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   items, "Theme (*) ", lwidth);
+                                   items, "Theme     ", lwidth);
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4 * 4;
 
@@ -98,14 +98,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myWheelLinesPopup->setMaxValue(10);
   myWheelLinesPopup->setTickmarkInterval(3);
   wid.push_back(myWheelLinesPopup);
-
-  // Add message concerning usage
-  xpos = HBORDER;
-  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
-  lwidth = ifont.getStringWidth("(*) Requires application restart");
-  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w-20), fontHeight,
-                       "(*) Requires application restart",
-                       TextAlign::Left);
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -247,6 +239,7 @@ void UIDialog::saveConfig()
   // UI palette
   instance().settings().setValue("uipalette",
     myPalettePopup->getSelectedTag().toString());
+  instance().frameBuffer().setUIPalette();
 
   // Listwidget quick delay
   instance().settings().setValue("listdelay", myListDelayPopup->getValue());
