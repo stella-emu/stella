@@ -63,6 +63,8 @@
 
   * Fixed missing debug color update when switching display type.
 
+  * 'Fill to scanline' now works for scanlines above current scanline too
+
   * For UNIX systems: in the ROM launcher, when using symlinks use the
     symlink pathname instead of the underlying filesystem pathname.
 
