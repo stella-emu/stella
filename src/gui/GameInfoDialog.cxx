@@ -124,7 +124,7 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + VGAP;
 
   myTypeDetected = new StaticTextWidget(myTab, ifont, xpos+lwidth, ypos,
-                       "( CM (SpectraVideo CompuMate) detected)");
+                       "(CM (SpectraVideo CompuMate) detected)");
   wid.push_back(myTypeDetected);
   ypos += ifont.getLineHeight() + VGAP/2;
 
@@ -299,32 +299,33 @@ GameInfoDialog::GameInfoDialog(
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myFormat);
 
-  myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 4, ypos + 4, "(SECAM60* detected");
+  myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 8, ypos + 4, "SECAM60 detected");
   wid.push_back(myFormatDetected);
 
   ypos += lineHeight + VGAP;
   swidth = myFormat->getWidth();
   t = new StaticTextWidget(myTab, font, HBORDER, ypos+2, "Y-Start ");
   myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
-                              "", 0, kYStartChanged, 4 * fontWidth, "px");
+                              "   ", 0, kYStartChanged, 5 * fontWidth, "px");
   myYStart->setMinValue(TIAConstants::minYStart-1);
   myYStart->setMaxValue(TIAConstants::maxYStart);
   myYStart->setTickmarkInterval(4);
   wid.push_back(myYStart);
 
-  myYStartDetected = new StaticTextWidget(myTab, ifont, myYStart->getRight() + 4, ypos + 5, " (100px detected)");
+  int iWidth = ifont.getCharWidth('2');
+  myYStartDetected = new StaticTextWidget(myTab, ifont, myYStart->getRight() + 8 + iWidth, ypos + 5, "100px detected");
   wid.push_back(myYStartDetected);
 
   ypos += lineHeight + VGAP;
   t = new StaticTextWidget(myTab, font, HBORDER, ypos+2, "Height  ");
   myHeight = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
-                              "", 0, kHeightChanged, 5 * fontWidth, "px");
+                              "   ", 0, kHeightChanged, 5 * fontWidth, "px");
   myHeight->setMinValue(TIAConstants::minViewableHeight-1);
   myHeight->setMaxValue(TIAConstants::maxViewableHeight);
   myHeight->setTickmarkInterval(4);
   wid.push_back(myHeight);
 
-  myHeightDetected = new StaticTextWidget(myTab, ifont, myHeight->getRight() + 4, ypos + 5, "(100px detected)");
+  myHeightDetected = new StaticTextWidget(myTab, ifont, myHeight->getRight() + 8, ypos + 5, "100px detected");
   wid.push_back(myYStartDetected);
 
 
@@ -387,9 +388,12 @@ void GameInfoDialog::loadCartridgeProperties(Properties properties)
 
   if(instance().hasConsole() && myType->getSelectedTag().toString() == "AUTO")
   {
-    stringstream ss;
-    ss << "(" << instance().console().about().BankSwitch << "detected)";
-    myTypeDetected->setLabel(ss.str());
+    string bs = instance().console().about().BankSwitch;
+    int pos = bs.find_first_of('*');
+    // remove '*':
+    if (pos != string::npos)
+      bs = bs.substr(0, pos) + bs.substr(pos+1);
+    myTypeDetected->setLabel(bs +  "detected");
   }
   else
     myTypeDetected->setLabel("");
@@ -449,7 +453,7 @@ void GameInfoDialog::loadDisplayProperties(Properties properties)
   {
     const string& format = instance().console().about().DisplayFormat;
     string label = format.substr(0, format.length() - 1);
-    myFormatDetected->setLabel("(" + label + " detected)");
+    myFormatDetected->setLabel(label + " detected");
   }
   else
     myFormatDetected->setLabel("");
@@ -461,7 +465,7 @@ void GameInfoDialog::loadDisplayProperties(Properties properties)
   if(instance().hasConsole() && ystart == "0")
   {
     stringstream ss;
-    ss << " (" << instance().console().tia().ystart() << "px detected)";
+    ss << instance().console().tia().ystart() << "px detected";
     myYStartDetected->setLabel(ss.str());
   }
   else
@@ -475,7 +479,7 @@ void GameInfoDialog::loadDisplayProperties(Properties properties)
   if(instance().hasConsole() && height == "0")
   {
     stringstream ss;
-    ss << "(" << instance().console().tia().height() << "px detected)";
+    ss << instance().console().tia().height() << "px detected";
     myHeightDetected->setLabel(ss.str());
   }
   else
