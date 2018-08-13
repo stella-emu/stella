@@ -68,6 +68,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myRarity;
     EditTextWidget*   myNote;
     PopUpWidget*      myType;
+    StaticTextWidget* myTypeDetected;
     CheckboxWidget*   mySound;
 
     // Console properties
@@ -92,8 +93,11 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     // Display properties
     PopUpWidget*      myFormat;
+    StaticTextWidget* myFormatDetected;
     SliderWidget*     myYStart;
+    StaticTextWidget* myYStartDetected;
     SliderWidget*     myHeight;
+    StaticTextWidget* myHeightDetected;
     CheckboxWidget*   myPhosphor;
     SliderWidget*     myPPBlend;
 

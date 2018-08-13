@@ -123,6 +123,11 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myType);
   ypos += lineHeight + VGAP;
 
+  myTypeDetected = new StaticTextWidget(myTab, ifont, xpos+lwidth, ypos,
+                       "( CM (SpectraVideo CompuMate) detected)");
+  wid.push_back(myTypeDetected);
+  ypos += ifont.getLineHeight() + VGAP/2;
+
   mySound = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Stereo sound");
   wid.push_back(mySound);
 
@@ -294,9 +299,12 @@ GameInfoDialog::GameInfoDialog(
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myFormat);
 
+  myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 4, ypos + 4, "(SECAM60* detected");
+  wid.push_back(myFormatDetected);
+
   ypos += lineHeight + VGAP;
   swidth = myFormat->getWidth();
-  t = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Y-Start ");
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos+2, "Y-Start ");
   myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
                               "", 0, kYStartChanged, 4 * fontWidth, "px");
   myYStart->setMinValue(TIAConstants::minYStart-1);
@@ -304,14 +312,21 @@ GameInfoDialog::GameInfoDialog(
   myYStart->setTickmarkInterval(4);
   wid.push_back(myYStart);
 
+  myYStartDetected = new StaticTextWidget(myTab, ifont, myYStart->getRight() + 4, ypos + 5, " (100px detected)");
+  wid.push_back(myYStartDetected);
+
   ypos += lineHeight + VGAP;
-  t = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Height  ");
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos+2, "Height  ");
   myHeight = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
                               "", 0, kHeightChanged, 5 * fontWidth, "px");
   myHeight->setMinValue(TIAConstants::minViewableHeight-1);
   myHeight->setMaxValue(TIAConstants::maxViewableHeight);
   myHeight->setTickmarkInterval(4);
   wid.push_back(myHeight);
+
+  myHeightDetected = new StaticTextWidget(myTab, ifont, myHeight->getRight() + 4, ypos + 5, "(100px detected)");
+  wid.push_back(myYStartDetected);
+
 
   // Phosphor
   ypos += lineHeight + VGAP*4;
@@ -369,6 +384,15 @@ void GameInfoDialog::loadCartridgeProperties(Properties properties)
   myNote->setText(properties.get(Cartridge_Note));
   mySound->setState(properties.get(Cartridge_Sound) == "STEREO");
   myType->setSelected(properties.get(Cartridge_Type), "AUTO");
+
+  if(instance().hasConsole() && myType->getSelectedTag().toString() == "AUTO")
+  {
+    stringstream ss;
+    ss << "(" << instance().console().about().BankSwitch << "detected)";
+    myTypeDetected->setLabel(ss.str());
+  }
+  else
+    myTypeDetected->setLabel("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -421,16 +445,41 @@ void GameInfoDialog::loadControllerProperties(Properties properties)
 void GameInfoDialog::loadDisplayProperties(Properties properties)
 {
   myFormat->setSelected(properties.get(Display_Format), "AUTO");
+  if(instance().hasConsole() && myFormat->getSelectedTag().toString() == "AUTO")
+  {
+    const string& format = instance().console().about().DisplayFormat;
+    string label = format.substr(0, format.length() - 1);
+    myFormatDetected->setLabel("(" + label + " detected)");
+  }
+  else
+    myFormatDetected->setLabel("");
 
   const string& ystart = properties.get(Display_YStart);
   myYStart->setValue(atoi(ystart.c_str()));
   myYStart->setValueLabel(ystart == "0" ? "Auto" : ystart);
   myYStart->setValueUnit(ystart == "0" ? "" : "px");
+  if(instance().hasConsole() && ystart == "0")
+  {
+    stringstream ss;
+    ss << " (" << instance().console().tia().ystart() << "px detected)";
+    myYStartDetected->setLabel(ss.str());
+  }
+  else
+    myYStartDetected->setLabel("");
 
   const string& height = properties.get(Display_Height);
   myHeight->setValue(atoi(height.c_str()));
   myHeight->setValueLabel(height == "0" ? "Auto" : height);
   myHeight->setValueUnit(height == "0" ? "" : "px");
+
+  if(instance().hasConsole() && height == "0")
+  {
+    stringstream ss;
+    ss << "(" << instance().console().tia().height() << "px detected)";
+    myHeightDetected->setLabel(ss.str());
+  }
+  else
+    myHeightDetected->setLabel("");
 
   bool usePhosphor = properties.get(Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
