@@ -98,7 +98,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
-  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Frame statistics");
+  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Console info overlay");
   wid.push_back(myFrameStatsWidget);
   ypos += lineHeight + VGAP;
 
