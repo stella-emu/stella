@@ -389,7 +389,7 @@ void GameInfoDialog::loadCartridgeProperties(Properties properties)
   if(instance().hasConsole() && myType->getSelectedTag().toString() == "AUTO")
   {
     string bs = instance().console().about().BankSwitch;
-    int pos = bs.find_first_of('*');
+    size_t pos = bs.find_first_of('*');
     // remove '*':
     if (pos != string::npos)
       bs = bs.substr(0, pos) + bs.substr(pos+1);
