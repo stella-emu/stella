@@ -652,6 +652,22 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
+  // Switching between fullscreen and windowed modes will invariably mean
+  // that the 'window' resolution changes.  Currently, dialogs are not
+  // able to resize themselves when they are actively being shown
+  // (they would have to be closed and then re-opened, etc).
+  // For now, we simply disallow screen switches in such modes
+  switch(myOSystem.eventHandler().state())
+  {
+    case EventHandlerState::EMULATION:
+    case EventHandlerState::LAUNCHER:
+    case EventHandlerState::DEBUGGER:
+    case EventHandlerState::PAUSE:
+      break; // continue with processing (aka, allow a mode switch)
+    default:
+      return;
+  }
+
   const VideoMode& mode = getSavedVidMode(enable);
   if(setVideoMode(myScreenTitle, mode))
   {

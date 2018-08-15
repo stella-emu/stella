@@ -143,18 +143,15 @@ void Dialog::setTitle(const string& title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::center()
 {
-  if(_surface)
-  {
-    const GUI::Size& screen = instance().frameBuffer().screenSize();
-    const GUI::Rect& dst = _surface->dstRect();
-    _surface->setDstPos((screen.w - dst.width()) >> 1, (screen.h - dst.height()) >> 1);
-  }
+  const GUI::Size& screen = instance().frameBuffer().screenSize();
+  const GUI::Rect& dst = _surface->dstRect();
+  _surface->setDstPos((screen.w - dst.width()) >> 1, (screen.h - dst.height()) >> 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::render()
 {
-  if(!_dirty)
+  if(!_dirty || !isVisible())
     return false;
 
   // Draw this dialog
