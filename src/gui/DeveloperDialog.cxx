@@ -739,8 +739,8 @@ void DeveloperDialog::setDefaults()
       myConsole[set] = 0;
       // Randomization
       myRandomBank[set] = devSettings ? true : false;
-      myRandomizeRAM[set] = devSettings ? true : false;
-      myRandomizeCPU[set] = devSettings ? "SAXYP" : "";
+      myRandomizeRAM[set] = true;
+      myRandomizeCPU[set] = devSettings ? "SAXYP" : "AXYP";
       // Undriven TIA pins
       myUndrivenPins[set] = devSettings ? true : false;
       // Thumb ARM emulation exception

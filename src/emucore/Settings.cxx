@@ -153,8 +153,8 @@ Settings::Settings(OSystem& osystem)
   // player settings
   setInternal("plr.stats", "false");
   setInternal("plr.bankrandom", "false");
-  setInternal("plr.ramrandom", "false");
-  setInternal("plr.cpurandom", "");
+  setInternal("plr.ramrandom", "true");
+  setInternal("plr.cpurandom", "AXYP");
   setInternal("plr.colorloss", "false");
   setInternal("plr.tv.jitter", "true");
   setInternal("plr.tv.jitter_recovery", "10");
