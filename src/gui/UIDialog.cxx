@@ -255,7 +255,12 @@ void UIDialog::setDefaults()
 {
   switch(myTab->getActiveTab())
   {
-    case 0:  // Launcher options
+    case 0:  // Misc. options
+      myPalettePopup->setSelected("standard");
+      myListDelayPopup->setValue(300);
+      myWheelLinesPopup->setValue(4);
+      break;
+    case 1:  // Launcher options
     {
       uInt32 w = std::min(instance().frameBuffer().desktopSize().w, 900u);
       uInt32 h = std::min(instance().frameBuffer().desktopSize().h, 600u);
@@ -266,13 +271,6 @@ void UIDialog::setDefaults()
       myLauncherExitWidget->setState(false);
       break;
     }
-
-    case 1:  // Misc. options
-      myPalettePopup->setSelected("standard");
-      myListDelayPopup->setValue(300);
-      myWheelLinesPopup->setValue(4);
-      break;
-
     default:
       break;
   }
