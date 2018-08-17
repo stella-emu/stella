@@ -26,6 +26,7 @@ class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
 class TabWidget;
+class BrowserDialog;
 class OSystem;
 
 #include "bspf.hxx"
@@ -42,27 +43,37 @@ class UIDialog : public Dialog
     void setDefaults() override;
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleRomViewer();
+    void createBrowser(const string& title);
 
   private:
     enum
     {
       kListDelay  = 'UILd',
       kMouseWheel = 'UIMw',
+      kRomViewer = 'UIRv',
+      kChooseSnapLoadDirCmd = 'UIsl', // snapshot dir (load files)
+      kSnapLoadDirChosenCmd = 'UIsc' // snap chosen (load files)
     };
 
+    const GUI::Font& myFont;
     TabWidget* myTab;
 
     // Launcher options
     SliderWidget*     myLauncherWidthSlider;
     SliderWidget*     myLauncherHeightSlider;
-    CheckboxWidget*   myLauncherExitWidget;
     PopUpWidget*      myLauncherFontPopup;
     PopUpWidget*      myRomViewerPopup;
+    ButtonWidget*     myOpenBrowserButton;
+    EditTextWidget*   mySnapLoadPath;
+    CheckboxWidget*   myLauncherExitWidget;
 
     // Misc options
     PopUpWidget*      myPalettePopup;
-    SliderWidget*      myListDelayPopup;
-    SliderWidget*      myWheelLinesPopup;
+    SliderWidget*     myListDelayPopup;
+    SliderWidget*     myWheelLinesPopup;
+
+    unique_ptr<BrowserDialog> myBrowser;
 
   private:
     // Following constructors and assignment operators not supported

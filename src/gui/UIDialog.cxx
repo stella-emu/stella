@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "BrowserDialog.hxx"
 #include "Dialog.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -23,6 +24,7 @@
 #include "ListWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "ScrollBarWidget.hxx"
+#include "EditTextWidget.hxx"
 #include "Settings.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
@@ -35,15 +37,19 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font)
-  : Dialog(osystem, parent, font, "User interface settings")
+  : Dialog(osystem, parent, font, "User interface settings"),
+  myFont(font)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
+            buttonWidth  = font.getStringWidth("Image path" + ELLIPSIS) + 20 + 1,
             buttonHeight = font.getLineHeight() + 4;
+
   const int VBORDER = 8;
   const int HBORDER = 10;
+  const int INDENT = 16;
   int xpos, ypos, tabID;
   int lwidth, pwidth = font.getStringWidth("Standard");
   WidgetArray wid;
@@ -51,8 +57,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Size& ds = instance().frameBuffer().desktopSize();
 
   // Set real dimensions
-  _w = 39 * fontWidth + 10 * 2;
-  _h = 10 * (lineHeight + 4) + VBORDER + _th;
+  _w = (39+15) * fontWidth + 10 * 2;
+  _h = (10+1) * (lineHeight + 4) + VBORDER + _th;
 
   // The tab widget
   xpos = HBORDER;  ypos = VBORDER;
@@ -138,7 +144,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
                     "Launcher Font ", lwidth);
   wid.push_back(myLauncherFontPopup);
-  ypos += lineHeight + 4;
+  ypos += lineHeight +  4 * 4;
 
   // ROM launcher info/snapshot viewer
   items.clear();
@@ -147,11 +153,25 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "2x (1000x760)", "2");
   myRomViewerPopup =
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
-                    "ROM Info viewer ", lwidth);
+                    "ROM Info viewer ", lwidth, kRomViewer);
   wid.push_back(myRomViewerPopup);
-  ypos += lineHeight + 4*4;
+  ypos += lineHeight + 4;
+
+  // Snapshot path (load files)
+  xpos = HBORDER + INDENT;
+  myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, buttonWidth, buttonHeight,
+                                         "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
+  wid.push_back(myOpenBrowserButton);
+  //ypos += lineHeight + 4;
+  xpos = myOpenBrowserButton->getRight() + 8;
+
+  mySnapLoadPath = new EditTextWidget(myTab, font, xpos, ypos + 1,
+                                      _w - xpos - HBORDER, lineHeight, "");
+  wid.push_back(mySnapLoadPath);
+  ypos += lineHeight + 4 * 5;
 
   // Exit to Launcher
+  xpos = HBORDER;
   myLauncherExitWidget = new CheckboxWidget(myTab, font, xpos + 1, ypos, "Always exit to Launcher");
   wid.push_back(myLauncherExitWidget);
 
@@ -198,6 +218,9 @@ void UIDialog::loadConfig()
   const string& viewer = instance().settings().getString("romviewer");
   myRomViewerPopup->setSelected(viewer, "0");
 
+  // ROM launcher info viewer image path
+  mySnapLoadPath->setText(instance().settings().getString("snaploaddir"));
+
   // Exit to launcher
   bool exitlauncher = instance().settings().getBool("exitlauncher");
   myLauncherExitWidget->setState(exitlauncher);
@@ -213,6 +236,8 @@ void UIDialog::loadConfig()
   // Mouse wheel lines
   int mw = instance().settings().getInt("mwheel");
   myWheelLinesPopup->setValue(mw);
+
+  handleRomViewer();
 
   myTab->loadConfig();
 }
@@ -232,6 +257,9 @@ void UIDialog::saveConfig()
   // ROM launcher info viewer
   instance().settings().setValue("romviewer",
     myRomViewerPopup->getSelectedTag().toString());
+
+  // ROM launcher info viewer image path
+  instance().settings().setValue("snaploaddir", mySnapLoadPath->getText());
 
   // Exit to Launcher
   instance().settings().setValue("exitlauncher", myLauncherExitWidget->getState());
@@ -268,6 +296,7 @@ void UIDialog::setDefaults()
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
       myRomViewerPopup->setSelected("1", "");
+      mySnapLoadPath->setText(instance().defaultLoadDir());
       myLauncherExitWidget->setState(false);
       break;
     }
@@ -313,8 +342,48 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         myWheelLinesPopup->setValueUnit(" lines");
       break;
 
+    case kRomViewer:
+      handleRomViewer();
+      break;
+
+    case kChooseSnapLoadDirCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser("Select snapshot load directory");
+      myBrowser->show(mySnapLoadPath->getText(),
+                      BrowserDialog::Directories, kSnapLoadDirChosenCmd);
+      break;
+
+    case kSnapLoadDirChosenCmd:
+      mySnapLoadPath->setText(myBrowser->getResult().getShortPath());
+      break;
+
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UIDialog::handleRomViewer()
+{
+  bool enable = myRomViewerPopup->getSelectedName() != "Off";
+
+  myOpenBrowserButton->setEnabled(enable);
+  mySnapLoadPath->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UIDialog::createBrowser(const string& title)
+{
+  uInt32 w = 0, h = 0;
+  getResizableBounds(w, h);
+
+  // Create file browser dialog
+  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
+     uInt32(myBrowser->getHeight()) != h)
+    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
+  else
+    myBrowser->setTitle(title);
+}
+

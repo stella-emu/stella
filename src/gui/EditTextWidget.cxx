@@ -85,7 +85,7 @@ void EditTextWidget::drawWidget(bool hilite)
   // Highlight changes
   if(_changed && onTop)
     s.fillRect(_x, _y, _w, _h, kDbgChangedColor);
-  else if(!isEditable())
+  else if(!isEditable() || !isEnabled())
     s.fillRect(_x, _y, _w, _h, onTop ? kDlgColor : kBGColorLo);
 
   // Draw a thin frame around us.
@@ -94,9 +94,9 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   s.drawString(_font, editString(), _x + 2, _y + 2, getEditRect().width(),
-               _changed && onTop
+               _changed && onTop && isEnabled()
                ? kDbgChangedTextColor
-               : onTop ? _textcolor : kColor,
+               : onTop && isEnabled() ? _textcolor : kColor,
                TextAlign::Left, -_editScrollOffset, false);
 
   // Draw the caret
