@@ -524,21 +524,6 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
           myOSystem.console().changeHeight(-1);
           break;
 
-        case KBDK_S:         // Ctrl-s saves properties to a file
-        {
-          string filename = myOSystem.baseDir() +
-              myOSystem.console().properties().get(Cartridge_Name) + ".pro";
-          ofstream out(filename);
-          if(out)
-          {
-            out << myOSystem.console().properties();
-            myOSystem.frameBuffer().showMessage("Properties saved");
-          }
-          else
-            myOSystem.frameBuffer().showMessage("Error saving properties");
-          break;
-        }
-
         default:
           handled = false;
           break;

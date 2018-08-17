@@ -46,13 +46,13 @@ class GameInfoDialog : public Dialog, public CommandSender
     void setDefaults() override;
 
     // load the properties for the 'Cartridge' tab
-    void loadCartridgeProperties(Properties properties);
+    void loadCartridgeProperties(const Properties& props);
     // load the properties for the 'Console' tab
-    void loadConsoleProperties(Properties properties);
+    void loadConsoleProperties(const Properties& props);
     // load the properties for the 'Controller' tab
-    void loadControllerProperties(Properties properties);
+    void loadControllerProperties(const Properties& props);
     // load the properties for the 'Display' tab
-    void loadDisplayProperties(Properties properties);
+    void loadDisplayProperties(const Properties& props);
 
     void updateControllerStates();
     void eraseEEPROM();

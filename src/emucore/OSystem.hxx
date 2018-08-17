@@ -112,13 +112,7 @@ class OSystem
 
       @return The properties set object
     */
-    PropertiesSet& propSet(const string& md5 = EmptyString);
-    PropertiesSet& propSet(const string& md5, const FilesystemNode& node);
-
-    /**
-      Save the game specific property file.
-    */
-    void saveGamePropSet(const string& md5);
+    PropertiesSet& propSet() const { return *myPropSet; }
 
     /**
       Get the console of the system.  The console won't always exist,
@@ -269,14 +263,6 @@ class OSystem
       @return String representing the full path of the properties filename.
     */
     const string& paletteFile() const { return myPaletteFile; }
-
-    /**
-      This method should be called to get the full path of the
-      properties file (stella.pro).
-
-      @return String representing the full path of the properties filename.
-    */
-    const string& propertiesFile() const { return myPropertiesFile; }
 
     /**
       This method should be called to get the full path of the currently
@@ -448,12 +434,6 @@ class OSystem
     // Pointer to the PropertiesSet object
     unique_ptr<PropertiesSet> myPropSet;
 
-    // Pointer to the game's PropertiesSet object
-    unique_ptr<PropertiesSet> myGamePropSet;
-
-    // MD5 of the currently loaded  game PropertiesSet object
-    string myGamePropSetMD5;
-
     // Pointer to the (currently defined) Console object
     unique_ptr<Console> myConsole;
 
@@ -510,7 +490,6 @@ class OSystem
     string myConfigFile;
     string myPaletteFile;
     string myPropertiesFile;
-    string myGamePropertiesFile;
 
     FilesystemNode myRomFile;
     string myRomMD5;

@@ -171,13 +171,6 @@ void PropertiesSet::insert(const Properties& properties, bool save)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::removeMD5(const string& md5)
-{
-  // We only remove from the external list
-  myExternalProps.erase(md5);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::print() const
 {
   // We only look at the external properties and the built-in ones;

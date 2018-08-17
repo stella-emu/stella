@@ -363,7 +363,7 @@ void GameInfoDialog::loadConfig()
   else
   {
     const string& md5 = instance().launcher().selectedRomMD5();
-    instance().propSet(md5).getMD5(md5, myGameProperties);
+    instance().propSet().getMD5(md5, myGameProperties);
   }
 
   loadCartridgeProperties(myGameProperties);
@@ -375,16 +375,16 @@ void GameInfoDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::loadCartridgeProperties(Properties properties)
+void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 {
-  myName->setText(properties.get(Cartridge_Name));
-  myMD5->setText(properties.get(Cartridge_MD5));
-  myManufacturer->setText(properties.get(Cartridge_Manufacturer));
-  myModelNo->setText(properties.get(Cartridge_ModelNo));
-  myRarity->setText(properties.get(Cartridge_Rarity));
-  myNote->setText(properties.get(Cartridge_Note));
-  mySound->setState(properties.get(Cartridge_Sound) == "STEREO");
-  myType->setSelected(properties.get(Cartridge_Type), "AUTO");
+  myName->setText(props.get(Cartridge_Name));
+  myMD5->setText(props.get(Cartridge_MD5));
+  myManufacturer->setText(props.get(Cartridge_Manufacturer));
+  myModelNo->setText(props.get(Cartridge_ModelNo));
+  myRarity->setText(props.get(Cartridge_Rarity));
+  myNote->setText(props.get(Cartridge_Note));
+  mySound->setState(props.get(Cartridge_Sound) == "STEREO");
+  myType->setSelected(props.get(Cartridge_Type), "AUTO");
 
   if(instance().hasConsole() && myType->getSelectedTag().toString() == "AUTO")
   {
@@ -400,23 +400,23 @@ void GameInfoDialog::loadCartridgeProperties(Properties properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::loadConsoleProperties(Properties properties)
+void GameInfoDialog::loadConsoleProperties(const Properties& props)
 {
-  myLeftDiffGroup->setSelected(properties.get(Console_LeftDifficulty) == "A" ? 0 : 1);
-  myRightDiffGroup->setSelected(properties.get(Console_RightDifficulty) == "A" ? 0 : 1);
-  myTVTypeGroup->setSelected(properties.get(Console_TelevisionType) == "BW" ? 1 : 0);
+  myLeftDiffGroup->setSelected(props.get(Console_LeftDifficulty) == "A" ? 0 : 1);
+  myRightDiffGroup->setSelected(props.get(Console_RightDifficulty) == "A" ? 0 : 1);
+  myTVTypeGroup->setSelected(props.get(Console_TelevisionType) == "BW" ? 1 : 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::loadControllerProperties(Properties properties)
+void GameInfoDialog::loadControllerProperties(const Properties& props)
 {
-  myP0Controller->setSelected(properties.get(Controller_Left), "JOYSTICK");
-  myP1Controller->setSelected(properties.get(Controller_Right), "JOYSTICK");
-  mySwapPorts->setState(properties.get(Console_SwapPorts) == "YES");
-  mySwapPaddles->setState(properties.get(Controller_SwapPaddles) == "YES");
+  myP0Controller->setSelected(props.get(Controller_Left), "JOYSTICK");
+  myP1Controller->setSelected(props.get(Controller_Right), "JOYSTICK");
+  mySwapPorts->setState(props.get(Console_SwapPorts) == "YES");
+  mySwapPaddles->setState(props.get(Controller_SwapPaddles) == "YES");
 
   // MouseAxis property (potentially contains 'range' information)
-  istringstream m_axis(properties.get(Controller_MouseAxis));
+  istringstream m_axis(props.get(Controller_MouseAxis));
   string m_control, m_range;
   m_axis >> m_control;
   bool autoAxis = BSPF::equalsIgnoreCase(m_control, "AUTO");
@@ -446,9 +446,9 @@ void GameInfoDialog::loadControllerProperties(Properties properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::loadDisplayProperties(Properties properties)
+void GameInfoDialog::loadDisplayProperties(const Properties& props)
 {
-  myFormat->setSelected(properties.get(Display_Format), "AUTO");
+  myFormat->setSelected(props.get(Display_Format), "AUTO");
   if(instance().hasConsole() && myFormat->getSelectedTag().toString() == "AUTO")
   {
     const string& format = instance().console().about().DisplayFormat;
@@ -458,7 +458,7 @@ void GameInfoDialog::loadDisplayProperties(Properties properties)
   else
     myFormatDetected->setLabel("");
 
-  const string& ystart = properties.get(Display_YStart);
+  const string& ystart = props.get(Display_YStart);
   myYStart->setValue(atoi(ystart.c_str()));
   myYStart->setValueLabel(ystart == "0" ? "Auto" : ystart);
   myYStart->setValueUnit(ystart == "0" ? "" : "px");
@@ -471,7 +471,7 @@ void GameInfoDialog::loadDisplayProperties(Properties properties)
   else
     myYStartDetected->setLabel("");
 
-  const string& height = properties.get(Display_Height);
+  const string& height = props.get(Display_Height);
   myHeight->setValue(atoi(height.c_str()));
   myHeight->setValueLabel(height == "0" ? "Auto" : height);
   myHeight->setValueUnit(height == "0" ? "" : "px");
@@ -485,11 +485,11 @@ void GameInfoDialog::loadDisplayProperties(Properties properties)
   else
     myHeightDetected->setLabel("");
 
-  bool usePhosphor = properties.get(Display_Phosphor) == "YES";
+  bool usePhosphor = props.get(Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
   myPPBlend->setEnabled(usePhosphor);
 
-  const string& blend = properties.get(Display_PPBlend);
+  const string& blend = props.get(Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));
   myPPBlend->setValueLabel(blend == "0" ? "Default" : blend);
   myPPBlend->setValueUnit(blend == "0" ? "" : "%");
@@ -539,10 +539,8 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Display_PPBlend, myPPBlend->getValueLabel() == "Default" ? "0" :
                        myPPBlend->getValueLabel());
 
-  const string& md5 = myGameProperties.get(Cartridge_MD5);
-  // always insert, doesn't hurt
-  instance().propSet(md5).insert(myGameProperties);
-  instance().saveGamePropSet(myGameProperties.get(Cartridge_MD5));
+  // Always insert; if the properties are already present, nothing will happen
+  instance().propSet().insert(myGameProperties);
 
   // In any event, inform the Console
   if(instance().hasConsole())
@@ -583,9 +581,9 @@ void GameInfoDialog::setDefaults()
 {
   // Load the default properties
   Properties defaultProperties;
-  string md5 = myGameProperties.get(Cartridge_MD5);
+  const string& md5 = myGameProperties.get(Cartridge_MD5);
 
-  instance().propSet(md5).getMD5(md5, defaultProperties, true);
+  instance().propSet().getMD5(md5, defaultProperties, true);
 
   switch(myTab->getActiveTab())
   {

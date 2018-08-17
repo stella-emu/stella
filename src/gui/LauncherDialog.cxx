@@ -332,7 +332,7 @@ void LauncherDialog::loadRomInfo()
 
     // Get the properties for this entry
     Properties props;
-    instance().propSet(myGameList->md5(item), node).getMD5WithInsert(node, myGameList->md5(item), props);
+    instance().propSet().getMD5WithInsert(node, myGameList->md5(item), props);
 
     myRomInfoWidget->setProperties(props);
   }
