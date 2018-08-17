@@ -38,7 +38,7 @@
 UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                    const GUI::Font& font)
   : Dialog(osystem, parent, font, "User interface settings"),
-  myFont(font)
+    myFont(font)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = font.getLineHeight(),
@@ -193,6 +193,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.clear();
   addDefaultsOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+UIDialog::~UIDialog()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
