@@ -369,9 +369,8 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
         *out++ = i * s + q * c;
       }
       while ( --n2 );
-      if constexpr( burst_count <= 1 )
-        break;
-      ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
+      if constexpr( burst_count > 1 )
+        ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
     }
     while ( --n );
   }
