@@ -132,7 +132,6 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
                                       WidgetArray& wid)
 {
-  const int fontHeight = font.getFontHeight();
   int xpos = x, ypos = y;
   const int VGAP = 4;
 

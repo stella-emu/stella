@@ -25,6 +25,7 @@
   @author Bradford W. Mott and Stephen Anthony
 */
 
+#include <climits>
 #include <cstdint>
 // Types for 8/16/32/64-bit signed and unsigned integers
 using Int8   = int8_t;
