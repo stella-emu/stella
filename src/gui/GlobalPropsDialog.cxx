@@ -38,32 +38,31 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
             fontHeight   = font.getFontHeight(),
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
-  int lwidth = font.getStringWidth("Right Difficulty "),
+  int lwidth = font.getStringWidth("Right difficulty "),
       pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
+  const int VGAP = 4;
   WidgetArray wid;
   VariantList items;
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
 
   // Set real dimensions
   _w = lwidth + pwidth + fontWidth*3 + 15;
-  _h = 17 * (lineHeight + 4) + buttonHeight + 20 + _th;
+  _h = 15 * (lineHeight + 4) + buttonHeight + 10 + _th;
 
   xpos = 10;  ypos = 10 + _th;
 
   // Bankswitch type
-  new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Bankswitch type", TextAlign::Left);
+  new StaticTextWidget(this, font, xpos, ypos+1, "Bankswitch type");
   for(int i = 0; i < int(BSType::NumSchemes); ++i)
     VarList::push_back(items, BSList[i].desc, BSList[i].name);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myBSType);
-  ypos += lineHeight + 10;
+  ypos += lineHeight + VGAP*2;
 
   // Left difficulty
   pwidth = font.getStringWidth("Debugger");
-  new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Left Difficulty", TextAlign::Left);
+  new StaticTextWidget(this, font, xpos, ypos+1, "Left difficulty");
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "B", "B");
@@ -71,20 +70,18 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   myLeftDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
                                pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myLeftDiff);
-  ypos += lineHeight + 5;
+  ypos += lineHeight + VGAP;
 
   // Right difficulty
-  new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Right Difficulty", TextAlign::Left);
+  new StaticTextWidget(this, font, xpos, ypos+1, "Right difficulty");
   // ... use same items as above
   myRightDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
                                 pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myRightDiff);
-  ypos += lineHeight + 5;
+  ypos += lineHeight + VGAP;
 
   // TV type
-  new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "TV Type", TextAlign::Left);
+  new StaticTextWidget(this, font, xpos, ypos+1, "TV type");
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "Color", "COLOR");
@@ -92,47 +89,40 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   myTVType = new PopUpWidget(this, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myTVType);
-  ypos += lineHeight + 10;
+  ypos += lineHeight + VGAP*2;
 
   // Start in debugger mode
-  new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Startup Mode", TextAlign::Left);
+  new StaticTextWidget(this, font, xpos, ypos+1, "Startup mode");
   items.clear();
   VarList::push_back(items, "Console", "false");
   VarList::push_back(items, "Debugger", "true");
   myDebug = new PopUpWidget(this, font, xpos+lwidth, ypos,
                             pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myDebug);
-  ypos += lineHeight + 10;
+  ypos += lineHeight + VGAP*3;
 
   // Start console with buttons held down
   new StaticTextWidget(this, font, xpos, ypos+1,
-      font.getStringWidth("Start console with the following held down:"),
-      fontHeight, "Start console with the following held down:",
-      TextAlign::Left);
-  xpos += 10;  ypos += lineHeight;
-  new StaticTextWidget(this, infofont, xpos, ypos+1, _w - 40, infofont.getFontHeight(),
-      "(*) Buttons are automatically released shortly",
-      TextAlign::Left);
-  ypos += infofont.getLineHeight();
-  new StaticTextWidget(this, infofont, xpos, ypos+1, _w - 40, infofont.getFontHeight(),
-      "    after emulation has started",
-      TextAlign::Left);
+      "Start with the following held down:");
+  ypos += lineHeight;
+  new StaticTextWidget(this, infofont, xpos, ypos+1,
+      "(automatically released shortly after start)");
 
   // Start with console joystick direction/buttons held down
-  xpos = 30;  ypos += lineHeight + 10;
+  xpos = 32;  ypos += infofont.getLineHeight() + VGAP*2;
   ypos = addHoldWidgets(font, xpos, ypos, wid);
 
   // Add message concerning usage
   xpos = 10;  ypos += 2 * fontHeight;
-  new StaticTextWidget(this, infofont, xpos, ypos,  _w - 20, infofont.getFontHeight(),
-    "(*) These options are not saved, but apply to all", TextAlign::Left);
+  ypos = _h - fontHeight * 2 - infofont.getLineHeight() - 24;
+  new StaticTextWidget(this, infofont, xpos, ypos,
+    "(*) These options are not saved, but apply to all");
   ypos += infofont.getLineHeight();
-  new StaticTextWidget(this, infofont, xpos, ypos,  _w - 20, infofont.getFontHeight(),
-    "    further ROMs until clicking 'Defaults'", TextAlign::Left);
+  new StaticTextWidget(this, infofont, xpos, ypos,
+    "    further ROMs until selecting 'Defaults'.");
 
   // Add Defaults, OK and Cancel buttons
-  addDefaultsOKCancelBGroup(wid, font, "Load ROM", "Close");
+  addDefaultsOKCancelBGroup(wid, font, "Load ROM", "Cancel");
 
   addToFocusList(wid);
 }
@@ -143,53 +133,48 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
 {
   const int fontHeight = font.getFontHeight();
   int xpos = x, ypos = y;
+  const int VGAP = 4;
 
   // Left joystick
-  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos+2,
-    font.getStringWidth("Left Joy"), fontHeight, "Left Joy",
-    TextAlign::Left);
-  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
+  StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos+2, "Left joy");
+  xpos += t->getWidth()/2 - 7;  ypos += t->getHeight() + VGAP;
   myJoy[kJ0Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Up);
-  ypos += myJoy[kJ0Up]->getHeight() * 2 + 10;
+  ypos += myJoy[kJ0Up]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ0Down] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Down);
   xpos -= myJoy[kJ0Up]->getWidth() + 5;
-  ypos -= myJoy[kJ0Up]->getHeight() + 5;
+  ypos -= myJoy[kJ0Up]->getHeight() + VGAP;
   myJoy[kJ0Left] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Left);
   xpos += (myJoy[kJ0Up]->getWidth() + 5) * 2;
   myJoy[kJ0Right] = new CheckboxWidget(this, font, xpos, ypos, "", kJ0Right);
   xpos -= (myJoy[kJ0Up]->getWidth() + 5) * 2;
-  ypos += myJoy[kJ0Down]->getHeight() * 2 + 10;
+  ypos += myJoy[kJ0Down]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ0Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ0Fire);
 
   int final_y = ypos;
   xpos = _w / 3;  ypos = y;
 
   // Right joystick
-  t = new StaticTextWidget(this, font, xpos, ypos+2,
-    font.getStringWidth("Right Joy"), fontHeight, "Right Joy",
-    TextAlign::Left);
-  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
+  t = new StaticTextWidget(this, font, xpos, ypos + 2, "Right joy");
+  xpos += t->getWidth()/2 - 7;  ypos += t->getHeight() + VGAP;
   myJoy[kJ1Up] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Up);
-  ypos += myJoy[kJ1Up]->getHeight() * 2 + 10;
+  ypos += myJoy[kJ1Up]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ1Down] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Down);
   xpos -= myJoy[kJ1Up]->getWidth() + 5;
-  ypos -= myJoy[kJ1Up]->getHeight() + 5;
+  ypos -= myJoy[kJ1Up]->getHeight() + VGAP;
   myJoy[kJ1Left] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Left);
   xpos += (myJoy[kJ1Up]->getWidth() + 5) * 2;
   myJoy[kJ1Right] = new CheckboxWidget(this, font, xpos, ypos, "", kJ1Right);
   xpos -= (myJoy[kJ1Up]->getWidth() + 5) * 2;
-  ypos += myJoy[kJ1Down]->getHeight() * 2 + 10;
+  ypos += myJoy[kJ1Down]->getHeight() * 2 + VGAP * 2;
   myJoy[kJ1Fire] = new CheckboxWidget(this, font, xpos, ypos, "Fire", kJ1Fire);
 
-  xpos = 2 * _w / 3;  ypos = y;
+  xpos = 2 * _w / 3 + 8;  ypos = y;
 
   // Console Select/Reset
-  t = new StaticTextWidget(this, font, xpos, ypos+2,
-    font.getStringWidth("Console"), fontHeight, "Console",
-    TextAlign::Left);
-  xpos -= 10;  ypos += t->getHeight() + 10;
+  t = new StaticTextWidget(this, font, xpos, ypos+2, "Console");
+  ypos += t->getHeight() + VGAP;
   myHoldSelect = new CheckboxWidget(this, font, xpos, ypos, "Select");
-  ypos += myHoldSelect->getHeight() + 5;
+  ypos += myHoldSelect->getHeight() + VGAP;
   myHoldReset = new CheckboxWidget(this, font, xpos, ypos, "Reset");
 
   for(int i = kJ0Up; i <= kJ1Fire; ++i)
