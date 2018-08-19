@@ -47,7 +47,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
 
   // Set real dimensions
   _w = lwidth + pwidth + fontWidth*3 + 15;
-  _h = 15 * (lineHeight + 4) + buttonHeight + 10 + _th;
+  _h = 15 * (lineHeight + 4) + buttonHeight + 16 + _th;
 
   xpos = 10;  ypos = 10 + _th;
 
@@ -56,19 +56,31 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   for(int i = 0; i < int(BSType::NumSchemes); ++i)
     VarList::push_back(items, BSList[i].desc, BSList[i].name);
   myBSType = new PopUpWidget(this, font, xpos+lwidth, ypos,
-                             pwidth, lineHeight, items, "", 0, 0);
+                             pwidth, lineHeight, items, "");
   wid.push_back(myBSType);
-  ypos += lineHeight + VGAP*2;
+  ypos += lineHeight + VGAP * 3;
+
+  pwidth = font.getStringWidth("Debugger");
+
+  // TV type
+  new StaticTextWidget(this, font, xpos, ypos + 1, "TV type");
+  items.clear();
+  VarList::push_back(items, "Default", "DEFAULT");
+  VarList::push_back(items, "Color", "COLOR");
+  VarList::push_back(items, "B/W", "BW");
+  myTVType = new PopUpWidget(this, font, xpos + lwidth, ypos,
+                             pwidth, lineHeight, items, "");
+  wid.push_back(myTVType);
+  ypos += lineHeight + VGAP;
 
   // Left difficulty
-  pwidth = font.getStringWidth("Debugger");
   new StaticTextWidget(this, font, xpos, ypos+1, "Left difficulty");
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "B", "B");
   VarList::push_back(items, "A", "A");
   myLeftDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
-                               pwidth, lineHeight, items, "", 0, 0);
+                               pwidth, lineHeight, items, "");
   wid.push_back(myLeftDiff);
   ypos += lineHeight + VGAP;
 
@@ -76,20 +88,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, "Right difficulty");
   // ... use same items as above
   myRightDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
-                                pwidth, lineHeight, items, "", 0, 0);
+                                pwidth, lineHeight, items, "");
   wid.push_back(myRightDiff);
-  ypos += lineHeight + VGAP;
-
-  // TV type
-  new StaticTextWidget(this, font, xpos, ypos+1, "TV type");
-  items.clear();
-  VarList::push_back(items, "Default", "DEFAULT");
-  VarList::push_back(items, "Color", "COLOR");
-  VarList::push_back(items, "B & W", "BW");
-  myTVType = new PopUpWidget(this, font, xpos+lwidth, ypos,
-                             pwidth, lineHeight, items, "", 0, 0);
-  wid.push_back(myTVType);
-  ypos += lineHeight + VGAP*2;
+  ypos += lineHeight + VGAP * 3;
 
   // Start in debugger mode
   new StaticTextWidget(this, font, xpos, ypos+1, "Startup mode");
@@ -97,9 +98,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   VarList::push_back(items, "Console", "false");
   VarList::push_back(items, "Debugger", "true");
   myDebug = new PopUpWidget(this, font, xpos+lwidth, ypos,
-                            pwidth, lineHeight, items, "", 0, 0);
+                            pwidth, lineHeight, items, "");
   wid.push_back(myDebug);
-  ypos += lineHeight + VGAP*3;
+  ypos += lineHeight + VGAP * 3;
 
   // Start console with buttons held down
   new StaticTextWidget(this, font, xpos, ypos+1,
@@ -109,7 +110,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
       "(automatically released shortly after start)");
 
   // Start with console joystick direction/buttons held down
-  xpos = 32;  ypos += infofont.getLineHeight() + VGAP*2;
+  xpos = 32;  ypos += infofont.getLineHeight() + VGAP * 2;
   ypos = addHoldWidgets(font, xpos, ypos, wid);
 
   // Add message concerning usage
