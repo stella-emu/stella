@@ -49,6 +49,7 @@ using uInt64 = uint64_t;
 #include <cstring>
 #include <cctype>
 #include <cstdio>
+#include <ctime>
 #include <utility>
 #include <vector>
 
@@ -94,10 +95,6 @@ namespace BSPF
     #define ATTRIBUTE_FMT_PRINTF __attribute__((__format__ (__printf__, 2, 0)))
   #elif defined(BSPF_WINDOWS)
     static const string PATH_SEPARATOR = "\\";
-    #pragma warning (disable : 4146)  // unary minus operator applied to unsigned type
-    #pragma warning(2:4264)  // no override available for virtual member function from base 'class'; function is hidden
-    #pragma warning(2:4265)  // class has virtual functions, but destructor is not virtual
-    #pragma warning(2:4266)  // no override available for virtual member function from base 'type'; function is hidden
     #define ATTRIBUTE_FMT_PRINTF
   #else
     #error Update src/common/bspf.hxx for path separator
@@ -214,6 +211,21 @@ namespace BSPF
       return true;
     }
     return false;
+  }
+
+  // C++11 way to get local time
+  // Equivalent to the C-style localtime() function, but is thread-safe
+  inline std::tm localTime()
+  {
+    std::time_t currtime;
+    std::time(&currtime);
+    std::tm tm_snapshot;
+  #if defined BSPF_WINDOWS && !defined __GNUG__
+    localtime_s(&tm_snapshot, &currtime);
+  #else
+    localtime_r(&currtime, &tm_snapshot);
+  #endif
+    return tm_snapshot;
   }
 } // namespace BSPF
 

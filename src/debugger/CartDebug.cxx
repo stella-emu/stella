@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <ctime>
-
 #include "bspf.hxx"
 #include "System.hxx"
 #include "M6502.hxx"
@@ -1101,11 +1099,9 @@ string CartDebug::saveDisassembly()
   }
 
   // Some boilerplate, similar to what DiStella adds
-// FIXME - change 'time' to proper C++ way - unsafe function
-  time_t currtime;
-  time(&currtime);
+  auto timeinfo = BSPF::localTime();
   out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
-      << "; Disassembled " << ctime(&currtime)
+      << "; Disassembled " << std::put_time(&timeinfo, "%c\n")
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
       << "; ROM properties name : " << myConsole.properties().get(Cartridge_Name) << "\n"
       << "; ROM properties MD5  : " << myConsole.properties().get(Cartridge_MD5) << "\n"

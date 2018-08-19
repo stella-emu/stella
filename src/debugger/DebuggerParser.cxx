@@ -1784,17 +1784,11 @@ void DebuggerParser::executeSaverom()
 // "saveses"
 void DebuggerParser::executeSaveses()
 {
-  // Create a file named with the current date and time
-  time_t currtime;
-  struct tm* timeinfo;
-  char buffer[80];
-
-// FIXME - change 'time' to proper C++ way - unsafe function
-  time(&currtime);
-  timeinfo = localtime(&currtime);
-  strftime(buffer, 80, "session_%F_%H-%M-%S.txt", timeinfo);
-
-  FilesystemNode file(debugger.myOSystem.defaultSaveDir() + buffer);
+  ostringstream filename;
+  auto timeinfo = BSPF::localTime();
+  filename << debugger.myOSystem.defaultSaveDir()
+           << std::put_time(&timeinfo, "session_%F_%H-%M-%S.txt");
+  FilesystemNode file(filename.str());
   if(debugger.prompt().saveBuffer(file))
     commandResult << "saved " + file.getShortPath() + " OK";
   else
