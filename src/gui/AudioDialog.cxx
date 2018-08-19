@@ -227,7 +227,7 @@ void AudioDialog::setDefaults()
   mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
   myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
 
-  if (AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
+  if constexpr(AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
     myFragsizePopup->setSelected(AudioSettings::DEFAULT_FRAGMENT_SIZE);
     myFreqPopup->setSelected(AudioSettings::DEFAULT_SAMPLE_RATE);
     myHeadroomSlider->setValue(AudioSettings::DEFAULT_HEADROOM);
