@@ -50,7 +50,7 @@ string Base::toString(int value, Common::Base::Format outputBase)
     case Base::F_2_16:  // base 2:  2 bytes (16 bits) wide
     {
       int places = (outputBase == Base::F_2_8 ||
-               (outputBase == Base::F_2 && value < 0x100)) ? 8 : 16;
+                   (outputBase == Base::F_2 && value < 0x100)) ? 8 : 16;
       vToS_buf[places] = '\0';
       int bit = 1;
       while(--places >= 0) {
@@ -63,9 +63,9 @@ string Base::toString(int value, Common::Base::Format outputBase)
 
     case Base::F_10:    // base 10: 3 or 5 bytes (depending on value)
       if(value < 0x100)
-        std::snprintf(vToS_buf, 4, "%3d", value);
+        std::snprintf(vToS_buf, 4, "%3d", value & 0xff);
       else
-        std::snprintf(vToS_buf, 6, "%5d", value);
+        std::snprintf(vToS_buf, 6, "%5d", value & 0xffff);
       break;
 
     case Base::F_10_02:  // base 10: 2 digits (with leading zero)
