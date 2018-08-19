@@ -981,7 +981,8 @@ void Console::generateColorLossPalette()
 float Console::getFramerate() const
 {
   return
-    (myConsoleTiming == ConsoleTiming::ntsc ? 262. * 60. : 312. * 50.) / myTIA->frameBufferScanlinesLastFrame();
+    (myConsoleTiming == ConsoleTiming::ntsc ? 262.f * 60.f : 312.f * 50.f) /
+     myTIA->frameBufferScanlinesLastFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

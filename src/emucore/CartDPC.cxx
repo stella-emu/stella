@@ -39,7 +39,10 @@ CartridgeDPC::CartridgeDPC(const BytePtr& image, uInt32 size,
 
   // Initialize the DPC data fetcher registers
   for(int i = 0; i < 8; ++i)
-    myTops[i] = myBottoms[i] = myCounters[i] = myFlags[i] = 0;
+  {
+    myTops[i] = myBottoms[i] = myFlags[i] = 0;
+    myCounters[i] = 0;
+  }
 
   // None of the data fetchers are in music mode
   myMusicMode[0] = myMusicMode[1] = myMusicMode[2] = false;

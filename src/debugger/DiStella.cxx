@@ -883,7 +883,7 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
     return 3;
   } else if (type == CartDebug::ADDR_ZPRAM && myOffset != 0) {
     return 5;
-  } else if (address >= myOffset && address <= myAppData.end + myOffset) {
+  } else if (address >= uInt32(myOffset) && address <= uInt32(myAppData.end + myOffset)) {
     myLabels[address - myOffset] = myLabels[address - myOffset] | mask;
     if (directive)  myDirectives[address - myOffset] = mask;
     return 1;

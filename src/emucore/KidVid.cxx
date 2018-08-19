@@ -162,6 +162,7 @@ cerr << "myTape = " << myTape << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::openSampleFile()
 {
+#if 0
   static const char* const kvNameTable[6] = {
     "kvs3.wav", "kvs1.wav", "kvs2.wav", "kvb3.wav", "kvb1.wav", "kvb2.wav"
   };
@@ -202,17 +203,20 @@ cerr << "opened file: " << "kvshared.wav" << endl;
     myTapeBusy = false;
     myFilePointer = StartSong[i];
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::closeSampleFile()
 {
+#if 0
   if(myFileOpened)
   {
     fclose(mySampleFile);
     fclose(mySharedSampleFile);
     myFileOpened = false;
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

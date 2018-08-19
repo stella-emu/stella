@@ -116,7 +116,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
   // Is the data hold register being set?
   if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
   {
-    myDataHoldRegister = addr;
+    myDataHoldRegister = uInt8(addr);  // FIXME - check cast here
     myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
     myWritePending = true;
   }
@@ -163,7 +163,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   // Is the data hold register being set?
   if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
   {
-    myDataHoldRegister = addr;
+    myDataHoldRegister = uInt8(addr);  // FIXME - check cast here
     myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
     myWritePending = true;
   }
@@ -400,7 +400,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 bool CartridgeAR::bank(uInt16 bank)
 {
   if(!bankLocked())
-    return bankConfiguration(bank);
+    return bankConfiguration(uInt8(bank));
   else
     return false;
 }

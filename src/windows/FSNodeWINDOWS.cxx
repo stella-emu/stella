@@ -251,12 +251,11 @@ bool FilesystemNodeWINDOWS::
     // Files enumeration
     WIN32_FIND_DATA desc;
     HANDLE handle;
-    char searchPath[MAX_PATH + 10];
 
-    sprintf(searchPath, "%s*", _path.c_str());
+    ostringstream searchPath;
+    searchPath << _path << "*";
 
-    handle = FindFirstFile(toUnicode(searchPath), &desc);
-
+    handle = FindFirstFile(searchPath.str().c_str(), &desc);
     if(handle == INVALID_HANDLE_VALUE)
       return false;
 

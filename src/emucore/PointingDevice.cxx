@@ -117,7 +117,7 @@ bool PointingDevice::setMouseControl(
 void PointingDevice::setSensitivity(int sensitivity)
 {
   BSPF::clamp(sensitivity, 1, 20, 10);
-  TB_SENSITIVITY = sensitivity / 10.0;
+  TB_SENSITIVITY = sensitivity / 10.0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

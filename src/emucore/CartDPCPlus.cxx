@@ -90,8 +90,11 @@ void CartridgeDPCPlus::setInitialState()
 
   // Initialize the DPC data fetcher registers
   for(int i = 0; i < 8; ++i)
-    myTops[i] = myBottoms[i] = myCounters[i] = myFractionalIncrements[i] =
+  {
+    myTops[i] = myBottoms[i] = myFractionalIncrements[i] = 0;
     myFractionalCounters[i] = 0;
+    myCounters[i] = 0;
+  }
 
   // Set waveforms to first waveform entry
   myMusicWaveforms[0] = myMusicWaveforms[1] = myMusicWaveforms[2] = 0;

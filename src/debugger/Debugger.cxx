@@ -717,7 +717,7 @@ const FunctionDefMap Debugger::getFunctionDefMap() const
 string Debugger::builtinHelp() const
 {
   ostringstream buf;
-  uInt16 len, c_maxlen = 0, i_maxlen = 0;
+  size_t len, c_maxlen = 0, i_maxlen = 0;
 
   // Get column widths for aligned output (functions)
   for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)

@@ -1235,10 +1235,10 @@ void DebuggerParser::executeHelp()
   if(argCount == 0)  // normal help, show all commands
   {
     // Find length of longest command
-    uInt16 clen = 0;
+    size_t clen = 0;
     for(int i = 0; i < kNumCommands; ++i)
     {
-      uInt16 len = commands[i].cmdString.length();
+      size_t len = commands[i].cmdString.length();
       if(len > clen)  clen = len;
     }
 
@@ -1789,6 +1789,7 @@ void DebuggerParser::executeSaveses()
   struct tm* timeinfo;
   char buffer[80];
 
+// FIXME - change 'time' to proper C++ way - unsafe function
   time(&currtime);
   timeinfo = localtime(&currtime);
   strftime(buffer, 80, "session_%F_%H-%M-%S.txt", timeinfo);

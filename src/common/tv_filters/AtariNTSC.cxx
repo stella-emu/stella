@@ -383,7 +383,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
   /* generate luma (y) filter using sinc kernel */
   {
     /* sinc with rolloff (dsf) */
-    float const rolloff = 1 + float(setup.sharpness) * 0.032;
+    float const rolloff = 1 + float(setup.sharpness) * 0.032f;
     float const maxh = 32;
     float const pow_a_n = float(pow( rolloff, maxh ));
     float sum;
@@ -406,7 +406,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
             pow_a_n * rolloff * float(cos( (maxh - 1) * angle ));
         float den = 1 - rolloff_cos_a - rolloff_cos_a + rolloff * rolloff;
         float dsf = num / den;
-        kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - 0.5;
+        kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - 0.5f;
       }
     }
 

@@ -1101,6 +1101,7 @@ string CartDebug::saveDisassembly()
   }
 
   // Some boilerplate, similar to what DiStella adds
+// FIXME - change 'time' to proper C++ way - unsafe function
   time_t currtime;
   time(&currtime);
   out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
@@ -1292,7 +1293,7 @@ string CartDebug::clearConfig(int bank)
     endbank = startbank + 1;
   }
 
-  uInt32 count = 0;
+  size_t count = 0;
   for(uInt32 b = startbank; b < endbank; ++b)
   {
     count += myBankInfo[b].directiveList.size();
