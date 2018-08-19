@@ -119,7 +119,7 @@ void M6502::reset()
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
 
-  myLastBreakCycle = -1;
+  myLastBreakCycle = ULLONG_MAX;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

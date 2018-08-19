@@ -28,7 +28,6 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
     myPage(1),
     myNumPages(5)
 {
-  const string ELLIPSIS = "\x1d";
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),

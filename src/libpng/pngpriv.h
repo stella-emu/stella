@@ -1,8 +1,3 @@
-// Added by SA: TODO - find a better way to do this
-#ifdef BSPF_WINDOWS
-  #define _CRT_SECURE_NO_WARNINGS
-#endif
-
 /* pngpriv.h - private declarations for use inside libpng
  *
  * Last changed in libpng 1.6.35 [July 15, 2018]

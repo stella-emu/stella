@@ -42,7 +42,6 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myNumRows(numrows),
     myPageSize(pagesize)
 {
-  const string ELLIPSIS = "\x1d";
   const int bwidth  = lfont.getStringWidth("Compare " + ELLIPSIS),
             bheight = myLineHeight + 2;
   const int VGAP = 4;

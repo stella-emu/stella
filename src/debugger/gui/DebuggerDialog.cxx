@@ -482,7 +482,6 @@ void DebuggerDialog::addRomArea()
 
   const GUI::Rect& r = getRomBounds();
   const int VBORDER = 4;
-  const string ELLIPSIS = "\x1d";
   WidgetArray wid1, wid2;
   ButtonWidget* b;
 

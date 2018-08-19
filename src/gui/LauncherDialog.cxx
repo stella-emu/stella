@@ -54,7 +54,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myRomInfoWidget(nullptr),
     mySelectedItem(0)
 {
-  const string ELLIPSIS = "\x1d";
   const GUI::Font& font = instance().frameBuffer().launcherFont();
 
   const int HBORDER = 10;

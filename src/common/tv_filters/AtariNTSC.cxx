@@ -299,8 +299,10 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt32 AtariNTSC::getRGBPhosphor(const uInt32 c, const uInt32 p) const
 {
-#define TO_RGB(color, red, green, blue) \
-    const uInt8 red = color >> 16; const uInt8 green = color >> 8; const uInt8 blue = color;
+#define TO_RGB(color, red, green, blue)   \
+    const uInt8 red   = uInt8(color >> 16); \
+    const uInt8 green = uInt8(color >> 8);\
+    const uInt8 blue  = uInt8(color);
 
   TO_RGB(c, rc, gc, bc);
   TO_RGB(p, rp, gp, bp);
@@ -332,7 +334,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
   initFilters(impl, setup);
 
   /* generate gamma table */
-  if ( gamma_size > 1 )
+  if constexpr( gamma_size > 1 )
   {
     float const to_float = 1.0f / (gamma_size - (gamma_size > 1));
     float const gamma = 1.1333f - float(setup.gamma) * 0.5f;
@@ -367,7 +369,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
         *out++ = i * s + q * c;
       }
       while ( --n2 );
-      if ( burst_count <= 1 )
+      if constexpr( burst_count <= 1 )
         break;
       ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
     }

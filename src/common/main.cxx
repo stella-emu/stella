@@ -151,7 +151,7 @@ int main(int argc, char* argv[])
     if(initBreak != "")
     {
       Debugger& dbg = theOSystem->debugger();
-      int bp = dbg.stringToValue(initBreak);
+      uInt16 bp = uInt16(dbg.stringToValue(initBreak));
       dbg.setBreakPoint(bp, true);
       theOSystem->settings().setValue("break", "");
     }
