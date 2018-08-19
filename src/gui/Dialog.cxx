@@ -318,7 +318,6 @@ void Dialog::addSurface(shared_ptr<FBSurface> surface)
   mySurfaceStack.push(surface);
 }
 
-static int COUNT = 1;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::drawDialog()
 {
@@ -327,7 +326,6 @@ void Dialog::drawDialog()
 
   FBSurface& s = surface();
 
-cerr << COUNT++ << " Dialog::drawDialog()\n";
   // Dialog is still on top if e.g a ContextMenu is opened
   _onTop = parent().myDialogStack.top() == this
     || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
