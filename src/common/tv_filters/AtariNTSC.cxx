@@ -334,7 +334,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
   initFilters(impl, setup);
 
   /* generate gamma table */
-  if constexpr( gamma_size > 1 )
+  if ( gamma_size > 1 )
   {
     float const to_float = 1.0f / (gamma_size - (gamma_size > 1));
     float const gamma = 1.1333f - float(setup.gamma) * 0.5f;
@@ -369,7 +369,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
         *out++ = i * s + q * c;
       }
       while ( --n2 );
-      if constexpr( burst_count > 1 )
+      if ( burst_count > 1 )
         ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
     }
     while ( --n );
