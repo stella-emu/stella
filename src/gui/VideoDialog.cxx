@@ -310,7 +310,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CLONE_BUTTON(Composite, "Clone Composite");
   CREATE_CLONE_BUTTON(Svideo, "Clone S-Video");
   CREATE_CLONE_BUTTON(RGB, "Clone RGB");
-  CREATE_CLONE_BUTTON(Bad, "Clone Bad Adjust");
+  CREATE_CLONE_BUTTON(Bad, "Clone Bad adjust");
   CREATE_CLONE_BUTTON(Custom, "Revert");
 
   // Add items for tab 2

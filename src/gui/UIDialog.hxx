@@ -51,6 +51,7 @@ class UIDialog : public Dialog
     {
       kListDelay  = 'UILd',
       kMouseWheel = 'UIMw',
+      kLauncherSize = 'UIls',
       kRomViewer = 'UIRv',
       kChooseSnapLoadDirCmd = 'UIsl', // snapshot dir (load files)
       kSnapLoadDirChosenCmd = 'UIsc' // snap chosen (load files)

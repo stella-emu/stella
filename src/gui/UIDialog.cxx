@@ -112,12 +112,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // 2) Launcher options
   wid.clear();
   tabID = myTab->addTab(" Launcher ");
-  lwidth = font.getStringWidth("Launcher Height ");
+  lwidth = font.getStringWidth("Launcher height ");
   xpos = HBORDER;  ypos = VBORDER;
 
   // Launcher width and height
-  myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Width ",
-                                           lwidth, 0, 6 * fontWidth, "px");
+  myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher width ",
+                                           lwidth, kLauncherSize, 6 * fontWidth, "px");
   myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
@@ -125,8 +125,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myLauncherWidthSlider);
   ypos += lineHeight + 4;
 
-  myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher Height ",
-                                            lwidth, 0, 6 * fontWidth, "px");
+  myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher height ",
+                                            lwidth, kLauncherSize, 6 * fontWidth, "px");
   myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
@@ -142,7 +142,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large", "large");
   myLauncherFontPopup =
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
-                    "Launcher Font ", lwidth);
+                    "Launcher font ", lwidth);
   wid.push_back(myLauncherFontPopup);
   ypos += lineHeight +  4 * 4;
 
@@ -153,7 +153,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "2x (1000x760)", "2");
   myRomViewerPopup =
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
-                    "ROM Info viewer ", lwidth, kRomViewer);
+                    "ROM info viewer ", lwidth, kRomViewer);
   wid.push_back(myRomViewerPopup);
   ypos += lineHeight + 4;
 
@@ -347,6 +347,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         myWheelLinesPopup->setValueUnit(" lines");
       break;
 
+    case kLauncherSize:
     case kRomViewer:
       handleRomViewer();
       break;
@@ -372,10 +373,24 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::handleRomViewer()
 {
+  //string size = myRomViewerPopup->getSelectedName();
   bool enable = myRomViewerPopup->getSelectedName() != "Off";
+  VariantList items;
 
   myOpenBrowserButton->setEnabled(enable);
   mySnapLoadPath->setEnabled(enable);
+
+  /*items.clear();
+  VarList::push_back(items, "Off", "0");
+  VarList::push_back(items, "1x (640x480) ", "1");
+  if(myLauncherWidthSlider->getValue() >= 1000 &&
+     myLauncherHeightSlider->getValue() >= 760)
+  {
+    VarList::push_back(items, "2x (1000x760)", "2");
+  }
+  myRomViewerPopup->addItems(items);
+
+  //myRomViewerPopup->setSelected("1x(640x480) ");*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

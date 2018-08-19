@@ -413,10 +413,10 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   // Font style (bold label vs. text, etc)
   items.clear();
-  VarList::push_back(items, "All Normal font", "0");
+  VarList::push_back(items, "All normal font", "0");
   VarList::push_back(items, "Bold labels only", "1");
   VarList::push_back(items, "Bold non-labels only", "2");
-  VarList::push_back(items, "All Bold font", "3");
+  VarList::push_back(items, "All bold font", "3");
   pwidth = font.getStringWidth("Bold non-labels only");
   myDebuggerFontStyle =
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,

@@ -304,7 +304,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + VGAP;
   swidth = myFormat->getWidth();
-  t = new StaticTextWidget(myTab, font, HBORDER, ypos+2, "Y-Start ");
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos+2, "Y-start ");
   myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
                               "   ", 0, kYStartChanged, 5 * fontWidth, "px");
   myYStart->setMinValue(TIAConstants::minYStart-1);
