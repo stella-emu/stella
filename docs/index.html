@@ -333,7 +333,7 @@
     <li>Joysticks or gamepads are highly recommended</li>
     <li>Mouse or <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a>/<a href="http://2600-daptor.com">2600-daptor</a>
     with real paddles required for paddle emulation</li>
-    <li>Some ROM images (See <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
+    <li>Some ROM images (see <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
   </ul>
 
   <p>
@@ -2605,7 +2605,7 @@
           <tr><td>Emul. speed</td><td>Emulation speed</td><td>-speed</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory</td><td>-fullscreen</td></tr>
           <tr><td>Fullscreen fill</td><td>Completely fill TIA image in fullscreen</td><td>-tia.fsfill</td></tr>
-          <tr><td>VSync</td><td>Enable vertical sync'ed updates</td><td>-vsync</td></tr>
+          <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
           <tr><td>Fast SuperCharger load</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>Overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>Attempt to center application window</td><td>-center</td></tr>
@@ -2624,18 +2624,18 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>TV Mode</td><td>Disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
-          <tr><td>TV Phosphor</td><td>Enable phosphor mode under what conditions</td><td>-tv.phosphor</td></tr>
-          <tr><td>Phosphor (Default)</td><td>Default blend level to use in phosphor mode<br/>
-                (needs to be manually set for your particular hardware)</td><td>-tv.phosblend</td></tr>
-          <tr><td>Scanline Intensity</td><td>Sets scanline black-level intensity.</br>
-                  Note: No scanlines in 1x mode snapshots.</td><td>-tv.scanlines</td></tr>
-          <tr><td>Scanline Interpolation</td><td>Smooth/blend scanlines into image</td><td>-tv.scaninter</td></tr>
+          <tr><td>TV mode</td><td>Disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
           <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' mode</td><td>-tv.contrast, tv.hue, etc.</td></tr>
+          <tr><td>Phosphor for all ROMs</td><td>Enable phosphor mode for all ROMs</td><td>-tv.phosphor</td></tr>
+          <tr><td>Default (phosphor)</td><td>Default blend level to use in phosphor mode<br/>
+                (needs to be manually set for your particular hardware)</td><td>-tv.phosblend</td></tr>
+          <tr><td>Scanline intensity</td><td>Sets scanline black-level intensity.</br>
+                  Note: No scanlines in 1x mode snapshots.</td><td>-tv.scanlines</td></tr>
+          <tr><td>Scanline interpolation</td><td>Smooth/blend scanlines into image</td><td>-tv.scaninter</td></tr>
           <tr><td>Clone Composite</td><td>Copy 'Composite' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone S-Video</td><td>Copy 'S-Video' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone RGB</td><td>Copy 'RGB' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
-          <tr><td>Clone Bad Adjust</td><td>Copy 'Bad Adjust' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Clone Bad adjust</td><td>Copy 'Bad Adjust' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Revert</td><td>Revert attribute sliders to saved 'Custom' settings</td><td>&nbsp;</td></tr>
         </table>
       </td>
@@ -2828,7 +2828,6 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Stelladaptor port order</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
           <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
           <tr><td>Mouse cursor visibility</td><td>Show/hide cursor depending on current state</td><td>-cursor</td></tr>
           <tr><td>Joystick deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
@@ -2838,8 +2837,9 @@
           <tr><td>Allow all 4 directions ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
           <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode<br/>(only when used as controller)<br/>
                   Note: The sensitivity may greatly vary when the mouse is not grabbed.</td><td>-grabmouse</td></tr>
-          <tr><td>Use Control key combos</td><td>Enable using Control key in keyboard actions</td><td>-ctrlcombo</td></tr>
-          <tr><td>Joystick Database</td><td>Show all joysticks that Stella knows about, with the option to remove them</td><td>&nbsp;</td></tr>
+          <tr><td>Use control key combos</td><td>Enable using Control key in keyboard actions</td><td>-ctrlcombo</td></tr>
+          <tr><td>Swap Stelladaptor ports</td><td>Swap the order of the detected Stelladaptors/2600-daptors (see <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
+          <tr><td>Joystick database</td><td>Show all joysticks that Stella knows about, with the option to remove them</td><td>&nbsp;</td></tr>
           <tr><td>Erase EEPROM</td><td>Erase the whole AtariVox/SaveKey flash memory</td><td>&nbsp;</td></tr>
           <tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
         </table>
@@ -2913,7 +2913,7 @@
     temporarily held down. Selecting options from this dialog will cause all ROMs launched
     after that to use those properties you specify. Clicking <b>Defaults</b> will disable
     its functionality, and use ROM properties as defined by the ROM itself. The dialog is as
-    follows (See <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>
+    follows (see <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>
     for more information concerning ROM properties):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
@@ -2923,12 +2923,12 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>For more information,<br>see <a href="#CommandLine">Commandline</a></th></tr>
           <tr><td>Bankswitch type</td><td>-bs</td></tr>
-          <tr><td>TV Type</td><td>-tv</td></tr>
-          <tr><td>Left Difficulty</td><td>-ld</td></tr>
-          <tr><td>Right Difficulty</td><td>-rd</td></tr>
-          <tr><td>Startup Mode</td><td>-debug</td></tr>
-          <tr><td>Left Joy items</td><td>-holdjoy0</td></tr>
-          <tr><td>Right Joy items</td><td>-holdjoy1</td></tr>
+          <tr><td>TV type</td><td>-tv</td></tr>
+          <tr><td>Left difficulty</td><td>-ld</td></tr>
+          <tr><td>Right difficulty</td><td>-rd</td></tr>
+          <tr><td>Startup mode</td><td>-debug</td></tr>
+          <tr><td>Left joy items</td><td>-holdjoy0</td></tr>
+          <tr><td>Right joy items</td><td>-holdjoy1</td></tr>
           <tr><td>Console: Select</td><td>-holdselect</td></tr>
           <tr><td>Console: Reset</td><td>-holdreset</td></tr>
         </table>
