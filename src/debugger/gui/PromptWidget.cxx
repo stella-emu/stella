@@ -715,7 +715,7 @@ void PromptWidget::historyScroll(int direction)
   {
     int i;
     for (i = 0; i < _promptEndPos - _promptStartPos; i++)
-      _history[_historyIndex][i] = buffer(_promptStartPos + i);
+      _history[_historyIndex][i] = buffer(_promptStartPos + i); //FIXME: int to char??
 
     _history[_historyIndex][i] = '\0';
   }
@@ -879,7 +879,7 @@ void PromptWidget::drawCaret()
   int x = _x + 1 + (_currentPos % _lineWidth) * _kConsoleCharWidth;
   int y = _y + displayLine * _kConsoleLineHeight;
 
-  char c = buffer(_currentPos);
+  char c = buffer(_currentPos); //FIXME: int to char??
   s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, onTop ? kTextColor : kColor);
   s.drawChar(_font, c, x, y + 2, kBGColor);
 }

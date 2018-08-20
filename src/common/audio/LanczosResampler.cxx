@@ -49,7 +49,7 @@ namespace {
     );
   }
 
-  double lanczosKernel(float x, uInt32 a) {
+  float lanczosKernel(float x, uInt32 a) {
     return sinc(x) * sinc(x / static_cast<float>(a));
   }
 

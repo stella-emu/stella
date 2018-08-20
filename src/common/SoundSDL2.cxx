@@ -62,7 +62,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
   desired.freq   = myAudioSettings.sampleRate();
   desired.format = AUDIO_F32SYS;
   desired.channels = 2;
-  desired.samples  = myAudioSettings.fragmentSize();
+  desired.samples  = static_cast<Uint16>(myAudioSettings.fragmentSize());
   desired.callback = callback;
   desired.userdata = static_cast<void*>(this);
 

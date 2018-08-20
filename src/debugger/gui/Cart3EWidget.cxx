@@ -119,7 +119,7 @@ void Cartridge3EWidget::loadConfig()
 void Cartridge3EWidget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
-  int bank = -1;
+  uInt16 bank = 0;
 
   if(cmd == kROMBankChanged)
   {
