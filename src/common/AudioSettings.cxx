@@ -147,6 +147,13 @@ AudioSettings::ResamplingQuality AudioSettings::resamplingQuality()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string AudioSettings::stereo() const
+{
+  // 0 is a valid value -> keep it
+  return mySettings->getString(SETTING_STEREO);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioSettings::volume() const
 {
   // 0 is a valid value -> keep it
@@ -251,6 +258,14 @@ void AudioSettings::setResamplingQuality(AudioSettings::ResamplingQuality resamp
 
   mySettings->setValue(SETTING_RESAMPLING_QUALITY, static_cast<int>(resamplingQuality));
   normalize(*mySettings);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioSettings::setStereo(const string& mode)
+{
+  if(!myIsPersistent) return;
+
+  mySettings->setValue(SETTING_STEREO, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

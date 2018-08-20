@@ -70,13 +70,14 @@ Settings::Settings(OSystem& osystem)
 
   // Sound options
   setInternal(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
+  setInternal(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
+  setInternal(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
   setInternal(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
   setInternal(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
   setInternal(AudioSettings::SETTING_FRAGMENT_SIZE, AudioSettings::DEFAULT_FRAGMENT_SIZE);
   setInternal(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
   setInternal(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
   setInternal(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
-  setInternal(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
 
   // Input event options
   setInternal("keymap", "");
@@ -445,13 +446,15 @@ void Settings::usage() const
     << endl
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>          Enable audio\n"
+    << "  -audio.volume             <number>       Vokume (0 -- 100)\n"
+    << "  -audio.stereo             <byrom|mono|   Enable stereo mode\n"
+    << "                            stereo>\n"
     << "  -audio.preset             <1-5>          Audio preset (or 1 for custom)\n"
     << "  -audio.sample_rate        <number>       Output sample rate (44100|48000|96000)\n"
     << "  -audio.fragment_size      <number>       Fragment size (128|256|512|1024|2048|4096)\n"
     << "  -audio.buffer_size        <number>       Max. number of additional half-frames to buffer (0 -- 20)\n"
     << "  -audio.headroom           <number>       Additional half-frames to prebuffer (0 -- 20)\n"
     << "  -audio.resampling_quality <1-3>          Resampling quality\n"
-    << "  -audio.volume             <number>       Vokume (0 -- 100)\n"
     << endl
   #endif
     << "  -tia.zoom      <zoom>         Use the specified zoom level (windowed mode) for TIA image\n"
