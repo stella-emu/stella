@@ -61,7 +61,10 @@ class Base
     static Base::Format format()             { return myDefaultBase; }
 
     /** Get/set HEX output to be upper/lower case */
-    static void setHexUppercase(bool enable);
+    static void setHexUppercase(bool enable) {
+      if(enable) myHexflags |= std::ios_base::uppercase;
+      else       myHexflags &= ~std::ios_base::uppercase;
+    }
     static bool hexUppercase() { return myHexflags & std::ios_base::uppercase; }
 
     /** Output HEX digits in 0.5/1/2/4 byte format */
@@ -97,13 +100,6 @@ class Base
 
     // Upper or lower case for HEX digits
     static std::ios_base::fmtflags myHexflags;
-
-    // Format specifiers to use for sprintf (eventually we may convert
-    // to C++ streams
-    static ostringstream buf;
-    static const char* const myLowerFmt[4];
-    static const char* const myUpperFmt[4];
-    static const char* const* myFmt;
 
   private:
     // Following constructors and assignment operators not supported

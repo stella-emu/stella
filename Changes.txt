@@ -49,9 +49,6 @@
 
   * Fixed bug in autodetecting Genesis controllers.
 
-  * The Linux builds now use the system-installed PNG and ZLIB libraries
-    by default.
-
   * When starting Stella for the first time, the first ROM selected will
     determine which path to use by default for subsequent runs.
 
@@ -63,19 +60,22 @@
 
   * Fixed missing debug color update when switching display type.
 
-  * 'Fill to scanline' now works for scanlines above current scanline too
+  * 'Fill to scanline' now works for scanlines above current scanline too.
 
-  * For UNIX systems: in the ROM launcher, when using symlinks use the
-    symlink pathname instead of the underlying filesystem pathname.
+  * The debugger 'uhex' command is now honoured in CDF and BUS schemes.
 
   * Updated PAL palette.
 
   * Updated included PNG library to latest stable version.
 
+  * For UNIX systems: in the ROM launcher, when using symlinks use the
+    symlink pathname instead of the underlying filesystem pathname.
+
+  * The Linux builds now use the system-installed PNG and ZLIB libraries
+    by default.
+
   * For better compatibility, the Windows 32-bit version does not require SSE2
     anymore.
-
-  * Simplified first start, ROM path is now set by first played ROM.
 
 -Have fun!
 
