@@ -441,7 +441,6 @@ void Settings::usage() const
     << "                 z26|\n"
     << "                 user>\n"
     << "  -speed        <number>       Run emulation at the given speed\n"
-    << "  -timing       <sleep|busy>   Use the given type of wait between frames\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << endl
   #ifdef SOUND_SUPPORT

@@ -1893,21 +1893,8 @@
     </tr>
 
     <tr>
-      <td><pre>-framerate &lt;number&gt;</pre></td>
-      <td>Display the given number of frames per second. Normally, Stella
-        will determine framerate based on number of scanlines.
-        Setting this to 0 automatically enables auto-frame
-        calculation (ie, framerate based on scanlines).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-timing &lt;sleep|busy&gt;</pre></td>
-      <td>Determines type of wait to perform between processing frames.
-        Sleep will release the CPU as much as possible, and is the
-        preferred method on laptops (and other low-powered devices)
-        and when using VSync. Busy will emulate z26 busy-wait
-        behaviour, and use all possible CPU time, but may eliminate
-        graphical 'tearing' in software mode.</td>
+      <td><pre>-speed &lt;number&gt;</pre></td>
+      <td>Control the emulation speed (as a percentage, 10 - 1000).</td>
     </tr>
 
     <tr>
@@ -2610,20 +2597,19 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Renderer</td><td>Use specified rendering mode</td><td>-video</td></tr>
-          <tr><td>TIA Zoom</td><td>(Integral) zoom level for emulation mode </td><td>-tia.zoom</td></tr>
-          <tr><td>TIA Palette</td><td>Palette for emulation mode</td><td>-palette</td></tr>
-          <tr><td>TIA Inter</td><td>Interpolation for TIA image</td><td>-tia.inter</td></tr>
-          <tr><td>Timing (*)</td><td>How to wait between frames (requires restart)</td><td>-timing</td></tr>
-          <tr><td>NTSC Aspect</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
-          <tr><td>PAL Aspect</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
-          <tr><td>Framerate</td><td>Frames per second in emulation mode</td><td>-framerate</td></tr>
+          <tr><td>TIA palette</td><td>Palette for emulation mode</td><td>-palette</td></tr>
+          <tr><td>TIA zoom</td><td>(Integral) zoom level for emulation mode </td><td>-tia.zoom</td></tr>
+          <tr><td>TIA interpolation</td><td>Interpolation for TIA image</td><td>-tia.inter</td></tr>
+          <tr><td>NTSC aspect</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
+          <tr><td>PAL aspect</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
+          <tr><td>Emul. speed</td><td>Emulation speed</td><td>-speed</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory</td><td>-fullscreen</td></tr>
-          <tr><td>Fullscreen Fill</td><td>Completely fill TIA image in fullscreen</td><td>-tia.fsfill</td></tr>
+          <tr><td>Fullscreen fill</td><td>Completely fill TIA image in fullscreen</td><td>-tia.fsfill</td></tr>
           <tr><td>VSync</td><td>Enable vertical sync'ed updates</td><td>-vsync</td></tr>
-          <tr><td>Fast SC/AR BIOS</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
+          <tr><td>Fast SuperCharger load</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>Overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>Attempt to center application window</td><td>-center</td></tr>
-          <tr><td>Use multi-threading</td><td>Enable multi-threaded rendering</td><td>-threads</td></tr>
+          <tr><td>Multi-threading</td><td>Enable multi-threaded rendering</td><td>-threads</td></tr>
         </table>
       </td>
     </tr>
