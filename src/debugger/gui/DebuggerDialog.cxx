@@ -124,53 +124,53 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
           instance().console().toggleP0Collision();
         else
           instance().console().toggleP0Bit();
-        break;
+        return;
 
       case KBDK_X:
         if(StellaModTest::isShift(mod))
           instance().console().toggleP1Collision();
         else
           instance().console().toggleP1Bit();
-        break;
+        return;
 
       case KBDK_C:
         if(StellaModTest::isShift(mod))
           instance().console().toggleM0Collision();
         else
           instance().console().toggleM0Bit();
-        break;
+        return;
 
       case KBDK_V:
         if(StellaModTest::isShift(mod))
           instance().console().toggleM1Collision();
         else
           instance().console().toggleM1Bit();
-        break;
+        return;
 
       case KBDK_B:
         if(StellaModTest::isShift(mod))
           instance().console().toggleBLCollision();
         else
           instance().console().toggleBLBit();
-        break;
+        return;
 
       case KBDK_N:
         if(StellaModTest::isShift(mod))
           instance().console().togglePFCollision();
         else
           instance().console().togglePFBit();
-        break;
+        return;
 
       case KBDK_COMMA:
         instance().console().toggleFixedColors();
-        break;
+        return;
 
       case KBDK_PERIOD:
         if(StellaModTest::isShift(mod))
           instance().console().toggleCollisions();
         else
           instance().console().toggleBits();
-        break;
+        return;
 
       case KBDK_T:  // Alt-t toggles Time Machine
         instance().state().toggleTimeMachine();

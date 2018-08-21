@@ -43,8 +43,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   const int INDENT = 20;
   const int VGAP = 4;
   const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight();
+            fontWidth    = font.getMaxCharWidth();
   int xpos, ypos;
   int lwidth = font.getStringWidth("Volume "),
     pwidth;
