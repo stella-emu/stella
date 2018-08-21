@@ -45,6 +45,7 @@
 #include "ConsoleMediumBFont.hxx"
 #include "StellaMediumFont.hxx"
 #include "OptionsDialog.hxx"
+#include "StateManager.hxx"
 #include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,6 +118,64 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
       case KBDK_UP:  // Alt-up rewinds to end of list
         doUnwindAll();
         return;
+
+      case KBDK_Z:
+        if(StellaModTest::isShift(mod))
+          instance().console().toggleP0Collision();
+        else
+          instance().console().toggleP0Bit();
+        break;
+
+      case KBDK_X:
+        if(StellaModTest::isShift(mod))
+          instance().console().toggleP1Collision();
+        else
+          instance().console().toggleP1Bit();
+        break;
+
+      case KBDK_C:
+        if(StellaModTest::isShift(mod))
+          instance().console().toggleM0Collision();
+        else
+          instance().console().toggleM0Bit();
+        break;
+
+      case KBDK_V:
+        if(StellaModTest::isShift(mod))
+          instance().console().toggleM1Collision();
+        else
+          instance().console().toggleM1Bit();
+        break;
+
+      case KBDK_B:
+        if(StellaModTest::isShift(mod))
+          instance().console().toggleBLCollision();
+        else
+          instance().console().toggleBLBit();
+        break;
+
+      case KBDK_N:
+        if(StellaModTest::isShift(mod))
+          instance().console().togglePFCollision();
+        else
+          instance().console().togglePFBit();
+        break;
+
+      case KBDK_COMMA:
+        instance().console().toggleFixedColors();
+        break;
+
+      case KBDK_PERIOD:
+        if(StellaModTest::isShift(mod))
+          instance().console().toggleCollisions();
+        else
+          instance().console().toggleBits();
+        break;
+
+      case KBDK_T:  // Alt-t toggles Time Machine
+        instance().state().toggleTimeMachine();
+        break;
+
       default:
         break;
     }
