@@ -163,7 +163,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("Remapped Eve", "nts");
       ADD_TEXT("Most other commands can be");
       ADD_TEXT("remapped. Please consult the");
-      ADD_TEXT("'Input Settings" + ELLIPSIS + "' menu for");
+      ADD_TEXT("'Options/Input" + ELLIPSIS + "' dialog for");
       ADD_TEXT("more information.");
       break;
   }
