@@ -46,37 +46,46 @@ enum class MessagePosition {
 // the future, if necessary
 using ColorId = uInt32;
 static constexpr ColorId
+  // *** Base colors ***
   kColor = 256,
   kBGColor = 257,
   kBGColorLo = 258,
   kBGColorHi = 259,
   kShadowColor = 260,
+  // *** Text colors ***
   kTextColor = 261,
   kTextColorHi = 262,
   kTextColorEm = 263,
   kTextColorInv = 264,
+  // *** UI elements(dialog and widgets) ***
   kDlgColor = 265,
   kWidColor = 266,
   kWidColorHi = 267,
   kWidFrameColor = 268,
+  // *** Button colors ***
   kBtnColor = 269,
   kBtnColorHi = 270,
   kBtnBorderColor = 271,
   kBtnBorderColorHi = 272,
   kBtnTextColor = 273,
   kBtnTextColorHi = 274,
+  // *** Checkbox colors ***
   kCheckColor = 275,
+  // *** Scrollbar colors ***
   kScrollColor = 276,
   kScrollColorHi = 277,
-  kSliderColor = 278,
-  kSliderColorHi = 279,
-  kSliderBGColor = 280,
-  kSliderBGColorHi = 281,
-  kSliderBGColorLo = 282,
-  kDbgChangedColor = 283,
-  kDbgChangedTextColor = 284,
-  kDbgColorHi = 285,
-  kDbgColorRed = 286,
+  // *** Debugger colors ***
+  kDbgChangedColor = 278,
+  kDbgChangedTextColor = 279,
+  kDbgColorHi = 280,
+  kDbgColorRed = 281, // Note: this must be < 0x11e (286)! (see PromptWidget::putcharIntern)
+  // *** Slider colors ***
+  kSliderColor = 282,
+  kSliderColorHi = 283,
+  kSliderBGColor = 284,
+  kSliderBGColorHi = 285,
+  kSliderBGColorLo = 286,
+  // *** Other colors ***
   kColorInfo = 287,
   kColorTitleBar = 288,
   kColorTitleText = 289,
