@@ -453,6 +453,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     // Get a valid set of properties, including any entered on the commandline
     // For initial creation of the Cart, we're only concerned with the BS type
     Properties props;
+    myPropSet->getMD5(md5, props);
 
     // Local helper method
     auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropertyType prop)
