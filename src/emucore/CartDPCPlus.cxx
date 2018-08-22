@@ -53,7 +53,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
   myFrequencyImage = myDisplayImage + 0x1000;
 
   // Create Thumbulator ARM emulator
-  const string& prefix = settings.getBool("dev.settings") ? "plr." : "dev.";
+  const string& prefix = settings.getBool("dev.settings") ? "dev." : "plr.";
   myThumbEmulator = make_unique<Thumbulator>
       (reinterpret_cast<uInt16*>(myImage),
        reinterpret_cast<uInt16*>(myDPCRAM),
