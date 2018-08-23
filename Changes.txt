@@ -49,6 +49,9 @@
 
   * Fixed bug in autodetecting Genesis controllers.
 
+  * Fixed bug with 'hold' events; they are now released a short time after
+    starting a ROM.
+
   * When starting Stella for the first time, the first ROM selected will
     determine which path to use by default for subsequent runs.
 

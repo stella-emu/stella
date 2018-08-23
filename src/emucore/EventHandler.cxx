@@ -41,6 +41,7 @@
 #include "Settings.hxx"
 #include "Sound.hxx"
 #include "StateManager.hxx"
+#include "TimerManager.hxx"
 #include "Switches.hxx"
 #include "M6532.hxx"
 #include "MouseControl.hxx"
@@ -120,6 +121,12 @@ void EventHandler::reset(EventHandlerState state)
   setState(state);
   myOSystem.state().reset();
   myOSystem.png().setContinuousSnapInterval(0);
+
+  // Reset events almost immediately after starting emulation mode
+  // We wait a little while (0.5s), since 'hold' events may be present,
+  // and we want time for the ROM to process them
+  if(state == EventHandlerState::EMULATION)
+    myOSystem.timer().setTimeout([&ev = myEvent]() { ev.clear(); }, 500);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

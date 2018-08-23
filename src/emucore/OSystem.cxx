@@ -50,6 +50,7 @@
 #include "Random.hxx"
 #include "SerialPort.hxx"
 #include "StateManager.hxx"
+#include "TimerManager.hxx"
 #include "Version.hxx"
 #include "TIA.hxx"
 #include "DispatchResult.hxx"
@@ -140,12 +141,13 @@ bool OSystem::create()
   myCheatManager->loadCheatDatabase();
 #endif
 
-  // Create menu and launcher GUI objects
+  // Create various subsystems (menu and launcher GUI objects, etc)
   myMenu = make_unique<Menu>(*this);
   myCommandMenu = make_unique<CommandMenu>(*this);
   myTimeMachine = make_unique<TimeMachine>(*this);
   myLauncher = make_unique<Launcher>(*this);
   myStateManager = make_unique<StateManager>(*this);
+  myTimerManager = make_unique<TimerManager>();
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems

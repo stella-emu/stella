@@ -15,6 +15,7 @@ MODULE_OBJS := \
 	src/common/RewindManager.o \
 	src/common/SoundSDL2.o \
 	src/common/StateManager.o \
+	src/common/TimerManager.o \
 	src/common/ZipHandler.o \
 	src/common/AudioQueue.o \
 	src/common/AudioSettings.o \

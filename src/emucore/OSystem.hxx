@@ -37,6 +37,7 @@ class SerialPort;
 class Settings;
 class Sound;
 class StateManager;
+class TimerManager;
 class VideoDialog;
 class EmulationWorker;
 
@@ -169,6 +170,13 @@ class OSystem
       @return The statemanager object
     */
     StateManager& state() const { return *myStateManager; }
+
+    /**
+      Get the timer/callback manager of the system.
+
+      @return The timermanager object
+    */
+    TimerManager& timer() const { return *myTimerManager; }
 
     /**
       Get the PNG handler of the system.
@@ -465,6 +473,9 @@ class OSystem
 
     // Pointer to the StateManager object
     unique_ptr<StateManager> myStateManager;
+
+    // Pointer to the TimerManager object
+    unique_ptr<TimerManager> myTimerManager;
 
     // PNG object responsible for loading/saving PNG images
     unique_ptr<PNGLibrary> myPNGLib;
