@@ -1235,10 +1235,10 @@ void DebuggerParser::executeHelp()
   if(argCount == 0)  // normal help, show all commands
   {
     // Find length of longest command
-    size_t clen = 0;
+    uInt32 clen = 0;
     for(int i = 0; i < kNumCommands; ++i)
     {
-      size_t len = commands[i].cmdString.length();
+      uInt32 len = uInt32(commands[i].cmdString.length());
       if(len > clen)  clen = len;
     }
 

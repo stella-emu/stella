@@ -717,14 +717,14 @@ const FunctionDefMap Debugger::getFunctionDefMap() const
 string Debugger::builtinHelp() const
 {
   ostringstream buf;
-  size_t len, c_maxlen = 0, i_maxlen = 0;
+  uInt32 len, c_maxlen = 0, i_maxlen = 0;
 
   // Get column widths for aligned output (functions)
   for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
   {
-    len = ourBuiltinFunctions[i].name.size();
+    len = uInt32(ourBuiltinFunctions[i].name.size());
     if(len > c_maxlen)  c_maxlen = len;
-    len = ourBuiltinFunctions[i].defn.size();
+    len = uInt32(ourBuiltinFunctions[i].defn.size());
     if(len > i_maxlen)  i_maxlen = len;
   }
 
@@ -743,7 +743,7 @@ string Debugger::builtinHelp() const
   c_maxlen = 0;
   for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
   {
-    len = ourPseudoRegisters[i].name.size();
+    len = uInt32(ourPseudoRegisters[i].name.size());
     if(len > c_maxlen)  c_maxlen = len;
   }
 
