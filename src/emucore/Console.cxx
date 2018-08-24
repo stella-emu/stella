@@ -753,10 +753,17 @@ void Console::setTIAProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::createAudioQueue()
 {
+  const string& stereo = myOSystem.settings().getString(AudioSettings::SETTING_STEREO);
+  bool useStereo = false;
+  if(BSPF::equalsIgnoreCase(stereo, "byrom"))
+    useStereo = myProperties.get(Cartridge_Sound) == "STEREO";
+  else
+    useStereo = BSPF::equalsIgnoreCase(stereo, "stereo");
+
   myAudioQueue = make_shared<AudioQueue>(
     myEmulationTiming.audioFragmentSize(),
     myEmulationTiming.audioQueueCapacity(),
-    myProperties.get(Cartridge_Sound) == "STEREO"
+    useStereo
   );
 }
 

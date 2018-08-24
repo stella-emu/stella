@@ -23,6 +23,9 @@
   * Full rewrite of the audio subsystem; resample TIA output to target sample
     rate directly in Stella.
 
+  * Added option to force stereo sound for all ROMs, or to use the setting
+    on a per-ROM basis.
+
   * Threading: decouple emulation from frame rendering.
 
   * Main loop rewritten; emulating speed and timing is now much more faithful
@@ -69,16 +72,16 @@
 
   * Updated PAL palette.
 
-  * Updated included PNG library to latest stable version.
-
   * For UNIX systems: in the ROM launcher, when using symlinks use the
     symlink pathname instead of the underlying filesystem pathname.
 
-  * The Linux builds now use the system-installed PNG and ZLIB libraries
+  * The UNIX builds now use the system-installed PNG and ZLIB libraries
     by default.
 
   * For better compatibility, the Windows 32-bit version does not require SSE2
     anymore.
+
+  * Updated included PNG library to latest stable version.
 
 -Have fun!
 

@@ -56,7 +56,7 @@ class AudioSettings
     static constexpr uInt32 DEFAULT_BUFFER_SIZE                     = 3;
     static constexpr uInt32 DEFAULT_HEADROOM                        = 2;
     static constexpr ResamplingQuality DEFAULT_RESAMPLING_QUALITY   = ResamplingQuality::lanczos_2;
-    static constexpr const char* DEFAULT_STEREO                     = "BYROM";
+    static constexpr const char* DEFAULT_STEREO                     = "byrom";
     static constexpr uInt32 DEFAULT_VOLUME                          = 80;
     static constexpr bool DEFAULT_ENABLED                           = true;
 
