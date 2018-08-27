@@ -141,7 +141,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 #endif
 
   lwidth = font.getStringWidth("Digital paddle sensitivity ");
-  pwidth = font.getMaxCharWidth() * 8;
 
   // Add joystick deadzone setting
   ypos += lineHeight + VGAP*3;

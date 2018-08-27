@@ -216,7 +216,7 @@ class Controller : public Serializable
     */
     virtual string about(bool swappedPorts) const
     {
-      return name() + " in " + ((myJack == Left) ^ swappedPorts ?
+      return name() + " in " + (((myJack == Left) ^ swappedPorts) ?
           "left port" : "right port");
     }
 

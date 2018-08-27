@@ -88,6 +88,8 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
 
   // Then initialize the I2C state
   jpee_init();
+
+  systemReset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,7 +151,7 @@ void MT24LC256::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::systemReset()
 {
-  memset(myPageHit, false, sizeof(myPageHit));
+  std::fill(myPageHit, myPageHit + PAGE_NUM, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

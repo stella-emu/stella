@@ -27,7 +27,8 @@ class DispatchResult
 
   public:
 
-    DispatchResult() : myStatus(Status::invalid) {}
+    DispatchResult()
+      : myStatus(Status::invalid), myCycles(0), myAddress(0), myWasReadTrap(false) { }
 
     Status getStatus() const { return myStatus; }
 

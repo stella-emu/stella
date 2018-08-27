@@ -41,6 +41,14 @@ class RiotState : public DebuggerState
     // These are actually from the TIA, but are I/O related
     uInt8 INPT0, INPT1, INPT2, INPT3, INPT4, INPT5;
     bool INPTLatch, INPTDump;
+
+    RiotState()
+      : SWCHA_R(0), SWCHA_W(0), SWACNT(0), SWCHB_R(0), SWCHB_W(0), SWBCNT(0),
+        TIM1T(0), TIM8T(0), TIM64T(0), T1024T(0), INTIM(0), TIMINT(0),
+        TIMCLKS(0), INTIMCLKS(0), TIMDIV(0),
+        INPT0(0), INPT1(0), INPT2(0), INPT3(0), INPT4(0), INPT5(0),
+        INPTLatch(false), INPTDump(false)
+    { }
 };
 
 class RiotDebug : public DebuggerSystem

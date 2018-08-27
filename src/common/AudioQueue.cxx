@@ -27,7 +27,8 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
     myFragmentQueue(capacity),
     myAllFragments(capacity + 2),
     mySize(0),
-    myNextFragment(0)
+    myNextFragment(0),
+    myIgnoreOverflows(true)
 {
   const uInt8 sampleSize = myIsStereo ? 2 : 1;
 

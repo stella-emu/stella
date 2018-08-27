@@ -293,10 +293,10 @@ string RiotDebug::dirP0String()
 {
   uInt8 reg = swcha();
   ostringstream buf;
-  buf << (reg & 0x80 ? "" : "right ")
-      << (reg & 0x40 ? "" : "left ")
-      << (reg & 0x20 ? "" : "left ")
-      << (reg & 0x10 ? "" : "left ")
+  buf << ((reg & 0x80) ? "" : "right ")
+      << ((reg & 0x40) ? "" : "left ")
+      << ((reg & 0x20) ? "" : "left ")
+      << ((reg & 0x10) ? "" : "left ")
       << ((reg & 0xf0) == 0xf0 ? "(no directions) " : "");
   return buf.str();
 }
@@ -306,10 +306,10 @@ string RiotDebug::dirP1String()
 {
   uInt8 reg = swcha();
   ostringstream buf;
-  buf << (reg & 0x08 ? "" : "right ")
-      << (reg & 0x04 ? "" : "left ")
-      << (reg & 0x02 ? "" : "left ")
-      << (reg & 0x01 ? "" : "left ")
+  buf << ((reg & 0x08) ? "" : "right ")
+      << ((reg & 0x04) ? "" : "left ")
+      << ((reg & 0x02) ? "" : "left ")
+      << ((reg & 0x01) ? "" : "left ")
       << ((reg & 0x0f) == 0x0f ? "(no directions) " : "");
   return buf.str();
 }
@@ -336,8 +336,8 @@ string RiotDebug::tvTypeString()
 string RiotDebug::switchesString()
 {
   ostringstream buf;
-  buf << (swchb() & 0x2 ? "-" : "+") << "select "
-      << (swchb() & 0x1 ? "-" : "+") << "reset";
+  buf << ((swchb() & 0x2) ? "-" : "+") << "select "
+      << ((swchb() & 0x1) ? "-" : "+") << "reset";
   return buf.str();
 }
 

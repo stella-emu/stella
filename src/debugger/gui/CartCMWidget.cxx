@@ -196,8 +196,8 @@ void CartridgeCMWidget::loadConfig()
   myAudOut->setState(swcha & 0x40);
 
   // RAM state (several bits from SWCHA)
-  const string& ram = swcha & 0x10 ? " Inactive" :
-                        swcha & 0x20 ? " Read-only" : " Write-only";
+  const string& ram = (swcha & 0x10) ? " Inactive" :
+                      (swcha & 0x20) ? " Read-only" : " Write-only";
   myRAM->setText(ram, (swcha & 0x30) != (myOldState.swcha & 0x30));
 
   CartDebugWidget::loadConfig();
@@ -224,8 +224,8 @@ string CartridgeCMWidget::bankState()
   ostringstream& buf = buffer();
 
   buf << "Bank = " << std::dec << myCart.getBank()
-      << ", RAM is" << (myCart.mySWCHA & 0x10 ? " Inactive" :
-         myCart.mySWCHA & 0x20 ? " Read-only" : " Write-only");
+      << ", RAM is" << ((myCart.mySWCHA & 0x10) ? " Inactive" :
+         (myCart.mySWCHA & 0x20) ? " Read-only" : " Write-only");
 
   return buf.str();
 }

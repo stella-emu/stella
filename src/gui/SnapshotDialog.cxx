@@ -59,7 +59,6 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // Snapshot naming
   xpos = HBORDER;  ypos += buttonHeight + V_GAP * 4;
-  fwidth = font.getStringWidth("10 seconds");
 
   // Snapshot interval (continuous mode)
   mySnapInterval = new SliderWidget(this, font, xpos, ypos,
@@ -106,7 +105,7 @@ SnapshotDialog::~SnapshotDialog()
 void SnapshotDialog::loadConfig()
 {
   const Settings& settings = instance().settings();
-  mySnapSavePath->setText(settings.getString("snapsavedir"));  
+  mySnapSavePath->setText(settings.getString("snapsavedir"));
   mySnapInterval->setValue(instance().settings().getInt("ssinterval"));
   mySnapName->setState(instance().settings().getString("snapname") == "rom");
   mySnapSingle->setState(settings.getBool("sssingle"));
@@ -116,7 +115,7 @@ void SnapshotDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SnapshotDialog::saveConfig()
 {
-  instance().settings().setValue("snapsavedir", mySnapSavePath->getText());  
+  instance().settings().setValue("snapsavedir", mySnapSavePath->getText());
   instance().settings().setValue("ssinterval", mySnapInterval->getValue());
   instance().settings().setValue("snapname", mySnapName->getState() ? "rom" : "int");
   instance().settings().setValue("sssingle", mySnapSingle->getState());
@@ -130,7 +129,7 @@ void SnapshotDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SnapshotDialog::setDefaults()
 {
-  mySnapSavePath->setText(instance().defaultSaveDir());  
+  mySnapSavePath->setText(instance().defaultSaveDir());
   mySnapInterval->setValue(2);
   mySnapName->setState(false);
   mySnapSingle->setState(false);

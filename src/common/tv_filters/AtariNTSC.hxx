@@ -185,7 +185,11 @@ class AtariNTSC
       float fringing;
       float kernel [rescale_out * kernel_size * 2];
 
-      init_t() : contrast(0.0), brightness(0.0), artifacts(0.0), fringing(0.0) { }
+      init_t() : contrast(0.0), brightness(0.0), artifacts(0.0), fringing(0.0) {
+        std::fill(to_rgb, to_rgb + burst_count * 6, 0.0);
+        std::fill(to_float, to_float + gamma_size, 0.0);
+        std::fill(kernel, kernel + rescale_out * kernel_size * 2, 0.0);
+      }
     };
     init_t myImpl;
 

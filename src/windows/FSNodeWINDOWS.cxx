@@ -131,7 +131,7 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   if(!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))
     return;
 
-  isDirectory = (find_data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? true : false);
+  isDirectory = ((find_data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? true : false);
   isFile = !isDirectory;//(find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
 
   if((isFile && mode == FilesystemNode::kListDirectoriesOnly) ||

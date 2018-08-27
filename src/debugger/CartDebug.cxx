@@ -460,7 +460,7 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
       i->end = tag.start - 1;
 
       // Insert new endpoint
-      i++;
+      ++i;
       list.insert(i, tag2);
       break;  // no need to go further; this is the insertion point
     }
@@ -1179,10 +1179,10 @@ string CartDebug::saveDisassembly()
           out << "\n";
         out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
           << Base::HEX2 << right << (addr)
-          << (stackUsed|codeUsed ? "; (" : "")
+          << ((stackUsed|codeUsed) ? "; (" : "")
           << (codeUsed ? "c" : "")
           << (stackUsed ? "s" : "")
-          << (stackUsed | codeUsed ? ")" : "")
+          << ((stackUsed | codeUsed) ? ")" : "")
           << "\n";
         addLine = false;
       } else if (ramUsed|codeUsed|stackUsed) {

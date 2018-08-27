@@ -255,7 +255,7 @@ void CartridgeDASHWidget::updateUIState()
     else
     {
       int bankno = segment & myCart.BIT_BANK_MASK;
-      const string& banktype = segment & myCart.BITMASK_ROMRAM ? "RAM" : "ROM";
+      const string& banktype = (segment & myCart.BITMASK_ROMRAM) ? "RAM" : "ROM";
 
       myBankNumber[i]->setSelected(bankno);
       myBankType[i]->setSelected(banktype);

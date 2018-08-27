@@ -58,7 +58,6 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER;  ypos = VBORDER + _th;
 
   // Enable sound
-  xpos = HBORDER;
   mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                              "Enable sound", kSoundEnableChanged);
   wid.push_back(mySoundEnableCheckbox);

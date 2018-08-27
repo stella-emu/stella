@@ -134,11 +134,12 @@ void RomAuditDialog::auditRoms()
   int renamed = 0, notfound = 0;
   for(uInt32 idx = 0; idx < files.size(); idx++)
   {
-    bool renameSucceeded = false;
     string extension;
     if(files[idx].isFile() &&
        LauncherFilterDialog::isValidRomName(files[idx], extension))
     {
+      bool renameSucceeded = false;
+
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)
       const string& md5 = MD5::hash(files[idx]);

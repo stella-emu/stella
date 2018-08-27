@@ -51,7 +51,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   const int HBORDER = 10;
   const int INDENT = 16;
   int xpos, ypos, tabID;
-  int lwidth, pwidth = font.getStringWidth("Standard");
+  int lwidth, pwidth;
   WidgetArray wid;
   VariantList items;
   const GUI::Size& ds = instance().frameBuffer().desktopSize();
@@ -61,7 +61,6 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   _h = (10+1) * (lineHeight + 4) + VBORDER + _th;
 
   // The tab widget
-  xpos = HBORDER;  ypos = VBORDER;
   myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2*2, _h - _th - buttonHeight - 20);
   addTabWidget(myTab);
 

@@ -614,14 +614,11 @@ void GameInfoDialog::updateControllerStates()
   const string& contrP0 = myP0Controller->getSelectedTag().toString();
   const string& contrP1 = myP1Controller->getSelectedTag().toString();
   bool enableEEEraseButton = false;
-  bool enableSwapPaddles = false;
-  bool enableSwapPorts = false;
 
   // Compumate bankswitching scheme doesn't allow to select controllers
   bool enableSelectControl = myType->getSelectedTag() != "CM";
 
-  enableSwapPorts = enableSelectControl;
-  enableSwapPaddles = BSPF::startsWithIgnoreCase(contrP0, "PADDLES") ||
+  bool enableSwapPaddles = BSPF::startsWithIgnoreCase(contrP0, "PADDLES") ||
     BSPF::startsWithIgnoreCase(contrP1, "PADDLES");
 
   if(instance().hasConsole())
@@ -630,10 +627,10 @@ void GameInfoDialog::updateControllerStates()
     const Controller& rport = instance().console().rightController();
 
     // we only enable the button if we have a valid previous and new controller.
-    enableEEEraseButton = ((lport.type() == Controller::SaveKey && contrP0 == "SAVEKEY")
-                           || (lport.type() == Controller::AtariVox && contrP0 == "ATARIVOX")
-                           || (rport.type() == Controller::SaveKey && contrP1 == "SAVEKEY")
-                           || (rport.type() == Controller::AtariVox && contrP1 == "ATARIVOX"));
+    enableEEEraseButton = ((lport.type() == Controller::SaveKey && contrP0 == "SAVEKEY") ||
+                           (rport.type() == Controller::SaveKey && contrP1 == "SAVEKEY") ||
+                           (lport.type() == Controller::AtariVox && contrP0 == "ATARIVOX") ||
+                           (rport.type() == Controller::AtariVox && contrP1 == "ATARIVOX"));
   }
 
   myP0Label->setEnabled(enableSelectControl);
@@ -641,7 +638,7 @@ void GameInfoDialog::updateControllerStates()
   myP0Controller->setEnabled(enableSelectControl);
   myP1Controller->setEnabled(enableSelectControl);
 
-  mySwapPorts->setEnabled(enableSwapPorts);
+  mySwapPorts->setEnabled(enableSelectControl);
   mySwapPaddles->setEnabled(enableSwapPaddles);
 
   myEraseEEPROMLabel->setEnabled(enableEEEraseButton);

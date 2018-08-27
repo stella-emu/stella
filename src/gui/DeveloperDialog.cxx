@@ -131,7 +131,6 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   // Randomize CPU
-  lwidth = font.getStringWidth("Randomize CPU ");
   myRandomizeCPULabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Randomize CPU ");
   wid.push_back(myRandomizeCPULabel);
 
@@ -184,7 +183,6 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   int tabID = myTab->addTab("Video");
 
   wid.clear();
-  ypos = VBORDER;
 
   // settings set
   mySettingsGroup1 = new RadioButtonGroup();
