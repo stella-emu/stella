@@ -619,7 +619,7 @@ case 0x4b:
   A >>= 1;
 
   notZ = A;
-  N = 0;
+  N = false;
 }
 break;
 
@@ -829,12 +829,12 @@ case 0x6b:
 
     if(((value & 0xf0) + (value & 0x10)) > 0x50)
     {
-      A = (A + 0x60) & 0xff;
-      C = 1;
+      A += 0x60;
+      C = true;
     }
     else
     {
-      C = 0;
+      C = false;
     }
   }
 }
@@ -2674,7 +2674,7 @@ case 0x4a:
   A >>= 1;
 
   notZ = A;
-  N = 0;
+  N = false;
 }
 break;
 
@@ -2693,7 +2693,7 @@ case 0x46:
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
-  N = 0;
+  N = false;
 }
 break;
 
@@ -2713,7 +2713,7 @@ case 0x56:
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
-  N = 0;
+  N = false;
 }
 break;
 
@@ -2732,7 +2732,7 @@ case 0x4e:
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
-  N = 0;
+  N = false;
 }
 break;
 
@@ -2753,7 +2753,7 @@ case 0x5e:
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
-  N = 0;
+  N = false;
 }
 break;
 

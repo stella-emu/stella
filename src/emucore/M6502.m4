@@ -445,12 +445,12 @@ define(M6502_ARR, `{
 
     if(((value & 0xf0) + (value & 0x10)) > 0x50)
     {
-      A = (A + 0x60) & 0xff;
-      C = 1;
+      A += 0x60;
+      C = true;
     }
     else
     {
-      C = 0;
+      C = false;
     }
   }
 }')
@@ -485,7 +485,7 @@ define(M6502_ASR, `{
   A >>= 1;
 
   notZ = A;
-  N = 0;
+  N = false;
 }')
 
 define(M6502_BIT, `{
@@ -695,7 +695,7 @@ define(M6502_LSR, `{
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
-  N = 0;
+  N = false;
 }')
 
 define(M6502_LSRA, `{
@@ -705,7 +705,7 @@ define(M6502_LSRA, `{
   A >>= 1;
 
   notZ = A;
-  N = 0;
+  N = false;
 }')
 
 define(M6502_LXA, `{
