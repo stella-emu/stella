@@ -55,7 +55,7 @@ namespace GUI {
 class Font
 {
   public:
-    Font(FontDesc desc);
+    Font(const FontDesc& desc);
 
     const FontDesc& desc() const { return myFontDesc; }
 

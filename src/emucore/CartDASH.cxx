@@ -44,7 +44,7 @@ void CartridgeDASH::reset()
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
-  for(uInt32 b = 0; b < 8; b++)
+  for(uInt32 b = 0; b < 8; ++b)
   {
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
     segmentInUse[b/2] = BANK_UNDEFINED;
@@ -69,7 +69,7 @@ void CartridgeDASH::install(System& system)
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
-  for (uInt32 b = 0; b < 8; b++)
+  for (uInt32 b = 0; b < 8; ++b)
   {
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
     segmentInUse[b/2] = BANK_UNDEFINED;
@@ -240,7 +240,7 @@ void CartridgeDASH::bankROMSlot(uInt16 bank)
 void CartridgeDASH::initializeBankState()
 {
   // Switch in each 512b slot
-  for(uInt32 b = 0; b < 8; b++)
+  for(uInt32 b = 0; b < 8; ++b)
   {
     if(bankInUse[b] == BANK_UNDEFINED)
     {

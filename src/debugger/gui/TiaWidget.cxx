@@ -941,7 +941,7 @@ void TiaWidget::loadConfig()
 
   // Color registers
   alist.clear();  vlist.clear();  changed.clear();
-  for(uInt32 i = 0; i < 4; i++)
+  for(uInt32 i = 0; i < 4; ++i)
   {
     alist.push_back(i);
     vlist.push_back(state.coluRegs[i]);

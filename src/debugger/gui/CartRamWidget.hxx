@@ -69,14 +69,14 @@ class CartRamWidget : public Widget, public CommandSender
         virtual ~InternalRamWidget();
 
       private:
-        uInt8 getValue(int addr) const;
-        void setValue(int addr, uInt8 value);
-        string getLabel(int addr) const;
+        uInt8 getValue(int addr) const override;
+        void setValue(int addr, uInt8 value) override;
+        string getLabel(int addr) const override;
 
         void fillList(uInt32 start, uInt32 size, IntArray& alist,
-                      IntArray& vlist, BoolArray& changed) const;
-        uInt32 readPort(uInt32 start) const;
-        const ByteArray& currentRam(uInt32 start) const;
+                      IntArray& vlist, BoolArray& changed) const override;
+        uInt32 readPort(uInt32 start) const override;
+        const ByteArray& currentRam(uInt32 start) const override;
 
       private:
         CartDebugWidget& myCart;

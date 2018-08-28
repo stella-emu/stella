@@ -1061,7 +1061,7 @@ string TIADebug::toString()
   ostringstream buf;
 
   buf << "00: ";
-  for (uInt8 j = 0; j < 0x010; j++)
+  for (uInt8 j = 0; j < 0x010; ++j)
   {
     buf << Common::Base::HEX2 << int(mySystem.peek(j)) << " ";
     if(j == 0x07) buf << "- ";

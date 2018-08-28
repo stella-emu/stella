@@ -23,7 +23,7 @@
 namespace GUI {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Font::Font(FontDesc desc)
+Font::Font(const FontDesc& desc)
   : myFontDesc(desc)
 {
 }

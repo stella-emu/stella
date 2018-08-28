@@ -235,7 +235,7 @@ void Cartridge3EPlus::bankROMSlot(uInt16 bank)
 void Cartridge3EPlus::initializeBankState()
 {
   // Switch in each 512b slot
-  for(uInt32 b = 0; b < 8; b++)
+  for(uInt32 b = 0; b < 8; ++b)
   {
     if(bankInUse[b] == BANK_UNDEFINED)
     {

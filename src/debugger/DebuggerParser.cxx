@@ -426,8 +426,8 @@ bool DebuggerParser::validateArgs(int cmd)
   uInt32 count = 0, argRequiredCount = 0;
   while(*p != kARG_END_ARGS && *p != kARG_MULTI_BYTE)
   {
-    count++;
-    p++;
+    ++count;
+    ++p;
   }
 
   // Evil hack: some commands intentionally take multiple arguments
@@ -500,8 +500,8 @@ bool DebuggerParser::validateArgs(int cmd)
       case kARG_END_ARGS:
         break;
     }
-    curCount++;
-    p++;
+    ++curCount;
+    ++p;
 
   } while(*p != kARG_END_ARGS && curCount < argRequiredCount);
 
@@ -571,7 +571,7 @@ void DebuggerParser::listTraps(bool listCond)
   StringList names = debugger.m6502().getCondTrapNames();
 
   commandResult << (listCond ? "trapifs:" : "traps:") << endl;
-  for(uInt32 i = 0; i < names.size(); i++)
+  for(uInt32 i = 0; i < names.size(); ++i)
   {
     bool hasCond = names[i] != "";
     if(hasCond == listCond)
@@ -753,7 +753,7 @@ void DebuggerParser::executeBreakif()
   if(res == 0)
   {
     string condition = argStrings[0];
-    for(uInt32 i = 0; i < debugger.m6502().getCondBreakNames().size(); i++)
+    for(uInt32 i = 0; i < debugger.m6502().getCondBreakNames().size(); ++i)
     {
       if(condition == debugger.m6502().getCondBreakNames()[i])
       {
@@ -1164,9 +1164,9 @@ void DebuggerParser::executeExec()
     prefix << std::hex << std::setw(8) << std::setfill('0') << uInt32(debugger.myOSystem.getTicks()/1000);
     execPrefix = prefix.str();
   }
-  execDepth++;
+  ++execDepth;
   commandResult << exec(node);
-  execDepth--;
+  --execDepth;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1419,7 +1419,7 @@ void DebuggerParser::executeListbreaks()
     if(count)
       commandResult << endl;
     commandResult << "breakifs:" << endl;
-    for(uInt32 i = 0; i < conds.size(); i++)
+    for(uInt32 i = 0; i < conds.size(); ++i)
     {
       commandResult << Base::toString(i) << ": " << conds[i];
       if(i != (conds.size() - 1)) commandResult << endl;
@@ -1465,7 +1465,7 @@ void DebuggerParser::executeListsavestateifs()
   if(conds.size() > 0)
   {
     commandResult << "savestateif:" << endl;
-    for(uInt32 i = 0; i < conds.size(); i++)
+    for(uInt32 i = 0; i < conds.size(); ++i)
     {
       commandResult << Base::toString(i) << ": " << conds[i];
       if(i != (conds.size() - 1)) commandResult << endl;
@@ -1492,7 +1492,7 @@ void DebuggerParser::executeListtraps()
   if (names.size() > 0)
   {
     bool trapFound = false, trapifFound = false;
-    for(uInt32 i = 0; i < names.size(); i++)
+    for(uInt32 i = 0; i < names.size(); ++i)
       if(names[i] == "")
         trapFound = true;
       else
@@ -1820,7 +1820,7 @@ void DebuggerParser::executeSavestateif()
   if(res == 0)
   {
     string condition = argStrings[0];
-    for(uInt32 i = 0; i < debugger.m6502().getCondSaveStateNames().size(); i++)
+    for(uInt32 i = 0; i < debugger.m6502().getCondSaveStateNames().size(); ++i)
     {
       if(condition == debugger.m6502().getCondSaveStateNames()[i])
       {
@@ -1997,7 +1997,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
   {
     // duplicates will remove each other
     bool add = true;
-    for(uInt32 i = 0; i < myTraps.size(); i++)
+    for(uInt32 i = 0; i < myTraps.size(); ++i)
     {
       if(myTraps[i]->begin == begin && myTraps[i]->end == end &&
          myTraps[i]->read == read && myTraps[i]->write == write &&

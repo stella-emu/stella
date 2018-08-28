@@ -148,7 +148,7 @@ void CartRamWidget::InternalRamWidget::fillList(uInt32 start, uInt32 size,
   const ByteArray& oldRam = myCart.internalRamOld(start, size);
   const ByteArray& currRam = myCart.internalRamCurrent(start, size);
 
-  for(uInt32 i = 0; i < size; i++)
+  for(uInt32 i = 0; i < size; ++i)
   {
     alist.push_back(i+start);
     vlist.push_back(currRam[i]);

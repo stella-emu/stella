@@ -42,7 +42,7 @@ bool CheatManager::add(const string& name, const string& code,
     return false;
 
   // Delete duplicate entries
-  for(uInt32 i = 0; i < myCheatList.size(); i++)
+  for(uInt32 i = 0; i < myCheatList.size(); ++i)
   {
     if(myCheatList[i]->name() == name || myCheatList[i]->code() == code)
     {
@@ -96,7 +96,7 @@ void CheatManager::addPerFrame(const string& name, const string& code, bool enab
   // Make sure there are no duplicates
   bool found = false;
   uInt32 i;
-  for(i = 0; i < myPerFrameList.size(); i++)
+  for(i = 0; i < myPerFrameList.size(); ++i)
   {
     if(myPerFrameList[i]->code() == cheat->code())
     {
@@ -291,7 +291,7 @@ void CheatManager::loadCheats(const string& md5sum)
 void CheatManager::saveCheats(const string& md5sum)
 {
   ostringstream cheats;
-  for(uInt32 i = 0; i < myCheatList.size(); i++)
+  for(uInt32 i = 0; i < myCheatList.size(); ++i)
   {
     cheats << myCheatList[i]->name() << ":"
            << myCheatList[i]->code() << ":"

@@ -639,7 +639,7 @@ void Console::changeYStart(int direction)
       myOSystem.frameBuffer().showMessage("YStart at maximum");
       return;
     }
-    ystart++;
+    ++ystart;
   }
   else if(direction == -1)  // decrease YStart
   {
@@ -654,7 +654,7 @@ void Console::changeYStart(int direction)
       return;
     }
 
-    ystart--;
+    --ystart;
   }
   else
     return;
@@ -689,7 +689,7 @@ void Console::changeHeight(int direction)
 
   if(direction == +1)       // increase Height
   {
-    height++;
+    ++height;
     if(height > TIAConstants::maxViewableHeight || height > dheight)
     {
       myOSystem.frameBuffer().showMessage("Height at maximum");
@@ -698,7 +698,7 @@ void Console::changeHeight(int direction)
   }
   else if(direction == -1)  // decrease Height
   {
-    height--;
+    --height;
     if(height < TIAConstants::minViewableHeight) height = 0;
   }
   else

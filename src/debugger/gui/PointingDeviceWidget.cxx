@@ -40,7 +40,7 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
   myGrayValueV->setEditable(false);
 
   ypos += myGrayValueV->getHeight() + 2;
-  
+
   myGrayUp = new ButtonWidget(boss, font, xMid, ypos, 17, "+", kTBUp);
   myGrayUp->setTarget(this);
 
@@ -81,29 +81,29 @@ void PointingDeviceWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  // since the PointingDevice uses its own, internal state (not reading the controller), 
+  // since the PointingDevice uses its own, internal state (not reading the controller),
   // we have to communicate directly with it
   PointingDevice& pDev = static_cast<PointingDevice&>(myController);
 
   switch(cmd)
   {
     case kTBLeft:
-      pDev.myCountH++;
+      ++pDev.myCountH;
       pDev.myTrackBallLeft = false;
-      setGrayCodeH(); 
+      setGrayCodeH();
       break;
     case kTBRight:
-      pDev.myCountH--;
+      --pDev.myCountH;
       pDev.myTrackBallLeft = true;
       setGrayCodeH();
       break;
     case kTBUp:
-      pDev.myCountV++;
+      ++pDev.myCountV;
       pDev.myTrackBallDown = true;
       setGrayCodeV();
       break;
     case kTBDown:
-      pDev.myCountV--;
+      --pDev.myCountV;
       pDev.myTrackBallDown = false;
       setGrayCodeV();
       break;
@@ -117,7 +117,7 @@ void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int dat
 void PointingDeviceWidget::setGrayCodeH()
 {
   PointingDevice& pDev = static_cast<PointingDevice&>(myController);
-  
+
   pDev.myCountH &= 0b11;
   setValue(myGrayValueH, pDev.myCountH, pDev.myTrackBallLeft);
 }
@@ -126,7 +126,7 @@ void PointingDeviceWidget::setGrayCodeH()
 void PointingDeviceWidget::setGrayCodeV()
 {
   PointingDevice& pDev = static_cast<PointingDevice&>(myController);
-  
+
   pDev.myCountV &= 0b11;
   setValue(myGrayValueV, pDev.myCountV, !pDev.myTrackBallDown);
 }

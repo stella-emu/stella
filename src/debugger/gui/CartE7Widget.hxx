@@ -30,8 +30,8 @@ class CartridgeE7Widget : public CartridgeMNetworkWidget
     virtual ~CartridgeE7Widget() = default;
 
   protected:
-    const char* getSpotLower(int idx);
-    const char* getSpotUpper(int idx);
+    const char* getSpotLower(int idx) override;
+    const char* getSpotUpper(int idx) override;
 
   private:
     // Following constructors and assignment operators not supported

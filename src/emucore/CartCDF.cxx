@@ -196,8 +196,8 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     uInt32 pointer;
     uInt8 value;
 
-    myFastJumpActive--;
-    myJMPoperandAddress++;
+    --myFastJumpActive;
+    ++myJMPoperandAddress;
 
     pointer = getDatastreamPointer(JUMPSTREAM);
     value = myDisplayImage[ pointer >> 20 ];

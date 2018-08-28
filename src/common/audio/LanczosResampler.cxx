@@ -29,7 +29,7 @@ namespace {
 
   uInt32 reducedDenominator(uInt32 n, uInt32 d)
   {
-    for (uInt32 i = std::min(n ,d); i > 1; i--) {
+    for (uInt32 i = std::min(n ,d); i > 1; --i) {
       if ((n % i == 0) && (d % i == 0)) {
         n /= i;
         d /= i;
@@ -103,13 +103,13 @@ void LanczosResampler::precomputeKernels()
   // timeIndex = time * formatFrom.sampleRate * formatTo.sampleRAte
   uInt32 timeIndex = 0;
 
-  for (uInt32 i = 0; i < myPrecomputedKernelCount; i++) {
+  for (uInt32 i = 0; i < myPrecomputedKernelCount; ++i) {
     float* kernel = myPrecomputedKernels.get() + myKernelSize * i;
     // The kernel is normalized such to be evaluate on time * formatFrom.sampleRate
     float center =
       static_cast<float>(timeIndex) / static_cast<float>(myFormatTo.sampleRate);
 
-    for (uInt32 j = 0; j < 2 * myKernelParameter; j++) {
+    for (uInt32 j = 0; j < 2 * myKernelParameter; ++j) {
       kernel[j] = lanczosKernel(
           center - static_cast<float>(j) + static_cast<float>(myKernelParameter) - 1.f, myKernelParameter
         ) * CLIPPING_FACTOR;
@@ -150,7 +150,7 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
 
   const uInt32 outputSamples = myFormatTo.stereo ? (length >> 1) : length;
 
-  for (uInt32 i = 0; i < outputSamples; i++) {
+  for (uInt32 i = 0; i < outputSamples; ++i) {
     float* kernel = myPrecomputedKernels.get() + (myCurrentKernelIndex * myKernelSize);
     myCurrentKernelIndex = (myCurrentKernelIndex + 1) % myPrecomputedKernelCount;
 
@@ -194,7 +194,7 @@ inline void LanczosResampler::shiftSamples(uInt32 samplesToShift)
     else
       myBuffer->shift(myHighPass.apply(myCurrentFragment[myFragmentIndex] / static_cast<float>(0x7fff)));
 
-    myFragmentIndex++;
+    ++myFragmentIndex;
 
     if (myFragmentIndex >= myFormatFrom.fragmentSize) {
       myFragmentIndex %= myFormatFrom.fragmentSize;

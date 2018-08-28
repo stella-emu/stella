@@ -202,7 +202,7 @@ void CartridgeBUSWidget::saveOldState()
   myOldState.internalram.clear();
   myOldState.samplepointer.clear();
 
-  for(uInt32 i = 0; i < 18; i++)
+  for(uInt32 i = 0; i < 18; ++i)
   {
     // Pointers are stored as:
     // PPPFF---
@@ -221,20 +221,14 @@ void CartridgeBUSWidget::saveOldState()
       myOldState.datastreamincrements.push_back(0x100);
   }
 
-  for(uInt32 i = 0; i < 37; i++) // only 37 map values
-  {
+  for(uInt32 i = 0; i < 37; ++i) // only 37 map values
     myOldState.addressmaps.push_back(myCart.getAddressMap(i));
-  }
 
-  for(uInt32 i = 37; i < 40; i++) // but need 40 for the grid
-  {
+  for(uInt32 i = 37; i < 40; ++i) // but need 40 for the grid
     myOldState.addressmaps.push_back(0);
-  }
 
   for(uInt32 i = 0; i < 3; ++i)
-  {
     myOldState.mcounters.push_back(myCart.myMusicCounters[i]);
-  }
 
   for(uInt32 i = 0; i < 3; ++i)
   {

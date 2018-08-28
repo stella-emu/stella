@@ -201,7 +201,7 @@ namespace BSPF
     if(BSPF::startsWithIgnoreCase(s1, s2.substr(0, 1)))
     {
       size_t pos = 1;
-      for(uInt32 j = 1; j < s2.size(); j++)
+      for(uInt32 j = 1; j < s2.size(); ++j)
       {
         size_t found = BSPF::findIgnoreCase(s1, s2.substr(j, 1), pos);
         if(found == string::npos)

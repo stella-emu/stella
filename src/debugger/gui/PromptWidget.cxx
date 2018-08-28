@@ -523,7 +523,7 @@ void PromptWidget::loadConfig()
     // fill the history from the saved breaks, traps and watches commands
     StringList history;
     print(instance().debugger().autoExec(&history));
-    for(uInt32 i = 0; i < history.size(); i++)
+    for(uInt32 i = 0; i < history.size(); ++i)
     {
       addToHistory(history[i].c_str());
     }
@@ -931,9 +931,9 @@ bool PromptWidget::saveBuffer(const FilesystemNode& file)
 string PromptWidget::getCompletionPrefix(const StringList& completions)
 {
   // Find the number of characters matching for each of the completions provided
-  for(uInt32 len = 1;; len++)
+  for(uInt32 len = 1;; ++len)
   {
-    for(uInt32 i = 0; i < completions.size(); i++)
+    for(uInt32 i = 0; i < completions.size(); ++i)
     {
       string s1 = completions[i];
       if(s1.length() < len)
@@ -942,7 +942,7 @@ string PromptWidget::getCompletionPrefix(const StringList& completions)
       }
       string find = s1.substr(0, len);
 
-      for(uInt32 j = i + 1; j < completions.size(); j++)
+      for(uInt32 j = i + 1; j < completions.size(); ++j)
       {
         if(!BSPF::startsWithIgnoreCase(completions[j], find))
           return s1.substr(0, len - 1);

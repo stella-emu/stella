@@ -193,7 +193,7 @@ void CartridgeCDFWidget::saveOldState()
   myOldState.internalram.clear();
   myOldState.samplepointer.clear();
 
-  for(uInt32 i = 0; i < 34; i++)
+  for(uInt32 i = 0; i < 34; ++i)
   {
     // Pointers are stored as:
     // PPPFF---
@@ -210,9 +210,7 @@ void CartridgeCDFWidget::saveOldState()
   }
 
   for(uInt32 i = 0; i < 3; ++i)
-  {
     myOldState.mcounters.push_back(myCart.myMusicCounters[i]);
-  }
 
   for(uInt32 i = 0; i < 3; ++i)
   {

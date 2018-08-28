@@ -33,7 +33,7 @@ class LanczosResampler : public Resampler
       uInt32 kernelParameter
     );
 
-    virtual void fillFragment(float* fragment, uInt32 length);
+    void fillFragment(float* fragment, uInt32 length) override;
 
     virtual ~LanczosResampler() = default;
 

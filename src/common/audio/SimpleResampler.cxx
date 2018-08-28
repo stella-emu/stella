@@ -51,7 +51,7 @@ void SimpleResampler::fillFragment(float* fragment, uInt32 length)
   const uInt32 outputSamples = myFormatTo.stereo ? (length >> 1) : length;
 
   // For the following math, remember that myTimeIndex = time * myFormatFrom.sampleRate * myFormatTo.sampleRate
-  for (uInt32 i = 0; i < outputSamples; i++) {
+  for (uInt32 i = 0; i < outputSamples; ++i) {
     if (myFormatFrom.stereo) {
       float sampleL = static_cast<float>(myCurrentFragment[2*myFragmentIndex]) / static_cast<float>(0x7fff);
       float sampleR = static_cast<float>(myCurrentFragment[2*myFragmentIndex + 1]) / static_cast<float>(0x7fff);

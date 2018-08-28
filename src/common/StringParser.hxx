@@ -57,12 +57,13 @@ class StringParser
 
       while(std::getline(buf, line, '\n'))
       {
-        size_t beg = 0, len = maxlen, size = line.size();
+        size_t len = maxlen, size = line.size();
 
         if(size <= len)
           myStringList.push_back(line);
         else
         {
+          size_t beg = 0;
           while((beg+maxlen) < size)
           {
             size_t spos = line.find_last_of(' ', beg+len);

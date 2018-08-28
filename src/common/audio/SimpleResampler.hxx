@@ -30,7 +30,7 @@ class SimpleResampler : public Resampler
       Resampler::NextFragmentCallback NextFragmentCallback
     );
 
-    virtual void fillFragment(float* fragment, uInt32 length);
+    void fillFragment(float* fragment, uInt32 length) override;
 
   private:
 
