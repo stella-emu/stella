@@ -589,15 +589,11 @@ void Console::initializeAudio()
   myOSystem.sound().close();
 
   myEmulationTiming
-    .updatePlaybackRate(myOSystem.sound().getSampleRate())
-    .updatePlaybackPeriod(myOSystem.sound().getFragmentSize())
+    .updatePlaybackRate(myAudioSettings.sampleRate())
+    .updatePlaybackPeriod(myAudioSettings.fragmentSize())
     .updateAudioQueueExtraFragments(myAudioSettings.bufferSize())
     .updateAudioQueueHeadroom(myAudioSettings.headroom())
     .updateSpeedFactor(myOSystem.settings().getFloat("speed"));
-
-  (cout << "sample rate: " << myOSystem.sound().getSampleRate() << std::endl).flush();
-  (cout << "fragment size: " << myOSystem.sound().getFragmentSize() << std::endl).flush();
-  (cout << "prebuffer fragment count: " << myEmulationTiming.prebufferFragmentCount() << std::endl).flush();
 
   createAudioQueue();
   myTIA->setAudioQueue(myAudioQueue);

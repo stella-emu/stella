@@ -85,11 +85,6 @@ class SoundNull : public Sound
     uInt32 getSampleRate() const override { return 31400; }
 
     /**
-      Reset the sound device.
-    */
-    void reset() override { }
-
-    /**
       Sets the volume of the sound device to the specified level.  The
       volume is given as a percentage from 0 to 100.  Values outside
       this range indicate that the volume shouldn't be changed at all.

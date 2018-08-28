@@ -34,7 +34,7 @@ class Sound
 {
   public:
     /**
-      Create a new sound object.  The init method must be invoked before
+      Create a new sound object.  The open method must be invoked before
       using the object.
     */
     Sound(OSystem& osystem) : myOSystem(osystem) { }
@@ -76,11 +76,6 @@ class Sound
       Get the sample rate.
     */
     virtual uInt32 getSampleRate() const = 0;
-
-    /**
-      Reset the sound device.
-    */
-    virtual void reset() = 0;
 
     /**
       Sets the volume of the sound device to the specified level.  The

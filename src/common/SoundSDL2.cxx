@@ -54,32 +54,9 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
     return;
   }
 
-  // The sound system is opened only once per program run, to eliminate
-  // issues with opening and closing it multiple times
-  // This fixes a bug most prevalent with ATI video cards in Windows,
-  // whereby sound stopped working after the first video change
-  SDL_AudioSpec desired;
-  desired.freq   = myAudioSettings.sampleRate();
-  desired.format = AUDIO_F32SYS;
-  desired.channels = 2;
-  desired.samples  = static_cast<Uint16>(myAudioSettings.fragmentSize());
-  desired.callback = callback;
-  desired.userdata = static_cast<void*>(this);
-
-  myDevice = SDL_OpenAudioDevice(nullptr, 0, &desired, &myHardwareSpec,
-                                 SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
-
-  if(myDevice == 0)
-  {
-    ostringstream buf;
-
-    buf << "WARNING: Couldn't open SDL audio device! " << endl
-        << "         " << SDL_GetError() << endl;
-    myOSystem.logMessage(buf.str(), 0);
+  SDL_zero(myHardwareSpec);
+  if(!openDevice())
     return;
-  }
-
-  myIsInitializedFlag = true;
 
   mute(true);
 
@@ -96,6 +73,35 @@ SoundSDL2::~SoundSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL2::openDevice()
+{
+  SDL_AudioSpec desired;
+  desired.freq   = myAudioSettings.sampleRate();
+  desired.format = AUDIO_F32SYS;
+  desired.channels = 2;
+  desired.samples  = static_cast<Uint16>(myAudioSettings.fragmentSize());
+  desired.callback = callback;
+  desired.userdata = static_cast<void*>(this);
+
+  if(myIsInitializedFlag)
+    SDL_CloseAudioDevice(myDevice);
+  myDevice = SDL_OpenAudioDevice(nullptr, 0, &desired, &myHardwareSpec,
+                                 SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+
+  if(myDevice == 0)
+  {
+    ostringstream buf;
+
+    buf << "WARNING: Couldn't open SDL audio device! " << endl
+        << "         " << SDL_GetError() << endl;
+    myOSystem.logMessage(buf.str(), 0);
+
+    return myIsInitializedFlag = false;
+  }
+  return myIsInitializedFlag = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setEnabled(bool state)
 {
   myAudioSettings.setEnabled(state);
@@ -109,6 +115,12 @@ void SoundSDL2::setEnabled(bool state)
 void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
                      EmulationTiming* emulationTiming)
 {
+  // Do we need to re-open the sound device?
+  // Only do this when absolutely necessary
+  if(myAudioSettings.sampleRate() != uInt32(myHardwareSpec.freq) ||
+     myAudioSettings.fragmentSize() != uInt32(myHardwareSpec.samples))
+    openDevice();
+
   myEmulationTiming = emulationTiming;
 
   myOSystem.logMessage("SoundSDL2::open started ...", 2);
@@ -128,17 +140,31 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   // Adjust volume to that defined in settings
   setVolume(myAudioSettings.volume());
 
+  initResampler();
+
   // Show some info
   ostringstream buf;
   buf << "Sound enabled:"  << endl
       << "  Volume:      " << myVolume << endl
       << "  Frag size:   " << uInt32(myHardwareSpec.samples) << endl
       << "  Frequency:   " << uInt32(myHardwareSpec.freq) << endl
-      << "  Channels:    " << uInt32(myHardwareSpec.channels)
-      << endl;
+      << "  Channels:    " << uInt32(myHardwareSpec.channels) << endl
+      << "  Resampling:  ";
+  switch (myAudioSettings.resamplingQuality()) {
+    case AudioSettings::ResamplingQuality::nearestNeightbour:
+      buf << "quality 1, nearest neighbor" << endl;
+      break;
+    case AudioSettings::ResamplingQuality::lanczos_2:
+      buf << "quality 2, nearest Lanczos (a = 2)" << endl;
+      break;
+    case AudioSettings::ResamplingQuality::lanczos_3:
+      buf << "quality 3, nearest Lanczos (a = 3)" << endl;
+      break;
+    default:
+      buf << "unknown resampler" << endl;
+      break;
+  }
   myOSystem.logMessage(buf.str(), 1);
-
-  initResampler();
 
   // And start the SDL sound subsystem ...
   mute(false);
@@ -158,7 +184,6 @@ void SoundSDL2::close()
   myCurrentFragment = nullptr;
 
   myOSystem.logMessage("SoundSDL2::close", 2);
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,11 +193,6 @@ void SoundSDL2::mute(bool state)
   {
     SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::reset()
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -262,16 +282,13 @@ void SoundSDL2::initResampler()
   switch (myAudioSettings.resamplingQuality()) {
     case AudioSettings::ResamplingQuality::nearestNeightbour:
       myResampler = make_unique<SimpleResampler>(formatFrom, formatTo, nextFragmentCallback);
-      (cerr << "resampling quality 1: using nearest neighbor resampling\n").flush();
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_2:
-      (cerr << "resampling quality 2: using nearest Lanczos resampling, a = 2\n").flush();
       myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 2);
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_3:
-      (cerr << "resampling quality 3: using nearest Lanczos resampling, a = 3\n").flush();
       myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 3);
       break;
 

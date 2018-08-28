@@ -78,11 +78,6 @@ class SoundSDL2 : public Sound
     void mute(bool state) override;
 
     /**
-      Reset the sound device.
-    */
-    void reset() override;
-
-    /**
       Sets the volume of the sound device to the specified level.  The
       volume is given as a percentage from 0 to 100.  Values outside
       this range indicate that the volume shouldn't be changed at all.
@@ -115,6 +110,12 @@ class SoundSDL2 : public Sound
     void processFragment(float* stream, uInt32 length);
 
   private:
+    /**
+      The actual sound device is opened only when absolutely necessary.
+      Typically this will only happen once per program run, but it can also
+      happen dynamically when changing sample rate and/or fragment size.
+    */
+    bool openDevice();
 
     void initResampler();
 
