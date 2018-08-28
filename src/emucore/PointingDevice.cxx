@@ -49,8 +49,8 @@ uInt8 PointingDevice::read()
   // Loop over all missed changes
   while(myScanCountH < scanline)
   {
-    if(myTrackBallLeft) myCountH--;
-    else                myCountH++;
+    if(myTrackBallLeft) --myCountH;
+    else                ++myCountH;
 
     // Define scanline of next change
     myScanCountH += myTrackBallLinesH;
@@ -59,8 +59,8 @@ uInt8 PointingDevice::read()
   // Loop over all missed changes
   while(myScanCountV < scanline)
   {
-    if(myTrackBallDown) myCountV++;
-    else                myCountV--;
+    if(myTrackBallDown) ++myCountV;
+    else                --myCountV;
 
     // Define scanline of next change
     myScanCountV += myTrackBallLinesV;

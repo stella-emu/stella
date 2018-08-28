@@ -45,25 +45,25 @@ class FilesystemNodeZIP : public AbstractFSNode
      */
     FilesystemNodeZIP(const string& path);
 
-    bool exists() const      { return _realNode && _realNode->exists(); }
-    const string& getName() const { return _name;      }
-    const string& getPath() const { return _path;      }
-    string getShortPath() const   { return _shortPath; }
-    bool isDirectory() const { return _isDirectory; }
-    bool isFile() const      { return _isFile;      }
-    bool isReadable() const  { return _realNode && _realNode->isReadable(); }
-    bool isWritable() const  { return false; }
+    bool exists() const override     { return _realNode && _realNode->exists(); }
+    const string& getName() const override { return _name;      }
+    const string& getPath() const override { return _path;      }
+    string getShortPath() const   override { return _shortPath; }
+    bool isDirectory() const override { return _isDirectory; }
+    bool isFile() const      override { return _isFile;      }
+    bool isReadable() const  override { return _realNode && _realNode->isReadable(); }
+    bool isWritable() const  override { return false; }
 
     //////////////////////////////////////////////////////////
     // For now, ZIP files cannot be modified in any way
-    bool makeDir() { return false; }
-    bool rename(const string& newfile) { return false; }
+    bool makeDir() override { return false; }
+    bool rename(const string& newfile) override { return false; }
     //////////////////////////////////////////////////////////
 
-    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
-    AbstractFSNodePtr getParent() const;
+    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const override;
+    AbstractFSNodePtr getParent() const override;
 
-    uInt32 read(BytePtr& image) const;
+    uInt32 read(BytePtr& image) const override;
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualpath,

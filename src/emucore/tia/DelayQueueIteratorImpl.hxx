@@ -119,7 +119,7 @@ bool DelayQueueIteratorImpl<length, capacity>::next()
   myIndex = 0;
 
   do {
-    myDelayCycle++;
+    ++myDelayCycle;
   } while (myDelayQueue.myMembers[currentIndex()].mySize == 0 && isValid());
 
   return isValid();

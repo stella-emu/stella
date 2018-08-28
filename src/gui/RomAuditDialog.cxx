@@ -132,7 +132,7 @@ void RomAuditDialog::auditRoms()
   // Create a entry for the GameList for each file
   Properties props;
   int renamed = 0, notfound = 0;
-  for(uInt32 idx = 0; idx < files.size(); idx++)
+  for(uInt32 idx = 0; idx < files.size(); ++idx)
   {
     string extension;
     if(files[idx].isFile() &&

@@ -410,7 +410,7 @@ void TIA::bindToControllers()
     }
   );
 
-  for (uInt8 i = 0; i < 4; i++)
+  for (uInt8 i = 0; i < 4; ++i)
     updatePaddle(i);
 }
 
@@ -1205,7 +1205,7 @@ void TIA::onFrameComplete()
 
   myFrontBufferScanlines = scanlinesLastFrame();
 
-  myFramesSinceLastRender++;
+  ++myFramesSinceLastRender;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1219,7 +1219,7 @@ void TIA::onHalt()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::cycle(uInt32 colorClocks)
 {
-  for (uInt32 i = 0; i < colorClocks; i++)
+  for (uInt32 i = 0; i < colorClocks; ++i)
   {
     myDelayQueue.execute(
       [this] (uInt8 address, uInt8 value) {delayedWrite(address, value);}
@@ -1244,7 +1244,7 @@ void TIA::cycle(uInt32 colorClocks)
 
     myAudio.tick();
 
-    myTimestamp++;
+    ++myTimestamp;
   }
 }
 
@@ -1267,7 +1267,7 @@ void TIA::tickMovement()
     myMovementInProgress = m;
     myCollisionUpdateRequired = m;
 
-    myMovementClock++;
+    ++myMovementClock;
   }
 }
 
@@ -1331,7 +1331,7 @@ void TIA::nextLine()
 
   myHctr = 0;
 
-  if (!myMovementInProgress && myLinesSinceChange < 2) myLinesSinceChange++;
+  if (!myMovementInProgress && myLinesSinceChange < 2) ++myLinesSinceChange;
 
   myHstate = HState::blank;
   myHctrDelta = 0;
@@ -1448,7 +1448,7 @@ void TIA::flushLineCache()
   if (wasCaching) {
     const auto rewindCycles = myHctr;
 
-    for (myHctr = 0; myHctr < rewindCycles; myHctr++) {
+    for (myHctr = 0; myHctr < rewindCycles; ++myHctr) {
       if (myHstate == HState::blank)
         tickHblank();
       else

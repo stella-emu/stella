@@ -38,9 +38,8 @@ struct Point
   Point() : x(0), y(0) { }
   Point(const Point& p) : x(p.x), y(p.y) { }
   explicit Point(uInt32 x1, uInt32 y1) : x(x1), y(y1) { }
-  Point(const string& p) {
+  Point(const string& p) : x(0), y(0) {
     char c = '\0';
-    x = y = 0;
     istringstream buf(p);
     buf >> x >> c >> y;
     if(c != 'x')
@@ -64,9 +63,8 @@ struct Size
   Size() : w(0), h(0) { }
   Size(const Size& s) : w(s.w), h(s.h) { }
   explicit Size(uInt32 w1, uInt32 h1) : w(w1), h(h1) { }
-  Size(const string& s) {
+  Size(const string& s) : w(0), h(0) {
     char c = '\0';
-    w = h = 0;
     istringstream buf(s);
     buf >> w >> c >> h;
     if(c != 'x')

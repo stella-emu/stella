@@ -75,7 +75,7 @@ void AudioChannel::phase0()
   if (myDivCounter == myAudf || myDivCounter == 0x1f) {
     myDivCounter = 0;
   } else {
-    myDivCounter++;
+    ++myDivCounter;
   }
 }
 

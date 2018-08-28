@@ -88,16 +88,16 @@ void DelayQueueMember<capacity>::remove(uInt8 address)
 {
   uInt8 index;
 
-  for (index = 0; index < mySize; index++) {
+  for (index = 0; index < mySize; ++index) {
     if (myEntries[index].address == address) break;
   }
 
   if (index < mySize) {
-    for (uInt8 i = index + 1; i < mySize; i++) {
+    for (uInt8 i = index + 1; i < mySize; ++i) {
       myEntries[i-1] = myEntries[i];
     }
 
-    mySize--;
+    --mySize;
   }
 }
 

@@ -978,7 +978,7 @@ void DeveloperDialog::handleSize()
       }
     }
     if(!found)
-      interval--;
+      --interval;
   } while(!found);
 
   if(size < uncompressed)

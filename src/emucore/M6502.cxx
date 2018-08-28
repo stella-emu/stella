@@ -131,7 +131,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   // TODO - move this logic directly into CartAR
   if(address != myLastAddress)
   {
-    myNumberOfDistinctAccesses++;
+    ++myNumberOfDistinctAccesses;
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
@@ -168,7 +168,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
   // TODO - move this logic directly into CartAR
   if(address != myLastAddress)
   {
-    myNumberOfDistinctAccesses++;
+    ++myNumberOfDistinctAccesses;
     myLastAddress = address;
   }
   ////////////////////////////////////////////////

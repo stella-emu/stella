@@ -257,38 +257,38 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
     {
       // Store back into displayed frame buffer (for next frame)
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
     }
     // finish final pixels
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
 #if 0
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
 #endif
 
     atari_in += in_width;
@@ -334,9 +334,9 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
   initFilters(impl, setup);
 
   /* generate gamma table */
-  if ( gamma_size > 1 )
+  if (true)  /* was (gamma_size > 1) */
   {
-    float const to_float = 1.0f / (gamma_size - (gamma_size > 1));
+    float const to_float = 1.0f / (gamma_size - 1/*(gamma_size > 1)*/);
     float const gamma = 1.1333f - float(setup.gamma) * 0.5f;
     /* match common PC's 2.2 gamma to TV's 2.65 gamma */
     int i;
@@ -369,8 +369,10 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
         *out++ = i * s + q * c;
       }
       while ( --n2 );
+    #if 0  // burst_count is always 0
       if ( burst_count > 1 )
         ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
+    #endif
     }
     while ( --n );
   }
@@ -537,7 +539,7 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
         }
       }
     }
-    while ( alignment_count > 1 && --alignment_remain );
+    while ( /*alignment_count > 1 && */ --alignment_remain );
   }
   while ( --burst_remain );
 }

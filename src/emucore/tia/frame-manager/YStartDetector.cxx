@@ -84,7 +84,7 @@ void YStartDetector::onNextLine()
       // We start counting the number of "lines spent while waiting for vsync start" from
       // the "ideal" frame size (corrected by the three scanlines spent in vsync).
       if (myCurrentFrameTotalLines > frameLines - 3 || myTotalFrames == 0)
-        myLinesWaitingForVsyncToStart++;
+        ++myLinesWaitingForVsyncToStart;
 
       if (myLinesWaitingForVsyncToStart > Metrics::waitForVsync) setState(State::waitForVsyncEnd);
 
@@ -97,7 +97,7 @@ void YStartDetector::onNextLine()
 
     case State::waitForFrameStart:
       if (shouldTransitionToFrame()) setState(State::waitForVsyncStart);
-      else myCurrentVblankLines++;
+      else ++myCurrentVblankLines;
 
       break;
 
@@ -126,7 +126,7 @@ bool YStartDetector::shouldTransitionToFrame()
         // Is this same scanline in which the transition ocurred last frame?
         if (myTotalFrames > Metrics::initialGarbageFrames && myCurrentVblankLines == myLastVblankLines)
           // Yes? -> Increase the number of stable frames
-          myStableVblankFrames++;
+          ++myStableVblankFrames;
         else
           // No? -> Frame start shifted again, set the number of consecutive stable frames to zero
           myStableVblankFrames = 0;
@@ -160,7 +160,7 @@ bool YStartDetector::shouldTransitionToFrame()
           myVblankViolations = 0;
         else {
           // Record a violation if it wasn't recorded before
-          if (!myVblankViolated) myVblankViolations++;
+          if (!myVblankViolated) ++myVblankViolations;
           myVblankViolated = true;
         }
 
@@ -169,7 +169,7 @@ bool YStartDetector::shouldTransitionToFrame()
       // The algorithm tells us to transition although we haven't reached the trip line before
       } else if (shouldTransition) {
         // Record a violation if it wasn't recorded before
-        if (!myVblankViolated) myVblankViolations++;
+        if (!myVblankViolated) ++myVblankViolations;
         myVblankViolated = true;
       }
 

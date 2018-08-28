@@ -100,7 +100,7 @@ void Missile::resm(uInt8 counter, bool hblank)
 
         case 2:
           if (hblank) myIsRendering = myRenderCounter > 1;
-          else if (myRenderCounter == 0) myRenderCounter++;
+          else if (myRenderCounter == 0) ++myRenderCounter;
 
           break;
 
@@ -193,7 +193,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
           switch ((hclock + 1) % 4) {
             case 3:
               myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
-              if (myWidth < 4) myRenderCounter++;
+              if (myWidth < 4) ++myRenderCounter;
               break;
 
             case 2:

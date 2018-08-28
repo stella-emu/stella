@@ -350,9 +350,9 @@ void TIASurface::render()
         {
           // Store back into displayed frame buffer (for next frame)
           rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
-          bufofs++;
+          ++bufofs;
           rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
-          bufofs++;
+          ++bufofs;
         }
         screenofsY += outPitch;
       }

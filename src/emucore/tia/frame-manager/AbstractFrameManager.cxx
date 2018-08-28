@@ -44,7 +44,7 @@ void AbstractFrameManager::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AbstractFrameManager::nextLine()
 {
-  myCurrentFrameTotalLines++;
+  ++myCurrentFrameTotalLines;
 
   onNextLine();
 }
@@ -96,7 +96,7 @@ void AbstractFrameManager::notifyFrameComplete()
   myPreviousFrameFinalLines = myCurrentFrameFinalLines;
   myCurrentFrameFinalLines = myCurrentFrameTotalLines;
   myCurrentFrameTotalLines = 0;
-  myTotalFrames++;
+  ++myTotalFrames;
 
   if (myOnFrameComplete) myOnFrameComplete();
 }

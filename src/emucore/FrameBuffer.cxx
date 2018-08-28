@@ -166,7 +166,7 @@ void FrameBuffer::setUIPalette()
 FBInitStatus FrameBuffer::createDisplay(const string& title,
                                         uInt32 width, uInt32 height)
 {
-  myInitializedCount++;
+  ++myInitializedCount;
   myScreenTitle = title;
 
   // A 'windowed' system is defined as one where the window size can be
@@ -1093,7 +1093,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xc9af7c, 0xf0f0cf, 0xd55941, 0xc80000,                     // UI elements
     0xac3410, 0xd55941, 0x686868, 0xdccfa5, 0xf0f0cf, 0xf0f0cf, // buttons
     0xac3410,                                                   // checkbox
-    0xac3410, 0xd55941,                                         // scrollbar    
+    0xac3410, 0xd55941,                                         // scrollbar
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
     0xac3410, 0xd55941, 0xdccfa5, 0xf0f0cf, 0xa38c61,           // slider
     0xffffff, 0xac3410, 0xf0f0cf, 0x686868, 0xdccfa5            // other
@@ -1104,7 +1104,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0x000000, 0x000000, 0x00ff00, 0xc80000,                     // UI elements
     0x000000, 0x000000, 0x686868, 0x00ff00, 0x20a020, 0x00ff00, // buttons
     0x20a020,                                                   // checkbox
-    0x20a020, 0x00ff00,                                         // scrollbar    
+    0x20a020, 0x00ff00,                                         // scrollbar
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
     0x20a020, 0x00ff00, 0x404040, 0x686868, 0x404040,           // slider
     0x00ff00, 0x20a020, 0x000000, 0x686868, 0x404040            // other
@@ -1115,7 +1115,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xf0f0f0, 0xffffff, 0x0078d7, 0x0f0f0f,                     // UI elements
     0xe1e1e1, 0xe5f1fb, 0x808080, 0x0078d7, 0x000000, 0x000000, // buttons
     0x333333,                                                   // checkbox
-    0xc0c0c0, 0x808080,                                         // scrollbar    
+    0xc0c0c0, 0x808080,                                         // scrollbar
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
     0x333333, 0x0078d7, 0xc0c0c0, 0xffffff, 0xc0c0c0,           // slider 0xBDDEF9| 0xe1e1e1 | 0xffffff
     0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other

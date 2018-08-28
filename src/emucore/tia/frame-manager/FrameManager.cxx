@@ -70,13 +70,13 @@ void FrameManager::onNextLine()
   Int32 jitter;
 
   State previousState = myState;
-  myLineInState++;
+  ++myLineInState;
 
   switch (myState)
   {
     case State::waitForVsyncStart:
       if ((myCurrentFrameTotalLines > myFrameLines - 3) || myTotalFrames == 0)
-        myVsyncLines++;
+        ++myVsyncLines;
 
       if (myVsyncLines > Metrics::maxLinesVsync) setState(State::waitForFrameStart);
 
@@ -107,7 +107,7 @@ void FrameManager::onNextLine()
       throw runtime_error("frame manager: invalid state");
   }
 
-  if (myState == State::frame && previousState == State::frame) myY++;
+  if (myState == State::frame && previousState == State::frame) ++myY;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

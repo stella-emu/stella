@@ -67,7 +67,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 
   int lwidth = 12 * fontWidth;
   xpos += 5;  ypos += lineHeight + 4;
-  for(uInt8 i = 0; i < kLINES_PER_PAGE; i++)
+  for(uInt8 i = 0; i < kLINES_PER_PAGE; ++i)
   {
     myKey[i] =
       new StaticTextWidget(this, font, xpos, ypos, lwidth,
@@ -179,7 +179,7 @@ void HelpDialog::displayInfo()
   updateStrings(myPage, kLINES_PER_PAGE, titleStr);
 
   myTitle->setLabel(titleStr);
-  for(uInt8 i = 0; i < kLINES_PER_PAGE; i++)
+  for(uInt8 i = 0; i < kLINES_PER_PAGE; ++i)
   {
     myKey[i]->setLabel(myKeyStr[i]);
     myDesc[i]->setLabel(myDescStr[i]);
@@ -193,7 +193,7 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case GuiObject::kNextCmd:
-      myPage++;
+      ++myPage;
       if(myPage >= myNumPages)
         myNextButton->clearFlags(WIDGET_ENABLED);
       if(myPage >= 2)
@@ -203,7 +203,7 @@ void HelpDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case GuiObject::kPrevCmd:
-      myPage--;
+      --myPage;
       if(myPage <= myNumPages)
         myNextButton->setFlags(WIDGET_ENABLED);
       if(myPage <= 1)

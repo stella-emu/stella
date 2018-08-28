@@ -27,6 +27,7 @@
 CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
                                    const Settings& settings)
   : Cartridge(settings),
+    mySize(std::min(size, 32768u)),
     myFastFetch(false),
     myLDAimmediate(false),
     myParameterPointer(0),
@@ -37,7 +38,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
 {
   // Image is always 32K, but in the case of ROM > 29K, the image is
   // copied to the end of the buffer
-  mySize = std::min(size, 32768u);
   if(mySize < 32768u)
     memset(myImage, 0, 32768);
   memcpy(myImage + (32768u - mySize), image.get(), size);

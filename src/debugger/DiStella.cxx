@@ -750,7 +750,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         break;
 
       case IMMEDIATE:
-        myPC++;
+        ++myPC;
         break;
 
       case ABSOLUTE_X:
@@ -764,11 +764,11 @@ void DiStella::disasmFromAddress(uInt32 distart)
         break;
 
       case INDIRECT_X:
-        myPC++;
+        ++myPC;
         break;
 
       case INDIRECT_Y:
-        myPC++;
+        ++myPC;
         break;
 
       case ZERO_PAGE_X:

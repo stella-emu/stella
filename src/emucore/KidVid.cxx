@@ -116,8 +116,8 @@ cerr << "myTape = " << myTape << endl;
     IOPortA = (IOPortA & 0xf7) | (((ourKVData[myIdx >> 3] << (myIdx & 0x07)) & 0x80) >> 4);
 
     // increase to next bit
-    myIdx++;
-    myBlockIdx--;
+    ++myIdx;
+    --myBlockIdx;
 
     // increase to next block (byte)
     if(myBlockIdx == 0)
@@ -147,7 +147,7 @@ cerr << "myTape = " << myTape << endl;
           }
         }
       }
-      myBlock++;
+      ++myBlock;
       myBlockIdx = KVBLOCKBITS;
     }
   }
@@ -237,7 +237,7 @@ void KidVid::setNextSong()
       ; // fseek(mySampleFile, ourSongStart[temp], SEEK_SET);
 #endif
 
-    myFilePointer++;
+    ++myFilePointer;
     myTapeBusy = true;
   }
   else

@@ -89,8 +89,8 @@ void Driving::update()
     if(myControlIDY > -1)
     {
       int m_axis = myEvent.get(Event::MouseAxisYValue);
-      if(m_axis < -2)     myCounter--;
-      else if(m_axis > 2) myCounter++;
+      if(m_axis < -2)     --myCounter;
+      else if(m_axis > 2) ++myCounter;
       if(myEvent.get(Event::MouseButtonRightValue))
         myDigitalPinState[Six] = false;
     }
