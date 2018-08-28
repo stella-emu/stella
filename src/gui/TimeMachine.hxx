@@ -30,7 +30,7 @@ class OSystem;
 class TimeMachine : public DialogContainer
 {
   public:
-    TimeMachine(OSystem& osystem);
+    explicit TimeMachine(OSystem& osystem);
     virtual ~TimeMachine() = default;
 
     /**

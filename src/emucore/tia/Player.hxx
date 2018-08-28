@@ -26,7 +26,7 @@ class TIA;
 class Player : public Serializable
 {
   public:
-    Player(uInt32 collisionMask);
+    explicit Player(uInt32 collisionMask);
 
   public:
 

@@ -26,7 +26,7 @@ class TIA;
 class Playfield : public Serializable
 {
   public:
-    Playfield(uInt32 collisionMask);
+    explicit Playfield(uInt32 collisionMask);
 
   public:
 

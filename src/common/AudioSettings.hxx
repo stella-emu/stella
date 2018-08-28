@@ -67,7 +67,7 @@ class AudioSettings
 
     AudioSettings();
 
-    AudioSettings(Settings* mySettings);
+    explicit AudioSettings(Settings* mySettings);
 
     static void normalize(Settings& settings);
 

@@ -47,7 +47,7 @@ class TIASurface
     /**
       Creates a new TIASurface object
     */
-    TIASurface(OSystem& system);
+    explicit TIASurface(OSystem& system);
 
     /**
       Set the TIA object, which is needed for actually rendering the TIA image.

@@ -34,7 +34,7 @@ class StringParser
 
       @param str  The string to split
     */
-    StringParser(const string& str)
+    explicit StringParser(const string& str)
     {
       istringstream buf(str);
       string line;

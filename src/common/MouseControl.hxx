@@ -80,7 +80,7 @@ class MouseControl
       int xid, yid;
       string message;
 
-      MouseMode(const string& msg = "")
+      explicit MouseMode(const string& msg = "")
         : xtype(Controller::Joystick),
           ytype(Controller::Joystick),
           xid(-1),

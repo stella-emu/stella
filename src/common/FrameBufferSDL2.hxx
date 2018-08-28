@@ -40,7 +40,7 @@ class FrameBufferSDL2 : public FrameBuffer
     /**
       Creates a new SDL2 framebuffer
     */
-    FrameBufferSDL2(OSystem& osystem);
+    explicit FrameBufferSDL2(OSystem& osystem);
     virtual ~FrameBufferSDL2();
 
     //////////////////////////////////////////////////////////////////////

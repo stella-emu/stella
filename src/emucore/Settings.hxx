@@ -36,7 +36,7 @@ class Settings
     /**
       Create a new settings abstract class
     */
-    Settings(OSystem& osystem);
+    explicit Settings(OSystem& osystem);
     virtual ~Settings() = default;
 
   public:

@@ -43,7 +43,7 @@ class StateManager
     /**
       Create a new statemananger class.
     */
-    StateManager(OSystem& osystem);
+    explicit StateManager(OSystem& osystem);
     ~StateManager();
 
   public:

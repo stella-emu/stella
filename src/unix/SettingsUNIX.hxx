@@ -33,7 +33,7 @@ class SettingsUNIX : public Settings
     /**
       Create a new UNIX settings object
     */
-    SettingsUNIX(OSystem& osystem);
+    explicit SettingsUNIX(OSystem& osystem);
     virtual ~SettingsUNIX() = default;
 
   private:

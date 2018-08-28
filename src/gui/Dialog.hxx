@@ -165,7 +165,7 @@ class Dialog : public GuiObject
       Widget* widget;
       WidgetArray list;
 
-      Focus(Widget* w = nullptr) : widget(w) { }
+      explicit Focus(Widget* w = nullptr) : widget(w) { }
       virtual ~Focus() = default;
 
       Focus(const Focus&) = default;
@@ -178,7 +178,7 @@ class Dialog : public GuiObject
       FocusList focus;
       uInt32 currentTab;
 
-      TabFocus(TabWidget* w = nullptr) : widget(w), currentTab(0) { }
+      explicit TabFocus(TabWidget* w = nullptr) : widget(w), currentTab(0) { }
       virtual ~TabFocus() = default;
 
       TabFocus(const TabFocus&) = default;

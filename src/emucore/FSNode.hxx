@@ -261,7 +261,7 @@ class FilesystemNode
 
   private:
     AbstractFSNodePtr _realNode;
-    FilesystemNode(AbstractFSNodePtr realNode);
+    explicit FilesystemNode(AbstractFSNodePtr realNode);
 };
 
 

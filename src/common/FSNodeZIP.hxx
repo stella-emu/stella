@@ -43,7 +43,7 @@ class FilesystemNodeZIP : public AbstractFSNode
      *
      * @param path  String with the path the new node should point to.
      */
-    FilesystemNodeZIP(const string& path);
+    explicit FilesystemNodeZIP(const string& path);
 
     bool exists() const override     { return _realNode && _realNode->exists(); }
     const string& getName() const override { return _name;      }

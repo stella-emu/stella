@@ -27,7 +27,7 @@ template<unsigned length, unsigned capacity>
 class DelayQueueIteratorImpl : public DelayQueueIterator
 {
   public:
-    DelayQueueIteratorImpl(const DelayQueue<length, capacity>& delayQueue);
+    explicit DelayQueueIteratorImpl(const DelayQueue<length, capacity>& delayQueue);
 
   public:
 

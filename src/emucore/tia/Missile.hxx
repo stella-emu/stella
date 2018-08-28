@@ -28,7 +28,7 @@ class Missile : public Serializable
 {
   public:
 
-    Missile(uInt32 collisionMask);
+    explicit Missile(uInt32 collisionMask);
 
   public:
 

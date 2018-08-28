@@ -27,7 +27,7 @@ class Ball : public Serializable
 {
   public:
 
-    Ball(uInt32 collisionMask);
+    explicit Ball(uInt32 collisionMask);
 
   public:
 

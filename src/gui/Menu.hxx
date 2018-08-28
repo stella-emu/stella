@@ -33,7 +33,7 @@ class Menu : public DialogContainer
     /**
       Create a new menu stack
     */
-    Menu(OSystem& osystem);
+    explicit Menu(OSystem& osystem);
     virtual ~Menu() = default;
 
   private:

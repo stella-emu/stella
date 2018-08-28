@@ -34,7 +34,7 @@ class Random : public Serializable
     /**
       Create a new random number generator
     */
-    Random(uInt32 seed) { initSeed(seed); }
+    explicit Random(uInt32 seed) { initSeed(seed); }
 
     /**
       Re-initialize the random number generator with a new seed,

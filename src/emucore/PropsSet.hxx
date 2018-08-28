@@ -42,7 +42,7 @@ class PropertiesSet
     /**
       Create a properties set object from the specified properties file.
     */
-    PropertiesSet(const string& propsfile);
+    explicit PropertiesSet(const string& propsfile);
 
   public:
     /**

@@ -34,7 +34,7 @@ class CommandMenu : public DialogContainer
     /**
       Create a new menu stack
     */
-    CommandMenu(OSystem& osystem);
+    explicit CommandMenu(OSystem& osystem);
     virtual ~CommandMenu() = default;
 
   private:

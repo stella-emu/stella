@@ -46,7 +46,7 @@ class DialogContainer
     /**
       Create a new DialogContainer stack
     */
-    DialogContainer(OSystem& osystem);
+    explicit DialogContainer(OSystem& osystem);
     virtual ~DialogContainer();
 
   public:

@@ -62,7 +62,7 @@ class M6502 : public Serializable
     /**
       Create a new 6502 microprocessor.
     */
-    M6502(const Settings& settings);
+    explicit M6502(const Settings& settings);
     virtual ~M6502() = default;
 
   public:
