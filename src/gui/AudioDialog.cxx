@@ -110,7 +110,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "4 KB", 4096);
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth, lineHeight,
-                                    items, "Fragment size (*) ", lwidth);
+                                    items, "Fragment size", lwidth);
   wid.push_back(myFragsizePopup);
   ypos += lineHeight + VGAP;
 
@@ -121,7 +121,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "96000 Hz", 96000);
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth, lineHeight,
-                                items, "Sample rate (*) ", lwidth);
+                                items, "Sample rate", lwidth);
   wid.push_back(myFreqPopup);
   ypos += lineHeight + VGAP;
 
