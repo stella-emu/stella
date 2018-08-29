@@ -45,7 +45,7 @@ class TimeMachine : public DialogContainer
     void setEnterWinds(Int32 numWinds);
 
   private:
-    int myWidth;
+    uInt32 myWidth;
 
   private:
     // Following constructors and assignment operators not supported
