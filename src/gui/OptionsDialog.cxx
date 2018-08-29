@@ -260,10 +260,9 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       {
         uInt32 w = 0, h = 0;
         bool uselargefont = getResizableBounds(w, h);
-        const GUI::Rect& r = instance().frameBuffer().imageRect();
 
         myLoggerDialog = make_unique<LoggerDialog>(instance(), parent(),
-            instance().frameBuffer().font(), r.width(), r.height(), uselargefont);
+            instance().frameBuffer().font(), w, h, uselargefont);
       }
       myLoggerDialog->open();
       break;
