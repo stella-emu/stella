@@ -144,7 +144,7 @@ void TIA::reset()
   myHstate = HState::blank;
   myCollisionMask = 0;
   myLinesSinceChange = 0;
-  myCollisionUpdateRequired = false;
+  myCollisionUpdateRequired = myCollisionUpdateScheduled = false;
   myColorLossEnabled = myColorLossActive = false;
   myColorHBlank = 0;
   myLastCycle = 0;

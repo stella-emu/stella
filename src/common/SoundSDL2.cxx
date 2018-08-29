@@ -40,7 +40,10 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
     myIsInitializedFlag(false),
     myVolume(100),
     myVolumeFactor(0xffff),
+    myDevice(0),
+    myEmulationTiming(nullptr),
     myCurrentFragment(nullptr),
+    myUnderrun(false),
     myAudioSettings(audioSettings)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);

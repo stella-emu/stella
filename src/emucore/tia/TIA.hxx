@@ -747,6 +747,11 @@ class TIA : public Device
     bool myCollisionUpdateRequired;
 
     /**
+     * Force schedule a collision update
+     */
+    bool myCollisionUpdateScheduled;
+
+    /**
      * The collision latches are represented by 15 bits in a bitfield.
      */
     uInt32 myCollisionMask;
@@ -828,9 +833,6 @@ class TIA : public Device
      */
     bool myEnableJitter;
     uInt8 myJitterFactor;
-
-    // Force schedule a collision update
-    bool myCollisionUpdateScheduled;
 
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA

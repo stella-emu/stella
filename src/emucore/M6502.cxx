@@ -59,6 +59,7 @@ M6502::M6502(const Settings& settings)
     icycles(0),
     myNumberOfDistinctAccesses(0),
     myLastAddress(0),
+    myLastBreakCycle(ULLONG_MAX),
     myLastPeekAddress(0),
     myLastPokeAddress(0),
     myLastPeekBaseAddress(0),
