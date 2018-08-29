@@ -31,21 +31,13 @@ TimeMachine::TimeMachine(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachine::requestResize()
 {
-  uInt32 w, h;
-  myBaseDialog->getResizableBounds(w, h);
-
-  // If dialog is too large for given area, we need to resize it
-  // Otherwise, make it 80% of the allowable width
-  int newWidth = myWidth;
-  if(w < FrameBuffer::kFBMinW)
-    newWidth = w;
-  else if(myBaseDialog->getWidth() != 0.8 * w)
-    newWidth = uInt32(0.8 * w);
+  uInt32 w = 0, h = 0;
+  myBaseDialog->getDynamicBounds(w, h);
 
   // Only re-create when absolutely necessary
-  if(myWidth != newWidth)
+  if(myWidth != w)
   {
-    myWidth = newWidth;
+    myWidth = w;
     Dialog* oldPtr = myBaseDialog;
     Int32 enterWinds = static_cast<TimeMachineDialog*>(myBaseDialog)->getEnterWinds();
     delete myBaseDialog;

@@ -798,28 +798,20 @@ Widget* Dialog::TabFocus::getNewFocus()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::getResizableBounds(uInt32& w, uInt32& h) const
+bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
 {
   const GUI::Rect& r = instance().frameBuffer().imageRect();
-  bool ntsc = true;
-
-  if(instance().hasConsole())
-  {
-    ntsc = instance().console().tia().frameLayout() == FrameLayout::ntsc;
-  }
-
-  uInt32 aspect = instance().settings().getInt(ntsc ?"tia.aspectn" : "tia.aspectp");
 
   if(r.width() <= FrameBuffer::kFBMinW || r.height() <= FrameBuffer::kFBMinH)
   {
-    w = uInt32(aspect * FrameBuffer::kTIAMinW) * 2 / 100;
-    h = FrameBuffer::kTIAMinH * 2;
+    w = r.width();
+    h = r.height();
     return false;
   }
   else
   {
-    w = std::max(uInt32(aspect * r.width() / 100), uInt32(FrameBuffer::kFBMinW));
-    h = std::max(uInt32(aspect * r.height() / 100), uInt32(FrameBuffer::kFBMinH));
+    w = uInt32(0.9 * r.width());
+    h = uInt32(0.9 * r.height());
     return true;
   }
 }

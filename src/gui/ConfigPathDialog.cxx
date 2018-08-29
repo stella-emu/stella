@@ -291,7 +291,7 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
 void ConfigPathDialog::createBrowser(const string& title)
 {
   uInt32 w = 0, h = 0;
-  getResizableBounds(w, h);
+  getDynamicBounds(w, h);
 
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||

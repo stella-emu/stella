@@ -72,7 +72,7 @@
 
   * Updated PAL palette.
 
-  * Aspect ratio now affects height instead of width (like on a real CRT)
+  * Aspect ratio now affects height instead of width (like on a real CRT).
 
   * For UNIX systems: in the ROM launcher, when using symlinks use the
     symlink pathname instead of the underlying filesystem pathname.
