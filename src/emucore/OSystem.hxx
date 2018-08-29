@@ -40,6 +40,7 @@ class StateManager;
 class TimerManager;
 class VideoDialog;
 class EmulationWorker;
+class AudioSettings;
 
 #include <chrono>
 
@@ -48,7 +49,6 @@ class EmulationWorker;
 #include "EventHandlerConstants.hxx"
 #include "FpsMeter.hxx"
 #include "bspf.hxx"
-#include "AudioSettings.hxx"
 
 /**
   This class provides an interface for accessing operating system specific
@@ -125,9 +125,11 @@ class OSystem
     bool hasConsole() const;
 
     /**
-      Get the audio settings ovject.
-     */
-    AudioSettings& audioSettings() { return myAudioSettings; }
+      Get the audio settings object of the system.
+
+      @return The audio settings object
+    */
+    AudioSettings& audioSettings() { return *myAudioSettings; }
 
     /**
       Get the serial port of the system.
@@ -445,6 +447,9 @@ class OSystem
     // Pointer to the (currently defined) Console object
     unique_ptr<Console> myConsole;
 
+    // Pointer to audio settings object
+    unique_ptr<AudioSettings> myAudioSettings;
+
     // Pointer to the serial port object
     unique_ptr<SerialPort> mySerialPort;
 
@@ -485,9 +490,6 @@ class OSystem
 
     // Indicates whether to stop the main loop
     bool myQuitLoop;
-
-    // Audio settings
-    AudioSettings myAudioSettings;
 
   private:
     string myBaseDir;

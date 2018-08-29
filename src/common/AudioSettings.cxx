@@ -42,17 +42,11 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioSettings::AudioSettings()
-  : mySettings(),
-    myIsPersistent(false)
-{}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioSettings::AudioSettings(Settings* settings)
+AudioSettings::AudioSettings(Settings& settings)
   : mySettings(settings),
     myIsPersistent(true)
 {
-  setPreset(normalizedPreset(mySettings->getInt(SETTING_PRESET)));
+  setPreset(normalizedPreset(mySettings.getInt(SETTING_PRESET)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,14 +107,14 @@ AudioSettings::Preset AudioSettings::preset()
 uInt32 AudioSettings::sampleRate()
 {
   updatePresetFromSettings();
-  return customSettings() ? convertInt(mySettings->getInt(SETTING_SAMPLE_RATE), DEFAULT_SAMPLE_RATE) : myPresetSampleRate;
+  return customSettings() ? convertInt(mySettings.getInt(SETTING_SAMPLE_RATE), DEFAULT_SAMPLE_RATE) : myPresetSampleRate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioSettings::fragmentSize()
 {
   updatePresetFromSettings();
-  return customSettings() ? convertInt(mySettings->getInt(SETTING_FRAGMENT_SIZE), DEFAULT_FRAGMENT_SIZE) : myPresetFragmentSize;
+  return customSettings() ? convertInt(mySettings.getInt(SETTING_FRAGMENT_SIZE), DEFAULT_FRAGMENT_SIZE) : myPresetFragmentSize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,7 +122,7 @@ uInt32 AudioSettings::bufferSize()
 {
   updatePresetFromSettings();
   // 0 is a valid value -> keep it
-  return customSettings() ? convertInt(mySettings->getInt(SETTING_BUFFER_SIZE), 0) : myPresetBufferSize;
+  return customSettings() ? convertInt(mySettings.getInt(SETTING_BUFFER_SIZE), 0) : myPresetBufferSize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,34 +130,34 @@ uInt32 AudioSettings::headroom()
 {
   updatePresetFromSettings();
   // 0 is a valid value -> keep it
-  return customSettings() ? convertInt(mySettings->getInt(SETTING_HEADROOM), 0) : myPresetHeadroom;
+  return customSettings() ? convertInt(mySettings.getInt(SETTING_HEADROOM), 0) : myPresetHeadroom;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioSettings::ResamplingQuality AudioSettings::resamplingQuality()
 {
   updatePresetFromSettings();
-  return customSettings() ? normalizeResamplingQuality(mySettings->getInt(SETTING_RESAMPLING_QUALITY)) : myPresetResamplingQuality;
+  return customSettings() ? normalizeResamplingQuality(mySettings.getInt(SETTING_RESAMPLING_QUALITY)) : myPresetResamplingQuality;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string AudioSettings::stereo() const
 {
   // 0 is a valid value -> keep it
-  return mySettings->getString(SETTING_STEREO);
+  return mySettings.getString(SETTING_STEREO);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioSettings::volume() const
 {
   // 0 is a valid value -> keep it
-  return convertInt(mySettings->getInt(SETTING_VOLUME), 0);
+  return convertInt(mySettings.getInt(SETTING_VOLUME), 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AudioSettings::enabled() const
 {
-  return mySettings->getBool(SETTING_ENABLED);
+  return mySettings.getBool(SETTING_ENABLED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,7 +206,7 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
       throw runtime_error("invalid preset");
   }
 
-  if (myIsPersistent) mySettings->setValue(SETTING_PRESET, static_cast<int>(myPreset));
+  if (myIsPersistent) mySettings.setValue(SETTING_PRESET, static_cast<int>(myPreset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,8 +214,8 @@ void AudioSettings::setSampleRate(uInt32 sampleRate)
 {
   if (!myIsPersistent) return;
 
-  mySettings->setValue(SETTING_SAMPLE_RATE, sampleRate);
-  normalize(*mySettings);
+  mySettings.setValue(SETTING_SAMPLE_RATE, sampleRate);
+  normalize(mySettings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,8 +223,8 @@ void AudioSettings::setFragmentSize(uInt32 fragmentSize)
 {
   if (!myIsPersistent) return;
 
-  mySettings->setValue(SETTING_FRAGMENT_SIZE, fragmentSize);
-  normalize(*mySettings);
+  mySettings.setValue(SETTING_FRAGMENT_SIZE, fragmentSize);
+  normalize(mySettings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -238,8 +232,8 @@ void AudioSettings::setBufferSize(uInt32 bufferSize)
 {
   if (!myIsPersistent) return;
 
-  mySettings->setValue(SETTING_BUFFER_SIZE, bufferSize);
-  normalize(*mySettings);
+  mySettings.setValue(SETTING_BUFFER_SIZE, bufferSize);
+  normalize(mySettings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -247,8 +241,8 @@ void AudioSettings::setHeadroom(uInt32 headroom)
 {
   if (!myIsPersistent) return;
 
-  mySettings->setValue(SETTING_HEADROOM, headroom);
-  normalize(*mySettings);
+  mySettings.setValue(SETTING_HEADROOM, headroom);
+  normalize(mySettings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -256,8 +250,8 @@ void AudioSettings::setResamplingQuality(AudioSettings::ResamplingQuality resamp
 {
   if (!myIsPersistent) return;
 
-  mySettings->setValue(SETTING_RESAMPLING_QUALITY, static_cast<int>(resamplingQuality));
-  normalize(*mySettings);
+  mySettings.setValue(SETTING_RESAMPLING_QUALITY, static_cast<int>(resamplingQuality));
+  normalize(mySettings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -265,7 +259,7 @@ void AudioSettings::setStereo(const string& mode)
 {
   if(!myIsPersistent) return;
 
-  mySettings->setValue(SETTING_STEREO, mode);
+  mySettings.setValue(SETTING_STEREO, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -273,8 +267,8 @@ void AudioSettings::setVolume(uInt32 volume)
 {
   if (!myIsPersistent) return;
 
-  mySettings->setValue(SETTING_VOLUME, volume);
-  normalize(*mySettings);
+  mySettings.setValue(SETTING_VOLUME, volume);
+  normalize(mySettings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -282,7 +276,7 @@ void AudioSettings::setEnabled(bool isEnabled)
 {
   if (!myIsPersistent) return;
 
-  mySettings->setValue(SETTING_ENABLED, isEnabled);
+  mySettings.setValue(SETTING_ENABLED, isEnabled);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,5 +296,5 @@ void AudioSettings::updatePresetFromSettings()
 {
   if (!myIsPersistent) return;
 
-  setPreset(normalizedPreset(mySettings->getInt(SETTING_PRESET)));
+  setPreset(normalizedPreset(mySettings.getInt(SETTING_PRESET)));
 }

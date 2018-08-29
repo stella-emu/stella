@@ -65,9 +65,7 @@ class AudioSettings
 
   public:
 
-    AudioSettings();
-
-    explicit AudioSettings(Settings* mySettings);
+    explicit AudioSettings(Settings& mySettings);
 
     static void normalize(Settings& settings);
 
@@ -117,7 +115,7 @@ class AudioSettings
 
   private:
 
-    Settings* mySettings;
+    Settings& mySettings;
 
     Preset myPreset;
 

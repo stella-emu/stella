@@ -214,7 +214,6 @@ void AudioDialog::saveConfig()
 
   // Stereo
   audioSettings.setStereo(myStereoSoundPopup->getSelectedTag().toString());
-  //TODO: instance().sound().setStereo(myStereoSoundPopup->getSelectedTag().toString());
 
   AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
   audioSettings.setPreset(preset);
