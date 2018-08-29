@@ -23,6 +23,7 @@
 #include "LauncherDialog.hxx"
 #include "PopUpWidget.hxx"
 #include "Settings.hxx"
+#include "FrameBuffer.hxx"
 #include "ConfigPathDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -292,11 +293,12 @@ void ConfigPathDialog::createBrowser(const string& title)
 {
   uInt32 w = 0, h = 0;
   getResizableBounds(w, h);
+  const GUI::Rect& r = instance().frameBuffer().imageRect();
 
   // Create file browser dialog
   if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
      uInt32(myBrowser->getHeight()) != h)
-    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
+    myBrowser = make_unique<BrowserDialog>(this, myFont, r.width()*0.95, r.height()*0.95, title);
   else
     myBrowser->setTitle(title);
 }
