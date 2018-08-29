@@ -810,8 +810,8 @@ bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
   }
   else
   {
-    w = uInt32(0.9 * r.width());
-    h = uInt32(0.9 * r.height());
+    w = uInt32(0.95 * r.width());
+    h = uInt32(0.95 * r.height());
     return true;
   }
 }
