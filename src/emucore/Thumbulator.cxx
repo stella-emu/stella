@@ -771,7 +771,7 @@ int Thumbulator::execute()
       if(rc & 0x80000000)
       {
         do_cflag_bit(1);
-        rc = ~0;
+        rc = ~0u;
       }
       else
       {
