@@ -917,9 +917,9 @@ VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
 {
-  // Height is modified by aspect ratio; other factors may be applied below
-  uInt32 iw = image.width();
-  uInt32 ih = image.height() / aspect * 100.0;
+  // Width is modified by aspect ratio; other factors may be applied below
+  uInt32 iw = uInt32(float(image.width() * aspect) / 100.0);
+  uInt32 ih = image.height();
 
   if(fsIndex != -1)
   {
