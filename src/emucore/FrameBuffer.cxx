@@ -812,8 +812,8 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
                      myDesktopSize.w, myDesktopSize.h);
 
     // Aspect ratio
-    uInt32 aspect = myOSystem.settings().getInt(myOSystem.console().timing() == ConsoleTiming::ntsc ?
-                      "tia.aspectn" : "tia.aspectp");
+    uInt32 aspect = myOSystem.settings().getInt(myOSystem.console().tia().frameLayout() == FrameLayout::ntsc ?
+                                                "tia.aspectn" : "tia.aspectp");
 
     // Figure our the smallest zoom level we can use
     uInt32 firstZoom = 2;
