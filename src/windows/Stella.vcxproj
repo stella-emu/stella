@@ -491,7 +491,6 @@
     <ClCompile Include="..\gui\InputTextDialog.cxx" />
     <ClCompile Include="..\gui\Launcher.cxx" />
     <ClCompile Include="..\gui\LauncherDialog.cxx" />
-    <ClCompile Include="..\gui\LauncherFilterDialog.cxx" />
     <ClCompile Include="..\gui\ListWidget.cxx" />
     <ClCompile Include="..\gui\Menu.cxx" />
     <ClCompile Include="..\gui\MessageBox.cxx" />
@@ -1105,7 +1104,6 @@
     <ClInclude Include="..\gui\InputTextDialog.hxx" />
     <ClInclude Include="..\gui\Launcher.hxx" />
     <ClInclude Include="..\gui\LauncherDialog.hxx" />
-    <ClInclude Include="..\gui\LauncherFilterDialog.hxx" />
     <ClInclude Include="..\gui\ListWidget.hxx" />
     <ClInclude Include="..\gui\Menu.hxx" />
     <ClInclude Include="..\gui\MessageBox.hxx" />

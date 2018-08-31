@@ -402,9 +402,6 @@
     <ClCompile Include="..\gui\LauncherDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\gui\LauncherFilterDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\gui\ListWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -1335,9 +1332,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\LauncherDialog.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\gui\LauncherFilterDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\ListWidget.hxx">
