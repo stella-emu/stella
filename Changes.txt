@@ -86,6 +86,10 @@
 
   * The debugger 'uhex' command is now honoured in CDF and BUS schemes.
 
+  * When switching screenmodes, the sound is now paused and later resumed.
+    This fixes popping and cracking sounds apparent on some systems, notably
+    OSX when toggling windowed/fullscreen mode.
+
   * Updated PAL palette.
 
   * For UNIX systems: in the ROM launcher, when using symlinks use the

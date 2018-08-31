@@ -73,9 +73,11 @@ class SoundSDL2 : public Sound
     /**
       Set the mute state of the sound object.  While muted no sound is played.
 
-      @param state  Mutes sound if true, unmute if false
+      @param state Mutes sound if true, unmute if false
+
+      @return  The previous (old) mute state
     */
-    void mute(bool state) override;
+    bool mute(bool state) override;
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -93,10 +95,6 @@ class SoundSDL2 : public Sound
                         amount based on the direction (1 = increase, -1 = decrease)
     */
     void adjustVolume(Int8 direction) override;
-
-    uInt32 getFragmentSize() const override;
-
-    uInt32 getSampleRate() const override;
 
   protected:
     /**

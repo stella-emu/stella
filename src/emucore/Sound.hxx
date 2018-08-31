@@ -64,18 +64,10 @@ class Sound
       Set the mute state of the sound object.  While muted no sound is played.
 
       @param state Mutes sound if true, unmute if false
-    */
-    virtual void mute(bool state) = 0;
 
-    /**
-      Get the fragment size.
+      @return  The previous (old) mute state
     */
-    virtual uInt32 getFragmentSize() const = 0;
-
-    /**
-      Get the sample rate.
-    */
-    virtual uInt32 getSampleRate() const = 0;
+    virtual bool mute(bool state) = 0;
 
     /**
       Sets the volume of the sound device to the specified level.  The

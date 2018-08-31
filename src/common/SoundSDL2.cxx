@@ -190,12 +190,13 @@ void SoundSDL2::close()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::mute(bool state)
+bool SoundSDL2::mute(bool state)
 {
+  bool oldstate = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
   if(myIsInitializedFlag)
-  {
     SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
-  }
+
+  return oldstate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -236,18 +237,6 @@ void SoundSDL2::adjustVolume(Int8 direction)
   message += strval.str();
 
   myOSystem.frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 SoundSDL2::getFragmentSize() const
-{
-  return myHardwareSpec.samples;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 SoundSDL2::getSampleRate() const
-{
-  return myHardwareSpec.freq;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

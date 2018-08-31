@@ -32,6 +32,7 @@
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "TIA.hxx"
+#include "Sound.hxx"
 
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
@@ -206,6 +207,10 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   const VideoMode& mode = getSavedVidMode(useFullscreen);
   if(width <= mode.screen.w && height <= mode.screen.h)
   {
+    // Changing the video mode can take some time, during which the last
+    // sound played may get 'stuck'
+    // So we mute the sound until the operation completes
+    bool oldMuteState = myOSystem.sound().mute(true);
     if(setVideoMode(myScreenTitle, mode))
     {
       myImageRect = mode.image;
@@ -220,6 +225,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
       myOSystem.settings().setValue("fullscreen", fullScreen());
       resetSurfaces();
       setCursorState();
+
+      myOSystem.sound().mute(oldMuteState);
     }
     else
     {
@@ -668,6 +675,11 @@ void FrameBuffer::setFullscreen(bool enable)
       return;
   }
 
+  // Changing the video mode can take some time, during which the last
+  // sound played may get 'stuck'
+  // So we mute the sound until the operation completes
+  bool oldMuteState = myOSystem.sound().mute(true);
+
   const VideoMode& mode = getSavedVidMode(enable);
   if(setVideoMode(myScreenTitle, mode))
   {
@@ -684,6 +696,7 @@ void FrameBuffer::setFullscreen(bool enable)
     resetSurfaces();
     setCursorState();
   }
+  myOSystem.sound().mute(oldMuteState);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -711,6 +724,11 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
   else
     return false;
 
+  // Changing the video mode can take some time, during which the last
+  // sound played may get 'stuck'
+  // So we mute the sound until the operation completes
+  bool oldMuteState = myOSystem.sound().mute(true);
+
   const VideoMode& mode = myCurrentModeList->current();
   if(setVideoMode(myScreenTitle, mode))
   {
@@ -723,8 +741,10 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
     resetSurfaces();
     showMessage(mode.description);
     myOSystem.settings().setValue("tia.zoom", mode.zoom);
+    myOSystem.sound().mute(oldMuteState);
     return true;
   }
+  myOSystem.sound().mute(oldMuteState);
 #endif
   return false;
 }
