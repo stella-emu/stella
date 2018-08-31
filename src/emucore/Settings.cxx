@@ -115,7 +115,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("exitlauncher", "false");
   setInternal("launcherres", GUI::Size(900, 600));
   setInternal("launcherfont", "medium");
-  setInternal("launcherexts", "allroms");
+  setInternal("launcherroms", "true");
   setInternal("romviewer", "1");
   setInternal("lastrom", "");
 
@@ -536,10 +536,7 @@ void Settings::usage() const
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
     << "                 large>\n"
-    << "  -launcherexts <allfiles|     Show files with the given extensions in ROM\n"
-    << "                                launcher\n"
-    << "                 allroms|        (exts is a ':' separated list of extensions)\n"
-    << "                 exts\n"
+    << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
     << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (0 for off)\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets\n"

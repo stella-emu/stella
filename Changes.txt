@@ -17,19 +17,19 @@
   * Note: because of major TIA sound changes, the state file format has
           changed, and old state files will not work with this release.
 
-  * New cycle exact audio core based on work by Chris Brenner (crispy); greatly
-    improved audio emulation accuracy (i.e. E.T., Ms. Pacman).
+  * New cycle exact audio core based on work by Chris Brenner (crispy);
+    greatly improved audio emulation accuracy (i.e. E.T., Ms. Pacman).
 
-  * Full rewrite of the audio subsystem; resample TIA output to target sample
-    rate directly in Stella.
+  * Full rewrite of the audio subsystem; resample TIA output to target
+    sample rate directly in Stella.
 
-  * Added option to force stereo sound for all ROMs, or to use the setting
-    on a per-ROM basis.
+  * Added option to force stereo sound for all ROMs, or to use the
+    setting on a per-ROM basis.
 
   * Threading: decouple emulation from frame rendering.
 
-  * Main loop rewritten; emulating speed and timing is now much more faithful
-    (i.e. speed in Pick'n'Pile).
+  * Main loop rewritten; emulating speed and timing is now much more
+    faithful (i.e. speed in Pick'n'Pile).
 
   * Audio settings replaced with new 'audio.xxx' settings.
 
@@ -43,10 +43,21 @@
   * UI modernization (new widget look, dialog titles added, dialogs
     refactored).
 
-  * Fixed excessive CPU usage while in UI modes (ROM launcher, debugger, etc).
+  * Fixed excessive CPU usage while in UI modes (ROM launcher, debugger,
+    etc).
+
+  * The bankswitch scheme can now be forced by naming the ROM with a
+    specific extension (ie: .f8s for F8SC, .fe for FE, etc).  The
+    supported extensions are the same as the ones from HarmonyCart and
+    UnoCart.
+
+  * The 'launcherexts' option has been replaced by a true/false option
+    named 'launcherroms', which specifies to show only ROMs or all files
+    in the ROM launcher.
 
   * Changes in 'Game Properties' dialog
-    - 'Default' button now affects only current tab like in all other dialogs.
+    - 'Default' button now affects only current tab like in all other
+      dialogs.
     - 'Display' and 'Console' tab changes are now immediate.
     - Fixed bug when selecting 'Auto-detect' format for 50Hz ROMs
 
@@ -78,8 +89,8 @@
   * The UNIX builds now use the system-installed PNG and ZLIB libraries
     by default.
 
-  * For better compatibility, the Windows 32-bit version does not require SSE2
-    anymore.
+  * For better compatibility, the Windows 32-bit version does not require
+    SSE2 anymore.
 
   * Updated included PNG library to latest stable version.
 

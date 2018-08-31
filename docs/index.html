@@ -42,7 +42,7 @@
         <li><a href="#ROMInfo">ROM Launcher</a></li>
         <ul>
           <li><a href="#ROMInfoViewer">ROM Launcher Viewer</a></li>
-          <li><a href="#ROMLauchnerContextMenu">ROM Launcher Context Menu</a></li>
+          <li><a href="#ROMLauncherContextMenu">ROM Launcher Context Menu</a></li>
         </ul>
         <li><a href="#ROMAudit">ROM Audit Mode</a></li>
         <li><a href="#Adaptor">Stelladaptor/2600-daptor Support</a></li>
@@ -255,8 +255,10 @@
     <li>Supports high quality TIA emulation using the TIA core from
       <a href="https://github.com/6502ts/6502.ts">6502.ts</a> by
       Christian Speckner</li>
-    <li>Supports high quality sound emulation using code derived from Ron Fries'
-      TIA Sound Emulation library, including stereo sound support</li>
+    <li>Supports high quality sound emulation using code derived from Chris Brenner's
+      Atari 2600 FPGA project, including cycle-accurate audio, analog interference
+      from mixing of audio channels, as well as stereo sound support; dynamic
+      sound resampling is also included</li>
     <li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard,
       joysticks or mouse</li>
     <li>Emulates the Atari 2600 Keyboard Controllers using your computer's keyboard</li>
@@ -287,6 +289,7 @@
     <li>Supports DPC+/CDF bankswitching schemes from the <a href="http://harmony.atariage.com">Harmony Cart</a>,
       including <a href="http://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
+    <li>Supports using ROM filename extensions to force specific bankswitching schemes</li>
     <li>Supports Supercharger single-load and multi-load games</li>
     <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual raw A26/BIN/ROM formats</li>
     <li>Supports property file for setting the properties associated with games</li>
@@ -2227,11 +2230,9 @@
     </tr>
 
     <tr>
-      <td><pre>-launcherexts &lt;allfiles|allroms|LIST&gt;</pre></td>
-      <td>Specifies which files to show in the ROM launcher
-        ('allfiles' is self-explanatory, 'allroms' is all files
-        with valid rom extensions (currently: a26, bin, rom,
-        gz, zip), 'LIST' is a ':' separated list of valid rom extensions.</td>
+      <td><pre>-launcherroms &lt;1|0&gt;</pre></td>
+      <td>Specifies whether to show ROMs only (the default) or all
+        files in the ROM launcher.</td>
     </tr>
 
     <tr>
@@ -2901,7 +2902,7 @@
   case sensitive, so you don't need to worry about capital or lower-case
   letters.</p>
 
-  <h3><b><a name="ROMLauchnerContextMenu">ROM Lauchner Context Menu</a></b></h3>
+  <h3><b><a name="ROMLauncherContextMenu">ROM Launcher Context Menu</a></b></h3>
 
   <p>The ROM launcher also contains a context menu, selected by clicking the
   right mouse button anywhere in the current window. This context menu
@@ -2938,23 +2939,14 @@
   </table>
     </li>
 
-    <li><p><b>Filter listing</b>: Selecting this option shows a dialog whereby
-    one can filter the types of files shown in the listing. The dialog is as
-    follows:</p>
-    <p><img src="graphics/launcher_filter.png"></p>
-    <p>Currently, the choices are as follows:</p>
-    <p><ul>
-      <li><b>All files</b> - self explanatory, show all files in the ROM
-        listing. This is the default, and emulates the behaviour of
-        all previous versions of Stella.</li>
-      <li><b>All roms</b> - show only files with a valid ROM extension.
-        Currently, this means extensions .a26, .bin, .rom, .gz, .zip.</li>
-      <li><b>ROMs ending with</b> - show only files with a ROM extension
-        as selected from the checkboxes.</li>
-      </ul></p>
-    </li>
 
-    <li><b>Reload listing</b>: Selecting this performs a reload of the
+    <br><li><b>Show only ROM files</b>: Selecting this reloads the current listing,
+    showing only files that have a valid ROM extension.</li>
+
+    <br><li><b>Show all files</b>: Selecting this reloads the current listing,
+    showing <i>all</i> files (with no restriction on file name).</li>
+
+    <br><li><b>Reload listing</b>: Selecting this performs a reload of the
     current listing. It is an alternative to pressing the Control-r
     key combo.</li>
   </ol></p>
