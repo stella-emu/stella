@@ -63,6 +63,11 @@
 
   * Fixed bug in autodetecting Genesis controllers.
 
+  * Fixed bug in reading from settings file with entries that were empty;
+    the parsing was failing.  This affected the 'cpurandom' argument; when
+    all options in it were turned off, they were all turned on again during
+    the next program run.
+
   * Fixed bug with 'hold' events; they are now released a short time after
     starting a ROM.
 
