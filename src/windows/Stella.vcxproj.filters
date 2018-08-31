@@ -942,6 +942,9 @@
     <ClCompile Include="..\common\TimerManager.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\Bankswitch.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1924,6 +1927,9 @@
     </ClInclude>
     <ClInclude Include="..\common\TimerManager.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\Bankswitch.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
