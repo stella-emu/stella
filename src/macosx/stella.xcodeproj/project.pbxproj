@@ -306,6 +306,8 @@
 		DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */; };
 		DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */; };
 		DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */; };
+		DC5963132139FA14002736F2 /* Bankswitch.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5963112139FA14002736F2 /* Bankswitch.cxx */; };
+		DC5963142139FA14002736F2 /* Bankswitch.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5963122139FA14002736F2 /* Bankswitch.hxx */; };
 		DC5AAC281FCB24AB00C420A6 /* EventHandlerConstants.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */; };
 		DC5AAC291FCB24AB00C420A6 /* FrameBufferConstants.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5AAC271FCB24AB00C420A6 /* FrameBufferConstants.hxx */; };
 		DC5AAC2C1FCB24DF00C420A6 /* RadioButtonWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5AAC2A1FCB24DF00C420A6 /* RadioButtonWidget.cxx */; };
@@ -321,8 +323,6 @@
 		DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */; };
 		DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */; };
 		DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */; };
-		DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */; };
-		DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */; };
 		DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */; };
 		DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */; };
 		DC62E6471960E87B007AEF05 /* AtariVoxWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC62E6431960E87B007AEF05 /* AtariVoxWidget.cxx */; };
@@ -496,7 +496,6 @@
 		DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */; };
 		DCAD60A91152F8BD00BC4184 /* CartDPCPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */; };
 		DCB20EC71A0C506C0048F595 /* main.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB20EC61A0C506C0048F595 /* main.cxx */; };
-		DCB2ECAE1F0AECA3009738A6 /* BSType.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB2ECAB1F0AECA3009738A6 /* BSType.hxx */; };
 		DCB2ECAF1F0AECA3009738A6 /* CartDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */; };
 		DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
@@ -1005,6 +1004,8 @@
 		DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PointingDevice.cxx; sourceTree = "<group>"; };
 		DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseControl.cxx; sourceTree = "<group>"; };
 		DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MouseControl.hxx; sourceTree = "<group>"; };
+		DC5963112139FA14002736F2 /* Bankswitch.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bankswitch.cxx; sourceTree = "<group>"; };
+		DC5963122139FA14002736F2 /* Bankswitch.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Bankswitch.hxx; sourceTree = "<group>"; };
 		DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EventHandlerConstants.hxx; sourceTree = "<group>"; };
 		DC5AAC271FCB24AB00C420A6 /* FrameBufferConstants.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameBufferConstants.hxx; sourceTree = "<group>"; };
 		DC5AAC2A1FCB24DF00C420A6 /* RadioButtonWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RadioButtonWidget.cxx; sourceTree = "<group>"; };
@@ -1020,8 +1021,6 @@
 		DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaFont.hxx; sourceTree = "<group>"; };
 		DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaLargeFont.hxx; sourceTree = "<group>"; };
 		DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaMediumFont.hxx; sourceTree = "<group>"; };
-		DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LauncherFilterDialog.cxx; sourceTree = "<group>"; };
-		DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LauncherFilterDialog.hxx; sourceTree = "<group>"; };
 		DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NTSCFilter.cxx; sourceTree = "<group>"; };
 		DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = NTSCFilter.hxx; sourceTree = "<group>"; };
 		DC62E6431960E87B007AEF05 /* AtariVoxWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AtariVoxWidget.cxx; sourceTree = "<group>"; };
@@ -1196,7 +1195,6 @@
 		DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDPCPlus.cxx; sourceTree = "<group>"; };
 		DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDPCPlus.hxx; sourceTree = "<group>"; };
 		DCB20EC61A0C506C0048F595 /* main.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cxx; sourceTree = "<group>"; };
-		DCB2ECAB1F0AECA3009738A6 /* BSType.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BSType.hxx; sourceTree = "<group>"; };
 		DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDetector.cxx; sourceTree = "<group>"; };
 		DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDetector.hxx; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MediaFactory.hxx; sourceTree = "<group>"; };
@@ -1713,9 +1711,10 @@
 				DC1B2EC01E50036100F62837 /* AtariMouse.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
 				DC487FB50DA5350900E12499 /* AtariVox.hxx */,
+				DC5963112139FA14002736F2 /* Bankswitch.cxx */,
+				DC5963122139FA14002736F2 /* Bankswitch.hxx */,
 				2DE2DF100627AE07006BEC99 /* Booster.cxx */,
 				2DE2DF110627AE07006BEC99 /* Booster.hxx */,
-				DCB2ECAB1F0AECA3009738A6 /* BSType.hxx */,
 				2DE2DF120627AE07006BEC99 /* Cart.cxx */,
 				2DE2DF130627AE07006BEC99 /* Cart.hxx */,
 				2DE2DF140627AE07006BEC99 /* Cart2K.cxx */,
@@ -1951,8 +1950,6 @@
 				2DDBEABB084578BF00812C11 /* Launcher.hxx */,
 				2DDBEABC084578BF00812C11 /* LauncherDialog.cxx */,
 				2DDBEABD084578BF00812C11 /* LauncherDialog.hxx */,
-				DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */,
-				DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */,
 				2DDBEAC0084578BF00812C11 /* ListWidget.cxx */,
 				2DDBEAC1084578BF00812C11 /* ListWidget.hxx */,
 				DC6C726013CDEA0A008A5975 /* LoggerDialog.cxx */,
@@ -2086,10 +2083,10 @@
 		DCC6A4AD20A2620D00863C59 /* audio */ = {
 			isa = PBXGroup;
 			children = (
-				E0893AF0211B9841008B170D /* HighPass.cxx */,
-				E0893AF1211B9841008B170D /* HighPass.hxx */,
 				E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */,
 				E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */,
+				E0893AF0211B9841008B170D /* HighPass.cxx */,
+				E0893AF1211B9841008B170D /* HighPass.hxx */,
 				E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */,
 				E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */,
 				DCC6A4AE20A2622500863C59 /* Resampler.hxx */,
@@ -2332,7 +2329,6 @@
 				DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */,
 				2D91745209BA90380026E9FF /* CommandDialog.hxx in Headers */,
 				2D91745309BA90380026E9FF /* CommandMenu.hxx in Headers */,
-				DCB2ECAE1F0AECA3009738A6 /* BSType.hxx in Headers */,
 				E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */,
 				2D91745509BA90380026E9FF /* CpuWidget.hxx in Headers */,
 				2D91745609BA90380026E9FF /* DataGridOpsWidget.hxx in Headers */,
@@ -2396,7 +2392,6 @@
 				DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */,
 				DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */,
 				DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */,
-				DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */,
 				DC3EE8681E2C0E6D00905161 /* inftrees.h in Headers */,
 				DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */,
 				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
@@ -2485,6 +2480,7 @@
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
 				DCAAE5E71715887B0080BB82 /* CartF4Widget.hxx in Headers */,
+				DC5963142139FA14002736F2 /* Bankswitch.hxx in Headers */,
 				DCAAE5E91715887B0080BB82 /* CartF6SCWidget.hxx in Headers */,
 				DCAAE5EB1715887B0080BB82 /* CartF6Widget.hxx in Headers */,
 				DCAAE5ED1715887B0080BB82 /* CartF8SCWidget.hxx in Headers */,
@@ -2751,6 +2747,7 @@
 				2D9174FA09BA90380026E9FF /* DebuggerDialog.cxx in Sources */,
 				DCF3A6E91DFC75E3008A8AF3 /* Ball.cxx in Sources */,
 				2D9174FB09BA90380026E9FF /* PromptWidget.cxx in Sources */,
+				DC5963132139FA14002736F2 /* Bankswitch.cxx in Sources */,
 				DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */,
 				2D9174FC09BA90380026E9FF /* RamWidget.cxx in Sources */,
 				DC2AADAE194F389C0026C7A4 /* CartDASH.cxx in Sources */,
@@ -2808,7 +2805,6 @@
 				DC173F760E2CAC1E00320F94 /* ContextMenu.cxx in Sources */,
 				DC2AADB4194F390F0026C7A4 /* CartRamWidget.cxx in Sources */,
 				DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */,
-				DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */,
 				DCF3A6EF1DFC75E3008A8AF3 /* DrawCounterDecodes.cxx in Sources */,
 				DC5AAC2C1FCB24DF00C420A6 /* RadioButtonWidget.cxx in Sources */,
 				DC9EA8870F729A36000452B5 /* KidVid.cxx in Sources */,
