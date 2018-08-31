@@ -221,10 +221,8 @@ void Settings::loadConfig()
       continue;
 
     // Split the line into key/value pairs and trim any whitespace
-    key   = line.substr(0, equalPos);
-    value = line.substr(equalPos + 1, line.length() - key.length() - 1);
-    key   = trim(key);
-    value = trim(value);
+    key   = trim(line.substr(0, equalPos));
+    value = trim(line.substr(equalPos + 1, line.length() - key.length() - 1));
 
     // Skip absent key
     if(key.length() == 0)

@@ -98,7 +98,7 @@ class Settings
     virtual void saveConfig();
 
     // Trim leading and following whitespace from a string
-    static string trim(string& str)
+    static string trim(const string& str)
     {
       string::size_type first = str.find_first_not_of(' ');
       return (first == string::npos) ? EmptyString :
