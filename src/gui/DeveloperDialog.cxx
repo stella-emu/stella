@@ -475,7 +475,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::loadSettings(SettingsSet set)
 {
-  string prefix = set == SettingsSet::player ? "plr." : "dev.";
+  const string& prefix = set == SettingsSet::player ? "plr." : "dev.";
 
   myFrameStats[set] = instance().settings().getBool(prefix + "stats");
   myConsole[set] = instance().settings().getString(prefix + "console") == "7800" ? 1 : 0;
@@ -509,7 +509,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveSettings(SettingsSet set)
 {
-  string prefix = set == SettingsSet::player ? "plr." : "dev.";
+  const string& prefix = set == SettingsSet::player ? "plr." : "dev.";
 
   instance().settings().setValue(prefix + "stats", myFrameStats[set]);
   instance().settings().setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");

@@ -226,8 +226,8 @@ void Settings::loadConfig()
     key   = trim(key);
     value = trim(value);
 
-    // Check for absent key or value
-    if((key.length() == 0) || (value.length() == 0))
+    // Skip absent key
+    if(key.length() == 0)
       continue;
 
     // Only settings which have been previously set are valid
