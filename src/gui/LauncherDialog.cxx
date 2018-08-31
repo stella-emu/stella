@@ -178,8 +178,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Create context menu for ROM list options
   VariantList l;
   VarList::push_back(l, "Power-on options" + ELLIPSIS, "override");
-  VarList::push_back(l, "Show only ROM files" + ELLIPSIS, "roms");
-  VarList::push_back(l, "Show all files" + ELLIPSIS, "allfiles");
+  VarList::push_back(l, "Show only ROM files", "roms");
+  VarList::push_back(l, "Show all files", "allfiles");
   VarList::push_back(l, "Reload listing", "reload");
   myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), l);
 
