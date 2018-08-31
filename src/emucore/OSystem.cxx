@@ -472,7 +472,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     string cartmd5 = md5;
     const string& type = props.get(Cartridge_Type);
     unique_ptr<Cartridge> cart =
-      CartDetector::create(image, size, cartmd5, type, *this);
+      CartDetector::create(romfile, image, size, cartmd5, type, *this);
 
     // It's possible that the cart created was from a piece of the image,
     // and that the md5 (and hence the cart) has changed

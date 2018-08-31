@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "BSType.hxx"
+#include "Bankswitch.hxx"
 #include "Console.hxx"
 #include "MouseControl.hxx"
 #include "SaveKey.hxx"
@@ -116,8 +116,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight, "Type (*)");
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
-  for(int i = 0; i < int(BSType::NumSchemes); ++i)
-    VarList::push_back(items, BSList[i].desc, BSList[i].name);
+  for(uInt32 i = 0; i < uInt32(Bankswitch::Type::NumSchemes); ++i)
+    VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, items, "");
   wid.push_back(myType);

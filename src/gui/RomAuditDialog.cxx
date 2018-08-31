@@ -17,7 +17,7 @@
 
 #include "bspf.hxx"
 #include "Launcher.hxx"
-#include "LauncherFilterDialog.hxx"
+#include "Bankswitch.hxx"
 #include "BrowserDialog.hxx"
 #include "DialogContainer.hxx"
 #include "EditTextWidget.hxx"
@@ -136,7 +136,7 @@ void RomAuditDialog::auditRoms()
   {
     string extension;
     if(files[idx].isFile() &&
-       LauncherFilterDialog::isValidRomName(files[idx], extension))
+       Bankswitch::isValidRomName(files[idx], extension))
     {
       bool renameSucceeded = false;
 

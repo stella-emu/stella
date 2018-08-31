@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "Bankswitch.hxx"
 #include "BrowserDialog.hxx"
 #include "ContextMenu.hxx"
 #include "DialogContainer.hxx"
@@ -200,9 +201,8 @@ const string& LauncherDialog::selectedRomMD5()
   if(item < 0)
     return EmptyString;
 
-  string extension;
   const FilesystemNode node(myGameList->path(item));
-  if(node.isDirectory() || !LauncherFilterDialog::isValidRomName(node, extension))
+  if(node.isDirectory() || !Bankswitch::isValidRomName(node))
     return EmptyString;
 
   // Make sure we have a valid md5 for this ROM
@@ -321,9 +321,8 @@ void LauncherDialog::loadRomInfo()
   int item = myList->getSelected();
   if(item < 0) return;
 
-  string extension;
   const FilesystemNode node(myGameList->path(item));
-  if(!node.isDirectory() && LauncherFilterDialog::isValidRomName(node, extension))
+  if(!node.isDirectory() && Bankswitch::isValidRomName(node))
   {
     // Make sure we have a valid md5 for this ROM
     if(myGameList->md5(item) == "")

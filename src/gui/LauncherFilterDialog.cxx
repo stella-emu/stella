@@ -124,27 +124,6 @@ bool LauncherFilterDialog::isValidRomName(const string& name,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherFilterDialog::isValidRomName(const FilesystemNode& node, string& ext)
-{
-  const string& name = node.getPath();
-  string::size_type idx = name.find_last_of('.');
-  if(idx != string::npos)
-  {
-    const char* const e = name.c_str() + idx + 1;
-
-    for(uInt32 i = 0; i < 5; ++i)
-    {
-      if(BSPF::equalsIgnoreCase(e, ourRomTypes[1][i]))
-      {
-        ext = e;
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherFilterDialog::loadConfig()
 {
   handleFileTypeChange(instance().settings().getString("launcherexts"));

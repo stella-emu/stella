@@ -47,14 +47,6 @@ class LauncherFilterDialog : public Dialog, public CommandSender
      */
     static bool isValidRomName(const string& name, const StringList& exts);
 
-    /**
-      Is this a valid ROM filename (does it have a valid extension?).
-
-      @param name  File node of potential ROM file
-      @param ext   The extension extracted from the given file
-     */
-    static bool isValidRomName(const FilesystemNode& name, string& ext);
-
   private:
     void loadConfig() override;
     void saveConfig() override;
