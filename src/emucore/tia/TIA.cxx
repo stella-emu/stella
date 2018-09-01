@@ -1242,7 +1242,9 @@ void TIA::cycle(uInt32 colorClocks)
     if (++myHctr >= 228)
       nextLine();
 
-    myAudio.tick();
+    #ifdef SOUND_SUPPORT
+      myAudio.tick();
+    #endif
 
     ++myTimestamp;
   }
