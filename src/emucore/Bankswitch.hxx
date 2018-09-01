@@ -91,8 +91,10 @@ class Bankswitch
       }
     };
     using ExtensionMap = std::map<string, Bankswitch::Type, TypeComparator>;
-
     static ExtensionMap ourExtensions;
+
+    using NameToTypeMap = std::map<string, Bankswitch::Type, TypeComparator>;
+    static NameToTypeMap ourNameToTypes;
 
   private:
     // Following constructors and assignment operators not supported
