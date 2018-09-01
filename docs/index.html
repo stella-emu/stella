@@ -252,11 +252,11 @@
 
   <ul>
     <li>High speed emulation using optimized C++14 code</li>
-    <li>Supports high quality TIA emulation using the TIA core from
+    <li>Supports high quality TIA emulation using the cycle-exact TIA core from
       <a href="https://github.com/6502ts/6502.ts">6502.ts</a> by
       Christian Speckner</li>
     <li>Supports high quality sound emulation using code derived from Chris Brenner's
-      Atari 2600 FPGA project, including cycle-accurate audio, analog interference
+      Atari 2600 FPGA project, including cycle-exact audio, analog interference
       from mixing of audio channels, as well as stereo sound support; dynamic
       sound resampling is also included</li>
     <li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard,
@@ -295,7 +295,7 @@
     <li>Supports property file for setting the properties associated with games</li>
     <li>Supports the NTSC, PAL and SECAM television standards in 50Hz and 60Hz mode</li>
     <li>Supports autodetection of display format for 50Hz vs. 60Hz modes</li>
-    <li>Supports several "undocumented features" of the TIA graphics chip used by
+    <li>Supports most "undocumented features" of the TIA graphics chip used by
       some games</li>
     <li>TIA emulation supports full collision checking, with ability to disable
       TIA sprites and collisions for each object separately</li>
@@ -490,12 +490,11 @@
     their ROM images</li>
 
     <li>If you're handy with a soldering iron then you can design and build a
-    device that plugs into the printer port of a PC and read the data from the
-    cartridge</li>
+    device that plugs into a PC and read the data from the cartridge</li>
   </ul>
 
-  <p><b>WARNING:</b> It is illegal to use ROM images of games that you do not
-  actually own since these games are still copyrighted.</p>
+  <p><b>WARNING:</b> It may be illegal to use ROM images of games that you do not
+  actually own since these games may still be copyrighted.</p>
 
   <p>
   <h3><b><u>Supercharger Cassettes</u></b></h3>
@@ -533,8 +532,24 @@
   <p>Stella supports ROMs ending with extensions .a26, .bin, .rom, .gz, and .zip.
   For the last two compressed formats (GZIP and ZIP, respectively), Stella will
   automatically decompress the archive, and use the first ROM image it finds in
-  it (ie, the first one ending in a valid extension).</p>
-  </blockquote>
+  it (ie, the first one ending in a valid extension).  If a ZIP archive contains
+  many such files, Stella will display a <i>virtual filesystem</i> of the contents
+  of the archive.</p>
+
+  <p>Other extensions are also possible, namely to force a specific bankswitch scheme.
+  Normally, the bankswitching scheme for a ROM is determined automatically,
+  or manually by setting a <a href="#Properties">ROM property</a>, and you never
+  have to do anything yourself.  However, it is also possible to force the
+  bankswitch type to use by adding a special filename extension.  These extensions
+  are listed in the <a href="#Properties">ROM properties</a> section under
+  <a href="#PropertiesCartType">Cartridge.Type -&gt; File Extension</a>.</p>
+
+  <p><b>Note:</b> These extensions are the same as those used by the Harmony Cart
+  and Unocart and are not case-sensitive, so you can name your files and have them
+  work across all applications.  <u>Again, to be clear, this is only necessary when
+  you want to override the default bankswitching scheme for a ROM.</u>  <b>This will
+  not normally be necessary.</b></p>
+
 
   <h2><b><a name="Playing">Playing a Game</a></b></h2>
 
@@ -554,15 +569,8 @@
 
   <p>If this is your first time starting Stella, you may have to navigate to your ROMs.
   The path of the first ROM you play automatically defines the default ROM path. You
-  can change it in the <b><a href="#ConfigPaths">Configure Paths</a></b> dialog.
+  can change it later in the <b><a href="#ConfigPaths">Configure Paths</a></b> dialog.
   </p>
-
-  <p>The browser should be self-explanatory. The 'Go Up' button moves to the parent
-  folder (if it exists), and the 'Base Dir' button moves to the base directory where,
-  by default, all Stella-related files are stored. Double-clicking an item will
-  enter that directory. Click 'Choose' to select the location, or 'Cancel' to exit
-  the browser. Note that if you don't select a ROM directory now, you will be prompted
-  again the next time Stella is started.</p>
 
   <p>At this point, you may want to set the locations for snapshots and other
   external paths. This is described in more detail in
@@ -571,13 +579,12 @@
   These settings are optional, and can be left at the defaults if you won't be using
   snapshots in the ROM launcher.</p>
 
-  <p>Once you've correctly set the default ROM directory, you can start emulation by
-  selecting a ROM and pressing 'Enter' or clicking 'Select', or double-clicking a ROM.
-  Note that some games require you to 'Reset' the console before you start playing. In this
-  case, you need to hit the virtual reset switch, which by default is the F2 key.
-  Also, some games may require that you press the joystick fire button to begin,
-  which by default is the Left Control or Space key(s). If a game uses a
-  more complex controller, see
+  <p>you can start emulation by selecting a ROM and pressing 'Enter' or clicking 'Select',
+  or double-clicking a ROM. Note that some games require you to 'Reset' the console
+  before you start playing. In this case, you need to hit the virtual reset switch,
+  which by default is the F2 key.  Also, some games may require that you press the
+  joystick fire button to begin, which by default is the Left Control or Space key(s),
+  or button 0 on your joystick.  If a game uses a more complex controller, see
   <b>Getting Started - <a href="#Keyboard">Keyboard Layout</a></b>
   for more information. To exit a game and re-enter the ROM launcher, press the 'Escape'
   key.</p>
@@ -1785,7 +1792,6 @@
   </blockquote>
 
 
-
   <br><br>
   <p><h2>
   <a name="TimeMachine">Stella's 'Time Machine'</a></h2>
@@ -1835,6 +1841,7 @@
 
   <p>The 'Time Machine' mode can be configured by the user. For details see
   <a href="#Debugger"><b>Developer Options</b> - Time Machine</a></h2> tab.</p>
+
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
   <br><br>
@@ -2977,9 +2984,9 @@
       don't use this function. There is no undo feature, and one won't be
       added.</li>
     <li>Only filenames that Stella considers to be valid ROMs will be
-      considered. Currently, this means files that end in '.a26',
-      '.bin', '.rom', '.gz' and '.zip'. Files which don't have these
-      extensions will be ignored.</li>
+      considered. Currently, this means files with extensions described in
+      "Supported File formats". Files which don't have these extensions will
+      be ignored.</li>
     <li>If a valid ROM doesn't have a properties entry, it will be
       ignored.</li>
   </ul>
@@ -3098,7 +3105,7 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Player/Developer settings</td><td>Selects the active settings set</td><td>-dev.settings</td></tr>
           <tr><td>Console info overlay</td><td>Overlay console info on the TIA image during emulation.</td><td>-plr.stats<br/>-dev.stats</td></tr>
-          <tr><td>Console</td><td>Select the console type, this affects Color/B&W/Pause key emulation and zero-page RAM initialzation</td><td>-plr.console <br/>-dev.console</td></tr>
+          <tr><td>Console</td><td>Select the console type, this affects Color/B&W/Pause key emulation and zero-page RAM initialization</td><td>-plr.console <br/>-dev.console</td></tr>
           <tr><td>Random startup bank</td><td>Randomize the startup bank (only for selected bankswitch types)</td><td>-plr.bankrandom<br/>-dev.bankrandom</td></tr>
           <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
           <tr><td>Randomize CPU</td><td>When loading a ROM, randomize the content of the specified CPU registers</td><td>-plr.cpurandom<br/>-dev.cpurandom</td></tr>
@@ -3186,7 +3193,7 @@
               will be compressed (*). This means that more and more intermediate
               states will be removed and the interval between save states
               becomes larger the further they are back in time.<br>
-              (*) Compresion only works if 'Uncompressed size' is smaller than
+              (*) Compression only works if 'Uncompressed size' is smaller than
               'Buffer size'.
             </td>
             <td>-plr.tm.horizon<br>-dev.tm.horizon</td>
@@ -3207,7 +3214,7 @@
           <tr><td>Font size</td><td>Self-explanatory</td><td>-dbg.fontsize</td></tr>
           <tr><td>Font style</td><td>Self-explanatory</td><td>-dbg.fontstyle</td></tr>
           <tr><td>Debugger width/height</td><td>Self-explanatory</td><td>-dbg.res</td></tr>
-          <tr><td>Trap on 'ghost' reads</td><td>Defines whether the debugger should consider CPU 'ghost' reads for trap adresses.</td><td><span style="white-space:nowrap">-dbg.ghostreadstrap</span></td></tr>
+          <tr><td>Trap on 'ghost' reads</td><td>Defines whether the debugger should consider CPU 'ghost' reads for trap addresses.</td><td><span style="white-space:nowrap">-dbg.ghostreadstrap</span></td></tr>
         </table>
       </td>
     </tr>
@@ -3543,7 +3550,7 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Type:</i></td>
+      <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cartridge.Type:</i></a></td>
       <td>Indicates the bank-switching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
       (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
@@ -3551,56 +3558,56 @@ Ms Pac-Man (Stella extended codes):
       as (&#185;) do not currently have reliable auto-detection, those marked as (&#178;)
       are not fully supported in the debugger:
       <table cellpadding="2" border="1">
-        <tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
-        <tr><td>0840 </td><td>8K ECONObanking </td></tr>
-        <tr><td>2IN1 &#185;</td><td>4-32K Multicart (2 games) </td></tr>
-        <tr><td>4IN1 &#185;</td><td>8-32K Multicart (4 games) </td></tr>
-        <tr><td>8IN1 &#185;</td><td>16-64K Multicart (8 games) </td></tr>
-        <tr><td>16IN1 &#185;</td><td>32-128K Multicart (16 games) </td></tr>
-        <tr><td>32IN1 &#185;</td><td>64-128K Multicart (32 games) </td></tr>
-        <tr><td>64IN1 &#185;</td><td>64/128K Multicart </td></tr>
-        <tr><td>128IN1 &#185;</td><td>256/512K Multicart </td></tr>
-        <tr><td>2K </td><td>64-2048 byte Atari </td></tr>
-        <tr><td>3E </td><td>32K Tigervision </td></tr>
-        <tr><td>3E+ </td><td>3E+ (TJ modified DASH) </td></tr>
-        <tr><td>3F </td><td>512K Tigervision </td></tr>
-        <tr><td>4A50 &#178;</td><td>64K 4A50 + ram </td></tr>
-        <tr><td>4K </td><td>4K Atari </td></tr>
-        <tr><td>4KSC </td><td>CPUWIZ 4K + ram </td></tr>
-        <tr><td>AR </td><td>Supercharger </td></tr>
-        <tr><td>BF </td><td>CPUWIZ 256K </td></tr>
-        <tr><td>BFSC </td><td>CPUWIZ 256K + ram</td></tr>
-        <tr><td>BUS </td><td>Experimental</td></tr>
-        <tr><td>CDF </td><td>Chris, Darrell, Fred</td></tr>
-        <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td></tr>
-        <tr><td>CTY &#185;&#178;</td><td>CDW - Chetiry </td></tr>
-        <tr><td>CV </td><td>Commavid extra ram </td></tr>
-        <tr><td>CV+ </td><td>Extended Commavid extra ram</td></tr>
-        <tr><td>DASH </td><td>Boulder Dash 2 </td></tr>
-        <tr><td>DF </td><td>CPUWIZ 128K </td></tr>
-        <tr><td>DFSC </td><td>CPUWIZ 128K + ram</td></tr>
-        <tr><td>DPC </td><td>Pitfall II </td></tr>
-        <tr><td>DPC+</td><td>Enhanced DPC </td></tr>
-        <tr><td>E0 </td><td>8K Parker Bros </td></tr>
-        <tr><td>E7 </td><td>16K M-network </td></tr>
-        <tr><td>E78K </td><td>8K M-network </td></tr>
-        <tr><td>EF </td><td>64K Homestar Runner </td></tr>
-        <tr><td>EFSC </td><td>64K Homestar Runner + ram</td></tr>
-        <tr><td>F0 </td><td>Dynacom Megaboy </td></tr>
-        <tr><td>F4 </td><td>32K Atari </td></tr>
-        <tr><td>F4SC </td><td>32K Atari + ram </td></tr>
-        <tr><td>F6 </td><td>16K Atari </td></tr>
-        <tr><td>F6SC </td><td>16K Atari + ram </td></tr>
-        <tr><td>F8 </td><td>8K Atari </td></tr>
-        <tr><td>F8SC </td><td>8K Atari + ram </td></tr>
-        <tr><td>FA </td><td>CBS RAM Plus </td></tr>
-        <tr><td>FA2 </td><td>CBS RAM Plus 24/28K </td></tr>
-        <tr><td>FE </td><td>8K Decathlon </td></tr>
-        <tr><td>MDM </td><td>Menu Driven Megacart </td></tr>
-        <tr><td>SB </td><td>128-256k SUPERbanking </td></tr>
-        <tr><td>UA </td><td>8K UA Ltd. </td></tr>
-        <tr><td>WD </td><td>Wickstead Design </td></tr>
-        <tr><td>X07 &#185;</td><td>64K AtariAge </td></tr>
+        <tr><th>&nbsp;Type&nbsp;</th><th>Description</th><th>File Extension<br>(to force type)</th></tr>
+        <tr><td>0840 </td><td>8K ECONObanking </td><td>.084 </td></tr>
+        <tr><td>2IN1 &#185;</td><td>4-32K Multicart (2 games) </td><td>.2N1 </td></tr>
+        <tr><td>4IN1 &#185;</td><td>8-32K Multicart (4 games) </td><td>.4N1 </td></tr>
+        <tr><td>8IN1 &#185;</td><td>16-64K Multicart (8 games) </td><td>.8N1 </td></tr>
+        <tr><td>16IN1 &#185;</td><td>32-128K Multicart (16 games) </td><td>.16N </td></tr>
+        <tr><td>32IN1 &#185;</td><td>64-128K Multicart (32 games) </td><td>.32N </td></tr>
+        <tr><td>64IN1 &#185;</td><td>64/128K Multicart </td><td>.64N </td></tr>
+        <tr><td>128IN1 &#185;</td><td>256/512K Multicart </td><td>.128 </td></tr>
+        <tr><td>2K </td><td>64-2048 byte Atari </td><td>.2K </td></tr>
+        <tr><td>3E </td><td>32K Tigervision </td><td>.3E </td></tr>
+        <tr><td>3E+ </td><td>3E+ (TJ modified DASH) </td><td>.3EP </td></tr>
+        <tr><td>3F </td><td>512K Tigervision </td><td>.3F </td></tr>
+        <tr><td>4A50 &#178;</td><td>64K 4A50 + ram </td><td>.4A5 </td></tr>
+        <tr><td>4K </td><td>4K Atari </td><td>.4K </td></tr>
+        <tr><td>4KSC </td><td>CPUWIZ 4K + ram </td><td>.4KS </td></tr>
+        <tr><td>AR </td><td>Supercharger </td><td>.AR </td></tr>
+        <tr><td>BF </td><td>CPUWIZ 256K </td><td>.BF </td></tr>
+        <tr><td>BFSC </td><td>CPUWIZ 256K + ram</td><td>.BFS </td></tr>
+        <tr><td>BUS </td><td>Experimental</td><td>.BUS </td></tr>
+        <tr><td>CDF </td><td>Chris, Darrell, Fred</td><td>.CDF </td></tr>
+        <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td><td>.CM </td></tr>
+        <tr><td>CTY &#185;&#178;</td><td>CDW - Chetiry </td><td>.CTY </td></tr>
+        <tr><td>CV </td><td>Commavid extra ram </td><td>.CV </td></tr>
+        <tr><td>CV+ </td><td>Extended Commavid extra ram</td><td>.CVP </td></tr>
+        <tr><td>DASH </td><td>Boulder Dash 2 </td><td>.DAS </td></tr>
+        <tr><td>DF </td><td>CPUWIZ 128K </td><td>.DF </td></tr>
+        <tr><td>DFSC </td><td>CPUWIZ 128K + ram</td><td>.DFS </td></tr>
+        <tr><td>DPC </td><td>Pitfall II </td><td>.DPC </td></tr>
+        <tr><td>DPC+</td><td>Enhanced DPC </td><td>.DPP </td></tr>
+        <tr><td>E0 </td><td>8K Parker Bros </td><td>.E0 </td></tr>
+        <tr><td>E7 </td><td>16K M-network </td><td>.E7 </td></tr>
+        <tr><td>E78K </td><td>8K M-network </td><td>.E78 </td></tr>
+        <tr><td>EF </td><td>64K Homestar Runner </td><td>.EF </td></tr>
+        <tr><td>EFSC </td><td>64K Homestar Runner + ram</td><td>.EFS </td></tr>
+        <tr><td>F0 </td><td>Dynacom Megaboy </td><td>.F0 </td></tr>
+        <tr><td>F4 </td><td>32K Atari </td><td>.F4 </td></tr>
+        <tr><td>F4SC </td><td>32K Atari + ram </td><td>.F4S </td></tr>
+        <tr><td>F6 </td><td>16K Atari </td><td>.F6 </td></tr>
+        <tr><td>F6SC </td><td>16K Atari + ram </td><td>.F6S </td></tr>
+        <tr><td>F8 </td><td>8K Atari </td><td>.F8 </td></tr>
+        <tr><td>F8SC </td><td>8K Atari + ram </td><td>.F8S </td></tr>
+        <tr><td>FA </td><td>CBS RAM Plus </td><td>.FA </td></tr>
+        <tr><td>FA2 </td><td>CBS RAM Plus 24/28K </td><td>.FA2 </td></tr>
+        <tr><td>FE </td><td>8K Decathlon </td><td>.FE </td></tr>
+        <tr><td>MDM </td><td>Menu Driven Megacart </td><td>.MDM </td></tr>
+        <tr><td>SB </td><td>128-256k SUPERbanking </td><td>.SB </td></tr>
+        <tr><td>UA </td><td>8K UA Ltd. </td><td>.UA </td></tr>
+        <tr><td>WD </td><td>Wickstead Design </td><td>.WD </td></tr>
+        <tr><td>X07 &#185;</td><td>64K AtariAge </td><td>.X07 </td></tr>
       </table></td>
     </tr>
   </table>
