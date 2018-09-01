@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include <zlib.h>
 
+#include "Bankswitch.hxx"
 #include "ZipHandler.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -261,13 +262,8 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char* filename, zip_file**
 
   // Count ROM files (we do it at this level so it will be cached)
   while(hasNext())
-  {
-    const std::string& file = next();
-    if(BSPF::endsWithIgnoreCase(file, ".a26") ||
-       BSPF::endsWithIgnoreCase(file, ".bin") ||
-       BSPF::endsWithIgnoreCase(file, ".rom"))
+    if(Bankswitch::isValidRomName(next()))
       (*zip)->romfiles++;
-  }
 
   return ZIPERR_NONE;
 

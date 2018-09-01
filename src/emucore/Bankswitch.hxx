@@ -74,15 +74,17 @@ class Bankswitch
     /**
       Is this a valid ROM filename (does it have a valid extension?).
 
-      @param name  File node of potential ROM file
+      @param name  Filename of potential ROM file
       @param ext   The extension extracted from the given file
      */
-    static bool isValidRomName(const FilesystemNode& name, string& ext);
+    static bool isValidRomName(const string& name, string& ext);
 
     /**
-      Convenience function when extension isn't needed.
+      Convenience functions for different parameter types.
      */
+    static bool isValidRomName(const FilesystemNode& name, string& ext);
     static bool isValidRomName(const FilesystemNode& name);
+    static bool isValidRomName(const string& name);
 
   private:
     struct TypeComparator {

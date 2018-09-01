@@ -18,6 +18,7 @@
 #include <set>
 
 #include "bspf.hxx"
+#include "Bankswitch.hxx"
 #include "OSystem.hxx"
 #include "FSNodeFactory.hxx"
 #include "FSNodeZIP.hxx"
@@ -38,14 +39,6 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
     _isDirectory(false),
     _isFile(false)
 {
-  // Is this a valid file?
-  auto isFile = [](const string& file)
-  {
-    return BSPF::endsWithIgnoreCase(file, ".a26") ||
-           BSPF::endsWithIgnoreCase(file, ".bin") ||
-           BSPF::endsWithIgnoreCase(file, ".rom");
-  };
-
   // Extract ZIP file and virtual file (if specified)
   size_t pos = BSPF::findIgnoreCase(p, ".zip");
   if(pos == string::npos)
@@ -67,7 +60,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   if(pos+5 < p.length())
   {
     _virtualPath = p.substr(pos+5);
-    _isFile = isFile(_virtualPath);
+    _isFile = Bankswitch::isValidRomName(_virtualPath);
     _isDirectory = !_isFile;
   }
   else if(_numFiles == 1)
@@ -76,7 +69,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
     while(zip.hasNext() && !found)
     {
       const string& file = zip.next();
-      if(isFile(file))
+      if(Bankswitch::isValidRomName(file))
       {
         _virtualPath = file;
         _isFile = true;
