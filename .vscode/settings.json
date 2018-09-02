@@ -59,6 +59,7 @@
         "iostream": "cpp",
         "cstdint": "cpp",
         "ostream": "cpp",
-        "__memory": "cpp"
+        "__memory": "cpp",
+        "iosfwd": "cpp"
     }
 }

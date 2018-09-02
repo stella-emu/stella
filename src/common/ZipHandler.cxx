@@ -256,7 +256,7 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char* filename, zip_file**
     goto error;
   }
 
-  strcpy_s(string, strlen(filename) + 1, filename);
+  strncpy(string, filename, strlen(filename) + 1);
   newzip->filename = string;
   *zip = newzip;
 
