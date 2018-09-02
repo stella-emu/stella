@@ -689,7 +689,7 @@ void PromptWidget::textPaste()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::addToHistory(const char* str)
 {
-  strncpy_s(_history[_historyIndex], str, kLineBufferSize - 1);
+  strncpy(_history[_historyIndex], str, kLineBufferSize - 1);
   _historyIndex = (_historyIndex + 1) % kHistorySize;
   _historyLine = 0;
 
