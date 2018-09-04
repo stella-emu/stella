@@ -289,8 +289,8 @@ void ZipHandler::ZipFile::readEcd()
       throw ZipError::FILE_ERROR;
 
     // Find the ECD signature
-    size_t offset;
-		for(offset = buflen - EcdReader::minimumLength(); offset >= 0; --offset)
+    Int32 offset;
+		for(offset = Int32(buflen - EcdReader::minimumLength()); offset >= 0; --offset)
     {
       EcdReader reader(buffer.get() + offset);
       if(reader.signatureCorrect() && ((reader.totalLength() + offset) <= buflen))
