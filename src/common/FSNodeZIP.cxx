@@ -140,7 +140,10 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
   while(zip.hasNext())
   {
     // Only consider entries that start with '_virtualPath'
+    // Ignore empty filenames and '__MACOSX' virtual directories
     const string& next = zip.next();
+    if(BSPF::startsWithIgnoreCase(next, "__MACOSX") || next == EmptyString)
+      continue;
     if(BSPF::startsWithIgnoreCase(next, _virtualPath))
     {
       // First strip off the leading directory
