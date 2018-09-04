@@ -47,8 +47,18 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   _zipFile = p.substr(0, pos+4);
 
   // Open file at least once to initialize the virtual file count
-  ZipHandler& zip = open(_zipFile);
-  _numFiles = zip.romFiles();
+  try
+  {
+    myZipHandler->open(_zipFile);
+  }
+  catch(const runtime_error&)
+  {
+    // TODO: Actually present the error passed in back to the user
+    //       For now, we just indicate that no ROMs were found
+    _error = ZIPERR_NO_ROMS;
+    return;
+  }
+  _numFiles = myZipHandler->romFiles();
   if(_numFiles == 0)
   {
     _error = ZIPERR_NO_ROMS;
@@ -66,9 +76,9 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   else if(_numFiles == 1)
   {
     bool found = false;
-    while(zip.hasNext() && !found)
+    while(myZipHandler->hasNext() && !found)
     {
-      const string& file = zip.next();
+      const string& file = myZipHandler->next();
       if(Bankswitch::isValidRomName(file))
       {
         _virtualPath = file;
@@ -136,12 +146,12 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
     return false;
 
   std::set<string> dirs;
-  ZipHandler& zip = open(_zipFile);
-  while(zip.hasNext())
+  myZipHandler->open(_zipFile);
+  while(myZipHandler->hasNext())
   {
     // Only consider entries that start with '_virtualPath'
     // Ignore empty filenames and '__MACOSX' virtual directories
-    const string& next = zip.next();
+    const string& next = myZipHandler->next();
     if(BSPF::startsWithIgnoreCase(next, "__MACOSX") || next == EmptyString)
       continue;
     if(BSPF::startsWithIgnoreCase(next, _virtualPath))
@@ -177,13 +187,13 @@ uInt32 FilesystemNodeZIP::read(BytePtr& image) const
     case ZIPERR_NO_ROMS:      throw runtime_error("ZIP file doesn't contain any ROMs");
   }
 
-  ZipHandler& zip = open(_zipFile);
+  myZipHandler->open(_zipFile);
 
   bool found = false;
-  while(zip.hasNext() && !found)
-    found = zip.next() == _virtualPath;
+  while(myZipHandler->hasNext() && !found)
+    found = myZipHandler->next() == _virtualPath;
 
-  return found ? zip.decompress(image) : 0;
+  return found ? myZipHandler->decompress(image) : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

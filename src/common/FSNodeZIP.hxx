@@ -101,11 +101,6 @@ class FilesystemNodeZIP : public AbstractFSNode
 
     // ZipHandler static reference variable responsible for accessing ZIP files
     static unique_ptr<ZipHandler> myZipHandler;
-    inline static ZipHandler& open(const string& file)
-    {
-      myZipHandler->open(file);
-      return *myZipHandler;
-    }
 
     // Get last component of path
     static const char* lastPathComponent(const string& str)
