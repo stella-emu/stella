@@ -118,6 +118,8 @@ void SoundSDL2::setEnabled(bool state)
 void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
                      EmulationTiming* emulationTiming)
 {
+  string pre_about = myAboutString;
+
   // Do we need to re-open the sound device?
   // Only do this when absolutely necessary
   if(myAudioSettings.sampleRate() != uInt32(myHardwareSpec.freq) ||
@@ -146,28 +148,9 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   initResampler();
 
   // Show some info
-  ostringstream buf;
-  buf << "Sound enabled:"  << endl
-      << "  Volume:      " << myVolume << endl
-      << "  Frag size:   " << uInt32(myHardwareSpec.samples) << endl
-      << "  Frequency:   " << uInt32(myHardwareSpec.freq) << endl
-      << "  Channels:    " << uInt32(myHardwareSpec.channels) << endl
-      << "  Resampling:  ";
-  switch (myAudioSettings.resamplingQuality()) {
-    case AudioSettings::ResamplingQuality::nearestNeightbour:
-      buf << "quality 1, nearest neighbor" << endl;
-      break;
-    case AudioSettings::ResamplingQuality::lanczos_2:
-      buf << "quality 2, nearest Lanczos (a = 2)" << endl;
-      break;
-    case AudioSettings::ResamplingQuality::lanczos_3:
-      buf << "quality 3, nearest Lanczos (a = 3)" << endl;
-      break;
-    default:
-      buf << "unknown resampler" << endl;
-      break;
-  }
-  myOSystem.logMessage(buf.str(), 1);
+  myAboutString = about();
+  if(myAboutString != pre_about)
+    myOSystem.logMessage(myAboutString, 1);
 
   // And start the SDL sound subsystem ...
   mute(false);
@@ -240,6 +223,51 @@ void SoundSDL2::adjustVolume(Int8 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string SoundSDL2::about() const
+{
+  ostringstream buf;
+  buf << "Sound enabled:"  << endl
+      << "  Volume:   " << myVolume << endl
+      << "  Channels: " << uInt32(myHardwareSpec.channels) << endl
+      << "  Preset:   ";
+  switch (myAudioSettings.preset()) {
+    case AudioSettings::Preset::custom:
+      buf << "Custom" << endl;
+      break;
+    case AudioSettings::Preset::lowQualityMediumLag:
+      buf << "Low quality, medium lag" << endl;
+      break;
+    case AudioSettings::Preset::highQualityMediumLag:
+      buf << "High quality, medium lag" << endl;
+      break;
+    case AudioSettings::Preset::highQualityLowLag:
+      buf << "High quality, low lag" << endl;
+      break;
+    case AudioSettings::Preset::veryHighQualityVeryLowLag:
+      buf << "Very high quality, very low lag" << endl;
+      break;
+  }
+  buf << "    Sample rate: " << uInt32(myHardwareSpec.freq) << endl
+      << "    Frag size:   " << uInt32(myHardwareSpec.samples) << endl
+      << "    Buffer size: " << myAudioSettings.bufferSize() << endl
+      << "    Head room:   " << myAudioSettings.headroom() << endl
+      << "    Resampling:  ";
+  switch (myAudioSettings.resamplingQuality()) {
+    case AudioSettings::ResamplingQuality::nearestNeightbour:
+      buf << "quality 1, nearest neighbor" << endl;
+      break;
+    case AudioSettings::ResamplingQuality::lanczos_2:
+      buf << "quality 2, Lanczos (a = 2)" << endl;
+      break;
+    case AudioSettings::ResamplingQuality::lanczos_3:
+      buf << "quality 3, Lanczos (a = 3)" << endl;
+      break;
+  }
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::processFragment(float* stream, uInt32 length)
 {
   myResampler->fillFragment(stream, length);
@@ -269,7 +297,6 @@ void SoundSDL2::initResampler()
     Resampler::Format(myEmulationTiming->audioSampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
   Resampler::Format formatTo =
     Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples, myHardwareSpec.channels > 1);
-
 
   switch (myAudioSettings.resamplingQuality()) {
     case AudioSettings::ResamplingQuality::nearestNeightbour:

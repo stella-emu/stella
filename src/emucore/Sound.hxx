@@ -86,6 +86,11 @@ class Sound
     */
     virtual void adjustVolume(Int8 direction) = 0;
 
+    /**
+      This method is called to provide information about the sound device.
+    */
+    virtual string about() const = 0;
+
   protected:
     // The OSystem for this sound object
     OSystem& myOSystem;

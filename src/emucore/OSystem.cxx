@@ -351,7 +351,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     }
     buf << "Game console created:" << endl
         << "  ROM file: " << myRomFile.getShortPath() << endl << endl
-        << getROMInfo(*myConsole) << endl;
+        << getROMInfo(*myConsole);
     logMessage(buf.str(), 1);
 
     myFrameBuffer->setCursorState();

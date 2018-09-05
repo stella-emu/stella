@@ -96,6 +96,11 @@ class SoundSDL2 : public Sound
     */
     void adjustVolume(Int8 direction) override;
 
+    /**
+      This method is called to provide information about the sound device.
+    */
+    string about() const override;
+
   protected:
     /**
       Invoked by the sound callback to process the next sound fragment.
@@ -140,6 +145,8 @@ class SoundSDL2 : public Sound
     unique_ptr<Resampler> myResampler;
 
     AudioSettings& myAudioSettings;
+
+    string myAboutString;
 
   private:
     // Callback function invoked by the SDL Audio library when it needs data

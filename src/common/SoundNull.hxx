@@ -93,6 +93,11 @@ class SoundNull : public Sound
     */
     void adjustVolume(Int8 direction) override { }
 
+    /**
+      This method is called to provide information about the sound device.
+    */
+    string about() const override { return "Sound disabled"; }
+
   private:
     // Following constructors and assignment operators not supported
     SoundNull() = delete;
