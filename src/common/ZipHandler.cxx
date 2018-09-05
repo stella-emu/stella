@@ -393,6 +393,9 @@ void ZipHandler::ZipFile::decompress(BytePtr& out, uInt64 length)
 
       case 14:
         throw ZipError::LZMA_UNSUPPORTED;  // FIXME - LZMA format not yet supported
+
+      default:
+        throw ZipError::UNSUPPORTED;
     }
   }
   catch(const ZipError&)
@@ -404,18 +407,27 @@ void ZipHandler::ZipFile::decompress(BytePtr& out, uInt64 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 ZipHandler::ZipFile::getCompressedDataOffset()
 {
+  // Don't support a number of features
+  GeneralFlagReader const flags(myHeader.bitFlag);
+  if(myHeader.startDiskNumber != myEcd.diskNumber ||
+     myHeader.versionNeeded > 63 || flags.patchData() ||
+     flags.encrypted() || flags.strongEncryption())
+    throw ZipError::UNSUPPORTED;
+
   // Read the fixed-sized part of the local file header
   uInt64 read_length = 0;
   bool success = readStream(myBuffer, myHeader.localHeaderOffset, 0x1e, read_length);
   if(!success)
     throw ZipError::FILE_ERROR;
-  else if(read_length != 0x1e)
+  else if(read_length != LocalFileHeaderReader::minimumLength())
     throw ZipError::FILE_TRUNCATED;
 
   // Compute the final offset
-  return myHeader.localHeaderOffset + 0x1e +
-         read_word(myBuffer.get() + 0x1a) +
-         read_word(myBuffer.get() + 0x1c);
+  LocalFileHeaderReader reader(&myBuffer[0]);
+  if(!reader.signatureCorrect())
+    throw ZipError::BAD_SIGNATURE;
+
+  return myHeader.localHeaderOffset + reader.totalLength();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

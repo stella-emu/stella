@@ -151,64 +151,145 @@ class ZipHandler
     };
     using ZipFilePtr = unique_ptr<ZipFile>;
 
-    class EcdReader
+    /** Classes to parse the ZIP metadata in an abstracted way */
+    class ReaderBase
     {
-      public:
-        explicit EcdReader(const uInt8* const b) : myBuf(b) { }
+      protected:
+        explicit ReaderBase(const uInt8* const b) : myBuf(b) { }
 
-        uInt32 signature() const       { return read_dword(myBuf + 0x00); }
-        uInt16 thisDiskNo() const      { return read_word(myBuf + 0x04);  }
-        uInt16 dirStartDisk() const    { return read_word(myBuf + 0x06);  }
-        uInt16 dirDiskEntries() const  { return read_word(myBuf + 0x08);  }
-        uInt16 dirTotalEntries() const { return read_word(myBuf + 0x0a);  }
-        uInt32 dirSize() const         { return read_dword(myBuf + 0x0c); }
-        uInt32 dirOffset() const       { return read_dword(myBuf + 0x10); }
-        uInt16 commentLength() const   { return read_word(myBuf + 0x14);  }
-        string comment() const         { return read_string(myBuf + 0x16, commentLength()); }
-
-        bool signatureCorrect() const  { return signature() == 0x06054b50; }
-
-        size_t totalLength() const { return minimumLength() + commentLength(); }
-        static size_t minimumLength() { return 0x16; }
+        uInt8 read_byte(size_t offs) const
+        {
+          return myBuf[offs];
+        }
+        uInt16 read_word(size_t offs) const
+        {
+          return (uInt16(myBuf[offs + 1]) << 8) |
+                 (uInt16(myBuf[offs + 0]) << 0);
+        }
+        uInt32 read_dword(std::size_t offs) const
+        {
+          return (uInt32(myBuf[offs + 3]) << 24) |
+                 (uInt32(myBuf[offs + 2]) << 16) |
+                 (uInt32(myBuf[offs + 1]) << 8)  |
+                 (uInt32(myBuf[offs + 0]) << 0);
+        }
+        uInt64 read_qword(size_t offs) const
+        {
+          return (uInt64(myBuf[offs + 7]) << 56) |
+                 (uInt64(myBuf[offs + 6]) << 48) |
+                 (uInt64(myBuf[offs + 5]) << 40) |
+                 (uInt64(myBuf[offs + 4]) << 32) |
+                 (uInt64(myBuf[offs + 3]) << 24) |
+                 (uInt64(myBuf[offs + 2]) << 16) |
+                 (uInt64(myBuf[offs + 1]) << 8)  |
+                 (uInt64(myBuf[offs + 0]) << 0);
+        }
+        string read_string(size_t offs, size_t len = string::npos) const
+        {
+          return string(reinterpret_cast<char const *>(myBuf + offs), len);
+        }
 
       private:
         const uInt8* const myBuf;
     };
 
-    class CentralDirEntryReader
+    class LocalFileHeaderReader : public ReaderBase
     {
       public:
-        explicit CentralDirEntryReader(const uInt8* const b) : myBuf(b) { }
+        explicit LocalFileHeaderReader(const uInt8* const b) : ReaderBase(b) { }
 
-        uInt32 signature() const          { return read_dword(myBuf + 0x00); }
-        uInt8  versionCreated() const     { return myBuf[0x04];              }
-        uInt8  osCreated() const          { return myBuf[0x05];              }
-        uInt8  versionNeeded() const      { return myBuf[0x06];              }
-        uInt8  osNeeded() const           { return myBuf[0x07];              }
-        uInt16 generalFlag() const        { return read_word(myBuf + 0x08);  }
-        uInt16 compressionMethod() const  { return read_word(myBuf + 0x0a);  }
-        uInt16 modifiedTime() const       { return read_word(myBuf + 0x0c);  }
-        uInt16 modifiedDate() const       { return read_word(myBuf + 0x0e);  }
-        uInt32 crc32() const              { return read_dword(myBuf + 0x10); }
-        uInt32 compressedSize() const     { return read_dword(myBuf + 0x14); }
-        uInt32 uncompressedSize() const   { return read_dword(myBuf + 0x18); }
-        uInt16 filenameLength() const     { return read_word(myBuf + 0x1c);  }
-        uInt16 extraFieldLength() const   { return read_word(myBuf + 0x1e);  }
-        uInt16 fileCommentLength() const  { return read_word(myBuf + 0x20);  }
-        uInt16 startDisk() const          { return read_word(myBuf + 0x22);  }
-        uInt16 intFileAttr() const        { return read_word(myBuf + 0x24);  }
-        uInt32 extFileAttr() const        { return read_dword(myBuf + 0x26); }
-        uInt32 headerOffset() const       { return read_dword(myBuf + 0x2a); }
-        string filename() const           { return read_string(myBuf + 0x2e, filenameLength()); }
-        string fileComment() const        { return read_string(myBuf + 0x2e + filenameLength() + extraFieldLength(), fileCommentLength()); }
+        uInt32  signature() const         { return read_dword(0x00); }
+        uInt8   versionNeeded() const     { return read_byte(0x04);  }
+        uInt8   osNeeded() const          { return read_byte(0x05);  }
+        uInt16  generalFlag() const       { return read_word(0x06);  }
+        uInt16  compressionMethod() const { return read_word(0x08);  }
+        uInt16  modifiedTime() const      { return read_word(0x0a);  }
+        uInt16  modifiedDate() const      { return read_word(0x0c);  }
+        uInt32  crc32() const             { return read_dword(0x0e); }
+        uInt32  compressedSize() const    { return read_dword(0x12); }
+        uInt32  uncompressedSize() const  { return read_dword(0x16); }
+        uInt16  filenameLength() const    { return read_word(0x1a);  }
+        uInt16  extraFieldLength() const  { return read_word(0x1c);  }
+        string  filename() const          { return read_string(0x1e, filenameLength()); }
+
+        bool signatureCorrect() const  { return signature() == 0x04034b50; }
+
+        size_t totalLength() const { return minimumLength() + filenameLength() + extraFieldLength(); }
+        static size_t minimumLength() { return 0x1e; }
+    };
+
+    class CentralDirEntryReader : public ReaderBase
+    {
+      public:
+        explicit CentralDirEntryReader(const uInt8* const b) : ReaderBase(b) { }
+
+        uInt32 signature() const          { return read_dword(0x00); }
+        uInt8  versionCreated() const     { return read_byte(0x04);  }
+        uInt8  osCreated() const          { return read_byte(0x05);  }
+        uInt8  versionNeeded() const      { return read_byte(0x06);  }
+        uInt8  osNeeded() const           { return read_byte(0x07);  }
+        uInt16 generalFlag() const        { return read_word(0x08);  }
+        uInt16 compressionMethod() const  { return read_word(0x0a);  }
+        uInt16 modifiedTime() const       { return read_word(0x0c);  }
+        uInt16 modifiedDate() const       { return read_word(0x0e);  }
+        uInt32 crc32() const              { return read_dword(0x10); }
+        uInt32 compressedSize() const     { return read_dword(0x14); }
+        uInt32 uncompressedSize() const   { return read_dword(0x18); }
+        uInt16 filenameLength() const     { return read_word(0x1c);  }
+        uInt16 extraFieldLength() const   { return read_word(0x1e);  }
+        uInt16 fileCommentLength() const  { return read_word(0x20);  }
+        uInt16 startDisk() const          { return read_word(0x22);  }
+        uInt16 intFileAttr() const        { return read_word(0x24);  }
+        uInt32 extFileAttr() const        { return read_dword(0x26); }
+        uInt32 headerOffset() const       { return read_dword(0x2a); }
+        string filename() const           { return read_string(0x2e, filenameLength()); }
+        string fileComment() const        { return read_string(0x2e + filenameLength() + extraFieldLength(), fileCommentLength()); }
 
         bool signatureCorrect() const { return signature() == 0x02014b50; }
 
         size_t totalLength() const { return minimumLength() + filenameLength() + extraFieldLength() + fileCommentLength(); }
         static size_t minimumLength() { return 0x2e; }
+    };
+
+    class EcdReader : public ReaderBase
+    {
+      public:
+        explicit EcdReader(const uInt8* const b) : ReaderBase(b) { }
+
+        uInt32 signature() const       { return read_dword(0x00); }
+        uInt16 thisDiskNo() const      { return read_word(0x04);  }
+        uInt16 dirStartDisk() const    { return read_word(0x06);  }
+        uInt16 dirDiskEntries() const  { return read_word(0x08);  }
+        uInt16 dirTotalEntries() const { return read_word(0x0a);  }
+        uInt32 dirSize() const         { return read_dword(0x0c); }
+        uInt32 dirOffset() const       { return read_dword(0x10); }
+        uInt16 commentLength() const   { return read_word(0x14);  }
+        string comment() const         { return read_string(0x16, commentLength()); }
+
+        bool signatureCorrect() const  { return signature() == 0x06054b50; }
+
+        size_t totalLength() const { return minimumLength() + commentLength(); }
+        static size_t minimumLength() { return 0x16; }
+    };
+
+    class GeneralFlagReader
+    {
+      public:
+        explicit GeneralFlagReader(uInt16 val) : myValue(val) { }
+
+        bool   encrypted() const           { return bool(myValue & 0x0001); }
+        bool   implode8kDict() const       { return bool(myValue & 0x0002); }
+        bool   implode3Trees() const       { return bool(myValue & 0x0004); }
+        uInt32 deflateOption() const       { return uInt32((myValue >> 1) & 0x0003); }
+        bool   lzmaEosMark() const         { return bool(myValue & 0x0002); }
+        bool   useDescriptor() const       { return bool(myValue & 0x0008); }
+        bool   patchData() const           { return bool(myValue & 0x0020); }
+        bool   strongEncryption() const    { return bool(myValue & 0x0040); }
+        bool   utf8Encoding() const        { return bool(myValue & 0x0800); }
+        bool   directoryEncryption() const { return bool(myValue & 0x2000); }
 
       private:
-        const uInt8* const myBuf;
+        uInt16 myValue;
     };
 
   private:
@@ -220,22 +301,6 @@ class ZipHandler
 
     /** Close a ZIP file and add it to the cache */
     void addToCache();
-
-    /** Convenience functions to read specific datatypes */
-    static inline uInt16 read_word(const uInt8* const buf)
-    {
-      uInt16 p0 = uInt16(buf[0]), p1 = uInt16(buf[1]);
-      return (p1 << 8) | p0;
-    }
-    static inline uInt32 read_dword(const uInt8* const buf)
-    {
-      return (buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0];
-    }
-    static inline string read_string(const uInt8* const buf, size_t len = string::npos)
-    {
-      return (buf == nullptr || *buf == '\0') ? "" :
-          string(reinterpret_cast<const char*>(buf), len);
-    }
 
   private:
     static constexpr uInt32 DECOMPRESS_BUFSIZE = 16384;
