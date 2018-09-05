@@ -45,7 +45,7 @@ class ZipHandler
 
     // Decompress the currently selected file and return its length
     // An exception will be thrown on any errors
-    uInt32 decompress(BytePtr& image);
+    uInt64 decompress(BytePtr& image);
 
     // Answer the number of ROM files (with a valid extension) found
     uInt16 romFiles() const { return myZip ? myZip->myRomfiles : 0; }
@@ -105,7 +105,7 @@ class ZipHandler
     {
       string  myFilename; // copy of ZIP filename (for caching)
       fstream myStream;   // C++ fstream file handle
-      uInt32  myLength;   // length of zip file
+      uInt64  myLength;   // length of zip file
       uInt16  myRomfiles; // number of ROM files in central directory
 
       ZipEcd    myEcd;    // end of central directory
@@ -132,22 +132,22 @@ class ZipHandler
       void readEcd();
 
       /** Read data from stream */
-      bool readStream(BytePtr& out, uInt32 offset, uInt32 length, uInt32& actual);
+      bool readStream(BytePtr& out, uInt64 offset, uInt64 length, uInt64& actual);
 
       /** Return the next entry in the ZIP file */
       const ZipHeader* const nextFile();
 
       /** Decompress the most recently found file in the ZIP into target buffer */
-      void decompress(BytePtr& out, uInt32 length);
+      void decompress(BytePtr& out, uInt64 length);
 
       /** Return the offset of the compressed data */
-      uInt32 getCompressedDataOffset();
+      uInt64 getCompressedDataOffset();
 
       /** Decompress type 0 data (which is uncompressed) */
-      void decompressDataType0(uInt32 offset, BytePtr& out, uInt32 length);
+      void decompressDataType0(uInt64 offset, BytePtr& out, uInt64 length);
 
       /** Decompress type 8 data (which is deflated) */
-      void decompressDataType8(uInt32 offset, BytePtr& out, uInt32 length);
+      void decompressDataType8(uInt64 offset, BytePtr& out, uInt64 length);
     };
     using ZipFilePtr = unique_ptr<ZipFile>;
 

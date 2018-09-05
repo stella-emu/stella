@@ -193,7 +193,7 @@ uInt32 FilesystemNodeZIP::read(BytePtr& image) const
   while(myZipHandler->hasNext() && !found)
     found = myZipHandler->next() == _virtualPath;
 
-  return found ? myZipHandler->decompress(image) : 0;
+  return found ? uInt32(myZipHandler->decompress(image)) : 0; // TODO: 64bit
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
