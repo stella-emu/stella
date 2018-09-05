@@ -92,6 +92,8 @@
 
   * Updated PAL palette.
 
+  * Added recently released 'Arkyology' prototype ROM to the database.
+
   * For UNIX systems: in the ROM launcher, when using symlinks use the
     symlink pathname instead of the underlying filesystem pathname.
 

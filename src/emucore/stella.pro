@@ -20430,3 +20430,16 @@
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
+"Cartridge.MD5" "2434102f30eeb47792cf0825e368229b"
+"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
+"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype)"
+"Cartridge.Note" "ROM must be started in bank 0"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "93c4b910f7649b3e998bb6d8527c6f4a"
+"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
+"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype) [fixed]"
+"Cartridge.Note" "Fix for un-initialized 'X' register"
+"Cartridge.Rarity" "Prototype"
+""

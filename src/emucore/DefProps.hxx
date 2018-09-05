@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3316
+#define DEF_PROPS_SIZE 3318
 
 static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -481,6 +481,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "23fad5a125bcd4463701c8ad8a0043a9", "CCE", "C-840", "Stone Age (1983) (CCE)", "Uses the Joystick Controllers (swapped)", "", "", "", "A", "A", "", "YES", "", "", "", "", "", "", "220", "YES", "" },
   { "240bfbac5163af4df5ae713985386f92", "Activision, Steve Cartwright", "AX-022", "Seaquest (1983) (Activision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2432f33fd278dea5fe6ae94073627fcc", "CBS Electronics, Tom DiDomenico", "4L2477, 4L2482, 4L2485, 4L4171", "Blueprint (1983) (CBS Electronics) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
+  { "2434102f30eeb47792cf0825e368229b", "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis", "", "Arkyology (1983) (Sparrow) (Prototype)", "ROM must be started in bank 0", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "24385ba7f5109fbe76aadc0a375de573", "CCE", "", "Xevious (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "2447e17a4e18e6b609de498fe4ab52ba", "CCE", "", "Super Futebol (CCE)", "AKA RealSports Soccer", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "244c6de27faff527886fc7699a41c3be", "", "", "Matt Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1949,6 +1950,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "939ce554f5c0e74cc6e4e62810ec2111", "ZiMAG - Emag - Vidco", "711-111 - GN-020", "Dishaster (1983) (ZiMAG)", "AKA Dancing Plate", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "93acd5020ae8eb5673601e2edecbc158", "Chris Cracknell", "", "Video Time Machine (Chris Cracknell)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "93b9229fc0ea4fb959d604f83f8f603c", "Thomas Jentzsch", "", "Amidar DS (Fast Enemies) (2003) (TJ) (Hack)", "Hack of Amidar", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "93c4b910f7649b3e998bb6d8527c6f4a", "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis", "", "Arkyology (1983) (Sparrow) (Prototype) [fixed]", "Fix for un-initialized 'X' register", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "93c52141d3c4e1b5574d072f1afde6cd", "Imagic, Mark Klein", "720112-1A, 03213", "Subterranea (1983) (Imagic)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "93c8d9d24f9c5f1f570694848d087df7", "Digivision", "", "Galaxian (Digivision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "93c9f9239a4e5c956663dd7affa70da2", "Quelle", "626.610 0", "Billard (1983) (Quelle) (PAL)", "AKA Trick Shot", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },

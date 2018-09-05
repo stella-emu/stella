@@ -36,7 +36,8 @@ CartridgeF8::CartridgeF8(const BytePtr& image, uInt32 size, const string& md5,
      md5 == "75ee371ccfc4f43e7d9b8f24e1266b55" ||  // Snow White
      md5 == "74c8a6f20f8adaa7e05183f796eda796" ||  // Tricade Demo
      md5 == "9905f9f4706223dadee84f6867ede8e3" ||  // Challenge
-     md5 == "3c7a7b3a0a7e6319b2fa0f923ef6c9af")    // Racer Prototype
+     md5 == "3c7a7b3a0a7e6319b2fa0f923ef6c9af" ||  // Racer Prototype
+     md5 == "2434102f30eeb47792cf0825e368229b")    // Arkyology
     ? 0 : 1;
 }
 
