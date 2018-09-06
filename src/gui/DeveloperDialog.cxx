@@ -429,7 +429,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
   myDebuggerWidthSlider->setStepValue(10);
-  myDebuggerWidthSlider->setTickmarkInterval(5);
+  // one tickmark every ~100 pixel
+  myDebuggerWidthSlider->setTickmarkInterval((ds.w - DebuggerDialog::kSmallFontMinW + 50) / 100);
   wid.push_back(myDebuggerWidthSlider);
   ypos += lineHeight + VGAP;
 
@@ -438,7 +439,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
   myDebuggerHeightSlider->setStepValue(10);
-  myDebuggerHeightSlider->setTickmarkInterval(5);
+  // one tickmark every ~100 pixel
+  myDebuggerHeightSlider->setTickmarkInterval((ds.h - DebuggerDialog::kSmallFontMinH + 50) / 100);
   wid.push_back(myDebuggerHeightSlider);
   ypos += lineHeight + VGAP * 4;
 

@@ -120,7 +120,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
-  myLauncherWidthSlider->setTickmarkInterval(5);
+  // one tickmark every ~100 pixel
+  myLauncherWidthSlider->setTickmarkInterval((ds.w - FrameBuffer::kFBMinW + 50) / 100);
   wid.push_back(myLauncherWidthSlider);
   ypos += lineHeight + 4;
 
@@ -129,7 +130,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
-  myLauncherHeightSlider->setTickmarkInterval(5);
+  // one tickmark every ~100 pixel
+  myLauncherHeightSlider->setTickmarkInterval((ds.h - FrameBuffer::kFBMinH + 50) / 100);
   wid.push_back(myLauncherHeightSlider);
   ypos += lineHeight + 4;
 

@@ -309,7 +309,8 @@ GameInfoDialog::GameInfoDialog(
                               "   ", 0, kYStartChanged, 5 * fontWidth, "px");
   myYStart->setMinValue(TIAConstants::minYStart-1);
   myYStart->setMaxValue(TIAConstants::maxYStart);
-  myYStart->setTickmarkInterval(4);
+  // one tickmark every ~10 pixel
+  myYStart->setTickmarkInterval((TIAConstants::maxYStart - (TIAConstants::minYStart-1) + 5) / 10);
   wid.push_back(myYStart);
 
   int iWidth = ifont.getCharWidth('2');
@@ -322,7 +323,8 @@ GameInfoDialog::GameInfoDialog(
                               "   ", 0, kHeightChanged, 5 * fontWidth, "px");
   myHeight->setMinValue(TIAConstants::minViewableHeight-1);
   myHeight->setMaxValue(TIAConstants::maxViewableHeight);
-  myHeight->setTickmarkInterval(4);
+  // one tickmark every ~10 pixel
+  myHeight->setTickmarkInterval((TIAConstants::maxViewableHeight - (TIAConstants::minViewableHeight - 1) + 5) / 10);
   wid.push_back(myHeight);
 
   myHeightDetected = new StaticTextWidget(myTab, ifont, myHeight->getRight() + 8, ypos + 5, "100px detected");
