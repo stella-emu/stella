@@ -227,8 +227,9 @@ string SoundSDL2::about() const
 {
   ostringstream buf;
   buf << "Sound enabled:"  << endl
-      << "  Volume:   " << myVolume << endl
-      << "  Channels: " << uInt32(myHardwareSpec.channels) << endl
+      << "  Volume:   " << myVolume << "%" << endl
+      << "  Channels: " << uInt32(myHardwareSpec.channels)
+      << (myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)") << endl
       << "  Preset:   ";
   switch (myAudioSettings.preset()) {
     case AudioSettings::Preset::custom:
@@ -247,8 +248,8 @@ string SoundSDL2::about() const
       buf << "Very high quality, very low lag" << endl;
       break;
   }
-  buf << "    Fragment size: " << uInt32(myHardwareSpec.samples) << endl
-      << "    Sample rate:   " << uInt32(myHardwareSpec.freq) << endl;
+  buf << "    Fragment size: " << uInt32(myHardwareSpec.samples) << " bytes" << endl
+      << "    Sample rate:   " << uInt32(myHardwareSpec.freq) << "Hz" << endl;
   buf << "    Resampling:    ";
   switch(myAudioSettings.resamplingQuality())
   {
