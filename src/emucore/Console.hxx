@@ -316,6 +316,16 @@ class Console : public Serializable
     void autodetectYStart();
 
     /**
+     * Rerun frame layout autodetection
+     */
+    void redetectFrameLayout();
+
+    /**
+     * Rerun ystart autodetection.
+     */
+    void redetectYStart();
+
+    /**
       Sets various properties of the TIA (YStart, Height, etc) based on
       the current display format.
     */
@@ -408,6 +418,9 @@ class Console : public Serializable
 
     // Autodetected ystart.
     uInt32 myAutodetectedYstart;
+
+    // Is ystart currently autodetected?
+    bool myYStartAutodetected;
 
     // Indicates whether an external palette was found and
     // successfully loaded

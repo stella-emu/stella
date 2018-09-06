@@ -60,6 +60,10 @@
         "cstdint": "cpp",
         "ostream": "cpp",
         "__memory": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "__hash_table": "cpp",
+        "array": "cpp",
+        "queue": "cpp",
+        "unordered_map": "cpp"
     }
 }

@@ -52,6 +52,7 @@
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
 #include "Serializable.hxx"
+#include "Serializer.hxx"
 #include "Version.hxx"
 #include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
@@ -85,6 +86,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myDisplayFormat(""),  // Unknown TV format @ start
     myCurrentFormat(0),   // Unknown format @ start,
     myAutodetectedYstart(0),
+    myYStartAutodetected(false),
     myUserPaletteDefined(false),
     myConsoleTiming(ConsoleTiming::ntsc),
     myAudioSettings(audioSettings)
@@ -238,6 +240,21 @@ void Console::autodetectFrameLayout()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::redetectFrameLayout()
+{
+  Serializer s;
+
+  myOSystem.sound().close();
+  save(s);
+
+  autodetectFrameLayout();
+  if (myYStartAutodetected) autodetectYStart();
+
+  load(s);
+  initializeAudio();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::autodetectYStart()
 {
   // We turn off the SuperCharger progress bars, otherwise the SC BIOS
@@ -259,6 +276,22 @@ void Console::autodetectYStart()
 
   // Don't forget to reset the SC progress bars again
   myOSystem.settings().setValue("fastscbios", fastscbios);
+
+  myYStartAutodetected = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::redetectYStart()
+{
+  Serializer s;
+
+  myOSystem.sound().close();
+  save(s);
+
+  autodetectYStart();
+
+  load(s);
+  initializeAudio();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -337,7 +370,7 @@ void Console::setFormat(uInt32 format)
     case 0:  // auto-detect
     {
       string oldDisplayFormat = myDisplayFormat;
-      autodetectFrameLayout();
+      redetectFrameLayout();
       myTIA->update();
       reset = oldDisplayFormat != myDisplayFormat;
       saveformat = "AUTO";
@@ -639,15 +672,12 @@ void Console::changeYStart(int direction)
       myOSystem.frameBuffer().showMessage("YStart at maximum");
       return;
     }
+
     ++ystart;
+    myYStartAutodetected = false;
   }
   else if(direction == -1)  // decrease YStart
   {
-    if (ystart == TIAConstants::minYStart && myAutodetectedYstart == 0) {
-      myOSystem.frameBuffer().showMessage("Autodetected YStart not available");
-      return;
-    }
-
     if(ystart == TIAConstants::minYStart-1 && myAutodetectedYstart > 0)
     {
       myOSystem.frameBuffer().showMessage("YStart at minimum");
@@ -655,14 +685,19 @@ void Console::changeYStart(int direction)
     }
 
     --ystart;
+    myYStartAutodetected = false;
   }
   else
     return;
 
   ostringstream val;
   val << ystart;
-  if(ystart == TIAConstants::minYStart-1)
+  if(ystart == TIAConstants::minYStart-1) {
+    redetectYStart();
+    ystart = myAutodetectedYstart;
+
     myOSystem.frameBuffer().showMessage("YStart autodetected");
+  }
   else
   {
     if(myAutodetectedYstart > 0 && myAutodetectedYstart == ystart)
@@ -674,6 +709,8 @@ void Console::changeYStart(int direction)
     }
     else
       myOSystem.frameBuffer().showMessage("YStart " + val.str());
+
+    myAutodetectedYstart = false;
   }
 
   myProperties.set(Display_YStart, val.str());
@@ -739,7 +776,7 @@ void Console::setTIAProperties()
     myTIA->setLayout(FrameLayout::pal);
   }
 
-  myTIA->setYStart(ystart != 0 ? ystart : myAutodetectedYstart);
+  myTIA->setYStart(myAutodetectedYstart ? myAutodetectedYstart : ystart);
   myTIA->setHeight(height);
 
   myEmulationTiming.updateFrameLayout(myTIA->frameLayout());
