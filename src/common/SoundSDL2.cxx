@@ -247,25 +247,25 @@ string SoundSDL2::about() const
       buf << "Very high quality, very low lag" << endl;
       break;
   }
-  buf << "    Sample rate: " << uInt32(myHardwareSpec.freq) << endl
-      << "    Frag size:   " << uInt32(myHardwareSpec.samples) << endl
-      << "    Head room:   " << std::fixed << std::setprecision(1)
-      <<      (0.5 * myAudioSettings.headroom()) << " frames" << endl
-      << "    Buffer size: " << std::fixed << std::setprecision(1)
-      <<      (0.5 * myAudioSettings.bufferSize()) << " frames" << endl
-      << "    Resampling:  ";
-  switch (myAudioSettings.resamplingQuality()) {
+  buf << "    Fragment size: " << uInt32(myHardwareSpec.samples) << endl
+      << "    Sample rate:   " << uInt32(myHardwareSpec.freq) << endl;
+  buf << "    Resampling:    ";
+  switch(myAudioSettings.resamplingQuality())
+  {
     case AudioSettings::ResamplingQuality::nearestNeightbour:
-      buf << "quality 1, nearest neighbor" << endl;
+      buf << "Quality 1, nearest neighbor" << endl;
       break;
     case AudioSettings::ResamplingQuality::lanczos_2:
-      buf << "quality 2, Lanczos (a = 2)" << endl;
+      buf << "Quality 2, Lanczos (a = 2)" << endl;
       break;
     case AudioSettings::ResamplingQuality::lanczos_3:
-      buf << "quality 3, Lanczos (a = 3)" << endl;
+      buf << "Quality 3, Lanczos (a = 3)" << endl;
       break;
   }
-
+  buf << "    Headroom:      " << std::fixed << std::setprecision(1)
+      << (0.5 * myAudioSettings.headroom()) << " frames" << endl
+      << "    Buffer size:   " << std::fixed << std::setprecision(1)
+      << (0.5 * myAudioSettings.bufferSize()) << " frames" << endl;
   return buf.str();
 }
 
