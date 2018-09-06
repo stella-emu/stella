@@ -249,7 +249,7 @@ string SoundSDL2::about() const
       break;
   }
   buf << "    Fragment size: " << uInt32(myHardwareSpec.samples) << " bytes" << endl
-      << "    Sample rate:   " << uInt32(myHardwareSpec.freq) << "Hz" << endl;
+      << "    Sample rate:   " << uInt32(myHardwareSpec.freq) << " Hz" << endl;
   buf << "    Resampling:    ";
   switch(myAudioSettings.resamplingQuality())
   {
