@@ -219,8 +219,7 @@ void AudioDialog::saveConfig()
   audioSettings.setPreset(preset);
 
   if (preset == AudioSettings::Preset::custom) {
-
-  // Fragsize
+    // Fragsize
     audioSettings.setFragmentSize(myFragsizePopup->getSelectedTag().toInt());
     audioSettings.setSampleRate(myFreqPopup->getSelectedTag().toInt());
     audioSettings.setHeadroom(myHeadroomSlider->getValue());

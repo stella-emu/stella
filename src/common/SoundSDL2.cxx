@@ -249,8 +249,10 @@ string SoundSDL2::about() const
   }
   buf << "    Sample rate: " << uInt32(myHardwareSpec.freq) << endl
       << "    Frag size:   " << uInt32(myHardwareSpec.samples) << endl
-      << "    Buffer size: " << myAudioSettings.bufferSize() << endl
-      << "    Head room:   " << myAudioSettings.headroom() << endl
+      << "    Head room:   " << std::fixed << std::setprecision(1)
+      <<      (0.5 * myAudioSettings.headroom()) << " frames" << endl
+      << "    Buffer size: " << std::fixed << std::setprecision(1)
+      <<      (0.5 * myAudioSettings.bufferSize()) << " frames" << endl
       << "    Resampling:  ";
   switch (myAudioSettings.resamplingQuality()) {
     case AudioSettings::ResamplingQuality::nearestNeightbour:
