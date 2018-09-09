@@ -560,12 +560,8 @@ void GameInfoDialog::saveConfig()
     // update 'Display' tab settings immediately
     bool reset = false;
     instance().console().setFormat(myFormat->getSelected());
-    if(uInt32(myYStart->getValue()) != TIAConstants::minYStart - 1 &&
-       uInt32(myYStart->getValue()) != instance().console().tia().ystart())
-    {
-      instance().console().tia().setYStart(myYStart->getValue());
-      reset = true;
-    }
+    instance().console().updateYStart(myYStart->getValue());
+
     if(uInt32(myHeight->getValue()) != TIAConstants::minViewableHeight - 1 &&
        uInt32(myHeight->getValue()) != instance().console().tia().height())
     {

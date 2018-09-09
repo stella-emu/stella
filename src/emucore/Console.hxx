@@ -304,16 +304,21 @@ class Console : public Serializable
     */
     void toggleJitter() const;
 
+    /**
+     * Update yatart and run autodetection if necessary.
+     */
+    void updateYStart(uInt32 ystart);
+
   private:
     /**
      * Dry-run the emulation and detect the frame layout (PAL / NTSC).
      */
-    void autodetectFrameLayout();
+    void autodetectFrameLayout(bool reset = true);
 
     /**
      * Dryrun the emulation and detect ystart (the first visible scanline).
      */
-    void autodetectYStart();
+    void autodetectYStart(bool reset = true);
 
     /**
      * Rerun frame layout autodetection

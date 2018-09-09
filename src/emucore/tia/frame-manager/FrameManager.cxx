@@ -49,6 +49,7 @@ FrameManager::FrameManager()
     myYStart(0),
     myJitterEnabled(false)
 {
+  reset();
   onLayoutChange();
 }
 

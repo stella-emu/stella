@@ -47,6 +47,12 @@ enum Metrics: uInt32 {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+YStartDetector::YStartDetector()
+{
+  reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 YStartDetector::detectedYStart() const
 {
   return myLastVblankLines;

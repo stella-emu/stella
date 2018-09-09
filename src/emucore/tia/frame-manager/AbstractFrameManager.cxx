@@ -24,7 +24,6 @@ AbstractFrameManager::AbstractFrameManager() :
   myOnFrameComplete(nullptr)
 {
   layout(FrameLayout::ntsc);
-  reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

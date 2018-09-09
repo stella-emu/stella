@@ -43,6 +43,12 @@ FrameLayout FrameLayoutDetector::detectedLayout() const{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FrameLayoutDetector::FrameLayoutDetector()
+{
+  reset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameLayoutDetector::onReset()
 {
   myState = State::waitForVsyncStart;

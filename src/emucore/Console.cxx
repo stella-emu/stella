@@ -216,7 +216,7 @@ Console::~Console()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::autodetectFrameLayout()
+void Console::autodetectFrameLayout(bool reset)
 {
   // Run the TIA, looking for PAL scanline patterns
   // We turn off the SuperCharger progress bars, otherwise the SC BIOS
@@ -227,7 +227,8 @@ void Console::autodetectFrameLayout()
 
   FrameLayoutDetector frameLayoutDetector;
   myTIA->setFrameManager(&frameLayoutDetector);
-  mySystem->reset(true);
+
+  if (reset) mySystem->reset(true);
 
   for(int i = 0; i < 60; ++i) myTIA->update();
 
@@ -247,7 +248,7 @@ void Console::redetectFrameLayout()
   myOSystem.sound().close();
   save(s);
 
-  autodetectFrameLayout();
+  autodetectFrameLayout(false);
   if (myYStartAutodetected) autodetectYStart();
 
   load(s);
@@ -255,7 +256,7 @@ void Console::redetectFrameLayout()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::autodetectYStart()
+void Console::autodetectYStart(bool reset)
 {
   // We turn off the SuperCharger progress bars, otherwise the SC BIOS
   // will take over 250 frames!
@@ -266,7 +267,8 @@ void Console::autodetectYStart()
   YStartDetector ystartDetector;
   ystartDetector.setLayout(myDisplayFormat == "PAL" ? FrameLayout::pal : FrameLayout::ntsc);
   myTIA->setFrameManager(&ystartDetector);
-  mySystem->reset(true);
+
+  if (reset) mySystem->reset(true);
 
   for (int i = 0; i < 80; i++) myTIA->update();
 
@@ -288,7 +290,7 @@ void Console::redetectYStart()
   myOSystem.sound().close();
   save(s);
 
-  autodetectYStart();
+  autodetectYStart(false);
 
   load(s);
   initializeAudio();
@@ -716,6 +718,20 @@ void Console::changeYStart(int direction)
   myProperties.set(Display_YStart, val.str());
   myTIA->setYStart(ystart);
   myTIA->frameReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::updateYStart(uInt32 ystart)
+{
+  if (ystart == TIAConstants::minYStart-1 && !myYStartAutodetected) {
+    redetectYStart();
+    ystart = myAutodetectedYstart;
+  } else if (ystart <= TIAConstants::maxYStart) myYStartAutodetected = false;
+
+  if (ystart <= TIAConstants::maxYStart) {
+    myTIA->setYStart(ystart);
+    myTIA->frameReset();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
