@@ -244,6 +244,7 @@ void Properties::print() const
        << get(Cartridge_Note)         << "|"
        << get(Cartridge_Rarity)       << "|"
        << get(Cartridge_Sound)        << "|"
+       << get(Cartridge_StartBank)    << "|"
        << get(Cartridge_Type)         << "|"
        << get(Console_LeftDifficulty) << "|"
        << get(Console_RightDifficulty)<< "|"
@@ -289,6 +290,7 @@ void Properties::printHeader()
        << "Cartridge_Note|"
        << "Cartridge_Rarity|"
        << "Cartridge_Sound|"
+       << "Cartridge_StartBank|"
        << "Cartridge_Type|"
        << "Console_LeftDifficulty|"
        << "Console_RightDifficulty|"
@@ -315,6 +317,7 @@ string Properties::ourDefaultProperties[LastPropType] = {
   "",          // Cartridge.Note
   "",          // Cartridge.Rarity
   "MONO",      // Cartridge.Sound
+  "",          // Cartridge.StartBank
   "AUTO",      // Cartridge.Type
   "B",         // Console.LeftDifficulty
   "B",         // Console.RightDifficulty
@@ -340,6 +343,7 @@ const char* const Properties::ourPropertyNames[LastPropType] = {
   "Cartridge.Note",
   "Cartridge.Rarity",
   "Cartridge.Sound",
+  "Cartridge.StartBank",
   "Cartridge.Type",
   "Console.LeftDifficulty",
   "Console.RightDifficulty",

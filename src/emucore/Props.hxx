@@ -28,6 +28,7 @@ enum PropertyType {
   Cartridge_Note,
   Cartridge_Rarity,
   Cartridge_Sound,
+  Cartridge_StartBank,
   Cartridge_Type,
   Console_LeftDifficulty,
   Console_RightDifficulty,
