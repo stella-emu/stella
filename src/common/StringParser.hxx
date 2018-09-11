@@ -64,10 +64,10 @@ class StringParser
         else
         {
           size_t beg = 0;
-          while((beg+maxlen) < size)
+          while((beg + maxlen) < size)
           {
-            size_t spos = line.find_last_of(' ', beg+len);
-            if(spos > beg)
+            size_t spos = line.find_last_of(' ', beg + len);
+            if(spos != string::npos && spos > beg)
               len = spos - beg;
 
             myStringList.push_back(line.substr(beg, len));
