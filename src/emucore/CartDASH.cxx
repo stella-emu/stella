@@ -307,7 +307,6 @@ bool CartridgeDASH::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShortArray(bankInUse, 8);
     out.putShortArray(segmentInUse, 4);
     out.putByteArray(myRAM, RAM_TOTAL_SIZE);
@@ -325,8 +324,6 @@ bool CartridgeDASH::load(Serializer& in)
 {
   try
   {
-    if (in.getString() != name())
-      return false;
     in.getShortArray(bankInUse, 8);
     in.getShortArray(segmentInUse, 4);
     in.getByteArray(myRAM, RAM_TOTAL_SIZE);

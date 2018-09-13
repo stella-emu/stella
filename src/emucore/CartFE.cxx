@@ -139,7 +139,6 @@ bool CartridgeFE::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
     out.putBool(myLastAccessWasFE);
   }
@@ -157,9 +156,6 @@ bool CartridgeFE::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
     myLastAccessWasFE = in.getBool();
   }

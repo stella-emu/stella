@@ -155,7 +155,6 @@ bool CartridgeX07::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myCurrentBank);
   }
   catch(...)
@@ -172,9 +171,6 @@ bool CartridgeX07::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myCurrentBank = in.getShort();
   }
   catch(...)

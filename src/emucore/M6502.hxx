@@ -214,13 +214,6 @@ class M6502 : public Serializable
     */
     bool load(Serializer& in) override;
 
-    /**
-      Get a null terminated string which is the processor's name (i.e. "M6532")
-
-      @return The name of the device
-    */
-    string name() const override { return "M6502"; }
-
 #ifdef DEBUGGER_SUPPORT
   public:
     // Attach the specified debugger.

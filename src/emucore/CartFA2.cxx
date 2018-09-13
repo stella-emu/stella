@@ -289,7 +289,6 @@ bool CartridgeFA2::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
     out.putByteArray(myRAM, 256);
   }
@@ -307,9 +306,6 @@ bool CartridgeFA2::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
     in.getByteArray(myRAM, 256);
   }

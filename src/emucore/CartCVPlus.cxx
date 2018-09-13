@@ -193,7 +193,6 @@ bool CartridgeCVPlus::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 1024);
   }
@@ -211,9 +210,6 @@ bool CartridgeCVPlus::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 1024);
   }

@@ -436,8 +436,6 @@ bool CartridgeAR::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     // Indicates the offest within the image for the corresponding bank
     out.putIntArray(myImageOffset, 2);
 
@@ -483,9 +481,6 @@ bool CartridgeAR::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     // Indicates the offest within the image for the corresponding bank
     in.getIntArray(myImageOffset, 2);
 

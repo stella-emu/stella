@@ -59,8 +59,6 @@ bool LatchedInput::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putBool(myModeLatched);
     out.putByte(myLatchedValue);
   }
@@ -78,9 +76,6 @@ bool LatchedInput::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myModeLatched = in.getBool();
     myLatchedValue = in.getByte();
   }

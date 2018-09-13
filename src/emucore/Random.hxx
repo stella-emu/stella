@@ -65,7 +65,6 @@ class Random : public Serializable
     {
       try
       {
-        out.putString(name());
         out.putInt(myValue);
       }
       catch(...)
@@ -87,9 +86,6 @@ class Random : public Serializable
     {
       try
       {
-        if(in.getString() != name())
-          return false;
-
         myValue = in.getInt();
       }
       catch(...)
@@ -100,13 +96,6 @@ class Random : public Serializable
 
       return true;
     }
-
-    /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "Random"; }
 
   private:
     // Indicates the next random number

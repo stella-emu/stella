@@ -177,7 +177,6 @@ bool Cartridge0840::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
   }
   catch(...)
@@ -194,9 +193,6 @@ bool Cartridge0840::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
   }
   catch(...)

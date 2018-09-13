@@ -184,7 +184,6 @@ bool CartridgeEFSC::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
     out.putByteArray(myRAM, 128);
   }
@@ -202,9 +201,6 @@ bool CartridgeEFSC::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
     in.getByteArray(myRAM, 128);
   }

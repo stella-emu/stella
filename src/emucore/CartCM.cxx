@@ -190,7 +190,6 @@ bool CartridgeCM::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
     out.putByte(mySWCHA);
     out.putByte(myCompuMate->column());
@@ -210,9 +209,6 @@ bool CartridgeCM::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
     mySWCHA = in.getByte();
     myCompuMate->column() = in.getByte();

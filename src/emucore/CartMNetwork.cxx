@@ -252,7 +252,6 @@ bool CartridgeMNetwork::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShortArray(myCurrentSlice, NUM_SEGMENTS);
     out.putShort(myCurrentRAM);
     out.putByteArray(myRAM, RAM_SIZE);
@@ -270,9 +269,6 @@ bool CartridgeMNetwork::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     in.getShortArray(myCurrentSlice, NUM_SEGMENTS);
     myCurrentRAM = in.getShort();
     in.getByteArray(myRAM, RAM_SIZE);

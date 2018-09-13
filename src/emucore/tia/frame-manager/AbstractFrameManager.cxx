@@ -113,9 +113,8 @@ void AbstractFrameManager::layout(FrameLayout layout)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AbstractFrameManager::save(Serializer& out) const
 {
-  try {
-    out.putString(name());
-
+  try
+  {
     out.putBool(myIsRendering);
     out.putBool(myVsync);
     out.putBool(myVblank);
@@ -137,9 +136,8 @@ bool AbstractFrameManager::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AbstractFrameManager::load(Serializer& in)
 {
-  try {
-    if (in.getString() != name()) return false;
-
+  try
+  {
     myIsRendering = in.getBool();
     myVsync = in.getBool();
     myVblank = in.getBool();

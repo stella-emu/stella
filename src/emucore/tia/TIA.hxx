@@ -483,13 +483,6 @@ class TIA : public Device
     bool load(Serializer& in) override;
 
     /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "TIA"; }
-
-    /**
      * Run and forward TIA emulation to the current system clock.
      */
     void updateEmulation();

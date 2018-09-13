@@ -66,13 +66,6 @@ class NullDevice : public Device
     */
     bool load(Serializer& in) override { return true; }
 
-    /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "NullDevice"; }
-
   public:
     /**
       Get the byte at the specified address

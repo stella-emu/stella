@@ -132,7 +132,6 @@ bool CartridgeDF::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putInt(myBankOffset);
   }
   catch(...)
@@ -149,9 +148,6 @@ bool CartridgeDF::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getInt();
   }
   catch(...)

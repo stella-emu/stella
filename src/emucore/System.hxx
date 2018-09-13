@@ -377,13 +377,6 @@ class System : public Serializable
     */
     bool load(Serializer& in) override;
 
-    /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "System"; }
-
   private:
     const OSystem& myOSystem;
 

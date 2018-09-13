@@ -87,7 +87,6 @@ class Player : public Serializable
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override { return "TIA_Player"; }
 
   public:
 

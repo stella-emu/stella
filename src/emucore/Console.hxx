@@ -150,13 +150,6 @@ class Console : public Serializable
     bool load(Serializer& in) override;
 
     /**
-      Get a descriptor for this console class (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "Console"; }
-
-    /**
       Set the properties to those given
 
       @param props The properties to use for the current game

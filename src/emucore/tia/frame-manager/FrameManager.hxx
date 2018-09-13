@@ -64,8 +64,6 @@ class FrameManager: public AbstractFrameManager {
 
     bool onLoad(Serializer& in) override;
 
-    string name() const override { return "TIA_FrameManager"; }
-
   private:
 
     enum State {

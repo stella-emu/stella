@@ -118,7 +118,6 @@ bool Cartridge4KSC::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putByteArray(myRAM, 128);
   }
   catch(...)
@@ -135,9 +134,6 @@ bool Cartridge4KSC::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     in.getByteArray(myRAM, 128);
   }
   catch(...)

@@ -400,12 +400,8 @@ void M6502::interruptHandler()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::save(Serializer& out) const
 {
-  const string& CPU = name();
-
   try
   {
-    out.putString(CPU);
-
     out.putByte(A);    // Accumulator
     out.putByte(X);    // X index register
     out.putByte(Y);    // Y index register
@@ -452,13 +448,8 @@ bool M6502::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::load(Serializer& in)
 {
-  const string& CPU = name();
-
   try
   {
-    if(in.getString() != CPU)
-      return false;
-
     A = in.getByte();    // Accumulator
     X = in.getByte();    // X index register
     Y = in.getByte();    // Y index register

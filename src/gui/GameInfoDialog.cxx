@@ -569,7 +569,9 @@ void GameInfoDialog::saveConfig()
     instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
     if (reset)
       instance().console().tia().frameReset();
-  } else {
+  }
+  else
+  {
     myGameProperties.set(
       Display_YStart,
       myYStart->getValueLabel() == "Auto" ? "0" : myYStart->getValueLabel()

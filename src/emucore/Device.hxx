@@ -79,13 +79,6 @@ class Device : public Serializable
     */
     virtual bool load(Serializer& in) override = 0;
 
-    /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    virtual string name() const override = 0;
-
   public:
     /**
       Get the byte at the specified address

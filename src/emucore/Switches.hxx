@@ -79,13 +79,6 @@ class Switches : public Serializable
     bool load(Serializer& in) override;
 
     /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "Switches"; }
-
-    /**
       Query the 'Console_TelevisionType' switches bit.
 
       @return  True if 'Color', false if 'BlackWhite'

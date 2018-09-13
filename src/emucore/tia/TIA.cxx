@@ -237,8 +237,6 @@ bool TIA::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     if(!myDelayQueue.save(out))   return false;
     if(!myFrameManager->save(out)) return false;
 
@@ -308,9 +306,6 @@ bool TIA::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     if(!myDelayQueue.load(in))   return false;
     if(!myFrameManager->load(in)) return false;
 

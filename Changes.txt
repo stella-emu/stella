@@ -90,6 +90,10 @@
     This fixes popping and cracking sounds apparent on some systems, notably
     OSX when toggling windowed/fullscreen mode.
 
+  * State file format has been optimized to be smaller, and faster loading
+    and saving.  This affects both the files saved to your computer as well
+    as Time Machine functionality.
+
   * Updated PAL palette.
 
   * Added recently released 'Arkyology' prototype ROM to the database.

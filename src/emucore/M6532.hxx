@@ -100,13 +100,6 @@ class M6532 : public Device
     */
     bool load(Serializer& in) override;
 
-    /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "M6532"; }
-
    public:
     /**
       Get the byte at the specified address

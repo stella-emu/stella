@@ -47,7 +47,6 @@ class DelayQueueMember : public Serializable {
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override;
 
   public:
     Entry myEntries[capacity];
@@ -153,13 +152,6 @@ bool DelayQueueMember<capacity>::load(Serializer& in)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<unsigned capacity>
-string DelayQueueMember<capacity>::name() const
-{
-  return "TIA_DelayQueueMember";
 }
 
 #endif // TIA_DELAY_QUEUE_MEMBER

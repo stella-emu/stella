@@ -142,18 +142,10 @@ void AudioChannel::audf(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string AudioChannel::name() const
-{
-  return "TIA_AudioChannel";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AudioChannel::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putInt(myAudc);
     out.putInt(myAudv);
     out.putInt(myAudf);
@@ -181,8 +173,6 @@ bool AudioChannel::load(Serializer& in)
 {
   try
   {
-    if (in.getString() != name()) return false;
-
     myAudc = in.getInt();
     myAudv = in.getInt();
     myAudf = in.getInt();

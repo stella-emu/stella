@@ -53,13 +53,6 @@ class Serializable
       @return  False on any errors, else true
     */
     virtual bool load(Serializer& in) = 0;
-
-    /**
-      Get a descriptor for the object name (used in error checking).
-
-      @return The name of the object
-    */
-    virtual string name() const = 0;
 };
 
 #endif

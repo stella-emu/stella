@@ -184,7 +184,6 @@ bool CartridgeBFSC::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putInt(myBankOffset);
     out.putByteArray(myRAM, 128);
   }
@@ -202,9 +201,6 @@ bool CartridgeBFSC::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getInt();
     in.getByteArray(myRAM, 128);
   }

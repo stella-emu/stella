@@ -251,7 +251,7 @@ class Controller : public Serializable
     /**
       Returns the name of this controller.
     */
-    string name() const override { return myName; }
+    string name() const { return myName; }
 
     /**
       Inject a callback to be notified on analog pin updates.

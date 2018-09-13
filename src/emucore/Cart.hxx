@@ -146,6 +146,13 @@ class Cartridge : public Device
     virtual const uInt8* getImage(uInt32& size) const = 0;
 
     /**
+      Get a descriptor for the cart name.
+
+      @return The name of the object
+    */
+    virtual string name() const = 0;
+
+    /**
       Informs the cartridge about the name of the ROM file used when
       creating this cart.
 

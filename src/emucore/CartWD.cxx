@@ -266,7 +266,6 @@ bool CartridgeWD::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 64);
     out.putLong(myCyclesAtBankswitchInit);
@@ -286,9 +285,6 @@ bool CartridgeWD::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 64);
     myCyclesAtBankswitchInit = in.getLong();

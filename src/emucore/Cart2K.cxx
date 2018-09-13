@@ -85,34 +85,13 @@ const uInt8* Cartridge2K::getImage(uInt32& size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge2K::save(Serializer& out) const
+bool Cartridge2K::save(Serializer&) const
 {
-  try
-  {
-    out.putString(name());
-  }
-  catch(...)
-  {
-    cerr << "ERROR: Cartridge2K::save" << endl;
-    return false;
-  }
-
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge2K::load(Serializer& in)
+bool Cartridge2K::load(Serializer&)
 {
-  try
-  {
-    if(in.getString() != name())
-      return false;
-  }
-  catch(...)
-  {
-    cerr << "ERROR: Cartridge2K::load" << endl;
-    return false;
-  }
-
   return true;
 }

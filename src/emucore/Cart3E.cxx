@@ -239,7 +239,6 @@ bool Cartridge3E::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 32768);
   }
@@ -257,9 +256,6 @@ bool Cartridge3E::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 32768);
   }

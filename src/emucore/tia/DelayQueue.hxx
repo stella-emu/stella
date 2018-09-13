@@ -48,7 +48,6 @@ class DelayQueue : public Serializable
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override;
 
   private:
     DelayQueueMember<capacity> myMembers[length];
@@ -164,13 +163,6 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<unsigned length, unsigned capacity>
-string DelayQueue<length, capacity>::name() const
-{
-  return "TIA_DelayQueue";
 }
 
 #endif //  TIA_DELAY_QUEUE

@@ -445,8 +445,6 @@ bool CartridgeDPC::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     // Indicates which bank is currently active
     out.putShort(myBankOffset);
 
@@ -486,9 +484,6 @@ bool CartridgeDPC::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     // Indicates which bank is currently active
     myBankOffset = in.getShort();
 

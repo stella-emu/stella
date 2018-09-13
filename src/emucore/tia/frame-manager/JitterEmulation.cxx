@@ -86,9 +86,8 @@ void JitterEmulation::updateJitter(Int32 scanlineDifference)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool JitterEmulation::save(Serializer& out) const
 {
-  try {
-    out.putString(name());
-
+  try
+  {
     out.putInt(myLastFrameScanlines);
     out.putInt(myStableFrameFinalLines);
     out.putInt(myStableFrames);
@@ -111,9 +110,8 @@ bool JitterEmulation::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool JitterEmulation::load(Serializer& in)
 {
-  try {
-    if (in.getString() != name()) return false;
-
+  try
+  {
     myLastFrameScanlines = in.getInt();
     myStableFrameFinalLines = in.getInt();
     myStableFrames = in.getInt();

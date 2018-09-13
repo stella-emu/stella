@@ -110,8 +110,6 @@ bool PaddleReader::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putDouble(myUThresh);
     out.putDouble(myU);
 
@@ -137,9 +135,6 @@ bool PaddleReader::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myUThresh = in.getDouble();
     myU = in.getDouble();
 

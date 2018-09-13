@@ -279,7 +279,6 @@ bool CartridgeCTY::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(getBank());
     out.putByteArray(myRAM, 64);
 
@@ -305,9 +304,6 @@ bool CartridgeCTY::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     // Remember what bank we were in
     bank(in.getShort());
     in.getByteArray(myRAM, 64);
