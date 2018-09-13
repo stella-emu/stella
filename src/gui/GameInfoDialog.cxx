@@ -307,10 +307,10 @@ GameInfoDialog::GameInfoDialog(
   t = new StaticTextWidget(myTab, font, HBORDER, ypos+2, "Y-start ");
   myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
                               "   ", 0, kYStartChanged, 5 * fontWidth, "px");
-  myYStart->setMinValue(TIAConstants::minYStart-1);
+  myYStart->setMinValue(0);
   myYStart->setMaxValue(TIAConstants::maxYStart);
   // one tickmark every ~10 pixel
-  myYStart->setTickmarkInterval((TIAConstants::maxYStart - (TIAConstants::minYStart-1) + 5) / 10);
+  myYStart->setTickmarkInterval((TIAConstants::maxYStart + 5) / 10);
   wid.push_back(myYStart);
 
   int iWidth = ifont.getCharWidth('2');
@@ -532,8 +532,6 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
-  myGameProperties.set(Display_YStart, myYStart->getValueLabel() == "Auto" ? "0" :
-                       myYStart->getValueLabel());
   myGameProperties.set(Display_Height, myHeight->getValueLabel() == "Auto" ? "0" :
                        myHeight->getValueLabel());
   myGameProperties.set(Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
@@ -571,6 +569,11 @@ void GameInfoDialog::saveConfig()
     instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
     if (reset)
       instance().console().tia().frameReset();
+  } else {
+    myGameProperties.set(
+      Display_YStart,
+      myYStart->getValueLabel() == "Auto" ? "0" : myYStart->getValueLabel()
+    );
   }
 }
 
@@ -703,7 +706,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kYStartChanged:
-      if(myYStart->getValue() == TIAConstants::minYStart-1)
+      if(myYStart->getValue() == 0)
       {
         myYStart->setValueLabel("Auto");
         myYStart->setValueUnit("");

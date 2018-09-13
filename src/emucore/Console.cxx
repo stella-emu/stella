@@ -680,10 +680,9 @@ void Console::changeYStart(int direction)
   }
   else if(direction == -1)  // decrease YStart
   {
-    if(ystart == TIAConstants::minYStart-1 && myAutodetectedYstart > 0)
+    if(ystart == 0)
     {
-      myOSystem.frameBuffer().showMessage("YStart at minimum");
-      return;
+      throw runtime_error("cannot happen");
     }
 
     --ystart;
@@ -694,7 +693,7 @@ void Console::changeYStart(int direction)
 
   ostringstream val;
   val << ystart;
-  if(ystart == TIAConstants::minYStart-1) {
+  if(ystart == 0) {
     redetectYStart();
     ystart = myAutodetectedYstart;
 
@@ -707,12 +706,12 @@ void Console::changeYStart(int direction)
       // We've reached the auto-detect value, so reset
       myOSystem.frameBuffer().showMessage("YStart " + val.str() + " (Auto)");
       val.str("");
-      val << TIAConstants::minYStart-1;
+      val << static_cast<int>(0);
     }
     else
       myOSystem.frameBuffer().showMessage("YStart " + val.str());
 
-    myAutodetectedYstart = false;
+    myYStartAutodetected = false;
   }
 
   myProperties.set(Display_YStart, val.str());
@@ -723,14 +722,23 @@ void Console::changeYStart(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::updateYStart(uInt32 ystart)
 {
-  if (ystart == TIAConstants::minYStart-1 && !myYStartAutodetected) {
-    redetectYStart();
-    ystart = myAutodetectedYstart;
-  } else if (ystart <= TIAConstants::maxYStart) myYStartAutodetected = false;
+  if (ystart > TIAConstants::maxYStart) return;
 
-  if (ystart <= TIAConstants::maxYStart) {
+  ostringstream ss;
+  ss << ystart;
+
+  if (ss.str() == myProperties.get(Display_YStart)) return;
+
+  myProperties.set(Display_YStart, ss.str());
+
+  if (ystart == 0) {
+    redetectYStart();
+    myTIA->setYStart(myAutodetectedYstart);
+    myTIA->frameReset();
+  } else {
     myTIA->setYStart(ystart);
     myTIA->frameReset();
+    myYStartAutodetected = false;
   }
 }
 
@@ -772,7 +780,7 @@ void Console::setTIAProperties()
 {
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
   if(ystart != 0)
-    ystart = BSPF::clamp(ystart, TIAConstants::minYStart, TIAConstants::maxYStart);
+    ystart = BSPF::clamp(ystart, 0u, TIAConstants::maxYStart);
   uInt32 height = atoi(myProperties.get(Display_Height).c_str());
   if(height != 0)
     height = BSPF::clamp(height, TIAConstants::minViewableHeight, TIAConstants::maxViewableHeight);
