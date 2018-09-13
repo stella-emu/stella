@@ -19,9 +19,9 @@
 #include "Settings.hxx"
 
 namespace {
-  uInt32 convertInt(int x, int defaultValue)
+  uInt32 lboundInt(int x, int defaultValue)
   {
-    return x <= defaultValue ? defaultValue : x;
+    return x <= 0 ? defaultValue : x;
   }
 
   AudioSettings::Preset normalizedPreset(int numericPreset)
@@ -107,14 +107,14 @@ AudioSettings::Preset AudioSettings::preset()
 uInt32 AudioSettings::sampleRate()
 {
   updatePresetFromSettings();
-  return customSettings() ? convertInt(mySettings.getInt(SETTING_SAMPLE_RATE), DEFAULT_SAMPLE_RATE) : myPresetSampleRate;
+  return customSettings() ? lboundInt(mySettings.getInt(SETTING_SAMPLE_RATE), DEFAULT_SAMPLE_RATE) : myPresetSampleRate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioSettings::fragmentSize()
 {
   updatePresetFromSettings();
-  return customSettings() ? convertInt(mySettings.getInt(SETTING_FRAGMENT_SIZE), DEFAULT_FRAGMENT_SIZE) : myPresetFragmentSize;
+  return customSettings() ? lboundInt(mySettings.getInt(SETTING_FRAGMENT_SIZE), DEFAULT_FRAGMENT_SIZE) : myPresetFragmentSize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,7 +122,7 @@ uInt32 AudioSettings::bufferSize()
 {
   updatePresetFromSettings();
   // 0 is a valid value -> keep it
-  return customSettings() ? convertInt(mySettings.getInt(SETTING_BUFFER_SIZE), 0) : myPresetBufferSize;
+  return customSettings() ? lboundInt(mySettings.getInt(SETTING_BUFFER_SIZE), 0) : myPresetBufferSize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,7 +130,7 @@ uInt32 AudioSettings::headroom()
 {
   updatePresetFromSettings();
   // 0 is a valid value -> keep it
-  return customSettings() ? convertInt(mySettings.getInt(SETTING_HEADROOM), 0) : myPresetHeadroom;
+  return customSettings() ? lboundInt(mySettings.getInt(SETTING_HEADROOM), 0) : myPresetHeadroom;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,7 +151,7 @@ string AudioSettings::stereo() const
 uInt32 AudioSettings::volume() const
 {
   // 0 is a valid value -> keep it
-  return convertInt(mySettings.getInt(SETTING_VOLUME), 0);
+  return lboundInt(mySettings.getInt(SETTING_VOLUME), 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
