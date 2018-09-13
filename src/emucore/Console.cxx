@@ -716,7 +716,6 @@ void Console::changeYStart(int direction)
 
   myProperties.set(Display_YStart, val.str());
   myTIA->setYStart(ystart);
-  myTIA->frameReset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -734,10 +733,8 @@ void Console::updateYStart(uInt32 ystart)
   if (ystart == 0) {
     redetectYStart();
     myTIA->setYStart(myAutodetectedYstart);
-    myTIA->frameReset();
   } else {
     myTIA->setYStart(ystart);
-    myTIA->frameReset();
     myYStartAutodetected = false;
   }
 }
@@ -766,7 +763,6 @@ void Console::changeHeight(int direction)
     return;
 
   myTIA->setHeight(height);
-  myTIA->frameReset();
   initializeVideo();  // takes care of refreshing the screen
 
   ostringstream val;
