@@ -568,7 +568,11 @@ void GameInfoDialog::saveConfig()
     }
     instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
     if (reset)
-      instance().console().tia().frameReset();
+      instance().console().tia().reset();
+
+    // Certain calls above may blank the TIA image (notably, setFormat)
+    // So we make sure we have a valid image when the dialog exits
+    instance().console().tia().renderToFrameBuffer();
   }
   else
   {

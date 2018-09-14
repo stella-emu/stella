@@ -178,7 +178,7 @@ void TIA::reset()
   if (myFrameManager)
   {
     myFrameManager->reset();
-    frameReset();  // Recalculate the size of the display
+    enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
   }
 
   myFrontBufferScanlines = myFrameBufferScanlines = 0;
@@ -189,18 +189,14 @@ void TIA::reset()
   enableFixedColors(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.debugcolors" : "plr.debugcolors"));
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
 
-#ifdef DEBUGGER_SUPPORT
-  createAccessBase();
-#endif // DEBUGGER_SUPPORT
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::frameReset()
-{
+  // Blank the various framebuffers; they may contain graphical garbage
   memset(myBackBuffer, 0, 160 * TIAConstants::frameBufferHeight);
   memset(myFrontBuffer, 0, 160 * TIAConstants::frameBufferHeight);
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
-  enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
+
+#ifdef DEBUGGER_SUPPORT
+  createAccessBase();
+#endif // DEBUGGER_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

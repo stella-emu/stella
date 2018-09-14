@@ -420,8 +420,7 @@ void Console::setFormat(uInt32 format)
   {
     setPalette(myOSystem.settings().getString("palette"));
     setTIAProperties();
-    myTIA->frameReset();
-    initializeVideo();  // takes care of refreshing the screen
+    initializeVideo(); // takes care of refreshing the screen
     initializeAudio(); // ensure that audio synthesis is set up to match emulation speed
     myOSystem.resetFps(); // Reset FPS measurement
   }
