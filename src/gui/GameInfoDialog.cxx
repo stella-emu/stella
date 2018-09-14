@@ -531,6 +531,11 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Controller_MouseAxis, mcontrol);
 
   // Display properties
+  const string& ystart = myGameProperties.get(Display_YStart);
+  uInt32 oldYStart = atoi(ystart.c_str());
+  const string& height = myGameProperties.get(Display_Height);
+  uInt32 oldHeight = atoi(height.c_str());
+
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
   myGameProperties.set(Display_YStart, myYStart->getValueLabel() == "Auto" ? "0" :
                        myYStart->getValueLabel());
@@ -557,15 +562,17 @@ void GameInfoDialog::saveConfig()
     instance().console().switches().setRightDifficultyA(myRightDiffGroup->getSelected() == 0);
 
     // update 'Display' tab settings immediately
-    bool reset = false;
     instance().console().setFormat(myFormat->getSelected());
-    if(uInt32(myYStart->getValue()) != instance().console().tia().ystart())
+
+    // only call tia().reset() when values have changed
+    bool reset = false;
+    if(uInt32((myYStart->getValue()) != 0 || oldYStart != 0) &&
+      uInt32(myYStart->getValue()) != instance().console().tia().ystart())
     {
       instance().console().updateYStart(myYStart->getValue());
       reset = true;
     }
-
-    if(/*uInt32(myHeight->getValue()) != TIAConstants::minViewableHeight - 1 &&*/
+    if(uInt32((myHeight->getValue()) != TIAConstants::minViewableHeight - 1 || oldHeight != 0) &&
        uInt32(myHeight->getValue()) != instance().console().tia().height())
     {
       instance().console().tia().setHeight(myHeight->getValue());
