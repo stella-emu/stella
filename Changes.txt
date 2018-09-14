@@ -99,6 +99,9 @@
 
   * Updated PAL palette.
 
+  * Added 'Cartridge.StartBank' ROM property, to force a ROM to use a
+    specific bank for its reset vector.
+
   * Added recently released 'Arkyology' prototype ROM to the database.
 
   * For UNIX systems: in the ROM launcher, when using symlinks use the

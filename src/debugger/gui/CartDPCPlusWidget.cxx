@@ -35,7 +35,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
        << "DPC registers accessible @ $F000 - $F07F\n"
        << "  $F000 - $F03F (R), $F040 - $F07F (W)\n"
        << "Banks accessible at hotspots $FFF6 to $FFFB\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.startBank() << "\n";
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler

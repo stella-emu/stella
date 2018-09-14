@@ -32,18 +32,16 @@ CartridgeCVPlus::CartridgeCVPlus(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize + 1024);
-
-  // Remember startup bank
-  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCVPlus::reset()
 {
   initializeRAM(myRAM, 1024);
+  initializeStartBank(0);
 
   // We'll map the startup bank into the first segment upon reset
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,7 +77,7 @@ void CartridgeCVPlus::install(System& system)
   }
 
   // Install pages for the startup bank into the first segment
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

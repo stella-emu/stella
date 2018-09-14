@@ -113,6 +113,12 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myLeftControl  = make_unique<Joystick>(Controller::Left, myEvent, *mySystem);
   myRightControl = make_unique<Joystick>(Controller::Right, myEvent, *mySystem);
 
+  // Let the cart know how to query for the 'Cartridge.StartBank' property
+  myCart->setStartBankFromPropsFunc([this]() {
+    const string& startbank = myProperties.get(Cartridge_StartBank);
+    return startbank == EmptyString ? -1 : atoi(startbank.c_str());
+  });
+
   // We can only initialize after all the devices/components have been created
   mySystem->initialize();
 

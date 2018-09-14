@@ -4876,6 +4876,7 @@
 "Cartridge.Name" "Racer (1982) (Atari) (Prototype)"
 "Cartridge.Note" "ROM must be started in bank 0"
 "Cartridge.Rarity" "Prototype"
+"Cartridge.StartBank" "0"
 ""
 
 "Cartridge.MD5" "3c7a96978f52b2b15426cdd50f2c4048"
@@ -9543,6 +9544,7 @@
 "Cartridge.Name" "Snow White (11-09-1982) (Atari) (Prototype)"
 "Cartridge.Note" "ROM must be started in bank 0"
 "Cartridge.Rarity" "Prototype"
+"Cartridge.StartBank" "0"
 ""
 
 "Cartridge.MD5" "7608abdfd9b26f4a0ecec18b232bea54"
@@ -19897,6 +19899,11 @@
 "Cartridge.Name" "Private Eye (CCE)"
 ""
 
+"Cartridge.MD5" "bc24440b59092559a1ec26055fd1270e"
+"Cartridge.Name" "Private Eye (1984) (Activision) [a]"
+"Cartridge.StartBank" "0"
+""
+
 "Cartridge.MD5" "f9d51a4e5f8b48f68770c89ffd495ed1"
 "Cartridge.Manufacturer" "Atari, Tod Frye, Mimi Nyden"
 "Cartridge.ModelNo" "CX2657"
@@ -20435,6 +20442,7 @@
 "Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype)"
 "Cartridge.Note" "ROM must be started in bank 0"
 "Cartridge.Rarity" "Prototype"
+"Cartridge.StartBank" "0"
 ""
 
 "Cartridge.MD5" "93c4b910f7649b3e998bb6d8527c6f4a"

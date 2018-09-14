@@ -55,8 +55,9 @@ void CartridgeAR::reset()
   // Initialize RAM
 #if 0  // TODO - figure out actual behaviour of the real cart
   initializeRAM(myImage, 6*1024);
+#else
+  memset(myImage, 0, 6 * 1024);
 #endif
-    memset(myImage, 0, 6 * 1024);
 
   // Initialize SC BIOS ROM
   initializeROM();

@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3318
+#define DEF_PROPS_SIZE 3319
 
 static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -481,7 +481,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "23fad5a125bcd4463701c8ad8a0043a9", "CCE", "C-840", "Stone Age (1983) (CCE)", "Uses the Joystick Controllers (swapped)", "", "", "", "", "A", "A", "", "YES", "", "", "", "", "", "", "220", "YES", "" },
   { "240bfbac5163af4df5ae713985386f92", "Activision, Steve Cartwright", "AX-022", "Seaquest (1983) (Activision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2432f33fd278dea5fe6ae94073627fcc", "CBS Electronics, Tom DiDomenico", "4L2477, 4L2482, 4L2485, 4L4171", "Blueprint (1983) (CBS Electronics) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
-  { "2434102f30eeb47792cf0825e368229b", "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis", "", "Arkyology (1983) (Sparrow) (Prototype)", "ROM must be started in bank 0", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "2434102f30eeb47792cf0825e368229b", "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis", "", "Arkyology (1983) (Sparrow) (Prototype)", "ROM must be started in bank 0", "Prototype", "", "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "24385ba7f5109fbe76aadc0a375de573", "CCE", "", "Xevious (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "2447e17a4e18e6b609de498fe4ab52ba", "CCE", "", "Super Futebol (CCE)", "AKA RealSports Soccer", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "244c6de27faff527886fc7699a41c3be", "", "", "Matt Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -816,7 +816,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "3c4a6f613ca8ba27ce9e43c6c92a3128", "", "", "Qb (V0.04) (Non-Lax Version) (2001) (Retroactive)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "3c57748c8286cf9e821ecd064f21aaa9", "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira", "CX26118", "Millipede (1984) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "3c72ddaf41158fdd66e4f1cb90d4fd29", "Dismac", "", "Comando Suicida (Dismac)", "AKA Chopper Command", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "3c7a7b3a0a7e6319b2fa0f923ef6c9af", "Atari - Roklan, Joe Gaucher", "", "Racer (1982) (Atari) (Prototype)", "ROM must be started in bank 0", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "3c7a7b3a0a7e6319b2fa0f923ef6c9af", "Atari - Roklan, Joe Gaucher", "", "Racer (1982) (Atari) (Prototype)", "ROM must be started in bank 0", "Prototype", "", "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "3c7a96978f52b2b15426cdd50f2c4048", "", "", "Overhead Adventure Demo 3 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "3c82e808fe0e6a006dc0c4e714d36209", "Activision, David Crane", "AG-004", "Fishing Derby (1980) (Activision) (16K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "3c853d864a1d5534ed0d4b325347f131", "Telesys, Don 'Donyo' Ruffcorn", "1002", "Cosmic Creeps (1982) (Telesys)", "AKA Space Maze, Spaze Maze", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
@@ -1576,7 +1576,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "75e8d8b9e9c5c67c2226dbfd77dcfa7d", "", "", "2600 Digital Clock (V b1) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "75ea128ba96ac6db8edf54b071027c4e", "Atari, David Crane", "CX26163P", "Slot Machine (32 in 1) (1988) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "75ea60884c05ba496473c23a58edf12f", "Atari, Howard Scott Warshaw - Sears", "CX2655 - 49-75167", "Yars' Revenge (1982) (Atari) (PAL) [a]", "ROM must be started in bank 0", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
-  { "75ee371ccfc4f43e7d9b8f24e1266b55", "Atari, Greg Easter, Mimi Nyden", "CX26107", "Snow White (11-09-1982) (Atari) (Prototype)", "ROM must be started in bank 0", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "75ee371ccfc4f43e7d9b8f24e1266b55", "Atari, Greg Easter, Mimi Nyden", "CX26107", "Snow White (11-09-1982) (Atari) (Prototype)", "ROM must be started in bank 0", "Prototype", "", "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "7608abdfd9b26f4a0ecec18b232bea54", "Atari, Bob Whitehead", "CX26163P", "NFL Football (32 in 1) (1988) (Atari) (PAL)", "AKA Football", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "7623a639a6fffdb246775fe2eabc8d01", "Activision, Bob Whitehead", "AG-005, CAG-005, AG-005-04", "Skiing (1980) (Activision) (8K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "7628d3cadeee0fd2e41e68b3b8fbe229", "Atari", "CX26163P", "Fishing Derby (32 in 1) (1988) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2412,6 +2412,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "bb756aa98b847dddc8fc170bc79f92b2", "", "", "Golf (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "bb9f06b288b5275bc0d38b6731b2526a", "", "", "Star Fire - Meteor Dance 2 (18-11-2002) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "bbf8c7c9ed280151934aabe138e41ba7", "Amiga", "1130", "Power Play Arcade Video Game Album V (1984) (Amiga) (Prototype)", "Mogul Maniac, Surf's Up, Off Your Rocker, S.A.C. Alert", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "bc24440b59092559a1ec26055fd1270e", "", "", "Private Eye (1984) (Activision) [a]", "", "", "", "0", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "bc3057a35319aae3a5cd87a203736abe", "CCE", "C-845", "Time Warp (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "bc33c685e6ffced83abe7a43f30df7f9", "Dynacom", "", "Seaquest (1983) (Dynacom)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "bc4cf38a4bee45752dc466c98ed7ad09", "Atari, Douglas Neubauer, Mimi Nyden", "CX26136", "Solaris (1986) (Atari) (PAL)", "AKA Universe, Star Raiders II, The Last Starfighter", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },

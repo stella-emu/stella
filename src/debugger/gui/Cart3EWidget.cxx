@@ -37,10 +37,10 @@ Cartridge3EWidget::Cartridge3EWidget(
           "First 2K (RAM) selected by writing to $3E\n"
           "  $F000 - $F3FF (R), $F400 - $F7FF (W)\n"
           "Last 2K always points to last 2K of ROM\n";
-  if(cart.myStartBank < myNumRomBanks)
-    info << "Startup bank = " << cart.myStartBank << " (ROM)\n";
+  if(cart.startBank() < myNumRomBanks)
+    info << "Startup bank = " << cart.startBank() << " (ROM)\n";
   else
-    info << "Startup bank = " << (cart.myStartBank-myNumRomBanks) << " (RAM)\n";
+    info << "Startup bank = " << (cart.startBank()-myNumRomBanks) << " (RAM)\n";
 
   // Eventually, we should query this from the debugger/disassembler
   uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];

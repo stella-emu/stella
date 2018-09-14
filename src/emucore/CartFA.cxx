@@ -27,21 +27,16 @@ CartridgeFA::CartridgeFA(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(12288u, size));
   createCodeAccessBase(12288);
-
-  // Remember startup bank
-  myStartBank = 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA::reset()
 {
-  // define random startup bank
-  randomizeStartBank();
-
   initializeRAM(myRAM, 256);
+  initializeStartBank(2);
 
   // Upon reset we switch to the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,7 +66,7 @@ void CartridgeFA::install(System& system)
   }
 
   // Install pages for the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -32,18 +32,16 @@ Cartridge3E::Cartridge3E(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize + 32768);
-
-  // Remember startup bank
-  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3E::reset()
 {
   initializeRAM(myRAM, 32768);
+  initializeStartBank(0);
 
   // We'll map the startup bank into the first segment upon reset
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,7 +65,7 @@ void Cartridge3E::install(System& system)
   }
 
   // Install pages for the startup bank into the first segment
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

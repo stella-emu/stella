@@ -390,7 +390,7 @@ class Console : public Serializable
     // Pointer to the TIA object
     unique_ptr<TIA> myTIA;
 
-    // The frame manager instance that is used during emulation.
+    // The frame manager instance that is used during emulation
     unique_ptr<AbstractFrameManager> myFrameManager;
 
     // The audio fragment queue that connects TIA and audio driver

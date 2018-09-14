@@ -87,7 +87,7 @@ void CartridgeCDF::reset()
   setInitialState();
 
   // Upon reset we switch to the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,7 +100,7 @@ void CartridgeCDF::setInitialState()
     myMusicWaveformSize[i] = 27;
 
   // CDF always starts in bank 6
-  myStartBank = 6;
+  initializeStartBank(6);
 
   // Assuming mode starts out with Fast Fetch off and 3-Voice music,
   // need to confirm with Chris
@@ -127,7 +127,7 @@ void CartridgeCDF::install(System& system)
     mySystem->setPageAccess(addr, access);
 
   // Install pages for the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

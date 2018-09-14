@@ -30,7 +30,7 @@ CartridgeBFWidget::CartridgeBFWidget(
 
   ostringstream info;
   info << "BF cartridge, 64 4K banks\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.startBank() << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xF80; i < 64; ++i, offset += 0x1000)

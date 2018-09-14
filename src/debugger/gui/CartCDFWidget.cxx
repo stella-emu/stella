@@ -35,7 +35,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   << "8K CDF RAM\n"
   << "CDF registers accessible @ $FFF0 - $FFF3\n"
   << "Banks accessible at hotspots $FFF5 to $FFFB\n"
-  << "Startup bank = " << cart.myStartBank << "\n";
+  << "Startup bank = " << cart.startBank() << "\n";
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler

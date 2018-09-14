@@ -34,7 +34,7 @@ CartridgeBFSCWidget::CartridgeBFSCWidget(
   info << "256K BFSC + RAM, 64 4K banks\n"
        << "128 bytes RAM @ $F000 - $F0FF\n"
        << "  $F080 - $F0FF (R), $F000 - $F07F (W)\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.startBank() << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xF80; i < 64; ++i, offset += 0x1000)

@@ -35,7 +35,7 @@ CartridgeBUSWidget::CartridgeBUSWidget(
        << "8K BUS RAM\n"
        << "BUS registers accessible @ $FFEE - $FFF3\n"
        << "Banks accessible at hotspots $FFFF to $FFFB\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.startBank() << "\n";
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler

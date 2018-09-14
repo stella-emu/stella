@@ -35,7 +35,7 @@ CartridgeCVPlusWidget::CartridgeCVPlusWidget(
        << "1024 bytes RAM @ $F000 - $F7FF\n"
        << "  $F000 - $F3FF (R), $F400 - $F7FF (W)\n"
        << "2048 bytes ROM @ $F800 - $FFFF, by writing to $3D\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.startBank() << "\n";
 
   int xpos = 10,
       ypos = addBaseInformation(size, "LS_Dracon / Stephen Anthony",

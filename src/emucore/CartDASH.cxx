@@ -31,16 +31,16 @@ CartridgeDASH::CartridgeDASH(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize + RAM_TOTAL_SIZE);
-
-  // Remember startup bank (0 per spec, rather than last per 3E scheme).
-  // Set this to go to 3rd 1K Bank.
-  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASH::reset()
 {
   initializeRAM(myRAM, RAM_TOTAL_SIZE);
+
+  // Remember startup bank (0 per spec, rather than last per 3E scheme).
+  // Set this to go to 3rd 1K Bank.
+  initializeStartBank(0);
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location

@@ -35,7 +35,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
        << "256 bytes RAM @ $F000 - $F1FF\n"
        << "  $F100 - $F1FF (R), $F000 - $F0FF (W)\n"
        << "RAM can be loaded/saved to Harmony flash by accessing $FFF4\n"
-       << "Startup bank = " << cart.myStartBank << " or undetermined\n";
+       << "Startup bank = " << cart.startBank() << " or undetermined\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < cart.bankCount();
