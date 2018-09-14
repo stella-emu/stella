@@ -532,10 +532,11 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
+  myGameProperties.set(Display_YStart, myYStart->getValueLabel() == "Auto" ? "0" :
+                       myYStart->getValueLabel());
   myGameProperties.set(Display_Height, myHeight->getValueLabel() == "Auto" ? "0" :
                        myHeight->getValueLabel());
   myGameProperties.set(Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
-
   myGameProperties.set(Display_PPBlend, myPPBlend->getValueLabel() == "Default" ? "0" :
                        myPPBlend->getValueLabel());
 
@@ -558,9 +559,13 @@ void GameInfoDialog::saveConfig()
     // update 'Display' tab settings immediately
     bool reset = false;
     instance().console().setFormat(myFormat->getSelected());
-    instance().console().updateYStart(myYStart->getValue());
+    if(uInt32(myYStart->getValue()) != instance().console().tia().ystart())
+    {
+      instance().console().updateYStart(myYStart->getValue());
+      reset = true;
+    }
 
-    if(uInt32(myHeight->getValue()) != TIAConstants::minViewableHeight - 1 &&
+    if(/*uInt32(myHeight->getValue()) != TIAConstants::minViewableHeight - 1 &&*/
        uInt32(myHeight->getValue()) != instance().console().tia().height())
     {
       instance().console().tia().setHeight(myHeight->getValue());
@@ -573,13 +578,6 @@ void GameInfoDialog::saveConfig()
     // Certain calls above may blank the TIA image (notably, setFormat)
     // So we make sure we have a valid image when the dialog exits
     instance().console().tia().renderToFrameBuffer();
-  }
-  else
-  {
-    myGameProperties.set(
-      Display_YStart,
-      myYStart->getValueLabel() == "Auto" ? "0" : myYStart->getValueLabel()
-    );
   }
 }
 
