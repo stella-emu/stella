@@ -94,6 +94,9 @@
     and saving.  This affects both the files saved to your computer as well
     as Time Machine functionality.
 
+  * The ROM name saved in a PNG tEXt chunk now honours the 'snapname'
+    setting.
+
   * Updated PAL palette.
 
   * Added recently released 'Arkyology' prototype ROM to the database.

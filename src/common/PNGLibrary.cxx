@@ -331,7 +331,10 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
           << BSPF::ARCH << "]";
   VarList::push_back(comments, "Software", version.str());
-  VarList::push_back(comments, "ROM Name", myOSystem.console().properties().get(Cartridge_Name));
+  const string& name = (myOSystem.settings().getString("snapname") == "int")
+      ? myOSystem.console().properties().get(Cartridge_Name)
+      : myOSystem.romFile().getName();
+  VarList::push_back(comments, "ROM Name", name);
   VarList::push_back(comments, "ROM MD5", myOSystem.console().properties().get(Cartridge_MD5));
   VarList::push_back(comments, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
 
