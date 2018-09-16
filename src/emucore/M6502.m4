@@ -445,12 +445,12 @@ define(M6502_ARR, `{
 
     if(((value & 0xf0) + (value & 0x10)) > 0x50)
     {
-      A = (A + 0x60) & 0xff;
-      C = 1;
+      A += 0x60;
+      C = true;
     }
     else
     {
-      C = 0;
+      C = false;
     }
   }
 }')
@@ -482,10 +482,10 @@ define(M6502_ASR, `{
   // Set carry flag according to the right-most bit
   C = A & 0x01;
 
-  A = (A >> 1) & 0x7f;
+  A >>= 1;
 
   notZ = A;
-  N = A & 0x80;
+  N = false;
 }')
 
 define(M6502_BIT, `{
@@ -691,21 +691,21 @@ define(M6502_LSR, `{
   // Set carry flag according to the right-most bit in value
   C = operand & 0x01;
 
-  operand = (operand >> 1) & 0x7f;
+  operand >>= 1;
   poke(operandAddress, operand, DISASM_WRITE);
 
   notZ = operand;
-  N = operand & 0x80;
+  N = false;
 }')
 
 define(M6502_LSRA, `{
   // Set carry flag according to the right-most bit
   C = A & 0x01;
 
-  A = (A >> 1) & 0x7f;
+  A >>= 1;
 
   notZ = A;
-  N = A & 0x80;
+  N = false;
 }')
 
 define(M6502_LXA, `{

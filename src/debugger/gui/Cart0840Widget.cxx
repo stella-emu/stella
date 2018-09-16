@@ -30,7 +30,7 @@ Cartridge0840Widget::Cartridge0840Widget(
 
   ostringstream info;
   info << "0840 ECONObanking, two 4K banks\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.startBank() << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0x800; i < 2;

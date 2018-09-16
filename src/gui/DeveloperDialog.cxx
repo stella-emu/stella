@@ -98,7 +98,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
-  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Frame statistics");
+  myFrameStatsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1, "Console info overlay");
   wid.push_back(myFrameStatsWidget);
   ypos += lineHeight + VGAP;
 
@@ -131,7 +131,6 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   // Randomize CPU
-  lwidth = font.getStringWidth("Randomize CPU ");
   myRandomizeCPULabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, "Randomize CPU ");
   wid.push_back(myRandomizeCPULabel);
 
@@ -184,7 +183,6 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   int tabID = myTab->addTab("Video");
 
   wid.clear();
-  ypos = VBORDER;
 
   // settings set
   mySettingsGroup1 = new RadioButtonGroup();
@@ -413,10 +411,10 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 
   // Font style (bold label vs. text, etc)
   items.clear();
-  VarList::push_back(items, "All Normal font", "0");
+  VarList::push_back(items, "All normal font", "0");
   VarList::push_back(items, "Bold labels only", "1");
   VarList::push_back(items, "Bold non-labels only", "2");
-  VarList::push_back(items, "All Bold font", "3");
+  VarList::push_back(items, "All bold font", "3");
   pwidth = font.getStringWidth("Bold non-labels only");
   myDebuggerFontStyle =
     new PopUpWidget(myTab, font, HBORDER, ypos + 1, pwidth, lineHeight, items,
@@ -431,7 +429,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerWidthSlider->setMinValue(DebuggerDialog::kSmallFontMinW);
   myDebuggerWidthSlider->setMaxValue(ds.w);
   myDebuggerWidthSlider->setStepValue(10);
-  myDebuggerWidthSlider->setTickmarkInterval(5);
+  // one tickmark every ~100 pixel
+  myDebuggerWidthSlider->setTickmarkInterval((ds.w - DebuggerDialog::kSmallFontMinW + 50) / 100);
   wid.push_back(myDebuggerWidthSlider);
   ypos += lineHeight + VGAP;
 
@@ -440,7 +439,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerHeightSlider->setMinValue(DebuggerDialog::kSmallFontMinH);
   myDebuggerHeightSlider->setMaxValue(ds.h);
   myDebuggerHeightSlider->setStepValue(10);
-  myDebuggerHeightSlider->setTickmarkInterval(5);
+  // one tickmark every ~100 pixel
+  myDebuggerHeightSlider->setTickmarkInterval((ds.h - DebuggerDialog::kSmallFontMinH + 50) / 100);
   wid.push_back(myDebuggerHeightSlider);
   ypos += lineHeight + VGAP * 4;
 
@@ -477,7 +477,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::loadSettings(SettingsSet set)
 {
-  string prefix = set == SettingsSet::player ? "plr." : "dev.";
+  const string& prefix = set == SettingsSet::player ? "plr." : "dev.";
 
   myFrameStats[set] = instance().settings().getBool(prefix + "stats");
   myConsole[set] = instance().settings().getString(prefix + "console") == "7800" ? 1 : 0;
@@ -511,7 +511,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveSettings(SettingsSet set)
 {
-  string prefix = set == SettingsSet::player ? "plr." : "dev.";
+  const string& prefix = set == SettingsSet::player ? "plr." : "dev.";
 
   instance().settings().setValue(prefix + "stats", myFrameStats[set]);
   instance().settings().setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");
@@ -739,8 +739,8 @@ void DeveloperDialog::setDefaults()
       myConsole[set] = 0;
       // Randomization
       myRandomBank[set] = devSettings ? true : false;
-      myRandomizeRAM[set] = devSettings ? true : false;
-      myRandomizeCPU[set] = devSettings ? "SAXYP" : "";
+      myRandomizeRAM[set] = true;
+      myRandomizeCPU[set] = devSettings ? "SAXYP" : "AXYP";
       // Undriven TIA pins
       myUndrivenPins[set] = devSettings ? true : false;
       // Thumb ARM emulation exception
@@ -980,7 +980,7 @@ void DeveloperDialog::handleSize()
       }
     }
     if(!found)
-      interval--;
+      --interval;
   } while(!found);
 
   if(size < uncompressed)

@@ -39,16 +39,16 @@ CartridgeDPC::CartridgeDPC(const BytePtr& image, uInt32 size,
 
   // Initialize the DPC data fetcher registers
   for(int i = 0; i < 8; ++i)
-    myTops[i] = myBottoms[i] = myCounters[i] = myFlags[i] = 0;
+  {
+    myTops[i] = myBottoms[i] = myFlags[i] = 0;
+    myCounters[i] = 0;
+  }
 
   // None of the data fetchers are in music mode
   myMusicMode[0] = myMusicMode[1] = myMusicMode[2] = false;
 
   // Initialize the DPC's random number generator register (must be non-zero)
   myRandomNumber = 1;
-
-  // Remember startup bank
-  myStartBank = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,11 +57,11 @@ void CartridgeDPC::reset()
   myAudioCycles = 0;
   myFractionalClocks = 0.0;
 
-  // define random startup bank
-  randomizeStartBank();
+  // Use random startup bank
+  initializeStartBank();
 
   // Upon reset we switch to the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,7 +75,7 @@ void CartridgeDPC::install(System& system)
     mySystem->setPageAccess(addr, access);
 
   // Install pages for the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -239,7 +239,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
     }
 
     // Clock the selected data fetcher's counter if needed
-    if((index < 5) || ((index >= 5) && (!myMusicMode[index - 5])))
+    if(index < 5 || !myMusicMode[index - 5])
     {
       myCounters[index] = (myCounters[index] - 1) & 0x07ff;
     }
@@ -442,8 +442,6 @@ bool CartridgeDPC::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     // Indicates which bank is currently active
     out.putShort(myBankOffset);
 
@@ -483,9 +481,6 @@ bool CartridgeDPC::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     // Indicates which bank is currently active
     myBankOffset = in.getShort();
 

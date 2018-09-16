@@ -61,15 +61,15 @@ void Driving::update()
   // Digital events (from keyboard or joystick hats & buttons)
   myDigitalPinState[Six] = (myEvent.get(myFireEvent) == 0);
   int d_axis = myEvent.get(myXAxisValue);
-  if(myEvent.get(myCCWEvent) != 0 || d_axis < -16384)     myCounter--;
-  else if(myEvent.get(myCWEvent) != 0 || d_axis > 16384)  myCounter++;
+  if(myEvent.get(myCCWEvent) != 0 || d_axis < -16384)     --myCounter;
+  else if(myEvent.get(myCWEvent) != 0 || d_axis > 16384)  ++myCounter;
 
   // Mouse motion and button events
   if(myControlID > -1)
   {
     int m_axis = myEvent.get(Event::MouseAxisXValue);
-    if(m_axis < -2)     myCounter--;
-    else if(m_axis > 2) myCounter++;
+    if(m_axis < -2)     --myCounter;
+    else if(m_axis > 2) ++myCounter;
     if(myEvent.get(Event::MouseButtonLeftValue) ||
        myEvent.get(Event::MouseButtonRightValue))
       myDigitalPinState[Six] = false;
@@ -81,16 +81,16 @@ void Driving::update()
     if(myControlIDX > -1)
     {
       int m_axis = myEvent.get(Event::MouseAxisXValue);
-      if(m_axis < -2)     myCounter--;
-      else if(m_axis > 2) myCounter++;
+      if(m_axis < -2)     --myCounter;
+      else if(m_axis > 2) ++myCounter;
       if(myEvent.get(Event::MouseButtonLeftValue))
         myDigitalPinState[Six] = false;
     }
     if(myControlIDY > -1)
     {
       int m_axis = myEvent.get(Event::MouseAxisYValue);
-      if(m_axis < -2)     myCounter--;
-      else if(m_axis > 2) myCounter++;
+      if(m_axis < -2)     --myCounter;
+      else if(m_axis > 2) ++myCounter;
       if(myEvent.get(Event::MouseButtonRightValue))
         myDigitalPinState[Six] = false;
     }
@@ -114,7 +114,7 @@ void Driving::update()
       myGrayIndex = 1; // down
     else if(yaxis >= 16384-4096)
       myGrayIndex = 2; // up + down
-    else if(yaxis < 16384-4096)
+    else /* if(yaxis < 16384-4096) */
       myGrayIndex = 0; // no movement
   }
 

@@ -141,7 +141,6 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 #endif
 
   lwidth = font.getStringWidth("Digital paddle sensitivity ");
-  pwidth = font.getMaxCharWidth() * 8;
 
   // Add joystick deadzone setting
   ypos += lineHeight + VGAP*3;
@@ -204,7 +203,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   // Enable/disable control key-combos
   ypos += lineHeight + VGAP;
   myCtrlCombo = new CheckboxWidget(myTab, font, HBORDER, ypos,
-	                "Use Control key combos");
+	                "Use control key combos");
   wid.push_back(myCtrlCombo);
   ypos += lineHeight + VGAP;
 

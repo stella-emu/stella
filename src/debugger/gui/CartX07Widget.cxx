@@ -30,7 +30,7 @@ CartridgeX07Widget::CartridgeX07Widget(
 
   ostringstream info;
   info << "64K X07 cartridge, 16 4K banks\n"
-       << "Startup bank = " << cart.myStartBank << "\n"
+       << "Startup bank = " << cart.startBank() << "\n"
        << "Multiple hotspots, all below $1000\n"
        << "See documentation for further details\n";
 

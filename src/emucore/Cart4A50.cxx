@@ -367,8 +367,6 @@ bool Cartridge4A50::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     // The 32K bytes of RAM
     out.putByteArray(myRAM, 32768);
 
@@ -400,9 +398,6 @@ bool Cartridge4A50::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     in.getByteArray(myRAM, 32768);
 
     // Index pointers

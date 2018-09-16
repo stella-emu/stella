@@ -37,7 +37,7 @@ using CheatList = vector<shared_ptr<Cheat>>;
 class CheatManager
 {
   public:
-    CheatManager(OSystem& osystem);
+    explicit CheatManager(OSystem& osystem);
 
     /**
       Adds the specified cheat to an internal list.

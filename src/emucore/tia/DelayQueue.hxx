@@ -48,7 +48,6 @@ class DelayQueue : public Serializable
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override;
 
   private:
     DelayQueueMember<capacity> myMembers[length];
@@ -96,7 +95,7 @@ void DelayQueue<length, capacity>::push(uInt8 address, uInt8 value, uInt8 delay)
 template<unsigned length, unsigned capacity>
 void DelayQueue<length, capacity>::reset()
 {
-  for (uInt8 i = 0; i < length; i++)
+  for (uInt8 i = 0; i < length; ++i)
     myMembers[i].clear();
 
   myIndex = 0;
@@ -110,7 +109,7 @@ void DelayQueue<length, capacity>::execute(T executor)
 {
   DelayQueueMember<capacity>& currentMember = myMembers[myIndex];
 
-  for (uInt8 i = 0; i < currentMember.mySize; i++) {
+  for (uInt8 i = 0; i < currentMember.mySize; ++i) {
     executor(currentMember.myEntries[i].address, currentMember.myEntries[i].value);
     myIndices[currentMember.myEntries[i].address] = 0xFF;
   }
@@ -128,7 +127,7 @@ bool DelayQueue<length, capacity>::save(Serializer& out) const
   {
     out.putInt(length);
 
-    for (uInt8 i = 0; i < length; i++)
+    for (uInt8 i = 0; i < length; ++i)
       myMembers[i].save(out);
 
     out.putByte(myIndex);
@@ -151,7 +150,7 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
   {
     if (in.getInt() != length) throw runtime_error("delay queue length mismatch");
 
-    for (uInt8 i = 0; i < length; i++)
+    for (uInt8 i = 0; i < length; ++i)
       myMembers[i].load(in);
 
     myIndex = in.getByte();
@@ -164,13 +163,6 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<unsigned length, unsigned capacity>
-string DelayQueue<length, capacity>::name() const
-{
-  return "TIA_DelayQueue";
 }
 
 #endif //  TIA_DELAY_QUEUE

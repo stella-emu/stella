@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "BSType.hxx"
+#include "Bankswitch.hxx"
 #include "Console.hxx"
 #include "MouseControl.hxx"
 #include "SaveKey.hxx"
@@ -116,12 +116,17 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight, "Type (*)");
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
-  for(int i = 0; i < int(BSType::NumSchemes); ++i)
-    VarList::push_back(items, BSList[i].desc, BSList[i].name);
+  for(uInt32 i = 0; i < uInt32(Bankswitch::Type::NumSchemes); ++i)
+    VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, items, "");
   wid.push_back(myType);
   ypos += lineHeight + VGAP;
+
+  myTypeDetected = new StaticTextWidget(myTab, ifont, xpos+lwidth, ypos,
+                       "(CM (SpectraVideo CompuMate) detected)");
+  wid.push_back(myTypeDetected);
+  ypos += ifont.getLineHeight() + VGAP/2;
 
   mySound = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Stereo sound");
   wid.push_back(mySound);
@@ -294,24 +299,37 @@ GameInfoDialog::GameInfoDialog(
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myFormat);
 
-  ypos += lineHeight + VGAP;
-  swidth = myFormat->getWidth();
-  t = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Y-Start ");
-  myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
-                              "", 0, kYStartChanged, 4 * fontWidth, "px");
-  myYStart->setMinValue(TIAConstants::minYStart-1);
-  myYStart->setMaxValue(TIAConstants::maxYStart);
-  myYStart->setTickmarkInterval(4);
-  wid.push_back(myYStart);
+  myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 8, ypos + 4, "SECAM60 detected");
+  wid.push_back(myFormatDetected);
 
   ypos += lineHeight + VGAP;
-  t = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Height  ");
+  swidth = myFormat->getWidth();
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos+2, "Y-start ");
+  myYStart = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
+                              "   ", 0, kYStartChanged, 5 * fontWidth, "px");
+  myYStart->setMinValue(0);
+  myYStart->setMaxValue(TIAConstants::maxYStart);
+  // one tickmark every ~10 pixel
+  myYStart->setTickmarkInterval((TIAConstants::maxYStart + 5) / 10);
+  wid.push_back(myYStart);
+
+  int iWidth = ifont.getCharWidth('2');
+  myYStartDetected = new StaticTextWidget(myTab, ifont, myYStart->getRight() + 8 + iWidth, ypos + 5, "100px detected");
+  wid.push_back(myYStartDetected);
+
+  ypos += lineHeight + VGAP;
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos+2, "Height  ");
   myHeight = new SliderWidget(myTab, font, t->getRight(), ypos, swidth, lineHeight,
-                              "", 0, kHeightChanged, 5 * fontWidth, "px");
+                              "   ", 0, kHeightChanged, 5 * fontWidth, "px");
   myHeight->setMinValue(TIAConstants::minViewableHeight-1);
   myHeight->setMaxValue(TIAConstants::maxViewableHeight);
-  myHeight->setTickmarkInterval(4);
+  // one tickmark every ~10 pixel
+  myHeight->setTickmarkInterval((TIAConstants::maxViewableHeight - (TIAConstants::minViewableHeight - 1) + 5) / 10);
   wid.push_back(myHeight);
+
+  myHeightDetected = new StaticTextWidget(myTab, ifont, myHeight->getRight() + 8, ypos + 5, "100px detected");
+  wid.push_back(myYStartDetected);
+
 
   // Phosphor
   ypos += lineHeight + VGAP*4;
@@ -347,7 +365,7 @@ void GameInfoDialog::loadConfig()
   else
   {
     const string& md5 = instance().launcher().selectedRomMD5();
-    instance().propSet(md5).getMD5(md5, myGameProperties);
+    instance().propSet().getMD5(md5, myGameProperties);
   }
 
   loadCartridgeProperties(myGameProperties);
@@ -359,36 +377,48 @@ void GameInfoDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::loadCartridgeProperties(Properties properties)
+void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 {
-  myName->setText(properties.get(Cartridge_Name));
-  myMD5->setText(properties.get(Cartridge_MD5));
-  myManufacturer->setText(properties.get(Cartridge_Manufacturer));
-  myModelNo->setText(properties.get(Cartridge_ModelNo));
-  myRarity->setText(properties.get(Cartridge_Rarity));
-  myNote->setText(properties.get(Cartridge_Note));
-  mySound->setState(properties.get(Cartridge_Sound) == "STEREO");
-  myType->setSelected(properties.get(Cartridge_Type), "AUTO");
+  myName->setText(props.get(Cartridge_Name));
+  myMD5->setText(props.get(Cartridge_MD5));
+  myManufacturer->setText(props.get(Cartridge_Manufacturer));
+  myModelNo->setText(props.get(Cartridge_ModelNo));
+  myRarity->setText(props.get(Cartridge_Rarity));
+  myNote->setText(props.get(Cartridge_Note));
+  mySound->setState(props.get(Cartridge_Sound) == "STEREO");
+  myType->setSelected(props.get(Cartridge_Type), "AUTO");
+
+  if(instance().hasConsole() && myType->getSelectedTag().toString() == "AUTO")
+  {
+    string bs = instance().console().about().BankSwitch;
+    size_t pos = bs.find_first_of('*');
+    // remove '*':
+    if (pos != string::npos)
+      bs = bs.substr(0, pos) + bs.substr(pos+1);
+    myTypeDetected->setLabel(bs +  "detected");
+  }
+  else
+    myTypeDetected->setLabel("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::loadConsoleProperties(Properties properties)
+void GameInfoDialog::loadConsoleProperties(const Properties& props)
 {
-  myLeftDiffGroup->setSelected(properties.get(Console_LeftDifficulty) == "A" ? 0 : 1);
-  myRightDiffGroup->setSelected(properties.get(Console_RightDifficulty) == "A" ? 0 : 1);
-  myTVTypeGroup->setSelected(properties.get(Console_TelevisionType) == "BW" ? 1 : 0);
+  myLeftDiffGroup->setSelected(props.get(Console_LeftDifficulty) == "A" ? 0 : 1);
+  myRightDiffGroup->setSelected(props.get(Console_RightDifficulty) == "A" ? 0 : 1);
+  myTVTypeGroup->setSelected(props.get(Console_TelevisionType) == "BW" ? 1 : 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::loadControllerProperties(Properties properties)
+void GameInfoDialog::loadControllerProperties(const Properties& props)
 {
-  myP0Controller->setSelected(properties.get(Controller_Left), "JOYSTICK");
-  myP1Controller->setSelected(properties.get(Controller_Right), "JOYSTICK");
-  mySwapPorts->setState(properties.get(Console_SwapPorts) == "YES");
-  mySwapPaddles->setState(properties.get(Controller_SwapPaddles) == "YES");
+  myP0Controller->setSelected(props.get(Controller_Left), "JOYSTICK");
+  myP1Controller->setSelected(props.get(Controller_Right), "JOYSTICK");
+  mySwapPorts->setState(props.get(Console_SwapPorts) == "YES");
+  mySwapPaddles->setState(props.get(Controller_SwapPaddles) == "YES");
 
   // MouseAxis property (potentially contains 'range' information)
-  istringstream m_axis(properties.get(Controller_MouseAxis));
+  istringstream m_axis(props.get(Controller_MouseAxis));
   string m_control, m_range;
   m_axis >> m_control;
   bool autoAxis = BSPF::equalsIgnoreCase(m_control, "AUTO");
@@ -418,25 +448,50 @@ void GameInfoDialog::loadControllerProperties(Properties properties)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::loadDisplayProperties(Properties properties)
+void GameInfoDialog::loadDisplayProperties(const Properties& props)
 {
-  myFormat->setSelected(properties.get(Display_Format), "AUTO");
+  myFormat->setSelected(props.get(Display_Format), "AUTO");
+  if(instance().hasConsole() && myFormat->getSelectedTag().toString() == "AUTO")
+  {
+    const string& format = instance().console().about().DisplayFormat;
+    string label = format.substr(0, format.length() - 1);
+    myFormatDetected->setLabel(label + " detected");
+  }
+  else
+    myFormatDetected->setLabel("");
 
-  const string& ystart = properties.get(Display_YStart);
+  const string& ystart = props.get(Display_YStart);
   myYStart->setValue(atoi(ystart.c_str()));
   myYStart->setValueLabel(ystart == "0" ? "Auto" : ystart);
   myYStart->setValueUnit(ystart == "0" ? "" : "px");
+  if(instance().hasConsole() && ystart == "0")
+  {
+    stringstream ss;
+    ss << instance().console().tia().ystart() << "px detected";
+    myYStartDetected->setLabel(ss.str());
+  }
+  else
+    myYStartDetected->setLabel("");
 
-  const string& height = properties.get(Display_Height);
+  const string& height = props.get(Display_Height);
   myHeight->setValue(atoi(height.c_str()));
   myHeight->setValueLabel(height == "0" ? "Auto" : height);
   myHeight->setValueUnit(height == "0" ? "" : "px");
 
-  bool usePhosphor = properties.get(Display_Phosphor) == "YES";
+  if(instance().hasConsole() && height == "0")
+  {
+    stringstream ss;
+    ss << instance().console().tia().height() << "px detected";
+    myHeightDetected->setLabel(ss.str());
+  }
+  else
+    myHeightDetected->setLabel("");
+
+  bool usePhosphor = props.get(Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
   myPPBlend->setEnabled(usePhosphor);
 
-  const string& blend = properties.get(Display_PPBlend);
+  const string& blend = props.get(Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));
   myPPBlend->setValueLabel(blend == "0" ? "Default" : blend);
   myPPBlend->setValueUnit(blend == "0" ? "" : "%");
@@ -476,20 +531,22 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Controller_MouseAxis, mcontrol);
 
   // Display properties
+  const string& ystart = myGameProperties.get(Display_YStart);
+  uInt32 oldYStart = atoi(ystart.c_str());
+  const string& height = myGameProperties.get(Display_Height);
+  uInt32 oldHeight = atoi(height.c_str());
+
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
   myGameProperties.set(Display_YStart, myYStart->getValueLabel() == "Auto" ? "0" :
                        myYStart->getValueLabel());
   myGameProperties.set(Display_Height, myHeight->getValueLabel() == "Auto" ? "0" :
                        myHeight->getValueLabel());
   myGameProperties.set(Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
-
   myGameProperties.set(Display_PPBlend, myPPBlend->getValueLabel() == "Default" ? "0" :
                        myPPBlend->getValueLabel());
 
-  const string& md5 = myGameProperties.get(Cartridge_MD5);
-  // always insert, doesn't hurt
-  instance().propSet(md5).insert(myGameProperties);
-  instance().saveGamePropSet(myGameProperties.get(Cartridge_MD5));
+  // Always insert; if the properties are already present, nothing will happen
+  instance().propSet().insert(myGameProperties);
 
   // In any event, inform the Console
   if(instance().hasConsole())
@@ -505,15 +562,17 @@ void GameInfoDialog::saveConfig()
     instance().console().switches().setRightDifficultyA(myRightDiffGroup->getSelected() == 0);
 
     // update 'Display' tab settings immediately
-    bool reset = false;
     instance().console().setFormat(myFormat->getSelected());
-    if(uInt32(myYStart->getValue()) != TIAConstants::minYStart - 1 &&
-       uInt32(myYStart->getValue()) != instance().console().tia().ystart())
+
+    // only call tia().reset() when values have changed
+    bool reset = false;
+    if(uInt32((myYStart->getValue()) != 0 || oldYStart != 0) &&
+      uInt32(myYStart->getValue()) != instance().console().tia().ystart())
     {
-      instance().console().tia().setYStart(myYStart->getValue());
+      instance().console().updateYStart(myYStart->getValue());
       reset = true;
     }
-    if(uInt32(myHeight->getValue()) != TIAConstants::minViewableHeight - 1 &&
+    if(uInt32((myHeight->getValue()) != TIAConstants::minViewableHeight - 1 || oldHeight != 0) &&
        uInt32(myHeight->getValue()) != instance().console().tia().height())
     {
       instance().console().tia().setHeight(myHeight->getValue());
@@ -521,7 +580,11 @@ void GameInfoDialog::saveConfig()
     }
     instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
     if (reset)
-      instance().console().tia().frameReset();
+      instance().console().tia().reset();
+
+    // Certain calls above may blank the TIA image (notably, setFormat)
+    // So we make sure we have a valid image when the dialog exits
+    instance().console().tia().renderToFrameBuffer();
   }
 }
 
@@ -530,9 +593,9 @@ void GameInfoDialog::setDefaults()
 {
   // Load the default properties
   Properties defaultProperties;
-  string md5 = myGameProperties.get(Cartridge_MD5);
+  const string& md5 = myGameProperties.get(Cartridge_MD5);
 
-  instance().propSet(md5).getMD5(md5, defaultProperties, true);
+  instance().propSet().getMD5(md5, defaultProperties, true);
 
   switch(myTab->getActiveTab())
   {
@@ -563,14 +626,11 @@ void GameInfoDialog::updateControllerStates()
   const string& contrP0 = myP0Controller->getSelectedTag().toString();
   const string& contrP1 = myP1Controller->getSelectedTag().toString();
   bool enableEEEraseButton = false;
-  bool enableSwapPaddles = false;
-  bool enableSwapPorts = false;
 
   // Compumate bankswitching scheme doesn't allow to select controllers
   bool enableSelectControl = myType->getSelectedTag() != "CM";
 
-  enableSwapPorts = enableSelectControl;
-  enableSwapPaddles = BSPF::startsWithIgnoreCase(contrP0, "PADDLES") ||
+  bool enableSwapPaddles = BSPF::startsWithIgnoreCase(contrP0, "PADDLES") ||
     BSPF::startsWithIgnoreCase(contrP1, "PADDLES");
 
   if(instance().hasConsole())
@@ -579,10 +639,10 @@ void GameInfoDialog::updateControllerStates()
     const Controller& rport = instance().console().rightController();
 
     // we only enable the button if we have a valid previous and new controller.
-    enableEEEraseButton = ((lport.type() == Controller::SaveKey && contrP0 == "SAVEKEY")
-                           || (lport.type() == Controller::AtariVox && contrP0 == "ATARIVOX")
-                           || (rport.type() == Controller::SaveKey && contrP1 == "SAVEKEY")
-                           || (rport.type() == Controller::AtariVox && contrP1 == "ATARIVOX"));
+    enableEEEraseButton = ((lport.type() == Controller::SaveKey && contrP0 == "SAVEKEY") ||
+                           (rport.type() == Controller::SaveKey && contrP1 == "SAVEKEY") ||
+                           (lport.type() == Controller::AtariVox && contrP0 == "ATARIVOX") ||
+                           (rport.type() == Controller::AtariVox && contrP1 == "ATARIVOX"));
   }
 
   myP0Label->setEnabled(enableSelectControl);
@@ -590,7 +650,7 @@ void GameInfoDialog::updateControllerStates()
   myP0Controller->setEnabled(enableSelectControl);
   myP1Controller->setEnabled(enableSelectControl);
 
-  mySwapPorts->setEnabled(enableSwapPorts);
+  mySwapPorts->setEnabled(enableSelectControl);
   mySwapPaddles->setEnabled(enableSwapPaddles);
 
   myEraseEEPROMLabel->setEnabled(enableEEEraseButton);
@@ -657,7 +717,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kYStartChanged:
-      if(myYStart->getValue() == TIAConstants::minYStart-1)
+      if(myYStart->getValue() == 0)
       {
         myYStart->setValueLabel("Auto");
         myYStart->setValueUnit("");

@@ -293,8 +293,6 @@ bool Playfield::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putInt(collision);
     out.putInt(myCollisionMaskDisabled);
     out.putInt(myCollisionMaskEnabled);
@@ -336,9 +334,6 @@ bool Playfield::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     collision = in.getInt();
     myCollisionMaskDisabled = in.getInt();
     myCollisionMaskEnabled = in.getInt();

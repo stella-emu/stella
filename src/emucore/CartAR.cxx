@@ -55,8 +55,9 @@ void CartridgeAR::reset()
   // Initialize RAM
 #if 0  // TODO - figure out actual behaviour of the real cart
   initializeRAM(myImage, 6*1024);
+#else
+  memset(myImage, 0, 6 * 1024);
 #endif
-    memset(myImage, 0, 6 * 1024);
 
   // Initialize SC BIOS ROM
   initializeROM();
@@ -116,7 +117,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
   // Is the data hold register being set?
   if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
   {
-    myDataHoldRegister = addr;
+    myDataHoldRegister = uInt8(addr);  // FIXME - check cast here
     myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
     myWritePending = true;
   }
@@ -163,7 +164,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   // Is the data hold register being set?
   if(!(addr & 0x0F00) && (!myWriteEnabled || !myWritePending))
   {
-    myDataHoldRegister = addr;
+    myDataHoldRegister = uInt8(addr);  // FIXME - check cast here
     myNumberOfDistinctAccesses = mySystem->m6502().distinctAccesses();
     myWritePending = true;
   }
@@ -400,7 +401,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 bool CartridgeAR::bank(uInt16 bank)
 {
   if(!bankLocked())
-    return bankConfiguration(bank);
+    return bankConfiguration(uInt8(bank));
   else
     return false;
 }
@@ -436,8 +437,6 @@ bool CartridgeAR::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     // Indicates the offest within the image for the corresponding bank
     out.putIntArray(myImageOffset, 2);
 
@@ -483,9 +482,6 @@ bool CartridgeAR::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     // Indicates the offest within the image for the corresponding bank
     in.getIntArray(myImageOffset, 2);
 

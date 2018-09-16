@@ -100,7 +100,7 @@ string NTSCFilter::setPreviousAdjustable()
     return "'Custom' TV mode not selected";
 
   if(myCurrentAdjustable == 0) myCurrentAdjustable = 9;
-  else                         myCurrentAdjustable--;
+  else                         --myCurrentAdjustable;
   ostringstream buf;
   buf << "Custom adjustable '" << ourCustomAdjustables[myCurrentAdjustable].type
       << "' selected";

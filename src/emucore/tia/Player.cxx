@@ -140,7 +140,7 @@ void Player::nusiz(uInt8 value, bool hblank)
           setDivider(myDividerPending);
         } else if (delta < (hblank ? 6 : 5)) {
           setDivider(myDividerPending);
-          myRenderCounter--;
+          --myRenderCounter;
         } else {
           myDividerChangeCounter = (hblank ? 0 : 1);
         }
@@ -282,12 +282,12 @@ void Player::tick()
     mySampleCounter = 0;
     myRenderCounter = Count::renderCounterOffset;
   } else if (myIsRendering) {
-    myRenderCounter++;
+    ++myRenderCounter;
 
     switch (myDivider) {
       case 1:
         if (myRenderCounter > 0)
-          mySampleCounter++;
+          ++mySampleCounter;
 
         if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
           setDivider(myDividerPending);
@@ -296,7 +296,7 @@ void Player::tick()
 
       default:
         if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
-          mySampleCounter++;
+          ++mySampleCounter;
 
         if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
           setDivider(myDividerPending);
@@ -444,8 +444,6 @@ bool Player::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putInt(collision);
     out.putInt(myCollisionMaskDisabled);
     out.putInt(myCollisionMaskEnabled);
@@ -491,9 +489,6 @@ bool Player::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     collision = in.getInt();
     myCollisionMaskDisabled = in.getInt();
     myCollisionMaskEnabled = in.getInt();

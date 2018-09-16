@@ -27,7 +27,7 @@
 
 #include "StateManager.hxx"
 
-#define STATE_HEADER "05099000state"
+#define STATE_HEADER "05099200state"
 // #define MOVIE_HEADER "03030000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,8 +229,6 @@ void StateManager::loadState(int slot)
     {
       if(in.getString() != STATE_HEADER)
         buf << "Incompatible state " << slot << " file";
-      else if(in.getString() != myOSystem.console().cartridge().name())
-        buf << "State " << slot << " file doesn't match current ROM";
       else
       {
         if(myOSystem.console().load(in))
@@ -275,9 +273,6 @@ void StateManager::saveState(int slot)
       // Add header so that if the state format changes in the future,
       // we'll know right away, without having to parse the rest of the file
       out.putString(STATE_HEADER);
-
-      // Sanity check; prepend the cart type/name
-      out.putString(myOSystem.console().cartridge().name());
     }
     catch(...)
     {
@@ -325,10 +320,9 @@ bool StateManager::loadState(Serializer& in)
       // Make sure the file can be opened for reading
       if(in)
       {
-        // First test if we have a valid header and cart type
+        // First test if we have a valid header
         // If so, do a complete state load using the Console
         return in.getString() == STATE_HEADER &&
-               in.getString() == myOSystem.console().cartridge().name() &&
                myOSystem.console().load(in);
       }
     }
@@ -353,9 +347,6 @@ bool StateManager::saveState(Serializer& out)
         // Add header so that if the state format changes in the future,
         // we'll know right away, without having to parse the rest of the file
         out.putString(STATE_HEADER);
-
-        // Sanity check; prepend the cart type/name
-        out.putString(myOSystem.console().cartridge().name());
 
         // Do a complete state save using the Console
         if(myOSystem.console().save(out))

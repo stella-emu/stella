@@ -244,7 +244,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Custom adjustables (using macro voodoo)
   xpos += INDENT - 2; ypos += 0;
-  pwidth = lwidth;
   lwidth = font.getStringWidth("Saturation ");
 
 #define CREATE_CUSTOM_SLIDERS(obj, desc)                                 \
@@ -271,7 +270,6 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos = VBORDER;
 
   lwidth = font.getStringWidth("Intensity ");
-  pwidth = font.getMaxCharWidth() * 6;
 
   // TV Phosphor effect
   myTVPhosphor = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Phosphor for all ROMs");
@@ -310,7 +308,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CLONE_BUTTON(Composite, "Clone Composite");
   CREATE_CLONE_BUTTON(Svideo, "Clone S-Video");
   CREATE_CLONE_BUTTON(RGB, "Clone RGB");
-  CREATE_CLONE_BUTTON(Bad, "Clone Bad Adjust");
+  CREATE_CLONE_BUTTON(Bad, "Clone Bad adjust");
   CREATE_CLONE_BUTTON(Custom, "Revert");
 
   // Add items for tab 2

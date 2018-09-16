@@ -20,21 +20,6 @@
 namespace Common {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Base::setHexUppercase(bool enable)
-{
-  if(enable)
-  {
-    myHexflags |= std::ios_base::uppercase;
-    myFmt = Base::myUpperFmt;
-  }
-  else
-  {
-    myHexflags &= ~std::ios_base::uppercase;
-    myFmt = Base::myLowerFmt;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Base::toString(int value, Common::Base::Format outputBase)
 {
   static char vToS_buf[32];
@@ -42,7 +27,6 @@ string Base::toString(int value, Common::Base::Format outputBase)
   if(outputBase == Base::F_DEFAULT)
     outputBase = myDefaultBase;
 
-  // Note: generates warnings about 'nonliteral' format
   switch(outputBase)
   {
     case Base::F_2:     // base 2:  8 or 16 bits (depending on value)
@@ -50,7 +34,7 @@ string Base::toString(int value, Common::Base::Format outputBase)
     case Base::F_2_16:  // base 2:  2 bytes (16 bits) wide
     {
       int places = (outputBase == Base::F_2_8 ||
-               (outputBase == Base::F_2 && value < 0x100)) ? 8 : 16;
+                   (outputBase == Base::F_2 && value < 0x100)) ? 8 : 16;
       vToS_buf[places] = '\0';
       int bit = 1;
       while(--places >= 0) {
@@ -63,9 +47,9 @@ string Base::toString(int value, Common::Base::Format outputBase)
 
     case Base::F_10:    // base 10: 3 or 5 bytes (depending on value)
       if(value < 0x100)
-        std::snprintf(vToS_buf, 4, "%3d", value);
+        std::snprintf(vToS_buf, 4, "%3d", value & 0xff);
       else
-        std::snprintf(vToS_buf, 6, "%5d", value);
+        std::snprintf(vToS_buf, 6, "%5d", value & 0xffff);
       break;
 
     case Base::F_10_02:  // base 10: 2 digits (with leading zero)
@@ -77,32 +61,34 @@ string Base::toString(int value, Common::Base::Format outputBase)
       break;
 
     case Base::F_16_1:  // base 16: 1 byte wide
-      std::snprintf(vToS_buf, 2, myFmt[0], value);
+      std::snprintf(vToS_buf, 2, hexUppercase() ? "%1X" : "%1x", value);
       break;
     case Base::F_16_2:  // base 16: 2 bytes wide
-      std::snprintf(vToS_buf, 3, myFmt[1], value);
+      std::snprintf(vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", value);
       break;
     case Base::F_16_2_2:
-      std::snprintf(vToS_buf, 6, "%02X.%02X", value >> 8, value & 0xff );
+      std::snprintf(vToS_buf, 6, hexUppercase() ? "%02X.%02X" : "%02x.%02x",
+                    value >> 8, value & 0xff );
       break;
     case Base::F_16_3_2:
-      std::snprintf(vToS_buf, 7, "%03X.%02X", value >> 8, value & 0xff );
+      std::snprintf(vToS_buf, 7, hexUppercase() ? "%03X.%02X" : "%03x.%02x",
+                    value >> 8, value & 0xff );
       break;
     case Base::F_16_4:  // base 16: 4 bytes wide
-      std::snprintf(vToS_buf, 5, myFmt[2], value);
+      std::snprintf(vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", value);
       break;
     case Base::F_16_8:  // base 16: 8 bytes wide
-      std::snprintf(vToS_buf, 9, myFmt[3], value);
+      std::snprintf(vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", value);
       break;
 
     case Base::F_16:    // base 16: 2, 4, 8 bytes (depending on value)
     default:
       if(value < 0x100)
-        std::snprintf(vToS_buf, 3, myFmt[1], value);
+        std::snprintf(vToS_buf, 3, hexUppercase() ? "%02X" : "%02x", value);
       else if(value < 0x10000)
-        std::snprintf(vToS_buf, 5, myFmt[2], value);
+        std::snprintf(vToS_buf, 5, hexUppercase() ? "%04X" : "%04x", value);
       else
-        std::snprintf(vToS_buf, 9, myFmt[3], value);
+        std::snprintf(vToS_buf, 9, hexUppercase() ? "%08X" : "%08x", value);
       break;
   }
 
@@ -114,14 +100,5 @@ Base::Format Base::myDefaultBase = Base::F_16;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::ios_base::fmtflags Base::myHexflags = std::ios_base::hex;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* const Base::myLowerFmt[4] = {
-  "%1x", "%02x", "%04x", "%08x"
-};
-const char* const Base::myUpperFmt[4] = {
-  "%1X", "%02X", "%04X", "%08X"
-};
-const char* const* Base::myFmt = Base::myLowerFmt;
 
 } // Namespace Common

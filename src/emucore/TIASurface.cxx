@@ -221,12 +221,12 @@ void TIASurface::enableScanlineInterpolation(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enablePhosphor(bool enable, int blend)
 {
-  if(myUsePhosphor == enable && myPhosphorPercent == blend / 100.0)
+  if(myUsePhosphor == enable && myPhosphorPercent == blend / 100.0f)
     return;
 
   myUsePhosphor = enable;
   if(blend >= 0)
-    myPhosphorPercent = blend / 100.0;
+    myPhosphorPercent = blend / 100.0f;
   myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
 
   memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
@@ -234,9 +234,9 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   // Precalculate the average colors for the 'phosphor' effect
   if(myUsePhosphor)
   {
-    for(Int16 c = 255; c >= 0; c--)
-      for(Int16 p = 255; p >= 0; p--)
-        myPhosphorPalette[c][p] = getPhosphor(c, p);
+    for(int c = 255; c >= 0; c--)
+      for(int p = 255; p >= 0; p--)
+        myPhosphorPalette[c][p] = getPhosphor(uInt8(c), uInt8(p));
 
     myNTSCFilter.setPhosphorPalette(myPhosphorPalette);
   }
@@ -350,9 +350,9 @@ void TIASurface::render()
         {
           // Store back into displayed frame buffer (for next frame)
           rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
-          bufofs++;
+          ++bufofs;
           rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
-          bufofs++;
+          ++bufofs;
         }
         screenofsY += outPitch;
       }

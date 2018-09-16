@@ -28,7 +28,7 @@ class YStartDetector: public AbstractFrameManager {
 
   public:
 
-    YStartDetector() = default;
+    YStartDetector();
 
   public:
 

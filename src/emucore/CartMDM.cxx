@@ -32,16 +32,15 @@ CartridgeMDM::CartridgeMDM(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize);
-
-  // Remember startup bank
-  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMDM::reset()
 {
+  initializeStartBank(0);
+
   // Upon reset we switch to the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,7 +65,7 @@ void CartridgeMDM::install(System& system)
     mySystem->setPageAccess(addr, access);
 
   // Install pages for bank 0
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,7 +154,6 @@ bool CartridgeMDM::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putInt(myBankOffset);
   }
   catch(...)
@@ -172,9 +170,6 @@ bool CartridgeMDM::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getInt();
   }
   catch(...)

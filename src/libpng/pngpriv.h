@@ -1,4 +1,3 @@
-
 /* pngpriv.h - private declarations for use inside libpng
  *
  * Last changed in libpng 1.6.35 [July 15, 2018]

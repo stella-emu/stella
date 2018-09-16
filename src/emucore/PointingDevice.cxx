@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <climits>
-
 #include "Control.hxx"
 #include "Event.hxx"
 #include "System.hxx"
@@ -51,8 +49,8 @@ uInt8 PointingDevice::read()
   // Loop over all missed changes
   while(myScanCountH < scanline)
   {
-    if(myTrackBallLeft) myCountH--;
-    else                myCountH++;
+    if(myTrackBallLeft) --myCountH;
+    else                ++myCountH;
 
     // Define scanline of next change
     myScanCountH += myTrackBallLinesH;
@@ -61,8 +59,8 @@ uInt8 PointingDevice::read()
   // Loop over all missed changes
   while(myScanCountV < scanline)
   {
-    if(myTrackBallDown) myCountV++;
-    else                myCountV--;
+    if(myTrackBallDown) ++myCountV;
+    else                --myCountV;
 
     // Define scanline of next change
     myScanCountV += myTrackBallLinesV;
@@ -117,7 +115,7 @@ bool PointingDevice::setMouseControl(
 void PointingDevice::setSensitivity(int sensitivity)
 {
   BSPF::clamp(sensitivity, 1, 20, 10);
-  TB_SENSITIVITY = sensitivity / 10.0;
+  TB_SENSITIVITY = sensitivity / 10.0f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -402,9 +402,6 @@
     <ClCompile Include="..\gui\LauncherDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\gui\LauncherFilterDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\gui\ListWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -939,6 +936,12 @@
     <ClCompile Include="..\common\audio\HighPass.cxx">
       <Filter>Source Files\audio</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\TimerManager.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\emucore\Bankswitch.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1329,9 +1332,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\LauncherDialog.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\gui\LauncherFilterDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\ListWidget.hxx">
@@ -1918,6 +1918,12 @@
     </ClInclude>
     <ClInclude Include="..\common\audio\HighPass.hxx">
       <Filter>Header Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\TimerManager.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\Bankswitch.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

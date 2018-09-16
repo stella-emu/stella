@@ -27,13 +27,14 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
     myFragmentQueue(capacity),
     myAllFragments(capacity + 2),
     mySize(0),
-    myNextFragment(0)
+    myNextFragment(0),
+    myIgnoreOverflows(true)
 {
   const uInt8 sampleSize = myIsStereo ? 2 : 1;
 
   myFragmentBuffer = make_unique<Int16[]>(myFragmentSize * sampleSize * (capacity + 2));
 
-  for (uInt32 i = 0; i < capacity; i++)
+  for (uInt32 i = 0; i < capacity; ++i)
     myFragmentQueue[i] = myAllFragments[i] = myFragmentBuffer.get() + i * sampleSize * myFragmentSize;
 
   myAllFragments[capacity] = myFirstFragmentForEnqueue =
@@ -85,13 +86,13 @@ Int16* AudioQueue::enqueue(Int16* fragment)
     return newFragment;
   }
 
-  const uInt8 capacity = myFragmentQueue.size();
+  const uInt8 capacity = uInt8(myFragmentQueue.size());
   const uInt8 fragmentIndex = (myNextFragment + mySize) % capacity;
 
   newFragment = myFragmentQueue.at(fragmentIndex);
   myFragmentQueue.at(fragmentIndex) = fragment;
 
-  if (mySize < capacity) mySize++;
+  if (mySize < capacity) ++mySize;
   else {
     myNextFragment = (myNextFragment + 1) % capacity;
     if (!myIgnoreOverflows) (cerr << "audio buffer overflow\n").flush();
@@ -117,7 +118,7 @@ Int16* AudioQueue::dequeue(Int16* fragment)
   Int16* nextFragment = myFragmentQueue.at(myNextFragment);
   myFragmentQueue.at(myNextFragment) = fragment;
 
-  mySize--;
+  --mySize;
   myNextFragment = (myNextFragment + 1) % myFragmentQueue.size();
 
   return nextFragment;

@@ -46,7 +46,7 @@ class DialogContainer
     /**
       Create a new DialogContainer stack
     */
-    DialogContainer(OSystem& osystem);
+    explicit DialogContainer(OSystem& osystem);
     virtual ~DialogContainer();
 
   public:
@@ -179,8 +179,8 @@ class DialogContainer
 
     // For continuous 'key down' events
     struct {
-      StellaKey keycode;
-      StellaMod flags;
+      StellaKey key;
+      StellaMod mod;
     } myCurrentKeyDown;
     uInt64 myKeyRepeatTime;
 

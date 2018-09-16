@@ -137,11 +137,6 @@ class TIA : public Device
     void reset() override;
 
     /**
-      Reset frame to current YStart/Height properties.
-    */
-    void frameReset();
-
-    /**
       Install TIA in the specified system.  Invoked by the system
       when the TIA is attached to it.
 
@@ -254,7 +249,7 @@ class TIA : public Device
     /**
       Changes the current Height/YStart properties.
       Note that calls to these method(s) must be eventually followed by
-      ::frameReset() for the changes to take effect.
+      ::reset() for the changes to take effect.
     */
     void setHeight(uInt32 height) { myFrameManager->setFixedHeight(height); }
     void setYStart(uInt32 ystart) { myFrameManager->setYstart(ystart); }
@@ -481,13 +476,6 @@ class TIA : public Device
       @return  False on any errors, else true
     */
     bool load(Serializer& in) override;
-
-    /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "TIA"; }
 
     /**
      * Run and forward TIA emulation to the current system clock.
@@ -747,6 +735,11 @@ class TIA : public Device
     bool myCollisionUpdateRequired;
 
     /**
+     * Force schedule a collision update
+     */
+    bool myCollisionUpdateScheduled;
+
+    /**
      * The collision latches are represented by 15 bits in a bitfield.
      */
     uInt32 myCollisionMask;
@@ -828,9 +821,6 @@ class TIA : public Device
      */
     bool myEnableJitter;
     uInt8 myJitterFactor;
-
-    // Force schedule a collision update
-    bool myCollisionUpdateScheduled;
 
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA

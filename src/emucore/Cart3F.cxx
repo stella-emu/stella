@@ -32,24 +32,14 @@ Cartridge3F::Cartridge3F(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize);
-
-  // Remember startup bank
-  myStartBank = bankCount() - 1; // last bank
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3F::reset()
 {
-  // define random startup banks
-  // Note: This works for all Tigervision ROMs except for one version of Polaris
-  //   (md5: 203049f4d8290bb4521cc4402415e737) which requires 3 as startup bank
-  //   (or non-randomized RAM). All other ROMs take care of other startup banks.
-  //   The problematic version is most likely an incorrect dump with wrong
-  //   startup vectors.
-  randomizeStartBank();
+  initializeStartBank(bankCount() - 1);
 
-  // We'll map the startup bank into the first segment upon reset
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,8 +62,7 @@ void Cartridge3F::install(System& system)
     mySystem->setPageAccess(addr, access);
   }
 
-  // Install pages for startup bank into the first segment
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -172,7 +161,6 @@ bool Cartridge3F::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myCurrentBank);
   }
   catch(...)
@@ -189,9 +177,6 @@ bool Cartridge3F::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myCurrentBank = in.getShort();
   }
   catch(...)

@@ -27,21 +27,16 @@ CartridgeF8SC::CartridgeF8SC(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(8192u, size));
   createCodeAccessBase(8192);
-
-  // Remember startup bank
-  myStartBank = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8SC::reset()
 {
-  // define startup bank
-  randomizeStartBank();
-
   initializeRAM(myRAM, 128);
+  initializeStartBank();
 
   // Upon reset we switch to the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,7 +66,7 @@ void CartridgeF8SC::install(System& system)
   }
 
   // Install pages for the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -213,7 +208,6 @@ bool CartridgeF8SC::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
     out.putByteArray(myRAM, 128);
   }
@@ -231,9 +225,6 @@ bool CartridgeF8SC::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
     in.getByteArray(myRAM, 128);
   }

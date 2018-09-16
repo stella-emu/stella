@@ -48,9 +48,7 @@ class SnapshotDialog : public Dialog
   private:
     enum {
       kChooseSnapSaveDirCmd = 'LOss', // snapshot dir (save files)
-      kChooseSnapLoadDirCmd = 'LOsl', // snapshot dir (load files)
       kSnapSaveDirChosenCmd = 'snsc', // snap chosen (save files)
-      kSnapLoadDirChosenCmd = 'snlc', // snap chosen (load files)
       kSnapshotInterval     = 'SnIn'  // snap chosen (load files)
     };
 
@@ -58,7 +56,6 @@ class SnapshotDialog : public Dialog
 
     // Config paths
     EditTextWidget* mySnapSavePath;
-    EditTextWidget* mySnapLoadPath;
 
     CheckboxWidget* mySnapName;
     SliderWidget* mySnapInterval;

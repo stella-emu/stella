@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "Bankswitch.hxx"
 #include "BrowserDialog.hxx"
 #include "ContextMenu.hxx"
 #include "DialogContainer.hxx"
@@ -26,7 +27,6 @@
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
 #include "GlobalPropsDialog.hxx"
-#include "LauncherFilterDialog.hxx"
 #include "MessageBox.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -54,7 +54,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myRomInfoWidget(nullptr),
     mySelectedItem(0)
 {
-  const string ELLIPSIS = "\x1d";
   const GUI::Font& font = instance().frameBuffer().launcherFont();
 
   const int HBORDER = 10;
@@ -179,7 +178,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Create context menu for ROM list options
   VariantList l;
   VarList::push_back(l, "Power-on options" + ELLIPSIS, "override");
-  VarList::push_back(l, "Filter listing" + ELLIPSIS, "filter");
+  VarList::push_back(l, "Show only ROM files", "roms");
+  VarList::push_back(l, "Show all files", "allfiles");
   VarList::push_back(l, "Reload listing", "reload");
   myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), l);
 
@@ -187,11 +187,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // ROM properties
   myGlobalProps = make_unique<GlobalPropsDialog>(this, osystem.frameBuffer().font());
 
-  // Create dialog whereby the files shown in the ROM listing can be customized
-  myFilters = make_unique<LauncherFilterDialog>(this, osystem.frameBuffer().font());
-
-  // Figure out which filters are needed for the ROM listing
-  setListFilters();
+  // Do we show only ROMs or all files?
+  showOnlyROMs(instance().settings().getBool("launcherroms"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -201,9 +198,8 @@ const string& LauncherDialog::selectedRomMD5()
   if(item < 0)
     return EmptyString;
 
-  string extension;
   const FilesystemNode node(myGameList->path(item));
-  if(node.isDirectory() || !LauncherFilterDialog::isValidRomName(node, extension))
+  if(node.isDirectory() || !Bankswitch::isValidRomName(node))
     return EmptyString;
 
   // Make sure we have a valid md5 for this ROM
@@ -293,16 +289,9 @@ void LauncherDialog::loadDirListing()
     bool isDir = f.isDirectory();
     const string& name = isDir ? (" [" + f.getName() + "]") : f.getName();
 
-    // Honour the filtering settings
-    // Showing only certain ROM extensions is determined by the extension
-    // that we want - if there are no extensions, it implies show all files
-    // In this way, showing all files is on the 'fast code path'
-    if(!isDir && myRomExts.size() > 0)
-    {
-      // Skip over those names we've filtered out
-      if(!LauncherFilterDialog::isValidRomName(name, myRomExts))
-        continue;
-    }
+    // Do we want to show only ROMs or all files?
+    if(!isDir && myShowOnlyROMs && !Bankswitch::isValidRomName(f))
+      continue;
 
     // Skip over files that don't match the pattern in the 'pattern' textbox
     if(domatch && !isDir && !matchPattern(name, myPattern->getText()))
@@ -322,9 +311,8 @@ void LauncherDialog::loadRomInfo()
   int item = myList->getSelected();
   if(item < 0) return;
 
-  string extension;
   const FilesystemNode node(myGameList->path(item));
-  if(!node.isDirectory() && LauncherFilterDialog::isValidRomName(node, extension))
+  if(!node.isDirectory() && Bankswitch::isValidRomName(node))
   {
     // Make sure we have a valid md5 for this ROM
     if(myGameList->md5(item) == "")
@@ -332,7 +320,7 @@ void LauncherDialog::loadRomInfo()
 
     // Get the properties for this entry
     Properties props;
-    instance().propSet(myGameList->md5(item), node).getMD5WithInsert(node, myGameList->md5(item), props);
+    instance().propSet().getMD5WithInsert(node, myGameList->md5(item), props);
 
     myRomInfoWidget->setProperties(props);
   }
@@ -349,9 +337,10 @@ void LauncherDialog::handleContextMenu()
   {
     myGlobalProps->open();
   }
-  else if(cmd == "filter")
+  else if(cmd == "roms" || cmd == "allfiles")
   {
-    myFilters->open();
+    showOnlyROMs(cmd == "roms");
+    updateListing();
   }
   else if(cmd == "reload")
   {
@@ -360,11 +349,10 @@ void LauncherDialog::handleContextMenu()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::setListFilters()
+void LauncherDialog::showOnlyROMs(bool state)
 {
-  const string& exts = instance().settings().getString("launcherexts");
-  myRomExts.clear();
-  LauncherFilterDialog::parseExts(myRomExts, exts);
+  myShowOnlyROMs = state;
+  instance().settings().setValue("launcherroms", state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -513,8 +501,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       updateListing();
       break;
 
-    case kReloadFiltersCmd:
-      setListFilters();
+    case kOnlyROMsCmd:
+      showOnlyROMs(data);  // NOTE: present for when we add a widget for this
       updateListing();
       break;
 

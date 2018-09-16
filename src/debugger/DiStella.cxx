@@ -132,7 +132,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         mark(myPC + myOffset, CartDebug::VALID_ENTRY);
       if (pass == 3)
         outputGraphics();
-      myPC++;
+      ++myPC;
     } else if (checkBits(myPC, CartDebug::DATA,
                CartDebug::CODE | CartDebug::GFX | CartDebug::PGFX)) {
       if (pass == 2)
@@ -140,7 +140,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       if (pass == 3)
         outputBytes(CartDebug::DATA);
       else
-        myPC++;
+        ++myPC;
     } else if (checkBits(myPC, CartDebug::ROW,
                CartDebug::CODE | CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
 FIX_LAST:
@@ -150,7 +150,7 @@ FIX_LAST:
       if (pass == 3)
         outputBytes(CartDebug::ROW);
       else
-        myPC++;
+        ++myPC;
     } else {
       // The following sections must be CODE
 
@@ -177,7 +177,7 @@ FIX_LAST:
         else
           myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
       }
-      myPC++;
+      ++myPC;
 
       // detect labels inside instructions (e.g. BIT masks)
       labelFound = false;
@@ -252,7 +252,7 @@ FIX_LAST:
                 else
                   myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
 
-                opcode = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+                opcode = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
                 myDisasmBuf << ".byte $" << Base::HEX2 << int(opcode) << "              $"
                   << Base::HEX4 << myPC + myOffset << "'"
                   << Base::HEX2 << int(opcode);
@@ -277,7 +277,7 @@ FIX_LAST:
               nextLine.str("");
               nextLineBytes.str("");
             }
-            myPC++;
+            ++myPC;
             myPCEnd = myAppData.end + myOffset;
             return;
           }
@@ -330,7 +330,7 @@ FIX_LAST:
 
         case ZERO_PAGE:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           labelFound = mark(d1, CartDebug::REFERENCED);
           if (pass == 3) {
             nextLine << "     ";
@@ -342,7 +342,7 @@ FIX_LAST:
 
         case IMMEDIATE:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           if (pass == 3) {
             nextLine << "     #$" << Base::HEX2 << int(d1) << " ";
             nextLineBytes << Base::HEX2 << int(d1);
@@ -430,7 +430,7 @@ FIX_LAST:
 
         case INDIRECT_X:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           if (pass == 3) {
             labelFound = mark(d1, 0);  // dummy call to get address type
             nextLine << "     (";
@@ -443,7 +443,7 @@ FIX_LAST:
 
         case INDIRECT_Y:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           if (pass == 3) {
             labelFound = mark(d1, 0);  // dummy call to get address type
             nextLine << "     (";
@@ -456,7 +456,7 @@ FIX_LAST:
 
         case ZERO_PAGE_X:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           labelFound = mark(d1, CartDebug::REFERENCED);
           if (pass == 3) {
             nextLine << "     ";
@@ -469,7 +469,7 @@ FIX_LAST:
 
         case ZERO_PAGE_Y:
         {
-          d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           labelFound = mark(d1, CartDebug::REFERENCED);
           if (pass == 3) {
             nextLine << "     ";
@@ -485,7 +485,7 @@ FIX_LAST:
           // SA - 04-06-2010: there seemed to be a bug in distella,
           // where wraparound occurred on a 32-bit int, and subsequent
           // indexing into the labels array caused a crash
-          d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+          d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           ad = ((myPC + Int8(d1)) & 0xfff) + myOffset;
 
           labelFound = mark(ad, CartDebug::REFERENCED);
@@ -607,7 +607,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
       // However, addresses *specifically* marked as DATA/GFX/PGFX
       // in the emulation core indicate that the CODE range has finished
       // Therefore, we stop at the first such address encountered
-      for (uInt32 k = pcBeg; k <= myPCEnd; k++) {
+      for (uInt32 k = pcBeg; k <= myPCEnd; ++k) {
         if (checkBits(k, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX,
                       CartDebug::CODE)) {
           //if (Debugger::debugger().getAccessFlags(k) &
@@ -694,7 +694,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
     // so this should be code now...
     // get opcode
-    opcode = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+    opcode = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
     // get address mode for opcode
     addrMode = ourLookup[opcode].addr_mode;
 
@@ -716,7 +716,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         case ZERO_PAGE_Y:
         case RELATIVE:
           if (myPC > myAppData.end) {
-            myPC++;
+            ++myPC;
             myPCEnd = myAppData.end + myOffset;
             return;
           }
@@ -745,12 +745,12 @@ void DiStella::disasmFromAddress(uInt32 distart)
         break;
 
       case ZERO_PAGE:
-        d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+        d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
         mark(d1, CartDebug::REFERENCED);
         break;
 
       case IMMEDIATE:
-        myPC++;
+        ++myPC;
         break;
 
       case ABSOLUTE_X:
@@ -764,20 +764,20 @@ void DiStella::disasmFromAddress(uInt32 distart)
         break;
 
       case INDIRECT_X:
-        myPC++;
+        ++myPC;
         break;
 
       case INDIRECT_Y:
-        myPC++;
+        ++myPC;
         break;
 
       case ZERO_PAGE_X:
-        d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+        d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
         mark(d1, CartDebug::REFERENCED);
         break;
 
       case ZERO_PAGE_Y:
-        d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+        d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
         mark(d1, CartDebug::REFERENCED);
         break;
 
@@ -785,7 +785,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         // SA - 04-06-2010: there seemed to be a bug in distella,
         // where wraparound occurred on a 32-bit int, and subsequent
         // indexing into the labels array caused a crash
-        d1 = Debugger::debugger().peek(myPC + myOffset);  myPC++;
+        d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
         ad = ((myPC + Int8(d1)) & 0xfff) + myOffset;
         mark(ad, CartDebug::REFERENCED);
         // do NOT use flags set by debugger, else known CODE will not analyzed statically.
@@ -883,7 +883,7 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
     return 3;
   } else if (type == CartDebug::ADDR_ZPRAM && myOffset != 0) {
     return 5;
-  } else if (address >= myOffset && address <= myAppData.end + myOffset) {
+  } else if (address >= uInt32(myOffset) && address <= uInt32(myAppData.end + myOffset)) {
     myLabels[address - myOffset] = myLabels[address - myOffset] | mask;
     if (directive)  myDirectives[address - myOffset] = mask;
     return 1;
@@ -1079,14 +1079,14 @@ void DiStella::outputBytes(CartDebug::DisasmType type)
       myDisasmBuf << Base::HEX4 << myPC + myOffset << "'L" << Base::HEX4
         << myPC + myOffset << "'.byte " << "$" << Base::HEX2
         << int(Debugger::debugger().peek(myPC + myOffset));
-      myPC++;
+      ++myPC;
       numBytes = 1;
       lineEmpty = false;
     } else if (lineEmpty) {
       // start a new line without a label
       myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '"
         << ".byte $" << Base::HEX2 << int(Debugger::debugger().peek(myPC + myOffset));
-      myPC++;
+      ++myPC;
       numBytes = 1;
       lineEmpty = false;
     }
@@ -1096,7 +1096,7 @@ void DiStella::outputBytes(CartDebug::DisasmType type)
       lineEmpty = true;
     } else {
       myDisasmBuf << ",$" << Base::HEX2 << int(Debugger::debugger().peek(myPC + myOffset));
-      myPC++;
+      ++myPC;
     }
     isType = checkBits(myPC, type,
                         CartDebug::CODE | (type != CartDebug::DATA ? CartDebug::DATA : 0) | CartDebug::GFX | CartDebug::PGFX);

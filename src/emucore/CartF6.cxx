@@ -27,19 +27,16 @@ CartridgeF6::CartridgeF6(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(16384u, size));
   createCodeAccessBase(16384);
-
-  // Remember startup bank
-  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF6::reset()
 {
-  // define random startup bank
-  randomizeStartBank();
+  // Use random startup bank
+  initializeStartBank();
 
   // Upon reset we switch to the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,7 +45,7 @@ void CartridgeF6::install(System& system)
   mySystem = &system;
 
   // Upon install we'll setup the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,7 +177,6 @@ bool CartridgeF6::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
   }
   catch(...)
@@ -197,9 +193,6 @@ bool CartridgeF6::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
   }
   catch(...)

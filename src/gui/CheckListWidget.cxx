@@ -33,11 +33,10 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
   _rows = h / _fontHeight;
 
   // Create a CheckboxWidget for each row in the list
-  CheckboxWidget* t = nullptr;
   for(int i = 0; i < _rows; ++i)
   {
-    t = new CheckboxWidget(boss, font, _x + 2, ypos, "",
-                           CheckboxWidget::kCheckActionCmd);
+    CheckboxWidget* t = new CheckboxWidget(boss, font, _x + 2, ypos, "",
+                              CheckboxWidget::kCheckActionCmd);
     t->setTextColor(kTextColor);
     t->setTarget(this);
     t->setID(i);

@@ -38,8 +38,8 @@ Audio::Audio()
   : myAudioQueue(nullptr),
     myCurrentFragment(nullptr)
 {
-  for (uInt8 i = 0; i <= 0x1e; i++) myMixingTableSum[i] = mixingTableEntry(i, 0x1e);
-  for (uInt8 i = 0; i <= 0x0f; i++) myMixingTableIndividual[i] = mixingTableEntry(i, 0x0f);
+  for (uInt8 i = 0; i <= 0x1e; ++i) myMixingTableSum[i] = mixingTableEntry(i, 0x1e);
+  for (uInt8 i = 0; i <= 0x0f; ++i) myMixingTableIndividual[i] = mixingTableEntry(i, 0x0f);
 
   reset();
 }
@@ -117,18 +117,10 @@ AudioChannel& Audio::channel1()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Audio::name() const
-{
-  return "TIA_Audio";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Audio::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putInt(myCounter);
 
     // The queue starts out pristine after loading, so we don't need to save
@@ -151,8 +143,6 @@ bool Audio::load(Serializer& in)
 {
   try
   {
-    if (in.getString() != name()) return false;
-
     myCounter = in.getInt();
 
     if (!myChannel0.load(in)) return false;

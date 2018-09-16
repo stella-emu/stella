@@ -24,7 +24,7 @@ class ConvolutionBuffer
 {
   public:
 
-    ConvolutionBuffer(uInt32 size);
+    explicit ConvolutionBuffer(uInt32 size);
 
     void shift(float nextValue);
 

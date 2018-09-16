@@ -30,7 +30,7 @@ class OSystem;
 class TimeMachine : public DialogContainer
 {
   public:
-    TimeMachine(OSystem& osystem);
+    explicit TimeMachine(OSystem& osystem);
     virtual ~TimeMachine() = default;
 
     /**
@@ -45,7 +45,7 @@ class TimeMachine : public DialogContainer
     void setEnterWinds(Int32 numWinds);
 
   private:
-    int myWidth;
+    uInt32 myWidth;
 
   private:
     // Following constructors and assignment operators not supported

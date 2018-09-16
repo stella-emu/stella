@@ -46,6 +46,7 @@ class AudioSettings
     static constexpr const char* SETTING_BUFFER_SIZE         = "audio.buffer_size";
     static constexpr const char* SETTING_HEADROOM            = "audio.headroom";
     static constexpr const char* SETTING_RESAMPLING_QUALITY  = "audio.resampling_quality";
+    static constexpr const char* SETTING_STEREO              = "audio.stereo";
     static constexpr const char* SETTING_VOLUME              = "audio.volume";
     static constexpr const char* SETTING_ENABLED             = "audio.enabled";
 
@@ -55,6 +56,7 @@ class AudioSettings
     static constexpr uInt32 DEFAULT_BUFFER_SIZE                     = 3;
     static constexpr uInt32 DEFAULT_HEADROOM                        = 2;
     static constexpr ResamplingQuality DEFAULT_RESAMPLING_QUALITY   = ResamplingQuality::lanczos_2;
+    static constexpr const char* DEFAULT_STEREO                     = "byrom";
     static constexpr uInt32 DEFAULT_VOLUME                          = 80;
     static constexpr bool DEFAULT_ENABLED                           = true;
 
@@ -63,9 +65,7 @@ class AudioSettings
 
   public:
 
-    AudioSettings();
-
-    AudioSettings(Settings* mySettings);
+    explicit AudioSettings(Settings& mySettings);
 
     static void normalize(Settings& settings);
 
@@ -80,6 +80,8 @@ class AudioSettings
     uInt32 headroom();
 
     ResamplingQuality resamplingQuality();
+
+    string stereo() const;
 
     uInt32 volume() const;
 
@@ -97,6 +99,8 @@ class AudioSettings
 
     void setResamplingQuality(ResamplingQuality resamplingQuality);
 
+    void setStereo(const string& mode);
+
     void setVolume(uInt32 volume);
 
     void setEnabled(bool isEnabled);
@@ -111,7 +115,7 @@ class AudioSettings
 
   private:
 
-    Settings* mySettings;
+    Settings& mySettings;
 
     Preset myPreset;
 

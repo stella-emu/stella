@@ -64,8 +64,6 @@ class FrameManager: public AbstractFrameManager {
 
     bool onLoad(Serializer& in) override;
 
-    string name() const override { return "TIA_FrameManager"; }
-
   private:
 
     enum State {
@@ -77,9 +75,7 @@ class FrameManager: public AbstractFrameManager {
 
   private:
 
-    void updateAutodetectedLayout();
-
-    void setState(State state);
+  void setState(State state);
 
     void updateIsRendering();
 

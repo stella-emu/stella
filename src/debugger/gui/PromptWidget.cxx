@@ -523,7 +523,7 @@ void PromptWidget::loadConfig()
     // fill the history from the saved breaks, traps and watches commands
     StringList history;
     print(instance().debugger().autoExec(&history));
-    for(uInt32 i = 0; i < history.size(); i++)
+    for(uInt32 i = 0; i < history.size(); ++i)
     {
       addToHistory(history[i].c_str());
     }
@@ -689,7 +689,7 @@ void PromptWidget::textPaste()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::addToHistory(const char* str)
 {
-  strncpy(_history[_historyIndex], str, kLineBufferSize-1);
+  strncpy(_history[_historyIndex], str, kLineBufferSize - 1);
   _historyIndex = (_historyIndex + 1) % kHistorySize;
   _historyLine = 0;
 
@@ -715,7 +715,7 @@ void PromptWidget::historyScroll(int direction)
   {
     int i;
     for (i = 0; i < _promptEndPos - _promptStartPos; i++)
-      _history[_historyIndex][i] = buffer(_promptStartPos + i);
+      _history[_historyIndex][i] = buffer(_promptStartPos + i); //FIXME: int to char??
 
     _history[_historyIndex][i] = '\0';
   }
@@ -879,7 +879,7 @@ void PromptWidget::drawCaret()
   int x = _x + 1 + (_currentPos % _lineWidth) * _kConsoleCharWidth;
   int y = _y + displayLine * _kConsoleLineHeight;
 
-  char c = buffer(_currentPos);
+  char c = buffer(_currentPos); //FIXME: int to char??
   s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, onTop ? kTextColor : kColor);
   s.drawChar(_font, c, x, y + 2, kBGColor);
 }
@@ -931,9 +931,9 @@ bool PromptWidget::saveBuffer(const FilesystemNode& file)
 string PromptWidget::getCompletionPrefix(const StringList& completions)
 {
   // Find the number of characters matching for each of the completions provided
-  for(uInt32 len = 1;; len++)
+  for(uInt32 len = 1;; ++len)
   {
-    for(uInt32 i = 0; i < completions.size(); i++)
+    for(uInt32 i = 0; i < completions.size(); ++i)
     {
       string s1 = completions[i];
       if(s1.length() < len)
@@ -942,7 +942,7 @@ string PromptWidget::getCompletionPrefix(const StringList& completions)
       }
       string find = s1.substr(0, len);
 
-      for(uInt32 j = i + 1; j < completions.size(); j++)
+      for(uInt32 j = i + 1; j < completions.size(); ++j)
       {
         if(!BSPF::startsWithIgnoreCase(completions[j], find))
           return s1.substr(0, len - 1);

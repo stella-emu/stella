@@ -26,7 +26,7 @@ class TIA;
 class Playfield : public Serializable
 {
   public:
-    Playfield(uInt32 collisionMask);
+    explicit Playfield(uInt32 collisionMask);
 
   public:
 
@@ -69,7 +69,6 @@ class Playfield : public Serializable
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override { return "TIA_Playfield"; }
 
   public:
 

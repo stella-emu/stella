@@ -70,13 +70,14 @@ Settings::Settings(OSystem& osystem)
 
   // Sound options
   setInternal(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
+  setInternal(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
+  setInternal(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
   setInternal(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
   setInternal(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
   setInternal(AudioSettings::SETTING_FRAGMENT_SIZE, AudioSettings::DEFAULT_FRAGMENT_SIZE);
   setInternal(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
   setInternal(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
   setInternal(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
-  setInternal(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
 
   // Input event options
   setInternal("keymap", "");
@@ -114,7 +115,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("exitlauncher", "false");
   setInternal("launcherres", GUI::Size(900, 600));
   setInternal("launcherfont", "medium");
-  setInternal("launcherexts", "allroms");
+  setInternal("launcherroms", "true");
   setInternal("romviewer", "1");
   setInternal("lastrom", "");
 
@@ -153,8 +154,8 @@ Settings::Settings(OSystem& osystem)
   // player settings
   setInternal("plr.stats", "false");
   setInternal("plr.bankrandom", "false");
-  setInternal("plr.ramrandom", "false");
-  setInternal("plr.cpurandom", "");
+  setInternal("plr.ramrandom", "true");
+  setInternal("plr.cpurandom", "AXYP");
   setInternal("plr.colorloss", "false");
   setInternal("plr.tv.jitter", "true");
   setInternal("plr.tv.jitter_recovery", "10");
@@ -220,13 +221,11 @@ void Settings::loadConfig()
       continue;
 
     // Split the line into key/value pairs and trim any whitespace
-    key   = line.substr(0, equalPos);
-    value = line.substr(equalPos + 1, line.length() - key.length() - 1);
-    key   = trim(key);
-    value = trim(value);
+    key   = trim(line.substr(0, equalPos));
+    value = trim(line.substr(equalPos + 1, line.length() - key.length() - 1));
 
-    // Check for absent key or value
-    if((key.length() == 0) || (value.length() == 0))
+    // Skip absent key
+    if(key.length() == 0)
       continue;
 
     // Only settings which have been previously set are valid
@@ -440,93 +439,128 @@ void Settings::usage() const
     << "                 z26|\n"
     << "                 user>\n"
     << "  -speed        <number>       Run emulation at the given speed\n"
-    << "  -timing       <sleep|busy>   Use the given type of wait between frames\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << endl
   #ifdef SOUND_SUPPORT
-    << "  -audio.enabled            <1|0>          Enable audio\n"
-    << "  -audio.preset             <1-5>          Audio preset (or 1 for custom)\n"
-    << "  -audio.sample_rate        <number>       Output sample rate (44100|48000|96000)\n"
-    << "  -audio.fragment_size      <number>       Fragment size (128|256|512|1024|2048|4096)\n"
-    << "  -audio.buffer_size        <number>       Max. number of additional half-frames to buffer (0 -- 20)\n"
-    << "  -audio.headroom           <number>       Additional half-frames to prebuffer (0 -- 20)\n"
-    << "  -audio.resampling_quality <1-3>          Resampling quality\n"
-    << "  -audio.volume             <number>       Vokume (0 -- 100)\n"
+    << "  -audio.enabled            <1|0>        Enable audio\n"
+    << "  -audio.volume             <number>     Vokume (0-100)\n"
+    << "  -audio.stereo             <byrom|mono| Enable stereo mode\n"
+    << "                            stereo>\n"
+    << "  -audio.preset             <1-5>        Audio preset (or 1 for custom)\n"
+    << "  -audio.sample_rate        <number>     Output sample rate (44100|48000|96000)\n"
+    << "  -audio.fragment_size      <number>     Fragment size (128|256|512|1024|\n"
+    << "                                          2048|4096)\n"
+    << "  -audio.buffer_size        <number>     Max. number of additional half-\n"
+    << "                                         frames to buffer(0-20)\n"
+    << "  -audio.headroom           <number>     Additional half-frames to prebuffer\n"
+    << "                                          (0-20)\n"
+    << "  -audio.resampling_quality <1-3>        Resampling quality\n"
     << endl
   #endif
-    << "  -tia.zoom      <zoom>         Use the specified zoom level (windowed mode) for TIA image\n"
-    << "  -tia.inter     <1|0>          Enable interpolated (smooth) scaling for TIA image\n"
-    << "  -tia.aspectn   <number>       Scale TIA width by the given percentage in NTSC mode\n"
-    << "  -tia.aspectp   <number>       Scale TIA width by the given percentage in PAL mode\n"
+    << "  -tia.zoom      <zoom>         Use the specified zoom level (windowed mode)\n"
+    << "                                 for TIA image\n"
+    << "  -tia.inter     <1|0>          Enable interpolated (smooth) scaling for TIA\n"
+    << "                                 image\n"
+    << "  -tia.aspectn   <number>       Scale TIA width by the given percentage in NTS\n"
+    << "                                 mode\n"
+    << "  -tia.aspectp   <number>       Scale TIA width by the given percentage in PAL\n"
+    << "                                 mode\n"
     << "  -tia.fsfill    <1|0>          Stretch TIA image to fill fullscreen mode\n"
-    << "  -tia.dbgcolors <string>       Debug colors to use for each object (see manual for description)\n"
+    << "  -tia.dbgcolors <string>       Debug colors to use for each object (see manual\n"
+    << "                                 for description)\n"
     << endl
-    << "  -tv.filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
-    << "  -tv.phosphor  <always|byrom> When to use phosphor mode\n"
-    << "  -tv.phosblend <0-100>        Set default blend level in phosphor mode\n"
-    << "  -tv.scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
-    << "  -tv.scaninter <1|0>          Enable interpolated (smooth) scanlines\n"
-    << "  -tv.contrast    <value>      Set TV effects custom contrast to value 1.0 - 1.0\n"
-    << "  -tv.brightness  <value>      Set TV effects custom brightness to value 1.0 - 1.0\n"
-    << "  -tv.hue         <value>      Set TV effects custom hue to value 1.0 - 1.0\n"
-    << "  -tv.saturation  <value>      Set TV effects custom saturation to value 1.0 - 1.0\n"
-    << "  -tv.gamma       <value>      Set TV effects custom gamma to value 1.0 - 1.0\n"
-    << "  -tv.sharpness   <value>      Set TV effects custom sharpness to value 1.0 - 1.0\n"
-    << "  -tv.resolution  <value>      Set TV effects custom resolution to value 1.0 - 1.0\n"
-    << "  -tv.artifacts   <value>      Set TV effects custom artifacts to value 1.0 - 1.0\n"
-    << "  -tv.fringing    <value>      Set TV effects custom fringing to value 1.0 - 1.0\n"
-    << "  -tv.bleed       <value>      Set TV effects custom bleed to value 1.0 - 1.0\n"
+    << "  -tv.filter    <0-5>           Set TV effects off (0) or to specified mode\n"
+    << "                                 (1-5)\n"
+    << "  -tv.phosphor  <always|byrom>  When to use phosphor mode\n"
+    << "  -tv.phosblend <0-100>         Set default blend level in phosphor mode\n"
+    << "  -tv.scanlines <0-100>         Set scanline intensity to percentage\n"
+    << "                                 (0 disables completely)\n"
+    << "  -tv.scaninter <1|0>           Enable interpolated (smooth) scanlines\n"
+    << "  -tv.contrast    <-1.0 - 1.0>  Set TV effects custom contrast\n"
+    << "  -tv.brightness  <-1.0 - 1.0>  Set TV effects custom brightness\n"
+    << "  -tv.hue         <-1.0 - 1.0>  Set TV effects custom hue\n"
+    << "  -tv.saturation  <-1.0 - 1.0>  Set TV effects custom saturation\n"
+    << "  -tv.gamma       <-1.0 - 1.0>  Set TV effects custom gamma\n"
+    << "  -tv.sharpness   <-1.0 - 1.0>  Set TV effects custom sharpness\n"
+    << "  -tv.resolution  <-1.0 - 1.0>  Set TV effects custom resolution\n"
+    << "  -tv.artifacts   <-1.0 - 1.0>  Set TV effects custom artifacts\n"
+    << "  -tv.fringing    <-1.0 - 1.0>  Set TV effects custom fringing\n"
+    << "  -tv.bleed       <-1.0 - 1.0>  Set TV effects custom bleed\n"
     << endl
-    << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
+    << "  -cheat        <code>         Use the specified cheatcode (see manual for\n"
+    << "                                description)\n"
     << "  -loglevel     <0|1|2>        Set level of logging during application run\n"
+    << endl
     << "  -logtoconsole <1|0>          Log output to console/commandline\n"
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
-    << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be pressed simultaneously\n"
+    << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be\n"
+    << "                                pressed simultaneously\n"
     << "  -usemouse     <always|\n"
     << "                 analog|\n"
-    << "                 never>        Use mouse as a controller as specified by ROM properties in given mode(see manual)\n"
+    << "                 never>        Use mouse as a controller as specified by ROM\n"
+    << "                                properties in given mode(see manual)\n"
     << "  -grabmouse    <1|0>          Locks the mouse cursor in the TIA window\n"
     << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
-    << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-20)\n"
-    << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-20)\n"
-    << "  -tsense       <number>       Sensitivity of mouse emulated trackball movement (1-20)\n"
-    << "  -saport       <lr|rl>        How to assign virtual ports to multiple Stelladaptor/2600-daptors\n"
-    << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"
-    << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
+    << "  -dsense       <number>       Sensitivity of digital emulated paddle movement\n"
+    << "                                (1-20)\n"
+    << "  -msense       <number>       Sensitivity of mouse emulated paddle movement\n"
+    << "                                (1-20)\n"
+    << "  -tsense       <number>       Sensitivity of mouse emulated trackball movement\n"
+    << "                                (1-20)\n"
+    << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
+    << "                                Stelladaptor/2600-daptors\n"
+    << "  -ctrlcombo    <1|0>          Use key combos involving the Control key\n"
+    << "                                (Control-Q for quit may be disabled!)\n"
+    << "  -autoslot     <1|0>          Automatically switch to next save slot when\n"
+    << "                                state saving\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
-    << "  -threads      <1|0>          Whether to using multi-threading during emulation\n"
+    << "  -threads      <1|0>          Whether to using multi-threading during\n"
+    << "                                emulation\n"
     << "  -snapsavedir  <path>         The directory to save snapshot files to\n"
     << "  -snaploaddir  <path>         The directory to load snapshot files from\n"
-    << "  -snapname     <int|rom>      Name snapshots according to internal database or ROM\n"
+    << "  -snapname     <int|rom>      Name snapshots according to internal database or\n"
+    << "                                ROM\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
-    << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling/effects)\n"
-    << "  -ssinterval   <number        Number of seconds between snapshots in continuous snapshot mode\n"
+    << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore\n"
+    << "                                scaling/effects)\n"
+    << "  -ssinterval   <number        Number of seconds between snapshots in\n"
+    << "                                continuous snapshot mode\n"
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
-    << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
+    << "  -listrominfo                 Display contents of stella.pro, one line per ROM\n"
+    << "                                entry\n"
+    << "                               \n"
     << "  -exitlauncher <1|0>          On exiting a ROM, go back to the ROM launcher\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
     << "                 large>\n"
-    << "  -launcherexts <allfiles|     Show files with the given extensions in ROM launcher\n"
-    << "                 allroms|        (exts is a ':' separated list of extensions)\n"
-    << "                 exts\n"
-    << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM launcher (0 for off)\n"
-    << "  -listdelay    <delay>        Time to wait between keypresses in list widgets (300-1000)\n"
-    << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
+    << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
+    << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM\n"
+    << "                                launcher (0 for off)\n"
+    << "  -listdelay    <delay>        Time to wait between keypresses in list widgets\n"
+    << "                                (300-1000)\n"
+    << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in\n"
+    << "                                UI\n"
     << "  -romdir       <dir>          Directory in which to load ROM files\n"
     << "  -statedir     <dir>          Directory in which to save/load state files\n"
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
     << "  -palettefile  <file>         Full pathname of user-defined palette file\n"
     << "  -propsfile    <file>         Full pathname of ROM properties file\n"
-    << "  -nvramdir     <dir>          Directory in which to save/load flash/EEPROM files\n"
+    << "  -nvramdir     <dir>          Directory in which to save/load flash/EEPROM\n"
+    << "                                files\n"
     << "  -cfgdir       <dir>          Directory in which to save Distella config files\n"
-    << "  -avoxport     <name>         The name of the serial port where an AtariVox is connected\n"
-    << "  -holdreset                   Start the emulator with the Game Reset switch held down\n"
-    << "  -holdselect                  Start the emulator with the Game Select switch held down\n"
-    << "  -holdjoy0     <U,D,L,R,F>    Start the emulator with the left joystick direction/fire button held down\n"
-    << "  -holdjoy1     <U,D,L,R,F>    Start the emulator with the right joystick direction/fire button held down\n"
-    << "  -maxres       <WxH>          Used by developers to force the maximum size of the application window\n"
+    << "  -avoxport     <name>         The name of the serial port where an AtariVox is\n"
+    << "                                connected\n"
+    << "  -holdreset                   Start the emulator with the Game Reset switch\n"
+    << "                                held down\n"
+    << "  -holdselect                  Start the emulator with the Game Select switch\n"
+    << "                                held down\n"
+    << "  -holdjoy0     <U,D,L,R,F>    Start the emulator with the left joystick\n"
+    << "                                direction/fire button held down\n"
+    << "  -holdjoy1     <U,D,L,R,F>    Start the emulator with the right joystick\n"
+    << "                                direction/fire button held down\n"
+    << "  -maxres       <WxH>          Used by developers to force the maximum size of\n"
+    << "                                the application window\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
@@ -534,14 +568,17 @@ void Settings::usage() const
     << " Arguments are more fully explained in the manual\n"
     << endl
     << "   -dis.resolve   <1|0>        Attempt to resolve code sections in disassembler\n"
-    << "   -dis.gfxformat <2|16>       Set base to use for displaying GFX sections in disassembler\n"
+    << "   -dis.gfxformat <2|16>       Set base to use for displaying GFX sections in\n"
+    << "                                disassembler\n"
     << "   -dis.showaddr  <1|0>        Show opcode addresses in disassembler\n"
-    << "   -dis.relocate  <1|0>        Relocate calls out of address range in disassembler\n"
+    << "   -dis.relocate  <1|0>        Relocate calls out of address range in\n"
+    << "                                disassembler\n"
     << endl
     << "   -dbg.res       <WxH>          The resolution to use in debugger mode\n"
     << "   -dbg.fontsize  <small|medium| Font size to use in debugger window\n"
     << "                  large>\n"
-    << "   -dbg.fontstyle <0-3>          Font style to use in debugger window (bold vs. normal)\n"
+    << "   -dbg.fontstyle <0-3>          Font style to use in debugger window (bold vs.\n"
+    << "                                  normal)\n"
     << "   -dbg.ghostreadstrap <1|0>     Debugger traps on 'ghost' reads\n"
     << "   -dbg.uhex      <0|1>          lower-/uppercase HEX display\n"
     << "   -break         <address>      Set a breakpoint at 'address'\n"
@@ -568,34 +605,45 @@ void Settings::usage() const
 
     << " Various development related parameters for player settings mode\n"
     << endl
-    << "  -dev.settings     <1|0>          Select developer (1) or player (0) settings mode\n"
+    << "  -dev.settings     <1|0>          Select developer (1) or player (0) settings\n"
+    << "                                    mode\n"
     << endl
     << "  -plr.stats        <1|0>          Overlay console info during emulation\n"
-    << "  -plr.console      <2600|7800>    Select console for B/W and Pause key handling and RAM initialization\n"
+    << "  -plr.console      <2600|7800>    Select console for B/W and Pause key\n"
+    << "                                    handling and RAM initialization\n"
     << "  -plr.bankrandom   <1|0>          Randomize the startup bank on reset\n"
     << "  -plr.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
-    << "  -plr.cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
+    << "  -plr.cpurandom    <1|0>          Randomize the contents of CPU registers on\n"
+    << "                                    reset\n"
     << "  -plr.debugcolors  <1|0>          Enable debug colors\n"
     << "  -plr.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
-    << "  -plr.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
-    << "  -plr.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation throw an exception\n"
-    << "  -plr.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access messages\n"
+    << "  -plr.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
+    << "                                    read/peek\n"
+    << "  -plr.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation\n"
+    << "                                    throw an exception\n"
+    << "  -plr.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
+    << "                                    messages\n"
     << endl
     << " The same parameters but for developer settings mode\n"
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
-    << "  -dev.console      <2600|7800>    Select console for B/W and Pause key handling and RAM initialization\n"
+    << "  -dev.console      <2600|7800>    Select console for B/W and Pause key\n"
+    << "                                    handling and RAM initialization\n"
     << "  -dev.bankrandom   <1|0>          Randomize the startup bank on reset\n"
     << "  -dev.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
-    << "  -dev.cpurandom    <1|0>          Randomize the contents of CPU registers on reset\n"
+    << "  -dev.cpurandom    <1|0>          Randomize the contents of CPU registers on\n"
+    << "                                    reset\n"
     << "  -dev.debugcolors  <1|0>          Enable debug colors\n"
     << "  -dev.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -dev.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
-    << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
-    << "  -dev.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation throw an exception\n"
-    << "  -dev.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access messages\n"
+    << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
+    << "                                    read/peek\n"
+    << "  -dev.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation\n"
+    << "                                    throw an exception\n"
+    << "  -dev.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
+    << "                                    messages\n"
     << endl << std::flush;
 }
 

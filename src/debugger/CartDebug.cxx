@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <ctime>
-
 #include "bspf.hxx"
 #include "System.hxx"
 #include "M6502.hxx"
@@ -462,7 +460,7 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
       i->end = tag.start - 1;
 
       // Insert new endpoint
-      i++;
+      ++i;
       list.insert(i, tag2);
       break;  // no need to go further; this is the insertion point
     }
@@ -1101,10 +1099,9 @@ string CartDebug::saveDisassembly()
   }
 
   // Some boilerplate, similar to what DiStella adds
-  time_t currtime;
-  time(&currtime);
+  auto timeinfo = BSPF::localTime();
   out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
-      << "; Disassembled " << ctime(&currtime)
+      << "; Disassembled " << std::put_time(&timeinfo, "%c\n")
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
       << "; ROM properties name : " << myConsole.properties().get(Cartridge_Name) << "\n"
       << "; ROM properties MD5  : " << myConsole.properties().get(Cartridge_MD5) << "\n"
@@ -1182,10 +1179,10 @@ string CartDebug::saveDisassembly()
           out << "\n";
         out << ALIGN(16) << ourZPMnemonic[addr - 0x80] << "= $"
           << Base::HEX2 << right << (addr)
-          << (stackUsed|codeUsed ? "; (" : "")
+          << ((stackUsed|codeUsed) ? "; (" : "")
           << (codeUsed ? "c" : "")
           << (stackUsed ? "s" : "")
-          << (stackUsed | codeUsed ? ")" : "")
+          << ((stackUsed | codeUsed) ? ")" : "")
           << "\n";
         addLine = false;
       } else if (ramUsed|codeUsed|stackUsed) {
@@ -1292,7 +1289,7 @@ string CartDebug::clearConfig(int bank)
     endbank = startbank + 1;
   }
 
-  uInt32 count = 0;
+  size_t count = 0;
   for(uInt32 b = startbank; b < endbank; ++b)
   {
     count += myBankInfo[b].directiveList.size();

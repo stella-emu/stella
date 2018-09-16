@@ -368,8 +368,6 @@ bool M6532::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putByteArray(myRAM, 128);
 
     out.putInt(myTimer);
@@ -403,9 +401,6 @@ bool M6532::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     in.getByteArray(myRAM, 128);
 
     myTimer = in.getInt();

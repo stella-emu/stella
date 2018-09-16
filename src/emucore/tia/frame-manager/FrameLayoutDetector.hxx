@@ -28,7 +28,7 @@
 class FrameLayoutDetector: public AbstractFrameManager {
   public:
 
-    FrameLayoutDetector() = default;
+    FrameLayoutDetector();
 
   public:
 

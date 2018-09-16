@@ -30,7 +30,7 @@ Cartridge3FWidget::Cartridge3FWidget(
 
   ostringstream info;
   info << "Tigervision 3F cartridge, 2-256 2K banks\n"
-       << "Startup bank = " << cart.myStartBank << " or undetermined\n"
+       << "Startup bank = " << cart.startBank() << " or undetermined\n"
        << "First 2K bank selected by writing to $3F\n"
        << "Last 2K always points to last 2K of ROM\n";
 

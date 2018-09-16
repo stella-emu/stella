@@ -34,7 +34,7 @@ class Sound
 {
   public:
     /**
-      Create a new sound object.  The init method must be invoked before
+      Create a new sound object.  The open method must be invoked before
       using the object.
     */
     Sound(OSystem& osystem) : myOSystem(osystem) { }
@@ -64,23 +64,10 @@ class Sound
       Set the mute state of the sound object.  While muted no sound is played.
 
       @param state Mutes sound if true, unmute if false
-    */
-    virtual void mute(bool state) = 0;
 
-    /**
-      Get the fragment size.
+      @return  The previous (old) mute state
     */
-    virtual uInt32 getFragmentSize() const = 0;
-
-    /**
-      Get the sample rate.
-    */
-    virtual uInt32 getSampleRate() const = 0;
-
-    /**
-      Reset the sound device.
-    */
-    virtual void reset() = 0;
+    virtual bool mute(bool state) = 0;
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -98,6 +85,11 @@ class Sound
                         amount based on the direction (1 = increase, -1 =decrease)
     */
     virtual void adjustVolume(Int8 direction) = 0;
+
+    /**
+      This method is called to provide information about the sound device.
+    */
+    virtual string about() const = 0;
 
   protected:
     // The OSystem for this sound object

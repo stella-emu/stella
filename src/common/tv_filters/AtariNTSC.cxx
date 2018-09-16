@@ -257,38 +257,38 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
     {
       // Store back into displayed frame buffer (for next frame)
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-      bufofs++;
+      ++bufofs;
     }
     // finish final pixels
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
 #if 0
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
-    bufofs++;
+    ++bufofs;
 #endif
 
     atari_in += in_width;
@@ -299,8 +299,10 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt32 AtariNTSC::getRGBPhosphor(const uInt32 c, const uInt32 p) const
 {
-#define TO_RGB(color, red, green, blue) \
-    const uInt8 red = color >> 16; const uInt8 green = color >> 8; const uInt8 blue = color;
+#define TO_RGB(color, red, green, blue)   \
+    const uInt8 red   = uInt8(color >> 16); \
+    const uInt8 green = uInt8(color >> 8);\
+    const uInt8 blue  = uInt8(color);
 
   TO_RGB(c, rc, gc, bc);
   TO_RGB(p, rp, gp, bp);
@@ -332,9 +334,9 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
   initFilters(impl, setup);
 
   /* generate gamma table */
-  if ( gamma_size > 1 )
+  if (true)  /* was (gamma_size > 1) */
   {
-    float const to_float = 1.0f / (gamma_size - (gamma_size > 1));
+    float const to_float = 1.0f / (gamma_size - 1/*(gamma_size > 1)*/);
     float const gamma = 1.1333f - float(setup.gamma) * 0.5f;
     /* match common PC's 2.2 gamma to TV's 2.65 gamma */
     int i;
@@ -367,9 +369,10 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
         *out++ = i * s + q * c;
       }
       while ( --n2 );
-      if ( burst_count <= 1 )
-        break;
-      ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
+    #if 0  // burst_count is always 0
+      if ( burst_count > 1 )
+        ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
+    #endif
     }
     while ( --n );
   }
@@ -383,7 +386,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
   /* generate luma (y) filter using sinc kernel */
   {
     /* sinc with rolloff (dsf) */
-    float const rolloff = 1 + float(setup.sharpness) * 0.032;
+    float const rolloff = 1 + float(setup.sharpness) * 0.032f;
     float const maxh = 32;
     float const pow_a_n = float(pow( rolloff, maxh ));
     float sum;
@@ -406,7 +409,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
             pow_a_n * rolloff * float(cos( (maxh - 1) * angle ));
         float den = 1 - rolloff_cos_a - rolloff_cos_a + rolloff * rolloff;
         float dsf = num / den;
-        kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - 0.5;
+        kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - 0.5f;
       }
     }
 
@@ -536,7 +539,7 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
         }
       }
     }
-    while ( alignment_count > 1 && --alignment_remain );
+    while ( /*alignment_count > 1 && */ --alignment_remain );
   }
   while ( --burst_remain );
 }

@@ -287,7 +287,7 @@ static void Encode(uInt8* output, uInt32* input, uInt32 len)
 {
   uInt32 i, j;
 
-  for (i = 0, j = 0; j < len; i++, j += 4) {
+  for (i = 0, j = 0; j < len; ++i, j += 4) {
     output[j]   = uInt8(input[i] & 0xff);
     output[j+1] = uInt8((input[i] >> 8) & 0xff);
     output[j+2] = uInt8((input[i] >> 16) & 0xff);
@@ -301,7 +301,7 @@ static void Decode(uInt32* output, const uInt8* input, uInt32 len)
 {
   uInt32 i, j;
 
-  for (i = 0, j = 0; j < len; i++, j += 4)
+  for (i = 0, j = 0; j < len; ++i, j += 4)
     output[i] = (uInt32(input[j])) | ((uInt32(input[j+1])) << 8) |
     ((uInt32(input[j+2])) << 16) | ((uInt32(input[j+3])) << 24);
 }

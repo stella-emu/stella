@@ -200,7 +200,6 @@ bool CartridgeE0::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShortArray(myCurrentSlice, 4);
   }
   catch(...)
@@ -217,9 +216,6 @@ bool CartridgeE0::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     in.getShortArray(myCurrentSlice, 4);
   }
   catch(...)

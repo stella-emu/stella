@@ -88,6 +88,8 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
 
   // Then initialize the I2C state
   jpee_init();
+
+  systemReset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,7 +151,7 @@ void MT24LC256::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::systemReset()
 {
-  memset(myPageHit, false, sizeof(myPageHit));
+  std::fill(myPageHit, myPageHit + PAGE_NUM, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,7 +164,7 @@ void MT24LC256::eraseAll()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::eraseCurrent()
 {
-  for(uInt32 page = 0; page < PAGE_NUM; page++)
+  for(uInt32 page = 0; page < PAGE_NUM; ++page)
   {
     if(myPageHit[page])
     {
@@ -367,7 +369,7 @@ void MT24LC256::jpee_clock_fall()
       {
         jpee_state = 4;
         jpee_sdat = 1;
-        jpee_address++;
+        ++jpee_address;
       }
       break;
 

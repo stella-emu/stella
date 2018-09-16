@@ -220,12 +220,6 @@ class AbstractFrameManager : public Serializable
      */
     virtual bool onLoad(Serializer& in) { throw runtime_error("cannot be serialized"); }
 
-    /**
-     * This needs to be overriden if state serialization is implemented
-     * (unnecesary in autodetect managers).
-     */
-    string name() const override { throw runtime_error("state serialization is not implemented!"); }
-
   protected:
     // These need to be called in order to drive the frame lifecycle of the
     // emulation.

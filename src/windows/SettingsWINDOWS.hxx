@@ -28,7 +28,7 @@ class SettingsWINDOWS : public Settings
     /**
       Create a new UNIX settings object
     */
-    SettingsWINDOWS(OSystem& osystem);
+    explicit SettingsWINDOWS(OSystem& osystem);
     virtual ~SettingsWINDOWS() = default;
 
   private:

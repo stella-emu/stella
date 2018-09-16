@@ -48,8 +48,6 @@ class JitterEmulation: public Serializable {
      */
     bool load(Serializer& in) override;
 
-    string name() const override { return "JitterEmulation"; }
-
   private:
 
     void updateJitter(Int32 scanlineDifference);

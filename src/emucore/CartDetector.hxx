@@ -22,8 +22,8 @@ class Cartridge;
 class Properties;
 class OSystem;
 
+#include "Bankswitch.hxx"
 #include "bspf.hxx"
-#include "BSType.hxx"
 
 /**
   Auto-detect cart type based on various attributes (file size, signatures,
@@ -45,8 +45,9 @@ class CartDetector
       @param system   The osystem associated with the system
       @return   Pointer to the new cartridge object allocated on the heap
     */
-    static unique_ptr<Cartridge> create(const BytePtr& image, uInt32 size,
-                 string& md5, const string& dtype, const OSystem& system);
+    static unique_ptr<Cartridge> create(const FilesystemNode& file,
+                 const BytePtr& image, uInt32 size, string& md5,
+                 const string& dtype, const OSystem& system);
 
   private:
     /**
@@ -65,7 +66,7 @@ class CartDetector
     */
     static unique_ptr<Cartridge>
       createFromMultiCart(const BytePtr& image, uInt32& size,
-        uInt32 numroms, string& md5, BSType type, string& id,
+        uInt32 numroms, string& md5, Bankswitch::Type type, string& id,
         const OSystem& osystem);
 
     /**
@@ -80,7 +81,7 @@ class CartDetector
       @return  Pointer to the new cartridge object allocated on the heap
     */
     static unique_ptr<Cartridge>
-      createFromImage(const BytePtr& image, uInt32 size, BSType type,
+      createFromImage(const BytePtr& image, uInt32 size, Bankswitch::Type type,
                       const string& md5, const OSystem& osystem);
 
     /**
@@ -91,7 +92,7 @@ class CartDetector
 
       @return The "best guess" for the cartridge type
     */
-    static BSType autodetectType(const BytePtr& image, uInt32 size);
+    static Bankswitch::Type autodetectType(const BytePtr& image, uInt32 size);
 
     /**
       Search the image for the specified byte signature
@@ -152,7 +153,7 @@ class CartDetector
     /**
       Returns true if the image is probably a BF/BFSC bankswitching cartridge
     */
-    static bool isProbablyBF(const BytePtr& image, uInt32 size, BSType& type);
+    static bool isProbablyBF(const BytePtr& image, uInt32 size, Bankswitch::Type& type);
 
     /**
       Returns true if the image is probably a BUS bankswitching cartridge
@@ -187,7 +188,7 @@ class CartDetector
     /**
       Returns true if the image is probably a DF/DFSC bankswitching cartridge
     */
-    static bool isProbablyDF(const BytePtr& image, uInt32 size, BSType& type);
+    static bool isProbablyDF(const BytePtr& image, uInt32 size, Bankswitch::Type& type);
 
     /**
       Returns true if the image is probably a DPC+ bankswitching cartridge
@@ -212,7 +213,7 @@ class CartDetector
     /**
       Returns true if the image is probably an EF/EFSC bankswitching cartridge
     */
-    static bool isProbablyEF(const BytePtr& image, uInt32 size, BSType& type);
+    static bool isProbablyEF(const BytePtr& image, uInt32 size, Bankswitch::Type& type);
 
     /**
       Returns true if the image is probably an F6 bankswitching cartridge

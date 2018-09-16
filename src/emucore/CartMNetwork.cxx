@@ -38,8 +38,6 @@ void CartridgeMNetwork::initialize(const BytePtr& image, uInt32 size)
   memcpy(myImage.get(), image.get(), std::min(romSize(), size));
   createCodeAccessBase(romSize() + RAM_SIZE);
 
-  // Remember startup bank
-  myStartBank = 0;
   myRAMSlice = bankCount() - 1;
 }
 
@@ -48,14 +46,14 @@ void CartridgeMNetwork::reset()
 {
   initializeRAM(myRAM, RAM_SIZE);
 
-  // define random startup banks
-  randomizeStartBank();
+  // Use random startup bank
+  initializeStartBank();
   uInt32 ramBank = randomStartBank() ?
     mySystem->randGenerator().next() % 4 : 0;
 
   // Install some default banks for the RAM and first segment
   bankRAM(ramBank);
-  bank(myStartBank);
+  bank(startBank());
 
   myBankChanged = true;
 }
@@ -104,7 +102,7 @@ void CartridgeMNetwork::install(System& system)
 
   // Install some default banks for the RAM and first segment
   bankRAM(0);
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -252,7 +250,6 @@ bool CartridgeMNetwork::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShortArray(myCurrentSlice, NUM_SEGMENTS);
     out.putShort(myCurrentRAM);
     out.putByteArray(myRAM, RAM_SIZE);
@@ -270,9 +267,6 @@ bool CartridgeMNetwork::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     in.getShortArray(myCurrentSlice, NUM_SEGMENTS);
     myCurrentRAM = in.getShort();
     in.getByteArray(myRAM, RAM_SIZE);

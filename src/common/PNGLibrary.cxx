@@ -49,7 +49,7 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 
   ifstream in(filename, std::ios_base::binary);
   if(!in.is_open())
-    loadImageERROR("No image found");
+    loadImageERROR("No snapshot found");
 
   // Create the PNG loading context structure
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr,
@@ -331,7 +331,10 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   version << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
           << BSPF::ARCH << "]";
   VarList::push_back(comments, "Software", version.str());
-  VarList::push_back(comments, "ROM Name", myOSystem.console().properties().get(Cartridge_Name));
+  const string& name = (myOSystem.settings().getString("snapname") == "int")
+      ? myOSystem.console().properties().get(Cartridge_Name)
+      : myOSystem.romFile().getName();
+  VarList::push_back(comments, "ROM Name", name);
   VarList::push_back(comments, "ROM MD5", myOSystem.console().properties().get(Cartridge_MD5));
   VarList::push_back(comments, "TV Effects", myOSystem.frameBuffer().tiaSurface().effectsInfo());
 

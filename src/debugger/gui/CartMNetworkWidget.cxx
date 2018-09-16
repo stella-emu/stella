@@ -68,10 +68,8 @@ void CartridgeMNetworkWidget::saveOldState()
 {
   myOldState.internalram.clear();
 
-  for(uInt32 i = 0; i < this->internalRamSize(); i++)
-  {
+  for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myRAM[i]);
-  }
 
   myOldState.lowerBank = myCart.myCurrentSlice[0];
   myOldState.upperBank = myCart.myCurrentRAM;

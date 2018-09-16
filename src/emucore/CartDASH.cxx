@@ -31,10 +31,6 @@ CartridgeDASH::CartridgeDASH(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage.get(), image.get(), mySize);
   createCodeAccessBase(mySize + RAM_TOTAL_SIZE);
-
-  // Remember startup bank (0 per spec, rather than last per 3E scheme).
-  // Set this to go to 3rd 1K Bank.
-  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -42,9 +38,13 @@ void CartridgeDASH::reset()
 {
   initializeRAM(myRAM, RAM_TOTAL_SIZE);
 
+  // Remember startup bank (0 per spec, rather than last per 3E scheme).
+  // Set this to go to 3rd 1K Bank.
+  initializeStartBank(0);
+
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
-  for(uInt32 b = 0; b < 8; b++)
+  for(uInt32 b = 0; b < 8; ++b)
   {
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
     segmentInUse[b/2] = BANK_UNDEFINED;
@@ -69,7 +69,7 @@ void CartridgeDASH::install(System& system)
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
-  for (uInt32 b = 0; b < 8; b++)
+  for (uInt32 b = 0; b < 8; ++b)
   {
     bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
     segmentInUse[b/2] = BANK_UNDEFINED;
@@ -240,7 +240,7 @@ void CartridgeDASH::bankROMSlot(uInt16 bank)
 void CartridgeDASH::initializeBankState()
 {
   // Switch in each 512b slot
-  for(uInt32 b = 0; b < 8; b++)
+  for(uInt32 b = 0; b < 8; ++b)
   {
     if(bankInUse[b] == BANK_UNDEFINED)
     {
@@ -307,7 +307,6 @@ bool CartridgeDASH::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShortArray(bankInUse, 8);
     out.putShortArray(segmentInUse, 4);
     out.putByteArray(myRAM, RAM_TOTAL_SIZE);
@@ -325,8 +324,6 @@ bool CartridgeDASH::load(Serializer& in)
 {
   try
   {
-    if (in.getString() != name())
-      return false;
     in.getShortArray(bankInUse, 8);
     in.getShortArray(segmentInUse, 4);
     in.getByteArray(myRAM, RAM_TOTAL_SIZE);

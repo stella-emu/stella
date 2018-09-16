@@ -40,7 +40,10 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
     myIsInitializedFlag(false),
     myVolume(100),
     myVolumeFactor(0xffff),
+    myDevice(0),
+    myEmulationTiming(nullptr),
     myCurrentFragment(nullptr),
+    myUnderrun(false),
     myAudioSettings(audioSettings)
 {
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
@@ -54,31 +57,9 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
     return;
   }
 
-  // The sound system is opened only once per program run, to eliminate
-  // issues with opening and closing it multiple times
-  // This fixes a bug most prevalent with ATI video cards in Windows,
-  // whereby sound stopped working after the first video change
-  SDL_AudioSpec desired;
-  desired.freq   = myAudioSettings.sampleRate();
-  desired.format = AUDIO_F32SYS;
-  desired.channels = 2;
-  desired.samples  = myAudioSettings.fragmentSize();
-  desired.callback = callback;
-  desired.userdata = static_cast<void*>(this);
-
-  myDevice = SDL_OpenAudioDevice(0, 0, &desired, &myHardwareSpec, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
-
-  if(myDevice == 0)
-  {
-    ostringstream buf;
-
-    buf << "WARNING: Couldn't open SDL audio device! " << endl
-        << "         " << SDL_GetError() << endl;
-    myOSystem.logMessage(buf.str(), 0);
+  SDL_zero(myHardwareSpec);
+  if(!openDevice())
     return;
-  }
-
-  myIsInitializedFlag = true;
 
   mute(true);
 
@@ -95,6 +76,35 @@ SoundSDL2::~SoundSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL2::openDevice()
+{
+  SDL_AudioSpec desired;
+  desired.freq   = myAudioSettings.sampleRate();
+  desired.format = AUDIO_F32SYS;
+  desired.channels = 2;
+  desired.samples  = static_cast<Uint16>(myAudioSettings.fragmentSize());
+  desired.callback = callback;
+  desired.userdata = static_cast<void*>(this);
+
+  if(myIsInitializedFlag)
+    SDL_CloseAudioDevice(myDevice);
+  myDevice = SDL_OpenAudioDevice(nullptr, 0, &desired, &myHardwareSpec,
+                                 SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+
+  if(myDevice == 0)
+  {
+    ostringstream buf;
+
+    buf << "WARNING: Couldn't open SDL audio device! " << endl
+        << "         " << SDL_GetError() << endl;
+    myOSystem.logMessage(buf.str(), 0);
+
+    return myIsInitializedFlag = false;
+  }
+  return myIsInitializedFlag = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setEnabled(bool state)
 {
   myAudioSettings.setEnabled(state);
@@ -108,6 +118,14 @@ void SoundSDL2::setEnabled(bool state)
 void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
                      EmulationTiming* emulationTiming)
 {
+  string pre_about = myAboutString;
+
+  // Do we need to re-open the sound device?
+  // Only do this when absolutely necessary
+  if(myAudioSettings.sampleRate() != uInt32(myHardwareSpec.freq) ||
+     myAudioSettings.fragmentSize() != uInt32(myHardwareSpec.samples))
+    openDevice();
+
   myEmulationTiming = emulationTiming;
 
   myOSystem.logMessage("SoundSDL2::open started ...", 2);
@@ -127,17 +145,12 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   // Adjust volume to that defined in settings
   setVolume(myAudioSettings.volume());
 
-  // Show some info
-  ostringstream buf;
-  buf << "Sound enabled:"  << endl
-      << "  Volume:      " << myVolume << endl
-      << "  Frag size:   " << uInt32(myHardwareSpec.samples) << endl
-      << "  Frequency:   " << uInt32(myHardwareSpec.freq) << endl
-      << "  Channels:    " << uInt32(myHardwareSpec.channels)
-      << endl;
-  myOSystem.logMessage(buf.str(), 1);
-
   initResampler();
+
+  // Show some info
+  myAboutString = about();
+  if(myAboutString != pre_about)
+    myOSystem.logMessage(myAboutString, 1);
 
   // And start the SDL sound subsystem ...
   mute(false);
@@ -157,21 +170,16 @@ void SoundSDL2::close()
   myCurrentFragment = nullptr;
 
   myOSystem.logMessage("SoundSDL2::close", 2);
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::mute(bool state)
+bool SoundSDL2::mute(bool state)
 {
+  bool oldstate = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
   if(myIsInitializedFlag)
-  {
     SDL_PauseAudioDevice(myDevice, state ? 1 : 0);
-  }
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL2::reset()
-{
+  return oldstate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,15 +223,51 @@ void SoundSDL2::adjustVolume(Int8 direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 SoundSDL2::getFragmentSize() const
+string SoundSDL2::about() const
 {
-  return myHardwareSpec.samples;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 SoundSDL2::getSampleRate() const
-{
-  return myHardwareSpec.freq;
+  ostringstream buf;
+  buf << "Sound enabled:"  << endl
+      << "  Volume:   " << myVolume << "%" << endl
+      << "  Channels: " << uInt32(myHardwareSpec.channels)
+      << (myAudioQueue->isStereo() ? " (Stereo)" : " (Mono)") << endl
+      << "  Preset:   ";
+  switch (myAudioSettings.preset()) {
+    case AudioSettings::Preset::custom:
+      buf << "Custom" << endl;
+      break;
+    case AudioSettings::Preset::lowQualityMediumLag:
+      buf << "Low quality, medium lag" << endl;
+      break;
+    case AudioSettings::Preset::highQualityMediumLag:
+      buf << "High quality, medium lag" << endl;
+      break;
+    case AudioSettings::Preset::highQualityLowLag:
+      buf << "High quality, low lag" << endl;
+      break;
+    case AudioSettings::Preset::veryHighQualityVeryLowLag:
+      buf << "Very high quality, very low lag" << endl;
+      break;
+  }
+  buf << "    Fragment size: " << uInt32(myHardwareSpec.samples) << " bytes" << endl
+      << "    Sample rate:   " << uInt32(myHardwareSpec.freq) << " Hz" << endl;
+  buf << "    Resampling:    ";
+  switch(myAudioSettings.resamplingQuality())
+  {
+    case AudioSettings::ResamplingQuality::nearestNeightbour:
+      buf << "Quality 1, nearest neighbor" << endl;
+      break;
+    case AudioSettings::ResamplingQuality::lanczos_2:
+      buf << "Quality 2, Lanczos (a = 2)" << endl;
+      break;
+    case AudioSettings::ResamplingQuality::lanczos_3:
+      buf << "Quality 3, Lanczos (a = 3)" << endl;
+      break;
+  }
+  buf << "    Headroom:      " << std::fixed << std::setprecision(1)
+      << (0.5 * myAudioSettings.headroom()) << " frames" << endl
+      << "    Buffer size:   " << std::fixed << std::setprecision(1)
+      << (0.5 * myAudioSettings.bufferSize()) << " frames" << endl;
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -257,20 +301,16 @@ void SoundSDL2::initResampler()
   Resampler::Format formatTo =
     Resampler::Format(myHardwareSpec.freq, myHardwareSpec.samples, myHardwareSpec.channels > 1);
 
-
   switch (myAudioSettings.resamplingQuality()) {
     case AudioSettings::ResamplingQuality::nearestNeightbour:
       myResampler = make_unique<SimpleResampler>(formatFrom, formatTo, nextFragmentCallback);
-      (cerr << "resampling quality 1: using nearest neighbor resampling\n").flush();
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_2:
-      (cerr << "resampling quality 2: using nearest Lanczos resampling, a = 2\n").flush();
       myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 2);
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_3:
-      (cerr << "resampling quality 3: using nearest Lanczos resampling, a = 3\n").flush();
       myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 3);
       break;
 

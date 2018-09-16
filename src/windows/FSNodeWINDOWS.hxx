@@ -55,7 +55,7 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
      *
      * @param path String with the path the new node should point to.
      */
-    FilesystemNodeWINDOWS(const string& path);
+    explicit FilesystemNodeWINDOWS(const string& path);
 
     bool exists() const override;
     const string& getName() const override   { return _displayName; }

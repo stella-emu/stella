@@ -122,7 +122,7 @@ void CartridgeDASHWidget::saveOldState()
 {
   myOldState.internalram.clear();
 
-  for(uInt32 i = 0; i < this->internalRamSize();i++)
+  for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myRAM[i]);
 }
 
@@ -255,7 +255,7 @@ void CartridgeDASHWidget::updateUIState()
     else
     {
       int bankno = segment & myCart.BIT_BANK_MASK;
-      const string& banktype = segment & myCart.BITMASK_ROMRAM ? "RAM" : "ROM";
+      const string& banktype = (segment & myCart.BITMASK_ROMRAM) ? "RAM" : "ROM";
 
       myBankNumber[i]->setSelected(bankno);
       myBankType[i]->setSelected(banktype);

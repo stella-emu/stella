@@ -42,7 +42,7 @@ class PropertiesSet
     /**
       Create a properties set object from the specified properties file.
     */
-    PropertiesSet(const string& propsfile);
+    explicit PropertiesSet(const string& propsfile);
 
   public:
     /**
@@ -101,21 +101,9 @@ class PropertiesSet
     void insert(const Properties& properties, bool save = true);
 
     /**
-      Marks the property with the given MD5 as being removed.
-
-      @param md5  The md5 of the property to remove
-    */
-    void removeMD5(const string& md5);
-
-    /**
       Prints the contents of the PropertiesSet as a flat file.
     */
     void print() const;
-
-    /**
-      Return the size of the myExternalProps list
-    */
-    uInt64 size() const { return myExternalProps.size(); }
 
   private:
     using PropsList = std::map<string, Properties>;

@@ -59,6 +59,7 @@ M6502::M6502(const Settings& settings)
     icycles(0),
     myNumberOfDistinctAccesses(0),
     myLastAddress(0),
+    myLastBreakCycle(ULLONG_MAX),
     myLastPeekAddress(0),
     myLastPokeAddress(0),
     myLastPeekBaseAddress(0),
@@ -119,7 +120,7 @@ void M6502::reset()
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
 
-  myLastBreakCycle = -1;
+  myLastBreakCycle = ULLONG_MAX;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,7 +132,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   // TODO - move this logic directly into CartAR
   if(address != myLastAddress)
   {
-    myNumberOfDistinctAccesses++;
+    ++myNumberOfDistinctAccesses;
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
@@ -168,7 +169,7 @@ inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
   // TODO - move this logic directly into CartAR
   if(address != myLastAddress)
   {
-    myNumberOfDistinctAccesses++;
+    ++myNumberOfDistinctAccesses;
     myLastAddress = address;
   }
   ////////////////////////////////////////////////
@@ -399,12 +400,8 @@ void M6502::interruptHandler()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::save(Serializer& out) const
 {
-  const string& CPU = name();
-
   try
   {
-    out.putString(CPU);
-
     out.putByte(A);    // Accumulator
     out.putByte(X);    // X index register
     out.putByte(Y);    // Y index register
@@ -451,13 +448,8 @@ bool M6502::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6502::load(Serializer& in)
 {
-  const string& CPU = name();
-
   try
   {
-    if(in.getString() != CPU)
-      return false;
-
     A = in.getByte();    // Accumulator
     X = in.getByte();    // X index register
     Y = in.getByte();    // Y index register

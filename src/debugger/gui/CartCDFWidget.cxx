@@ -35,7 +35,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   << "8K CDF RAM\n"
   << "CDF registers accessible @ $FFF0 - $FFF3\n"
   << "Banks accessible at hotspots $FFF5 to $FFFB\n"
-  << "Startup bank = " << cart.myStartBank << "\n";
+  << "Startup bank = " << cart.startBank() << "\n";
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler
@@ -193,7 +193,7 @@ void CartridgeCDFWidget::saveOldState()
   myOldState.internalram.clear();
   myOldState.samplepointer.clear();
 
-  for(uInt32 i = 0; i < 34; i++)
+  for(uInt32 i = 0; i < 34; ++i)
   {
     // Pointers are stored as:
     // PPPFF---
@@ -210,9 +210,7 @@ void CartridgeCDFWidget::saveOldState()
   }
 
   for(uInt32 i = 0; i < 3; ++i)
-  {
     myOldState.mcounters.push_back(myCart.myMusicCounters[i]);
-  }
 
   for(uInt32 i = 0; i < 3; ++i)
   {

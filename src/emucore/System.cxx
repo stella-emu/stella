@@ -202,7 +202,6 @@ bool System::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putLong(myCycles);
     out.putByte(myDataBusState);
 
@@ -232,9 +231,6 @@ bool System::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myCycles = in.getLong();
     myDataBusState = in.getByte();
 

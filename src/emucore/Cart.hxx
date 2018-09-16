@@ -40,6 +40,9 @@ class GuiObject;
 class Cartridge : public Device
 {
   public:
+    using StartBankFromPropsFunc = std::function<int()>;
+
+  public:
     /**
       Create a new cartridge
 
@@ -80,6 +83,14 @@ class Cartridge : public Device
       @return  The startup bank
     */
     uInt16 startBank() const { return myStartBank; }
+
+    /**
+      Set the function to use when we want to query the 'Cartridge.StartBank'
+      ROM property.
+    */
+    void setStartBankFromPropsFunc(StartBankFromPropsFunc func) {
+      myStartBankFromPropsFunc = func;
+    }
 
     /**
       Answer whether the bank has changed since the last time this
@@ -146,6 +157,13 @@ class Cartridge : public Device
     virtual const uInt8* getImage(uInt32& size) const = 0;
 
     /**
+      Get a descriptor for the cart name.
+
+      @return The name of the cart
+    */
+    virtual string name() const = 0;
+
+    /**
       Informs the cartridge about the name of the ROM file used when
       creating this cart.
 
@@ -196,31 +214,33 @@ class Cartridge : public Device
     void initializeRAM(uInt8* arr, uInt32 size, uInt8 val = 0) const;
 
     /**
-      Checks if initial RAM randomization is enabled
+      Set the start bank to be used when the cart is reset.  This method
+      will take both randomization and properties settings into account.
+      See the actual method for more information on the logic used.
 
-      @return Whether the initial RAM should be randomized
+      @param defaultBank  The actual bank to use during reset
+
+      @return  The bank number that was determined
+    */
+    uInt16 initializeStartBank(int defaultBank = -1);
+
+    /**
+      Checks if initial RAM randomization is enabled.
+
+      @return  Whether the initial RAM should be randomized
     */
     bool randomInitialRAM() const;
 
     /**
-      Defines the startup bank. if 'bank' is negative, a random bank will
-      be selected.
-    */
-    void randomizeStartBank();
+      Checks if startup bank randomization is enabled.
 
-    /**
-      Checks if startup bank randomization is enabled
-
-      @return Whether the startup bank(s) should be randomized
+      @return  Whether the startup bank(s) should be randomized
     */
     bool randomStartBank() const;
 
   protected:
     // Settings class for the application
     const Settings& mySettings;
-
-    // The startup bank to use (where to look for the reset vector address)
-    uInt16 myStartBank;
 
     // Indicates if the bank has changed somehow (a bankswitch has occurred)
     bool myBankChanged;
@@ -230,6 +250,9 @@ class Cartridge : public Device
     BytePtr myCodeAccessBase;
 
   private:
+    // The startup bank to use (where to look for the reset vector address)
+    uInt16 myStartBank;
+
     // If myBankLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.
     bool myBankLocked;
@@ -239,6 +262,9 @@ class Cartridge : public Device
     // sometimes the information in both do not match
     // (ie, detected type could be '2in1' while name of cart is '4K')
     string myAbout, myDetectedType, myMultiCartID;
+
+    // Used when we want the 'Cartridge.StartBank' ROM property
+    StartBankFromPropsFunc myStartBankFromPropsFunc;
 
     // Following constructors and assignment operators not supported
     Cartridge() = delete;

@@ -167,7 +167,7 @@ void Thumbulator::dump_regs()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::fetch16(uInt32 addr)
 {
-  fetches++;
+  ++fetches;
 
   uInt32 data;
   switch(addr & 0xF0000000)
@@ -229,7 +229,7 @@ void Thumbulator::write16(uInt32 addr, uInt32 data)
   if(addr & 1)
     fatalError("write16", addr, "abort - misaligned");
 
-  writes++;
+  ++writes;
 
   DO_DBUG(statusMsg << "write16(" << Base::HEX8 << addr << "," << Base::HEX8 << data << ")" << endl);
 
@@ -369,7 +369,7 @@ uInt32 Thumbulator::read16(uInt32 addr)
   if(addr & 1)
     fatalError("read16", addr, "abort - misaligned");
 
-  reads++;
+  ++reads;
 
   switch(addr & 0xF0000000)
   {
@@ -597,7 +597,7 @@ int Thumbulator::execute()
   write_register(15, pc);
   DO_DISS(statusMsg << Base::HEX8 << (pc-5) << ": " << Base::HEX4 << inst << " ");
 
-  instructions++;
+  ++instructions;
 
   //ADC
   if((inst & 0xFFC0) == 0x4140)
@@ -609,7 +609,7 @@ int Thumbulator::execute()
     rb = read_register(rm);
     rc = ra + rb;
     if(cpsr & CPSR_C)
-      rc++;
+      ++rc;
     write_register(rd, rc);
     do_nflag(rc);
     do_zflag(rc);
@@ -771,7 +771,7 @@ int Thumbulator::execute()
       if(rc & 0x80000000)
       {
         do_cflag_bit(1);
-        rc = ~0;
+        rc = ~0u;
       }
       else
       {
@@ -909,8 +909,8 @@ int Thumbulator::execute()
       case 0xA: //b ge N == V
         DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
         ra = 0;
-        if(  (cpsr & CPSR_N)  &&   (cpsr & CPSR_V) ) ra++;
-        if((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))) ra++;
+        if(  (cpsr & CPSR_N)  &&   (cpsr & CPSR_V) ) ++ra;
+        if((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))) ++ra;
         if(ra)
           write_register(15, rb);
         return 0;
@@ -918,8 +918,8 @@ int Thumbulator::execute()
       case 0xB: //b lt N != V
         DO_DISS(statusMsg << "blt 0x" << Base::HEX8 << (rb-3) << endl);
         ra = 0;
-        if((!(cpsr & CPSR_N)) && (cpsr & CPSR_V)) ra++;
-        if((!(cpsr & CPSR_V)) && (cpsr & CPSR_N)) ra++;
+        if((!(cpsr & CPSR_N)) && (cpsr & CPSR_V)) ++ra;
+        if((!(cpsr & CPSR_V)) && (cpsr & CPSR_N)) ++ra;
         if(ra)
           write_register(15, rb);
         return 0;
@@ -927,8 +927,8 @@ int Thumbulator::execute()
       case 0xC: //b gt Z==0 and N == V
         DO_DISS(statusMsg << "bgt 0x" << Base::HEX8 << (rb-3) << endl);
         ra = 0;
-        if(  (cpsr & CPSR_N)  &&   (cpsr & CPSR_V) ) ra++;
-        if((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))) ra++;
+        if(  (cpsr & CPSR_N)  &&   (cpsr & CPSR_V) ) ++ra;
+        if((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))) ++ra;
         if(cpsr & CPSR_Z) ra = 0;
         if(ra)
           write_register(15, rb);
@@ -937,9 +937,9 @@ int Thumbulator::execute()
       case 0xD: //b le Z==1 or N != V
         DO_DISS(statusMsg << "ble 0x" << Base::HEX8 << (rb-3) << endl);
         ra = 0;
-        if((!(cpsr & CPSR_N)) && (cpsr & CPSR_V)) ra++;
-        if((!(cpsr & CPSR_V)) && (cpsr & CPSR_N)) ra++;
-        if(cpsr & CPSR_Z) ra++;
+        if((!(cpsr & CPSR_N)) && (cpsr & CPSR_V)) ++ra;
+        if((!(cpsr & CPSR_V)) && (cpsr & CPSR_N)) ++ra;
+        if(cpsr & CPSR_Z) ++ra;
         if(ra)
           write_register(15, rb);
         return 0;
@@ -1394,7 +1394,7 @@ int Thumbulator::execute()
     rn = (inst >> 8) & 0x7;
   #if defined(THUMB_DISS)
     statusMsg << "ldmia r" << dec << rn << "!,{";
-    for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,ra++)
+    for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
     {
       if(inst&rb)
       {
@@ -1406,7 +1406,7 @@ int Thumbulator::execute()
     statusMsg << "}" << endl;
   #endif
     sp = read_register(rn);
-    for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ra++)
+    for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
     {
       if(inst & rb)
       {
@@ -1816,7 +1816,7 @@ int Thumbulator::execute()
   {
   #if defined(THUMB_DISS)
     statusMsg << "pop {";
-    for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,ra++)
+    for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
     {
       if(inst&rb)
       {
@@ -1834,7 +1834,7 @@ int Thumbulator::execute()
   #endif
 
     sp = read_register(13);
-    for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ra++)
+    for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
     {
       if(inst & rb)
       {
@@ -1858,7 +1858,7 @@ int Thumbulator::execute()
   {
   #if defined(THUMB_DISS)
     statusMsg << "push {";
-    for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,ra++)
+    for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
     {
       if(inst&rb)
       {
@@ -1877,18 +1877,18 @@ int Thumbulator::execute()
 
     sp = read_register(13);
     //fprintf(stderr,"sp 0x%08X\n",sp);
-    for(ra = 0, rb = 0x01, rc = 0; rb; rb = (rb << 1) & 0xFF, ra++)
+    for(ra = 0, rb = 0x01, rc = 0; rb; rb = (rb << 1) & 0xFF, ++ra)
     {
       if(inst & rb)
       {
-        rc++;
+        ++rc;
       }
     }
-    if(inst & 0x100) rc++;
+    if(inst & 0x100) ++rc;
     rc <<= 2;
     sp -= rc;
     rd = sp;
-    for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ra++)
+    for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
     {
       if(inst & rb)
       {
@@ -1996,7 +1996,7 @@ int Thumbulator::execute()
     ra = read_register(rd);
     rb = read_register(rm);
     rc = ra - rb;
-    if(!(cpsr & CPSR_C)) rc--;
+    if(!(cpsr & CPSR_C)) --rc;
     write_register(rd, rc);
     do_nflag(rc);
     do_zflag(rc);
@@ -2026,7 +2026,7 @@ int Thumbulator::execute()
     rn = (inst >> 8) & 0x7;
   #if defined(THUMB_DISS)
     statusMsg << "stmia r" << dec << rn << "!,{";
-    for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,ra++)
+    for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
     {
       if(inst & rb)
       {
@@ -2039,7 +2039,7 @@ int Thumbulator::execute()
   #endif
 
     sp = read_register(rn);
-    for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ra++)
+    for(ra = 0, rb = 0x01; rb; rb = (rb << 1) & 0xFF, ++ra)
     {
       if(inst & rb)
       {

@@ -144,7 +144,7 @@ void TIA::reset()
   myHstate = HState::blank;
   myCollisionMask = 0;
   myLinesSinceChange = 0;
-  myCollisionUpdateRequired = false;
+  myCollisionUpdateRequired = myCollisionUpdateScheduled = false;
   myColorLossEnabled = myColorLossActive = false;
   myColorHBlank = 0;
   myLastCycle = 0;
@@ -178,7 +178,7 @@ void TIA::reset()
   if (myFrameManager)
   {
     myFrameManager->reset();
-    frameReset();  // Recalculate the size of the display
+    enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
   }
 
   myFrontBufferScanlines = myFrameBufferScanlines = 0;
@@ -189,18 +189,14 @@ void TIA::reset()
   enableFixedColors(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.debugcolors" : "plr.debugcolors"));
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
 
-#ifdef DEBUGGER_SUPPORT
-  createAccessBase();
-#endif // DEBUGGER_SUPPORT
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::frameReset()
-{
+  // Blank the various framebuffers; they may contain graphical garbage
   memset(myBackBuffer, 0, 160 * TIAConstants::frameBufferHeight);
   memset(myFrontBuffer, 0, 160 * TIAConstants::frameBufferHeight);
   memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
-  enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
+
+#ifdef DEBUGGER_SUPPORT
+  createAccessBase();
+#endif // DEBUGGER_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -237,8 +233,6 @@ bool TIA::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     if(!myDelayQueue.save(out))   return false;
     if(!myFrameManager->save(out)) return false;
 
@@ -308,9 +302,6 @@ bool TIA::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     if(!myDelayQueue.load(in))   return false;
     if(!myFrameManager->load(in)) return false;
 
@@ -410,7 +401,7 @@ void TIA::bindToControllers()
     }
   );
 
-  for (uInt8 i = 0; i < 4; i++)
+  for (uInt8 i = 0; i < 4; ++i)
     updatePaddle(i);
 }
 
@@ -1205,7 +1196,7 @@ void TIA::onFrameComplete()
 
   myFrontBufferScanlines = scanlinesLastFrame();
 
-  myFramesSinceLastRender++;
+  ++myFramesSinceLastRender;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1219,7 +1210,7 @@ void TIA::onHalt()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::cycle(uInt32 colorClocks)
 {
-  for (uInt32 i = 0; i < colorClocks; i++)
+  for (uInt32 i = 0; i < colorClocks; ++i)
   {
     myDelayQueue.execute(
       [this] (uInt8 address, uInt8 value) {delayedWrite(address, value);}
@@ -1242,9 +1233,11 @@ void TIA::cycle(uInt32 colorClocks)
     if (++myHctr >= 228)
       nextLine();
 
-    myAudio.tick();
+    #ifdef SOUND_SUPPORT
+      myAudio.tick();
+    #endif
 
-    myTimestamp++;
+    ++myTimestamp;
   }
 }
 
@@ -1267,7 +1260,7 @@ void TIA::tickMovement()
     myMovementInProgress = m;
     myCollisionUpdateRequired = m;
 
-    myMovementClock++;
+    ++myMovementClock;
   }
 }
 
@@ -1331,7 +1324,7 @@ void TIA::nextLine()
 
   myHctr = 0;
 
-  if (!myMovementInProgress && myLinesSinceChange < 2) myLinesSinceChange++;
+  if (!myMovementInProgress && myLinesSinceChange < 2) ++myLinesSinceChange;
 
   myHstate = HState::blank;
   myHctrDelta = 0;
@@ -1448,7 +1441,7 @@ void TIA::flushLineCache()
   if (wasCaching) {
     const auto rewindCycles = myHctr;
 
-    for (myHctr = 0; myHctr < rewindCycles; myHctr++) {
+    for (myHctr = 0; myHctr < rewindCycles; ++myHctr) {
       if (myHstate == HState::blank)
         tickHblank();
       else

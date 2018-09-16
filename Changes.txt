@@ -17,16 +17,19 @@
   * Note: because of major TIA sound changes, the state file format has
           changed, and old state files will not work with this release.
 
-  * New cycle exact audio core based on work by Chris Brenner (crispy); greatly
-    improved audio emulation accuracy (i.e. E.T., Ms. Pacman).
+  * New cycle exact audio core based on work by Chris Brenner (crispy);
+    greatly improved audio emulation accuracy (i.e. E.T., Ms. Pacman).
 
-  * Full rewrite of the audio subsystem; resample TIA output to target sample
-    rate directly in Stella.
+  * Full rewrite of the audio subsystem; resample TIA output to target
+    sample rate directly in Stella.
+
+  * Added option to force stereo sound for all ROMs, or to use the
+    setting on a per-ROM basis.
 
   * Threading: decouple emulation from frame rendering.
 
-  * Main loop rewritten; emulating speed and timing is now much more faithful
-    (i.e. speed in Pick'n'Pile).
+  * Main loop rewritten; emulating speed and timing is now much more
+    faithful (i.e. speed in Pick'n'Pile).
 
   * Audio settings replaced with new 'audio.xxx' settings.
 
@@ -40,17 +43,33 @@
   * UI modernization (new widget look, dialog titles added, dialogs
     refactored).
 
-  * Fixed excessive CPU usage while in UI modes (ROM launcher, debugger, etc).
+  * Fixed excessive CPU usage while in UI modes (ROM launcher, debugger,
+    etc).
+
+  * The bankswitch scheme can now be forced by naming the ROM with a
+    specific extension (ie: .f8s for F8SC, .fe for FE, etc).  The
+    supported extensions are the same as the ones from HarmonyCart and
+    UnoCart.
+
+  * The 'launcherexts' option has been replaced by a true/false option
+    named 'launcherroms', which specifies to show only ROMs or all files
+    in the ROM launcher.
 
   * Changes in 'Game Properties' dialog
-    - 'Default' button now affects only current tab like in all other dialogs.
-    - 'Display' tab changes are now immediate.
+    - 'Default' button now affects only current tab like in all other
+      dialogs.
+    - 'Display' and 'Console' tab changes are now immediate.
     - Fixed bug when selecting 'Auto-detect' format for 50Hz ROMs
 
   * Fixed bug in autodetecting Genesis controllers.
 
-  * The Linux builds now use the system-installed PNG and ZLIB libraries
-    by default.
+  * Fixed bug in reading from settings file with entries that were empty;
+    the parsing was failing.  This affected the 'cpurandom' argument; when
+    all options in it were turned off, they were all turned on again during
+    the next program run.
+
+  * Fixed bug with 'hold' events; they are now released a short time after
+    starting a ROM.
 
   * When starting Stella for the first time, the first ROM selected will
     determine which path to use by default for subsequent runs.
@@ -61,15 +80,40 @@
   * Fixed missing TV format update in frame stats dialog when switching
     display type.
 
-  * For UNIX systems: in the ROM launcher, when using symlinks use the
-    symlink pathname instead of the underlying filesystem pathname.
+  * Fixed missing debug color update when switching display type.
+
+  * 'Fill to scanline' now works for scanlines above current scanline too.
+
+  * The debugger 'uhex' command is now honoured in CDF and BUS schemes.
+
+  * When switching screenmodes, the sound is now paused and later resumed.
+    This fixes popping and cracking sounds apparent on some systems, notably
+    OSX when toggling windowed/fullscreen mode.
+
+  * State file format has been optimized to be smaller, and faster loading
+    and saving.  This affects both the files saved to your computer as well
+    as Time Machine functionality.
+
+  * The ROM name saved in a PNG tEXt chunk now honours the 'snapname'
+    setting.
 
   * Updated PAL palette.
 
-  * Updated included PNG library to latest stable version.
+  * Added 'Cartridge.StartBank' ROM property, to force a ROM to use a
+    specific bank for its reset vector.
 
-  * For better compatibility, the Windows 32-bit version does not requires SSE2
-    anymore.
+  * Added recently released 'Arkyology' prototype ROM to the database.
+
+  * For UNIX systems: in the ROM launcher, when using symlinks use the
+    symlink pathname instead of the underlying filesystem pathname.
+
+  * The UNIX builds now use the system-installed PNG and ZLIB libraries
+    by default.
+
+  * For better compatibility, the Windows 32-bit version does not require
+    SSE2 anymore.
+
+  * Updated included PNG library to latest stable version.
 
 -Have fun!
 

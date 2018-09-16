@@ -143,18 +143,15 @@ void Dialog::setTitle(const string& title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::center()
 {
-  if(_surface)
-  {
-    const GUI::Size& screen = instance().frameBuffer().screenSize();
-    const GUI::Rect& dst = _surface->dstRect();
-    _surface->setDstPos((screen.w - dst.width()) >> 1, (screen.h - dst.height()) >> 1);
-  }
+  const GUI::Size& screen = instance().frameBuffer().screenSize();
+  const GUI::Rect& dst = _surface->dstRect();
+  _surface->setDstPos((screen.w - dst.width()) >> 1, (screen.h - dst.height()) >> 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::render()
 {
-  if(!_dirty)
+  if(!_dirty || !isVisible())
     return false;
 
   // Draw this dialog
@@ -321,7 +318,6 @@ void Dialog::addSurface(shared_ptr<FBSurface> surface)
   mySurfaceStack.push(surface);
 }
 
-static int COUNT = 1;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::drawDialog()
 {
@@ -330,7 +326,6 @@ void Dialog::drawDialog()
 
   FBSurface& s = surface();
 
-cerr << COUNT++ << " Dialog::drawDialog()\n";
   // Dialog is still on top if e.g a ContextMenu is opened
   _onTop = parent().myDialogStack.top() == this
     || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
@@ -803,28 +798,20 @@ Widget* Dialog::TabFocus::getNewFocus()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::getResizableBounds(uInt32& w, uInt32& h) const
+bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
 {
   const GUI::Rect& r = instance().frameBuffer().imageRect();
-  bool ntsc = true;
-
-  if(instance().hasConsole())
-  {
-    ntsc = instance().console().tia().frameLayout() == FrameLayout::ntsc;
-  }
-
-  uInt32 aspect = instance().settings().getInt(ntsc ?"tia.aspectn" : "tia.aspectp");
 
   if(r.width() <= FrameBuffer::kFBMinW || r.height() <= FrameBuffer::kFBMinH)
   {
-    w = uInt32(aspect * FrameBuffer::kTIAMinW) * 2 / 100;
-    h = FrameBuffer::kTIAMinH * 2;
+    w = r.width();
+    h = r.height();
     return false;
   }
   else
   {
-    w = std::max(uInt32(aspect * r.width() / 100), uInt32(FrameBuffer::kFBMinW));
-    h = std::max(uInt32(aspect * r.height() / 100), uInt32(FrameBuffer::kFBMinH));
+    w = uInt32(0.95 * r.width());
+    h = uInt32(0.95 * r.height());
     return true;
   }
 }

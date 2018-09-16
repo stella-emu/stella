@@ -27,6 +27,7 @@
 CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
                                    const Settings& settings)
   : Cartridge(settings),
+    mySize(std::min(size, 32768u)),
     myFastFetch(false),
     myLDAimmediate(false),
     myParameterPointer(0),
@@ -37,7 +38,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
 {
   // Image is always 32K, but in the case of ROM > 29K, the image is
   // copied to the end of the buffer
-  mySize = std::min(size, 32768u);
   if(mySize < 32768u)
     memset(myImage, 0, 32768);
   memcpy(myImage + (32768u - mySize), image.get(), size);
@@ -53,7 +53,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
   myFrequencyImage = myDisplayImage + 0x1000;
 
   // Create Thumbulator ARM emulator
-  const string& prefix = settings.getBool("dev.settings") ? "plr." : "dev.";
+  const string& prefix = settings.getBool("dev.settings") ? "dev." : "plr.";
   myThumbEmulator = make_unique<Thumbulator>
       (reinterpret_cast<uInt16*>(myImage),
        reinterpret_cast<uInt16*>(myDPCRAM),
@@ -62,9 +62,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
        this);
 
   setInitialState();
-
-  // DPC+ always starts in bank 5
-  myStartBank = 5;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,8 +72,11 @@ void CartridgeDPCPlus::reset()
 
   setInitialState();
 
+  // DPC+ always starts in bank 5
+  initializeStartBank(5);
+
   // Upon reset we switch to the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,8 +90,11 @@ void CartridgeDPCPlus::setInitialState()
 
   // Initialize the DPC data fetcher registers
   for(int i = 0; i < 8; ++i)
-    myTops[i] = myBottoms[i] = myCounters[i] = myFractionalIncrements[i] =
+  {
+    myTops[i] = myBottoms[i] = myFractionalIncrements[i] = 0;
     myFractionalCounters[i] = 0;
+    myCounters[i] = 0;
+  }
 
   // Set waveforms to first waveform entry
   myMusicWaveforms[0] = myMusicWaveforms[1] = myMusicWaveforms[2] = 0;
@@ -117,7 +120,7 @@ void CartridgeDPCPlus::install(System& system)
     mySystem->setPageAccess(addr, access);
 
   // Install pages for the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -630,8 +633,6 @@ bool CartridgeDPCPlus::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     // Indicates which bank is currently active
     out.putShort(myBankOffset);
 
@@ -693,9 +694,6 @@ bool CartridgeDPCPlus::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     // Indicates which bank is currently active
     myBankOffset = in.getShort();
 

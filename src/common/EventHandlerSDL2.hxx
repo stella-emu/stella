@@ -35,7 +35,7 @@ class EventHandlerSDL2 : public EventHandler
     /**
       Create a new SDL2 event handler object
     */
-    EventHandlerSDL2(OSystem& osystem);
+    explicit EventHandlerSDL2(OSystem& osystem);
     virtual ~EventHandlerSDL2() = default;
 
   private:
@@ -57,7 +57,7 @@ class EventHandlerSDL2 : public EventHandler
     class JoystickSDL2 : public PhysicalJoystick
     {
       public:
-        JoystickSDL2(int idx);
+        explicit JoystickSDL2(int idx);
         virtual ~JoystickSDL2();
 
       private:

@@ -27,27 +27,15 @@ CartridgeF8::CartridgeF8(const BytePtr& image, uInt32 size, const string& md5,
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(8192u, size));
   createCodeAccessBase(8192);
-
-  // Normally bank 1 is the reset bank, unless we're dealing with ROMs
-  // that have been incorrectly created with banks in the opposite order
-  myStartBank =
-    (md5 == "bc24440b59092559a1ec26055fd1270e" ||  // Private Eye [a]
-     md5 == "75ea60884c05ba496473c23a58edf12f" ||  // 8-in-1 Yars Revenge
-     md5 == "75ee371ccfc4f43e7d9b8f24e1266b55" ||  // Snow White
-     md5 == "74c8a6f20f8adaa7e05183f796eda796" ||  // Tricade Demo
-     md5 == "9905f9f4706223dadee84f6867ede8e3" ||  // Challenge
-     md5 == "3c7a7b3a0a7e6319b2fa0f923ef6c9af")    // Racer Prototype
-    ? 0 : 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8::reset()
 {
-  // define random startup bank
-  randomizeStartBank();
+  initializeStartBank(1);
 
   // Upon reset we switch to the reset bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,7 +44,7 @@ void CartridgeF8::install(System& system)
   mySystem = &system;
 
   // Install pages for the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,7 +156,6 @@ bool CartridgeF8::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
   }
   catch(...)
@@ -185,9 +172,6 @@ bool CartridgeF8::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
   }
   catch(...)

@@ -37,7 +37,7 @@ class SoundNull : public Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundNull(OSystem& osystem) : Sound(osystem)
+    explicit SoundNull(OSystem& osystem) : Sound(osystem)
     {
       myOSystem.logMessage("Sound disabled.\n", 1);
     }
@@ -71,23 +71,10 @@ class SoundNull : public Sound
       Set the mute state of the sound object.  While muted no sound is played.
 
       @param state Mutes sound if true, unmute if false
-    */
-    void mute(bool state) override { }
 
-    /**
-      Get the fragment size.
+      @return  The previous (old) mute state
     */
-    uInt32 getFragmentSize() const override { return 512; }
-
-    /**
-      Get the sample rate.
-    */
-    uInt32 getSampleRate() const override { return 31400; }
-
-    /**
-      Reset the sound device.
-    */
-    void reset() override { }
+    bool mute(bool state) override { return true; }
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -105,6 +92,11 @@ class SoundNull : public Sound
                         amount based on the direction (1 = increase, -1 =decrease)
     */
     void adjustVolume(Int8 direction) override { }
+
+    /**
+      This method is called to provide information about the sound device.
+    */
+    string about() const override { return "Sound disabled"; }
 
   private:
     // Following constructors and assignment operators not supported

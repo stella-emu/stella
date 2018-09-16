@@ -30,7 +30,7 @@ CartridgeEFWidget::CartridgeEFWidget(
 
   ostringstream info;
   info << "64K H. Runner EF cartridge, 16 4K banks\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+       << "Startup bank = " << cart.startBank() << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0xFE0; i < 16; ++i, offset += 0x1000)

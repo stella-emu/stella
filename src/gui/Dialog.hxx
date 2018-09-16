@@ -97,10 +97,23 @@ class Dialog : public GuiObject
     void setTitle(const string& title);
     bool hasTitle() { return !_title.empty(); }
 
-    /** Determine the maximum bounds based on the given width and height
-        Returns whether or not a large font can be used within these bounds.
+    /**
+      Determine the maximum width/height of a dialog based on the minimum
+      allowable bounds, also taking into account the current window size.
+      Currently scales the width/height to 90% of allowable area when possible.
+
+      NOTE: This method is meant to be used for dynamic, resizeable dialogs.
+            That is, those that can change size during a program run, and
+            *have* to take the current window size into account.
+
+      @param w  The resulting width to use for the dialog
+      @param h  The resulting height to use for the dialog
+
+      @return  True if the dialog fits in the current window (scaled to 90%)
+               False if the dialog is smaller than the current window, and
+               has to be scaled down
     */
-    bool getResizableBounds(uInt32& w, uInt32& h) const;
+    bool getDynamicBounds(uInt32& w, uInt32& h) const;
 
   protected:
     virtual void draw() override { }
@@ -165,7 +178,7 @@ class Dialog : public GuiObject
       Widget* widget;
       WidgetArray list;
 
-      Focus(Widget* w = nullptr) : widget(w) { }
+      explicit Focus(Widget* w = nullptr) : widget(w) { }
       virtual ~Focus() = default;
 
       Focus(const Focus&) = default;
@@ -178,7 +191,7 @@ class Dialog : public GuiObject
       FocusList focus;
       uInt32 currentTab;
 
-      TabFocus(TabWidget* w = nullptr) : widget(w), currentTab(0) { }
+      explicit TabFocus(TabWidget* w = nullptr) : widget(w), currentTab(0) { }
       virtual ~TabFocus() = default;
 
       TabFocus(const TabFocus&) = default;

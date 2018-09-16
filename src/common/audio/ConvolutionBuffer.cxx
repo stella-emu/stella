@@ -38,7 +38,7 @@ float ConvolutionBuffer::convoluteWith(float* kernel) const
 {
   float result = 0.;
 
-  for (uInt32 i = 0; i < mySize; i++) {
+  for (uInt32 i = 0; i < mySize; ++i) {
     result += kernel[i] * myData[(myFirstIndex + i) % mySize];
   }
 

@@ -52,6 +52,7 @@
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
 #include "Serializable.hxx"
+#include "Serializer.hxx"
 #include "Version.hxx"
 #include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
@@ -85,6 +86,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myDisplayFormat(""),  // Unknown TV format @ start
     myCurrentFormat(0),   // Unknown format @ start,
     myAutodetectedYstart(0),
+    myYStartAutodetected(false),
     myUserPaletteDefined(false),
     myConsoleTiming(ConsoleTiming::ntsc),
     myAudioSettings(audioSettings)
@@ -110,6 +112,12 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // controllers such as the AVox and SaveKey
   myLeftControl  = make_unique<Joystick>(Controller::Left, myEvent, *mySystem);
   myRightControl = make_unique<Joystick>(Controller::Right, myEvent, *mySystem);
+
+  // Let the cart know how to query for the 'Cartridge.StartBank' property
+  myCart->setStartBankFromPropsFunc([this]() {
+    const string& startbank = myProperties.get(Cartridge_StartBank);
+    return startbank == EmptyString ? -1 : atoi(startbank.c_str());
+  });
 
   // We can only initialize after all the devices/components have been created
   mySystem->initialize();
@@ -214,7 +222,7 @@ Console::~Console()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::autodetectFrameLayout()
+void Console::autodetectFrameLayout(bool reset)
 {
   // Run the TIA, looking for PAL scanline patterns
   // We turn off the SuperCharger progress bars, otherwise the SC BIOS
@@ -225,7 +233,8 @@ void Console::autodetectFrameLayout()
 
   FrameLayoutDetector frameLayoutDetector;
   myTIA->setFrameManager(&frameLayoutDetector);
-  mySystem->reset(true);
+
+  if (reset) mySystem->reset(true);
 
   for(int i = 0; i < 60; ++i) myTIA->update();
 
@@ -238,7 +247,22 @@ void Console::autodetectFrameLayout()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::autodetectYStart()
+void Console::redetectFrameLayout()
+{
+  Serializer s;
+
+  myOSystem.sound().close();
+  save(s);
+
+  autodetectFrameLayout(false);
+  if (myYStartAutodetected) autodetectYStart();
+
+  load(s);
+  initializeAudio();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::autodetectYStart(bool reset)
 {
   // We turn off the SuperCharger progress bars, otherwise the SC BIOS
   // will take over 250 frames!
@@ -249,7 +273,8 @@ void Console::autodetectYStart()
   YStartDetector ystartDetector;
   ystartDetector.setLayout(myDisplayFormat == "PAL" ? FrameLayout::pal : FrameLayout::ntsc);
   myTIA->setFrameManager(&ystartDetector);
-  mySystem->reset(true);
+
+  if (reset) mySystem->reset(true);
 
   for (int i = 0; i < 80; i++) myTIA->update();
 
@@ -259,6 +284,22 @@ void Console::autodetectYStart()
 
   // Don't forget to reset the SC progress bars again
   myOSystem.settings().setValue("fastscbios", fastscbios);
+
+  myYStartAutodetected = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::redetectYStart()
+{
+  Serializer s;
+
+  myOSystem.sound().close();
+  save(s);
+
+  autodetectYStart(false);
+
+  load(s);
+  initializeAudio();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -337,7 +378,7 @@ void Console::setFormat(uInt32 format)
     case 0:  // auto-detect
     {
       string oldDisplayFormat = myDisplayFormat;
-      autodetectFrameLayout();
+      redetectFrameLayout();
       myTIA->update();
       reset = oldDisplayFormat != myDisplayFormat;
       saveformat = "AUTO";
@@ -385,8 +426,7 @@ void Console::setFormat(uInt32 format)
   {
     setPalette(myOSystem.settings().getString("palette"));
     setTIAProperties();
-    myTIA->frameReset();
-    initializeVideo();  // takes care of refreshing the screen
+    initializeVideo(); // takes care of refreshing the screen
     initializeAudio(); // ensure that audio synthesis is set up to match emulation speed
     myOSystem.resetFps(); // Reset FPS measurement
   }
@@ -589,15 +629,11 @@ void Console::initializeAudio()
   myOSystem.sound().close();
 
   myEmulationTiming
-    .updatePlaybackRate(myOSystem.sound().getSampleRate())
-    .updatePlaybackPeriod(myOSystem.sound().getFragmentSize())
+    .updatePlaybackRate(myAudioSettings.sampleRate())
+    .updatePlaybackPeriod(myAudioSettings.fragmentSize())
     .updateAudioQueueExtraFragments(myAudioSettings.bufferSize())
     .updateAudioQueueHeadroom(myAudioSettings.headroom())
     .updateSpeedFactor(myOSystem.settings().getFloat("speed"));
-
-  (cout << "sample rate: " << myOSystem.sound().getSampleRate() << std::endl).flush();
-  (cout << "fragment size: " << myOSystem.sound().getFragmentSize() << std::endl).flush();
-  (cout << "prebuffer fragment count: " << myEmulationTiming.prebufferFragmentCount() << std::endl).flush();
 
   createAudioQueue();
   myTIA->setAudioQueue(myAudioQueue);
@@ -643,30 +679,31 @@ void Console::changeYStart(int direction)
       myOSystem.frameBuffer().showMessage("YStart at maximum");
       return;
     }
-    ystart++;
+
+    ++ystart;
+    myYStartAutodetected = false;
   }
   else if(direction == -1)  // decrease YStart
   {
-    if (ystart == TIAConstants::minYStart && myAutodetectedYstart == 0) {
-      myOSystem.frameBuffer().showMessage("Autodetected YStart not available");
-      return;
-    }
-
-    if(ystart == TIAConstants::minYStart-1 && myAutodetectedYstart > 0)
+    if(ystart == 0)
     {
-      myOSystem.frameBuffer().showMessage("YStart at minimum");
-      return;
+      throw runtime_error("cannot happen");
     }
 
-    ystart--;
+    --ystart;
+    myYStartAutodetected = false;
   }
   else
     return;
 
   ostringstream val;
   val << ystart;
-  if(ystart == TIAConstants::minYStart-1)
+  if(ystart == 0) {
+    redetectYStart();
+    ystart = myAutodetectedYstart;
+
     myOSystem.frameBuffer().showMessage("YStart autodetected");
+  }
   else
   {
     if(myAutodetectedYstart > 0 && myAutodetectedYstart == ystart)
@@ -674,15 +711,37 @@ void Console::changeYStart(int direction)
       // We've reached the auto-detect value, so reset
       myOSystem.frameBuffer().showMessage("YStart " + val.str() + " (Auto)");
       val.str("");
-      val << TIAConstants::minYStart-1;
+      val << static_cast<int>(0);
     }
     else
       myOSystem.frameBuffer().showMessage("YStart " + val.str());
+
+    myYStartAutodetected = false;
   }
 
   myProperties.set(Display_YStart, val.str());
   myTIA->setYStart(ystart);
-  myTIA->frameReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::updateYStart(uInt32 ystart)
+{
+  if (ystart > TIAConstants::maxYStart) return;
+
+  ostringstream ss;
+  ss << ystart;
+
+  if (ss.str() == myProperties.get(Display_YStart)) return;
+
+  myProperties.set(Display_YStart, ss.str());
+
+  if (ystart == 0) {
+    redetectYStart();
+    myTIA->setYStart(myAutodetectedYstart);
+  } else {
+    myTIA->setYStart(ystart);
+    myYStartAutodetected = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -693,7 +752,7 @@ void Console::changeHeight(int direction)
 
   if(direction == +1)       // increase Height
   {
-    height++;
+    ++height;
     if(height > TIAConstants::maxViewableHeight || height > dheight)
     {
       myOSystem.frameBuffer().showMessage("Height at maximum");
@@ -702,14 +761,13 @@ void Console::changeHeight(int direction)
   }
   else if(direction == -1)  // decrease Height
   {
-    height--;
+    --height;
     if(height < TIAConstants::minViewableHeight) height = 0;
   }
   else
     return;
 
   myTIA->setHeight(height);
-  myTIA->frameReset();
   initializeVideo();  // takes care of refreshing the screen
 
   ostringstream val;
@@ -723,7 +781,7 @@ void Console::setTIAProperties()
 {
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
   if(ystart != 0)
-    ystart = BSPF::clamp(ystart, TIAConstants::minYStart, TIAConstants::maxYStart);
+    ystart = BSPF::clamp(ystart, 0u, TIAConstants::maxYStart);
   uInt32 height = atoi(myProperties.get(Display_Height).c_str());
   if(height != 0)
     height = BSPF::clamp(height, TIAConstants::minViewableHeight, TIAConstants::maxViewableHeight);
@@ -743,7 +801,7 @@ void Console::setTIAProperties()
     myTIA->setLayout(FrameLayout::pal);
   }
 
-  myTIA->setYStart(ystart != 0 ? ystart : myAutodetectedYstart);
+  myTIA->setYStart(myAutodetectedYstart ? myAutodetectedYstart : ystart);
   myTIA->setHeight(height);
 
   myEmulationTiming.updateFrameLayout(myTIA->frameLayout());
@@ -753,10 +811,17 @@ void Console::setTIAProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::createAudioQueue()
 {
+  const string& stereo = myOSystem.settings().getString(AudioSettings::SETTING_STEREO);
+  bool useStereo = false;
+  if(BSPF::equalsIgnoreCase(stereo, "byrom"))
+    useStereo = myProperties.get(Cartridge_Sound) == "STEREO";
+  else
+    useStereo = BSPF::equalsIgnoreCase(stereo, "stereo");
+
   myAudioQueue = make_shared<AudioQueue>(
     myEmulationTiming.audioFragmentSize(),
     myEmulationTiming.audioQueueCapacity(),
-    myProperties.get(Cartridge_Sound) == "STEREO"
+    useStereo
   );
 }
 
@@ -981,7 +1046,8 @@ void Console::generateColorLossPalette()
 float Console::getFramerate() const
 {
   return
-    (myConsoleTiming == ConsoleTiming::ntsc ? 262. * 60. : 312. * 50.) / myTIA->frameBufferScanlinesLastFrame();
+    (myConsoleTiming == ConsoleTiming::ntsc ? 262.f * 60.f : 312.f * 50.f) /
+     myTIA->frameBufferScanlinesLastFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -63,7 +63,7 @@ void AudioChannel::phase0()
 
       default:
         myNoiseFeedback =
-          ((myNoiseCounter & 0x04 ? 1 : 0) ^ (myNoiseCounter & 0x01)) ||
+          (((myNoiseCounter & 0x04) ? 1 : 0) ^ (myNoiseCounter & 0x01)) ||
           myNoiseCounter == 0;
 
       break;
@@ -75,20 +75,19 @@ void AudioChannel::phase0()
   if (myDivCounter == myAudf || myDivCounter == 0x1f) {
     myDivCounter = 0;
   } else {
-    myDivCounter++;
+    ++myDivCounter;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 AudioChannel::phase1()
 {
-  bool pulseFeedback = false;
-
   if (myClockEnable) {
+    bool pulseFeedback = false;
     switch (myAudc >> 2) {
       case 0x00:
         pulseFeedback =
-          ((myPulseCounter & 0x02 ? 1 : 0) ^ (myPulseCounter & 0x01)) &&
+          (((myPulseCounter & 0x02) ? 1 : 0) ^ (myPulseCounter & 0x01)) &&
           (myPulseCounter != 0x0a) &&
           (myAudc & 0x03);
 
@@ -143,18 +142,10 @@ void AudioChannel::audf(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string AudioChannel::name() const
-{
-  return "TIA_AudioChannel";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AudioChannel::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putInt(myAudc);
     out.putInt(myAudv);
     out.putInt(myAudf);
@@ -182,8 +173,6 @@ bool AudioChannel::load(Serializer& in)
 {
   try
   {
-    if (in.getString() != name()) return false;
-
     myAudc = in.getInt();
     myAudv = in.getInt();
     myAudf = in.getInt();

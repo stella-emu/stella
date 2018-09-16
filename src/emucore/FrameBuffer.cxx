@@ -32,6 +32,7 @@
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "TIA.hxx"
+#include "Sound.hxx"
 
 #include "FBSurface.hxx"
 #include "TIASurface.hxx"
@@ -131,22 +132,7 @@ bool FrameBuffer::initialize()
     VarList::push_back(myTIAZoomLevels, desc.str(), zoom);
   }
 
-  // Set palette for GUI (upper area of array, doesn't change during execution)
-  int palID = 0;
-  if(myOSystem.settings().getString("uipalette") == "classic")
-    palID = 1;
-  else if(myOSystem.settings().getString("uipalette") == "light")
-    palID = 2;
-
-  for(uInt32 i = 0, j = 256; i < kNumColors-256; ++i, ++j)
-  {
-    uInt8 r = (ourGUIColors[palID][i] >> 16) & 0xff;
-    uInt8 g = (ourGUIColors[palID][i] >> 8) & 0xff;
-    uInt8 b = ourGUIColors[palID][i] & 0xff;
-
-    myPalette[j] = mapRGB(r, g, b);
-  }
-  FBSurface::setPalette(myPalette);
+  setUIPalette();
 
   myGrabMouse = myOSystem.settings().getBool("grabmouse");
 
@@ -157,10 +143,31 @@ bool FrameBuffer::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setUIPalette()
+{
+  // Set palette for GUI (upper area of array)
+  int palID = 0;
+  if(myOSystem.settings().getString("uipalette") == "classic")
+    palID = 1;
+  else if(myOSystem.settings().getString("uipalette") == "light")
+    palID = 2;
+
+  for(uInt32 i = 0, j = 256; i < kNumColors - 256; ++i, ++j)
+  {
+    uInt8 r = (ourGUIColors[palID][i] >> 16) & 0xff;
+    uInt8 g = (ourGUIColors[palID][i] >> 8) & 0xff;
+    uInt8 b = ourGUIColors[palID][i] & 0xff;
+
+    myPalette[j] = mapRGB(r, g, b);
+  }
+  FBSurface::setPalette(myPalette);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::createDisplay(const string& title,
                                         uInt32 width, uInt32 height)
 {
-  myInitializedCount++;
+  ++myInitializedCount;
   myScreenTitle = title;
 
   // A 'windowed' system is defined as one where the window size can be
@@ -200,6 +207,10 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   const VideoMode& mode = getSavedVidMode(useFullscreen);
   if(width <= mode.screen.w && height <= mode.screen.h)
   {
+    // Changing the video mode can take some time, during which the last
+    // sound played may get 'stuck'
+    // So we mute the sound until the operation completes
+    bool oldMuteState = myOSystem.sound().mute(true);
     if(setVideoMode(myScreenTitle, mode))
     {
       myImageRect = mode.image;
@@ -214,6 +225,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
       myOSystem.settings().setValue("fullscreen", fullScreen());
       resetSurfaces();
       setCursorState();
+
+      myOSystem.sound().mute(oldMuteState);
     }
     else
     {
@@ -646,6 +659,27 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
+  // Switching between fullscreen and windowed modes will invariably mean
+  // that the 'window' resolution changes.  Currently, dialogs are not
+  // able to resize themselves when they are actively being shown
+  // (they would have to be closed and then re-opened, etc).
+  // For now, we simply disallow screen switches in such modes
+  switch(myOSystem.eventHandler().state())
+  {
+    case EventHandlerState::EMULATION:
+    case EventHandlerState::LAUNCHER:
+    case EventHandlerState::DEBUGGER:
+    case EventHandlerState::PAUSE:
+      break; // continue with processing (aka, allow a mode switch)
+    default:
+      return;
+  }
+
+  // Changing the video mode can take some time, during which the last
+  // sound played may get 'stuck'
+  // So we mute the sound until the operation completes
+  bool oldMuteState = myOSystem.sound().mute(true);
+
   const VideoMode& mode = getSavedVidMode(enable);
   if(setVideoMode(myScreenTitle, mode))
   {
@@ -662,6 +696,7 @@ void FrameBuffer::setFullscreen(bool enable)
     resetSurfaces();
     setCursorState();
   }
+  myOSystem.sound().mute(oldMuteState);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -689,6 +724,11 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
   else
     return false;
 
+  // Changing the video mode can take some time, during which the last
+  // sound played may get 'stuck'
+  // So we mute the sound until the operation completes
+  bool oldMuteState = myOSystem.sound().mute(true);
+
   const VideoMode& mode = myCurrentModeList->current();
   if(setVideoMode(myScreenTitle, mode))
   {
@@ -701,8 +741,10 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
     resetSurfaces();
     showMessage(mode.description);
     myOSystem.settings().setValue("tia.zoom", mode.zoom);
+    myOSystem.sound().mute(oldMuteState);
     return true;
   }
+  myOSystem.sound().mute(oldMuteState);
 #endif
   return false;
 }
@@ -790,8 +832,8 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
                      myDesktopSize.w, myDesktopSize.h);
 
     // Aspect ratio
-    uInt32 aspect = myOSystem.settings().getInt(myOSystem.console().timing() == ConsoleTiming::ntsc ?
-                      "tia.aspectn" : "tia.aspectp");
+    uInt32 aspect = myOSystem.settings().getInt(myOSystem.console().tia().frameLayout() == FrameLayout::ntsc ?
+                                                "tia.aspectn" : "tia.aspectp");
 
     // Figure our the smallest zoom level we can use
     uInt32 firstZoom = 2;
@@ -1046,17 +1088,17 @@ void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
     *** Scrollbar colors ***
     kScrollColor      Normal scrollbar color
     kScrollColorHi    Highlighted scrollbar color
+    *** Debugger colors ***
+    kDbgChangedColor      Background color for changed cells
+    kDbgChangedTextColor  Text color for changed cells
+    kDbgColorHi           Highlighted color in debugger data cells
+    kDbgColorRed          Red color in debugger
     *** Slider colors ***
     kSliderColor          Enabled slider
     kSliderColorHi        Focussed slider
     kSliderBGColor        Enabled slider background
     kSliderBGColorHi      Focussed slider background
     kSliderBGColorLo      Disabled slider background
-    *** Debugger colors ***
-    kDbgChangedColor      Background color for changed cells
-    kDbgChangedTextColor  Text color for changed cells
-    kDbgColorHi           Highlighted color in debugger data cells
-    kDbgColorRed          Red color in debugger
     *** Other colors ***
     kColorInfo            TIA output position color
     kColorTitleBar        Title bar color
@@ -1072,8 +1114,8 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xac3410, 0xd55941, 0x686868, 0xdccfa5, 0xf0f0cf, 0xf0f0cf, // buttons
     0xac3410,                                                   // checkbox
     0xac3410, 0xd55941,                                         // scrollbar
-    0xac3410, 0xd55941, 0xdccfa5, 0xf0f0cf, 0xa38c61,           // slider
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
+    0xac3410, 0xd55941, 0xdccfa5, 0xf0f0cf, 0xa38c61,           // slider
     0xffffff, 0xac3410, 0xf0f0cf, 0x686868, 0xdccfa5            // other
   },
   // Classic
@@ -1083,8 +1125,8 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0x000000, 0x000000, 0x686868, 0x00ff00, 0x20a020, 0x00ff00, // buttons
     0x20a020,                                                   // checkbox
     0x20a020, 0x00ff00,                                         // scrollbar
-    0x20a020, 0x00ff00, 0x404040, 0x686868, 0x404040,           // slider
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
+    0x20a020, 0x00ff00, 0x404040, 0x686868, 0x404040,           // slider
     0x00ff00, 0x20a020, 0x000000, 0x686868, 0x404040            // other
   },
   // Light
@@ -1094,8 +1136,8 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xe1e1e1, 0xe5f1fb, 0x808080, 0x0078d7, 0x000000, 0x000000, // buttons
     0x333333,                                                   // checkbox
     0xc0c0c0, 0x808080,                                         // scrollbar
-    0x333333, 0x0078d7, 0xc0c0c0, 0xffffff, 0xc0c0c0,           // slider 0xBDDEF9| 0xe1e1e1 | 0xffffff
     0xffc0c0, 0x000000, 0xe00000, 0xc00000,                     // debugger
+    0x333333, 0x0078d7, 0xc0c0c0, 0xffffff, 0xc0c0c0,           // slider 0xBDDEF9| 0xe1e1e1 | 0xffffff
     0xffffff, 0x333333, 0xf0f0f0, 0x808080, 0xc0c0c0            // other
   }
 };

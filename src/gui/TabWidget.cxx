@@ -210,12 +210,8 @@ void TabWidget::handleMouseLeft()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  switch(cmd)
-  {
-    default:
-      sendCommand(cmd, data, _id);
-      break;
-  }
+  // Command is not inspected; simply forward it to the caller
+  sendCommand(cmd, data, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

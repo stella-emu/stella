@@ -25,8 +25,8 @@ KidVid::KidVid(Jack jack, const Event& event, const System& system,
                const string& rommd5)
   : Controller(jack, event, system, Controller::KidVid),
     myEnabled(myJack == Right),
-    mySampleFile(nullptr),
-    mySharedSampleFile(nullptr),
+//     mySampleFile(nullptr),
+//     mySharedSampleFile(nullptr),
     myFileOpened(false),
     myTapeBusy(false),
     myFilePointer(0),
@@ -116,8 +116,8 @@ cerr << "myTape = " << myTape << endl;
     IOPortA = (IOPortA & 0xf7) | (((ourKVData[myIdx >> 3] << (myIdx & 0x07)) & 0x80) >> 4);
 
     // increase to next bit
-    myIdx++;
-    myBlockIdx--;
+    ++myIdx;
+    --myBlockIdx;
 
     // increase to next block (byte)
     if(myBlockIdx == 0)
@@ -147,7 +147,7 @@ cerr << "myTape = " << myTape << endl;
           }
         }
       }
-      myBlock++;
+      ++myBlock;
       myBlockIdx = KVBLOCKBITS;
     }
   }
@@ -162,6 +162,7 @@ cerr << "myTape = " << myTape << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::openSampleFile()
 {
+#if 0
   static const char* const kvNameTable[6] = {
     "kvs3.wav", "kvs1.wav", "kvs2.wav", "kvb3.wav", "kvb1.wav", "kvb2.wav"
   };
@@ -202,17 +203,20 @@ cerr << "opened file: " << "kvshared.wav" << endl;
     myTapeBusy = false;
     myFilePointer = StartSong[i];
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::closeSampleFile()
 {
+#if 0
   if(myFileOpened)
   {
     fclose(mySampleFile);
     fclose(mySharedSampleFile);
     myFileOpened = false;
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -233,7 +237,7 @@ void KidVid::setNextSong()
       ; // fseek(mySampleFile, ourSongStart[temp], SEEK_SET);
 #endif
 
-    myFilePointer++;
+    ++myFilePointer;
     myTapeBusy = true;
   }
   else

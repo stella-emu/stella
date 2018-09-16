@@ -27,16 +27,15 @@ CartridgeEF::CartridgeEF(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(65536u, size));
   createCodeAccessBase(65536);
-
-  // Remember startup bank
-  myStartBank = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEF::reset()
 {
+  initializeStartBank(1);
+
   // Upon reset we switch to the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -45,7 +44,7 @@ void CartridgeEF::install(System& system)
   mySystem = &system;
 
   // Install pages for the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,7 +131,6 @@ bool CartridgeEF::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
   }
   catch(...)
@@ -149,9 +147,6 @@ bool CartridgeEF::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
   }
   catch(...)

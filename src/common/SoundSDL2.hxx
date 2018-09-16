@@ -73,14 +73,11 @@ class SoundSDL2 : public Sound
     /**
       Set the mute state of the sound object.  While muted no sound is played.
 
-      @param state  Mutes sound if true, unmute if false
-    */
-    void mute(bool state) override;
+      @param state Mutes sound if true, unmute if false
 
-    /**
-      Reset the sound device.
+      @return  The previous (old) mute state
     */
-    void reset() override;
+    bool mute(bool state) override;
 
     /**
       Sets the volume of the sound device to the specified level.  The
@@ -99,9 +96,10 @@ class SoundSDL2 : public Sound
     */
     void adjustVolume(Int8 direction) override;
 
-    uInt32 getFragmentSize() const override;
-
-    uInt32 getSampleRate() const override;
+    /**
+      This method is called to provide information about the sound device.
+    */
+    string about() const override;
 
   protected:
     /**
@@ -115,6 +113,12 @@ class SoundSDL2 : public Sound
     void processFragment(float* stream, uInt32 length);
 
   private:
+    /**
+      The actual sound device is opened only when absolutely necessary.
+      Typically this will only happen once per program run, but it can also
+      happen dynamically when changing sample rate and/or fragment size.
+    */
+    bool openDevice();
 
     void initResampler();
 
@@ -141,6 +145,8 @@ class SoundSDL2 : public Sound
     unique_ptr<Resampler> myResampler;
 
     AudioSettings& myAudioSettings;
+
+    string myAboutString;
 
   private:
     // Callback function invoked by the SDL Audio library when it needs data

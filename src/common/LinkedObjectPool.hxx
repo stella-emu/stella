@@ -84,7 +84,7 @@ class LinkedObjectPool
       iter it = myCurrent;
       uInt32 idx = 1;
 
-      while(it-- != myList.begin()) idx++;
+      while(it-- != myList.begin()) ++idx;
       return idx;
     }
 

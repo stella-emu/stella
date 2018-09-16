@@ -47,7 +47,6 @@ class DelayQueueMember : public Serializable {
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
-    string name() const override;
 
   public:
     Entry myEntries[capacity];
@@ -88,16 +87,16 @@ void DelayQueueMember<capacity>::remove(uInt8 address)
 {
   uInt8 index;
 
-  for (index = 0; index < mySize; index++) {
+  for (index = 0; index < mySize; ++index) {
     if (myEntries[index].address == address) break;
   }
 
   if (index < mySize) {
-    for (uInt8 i = index + 1; i < mySize; i++) {
+    for (uInt8 i = index + 1; i < mySize; ++i) {
       myEntries[i-1] = myEntries[i];
     }
 
-    mySize--;
+    --mySize;
   }
 }
 
@@ -114,7 +113,7 @@ bool DelayQueueMember<capacity>::save(Serializer& out) const
 {
   try
   {
-    out.putInt(mySize);
+    out.putInt(mySize); //FIXME - check datatype
     for(uInt8 i = 0; i < mySize; ++i)
     {
       const Entry& e = myEntries[i];
@@ -137,7 +136,7 @@ bool DelayQueueMember<capacity>::load(Serializer& in)
 {
   try
   {
-    mySize = in.getInt();
+    mySize = in.getInt(); //FIXME - check datatype
     if (mySize > capacity) throw new runtime_error("invalid delay queue size");
     for(uInt32 i = 0; i < mySize; ++i)
     {
@@ -153,13 +152,6 @@ bool DelayQueueMember<capacity>::load(Serializer& in)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-template<unsigned capacity>
-string DelayQueueMember<capacity>::name() const
-{
-  return "TIA_DelayQueueMember";
 }
 
 #endif // TIA_DELAY_QUEUE_MEMBER

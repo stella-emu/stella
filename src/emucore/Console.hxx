@@ -150,13 +150,6 @@ class Console : public Serializable
     bool load(Serializer& in) override;
 
     /**
-      Get a descriptor for this console class (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "Console"; }
-
-    /**
       Set the properties to those given
 
       @param props The properties to use for the current game
@@ -304,16 +297,31 @@ class Console : public Serializable
     */
     void toggleJitter() const;
 
+    /**
+     * Update yatart and run autodetection if necessary.
+     */
+    void updateYStart(uInt32 ystart);
+
   private:
     /**
      * Dry-run the emulation and detect the frame layout (PAL / NTSC).
      */
-    void autodetectFrameLayout();
+    void autodetectFrameLayout(bool reset = true);
 
     /**
      * Dryrun the emulation and detect ystart (the first visible scanline).
      */
-    void autodetectYStart();
+    void autodetectYStart(bool reset = true);
+
+    /**
+     * Rerun frame layout autodetection
+     */
+    void redetectFrameLayout();
+
+    /**
+     * Rerun ystart autodetection.
+     */
+    void redetectYStart();
 
     /**
       Sets various properties of the TIA (YStart, Height, etc) based on
@@ -382,7 +390,7 @@ class Console : public Serializable
     // Pointer to the TIA object
     unique_ptr<TIA> myTIA;
 
-    // The frame manager instance that is used during emulation.
+    // The frame manager instance that is used during emulation
     unique_ptr<AbstractFrameManager> myFrameManager;
 
     // The audio fragment queue that connects TIA and audio driver
@@ -408,6 +416,9 @@ class Console : public Serializable
 
     // Autodetected ystart.
     uInt32 myAutodetectedYstart;
+
+    // Is ystart currently autodetected?
+    bool myYStartAutodetected;
 
     // Indicates whether an external palette was found and
     // successfully loaded

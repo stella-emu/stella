@@ -37,7 +37,7 @@ class Properties;
 class PNGLibrary
 {
   public:
-    PNGLibrary(OSystem& osystem);
+    explicit PNGLibrary(OSystem& osystem);
 
     /**
       Read a PNG image from the specified file into a FBSurface structure,

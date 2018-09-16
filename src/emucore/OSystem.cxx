@@ -50,10 +50,12 @@
 #include "Random.hxx"
 #include "SerialPort.hxx"
 #include "StateManager.hxx"
+#include "TimerManager.hxx"
 #include "Version.hxx"
 #include "TIA.hxx"
 #include "DispatchResult.hxx"
 #include "EmulationWorker.hxx"
+#include "AudioSettings.hxx"
 
 #include "OSystem.hxx"
 
@@ -94,7 +96,6 @@ OSystem::OSystem()
   myBuildInfo = info.str();
 
   mySettings = MediaFactory::createSettings(*this);
-  myAudioSettings = AudioSettings(mySettings.get());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,20 +133,22 @@ bool OSystem::create()
   myEventHandler = MediaFactory::createEventHandler(*this);
   myEventHandler->initialize();
 
-  // Create a properties set for us to use and set it up
-  myPropSet = make_unique<PropertiesSet>(propertiesFile());
+  // Create the ROM properties database
+  myPropSet = make_unique<PropertiesSet>(myPropertiesFile);
 
 #ifdef CHEATCODE_SUPPORT
   myCheatManager = make_unique<CheatManager>(*this);
   myCheatManager->loadCheatDatabase();
 #endif
 
-  // Create menu and launcher GUI objects
+  // Create various subsystems (menu and launcher GUI objects, etc)
   myMenu = make_unique<Menu>(*this);
   myCommandMenu = make_unique<CommandMenu>(*this);
   myTimeMachine = make_unique<TimeMachine>(*this);
   myLauncher = make_unique<Launcher>(*this);
   myStateManager = make_unique<StateManager>(*this);
+  myTimerManager = make_unique<TimerManager>();
+  myAudioSettings = make_unique<AudioSettings>(*mySettings);
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems
@@ -221,56 +224,6 @@ void OSystem::setConfigPaths()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet& OSystem::propSet(const string& md5)
-{
-  FilesystemNode node = FilesystemNode();
-
-  return propSet(md5, node);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet& OSystem::propSet(const string& md5, const FilesystemNode& node)
-{
-  if(md5 == EmptyString)
-    return *myPropSet;
-  else if(md5 == myGamePropSetMD5)
-    return *myGamePropSet;
-  else if (!node.exists())
-    return *myPropSet;
-
-  // Get a valid set of game specific properties
-  Properties props;
-  string path = myBaseDir + node.getNameWithExt(".pro");
-
-  // Create a properties set based on ROM name
-  FilesystemNode propNode = FilesystemNode(path);
-  myGamePropertiesFile = propNode.getPath();
-
-  myGamePropSet = make_unique<PropertiesSet>(myGamePropertiesFile);
-
-  // Check if game specific property file exists and has matching md5
-  if(myGamePropSet->size() && myGamePropSet->getMD5(md5, props))
-  {
-    myGamePropSetMD5 = md5;
-    return *myGamePropSet;
-  }
-  else
-  {
-    myGamePropSetMD5 = "";
-    return *myPropSet;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::saveGamePropSet(const string& md5)
-{
-  if(myGamePropSet->size() && md5 == myGamePropSetMD5)
-  {
-    myGamePropSet->save(myGamePropertiesFile);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setBaseDir(const string& basedir)
 {
   FilesystemNode node(basedir);
@@ -325,9 +278,9 @@ FBInitStatus OSystem::createFrameBuffer()
 void OSystem::createSound()
 {
   if(!mySound)
-    mySound = MediaFactory::createAudio(*this, myAudioSettings);
+    mySound = MediaFactory::createAudio(*this, *myAudioSettings);
 #ifndef SOUND_SUPPORT
-  myAudioSettings.setEnabled(false);
+  myAudioSettings->setEnabled(false);
 #endif
 }
 
@@ -398,7 +351,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     }
     buf << "Game console created:" << endl
         << "  ROM file: " << myRomFile.getShortPath() << endl << endl
-        << getROMInfo(*myConsole) << endl;
+        << getROMInfo(*myConsole);
     logMessage(buf.str(), 1);
 
     myFrameBuffer->setCursorState();
@@ -503,13 +456,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     // Get a valid set of properties, including any entered on the commandline
     // For initial creation of the Cart, we're only concerned with the BS type
     Properties props;
-
-    // Load and use game specific props if existing
-    FilesystemNode node = FilesystemNode(romfile);
-
-    string path = myBaseDir + node.getNameWithExt(".pro");
-    PropertiesSet& propset = propSet(md5, romfile);
-    propset.getMD5(md5, props);
+    myPropSet->getMD5(md5, props);
 
     // Local helper method
     auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropertyType prop)
@@ -525,18 +472,18 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     string cartmd5 = md5;
     const string& type = props.get(Cartridge_Type);
     unique_ptr<Cartridge> cart =
-      CartDetector::create(image, size, cartmd5, type, *this);
+      CartDetector::create(romfile, image, size, cartmd5, type, *this);
 
     // It's possible that the cart created was from a piece of the image,
     // and that the md5 (and hence the cart) has changed
     if(props.get(Cartridge_MD5) != cartmd5)
     {
-      if(!propset.getMD5(cartmd5, props))
+      if(!myPropSet->getMD5(cartmd5, props))
       {
         // Cart md5 wasn't found, so we create a new props for it
         props.set(Cartridge_MD5, cartmd5);
         props.set(Cartridge_Name, props.get(Cartridge_Name)+cart->multiCartID());
-        propset.insert(props, false);
+        myPropSet->insert(props, false);
       }
     }
 
@@ -559,7 +506,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
 
     // Finally, create the cart with the correct properties
     if(cart)
-      console = make_unique<Console>(*this, cart, props, myAudioSettings);
+      console = make_unique<Console>(*this, cart, props, *myAudioSettings);
   }
 
   return console;

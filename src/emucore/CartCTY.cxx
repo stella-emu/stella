@@ -41,9 +41,6 @@ CartridgeCTY::CartridgeCTY(const BytePtr& image, uInt32 size,
 
   // Point to the first tune
   myFrequencyImage = CartCTYTunes;
-
-  // Remember startup bank (not bank 0, since that's ARM code)
-  myStartBank = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,13 +48,16 @@ void CartridgeCTY::reset()
 {
   initializeRAM(myRAM, 64);
 
+  // Remember startup bank (not bank 0, since that's ARM code)
+  initializeStartBank(1);
+
   myRAM[0] = myRAM[1] = myRAM[2] = myRAM[3] = 0xFF;
 
   myAudioCycles = 0;
   myFractionalClocks = 0.0;
 
   // Upon reset we switch to the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,7 +71,7 @@ void CartridgeCTY::install(System& system)
     mySystem->setPageAccess(addr, access);
 
   // Install pages for the startup bank
-  bank(myStartBank);
+  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -279,7 +279,6 @@ bool CartridgeCTY::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(getBank());
     out.putByteArray(myRAM, 64);
 
@@ -305,9 +304,6 @@ bool CartridgeCTY::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     // Remember what bank we were in
     bank(in.getShort());
     in.getByteArray(myRAM, 64);

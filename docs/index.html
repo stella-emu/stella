@@ -26,7 +26,7 @@
       <ul>
         <li><a href="#Requirements">Requirements</a></li>
         <li><a href="#Installation">Installation</a></li>
-        <li><a href="#Games">Locating Game Images (aka, ROMs)</a></li>
+        <li><a href="#Games">Locating Game Images (aka ROMs)</a></li>
         <li><a href="#Playing">Playing a Game</a></li>
         <li><a href="#Keyboard">Keyboard Layout</a></li>
         <li><a href="#Hotkeys">Hotkeys</a></li>
@@ -42,7 +42,7 @@
         <li><a href="#ROMInfo">ROM Launcher</a></li>
         <ul>
           <li><a href="#ROMInfoViewer">ROM Launcher Viewer</a></li>
-          <li><a href="#ROMLauchnerContextMenu">ROM Launcher Context Menu</a></li>
+          <li><a href="#ROMLauncherContextMenu">ROM Launcher Context Menu</a></li>
         </ul>
         <li><a href="#ROMAudit">ROM Audit Mode</a></li>
         <li><a href="#Adaptor">Stelladaptor/2600-daptor Support</a></li>
@@ -252,11 +252,13 @@
 
   <ul>
     <li>High speed emulation using optimized C++14 code</li>
-    <li>Supports high quality TIA emulation using the TIA core from
+    <li>Supports high quality TIA emulation using the cycle-exact TIA core from
       <a href="https://github.com/6502ts/6502.ts">6502.ts</a> by
       Christian Speckner</li>
-    <li>Supports high quality sound emulation using code derived from Ron Fries'
-      TIA Sound Emulation library, including stereo sound support</li>
+    <li>Supports high quality sound emulation using code derived from Chris Brenner's
+      Atari 2600 FPGA project, including cycle-exact audio, analog interference
+      from mixing of audio channels, as well as stereo sound support; dynamic
+      sound resampling is also included</li>
     <li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard,
       joysticks or mouse</li>
     <li>Emulates the Atari 2600 Keyboard Controllers using your computer's keyboard</li>
@@ -287,12 +289,13 @@
     <li>Supports DPC+/CDF bankswitching schemes from the <a href="http://harmony.atariage.com">Harmony Cart</a>,
       including <a href="http://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
+    <li>Supports using ROM filename extensions to force specific bankswitching schemes</li>
     <li>Supports Supercharger single-load and multi-load games</li>
     <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual raw A26/BIN/ROM formats</li>
     <li>Supports property file for setting the properties associated with games</li>
     <li>Supports the NTSC, PAL and SECAM television standards in 50Hz and 60Hz mode</li>
     <li>Supports autodetection of display format for 50Hz vs. 60Hz modes</li>
-    <li>Supports several "undocumented features" of the TIA graphics chip used by
+    <li>Supports most "undocumented features" of the TIA graphics chip used by
       some games</li>
     <li>TIA emulation supports full collision checking, with ability to disable
       TIA sprites and collisions for each object separately</li>
@@ -333,7 +336,7 @@
     <li>Joysticks or gamepads are highly recommended</li>
     <li>Mouse or <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a>/<a href="http://2600-daptor.com">2600-daptor</a>
     with real paddles required for paddle emulation</li>
-    <li>Some ROM images (See <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
+    <li>Some ROM images (see <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
   </ul>
 
   <p>
@@ -460,7 +463,7 @@
   </ul>
   </blockquote>
 
-  <h2><b><a name="Games">Locating Game Images (aka, ROMs)</a></b></h2>
+  <h2><b><a name="Games">Locating Game Images (aka ROMs)</a></b></h2>
 
   <blockquote>
   <p>
@@ -487,12 +490,11 @@
     their ROM images</li>
 
     <li>If you're handy with a soldering iron then you can design and build a
-    device that plugs into the printer port of a PC and read the data from the
-    cartridge</li>
+    device that plugs into a PC and read the data from the cartridge</li>
   </ul>
 
-  <p><b>WARNING:</b> It is illegal to use ROM images of games that you do not
-  actually own since these games are still copyrighted.</p>
+  <p><b>WARNING:</b> It may be illegal to use ROM images of games that you do not
+  actually own since these games may still be copyrighted.</p>
 
   <p>
   <h3><b><u>Supercharger Cassettes</u></b></h3>
@@ -530,8 +532,24 @@
   <p>Stella supports ROMs ending with extensions .a26, .bin, .rom, .gz, and .zip.
   For the last two compressed formats (GZIP and ZIP, respectively), Stella will
   automatically decompress the archive, and use the first ROM image it finds in
-  it (ie, the first one ending in a valid extension).</p>
-  </blockquote>
+  it (ie, the first one ending in a valid extension).  If a ZIP archive contains
+  many such files, Stella will display a <i>virtual filesystem</i> of the contents
+  of the archive.</p>
+
+  <p>Other extensions are also possible, namely to force a specific bankswitch scheme.
+  Normally, the bankswitching scheme for a ROM is determined automatically,
+  or manually by setting a <a href="#Properties">ROM property</a>, and you never
+  have to do anything yourself.  However, it is also possible to force the
+  bankswitch type to use by adding a special filename extension.  These extensions
+  are listed in the <a href="#Properties">ROM properties</a> section under
+  <a href="#PropertiesCartType">Cartridge.Type -&gt; File Extension</a>.</p>
+
+  <p><b>Note:</b> These extensions are the same as those used by the Harmony Cart
+  and Unocart and are not case-sensitive, so you can name your files and have them
+  work across all applications.  <u>Again, to be clear, this is only necessary when
+  you want to override the default bankswitching scheme for a ROM.</u>  <b>This will
+  not normally be necessary.</b></p>
+
 
   <h2><b><a name="Playing">Playing a Game</a></b></h2>
 
@@ -549,38 +567,24 @@
   'ROM Launcher' mode:<br><br>
   <img src="graphics/launcher.png"></p>
 
-  <p>If this is your first time starting Stella, you will be asked to select the
-  default ROM directory to use. This is where you have all your ROMs,
-  collected as described in the previous section. Several dialogs will be shown, similar
-  to the following:</p>
-  <table>
-    <tr>
-      <td><img src="graphics/select_romdir.png">&nbsp;&nbsp;</td>
-      <td><img src="graphics/rom_browser.png"></td>
-    </tr>
-  <table>
-
-  <p>The browser should be self-explanatory. The 'Go Up' button moves to the parent
-  folder (if it exists), and the 'Base Dir' button moves to the base directory where,
-  by default, all Stella-related files are stored. Double-clicking an item will
-  enter that directory. Click 'Choose' to select the location, or 'Cancel' to exit
-  the browser. Note that if you don't select a ROM directory now, you will be prompted
-  again the next time Stella is started.</p>
+  <p>If this is your first time starting Stella, you may have to navigate to your ROMs.
+  The path of the first ROM you play automatically defines the default ROM path. You
+  can change it later in the <b><a href="#ConfigPaths">Configure Paths</a></b> dialog.
+  </p>
 
   <p>At this point, you may want to set the locations for snapshots and other
   external paths. This is described in more detail in
   <b>Advanced Configuration - <a href="#Snapshots">Snapshot Settings</a></b> and
-  <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>.
+  <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>.
   These settings are optional, and can be left at the defaults if you won't be using
   snapshots in the ROM launcher.</p>
 
-  <p>Once you've correctly set the default ROM directory, you can start emulation by
-  selecting a ROM and pressing 'Enter' or clicking 'Select', or double-clicking a ROM.
-  Note that some games require you to 'Reset' the console before you start playing. In this
-  case, you need to hit the virtual reset switch, which by default is the F2 key.
-  Also, some games may require that you press the joystick fire button to begin,
-  which by default is the Left Control or Space key(s). If a game uses a
-  more complex controller, see
+  <p>you can start emulation by selecting a ROM and pressing 'Enter' or clicking 'Select',
+  or double-clicking a ROM. Note that some games require you to 'Reset' the console
+  before you start playing. In this case, you need to hit the virtual reset switch,
+  which by default is the F2 key.  Also, some games may require that you press the
+  joystick fire button to begin, which by default is the Left Control or Space key(s),
+  or button 0 on your joystick.  If a game uses a more complex controller, see
   <b>Getting Started - <a href="#Keyboard">Keyboard Layout</a></b>
   for more information. To exit a game and re-enter the ROM launcher, press the 'Escape'
   key.</p>
@@ -1525,12 +1529,6 @@
     </tr>
 
     <tr>
-      <td>Save current game's properties to a separate properties file</td>
-      <td>Control + s</td>
-      <td>Control + s</td>
-    </tr>
-
-    <tr>
       <td>Switch mouse between controller emulation modes (see <b>Game Properties - <a href="#Controller">Controller</a></b>)</td>
       <td>Control + 0</td>
       <td>Control + 0</td>
@@ -1794,7 +1792,6 @@
   </blockquote>
 
 
-
   <br><br>
   <p><h2>
   <a name="TimeMachine">Stella's 'Time Machine'</a></h2>
@@ -1829,13 +1826,14 @@
 	  <tr><th>Item</th><th>Description</th></tr>
 	  <tr><td>Current time</td><td>Shows the time of the currently selected status,
       relative to the first one</td></tr>
+	  <tr><td>'Start/Stop' button</td><td>Starts or stops the Time Machine</td></tr>
+	  <tr><td>'Continue' button</td><td>Exits the dialog and continues emulation</td></tr>
 	  <tr><td>'Rewind All' button</td><td>Navigates back to the begin of the timeline</td></tr>
 	  <tr><td>'Rewind One' button</td><td>Navigates back by one state</td></tr>
-	  <tr><td>'Continue' button</td><td>Exits the dialog and continues emulation.</td></tr>
-	  <tr><td>Navigation info</td><td>Informs about the interval of the user's last
-      Time Machine navigation. The interval can vary if the timeline is compressed.</td></tr>
 	  <tr><td>'Unwind One' button</td><td>Navigates forward by one state</td></tr>
 	  <tr><td>'Unwind All' button</td><td>Navigates forward to the end of the timeline</td></tr>
+	  <tr><td>Navigation info</td><td>Informs about the interval of the user's last
+      Time Machine navigation. The interval can vary if the timeline is compressed.</td></tr>
 	  <tr><td>Total time</td><td>Shows the total time covered by the save states
       (aka 'Horizon')</td></tr>
 	</table>
@@ -1843,6 +1841,7 @@
 
   <p>The 'Time Machine' mode can be configured by the user. For details see
   <a href="#Debugger"><b>Developer Options</b> - Time Machine</a></h2> tab.</p>
+
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
   <br><br>
@@ -1904,21 +1903,8 @@
     </tr>
 
     <tr>
-      <td><pre>-framerate &lt;number&gt;</pre></td>
-      <td>Display the given number of frames per second. Normally, Stella
-        will determine framerate based on number of scanlines.
-        Setting this to 0 automatically enables auto-frame
-        calculation (ie, framerate based on scanlines).</td>
-    </tr>
-
-    <tr>
-      <td><pre>-timing &lt;sleep|busy&gt;</pre></td>
-      <td>Determines type of wait to perform between processing frames.
-        Sleep will release the CPU as much as possible, and is the
-        preferred method on laptops (and other low-powered devices)
-        and when using VSync. Busy will emulate z26 busy-wait
-        behaviour, and use all possible CPU time, but may eliminate
-        graphical 'tearing' in software mode.</td>
+      <td><pre>-speed &lt;number&gt;</pre></td>
+      <td>Control the emulation speed (as a percentage, 10 - 1000).</td>
     </tr>
 
     <tr>
@@ -2196,7 +2182,7 @@
 
     <tr>
       <td><pre>-snaploaddir &lt;path&gt;</pre></td>
-      <td>The directory to load snapshot files from.</td>
+      <td>The directory to load ROM info viewer snaposhot files from.</td>
     </tr>
 
     <tr>
@@ -2251,11 +2237,9 @@
     </tr>
 
     <tr>
-      <td><pre>-launcherexts &lt;allfiles|allroms|LIST&gt;</pre></td>
-      <td>Specifies which files to show in the ROM launcher
-        ('allfiles' is self-explanatory, 'allroms' is all files
-        with valid rom extensions (currently: a26, bin, rom,
-        gz, zip), 'LIST' is a ':' separated list of valid rom extensions.</td>
+      <td><pre>-launcherroms &lt;1|0&gt;</pre></td>
+      <td>Specifies whether to show ROMs only (the default) or all
+        files in the ROM launcher.</td>
     </tr>
 
     <tr>
@@ -2621,20 +2605,19 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Renderer</td><td>Use specified rendering mode</td><td>-video</td></tr>
-          <tr><td>TIA Zoom</td><td>(Integral) zoom level for emulation mode </td><td>-tia.zoom</td></tr>
-          <tr><td>TIA Palette</td><td>Palette for emulation mode</td><td>-palette</td></tr>
-          <tr><td>TIA Inter</td><td>Interpolation for TIA image</td><td>-tia.inter</td></tr>
-          <tr><td>Timing (*)</td><td>How to wait between frames (requires restart)</td><td>-timing</td></tr>
-          <tr><td>NTSC Aspect</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
-          <tr><td>PAL Aspect</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
-          <tr><td>Framerate</td><td>Frames per second in emulation mode</td><td>-framerate</td></tr>
+          <tr><td>TIA palette</td><td>Palette for emulation mode</td><td>-palette</td></tr>
+          <tr><td>TIA zoom</td><td>(Integral) zoom level for emulation mode </td><td>-tia.zoom</td></tr>
+          <tr><td>TIA interpolation</td><td>Interpolation for TIA image</td><td>-tia.inter</td></tr>
+          <tr><td>NTSC aspect</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
+          <tr><td>PAL aspect</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
+          <tr><td>Emul. speed</td><td>Emulation speed</td><td>-speed</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory</td><td>-fullscreen</td></tr>
-          <tr><td>Fullscreen Fill</td><td>Completely fill TIA image in fullscreen</td><td>-tia.fsfill</td></tr>
-          <tr><td>VSync</td><td>Enable vertical sync'ed updates</td><td>-vsync</td></tr>
-          <tr><td>Fast SC/AR BIOS</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
+          <tr><td>Fullscreen fill</td><td>Completely fill TIA image in fullscreen</td><td>-tia.fsfill</td></tr>
+          <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
+          <tr><td>Fast SuperCharger load</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>Overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>Attempt to center application window</td><td>-center</td></tr>
-          <tr><td>Use multi-threading</td><td>Enable multi-threaded rendering</td><td>-threads</td></tr>
+          <tr><td>Multi-threading</td><td>Enable multi-threaded rendering</td><td>-threads</td></tr>
         </table>
       </td>
     </tr>
@@ -2649,18 +2632,18 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>TV Mode</td><td>Disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
-          <tr><td>TV Phosphor</td><td>Enable phosphor mode under what conditions</td><td>-tv.phosphor</td></tr>
-          <tr><td>Phosphor (Default)</td><td>Default blend level to use in phosphor mode<br/>
-                (needs to be manually set for your particular hardware)</td><td>-tv.phosblend</td></tr>
-          <tr><td>Scanline Intensity</td><td>Sets scanline black-level intensity.</br>
-                  Note: No scanlines in 1x mode snapshots.</td><td>-tv.scanlines</td></tr>
-          <tr><td>Scanline Interpolation</td><td>Smooth/blend scanlines into image</td><td>-tv.scaninter</td></tr>
+          <tr><td>TV mode</td><td>Disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
           <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' mode</td><td>-tv.contrast, tv.hue, etc.</td></tr>
+          <tr><td>Phosphor for all ROMs</td><td>Enable phosphor mode for all ROMs</td><td>-tv.phosphor</td></tr>
+          <tr><td>Default (phosphor)</td><td>Default blend level to use in phosphor mode<br/>
+                (needs to be manually set for your particular hardware)</td><td>-tv.phosblend</td></tr>
+          <tr><td>Scanline intensity</td><td>Sets scanline black-level intensity.</br>
+                  Note: No scanlines in 1x mode snapshots.</td><td>-tv.scanlines</td></tr>
+          <tr><td>Scanline interpolation</td><td>Smooth/blend scanlines into image</td><td>-tv.scaninter</td></tr>
           <tr><td>Clone Composite</td><td>Copy 'Composite' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone S-Video</td><td>Copy 'S-Video' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Clone RGB</td><td>Copy 'RGB' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
-          <tr><td>Clone Bad Adjust</td><td>Copy 'Bad Adjust' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Clone Bad adjust</td><td>Copy 'Bad Adjust' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
           <tr><td>Revert</td><td>Revert attribute sliders to saved 'Custom' settings</td><td>&nbsp;</td></tr>
         </table>
       </td>
@@ -2695,16 +2678,7 @@
     </tr>
   </table>
   <br>
-  <p><b>UI Settings</b> dialog (2 tabs):</p>
-  <table border="5" cellpadding="2" frame="box" rules="none">
-    <tr>
-      <td><img src="graphics/options_ui.png"></td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td valign="top"><br>This tab is described in further detail in
-        <b>Advanced Configuration - <a href="#ROMInfo">ROM Launcher</a></b>.</td>
-    </tr>
-  </table>
-  <br>
+  <p><b>User Interface Settings</b> dialog (2 tabs):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_misc.png"><br><br></td>
@@ -2712,8 +2686,8 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Interface Palette</td><td>Palette to use for UI elements (see examples)</td><td>-uipalette</td></tr>
-          <tr><td>List quick delay</td><td>Time to wait between keypresses in list-widgets</td><td>-listdelay</td></tr>
+          <tr><td>Theme</td><td>Theme to use for UI elements (see examples)</td><td>-uipalette</td></tr>
+          <tr><td>List input delay</td><td>Maximum delay between keypresses in list-widgets before a search string resets. </td><td>-listdelay</td></tr>
           <tr><td>Mouse wheel scroll</td><td>Number of lines a mouse scroll will move in list-widgets</td><td>-mscroll</td></tr>
         </table>
       </td>
@@ -2722,6 +2696,15 @@
       <td><img src="graphics/options_misc_classic.png"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td><img src="graphics/options_misc_light.png"></td>
+    </tr>
+  </table>
+  <br>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/options_ui.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top"><br>This tab is described in further detail in
+        <b>Advanced Configuration - <a href="#ROMInfo">ROM Launcher</a></b>.</td>
     </tr>
   </table>
   <br>
@@ -2735,7 +2718,7 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Save path</td><td>Specifies where to save snapshots</td><td>-snapsavedir</td></tr>
-          <tr><td>Load path</td><td>Specifies where to load snapshots</td><td>-snaploaddir</td></tr>
+   		  <!--<tr><td>Load path</td><td>Specifies where to load snapshots</td><td>-snaploaddir</td></tr>  -->
           <tr><td>Continuous snapshot interval</td><td>Interval (in seconds) between snapshots</td><td>-ssinterval</td></tr>
           <tr><td>Use actual ROM name</td><td>Use the actual ROM filename instead of the internal database name.</td><td>-snapname</td></tr>
           <tr><td>Overwrite existing files</td><td>Whether to overwrite old snapshots</td><td>-sssingle</td></tr>
@@ -2746,7 +2729,7 @@
   </table>
   <br>
   <a name="ConfigPaths"></a>
-  <p><b>Config Paths</b> dialog:</p>
+  <p><b>Configure Paths</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/launcher_options_files.png"></td>
@@ -2853,7 +2836,6 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Stelladaptor port order</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
           <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
           <tr><td>Mouse cursor visibility</td><td>Show/hide cursor depending on current state</td><td>-cursor</td></tr>
           <tr><td>Joystick deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
@@ -2863,8 +2845,9 @@
           <tr><td>Allow all 4 directions ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
           <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode<br/>(only when used as controller)<br/>
                   Note: The sensitivity may greatly vary when the mouse is not grabbed.</td><td>-grabmouse</td></tr>
-          <tr><td>Use Control key combos</td><td>Enable using Control key in keyboard actions</td><td>-ctrlcombo</td></tr>
-          <tr><td>Joystick Database</td><td>Show all joysticks that Stella knows about, with the option to remove them</td><td>&nbsp;</td></tr>
+          <tr><td>Use control key combos</td><td>Enable using Control key in keyboard actions</td><td>-ctrlcombo</td></tr>
+          <tr><td>Swap Stelladaptor ports</td><td>Swap the order of the detected Stelladaptors/2600-daptors (see <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
+          <tr><td>Joystick database</td><td>Show all joysticks that Stella knows about, with the option to remove them</td><td>&nbsp;</td></tr>
           <tr><td>Erase EEPROM</td><td>Erase the whole AtariVox/SaveKey flash memory</td><td>&nbsp;</td></tr>
           <tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
         </table>
@@ -2913,7 +2896,7 @@
   <p>ROM Info Viewer in 1x mode, UI sized 1000x760, medium launcher font:</p>
   <img src="graphics/rominfo_1x_large.png">
 
-  <p>ROM Info Viewer in 2x mode, UI sized 1400x900, large launcher font:</p>
+  <p>ROM Info Viewer in 2x mode, UI sized 1280x900, large launcher font:</p>
   <img src="graphics/rominfo_2x_small.png">
 
   <p>The text box in the upper right corner can be used to narrow down the
@@ -2926,7 +2909,7 @@
   case sensitive, so you don't need to worry about capital or lower-case
   letters.</p>
 
-  <h3><b><a name="ROMLauchnerContextMenu">ROM Lauchner Context Menu</a></b></h3>
+  <h3><b><a name="ROMLauncherContextMenu">ROM Launcher Context Menu</a></b></h3>
 
   <p>The ROM launcher also contains a context menu, selected by clicking the
   right mouse button anywhere in the current window. This context menu
@@ -2938,7 +2921,7 @@
     temporarily held down. Selecting options from this dialog will cause all ROMs launched
     after that to use those properties you specify. Clicking <b>Defaults</b> will disable
     its functionality, and use ROM properties as defined by the ROM itself. The dialog is as
-    follows (See <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>
+    follows (see <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>
     for more information concerning ROM properties):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
@@ -2948,12 +2931,12 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>For more information,<br>see <a href="#CommandLine">Commandline</a></th></tr>
           <tr><td>Bankswitch type</td><td>-bs</td></tr>
-          <tr><td>Left Difficulty</td><td>-ld</td></tr>
-          <tr><td>Right Difficulty</td><td>-rd</td></tr>
-          <tr><td>TV Type</td><td>-tv</td></tr>
-          <tr><td>Startup Mode</td><td>-debug</td></tr>
-          <tr><td>Left Joy items</td><td>-holdjoy0</td></tr>
-          <tr><td>Right Joy items</td><td>-holdjoy1</td></tr>
+          <tr><td>TV type</td><td>-tv</td></tr>
+          <tr><td>Left difficulty</td><td>-ld</td></tr>
+          <tr><td>Right difficulty</td><td>-rd</td></tr>
+          <tr><td>Startup mode</td><td>-debug</td></tr>
+          <tr><td>Left joy items</td><td>-holdjoy0</td></tr>
+          <tr><td>Right joy items</td><td>-holdjoy1</td></tr>
           <tr><td>Console: Select</td><td>-holdselect</td></tr>
           <tr><td>Console: Reset</td><td>-holdreset</td></tr>
         </table>
@@ -2963,23 +2946,14 @@
   </table>
     </li>
 
-    <li><p><b>Filter listing</b>: Selecting this option shows a dialog whereby
-    one can filter the types of files shown in the listing. The dialog is as
-    follows:</p>
-    <p><img src="graphics/launcher_filter.png"></p>
-    <p>Currently, the choices are as follows:</p>
-    <p><ul>
-      <li><b>All files</b> - self explanatory, show all files in the ROM
-        listing. This is the default, and emulates the behaviour of
-        all previous versions of Stella.</li>
-      <li><b>All roms</b> - show only files with a valid ROM extension.
-        Currently, this means extensions .a26, .bin, .rom, .gz, .zip.</li>
-      <li><b>ROMs ending with</b> - show only files with a ROM extension
-        as selected from the checkboxes.</li>
-      </ul></p>
-    </li>
 
-    <li><b>Reload listing</b>: Selecting this performs a reload of the
+    <br><li><b>Show only ROM files</b>: Selecting this reloads the current listing,
+    showing only files that have a valid ROM extension.</li>
+
+    <br><li><b>Show all files</b>: Selecting this reloads the current listing,
+    showing <i>all</i> files (with no restriction on file name).</li>
+
+    <br><li><b>Reload listing</b>: Selecting this performs a reload of the
     current listing. It is an alternative to pressing the Control-r
     key combo.</li>
   </ol></p>
@@ -3010,9 +2984,9 @@
       don't use this function. There is no undo feature, and one won't be
       added.</li>
     <li>Only filenames that Stella considers to be valid ROMs will be
-      considered. Currently, this means files that end in '.a26',
-      '.bin', '.rom', '.gz' and '.zip'. Files which don't have these
-      extensions will be ignored.</li>
+      considered. Currently, this means files with extensions described in
+      "Supported File formats". Files which don't have these extensions will
+      be ignored.</li>
     <li>If a valid ROM doesn't have a properties entry, it will be
       ignored.</li>
   </ul>
@@ -3079,7 +3053,7 @@
 
   <p>The location of the EEPROM files are configurable through the
   '<i>-nvramdir</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>).
+  (see <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>).
   If the path for these files hasn't been set, the default location will depend on the
   version of Stella, as follows:</p>
 
@@ -3130,8 +3104,8 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Player/Developer settings</td><td>Selects the active settings set</td><td>-dev.settings</td></tr>
-          <tr><td>Frame Statistics</td><td>Overlay console info on the TIA image during emulation.</td><td>-plr.stats<br/>-dev.stats</td></tr>
-          <tr><td>Console</td><td>Select the console type, this affects Color/B&W/Pause key emulation and zero-page RAM initialzation</td><td>-plr.console <br/>-dev.console</td></tr>
+          <tr><td>Console info overlay</td><td>Overlay console info on the TIA image during emulation.</td><td>-plr.stats<br/>-dev.stats</td></tr>
+          <tr><td>Console</td><td>Select the console type, this affects Color/B&W/Pause key emulation and zero-page RAM initialization</td><td>-plr.console <br/>-dev.console</td></tr>
           <tr><td>Random startup bank</td><td>Randomize the startup bank (only for selected bankswitch types)</td><td>-plr.bankrandom<br/>-dev.bankrandom</td></tr>
           <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
           <tr><td>Randomize CPU</td><td>When loading a ROM, randomize the content of the specified CPU registers</td><td>-plr.cpurandom<br/>-dev.cpurandom</td></tr>
@@ -3219,7 +3193,7 @@
               will be compressed (*). This means that more and more intermediate
               states will be removed and the interval between save states
               becomes larger the further they are back in time.<br>
-              (*) Compresion only works if 'Uncompressed size' is smaller than
+              (*) Compression only works if 'Uncompressed size' is smaller than
               'Buffer size'.
             </td>
             <td>-plr.tm.horizon<br>-dev.tm.horizon</td>
@@ -3240,7 +3214,7 @@
           <tr><td>Font size</td><td>Self-explanatory</td><td>-dbg.fontsize</td></tr>
           <tr><td>Font style</td><td>Self-explanatory</td><td>-dbg.fontstyle</td></tr>
           <tr><td>Debugger width/height</td><td>Self-explanatory</td><td>-dbg.res</td></tr>
-          <tr><td>Trap on 'ghost' reads</td><td>Defines whether the debugger should consider CPU 'ghost' reads for trap adresses.</td><td><span style="white-space:nowrap">-dbg.ghostreadstrap</span></td></tr>
+          <tr><td>Trap on 'ghost' reads</td><td>Defines whether the debugger should consider CPU 'ghost' reads for trap addresses.</td><td><span style="white-space:nowrap">-dbg.ghostreadstrap</span></td></tr>
         </table>
       </td>
     </tr>
@@ -3264,7 +3238,7 @@
     frames per second, bankswitch and display formats, etc. The following shows
     an example of this information:
     <p><img src="graphics/developer_stats.png"></p>
-    <p>The two lines of output describe the following:
+    <p>The three lines of output describe the following:
     <ol>
       <li>Number of scanlines in current frame, associated framerate, and
         resulting display format. Note that the framerate shown is the
@@ -3272,6 +3246,8 @@
         number of scanlines). If the '*' character is present, it means
         the display format was auto-detected as shown. For the given example,
         the format was auto-detected as 'NTSC'.</li>
+      <li>Effective emulation speed displayed as frames per second and user
+        defined emulation speed displayed as percentage relative to normal speed.</li>
       <li>Cartridge information. If the '*' character is present,
         it means the bankswitch format was auto-detected as shown. The item
         in round brackets indicates ROM size. For the given example,
@@ -3424,7 +3400,7 @@ Ms Pac-Man (Stella extended codes):
 
   <p>The name of the cheat database file is configurable through the
   '<i>-cheatfile</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>). If the
+  (see <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>). If the
   path for this file hasn't been set, the default filename will depend on the
   version of Stella, as follows:</p>
 
@@ -3576,7 +3552,12 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Cartridge.Type:</i></td>
+      <td VALIGN="TOP"><i>Cartridge.StartBank:</i></td>
+      <td>Indicates which bank to use for reading the reset vector.</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cartridge.Type:</i></a></td>
       <td>Indicates the bank-switching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
       (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
@@ -3584,62 +3565,68 @@ Ms Pac-Man (Stella extended codes):
       as (&#185;) do not currently have reliable auto-detection, those marked as (&#178;)
       are not fully supported in the debugger:
       <table cellpadding="2" border="1">
-        <tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
-        <tr><td>0840 </td><td>8K ECONObanking </td></tr>
-        <tr><td>2IN1 &#185;</td><td>4-32K Multicart (2 games) </td></tr>
-        <tr><td>4IN1 &#185;</td><td>8-32K Multicart (4 games) </td></tr>
-        <tr><td>8IN1 &#185;</td><td>16-64K Multicart (8 games) </td></tr>
-        <tr><td>16IN1 &#185;</td><td>32-128K Multicart (16 games) </td></tr>
-        <tr><td>32IN1 &#185;</td><td>64-128K Multicart (32 games) </td></tr>
-        <tr><td>64IN1 &#185;</td><td>64/128K Multicart </td></tr>
-        <tr><td>128IN1 &#185;</td><td>256/512K Multicart </td></tr>
-        <tr><td>2K </td><td>64-2048 byte Atari </td></tr>
-        <tr><td>3E </td><td>32K Tigervision </td></tr>
-        <tr><td>3E+ </td><td>3E+ (TJ modified DASH) </td></tr>
-        <tr><td>3F </td><td>512K Tigervision </td></tr>
-        <tr><td>4A50 &#178;</td><td>64K 4A50 + ram </td></tr>
-        <tr><td>4K </td><td>4K Atari </td></tr>
-        <tr><td>4KSC </td><td>CPUWIZ 4K + ram </td></tr>
-        <tr><td>AR </td><td>Supercharger </td></tr>
-        <tr><td>BF </td><td>CPUWIZ 256K </td></tr>
-        <tr><td>BFSC </td><td>CPUWIZ 256K + ram</td></tr>
-        <tr><td>BUS </td><td>Experimental</td></tr>
-        <tr><td>CDF </td><td>Chris, Darrell, Fred</td></tr>
-        <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td></tr>
-        <tr><td>CTY &#185;&#178;</td><td>CDW - Chetiry </td></tr>
-        <tr><td>CV </td><td>Commavid extra ram </td></tr>
-        <tr><td>CV+ </td><td>Extended Commavid extra ram</td></tr>
-        <tr><td>DASH </td><td>Boulder Dash 2 </td></tr>
-        <tr><td>DF </td><td>CPUWIZ 128K </td></tr>
-        <tr><td>DFSC </td><td>CPUWIZ 128K + ram</td></tr>
-        <tr><td>DPC </td><td>Pitfall II </td></tr>
-        <tr><td>DPC+</td><td>Enhanced DPC </td></tr>
-        <tr><td>E0 </td><td>8K Parker Bros </td></tr>
-        <tr><td>E7 </td><td>16K M-network </td></tr>
-        <tr><td>E78K </td><td>8K M-network </td></tr>
-        <tr><td>EF </td><td>64K Homestar Runner </td></tr>
-        <tr><td>EFSC </td><td>64K Homestar Runner + ram</td></tr>
-        <tr><td>F0 </td><td>Dynacom Megaboy </td></tr>
-        <tr><td>F4 </td><td>32K Atari </td></tr>
-        <tr><td>F4SC </td><td>32K Atari + ram </td></tr>
-        <tr><td>F6 </td><td>16K Atari </td></tr>
-        <tr><td>F6SC </td><td>16K Atari + ram </td></tr>
-        <tr><td>F8 </td><td>8K Atari </td></tr>
-        <tr><td>F8SC </td><td>8K Atari + ram </td></tr>
-        <tr><td>FA </td><td>CBS RAM Plus </td></tr>
-        <tr><td>FA2 </td><td>CBS RAM Plus 24/28K </td></tr>
-        <tr><td>FE </td><td>8K Decathlon </td></tr>
-        <tr><td>MDM </td><td>Menu Driven Megacart </td></tr>
-        <tr><td>SB </td><td>128-256k SUPERbanking </td></tr>
-        <tr><td>UA </td><td>8K UA Ltd. </td></tr>
-        <tr><td>WD </td><td>Wickstead Design </td></tr>
-        <tr><td>X07 &#185;</td><td>64K AtariAge </td></tr>
+        <tr><th>&nbsp;Type&nbsp;</th><th>Description</th><th>File Extension<br>(to force type)</th></tr>
+        <tr><td>0840 </td><td>8K ECONObanking </td><td>.084 </td></tr>
+        <tr><td>2IN1 &#185;</td><td>4-32K Multicart (2 games) </td><td>.2N1 </td></tr>
+        <tr><td>4IN1 &#185;</td><td>8-32K Multicart (4 games) </td><td>.4N1 </td></tr>
+        <tr><td>8IN1 &#185;</td><td>16-64K Multicart (8 games) </td><td>.8N1 </td></tr>
+        <tr><td>16IN1 &#185;</td><td>32-128K Multicart (16 games) </td><td>.16N </td></tr>
+        <tr><td>32IN1 &#185;</td><td>64-128K Multicart (32 games) </td><td>.32N </td></tr>
+        <tr><td>64IN1 &#185;</td><td>64/128K Multicart </td><td>.64N </td></tr>
+        <tr><td>128IN1 &#185;</td><td>256/512K Multicart </td><td>.128 </td></tr>
+        <tr><td>2K </td><td>64-2048 byte Atari </td><td>.2K </td></tr>
+        <tr><td>3E </td><td>32K Tigervision </td><td>.3E </td></tr>
+        <tr><td>3E+ </td><td>3E+ (TJ modified DASH) </td><td>.3EP </td></tr>
+        <tr><td>3F </td><td>512K Tigervision </td><td>.3F </td></tr>
+        <tr><td>4A50 &#178;</td><td>64K 4A50 + ram </td><td>.4A5 </td></tr>
+        <tr><td>4K </td><td>4K Atari </td><td>.4K </td></tr>
+        <tr><td>4KSC </td><td>CPUWIZ 4K + ram </td><td>.4KS </td></tr>
+        <tr><td>AR </td><td>Supercharger </td><td>.AR </td></tr>
+        <tr><td>BF </td><td>CPUWIZ 256K </td><td>.BF </td></tr>
+        <tr><td>BFSC </td><td>CPUWIZ 256K + ram</td><td>.BFS </td></tr>
+        <tr><td>BUS </td><td>Experimental</td><td>.BUS </td></tr>
+        <tr><td>CDF </td><td>Chris, Darrell, Fred</td><td>.CDF </td></tr>
+        <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td><td>.CM </td></tr>
+        <tr><td>CTY &#185;&#178;</td><td>CDW - Chetiry </td><td>.CTY </td></tr>
+        <tr><td>CV </td><td>Commavid extra ram </td><td>.CV </td></tr>
+        <tr><td>CV+ </td><td>Extended Commavid extra ram</td><td>.CVP </td></tr>
+        <tr><td>DASH </td><td>Boulder Dash 2 </td><td>.DAS </td></tr>
+        <tr><td>DF </td><td>CPUWIZ 128K </td><td>.DF </td></tr>
+        <tr><td>DFSC </td><td>CPUWIZ 128K + ram</td><td>.DFS </td></tr>
+        <tr><td>DPC </td><td>Pitfall II </td><td>.DPC </td></tr>
+        <tr><td>DPC+</td><td>Enhanced DPC </td><td>.DPP </td></tr>
+        <tr><td>E0 </td><td>8K Parker Bros </td><td>.E0 </td></tr>
+        <tr><td>E7 </td><td>16K M-network </td><td>.E7 </td></tr>
+        <tr><td>E78K </td><td>8K M-network </td><td>.E78 </td></tr>
+        <tr><td>EF </td><td>64K Homestar Runner </td><td>.EF </td></tr>
+        <tr><td>EFSC </td><td>64K Homestar Runner + ram</td><td>.EFS </td></tr>
+        <tr><td>F0 </td><td>Dynacom Megaboy </td><td>.F0 </td></tr>
+        <tr><td>F4 </td><td>32K Atari </td><td>.F4 </td></tr>
+        <tr><td>F4SC </td><td>32K Atari + ram </td><td>.F4S </td></tr>
+        <tr><td>F6 </td><td>16K Atari </td><td>.F6 </td></tr>
+        <tr><td>F6SC </td><td>16K Atari + ram </td><td>.F6S </td></tr>
+        <tr><td>F8 </td><td>8K Atari </td><td>.F8 </td></tr>
+        <tr><td>F8SC </td><td>8K Atari + ram </td><td>.F8S </td></tr>
+        <tr><td>FA </td><td>CBS RAM Plus </td><td>.FA </td></tr>
+        <tr><td>FA2 </td><td>CBS RAM Plus 24/28K </td><td>.FA2 </td></tr>
+        <tr><td>FE </td><td>8K Decathlon </td><td>.FE </td></tr>
+        <tr><td>MDM </td><td>Menu Driven Megacart </td><td>.MDM </td></tr>
+        <tr><td>SB </td><td>128-256k SUPERbanking </td><td>.SB </td></tr>
+        <tr><td>UA </td><td>8K UA Ltd. </td><td>.UA </td></tr>
+        <tr><td>WD </td><td>Wickstead Design </td><td>.WD </td></tr>
+        <tr><td>X07 &#185;</td><td>64K AtariAge </td><td>.X07 </td></tr>
       </table></td>
     </tr>
   </table>
 
   <a><img src="graphics/options_gameinfo_console.png"></a>
   <table CELLSPACING="10">
+    <tr>
+      <td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
+      <td>Indicates the default television setting for the
+      game. The value must be <b>Color</b> or <b>BW</b>.</td>
+    </tr>
+
     <tr>
       <td VALIGN="TOP"><i>Console.LeftDifficulty:</i></td>
       <td>Indicates the default difficulty setting for the left
@@ -3650,12 +3637,6 @@ Ms Pac-Man (Stella extended codes):
       <td VALIGN="TOP"><i>Console.RightDifficulty:</i></td>
       <td>Indicates the default difficulty setting for the
       right player. The value must be <b>A</b> or <b>B</b>.</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
-      <td>Indicates the default television setting for the
-      game. The value must be <b>Color</b> or <b>BW</b>.</td>
     </tr>
   </table>
 
@@ -3684,8 +3665,6 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>CompuMate </td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
         <tr><td>Mindlink </td><td>Mindlink controller.</td></tr>
       </table></td>
-
-      https://atariage.com/2600/programming/atarivox_mem_list.html
     </tr>
 
     <tr>
@@ -3777,7 +3756,7 @@ Ms Pac-Man (Stella extended codes):
 -->
   <p>The name of the properties file is configurable through the
   '<i>-propsfile</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>). If the
+  (see <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>). If the
   path for this file hasn't been set, the default filename will depend on the
   version of Stella, as follows:</p>
 
@@ -3842,7 +3821,7 @@ Ms Pac-Man (Stella extended codes):
 
   <p>The name of the palette file is configurable through the
   '<i>-palettefile</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>). If the
+  (see <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>). If the
   path for this file hasn't been set, the default filename will depend on the
   version of Stella, as follows:</p>
 

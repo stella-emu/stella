@@ -47,7 +47,7 @@ class CommandSender
   // TODO - allow for multiple targets, i.e. store targets in a list
   // and add methods addTarget/removeTarget.
   public:
-    CommandSender(CommandReceiver* target)
+    explicit CommandSender(CommandReceiver* target)
         : _target(target) { }
 
     virtual ~CommandSender() = default;

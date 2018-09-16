@@ -29,14 +29,15 @@ CartridgeFE::CartridgeFE(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(8192u, size));
   createCodeAccessBase(8192);
-
-  myStartBank = 0;  // Decathlon requires this, since there is no startup vector in bank 1
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFE::reset()
 {
-  bank(myStartBank);
+  // Decathlon requires this, since there is no startup vector in bank 1
+  initializeStartBank(0);
+
+  bank(startBank());
   myLastAccessWasFE = false;
 }
 
@@ -139,7 +140,6 @@ bool CartridgeFE::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(myBankOffset);
     out.putBool(myLastAccessWasFE);
   }
@@ -157,9 +157,6 @@ bool CartridgeFE::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myBankOffset = in.getShort();
     myLastAccessWasFE = in.getBool();
   }

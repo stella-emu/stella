@@ -34,7 +34,7 @@ CartridgeSBWidget::CartridgeSBWidget(
        << "Hotspots are from $800 to $"
        << Common::Base::HEX2 << (0x800 + myCart.bankCount() - 1) << ", including\n"
        << "mirrors ($900, $A00, $B00, ...)\n"
-       << "Startup bank = " << std::dec << cart.myStartBank << "\n";
+       << "Startup bank = " << std::dec << cart.startBank() << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
   for(uInt32 i = 0, offset = 0xFFC, spot = 0x800; i < myCart.bankCount();

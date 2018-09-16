@@ -185,7 +185,7 @@ void Ball::tick(bool isReceivingMclock)
     myRenderCounter = Count::renderCounterOffset;
 
     uInt8 starfieldDelta = (myCounter + 160 - myLastMovementTick) % 4;
-    if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) myRenderCounter++;
+    if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) ++myRenderCounter;
 
     switch (starfieldDelta) {
       case 3:
@@ -288,8 +288,6 @@ bool Ball::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putInt(collision);
     out.putInt(myCollisionMaskDisabled);
     out.putInt(myCollisionMaskEnabled);
@@ -330,9 +328,6 @@ bool Ball::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     collision = in.getInt();
     myCollisionMaskDisabled = in.getInt();
     myCollisionMaskEnabled = in.getInt();

@@ -62,7 +62,7 @@ class M6502 : public Serializable
     /**
       Create a new 6502 microprocessor.
     */
-    M6502(const Settings& settings);
+    explicit M6502(const Settings& settings);
     virtual ~M6502() = default;
 
   public:
@@ -213,13 +213,6 @@ class M6502 : public Serializable
       @return The result of the load.  True on success, false on failure.
     */
     bool load(Serializer& in) override;
-
-    /**
-      Get a null terminated string which is the processor's name (i.e. "M6532")
-
-      @return The name of the device
-    */
-    string name() const override { return "M6502"; }
 
 #ifdef DEBUGGER_SUPPORT
   public:

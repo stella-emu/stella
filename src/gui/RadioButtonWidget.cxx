@@ -198,7 +198,7 @@ void RadioButtonGroup::select(RadioButtonWidget* widget)
       setSelected(i);
       break;
     }
-    i++;
+    ++i;
   }
 }
 
@@ -211,7 +211,6 @@ void RadioButtonGroup::setSelected(uInt32 selected)
   for(const auto& w : myWidgets)
   {
     (static_cast<RadioButtonWidget*>(w))->setState(i == mySelected);
-    i++;
+    ++i;
   }
 }
-

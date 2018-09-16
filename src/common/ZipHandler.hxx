@@ -18,254 +18,296 @@
 #ifndef ZIP_HANDLER_HXX
 #define ZIP_HANDLER_HXX
 
+#include <array>
+
 #include "bspf.hxx"
-
-/***************************************************************************
-
-    Copyright Aaron Giles
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are
-    met:
-
-        * Redistributions of source code must retain the above copyright
-          notice, this list of conditions and the following disclaimer.
-        * Redistributions in binary form must reproduce the above copyright
-          notice, this list of conditions and the following disclaimer in
-          the documentation and/or other materials provided with the
-          distribution.
-        * Neither the name 'MAME' nor the names of its contributors may be
-          used to endorse or promote products derived from this software
-          without specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY AARON GILES ''AS IS'' AND ANY EXPRESS OR
-    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    DISCLAIMED. IN NO EVENT SHALL AARON GILES BE LIABLE FOR ANY DIRECT,
-    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-    STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
-    IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
-
-***************************************************************************/
-
-#define ZIP_DECOMPRESS_BUFSIZE  16384
 
 /**
   This class implements a thin wrapper around the zip file management code
   from the MAME project.
 
-  @author  Wrapper class by Stephen Anthony, with main functionality
-           by Aaron Giles
+  @author  Original code by Aaron Giles, ZipHandler wrapper class and heavy
+           modifications/refactoring by Stephen Anthony.
 */
 class ZipHandler
 {
   public:
     ZipHandler();
-    ~ZipHandler();
 
     // Open ZIP file for processing
+    // An exception will be thrown on any errors
     void open(const string& filename);
 
     // The following form an iterator for processing the filenames in the ZIP file
-    void reset();     // Reset iterator to first file
-    bool hasNext();   // Answer whether there are more files present
-    string next();    // Get next file
+    void reset();          // Reset iterator to first file
+    bool hasNext() const;  // Answer whether there are more files present
+    const string& next();  // Get next file
 
     // Decompress the currently selected file and return its length
     // An exception will be thrown on any errors
-    uInt32 decompress(BytePtr& image);
+    uInt64 decompress(BytePtr& image);
 
-    // Answer the number of ROM files found in the archive
-    // Currently, this means files with extension a26/bin/rom
-    uInt16 romFiles() const { return myZip ? myZip->romfiles : 0; }
-
-  private:
-    // Replaces functionaity of various osd_xxxx functions
-    static bool stream_open(const char* filename, fstream** stream, uInt64& length);
-    static void stream_close(fstream** stream);
-    static bool stream_read(fstream* stream, void* buffer, uInt64 offset,
-                            uInt32 length, uInt32& actual);
-
-    /* Error types */
-    enum zip_error
-    {
-      ZIPERR_NONE = 0,
-      ZIPERR_OUT_OF_MEMORY,
-      ZIPERR_FILE_ERROR,
-      ZIPERR_BAD_SIGNATURE,
-      ZIPERR_DECOMPRESS_ERROR,
-      ZIPERR_FILE_TRUNCATED,
-      ZIPERR_FILE_CORRUPT,
-      ZIPERR_UNSUPPORTED,
-      ZIPERR_BUFFER_TOO_SMALL
-    };
-
-    /* contains extracted file header information */
-    struct zip_file_header
-    {
-      uInt32      signature;            /* central file header signature */
-      uInt16      version_created;      /* version made by */
-      uInt16      version_needed;       /* version needed to extract */
-      uInt16      bit_flag;             /* general purpose bit flag */
-      uInt16      compression;          /* compression method */
-      uInt16      file_time;            /* last mod file time */
-      uInt16      file_date;            /* last mod file date */
-      uInt32      crc;                  /* crc-32 */
-      uInt32      compressed_length;    /* compressed size */
-      uInt32      uncompressed_length;  /* uncompressed size */
-      uInt16      filename_length;      /* filename length */
-      uInt16      extra_field_length;   /* extra field length */
-      uInt16      file_comment_length;  /* file comment length */
-      uInt16      start_disk_number;    /* disk number start */
-      uInt16      internal_attributes;  /* internal file attributes */
-      uInt32      external_attributes;  /* external file attributes */
-      uInt32      local_header_offset;  /* relative offset of local header */
-      const char* filename;     /* filename */
-
-      uInt8*      raw;          /* pointer to the raw data */
-      uInt32      rawlength;    /* length of the raw data */
-      uInt8       saved;        /* saved byte from after filename */
-    };
-
-    /* contains extracted end of central directory information */
-    struct zip_ecd
-    {
-      uInt32      signature;            /* end of central dir signature */
-      uInt16      disk_number;          /* number of this disk */
-      uInt16      cd_start_disk_number; /* number of the disk with the start of the central directory */
-      uInt16      cd_disk_entries;      /* total number of entries in the central directory on this disk */
-      uInt16      cd_total_entries;     /* total number of entries in the central directory */
-      uInt32      cd_size;              /* size of the central directory */
-      uInt32      cd_start_disk_offset; /* offset of start of central directory with respect to the starting disk number */
-      uInt16      comment_length;       /* .ZIP file comment length */
-      const char* comment;              /* .ZIP file comment */
-
-      uInt8*      raw;              /* pointer to the raw data */
-      uInt32      rawlength;        /* length of the raw data */
-    };
-
-    /* describes an open ZIP file */
-    struct zip_file
-    {
-      const char*     filename;   /* copy of ZIP filename (for caching) */
-      fstream*        file;       /* C++ fstream file handle */
-      uInt64          length;     /* length of zip file */
-      uInt16          romfiles;   /* number of ROM files in central directory */
-
-      zip_ecd         ecd;        /* end of central directory */
-
-      uInt8*          cd;         /* central directory raw data */
-      uInt32          cd_pos;     /* position in central directory */
-      zip_file_header header;     /* current file header */
-
-      uInt8 buffer[ZIP_DECOMPRESS_BUFSIZE]; /* buffer for decompression */
-    };
-
-    enum {
-      /* number of open files to cache */
-      ZIP_CACHE_SIZE = 8,
-
-      /* offsets in end of central directory structure */
-      ZIPESIG  = 0x00,
-      ZIPEDSK  = 0x04,
-      ZIPECEN  = 0x06,
-      ZIPENUM  = 0x08,
-      ZIPECENN = 0x0a,
-      ZIPECSZ  = 0x0c,
-      ZIPEOFST = 0x10,
-      ZIPECOML = 0x14,
-      ZIPECOM  = 0x16,
-
-      /* offsets in central directory entry structure */
-      ZIPCENSIG = 0x00,
-      ZIPCVER   = 0x04,
-      ZIPCOS    = 0x05,
-      ZIPCVXT   = 0x06,
-      ZIPCEXOS  = 0x07,
-      ZIPCFLG   = 0x08,
-      ZIPCMTHD  = 0x0a,
-      ZIPCTIM   = 0x0c,
-      ZIPCDAT   = 0x0e,
-      ZIPCCRC   = 0x10,
-      ZIPCSIZ   = 0x14,
-      ZIPCUNC   = 0x18,
-      ZIPCFNL   = 0x1c,
-      ZIPCXTL   = 0x1e,
-      ZIPCCML   = 0x20,
-      ZIPDSK    = 0x22,
-      ZIPINT    = 0x24,
-      ZIPEXT    = 0x26,
-      ZIPOFST   = 0x2a,
-      ZIPCFN    = 0x2e,
-
-      /* offsets in local file header structure */
-      ZIPLOCSIG = 0x00,
-      ZIPVER    = 0x04,
-      ZIPGENFLG = 0x06,
-      ZIPMTHD   = 0x08,
-      ZIPTIME   = 0x0a,
-      ZIPDATE   = 0x0c,
-      ZIPCRC    = 0x0e,
-      ZIPSIZE   = 0x12,
-      ZIPUNCMP  = 0x16,
-      ZIPFNLN   = 0x1a,
-      ZIPXTRALN = 0x1c,
-      ZIPNAME   = 0x1e
-    };
+    // Answer the number of ROM files (with a valid extension) found
+    uInt16 romFiles() const { return myZip ? myZip->myRomfiles : 0; }
 
   private:
-    /* ----- ZIP file access ----- */
-
-    /* open a ZIP file and parse its central directory */
-    zip_error zip_file_open(const char* filename, zip_file** zip);
-
-    /* close a ZIP file (may actually be left open due to caching) */
-    void zip_file_close(zip_file* zip);
-
-    /* clear out all open ZIP files from the cache */
-    void zip_file_cache_clear();
-
-
-    /* ----- contained file access ----- */
-
-    /* find the next file in the ZIP */
-    const zip_file_header* zip_file_next_file(zip_file* zip);
-
-    /* decompress the most recently found file in the ZIP */
-    zip_error zip_file_decompress(zip_file* zip, void* buffer, uInt32 length);
-
-    inline static uInt16 read_word(uInt8* buf)
+    // Error types
+    enum class ZipError
     {
-      uInt16 p0 = uInt16(buf[0]), p1 = uInt16(buf[1]);
-      return (p1 << 8) | p0;
-    }
+      NONE = 0,
+      OUT_OF_MEMORY,
+      FILE_ERROR,
+      BAD_SIGNATURE,
+      DECOMPRESS_ERROR,
+      FILE_TRUNCATED,
+      FILE_CORRUPT,
+      UNSUPPORTED,
+      LZMA_UNSUPPORTED,
+      BUFFER_TOO_SMALL
+    };
 
-    inline static uInt32 read_dword(uInt8* buf)
+    // Contains extracted file header information
+    struct ZipHeader
     {
-      return (buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0];
-    }
+      uInt16 versionCreated;      // version made by
+      uInt16 versionNeeded;       // version needed to extract
+      uInt16 bitFlag;             // general purpose bit flag
+      uInt16 compression;         // compression method
+      uInt16 fileTime;            // last mod file time
+      uInt16 fileDate;            // last mod file date
+      uInt32 crc;                 // crc-32
+      uInt64 compressedLength;    // compressed size
+      uInt64 uncompressedLength;  // uncompressed size
+      uInt32 startDiskNumber;     // disk number start
+      uInt64 localHeaderOffset;   // relative offset of local header
+      string filename;            // filename
 
-    /* cache management */
-    static void free_zip_file(zip_file* zip);
+      /** Constructor */
+      ZipHeader();
+    };
 
-    /* ZIP file parsing */
-    static zip_error read_ecd(zip_file* zip);
-    static zip_error get_compressed_data_offset(zip_file* zip, uInt64& offset);
+    // Contains extracted end of central directory information
+    struct ZipEcd
+    {
+      uInt32 diskNumber;        // number of this disk
+      uInt32 cdStartDiskNumber; // number of the disk with the start of the central directory
+      uInt64 cdDiskEntries;     // total number of entries in the central directory on this disk
+      uInt64 cdTotalEntries;    // total number of entries in the central directory
+      uInt64 cdSize;            // size of the central directory
+      uInt64 cdStartDiskOffset; // offset of start of central directory with respect to the starting disk number
 
-    /* decompression interfaces */
-    static zip_error decompress_data_type_0(zip_file* zip, uInt64 offset,
-                                            void* buffer, uInt32 length);
-    static zip_error decompress_data_type_8(zip_file* zip, uInt64 offset,
-                                            void* buffer, uInt32 length);
+      /** Constructor */
+      ZipEcd();
+    };
+
+    // Describes an open ZIP file
+    struct ZipFile
+    {
+      string  myFilename; // copy of ZIP filename (for caching)
+      fstream myStream;   // C++ fstream file handle
+      uInt64  myLength;   // length of zip file
+      uInt16  myRomfiles; // number of ROM files in central directory
+
+      ZipEcd    myEcd;    // end of central directory
+
+      BytePtr   myCd;     // central directory raw data
+      uInt64    myCdPos;  // position in central directory
+      ZipHeader myHeader; // current file header
+
+      BytePtr myBuffer;   // buffer for decompression
+
+      /** Constructor */
+      explicit ZipFile(const string& filename);
+
+      /** Open the file and set up the internal stream buffer*/
+      bool open();
+
+      /** Read the ZIP contents from the internal stream buffer */
+      void initialize();
+
+      /** Close previously opened internal stream buffer */
+      void close();
+
+      /** Read the ECD data */
+      void readEcd();
+
+      /** Read data from stream */
+      bool readStream(BytePtr& out, uInt64 offset, uInt64 length, uInt64& actual);
+
+      /** Return the next entry in the ZIP file */
+      const ZipHeader* const nextFile();
+
+      /** Decompress the most recently found file in the ZIP into target buffer */
+      void decompress(BytePtr& out, uInt64 length);
+
+      /** Return the offset of the compressed data */
+      uInt64 getCompressedDataOffset();
+
+      /** Decompress type 0 data (which is uncompressed) */
+      void decompressDataType0(uInt64 offset, BytePtr& out, uInt64 length);
+
+      /** Decompress type 8 data (which is deflated) */
+      void decompressDataType8(uInt64 offset, BytePtr& out, uInt64 length);
+    };
+    using ZipFilePtr = unique_ptr<ZipFile>;
+
+    /** Classes to parse the ZIP metadata in an abstracted way */
+    class ReaderBase
+    {
+      protected:
+        explicit ReaderBase(const uInt8* const b) : myBuf(b) { }
+
+        uInt8 read_byte(size_t offs) const
+        {
+          return myBuf[offs];
+        }
+        uInt16 read_word(size_t offs) const
+        {
+          return (uInt16(myBuf[offs + 1]) << 8) |
+                 (uInt16(myBuf[offs + 0]) << 0);
+        }
+        uInt32 read_dword(std::size_t offs) const
+        {
+          return (uInt32(myBuf[offs + 3]) << 24) |
+                 (uInt32(myBuf[offs + 2]) << 16) |
+                 (uInt32(myBuf[offs + 1]) << 8)  |
+                 (uInt32(myBuf[offs + 0]) << 0);
+        }
+        uInt64 read_qword(size_t offs) const
+        {
+          return (uInt64(myBuf[offs + 7]) << 56) |
+                 (uInt64(myBuf[offs + 6]) << 48) |
+                 (uInt64(myBuf[offs + 5]) << 40) |
+                 (uInt64(myBuf[offs + 4]) << 32) |
+                 (uInt64(myBuf[offs + 3]) << 24) |
+                 (uInt64(myBuf[offs + 2]) << 16) |
+                 (uInt64(myBuf[offs + 1]) << 8)  |
+                 (uInt64(myBuf[offs + 0]) << 0);
+        }
+        string read_string(size_t offs, size_t len = string::npos) const
+        {
+          return string(reinterpret_cast<char const *>(myBuf + offs), len);
+        }
+
+      private:
+        const uInt8* const myBuf;
+    };
+
+    class LocalFileHeaderReader : public ReaderBase
+    {
+      public:
+        explicit LocalFileHeaderReader(const uInt8* const b) : ReaderBase(b) { }
+
+        uInt32  signature() const         { return read_dword(0x00); }
+        uInt8   versionNeeded() const     { return read_byte(0x04);  }
+        uInt8   osNeeded() const          { return read_byte(0x05);  }
+        uInt16  generalFlag() const       { return read_word(0x06);  }
+        uInt16  compressionMethod() const { return read_word(0x08);  }
+        uInt16  modifiedTime() const      { return read_word(0x0a);  }
+        uInt16  modifiedDate() const      { return read_word(0x0c);  }
+        uInt32  crc32() const             { return read_dword(0x0e); }
+        uInt32  compressedSize() const    { return read_dword(0x12); }
+        uInt32  uncompressedSize() const  { return read_dword(0x16); }
+        uInt16  filenameLength() const    { return read_word(0x1a);  }
+        uInt16  extraFieldLength() const  { return read_word(0x1c);  }
+        string  filename() const          { return read_string(0x1e, filenameLength()); }
+
+        bool signatureCorrect() const  { return signature() == 0x04034b50; }
+
+        size_t totalLength() const { return minimumLength() + filenameLength() + extraFieldLength(); }
+        static size_t minimumLength() { return 0x1e; }
+    };
+
+    class CentralDirEntryReader : public ReaderBase
+    {
+      public:
+        explicit CentralDirEntryReader(const uInt8* const b) : ReaderBase(b) { }
+
+        uInt32 signature() const          { return read_dword(0x00); }
+        uInt8  versionCreated() const     { return read_byte(0x04);  }
+        uInt8  osCreated() const          { return read_byte(0x05);  }
+        uInt8  versionNeeded() const      { return read_byte(0x06);  }
+        uInt8  osNeeded() const           { return read_byte(0x07);  }
+        uInt16 generalFlag() const        { return read_word(0x08);  }
+        uInt16 compressionMethod() const  { return read_word(0x0a);  }
+        uInt16 modifiedTime() const       { return read_word(0x0c);  }
+        uInt16 modifiedDate() const       { return read_word(0x0e);  }
+        uInt32 crc32() const              { return read_dword(0x10); }
+        uInt32 compressedSize() const     { return read_dword(0x14); }
+        uInt32 uncompressedSize() const   { return read_dword(0x18); }
+        uInt16 filenameLength() const     { return read_word(0x1c);  }
+        uInt16 extraFieldLength() const   { return read_word(0x1e);  }
+        uInt16 fileCommentLength() const  { return read_word(0x20);  }
+        uInt16 startDisk() const          { return read_word(0x22);  }
+        uInt16 intFileAttr() const        { return read_word(0x24);  }
+        uInt32 extFileAttr() const        { return read_dword(0x26); }
+        uInt32 headerOffset() const       { return read_dword(0x2a); }
+        string filename() const           { return read_string(0x2e, filenameLength()); }
+        string fileComment() const        { return read_string(0x2e + filenameLength() + extraFieldLength(), fileCommentLength()); }
+
+        bool signatureCorrect() const { return signature() == 0x02014b50; }
+
+        size_t totalLength() const { return minimumLength() + filenameLength() + extraFieldLength() + fileCommentLength(); }
+        static size_t minimumLength() { return 0x2e; }
+    };
+
+    class EcdReader : public ReaderBase
+    {
+      public:
+        explicit EcdReader(const uInt8* const b) : ReaderBase(b) { }
+
+        uInt32 signature() const       { return read_dword(0x00); }
+        uInt16 thisDiskNo() const      { return read_word(0x04);  }
+        uInt16 dirStartDisk() const    { return read_word(0x06);  }
+        uInt16 dirDiskEntries() const  { return read_word(0x08);  }
+        uInt16 dirTotalEntries() const { return read_word(0x0a);  }
+        uInt32 dirSize() const         { return read_dword(0x0c); }
+        uInt32 dirOffset() const       { return read_dword(0x10); }
+        uInt16 commentLength() const   { return read_word(0x14);  }
+        string comment() const         { return read_string(0x16, commentLength()); }
+
+        bool signatureCorrect() const  { return signature() == 0x06054b50; }
+
+        size_t totalLength() const { return minimumLength() + commentLength(); }
+        static size_t minimumLength() { return 0x16; }
+    };
+
+    class GeneralFlagReader
+    {
+      public:
+        explicit GeneralFlagReader(uInt16 val) : myValue(val) { }
+
+        bool   encrypted() const           { return bool(myValue & 0x0001); }
+        bool   implode8kDict() const       { return bool(myValue & 0x0002); }
+        bool   implode3Trees() const       { return bool(myValue & 0x0004); }
+        uInt32 deflateOption() const       { return uInt32((myValue >> 1) & 0x0003); }
+        bool   lzmaEosMark() const         { return bool(myValue & 0x0002); }
+        bool   useDescriptor() const       { return bool(myValue & 0x0008); }
+        bool   patchData() const           { return bool(myValue & 0x0020); }
+        bool   strongEncryption() const    { return bool(myValue & 0x0040); }
+        bool   utf8Encoding() const        { return bool(myValue & 0x0800); }
+        bool   directoryEncryption() const { return bool(myValue & 0x2000); }
+
+      private:
+        uInt16 myValue;
+    };
 
   private:
-    zip_file* myZip;
-    zip_file* myZipCache[ZIP_CACHE_SIZE];
+    /** Get message for given ZipError enumeration */
+    string errorMessage(ZipError err) const;
+
+    /** Search cache for given ZIP file */
+    ZipFilePtr findCached(const string& filename);
+
+    /** Close a ZIP file and add it to the cache */
+    void addToCache();
+
+  private:
+    static constexpr uInt32 DECOMPRESS_BUFSIZE = 16384;
+    static constexpr uInt32 CACHE_SIZE = 8; // number of open files to cache
+
+    ZipFilePtr myZip;
+    std::array<ZipFilePtr, CACHE_SIZE> myZipCache;
 
   private:
     // Following constructors and assignment operators not supported

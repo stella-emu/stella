@@ -454,13 +454,13 @@ bool EditableWidget::moveWord(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::copySelectedText()
 {
-  _clippedText = _editString;
+//  _clippedText = _editString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::pasteSelectedText()
 {
-  _editString = _clippedText;
+//  _editString = _clippedText;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

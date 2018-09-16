@@ -62,7 +62,7 @@ class System;
 class Controller : public Serializable
 {
   /**
-    Riot debug class needs special access to the underlying controller state
+    Various classes that need special access to the underlying controller state
   */
   friend class M6532;
   friend class RiotDebug;
@@ -216,7 +216,7 @@ class Controller : public Serializable
     */
     virtual string about(bool swappedPorts) const
     {
-      return name() + " in " + ((myJack == Left) ^ swappedPorts ?
+      return name() + " in " + (((myJack == Left) ^ swappedPorts) ?
           "left port" : "right port");
     }
 
@@ -251,7 +251,7 @@ class Controller : public Serializable
     /**
       Returns the name of this controller.
     */
-    string name() const override { return myName; }
+    string name() const { return myName; }
 
     /**
       Inject a callback to be notified on analog pin updates.

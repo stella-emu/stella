@@ -82,8 +82,6 @@ bool Background::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
-
     out.putByte(myColor);
     out.putByte(myObjectColor);
     out.putByte(myDebugColor);
@@ -103,9 +101,6 @@ bool Background::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     myColor = in.getByte();
     myObjectColor = in.getByte();
     myDebugColor = in.getByte();

@@ -36,7 +36,7 @@ class Launcher : public DialogContainer
     /**
       Create a new menu stack
     */
-    Launcher(OSystem& osystem);
+    explicit Launcher(OSystem& osystem);
     virtual ~Launcher() = default;
 
     /**

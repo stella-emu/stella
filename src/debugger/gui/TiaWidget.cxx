@@ -173,7 +173,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myGRP0 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP0->setTarget(this);
   myGRP0->setID(kGRP0ID);
-  myGRP0->setBackgroundColor(-1);
+  myGRP0->clearBackgroundColor();
   addFocusWidget(myGRP0);
 
   // posP0
@@ -220,7 +220,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myGRP0Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP0Old->setTarget(this);
   myGRP0Old->setID(kGRP0OldID);
-  myGRP0Old->setBackgroundColor(-1);
+  myGRP0Old->clearBackgroundColor();
   addFocusWidget(myGRP0Old);
 
   // P0 delay
@@ -258,7 +258,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myGRP1 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP1->setTarget(this);
   myGRP1->setID(kGRP1ID);
-  myGRP1->setBackgroundColor(-1);
+  myGRP1->clearBackgroundColor();
   addFocusWidget(myGRP1);
 
   // posP1
@@ -304,7 +304,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myGRP1Old = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 8, 1);
   myGRP1Old->setTarget(this);
   myGRP1Old->setID(kGRP1OldID);
-  myGRP1Old->setBackgroundColor(-1);
+  myGRP1Old->clearBackgroundColor();
   addFocusWidget(myGRP1Old);
 
   // P1 delay
@@ -342,7 +342,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myEnaM0 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaM0->setTarget(this);
   myEnaM0->setID(kEnaM0ID);
-  myEnaM0->setBackgroundColor(-1);
+  myEnaM0->clearBackgroundColor();
   addFocusWidget(myEnaM0);
 
   // posM0
@@ -405,7 +405,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myEnaM1 = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaM1->setTarget(this);
   myEnaM1->setID(kEnaM1ID);
-  myEnaM1->setBackgroundColor(-1);
+  myEnaM1->clearBackgroundColor();
   addFocusWidget(myEnaM1);
 
   // posM0
@@ -468,7 +468,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myEnaBL = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaBL->setTarget(this);
   myEnaBL->setID(kEnaBLID);
-  myEnaBL->setBackgroundColor(-1);
+  myEnaBL->clearBackgroundColor();
   addFocusWidget(myEnaBL);
 
   // posBL
@@ -517,7 +517,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myEnaBLOld = new TogglePixelWidget(boss, nfont, xpos, ypos+1, 1, 1);
   myEnaBLOld->setTarget(this);
   myEnaBLOld->setID(kEnaBLOldID);
-  myEnaBLOld->setBackgroundColor(-1);
+  myEnaBLOld->clearBackgroundColor();
   addFocusWidget(myEnaBLOld);
 
   // Ball delay
@@ -941,7 +941,7 @@ void TiaWidget::loadConfig()
 
   // Color registers
   alist.clear();  vlist.clear();  changed.clear();
-  for(uInt32 i = 0; i < 4; i++)
+  for(uInt32 i = 0; i < 4; ++i)
   {
     alist.push_back(i);
     vlist.push_back(state.coluRegs[i]);
