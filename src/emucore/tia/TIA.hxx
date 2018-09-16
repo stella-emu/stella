@@ -137,6 +137,11 @@ class TIA : public Device
     void reset() override;
 
     /**
+      Reset frame to current YStart/Height properties.
+    */
+    void frameReset();
+
+    /**
       Install TIA in the specified system.  Invoked by the system
       when the TIA is attached to it.
 
@@ -249,7 +254,7 @@ class TIA : public Device
     /**
       Changes the current Height/YStart properties.
       Note that calls to these method(s) must be eventually followed by
-      ::reset() for the changes to take effect.
+      ::frameReset() for the changes to take effect.
     */
     void setHeight(uInt32 height) { myFrameManager->setFixedHeight(height); }
     void setYStart(uInt32 ystart) { myFrameManager->setYstart(ystart); }

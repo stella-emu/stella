@@ -531,22 +531,18 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Controller_MouseAxis, mcontrol);
 
   // Display properties
-  const string& ystart = myGameProperties.get(Display_YStart);
-  uInt32 oldYStart = atoi(ystart.c_str());
-  const string& height = myGameProperties.get(Display_Height);
-  uInt32 oldHeight = atoi(height.c_str());
-
+  myGameProperties.set(Display_YStart, myYStart->getValue() == 0 ? "0" : myYStart->getValueLabel());
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
-  myGameProperties.set(Display_YStart, myYStart->getValueLabel() == "Auto" ? "0" :
-                       myYStart->getValueLabel());
   myGameProperties.set(Display_Height, myHeight->getValueLabel() == "Auto" ? "0" :
                        myHeight->getValueLabel());
   myGameProperties.set(Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
+
   myGameProperties.set(Display_PPBlend, myPPBlend->getValueLabel() == "Default" ? "0" :
                        myPPBlend->getValueLabel());
 
   // Always insert; if the properties are already present, nothing will happen
   instance().propSet().insert(myGameProperties);
+  instance().saveConfig();
 
   // In any event, inform the Console
   if(instance().hasConsole())
@@ -563,28 +559,14 @@ void GameInfoDialog::saveConfig()
 
     // update 'Display' tab settings immediately
     instance().console().setFormat(myFormat->getSelected());
+    instance().console().updateYStart(myYStart->getValue());
 
-    // only call tia().reset() when values have changed
-    bool reset = false;
-    if(uInt32((myYStart->getValue()) != 0 || oldYStart != 0) &&
-      uInt32(myYStart->getValue()) != instance().console().tia().ystart())
-    {
-      instance().console().updateYStart(myYStart->getValue());
-      reset = true;
-    }
-    if(uInt32((myHeight->getValue()) != TIAConstants::minViewableHeight - 1 || oldHeight != 0) &&
+    if(uInt32(myHeight->getValue()) != TIAConstants::minViewableHeight - 1 &&
        uInt32(myHeight->getValue()) != instance().console().tia().height())
     {
       instance().console().tia().setHeight(myHeight->getValue());
-      reset = true;
     }
     instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
-    if (reset)
-      instance().console().tia().reset();
-
-    // Certain calls above may blank the TIA image (notably, setFormat)
-    // So we make sure we have a valid image when the dialog exits
-    instance().console().tia().renderToFrameBuffer();
   }
 }
 

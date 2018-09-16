@@ -178,7 +178,7 @@ void TIA::reset()
   if (myFrameManager)
   {
     myFrameManager->reset();
-    enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
+    frameReset();  // Recalculate the size of the display
   }
 
   myFrontBufferScanlines = myFrameBufferScanlines = 0;
@@ -189,14 +189,18 @@ void TIA::reset()
   enableFixedColors(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.debugcolors" : "plr.debugcolors"));
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
 
-  // Blank the various framebuffers; they may contain graphical garbage
-  memset(myBackBuffer, 0, 160 * TIAConstants::frameBufferHeight);
-  memset(myFrontBuffer, 0, 160 * TIAConstants::frameBufferHeight);
-  memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
-
 #ifdef DEBUGGER_SUPPORT
   createAccessBase();
 #endif // DEBUGGER_SUPPORT
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::frameReset()
+{
+  memset(myBackBuffer, 0, 160 * TIAConstants::frameBufferHeight);
+  memset(myFrontBuffer, 0, 160 * TIAConstants::frameBufferHeight);
+  memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
+  enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
