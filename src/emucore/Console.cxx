@@ -734,7 +734,8 @@ void Console::updateYStart(uInt32 ystart)
     redetectYStart();
     myYStartAutodetected = true;
     ystart = myAutodetectedYstart;
-  }
+  } else
+    myYStartAutodetected = false;
 
   if (ystart != myTIA->ystart()) myTIA->setYStart(ystart);
 }
