@@ -30,15 +30,16 @@ CartridgeCM::CartridgeCM(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(16384u, size));
   createCodeAccessBase(16384);
-
-  // On powerup, the last bank of ROM is enabled and RAM is disabled
-  initializeStartBank(mySWCHA & 0x3);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCM::reset()
 {
   initializeRAM(myRAM, 2048);
+
+  // On powerup, the last bank of ROM is enabled and RAM is disabled
+  mySWCHA = 0xFF;
+  initializeStartBank(mySWCHA & 0x3);
 
   // Upon reset we switch to the startup bank
   bank(startBank());

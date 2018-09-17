@@ -78,6 +78,9 @@ void CartridgeBUS::reset()
 {
   initializeRAM(myBUSRAM+2048, 8192-2048);
 
+  // BUS always starts in bank 6
+  initializeStartBank(6);
+
   // Update cycles to the current system cycles
   myAudioCycles = myARMCycles = 0;
   myFractionalClocks = 0.0;
@@ -96,9 +99,6 @@ void CartridgeBUS::setInitialState()
 
   for (int i=0; i < 3; ++i)
     myMusicWaveformSize[i] = 27;
-
-  // BUS always starts in bank 6
-  initializeStartBank(6);
 
   // Assuming mode starts out with Fast Fetch off and 3-Voice music,
   // need to confirm with Chris

@@ -81,6 +81,9 @@ void CartridgeCDF::reset()
 {
   initializeRAM(myCDFRAM+2048, 8192-2048);
 
+  // CDF always starts in bank 6
+  initializeStartBank(6);
+
   myAudioCycles = myARMCycles = 0;
   myFractionalClocks = 0.0;
 
@@ -98,9 +101,6 @@ void CartridgeCDF::setInitialState()
 
   for (int i=0; i < 3; ++i)
     myMusicWaveformSize[i] = 27;
-
-  // CDF always starts in bank 6
-  initializeStartBank(6);
 
   // Assuming mode starts out with Fast Fetch off and 3-Voice music,
   // need to confirm with Chris

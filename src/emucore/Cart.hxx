@@ -218,6 +218,9 @@ class Cartridge : public Device
       will take both randomization and properties settings into account.
       See the actual method for more information on the logic used.
 
+      NOTE: If this method is used, it *must* be called from the cart reset()
+            method, *not* from the c'tor.
+
       @param defaultBank  The actual bank to use during reset
 
       @return  The bank number that was determined
