@@ -433,7 +433,9 @@ Bankswitch::Type CartDetector::autodetectType(const BytePtr& image, uInt32 size)
   }
   else if(size == 32*1024)  // 32K
   {
-    if(isProbablySC(image, size))
+    if (isProbablyCTY(image, size))
+      type = Bankswitch::Type::_CTY;
+    else if(isProbablySC(image, size))
       type = Bankswitch::Type::_F4SC;
     else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
