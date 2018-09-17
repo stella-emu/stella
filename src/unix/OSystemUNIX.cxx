@@ -17,6 +17,8 @@
 
 #include <cstdlib>
 
+#include "FSNode.hxx"
+#include "Version.hxx"
 #include "OSystemUNIX.hxx"
 
 /**
@@ -38,7 +40,17 @@ OSystemUNIX::OSystemUNIX()
   if(configDir == nullptr)  configDir = "~/.config";
 
   string stellaDir = string(configDir) + "/stella";
-
   setBaseDir(stellaDir);
-  setConfigFile(stellaDir + "/stellarc");
+
+  // (Currently) non-documented alternative for using version-specific
+  // config file
+  ostringstream buf;
+  buf << stellaDir << "/stellarc" << "-" << STELLA_VERSION;
+
+  // Use version-specific config file only if it already exists
+  FilesystemNode altConfigFile(buf.str());
+  if(altConfigFile.exists() && altConfigFile.isWritable())
+    setConfigFile(altConfigFile.getPath());
+  else
+    setConfigFile(stellaDir + "/stellarc");
 }
