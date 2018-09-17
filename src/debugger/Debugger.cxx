@@ -156,9 +156,10 @@ void Debugger::quit(bool exitrom)
   if(exitrom)
     myOSystem.eventHandler().handleEvent(Event::LauncherMode, 1);
   else
+  {
     myOSystem.eventHandler().leaveDebugMode();
-
-  myOSystem.console().tia().clearPendingFrame();
+    myOSystem.console().tia().clearPendingFrame();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
