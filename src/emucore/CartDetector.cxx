@@ -445,10 +445,15 @@ Bankswitch::Type CartDetector::autodetectType(const BytePtr& image, uInt32 size)
       type = Bankswitch::Type::_CDF;
     else if(isProbablyDPCplus(image, size))
       type = Bankswitch::Type::_DPCP;
-    else if(isProbablyCTY(image, size))
-      type = Bankswitch::Type::_CTY;
     else if(isProbablyFA2(image, size))
       type = Bankswitch::Type::_FA2;
+    else
+      type = Bankswitch::Type::_F4;
+  }
+  else if(size == 60*1024)  // 60K
+  {
+    if(isProbablyCTY(image, size))
+      type = Bankswitch::Type::_CTY;
     else
       type = Bankswitch::Type::_F4;
   }
@@ -662,9 +667,10 @@ bool CartDetector::isProbably4A50(const BytePtr& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyCTY(const BytePtr&, uInt32)
+bool CartDetector::isProbablyCTY(const BytePtr& image, uInt32 size)
 {
-  return false;  // TODO - add autodetection
+  uInt8 signature[] = { 'L', 'E', 'N', 'I', 'N' };
+  return searchForBytes(image.get(), size, signature, 5, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

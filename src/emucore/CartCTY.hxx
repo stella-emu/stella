@@ -83,8 +83,6 @@ class System;
       The tune table functionality is also based on Harmony EEPROM, where
       7 4K tunes are stored (28K total).  The 'index' for operation 1 can
       therefore be in the range 0 - 6, indicating which tune to load.
-      For this implementation, the 28K tune data is in the 'CartCTYTunes'
-      header file.
 
   DPC+:
     The music functionality is quite similar to the DPC+ scheme.
@@ -256,12 +254,17 @@ class CartridgeCTY : public Cartridge
     */
     void updateMusicModeDataFetchers();
 
+    void updateTune();
+
   private:
     // OSsytem currently in use
     const OSystem& myOSystem;
 
     // The 32K ROM image of the cartridge
     uInt8 myImage[32768];
+
+    // The 28K ROM image of the music
+    uInt8 myTuneData[28*1024];
 
     // The 64 bytes of RAM accessible at $1000 - $1080
     uInt8 myRAM[64];
@@ -270,11 +273,17 @@ class CartridgeCTY : public Cartridge
     uInt8 myOperationType;
 
     // Pointer to the 28K frequency table (points to the start of one
-    // of seven 4K tunes in CartCTYTunes)
+    // of seven 4K tunes in myTuneData)
     const uInt8* myFrequencyImage;
 
     // The counter register for the data fetcher
-    uInt16 myCounter;
+    uInt16 myTunePosition;
+
+    // The music mode counters
+    uInt32 myMusicCounters[3];
+
+    // The music frequency
+    uInt32 myMusicFrequencies[3];
 
     // Flags that last byte peeked was A9 (LDA #)
     bool myLDAimmediate;
@@ -300,6 +309,8 @@ class CartridgeCTY : public Cartridge
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
+
+    static const uInt32 ourFrequencyTable[63];
 
   private:
     // Following constructors and assignment operators not supported
