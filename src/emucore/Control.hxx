@@ -108,7 +108,7 @@ class Controller : public Serializable
       @param system The system using this controller
       @param type   The type for this controller
     */
-    Controller(Jack jack, const Event& event, const System& system,
+    Controller(Jack jack, Event& event, const System& system,
                Type type);
     virtual ~Controller() = default;
 
@@ -275,7 +275,7 @@ class Controller : public Serializable
     const Jack myJack;
 
     /// Reference to the event object this controller uses
-    const Event& myEvent;
+    Event& myEvent;
 
     /// Pointer to the System object (used for timing purposes)
     const System& mySystem;

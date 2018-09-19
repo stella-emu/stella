@@ -21,7 +21,7 @@
 #include "KidVid.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KidVid::KidVid(Jack jack, const Event& event, const System& system,
+KidVid::KidVid(Jack jack, Event& event, const System& system,
                const string& rommd5)
   : Controller(jack, event, system, Controller::KidVid),
     myEnabled(myJack == Right),

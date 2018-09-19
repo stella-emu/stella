@@ -23,7 +23,7 @@
 #include "PointingDevice.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PointingDevice::PointingDevice(Jack jack, const Event& event,
+PointingDevice::PointingDevice(Jack jack, Event& event,
                                const System& system, Controller::Type type,
                                float sensitivity)
   : Controller(jack, event, system, type),

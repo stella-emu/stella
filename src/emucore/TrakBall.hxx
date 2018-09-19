@@ -30,7 +30,7 @@ class TrakBall : public PointingDevice
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    TrakBall(Jack jack, const Event& event, const System& system)
+    TrakBall(Jack jack, Event& event, const System& system)
       : PointingDevice(jack, event, system, Controller::TrakBall,
         trackballSensitivity) { }
     virtual ~TrakBall() = default;

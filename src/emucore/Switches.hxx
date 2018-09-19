@@ -46,7 +46,7 @@ class Switches : public Serializable
       @param props The ROM properties to use for the currently enabled ROM
       @param settings The settings used by the system
     */
-    Switches(const Event& event, const Properties& props, const Settings& settings);
+    Switches(Event& event, const Properties& props, const Settings& settings);
     virtual ~Switches() = default;
 
   public:
@@ -124,7 +124,7 @@ class Switches : public Serializable
 
   private:
     // Reference to the event object to use
-    const Event& myEvent;
+    Event& myEvent;
 
     // State of the console switches
     uInt8 mySwitches;

@@ -30,7 +30,7 @@ class AtariMouse : public PointingDevice
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    AtariMouse(Jack jack, const Event& event, const System& system)
+    AtariMouse(Jack jack, Event& event, const System& system)
       : PointingDevice(jack, event, system, Controller::AtariMouse,
         trackballSensitivity) { }
     virtual ~AtariMouse() = default;

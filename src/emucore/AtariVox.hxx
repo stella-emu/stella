@@ -45,7 +45,7 @@ class AtariVox : public SaveKey
       @param portname   Name of the port used for reading and writing
       @param eepromfile The file containing the EEPROM data
     */
-    AtariVox(Jack jack, const Event& event, const System& system,
+    AtariVox(Jack jack, Event& event, const System& system,
              const SerialPort& port, const string& portname,
              const string& eepromfile);
     virtual ~AtariVox() = default;

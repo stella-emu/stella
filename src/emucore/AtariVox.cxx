@@ -20,7 +20,7 @@
 #include "AtariVox.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
+AtariVox::AtariVox(Jack jack, Event& event, const System& system,
                    const SerialPort& port, const string& portname,
                    const string& eepromfile)
   : SaveKey(jack, event, system, eepromfile, Controller::AtariVox),

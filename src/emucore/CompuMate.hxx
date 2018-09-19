@@ -50,7 +50,7 @@ class CompuMate
       @param event    The event object to use for events
       @param system   The system using this controller
     */
-    CompuMate(const Console& console, const Event& event, const System& system);
+    CompuMate(const Console& console, Event& event, const System& system);
     virtual ~CompuMate() = default;  // Controllers are deleted outside this class
 
     /**
@@ -98,7 +98,7 @@ class CompuMate
           @param event    The event object to use for events
           @param system   The system using this controller
         */
-        CMControl(class CompuMate& handler, Controller::Jack jack, const Event& event,
+        CMControl(class CompuMate& handler, Controller::Jack jack, Event& event,
                   const System& system)
           : Controller(jack, event, system, Controller::CompuMate),
             myHandler(handler) { }
@@ -134,7 +134,6 @@ class CompuMate
   private:
     // Console and Event objects
     const Console& myConsole;
-    const Event& myEvent;
 
     // Left and right controllers
     unique_ptr<Controller> myLeftController, myRightController;
@@ -143,11 +142,7 @@ class CompuMate
     uInt8 myColumn;
 
     // The keyboard state array (tells us the current state of the keyboard)
-    const bool* myKeyTable;
-
-    // Array of keyboard key states when in the debugger (the normal keyboard
-    // keys are ignored in such a case)
-    bool myInternalKeyTable[KBDK_LAST];
+    Event::KeyTable myKeyTable;
 
   private:
     // Following constructors and assignment operators not supported

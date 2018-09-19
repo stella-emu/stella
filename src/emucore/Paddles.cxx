@@ -19,7 +19,7 @@
 #include "Paddles.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Paddles::Paddles(Jack jack, const Event& event, const System& system,
+Paddles::Paddles(Jack jack, Event& event, const System& system,
                  bool swappaddle, bool swapaxis, bool swapdir)
   : Controller(jack, event, system, Controller::Paddles),
     myMPaddleID(-1),

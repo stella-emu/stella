@@ -63,7 +63,7 @@ class EventHandler
 
       @return The event object
     */
-    const Event& event() const { return myEvent; }
+    Event& event() { return myEvent; }
 
     /**
       Initialize state of this eventhandler.

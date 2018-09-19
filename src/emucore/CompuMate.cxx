@@ -20,12 +20,11 @@
 #include "CompuMate.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CompuMate::CompuMate(const Console& console, const Event& event,
+CompuMate::CompuMate(const Console& console, Event& event,
                      const System& system)
   : myConsole(console),
-    myEvent(event),
     myColumn(0),
-    myKeyTable(nullptr)
+    myKeyTable(event.getKeys())
 {
   // These controller pointers will be retrieved by the Console, which will
   // also take ownership of them
@@ -43,15 +42,7 @@ CompuMate::CompuMate(const Console& console, const Event& event,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CompuMate::enableKeyHandling(bool enable)
 {
-  if(enable)
-    myKeyTable = myEvent.getKeys();
-  else
-  {
-    for(uInt32 i = 0; i < KBDK_LAST; ++i)
-      myInternalKeyTable[i] = false;
-
-    myKeyTable = myInternalKeyTable;
-  }
+  myKeyTable.enable(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

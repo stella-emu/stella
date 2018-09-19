@@ -47,7 +47,7 @@ class MindLink : public Controller
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    MindLink(Jack jack, const Event& event, const System& system);
+    MindLink(Jack jack, Event& event, const System& system);
     virtual ~MindLink() = default;
 
   public:

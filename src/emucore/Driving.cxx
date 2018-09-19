@@ -21,7 +21,7 @@
 #include "Driving.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Driving::Driving(Jack jack, const Event& event, const System& system)
+Driving::Driving(Jack jack, Event& event, const System& system)
   : Controller(jack, event, system, Controller::Driving),
     myCounter(0),
     myGrayIndex(0),

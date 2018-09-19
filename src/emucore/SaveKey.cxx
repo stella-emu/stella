@@ -20,7 +20,7 @@
 #include "SaveKey.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
+SaveKey::SaveKey(Jack jack, Event& event, const System& system,
                  const string& eepromfile, Type type)
   : Controller(jack, event, system, type)
 {
@@ -30,7 +30,7 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
+SaveKey::SaveKey(Jack jack, Event& event, const System& system,
                  const string& eepromfile)
   : SaveKey(jack, event, system, eepromfile, Controller::SaveKey)
 {

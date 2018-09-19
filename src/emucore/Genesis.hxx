@@ -40,7 +40,7 @@ class Genesis : public Controller
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    Genesis(Jack jack, const Event& event, const System& system);
+    Genesis(Jack jack, Event& event, const System& system);
     virtual ~Genesis() = default;
 
   public:
