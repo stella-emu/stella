@@ -56,13 +56,13 @@ class AudioDialog : public Dialog
 
     CheckboxWidget*   mySoundEnableCheckbox;
     SliderWidget*     myVolumeSlider;
+    CheckboxWidget*   myStereoSoundCheckbox;
     PopUpWidget*      myModePopup;
     PopUpWidget*      myFragsizePopup;
     PopUpWidget*      myFreqPopup;
     PopUpWidget*      myResamplingPopup;
     SliderWidget*     myHeadroomSlider;
     SliderWidget*     myBufferSizeSlider;
-    PopUpWidget*      myStereoSoundPopup;
 
   private:
     // Following constructors and assignment operators not supported

@@ -444,8 +444,7 @@ void Settings::usage() const
   #ifdef SOUND_SUPPORT
     << "  -audio.enabled            <1|0>        Enable audio\n"
     << "  -audio.volume             <number>     Vokume (0-100)\n"
-    << "  -audio.stereo             <byrom|mono| Enable stereo mode\n"
-    << "                            stereo>\n"
+    << "  -audio.stereo             <1|0>        Enable stereo mode for all ROMs\n"
     << "  -audio.preset             <1-5>        Audio preset (or 1 for custom)\n"
     << "  -audio.sample_rate        <number>     Output sample rate (44100|48000|96000)\n"
     << "  -audio.fragment_size      <number>     Fragment size (128|256|512|1024|\n"

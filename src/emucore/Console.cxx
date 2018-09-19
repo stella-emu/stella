@@ -544,13 +544,13 @@ void Console::togglePhosphor()
 {
   if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
   {
-    myProperties.set(Display_Phosphor, "No");
+    myProperties.set(Display_Phosphor, "NO");
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(false);
     myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
   }
   else
   {
-    myProperties.set(Display_Phosphor, "Yes");
+    myProperties.set(Display_Phosphor, "YES");
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(true);
     myOSystem.frameBuffer().showMessage("Phosphor effect enabled");
   }
@@ -812,12 +812,8 @@ void Console::setTIAProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::createAudioQueue()
 {
-  const string& stereo = myOSystem.settings().getString(AudioSettings::SETTING_STEREO);
-  bool useStereo = false;
-  if(BSPF::equalsIgnoreCase(stereo, "byrom"))
-    useStereo = myProperties.get(Cartridge_Sound) == "STEREO";
-  else
-    useStereo = BSPF::equalsIgnoreCase(stereo, "stereo");
+  bool useStereo = myOSystem.settings().getBool(AudioSettings::SETTING_STEREO)
+    || myProperties.get(Cartridge_Sound) == "STEREO";
 
   myAudioQueue = make_shared<AudioQueue>(
     myEmulationTiming.audioFragmentSize(),

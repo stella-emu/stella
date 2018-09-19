@@ -72,18 +72,6 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myVolumeSlider);
   ypos += lineHeight + VGAP;
 
-  // Stereo sound
-  VarList::push_back(items, "By ROM", "BYROM");
-  VarList::push_back(items, "Off", "MONO");
-  VarList::push_back(items, "On", "STEREO");
-  pwidth = font.getStringWidth("By ROM");
-
-  myStereoSoundPopup = new PopUpWidget(this, font, xpos, ypos,
-                                       pwidth, lineHeight,
-                                       items, "Stereo", lwidth);
-  wid.push_back(myStereoSoundPopup);
-  ypos += lineHeight + VGAP;
-
   // Mode
   items.clear();
   VarList::push_back(items, "Low quality, medium lag", static_cast<int>(AudioSettings::Preset::lowQualityMediumLag));
@@ -151,6 +139,13 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   myBufferSizeSlider->setMinValue(0); myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
   myBufferSizeSlider->setTickmarkInterval(5);
   wid.push_back(myBufferSizeSlider);
+  ypos += lineHeight + VGAP;
+
+  // Stereo sound
+  xpos -= INDENT;
+  myStereoSoundCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+                                             "Stereo for all ROMs");
+  wid.push_back(myStereoSoundCheckbox);
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
@@ -170,7 +165,7 @@ void AudioDialog::loadConfig()
   myVolumeSlider->setValue(audioSettings.volume());
 
   // Stereo
-  myStereoSoundPopup->setSelected(audioSettings.stereo());
+  myStereoSoundCheckbox->setState(audioSettings.stereo());
 
   // Preset / mode
   myModePopup->setSelected(static_cast<int>(audioSettings.preset()));
@@ -213,7 +208,7 @@ void AudioDialog::saveConfig()
   instance().sound().setVolume(myVolumeSlider->getValue());
 
   // Stereo
-  audioSettings.setStereo(myStereoSoundPopup->getSelectedTag().toString());
+  audioSettings.setStereo(myStereoSoundCheckbox->getState());
 
   AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
   audioSettings.setPreset(preset);
@@ -238,7 +233,7 @@ void AudioDialog::setDefaults()
 {
   mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
   myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
-  myStereoSoundPopup->setSelected(AudioSettings::DEFAULT_STEREO);
+  myStereoSoundCheckbox->setState(AudioSettings::DEFAULT_STEREO);
   myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
 
   if (AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
@@ -261,7 +256,7 @@ void AudioDialog::updateEnabledState()
   bool userMode = preset == AudioSettings::Preset::custom;
 
   myVolumeSlider->setEnabled(active);
-  myStereoSoundPopup->setEnabled(active);
+  myStereoSoundCheckbox->setEnabled(active);
   myModePopup->setEnabled(active);
 
   myFragsizePopup->setEnabled(active && userMode);
