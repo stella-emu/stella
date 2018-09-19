@@ -385,9 +385,9 @@ cc_check_define __GNUC__ && have_gcc=yes
 
 if test "$have_clang" = yes; then
 
-	clang_minor=$( $CXX -dM -E -x c /dev/null | grep __clang_minor__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
-	clang_patch=$( $CXX -dM -E -x c /dev/null | grep __clang_patchlevel__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
-	clang_major=$( $CXX -dM -E -x c /dev/null | grep __clang_major__ | sed 's/.*\([0-9][0-9]*\).*/\1/' )
+	clang_minor=$( $CXX -dM -E -x c /dev/null | grep __clang_minor__ | sed -E 's/.* ([0-9]+).*/\1/' )
+	clang_patch=$( $CXX -dM -E -x c /dev/null | grep __clang_patchlevel__ | sed -E 's/.* ([0-9]+).*/\1/' )
+	clang_major=$( $CXX -dM -E -x c /dev/null | grep __clang_major__ | sed -E 's/.* ([0-9]+).*/\1/' )
 
 	cxx_version="$clang_major.$clang_minor.$clang_patch"
 
