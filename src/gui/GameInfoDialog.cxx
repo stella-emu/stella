@@ -36,6 +36,7 @@
 #include "TIASurface.hxx"
 #include "TIA.hxx"
 #include "Switches.hxx"
+#include "AudioSettings.hxx"
 
 #include "GameInfoDialog.hxx"
 
@@ -386,6 +387,8 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
   myRarity->setText(props.get(Cartridge_Rarity));
   myNote->setText(props.get(Cartridge_Note));
   mySound->setState(props.get(Cartridge_Sound) == "STEREO");
+  // if stereo is always enabled, disable game specific stereo setting
+  mySound->setEnabled(!instance().audioSettings().stereo());
   myType->setSelected(props.get(Cartridge_Type), "AUTO");
 
   if(instance().hasConsole() && myType->getSelectedTag().toString() == "AUTO")
@@ -487,9 +490,12 @@ void GameInfoDialog::loadDisplayProperties(const Properties& props)
   else
     myHeightDetected->setLabel("");
 
+  // if phosphor is always enabled, disable game specific phosphor settings
+  bool alwaysPhosphor = instance().settings().getString("tv.phosphor") == "always";
   bool usePhosphor = props.get(Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
-  myPPBlend->setEnabled(usePhosphor);
+  myPhosphor->setEnabled(!alwaysPhosphor);
+  myPPBlend->setEnabled(!alwaysPhosphor && usePhosphor);
 
   const string& blend = props.get(Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));

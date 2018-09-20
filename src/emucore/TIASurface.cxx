@@ -71,10 +71,18 @@ void TIASurface::initialize(const Console& console, const VideoMode& mode)
   mySLineSurface->setDstSize(mode.image.width(), mode.image.height());
 
   // Phosphor mode can be enabled either globally or per-ROM
-  bool p_enable = myOSystem.settings().getString("tv.phosphor") == "always" ||
-      console.properties().get(Display_Phosphor) == "YES";
-  int p_blend = atoi(console.properties().get(Display_PPBlend).c_str());
-  enablePhosphor(p_enable, p_blend);
+  int p_blend = 0;
+
+  if(myOSystem.settings().getString("tv.phosphor") == "always")
+  {
+    p_blend = myOSystem.settings().getInt("tv.phosblend");
+  }
+  else if(console.properties().get(Display_Phosphor) == "YES")
+  {
+    p_blend = atoi(console.properties().get(Display_PPBlend).c_str());
+  }
+  enablePhosphor(p_blend != 0, p_blend);
+
   setNTSC(NTSCFilter::Preset(myOSystem.settings().getInt("tv.filter")), false);
 
   // Scanline repeating is sensitive to non-integral vertical resolution,
