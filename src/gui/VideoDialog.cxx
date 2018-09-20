@@ -529,6 +529,7 @@ void VideoDialog::setDefaults()
 
       // Make sure that mutually-exclusive items are not enabled at the same time
       handleTVModeChange(NTSCFilter::PRESET_OFF);
+      handlePhosphorChange();
       loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
       break;
     }
