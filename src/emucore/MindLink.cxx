@@ -19,7 +19,7 @@
 #include "MindLink.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MindLink::MindLink(Jack jack, Event& event, const System& system)
+MindLink::MindLink(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::MindLink),
     myMindlinkPos(0x2800),
     myMindlinkShift(1),

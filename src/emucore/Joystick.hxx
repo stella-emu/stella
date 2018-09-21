@@ -37,7 +37,7 @@ class Joystick : public Controller
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    Joystick(Jack jack, Event& event, const System& system);
+    Joystick(Jack jack, const Event& event, const System& system);
     virtual ~Joystick() = default;
 
   public:

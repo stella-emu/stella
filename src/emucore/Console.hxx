@@ -372,7 +372,7 @@ class Console : public Serializable
     OSystem& myOSystem;
 
     // Reference to the event object to use
-    Event& myEvent;
+    const Event& myEvent;
 
     // Properties for the game
     Properties myProperties;

@@ -38,7 +38,7 @@ class BoosterGrip : public Controller
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    BoosterGrip(Jack jack, Event& event, const System& system);
+    BoosterGrip(Jack jack, const Event& event, const System& system);
     virtual ~BoosterGrip() = default;
 
   public:

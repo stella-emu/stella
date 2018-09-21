@@ -42,7 +42,7 @@ class SaveKey : public Controller
       @param system     The system using this controller
       @param eepromfile The file containing the EEPROM data
     */
-    SaveKey(Jack jack, Event& event, const System& system,
+    SaveKey(Jack jack, const Event& event, const System& system,
             const string& eepromfile);
     virtual ~SaveKey();
 
@@ -51,7 +51,7 @@ class SaveKey : public Controller
       Delegating constructor currently used by both this class and classes
       that inherit from SaveKey (currently, AtariVox)
     */
-    SaveKey(Jack jack, Event& event, const System& system,
+    SaveKey(Jack jack, const Event& event, const System& system,
             const string& eepromfile, Type type);
 
   public:

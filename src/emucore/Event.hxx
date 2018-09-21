@@ -24,7 +24,7 @@
 #include "StellaKeys.hxx"
 
 /**
-  @author  Bradford W. Mott, Stephen Anthony
+  @author  Stephen Anthony, Christian Speckner
 */
 class Event
 {
@@ -89,9 +89,10 @@ class Event
           : myKeyTable(keyTable),
             myMutex(mutex),
             myIsEnabled(true)
-        {}
+        {
+        }
 
-        bool operator[](int type) {
+        bool operator[](int type) const {
           if (!myIsEnabled) return false;
 
           std::lock_guard<std::mutex> lock(myMutex);
@@ -122,7 +123,7 @@ class Event
     /**
       Get the value associated with the event of the specified type.
     */
-    Int32 get(Type type) {
+    Int32 get(Type type) const {
       std::lock_guard<std::mutex> lock(myMutex);
 
       return myValues[type];
@@ -154,7 +155,7 @@ class Event
     /**
       Get the keytable associated with this event.
     */
-    KeyTable getKeys() { return KeyTable(myKeyTable, myMutex); }
+    KeyTable getKeys() const { return KeyTable(myKeyTable, myMutex); }
 
     /**
       Set the value associated with the event of the specified type.
@@ -189,7 +190,7 @@ class Event
     // Array of keyboard key states
     bool myKeyTable[KBDK_LAST];
 
-    std::mutex myMutex;
+    mutable std::mutex myMutex;
 
   private:
     // Following constructors and assignment operators not supported

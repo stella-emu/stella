@@ -19,7 +19,7 @@
 #include "Keyboard.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Keyboard::Keyboard(Jack jack, Event& event, const System& system)
+Keyboard::Keyboard(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::Keyboard)
 {
   if(myJack == Left)

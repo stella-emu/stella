@@ -19,7 +19,7 @@
 #include "Joystick.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Joystick::Joystick(Jack jack, Event& event, const System& system)
+Joystick::Joystick(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::Joystick),
     myControlID(-1)
 {

@@ -21,7 +21,7 @@
 #include "Switches.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Switches::Switches(Event& event, const Properties& properties,
+Switches::Switches(const Event& event, const Properties& properties,
                    const Settings& settings)
   : myEvent(event),
     mySwitches(0xFF),

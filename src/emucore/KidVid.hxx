@@ -47,7 +47,7 @@ class KidVid : public Controller
       @param system The system using this controller
       @param md5sum The md5 of the ROM using this controller
     */
-    KidVid(Jack jack, Event& event, const System& system,
+    KidVid(Jack jack, const Event& event, const System& system,
            const string& md5sum);
     virtual ~KidVid();
 

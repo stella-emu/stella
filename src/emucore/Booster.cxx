@@ -19,7 +19,7 @@
 #include "Booster.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BoosterGrip::BoosterGrip(Jack jack, Event& event, const System& system)
+BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::BoosterGrip),
     myControlID(-1)
 {

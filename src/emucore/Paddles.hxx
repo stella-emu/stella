@@ -43,7 +43,7 @@ class Paddles : public Controller
                         causes movement (lesser axis values cause paddle
                         resistance to decrease instead of increase)
     */
-    Paddles(Jack jack, Event& event, const System& system,
+    Paddles(Jack jack, const Event& event, const System& system,
             bool swappaddle, bool swapaxis, bool swapdir);
     virtual ~Paddles() = default;
 

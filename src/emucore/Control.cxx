@@ -21,7 +21,7 @@
 #include "Control.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::Controller(Jack jack, Event& event, const System& system,
+Controller::Controller(Jack jack, const Event& event, const System& system,
                        Type type)
   : myJack(jack),
     myEvent(event),

@@ -19,7 +19,7 @@
 #include "Genesis.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Genesis::Genesis(Jack jack, Event& event, const System& system)
+Genesis::Genesis(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::Genesis),
     myControlID(-1)
 {

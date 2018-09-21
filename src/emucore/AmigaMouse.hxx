@@ -30,7 +30,7 @@ class AmigaMouse : public PointingDevice
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    AmigaMouse(Jack jack, Event& event, const System& system)
+    AmigaMouse(Jack jack, const Event& event, const System& system)
       : PointingDevice(jack, event, system, Controller::AmigaMouse,
         trackballSensitivity) { }
     virtual ~AmigaMouse() = default;

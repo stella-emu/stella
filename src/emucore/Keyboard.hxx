@@ -37,7 +37,7 @@ class Keyboard : public Controller
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    Keyboard(Jack jack, Event& event, const System& system);
+    Keyboard(Jack jack, const Event& event, const System& system);
     virtual ~Keyboard() = default;
 
   public:

@@ -20,7 +20,7 @@
 #include "CompuMate.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CompuMate::CompuMate(const Console& console, Event& event,
+CompuMate::CompuMate(const Console& console, const Event& event,
                      const System& system)
   : myConsole(console),
     myColumn(0),

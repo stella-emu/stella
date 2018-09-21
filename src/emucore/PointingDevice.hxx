@@ -35,7 +35,7 @@ class PointingDevice : public Controller
   friend class PointingDeviceWidget;
 
   public:
-    PointingDevice(Jack jack, Event& event,
+    PointingDevice(Jack jack, const Event& event,
                    const System& system, Controller::Type type,
                    float sensitivity);
     virtual ~PointingDevice() = default;
