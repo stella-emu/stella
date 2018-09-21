@@ -48,7 +48,7 @@ CartridgeCTY::CartridgeCTY(const BytePtr& image, uInt32 size,
   // Point to the first tune
   myFrequencyImage = myTuneData;
 
-  for(uInt8 i = 0; i < 3; i++)
+  for(uInt8 i = 0; i < 3; ++i)
     myMusicCounters[i] = myMusicFrequencies[i] = 0;
 }
 
