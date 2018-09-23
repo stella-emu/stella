@@ -27,13 +27,6 @@
 
 class Cartridge;
 
-// FIXME - This code has many instances of shifting into signed integers
-//         Perhaps the int's should be changed to uInt32
-#ifdef __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wshift-sign-overflow"
-#endif
-
 #include "bspf.hxx"
 #include "Console.hxx"
 
@@ -43,10 +36,10 @@ class Cartridge;
 #define ROMSIZE (ROMADDMASK+1)
 #define RAMSIZE (RAMADDMASK+1)
 
-#define CPSR_N (1<<31)
-#define CPSR_Z (1<<30)
-#define CPSR_C (1<<29)
-#define CPSR_V (1<<28)
+#define CPSR_N (1u<<31)
+#define CPSR_Z (1u<<30)
+#define CPSR_C (1u<<29)
+#define CPSR_V (1u<<28)
 
 class Thumbulator
 {
