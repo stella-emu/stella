@@ -72,6 +72,7 @@ FrameBufferSDL2::~FrameBufferSDL2()
     SDL_DestroyWindow(myWindow);
     myWindow = nullptr;
   }
+  SDL_Quit();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
