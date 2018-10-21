@@ -1242,7 +1242,6 @@
 "Cartridge.ModelNo" "684.733 9"
 "Cartridge.Name" "Robin Hood (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Save Our Ship"
-"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "0f95264089c99fc2a839a19872552004"
@@ -2315,6 +2314,7 @@
 "Cartridge.ModelNo" "686.561 2 - 781627"
 "Cartridge.Name" "Mein Weg (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Challenge"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "1e1290ea102e12d7ac52820961457e2b"
@@ -2787,6 +2787,14 @@
 "Cartridge.ModelNo" "4L2477, 4L2482, 4L2485, 4L4171"
 "Cartridge.Name" "Blueprint (1983) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "2434102f30eeb47792cf0825e368229b"
+"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
+"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype)"
+"Cartridge.Note" "ROM must be started in bank 0"
+"Cartridge.Rarity" "Prototype"
+"Cartridge.StartBank" "0"
 ""
 
 "Cartridge.MD5" "24385ba7f5109fbe76aadc0a375de573"
@@ -3340,6 +3348,7 @@
 "Cartridge.Manufacturer" "Tigervision, Bill Hogue"
 "Cartridge.ModelNo" "7-011"
 "Cartridge.Name" "Miner 2049er Volume II (1983) (Tigervision)"
+"Display.YStart" "26"
 "Display.Phosphor" "YES"
 ""
 
@@ -4508,6 +4517,7 @@
 "Cartridge.ModelNo" "SS-004"
 "Cartridge.Name" "Pyramid War (Rainbow Vision) (PAL) [a2]"
 "Cartridge.Note" "AKA Chopper Command"
+"Display.Format" "PAL"
 ""
 
 "Cartridge.MD5" "384db97670817103dd8c0bbdef132445"
@@ -7100,6 +7110,7 @@
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "28"
 "Display.Height" "214"
 ""
 
@@ -9611,8 +9622,6 @@
 "Cartridge.ModelNo" "311377"
 "Cartridge.Name" "Fox & Goat (Double-Game Package) (1983) (Otto Versand) (PAL)"
 "Cartridge.Note" "AKA Nuts"
-"Display.YStart" "45"
-"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "76f53abbbf39a0063f24036d6ee0968a"
@@ -10455,6 +10464,7 @@
 "Cartridge.ModelNo" "DY-293005"
 "Cartridge.Name" "Jumping Jack (1983) (Dynamics) (PAL)"
 "Cartridge.Note" "AKA Bobby Is Going Home"
+"Display.YStart" "40"
 ""
 
 "Cartridge.MD5" "80e52315919bd8a8b82a407ccd9bb13f"
@@ -11855,6 +11865,13 @@
 "Cartridge.Rarity" "Hack"
 ""
 
+"Cartridge.MD5" "93c4b910f7649b3e998bb6d8527c6f4a"
+"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
+"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype) [fixed]"
+"Cartridge.Note" "Fix for un-initialized 'X' register"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "93c52141d3c4e1b5574d072f1afde6cd"
 "Cartridge.Manufacturer" "Imagic, Mark Klein"
 "Cartridge.ModelNo" "720112-1A, 03213"
@@ -12104,6 +12121,15 @@
 "Cartridge.Manufacturer" "Atari - GCC, Douglas B. Macrae"
 "Cartridge.ModelNo" "CX2677, CX2677P"
 "Cartridge.Name" "Dig Dug (1983) (Atari) (PAL)"
+""
+
+"Cartridge.MD5" "9784290f422e7aeeab4d542318bd9a1f"
+"Cartridge.Manufacturer" "AtariAge, Chris Walton"
+"Cartridge.ModelNo" "1.0 (Release)"
+"Cartridge.Name" "Chetiry (2011) (AtariAge) (60k)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
+"Display.PPBlend" "50"
 ""
 
 "Cartridge.MD5" "97842fe847e8eb71263d6f92f7e122bd"
@@ -12574,7 +12600,6 @@
 
 "Cartridge.MD5" "9ed0f2aa226c34d4f55f661442e8f22a"
 "Cartridge.Name" "Nuts (Unknown) (PAL)"
-"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "9eeb40f04a27efb1c68ba1d25e606607"
@@ -14675,6 +14700,11 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
+"Cartridge.MD5" "bc24440b59092559a1ec26055fd1270e"
+"Cartridge.Name" "Private Eye (1984) (Activision) [a]"
+"Cartridge.StartBank" "0"
+""
+
 "Cartridge.MD5" "bc3057a35319aae3a5cd87a203736abe"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-845"
@@ -14990,6 +15020,15 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Skiing (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
+""
+
+"Cartridge.MD5" "c11e8473c652619ac6166900150ce215"
+"Cartridge.Manufacturer" "AtariAge, Chris Walton"
+"Cartridge.ModelNo" "1.0 (Release)"
+"Cartridge.Name" "Chetiry (2011) (AtariAge) (60k) (PAL)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
+"Display.PPBlend" "50"
 ""
 
 "Cartridge.MD5" "c126656df6badfa519cc63e681fb3596"
@@ -16633,6 +16672,7 @@
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Funky Fish (1983) (UA Limited) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "28"
 "Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
@@ -16678,6 +16718,7 @@
 "Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL)"
 "Cartridge.Note" "AKA Nile Flyer, Sphinx"
 "Display.Format" "PAL"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "d483f65468d9a265661917bae1a54f3e"
@@ -17494,7 +17535,6 @@
 
 "Cartridge.MD5" "de7a64108074098ba333cc0c70eef18a"
 "Cartridge.Name" "Nuts (Unknown)"
-"Display.YStart" "37"
 ""
 
 "Cartridge.MD5" "de7bca4e569ad9d3fd08ff1395e53d2d"
@@ -17998,7 +18038,6 @@
 "Cartridge.Manufacturer" "TechnoVision - Video Technology"
 "Cartridge.ModelNo" "TVS1001"
 "Cartridge.Name" "Nuts (1983) (TechnoVision) (PAL)"
-"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "e3ed4ba3361756970f076e46e9cad1d2"
@@ -19899,11 +19938,6 @@
 "Cartridge.Name" "Private Eye (CCE)"
 ""
 
-"Cartridge.MD5" "bc24440b59092559a1ec26055fd1270e"
-"Cartridge.Name" "Private Eye (1984) (Activision) [a]"
-"Cartridge.StartBank" "0"
-""
-
 "Cartridge.MD5" "f9d51a4e5f8b48f68770c89ffd495ed1"
 "Cartridge.Manufacturer" "Atari, Tod Frye, Mimi Nyden"
 "Cartridge.ModelNo" "CX2657"
@@ -20437,17 +20471,3 @@
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
-"Cartridge.MD5" "2434102f30eeb47792cf0825e368229b"
-"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
-"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype)"
-"Cartridge.Note" "ROM must be started in bank 0"
-"Cartridge.Rarity" "Prototype"
-"Cartridge.StartBank" "0"
-""
-
-"Cartridge.MD5" "93c4b910f7649b3e998bb6d8527c6f4a"
-"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
-"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype) [fixed]"
-"Cartridge.Note" "Fix for un-initialized 'X' register"
-"Cartridge.Rarity" "Prototype"
-""
