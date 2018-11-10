@@ -33,7 +33,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
     myRenderer(nullptr)
 {
   // Initialize SDL2 context
-  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) < 0)
+  if(SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
@@ -72,6 +72,7 @@ FrameBufferSDL2::~FrameBufferSDL2()
     SDL_DestroyWindow(myWindow);
     myWindow = nullptr;
   }
+  SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

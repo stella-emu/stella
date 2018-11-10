@@ -22,6 +22,22 @@
 EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   : EventHandler(osystem)
 {
+#ifdef JOYSTICK_SUPPORT
+  if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+  {
+    ostringstream buf;
+    buf << "ERROR: Couldn't initialize SDL joystick support: " << SDL_GetError() << endl;
+    osystem.logMessage(buf.str(), 0);
+  }
+  osystem.logMessage("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK", 2);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EventHandlerSDL2::~EventHandlerSDL2()
+{
+  if(SDL_WasInit(SDL_INIT_JOYSTICK))
+    SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,6 +231,6 @@ EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::~JoystickSDL2()
 {
-  if(myStick)
+  if(SDL_WasInit(SDL_INIT_JOYSTICK) && myStick)
     SDL_JoystickClose(myStick);
 }

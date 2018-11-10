@@ -124,6 +124,11 @@ class MediaFactory
       return make_unique<EventHandlerSDL2>(osystem);
     }
 
+    static void cleanUp()
+    {
+      SDL_Quit();
+    }
+
   private:
     // Following constructors and assignment operators not supported
     MediaFactory() = delete;

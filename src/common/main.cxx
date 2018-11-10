@@ -57,6 +57,8 @@ int main(int argc, char* argv[])
   auto Cleanup = [&theOSystem]() {
     theOSystem->logMessage("Cleanup from main", 2);
     theOSystem->saveConfig();
+    theOSystem.reset();       // Force delete of object
+    MediaFactory::cleanUp();  // Finish any remaining cleanup
 
     return 0;
   };
