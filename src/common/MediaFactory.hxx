@@ -19,6 +19,7 @@
 #define MEDIA_FACTORY_HXX
 
 #include "bspf.hxx"
+#include "SDL_lib.hxx"
 
 #include "OSystem.hxx"
 #include "Settings.hxx"
@@ -127,6 +128,16 @@ class MediaFactory
     static void cleanUp()
     {
       SDL_Quit();
+    }
+
+    static string backendName()
+    {
+      ostringstream buf;
+      SDL_version ver;
+      SDL_GetVersion(&ver);
+      buf << "SDL " << int(ver.major) << "." << int(ver.minor) << "." << int(ver.patch);
+
+      return buf.str();
     }
 
   private:

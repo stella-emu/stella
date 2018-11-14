@@ -87,11 +87,8 @@ OSystem::OSystem()
 
   // Get build info
   ostringstream info;
-  SDL_version ver;
-  SDL_GetVersion(&ver);
 
-  info << "Build " << STELLA_BUILD << ", using SDL " << int(ver.major)
-       << "." << int(ver.minor) << "."<< int(ver.patch)
+  info << "Build " << STELLA_BUILD << ", using " << MediaFactory::backendName()
        << " [" << BSPF::ARCH << "]";
   myBuildInfo = info.str();
 
