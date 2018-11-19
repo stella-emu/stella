@@ -17,13 +17,9 @@
 // $Id: CartCTY.cxx 2838 2014-01-17 23:34:03Z stephena $
 //============================================================================
 
-#include <cassert>
-#include <cstring>
-
 #include "OSystem.hxx"
 #include "Serializer.hxx"
 #include "System.hxx"
-#include "CartCTYTunes.hxx"
 #include "CartCTY.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -31,30 +27,33 @@ CartridgeCTY::CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osyst
   : Cartridge(osystem.settings()),
     myOSystem(osystem),
     myOperationType(0),
-    myCounter(0),
+    myTunePosition(0),
     myLDAimmediate(false),
     myRandomNumber(0x2B435044),
     myRamAccessTimeout(0),
-    mySystemCycles(0),
-    myFractionalClocks(0.0)
+    myAudioCycles(0),
+    myFractionalClocks(0.0),
+    myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF_min(32768u, size));
+  memcpy(myImage, image, std::min(32768u, size));
   createCodeAccessBase(32768);
 
-  // This cart contains 64 bytes extended RAM @ 0x1000
-  registerRamArea(0x1000, 64, 0x40, 0x00);
+  // Default to no tune data in case user is utilizing an old ROM
+  memset(myTuneData, 0, 28*1024);
+
+  // Extract tune data if it exists
+  if (size > 32768u)
+    memcpy(myTuneData, image + 32768u, size - 32768u);
 
   // Point to the first tune
-  myFrequencyImage = CartCTYTunes;
+  myFrequencyImage = myTuneData;
+
+  for(uInt8 i = 0; i < 3; ++i)
+    myMusicCounters[i] = myMusicFrequencies[i] = 0;
 
   // Remember startup bank (not bank 0, since that's ARM code)
   myStartBank = 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCTY::~CartridgeCTY()
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,7 +69,7 @@ void CartridgeCTY::reset()
   myRAM[0] = myRAM[1] = myRAM[2] = myRAM[3] = 0xFF;
 
   // Update cycles to the current system cycles
-  mySystemCycles = mySystem->cycles();
+  myAudioCycles = mySystem->cycles();
   myFractionalClocks = 0.0;
 
   // Upon reset we switch to the startup bank
@@ -81,18 +80,14 @@ void CartridgeCTY::reset()
 void CartridgeCTY::systemCyclesReset()
 {
   // Adjust the cycle counter so that it reflects the new value
-  mySystemCycles -= mySystem->cycles();
+  myAudioCycles -= mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::install(System& system)
 {
   mySystem = &system;
-  uInt16 mask = mySystem->pageMask();
   uInt16 shift = mySystem->pageShift();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert(((0x1000 & mask) == 0) && ((0x1080 & mask) == 0));
 
   // Map all RAM accesses to call peek and poke
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
@@ -108,7 +103,7 @@ uInt8 CartridgeCTY::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
   address &= 0x0FFF;
-  uInt8 peekValue = myImage[myCurrentBank + address];
+  uInt8 peekValue = myImage[myBankOffset + address];
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
@@ -123,15 +118,23 @@ uInt8 CartridgeCTY::peek(uInt16 address)
     // Update the music data fetchers (counter & flag)
     updateMusicModeDataFetchers();
 
-#if 0
-    // using myDisplayImage[] instead of myProgramImage[] because waveforms
-    // can be modified during runtime.
-    uInt32 i = myDisplayImage[(myMusicWaveforms[0] << 5) + (myMusicCounters[0] >> 27)] +
-               myDisplayImage[(myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
-               myDisplayImage[(myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
-    return = (uInt8)i;
-#endif
-    return 0xF2;  // FIXME - return frequency value here
+    uInt8 i = 0;
+
+    /*
+     in the ARM driver registers 8-10 are the music counters 0-2
+     lsr     r2, r8, #31
+     add     r2, r2, r9, lsr #31
+     add     r2, r2, r10, lsr #31
+     lsl     r2, r2, #2
+    */
+
+    i = myMusicCounters[0] >> 31;
+    i = i + (myMusicCounters[1] >> 31);
+    i = i + (myMusicCounters[2] >> 31);
+    i <<= 2;
+
+    return i;
+
   }
   else
     myLDAimmediate = false;
@@ -161,9 +164,9 @@ uInt8 CartridgeCTY::peek(uInt16 address)
                          ((myRandomNumber >> 11) | (myRandomNumber << 21));
         return myRandomNumber & 0xFF;
       case 0x02:  // Get Tune position (low byte)
-        return myCounter & 0xFF;
+        return myTunePosition & 0xFF;
       case 0x03:  // Get Tune position (high byte)
-        return (myCounter >> 8) & 0xFF;
+        return (myTunePosition >> 8) & 0xFF;
       default:
         return myRAM[address];
     }
@@ -204,7 +207,7 @@ bool CartridgeCTY::poke(uInt16 address, uInt8 value)
 //cerr << "POKE: address=" << HEX4 << address << ", value=" << HEX2 << value << endl;
   if(address < 0x0040)  // Write port is at $1000 - $103F (64 bytes)
   {
-    switch(address)  // FIXME for functionality
+    switch(address)
     {
       case 0x00:  // Operation type for $1FF4
         myOperationType = value;
@@ -213,10 +216,16 @@ bool CartridgeCTY::poke(uInt16 address, uInt8 value)
         myRandomNumber = 0x2B435044;
         break;
       case 0x02:  // Reset fetcher to beginning of tune
-        myCounter = 0;
+        myTunePosition = 0;
+        myMusicCounters[0] = 0;
+        myMusicCounters[1] = 0;
+        myMusicCounters[2] = 0;
+        myMusicFrequencies[0] = 0;
+        myMusicFrequencies[1] = 0;
+        myMusicFrequencies[2] = 0;
         break;
       case 0x03:  // Advance fetcher to next tune position
-        myCounter = (myCounter + 3) & 0x0fff;
+        updateTune();
         break;
       default:
         myRAM[address] = value;
@@ -254,14 +263,14 @@ bool CartridgeCTY::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank << 12;
+  myBankOffset = bank << 12;
   uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
   for(uInt32 address = 0x1080; address < 0x2000; address += (1 << shift))
   {
-    access.codeAccessBase = &myCodeAccessBase[myCurrentBank + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
   return myBankChanged = true;
@@ -270,7 +279,7 @@ bool CartridgeCTY::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeCTY::bank() const
 {
-  return myCurrentBank >> 12;
+  return myBankOffset >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -292,7 +301,7 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
     myRAM[address & 0x003F] = value;
   }
   else
-    myImage[myCurrentBank + address] = value;
+    myImage[myBankOffset + address] = value;
 
   return myBankChanged = true;
 }
@@ -309,17 +318,18 @@ bool CartridgeCTY::save(Serializer& out) const
 {
   try
   {
-    out.putString(name());
     out.putShort(bank());
     out.putByteArray(myRAM, 64);
 
     out.putByte(myOperationType);
-    out.putShort(myCounter);
+    out.putShort(myTunePosition);
     out.putBool(myLDAimmediate);
     out.putInt(myRandomNumber);
-    out.putInt(mySystemCycles);
-    out.putInt((uInt32)(myFractionalClocks * 100000000.0));
-
+    out.putLong(myAudioCycles);
+    out.putDouble(myFractionalClocks);
+    out.putIntArray(myMusicCounters, 3);
+    out.putIntArray(myMusicFrequencies, 3);
+    out.putLong(myFrequencyImage - myTuneData);
   }
   catch(...)
   {
@@ -335,19 +345,19 @@ bool CartridgeCTY::load(Serializer& in)
 {
   try
   {
-    if(in.getString() != name())
-      return false;
-
     // Remember what bank we were in
     bank(in.getShort());
     in.getByteArray(myRAM, 64);
 
     myOperationType = in.getByte();
-    myCounter = in.getShort();
+    myTunePosition = in.getShort();
     myLDAimmediate = in.getBool();
     myRandomNumber = in.getInt();
-    mySystemCycles = (Int32)in.getInt();
-    myFractionalClocks = (double)in.getInt() / 100000000.0;
+    myAudioCycles = in.getLong();
+    myFractionalClocks = in.getDouble();
+    in.getIntArray(myMusicCounters, 3);
+    in.getIntArray(myMusicFrequencies, 3);
+    myFrequencyImage = myTuneData + in.getLong();
   }
   catch(...)
   {
@@ -424,7 +434,7 @@ uInt8 CartridgeCTY::ramReadWrite()
         break;
     }
     // Bit 6 is 1, busy
-    return myImage[myCurrentBank + 0xFF4] | 0x40;
+    return myImage[myBankOffset + 0xFF4] | 0x40;
   }
   else
   {
@@ -435,11 +445,11 @@ uInt8 CartridgeCTY::ramReadWrite()
       myRAM[0] = 0;            // Successful operation
 
       // Bit 6 is 0, ready/success
-      return myImage[myCurrentBank + 0xFF4] & ~0x40;
+      return myImage[myBankOffset + 0xFF4] & ~0x40;
     }
     else
       // Bit 6 is 1, busy
-      return myImage[myCurrentBank + 0xFF4] | 0x40;
+      return myImage[myBankOffset + 0xFF4] | 0x40;
   }
 }
 
@@ -449,10 +459,62 @@ void CartridgeCTY::loadTune(uInt8 index)
   // Each tune is offset by 4096 bytes
   // Instead of copying non-modifiable data around (as would happen on the
   // Harmony), we simply point to the appropriate tune
-  myFrequencyImage = CartCTYTunes + (index << 12);
+  myFrequencyImage = myTuneData + (index << 12);
 
   // Reset to beginning of tune
-  myCounter = 0;
+  myTunePosition = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCTY::updateTune()
+{
+//UpdateTune:
+//  /* Float data bus */
+//  strb    r8, [r0, #+0x01]
+//
+//  /* Increment song position */
+//  add     r7, r7, #1                r7 = songPosition
+//
+//  /* Read song data (0 = continue) */
+//  msr     cpsr_c, #MODE_FIQ|I_BIT|F_BIT
+//  ldrb    r2, [r14], #1             r14 = myTunePosition, r2 = note
+//  cmp     r2, #0
+//  ldrne   r11, [r6, +r2, lsl #2]    r6 +r2 = ourFrequencyTable[note].  Why lsl #2?
+//  ldrb    r2, [r14], #1             r11 = myMusicFrequency[0]
+//  cmp     r2, #0
+//  ldrne   r12, [r6, +r2, lsl #2]    r12 = myMusicFrequency[1]
+//  ldrb    r2, [r14], #1
+//  cmp     r2, #1
+//  ldrcs   r13, [r6, +r2, lsl #2]    r13 = myMusicFrequency[2]
+//
+//  /* Reset tune */
+//  mvneq   r7, #0
+//  moveq   r14, r4                   r4 = start of tune data
+//  msr     cpsr_c, #MODE_SYS|I_BIT|F_BIT
+//
+//  /* Wait until address changes */
+//WaitAddrChangeA:
+//  ldrh    r2, [r0, #+0x16]
+//  cmp     r1, r2
+//  beq     WaitAddrChangeA
+//  b       NewAddress
+
+  myTunePosition += 1;
+  uInt16 songPosition = (myTunePosition - 1) *3;
+
+  uInt8 note = myFrequencyImage[songPosition + 0];
+  if (note)
+    myMusicFrequencies[0] = ourFrequencyTable[note];
+
+  note = myFrequencyImage[songPosition + 1];
+  if (note)
+    myMusicFrequencies[1] = ourFrequencyTable[note];
+
+  note = myFrequencyImage[songPosition + 2];
+  if (note == 1)
+    myTunePosition = 0;
+  else
+    myMusicFrequencies[2] = ourFrequencyTable[note];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -504,7 +566,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     catch(...)
     {
       // Maybe add logging here that save failed?
-      cerr << name() << ": ERROR saving score table " << (int)index << endl;
+      cerr << name() << ": ERROR saving score table " << int(index) << endl;
     }
   }
 }
@@ -534,20 +596,150 @@ void CartridgeCTY::wipeAllScores()
 inline void CartridgeCTY::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
-  Int32 cycles = mySystem->cycles() - mySystemCycles;
-  mySystemCycles = mySystem->cycles();
+  uInt32 cycles = uInt32(mySystem->cycles() - myAudioCycles);
+  myAudioCycles = mySystem->cycles();
 
-  // Calculate the number of DPC OSC clocks since the last update
+  // Calculate the number of CTY OSC clocks since the last update
   double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
-  Int32 wholeClocks = (Int32)clocks;
-  myFractionalClocks = clocks - (double)wholeClocks;
-
-  if(wholeClocks <= 0)
-    return;
+  uInt32 wholeClocks = uInt32(clocks);
+  myFractionalClocks = clocks - double(wholeClocks);
 
   // Let's update counters and flags of the music mode data fetchers
-  for(int x = 0; x <= 2; ++x)
-  {
-//    myMusicCounters[x] += myMusicFrequencies[x];
-  }
+  if(wholeClocks > 0)
+    for(int x = 0; x <= 2; ++x)
+      myMusicCounters[x] += myMusicFrequencies[x] * wholeClocks;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt32 CartridgeCTY::ourFrequencyTable[63] =
+{
+  // this should really be referenced from within the ROM, but its part of
+  // the Harmony/Melody CTY Driver, which does not appear to be in the ROM.
+
+     0,           // CONT   0   Continue Note
+     0,           // REPEAT 1   Repeat Song
+     0,           // REST   2   Note Rest
+  /*
+      3511350     // C0
+      3720300     // C0s
+      3941491     // D0
+      4175781     // D0s
+      4424031     // E0
+      4687313     // F0
+      4965841     // F0s
+      5261120     // G0
+      5496699     // G0s
+
+      5905580     // A1
+      6256694     // A1s
+      6628853     // B1
+      7022916     // C1
+      7440601     // C1s
+      7882983     // D1
+      8351778     // D1s
+      8848277     // E1
+      9374625     // F1
+      9931897     // F1s
+      10522455    // G1
+      11148232    // G1s
+   */
+     11811160,    // A2
+     12513387,    // A2s
+     13257490,    // B2
+     14045832,    // C2
+     14881203,    // C2s
+     15765966,    // D2
+     16703557,    // D2s
+     17696768,    // E2
+     18749035,    // F2
+     19864009,    // F2s
+     21045125,    // G2
+     22296464,    // G2s
+
+     23622320,    // A3
+     25026989,    // A3s
+     26515195,    // B3
+     28091878,    // C3
+     29762191,    // C3s
+     31531932,    // D3
+     33406900,    // D3s
+     35393537,    // E3
+     37498071,    // F3
+     39727803,    // F3s
+     42090250,    // G3
+     44592927,    // G3s
+
+     47244640,    // A4
+     50053978,    // A4s
+     53030391,    // B4
+     56183756,    // C4   (Middle C)
+     59524596,    // C4s
+     63064079,    // D4
+     66814014,    // D4s
+     70787074,    // E4
+     74996142,    // F4
+     79455606,    // F4s
+     84180285,    // G4
+     89186069,    // G4s
+
+     94489281,    // A5
+     100107957,   // A5s
+     106060567,   // B5
+     112367297,   // C5
+     119048977,   // C5s
+     126128157,   // D5
+     133628029,   // D5s
+     141573933,   // E5
+     149992288,   // F5
+     158911428,   // F5s
+     168360785,   // G5
+     178371925,   // G5s
+
+     188978561,   // A6
+     200215913,   // A6s
+     212121348,   // B6
+     224734593,   // C6
+     238098169,   // C6s
+     252256099,   // D6
+     267256058,   // D6s
+     283147866,   // E6
+     299984783,   // F6
+     317822855,   // F6s
+     336721571,   // G6
+     356744064   // G6s
+  /*
+      377957122   // A7
+      400431612   // A7s
+      424242481   // B7
+      449469401   // C7
+      476196124   // C7s
+      504512198   // D7
+      534512116   // D7s
+      566295948   // E7
+      599969565   // F7
+      635645496   // F7s
+      673443141   // G7
+      713488128   // G7s
+
+      755914244   // A8
+      800863224   // A8s
+      848484963   // B8
+      898938588   // C8
+      952392248   // C8s
+      1009024398  // D8
+      1069024232  // D8s
+      1132591895  // E8
+      1199939130  // F8
+      1271290992  // F8s
+      1346886282  // G8
+      1426976255  // G8s
+
+      1511828488  // A9
+      1601726449  // A9s
+      1696969925  // B9
+      1797877176  // C9
+      1904784495  // C9s
+      2018048796  // D9
+      2138048463  // D9s
+  */
+};

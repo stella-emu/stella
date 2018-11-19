@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -83,12 +83,10 @@ class System;
       The tune table functionality is also based on Harmony EEPROM, where
       7 4K tunes are stored (28K total).  The 'index' for operation 1 can
       therefore be in the range 0 - 6, indicating which tune to load.
-      For this implementation, the 28K tune data is in the 'CartCTYTunes'
-      header file.
 
   DPC+:
     The music functionality is quite similar to the DPC+ scheme.
-    
+
     Fast Fetcher
       The music frequency value is fetched using a fast fetcher operation.
       This operation is aliased to the instruction "LDA #$F2". Whenever this
@@ -123,11 +121,7 @@ class CartridgeCTY : public Cartridge
       @param osystem   A reference to the OSystem currently in use
     */
     CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osystem);
- 
-    /**
-      Destructor
-    */
-    virtual ~CartridgeCTY();
+    virtual ~CartridgeCTY() = default;
 
   public:
     /**
@@ -262,21 +256,23 @@ class CartridgeCTY : public Cartridge
     void saveScore(uInt8 index);
     void wipeAllScores();
 
-    /** 
+    /**
       Updates any data fetchers in music mode based on the number of
       CPU cycles which have passed since the last update.
     */
     void updateMusicModeDataFetchers();
 
+    void updateTune();
+
   private:
     // OSsytem currently in use
     const OSystem& myOSystem;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The 32K ROM image of the cartridge
     uInt8 myImage[32768];
+
+    // The 28K ROM image of the music
+    uInt8 myTuneData[28*1024];
 
     // The 64 bytes of RAM accessible at $1000 - $1080
     uInt8 myRAM[64];
@@ -285,11 +281,17 @@ class CartridgeCTY : public Cartridge
     uInt8 myOperationType;
 
     // Pointer to the 28K frequency table (points to the start of one
-    // of seven 4K tunes in CartCTYTunes)
+    // of seven 4K tunes in myTuneData)
     const uInt8* myFrequencyImage;
 
     // The counter register for the data fetcher
-    uInt16 myCounter;
+    uInt16 myTunePosition;
+
+    // The music mode counters
+    uInt32 myMusicCounters[3];
+
+    // The music frequency
+    uInt32 myMusicFrequencies[3];
 
     // Flags that last byte peeked was A9 (LDA #)
     bool myLDAimmediate;
@@ -307,11 +309,16 @@ class CartridgeCTY : public Cartridge
     // of internal RAM to Harmony cart EEPROM
     string myEEPROMFile;
 
-    // System cycle count when the last update to music data fetchers occurred
-    Int32 mySystemCycles;
+    // System cycle count from when the last update to music data fetchers occurred
+    uInt64 myAudioCycles;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
+
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
+
+    static const uInt32 ourFrequencyTable[63];
 };
 
 #endif
