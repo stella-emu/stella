@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -29,7 +29,7 @@ class System;
 #endif
 
 /**
-  Cartridge class used for Pitfall II.  There are two 4K program banks, a 
+  Cartridge class used for Pitfall II.  There are two 4K program banks, a
   2K display bank, and the DPC chip.  The bankswitching itself is the same
   as F8 scheme (hotspots at $1FF8 and $1FF9).  DPC chip access is mapped to
   $1000 - $1080 ($1000 - $103F is read port, $1040 - $107F is write port).
@@ -53,11 +53,7 @@ class CartridgeDPC : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeDPC(const uInt8* image, uInt32 size, const Settings& settings);
- 
-    /**
-      Destructor
-    */
-    virtual ~CartridgeDPC();
+    virtual ~CartridgeDPC() = default;
 
   public:
     /**
@@ -167,12 +163,12 @@ class CartridgeDPC : public Cartridge
     bool poke(uInt16 address, uInt8 value);
 
   private:
-    /** 
+    /**
       Clocks the random number generator to move it to its next state
     */
     void clockRandomNumberGenerator();
 
-    /** 
+    /**
       Updates any data fetchers in music mode based on the number of
       CPU cycles which have passed since the last update.
     */
@@ -190,9 +186,6 @@ class CartridgeDPC : public Cartridge
 
     // Pointer to the 2K display ROM image of the cartridge
     uInt8* myDisplayImage;
-
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
 
     // The top registers for the data fetchers
     uInt8 myTops[8];
@@ -212,11 +205,14 @@ class CartridgeDPC : public Cartridge
     // The random number generator register
     uInt8 myRandomNumber;
 
-    // System cycle count when the last update to music data fetchers occurred
-    Int32 mySystemCycles;
+    // System cycle count from when the last update to music data fetchers occurred
+    uInt64 myAudioCycles;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
+
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 };
 
 #endif
