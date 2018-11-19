@@ -104,6 +104,9 @@
 
   * Added recently released 'Arkyology' prototype ROM to the database.
 
+  * Fixed 'Street Racer' and 'Video Olympics' ROMs to use paddles in both
+    ports.
+
   * Added premliminary support for 'CTY' bankswitching scheme and recently
     released 'Chetiry' ROMs.  Special thanks to SpiceWare for adding music
     support to this scheme.
