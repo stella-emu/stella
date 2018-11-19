@@ -33,7 +33,7 @@
 #include "Cart4KSC.hxx"
 #include "CartAR.hxx"
 // #include "CartBUS.hxx"
-// #include "CartCDF.hxx"
+#include "CartCDF.hxx"
 #include "CartCM.hxx"
 #include "CartCTY.hxx"
 #include "CartCV.hxx"
@@ -208,8 +208,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeBFSC(image, size, settings);
 //   else if(type == "BUS")
 //     cartridge = new CartridgeBUS(image, size, settings);
-//   else if(type == "CDF")
-//     cartridge = new CartridgeCDF(image, size, settings);
+  else if(type == "CDF")
+    cartridge = new CartridgeCDF(image, size, settings);
   else if(type == "CM")
     cartridge = new CartridgeCM(image, size, settings);
   else if(type == "CTY")
