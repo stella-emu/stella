@@ -19,6 +19,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFrameManager::AbstractFrameManager() :
+  myIsRendering(false),
+  myVsync(false),
+  myVblank(false),
   myLayout(FrameLayout::pal),
   myOnFrameStart(nullptr),
   myOnFrameComplete(nullptr)

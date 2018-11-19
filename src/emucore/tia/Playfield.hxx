@@ -76,7 +76,7 @@ class Playfield : public Serializable
 
   private:
 
-    enum ColorMode: uInt8 {normal, score};
+    enum class ColorMode: uInt8 {normal, score};
 
   private:
 

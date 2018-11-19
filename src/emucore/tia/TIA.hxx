@@ -484,13 +484,13 @@ class TIA : public Device
     /**
      * During each line, the TIA cycles through these two states.
      */
-    enum HState {blank, frame};
+    enum class HState {blank, frame};
 
     /**
      * The three different modes of the priority encoder. Check TIA::renderPixel
      * for a precise definition.
      */
-    enum Priority {pfp, score, normal};
+    enum class Priority {pfp, score, normal};
 
     /**
      * Palette and indices for fixed debug colors.

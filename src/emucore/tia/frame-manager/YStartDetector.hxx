@@ -64,7 +64,7 @@ class YStartDetector: public AbstractFrameManager {
     /**
      * Our various states.
      */
-    enum State {
+    enum class State {
       // Wait for vsync on
       waitForVsyncStart,
 
@@ -78,7 +78,7 @@ class YStartDetector: public AbstractFrameManager {
     /**
      * Have we settled on a frame start?
      */
-    enum VblankMode {
+    enum class VblankMode {
       // We have settled on a frame start and have some hysteresis before we return to floating
       locked,
 

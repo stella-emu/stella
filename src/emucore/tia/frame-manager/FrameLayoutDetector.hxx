@@ -59,7 +59,7 @@ class FrameLayoutDetector: public AbstractFrameManager {
     /**
      * This frame manager only tracks frame boundaries, so we have only two states.
      */
-    enum State {
+    enum class State {
       // Wait for VSYNC to be enabled.
       waitForVsyncStart,
 
