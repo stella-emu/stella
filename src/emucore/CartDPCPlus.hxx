@@ -56,11 +56,7 @@ class CartridgeDPCPlus : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeDPCPlus(const uInt8* image, uInt32 size, const Settings& settings);
- 
-    /**
-      Destructor
-    */
-    virtual ~CartridgeDPCPlus();
+    virtual ~CartridgeDPCPlus() = default;
 
   public:
     /**
@@ -170,35 +166,35 @@ class CartridgeDPCPlus : public Cartridge
     bool poke(uInt16 address, uInt8 value);
 
   private:
-    /** 
+    /**
       Sets the initial state of the DPC pointers and RAM
     */
     void setInitialState();
 
-    /** 
+    /**
       Clocks the random number generator to move it to its next state
     */
     void clockRandomNumberGenerator();
-  
-    /** 
+
+    /**
       Clocks the random number generator to move it to its prior state
     */
     void priorClockRandomNumberGenerator();
 
-    /** 
+    /**
       Updates any data fetchers in music mode based on the number of
       CPU cycles which have passed since the last update.
     */
     void updateMusicModeDataFetchers();
 
-    /** 
+    /**
       Call Special Functions
     */
     void callFunction(uInt8 value);
 
   private:
     // The ROM image and size
-    uInt8* myImage;
+    uInt8 myImage[32768];
     uInt32 mySize;
 
     // Pointer to the 24K program ROM image of the cartridge
@@ -207,20 +203,20 @@ class CartridgeDPCPlus : public Cartridge
     // Pointer to the 4K display ROM image of the cartridge
     uInt8* myDisplayImage;
 
-    // The DPC 8k RAM image
+    // The DPC 8k RAM image, used as:
+    //   3K DPC+ driver
+    //   4K Display Data
+    //   1K Frequency Data
     uInt8 myDPCRAM[8192];
 
 #ifdef THUMB_SUPPORT
     // Pointer to the Thumb ARM emulator object
-    Thumbulator* myThumbEmulator;
+    unique_ptr<Thumbulator> myThumbEmulator;
 #endif
 
     // Pointer to the 1K frequency table
     uInt8* myFrequencyImage;
 
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-  
     // The top registers for the data fetchers
     uInt8 myTops[8];
 
@@ -229,7 +225,7 @@ class CartridgeDPCPlus : public Cartridge
 
     // The counter registers for the data fetchers
     uInt16 myCounters[8];
-  
+
     // The counter registers for the fractional data fetchers
     uInt32 myFractionalCounters[8];
 
@@ -238,7 +234,7 @@ class CartridgeDPCPlus : public Cartridge
 
     // The Fast Fetcher Enabled flag
     bool myFastFetch;
-  
+
     // Flags that last byte peeked was A9 (LDA #)
     bool myLDAimmediate;
 
@@ -253,18 +249,24 @@ class CartridgeDPCPlus : public Cartridge
 
     // The music frequency
     uInt32 myMusicFrequencies[3];
-  
+
     // The music waveforms
     uInt16 myMusicWaveforms[3];
-  
+
     // The random number generator register
     uInt32 myRandomNumber;
 
     // System cycle count when the last update to music data fetchers occurred
-    Int32 mySystemCycles;
+    uInt64 myAudioCycles;
+
+    // System cycle count when the last Thumbulator::run() occurred
+    uInt64 myARMCycles;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
+
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset;
 };
 
 #endif

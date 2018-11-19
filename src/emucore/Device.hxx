@@ -22,6 +22,7 @@
 
 class System;
 
+#include "ConsoleTiming.hxx"
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
@@ -56,8 +57,17 @@ class Device : public Serializable
     virtual void reset() = 0;
 
     /**
+      Notification method invoked by the system when the console type
+      has changed.  It may be necessary to override this method for
+      devices that want to know about console changes.
+
+      @param timing  Enum representing the new console type
+    */
+    virtual void consoleChanged(ConsoleTiming timing) { }
+
+    /**
       Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary 
+      system resets its cycle counter to zero.  It may be necessary
       to override this method for devices that remember cycle counts.
     */
     virtual void systemCyclesReset() { }

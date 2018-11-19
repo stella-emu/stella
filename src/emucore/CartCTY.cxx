@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -250,7 +250,7 @@ bool CartridgeCTY::poke(uInt16 address, uInt8 value)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCTY::bank(uInt16 bank)
-{ 
+{
   if(bankLocked()) return false;
 
   // Remember what bank we're in
@@ -295,7 +295,7 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
     myImage[myCurrentBank + address] = value;
 
   return myBankChanged = true;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeCTY::getImage(int& size) const
@@ -459,7 +459,7 @@ void CartridgeCTY::loadTune(uInt8 index)
 void CartridgeCTY::loadScore(uInt8 index)
 {
   Serializer serializer(myEEPROMFile, true);
-  if(serializer.isValid())
+  if(serializer)
   {
     uInt8 scoreRAM[256];
     try
@@ -479,7 +479,7 @@ void CartridgeCTY::loadScore(uInt8 index)
 void CartridgeCTY::saveScore(uInt8 index)
 {
   Serializer serializer(myEEPROMFile);
-  if(serializer.isValid())
+  if(serializer)
   {
     // Load score RAM
     uInt8 scoreRAM[256];
@@ -496,7 +496,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     memcpy(scoreRAM + (index << 6) + 4, myRAM+4, 60);
 
     // Save score RAM
-    serializer.reset();
+    serializer.rewind();
     try
     {
       serializer.putByteArray(scoreRAM, 256);
@@ -513,7 +513,7 @@ void CartridgeCTY::saveScore(uInt8 index)
 void CartridgeCTY::wipeAllScores()
 {
   Serializer serializer(myEEPROMFile);
-  if(serializer.isValid())
+  if(serializer)
   {
     // Erase score RAM
     uInt8 scoreRAM[256];

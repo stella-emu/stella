@@ -35,7 +35,6 @@ MODULE_OBJS := \
 	src/emucore/CartFA.o \
 	src/emucore/CartFA2.o \
 	src/emucore/CartFE.o \
-	src/emucore/CartMC.o \
 	src/emucore/CartSB.o \
 	src/emucore/CartUA.o \
 	src/emucore/CartX07.o \
@@ -76,5 +75,5 @@ MODULE_OBJS := \
 MODULE_DIRS += \
 	src/emucore
 
-# Include common rules 
+# Include common rules
 include $(srcdir)/common.rules

@@ -30,7 +30,7 @@
 
 #include "StateManager.hxx"
 
-#define STATE_HEADER "03090100state"
+#define STATE_HEADER "03090400state"
 #define MOVIE_HEADER "03030000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,7 +186,7 @@ void StateManager::loadState(int slot)
 
     // Make sure the file can be opened in read-only mode
     Serializer in(buf.str(), true);
-    if(!in.isValid())
+    if(!in)
     {
       buf.str("");
   #if !defined(RETRON77)
@@ -251,7 +251,7 @@ void StateManager::saveState(int slot)
 
     // Make sure the file can be opened for writing
     Serializer out(buf.str());
-    if(!out.isValid())
+    if(!out)
     {
       buf.str("");
       buf << "Can't open/save to state file " << " " << myOSystem->stateDir() << name << ".st" << slot;
@@ -309,7 +309,7 @@ bool StateManager::loadState(Serializer& in)
   if(&myOSystem->console())
   {
     // Make sure the file can be opened for reading
-    if(in.isValid())
+    if(in)
     {
       // First test if we have a valid header and cart type
       // If so, do a complete state load using the Console
@@ -329,7 +329,7 @@ bool StateManager::saveState(Serializer& out)
     if(&myOSystem->console())
     {
       // Make sure the file can be opened for writing
-      if(out.isValid())
+      if(out)
       {
         // Add header so that if the state format changes in the future,
         // we'll know right away, without having to parse the rest of the file
