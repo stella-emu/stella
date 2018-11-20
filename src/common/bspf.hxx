@@ -71,6 +71,8 @@
 #include <cstring>
 #include <cctype>
 #include <cstdio>
+#include <memory>
+using std::make_unique;
 using namespace std;
 
 // Defines to help with path handling
