@@ -116,11 +116,6 @@ class CartDetector
     static bool isProbablySC(const BytePtr& image, uInt32 size);
 
     /**
-      Returns true if the image is probably a 4K SuperChip (128 bytes RAM)
-    */
-    static bool isProbably4KSC(const BytePtr& image, uInt32 size);
-
-    /**
       Returns true if the image probably contains ARM code in the first 1K
     */
     static bool isProbablyARM(const BytePtr& image, uInt32 size);
@@ -149,6 +144,11 @@ class CartDetector
       Returns true if the image is probably a 4A50 bankswitching cartridge
     */
     static bool isProbably4A50(const BytePtr& image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a 4K SuperChip (128 bytes RAM)
+    */
+    static bool isProbably4KSC(const BytePtr& image, uInt32 size);
 
     /**
       Returns true if the image is probably a BF/BFSC bankswitching cartridge

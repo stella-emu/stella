@@ -26,6 +26,8 @@
 #include "Cart4K.hxx"
 #include "Cart4KSC.hxx"
 #include "CartAR.hxx"
+#include "CartBF.hxx"
+#include "CartBFSC.hxx"
 #include "CartBUS.hxx"
 #include "CartCDF.hxx"
 #include "CartCM.hxx"
@@ -33,6 +35,8 @@
 #include "CartCV.hxx"
 #include "CartCVPlus.hxx"
 #include "CartDASH.hxx"
+#include "CartDF.hxx"
+#include "CartDFSC.hxx"
 #include "CartDPC.hxx"
 #include "CartDPCPlus.hxx"
 #include "CartE0.hxx"
@@ -40,10 +44,6 @@
 #include "CartE78K.hxx"
 #include "CartEF.hxx"
 #include "CartEFSC.hxx"
-#include "CartBF.hxx"
-#include "CartBFSC.hxx"
-#include "CartDF.hxx"
-#include "CartDFSC.hxx"
 #include "CartF0.hxx"
 #include "CartF4.hxx"
 #include "CartF4SC.hxx"
@@ -263,6 +263,10 @@ CartDetector::createFromImage(const BytePtr& image, uInt32 size, Bankswitch::Typ
       return make_unique<Cartridge4KSC>(image, size, osystem.settings());
     case Bankswitch::Type::_AR:
       return make_unique<CartridgeAR>(image, size, osystem.settings());
+    case Bankswitch::Type::_BF:
+      return make_unique<CartridgeBF>(image, size, osystem.settings());
+    case Bankswitch::Type::_BFSC:
+      return make_unique<CartridgeBFSC>(image, size, osystem.settings());
     case Bankswitch::Type::_BUS:
       return make_unique<CartridgeBUS>(image, size, osystem.settings());
     case Bankswitch::Type::_CDF:
@@ -277,6 +281,10 @@ CartDetector::createFromImage(const BytePtr& image, uInt32 size, Bankswitch::Typ
       return make_unique<CartridgeCVPlus>(image, size, osystem.settings());
     case Bankswitch::Type::_DASH:
       return make_unique<CartridgeDASH>(image, size, osystem.settings());
+    case Bankswitch::Type::_DF:
+      return make_unique<CartridgeDF>(image, size, osystem.settings());
+    case Bankswitch::Type::_DFSC:
+      return make_unique<CartridgeDFSC>(image, size, osystem.settings());
     case Bankswitch::Type::_DPC:
       return make_unique<CartridgeDPC>(image, size, osystem.settings());
     case Bankswitch::Type::_DPCP:
@@ -291,14 +299,6 @@ CartDetector::createFromImage(const BytePtr& image, uInt32 size, Bankswitch::Typ
       return make_unique<CartridgeEF>(image, size, osystem.settings());
     case Bankswitch::Type::_EFSC:
       return make_unique<CartridgeEFSC>(image, size, osystem.settings());
-    case Bankswitch::Type::_BF:
-      return make_unique<CartridgeBF>(image, size, osystem.settings());
-    case Bankswitch::Type::_BFSC:
-      return make_unique<CartridgeBFSC>(image, size, osystem.settings());
-    case Bankswitch::Type::_DF:
-      return make_unique<CartridgeDF>(image, size, osystem.settings());
-    case Bankswitch::Type::_DFSC:
-      return make_unique<CartridgeDFSC>(image, size, osystem.settings());
     case Bankswitch::Type::_F0:
       return make_unique<CartridgeF0>(image, size, osystem.settings());
     case Bankswitch::Type::_F4:
@@ -340,7 +340,7 @@ Bankswitch::Type CartDetector::autodetectType(const BytePtr& image, uInt32 size)
   // Guess type based on size
   Bankswitch::Type type = Bankswitch::Type::_AUTO;
 
-  if(isProbablyCVPlus(image,size))
+  if(isProbablyCVPlus(image, size))
   {
     type = Bankswitch::Type::_CVP;
   }
@@ -565,23 +565,6 @@ bool CartDetector::isProbablySC(const BytePtr& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbably4KSC(const BytePtr& image, uInt32 size)
-{
-  // We check if the first 256 bytes are identical *and* if there's
-  // an "SC" signature for one of our larger SC types at 1FFA.
-
-  uInt8 first = image[0];
-  for(uInt32 i = 1; i < 256; ++i)
-      if(image[i] != first)
-        return false;
-
-  if((image[size-6]=='S') && (image[size-5]=='C'))
-      return true;
-
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyARM(const BytePtr& image, uInt32 size)
 {
   // ARM code contains the following 'loader' patterns in the first 1K
@@ -635,8 +618,8 @@ bool CartDetector::isProbably3E(const BytePtr& image, uInt32 size)
 bool CartDetector::isProbably3EPlus(const BytePtr& image, uInt32 size)
 {
   // 3E+ cart is identified key 'TJ3E' in the ROM
-  uInt8 signature[] = { 'T', 'J', '3', 'E' };
-  return searchForBytes(image.get(), size, signature, 4, 1);
+  uInt8 tj3e[] = { 'T', 'J', '3', 'E' };
+  return searchForBytes(image.get(), size, tj3e, 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -669,10 +652,69 @@ bool CartDetector::isProbably4A50(const BytePtr& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbably4KSC(const BytePtr& image, uInt32 size)
+{
+  // We check if the first 256 bytes are identical *and* if there's
+  // an "SC" signature for one of our larger SC types at 1FFA.
+
+  uInt8 first = image[0];
+  for(uInt32 i = 1; i < 256; ++i)
+      if(image[i] != first)
+        return false;
+
+  if((image[size-6]=='S') && (image[size-5]=='C'))
+      return true;
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyBF(const BytePtr& image, uInt32 size,
+                                Bankswitch::Type& type)
+{
+  // BF carts store strings 'BFBF' and 'BFSC' starting at address $FFF8
+  // This signature is attributed to "RevEng" of AtariAge
+  uInt8 bf[]   = { 'B', 'F', 'B', 'F' };
+  uInt8 bfsc[] = { 'B', 'F', 'S', 'C' };
+  if(searchForBytes(image.get()+size-8, 8, bf, 4, 1))
+  {
+    type = Bankswitch::Type::_BF;
+    return true;
+  }
+  else if(searchForBytes(image.get()+size-8, 8, bfsc, 4, 1))
+  {
+    type = Bankswitch::Type::_BFSC;
+    return true;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyBUS(const BytePtr& image, uInt32 size)
+{
+  // BUS ARM code has 2 occurrences of the string BUS
+  // Note: all Harmony/Melody custom drivers also contain the value
+  // 0x10adab1e (LOADABLE) if needed for future improvement
+  uInt8 bus[] = { 'B', 'U', 'S'};
+  return searchForBytes(image.get(), size, bus, 3, 2);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyCDF(const BytePtr& image, uInt32 size)
+{
+  // CDF ARM code has 3 occurrences of the string CDF
+  // Note: all Harmony/Melody custom drivers also contain the value
+  // 0x10adab1e (LOADABLE) if needed for future improvement
+  uInt8 cdf[] = { 'C', 'D', 'F' };
+  return searchForBytes(image.get(), size, cdf, 3, 3);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyCTY(const BytePtr& image, uInt32 size)
 {
-  uInt8 signature[] = { 'L', 'E', 'N', 'I', 'N' };
-  return searchForBytes(image.get(), size, signature, 5, 1);
+  uInt8 lenin[] = { 'L', 'E', 'N', 'I', 'N' };
+  return searchForBytes(image.get(), size, lenin, 5, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -695,17 +737,40 @@ bool CartDetector::isProbablyCVPlus(const BytePtr& image, uInt32)
 {
   // CV+ cart is identified key 'commavidplus' @ $04 in the ROM
   // We inspect only this area to speed up the search
-  uInt8 signature[12] = { 'c', 'o', 'm', 'm', 'a', 'v', 'i', 'd',
-                          'p', 'l', 'u', 's' };
-  return searchForBytes(image.get()+4, 24, signature, 12, 1);
+  uInt8 cvp[12] = { 'c', 'o', 'm', 'm', 'a', 'v', 'i', 'd',
+                    'p', 'l', 'u', 's' };
+  return searchForBytes(image.get()+4, 24, cvp, 12, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyDASH(const BytePtr& image, uInt32 size)
 {
   // DASH cart is identified key 'TJAD' in the ROM
-  uInt8 signature[] = { 'T', 'J', 'A', 'D' };
-  return searchForBytes(image.get(), size, signature, 4, 1);
+  uInt8 tjad[] = { 'T', 'J', 'A', 'D' };
+  return searchForBytes(image.get(), size, tjad, 4, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyDF(const BytePtr& image, uInt32 size,
+                                Bankswitch::Type& type)
+{
+
+  // BF carts store strings 'DFDF' and 'DFSC' starting at address $FFF8
+  // This signature is attributed to "RevEng" of AtariAge
+  uInt8 df[]   = { 'D', 'F', 'D', 'F' };
+  uInt8 dfsc[] = { 'D', 'F', 'S', 'C' };
+  if(searchForBytes(image.get()+size-8, 8, df, 4, 1))
+  {
+    type = Bankswitch::Type::_DF;
+    return true;
+  }
+  else if(searchForBytes(image.get()+size-8, 8, dfsc, 4, 1))
+  {
+    type = Bankswitch::Type::_DFSC;
+    return true;
+  }
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -714,8 +779,8 @@ bool CartDetector::isProbablyDPCplus(const BytePtr& image, uInt32 size)
   // DPC+ ARM code has 2 occurrences of the string DPC+
   // Note: all Harmony/Melody custom drivers also contain the value
   // 0x10adab1e (LOADABLE) if needed for future improvement
-  uInt8 signature[] = { 'D', 'P', 'C', '+' };
-  return searchForBytes(image.get(), size, signature, 4, 2);
+  uInt8 dpcp[] = { 'D', 'P', 'C', '+' };
+  return searchForBytes(image.get(), size, dpcp, 4, 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -789,7 +854,8 @@ bool CartDetector::isProbablyE78K(const BytePtr& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyEF(const BytePtr& image, uInt32 size, Bankswitch::Type& type)
+bool CartDetector::isProbablyEF(const BytePtr& image, uInt32 size,
+                                Bankswitch::Type& type)
 {
   // Newer EF carts store strings 'EFEF' and 'EFSC' starting at address $FFF8
   // This signature is attributed to "RevEng" of AtariAge
@@ -837,69 +903,6 @@ bool CartDetector::isProbablyEF(const BytePtr& image, uInt32 size, Bankswitch::T
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyBF(const BytePtr& image, uInt32 size, Bankswitch::Type& type)
-{
-  // BF carts store strings 'BFBF' and 'BFSC' starting at address $FFF8
-  // This signature is attributed to "RevEng" of AtariAge
-  uInt8 bf[]   = { 'B', 'F', 'B', 'F' };
-  uInt8 bfsc[] = { 'B', 'F', 'S', 'C' };
-  if(searchForBytes(image.get()+size-8, 8, bf, 4, 1))
-  {
-    type = Bankswitch::Type::_BF;
-    return true;
-  }
-  else if(searchForBytes(image.get()+size-8, 8, bfsc, 4, 1))
-  {
-    type = Bankswitch::Type::_BFSC;
-    return true;
-  }
-
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyBUS(const BytePtr& image, uInt32 size)
-{
-  // BUS ARM code has 2 occurrences of the string BUS
-  // Note: all Harmony/Melody custom drivers also contain the value
-  // 0x10adab1e (LOADABLE) if needed for future improvement
-  uInt8 bus[] = { 'B', 'U', 'S'};
-  return searchForBytes(image.get(), size, bus, 3, 2);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyCDF(const BytePtr& image, uInt32 size)
-{
-  // CDF ARM code has 3 occurrences of the string DPC+
-  // Note: all Harmony/Melody custom drivers also contain the value
-  // 0x10adab1e (LOADABLE) if needed for future improvement
-  uInt8 signature[] = { 'C', 'D', 'F' };
-  return searchForBytes(image.get(), size, signature, 3, 3);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyDF(const BytePtr& image, uInt32 size, Bankswitch::Type& type)
-{
-
-  // BF carts store strings 'DFDF' and 'DFSC' starting at address $FFF8
-  // This signature is attributed to "RevEng" of AtariAge
-  uInt8 df[]   = { 'D', 'F', 'D', 'F' };
-  uInt8 dfsc[] = { 'D', 'F', 'S', 'C' };
-  if(searchForBytes(image.get()+size-8, 8, df, 4, 1))
-  {
-    type = Bankswitch::Type::_DF;
-    return true;
-  }
-  else if(searchForBytes(image.get()+size-8, 8, dfsc, 4, 1))
-  {
-    type = Bankswitch::Type::_DFSC;
-    return true;
-  }
-
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyFA2(const BytePtr& image, uInt32)
 {
   // This currently tests only the 32K version of FA2; the 24 and 28K
@@ -937,8 +940,8 @@ bool CartDetector::isProbablyFE(const BytePtr& image, uInt32 size)
 bool CartDetector::isProbablyMDM(const BytePtr& image, uInt32 size)
 {
   // MDM cart is identified key 'MDMC' in the first 8K of ROM
-  uInt8 signature[] = { 'M', 'D', 'M', 'C' };
-  return searchForBytes(image.get(), std::min(size, 8192u), signature, 4, 1);
+  uInt8 mdmc[] = { 'M', 'D', 'M', 'C' };
+  return searchForBytes(image.get(), std::min(size, 8192u), mdmc, 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
