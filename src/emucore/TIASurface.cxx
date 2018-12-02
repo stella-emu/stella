@@ -72,16 +72,19 @@ void TIASurface::initialize(const Console& console, const VideoMode& mode)
 
   // Phosphor mode can be enabled either globally or per-ROM
   int p_blend = 0;
+  bool enable = false;
 
   if(myOSystem.settings().getString("tv.phosphor") == "always")
   {
     p_blend = myOSystem.settings().getInt("tv.phosblend");
+    enable = true;
   }
-  else if(console.properties().get(Display_Phosphor) == "YES")
+  else
   {
     p_blend = atoi(console.properties().get(Display_PPBlend).c_str());
+    enable = console.properties().get(Display_Phosphor) == "YES";
   }
-  enablePhosphor(p_blend != 0, p_blend);
+  enablePhosphor(enable, p_blend);
 
   setNTSC(NTSCFilter::Preset(myOSystem.settings().getInt("tv.filter")), false);
 
