@@ -31,6 +31,8 @@
 #include "PNGLibrary.hxx"
 #include "System.hxx"
 
+#include "ThreadDebugging.hxx"
+
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
@@ -47,6 +49,8 @@ int stellaMain(int argc, char* argv[])
 int main(int argc, char* argv[])
 #endif
 {
+  SET_MAIN_THREAD;
+
   std::ios_base::sync_with_stdio(false);
 
   // Create the parent OSystem object

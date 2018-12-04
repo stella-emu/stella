@@ -34,6 +34,8 @@
 #include "audio/SimpleResampler.hxx"
 #include "audio/LanczosResampler.hxx"
 
+#include "ThreadDebugging.hxx"
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
   : Sound(osystem),
@@ -46,6 +48,8 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
     myUnderrun(false),
     myAudioSettings(audioSettings)
 {
+  ASSERT_MAIN_THREAD;
+
   myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
 
   if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
@@ -69,6 +73,8 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::~SoundSDL2()
 {
+  ASSERT_MAIN_THREAD;
+
   if (!myIsInitializedFlag) return;
 
   SDL_CloseAudioDevice(myDevice);
@@ -78,6 +84,8 @@ SoundSDL2::~SoundSDL2()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SoundSDL2::openDevice()
 {
+  ASSERT_MAIN_THREAD;
+
   SDL_AudioSpec desired;
   desired.freq   = myAudioSettings.sampleRate();
   desired.format = AUDIO_F32SYS;
