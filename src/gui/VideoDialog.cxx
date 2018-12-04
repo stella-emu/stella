@@ -272,14 +272,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   lwidth = font.getStringWidth("Intensity ");
 
   // TV Phosphor effect
-  myTVPhosphor = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Phosphor for all ROMs");
+  myTVPhosphor = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Phosphor for all ROMs", kPhosphorChanged);
   wid.push_back(myTVPhosphor);
   ypos += lineHeight + VGAP;
 
-  // TV Phosphor default level
+  // TV Phosphor blend level
   xpos += INDENT;
   swidth = font.getMaxCharWidth() * 10;
-  CREATE_CUSTOM_SLIDERS(PhosLevel, "Default   ");
+  CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend     ");
   ypos += 6;
 
   // Scanline intensity and interpolation
@@ -395,6 +395,7 @@ void VideoDialog::loadConfig()
 
   // TV phosphor blend
   myTVPhosLevel->setValue(instance().settings().getInt("tv.phosblend"));
+  handlePhosphorChange();
 
   // TV scanline intensity and interpolation
   myTVScanIntense->setValue(instance().settings().getInt("tv.scanlines"));
@@ -475,10 +476,8 @@ void VideoDialog::saveConfig()
   // TV phosphor mode
   instance().settings().setValue("tv.phosphor",
                                  myTVPhosphor->getState() ? "always" : "byrom");
-
   // TV phosphor blend
   instance().settings().setValue("tv.phosblend", myTVPhosLevel->getValueLabel());
-  Properties::setDefault(Display_PPBlend, myTVPhosLevel->getValueLabel());
 
   // TV scanline intensity and interpolation
   instance().settings().setValue("tv.scanlines", myTVScanIntense->getValueLabel());
@@ -530,6 +529,7 @@ void VideoDialog::setDefaults()
 
       // Make sure that mutually-exclusive items are not enabled at the same time
       handleTVModeChange(NTSCFilter::PRESET_OFF);
+      handlePhosphorChange();
       loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
       break;
     }
@@ -582,6 +582,12 @@ void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handlePhosphorChange()
+{
+  myTVPhosLevel->setEnabled(myTVPhosphor->getState());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::handleCommand(CommandSender* sender, int cmd,
                                 int data, int id)
 {
@@ -613,6 +619,10 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
     case kCloneBadCmd: loadTVAdjustables(NTSCFilter::PRESET_BAD);
       break;
     case kCloneCustomCmd: loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+      break;
+
+    case kPhosphorChanged:
+      handlePhosphorChange();
       break;
 
     default:

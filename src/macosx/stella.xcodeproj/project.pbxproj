@@ -331,7 +331,6 @@
 		DC62E64A1960E87B007AEF05 /* SaveKeyWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */; };
 		DC67270B1556F4860023653B /* CartCTY.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6727081556F4860023653B /* CartCTY.cxx */; };
 		DC67270C1556F4860023653B /* CartCTY.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6727091556F4860023653B /* CartCTY.hxx */; };
-		DC67270D1556F4860023653B /* CartCTYTunes.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC67270A1556F4860023653B /* CartCTYTunes.hxx */; };
 		DC676A411729A0B000E4E73D /* Cart3EWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC676A251729A0B000E4E73D /* Cart3EWidget.cxx */; };
 		DC676A421729A0B000E4E73D /* Cart3EWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC676A261729A0B000E4E73D /* Cart3EWidget.hxx */; };
 		DC676A431729A0B000E4E73D /* Cart4A50Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC676A271729A0B000E4E73D /* Cart4A50Widget.cxx */; };
@@ -1029,7 +1028,6 @@
 		DC62E6461960E87B007AEF05 /* SaveKeyWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SaveKeyWidget.hxx; sourceTree = "<group>"; };
 		DC6727081556F4860023653B /* CartCTY.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCTY.cxx; sourceTree = "<group>"; };
 		DC6727091556F4860023653B /* CartCTY.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCTY.hxx; sourceTree = "<group>"; };
-		DC67270A1556F4860023653B /* CartCTYTunes.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCTYTunes.hxx; sourceTree = "<group>"; };
 		DC676A251729A0B000E4E73D /* Cart3EWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3EWidget.cxx; sourceTree = "<group>"; };
 		DC676A261729A0B000E4E73D /* Cart3EWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EWidget.hxx; sourceTree = "<group>"; };
 		DC676A271729A0B000E4E73D /* Cart4A50Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart4A50Widget.cxx; sourceTree = "<group>"; };
@@ -1747,7 +1745,6 @@
 				DC8C1BA814B25DE7006440EE /* CartCM.hxx */,
 				DC6727081556F4860023653B /* CartCTY.cxx */,
 				DC6727091556F4860023653B /* CartCTY.hxx */,
-				DC67270A1556F4860023653B /* CartCTYTunes.hxx */,
 				2DE2DF1C0627AE07006BEC99 /* CartCV.cxx */,
 				2DE2DF1D0627AE07006BEC99 /* CartCV.hxx */,
 				DCACBAD21C54298300703A9B /* CartCVPlus.cxx */,
@@ -2462,7 +2459,6 @@
 				DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */,
 				DC67270C1556F4860023653B /* CartCTY.hxx in Headers */,
 				DC1B2EC41E50036100F62837 /* AmigaMouse.hxx in Headers */,
-				DC67270D1556F4860023653B /* CartCTYTunes.hxx in Headers */,
 				DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */,
 				DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */,
 				DCE395F116CB0B5F008DB1E5 /* FSNodeZIP.hxx in Headers */,

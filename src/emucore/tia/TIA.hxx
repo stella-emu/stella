@@ -248,8 +248,6 @@ class TIA : public Device
 
     /**
       Changes the current Height/YStart properties.
-      Note that calls to these method(s) must be eventually followed by
-      ::reset() for the changes to take effect.
     */
     void setHeight(uInt32 height) { myFrameManager->setFixedHeight(height); }
     void setYStart(uInt32 ystart) { myFrameManager->setYstart(ystart); }
@@ -486,13 +484,13 @@ class TIA : public Device
     /**
      * During each line, the TIA cycles through these two states.
      */
-    enum HState {blank, frame};
+    enum class HState {blank, frame};
 
     /**
      * The three different modes of the priority encoder. Check TIA::renderPixel
      * for a precise definition.
      */
-    enum Priority {pfp, score, normal};
+    enum class Priority {pfp, score, normal};
 
     /**
      * Palette and indices for fixed debug colors.

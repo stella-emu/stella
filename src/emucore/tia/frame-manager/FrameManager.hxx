@@ -66,7 +66,7 @@ class FrameManager: public AbstractFrameManager {
 
   private:
 
-    enum State {
+    enum class State {
       waitForVsyncStart,
       waitForVsyncEnd,
       waitForFrameStart,
@@ -75,7 +75,7 @@ class FrameManager: public AbstractFrameManager {
 
   private:
 
-  void setState(State state);
+    void setState(State state);
 
     void updateIsRendering();
 

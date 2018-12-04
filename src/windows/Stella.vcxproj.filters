@@ -1493,9 +1493,6 @@
     <ClInclude Include="..\emucore\CartCTY.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\CartCTYTunes.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\FSNodeFactory.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>

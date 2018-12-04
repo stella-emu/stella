@@ -914,7 +914,6 @@
     <ClInclude Include="..\emucore\CartCDF.hxx" />
     <ClInclude Include="..\emucore\CartCM.hxx" />
     <ClInclude Include="..\emucore\CartCTY.hxx" />
-    <ClInclude Include="..\emucore\CartCTYTunes.hxx" />
     <ClInclude Include="..\emucore\CartCVPlus.hxx" />
     <ClInclude Include="..\emucore\CartDASH.hxx" />
     <ClInclude Include="..\emucore\CartDetector.hxx" />

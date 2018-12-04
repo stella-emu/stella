@@ -15,10 +15,21 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef VERSION_HXX
-#define VERSION_HXX
+#include "FatalEmulationError.hxx"
 
-#define STELLA_VERSION "6.0_beta2"
-#define STELLA_BUILD "4603"
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FatalEmulationError::FatalEmulationError(const string& message)
+  : myMessage(message)
+{}
 
-#endif
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* FatalEmulationError::what() const throw()
+{
+  return myMessage.c_str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FatalEmulationError::raise(const string& message)
+{
+  throw FatalEmulationError(message);
+}

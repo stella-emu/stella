@@ -415,6 +415,13 @@
 "Cartridge.Name" "Test (1996) (J.V. Matthews) (PD)"
 ""
 
+"Cartridge.MD5" "05c765a63e61882abd1c2d627b652225"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+""
+
 "Cartridge.MD5" "05ccf96247af12eef59698f1a060a54f"
 "Cartridge.Manufacturer" "Otto Versand"
 "Cartridge.ModelNo" "600273"
@@ -452,6 +459,14 @@
 
 "Cartridge.MD5" "0614ed51acd027d531e7c85c4f435292"
 "Cartridge.Name" "Narnia (Glenn Saunders) (PD)"
+""
+
+"Cartridge.MD5" "0619e1c3286bbfbace040b8c3ec5add2"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "0651216c4a4a9c9ac5ada3013a317c72"
@@ -655,6 +670,14 @@
 "Cartridge.Name" "Star Fire - 4K Version (25-10-2002) (MP)"
 ""
 
+"Cartridge.MD5" "0891252ee4e307689febccf3cfd8a8ab"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "0894aa7be77521f9df562be8d9555fe6"
 "Cartridge.Manufacturer" "CBS Electronics, Dan Kitchen, Garry Kitchen"
 "Cartridge.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
@@ -703,6 +726,14 @@
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 "Display.YStart" "34"
+""
+
+"Cartridge.MD5" "08ea2fdaa22e5802c839ee7dfb0483dc"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "08f4dc6f118f7c98e2406c180c08e78e"
@@ -1040,12 +1071,27 @@
 "Cartridge.Name" "Crash Dive (1983) (20th Century Fox) (PAL)"
 ""
 
+"Cartridge.MD5" "0cec9e46a25d338bf595a29aa2606516"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "0cfdd2f3b243cac21f38a0f09f54bead"
 "Cartridge.Name" "Overhead Adventure Demo 4 (PD)"
 ""
 
 "Cartridge.MD5" "0d07d2c1be1a5eaaea235a533bcda781"
 "Cartridge.Name" "Scrolling Playfield 1 (Junkosoft) (PD)"
+""
+
+"Cartridge.MD5" "0d08558f34a47e4eaa39d01c8efb81f0"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control - Atari Mouse Hack v1.15 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "0d09cff0d28033c02c3290edfc3a5cea"
@@ -1139,6 +1185,14 @@
 "Controller.Right" "MINDLINK"
 ""
 
+"Cartridge.MD5" "0e23d0ed4c33b2011ab4cc93a7619683"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "0e4b2b6e014a93ef8be896823da0d4ec"
 "Cartridge.Name" "Skiing (208 in 1) (Unknown) (PAL)"
 ""
@@ -1194,6 +1248,13 @@
 "Display.Height" "256"
 ""
 
+"Cartridge.MD5" "0effef4a341f8eebab65621c60c48787"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+""
+
 "Cartridge.MD5" "0f14c03050b35d6b1d8850b07578722d"
 "Cartridge.Manufacturer" "Jeffry Johnston"
 "Cartridge.Name" "Radial Pong - Version 10 (Jeffry Johnston) (PD)"
@@ -1242,7 +1303,6 @@
 "Cartridge.ModelNo" "684.733 9"
 "Cartridge.Name" "Robin Hood (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Save Our Ship"
-"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "0f95264089c99fc2a839a19872552004"
@@ -1437,6 +1497,13 @@
 
 "Cartridge.MD5" "1201c18cf00d2c236f42e4d7d8c86aa1"
 "Cartridge.Name" "Nick Bensema Demo (Nick Bensema)"
+""
+
+"Cartridge.MD5" "12080205f669b8e7783b976f8cf3d8bb"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Amiga Mouse) v4 (Omegamatrix)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "12123b534bdee79ed7563b9ad74f1cbd"
@@ -1859,6 +1926,14 @@
 "Cartridge.Rarity" "Hack"
 ""
 
+"Cartridge.MD5" "171ebf135b13ba907f462c10d88a2c25"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "1733772165d7b886a94e2b4ed0f74ccd"
 "Cartridge.Name" "Boring Journey Escape (Hack)"
 "Cartridge.Note" "Hack of Journey - Escape"
@@ -1993,6 +2068,14 @@
 "Cartridge.Rarity" "New Release"
 ""
 
+"Cartridge.MD5" "18be8981b8201638f3ed8ae92bb4c215"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "18bebbbd41c234f82b1717b1905e6027"
 "Cartridge.Name" "Space Instigators (Public Release) (02-01-2003) (CT)"
 ""
@@ -2052,6 +2135,13 @@
 "Cartridge.Manufacturer" "Atari, Carol Shaw"
 "Cartridge.ModelNo" "CX2636, CX2636P"
 "Cartridge.Name" "Video Checkers (1980) (Atari) (PAL)"
+""
+
+"Cartridge.MD5" "1986f864e32e3e8d198b5becf3022257"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "199985cae1c0123ab1aef921daace8be"
@@ -2195,6 +2285,14 @@
 "Display.YStart" "54"
 ""
 
+"Cartridge.MD5" "1bfae770e089fa81412d04eb299f4c3f"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Marble Craze - Atari Mouse Hack v1.0 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controllers"
+"Controller.Left" "ATARIMOUSE"
+"Controller.Right" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "1c3f3133a3e5b023c77ecba94fd65995"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-830"
@@ -2206,6 +2304,15 @@
 "Cartridge.ModelNo" "715.853 5"
 "Cartridge.Name" "Wachroboter jagt Jupy (Quelle) (PAL)"
 "Cartridge.Note" "AKA Keystone Kapers"
+""
+
+"Cartridge.MD5" "1c666ba5aac19b81671357e76062989b"
+"Cartridge.Manufacturer" "Nukey Shay, Omegamatrix"
+"Cartridge.Name" "Double Dragon (Genesis) (PAL60) V2"
+"Cartridge.Note" "Genesis controller"
+"Controller.Left" "GENESIS"
+"Controller.Right" "GENESIS"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "1c6eb740d3c485766cade566abab8208"
@@ -2315,6 +2422,7 @@
 "Cartridge.ModelNo" "686.561 2 - 781627"
 "Cartridge.Name" "Mein Weg (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Challenge"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "1e1290ea102e12d7ac52820961457e2b"
@@ -2540,6 +2648,14 @@
 "Cartridge.Rarity" "Hack"
 ""
 
+"Cartridge.MD5" "2058cf3fefad4d2bc03ed817cedddcd4"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "2091af29b4e7b86914d79d9aaa4cbd20"
 "Cartridge.Manufacturer" "CBS Electronics - Woodside Design Associates, Harley H. Puthuff Jr."
 "Cartridge.ModelNo" "4L1802"
@@ -2625,6 +2741,13 @@
 
 "Cartridge.MD5" "2179dfd7edee76efafe698c1bc763735"
 "Cartridge.Name" "Yellow Submarine (Cody Pittman) (PD)"
+""
+
+"Cartridge.MD5" "217b1452881264ac75126bf77b8d0db8"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "218b76f5a4142dc2ea9051a768583d70"
@@ -2787,6 +2910,14 @@
 "Cartridge.ModelNo" "4L2477, 4L2482, 4L2485, 4L4171"
 "Cartridge.Name" "Blueprint (1983) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "2434102f30eeb47792cf0825e368229b"
+"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
+"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype)"
+"Cartridge.Note" "ROM must be started in bank 0"
+"Cartridge.Rarity" "Prototype"
+"Cartridge.StartBank" "0"
 ""
 
 "Cartridge.MD5" "24385ba7f5109fbe76aadc0a375de573"
@@ -3040,6 +3171,14 @@
 "Cartridge.Rarity" "Hack"
 ""
 
+"Cartridge.MD5" "2712e91f6f1dc55e90e2b14b27c042ac"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "SpaceMaster X-7 (Amiga Mouse) (PAL60) (Omegamatrix)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "271bfd5dc2673d382019f1fb6cab9332"
 "Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
@@ -3110,6 +3249,13 @@
 "Cartridge.Rarity" "Homebrew"
 "Controller.Right" "PADDLES"
 "Display.YStart" "28"
+""
+
+"Cartridge.MD5" "27baecd618e7e53dc11f2a9c559f529d"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Atari Trak-Ball) v4 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "27c4c2af4b46394bb98638af8e0f6e9d"
@@ -3340,6 +3486,7 @@
 "Cartridge.Manufacturer" "Tigervision, Bill Hogue"
 "Cartridge.ModelNo" "7-011"
 "Cartridge.Name" "Miner 2049er Volume II (1983) (Tigervision)"
+"Display.YStart" "26"
 "Display.Phosphor" "YES"
 ""
 
@@ -3608,10 +3755,24 @@
 "Cartridge.Name" "Secret Quest (1989) (Atari) (PAL)"
 ""
 
+"Cartridge.MD5" "2d38a96f92952b301eefdf25a5e6976b"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Atari Mouse) (Y_Inverted) v4 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "2d405da70af82b20a6b3ecc3d1d2c4ec"
 "Cartridge.Manufacturer" "Genus"
 "Cartridge.Name" "Pitfall (Genus)"
 "Cartridge.Note" "AKA Pitfall!"
+""
+
+"Cartridge.MD5" "2d6388a8389f1d59108fd169c3356d79"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "2d6741cda3000230f6bbdd5e31941c01"
@@ -3922,6 +4083,13 @@
 "Cartridge.Rarity" "Extremely Rare"
 ""
 
+"Cartridge.MD5" "31235a27b065c2863048fa84db330dc6"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+""
+
 "Cartridge.MD5" "313243fc41e49ef6bd3aa9ebc0d372dd"
 "Cartridge.Name" "Fast Food (Unknown) (PAL)"
 ""
@@ -4145,6 +4313,13 @@
 
 "Cartridge.MD5" "3367eeba3269aa04720abe6169767502"
 "Cartridge.Name" "Space Treat (30-12-2002) (Fabrizio Zavagli)"
+""
+
+"Cartridge.MD5" "336ea20d38f98926919d4b4651d1a03f"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Omega Race (Genesis) V2"
+"Cartridge.Note" "Genesis controller"
+"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "3391f7c4c656793f92299f4187e139f7"
@@ -4508,6 +4683,7 @@
 "Cartridge.ModelNo" "SS-004"
 "Cartridge.Name" "Pyramid War (Rainbow Vision) (PAL) [a2]"
 "Cartridge.Note" "AKA Chopper Command"
+"Display.Format" "PAL"
 ""
 
 "Cartridge.MD5" "384db97670817103dd8c0bbdef132445"
@@ -4631,8 +4807,17 @@
 "Cartridge.Name" "Street Racer (1977) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10 60"
+"Controller.MouseAxis" "AUTO 60"
+""
+
+"Cartridge.MD5" "3974e2d1f614fbd3a092533ecae2e84d"
+"Cartridge.Manufacturer" "Alessandro Ciceri"
+"Cartridge.Name" "MagiCard+ (alex_79) WIP_20150118"
+"Cartridge.Note" "MagiCard hack"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "39790a2e9030751d7db414e13f1b6960"
@@ -4694,6 +4879,13 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (2.07) (Retroactive) (NTSC)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "3a521b7e29123b2d38e34e3ff8dc255c"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "3a526e6a1f9fe918af0f2ce997dfea73"
@@ -5230,6 +5422,14 @@
 "Cartridge.Note" "AKA Lock 'n' Chase (Double-Game Package)"
 ""
 
+"Cartridge.MD5" "4026ad38ba5ce486e88383dc27d7a46f"
+"Cartridge.Manufacturer" "Nukey Shay, Omegamatrix"
+"Cartridge.Name" "Double Dragon (Genesis) V2"
+"Cartridge.Note" "Genesis controller"
+"Controller.Left" "GENESIS"
+"Controller.Right" "GENESIS"
+""
+
 "Cartridge.MD5" "402b1ca3c230a60fb279d4a2a10fa677"
 "Cartridge.Name" "3-D Tic-Tac-Toe (Unknown) (PAL) (4K)"
 "Display.YStart" "62"
@@ -5358,6 +5558,13 @@
 "Cartridge.Manufacturer" "Exus Corporation"
 "Cartridge.Name" "Video Jogger (1983) (Exus)"
 "Cartridge.Note" "AKA Foot Craz"
+""
+
+"Cartridge.MD5" "41b554c6970b18670acc7b6baef8ed2e"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "41c4e3d45a06df9d21b7aae6ae7e9912"
@@ -5699,6 +5906,13 @@
 "Cartridge.Name" "Invaders Demo (PAL) (2001) (Eckhard Stolberg)"
 ""
 
+"Cartridge.MD5" "46dc526773808c8b9bb2111f24e5704c"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "SpaceMaster X-7 (Atari Mouse) (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "46e9428848c9ea71a4d8f91ff81ac9cc"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.Name" "Astroblast (1988) (Telegames) (PAL)"
@@ -5720,10 +5934,25 @@
 "Cartridge.Name" "Math Gran Prix (1982) (Atari)"
 ""
 
+"Cartridge.MD5" "471f7bdc933e8db0e44aa3dde2dd92af"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "47464694e9cce07fdbfd096605bf39d4"
 "Cartridge.Manufacturer" "Activision, Dan Kitchen"
 "Cartridge.ModelNo" "EAK-050-04"
 "Cartridge.Name" "Double Dragon (1989) (Activision) (PAL) [a]"
+""
+
+"Cartridge.MD5" "47585c047802dd9af888b998fb921f32"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Atari Trak-Ball) v4 (PAL60) (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "4767356fa0ed3ebe21437b4473d4ee28"
@@ -5812,6 +6041,13 @@
 "Cartridge.Note" "AKA Innerspace"
 ""
 
+"Cartridge.MD5" "4834b7b28ea862227ac7e40053fb52a5"
+"Cartridge.Manufacturer" "Nukey Shay"
+"Cartridge.Name" "Montezuma's Revenge (Genesis) (F6_Conversion)"
+"Cartridge.Note" "Genesis controller"
+"Controller.Left" "GENESIS"
+""
+
 "Cartridge.MD5" "48411c9ef7e2cef1d6b2bee0e6055c27"
 "Cartridge.Manufacturer" "Telesys, Don Ruffcorn, Jack Woodman"
 "Cartridge.ModelNo" "1003"
@@ -5828,6 +6064,13 @@
 "Cartridge.Manufacturer" "Eric Mooney"
 "Cartridge.Name" "Invaders by Erik Mooney (V2.1) (1-3-98) (PD)"
 "Cartridge.Rarity" "New Release"
+""
+
+"Cartridge.MD5" "487193a7b7fe57a1bbc2f431f628bd5f"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "4884b1297500bd1243659e43c7e7579e"
@@ -5924,6 +6167,13 @@
 "Cartridge.MD5" "49571b26f46620a85f93448359324c28"
 "Cartridge.Name" "Save Our Ship (Unknown)"
 "Display.YStart" "37"
+""
+
+"Cartridge.MD5" "497c811026367c08fd838c9c59e5041d"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "SpaceMaster X-7 (Atari Trak-Ball) (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "497f3d2970c43e5224be99f75e97cbbb"
@@ -6065,6 +6315,14 @@
 "Cartridge.Rarity" "Common"
 ""
 
+"Cartridge.MD5" "4b379b885e2694f992c6cc932f18327f"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "SpaceMaster X-7 (Atari Mouse) (PAL60) (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "4b71197153d651480830638cb6a03249"
 "Cartridge.Manufacturer" "Atari, Larry Kaplan"
 "Cartridge.ModelNo" "CX26163P"
@@ -6110,6 +6368,14 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Human Cannonball (32 in 1) (1988) (Atari) (PAL) (4K)"
+""
+
+"Cartridge.MD5" "4bdf54a454470ba015a217a8f5e61320"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "4c030667d07d1438f0e5c458a90978d8"
@@ -6604,6 +6870,13 @@
 "Cartridge.Note" "AKA Bobby geht Heim"
 ""
 
+"Cartridge.MD5" "522b27a8afeb951b5a5a667f8d1a46a1"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+""
+
 "Cartridge.MD5" "522c9cf684ecd72db2f85053e6f6f720"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-008"
@@ -6701,6 +6974,13 @@
 "Cartridge.Note" "AKA Lost City of Atlantis"
 ""
 
+"Cartridge.MD5" "533661e9bccd8a9f80ce3765f282c92f"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Atari Trak-Ball) (Y Inverted) v4 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+""
+
 "Cartridge.MD5" "5336f86f6b982cc925532f2e80aa1e17"
 "Cartridge.Manufacturer" "Parker Brothers - JWDA, Todd Marshall, Robin McDaniel, Ray Miller"
 "Cartridge.ModelNo" "PB5060"
@@ -6757,6 +7037,13 @@
 
 "Cartridge.MD5" "53d181cde2e0219b5754caad246fcb66"
 "Cartridge.Name" "Missile Demo (1998) (Ruffin Bailey) (PD)"
+""
+
+"Cartridge.MD5" "53e03df47e76329b701641f8bdc206f5"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "53f147b9746fdc997c62f3dd67888ee5"
@@ -6945,6 +7232,14 @@
 "Cartridge.Name" "Robotfindskitten2600 (26-04-2003) (Jeremy Penner)"
 ""
 
+"Cartridge.MD5" "56f72247eb9ebfd33bfd0cca23ab7ef4"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Amiga Mouse) v4 (PAL60) (Omegamatrix)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "571c6d9bc71cb97617422851f787f8fe"
 "Cartridge.Manufacturer" "Activision, David Crane - Ariola"
 "Cartridge.ModelNo" "EAG-004, PAG-004 - 711 004-715"
@@ -7100,6 +7395,7 @@
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "28"
 "Display.Height" "214"
 ""
 
@@ -7170,6 +7466,13 @@
 "Cartridge.ModelNo" "781698"
 "Cartridge.Name" "Flippern (Double-Game Package) (1983) (Otto Versand) (PAL)"
 "Cartridge.Note" "AKA Video Pinball"
+""
+
+"Cartridge.MD5" "5a4205aeedd3b0588f973f38bbd9dfd4"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "5a5390f91437af9951a5f8455b61cd43"
@@ -7324,6 +7627,13 @@
 
 "Cartridge.MD5" "5bbab3f3e4b47e3e23f9820765dbb45c"
 "Cartridge.Name" "Pitfall! (says 1985) [h1]"
+""
+
+"Cartridge.MD5" "5bbb75b49b2bccef9c91ff84bb249c80"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "5bc9998b7e9a970e31d2cb60e8696cc4"
@@ -7779,6 +8089,7 @@
 "Cartridge.Name" "Video Olympics (1977) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.Right" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
 ""
@@ -7848,6 +8159,14 @@
 
 "Cartridge.MD5" "6205855cc848d1f6c4551391b9bfa279"
 "Cartridge.Name" "Euchre (Release Candidate 2) (NTSC) (01-10-2002) (Erik Eid)"
+""
+
+"Cartridge.MD5" "6238ac888871fec301d1b9fc4fc613c9"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controllers"
+"Controller.Left" "ATARIMOUSE"
+"Controller.Right" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "624e0a77f9ec67d628211aaf24d8aea6"
@@ -8375,6 +8694,14 @@
 "Cartridge.Rarity" "Hack"
 ""
 
+"Cartridge.MD5" "67f90d74fd0b72fdc6d9b92436780ea9"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "SpaceMaster X-7 (Atari Trak-Ball) (PAL60) (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "6803fa7c2c094b428b859a58dc1dd06a"
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (0.11) (Retroactive)"
@@ -8392,6 +8719,14 @@
 "Cartridge.Name" "Casino (Unknown) (PAL)"
 "Controller.Left" "PADDLES"
 "Display.YStart" "49"
+""
+
+"Cartridge.MD5" "6833c26f385e866f3a0fa0dff311216e"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "683bb0d0f0c5df58557fba9dffc32c40"
@@ -8469,6 +8804,13 @@
 "Cartridge.Rarity" "New Release"
 ""
 
+"Cartridge.MD5" "68c938a2a2b45c37db50509f1037fe6e"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Atari Mouse) v4 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "68cd2adc6b1fc9a1f263ab4561112f30"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Boulderdash Demo (09-12-2002) (TJ)"
@@ -8512,6 +8854,13 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "6936aa6763835f62ac13d1aaa79b9f91"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+""
+
 "Cartridge.MD5" "6979f30204149be3e227558cffe21c1d"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26163P"
@@ -8553,6 +8902,13 @@
 
 "Cartridge.MD5" "69ebf910ab9b63e5b8345f016095003b"
 "Cartridge.Name" "Maze Demo 1 (PD)"
+""
+
+"Cartridge.MD5" "69edfb4e1810a523311b3e250fc1e275"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Command Atari Trak-Ball Hack v1.3 (PAL) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "69fac82cd2312dd9ce5d90e22e2f070a"
@@ -9096,6 +9452,13 @@
 "Cartridge.Note" "AKA Amidar"
 ""
 
+"Cartridge.MD5" "70a43fbdb1c039283ee5048d99842469"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "70a8480cfaf08776e5420365732159d2"
 "Cartridge.Manufacturer" "Rob Kudla"
 "Cartridge.Name" "Horizontally Scrolling Playfield Thing (Rob Kudla) (PD)"
@@ -9252,6 +9615,14 @@
 
 "Cartridge.MD5" "72a5b5052272ac785fa076709d16cef4"
 "Cartridge.Name" "KC Munckin (29-01-2003) (J. Parlee)"
+""
+
+"Cartridge.MD5" "72a63bcb5eb31bd0fd5e98ed05125ec1"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "72bda70c75dfa2365b3f8894bace9e6a"
@@ -9451,6 +9822,13 @@
 "Controller.MouseAxis" "AUTO 55"
 ""
 
+"Cartridge.MD5" "752da1c0acd7d132ccfb0b1067f53cf6"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "753375d183c713cfa0aa7298d1f3067b"
 "Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4102"
@@ -9611,8 +9989,6 @@
 "Cartridge.ModelNo" "311377"
 "Cartridge.Name" "Fox & Goat (Double-Game Package) (1983) (Otto Versand) (PAL)"
 "Cartridge.Note" "AKA Nuts"
-"Display.YStart" "45"
-"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "76f53abbbf39a0063f24036d6ee0968a"
@@ -9676,6 +10052,7 @@
 "Cartridge.Name" "Video Olympics (1977) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.Right" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
 ""
@@ -9691,6 +10068,14 @@
 "Cartridge.MD5" "784176346e9422733d55c427230e5bad"
 "Cartridge.Manufacturer" "Activision, Alex DeMeo"
 "Cartridge.Name" "Title Match Pro Wrestling (1989) (Activision)"
+""
+
+"Cartridge.MD5" "784abfdb31d5341e5bd404d8d2a71c3b"
+"Cartridge.Manufacturer" "Alessandro Ciceri"
+"Cartridge.Name" "MagiCard (TV format conversion) (alex_79) (PAL)"
+"Cartridge.Note" "MagiCard PAL conversion hack"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "7860716fa5dbc0fffab93fb9a4cb4132"
@@ -9954,10 +10339,25 @@
 "Display.Height" "222"
 ""
 
+"Cartridge.MD5" "7b4be337ac4d73eda75c848355f6f480"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Atari Trak-Ball) (Y Inverted) (PAL60) v4 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "7b5207e68ee85b16998bea861987c690"
 "Cartridge.Manufacturer" "Atari, Carol Shaw"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "3-D Tic-Tac-Toe (32 in 1) (1988) (Atari) (PAL)"
+""
+
+"Cartridge.MD5" "7b57318c489ff178f7ff500da1ec9e8c"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "7b6f3348dbf71ada88db0fdaf7feefe0"
@@ -10077,6 +10477,14 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
+"Cartridge.MD5" "7cf3a9267cdb95aba91abc5838d61cc5"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "7d0b49ea4fe3a5f1e119a6d14843db17"
 "Cartridge.Manufacturer" "Gameworld, J. Ray Dettling"
 "Cartridge.ModelNo" "133-008"
@@ -10109,6 +10517,13 @@
 "Cartridge.Name" "Cabbage Patch Kids (07-27-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "7d8287e8423a56d4f8cef10435d97179"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "7d903411807704e725cf3fafbeb97255"
@@ -10455,6 +10870,7 @@
 "Cartridge.ModelNo" "DY-293005"
 "Cartridge.Name" "Jumping Jack (1983) (Dynamics) (PAL)"
 "Cartridge.Note" "AKA Bobby Is Going Home"
+"Display.YStart" "40"
 ""
 
 "Cartridge.MD5" "80e52315919bd8a8b82a407ccd9bb13f"
@@ -10466,6 +10882,13 @@
 "Cartridge.Name" "Cabbage Patch Kids (06-XX-1984) (Coleco) (Prototype)"
 "Cartridge.Note" "Adventures in the Park"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "80f7bf7418a462e8687ecefeaf6eb9c2"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "8101efafcf0af32fedda4579c941e6f4"
@@ -11332,6 +11755,14 @@
 "Cartridge.Name" "Poker Squares (V0.27) (2001) (B. Watson)"
 ""
 
+"Cartridge.MD5" "8c146c61817edd376bc1354c7f1ddc63"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Amiga Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "8c2fa33048f055f38358d51eefe417db"
 "Cartridge.Manufacturer" "Home Vision - Gem International Corp. - VDI"
 "Cartridge.ModelNo" "VCS83137"
@@ -11373,6 +11804,13 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (V1.01) (NTSC) (2001) (Retroactive)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "8ccf63141a029603572d1056e772990e"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "8cd26dcf249456fe4aeb8db42d49df74"
@@ -11525,6 +11963,14 @@
 "Cartridge.Name" "Euchre (20-07-2001) (Eric Eid) (PD)"
 ""
 
+"Cartridge.MD5" "8ef96ace4a1d6dfb65926c1e868b0188"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "8f33bce5ba1053dcf4cea9c1c69981e4"
 "Cartridge.Name" "Jawbreaker (Unknown) (PAL) [a]"
 ""
@@ -11628,6 +12074,13 @@
 "Cartridge.Rarity" "Hack"
 "Display.Format" "PAL60"
 "Display.YStart" "30"
+""
+
+"Cartridge.MD5" "90a3c3255f2a54225cdcb50831f8793a"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "90b1799dddb8bf748ee286d22e609480"
@@ -11855,6 +12308,13 @@
 "Cartridge.Rarity" "Hack"
 ""
 
+"Cartridge.MD5" "93c4b910f7649b3e998bb6d8527c6f4a"
+"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
+"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype) [fixed]"
+"Cartridge.Note" "Fix for un-initialized 'X' register"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "93c52141d3c4e1b5574d072f1afde6cd"
 "Cartridge.Manufacturer" "Imagic, Mark Klein"
 "Cartridge.ModelNo" "720112-1A, 03213"
@@ -11874,6 +12334,14 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "93db185c3b3dc382f3aecd6a2fea7fd9"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "93dc15d15e77a7b23162467f95a5f22d"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Sky Jinks (CCE)"
@@ -11890,11 +12358,34 @@
 "Cartridge.Name" "Joustpong (14-07-2002) (Kirk Israel) (PD)"
 ""
 
+"Cartridge.MD5" "9433770890f087bfcf3e50122694d8c0"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Amiga Mouse) (Y Inverted) v4 (Omegamatrix)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+""
+
 "Cartridge.MD5" "9436b7ad131b5a1f7753ce4309ba3dee"
 "Cartridge.Manufacturer" "Kyle Pittman"
 "Cartridge.Name" "War of The Worlds (Kyle Pittman) (Hack)"
 "Cartridge.Note" "Hack of Defender"
 "Cartridge.Rarity" "Hack"
+""
+
+"Cartridge.MD5" "9446940866c9417f210f8552cf6c3078"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controllers"
+"Controller.Left" "AMIGAMOUSE"
+"Controller.Right" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
+"Cartridge.MD5" "94507dee401b0a072a481c00d7699ffe"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "9469d18238345d87768e8965f9f4a6b2"
@@ -12032,6 +12523,13 @@
 "Cartridge.Name" "Marble Craze Song (Paul Slocum) (PD)"
 ""
 
+"Cartridge.MD5" "966c955e4aaca7082d9ffb9a68e3f3ed"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "9671b658286e276cc4a3d02aa25931d2"
 "Cartridge.Name" "Hangman Ghost Wordlist (Hack)"
 "Cartridge.Note" "Hack of Hangman"
@@ -12106,6 +12604,15 @@
 "Cartridge.Name" "Dig Dug (1983) (Atari) (PAL)"
 ""
 
+"Cartridge.MD5" "9784290f422e7aeeab4d542318bd9a1f"
+"Cartridge.Manufacturer" "AtariAge, Chris Walton"
+"Cartridge.ModelNo" "1.0 (Release)"
+"Cartridge.Name" "Chetiry (2011) (AtariAge) (60k)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
+"Display.PPBlend" "50"
+""
+
 "Cartridge.MD5" "97842fe847e8eb71263d6f92f7e122bd"
 "Cartridge.Manufacturer" "Imagic, Wilfredo Aguilar, Michael Becker, Dennis Koble"
 "Cartridge.ModelNo" "720113-1A, 03206"
@@ -12143,6 +12650,13 @@
 "Cartridge.Manufacturer" "Activision, Garry Kitchen"
 "Cartridge.ModelNo" "AZ-032"
 "Cartridge.Name" "Pressure Cooker (1983) (Activision)"
+""
+
+"Cartridge.MD5" "97e47512f89e79818d988d078dc90410"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control - Amiga Mouse Hack v1.15 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "9813b9e4b8a6fd919c86a40c6bda8c93"
@@ -12574,7 +13088,6 @@
 
 "Cartridge.MD5" "9ed0f2aa226c34d4f55f661442e8f22a"
 "Cartridge.Name" "Nuts (Unknown) (PAL)"
-"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "9eeb40f04a27efb1c68ba1d25e606607"
@@ -12850,6 +13363,13 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
+"Cartridge.MD5" "a2276822c772f72073a8a40a72a1ca52"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "a23ffc86804240ce77134a1c91926685"
 "Cartridge.Name" "Star Fire - Paulstar WIP (MP)"
 ""
@@ -12886,6 +13406,14 @@
 "Cartridge.Note" "AKA Crackpots"
 ""
 
+"Cartridge.MD5" "a2d7cc2e5419a9e4ab91fdb26339b726"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Atari Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "a2de0fc85548871279ed2a3c1325c13e"
 "Cartridge.Manufacturer" "George Veeder"
 "Cartridge.Name" "Cat and Mouse (George Veeder) (Hack)"
@@ -12901,6 +13429,14 @@
 
 "Cartridge.MD5" "a2f296ea2d6d4b59979bac5dfbf4edf0"
 "Cartridge.Name" "Warring Worms (28-01-2002) (Billy Eno)"
+""
+
+"Cartridge.MD5" "a2f9e3b6aaa23b6dc06099cdd5b51b31"
+"Cartridge.Manufacturer" "Nukey Shay"
+"Cartridge.Name" "Montezuma's Revenge (Genesis) (PAL60) (F6_Conversion)"
+"Cartridge.Note" "Genesis controller"
+"Controller.Left" "GENESIS"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "a302b922a8dbec47743f28b7f91d4cd8"
@@ -13031,6 +13567,15 @@
 "Cartridge.Note" "Uses Keypad Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
+""
+
+"Cartridge.MD5" "a484638990de7b12c62947c79dafa4c6"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controllers"
+"Controller.Left" "ATARIMOUSE"
+"Controller.Right" "ATARIMOUSE"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "a499d720e7ee35c62424de882a3351b6"
@@ -13696,6 +14241,14 @@
 "Cartridge.Name" "Human Cannonball (32 in 1) (1988) (Atari) (PAL)"
 ""
 
+"Cartridge.MD5" "ad72d616030a17634ff29ce8680d3c4c"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "ad7e97c19bd25d5aa3999430845c755b"
 "Cartridge.Name" "Sprite Demo 5 (PD)"
 ""
@@ -13900,6 +14453,13 @@
 "Cartridge.Name" "Marine Wars (1983) (Konami)"
 ""
 
+"Cartridge.MD5" "b011d8fdc450597c0762c2c0010a9b17"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+""
+
 "Cartridge.MD5" "b049fc8ac50be7c2f28418817979c637"
 "Cartridge.Manufacturer" "Activision - Imagineering, Dan Kitchen, David Lubar"
 "Cartridge.ModelNo" "EAK-048-04, EAK-048-04B"
@@ -13964,6 +14524,22 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "b1276417fb0f79bc52e741bb8f4d8360"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Marble Craze - Amiga Mouse Hack v1.0 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controllers"
+"Controller.Left" "AMIGAMOUSE"
+"Controller.Right" "AMIGAMOUSE"
+""
+
+"Cartridge.MD5" "b129d7541cff79ebe33852a83057c524"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controllers"
+"Controller.Left" "TRAKBALL"
+"Controller.Right" "TRAKBALL"
+""
+
 "Cartridge.MD5" "b12a7f63787a6bb08e683837a8ed3f18"
 "Cartridge.Manufacturer" "Imagic, Rob Fulop"
 "Cartridge.ModelNo" "720000-200, 720101-1B, 720101-1C, IA3200, IA3200C, IX-006-04"
@@ -14002,6 +14578,14 @@
 "Cartridge.ModelNo" "377.943 6"
 "Cartridge.Name" "Stopp die Gangster (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Gangster Alley"
+""
+
+"Cartridge.MD5" "b182d9708e00709830caab9cf8205ca0"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "b1a6c96e9093352106bc335e96caa154"
@@ -14144,6 +14728,14 @@
 "Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
 "Cartridge.Name" "Survival Island (2 of 3) (1983) (Arcadia)"
+""
+
+"Cartridge.MD5" "b31e9487efc06f18dfc3d7ebadf54416"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Star Wars Arcade (Atari Mouse) v4 (PAL60) (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "b31f178aa0d569cccac7959f84e0a724"
@@ -14639,6 +15231,14 @@
 "Cartridge.Note" "AKA Dragster Rennen"
 ""
 
+"Cartridge.MD5" "bb2b83fff97604f74ada565e0b5bae94"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "bb5049e4558daade0f87fed69a244c59"
 "Cartridge.Manufacturer" "Atari, Brad Stewart"
 "Cartridge.ModelNo" "CX2649, CX2649P"
@@ -14663,6 +15263,13 @@
 "Cartridge.Name" "Golf (208 in 1) (Unknown) (PAL)"
 ""
 
+"Cartridge.MD5" "bb9112d478a1a922d2c289a752bba695"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "SpaceMaster X-7 (Amiga Mouse) (Omegamatrix)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+""
+
 "Cartridge.MD5" "bb9f06b288b5275bc0d38b6731b2526a"
 "Cartridge.Name" "Star Fire - Meteor Dance 2 (18-11-2002) (MP)"
 ""
@@ -14673,6 +15280,11 @@
 "Cartridge.Name" "Power Play Arcade Video Game Album V (1984) (Amiga) (Prototype)"
 "Cartridge.Note" "Mogul Maniac, Surf's Up, Off Your Rocker, S.A.C. Alert"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "bc24440b59092559a1ec26055fd1270e"
+"Cartridge.Name" "Private Eye (1984) (Activision) [a]"
+"Cartridge.StartBank" "0"
 ""
 
 "Cartridge.MD5" "bc3057a35319aae3a5cd87a203736abe"
@@ -14863,6 +15475,13 @@
 "Cartridge.Name" "Push (V0.03) (No Illegal Opcodes) (1998) (AD)"
 ""
 
+"Cartridge.MD5" "bf1970b692275b42c4ec0683588eb062"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+""
+
 "Cartridge.MD5" "bf52327c2197d9d2c4544be053caded1"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "AG-930-04, AZ-030"
@@ -14992,11 +15611,27 @@
 "Cartridge.Note" "2600 Screen Search Console"
 ""
 
+"Cartridge.MD5" "c11e8473c652619ac6166900150ce215"
+"Cartridge.Manufacturer" "AtariAge, Chris Walton"
+"Cartridge.ModelNo" "1.0 (Release)"
+"Cartridge.Name" "Chetiry (2011) (AtariAge) (60k) (PAL)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
+"Display.PPBlend" "50"
+""
+
 "Cartridge.MD5" "c126656df6badfa519cc63e681fb3596"
 "Cartridge.Manufacturer" "Ron Corcoran"
 "Cartridge.Name" "Space Invaders (2002) (Ron Corcoran) (Hack)"
 "Cartridge.Note" "Hack of Space Invaders"
 "Cartridge.Rarity" "Hack"
+""
+
+"Cartridge.MD5" "c15042e54c7408498f051d782aaa8945"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "c150c76cbde2c9b5a97eb5399d46c64f"
@@ -15161,6 +15796,20 @@
 "Cartridge.MD5" "c2c7a11717e255593e54d0acaf653ee5"
 "Cartridge.Name" "Chopper Command (208 in 1) (Unknown) (PAL) (Hack)"
 "Cartridge.Rarity" "Hack"
+""
+
+"Cartridge.MD5" "c2c8eb642765137bb82b83a65232961f"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
+"Cartridge.MD5" "c2dea467f4a02fa1f06d66f52bc12e6e"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Command Atari Trak-Ball Hack v1.3 (NTSC) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "c2fbef02b6eea37d8df3e91107f89950"
@@ -15387,6 +16036,13 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
+"Cartridge.MD5" "c560a3ecb7b751021953819efcfe5b41"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Ghostbusters (Genesis)"
+"Cartridge.Note" "Genesis controller"
+"Controller.Left" "GENESIS"
+""
+
 "Cartridge.MD5" "c569e57dca93d3bee115a49923057fd7"
 "Cartridge.Name" "Pac-Space (Pac-Man Hack)"
 "Display.YStart" "33"
@@ -15448,6 +16104,13 @@
 "Cartridge.ModelNo" "CX2680"
 "Cartridge.Name" "RealSports Tennis (1982) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "c5f71dfbdca9cc96b28643ff4d06aa6f"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "c5fe45f2734afd47e27ca3b04a90213c"
@@ -15655,6 +16318,15 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26144"
 "Cartridge.Name" "Donkey Kong Junior (1987) (Atari)"
+""
+
+"Cartridge.MD5" "c90788d9aa71a78bcc78c015edb22c54"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL60) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controllers"
+"Controller.Left" "TRAKBALL"
+"Controller.Right" "TRAKBALL"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "c9196e28367e46f8a55e04c27743148f"
@@ -16061,6 +16733,14 @@
 "Cartridge.Name" "Space Instigators (V1.6) (17-10-2002) (CT)"
 ""
 
+"Cartridge.MD5" "cdadb57b34438805ee322ff05bd3d43e"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "cdb81bf33d830ee4ee0606ee99e84dba"
 "Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "AR-4300"
@@ -16150,6 +16830,14 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (2.07) (Retroactive) (Stella)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "ceba7965a93c689bdecdb46a5b2ac0c1"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "cedbd67d1ff321c996051eec843f8716"
@@ -16423,6 +17111,13 @@
 "Cartridge.Name" "Lilly Adventure (1983) (Quelle) (PAL)"
 ""
 
+"Cartridge.MD5" "d0e05ba5f10e3df3023c5ee787f760ef"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "d0e15a3ce322c5af60f07343594392af"
 "Cartridge.Manufacturer" "Amiga - Video Soft"
 "Cartridge.ModelNo" "3125"
@@ -16633,6 +17328,7 @@
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Funky Fish (1983) (UA Limited) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "28"
 "Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
@@ -16678,6 +17374,7 @@
 "Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL)"
 "Cartridge.Note" "AKA Nile Flyer, Sphinx"
 "Display.Format" "PAL"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "d483f65468d9a265661917bae1a54f3e"
@@ -17026,6 +17723,13 @@
 "Cartridge.Note" "AKA Les guerriers de l'espace"
 ""
 
+"Cartridge.MD5" "d968de2b4ff18bfe4a95066cde310578"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
+""
+
 "Cartridge.MD5" "d97e3d0b4575ce0b9a6132e19cfeac6e"
 "Cartridge.Manufacturer" "Fabrizio Zavagli"
 "Cartridge.Name" "Space Treat (061002) (PD)"
@@ -17252,6 +17956,13 @@
 "Cartridge.Name" "Superman (1979) (Atari) (PAL)"
 ""
 
+"Cartridge.MD5" "dbba14a0f69f0e13fdccb3fde3baedca"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+""
+
 "Cartridge.MD5" "dbc7485ad5814d466de780a3e7ed3b46"
 "Cartridge.Manufacturer" "Kyle Pittman"
 "Cartridge.Name" "Pink Floyd (Kyle Pittman) (PD)"
@@ -17364,6 +18075,13 @@
 
 "Cartridge.MD5" "dd10b5ee37fdbf909423f2998a1f3179"
 "Cartridge.Name" "Space Instigators (V1.9) (21-10-2002) (CT)"
+""
+
+"Cartridge.MD5" "dd13a16d14100819f79b1ce3a5bf499c"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "dd1422ffd538e2e33b339ebeef4f259d"
@@ -17494,7 +18212,6 @@
 
 "Cartridge.MD5" "de7a64108074098ba333cc0c70eef18a"
 "Cartridge.Name" "Nuts (Unknown)"
-"Display.YStart" "37"
 ""
 
 "Cartridge.MD5" "de7bca4e569ad9d3fd08ff1395e53d2d"
@@ -17587,6 +18304,14 @@
 "Cartridge.Manufacturer" "CBS Electronics, Bob Curtiss"
 "Cartridge.ModelNo" "4L1845, 4L1852, 4L1853, 4L1854"
 "Cartridge.Name" "Solar Fox (1983) (CBS Electronics) (PAL) [a]"
+""
+
+"Cartridge.MD5" "df91277a3569344b89e6e8bd5bebc8d1"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controllers"
+"Controller.Left" "AMIGAMOUSE"
+"Controller.Right" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "df95e4af466c809619299f49ece92365"
@@ -17728,8 +18453,9 @@
 "Cartridge.Name" "Street Racer (1977) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10 75"
+"Controller.MouseAxis" "AUTO 75"
 ""
 
 "Cartridge.MD5" "e13818a5c0cb2f84dd84368070e9f099"
@@ -17998,7 +18724,6 @@
 "Cartridge.Manufacturer" "TechnoVision - Video Technology"
 "Cartridge.ModelNo" "TVS1001"
 "Cartridge.Name" "Nuts (1983) (TechnoVision) (PAL)"
-"Display.YStart" "45"
 ""
 
 "Cartridge.MD5" "e3ed4ba3361756970f076e46e9cad1d2"
@@ -18024,6 +18749,14 @@
 "Cartridge.ModelNo" "CX2681"
 "Cartridge.Name" "Battlezone (05-02-1983) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "e48d3a4056ede9393586421996db1ae8"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "e49ac0ec879a0d7820bc2598fc2cfcd4"
@@ -18140,6 +18873,14 @@
 "Cartridge.Name" "This Planet Sucks Demo 4 (Greg Troutman) (PD)"
 "Cartridge.Rarity" "New Release"
 "Display.YStart" "36"
+""
+
+"Cartridge.MD5" "e59d022d524d05acc19515598c831e4d"
+"Cartridge.Manufacturer" "Alessandro Ciceri"
+"Cartridge.Name" "MagiCard+ (alex_79) WIP_20150118 (PAL)"
+"Cartridge.Note" "MagiCard hack"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "e5a6e0bb7d56e2f08b237e15076e5699"
@@ -18493,6 +19234,14 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "e9db2f91efe6ff7ea3546e2c2578fb09"
+"Cartridge.Manufacturer" "Omegamatrix"
+"Cartridge.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "e9e646f730b8400cd5da08c849ef3e3b"
 "Cartridge.Manufacturer" "Tron"
 "Cartridge.Name" "Enduro (Tron)"
@@ -18671,6 +19420,13 @@
 "Cartridge.Name" "Extra Terrestrials (1984) (SSG)"
 "Cartridge.Note" "The only Canadian-designed and manufactured Atari 2600 game from the 1980's"
 "Cartridge.Rarity" "Extremely Rare"
+""
+
+"Cartridge.MD5" "ebdc5716b85c4ff44fa357cb697d6cef"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "ebf2dff78a08733251bf3838f02f7938"
@@ -18980,6 +19736,13 @@
 "Cartridge.Name" "Tunnel Runner (1983) (CBS Electronics) [a]"
 ""
 
+"Cartridge.MD5" "effa3a7ce078c6d83bf43174a7bfdb1f"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+""
+
 "Cartridge.MD5" "efffafc17b7cb01b9ca35324aa767364"
 "Cartridge.Name" "Circus Atari (Unknown)"
 ""
@@ -19005,6 +19768,13 @@
 "Cartridge.ModelNo" "CX26114"
 "Cartridge.Name" "Pigs in Space (1983) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "f0510abbfbe24ead552e92e3841f63f3"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "f0536303f49006806bac3aec15738336"
@@ -19064,6 +19834,14 @@
 "Cartridge.MD5" "f0daaa966199ef2b49403e9a29d12c50"
 "Cartridge.Name" "Mr. Postman (Unknown)"
 "Cartridge.Rarity" "Rare"
+""
+
+"Cartridge.MD5" "f0de4f49e95d529569e8788d5a7b4d30"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
+"Cartridge.Note" "Uses Atari Mouse Controller"
+"Controller.Left" "ATARIMOUSE"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "f0e0addc07971561ab80d9abe1b8d333"
@@ -19207,6 +19985,13 @@
 
 "Cartridge.MD5" "f21813aa050437f0dbc8479864acec6d"
 "Cartridge.Name" "Sneak 'n Peek (Unknown) (PAL)"
+""
+
+"Cartridge.MD5" "f23d19b73dac50cc6149316912b8ee53"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "f240ba9f8092d2e8a4c7d82c554bf509"
@@ -19410,6 +20195,13 @@
 "Cartridge.MD5" "f49a34f1fdd7dc147cbf96ce2ce71b76"
 "Cartridge.Name" "Qb (Special Edition) (PAL) (Retroactive)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "f4a09f906cc37be31224433f576d77d3"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controller"
+"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "f4ab6bd5f80d8988141edde4c84b23b5"
@@ -19882,6 +20674,14 @@
 "Cartridge.Sound" "STEREO"
 ""
 
+"Cartridge.MD5" "f991e0670b5f67faa6b6211e9bd81b91"
+"Cartridge.Manufacturer" "Nukey Shay, Omegamatrix"
+"Cartridge.Name" "Double Dragon (Genesis) (PAL) V2"
+"Cartridge.Note" "Genesis controller"
+"Controller.Left" "GENESIS"
+"Controller.Right" "GENESIS"
+""
+
 "Cartridge.MD5" "f992a39b46aa48188fab12ad3809ae4a"
 "Cartridge.Name" "Sky Jinks (Unknown) (PAL) (Hack)"
 "Cartridge.Rarity" "Hack"
@@ -19897,11 +20697,6 @@
 "Cartridge.MD5" "f9cef637ea8e905a10e324e582dd39c2"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Private Eye (CCE)"
-""
-
-"Cartridge.MD5" "bc24440b59092559a1ec26055fd1270e"
-"Cartridge.Name" "Private Eye (1984) (Activision) [a]"
-"Cartridge.StartBank" "0"
 ""
 
 "Cartridge.MD5" "f9d51a4e5f8b48f68770c89ffd495ed1"
@@ -20372,6 +21167,14 @@
 "Controller.MouseAxis" "10"
 ""
 
+"Cartridge.MD5" "ff1523783e0e76a3b0d1f7f0d1cb3050"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL) (TJ)"
+"Cartridge.Note" "Uses Atari Trak-Ball Controllers"
+"Controller.Left" "TRAKBALL"
+"Controller.Right" "TRAKBALL"
+""
+
 "Cartridge.MD5" "ff3bd0c684f7144aeaa18758d8281a78"
 "Cartridge.Manufacturer" "Atari, Bob Whitehead"
 "Cartridge.ModelNo" "CX2651"
@@ -20437,17 +21240,3 @@
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
-"Cartridge.MD5" "2434102f30eeb47792cf0825e368229b"
-"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
-"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype)"
-"Cartridge.Note" "ROM must be started in bank 0"
-"Cartridge.Rarity" "Prototype"
-"Cartridge.StartBank" "0"
-""
-
-"Cartridge.MD5" "93c4b910f7649b3e998bb6d8527c6f4a"
-"Cartridge.Manufacturer" "Sparrow - Enter-Tech, Paul Walters, Rick Harris, George Hefner, Barbara Ultis"
-"Cartridge.Name" "Arkyology (1983) (Sparrow) (Prototype) [fixed]"
-"Cartridge.Note" "Fix for un-initialized 'X' register"
-"Cartridge.Rarity" "Prototype"
-""

@@ -17,6 +17,8 @@
 
 #include "FBSurfaceSDL2.hxx"
 
+#include "ThreadDebugging.hxx"
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
                              uInt32 width, uInt32 height, const uInt32* data)
@@ -36,6 +38,8 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::~FBSurfaceSDL2()
 {
+  ASSERT_MAIN_THREAD;
+
   if(mySurface)
   {
     SDL_FreeSurface(mySurface);
@@ -48,6 +52,8 @@ FBSurfaceSDL2::~FBSurfaceSDL2()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color)
 {
+  ASSERT_MAIN_THREAD;
+
   // Fill the rectangle
   SDL_Rect tmp;
   tmp.x = x;
@@ -125,6 +131,8 @@ void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FBSurfaceSDL2::render()
 {
+  ASSERT_MAIN_THREAD;
+
   if(myIsVisible)
   {
     if(myTexAccess == SDL_TEXTUREACCESS_STREAMING)
@@ -139,12 +147,16 @@ bool FBSurfaceSDL2::render()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::invalidate()
 {
+  ASSERT_MAIN_THREAD;
+
   SDL_FillRect(mySurface, nullptr, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::free()
 {
+  ASSERT_MAIN_THREAD;
+
   if(myTexture)
   {
     SDL_DestroyTexture(myTexture);
@@ -155,6 +167,8 @@ void FBSurfaceSDL2::free()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reload()
 {
+  ASSERT_MAIN_THREAD;
+
   // Re-create texture; the underlying SDL_Surface is fine as-is
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myInterpolate ? "1" : "0");
   myTexture = SDL_CreateTexture(myFB.myRenderer, myFB.myPixelFormat->format,
@@ -175,6 +189,8 @@ void FBSurfaceSDL2::reload()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 {
+  ASSERT_MAIN_THREAD;
+
   // We will only resize when necessary, and not using static textures
   if((myTexAccess == SDL_TEXTUREACCESS_STATIC) || (mySurface &&
       int(width) <= mySurface->w && int(height) <= mySurface->h))
@@ -191,6 +207,8 @@ void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
                                   const uInt32* data)
 {
+  ASSERT_MAIN_THREAD;
+
   // Create a surface in the same format as the parent GL class
   const SDL_PixelFormat* pf = myFB.myPixelFormat;
 

@@ -45,6 +45,7 @@ class VideoDialog : public Dialog
 
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
+    void handlePhosphorChange();
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -98,15 +99,15 @@ class VideoDialog : public Dialog
     ButtonWidget*     myCloneCustom;
 
     enum {
-      kSpeedupChanged    = 'VDSp',
+      kSpeedupChanged     = 'VDSp',
 
-      kTVModeChanged       = 'VDtv',
-
-      kCloneCompositeCmd   = 'CLcp',
-      kCloneSvideoCmd      = 'CLsv',
-      kCloneRGBCmd         = 'CLrb',
-      kCloneBadCmd         = 'CLbd',
-      kCloneCustomCmd      = 'CLcu'
+      kTVModeChanged      = 'VDtv',
+      kCloneCompositeCmd  = 'CLcp',
+      kCloneSvideoCmd     = 'CLsv',
+      kCloneRGBCmd        = 'CLrb',
+      kCloneBadCmd        = 'CLbd',
+      kCloneCustomCmd     = 'CLcu',
+      kPhosphorChanged    = 'VDph'
     };
 
   private:

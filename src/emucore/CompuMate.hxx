@@ -134,7 +134,6 @@ class CompuMate
   private:
     // Console and Event objects
     const Console& myConsole;
-    const Event& myEvent;
 
     // Left and right controllers
     unique_ptr<Controller> myLeftController, myRightController;
@@ -143,11 +142,7 @@ class CompuMate
     uInt8 myColumn;
 
     // The keyboard state array (tells us the current state of the keyboard)
-    const bool* myKeyTable;
-
-    // Array of keyboard key states when in the debugger (the normal keyboard
-    // keys are ignored in such a case)
-    bool myInternalKeyTable[KBDK_LAST];
+    Event::KeyTable myKeyTable;
 
   private:
     // Following constructors and assignment operators not supported

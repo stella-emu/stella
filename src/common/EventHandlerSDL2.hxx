@@ -36,7 +36,7 @@ class EventHandlerSDL2 : public EventHandler
       Create a new SDL2 event handler object
     */
     explicit EventHandlerSDL2(OSystem& osystem);
-    virtual ~EventHandlerSDL2() = default;
+    virtual ~EventHandlerSDL2();
 
   private:
     /**

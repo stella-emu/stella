@@ -1124,7 +1124,7 @@ TIA& TIA::updateScanlineByStep()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA& TIA::updateScanlineByTrace(int target)
 {
-  uInt32 count = 100;  // only try up to 100 steps
+  uInt32 count = 10000;  // only try up to 100 steps
   while (mySystem->m6502().getPC() != target && count-- &&
          mySystem->m6502().execute(1));
 

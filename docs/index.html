@@ -1991,7 +1991,7 @@
 
     <tr>
       <td><pre>-tv.phosblend &lt;0 - 100&gt;</pre></td>
-      <td>Enable default phosphor blending level; 0 implies no mixing, and 100
+      <td>Enable phosphor blending level; 0 implies no mixing, and 100
         is full mixing (not recommended). Note that this doesn't actually
         enable phosphor mode; that is done for each ROM in the ROM properties.
         Higher blend values will intensify the phosphor effect. Depending on your
@@ -2633,10 +2633,10 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>TV mode</td><td>Disable TV effects, or select TV preset</td><td>-tv.filter</td></tr>
-          <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' mode</td><td>-tv.contrast, tv.hue, etc.</td></tr>
+          <tr><td>Adjustable sliders</td><td>Set specific attribute in 'Custom' TV mode</td><td>-tv.contrast, -tv.hue, etc.</td></tr>
           <tr><td>Phosphor for all ROMs</td><td>Enable phosphor mode for all ROMs</td><td>-tv.phosphor</td></tr>
-          <tr><td>Default (phosphor)</td><td>Default blend level to use in phosphor mode<br/>
-                (needs to be manually set for your particular hardware)</td><td>-tv.phosblend</td></tr>
+          <tr><td>Blend (phosphor)</td><td>Blend level to use in phosphor mode for all ROMs
+                (needs to be manually adjusted for your particular hardware)</td><td>-tv.phosblend</td></tr>
           <tr><td>Scanline intensity</td><td>Sets scanline black-level intensity.</br>
                   Note: No scanlines in 1x mode snapshots.</td><td>-tv.scanlines</td></tr>
           <tr><td>Scanline interpolation</td><td>Smooth/blend scanlines into image</td><td>-tv.scaninter</td></tr>
@@ -2651,7 +2651,7 @@
   </table>
   <br>
 
-  <p><b>Audio Settings</b> dialog:</p>
+  <p><b>TODO! Audio Settings</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_audio.png"></td>
@@ -3587,7 +3587,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>BUS </td><td>Experimental</td><td>.BUS </td></tr>
         <tr><td>CDF </td><td>Chris, Darrell, Fred</td><td>.CDF </td></tr>
         <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td><td>.CM </td></tr>
-        <tr><td>CTY &#185;&#178;</td><td>CDW - Chetiry </td><td>.CTY </td></tr>
+        <tr><td>CTY &#178;</td><td>CDW - Chetiry </td><td>.CTY </td></tr>
         <tr><td>CV </td><td>Commavid extra ram </td><td>.CV </td></tr>
         <tr><td>CV+ </td><td>Extended Commavid extra ram</td><td>.CVP </td></tr>
         <tr><td>DASH </td><td>Boulder Dash 2 </td><td>.DAS </td></tr>

@@ -87,6 +87,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myCurrentFormat(0),   // Unknown format @ start,
     myAutodetectedYstart(0),
     myYStartAutodetected(false),
+    myFormatAutodetected(false),
     myUserPaletteDefined(false),
     myConsoleTiming(ConsoleTiming::ntsc),
     myAudioSettings(audioSettings)
@@ -143,6 +144,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     {
       autodetected = "*";
       myCurrentFormat = 0;
+      myFormatAutodetected = true;
     }
   }
 
@@ -284,8 +286,6 @@ void Console::autodetectYStart(bool reset)
 
   // Don't forget to reset the SC progress bars again
   myOSystem.settings().setValue("fastscbios", fastscbios);
-
-  myYStartAutodetected = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -370,17 +370,17 @@ void Console::setFormat(uInt32 format)
 
   string saveformat, message;
   string autodetected = "";
-  bool reset = true;
 
   myCurrentFormat = format;
   switch(myCurrentFormat)
   {
     case 0:  // auto-detect
     {
+      if (myFormatAutodetected) return;
+
       string oldDisplayFormat = myDisplayFormat;
       redetectFrameLayout();
-      myTIA->update();
-      reset = oldDisplayFormat != myDisplayFormat;
+      myFormatAutodetected = true;
       saveformat = "AUTO";
       autodetected = "*";
       myConsoleTiming = myDisplayFormat == "PAL" ? ConsoleTiming::pal : ConsoleTiming::ntsc;
@@ -391,45 +391,48 @@ void Console::setFormat(uInt32 format)
       saveformat = myDisplayFormat = "NTSC";
       myConsoleTiming = ConsoleTiming::ntsc;
       message = "NTSC mode";
+      myFormatAutodetected = false;
       break;
     case 2:
       saveformat = myDisplayFormat = "PAL";
       myConsoleTiming = ConsoleTiming::pal;
       message = "PAL mode";
+      myFormatAutodetected = false;
       break;
     case 3:
       saveformat = myDisplayFormat = "SECAM";
       myConsoleTiming = ConsoleTiming::secam;
       message = "SECAM mode";
+      myFormatAutodetected = false;
       break;
     case 4:
       saveformat = myDisplayFormat = "NTSC50";
       myConsoleTiming = ConsoleTiming::ntsc;
       message = "NTSC50 mode";
+      myFormatAutodetected = false;
       break;
     case 5:
       saveformat = myDisplayFormat = "PAL60";
       myConsoleTiming = ConsoleTiming::pal;
       message = "PAL60 mode";
+      myFormatAutodetected = false;
       break;
     case 6:
       saveformat = myDisplayFormat = "SECAM60";
       myConsoleTiming = ConsoleTiming::secam;
       message = "SECAM60 mode";
+      myFormatAutodetected = false;
       break;
   }
   myProperties.set(Display_Format, saveformat);
 
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
-  if(reset)
-  {
-    setPalette(myOSystem.settings().getString("palette"));
-    setTIAProperties();
-    initializeVideo(); // takes care of refreshing the screen
-    initializeAudio(); // ensure that audio synthesis is set up to match emulation speed
-    myOSystem.resetFps(); // Reset FPS measurement
-  }
+  setPalette(myOSystem.settings().getString("palette"));
+  setTIAProperties();
+  initializeVideo();  // takes care of refreshing the screen
+  initializeAudio(); // ensure that audio synthesis is set up to match emulation speed
+  myOSystem.resetFps(); // Reset FPS measurement
 
   myOSystem.frameBuffer().showMessage(message);
 
@@ -541,13 +544,13 @@ void Console::togglePhosphor()
 {
   if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
   {
-    myProperties.set(Display_Phosphor, "No");
+    myProperties.set(Display_Phosphor, "NO");
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(false);
     myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
   }
   else
   {
-    myProperties.set(Display_Phosphor, "Yes");
+    myProperties.set(Display_Phosphor, "YES");
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(true);
     myOSystem.frameBuffer().showMessage("Phosphor effect enabled");
   }
@@ -696,31 +699,28 @@ void Console::changeYStart(int direction)
   else
     return;
 
-  ostringstream val;
-  val << ystart;
   if(ystart == 0) {
     redetectYStart();
     ystart = myAutodetectedYstart;
+    myYStartAutodetected = true;
 
-    myOSystem.frameBuffer().showMessage("YStart autodetected");
+    myProperties.set(Display_YStart, "0");
   }
-  else
-  {
-    if(myAutodetectedYstart > 0 && myAutodetectedYstart == ystart)
-    {
-      // We've reached the auto-detect value, so reset
-      myOSystem.frameBuffer().showMessage("YStart " + val.str() + " (Auto)");
-      val.str("");
-      val << static_cast<int>(0);
-    }
-    else
-      myOSystem.frameBuffer().showMessage("YStart " + val.str());
+  else {
+    ostringstream ss;
+    ss << ystart;
 
-    myYStartAutodetected = false;
+    myProperties.set(Display_YStart, ss.str());
   }
 
-  myProperties.set(Display_YStart, val.str());
-  myTIA->setYStart(ystart);
+  if (ystart != myTIA->ystart()) myTIA->setYStart(ystart);
+
+  ostringstream ss;
+
+  if(myAutodetectedYstart == ystart) ss << "YStart " << ystart << " (Auto)";
+  else ss << "YStart " << ystart;
+
+  myOSystem.frameBuffer().showMessage(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -728,20 +728,16 @@ void Console::updateYStart(uInt32 ystart)
 {
   if (ystart > TIAConstants::maxYStart) return;
 
-  ostringstream ss;
-  ss << ystart;
-
-  if (ss.str() == myProperties.get(Display_YStart)) return;
-
-  myProperties.set(Display_YStart, ss.str());
-
   if (ystart == 0) {
+    if (myYStartAutodetected) return;
+
     redetectYStart();
-    myTIA->setYStart(myAutodetectedYstart);
-  } else {
-    myTIA->setYStart(ystart);
+    myYStartAutodetected = true;
+    ystart = myAutodetectedYstart;
+  } else
     myYStartAutodetected = false;
-  }
+
+  if (ystart != myTIA->ystart()) myTIA->setYStart(ystart);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -782,6 +778,11 @@ void Console::setTIAProperties()
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
   if(ystart != 0)
     ystart = BSPF::clamp(ystart, 0u, TIAConstants::maxYStart);
+  else {
+    ystart = myAutodetectedYstart;
+    myYStartAutodetected = true;
+  }
+
   uInt32 height = atoi(myProperties.get(Display_Height).c_str());
   if(height != 0)
     height = BSPF::clamp(height, TIAConstants::minViewableHeight, TIAConstants::maxViewableHeight);
@@ -801,7 +802,7 @@ void Console::setTIAProperties()
     myTIA->setLayout(FrameLayout::pal);
   }
 
-  myTIA->setYStart(myAutodetectedYstart ? myAutodetectedYstart : ystart);
+  myTIA->setYStart(ystart);
   myTIA->setHeight(height);
 
   myEmulationTiming.updateFrameLayout(myTIA->frameLayout());
@@ -811,12 +812,8 @@ void Console::setTIAProperties()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::createAudioQueue()
 {
-  const string& stereo = myOSystem.settings().getString(AudioSettings::SETTING_STEREO);
-  bool useStereo = false;
-  if(BSPF::equalsIgnoreCase(stereo, "byrom"))
-    useStereo = myProperties.get(Cartridge_Sound) == "STEREO";
-  else
-    useStereo = BSPF::equalsIgnoreCase(stereo, "stereo");
+  bool useStereo = myOSystem.settings().getBool(AudioSettings::SETTING_STEREO)
+    || myProperties.get(Cartridge_Sound) == "STEREO";
 
   myAudioQueue = make_shared<AudioQueue>(
     myEmulationTiming.audioFragmentSize(),

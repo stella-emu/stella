@@ -31,6 +31,8 @@
 #include "PNGLibrary.hxx"
 #include "System.hxx"
 
+#include "ThreadDebugging.hxx"
+
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
@@ -47,6 +49,8 @@ int stellaMain(int argc, char* argv[])
 int main(int argc, char* argv[])
 #endif
 {
+  SET_MAIN_THREAD;
+
   std::ios_base::sync_with_stdio(false);
 
   // Create the parent OSystem object
@@ -57,6 +61,8 @@ int main(int argc, char* argv[])
   auto Cleanup = [&theOSystem]() {
     theOSystem->logMessage("Cleanup from main", 2);
     theOSystem->saveConfig();
+    theOSystem.reset();       // Force delete of object
+    MediaFactory::cleanUp();  // Finish any remaining cleanup
 
     return 0;
   };

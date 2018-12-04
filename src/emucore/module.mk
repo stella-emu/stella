@@ -80,7 +80,8 @@ MODULE_OBJS := \
 	src/emucore/Switches.o \
 	src/emucore/System.o \
 	src/emucore/TIASurface.o \
-	src/emucore/Thumbulator.o
+	src/emucore/Thumbulator.o \
+	src/emucore/exception/FatalEmulationError.o
 
 MODULE_DIRS += \
 	src/emucore

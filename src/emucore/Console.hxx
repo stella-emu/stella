@@ -420,6 +420,9 @@ class Console : public Serializable
     // Is ystart currently autodetected?
     bool myYStartAutodetected;
 
+    // Is the TV format autodetected?
+    bool myFormatAutodetected;
+
     // Indicates whether an external palette was found and
     // successfully loaded
     bool myUserPaletteDefined;

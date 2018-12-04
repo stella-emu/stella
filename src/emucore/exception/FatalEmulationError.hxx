@@ -15,10 +15,25 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef VERSION_HXX
-#define VERSION_HXX
+#ifndef FATAL_EMULATION_ERROR_HXX
+#define FATAL_EMULATION_ERROR_HXX
 
-#define STELLA_VERSION "6.0_beta2"
-#define STELLA_BUILD "4603"
+#include "bspf.hxx"
 
-#endif
+class FatalEmulationError: public std::exception {
+
+  public:
+
+    FatalEmulationError(const string& message);
+
+    virtual const char* what() const throw();
+
+    static void raise(const string& message);
+
+  private:
+
+    const string myMessage;
+
+};
+
+#endif // FATAL_EMULATION_ERROR_HXX

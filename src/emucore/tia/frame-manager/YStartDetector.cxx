@@ -48,6 +48,9 @@ enum Metrics: uInt32 {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 YStartDetector::YStartDetector()
+  : myState(State::waitForVsyncStart),
+    myVblankMode(VblankMode::floating),
+    myVblankViolated(false)
 {
   reset();
 }

@@ -18,15 +18,39 @@
 #include "OSystem.hxx"
 #include "EventHandlerSDL2.hxx"
 
+#include "ThreadDebugging.hxx"
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   : EventHandler(osystem)
 {
+  ASSERT_MAIN_THREAD;
+
+#ifdef JOYSTICK_SUPPORT
+  if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+  {
+    ostringstream buf;
+    buf << "ERROR: Couldn't initialize SDL joystick support: " << SDL_GetError() << endl;
+    osystem.logMessage(buf.str(), 0);
+  }
+  osystem.logMessage("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK", 2);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EventHandlerSDL2::~EventHandlerSDL2()
+{
+  ASSERT_MAIN_THREAD;
+
+  if(SDL_WasInit(SDL_INIT_JOYSTICK))
+    SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL2::enableTextEvents(bool enable)
 {
+  ASSERT_MAIN_THREAD;
+
   if(enable)
     SDL_StartTextInput();
   else
@@ -36,6 +60,8 @@ void EventHandlerSDL2::enableTextEvents(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandlerSDL2::pollEvent()
 {
+  ASSERT_MAIN_THREAD;
+
   while(SDL_PollEvent(&myEvent))
   {
     switch(myEvent.type)
@@ -194,6 +220,8 @@ void EventHandlerSDL2::pollEvent()
 EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
   : myStick(nullptr)
 {
+  ASSERT_MAIN_THREAD;
+
   myStick = SDL_JoystickOpen(idx);
   if(myStick)
   {
@@ -215,6 +243,8 @@ EventHandlerSDL2::JoystickSDL2::JoystickSDL2(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandlerSDL2::JoystickSDL2::~JoystickSDL2()
 {
-  if(myStick)
+  ASSERT_MAIN_THREAD;
+
+  if(SDL_WasInit(SDL_INIT_JOYSTICK) && myStick)
     SDL_JoystickClose(myStick);
 }

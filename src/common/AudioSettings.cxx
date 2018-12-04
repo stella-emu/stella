@@ -141,10 +141,10 @@ AudioSettings::ResamplingQuality AudioSettings::resamplingQuality()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string AudioSettings::stereo() const
+bool AudioSettings::stereo() const
 {
   // 0 is a valid value -> keep it
-  return mySettings.getString(SETTING_STEREO);
+  return mySettings.getBool(SETTING_STEREO);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -255,11 +255,11 @@ void AudioSettings::setResamplingQuality(AudioSettings::ResamplingQuality resamp
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AudioSettings::setStereo(const string& mode)
+void AudioSettings::setStereo(bool allROMs)
 {
   if(!myIsPersistent) return;
 
-  mySettings.setValue(SETTING_STEREO, mode);
+  mySettings.setValue(SETTING_STEREO, allROMs);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

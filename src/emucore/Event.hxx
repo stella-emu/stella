@@ -18,11 +18,13 @@
 #ifndef EVENT_HXX
 #define EVENT_HXX
 
+#include <mutex>
+
 #include "bspf.hxx"
 #include "StellaKeys.hxx"
 
 /**
-  @author  Bradford W. Mott, Stephen Anthony
+  @author  Stephen Anthony, Christian Speckner
 */
 class Event
 {
@@ -80,6 +82,37 @@ class Event
       LastType
     };
 
+    class KeyTable {
+      public:
+
+        KeyTable(const bool* keyTable, std::mutex& mutex)
+          : myKeyTable(keyTable),
+            myMutex(mutex),
+            myIsEnabled(true)
+        {
+        }
+
+        bool operator[](int type) const {
+          if (!myIsEnabled) return false;
+
+          std::lock_guard<std::mutex> lock(myMutex);
+
+          return myKeyTable[type];
+        }
+
+        void enable(bool isEnabled) {
+          myIsEnabled = isEnabled;
+        }
+
+      private:
+
+        const bool *myKeyTable;
+        std::mutex& myMutex;
+
+        bool myIsEnabled;
+
+    };
+
   public:
     /**
       Create a new event object.
@@ -90,18 +123,28 @@ class Event
     /**
       Get the value associated with the event of the specified type.
     */
-    Int32 get(Type type) const { return myValues[type]; }
+    Int32 get(Type type) const {
+      std::lock_guard<std::mutex> lock(myMutex);
+
+      return myValues[type];
+    }
 
     /**
       Set the value associated with the event of the specified type.
     */
-    void set(Type type, Int32 value) { myValues[type] = value; }
+    void set(Type type, Int32 value) {
+      std::lock_guard<std::mutex> lock(myMutex);
+
+      myValues[type] = value;
+    }
 
     /**
       Clears the event array (resets to initial state).
     */
     void clear()
     {
+      std::lock_guard<std::mutex> lock(myMutex);
+
       for(uInt32 i = 0; i < LastType; ++i)
         myValues[i] = Event::NoType;
 
@@ -112,12 +155,16 @@ class Event
     /**
       Get the keytable associated with this event.
     */
-    const bool* getKeys() const { return myKeyTable; }
+    KeyTable getKeys() const { return KeyTable(myKeyTable, myMutex); }
 
     /**
       Set the value associated with the event of the specified type.
     */
-    void setKey(StellaKey key, bool state) { myKeyTable[key] = state; }
+    void setKey(StellaKey key, bool state) {
+      std::lock_guard<std::mutex> lock(myMutex);
+
+      myKeyTable[key] = state;
+    }
 
     /**
       Tests if a given event represents continuous or analog values.
@@ -142,6 +189,8 @@ class Event
 
     // Array of keyboard key states
     bool myKeyTable[KBDK_LAST];
+
+    mutable std::mutex myMutex;
 
   private:
     // Following constructors and assignment operators not supported

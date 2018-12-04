@@ -307,7 +307,7 @@ bool Playfield::save(Serializer& out) const
     out.putByte(myDebugColor);
     out.putBool(myDebugEnabled);
 
-    out.putByte(myColorMode);
+    out.putByte(uInt8(myColorMode));
 
     out.putInt(myPattern);
     out.putInt(myEffectivePattern);

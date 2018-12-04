@@ -1201,7 +1201,6 @@ void EventHandler::setState(EventHandlerState state)
     case EventHandlerState::LAUNCHER:
       myOverlay = &myOSystem.launcher();
       enableTextEvents(true);
-      myEvent.clear();
       break;
 
     case EventHandlerState::DEBUGGER:
@@ -1225,6 +1224,9 @@ void EventHandler::setState(EventHandlerState state)
   // Sometimes an extraneous mouse motion event is generated
   // after a state change, which should be supressed
   mySkipMouseMotion = true;
+
+  // Erase and pending events
+  myEvent.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

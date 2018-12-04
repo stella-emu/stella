@@ -25,6 +25,7 @@
 #include "TIA.hxx"
 #include "Thumbulator.hxx"
 #include "CartBUS.hxx"
+#include "exception/FatalEmulationError.hxx"
 
 // Location of data within the RAM copy of the BUS Driver.
 #define DSxPTR        0x06D8
@@ -78,6 +79,9 @@ void CartridgeBUS::reset()
 {
   initializeRAM(myBUSRAM+2048, 8192-2048);
 
+  // BUS always starts in bank 6
+  initializeStartBank(6);
+
   // Update cycles to the current system cycles
   myAudioCycles = myARMCycles = 0;
   myFractionalClocks = 0.0;
@@ -96,9 +100,6 @@ void CartridgeBUS::setInitialState()
 
   for (int i=0; i < 3; ++i)
     myMusicWaveformSize[i] = 27;
-
-  // BUS always starts in bank 6
-  initializeStartBank(6);
 
   // Assuming mode starts out with Fast Fetch off and 3-Voice music,
   // need to confirm with Chris
@@ -171,11 +172,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
         {
-      #ifdef DEBUGGER_SUPPORT
-          Debugger::debugger().startWithFatalError(e.what());
-      #else
-          cout << e.what() << endl;
-      #endif
+          FatalEmulationError::raise(e.what());
         }
       }
       break;

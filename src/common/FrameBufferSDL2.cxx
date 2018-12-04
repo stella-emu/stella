@@ -26,14 +26,18 @@
 #include "FBSurfaceSDL2.hxx"
 #include "FrameBufferSDL2.hxx"
 
+#include "ThreadDebugging.hxx"
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   : FrameBuffer(osystem),
     myWindow(nullptr),
     myRenderer(nullptr)
 {
+  ASSERT_MAIN_THREAD;
+
   // Initialize SDL2 context
-  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) < 0)
+  if(SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
@@ -52,6 +56,8 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL2::~FrameBufferSDL2()
 {
+  ASSERT_MAIN_THREAD;
+
   SDL_FreeFormat(myPixelFormat);
 
   if(myRenderer)
@@ -72,12 +78,15 @@ FrameBufferSDL2::~FrameBufferSDL2()
     SDL_DestroyWindow(myWindow);
     myWindow = nullptr;
   }
+  SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
                                     VariantList& renderers)
 {
+  ASSERT_MAIN_THREAD;
+
   // First get the maximum windowed desktop resolution
   SDL_DisplayMode display;
   int maxDisplays = SDL_GetNumVideoDisplays();
@@ -128,12 +137,16 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 FrameBufferSDL2::getCurrentDisplayIndex()
 {
+  ASSERT_MAIN_THREAD;
+
   return SDL_GetWindowDisplayIndex(myWindow);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 {
+  ASSERT_MAIN_THREAD;
+
   // If not initialized by this point, then immediately fail
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
@@ -243,6 +256,8 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::setTitle(const string& title)
 {
+  ASSERT_MAIN_THREAD;
+
   myScreenTitle = title;
 
   if(myWindow)
@@ -252,6 +267,8 @@ void FrameBufferSDL2::setTitle(const string& title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FrameBufferSDL2::about() const
 {
+  ASSERT_MAIN_THREAD;
+
   ostringstream out;
   out << "Video system: " << SDL_GetCurrentVideoDriver() << endl;
   SDL_RendererInfo info;
@@ -272,24 +289,32 @@ string FrameBufferSDL2::about() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::invalidate()
 {
+  ASSERT_MAIN_THREAD;
+
   SDL_RenderClear(myRenderer);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::showCursor(bool show)
 {
+  ASSERT_MAIN_THREAD;
+
   SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::grabMouse(bool grab)
 {
+  ASSERT_MAIN_THREAD;
+
   SDL_SetRelativeMouseMode(grab ? SDL_TRUE : SDL_FALSE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSDL2::fullScreen() const
 {
+  ASSERT_MAIN_THREAD;
+
 #ifdef WINDOWED_SUPPORT
   return SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP;
 #else
@@ -300,6 +325,8 @@ bool FrameBufferSDL2::fullScreen() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::renderToScreen()
 {
+  ASSERT_MAIN_THREAD;
+
   // Show all changes made to the renderer
   SDL_RenderPresent(myRenderer);
 }
@@ -307,6 +334,8 @@ void FrameBufferSDL2::renderToScreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::setWindowIcon()
 {
+  ASSERT_MAIN_THREAD;
+
 #ifndef BSPF_MAC_OSX        // Currently not needed for OSX
 #include "stella_icon.hxx"  // The Stella icon
 
@@ -328,6 +357,8 @@ unique_ptr<FBSurface>
 void FrameBufferSDL2::readPixels(uInt8* pixels, uInt32 pitch,
                                  const GUI::Rect& rect) const
 {
+  ASSERT_MAIN_THREAD;
+
   SDL_Rect r;
   r.x = rect.x();  r.y = rect.y();
   r.w = rect.width();  r.h = rect.height();
