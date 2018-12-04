@@ -110,7 +110,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\emucore\tia\frame-manager;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;DEBUG_BUILD;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -145,7 +145,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\emucore\tia\frame-manager;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;DEBUG_BUILD;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -261,6 +261,7 @@
     <ClCompile Include="..\common\PKeyboardHandler.cxx" />
     <ClCompile Include="..\common\RewindManager.cxx" />
     <ClCompile Include="..\common\StateManager.cxx" />
+    <ClCompile Include="..\common\ThreadDebugging.cxx" />
     <ClCompile Include="..\common\TimerManager.cxx" />
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
@@ -349,6 +350,7 @@
     <ClCompile Include="..\emucore\DispatchResult.cxx" />
     <ClCompile Include="..\emucore\EmulationTiming.cxx" />
     <ClCompile Include="..\emucore\EmulationWorker.cxx" />
+    <ClCompile Include="..\emucore\exception\FatalEmulationError.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\emucore\PointingDevice.cxx" />
@@ -832,6 +834,7 @@
     <ClInclude Include="..\common\StateManager.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
+    <ClInclude Include="..\common\ThreadDebugging.hxx" />
     <ClInclude Include="..\common\TimerManager.hxx" />
     <ClInclude Include="..\common\tv_filters\AtariNTSC.hxx" />
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
@@ -929,6 +932,7 @@
     <ClInclude Include="..\emucore\EmulationTiming.hxx" />
     <ClInclude Include="..\emucore\EmulationWorker.hxx" />
     <ClInclude Include="..\emucore\EventHandlerConstants.hxx" />
+    <ClInclude Include="..\emucore\exception\FatalEmulationError.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\FrameBufferConstants.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
