@@ -245,8 +245,7 @@ bool M6502::execute(uInt64 number)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 {
-  // Clear all of the execution status bits except for the fatal error bit
-  myExecutionStatus &= FatalErrorBit;
+  myExecutionStatus = 0;
 
 #ifdef DEBUGGER_SUPPORT
   TIA& tia = mySystem->tia();

@@ -52,7 +52,10 @@ class DispatchResult
 
   private:
 
-    void assertStatus(Status status) const;
+    void assertStatus(Status status) const
+    {
+      if (myStatus != status) throw runtime_error("invalid status for operation");
+    }
 
     template<class ...Ts> void assertStatus(Status status, Ts... more) const
     {

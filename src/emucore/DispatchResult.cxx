@@ -18,12 +18,6 @@
 #include "DispatchResult.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DispatchResult::assertStatus(Status status) const
-{
-  if (myStatus != status) throw runtime_error("invalid status for operation");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DispatchResult::isSuccess() const
 {
   return myStatus == Status::debugger || myStatus == Status::ok;
