@@ -15,7 +15,12 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#ifndef THREADING_DEBUGGER_HXX
+#define THREADING_DEBUGGER_HXX
+
 #include <thread>
+
+#include "bspf.hxx"
 
 #ifdef DEBUG_BUILD
 
@@ -41,7 +46,7 @@ class ThreadDebuggingHelper {
 
   private:
 
-    void fail(std::string message);
+    void fail(const string& message);
 
     ThreadDebuggingHelper();
 
@@ -56,3 +61,5 @@ class ThreadDebuggingHelper {
     ThreadDebuggingHelper& operator=(const ThreadDebuggingHelper&) = delete;
     ThreadDebuggingHelper& operator=(ThreadDebuggingHelper&&) = delete;
 };
+
+#endif // THREADING_DEBUGGER_HXX

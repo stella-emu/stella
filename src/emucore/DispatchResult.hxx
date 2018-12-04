@@ -34,7 +34,7 @@ class DispatchResult
 
     uInt64 getCycles() const { return myCycles; }
 
-    const string& getMessage() const { assertStatus(Status::debugger); return myMessage; }
+    const string& getMessage() const { assertStatus(Status::debugger, Status::fatal); return myMessage; }
 
     int getAddress() const { assertStatus(Status::debugger); return myAddress; }
 
@@ -48,9 +48,18 @@ class DispatchResult
 
     void setFatal(uInt64 cycles);
 
+    void setMessage(const string& message);
+
   private:
 
     void assertStatus(Status status) const;
+
+    template<class ...Ts> void assertStatus(Status status, Ts... more) const
+    {
+      if (myStatus == status) return;
+
+      assertStatus(more...);
+    }
 
   private:
 

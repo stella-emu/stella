@@ -22,6 +22,7 @@
 #include "Thumbulator.hxx"
 #include "CartDPCPlus.hxx"
 #include "TIA.hxx"
+#include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
@@ -191,11 +192,7 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
         {
-      #ifdef DEBUGGER_SUPPORT
-          Debugger::debugger().startWithFatalError(e.what());
-      #else
-          cout << e.what() << endl;
-      #endif
+          FatalEmulationError::raise(e.what());
         }
       }
       break;

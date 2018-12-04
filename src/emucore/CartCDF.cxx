@@ -25,6 +25,7 @@
 #include "Thumbulator.hxx"
 #include "CartCDF.hxx"
 #include "TIA.hxx"
+#include "exception/FatalEmulationError.hxx"
 
 // Location of data within the RAM copy of the CDF Driver.
 //  Version                   0       1
@@ -166,11 +167,7 @@ inline void CartridgeCDF::callFunction(uInt8 value)
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
         {
-#ifdef DEBUGGER_SUPPORT
-          Debugger::debugger().startWithFatalError(e.what());
-#else
-          cout << e.what() << endl;
-#endif
+          FatalEmulationError::raise(e.what());
         }
       }
       break;

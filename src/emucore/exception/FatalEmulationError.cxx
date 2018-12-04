@@ -15,42 +15,21 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "ThreadDebugging.hxx"
+#include "FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ThreadDebuggingHelper::ThreadDebuggingHelper()
-  : myMainThreadIdConfigured(false)
+FatalEmulationError::FatalEmulationError(const string& message)
+  : myMessage(message)
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ThreadDebuggingHelper& ThreadDebuggingHelper::instance()
+const char* FatalEmulationError::what() const throw()
 {
-  static ThreadDebuggingHelper instance;
-
-  return instance;
+  return myMessage.c_str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ThreadDebuggingHelper::fail(const string& message)
+void FatalEmulationError::raise(const string& message)
 {
-  cerr << message << endl;
-
-  throw runtime_error(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ThreadDebuggingHelper::setMainThread()
-{
-  if (myMainThreadIdConfigured) fail("main thread already configured");
-
-  myMainThreadIdConfigured = true;
-  myMainThreadId = std::this_thread::get_id();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ThreadDebuggingHelper::assertMainThread()
-{
-  if (!myMainThreadIdConfigured) fail("main thread not configured");
-
-  if (std::this_thread::get_id() != myMainThreadId) fail("must be called from main thread");
+  throw FatalEmulationError(message);
 }

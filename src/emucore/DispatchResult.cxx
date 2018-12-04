@@ -53,3 +53,9 @@ void DispatchResult::setFatal(uInt64 cycles)
 
   myStatus = Status::fatal;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DispatchResult::setMessage(const string& message)
+{
+  myMessage = message;
+}
