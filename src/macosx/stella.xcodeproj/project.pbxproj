@@ -378,6 +378,10 @@
 		DC6DC91F205DB879004A5FC3 /* PhysicalJoystick.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6DC91B205DB879004A5FC3 /* PhysicalJoystick.hxx */; };
 		DC6DC920205DB879004A5FC3 /* PJoystickHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6DC91C205DB879004A5FC3 /* PJoystickHandler.cxx */; };
 		DC6DC921205DB879004A5FC3 /* PJoystickHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6DC91D205DB879004A5FC3 /* PJoystickHandler.hxx */; };
+		DC6F394921B897C700897AD8 /* FatalEmulationError.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6F394721B897C700897AD8 /* FatalEmulationError.cxx */; };
+		DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */; };
+		DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */; };
+		DC6F394E21B897F300897AD8 /* ThreadDebugging.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */; };
 		DC71EA9D1FDA06D2008827CB /* CartE78K.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71EA991FDA06D2008827CB /* CartE78K.cxx */; };
 		DC71EA9E1FDA06D2008827CB /* CartE78K.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC71EA9A1FDA06D2008827CB /* CartE78K.hxx */; };
 		DC71EA9F1FDA06D2008827CB /* CartMNetwork.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71EA9B1FDA06D2008827CB /* CartMNetwork.cxx */; };
@@ -1075,6 +1079,10 @@
 		DC6DC91B205DB879004A5FC3 /* PhysicalJoystick.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PhysicalJoystick.hxx; sourceTree = "<group>"; };
 		DC6DC91C205DB879004A5FC3 /* PJoystickHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PJoystickHandler.cxx; sourceTree = "<group>"; };
 		DC6DC91D205DB879004A5FC3 /* PJoystickHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PJoystickHandler.hxx; sourceTree = "<group>"; };
+		DC6F394721B897C700897AD8 /* FatalEmulationError.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FatalEmulationError.cxx; path = exception/FatalEmulationError.cxx; sourceTree = "<group>"; };
+		DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FatalEmulationError.hxx; path = exception/FatalEmulationError.hxx; sourceTree = "<group>"; };
+		DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadDebugging.cxx; sourceTree = "<group>"; };
+		DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ThreadDebugging.hxx; sourceTree = "<group>"; };
 		DC71EA991FDA06D2008827CB /* CartE78K.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartE78K.cxx; sourceTree = "<group>"; };
 		DC71EA9A1FDA06D2008827CB /* CartE78K.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartE78K.hxx; sourceTree = "<group>"; };
 		DC71EA9B1FDA06D2008827CB /* CartMNetwork.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartMNetwork.cxx; sourceTree = "<group>"; };
@@ -1668,6 +1676,8 @@
 				DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */,
 				DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */,
 				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
+				DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */,
+				DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */,
 				DC30924A212F74930020DAD0 /* TimerManager.cxx */,
 				DC30924B212F74930020DAD0 /* TimerManager.hxx */,
 				DCC467EA14FBEC9600E15508 /* tv_filters */,
@@ -1824,6 +1834,7 @@
 				2D733D6E062895B2006265D9 /* EventHandler.cxx */,
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
 				DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */,
+				DC6F394621B897AD00897AD8 /* exception */,
 				DC73BD871915E5E3003FAFAD /* FBSurface.cxx */,
 				DC73BD881915E5E3003FAFAD /* FBSurface.hxx */,
 				2D733D70062895B2006265D9 /* FrameBuffer.cxx */,
@@ -2064,6 +2075,15 @@
 				DC3EE8551E2C0E6D00905161 /* zutil.h */,
 			);
 			path = zlib;
+			sourceTree = "<group>";
+		};
+		DC6F394621B897AD00897AD8 /* exception */ = {
+			isa = PBXGroup;
+			children = (
+				DC6F394721B897C700897AD8 /* FatalEmulationError.cxx */,
+				DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */,
+			);
+			name = exception;
 			sourceTree = "<group>";
 		};
 		DCC467EA14FBEC9600E15508 /* tv_filters */ = {
@@ -2373,6 +2393,7 @@
 				DC6DC91F205DB879004A5FC3 /* PhysicalJoystick.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
 				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
+				DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
 				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,
@@ -2407,6 +2428,7 @@
 				DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */,
 				DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */,
 				DCC527D110B9DA19005E1287 /* Device.hxx in Headers */,
+				DC6F394E21B897F300897AD8 /* ThreadDebugging.hxx in Headers */,
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
 				DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */,
 				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
@@ -2697,6 +2719,7 @@
 				2D9174B609BA90380026E9FF /* Menu.cxx in Sources */,
 				CFE3F60D1E84A9A200A8204E /* CartCDFWidget.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
+				DC6F394921B897C700897AD8 /* FatalEmulationError.cxx in Sources */,
 				2D9174B809BA90380026E9FF /* PopUpWidget.cxx in Sources */,
 				DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */,
 				DCE9158B201543B900960CC0 /* TimeLineWidget.cxx in Sources */,
@@ -2835,6 +2858,7 @@
 				E0306E0F1F93E916003DDD52 /* JitterEmulation.cxx in Sources */,
 				DCD6FC7C11C281ED005DA767 /* pngset.c in Sources */,
 				DCD6FC7E11C281ED005DA767 /* pngtrans.c in Sources */,
+				DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */,
 				DCD6FC7F11C281ED005DA767 /* pngwio.c in Sources */,
 				DCD6FC8011C281ED005DA767 /* pngwrite.c in Sources */,
 				DC3EE8621E2C0E6D00905161 /* inffast.c in Sources */,
