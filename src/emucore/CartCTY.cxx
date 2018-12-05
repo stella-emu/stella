@@ -312,7 +312,6 @@ bool CartridgeCTY::save(Serializer& out) const
     out.putIntArray(myMusicCounters, 3);
     out.putIntArray(myMusicFrequencies, 3);
     out.putLong(myFrequencyImage - myTuneData);
-
   }
   catch(...)
   {

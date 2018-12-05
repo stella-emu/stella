@@ -20,10 +20,11 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FatalEmulationError::FatalEmulationError(const string& message)
   : myMessage(message)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* FatalEmulationError::what() const throw()
+const char* FatalEmulationError::what() const noexcept
 {
   return myMessage.c_str();
 }

@@ -26,9 +26,9 @@ class FatalEmulationError: public std::exception {
 
     FatalEmulationError(const string& message);
 
-    virtual const char* what() const throw();
+    virtual const char* what() const noexcept;
 
-    static void raise(const string& message);
+    [[noreturn]] static void raise(const string& message);
 
   private:
 

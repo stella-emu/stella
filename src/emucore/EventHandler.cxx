@@ -1225,7 +1225,8 @@ void EventHandler::setState(EventHandlerState state)
   // after a state change, which should be supressed
   mySkipMouseMotion = true;
 
-  // Erase and pending events
+  // Erase any previously set events, since a state change implies
+  // that old events are now invalid
   myEvent.clear();
 }
 

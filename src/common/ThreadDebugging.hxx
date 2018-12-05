@@ -46,7 +46,7 @@ class ThreadDebuggingHelper {
 
   private:
 
-    void fail(const string& message);
+    [[noreturn]] void fail(const string& message);
 
     ThreadDebuggingHelper();
 
