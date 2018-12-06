@@ -361,6 +361,8 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     myOSystem.frameBuffer().enableMessages(false);
     myOSystem.frameBuffer().tiaSurface().reRender();
 
+
+
     string message = "Snapshot saved";
     try
     {
