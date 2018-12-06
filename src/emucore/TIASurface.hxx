@@ -155,6 +155,11 @@ class TIASurface
     */
     void reRender();
 
+    /**
+      Save a snapshot after rendering.
+    */
+    void saveSnapShot() { saveFlag = true; }
+
   private:
     OSystem& myOSystem;
     FrameBuffer& myFB;
@@ -201,6 +206,9 @@ class TIASurface
 
     // Palette for normal TIA rendering mode
     const uInt32* myPalette;
+
+    // Flag for saving a snapshot
+    bool saveFlag;
 
   private:
     // Following constructors and assignment operators not supported

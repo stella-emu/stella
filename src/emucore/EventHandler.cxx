@@ -46,6 +46,7 @@
 #include "M6532.hxx"
 #include "MouseControl.hxx"
 #include "PNGLibrary.hxx"
+#include "TIASurface.hxx"
 
 #include "EventHandler.hxx"
 
@@ -386,7 +387,8 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       return;
 
     case Event::TakeSnapshot:
-      if(state) myOSystem.png().takeSnapshot();
+      //if(state) myOSystem.png().takeSnapshot();
+      if(state) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
 
     case Event::LauncherMode:

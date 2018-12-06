@@ -23,6 +23,7 @@
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "TIA.hxx"
+    #include "PNGLibrary.hxx"
 #include "TIASurface.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,7 +35,8 @@ TIASurface::TIASurface(OSystem& system)
     myUsePhosphor(false),
     myPhosphorPercent(0.60f),
     myScanlinesEnabled(false),
-    myPalette(nullptr)
+    myPalette(nullptr),
+    saveFlag(false)
 {
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem.settings());
@@ -389,6 +391,12 @@ void TIASurface::render()
   // Draw overlaying scanlines
   if(myScanlinesEnabled)
     mySLineSurface->render();
+
+  if(saveFlag)
+  {
+    saveFlag = false;
+    myOSystem.png().takeSnapshot();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
