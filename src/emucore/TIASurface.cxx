@@ -322,6 +322,25 @@ string TIASurface::effectsInfo() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
+{
+  uInt32 c = myRGBFramebuffer[bufOfs];
+  uInt32 p = myPrevRGBFramebuffer[bufOfs];
+
+  // Split into RGB values
+  TO_RGB(c, rc, gc, bc);
+  TO_RGB(p, rp, gp, bp);
+
+  // Mix current calculated buffer with previous calculated buffer (50:50)
+  const uInt8 rn = (rc + rp) / 2;
+  const uInt8 gn = (gc + gp) / 2;
+  const uInt8 bn = (bc + bp) / 2;
+
+  // return averaged value
+  return  (rn << 16) | (gn << 8) | bn;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::render()
 {
   uInt32 width  = myTIA->width();
@@ -384,7 +403,8 @@ void TIASurface::render()
     case Filter::BlarggPhosphor:
     {
       if(saveFlag)
-        memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, width * height * sizeof(uInt32));
+        memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, height * outPitch * sizeof(uInt32));
+
       myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer);
       break;
     }
@@ -398,67 +418,14 @@ void TIASurface::render()
     mySLineSurface->render();
 
   if(saveFlag)
-  {
-    saveFlag = false;
-
-    switch(myFilter)
-    {
-      case Filter::Phosphor:
-      //case Filter::BlarggPhosphor: ;not tested!
-      {
-        // Note: This loop is the same as in "case Filter::Phosphor:" above
-        // and (for now!) I am simply overwriting the out buffer because it has beend rendered already.
-        uInt32 bufofs = 0, screenofsY = 0, pos;
-        for(uInt32 y = height; y; --y)
-        {
-          pos = screenofsY;
-          for(uInt32 x = width / 2; x; --x)
-          {
-            // do everything twice
-            {
-              uInt32 c = myRGBFramebuffer[bufofs];
-              uInt32 p = myPrevRGBFramebuffer[bufofs];
-              ++bufofs;
-              TO_RGB(c, rc, gc, bc);
-              TO_RGB(p, rp, gp, bp);
-              // Mix current calculated frame with previous calculated frame (50:50)
-              const uInt8 rn = (rc + rp) / 2;
-              const uInt8 gn = (gc + gp) / 2;
-              const uInt8 bn = (bc + bp) / 2;
-
-              // Store back into output frame buffer
-              out[pos++] = (rn << 16) | (gn << 8) | bn;
-            }
-            {
-              uInt32 c = myRGBFramebuffer[bufofs];
-              uInt32 p = myPrevRGBFramebuffer[bufofs];
-              ++bufofs;
-              TO_RGB(c, rc, gc, bc);
-              TO_RGB(p, rp, gp, bp);
-              // Mix current calculated frame with previous calculated frame (50:50)
-              const uInt8 rn = (rc + rp) / 2;
-              const uInt8 gn = (gc + gp) / 2;
-              const uInt8 bn = (bc + bp) / 2;
-
-              // Store back into output frame buffer
-              out[pos++] = (rn << 16) | (gn << 8) | bn;
-            }
-          }
-          screenofsY += outPitch;
-        }
-        break;
-      }
-      default:
-        break;
-    }
-
     myOSystem.png().takeSnapshot();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::reRender()
 {
+  // Note: This is currently called from PNGLibrary::takeSnapshot() only
+  // Therefore the code could be simplified.
   uInt32 width = myTIA->width();
   uInt32 height = myTIA->height();
   uInt32 pos = 0;
@@ -471,19 +438,54 @@ void TIASurface::reRender()
     // for non-phosphor modes, render the frame again
     case Filter::Normal:
     case Filter::BlarggNormal:
+      saveFlag = false;
       render();
       break;
     // for phosphor modes, copy the phosphor framebuffer
     case Filter::Phosphor:
-      for (uInt32 y = height; y; --y)
+    {
+      if(saveFlag) // always true
       {
-        memcpy(outPtr, myRGBFramebuffer + pos, width);
-        outPtr += outPitch;
-        pos += width;
+        saveFlag = false;
+        uInt32 bufofs = 0, screenofsY = 0;
+        for(uInt32 y = height; y; --y)
+        {
+          pos = screenofsY;
+          for(uInt32 x = width / 2; x; --x)
+          {
+            outPtr[pos++] = averageBuffers(bufofs++);
+            outPtr[pos++] = averageBuffers(bufofs++);
+          }
+          screenofsY += outPitch;
+        }
+      }
+      else // never executed!
+      {
+        for(uInt32 y = height; y; --y)
+        {
+          memcpy(outPtr, myRGBFramebuffer + pos, width);
+          outPtr += outPitch;
+          pos += width;
+        }
       }
       break;
+    }
+
     case Filter::BlarggPhosphor:
-      memcpy(outPtr, myRGBFramebuffer, height * outPitch << 2);
+      if(saveFlag) // always true
+      {
+        saveFlag = false;
+        uInt32 bufofs = 0;
+        for(uInt32 y = height; y; --y)
+        {
+          for(uInt32 x = outPitch; x; --x)
+          {
+            outPtr[pos++] = averageBuffers(bufofs++);
+          }
+        }
+      }
+      else // never executed!
+        memcpy(outPtr, myRGBFramebuffer, height * outPitch * sizeof(uInt32));
       break;
   }
 

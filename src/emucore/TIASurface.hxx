@@ -161,6 +161,12 @@ class TIASurface
     void saveSnapShot() { saveFlag = true; }
 
   private:
+    /**
+      Average current calculated buffer's pixel with previous calculated buffer's pixel (50:50).
+    */
+    uInt32 averageBuffers(uInt32 bufOfs);
+
+  private:
     OSystem& myOSystem;
     FrameBuffer& myFB;
     TIA* myTIA;
