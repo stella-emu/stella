@@ -626,14 +626,34 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
   // Stop the worker and wait until it has finished
   uInt64 totalCycles = emulationWorker.stop();
 
-#ifdef DEBUGGER_SUPPORT
-  // Break or trap? -> start debugger
-  if (dispatchResult.getStatus() == DispatchResult::Status::debugger) myDebugger->start(
-    dispatchResult.getMessage(),
-    dispatchResult.getAddress(),
-    dispatchResult.wasReadTrap()
-  );
-#endif
+  // Handle the dispatch result
+  switch (dispatchResult.getStatus()) {
+    case DispatchResult::Status::ok:
+      break;
+
+    case DispatchResult::Status::debugger:
+      #ifdef DEBUGGER_SUPPORT
+       myDebugger->start(
+          dispatchResult.getMessage(),
+          dispatchResult.getAddress(),
+          dispatchResult.wasReadTrap()
+        );
+      #endif
+
+      break;
+
+    case DispatchResult::Status::fatal:
+      #ifdef DEBUGGER_SUPPORT
+        myDebugger->startWithFatalError(dispatchResult.getMessage());
+      #else
+        throw runtime_error(dispatchResult.getMessage());
+      #endif
+
+      break;
+
+    default:
+      throw runtime_error("invalid emulation dispatch result");
+  }
 
   // Handle frying
   if (dispatchResult.getStatus() == DispatchResult::Status::ok && myEventHandler->frying())

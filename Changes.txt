@@ -63,6 +63,10 @@
 
   * Fixed bug in autodetecting Genesis controllers.
 
+  * Fixed bug with 'thumb.trapfatal' commandline argument; sometimes Stella
+    would lock up when encountering a fatal error instead of entering the
+    debugger and displaying a message.
+
   * Fixed bug in reading from settings file with entries that were empty;
     the parsing was failing.  This affected the 'cpurandom' argument; when
     all options in it were turned off, they were all turned on again during

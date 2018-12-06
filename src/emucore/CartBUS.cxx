@@ -25,6 +25,7 @@
 #include "TIA.hxx"
 #include "Thumbulator.hxx"
 #include "CartBUS.hxx"
+#include "exception/FatalEmulationError.hxx"
 
 // Location of data within the RAM copy of the BUS Driver.
 #define DSxPTR        0x06D8
@@ -171,11 +172,7 @@ inline void CartridgeBUS::callFunction(uInt8 value)
       catch(const runtime_error& e) {
         if(!mySystem->autodetectMode())
         {
-      #ifdef DEBUGGER_SUPPORT
-          Debugger::debugger().startWithFatalError(e.what());
-      #else
-          cout << e.what() << endl;
-      #endif
+          FatalEmulationError::raise(e.what());
         }
       }
       break;
