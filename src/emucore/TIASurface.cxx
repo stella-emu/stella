@@ -355,6 +355,9 @@ void TIASurface::render()
       uInt8*  tiaIn = myTIA->frameBuffer();
       uInt32* rgbIn = myRGBFramebuffer;
 
+      if (saveFlag)
+        memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, width * height * sizeof(uInt32));
+
       uInt32 bufofs = 0, screenofsY = 0, pos;
       for(uInt32 y = height; y ; --y)
       {
@@ -380,6 +383,8 @@ void TIASurface::render()
 
     case Filter::BlarggPhosphor:
     {
+      if(saveFlag)
+        memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, width * height * sizeof(uInt32));
       myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer);
       break;
     }
@@ -395,6 +400,58 @@ void TIASurface::render()
   if(saveFlag)
   {
     saveFlag = false;
+
+    switch(myFilter)
+    {
+      case Filter::Phosphor:
+      //case Filter::BlarggPhosphor: ;not tested!
+      {
+        // Note: This loop is the same as in "case Filter::Phosphor:" above
+        // and (for now!) I am simply overwriting the out buffer because it has beend rendered already.
+        uInt32 bufofs = 0, screenofsY = 0, pos;
+        for(uInt32 y = height; y; --y)
+        {
+          pos = screenofsY;
+          for(uInt32 x = width / 2; x; --x)
+          {
+            // do everything twice
+            {
+              uInt32 c = myRGBFramebuffer[bufofs];
+              uInt32 p = myPrevRGBFramebuffer[bufofs];
+              ++bufofs;
+              TO_RGB(c, rc, gc, bc);
+              TO_RGB(p, rp, gp, bp);
+              // Mix current calculated frame with previous calculated frame (50:50)
+              const uInt8 rn = (rc + rp) / 2;
+              const uInt8 gn = (gc + gp) / 2;
+              const uInt8 bn = (bc + bp) / 2;
+
+              // Store back into output frame buffer
+              out[pos++] = (rn << 16) | (gn << 8) | bn;
+            }
+            {
+              uInt32 c = myRGBFramebuffer[bufofs];
+              uInt32 p = myPrevRGBFramebuffer[bufofs];
+              ++bufofs;
+              TO_RGB(c, rc, gc, bc);
+              TO_RGB(p, rp, gp, bp);
+              // Mix current calculated frame with previous calculated frame (50:50)
+              const uInt8 rn = (rc + rp) / 2;
+              const uInt8 gn = (gc + gp) / 2;
+              const uInt8 bn = (bc + bp) / 2;
+
+              // Store back into output frame buffer
+              out[pos++] = (rn << 16) | (gn << 8) | bn;
+            }
+          }
+          screenofsY += outPitch;
+        }
+        break;
+      }
+      default:
+        break;
+    }
+
     myOSystem.png().takeSnapshot();
   }
 }

@@ -190,6 +190,7 @@ class TIASurface
     // Phosphor mode items (aka reduced flicker on 30Hz screens)
     // RGB frame buffer
     uInt32 myRGBFramebuffer[AtariNTSC::outWidth(kTIAW) * kTIAH];
+    uInt32 myPrevRGBFramebuffer[AtariNTSC::outWidth(kTIAW) * kTIAH];
 
     // Use phosphor effect
     bool myUsePhosphor;
