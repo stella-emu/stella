@@ -114,6 +114,9 @@ class PNGLibrary
     void setContinuousSnapInterval(uInt32 interval);
 
     /**
+      NOTE: This method will be made private soon, so all calls from
+            external code should be refactored
+
       Create a new snapshot based on the name of the ROM, and also
       optionally using the number given as a parameter.
 
@@ -161,9 +164,9 @@ class PNGLibrary
       @param height   The height of the PNG image
       @param comments The text comments to add to the PNG image
     */
-    void saveImage(ofstream& out, const unique_ptr<png_bytep[]>& rows,
-                   png_uint_32 width, png_uint_32 height,
-                   const VariantList& comments);
+    void saveImageToDisk(ofstream& out, const unique_ptr<png_bytep[]>& rows,
+                         png_uint_32 width, png_uint_32 height,
+                         const VariantList& comments);
 
     /**
       Load the PNG data from 'ReadInfo' into the FBSurface.  The surface

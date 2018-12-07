@@ -151,14 +151,16 @@ class TIASurface
     void render();
 
     /**
-      This method renders the current frame again.
+      This method prepares the current frame for taking a snapshot.
+      In particular, in phosphor modes the blending is adjusted slightly to
+      generate better images.
     */
-    void reRender();
+    void renderForSnapshot();
 
     /**
       Save a snapshot after rendering.
     */
-    void saveSnapShot() { saveFlag = true; }
+    void saveSnapShot() { mySaveSnapFlag = true; }
 
   private:
     /**
@@ -215,7 +217,7 @@ class TIASurface
     const uInt32* myPalette;
 
     // Flag for saving a snapshot
-    bool saveFlag;
+    bool mySaveSnapFlag;
 
   private:
     // Following constructors and assignment operators not supported

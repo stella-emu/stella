@@ -36,7 +36,7 @@ TIASurface::TIASurface(OSystem& system)
     myPhosphorPercent(0.60f),
     myScanlinesEnabled(false),
     myPalette(nullptr),
-    saveFlag(false)
+    mySaveSnapFlag(false)
 {
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem.settings());
@@ -322,7 +322,7 @@ string TIASurface::effectsInfo() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
+inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
 {
   uInt32 c = myRGBFramebuffer[bufOfs];
   uInt32 p = myPrevRGBFramebuffer[bufOfs];
@@ -374,7 +374,7 @@ void TIASurface::render()
       uInt8*  tiaIn = myTIA->frameBuffer();
       uInt32* rgbIn = myRGBFramebuffer;
 
-      if (saveFlag)
+      if (mySaveSnapFlag)
         memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, width * height * sizeof(uInt32));
 
       uInt32 bufofs = 0, screenofsY = 0, pos;
@@ -402,7 +402,7 @@ void TIASurface::render()
 
     case Filter::BlarggPhosphor:
     {
-      if(saveFlag)
+      if(mySaveSnapFlag)
         memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, height * outPitch * sizeof(uInt32));
 
       myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer);
@@ -417,15 +417,17 @@ void TIASurface::render()
   if(myScanlinesEnabled)
     mySLineSurface->render();
 
-  if(saveFlag)
+  if(mySaveSnapFlag)
     myOSystem.png().takeSnapshot();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::reRender()
+void TIASurface::renderForSnapshot()
 {
-  // Note: This is currently called from PNGLibrary::takeSnapshot() only
+  // TODO: This is currently called from PNGLibrary::takeSnapshot() only
   // Therefore the code could be simplified.
+  // At some point, we will probably merge some of the functionality.
+
   uInt32 width = myTIA->width();
   uInt32 height = myTIA->height();
   uInt32 pos = 0;
@@ -433,69 +435,47 @@ void TIASurface::reRender()
 
   myTiaSurface->basePtr(outPtr, outPitch);
 
+  mySaveSnapFlag = false;
   switch (myFilter)
   {
-    // for non-phosphor modes, render the frame again
+    // For non-phosphor modes, render the frame again
     case Filter::Normal:
     case Filter::BlarggNormal:
-      saveFlag = false;
       render();
       break;
-    // for phosphor modes, copy the phosphor framebuffer
+
+    // For phosphor modes, copy the phosphor framebuffer
     case Filter::Phosphor:
     {
-      if(saveFlag) // always true
+      uInt32 bufofs = 0, screenofsY = 0;
+      for(uInt32 y = height; y; --y)
       {
-        saveFlag = false;
-        uInt32 bufofs = 0, screenofsY = 0;
-        for(uInt32 y = height; y; --y)
+        pos = screenofsY;
+        for(uInt32 x = width / 2; x; --x)
         {
-          pos = screenofsY;
-          for(uInt32 x = width / 2; x; --x)
-          {
-            outPtr[pos++] = averageBuffers(bufofs++);
-            outPtr[pos++] = averageBuffers(bufofs++);
-          }
-          screenofsY += outPitch;
+          outPtr[pos++] = averageBuffers(bufofs++);
+          outPtr[pos++] = averageBuffers(bufofs++);
         }
-      }
-      else // never executed!
-      {
-        for(uInt32 y = height; y; --y)
-        {
-          memcpy(outPtr, myRGBFramebuffer + pos, width);
-          outPtr += outPitch;
-          pos += width;
-        }
+        screenofsY += outPitch;
       }
       break;
     }
 
     case Filter::BlarggPhosphor:
-      if(saveFlag) // always true
-      {
-        saveFlag = false;
-        uInt32 bufofs = 0;
-        for(uInt32 y = height; y; --y)
-        {
-          for(uInt32 x = outPitch; x; --x)
-          {
-            outPtr[pos++] = averageBuffers(bufofs++);
-          }
-        }
-      }
-      else // never executed!
-        memcpy(outPtr, myRGBFramebuffer, height * outPitch * sizeof(uInt32));
+      uInt32 bufofs = 0;
+      for(uInt32 y = height; y; --y)
+        for(uInt32 x = outPitch; x; --x)
+          outPtr[pos++] = averageBuffers(bufofs++);
       break;
   }
 
-  if (myUsePhosphor)
+  if(myUsePhosphor)
   {
     // Draw TIA image
     myTiaSurface->render();
 
     // Draw overlaying scanlines
-    if (myScanlinesEnabled)
+    if(myScanlinesEnabled)
       mySLineSurface->render();
   }
 }

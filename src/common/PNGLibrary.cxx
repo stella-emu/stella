@@ -142,7 +142,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
     rows[k] = png_bytep(buffer.get() + k*width*4);
 
   // And save the image
-  saveImage(out, rows, width, height, comments);
+  saveImageToDisk(out, rows, width, height, comments);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,11 +171,11 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
     rows[k] = png_bytep(buffer.get() + k*width*4);
 
   // And save the image
-  saveImage(out, rows, width, height, comments);
+  saveImageToDisk(out, rows, width, height, comments);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PNGLibrary::saveImage(ofstream& out, const unique_ptr<png_bytep[]>& rows,
+void PNGLibrary::saveImageToDisk(ofstream& out, const unique_ptr<png_bytep[]>& rows,
     png_uint_32 width, png_uint_32 height, const VariantList& comments)
 {
   #define saveImageERROR(s) { err_message = s; goto done; }
@@ -359,7 +359,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
   {
     // Make sure we have a 'clean' image, with no onscreen messages
     myOSystem.frameBuffer().enableMessages(false);
-    myOSystem.frameBuffer().tiaSurface().reRender();
+    myOSystem.frameBuffer().tiaSurface().renderForSnapshot();
 
     string message = "Snapshot saved";
     try
