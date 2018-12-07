@@ -163,6 +163,9 @@ void CartDebug::triggerReadFromWritePort(uInt16 addr)
 {
   myRWPortAddress = addr;
   mySystem.setDirtyPage(addr);
+#ifdef DEBUGGER_SUPPORT
+  mySystem.m6502().setReadFromWritePort(addr);
+#endif  // DEBUGGER_SUPPORT
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

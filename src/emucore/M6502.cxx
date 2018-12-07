@@ -73,7 +73,9 @@ M6502::M6502(const Settings& settings)
     myOnHaltCallback(nullptr),
     myHaltRequested(false),
     myGhostReadsTrap(true),
-    myStepStateByInstruction(false)
+    myStepStateByInstruction(false),
+    myReadFromWritePortBreak(false),
+    myReadFromWritePortAddr(0)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
@@ -120,6 +122,7 @@ void M6502::reset()
 
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
+  myReadFromWritePortBreak = mySettings.getBool(devSettings ? "dev.rwportbreak" : "plr.rwportbreak");
 
   myLastBreakCycle = ULLONG_MAX;
 }
@@ -289,6 +292,18 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           result.setDebugger(currentCycles, msg.str());
           return;
         }
+
+        int rwAddr = readFromWritePort();
+        if(rwAddr)
+        {
+          stringstream msg;
+          msg << "RWP[@ $" << Common::Base::HEX4 << rwAddr << "]: ";
+
+          myLastBreakCycle = mySystem->cycles();
+
+          result.setDebugger(currentCycles, msg.str(), PC);
+          return;
+        }
       }
 
       int cond = evalCondSaveStates();
@@ -437,6 +452,8 @@ bool M6502::save(Serializer& out) const
     out.putBool(myHaltRequested);
     out.putBool(myStepStateByInstruction);
     out.putBool(myGhostReadsTrap);
+    out.putBool(myReadFromWritePortBreak);
+    out.putInt(myReadFromWritePortAddr);
     out.putLong(myLastBreakCycle);
   }
   catch(...)
@@ -485,7 +502,8 @@ bool M6502::load(Serializer& in)
     myHaltRequested = in.getBool();
     myStepStateByInstruction = in.getBool();
     myGhostReadsTrap = in.getBool();
-
+    myReadFromWritePortBreak = in.getBool();
+    myReadFromWritePortAddr = in.getInt();
     myLastBreakCycle = in.getLong();
   }
   catch(...)
@@ -633,6 +651,23 @@ void M6502::updateStepStateByInstruction()
 {
   myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() ||
                              myTrapConds.size();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int M6502::readFromWritePort()
+{
+  uInt16 addr = myReadFromWritePortAddr;
+  myReadFromWritePortAddr = 0;
+
+  // A read from the write port occurs when the read is actually in the write
+  // port address space AND the last access was actually a read (the latter
+  // differentiates between reads that are normally part of a write cycle vs.
+  // ones that are illegal)
+  if(myReadFromWritePortBreak && lastReadAddress() &&
+    (mySystem->getPageAccessType(addr) & System::PA_WRITE) == System::PA_WRITE)
+    return addr;
+  else
+    return 0;
 }
 
 #endif  // DEBUGGER_SUPPORT

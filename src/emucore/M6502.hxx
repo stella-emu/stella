@@ -242,6 +242,9 @@ class M6502 : public Serializable
     const StringList& getCondTrapNames() const;
 
     void setGhostReadsTrap(bool enable) { myGhostReadsTrap = enable; }
+    void setReadFromWritePortBreak(bool enable) { myReadFromWritePortBreak = enable; }
+    void setReadFromWritePort(uInt16 addr) { myReadFromWritePortAddr = addr; };
+    int readFromWritePort();
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -461,6 +464,8 @@ class M6502 : public Serializable
     // in save states, they cannot be conditionally compiled
     bool myGhostReadsTrap;    // trap on ghost reads
     bool myStepStateByInstruction;
+    bool myReadFromWritePortBreak;
+    uInt16 myReadFromWritePortAddr;
 
   private:
     // Following constructors and assignment operators not supported

@@ -149,6 +149,8 @@ Settings::Settings(OSystem& osystem)
   setInternal("dis.gfxformat", "2");
   setInternal("dis.showaddr", "true");
   setInternal("dis.relocate", "false");
+  setInternal("plr.rwportbreak", "false");
+  setInternal("dev.rwportbreak", "true");
 #endif
 
   // player settings
@@ -620,6 +622,9 @@ void Settings::usage() const
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -plr.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
     << "                                    read/peek\n"
+  #ifdef DEBUGGER_SUPPORT
+    << "  -plr.rwportbreak <1|0>           Debugger breaks on reads from write ports\n"
+  #endif
     << "  -plr.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation\n"
     << "                                    throw an exception\n"
     << "  -plr.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
@@ -639,6 +644,9 @@ void Settings::usage() const
     << "  -dev.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
     << "                                    read/peek\n"
+#ifdef DEBUGGER_SUPPORT
+    << "  -dev.rwportbreak <1|0>           Debugger breaks on reads from write ports\n"
+#endif
     << "  -dev.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation\n"
     << "                                    throw an exception\n"
     << "  -dev.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
