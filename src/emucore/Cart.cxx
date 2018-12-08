@@ -17,6 +17,7 @@
 
 #include "Settings.hxx"
 #include "System.hxx"
+#include "MD5.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "CartDebug.hxx"
@@ -32,6 +33,7 @@ Cartridge::Cartridge(const Settings& settings)
     myStartBank(0),
     myBankLocked(false)
 {
+  std::fill(myRWPRandomValues, myRWPRandomValues + 256, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,6 +77,20 @@ void Cartridge::triggerReadFromWritePort(uInt16 address)
   if(!mySystem->autodetectMode())
     Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::createReadFromWritePortValues(const uInt8* image, uInt32 size)
+{
+  Random rand(MD5::hashToInt(image, size));
+  for(uInt32 i = 0; i < 256; ++i)
+    myRWPRandomValues[i] = rand.next();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Cartridge::randomReadFromWritePortValue(uInt16 address) const
+{
+  return myRWPRandomValues[address & 0xFF];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

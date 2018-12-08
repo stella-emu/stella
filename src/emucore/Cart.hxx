@@ -196,6 +196,28 @@ class Cartridge : public Device
     void triggerReadFromWritePort(uInt16 address);
 
     /**
+      Creates an array of semi-random values to use for returning when a
+      read from the write port happens.  Currently, these values are based in
+      part on the md5sum of the ROM, so this method needs to be called to
+      calculate that information.  If the method isn't called, then the values
+      used will be 0.
+
+      @param image  The cart ROM data
+      @param size   The size of ROM data
+    */
+    void createReadFromWritePortValues(const uInt8* image, uInt32 size);
+
+    /**
+      Return a random value to use when a read from the write port happens.
+      This functionality is placed in a method, so we can change
+      implementations as required.
+
+      @param address  The address of the illegal read
+      @return  A random value somehow associated with the given address
+    */
+    uInt8 randomReadFromWritePortValue(uInt16 address) const;
+
+    /**
       Create an array that holds code-access information for every byte
       of the ROM (indicated by 'size').  Note that this is only used by
       the debugger, and is unavailable otherwise.
@@ -259,6 +281,9 @@ class Cartridge : public Device
     // If myBankLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.
     bool myBankLocked;
+
+    // Semi-random values to use when a read from write port occurs
+    uInt8 myRWPRandomValues[256];
 
     // Contains various info about this cartridge
     // This needs to be stored separately from child classes, since

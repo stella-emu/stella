@@ -27,6 +27,7 @@ CartridgeF8SC::CartridgeF8SC(const BytePtr& image, uInt32 size,
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(8192u, size));
   createCodeAccessBase(8192);
+  createReadFromWritePortValues(myImage, 8192);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,7 +96,7 @@ uInt8 CartridgeF8SC::peek(uInt16 address)
   if(address < 0x0080)  // Write port is at 0xF000 - 0xF07F (128 bytes)
   {
     // Reading from the write port triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
+    uInt8 value = randomReadFromWritePortValue(address);
 
     if(bankLocked())
       return value;

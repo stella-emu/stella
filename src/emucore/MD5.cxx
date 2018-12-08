@@ -351,4 +351,21 @@ string hash(const FilesystemNode& node)
   return md5;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 hashToInt(const uInt8* buffer, uInt32 length)
+{
+  MD5_CTX context;
+  uInt8 md5[16];
+
+  MD5Init(&context);
+  MD5Update(&context, buffer, length);
+  MD5Final(md5, &context);
+
+  auto toInt = [](uInt8* arr, uInt32 i) {
+    return uInt32((arr[i] << 24) + (arr[i+1] << 16) + (arr[i+2] << 8) + arr[i+3]);
+  };
+
+  return toInt(md5, 0) ^ toInt(md5, 4) ^ toInt(md5, 8) ^ toInt(md5, 12);
+}
+
 }  // Namespace MD5
