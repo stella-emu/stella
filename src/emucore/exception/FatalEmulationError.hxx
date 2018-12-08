@@ -20,20 +20,19 @@
 
 #include "bspf.hxx"
 
-class FatalEmulationError: public std::exception {
-
+class FatalEmulationError : public std::exception
+{
   public:
+    FatalEmulationError(const string& message) : myMessage(message) { }
 
-    FatalEmulationError(const string& message);
+    const char* what() const noexcept override { return myMessage.c_str(); }
 
-    virtual const char* what() const noexcept;
-
-    [[noreturn]] static void raise(const string& message);
+    [[noreturn]] static void raise(const string& message) {
+      throw FatalEmulationError(message);
+    }
 
   private:
-
     const string myMessage;
-
 };
 
 #endif // FATAL_EMULATION_ERROR_HXX

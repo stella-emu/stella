@@ -32,6 +32,8 @@
 #include "CartRamWidget.hxx"
 #include "RomWidget.hxx"
 #include "Base.hxx"
+#include "exception/EmulationWarning.hxx"
+
 using Common::Base;
 using std::hex;
 using std::dec;
@@ -47,6 +49,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
     myDebugWidget(nullptr),
     myAddrToLineIsROM(true),
     myRWPortAddress(0),
+    myRWPortTriggersBreak(false),
     myLabelLength(8)   // longest pre-defined label
 {
   // Add case sensitive compare for user labels
@@ -129,6 +132,10 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   DiStella::settings.rFlag = myOSystem.settings().getBool("dis.relocate");
   DiStella::settings.bFlag = true;  // Not currently configurable
   DiStella::settings.bytesWidth = 8+1;  // TODO - configure based on window size
+
+  setReadFromWritePortBreak(myOSystem.settings().getBool(
+      myOSystem.settings().getBool("dev.settings") ?
+      "dev.rwportbreak" : "plr.rwportbreak"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -163,9 +170,13 @@ void CartDebug::triggerReadFromWritePort(uInt16 addr)
 {
   myRWPortAddress = addr;
   mySystem.setDirtyPage(addr);
-#ifdef DEBUGGER_SUPPORT
-  mySystem.m6502().setReadFromWritePort(addr);
-#endif  // DEBUGGER_SUPPORT
+
+  if(myRWPortTriggersBreak)
+  {
+    ostringstream msg;
+    msg << "RWP[@ $" << Common::Base::HEX4 << addr << "]: ";
+    EmulationWarning::raise(msg.str());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -34,6 +34,8 @@
 #include "DebuggerDialog.hxx"
 #endif
 #include "Console.hxx"
+#include "Debugger.hxx"
+#include "CartDebug.hxx"
 #include "TIA.hxx"
 #include "OSystem.hxx"
 #include "StateManager.hxx"
@@ -695,9 +697,11 @@ void DeveloperDialog::saveConfig()
   saveSettings(SettingsSet::player);
   saveSettings(SettingsSet::developer);
 
+#ifdef DEBUGGER_SUPPORT
   // Read from write ports break
   if(instance().hasConsole())
-    instance().console().system().m6502().setReadFromWritePortBreak(myRWPortBreakWidget->getState());
+    Debugger::debugger().cartDebug().setReadFromWritePortBreak(myRWPortBreakWidget->getState());
+#endif
 
   // activate the current settings
   instance().frameBuffer().showFrameStats(myFrameStatsWidget->getState());

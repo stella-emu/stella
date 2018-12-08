@@ -109,13 +109,17 @@ class CartDebug : public DebuggerSystem
     CartDebugWidget* getDebugWidget() const { return myDebugWidget; }
     void setDebugWidget(CartDebugWidget* w) { myDebugWidget = w; }
 
-    // Indicate that a read from write port has occurred at the specified
-    // address.
+    // Called when a read from write port has occurred at the specified address.
+    // An exception will be thrown, if enabled
     void triggerReadFromWritePort(uInt16 address);
 
     // Return the address at which an invalid read was performed in a
     // write port area.
     int readFromWritePort();
+
+    // Determines whether a debugger exception will be thrown when a read from
+    // the write port happens.
+    void setReadFromWritePortBreak(bool enable) { myRWPortTriggersBreak = enable; }
 
     // Return the base (= non-mirrored) address of the last CPU read
     int lastReadBaseAddress();
@@ -356,6 +360,9 @@ class CartDebug : public DebuggerSystem
     // Holds address at which the most recent read from a write port
     // occurred
     uInt16 myRWPortAddress;
+
+    // Whether a read from write port should trigger a debugger exception
+    bool myRWPortTriggersBreak;
 
     // The maximum length of all labels currently defined
     uInt16 myLabelLength;

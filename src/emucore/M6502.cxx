@@ -48,6 +48,7 @@
 #include "System.hxx"
 #include "M6502.hxx"
 #include "DispatchResult.hxx"
+#include "exception/EmulationWarning.hxx"
 #include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -73,9 +74,7 @@ M6502::M6502(const Settings& settings)
     myOnHaltCallback(nullptr),
     myHaltRequested(false),
     myGhostReadsTrap(true),
-    myStepStateByInstruction(false),
-    myReadFromWritePortBreak(false),
-    myReadFromWritePortAddr(0)
+    myStepStateByInstruction(false)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
@@ -122,7 +121,6 @@ void M6502::reset()
 
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
-  myReadFromWritePortBreak = mySettings.getBool(devSettings ? "dev.rwportbreak" : "plr.rwportbreak");
 
   myLastBreakCycle = ULLONG_MAX;
 }
@@ -285,23 +283,11 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
         int cond = evalCondBreaks();
         if(cond > -1)
         {
-          stringstream msg;
+          ostringstream msg;
           msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
 
           myLastBreakCycle = mySystem->cycles();
           result.setDebugger(currentCycles, msg.str());
-          return;
-        }
-
-        int rwAddr = readFromWritePort();
-        if(rwAddr)
-        {
-          stringstream msg;
-          msg << "RWP[@ $" << Common::Base::HEX4 << rwAddr << "]: ";
-
-          myLastBreakCycle = mySystem->cycles();
-
-          result.setDebugger(currentCycles, msg.str(), PC);
           return;
         }
       }
@@ -309,7 +295,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       int cond = evalCondSaveStates();
       if(cond > -1)
       {
-        stringstream msg;
+        ostringstream msg;
         msg << "conditional savestate [" << Common::Base::HEX2 << cond << "]";
         myDebugger->addState(msg.str());
       }
@@ -336,9 +322,12 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           default:
             FatalEmulationError::raise("invalid instruction");
         }
-      } catch (FatalEmulationError& e) {
+      } catch (const FatalEmulationError& e) {
         myExecutionStatus |= FatalErrorBit;
         result.setMessage(e.what());
+      } catch (const EmulationWarning& e) {
+        result.setDebugger(currentCycles, e.what(), PC);
+        return;
       }
 
       currentCycles = (mySystem->cycles() - previousCycles);
@@ -363,7 +352,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       interruptHandler();
     }
 
-    // See if a fatal error has occured
+    // See if a fatal error has occurred
     if(myExecutionStatus & FatalErrorBit)
     {
       // Yes, so answer that something when wrong. The message has already been set when
@@ -452,8 +441,6 @@ bool M6502::save(Serializer& out) const
     out.putBool(myHaltRequested);
     out.putBool(myStepStateByInstruction);
     out.putBool(myGhostReadsTrap);
-    out.putBool(myReadFromWritePortBreak);
-    out.putInt(myReadFromWritePortAddr);
     out.putLong(myLastBreakCycle);
   }
   catch(...)
@@ -502,8 +489,6 @@ bool M6502::load(Serializer& in)
     myHaltRequested = in.getBool();
     myStepStateByInstruction = in.getBool();
     myGhostReadsTrap = in.getBool();
-    myReadFromWritePortBreak = in.getBool();
-    myReadFromWritePortAddr = in.getInt();
     myLastBreakCycle = in.getLong();
   }
   catch(...)
@@ -652,22 +637,4 @@ void M6502::updateStepStateByInstruction()
   myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() ||
                              myTrapConds.size();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int M6502::readFromWritePort()
-{
-  uInt16 addr = myReadFromWritePortAddr;
-  myReadFromWritePortAddr = 0;
-
-  // A read from the write port occurs when the read is actually in the write
-  // port address space AND the last access was actually a read (the latter
-  // differentiates between reads that are normally part of a write cycle vs.
-  // ones that are illegal)
-  if(myReadFromWritePortBreak && lastReadAddress() &&
-    (mySystem->getPageAccessType(addr) & System::PA_WRITE) == System::PA_WRITE)
-    return addr;
-  else
-    return 0;
-}
-
 #endif  // DEBUGGER_SUPPORT
