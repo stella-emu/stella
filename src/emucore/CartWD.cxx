@@ -117,8 +117,9 @@ uInt8 CartridgeWD::peek(uInt16 address)
         return value;
       else
       {
+        myRAM[address & 0x003F] = value;
         triggerReadFromWritePort(peekAddress);
-        return myRAM[address & 0x003F] = value;
+        return value;
       }
     }
     else if(address < 0x0400)

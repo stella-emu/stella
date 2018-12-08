@@ -107,12 +107,12 @@ uInt8 CartridgeDASH::peek(uInt16 address)
       return value;
     else
     {
-      triggerReadFromWritePort(peekAddress);
-
       Int32 ramBank = imageBank & BIT_BANK_MASK;    // discard irrelevant bits
       Int32 offset = ramBank << RAM_BANK_TO_POWER;  // base bank address in RAM
       offset += (address & BITMASK_RAM_BANK);       // + byte offset in RAM bank
-      return myRAM[offset] = value;
+      myRAM[offset] = value;
+      triggerReadFromWritePort(peekAddress);
+      return value;
     }
   }
 

@@ -98,7 +98,7 @@ void CartridgeCV::install(System& system)
 uInt8 CartridgeCV::peek(uInt16 address)
 {
   // The only way we can get to this method is if we attempt to read from
-  // the write port (0xF400 - 0xF800, 1024 bytes), in which case an
+  // the write port (0xF400 - 0xF7FF, 1024 bytes), in which case an
   // unwanted write is triggered
   uInt8 value = mySystem->getDataBusState(0xFF);
 
@@ -106,8 +106,9 @@ uInt8 CartridgeCV::peek(uInt16 address)
     return value;
   else
   {
+    myRAM[address & 0x03FF] = value;
     triggerReadFromWritePort(address);
-    return myRAM[address & 0x03FF] = value;
+    return value;
   }
 }
 

@@ -123,8 +123,9 @@ uInt8 CartridgeMNetwork::peek(uInt16 address)
       return value;
     else
     {
+      myRAM[address & (BANK_SIZE / 2 - 1)] = value;
       triggerReadFromWritePort(peekAddress);
-      return myRAM[address & (BANK_SIZE / 2 - 1)] = value;
+      return value;
     }
   }
   else if((address >= 0x0800) && (address <= 0x08FF))
@@ -136,8 +137,9 @@ uInt8 CartridgeMNetwork::peek(uInt16 address)
       return value;
     else
     {
+      myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
       triggerReadFromWritePort(peekAddress);
-      return myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
+      return value;
     }
   }
   else

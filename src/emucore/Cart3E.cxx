@@ -91,8 +91,9 @@ uInt8 Cartridge3E::peek(uInt16 address)
           return value;
         else
         {
+          myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)] = value;
           triggerReadFromWritePort(peekAddress);
-          return myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)] = value;
+          return value;
         }
       }
     }

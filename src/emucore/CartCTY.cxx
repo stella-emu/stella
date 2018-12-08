@@ -131,8 +131,9 @@ uInt8 CartridgeCTY::peek(uInt16 address)
       return value;
     else
     {
+      myRAM[address] = value;
       triggerReadFromWritePort(peekAddress);
-      return myRAM[address] = value;
+      return value;
     }
   }
   else if(address < 0x0080)  // Read port is at $1040 - $107F (64 bytes)

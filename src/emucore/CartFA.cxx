@@ -97,7 +97,7 @@ uInt8 CartridgeFA::peek(uInt16 address)
       break;
   }
 
-  if(address < 0x0100)  // Write port is at 0xF000 - 0xF100 (256 bytes)
+  if(address < 0x0100)  // Write port is at 0xF000 - 0xF0FF (256 bytes)
   {
     // Reading from the write port triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
@@ -106,8 +106,9 @@ uInt8 CartridgeFA::peek(uInt16 address)
       return value;
     else
     {
+      myRAM[address] = value;
       triggerReadFromWritePort(peekAddress);
-      return myRAM[address] = value;
+      return value;
     }
   }
   else

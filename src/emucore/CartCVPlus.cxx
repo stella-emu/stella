@@ -83,7 +83,7 @@ void CartridgeCVPlus::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCVPlus::peek(uInt16 address)
 {
-  if((address & 0x0FFF) < 0x0800)  // Write port is at 0xF400 - 0xF800 (1024 bytes)
+  if((address & 0x0FFF) < 0x0800)  // Write port is at 0xF400 - 0xF7FF (1024 bytes)
   {                                // Read port is handled in ::install()
     // Reading from the write port triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
@@ -92,8 +92,9 @@ uInt8 CartridgeCVPlus::peek(uInt16 address)
       return value;
     else
     {
+      myRAM[address & 0x03FF] = value;
       triggerReadFromWritePort(address);
-      return myRAM[address & 0x03FF] = value;
+      return value;
     }
   }
   else

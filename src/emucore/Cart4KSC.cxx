@@ -75,7 +75,7 @@ void Cartridge4KSC::install(System& system)
 uInt8 Cartridge4KSC::peek(uInt16 address)
 {
   // The only way we can get to this method is if we attempt to read from
-  // the write port (0xF000 - 0xF080, 128 bytes), in which case an
+  // the write port (0xF000 - 0xF07F, 128 bytes), in which case an
   // unwanted write is triggered
   uInt8 value = mySystem->getDataBusState(0xFF);
 
@@ -83,8 +83,9 @@ uInt8 Cartridge4KSC::peek(uInt16 address)
     return value;
   else
   {
+    myRAM[address & 0x0FFF] = value;
     triggerReadFromWritePort(address);
-    return myRAM[address & 0x0FFF] = value;
+    return value;
   }
 }
 
