@@ -350,7 +350,6 @@
     <ClCompile Include="..\emucore\DispatchResult.cxx" />
     <ClCompile Include="..\emucore\EmulationTiming.cxx" />
     <ClCompile Include="..\emucore\EmulationWorker.cxx" />
-    <ClCompile Include="..\emucore\exception\FatalEmulationError.cxx" />
     <ClCompile Include="..\emucore\FBSurface.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\emucore\PointingDevice.cxx" />
@@ -932,6 +931,7 @@
     <ClInclude Include="..\emucore\EmulationTiming.hxx" />
     <ClInclude Include="..\emucore\EmulationWorker.hxx" />
     <ClInclude Include="..\emucore\EventHandlerConstants.hxx" />
+    <ClInclude Include="..\emucore\exception\EmulationWarning.hxx" />
     <ClInclude Include="..\emucore\exception\FatalEmulationError.hxx" />
     <ClInclude Include="..\emucore\FBSurface.hxx" />
     <ClInclude Include="..\emucore\FrameBufferConstants.hxx" />
