@@ -106,6 +106,10 @@
   * Added 'Cartridge.StartBank' ROM property, to force a ROM to use a
     specific bank for its reset vector.
 
+  * Improved snapshots when phosphor is enabled
+
+  * Added Developer setting, which breaks on reads from write ports
+
   * Added recently released 'Arkyology' prototype ROM to the database.
 
   * Fixed 'Street Racer' and 'Video Olympics' ROMs to use paddles in both
