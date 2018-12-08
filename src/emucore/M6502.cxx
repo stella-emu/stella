@@ -66,6 +66,7 @@ M6502::M6502(const Settings& settings)
     myLastPokeAddress(0),
     myLastPeekBaseAddress(0),
     myLastPokeBaseAddress(0),
+    myFlags(DISASM_NONE),
     myLastSrcAddressS(-1),
     myLastSrcAddressA(-1),
     myLastSrcAddressX(-1),
@@ -74,8 +75,7 @@ M6502::M6502(const Settings& settings)
     myOnHaltCallback(nullptr),
     myHaltRequested(false),
     myGhostReadsTrap(true),
-    myStepStateByInstruction(false),
-    myFlags(DISASM_NONE)
+    myStepStateByInstruction(false)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
@@ -440,12 +440,12 @@ bool M6502::save(Serializer& out) const
     out.putInt(myLastSrcAddressA);
     out.putInt(myLastSrcAddressX);
     out.putInt(myLastSrcAddressY);
+    out.putByte(myFlags);
 
     out.putBool(myHaltRequested);
     out.putBool(myStepStateByInstruction);
     out.putBool(myGhostReadsTrap);
     out.putLong(myLastBreakCycle);
-    out.putShort(myFlags);
   }
   catch(...)
   {
@@ -489,12 +489,12 @@ bool M6502::load(Serializer& in)
     myLastSrcAddressA = in.getInt();
     myLastSrcAddressX = in.getInt();
     myLastSrcAddressY = in.getInt();
+    myFlags = in.getByte();
 
     myHaltRequested = in.getBool();
     myStepStateByInstruction = in.getBool();
     myGhostReadsTrap = in.getBool();
     myLastBreakCycle = in.getLong();
-    myFlags = in.getShort();
   }
   catch(...)
   {
