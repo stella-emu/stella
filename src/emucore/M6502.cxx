@@ -74,7 +74,8 @@ M6502::M6502(const Settings& settings)
     myOnHaltCallback(nullptr),
     myHaltRequested(false),
     myGhostReadsTrap(true),
-    myStepStateByInstruction(false)
+    myStepStateByInstruction(false),
+    myFlags(DISASM_NONE)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger = nullptr;
@@ -118,6 +119,7 @@ void M6502::reset()
   myLastSrcAddressS = myLastSrcAddressA =
     myLastSrcAddressX = myLastSrcAddressY = -1;
   myDataAddressForPoke = 0;
+  myFlags = DISASM_NONE;
 
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
@@ -140,6 +142,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   ////////////////////////////////////////////////
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
   icycles += SYSTEM_CYCLES_PER_CPU;
+  myFlags = flags;
   uInt8 result = mySystem->peek(address, flags);
   myLastPeekAddress = address;
 
@@ -442,6 +445,7 @@ bool M6502::save(Serializer& out) const
     out.putBool(myStepStateByInstruction);
     out.putBool(myGhostReadsTrap);
     out.putLong(myLastBreakCycle);
+    out.putShort(myFlags);
   }
   catch(...)
   {
@@ -490,6 +494,7 @@ bool M6502::load(Serializer& in)
     myStepStateByInstruction = in.getBool();
     myGhostReadsTrap = in.getBool();
     myLastBreakCycle = in.getLong();
+    myFlags = in.getShort();
   }
   catch(...)
   {

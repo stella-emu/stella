@@ -143,18 +143,11 @@ class M6502 : public Serializable
     uInt16 getPC() const { return PC; }
 
     /**
-      Return the last address that was part of a read/peek.  Note that
-      reads which are part of a write are not considered here, unless
-      they're not the same as the last write address.  This eliminates
-      accesses that are part of a normal read/write cycle.
+      Check the type of the last peek().
 
-      @return The address of the last read
+      @return true, if the last peek() was a ghost read.
     */
-    uInt16 lastReadAddress() const {
-      return myLastPokeAddress ?
-        (myLastPokeAddress != myLastPeekAddress ? myLastPeekAddress : 0) :
-        myLastPeekAddress;
-    }
+    bool lastWasGhostPeek() const { return myFlags == 0; } // DISASM_NONE
 
     /**
       Return the last address that was part of a read/peek.
@@ -379,6 +372,8 @@ class M6502 : public Serializable
     /// Indicates the last base (= non-mirrored) address which was
     /// accessed specifically by a peek or poke command
     uInt16 myLastPeekBaseAddress, myLastPokeBaseAddress;
+    // Indicates the type of the last access
+    uInt8 myFlags;
 
     /// Indicates the last address used to access data by a peek command
     /// for the CPU registers (S/A/X/Y)
