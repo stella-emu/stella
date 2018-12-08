@@ -171,7 +171,9 @@ void CartDebug::triggerReadFromWritePort(uInt16 addr)
   myRWPortAddress = addr;
   mySystem.setDirtyPage(addr);
 
-  if(myRWPortTriggersBreak)
+  if(myRWPortTriggersBreak &&
+     mySystem.m6502().lastReadAddress() &&
+     (mySystem.getPageAccessType(addr) & System::PA_WRITE) == System::PA_WRITE)
   {
     ostringstream msg;
     msg << "RWP[@ $" << Common::Base::HEX4 << addr << "]: ";
