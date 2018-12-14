@@ -20,7 +20,8 @@ MODULE_OBJS := \
 	src/common/AudioQueue.o \
 	src/common/AudioSettings.o \
 	src/common/FpsMeter.o \
-	src/common/ThreadDebugging.o
+	src/common/ThreadDebugging.o \
+	src/common/StaggeredLogger.o
 
 MODULE_DIRS += \
 	src/common

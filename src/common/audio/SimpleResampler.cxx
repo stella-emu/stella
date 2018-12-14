@@ -21,8 +21,9 @@
 SimpleResampler::SimpleResampler(
   Resampler::Format formatFrom,
   Resampler::Format formatTo,
-  Resampler::NextFragmentCallback nextFragmentCallback)
-  : Resampler(formatFrom, formatTo, nextFragmentCallback),
+  Resampler::NextFragmentCallback nextFragmentCallback,
+  StaggeredLogger::Logger logger)
+  : Resampler(formatFrom, formatTo, nextFragmentCallback, logger),
     myCurrentFragment(nullptr),
     myTimeIndex(0),
     myFragmentIndex(0),
@@ -88,7 +89,7 @@ void SimpleResampler::fillFragment(float* fragment, uInt32 length)
       if (nextFragment)
         myCurrentFragment = nextFragment;
       else {
-        (cerr << "audio buffer underrun\n").flush();
+        myUnderrunLogger.log();
         myIsUnderrun = true;
       }
     }

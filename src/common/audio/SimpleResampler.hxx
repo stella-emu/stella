@@ -27,7 +27,8 @@ class SimpleResampler : public Resampler
     SimpleResampler(
       Resampler::Format formatFrom,
       Resampler::Format formatTo,
-      Resampler::NextFragmentCallback NextFragmentCallback
+      Resampler::NextFragmentCallback NextFragmentCallback,
+      StaggeredLogger::Logger logger
     );
 
     void fillFragment(float* fragment, uInt32 length) override;
