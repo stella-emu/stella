@@ -21,6 +21,7 @@
 #include <mutex>
 
 #include "bspf.hxx"
+#include "StaggeredLogger.hxx"
 
 /**
   This class implements a an audio queue that acts both like a ring buffer
@@ -44,7 +45,7 @@ class AudioQueue
        @param capacity      The number of fragments that can be queued before wrapping.
        @param isStereo      Whether samples are stereo or mono.
      */
-    AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo);
+    AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, StaggeredLogger::Logger logger);
 
     /**
        Capacity getter.
@@ -128,6 +129,8 @@ class AudioQueue
 
     // Log overflows?
     bool myIgnoreOverflows;
+
+    StaggeredLogger myOverflowLogger;
 
   private:
 

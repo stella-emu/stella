@@ -818,7 +818,8 @@ void Console::createAudioQueue()
   myAudioQueue = make_shared<AudioQueue>(
     myEmulationTiming.audioFragmentSize(),
     myEmulationTiming.audioQueueCapacity(),
-    useStereo
+    useStereo,
+    [this](string msg){ myOSystem.logMessage(msg, 0); }
   );
 }
 

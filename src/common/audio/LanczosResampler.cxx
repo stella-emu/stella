@@ -60,9 +60,10 @@ LanczosResampler::LanczosResampler(
   Resampler::Format formatFrom,
   Resampler::Format formatTo,
   Resampler::NextFragmentCallback nextFragmentCallback,
-  uInt32 kernelParameter)
+  uInt32 kernelParameter,
+  StaggeredLogger::Logger logger)
 :
-  Resampler(formatFrom, formatTo, nextFragmentCallback),
+  Resampler(formatFrom, formatTo, nextFragmentCallback, logger),
   // In order to find the number of kernels we need to precompute, we need to find N minimal such that
   //
   // N / formatTo.sampleRate = M / formatFrom.sampleRate
@@ -204,7 +205,7 @@ inline void LanczosResampler::shiftSamples(uInt32 samplesToShift)
         myCurrentFragment = nextFragment;
         myIsUnderrun = false;
       } else {
-        (cerr << "audio buffer underrun\n").flush();
+        myUnderrunLogger.log();
         myIsUnderrun = true;
       }
     }

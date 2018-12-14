@@ -21,6 +21,7 @@
 #include <functional>
 
 #include "bspf.hxx"
+#include "StaggeredLogger.hxx"
 
 class Resampler {
   public:
@@ -49,10 +50,11 @@ class Resampler {
 
   public:
 
-    Resampler(Format formatFrom, Format formatTo, NextFragmentCallback nextFragmentCallback) :
+    Resampler(Format formatFrom, Format formatTo, NextFragmentCallback nextFragmentCallback, StaggeredLogger::Logger logger) :
       myFormatFrom(formatFrom),
       myFormatTo(formatTo),
-      myNextFragmentCallback(nextFragmentCallback)
+      myNextFragmentCallback(nextFragmentCallback),
+      myUnderrunLogger("audio buffer underrun", logger)
     {}
 
     virtual void fillFragment(float* fragment, uInt32 length) = 0;
@@ -65,6 +67,8 @@ class Resampler {
     Format myFormatTo;
 
     NextFragmentCallback myNextFragmentCallback;
+
+    StaggeredLogger myUnderrunLogger;
 
   private:
 

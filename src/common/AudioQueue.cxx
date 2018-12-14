@@ -21,14 +21,15 @@ using std::mutex;
 using std::lock_guard;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
+AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, StaggeredLogger::Logger logger)
   : myFragmentSize(fragmentSize),
     myIsStereo(isStereo),
     myFragmentQueue(capacity),
     myAllFragments(capacity + 2),
     mySize(0),
     myNextFragment(0),
-    myIgnoreOverflows(true)
+    myIgnoreOverflows(true),
+    myOverflowLogger("audio buffer overflow", logger)
 {
   const uInt8 sampleSize = myIsStereo ? 2 : 1;
 
@@ -95,7 +96,7 @@ Int16* AudioQueue::enqueue(Int16* fragment)
   if (mySize < capacity) ++mySize;
   else {
     myNextFragment = (myNextFragment + 1) % capacity;
-    if (!myIgnoreOverflows) (cerr << "audio buffer overflow\n").flush();
+    if (!myIgnoreOverflows) myOverflowLogger.log();
   }
 
   return newFragment;

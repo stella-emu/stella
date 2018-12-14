@@ -33,6 +33,7 @@
 #include "AudioSettings.hxx"
 #include "audio/SimpleResampler.hxx"
 #include "audio/LanczosResampler.hxx"
+#include "StaggeredLogger.hxx"
 
 #include "ThreadDebugging.hxx"
 
@@ -304,6 +305,8 @@ void SoundSDL2::initResampler()
     return nextFragment;
   };
 
+  StaggeredLogger::Logger logger = [this](string msg) { myOSystem.logMessage(msg, 0); };
+
   Resampler::Format formatFrom =
     Resampler::Format(myEmulationTiming->audioSampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
   Resampler::Format formatTo =
@@ -311,15 +314,15 @@ void SoundSDL2::initResampler()
 
   switch (myAudioSettings.resamplingQuality()) {
     case AudioSettings::ResamplingQuality::nearestNeightbour:
-      myResampler = make_unique<SimpleResampler>(formatFrom, formatTo, nextFragmentCallback);
+      myResampler = make_unique<SimpleResampler>(formatFrom, formatTo, nextFragmentCallback, logger);
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_2:
-      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 2);
+      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 2, logger);
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_3:
-      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 3);
+      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 3, logger);
       break;
 
     default:
