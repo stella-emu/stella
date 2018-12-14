@@ -87,12 +87,16 @@ void StaggeredLogger::_log()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::logLine()
 {
+  high_resolution_clock::time_point now = high_resolution_clock::now();
+  Int64 millisecondsSinceLastLogEvent =
+    duration_cast<duration<Int64, std::milli>>(now - myCurrentIntervalStartTimestamp).count();
+
   stringstream ss;
   ss
     << currentTimestamp() << ": "
     << myMessage
     << " (" << myCurrentEventCount << " times in "
-      << myCurrentIntervalSize << "  milliseconds"
+      << millisecondsSinceLastLogEvent << "  milliseconds"
     << ")";
 
     myLogger(ss.str());
