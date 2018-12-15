@@ -42,13 +42,34 @@ StaggeredLogger::StaggeredLogger(const string& message, Logger logger)
     myCurrentIntervalSize(100),
     myMaxIntervalFactor(9),
     myCurrentIntervalFactor(1),
-    myCooldownTime(1000)
+    myCooldownTime(1000),
+    myTimer(new TimerManager())
 {
   if (logger) myLogger = logger;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StaggeredLogger::~StaggeredLogger()
+{
+  myTimer->clear(myTimerId);
+
+  // make sure that the worker thread joins before continuing with the destruction
+  delete myTimer;
+
+  // the worker thread has joined and there will be no more reentrant calls ->
+  // continue with destruction
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::setLogger(Logger logger)
+{
+  std::lock_guard<std::mutex> lock(myMutex);
+
+  _setLogger(logger);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StaggeredLogger::_setLogger(Logger logger)
 {
   myLogger = logger;
 }
@@ -62,48 +83,31 @@ void StaggeredLogger::log()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaggeredLogger::advance()
-{
-  std::lock_guard<std::mutex> lock(myMutex);
-
-  _advance();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::_log()
 {
-  _advance();
-
-  if (!myIsCurrentlyCollecting) {
-    myCurrentEventCount = 0;
-    myIsCurrentlyCollecting = true;
-    myCurrentIntervalStartTimestamp = high_resolution_clock::now();
-  }
+  if (!myIsCurrentlyCollecting) startInterval();
 
   myCurrentEventCount++;
-  myLastLogEventTimestamp = high_resolution_clock::now();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::logLine()
 {
+  if (!myLogger) return;
+
   high_resolution_clock::time_point now = high_resolution_clock::now();
-  Int64 millisecondsSinceLastLogEvent =
-    duration_cast<duration<Int64, std::milli>>(now - myCurrentIntervalStartTimestamp).count();
+  Int64 millisecondsSinceIntervalStart =
+    duration_cast<duration<Int64, std::milli>>(now - myLastIntervalStartTimestamp).count();
 
   stringstream ss;
   ss
     << currentTimestamp() << ": "
     << myMessage
     << " (" << myCurrentEventCount << " times in "
-      << millisecondsSinceLastLogEvent << "  milliseconds"
+      << millisecondsSinceIntervalStart << "  milliseconds"
     << ")";
 
-    myLogger(ss.str());
-
-    myIsCurrentlyCollecting = false;
-
-    increaseInterval();
+  myLogger(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,22 +129,37 @@ void StaggeredLogger::decreaseInterval()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaggeredLogger::_advance()
+void StaggeredLogger::startInterval()
 {
+  if (myIsCurrentlyCollecting) return;
+
+  myIsCurrentlyCollecting = true;
+
   high_resolution_clock::time_point now = high_resolution_clock::now();
+  Int64 msecSinceLastIntervalEnd =
+    duration_cast<duration<Int64, std::milli>>(now - myLastIntervalEndTimestamp).count();
 
-  if (myIsCurrentlyCollecting) {
-    Int64 msecSinceIntervalStart =
-      duration_cast<duration<Int64, std::milli>>(now - myCurrentIntervalStartTimestamp).count();
-
-    if (msecSinceIntervalStart > myCurrentIntervalSize) logLine();
-  }
-
-  Int64 msec =
-    duration_cast<duration<Int64, std::milli>>(now - myLastLogEventTimestamp).count();
-
-  while (msec > myCooldownTime && myCurrentIntervalFactor > 1) {
-    msec -= myCooldownTime;
+  while (msecSinceLastIntervalEnd > myCooldownTime && myCurrentIntervalFactor > 1) {
+    msecSinceLastIntervalEnd -= myCooldownTime;
     decreaseInterval();
   }
+
+  myCurrentEventCount = 0;
+  myLastIntervalStartTimestamp = now;
+
+  myTimer->clear(myTimerId);
+  myTimerId = myTimer->setTimeout(std::bind(&StaggeredLogger::onTimerExpired, this), myCurrentIntervalSize);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StaggeredLogger::onTimerExpired()
+{
+  std::lock_guard<std::mutex> lock(myMutex);
+
+  logLine();
+
+  myIsCurrentlyCollecting = false;
+  increaseInterval();
+
+  myLastIntervalEndTimestamp = high_resolution_clock::now();
 }
