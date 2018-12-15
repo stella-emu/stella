@@ -110,6 +110,8 @@
 
   * Added Developer setting, which breaks on reads from write ports
 
+  * Fixed '_rwport'
+
   * Added recently released 'Arkyology' prototype ROM to the database.
 
   * Fixed 'Street Racer' and 'Video Olympics' ROMs to use paddles in both
