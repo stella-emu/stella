@@ -43,7 +43,8 @@ StaggeredLogger::StaggeredLogger(const string& message, Logger logger)
     myMaxIntervalFactor(9),
     myCurrentIntervalFactor(1),
     myCooldownTime(1000),
-    myTimer(new TimerManager())
+    myTimer(new TimerManager()),
+    myTimerCallbackId(0)
 {
   if (logger) myLogger = logger;
 }
@@ -148,13 +149,15 @@ void StaggeredLogger::startInterval()
   myLastIntervalStartTimestamp = now;
 
   myTimer->clear(myTimerId);
-  myTimerId = myTimer->setTimeout(std::bind(&StaggeredLogger::onTimerExpired, this), myCurrentIntervalSize);
+  myTimerId = myTimer->setTimeout(std::bind(&StaggeredLogger::onTimerExpired, this, ++myTimerCallbackId), myCurrentIntervalSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaggeredLogger::onTimerExpired()
+void StaggeredLogger::onTimerExpired(uInt32 timerCallbackId)
 {
   std::lock_guard<std::mutex> lock(myMutex);
+
+  if (timerCallbackId != myTimerCallbackId) return;
 
   logLine();
 

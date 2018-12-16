@@ -52,7 +52,7 @@ class StaggeredLogger {
 
     void _setLogger(Logger logger);
 
-    void onTimerExpired();
+    void onTimerExpired(uInt32 timerId);
 
     void startInterval();
 
@@ -83,6 +83,11 @@ class StaggeredLogger {
     // our destructor.
     TimerManager *myTimer;
     TimerManager::TimerId myTimerId;
+
+    // It is possible that the timer callback is running even after TimerManager::clear
+    // returns. This id is unique per timer and is used to return from the callback
+    // early in case the time is stale.
+    uInt32 myTimerCallbackId;
 };
 
 #endif // STAGGERED_LOGGER
