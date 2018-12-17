@@ -47,16 +47,16 @@ void CartridgeF4SC::install(System& system)
   System::PageAccess access(this, System::PA_READ);
 
   // Set the page accessing method for the RAM writing pages
+  // Map access to this class, since we need to inspect all accesses to
+  // check if RWP happens
   access.type = System::PA_WRITE;
   for(uInt16 addr = 0x1000; addr < 0x1080; addr += System::PAGE_SIZE)
   {
-    access.directPokeBase = &myRAM[addr & 0x007F];
     access.codeAccessBase = &myCodeAccessBase[addr & 0x007F];
     mySystem->setPageAccess(addr, access);
   }
 
   // Set the page accessing method for the RAM reading pages
-  access.directPokeBase = nullptr;
   access.type = System::PA_READ;
   for(uInt16 addr = 0x1080; addr < 0x1100; addr += System::PAGE_SIZE)
   {
@@ -80,39 +80,25 @@ uInt8 CartridgeF4SC::peek(uInt16 address)
     bank(address - 0x0FF4);
 
   if(address < 0x0080)  // Write port is at 0xF000 - 0xF07F (128 bytes)
-  {
-    // Reading from the write port triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
-
-    if(bankLocked())
-      return value;
-    else
-    {
-      myRAM[address] = value;
-      triggerReadFromWritePort(peekAddress);
-      return value;
-    }
-  }
-
-  // NOTE: This does not handle accessing RAM, however, this function
-  // should never be called for RAM because of the way page accessing
-  // has been setup
-  return myImage[myBankOffset + address];
+    return peekRAM(myRAM[address], peekAddress);
+  else
+    return myImage[myBankOffset + address];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF4SC::poke(uInt16 address, uInt8)
+bool CartridgeF4SC::poke(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;
 
   // Switch banks if necessary
   if((address >= 0x0FF4) && (address <= 0x0FFB))
+  {
     bank(address - 0x0FF4);
+    return false;
+  }
 
-  // NOTE: This does not handle accessing RAM, however, this function
-  // should never be called for RAM because of the way page accessing
-  // has been setup
-  return false;
+  pokeRAM(myRAM[address & 0x007F], address, value);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
