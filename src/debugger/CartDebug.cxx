@@ -132,10 +132,6 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   DiStella::settings.rFlag = myOSystem.settings().getBool("dis.relocate");
   DiStella::settings.bFlag = true;  // Not currently configurable
   DiStella::settings.bytesWidth = 8+1;  // TODO - configure based on window size
-
-  setReadFromWritePortBreak(myOSystem.settings().getBool(
-      myOSystem.settings().getBool("dev.settings") ?
-      "dev.rwportbreak" : "plr.rwportbreak"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

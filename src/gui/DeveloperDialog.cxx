@@ -30,17 +30,17 @@
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
-#ifdef DEBUGGER_SUPPORT
-#include "DebuggerDialog.hxx"
-#endif
 #include "Console.hxx"
-#include "Debugger.hxx"
-#include "CartDebug.hxx"
 #include "TIA.hxx"
 #include "OSystem.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 #include "M6502.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "Debugger.hxx"
+  #include "CartDebug.hxx"
+  #include "DebuggerDialog.hxx"
+#endif
 #include "DeveloperDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -153,10 +153,12 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myUndrivenPinsWidget);
   ypos += lineHeight + VGAP;
 
+#ifdef DEBUGGER_SUPPORT
   myRWPortBreakWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                            "Break on reads from write ports");
   wid.push_back(myRWPortBreakWidget);
   ypos += lineHeight + VGAP;
+#endif
 
   // Thumb ARM emulation exception
   myThumbExceptionWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
@@ -494,8 +496,10 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myRandomizeCPU[set] = instance().settings().getString(prefix + "cpurandom");
   // Undriven TIA pins
   myUndrivenPins[set] = instance().settings().getBool(prefix + "tiadriven");
+#ifdef DEBUGGER_SUPPORT
   // Read from write ports break
   myRWPortBreak[set] = instance().settings().getBool(prefix + "rwportbreak");
+#endif
   // Thumb ARM emulation exception
   myThumbException[set] = instance().settings().getBool(prefix + "thumb.trapfatal");
   // AtariVox/SaveKey EEPROM access
@@ -530,8 +534,10 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   instance().settings().setValue(prefix + "cpurandom", myRandomizeCPU[set]);
   // Undriven TIA pins
   instance().settings().setValue(prefix + "tiadriven", myUndrivenPins[set]);
+#ifdef DEBUGGER_SUPPORT
   // Read from write ports break
   instance().settings().setValue(prefix + "rwportbreak", myRWPortBreak[set]);
+#endif
   // Thumb ARM emulation exception
   instance().settings().setValue(prefix + "thumb.trapfatal", myThumbException[set]);
   // AtariVox/SaveKey EEPROM access
@@ -569,8 +575,10 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myRandomizeCPU[set] = cpurandom;
   // Undriven TIA pins
   myUndrivenPins[set] = myUndrivenPinsWidget->getState();
+#ifdef DEBUGGER_SUPPORT
   // Read from write ports break
   myRWPortBreak[set] = myRWPortBreakWidget->getState();
+#endif
   // Thumb ARM emulation exception
   myThumbException[set] = myThumbExceptionWidget->getState();
   // AtariVox/SaveKey EEPROM access
@@ -608,8 +616,10 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
     myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
   // Undriven TIA pins
   myUndrivenPinsWidget->setState(myUndrivenPins[set]);
+#ifdef DEBUGGER_SUPPORT
   // Read from write ports break
   myRWPortBreakWidget->setState(myRWPortBreak[set]);
+#endif
   // Thumb ARM emulation exception
   myThumbExceptionWidget->setState(myThumbException[set]);
   // AtariVox/SaveKey EEPROM access
@@ -697,12 +707,6 @@ void DeveloperDialog::saveConfig()
   saveSettings(SettingsSet::player);
   saveSettings(SettingsSet::developer);
 
-#ifdef DEBUGGER_SUPPORT
-  // Read from write ports break
-  if(instance().hasConsole())
-    Debugger::debugger().cartDebug().setReadFromWritePortBreak(myRWPortBreakWidget->getState());
-#endif
-
   // activate the current settings
   instance().frameBuffer().showFrameStats(myFrameStatsWidget->getState());
   // jitter
@@ -744,6 +748,10 @@ void DeveloperDialog::saveConfig()
   instance().settings().setValue("dbg.ghostreadstrap", myGhostReadsTrapWidget->getState());
   if(instance().hasConsole())
     instance().console().system().m6502().setGhostReadsTrap(myGhostReadsTrapWidget->getState());
+
+  // Read from write ports break
+  if(instance().hasConsole())
+    instance().console().system().m6502().setReadFromWritePortBreak(myRWPortBreakWidget->getState());
 #endif
 }
 
@@ -764,8 +772,10 @@ void DeveloperDialog::setDefaults()
       myRandomizeCPU[set] = devSettings ? "SAXYP" : "AXYP";
       // Undriven TIA pins
       myUndrivenPins[set] = devSettings ? true : false;
+    #ifdef DEBUGGER_SUPPORT
       // Reads from write ports
       myRWPortBreak[set] = devSettings ? true : false;
+    #endif
       // Thumb ARM emulation exception
       myThumbException[set] = devSettings ? true : false;
       // AtariVox/SaveKey EEPROM access

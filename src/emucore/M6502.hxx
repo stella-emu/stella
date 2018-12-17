@@ -235,6 +235,7 @@ class M6502 : public Serializable
     const StringList& getCondTrapNames() const;
 
     void setGhostReadsTrap(bool enable) { myGhostReadsTrap = enable; }
+    void setReadFromWritePortBreak(bool enable) { myReadFromWritePortBreak = enable; }
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -452,9 +453,8 @@ class M6502 : public Serializable
     StringList myTrapCondNames;
 #endif  // DEBUGGER_SUPPORT
 
-    // These are both used only by the debugger, but since they're included
-    // in save states, they cannot be conditionally compiled
-    bool myGhostReadsTrap;    // trap on ghost reads
+    bool myGhostReadsTrap;          // trap on ghost reads
+    bool myReadFromWritePortBreak;  // trap on reads from write ports
     bool myStepStateByInstruction;
 
   private:

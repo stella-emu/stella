@@ -43,6 +43,7 @@
 #include "Settings.hxx"
 #include "Vec.hxx"
 
+#include "Cart.hxx"
 #include "TIA.hxx"
 #include "M6532.hxx"
 #include "System.hxx"
@@ -74,7 +75,8 @@ M6502::M6502(const Settings& settings)
     myDataAddressForPoke(0),
     myOnHaltCallback(nullptr),
     myHaltRequested(false),
-    myGhostReadsTrap(true),
+    myGhostReadsTrap(false),
+    myReadFromWritePortBreak(false),
     myStepStateByInstruction(false)
 {
 #ifdef DEBUGGER_SUPPORT
@@ -123,6 +125,7 @@ void M6502::reset()
 
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
+  myReadFromWritePortBreak = mySettings.getBool(devSettings ? "dev.rwportbreak" : "plr.rwportbreak");
 
   myLastBreakCycle = ULLONG_MAX;
 }
@@ -302,6 +305,8 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
         msg << "conditional savestate [" << Common::Base::HEX2 << cond << "]";
         myDebugger->addState(msg.str());
       }
+
+      mySystem->cart().clearAllRAMAccesses();
   #endif  // DEBUGGER_SUPPORT
 
       uInt16 operandAddress = 0, intermediateAddress = 0;
@@ -312,6 +317,9 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 
       try {
         icycles = 0;
+    #ifdef DEBUGGER_SUPPORT
+        uInt16 oldPC = PC;
+    #endif
 
         // Fetch instruction at the program counter
         IR = peek(PC++, DISASM_CODE);  // This address represents a code section
@@ -325,6 +333,25 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           default:
             FatalEmulationError::raise("invalid instruction");
         }
+
+    #ifdef DEBUGGER_SUPPORT
+        if(myReadFromWritePortBreak)
+        {
+          uInt16 rwpAddr = mySystem->cart().getIllegalRAMAccess();
+          if(rwpAddr)
+          {
+            //////////////////////////////////////////////////////////
+            // TODO - remove debugging code
+            cerr << std::hex << "Illegal access: " << rwpAddr
+                 << " @ "  << std::dec << mySystem->cycles() << endl;
+            //////////////////////////////////////////////////////////
+            ostringstream msg;
+            msg << "RWP[@ $" << Common::Base::HEX4 << rwpAddr << "]: ";
+            result.setDebugger(currentCycles, msg.str(), oldPC);
+            return;
+          }
+        }
+    #endif  // DEBUGGER_SUPPORT
       } catch (const FatalEmulationError& e) {
         myExecutionStatus |= FatalErrorBit;
         result.setMessage(e.what());
@@ -443,8 +470,6 @@ bool M6502::save(Serializer& out) const
     out.putByte(myFlags);
 
     out.putBool(myHaltRequested);
-    out.putBool(myStepStateByInstruction);
-    out.putBool(myGhostReadsTrap);
     out.putLong(myLastBreakCycle);
   }
   catch(...)
@@ -492,9 +517,11 @@ bool M6502::load(Serializer& in)
     myFlags = in.getByte();
 
     myHaltRequested = in.getBool();
-    myStepStateByInstruction = in.getBool();
-    myGhostReadsTrap = in.getBool();
     myLastBreakCycle = in.getLong();
+
+  #ifdef DEBUGGER_SUPPORT
+    updateStepStateByInstruction();
+  #endif
   }
   catch(...)
   {

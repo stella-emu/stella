@@ -33,7 +33,20 @@ Cartridge::Cartridge(const Settings& settings)
     myStartBank(0),
     myBankLocked(false)
 {
-  std::fill(myRWPRandomValues, myRWPRandomValues + 256, 0);
+  // TODO - get md5 from parameter
+  string md5 = "d30b89fcc488b7ac2fcbd96c06cb932e";
+
+  auto to_uInt32 = [](const string& s, uInt32 pos) {
+    return uInt32(std::stoul(s.substr(pos, 8), nullptr, 16));
+  };
+
+  uInt32 seed = to_uInt32(md5, 0)  ^ to_uInt32(md5, 8) ^
+                to_uInt32(md5, 16) ^ to_uInt32(md5, 24);
+  Random rand(seed);
+  for(uInt32 i = 0; i < 256; ++i)
+    myRWPRandomValues[i] = rand.next();
+
+  myRAMAccesses.reserve(5);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,26 +84,49 @@ bool Cartridge::bankChanged()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
+{
+  uInt8 value = myRWPRandomValues[address & 0xFF];
+
+  // Reading from the write port triggers an unwanted write
+  // But this only happens when in normal emulation mode
+#ifdef DEBUGGER_SUPPORT
+  if(!bankLocked() && !mySystem->autodetectMode())
+  {
+    // Record access here; final determination will happen in ::pokeRAM()
+    myRAMAccesses.push_back(address);
+    dest = value;
+  }
+#else
+  if(!mySystem->autodetectMode())
+    dest = value;
+#endif
+  return value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
+{
+#ifdef DEBUGGER_SUPPORT
+  for(auto i = myRAMAccesses.begin(); i != myRAMAccesses.end(); ++i)
+  {
+    if(*i == address)
+    {
+      myRAMAccesses.erase(i);
+      break;
+    }
+  }
+#endif
+  dest = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge::triggerReadFromWritePort(uInt16 address)
 {
 #ifdef DEBUGGER_SUPPORT
   if(!mySystem->autodetectMode())
     Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::createReadFromWritePortValues(const uInt8* image, uInt32 size)
-{
-  Random rand(MD5::hashToInt(image, size));
-  for(uInt32 i = 0; i < 256; ++i)
-    myRWPRandomValues[i] = rand.next();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge::randomReadFromWritePortValue(uInt16 address) const
-{
-  return myRWPRandomValues[address & 0xFF];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

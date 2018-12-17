@@ -44,18 +44,6 @@ string hash(const uInt8* buffer, uInt32 length);
 */
 string hash(const FilesystemNode& node);
 
-/**
-  Get the MD5 Message-Digest of the specified message with the
-  given length.  The digest consists of 32 hexadecimal digits,
-  but here we will get the 4 32-bit integers that make up the
-  digest and XOR them, resulting in one 32-bit value.
-
-  @param buffer The message to compute the digest of
-  @param length The length of the message
-  @return The 32-bit integer representing the digest
-*/
-uInt32 hashToInt(const uInt8* buffer, uInt32 length);
-
 }  // Namespace MD5
 
 #endif

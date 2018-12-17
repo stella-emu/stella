@@ -103,6 +103,25 @@ class Cartridge : public Device
     */
     virtual bool bankChanged();
 
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      To be called at the start of each instruction.
+      Clears information about all accesses to cart RAM.
+    */
+    void clearAllRAMAccesses() { myRAMAccesses.clear(); }
+
+    /**
+      To be called at the end of each instruction.
+      Answers whether an access in the last instruction cycle generated
+      an illegal RAM access.
+
+      @return  Address of illegal access if one occurred, else 0
+    */
+    uInt16 getIllegalRAMAccess() const {
+      return myRAMAccesses.size() > 0 ? myRAMAccesses[0] : 0;
+    }
+  #endif
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are cart-specific and will usually be
@@ -189,33 +208,35 @@ class Cartridge : public Device
 
   protected:
     /**
+      Get a random value to use when a read from the write port happens.
+      Sometimes a RWP means that RAM should be overwritten, sometimes not.
+
+      Internally, this method also keeps track of illegal accesses.
+
+      @param dest     The location to place the value, when an overwrite should happen
+      @param address  The address of the illegal read
+      @return  The value read, whether it is overwritten or not
+    */
+    uInt8 peekRAM(uInt8& dest, uInt16 address);
+
+    /**
+      Use the given value when writing to RAM.
+
+      Internally, this method also keeps track of legal accesses, and removes
+      them from the illegal list.
+
+      @param dest     The final location (including address) to place the value
+      @param address  The address of the legal write
+      @param value    The value to write to the given address
+    */
+    void pokeRAM(uInt8& dest, uInt16 address, uInt8 value);
+
+    /**
       Indicate that an illegal read from a write port has occurred.
 
       @param address  The address of the illegal read
     */
     void triggerReadFromWritePort(uInt16 address);
-
-    /**
-      Creates an array of semi-random values to use for returning when a
-      read from the write port happens.  Currently, these values are based in
-      part on the md5sum of the ROM, so this method needs to be called to
-      calculate that information.  If the method isn't called, then the values
-      used will be 0.
-
-      @param image  The cart ROM data
-      @param size   The size of ROM data
-    */
-    void createReadFromWritePortValues(const uInt8* image, uInt32 size);
-
-    /**
-      Return a random value to use when a read from the write port happens.
-      This functionality is placed in a method, so we can change
-      implementations as required.
-
-      @param address  The address of the illegal read
-      @return  A random value somehow associated with the given address
-    */
-    uInt8 randomReadFromWritePortValue(uInt16 address) const;
 
     /**
       Create an array that holds code-access information for every byte
@@ -293,6 +314,9 @@ class Cartridge : public Device
 
     // Used when we want the 'Cartridge.StartBank' ROM property
     StartBankFromPropsFunc myStartBankFromPropsFunc;
+
+    // Contains
+    ShortArray myRAMAccesses;
 
     // Following constructors and assignment operators not supported
     Cartridge() = delete;
