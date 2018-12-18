@@ -116,7 +116,6 @@ bool Cartridge3EPlus::poke(uInt16 address, uInt8 value)
 
   if(address == BANK_SWITCH_HOTSPOT_RAM)
     changed = bankRAM(value);
-
   else if(address == BANK_SWITCH_HOTSPOT_ROM)
     changed = bankROM(value);
 
