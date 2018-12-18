@@ -2657,7 +2657,7 @@
   </table>
   <br>
 
-  <p><b>TODO! Audio Settings</b> dialog:</p>
+  <p><b>Audio Settings</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_audio.png"></td>
@@ -2665,11 +2665,35 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Volume</td><td>Self-explanatory</td><td>-volume</td></tr>
-          <tr><td>Sample size (*)</td><td>Set size of audio buffers</td><td>-fragsize</td></tr>
-          <tr><td>Frequency (*)</td><td>Change sound output frequency</td><td>-freq</td></tr>
-          <tr><td>Enable sound</td><td>Self-explanatory</td><td>-sound</td></tr>
+          <tr><td>Enable audio</td><td>Self-explanatory</td><td>-audio.enabled</td></tr>
+          <tr><td>Volume</td><td>Self-explanatory</td><td>-audio.volume</td></tr>
+          <tr><td>Mode</td><td>Select an audio preset or choose 'custom' for manual configuration</td><td>-audio.preset</td></tr>
+          <tr><td>Fragment size</td><td>The number of samples in a single fragment processed by the audio driver. Smaller values mean less latency, but may lead to dropouts (depending on OS and hardware).</td><td>-audio.fragment_size</td></tr>
+          <tr><td>Sample rate</td><td>
+            Output samples per second. Higher values reduce artifacts from resampling and decrease latency,
+            but may lead to dropouts (depending on OS and hardware).
+          </td><td>-audio.sample_rate</td></tr>
+          <tr><td>Resampling quality</td><td>
+            Chooses the algorithm used for resampling (= converting TIA output to the target sample rate).
+            'High' and 'ultra' use a high-quality Lanczos filter
+            but require slightly more CPU, while 'low' may lead to audible screeching artifacts in
+            some games (notably Quadrun).
+          </td><td>-audio.resampling_quality</td></tr>
+          <tr><td>Headroom</td><td>Number of frames to buffer before playback starts. Higher values increase latency, but reduce the potential for dropouts.</td><td>-audio.headroom</td></tr>
+          <tr><td>Buffer size</td><td>Maximum size of the audio buffer. Higher values increase maximum latency, but reduce the potential for dropouts</td><td>-audio.buffer_size</td></tr>
         </table>
+        <p>
+          <strong>IMPORTANT:</strong> In order to maintain a stable stream of audio data, emulation speed must be
+          synchronized with the audio hardware. Buffering happens in multiple places (OS = fragment size, Stella =
+          headroom and buffer size) and improves the tolerance to speed fluctuations, but introduces latency which
+          manifests as a lag between audio and video.
+        </p><p>
+          Too aggressive settings for your combination of hardware and software (high sample rate,
+          low fragment size, low headroom, low buffer size) may lead to audio dropouts whose effect may range from
+          isolated popping artifacts to garbled audio. You can check the system log for related messages. If you
+          get recurring messages about audio overruns and underruns (isolates underruns / overruns are normal
+          and a consequence of host system activity), you might have to adjust your settings.
+        </p>
       </td>
     </tr>
   </table>
