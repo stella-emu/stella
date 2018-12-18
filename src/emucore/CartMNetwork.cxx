@@ -69,10 +69,10 @@ void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
 
   for(uInt16 addr = addrFrom; addr < addrFrom + size; addr += System::PAGE_SIZE)
   {
-    if (type == System::PA_READ)
+    if(type == System::PA_READ)
       access.directPeekBase = &directData[directOffset + (addr & addrMask)];
-    if(type == System::PA_WRITE)
-      access.directPokeBase = &directData[directOffset + (addr & addrMask)];
+    else if(type == System::PA_WRITE)  // all RAM writes mapped to ::poke()
+      access.directPokeBase = nullptr;
     access.codeAccessBase = &myCodeAccessBase[codeOffset + (addr & addrMask)];
     mySystem->setPageAccess(addr, access);
   }
@@ -117,46 +117,38 @@ uInt8 CartridgeMNetwork::peek(uInt16 address)
   if((myCurrentSlice[0] == myRAMSlice) && (address < BANK_SIZE / 2))
   {
     // Reading from the 1K write port @ $1000 triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
-
-    if(bankLocked())
-      return value;
-    else
-    {
-      myRAM[address & (BANK_SIZE / 2 - 1)] = value;
-      triggerReadFromWritePort(peekAddress);
-      return value;
-    }
+    return peekRAM(myRAM[address & (BANK_SIZE / 2 - 1)], peekAddress);
   }
   else if((address >= 0x0800) && (address <= 0x08FF))
   {
     // Reading from the 256B write port @ $1800 triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
-
-    if(bankLocked())
-      return value;
-    else
-    {
-      myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
-      triggerReadFromWritePort(peekAddress);
-      return value;
-    }
+    return peekRAM(myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)], peekAddress);
   }
   else
     return myImage[(myCurrentSlice[address >> 11] << 11) + (address & (BANK_SIZE - 1))];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMNetwork::poke(uInt16 address, uInt8)
+bool CartridgeMNetwork::poke(uInt16 address, uInt8 value)
 {
+  uInt16 pokeAddress = address;
   address &= 0x0FFF;
 
   // Switch banks if necessary
   checkSwitchBank(address);
 
-  // NOTE: This does not handle writing to RAM, however, this
-  // method should never be called for RAM because of the
-  // way page accessing has been setup
+  // All RAM writes are mapped here
+  if((myCurrentSlice[0] == myRAMSlice) && (address < BANK_SIZE / 2))
+  {
+    pokeRAM(myRAM[address & (BANK_SIZE / 2 - 1)], pokeAddress, value);
+    return true;
+  }
+  else if((address >= 0x0800) && (address <= 0x08FF))
+  {
+    pokeRAM(myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)], pokeAddress, value);
+    return true;
+  }
+
   return false;
 }
 
