@@ -111,10 +111,8 @@ uInt8 CartridgeF6SC::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF6SC::poke(uInt16 address, uInt8 value)
 {
-  address &= 0x0FFF;
-
   // Switch banks if necessary
-  switch(address)
+  switch(address & 0x0FFF)
   {
     case 0x0FF6:
       // Set the current bank to the first 4k bank

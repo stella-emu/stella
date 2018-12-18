@@ -88,6 +88,7 @@ uInt8 CartridgeF4SC::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF4SC::poke(uInt16 address, uInt8 value)
 {
+  uInt16 pokeAddress = address;
   address &= 0x0FFF;
 
   // Switch banks if necessary
@@ -97,7 +98,7 @@ bool CartridgeF4SC::poke(uInt16 address, uInt8 value)
     return false;
   }
 
-  pokeRAM(myRAM[address & 0x007F], address, value);
+  pokeRAM(myRAM[address & 0x007F], pokeAddress, value);
   return true;
 }
 
