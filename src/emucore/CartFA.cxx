@@ -47,16 +47,16 @@ void CartridgeFA::install(System& system)
   System::PageAccess access(this, System::PA_READ);
 
   // Set the page accessing method for the RAM writing pages
+  // Map access to this class, since we need to inspect all accesses to
+  // check if RWP happens
   access.type = System::PA_WRITE;
   for(uInt16 addr = 0x1000; addr < 0x1100; addr += System::PAGE_SIZE)
   {
-    access.directPokeBase = &myRAM[addr & 0x00FF];
     access.codeAccessBase = &myCodeAccessBase[addr & 0x00FF];
     mySystem->setPageAccess(addr, access);
   }
 
   // Set the page accessing method for the RAM reading pages
-  access.directPokeBase = nullptr;
   access.type = System::PA_READ;
   for(uInt16 addr = 0x1100; addr < 0x1200; addr += System::PAGE_SIZE)
   {
@@ -98,54 +98,38 @@ uInt8 CartridgeFA::peek(uInt16 address)
   }
 
   if(address < 0x0100)  // Write port is at 0xF000 - 0xF0FF (256 bytes)
-  {
-    // Reading from the write port triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
-
-    if(bankLocked())
-      return value;
-    else
-    {
-      myRAM[address] = value;
-      triggerReadFromWritePort(peekAddress);
-      return value;
-    }
-  }
+    return peekRAM(myRAM[address], peekAddress);
   else
     return myImage[myBankOffset + address];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFA::poke(uInt16 address, uInt8)
+bool CartridgeFA::poke(uInt16 address, uInt8 value)
 {
-  address &= 0x0FFF;
-
   // Switch banks if necessary
-  switch(address)
+  switch(address & 0x0FFF)
   {
     case 0x0FF8:
       // Set the current bank to the lower 4k bank
       bank(0);
-      break;
+      return false;
 
     case 0x0FF9:
       // Set the current bank to the middle 4k bank
       bank(1);
-      break;
+      return false;
 
     case 0x0FFA:
       // Set the current bank to the upper 4k bank
       bank(2);
-      break;
+      return false;
 
     default:
       break;
   }
 
-  // NOTE: This does not handle accessing RAM, however, this function
-  // should never be called for RAM because of the way page accessing
-  // has been setup
-  return false;
+  pokeRAM(myRAM[address & 0x00FF], address, value);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

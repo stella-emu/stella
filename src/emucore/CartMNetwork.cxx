@@ -255,7 +255,8 @@ bool CartridgeMNetwork::save(Serializer& out) const
     out.putShortArray(myCurrentSlice, NUM_SEGMENTS);
     out.putShort(myCurrentRAM);
     out.putByteArray(myRAM, RAM_SIZE);
-  } catch(...)
+  }
+  catch(...)
   {
     cerr << "ERROR: " << name() << "::save" << endl;
     return false;
@@ -272,7 +273,8 @@ bool CartridgeMNetwork::load(Serializer& in)
     in.getShortArray(myCurrentSlice, NUM_SEGMENTS);
     myCurrentRAM = in.getShort();
     in.getByteArray(myRAM, RAM_SIZE);
-  } catch(...)
+  }
+  catch(...)
   {
     cerr << "ERROR: " << name() << "::load" << endl;
     return false;
@@ -296,4 +298,3 @@ uInt32 CartridgeMNetwork::romSize() const
 {
   return bankCount() * BANK_SIZE;
 }
-

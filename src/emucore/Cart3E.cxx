@@ -85,16 +85,7 @@ uInt8 Cartridge3E::peek(uInt16 address)
       else
       {
         // Reading from the write port triggers an unwanted write
-        uInt8 value = mySystem->getDataBusState(0xFF);
-
-        if(bankLocked())
-          return value;
-        else
-        {
-          myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)] = value;
-          triggerReadFromWritePort(peekAddress);
-          return value;
-        }
+        return peekRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)], peekAddress);
       }
     }
   }
@@ -107,23 +98,24 @@ uInt8 Cartridge3E::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3E::poke(uInt16 address, uInt8 value)
 {
+  uInt16 pokeAddress = address;
   address &= 0x0FFF;
 
   // Switch banks if necessary. Armin (Kroko) says there are no mirrored
   // hotspots.
-  if(address == 0x003F)
+  if(address < 0x0040)
   {
-    bank(value);
-  }
-  else if(address == 0x003E)
-  {
-    bank(value + 256);
-  }
+    if(address == 0x003F)
+      bank(value);
+    else if(address == 0x003E)
+      bank(value + 256);
 
-  // Handle TIA space that we claimed above
-  mySystem->tia().poke(address, value);
+    return mySystem->tia().poke(address, value);
+  }
+  else
+    pokeRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)], pokeAddress, value);
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,9 +173,10 @@ bool Cartridge3E::bank(uInt16 bank)
     access.type = System::PA_WRITE;
 
     // Map write-port RAM image into the system
+    // Map access to this class, since we need to inspect all accesses to
+    // check if RWP happens
     for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
     {
-      access.directPokeBase = &myRAM[offset + (addr & 0x03FF)];
       access.codeAccessBase = &myCodeAccessBase[mySize + offset + (addr & 0x03FF)];
       mySystem->setPageAccess(addr, access);
     }

@@ -62,10 +62,11 @@ void CartridgeWD::install(System& system)
   }
 
   // Set the page accessing method for the RAM writing pages
+  // Map access to this class, since we need to inspect all accesses to
+  // check if RWP happens
   System::PageAccess write(this, System::PA_WRITE);
   for(uInt16 addr = 0x1040; addr < 0x1080; addr += System::PAGE_SIZE)
   {
-    write.directPokeBase = &myRAM[addr & 0x003F];
     write.codeAccessBase = &myCodeAccessBase[addr & 0x003F];
     mySystem->setPageAccess(addr, write);
   }
@@ -109,19 +110,8 @@ uInt8 CartridgeWD::peek(uInt16 address)
     if(address < 0x0040)        // RAM read port
       return myRAM[address];
     else if(address < 0x0080)   // RAM write port
-    {
       // Reading from the write port @ $1040 - $107F triggers an unwanted write
-      uInt8 value = mySystem->getDataBusState(0xFF);
-
-      if(bankLocked())
-        return value;
-      else
-      {
-        myRAM[address & 0x003F] = value;
-        triggerReadFromWritePort(peekAddress);
-        return value;
-      }
-    }
+      return peekRAM(myRAM[address & 0x003F], peekAddress);
     else if(address < 0x0400)
       return myImage[myOffset[0] + (address & 0x03FF)];
     else if(address < 0x0800)
@@ -136,11 +126,12 @@ uInt8 CartridgeWD::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeWD::poke(uInt16 address, uInt8 value)
 {
-  // Only TIA writes will reach here
-  if(!(address & 0x1000))
+  if(!(address & 0x1000))  // TIA addresses
     return mySystem->tia().poke(address, value);
   else
-    return false;
+    pokeRAM(myRAM[address & 0x003F], address, value);
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
