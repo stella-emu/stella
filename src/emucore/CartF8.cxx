@@ -19,9 +19,9 @@
 #include "CartF8.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF8::CartridgeF8(const BytePtr& image, uInt32 size, const string& md5,
-                         const Settings& settings)
-  : Cartridge(settings),
+CartridgeF8::CartridgeF8(const BytePtr& image, uInt32 size,
+                         const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer

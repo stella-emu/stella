@@ -20,8 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF8SC::CartridgeF8SC(const BytePtr& image, uInt32 size,
-                             const Settings& settings)
-  : Cartridge(settings),
+                             const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer

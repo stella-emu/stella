@@ -246,89 +246,89 @@ CartDetector::createFromImage(const BytePtr& image, uInt32 size, Bankswitch::Typ
   switch(type)
   {
     case Bankswitch::Type::_0840:
-      return make_unique<Cartridge0840>(image, size, osystem.settings());
+      return make_unique<Cartridge0840>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_2K:
-      return make_unique<Cartridge2K>(image, size, osystem.settings());
+      return make_unique<Cartridge2K>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_3E:
-      return make_unique<Cartridge3E>(image, size, osystem.settings());
+      return make_unique<Cartridge3E>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_3EP:
-      return make_unique<Cartridge3EPlus>(image, size, osystem.settings());
+      return make_unique<Cartridge3EPlus>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_3F:
-      return make_unique<Cartridge3F>(image, size, osystem.settings());
+      return make_unique<Cartridge3F>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_4A50:
-      return make_unique<Cartridge4A50>(image, size, osystem.settings());
+      return make_unique<Cartridge4A50>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_4K:
-      return make_unique<Cartridge4K>(image, size, osystem.settings());
+      return make_unique<Cartridge4K>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_4KSC:
-      return make_unique<Cartridge4KSC>(image, size, osystem.settings());
+      return make_unique<Cartridge4KSC>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_AR:
-      return make_unique<CartridgeAR>(image, size, osystem.settings());
+      return make_unique<CartridgeAR>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_BF:
-      return make_unique<CartridgeBF>(image, size, osystem.settings());
+      return make_unique<CartridgeBF>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_BFSC:
-      return make_unique<CartridgeBFSC>(image, size, osystem.settings());
+      return make_unique<CartridgeBFSC>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_BUS:
-      return make_unique<CartridgeBUS>(image, size, osystem.settings());
+      return make_unique<CartridgeBUS>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_CDF:
-      return make_unique<CartridgeCDF>(image, size, osystem.settings());
+      return make_unique<CartridgeCDF>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_CM:
-      return make_unique<CartridgeCM>(image, size, osystem.settings());
+      return make_unique<CartridgeCM>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_CTY:
-      return make_unique<CartridgeCTY>(image, size, osystem);
+      return make_unique<CartridgeCTY>(image, size, md5, osystem);
     case Bankswitch::Type::_CV:
-      return make_unique<CartridgeCV>(image, size, osystem.settings());
+      return make_unique<CartridgeCV>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_CVP:
-      return make_unique<CartridgeCVPlus>(image, size, osystem.settings());
+      return make_unique<CartridgeCVPlus>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_DASH:
-      return make_unique<CartridgeDASH>(image, size, osystem.settings());
+      return make_unique<CartridgeDASH>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_DF:
-      return make_unique<CartridgeDF>(image, size, osystem.settings());
+      return make_unique<CartridgeDF>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_DFSC:
-      return make_unique<CartridgeDFSC>(image, size, osystem.settings());
+      return make_unique<CartridgeDFSC>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_DPC:
-      return make_unique<CartridgeDPC>(image, size, osystem.settings());
+      return make_unique<CartridgeDPC>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_DPCP:
-      return make_unique<CartridgeDPCPlus>(image, size, osystem.settings());
+      return make_unique<CartridgeDPCPlus>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_E0:
-      return make_unique<CartridgeE0>(image, size, osystem.settings());
+      return make_unique<CartridgeE0>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_E7:
-      return make_unique<CartridgeE7>(image, size, osystem.settings());
+      return make_unique<CartridgeE7>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_E78K:
-      return make_unique<CartridgeE78K>(image, size, osystem.settings());
+      return make_unique<CartridgeE78K>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_EF:
-      return make_unique<CartridgeEF>(image, size, osystem.settings());
+      return make_unique<CartridgeEF>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_EFSC:
-      return make_unique<CartridgeEFSC>(image, size, osystem.settings());
+      return make_unique<CartridgeEFSC>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_F0:
-      return make_unique<CartridgeF0>(image, size, osystem.settings());
+      return make_unique<CartridgeF0>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_F4:
-      return make_unique<CartridgeF4>(image, size, osystem.settings());
+      return make_unique<CartridgeF4>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_F4SC:
-      return make_unique<CartridgeF4SC>(image, size, osystem.settings());
+      return make_unique<CartridgeF4SC>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_F6:
-      return make_unique<CartridgeF6>(image, size, osystem.settings());
+      return make_unique<CartridgeF6>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_F6SC:
-      return make_unique<CartridgeF6SC>(image, size, osystem.settings());
+      return make_unique<CartridgeF6SC>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_F8:
       return make_unique<CartridgeF8>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_F8SC:
-      return make_unique<CartridgeF8SC>(image, size, osystem.settings());
+      return make_unique<CartridgeF8SC>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_FA:
-      return make_unique<CartridgeFA>(image, size, osystem.settings());
+      return make_unique<CartridgeFA>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_FA2:
-      return make_unique<CartridgeFA2>(image, size, osystem);
+      return make_unique<CartridgeFA2>(image, size, md5, osystem);
     case Bankswitch::Type::_FE:
-      return make_unique<CartridgeFE>(image, size, osystem.settings());
+      return make_unique<CartridgeFE>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_MDM:
-      return make_unique<CartridgeMDM>(image, size, osystem.settings());
+      return make_unique<CartridgeMDM>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_UA:
-      return make_unique<CartridgeUA>(image, size, osystem.settings());
+      return make_unique<CartridgeUA>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_SB:
-      return make_unique<CartridgeSB>(image, size, osystem.settings());
+      return make_unique<CartridgeSB>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_WD:
-      return make_unique<CartridgeWD>(image, size, osystem.settings());
+      return make_unique<CartridgeWD>(image, size, md5, osystem.settings());
     case Bankswitch::Type::_X07:
-      return make_unique<CartridgeX07>(image, size, osystem.settings());
+      return make_unique<CartridgeX07>(image, size, md5, osystem.settings());
     default:
       return nullptr;  // The remaining types have already been handled
   }

@@ -20,8 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMNetwork::CartridgeMNetwork(const BytePtr& image, uInt32 size,
-                                     const Settings& settings)
-  : Cartridge(settings),
+                                     const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     mySize(size),
     myCurrentRAM(0),
     myRAMSlice(0)

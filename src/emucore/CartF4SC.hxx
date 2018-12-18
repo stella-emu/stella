@@ -43,9 +43,11 @@ class CartridgeF4SC : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
+      @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeF4SC(const BytePtr& image, uInt32 size, const Settings& settings);
+    CartridgeF4SC(const BytePtr& image, uInt32 size, const string& md5,
+                  const Settings& settings);
     virtual ~CartridgeF4SC() = default;
 
   public:

@@ -20,8 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE78K::CartridgeE78K(const BytePtr& image, uInt32 size,
-                         const Settings& settings)
-  : CartridgeMNetwork(image, size, settings)
+                             const string& md5, const Settings& settings)
+  : CartridgeMNetwork(image, size, md5, settings)
 {
   initialize(image, size);
 }

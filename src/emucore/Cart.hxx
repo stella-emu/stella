@@ -47,8 +47,9 @@ class Cartridge : public Device
       Create a new cartridge
 
       @param settings  A reference to the various settings (read-only)
+      @param md5       The md5sum of the cart image
     */
-    Cartridge(const Settings& settings);
+    Cartridge(const Settings& settings, const string& md5);
     virtual ~Cartridge() = default;
 
     /**

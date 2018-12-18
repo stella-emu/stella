@@ -21,8 +21,8 @@
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3EPlus::Cartridge3EPlus(const BytePtr& image, uInt32 size,
-                                 const Settings& settings)
-  : Cartridge(settings),
+                                 const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     mySize(size)
 {
   // Allocate array for the ROM image

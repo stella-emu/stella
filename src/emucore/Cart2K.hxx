@@ -45,9 +45,11 @@ class Cartridge2K : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image (<= 2048 bytes)
+      @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge2K(const BytePtr& image, uInt32 size, const Settings& settings);
+    Cartridge2K(const BytePtr& image, uInt32 size, const string& md5,
+                const Settings& settings);
     virtual ~Cartridge2K() = default;
 
   public:

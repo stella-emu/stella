@@ -22,8 +22,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCTY::CartridgeCTY(const BytePtr& image, uInt32 size,
-                           const OSystem& osystem)
-  : Cartridge(osystem.settings()),
+                           const string& md5, const OSystem& osystem)
+  : Cartridge(osystem.settings(), md5),
     myOSystem(osystem),
     myOperationType(0),
     myTunePosition(0),

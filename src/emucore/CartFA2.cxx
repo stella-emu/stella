@@ -22,8 +22,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA2::CartridgeFA2(const BytePtr& image, uInt32 size,
-                           const OSystem& osystem)
-  : Cartridge(osystem.settings()),
+                           const string& md5, const OSystem& osystem)
+  : Cartridge(osystem.settings(), md5),
     myOSystem(osystem),
     mySize(28 * 1024),
     myRamAccessTimeout(0),

@@ -52,9 +52,11 @@ class CartridgeX07 : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
+      @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeX07(const BytePtr& image, uInt32 size, const Settings& settings);
+    CartridgeX07(const BytePtr& image, uInt32 size, const string& md5,
+                 const Settings& settings);
     virtual ~CartridgeX07() = default;
 
   public:

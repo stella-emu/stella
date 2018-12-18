@@ -26,16 +26,13 @@
 #include "Cart.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge::Cartridge(const Settings& settings)
+Cartridge::Cartridge(const Settings& settings, const string& md5)
   : mySettings(settings),
     myBankChanged(true),
     myCodeAccessBase(nullptr),
     myStartBank(0),
     myBankLocked(false)
 {
-  // TODO - get md5 from parameter
-  string md5 = "d30b89fcc488b7ac2fcbd96c06cb932e";
-
   auto to_uInt32 = [](const string& s, uInt32 pos) {
     return uInt32(std::stoul(s.substr(pos, 8), nullptr, 16));
   };
