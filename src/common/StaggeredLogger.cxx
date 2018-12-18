@@ -88,7 +88,7 @@ void StaggeredLogger::_log()
 {
   if (!myIsCurrentlyCollecting) startInterval();
 
-  myCurrentEventCount++;
+  ++myCurrentEventCount;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,7 +116,7 @@ void StaggeredLogger::increaseInterval()
 {
   if (myCurrentIntervalFactor >= myMaxIntervalFactor) return;
 
-  myCurrentIntervalFactor++;
+  ++myCurrentIntervalFactor;
   myCurrentIntervalSize *= 2;
 }
 
@@ -125,7 +125,7 @@ void StaggeredLogger::decreaseInterval()
 {
   if (myCurrentIntervalFactor <= 1) return;
 
-  myCurrentIntervalFactor--;
+  --myCurrentIntervalFactor;
   myCurrentIntervalSize /= 2;
 }
 
