@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-5.1.3 to 6.0: (MMM d, 2018)
+5.1.3 to 6.0: (December 23, 2018)
 
   * Note: because of major TIA sound changes, the state file format has
           changed, and old state files will not work with this release.
@@ -31,6 +31,18 @@
   * Main loop rewritten; emulating speed and timing is now much more
     faithful (i.e. speed in Pick'n'Pile).
 
+  * Added preliminary support for 'CTY' bankswitching scheme and recently
+    released 'Chetiry' ROMs.  Special thanks to SpiceWare for adding music
+    support to this scheme.
+
+  * UI modernization (new widget look, dialog titles added, dialogs
+    refactored).
+
+  * The bankswitch scheme can now be forced by naming the ROM with a
+    specific extension (ie: .f8s for F8SC, .fe for FE, etc).  The
+    supported extensions are the same as the ones from HarmonyCart and
+    UnoCart.
+
   * Audio settings replaced with new 'audio.xxx' settings.
 
   * FPS setting replaced with speed setting for adjusting emulation speed.
@@ -38,18 +50,13 @@
   * Extra functionality for Time Machine dialog (start/stop recording;
     minor fixes; TODO button and initial key repeats...)
 
-  * Fixes for collision corner cases (during HBlank).
+  * When logging messages to the System Logger, condense similar messages
+    that arrive in batches into fewer messages (including timestamps).
 
-  * UI modernization (new widget look, dialog titles added, dialogs
-    refactored).
+  * Fixes for collision corner cases (during HBlank).
 
   * Fixed excessive CPU usage while in UI modes (ROM launcher, debugger,
     etc).
-
-  * The bankswitch scheme can now be forced by naming the ROM with a
-    specific extension (ie: .f8s for F8SC, .fe for FE, etc).  The
-    supported extensions are the same as the ones from HarmonyCart and
-    UnoCart.
 
   * The 'launcherexts' option has been replaced by a true/false option
     named 'launcherroms', which specifies to show only ROMs or all files
@@ -101,25 +108,22 @@
   * The ROM name saved in a PNG tEXt chunk now honours the 'snapname'
     setting.
 
+  * Improved snapshots when phosphor is enabled.
+
   * Updated PAL palette.
 
   * Added 'Cartridge.StartBank' ROM property, to force a ROM to use a
     specific bank for its reset vector.
 
-  * Improved snapshots when phosphor is enabled
-
-  * Added Developer setting, which breaks on reads from write ports
-
-  * Fixed '_rwport'
+  * Added Developer setting, which breaks on reads from write ports.  It
+    now detects such conditions in many more cases.  This new way of
+    detecting RWP errors obsoletes the old '_rwport' debugger command,
+    which has now been removed.
 
   * Added recently released 'Arkyology' prototype ROM to the database.
 
   * Fixed 'Street Racer' and 'Video Olympics' ROMs to use paddles in both
     ports.
-
-  * Added premliminary support for 'CTY' bankswitching scheme and recently
-    released 'Chetiry' ROMs.  Special thanks to SpiceWare for adding music
-    support to this scheme.
 
   * For UNIX systems: in the ROM launcher, when using symlinks use the
     symlink pathname instead of the underlying filesystem pathname.
