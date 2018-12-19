@@ -118,15 +118,6 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::triggerReadFromWritePort(uInt16 address)
-{
-#ifdef DEBUGGER_SUPPORT
-  if(!mySystem->autodetectMode())
-    Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge::createCodeAccessBase(uInt32 size)
 {
 #ifdef DEBUGGER_SUPPORT

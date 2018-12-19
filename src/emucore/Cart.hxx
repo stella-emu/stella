@@ -233,13 +233,6 @@ class Cartridge : public Device
     void pokeRAM(uInt8& dest, uInt16 address, uInt8 value);
 
     /**
-      Indicate that an illegal read from a write port has occurred.
-
-      @param address  The address of the illegal read
-    */
-    void triggerReadFromWritePort(uInt16 address);
-
-    /**
       Create an array that holds code-access information for every byte
       of the ROM (indicated by 'size').  Note that this is only used by
       the debugger, and is unavailable otherwise.

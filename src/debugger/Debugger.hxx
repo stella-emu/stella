@@ -324,7 +324,7 @@ class Debugger : public DialogContainer
       string name, help;
     };
     static const uInt32 NUM_BUILTIN_FUNCS = 18;
-    static const uInt32 NUM_PSEUDO_REGS = 12;
+    static const uInt32 NUM_PSEUDO_REGS = 11;
     static BuiltinFunction ourBuiltinFunctions[NUM_BUILTIN_FUNCS];
     static PseudoRegister ourPseudoRegisters[NUM_PSEUDO_REGS];
 
