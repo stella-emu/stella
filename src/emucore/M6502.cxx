@@ -340,11 +340,6 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           uInt16 rwpAddr = mySystem->cart().getIllegalRAMAccess();
           if(rwpAddr)
           {
-            //////////////////////////////////////////////////////////
-            // TODO - remove debugging code
-            cerr << std::hex << "Illegal access: " << rwpAddr
-                 << " @ "  << std::dec << mySystem->cycles() << endl;
-            //////////////////////////////////////////////////////////
             ostringstream msg;
             msg << "RWP[@ $" << Common::Base::HEX4 << rwpAddr << "]: ";
             result.setDebugger(currentCycles, msg.str(), oldPC);
