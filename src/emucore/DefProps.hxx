@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3423
+#define DEF_PROPS_SIZE 3429
 
 static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -192,6 +192,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "0c35806ff0019a270a7acae68de89d28", "Froggo", "FG1003", "Task Force (1987) (Froggo)", "AKA Gangster Alley", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "0c48e820301251fbb6bcdc89bd3555d9", "Atari, Bill Aspromonte, Andrew Fuchs", "CX26120", "Stargate (1984) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "0c54811cf3b1f1573c9164d5f19eca65", "Activision, David Crane - Ariola", "EAG-001, PAG-001, EAG-001-04B, EAG-001-04I - 711 001-715", "Dragster (1980) (Activision) (PAL)", "AKA Dragster Rennen, Drag Strip", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "0c72cc3a6658c1abd4b735ef55fa72e4", "Dion Olsthoorn", "v1.3", "Amoeba Jump (2018) (Dionoid) (PAL60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "", "" },
   { "0c7926d660f903a2d6910c254660c32c", "Atari, Larry Kaplan", "CX2602, CX2602P", "Air-Sea Battle (1977) (Atari) (PAL)", "AKA Anti-Aircraft", "Uncommon", "", "", "", "", "", "", "", "", "", "", "", "", "", "256", "", "" },
   { "0c7bd935d9a7f2522155e48315f44fa0", "Carrere Video - Western Technologies, Jeff Corsiglia, Paul Allen Newell, Tom Sloper - Teldec - Prism", "USC1009", "Infernal Tower (1983) (Carrere Video) (PAL)", "AKA Towering Inferno", "", "", "", "", "", "", "", "YES", "", "", "", "", "", "", "", "YES", "" },
   { "0c80751f6f7a3b370cc9e9f39ad533a7", "Atari, Carla Meninsky", "CX2610", "Warlords (1981) (Atari) (PAL)", "Uses the Paddle Controllers", "", "", "", "", "", "", "", "", "PADDLES", "PADDLES", "", "01 50", "", "", "", "", "" },
@@ -629,6 +630,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "2d16a8b59a225ea551667be45f554652", "Quelle", "802.744 3", "Der Geheimkurier (1983) (Quelle) (PAL)", "AKA Mr. Postman", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2d1cf85fbc732856bf76470cd4060f4a", "", "", "Daredevil (V1) (Stunt_Cycle_Rules!) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "216", "", "" },
   { "2d2c5f0761e609e3c5228766f446f7f8", "Atari - Axlon, Steve DeFrisco", "CX26170, CX26170P", "Secret Quest (1989) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "2d33a44e82f88d05f6c50577218c0cae", "AtariAge - Michael Haas", "RC2", "Flappy (2014) (AtariAge)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2d38a96f92952b301eefdf25a5e6976b", "Omegamatrix", "", "Star Wars Arcade (Atari Mouse) (Y_Inverted) v4 (Omegamatrix)", "Uses Atari Mouse Controller", "", "", "", "", "", "", "", "", "ATARIMOUSE", "", "", "", "", "", "", "", "" },
   { "2d405da70af82b20a6b3ecc3d1d2c4ec", "Genus", "", "Pitfall (Genus)", "AKA Pitfall!", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2d6388a8389f1d59108fd169c3356d79", "Thomas Jentzsch", "", "Reactor - Atari Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)", "Uses Atari Mouse Controller", "", "", "", "", "", "", "", "", "ATARIMOUSE", "", "", "", "", "", "", "", "" },
@@ -847,7 +849,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "3c8e57a246742fa5d59e517134c0b4e6", "Parker Brothers, Rex Bradford, Sam Kjellman", "PB5050", "Star Wars - The Empire Strikes Back (1982) (Parker Bros)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "3ca51b5c08f5a0ecfb17d0c1ec6d0942", "Atari, James Andreasen - Sears", "CX2654 - 49-75141", "Haunted House (09-28-81) (Atari) (Prototype)", "AKA Mystery Mansion, Graves' Manor, Nightmare Manor", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "3caa902ac0ce4509308990645876426a", "Atari - GCC, Dave Payne", "CX2669, CX2669P", "Vanguard (1983) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "3cbdf71bb9fd261fbc433717f547d738", "CCE", "C-803", "Bobby Is Going Home (1983) (CCE) (PAL)", "AKA Bobby Vai Para Casa", "Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "3cbdf71bb9fd261fbc433717f547d738", "CCE", "C-803", "Bobby Is Going Home (1983) (CCE) (PAL)", "AKA Bobby Vai Para Casa", "Rare", "", "", "", "", "", "", "", "", "", "", "", "", "36", "256", "", "" },
   { "3cdd91e1c28d28e856c0063d602da166", "", "", "Stell-A-Sketch (03-11-1997) (Bob Colbert) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "3d1e83afdb4265fa2fb84819c9cfd39c", "Coleco - JWDA, Todd Marshall, Robin McDaniel, Henry Will IV", "2465", "Smurf - Rescue in Gargamel's Castle (1983) (Coleco)", "AKA Smurf, Smurf Action", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "3d2367b2b09c28f1659c082bb46a7334", "Imagic, Dennis Koble", "720103-2A, IA3203P, EIX-010-04I", "Atlantis (1982) (Imagic) (PAL)", "AKA Lost City of Atlantis", "Uncommon", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1159,6 +1161,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "5385cf2a04de1d36ab55c73174b84db0", "Paul Slocum", "", "Combat Rock (PD) (Hack)", "Hack of Combat", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "539b7038acec0ccedeae40f238998579", "", "", "Star Fire (25-10-2002) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "539d26b6e9df0da8e7465f0f5ad863b7", "Atari, Carol Shaw - Sears", "CX2636 - 49-75156", "Video Checkers (1980) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "539f3c42c4e15f450ed93cb96ce93af5", "Dion Olsthoorn", "v1.3", "Amoeba Jump (2018) (Dionoid)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "53b66f11f67c3b53b2995e0e02017bd7", "CCE", "C-1005", "Super Tennis (1983) (CCE)", "AKA RealSports Tennis", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "53d181cde2e0219b5754caad246fcb66", "", "", "Missile Demo (1998) (Ruffin Bailey) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "53e03df47e76329b701641f8bdc206f5", "Thomas Jentzsch", "", "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Half-Speed) (TJ)", "Uses Atari Trak-Ball Controller", "", "", "", "", "", "", "", "", "TRAKBALL", "", "", "", "", "", "", "", "" },
@@ -1179,6 +1182,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "551a64a945d7d6ece81e9c1047acedbc", "Matthias Jaap", "", "Coffee Cup Soccer (Matthias Jaap) (Hack)", "Hack of Pele's Soccer", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "551ef75593ec18d078e8f5cc0229e1c4", "", "", "Star Fire - New Paulstar WIP (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5524718a19107a04ec3265c93136a7b5", "Thomas Jentzsch", "", "RealSports Basketball (Thomas Jentzsch)", "NTSC Conversion", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "553dbf9358cfd2195e2fa0e08b01fb6a", "Atari - GCC, Mike Feinstein, Kevin Osborn", "CX2691", "Joust (07-05-1983) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "557e893616648c37a27aab5a47acbf10", "Atari - Axlon, Tod Frye - Heuristica, Augustin Ortiz", "CX26169", "Shooting Arcade (01-16-1990) (Atari) (Prototype) (PAL)", "Uses the Light Gun Controller (left only)", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "559317712f989f097ea464517f1a8318", "Panda", "100", "Space Canyon (1983) (Panda)", "AKA Space Cavern", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "55949cb7884f9db0f8dfcf8707c7e5cb", "Atari, Ed Logg, Carol Shaw - Sears", "CX2639 - 49-75162", "Othello (1981) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1270,6 +1274,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "5c86e938e0845b9d61f458539e9a552b", "Atari, Alan Miller", "CX26163P", "Surround (32 in 1) (1988) (Atari) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5cbd7c31443fb9c308e9f0b54d94a395", "Spectravideo, Mark Turmell", "SA-217", "Gas Hog (1983) (Spectravideo) [fixed]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5ce98f22ade915108860424d8dde0d35", "", "", "Hangman Man Biglist3 (Hack)", "Hack of Hangman", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "5ced13931c21ef4fc77d3fe801a1cbfa", "CCE", "C-828", "Missile Command (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5d0e8a25cbd23e76f843c75a86b7e15b", "Coleco - Individeo, Ed Temple", "", "Cabbage Patch Kids (09-07-1984) (Coleco) (Prototype)", "Adventures in the Park", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5d132d121aabc5235dd039dfc46aa024", "", "", "Basketball (208 in 1) (Unknown) (PAL) (Hack)", "Console ports are swapped", "Hack", "", "", "", "", "", "", "YES", "", "", "", "", "", "", "", "", "" },
   { "5d25df9dc2cde746ceac48e834cf84a7", "Activision - Woodside Design Associates, Steve 'Jessica Stevens' Kitchen", "EAZ-033", "Space Shuttle (1983) (Activision) (SECAM)", "A Journey Into Space", "", "", "", "FE", "", "", "", "", "", "", "", "", "SECAM", "", "", "", "" },
@@ -1713,7 +1718,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "7cc77f6745e1f2b20df4a4327d350545", "Atari, Richard Maurer", "CX2632, CX2632P", "Space Invaders (1980) (Atari) (PAL) [fixed]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "7ccf350354ee15cd9b85564a2014b08c", "", "", "Big Dig (13-04-2003) (CT)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "220", "", "" },
   { "7cd379da92c93679f3b6d2548617746a", "", "", "Demo Image Series #5 - Clown (19-02-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "7cd900e9eccbb240fe9c37fa28f917b5", "Jone Yuan Telephonic Enterprise Co", "", "Bi! Bi! (Jone Yuan) (PAL)", "AKA Skindiver", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "7cd900e9eccbb240fe9c37fa28f917b5", "Jone Yuan Telephonic Enterprise Co", "", "Bi! Bi! (Jone Yuan) (PAL)", "AKA Skindiver", "", "", "", "", "", "", "", "", "", "", "", "", "", "36", "250", "", "" },
   { "7ced6709f091e79a2ab9575d3516a4ac", "Activision, Steve Cartwright - Ariola", "EAX-027 - 711 027-722", "Plaque Attack (1983) (Activision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "7cedffa0db65d610568b90aeca705ac6", "Atari, Rob Fulop - Sears", "CX2638 - 49-75166", "Missile Command (1981) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "7cf3a9267cdb95aba91abc5838d61cc5", "Thomas Jentzsch", "", "Centipede - Atari Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)", "Uses Atari Mouse Controller", "", "", "", "", "", "", "", "", "ATARIMOUSE", "", "", "", "PAL60", "", "", "", "" },
@@ -2448,6 +2453,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "b79fe32320388a197ac3a0b932cc2189", "Imagic, Bob Smith", "13207, EIZ-001-04I", "Moonsweeper (1983) (Imagic) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "b7a7e34e304e4b7bc565ec01ba33ea27", "Parker Brothers", "PB5820", "Mr. Do!'s Castle (1984) (Parker Bros) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "b7b1d3ce07e75976c43a2dca3866237e", "Atari", "CX26163P", "Freeway Chicken (32 in 1) (1988) (Atari) (PAL) (4K)", "AKA Freeway", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "b7d7c76e37f372f4e4979b380ed95a58", "AtariAge - Michael Haas", "RC2", "Flappy (2014) (AtariAge) (PAL60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "", "" },
   { "b7e459d5416eeb196aaa8e092db14463", "", "", "Push (V0.02) (1998) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b7f184013991823fc02a6557341d2a7a", "", "", "Blue Rod Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b80d50ecee73919a507498d0a4d922ae", "20th Century Fox Video Games - Sirius Software, David Lubar", "11008", "Fantastic Voyage (1982) (20th Century Fox)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },

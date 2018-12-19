@@ -122,6 +122,9 @@
 
   * Added recently released 'Arkyology' prototype ROM to the database.
 
+  * Added 'Amoeba Jump' and 'Flappy' ROMs (from the Retron77) to the
+    database.
+
   * Fixed 'Street Racer' and 'Video Olympics' ROMs to use paddles in both
     ports.
 
