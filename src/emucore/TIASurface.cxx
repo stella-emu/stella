@@ -418,7 +418,10 @@ void TIASurface::render()
     mySLineSurface->render();
 
   if(mySaveSnapFlag)
+  {
     myOSystem.png().takeSnapshot();
+    mySaveSnapFlag = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -427,6 +430,8 @@ void TIASurface::renderForSnapshot()
   // TODO: This is currently called from PNGLibrary::takeSnapshot() only
   // Therefore the code could be simplified.
   // At some point, we will probably merge some of the functionality.
+  // Furthermore, toggling the variable 'mySaveSnapFlag' in different places
+  // is brittle, especially since rendering can happen in a different thread.
 
   uInt32 width = myTIA->width();
   uInt32 height = myTIA->height();
