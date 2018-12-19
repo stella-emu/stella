@@ -131,6 +131,9 @@
   * The UNIX builds now use the system-installed PNG and ZLIB libraries
     by default.
 
+  * The Macintosh builds are now named 'macOS' throughout the codebase to
+    reflect the new naming from Apple.
+
   * For better compatibility, the Windows 32-bit version does not require
     SSE2 anymore.
 

@@ -44,7 +44,7 @@
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#if defined(BSPF_MAC_OSX)
+#if defined(BSPF_MACOS)
 int stellaMain(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])

@@ -18,8 +18,8 @@
 #import <Cocoa/Cocoa.h>
 
 /**
-  AboutBox window class and support functions for the Macintosh OS X
-  SDL port of Stella.
+  AboutBox window class and support functions for the macOS
+  SDL2 port of Stella.
 
   @author  Mark Grebe <atarimac@cox.net>
 */

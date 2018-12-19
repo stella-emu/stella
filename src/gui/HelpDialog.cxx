@@ -84,7 +84,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
-#ifdef BSPF_MAC_OSX
+#ifdef BSPF_MACOS
   #define ALT_ "Cmd"
 #else
   #define ALT_ "Alt"
@@ -102,7 +102,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   {
     case 1:
       title = "Common commands";
-#ifndef BSPF_MAC_OSX
+#ifndef BSPF_MACOS
       ADD_BIND("Ctrl Q",    "Quit emulation");
 #else
       ADD_BIND("Cmd Q",     "Quit emulation");

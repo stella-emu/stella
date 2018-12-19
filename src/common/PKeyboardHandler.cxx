@@ -259,7 +259,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
   // Control or Alt/Cmd combos first
   if(StellaModTest::isAlt(mod) && state)
   {
-#ifdef BSPF_MAC_OSX
+#ifdef BSPF_MACOS
     // These keys work in all states
     if(key == KBDK_Q)
     {

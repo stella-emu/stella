@@ -25,23 +25,23 @@
 #include <sys/filio.h>
 #include <sys/ioctl.h>
 
-#include "SerialPortMACOSX.hxx"
+#include "SerialPortMACOS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SerialPortMACOSX::SerialPortMACOSX()
+SerialPortMACOS::SerialPortMACOS()
   : SerialPort(),
     myHandle(0)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SerialPortMACOSX::~SerialPortMACOSX()
+SerialPortMACOS::~SerialPortMACOS()
 {
   closePort();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortMACOSX::openPort(const string& device)
+bool SerialPortMACOS::openPort(const string& device)
 {
   myHandle = open(device.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
   if(myHandle <= 0)
@@ -61,7 +61,7 @@ bool SerialPortMACOSX::openPort(const string& device)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SerialPortMACOSX::closePort()
+void SerialPortMACOS::closePort()
 {
   if(myHandle)
   {
@@ -71,11 +71,11 @@ void SerialPortMACOSX::closePort()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortMACOSX::writeByte(const uInt8* data)
+bool SerialPortMACOS::writeByte(const uInt8* data)
 {
   if(myHandle)
   {
-//    cerr << "SerialPortMACOSX::writeByte " << (int)(*data) << endl;
+//    cerr << "SerialPortMACOS::writeByte " << (int)(*data) << endl;
     return write(myHandle, data, 1) == 1;
   }
   return false;

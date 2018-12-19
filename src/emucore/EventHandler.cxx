@@ -700,7 +700,7 @@ void EventHandler::setActionMappings(EventMode mode)
     // There are some keys which are hardcoded.  These should be represented too.
     string prepend = "";
     if(event == Event::Quit)
-#ifndef BSPF_MAC_OSX
+#ifndef BSPF_MACOS
       prepend = "Ctrl Q";
 #else
       prepend = "Cmd Q";

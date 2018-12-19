@@ -16,7 +16,7 @@
 //============================================================================
 
 #include "FSNode.hxx"
-#include "OSystemMACOSX.hxx"
+#include "OSystemMACOS.hxx"
 
 /**
   Each derived class is responsible for calling the following methods
@@ -29,24 +29,24 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemMACOSX::OSystemMACOSX()
+OSystemMACOS::OSystemMACOS()
   : OSystem()
 {
   setBaseDir("~/Library/Application Support/Stella/");
 
-  // This will be overridden, as OSX uses plist files for settings
+  // This will be overridden, as macOS uses plist files for settings
   setConfigFile("~/Library/Application Support/Stella/stellarc");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemMACOSX::defaultSaveDir() const
+string OSystemMACOS::defaultSaveDir() const
 {
   FilesystemNode desktop("~/Desktop/");
   return desktop.isDirectory() ? desktop.getShortPath() : "~/";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemMACOSX::defaultLoadDir() const
+string OSystemMACOS::defaultLoadDir() const
 {
   return defaultSaveDir();
 }

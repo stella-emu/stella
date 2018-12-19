@@ -19,7 +19,7 @@
 #define FSNODE_FACTORY_HXX
 
 class AbstractFSNode;
-#if defined(BSPF_UNIX) || defined(BSPF_MAC_OSX)
+#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
   #include "FSNodePOSIX.hxx"
 #elif defined(BSPF_WINDOWS)
   #include "FSNodeWINDOWS.hxx"
@@ -45,7 +45,7 @@ class FilesystemNodeFactory
       switch(type)
       {
         case SYSTEM:
-      #if defined(BSPF_UNIX) || defined(BSPF_MAC_OSX)
+      #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
           return make_unique<FilesystemNodePOSIX>(path);
       #elif defined(BSPF_WINDOWS)
           return make_unique<FilesystemNodeWINDOWS>(path);

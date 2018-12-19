@@ -727,7 +727,7 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
 
   _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
 
-#ifndef BSPF_MAC_OSX
+#ifndef BSPF_MACOS
   addOKWidget(new ButtonWidget(this, font, _w - 2 * buttonWidth - HBORDER - BUTTON_GAP,
       _h - buttonHeight - VBORDER, buttonWidth, buttonHeight, okText, GuiObject::kOKCmd));
   addCancelWidget(new ButtonWidget(this, font, _w - (buttonWidth + HBORDER),

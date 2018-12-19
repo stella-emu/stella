@@ -18,19 +18,12 @@
 #import <Cocoa/Cocoa.h>
 
 /**
-  Preferences class and support functions for the Macintosh OS X
-  SDL port of Stella.
+  AboutBoxTextView class and support functions for the macOS
+  SDL2 port of Stella.
 
   @author  Mark Grebe <atarimac@cox.net>
 */
-@interface Preferences : NSObject
+@interface AboutBoxTextView : NSTextView
 {
-  NSUserDefaults *defaults;    /* Defaults pointer */
 }
-
-+ (Preferences *)sharedInstance;
-- (void)setString:(const char *)key : (const char *)value;
-- (void)getString:(const char *)key : (char *)value : (int)size;
-- (void)save;
-
 @end
