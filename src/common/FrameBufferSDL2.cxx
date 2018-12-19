@@ -89,12 +89,12 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
 
   // First get the maximum windowed desktop resolution
   int maxDisplays = SDL_GetNumVideoDisplays();
-#if 0 //def BSPF_MAC_OSX
+#if SDL_VERSION_ATLEAST(2,0,5)
   SDL_Rect r;
   for(int i = 0; i < maxDisplays; ++i)
   {
     // Display bounds minus dock
-    SDL_GetDisplayUsableBounds(i, &r);   // Requires SDL-2.0.5 or higher
+    SDL_GetDisplayUsableBounds(i, &r);  // Requires SDL-2.0.5 or higher
     displays.emplace_back(r.w, r.h);
   }
 #else
@@ -105,7 +105,7 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
     displays.emplace_back(display.w, display.h);
   }
 #endif
-  
+
   struct RenderName
   {
     string sdlName;
