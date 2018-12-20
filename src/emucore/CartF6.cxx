@@ -32,10 +32,8 @@ CartridgeF6::CartridgeF6(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF6::reset()
 {
-  // Use random startup bank
-  initializeStartBank();
-
   // Upon reset we switch to the startup bank
+  initializeStartBank(0);
   bank(startBank());
 }
 

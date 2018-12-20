@@ -32,9 +32,8 @@ CartridgeUA::CartridgeUA(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeUA::reset()
 {
-  initializeStartBank();
-
   // Upon reset we switch to the startup bank
+  initializeStartBank(0);
   bank(startBank());
 }
 

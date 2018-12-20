@@ -45,7 +45,7 @@ CartridgeFA2::CartridgeFA2(const BytePtr& image, uInt32 size,
 void CartridgeFA2::reset()
 {
   initializeRAM(myRAM, 256);
-  initializeStartBank();
+  initializeStartBank(0);
 
   // Upon reset we switch to the startup bank
   bank(startBank());

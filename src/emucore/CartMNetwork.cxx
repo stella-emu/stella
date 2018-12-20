@@ -46,8 +46,7 @@ void CartridgeMNetwork::reset()
 {
   initializeRAM(myRAM, RAM_SIZE);
 
-  // Use random startup bank
-  initializeStartBank();
+  initializeStartBank(0);
   uInt32 ramBank = randomStartBank() ?
     mySystem->randGenerator().next() % 4 : 0;
 

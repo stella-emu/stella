@@ -139,18 +139,16 @@ void Cartridge::initializeRAM(uInt8* arr, uInt32 size, uInt8 val) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge::initializeStartBank(int defaultBank)
+uInt16 Cartridge::initializeStartBank(uInt16 defaultBank)
 {
   int propsBank = myStartBankFromPropsFunc();
 
-  bool userandom = randomStartBank() || (defaultBank < 0 && propsBank < 0);
-
-  if(userandom)
+  if(randomStartBank())
     return myStartBank = mySystem->randGenerator().next() % bankCount();
   else if(propsBank >= 0)
     return myStartBank = BSPF::clamp(propsBank, 0, bankCount() - 1);
   else
-    return myStartBank = BSPF::clamp(defaultBank, 0, bankCount() - 1);
+    return myStartBank = BSPF::clamp(int(defaultBank), 0, bankCount() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

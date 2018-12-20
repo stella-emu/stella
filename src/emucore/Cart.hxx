@@ -258,11 +258,12 @@ class Cartridge : public Device
       NOTE: If this method is used, it *must* be called from the cart reset()
             method, *not* from the c'tor.
 
-      @param defaultBank  The actual bank to use during reset
+      @param defaultBank  The default bank to use during reset, if
+                          randomization or properties aren't being used
 
       @return  The bank number that was determined
     */
-    uInt16 initializeStartBank(int defaultBank = -1);
+    uInt16 initializeStartBank(uInt16 defaultBank);
 
     /**
       Checks if initial RAM randomization is enabled.
