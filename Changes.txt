@@ -128,6 +128,10 @@
   * Fixed 'Street Racer' and 'Video Olympics' ROMs to use paddles in both
     ports.
 
+  * If using SDL 2.0.5 or above, the calculated desktop size now takes
+    the taskbar/dock into account (so windows should no longer overlap
+    those areas).
+
   * For UNIX systems: in the ROM launcher, when using symlinks use the
     symlink pathname instead of the underlying filesystem pathname.
 
