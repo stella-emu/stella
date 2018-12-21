@@ -93,9 +93,9 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "128 samples", 128);
   VarList::push_back(items, "256 samples", 256);
   VarList::push_back(items, "512 samples", 512);
-  VarList::push_back(items, "1 kSamples", 1024);
-  VarList::push_back(items, "2 kSamples", 2048);
-  VarList::push_back(items, "4 KSamples", 4096);
+  VarList::push_back(items, "1k samples", 1024);
+  VarList::push_back(items, "2k samples", 2048);
+  VarList::push_back(items, "4K samples", 4096);
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth, lineHeight,
                                     items, "Fragment size", lwidth);
