@@ -48,7 +48,7 @@
   * FPS setting replaced with speed setting for adjusting emulation speed.
 
   * Extra functionality for Time Machine dialog (start/stop recording;
-    minor fixes; TODO button and initial key repeats...)
+    minor fixes).
 
   * When logging messages to the System Logger, condense similar messages
     that arrive in batches into fewer messages (including timestamps).

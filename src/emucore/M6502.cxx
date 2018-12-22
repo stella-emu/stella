@@ -24,19 +24,19 @@
 
   // Flags for disassembly types
   #define DISASM_CODE  CartDebug::CODE
-//   #define DISASM_GFX   CartDebug::GFX  // TODO - uncomment when needed
-//   #define DISASM_PGFX  CartDebug::PGFX // TODO - uncomment when needed
+//   #define DISASM_GFX   CartDebug::GFX
+//   #define DISASM_PGFX  CartDebug::PGFX
   #define DISASM_DATA  CartDebug::DATA
-//   #define DISASM_ROW   CartDebug::ROW  // TODO - uncomment when needed
+//   #define DISASM_ROW   CartDebug::ROW
   #define DISASM_WRITE CartDebug::WRITE
   #define DISASM_NONE  0
 #else
   // Flags for disassembly types
   #define DISASM_CODE  0
-//   #define DISASM_GFX   0   // TODO - uncomment when needed
-//   #define DISASM_PGFX  0   // TODO - uncomment when needed
+//   #define DISASM_GFX   0
+//   #define DISASM_PGFX  0
   #define DISASM_DATA  0
-//   #define DISASM_ROW   0   // TODO - uncomment when needed
+//   #define DISASM_ROW   0
   #define DISASM_NONE  0
   #define DISASM_WRITE 0
 #endif
