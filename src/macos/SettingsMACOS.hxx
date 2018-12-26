@@ -15,26 +15,26 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SETTINGS_MAC_OSX_HXX
-#define SETTINGS_MAC_OSX_HXX
+#ifndef SETTINGS_MACOS_HXX
+#define SETTINGS_MACOS_HXX
 
 class OSystem;
 
 #include "Settings.hxx"
 
 /**
-  This class defines Macintosh OSX system specific settings.
+  This class defines macOS system-specific settings.
 
-  @author  Mark Grebe
+  @author  Mark Grebe, Stephen Anthony
 */
-class SettingsMACOSX : public Settings
+class SettingsMACOS : public Settings
 {
   public:
     /**
       Create a new UNIX settings object
     */
-    explicit SettingsMACOSX(OSystem& osystem);
-    virtual ~SettingsMACOSX() = default;
+    explicit SettingsMACOS(OSystem& osystem);
+    virtual ~SettingsMACOS() = default;
 
   public:
     /**
@@ -51,11 +51,11 @@ class SettingsMACOSX : public Settings
 
   private:
     // Following constructors and assignment operators not supported
-    SettingsMACOSX() = delete;
-    SettingsMACOSX(const SettingsMACOSX&) = delete;
-    SettingsMACOSX(SettingsMACOSX&&) = delete;
-    SettingsMACOSX& operator=(const SettingsMACOSX&) = delete;
-    SettingsMACOSX& operator=(SettingsMACOSX&&) = delete;
+    SettingsMACOS() = delete;
+    SettingsMACOS(const SettingsMACOS&) = delete;
+    SettingsMACOS(SettingsMACOS&&) = delete;
+    SettingsMACOS& operator=(const SettingsMACOS&) = delete;
+    SettingsMACOS& operator=(SettingsMACOS&&) = delete;
 };
 
 #endif

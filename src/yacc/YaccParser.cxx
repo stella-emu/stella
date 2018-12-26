@@ -181,8 +181,6 @@ CartMethod getCartSpecial(char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_bank"))
     return &CartDebug::getBank;
-  else if(BSPF::equalsIgnoreCase(ch, "_rwport"))
-    return &CartDebug::readFromWritePort;
   else if(BSPF::equalsIgnoreCase(ch, "__lastread"))
     return &CartDebug::lastReadBaseAddress;
   else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))

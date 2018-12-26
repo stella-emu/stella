@@ -22,8 +22,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCTY::CartridgeCTY(const BytePtr& image, uInt32 size,
-                           const OSystem& osystem)
-  : Cartridge(osystem.settings()),
+                           const string& md5, const OSystem& osystem)
+  : Cartridge(osystem.settings(), md5),
     myOSystem(osystem),
     myOperationType(0),
     myTunePosition(0),
@@ -42,7 +42,7 @@ CartridgeCTY::CartridgeCTY(const BytePtr& image, uInt32 size,
   memset(myTuneData, 0, 28*1024);
 
   // Extract tune data if it exists
-  if (size > 32768u)
+  if(size > 32768u)
     memcpy(myTuneData, image.get() + 32768u, size - 32768u);
 
   // Point to the first tune
@@ -125,15 +125,7 @@ uInt8 CartridgeCTY::peek(uInt16 address)
   if(address < 0x0040)  // Write port is at $1000 - $103F (64 bytes)
   {
     // Reading from the write port triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
-
-    if(bankLocked())
-      return value;
-    else
-    {
-      triggerReadFromWritePort(peekAddress);
-      return myRAM[address] = value;
-    }
+    return peekRAM(myRAM[address], peekAddress);
   }
   else if(address < 0x0080)  // Read port is at $1040 - $107F (64 bytes)
   {
@@ -185,9 +177,9 @@ uInt8 CartridgeCTY::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCTY::poke(uInt16 address, uInt8 value)
 {
+  uInt16 pokeAddress = address;
   address &= 0x0FFF;
 
-//cerr << "POKE: address=" << HEX4 << address << ", value=" << HEX2 << value << endl;
   if(address < 0x0040)  // Write port is at $1000 - $103F (64 bytes)
   {
     switch(address)
@@ -211,7 +203,7 @@ bool CartridgeCTY::poke(uInt16 address, uInt8 value)
         updateTune();
         break;
       default:
-        myRAM[address] = value;
+        pokeRAM(myRAM[address], pokeAddress, value);
         break;
     }
   }
@@ -312,7 +304,6 @@ bool CartridgeCTY::save(Serializer& out) const
     out.putIntArray(myMusicCounters, 3);
     out.putIntArray(myMusicFrequencies, 3);
     out.putLong(myFrequencyImage - myTuneData);
-
   }
   catch(...)
   {

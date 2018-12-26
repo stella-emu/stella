@@ -20,7 +20,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ThreadDebuggingHelper::ThreadDebuggingHelper()
   : myMainThreadIdConfigured(false)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ThreadDebuggingHelper& ThreadDebuggingHelper::instance()

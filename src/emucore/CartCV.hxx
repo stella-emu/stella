@@ -45,9 +45,11 @@ class CartridgeCV : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
+      @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeCV(const BytePtr& image, uInt32 size, const Settings& settings);
+    CartridgeCV(const BytePtr& image, uInt32 size, const string& md5,
+                const Settings& settings);
     virtual ~CartridgeCV() = default;
 
   public:
@@ -123,6 +125,15 @@ class CartridgeCV : public Cartridge
       @return The byte at the specified address
     */
     uInt8 peek(uInt16 address) override;
+
+    /**
+      Change the byte at the specified address to the given value
+
+      @param address The address where the value should be stored
+      @param value The value to be stored at the address
+      @return  True if the poke changed the device address space, else false
+    */
+    bool poke(uInt16 address, uInt8 value) override;
 
   private:
     // Pointer to the initial RAM data from the cart

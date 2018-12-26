@@ -104,7 +104,7 @@ void StringListWidget::drawWidget(bool hilite)
 GUI::Rect StringListWidget::getEditRect() const
 {
   GUI::Rect r(2, 1, _w - 2, _fontHeight);
-  const int offset = (_selectedItem - _currentPos) * _fontHeight;
+  const int offset = std::max(0, (_selectedItem - _currentPos) * _fontHeight);
   r.top += offset;
   r.bottom += offset;
 

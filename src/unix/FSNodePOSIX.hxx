@@ -20,7 +20,7 @@
 
 #include "FSNode.hxx"
 
-#ifdef MACOSX
+#ifdef BSPF_MACOS
   #include <sys/types.h>
 #endif
 
@@ -39,7 +39,7 @@
 #endif
 
 /*
- * Implementation of the Stella file system API based on POSIX (for Linux and OSX)
+ * Implementation of the Stella file system API based on POSIX (for Linux and macOS)
  *
  * Parts of this class are documented in the base interface class, AbstractFSNode.
  */

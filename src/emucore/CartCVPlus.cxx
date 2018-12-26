@@ -21,8 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCVPlus::CartridgeCVPlus(const BytePtr& image, uInt32 size,
-                                 const Settings& settings)
-  : Cartridge(settings),
+                                 const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     mySize(size),
     myCurrentBank(0)
 {
@@ -56,18 +56,18 @@ void CartridgeCVPlus::install(System& system)
     mySystem->setPageAccess(addr, access);
 
   // Set the page accessing method for the RAM writing pages
-  access.directPeekBase = nullptr;
+  // Map access to this class, since we need to inspect all accesses to
+  // check if RWP happens
+  access.directPeekBase = access.directPokeBase = nullptr;
   access.codeAccessBase = nullptr;
   access.type = System::PA_WRITE;
   for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    access.directPokeBase = &myRAM[addr & 0x03FF];
     access.codeAccessBase = &myCodeAccessBase[mySize + (addr & 0x03FF)];
     mySystem->setPageAccess(addr, access);
   }
 
   // Set the page accessing method for the RAM reading pages
-  access.directPokeBase = nullptr;
   access.type = System::PA_READ;
   for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
   {
@@ -83,19 +83,8 @@ void CartridgeCVPlus::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCVPlus::peek(uInt16 address)
 {
-  if((address & 0x0FFF) < 0x0800)  // Write port is at 0xF400 - 0xF800 (1024 bytes)
-  {                                // Read port is handled in ::install()
-    // Reading from the write port triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
-
-    if(bankLocked())
-      return value;
-    else
-    {
-      triggerReadFromWritePort(address);
-      return myRAM[address & 0x03FF] = value;
-    }
-  }
+  if((address & 0x0FFF) < 0x0800)  // Write port is at 0xF400 - 0xF7FF (1024 bytes)
+    return peekRAM(myRAM[address & 0x03FF], address);
   else
     return myImage[(address & 0x07FF) + (myCurrentBank << 11)];
 }
@@ -103,16 +92,22 @@ uInt8 CartridgeCVPlus::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCVPlus::poke(uInt16 address, uInt8 value)
 {
+  uInt16 pokeAddress = address;
   address &= 0x0FFF;
 
-  // Switch banks if necessary
-  if(address == 0x003D)
-    bank(value);
+  if(address < 0x0040)
+  {
+    // Switch banks if necessary
+    if(address == 0x003D)
+      bank(value);
 
-  // Handle TIA space that we claimed above
-  mySystem->tia().poke(address, value);
+    // Handle TIA space that we claimed above
+    return mySystem->tia().poke(address, value);
+  }
+  else
+    pokeRAM(myRAM[address & 0x03FF], pokeAddress, value);
 
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

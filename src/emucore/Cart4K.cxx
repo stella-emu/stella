@@ -20,8 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4K::Cartridge4K(const BytePtr& image, uInt32 size,
-                         const Settings& settings)
-  : Cartridge(settings)
+                         const string& md5, const Settings& settings)
+  : Cartridge(settings, md5)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(4096u, size));

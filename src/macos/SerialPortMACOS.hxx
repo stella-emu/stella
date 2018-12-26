@@ -15,22 +15,22 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SERIALPORT_UNIX_HXX
-#define SERIALPORT_UNIX_HXX
+#ifndef SERIALPORT_MACOS_HXX
+#define SERIALPORT_MACOS_HXX
 
 #include "SerialPort.hxx"
 
 /**
-  Implement reading and writing from a serial port under OSX.  For now,
+  Implement reading and writing from a serial port under macOS.  For now,
   reading isn't actually supported at all.
 
   @author  Stephen Anthony & D. Spice
 */
-class SerialPortMACOSX : public SerialPort
+class SerialPortMACOS : public SerialPort
 {
   public:
-    SerialPortMACOSX();
-    virtual ~SerialPortMACOSX();
+    SerialPortMACOS();
+    virtual ~SerialPortMACOS();
 
     /**
       Open the given serial port with the specified attributes.
@@ -59,10 +59,10 @@ class SerialPortMACOSX : public SerialPort
 
   private:
     // Following constructors and assignment operators not supported
-    SerialPortMACOSX(const SerialPortMACOSX&) = delete;
-    SerialPortMACOSX(SerialPortMACOSX&&) = delete;
-    SerialPortMACOSX& operator=(const SerialPortMACOSX&) = delete;
-    SerialPortMACOSX& operator=(SerialPortMACOSX&&) = delete;
+    SerialPortMACOS(const SerialPortMACOS&) = delete;
+    SerialPortMACOS(SerialPortMACOS&&) = delete;
+    SerialPortMACOS& operator=(const SerialPortMACOS&) = delete;
+    SerialPortMACOS& operator=(SerialPortMACOS&&) = delete;
 };
 
 #endif

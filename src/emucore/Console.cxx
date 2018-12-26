@@ -819,7 +819,7 @@ void Console::createAudioQueue()
     myEmulationTiming.audioFragmentSize(),
     myEmulationTiming.audioQueueCapacity(),
     useStereo,
-    [this](string msg){ myOSystem.logMessage(msg, 0); }
+    [this](string msg){ myOSystem.logMessage(msg, 1); }
   );
 }
 

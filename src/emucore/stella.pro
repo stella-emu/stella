@@ -1022,6 +1022,14 @@
 "Cartridge.Note" "AKA Dragster Rennen, Drag Strip"
 ""
 
+"Cartridge.MD5" "0c72cc3a6658c1abd4b735ef55fa72e4"
+"Cartridge.Manufacturer" "Dion Olsthoorn"
+"Cartridge.ModelNo" "v1.3"
+"Cartridge.Name" "Amoeba Jump (2018) (Dionoid) (PAL60)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "0c7926d660f903a2d6910c254660c32c"
 "Cartridge.Manufacturer" "Atari, Larry Kaplan"
 "Cartridge.ModelNo" "CX2602, CX2602P"
@@ -3755,6 +3763,13 @@
 "Cartridge.Name" "Secret Quest (1989) (Atari) (PAL)"
 ""
 
+"Cartridge.MD5" "2d33a44e82f88d05f6c50577218c0cae"
+"Cartridge.Manufacturer" "AtariAge - Michael Haas"
+"Cartridge.ModelNo" "RC2"
+"Cartridge.Name" "Flappy (2014) (AtariAge)"
+"Cartridge.Rarity" "Homebrew"
+""
+
 "Cartridge.MD5" "2d38a96f92952b301eefdf25a5e6976b"
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Atari Mouse) (Y_Inverted) v4 (Omegamatrix)"
@@ -5115,6 +5130,8 @@
 "Cartridge.Name" "Bobby Is Going Home (1983) (CCE) (PAL)"
 "Cartridge.Note" "AKA Bobby Vai Para Casa"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "36"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "3cdd91e1c28d28e856c0063d602da166"
@@ -7028,6 +7045,13 @@
 "Cartridge.Name" "Video Checkers (1980) (Atari)"
 ""
 
+"Cartridge.MD5" "539f3c42c4e15f450ed93cb96ce93af5"
+"Cartridge.Manufacturer" "Dion Olsthoorn"
+"Cartridge.ModelNo" "v1.3"
+"Cartridge.Name" "Amoeba Jump (2018) (Dionoid)"
+"Cartridge.Rarity" "Homebrew"
+""
+
 "Cartridge.MD5" "53b66f11f67c3b53b2995e0e02017bd7"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-1005"
@@ -7157,6 +7181,14 @@
 "Cartridge.Name" "RealSports Basketball (Thomas Jentzsch)"
 "Cartridge.Note" "NTSC Conversion"
 "Cartridge.Rarity" "Homebrew"
+""
+
+"Cartridge.MD5" "553dbf9358cfd2195e2fa0e08b01fb6a"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, Kevin Osborn"
+"Cartridge.ModelNo" "CX2691"
+"Cartridge.Name" "Joust (07-05-1983) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "557e893616648c37a27aab5a47acbf10"
@@ -7722,6 +7754,12 @@
 "Cartridge.Name" "Hangman Man Biglist3 (Hack)"
 "Cartridge.Note" "Hack of Hangman"
 "Cartridge.Rarity" "Hack"
+""
+
+"Cartridge.MD5" "5ced13931c21ef4fc77d3fe801a1cbfa"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-828"
+"Cartridge.Name" "Missile Command (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "5d0e8a25cbd23e76f843c75a86b7e15b"
@@ -10462,6 +10500,8 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Bi! Bi! (Jone Yuan) (PAL)"
 "Cartridge.Note" "AKA Skindiver"
+"Display.YStart" "36"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "7ced6709f091e79a2ab9575d3516a4ac"
@@ -15025,6 +15065,14 @@
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Freeway Chicken (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Cartridge.Note" "AKA Freeway"
+""
+
+"Cartridge.MD5" "b7d7c76e37f372f4e4979b380ed95a58"
+"Cartridge.Manufacturer" "AtariAge - Michael Haas"
+"Cartridge.ModelNo" "RC2"
+"Cartridge.Name" "Flappy (2014) (AtariAge) (PAL60)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "b7e459d5416eeb196aaa8e092db14463"

@@ -716,7 +716,7 @@ case $_host_os in
 			INCLUDES="$INCLUDES -I$SRC/unix"
 			;;
 		darwin)
-			DEFINES="$DEFINES -DBSPF_UNIX -DOSX_KEYS"
+			DEFINES="$DEFINES -DBSPF_UNIX -DMACOS_KEYS"
 			MODULES="$MODULES $SRC/unix"
 			INCLUDES="$INCLUDES -I$SRC/unix"
 			;;
@@ -823,7 +823,7 @@ rm -f stella-conf*
 if test "$_host_os" = darwin; then
 	cat <<EOI
 
-WARNING: plain UNIX-style builds on OSX without XCode have degraded functionality
+WARNING: plain UNIX-style builds on macOS without XCode have degraded functionality
 and are unsupported. Continue on your own risk...
 EOI
 fi

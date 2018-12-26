@@ -15,21 +15,24 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "FatalEmulationError.hxx"
+#ifndef EMULATION_WARNING_HXX
+#define EMULATION_WARNING_HXX
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FatalEmulationError::FatalEmulationError(const string& message)
-  : myMessage(message)
-{}
+#include "bspf.hxx"
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* FatalEmulationError::what() const throw()
+class EmulationWarning : public std::exception
 {
-  return myMessage.c_str();
-}
+  public:
+    explicit EmulationWarning(const string& message) : myMessage(message) { }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FatalEmulationError::raise(const string& message)
-{
-  throw FatalEmulationError(message);
-}
+    const char* what() const noexcept override { return myMessage.c_str(); }
+
+    [[noreturn]] static void raise(const string& message) {
+      throw EmulationWarning(message);
+    }
+
+  private:
+    const string myMessage;
+};
+
+#endif // EMULATION_WARNING_HXX

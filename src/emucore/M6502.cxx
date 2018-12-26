@@ -24,30 +24,32 @@
 
   // Flags for disassembly types
   #define DISASM_CODE  CartDebug::CODE
-//   #define DISASM_GFX   CartDebug::GFX  // TODO - uncomment when needed
-//   #define DISASM_PGFX  CartDebug::PGFX // TODO - uncomment when needed
+//   #define DISASM_GFX   CartDebug::GFX
+//   #define DISASM_PGFX  CartDebug::PGFX
   #define DISASM_DATA  CartDebug::DATA
-//   #define DISASM_ROW   CartDebug::ROW  // TODO - uncomment when needed
+//   #define DISASM_ROW   CartDebug::ROW
   #define DISASM_WRITE CartDebug::WRITE
   #define DISASM_NONE  0
 #else
   // Flags for disassembly types
   #define DISASM_CODE  0
-//   #define DISASM_GFX   0   // TODO - uncomment when needed
-//   #define DISASM_PGFX  0   // TODO - uncomment when needed
+//   #define DISASM_GFX   0
+//   #define DISASM_PGFX  0
   #define DISASM_DATA  0
-//   #define DISASM_ROW   0   // TODO - uncomment when needed
+//   #define DISASM_ROW   0
   #define DISASM_NONE  0
   #define DISASM_WRITE 0
 #endif
 #include "Settings.hxx"
 #include "Vec.hxx"
 
+#include "Cart.hxx"
 #include "TIA.hxx"
 #include "M6532.hxx"
 #include "System.hxx"
 #include "M6502.hxx"
 #include "DispatchResult.hxx"
+#include "exception/EmulationWarning.hxx"
 #include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,6 +67,7 @@ M6502::M6502(const Settings& settings)
     myLastPokeAddress(0),
     myLastPeekBaseAddress(0),
     myLastPokeBaseAddress(0),
+    myFlags(DISASM_NONE),
     myLastSrcAddressS(-1),
     myLastSrcAddressA(-1),
     myLastSrcAddressX(-1),
@@ -72,7 +75,8 @@ M6502::M6502(const Settings& settings)
     myDataAddressForPoke(0),
     myOnHaltCallback(nullptr),
     myHaltRequested(false),
-    myGhostReadsTrap(true),
+    myGhostReadsTrap(false),
+    myReadFromWritePortBreak(false),
     myStepStateByInstruction(false)
 {
 #ifdef DEBUGGER_SUPPORT
@@ -117,9 +121,11 @@ void M6502::reset()
   myLastSrcAddressS = myLastSrcAddressA =
     myLastSrcAddressX = myLastSrcAddressY = -1;
   myDataAddressForPoke = 0;
+  myFlags = DISASM_NONE;
 
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
+  myReadFromWritePortBreak = mySettings.getBool(devSettings ? "dev.rwportbreak" : "plr.rwportbreak");
 
   myLastBreakCycle = ULLONG_MAX;
 }
@@ -139,6 +145,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
   ////////////////////////////////////////////////
   mySystem->incrementCycles(SYSTEM_CYCLES_PER_CPU);
   icycles += SYSTEM_CYCLES_PER_CPU;
+  myFlags = flags;
   uInt8 result = mySystem->peek(address, flags);
   myLastPeekAddress = address;
 
@@ -282,7 +289,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
         int cond = evalCondBreaks();
         if(cond > -1)
         {
-          stringstream msg;
+          ostringstream msg;
           msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
 
           myLastBreakCycle = mySystem->cycles();
@@ -294,10 +301,12 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       int cond = evalCondSaveStates();
       if(cond > -1)
       {
-        stringstream msg;
+        ostringstream msg;
         msg << "conditional savestate [" << Common::Base::HEX2 << cond << "]";
         myDebugger->addState(msg.str());
       }
+
+      mySystem->cart().clearAllRAMAccesses();
   #endif  // DEBUGGER_SUPPORT
 
       uInt16 operandAddress = 0, intermediateAddress = 0;
@@ -308,6 +317,9 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 
       try {
         icycles = 0;
+    #ifdef DEBUGGER_SUPPORT
+        uInt16 oldPC = PC;
+    #endif
 
         // Fetch instruction at the program counter
         IR = peek(PC++, DISASM_CODE);  // This address represents a code section
@@ -321,9 +333,26 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           default:
             FatalEmulationError::raise("invalid instruction");
         }
-      } catch (FatalEmulationError& e) {
+
+    #ifdef DEBUGGER_SUPPORT
+        if(myReadFromWritePortBreak)
+        {
+          uInt16 rwpAddr = mySystem->cart().getIllegalRAMAccess();
+          if(rwpAddr)
+          {
+            ostringstream msg;
+            msg << "RWP[@ $" << Common::Base::HEX4 << rwpAddr << "]: ";
+            result.setDebugger(currentCycles, msg.str(), oldPC);
+            return;
+          }
+        }
+    #endif  // DEBUGGER_SUPPORT
+      } catch (const FatalEmulationError& e) {
         myExecutionStatus |= FatalErrorBit;
         result.setMessage(e.what());
+      } catch (const EmulationWarning& e) {
+        result.setDebugger(currentCycles, e.what(), PC);
+        return;
       }
 
       currentCycles = (mySystem->cycles() - previousCycles);
@@ -348,7 +377,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       interruptHandler();
     }
 
-    // See if a fatal error has occured
+    // See if a fatal error has occurred
     if(myExecutionStatus & FatalErrorBit)
     {
       // Yes, so answer that something when wrong. The message has already been set when
@@ -433,10 +462,9 @@ bool M6502::save(Serializer& out) const
     out.putInt(myLastSrcAddressA);
     out.putInt(myLastSrcAddressX);
     out.putInt(myLastSrcAddressY);
+    out.putByte(myFlags);
 
     out.putBool(myHaltRequested);
-    out.putBool(myStepStateByInstruction);
-    out.putBool(myGhostReadsTrap);
     out.putLong(myLastBreakCycle);
   }
   catch(...)
@@ -481,12 +509,14 @@ bool M6502::load(Serializer& in)
     myLastSrcAddressA = in.getInt();
     myLastSrcAddressX = in.getInt();
     myLastSrcAddressY = in.getInt();
+    myFlags = in.getByte();
 
     myHaltRequested = in.getBool();
-    myStepStateByInstruction = in.getBool();
-    myGhostReadsTrap = in.getBool();
-
     myLastBreakCycle = in.getLong();
+
+  #ifdef DEBUGGER_SUPPORT
+    updateStepStateByInstruction();
+  #endif
   }
   catch(...)
   {
@@ -634,5 +664,4 @@ void M6502::updateStepStateByInstruction()
   myStepStateByInstruction = myCondBreaks.size() || myCondSaveStates.size() ||
                              myTrapConds.size();
 }
-
 #endif  // DEBUGGER_SUPPORT

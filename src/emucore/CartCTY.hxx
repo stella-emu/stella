@@ -27,8 +27,6 @@ class System;
 #endif
 
 /**
-  FIXME: This scheme is not yet fully implemented.
-
   The 'Chetiry' bankswitch scheme was developed by Chris D. Walton for a
   Tetris clone game by the same name.  It makes use of a Harmony cart,
   whereby ARM code in bank 0 is executed to implement the bankswitch scheme.
@@ -117,9 +115,11 @@ class CartridgeCTY : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
+      @param md5       The md5sum of the ROM image
       @param osystem   A reference to the OSystem currently in use
     */
-    CartridgeCTY(const BytePtr& image, uInt32 size, const OSystem& osystem);
+    CartridgeCTY(const BytePtr& image, uInt32 size, const string& md5,
+                 const OSystem& osystem);
     virtual ~CartridgeCTY() = default;
 
   public:

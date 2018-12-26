@@ -305,7 +305,7 @@ void SoundSDL2::initResampler()
     return nextFragment;
   };
 
-  StaggeredLogger::Logger logger = [this](string msg) { myOSystem.logMessage(msg, 0); };
+  StaggeredLogger::Logger logger = [this](string msg) { myOSystem.logMessage(msg, 1); };
 
   Resampler::Format formatFrom =
     Resampler::Format(myEmulationTiming->audioSampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo());

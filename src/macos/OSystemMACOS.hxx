@@ -15,24 +15,24 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef OSYSTEM_MACOSX_HXX
-#define OSYSTEM_MACOSX_HXX
+#ifndef OSYSTEM_MACOS_HXX
+#define OSYSTEM_MACOS_HXX
 
 #include "OSystem.hxx"
 
 /**
-  This class defines UNIX-like OS's (MacOS X) system specific settings.
+  This class defines UNIX-like OS's (macOS) system-specific settings.
 
-  @author  Mark Grebe
+  @author  Mark Grebe, Stephen Anthony
 */
-class OSystemMACOSX : public OSystem
+class OSystemMACOS : public OSystem
 {
   public:
     /**
-      Create a new MACOSX-specific operating system object
+      Create a new macOS-specific operating system object
     */
-    OSystemMACOSX();
-    virtual ~OSystemMACOSX() = default;
+    OSystemMACOS();
+    virtual ~OSystemMACOS() = default;
 
     /**
       Returns the default paths for loading/saving files.
@@ -42,10 +42,10 @@ class OSystemMACOSX : public OSystem
 
   private:
     // Following constructors and assignment operators not supported
-    OSystemMACOSX(const OSystemMACOSX&) = delete;
-    OSystemMACOSX(OSystemMACOSX&&) = delete;
-    OSystemMACOSX& operator=(const OSystemMACOSX&) = delete;
-    OSystemMACOSX& operator=(OSystemMACOSX&&) = delete;
+    OSystemMACOS(const OSystemMACOS&) = delete;
+    OSystemMACOS(OSystemMACOS&&) = delete;
+    OSystemMACOS& operator=(const OSystemMACOS&) = delete;
+    OSystemMACOS& operator=(OSystemMACOS&&) = delete;
 };
 
 #endif

@@ -20,8 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const BytePtr& image, uInt32 size,
-                         const Settings& settings)
-  : Cartridge(settings),
+                         const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     mySize(size)
 {
   if(mySize == 2048)
@@ -74,14 +74,13 @@ void CartridgeCV::install(System& system)
   }
 
   // Set the page accessing method for the RAM writing pages
+  // Map access to this class, since we need to inspect all accesses to
+  // check if RWP happens
   access.directPeekBase = nullptr;
   access.codeAccessBase = nullptr;
   access.type = System::PA_WRITE;
   for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
-  {
-    access.directPokeBase = &myRAM[addr & 0x03FF];
     mySystem->setPageAccess(addr, access);
-  }
 
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = nullptr;
@@ -98,17 +97,16 @@ void CartridgeCV::install(System& system)
 uInt8 CartridgeCV::peek(uInt16 address)
 {
   // The only way we can get to this method is if we attempt to read from
-  // the write port (0xF400 - 0xF800, 1024 bytes), in which case an
-  // unwanted write is triggered
-  uInt8 value = mySystem->getDataBusState(0xFF);
+  // the write port (0xF400 - 0xF7FF, 1024 bytes), in which case an
+  // unwanted write is potentially triggered
+  return peekRAM(myRAM[address & 0x03FF], address);
+}
 
-  if(bankLocked())
-    return value;
-  else
-  {
-    triggerReadFromWritePort(address);
-    return myRAM[address & 0x03FF] = value;
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCV::poke(uInt16 address, uInt8 value)
+{
+  pokeRAM(myRAM[address & 0x03FF], address, value);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

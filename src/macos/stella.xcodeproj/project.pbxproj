@@ -43,8 +43,6 @@
 		2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D6F062895B2006265D9 /* EventHandler.hxx */; };
 		2D9173FA09BA90380026E9FF /* FrameBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D71062895B2006265D9 /* FrameBuffer.hxx */; };
 		2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D77062895F1006265D9 /* Settings.hxx */; };
-		2D9173FC09BA90380026E9FF /* SettingsMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D94486C0629124700DD9879 /* SettingsMACOSX.hxx */; };
-		2D9173FF09BA90380026E9FF /* OSystemMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEA0F0845709700812C11 /* OSystemMACOSX.hxx */; };
 		2D91740009BA90380026E9FF /* AboutDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAA4084578BF00812C11 /* AboutDialog.hxx */; };
 		2D91740109BA90380026E9FF /* AudioDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAA7084578BF00812C11 /* AudioDialog.hxx */; };
 		2D91740209BA90380026E9FF /* BrowserDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAA9084578BF00812C11 /* BrowserDialog.hxx */; };
@@ -145,9 +143,7 @@
 		2D9174A109BA90380026E9FF /* EventHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D6E062895B2006265D9 /* EventHandler.cxx */; };
 		2D9174A209BA90380026E9FF /* FrameBuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D70062895B2006265D9 /* FrameBuffer.cxx */; };
 		2D9174A309BA90380026E9FF /* Settings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D944848062904E800DD9879 /* Settings.cxx */; };
-		2D9174A409BA90380026E9FF /* SettingsMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D944866062911CD00DD9879 /* SettingsMACOSX.cxx */; };
 		2D9174A809BA90380026E9FF /* FSNodePOSIX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */; };
-		2D9174A909BA90380026E9FF /* OSystemMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEA0E0845709700812C11 /* OSystemMACOSX.cxx */; };
 		2D9174AA09BA90380026E9FF /* AboutDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAA3084578BF00812C11 /* AboutDialog.cxx */; };
 		2D9174AB09BA90380026E9FF /* AudioDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAA6084578BF00812C11 /* AudioDialog.cxx */; };
 		2D9174AC09BA90380026E9FF /* BrowserDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAA8084578BF00812C11 /* BrowserDialog.cxx */; };
@@ -235,8 +231,12 @@
 		DC1B2EC81E50036100F62837 /* TrakBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1B2EC21E50036100F62837 /* TrakBall.hxx */; };
 		DC1BC6662066B4390076F74A /* PKeyboardHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1BC6642066B4390076F74A /* PKeyboardHandler.cxx */; };
 		DC1BC6672066B4390076F74A /* PKeyboardHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */; };
-		DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */; };
-		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
+		DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */; };
+		DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */; };
+		DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */; };
+		DC21E5C221CA903E007D0E1A /* SerialPortMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */; };
+		DC21E5C321CA903E007D0E1A /* SettingsMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5BD21CA903E007D0E1A /* SettingsMACOS.cxx */; };
+		DC21E5C421CA903E007D0E1A /* SettingsMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BE21CA903E007D0E1A /* SettingsMACOS.hxx */; };
 		DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2874061F8F2278004BF21A /* TrapArray.hxx */; };
 		DC2AADAE194F389C0026C7A4 /* CartDASH.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2AADAA194F389C0026C7A4 /* CartDASH.cxx */; };
 		DC2AADAF194F389C0026C7A4 /* CartDASH.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2AADAB194F389C0026C7A4 /* CartDASH.hxx */; };
@@ -378,6 +378,9 @@
 		DC6DC91F205DB879004A5FC3 /* PhysicalJoystick.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6DC91B205DB879004A5FC3 /* PhysicalJoystick.hxx */; };
 		DC6DC920205DB879004A5FC3 /* PJoystickHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6DC91C205DB879004A5FC3 /* PJoystickHandler.cxx */; };
 		DC6DC921205DB879004A5FC3 /* PJoystickHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6DC91D205DB879004A5FC3 /* PJoystickHandler.hxx */; };
+		DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */; };
+		DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */; };
+		DC6F394E21B897F300897AD8 /* ThreadDebugging.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */; };
 		DC71EA9D1FDA06D2008827CB /* CartE78K.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71EA991FDA06D2008827CB /* CartE78K.cxx */; };
 		DC71EA9E1FDA06D2008827CB /* CartE78K.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC71EA9A1FDA06D2008827CB /* CartE78K.hxx */; };
 		DC71EA9F1FDA06D2008827CB /* CartMNetwork.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71EA9B1FDA06D2008827CB /* CartMNetwork.cxx */; };
@@ -616,6 +619,9 @@
 		DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DA10A762FC007A2870 /* CartF0.hxx */; };
 		DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF7B0DB10A762FC007A2870 /* CartFA.cxx */; };
 		DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DC10A762FC007A2870 /* CartFA.hxx */; };
+		DCF8621621C9D3CE00F95F52 /* EmulationWarning.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF8621521C9D3CE00F95F52 /* EmulationWarning.hxx */; };
+		DCF8621921C9D43300F95F52 /* StaggeredLogger.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF8621721C9D43300F95F52 /* StaggeredLogger.cxx */; };
+		DCF8621A21C9D43300F95F52 /* StaggeredLogger.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF8621821C9D43300F95F52 /* StaggeredLogger.hxx */; };
 		DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFB9FAB1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx */; };
 		DCFCDE7220C9E66500915CBE /* EmulationWorker.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFCDE7020C9E66500915CBE /* EmulationWorker.cxx */; };
 		DCFCDE7320C9E66500915CBE /* EmulationWorker.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFCDE7120C9E66500915CBE /* EmulationWorker.hxx */; };
@@ -779,15 +785,11 @@
 		2D9217FB0857CC88001D664B /* Font.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Font.cxx; sourceTree = "<group>"; };
 		2D9217FC0857CC88001D664B /* Font.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Font.hxx; sourceTree = "<group>"; };
 		2D944848062904E800DD9879 /* Settings.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Settings.cxx; sourceTree = "<group>"; };
-		2D944866062911CD00DD9879 /* SettingsMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsMACOSX.cxx; sourceTree = "<group>"; };
-		2D94486C0629124700DD9879 /* SettingsMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SettingsMACOSX.hxx; sourceTree = "<group>"; };
 		2D9555D90880E78000466554 /* Cart3E.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3E.cxx; sourceTree = "<group>"; };
 		2D9555DA0880E78000466554 /* Cart3E.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Cart3E.hxx; sourceTree = "<group>"; };
 		2D9555DD0880E79600466554 /* CpuDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CpuDebug.cxx; sourceTree = "<group>"; };
 		2D9555DE0880E79600466554 /* CpuDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CpuDebug.hxx; sourceTree = "<group>"; };
 		2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = FSNodePOSIX.cxx; sourceTree = "<group>"; };
-		2DDBEA0E0845709700812C11 /* OSystemMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = OSystemMACOSX.cxx; sourceTree = "<group>"; };
-		2DDBEA0F0845709700812C11 /* OSystemMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = OSystemMACOSX.hxx; sourceTree = "<group>"; };
 		2DDBEAA3084578BF00812C11 /* AboutDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AboutDialog.cxx; sourceTree = "<group>"; };
 		2DDBEAA4084578BF00812C11 /* AboutDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = AboutDialog.hxx; sourceTree = "<group>"; };
 		2DDBEAA6084578BF00812C11 /* AudioDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AudioDialog.cxx; sourceTree = "<group>"; };
@@ -932,8 +934,12 @@
 		DC1B2EC21E50036100F62837 /* TrakBall.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrakBall.hxx; sourceTree = "<group>"; };
 		DC1BC6642066B4390076F74A /* PKeyboardHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PKeyboardHandler.cxx; sourceTree = "<group>"; };
 		DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PKeyboardHandler.hxx; sourceTree = "<group>"; };
-		DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOSX.cxx; sourceTree = "<group>"; };
-		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
+		DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OSystemMACOS.cxx; sourceTree = SOURCE_ROOT; };
+		DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = OSystemMACOS.hxx; sourceTree = SOURCE_ROOT; };
+		DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOS.cxx; sourceTree = SOURCE_ROOT; };
+		DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOS.hxx; sourceTree = SOURCE_ROOT; };
+		DC21E5BD21CA903E007D0E1A /* SettingsMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsMACOS.cxx; sourceTree = SOURCE_ROOT; };
+		DC21E5BE21CA903E007D0E1A /* SettingsMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SettingsMACOS.hxx; sourceTree = SOURCE_ROOT; };
 		DC2874061F8F2278004BF21A /* TrapArray.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrapArray.hxx; sourceTree = "<group>"; };
 		DC2AADAA194F389C0026C7A4 /* CartDASH.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDASH.cxx; sourceTree = "<group>"; };
 		DC2AADAB194F389C0026C7A4 /* CartDASH.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDASH.hxx; sourceTree = "<group>"; };
@@ -1075,6 +1081,9 @@
 		DC6DC91B205DB879004A5FC3 /* PhysicalJoystick.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PhysicalJoystick.hxx; sourceTree = "<group>"; };
 		DC6DC91C205DB879004A5FC3 /* PJoystickHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PJoystickHandler.cxx; sourceTree = "<group>"; };
 		DC6DC91D205DB879004A5FC3 /* PJoystickHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PJoystickHandler.hxx; sourceTree = "<group>"; };
+		DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FatalEmulationError.hxx; path = exception/FatalEmulationError.hxx; sourceTree = "<group>"; };
+		DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadDebugging.cxx; sourceTree = "<group>"; };
+		DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ThreadDebugging.hxx; sourceTree = "<group>"; };
 		DC71EA991FDA06D2008827CB /* CartE78K.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartE78K.cxx; sourceTree = "<group>"; };
 		DC71EA9A1FDA06D2008827CB /* CartE78K.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartE78K.hxx; sourceTree = "<group>"; };
 		DC71EA9B1FDA06D2008827CB /* CartMNetwork.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartMNetwork.cxx; sourceTree = "<group>"; };
@@ -1315,6 +1324,9 @@
 		DCF7B0DA10A762FC007A2870 /* CartF0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartF0.hxx; sourceTree = "<group>"; };
 		DCF7B0DB10A762FC007A2870 /* CartFA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA.cxx; sourceTree = "<group>"; };
 		DCF7B0DC10A762FC007A2870 /* CartFA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFA.hxx; sourceTree = "<group>"; };
+		DCF8621521C9D3CE00F95F52 /* EmulationWarning.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = EmulationWarning.hxx; path = exception/EmulationWarning.hxx; sourceTree = "<group>"; };
+		DCF8621721C9D43300F95F52 /* StaggeredLogger.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StaggeredLogger.cxx; sourceTree = "<group>"; };
+		DCF8621821C9D43300F95F52 /* StaggeredLogger.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StaggeredLogger.hxx; sourceTree = "<group>"; };
 		DCFB9FAB1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DelayQueueIteratorImpl.hxx; sourceTree = "<group>"; };
 		DCFCDE7020C9E66500915CBE /* EmulationWorker.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmulationWorker.cxx; sourceTree = "<group>"; };
 		DCFCDE7120C9E66500915CBE /* EmulationWorker.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EmulationWorker.hxx; sourceTree = "<group>"; };
@@ -1424,7 +1436,7 @@
 				2D6050CC0898776500C6DE89 /* emucore */,
 				2D6050FA0898786C00C6DE89 /* gui */,
 				DCD6FC5A11C281A1005DA767 /* libpng */,
-				2D6050C60898771C00C6DE89 /* macosx */,
+				2D6050C60898771C00C6DE89 /* macos */,
 				2D6050C90898774B00C6DE89 /* unix */,
 				2D60513708987A5400C6DE89 /* yacc */,
 				DC3EE83B1E2C0E4400905161 /* zlib */,
@@ -1664,10 +1676,14 @@
 				DC368F5218A2FB710084199C /* SoundSDL2.cxx */,
 				DC368F5318A2FB710084199C /* SoundSDL2.hxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
+				DCF8621721C9D43300F95F52 /* StaggeredLogger.cxx */,
+				DCF8621821C9D43300F95F52 /* StaggeredLogger.hxx */,
 				DCDDEAC21F5DBF0400C67366 /* StateManager.cxx */,
 				DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */,
 				DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */,
 				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
+				DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */,
+				DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */,
 				DC30924A212F74930020DAD0 /* TimerManager.cxx */,
 				DC30924B212F74930020DAD0 /* TimerManager.hxx */,
 				DCC467EA14FBEC9600E15508 /* tv_filters */,
@@ -1680,16 +1696,17 @@
 			path = common;
 			sourceTree = "<group>";
 		};
-		2D6050C60898771C00C6DE89 /* macosx */ = {
+		2D6050C60898771C00C6DE89 /* macos */ = {
 			isa = PBXGroup;
 			children = (
-				2DDBEA0E0845709700812C11 /* OSystemMACOSX.cxx */,
-				2DDBEA0F0845709700812C11 /* OSystemMACOSX.hxx */,
-				DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */,
-				DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */,
-				2D944866062911CD00DD9879 /* SettingsMACOSX.cxx */,
-				2D94486C0629124700DD9879 /* SettingsMACOSX.hxx */,
+				DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */,
+				DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */,
+				DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */,
+				DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */,
+				DC21E5BD21CA903E007D0E1A /* SettingsMACOS.cxx */,
+				DC21E5BE21CA903E007D0E1A /* SettingsMACOS.hxx */,
 			);
+			name = macos;
 			path = macosx;
 			sourceTree = "<group>";
 		};
@@ -1824,6 +1841,7 @@
 				2D733D6E062895B2006265D9 /* EventHandler.cxx */,
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
 				DC5AAC261FCB24AB00C420A6 /* EventHandlerConstants.hxx */,
+				DC6F394621B897AD00897AD8 /* exception */,
 				DC73BD871915E5E3003FAFAD /* FBSurface.cxx */,
 				DC73BD881915E5E3003FAFAD /* FBSurface.hxx */,
 				2D733D70062895B2006265D9 /* FrameBuffer.cxx */,
@@ -2066,6 +2084,15 @@
 			path = zlib;
 			sourceTree = "<group>";
 		};
+		DC6F394621B897AD00897AD8 /* exception */ = {
+			isa = PBXGroup;
+			children = (
+				DCF8621521C9D3CE00F95F52 /* EmulationWarning.hxx */,
+				DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */,
+			);
+			name = exception;
+			sourceTree = "<group>";
+		};
 		DCC467EA14FBEC9600E15508 /* tv_filters */ = {
 			isa = PBXGroup;
 			children = (
@@ -2255,8 +2282,6 @@
 				2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */,
 				2D9173FA09BA90380026E9FF /* FrameBuffer.hxx in Headers */,
 				2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */,
-				2D9173FC09BA90380026E9FF /* SettingsMACOSX.hxx in Headers */,
-				2D9173FF09BA90380026E9FF /* OSystemMACOSX.hxx in Headers */,
 				2D91740009BA90380026E9FF /* AboutDialog.hxx in Headers */,
 				DCF3A6EE1DFC75E3008A8AF3 /* DelayQueueMember.hxx in Headers */,
 				DC96162F1F817830008A2206 /* AtariMouseWidget.hxx in Headers */,
@@ -2337,6 +2362,7 @@
 				DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */,
 				DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */,
 				DCF3A6E81DFC75E3008A8AF3 /* Background.hxx in Headers */,
+				DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */,
 				DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */,
 				DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */,
 				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,
@@ -2368,16 +2394,17 @@
 				DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */,
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
 				DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */,
+				DCF8621621C9D3CE00F95F52 /* EmulationWarning.hxx in Headers */,
 				DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */,
 				DCC6A4B320A2622500863C59 /* SimpleResampler.hxx in Headers */,
 				DC6DC91F205DB879004A5FC3 /* PhysicalJoystick.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
 				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
+				DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
 				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,
 				DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */,
-				DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */,
 				DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */,
 				DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */,
 				DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */,
@@ -2407,8 +2434,10 @@
 				DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */,
 				DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */,
 				DCC527D110B9DA19005E1287 /* Device.hxx in Headers */,
+				DC6F394E21B897F300897AD8 /* ThreadDebugging.hxx in Headers */,
 				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
 				DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */,
+				DC21E5C221CA903E007D0E1A /* SerialPortMACOS.hxx in Headers */,
 				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
 				DCC527D710B9DA19005E1287 /* System.hxx in Headers */,
 				CFE3F6161E84A9CE00A8204E /* CartCDF.hxx in Headers */,
@@ -2470,9 +2499,11 @@
 				DCAAE5DC1715887B0080BB82 /* CartCVWidget.hxx in Headers */,
 				DCAAE5DD1715887B0080BB82 /* CartDebugWidget.hxx in Headers */,
 				DC6DC921205DB879004A5FC3 /* PJoystickHandler.hxx in Headers */,
+				DC21E5C421CA903E007D0E1A /* SettingsMACOS.hxx in Headers */,
 				DCAAE5DF1715887B0080BB82 /* CartEFSCWidget.hxx in Headers */,
 				DCAAE5E11715887B0080BB82 /* CartEFWidget.hxx in Headers */,
 				DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */,
+				DCF8621A21C9D43300F95F52 /* StaggeredLogger.hxx in Headers */,
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,
 				DCAAE5E51715887B0080BB82 /* CartF4SCWidget.hxx in Headers */,
 				DCAAE5E71715887B0080BB82 /* CartF4Widget.hxx in Headers */,
@@ -2648,6 +2679,7 @@
 				DCF3A6FC1DFC75E3008A8AF3 /* Playfield.cxx in Sources */,
 				2D91747C09BA90380026E9FF /* CartDPC.cxx in Sources */,
 				2D91747D09BA90380026E9FF /* CartE0.cxx in Sources */,
+				DCF8621921C9D43300F95F52 /* StaggeredLogger.cxx in Sources */,
 				E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */,
 				2D91747E09BA90380026E9FF /* CartE7.cxx in Sources */,
 				DC9616321F817830008A2206 /* PointingDeviceWidget.cxx in Sources */,
@@ -2680,9 +2712,7 @@
 				2D9174A109BA90380026E9FF /* EventHandler.cxx in Sources */,
 				2D9174A209BA90380026E9FF /* FrameBuffer.cxx in Sources */,
 				2D9174A309BA90380026E9FF /* Settings.cxx in Sources */,
-				2D9174A409BA90380026E9FF /* SettingsMACOSX.cxx in Sources */,
 				2D9174A809BA90380026E9FF /* FSNodePOSIX.cxx in Sources */,
-				2D9174A909BA90380026E9FF /* OSystemMACOSX.cxx in Sources */,
 				2D9174AA09BA90380026E9FF /* AboutDialog.cxx in Sources */,
 				2D9174AB09BA90380026E9FF /* AudioDialog.cxx in Sources */,
 				2D9174AC09BA90380026E9FF /* BrowserDialog.cxx in Sources */,
@@ -2747,6 +2777,7 @@
 				DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */,
 				2D9174FC09BA90380026E9FF /* RamWidget.cxx in Sources */,
 				DC2AADAE194F389C0026C7A4 /* CartDASH.cxx in Sources */,
+				DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */,
 				E007231F210FBF5E002CF343 /* FpsMeter.cxx in Sources */,
 				2D9174FD09BA90380026E9FF /* RomListWidget.cxx in Sources */,
 				DCF3A6F81DFC75E3008A8AF3 /* PaddleReader.cxx in Sources */,
@@ -2792,7 +2823,6 @@
 				DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */,
 				DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */,
 				DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */,
-				DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */,
 				DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */,
 				DC047FEE1A4A6F3600348F0F /* JoystickDialog.cxx in Sources */,
 				DC4AC6EF0DC8DACB00CD3AD2 /* RiotWidget.cxx in Sources */,
@@ -2817,6 +2847,7 @@
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 				CFE3F6151E84A9CE00A8204E /* CartCDF.cxx in Sources */,
 				DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */,
+				DC21E5C321CA903E007D0E1A /* SettingsMACOS.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,
 				DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */,
 				DC5ACB5B1FBFCE8E00A213FD /* DeveloperDialog.cxx in Sources */,
@@ -2835,6 +2866,7 @@
 				E0306E0F1F93E916003DDD52 /* JitterEmulation.cxx in Sources */,
 				DCD6FC7C11C281ED005DA767 /* pngset.c in Sources */,
 				DCD6FC7E11C281ED005DA767 /* pngtrans.c in Sources */,
+				DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */,
 				DCD6FC7F11C281ED005DA767 /* pngwio.c in Sources */,
 				DCD6FC8011C281ED005DA767 /* pngwrite.c in Sources */,
 				DC3EE8621E2C0E6D00905161 /* inffast.c in Sources */,
@@ -2873,6 +2905,7 @@
 				DCAAE5D71715887B0080BB82 /* Cart4KWidget.cxx in Sources */,
 				DCDA03B01A2009BB00711920 /* CartWD.cxx in Sources */,
 				DCC6A4B220A2622500863C59 /* SimpleResampler.cxx in Sources */,
+				DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */,
 				DCAAE5D91715887B0080BB82 /* Cart0840Widget.cxx in Sources */,
 				DCAAE5DB1715887B0080BB82 /* CartCVWidget.cxx in Sources */,
 				DCAAE5DE1715887B0080BB82 /* CartEFSCWidget.cxx in Sources */,
@@ -2964,7 +2997,7 @@
 					JOYSTICK_SUPPORT,
 					SOUND_SUPPORT,
 					WINDOWED_SUPPORT,
-					BSPF_MAC_OSX,
+					BSPF_MACOS,
 					MAC_OSX,
 				);
 				HEADER_SEARCH_PATHS = (
@@ -3015,7 +3048,7 @@
 					JOYSTICK_SUPPORT,
 					SOUND_SUPPORT,
 					WINDOWED_SUPPORT,
-					BSPF_MAC_OSX,
+					BSPF_MACOS,
 					MAC_OSX,
 				);
 				HEADER_SEARCH_PATHS = (

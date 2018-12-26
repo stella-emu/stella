@@ -67,6 +67,7 @@
         "unordered_map": "cpp",
         "istream": "cpp",
         "thread": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "streambuf": "cpp"
     }
 }

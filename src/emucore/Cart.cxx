@@ -17,6 +17,7 @@
 
 #include "Settings.hxx"
 #include "System.hxx"
+#include "MD5.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "CartDebug.hxx"
@@ -25,13 +26,24 @@
 #include "Cart.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge::Cartridge(const Settings& settings)
+Cartridge::Cartridge(const Settings& settings, const string& md5)
   : mySettings(settings),
     myBankChanged(true),
     myCodeAccessBase(nullptr),
     myStartBank(0),
     myBankLocked(false)
 {
+  auto to_uInt32 = [](const string& s, uInt32 pos) {
+    return uInt32(std::stoul(s.substr(pos, 8), nullptr, 16));
+  };
+
+  uInt32 seed = to_uInt32(md5, 0)  ^ to_uInt32(md5, 8) ^
+                to_uInt32(md5, 16) ^ to_uInt32(md5, 24);
+  Random rand(seed);
+  for(uInt32 i = 0; i < 256; ++i)
+    myRWPRandomValues[i] = rand.next();
+
+  myRAMAccesses.reserve(5);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -69,12 +81,40 @@ bool Cartridge::bankChanged()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::triggerReadFromWritePort(uInt16 address)
+uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
+{
+  uInt8 value = myRWPRandomValues[address & 0xFF];
+
+  // Reading from the write port triggers an unwanted write
+  // But this only happens when in normal emulation mode
+#ifdef DEBUGGER_SUPPORT
+  if(!bankLocked() && !mySystem->autodetectMode())
+  {
+    // Record access here; final determination will happen in ::pokeRAM()
+    myRAMAccesses.push_back(address);
+    dest = value;
+  }
+#else
+  if(!mySystem->autodetectMode())
+    dest = value;
+#endif
+  return value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 {
 #ifdef DEBUGGER_SUPPORT
-  if(!mySystem->autodetectMode())
-    Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
+  for(auto i = myRAMAccesses.begin(); i != myRAMAccesses.end(); ++i)
+  {
+    if(*i == address)
+    {
+      myRAMAccesses.erase(i);
+      break;
+    }
+  }
 #endif
+  dest = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -99,18 +139,16 @@ void Cartridge::initializeRAM(uInt8* arr, uInt32 size, uInt8 val) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge::initializeStartBank(int defaultBank)
+uInt16 Cartridge::initializeStartBank(uInt16 defaultBank)
 {
   int propsBank = myStartBankFromPropsFunc();
 
-  bool userandom = randomStartBank() || (defaultBank < 0 && propsBank < 0);
-
-  if(userandom)
+  if(randomStartBank())
     return myStartBank = mySystem->randGenerator().next() % bankCount();
   else if(propsBank >= 0)
     return myStartBank = BSPF::clamp(propsBank, 0, bankCount() - 1);
   else
-    return myStartBank = BSPF::clamp(defaultBank, 0, bankCount() - 1);
+    return myStartBank = BSPF::clamp(int(defaultBank), 0, bankCount() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -118,7 +118,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       title = "The Stella Team";
       ADD_ATEXT("\\L\\c0""Stephen Anthony");
       ADD_ATEXT("\\L\\c2""  Lead developer, current maintainer for the");
-      ADD_ATEXT("\\L\\c2""  Linux/OSX and Windows ports ");
+      ADD_ATEXT("\\L\\c2""  Linux, macOS and Windows ports ");
       ADD_ATEXT("\\L\\c0""Christian Speckner");
       ADD_ATEXT("\\L\\c2""  Emulation core development, TIA core");
       ADD_ATEXT("\\L\\c0""Eckhard Stolberg");

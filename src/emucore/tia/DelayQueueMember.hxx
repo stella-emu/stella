@@ -113,7 +113,7 @@ bool DelayQueueMember<capacity>::save(Serializer& out) const
 {
   try
   {
-    out.putInt(mySize); //FIXME - check datatype
+    out.putByte(mySize);
     for(uInt8 i = 0; i < mySize; ++i)
     {
       const Entry& e = myEntries[i];
@@ -136,7 +136,7 @@ bool DelayQueueMember<capacity>::load(Serializer& in)
 {
   try
   {
-    mySize = in.getInt(); //FIXME - check datatype
+    mySize = in.getByte();
     if (mySize > capacity) throw new runtime_error("invalid delay queue size");
     for(uInt32 i = 0; i < mySize; ++i)
     {

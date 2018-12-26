@@ -61,7 +61,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - TODO 2018</b></center>
+  <center><b>February 1999 - December 2018</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="https://stella-emu.github.io">Stella Homepage</a></b></center>
 
@@ -358,7 +358,7 @@
   <p>The Mac version of Stella is designed to work on an Apple Macintosh with
   the following:</p>
   <ul>
-    <li>MacOSX 10.7 (Lion) or above</li>
+    <li>macOS 10.7 or above</li>
     <li>64-bit Intel processor</li>
     <li>OpenGL capable video card</li>
     <li>Xcode 8.0 is required to compile the Stella source code</li>
@@ -382,7 +382,7 @@
   <h3><b><u>Other</u></b></h3>
 
   <p>Stella is extremely portable, and in its lifetime has been ported to almost every
-  platform where the SDL library exists. It is 32/64-bit and endian clean in Linux/Unix, MacOSX
+  platform where the SDL library exists. It is 32/64-bit and endian clean in Linux/Unix, macOS
   and Windows. The Stella Team is interested in hearing about any problems you may
   encounter with diverse operating systems and CPU types.</p>
   </blockquote>
@@ -423,7 +423,7 @@
   <p>
   <h3><b><u>Macintosh</u></b></h3>
   <ul>
-    <li><b>Binary DMG file</b> (Stella-<i>release</i>-macosx.dmg)
+    <li><b>Binary DMG file</b> (Stella-<i>release</i>-macos.dmg)
       <ul>
         <li>Double-click the disk image, open the 'Stella' folder, then copy the
         <b>Stella.app</b> package to your 'Applications' folder.</li>
@@ -632,7 +632,7 @@
     <tr>
       <th>Function</th>
       <th>Key (Standard)</th>
-      <th>Key (MacOSX)</th>
+      <th>Key (macOS)</th>
     </tr>
 
     <tr>
@@ -1262,7 +1262,7 @@
     <tr>
       <th>Function</th>
       <th>Key (Standard)</th>
-      <th>Key (MacOSX)</th>
+      <th>Key (macOS)</th>
     </tr>
     <tr>
       <td>Disable TV effects</td>
@@ -1347,7 +1347,7 @@
     <tr>
       <th>Function</th>
       <th>Key (Standard)</th>
-      <th>Key (MacOSX)</th>
+      <th>Key (macOS)</th>
     </tr>
 
     <tr>
@@ -1483,7 +1483,7 @@
     <tr>
       <th>Function</th>
       <th>Key (Standard)</th>
-      <th>Key (MacOSX)</th>
+      <th>Key (macOS)</th>
     </tr>
 
     <tr>
@@ -2539,8 +2539,14 @@
       <td>Set unused TIA pins to be randomly driven high or low on a read/peek.
           If disabled, use the last databus value for those pins instead.</td>
     </tr><tr>
+      <td><pre>-&lt;plr.|dev.&gt;rwportbreak &lt;1|0&gt;</pre></td>
+      <td>Since the 2600 has no dedicated R/W line, different addresses are used
+	    for RAM read or write access. If the code reads from such a write address, this causes
+		an unwanted, semi-random write to that address.
+		When this option is enabled, such reads interrupt emulation and the debugger is entered.</td>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;thumb.trapfatal &lt;1|0&gt;</pre></td>
-      <td>The default of true allows the Thumb ARM emulation to
+      <td>When enabled, this allows the Thumb ARM emulation to
         throw an exception and enter the debugger on fatal errors. When disabled, such
         fatal errors are simply logged, and emulation continues. Do not use this
         unless you know exactly what you're doing, as it changes the behaviour as
@@ -2651,7 +2657,7 @@
   </table>
   <br>
 
-  <p><b>TODO! Audio Settings</b> dialog:</p>
+  <p><b>Audio Settings</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/options_audio.png"></td>
@@ -2659,11 +2665,35 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Volume</td><td>Self-explanatory</td><td>-volume</td></tr>
-          <tr><td>Sample size (*)</td><td>Set size of audio buffers</td><td>-fragsize</td></tr>
-          <tr><td>Frequency (*)</td><td>Change sound output frequency</td><td>-freq</td></tr>
-          <tr><td>Enable sound</td><td>Self-explanatory</td><td>-sound</td></tr>
+          <tr><td>Enable audio</td><td>Self-explanatory</td><td>-audio.enabled</td></tr>
+          <tr><td>Volume</td><td>Self-explanatory</td><td>-audio.volume</td></tr>
+          <tr><td>Mode</td><td>Select an audio preset or choose 'custom' for manual configuration</td><td>-audio.preset</td></tr>
+          <tr><td>Fragment size</td><td>The number of samples in a single fragment processed by the audio driver. Smaller values mean less latency, but may lead to dropouts (depending on OS and hardware).</td><td>-audio.fragment_size</td></tr>
+          <tr><td>Sample rate</td><td>
+            Output samples per second. Higher values reduce artifacts from resampling and decrease latency,
+            but may lead to dropouts (depending on OS and hardware).
+          </td><td>-audio.sample_rate</td></tr>
+          <tr><td>Resampling quality</td><td>
+            Chooses the algorithm used for resampling (= converting TIA output to the target sample rate).
+            'High' and 'ultra' use a high-quality Lanczos filter
+            but require slightly more CPU, while 'low' may lead to audible screeching artifacts in
+            some games (notably Quadrun).
+          </td><td>-audio.resampling_quality</td></tr>
+          <tr><td>Headroom</td><td>Number of frames to buffer before playback starts. Higher values increase latency, but reduce the potential for dropouts.</td><td>-audio.headroom</td></tr>
+          <tr><td>Buffer size</td><td>Maximum size of the audio buffer. Higher values increase maximum latency, but reduce the potential for dropouts</td><td>-audio.buffer_size</td></tr>
         </table>
+        <p>
+          <strong>IMPORTANT:</strong> In order to maintain a stable stream of audio data, emulation speed must be
+          synchronized with the audio hardware. Buffering happens in multiple places (OS = fragment size, Stella =
+          headroom and buffer size) and improves the tolerance to speed fluctuations, but introduces latency which
+          manifests as a lag between audio and video.
+        </p><p>
+          Too aggressive settings for your combination of hardware and software (high sample rate,
+          low fragment size, low headroom, low buffer size) may lead to audio dropouts whose effect may range from
+          isolated popping artifacts to garbled audio. You can check the system log for related messages. If you
+          get recurring messages about audio overruns and underruns (isolates underruns / overruns are normal
+          and a consequence of host system activity), you might have to adjust your settings.
+        </p>
       </td>
     </tr>
   </table>
@@ -3042,8 +3072,8 @@
 
   <p>Note that you must use the entire name of the port as specified by
   your operating system. For example, in Windows this would be COM1,
-  COM2, etc.; Linux and MacOSX tend to use names similar to '/dev/xxxxxx'.
-  For now, only Linux/UNIX, MacOSX, and Windows are supported.</p>
+  COM2, etc.; Linux and macOS tend to use names similar to '/dev/xxxxxx'.
+  For now, only Linux/UNIX, macOS, and Windows are supported.</p>
 
   <p>Support for the EEPROM portion of the AtariVox and SaveKey is currently
   emulated. That is, a file will be created on your computer simulating the
@@ -3110,6 +3140,11 @@
           <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
           <tr><td>Randomize CPU</td><td>When loading a ROM, randomize the content of the specified CPU registers</td><td>-plr.cpurandom<br/>-dev.cpurandom</td></tr>
           <tr><td>Drive unused TIA pins ...</td><td>Unused TIA pins are read random instead of the last databus values</td><td>-plr.tiadriven<br/>-dev.tiadriven</td></tr>
+          <tr>
+            <td>Break on reads from ...</td>
+            <td>A read from a write port interrupts emulation and the debugger is entered.</td>
+            <td><span style="white-space:nowrap">-plr.rwportbreak<br/>-dev.rwportbreak</span></td>
+          </tr>
           <tr>
             <td>Fatal ARM emulation ...</td>
             <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>

@@ -30,6 +30,7 @@
 #include "OSystem.hxx"
 #include "PNGLibrary.hxx"
 #include "System.hxx"
+#include "TIASurface.hxx"
 
 #include "ThreadDebugging.hxx"
 
@@ -43,7 +44,7 @@
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#if defined(BSPF_MAC_OSX)
+#if defined(BSPF_MACOS)
 int stellaMain(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
@@ -137,12 +138,16 @@ int main(int argc, char* argv[])
       if(result != EmptyString)
         return Cleanup();
 
+#if 0
+      TODO: Fix this to use functionality from OSystem::mainLoop
       if(theOSystem->settings().getBool("takesnapshot"))
       {
         for(int i = 0; i < 30; ++i)  theOSystem->frameBuffer().update();
+//        theOSystem->frameBuffer().tiaSurface().saveSnapShot();
         theOSystem->png().takeSnapshot();
         return Cleanup();
       }
+#endif
     }
     catch(const runtime_error& e)
     {

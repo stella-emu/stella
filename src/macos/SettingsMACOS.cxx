@@ -15,7 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "SettingsMACOSX.hxx"
+#include "SettingsMACOS.hxx"
 
 extern "C" {
   void prefsSetString(const char* key, const char* value);
@@ -24,13 +24,13 @@ extern "C" {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsMACOSX::SettingsMACOSX(OSystem& osystem)
+SettingsMACOS::SettingsMACOS(OSystem& osystem)
   : Settings(osystem)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsMACOSX::loadConfig()
+void SettingsMACOS::loadConfig()
 {
   string key, value;
   char cvalue[4096];
@@ -46,7 +46,7 @@ void SettingsMACOSX::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsMACOSX::saveConfig()
+void SettingsMACOS::saveConfig()
 {
   // Write out each of the key and value pairs
   for(const auto& s: getInternalSettings())

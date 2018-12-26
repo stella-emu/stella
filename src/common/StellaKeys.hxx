@@ -417,7 +417,7 @@ namespace StellaModTest
 {
   inline bool isAlt(int mod)
   {
-#if defined(BSPF_MAC_OSX) || defined(OSX_KEYS)
+#if defined(BSPF_MACOS) || defined(MACOS_KEYS)
     return (mod & KBDM_GUI);
 #else
     return (mod & KBDM_ALT);

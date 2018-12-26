@@ -32,10 +32,10 @@
   #include "SerialPortWINDOWS.hxx"
   #include "SettingsWINDOWS.hxx"
   #include "OSystemWINDOWS.hxx"
-#elif defined(BSPF_MAC_OSX)
-  #include "SerialPortMACOSX.hxx"
-  #include "SettingsMACOSX.hxx"
-  #include "OSystemMACOSX.hxx"
+#elif defined(BSPF_MACOS)
+  #include "SerialPortMACOS.hxx"
+  #include "SettingsMACOS.hxx"
+  #include "OSystemMACOS.hxx"
   extern "C" {
     int stellaMain(int argc, char* argv[]);
   }
@@ -73,8 +73,8 @@ class MediaFactory
       return make_unique<OSystemUNIX>();
     #elif defined(BSPF_WINDOWS)
       return make_unique<OSystemWINDOWS>();
-    #elif defined(BSPF_MAC_OSX)
-      return make_unique<OSystemMACOSX>();
+    #elif defined(BSPF_MACOS)
+      return make_unique<OSystemMACOS>();
     #else
       #error Unsupported platform for OSystem!
     #endif
@@ -86,8 +86,8 @@ class MediaFactory
       return make_unique<SettingsUNIX>(osystem);
     #elif defined(BSPF_WINDOWS)
       return make_unique<SettingsWINDOWS>(osystem);
-    #elif defined(BSPF_MAC_OSX)
-      return make_unique<SettingsMACOSX>(osystem);
+    #elif defined(BSPF_MACOS)
+      return make_unique<SettingsMACOS>(osystem);
     #else
       #error Unsupported platform for Settings!
     #endif
@@ -99,8 +99,8 @@ class MediaFactory
       return make_unique<SerialPortUNIX>();
     #elif defined(BSPF_WINDOWS)
       return make_unique<SerialPortWINDOWS>();
-    #elif defined(BSPF_MAC_OSX)
-      return make_unique<SerialPortMACOSX>();
+    #elif defined(BSPF_MACOS)
+      return make_unique<SerialPortMACOS>();
     #else
       return make_unique<SerialPort>();
     #endif

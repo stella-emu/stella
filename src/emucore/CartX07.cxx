@@ -22,8 +22,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeX07::CartridgeX07(const BytePtr& image, uInt32 size,
-                           const Settings& settings)
-  : Cartridge(settings),
+                           const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
@@ -34,9 +34,8 @@ CartridgeX07::CartridgeX07(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeX07::reset()
 {
-  initializeStartBank();
-
   // Upon reset we switch to the startup bank
+  initializeStartBank(0);
   bank(startBank());
 }
 

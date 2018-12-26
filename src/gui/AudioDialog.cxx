@@ -52,7 +52,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = 46 * fontWidth + HBORDER * 2;
+  _w = 48 * fontWidth + HBORDER * 2;
   _h = 11 * (lineHeight + VGAP) + VBORDER + _th;
 
   xpos = HBORDER;  ypos = VBORDER + _th;
@@ -87,15 +87,15 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   xpos += INDENT;
 
   // Fragment size
-  pwidth = font.getStringWidth("512 bytes");
+  pwidth = font.getStringWidth("512 samples");
   lwidth = font.getStringWidth("Resampling quality ");
   items.clear();
-  VarList::push_back(items, "128 bytes", 128);
-  VarList::push_back(items, "256 bytes", 256);
-  VarList::push_back(items, "512 bytes", 512);
-  VarList::push_back(items, "1 KB", 1024);
-  VarList::push_back(items, "2 KB", 2048);
-  VarList::push_back(items, "4 KB", 4096);
+  VarList::push_back(items, "128 samples", 128);
+  VarList::push_back(items, "256 samples", 256);
+  VarList::push_back(items, "512 samples", 512);
+  VarList::push_back(items, "1k samples", 1024);
+  VarList::push_back(items, "2k samples", 2048);
+  VarList::push_back(items, "4K samples", 4096);
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth, lineHeight,
                                     items, "Fragment size", lwidth);

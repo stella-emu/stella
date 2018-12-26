@@ -89,12 +89,12 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
 
   // First get the maximum windowed desktop resolution
   int maxDisplays = SDL_GetNumVideoDisplays();
-#if 0 //def BSPF_MAC_OSX
+#if SDL_VERSION_ATLEAST(2,0,5)
   SDL_Rect r;
   for(int i = 0; i < maxDisplays; ++i)
   {
     // Display bounds minus dock
-    SDL_GetDisplayUsableBounds(i, &r);   // Requires SDL-2.0.5 or higher
+    SDL_GetDisplayUsableBounds(i, &r);  // Requires SDL-2.0.5 or higher
     displays.emplace_back(r.w, r.h);
   }
 #else
@@ -105,7 +105,7 @@ void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
     displays.emplace_back(display.w, display.h);
   }
 #endif
-  
+
   struct RenderName
   {
     string sdlName;
@@ -189,12 +189,12 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
                  : SDL_WINDOWPOS_UNDEFINED_DISPLAY(displayIndex);
   uInt32 flags = mode.fsIndex != -1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
 
-  // OSX seems to have issues with destroying the window, and wants to keep
-  // the same handle
+  // macOS seems to have issues with destroying the window, and wants to
+  // keep the same handle
   // Problem is, doing so on other platforms results in flickering when
   // toggling fullscreen windowed mode
-  // So we have a special case for OSX
-#ifndef BSPF_MAC_OSX
+  // So we have a special case for macOS
+#ifndef BSPF_MACOS
   // Don't re-create the window if its size hasn't changed, as it's not
   // necessary, and causes flashing in fullscreen mode
   if(myWindow)
@@ -213,7 +213,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     SDL_SetWindowTitle(myWindow, title.c_str());
   }
 #else
-  // OSX wants to *never* re-create the window
+  // macOS wants to *never* re-create the window
   // This sometimes results in the window being resized *after* it's displayed,
   // but at least the code works and doesn't crash
   if(myWindow)
@@ -346,7 +346,7 @@ void FrameBufferSDL2::setWindowIcon()
 {
   ASSERT_MAIN_THREAD;
 
-#ifndef BSPF_MAC_OSX        // Currently not needed for OSX
+#ifndef BSPF_MACOS          // Currently not needed for macOS
 #include "stella_icon.hxx"  // The Stella icon
 
   SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(stella_icon, 32, 32, 32,

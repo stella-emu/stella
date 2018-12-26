@@ -23,6 +23,7 @@
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "TIA.hxx"
+    #include "PNGLibrary.hxx"
 #include "TIASurface.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,7 +35,8 @@ TIASurface::TIASurface(OSystem& system)
     myUsePhosphor(false),
     myPhosphorPercent(0.60f),
     myScanlinesEnabled(false),
-    myPalette(nullptr)
+    myPalette(nullptr),
+    mySaveSnapFlag(false)
 {
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem.settings());
@@ -320,6 +322,25 @@ string TIASurface::effectsInfo() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
+{
+  uInt32 c = myRGBFramebuffer[bufOfs];
+  uInt32 p = myPrevRGBFramebuffer[bufOfs];
+
+  // Split into RGB values
+  TO_RGB(c, rc, gc, bc);
+  TO_RGB(p, rp, gp, bp);
+
+  // Mix current calculated buffer with previous calculated buffer (50:50)
+  const uInt8 rn = (rc + rp) / 2;
+  const uInt8 gn = (gc + gp) / 2;
+  const uInt8 bn = (bc + bp) / 2;
+
+  // return averaged value
+  return  (rn << 16) | (gn << 8) | bn;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::render()
 {
   uInt32 width  = myTIA->width();
@@ -353,6 +374,9 @@ void TIASurface::render()
       uInt8*  tiaIn = myTIA->frameBuffer();
       uInt32* rgbIn = myRGBFramebuffer;
 
+      if (mySaveSnapFlag)
+        memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, width * height * sizeof(uInt32));
+
       uInt32 bufofs = 0, screenofsY = 0, pos;
       for(uInt32 y = height; y ; --y)
       {
@@ -378,6 +402,9 @@ void TIASurface::render()
 
     case Filter::BlarggPhosphor:
     {
+      if(mySaveSnapFlag)
+        memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, height * outPitch * sizeof(uInt32));
+
       myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer);
       break;
     }
@@ -389,11 +416,23 @@ void TIASurface::render()
   // Draw overlaying scanlines
   if(myScanlinesEnabled)
     mySLineSurface->render();
+
+  if(mySaveSnapFlag)
+  {
+    myOSystem.png().takeSnapshot();
+    mySaveSnapFlag = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::reRender()
+void TIASurface::renderForSnapshot()
 {
+  // TODO: This is currently called from PNGLibrary::takeSnapshot() only
+  // Therefore the code could be simplified.
+  // At some point, we will probably merge some of the functionality.
+  // Furthermore, toggling the variable 'mySaveSnapFlag' in different places
+  // is brittle, especially since rendering can happen in a different thread.
+
   uInt32 width = myTIA->width();
   uInt32 height = myTIA->height();
   uInt32 pos = 0;
@@ -401,34 +440,47 @@ void TIASurface::reRender()
 
   myTiaSurface->basePtr(outPtr, outPitch);
 
+  mySaveSnapFlag = false;
   switch (myFilter)
   {
-    // for non-phosphor modes, render the frame again
+    // For non-phosphor modes, render the frame again
     case Filter::Normal:
     case Filter::BlarggNormal:
       render();
       break;
-    // for phosphor modes, copy the phosphor framebuffer
+
+    // For phosphor modes, copy the phosphor framebuffer
     case Filter::Phosphor:
-      for (uInt32 y = height; y; --y)
+    {
+      uInt32 bufofs = 0, screenofsY = 0;
+      for(uInt32 y = height; y; --y)
       {
-        memcpy(outPtr, myRGBFramebuffer + pos, width);
-        outPtr += outPitch;
-        pos += width;
+        pos = screenofsY;
+        for(uInt32 x = width / 2; x; --x)
+        {
+          outPtr[pos++] = averageBuffers(bufofs++);
+          outPtr[pos++] = averageBuffers(bufofs++);
+        }
+        screenofsY += outPitch;
       }
       break;
+    }
+
     case Filter::BlarggPhosphor:
-      memcpy(outPtr, myRGBFramebuffer, height * outPitch << 2);
+      uInt32 bufofs = 0;
+      for(uInt32 y = height; y; --y)
+        for(uInt32 x = outPitch; x; --x)
+          outPtr[pos++] = averageBuffers(bufofs++);
       break;
   }
 
-  if (myUsePhosphor)
+  if(myUsePhosphor)
   {
     // Draw TIA image
     myTiaSurface->render();
 
     // Draw overlaying scanlines
-    if (myScanlinesEnabled)
+    if(myScanlinesEnabled)
       mySLineSurface->render();
   }
 }

@@ -46,6 +46,7 @@
 #include "M6532.hxx"
 #include "MouseControl.hxx"
 #include "PNGLibrary.hxx"
+#include "TIASurface.hxx"
 
 #include "EventHandler.hxx"
 
@@ -386,7 +387,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       return;
 
     case Event::TakeSnapshot:
-      if(state) myOSystem.png().takeSnapshot();
+      if(state) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
 
     case Event::LauncherMode:
@@ -699,7 +700,7 @@ void EventHandler::setActionMappings(EventMode mode)
     // There are some keys which are hardcoded.  These should be represented too.
     string prepend = "";
     if(event == Event::Quit)
-#ifndef BSPF_MAC_OSX
+#ifndef BSPF_MACOS
       prepend = "Ctrl Q";
 #else
       prepend = "Cmd Q";
@@ -1225,7 +1226,8 @@ void EventHandler::setState(EventHandlerState state)
   // after a state change, which should be supressed
   mySkipMouseMotion = true;
 
-  // Erase and pending events
+  // Erase any previously set events, since a state change implies
+  // that old events are now invalid
   myEvent.clear();
 }
 

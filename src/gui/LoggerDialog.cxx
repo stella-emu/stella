@@ -89,6 +89,7 @@ void LoggerDialog::loadConfig()
   StringParser parser(instance().logMessages());
   myLogInfo->setList(parser.stringList());
   myLogInfo->setSelected(0);
+  myLogInfo->scrollToEnd();
 
   myLogLevel->setSelected(instance().settings().getString("loglevel"), "1");
   myLogToConsole->setState(instance().settings().getBool("logtoconsole"));

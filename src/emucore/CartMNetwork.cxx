@@ -20,8 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMNetwork::CartridgeMNetwork(const BytePtr& image, uInt32 size,
-                                     const Settings& settings)
-  : Cartridge(settings),
+                                     const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     mySize(size),
     myCurrentRAM(0),
     myRAMSlice(0)
@@ -46,8 +46,7 @@ void CartridgeMNetwork::reset()
 {
   initializeRAM(myRAM, RAM_SIZE);
 
-  // Use random startup bank
-  initializeStartBank();
+  initializeStartBank(0);
   uInt32 ramBank = randomStartBank() ?
     mySystem->randGenerator().next() % 4 : 0;
 
@@ -69,10 +68,10 @@ void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
 
   for(uInt16 addr = addrFrom; addr < addrFrom + size; addr += System::PAGE_SIZE)
   {
-    if (type == System::PA_READ)
+    if(type == System::PA_READ)
       access.directPeekBase = &directData[directOffset + (addr & addrMask)];
-    if(type == System::PA_WRITE)
-      access.directPokeBase = &directData[directOffset + (addr & addrMask)];
+    else if(type == System::PA_WRITE)  // all RAM writes mapped to ::poke()
+      access.directPokeBase = nullptr;
     access.codeAccessBase = &myCodeAccessBase[codeOffset + (addr & addrMask)];
     mySystem->setPageAccess(addr, access);
   }
@@ -117,44 +116,38 @@ uInt8 CartridgeMNetwork::peek(uInt16 address)
   if((myCurrentSlice[0] == myRAMSlice) && (address < BANK_SIZE / 2))
   {
     // Reading from the 1K write port @ $1000 triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
-
-    if(bankLocked())
-      return value;
-    else
-    {
-      triggerReadFromWritePort(peekAddress);
-      return myRAM[address & (BANK_SIZE / 2 - 1)] = value;
-    }
+    return peekRAM(myRAM[address & (BANK_SIZE / 2 - 1)], peekAddress);
   }
   else if((address >= 0x0800) && (address <= 0x08FF))
   {
     // Reading from the 256B write port @ $1800 triggers an unwanted write
-    uInt8 value = mySystem->getDataBusState(0xFF);
-
-    if(bankLocked())
-      return value;
-    else
-    {
-      triggerReadFromWritePort(peekAddress);
-      return myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
-    }
+    return peekRAM(myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)], peekAddress);
   }
   else
     return myImage[(myCurrentSlice[address >> 11] << 11) + (address & (BANK_SIZE - 1))];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMNetwork::poke(uInt16 address, uInt8)
+bool CartridgeMNetwork::poke(uInt16 address, uInt8 value)
 {
+  uInt16 pokeAddress = address;
   address &= 0x0FFF;
 
   // Switch banks if necessary
   checkSwitchBank(address);
 
-  // NOTE: This does not handle writing to RAM, however, this
-  // method should never be called for RAM because of the
-  // way page accessing has been setup
+  // All RAM writes are mapped here
+  if((myCurrentSlice[0] == myRAMSlice) && (address < BANK_SIZE / 2))
+  {
+    pokeRAM(myRAM[address & (BANK_SIZE / 2 - 1)], pokeAddress, value);
+    return true;
+  }
+  else if((address >= 0x0800) && (address <= 0x08FF))
+  {
+    pokeRAM(myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)], pokeAddress, value);
+    return true;
+  }
+
   return false;
 }
 
@@ -253,7 +246,8 @@ bool CartridgeMNetwork::save(Serializer& out) const
     out.putShortArray(myCurrentSlice, NUM_SEGMENTS);
     out.putShort(myCurrentRAM);
     out.putByteArray(myRAM, RAM_SIZE);
-  } catch(...)
+  }
+  catch(...)
   {
     cerr << "ERROR: " << name() << "::save" << endl;
     return false;
@@ -270,7 +264,8 @@ bool CartridgeMNetwork::load(Serializer& in)
     in.getShortArray(myCurrentSlice, NUM_SEGMENTS);
     myCurrentRAM = in.getShort();
     in.getByteArray(myRAM, RAM_SIZE);
-  } catch(...)
+  }
+  catch(...)
   {
     cerr << "ERROR: " << name() << "::load" << endl;
     return false;
@@ -294,4 +289,3 @@ uInt32 CartridgeMNetwork::romSize() const
 {
   return bankCount() * BANK_SIZE;
 }
-

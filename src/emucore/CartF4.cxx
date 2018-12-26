@@ -21,8 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF4::CartridgeF4(const BytePtr& image, uInt32 size,
-                         const Settings& settings)
-  : Cartridge(settings),
+                         const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
@@ -33,10 +33,8 @@ CartridgeF4::CartridgeF4(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF4::reset()
 {
-  // Use random startup bank
-  initializeStartBank();
-
   // Upon reset we switch to the startup bank
+  initializeStartBank(0);
   bank(startBank());
 }
 

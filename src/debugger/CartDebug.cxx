@@ -32,6 +32,8 @@
 #include "CartRamWidget.hxx"
 #include "RomWidget.hxx"
 #include "Base.hxx"
+#include "exception/EmulationWarning.hxx"
+
 using Common::Base;
 using std::hex;
 using std::dec;
@@ -46,7 +48,6 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
     myOSystem(osystem),
     myDebugWidget(nullptr),
     myAddrToLineIsROM(true),
-    myRWPortAddress(0),
     myLabelLength(8)   // longest pre-defined label
 {
   // Add case sensitive compare for user labels
@@ -156,30 +157,6 @@ void CartDebug::saveOldState()
     myOldState.bank = myDebugWidget->bankState();
     myDebugWidget->saveOldState();
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::triggerReadFromWritePort(uInt16 addr)
-{
-  myRWPortAddress = addr;
-  mySystem.setDirtyPage(addr);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::readFromWritePort()
-{
-  uInt16 addr = myRWPortAddress;
-  myRWPortAddress = 0;
-
-  // A read from the write port occurs when the read is actually in the write
-  // port address space AND the last access was actually a read (the latter
-  // differentiates between reads that are normally part of a write cycle vs.
-  // ones that are illegal)
-  if(mySystem.m6502().lastReadAddress() &&
-      (mySystem.getPageAccessType(addr) & System::PA_WRITE) == System::PA_WRITE)
-    return addr;
-  else
-    return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

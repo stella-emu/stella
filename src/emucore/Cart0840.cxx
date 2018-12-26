@@ -20,8 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge0840::Cartridge0840(const BytePtr& image, uInt32 size,
-                             const Settings& settings)
-  : Cartridge(settings),
+                             const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
@@ -32,9 +32,8 @@ Cartridge0840::Cartridge0840(const BytePtr& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge0840::reset()
 {
-  initializeStartBank();
-
   // Upon reset we switch to the startup bank
+  initializeStartBank(0);
   bank(startBank());
 }
 

@@ -75,7 +75,6 @@ class DeveloperDialog : public Dialog
       kBLColourChangedCmd   = 'GObl',
   #ifdef DEBUGGER_SUPPORT
       kDFontSizeChanged     = 'UIfs',
-      kGhostReads           = 'Dbgh'
   #endif
     };
     enum SettingsSet
@@ -101,6 +100,9 @@ class DeveloperDialog : public Dialog
     StaticTextWidget*   myRandomizeCPULabel;
     CheckboxWidget*     myRandomizeCPUWidget[5];
     CheckboxWidget*     myUndrivenPinsWidget;
+#ifdef DEBUGGER_SUPPORT
+    CheckboxWidget*     myRWPortBreakWidget;
+#endif
     CheckboxWidget*     myThumbExceptionWidget;
     CheckboxWidget*     myEEPROMAccessWidget;
 
@@ -143,6 +145,9 @@ class DeveloperDialog : public Dialog
     int     myTVJitterRec[2];
     bool    myDebugColors[2];
     bool    myUndrivenPins[2];
+#ifdef DEBUGGER_SUPPORT
+    bool    myRWPortBreak[2];
+#endif
     bool    myThumbException[2];
     bool    myEEPROMAccess[2];
     // States sets

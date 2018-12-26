@@ -90,7 +90,7 @@ static const string EmptyString("");
 namespace BSPF
 {
   // Defines to help with path handling
-  #if defined(BSPF_UNIX) || defined(BSPF_MAC_OSX)
+  #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
     static const string PATH_SEPARATOR = "/";
     #define ATTRIBUTE_FMT_PRINTF __attribute__((__format__ (__printf__, 2, 0)))
   #elif defined(BSPF_WINDOWS)

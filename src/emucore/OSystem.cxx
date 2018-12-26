@@ -645,11 +645,10 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
     case DispatchResult::Status::fatal:
       #ifdef DEBUGGER_SUPPORT
         myDebugger->startWithFatalError(dispatchResult.getMessage());
+        break;
       #else
         throw runtime_error(dispatchResult.getMessage());
       #endif
-
-      break;
 
     default:
       throw runtime_error("invalid emulation dispatch result");

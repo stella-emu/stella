@@ -67,7 +67,7 @@ Serializer::Serializer()
 {
   myStream = make_unique<stringstream>(ios::in | ios::out | ios::binary);
 
-  // For some reason, Windows and possibly OSX needs to store something in
+  // For some reason, Windows and possibly macOS needs to store something in
   // the stream before it is used for the first time
   if(myStream)
   {

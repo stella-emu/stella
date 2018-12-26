@@ -4,7 +4,7 @@
 # usage:
 #    Create_build.sh <version>
 #
-# The result will be a file called ~/Desktop/Stella-<ver>-macosx.dmg
+# The result will be a file called ~/Desktop/Stella-<ver>-macos.dmg
 
 if [ $# != 1 ]; then
 	echo "usage: Create_build.sh version"
@@ -12,7 +12,7 @@ if [ $# != 1 ]; then
 fi
 
 VER="$1"
-DMG="Stella-${VER}-macosx.dmg"
+DMG="Stella-${VER}-macos.dmg"
 DISK="/Volumes/Stella"
 DEST=~/Desktop/${DMG}
 

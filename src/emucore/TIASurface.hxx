@@ -151,9 +151,22 @@ class TIASurface
     void render();
 
     /**
-      This method renders the current frame again.
+      This method prepares the current frame for taking a snapshot.
+      In particular, in phosphor modes the blending is adjusted slightly to
+      generate better images.
     */
-    void reRender();
+    void renderForSnapshot();
+
+    /**
+      Save a snapshot after rendering.
+    */
+    void saveSnapShot() { mySaveSnapFlag = true; }
+
+  private:
+    /**
+      Average current calculated buffer's pixel with previous calculated buffer's pixel (50:50).
+    */
+    uInt32 averageBuffers(uInt32 bufOfs);
 
   private:
     OSystem& myOSystem;
@@ -185,6 +198,7 @@ class TIASurface
     // Phosphor mode items (aka reduced flicker on 30Hz screens)
     // RGB frame buffer
     uInt32 myRGBFramebuffer[AtariNTSC::outWidth(kTIAW) * kTIAH];
+    uInt32 myPrevRGBFramebuffer[AtariNTSC::outWidth(kTIAW) * kTIAH];
 
     // Use phosphor effect
     bool myUsePhosphor;
@@ -201,6 +215,9 @@ class TIASurface
 
     // Palette for normal TIA rendering mode
     const uInt32* myPalette;
+
+    // Flag for saving a snapshot
+    bool mySaveSnapFlag;
 
   private:
     // Following constructors and assignment operators not supported

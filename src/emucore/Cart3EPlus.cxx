@@ -21,8 +21,8 @@
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3EPlus::Cartridge3EPlus(const BytePtr& image, uInt32 size,
-                                 const Settings& settings)
-  : Cartridge(settings),
+                                 const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
     mySize(size)
 {
   // Allocate array for the ROM image
@@ -96,20 +96,11 @@ uInt8 Cartridge3EPlus::peek(uInt16 address)
   }
   else if(imageBank & BITMASK_ROMRAM)        // a RAM bank
   {
-    // Reading from the write port triggers an unwanted write
-    value = mySystem->getDataBusState(0xFF);
+    Int32 ramBank = imageBank & BIT_BANK_MASK;    // discard irrelevant bits
+    Int32 offset = ramBank << RAM_BANK_TO_POWER;  // base bank address in RAM
+    offset += (address & BITMASK_RAM_BANK);       // + byte offset in RAM bank
 
-    if(bankLocked())
-      return value;
-    else
-    {
-      triggerReadFromWritePort(peekAddress);
-
-      Int32 ramBank = imageBank & BIT_BANK_MASK;    // discard irrelevant bits
-      Int32 offset = ramBank << RAM_BANK_TO_POWER;  // base bank address in RAM
-      offset += (address & BITMASK_RAM_BANK);       // + byte offset in RAM bank
-      return myRAM[offset] = value;
-    }
+    return peekRAM(myRAM[offset], peekAddress);
   }
 
   return value;
@@ -125,12 +116,27 @@ bool Cartridge3EPlus::poke(uInt16 address, uInt8 value)
 
   if(address == BANK_SWITCH_HOTSPOT_RAM)
     changed = bankRAM(value);
-
   else if(address == BANK_SWITCH_HOTSPOT_ROM)
     changed = bankROM(value);
 
-  // Handle TIA space that we claimed above
-  mySystem->tia().poke(address, value);
+  if(!(address & 0x1000))
+  {
+    // Handle TIA space that we claimed above
+    changed = changed || mySystem->tia().poke(address, value);
+  }
+  else
+  {
+    uInt32 bankNumber = (address >> RAM_BANK_TO_POWER) & 7;   // now 512 byte bank # (ie: 0-7)
+    Int16 whichBankIsThere = bankInUse[bankNumber];           // ROM or RAM bank reference
+
+    if(whichBankIsThere & BITMASK_ROMRAM)
+    {
+      uInt32 byteOffset = address & BITMASK_RAM_BANK;
+      uInt32 baseAddress = ((whichBankIsThere & BIT_BANK_MASK) << RAM_BANK_TO_POWER) + byteOffset;
+      pokeRAM(myRAM[baseAddress], address, value);
+      changed = true;
+    }
+  }
 
   return changed;
 }
@@ -181,9 +187,7 @@ void Cartridge3EPlus::bankRAMSlot(uInt16 bank)
 //     << "start=" << std::hex << start << ", end=" << end << endl << endl;
   for(uInt16 addr = start; addr <= end; addr += System::PAGE_SIZE)
   {
-    if(upper)
-      access.directPokeBase = &myRAM[startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
-    else
+    if(!upper)
       access.directPeekBase = &myRAM[startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
 
     access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];

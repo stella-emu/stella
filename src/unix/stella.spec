@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
-* TODO 2018 Stephen Anthony <stephena@users.sf.net> 6.0-1
+* Sun Dec 23 2018 Stephen Anthony <stephena@users.sf.net> 6.0-1
 - Version 6.0 release
 
 * Wed Feb 21 2018 Stephen Anthony <stephena@users.sf.net> 5.1.1-1

@@ -120,6 +120,13 @@ class System : public Serializable
     TIA& tia() const { return myTIA; }
 
     /**
+      Answer the Cart attached to the system.
+
+      @return The attached cartridge
+    */
+    Cartridge& cart() const { return myCart; }
+
+    /**
       Answer the random generator attached to the system.
 
       @return The random generator
