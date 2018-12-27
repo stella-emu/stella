@@ -62,38 +62,55 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
             bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1)),
-            bheight = lineHeight + 4;
+            bheight = lineHeight + 4,
+            LBL_GAP = fontWidth;
   int xpos, ypos = 0, lwidth = 0, lwidth2 = 0;
   WidgetArray wid;
 
-  // Show game name
-  lwidth = font.getStringWidth("Select a ROM from the list" + ELLIPSIS);
+  string lblRom = "Select a ROM from the list" + ELLIPSIS;
+  const string& lblFilter = "Filter";
+  const string& lblAllFiles = "Show all files";
+  const string& lblFound = "XXXX items found";
+
+  lwidth = font.getStringWidth(lblRom);
+  lwidth2 = font.getStringWidth(lblAllFiles) + 20;
+  int lwidth3 = font.getStringWidth(lblFilter);
+  int lwidth4 = font.getStringWidth(lblFound);
+
+  if(w < HBORDER * 2 + lwidth + lwidth2 + lwidth3 + lwidth4 + fontWidth * 6 + LBL_GAP * 8)
+  {
+    // make sure there is space for at least 6 characters in the filter field
+    lblRom = "Select a ROM" + ELLIPSIS;
+    lwidth = font.getStringWidth(lblRom);
+  }
+
+  // Show the header
   xpos = HBORDER;  ypos += 8;
-  new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                       "Select a ROM from the list" + ELLIPSIS);
-
-  lwidth2 = font.getStringWidth("XXXX items found");
-  xpos = _w - lwidth2 - 10;
+  new StaticTextWidget(this, font, xpos, ypos, lblRom);
+  // Shop the files counter
+  xpos = _w - HBORDER - lwidth4;
   myRomCount = new StaticTextWidget(this, font, xpos, ypos,
-                                    lwidth2, fontHeight,
+                                    lwidth4, fontHeight,
                                     "", TextAlign::Right);
-
   // Add filter that can narrow the results shown in the listing
   // It has to fit between both labels
   if(w >= 640)
   {
-    int fwidth = std::min(15 * fontWidth, xpos - 20 - lwidth);
-
-    new StaticTextWidget(this, font, xpos - fwidth - 5 - font.getStringWidth("Filter "),
-                         ypos, "Filter ");
-    xpos -= fwidth + 5;
-    myPattern = new EditTextWidget(this, font, xpos, ypos - 2,
-                                   fwidth, lineHeight, "");
+    int fwidth = std::min(15 * fontWidth, xpos - lwidth3 - lwidth2 - lwidth - HBORDER - LBL_GAP * 8);
+    // Show the filter input field
+    xpos -= fwidth + LBL_GAP;
+    myPattern = new EditTextWidget(this, font, xpos, ypos - 2, fwidth, lineHeight, "");
+    // Show the "Filter" label
+    xpos -= lwidth3 + LBL_GAP;
+    new StaticTextWidget(this, font, xpos, ypos, lblFilter);
+    // Show the checkbox for all files
+    xpos -= lwidth2 + LBL_GAP * 3;
+    myAllFiles = new CheckboxWidget(this, font, xpos, ypos, lblAllFiles, kAllfilesCmd);
   }
 
   // Add list with game titles
   // Before we add the list, we need to know the size of the RomInfoWidget
-  xpos = 10;  ypos += lineHeight + 4;
+  xpos = HBORDER;  ypos += lineHeight + 4;
   int romWidth = 0;
   int romSize = instance().settings().getInt("romviewer");
   if(romSize > 1 && w >= 1000 && h >= 760)
@@ -119,18 +136,18 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   }
 
   // Add textfield to show current directory
-  xpos = 10;
+  xpos = HBORDER;
   ypos += myList->getHeight() + 8;
-  lwidth = font.getStringWidth("Path ");
+  lwidth = font.getStringWidth("Path") + LBL_GAP;
   myDirLabel = new StaticTextWidget(this, font, xpos, ypos+2, lwidth, fontHeight,
                                     "Path", TextAlign::Left);
   xpos += lwidth;
-  myDir = new EditTextWidget(this, font, xpos, ypos, _w - xpos - 10, lineHeight, "");
+  myDir = new EditTextWidget(this, font, xpos, ypos, _w - xpos - HBORDER, lineHeight, "");
   myDir->setEditable(false, true);
   myDir->clearFlags(WIDGET_RETAIN_FOCUS);
 
   // Add four buttons at the bottom
-  xpos = 10;  ypos += myDir->getHeight() + 8;
+  xpos = HBORDER;  ypos += myDir->getHeight() + 8;
 #ifndef BSPF_MACOS
   myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                   "Select", kLoadROMCmd);
@@ -178,8 +195,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Create context menu for ROM list options
   VariantList l;
   VarList::push_back(l, "Power-on options" + ELLIPSIS, "override");
-  VarList::push_back(l, "Show only ROM files", "roms");
-  VarList::push_back(l, "Show all files", "allfiles");
   VarList::push_back(l, "Reload listing", "reload");
   myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), l);
 
@@ -188,7 +203,9 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   myGlobalProps = make_unique<GlobalPropsDialog>(this, osystem.frameBuffer().font());
 
   // Do we show only ROMs or all files?
-  showOnlyROMs(instance().settings().getBool("launcherroms"));
+  bool onlyROMs = instance().settings().getBool("launcherroms");
+  showOnlyROMs(onlyROMs);
+  myAllFiles->setState(!onlyROMs);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -337,11 +354,6 @@ void LauncherDialog::handleContextMenu()
   {
     myGlobalProps->open();
   }
-  else if(cmd == "roms" || cmd == "allfiles")
-  {
-    showOnlyROMs(cmd == "roms");
-    updateListing();
-  }
   else if(cmd == "reload")
   {
     updateListing();
@@ -426,6 +438,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch (cmd)
   {
+    case kAllfilesCmd:
+      showOnlyROMs(!myAllFiles->getState());
+      updateListing();
+      break;
     case kLoadROMCmd:
     case ListWidget::kActivatedCmd:
     case ListWidget::kDoubleClickedCmd:
@@ -498,11 +514,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kReloadRomDirCmd:
-      updateListing();
-      break;
-
-    case kOnlyROMsCmd:
-      showOnlyROMs(data);  // NOTE: present for when we add a widget for this
       updateListing();
       break;
 

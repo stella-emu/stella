@@ -46,10 +46,10 @@ class LauncherDialog : public Dialog
   public:
     // These must be accessible from dialogs created by this class
     enum {
+      kAllfilesCmd     = 'lalf',  // show all files (or ROMs only)
       kLoadROMCmd      = 'STRT',  // load currently selected ROM
       kRomDirChosenCmd = 'romc',  // rom dir chosen
       kReloadRomDirCmd = 'rdrl',  // reload the current listing
-      kOnlyROMsCmd     = 'rdor'   // what to show has changed (ROMs vs. all files)
     };
 
   public:
@@ -107,6 +107,7 @@ class LauncherDialog : public Dialog
     EditTextWidget*   myDir;
     StaticTextWidget* myRomCount;
     EditTextWidget*   myPattern;
+    CheckboxWidget*   myAllFiles;
 
     RomInfoWidget* myRomInfoWidget;
 
