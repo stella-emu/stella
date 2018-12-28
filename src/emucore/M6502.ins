@@ -3017,7 +3017,7 @@ case 0x48:
 {
   peek(PC, DISASM_NONE);
 }
-// TODO - add tracking for this opcode
+SET_LAST_POKE(myLastSrcAddressA)
 {
   poke(0x0100 + SP--, A, DISASM_WRITE);
 }
@@ -4602,6 +4602,7 @@ case 0x8d:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
 }
+SET_LAST_POKE(myLastSrcAddressA)
 {
   poke(operandAddress, A, DISASM_WRITE);
 }
@@ -4687,6 +4688,7 @@ case 0x8e:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
 }
+SET_LAST_POKE(myLastSrcAddressX)
 {
   poke(operandAddress, X, DISASM_WRITE);
 }
@@ -4722,6 +4724,7 @@ case 0x8c:
   operandAddress = peek(PC++, DISASM_CODE);
   operandAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
 }
+SET_LAST_POKE(myLastSrcAddressY)
 {
   poke(operandAddress, Y, DISASM_WRITE);
 }

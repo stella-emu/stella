@@ -1842,7 +1842,7 @@ break;
 // PHA
 case 0x48:
 M6502_IMPLIED
-// TODO - add tracking for this opcode
+SET_LAST_POKE(myLastSrcAddressA)
 M6502_PHA
 break;
 
@@ -2228,6 +2228,7 @@ break;
 
 case 0x8d:
 M6502_ABSOLUTE_WRITE
+SET_LAST_POKE(myLastSrcAddressA)
 M6502_STA
 break;
 
@@ -2268,6 +2269,7 @@ break;
 
 case 0x8e:
 M6502_ABSOLUTE_WRITE
+SET_LAST_POKE(myLastSrcAddressX)
 M6502_STX
 break;
 //////////////////////////////////////////////////
@@ -2288,6 +2290,7 @@ break;
 
 case 0x8c:
 M6502_ABSOLUTE_WRITE
+SET_LAST_POKE(myLastSrcAddressY)
 M6502_STY
 break;
 //////////////////////////////////////////////////
