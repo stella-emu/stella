@@ -21,6 +21,7 @@
 #include "Dialog.hxx"
 #include "Font.hxx"
 #include "EventHandler.hxx"
+#include "StateManager.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
 #include "CommandDialog.hxx"
@@ -29,63 +30,92 @@
 CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
-  const int buttonWidth = _font.getStringWidth("Right Diff B") + 20,
+  const int HBORDER = 10;
+  const int buttonWidth = _font.getStringWidth("Stella Palette") + 20,
             buttonHeight = _font.getLineHeight() + 6,
             rowHeight = buttonHeight + 8;
 
   // Set real dimensions
-  _w = 3 * (buttonWidth + 5) + 20;
+  _w = 3 * (buttonWidth + 5) + HBORDER * 2;
   _h = 6 * rowHeight + 8 + _th;
-
+  ButtonWidget* bw;
   WidgetArray wid;
-  ButtonWidget* b[16];
-  int xoffset = 10, yoffset = 8 + _th;
+  int xoffset = HBORDER, yoffset = 8 + _th;
 
   auto ADD_CD_BUTTON = [&](const string& label, int cmd)
   {
     ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);
-    xoffset += buttonWidth + 8;
+    yoffset += buttonHeight + 8;
     return bw;
   };
 
-  // Row 1
-  b[0] = ADD_CD_BUTTON("Select", kSelectCmd);
-  b[4] = ADD_CD_BUTTON("Left Diff A", kLeftDiffACmd);
-  b[8] = ADD_CD_BUTTON("Save State", kSaveStateCmd);
+  // Column 1
+  bw = ADD_CD_BUTTON("Select", kSelectCmd);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("Reset", kResetCmd);
+  wid.push_back(bw);
+  myColorButton = ADD_CD_BUTTON("Color TV", kColorCmd);
+  wid.push_back(myColorButton);
+  myLeftDiffButton = ADD_CD_BUTTON("Left Diff X", kLeftDiffCmd);
+  wid.push_back(myLeftDiffButton);
+  myRightDiffButton = ADD_CD_BUTTON("Left Diff X", kLeftDiffCmd);
+  wid.push_back(myRightDiffButton);
 
-  // Row 2
-  xoffset = 10;  yoffset += buttonHeight + 8;
-  b[1] = ADD_CD_BUTTON("Reset", kResetCmd);
-  b[5] = ADD_CD_BUTTON("Left Diff B", kLeftDiffBCmd);
-  b[9] = ADD_CD_BUTTON("State Slot", kStateSlotCmd);
+  // Column 2
+  xoffset += buttonWidth + 8;
+  yoffset = 8 + _th;
 
-  // Row 3
-  xoffset = 10;  yoffset += buttonHeight + 8;
-  b[2]  = ADD_CD_BUTTON("Color TV", kColorCmd);
-  b[6]  = ADD_CD_BUTTON("Right Diff A", kRightDiffACmd);
-  b[10] = ADD_CD_BUTTON("Load State", kLoadStateCmd);
+  mySaveStateButton = ADD_CD_BUTTON("Save State", kSaveStateCmd);
+  wid.push_back(mySaveStateButton);
+  myStateSlotButton = ADD_CD_BUTTON("State Slot", kStateSlotCmd);
+  wid.push_back(myStateSlotButton);
+  myLoadStateButton = ADD_CD_BUTTON("Load State", kLoadStateCmd);
+  wid.push_back(myLoadStateButton);
+  bw = ADD_CD_BUTTON("Snapshot", kSnapshotCmd);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("TODO", 0);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("Exit Game", kExitCmd);
+  wid.push_back(bw);
 
-  // Row 4
-  xoffset = 10;  yoffset += buttonHeight + 8;
-  b[3]  = ADD_CD_BUTTON("B/W TV", kBWCmd);
-  b[7]  = ADD_CD_BUTTON("Right Diff B", kRightDiffBCmd);
-  b[11] = ADD_CD_BUTTON("Snapshot", kSnapshotCmd);
+  // Column 3
+  xoffset += buttonWidth + 8;
+  yoffset = 8 + _th;
 
-  // Row 5
-  xoffset = 10;  yoffset += buttonHeight + 8;
-  b[12] = ADD_CD_BUTTON("TV Format", kFormatCmd);
-  b[13] = ADD_CD_BUTTON("Palette", kPaletteCmd);
-  b[14] = ADD_CD_BUTTON("Reload ROM", kReloadRomCmd);
-
-  // Row 6
-  xoffset = 10 + buttonWidth + 8;  yoffset += buttonHeight + 8;
-  b[15] = ADD_CD_BUTTON("Exit Game", kExitCmd);
-
-  for(int i = 0; i < 16; ++i)
-    wid.push_back(b[i]);
+  myTVFormatButton = ADD_CD_BUTTON("SECAM-60", kFormatCmd);
+  wid.push_back(myTVFormatButton);
+  myPaletteButton = ADD_CD_BUTTON("Stella Palette", kPaletteCmd);
+  wid.push_back(myPaletteButton);
+  bw = ADD_CD_BUTTON("TODO", 0);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("TODO", 0);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("Reload ROM", kReloadRomCmd);
+  wid.push_back(bw);
 
   addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CommandDialog::loadConfig()
+{
+  myColorButton->setLabel(instance().console().switches().tvColor() ? "Color Mode" : "B/W Mode");
+  myLeftDiffButton->setLabel(instance().console().switches().leftDifficultyA() ? "Left Diff A" : "Left Diff B");
+  myRightDiffButton->setLabel(instance().console().switches().rightDifficultyA() ? "Right Diff A" : "Right Diff B");
+
+  updateSlot(instance().state().currentSlot());
+
+  myTVFormatButton->setLabel(instance().console().getFormatString() + " Mode");
+  string palette, label;
+  palette = instance().settings().getString("palette");
+  if(palette == "standard")
+    label = "Stella Palette";
+  else if(palette == "z26")
+    label = "Z26 Palette";
+  else
+    label = "User Palette";
+  myPaletteButton->setLabel(label);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -108,32 +138,17 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kColorCmd:
-      event = Event::ConsoleColor;
+      event = Event::ConsoleColorToggle;
       consoleCmd = true;
       break;
 
-    case kBWCmd:
-      event = Event::ConsoleBlackWhite;
+    case kLeftDiffCmd:
+      event = Event::ConsoleLeftDiffToggle;
       consoleCmd = true;
       break;
 
-    case kLeftDiffACmd:
-      event = Event::ConsoleLeftDiffA;
-      consoleCmd = true;
-      break;
-
-    case kLeftDiffBCmd:
-      event = Event::ConsoleLeftDiffB;
-      consoleCmd = true;
-      break;
-
-    case kRightDiffACmd:
-      event = Event::ConsoleRightDiffA;
-      consoleCmd = true;
-      break;
-
-    case kRightDiffBCmd:
-      event = Event::ConsoleRightDiffB;
+    case kRightDiffCmd:
+      event = Event::ConsoleRightDiffToggle;
       consoleCmd = true;
       break;
 
@@ -143,10 +158,13 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kStateSlotCmd:
+    {
       event = Event::ChangeState;
       stateCmd = true;
+      int slot = (instance().state().currentSlot() + 1) % 10;
+      updateSlot(slot);
       break;
-
+    }
     case kLoadStateCmd:
       event = Event::LoadState;
       consoleCmd = true;
@@ -189,4 +207,15 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
   }
   else if(stateCmd)
     instance().eventHandler().handleEvent(event, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CommandDialog::updateSlot(int slot)
+{
+  ostringstream buf;
+  buf << " " << slot;
+
+  mySaveStateButton->setLabel("Save State" + buf.str());
+  myStateSlotButton->setLabel("State Slot" + buf.str());
+  myLoadStateButton->setLabel("Load State" + buf.str());
 }

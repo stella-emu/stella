@@ -195,6 +195,11 @@ class Console : public Serializable
     void setFormat(uInt32 format);
 
     /**
+      Get NTSC/PAL/SECAM (and variants) display format name
+    */
+    string getFormatString() const { return myDisplayFormat; }
+
+    /**
       Toggle between the available palettes.
     */
     void togglePalette();
@@ -357,12 +362,6 @@ class Console : public Serializable
       'greying out' the frame in the debugger.
     */
     void generateColorLossPalette();
-
-    /**
-      Returns a pointer to the palette data for the palette currently defined
-      by the ROM properties.
-    */
-    const uInt32* getPalette(int direction) const;
 
     void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
     void toggleTIACollision(TIABit bit, const string& bitname, bool show = true) const;

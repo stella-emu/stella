@@ -142,6 +142,11 @@ class StateManager
     void reset();
 
     /**
+      Returns the current slot number
+    */
+    int currentSlot() const { return myCurrentSlot; }
+
+    /**
       The rewind facility for the state manager
     */
     RewindManager& rewindManager() const { return *myRewindManager; }

@@ -450,7 +450,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       if(state && !myIs7800)
       {
         myEvent.set(Event::ConsoleColor, 0);
-        myOSystem.frameBuffer().showMessage("BW Mode");
+        myOSystem.frameBuffer().showMessage("B/W Mode");
       }
       break;
     case Event::ConsoleColorToggle:
@@ -460,7 +460,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
         {
           myEvent.set(Event::ConsoleBlackWhite, 1);
           myEvent.set(Event::ConsoleColor, 0);
-          myOSystem.frameBuffer().showMessage("BW Mode");
+          myOSystem.frameBuffer().showMessage("B/W Mode");
         }
         else
         {

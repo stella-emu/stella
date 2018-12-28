@@ -32,17 +32,28 @@ class CommandDialog : public Dialog
     virtual ~CommandDialog() = default;
 
   protected:
+    void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void updateSlot(int slot);
+
+    // column 0
+    ButtonWidget* myColorButton;
+    ButtonWidget* myLeftDiffButton;
+    ButtonWidget* myRightDiffButton;
+    // column 1
+    ButtonWidget* mySaveStateButton;
+    ButtonWidget* myStateSlotButton;
+    ButtonWidget* myLoadStateButton;
+    // column 2
+    ButtonWidget* myTVFormatButton;
+    ButtonWidget* myPaletteButton;
 
     enum {
       kSelectCmd     = 'Csel',
       kResetCmd      = 'Cres',
       kColorCmd      = 'Ccol',
-      kBWCmd         = 'Cbwt',
-      kLeftDiffACmd  = 'Clda',
-      kLeftDiffBCmd  = 'Cldb',
-      kRightDiffACmd = 'Crda',
-      kRightDiffBCmd = 'Crdb',
+      kLeftDiffCmd   = 'Cldf',
+      kRightDiffCmd  = 'Crdf',
       kSaveStateCmd  = 'Csst',
       kStateSlotCmd  = 'Ccst',
       kLoadStateCmd  = 'Clst',
