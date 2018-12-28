@@ -45,14 +45,14 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     void setDefaults() override;
 
-    // load the properties for the 'Cartridge' tab
-    void loadCartridgeProperties(const Properties& props);
+    // load the properties for the 'Emulation' tab
+    void loadEmulationProperties(const Properties& props);
     // load the properties for the 'Console' tab
     void loadConsoleProperties(const Properties& props);
     // load the properties for the 'Controller' tab
     void loadControllerProperties(const Properties& props);
-    // load the properties for the 'Display' tab
-    void loadDisplayProperties(const Properties& props);
+    // load the properties for the 'Cartridge' tab
+    void loadCartridgeProperties(const Properties& props);
 
     void updateControllerStates();
     void eraseEEPROM();
@@ -60,15 +60,13 @@ class GameInfoDialog : public Dialog, public CommandSender
   private:
     TabWidget* myTab;
 
-    // Cartridge properties
-    EditTextWidget*   myName;
-    EditTextWidget*   myMD5;
-    EditTextWidget*   myManufacturer;
-    EditTextWidget*   myModelNo;
-    EditTextWidget*   myRarity;
-    EditTextWidget*   myNote;
-    PopUpWidget*      myType;
+    // Emulation properties
+    PopUpWidget*      myBSType;
     StaticTextWidget* myTypeDetected;
+    PopUpWidget*      myFormat;
+    StaticTextWidget* myFormatDetected;
+    CheckboxWidget*   myPhosphor;
+    SliderWidget*     myPPBlend;
     CheckboxWidget*   mySound;
 
     // Console properties
@@ -91,23 +89,19 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget*      myMouseY;
     SliderWidget*     myMouseRange;
 
-    // Display properties
-    PopUpWidget*      myFormat;
-    StaticTextWidget* myFormatDetected;
-    SliderWidget*     myYStart;
-    StaticTextWidget* myYStartDetected;
-    SliderWidget*     myHeight;
-    StaticTextWidget* myHeightDetected;
-    CheckboxWidget*   myPhosphor;
-    SliderWidget*     myPPBlend;
+    // Cartridge properties
+    EditTextWidget*   myName;
+    EditTextWidget*   myMD5;
+    EditTextWidget*   myManufacturer;
+    EditTextWidget*   myModelNo;
+    EditTextWidget*   myRarity;
+    EditTextWidget*   myNote;
 
     enum {
+      kPhosphorChanged = 'PPch',
+      kPPBlendChanged = 'PBch',
       kLeftCChanged    = 'LCch',
       kRightCChanged   = 'RCch',
-      kYStartChanged   = 'YSch',
-      kHeightChanged   = 'HTch',
-      kPhosphorChanged = 'PPch',
-      kPPBlendChanged  = 'PBch',
       kMCtrlChanged    = 'MCch',
       kEEButtonPressed = 'EEgb',
     };
