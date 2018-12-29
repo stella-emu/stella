@@ -65,7 +65,7 @@
 "Cartridge.MD5" "00eaee22034aff602f899b684c107d77"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek - Sunteck Corp"
 "Cartridge.ModelNo" "SS-001"
-"Cartridge.Name" "Time Race (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Time Race (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Space Jockey"
 "Display.Height" "240"
 ""
@@ -309,7 +309,7 @@
 ""
 
 "Cartridge.MD5" "0443cfa9872cdb49069186413275fa21"
-"Cartridge.Manufacturer" "M Network, Patricia Lewis Du Long, Ron Surratt - INTV"
+"Cartridge.Manufacturer" "M Network - INTV, Patricia Lewis Du Long, Ron Surratt"
 "Cartridge.ModelNo" "MT4518"
 "Cartridge.Name" "BurgerTime (1983) (M Network)"
 ""
@@ -526,9 +526,9 @@
 ""
 
 "Cartridge.MD5" "071f84d10b343c7c05ce3e32af631687"
-"Cartridge.Manufacturer" "Videospielkassette - Ariola"
-"Cartridge.ModelNo" "PGP233"
-"Cartridge.Name" "Krieg der Sterne (Ariola) (PAL)"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-019"
+"Cartridge.Name" "Curtiss (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Atlantis"
 ""
 
@@ -565,9 +565,9 @@
 ""
 
 "Cartridge.MD5" "07973be3ecfd55235bf59aa56bdef28c"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "732.052 6"
-"Cartridge.Name" "Eddy Langfinger, der Museumsdieb (1983) (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-036"
+"Cartridge.Name" "Criminal Pursuit (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA A Mysterious Thief"
 "Display.Phosphor" "YES"
 ""
@@ -1340,7 +1340,7 @@
 "Cartridge.MD5" "0fcff6fe3b0769ad5d0cf82814d2a6d9"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-027"
-"Cartridge.Name" "Zoo Fun (Suntek) (PAL)"
+"Cartridge.Name" "Zoo Fun (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA Panda Chase"
 "Display.Height" "256"
 ""
@@ -1409,7 +1409,7 @@
 "Cartridge.MD5" "1086ff69f82b68d6776634f336fb4857"
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-009"
-"Cartridge.Name" "Bloody Human Freeway (Activision) (Prototype)"
+"Cartridge.Name" "Bloody Human Freeway (1981) (Activision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -1539,9 +1539,9 @@
 ""
 
 "Cartridge.MD5" "1278f74ca1dfaa9122df3eca3c5bcaad"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "719.013 5"
-"Cartridge.Name" "Ungeheuer der Tiefe (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-013"
+"Cartridge.Name" "Bi! Bi! (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Skindiver"
 ""
 
@@ -1821,6 +1821,13 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "15a0d59304dece2c7d0580f3ea3527f0"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Peter C. Niday"
+"Cartridge.ModelNo" "CX26115"
+"Cartridge.Name" "Dumbo's Flying Circus (04-04-1983) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "15b498199ed0ed28057bf0dbdce9b8d8"
 "Cartridge.Manufacturer" "Hozer Video Games"
 "Cartridge.Name" "Jammed (V0.2) (Demo) (2001) (TJ)"
@@ -1917,7 +1924,7 @@
 ""
 
 "Cartridge.MD5" "170e7589a48739cfb9cc782cbb0fe25a"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Hal Finney - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, Hal Finney"
 "Cartridge.ModelNo" "MT5666"
 "Cartridge.Name" "Astroblast (1982) (M Network) [fixed]"
 "Cartridge.Note" "Can also use left joystick"
@@ -1994,7 +2001,7 @@
 ""
 
 "Cartridge.MD5" "17badbb3f54d1fc01ee68726882f26a6"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Hal Finney, Bruce Pedersen - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, Hal Finney, Bruce Pedersen"
 "Cartridge.ModelNo" "MT5659"
 "Cartridge.Name" "Space Attack (1982) (M Network)"
 ""
@@ -2208,13 +2215,13 @@
 "Cartridge.Manufacturer" "Home Vision - Gem International Corp. - VDI"
 "Cartridge.ModelNo" "VCS83135"
 "Cartridge.Name" "Tanks War (1983) (Home Vision) (PAL)"
-"Cartridge.Note" "AKA Tanks But No Tanks"
+"Cartridge.Note" "AKA Phantom Tank"
 ""
 
 "Cartridge.MD5" "1a624e236526c4c8f31175e9c89b2a22"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-007"
-"Cartridge.Name" "Space Raid (Rainbow Vision) (PAL) [a]"
+"Cartridge.Name" "Space Raid (1983) (Rainbow Vision) (PAL) [a]"
 "Cartridge.Note" "AKA MegaMania"
 ""
 
@@ -2270,7 +2277,7 @@
 "Cartridge.MD5" "1bb91bae919ddbd655fa25c54ea6f532"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-026"
-"Cartridge.Name" "Treasure Island (Suntek) (PAL)"
+"Cartridge.Name" "Treasure Island (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA Treasure Discovery"
 ""
 
@@ -2308,9 +2315,9 @@
 ""
 
 "Cartridge.MD5" "1c5796d277d9e4df3f6648f7012884c4"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "715.853 5"
-"Cartridge.Name" "Wachroboter jagt Jupy (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-012"
+"Cartridge.Name" "Hey! Stop! (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Keystone Kapers"
 ""
 
@@ -2646,7 +2653,7 @@
 "Cartridge.Manufacturer" "Quelle"
 "Cartridge.ModelNo" "685.996 1"
 "Cartridge.Name" "Teller-Jonglieren! (1983) (Quelle) (PAL)"
-"Cartridge.Note" "AKA Dishaster"
+"Cartridge.Note" "AKA Dancing Plate"
 "Display.Phosphor" "YES"
 ""
 
@@ -3364,8 +3371,8 @@
 "Cartridge.MD5" "28d5df3ed036ed63d33a31d0d8b85c47"
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG204"
-"Cartridge.Name" "Open, Sesame! (1983) (BitCorp) (PAL) [a]"
-"Cartridge.Note" "AKA I Want My Mommy"
+"Cartridge.Name" "Open, Sesame! (1983) (BitCorp) (PAL)"
+"Cartridge.Note" "AKA Sesam, Offne Dich"
 "Display.YStart" "38"
 "Display.Height" "256"
 "Display.Phosphor" "YES"
@@ -3715,6 +3722,12 @@
 "Controller.Right" "KEYBOARD"
 ""
 
+"Cartridge.MD5" "2cc3049b7feb8e92f1870f1972629757"
+"Cartridge.Manufacturer" "Video Soft"
+"Cartridge.Name" "Atom Smasher (1984) (Video Soft) (Prototype) [stack pointer fix]"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "2cccc079c15e9af94246f867ffc7e9bf"
 "Cartridge.Manufacturer" "PlayAround - J.H.M."
 "Cartridge.ModelNo" "203"
@@ -3788,6 +3801,11 @@
 "Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
 "Controller.Left" "ATARIMOUSE"
+""
+
+"Cartridge.MD5" "2d63b452f897818c52b3fceeb080a4d0"
+"Cartridge.Manufacturer" "HES - Absolute Entertainment"
+"Cartridge.Name" "Pete Rose Baseball (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "2d6741cda3000230f6bbdd5e31941c01"
@@ -3911,7 +3929,7 @@
 "Cartridge.MD5" "2e842c2ee22e9dad9df16eed091315c4"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "701-157"
-"Cartridge.Name" "2 Pak Special - Motocross, Boom Bang (1990) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Moto-cross, Boom Bang (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "2eaf8fa9e9fdf1fcfc896926a4bdbf85"
@@ -4391,7 +4409,7 @@
 "Cartridge.MD5" "345769d085113d57937198262af52298"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-007"
-"Cartridge.Name" "Space Raid (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Space Raid (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA MegaMania"
 ""
 
@@ -4573,9 +4591,9 @@
 ""
 
 "Cartridge.MD5" "36b20c427975760cb9cf4a47e41369e4"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26143"
-"Cartridge.Name" "Donkey Kong (1987) (Atari)"
+"Cartridge.Manufacturer" "Coleco - Woodside Design Associates - Imaginative Systems Software, Garry Kitchen"
+"Cartridge.ModelNo" "2451"
+"Cartridge.Name" "Donkey Kong (1982) (Coleco)"
 ""
 
 "Cartridge.MD5" "36c29ceee2c151b23a1ad7aa04bd529d"
@@ -4696,7 +4714,7 @@
 "Cartridge.MD5" "37fd7fa52d358f66984948999f1213c5"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-004"
-"Cartridge.Name" "Pyramid War (Rainbow Vision) (PAL) [a2]"
+"Cartridge.Name" "Pyramid War (1983) (Rainbow Vision) (PAL) [a2]"
 "Cartridge.Note" "AKA Chopper Command"
 "Display.Format" "PAL"
 ""
@@ -4999,7 +5017,7 @@
 ""
 
 "Cartridge.MD5" "3b76242691730b2dd22ec0ceab351bc6"
-"Cartridge.Manufacturer" "M Network, Connie Goldman, Joe King, Patricia Lewis Du Long, Gerald Moore, Mike Sanders, Jossef Wagner - INTV"
+"Cartridge.Manufacturer" "M Network - INTV, Connie Goldman, Joe King, Patricia Lewis Du Long, Gerald Moore, Mike Sanders, Jossef Wagner"
 "Cartridge.ModelNo" "MT4319"
 "Cartridge.Name" "Masters of the Universe (1983) (M Network)"
 "Console.RightDifficulty" "A"
@@ -5239,7 +5257,7 @@
 ""
 
 "Cartridge.MD5" "3e33ac10dcf2dff014bc1decf8a9aea4"
-"Cartridge.Manufacturer" "Spectravideo - Video Games Industries Corporation, Mike Schwartz - Ralston Purina"
+"Cartridge.Manufacturer" "Spectravideo - Video Games Industries Corporation, Michael Schwartz - Ralston Purina"
 "Cartridge.Name" "Chase the Chuckwagon (1983) (Spectravideo)"
 "Display.YStart" "22"
 "Display.Phosphor" "YES"
@@ -5747,7 +5765,7 @@
 ""
 
 "Cartridge.MD5" "4474b3ad3bf6aabe719a2d7f1d1fb4cc"
-"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.Manufacturer" "Activision - Imagineering, Dan Kitchen"
 "Cartridge.ModelNo" "EAX-039-04B, EAX-039-04I"
 "Cartridge.Name" "Kung-Fu Master (1987) (Activision) (PAL)"
 ""
@@ -6003,7 +6021,7 @@
 "Cartridge.MD5" "47aad247cce2534fd70c412cb483c7e0"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-010"
-"Cartridge.Name" "Mafia (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Mafia (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Gangster Alley"
 ""
 
@@ -6149,7 +6167,7 @@
 ""
 
 "Cartridge.MD5" "490eed07d4691b27f473953fbea6541a"
-"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright, David Crane"
 "Cartridge.ModelNo" "AB-035-04"
 "Cartridge.Name" "Pitfall II (1983) (Activision) [a]"
 ""
@@ -6204,7 +6222,7 @@
 "Cartridge.Manufacturer" "Home Vision - Gem International Corp. - VDI"
 "Cartridge.ModelNo" "VCS83136"
 "Cartridge.Name" "Cosmic War (1983) (Home Vision) (PAL)"
-"Cartridge.Note" "AKA Cosmic Corridor"
+"Cartridge.Note" "AKA Space Tunnel"
 "Display.Height" "256"
 ""
 
@@ -6897,7 +6915,7 @@
 "Cartridge.MD5" "522c9cf684ecd72db2f85053e6f6f720"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-008"
-"Cartridge.Name" "Year 1999, The (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Year 1999, The (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Condor Attack"
 ""
 
@@ -6905,7 +6923,7 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-804"
 "Cartridge.Name" "Open, Sesame! (1983) (CCE)"
-"Cartridge.Note" "AKA I Want My Mommy"
+"Cartridge.Note" "AKA Abre-te, Sesamo!"
 "Display.Height" "214"
 "Display.Phosphor" "YES"
 ""
@@ -7365,7 +7383,7 @@
 ""
 
 "Cartridge.MD5" "589c73bbcd77db798cb92a992b4c06c3"
-"Cartridge.Manufacturer" "Xonox - K-Tel Software - Action Graphics, John Perkins, David Thiel"
+"Cartridge.Manufacturer" "Xonox - K-Tel Software - Action Graphics, Michael Schwartz, David Thiel"
 "Cartridge.ModelNo" "6230, 7210, 06004, 99004"
 "Cartridge.Name" "Artillery Duel (1983) (Xonox) (PAL60)"
 "Display.Format" "PAL60"
@@ -7406,7 +7424,7 @@
 "Cartridge.MD5" "594dbc80b93fa5804e0f1368c037331d"
 "Cartridge.Manufacturer" "Telesys, Alex Leavens"
 "Cartridge.Name" "Bouncin' Baby Bunnies (1983) (Telesys) (Prototype)"
-"Cartridge.Note" "AKA Bouncing Baby Monkeys"
+"Cartridge.Note" "AKA Baby Boom Boom, Bouncing Baby Monkeys"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -7560,7 +7578,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-808"
 "Cartridge.Name" "Phantom Tank (1983) (CCE) (PAL)"
-"Cartridge.Note" "AKA Tanks But No Tanks"
 "Display.YStart" "36"
 ""
 
@@ -7629,7 +7646,7 @@
 ""
 
 "Cartridge.MD5" "5b92a93b23523ff16e2789b820e2a4c5"
-"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.Manufacturer" "Activision - Imagineering, Dan Kitchen"
 "Cartridge.ModelNo" "AG-039-04"
 "Cartridge.Name" "Kung-Fu Master (1987) (Activision)"
 ""
@@ -7706,9 +7723,9 @@
 ""
 
 "Cartridge.MD5" "5c0520c00163915a4336e481ca4e7ef4"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "262.794 1"
-"Cartridge.Name" "Wuestenschlacht (1983) (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-004"
+"Cartridge.Name" "Pyramid War (1983) (Rainbow Vision) (PAL) [a1]"
 "Cartridge.Note" "AKA Chopper Command"
 ""
 
@@ -8142,7 +8159,7 @@
 "Cartridge.MD5" "6141c095d0aee4e734bebfaac939030a"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-017"
-"Cartridge.Name" "Mariana (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Mariana (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Seaquest"
 ""
 
@@ -8324,7 +8341,7 @@
 "Cartridge.MD5" "638cc82ea96f67674595ba9ae05da6c6"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-011"
-"Cartridge.Name" "Super Ferrari (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Super Ferrari (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Enduro"
 ""
 
@@ -8490,7 +8507,7 @@
 "Cartridge.MD5" "656dc247db2871766dffd978c71da80c"
 "Cartridge.Manufacturer" "Sears Tele-Games, Jim Huether"
 "Cartridge.ModelNo" "CX2614 - 49-75126"
-"Cartridge.Name" "Steeplechase (1980) (Sears)"
+"Cartridge.Name" "Steeplechase (1981) (Sears)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
 "Controller.Right" "PADDLES"
@@ -9053,7 +9070,6 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG203"
 "Cartridge.Name" "Phantom Tank (1982) (BitCorp) (PAL)"
-"Cartridge.Note" "AKA Tanks But No Tanks"
 "Display.YStart" "36"
 ""
 
@@ -9183,7 +9199,7 @@
 "Cartridge.MD5" "6c85098518d3f94f7622c42fd1d819ac"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-028"
-"Cartridge.Name" "Firebug (Suntek) (PAL)"
+"Cartridge.Name" "Firebug (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA Spinning Fireball"
 ""
 
@@ -9259,7 +9275,7 @@
 ""
 
 "Cartridge.MD5" "6d842c96d5a01967be9680080dd5be54"
-"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright, David Crane"
 "Cartridge.ModelNo" "AB-035-04"
 "Cartridge.Name" "Pitfall II (1984) (Activision)"
 ""
@@ -9398,7 +9414,7 @@
 "Cartridge.MD5" "6fc0176ccf53d7bce249aeb56d59d414"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-004"
-"Cartridge.Name" "Pyramid War (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Pyramid War (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Chopper Command"
 ""
 
@@ -9486,7 +9502,7 @@
 "Cartridge.MD5" "709910c2e83361bc4bf8cd0c20c34fbf"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-006"
-"Cartridge.Name" "Netmaker (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Netmaker (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Amidar"
 ""
 
@@ -9525,7 +9541,7 @@
 ""
 
 "Cartridge.MD5" "71464c54da46adae9447926fdbfc1abe"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Bruce Pedersen - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, Bruce Pedersen"
 "Cartridge.ModelNo" "MT5663"
 "Cartridge.Name" "Lock 'n' Chase (1982) (M Network)"
 ""
@@ -9716,10 +9732,10 @@
 ""
 
 "Cartridge.MD5" "73aa02458b413091ac940c0489301710"
-"Cartridge.Manufacturer" "Quelle - Otto Versand"
-"Cartridge.ModelNo" "463.574 4 - 781393, 986153"
-"Cartridge.Name" "Kampf dem Steinfresser (1983) (Quelle) (PAL)"
-"Cartridge.Note" "Boom Bang (AKA Crackpots)"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-016"
+"Cartridge.Name" "Boom Bang (1983) (Rainbow Vision) (PAL)"
+"Cartridge.Note" "AKA Crackpots"
 ""
 
 "Cartridge.MD5" "73b4e8f8b04515d91937510e680214bc"
@@ -9791,7 +9807,7 @@
 ""
 
 "Cartridge.MD5" "7454786af7126ccc7a0c31fcf5af40f1"
-"Cartridge.Name" "Tanks But No Tanks (Unknown) (PAL)"
+"Cartridge.Name" "Phantom Tank (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "7465b06b6e25a4a6c6d77d02242af6d6"
@@ -9850,7 +9866,7 @@
 ""
 
 "Cartridge.MD5" "75169c08b56e4e6c36681e599c4d8cc5"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Hal Finney - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, Hal Finney"
 "Cartridge.ModelNo" "MT5666"
 "Cartridge.Name" "Astroblast (1982) (M Network)"
 "Cartridge.Note" "Can also use left joystick"
@@ -10241,7 +10257,7 @@
 ""
 
 "Cartridge.MD5" "79e5338dbfa6b64008bb0d72a3179d3c"
-"Cartridge.Manufacturer" "M Network, David Akers, Patricia Lewis Du Long - INTV"
+"Cartridge.Manufacturer" "M Network - INTV, David Akers, Patricia Lewis Du Long"
 "Cartridge.ModelNo" "MT4313"
 "Cartridge.Name" "Star Strike (1983) (M Network)"
 ""
@@ -10818,7 +10834,7 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-807"
 "Cartridge.Name" "Space Tunnel (1983) (CCE)"
-"Cartridge.Note" "AKA Cosmic Corridor, O Tunel Espacial"
+"Cartridge.Note" "AKA O Tunel Espacial"
 "Display.YStart" "32"
 "Display.Height" "215"
 ""
@@ -10826,7 +10842,7 @@
 "Cartridge.MD5" "7ff53f6922708119e7bf478d7d618c86"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-032"
-"Cartridge.Name" "Walker (Suntek) (PAL)"
+"Cartridge.Name" "Walker (1983) (Suntek) (PAL)"
 ""
 
 "Cartridge.MD5" "7ffc2d80fd49a124808315306d19868e"
@@ -10947,9 +10963,9 @@
 ""
 
 "Cartridge.MD5" "8108162bc88b5a14adc3e031cf4175ad"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "719.941 7"
-"Cartridge.Name" "Vom Himmel durch die Hoelle (1983) (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-030"
+"Cartridge.Name" "Skydiver (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA Parachute"
 ""
 
@@ -11066,7 +11082,7 @@
 "Cartridge.MD5" "82bf0dff20cee6a1ed4bb834b00074e6"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-035"
-"Cartridge.Name" "Panda (Quest) (Suntek) (PAL)"
+"Cartridge.Name" "Panda (1983) (Quest) (Suntek) (PAL)"
 "Cartridge.Note" "AKA Panda Chase"
 "Display.Height" "256"
 ""
@@ -11446,7 +11462,7 @@
 "Cartridge.Manufacturer" "Goliath"
 "Cartridge.ModelNo" "5"
 "Cartridge.Name" "Open Sesame (1983) (Goliath) (PAL)"
-"Cartridge.Note" "AKA I Want My Mommy"
+"Cartridge.Note" "AKA Open, Sesame!"
 "Display.YStart" "34"
 "Display.Phosphor" "YES"
 ""
@@ -11731,7 +11747,7 @@
 ""
 
 "Cartridge.MD5" "8b5b1e3a434ebbdc2c2a49dc68f46360"
-"Cartridge.Manufacturer" "CBS Electronics - Woodside Design Associates - Imaginative Systems Software, Dan Kitchen, Garry Kitchen"
+"Cartridge.Manufacturer" "CBS Electronics - Woodside Design Associates - Imaginative Systems Software, Garry Kitchen"
 "Cartridge.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
 "Cartridge.Name" "Donkey Kong (1983) (CBS Electronics) (PAL)"
 ""
@@ -11807,7 +11823,7 @@
 "Cartridge.Manufacturer" "Home Vision - Gem International Corp. - VDI"
 "Cartridge.ModelNo" "VCS83137"
 "Cartridge.Name" "Teddy Apple (1983) (Home Vision) (PAL)"
-"Cartridge.Note" "AKA I Want My Mommy"
+"Cartridge.Note" "AKA Open, Sesame!"
 "Display.Phosphor" "YES"
 ""
 
@@ -12102,7 +12118,7 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PGP204"
 "Cartridge.Name" "Open Sesame (4 Game in One) (1983) (BitCorp) (PAL)"
-"Cartridge.Note" "AKA I Want My Mommy"
+"Cartridge.Note" "AKA Open, Sesame!"
 "Display.YStart" "34"
 "Display.Phosphor" "YES"
 ""
@@ -12530,9 +12546,10 @@
 ""
 
 "Cartridge.MD5" "95e542a7467c94b1e4ab24a3ebe907f1"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "719.252 9"
-"Cartridge.Name" "Im Schutz der Drachen (1983) (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-021"
+"Cartridge.Name" "Dragon Defender (1983) (Suntek) (PAL)"
+"Controller.Left" "MINDLINK"
 "Display.Phosphor" "YES"
 ""
 
@@ -13020,7 +13037,7 @@
 ""
 
 "Cartridge.MD5" "9d37a1be4a6e898026414b8fee2fc826"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, David Rolfe - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, David Rolfe"
 "Cartridge.ModelNo" "MT5665"
 "Cartridge.Name" "Super Challenge Baseball (1982) (M Network)"
 "Cartridge.Note" "AKA Big League Baseball"
@@ -13271,7 +13288,7 @@
 ""
 
 "Cartridge.MD5" "a0675883f9b09a3595ddd66a6f5d3498"
-"Cartridge.Manufacturer" "Telegames"
+"Cartridge.Manufacturer" "Telegames - VSS"
 "Cartridge.ModelNo" "6057 A227"
 "Cartridge.Name" "Quest for Quintana Roo (1988) (Telegames)"
 ""
@@ -13812,7 +13829,7 @@
 ""
 
 "Cartridge.MD5" "a7b584937911d60c120677fe0d47f36f"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Hal Finney - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, Hal Finney"
 "Cartridge.ModelNo" "MT5661"
 "Cartridge.Name" "Armor Ambush (1982) (M Network)"
 "Cartridge.Note" "AKA Tank Battle"
@@ -14008,7 +14025,7 @@
 ""
 
 "Cartridge.MD5" "a9cb638cd2cb2e8e0643d7a67db4281c"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Larry Zwick - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, Larry Zwick"
 "Cartridge.ModelNo" "MT5861"
 "Cartridge.Name" "Air Raiders (1983) (M Network)"
 "Cartridge.Note" "AKA Air Battle"
@@ -14107,7 +14124,7 @@
 ""
 
 "Cartridge.MD5" "ab2cfcaad3daaf673b2b14fdbb8dac33"
-"Cartridge.Manufacturer" "M Network, David Akers, Joe King, Patricia Lewis Du Long, Jeff Ratcliff - INTV"
+"Cartridge.Manufacturer" "M Network - INTV, David Akers, Joe King, Patricia Lewis Du Long, Jeff Ratcliff"
 "Cartridge.ModelNo" "MT7045"
 "Cartridge.Name" "Bump 'n' Jump (1983) (M Network)"
 ""
@@ -14717,7 +14734,6 @@
 "Cartridge.Manufacturer" "Goliath"
 "Cartridge.ModelNo" "3"
 "Cartridge.Name" "Phantom Tank (1983) (Goliath) (PAL)"
-"Cartridge.Note" "AKA Tanks But No Tanks"
 ""
 
 "Cartridge.MD5" "b2a6f31636b699aeda900f07152bab6e"
@@ -15405,7 +15421,7 @@
 "Cartridge.MD5" "bcef7880828a391cf6b50d5a6dcef719"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-009"
-"Cartridge.Name" "Bermuda, The (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Bermuda, The (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA River Raid"
 ""
 
@@ -15485,7 +15501,7 @@
 "Cartridge.Manufacturer" "Puzzy - Bit Corporation"
 "Cartridge.ModelNo" "PG202"
 "Cartridge.Name" "Space Tunnel (1982) (Puzzy)"
-"Cartridge.Note" "AKA Cosmic Corridor, Le Tunnel de L'Estace"
+"Cartridge.Note" "AKA Le Tunnel de L'Estace"
 "Display.YStart" "34"
 "Display.Height" "215"
 ""
@@ -15531,9 +15547,10 @@
 ""
 
 "Cartridge.MD5" "bf52327c2197d9d2c4544be053caded1"
-"Cartridge.Manufacturer" "HES"
+"Cartridge.Manufacturer" "HES - Activision"
 "Cartridge.ModelNo" "AG-930-04, AZ-030"
 "Cartridge.Name" "Decathlon (HES) (PAL) (16K)"
+"Cartridge.Note" "AKA Activision Decathlon"
 ""
 
 "Cartridge.MD5" "bf5e2079586cb307bf5eb2413e2e61af"
@@ -16065,7 +16082,7 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG202"
 "Cartridge.Name" "Space Tunnel (1982) (BitCorp) (PAL)"
-"Cartridge.Note" "AKA Cosmic Corridor, Weltraum-Tunnel"
+"Cartridge.Note" "AKA Weltraum-Tunnel"
 "Display.Height" "256"
 ""
 
@@ -16264,7 +16281,7 @@
 "Cartridge.MD5" "c745487828a1a6a743488ecebc55ad44"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-002"
-"Cartridge.Name" "Galactic (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Galactic (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA The Challenge of.... Nexar"
 ""
 
@@ -16285,7 +16302,7 @@
 ""
 
 "Cartridge.MD5" "c77c35a6fc3c0f12bf9e8bae48cba54b"
-"Cartridge.Manufacturer" "Xonox - K-Tel Software - Action Graphics, John Perkins, David Thiel"
+"Cartridge.Manufacturer" "Xonox - K-Tel Software - Action Graphics, Michael Schwartz, David Thiel"
 "Cartridge.ModelNo" "6230, 7210, 06004, 99004"
 "Cartridge.Name" "Artillery Duel (1983) (Xonox)"
 "Cartridge.Rarity" "Extremely Rare"
@@ -16295,7 +16312,7 @@
 "Cartridge.Manufacturer" "Panda"
 "Cartridge.ModelNo" "101"
 "Cartridge.Name" "Tank Brigade (1983) (Panda)"
-"Cartridge.Note" "AKA Tanks But No Tanks"
+"Cartridge.Note" "AKA Phantom Tank"
 ""
 
 "Cartridge.MD5" "c7900a7fe95a47eef3b325072ad2c232"
@@ -16336,7 +16353,7 @@
 ""
 
 "Cartridge.MD5" "c830f6ae7ee58bcc2a6712fb33e92d55"
-"Cartridge.Manufacturer" "Atari, Michael Kosaka, Carla Meninsky"
+"Cartridge.Manufacturer" "Atari, Michael Kosaka"
 "Cartridge.ModelNo" "CX2687"
 "Cartridge.Name" "Tempest (01-05-1984) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -16429,7 +16446,7 @@
 ""
 
 "Cartridge.MD5" "ca4f8c5b4d6fb9d608bb96bc7ebd26c7"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Hal Finney, Glenn Hightower, Peter Kaminski - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, Hal Finney, Glenn Hightower, Peter Kaminski"
 "Cartridge.ModelNo" "MT4317"
 "Cartridge.Name" "Adventures of TRON (1983) (M Network)"
 "Cartridge.Note" "AKA Tron Joystick"
@@ -16439,7 +16456,7 @@
 "Cartridge.MD5" "ca50cc4b21b0155255e066fcd6396331"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-031"
-"Cartridge.Name" "UFO Patrol (Suntek) (PAL)"
+"Cartridge.Name" "UFO Patrol (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA X'Mission"
 "Display.Phosphor" "YES"
 ""
@@ -16831,6 +16848,12 @@
 "Cartridge.Rarity" "New Release"
 ""
 
+"Cartridge.MD5" "ce5524bb18e3bd8e092273ef22d36cb9"
+"Cartridge.Manufacturer" "Carrere Video - JWDA, Todd Marshall, Wes Trager, Henry Will IV - Teldec - Prism"
+"Cartridge.ModelNo" "USC1004"
+"Cartridge.Name" "Commando Raid (Carrere Video) (PAL)"
+""
+
 "Cartridge.MD5" "ce5cc62608be2cd3ed8abd844efb8919"
 "Cartridge.Manufacturer" "Atari - Bobco, Robert C. Polaro"
 "Cartridge.ModelNo" "CX2663"
@@ -16918,7 +16941,7 @@
 "Cartridge.MD5" "cf3c2725f736d4bcb84ad6f42de62a41"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-009"
-"Cartridge.Name" "Bermuda, The (Rainbow Vision) (PAL) [a]"
+"Cartridge.Name" "Bermuda, The (1983) (Rainbow Vision) (PAL) [a]"
 "Cartridge.Note" "AKA River Raid"
 ""
 
@@ -17082,8 +17105,8 @@
 ""
 
 "Cartridge.MD5" "d08fccfbebaa531c4a4fa7359393a0a9"
-"Cartridge.Manufacturer" "Activision, David Crane"
-"Cartridge.Name" "Venetian Blinds Demo (1982) (Activision)"
+"Cartridge.Manufacturer" "Activision, David Crane, Bob Whitehead"
+"Cartridge.Name" "Venetian Blinds Demo (1981) (Activision)"
 ""
 
 "Cartridge.MD5" "d090836f0a4ea8db9ac7abb7d6adf61e"
@@ -17194,7 +17217,7 @@
 "Cartridge.MD5" "d175258b2973b917a05b46df4e1cf15d"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-032"
-"Cartridge.Name" "Walker (Suntek) (PAL) [a]"
+"Cartridge.Name" "Walker (1983) (Suntek) (PAL) [a]"
 "Display.Height" "230"
 ""
 
@@ -17250,8 +17273,8 @@
 "Cartridge.MD5" "d223bc6f13358642f02ddacfaf4a90c9"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-003"
-"Cartridge.Name" "Pac-Kong (Rainbow Vision) (PAL)"
-"Cartridge.Note" "AKA Spider Kong"
+"Cartridge.Name" "Pac-Kong (1983) (Rainbow Vision) (PAL)"
+"Cartridge.Note" "AKA Inca Gold"
 ""
 
 "Cartridge.MD5" "d245e2f27c84016041e9496b66b722fe"
@@ -17627,7 +17650,6 @@
 "Cartridge.Manufacturer" "Goliath"
 "Cartridge.ModelNo" "7"
 "Cartridge.Name" "Space Tunnel (1983) (Goliath) (PAL)"
-"Cartridge.Note" "AKA Cosmic Corridor"
 ""
 
 "Cartridge.MD5" "d74a81fcd89c5cf0bd4c88eb207ebd62"
@@ -17709,9 +17731,9 @@
 ""
 
 "Cartridge.MD5" "d85f1e35c5445ac898746719a3d93f09"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "731.503 9"
-"Cartridge.Name" "Tom's Eierjagd (1983) (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-034"
+"Cartridge.Name" "Farmyard Fun (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA Play Farm"
 ""
 
@@ -18050,7 +18072,7 @@
 "Cartridge.MD5" "dc33479d66615a3b09670775de4c2a38"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-033"
-"Cartridge.Name" "I.Q. Memory Teaser (Suntek) (PAL)"
+"Cartridge.Name" "I.Q. Memory Teaser (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA IQ 180"
 ""
 
@@ -18090,7 +18112,7 @@
 ""
 
 "Cartridge.MD5" "dcc2956c7a39fdbf1e861fc5c595da0d"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, David Rolfe - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, David Rolfe"
 "Cartridge.ModelNo" "MT5664"
 "Cartridge.Name" "Frogs and Flies (1982) (M Network)"
 "Cartridge.Note" "AKA Frogs 'n' Flies"
@@ -18133,9 +18155,8 @@
 ""
 
 "Cartridge.MD5" "dd1422ffd538e2e33b339ebeef4f259d"
-"Cartridge.Manufacturer" "Atari, Tod Frye"
-"Cartridge.Name" "Red Vs. Blue (1981) (Atari) (Prototype)"
-"Cartridge.Note" "RealSports Football Beta"
+"Cartridge.Manufacturer" "Atari, Michael Sierchio"
+"Cartridge.Name" "Football Demo (1982) (Atari)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -18240,7 +18261,7 @@
 "Cartridge.MD5" "de61a0b171e909a5a4cfcf81d146dbcb"
 "Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-005"
-"Cartridge.Name" "Tom Boy (Rainbow Vision) (PAL)"
+"Cartridge.Name" "Tom Boy (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Pitfall!"
 ""
 
@@ -18304,7 +18325,7 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG202"
 "Cartridge.Name" "Space Tunnel (1982) (BitCorp)"
-"Cartridge.Note" "AKA Cosmic Corridor, Weltraum-Tunnel"
+"Cartridge.Note" "AKA Weltraum-Tunnel"
 "Display.Height" "222"
 ""
 
@@ -18558,9 +18579,9 @@
 ""
 
 "Cartridge.MD5" "e17699a54c90f3a56ae4820f779f72c4"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "465.302 8"
-"Cartridge.Name" "Vogel Flieh (1983) (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-020"
+"Cartridge.Name" "Tuby Bird (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Dolphin"
 ""
 
@@ -18644,7 +18665,7 @@
 ""
 
 "Cartridge.MD5" "e275cbe7d4e11e62c3bfcfb38fca3d49"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Ken Smith - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, Ken Smith"
 "Cartridge.ModelNo" "MT5658"
 "Cartridge.Name" "Super Challenge Football (1982) (M Network)"
 "Cartridge.Note" "AKA Pro Football"
@@ -18710,7 +18731,7 @@
 ""
 
 "Cartridge.MD5" "e34c236630c945089fcdef088c4b6e06"
-"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright, David Crane - Ariola"
 "Cartridge.ModelNo" "EAB-035-04 - 711 035-721"
 "Cartridge.Name" "Pitfall II (1984) (Activision) (PAL)"
 "Cartridge.Note" "Lost Caverns"
@@ -18737,7 +18758,7 @@
 ""
 
 "Cartridge.MD5" "e377c3af4f54a51b85efe37d4b7029e6"
-"Cartridge.Manufacturer" "20th Century Fox Video Games, Steve Beck"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Beck-Tech, Steve Beck"
 "Cartridge.ModelNo" "11035"
 "Cartridge.Name" "Save the Whales (1983) (20th Century Fox) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -19101,7 +19122,7 @@
 "Cartridge.MD5" "e73838c43040bcbc83e4204a3e72eef4"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Apples and Dolls (CCE)"
-"Cartridge.Note" "AKA I Want My Mommy"
+"Cartridge.Note" "AKA Open, Sesame!"
 "Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
@@ -19210,7 +19231,7 @@
 "Cartridge.MD5" "e9034b41741dcee64ab6605aba9de455"
 "Cartridge.Manufacturer" "Digivision"
 "Cartridge.Name" "Phanton Tank (Digivision)"
-"Cartridge.Note" "AKA Tanks But No Tanks"
+"Cartridge.Note" "AKA Phantom Tank"
 "Display.YStart" "30"
 ""
 
@@ -19519,7 +19540,6 @@
 "Cartridge.Manufacturer" "Puzzy - Bit Corporation"
 "Cartridge.ModelNo" "PG205"
 "Cartridge.Name" "Dancing Plate (1982) (Puzzy) (PAL)"
-"Cartridge.Note" "AKA Dishaster"
 "Display.Phosphor" "YES"
 ""
 
@@ -19563,7 +19583,7 @@
 "Cartridge.MD5" "ed1306436ce237afc5a7ed3f77134202"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "771-341"
-"Cartridge.Name" "2 Pak Special - Dolphin, Pigs 'n' Wolf (1990) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Dolphin, Pigs n' Wolf (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "ed1492d4cafd7ebf064f0c933249f5b0"
@@ -19900,9 +19920,9 @@
 ""
 
 "Cartridge.MD5" "f10e3f45fb01416c87e5835ab270b53a"
-"Cartridge.Manufacturer" "Video Game Cartridge - Ariola"
-"Cartridge.ModelNo" "TP-607"
-"Cartridge.Name" "Ski Run (Ariola) (PAL)"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-024"
+"Cartridge.Name" "Ski Run (1983) (Suntek) (PAL)"
 ""
 
 "Cartridge.MD5" "f1127ade54037236e75a133b1dfc389d"
@@ -20149,6 +20169,7 @@
 "Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
 "Cartridge.ModelNo" "708-111 - GN-040"
 "Cartridge.Name" "Cosmic Corridor (1983) (ZiMAG)"
+"Cartridge.Note" "AKA Space Tunnel"
 "Display.Height" "220"
 ""
 
@@ -20236,7 +20257,8 @@
 ""
 
 "Cartridge.MD5" "f48735115ec302ba8bb2d2f3a442e814"
-"Cartridge.Name" "Dishaster (Unknown) (PAL)"
+"Cartridge.Name" "Dancing Plate (Unknown) (PAL)"
+"Controller.Left" "PADDLES_IDIR"
 "Display.Phosphor" "YES"
 ""
 
@@ -20319,7 +20341,7 @@
 "Cartridge.MD5" "f5a2f6efa33a3e5541bc680e9dc31d5b"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-022"
-"Cartridge.Name" "Motocross (Suntek) (PAL)"
+"Cartridge.Name" "Motocross (1983) (Suntek) (PAL)"
 ""
 
 "Cartridge.MD5" "f5a3e051730d45fea518f2e8b926565b"
@@ -20387,6 +20409,7 @@
 "Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
 "Cartridge.ModelNo" "710-111 - GN-010"
 "Cartridge.Name" "I Want My Mommy (1983) (ZiMAG)"
+"Cartridge.Note" "AKA Open, Sesame!"
 "Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
@@ -20422,9 +20445,9 @@
 ""
 
 "Cartridge.MD5" "f6f1b27efc247a0e8d473ddb4269ff9e"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "429.663 8"
-"Cartridge.Name" "Schnapp die Apfeldiebe (1983) (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-015"
+"Cartridge.Name" "Catch Time (1983) (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Plaque Attack"
 ""
 
@@ -20571,7 +20594,7 @@
 "Cartridge.MD5" "f802fa61011dd9eb6f80b271bac479d0"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-023"
-"Cartridge.Name" "Mole Hunter (Suntek) (PAL)"
+"Cartridge.Name" "Mole Hunter (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA Topy"
 ""
 
@@ -20887,7 +20910,7 @@
 "Cartridge.MD5" "faffd84f3a8eceee2fa5ea5b0a3e6678"
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-025"
-"Cartridge.Name" "Spectracube Invasion (Suntek) (PAL)"
+"Cartridge.Name" "Spectracube Invasion (1983) (Suntek) (PAL)"
 "Cartridge.Note" "AKA Immies & Aggies"
 ""
 
@@ -20904,7 +20927,7 @@
 ""
 
 "Cartridge.MD5" "fb27afe896e7c928089307b32e5642ee"
-"Cartridge.Manufacturer" "M Network - APh Technological Consulting, Jeff Ronne, Brett Stutz - INTV"
+"Cartridge.Manufacturer" "M Network - INTV - APh Technological Consulting, Jeff Ronne, Brett Stutz"
 "Cartridge.ModelNo" "MT5662"
 "Cartridge.Name" "TRON - Deadly Discs (1983) (M Network)"
 ""
@@ -21150,6 +21173,13 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
+""
+
+"Cartridge.MD5" "fe641247a4ab9bee970e19ab55f23b25"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Beck-Tech, Steve Beck"
+"Cartridge.ModelNo" "11035"
+"Cartridge.Name" "Save the Whales (02-07-1983) (20th Century Fox) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "fe67087f9c22655ce519616fc6c6ef4d"
