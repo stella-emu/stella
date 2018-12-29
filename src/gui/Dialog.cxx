@@ -98,11 +98,13 @@ void Dialog::open()
   parent().addDialog(this);
 
   center();
-  loadConfig();
+
 
   // (Re)-build the focus list to use for the widgets which are currently
   // onscreen
-  buildCurrentFocusList();
+  buildCurrentFocusList(0);
+
+  loadConfig();
 
   _visible = true;
 
