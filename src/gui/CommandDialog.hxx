@@ -64,11 +64,6 @@ class CommandDialog : public Dialog
       kExitCmd       = 'Clex'
     };
 
-    enum {
-      kNumRows = 4,
-      kNumCols = 4
-    };
-
   private:
     // Following constructors and assignment operators not supported
     CommandDialog() = delete;

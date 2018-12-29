@@ -31,22 +31,25 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
   const int HBORDER = 10;
-  const int buttonWidth = _font.getStringWidth("Stella Palette") + 20,
+  const int VBORDER = 10;
+  const int HGAP = 8;
+  const int VGAP = 4;
+  const int buttonWidth = _font.getStringWidth("Stella Palette") + 16,
             buttonHeight = _font.getLineHeight() + 6,
-            rowHeight = buttonHeight + 8;
-
+            rowHeight = buttonHeight + VGAP;
+                                                         
   // Set real dimensions
   _w = 3 * (buttonWidth + 5) + HBORDER * 2;
-  _h = 6 * rowHeight + 8 + _th;
+  _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
   ButtonWidget* bw;
   WidgetArray wid;
-  int xoffset = HBORDER, yoffset = 8 + _th;
+  int xoffset = HBORDER, yoffset = VBORDER + _th;
 
   auto ADD_CD_BUTTON = [&](const string& label, int cmd)
   {
     ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);
-    yoffset += buttonHeight + 8;
+    yoffset += buttonHeight + VGAP;
     return bw;
   };
 
@@ -55,22 +58,22 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   wid.push_back(bw);
   bw = ADD_CD_BUTTON("Reset", kResetCmd);
   wid.push_back(bw);
-  myColorButton = ADD_CD_BUTTON("Color TV", kColorCmd);
+  myColorButton = ADD_CD_BUTTON("", kColorCmd);
   wid.push_back(myColorButton);
-  myLeftDiffButton = ADD_CD_BUTTON("Left Diff X", kLeftDiffCmd);
+  myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
   wid.push_back(myLeftDiffButton);
-  myRightDiffButton = ADD_CD_BUTTON("Left Diff X", kLeftDiffCmd);
+  myRightDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
   wid.push_back(myRightDiffButton);
 
   // Column 2
-  xoffset += buttonWidth + 8;
-  yoffset = 8 + _th;
+  xoffset += buttonWidth + HGAP;
+  yoffset = VBORDER + _th;
 
-  mySaveStateButton = ADD_CD_BUTTON("Save State", kSaveStateCmd);
+  mySaveStateButton = ADD_CD_BUTTON("", kSaveStateCmd);
   wid.push_back(mySaveStateButton);
-  myStateSlotButton = ADD_CD_BUTTON("State Slot", kStateSlotCmd);
+  myStateSlotButton = ADD_CD_BUTTON("", kStateSlotCmd);
   wid.push_back(myStateSlotButton);
-  myLoadStateButton = ADD_CD_BUTTON("Load State", kLoadStateCmd);
+  myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd);
   wid.push_back(myLoadStateButton);
   bw = ADD_CD_BUTTON("Snapshot", kSnapshotCmd);
   wid.push_back(bw);
@@ -80,12 +83,12 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   wid.push_back(bw);
 
   // Column 3
-  xoffset += buttonWidth + 8;
-  yoffset = 8 + _th;
+  xoffset += buttonWidth + HGAP;
+  yoffset = VBORDER + _th;
 
-  myTVFormatButton = ADD_CD_BUTTON("SECAM-60", kFormatCmd);
+  myTVFormatButton = ADD_CD_BUTTON("", kFormatCmd);
   wid.push_back(myTVFormatButton);
-  myPaletteButton = ADD_CD_BUTTON("Stella Palette", kPaletteCmd);
+  myPaletteButton = ADD_CD_BUTTON("", kPaletteCmd);
   wid.push_back(myPaletteButton);
   bw = ADD_CD_BUTTON("TODO", 0);
   wid.push_back(bw);
@@ -109,9 +112,9 @@ void CommandDialog::loadConfig()
   myTVFormatButton->setLabel(instance().console().getFormatString() + " Mode");
   string palette, label;
   palette = instance().settings().getString("palette");
-  if(palette == "standard")
+  if(BSPF::equalsIgnoreCase(palette, "standard"))
     label = "Stella Palette";
-  else if(palette == "z26")
+  else if(BSPF::equalsIgnoreCase(palette, "z26"))
     label = "Z26 Palette";
   else
     label = "User Palette";

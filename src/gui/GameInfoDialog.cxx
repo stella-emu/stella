@@ -72,7 +72,6 @@ GameInfoDialog::GameInfoDialog(
 
   //////////////////////////////////////////////////////////////////////////////
   // 1) Emulation properties
-  wid.clear();
   tabID = myTab->addTab("Emulation");
 
   ypos = VBORDER;
@@ -132,8 +131,7 @@ GameInfoDialog::GameInfoDialog(
                        "(*) Changes require a ROM reload");
 
   // Add items for tab 0
-  addToFocusList(wid, myTab, tabID);
-
+  addToFocusList(wid, myTab, tabID);          
 
   //////////////////////////////////////////////////////////////////////////////
   // 2) Console properties
@@ -277,6 +275,7 @@ GameInfoDialog::GameInfoDialog(
 
   //////////////////////////////////////////////////////////////////////////////
   // 4) Cartridge properties
+  wid.clear();
   tabID = myTab->addTab("Cartridge");
 
   xpos = HBORDER; ypos = VBORDER;
