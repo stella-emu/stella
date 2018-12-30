@@ -100,7 +100,7 @@ class Dialog : public GuiObject
     /**
       Determine the maximum width/height of a dialog based on the minimum
       allowable bounds, also taking into account the current window size.
-      Currently scales the width/height to 90% of allowable area when possible.
+      Currently scales the width/height to 95% of allowable area when possible.
 
       NOTE: This method is meant to be used for dynamic, resizeable dialogs.
             That is, those that can change size during a program run, and
@@ -114,6 +114,16 @@ class Dialog : public GuiObject
                has to be scaled down
     */
     bool getDynamicBounds(uInt32& w, uInt32& h) const;
+
+    /**
+      Checks if the dialogs fits into the actual sizes.
+
+      @param w  The resulting width to use for the dialog
+      @param h  The resulting height to use for the dialog
+
+      @return  True if the dialog should be resized
+    */
+    bool shouldResize(uInt32& w, uInt32& h) const;
 
   protected:
     virtual void draw() override { }
@@ -148,6 +158,9 @@ class Dialog : public GuiObject
                                    bool focusOKButton = true);
 
     void processCancelWithoutWidget(bool state) { _processCancel = state; }
+
+    /** Define the size (allowed) for the dialog. */
+    void setSize(uInt32 w, uInt32 h, uInt32 max_w, uInt32 max_h);
 
   private:
     void buildCurrentFocusList(int tabID = -1);
@@ -212,6 +225,8 @@ class Dialog : public GuiObject
     int _tabID;
     int _flags;
     bool _dirty;
+    uInt32 _max_w; // maximum wanted width
+    uInt32 _max_h; // maximum wanted height
 
   private:
     // Following constructors and assignment operators not supported

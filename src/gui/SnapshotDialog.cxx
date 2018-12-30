@@ -43,8 +43,7 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   ButtonWidget* b;
 
   // Set real dimensions
-  _w = std::min(max_w, 64 * fontWidth + HBORDER * 2);
-  _h = 9 * (lineHeight + 4) + VBORDER + _th;
+  setSize(64 * fontWidth + HBORDER * 2, 9 * (lineHeight + 4) + VBORDER + _th, max_w, max_h);
 
   xpos = HBORDER;  ypos = VBORDER + _th;
 

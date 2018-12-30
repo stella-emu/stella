@@ -131,12 +131,12 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   myUIDialog       = make_unique<UIDialog>(osystem, parent, _font);
   mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, _font, max_w, max_h);
   myConfigPathDialog = make_unique<ConfigPathDialog>(osystem, parent, _font, boss, max_w, max_h);
-  myRomAuditDialog = make_unique<RomAuditDialog>(osystem, parent, _font, max_w, max_h);
-  myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, _font, this);
+  myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, _font, max_w, max_h);
+  myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, _font, this, max_w, max_h);
 #ifdef CHEATCODE_SUPPORT
   myCheatCodeDialog = make_unique<CheatCodeDialog>(osystem, parent, _font);
 #endif
-  myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, _font, max_w, max_h);
+  myRomAuditDialog = make_unique<RomAuditDialog>(osystem, parent, _font, max_w, max_h);
   myHelpDialog      = make_unique<HelpDialog>(osystem, parent, _font);
   myAboutDialog     = make_unique<AboutDialog>(osystem, parent, _font);
 
@@ -191,13 +191,11 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       uInt32 w = 0, h = 0;
-      getDynamicBounds(w, h);
 
-      if(myVideoDialog == nullptr ||
-          uInt32(myVideoDialog->getWidth()) > w ||
-          uInt32(myVideoDialog->getHeight()) > h)
+      if(myVideoDialog == nullptr || myVideoDialog->shouldResize(w, h))
       {
-        myVideoDialog = make_unique<VideoDialog>(instance(), parent(), instance().frameBuffer().font(), w, h);
+        myVideoDialog = make_unique<VideoDialog>(instance(), parent(),
+                                                 instance().frameBuffer().font(), w, h);
       }
       myVideoDialog->open();
       break;
@@ -208,8 +206,20 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kInptCmd:
+    {
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      uInt32 w = 0, h = 0;
+
+      if(myInputDialog == nullptr || myInputDialog->shouldResize(w, h))
+      {
+        myInputDialog = make_unique<InputDialog>(instance(), parent(),
+                                                 instance().frameBuffer().font(), w, h);
+      }
+
       myInputDialog->open();
       break;
+    }
 
     case kUsrIfaceCmd:
       myUIDialog->open();
@@ -220,13 +230,11 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       uInt32 w = 0, h = 0;
-      getDynamicBounds(w, h);
 
-      if(mySnapshotDialog == nullptr ||
-          uInt32(mySnapshotDialog->getWidth()) > w ||
-          uInt32(mySnapshotDialog->getHeight()) > h)
+      if(mySnapshotDialog == nullptr || mySnapshotDialog->shouldResize(w, h))
       {
-        mySnapshotDialog = make_unique<SnapshotDialog>(instance(), parent(), instance().frameBuffer().font(), w, h);
+        mySnapshotDialog = make_unique<SnapshotDialog>(instance(), parent(),
+                                                       instance().frameBuffer().font(), w, h);
       }
       mySnapshotDialog->open();
       break;
@@ -237,32 +245,55 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       // This dialog is resizable under certain conditions, so we need
       // to re-create it as necessary
       uInt32 w = 0, h = 0;
-      getDynamicBounds(w, h);
 
-      if(myConfigPathDialog == nullptr ||
-          uInt32(myConfigPathDialog->getWidth()) > w ||
-          uInt32(myConfigPathDialog->getHeight()) > h)
+      if(myConfigPathDialog == nullptr || myConfigPathDialog->shouldResize(w, h))
       {
         myConfigPathDialog = make_unique<ConfigPathDialog>(instance(), parent(),
-            instance().frameBuffer().font(), _boss, w, h);
+                                                           instance().frameBuffer().font(), _boss, w, h);
       }
       myConfigPathDialog->open();
       break;
     }
 
-    case kAuditCmd:
-      myRomAuditDialog->open();
+    case kDevelopCmd:
+    {
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      uInt32 w = 0, h = 0;
+
+      if(myDeveloperDialog == nullptr || myDeveloperDialog->shouldResize(w, h))
+      {
+        myDeveloperDialog = make_unique<DeveloperDialog>(instance(), parent(),
+                                                         instance().frameBuffer().font(), w, h);
+      }
+      myDeveloperDialog->open();
       break;
+    }
 
     case kInfoCmd:
+    {
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      uInt32 w = 0, h = 0;
+
+      if(myGameInfoDialog == nullptr || myGameInfoDialog->shouldResize(w, h))
+      {
+        myGameInfoDialog = make_unique<GameInfoDialog>(instance(), parent(),
+                                                       instance().frameBuffer().font(), this, w, h);
+      }
       myGameInfoDialog->open();
       break;
+    }
 
 #ifdef CHEATCODE_SUPPORT
     case kCheatCmd:
       myCheatCodeDialog->open();
       break;
 #endif
+
+    case kAuditCmd:
+      myRomAuditDialog->open();
+      break;
 
     case kLoggerCmd:
     {
@@ -271,21 +302,14 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       uInt32 w = 0, h = 0;
       bool uselargefont = getDynamicBounds(w, h);
 
-      if(myLoggerDialog == nullptr ||
-          uInt32(myLoggerDialog->getWidth()) != w ||
-          uInt32(myLoggerDialog->getHeight()) != h)
+      if(myLoggerDialog == nullptr || myLoggerDialog->shouldResize(w, h))
       {
         myLoggerDialog = make_unique<LoggerDialog>(instance(), parent(),
             instance().frameBuffer().font(), w, h, uselargefont);
       }
-
       myLoggerDialog->open();
       break;
     }
-
-    case kDevelopCmd:
-      myDeveloperDialog->open();
-      break;
 
     case kHelpCmd:
       myHelpDialog->open();

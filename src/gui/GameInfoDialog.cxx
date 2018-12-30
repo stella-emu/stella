@@ -43,7 +43,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameInfoDialog::GameInfoDialog(
       OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
-      GuiObject* boss)
+      GuiObject* boss, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Game properties"),
     CommandSender(boss)
 {
@@ -62,8 +62,9 @@ GameInfoDialog::GameInfoDialog(
   StaticTextWidget* t;
 
   // Set real dimensions
-  _w = 53 * fontWidth + 8;
-  _h = 8 * (lineHeight + VGAP) + VBORDER * 2 + _th + buttonHeight + fontHeight + ifont.getLineHeight() + 20;
+  setSize(53 * fontWidth + 8,
+          8 * (lineHeight + VGAP) + VBORDER * 2 + _th + buttonHeight + fontHeight + ifont.getLineHeight() + 20,
+          max_w, max_h);
 
   // The tab widget
   myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2 * 2,

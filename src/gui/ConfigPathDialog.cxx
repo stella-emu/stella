@@ -48,8 +48,7 @@ ConfigPathDialog::ConfigPathDialog(
   ButtonWidget* b;
 
   // Set real dimensions
-  _w = std::min(64 * fontWidth + HBORDER*2, max_w);
-  _h = 9 * (lineHeight + V_GAP) + VBORDER;
+  setSize(64 * fontWidth + HBORDER * 2, 9 * (lineHeight + V_GAP) + VBORDER, max_w, max_h);
 
   xpos = HBORDER;  ypos = VBORDER;
 

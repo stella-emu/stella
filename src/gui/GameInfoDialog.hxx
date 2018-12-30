@@ -35,7 +35,7 @@ class GameInfoDialog : public Dialog, public CommandSender
 {
   public:
     GameInfoDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font, GuiObject* boss);
+                   const GUI::Font& font, GuiObject* boss, int max_w, int max_h);
     virtual ~GameInfoDialog() = default;
 
   private:

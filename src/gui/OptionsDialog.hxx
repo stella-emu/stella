@@ -68,13 +68,13 @@ class OptionsDialog : public Dialog
     unique_ptr<UIDialog>         myUIDialog;
     unique_ptr<SnapshotDialog>   mySnapshotDialog;
     unique_ptr<ConfigPathDialog> myConfigPathDialog;
-    unique_ptr<RomAuditDialog>   myRomAuditDialog;
+    unique_ptr<DeveloperDialog>  myDeveloperDialog;
     unique_ptr<GameInfoDialog>   myGameInfoDialog;
   #ifdef CHEATCODE_SUPPORT
     unique_ptr<CheatCodeDialog>  myCheatCodeDialog;
   #endif
+    unique_ptr<RomAuditDialog>   myRomAuditDialog;
     unique_ptr<LoggerDialog>     myLoggerDialog;
-    unique_ptr<DeveloperDialog>  myDeveloperDialog;
     unique_ptr<HelpDialog>       myHelpDialog;
     unique_ptr<AboutDialog>      myAboutDialog;
 

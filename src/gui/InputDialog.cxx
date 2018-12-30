@@ -51,8 +51,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   StringList actions;
 
   // Set real dimensions
-  _w = std::min(50 * fontWidth + 10, max_w);
-  _h = std::min(16 * (lineHeight + 4) + 16 + _th, max_h);
+  setSize(50 * fontWidth + 10, 16 * (lineHeight + 4) + 16 + _th, max_w, max_h);
 
   // The tab widget
   xpos = 2; ypos = vBorder + _th;

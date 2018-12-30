@@ -55,8 +55,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos;
 
   // Set real dimensions
-  _w = std::min(53 * fontWidth + 10, max_w);
-  _h = std::min(15 * (lineHeight + VGAP) + 14 + _th, max_h);
+  setSize(53 * fontWidth + 10, 15 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
 
   // The tab widget
   xpos = 2; ypos = 4;

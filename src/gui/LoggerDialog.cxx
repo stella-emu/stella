@@ -44,8 +44,7 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   // This is one dialog that can take as much space as is available
-  _w = max_w;
-  _h = max_h;
+  setSize(4000, 4000, max_w, max_h);
 
   // Test listing of the log output
   xpos = 10;  ypos = 10 + _th;

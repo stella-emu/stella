@@ -62,7 +62,9 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _th(0),
     _surface(nullptr),
     _tabID(0),
-    _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG)
+    _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG),
+    _max_w(0),
+    _max_h(0)
 {
   setTitle(title);
   setDirty();
@@ -824,4 +826,25 @@ bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
     h = uInt32(0.95 * r.height());
     return true;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::setSize(uInt32 w, uInt32 h, uInt32 max_w, uInt32 max_h)
+{
+  _w = std::min(w, max_w);
+  _max_w = w;
+  _h = std::min(h, max_h);
+  _max_h = h;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::shouldResize(uInt32& w, uInt32& h) const
+{
+  getDynamicBounds(w, h);
+
+  // returns true if the current size is larger than the allowed size or
+  //  if the current size is smaller than the allowed and wanted size
+  return (uInt32(_w) > w || uInt32(_h) > h ||
+          (uInt32(_w) < w && uInt32(_w) < _max_w) ||
+          (uInt32(_h) < h && uInt32(_h) < _max_h));
 }

@@ -94,8 +94,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  _w = std::min(55 * fontWidth + HBORDER * 2, max_w);
-  _h = std::min(14 * (lineHeight + VGAP) + 14 + _th, max_h);
+  setSize(55 * fontWidth + HBORDER * 2, 14 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
 
   // The tab widget
   xpos = 2;  ypos = 4;
