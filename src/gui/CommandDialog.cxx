@@ -37,20 +37,20 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   const int buttonWidth = _font.getStringWidth("Stella Palette") + 16,
             buttonHeight = _font.getLineHeight() + 6,
             rowHeight = buttonHeight + VGAP;
-                                                         
+
   // Set real dimensions
   _w = 3 * (buttonWidth + 5) + HBORDER * 2;
   _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
-  ButtonWidget* bw;
+  ButtonWidget* bw = nullptr;
   WidgetArray wid;
   int xoffset = HBORDER, yoffset = VBORDER + _th;
 
   auto ADD_CD_BUTTON = [&](const string& label, int cmd)
   {
-    ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
+    ButtonWidget* b = new ButtonWidget(this, _font, xoffset, yoffset,
             buttonWidth, buttonHeight, label, cmd);
     yoffset += buttonHeight + VGAP;
-    return bw;
+    return b;
   };
 
   // Column 1
