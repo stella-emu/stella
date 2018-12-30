@@ -99,9 +99,12 @@ void Dialog::open()
 
   center();
 
-  // (Re)-build the focus list to use for all widgets of all tabs
-  for(auto& tabfocus : _myTabList)
-    buildCurrentFocusList(tabfocus.widget->getID());
+  if(_myTabList.size())
+    // (Re)-build the focus list to use for all widgets of all tabs
+    for(auto& tabfocus : _myTabList)
+      buildCurrentFocusList(tabfocus.widget->getID());
+  else
+    buildCurrentFocusList();
 
   loadConfig(); // has to be done AFTER (re)building the focus list
 
@@ -181,8 +184,8 @@ void Dialog::releaseFocus()
     for(auto& tabfocus : _myTabList)
       tabfocus.saveCurrentFocus(_focusedWidget);
 
-    _focusedWidget->lostFocus();
-    _focusedWidget = nullptr;
+    //_focusedWidget->lostFocus();
+    //_focusedWidget = nullptr;
   }
 }
 
