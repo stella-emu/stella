@@ -35,7 +35,7 @@ class UIDialog : public Dialog
 {
   public:
     UIDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
-    virtual ~UIDialog() = default;
+    virtual ~UIDialog();
 
   private:
     void loadConfig() override;
