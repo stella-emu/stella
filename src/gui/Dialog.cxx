@@ -99,12 +99,11 @@ void Dialog::open()
 
   center();
 
+  // (Re)-build the focus list to use for all widgets of all tabs
+  for(auto& tabfocus : _myTabList)
+    buildCurrentFocusList(tabfocus.widget->getID());
 
-  // (Re)-build the focus list to use for the widgets which are currently
-  // onscreen
-  buildCurrentFocusList(0);
-
-  loadConfig();
+  loadConfig(); // has to be done AFTER (re)building the focus list
 
   _visible = true;
 
@@ -178,6 +177,10 @@ void Dialog::releaseFocus()
 {
   if(_focusedWidget)
   {
+    // remember focus of all tabs for when dialog is reopened again
+    for(auto& tabfocus : _myTabList)
+      tabfocus.saveCurrentFocus(_focusedWidget);
+
     _focusedWidget->lostFocus();
     _focusedWidget = nullptr;
   }

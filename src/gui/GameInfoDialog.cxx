@@ -131,7 +131,7 @@ GameInfoDialog::GameInfoDialog(
                        "(*) Changes require a ROM reload");
 
   // Add items for tab 0
-  addToFocusList(wid, myTab, tabID);          
+  addToFocusList(wid, myTab, tabID);
 
   //////////////////////////////////////////////////////////////////////////////
   // 2) Console properties

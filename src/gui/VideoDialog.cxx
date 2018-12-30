@@ -32,6 +32,7 @@
 #include "TabWidget.hxx"
 #include "NTSCFilter.hxx"
 #include "TIASurface.hxx"
+
 #include "VideoDialog.hxx"
 
 namespace {
