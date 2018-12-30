@@ -194,8 +194,8 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       getDynamicBounds(w, h);
 
       if(myVideoDialog == nullptr ||
-          uInt32(myVideoDialog->getWidth()) != w ||
-          uInt32(myVideoDialog->getHeight()) != h)
+          uInt32(myVideoDialog->getWidth()) > w ||
+          uInt32(myVideoDialog->getHeight()) > h)
       {
         myVideoDialog = make_unique<VideoDialog>(instance(), parent(), instance().frameBuffer().font(), w, h);
       }
@@ -223,8 +223,8 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       getDynamicBounds(w, h);
 
       if(mySnapshotDialog == nullptr ||
-          uInt32(mySnapshotDialog->getWidth()) != w ||
-          uInt32(mySnapshotDialog->getHeight()) != h)
+          uInt32(mySnapshotDialog->getWidth()) > w ||
+          uInt32(mySnapshotDialog->getHeight()) > h)
       {
         mySnapshotDialog = make_unique<SnapshotDialog>(instance(), parent(), instance().frameBuffer().font(), w, h);
       }
@@ -240,8 +240,8 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       getDynamicBounds(w, h);
 
       if(myConfigPathDialog == nullptr ||
-          uInt32(myConfigPathDialog->getWidth()) != w ||
-          uInt32(myConfigPathDialog->getHeight()) != h)
+          uInt32(myConfigPathDialog->getWidth()) > w ||
+          uInt32(myConfigPathDialog->getHeight()) > h)
       {
         myConfigPathDialog = make_unique<ConfigPathDialog>(instance(), parent(),
             instance().frameBuffer().font(), _boss, w, h);
