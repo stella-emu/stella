@@ -3290,7 +3290,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][22] = {
   { "f457674cef449cfd85f21db2b4f631a7", "U.S. Games Corporation - JWDA, Todd Marshall, Wes Trager, Henry Will IV", "VC1004", "Commando Raid (1982) (U.S. Games)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f473f99e47d4026a7a571184922ebf04", "Philip R. Frey", "", "Donkey Claus (Philip R. Frey) (Hack)", "Hack of Donkey Kong", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "f48022230bb774a7f22184b48a3385af", "Atari, Rob Fulop - Sears", "CX2633 - 49-75119", "Night Driver (1980) (Atari) (4K)", "Uses the Paddle Controllers (left only)", "", "", "", "", "", "", "", "", "PADDLES", "", "", "AUTO 65", "", "", "", "YES", "" },
-  { "f48735115ec302ba8bb2d2f3a442e814", "", "", "Dancing Plate (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "PADDLES_IDIR", "", "", "", "", "", "", "YES", "" },
+  { "f48735115ec302ba8bb2d2f3a442e814", "", "", "Dancing Plate (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "f49a34f1fdd7dc147cbf96ce2ce71b76", "", "", "Qb (Special Edition) (PAL) (Retroactive)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "f4a09f906cc37be31224433f576d77d3", "Thomas Jentzsch", "", "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL) (TJ)", "Uses Atari Trak-Ball Controller", "", "", "", "", "", "", "", "", "TRAKBALL", "", "", "", "", "", "", "", "" },
   { "f4ab6bd5f80d8988141edde4c84b23b5", "Atari, Alan Miller", "CX2624, CX2624P", "Basketball (1978) (Atari) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },

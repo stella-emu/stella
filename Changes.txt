@@ -18,6 +18,10 @@
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
 
+  * Removed superfluous controller option 'PADDLES_IDIR'
+
+  * Fixed 'Dancing Plate (Unknown) (PAL)' to use joystick
+
 -Have fun!
 
 

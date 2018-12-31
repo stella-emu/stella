@@ -185,7 +185,6 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
   VarList::push_back(ctrls, "Paddles", "PADDLES");
   VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
-  VarList::push_back(ctrls, "Paddles_IDir", "PADDLES_IDIR");
   VarList::push_back(ctrls, "Paddles_IAxDr", "PADDLES_IAXDR");
   VarList::push_back(ctrls, "BoosterGrip", "BOOSTERGRIP");
   VarList::push_back(ctrls, "Driving", "DRIVING");

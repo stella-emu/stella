@@ -899,8 +899,6 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
     bool swapAxis = false, swapDir = false;
     if(controllerName == "PADDLES_IAXIS")
       swapAxis = true;
-    else if(controllerName == "PADDLES_IDIR")
-      swapDir = true;
     else if(controllerName == "PADDLES_IAXDR")
       swapAxis = swapDir = true;
     controller = make_unique<Paddles>(port, myEvent, *mySystem,
