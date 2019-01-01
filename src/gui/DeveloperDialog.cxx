@@ -33,6 +33,7 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 #include "M6502.hxx"
@@ -527,6 +528,9 @@ void DeveloperDialog::saveSettings(SettingsSet set)
 
   instance().settings().setValue(prefix + "stats", myFrameStats[set]);
   instance().settings().setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");
+  if(instance().hasConsole())
+    instance().eventHandler().set7800Mode();
+
   // Randomization
   instance().settings().setValue(prefix + "bankrandom", myRandomBank[set]);
   instance().settings().setValue(prefix + "ramrandom", myRandomizeRAM[set]);

@@ -20,6 +20,8 @@
 
   * Removed superfluous controller option 'PADDLES_IDIR'
 
+  * Fixed not working 7800 pause key
+
   * Fixed 'Dancing Plate (Unknown) (PAL)' to use joystick
 
 -Have fun!
