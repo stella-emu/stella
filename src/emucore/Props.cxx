@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cctype>
-#include <algorithm>
 #include <sstream>
 
 #include "bspf.hxx"
@@ -58,8 +56,7 @@ void Properties::set(PropertyType key, const string& value)
       case Controller_MouseAxis:
       case Display_Phosphor:
       {
-        transform(myProperties[key].begin(), myProperties[key].end(),
-                  myProperties[key].begin(), ::toupper);
+        BSPF::toUpperCase(myProperties[key]);
         break;
       }
 

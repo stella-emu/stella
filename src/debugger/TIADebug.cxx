@@ -992,21 +992,10 @@ string TIADebug::audFreq(uInt8 div)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::booleanWithLabel(string label, bool value)
 {
-  char buf[64];
-  string ret;
-
   if(value)
-  {
-    char *p = buf;
-    const char *q = label.c_str();
-    while((*p++ = toupper(*q++)))
-      ;
-    ret += "+";
-    ret += buf;
-    return ret;
-  }
+    return "+" + BSPF::toUpperCase(label);
   else
-    return "-" + label;
+    return "-" + BSPF::toLowerCase(label);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

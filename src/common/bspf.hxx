@@ -123,6 +123,18 @@ namespace BSPF
     if(val < lower || val > upper)  val = setVal;
   }
 
+  // Convert string to given case
+  inline const string& toUpperCase(string& s)
+  {
+    transform(s.begin(), s.end(), s.begin(), ::toupper);
+    return s;
+  }
+  inline const string& toLowerCase(string& s)
+  {
+    transform(s.begin(), s.end(), s.begin(), ::tolower);
+    return s;
+  }
+
   // Compare two strings, ignoring case
   inline int compareIgnoreCase(const string& s1, const string& s2)
   {
