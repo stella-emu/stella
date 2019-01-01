@@ -71,16 +71,14 @@ void Switches::update()
       mySwitches |= 0x08;
     }
   }
-  else
+
+  if(myEvent.get(Event::ConsoleColor) != 0)
   {
-    if(myEvent.get(Event::ConsoleColor) != 0)
-    {
-      mySwitches |= 0x08;
-    }
-    else if(myEvent.get(Event::ConsoleBlackWhite) != 0)
-    {
-      mySwitches &= ~0x08;
-    }
+    mySwitches |= 0x08;
+  }
+  else if(myEvent.get(Event::ConsoleBlackWhite) != 0)
+  {
+    mySwitches &= ~0x08;
   }
 
   if(myEvent.get(Event::ConsoleRightDiffA) != 0)

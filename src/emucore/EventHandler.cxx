@@ -111,9 +111,6 @@ void EventHandler::initialize()
   // Default phosphor blend
   Properties::setDefault(Display_PPBlend,
                          myOSystem.settings().getString("tv.phosblend"));
-
-  // Toggle 7800 mode
-  set7800Mode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,6 +125,8 @@ void EventHandler::reset(EventHandlerState state)
   // and we want time for the ROM to process them
   if(state == EventHandlerState::EMULATION)
     myOSystem.timer().setTimeout([&ev = myEvent]() { ev.clear(); }, 500);
+  // Toggle 7800 mode
+  set7800Mode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -440,37 +439,47 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
     ////////////////////////////////////////////////////////////////////////
     // Events which relate to switches()
     case Event::ConsoleColor:
-      if(state && !myIs7800)
+      if(state)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
-        myOSystem.frameBuffer().showMessage("Color Mode");
+        myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause released" : "Color Mode");
       }
       break;
     case Event::ConsoleBlackWhite:
-      if(state && !myIs7800)
+      if(state)
       {
         myEvent.set(Event::ConsoleColor, 0);
-        myOSystem.frameBuffer().showMessage("B/W Mode");
+        myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
       }
       break;
     case Event::ConsoleColorToggle:
-      if(state && !myIs7800)
+      if(state)
       {
         if(myOSystem.console().switches().tvColor())
         {
           myEvent.set(Event::ConsoleBlackWhite, 1);
           myEvent.set(Event::ConsoleColor, 0);
-          myOSystem.frameBuffer().showMessage("B/W Mode");
+          myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
         }
         else
         {
           myEvent.set(Event::ConsoleBlackWhite, 0);
           myEvent.set(Event::ConsoleColor, 1);
-          myOSystem.frameBuffer().showMessage("Color Mode");
+          myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause released" : "Color Mode");
         }
         myOSystem.console().switches().update();
       }
       return;
+
+    case Event::Console7800Pause:
+      if(state)
+      {
+        myEvent.set(Event::ConsoleBlackWhite, 0);
+        myEvent.set(Event::ConsoleColor, 0);
+        if (myIs7800)
+          myOSystem.frameBuffer().showMessage("Pause pressed");
+      }
+      break;
 
     case Event::ConsoleLeftDiffA:
       if(state)
