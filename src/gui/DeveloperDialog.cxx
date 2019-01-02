@@ -801,11 +801,11 @@ void DeveloperDialog::setDefaults()
       break;
 
     case 2: // States
-      myTimeMachine[set] = devSettings ? true : false;
-      myStateSize[set] = 100;
-      myUncompressed[set] = devSettings ? 60 : 30;
+      myTimeMachine[set] = true;
+      myStateSize[set] = devSettings ? 1000 : 200;
+      myUncompressed[set] = devSettings ? 600 : 60;
       myStateInterval[set] = devSettings ? "1f" : "30f";
-      myStateHorizon[set] = devSettings ? "10s" : "10m";
+      myStateHorizon[set] = devSettings ? "30s" : "10m";
 
       setWidgetStates(set);
       break;

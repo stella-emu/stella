@@ -164,9 +164,9 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.debugcolors", "false");
   setInternal("plr.tiadriven", "false");
   setInternal("plr.console", "2600"); // 7800
-  setInternal("plr.timemachine", false);
-  setInternal("plr.tm.size", 100);
-  setInternal("plr.tm.uncompressed", 30);
+  setInternal("plr.timemachine", true);
+  setInternal("plr.tm.size", 200);
+  setInternal("plr.tm.uncompressed", 60);
   setInternal("plr.tm.interval", "30f"); // = 0.5 seconds
   setInternal("plr.tm.horizon", "10m"); // = ~10 minutes
   // Thumb ARM emulation options
@@ -186,10 +186,10 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
   setInternal("dev.timemachine", true);
-  setInternal("dev.tm.size", 100);
-  setInternal("dev.tm.uncompressed", 60);
+  setInternal("dev.tm.size", 1000);
+  setInternal("dev.tm.uncompressed", 600);
   setInternal("dev.tm.interval", "1f"); // = 1 frame
-  setInternal("dev.tm.horizon", "10s"); // = ~10 seconds
+  setInternal("dev.tm.horizon", "30s"); // = ~30 seconds
   // Thumb ARM emulation options
   setInternal("dev.thumb.trapfatal", "true");
   setInternal("dev.eepromaccess", "true");
