@@ -24,6 +24,9 @@
 #include "StateManager.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
+#include "AudioSettings.hxx"
+#include "Sound.hxx"
+#include "TIASurface.hxx"
 #include "CommandDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,7 +37,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   const int VBORDER = 10;
   const int HGAP = 8;
   const int VGAP = 4;
-  const int buttonWidth = _font.getStringWidth("Stella Palette") + 16,
+  const int buttonWidth = _font.getStringWidth("Time Machine On") + 16,
             buttonHeight = _font.getLineHeight() + 6,
             rowHeight = buttonHeight + VGAP;
 
@@ -77,8 +80,8 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   wid.push_back(myLoadStateButton);
   bw = ADD_CD_BUTTON("Snapshot", kSnapshotCmd);
   wid.push_back(bw);
-  bw = ADD_CD_BUTTON("TODO", 0);
-  wid.push_back(bw);
+  myTimeMachineButton = ADD_CD_BUTTON("", kTimeMachineCmd);
+  wid.push_back(myTimeMachineButton);
   bw = ADD_CD_BUTTON("Exit Game", kExitCmd);
   wid.push_back(bw);
 
@@ -90,10 +93,10 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   wid.push_back(myTVFormatButton);
   myPaletteButton = ADD_CD_BUTTON("", kPaletteCmd);
   wid.push_back(myPaletteButton);
-  bw = ADD_CD_BUTTON("TODO", 0);
-  wid.push_back(bw);
-  bw = ADD_CD_BUTTON("TODO", 0);
-  wid.push_back(bw);
+  myPhosphorButton = ADD_CD_BUTTON("", kPhosphorCmd);
+  wid.push_back(myPhosphorButton);
+  mySoundButton = ADD_CD_BUTTON("", kSoundCmd);
+  wid.push_back(mySoundButton);
   bw = ADD_CD_BUTTON("Reload ROM", kReloadRomCmd);
   wid.push_back(bw);
 
@@ -103,12 +106,15 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CommandDialog::loadConfig()
 {
+  // Column 1
   myColorButton->setLabel(instance().console().switches().tvColor() ? "Color Mode" : "B/W Mode");
   myLeftDiffButton->setLabel(instance().console().switches().leftDifficultyA() ? "Left Diff A" : "Left Diff B");
   myRightDiffButton->setLabel(instance().console().switches().rightDifficultyA() ? "Right Diff A" : "Right Diff B");
-
+  // Column 2
   updateSlot(instance().state().currentSlot());
-
+  myTimeMachineButton->setLabel(instance().state().mode() == StateManager::Mode::TimeMachine ?
+                                "Time Machine On" : "No Time Machine");
+  // Column 3
   myTVFormatButton->setLabel(instance().console().getFormatString() + " Mode");
   string palette, label;
   palette = instance().settings().getString("palette");
@@ -119,6 +125,8 @@ void CommandDialog::loadConfig()
   else
     label = "User Palette";
   myPaletteButton->setLabel(label);
+  myPhosphorButton->setLabel(instance().frameBuffer().tiaSurface().phosphorEnabled() ? "Phosphor On" : "Phosphor Off");
+  mySoundButton->setLabel(instance().audioSettings().enabled() ? "Sound On" : "Sound Off");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,6 +138,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
   switch(cmd)
   {
+    // Column 1
     case kSelectCmd:
       event = Event::ConsoleSelect;
       consoleCmd = true;
@@ -155,6 +164,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       consoleCmd = true;
       break;
 
+    // Column 2
     case kSaveStateCmd:
       event = Event::SaveState;
       consoleCmd = true;
@@ -178,6 +188,16 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       instance().eventHandler().handleEvent(Event::TakeSnapshot, 1);
       break;
 
+    case kTimeMachineCmd:
+      instance().eventHandler().leaveMenuMode();
+      instance().state().toggleTimeMachine();
+      break;
+
+    case kExitCmd:
+      instance().eventHandler().handleEvent(Event::LauncherMode, 1);
+      break;
+
+    // Column 3
     case kFormatCmd:
       instance().eventHandler().leaveMenuMode();
       instance().console().toggleFormat();
@@ -188,13 +208,22 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       instance().console().togglePalette();
       break;
 
+    case kPhosphorCmd:
+      instance().eventHandler().leaveMenuMode();
+      instance().console().togglePhosphor();
+      break;
+
+    case kSoundCmd:
+    {
+      instance().eventHandler().leaveMenuMode();
+      bool enabled = instance().audioSettings().enabled();
+      instance().audioSettings().setEnabled(!enabled);
+      instance().console().initializeAudio();
+      break;
+    }
     case kReloadRomCmd:
       instance().eventHandler().leaveMenuMode();
       instance().reloadConsole();
-      break;
-
-    case kExitCmd:
-      instance().eventHandler().handleEvent(Event::LauncherMode, 1);
       break;
   }
 

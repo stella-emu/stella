@@ -44,24 +44,30 @@ class CommandDialog : public Dialog
     ButtonWidget* mySaveStateButton;
     ButtonWidget* myStateSlotButton;
     ButtonWidget* myLoadStateButton;
+    ButtonWidget* myTimeMachineButton;
     // column 2
     ButtonWidget* myTVFormatButton;
     ButtonWidget* myPaletteButton;
+    ButtonWidget* myPhosphorButton;
+    ButtonWidget* mySoundButton;
 
     enum {
-      kSelectCmd     = 'Csel',
-      kResetCmd      = 'Cres',
-      kColorCmd      = 'Ccol',
-      kLeftDiffCmd   = 'Cldf',
-      kRightDiffCmd  = 'Crdf',
-      kSaveStateCmd  = 'Csst',
-      kStateSlotCmd  = 'Ccst',
-      kLoadStateCmd  = 'Clst',
-      kSnapshotCmd   = 'Csnp',
-      kFormatCmd     = 'Cfmt',
-      kPaletteCmd    = 'Cpal',
-      kReloadRomCmd  = 'Crom',
-      kExitCmd       = 'Clex'
+      kSelectCmd      = 'Csel',
+      kResetCmd       = 'Cres',
+      kColorCmd       = 'Ccol',
+      kLeftDiffCmd    = 'Cldf',
+      kRightDiffCmd   = 'Crdf',
+      kSaveStateCmd   = 'Csst',
+      kStateSlotCmd   = 'Ccst',
+      kLoadStateCmd   = 'Clst',
+      kSnapshotCmd    = 'Csnp',
+      kTimeMachineCmd = 'Ctim',
+      kFormatCmd      = 'Cfmt',
+      kPaletteCmd     = 'Cpal',
+      kPhosphorCmd    = 'Cpho',
+      kSoundCmd       = 'Csnd',
+      kReloadRomCmd   = 'Crom',
+      kExitCmd        = 'Clex'
     };
 
   private:
