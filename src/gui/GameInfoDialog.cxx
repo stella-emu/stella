@@ -93,7 +93,7 @@ GameInfoDialog::GameInfoDialog(
   ypos += ifont.getLineHeight() + VGAP * 4;
 
   pwidth = font.getStringWidth("Auto-detect");
-  t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "TV Format ");
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "TV format ");
   items.clear();
   VarList::push_back(items, "Auto-detect", "AUTO");
   VarList::push_back(items, "NTSC", "NTSC");

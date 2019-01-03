@@ -133,9 +133,9 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       title = "TV Filters";
       ADD_BIND(ALT_" 1", "Disable filtering");
       ADD_BIND(ALT_" 2", "Enable 'Composite' mode");
-      ADD_BIND(ALT_" 3", "Enable 'S-video' mode");
+      ADD_BIND(ALT_" 3", "Enable 'S-Video' mode");
       ADD_BIND(ALT_" 4", "Enable 'RGB' mode");
-      ADD_BIND(ALT_" 5", "Enable 'Bad Adjust' mode");
+      ADD_BIND(ALT_" 5", "Enable 'Bad adjust' mode");
       ADD_BIND(ALT_" 6", "Enable 'Custom' mode");
       ADD_BIND(ALT_" 7", "Adjust scanline intensity");
       ADD_BIND(ALT_" 8", "Toggle scanline interpol.");
@@ -153,7 +153,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("Ctrl PgDn", "Decrease Display.Height");
       ADD_LINE();
       ADD_BIND(ALT_" L", "Toggle frame stats");
-      ADD_BIND(ALT_" ,", "Toggle 'Debug Colors' mode");
+      ADD_BIND(ALT_" ,", "Toggle 'Debug colors' mode");
       ADD_BIND(ALT_" t", "Toggle 'Time Machine' mode");
       break;
 
