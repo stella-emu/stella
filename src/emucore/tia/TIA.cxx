@@ -289,6 +289,9 @@ bool TIA::save(Serializer& out) const
 
     out.putInt(myFrameBufferScanlines);
     out.putInt(myFrontBufferScanlines);
+
+    out.putByte(myPFDelay);
+    out.putByte(myPFColorDelay);
   }
   catch(...)
   {
@@ -358,6 +361,9 @@ bool TIA::load(Serializer& in)
 
     myFrameBufferScanlines = in.getInt();
     myFrontBufferScanlines = in.getInt();
+
+    myPFDelay = in.getByte();
+    myPFColorDelay = in.getByte();
   }
   catch(...)
   {
