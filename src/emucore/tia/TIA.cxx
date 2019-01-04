@@ -171,6 +171,8 @@ void TIA::reset()
   for (PaddleReader& paddleReader : myPaddleReaders)
     paddleReader.reset(myTimestamp);
 
+  bool devSettings = mySettings.getBool("dev.settings");
+  setPFDelay(mySettings.getBool(devSettings ? "dev.extrapfdelay" : "plr.extrapfdelay"));
   myDelayQueue.reset();
 
   myCyclesAtFrameStart = 0;
@@ -178,7 +180,7 @@ void TIA::reset()
   if (myFrameManager)
   {
     myFrameManager->reset();
-    enableColorLoss(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.colorloss" : "plr.colorloss"));
+    enableColorLoss(mySettings.getBool(devSettings ? "dev.colorloss" : "plr.colorloss"));
   }
 
   myFrontBufferScanlines = myFrameBufferScanlines = 0;
@@ -186,7 +188,7 @@ void TIA::reset()
   myFramesSinceLastRender = 0;
 
   // Must be done last, after all other items have reset
-  enableFixedColors(mySettings.getBool(mySettings.getBool("dev.settings") ? "dev.debugcolors" : "plr.debugcolors"));
+  enableFixedColors(mySettings.getBool(devSettings ? "dev.debugcolors" : "plr.debugcolors"));
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
 
   // Blank the various framebuffers; they may contain graphical garbage
@@ -593,14 +595,19 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case COLUPF:
       flushLineCache();
       value &= 0xFE;
-      myPlayfield.setColor(value);
-      myBall.setColor(value);
-      myShadowRegisters[address] = value;
+      if (myPFColorDelay)
+        myDelayQueue.push(COLUPF, value, 1);
+      else
+      {
+        myPlayfield.setColor(value);
+        myBall.setColor(value);
+        myShadowRegisters[address] = value;
+      }
       break;
 
     case PF0:
     {
-      myDelayQueue.push(PF0, value, Delay::pf);
+      myDelayQueue.push(PF0, value, myPFDelay);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -611,7 +618,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case PF1:
     {
-      myDelayQueue.push(PF1, value, Delay::pf);
+      myDelayQueue.push(PF1, value, myPFDelay);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -622,7 +629,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case PF2:
     {
-      myDelayQueue.push(PF2, value, Delay::pf);
+      myDelayQueue.push(PF2, value, myPFDelay);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -1458,6 +1465,13 @@ void TIA::clearHmoveComb()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setPFDelay(bool slow)
+{
+  myPFDelay = slow ? Delay::pf + 1 : Delay::pf;
+  myPFColorDelay = slow ? 1 : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::delayedWrite(uInt8 address, uInt8 value)
 {
   if (address < 64)
@@ -1498,6 +1512,11 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
 
     case PF2:
       myPlayfield.pf2(value);
+      break;
+
+    case COLUPF:
+      myPlayfield.setColor(value);
+      myBall.setColor(value);
       break;
 
     case HMM0:

@@ -413,6 +413,13 @@ class TIA : public Device
     void setJitterRecoveryFactor(Int32 factor);
 
     /**
+      Enables/disables slower playfield values.
+
+      @param slow   Wether to enable slow playfield delays 
+    */
+    void setPFDelay(bool slow);
+
+    /**
       This method should be called to update the TIA with a new scanline.
     */
     TIA& updateScanline();
@@ -655,6 +662,12 @@ class TIA : public Device
      * on real hardware and delayed side effects of certain operations (GRPx!).
      */
     DelayQueue<delayQueueLength, delayQueueSize> myDelayQueue;
+
+    /**
+      Variable delay values for PF writes.
+    */
+    uInt8 myPFDelay;
+    uInt8 myPFColorDelay;
 
     /**
      * The frame manager is responsible for detecting frame boundaries and the visible

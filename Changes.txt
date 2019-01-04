@@ -18,6 +18,9 @@
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
 
+  * Added developer option for an extra playfield delay clock which is
+    exhibitted by a (very) few consoles.
+
   * Removed superfluous controller option 'PADDLES_IDIR'
 
   * Fixed not working 7800 pause key

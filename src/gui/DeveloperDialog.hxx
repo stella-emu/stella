@@ -94,6 +94,7 @@ class DeveloperDialog : public Dialog
     RadioButtonGroup*   mySettingsGroup0;
     CheckboxWidget*     myFrameStatsWidget;
     PopUpWidget*        myConsoleWidget;
+    CheckboxWidget*     myPFDelaykWidget;
     StaticTextWidget*   myLoadingROMLabel;
     CheckboxWidget*     myRandomBankWidget;
     CheckboxWidget*     myRandomizeRAMWidget;
@@ -137,6 +138,7 @@ class DeveloperDialog : public Dialog
     // Emulator sets
     bool    myFrameStats[2];
     int     myConsole[2];
+    bool    myPFDelay[2];
     bool    myRandomBank[2];
     bool    myRandomizeRAM[2];
     string  myRandomizeCPU[2];

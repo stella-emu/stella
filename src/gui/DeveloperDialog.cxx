@@ -114,6 +114,11 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myConsoleWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items,
                                     "Console ", lwidth, kConsole);
   wid.push_back(myConsoleWidget);
+
+  myPFDelaykWidget = new CheckboxWidget(myTab, font, myConsoleWidget->getRight() + 20, ypos + 1,
+                                        "Extra playfield delay");
+  wid.push_back(myPFDelaykWidget);
+
   ypos += lineHeight + VGAP;
 
   // Randomize items
@@ -490,6 +495,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
 
   myFrameStats[set] = instance().settings().getBool(prefix + "stats");
   myConsole[set] = instance().settings().getString(prefix + "console") == "7800" ? 1 : 0;
+  myPFDelay[set] = instance().settings().getBool(prefix + "extrapfdelay");
   // Randomization
   myRandomBank[set] = instance().settings().getBool(prefix + "bankrandom");
   myRandomizeRAM[set] = instance().settings().getBool(prefix + "ramrandom");
@@ -530,6 +536,7 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   instance().settings().setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");
   if(instance().hasConsole())
     instance().eventHandler().set7800Mode();
+  instance().settings().setValue(prefix + "extrapfdelay", myPFDelay[set]);
 
   // Randomization
   instance().settings().setValue(prefix + "bankrandom", myRandomBank[set]);
@@ -567,6 +574,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
 {
   myFrameStats[set] = myFrameStatsWidget->getState();
   myConsole[set] = myConsoleWidget->getSelected() == 1;
+  myPFDelay[set] = myPFDelaykWidget->getState();
   // Randomization
   myRandomBank[set] = myRandomBankWidget->getState();
   myRandomizeRAM[set] = myRandomizeRAMWidget->getState();
@@ -609,6 +617,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 {
   myFrameStatsWidget->setState(myFrameStats[set]);
   myConsoleWidget->setSelectedIndex(myConsole[set]);
+  myPFDelaykWidget->setState(myPFDelay[set]);
   // Randomization
   myRandomBankWidget->setState(myRandomBank[set]);
   myRandomizeRAMWidget->setState(myRandomizeRAM[set]);
@@ -712,9 +721,10 @@ void DeveloperDialog::saveConfig()
 
   // activate the current settings
   instance().frameBuffer().showFrameStats(myFrameStatsWidget->getState());
-  // jitter
+  // playfield delay & jitter
   if(instance().hasConsole())
   {
+    instance().console().tia().setPFDelay(myPFDelaykWidget->getState());
     instance().console().tia().toggleJitter(myTVJitterWidget->getState() ? 1 : 0);
     instance().console().tia().setJitterRecoveryFactor(myTVJitterRecWidget->getValue());
   }
@@ -769,6 +779,7 @@ void DeveloperDialog::setDefaults()
     case 0: // Emulation
       myFrameStats[set] = devSettings ? true : false;
       myConsole[set] = 0;
+      myPFDelay[set] = false;
       // Randomization
       myRandomBank[set] = devSettings ? true : false;
       myRandomizeRAM[set] = true;

@@ -164,6 +164,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.debugcolors", "false");
   setInternal("plr.tiadriven", "false");
   setInternal("plr.console", "2600"); // 7800
+  setInternal("plr.extrapfdelay", "false");
   setInternal("plr.timemachine", true);
   setInternal("plr.tm.size", 200);
   setInternal("plr.tm.uncompressed", 60);
@@ -185,6 +186,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.debugcolors", "false");
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
+  setInternal("dev.extrapfdelay", "false");
   setInternal("dev.timemachine", true);
   setInternal("dev.tm.size", 1000);
   setInternal("dev.tm.uncompressed", 600);
@@ -612,6 +614,7 @@ void Settings::usage() const
     << "  -plr.stats        <1|0>          Overlay console info during emulation\n"
     << "  -plr.console      <2600|7800>    Select console for B/W and Pause key\n"
     << "                                    handling and RAM initialization\n"
+    << "  -plr.extrapfdelay <1|0>          Enable extra delay cycle for PF access\n"    
     << "  -plr.bankrandom   <1|0>          Randomize the startup bank on reset\n"
     << "  -plr.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -plr.cpurandom    <1|0>          Randomize the contents of CPU registers on\n"
@@ -634,6 +637,7 @@ void Settings::usage() const
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
     << "  -dev.console      <2600|7800>    Select console for B/W and Pause key\n"
     << "                                    handling and RAM initialization\n"
+    << "  -dev.extrapfdelay <1|0>          Enable extra delay cycle for PF access\n"
     << "  -dev.bankrandom   <1|0>          Randomize the startup bank on reset\n"
     << "  -dev.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -dev.cpurandom    <1|0>          Randomize the contents of CPU registers on\n"
