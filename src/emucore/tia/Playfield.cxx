@@ -188,7 +188,7 @@ void Playfield::tick(uInt32 x)
 {
   myX = x;
 
-  if (myX == 80 || myX == 0) myRefp = myReflected;
+  if (myX == TIA::H_PIXEL / 2 || myX == 0) myRefp = myReflected;
 
   if (x & 0x03) return;
 
@@ -196,7 +196,7 @@ void Playfield::tick(uInt32 x)
 
   if (myEffectivePattern == 0) {
       currentPixel = 0;
-  } else if (x < 80) {
+  } else if (x < TIA::H_PIXEL / 2) {
       currentPixel = myEffectivePattern & (1 << (x >> 2));
   } else if (myRefp) {
       currentPixel = myEffectivePattern & (1 << (39 - (x >> 2)));
@@ -249,10 +249,10 @@ void Playfield::applyColors()
 uInt8 Playfield::getColor() const
 {
   if (!myDebugEnabled)
-    return myX < 80 ? myColorLeft : myColorRight;
+    return myX < TIA::H_PIXEL / 2 ? myColorLeft : myColorRight;
   else
   {
-    if (myX < 80)
+    if (myX < TIA::H_PIXEL / 2)
     {
       // left side:
       if(myX < 16)
@@ -265,16 +265,16 @@ uInt8 Playfield::getColor() const
       // right side:
       if(!myReflected)
       {
-        if(myX < 80 + 16)
+        if(myX < TIA::H_PIXEL / 2 + 16)
           return myDebugColor - 2;  // PF0
-        if(myX < 80 + 48)
+        if(myX < TIA::H_PIXEL / 2 + 48)
           return myDebugColor;      // PF1
       }
       else
       {
-        if(myX >= 160 - 16)
+        if(myX >= TIA::H_PIXEL - 16)
           return myDebugColor - 2;  // PF0
-        if(myX >= 160 - 48)
+        if(myX >= TIA::H_PIXEL - 48)
           return myDebugColor;      // PF1
       }
     }

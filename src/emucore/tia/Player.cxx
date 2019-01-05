@@ -104,7 +104,7 @@ void Player::nusiz(uInt8 value, bool hblank)
     myDecodes != oldDecodes &&
     myIsRendering &&
     (myRenderCounter - Count::renderCounterOffset) < 2 &&
-    !myDecodes[(myCounter - myRenderCounter + Count::renderCounterOffset + 159) % 160]
+    !myDecodes[(myCounter - myRenderCounter + Count::renderCounterOffset + TIA::H_PIXEL - 1) % TIA::H_PIXEL]
   ) {
     myIsRendering = false;
   }
@@ -307,7 +307,7 @@ void Player::tick()
     if (mySampleCounter > 7) myIsRendering = false;
   }
 
-  if (++myCounter >= 160) myCounter = 0;
+  if (++myCounter >= TIA::H_PIXEL) myCounter = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -338,13 +338,13 @@ uInt8 Player::getRespClock() const
   switch (myDivider)
   {
     case 1:
-      return (myCounter + 160 - 5) % 160;
+      return (myCounter + TIA::H_PIXEL - 5) % TIA::H_PIXEL;
 
     case 2:
-      return (myCounter + 160 - 9) % 160;
+      return (myCounter + TIA::H_PIXEL - 9) % TIA::H_PIXEL;
 
     case 4:
-      return (myCounter + 160 - 12) % 160;
+      return (myCounter + TIA::H_PIXEL - 12) % TIA::H_PIXEL;
 
     default:
       throw runtime_error("invalid width");
@@ -420,12 +420,12 @@ uInt8 Player::getPosition() const
   //    (current counter - 156 (the decode clock of copy 0)) +
   //    clock count after decode until first pixel +
   //    shift (accounts for wide player shift) +
-  //    1 (it'll take another cycle after the decode for the rendter counter to start ticking)
+  //    1 (it'll take another cycle after the decode for the render counter to start ticking)
   //
-  // The result may be negative, so we add 160 and do the modulus -> 317 = 156 + 160 + 1
+  // The result may be negative, so we add TIA::H_PIXEL and do the modulus -> 317 = 156 + TIA::H_PIXEL + 1
   //
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (317 - myCounter - Count::renderCounterOffset + shift + myTIA->getPosition()) % 160;
+  return (317 - myCounter - Count::renderCounterOffset + shift + myTIA->getPosition()) % TIA::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -436,7 +436,7 @@ void Player::setPosition(uInt8 newPosition)
   const uInt8 shift = myDivider == 1 ? 0 : 1;
 
   // See getPosition for an explanation
-  myCounter = (317 - newPosition - Count::renderCounterOffset + shift + myTIA->getPosition()) % 160;
+  myCounter = (317 - newPosition - Count::renderCounterOffset + shift + myTIA->getPosition()) % TIA::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

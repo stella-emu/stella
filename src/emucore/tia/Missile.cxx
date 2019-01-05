@@ -212,7 +212,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
       if (++myRenderCounter >= (myIsMoving ? myEffectiveWidth : myWidth)) myIsRendering = false;
   }
 
-  if (++myCounter >= 160) myCounter = 0;
+  if (++myCounter >= TIA::H_PIXEL) myCounter = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -288,7 +288,7 @@ uInt8 Missile::getPosition() const
   // The result may be negative, so we add 160 and do the modulus
   //
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (317 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % 160;
+  return (317 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % TIA::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -297,7 +297,7 @@ void Missile::setPosition(uInt8 newPosition)
   myTIA->flushLineCache();
 
   // See getPosition for an explanation
-  myCounter = (317 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % 160;
+  myCounter = (317 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % TIA::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

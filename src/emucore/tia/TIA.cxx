@@ -64,7 +64,7 @@ enum ResxCounter: uInt8 {
 // This parameter still has room for tuning. If we go lower than 73, long005 will show
 // a slight artifact (still have to crosscheck on real hardware), if we go lower than
 // 70, the G.I. Joe will show an artifact (hole in roof).
-static constexpr uInt8 resxLateHblankThreshold = 73;
+static constexpr uInt8 resxLateHblankThreshold = TIA::H_CYCLES - 3;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(Console& console, Settings& settings)
@@ -192,9 +192,9 @@ void TIA::reset()
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
 
   // Blank the various framebuffers; they may contain graphical garbage
-  memset(myBackBuffer, 0, 160 * TIAConstants::frameBufferHeight);
-  memset(myFrontBuffer, 0, 160 * TIAConstants::frameBufferHeight);
-  memset(myFramebuffer, 0, 160 * TIAConstants::frameBufferHeight);
+  memset(myBackBuffer, 0, H_PIXEL * TIAConstants::frameBufferHeight);
+  memset(myFrontBuffer, 0, H_PIXEL * TIAConstants::frameBufferHeight);
+  memset(myFramebuffer, 0, H_PIXEL * TIAConstants::frameBufferHeight);
 
 #ifdef DEBUGGER_SUPPORT
   createAccessBase();
@@ -797,9 +797,9 @@ bool TIA::saveDisplay(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myFramebuffer, 160* TIAConstants::frameBufferHeight);
-    out.putByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
-    out.putByteArray(myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
+    out.putByteArray(myFramebuffer, H_PIXEL * TIAConstants::frameBufferHeight);
+    out.putByteArray(myBackBuffer, H_PIXEL * TIAConstants::frameBufferHeight);
+    out.putByteArray(myFrontBuffer, H_PIXEL * TIAConstants::frameBufferHeight);
     out.putInt(myFramesSinceLastRender);
   }
   catch(...)
@@ -817,9 +817,9 @@ bool TIA::loadDisplay(Serializer& in)
   try
   {
     // Reset frame buffer pointer and data
-    in.getByteArray(myFramebuffer, 160 * TIAConstants::frameBufferHeight);
-    in.getByteArray(myBackBuffer, 160 * TIAConstants::frameBufferHeight);
-    in.getByteArray(myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
+    in.getByteArray(myFramebuffer, H_PIXEL * TIAConstants::frameBufferHeight);
+    in.getByteArray(myBackBuffer, H_PIXEL * TIAConstants::frameBufferHeight);
+    in.getByteArray(myFrontBuffer, H_PIXEL * TIAConstants::frameBufferHeight);
     myFramesSinceLastRender = in.getInt();
   }
   catch(...)
@@ -846,7 +846,7 @@ void TIA::renderToFrameBuffer()
 
   myFramesSinceLastRender = 0;
 
-  memcpy(myFramebuffer, myFrontBuffer, 160 * TIAConstants::frameBufferHeight);
+  memcpy(myFramebuffer, myFrontBuffer, H_PIXEL * TIAConstants::frameBufferHeight);
 
   myFrameBufferScanlines = myFrontBufferScanlines;
 }
@@ -890,7 +890,7 @@ bool TIA::electronBeamPos(uInt32& x, uInt32& y) const
 {
   uInt8 clocks = clocksThisLine();
 
-  x = (clocks < 68) ? 0 : clocks - 68;
+  x = (clocks < H_BLANK_CLOCKS) ? 0 : clocks - H_BLANK_CLOCKS;
   y = myFrameManager->getY();
 
   return isRendering();
@@ -1137,7 +1137,7 @@ TIA& TIA::updateScanlineByStep()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA& TIA::updateScanlineByTrace(int target)
 {
-  uInt32 count = 10000;  // only try up to 100 steps
+  uInt32 count = 10000;  // only try up to 10000 steps
   while (mySystem->m6502().getPC() != target && count-- &&
          mySystem->m6502().execute(1));
 
@@ -1155,10 +1155,10 @@ void TIA::updateEmulation()
 {
   const uInt64 systemCycles = mySystem->cycles();
 
-  if (mySubClock > 2)
+  if (mySubClock > CYCLE_CLOCKS - 1)
     throw runtime_error("subclock exceeds range");
 
-  const uInt32 cyclesToRun = 3 * uInt32(systemCycles - myLastCycle) + mySubClock;
+  const uInt32 cyclesToRun = CYCLE_CLOCKS * uInt32(systemCycles - myLastCycle) + mySubClock;
 
   mySubClock = 0;
   myLastCycle = systemCycles;
@@ -1203,9 +1203,9 @@ void TIA::onFrameComplete()
   // Blank out any extra lines not drawn this frame
   const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
-    memset(myBackBuffer + 160 * myFrameManager->getY(), 0, missingScanlines * 160);
+    memset(myBackBuffer + H_PIXEL * myFrameManager->getY(), 0, missingScanlines * H_PIXEL);
 
-  memcpy(myFrontBuffer, myBackBuffer, 160 * TIAConstants::frameBufferHeight);
+  memcpy(myFrontBuffer, myBackBuffer, H_PIXEL * TIAConstants::frameBufferHeight);
 
   myFrontBufferScanlines = scanlinesLastFrame();
 
@@ -1215,9 +1215,9 @@ void TIA::onFrameComplete()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::onHalt()
 {
-  mySubClock += (228 - myHctr) % 228;
-  mySystem->incrementCycles(mySubClock / 3);
-  mySubClock %= 3;
+  mySubClock += (H_CLOCKS - myHctr) % H_CLOCKS;
+  mySystem->incrementCycles(mySubClock / CYCLE_CLOCKS);
+  mySubClock %= CYCLE_CLOCKS;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1243,7 +1243,7 @@ void TIA::cycle(uInt32 colorClocks)
       if (myCollisionUpdateRequired && !myFrameManager->vblank()) updateCollision();
     }
 
-    if (++myHctr >= 228)
+    if (++myHctr >= H_CLOCKS)
       nextLine();
 
     #ifdef SOUND_SUPPORT
@@ -1285,23 +1285,23 @@ void TIA::tickHblank()
       myExtendedHblank = false;
       break;
 
-    case 67:
+    case H_BLANK_CLOCKS - 1:
       if (!myExtendedHblank) myHstate = HState::frame;
       break;
 
-    case 75:
+    case H_BLANK_CLOCKS + 7:
       if (myExtendedHblank) myHstate = HState::frame;
       break;
   }
 
-  if (myExtendedHblank && myHctr > 67) myPlayfield.tick(myHctr - 68 - myHctrDelta);
+  if (myExtendedHblank && myHctr > H_BLANK_CLOCKS - 1) myPlayfield.tick(myHctr - H_BLANK_CLOCKS - myHctrDelta);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::tickHframe()
 {
   const uInt32 y = myFrameManager->getY();
-  const uInt32 x = myHctr - 68 - myHctrDelta;
+  const uInt32 x = myHctr - H_BLANK_CLOCKS - myHctrDelta;
 
   myCollisionUpdateRequired = true;
 
@@ -1319,13 +1319,13 @@ void TIA::tickHframe()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::applyRsync()
 {
-  const uInt32 x = myHctr > 68 ? myHctr - 68 : 0;
+  const uInt32 x = myHctr > H_BLANK_CLOCKS ? myHctr - H_BLANK_CLOCKS : 0;
 
-  myHctrDelta = 225 - myHctr;
+  myHctrDelta = H_CLOCKS - 3 - myHctr;
   if (myFrameManager->isRendering())
-    memset(myBackBuffer + myFrameManager->getY() * 160 + x, 0, 160 - x);
+    memset(myBackBuffer + myFrameManager->getY() * H_PIXEL + x, 0, H_PIXEL - x);
 
-  myHctr = 225;
+  myHctr = H_CLOCKS - 3;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1364,7 +1364,7 @@ void TIA::cloneLastLine()
 
   uInt8* buffer = myBackBuffer;
 
-  memcpy(buffer + y * 160, buffer + (y-1) * 160, 160);
+  memcpy(buffer + y * H_PIXEL, buffer + (y-1) * H_PIXEL, H_PIXEL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1389,7 +1389,7 @@ void TIA::updateCollision()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::renderPixel(uInt32 x, uInt32 y)
 {
-  if (x >= 160) return;
+  if (x >= H_PIXEL) return;
 
   uInt8 color = 0;
 
@@ -1441,7 +1441,7 @@ void TIA::renderPixel(uInt32 x, uInt32 y)
     }
   }
 
-  myBackBuffer[y * 160 + x] = color;
+  myBackBuffer[y * H_PIXEL + x] = color;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1467,7 +1467,7 @@ void TIA::flushLineCache()
 void TIA::clearHmoveComb()
 {
   if (myFrameManager->isRendering() && myHstate == HState::blank)
-    memset(myBackBuffer + myFrameManager->getY() * 160, myColorHBlank, 8);
+    memset(myBackBuffer + myFrameManager->getY() * H_PIXEL, myColorHBlank, 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

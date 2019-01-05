@@ -184,7 +184,7 @@ void Ball::tick(bool isReceivingMclock)
     myIsRendering = true;
     myRenderCounter = Count::renderCounterOffset;
 
-    uInt8 starfieldDelta = (myCounter + 160 - myLastMovementTick) % 4;
+    uInt8 starfieldDelta = (myCounter + TIA::H_PIXEL - myLastMovementTick) % 4;
     if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) ++myRenderCounter;
 
     switch (starfieldDelta) {
@@ -204,7 +204,7 @@ void Ball::tick(bool isReceivingMclock)
   } else if (myIsRendering && ++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth))
     myIsRendering = false;
 
-  if (++myCounter >= 160)
+  if (++myCounter >= TIA::H_PIXEL)
       myCounter = 0;
 }
 
@@ -268,10 +268,10 @@ uInt8 Ball::getPosition() const
   //    clock count after decode until first pixel +
   //    1 (it'll take another cycle after the decode for the rendter counter to start ticking)
   //
-  // The result may be negative, so we add 160 and do the modulus -> 317 = 156 + 160 + 1
+  // The result may be negative, so we add 160 and do the modulus -> 317 = 156 + TIA::H_PIXEL + 1
   //
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (317 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % 160;
+  return (317 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % TIA::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -280,7 +280,7 @@ void Ball::setPosition(uInt8 newPosition)
   myTIA->flushLineCache();
 
   // See getPosition for an explanation
-  myCounter = (317 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % 160;
+  myCounter = (317 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % TIA::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

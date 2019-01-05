@@ -100,6 +100,11 @@ class TIA : public Device
       HBLANK_WHITE  = 0x0e
     };
 
+    static constexpr uInt16
+      H_PIXEL = 160, H_CYCLES = 76, CYCLE_CLOCKS = 3,
+      H_CLOCKS = H_CYCLES * CYCLE_CLOCKS,   // = 228
+      H_BLANK_CLOCKS = H_CLOCKS - H_PIXEL;  // = 68
+
   public:
     friend class TIADebug;
     friend class RiotDebug;
@@ -242,7 +247,7 @@ class TIA : public Device
     /**
       Answers dimensional info about the framebuffer.
     */
-    uInt32 width() const  { return 160; }
+    uInt32 width() const  { return H_PIXEL; }
     uInt32 height() const { return myFrameManager->height(); }
     uInt32 ystart() const { return myFrameManager->ystart(); }
 
@@ -415,7 +420,7 @@ class TIA : public Device
     /**
       Enables/disables slower playfield values.
 
-      @param slow   Wether to enable slow playfield delays 
+      @param slow   Wether to enable slow playfield delays
     */
     void setPFDelay(bool slow);
 
@@ -447,7 +452,7 @@ class TIA : public Device
     uInt8 getPosition() const {
       uInt8 realHctr = myHctr - myHctrDelta;
 
-      return (realHctr < 68) ? 0 : (realHctr - 68);
+      return (realHctr < H_BLANK_CLOCKS) ? 0 : (realHctr - H_BLANK_CLOCKS);
     }
 
     /**
@@ -700,12 +705,12 @@ class TIA : public Device
     LatchedInput myInput1;
 
     // Pointer to the internal color-index-based frame buffer
-    uInt8 myFramebuffer[160 * TIAConstants::frameBufferHeight];
+    uInt8 myFramebuffer[H_PIXEL * TIAConstants::frameBufferHeight];
 
     // The frame is rendered to the backbuffer and only copied to the framebuffer
     // upon completion
-    uInt8 myBackBuffer[160 * TIAConstants::frameBufferHeight];
-    uInt8 myFrontBuffer[160 * TIAConstants::frameBufferHeight];
+    uInt8 myBackBuffer[H_PIXEL * TIAConstants::frameBufferHeight];
+    uInt8 myFrontBuffer[H_PIXEL * TIAConstants::frameBufferHeight];
 
     // We snapshot frame statistics when the back buffer is copied to the front buffer
     // and when the front buffer is copied to the frame buffer
