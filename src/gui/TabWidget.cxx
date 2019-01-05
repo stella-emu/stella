@@ -240,7 +240,7 @@ bool TabWidget::handleEvent(Event::Type event)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::loadConfig()
 {
-  //if(_firstTime)
+  if(_firstTime)
   {
     setActiveTab(_activeTab, true);
     _firstTime = false;
