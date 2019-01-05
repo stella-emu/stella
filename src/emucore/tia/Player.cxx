@@ -173,8 +173,8 @@ void Player::resp(uInt8 counter)
 
   // This tries to account for the effects of RESP during draw counter decode as
   // described in Andrew Towers' notes. Still room for tuning.'
-  if (myIsRendering && (myRenderCounter - renderCounterOffset) < 4)
-    myRenderCounter = renderCounterOffset + (counter - 157);
+  if (myIsRendering && (myRenderCounter - Count::renderCounterOffset) < 4)
+    myRenderCounter = Count::renderCounterOffset + (counter - 157);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
