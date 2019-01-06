@@ -202,27 +202,27 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   ypos += lineHeight + VGAP * 1;
 
   myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                        "Delayed playfield bits");
+                                        "Delayed playfield bits (Thrust, Pesco)");
   wid.push_back(myPFBitsWidget);
   ypos += lineHeight + VGAP * 1;
 
   myPFColorWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                        "Delayed playfield color");
+                                        "Delayed playfield color (Quick Step/Ixion)");
   wid.push_back(myPFColorWidget);
   ypos += lineHeight + VGAP * 1;
 
   myGRP0SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                        "Delayed player 0 swap");
+                                        "Delayed player 0 swap (He-Man V1, Obelix)");
   wid.push_back(myGRP0SwapWidget);
   ypos += lineHeight + VGAP * 1;
 
   myGRP1SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                        "Delayed player 1 swap");
+                                        "Delayed player 1 swap (He-Man V2)");
   wid.push_back(myGRP1SwapWidget);
   ypos += lineHeight + VGAP * 1;
 
   myGRPxStuffedWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                           "Stuffed player move");
+                                           "Stuffed player move (Kool Aid Man/Thunderground)");
   wid.push_back(myGRPxStuffedWidget);
   ypos += lineHeight + VGAP * 1;
 

@@ -493,6 +493,7 @@ bool Player::save(Serializer& out) const
 
     out.putBool(myIsReflected);
     out.putBool(myIsDelaying);
+    out.putBool(myStuffedClock);
   }
   catch(...)
   {
@@ -539,6 +540,7 @@ bool Player::load(Serializer& in)
 
     myIsReflected = in.getBool();
     myIsDelaying = in.getBool();
+    myStuffedClock = in.getBool();
 
     applyColors();
   }

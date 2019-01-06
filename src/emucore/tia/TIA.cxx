@@ -296,6 +296,8 @@ bool TIA::save(Serializer& out) const
 
     out.putByte(myPFBitsDelay);
     out.putByte(myPFColorDelay);
+    out.putByte(myP0SwapDelay);
+    out.putByte(myP1SwapDelay);
   }
   catch(...)
   {
@@ -368,6 +370,8 @@ bool TIA::load(Serializer& in)
 
     myPFBitsDelay = in.getByte();
     myPFColorDelay = in.getByte();
+    myP0SwapDelay = in.getByte();
+    myP1SwapDelay = in.getByte();
   }
   catch(...)
   {
