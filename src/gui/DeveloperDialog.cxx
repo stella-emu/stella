@@ -212,7 +212,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   ypos += lineHeight + VGAP * 1;
 
   myGRP0SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                        "Delayed player 0 swap (He-Man V1, Obelix)");
+                                        "Delayed player 0 swap (He-Man V1/Obelix/Octopus)");
   wid.push_back(myGRP0SwapWidget);
   ypos += lineHeight + VGAP * 1;
 
@@ -729,7 +729,6 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myTVJitterRecWidget->setValue(myTVJitterRec[set]);
 
   handleTVJitterChange(myTVJitterWidget->getState());
-  handleEnableDebugColors();
 
   // States
   myTimeMachineWidget->setState(myTimeMachine[set]);
