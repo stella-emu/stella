@@ -149,7 +149,6 @@ Settings::Settings(OSystem& osystem)
   setInternal("dis.gfxformat", "2");
   setInternal("dis.showaddr", "true");
   setInternal("dis.relocate", "false");
-  setInternal("plr.rwportbreak", "false");
   setInternal("dev.rwportbreak", "true");
 #endif
 
@@ -164,14 +163,11 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.debugcolors", "false");
   setInternal("plr.tiadriven", "false");
   setInternal("plr.console", "2600"); // 7800
-  setInternal("plr.extrapfdelay", "false");
   setInternal("plr.timemachine", true);
   setInternal("plr.tm.size", 200);
   setInternal("plr.tm.uncompressed", 60);
   setInternal("plr.tm.interval", "30f"); // = 0.5 seconds
   setInternal("plr.tm.horizon", "10m"); // = ~10 minutes
-  // Thumb ARM emulation options
-  setInternal("plr.thumb.trapfatal", "false");
   setInternal("plr.eepromaccess", "false");
 
   // developer settings
@@ -186,7 +182,11 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.debugcolors", "false");
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
-  setInternal("dev.extrapfdelay", "false");
+  setInternal("dev.tia.delaypfbits", "false");
+  setInternal("dev.tia.delaycolorbits", "false");
+  setInternal("dev.tia.delayp0swap", "false");
+  setInternal("dev.tia.delayp1swap", "false");
+  setInternal("dev.tia.stuffplayerhm", "false");
   setInternal("dev.timemachine", true);
   setInternal("dev.tm.size", 1000);
   setInternal("dev.tm.uncompressed", 600);
@@ -614,7 +614,6 @@ void Settings::usage() const
     << "  -plr.stats        <1|0>          Overlay console info during emulation\n"
     << "  -plr.console      <2600|7800>    Select console for B/W and Pause key\n"
     << "                                    handling and RAM initialization\n"
-    << "  -plr.extrapfdelay <1|0>          Enable extra delay cycle for PF access\n"    
     << "  -plr.bankrandom   <1|0>          Randomize the startup bank on reset\n"
     << "  -plr.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -plr.cpurandom    <1|0>          Randomize the contents of CPU registers on\n"
@@ -625,11 +624,6 @@ void Settings::usage() const
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
     << "  -plr.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
     << "                                    read/peek\n"
-  #ifdef DEBUGGER_SUPPORT
-    << "  -plr.rwportbreak <1|0>           Debugger breaks on reads from write ports\n"
-  #endif
-    << "  -plr.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation\n"
-    << "                                    throw an exception\n"
     << "  -plr.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
     << "                                    messages\n"
     << endl
@@ -637,7 +631,6 @@ void Settings::usage() const
     << "  -dev.stats        <1|0>          Overlay console info during emulation\n"
     << "  -dev.console      <2600|7800>    Select console for B/W and Pause key\n"
     << "                                    handling and RAM initialization\n"
-    << "  -dev.extrapfdelay <1|0>          Enable extra delay cycle for PF access\n"
     << "  -dev.bankrandom   <1|0>          Randomize the startup bank on reset\n"
     << "  -dev.ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -dev.cpurandom    <1|0>          Randomize the contents of CPU registers on\n"
@@ -655,6 +648,11 @@ void Settings::usage() const
     << "                                    throw an exception\n"
     << "  -dev.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
     << "                                    messages\n"
+    << "  -dev.tia.delaypfbits <1|0>       Enable extra delay cycle for PF bits access\n"
+    << "  -dev.tia.delaypfcolor <1|0>      Enable extra delay cycle for PF color\n"
+    << "  -dev.tia.delayp0swap <1|0>       Enable extra delay cycle for PF color\n"
+    << "  -dev.tia.delayp1swap <1|0>       Enable extra delay cycle for PF color\n"
+    << "  -dev.tia.stuffplayerhm <1|0>     Enable extra delay cycle for PF color\n"
     << endl << std::flush;
 }
 

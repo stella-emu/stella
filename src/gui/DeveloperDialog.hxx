@@ -91,10 +91,9 @@ class DeveloperDialog : public Dialog
 
     TabWidget* myTab;
     // Emulator widgets
-    RadioButtonGroup*   mySettingsGroup0;
+    RadioButtonGroup*   mySettingsGroupEmulation;
     CheckboxWidget*     myFrameStatsWidget;
     PopUpWidget*        myConsoleWidget;
-    CheckboxWidget*     myPFDelaykWidget;
     StaticTextWidget*   myLoadingROMLabel;
     CheckboxWidget*     myRandomBankWidget;
     CheckboxWidget*     myRandomizeRAMWidget;
@@ -107,8 +106,16 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*     myThumbExceptionWidget;
     CheckboxWidget*     myEEPROMAccessWidget;
 
+    // TIA widgets
+    RadioButtonGroup*   mySettingsGroupTia;
+    CheckboxWidget*     myPFBitsWidget;
+    CheckboxWidget*     myPFColorWidget;
+    CheckboxWidget*     myGRP0SwapWidget;
+    CheckboxWidget*     myGRP1SwapWidget;
+    CheckboxWidget*     myGRPxStuffedWidget;
+
     // Video widgets
-    RadioButtonGroup*   mySettingsGroup1;
+    RadioButtonGroup*   mySettingsGroupVideo;
     CheckboxWidget*     myTVJitterWidget;
     SliderWidget*       myTVJitterRecWidget;
     StaticTextWidget*   myTVJitterRecLabelWidget;
@@ -118,7 +125,7 @@ class DeveloperDialog : public Dialog
     ColorWidget*        myDbgColourSwatch[DEBUG_COLORS];
 
     // States widgets
-    RadioButtonGroup*   mySettingsGroup2;
+    RadioButtonGroup*   mySettingsGroupTM;
     CheckboxWidget*     myTimeMachineWidget;
     SliderWidget*       myStateSizeWidget;
     SliderWidget*       myUncompressedWidget;
@@ -138,7 +145,6 @@ class DeveloperDialog : public Dialog
     // Emulator sets
     bool    myFrameStats[2];
     int     myConsole[2];
-    bool    myPFDelay[2];
     bool    myRandomBank[2];
     bool    myRandomizeRAM[2];
     string  myRandomizeCPU[2];
@@ -152,6 +158,12 @@ class DeveloperDialog : public Dialog
 #endif
     bool    myThumbException[2];
     bool    myEEPROMAccess[2];
+    // TIA sets
+    bool    myPFBits[2];
+    bool    myPFColor[2];
+    bool    myGRP0Swap[2];
+    bool    myGRP1Swap[2];
+    bool    myGRPxStuffed[2];
     // States sets
     bool    myTimeMachine[2];
     int     myStateSize[2];
@@ -162,6 +174,7 @@ class DeveloperDialog : public Dialog
   private:
     void addEmulationTab(const GUI::Font& font);
     void addTimeMachineTab(const GUI::Font& font);
+    void addTiaTab(const GUI::Font& font);
     void addVideoTab(const GUI::Font& font);
     void addDebuggerTab(const GUI::Font& font);
 
@@ -174,6 +187,8 @@ class DeveloperDialog : public Dialog
     void handleTVJitterChange(bool enable);
     void handleEnableDebugColors();
     void handleConsole();
+
+    void handleTia();
 
     void handleDebugColours(int cmd, int color);
     void handleDebugColours(const string& colors);

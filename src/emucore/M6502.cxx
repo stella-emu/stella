@@ -125,7 +125,7 @@ void M6502::reset()
 
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
-  myReadFromWritePortBreak = mySettings.getBool(devSettings ? "dev.rwportbreak" : "plr.rwportbreak");
+  myReadFromWritePortBreak = devSettings ? mySettings.getBool("dev.rwportbreak") : false;
 
   myLastBreakCycle = ULLONG_MAX;
 }

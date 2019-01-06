@@ -56,7 +56,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos;
 
   // Set real dimensions
-  setSize(53 * fontWidth + 10, 15 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
+  setSize(54 * fontWidth + 10, 15 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
 
   // The tab widget
   xpos = 2; ypos = 4;
@@ -64,6 +64,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   addTabWidget(myTab);
 
   addEmulationTab(font);
+  addTiaTab(font);
   addVideoTab(font);
   addTimeMachineTab(font);
   addDebuggerTab(font);
@@ -90,13 +91,13 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int tabID = myTab->addTab("Emulation");
 
   // settings set
-  mySettingsGroup0 = new RadioButtonGroup();
+  mySettingsGroupEmulation = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                                               "Player settings", mySettingsGroup0, kPlrSettings);
+                                               "Player settings", mySettingsGroupEmulation, kPlrSettings);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                            "Developer settings", mySettingsGroup0, kDevSettings);
+                            "Developer settings", mySettingsGroupEmulation, kDevSettings);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
@@ -114,11 +115,6 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myConsoleWidget = new PopUpWidget(myTab, font, HBORDER + INDENT * 1, ypos, pwidth, lineHeight, items,
                                     "Console ", lwidth, kConsole);
   wid.push_back(myConsoleWidget);
-
-  myPFDelaykWidget = new CheckboxWidget(myTab, font, myConsoleWidget->getRight() + 20, ypos + 1,
-                                        "Extra playfield delay");
-  wid.push_back(myPFDelaykWidget);
-
   ypos += lineHeight + VGAP;
 
   // Randomize items
@@ -181,6 +177,60 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::addTiaTab(const GUI::Font& font)
+{
+  const int HBORDER = 10;
+  const int INDENT = 16 + 4;
+  const int VBORDER = 8;
+  const int VGAP = 4;
+  int ypos = VBORDER;
+  int lineHeight = font.getLineHeight();
+  WidgetArray wid;
+  int tabID = myTab->addTab("TIA");
+
+  wid.clear();
+
+  // settings set
+  mySettingsGroupTia = new RadioButtonGroup();
+  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+                                               "Player settings", mySettingsGroupTia, kPlrSettings);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP;
+  r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
+                            "Developer settings", mySettingsGroupTia, kDevSettings);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP * 1;
+
+  myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+                                        "Delayed playfield bits");
+  wid.push_back(myPFBitsWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  myPFColorWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+                                        "Delayed playfield color");
+  wid.push_back(myPFColorWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  myGRP0SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+                                        "Delayed player 0 swap");
+  wid.push_back(myGRP0SwapWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  myGRP1SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+                                        "Delayed player 1 swap");
+  wid.push_back(myGRP1SwapWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  myGRPxStuffedWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+                                           "Stuffed player move");
+  wid.push_back(myGRPxStuffedWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  // Add items for tab 2
+  addToFocusList(wid, myTab, tabID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addVideoTab(const GUI::Font& font)
 {
   const int HBORDER = 10;
@@ -199,13 +249,13 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   wid.clear();
 
   // settings set
-  mySettingsGroup1 = new RadioButtonGroup();
+  mySettingsGroupVideo = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                                               "Player settings", mySettingsGroup1, kPlrSettings);
+                                               "Player settings", mySettingsGroupVideo, kPlrSettings);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                            "Developer settings", mySettingsGroup1, kDevSettings);
+                            "Developer settings", mySettingsGroupVideo, kDevSettings);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
@@ -329,16 +379,16 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     lwidth = fontWidth * 11;
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab("Time Machine");
+  int tabID = myTab->addTab("Time Mach.");
 
   // settings set
-  mySettingsGroup2 = new RadioButtonGroup();
+  mySettingsGroupTM = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                                               "Player settings", mySettingsGroup2, kPlrSettings);
+                                               "Player settings", mySettingsGroupTM, kPlrSettings);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER, ypos + 1,
-                            "Developer settings", mySettingsGroup2, kDevSettings);
+                            "Developer settings", mySettingsGroupTM, kDevSettings);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
@@ -491,11 +541,11 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::loadSettings(SettingsSet set)
 {
-  const string& prefix = set == SettingsSet::player ? "plr." : "dev.";
+  bool devSettings = set == SettingsSet::developer;
+  const string& prefix = devSettings ? "dev." : "plr.";
 
   myFrameStats[set] = instance().settings().getBool(prefix + "stats");
   myConsole[set] = instance().settings().getString(prefix + "console") == "7800" ? 1 : 0;
-  myPFDelay[set] = instance().settings().getBool(prefix + "extrapfdelay");
   // Randomization
   myRandomBank[set] = instance().settings().getBool(prefix + "bankrandom");
   myRandomizeRAM[set] = instance().settings().getBool(prefix + "ramrandom");
@@ -504,12 +554,19 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myUndrivenPins[set] = instance().settings().getBool(prefix + "tiadriven");
 #ifdef DEBUGGER_SUPPORT
   // Read from write ports break
-  myRWPortBreak[set] = instance().settings().getBool(prefix + "rwportbreak");
+  myRWPortBreak[set] = devSettings ? instance().settings().getBool("dev.rwportbreak") : false;
 #endif
   // Thumb ARM emulation exception
-  myThumbException[set] = instance().settings().getBool(prefix + "thumb.trapfatal");
+  myThumbException[set] = devSettings ? instance().settings().getBool("dev.thumb.trapfatal") : false;
   // AtariVox/SaveKey EEPROM access
   myEEPROMAccess[set] = instance().settings().getBool(prefix + "eepromaccess");
+
+  // TIA tab
+  myPFBits[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfbits") : false;
+  myPFColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfcolor") : false;
+  myGRP0Swap[set] = devSettings ? instance().settings().getBool("dev.tia.delayp0swap") : false;
+  myGRP1Swap[set] = devSettings ? instance().settings().getBool("dev.tia.delayp1swap") : false;
+  myGRPxStuffed[set] = devSettings ? instance().settings().getBool("dev.tia.stuffplayerhm") : false;
 
   // Debug colors
   myDebugColors[set] = instance().settings().getBool(prefix + "debugcolors");
@@ -530,13 +587,13 @@ void DeveloperDialog::loadSettings(SettingsSet set)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveSettings(SettingsSet set)
 {
-  const string& prefix = set == SettingsSet::player ? "plr." : "dev.";
+  bool devSettings = set == SettingsSet::developer;
+  const string& prefix = devSettings ? "dev." : "plr.";
 
   instance().settings().setValue(prefix + "stats", myFrameStats[set]);
   instance().settings().setValue(prefix + "console", myConsole[set] == 1 ? "7800" : "2600");
   if(instance().hasConsole())
     instance().eventHandler().set7800Mode();
-  instance().settings().setValue(prefix + "extrapfdelay", myPFDelay[set]);
 
   // Randomization
   instance().settings().setValue(prefix + "bankrandom", myRandomBank[set]);
@@ -545,13 +602,25 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   // Undriven TIA pins
   instance().settings().setValue(prefix + "tiadriven", myUndrivenPins[set]);
 #ifdef DEBUGGER_SUPPORT
-  // Read from write ports break
-  instance().settings().setValue(prefix + "rwportbreak", myRWPortBreak[set]);
+  if(devSettings)
+    // Read from write ports break
+    instance().settings().setValue("dev.rwportbreak", myRWPortBreak[set]);
 #endif
-  // Thumb ARM emulation exception
-  instance().settings().setValue(prefix + "thumb.trapfatal", myThumbException[set]);
+  if(devSettings)
+    // Thumb ARM emulation exception
+    instance().settings().setValue("dev.thumb.trapfatal", myThumbException[set]);
   // AtariVox/SaveKey EEPROM access
   instance().settings().setValue(prefix + "eepromaccess", myEEPROMAccess[set]);
+
+  // TIA tab
+  if (devSettings)
+  {
+    instance().settings().setValue("dev.tia.delaypfbits", myPFBits[set]);
+    instance().settings().setValue("dev.tia.delaypfcolor", myPFColor[set]);
+    instance().settings().setValue("dev.tia.delayp0swap", myGRP0Swap[set]);
+    instance().settings().setValue("dev.tia.delayp1swap", myGRP1Swap[set]);
+    instance().settings().setValue("dev.tia.stuffplayerhm", myGRPxStuffed[set]);
+  }
 
   // Debug colors
   instance().settings().setValue(prefix + "debugcolors", myDebugColors[set]);
@@ -574,7 +643,6 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
 {
   myFrameStats[set] = myFrameStatsWidget->getState();
   myConsole[set] = myConsoleWidget->getSelected() == 1;
-  myPFDelay[set] = myPFDelaykWidget->getState();
   // Randomization
   myRandomBank[set] = myRandomBankWidget->getState();
   myRandomizeRAM[set] = myRandomizeRAMWidget->getState();
@@ -594,6 +662,13 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myThumbException[set] = myThumbExceptionWidget->getState();
   // AtariVox/SaveKey EEPROM access
   myEEPROMAccess[set] = myEEPROMAccessWidget->getState();
+
+  // TIA tab
+  myPFBits[set] = myPFBitsWidget->getState();
+  myPFColor[set] = myPFColorWidget->getState();
+  myGRP0Swap[set] = myGRP0SwapWidget->getState();
+  myGRP1Swap[set] = myGRP1SwapWidget->getState();
+  myGRPxStuffed[set] = myGRPxStuffedWidget->getState();
 
   // Debug colors
   myDebugColors[set] = myDebugColorsWidget->getState();
@@ -617,7 +692,6 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 {
   myFrameStatsWidget->setState(myFrameStats[set]);
   myConsoleWidget->setSelectedIndex(myConsole[set]);
-  myPFDelaykWidget->setState(myPFDelay[set]);
   // Randomization
   myRandomBankWidget->setState(myRandomBank[set]);
   myRandomizeRAMWidget->setState(myRandomizeRAM[set]);
@@ -636,8 +710,15 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myThumbExceptionWidget->setState(myThumbException[set]);
   // AtariVox/SaveKey EEPROM access
   myEEPROMAccessWidget->setState(myEEPROMAccess[set]);
-
   handleConsole();
+
+  // TIA tab
+  myPFBitsWidget->setState(myPFBits[set]);
+  myPFColorWidget->setState(myPFColor[set]);
+  myGRP0SwapWidget->setState(myGRP0Swap[set]);
+  myGRP1SwapWidget->setState(myGRP1Swap[set]);
+  myGRPxStuffedWidget->setState(myGRPxStuffed[set]);
+  handleTia();
 
   // Debug colors
   myDebugColorsWidget->setState(myDebugColors[set]);
@@ -669,15 +750,16 @@ void DeveloperDialog::loadConfig()
 {
   bool devSettings = instance().settings().getBool("dev.settings");
   mySettings = devSettings;
-  mySettingsGroup0->setSelected(devSettings ? 1 : 0);
-  mySettingsGroup1->setSelected(devSettings ? 1 : 0);
-  mySettingsGroup2->setSelected(devSettings ? 1 : 0);
+  mySettingsGroupEmulation->setSelected(devSettings ? 1 : 0);
+  mySettingsGroupTia->setSelected(devSettings ? 1 : 0);
+  mySettingsGroupVideo->setSelected(devSettings ? 1 : 0);
+  mySettingsGroupTM->setSelected(devSettings ? 1 : 0);
 
   // load both setting sets...
   loadSettings(SettingsSet::player);
   loadSettings(SettingsSet::developer);
   // ...and select the current one
-  setWidgetStates(SettingsSet(mySettingsGroup0->getSelected()));
+  setWidgetStates(SettingsSet(mySettingsGroupEmulation->getSelected()));
 
   // Debug colours
   handleDebugColours(instance().settings().getString("tia.dbgcolors"));
@@ -712,22 +794,33 @@ void DeveloperDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::saveConfig()
 {
-  instance().settings().setValue("dev.settings", mySettingsGroup0->getSelected() == SettingsSet::developer);
+  instance().settings().setValue("dev.settings", mySettingsGroupEmulation->getSelected() == SettingsSet::developer);
   // copy current widget status into set...
-  getWidgetStates(SettingsSet(mySettingsGroup0->getSelected()));
+  getWidgetStates(SettingsSet(mySettingsGroupEmulation->getSelected()));
   // ...and save both sets
   saveSettings(SettingsSet::player);
   saveSettings(SettingsSet::developer);
 
   // activate the current settings
   instance().frameBuffer().showFrameStats(myFrameStatsWidget->getState());
-  // playfield delay & jitter
+  // jitter
   if(instance().hasConsole())
   {
-    instance().console().tia().setPFDelay(myPFDelaykWidget->getState());
     instance().console().tia().toggleJitter(myTVJitterWidget->getState() ? 1 : 0);
     instance().console().tia().setJitterRecoveryFactor(myTVJitterRecWidget->getValue());
   }
+
+  // TIA tab
+  if(instance().hasConsole())
+  {
+    // playfield delay
+    instance().console().tia().setPFBitsDelay(myPFBitsWidget->getState());
+    instance().console().tia().setPFColorDelay(myPFColorWidget->getState());
+    instance().console().tia().setP0SwapDelay(myGRP0SwapWidget->getState());
+    instance().console().tia().setP1SwapDelay(myGRP1SwapWidget->getState());
+    instance().console().tia().setStuffPlayerMove(myGRPxStuffedWidget->getState());
+  }
+
   handleEnableDebugColors();
   // PAL color loss
   if(instance().hasConsole())
@@ -771,15 +864,14 @@ void DeveloperDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::setDefaults()
 {
-  bool devSettings = mySettingsGroup0->getSelected() == 1;
-  SettingsSet set = SettingsSet(mySettingsGroup0->getSelected());
+  bool devSettings = mySettingsGroupEmulation->getSelected() == 1;
+  SettingsSet set = SettingsSet(mySettingsGroupEmulation->getSelected());
 
   switch(myTab->getActiveTab())
   {
     case 0: // Emulation
       myFrameStats[set] = devSettings ? true : false;
       myConsole[set] = 0;
-      myPFDelay[set] = false;
       // Randomization
       myRandomBank[set] = devSettings ? true : false;
       myRandomizeRAM[set] = true;
@@ -798,7 +890,17 @@ void DeveloperDialog::setDefaults()
       setWidgetStates(set);
       break;
 
-    case 1: // Video
+    case 1: // TIA
+      myPFBits[set] = false;
+      myPFColor[set] = false;
+      myGRP0Swap[set] = false;
+      myGRP1Swap[set] = false;
+      myGRPxStuffed[set] = false;
+
+      setWidgetStates(set);
+      break;
+
+    case 2: // Video
       // Jitter
       myTVJitter[set] = true;
       myTVJitterRec[set] = devSettings ? 2 : 10;
@@ -811,7 +913,7 @@ void DeveloperDialog::setDefaults()
       setWidgetStates(set);
       break;
 
-    case 2: // States
+    case 3: // States
       myTimeMachine[set] = true;
       myStateSize[set] = devSettings ? 1000 : 200;
       myUncompressed[set] = devSettings ? 600 : 60;
@@ -821,7 +923,7 @@ void DeveloperDialog::setDefaults()
       setWidgetStates(set);
       break;
 
-    case 3: // Debugger options
+    case 4: // Debugger options
     {
 #ifdef DEBUGGER_SUPPORT
       uInt32 w = std::min(instance().frameBuffer().desktopSize().w, uInt32(DebuggerDialog::kMediumFontMinW));
@@ -944,12 +1046,16 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleSettings(bool devSettings)
 {
+  myRWPortBreakWidget->setEnabled(devSettings);
+  myThumbExceptionWidget->setEnabled(devSettings);
+
   if (mySettings != devSettings)
   {
     mySettings = devSettings; // block redundant events first!
-    mySettingsGroup0->setSelected(devSettings ? 1 : 0);
-    mySettingsGroup1->setSelected(devSettings ? 1 : 0);
-    mySettingsGroup2->setSelected(devSettings ? 1 : 0);
+    mySettingsGroupEmulation->setSelected(devSettings ? 1 : 0);
+    mySettingsGroupTia->setSelected(devSettings ? 1 : 0);
+    mySettingsGroupVideo->setSelected(devSettings ? 1 : 0);
+    mySettingsGroupTM->setSelected(devSettings ? 1 : 0);
     getWidgetStates(devSettings ? SettingsSet::player : SettingsSet::developer);
     setWidgetStates(devSettings ? SettingsSet::developer : SettingsSet::player);
   }
@@ -981,6 +1087,17 @@ void DeveloperDialog::handleConsole()
   myRandomizeRAMWidget->setEnabled(!is7800);
   if(is7800)
     myRandomizeRAMWidget->setState(false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DeveloperDialog::handleTia()
+{
+  bool enable = mySettingsGroupEmulation->getSelected() == SettingsSet::developer;
+  myPFBitsWidget->setEnabled(enable);
+  myPFColorWidget->setEnabled(enable);
+  myGRP0SwapWidget->setEnabled(enable);
+  myGRP1SwapWidget->setEnabled(enable);
+  myGRPxStuffedWidget->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

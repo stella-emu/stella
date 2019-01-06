@@ -57,6 +57,8 @@ class Player : public Serializable
 
     void applyColorLoss();
 
+    void setStuffedClock(bool enable);
+
     void startMovement();
 
     bool movementTick(uInt32 clock, bool apply);
@@ -130,6 +132,8 @@ class Player : public Serializable
 
     bool myIsReflected;
     bool myIsDelaying;
+    bool myStuffedClock;
+    bool myUseStuffedClock;
 
     TIA* myTIA;
 

@@ -53,6 +53,8 @@ void Player::reset()
   mySampleCounter = 0;
   myDividerPending = 0;
   myDividerChangeCounter = -1;
+  myStuffedClock = false;
+  myUseStuffedClock = false;
   myPattern = 0;
 
   setDivider(1);
@@ -252,6 +254,12 @@ void Player::applyColorLoss()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Player::setStuffedClock(bool enable)
+{
+  myUseStuffedClock = enable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::startMovement()
 {
   myIsMoving = true;
@@ -264,7 +272,12 @@ bool Player::movementTick(uInt32 clock, bool apply)
     myIsMoving = false;
   }
 
-  if (myIsMoving && apply) tick();
+  //if(myIsMoving && apply) tick();
+  if(myIsMoving)
+  {
+    if(apply) tick();
+    else myStuffedClock = true;
+  }
 
   return myIsMoving;
 }
@@ -272,6 +285,12 @@ bool Player::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::tick()
 {
+  if(myUseStuffedClock && myStuffedClock)
+  {
+    myStuffedClock = false;
+    return;
+  }
+
   if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
     collision = myCollisionMaskDisabled;
   else

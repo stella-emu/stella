@@ -172,7 +172,11 @@ void TIA::reset()
     paddleReader.reset(myTimestamp);
 
   bool devSettings = mySettings.getBool("dev.settings");
-  setPFDelay(mySettings.getBool(devSettings ? "dev.extrapfdelay" : "plr.extrapfdelay"));
+  setPFBitsDelay(devSettings ? mySettings.getBool("dev.tia.delaypfbits") : false);
+  setPFColorDelay(devSettings ? mySettings.getBool("dev.tia.delaypfcolor") : false);
+  setP0SwapDelay(devSettings ? mySettings.getBool("dev.tia.delayp0swap") : false);
+  setP1SwapDelay(devSettings ? mySettings.getBool("dev.tia.delayp1swap") : false);
+  setStuffPlayerMove(devSettings ? mySettings.getBool("dev.tia.stuffplayerhm") : false);
   myDelayQueue.reset();
 
   myCyclesAtFrameStart = 0;
@@ -290,7 +294,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(myFrameBufferScanlines);
     out.putInt(myFrontBufferScanlines);
 
-    out.putByte(myPFDelay);
+    out.putByte(myPFBitsDelay);
     out.putByte(myPFColorDelay);
   }
   catch(...)
@@ -362,7 +366,7 @@ bool TIA::load(Serializer& in)
     myFrameBufferScanlines = in.getInt();
     myFrontBufferScanlines = in.getInt();
 
-    myPFDelay = in.getByte();
+    myPFBitsDelay = in.getByte();
     myPFColorDelay = in.getByte();
   }
   catch(...)
@@ -613,7 +617,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case PF0:
     {
-      myDelayQueue.push(PF0, value, myPFDelay);
+      myDelayQueue.push(PF0, value, myPFBitsDelay);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -624,7 +628,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case PF1:
     {
-      myDelayQueue.push(PF1, value, myPFDelay);
+      myDelayQueue.push(PF1, value, myPFBitsDelay);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -635,7 +639,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
 
     case PF2:
     {
-      myDelayQueue.push(PF2, value, myPFDelay);
+      myDelayQueue.push(PF2, value, myPFBitsDelay);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -703,7 +707,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case GRP0:
     {
       myDelayQueue.push(GRP0, value, Delay::grp);
-      myDelayQueue.push(DummyRegisters::shuffleP1, 0, Delay::shufflePlayer);
+      myDelayQueue.push(DummyRegisters::shuffleP1, 0, myP0SwapDelay);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -715,7 +719,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case GRP1:
     {
       myDelayQueue.push(GRP1, value, Delay::grp);
-      myDelayQueue.push(DummyRegisters::shuffleP0, 0, Delay::shufflePlayer);
+      myDelayQueue.push(DummyRegisters::shuffleP0, 0, myP1SwapDelay);
       myDelayQueue.push(DummyRegisters::shuffleBL, 0, Delay::shuffleBall);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
@@ -1471,10 +1475,34 @@ void TIA::clearHmoveComb()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setPFDelay(bool slow)
+void TIA::setPFBitsDelay(bool delayed)
 {
-  myPFDelay = slow ? Delay::pf + 1 : Delay::pf;
-  myPFColorDelay = slow ? 1 : 0;
+  myPFBitsDelay = delayed ? Delay::pf + 1 : Delay::pf;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setPFColorDelay(bool delayed)
+{
+  myPFColorDelay = delayed ? 1 : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setP0SwapDelay(bool delayed)
+{
+  myP0SwapDelay = delayed ? Delay::shufflePlayer + 1 : Delay::shufflePlayer;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setP1SwapDelay(bool delayed)
+{
+  myP1SwapDelay = delayed ? Delay::shufflePlayer + 1 : Delay::shufflePlayer;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setStuffPlayerMove(bool enable)
+{
+  myPlayer0.setStuffedClock(enable);
+  myPlayer1.setStuffedClock(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

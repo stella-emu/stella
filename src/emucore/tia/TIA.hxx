@@ -418,11 +418,39 @@ class TIA : public Device
     void setJitterRecoveryFactor(Int32 factor);
 
     /**
-      Enables/disables slower playfield values.
+      Enables/disables delayed playfield bits values.
 
-      @param slow   Wether to enable slow playfield delays
+      @param delayed   Wether to enable delayed playfield delays
     */
-    void setPFDelay(bool slow);
+    void setPFBitsDelay(bool delayed);
+
+    /**
+      Enables/disables delayed playfield colors.
+
+      @param delayed   Wether to enable delayed playfield colors
+    */
+    void setPFColorDelay(bool delayed);
+
+    /**
+      Enables/disables delayed player 0 swapping.
+
+      @param delayed   Wether to enable player 0 swapping
+    */
+    void setP0SwapDelay(bool delayed);
+
+    /**
+      Enables/disables delayed player 1 swapping.
+
+      @param delayed   Wether to enable player 1 swapping
+    */
+    void setP1SwapDelay(bool delayed);
+
+    /**
+      Enables/disables stuffed player moving.
+
+      @param enable   Wether to enable stuffed player moving
+    */
+    void setStuffPlayerMove(bool enable);
 
     /**
       This method should be called to update the TIA with a new scanline.
@@ -669,10 +697,12 @@ class TIA : public Device
     DelayQueue<delayQueueLength, delayQueueSize> myDelayQueue;
 
     /**
-      Variable delay values for PF writes.
+      Variable delay values for TIA writes.
     */
-    uInt8 myPFDelay;
+    uInt8 myPFBitsDelay;
     uInt8 myPFColorDelay;
+    uInt8 myP0SwapDelay;
+    uInt8 myP1SwapDelay;
 
     /**
      * The frame manager is responsible for detecting frame boundaries and the visible
