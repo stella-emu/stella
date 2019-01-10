@@ -167,9 +167,10 @@ bool Missile::movementTick(uInt8 clock, uInt8 hclock, bool apply)
 {
   myLastMovementTick = myCounter;
 
-  if (clock == myHmmClocks) myIsMoving = false;
-
-  if (myIsMoving && apply) tick(hclock, false);
+  if(clock == myHmmClocks)
+    myIsMoving = false;
+  else if(myIsMoving && apply)
+    tick(hclock, false);
 
   return myIsMoving;
 }

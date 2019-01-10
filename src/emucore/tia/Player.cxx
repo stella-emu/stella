@@ -268,12 +268,9 @@ void Player::startMovement()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Player::movementTick(uInt32 clock, bool apply)
 {
-  if (clock == myHmmClocks) {
+  if (clock == myHmmClocks)
     myIsMoving = false;
-  }
-
-  //if(myIsMoving && apply) tick();
-  if(myIsMoving)
+  else if(myIsMoving)
   {
     if(apply) tick();
     else myStuffedClock = true;

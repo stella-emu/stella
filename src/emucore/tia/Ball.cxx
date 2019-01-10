@@ -165,9 +165,10 @@ bool Ball::movementTick(uInt32 clock, bool apply)
 {
   myLastMovementTick = myCounter;
 
-  if (clock == myHmmClocks) myIsMoving = false;
-
-  if (myIsMoving && apply) tick(false);
+  if (clock == myHmmClocks)
+    myIsMoving = false;
+  else if (myIsMoving && apply)
+    tick(false);
 
   return myIsMoving;
 }
