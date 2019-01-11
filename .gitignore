@@ -2,7 +2,7 @@ config.log
 config.mak
 src/**/*/.deps
 src/**/*.o
-stella
+stella.exe
 *.diff
 project.xcworkspace/
 xcuserdata/
