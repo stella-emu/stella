@@ -18,7 +18,7 @@
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
 
-  * Added various developer options for oddball TIAs
+  * Added various developer options for oddball TIAs:
      - delayed playfield bits
      - delayed playfield color
      - delayed player 0 swap
