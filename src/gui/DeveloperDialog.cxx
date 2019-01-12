@@ -185,7 +185,9 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   const int VGAP = 4;
   int ypos = VBORDER;
   int lineHeight = font.getLineHeight();
+  int pwidth = font.getStringWidth("Glitched Atari Video Cube");
   WidgetArray wid;
+  VariantList items;
   int tabID = myTab->addTab("TIA");
 
   wid.clear();
@@ -201,30 +203,44 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(r);
   ypos += lineHeight + VGAP * 1;
 
-  myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                        "Delayed playfield bits (Thrust, Pesco)");
+  items.clear();
+  VarList::push_back(items, "Standard", "standard");
+  VarList::push_back(items, "Faulty Kool-Aid Man", "koolaidman");
+  VarList::push_back(items, "Glitched Pesco", "pesco");
+  VarList::push_back(items, "Glitched Atari Video Cube", "videocube");
+  VarList::push_back(items, "Glitched He-Man title V1", "hemanv1");
+  VarList::push_back(items, "Glitched He-Man title V2", "hemanv2");
+  VarList::push_back(items, "Custom", "custom");
+  myTIATypeWidget = new PopUpWidget(myTab, font, HBORDER + INDENT, ypos - 1,
+                                    pwidth, lineHeight, items, "Chip type ", 0, kTIAType);
+  wid.push_back(myTIATypeWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  myGRPxStuffedWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                           "Stuffed player move (Kool Aid Man/Thundergr.)");
+  wid.push_back(myGRPxStuffedWidget);
+  ypos += lineHeight + VGAP * 1;
+
+  myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                      "Delayed playfield bits (Thrust, Pesco)");
   wid.push_back(myPFBitsWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myPFColorWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                        "Delayed playfield color (Quick Step/Ixion)");
+  myPFColorWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                       "Delayed playfield color (Quick Step/Ixion)");
   wid.push_back(myPFColorWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myGRP0SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                        "Delayed player 0 swap (He-Man V1/Obelix/Octopus)");
+  myGRP0SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                        "Delayed player 0 swap (HeMan V2/Obelix/Octop.)");
   wid.push_back(myGRP0SwapWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myGRP1SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                        "Delayed player 1 swap (He-Man V2)");
+  myGRP1SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                        "Delayed player 1 swap (HeMan V1+2)");
   wid.push_back(myGRP1SwapWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myGRPxStuffedWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-                                           "Stuffed player move (Kool Aid Man/Thunderground)");
-  wid.push_back(myGRPxStuffedWidget);
-  ypos += lineHeight + VGAP * 1;
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -562,11 +578,13 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myEEPROMAccess[set] = instance().settings().getBool(prefix + "eepromaccess");
 
   // TIA tab
+  myTIAType[set] = devSettings ? instance().settings().getString("dev.tia.type") : "standard";
+  //bool custom = BSPF::equalsIgnoreCase("custom", myTIAType[set]);
+  myGRPxStuffed[set] = devSettings ? instance().settings().getBool("dev.tia.stuffplayerhm") : false;
   myPFBits[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfbits") : false;
   myPFColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfcolor") : false;
   myGRP0Swap[set] = devSettings ? instance().settings().getBool("dev.tia.delayp0swap") : false;
   myGRP1Swap[set] = devSettings ? instance().settings().getBool("dev.tia.delayp1swap") : false;
-  myGRPxStuffed[set] = devSettings ? instance().settings().getBool("dev.tia.stuffplayerhm") : false;
 
   // Debug colors
   myDebugColors[set] = instance().settings().getBool(prefix + "debugcolors");
@@ -616,11 +634,15 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   // TIA tab
   if (devSettings)
   {
-    instance().settings().setValue("dev.tia.delaypfbits", myPFBits[set]);
-    instance().settings().setValue("dev.tia.delaypfcolor", myPFColor[set]);
-    instance().settings().setValue("dev.tia.delayp0swap", myGRP0Swap[set]);
-    instance().settings().setValue("dev.tia.delayp1swap", myGRP1Swap[set]);
-    instance().settings().setValue("dev.tia.stuffplayerhm", myGRPxStuffed[set]);
+    instance().settings().setValue("dev.tia.type", myTIAType[set]);
+    if (BSPF::equalsIgnoreCase("custom", myTIAType[set]))
+    {
+      instance().settings().setValue("dev.tia.stuffplayerhm", myGRPxStuffed[set]);
+      instance().settings().setValue("dev.tia.delaypfbits", myPFBits[set]);
+      instance().settings().setValue("dev.tia.delaypfcolor", myPFColor[set]);
+      instance().settings().setValue("dev.tia.delayp0swap", myGRP0Swap[set]);
+      instance().settings().setValue("dev.tia.delayp1swap", myGRP1Swap[set]);
+    }
   }
 
   // Debug colors
@@ -665,11 +687,12 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myEEPROMAccess[set] = myEEPROMAccessWidget->getState();
 
   // TIA tab
+  myTIAType[set] = myTIATypeWidget->getSelectedTag().toString();
+  myGRPxStuffed[set] = myGRPxStuffedWidget->getState();
   myPFBits[set] = myPFBitsWidget->getState();
   myPFColor[set] = myPFColorWidget->getState();
   myGRP0Swap[set] = myGRP0SwapWidget->getState();
   myGRP1Swap[set] = myGRP1SwapWidget->getState();
-  myGRPxStuffed[set] = myGRPxStuffedWidget->getState();
 
   // Debug colors
   myDebugColors[set] = myDebugColorsWidget->getState();
@@ -714,11 +737,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   handleConsole();
 
   // TIA tab
-  myPFBitsWidget->setState(myPFBits[set]);
-  myPFColorWidget->setState(myPFColor[set]);
-  myGRP0SwapWidget->setState(myGRP0Swap[set]);
-  myGRP1SwapWidget->setState(myGRP1Swap[set]);
-  myGRPxStuffedWidget->setState(myGRPxStuffed[set]);
+  myTIATypeWidget->setSelected(myTIAType[set], "standard");
   handleTia();
 
   // Debug colors
@@ -813,12 +832,11 @@ void DeveloperDialog::saveConfig()
   // TIA tab
   if(instance().hasConsole())
   {
-    // playfield delay
+    instance().console().tia().setStuffPlayerMove(myGRPxStuffedWidget->getState());
     instance().console().tia().setPFBitsDelay(myPFBitsWidget->getState());
     instance().console().tia().setPFColorDelay(myPFColorWidget->getState());
     instance().console().tia().setP0SwapDelay(myGRP0SwapWidget->getState());
     instance().console().tia().setP1SwapDelay(myGRP1SwapWidget->getState());
-    instance().console().tia().setStuffPlayerMove(myGRPxStuffedWidget->getState());
   }
 
   handleEnableDebugColors();
@@ -891,11 +909,12 @@ void DeveloperDialog::setDefaults()
       break;
 
     case 1: // TIA
-      myPFBits[set] = false;
-      myPFColor[set] = false;
-      myGRP0Swap[set] = false;
-      myGRP1Swap[set] = false;
-      myGRPxStuffed[set] = false;
+      myTIAType[set] = "standard";
+      myGRPxStuffed[set] = devSettings ? true : false;
+      myPFBits[set] = devSettings ? true : false;
+      myPFColor[set] = devSettings ? true : false;
+      myGRP0Swap[set] = devSettings ? true : false;
+      myGRP1Swap[set] = devSettings ? true : false;
 
       setWidgetStates(set);
       break;
@@ -956,6 +975,10 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 
     case kDevSettings:
       handleSettings(true);
+      break;
+
+    case kTIAType:
+      handleTia();
       break;
 
     case kConsole:
@@ -1093,12 +1116,72 @@ void DeveloperDialog::handleConsole()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleTia()
 {
-  bool enable = mySettingsGroupEmulation->getSelected() == SettingsSet::developer;
+  bool devSettings = mySettings;
+  bool enable = BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString());
+
+  myTIATypeWidget->setEnabled(devSettings);
+  myGRPxStuffedWidget->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
   myPFColorWidget->setEnabled(enable);
   myGRP0SwapWidget->setEnabled(enable);
   myGRP1SwapWidget->setEnabled(enable);
-  myGRPxStuffedWidget->setEnabled(enable);
+
+  if(BSPF::equalsIgnoreCase("standard", myTIATypeWidget->getSelectedTag().toString()))
+  {
+    myGRPxStuffedWidget->setState(false);
+    myPFBitsWidget->setState(false);
+    myPFColorWidget->setState(false);
+    myGRP0SwapWidget->setState(false);
+    myGRP1SwapWidget->setState(false);
+  }
+  if(BSPF::equalsIgnoreCase("koolaidman", myTIATypeWidget->getSelectedTag().toString()))
+  {
+    myGRPxStuffedWidget->setState(true);
+    myPFBitsWidget->setState(false);
+    myPFColorWidget->setState(false);
+    myGRP0SwapWidget->setState(false);
+    myGRP1SwapWidget->setState(false);
+  }
+  if(BSPF::equalsIgnoreCase("pesco", myTIATypeWidget->getSelectedTag().toString()))
+  {
+    myGRPxStuffedWidget->setState(false);
+    myPFBitsWidget->setState(true);
+    myPFColorWidget->setState(false);
+    myGRP0SwapWidget->setState(false);
+    myGRP1SwapWidget->setState(false);
+  }
+  if(BSPF::equalsIgnoreCase("videocube", myTIATypeWidget->getSelectedTag().toString()))
+  {
+    myGRPxStuffedWidget->setState(false);
+    myPFBitsWidget->setState(false);
+    myPFColorWidget->setState(true);
+    myGRP0SwapWidget->setState(false);
+    myGRP1SwapWidget->setState(false);
+  }
+  if(BSPF::equalsIgnoreCase("hemanv1", myTIATypeWidget->getSelectedTag().toString()))
+  {
+    myGRPxStuffedWidget->setState(false);
+    myPFBitsWidget->setState(false);
+    myPFColorWidget->setState(false);
+    myGRP0SwapWidget->setState(false);
+    myGRP1SwapWidget->setState(true);
+  }
+  if(BSPF::equalsIgnoreCase("hemanv2", myTIATypeWidget->getSelectedTag().toString()))
+  {
+    myGRPxStuffedWidget->setState(false);
+    myPFBitsWidget->setState(false);
+    myPFColorWidget->setState(false);
+    myGRP0SwapWidget->setState(true);
+    myGRP1SwapWidget->setState(true);
+  }
+  if(BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString()))
+  {
+    myGRPxStuffedWidget->setState(myGRPxStuffed[SettingsSet::developer]);
+    myPFBitsWidget->setState(myPFBits[SettingsSet::developer]);
+    myPFColorWidget->setState(myPFColor[SettingsSet::developer]);
+    myGRP0SwapWidget->setState(myGRP0Swap[SettingsSet::developer]);
+    myGRP1SwapWidget->setState(myGRP1Swap[SettingsSet::developer]);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

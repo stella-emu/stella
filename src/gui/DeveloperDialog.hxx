@@ -59,6 +59,7 @@ class DeveloperDialog : public Dialog
       kConsole              = 'DVco',
       kRandRAMID            = 'DVrm',
       kRandCPUID            = 'DVcp',
+      kTIAType              = 'DVtt',
       kTVJitter             = 'DVjt',
       kTVJitterChanged      = 'DVjr',
       kPPinCmd              = 'DVpn',
@@ -108,11 +109,12 @@ class DeveloperDialog : public Dialog
 
     // TIA widgets
     RadioButtonGroup*   mySettingsGroupTia;
+    PopUpWidget*        myTIATypeWidget;
+    CheckboxWidget*     myGRPxStuffedWidget;
     CheckboxWidget*     myPFBitsWidget;
     CheckboxWidget*     myPFColorWidget;
     CheckboxWidget*     myGRP0SwapWidget;
     CheckboxWidget*     myGRP1SwapWidget;
-    CheckboxWidget*     myGRPxStuffedWidget;
 
     // Video widgets
     RadioButtonGroup*   mySettingsGroupVideo;
@@ -159,11 +161,12 @@ class DeveloperDialog : public Dialog
     bool    myThumbException[2];
     bool    myEEPROMAccess[2];
     // TIA sets
+    string  myTIAType[2];
+    bool    myGRPxStuffed[2];
     bool    myPFBits[2];
     bool    myPFColor[2];
     bool    myGRP0Swap[2];
     bool    myGRP1Swap[2];
-    bool    myGRPxStuffed[2];
     // States sets
     bool    myTimeMachine[2];
     int     myStateSize[2];

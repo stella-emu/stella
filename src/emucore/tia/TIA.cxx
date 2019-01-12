@@ -172,11 +172,35 @@ void TIA::reset()
     paddleReader.reset(myTimestamp);
 
   bool devSettings = mySettings.getBool("dev.settings");
-  setPFBitsDelay(devSettings ? mySettings.getBool("dev.tia.delaypfbits") : false);
-  setPFColorDelay(devSettings ? mySettings.getBool("dev.tia.delaypfcolor") : false);
-  setP0SwapDelay(devSettings ? mySettings.getBool("dev.tia.delayp0swap") : false);
-  setP1SwapDelay(devSettings ? mySettings.getBool("dev.tia.delayp1swap") : false);
-  setStuffPlayerMove(devSettings ? mySettings.getBool("dev.tia.stuffplayerhm") : false);
+  if(devSettings)
+  {
+    bool custom = BSPF::equalsIgnoreCase("custom", mySettings.getString("dev.tia.type"));
+
+    setStuffPlayerMove(custom
+                       ? mySettings.getBool("dev.tia.stuffplayerhm")
+                       : BSPF::equalsIgnoreCase("koolaidman", mySettings.getString("dev.tia.type")));
+    setPFBitsDelay(custom
+                   ? mySettings.getBool("dev.tia.delaypfbits")
+                   : BSPF::equalsIgnoreCase("pesco", mySettings.getString("dev.tia.type")));
+    setPFColorDelay(custom
+                    ? mySettings.getBool("dev.tia.delaypfcolor")
+                    : BSPF::equalsIgnoreCase("videocube", mySettings.getString("dev.tia.type")));
+    setP0SwapDelay(custom
+                   ? mySettings.getBool("dev.tia.delayp0swap")
+                   : BSPF::equalsIgnoreCase("hemanv2", mySettings.getString("dev.tia.type")));
+    setP1SwapDelay(custom
+                   ? mySettings.getBool("dev.tia.delayp1swap")
+                   : BSPF::equalsIgnoreCase("hemanv1", mySettings.getString("dev.tia.type"))
+                   || BSPF::equalsIgnoreCase("hemanv2", mySettings.getString("dev.tia.type")));
+  }
+  else
+  {
+    setPFBitsDelay(false);
+    setPFColorDelay(false);
+    setP0SwapDelay(false);
+    setP1SwapDelay(false);
+    setStuffPlayerMove(false);
+  }
   myDelayQueue.reset();
 
   myCyclesAtFrameStart = 0;
