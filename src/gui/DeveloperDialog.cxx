@@ -551,7 +551,7 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myRandomizeRAM[set] = instance().settings().getBool(prefix + "ramrandom");
   myRandomizeCPU[set] = instance().settings().getString(prefix + "cpurandom");
   // Undriven TIA pins
-  myUndrivenPins[set] = instance().settings().getBool(prefix + "tiadriven");
+  myUndrivenPins[set] = devSettings ? instance().settings().getBool("dev.tiadriven") : false;
 #ifdef DEBUGGER_SUPPORT
   // Read from write ports break
   myRWPortBreak[set] = devSettings ? instance().settings().getBool("dev.rwportbreak") : false;
@@ -600,7 +600,8 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   instance().settings().setValue(prefix + "ramrandom", myRandomizeRAM[set]);
   instance().settings().setValue(prefix + "cpurandom", myRandomizeCPU[set]);
   // Undriven TIA pins
-  instance().settings().setValue(prefix + "tiadriven", myUndrivenPins[set]);
+  if(devSettings)
+    instance().settings().setValue("dev.tiadriven", myUndrivenPins[set]);
 #ifdef DEBUGGER_SUPPORT
   if(devSettings)
     // Read from write ports break
@@ -1045,6 +1046,7 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleSettings(bool devSettings)
 {
+  myUndrivenPinsWidget->setEnabled(devSettings);
   myRWPortBreakWidget->setEnabled(devSettings);
   myThumbExceptionWidget->setEnabled(devSettings);
 

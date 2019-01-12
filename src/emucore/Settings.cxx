@@ -161,7 +161,6 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.tv.jitter", "true");
   setInternal("plr.tv.jitter_recovery", "10");
   setInternal("plr.debugcolors", "false");
-  setInternal("plr.tiadriven", "false");
   setInternal("plr.console", "2600"); // 7800
   setInternal("plr.timemachine", true);
   setInternal("plr.tm.size", 200);
@@ -183,7 +182,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
   setInternal("dev.tia.delaypfbits", "false");
-  setInternal("dev.tia.delaycolorbits", "false");
+  setInternal("dev.tia.delaypfcolor", "false");
   setInternal("dev.tia.delayp0swap", "false");
   setInternal("dev.tia.delayp1swap", "false");
   setInternal("dev.tia.stuffplayerhm", "false");
@@ -622,8 +621,6 @@ void Settings::usage() const
     << "  -plr.colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -plr.tv.jitter    <1|0>          Enable TV jitter effect\n"
     << "  -plr.tv.jitter_recovery <1-20>   Set recovery time for TV jitter effect\n"
-    << "  -plr.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
-    << "                                    read/peek\n"
     << "  -plr.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
     << "                                    messages\n"
     << endl

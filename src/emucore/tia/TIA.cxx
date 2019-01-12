@@ -81,7 +81,7 @@ TIA::TIA(Console& console, Settings& settings)
     myCollisionsEnabledBits(0xFF)
 {
   bool devSettings = mySettings.getBool("dev.settings");
-  myTIAPinsDriven = mySettings.getBool(devSettings ? "dev.tiadriven" : "plr.tiadriven");
+  myTIAPinsDriven = devSettings ? mySettings.getBool("dev.tiadriven") : false;
 
   myBackground.setTIA(this);
   myPlayfield.setTIA(this);
@@ -1075,10 +1075,8 @@ bool TIA::driveUnusedPinsRandom(uInt8 mode)
   // If mode is 0 or 1, use it as a boolean (off or on)
   // Otherwise, return the state
   if (mode == 0 || mode == 1)
-  {
     myTIAPinsDriven = bool(mode);
-    mySettings.setValue(mySettings.getBool("dev.settings") ? "dev.tiadriven" : "plr.tiadriven", myTIAPinsDriven);
-  }
+
   return myTIAPinsDriven;
 }
 

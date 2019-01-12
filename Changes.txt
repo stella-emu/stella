@@ -18,8 +18,14 @@
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
 
-  * Added developer option for an extra playfield delay clock which is
-    exhibitted by a (very) few consoles.
+  * Added various developer options for oddball TIAs
+     - delayed playfield bits
+     - delayed playfield color
+     - delayed player 0 swap
+     - delayed player 1 swap
+     - stuffed player move
+
+  * disabled some developer options for 'Player settings'
 
   * Removed superfluous controller option 'PADDLES_IDIR'
 

@@ -2508,7 +2508,7 @@
     </tr>
   </table>
 
-  <p>The following are available in two sets, one for players (prefixed by "plr.") and one
+  <p>The following are almost all available in two sets, one for players (prefixed by "plr.") and one
     for developers (prefixd by "dev."). Only use them if you know what you're doing!  Note
     that in all cases, the values supplied to the arguments are <b>not</b> case sensitive.</p>
 
@@ -2535,17 +2535,17 @@
       <td><pre>-&lt;plr.|dev.&gt;cpurandom &lt;S,A,X,Y,P&gt;</pre></td>
       <td>On reset, randomize the content of the specified CPU registers.</td>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;tiadriven &lt;1|0&gt;</pre></td>
+      <td><pre>dev.tiadriven &lt;1|0&gt;</pre></td>
       <td>Set unused TIA pins to be randomly driven high or low on a read/peek.
           If disabled, use the last databus value for those pins instead.</td>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;rwportbreak &lt;1|0&gt;</pre></td>
+      <td><pre>dev.rwportbreak &lt;1|0&gt;</pre></td>
       <td>Since the 2600 has no dedicated R/W line, different addresses are used
 	    for RAM read or write access. If the code reads from such a write address, this causes
 		an unwanted, semi-random write to that address.
 		When this option is enabled, such reads interrupt emulation and the debugger is entered.</td>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;thumb.trapfatal &lt;1|0&gt;</pre></td>
+      <td><pre>dev.thumb.trapfatal &lt;1|0&gt;</pre></td>
       <td>When enabled, this allows the Thumb ARM emulation to
         throw an exception and enter the debugger on fatal errors. When disabled, such
         fatal errors are simply logged, and emulation continues. Do not use this
@@ -3139,16 +3139,16 @@
           <tr><td>Random startup bank</td><td>Randomize the startup bank (only for selected bankswitch types)</td><td>-plr.bankrandom<br/>-dev.bankrandom</td></tr>
           <tr><td>Randomize zero-page ...</td><td>When loading a ROM, randomize all RAM content instead of initializing with all zeroes (for 'Console' = 'Atari 2600' only)</td><td>-plr.ramrandom<br/>-dev.ramrandom</td></tr>
           <tr><td>Randomize CPU</td><td>When loading a ROM, randomize the content of the specified CPU registers</td><td>-plr.cpurandom<br/>-dev.cpurandom</td></tr>
-          <tr><td>Drive unused TIA pins ...</td><td>Unused TIA pins are read random instead of the last databus values</td><td>-plr.tiadriven<br/>-dev.tiadriven</td></tr>
+          <tr><td>Drive unused TIA pins ...</td><td>Unused TIA pins are read random instead of the last databus values</td><td>-dev.tiadriven</td></tr>
           <tr>
             <td>Break on reads from ...</td>
             <td>A read from a write port interrupts emulation and the debugger is entered.</td>
-            <td><span style="white-space:nowrap">-plr.rwportbreak<br/>-dev.rwportbreak</span></td>
+            <td><span style="white-space:nowrap">-dev.rwportbreak</span></td>
           </tr>
           <tr>
             <td>Fatal ARM emulation ...</td>
             <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>
-            <td><span style="white-space:nowrap">-plr.thumb.trapfatal<br/>-dev.thumb.trapfatal</span></td>
+            <td><span style="white-space:nowrap">-dev.thumb.trapfatal</span></td>
           </tr>
           <tr><td>Display AtariVox...</td><td>Display a message when the AtariVox/SaveKey EEPROM is read or written</td><td>-plr.eepromaccess<br/>-dev.eepromaccess</td></tr>
         </table>
