@@ -184,7 +184,7 @@ void TIA::reset()
                    : BSPF::equalsIgnoreCase("pesco", mySettings.getString("dev.tia.type")));
     setPFColorDelay(custom
                     ? mySettings.getBool("dev.tia.delaypfcolor")
-                    : BSPF::equalsIgnoreCase("videocube", mySettings.getString("dev.tia.type")));
+                    : BSPF::equalsIgnoreCase("quickstep", mySettings.getString("dev.tia.type")));
     setP0SwapDelay(custom
                    ? mySettings.getBool("dev.tia.delayp0swap")
                    : BSPF::equalsIgnoreCase("hemanv2", mySettings.getString("dev.tia.type")));

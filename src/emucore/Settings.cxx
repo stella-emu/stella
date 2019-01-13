@@ -648,7 +648,7 @@ void Settings::usage() const
     << "                                    messages\n"
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
     << "                 koolaidman|pesco|\n"
-    << "                 videocube|\n"
+    << "                 quickstep|\n"
     << "                 hemanv1|hemanv2>\n"
     << "  -dev.tia.stuffplayerhm <1|0>     Enable stuffed player moves\n"
     << "  -dev.tia.delaypfbits <1|0>       Enable extra delay cycle for PF bits access\n"

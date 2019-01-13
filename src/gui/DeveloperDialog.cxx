@@ -185,7 +185,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   const int VGAP = 4;
   int ypos = VBORDER;
   int lineHeight = font.getLineHeight();
-  int pwidth = font.getStringWidth("Glitched Atari Video Cube");
+  int pwidth = font.getStringWidth("Glitched He-Man title V2");
   WidgetArray wid;
   VariantList items;
   int tabID = myTab->addTab("TIA");
@@ -207,7 +207,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Faulty Kool-Aid Man", "koolaidman");
   VarList::push_back(items, "Glitched Pesco", "pesco");
-  VarList::push_back(items, "Glitched Atari Video Cube", "videocube");
+  VarList::push_back(items, "Glitched Quick Step!", "quickstep");
   VarList::push_back(items, "Glitched He-Man title V1", "hemanv1");
   VarList::push_back(items, "Glitched He-Man title V2", "hemanv2");
   VarList::push_back(items, "Custom", "custom");
@@ -217,30 +217,29 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   ypos += lineHeight + VGAP * 1;
 
   myGRPxStuffedWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                           "Stuffed player move (Kool Aid Man/Thundergr.)");
+                                           "Stuffed player move");
   wid.push_back(myGRPxStuffedWidget);
   ypos += lineHeight + VGAP * 1;
 
   myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                      "Delayed playfield bits (Thrust, Pesco)");
+                                      "Delayed playfield bits");
   wid.push_back(myPFBitsWidget);
   ypos += lineHeight + VGAP * 1;
 
   myPFColorWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                       "Delayed playfield color (Quick Step/Ixion)");
+                                       "Delayed playfield color");
   wid.push_back(myPFColorWidget);
   ypos += lineHeight + VGAP * 1;
 
   myGRP0SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                        "Delayed player 0 swap (HeMan V2/Obelix/Octop.)");
+                                        "Delayed player 0 swap");
   wid.push_back(myGRP0SwapWidget);
   ypos += lineHeight + VGAP * 1;
 
   myGRP1SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                        "Delayed player 1 swap (HeMan V1+2)");
+                                        "Delayed player 1 swap");
   wid.push_back(myGRP1SwapWidget);
   ypos += lineHeight + VGAP * 1;
-
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -579,7 +578,6 @@ void DeveloperDialog::loadSettings(SettingsSet set)
 
   // TIA tab
   myTIAType[set] = devSettings ? instance().settings().getString("dev.tia.type") : "standard";
-  //bool custom = BSPF::equalsIgnoreCase("custom", myTIAType[set]);
   myGRPxStuffed[set] = devSettings ? instance().settings().getBool("dev.tia.stuffplayerhm") : false;
   myPFBits[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfbits") : false;
   myPFColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfcolor") : false;
@@ -882,7 +880,7 @@ void DeveloperDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::setDefaults()
 {
-  bool devSettings = mySettingsGroupEmulation->getSelected() == 1;
+  bool devSettings = mySettings;
   SettingsSet set = SettingsSet(mySettingsGroupEmulation->getSelected());
 
   switch(myTab->getActiveTab())
@@ -910,6 +908,7 @@ void DeveloperDialog::setDefaults()
 
     case 1: // TIA
       myTIAType[set] = "standard";
+      // reset "custom" mode
       myGRPxStuffed[set] = devSettings ? true : false;
       myPFBits[set] = devSettings ? true : false;
       myPFColor[set] = devSettings ? true : false;
@@ -1076,12 +1075,13 @@ void DeveloperDialog::handleSettings(bool devSettings)
   if (mySettings != devSettings)
   {
     mySettings = devSettings; // block redundant events first!
-    mySettingsGroupEmulation->setSelected(devSettings ? 1 : 0);
-    mySettingsGroupTia->setSelected(devSettings ? 1 : 0);
-    mySettingsGroupVideo->setSelected(devSettings ? 1 : 0);
-    mySettingsGroupTM->setSelected(devSettings ? 1 : 0);
+    SettingsSet set = devSettings ? SettingsSet::developer : SettingsSet::player;
+    mySettingsGroupEmulation->setSelected(set);
+    mySettingsGroupTia->setSelected(set);
+    mySettingsGroupVideo->setSelected(set);
+    mySettingsGroupTM->setSelected(set);
     getWidgetStates(devSettings ? SettingsSet::player : SettingsSet::developer);
-    setWidgetStates(devSettings ? SettingsSet::developer : SettingsSet::player);
+    setWidgetStates(set);
   }
 }
 
@@ -1116,10 +1116,9 @@ void DeveloperDialog::handleConsole()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::handleTia()
 {
-  bool devSettings = mySettings;
   bool enable = BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString());
 
-  myTIATypeWidget->setEnabled(devSettings);
+  myTIATypeWidget->setEnabled(mySettings);
   myGRPxStuffedWidget->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
   myPFColorWidget->setEnabled(enable);
@@ -1150,7 +1149,7 @@ void DeveloperDialog::handleTia()
     myGRP0SwapWidget->setState(false);
     myGRP1SwapWidget->setState(false);
   }
-  if(BSPF::equalsIgnoreCase("videocube", myTIATypeWidget->getSelectedTag().toString()))
+  if(BSPF::equalsIgnoreCase("quickstep", myTIATypeWidget->getSelectedTag().toString()))
   {
     myGRPxStuffedWidget->setState(false);
     myPFBitsWidget->setState(false);
@@ -1413,13 +1412,13 @@ void DeveloperDialog::handleDebugColours(const string& colors)
   {
     switch(colors[i])
     {
-      case 'r': handleDebugColours(i, 0);  break;
-      case 'o': handleDebugColours(i, 1);  break;
-      case 'y': handleDebugColours(i, 2);  break;
-      case 'g': handleDebugColours(i, 3);  break;
-      case 'p': handleDebugColours(i, 4);  break;
-      case 'b': handleDebugColours(i, 5);  break;
-      default:                              break;
+      case 'r': handleDebugColours(i, 0); break;
+      case 'o': handleDebugColours(i, 1); break;
+      case 'y': handleDebugColours(i, 2); break;
+      case 'g': handleDebugColours(i, 3); break;
+      case 'p': handleDebugColours(i, 4); break;
+      case 'b': handleDebugColours(i, 5); break;
+      default:                            break;
     }
   }
 }
