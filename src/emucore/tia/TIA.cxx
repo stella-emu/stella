@@ -176,9 +176,12 @@ void TIA::reset()
   {
     bool custom = BSPF::equalsIgnoreCase("custom", mySettings.getString("dev.tia.type"));
 
-    setStuffPlayerMove(custom
-                       ? mySettings.getBool("dev.tia.stuffplayerhm")
+    setPlayerInvertedPhaseClock(custom
+                       ? mySettings.getBool("dev.tia.playerinvphase")
                        : BSPF::equalsIgnoreCase("koolaidman", mySettings.getString("dev.tia.type")));
+    setMissileInvertedPhaseClock(custom
+                                ? mySettings.getBool("dev.tia.missileinvphase")
+                                : BSPF::equalsIgnoreCase("cosmicark", mySettings.getString("dev.tia.type")));
     setPFBitsDelay(custom
                    ? mySettings.getBool("dev.tia.delaypfbits")
                    : BSPF::equalsIgnoreCase("pesco", mySettings.getString("dev.tia.type")));
@@ -195,11 +198,12 @@ void TIA::reset()
   }
   else
   {
+    setPlayerInvertedPhaseClock(false);
+    setMissileInvertedPhaseClock(false);
     setPFBitsDelay(false);
     setPFColorDelay(false);
     setP0SwapDelay(false);
     setP1SwapDelay(false);
-    setStuffPlayerMove(false);
   }
   myDelayQueue.reset();
 
@@ -1525,10 +1529,17 @@ void TIA::setP1SwapDelay(bool delayed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setStuffPlayerMove(bool enable)
+void TIA::setPlayerInvertedPhaseClock(bool enable)
 {
-  myPlayer0.setStuffedClock(enable);
-  myPlayer1.setStuffedClock(enable);
+  myPlayer0.setInvertedPhaseClock(enable);
+  myPlayer1.setInvertedPhaseClock(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setMissileInvertedPhaseClock(bool enable)
+{
+  myMissile0.setInvertedPhaseClock(enable);
+  myMissile1.setInvertedPhaseClock(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

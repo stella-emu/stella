@@ -182,7 +182,8 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
   setInternal("dev.tia.type", "standard");
-  setInternal("dev.tia.stuffplayerhm", "true");
+  setInternal("dev.tia.playerinvphase", "true");
+  setInternal("dev.tia.missileinvphase", "true");
   setInternal("dev.tia.delaypfbits", "true");
   setInternal("dev.tia.delaypfcolor", "true");
   setInternal("dev.tia.delayp0swap", "true");
@@ -647,10 +648,11 @@ void Settings::usage() const
     << "  -dev.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
     << "                                    messages\n"
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
-    << "                 koolaidman|pesco|\n"
-    << "                 quickstep|\n"
+    << "                 koolaidman|cosmicark|\n"
+    << "                 pesco|quickstep|\n"
     << "                 hemanv1|hemanv2>\n"
-    << "  -dev.tia.stuffplayerhm <1|0>     Enable stuffed player moves\n"
+    << "  -dev.tia.playerinvphase <1|0>    Enable inverted HMOVE clock phase for players\n"
+    << "  -dev.tia.missileinvphase <1|0>   Enable inverted HMOVE clock phase for missiles\n"
     << "  -dev.tia.delaypfbits <1|0>       Enable extra delay cycle for PF bits access\n"
     << "  -dev.tia.delaypfcolor <1|0>      Enable extra delay cycle for PF color\n"
     << "  -dev.tia.delayp0swap <1|0>       Enable extra delay cycle for player 0 swap\n"

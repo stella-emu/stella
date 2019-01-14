@@ -54,6 +54,8 @@ void Missile::reset()
   myDebugEnabled = false;
   collision = myCollisionMaskDisabled;
   myIsEnabled = false;
+  myInvertedPhaseClock = false;
+  myUseInvertedPhaseClock = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -169,8 +171,11 @@ bool Missile::movementTick(uInt8 clock, uInt8 hclock, bool apply)
 
   if(clock == myHmmClocks)
     myIsMoving = false;
-  else if(myIsMoving && apply)
-    tick(hclock, false);
+  else if(myIsMoving)
+  {
+    if(apply) tick(hclock, false);
+    else myInvertedPhaseClock = true;
+  }
 
   return myIsMoving;
 }
@@ -178,6 +183,12 @@ bool Missile::movementTick(uInt8 clock, uInt8 hclock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::tick(uInt8 hclock, bool isReceivingMclock)
 {
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+  {
+    myInvertedPhaseClock = false;
+    return;
+  }
+
   myIsVisible =
     myIsRendering &&
     (myRenderCounter >= 0 || (myIsMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
@@ -256,6 +267,12 @@ void Missile::applyColorLoss()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::setInvertedPhaseClock(bool enable)
+{
+  myUseInvertedPhaseClock = enable;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::updateEnabled()
 {
   myIsEnabled = !myIsSuppressed && myEnam && !myResmp;
@@ -331,6 +348,7 @@ bool Missile::save(Serializer& out) const
     out.putByte(myColor);
     out.putByte(myObjectColor);  out.putByte(myDebugColor);
     out.putBool(myDebugEnabled);
+    out.putBool(myInvertedPhaseClock);
   }
   catch(...)
   {
@@ -372,6 +390,7 @@ bool Missile::load(Serializer& in)
     myColor = in.getByte();
     myObjectColor = in.getByte();  myDebugColor = in.getByte();
     myDebugEnabled = in.getBool();
+    myInvertedPhaseClock = in.getBool();
 
     applyColors();
   }

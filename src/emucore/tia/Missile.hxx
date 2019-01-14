@@ -61,6 +61,8 @@ class Missile : public Serializable
 
     void applyColorLoss();
 
+    void setInvertedPhaseClock(bool enable);
+
     void toggleCollisions(bool enabled);
 
     void toggleEnabled(bool enabled);
@@ -113,6 +115,9 @@ class Missile : public Serializable
     uInt8 myColor;
     uInt8 myObjectColor, myDebugColor;
     bool myDebugEnabled;
+
+    bool myInvertedPhaseClock;
+    bool myUseInvertedPhaseClock;
 
     TIA *myTIA;
 

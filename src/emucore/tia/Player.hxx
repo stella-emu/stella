@@ -57,7 +57,7 @@ class Player : public Serializable
 
     void applyColorLoss();
 
-    void setStuffedClock(bool enable);
+    void setInvertedPhaseClock(bool enable);
 
     void startMovement();
 
@@ -132,8 +132,8 @@ class Player : public Serializable
 
     bool myIsReflected;
     bool myIsDelaying;
-    bool myStuffedClock;
-    bool myUseStuffedClock;
+    bool myInvertedPhaseClock;
+    bool myUseInvertedPhaseClock;
 
     TIA* myTIA;
 

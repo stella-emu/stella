@@ -110,7 +110,8 @@ class DeveloperDialog : public Dialog
     // TIA widgets
     RadioButtonGroup*   mySettingsGroupTia;
     PopUpWidget*        myTIATypeWidget;
-    CheckboxWidget*     myGRPxStuffedWidget;
+    CheckboxWidget*     myPlayerInvPhaseWidget;
+    CheckboxWidget*     myMissileInvPhaseWidget;
     CheckboxWidget*     myPFBitsWidget;
     CheckboxWidget*     myPFColorWidget;
     CheckboxWidget*     myGRP0SwapWidget;
@@ -162,7 +163,8 @@ class DeveloperDialog : public Dialog
     bool    myEEPROMAccess[2];
     // TIA sets
     string  myTIAType[2];
-    bool    myGRPxStuffed[2];
+    bool    myPlayerInvPhase[2];
+    bool    myMissileInvPhase[2];
     bool    myPFBits[2];
     bool    myPFColor[2];
     bool    myGRP0Swap[2];

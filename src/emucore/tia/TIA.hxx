@@ -446,11 +446,18 @@ class TIA : public Device
     void setP1SwapDelay(bool delayed);
 
     /**
-      Enables/disables stuffed player moving.
+      Enables/disables inverted HMOVE phase clock for players.
 
-      @param enable   Wether to enable stuffed player moving
+      @param enable   Wether to enable inverted HMOVE phase clock for players
     */
-    void setStuffPlayerMove(bool enable);
+    void setPlayerInvertedPhaseClock(bool enable);
+
+    /**
+      Enables/disables inverted HMOVE phase clock for missiles.
+
+      @param enable   Wether to enable inverted HMOVE phase clock for missiles
+    */
+    void setMissileInvertedPhaseClock(bool enable);
 
     /**
       This method should be called to update the TIA with a new scanline.

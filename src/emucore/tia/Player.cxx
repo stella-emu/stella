@@ -53,8 +53,8 @@ void Player::reset()
   mySampleCounter = 0;
   myDividerPending = 0;
   myDividerChangeCounter = -1;
-  myStuffedClock = false;
-  myUseStuffedClock = false;
+  myInvertedPhaseClock = false;
+  myUseInvertedPhaseClock = false;
   myPattern = 0;
 
   setDivider(1);
@@ -254,9 +254,9 @@ void Player::applyColorLoss()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::setStuffedClock(bool enable)
+void Player::setInvertedPhaseClock(bool enable)
 {
-  myUseStuffedClock = enable;
+  myUseInvertedPhaseClock = enable;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -273,7 +273,7 @@ bool Player::movementTick(uInt32 clock, bool apply)
   else if(myIsMoving)
   {
     if(apply) tick();
-    else myStuffedClock = true;
+    else myInvertedPhaseClock = true;
   }
 
   return myIsMoving;
@@ -282,9 +282,9 @@ bool Player::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::tick()
 {
-  if(myUseStuffedClock && myStuffedClock)
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
   {
-    myStuffedClock = false;
+    myInvertedPhaseClock = false;
     return;
   }
 
@@ -490,7 +490,7 @@ bool Player::save(Serializer& out) const
 
     out.putBool(myIsReflected);
     out.putBool(myIsDelaying);
-    out.putBool(myStuffedClock);
+    out.putBool(myInvertedPhaseClock);
   }
   catch(...)
   {
@@ -537,7 +537,7 @@ bool Player::load(Serializer& in)
 
     myIsReflected = in.getBool();
     myIsDelaying = in.getBool();
-    myStuffedClock = in.getBool();
+    myInvertedPhaseClock = in.getBool();
 
     applyColors();
   }
