@@ -176,34 +176,33 @@ void TIA::reset()
   {
     bool custom = BSPF::equalsIgnoreCase("custom", mySettings.getString("dev.tia.type"));
 
-    setPlayerInvertedPhaseClock(custom
-                       ? mySettings.getBool("dev.tia.playerinvphase")
-                       : BSPF::equalsIgnoreCase("koolaidman", mySettings.getString("dev.tia.type")));
-    setMissileInvertedPhaseClock(custom
-                                ? mySettings.getBool("dev.tia.missileinvphase")
-                                : BSPF::equalsIgnoreCase("cosmicark", mySettings.getString("dev.tia.type")));
+    setPlInvertedPhaseClock(custom
+                            ? mySettings.getBool("dev.tia.plinvphase")
+                            : BSPF::equalsIgnoreCase("koolaidman", mySettings.getString("dev.tia.type")));
+    setMsInvertedPhaseClock(custom
+                            ? mySettings.getBool("dev.tia.msinvphase")
+                            : BSPF::equalsIgnoreCase("cosmicark", mySettings.getString("dev.tia.type")));
+    setBlInvertedPhaseClock(custom ? mySettings.getBool("dev.tia.blinvphase") : false);
     setPFBitsDelay(custom
                    ? mySettings.getBool("dev.tia.delaypfbits")
                    : BSPF::equalsIgnoreCase("pesco", mySettings.getString("dev.tia.type")));
     setPFColorDelay(custom
                     ? mySettings.getBool("dev.tia.delaypfcolor")
                     : BSPF::equalsIgnoreCase("quickstep", mySettings.getString("dev.tia.type")));
-    setP0SwapDelay(custom
-                   ? mySettings.getBool("dev.tia.delayp0swap")
-                   : BSPF::equalsIgnoreCase("hemanv2", mySettings.getString("dev.tia.type")));
-    setP1SwapDelay(custom
-                   ? mySettings.getBool("dev.tia.delayp1swap")
-                   : BSPF::equalsIgnoreCase("hemanv1", mySettings.getString("dev.tia.type"))
-                   || BSPF::equalsIgnoreCase("hemanv2", mySettings.getString("dev.tia.type")));
+    setPlSwapDelay(custom
+                   ? mySettings.getBool("dev.tia.delayplswap")
+                   : BSPF::equalsIgnoreCase("heman", mySettings.getString("dev.tia.type")));
+    setBlSwapDelay(custom ? mySettings.getBool("dev.tia.delayblswap") : false);
   }
   else
   {
-    setPlayerInvertedPhaseClock(false);
-    setMissileInvertedPhaseClock(false);
+    setPlInvertedPhaseClock(false);
+    setMsInvertedPhaseClock(false);
+    setBlInvertedPhaseClock(false);
     setPFBitsDelay(false);
     setPFColorDelay(false);
-    setP0SwapDelay(false);
-    setP1SwapDelay(false);
+    setPlSwapDelay(false);
+    setBlSwapDelay(false);
   }
   myDelayQueue.reset();
 
@@ -324,8 +323,7 @@ bool TIA::save(Serializer& out) const
 
     out.putByte(myPFBitsDelay);
     out.putByte(myPFColorDelay);
-    out.putByte(myP0SwapDelay);
-    out.putByte(myP1SwapDelay);
+    out.putByte(myPlSwapDelay);
   }
   catch(...)
   {
@@ -398,8 +396,7 @@ bool TIA::load(Serializer& in)
 
     myPFBitsDelay = in.getByte();
     myPFColorDelay = in.getByte();
-    myP0SwapDelay = in.getByte();
-    myP1SwapDelay = in.getByte();
+    myPlSwapDelay = in.getByte();
   }
   catch(...)
   {
@@ -739,7 +736,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case GRP0:
     {
       myDelayQueue.push(GRP0, value, Delay::grp);
-      myDelayQueue.push(DummyRegisters::shuffleP1, 0, myP0SwapDelay);
+      myDelayQueue.push(DummyRegisters::shuffleP1, 0, myPlSwapDelay);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
@@ -751,7 +748,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     case GRP1:
     {
       myDelayQueue.push(GRP1, value, Delay::grp);
-      myDelayQueue.push(DummyRegisters::shuffleP0, 0, myP1SwapDelay);
+      myDelayQueue.push(DummyRegisters::shuffleP0, 0, myPlSwapDelay);
       myDelayQueue.push(DummyRegisters::shuffleBL, 0, Delay::shuffleBall);
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
@@ -1517,29 +1514,35 @@ void TIA::setPFColorDelay(bool delayed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setP0SwapDelay(bool delayed)
+void TIA::setPlSwapDelay(bool delayed)
 {
-  myP0SwapDelay = delayed ? Delay::shufflePlayer + 1 : Delay::shufflePlayer;
+  myPlSwapDelay = delayed ? Delay::shufflePlayer + 1 : Delay::shufflePlayer;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setP1SwapDelay(bool delayed)
+void TIA::setBlSwapDelay(bool delayed)
 {
-  myP1SwapDelay = delayed ? Delay::shufflePlayer + 1 : Delay::shufflePlayer;
+  myBlSwapDelay = delayed ? Delay::shuffleBall + 1 : Delay::shuffleBall;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setPlayerInvertedPhaseClock(bool enable)
+void TIA::setPlInvertedPhaseClock(bool enable)
 {
   myPlayer0.setInvertedPhaseClock(enable);
   myPlayer1.setInvertedPhaseClock(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setMissileInvertedPhaseClock(bool enable)
+void TIA::setMsInvertedPhaseClock(bool enable)
 {
   myMissile0.setInvertedPhaseClock(enable);
   myMissile1.setInvertedPhaseClock(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::setBlInvertedPhaseClock(bool enable)
+{
+  myBall.setInvertedPhaseClock(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

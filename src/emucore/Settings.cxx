@@ -182,12 +182,13 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.tiadriven", "true");
   setInternal("dev.console", "2600"); // 7800
   setInternal("dev.tia.type", "standard");
-  setInternal("dev.tia.playerinvphase", "true");
-  setInternal("dev.tia.missileinvphase", "true");
+  setInternal("dev.tia.plinvphase", "true");
+  setInternal("dev.tia.msinvphase", "true");
+  setInternal("dev.tia.blinvphase", "true");
   setInternal("dev.tia.delaypfbits", "true");
   setInternal("dev.tia.delaypfcolor", "true");
-  setInternal("dev.tia.delayp0swap", "true");
-  setInternal("dev.tia.delayp1swap", "true");
+  setInternal("dev.tia.delayplswap", "true");
+  setInternal("dev.tia.delayblswap", "true");
   setInternal("dev.timemachine", true);
   setInternal("dev.tm.size", 1000);
   setInternal("dev.tm.uncompressed", 600);
@@ -648,15 +649,17 @@ void Settings::usage() const
     << "  -dev.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
     << "                                    messages\n"
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
-    << "                 koolaidman|cosmicark|\n"
-    << "                 pesco|quickstep|\n"
-    << "                 hemanv1|hemanv2>\n"
-    << "  -dev.tia.playerinvphase <1|0>    Enable inverted HMOVE clock phase for players\n"
-    << "  -dev.tia.missileinvphase <1|0>   Enable inverted HMOVE clock phase for missiles\n"
+    << "                 koolaidman|\n"
+    << "                 cosmicark|pesco|\n"
+    << "                 quickstep|heman|>\n"
+    << "  -dev.tia.plinvphase <1|0>        Enable inverted HMOVE clock phase for players\n"
+    << "  -dev.tia.msinvphase <1|0>        Enable inverted HMOVE clock phase for\n"
+    << "                                    missiles\n"
+    << "  -dev.tia.blinvphase <1|0>        Enable inverted HMOVE clock phase for ball\n"
     << "  -dev.tia.delaypfbits <1|0>       Enable extra delay cycle for PF bits access\n"
     << "  -dev.tia.delaypfcolor <1|0>      Enable extra delay cycle for PF color\n"
-    << "  -dev.tia.delayp0swap <1|0>       Enable extra delay cycle for player 0 swap\n"
-    << "  -dev.tia.delayp1swap <1|0>       Enable extra delay cycle for player 1 swap\n"
+    << "  -dev.tia.delayplswap <1|0>       Enable extra delay cycle for VDELP0/1 swap\n"
+    << "  -dev.tia.delayblswap <1|0>       Enable extra delay cycle for VDELBL swap\n"
     << endl << std::flush;
 }
 

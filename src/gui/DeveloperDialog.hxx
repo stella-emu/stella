@@ -110,12 +110,13 @@ class DeveloperDialog : public Dialog
     // TIA widgets
     RadioButtonGroup*   mySettingsGroupTia;
     PopUpWidget*        myTIATypeWidget;
-    CheckboxWidget*     myPlayerInvPhaseWidget;
-    CheckboxWidget*     myMissileInvPhaseWidget;
+    CheckboxWidget*     myPlInvPhaseWidget;
+    CheckboxWidget*     myMsInvPhaseWidget;
+    CheckboxWidget*     myBlInvPhaseWidget;
     CheckboxWidget*     myPFBitsWidget;
     CheckboxWidget*     myPFColorWidget;
-    CheckboxWidget*     myGRP0SwapWidget;
-    CheckboxWidget*     myGRP1SwapWidget;
+    CheckboxWidget*     myPlSwapWidget;
+    CheckboxWidget*     myBlSwapWidget;
 
     // Video widgets
     RadioButtonGroup*   mySettingsGroupVideo;
@@ -163,12 +164,13 @@ class DeveloperDialog : public Dialog
     bool    myEEPROMAccess[2];
     // TIA sets
     string  myTIAType[2];
-    bool    myPlayerInvPhase[2];
-    bool    myMissileInvPhase[2];
+    bool    myPlInvPhase[2];
+    bool    myMsInvPhase[2];
+    bool    myBlInvPhase[2];
     bool    myPFBits[2];
     bool    myPFColor[2];
-    bool    myGRP0Swap[2];
-    bool    myGRP1Swap[2];
+    bool    myPlSwap[2];
+    bool    myBlSwap[2];
     // States sets
     bool    myTimeMachine[2];
     int     myStateSize[2];

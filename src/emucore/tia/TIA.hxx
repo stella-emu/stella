@@ -432,32 +432,39 @@ class TIA : public Device
     void setPFColorDelay(bool delayed);
 
     /**
-      Enables/disables delayed player 0 swapping.
+      Enables/disables delayed player swapping.
 
-      @param delayed   Wether to enable player 0 swapping
+      @param delayed   Wether to enable delayed player swapping
     */
-    void setP0SwapDelay(bool delayed);
+    void setPlSwapDelay(bool delayed);
 
     /**
-      Enables/disables delayed player 1 swapping.
+      Enables/disables delayed ball swapping.
 
-      @param delayed   Wether to enable player 1 swapping
+      @param delayed   Wether to enable delayed ball swapping
     */
-    void setP1SwapDelay(bool delayed);
+    void setBlSwapDelay(bool delayed);
 
     /**
       Enables/disables inverted HMOVE phase clock for players.
 
       @param enable   Wether to enable inverted HMOVE phase clock for players
     */
-    void setPlayerInvertedPhaseClock(bool enable);
+    void setPlInvertedPhaseClock(bool enable);
 
     /**
       Enables/disables inverted HMOVE phase clock for missiles.
 
       @param enable   Wether to enable inverted HMOVE phase clock for missiles
     */
-    void setMissileInvertedPhaseClock(bool enable);
+    void setMsInvertedPhaseClock(bool enable);
+
+    /**
+      Enables/disables inverted HMOVE phase clock for ball.
+
+      @param enable   Wether to enable inverted HMOVE phase clock for ball
+    */
+    void setBlInvertedPhaseClock(bool enable);
 
     /**
       This method should be called to update the TIA with a new scanline.
@@ -708,8 +715,8 @@ class TIA : public Device
     */
     uInt8 myPFBitsDelay;
     uInt8 myPFColorDelay;
-    uInt8 myP0SwapDelay;
-    uInt8 myP1SwapDelay;
+    uInt8 myPlSwapDelay;
+    uInt8 myBlSwapDelay;
 
     /**
      * The frame manager is responsible for detecting frame boundaries and the visible

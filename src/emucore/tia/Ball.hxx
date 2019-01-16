@@ -56,6 +56,8 @@ class Ball : public Serializable
 
     void applyColorLoss();
 
+    void setInvertedPhaseClock(bool enable);
+
     void startMovement();
 
     bool movementTick(uInt32 clock, bool apply);
@@ -117,6 +119,9 @@ class Ball : public Serializable
 
     bool myIsRendering;
     Int8 myRenderCounter;
+
+    bool myInvertedPhaseClock;
+    bool myUseInvertedPhaseClock;
 
     TIA* myTIA;
 

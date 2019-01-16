@@ -52,6 +52,8 @@ void Ball::reset()
   myDebugEnabled = false;
   myRenderCounter = 0;
   myIsEnabled = false;
+  myInvertedPhaseClock = false;
+  myUseInvertedPhaseClock = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -155,6 +157,13 @@ void Ball::applyColorLoss()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::setInvertedPhaseClock(bool enable)
+{
+  myUseInvertedPhaseClock = enable;
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::startMovement()
 {
   myIsMoving = true;
@@ -167,8 +176,11 @@ bool Ball::movementTick(uInt32 clock, bool apply)
 
   if (clock == myHmmClocks)
     myIsMoving = false;
-  else if (myIsMoving && apply)
-    tick(false);
+  else if(myIsMoving)
+  {
+    if(apply) tick(false);
+    else myInvertedPhaseClock = true;
+  }
 
   return myIsMoving;
 }
@@ -176,6 +188,12 @@ bool Ball::movementTick(uInt32 clock, bool apply)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::tick(bool isReceivingMclock)
 {
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+  {
+    myInvertedPhaseClock = false;
+    return;
+  }
+
   myIsVisible = myIsRendering && myRenderCounter >= 0;
   collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
@@ -314,6 +332,7 @@ bool Ball::save(Serializer& out) const
 
     out.putBool(myIsRendering);
     out.putByte(myRenderCounter);
+    out.putBool(myInvertedPhaseClock);
   }
   catch(...)
   {
@@ -354,6 +373,7 @@ bool Ball::load(Serializer& in)
 
     myIsRendering = in.getBool();
     myRenderCounter = in.getByte();
+    myInvertedPhaseClock = in.getBool();
 
     applyColors();
   }

@@ -185,7 +185,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   const int VGAP = 4;
   int ypos = VBORDER;
   int lineHeight = font.getLineHeight();
-  int pwidth = font.getStringWidth("Glitched He-Man title V2");
+  int pwidth = font.getStringWidth("Faulty Cosmic Ark stars");
   WidgetArray wid;
   VariantList items;
   int tabID = myTab->addTab("TIA");
@@ -209,24 +209,27 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   VarList::push_back(items, "Faulty Cosmic Ark stars", "cosmicark");
   VarList::push_back(items, "Glitched Pesco", "pesco");
   VarList::push_back(items, "Glitched Quick Step!", "quickstep");
-  VarList::push_back(items, "Glitched He-Man title V1", "hemanv1");
-  VarList::push_back(items, "Glitched He-Man title V2", "hemanv2");
+  VarList::push_back(items, "Glitched He-Man title", "heman");
   VarList::push_back(items, "Custom", "custom");
   myTIATypeWidget = new PopUpWidget(myTab, font, HBORDER + INDENT, ypos - 1,
                                     pwidth, lineHeight, items, "Chip type ", 0, kTIAType);
   wid.push_back(myTIATypeWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myPlayerInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                           "Inverted HMOVE clock phase for players");
-  wid.push_back(myPlayerInvPhaseWidget);
+  myPlInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                          "Inverted HMOVE clock phase for players");
+  wid.push_back(myPlInvPhaseWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myMissileInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                              "Inverted HMOVE clock phase for missiles");
-  wid.push_back(myMissileInvPhaseWidget);
+  myMsInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                          "Inverted HMOVE clock phase for missiles");
+  wid.push_back(myMsInvPhaseWidget);
   ypos += lineHeight + VGAP * 1;
 
+  myBlInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                          "Inverted HMOVE clock phase for ball");
+  wid.push_back(myBlInvPhaseWidget);
+  ypos += lineHeight + VGAP * 1;
 
   myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
                                       "Delayed playfield bits");
@@ -238,15 +241,14 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(myPFColorWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myGRP0SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                        "Delayed player 0 swap");
-  wid.push_back(myGRP0SwapWidget);
+  myPlSwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                      "Delayed VDELP0/1 players swap");
+  wid.push_back(myPlSwapWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myGRP1SwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                        "Delayed player 1 swap");
-  wid.push_back(myGRP1SwapWidget);
-  ypos += lineHeight + VGAP * 1;
+  myBlSwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                      "Delayed VDELBL ball swap");
+  wid.push_back(myBlSwapWidget);
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -585,12 +587,13 @@ void DeveloperDialog::loadSettings(SettingsSet set)
 
   // TIA tab
   myTIAType[set] = devSettings ? instance().settings().getString("dev.tia.type") : "standard";
-  myPlayerInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.playerinvphase") : false;
-  myMissileInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.missileinvphase") : false;
+  myPlInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.plinvphase") : false;
+  myMsInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.msinvphase") : false;
+  myBlInvPhase[set] = devSettings ? instance().settings().getBool("dev.tia.blinvphase") : false;
   myPFBits[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfbits") : false;
   myPFColor[set] = devSettings ? instance().settings().getBool("dev.tia.delaypfcolor") : false;
-  myGRP0Swap[set] = devSettings ? instance().settings().getBool("dev.tia.delayp0swap") : false;
-  myGRP1Swap[set] = devSettings ? instance().settings().getBool("dev.tia.delayp1swap") : false;
+  myPlSwap[set] = devSettings ? instance().settings().getBool("dev.tia.delayplswap") : false;
+  myBlSwap[set] = devSettings ? instance().settings().getBool("dev.tia.delayblswap") : false;
 
   // Debug colors
   myDebugColors[set] = instance().settings().getBool(prefix + "debugcolors");
@@ -643,12 +646,13 @@ void DeveloperDialog::saveSettings(SettingsSet set)
     instance().settings().setValue("dev.tia.type", myTIAType[set]);
     if (BSPF::equalsIgnoreCase("custom", myTIAType[set]))
     {
-      instance().settings().setValue("dev.tia.playerinvphase", myPlayerInvPhase[set]);
-      instance().settings().setValue("dev.tia.missileinvphase", myMissileInvPhase[set]);
+      instance().settings().setValue("dev.tia.plinvphase", myPlInvPhase[set]);
+      instance().settings().setValue("dev.tia.msinvphase", myMsInvPhase[set]);
+      instance().settings().setValue("dev.tia.blinvphase", myBlInvPhase[set]);
       instance().settings().setValue("dev.tia.delaypfbits", myPFBits[set]);
       instance().settings().setValue("dev.tia.delaypfcolor", myPFColor[set]);
-      instance().settings().setValue("dev.tia.delayp0swap", myGRP0Swap[set]);
-      instance().settings().setValue("dev.tia.delayp1swap", myGRP1Swap[set]);
+      instance().settings().setValue("dev.tia.delayplswap", myPlSwap[set]);
+      instance().settings().setValue("dev.tia.delayblswap", myBlSwap[set]);
     }
   }
 
@@ -695,12 +699,13 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
 
   // TIA tab
   myTIAType[set] = myTIATypeWidget->getSelectedTag().toString();
-  myPlayerInvPhase[set] = myPlayerInvPhaseWidget->getState();
-  myMissileInvPhase[set] = myMissileInvPhaseWidget->getState();
+  myPlInvPhase[set] = myPlInvPhaseWidget->getState();
+  myMsInvPhase[set] = myMsInvPhaseWidget->getState();
+  myBlInvPhase[set] = myBlInvPhaseWidget->getState();
   myPFBits[set] = myPFBitsWidget->getState();
   myPFColor[set] = myPFColorWidget->getState();
-  myGRP0Swap[set] = myGRP0SwapWidget->getState();
-  myGRP1Swap[set] = myGRP1SwapWidget->getState();
+  myPlSwap[set] = myPlSwapWidget->getState();
+  myBlSwap[set] = myBlSwapWidget->getState();
 
   // Debug colors
   myDebugColors[set] = myDebugColorsWidget->getState();
@@ -840,12 +845,13 @@ void DeveloperDialog::saveConfig()
   // TIA tab
   if(instance().hasConsole())
   {
-    instance().console().tia().setPlayerInvertedPhaseClock(myPlayerInvPhaseWidget->getState());
-    instance().console().tia().setMissileInvertedPhaseClock(myMissileInvPhaseWidget->getState());
+    instance().console().tia().setPlInvertedPhaseClock(myPlInvPhaseWidget->getState());
+    instance().console().tia().setMsInvertedPhaseClock(myMsInvPhaseWidget->getState());
+    instance().console().tia().setBlInvertedPhaseClock(myBlInvPhaseWidget->getState());
     instance().console().tia().setPFBitsDelay(myPFBitsWidget->getState());
     instance().console().tia().setPFColorDelay(myPFColorWidget->getState());
-    instance().console().tia().setP0SwapDelay(myGRP0SwapWidget->getState());
-    instance().console().tia().setP1SwapDelay(myGRP1SwapWidget->getState());
+    instance().console().tia().setPlSwapDelay(myPlSwapWidget->getState());
+    instance().console().tia().setBlSwapDelay(myBlSwapWidget->getState());
   }
 
   handleEnableDebugColors();
@@ -920,12 +926,13 @@ void DeveloperDialog::setDefaults()
     case 1: // TIA
       myTIAType[set] = "standard";
       // reset "custom" mode
-      myPlayerInvPhase[set] = devSettings ? true : false;
-      myMissileInvPhase[set] = devSettings ? true : false;
+      myPlInvPhase[set] = devSettings ? true : false;
+      myMsInvPhase[set] = devSettings ? true : false;
+      myBlInvPhase[set] = devSettings ? true : false;
       myPFBits[set] = devSettings ? true : false;
       myPFColor[set] = devSettings ? true : false;
-      myGRP0Swap[set] = devSettings ? true : false;
-      myGRP1Swap[set] = devSettings ? true : false;
+      myPlSwap[set] = devSettings ? true : false;
+      myBlSwap[set] = devSettings ? true : false;
 
       setWidgetStates(set);
       break;
@@ -1131,84 +1138,33 @@ void DeveloperDialog::handleTia()
   bool enable = BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString());
 
   myTIATypeWidget->setEnabled(mySettings);
-  myPlayerInvPhaseWidget->setEnabled(enable);
-  myMissileInvPhaseWidget->setEnabled(enable);
+  myPlInvPhaseWidget->setEnabled(enable);
+  myMsInvPhaseWidget->setEnabled(enable);
+  myBlInvPhaseWidget->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
   myPFColorWidget->setEnabled(enable);
-  myGRP0SwapWidget->setEnabled(enable);
-  myGRP1SwapWidget->setEnabled(enable);
+  myPlSwapWidget->setEnabled(enable);
+  myBlSwapWidget->setEnabled(enable);
 
-  if(BSPF::equalsIgnoreCase("standard", myTIATypeWidget->getSelectedTag().toString()))
-  {
-    myPlayerInvPhaseWidget->setState(false);
-    myMissileInvPhaseWidget->setState(false);
-    myPFBitsWidget->setState(false);
-    myPFColorWidget->setState(false);
-    myGRP0SwapWidget->setState(false);
-    myGRP1SwapWidget->setState(false);
-  }
-  if(BSPF::equalsIgnoreCase("koolaidman", myTIATypeWidget->getSelectedTag().toString()))
-  {
-    myPlayerInvPhaseWidget->setState(true);
-    myMissileInvPhaseWidget->setState(false);
-    myPFBitsWidget->setState(false);
-    myPFColorWidget->setState(false);
-    myGRP0SwapWidget->setState(false);
-    myGRP1SwapWidget->setState(false);
-  }
-  if(BSPF::equalsIgnoreCase("cosmicark", myTIATypeWidget->getSelectedTag().toString()))
-  {
-    myPlayerInvPhaseWidget->setState(false);
-    myMissileInvPhaseWidget->setState(true);
-    myPFBitsWidget->setState(false);
-    myPFColorWidget->setState(false);
-    myGRP0SwapWidget->setState(false);
-    myGRP1SwapWidget->setState(false);
-  }
-  if(BSPF::equalsIgnoreCase("pesco", myTIATypeWidget->getSelectedTag().toString()))
-  {
-    myPlayerInvPhaseWidget->setState(false);
-    myMissileInvPhaseWidget->setState(false);
-    myPFBitsWidget->setState(true);
-    myPFColorWidget->setState(false);
-    myGRP0SwapWidget->setState(false);
-    myGRP1SwapWidget->setState(false);
-  }
-  if(BSPF::equalsIgnoreCase("quickstep", myTIATypeWidget->getSelectedTag().toString()))
-  {
-    myPlayerInvPhaseWidget->setState(false);
-    myMissileInvPhaseWidget->setState(false);
-    myPFBitsWidget->setState(false);
-    myPFColorWidget->setState(true);
-    myGRP0SwapWidget->setState(false);
-    myGRP1SwapWidget->setState(false);
-  }
-  if(BSPF::equalsIgnoreCase("hemanv1", myTIATypeWidget->getSelectedTag().toString()))
-  {
-    myPlayerInvPhaseWidget->setState(false);
-    myMissileInvPhaseWidget->setState(false);
-    myPFBitsWidget->setState(false);
-    myPFColorWidget->setState(false);
-    myGRP0SwapWidget->setState(false);
-    myGRP1SwapWidget->setState(true);
-  }
-  if(BSPF::equalsIgnoreCase("hemanv2", myTIATypeWidget->getSelectedTag().toString()))
-  {
-    myPlayerInvPhaseWidget->setState(false);
-    myMissileInvPhaseWidget->setState(false);
-    myPFBitsWidget->setState(false);
-    myPFColorWidget->setState(false);
-    myGRP0SwapWidget->setState(true);
-    myGRP1SwapWidget->setState(true);
-  }
   if(BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString()))
   {
-    myPlayerInvPhaseWidget->setState(myPlayerInvPhase[SettingsSet::developer]);
-    myMissileInvPhaseWidget->setState(myMissileInvPhase[SettingsSet::developer]);
+    myPlInvPhaseWidget->setState(myPlInvPhase[SettingsSet::developer]);
+    myMsInvPhaseWidget->setState(myMsInvPhase[SettingsSet::developer]);
+    myBlInvPhaseWidget->setState(myBlInvPhase[SettingsSet::developer]);
     myPFBitsWidget->setState(myPFBits[SettingsSet::developer]);
     myPFColorWidget->setState(myPFColor[SettingsSet::developer]);
-    myGRP0SwapWidget->setState(myGRP0Swap[SettingsSet::developer]);
-    myGRP1SwapWidget->setState(myGRP1Swap[SettingsSet::developer]);
+    myPlSwapWidget->setState(myPlSwap[SettingsSet::developer]);
+    myBlSwapWidget->setState(myBlSwap[SettingsSet::developer]);
+  }
+  else
+  {
+    myPlInvPhaseWidget->setState(BSPF::equalsIgnoreCase("koolaidman", myTIATypeWidget->getSelectedTag().toString()));
+    myMsInvPhaseWidget->setState(BSPF::equalsIgnoreCase("cosmicark", myTIATypeWidget->getSelectedTag().toString()));
+    myBlInvPhaseWidget->setState(false);
+    myPFBitsWidget->setState(BSPF::equalsIgnoreCase("pesco", myTIATypeWidget->getSelectedTag().toString()));
+    myPFColorWidget->setState(BSPF::equalsIgnoreCase("quickstep", myTIATypeWidget->getSelectedTag().toString()));
+    myPlSwapWidget->setState(BSPF::equalsIgnoreCase("heman", myTIATypeWidget->getSelectedTag().toString()));
+    myBlSwapWidget->setState(false);
   }
 }
 
