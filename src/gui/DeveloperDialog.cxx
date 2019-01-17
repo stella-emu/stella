@@ -216,38 +216,46 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(myTIATypeWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myPlInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                          "Inverted HMOVE clock phase for players");
+  myInvPhaseLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                         "Inverted HMOVE clock phase for");
+  wid.push_back(myInvPhaseLabel);
+  ypos += lineHeight + VGAP * 1;
+
+  myPlInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1,
+                                          "players");
   wid.push_back(myPlInvPhaseWidget);
-  ypos += lineHeight + VGAP * 1;
 
-  myMsInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                          "Inverted HMOVE clock phase for missiles");
+  myMsInvPhaseWidget = new CheckboxWidget(myTab, font, myPlInvPhaseWidget->getRight() + 20, ypos + 1,
+                                          "missiles");
   wid.push_back(myMsInvPhaseWidget);
-  ypos += lineHeight + VGAP * 1;
 
-  myBlInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                          "Inverted HMOVE clock phase for ball");
+  myBlInvPhaseWidget = new CheckboxWidget(myTab, font, myMsInvPhaseWidget->getRight() + 20, ypos + 1,
+                                          "ball");
   wid.push_back(myBlInvPhaseWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                      "Delayed playfield bits");
-  wid.push_back(myPFBitsWidget);
+  myPlayfieldLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                         "Delayed playfield");
+  wid.push_back(myPlayfieldLabel);
   ypos += lineHeight + VGAP * 1;
 
-  myPFColorWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                       "Delayed playfield color");
+  myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "bits");
+  wid.push_back(myPFBitsWidget);
+  //ypos += lineHeight + VGAP * 1;
+
+  myPFColorWidget = new CheckboxWidget(myTab, font, myPFBitsWidget->getRight() + 20, ypos + 1, "color");
   wid.push_back(myPFColorWidget);
   ypos += lineHeight + VGAP * 1;
 
-  myPlSwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                      "Delayed VDELP0/1 players swap");
-  wid.push_back(myPlSwapWidget);
+  mySwapLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
+                                     "Delayed VDEL" + ELLIPSIS + " swap for");
+  wid.push_back(mySwapLabel);
   ypos += lineHeight + VGAP * 1;
 
-  myBlSwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                      "Delayed VDELBL ball swap");
+  myPlSwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "players");
+  wid.push_back(myPlSwapWidget);
+
+  myBlSwapWidget = new CheckboxWidget(myTab, font, myPlSwapWidget->getRight() + 20, ypos + 1, "ball");
   wid.push_back(myBlSwapWidget);
 
   // Add items for tab 2
@@ -1138,11 +1146,14 @@ void DeveloperDialog::handleTia()
   bool enable = BSPF::equalsIgnoreCase("custom", myTIATypeWidget->getSelectedTag().toString());
 
   myTIATypeWidget->setEnabled(mySettings);
+  myInvPhaseLabel->setEnabled(enable);
   myPlInvPhaseWidget->setEnabled(enable);
   myMsInvPhaseWidget->setEnabled(enable);
   myBlInvPhaseWidget->setEnabled(enable);
+  myPlayfieldLabel->setEnabled(enable);
   myPFBitsWidget->setEnabled(enable);
   myPFColorWidget->setEnabled(enable);
+  mySwapLabel->setEnabled(enable);
   myPlSwapWidget->setEnabled(enable);
   myBlSwapWidget->setEnabled(enable);
 

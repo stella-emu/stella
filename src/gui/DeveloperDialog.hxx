@@ -110,11 +110,14 @@ class DeveloperDialog : public Dialog
     // TIA widgets
     RadioButtonGroup*   mySettingsGroupTia;
     PopUpWidget*        myTIATypeWidget;
+    StaticTextWidget*   myInvPhaseLabel;
     CheckboxWidget*     myPlInvPhaseWidget;
     CheckboxWidget*     myMsInvPhaseWidget;
     CheckboxWidget*     myBlInvPhaseWidget;
+    StaticTextWidget*   myPlayfieldLabel;
     CheckboxWidget*     myPFBitsWidget;
     CheckboxWidget*     myPFColorWidget;
+    StaticTextWidget*   mySwapLabel;
     CheckboxWidget*     myPlSwapWidget;
     CheckboxWidget*     myBlSwapWidget;
 
