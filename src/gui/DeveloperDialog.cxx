@@ -88,7 +88,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   int lineHeight = font.getLineHeight();
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab("Emulation");
+  int tabID = myTab->addTab(" Emulation ", TabWidget::AUTO_WIDTH);
 
   // settings set
   mySettingsGroupEmulation = new RadioButtonGroup();
@@ -188,7 +188,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   int pwidth = font.getStringWidth("Faulty Cosmic Ark stars");
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab("TIA");
+  int tabID = myTab->addTab("  TIA  ", TabWidget::AUTO_WIDTH);
 
   wid.clear();
 
@@ -222,15 +222,15 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   ypos += lineHeight + VGAP * 1;
 
   myPlInvPhaseWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1,
-                                          "players");
+                                          "Players");
   wid.push_back(myPlInvPhaseWidget);
 
   myMsInvPhaseWidget = new CheckboxWidget(myTab, font, myPlInvPhaseWidget->getRight() + 20, ypos + 1,
-                                          "missiles");
+                                          "Missiles");
   wid.push_back(myMsInvPhaseWidget);
 
   myBlInvPhaseWidget = new CheckboxWidget(myTab, font, myMsInvPhaseWidget->getRight() + 20, ypos + 1,
-                                          "ball");
+                                          "Ball");
   wid.push_back(myBlInvPhaseWidget);
   ypos += lineHeight + VGAP * 1;
 
@@ -239,11 +239,11 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(myPlayfieldLabel);
   ypos += lineHeight + VGAP * 1;
 
-  myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "bits");
+  myPFBitsWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "Bits");
   wid.push_back(myPFBitsWidget);
   //ypos += lineHeight + VGAP * 1;
 
-  myPFColorWidget = new CheckboxWidget(myTab, font, myPFBitsWidget->getRight() + 20, ypos + 1, "color");
+  myPFColorWidget = new CheckboxWidget(myTab, font, myPFBitsWidget->getRight() + 20, ypos + 1, "Color");
   wid.push_back(myPFColorWidget);
   ypos += lineHeight + VGAP * 1;
 
@@ -252,10 +252,10 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(mySwapLabel);
   ypos += lineHeight + VGAP * 1;
 
-  myPlSwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "players");
+  myPlSwapWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 3, ypos + 1, "Players");
   wid.push_back(myPlSwapWidget);
 
-  myBlSwapWidget = new CheckboxWidget(myTab, font, myPlSwapWidget->getRight() + 20, ypos + 1, "ball");
+  myBlSwapWidget = new CheckboxWidget(myTab, font, myPlSwapWidget->getRight() + 20, ypos + 1, "Ball");
   wid.push_back(myBlSwapWidget);
 
   // Add items for tab 2
@@ -276,7 +276,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   int pwidth = font.getMaxCharWidth() * 6;
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab("Video");
+  int tabID = myTab->addTab(" Video ", TabWidget::AUTO_WIDTH);
 
   wid.clear();
 
@@ -411,7 +411,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     lwidth = fontWidth * 11;
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab("Time Mach.");
+  int tabID = myTab->addTab(" Time Machine ", TabWidget::AUTO_WIDTH);
 
   // settings set
   mySettingsGroupTM = new RadioButtonGroup();
@@ -475,7 +475,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 {
-  int tabID = myTab->addTab("Debugger");
+  int tabID = myTab->addTab(" Debugger ", TabWidget::AUTO_WIDTH);
   WidgetArray wid;
 
 #ifdef DEBUGGER_SUPPORT
