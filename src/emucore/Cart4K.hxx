@@ -115,6 +115,13 @@ class Cartridge4K : public Cartridge
     }
   #endif
 
+    /**
+      Get the byte at the specified address.
+
+      @return The byte at the specified address
+    */
+    uInt8 peek(uInt16 address) override { return myImage[address & 0x0FFF]; }
+
   private:
     // The 4K ROM image for the cartridge
     uInt8 myImage[4096];

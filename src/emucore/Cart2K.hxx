@@ -118,6 +118,13 @@ class Cartridge2K : public Cartridge
     }
   #endif
 
+    /**
+      Get the byte at the specified address.
+
+      @return The byte at the specified address
+    */
+    uInt8 peek(uInt16 address) override { return myImage[address & myMask]; }
+
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
     BytePtr myImage;

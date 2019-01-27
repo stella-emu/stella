@@ -85,7 +85,7 @@ class Device : public Serializable
 
       @return The byte at the specified address
     */
-    virtual uInt8 peek(uInt16 address) { return 0; }
+    virtual uInt8 peek(uInt16 address) = 0;
 
     /**
       Change the byte at the specified address to the given value
