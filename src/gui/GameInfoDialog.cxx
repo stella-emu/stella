@@ -155,22 +155,22 @@ GameInfoDialog::GameInfoDialog(
   s = new StaticTextWidget(myTab, font, xpos, ypos+1, "Left difficulty  ");
   myLeftDiffGroup = new RadioButtonGroup();
   r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
-                                               "A", myLeftDiffGroup);
+                                               "A (Expert)", myLeftDiffGroup);
   wid.push_back(r);
   ypos += lineHeight;
   r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
-                            "B", myLeftDiffGroup);
+                            "B (Novice)", myLeftDiffGroup);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 2;
 
   s = new StaticTextWidget(myTab, font, xpos, ypos+1, "Right difficulty ");
   myRightDiffGroup = new RadioButtonGroup();
   r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
-                            "A", myRightDiffGroup);
+                            "A (Expert)", myRightDiffGroup);
   wid.push_back(r);
   ypos += lineHeight;
   r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
-                            "B", myRightDiffGroup);
+                            "B (Novice)", myRightDiffGroup);
   wid.push_back(r);
 
   // Add items for tab 1

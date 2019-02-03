@@ -60,7 +60,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   wid.push_back(myBSType);
   ypos += lineHeight + VGAP * 3;
 
-  pwidth = font.getStringWidth("Debugger");
+  pwidth = font.getStringWidth("A (Expert)");
 
   // TV type
   new StaticTextWidget(this, font, xpos, ypos + 1, "TV type");
@@ -77,8 +77,8 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, "Left difficulty");
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
-  VarList::push_back(items, "B", "B");
-  VarList::push_back(items, "A", "A");
+  VarList::push_back(items, "A (Expert)", "A");
+  VarList::push_back(items, "B (Novice)", "B");
   myLeftDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
                                pwidth, lineHeight, items, "");
   wid.push_back(myLeftDiff);
