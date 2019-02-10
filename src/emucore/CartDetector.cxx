@@ -369,8 +369,12 @@ Bankswitch::Type CartDetector::autodetectType(const BytePtr& image, uInt32 size)
   else if(size == 8*1024)  // 8K
   {
     // First check for *potential* F8
-    uInt8 signature[] = { 0x8D, 0xF9, 0x1F };  // STA $1FF9
-    bool f8 = searchForBytes(image.get(), size, signature, 3, 2);
+    uInt8 signature[2][3] = {
+      { 0x8D, 0xF9, 0x1F },  // STA $1FF9
+      { 0x8D, 0xF9, 0xFF }   // STA $FFF9
+    };
+    bool f8 = searchForBytes(image.get(), size, signature[0], 3, 2) ||
+              searchForBytes(image.get(), size, signature[1], 3, 2);
 
     if(isProbablySC(image, size))
       type = Bankswitch::Type::_F8SC;
