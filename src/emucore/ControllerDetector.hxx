@@ -41,7 +41,7 @@ class ControllerDetector
       @param size       The size of the ROM image
       @param controller The provided left controller type of the ROM image
       @param port       The port to be checked
-      @param system     The osystem associated with the system
+      @param osystem    The osystem associated with the system
       @return   The detected controller name
     */
     static string detect(const BytePtr& image, uInt32 size,

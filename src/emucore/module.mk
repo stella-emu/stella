@@ -52,6 +52,7 @@ MODULE_OBJS := \
 	src/emucore/CompuMate.o \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
+	src/emucore/ControllerDetector.o \
 	src/emucore/DispatchResult.o \
 	src/emucore/Driving.o \
 	src/emucore/EventHandler.o \
