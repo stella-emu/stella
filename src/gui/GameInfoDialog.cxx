@@ -51,7 +51,8 @@ GameInfoDialog::GameInfoDialog(
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() + 4;
+            buttonHeight = font.getLineHeight() + 4,
+            infoLineHeight = ifont.getLineHeight();
   const int VBORDER = 8;
   const int HBORDER = 10;
   const int VGAP = 4;
@@ -63,7 +64,8 @@ GameInfoDialog::GameInfoDialog(
 
   // Set real dimensions
   setSize(53 * fontWidth + 8,
-          8 * (lineHeight + VGAP) + VBORDER * 2 + _th + buttonHeight + fontHeight + ifont.getLineHeight() + 20,
+          8 * (lineHeight + VGAP) + 2 * (infoLineHeight + VGAP) + VBORDER * 2 + _th +
+          buttonHeight + fontHeight + ifont.getLineHeight() + 20,
           max_w, max_h);
 
   // The tab widget
@@ -182,6 +184,7 @@ GameInfoDialog::GameInfoDialog(
   tabID = myTab->addTab("Controller");
 
   ctrls.clear();
+  VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
   VarList::push_back(ctrls, "Paddles", "PADDLES");
   VarList::push_back(ctrls, "Paddles_IAxis", "PADDLES_IAXIS");
@@ -204,24 +207,32 @@ GameInfoDialog::GameInfoDialog(
   myP0Controller = new PopUpWidget(myTab, font, myP0Label->getRight(), myP0Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myP0Controller);
-
   ypos += lineHeight + VGAP;
+
+  myP0ControllerDetected = new StaticTextWidget(myTab, ifont, myP0Controller->getLeft(), ypos,
+                                                "BoosterGrip detected");
+  wid.push_back(myP0ControllerDetected);
+  ypos += ifont.getLineHeight() + VGAP;
+
   myP1Label = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "P1 controller    ");
   myP1Controller = new PopUpWidget(myTab, font, myP1Label->getRight(), myP1Label->getTop()-1,
                                    pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myP1Controller);
+  ypos += lineHeight + VGAP;
+  myP1ControllerDetected = new StaticTextWidget(myTab, ifont, myP1Controller->getLeft(), ypos,
+                                                "BoosterGrip detected");
+  wid.push_back(myP0ControllerDetected);
+  ypos += ifont.getLineHeight() + VGAP + 4;
 
-  //ypos += lineHeight + VGAP;
   mySwapPorts = new CheckboxWidget(myTab, font, myP0Controller->getRight() + fontWidth*4, myP0Controller->getTop()+1,
                                    "Swap ports");
   wid.push_back(mySwapPorts);
-  //ypos += lineHeight + VGAP;
   mySwapPaddles = new CheckboxWidget(myTab, font, myP1Controller->getRight() + fontWidth*4, myP1Controller->getTop()+1,
                                      "Swap paddles");
   wid.push_back(mySwapPaddles);
 
   // EEPROM erase button for P0/P1
-  ypos += lineHeight + VGAP + 4;
+  //ypos += lineHeight + VGAP + 4;
   pwidth = myP1Controller->getWidth();   //font.getStringWidth("Erase EEPROM ") + 23;
   myEraseEEPROMLabel = new StaticTextWidget(myTab, font, HBORDER, ypos, "AtariVox/SaveKey ");
   myEraseEEPROMButton = new ButtonWidget(myTab, font, myEraseEEPROMLabel->getRight(), ypos - 4,
@@ -405,8 +416,22 @@ void GameInfoDialog::loadConsoleProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadControllerProperties(const Properties& props)
 {
-  myP0Controller->setSelected(props.get(Controller_Left), "JOYSTICK");
-  myP1Controller->setSelected(props.get(Controller_Right), "JOYSTICK");
+  myP0Controller->setSelected(props.get(Controller_Left), "AUTO");
+  if(instance().hasConsole() && myP0Controller->getSelectedTag().toString() == "AUTO")
+  {
+    myP0ControllerDetected->setLabel(instance().console().leftController().name() + " detected");
+  }
+  else
+    myP0ControllerDetected->setLabel("");
+
+  myP1Controller->setSelected(props.get(Controller_Right), "AUTO");
+  if(instance().hasConsole() && myP1Controller->getSelectedTag().toString() == "AUTO")
+  {
+    myP1ControllerDetected->setLabel(instance().console().rightController().name() + " detected");
+  }
+  else
+    myP1ControllerDetected->setLabel("");
+
   mySwapPorts->setState(props.get(Console_SwapPorts) == "YES");
   mySwapPaddles->setState(props.get(Controller_SwapPaddles) == "YES");
 

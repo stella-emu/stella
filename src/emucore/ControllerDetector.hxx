@@ -44,12 +44,13 @@ class ControllerDetector
       @param osystem    The osystem associated with the system
       @return   The detected controller name
     */
-    static string detect(const BytePtr& image, uInt32 size,
+    static string detect(const uInt8* image, uInt32 size,
                          const string& controller, const Controller::Jack port,
-                         const OSystem& osystem);
+                         const Settings& settings);
 
   private:
-    static string autodetectPort(const BytePtr& image, uInt32 size, Controller::Jack port, const OSystem& osystem);
+    static string autodetectPort(const uInt8* image, uInt32 size, Controller::Jack port,
+                                 const Settings& settings);
 
     /**
       Search the image for the specified byte signature
@@ -63,29 +64,28 @@ class ControllerDetector
       @return  True if the signature was found at least 'minhits' time, else false
     */
     static bool searchForBytes(const uInt8* image, uInt32 imagesize,
-                               const uInt8* signature, uInt32 sigsize,
-                               uInt32 minhits = 1);
+                               const uInt8* signature, uInt32 sigsize);
 
     // Returns true if the port's joystick button access code is found
-    static bool usesJoystickButtons(const BytePtr& image, uInt32 size, Controller::Jack port);
+    static bool usesJoystickButton(const uInt8* image, uInt32 size, Controller::Jack port);
+
+    static bool usesGenesisButton(const uInt8* image, uInt32 size, Controller::Jack port);
 
     // Returns true if the port's paddle button access code is found
-    static bool usesPaddleButtons(const BytePtr& image, uInt32 size, Controller::Jack port, const OSystem& osystem);
+    static bool usesPaddle(const uInt8* image, uInt32 size, Controller::Jack port,
+                           const Settings& settings);
 
     // Returns true if Trak-Ball table is found
-    static bool isProbablyTrakBall(const BytePtr& image, uInt32 size);
+    static bool isProbablyTrakBall(const uInt8* image, uInt32 size);
 
     // Returns true if Atari Mouse table is found
-    static bool isProbablyAtariMouse(const BytePtr& image, uInt32 size);
+    static bool isProbablyAtariMouse(const uInt8* image, uInt32 size);
 
     // Returns true if Amiga Mouse table is found
-    static bool isProbablyAmigaMouse(const BytePtr& image, uInt32 size);
-
-    // Returns true if the AtariVox code pattern is found (TODO)
-    static bool isProbablyAtariVox(const BytePtr& image, uInt32 size, Controller::Jack port);
+    static bool isProbablyAmigaMouse(const uInt8* image, uInt32 size);
 
     // Returns true if the SaveKey code pattern is found
-    static bool isProbablySaveKey(const BytePtr& image, uInt32 size, Controller::Jack port);
+    static bool isProbablySaveKey(const uInt8* image, uInt32 size, Controller::Jack port);
 
   private:
     // Following constructors and assignment operators not supported

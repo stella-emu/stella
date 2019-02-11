@@ -34,7 +34,6 @@
 #include "MD5.hxx"
 #include "Cart.hxx"
 #include "CartDetector.hxx"
-#include "ControllerDetector.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "TIAConstants.hxx"
@@ -485,7 +484,6 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
       }
     }
 
-    // read controller properties...
     CMDLINE_PROPS_UPDATE("sp", Console_SwapPorts);
     CMDLINE_PROPS_UPDATE("lc", Controller_Left);
     CMDLINE_PROPS_UPDATE("rc", Controller_Right);
@@ -493,14 +491,6 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     if(s != "") { props.set(Controller_Left, s); props.set(Controller_Right, s); }
     CMDLINE_PROPS_UPDATE("cp", Controller_SwapPaddles);
     CMDLINE_PROPS_UPDATE("ma", Controller_MouseAxis);
-    // ...and try to detect controllers
-    const string& left = props.get(Controller_Left);
-    const string& detectedLeft = ControllerDetector::detect(image, size, left, Controller::Left, *this);
-    props.set(Controller_Left, detectedLeft);
-    const string& right = props.get(Controller_Right);
-    const string& detectedRight = ControllerDetector::detect(image, size, right, Controller::Right, *this);
-    props.set(Controller_Right, detectedRight);
-
     CMDLINE_PROPS_UPDATE("channels", Cartridge_Sound);
     CMDLINE_PROPS_UPDATE("ld", Console_LeftDifficulty);
     CMDLINE_PROPS_UPDATE("rd", Console_RightDifficulty);

@@ -51,7 +51,7 @@ class ControllerWidget : public Widget, public CommandSender
     bool isLeftPort()
     {
       bool swappedPorts = instance().console().properties().get(Console_SwapPorts) == "YES";
-      
+
       return (myController.jack() == Controller::Left) ^ swappedPorts;
     }
 

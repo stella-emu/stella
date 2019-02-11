@@ -78,7 +78,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myP0Label;
     StaticTextWidget* myP1Label;
     PopUpWidget*      myP0Controller;
+    StaticTextWidget* myP0ControllerDetected;
     PopUpWidget*      myP1Controller;
+    StaticTextWidget* myP1ControllerDetected;
     CheckboxWidget*   mySwapPorts;
     CheckboxWidget*   mySwapPaddles;
     StaticTextWidget* myEraseEEPROMLabel;

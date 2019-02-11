@@ -26,6 +26,7 @@
 #include "Driving.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
+#include "ControllerDetector.hxx"
 #include "Joystick.hxx"
 #include "Keyboard.hxx"
 #include "KidVid.hxx"
@@ -845,8 +846,17 @@ void Console::setControllers(const string& rommd5)
   else
   {
     // Setup the controllers based on properties
-    const string& left  = myProperties.get(Controller_Left);
-    const string& right = myProperties.get(Controller_Right);
+    string left = myProperties.get(Controller_Left);
+    string right = myProperties.get(Controller_Right);
+    uInt32 size = 0;
+    const uInt8* image = myCart->getImage(size);
+
+    // try to detect controllers
+    if(image != nullptr || size != 0)
+    {
+      left = ControllerDetector::detect(image, size, left, Controller::Left, myOSystem.settings());
+      right = ControllerDetector::detect(image, size, right, Controller::Right, myOSystem.settings());
+    }
 
     unique_ptr<Controller> leftC = getControllerPort(rommd5, left, Controller::Left),
       rightC = getControllerPort(rommd5, right, Controller::Right);
