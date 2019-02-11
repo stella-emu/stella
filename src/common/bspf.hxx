@@ -34,8 +34,13 @@ using Int16  = int16_t;
 using uInt16 = uint16_t;
 using Int32  = int32_t;
 using uInt32 = uint32_t;
+#ifdef RETRON77
+using Int64  = int32_t;
+using uInt64 = uint32_t;
+#else
 using Int64  = int64_t;
 using uInt64 = uint64_t;
+#endif
 
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.

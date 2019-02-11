@@ -1096,7 +1096,9 @@ void DeveloperDialog::handleCommand(CommandSender* sender, int cmd, int data, in
 void DeveloperDialog::handleSettings(bool devSettings)
 {
   myUndrivenPinsWidget->setEnabled(devSettings);
+#ifdef DEBUGGER_SUPPORT
   myRWPortBreakWidget->setEnabled(devSettings);
+#endif
   myThumbExceptionWidget->setEnabled(devSettings);
 
   if (mySettings != devSettings)
