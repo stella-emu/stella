@@ -91,7 +91,6 @@ GameInfoDialog::GameInfoDialog(
 
   myTypeDetected = new StaticTextWidget(myTab, ifont, t->getRight() + 8, ypos,
                                         "(CM (SpectraVideo CompuMate) detected)");
-  wid.push_back(myTypeDetected);
   ypos += ifont.getLineHeight() + VGAP * 4;
 
   pwidth = font.getStringWidth("Auto-detect");
@@ -109,7 +108,6 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myFormat);
 
   myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 8, ypos + 4, "SECAM60 detected");
-  wid.push_back(myFormatDetected);
 
   // Phosphor
   ypos += lineHeight + VGAP;
@@ -211,7 +209,6 @@ GameInfoDialog::GameInfoDialog(
 
   myP0ControllerDetected = new StaticTextWidget(myTab, ifont, myP0Controller->getLeft(), ypos,
                                                 "BoosterGrip detected");
-  wid.push_back(myP0ControllerDetected);
   ypos += ifont.getLineHeight() + VGAP;
 
   myP1Label = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "P1 controller    ");
@@ -221,7 +218,6 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + VGAP;
   myP1ControllerDetected = new StaticTextWidget(myTab, ifont, myP1Controller->getLeft(), ypos,
                                                 "BoosterGrip detected");
-  wid.push_back(myP0ControllerDetected);
   ypos += ifont.getLineHeight() + VGAP + 4;
 
   mySwapPorts = new CheckboxWidget(myTab, font, myP0Controller->getRight() + fontWidth*4, myP0Controller->getTop()+1,

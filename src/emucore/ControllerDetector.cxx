@@ -206,7 +206,7 @@ bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Cont
 {
   if(port == Controller::Left)
   {
-    const int NUM_SIGS_0 = 10;
+    const int NUM_SIGS_0 = 12;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x09, 0x10 }, // bit INPT1; bpl
@@ -219,6 +219,8 @@ bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Cont
       { 0xa5, 0x39, 0x30 }, // lda INPT1|$30; bmi
       { 0xa5, 0x39, 0x6a }, // lda INPT1|$30; ror
       { 0xa6, 0x39, 0x8e }, // ldx INPT1|$30; stx
+      { 0xa5, 0x09, 0x29 }, // lda INPT1; and
+      { 0xa4, 0x09, 0x30 }, // ldy INPT1; bmi
     };
     for(uInt32 i = 0; i < NUM_SIGS_0; ++i)
       if(searchForBytes(image, size, signature_0[i], SIG_SIZE_0))
