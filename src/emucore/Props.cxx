@@ -320,8 +320,8 @@ string Properties::ourDefaultProperties[LastPropType] = {
   "B",         // Console.RightDifficulty
   "COLOR",     // Console.TelevisionType
   "NO",        // Console.SwapPorts
-  "JOYSTICK",  // Controller.Left
-  "JOYSTICK",  // Controller.Right
+  "AUTO",      // Controller.Left
+  "AUTO",      // Controller.Right
   "NO",        // Controller.SwapPaddles
   "AUTO",      // Controller.MouseAxis
   "AUTO",      // Display.Format
