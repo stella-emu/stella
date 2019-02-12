@@ -90,7 +90,7 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + VGAP;
 
   myTypeDetected = new StaticTextWidget(myTab, ifont, t->getRight() + 8, ypos,
-                                        "(CM (SpectraVideo CompuMate) detected)");
+                                        "CM (SpectraVideo CompuMate) detected");
   ypos += ifont.getLineHeight() + VGAP * 4;
 
   pwidth = font.getStringWidth("Auto-detect");

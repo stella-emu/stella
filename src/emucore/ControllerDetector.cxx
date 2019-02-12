@@ -24,8 +24,8 @@ string ControllerDetector::detect(const uInt8* image, uInt32 size,
                                   const string& controller, const Controller::Jack port,
                                   const Settings& settings)
 {
-  //string type(controller);
-  string type("AUTO"); // dirty hack for testing!!!
+  string type(controller);
+  //string type("AUTO"); // dirty hack for testing!!!
 
   if(type == "AUTO" || settings.getBool("rominfo"))
   {
@@ -102,6 +102,7 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
 {
   if(port == Controller::Left)
   {
+    // check for INPT4 access
     const int NUM_SIGS_0 = 17;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
@@ -155,6 +156,7 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
   }
   else if(port == Controller::Right)
   {
+    // check for INPT5 and indexed INPT4 access
     const int NUM_SIGS_0 = 13;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
@@ -206,21 +208,23 @@ bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Cont
 {
   if(port == Controller::Left)
   {
-    const int NUM_SIGS_0 = 12;
+    // check for INPT1 access
+    const int NUM_SIGS_0 = 13;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
-      { 0x24, 0x09, 0x10 }, // bit INPT1; bpl
-      { 0x24, 0x09, 0x30 }, // bit INPT1; bmi
-      { 0xa5, 0x09, 0x10 }, // lda INPT1; bpl
-      { 0xa5, 0x09, 0x30 }, // lda INPT1; bmi
-      { 0x24, 0x39, 0x10 }, // bit INPT1|$30; bpl
-      { 0x24, 0x39, 0x30 }, // bit INPT1|$30; bmi
-      { 0xa5, 0x39, 0x10 }, // lda INPT1|$30; bpl
-      { 0xa5, 0x39, 0x30 }, // lda INPT1|$30; bmi
-      { 0xa5, 0x39, 0x6a }, // lda INPT1|$30; ror
-      { 0xa6, 0x39, 0x8e }, // ldx INPT1|$30; stx
-      { 0xa5, 0x09, 0x29 }, // lda INPT1; and
-      { 0xa4, 0x09, 0x30 }, // ldy INPT1; bmi
+      { 0x24, 0x09, 0x10 }, // bit INPT1; bpl (Genesis only)
+      { 0x24, 0x09, 0x30 }, // bit INPT1; bmi (paddle ROMS too)
+      { 0xa5, 0x09, 0x10 }, // lda INPT1; bpl (paddle ROMS too)
+      { 0xa5, 0x09, 0x30 }, // lda INPT1; bmi (paddle ROMS too)
+      { 0xa4, 0x09, 0x30 }, // ldy INPT1; bmi (Genesis only)
+      { 0xa6, 0x09, 0x30 }, // ldx INPT1; bmi (Genesis only)
+      { 0x24, 0x39, 0x10 }, // bit INPT1|$30; bpl (keyboard and paddle ROMS too)
+      { 0x24, 0x39, 0x30 }, // bit INPT1|$30; bmi (keyboard and paddle ROMS too)
+      { 0xa5, 0x39, 0x10 }, // lda INPT1|$30; bpl (keyboard ROMS too)
+      { 0xa5, 0x39, 0x30 }, // lda INPT1|$30; bmi (keyboard and paddle ROMS too)
+      { 0xa5, 0x39, 0x6a }, // lda INPT1|$30; ror (Genesis only)
+      { 0xa6, 0x39, 0x8e }, // ldx INPT1|$30; stx (Genesis only)
+      { 0xa5, 0x09, 0x29 }, // lda INPT1; and (Genesis only)
     };
     for(uInt32 i = 0; i < NUM_SIGS_0; ++i)
       if(searchForBytes(image, size, signature_0[i], SIG_SIZE_0))
@@ -228,6 +232,7 @@ bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Cont
   }
   else if(port == Controller::Right)
   {
+    // check for INPT3 access
     const int NUM_SIGS_0 = 9;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
@@ -254,6 +259,7 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
 {
   if(port == Controller::Left)
   {
+    // check for INPT0 access
     const int NUM_SIGS_0 = 13;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
@@ -304,6 +310,7 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
   }
   else if(port == Controller::Right)
   {
+    // check for INPT2 and indexed INPT0 access
     const int NUM_SIGS_0 = 17;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
@@ -357,6 +364,7 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::isProbablyTrakBall(const uInt8* image, uInt32 size)
 {
+  // check for TrakBall table
   const int NUM_SIGS = 1;
   const int SIG_SIZE = 8;
   uInt8 signature[SIG_SIZE] = {
@@ -373,6 +381,7 @@ bool ControllerDetector::isProbablyTrakBall(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::isProbablyAtariMouse(const uInt8* image, uInt32 size)
 {
+  // check for Atari Mouse table
   const int SIG_SIZE = 8;
   uInt8 signature[SIG_SIZE] = {
      0b0101, 0b0111, 0b0100, 0b0110, 0b1101, 0b1111, 0b1100, 0b1110 // NextTrackTbl
@@ -388,6 +397,7 @@ bool ControllerDetector::isProbablyAtariMouse(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::isProbablyAmigaMouse(const uInt8* image, uInt32 size)
 {
+  // check for Amiga Mouse table
   const int SIG_SIZE = 8;
   uInt8 signature[SIG_SIZE] = {
      0b1100, 0b1000, 0b0100, 0b0000, 0b1101, 0b1001, 0b0101, 0b0001 // NextTrackTbl
@@ -403,18 +413,43 @@ bool ControllerDetector::isProbablyAmigaMouse(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::isProbablySaveKey(const uInt8* image, uInt32 size, Controller::Jack port)
 {
-  // known SaveKey code only supports right port
+  // check for known SaveKey code, only supports right port
   if(port == Controller::Right)
   {
+    const int NUM_SIGS = 4;
     const int SIG_SIZE = 9;
-    uInt8 signature[SIG_SIZE] = { // from I2C_TXNACK
-       0xa9, 0x10,        // lda #I2C_SCL_MASK*2
-       0x8d, 0x80, 0x02,  // sta SWCHA
-       0x4a,              // lsr
-       0x8d, 0x81, 0x02   // sta SWACNT
+    uInt8 signature[NUM_SIGS][SIG_SIZE] = {
+      { // from I2C_START (i2c.inc)
+        0xa9, 0x08,       // lda #I2C_SCL_MASK
+        0x8d, 0x80, 0x02, // sta SWCHA
+        0xa9, 0x0c,       // lda #I2C_SCL_MASK|I2C_SDA_MASK
+        0x8d, 0x81        // sta SWACNT
+      },
+      { // from I2C_START (i2c_v2.1..3.inc)
+        0xa9, 0x18,       // #(I2C_SCL_MASK|I2C_SDA_MASK)*2
+        0x8d, 0x80, 0x02, // sta SWCHA
+        0x4a,             // lsr
+        0x8d, 0x81, 0x02  // sta SWACNT
+      },
+      { // from I2C_START (Strat-O-Gems)
+        0xa2, 0x08,       // ldx #I2C_SCL_MASK
+        0x8e, 0x80, 0x02, // stx SWCHA
+        0xa2, 0x0c,       // ldx #I2C_SCL_MASK|I2C_SDA_MASK
+        0x8e, 0x81        // stx SWACNT
+      },
+      { // from I2C_START (AStar, Fall Down, Go Fish!)
+        0xa9, 0x08,       // lda #I2C_SCL_MASK
+        0x8d, 0x80, 0x02, // sta SWCHA
+        0xea,             // nop
+        0xa9, 0x0c,       // lda #I2C_SCL_MASK|I2C_SDA_MASK
+        0x8d              // sta SWACNT
+      },
+
     };
 
-    return (searchForBytes(image, size, signature, SIG_SIZE));
+    for(uInt32 i = 0; i < NUM_SIGS; ++i)
+      if(searchForBytes(image, size, signature[i], SIG_SIZE))
+        return true;
   }
 
   return false;
