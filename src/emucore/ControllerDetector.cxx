@@ -364,16 +364,18 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::isProbablyTrakBall(const uInt8* image, uInt32 size)
 {
-  // check for TrakBall table
-  const int NUM_SIGS = 1;
-  const int SIG_SIZE = 8;
-  uInt8 signature[SIG_SIZE] = {
-    0b1010, 0b1000, 0b1000, 0b1010, 0b0010, 0b0000, 0b0000, 0b0010 // NextTrackTbl
-    // TODO: Omegamatrix's signature (.MovementTab_1)
-  };
+  // check for TrakBall tables
+  const int NUM_SIGS = 3;
+  const int SIG_SIZE = 6;
+  uInt8 signature[NUM_SIGS][SIG_SIZE] = {
+    { 0b1010, 0b1000, 0b1000, 0b1010, 0b0010, 0b0000/*, 0b0000, 0b0010*/ }, // NextTrackTbl (T. Jentzsch)
+    { 0x00, 0x07, 0x87, 0x07, 0x88, 0x01/*, 0xff, 0x01*/ }, // .MovementTab_1 (Omegamatrix, SMX7)
+    { 0x00, 0x01, 0x81, 0x01, 0x82, 0x03 }, // .MovementTab_1 (Omegamatrix)
+  }; // all pattern checked, only TrakBall matches
 
-  if(searchForBytes(image, size, signature, SIG_SIZE))
-    return true;
+  for(uInt32 i = 0; i < NUM_SIGS; ++i)
+    if(searchForBytes(image, size, signature[i], SIG_SIZE))
+      return true;
 
   return false;
 }
@@ -381,15 +383,18 @@ bool ControllerDetector::isProbablyTrakBall(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::isProbablyAtariMouse(const uInt8* image, uInt32 size)
 {
-  // check for Atari Mouse table
-  const int SIG_SIZE = 8;
-  uInt8 signature[SIG_SIZE] = {
-     0b0101, 0b0111, 0b0100, 0b0110, 0b1101, 0b1111, 0b1100, 0b1110 // NextTrackTbl
-     // TODO: Omegamatrix's signature (.MovementTab_1)
-  };
+  // check for Atari Mouse tables
+  const int NUM_SIGS = 3;
+  const int SIG_SIZE = 6;
+  uInt8 signature[NUM_SIGS][SIG_SIZE] = {
+    { 0b0101, 0b0111, 0b0100, 0b0110, 0b1101, 0b1111/*, 0b1100, 0b1110*/ }, // NextTrackTbl (T. Jentzsch)
+    { 0x00, 0x87, 0x07, 0x00, 0x08, 0x81/*, 0x7f, 0x08*/ }, // .MovementTab_1 (Omegamatrix, SMX7)
+    { 0x00, 0x81, 0x01, 0x00, 0x02, 0x83 }, // .MovementTab_1 (Omegamatrix)
+  }; // all pattern checked, only Atari Mouse matches
 
-  if(searchForBytes(image, size, signature, SIG_SIZE))
-    return true;
+  for(uInt32 i = 0; i < NUM_SIGS; ++i)
+    if(searchForBytes(image, size, signature[i], SIG_SIZE))
+      return true;
 
   return false;
 }
@@ -397,15 +402,18 @@ bool ControllerDetector::isProbablyAtariMouse(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::isProbablyAmigaMouse(const uInt8* image, uInt32 size)
 {
-  // check for Amiga Mouse table
-  const int SIG_SIZE = 8;
-  uInt8 signature[SIG_SIZE] = {
-     0b1100, 0b1000, 0b0100, 0b0000, 0b1101, 0b1001, 0b0101, 0b0001 // NextTrackTbl
-     // TODO: Omegamatrix's signature (.MovementTab_1)
-  };
+  // check for Amiga Mouse tables
+  const int NUM_SIGS = 3;
+  const int SIG_SIZE = 6;
+  uInt8 signature[NUM_SIGS][SIG_SIZE] = {
+    { 0b1100, 0b1000, 0b0100, 0b0000, 0b1101, 0b1001/*, 0b0101, 0b0001*/ }, // NextTrackTbl (T. Jentzsch)
+    { 0x00, 0x88, 0x07, 0x01, 0x08, 0x00/*, 0x7f, 0x07*/ }, // .MovementTab_1 (Omegamatrix, SMX7)
+    { 0x00, 0x82, 0x01, 0x03, 0x02, 0x00 }, // .MovementTab_1 (Omegamatrix)
+  }; // all pattern checked, only Amiga Mouse matches
 
-  if(searchForBytes(image, size, signature, SIG_SIZE))
-    return true;
+  for(uInt32 i = 0; i < NUM_SIGS; ++i)
+    if(searchForBytes(image, size, signature[i], SIG_SIZE))
+      return true;
 
   return false;
 }
@@ -443,8 +451,7 @@ bool ControllerDetector::isProbablySaveKey(const uInt8* image, uInt32 size, Cont
         0xea,             // nop
         0xa9, 0x0c,       // lda #I2C_SCL_MASK|I2C_SDA_MASK
         0x8d              // sta SWACNT
-      },
-
+      }
     };
 
     for(uInt32 i = 0; i < NUM_SIGS; ++i)

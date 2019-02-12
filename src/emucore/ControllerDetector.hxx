@@ -80,16 +80,16 @@ class ControllerDetector
     static bool usesPaddle(const uInt8* image, uInt32 size, Controller::Jack port,
                            const Settings& settings);
 
-    // Returns true if Trak-Ball table is found.
+    // Returns true if a Trak-Ball table is found.
     static bool isProbablyTrakBall(const uInt8* image, uInt32 size);
 
-    // Returns true if Atari Mouse table is found.
+    // Returns true if an Atari Mouse table is found.
     static bool isProbablyAtariMouse(const uInt8* image, uInt32 size);
 
-    // Returns true if Amiga Mouse table is found.
+    // Returns true if an Amiga Mouse table is found.
     static bool isProbablyAmigaMouse(const uInt8* image, uInt32 size);
 
-    // Returns true if the SaveKey code pattern is found.
+    // Returns true if a SaveKey code pattern is found.
     static bool isProbablySaveKey(const uInt8* image, uInt32 size, Controller::Jack port);
 
   private:
