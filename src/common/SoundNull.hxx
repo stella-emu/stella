@@ -77,6 +77,13 @@ class SoundNull : public Sound
     bool mute(bool state) override { return true; }
 
     /**
+      Toggles the sound mute state.  While muted no sound is played.
+
+      @return  The previous (old) mute state
+    */
+    bool toggleMute() override { }
+
+    /**
       Sets the volume of the sound device to the specified level.  The
       volume is given as a percentage from 0 to 100.  Values outside
       this range indicate that the volume shouldn't be changed at all.

@@ -80,6 +80,13 @@ class SoundSDL2 : public Sound
     bool mute(bool state) override;
 
     /**
+      Toggles the sound mute state.  While muted no sound is played.
+
+      @return  The previous (old) mute state
+    */
+    bool toggleMute();
+
+    /**
       Sets the volume of the sound device to the specified level.  The
       volume is given as a percentage from 0 to 100.  Values outside
       this range indicate that the volume shouldn't be changed at all.

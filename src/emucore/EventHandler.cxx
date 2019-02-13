@@ -373,6 +373,10 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       if(state) myOSystem.sound().adjustVolume(+1);
       return;
 
+    case Event::SoundToggle:
+      if(state) myOSystem.sound().toggleMute();
+      return;
+
     case Event::SaveState:
       if(state) myOSystem.state().saveState();
       return;
@@ -1261,6 +1265,7 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::Fry,                    "Fry cartridge",            "", false },
   { Event::VolumeDecrease,         "Decrease volume",          "", false },
   { Event::VolumeIncrease,         "Increase volume",          "", false },
+  { Event::SoundToggle,            "Toggle sound",             "", false },
   { Event::PauseMode,              "Pause",                    "", false },
   { Event::OptionsMenuMode,        "Enter options menu UI",    "", false },
   { Event::CmdMenuMode,            "Toggle command menu UI",   "", false },
