@@ -562,39 +562,37 @@ void Console::changePhosphor(int direction)
 {
   int blend = atoi(myProperties.get(Display_PPBlend).c_str());
 
-  if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
+  
+  if(direction == +1)       // increase blend
   {
-    if(direction == +1)       // increase blend
+    if(blend >= 100)
     {
-      if(blend >= 100)
-      {
-        myOSystem.frameBuffer().showMessage("Phosphor blend at maximum");
-        return;
-      }
-      else
-        blend = std::min(blend+2, 100);
-    }
-    else if(direction == -1)  // decrease blend
-    {
-      if(blend <= 2)
-      {
-        myOSystem.frameBuffer().showMessage("Phosphor blend at minimum");
-        return;
-      }
-      else
-        blend = std::max(blend-2, 0);
+      myOSystem.frameBuffer().showMessage("Phosphor blend at maximum");
+      myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, 100);
+      return;
     }
     else
+      blend = std::min(blend+2, 100);
+  }
+  else if(direction == -1)  // decrease blend
+  {
+    if(blend <= 2)
+    {
+      myOSystem.frameBuffer().showMessage("Phosphor blend at minimum");
+      myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, 0);
       return;
-
-    ostringstream val;
-    val << blend;
-    myProperties.set(Display_PPBlend, val.str());
-    myOSystem.frameBuffer().showMessage("Phosphor blend " + val.str());
-    myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
+    }
+    else
+      blend = std::max(blend-2, 0);
   }
   else
-    myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
+    return;
+
+  ostringstream val;
+  val << blend;
+  myProperties.set(Display_PPBlend, val.str());
+  myOSystem.frameBuffer().showMessage("Phosphor blend " + val.str());
+  myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

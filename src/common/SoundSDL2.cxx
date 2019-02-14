@@ -194,22 +194,18 @@ bool SoundSDL2::mute(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SoundSDL2::toggleMute()
 {
-  bool oldstate = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
-  if(myIsInitializedFlag)
-  {
-    string message;
+  bool enabled = myAudioSettings.enabled();
 
-    SDL_PauseAudioDevice(myDevice, oldstate ? 0 : 1);
+  setEnabled(!enabled);
+  myOSystem.console().initializeAudio();
 
-    message = "Sound ";
-    message += oldstate ? "unmuted" : "muted";
+  string message = "Sound ";
+  message += !enabled ? "unmuted" : "muted";
 
-    myOSystem.frameBuffer().showMessage(message);
-  }
-
-  return oldstate;
+  myOSystem.frameBuffer().showMessage(message);
+    
+  return enabled;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setVolume(uInt32 percent)
@@ -242,6 +238,15 @@ void SoundSDL2::adjustVolume(Int8 direction)
     return;
 
   setVolume(percent);
+
+  // enabled audio if it is currently disabled
+  bool enabled = myAudioSettings.enabled();
+
+  if (percent > 0 && !enabled)
+  {
+	  setEnabled(!enabled);
+	  myOSystem.console().initializeAudio();
+  }
 
   // Now show an onscreen message
   strval << percent;
