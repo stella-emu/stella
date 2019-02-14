@@ -25,13 +25,16 @@
      - delayed player 1 swap
      - stuffed player move
 
-  * disabled some developer options for 'Player settings'
+  * Disabled some developer options for 'Player settings'.
 
-  * Removed superfluous controller option 'PADDLES_IDIR'
+  * Removed superfluous controller option 'PADDLES_IDIR'.
 
-  * Fixed not working 7800 pause key
+  * Fixed not working 7800 pause key.
 
-  * Fixed 'Dancing Plate (Unknown) (PAL)' to use joystick
+  * Fixed display of negative values in debugger; sometimes they were
+    shown as positive.
+
+  * Fixed 'Dancing Plate (Unknown) (PAL)' to use joystick.
 
 -Have fun!
 

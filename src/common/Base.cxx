@@ -46,10 +46,10 @@ string Base::toString(int value, Common::Base::Format outputBase)
     }
 
     case Base::F_10:    // base 10: 3 or 5 bytes (depending on value)
-      if(value < 0x100)
-        std::snprintf(vToS_buf, 4, "%3d", value & 0xff);
+      if(value > -0x100 && value < 0x100)
+        std::snprintf(vToS_buf, 5, "%3d", Int16(value));
       else
-        std::snprintf(vToS_buf, 6, "%5d", value & 0xffff);
+        std::snprintf(vToS_buf, 6, "%5d", value);
       break;
 
     case Base::F_10_02:  // base 10: 2 digits (with leading zero)
