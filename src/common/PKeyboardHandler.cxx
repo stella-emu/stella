@@ -524,6 +524,10 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
           myOSystem.console().changeHeight(-1);
           break;
 
+        case KBDK_RIGHTBRACKET: // Ctrl-] toggles sound
+          myOSystem.sound().toggleMute();
+          break;
+
         default:
           handled = false;
           break;
