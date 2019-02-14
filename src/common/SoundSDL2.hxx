@@ -84,7 +84,7 @@ class SoundSDL2 : public Sound
 
       @return  The previous (old) mute state
     */
-    bool toggleMute();
+    bool toggleMute() override;
 
     /**
       Sets the volume of the sound device to the specified level.  The
