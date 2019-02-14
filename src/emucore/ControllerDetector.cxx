@@ -25,7 +25,6 @@ string ControllerDetector::detect(const uInt8* image, uInt32 size,
                                   const Settings& settings)
 {
   string type(controller);
-  //string type("AUTO"); // dirty hack for testing!!!
 
   if(type == "AUTO" || settings.getBool("rominfo"))
   {
@@ -49,9 +48,7 @@ string ControllerDetector::autodetectPort(const uInt8* image, uInt32 size,
   // default type joystick
   string type = "JOYSTICK"; // TODO: remove magic strings
 
-  if (isProbablySaveKey(image, size, port))
-    type = "SAVEKEY";
-  else if(usesJoystickButton(image, size, port))
+  if(usesJoystickButton(image, size, port))
   {
     if(isProbablyTrakBall(image, size))
       type = "TRAKBALL";
@@ -68,6 +65,8 @@ string ControllerDetector::autodetectPort(const uInt8* image, uInt32 size,
   {
     if(usesPaddle(image, size, port, settings))
       type = "PADDLES";
+	if (isProbablySaveKey(image, size, port))
+		type = "SAVEKEY";
   }
   // TODO: BOOSTERGRIP, DRIVING, MINDLINK, ATARIVOX, KIDVID
   // not detectable: PADDLES_IAXIS, PADDLES_IAXDR
