@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -256,31 +256,31 @@
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
 		DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */; };
 		DC3DAFAC1F2E233B00A64410 /* PointingDevice.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3DAFAB1F2E233B00A64410 /* PointingDevice.hxx */; };
-		DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83C1E2C0E6D00905161 /* adler32.c */; };
-		DC3EE8571E2C0E6D00905161 /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83D1E2C0E6D00905161 /* compress.c */; };
-		DC3EE8581E2C0E6D00905161 /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83E1E2C0E6D00905161 /* crc32.c */; };
+		DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83C1E2C0E6D00905161 /* adler32.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		DC3EE8571E2C0E6D00905161 /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83D1E2C0E6D00905161 /* compress.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		DC3EE8581E2C0E6D00905161 /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83E1E2C0E6D00905161 /* crc32.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DC3EE8591E2C0E6D00905161 /* crc32.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE83F1E2C0E6D00905161 /* crc32.h */; };
-		DC3EE85A1E2C0E6D00905161 /* deflate.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8401E2C0E6D00905161 /* deflate.c */; settings = {COMPILER_FLAGS = "-Wno-conversion"; }; };
+		DC3EE85A1E2C0E6D00905161 /* deflate.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8401E2C0E6D00905161 /* deflate.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DC3EE85B1E2C0E6D00905161 /* deflate.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8411E2C0E6D00905161 /* deflate.h */; };
-		DC3EE85C1E2C0E6D00905161 /* gzclose.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8421E2C0E6D00905161 /* gzclose.c */; };
+		DC3EE85C1E2C0E6D00905161 /* gzclose.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8421E2C0E6D00905161 /* gzclose.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DC3EE85D1E2C0E6D00905161 /* gzguts.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8431E2C0E6D00905161 /* gzguts.h */; };
-		DC3EE85E1E2C0E6D00905161 /* gzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8441E2C0E6D00905161 /* gzlib.c */; };
-		DC3EE85F1E2C0E6D00905161 /* gzread.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8451E2C0E6D00905161 /* gzread.c */; settings = {COMPILER_FLAGS = "-Wno-conversion"; }; };
-		DC3EE8601E2C0E6D00905161 /* gzwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8461E2C0E6D00905161 /* gzwrite.c */; settings = {COMPILER_FLAGS = "-Wno-conversion"; }; };
-		DC3EE8611E2C0E6D00905161 /* infback.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8471E2C0E6D00905161 /* infback.c */; };
+		DC3EE85E1E2C0E6D00905161 /* gzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8441E2C0E6D00905161 /* gzlib.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		DC3EE85F1E2C0E6D00905161 /* gzread.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8451E2C0E6D00905161 /* gzread.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		DC3EE8601E2C0E6D00905161 /* gzwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8461E2C0E6D00905161 /* gzwrite.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		DC3EE8611E2C0E6D00905161 /* infback.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8471E2C0E6D00905161 /* infback.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DC3EE8621E2C0E6D00905161 /* inffast.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8481E2C0E6D00905161 /* inffast.c */; };
 		DC3EE8631E2C0E6D00905161 /* inffast.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8491E2C0E6D00905161 /* inffast.h */; };
 		DC3EE8641E2C0E6D00905161 /* inffixed.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE84A1E2C0E6D00905161 /* inffixed.h */; };
-		DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE84B1E2C0E6D00905161 /* inflate.c */; };
+		DC3EE8651E2C0E6D00905161 /* inflate.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE84B1E2C0E6D00905161 /* inflate.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DC3EE8661E2C0E6D00905161 /* inflate.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE84C1E2C0E6D00905161 /* inflate.h */; };
-		DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE84D1E2C0E6D00905161 /* inftrees.c */; };
+		DC3EE8671E2C0E6D00905161 /* inftrees.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE84D1E2C0E6D00905161 /* inftrees.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DC3EE8681E2C0E6D00905161 /* inftrees.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE84E1E2C0E6D00905161 /* inftrees.h */; };
-		DC3EE8691E2C0E6D00905161 /* trees.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE84F1E2C0E6D00905161 /* trees.c */; };
+		DC3EE8691E2C0E6D00905161 /* trees.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE84F1E2C0E6D00905161 /* trees.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DC3EE86A1E2C0E6D00905161 /* trees.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8501E2C0E6D00905161 /* trees.h */; };
-		DC3EE86B1E2C0E6D00905161 /* uncompr.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8511E2C0E6D00905161 /* uncompr.c */; };
+		DC3EE86B1E2C0E6D00905161 /* uncompr.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8511E2C0E6D00905161 /* uncompr.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DC3EE86C1E2C0E6D00905161 /* zconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8521E2C0E6D00905161 /* zconf.h */; };
 		DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8531E2C0E6D00905161 /* zlib.h */; };
-		DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8541E2C0E6D00905161 /* zutil.c */; };
+		DC3EE86E1E2C0E6D00905161 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE8541E2C0E6D00905161 /* zutil.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		DC3EE86F1E2C0E6D00905161 /* zutil.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE8551E2C0E6D00905161 /* zutil.h */; };
 		DC44019E1F1A5D01008C08F6 /* ColorWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC44019C1F1A5D01008C08F6 /* ColorWidget.cxx */; };
 		DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC44019D1F1A5D01008C08F6 /* ColorWidget.hxx */; };
@@ -381,6 +381,8 @@
 		DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */; };
 		DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */; };
 		DC6F394E21B897F300897AD8 /* ThreadDebugging.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */; };
+		DC71C399221623D9005DE92F /* ControllerDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC71C397221623D8005DE92F /* ControllerDetector.hxx */; };
+		DC71C39A221623D9005DE92F /* ControllerDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71C398221623D9005DE92F /* ControllerDetector.cxx */; };
 		DC71EA9D1FDA06D2008827CB /* CartE78K.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71EA991FDA06D2008827CB /* CartE78K.cxx */; };
 		DC71EA9E1FDA06D2008827CB /* CartE78K.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC71EA9A1FDA06D2008827CB /* CartE78K.hxx */; };
 		DC71EA9F1FDA06D2008827CB /* CartMNetwork.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71EA9B1FDA06D2008827CB /* CartMNetwork.cxx */; };
@@ -1084,6 +1086,8 @@
 		DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FatalEmulationError.hxx; path = exception/FatalEmulationError.hxx; sourceTree = "<group>"; };
 		DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadDebugging.cxx; sourceTree = "<group>"; };
 		DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ThreadDebugging.hxx; sourceTree = "<group>"; };
+		DC71C397221623D8005DE92F /* ControllerDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControllerDetector.hxx; sourceTree = "<group>"; };
+		DC71C398221623D9005DE92F /* ControllerDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ControllerDetector.cxx; sourceTree = "<group>"; };
 		DC71EA991FDA06D2008827CB /* CartE78K.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartE78K.cxx; sourceTree = "<group>"; };
 		DC71EA9A1FDA06D2008827CB /* CartE78K.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartE78K.hxx; sourceTree = "<group>"; };
 		DC71EA9B1FDA06D2008827CB /* CartMNetwork.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartMNetwork.cxx; sourceTree = "<group>"; };
@@ -1706,8 +1710,7 @@
 				DC21E5BD21CA903E007D0E1A /* SettingsMACOS.cxx */,
 				DC21E5BE21CA903E007D0E1A /* SettingsMACOS.hxx */,
 			);
-			name = macos;
-			path = macosx;
+			path = macos;
 			sourceTree = "<group>";
 		};
 		2D6050C90898774B00C6DE89 /* unix */ = {
@@ -1827,6 +1830,8 @@
 				E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */,
 				2DE2DF3A0627AE07006BEC99 /* Control.cxx */,
 				2DE2DF3B0627AE07006BEC99 /* Control.hxx */,
+				DC71C398221623D9005DE92F /* ControllerDetector.cxx */,
+				DC71C397221623D8005DE92F /* ControllerDetector.hxx */,
 				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,
 				DCC527C910B9DA19005E1287 /* Device.hxx */,
 				DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */,
@@ -2497,6 +2502,7 @@
 				DCAAE5D81715887B0080BB82 /* Cart4KWidget.hxx in Headers */,
 				DCAAE5DA1715887B0080BB82 /* Cart0840Widget.hxx in Headers */,
 				DCAAE5DC1715887B0080BB82 /* CartCVWidget.hxx in Headers */,
+				DC71C399221623D9005DE92F /* ControllerDetector.hxx in Headers */,
 				DCAAE5DD1715887B0080BB82 /* CartDebugWidget.hxx in Headers */,
 				DC6DC921205DB879004A5FC3 /* PJoystickHandler.hxx in Headers */,
 				DC21E5C421CA903E007D0E1A /* SettingsMACOS.hxx in Headers */,
@@ -2603,11 +2609,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Stella-emu";
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -2824,6 +2830,7 @@
 				DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */,
 				DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */,
 				DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */,
+				DC71C39A221623D9005DE92F /* ControllerDetector.cxx in Sources */,
 				DC047FEE1A4A6F3600348F0F /* JoystickDialog.cxx in Sources */,
 				DC4AC6EF0DC8DACB00CD3AD2 /* RiotWidget.cxx in Sources */,
 				DC71EAA51FDA070D008827CB /* CartE78KWidget.cxx in Sources */,
@@ -2981,6 +2988,8 @@
 		2D91751709BA90380026E9FF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
@@ -2988,7 +2997,6 @@
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3033,13 +3041,14 @@
 		2D91751809BA90380026E9FF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3084,15 +3093,25 @@
 		2D91752209BA903B0026E9FF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -3116,6 +3135,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
@@ -3130,15 +3150,25 @@
 		2D91752309BA903B0026E9FF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -3160,6 +3190,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
