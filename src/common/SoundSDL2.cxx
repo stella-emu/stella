@@ -192,6 +192,26 @@ bool SoundSDL2::mute(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL2::toggleMute()
+{
+  bool oldstate = SDL_GetAudioDeviceStatus(myDevice) == SDL_AUDIO_PAUSED;
+  if(myIsInitializedFlag)
+  {
+    string message;
+
+    SDL_PauseAudioDevice(myDevice, oldstate ? 0 : 1);
+
+    message = "Sound ";
+    message += oldstate ? "unmuted" : "muted";
+
+    myOSystem.frameBuffer().showMessage(message);
+  }
+
+  return oldstate;
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL2::setVolume(uInt32 percent)
 {
   if(myIsInitializedFlag && (percent <= 100))

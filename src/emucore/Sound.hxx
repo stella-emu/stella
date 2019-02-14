@@ -70,6 +70,13 @@ class Sound
     virtual bool mute(bool state) = 0;
 
     /**
+      Toggles the sound mute state.  While muted no sound is played.
+
+      @return  The previous (old) mute state
+    */
+    virtual bool toggleMute() = 0;
+
+    /**
       Sets the volume of the sound device to the specified level.  The
       volume is given as a percentage from 0 to 100.  Values outside
       this range indicate that the volume shouldn't be changed at all.

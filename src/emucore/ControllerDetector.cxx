@@ -403,12 +403,13 @@ bool ControllerDetector::isProbablyAtariMouse(const uInt8* image, uInt32 size)
 bool ControllerDetector::isProbablyAmigaMouse(const uInt8* image, uInt32 size)
 {
   // check for Amiga Mouse tables
-  const int NUM_SIGS = 3;
+  const int NUM_SIGS = 4;
   const int SIG_SIZE = 6;
   uInt8 signature[NUM_SIGS][SIG_SIZE] = {
     { 0b1100, 0b1000, 0b0100, 0b0000, 0b1101, 0b1001/*, 0b0101, 0b0001*/ }, // NextTrackTbl (T. Jentzsch)
     { 0x00, 0x88, 0x07, 0x01, 0x08, 0x00/*, 0x7f, 0x07*/ }, // .MovementTab_1 (Omegamatrix, SMX7)
     { 0x00, 0x82, 0x01, 0x03, 0x02, 0x00 }, // .MovementTab_1 (Omegamatrix)
+    { 0b100, 0b000, 0b000, 0b000, 0b101, 0b001} // NextTrackTbl (T. Jentzsch, MCTB)
   }; // all pattern checked, only Amiga Mouse matches
 
   for(uInt32 i = 0; i < NUM_SIGS; ++i)
