@@ -495,7 +495,7 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Controller_Left, myLeftPort->getSelectedTag().toString());
   myGameProperties.set(Controller_Right, myRightPort->getSelectedTag().toString());
   myGameProperties.set(Console_SwapPorts, (mySwapPorts->isEnabled() && mySwapPorts->getState()) ? "YES" : "NO");
-  myGameProperties.set(Controller_SwapPaddles, (mySwapPaddles->isEnabled() && mySwapPaddles->getState()) ? "YES" : "NO");
+  myGameProperties.set(Controller_SwapPaddles, (/*mySwapPaddles->isEnabled() &&*/ mySwapPaddles->getState()) ? "YES" : "NO");
 
   // MouseAxis property (potentially contains 'range' information)
   string mcontrol = "AUTO";
@@ -579,6 +579,11 @@ void GameInfoDialog::updateControllerStates()
 
   bool enableSwapPaddles = BSPF::startsWithIgnoreCase(contrLeft, "PADDLES") ||
     BSPF::startsWithIgnoreCase(contrRight, "PADDLES");
+  if(instance().hasConsole())
+  {
+    enableSwapPaddles |= BSPF::equalsIgnoreCase(instance().console().leftController().name(), "Paddles");
+    enableSwapPaddles |= BSPF::equalsIgnoreCase(instance().console().rightController().name(), "Paddles");
+  }
 
   if(instance().hasConsole())
   {
