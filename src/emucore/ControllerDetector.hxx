@@ -73,6 +73,9 @@ class ControllerDetector
     // Returns true if the port's joystick button access code is found.
     static bool usesJoystickButton(const uInt8* image, uInt32 size, Controller::Jack port);
 
+    // Returns true if the port's keyboard access code is found.
+    static bool usesKeyboard(const uInt8* image, uInt32 size, Controller::Jack port);
+
     // Returns true if the port's 2nd Genesis button access code is found.
     static bool usesGenesisButton(const uInt8* image, uInt32 size, Controller::Jack port);
 

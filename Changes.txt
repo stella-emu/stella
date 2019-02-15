@@ -18,16 +18,22 @@
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
 
-  * Added various developer options for oddball TIAs:
+  * Added various developer options for oddball TIAs: (TODO: doc)
      - delayed playfield bits
      - delayed playfield color
      - delayed player 0 swap
      - delayed player 1 swap
      - stuffed player move
 
-  * Disabled some developer options for 'Player settings'.
+  * Disabled some developer options for 'Player settings'. (TODO: doc)
+
+  * Enhanced command dialog. (TODO: doc)
+
+  * Added automatic controller detection. (TODO: doc, Stella.pro cleanup)
 
   * Removed superfluous controller option 'PADDLES_IDIR'.
+
+  * Added hotkey for sound on/off.
 
   * Fixed not working 7800 pause key.
 

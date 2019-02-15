@@ -48,7 +48,9 @@ string ControllerDetector::autodetectPort(const uInt8* image, uInt32 size,
   // default type joystick
   string type = "JOYSTICK"; // TODO: remove magic strings
 
-  if(usesJoystickButton(image, size, port))
+  if(isProbablySaveKey(image, size, port))
+    type = "SAVEKEY";
+  else if(usesJoystickButton(image, size, port))
   {
     if(isProbablyTrakBall(image, size))
       type = "TRAKBALL";
@@ -56,8 +58,8 @@ string ControllerDetector::autodetectPort(const uInt8* image, uInt32 size,
       type = "ATARIMOUSE";
     else if(isProbablyAmigaMouse(image, size))
       type = "AMIGAMOUSE";
-    else if(usesPaddle(image, size, port, settings))
-      type = "KEYBOARD"; // only keyboard uses joystick and paddle buttons
+    else if(usesKeyboard(image, size, port))
+      type = "KEYBOARD";
     else if(usesGenesisButton(image, size, port))
       type = "GENESIS";
   }
@@ -65,8 +67,6 @@ string ControllerDetector::autodetectPort(const uInt8* image, uInt32 size,
   {
     if(usesPaddle(image, size, port, settings))
       type = "PADDLES";
-	if (isProbablySaveKey(image, size, port))
-		type = "SAVEKEY";
   }
   // TODO: BOOSTERGRIP, DRIVING, MINDLINK, ATARIVOX, KIDVID
   // not detectable: PADDLES_IAXIS, PADDLES_IAXDR
@@ -123,15 +123,16 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       { 0xa4, 0x0c, 0x30 }, // ldy INPT4|; bmi (only Game of Concentration)
       { 0xa4, 0x3c, 0x30 }, // ldy INPT4|$30; bmi (only Game of Concentration)
     };
-    const int NUM_SIGS_1 = 4;
+    const int NUM_SIGS_1 = 5;
     const int SIG_SIZE_1 = 4;
     uInt8 signature_1[NUM_SIGS_1][SIG_SIZE_1] = {
       { 0xb9, 0x0c, 0x00, 0x10 }, // lda INPT4,y; bpl (joystick games only)
       { 0xb9, 0x0c, 0x00, 0x30 }, // lda INPT4,y; bmi (joystick games only)
       { 0xb9, 0x3c, 0x00, 0x10 }, // lda INPT4,y; bpl (joystick games only)
       { 0xb9, 0x3c, 0x00, 0x30 }, // lda INPT4,y; bmi (joystick games only)
+      { 0xa5, 0x0c, 0x0a, 0xb0 }, // lda INPT4; asl; bcs (joystick games only)
     };
-    const int NUM_SIGS_2 = 5;
+    const int NUM_SIGS_2 = 7;
     const int SIG_SIZE_2 = 5;
     uInt8 signature_2[NUM_SIGS_2][SIG_SIZE_2] = {
       { 0xa5, 0x0c, 0x25, 0x0d, 0x10 }, // lda INPT4; and INPT5; bpl (joystick games only)
@@ -139,6 +140,8 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       { 0xa5, 0x3c, 0x25, 0x3d, 0x10 }, // lda INPT4|$30; and INPT5|$30; bpl (joystick games only)
       { 0xa5, 0x3c, 0x25, 0x3d, 0x30 }, // lda INPT4|$30; and INPT5|$30; bmi (joystick games only)
       { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT0|$30,y; and #$80; bne (Basic Programming)
+      { 0xa9, 0x80, 0x24, 0x0c, 0xd0 }, // lda #$80; bit INPT4; bne (bBasic)
+      { 0xa5, 0x0c, 0x29, 0x80, 0xd0 }, // lda INPT4; and #$80, bne (joystick games only)
     };
 
     for(uInt32 i = 0; i < NUM_SIGS_0; ++i)
@@ -181,10 +184,11 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       { 0xb9, 0x3c, 0x00, 0x10 }, // lda INPT4,y; bpl (joystick games only)
       { 0xb9, 0x3c, 0x00, 0x30 }, // lda INPT4,y; bmi (joystick games only)
     };
-    const int NUM_SIGS_2 = 1;
+    const int NUM_SIGS_2 = 2;
     const int SIG_SIZE_2 = 5;
     uInt8 signature_2[NUM_SIGS_2][SIG_SIZE_2] = {
       { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT0|$30,y; and #$80; bne (Basic Programming)
+      { 0xa9, 0x80, 0x24, 0x0c, 0xd0 }, // lda #$80; bit INPT4; bne (bBasic)
     };
 
     for(uInt32 i = 0; i < NUM_SIGS_0; ++i)
@@ -199,6 +203,136 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       if(searchForBytes(image, size, signature_2[i], SIG_SIZE_2))
         return true;
   }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controller::Jack port)
+{
+  if(port == Controller::Left)
+  {
+    // check for INPT0 *AND* INPT1 access
+    const int NUM_SIGS_0_0 = 4;
+    const int SIG_SIZE_0_0 = 3;
+    uInt8 signature_0_0[NUM_SIGS_0_0][SIG_SIZE_0_0] = {
+      { 0x24, 0x38, 0x30 }, // bit INPT0|$30; bmi
+      { 0xa5, 0x38, 0x10 }, // lda INPT0|$30; bpl
+      { 0xa4, 0x38, 0x30 }, // ldy INPT0|$30; bmi
+      { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi
+    };
+    const int NUM_SIGS_0_2 = 1;
+    const int SIG_SIZE_0_2 = 5;
+    uInt8 signature_0_2[NUM_SIGS_0_2][SIG_SIZE_0_2] = {
+      { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT0,x; and #80; bne
+    };
+
+    const int NUM_SIGS_1_0 = 5;
+    const int SIG_SIZE_1_0 = 3;
+    uInt8 signature_1_0[NUM_SIGS_1_0][SIG_SIZE_1_0] = {
+      { 0x24, 0x39, 0x10 }, // bit INPT1|$30;
+      { 0x24, 0x39, 0x30 }, // bit INPT1|$30;
+      { 0xa5, 0x39, 0x10 }, // lda INPT1|$30;
+      { 0xa4, 0x39, 0x30 }, // ldy INPT1|$30; bmi
+      { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi
+    };
+    const int NUM_SIGS_1_2 = 1;
+    const int SIG_SIZE_1_2 = 5;
+    uInt8 signature_1_2[NUM_SIGS_1_2][SIG_SIZE_1_2] = {
+      { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT0,x; and #80; bne
+    };
+
+    bool found = false;
+
+    for(uInt32 i = 0; i < NUM_SIGS_0_0; ++i)
+      if(searchForBytes(image, size, signature_0_0[i], SIG_SIZE_0_0))
+      {
+        found = true;
+        break;
+      }
+    if(!found)
+      for(uInt32 i = 0; i < NUM_SIGS_0_2; ++i)
+        if(searchForBytes(image, size, signature_0_2[i], SIG_SIZE_0_2))
+        {
+          found = true;
+          break;
+        }
+    if(found)
+    {
+      for(uInt32 j = 0; j < NUM_SIGS_1_0; ++j)
+        if(searchForBytes(image, size, signature_1_0[j], SIG_SIZE_1_0))
+        {
+          return true;
+        }
+
+      for(uInt32 j = 0; j < NUM_SIGS_1_2; ++j)
+        if(searchForBytes(image, size, signature_1_2[j], SIG_SIZE_1_2))
+        {
+          return true;
+        }
+    }
+  }
+  else if(port == Controller::Right)
+  {
+    // check for INPT2 *AND* INPT3 access
+    const int NUM_SIGS_0_0 = 3;
+    const int SIG_SIZE_0_0 = 3;
+    uInt8 signature_0_0[NUM_SIGS_0_0][SIG_SIZE_0_0] = {
+      { 0x24, 0x3a, 0x30 }, // bit INPT2|$30; bmi
+      { 0xa5, 0x3a, 0x10 }, // lda INPT2|$30; bpl
+      { 0xa4, 0x3a, 0x30 }, // ldy INPT2|$30; bmi
+    };
+    const int NUM_SIGS_0_2 = 1;
+    const int SIG_SIZE_0_2 = 5;
+    uInt8 signature_0_2[NUM_SIGS_0_2][SIG_SIZE_0_2] = {
+      { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT2,x; and #80; bne
+    };
+
+    const int NUM_SIGS_1_0 = 3;
+    const int SIG_SIZE_1_0 = 3;
+    uInt8 signature_1_0[NUM_SIGS_1_0][SIG_SIZE_1_0] = {
+      { 0x24, 0x3b, 0x30 }, // bit INPT3|$30;
+      { 0xa5, 0x3b, 0x10 }, // lda INPT3|$30;
+      { 0xa4, 0x3b, 0x30 }, // ldy INPT3|$30; bmi
+    };
+    const int NUM_SIGS_1_2 = 1;
+    const int SIG_SIZE_1_2 = 5;
+    uInt8 signature_1_2[NUM_SIGS_1_2][SIG_SIZE_1_2] = {
+      { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT2,x; and #80; bne
+    };
+
+    bool found = false;
+
+    for(uInt32 i = 0; i < NUM_SIGS_0_0; ++i)
+      if(searchForBytes(image, size, signature_0_0[i], SIG_SIZE_0_0))
+      {
+        found = true;
+        break;
+      }
+
+    if(!found)
+      for(uInt32 i = 0; i < NUM_SIGS_0_2; ++i)
+        if(searchForBytes(image, size, signature_0_2[i], SIG_SIZE_0_2))
+        {
+          found = true;
+          break;
+        }
+
+    if(found)
+    {
+      for(uInt32 j = 0; j < NUM_SIGS_1_0; ++j)
+        if(searchForBytes(image, size, signature_1_0[j], SIG_SIZE_1_0))
+        {
+          return true;
+        }
+
+      for(uInt32 j = 0; j < NUM_SIGS_1_2; ++j)
+        if(searchForBytes(image, size, signature_1_2[j], SIG_SIZE_1_2))
+        {
+          return true;
+        }
+    }
+  }
+
   return false;
 }
 
