@@ -58,6 +58,13 @@ class LauncherDialog : public Dialog
     virtual ~LauncherDialog() = default;
 
     /**
+      Get path for the currently selected file
+
+      @return path if a valid ROM file, else the empty string
+    */
+    const string& LauncherDialog::selectedRom();
+
+    /**
       Get MD5sum for the currently selected file
 
       @return md5sum if a valid ROM file, else the empty string

@@ -55,6 +55,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void loadCartridgeProperties(const Properties& props);
 
     void updateControllerStates();
+    const string getControllerName(const string& type);
     void eraseEEPROM();
 
   private:

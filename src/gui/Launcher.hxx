@@ -45,6 +45,11 @@ class Launcher : public DialogContainer
     FBInitStatus initializeVideo();
 
     /**
+      Wrapper for LauncherDialog::selectedRom() method.
+    */
+    const string& selectedRom();
+
+    /**
       Wrapper for LauncherDialog::selectedRomMD5() method.
     */
     const string& selectedRomMD5();
