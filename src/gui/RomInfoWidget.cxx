@@ -21,7 +21,7 @@
 #include "FBSurface.hxx"
 #include "Font.hxx"
 #include "OSystem.hxx"
-#include "Settings.hxx"
+#include "ControllerDetector.hxx"
 #include "Props.hxx"
 #include "PNGLibrary.hxx"
 #include "Rect.hxx"
@@ -44,24 +44,24 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::loadConfig()
+void RomInfoWidget::loadConfig(const FilesystemNode& node)
 {
   // The ROM may have changed since we were last in the browser, either
   // by saving a different image or through a change in video renderer,
   // so we reload the properties
   if(myHaveProperties)
-    parseProperties();
+    parseProperties(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::setProperties(const Properties& props)
+void RomInfoWidget::setProperties(const Properties& props, const FilesystemNode& node)
 {
   myHaveProperties = true;
   myProperties = props;
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
-    parseProperties();
+    parseProperties(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,7 +77,7 @@ void RomInfoWidget::clearProperties()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::parseProperties()
+void RomInfoWidget::parseProperties(const FilesystemNode& node)
 {
   // Check if a surface has ever been created; if so, we use it
   // The surface will always be the maximum size, but sometimes we'll
@@ -125,9 +125,26 @@ void RomInfoWidget::parseProperties()
   myRomInfo.push_back("Rarity: " + myProperties.get(Cartridge_Rarity));
   myRomInfo.push_back("Note: " + myProperties.get(Cartridge_Note));
   bool swappedPorts = myProperties.get(Console_SwapPorts) == "YES";
-  myRomInfo.push_back("Controllers: " + (!swappedPorts
-    ? myProperties.get(Controller_Left) + " (left), " + myProperties.get(Controller_Right) + " (right)"
-    : myProperties.get(Controller_Right) + " (left), " + myProperties.get(Controller_Left) + " (right)"));
+
+  string left = myProperties.get(Controller_Left);
+  string right = myProperties.get(Controller_Right);
+
+  // load the image for auto detection
+  BytePtr image;
+  string md5 = myProperties.get(Cartridge_MD5);
+  uInt32 size = 0;
+
+  if(node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr)
+  {
+    left = ControllerDetector::detect(image.get(), size, left,
+                                      !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
+                                      instance().settings());
+    right = ControllerDetector::detect(image.get(), size, right,
+                                       !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
+                                       instance().settings());
+  }
+  myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
+
 #if 0
   myRomInfo.push_back("YStart/Height: " + myProperties.get(Display_YStart) +
                       "    " + myProperties.get(Display_Height));

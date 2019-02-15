@@ -562,7 +562,6 @@ void Console::changePhosphor(int direction)
 {
   int blend = atoi(myProperties.get(Display_PPBlend).c_str());
 
-  
   if(direction == +1)       // increase blend
   {
     if(blend >= 100)
@@ -848,19 +847,24 @@ void Console::setControllers(const string& rommd5)
     string right = myProperties.get(Controller_Right);
     uInt32 size = 0;
     const uInt8* image = myCart->getImage(size);
+    const bool swappedPorts = myProperties.get(Console_SwapPorts) != "NO";
 
     // try to detect controllers
     if(image != nullptr || size != 0)
     {
-      left = ControllerDetector::detect(image, size, left, Controller::Left, myOSystem.settings());
-      right = ControllerDetector::detect(image, size, right, Controller::Right, myOSystem.settings());
+      left = ControllerDetector::detect(image, size, left,
+                                        !swappedPorts ? Controller::Left : Controller::Right,
+                                        myOSystem.settings());
+      right = ControllerDetector::detect(image, size, right,
+                                         !swappedPorts ? Controller::Right : Controller::Left,
+                                         myOSystem.settings());
     }
 
     unique_ptr<Controller> leftC = getControllerPort(rommd5, left, Controller::Left),
       rightC = getControllerPort(rommd5, right, Controller::Right);
 
     // Swap the ports if necessary
-    if(myProperties.get(Console_SwapPorts) == "NO")
+    if(!swappedPorts)
     {
       myLeftControl = std::move(leftC);
       myRightControl = std::move(rightC);

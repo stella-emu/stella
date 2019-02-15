@@ -393,7 +393,7 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
   if(port == Controller::Left)
   {
     // check for INPT0 access
-    const int NUM_SIGS_0 = 13;
+    const int NUM_SIGS_0 = 12;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       //{ 0x24, 0x08, 0x10 }, // bit INPT0; bpl (many joystick games too!)
@@ -409,7 +409,6 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
       { 0xb5, 0x38, 0x10 }, // lda INPT0|$30,x; bpl (Circus Atari, old code!)
       { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi (no joystick games)
       { 0x68, 0x48, 0x10 }, // pla; pha; bpl (i.a. Bachelor Party)
-      { 0xa5, 0x3b, 0x30 }, // lda INPT3|$30; bmi (only Tac Scan, ports and paddles swapped)
       { 0xa5, 0x08, 0x4c }, // lda INPT0; jmp (only Backgammon)
       { 0xa4, 0x38, 0x30 }, // ldy INPT0; bmi (no joystick games)
     };
@@ -444,7 +443,7 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
   else if(port == Controller::Right)
   {
     // check for INPT2 and indexed INPT0 access
-    const int NUM_SIGS_0 = 17;
+    const int NUM_SIGS_0 = 18;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x0a, 0x10 }, // bit INPT2; bpl (no joystick games)
@@ -464,6 +463,7 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
       { 0xb5, 0x38, 0x10 }, // lda INPT0|$30,x; bpl  (Circus Atari, old code!)
       { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi (no joystick games)
       { 0xa4, 0x3a, 0x30 }, // ldy INPT2|$30; bmi (no joystick games)
+      { 0xa5, 0x3b, 0x30 }, // lda INPT3|$30; bmi (only Tac Scan, ports and paddles swapped)
     };
     const int NUM_SIGS_1 = 1;
     const int SIG_SIZE_1 = 4;

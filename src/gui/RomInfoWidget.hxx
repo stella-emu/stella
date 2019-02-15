@@ -34,15 +34,15 @@ class RomInfoWidget : public Widget
                   int x, int y, int w, int h);
     virtual ~RomInfoWidget() = default;
 
-    void setProperties(const Properties& props);
+    void setProperties(const Properties& props, const FilesystemNode& node);
     void clearProperties();
-    void loadConfig() override;
+    void loadConfig(const FilesystemNode& node);
 
   protected:
     void drawWidget(bool hilite) override;
 
   private:
-    void parseProperties();
+    void parseProperties(const FilesystemNode& node);
 
   private:
     // Surface pointer holding the PNG image

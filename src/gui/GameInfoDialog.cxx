@@ -414,10 +414,15 @@ void GameInfoDialog::loadConsoleProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadControllerProperties(const Properties& props)
 {
+  bool swapPorts = props.get(Console_SwapPorts) == "YES";
+
   myLeftPort->setSelected(props.get(Controller_Left), "AUTO");
   if(instance().hasConsole() && myLeftPort->getSelectedTag().toString() == "AUTO")
   {
-    myLeftPortDetected->setLabel(instance().console().leftController().name() + " detected");
+    myLeftPortDetected->setLabel((!swapPorts
+                                  ? instance().console().leftController().name()
+                                  : instance().console().rightController().name())
+                                 + " detected");
   }
   else
     myLeftPortDetected->setLabel("");
@@ -425,7 +430,10 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   myRightPort->setSelected(props.get(Controller_Right), "AUTO");
   if(instance().hasConsole() && myRightPort->getSelectedTag().toString() == "AUTO")
   {
-    myRightPortDetected->setLabel(instance().console().rightController().name() + " detected");
+    myRightPortDetected->setLabel((!swapPorts
+                                  ? instance().console().rightController().name()
+                                  : instance().console().leftController().name())
+                                  + " detected");
   }
   else
     myRightPortDetected->setLabel("");

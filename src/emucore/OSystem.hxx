@@ -283,6 +283,20 @@ class OSystem
     const FilesystemNode& romFile() const { return myRomFile; }
 
     /**
+      Open the given ROM and return an array containing its contents.
+      Also, the properties database is updated with a valid ROM name
+      for this ROM (if necessary).
+
+      @param rom    The file node of the ROM to open (contains path)
+      @param md5    The md5 calculated from the ROM file
+                    (will be recalculated if necessary)
+      @param size   The amount of data read into the image array
+
+      @return  Unique pointer to the array
+    */
+    BytePtr openROM(const FilesystemNode& rom, string& md5, uInt32& size);
+
+    /**
       Creates a new game console from the specified romfile, and correctly
       initializes the system state to start emulation of the Console.
 
@@ -540,20 +554,6 @@ class OSystem
       Close and finalize any currently open console.
     */
     void closeConsole();
-
-    /**
-      Open the given ROM and return an array containing its contents.
-      Also, the properties database is updated with a valid ROM name
-      for this ROM (if necessary).
-
-      @param rom    The file node of the ROM to open (contains path)
-      @param md5    The md5 calculated from the ROM file
-                    (will be recalculated if necessary)
-      @param size   The amount of data read into the image array
-
-      @return  Unique pointer to the array
-    */
-    BytePtr openROM(const FilesystemNode& rom, string& md5, uInt32& size);
 
     /**
       Gets all possible info about the given console.

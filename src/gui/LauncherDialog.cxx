@@ -249,7 +249,13 @@ void LauncherDialog::loadConfig()
   Dialog::setFocus(getFocusList()[mySelectedItem]);
 
   if(myRomInfoWidget)
-    myRomInfoWidget->loadConfig();
+  {
+    int item = myList->getSelected();
+    if(item < 0) return;
+    const FilesystemNode node(myGameList->path(item));
+
+    myRomInfoWidget->loadConfig(node);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -339,7 +345,7 @@ void LauncherDialog::loadRomInfo()
     Properties props;
     instance().propSet().getMD5WithInsert(node, myGameList->md5(item), props);
 
-    myRomInfoWidget->setProperties(props);
+    myRomInfoWidget->setProperties(props, node);
   }
   else
     myRomInfoWidget->clearProperties();
