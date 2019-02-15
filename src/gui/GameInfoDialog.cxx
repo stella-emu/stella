@@ -201,35 +201,37 @@ GameInfoDialog::GameInfoDialog(
 
   ypos = VBORDER;
   pwidth = font.getStringWidth("Paddles_IAxis");
-  myP0Label = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "P0 controller    ");
-  myP0Controller = new PopUpWidget(myTab, font, myP0Label->getRight(), myP0Label->getTop()-1,
-                                   pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
-  wid.push_back(myP0Controller);
+  myLeftPortLabel = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Left port        ");
+  myLeftPort = new PopUpWidget(myTab, font, myLeftPortLabel->getRight(),
+                               myLeftPortLabel->getTop()-1,
+                               pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
+  wid.push_back(myLeftPort);
   ypos += lineHeight + VGAP;
 
-  myP0ControllerDetected = new StaticTextWidget(myTab, ifont, myP0Controller->getLeft(), ypos,
-                                                "BoosterGrip detected");
+  myLeftPortDetected = new StaticTextWidget(myTab, ifont, myLeftPort->getLeft(), ypos,
+                                            "BoosterGrip detected");
   ypos += ifont.getLineHeight() + VGAP;
 
-  myP1Label = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "P1 controller    ");
-  myP1Controller = new PopUpWidget(myTab, font, myP1Label->getRight(), myP1Label->getTop()-1,
-                                   pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
-  wid.push_back(myP1Controller);
+  myRightPortLabel = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Right port       ");
+  myRightPort = new PopUpWidget(myTab, font, myRightPortLabel->getRight(),
+                                myRightPortLabel->getTop()-1,
+                                pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
+  wid.push_back(myRightPort);
   ypos += lineHeight + VGAP;
-  myP1ControllerDetected = new StaticTextWidget(myTab, ifont, myP1Controller->getLeft(), ypos,
-                                                "BoosterGrip detected");
+  myRightPortDetected = new StaticTextWidget(myTab, ifont, myRightPort->getLeft(), ypos,
+                                             "BoosterGrip detected");
   ypos += ifont.getLineHeight() + VGAP + 4;
 
-  mySwapPorts = new CheckboxWidget(myTab, font, myP0Controller->getRight() + fontWidth*4, myP0Controller->getTop()+1,
-                                   "Swap ports");
+  mySwapPorts = new CheckboxWidget(myTab, font, myLeftPort->getRight() + fontWidth*4,
+                                   myLeftPort->getTop()+1, "Swap ports");
   wid.push_back(mySwapPorts);
-  mySwapPaddles = new CheckboxWidget(myTab, font, myP1Controller->getRight() + fontWidth*4, myP1Controller->getTop()+1,
-                                     "Swap paddles");
+  mySwapPaddles = new CheckboxWidget(myTab, font, myRightPort->getRight() + fontWidth*4,
+                                     myRightPort->getTop()+1, "Swap paddles");
   wid.push_back(mySwapPaddles);
 
-  // EEPROM erase button for P0/P1
+  // EEPROM erase button for left/right controller
   //ypos += lineHeight + VGAP + 4;
-  pwidth = myP1Controller->getWidth();   //font.getStringWidth("Erase EEPROM ") + 23;
+  pwidth = myRightPort->getWidth();   //font.getStringWidth("Erase EEPROM ") + 23;
   myEraseEEPROMLabel = new StaticTextWidget(myTab, font, HBORDER, ypos, "AtariVox/SaveKey ");
   myEraseEEPROMButton = new ButtonWidget(myTab, font, myEraseEEPROMLabel->getRight(), ypos - 4,
                                          pwidth, buttonHeight, "Erase EEPROM", kEEButtonPressed);
@@ -412,21 +414,21 @@ void GameInfoDialog::loadConsoleProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadControllerProperties(const Properties& props)
 {
-  myP0Controller->setSelected(props.get(Controller_Left), "AUTO");
-  if(instance().hasConsole() && myP0Controller->getSelectedTag().toString() == "AUTO")
+  myLeftPort->setSelected(props.get(Controller_Left), "AUTO");
+  if(instance().hasConsole() && myLeftPort->getSelectedTag().toString() == "AUTO")
   {
-    myP0ControllerDetected->setLabel(instance().console().leftController().name() + " detected");
+    myLeftPortDetected->setLabel(instance().console().leftController().name() + " detected");
   }
   else
-    myP0ControllerDetected->setLabel("");
+    myLeftPortDetected->setLabel("");
 
-  myP1Controller->setSelected(props.get(Controller_Right), "AUTO");
-  if(instance().hasConsole() && myP1Controller->getSelectedTag().toString() == "AUTO")
+  myRightPort->setSelected(props.get(Controller_Right), "AUTO");
+  if(instance().hasConsole() && myRightPort->getSelectedTag().toString() == "AUTO")
   {
-    myP1ControllerDetected->setLabel(instance().console().rightController().name() + " detected");
+    myRightPortDetected->setLabel(instance().console().rightController().name() + " detected");
   }
   else
-    myP1ControllerDetected->setLabel("");
+    myRightPortDetected->setLabel("");
 
   mySwapPorts->setState(props.get(Console_SwapPorts) == "YES");
   mySwapPaddles->setState(props.get(Controller_SwapPaddles) == "YES");
@@ -490,8 +492,8 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Console_TelevisionType, myTVTypeGroup->getSelected() ? "BW" : "COLOR");
 
   // Controller properties
-  myGameProperties.set(Controller_Left, myP0Controller->getSelectedTag().toString());
-  myGameProperties.set(Controller_Right, myP1Controller->getSelectedTag().toString());
+  myGameProperties.set(Controller_Left, myLeftPort->getSelectedTag().toString());
+  myGameProperties.set(Controller_Right, myRightPort->getSelectedTag().toString());
   myGameProperties.set(Console_SwapPorts, (mySwapPorts->isEnabled() && mySwapPorts->getState()) ? "YES" : "NO");
   myGameProperties.set(Controller_SwapPaddles, (mySwapPaddles->isEnabled() && mySwapPaddles->getState()) ? "YES" : "NO");
 
@@ -568,15 +570,15 @@ void GameInfoDialog::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::updateControllerStates()
 {
-  const string& contrP0 = myP0Controller->getSelectedTag().toString();
-  const string& contrP1 = myP1Controller->getSelectedTag().toString();
+  const string& contrLeft = myLeftPort->getSelectedTag().toString();
+  const string& contrRight = myRightPort->getSelectedTag().toString();
   bool enableEEEraseButton = false;
 
   // Compumate bankswitching scheme doesn't allow to select controllers
   bool enableSelectControl = myBSType->getSelectedTag() != "CM";
 
-  bool enableSwapPaddles = BSPF::startsWithIgnoreCase(contrP0, "PADDLES") ||
-    BSPF::startsWithIgnoreCase(contrP1, "PADDLES");
+  bool enableSwapPaddles = BSPF::startsWithIgnoreCase(contrLeft, "PADDLES") ||
+    BSPF::startsWithIgnoreCase(contrRight, "PADDLES");
 
   if(instance().hasConsole())
   {
@@ -584,16 +586,16 @@ void GameInfoDialog::updateControllerStates()
     const Controller& rport = instance().console().rightController();
 
     // we only enable the button if we have a valid previous and new controller.
-    enableEEEraseButton = ((lport.type() == Controller::SaveKey && contrP0 == "SAVEKEY") ||
-                           (rport.type() == Controller::SaveKey && contrP1 == "SAVEKEY") ||
-                           (lport.type() == Controller::AtariVox && contrP0 == "ATARIVOX") ||
-                           (rport.type() == Controller::AtariVox && contrP1 == "ATARIVOX"));
+    enableEEEraseButton = ((lport.type() == Controller::SaveKey && contrLeft == "SAVEKEY") ||
+                           (rport.type() == Controller::SaveKey && contrRight == "SAVEKEY") ||
+                           (lport.type() == Controller::AtariVox && contrLeft == "ATARIVOX") ||
+                           (rport.type() == Controller::AtariVox && contrRight == "ATARIVOX"));
   }
 
-  myP0Label->setEnabled(enableSelectControl);
-  myP1Label->setEnabled(enableSelectControl);
-  myP0Controller->setEnabled(enableSelectControl);
-  myP1Controller->setEnabled(enableSelectControl);
+  myLeftPortLabel->setEnabled(enableSelectControl);
+  myRightPortLabel->setEnabled(enableSelectControl);
+  myLeftPort->setEnabled(enableSelectControl);
+  myRightPort->setEnabled(enableSelectControl);
 
   mySwapPorts->setEnabled(enableSelectControl);
   mySwapPaddles->setEnabled(enableSwapPaddles);

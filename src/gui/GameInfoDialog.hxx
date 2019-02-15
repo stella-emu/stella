@@ -75,12 +75,12 @@ class GameInfoDialog : public Dialog, public CommandSender
     RadioButtonGroup* myTVTypeGroup;
 
     // Controller properties
-    StaticTextWidget* myP0Label;
-    StaticTextWidget* myP1Label;
-    PopUpWidget*      myP0Controller;
-    StaticTextWidget* myP0ControllerDetected;
-    PopUpWidget*      myP1Controller;
-    StaticTextWidget* myP1ControllerDetected;
+    StaticTextWidget* myLeftPortLabel;
+    StaticTextWidget* myRightPortLabel;
+    PopUpWidget*      myLeftPort;
+    StaticTextWidget* myLeftPortDetected;
+    PopUpWidget*      myRightPort;
+    StaticTextWidget* myRightPortDetected;
     CheckboxWidget*   mySwapPorts;
     CheckboxWidget*   mySwapPaddles;
     StaticTextWidget* myEraseEEPROMLabel;
