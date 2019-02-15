@@ -209,6 +209,16 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& LauncherDialog::selectedRom()
+{
+  int item = myList->getSelected();
+  if(item < 0)
+    return EmptyString;
+
+  return myGameList->path(item);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& LauncherDialog::selectedRomMD5()
 {
   int item = myList->getSelected();

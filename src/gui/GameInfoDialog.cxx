@@ -24,6 +24,7 @@
 #include "RadioButtonWidget.hxx"
 #include "Launcher.hxx"
 #include "OSystem.hxx"
+#include "ControllerDetector.hxx"
 #include "PopUpWidget.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
@@ -415,28 +416,60 @@ void GameInfoDialog::loadConsoleProperties(const Properties& props)
 void GameInfoDialog::loadControllerProperties(const Properties& props)
 {
   bool swapPorts = props.get(Console_SwapPorts) == "YES";
+  bool autoDetect = false;
+  BytePtr image;
+  string md5 = props.get(Cartridge_MD5);
+  uInt32 size = 0;
+  const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
 
-  myLeftPort->setSelected(props.get(Controller_Left), "AUTO");
-  if(instance().hasConsole() && myLeftPort->getSelectedTag().toString() == "AUTO")
-  {
-    myLeftPortDetected->setLabel((!swapPorts
-                                  ? instance().console().leftController().name()
-                                  : instance().console().rightController().name())
-                                 + " detected");
-  }
-  else
-    myLeftPortDetected->setLabel("");
+  // try to load the image for auto detection
+  if(!instance().hasConsole() &&
+     node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr)
+    autoDetect = true;
 
-  myRightPort->setSelected(props.get(Controller_Right), "AUTO");
-  if(instance().hasConsole() && myRightPort->getSelectedTag().toString() == "AUTO")
+  string label = "";
+  string controller = props.get(Controller_Left);
+
+  myLeftPort->setSelected(controller, "AUTO");
+  if(myLeftPort->getSelectedTag().toString() == "AUTO")
   {
-    myRightPortDetected->setLabel((!swapPorts
-                                  ? instance().console().rightController().name()
-                                  : instance().console().leftController().name())
-                                  + " detected");
+    if(instance().hasConsole())
+    {
+      label = (!swapPorts ? instance().console().leftController().name()
+               : instance().console().rightController().name())
+        + " detected";
+    }
+    else if(autoDetect)
+    {
+      controller = ControllerDetector::detect(image.get(), size, controller,
+                                              !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
+                                              instance().settings());
+      label = getControllerName(controller) + " detected";
+    }
   }
-  else
-    myRightPortDetected->setLabel("");
+  myLeftPortDetected->setLabel(label);
+
+  label = "";
+  controller = props.get(Controller_Right);
+
+  myRightPort->setSelected(controller, "AUTO");
+  if(myRightPort->getSelectedTag().toString() == "AUTO")
+  {
+    if(instance().hasConsole())
+    {
+      label = (!swapPorts ? instance().console().rightController().name()
+               : instance().console().leftController().name())
+        + " detected";
+    }
+    else if(autoDetect)
+    {
+      controller = ControllerDetector::detect(image.get(), size, controller,
+                                              !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
+                                              instance().settings());
+      label = getControllerName(controller) + " detected";
+    }
+  }
+  myRightPortDetected->setLabel(label);
 
   mySwapPorts->setState(props.get(Console_SwapPorts) == "YES");
   mySwapPaddles->setState(props.get(Controller_SwapPaddles) == "YES");
@@ -616,6 +649,29 @@ void GameInfoDialog::updateControllerStates()
   myEraseEEPROMLabel->setEnabled(enableEEEraseButton);
   myEraseEEPROMButton->setEnabled(enableEEEraseButton);
   myEraseEEPROMInfo->setEnabled(enableEEEraseButton);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string GameInfoDialog::getControllerName(const string& type)
+{
+  if(BSPF::equalsIgnoreCase(type, "JOYSTICK"))
+    return "Joystick";
+  if(BSPF::equalsIgnoreCase(type, "SAVEKEY"))
+    return "SaveKey";
+  if(BSPF::equalsIgnoreCase(type, "TRAKBALL"))
+    return "TrakBall";
+  if(BSPF::equalsIgnoreCase(type, "ATA RIMOUSE"))
+    return "AtariMouse";
+  if(BSPF::equalsIgnoreCase(type, "AMIGAMOUSE"))
+    return "AmigaMouse";
+  if(BSPF::equalsIgnoreCase(type, "KEYBOARD"))
+    return "Keyboard";
+  if(BSPF::equalsIgnoreCase(type, "GENESIS"))
+    return "Genesis";
+  if(BSPF::equalsIgnoreCase(type, "PADDLES"))
+    return "Paddles";
+
+  return type;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
