@@ -6773,7 +6773,7 @@
 
 "Cartridge.MD5" "504688d49a41bf03d8a955512609f3f2"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "SWOOPS! (TJ)"
+"Cartridge.Name" "SWOOPS! (v0.94) (TJ)"
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Right" "PADDLES"
@@ -21317,3 +21317,27 @@
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
+"Cartridge.MD5" "b7d0aae399781b3c18679debda6d32b1"
+"Cartridge.Manufacturer" "Thomas Jentsch"
+"Cartridge.Name" "Three.s (v1.02)"
+"Cartridge.Rarity" "New Release"
+""
+
+"Cartridge.MD5" "5e43c0391f7412ae64fae6f3742d6ee9"
+"Cartridge.Manufacturer" "Thomas Jentsch"
+"Cartridge.Name" "Thrust (v1.27)"
+"Cartridge.Rarity" "New Release"
+""
+
+"Cartridge.MD5" "96662271ae50b6859017bffbdda75525"
+"Cartridge.Manufacturer" "Andrew Davie & Thomas Jentsch"
+"Cartridge.Name" "Boulder Dash - Demo (2011)"
+"Cartridge.Rarity" "New Release"
+""
+
+"Cartridge.MD5" "ab48c4af46c8b34c3613d210e1206132"
+"Cartridge.Manufacturer" "Andrew Davie & Thomas Jentsch"
+"Cartridge.Name" "Boulder Dash - Demo V2 (2014)"
+"Cartridge.Rarity" "New Release"
+"Controller.Right" "SAVEKEY"
+""
