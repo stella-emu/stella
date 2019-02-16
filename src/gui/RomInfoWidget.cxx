@@ -44,7 +44,7 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::loadConfig(const FilesystemNode& node)
+void RomInfoWidget::reloadProperties(const FilesystemNode& node)
 {
   // The ROM may have changed since we were last in the browser, either
   // by saving a different image or through a change in video renderer,

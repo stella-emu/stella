@@ -264,7 +264,7 @@ void LauncherDialog::loadConfig()
     if(item < 0) return;
     const FilesystemNode node(myGameList->path(item));
 
-    myRomInfoWidget->loadConfig(node);
+    myRomInfoWidget->reloadProperties(node);
   }
 }
 

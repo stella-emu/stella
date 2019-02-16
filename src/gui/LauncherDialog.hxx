@@ -62,7 +62,7 @@ class LauncherDialog : public Dialog
 
       @return path if a valid ROM file, else the empty string
     */
-    const string& LauncherDialog::selectedRom();
+    const string& selectedRom();
 
     /**
       Get MD5sum for the currently selected file

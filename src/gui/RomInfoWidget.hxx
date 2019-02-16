@@ -36,7 +36,7 @@ class RomInfoWidget : public Widget
 
     void setProperties(const Properties& props, const FilesystemNode& node);
     void clearProperties();
-    void loadConfig(const FilesystemNode& node);
+    void reloadProperties(const FilesystemNode& node);
 
   protected:
     void drawWidget(bool hilite) override;
