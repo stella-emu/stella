@@ -48,28 +48,13 @@ class ConfigPathDialog : public Dialog, public CommandSender
 
   private:
     enum {
-      kChooseRomDirCmd      = 'LOrm', // rom select
-      kChooseStateDirCmd    = 'LOsd', // state dir
-      kChooseCheatFileCmd   = 'LOcf', // cheatfile (stella.cht)
-      kChoosePaletteFileCmd = 'LOpf', // palette file (stella.pal)
-      kChoosePropsFileCmd   = 'LOpr', // properties file (stella.pro)
-      kChooseNVRamDirCmd   =  'LOnv', // nvram (flash/eeprom) dir
-      kStateDirChosenCmd    = 'LOsc', // state dir changed
-      kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
-      kPaletteFileChosenCmd = 'LOpc', // palette file changed
-      kPropsFileChosenCmd   = 'LOrc', // properties file changed
-      kNVRamDirChosenCmd    = 'LOnc'  // nvram (flash/eeprom) dir changed
+      kChooseRomDirCmd = 'LOrm', // rom select
     };
 
     const GUI::Font& myFont;
 
     // Config paths
     EditTextWidget* myRomPath;
-    EditTextWidget* myStatePath;
-    EditTextWidget* myNVRamPath;
-    EditTextWidget* myCheatFile;
-    EditTextWidget* myPaletteFile;
-    EditTextWidget* myPropsFile;
 
     unique_ptr<BrowserDialog> myBrowser;
 

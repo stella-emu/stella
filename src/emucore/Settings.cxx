@@ -104,12 +104,7 @@ Settings::Settings(OSystem& osystem)
 
   // Config files and paths
   setInternal("romdir", "");
-  setInternal("statedir", "");
-  setInternal("cheatfile", "");
-  setInternal("palettefile", "");
-  setInternal("propsfile", "");
-  setInternal("nvramdir", "");
-  setInternal("cfgdir", "");
+// FIXME  setInternal("basedir", "");
 
   // ROM browser options
   setInternal("exitlauncher", "false");
@@ -547,13 +542,6 @@ void Settings::usage() const
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in\n"
     << "                                UI\n"
     << "  -romdir       <dir>          Directory in which to load ROM files\n"
-    << "  -statedir     <dir>          Directory in which to save/load state files\n"
-    << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
-    << "  -palettefile  <file>         Full pathname of user-defined palette file\n"
-    << "  -propsfile    <file>         Full pathname of ROM properties file\n"
-    << "  -nvramdir     <dir>          Directory in which to save/load flash/EEPROM\n"
-    << "                                files\n"
-    << "  -cfgdir       <dir>          Directory in which to save Distella config files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is\n"
     << "                                connected\n"
     << "  -holdreset                   Start the emulator with the Game Reset switch\n"

@@ -41,11 +41,10 @@ ConfigPathDialog::ConfigPathDialog(
   const int H_GAP = 8;
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Properties file") + 20,
+            buttonWidth  = font.getStringWidth("ROM Path") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   WidgetArray wid;
-  ButtonWidget* b;
 
   // Set real dimensions
   setSize(64 * fontWidth + HBORDER * 2, 9 * (lineHeight + V_GAP) + VBORDER, max_w, max_h);
@@ -61,56 +60,6 @@ ConfigPathDialog::ConfigPathDialog(
   myRomPath = new EditTextWidget(this, font, xpos, ypos + 1,
                                  _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(myRomPath);
-
-  // Cheat file
-  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Cheat file" + ELLIPSIS, kChooseCheatFileCmd);
-  wid.push_back(b);
-  xpos += buttonWidth + H_GAP;
-  myCheatFile = new EditTextWidget(this, font, xpos, ypos + 1,
-                                   _w - xpos - HBORDER, lineHeight, "");
-  wid.push_back(myCheatFile);
-
-  // Palette file
-  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Palette file" + ELLIPSIS, kChoosePaletteFileCmd);
-  wid.push_back(b);
-  xpos += buttonWidth + H_GAP;
-  myPaletteFile = new EditTextWidget(this, font, xpos, ypos + 1,
-                                     _w - xpos - HBORDER, lineHeight, "");
-  wid.push_back(myPaletteFile);
-
-  // Properties file
-  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Properties file" + ELLIPSIS, kChoosePropsFileCmd);
-  wid.push_back(b);
-  xpos += buttonWidth + H_GAP;
-  myPropsFile = new EditTextWidget(this, font, xpos, ypos + 1,
-                                   _w - xpos - HBORDER, lineHeight, "");
-  wid.push_back(myPropsFile);
-
-  // State directory
-  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "State path" + ELLIPSIS, kChooseStateDirCmd);
-  wid.push_back(b);
-  xpos += buttonWidth + H_GAP;
-  myStatePath = new EditTextWidget(this, font, xpos, ypos + 1,
-                                   _w - xpos - HBORDER, lineHeight, "");
-  wid.push_back(myStatePath);
-
-  // NVRAM directory
-  xpos = HBORDER;  ypos += buttonHeight + V_GAP;
-  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "NVRAM path" + ELLIPSIS, kChooseNVRamDirCmd);
-  wid.push_back(b);
-  xpos += buttonWidth + H_GAP;
-  myNVRamPath = new EditTextWidget(this, font, xpos, ypos + 1,
-                                   _w - xpos - HBORDER, lineHeight, "");
-  wid.push_back(myNVRamPath);
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
@@ -135,22 +84,12 @@ void ConfigPathDialog::loadConfig()
 {
   const Settings& settings = instance().settings();
   myRomPath->setText(settings.getString("romdir"));
-  myCheatFile->setText(settings.getString("cheatfile"));
-  myPaletteFile->setText(settings.getString("palettefile"));
-  myPropsFile->setText(settings.getString("propsfile"));
-  myNVRamPath->setText(settings.getString("nvramdir"));
-  myStatePath->setText(settings.getString("statedir"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ConfigPathDialog::saveConfig()
 {
   instance().settings().setValue("romdir", myRomPath->getText());
-  instance().settings().setValue("cheatfile", myCheatFile->getText());
-  instance().settings().setValue("palettefile", myPaletteFile->getText());
-  instance().settings().setValue("propsfile", myPropsFile->getText());
-  instance().settings().setValue("statedir", myStatePath->getText());
-  instance().settings().setValue("nvramdir", myNVRamPath->getText());
 
   // Flush changes to disk and inform the OSystem
   instance().saveConfig();
@@ -160,31 +99,8 @@ void ConfigPathDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ConfigPathDialog::setDefaults()
 {
-  FilesystemNode node;
-  const string& basedir = instance().baseDir();
-
-  node = FilesystemNode("~");
+  FilesystemNode node("~");
   myRomPath->setText(node.getShortPath());
-
-  const string& cheatfile = basedir + "stella.cht";
-  node = FilesystemNode(cheatfile);
-  myCheatFile->setText(node.getShortPath());
-
-  const string& palettefile = basedir + "stella.pal";
-  node = FilesystemNode(palettefile);
-  myPaletteFile->setText(node.getShortPath());
-
-  const string& propsfile = basedir + "stella.pro";
-  node = FilesystemNode(propsfile);
-  myPropsFile->setText(node.getShortPath());
-
-  const string& nvramdir = basedir + "nvram";
-  node = FilesystemNode(nvramdir);
-  myNVRamPath->setText(node.getShortPath());
-
-  const string& statedir = basedir + "state";
-  node = FilesystemNode(statedir);
-  myStatePath->setText(node.getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,72 +128,8 @@ void ConfigPathDialog::handleCommand(CommandSender* sender, int cmd,
                       BrowserDialog::Directories, LauncherDialog::kRomDirChosenCmd);
       break;
 
-    case kChooseCheatFileCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select cheat file");
-      myBrowser->show(myCheatFile->getText(),
-                      BrowserDialog::FileLoad, kCheatFileChosenCmd);
-      break;
-
-    case kChoosePaletteFileCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select palette file");
-      myBrowser->show(myPaletteFile->getText(),
-                      BrowserDialog::FileLoad, kPaletteFileChosenCmd);
-      break;
-
-    case kChoosePropsFileCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select properties file");
-      myBrowser->show(myPropsFile->getText(),
-                      BrowserDialog::FileLoad, kPropsFileChosenCmd);
-      break;
-
-    case kChooseNVRamDirCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select NVRAM directory");
-      myBrowser->show(myNVRamPath->getText(),
-                      BrowserDialog::Directories, kNVRamDirChosenCmd);
-      break;
-
-    case kChooseStateDirCmd:
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      createBrowser("Select state directory");
-      myBrowser->show(myStatePath->getText(),
-                      BrowserDialog::Directories, kStateDirChosenCmd);
-      break;
-
     case LauncherDialog::kRomDirChosenCmd:
       myRomPath->setText(myBrowser->getResult().getShortPath());
-      break;
-
-    case kCheatFileChosenCmd:
-      myCheatFile->setText(myBrowser->getResult().getShortPath());
-      break;
-
-    case kPaletteFileChosenCmd:
-      myPaletteFile->setText(myBrowser->getResult().getShortPath());
-      break;
-
-    case kPropsFileChosenCmd:
-      myPropsFile->setText(myBrowser->getResult().getShortPath());
-      break;
-
-    case kNVRamDirChosenCmd:
-      myNVRamPath->setText(myBrowser->getResult().getShortPath());
-      break;
-
-    case kStateDirChosenCmd:
-      myStatePath->setText(myBrowser->getResult().getShortPath());
-      break;
-
-    case LauncherDialog::kReloadRomDirCmd:
-      sendCommand(LauncherDialog::kReloadRomDirCmd, 0, 0);
       break;
 
     default:

@@ -563,18 +563,6 @@ class OSystem
     */
     string getROMInfo(const Console& console);
 
-    /**
-      Validate the directory name, and create it if necessary.
-      Also, update the settings with the new name.  For now, validation
-      means that the path must always end with the appropriate separator.
-
-      @param path     The actual path being accessed and created
-      @param setting  The setting corresponding to the path being considered
-      @param defaultpath  The default path to use if the settings don't exist
-    */
-    void validatePath(string& path, const string& setting,
-                      const string& defaultpath);
-
     double dispatchEmulation(EmulationWorker& emulationWorker);
 
     // Following constructors and assignment operators not supported

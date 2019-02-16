@@ -189,35 +189,42 @@ void OSystem::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setConfigPaths()
 {
-  // Paths are saved with special characters preserved ('~' or '.')
-  // We do some error checking here, so the rest of the codebase doesn't
-  // have to worry about it
-  FilesystemNode node;
-  string s;
+  // Make sure all required directories actually exist
+  auto buildDirIfRequired = [](string& path, const string& pathToBuild)
+  {
+    FilesystemNode node(pathToBuild);
+    if(!node.isDirectory())
+      node.makeDir();
 
-  validatePath(myStateDir, "statedir", myBaseDir + "state");
-  validatePath(mySnapshotSaveDir, "snapsavedir", defaultSaveDir());
-  validatePath(mySnapshotLoadDir, "snaploaddir", defaultLoadDir());
-  validatePath(myNVRamDir, "nvramdir", myBaseDir + "nvram");
-  validatePath(myCfgDir, "cfgdir", myBaseDir + "cfg");
+    path = node.getPath();
+  };
 
-  s = mySettings->getString("cheatfile");
-  if(s == "") s = myBaseDir + "stella.cht";
-  node = FilesystemNode(s);
-  myCheatFile = node.getPath();
-  mySettings->setValue("cheatfile", node.getShortPath());
+  buildDirIfRequired(myStateDir, myBaseDir + "state");
+  buildDirIfRequired(myNVRamDir, myBaseDir + "nvram");
+  buildDirIfRequired(myCfgDir,   myBaseDir + "cfg");
 
-  s = mySettings->getString("palettefile");
-  if(s == "") s = myBaseDir + "stella.pal";
-  node = FilesystemNode(s);
-  myPaletteFile = node.getPath();
-  mySettings->setValue("palettefile", node.getShortPath());
+  buildDirIfRequired(mySnapshotSaveDir, defaultSaveDir());
+  buildDirIfRequired(mySnapshotLoadDir, defaultLoadDir());
 
-  s = mySettings->getString("propsfile");
-  if(s == "") s = myBaseDir + "stella.pro";
-  node = FilesystemNode(s);
-  myPropertiesFile = node.getPath();
-  mySettings->setValue("propsfile", node.getShortPath());
+  myCheatFile = FilesystemNode(myBaseDir + "stella.cht").getPath();
+  myPaletteFile = FilesystemNode(myBaseDir + "stella.pal").getPath();
+  myPropertiesFile = FilesystemNode(myBaseDir + "stella.pro").getPath();
+
+  // TODO - remove this
+  auto dbgPath = [](const string& desc, const string& location)
+  {
+    cerr << desc << ": " << location << endl;
+  };
+  dbgPath("base dir  ", myBaseDir);
+  dbgPath("state dir ", myStateDir);
+  dbgPath("nvram dir ", myNVRamDir);
+  dbgPath("cfg dir   ", myCfgDir);
+  dbgPath("ssave dir ", mySnapshotSaveDir);
+  dbgPath("sload dir ", mySnapshotLoadDir);
+  dbgPath("cheat file", myCheatFile);
+  dbgPath("pal file  ", myPaletteFile);
+  dbgPath("pro file  ", myPropertiesFile);
+  dbgPath("INI file  ", myConfigFile);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -563,20 +570,6 @@ string OSystem::getROMInfo(const Console& console)
       << "  Bankswitch Type: " << info.BankSwitch << endl;
 
   return buf.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::validatePath(string& path, const string& setting,
-                           const string& defaultpath)
-{
-  const string& s = mySettings->getString(setting) == "" ? defaultpath :
-                    mySettings->getString(setting);
-  FilesystemNode node(s);
-  if(!node.isDirectory())
-    node.makeDir();
-
-  path = node.getPath();
-  mySettings->setValue(setting, node.getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
