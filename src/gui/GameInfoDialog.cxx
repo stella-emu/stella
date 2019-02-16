@@ -434,18 +434,12 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   if(myLeftPort->getSelectedTag().toString() == "AUTO")
   {
     if(instance().hasConsole())
-    {
       label = (!swapPorts ? instance().console().leftController().name()
-               : instance().console().rightController().name())
-        + " detected";
-    }
+               : instance().console().rightController().name()) + " detected";
     else if(autoDetect)
-    {
-      controller = ControllerDetector::detect(image.get(), size, controller,
-                                              !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
-                                              instance().settings());
-      label = getControllerName(controller) + " detected";
-    }
+      label = ControllerDetector::detectName(image.get(), size, controller,
+                                             !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
+                                             instance().settings()) + " detected";
   }
   myLeftPortDetected->setLabel(label);
 
@@ -456,18 +450,12 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   if(myRightPort->getSelectedTag().toString() == "AUTO")
   {
     if(instance().hasConsole())
-    {
       label = (!swapPorts ? instance().console().rightController().name()
-               : instance().console().leftController().name())
-        + " detected";
-    }
+               : instance().console().leftController().name()) + " detected";
     else if(autoDetect)
-    {
-      controller = ControllerDetector::detect(image.get(), size, controller,
-                                              !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
-                                              instance().settings());
-      label = getControllerName(controller) + " detected";
-    }
+      label = ControllerDetector::detectName(image.get(), size, controller,
+                                             !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
+                                             instance().settings()) + " detected";
   }
   myRightPortDetected->setLabel(label);
 
@@ -649,29 +637,6 @@ void GameInfoDialog::updateControllerStates()
   myEraseEEPROMLabel->setEnabled(enableEEEraseButton);
   myEraseEEPROMButton->setEnabled(enableEEEraseButton);
   myEraseEEPROMInfo->setEnabled(enableEEEraseButton);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string GameInfoDialog::getControllerName(const string& type)
-{
-  if(BSPF::equalsIgnoreCase(type, "JOYSTICK"))
-    return "Joystick";
-  if(BSPF::equalsIgnoreCase(type, "SAVEKEY"))
-    return "SaveKey";
-  if(BSPF::equalsIgnoreCase(type, "TRAKBALL"))
-    return "TrakBall";
-  if(BSPF::equalsIgnoreCase(type, "ATA RIMOUSE"))
-    return "AtariMouse";
-  if(BSPF::equalsIgnoreCase(type, "AMIGAMOUSE"))
-    return "AmigaMouse";
-  if(BSPF::equalsIgnoreCase(type, "KEYBOARD"))
-    return "Keyboard";
-  if(BSPF::equalsIgnoreCase(type, "GENESIS"))
-    return "Genesis";
-  if(BSPF::equalsIgnoreCase(type, "PADDLES"))
-    return "Paddles";
-
-  return type;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

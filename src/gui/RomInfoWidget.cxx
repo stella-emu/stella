@@ -136,12 +136,12 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
   if(node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr)
   {
-    left = ControllerDetector::detect(image.get(), size, left,
-                                      !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
-                                      instance().settings());
-    right = ControllerDetector::detect(image.get(), size, right,
-                                       !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
-                                       instance().settings());
+    left = ControllerDetector::detectName(image.get(), size, left,
+                                          !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
+                                          instance().settings());
+    right = ControllerDetector::detectName(image.get(), size, right,
+                                           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
+                                           instance().settings());
   }
   myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
 

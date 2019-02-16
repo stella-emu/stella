@@ -31,28 +31,54 @@ class ControllerDetector
 {
   public:
     /**
-      Detects the controller at the given port if no controller is provided.
+      Detects the controller type at the given port if no controller is provided.
 
       @param image      A pointer to the ROM image
       @param size       The size of the ROM image
       @param controller The provided controller type of the ROM image
       @param port       The port to be checked
       @param settings   A reference to the various settings (read-only)
-      @return   The detected controller name
+      @return   The detected controller type
     */
-    static string detect(const uInt8* image, uInt32 size,
-                         const string& controller, const Controller::Jack port,
-                         const Settings& settings);
+    static string detectType(const uInt8* image, uInt32 size,
+                             const string& controller, const Controller::Jack port,
+                             const Settings& settings);
+
+    /**
+      Detects the controller type at the given port if no controller is provided
+      and returns its name.
+
+      @param image      A pointer to the ROM image
+      @param size       The size of the ROM image
+      @param controller The provided controller type of the ROM image
+      @param port       The port to be checked
+      @param settings   A reference to the various settings (read-only)
+
+      @return   The (detected) controller name
+    */
+    static string detectName(const uInt8* image, uInt32 size,
+                             const string& controller, const Controller::Jack port,
+                             const Settings& settings);
+
+    /**
+      Returns a nicer formatted name for the given controller.
+
+      @param controller The provided controller type of the ROM image
+
+      @return   The controller name
+    */
+    static const string getControllerName(const string& controller);
 
   private:
     /**
-      Detects the controller at the given port.
+      Detects the controller type at the given port.
 
       @param image      A pointer to the ROM image
       @param size       The size of the ROM image
       @param port       The port to be checked
       @param settings   A reference to the various settings (read-only)
-      @return   The detected controller name
+
+      @return   The detected controller type
     */
     static string autodetectPort(const uInt8* image, uInt32 size, Controller::Jack port,
                                  const Settings& settings);

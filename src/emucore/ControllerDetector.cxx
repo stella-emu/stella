@@ -20,9 +20,9 @@
 #include "ControllerDetector.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerDetector::detect(const uInt8* image, uInt32 size,
-                                  const string& controller, const Controller::Jack port,
-                                  const Settings& settings)
+string ControllerDetector::detectType(const uInt8* image, uInt32 size,
+                                      const string& controller, const Controller::Jack port,
+                                      const Settings& settings)
 {
   string type(controller);
 
@@ -39,6 +39,14 @@ string ControllerDetector::detect(const uInt8* image, uInt32 size,
   }
 
   return type;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string ControllerDetector::detectName(const uInt8* image, uInt32 size,
+                                      const string& controller, const Controller::Jack port,
+                                      const Settings& settings)
+{
+  return getControllerName(detectType(image, size, controller, port, settings));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -594,4 +602,45 @@ bool ControllerDetector::isProbablySaveKey(const uInt8* image, uInt32 size, Cont
   }
 
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string ControllerDetector::getControllerName(const string& controller)
+{
+  // auto detected:
+  if(BSPF::equalsIgnoreCase(controller, "JOYSTICK"))
+    return "Joystick";
+  if(BSPF::equalsIgnoreCase(controller, "SAVEKEY"))
+    return "SaveKey";
+  if(BSPF::equalsIgnoreCase(controller, "TRAKBALL"))
+    return "TrakBall";
+  if(BSPF::equalsIgnoreCase(controller, "ATARIMOUSE"))
+    return "AtariMouse";
+  if(BSPF::equalsIgnoreCase(controller, "AMIGAMOUSE"))
+    return "AmigaMouse";
+  if(BSPF::equalsIgnoreCase(controller, "KEYBOARD"))
+    return "Keyboard";
+  if(BSPF::equalsIgnoreCase(controller, "GENESIS"))
+    return "Sega Genesis";
+  if(BSPF::equalsIgnoreCase(controller, "PADDLES"))
+    return "Paddles";
+  // not auto detected:
+  if(BSPF::equalsIgnoreCase(controller, "BOOSTERGRIP"))
+    return "BoosterGrip";
+  if(BSPF::equalsIgnoreCase(controller, "DRIVING"))
+    return "Driving";
+  if(BSPF::equalsIgnoreCase(controller, "MINDLINK"))
+    return "MindLink";
+  if(BSPF::equalsIgnoreCase(controller, "ATARIVOX"))
+    return "AtariVox";
+  if(BSPF::equalsIgnoreCase(controller, "PADDLES_IAXIS"))
+    return "Paddles IAxis";
+  if(BSPF::equalsIgnoreCase(controller, "PADDLES_IAXDR"))
+    return "Paddles IAxDr";
+  if(BSPF::equalsIgnoreCase(controller, "COMPUMATE"))
+    return "CompuMate";
+  if(BSPF::equalsIgnoreCase(controller, "KIDVID"))
+    return "KidVid";
+
+  return controller;
 }
