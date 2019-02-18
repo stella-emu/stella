@@ -712,16 +712,31 @@ void EventHandler::setActionMappings(EventMode mode)
 
     // There are some keys which are hardcoded.  These should be represented too.
     string prepend = "";
-    if(event == Event::Quit)
+    string modifier;
 #ifndef BSPF_MACOS
-      prepend = "Ctrl Q";
+    modifier = "Ctrl";
 #else
-      prepend = "Cmd Q";
+    modfier = "Cmd";
 #endif
+
+    if(event == Event::Quit)
+      prepend = modifier + " + Q (*)";
+    else if(event == Event::VolumeDecrease)
+      prepend = "Alt + '[' (*)";
+    else if(event == Event::VolumeIncrease)
+      prepend = "Alt + ']' (*)";
+    else if(event == Event::SoundToggle)
+      prepend = modifier + " + ']' (*)";
+    else if(event == Event::Fry)
+      prepend = "Backspace (*)";
+    else if(event == Event::OptionsMenuMode)
+      prepend = "Tab (*)";
     else if(event == Event::UINavNext)
-      prepend = "TAB";
+      prepend = "Tab (*)";
     else if(event == Event::UINavPrev)
-      prepend = "Shift-TAB";
+      prepend = "Shift + Tab (*)";
+    else if(event == Event::UIPrevDir)
+      prepend = "Backspace (*)";
     // else if ...
 
     if(key == "")
