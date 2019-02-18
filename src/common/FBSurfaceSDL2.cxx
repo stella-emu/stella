@@ -25,6 +25,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
   : myFB(buffer),
     mySurface(nullptr),
     myTexture(nullptr),
+    mySecondaryTexture(nullptr),
     mySurfaceIsDirty(true),
     myIsVisible(true),
     myTexAccess(SDL_TEXTUREACCESS_STREAMING),
@@ -135,9 +136,15 @@ bool FBSurfaceSDL2::render()
 
   if(myIsVisible)
   {
-    if(myTexAccess == SDL_TEXTUREACCESS_STREAMING)
+    SDL_Texture* texture = myTexture;
+
+    if(myTexAccess == SDL_TEXTUREACCESS_STREAMING) {
       SDL_UpdateTexture(myTexture, &mySrcR, mySurface->pixels, mySurface->pitch);
-    SDL_RenderCopy(myFB.myRenderer, myTexture, &mySrcR, &myDstR);
+      myTexture = mySecondaryTexture;
+      mySecondaryTexture = texture;
+    }
+
+    SDL_RenderCopy(myFB.myRenderer, texture, &mySrcR, &myDstR);
 
     return true;
   }
@@ -157,8 +164,10 @@ void FBSurfaceSDL2::free()
 {
   ASSERT_MAIN_THREAD;
 
-  if(myTexture)
-  {
+  SDL_Texture* textures[] = {myTexture, mySecondaryTexture};
+  for (SDL_Texture* texture: textures) {
+    if (!texture) continue;
+
     SDL_DestroyTexture(myTexture);
     myTexture = nullptr;
   }
@@ -174,15 +183,24 @@ void FBSurfaceSDL2::reload()
   myTexture = SDL_CreateTexture(myFB.myRenderer, myFB.myPixelFormat->format,
       myTexAccess, mySurface->w, mySurface->h);
 
+  if (myTexAccess == SDL_TEXTUREACCESS_STREAMING)
+    mySecondaryTexture = SDL_CreateTexture(myFB.myRenderer, myFB.myPixelFormat->format,
+        myTexAccess, mySurface->w, mySurface->h);
+
   // If the data is static, we only upload it once
   if(myTexAccess == SDL_TEXTUREACCESS_STATIC)
     SDL_UpdateTexture(myTexture, nullptr, myStaticData.get(), myStaticPitch);
 
-  // Blending enabled?
-  if(myBlendEnabled)
-  {
-    SDL_SetTextureBlendMode(myTexture, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(myTexture, myBlendAlpha);
+  SDL_Texture* textures[] = {myTexture, mySecondaryTexture};
+  for (SDL_Texture* texture: textures) {
+    if (!texture) continue;
+
+    // Blending enabled?
+    if(myBlendEnabled)
+    {
+      SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+      SDL_SetTextureAlphaMod(texture, myBlendAlpha);
+    }
   }
 }
 

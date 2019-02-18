@@ -78,6 +78,7 @@ class FBSurfaceSDL2 : public FBSurface
 
     SDL_Surface* mySurface;
     SDL_Texture* myTexture;
+    SDL_Texture* mySecondaryTexture;
     SDL_Rect mySrcR, myDstR;
 
     bool mySurfaceIsDirty;
