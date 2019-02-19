@@ -53,7 +53,7 @@ class Thumbulator
       DPCplus   // cartridges of type DPC+
     };
 
-    Thumbulator(const uInt16* rom, uInt16* ram, bool traponfatal,
+    Thumbulator(const uInt16* rom, uInt16* ram, uInt32 romSize, bool traponfatal,
                 Thumbulator::ConfigureFor configurefor, Cartridge* cartridge);
 
     /**
@@ -89,6 +89,58 @@ class Thumbulator
     void setConsoleTiming(ConsoleTiming timing);
 
   private:
+
+    enum class Op : uInt8 {
+      invalid,
+      adc,
+      add1, add2, add3, add4, add5, add6, add7,
+      and_,
+      asr1, asr2,
+      b1, b2,
+      bic,
+      bkpt,
+      blx1, blx2,
+      bx,
+      cmn,
+      cmp1, cmp2, cmp3,
+      cps,
+      cpy,
+      eor,
+      ldmia,
+      ldr1, ldr2, ldr3, ldr4,
+      ldrb1, ldrb2,
+      ldrh1, ldrh2,
+      ldrsb,
+      ldrsh,
+      lsl1, lsl2,
+      lsr1, lsr2,
+      mov1, mov2, mov3,
+      mul,
+      mvn,
+      neg,
+      orr,
+      pop,
+      push,
+      rev,
+      rev16,
+      revsh,
+      ror,
+      sbc,
+      setend,
+      stmia,
+      str1, str2, str3,
+      strb1, strb2,
+      strh1, strh2,
+      sub1, sub2, sub3, sub4,
+      swi,
+      sxtb,
+      sxth,
+      tst,
+      uxtb,
+      uxth
+    };
+
+  private:
     uInt32 read_register(uInt32 reg);
     void write_register(uInt32 reg, uInt32 data);
     uInt32 fetch16(uInt32 addr);
@@ -99,6 +151,8 @@ class Thumbulator
     void write16(uInt32 addr, uInt32 data);
     void write32(uInt32 addr, uInt32 data);
     void updateTimer(uInt32 cycles);
+
+    static Op decodeInstructionWord(uint16_t inst);
 
     void do_zflag(uInt32 x);
     void do_nflag(uInt32 x);
@@ -120,6 +174,8 @@ class Thumbulator
 
   private:
     const uInt16* rom;
+    uInt16 romSize;
+    const unique_ptr<Op[]> decodedRom;
     uInt16* ram;
 
     uInt32 reg_norm[16]; // normal execution mode, do not have a thread mode
