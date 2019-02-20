@@ -42,17 +42,42 @@
   #include "CheatManager.hxx"
 #endif
 
+/**
+  Checks the commandline for special settings that are used by various ports
+  to use a specific 'base directory'.
+
+  This needs to be done separately from the main commandline and settings
+  functionality, since they both depend on the settings file being already
+  available.  However, since a variabe basedir implies a different location
+  for the settings file, it *must* be processed first.
+
+  This function will set the environment variables STELLA_BASEDIR and
+  STELLA_USECURRENTASBASEDIR; it is up to each port to use these as they wish.
+*/
+void checkForCustomBaseDir(int ac, char* av[]);
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void checkForCustomBaseDir(int ac, char* av[])
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #if defined(BSPF_MACOS)
-int stellaMain(int argc, char* argv[])
+int stellaMain(int ac, char* av[])
 #else
-int main(int argc, char* argv[])
+int main(int ac, char* av[])
 #endif
 {
   SET_MAIN_THREAD;
 
   std::ios_base::sync_with_stdio(false);
+
+  // Check for custom base directory
+  // This needs to be done separately from the normal startup, since it
+  // queries information from the commandline that both OSystem and Settings
+  // need *before* they are created
+  checkForCustomBaseDir(ac, av);
 
   // Create the parent OSystem object
   unique_ptr<OSystem> theOSystem = MediaFactory::createOSystem();
@@ -70,7 +95,7 @@ int main(int argc, char* argv[])
 
   // Take care of commandline arguments
   theOSystem->logMessage("Loading commandline arguments ...", 2);
-  string romfile = theOSystem->settings().loadCommandLine(argc, argv);
+  string romfile = theOSystem->settings().loadCommandLine(ac, av);
 
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings

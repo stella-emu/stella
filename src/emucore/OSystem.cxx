@@ -203,8 +203,13 @@ void OSystem::setConfigPaths()
   buildDirIfRequired(myNVRamDir, myBaseDir + "nvram");
   buildDirIfRequired(myCfgDir,   myBaseDir + "cfg");
 
-  buildDirIfRequired(mySnapshotSaveDir, defaultSaveDir());
-  buildDirIfRequired(mySnapshotLoadDir, defaultLoadDir());
+  mySnapshotSaveDir = mySettings->getString("snapsavedir");
+  if(mySnapshotSaveDir == "") mySnapshotSaveDir = defaultSaveDir();
+  buildDirIfRequired(mySnapshotSaveDir, mySnapshotSaveDir);
+
+  mySnapshotLoadDir = mySettings->getString("snaploaddir");
+  if(mySnapshotLoadDir == "") mySnapshotLoadDir = defaultLoadDir();
+  buildDirIfRequired(mySnapshotLoadDir, mySnapshotLoadDir);
 
   myCheatFile = FilesystemNode(myBaseDir + "stella.cht").getPath();
   myPaletteFile = FilesystemNode(myBaseDir + "stella.pal").getPath();

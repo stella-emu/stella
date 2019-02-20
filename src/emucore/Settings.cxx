@@ -15,8 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cassert>
-
 #include "bspf.hxx"
 
 #include "OSystem.hxx"
@@ -104,7 +102,6 @@ Settings::Settings(OSystem& osystem)
 
   // Config files and paths
   setInternal("romdir", "");
-// FIXME  setInternal("basedir", "");
 
   // ROM browser options
   setInternal("exitlauncher", "false");
@@ -147,7 +144,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("dev.rwportbreak", "true");
 #endif
 
-  // player settings
+  // Player settings
   setInternal("plr.stats", "false");
   setInternal("plr.bankrandom", "false");
   setInternal("plr.ramrandom", "true");
@@ -164,7 +161,7 @@ Settings::Settings(OSystem& osystem)
   setInternal("plr.tm.horizon", "10m"); // = ~10 minutes
   setInternal("plr.eepromaccess", "false");
 
-  // developer settings
+  // Developer settings
   setInternal("dev.settings", "false");
   setInternal("dev.stats", "true");
   setInternal("dev.bankrandom", "true");
