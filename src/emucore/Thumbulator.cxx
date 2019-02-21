@@ -19,6 +19,7 @@
 // This class provides Thumb emulation code ("Thumbulator")
 //    by David Welch (dwelch@dwelch.com)
 // Modified by Fred Quimby
+// Optimized by Christina Speckner and Thomas Jentzsch
 // Code is public domain and used with the author's consent
 //============================================================================
 
@@ -57,7 +58,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 romSize,
                          Thumbulator::ConfigureFor configurefor, Cartridge* cartridge)
   : rom(rom_ptr),
     romSize(romSize),
-    decodedRom(new Op[romSize / 2]),
+    decodedInstruction(new Instruction[romSize / 2]),
     ram(ram_ptr),
     T1TCR(0),
     T1TC(0),
@@ -65,7 +66,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 romSize,
     myCartridge(cartridge)
 {
   for (uint32_t i = 0; i < romSize / 2; i++)
-    decodedRom[i] = decodeInstructionWord(CONV_RAMROM(rom[i]));
+    decodeInstructionWord(CONV_RAMROM(rom[i]), decodedInstruction[i]);
 
   setConsoleTiming(ConsoleTiming::ntsc);
   trapFatalErrors(traponfatal);
@@ -532,227 +533,572 @@ void Thumbulator::do_vflag_bit(uInt32 x)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Thumbulator::Op Thumbulator::decodeInstructionWord(uint16_t inst) {
+void Thumbulator::decodeInstructionWord(uint16_t inst, Instruction& instr)
+{
   //ADC
-  if((inst & 0xFFC0) == 0x4140) return Op::adc;
-
+  if((inst & 0xFFC0) == 0x4140)
+  {
+    instr.op = Op::adc;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rm = (inst >> 3) & 0x07;
+  }
   //ADD(1) small immediate two registers
-  if((inst & 0xFE00) == 0x1C00 && (inst >> 6) & 0x7) return Op::add1;
-
+  else if((inst & 0xFE00) == 0x1C00 && (inst >> 6) & 0x7)
+  {
+    instr.op = Op::add1;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rb = (inst >> 6) & 0x7;
+  }
   //ADD(2) big immediate one register
-  if((inst & 0xF800) == 0x3000) return Op::add2;
-
+  else if((inst & 0xF800) == 0x3000)
+  {
+    instr.op = Op::add2;
+    instr.rb = (inst >> 0) & 0xFF;
+    instr.rd = (inst >> 8) & 0x7;
+  }
   //ADD(3) three registers
-  if((inst & 0xFE00) == 0x1800) return Op::add3;
-
+  else if((inst & 0xFE00) == 0x1800)
+  {
+    instr.op = Op::add3;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //ADD(4) two registers one or both high no flags
-  if((inst & 0xFF00) == 0x4400) return Op::add4;
-
+  else if((inst & 0xFF00) == 0x4400)
+  {
+    instr.op = Op::add4;
+    if((inst >> 6) & 3)
+    {
+      //UNPREDICTABLE
+    }
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rd |= (inst >> 4) & 0x8;
+    instr.rm = (inst >> 3) & 0xF;
+  }
   //ADD(5) rd = pc plus immediate
-  if((inst & 0xF800) == 0xA000) return Op::add5;
-
+  else if((inst & 0xF800) == 0xA000)
+  {
+    instr.op = Op::add5;
+    instr.rb = (inst >> 0) & 0xFF;
+    instr.rd = (inst >> 8) & 0x7;
+    instr.rb <<= 2;
+  }
   //ADD(6) rd = sp plus immediate
-  if((inst & 0xF800) == 0xA800) return Op::add6;
-
+  else if((inst & 0xF800) == 0xA800)
+  {
+    instr.op = Op::add6;
+    instr.rb = (inst >> 0) & 0xFF;
+    instr.rd = (inst >> 8) & 0x7;
+    instr.rb <<= 2;
+  }
   //ADD(7) sp plus immediate
-  if((inst & 0xFF80) == 0xB000) return Op::add7;
-
+  else if((inst & 0xFF80) == 0xB000)
+  {
+    instr.op = Op::add7;
+    instr.rb = (inst >> 0) & 0x7F;
+    instr.rb <<= 2;
+  }
   //AND
-  if((inst & 0xFFC0) == 0x4000) return Op::and_;
-
+  else if((inst & 0xFFC0) == 0x4000)
+  {
+    instr.op = Op::and_;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //ASR(1) two register immediate
-  if((inst & 0xF800) == 0x1000) return Op::asr1;
-
+  else if((inst & 0xF800) == 0x1000)
+  {
+    instr.op = Op::asr1;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rm = (inst >> 3) & 0x07;
+    instr.rb = (inst >> 6) & 0x1F;
+  }
   //ASR(2) two register
-  if((inst & 0xFFC0) == 0x4100) return Op::asr2;
-
+  else if((inst & 0xFFC0) == 0x4100)
+  {
+    instr.op = Op::asr2;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rs = (inst >> 3) & 0x07;
+  }
   //B(1) conditional branch
-  if((inst & 0xF000) == 0xD000) return Op::b1;
-
+  else if((inst & 0xF000) == 0xD000)
+  {
+    instr.op = Op::b1;
+    instr.rb = (inst >> 0) & 0xFF;
+    if(instr.rb & 0x80)
+      instr.rb |= (~0u) << 8;
+    instr.rb <<= 1;
+    instr.rb += 2;
+  }
   //B(2) unconditional branch
-  if((inst & 0xF800) == 0xE000) return Op::b2;
-
+  else if((inst & 0xF800) == 0xE000)
+  {
+    instr.op = Op::b2;
+    instr.rb = (inst >> 0) & 0x7FF;
+    if(instr.rb & (1 << 10))
+      instr.rb |= (~0u) << 11;
+    instr.rb <<= 1;
+    instr.rb += 2;
+  }
   //BIC
-  if((inst & 0xFFC0) == 0x4380) return Op::bic;
-
+  else if((inst & 0xFFC0) == 0x4380)
+  {
+    instr.op = Op::bic;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //BKPT
-  if((inst & 0xFF00) == 0xBE00) return Op::bkpt;
-
+  else if((inst & 0xFF00) == 0xBE00)
+  {
+    instr.op = Op::bkpt;
+    instr.rb = (inst >> 0) & 0xFF;
+  }
   //BL/BLX(1)
-  if((inst & 0xE000) == 0xE000) return Op::blx1;
-
+  else if((inst & 0xE000) == 0xE000)
+  {
+    instr.op = Op::blx1;
+    if((inst & 0x1800) == 0x1000) //H=b10
+    {
+      instr.rb = inst & ((1 << 11) - 1);
+      if(instr.rb & 1 << 10)
+        instr.rb |= (~((1 << 11) - 1)); //sign extend
+      instr.rb <<= 12;
+    }
+    else if((inst & 0x1800) == 0x1800) //H=b11
+    {
+      instr.rb = (inst & ((1 << 11) - 1)) << 1;
+      instr.rb += 2;
+    }
+    else if((inst & 0x1800) == 0x0800) //H=b01
+    {
+      instr.rb = (inst & ((1 << 11) - 1)) << 1;
+    }
+  }
   //BLX(2)
-  if((inst & 0xFF87) == 0x4780) return Op::blx2;
-
+  else if((inst & 0xFF87) == 0x4780)
+  {
+    instr.op = Op::blx2;
+    instr.rm = (inst >> 3) & 0xF;
+  }
   //BX
-  if((inst & 0xFF87) == 0x4700) return Op::bx;
-
+  else if((inst & 0xFF87) == 0x4700)
+  {
+    instr.op = Op::bx;
+    instr.rm = (inst >> 3) & 0xF;
+  }
   //CMN
-  if((inst & 0xFFC0) == 0x42C0) return Op::cmn;
-
+  else if((inst & 0xFFC0) == 0x42C0)
+  {
+    instr.op = Op::cmn;
+    instr.rn = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //CMP(1) compare immediate
-  if((inst & 0xF800) == 0x2800) return Op::cmp1;
-
+  else if((inst & 0xF800) == 0x2800)
+  {
+    instr.op = Op::cmp1;
+    instr.rb = (inst >> 0) & 0xFF;
+    instr.rn = (inst >> 8) & 0x07;
+  }
   //CMP(2) compare register
-  if((inst & 0xFFC0) == 0x4280) return Op::cmp2;
-
+  else if((inst & 0xFFC0) == 0x4280)
+  {
+  instr.op = Op::cmp2;
+  instr.rn = (inst >> 0) & 0x7;
+  instr.rm = (inst >> 3) & 0x7;
+  }
   //CMP(3) compare high register
-  if((inst & 0xFF00) == 0x4500) return Op::cmp3;
-
+  else if((inst & 0xFF00) == 0x4500)
+  {
+    instr.op = Op::cmp3;
+    if(((inst >> 6) & 3) == 0x0)
+    {
+      //UNPREDICTABLE
+    }
+    instr.rn = (inst >> 0) & 0x7;
+    instr.rn |= (inst >> 4) & 0x8;
+    if(instr.rn == 0xF)
+    {
+      //UNPREDICTABLE
+    }
+    instr.rm = (inst >> 3) & 0xF;
+  }
   //CPS
-  if((inst & 0xFFE8) == 0xB660) return Op::cps;
-
+  else if((inst & 0xFFE8) == 0xB660)
+  {
+    instr.op = Op::cps;
+  }
   //CPY copy high register
-  if((inst & 0xFFC0) == 0x4600) return Op::cpy;
-
+  else if((inst & 0xFFC0) == 0x4600)
+  {
+    instr.op = Op::cpy;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //EOR
-  if((inst & 0xFFC0) == 0x4040) return Op::eor;
-
+  else if((inst & 0xFFC0) == 0x4040)
+  {
+    instr.op = Op::eor;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //LDMIA
-  if((inst & 0xF800) == 0xC800) return Op::ldmia;
-
+  else if((inst & 0xF800) == 0xC800)
+  {
+    instr.op = Op::ldmia;
+    instr.rn = (inst >> 8) & 0x7;
+  }
   //LDR(1) two register immediate
-  if((inst & 0xF800) == 0x6800) return Op::ldr1;
-
+  else if((inst & 0xF800) == 0x6800)
+  {
+    instr.op = Op::ldr1;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rn = (inst >> 3) & 0x07;
+    instr.rb = (inst >> 6) & 0x1F;
+    instr.rb <<= 2;
+  }
   //LDR(2) three register
-  if((inst & 0xFE00) == 0x5800) return Op::ldr2;
-
+  else if((inst & 0xFE00) == 0x5800)
+  {
+    instr.op = Op::ldr2;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //LDR(3)
-  if((inst & 0xF800) == 0x4800) return Op::ldr3;
+  else if((inst & 0xF800) == 0x4800)
+  {
+    instr.op = Op::ldr3;
+    instr.rb = (inst >> 0) & 0xFF;
+    instr.rd = (inst >> 8) & 0x07;
+    instr.rb <<= 2;
 
-  //LDR(4)
-  if((inst & 0xF800) == 0x9800) return Op::ldr4;
-
+  } //LDR(4)
+  else if((inst & 0xF800) == 0x9800)
+  {
+    instr.op = Op::ldr4;
+    instr.rb = (inst >> 0) & 0xFF;
+    instr.rd = (inst >> 8) & 0x07;
+    instr.rb <<= 2;
+  }
   //LDRB(1)
-  if((inst & 0xF800) == 0x7800) return Op::ldrb1;
-
+  else if((inst & 0xF800) == 0x7800)
+  {
+    instr.op = Op::ldrb1;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rn = (inst >> 3) & 0x07;
+    instr.rb = (inst >> 6) & 0x1F;
+  }
   //LDRB(2)
-  if((inst & 0xFE00) == 0x5C00) return Op::ldrb2;
-
+  else if((inst & 0xFE00) == 0x5C00)
+  {
+    instr.op = Op::ldrb2;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //LDRH(1)
-  if((inst & 0xF800) == 0x8800) return Op::ldrh1;
-
+  else if((inst & 0xF800) == 0x8800)
+  {
+    instr.op = Op::ldrh1;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rn = (inst >> 3) & 0x07;
+    instr.rb = (inst >> 6) & 0x1F;
+    instr.rb <<= 1;
+  }
   //LDRH(2)
-  if((inst & 0xFE00) == 0x5A00) return Op::ldrh2;
-
+  else if((inst & 0xFE00) == 0x5A00)
+  {
+    instr.op = Op::ldrh2;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //LDRSB
-  if((inst & 0xFE00) == 0x5600) return Op::ldrsb;
-
+  else if((inst & 0xFE00) == 0x5600)
+  {
+    instr.op = Op::ldrsb;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //LDRSH
-  if((inst & 0xFE00) == 0x5E00) return Op::ldrsh;
-
+  else if((inst & 0xFE00) == 0x5E00)
+  {
+    instr.op = Op::ldrsh;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //LSL(1)
-  if((inst & 0xF800) == 0x0000) return Op::lsl1;
-
+  else if((inst & 0xF800) == 0x0000)
+  {
+    instr.op = Op::lsl1;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rm = (inst >> 3) & 0x07;
+    instr.rb = (inst >> 6) & 0x1F;
+  }
   //LSL(2) two register
-  if((inst & 0xFFC0) == 0x4080) return Op::lsl2;
-
+  else if((inst & 0xFFC0) == 0x4080)
+  {
+    instr.op = Op::lsl2;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rs = (inst >> 3) & 0x07;
+  }
   //LSR(1) two register immediate
-  if((inst & 0xF800) == 0x0800) return Op::lsr1;
-
+  else if((inst & 0xF800) == 0x0800)
+  {
+    instr.op = Op::lsr1;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rm = (inst >> 3) & 0x07;
+    instr.rb = (inst >> 6) & 0x1F;
+  }
   //LSR(2) two register
-  if((inst & 0xFFC0) == 0x40C0) return Op::lsr2;
-
+  else if((inst & 0xFFC0) == 0x40C0)
+  {
+    instr.op = Op::lsr2;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rs = (inst >> 3) & 0x07;
+  }
   //MOV(1) immediate
-  if((inst & 0xF800) == 0x2000) return Op::mov1;
-
+  else if((inst & 0xF800) == 0x2000)
+  {
+    instr.op = Op::mov1;
+    instr.rb = (inst >> 0) & 0xFF;
+    instr.rd = (inst >> 8) & 0x07;
+  }
   //MOV(2) two low registers
-  if((inst & 0xFFC0) == 0x1C00) return Op::mov2;
-
+  else if((inst & 0xFFC0) == 0x1C00)
+  {
+    instr.op = Op::mov2;
+    instr.rd = (inst >> 0) & 7;
+    instr.rn = (inst >> 3) & 7;
+  }
   //MOV(3)
-  if((inst & 0xFF00) == 0x4600) return Op::mov3;
-
+  else if((inst & 0xFF00) == 0x4600)
+  {
+    instr.op = Op::mov3;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rd |= (inst >> 4) & 0x8;
+    instr.rm = (inst >> 3) & 0xF;
+  }
   //MUL
-  if((inst & 0xFFC0) == 0x4340) return Op::mul;
-
+  else if((inst & 0xFFC0) == 0x4340)
+  {
+    instr.op = Op::mul;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //MVN
-  if((inst & 0xFFC0) == 0x43C0) return Op::mvn;
-
+  else if((inst & 0xFFC0) == 0x43C0)
+  {
+    instr.op = Op::mvn;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //NEG
-  if((inst & 0xFFC0) == 0x4240) return Op::neg;
-
+  else if((inst & 0xFFC0) == 0x4240)
+  {
+    instr.op = Op::neg;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //ORR
-  if((inst & 0xFFC0) == 0x4300) return Op::orr;
-
+  else if((inst & 0xFFC0) == 0x4300)
+  {
+    instr.op = Op::orr;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //POP
-  if((inst & 0xFE00) == 0xBC00) return Op::pop;
-
+  else if((inst & 0xFE00) == 0xBC00)
+  {
+    instr.op = Op::pop;
+  }
   //PUSH
-  if((inst & 0xFE00) == 0xB400) return Op::push;
-
+  else if((inst & 0xFE00) == 0xB400)
+  {
+    instr.op = Op::push;
+  }
   //REV
-  if((inst & 0xFFC0) == 0xBA00) return Op::rev;
-
+  else if((inst & 0xFFC0) == 0xBA00)
+  {
+    instr.op = Op::rev;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+  }
   //REV16
-  if((inst & 0xFFC0) == 0xBA40) return Op::rev16;
-
+  else if((inst & 0xFFC0) == 0xBA40)
+  {
+    instr.op = Op::rev16;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+  }
   //REVSH
-  if((inst & 0xFFC0) == 0xBAC0) return Op::revsh;
-
+  else if((inst & 0xFFC0) == 0xBAC0)
+  {
+    instr.op = Op::revsh;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+  }
   //ROR
-  if((inst & 0xFFC0) == 0x41C0) return Op::ror;
-
+  else if((inst & 0xFFC0) == 0x41C0)
+  {
+    instr.op = Op::ror;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rs = (inst >> 3) & 0x7;
+  }
   //SBC
-  if((inst & 0xFFC0) == 0x4180) return Op::sbc;
-
+  else if((inst & 0xFFC0) == 0x4180)
+  {
+    instr.op = Op::sbc;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //SETEND
-  if((inst & 0xFFF7) == 0xB650) return Op::setend;
-
+  else if((inst & 0xFFF7) == 0xB650)
+  {
+    instr.op = Op::setend;
+  }
   //STMIA
-  if((inst & 0xF800) == 0xC000) return Op::stmia;
-
+  else if((inst & 0xF800) == 0xC000)
+  {
+    instr.op = Op::stmia;
+    instr.rn = (inst >> 8) & 0x7;
+  }
   //STR(1)
-  if((inst & 0xF800) == 0x6000) return Op::str1;
-
+  else if((inst & 0xF800) == 0x6000)
+  {
+    instr.op = Op::str1;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rn = (inst >> 3) & 0x07;
+    instr.rb = (inst >> 6) & 0x1F;
+    instr.rb <<= 2;
+  }
   //STR(2)
-  if((inst & 0xFE00) == 0x5000) return Op::str2;
-
+  else if((inst & 0xFE00) == 0x5000)
+  {
+    instr.op = Op::str2;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //STR(3)
-  if((inst & 0xF800) == 0x9000) return Op::str3;
-
+  else if((inst & 0xF800) == 0x9000)
+  {
+    instr.op = Op::str3;
+    instr.rb = (inst >> 0) & 0xFF;
+    instr.rd = (inst >> 8) & 0x07;
+    instr.rb <<= 2;
+  }
   //STRB(1)
-  if((inst & 0xF800) == 0x7000) return Op::strb1;
-
+  else if((inst & 0xF800) == 0x7000)
+  {
+    instr.op = Op::strb1;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rn = (inst >> 3) & 0x07;
+    instr.rb = (inst >> 6) & 0x1F;
+  }
   //STRB(2)
-  if((inst & 0xFE00) == 0x5400) return Op::strb2;
-
+  else if((inst & 0xFE00) == 0x5400)
+  {
+    instr.op = Op::strb2;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //STRH(1)
-  if((inst & 0xF800) == 0x8000) return Op::strh1;
-
+  else if((inst & 0xF800) == 0x8000)
+  {
+    instr.op = Op::strh1;
+    instr.rd = (inst >> 0) & 0x07;
+    instr.rn = (inst >> 3) & 0x07;
+    instr.rb = (inst >> 6) & 0x1F;
+    instr.rb <<= 1;
+  }
   //STRH(2)
-  if((inst & 0xFE00) == 0x5200) return Op::strh2;
-
+  else if((inst & 0xFE00) == 0x5200)
+  {
+    instr.op = Op::strh2;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //SUB(1)
-  if((inst & 0xFE00) == 0x1E00) return Op::sub1;
-
+  else if((inst & 0xFE00) == 0x1E00)
+  {
+    instr.op = Op::sub1;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rb = (inst >> 6) & 0x7;
+  }
   //SUB(2)
-  if((inst & 0xF800) == 0x3800) return Op::sub2;
-
+  else if((inst & 0xF800) == 0x3800)
+  {
+    instr.op = Op::sub2;
+    instr.rb = (inst >> 0) & 0xFF;
+    instr.rd = (inst >> 8) & 0x07;
+  }
   //SUB(3)
-  if((inst & 0xFE00) == 0x1A00) return Op::sub3;
-
+  else if((inst & 0xFE00) == 0x1A00)
+  {
+    instr.op = Op::sub3;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rn = (inst >> 3) & 0x7;
+    instr.rm = (inst >> 6) & 0x7;
+  }
   //SUB(4)
-  if((inst & 0xFF80) == 0xB080) return Op::sub4;
-
+  else if((inst & 0xFF80) == 0xB080)
+  {
+    instr.op = Op::sub4;
+    instr.rb = inst & 0x7F;
+    instr.rb <<= 2;
+  }
   //SWI
-  if((inst & 0xFF00) == 0xDF00) return Op::swi;
-
+  else if((inst & 0xFF00) == 0xDF00)
+  {
+    instr.op = Op::swi;
+    instr.rb = inst & 0xFF;
+  }
   //SXTB
-  if((inst & 0xFFC0) == 0xB240) return Op::sxtb;
-
+  else if((inst & 0xFFC0) == 0xB240)
+  {
+    instr.op = Op::sxtb;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //SXTH
-  if((inst & 0xFFC0) == 0xB200) return Op::sxth;
-
+  else if((inst & 0xFFC0) == 0xB200)
+  {
+    instr.op = Op::sxth;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //TST
-  if((inst & 0xFFC0) == 0x4200) return Op::tst;
-
+  else if((inst & 0xFFC0) == 0x4200)
+  {
+    instr.op = Op::tst;
+    instr.rn = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //UXTB
-  if((inst & 0xFFC0) == 0xB2C0) return Op::uxtb;
-
+  else if((inst & 0xFFC0) == 0xB2C0)
+  {
+    instr.op = Op::uxtb;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
   //UXTH
-  if((inst & 0xFFC0) == 0xB280) return Op::uxth;
-
-  return Op::invalid;
+  else if((inst & 0xFFC0) == 0xB280)
+  {
+    instr.op = Op::uxth;
+    instr.rd = (inst >> 0) & 0x7;
+    instr.rm = (inst >> 3) & 0x7;
+  }
+  else
+    instr.op = Op::invalid;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -771,15 +1117,19 @@ int Thumbulator::execute()
 
   ++instructions;
 
-  Op decodedOp;
-  if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize) decodedOp = decodedRom[instructionPtr / 2];
-  else decodedOp = decodeInstructionWord(inst);
+  Instruction decodedInstr;
+  if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
+    decodedInstr = decodedInstruction[instructionPtr / 2];
+  else
+    decodeInstructionWord(inst, decodedInstr);
 
-  switch (decodedOp) {
+  switch (decodedInstr.op) {
     //ADC
     case Op::adc: {
-      rd = (inst >> 0) & 0x07;
-      rm = (inst >> 3) & 0x07;
+      //rd = (inst >> 0) & 0x07;
+      //rm = (inst >> 3) & 0x07;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "adc r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rd);
       rb = read_register(rm);
@@ -796,9 +1146,12 @@ int Thumbulator::execute()
 
     //ADD(1) small immediate two registers
     case Op::add1: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rb = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rb = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rb = decodedInstr.rb;
       if(rb)
       {
         DO_DISS(statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ","
@@ -823,8 +1176,10 @@ int Thumbulator::execute()
 
     //ADD(2) big immediate one register
     case Op::add2: {
-      rb = (inst >> 0) & 0xFF;
-      rd = (inst >> 8) & 0x7;
+      //rb = (inst >> 0) & 0xFF;
+      //rd = (inst >> 8) & 0x7;
+      rb = decodedInstr.rb;
+      rd = decodedInstr.rd;
       DO_DISS(statusMsg << "adds r" << dec << rd << ",#0x" << Base::HEX2 << rb << endl);
       ra = read_register(rd);
       rc = ra + rb;
@@ -838,9 +1193,12 @@ int Thumbulator::execute()
 
     //ADD(3) three registers
     case Op::add3: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ",r" << rm << endl);
       ra = read_register(rn);
       rb = read_register(rm);
@@ -855,14 +1213,15 @@ int Thumbulator::execute()
 
     //ADD(4) two registers one or both high no flags
     case Op::add4: {
-      if((inst >> 6) & 3)
-      {
-        //UNPREDICTABLE
-      }
-      rd  = (inst >> 0) & 0x7;
-      rd |= (inst >> 4) & 0x8;
-      rm  = (inst >> 3) & 0xF;
-      DO_DISS(statusMsg << "add r" << dec << rd << ",r" << dec << rm << endl);
+      //if((inst >> 6) & 3)
+      //{
+      //  //UNPREDICTABLE
+      //}
+      //rd  = (inst >> 0) & 0x7;
+      //rd |= (inst >> 4) & 0x8;
+      //rm  = (inst >> 3) & 0xF;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       ra = read_register(rd);
       rb = read_register(rm);
       rc = ra + rb;
@@ -881,9 +1240,11 @@ int Thumbulator::execute()
 
     //ADD(5) rd = pc plus immediate
     case Op::add5: {
-      rb = (inst >> 0) & 0xFF;
-      rd = (inst >> 8) & 0x7;
-      rb <<= 2;
+      //rb = (inst >> 0) & 0xFF;
+      //rd = (inst >> 8) & 0x7;
+      //rb <<= 2;
+      rb = decodedInstr.rb;
+      rd = decodedInstr.rd;
       DO_DISS(statusMsg << "add r" << dec << rd << ",PC,#0x" << Base::HEX2 << rb << endl);
       ra = read_register(15);
       rc = (ra & (~3u)) + rb;
@@ -893,9 +1254,11 @@ int Thumbulator::execute()
 
     //ADD(6) rd = sp plus immediate
     case Op::add6: {
-      rb = (inst >> 0) & 0xFF;
-      rd = (inst >> 8) & 0x7;
-      rb <<= 2;
+      //rb = (inst >> 0) & 0xFF;
+      //rd = (inst >> 8) & 0x7;
+      //rb <<= 2;
+      rb = decodedInstr.rb;
+      rd = decodedInstr.rd;
       DO_DISS(statusMsg << "add r" << dec << rd << ",SP,#0x" << Base::HEX2 << rb << endl);
       ra = read_register(13);
       rc = ra + rb;
@@ -905,8 +1268,9 @@ int Thumbulator::execute()
 
     //ADD(7) sp plus immediate
     case Op::add7: {
-      rb = (inst >> 0) & 0x7F;
-      rb <<= 2;
+      //rb = (inst >> 0) & 0x7F;
+      //rb <<= 2;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "add SP,#0x" << Base::HEX2 << rb << endl);
       ra = read_register(13);
       rc = ra + rb;
@@ -916,8 +1280,10 @@ int Thumbulator::execute()
 
     //AND
     case Op::and_: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "ands r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rd);
       rb = read_register(rm);
@@ -930,9 +1296,12 @@ int Thumbulator::execute()
 
     //ASR(1) two register immediate
     case Op::asr1: {
-      rd = (inst >> 0) & 0x07;
-      rm = (inst >> 3) & 0x07;
-      rb = (inst >> 6) & 0x1F;
+      //rd = (inst >> 0) & 0x07;
+      //rm = (inst >> 3) & 0x07;
+      //rb = (inst >> 6) & 0x1F;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << endl);
       rc = read_register(rm);
       if(rb == 0)
@@ -964,8 +1333,10 @@ int Thumbulator::execute()
 
     //ASR(2) two register
     case Op::asr2: {
-      rd = (inst >> 0) & 0x07;
-      rs = (inst >> 3) & 0x07;
+      //rd = (inst >> 0) & 0x07;
+      //rs = (inst >> 3) & 0x07;
+      rd = decodedInstr.rd;
+      rs = decodedInstr.rs;
       DO_DISS(statusMsg << "asrs r" << dec << rd << ",r" << dec << rs << endl);
       rc = read_register(rd);
       rb = read_register(rs);
@@ -1004,13 +1375,14 @@ int Thumbulator::execute()
 
     //B(1) conditional branch
     case Op::b1: {
-      rb = (inst >> 0) & 0xFF;
-      if(rb & 0x80)
-        rb |= (~0u) << 8;
-      op=(inst >> 8) & 0xF;
-      rb <<= 1;
+      //rb = (inst >> 0) & 0xFF;
+      //if(rb & 0x80)
+      //  rb |= (~0u) << 8;
+      op = (inst >> 8) & 0xF;
+      //rb <<= 1;
+      rb = decodedInstr.rb;
       rb += pc;
-      rb += 2;
+      //rb += 2;
       switch(op)
       {
         case 0x0: //b eq  z set
@@ -1125,12 +1497,13 @@ int Thumbulator::execute()
 
     //B(2) unconditional branch
     case Op::b2: {
-      rb = (inst >> 0) & 0x7FF;
-      if(rb & (1 << 10))
-        rb |= (~0u) << 11;
-      rb <<= 1;
+      //rb = (inst >> 0) & 0x7FF;
+      //if(rb & (1 << 10))
+      //  rb |= (~0u) << 11;
+      //rb <<= 1;
+      rb = decodedInstr.rb;
       rb += pc;
-      rb += 2;
+      //rb += 2;
       DO_DISS(statusMsg << "B 0x" << Base::HEX8 << (rb-3) << endl);
       write_register(15, rb);
       return 0;
@@ -1138,8 +1511,10 @@ int Thumbulator::execute()
 
     //BIC
     case Op::bic: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "bics r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rd);
       rb = read_register(rm);
@@ -1152,7 +1527,8 @@ int Thumbulator::execute()
 
     //BKPT
     case Op::bkpt: {
-      rb = (inst >> 0) & 0xFF;
+      //rb = (inst >> 0) & 0xFF;
+      rb = decodedInstr.rb;
       statusMsg << "bkpt 0x" << Base::HEX2 << rb << endl;
       return 1;
     }
@@ -1162,9 +1538,10 @@ int Thumbulator::execute()
       if((inst & 0x1800) == 0x1000) //H=b10
       {
         DO_DISS(statusMsg << endl);
-        rb = inst & ((1 << 11) - 1);
-        if(rb & 1<<10) rb |= (~((1 << 11) - 1)); //sign extend
-        rb <<= 12;
+        //rb = inst & ((1 << 11) - 1);
+        //if(rb & 1<<10) rb |= (~((1 << 11) - 1)); //sign extend
+        //rb <<= 12;
+        rb = decodedInstr.rb;
         rb += pc;
         write_register(14, rb);
         return 0;
@@ -1172,9 +1549,10 @@ int Thumbulator::execute()
       else if((inst & 0x1800) == 0x1800) //H=b11
       {
         //branch to thumb
-        rb = read_register(14);
-        rb += (inst & ((1 << 11) - 1)) << 1;;
-        rb += 2;
+        //rb = (inst & ((1 << 11) - 1)) << 1;;
+        rb = decodedInstr.rb;
+        rb += read_register(14);
+        //rb += 2;
         DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
         write_register(14, (pc-2) | 1);
         write_register(15, rb);
@@ -1184,8 +1562,9 @@ int Thumbulator::execute()
       {
         //fprintf(stderr,"cannot branch to arm 0x%08X 0x%04X\n",pc,inst);
         // fxq: this should exit the code without having to detect it
-        rb = read_register(14);
-        rb += (inst & ((1 << 11) - 1)) << 1;;
+        //rb = (inst & ((1 << 11) - 1)) << 1;
+        rb = decodedInstr.rb;
+        rb += read_register(14);
         rb &= 0xFFFFFFFC;
         rb += 2;
         DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
@@ -1199,7 +1578,8 @@ int Thumbulator::execute()
 
     //BLX(2)
     case Op::blx2: {
-      rm = (inst >> 3) & 0xF;
+      //rm = (inst >> 3) & 0xF;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "blx r" << dec << rm << endl);
       rc = read_register(rm);
       //fprintf(stderr,"blx r%u 0x%X 0x%X\n",rm,rc,pc);
@@ -1221,7 +1601,8 @@ int Thumbulator::execute()
 
     //BX
     case Op::bx: {
-      rm = (inst >> 3) & 0xF;
+      //rm = (inst >> 3) & 0xF;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "bx r" << dec << rm << endl);
       rc = read_register(rm);
       rc += 2;
@@ -1448,8 +1829,10 @@ int Thumbulator::execute()
 
     //CMN
     case Op::cmn: {
-      rn = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rn = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "cmns r" << dec << rn << ",r" << dec << rm << endl);
       ra = read_register(rn);
       rb = read_register(rm);
@@ -1463,8 +1846,10 @@ int Thumbulator::execute()
 
     //CMP(1) compare immediate
     case Op::cmp1: {
-      rb = (inst >> 0) & 0xFF;
-      rn = (inst >> 8) & 0x07;
+      //rb = (inst >> 0) & 0xFF;
+      //rn = (inst >> 8) & 0x07;
+      rb = decodedInstr.rb;
+      rn = decodedInstr.rn;
       DO_DISS(statusMsg << "cmp r" << dec << rn << ",#0x" << Base::HEX2 << rb << endl);
       ra = read_register(rn);
       rc = ra - rb;
@@ -1478,8 +1863,10 @@ int Thumbulator::execute()
 
     //CMP(2) compare register
     case Op::cmp2: {
-      rn = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rn = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << endl);
       ra = read_register(rn);
       rb = read_register(rm);
@@ -1494,17 +1881,19 @@ int Thumbulator::execute()
 
     //CMP(3) compare high register
     case Op::cmp3: {
-      if(((inst >> 6) & 3) == 0x0)
-      {
-        //UNPREDICTABLE
-      }
-      rn = (inst >> 0) & 0x7;
-      rn |= (inst >> 4) & 0x8;
-      if(rn == 0xF)
-      {
-        //UNPREDICTABLE
-      }
-      rm = (inst >> 3) & 0xF;
+      //if(((inst >> 6) & 3) == 0x0)
+      //{
+      //  //UNPREDICTABLE
+      //}
+      //rn = (inst >> 0) & 0x7;
+      //rn |= (inst >> 4) & 0x8;
+      //if(rn == 0xF)
+      //{
+      //  //UNPREDICTABLE
+      //}
+      //rm = (inst >> 3) & 0xF;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << endl);
       ra = read_register(rn);
       rb = read_register(rm);
@@ -1526,8 +1915,10 @@ int Thumbulator::execute()
     case Op::cpy: {
       //same as mov except you can use both low registers
       //going to let mov handle high registers
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "cpy r" << dec << rd << ",r" << dec << rm << endl);
       rc = read_register(rm);
       write_register(rd, rc);
@@ -1536,8 +1927,10 @@ int Thumbulator::execute()
 
     //EOR
     case Op::eor: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "eors r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rd);
       rb = read_register(rm);
@@ -1550,7 +1943,8 @@ int Thumbulator::execute()
 
     //LDMIA
     case Op::ldmia: {
-      rn = (inst >> 8) & 0x7;
+      //rn = (inst >> 8) & 0x7;
+      rn = decodedInstr.rn;
     #if defined(THUMB_DISS)
       statusMsg << "ldmia r" << dec << rn << "!,{";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
@@ -1582,10 +1976,13 @@ int Thumbulator::execute()
 
     //LDR(1) two register immediate
     case Op::ldr1: {
-      rd = (inst >> 0) & 0x07;
-      rn = (inst >> 3) & 0x07;
-      rb = (inst >> 6) & 0x1F;
-      rb <<= 2;
+      //rd = (inst >> 0) & 0x07;
+      //rn = (inst >> 3) & 0x07;
+      //rb = (inst >> 6) & 0x1F;
+      //rb <<= 2;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
       rb = read_register(rn) + rb;
       rc = read32(rb);
@@ -1595,9 +1992,12 @@ int Thumbulator::execute()
 
     //LDR(2) three register
     case Op::ldr2: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn << ",r" << dec << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read32(rb);
@@ -1607,9 +2007,11 @@ int Thumbulator::execute()
 
     //LDR(3)
     case Op::ldr3: {
-      rb = (inst >> 0) & 0xFF;
-      rd = (inst >> 8) & 0x07;
-      rb <<= 2;
+      //rb = (inst >> 0) & 0xFF;
+      //rd = (inst >> 8) & 0x07;
+      //rb <<= 2;
+      rb = decodedInstr.rb;
+      rd = decodedInstr.rd;
       DO_DISS(statusMsg << "ldr r" << dec << rd << ",[PC+#0x" << Base::HEX2 << rb << "] ");
       ra = read_register(15);
       ra &= ~3;
@@ -1622,9 +2024,11 @@ int Thumbulator::execute()
 
     //LDR(4)
     case Op::ldr4: {
-      rb = (inst >> 0) & 0xFF;
-      rd = (inst >> 8) & 0x07;
-      rb <<= 2;
+      //rb = (inst >> 0) & 0xFF;
+      //rd = (inst >> 8) & 0x07;
+      //rb <<= 2;
+      rb = decodedInstr.rb;
+      rd = decodedInstr.rd;
       DO_DISS(statusMsg << "ldr r" << dec << rd << ",[SP+#0x" << Base::HEX2 << rb << "]" << endl);
       ra = read_register(13);
       //ra&=~3;
@@ -1636,9 +2040,12 @@ int Thumbulator::execute()
 
     //LDRB(1)
     case Op::ldrb1: {
-      rd = (inst >> 0) & 0x07;
-      rn = (inst >> 3) & 0x07;
-      rb = (inst >> 6) & 0x1F;
+      //rd = (inst >> 0) & 0x07;
+      //rn = (inst >> 3) & 0x07;
+      //rb = (inst >> 6) & 0x1F;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
       rb = read_register(rn) + rb;
       rc = read16(rb & (~1u));
@@ -1655,9 +2062,12 @@ int Thumbulator::execute()
 
     //LDRB(2)
     case Op::ldrb2: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read16(rb & (~1u));
@@ -1674,10 +2084,13 @@ int Thumbulator::execute()
 
     //LDRH(1)
     case Op::ldrh1: {
-      rd = (inst >> 0) & 0x07;
-      rn = (inst >> 3) & 0x07;
-      rb = (inst >> 6) & 0x1F;
-      rb <<= 1;
+      //rd = (inst >> 0) & 0x07;
+      //rn = (inst >> 3) & 0x07;
+      //rb = (inst >> 6) & 0x1F;
+      //rb <<= 1;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
       rb=read_register(rn) + rb;
       rc = read16(rb);
@@ -1687,9 +2100,12 @@ int Thumbulator::execute()
 
     //LDRH(2)
     case Op::ldrh2: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read16(rb);
@@ -1699,9 +2115,12 @@ int Thumbulator::execute()
 
     //LDRSB
     case Op::ldrsb: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read16(rb & (~1u));
@@ -1721,9 +2140,12 @@ int Thumbulator::execute()
 
     //LDRSH
     case Op::ldrsh: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "ldrsh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read16(rb);
@@ -1736,9 +2158,12 @@ int Thumbulator::execute()
 
     //LSL(1)
     case Op::lsl1: {
-      rd = (inst >> 0) & 0x07;
-      rm = (inst >> 3) & 0x07;
-      rb = (inst >> 6) & 0x1F;
+      //rd = (inst >> 0) & 0x07;
+      //rm = (inst >> 3) & 0x07;
+      //rb = (inst >> 6) & 0x1F;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << endl);
       rc = read_register(rm);
       if(rb == 0)
@@ -1761,8 +2186,10 @@ int Thumbulator::execute()
 
     //LSL(2) two register
     case Op::lsl2: {
-      rd = (inst >> 0) & 0x07;
-      rs = (inst >> 3) & 0x07;
+      //rd = (inst >> 0) & 0x07;
+      //rs = (inst >> 3) & 0x07;
+      rd = decodedInstr.rd;
+      rs = decodedInstr.rs;
       DO_DISS(statusMsg << "lsls r" << dec << rd << ",r" << dec << rs << endl);
       rc = read_register(rd);
       rb = read_register(rs);
@@ -1793,9 +2220,12 @@ int Thumbulator::execute()
 
     //LSR(1) two register immediate
     case Op::lsr1: {
-      rd = (inst >> 0) & 0x07;
-      rm = (inst >> 3) & 0x07;
-      rb = (inst >> 6) & 0x1F;
+      //rd = (inst >> 0) & 0x07;
+      //rm = (inst >> 3) & 0x07;
+      //rb = (inst >> 6) & 0x1F;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rm << ",#0x" << Base::HEX2 << rb << endl);
       rc = read_register(rm);
       if(rb == 0)
@@ -1816,8 +2246,10 @@ int Thumbulator::execute()
 
     //LSR(2) two register
     case Op::lsr2: {
-      rd = (inst >> 0) & 0x07;
-      rs = (inst >> 3) & 0x07;
+      //rd = (inst >> 0) & 0x07;
+      //rs = (inst >> 3) & 0x07;
+      rd = decodedInstr.rd;
+      rs = decodedInstr.rs;
       DO_DISS(statusMsg << "lsrs r" << dec << rd << ",r" << dec << rs << endl);
       rc = read_register(rd);
       rb = read_register(rs);
@@ -1848,8 +2280,10 @@ int Thumbulator::execute()
 
     //MOV(1) immediate
     case Op::mov1: {
-      rb = (inst >> 0) & 0xFF;
-      rd = (inst >> 8) & 0x07;
+      //rb = (inst >> 0) & 0xFF;
+      //rd = (inst >> 8) & 0x07;
+      rb = decodedInstr.rb;
+      rd = decodedInstr.rd;
       DO_DISS(statusMsg << "movs r" << dec << rd << ",#0x" << Base::HEX2 << rb << endl);
       write_register(rd, rb);
       do_nflag(rb);
@@ -1859,8 +2293,10 @@ int Thumbulator::execute()
 
     //MOV(2) two low registers
     case Op::mov2: {
-      rd = (inst >> 0) & 7;
-      rn = (inst >> 3) & 7;
+      //rd = (inst >> 0) & 7;
+      //rn = (inst >> 3) & 7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
       DO_DISS(statusMsg << "movs r" << dec << rd << ",r" << dec << rn << endl);
       rc = read_register(rn);
       //fprintf(stderr,"0x%08X\n",rc);
@@ -1874,9 +2310,11 @@ int Thumbulator::execute()
 
     //MOV(3)
     case Op::mov3: {
-      rd  = (inst >> 0) & 0x7;
-      rd |= (inst >> 4) & 0x8;
-      rm  = (inst >> 3) & 0xF;
+      //rd  = (inst >> 0) & 0x7;
+      //rd |= (inst >> 4) & 0x8;
+      //rm  = (inst >> 3) & 0xF;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "mov r" << dec << rd << ",r" << dec << rm << endl);
       rc = read_register(rm);
       if((rd == 14) && (rm == 15))
@@ -1895,8 +2333,10 @@ int Thumbulator::execute()
 
     //MUL
     case Op::mul: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "muls r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rd);
       rb = read_register(rm);
@@ -1909,8 +2349,10 @@ int Thumbulator::execute()
 
     //MVN
     case Op::mvn: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "mvns r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rm);
       rc = (~ra);
@@ -1922,8 +2364,10 @@ int Thumbulator::execute()
 
     //NEG
     case Op::neg: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "negs r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rm);
       rc = 0 - ra;
@@ -1937,8 +2381,10 @@ int Thumbulator::execute()
 
     //ORR
     case Op::orr: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "orrs r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rd);
       rb = read_register(rm);
@@ -2047,8 +2493,10 @@ int Thumbulator::execute()
 
     //REV
     case Op::rev: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
       DO_DISS(statusMsg << "rev r" << dec << rd << ",r" << dec << rn << endl);
       ra = read_register(rn);
       rc  = ((ra >>  0) & 0xFF) << 24;
@@ -2061,8 +2509,10 @@ int Thumbulator::execute()
 
     //REV16
     case Op::rev16: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
       DO_DISS(statusMsg << "rev16 r" << dec << rd << ",r" << dec << rn << endl);
       ra = read_register(rn);
       rc  = ((ra >>  0) & 0xFF) <<  8;
@@ -2075,8 +2525,10 @@ int Thumbulator::execute()
 
     //REVSH
     case Op::revsh: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
       DO_DISS(statusMsg << "revsh r" << dec << rd << ",r" << dec << rn << endl);
       ra = read_register(rn);
       rc  = ((ra >> 0) & 0xFF) << 8;
@@ -2089,8 +2541,10 @@ int Thumbulator::execute()
 
     //ROR
     case Op::ror: {
-      rd = (inst >> 0) & 0x7;
-      rs = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rs = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rs = decodedInstr.rs;
       DO_DISS(statusMsg << "rors r" << dec << rd << ",r" << dec << rs << endl);
       rc = read_register(rd);
       ra = read_register(rs);
@@ -2121,8 +2575,10 @@ int Thumbulator::execute()
 
     //SBC
     case Op::sbc: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "sbc r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rd);
       rb = read_register(rm);
@@ -2152,7 +2608,8 @@ int Thumbulator::execute()
 
     //STMIA
     case Op::stmia: {
-      rn = (inst >> 8) & 0x7;
+      /*rn = (inst >> 8) & 0x7;*/
+      rn = decodedInstr.rn;
     #if defined(THUMB_DISS)
       statusMsg << "stmia r" << dec << rn << "!,{";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,++ra)
@@ -2182,10 +2639,13 @@ int Thumbulator::execute()
 
     //STR(1)
     case Op::str1: {
-      rd = (inst >> 0) & 0x07;
-      rn = (inst >> 3) & 0x07;
-      rb = (inst >> 6) & 0x1F;
-      rb <<= 2;
+      //rd = (inst >> 0) & 0x07;
+      //rn = (inst >> 3) & 0x07;
+      //rb = (inst >> 6) & 0x1F;
+      //rb <<= 2;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
       rb = read_register(rn) + rb;
       rc = read_register(rd);
@@ -2195,9 +2655,12 @@ int Thumbulator::execute()
 
     //STR(2)
     case Op::str2: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "str r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
@@ -2207,9 +2670,11 @@ int Thumbulator::execute()
 
     //STR(3)
     case Op::str3: {
-      rb = (inst >> 0) & 0xFF;
-      rd = (inst >> 8) & 0x07;
-      rb <<= 2;
+      //rb = (inst >> 0) & 0xFF;
+      //rd = (inst >> 8) & 0x07;
+      //rb <<= 2;
+      rb = decodedInstr.rb;
+      rd = decodedInstr.rd;
       DO_DISS(statusMsg << "str r" << dec << rd << ",[SP,#0x" << Base::HEX2 << rb << "]" << endl);
       rb = read_register(13) + rb;
       //fprintf(stderr,"0x%08X\n",rb);
@@ -2220,9 +2685,12 @@ int Thumbulator::execute()
 
     //STRB(1)
     case Op::strb1: {
-      rd = (inst >> 0) & 0x07;
-      rn = (inst >> 3) & 0x07;
-      rb = (inst >> 6) & 0x1F;
+      //rd = (inst >> 0) & 0x07;
+      //rn = (inst >> 3) & 0x07;
+      //rb = (inst >> 6) & 0x1F;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX8 << rb << "]" << endl);
       rb = read_register(rn) + rb;
       rc = read_register(rd);
@@ -2243,9 +2711,12 @@ int Thumbulator::execute()
 
     //STRB(2)
     case Op::strb2: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",r" << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
@@ -2266,10 +2737,13 @@ int Thumbulator::execute()
 
     //STRH(1)
     case Op::strh1: {
-      rd = (inst >> 0) & 0x07;
-      rn = (inst >> 3) & 0x07;
-      rb = (inst >> 6) & 0x1F;
-      rb <<= 1;
+      //rd = (inst >> 0) & 0x07;
+      //rn = (inst >> 3) & 0x07;
+      //rb = (inst >> 6) & 0x1F;
+      //rb <<= 1;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
       rb = read_register(rn) + rb;
       rc=  read_register(rd);
@@ -2279,9 +2753,12 @@ int Thumbulator::execute()
 
     //STRH(2)
     case Op::strh2: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "strh r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
@@ -2291,9 +2768,12 @@ int Thumbulator::execute()
 
     //SUB(1)
     case Op::sub1: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rb = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rb = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",#0x" << Base::HEX2 << rb << endl);
       ra = read_register(rn);
       rc = ra - rb;
@@ -2307,8 +2787,10 @@ int Thumbulator::execute()
 
     //SUB(2)
     case Op::sub2: {
-      rb = (inst >> 0) & 0xFF;
-      rd = (inst >> 8) & 0x07;
+      //rb = (inst >> 0) & 0xFF;
+      //rd = (inst >> 8) & 0x07;
+      rb = decodedInstr.rb;
+      rd = decodedInstr.rd;
       DO_DISS(statusMsg << "subs r" << dec << rd << ",#0x" << Base::HEX2 << rb << endl);
       ra = read_register(rd);
       rc = ra - rb;
@@ -2322,9 +2804,12 @@ int Thumbulator::execute()
 
     //SUB(3)
     case Op::sub3: {
-      rd = (inst >> 0) & 0x7;
-      rn = (inst >> 3) & 0x7;
-      rm = (inst >> 6) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rn = (inst >> 3) & 0x7;
+      //rm = (inst >> 6) & 0x7;
+      rd = decodedInstr.rd;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "subs r" << dec << rd << ",r" << dec << rn << ",r" << dec << rm << endl);
       ra = read_register(rn);
       rb = read_register(rm);
@@ -2339,8 +2824,9 @@ int Thumbulator::execute()
 
     //SUB(4)
     case Op::sub4: {
-      rb = inst & 0x7F;
-      rb <<= 2;
+      //rb = inst & 0x7F;
+      //rb <<= 2;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "sub SP,#0x" << Base::HEX2 << rb << endl);
       ra = read_register(13);
       ra -= rb;
@@ -2350,7 +2836,8 @@ int Thumbulator::execute()
 
     //SWI
     case Op::swi: {
-      rb = inst & 0xFF;
+      //rb = inst & 0xFF;
+      rb = decodedInstr.rb;
       DO_DISS(statusMsg << "swi 0x" << Base::HEX2 << rb << endl);
 
       if((inst & 0xFF) == 0xCC)
@@ -2367,8 +2854,10 @@ int Thumbulator::execute()
 
     //SXTB
     case Op::sxtb: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "sxtb r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rm);
       rc = ra & 0xFF;
@@ -2380,8 +2869,10 @@ int Thumbulator::execute()
 
     //SXTH
     case Op::sxth: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "sxth r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rm);
       rc = ra & 0xFFFF;
@@ -2393,8 +2884,10 @@ int Thumbulator::execute()
 
     //TST
     case Op::tst: {
-      rn = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rn = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rn = decodedInstr.rn;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "tst r" << dec << rn << ",r" << dec << rm << endl);
       ra = read_register(rn);
       rb = read_register(rm);
@@ -2406,8 +2899,10 @@ int Thumbulator::execute()
 
     //UXTB
     case Op::uxtb: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "uxtb r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rm);
       rc = ra & 0xFF;
@@ -2417,8 +2912,10 @@ int Thumbulator::execute()
 
     //UXTH
     case Op::uxth: {
-      rd = (inst >> 0) & 0x7;
-      rm = (inst >> 3) & 0x7;
+      //rd = (inst >> 0) & 0x7;
+      //rm = (inst >> 3) & 0x7;
+      rd = decodedInstr.rd;
+      rm = decodedInstr.rm;
       DO_DISS(statusMsg << "uxth r" << dec << rd << ",r" << dec << rm << endl);
       ra = read_register(rm);
       rc = ra & 0xFFFF;
