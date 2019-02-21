@@ -167,9 +167,17 @@ bool OSystem::create()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::loadConfig()
+void OSystem::loadConfig(const Settings::Options& options)
 {
+  logMessage("Loading config options ...", 2);
   mySettings->loadConfig();
+
+  logMessage("Applying commandline config options ...", 2);
+  for(const auto& opt: options)
+    mySettings->setValue(opt.first, opt.second);
+
+  logMessage("Validating config options ...", 2);
+  mySettings->validate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,6 +223,7 @@ void OSystem::setConfigPaths()
   myPaletteFile = FilesystemNode(myBaseDir + "stella.pal").getPath();
   myPropertiesFile = FilesystemNode(myBaseDir + "stella.pro").getPath();
 
+#if 0
   // TODO - remove this
   auto dbgPath = [](const string& desc, const string& location)
   {
@@ -230,6 +239,7 @@ void OSystem::setConfigPaths()
   dbgPath("pal file  ", myPaletteFile);
   dbgPath("pro file  ", myPropertiesFile);
   dbgPath("INI file  ", myConfigFile);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -722,3 +732,6 @@ void OSystem::mainLoop()
   myCheatManager->saveCheatDatabase();
 #endif
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystem::ourOverrideBaseDir = "";

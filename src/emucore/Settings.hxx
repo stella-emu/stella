@@ -20,6 +20,8 @@
 
 class OSystem;
 
+#include <map>
+
 #include "Variant.hxx"
 #include "bspf.hxx"
 
@@ -39,20 +41,9 @@ class Settings
     explicit Settings(OSystem& osystem);
     virtual ~Settings() = default;
 
+    using Options = std::map<string, Variant>;
+
   public:
-    /**
-      This method should be called to load the arguments from the commandline.
-
-      @return Name of the ROM to load, otherwise empty string
-    */
-    string loadCommandLine(int argc, char** argv);
-
-    /**
-      This method should be called *after* settings have been read,
-      to validate (and change, if necessary) any improper settings.
-    */
-    void validate();
-
     /**
       This method should be called to display usage information.
     */
@@ -88,14 +79,22 @@ class Settings
 
   protected:
     /**
-      This method will be called to load the current settings from an rc file.
+      This method will be called to load the settings from the
+      platform-specific settings file.
     */
     virtual void loadConfig();
 
     /**
-      This method will be called to save the current settings to an rc file.
+      This method will be called to save the current settings to the
+      platform-specific settings file.
     */
     virtual void saveConfig();
+
+    /**
+      This method must be called *after* settings have been fully loaded
+      to validate (and change, if necessary) any improper settings.
+    */
+    void validate();
 
     // Trim leading and following whitespace from a string
     static string trim(const string& str)

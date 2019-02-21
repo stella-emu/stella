@@ -43,23 +43,102 @@
 #endif
 
 /**
+  Parse the commandline arguments and store into the appropriate hashmap.
+
+  Keys without a corresponding value are assumed to be boolean, and set to true.
+  Some keys are used only by the main function; these are placed in localOpts.
+  The rest are needed globally, and are placed in globalOpts.
+*/
+void parseCommandLine(int ac, char* av[],
+    Settings::Options& globalOpts, Settings::Options& localOpts);
+
+/**
   Checks the commandline for special settings that are used by various ports
   to use a specific 'base directory'.
 
-  This needs to be done separately from the main commandline and settings
-  functionality, since they both depend on the settings file being already
-  available.  However, since a variabe basedir implies a different location
-  for the settings file, it *must* be processed first.
+  This needs to be done separately, before either an OSystem or Settings
+  object can be created, since they both depend on each other, and a
+  variable basedir implies a different location for the settings file.
 
-  This function will set the environment variables STELLA_BASEDIR and
-  STELLA_USECURRENTASBASEDIR; it is up to each port to use these as they wish.
+  This function will call OSystem::overrideBaseDir() when either of the
+  applicable arguments are found, and then remove them from the argument
+  list.
 */
-void checkForCustomBaseDir(int ac, char* av[]);
+void checkForCustomBaseDir(Settings::Options& options);
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void checkForCustomBaseDir(int ac, char* av[])
+void parseCommandLine(int ac, char* av[],
+    Settings::Options& globalOpts, Settings::Options& localOpts)
 {
+  localOpts["ROMFILE"] = "";  // make sure we have an entry for this
+
+  for(int i = 1; i < ac; ++i)
+  {
+    string key = av[i];
+    if(key[0] == '-')
+    {
+      key = key.substr(1);
+
+      // Certain options are used only in the main function
+      // We detect these now, and remove them from further consideration
+      if(key == "help" || key == "listrominfo" || key == "rominfo" || key == "takesnapshot")
+      {
+        localOpts[key] = true;
+        continue;
+      }
+      // Take care of arguments without an option that are needed outside
+      // be saved to the config file
+      if(key == "debug" || key == "holdselect" || key == "holdreset")
+      {
+        globalOpts[key] = true;
+        continue;
+      }
+      // Some ports have the ability to override the base directory where all
+      // configuration files are stored; we check for those next
+      if(key == "baseinappdir")
+      {
+        globalOpts[key] = true;
+        continue;
+      }
+
+      if(++i >= ac)
+      {
+        cerr << "Missing argument for '" << key << "'" << endl;
+        continue;
+      }
+      if(key == "basedir" || key == "break")
+        localOpts[key] = av[i];
+      else
+        globalOpts[key] = av[i];
+    }
+    else
+      localOpts["ROMFILE"] = key;
+  }
+
+#if 0
+  cout << "Global opts:" << endl;
+  for(const auto& x: globalOpts)
+    cout << " -> " << x.first << ": " << x.second << endl;
+  cout << "Local opts:" << endl;
+  for(const auto& x: localOpts)
+    cout << " -> " << x.first << ": " << x.second << endl;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void checkForCustomBaseDir(Settings::Options& options)
+{
+  // If both of these are activated, the 'base in app dir' takes precedence
+  auto it = options.find("baseinappdir");
+  if(it != options.end())
+    OSystem::overrideBaseDir();
+  else
+  {
+    it = options.find("basedir");
+    if(it != options.end())
+      OSystem::overrideBaseDir(it->second.toString());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -73,34 +152,32 @@ int main(int ac, char* av[])
 
   std::ios_base::sync_with_stdio(false);
 
-  // Check for custom base directory
-  // This needs to be done separately from the normal startup, since it
-  // queries information from the commandline that both OSystem and Settings
-  // need *before* they are created
-  checkForCustomBaseDir(ac, av);
-
-  // Create the parent OSystem object
-  unique_ptr<OSystem> theOSystem = MediaFactory::createOSystem();
-  theOSystem->loadConfig();
-  theOSystem->logMessage("Loading config options ...", 2);
+  unique_ptr<OSystem> theOSystem;
 
   auto Cleanup = [&theOSystem]() {
-    theOSystem->logMessage("Cleanup from main", 2);
-    theOSystem->saveConfig();
-    theOSystem.reset();       // Force delete of object
+    if(theOSystem)
+    {
+      theOSystem->logMessage("Cleanup from main", 2);
+      theOSystem->saveConfig();
+      theOSystem.reset();     // Force delete of object
+    }
     MediaFactory::cleanUp();  // Finish any remaining cleanup
 
     return 0;
   };
 
-  // Take care of commandline arguments
-  theOSystem->logMessage("Loading commandline arguments ...", 2);
-  string romfile = theOSystem->settings().loadCommandLine(ac, av);
+  // Parse the commandline arguments
+  // They are placed in different maps depending on whether they're used
+  // locally or globally
+  Settings::Options globalOpts, localOpts;
+  parseCommandLine(ac, av, globalOpts, localOpts);
 
-  // Finally, make sure the settings are valid
-  // We do it once here, so the rest of the program can assume valid settings
-  theOSystem->logMessage("Validating config options ...", 2);
-  theOSystem->settings().validate();
+  // Check for custom base directory; some ports make use of this
+  checkForCustomBaseDir(localOpts);
+
+  // Create the parent OSystem object and initialize settings
+  theOSystem = MediaFactory::createOSystem();
+  theOSystem->loadConfig(globalOpts);
 
   // Create the full OSystem after the settings, since settings are
   // probably needed for defaults
@@ -114,13 +191,14 @@ int main(int ac, char* av[])
   // Check to see if the user requested info about a specific ROM,
   // or the list of internal ROMs
   // If so, show the information and immediately exit
-  if(theOSystem->settings().getBool("listrominfo"))
+  string romfile = localOpts["ROMFILE"].toString();
+  if(localOpts["listrominfo"].toBool())
   {
     theOSystem->logMessage("Showing output from 'listrominfo' ...", 2);
     theOSystem->propSet().print();
     return Cleanup();
   }
-  else if(theOSystem->settings().getBool("rominfo"))
+  else if(localOpts["rominfo"].toBool())
   {
     theOSystem->logMessage("Showing output from 'rominfo' ...", 2);
     FilesystemNode romnode(romfile);
@@ -128,7 +206,7 @@ int main(int ac, char* av[])
 
     return Cleanup();
   }
-  else if(theOSystem->settings().getBool("help"))
+  else if(localOpts["help"].toBool())
   {
     theOSystem->logMessage("Displaying usage", 2);
     theOSystem->settings().usage();
@@ -165,7 +243,7 @@ int main(int ac, char* av[])
 
 #if 0
       TODO: Fix this to use functionality from OSystem::mainLoop
-      if(theOSystem->settings().getBool("takesnapshot"))
+      if(localOpts["takesnapshot"].toBool())
       {
         for(int i = 0; i < 30; ++i)  theOSystem->frameBuffer().update();
 //        theOSystem->frameBuffer().tiaSurface().saveSnapShot();
@@ -182,14 +260,11 @@ int main(int ac, char* av[])
 
 #ifdef DEBUGGER_SUPPORT
     // Set up any breakpoint that was on the command line
-    // (and remove the key from the settings, so they won't get set again)
-    const string& initBreak = theOSystem->settings().getString("break");
-    if(initBreak != "")
+    if(localOpts["break"].toString() != "")
     {
       Debugger& dbg = theOSystem->debugger();
-      uInt16 bp = uInt16(dbg.stringToValue(initBreak));
+      uInt16 bp = uInt16(dbg.stringToValue(localOpts["break"].toString()));
       dbg.setBreakPoint(bp, true);
-      theOSystem->settings().setValue("break", "");
     }
 #endif
   }

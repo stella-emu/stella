@@ -233,68 +233,6 @@ void Settings::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Settings::loadCommandLine(int argc, char** argv)
-{
-  for(int i = 1; i < argc; ++i)
-  {
-    // strip off the '-' character
-    string key = argv[i];
-    if(key[0] == '-')
-    {
-      key = key.substr(1, key.length());
-
-      // Take care of the arguments which are meant to be executed immediately
-      // (and then Stella should exit)
-      if(key == "help" || key == "listrominfo")
-      {
-        setExternal(key, "true");
-        return "";
-      }
-
-      // Take care of arguments without an option or ones that shouldn't
-      // be saved to the config file
-      if(key == "rominfo" || key == "debug" || key == "holdreset" ||
-         key == "holdselect" || key == "takesnapshot")
-      {
-        setExternal(key, "true");
-        continue;
-      }
-
-      ostringstream buf;
-      if(++i >= argc)
-      {
-        buf << "Missing argument for '" << key << "'" << endl;
-        myOSystem.logMessage(buf.str(), 0);
-        return "";
-      }
-      string value = argv[i];
-
-      buf.str("");
-      buf << "  key = '" << key << "', value = '" << value << "'";
-
-      // Settings read from the commandline must not be saved to
-      // the rc-file, unless they were previously set
-      if(int idx = getInternalPos(key) != -1)
-      {
-        setInternal(key, value, idx);   // don't set initialValue here
-        buf << "(I)\n";
-      }
-      else
-      {
-        setExternal(key, value);
-        buf << "(E)\n";
-      }
-
-      myOSystem.logMessage(buf.str(), 2);
-    }
-    else
-      return key;
-  }
-
-  return EmptyString;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::validate()
 {
   string s;

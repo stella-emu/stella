@@ -55,16 +55,16 @@ class Variant
     Variant(const GUI::Size& s) { buf().str(""); buf() << s; data = buf().str(); }
 
     // Conversion methods
-    const string& toString() const { return data;                          }
-    const char* const toCString() const { return data.c_str();             }
-    const Int32 toInt() const      {
+    const string& toString() const { return data; }
+    const char* const toCString() const { return data.c_str(); }
+    const Int32 toInt() const {
       istringstream ss(data);
       Int32 parsed;
       ss >> parsed;
 
       return parsed;
     }
-    const float toFloat() const    {
+    const float toFloat() const {
       istringstream ss(data);
       float parsed;
       ss >> parsed;
@@ -72,7 +72,7 @@ class Variant
       return parsed;
     }
     const bool toBool() const      { return data == "1" || data == "true"; }
-    const GUI::Size toSize() const { return GUI::Size(data);               }
+    const GUI::Size toSize() const { return GUI::Size(data); }
 
     // Comparison
     bool operator==(const Variant& v) const { return data == v.data; }

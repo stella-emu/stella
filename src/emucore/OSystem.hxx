@@ -34,7 +34,6 @@ class Properties;
 class PropertiesSet;
 class Random;
 class SerialPort;
-class Settings;
 class Sound;
 class StateManager;
 class TimerManager;
@@ -48,6 +47,7 @@ class AudioSettings;
 #include "FrameBufferConstants.hxx"
 #include "EventHandlerConstants.hxx"
 #include "FpsMeter.hxx"
+#include "Settings.hxx"
 #include "bspf.hxx"
 
 /**
@@ -188,16 +188,16 @@ class OSystem
     PNGLibrary& png() const { return *myPNGLib; }
 
     /**
-      This method should be called to load the current settings from an rc file.
-      It first loads the settings from the config file, then informs subsystems
-      about the new settings.
+      This method should be called to initiate the process of loading settings
+      from the config file.  It takes care of loading settings, applying
+      commandline overrides, and finally validating all settings.
     */
-    void loadConfig();
+    void loadConfig(const Settings::Options& options);
 
     /**
-      This method should be called to save the current settings to an rc file.
-      It first asks each subsystem to update its settings, then it saves all
-      settings to the config file.
+      This method should be called to save the current settings. It first asks
+      each subsystem to update its settings, then it saves all settings to the
+      config file.
     */
     void saveConfig();
 
@@ -382,8 +382,22 @@ class OSystem
 
     /**
       Reset FPS measurement.
-     */
+    */
     void resetFps();
+
+    /**
+      Attempt to override the base directory that will be used by derived
+      classes, and use this one instead.  Note that this is only a hint;
+      derived classes are free to ignore this, as some can't use an
+      alternate base directory.
+
+      If the default path is used, this indicates to attempt to use the
+      application directory directly.  Again, this is not supported on
+      all systems, so it may be simply ignored.
+    */
+    static void overrideBaseDir(const string& path = "USE_APP_DIR") {
+      ourOverrideBaseDir = path;
+    }
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -504,6 +518,11 @@ class OSystem
 
     // Indicates whether to stop the main loop
     bool myQuitLoop;
+
+    // If not empty, a hint for derived classes to use this as the
+    // base directory (where all settings are stored)
+    // Derived classes are free to ignore it and use their own defaults
+    static string ourOverrideBaseDir;
 
   private:
     string myBaseDir;
