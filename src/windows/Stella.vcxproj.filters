@@ -951,9 +951,6 @@
     <ClCompile Include="..\common\StaggeredLogger.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source.cpp">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\emucore\ControllerDetector.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
