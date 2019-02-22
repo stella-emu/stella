@@ -24,13 +24,13 @@ extern "C" {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsMACOS::SettingsMACOS(OSystem& osystem)
-  : Settings(osystem)
+SettingsMACOS::SettingsMACOS()
+  : Settings()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsMACOS::loadConfig()
+bool SettingsMACOS::loadConfigFile(const string&)
 {
   string key, value;
   char cvalue[4096];
@@ -43,14 +43,17 @@ void SettingsMACOS::loadConfig()
     if(cvalue[0] != 0)
       setInternal(settings[i].key, cvalue, i, true);
   }
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SettingsMACOS::saveConfig()
+bool SettingsMACOS::saveConfigFile(const string&) const
 {
   // Write out each of the key and value pairs
   for(const auto& s: getInternalSettings())
     prefsSetString(s.key.c_str(), s.value.toCString());
 
   prefsSave();
+
+  return true;
 }

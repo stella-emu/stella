@@ -28,8 +28,7 @@
 #include "Settings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Settings::Settings(OSystem& osystem)
-  : myOSystem(osystem)
+Settings::Settings()
 {
   // Video-related options
   setInternal("video", "");
@@ -192,43 +191,34 @@ Settings::Settings(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::loadConfig()
+void Settings::load(const string& cfgfile, const Options& options)
 {
-  string line, key, value;
-  string::size_type equalPos, garbage;
-
-  ifstream in(myOSystem.configFile());
-  if(!in || !in.is_open())
+  // First load from the platform-specific config file
+  // Different ports may override this functionality
+  if(!loadConfigFile(cfgfile))
   {
-    myOSystem.logMessage("ERROR: Couldn't load settings file", 0);
-    return;
+    // FIXME - make logger available everywhere
+    // myOSystem.logMessage("ERROR: Couldn't load settings file", 0);
+    cout << "ERROR: Couldn't load settings file" << endl;
   }
 
-  while(getline(in, line))
+  // Apply commandline options, which override those from settings file
+  for(const auto& opt: options)
+    setValue(opt.first, opt.second);
+
+  // Finally, validate some settings, so the rest of the codebase
+  // can assume the values are valid
+  validate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::save(const string& cfgfile) const
+{
+  if(!saveConfigFile(cfgfile))
   {
-    // Strip all whitespace and tabs from the line
-    while((garbage = line.find("\t")) != string::npos)
-      line.erase(garbage, 1);
-
-    // Ignore commented and empty lines
-    if((line.length() == 0) || (line[0] == ';'))
-      continue;
-
-    // Search for the equal sign and discard the line if its not found
-    if((equalPos = line.find("=")) == string::npos)
-      continue;
-
-    // Split the line into key/value pairs and trim any whitespace
-    key   = trim(line.substr(0, equalPos));
-    value = trim(line.substr(equalPos + 1, line.length() - key.length() - 1));
-
-    // Skip absent key
-    if(key.length() == 0)
-      continue;
-
-    // Only settings which have been previously set are valid
-    if(int idx = getInternalPos(key) != -1)
-      setInternal(key, value, idx, true);
+    // FIXME - make logger available everywhere
+    // myOSystem.logMessage("ERROR: Couldn't save settings file", 0);
+    cout << "ERROR: Couldn't save settings file" << endl;
   }
 }
 
@@ -609,7 +599,48 @@ void Settings::setValue(const string& key, const Variant& value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::saveConfig()
+bool Settings::loadConfigFile(const string& cfgfile)
+{
+  string line, key, value;
+  string::size_type equalPos, garbage;
+
+  ifstream in(cfgfile);
+  if(!in || !in.is_open())
+  {
+    return false;
+  }
+
+  while(getline(in, line))
+  {
+    // Strip all whitespace and tabs from the line
+    while((garbage = line.find("\t")) != string::npos)
+      line.erase(garbage, 1);
+
+    // Ignore commented and empty lines
+    if((line.length() == 0) || (line[0] == ';'))
+      continue;
+
+    // Search for the equal sign and discard the line if its not found
+    if((equalPos = line.find("=")) == string::npos)
+      continue;
+
+    // Split the line into key/value pairs and trim any whitespace
+    key   = trim(line.substr(0, equalPos));
+    value = trim(line.substr(equalPos + 1, line.length() - key.length() - 1));
+
+    // Skip absent key
+    if(key.length() == 0)
+      continue;
+
+    // Only settings which have been previously set are valid
+    if(int idx = getInternalPos(key) != -1)
+      setInternal(key, value, idx, true);
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Settings::saveConfigFile(const string& cfgfile) const
 {
   // Do a quick scan of the internal settings to see if any have
   // changed.  If not, we don't need to save them at all.
@@ -624,14 +655,11 @@ void Settings::saveConfig()
   }
 
   if(!settingsChanged)
-    return;
+    return true;
 
-  ofstream out(myOSystem.configFile());
+  ofstream out(cfgfile);
   if(!out || !out.is_open())
-  {
-    myOSystem.logMessage("ERROR: Couldn't save settings file", 0);
-    return;
-  }
+    return false;
 
   out << ";  Stella configuration file" << endl
       << ";" << endl
@@ -651,6 +679,8 @@ void Settings::saveConfig()
   // Write out each of the key and value pairs
   for(const auto& s: myInternalSettings)
     out << s.key << " = " << s.value << endl;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

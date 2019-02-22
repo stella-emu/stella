@@ -28,12 +28,11 @@ class SettingsWINDOWS : public Settings
     /**
       Create a new UNIX settings object
     */
-    explicit SettingsWINDOWS(OSystem& osystem);
+    explicit SettingsWINDOWS();
     virtual ~SettingsWINDOWS() = default;
 
   private:
     // Following constructors and assignment operators not supported
-    SettingsWINDOWS() = delete;
     SettingsWINDOWS(const SettingsWINDOWS&) = delete;
     SettingsWINDOWS(SettingsWINDOWS&&) = delete;
     SettingsWINDOWS& operator=(const SettingsWINDOWS&) = delete;

@@ -18,8 +18,6 @@
 #ifndef SETTINGS_HXX
 #define SETTINGS_HXX
 
-class OSystem;
-
 #include <map>
 
 #include "Variant.hxx"
@@ -32,13 +30,11 @@ class OSystem;
 */
 class Settings
 {
-  friend class OSystem;
-
   public:
     /**
       Create a new settings abstract class
     */
-    explicit Settings(OSystem& osystem);
+    explicit Settings();
     virtual ~Settings() = default;
 
     using Options = std::map<string, Variant>;
@@ -48,6 +44,22 @@ class Settings
       This method should be called to display usage information.
     */
     void usage() const;
+
+    /**
+      This method is called to load settings from the settings file,
+      and apply commandline options specified by the given parameter.
+
+      @param cfgfile  The full path to the configuration file
+      @param options  A list of options that overrides ones in the
+                      settings file
+    */
+    void load(const string& cfgfile, const Options& options);
+
+    /**
+      This method is called to save the current settings to the
+      settings file.
+    */
+    void save(const string& cfgfile) const;
 
     /**
       Get the value assigned to the specified key.
@@ -80,21 +92,25 @@ class Settings
   protected:
     /**
       This method will be called to load the settings from the
-      platform-specific settings file.
+      platform-specific settings file.  Since different ports can have
+      different behaviour here, we mark it as virtual so derived
+      classes can override as needed.
+
+      @param cfgfile  The full path to the configuration file
+      @return  False on any error, else true
     */
-    virtual void loadConfig();
+    virtual bool loadConfigFile(const string& cfgfile);
 
     /**
       This method will be called to save the current settings to the
-      platform-specific settings file.
-    */
-    virtual void saveConfig();
+      platform-specific settings file.  Since different ports can have
+      different behaviour here, we mark it as virtual so derived
+      classes can override as needed.
 
-    /**
-      This method must be called *after* settings have been fully loaded
-      to validate (and change, if necessary) any improper settings.
+      @param cfgfile  The full path to the configuration file
+      @return  False on any error, else true
     */
-    void validate();
+    virtual bool saveConfigFile(const string& cfgfile) const;
 
     // Trim leading and following whitespace from a string
     static string trim(const string& str)
@@ -105,9 +121,6 @@ class Settings
     }
 
   protected:
-    // The parent OSystem object
-    OSystem& myOSystem;
-
     // Structure used for storing settings
     struct Setting
     {
@@ -136,6 +149,13 @@ class Settings
                     int pos = -1, bool useAsInitial = false);
 
   private:
+    /**
+      This method must be called *after* settings have been fully loaded
+      to validate (and change, if necessary) any improper settings.
+    */
+    void validate();
+
+  private:
     // Holds key,value pairs that are necessary for Stella to
     // function and must be saved on each program exit.
     SettingsArray myInternalSettings;
@@ -146,7 +166,6 @@ class Settings
 
   private:
     // Following constructors and assignment operators not supported
-    Settings() = delete;
     Settings(const Settings&) = delete;
     Settings(Settings&&) = delete;
     Settings& operator=(const Settings&) = delete;

@@ -18,6 +18,7 @@
 #include "SettingsWINDOWS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsWINDOWS::SettingsWINDOWS(OSystem& osystem)
-  : Settings(osystem)
-{}
+SettingsWINDOWS::SettingsWINDOWS()
+  : Settings()
+{
+}

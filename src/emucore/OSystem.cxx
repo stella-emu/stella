@@ -92,7 +92,7 @@ OSystem::OSystem()
        << " [" << BSPF::ARCH << "]";
   myBuildInfo = info.str();
 
-  mySettings = MediaFactory::createSettings(*this);
+  mySettings = MediaFactory::createSettings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -149,7 +149,7 @@ bool OSystem::create()
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems
-  // that only have a single sound device (no hardware mixing)
+  // that only have a single sound device (no hardware mixing))
   createSound();
 
   // Create the serial port object
@@ -170,14 +170,7 @@ bool OSystem::create()
 void OSystem::loadConfig(const Settings::Options& options)
 {
   logMessage("Loading config options ...", 2);
-  mySettings->loadConfig();
-
-  logMessage("Applying commandline config options ...", 2);
-  for(const auto& opt: options)
-    mySettings->setValue(opt.first, opt.second);
-
-  logMessage("Validating config options ...", 2);
-  mySettings->validate();
+  mySettings->load(configFile(), options);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,13 +178,19 @@ void OSystem::saveConfig()
 {
   // Ask all subsystems to save their settings
   if(myFrameBuffer)
-    myFrameBuffer->tiaSurface().ntsc().saveConfig(*mySettings);
+  {
+    logMessage("Saving TV effects options ...", 2);
+    myFrameBuffer->tiaSurface().ntsc().saveConfig(settings());
+  }
 
-  if(mySettings)
-    mySettings->saveConfig();
+  logMessage("Saving config options ...", 2);
+  mySettings->save(configFile());
 
   if(myPropSet)
+  {
+    logMessage("Saving properties set ...", 2);
     myPropSet->save(myPropertiesFile);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -469,7 +468,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
 
   // Open the cartridge image and read it in
   BytePtr image;
-  uInt32 size  = 0;
+  uInt32 size = 0;
   if((image = openROM(romfile, md5, size)) != nullptr)
   {
     // Get a valid set of properties, including any entered on the commandline

@@ -18,8 +18,6 @@
 #ifndef SETTINGS_MACOS_HXX
 #define SETTINGS_MACOS_HXX
 
-class OSystem;
-
 #include "Settings.hxx"
 
 /**
@@ -33,7 +31,7 @@ class SettingsMACOS : public Settings
     /**
       Create a new UNIX settings object
     */
-    explicit SettingsMACOS(OSystem& osystem);
+    explicit SettingsMACOS();
     virtual ~SettingsMACOS() = default;
 
   public:
@@ -41,17 +39,16 @@ class SettingsMACOS : public Settings
       This method should be called to load the current settings from the
       standard Mac preferences.
     */
-    void loadConfig() override;
+    bool loadConfigFile(const string&) override;
 
     /**
       This method should be called to save the current settings to the
       standard Mac preferences.
     */
-    void saveConfig() override;
+    bool saveConfigFile(const string&) const override;
 
   private:
     // Following constructors and assignment operators not supported
-    SettingsMACOS() = delete;
     SettingsMACOS(const SettingsMACOS&) = delete;
     SettingsMACOS(SettingsMACOS&&) = delete;
     SettingsMACOS& operator=(const SettingsMACOS&) = delete;

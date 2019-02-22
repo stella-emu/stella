@@ -80,14 +80,14 @@ class MediaFactory
     #endif
     }
 
-    static unique_ptr<Settings> createSettings(OSystem& osystem)
+    static unique_ptr<Settings> createSettings()
     {
     #if defined(BSPF_UNIX)
-      return make_unique<SettingsUNIX>(osystem);
+      return make_unique<SettingsUNIX>();
     #elif defined(BSPF_WINDOWS)
-      return make_unique<SettingsWINDOWS>(osystem);
+      return make_unique<SettingsWINDOWS>();
     #elif defined(BSPF_MACOS)
-      return make_unique<SettingsMACOS>(osystem);
+      return make_unique<SettingsMACOS>();
     #else
       #error Unsupported platform for Settings!
     #endif

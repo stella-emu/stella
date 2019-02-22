@@ -18,8 +18,6 @@
 #ifndef SETTINGS_UNIX_HXX
 #define SETTINGS_UNIX_HXX
 
-class OSystem;
-
 #include "Settings.hxx"
 
 /**
@@ -33,12 +31,11 @@ class SettingsUNIX : public Settings
     /**
       Create a new UNIX settings object
     */
-    explicit SettingsUNIX(OSystem& osystem);
+    explicit SettingsUNIX();
     virtual ~SettingsUNIX() = default;
 
   private:
     // Following constructors and assignment operators not supported
-    SettingsUNIX() = delete;
     SettingsUNIX(const SettingsUNIX&) = delete;
     SettingsUNIX(SettingsUNIX&&) = delete;
     SettingsUNIX& operator=(const SettingsUNIX&) = delete;
