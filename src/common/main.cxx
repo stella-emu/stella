@@ -81,14 +81,12 @@ void parseCommandLine(int ac, char* av[],
       key = key.substr(1);
 
       // Certain options are used only in the main function
-      // We detect these now, and remove them from further consideration
       if(key == "help" || key == "listrominfo" || key == "rominfo" || key == "takesnapshot")
       {
         localOpts[key] = true;
         continue;
       }
-      // Take care of arguments without an option that are needed outside
-      // be saved to the config file
+      // Take care of arguments without an option that are needed globally
       if(key == "debug" || key == "holdselect" || key == "holdreset")
       {
         globalOpts[key] = true;
