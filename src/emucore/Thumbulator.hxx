@@ -19,7 +19,6 @@
 // This class provides Thumb emulation code ("Thumbulator")
 //    by David Welch (dwelch@dwelch.com)
 // Modified by Fred Quimby
-// Optimized by Christina Speckner and Thomas Jentzsch
 // Code is public domain and used with the author's consent
 //============================================================================
 
@@ -141,12 +140,6 @@ class Thumbulator
       uxth
     };
 
-    struct Instruction
-    {
-      Op op;
-      uInt32 rb, rd, rm, rn, rs;
-    };
-
   private:
     uInt32 read_register(uInt32 reg);
     void write_register(uInt32 reg, uInt32 data);
@@ -159,7 +152,7 @@ class Thumbulator
     void write32(uInt32 addr, uInt32 data);
     void updateTimer(uInt32 cycles);
 
-    void decodeInstructionWord(uint16_t inst, Instruction& instr);
+    static Op decodeInstructionWord(uint16_t inst);
 
     void do_zflag(uInt32 x);
     void do_nflag(uInt32 x);
@@ -182,7 +175,7 @@ class Thumbulator
   private:
     const uInt16* rom;
     uInt16 romSize;
-    const unique_ptr<Instruction[]> decodedInstruction;
+    const unique_ptr<Op[]> decodedRom;
     uInt16* ram;
 
     uInt32 reg_norm[16]; // normal execution mode, do not have a thread mode
