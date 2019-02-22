@@ -498,11 +498,12 @@ void Thumbulator::do_cflag(uInt32 a, uInt32 b, uInt32 c)
 {
   uInt32 rc;
 
-  cpsr &= ~CPSR_C;
   rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
   rc = (rc >> 31) + (a >> 31) + (b >> 31);      //carry out
   if(rc & 2)
     cpsr |= CPSR_C;
+  else
+    cpsr &= ~CPSR_C;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -510,7 +511,6 @@ void Thumbulator::do_vflag(uInt32 a, uInt32 b, uInt32 c)
 {
   uInt32 rc, rd;
 
-  cpsr &= ~CPSR_V;
   rc = (a & 0x7FFFFFFF) + (b & 0x7FFFFFFF) + c; //carry in
   rc >>= 31; //carry in in lsbit
   rd = (rc & 1) + ((a >> 31) & 1) + ((b >> 31) & 1); //carry out
@@ -518,6 +518,8 @@ void Thumbulator::do_vflag(uInt32 a, uInt32 b, uInt32 c)
   rc = (rc^rd) & 1; //if carry in != carry out then signed overflow
   if(rc)
     cpsr |= CPSR_V;
+  else
+    cpsr &= ~CPSR_V;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1447,40 +1449,56 @@ int Thumbulator::execute()
 
         case 0xA: //b ge N == V
           DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
-          ra = 0;
+          /*ra = 0;
           if(  (cpsr & CPSR_N)  &&   (cpsr & CPSR_V) ) ++ra;
           if((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))) ++ra;
           if(ra)
+            write_register(15, rb);*/
+          if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
+            (!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V)))
             write_register(15, rb);
           return 0;
 
         case 0xB: //b lt N != V
           DO_DISS(statusMsg << "blt 0x" << Base::HEX8 << (rb-3) << endl);
-          ra = 0;
+          /*ra = 0;
           if((!(cpsr & CPSR_N)) && (cpsr & CPSR_V)) ++ra;
           if((!(cpsr & CPSR_V)) && (cpsr & CPSR_N)) ++ra;
           if(ra)
+            write_register(15, rb);*/
+          if((!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
+            (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
             write_register(15, rb);
           return 0;
 
         case 0xC: //b gt Z==0 and N == V
           DO_DISS(statusMsg << "bgt 0x" << Base::HEX8 << (rb-3) << endl);
-          ra = 0;
+          /*ra = 0;
           if(  (cpsr & CPSR_N)  &&   (cpsr & CPSR_V) ) ++ra;
           if((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))) ++ra;
           if(cpsr & CPSR_Z) ra = 0;
           if(ra)
-            write_register(15, rb);
+            write_register(15, rb);*/
+          if(!(cpsr & CPSR_Z))
+          {
+            if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
+              (!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V)))
+              write_register(15, rb);
+          }
           return 0;
 
         case 0xD: //b le Z==1 or N != V
           DO_DISS(statusMsg << "ble 0x" << Base::HEX8 << (rb-3) << endl);
-          ra = 0;
+          /*ra = 0;
           if((!(cpsr & CPSR_N)) && (cpsr & CPSR_V)) ++ra;
           if((!(cpsr & CPSR_V)) && (cpsr & CPSR_N)) ++ra;
           if(cpsr & CPSR_Z) ++ra;
           if(ra)
-            write_register(15, rb);
+            write_register(15, rb);*/
+          if((cpsr & CPSR_Z) ||
+            (!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
+            (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
+              write_register(15, rb);
           return 0;
 
         case 0xE:
