@@ -774,8 +774,10 @@ int Thumbulator::execute()
   ++instructions;
 
   Op decodedOp;
-  if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize) decodedOp = decodedRom[instructionPtr / 2];
-  else decodedOp = decodeInstructionWord(inst);
+  if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
+    decodedOp = decodedRom[instructionPtr / 2];
+  else
+    decodedOp = decodeInstructionWord(inst);
 
   switch (decodedOp) {
     //ADC
@@ -873,7 +875,7 @@ int Thumbulator::execute()
         if((rc & 1) == 0)
           fatalError("add pc", pc, rc, " produced an arm address");
 
-        rc &= ~1; //write_register may do this as well
+        //rc &= ~1; //write_register may do this as well
         rc += 2;  //The program counter is special
       }
       //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
@@ -1077,11 +1079,6 @@ int Thumbulator::execute()
 
         case 0xA: //b ge N == V
           DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
-          /*ra = 0;
-          if(  (cpsr & CPSR_N)  &&   (cpsr & CPSR_V) ) ++ra;
-          if((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))) ++ra;
-          if(ra)
-            write_register(15, rb);*/
           if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
             (!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V)))
             write_register(15, rb);
@@ -1089,11 +1086,6 @@ int Thumbulator::execute()
 
         case 0xB: //b lt N != V
           DO_DISS(statusMsg << "blt 0x" << Base::HEX8 << (rb-3) << endl);
-          /*ra = 0;
-          if((!(cpsr & CPSR_N)) && (cpsr & CPSR_V)) ++ra;
-          if((!(cpsr & CPSR_V)) && (cpsr & CPSR_N)) ++ra;
-          if(ra)
-            write_register(15, rb);*/
           if((!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
             (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
             write_register(15, rb);
@@ -1101,12 +1093,6 @@ int Thumbulator::execute()
 
         case 0xC: //b gt Z==0 and N == V
           DO_DISS(statusMsg << "bgt 0x" << Base::HEX8 << (rb-3) << endl);
-          /*ra = 0;
-          if(  (cpsr & CPSR_N)  &&   (cpsr & CPSR_V) ) ++ra;
-          if((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))) ++ra;
-          if(cpsr & CPSR_Z) ra = 0;
-          if(ra)
-            write_register(15, rb);*/
           if(!(cpsr & CPSR_Z))
           {
             if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
@@ -1117,12 +1103,6 @@ int Thumbulator::execute()
 
         case 0xD: //b le Z==1 or N != V
           DO_DISS(statusMsg << "ble 0x" << Base::HEX8 << (rb-3) << endl);
-          /*ra = 0;
-          if((!(cpsr & CPSR_N)) && (cpsr & CPSR_V)) ++ra;
-          if((!(cpsr & CPSR_V)) && (cpsr & CPSR_N)) ++ra;
-          if(cpsr & CPSR_Z) ++ra;
-          if(ra)
-            write_register(15, rb);*/
           if((cpsr & CPSR_Z) ||
             (!(cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
             (((cpsr & CPSR_N)) && !(cpsr & CPSR_V)))
@@ -1225,7 +1205,7 @@ int Thumbulator::execute()
       if(rc & 1)
       {
         write_register(14, (pc-2) | 1);
-        rc &= ~1;
+        //rc &= ~1;
         write_register(15, rc);
         return 0;
       }
@@ -1247,7 +1227,7 @@ int Thumbulator::execute()
       if(rc & 1)
       {
         // branch to odd address denotes 16 bit ARM code
-        rc &= ~1;
+        //rc &= ~1;
         write_register(15, rc);
         return 0;
       }
@@ -1453,7 +1433,7 @@ int Thumbulator::execute()
         {
           rc = read_register(14); // lr
           rc += 2;
-          rc &= ~1;
+          //rc &= ~1;
           write_register(15, rc);
           return 0;
         }
@@ -1904,7 +1884,7 @@ int Thumbulator::execute()
       }
       if(rd == 15)
       {
-        rc &= ~1; //write_register may do this as well
+        //rc &= ~1; //write_register may do this as well
         rc += 2;  //The program counter is special
       }
       write_register(rd, rc);
