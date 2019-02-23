@@ -1154,7 +1154,7 @@ int Thumbulator::execute()
         case 0xA: //b ge N == V
           DO_DISS(statusMsg << "bge 0x" << Base::HEX8 << (rb-3) << endl);
           if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-            (!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V)))
+             ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
             write_register(15, rb);
           return 0;
 
@@ -1170,7 +1170,7 @@ int Thumbulator::execute()
           if(!(cpsr & CPSR_Z))
           {
             if(((cpsr & CPSR_N) && (cpsr & CPSR_V)) ||
-              (!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V)))
+               ((!(cpsr & CPSR_N)) && (!(cpsr & CPSR_V))))
               write_register(15, rb);
           }
           return 0;

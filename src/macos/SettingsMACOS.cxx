@@ -36,12 +36,11 @@ bool SettingsMACOS::loadConfigFile(const string&)
   char cvalue[4096];
 
   // Read key/value pairs from the plist file
-  const SettingsArray& settings = getInternalSettings();
-  for(uInt32 i = 0; i < settings.size(); ++i)
+  for(const auto& s: getInternalSettings())
   {
-    prefsGetString(settings[i].key.c_str(), cvalue, 4090);
+    prefsGetString(s.first.c_str(), cvalue, 4090);
     if(cvalue[0] != 0)
-      setInternal(settings[i].key, cvalue, i, true);
+      setValue(s.first, cvalue);
   }
   return true;
 }
@@ -51,7 +50,7 @@ bool SettingsMACOS::saveConfigFile(const string&) const
 {
   // Write out each of the key and value pairs
   for(const auto& s: getInternalSettings())
-    prefsSetString(s.key.c_str(), s.value.toCString());
+    prefsSetString(s.first.c_str(), s.second.toCString());
 
   prefsSave();
 

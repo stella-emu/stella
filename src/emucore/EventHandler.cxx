@@ -716,7 +716,7 @@ void EventHandler::setActionMappings(EventMode mode)
 #ifndef BSPF_MACOS
     modifier = "Ctrl";
 #else
-    modfier = "Cmd";
+    modifier = "Cmd";
 #endif
 
     if(event == Event::Quit)
