@@ -230,111 +230,111 @@ void Settings::validate()
   float f;
 
   f = getFloat("speed");
-  if (f <= 0) setInternal("speed", "1.0");
+  if (f <= 0) setValue("speed", "1.0");
 
   i = getInt("tia.aspectn");
-  if(i < 80 || i > 120)  setInternal("tia.aspectn", "90");
+  if(i < 80 || i > 120)  setValue("tia.aspectn", "90");
   i = getInt("tia.aspectp");
-  if(i < 80 || i > 120)  setInternal("tia.aspectp", "100");
+  if(i < 80 || i > 120)  setValue("tia.aspectp", "100");
 
   s = getString("tia.dbgcolors");
   sort(s.begin(), s.end());
-  if(s != "bgopry")  setInternal("tia.dbgcolors", "roygpb");
+  if(s != "bgopry")  setValue("tia.dbgcolors", "roygpb");
 
   s = getString("tv.phosphor");
-  if(s != "always" && s != "byrom")  setInternal("tv.phosphor", "byrom");
+  if(s != "always" && s != "byrom")  setValue("tv.phosphor", "byrom");
 
   i = getInt("tv.phosblend");
-  if(i < 0 || i > 100)  setInternal("tv.phosblend", "50");
+  if(i < 0 || i > 100)  setValue("tv.phosblend", "50");
 
   i = getInt("tv.filter");
-  if(i < 0 || i > 5)  setInternal("tv.filter", "0");
+  if(i < 0 || i > 5)  setValue("tv.filter", "0");
 
   i = getInt("dev.tv.jitter_recovery");
-  if(i < 1 || i > 20) setInternal("dev.tv.jitter_recovery", "2");
+  if(i < 1 || i > 20) setValue("dev.tv.jitter_recovery", "2");
 
   int size = getInt("dev.tm.size");
   if(size < 20 || size > 1000)
   {
-    setInternal("dev.tm.size", 20);
+    setValue("dev.tm.size", 20);
     size = 20;
   }
 
   i = getInt("dev.tm.uncompressed");
-  if(i < 0 || i > size) setInternal("dev.tm.uncompressed", size);
+  if(i < 0 || i > size) setValue("dev.tm.uncompressed", size);
 
   /*i = getInt("dev.tm.interval");
-  if(i < 0 || i > 5) setInternal("dev.tm.interval", 0);
+  if(i < 0 || i > 5) setValue("dev.tm.interval", 0);
 
   i = getInt("dev.tm.horizon");
-  if(i < 0 || i > 6) setInternal("dev.tm.horizon", 1);*/
+  if(i < 0 || i > 6) setValue("dev.tm.horizon", 1);*/
 
   i = getInt("plr.tv.jitter_recovery");
-  if(i < 1 || i > 20) setInternal("plr.tv.jitter_recovery", "10");
+  if(i < 1 || i > 20) setValue("plr.tv.jitter_recovery", "10");
 
   size = getInt("plr.tm.size");
   if(size < 20 || size > 1000)
   {
-    setInternal("plr.tm.size", 20);
+    setValue("plr.tm.size", 20);
     size = 20;
   }
 
   i = getInt("plr.tm.uncompressed");
-  if(i < 0 || i > size) setInternal("plr.tm.uncompressed", size);
+  if(i < 0 || i > size) setValue("plr.tm.uncompressed", size);
 
   /*i = getInt("plr.tm.interval");
-  if(i < 0 || i > 5) setInternal("plr.tm.interval", 3);
+  if(i < 0 || i > 5) setValue("plr.tm.interval", 3);
 
   i = getInt("plr.tm.horizon");
-  if(i < 0 || i > 6) setInternal("plr.tm.horizon", 5);*/
+  if(i < 0 || i > 6) setValue("plr.tm.horizon", 5);*/
 
 #ifdef SOUND_SUPPORT
   AudioSettings::normalize(*this);
 #endif
 
   i = getInt("joydeadzone");
-  if(i < 0)        setInternal("joydeadzone", "0");
-  else if(i > 29)  setInternal("joydeadzone", "29");
+  if(i < 0)        setValue("joydeadzone", "0");
+  else if(i > 29)  setValue("joydeadzone", "29");
 
   i = getInt("cursor");
   if(i < 0 || i > 3)
-    setInternal("cursor", "2");
+    setValue("cursor", "2");
 
   i = getInt("dsense");
   if(i < 1 || i > 20)
-    setInternal("dsense", "10");
+    setValue("dsense", "10");
 
   i = getInt("msense");
   if(i < 1 || i > 20)
-    setInternal("msense", "10");
+    setValue("msense", "10");
 
   i = getInt("tsense");
   if(i < 1 || i > 20)
-    setInternal("tsense", "10");
+    setValue("tsense", "10");
 
   i = getInt("ssinterval");
-  if(i < 1)        setInternal("ssinterval", "2");
-  else if(i > 10)  setInternal("ssinterval", "10");
+  if(i < 1)        setValue("ssinterval", "2");
+  else if(i > 10)  setValue("ssinterval", "10");
 
   s = getString("palette");
   if(s != "standard" && s != "z26" && s != "user")
-    setInternal("palette", "standard");
+    setValue("palette", "standard");
 
   s = getString("launcherfont");
   if(s != "small" && s != "medium" && s != "large")
-    setInternal("launcherfont", "medium");
+    setValue("launcherfont", "medium");
 
   s = getString("dbg.fontsize");
   if(s != "small" && s != "medium" && s != "large")
-    setInternal("dbg.fontsize", "medium");
+    setValue("dbg.fontsize", "medium");
 
   i = getInt("romviewer");
-  if(i < 0)       setInternal("romviewer", "0");
-  else if(i > 2)  setInternal("romviewer", "2");
+  if(i < 0)       setValue("romviewer", "0");
+  else if(i > 2)  setValue("romviewer", "2");
 
   i = getInt("loglevel");
   if(i < 0 || i > 2)
-    setInternal("loglevel", "1");
+    setValue("loglevel", "1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -580,22 +580,26 @@ void Settings::usage() const
 const Variant& Settings::value(const string& key) const
 {
   // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-    return myInternalSettings[idx].value;
-  else if((idx = getExternalPos(key)) != -1)
-    return myExternalSettings[idx].value;
+  auto it = myInternalSettings.find(key);
+  if(it != myInternalSettings.end())
+    return it->second;
   else
-    return EmptyVariant;
+  {
+    it = myExternalSettings.find(key);
+    if(it != myExternalSettings.end())
+      return it->second;
+  }
+  return EmptyVariant;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setValue(const string& key, const Variant& value)
 {
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, value, idx);
+  auto it = myInternalSettings.find(key);
+  if(it != myInternalSettings.end())
+    it->second = value;
   else
-    setExternal(key, value);
+    myExternalSettings[key] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -606,9 +610,7 @@ bool Settings::loadConfigFile(const string& cfgfile)
 
   ifstream in(cfgfile);
   if(!in || !in.is_open())
-  {
     return false;
-  }
 
   while(getline(in, line))
   {
@@ -633,8 +635,7 @@ bool Settings::loadConfigFile(const string& cfgfile)
       continue;
 
     // Only settings which have been previously set are valid
-    if(int idx = getInternalPos(key) != -1)
-      setInternal(key, value, idx, true);
+    setValue(key, value);
   }
   return true;
 }
@@ -642,21 +643,6 @@ bool Settings::loadConfigFile(const string& cfgfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Settings::saveConfigFile(const string& cfgfile) const
 {
-  // Do a quick scan of the internal settings to see if any have
-  // changed.  If not, we don't need to save them at all.
-  bool settingsChanged = false;
-  for(const auto& s: myInternalSettings)
-  {
-    if(s.value != s.initialValue)
-    {
-      settingsChanged = true;
-      break;
-    }
-  }
-
-  if(!settingsChanged)
-    return true;
-
   ofstream out(cfgfile);
   if(!out || !out.is_open())
     return false;
@@ -678,131 +664,19 @@ bool Settings::saveConfigFile(const string& cfgfile) const
 
   // Write out each of the key and value pairs
   for(const auto& s: myInternalSettings)
-    out << s.key << " = " << s.value << endl;
+    out << s.first << " = " << s.second << endl;
 
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::getInternalPos(const string& key) const
+void Settings::setInternal(const string& key, const Variant& value)
 {
-  for(uInt32 i = 0; i < myInternalSettings.size(); ++i)
-    if(myInternalSettings[i].key == key)
-      return i;
-
-  return -1;
+  myInternalSettings[key] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::getExternalPos(const string& key) const
+void Settings::setExternal(const string& key, const Variant& value)
 {
-  for(uInt32 i = 0; i < myExternalSettings.size(); ++i)
-    if(myExternalSettings[i].key == key)
-      return i;
-
-  return -1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::setInternal(const string& key, const Variant& value,
-                          int pos, bool useAsInitial)
-{
-  int idx = -1;
-
-  if(pos >= 0 && pos < int(myInternalSettings.size()) &&
-     myInternalSettings[pos].key == key)
-  {
-    idx = pos;
-  }
-  else
-  {
-    for(uInt32 i = 0; i < myInternalSettings.size(); ++i)
-    {
-      if(myInternalSettings[i].key == key)
-      {
-        idx = i;
-        break;
-      }
-    }
-  }
-
-  if(idx != -1)
-  {
-    myInternalSettings[idx].key   = key;
-    myInternalSettings[idx].value = value;
-    if(useAsInitial) myInternalSettings[idx].initialValue = value;
-
-    /*cerr << "modify internal: key = " << key
-         << ", value  = " << value
-         << ", ivalue = " << myInternalSettings[idx].initialValue
-         << " @ index = " << idx
-         << endl;*/
-  }
-  else
-  {
-    Setting setting(key, value);
-    if(useAsInitial) setting.initialValue = value;
-
-    myInternalSettings.push_back(setting);
-    idx = int(myInternalSettings.size()) - 1;
-
-    /*cerr << "insert internal: key = " << key
-         << ", value  = " << value
-         << ", ivalue = " << setting.initialValue
-         << " @ index = " << idx
-         << endl;*/
-  }
-
-  return idx;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::setExternal(const string& key, const Variant& value,
-                          int pos, bool useAsInitial)
-{
-  int idx = -1;
-
-  if(pos >= 0 && pos < int(myExternalSettings.size()) &&
-     myExternalSettings[pos].key == key)
-  {
-    idx = pos;
-  }
-  else
-  {
-    for(uInt32 i = 0; i < myExternalSettings.size(); ++i)
-    {
-      if(myExternalSettings[i].key == key)
-      {
-        idx = i;
-        break;
-      }
-    }
-  }
-
-  if(idx != -1)
-  {
-    myExternalSettings[idx].key   = key;
-    myExternalSettings[idx].value = value;
-    if(useAsInitial) myExternalSettings[idx].initialValue = value;
-
-    /*cerr << "modify external: key = " << key
-         << ", value = " << value
-         << " @ index = " << idx
-         << endl;*/
-  }
-  else
-  {
-    Setting setting(key, value);
-    if(useAsInitial) setting.initialValue = value;
-
-    myExternalSettings.push_back(setting);
-    idx = int(myExternalSettings.size()) - 1;
-
-    /*cerr << "insert external: key = " << key
-         << ", value = " << value
-         << " @ index = " << idx
-         << endl;*/
-  }
-
-  return idx;
+  myExternalSettings[key] = value;
 }
