@@ -843,10 +843,14 @@ int Thumbulator::execute()
 #endif
 
   Op decodedOp;
+#ifndef UNSAFE_OPTIMIZATIONS
   if ((instructionPtr & 0xF0000000) == 0 && instructionPtr < romSize)
-    decodedOp = decodedRom[instructionPtr / 2];
+    decodedOp = decodedRom[instructionPtr >> 1];
   else
     decodedOp = decodeInstructionWord(inst);
+#else
+  decodedOp = decodedRom[instructionPtr >> 1];
+#endif
 
   switch (decodedOp) {
     //ADC
