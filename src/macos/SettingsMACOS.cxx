@@ -15,6 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+// TODO - Fix this code so that we don't need access to getPermanentSettings()
+//        The code should parse the plist file and call setValue on each
+//        option; it shouldn't need to query the base class for which options
+//        are valid.
+
 #include "SettingsMACOS.hxx"
 
 extern "C" {
@@ -36,7 +41,7 @@ bool SettingsMACOS::loadConfigFile(const string&)
   char cvalue[4096];
 
   // Read key/value pairs from the plist file
-  for(const auto& s: getInternalSettings())
+  for(const auto& s: getPermanentSettings())
   {
     prefsGetString(s.first.c_str(), cvalue, 4090);
     if(cvalue[0] != 0)
@@ -49,7 +54,7 @@ bool SettingsMACOS::loadConfigFile(const string&)
 bool SettingsMACOS::saveConfigFile(const string&) const
 {
   // Write out each of the key and value pairs
-  for(const auto& s: getInternalSettings())
+  for(const auto& s: getPermanentSettings())
     prefsSetString(s.first.c_str(), s.second.toCString());
 
   prefsSave();

@@ -27,16 +27,15 @@
   This class provides an interface for accessing all configurable options,
   both from the settings file and from the commandline.
 
-  Note that options can be configured as 'internal' or 'external'.  Internal
-  options are ones that the app registers with the system, and always saves
-  when the app exits.  External options are those that may be set for
-  temporary use; they are used (when appropriate), but never saved to the
-  settings file.
+  Note that options can be configured as 'permanent' or 'temporary'.
+  Permanent options are ones that the app registers with the system, and
+  always saves when the app exits.  Temporary options are those that are
+  used when appropriate, but never saved to the settings file.
 
   Each c'tor (both in the base class and in any derived classes) are
-  responsible for registering all options as either internal or external.
-  If an option isn't registered as internal, it will be considered external
-  and will not be saved.
+  responsible for registering all options as either permanent or temporary.
+  If an option isn't registered as permanent, it will be considered
+  temporary and will not be saved.
 
   @author  Stephen Anthony
 */
@@ -77,7 +76,7 @@ class Settings
       Get the value assigned to the specified key.
 
       @param key  The key of the setting to lookup
-      @return  The (variant) value of the setting
+      @return  The value of the setting; EmptyVariant if none exists
     */
     const Variant& value(const string& key) const;
 
@@ -85,7 +84,7 @@ class Settings
       Set the value associated with the specified key.
 
       @param key   The key of the setting
-      @param value The (variant) value to assign to the key
+      @param value The value to assign to the key
     */
     void setValue(const string& key, const Variant& value);
 
@@ -93,7 +92,7 @@ class Settings
       Convenience methods to return specific types.
 
       @param key  The key of the setting to lookup
-      @return  The specific type value of the value
+      @return  The specific type value of the variant
     */
     int getInt(const string& key) const     { return value(key).toInt();   }
     float getFloat(const string& key) const { return value(key).toFloat(); }
@@ -108,8 +107,8 @@ class Settings
       appropriate 'value'.  Elsewhere, any derived classes should call 'setValue',
       and let it decide where the key/value pair will be saved.
     */
-    void setInternal(const string& key, const Variant& value);
-    void setExternal(const string& key, const Variant& value);
+    void setPermanent(const string& key, const Variant& value);
+    void setTemporary(const string& key, const Variant& value);
 
     /**
       This method will be called to load the settings from the
@@ -141,10 +140,11 @@ class Settings
               str.substr(first, str.find_last_not_of(' ')-first+1);
     }
 
+    // FIXME - Rework so that these aren't needed; hence no commenting added
     const Options& getInternalSettings() const
-      { return myInternalSettings; }
+      { return myPermanentSettings; }
     const Options& getExternalSettings() const
-      { return myExternalSettings; }
+      { return myTemporarySettings; }
 
   private:
     /**
@@ -156,11 +156,11 @@ class Settings
   private:
     // Holds key/value pairs that are necessary for Stella to
     // function and must be saved on each program exit.
-    Options myInternalSettings;
+    Options myPermanentSettings;
 
     // Holds auxiliary key/value pairs that shouldn't be saved on
     // program exit.
-    Options myExternalSettings;
+    Options myTemporarySettings;
 
   private:
     // Following constructors and assignment operators not supported
