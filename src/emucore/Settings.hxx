@@ -141,9 +141,9 @@ class Settings
     }
 
     // FIXME - Rework so that these aren't needed; hence no commenting added
-    const Options& getInternalSettings() const
+    const Options& getPermanentSettings() const
       { return myPermanentSettings; }
-    const Options& getExternalSettings() const
+    const Options& getTemporarySettings() const
       { return myTemporarySettings; }
 
   private:

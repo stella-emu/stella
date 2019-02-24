@@ -18,35 +18,25 @@
 #include "FSNode.hxx"
 #include "OSystemMACOS.hxx"
 
-/**
-  Each derived class is responsible for calling the following methods
-  in its constructor:
-
-  setBaseDir()
-  setConfigFile()
-
-  See OSystem.hxx for a further explanation
-*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemMACOS::OSystemMACOS()
-  : OSystem()
+void OSystemMACOS::getBaseDirAndConfig(string& basedir, string& cfgfile,
+        string& savedir, string& loaddir,
+        bool useappdir, const string& usedir)
 {
-  setBaseDir("~/Library/Application Support/Stella/");
+  basedir = "~/Library/Application Support/Stella/";
+  cfgfile = "~/Library/Application Support/Stella/stellarc";  // FIXME - actually use this
 
-  // This will be overridden, as macOS uses plist files for settings
-  setConfigFile("~/Library/Application Support/Stella/stellarc");
-}
+#if 0
+  // Check to see if basedir overrides are active
+  if(useappdir)
+    cout << "ERROR: base dir in app folder not supported" << endl;
+  else if(usedir != "")
+  {
+    basedir = FilesystemNode(usedir).getPath();
+    savedir = loaddir = basedir;
+  }
+#endif
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemMACOS::defaultSaveDir() const
-{
   FilesystemNode desktop("~/Desktop/");
-  return desktop.isDirectory() ? desktop.getShortPath() : "~/";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemMACOS::defaultLoadDir() const
-{
-  return defaultSaveDir();
+  savedir = loaddir = desktop.isDirectory() ? desktop.getShortPath() : "~/";
 }
