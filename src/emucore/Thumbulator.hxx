@@ -152,7 +152,6 @@ class Thumbulator
     uInt32 read_register(uInt32 reg);
     void write_register(uInt32 reg, uInt32 data);
     uInt32 fetch16(uInt32 addr);
-    uInt32 fetch32(uInt32 addr);
     uInt32 read16(uInt32 addr);
     uInt32 read32(uInt32 addr);
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -208,9 +207,9 @@ class Thumbulator
     uInt32 T1TC;   // Timer 1 Timer Counter
     double timing_factor;
 
+#ifndef UNSAFE_OPTIMIZATIONS
     ostringstream statusMsg;
 
-#ifndef UNSAFE_OPTIMIZATIONS
     static bool trapOnFatal;
 #endif
 

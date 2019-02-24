@@ -89,8 +89,10 @@ string Thumbulator::run()
 #if defined(THUMB_DISS) || defined(THUMB_DBUG)
   dump_counters();
   cout << statusMsg.str() << endl;
-#endif
   return statusMsg.str();
+#else
+  return "";
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -208,42 +210,6 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
   }
 #ifndef UNSAFE_OPTIMIZATIONS
   return fatalError("fetch16", addr, "abort");
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Thumbulator::fetch32(uInt32 addr)
-{
-  uInt32 data;
-  switch(addr & 0xF0000000)
-  {
-    case 0x00000000: //ROM
-      if(addr < 0x50)
-      {
-        data = read32(addr);
-        DO_DBUG(statusMsg << "fetch32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
-        if(addr == 0x00000000) return data;
-        if(addr == 0x00000004) return data;
-#ifndef UNSAFE_OPTIMIZATIONS
-        if(addr == 0x0000003C) return data;
-        fatalError("fetch32", addr, "abort");
-#else
-        return data;
-#endif
-      }
-      [[fallthrough]];
-
-#ifndef UNSAFE_OPTIMIZATIONS
-    case 0x40000000: //RAM
-#else
-    default:
-#endif
-      data = read32(addr);
-      DO_DBUG(statusMsg << "fetch32(" << Base::HEX8 << addr << ")=" << Base::HEX8 << data << endl);
-      return data;
-  }
-#ifndef UNSAFE_OPTIMIZATIONS
-  return fatalError("fetch32", addr, "abort");
 #endif
 }
 
@@ -849,7 +815,7 @@ int Thumbulator::execute()
   else
     decodedOp = decodeInstructionWord(inst);
 #else
-  decodedOp = decodedRom[instructionPtr >> 1];
+  decodedOp = decodedRom[(instructionPtr & ROMADDMASK) >> 1];
 #endif
 
   switch (decodedOp) {
@@ -2438,7 +2404,9 @@ int Thumbulator::execute()
       }
       else
       {
+#if defined(THUMB_DISS)
         statusMsg << endl << endl << "swi 0x" << Base::HEX2 << rb << endl;
+#endif
         return 1;
       }
     }
@@ -2554,8 +2522,9 @@ int Thumbulator::reset()
 #ifndef NO_THUMB_STATS
   fetches = reads = writes = 0;
 #endif
-
+#ifndef UNSAFE_OPTIMIZATIONS
   statusMsg.str("");
+#endif
 
   return 0;
 }
