@@ -184,32 +184,31 @@ uInt32 Thumbulator::fetch16(uInt32 addr)
   ++fetches;
 #endif
 
+#ifndef UNSAFE_OPTIMIZATIONS
   uInt32 data;
   switch(addr & 0xF0000000)
   {
     case 0x00000000: //ROM
       addr &= ROMADDMASK;
-#ifndef UNSAFE_OPTIMIZATIONS
       if(addr < 0x50)
         fatalError("fetch16", addr, "abort");
-#endif
       addr >>= 1;
       data = CONV_RAMROM(rom[addr]);
       DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return data;
-#ifndef UNSAFE_OPTIMIZATIONS
+
     case 0x40000000: //RAM
-#else
-    default:
-#endif
       addr &= RAMADDMASK;
       addr >>= 1;
       data=CONV_RAMROM(ram[addr]);
       DO_DBUG(statusMsg << "fetch16(" << Base::HEX8 << addr << ")=" << Base::HEX4 << data << endl);
       return data;
   }
-#ifndef UNSAFE_OPTIMIZATIONS
   return fatalError("fetch16", addr, "abort");
+#else
+  addr &= ROMADDMASK;
+  addr >>= 1;
+  return CONV_RAMROM(rom[addr]);
 #endif
 }
 
