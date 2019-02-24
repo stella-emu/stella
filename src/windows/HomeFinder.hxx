@@ -70,7 +70,7 @@ class HomeFinder
     }
 
   private:
-    static string ourHomePath, ourAppDataPath, ourDocumentsPath;
+    static string ourHomePath, ourAppDataPath, ourDocumentsPath, ourDesktopPath;
 
     // Following constructors and assignment operators not supported
     HomeFinder(const HomeFinder&) = delete;
@@ -81,6 +81,7 @@ class HomeFinder
 
 __declspec(selectany) string HomeFinder::ourHomePath = "";
 __declspec(selectany) string HomeFinder::ourAppDataPath = "";
+__declspec(selectany) string HomeFinder::ourDesktopPath = "";
 __declspec(selectany) string HomeFinder::ourDocumentsPath = "";
 
 #endif

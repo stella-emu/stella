@@ -26,44 +26,24 @@ void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& cfgfile,
         string& savedir, string& loaddir,
         bool useappdir, const string& usedir)
 {
-#if 0
-  // Check if the base directory should be overridden
-  // Shouldn't normally be necessary, but is useful for those people that
-  // don't want to clutter their 'My Documents' folder
-  bool overrideBasedir = false;
-  FilesystemNode basedirfile("basedir.txt");
-  if(basedirfile.exists())
+  HomeFinder homefinder;
+  FilesystemNode appdata(homefinder.getAppDataPath());
+  if(appdata.isDirectory())
   {
-    ifstream in(basedirfile.getPath());
-    if(in && in.is_open())
-    {
-      getline(in, basedir);
-
-      // trim leading and trailing spaces
-      size_t spos = basedir.find_first_not_of(" \t");
-      size_t epos = basedir.find_last_not_of(" \t");
-      if(spos != string::npos && epos != string::npos)
-        basedir = basedir.substr(spos, epos-spos+1);
-
-      if(basedir != "")  overrideBasedir = true;
-    }
+    basedir = appdata.getShortPath();
+    if(basedir.length() > 1 && basedir[basedir.length() - 1] != '\\')
+      basedir += '\\';
+    basedir += "Stella\\";
   }
-#endif
+  savedir = loaddir = "~/"; // FIXME - change this to 'Desktop'
 
-  // If basedir hasn't been specified, use the 'home' directory
-  if(!overrideBasedir)
+  // Check to see if basedir overrides are active
+  if(useappdir)
+    cout << "ERROR: base dir in app folder not supported" << endl;
+  else if(usedir != "")
   {
-    HomeFinder homefinder;
-    FilesystemNode appdata(homefinder.getAppDataPath());
-    if(appdata.isDirectory())
-    {
-      basedir = appdata.getShortPath();
-      if(basedir.length() > 1 && basedir[basedir.length()-1] != '\\')
-        basedir += '\\';
-      basedir += "Stella\\";
-    }
-    else
-      basedir = ".\\";  // otherwise, default to current directory
+    basedir = FilesystemNode(usedir).getPath();
+    savedir = loaddir = basedir;
   }
 
   cfgfile = basedir + "stella.ini";
