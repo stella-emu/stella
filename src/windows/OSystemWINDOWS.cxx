@@ -21,22 +21,12 @@
 
 #include "OSystemWINDOWS.hxx"
 
-/**
-  Each derived class is responsible for calling the following methods
-  in its constructor:
-
-  setBaseDir()
-  setConfigFile()
-
-  See OSystem.hxx for a further explanation
-*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemWINDOWS::OSystemWINDOWS()
-  : OSystem()
+void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& cfgfile,
+        string& savedir, string& loaddir,
+        bool useappdir, const string& usedir)
 {
-  string basedir = "";
-
+#if 0
   // Check if the base directory should be overridden
   // Shouldn't normally be necessary, but is useful for those people that
   // don't want to clutter their 'My Documents' folder
@@ -58,6 +48,7 @@ OSystemWINDOWS::OSystemWINDOWS()
       if(basedir != "")  overrideBasedir = true;
     }
   }
+#endif
 
   // If basedir hasn't been specified, use the 'home' directory
   if(!overrideBasedir)
@@ -75,15 +66,9 @@ OSystemWINDOWS::OSystemWINDOWS()
       basedir = ".\\";  // otherwise, default to current directory
   }
 
-  setBaseDir(basedir);
-  setConfigFile(basedir + "stella.ini");
-
-  // Create default save/load dir
-  FilesystemNode node(defaultSaveDir());
-  if(!node.exists())
-    node.makeDir();
+  cfgfile = basedir + "stella.ini";
 }
-
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystemWINDOWS::defaultSaveDir() const
 {
@@ -97,3 +82,4 @@ string OSystemWINDOWS::defaultLoadDir() const
 {
   return defaultSaveDir();
 }
+#endif

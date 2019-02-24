@@ -283,6 +283,13 @@ class OSystem
     const FilesystemNode& romFile() const { return myRomFile; }
 
     /**
+      The default locations for saving and loading various files that
+      don't already have a specific location.
+    */
+    const string& defaultSaveDir() const { return myDefaultSaveDir; }
+    const string& defaultLoadDir() const { return myDefaultLoadDir; }
+
+    /**
       Open the given ROM and return an array containing its contents.
       Also, the properties database is updated with a valid ROM name
       for this ROM (if necessary).
@@ -391,13 +398,12 @@ class OSystem
       derived classes are free to ignore this, as some can't use an
       alternate base directory.
 
-      If the default path is used, this indicates to attempt to use the
-      application directory directly.  Again, this is not supported on
-      all systems, so it may be simply ignored.
+      Alternatively, attempt to use the application directory directly.
+      Again, this is not supported on all systems, so it may be simply
+      ignored.
     */
-    static void overrideBaseDir(const string& path = "USE_APP_DIR") {
-      ourOverrideBaseDir = path;
-    }
+    static void overrideBaseDir(const string& path) { ourOverrideBaseDir = path; }
+    static void overrideBaseDirWithApp() { ourOverrideBaseDirWithApp = true; }
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -431,27 +437,30 @@ class OSystem
     */
     virtual void stateChanged(EventHandlerState state) { }
 
-    /**
-      Returns the default save and load paths for various files
-      (snapshots, disassembly, roms, etc).  Since this varies greatly
-      among different systems and is the one directory that most end-users
-      care about (vs. config file stuff that usually isn't user-modifiable),
-      we create a special method for it.
-    */
-    virtual string defaultSaveDir() const { return string("~") + BSPF::PATH_SEPARATOR; }
-    virtual string defaultLoadDir() const { return string("~") + BSPF::PATH_SEPARATOR; }
-
   protected:
+    //////////////////////////////////////////////////////////////////////
+    // The following methods are system-specific and *must* be
+    // implemented in derived classes.
+    //////////////////////////////////////////////////////////////////////
     /**
-      Set the base directory for all Stella files (these files may be
-      located in other places through settings).
-    */
-    void setBaseDir(const string& basedir);
+      Determine the base directory and main configuration file from the
+      derived class.  It can also use hints, as described below.
 
-    /**
-      Set the locations of config file
+      @param basedir  The base directory for all configuration files
+      @param cfgfile  The fully qualified pathname of the config file
+                      (including the base directory)
+      @param savedir  The default directory to save various other files
+      @param loaddir  The default directory to load various other files
+      @param useappdir  A hint that the base dir should be set to the
+                        app directory; not all ports can do this, so
+                        they are free to ignore it
+      @param usedir     A hint that the base dir should be set to this
+                        parameter; not all ports can do this, so
+                        they are free to ignore it
     */
-    void setConfigFile(const string& file);
+    virtual void getBaseDirAndConfig(string& basedir, string& cfgfile,
+                    string& savedir, string& loaddir,
+                    bool useappdir, const string& usedir) = 0;
 
   protected:
     // Pointer to the EventHandler object
@@ -519,11 +528,6 @@ class OSystem
     // Indicates whether to stop the main loop
     bool myQuitLoop;
 
-    // If not empty, a hint for derived classes to use this as the
-    // base directory (where all settings are stored)
-    // Derived classes are free to ignore it and use their own defaults
-    static string ourOverrideBaseDir;
-
   private:
     string myBaseDir;
     string myStateDir;
@@ -531,6 +535,8 @@ class OSystem
     string mySnapshotLoadDir;
     string myNVRamDir;
     string myCfgDir;
+    string myDefaultSaveDir;
+    string myDefaultLoadDir;
 
     string myCheatFile;
     string myConfigFile;
@@ -544,6 +550,12 @@ class OSystem
     string myBuildInfo;
 
     FpsMeter myFpsMeter;
+
+    // If not empty, a hint for derived classes to use this as the
+    // base directory (where all settings are stored)
+    // Derived classes are free to ignore it and use their own defaults
+    static string ourOverrideBaseDir;
+    static bool ourOverrideBaseDirWithApp;
 
   private:
     /**

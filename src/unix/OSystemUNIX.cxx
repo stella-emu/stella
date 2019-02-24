@@ -21,36 +21,35 @@
 #include "Version.hxx"
 #include "OSystemUNIX.hxx"
 
-/**
-  Each derived class is responsible for calling the following methods
-  in its constructor:
-
-  setBaseDir()
-  setConfigFile()
-
-  See OSystem.hxx for a further explanation
-*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemUNIX::OSystemUNIX()
-  : OSystem()
+void OSystemUNIX::getBaseDirAndConfig(string& basedir, string& cfgfile,
+        string& savedir, string& loaddir,
+        bool useappdir, const string& usedir)
 {
   // Use XDG_CONFIG_HOME if defined, otherwise use the default
   const char* configDir = getenv("XDG_CONFIG_HOME");
   if(configDir == nullptr)  configDir = "~/.config";
+  basedir = string(configDir) + "/stella";
+  savedir = loaddir = "~/";
 
-  string stellaDir = string(configDir) + "/stella";
-  setBaseDir(stellaDir);
+  // Check to see if basedir overrides are active
+  if(useappdir)
+    cout << "ERROR: base dir in app folder not supported" << endl;
+  else if(usedir != "")
+  {
+    basedir = FilesystemNode(usedir).getPath();
+    savedir = loaddir = basedir;
+  }
 
   // (Currently) non-documented alternative for using version-specific
   // config file
   ostringstream buf;
-  buf << stellaDir << "/stellarc" << "-" << STELLA_VERSION;
+  buf << basedir << "/stellarc" << "-" << STELLA_VERSION;
 
   // Use version-specific config file only if it already exists
   FilesystemNode altConfigFile(buf.str());
   if(altConfigFile.exists() && altConfigFile.isWritable())
-    setConfigFile(altConfigFile.getPath());
+    cfgfile = altConfigFile.getPath();
   else
-    setConfigFile(stellaDir + "/stellarc");
+    cfgfile = basedir + "/stellarc";
 }

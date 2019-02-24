@@ -169,6 +169,29 @@ bool OSystem::create()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::loadConfig(const Settings::Options& options)
 {
+  // Get base directory and config file from derived class
+  // It will decide whether it can override its default location
+  getBaseDirAndConfig(myBaseDir, myConfigFile,
+      myDefaultSaveDir, myDefaultLoadDir,
+      ourOverrideBaseDirWithApp, ourOverrideBaseDir);
+
+  // Get fully-qualified pathnames, and make directories when needed
+  FilesystemNode node(myBaseDir);
+  if(!node.isDirectory())
+    node.makeDir();
+  myBaseDir = node.getPath();
+  myConfigFile = FilesystemNode(myConfigFile).getPath();
+
+  FilesystemNode save(myDefaultSaveDir);
+  if(!save.isDirectory())
+    save.makeDir();
+  myDefaultSaveDir = node.getPath();
+
+  FilesystemNode load(myDefaultLoadDir);
+  if(!load.isDirectory())
+    load.makeDir();
+  myDefaultLoadDir = node.getPath();
+
   logMessage("Loading config options ...", 2);
   mySettings->load(configFile(), options);
 }
@@ -239,22 +262,6 @@ void OSystem::setConfigPaths()
   dbgPath("pro file  ", myPropertiesFile);
   dbgPath("INI file  ", myConfigFile);
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setBaseDir(const string& basedir)
-{
-  FilesystemNode node(basedir);
-  if(!node.isDirectory())
-    node.makeDir();
-
-  myBaseDir = node.getPath();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setConfigFile(const string& file)
-{
-  myConfigFile = FilesystemNode(file).getPath();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -734,3 +741,4 @@ void OSystem::mainLoop()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::ourOverrideBaseDir = "";
+bool OSystem::ourOverrideBaseDirWithApp = false;

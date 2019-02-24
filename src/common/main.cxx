@@ -96,7 +96,7 @@ void parseCommandLine(int ac, char* av[],
       // configuration files are stored; we check for those next
       if(key == "baseinappdir")
       {
-        globalOpts[key] = true;
+        localOpts[key] = true;
         continue;
       }
 
@@ -130,7 +130,7 @@ void checkForCustomBaseDir(Settings::Options& options)
   // If both of these are activated, the 'base in app dir' takes precedence
   auto it = options.find("baseinappdir");
   if(it != options.end())
-    OSystem::overrideBaseDir();
+    OSystem::overrideBaseDirWithApp();
   else
   {
     it = options.find("basedir");
