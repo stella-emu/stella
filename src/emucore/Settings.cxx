@@ -31,163 +31,163 @@
 Settings::Settings()
 {
   // Video-related options
-  setInternal("video", "");
-  setInternal("speed", "1.0");
-  setInternal("vsync", "true");
-  setInternal("fullscreen", "false");
-  setInternal("center", "false");
-  setInternal("palette", "standard");
-  setInternal("uimessages", "true");
+  setPermanent("video", "");
+  setPermanent("speed", "1.0");
+  setPermanent("vsync", "true");
+  setPermanent("fullscreen", "false");
+  setPermanent("center", "false");
+  setPermanent("palette", "standard");
+  setPermanent("uimessages", "true");
 
   // TIA specific options
-  setInternal("tia.zoom", "3");
-  setInternal("tia.inter", "false");
-  setInternal("tia.aspectn", "91");
-  setInternal("tia.aspectp", "109");
-  setInternal("tia.fsfill", "false");
-  setInternal("tia.dbgcolors", "roygpb");
+  setPermanent("tia.zoom", "3");
+  setPermanent("tia.inter", "false");
+  setPermanent("tia.aspectn", "91");
+  setPermanent("tia.aspectp", "109");
+  setPermanent("tia.fsfill", "false");
+  setPermanent("tia.dbgcolors", "roygpb");
 
   // TV filtering options
-  setInternal("tv.filter", "0");
-  setInternal("tv.phosphor", "byrom");
-  setInternal("tv.phosblend", "50");
-  setInternal("tv.scanlines", "25");
-  setInternal("tv.scaninter", "true");
+  setPermanent("tv.filter", "0");
+  setPermanent("tv.phosphor", "byrom");
+  setPermanent("tv.phosblend", "50");
+  setPermanent("tv.scanlines", "25");
+  setPermanent("tv.scaninter", "true");
   // TV options when using 'custom' mode
-  setInternal("tv.contrast", "0.0");
-  setInternal("tv.brightness", "0.0");
-  setInternal("tv.hue", "0.0");
-  setInternal("tv.saturation", "0.0");
-  setInternal("tv.gamma", "0.0");
-  setInternal("tv.sharpness", "0.0");
-  setInternal("tv.resolution", "0.0");
-  setInternal("tv.artifacts", "0.0");
-  setInternal("tv.fringing", "0.0");
-  setInternal("tv.bleed", "0.0");
+  setPermanent("tv.contrast", "0.0");
+  setPermanent("tv.brightness", "0.0");
+  setPermanent("tv.hue", "0.0");
+  setPermanent("tv.saturation", "0.0");
+  setPermanent("tv.gamma", "0.0");
+  setPermanent("tv.sharpness", "0.0");
+  setPermanent("tv.resolution", "0.0");
+  setPermanent("tv.artifacts", "0.0");
+  setPermanent("tv.fringing", "0.0");
+  setPermanent("tv.bleed", "0.0");
 
   // Sound options
-  setInternal(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
-  setInternal(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
-  setInternal(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
-  setInternal(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
-  setInternal(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
-  setInternal(AudioSettings::SETTING_FRAGMENT_SIZE, AudioSettings::DEFAULT_FRAGMENT_SIZE);
-  setInternal(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
-  setInternal(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
-  setInternal(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+  setPermanent(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
+  setPermanent(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
+  setPermanent(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
+  setPermanent(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
+  setPermanent(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
+  setPermanent(AudioSettings::SETTING_FRAGMENT_SIZE, AudioSettings::DEFAULT_FRAGMENT_SIZE);
+  setPermanent(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
+  setPermanent(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
+  setPermanent(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
 
   // Input event options
-  setInternal("keymap", "");
-  setInternal("joymap", "");
-  setInternal("combomap", "");
-  setInternal("joydeadzone", "13");
-  setInternal("joyallow4", "false");
-  setInternal("usemouse", "analog");
-  setInternal("grabmouse", "true");
-  setInternal("cursor", "2");
-  setInternal("dsense", "10");
-  setInternal("msense", "10");
-  setInternal("tsense", "10");
-  setInternal("saport", "lr");
-  setInternal("ctrlcombo", "true");
+  setPermanent("keymap", "");
+  setPermanent("joymap", "");
+  setPermanent("combomap", "");
+  setPermanent("joydeadzone", "13");
+  setPermanent("joyallow4", "false");
+  setPermanent("usemouse", "analog");
+  setPermanent("grabmouse", "true");
+  setPermanent("cursor", "2");
+  setPermanent("dsense", "10");
+  setPermanent("msense", "10");
+  setPermanent("tsense", "10");
+  setPermanent("saport", "lr");
+  setPermanent("ctrlcombo", "true");
 
   // Snapshot options
-  setInternal("snapsavedir", "");
-  setInternal("snaploaddir", "");
-  setInternal("snapname", "int");
-  setInternal("sssingle", "false");
-  setInternal("ss1x", "false");
-  setInternal("ssinterval", "2");
+  setPermanent("snapsavedir", "");
+  setPermanent("snaploaddir", "");
+  setPermanent("snapname", "int");
+  setPermanent("sssingle", "false");
+  setPermanent("ss1x", "false");
+  setPermanent("ssinterval", "2");
 
   // Config files and paths
-  setInternal("romdir", "");
+  setPermanent("romdir", "");
 
   // ROM browser options
-  setInternal("exitlauncher", "false");
-  setInternal("launcherres", GUI::Size(900, 600));
-  setInternal("launcherfont", "medium");
-  setInternal("launcherroms", "true");
-  setInternal("romviewer", "1");
-  setInternal("lastrom", "");
+  setPermanent("exitlauncher", "false");
+  setPermanent("launcherres", GUI::Size(900, 600));
+  setPermanent("launcherfont", "medium");
+  setPermanent("launcherroms", "true");
+  setPermanent("romviewer", "1");
+  setPermanent("lastrom", "");
 
   // UI-related options
 #ifdef DEBUGGER_SUPPORT
-  setInternal("dbg.res",
+  setPermanent("dbg.res",
     GUI::Size(DebuggerDialog::kMediumFontMinW,
               DebuggerDialog::kMediumFontMinH));
 #endif
-  setInternal("uipalette", "standard");
-  setInternal("listdelay", "300");
-  setInternal("mwheel", "4");
+  setPermanent("uipalette", "standard");
+  setPermanent("listdelay", "300");
+  setPermanent("mwheel", "4");
 
   // Misc options
-  setInternal("autoslot", "false");
-  setInternal("loglevel", "1");
-  setInternal("logtoconsole", "0");
-  setInternal("avoxport", "");
-  setInternal("fastscbios", "true");
-  setInternal("threads", "false");
-  setExternal("romloadcount", "0");
-  setExternal("maxres", "");
+  setPermanent("autoslot", "false");
+  setPermanent("loglevel", "1");
+  setPermanent("logtoconsole", "0");
+  setPermanent("avoxport", "");
+  setPermanent("fastscbios", "true");
+  setPermanent("threads", "false");
+  setTemporary("romloadcount", "0");
+  setTemporary("maxres", "");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
-  setInternal("dbg.fontsize", "medium");
-  setInternal("dbg.fontstyle", "0");
-  setInternal("dbg.uhex", "false");
-  setInternal("dbg.ghostreadstrap", "true");
-  setInternal("dis.resolve", "true");
-  setInternal("dis.gfxformat", "2");
-  setInternal("dis.showaddr", "true");
-  setInternal("dis.relocate", "false");
-  setInternal("dev.rwportbreak", "true");
+  setPermanent("dbg.fontsize", "medium");
+  setPermanent("dbg.fontstyle", "0");
+  setPermanent("dbg.uhex", "false");
+  setPermanent("dbg.ghostreadstrap", "true");
+  setPermanent("dis.resolve", "true");
+  setPermanent("dis.gfxformat", "2");
+  setPermanent("dis.showaddr", "true");
+  setPermanent("dis.relocate", "false");
+  setPermanent("dev.rwportbreak", "true");
 #endif
 
   // Player settings
-  setInternal("plr.stats", "false");
-  setInternal("plr.bankrandom", "false");
-  setInternal("plr.ramrandom", "true");
-  setInternal("plr.cpurandom", "AXYP");
-  setInternal("plr.colorloss", "false");
-  setInternal("plr.tv.jitter", "true");
-  setInternal("plr.tv.jitter_recovery", "10");
-  setInternal("plr.debugcolors", "false");
-  setInternal("plr.console", "2600"); // 7800
-  setInternal("plr.timemachine", true);
-  setInternal("plr.tm.size", 200);
-  setInternal("plr.tm.uncompressed", 60);
-  setInternal("plr.tm.interval", "30f"); // = 0.5 seconds
-  setInternal("plr.tm.horizon", "10m"); // = ~10 minutes
-  setInternal("plr.eepromaccess", "false");
+  setPermanent("plr.stats", "false");
+  setPermanent("plr.bankrandom", "false");
+  setPermanent("plr.ramrandom", "true");
+  setPermanent("plr.cpurandom", "AXYP");
+  setPermanent("plr.colorloss", "false");
+  setPermanent("plr.tv.jitter", "true");
+  setPermanent("plr.tv.jitter_recovery", "10");
+  setPermanent("plr.debugcolors", "false");
+  setPermanent("plr.console", "2600"); // 7800
+  setPermanent("plr.timemachine", true);
+  setPermanent("plr.tm.size", 200);
+  setPermanent("plr.tm.uncompressed", 60);
+  setPermanent("plr.tm.interval", "30f"); // = 0.5 seconds
+  setPermanent("plr.tm.horizon", "10m"); // = ~10 minutes
+  setPermanent("plr.eepromaccess", "false");
 
   // Developer settings
-  setInternal("dev.settings", "false");
-  setInternal("dev.stats", "true");
-  setInternal("dev.bankrandom", "true");
-  setInternal("dev.ramrandom", "true");
-  setInternal("dev.cpurandom", "SAXYP");
-  setInternal("dev.colorloss", "true");
-  setInternal("dev.tv.jitter", "true");
-  setInternal("dev.tv.jitter_recovery", "2");
-  setInternal("dev.debugcolors", "false");
-  setInternal("dev.tiadriven", "true");
-  setInternal("dev.console", "2600"); // 7800
-  setInternal("dev.tia.type", "standard");
-  setInternal("dev.tia.plinvphase", "true");
-  setInternal("dev.tia.msinvphase", "true");
-  setInternal("dev.tia.blinvphase", "true");
-  setInternal("dev.tia.delaypfbits", "true");
-  setInternal("dev.tia.delaypfcolor", "true");
-  setInternal("dev.tia.delayplswap", "true");
-  setInternal("dev.tia.delayblswap", "true");
-  setInternal("dev.timemachine", true);
-  setInternal("dev.tm.size", 1000);
-  setInternal("dev.tm.uncompressed", 600);
-  setInternal("dev.tm.interval", "1f"); // = 1 frame
-  setInternal("dev.tm.horizon", "30s"); // = ~30 seconds
+  setPermanent("dev.settings", "false");
+  setPermanent("dev.stats", "true");
+  setPermanent("dev.bankrandom", "true");
+  setPermanent("dev.ramrandom", "true");
+  setPermanent("dev.cpurandom", "SAXYP");
+  setPermanent("dev.colorloss", "true");
+  setPermanent("dev.tv.jitter", "true");
+  setPermanent("dev.tv.jitter_recovery", "2");
+  setPermanent("dev.debugcolors", "false");
+  setPermanent("dev.tiadriven", "true");
+  setPermanent("dev.console", "2600"); // 7800
+  setPermanent("dev.tia.type", "standard");
+  setPermanent("dev.tia.plinvphase", "true");
+  setPermanent("dev.tia.msinvphase", "true");
+  setPermanent("dev.tia.blinvphase", "true");
+  setPermanent("dev.tia.delaypfbits", "true");
+  setPermanent("dev.tia.delaypfcolor", "true");
+  setPermanent("dev.tia.delayplswap", "true");
+  setPermanent("dev.tia.delayblswap", "true");
+  setPermanent("dev.timemachine", true);
+  setPermanent("dev.tm.size", 1000);
+  setPermanent("dev.tm.uncompressed", 600);
+  setPermanent("dev.tm.interval", "1f"); // = 1 frame
+  setPermanent("dev.tm.horizon", "30s"); // = ~30 seconds
   // Thumb ARM emulation options
-  setInternal("dev.thumb.trapfatal", "true");
-  setInternal("dev.eepromaccess", "true");
+  setPermanent("dev.thumb.trapfatal", "true");
+  setPermanent("dev.eepromaccess", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -230,111 +230,111 @@ void Settings::validate()
   float f;
 
   f = getFloat("speed");
-  if (f <= 0) setInternal("speed", "1.0");
+  if (f <= 0) setValue("speed", "1.0");
 
   i = getInt("tia.aspectn");
-  if(i < 80 || i > 120)  setInternal("tia.aspectn", "90");
+  if(i < 80 || i > 120)  setValue("tia.aspectn", "90");
   i = getInt("tia.aspectp");
-  if(i < 80 || i > 120)  setInternal("tia.aspectp", "100");
+  if(i < 80 || i > 120)  setValue("tia.aspectp", "100");
 
   s = getString("tia.dbgcolors");
   sort(s.begin(), s.end());
-  if(s != "bgopry")  setInternal("tia.dbgcolors", "roygpb");
+  if(s != "bgopry")  setValue("tia.dbgcolors", "roygpb");
 
   s = getString("tv.phosphor");
-  if(s != "always" && s != "byrom")  setInternal("tv.phosphor", "byrom");
+  if(s != "always" && s != "byrom")  setValue("tv.phosphor", "byrom");
 
   i = getInt("tv.phosblend");
-  if(i < 0 || i > 100)  setInternal("tv.phosblend", "50");
+  if(i < 0 || i > 100)  setValue("tv.phosblend", "50");
 
   i = getInt("tv.filter");
-  if(i < 0 || i > 5)  setInternal("tv.filter", "0");
+  if(i < 0 || i > 5)  setValue("tv.filter", "0");
 
   i = getInt("dev.tv.jitter_recovery");
-  if(i < 1 || i > 20) setInternal("dev.tv.jitter_recovery", "2");
+  if(i < 1 || i > 20) setValue("dev.tv.jitter_recovery", "2");
 
   int size = getInt("dev.tm.size");
   if(size < 20 || size > 1000)
   {
-    setInternal("dev.tm.size", 20);
+    setValue("dev.tm.size", 20);
     size = 20;
   }
 
   i = getInt("dev.tm.uncompressed");
-  if(i < 0 || i > size) setInternal("dev.tm.uncompressed", size);
+  if(i < 0 || i > size) setValue("dev.tm.uncompressed", size);
 
   /*i = getInt("dev.tm.interval");
-  if(i < 0 || i > 5) setInternal("dev.tm.interval", 0);
+  if(i < 0 || i > 5) setValue("dev.tm.interval", 0);
 
   i = getInt("dev.tm.horizon");
-  if(i < 0 || i > 6) setInternal("dev.tm.horizon", 1);*/
+  if(i < 0 || i > 6) setValue("dev.tm.horizon", 1);*/
 
   i = getInt("plr.tv.jitter_recovery");
-  if(i < 1 || i > 20) setInternal("plr.tv.jitter_recovery", "10");
+  if(i < 1 || i > 20) setValue("plr.tv.jitter_recovery", "10");
 
   size = getInt("plr.tm.size");
   if(size < 20 || size > 1000)
   {
-    setInternal("plr.tm.size", 20);
+    setValue("plr.tm.size", 20);
     size = 20;
   }
 
   i = getInt("plr.tm.uncompressed");
-  if(i < 0 || i > size) setInternal("plr.tm.uncompressed", size);
+  if(i < 0 || i > size) setValue("plr.tm.uncompressed", size);
 
   /*i = getInt("plr.tm.interval");
-  if(i < 0 || i > 5) setInternal("plr.tm.interval", 3);
+  if(i < 0 || i > 5) setValue("plr.tm.interval", 3);
 
   i = getInt("plr.tm.horizon");
-  if(i < 0 || i > 6) setInternal("plr.tm.horizon", 5);*/
+  if(i < 0 || i > 6) setValue("plr.tm.horizon", 5);*/
 
 #ifdef SOUND_SUPPORT
   AudioSettings::normalize(*this);
 #endif
 
   i = getInt("joydeadzone");
-  if(i < 0)        setInternal("joydeadzone", "0");
-  else if(i > 29)  setInternal("joydeadzone", "29");
+  if(i < 0)        setValue("joydeadzone", "0");
+  else if(i > 29)  setValue("joydeadzone", "29");
 
   i = getInt("cursor");
   if(i < 0 || i > 3)
-    setInternal("cursor", "2");
+    setValue("cursor", "2");
 
   i = getInt("dsense");
   if(i < 1 || i > 20)
-    setInternal("dsense", "10");
+    setValue("dsense", "10");
 
   i = getInt("msense");
   if(i < 1 || i > 20)
-    setInternal("msense", "10");
+    setValue("msense", "10");
 
   i = getInt("tsense");
   if(i < 1 || i > 20)
-    setInternal("tsense", "10");
+    setValue("tsense", "10");
 
   i = getInt("ssinterval");
-  if(i < 1)        setInternal("ssinterval", "2");
-  else if(i > 10)  setInternal("ssinterval", "10");
+  if(i < 1)        setValue("ssinterval", "2");
+  else if(i > 10)  setValue("ssinterval", "10");
 
   s = getString("palette");
   if(s != "standard" && s != "z26" && s != "user")
-    setInternal("palette", "standard");
+    setValue("palette", "standard");
 
   s = getString("launcherfont");
   if(s != "small" && s != "medium" && s != "large")
-    setInternal("launcherfont", "medium");
+    setValue("launcherfont", "medium");
 
   s = getString("dbg.fontsize");
   if(s != "small" && s != "medium" && s != "large")
-    setInternal("dbg.fontsize", "medium");
+    setValue("dbg.fontsize", "medium");
 
   i = getInt("romviewer");
-  if(i < 0)       setInternal("romviewer", "0");
-  else if(i > 2)  setInternal("romviewer", "2");
+  if(i < 0)       setValue("romviewer", "0");
+  else if(i > 2)  setValue("romviewer", "2");
 
   i = getInt("loglevel");
   if(i < 0 || i > 2)
-    setInternal("loglevel", "1");
+    setValue("loglevel", "1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -580,22 +580,26 @@ void Settings::usage() const
 const Variant& Settings::value(const string& key) const
 {
   // Try to find the named setting and answer its value
-  int idx = -1;
-  if((idx = getInternalPos(key)) != -1)
-    return myInternalSettings[idx].value;
-  else if((idx = getExternalPos(key)) != -1)
-    return myExternalSettings[idx].value;
+  auto it = myPermanentSettings.find(key);
+  if(it != myPermanentSettings.end())
+    return it->second;
   else
-    return EmptyVariant;
+  {
+    it = myTemporarySettings.find(key);
+    if(it != myTemporarySettings.end())
+      return it->second;
+  }
+  return EmptyVariant;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setValue(const string& key, const Variant& value)
 {
-  if(int idx = getInternalPos(key) != -1)
-    setInternal(key, value, idx);
+  auto it = myPermanentSettings.find(key);
+  if(it != myPermanentSettings.end())
+    it->second = value;
   else
-    setExternal(key, value);
+    myTemporarySettings[key] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -606,9 +610,7 @@ bool Settings::loadConfigFile(const string& cfgfile)
 
   ifstream in(cfgfile);
   if(!in || !in.is_open())
-  {
     return false;
-  }
 
   while(getline(in, line))
   {
@@ -633,8 +635,7 @@ bool Settings::loadConfigFile(const string& cfgfile)
       continue;
 
     // Only settings which have been previously set are valid
-    if(int idx = getInternalPos(key) != -1)
-      setInternal(key, value, idx, true);
+    setValue(key, value);
   }
   return true;
 }
@@ -642,21 +643,6 @@ bool Settings::loadConfigFile(const string& cfgfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Settings::saveConfigFile(const string& cfgfile) const
 {
-  // Do a quick scan of the internal settings to see if any have
-  // changed.  If not, we don't need to save them at all.
-  bool settingsChanged = false;
-  for(const auto& s: myInternalSettings)
-  {
-    if(s.value != s.initialValue)
-    {
-      settingsChanged = true;
-      break;
-    }
-  }
-
-  if(!settingsChanged)
-    return true;
-
   ofstream out(cfgfile);
   if(!out || !out.is_open())
     return false;
@@ -677,132 +663,20 @@ bool Settings::saveConfigFile(const string& cfgfile) const
       << ";" << endl;
 
   // Write out each of the key and value pairs
-  for(const auto& s: myInternalSettings)
-    out << s.key << " = " << s.value << endl;
+  for(const auto& s: myPermanentSettings)
+    out << s.first << " = " << s.second << endl;
 
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::getInternalPos(const string& key) const
+void Settings::setPermanent(const string& key, const Variant& value)
 {
-  for(uInt32 i = 0; i < myInternalSettings.size(); ++i)
-    if(myInternalSettings[i].key == key)
-      return i;
-
-  return -1;
+  myPermanentSettings[key] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::getExternalPos(const string& key) const
+void Settings::setTemporary(const string& key, const Variant& value)
 {
-  for(uInt32 i = 0; i < myExternalSettings.size(); ++i)
-    if(myExternalSettings[i].key == key)
-      return i;
-
-  return -1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::setInternal(const string& key, const Variant& value,
-                          int pos, bool useAsInitial)
-{
-  int idx = -1;
-
-  if(pos >= 0 && pos < int(myInternalSettings.size()) &&
-     myInternalSettings[pos].key == key)
-  {
-    idx = pos;
-  }
-  else
-  {
-    for(uInt32 i = 0; i < myInternalSettings.size(); ++i)
-    {
-      if(myInternalSettings[i].key == key)
-      {
-        idx = i;
-        break;
-      }
-    }
-  }
-
-  if(idx != -1)
-  {
-    myInternalSettings[idx].key   = key;
-    myInternalSettings[idx].value = value;
-    if(useAsInitial) myInternalSettings[idx].initialValue = value;
-
-    /*cerr << "modify internal: key = " << key
-         << ", value  = " << value
-         << ", ivalue = " << myInternalSettings[idx].initialValue
-         << " @ index = " << idx
-         << endl;*/
-  }
-  else
-  {
-    Setting setting(key, value);
-    if(useAsInitial) setting.initialValue = value;
-
-    myInternalSettings.push_back(setting);
-    idx = int(myInternalSettings.size()) - 1;
-
-    /*cerr << "insert internal: key = " << key
-         << ", value  = " << value
-         << ", ivalue = " << setting.initialValue
-         << " @ index = " << idx
-         << endl;*/
-  }
-
-  return idx;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Settings::setExternal(const string& key, const Variant& value,
-                          int pos, bool useAsInitial)
-{
-  int idx = -1;
-
-  if(pos >= 0 && pos < int(myExternalSettings.size()) &&
-     myExternalSettings[pos].key == key)
-  {
-    idx = pos;
-  }
-  else
-  {
-    for(uInt32 i = 0; i < myExternalSettings.size(); ++i)
-    {
-      if(myExternalSettings[i].key == key)
-      {
-        idx = i;
-        break;
-      }
-    }
-  }
-
-  if(idx != -1)
-  {
-    myExternalSettings[idx].key   = key;
-    myExternalSettings[idx].value = value;
-    if(useAsInitial) myExternalSettings[idx].initialValue = value;
-
-    /*cerr << "modify external: key = " << key
-         << ", value = " << value
-         << " @ index = " << idx
-         << endl;*/
-  }
-  else
-  {
-    Setting setting(key, value);
-    if(useAsInitial) setting.initialValue = value;
-
-    myExternalSettings.push_back(setting);
-    idx = int(myExternalSettings.size()) - 1;
-
-    /*cerr << "insert external: key = " << key
-         << ", value = " << value
-         << " @ index = " << idx
-         << endl;*/
-  }
-
-  return idx;
+  myTemporarySettings[key] = value;
 }

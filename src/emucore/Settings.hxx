@@ -24,7 +24,18 @@
 #include "bspf.hxx"
 
 /**
-  This class provides an interface for accessing frontend specific settings.
+  This class provides an interface for accessing all configurable options,
+  both from the settings file and from the commandline.
+
+  Note that options can be configured as 'permanent' or 'temporary'.
+  Permanent options are ones that the app registers with the system, and
+  always saves when the app exits.  Temporary options are those that are
+  used when appropriate, but never saved to the settings file.
+
+  Each c'tor (both in the base class and in any derived classes) are
+  responsible for registering all options as either permanent or temporary.
+  If an option isn't registered as permanent, it will be considered
+  temporary and will not be saved.
 
   @author  Stephen Anthony
 */
@@ -64,8 +75,8 @@ class Settings
     /**
       Get the value assigned to the specified key.
 
-      @param key The key of the setting to lookup
-      @return The (variant) value of the setting
+      @param key  The key of the setting to lookup
+      @return  The value of the setting; EmptyVariant if none exists
     */
     const Variant& value(const string& key) const;
 
@@ -73,15 +84,15 @@ class Settings
       Set the value associated with the specified key.
 
       @param key   The key of the setting
-      @param value The (variant) value to assign to the setting
+      @param value The value to assign to the key
     */
     void setValue(const string& key, const Variant& value);
 
     /**
       Convenience methods to return specific types.
 
-      @param key The key of the setting to lookup
-      @return The specific type value of the setting
+      @param key  The key of the setting to lookup
+      @return  The specific type value of the variant
     */
     int getInt(const string& key) const     { return value(key).toInt();   }
     float getFloat(const string& key) const { return value(key).toFloat(); }
@@ -90,6 +101,15 @@ class Settings
     const GUI::Size getSize(const string& key) const { return value(key).toSize();   }
 
   protected:
+    /**
+      Add key/value pair to specified map.  Note that these should only be called
+      directly within the c'tor, to register the 'key' and set it to the
+      appropriate 'value'.  Elsewhere, any derived classes should call 'setValue',
+      and let it decide where the key/value pair will be saved.
+    */
+    void setPermanent(const string& key, const Variant& value);
+    void setTemporary(const string& key, const Variant& value);
+
     /**
       This method will be called to load the settings from the
       platform-specific settings file.  Since different ports can have
@@ -120,33 +140,11 @@ class Settings
               str.substr(first, str.find_last_not_of(' ')-first+1);
     }
 
-  protected:
-    // Structure used for storing settings
-    struct Setting
-    {
-      string key;
-      Variant value;
-      Variant initialValue;
-
-      Setting(const string& k, const Variant& v, const Variant& i = EmptyVariant)
-        : key(k), value(v), initialValue(i) { }
-    };
-    using SettingsArray = vector<Setting>;
-
-    const SettingsArray& getInternalSettings() const
-      { return myInternalSettings; }
-    const SettingsArray& getExternalSettings() const
-      { return myExternalSettings; }
-
-    /** Get position in specified array of 'key' */
-    int getInternalPos(const string& key) const;
-    int getExternalPos(const string& key) const;
-
-    /** Add key,value pair to specified array at specified position */
-    int setInternal(const string& key, const Variant& value,
-                    int pos = -1, bool useAsInitial = false);
-    int setExternal(const string& key, const Variant& value,
-                    int pos = -1, bool useAsInitial = false);
+    // FIXME - Rework so that these aren't needed; hence no commenting added
+    const Options& getInternalSettings() const
+      { return myPermanentSettings; }
+    const Options& getExternalSettings() const
+      { return myTemporarySettings; }
 
   private:
     /**
@@ -156,13 +154,13 @@ class Settings
     void validate();
 
   private:
-    // Holds key,value pairs that are necessary for Stella to
+    // Holds key/value pairs that are necessary for Stella to
     // function and must be saved on each program exit.
-    SettingsArray myInternalSettings;
+    Options myPermanentSettings;
 
-    // Holds auxiliary key,value pairs that shouldn't be saved on
+    // Holds auxiliary key/value pairs that shouldn't be saved on
     // program exit.
-    SettingsArray myExternalSettings;
+    Options myTemporarySettings;
 
   private:
     // Following constructors and assignment operators not supported
