@@ -277,9 +277,11 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
     case 0xE0000000: //periph
       switch(addr)
       {
+#ifndef UNSAFE_OPTIMIZATIONS
         case 0xE0000000:
           DO_DISS(statusMsg << "uart: [" << char(data&0xFF) << "]" << endl);
           break;
+#endif
 
         case 0xE0008004:  // T1TCR - Timer 1 Control Register
           T1TCR = data;
@@ -491,6 +493,7 @@ uInt32 Thumbulator::read_register(uInt32 reg)
 
   uInt32 data = reg_norm[reg];
   DO_DBUG(statusMsg << "read_register(" << dec << reg << ")=" << Base::HEX8 << data << endl);
+#ifndef UNSAFE_OPTIMIZATIONS
   if(reg == 15)
   {
     if(data & 1)
@@ -499,6 +502,7 @@ uInt32 Thumbulator::read_register(uInt32 reg)
     }
     data &= ~1;
   }
+#endif
   return data;
 }
 
@@ -508,7 +512,9 @@ void Thumbulator::write_register(uInt32 reg, uInt32 data)
   reg &= 0xF;
 
   DO_DBUG(statusMsg << "write_register(" << dec << reg << "," << Base::HEX8 << data << ")" << endl);
+//#ifndef UNSAFE_OPTIMIZATIONS // this fails when combined with read_register UNSAFE_OPTIMIZATIONS
   if(reg == 15) data &= ~1;
+//#endif
   reg_norm[reg] = data;
 }
 
