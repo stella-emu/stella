@@ -126,31 +126,36 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   myRomInfo.push_back("Note: " + myProperties.get(Cartridge_Note));
   bool swappedPorts = myProperties.get(Console_SwapPorts) == "YES";
 
+  // Load the image for controller auto detection
   string left = myProperties.get(Controller_Left);
   string right = myProperties.get(Controller_Right);
-
-  // load the image for auto detection
-  BytePtr image;
-  string md5 = myProperties.get(Cartridge_MD5);
-  uInt32 size = 0;
-
-  if(node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr)
+  try
   {
-    left = ControllerDetector::detectName(image.get(), size, left,
-                                          !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
-                                          instance().settings());
-    right = ControllerDetector::detectName(image.get(), size, right,
-                                           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
-                                           instance().settings());
+    BytePtr image;
+    string md5 = myProperties.get(Cartridge_MD5);
+    uInt32 size = 0;
+
+    if(node.exists() && !node.isDirectory() &&
+      (image = instance().openROM(node, md5, size)) != nullptr)
+    {
+      if(BSPF::equalsIgnoreCase(left, "AUTO"))
+        left = ControllerDetector::detectName(image.get(), size, left,
+                  !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
+                  instance().settings());
+      if(BSPF::equalsIgnoreCase(right, "AUTO"))
+        right = ControllerDetector::detectName(image.get(), size, right,
+                  !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
+                  instance().settings());
+    }
   }
-  myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
-
-#if 0
-  myRomInfo.push_back("YStart/Height: " + myProperties.get(Display_YStart) +
-                      "    " + myProperties.get(Display_Height));
-#endif
-
-  setDirty();
+  catch(const runtime_error&)
+  {
+    // Do nothing; we simply don't update the controllers if openROM
+    // failed for any reason
+    left = right = "";
+  }
+  if(left != "" && right != "")
+    myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
