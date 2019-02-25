@@ -527,7 +527,7 @@ void Thumbulator::do_zflag(uInt32 x)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_nflag(uInt32 x)
 {
-  if(x & 0x80000000) cpsr|=CPSR_N;  else cpsr&=~CPSR_N;
+  if(x & 0x80000000) cpsr |= CPSR_N;  else cpsr &= ~CPSR_N;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1688,7 +1688,11 @@ int Thumbulator::execute()
       rb = (inst >> 6) & 0x1F;
       DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
       rb = read_register(rn) + rb;
+#ifndef UNSAFE_OPTIMIZATIONS
       rc = read16(rb & (~1u));
+#else
+      rc = read16(rb);
+#endif
       if(rb & 1)
       {
         rc >>= 8;
@@ -1707,13 +1711,14 @@ int Thumbulator::execute()
       rm = (inst >> 6) & 0x7;
       DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
+#ifndef UNSAFE_OPTIMIZATIONS
       rc = read16(rb & (~1u));
+#else
+      rc = read16(rb);
+#endif
       if(rb & 1)
       {
         rc >>= 8;
-      }
-      else
-      {
       }
       write_register(rd, rc & 0xFF);
       return 0;
@@ -1726,7 +1731,7 @@ int Thumbulator::execute()
       rb = (inst >> 6) & 0x1F;
       rb <<= 1;
       DO_DISS(statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
-      rb=read_register(rn) + rb;
+      rb = read_register(rn) + rb;
       rc = read16(rb);
       write_register(rd, rc & 0xFFFF);
       return 0;
@@ -1751,13 +1756,14 @@ int Thumbulator::execute()
       rm = (inst >> 6) & 0x7;
       DO_DISS(statusMsg << "ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
+#ifndef UNSAFE_OPTIMIZATIONS
       rc = read16(rb & (~1u));
+#else
+      rc = read16(rb);
+#endif
       if(rb & 1)
       {
         rc >>= 8;
-      }
-      else
-      {
       }
       rc &= 0xFF;
       if(rc & 0x80)
@@ -2275,7 +2281,11 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX8 << rb << "]" << endl);
       rb = read_register(rn) + rb;
       rc = read_register(rd);
+#ifndef UNSAFE_OPTIMIZATIONS
       ra = read16(rb & (~1u));
+#else
+      ra = read16(rb);
+#endif
       if(rb & 1)
       {
         ra &= 0x00FF;
@@ -2298,7 +2308,11 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "strb r" << dec << rd << ",[r" << dec << rn << ",r" << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
+#ifndef UNSAFE_OPTIMIZATIONS
       ra = read16(rb & (~1u));
+#else
+      ra = read16(rb);
+#endif
       if(rb & 1)
       {
         ra &= 0x00FF;
