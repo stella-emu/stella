@@ -31,6 +31,7 @@
 #include "PNGLibrary.hxx"
 #include "System.hxx"
 #include "TIASurface.hxx"
+#include "ProfilingRunner.hxx"
 
 #include "ThreadDebugging.hxx"
 
@@ -140,6 +141,13 @@ void checkForCustomBaseDir(Settings::Options& options)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool isProfilingRun(int ac, char* av[]) {
+  if (ac <= 1) return false;
+
+  return string(av[1]) == "-profile";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #if defined(BSPF_MACOS)
 int stellaMain(int ac, char* av[])
 #else
@@ -149,6 +157,12 @@ int main(int ac, char* av[])
   SET_MAIN_THREAD;
 
   std::ios_base::sync_with_stdio(false);
+
+  if (isProfilingRun(ac, av)) {
+    ProfilingRunner runner(ac, av);
+
+    return runner.run() ? 0 : 1;
+  }
 
   unique_ptr<OSystem> theOSystem;
 

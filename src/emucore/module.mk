@@ -73,6 +73,7 @@ MODULE_OBJS := \
 	src/emucore/OSystem.o \
 	src/emucore/Paddles.o \
 	src/emucore/PointingDevice.o \
+	src/emucore/ProfilingRunner.o \
 	src/emucore/Props.o \
 	src/emucore/PropsSet.o \
 	src/emucore/SaveKey.o \
