@@ -28,7 +28,7 @@
 #include "M6532.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6532::M6532(const Console& console, const Settings& settings)
+M6532::M6532(const ConsoleIO& console, const Settings& settings)
   : myConsole(console),
     mySettings(settings),
     myTimer(0), mySubTimer(0), myDivider(1),

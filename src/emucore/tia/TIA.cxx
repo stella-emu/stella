@@ -17,7 +17,6 @@
 
 #include "TIA.hxx"
 #include "M6502.hxx"
-#include "Console.hxx"
 #include "Control.hxx"
 #include "Paddles.hxx"
 #include "DelayQueueIteratorImpl.hxx"
@@ -67,8 +66,9 @@ enum ResxCounter: uInt8 {
 static constexpr uInt8 resxLateHblankThreshold = TIA::H_CYCLES - 3;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(Console& console, Settings& settings)
+TIA::TIA(ConsoleIO& console, ConsoleTimingProvider timingProvider, Settings& settings)
   : myConsole(console),
+    myTimingProvider(timingProvider),
     mySettings(settings),
     myFrameManager(nullptr),
     myPlayfield(~CollisionMask::playfield & 0x7FFF),
@@ -895,7 +895,7 @@ void TIA::update(uInt64 maxCycles)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableColorLoss(bool enabled)
 {
-  bool allowColorLoss = consoleTiming() == ConsoleTiming::pal;
+  bool allowColorLoss = myTimingProvider() == ConsoleTiming::pal;
 
   if(allowColorLoss && enabled)
   {
@@ -1010,8 +1010,8 @@ bool TIA::toggleCollisions()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::enableFixedColors(bool enable)
 {
-  int timing = consoleTiming() == ConsoleTiming::ntsc ? 0
-    : consoleTiming() == ConsoleTiming::pal ? 1 : 2;
+  int timing = myTimingProvider() == ConsoleTiming::ntsc ? 0
+    : myTimingProvider() == ConsoleTiming::pal ? 1 : 2;
 
   myMissile0.setDebugColor(myFixedColorPalette[timing][FixedObject::M0]);
   myMissile1.setDebugColor(myFixedColorPalette[timing][FixedObject::M1]);
@@ -1692,7 +1692,7 @@ void TIA::updatePaddle(uInt8 idx)
   myPaddleReaders[idx].update(
     (resistance == Controller::MAX_RESISTANCE) ? -1 : (double(resistance) / Paddles::MAX_RESISTANCE),
     myTimestamp,
-    consoleTiming()
+    myTimingProvider()
   );
 }
 

@@ -49,8 +49,8 @@ const DebuggerState& TIADebug::getState()
   myState.coluRegs.push_back(coluBK());
 
   // Debug Colors
-  int timing = myTIA.consoleTiming() == ConsoleTiming::ntsc ? 0
-    : myTIA.consoleTiming() == ConsoleTiming::pal ? 1 : 2;
+  int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
+    : myConsole.timing() == ConsoleTiming::pal ? 1 : 2;
 
   myState.fixedCols.clear();
   myState.fixedCols.push_back(myTIA.myFixedColorPalette[timing][TIA::P0]);
@@ -1003,8 +1003,8 @@ string TIADebug::debugColors() const
 {
   ostringstream buf;
 
-  int timing = myTIA.consoleTiming() == ConsoleTiming::ntsc ? 0
-    : myTIA.consoleTiming() == ConsoleTiming::pal ? 1 : 2;
+  int timing = myConsole.timing() == ConsoleTiming::ntsc ? 0
+    : myConsole.timing() == ConsoleTiming::pal ? 1 : 2;
 
   buf << " " << myTIA.myFixedColorNames[TIA::P0] << " " << colorSwatch(myTIA.myFixedColorPalette[timing][TIA::P0])
       << " Player 0\n"

@@ -18,7 +18,7 @@
 #ifndef M6532_HXX
 #define M6532_HXX
 
-class Console;
+class ConsoleIO;
 class RiotDebug;
 class System;
 class Settings;
@@ -51,7 +51,7 @@ class M6532 : public Device
       @param console  The console the 6532 is associated with
       @param settings The settings used by the system
     */
-    M6532(const Console& console, const Settings& settings);
+    M6532(const ConsoleIO& console, const Settings& settings);
     virtual ~M6532() = default;
 
    public:
@@ -163,7 +163,7 @@ class M6532 : public Device
     };
 
     // Reference to the console
-    const Console& myConsole;
+    const ConsoleIO& myConsole;
 
     // Reference to the settings
     const Settings& mySettings;

@@ -31,6 +31,7 @@ class AudioQueue;
 class AudioSettings;
 
 #include "bspf.hxx"
+#include "ConsoleIO.hxx"
 #include "Control.hxx"
 #include "Props.hxx"
 #include "TIAConstants.hxx"
@@ -60,7 +61,7 @@ struct ConsoleInfo
 
   @author  Bradford W. Mott
 */
-class Console : public Serializable
+class Console : public Serializable, public ConsoleIO
 {
   public:
     /**
@@ -85,11 +86,8 @@ class Console : public Serializable
 
       @return The specified controller
     */
-    Controller& leftController() const  { return *myLeftControl;  }
-    Controller& rightController() const { return *myRightControl; }
-    Controller& controller(Controller::Jack jack) const {
-      return jack == Controller::Left ? leftController() : rightController();
-    }
+    Controller& leftController() const override { return *myLeftControl;  }
+    Controller& rightController() const override { return *myRightControl; }
 
     /**
       Get the TIA for this console
@@ -110,7 +108,7 @@ class Console : public Serializable
 
       @return The console switches
     */
-    Switches& switches() const { return *mySwitches; }
+    Switches& switches() const override { return *mySwitches; }
 
     /**
       Get the 6502 based system used by the console to emulate the game

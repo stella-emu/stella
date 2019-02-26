@@ -18,8 +18,11 @@
 #ifndef TIA_TIA
 #define TIA_TIA
 
+#include <functional>
+
 #include "bspf.hxx"
-#include "Console.hxx"
+#include "ConsoleIO.hxx"
+#include "ConsoleTiming.hxx"
 #include "Settings.hxx"
 #include "Device.hxx"
 #include "Serializer.hxx"
@@ -105,6 +108,8 @@ class TIA : public Device
       H_CLOCKS = H_CYCLES * CYCLE_CLOCKS,   // = 228
       H_BLANK_CLOCKS = H_CLOCKS - H_PIXEL;  // = 68
 
+    using ConsoleTimingProvider = std::function<ConsoleTiming()>;
+
   public:
     friend class TIADebug;
     friend class RiotDebug;
@@ -115,7 +120,7 @@ class TIA : public Device
       @param console   The console the TIA is associated with
       @param settings  The settings object for this TIA device
     */
-    TIA(Console& console, Settings& settings);
+    TIA(ConsoleIO& console, ConsoleTimingProvider timingProvider, Settings& settings);
 
     virtual ~TIA() = default;
 
@@ -259,11 +264,6 @@ class TIA : public Device
 
     void setLayout(FrameLayout layout) { myFrameManager->setLayout(layout); }
     FrameLayout frameLayout() const { return myFrameManager->layout(); }
-
-    /**
-      Answers the timing of the console currently in use.
-    */
-    ConsoleTiming consoleTiming() const { return myConsole.timing(); }
 
     /**
       Enables/disables color-loss for PAL modes only.
@@ -690,7 +690,8 @@ class TIA : public Device
 
   private:
 
-    Console& myConsole;
+    ConsoleIO& myConsole;
+      ConsoleTimingProvider myTimingProvider;
     Settings& mySettings;
 
     /**

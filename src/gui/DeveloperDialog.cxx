@@ -1362,8 +1362,8 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
     }
   };
 
-  int timing = instance().console().tia().consoleTiming() == ConsoleTiming::ntsc ? 0
-    : instance().console().tia().consoleTiming() == ConsoleTiming::pal ? 1 : 2;
+  int timing = instance().console().timing() == ConsoleTiming::ntsc ? 0
+    : instance().console().timing() == ConsoleTiming::pal ? 1 : 2;
 
   myDbgColourSwatch[idx]->setColor(dbg_color[timing][color]);
   myDbgColour[idx]->setSelectedIndex(color);
