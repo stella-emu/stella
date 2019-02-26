@@ -24,8 +24,8 @@
 #include "Dialog.hxx"
 #include "FrameBuffer.hxx"
 #include "StellaKeys.hxx"
+#include "TimerManager.hxx"
 #include "ListWidget.hxx"
-#include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
@@ -256,7 +256,7 @@ bool ListWidget::handleText(char text)
     // Only works in a useful fashion if the list entries are sorted.
     // TODO: Maybe this should be off by default, and instead we add a
     // method "enableQuickSelect()" or so ?
-    uInt64 time = instance().getTicks() / 1000;
+    uInt64 time = TimerManager::getTicks() / 1000;
     if (_quickSelectTime < time)
       _quickSelectStr = text;
     else

@@ -23,6 +23,7 @@
 #include "M6532.hxx"
 #include "TIA.hxx"
 #include "Cart.hxx"
+#include "TimerManager.hxx"
 #include "System.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,7 +40,7 @@ System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
     mySystemInAutodetect(false)
 {
   // Re-initialize random generator
-  randGenerator().initSeed(uInt32(myOSystem.getTicks()));
+  randGenerator().initSeed(uInt32(TimerManager::getTicks()));
 
   // Initialize page access table
   PageAccess access(&myNullDevice, System::PA_READ);

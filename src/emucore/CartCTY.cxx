@@ -18,6 +18,7 @@
 #include "OSystem.hxx"
 #include "Serializer.hxx"
 #include "System.hxx"
+#include "TimerManager.hxx"
 #include "CartCTY.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -381,7 +382,7 @@ uInt8 CartridgeCTY::ramReadWrite()
         if(index < 7)
         {
           // Add 0.5 s delay for read
-          myRamAccessTimeout = myOSystem->getTicks() + 500000;
+          myRamAccessTimeout = TimerManager::getTicks() + 500000;
           loadTune(index);
         }
         break;
@@ -389,7 +390,7 @@ uInt8 CartridgeCTY::ramReadWrite()
         if(index < 4)
         {
           // Add 0.5 s delay for read
-          myRamAccessTimeout = myOSystem->getTicks() + 500000;
+          myRamAccessTimeout = TimerManager::getTicks() + 500000;
           loadScore(index);
         }
         break;
@@ -397,13 +398,13 @@ uInt8 CartridgeCTY::ramReadWrite()
         if(index < 4)
         {
           // Add 1 s delay for write
-          myRamAccessTimeout = myOSystem->getTicks() + 1000000;
+          myRamAccessTimeout = TimerManager::getTicks() + 1000000;
           saveScore(index);
         }
         break;
       case 4:  // Wipe all score tables
         // Add 1 s delay for write
-        myRamAccessTimeout = myOSystem->getTicks() + 1000000;
+        myRamAccessTimeout = TimerManager::getTicks() + 1000000;
         wipeAllScores();
         break;
     }
@@ -413,7 +414,7 @@ uInt8 CartridgeCTY::ramReadWrite()
   else
   {
     // Have we reached the timeout value yet?
-    if(myOSystem->getTicks() >= myRamAccessTimeout)
+    if(TimerManager::getTicks() >= myRamAccessTimeout)
     {
       myRamAccessTimeout = 0;  // Turn off timer
       myRAM[0] = 0;            // Successful operation

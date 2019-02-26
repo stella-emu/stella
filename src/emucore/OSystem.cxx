@@ -158,7 +158,7 @@ bool OSystem::create()
   mySerialPort = MediaFactory::createSerialPort();
 
   // Create random number generator
-  myRandom = make_unique<Random>(uInt32(getTicks()));
+  myRandom = make_unique<Random>(uInt32(TimerManager::getTicks()));
 
   // Create PNG handler
   myPNGLib = make_unique<PNGLibrary>(*this);
@@ -596,12 +596,6 @@ string OSystem::getROMInfo(const Console& console)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 OSystem::getTicks() const
-{
-  return duration_cast<duration<uInt64, std::ratio<1, 1000000> > >(system_clock::now().time_since_epoch()).count();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float OSystem::frameRate() const
 {
   return myConsole ? myConsole->getFramerate() : 0;
@@ -692,7 +686,7 @@ void OSystem::mainLoop()
   {
     bool wasEmulation = myEventHandler->state() == EventHandlerState::EMULATION;
 
-    myEventHandler->poll(getTicks());
+    myEventHandler->poll(TimerManager::getTicks());
     if(myQuitLoop) break;  // Exit if the user wants to quit
 
     if (!wasEmulation && myEventHandler->state() == EventHandlerState::EMULATION) {

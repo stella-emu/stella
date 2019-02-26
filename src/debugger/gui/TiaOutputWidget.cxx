@@ -30,6 +30,7 @@
 #include "TIADebug.hxx"
 #include "TIASurface.hxx"
 #include "TIA.hxx"
+#include "TimerManager.hxx"
 
 #include "TiaOutputWidget.hxx"
 
@@ -70,7 +71,8 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
   if (execDepth > 0 && !execPrefix.empty()) {
     sspath << execPrefix << "_";
   }
-  sspath << std::hex << std::setw(8) << std::setfill('0') << uInt32(instance().getTicks()/1000) << ".png";
+  sspath << std::hex << std::setw(8) << std::setfill('0')
+         << uInt32(TimerManager::getTicks()/1000) << ".png";
 
   const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();

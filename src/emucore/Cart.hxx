@@ -216,7 +216,7 @@ class Cartridge : public Device
     /**
       Setter for injecting OSystem.
     */
-    virtual void setOSystem(OSystem* osystem) {};
+    virtual void setOSystem(OSystem* osystem) {}
 
   protected:
     /**

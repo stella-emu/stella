@@ -116,7 +116,7 @@ class CartridgeCTY : public Cartridge
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
       @param md5       The md5sum of the ROM image
-      @param osystem   A reference to the OSystem currently in use
+      @param settings  A reference to the settings object
     */
     CartridgeCTY(const BytePtr& image, uInt32 size, const string& md5,
                  const Settings& settings);

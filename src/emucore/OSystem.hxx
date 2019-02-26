@@ -392,6 +392,8 @@ class OSystem
     */
     void resetFps();
 
+    float frameRate() const;
+
     /**
       Attempt to override the base directory that will be used by derived
       classes, and use this one instead.  Note that this is only a hint;
@@ -410,20 +412,6 @@ class OSystem
     // The following methods are system-specific and can be overrided in
     // derived classes.  Otherwise, the base methods will be used.
     //////////////////////////////////////////////////////////////////////
-    /**
-      This method returns number of ticks in microseconds since some
-      pre-defined time in the past.  *NOTE*: it is necessary that this
-      pre-defined time exists between runs of the application, and must
-      be (relatively) unique.  For example, the time since the system
-      started running is not a good choice, since it can be duplicated.
-      The current implementation uses time since the UNIX epoch.
-
-      @return Current time in microseconds.
-    */
-    virtual uInt64 getTicks() const;
-
-    float frameRate() const;
-
     /**
       This method runs the main loop.  Since different platforms
       may use different timing methods and/or algorithms, this method can

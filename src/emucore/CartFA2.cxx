@@ -18,6 +18,7 @@
 #include "OSystem.hxx"
 #include "Serializer.hxx"
 #include "System.hxx"
+#include "TimerManager.hxx"
 #include "CartFA2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -333,7 +334,7 @@ uInt8 CartridgeFA2::ramReadWrite()
   if(myRamAccessTimeout == 0)
   {
     // Remember when the first access was made
-    myRamAccessTimeout = myOSystem->getTicks();
+    myRamAccessTimeout = TimerManager::getTicks();
 
     // We go ahead and do the access now, and only return when a sufficient
     // amount of time has passed
@@ -372,7 +373,7 @@ uInt8 CartridgeFA2::ramReadWrite()
   else
   {
     // Have we reached the timeout value yet?
-    if(myOSystem->getTicks() >= myRamAccessTimeout)
+    if(TimerManager::getTicks() >= myRamAccessTimeout)
     {
       myRamAccessTimeout = 0;  // Turn off timer
       myRAM[255] = 0;          // Successful operation

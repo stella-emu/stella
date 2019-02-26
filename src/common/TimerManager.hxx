@@ -119,6 +119,22 @@ class TimerManager
     // Returns lazily initialized singleton
     static TimerManager& global();
 
+    /**
+      This method returns number of ticks in microseconds since some
+      pre-defined time in the past.  *NOTE*: it is necessary that this
+      pre-defined time exists between runs of the application, and must
+      be (relatively) unique.  For example, the time since the system
+      started running is not a good choice, since it can be duplicated.
+      The current implementation uses time since the UNIX epoch.
+
+      @return Current time in microseconds.
+    */
+    static uInt64 getTicks() {
+      using namespace std::chrono;
+      return duration_cast<duration<uInt64, std::ratio<1, 1000000> > >
+        (system_clock::now().time_since_epoch()).count();
+    }
+
   private:
     using Lock = std::mutex;
     using ScopedLock = std::unique_lock<Lock>;
