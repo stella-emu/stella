@@ -18,7 +18,8 @@
 #ifndef PROFILING_RUNNER
 #define PROFILING_RUNNER
 
-#include <bspf.hxx>
+#include "bspf.hxx"
+#include "Settings.hxx"
 
 class ProfilingRunner {
   public:
@@ -36,7 +37,13 @@ class ProfilingRunner {
 
   private:
 
+    bool runOne(const ProfilingRun run);
+
+  private:
+
     vector<ProfilingRun> profilingRuns;
+
+    Settings mySettings;
 };
 
 #endif // PROFILING_RUNNER

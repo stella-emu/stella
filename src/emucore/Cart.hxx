@@ -207,6 +207,17 @@ class Cartridge : public Device
     virtual CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h) { return nullptr; }
 
+    /**
+      We don't want cartridges to depend on OSystem by default. Cartridges that require OSystem
+      should override this method to get the OSystem instance injected via setter.
+    */
+    virtual bool requiresOSystem() { return false; }
+
+    /**
+      Setter for injecting OSystem.
+    */
+    virtual void setOSystem(OSystem* osystem) {};
+
   protected:
     /**
       Get a random value to use when a read from the write port happens.

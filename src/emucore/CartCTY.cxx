@@ -22,9 +22,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCTY::CartridgeCTY(const BytePtr& image, uInt32 size,
-                           const string& md5, const OSystem& osystem)
-  : Cartridge(osystem.settings(), md5),
-    myOSystem(osystem),
+                           const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
+    myOSystem(nullptr),
     myOperationType(0),
     myTunePosition(0),
     myLDAimmediate(false),
@@ -344,7 +344,7 @@ bool CartridgeCTY::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::setRomName(const string& name)
 {
-  myEEPROMFile = myOSystem.nvramDir() + name + "_eeprom.dat";
+  myEEPROMFile = myOSystem->nvramDir() + name + "_eeprom.dat";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -381,7 +381,7 @@ uInt8 CartridgeCTY::ramReadWrite()
         if(index < 7)
         {
           // Add 0.5 s delay for read
-          myRamAccessTimeout = myOSystem.getTicks() + 500000;
+          myRamAccessTimeout = myOSystem->getTicks() + 500000;
           loadTune(index);
         }
         break;
@@ -389,7 +389,7 @@ uInt8 CartridgeCTY::ramReadWrite()
         if(index < 4)
         {
           // Add 0.5 s delay for read
-          myRamAccessTimeout = myOSystem.getTicks() + 500000;
+          myRamAccessTimeout = myOSystem->getTicks() + 500000;
           loadScore(index);
         }
         break;
@@ -397,13 +397,13 @@ uInt8 CartridgeCTY::ramReadWrite()
         if(index < 4)
         {
           // Add 1 s delay for write
-          myRamAccessTimeout = myOSystem.getTicks() + 1000000;
+          myRamAccessTimeout = myOSystem->getTicks() + 1000000;
           saveScore(index);
         }
         break;
       case 4:  // Wipe all score tables
         // Add 1 s delay for write
-        myRamAccessTimeout = myOSystem.getTicks() + 1000000;
+        myRamAccessTimeout = myOSystem->getTicks() + 1000000;
         wipeAllScores();
         break;
     }
@@ -413,7 +413,7 @@ uInt8 CartridgeCTY::ramReadWrite()
   else
   {
     // Have we reached the timeout value yet?
-    if(myOSystem.getTicks() >= myRamAccessTimeout)
+    if(myOSystem->getTicks() >= myRamAccessTimeout)
     {
       myRamAccessTimeout = 0;  // Turn off timer
       myRAM[0] = 0;            // Successful operation

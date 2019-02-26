@@ -59,7 +59,7 @@ class CartridgeFA2 : public Cartridge
       @param osystem   A reference to the OSystem currently in use
     */
     CartridgeFA2(const BytePtr& image, uInt32 size, const string& md5,
-                 const OSystem& osystem);
+                 const Settings& settings);
     virtual ~CartridgeFA2() = default;
 
   public:
@@ -189,9 +189,13 @@ class CartridgeFA2 : public Cartridge
     */
     void flash(uInt8 operation);
 
+    bool requiresOSystem() override { return true; }
+
+    void setOSystem(OSystem* osystem) override { myOSystem = osystem; }
+
   private:
     // OSsytem currently in use
-    const OSystem& myOSystem;
+    const OSystem* myOSystem;
 
     // The 24K/28K ROM image of the cartridge
     uInt8 myImage[28 * 1024];

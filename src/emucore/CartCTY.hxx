@@ -119,7 +119,7 @@ class CartridgeCTY : public Cartridge
       @param osystem   A reference to the OSystem currently in use
     */
     CartridgeCTY(const BytePtr& image, uInt32 size, const string& md5,
-                 const OSystem& osystem);
+                 const Settings& settings);
     virtual ~CartridgeCTY() = default;
 
   public:
@@ -256,9 +256,13 @@ class CartridgeCTY : public Cartridge
 
     void updateTune();
 
+    bool requiresOSystem() override { return true; }
+
+    void setOSystem(OSystem* osystem) override { myOSystem = osystem; }
+
   private:
     // OSsytem currently in use
-    const OSystem& myOSystem;
+    const OSystem* myOSystem;
 
     // The 32K ROM image of the cartridge
     uInt8 myImage[32768];

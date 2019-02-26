@@ -61,14 +61,13 @@
 #include "CartX07.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
-#include "Settings.hxx"
 
 #include "CartDetector.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
     const BytePtr& image, uInt32 size, string& md5,
-    const string& propertiesType, const OSystem& osystem)
+    const string& propertiesType, Settings& settings)
 {
   unique_ptr<Cartridge> cartridge;
   Bankswitch::Type type = Bankswitch::nameToType(propertiesType),
@@ -86,7 +85,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
 
   // See if we should try to auto-detect the cartridge type
   // If we ask for extended info, always do an autodetect
-  if(type == Bankswitch::Type::_AUTO || osystem.settings().getBool("rominfo"))
+  if(type == Bankswitch::Type::_AUTO || settings.getBool("rominfo"))
   {
     detectedType = autodetectType(image, size);
     if(type != Bankswitch::Type::_AUTO && type != detectedType)
@@ -108,7 +107,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
       if(size == 2*2048 || size == 2*4096 || size == 2*8192 || size == 2*16384)
       {
         cartridge =
-          createFromMultiCart(image, size, 2, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 2, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -121,7 +120,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
       if(size == 4*2048 || size == 4*4096 || size == 4*8192)
       {
         cartridge =
-          createFromMultiCart(image, size, 4, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 4, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -134,7 +133,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
       if(size == 8*2048 || size == 8*4096 || size == 8*8192)
       {
         cartridge =
-          createFromMultiCart(image, size, 8, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 8, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -147,7 +146,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
       if(size == 16*2048 || size == 16*4096 || size == 16*8192)
       {
         cartridge =
-          createFromMultiCart(image, size, 16, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 16, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -160,7 +159,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
       if(size == 32*2048 || size == 32*4096)
       {
         cartridge =
-          createFromMultiCart(image, size, 32, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 32, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -173,7 +172,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
       if(size == 64*2048 || size == 64*4096)
       {
         cartridge =
-          createFromMultiCart(image, size, 64, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 64, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -186,7 +185,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
       if(size == 128*2048 || size == 128*4096)
       {
         cartridge =
-          createFromMultiCart(image, size, 128, md5, detectedType, id, osystem);
+          createFromMultiCart(image, size, 128, md5, detectedType, id, settings);
         buf << id;
       }
       else
@@ -195,7 +194,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
       break;
 
     default:
-      cartridge = createFromImage(image, size, detectedType, md5, osystem);
+      cartridge = createFromImage(image, size, detectedType, md5, settings);
       break;
   }
 
@@ -212,10 +211,10 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge>
 CartDetector::createFromMultiCart(const BytePtr& image, uInt32& size,
-    uInt32 numroms, string& md5, Bankswitch::Type type, string& id, const OSystem& osystem)
+    uInt32 numroms, string& md5, Bankswitch::Type type, string& id, Settings& settings)
 {
   // Get a piece of the larger image
-  uInt32 i = osystem.settings().getInt("romloadcount");
+  uInt32 i = settings.getInt("romloadcount");
   size /= numroms;
   BytePtr slice = make_unique<uInt8[]>(size);
   memcpy(slice.get(), image.get()+i*size, size);
@@ -227,108 +226,108 @@ CartDetector::createFromMultiCart(const BytePtr& image, uInt32& size,
   id = buf.str();
 
   // Move to the next game the next time this ROM is loaded
-  osystem.settings().setValue("romloadcount", (i+1)%numroms);
+  settings.setValue("romloadcount", (i+1)%numroms);
 
   if(size <= 2048)       type = Bankswitch::Type::_2K;
   else if(size == 4096)  type = Bankswitch::Type::_4K;
   else if(size == 8192)  type = Bankswitch::Type::_F8;
   else  /* default */    type = Bankswitch::Type::_4K;
 
-  return createFromImage(slice, size, type, md5, osystem);
+  return createFromImage(slice, size, type, md5, settings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge>
 CartDetector::createFromImage(const BytePtr& image, uInt32 size, Bankswitch::Type type,
-                              const string& md5, const OSystem& osystem)
+                              const string& md5, Settings& settings)
 {
   // We should know the cart's type by now so let's create it
   switch(type)
   {
     case Bankswitch::Type::_0840:
-      return make_unique<Cartridge0840>(image, size, md5, osystem.settings());
+      return make_unique<Cartridge0840>(image, size, md5, settings);
     case Bankswitch::Type::_2K:
-      return make_unique<Cartridge2K>(image, size, md5, osystem.settings());
+      return make_unique<Cartridge2K>(image, size, md5, settings);
     case Bankswitch::Type::_3E:
-      return make_unique<Cartridge3E>(image, size, md5, osystem.settings());
+      return make_unique<Cartridge3E>(image, size, md5, settings);
     case Bankswitch::Type::_3EP:
-      return make_unique<Cartridge3EPlus>(image, size, md5, osystem.settings());
+      return make_unique<Cartridge3EPlus>(image, size, md5, settings);
     case Bankswitch::Type::_3F:
-      return make_unique<Cartridge3F>(image, size, md5, osystem.settings());
+      return make_unique<Cartridge3F>(image, size, md5, settings);
     case Bankswitch::Type::_4A50:
-      return make_unique<Cartridge4A50>(image, size, md5, osystem.settings());
+      return make_unique<Cartridge4A50>(image, size, md5, settings);
     case Bankswitch::Type::_4K:
-      return make_unique<Cartridge4K>(image, size, md5, osystem.settings());
+      return make_unique<Cartridge4K>(image, size, md5, settings);
     case Bankswitch::Type::_4KSC:
-      return make_unique<Cartridge4KSC>(image, size, md5, osystem.settings());
+      return make_unique<Cartridge4KSC>(image, size, md5, settings);
     case Bankswitch::Type::_AR:
-      return make_unique<CartridgeAR>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeAR>(image, size, md5, settings);
     case Bankswitch::Type::_BF:
-      return make_unique<CartridgeBF>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeBF>(image, size, md5, settings);
     case Bankswitch::Type::_BFSC:
-      return make_unique<CartridgeBFSC>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeBFSC>(image, size, md5, settings);
     case Bankswitch::Type::_BUS:
-      return make_unique<CartridgeBUS>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeBUS>(image, size, md5, settings);
     case Bankswitch::Type::_CDF:
-      return make_unique<CartridgeCDF>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeCDF>(image, size, md5, settings);
     case Bankswitch::Type::_CM:
-      return make_unique<CartridgeCM>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeCM>(image, size, md5, settings);
     case Bankswitch::Type::_CTY:
-      return make_unique<CartridgeCTY>(image, size, md5, osystem);
+      return make_unique<CartridgeCTY>(image, size, md5, settings);
     case Bankswitch::Type::_CV:
-      return make_unique<CartridgeCV>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeCV>(image, size, md5, settings);
     case Bankswitch::Type::_CVP:
-      return make_unique<CartridgeCVPlus>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeCVPlus>(image, size, md5, settings);
     case Bankswitch::Type::_DASH:
-      return make_unique<CartridgeDASH>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeDASH>(image, size, md5, settings);
     case Bankswitch::Type::_DF:
-      return make_unique<CartridgeDF>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeDF>(image, size, md5, settings);
     case Bankswitch::Type::_DFSC:
-      return make_unique<CartridgeDFSC>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeDFSC>(image, size, md5, settings);
     case Bankswitch::Type::_DPC:
-      return make_unique<CartridgeDPC>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeDPC>(image, size, md5, settings);
     case Bankswitch::Type::_DPCP:
-      return make_unique<CartridgeDPCPlus>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeDPCPlus>(image, size, md5, settings);
     case Bankswitch::Type::_E0:
-      return make_unique<CartridgeE0>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeE0>(image, size, md5, settings);
     case Bankswitch::Type::_E7:
-      return make_unique<CartridgeE7>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeE7>(image, size, md5, settings);
     case Bankswitch::Type::_E78K:
-      return make_unique<CartridgeE78K>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeE78K>(image, size, md5, settings);
     case Bankswitch::Type::_EF:
-      return make_unique<CartridgeEF>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeEF>(image, size, md5, settings);
     case Bankswitch::Type::_EFSC:
-      return make_unique<CartridgeEFSC>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeEFSC>(image, size, md5, settings);
     case Bankswitch::Type::_F0:
-      return make_unique<CartridgeF0>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeF0>(image, size, md5, settings);
     case Bankswitch::Type::_F4:
-      return make_unique<CartridgeF4>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeF4>(image, size, md5, settings);
     case Bankswitch::Type::_F4SC:
-      return make_unique<CartridgeF4SC>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeF4SC>(image, size, md5, settings);
     case Bankswitch::Type::_F6:
-      return make_unique<CartridgeF6>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeF6>(image, size, md5, settings);
     case Bankswitch::Type::_F6SC:
-      return make_unique<CartridgeF6SC>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeF6SC>(image, size, md5, settings);
     case Bankswitch::Type::_F8:
-      return make_unique<CartridgeF8>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeF8>(image, size, md5, settings);
     case Bankswitch::Type::_F8SC:
-      return make_unique<CartridgeF8SC>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeF8SC>(image, size, md5, settings);
     case Bankswitch::Type::_FA:
-      return make_unique<CartridgeFA>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeFA>(image, size, md5, settings);
     case Bankswitch::Type::_FA2:
-      return make_unique<CartridgeFA2>(image, size, md5, osystem);
+      return make_unique<CartridgeFA2>(image, size, md5, settings);
     case Bankswitch::Type::_FE:
-      return make_unique<CartridgeFE>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeFE>(image, size, md5, settings);
     case Bankswitch::Type::_MDM:
-      return make_unique<CartridgeMDM>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeMDM>(image, size, md5, settings);
     case Bankswitch::Type::_UA:
-      return make_unique<CartridgeUA>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeUA>(image, size, md5, settings);
     case Bankswitch::Type::_SB:
-      return make_unique<CartridgeSB>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeSB>(image, size, md5, settings);
     case Bankswitch::Type::_WD:
-      return make_unique<CartridgeWD>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeWD>(image, size, md5, settings);
     case Bankswitch::Type::_X07:
-      return make_unique<CartridgeX07>(image, size, md5, osystem.settings());
+      return make_unique<CartridgeX07>(image, size, md5, settings);
     default:
       return nullptr;  // The remaining types have already been handled
   }

@@ -16,6 +16,10 @@
 //============================================================================
 
 #include "ProfilingRunner.hxx"
+#include "FSNode.hxx"
+#include "CartDetector.hxx"
+#include "Cart.hxx"
+#include "MD5.hxx"
 
 static constexpr uInt32 RUNTIME_DEFAULT = 60;
 
@@ -42,10 +46,46 @@ ProfilingRunner::ProfilingRunner(int argc, char* argv[])
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ProfilingRunner::run()
 {
-  cout << "Profiling Stela..." << endl << endl;
+  cout << "Profiling Stella..." << endl;
 
   for (ProfilingRun& run : profilingRuns) {
-    cout << "running " << run.romFile << " for " << run.runtime << " seconds..." << endl;
+    cout << endl << "running " << run.romFile << " for " << run.runtime << " seconds..." << endl;
+
+    if (!runOne(run)) return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ProfilingRunner::runOne(const ProfilingRun run)
+{
+  FilesystemNode imageFile(run.romFile);
+
+  if (!imageFile.isFile()) {
+    cout << "ERROR: " << run.romFile << " is not a ROM image" << endl;
+    return false;
+  }
+
+  BytePtr image;
+  uInt32 size = imageFile.read(image);
+  if (size == 0) {
+    cout << "ERROR: unable to read " << run.romFile << endl;
+    return false;
+  }
+
+  string md5 = MD5::hash(image, size);
+  string type = "";
+  unique_ptr<Cartridge> cartridge = CartDetector::create(imageFile, image, size, md5, type, mySettings);
+
+  if (!cartridge) {
+    cout << "ERROR: unable to determine cartridge type" << endl;
+    return false;
+  }
+
+  if (cartridge->requiresOSystem()) {
+    cout << "ERROR: profiling not supported for " << cartridge->name() << " ROM images" << endl;
+    return false;
   }
 
   return true;

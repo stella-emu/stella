@@ -20,10 +20,10 @@
 
 class Cartridge;
 class Properties;
-class OSystem;
 
 #include "Bankswitch.hxx"
 #include "bspf.hxx"
+#include "Settings.hxx"
 
 /**
   Auto-detect cart type based on various attributes (file size, signatures,
@@ -42,12 +42,12 @@ class CartDetector
       @param size     The size of the ROM image
       @param md5      The md5sum for the given ROM image (can be updated)
       @param dtype    The detected bankswitch type of the ROM image
-      @param system   The osystem associated with the system
+      @param settings The settings container
       @return   Pointer to the new cartridge object allocated on the heap
     */
     static unique_ptr<Cartridge> create(const FilesystemNode& file,
                  const BytePtr& image, uInt32 size, string& md5,
-                 const string& dtype, const OSystem& system);
+                 const string& dtype, Settings& settings);
 
   private:
     /**
@@ -60,14 +60,14 @@ class CartDetector
       @param md5      The md5sum for the slice of the ROM image
       @param type     The detected type of the slice of the ROM image
       @param id       The ID for the slice of the ROM image
-      @param osystem  The osystem associated with the system
+      @param settings The settings container
 
       @return  Pointer to the new cartridge object allocated on the heap
     */
     static unique_ptr<Cartridge>
       createFromMultiCart(const BytePtr& image, uInt32& size,
         uInt32 numroms, string& md5, Bankswitch::Type type, string& id,
-        const OSystem& osystem);
+        Settings& settings);
 
     /**
       Create a cartridge from the entire image pointer.
@@ -76,13 +76,13 @@ class CartDetector
       @param size     The size of the ROM image
       @param type     The bankswitch type of the ROM image
       @param md5      The md5sum for the ROM image
-      @param osystem  The osystem associated with the system
+      @param settings The settings container
 
       @return  Pointer to the new cartridge object allocated on the heap
     */
     static unique_ptr<Cartridge>
       createFromImage(const BytePtr& image, uInt32 size, Bankswitch::Type type,
-                      const string& md5, const OSystem& osystem);
+                      const string& md5, Settings& settings);
 
     /**
       Try to auto-detect the bankswitching type of the cartridge

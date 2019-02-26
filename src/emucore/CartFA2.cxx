@@ -22,9 +22,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA2::CartridgeFA2(const BytePtr& image, uInt32 size,
-                           const string& md5, const OSystem& osystem)
-  : Cartridge(osystem.settings(), md5),
-    myOSystem(osystem),
+                           const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
+    myOSystem(nullptr),
     mySize(28 * 1024),
     myRamAccessTimeout(0),
     myBankOffset(0)
@@ -305,7 +305,7 @@ bool CartridgeFA2::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA2::setRomName(const string& name)
 {
-  myFlashFile = myOSystem.nvramDir() + name + "_flash.dat";
+  myFlashFile = myOSystem->nvramDir() + name + "_flash.dat";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -333,7 +333,7 @@ uInt8 CartridgeFA2::ramReadWrite()
   if(myRamAccessTimeout == 0)
   {
     // Remember when the first access was made
-    myRamAccessTimeout = myOSystem.getTicks();
+    myRamAccessTimeout = myOSystem->getTicks();
 
     // We go ahead and do the access now, and only return when a sufficient
     // amount of time has passed
@@ -372,7 +372,7 @@ uInt8 CartridgeFA2::ramReadWrite()
   else
   {
     // Have we reached the timeout value yet?
-    if(myOSystem.getTicks() >= myRamAccessTimeout)
+    if(myOSystem->getTicks() >= myRamAccessTimeout)
     {
       myRamAccessTimeout = 0;  // Turn off timer
       myRAM[255] = 0;          // Successful operation
