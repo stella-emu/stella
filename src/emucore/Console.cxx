@@ -54,6 +54,7 @@
 #include "CommandMenu.hxx"
 #include "Serializable.hxx"
 #include "Serializer.hxx"
+#include "TimerManager.hxx"
 #include "Version.hxx"
 #include "TIAConstants.hxx"
 #include "FrameLayout.hxx"
@@ -106,7 +107,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myTIA->setFrameManager(myFrameManager.get());
 
   // Reinitialize the RNG
-  myOSystem.random().initSeed(static_cast<uInt32>(myOSystem.getTicks()));
+  myOSystem.random().initSeed(static_cast<uInt32>(TimerManager::getTicks()));
 
   // Construct the system and components
   mySystem = make_unique<System>(myOSystem.random(), *my6502, *myRiot, *myTIA, *myCart);
