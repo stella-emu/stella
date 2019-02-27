@@ -15,13 +15,42 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <chrono>
+
 #include "ProfilingRunner.hxx"
 #include "FSNode.hxx"
 #include "CartDetector.hxx"
 #include "Cart.hxx"
 #include "MD5.hxx"
+#include "Control.hxx"
+#include "M6502.hxx"
+#include "M6532.hxx"
+#include "TIA.hxx"
+#include "ConsoleTiming.hxx"
+#include "DummyFrameManager.hxx"
+#include "System.hxx"
+#include "Joystick.hxx"
+#include "Random.hxx"
+#include "DispatchResult.hxx"
 
-static constexpr uInt32 RUNTIME_DEFAULT = 60;
+using namespace std::chrono;
+
+namespace {
+  static constexpr uInt32 RUNTIME_DEFAULT = 60;
+  static constexpr uInt32 cyclesPerSecond = 262 * 76 * 60;
+
+  void updateProgress(uInt32 from, uInt32 to) {
+    while (from < to) {
+      if (from % 10 == 0 && from > 0) cout << from << "%";
+      else cout << ".";
+
+      cout.flush();
+
+      from++;
+    }
+  }
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProfilingRunner::ProfilingRunner(int argc, char* argv[])
@@ -82,6 +111,58 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
     cout << "ERROR: unable to determine cartridge type" << endl;
     return false;
   }
+
+  IO consoleIO;
+  Random rng(0);
+  Event event;
+  DummyFrameManager frameManager;
+
+  M6502 cpu(mySettings);
+  M6532 riot(consoleIO, mySettings);
+  TIA tia(consoleIO, []() { return ConsoleTiming::ntsc; }, mySettings);
+  System system(rng, cpu, riot, tia, *cartridge);
+
+  consoleIO.myLeftControl = make_unique<Joystick>(Controller::Left, event, system);
+  consoleIO.myRightControl = make_unique<Joystick>(Controller::Right, event, system);
+  consoleIO.mySwitches = make_unique<Switches>(event, myProps, mySettings);
+
+  tia.setFrameManager(&frameManager);
+  tia.bindToControllers();
+  cartridge->setStartBankFromPropsFunc([]() { return -1; });
+
+  system.initialize();
+  system.reset();
+
+  uInt64 cycles = 0;
+  uInt64 cyclesTarget = run.runtime * cyclesPerSecond;
+
+  DispatchResult dispatchResult;
+  dispatchResult.setOk(0);
+
+  uInt32 percent = 0;
+  (cout << "0%").flush();
+
+  time_point<high_resolution_clock> tp = high_resolution_clock::now();
+
+  while (cycles < cyclesTarget && dispatchResult.getStatus() == DispatchResult::Status::ok) {
+    tia.update(dispatchResult);
+    cycles += dispatchResult.getCycles();
+
+    uInt32 percentNow = std::min((100 * cycles) / cyclesTarget, static_cast<uInt64>(100));
+    updateProgress(percent, percentNow);
+
+    percent = percentNow;
+  }
+
+  double realtimeUsed = duration_cast<duration<double>>(high_resolution_clock::now () - tp).count();
+
+  if (dispatchResult.getStatus() != DispatchResult::Status::ok) {
+    cout << endl << "ERROR: emulation failed after " << cycles << " cycles";
+    return false;
+  }
+
+  (cout << "100%" << endl).flush();
+  cout << "real time: " << realtimeUsed << " seconds" << endl;
 
   return true;
 }

@@ -18,8 +18,13 @@
 #ifndef PROFILING_RUNNER
 #define PROFILING_RUNNER
 
+class Control;
+class Switches;
+
 #include "bspf.hxx"
 #include "Settings.hxx"
+#include "ConsoleIO.hxx"
+#include "Props.hxx"
 
 class ProfilingRunner {
   public:
@@ -35,6 +40,16 @@ class ProfilingRunner {
       uInt32 runtime;
     };
 
+    struct IO: public ConsoleIO {
+        Controller& leftController() const override { return *myLeftControl; }
+        Controller& rightController() const override { return *myRightControl; }
+        Switches& switches() const override { return *mySwitches; }
+
+        unique_ptr<Controller> myLeftControl;
+        unique_ptr<Controller> myRightControl;
+        unique_ptr<Switches> mySwitches;
+    };
+
   private:
 
     bool runOne(const ProfilingRun run);
@@ -44,6 +59,8 @@ class ProfilingRunner {
     vector<ProfilingRun> profilingRuns;
 
     Settings mySettings;
+
+    Properties myProps;
 };
 
 #endif // PROFILING_RUNNER
