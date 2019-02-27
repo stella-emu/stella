@@ -954,6 +954,9 @@
     <ClCompile Include="..\emucore\ControllerDetector.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\ProfilingRunner.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1947,6 +1950,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\ControllerDetector.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\ProfilingRunner.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
