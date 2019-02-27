@@ -25,7 +25,6 @@
 CartridgeCTY::CartridgeCTY(const BytePtr& image, uInt32 size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    myOSystem(nullptr),
     myOperationType(0),
     myTunePosition(0),
     myLDAimmediate(false),
@@ -343,9 +342,9 @@ bool CartridgeCTY::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCTY::setRomName(const string& name)
+void CartridgeCTY::setNVRamFile(const string& nvramdir, const string& romfile)
 {
-  myEEPROMFile = myOSystem->nvramDir() + name + "_eeprom.dat";
+  myEEPROMFile = nvramdir + romfile + "_eeprom.dat";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

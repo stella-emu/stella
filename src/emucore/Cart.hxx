@@ -184,12 +184,13 @@ class Cartridge : public Device
     virtual string name() const = 0;
 
     /**
-      Informs the cartridge about the name of the ROM file used when
-      creating this cart.
+      Informs the cartridge about the name of the nvram file it will
+      use; not all carts support this.
 
-      @param name  The properties file name of the ROM
+      @param nvramdir  The full path of the nvram directory
+      @param romfile   The name of the cart from ROM properties
     */
-    virtual void setRomName(const string& name) { }
+    virtual void setNVRamFile(const string& nvramdir, const string& romfile) { }
 
     /**
       Thumbulator only supports 16-bit ARM code.  Some Harmony/Melody drivers,
@@ -206,17 +207,6 @@ class Cartridge : public Device
     */
     virtual CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h) { return nullptr; }
-
-    /**
-      We don't want cartridges to depend on OSystem by default. Cartridges that require OSystem
-      should override this method to get the OSystem instance injected via setter.
-    */
-    virtual bool requiresOSystem() { return false; }
-
-    /**
-      Setter for injecting OSystem.
-    */
-    virtual void setOSystem(OSystem* osystem) {}
 
   protected:
     /**

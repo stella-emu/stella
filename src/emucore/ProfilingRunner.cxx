@@ -83,10 +83,5 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
     return false;
   }
 
-  if (cartridge->requiresOSystem()) {
-    cout << "ERROR: profiling not supported for " << cartridge->name() << " ROM images" << endl;
-    return false;
-  }
-
   return true;
 }

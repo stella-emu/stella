@@ -499,8 +499,6 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     unique_ptr<Cartridge> cart =
       CartDetector::create(romfile, image, size, cartmd5, type, *mySettings);
 
-    if (cart->requiresOSystem()) cart->setOSystem(this);
-
     // It's possible that the cart created was from a piece of the image,
     // and that the md5 (and hence the cart) has changed
     if(props.get(Cartridge_MD5) != cartmd5)

@@ -25,7 +25,6 @@
 CartridgeFA2::CartridgeFA2(const BytePtr& image, uInt32 size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    myOSystem(nullptr),
     mySize(28 * 1024),
     myRamAccessTimeout(0),
     myBankOffset(0)
@@ -304,9 +303,9 @@ bool CartridgeFA2::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA2::setRomName(const string& name)
+void CartridgeFA2::setNVRamFile(const string& nvramdir, const string& romfile)
 {
-  myFlashFile = myOSystem->nvramDir() + name + "_flash.dat";
+  myFlashFile = nvramdir + romfile + "_flash.dat";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

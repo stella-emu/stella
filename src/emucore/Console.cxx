@@ -206,7 +206,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myConsoleInfo.Control1   = myRightControl->about(swappedPorts);
   myConsoleInfo.BankSwitch = myCart->about();
 
-  myCart->setRomName(myConsoleInfo.CartName);
+  // Some carts have an associated nvram file
+  myCart->setNVRamFile(myOSystem.nvramDir(), myConsoleInfo.CartName);
 
   // Let the other devices know about the new console
   mySystem->consoleChanged(myConsoleTiming);

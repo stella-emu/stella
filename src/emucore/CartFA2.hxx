@@ -134,12 +134,12 @@ class CartridgeFA2 : public Cartridge
     string name() const override { return "CartridgeFA2"; }
 
     /**
-      Informs the cartridge about the name of the ROM file used when
-      creating this cart.
+      Informs the cartridge about the name of the nvram file it will use.
 
-      @param name  The properties file name of the ROM
+      @param nvramdir  The full path of the nvram directory
+      @param romfile   The name of the cart from ROM properties
     */
-    void setRomName(const string& name) override;
+    void setNVRamFile(const string& nvramdir, const string& romfile) override;
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -189,14 +189,7 @@ class CartridgeFA2 : public Cartridge
     */
     void flash(uInt8 operation);
 
-    bool requiresOSystem() override { return true; }
-
-    void setOSystem(OSystem* osystem) override { myOSystem = osystem; }
-
   private:
-    // OSsytem currently in use
-    const OSystem* myOSystem;
-
     // The 24K/28K ROM image of the cartridge
     uInt8 myImage[28 * 1024];
 

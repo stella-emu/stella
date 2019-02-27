@@ -194,12 +194,12 @@ class CartridgeCTY : public Cartridge
     string name() const override { return "CartridgeCTY"; }
 
     /**
-      Informs the cartridge about the name of the ROM file used when
-      creating this cart.
+      Informs the cartridge about the name of the nvram file it will use.
 
-      @param name  The properties file name of the ROM
+      @param nvramdir  The full path of the nvram directory
+      @param romfile   The name of the cart from ROM properties
     */
-    void setRomName(const string& name) override;
+    void setNVRamFile(const string& nvramdir, const string& romfile) override;
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -256,14 +256,7 @@ class CartridgeCTY : public Cartridge
 
     void updateTune();
 
-    bool requiresOSystem() override { return true; }
-
-    void setOSystem(OSystem* osystem) override { myOSystem = osystem; }
-
   private:
-    // OSsytem currently in use
-    const OSystem* myOSystem;
-
     // The 32K ROM image of the cartridge
     uInt8 myImage[32768];
 
