@@ -27,9 +27,9 @@
 #include "System.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
+System::System(Random& random, M6502& m6502, M6532& m6532,
                TIA& mTIA, Cartridge& mCart)
-  : myOSystem(osystem),
+  : myRandom(random),
     myM6502(m6502),
     myM6532(m6532),
     myTIA(mTIA),
@@ -39,9 +39,6 @@ System::System(const OSystem& osystem, M6502& m6502, M6532& m6532,
     myDataBusLocked(false),
     mySystemInAutodetect(false)
 {
-  // Re-initialize random generator
-  randGenerator().initSeed(uInt32(TimerManager::getTicks()));
-
   // Initialize page access table
   PageAccess access(&myNullDevice, System::PA_READ);
   for(int page = 0; page < NUM_PAGES; ++page)

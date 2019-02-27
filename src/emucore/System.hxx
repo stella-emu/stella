@@ -27,7 +27,6 @@ class NullDevice;
 #include "bspf.hxx"
 #include "Device.hxx"
 #include "NullDev.hxx"
-#include "OSystem.hxx"
 #include "Random.hxx"
 #include "Serializable.hxx"
 
@@ -50,7 +49,7 @@ class System : public Serializable
       Create a new system with an addressing space of 2^13 bytes and
       pages of 2^6 bytes.
     */
-    System(const OSystem& osystem, M6502& m6502, M6532& m6532,
+    System(Random& random, M6502& m6502, M6532& m6532,
            TIA& mTIA, Cartridge& mCart);
     virtual ~System() = default;
 
@@ -90,13 +89,6 @@ class System : public Serializable
 
   public:
     /**
-      Answer the OSystem attached to the system.
-
-      @return The attached OSystem
-    */
-    const OSystem& oSystem() const { return myOSystem; }
-
-    /**
       Answer the 6502 microprocessor attached to the system.  If a
       processor has not been attached calling this function will fail.
 
@@ -131,7 +123,7 @@ class System : public Serializable
 
       @return The random generator
     */
-    Random& randGenerator() const { return myOSystem.random(); }
+    Random& randGenerator() const { return myRandom; }
 
     /**
       Get the null device associated with the system.  Every system
@@ -385,7 +377,8 @@ class System : public Serializable
     bool load(Serializer& in) override;
 
   private:
-    const OSystem& myOSystem;
+    // The system RNG
+    Random& myRandom;
 
     // 6502 processor attached to the system
     M6502& myM6502;

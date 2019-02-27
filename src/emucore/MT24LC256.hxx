@@ -20,6 +20,7 @@
 
 class Controller;
 class System;
+class OSystem;
 
 #include "bspf.hxx"
 
@@ -38,8 +39,9 @@ class MT24LC256
 
       @param filename Data file containing the EEPROM data
       @param system   The system using the controller of this device
+      @param osystem  The OSystem abstraction
     */
-    MT24LC256(const string& filename, const System& system);
+    MT24LC256(const string& filename, const System& system, const OSystem& osystem);
     ~MT24LC256();
 
   private:
@@ -86,6 +88,9 @@ class MT24LC256
 
     // The system of the parent controller
     const System& mySystem;
+
+    // The OSystem abstraction
+    const OSystem& myOSystem;
 
     // The EEPROM data
     uInt8 myData[FLASH_SIZE];

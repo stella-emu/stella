@@ -19,6 +19,7 @@
 #define ATARIVOX_HXX
 
 class SerialPort;
+class OSystem;
 
 #include "Control.hxx"
 #include "SaveKey.hxx"
@@ -41,11 +42,12 @@ class AtariVox : public SaveKey
       @param jack       The jack the controller is plugged into
       @param event      The event object to use for events
       @param system     The system using this controller
+      @param osystem    The OSystem abstraction
       @param port       The serial port object
       @param portname   Name of the port used for reading and writing
       @param eepromfile The file containing the EEPROM data
     */
-    AtariVox(Jack jack, const Event& event, const System& system,
+    AtariVox(Jack jack, const Event& event, const System& system, const OSystem& osystem,
              const SerialPort& port, const string& portname,
              const string& eepromfile);
     virtual ~AtariVox() = default;

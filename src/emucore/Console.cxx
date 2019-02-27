@@ -105,8 +105,11 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   myTIA->setFrameManager(myFrameManager.get());
 
+  // Reinitialize the RNG
+  myOSystem.random().initSeed(static_cast<uInt32>(myOSystem.getTicks()));
+
   // Construct the system and components
-  mySystem = make_unique<System>(osystem, *my6502, *myRiot, *myTIA, *myCart);
+  mySystem = make_unique<System>(myOSystem.random(), *my6502, *myRiot, *myTIA, *myCart);
 
   // The real controllers for this console will be added later
   // For now, we just add dummy joystick controllers, since autodetection
@@ -933,13 +936,13 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
   {
     const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
     controller = make_unique<AtariVox>(port, myEvent,
-        *mySystem, myOSystem.serialPort(),
+        *mySystem, myOSystem, myOSystem.serialPort(),
         myOSystem.settings().getString("avoxport"), nvramfile);
   }
   else if(controllerName == "SAVEKEY")
   {
     const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
-    controller = make_unique<SaveKey>(port, myEvent, *mySystem,
+    controller = make_unique<SaveKey>(port, myEvent, *mySystem, myOSystem,
                                       nvramfile);
   }
   else if(controllerName == "GENESIS")

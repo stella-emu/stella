@@ -19,6 +19,7 @@
 #define SAVEKEY_HXX
 
 class MT24LC256;
+class OSystem;
 
 #include "Control.hxx"
 
@@ -40,9 +41,10 @@ class SaveKey : public Controller
       @param jack       The jack the controller is plugged into
       @param event      The event object to use for events
       @param system     The system using this controller
+      @param osystem    The OSystem abstraction
       @param eepromfile The file containing the EEPROM data
     */
-    SaveKey(Jack jack, const Event& event, const System& system,
+    SaveKey(Jack jack, const Event& event, const System& system, const OSystem& osystem,
             const string& eepromfile);
     virtual ~SaveKey();
 
@@ -51,7 +53,7 @@ class SaveKey : public Controller
       Delegating constructor currently used by both this class and classes
       that inherit from SaveKey (currently, AtariVox)
     */
-    SaveKey(Jack jack, const Event& event, const System& system,
+    SaveKey(Jack jack, const Event& event, const System& system, const OSystem& osystem,
             const string& eepromfile, Type type);
 
   public:

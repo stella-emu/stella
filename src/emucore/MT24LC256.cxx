@@ -19,6 +19,8 @@
 
 #include "System.hxx"
 
+#include "OSystem.hxx"
+
 #include "Settings.hxx"
 
 #include "MT24LC256.hxx"
@@ -46,8 +48,9 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MT24LC256::MT24LC256(const string& filename, const System& system)
+MT24LC256::MT24LC256(const string& filename, const System& system, const OSystem& osystem)
   : mySystem(system),
+    myOSystem(osystem),
     mySDA(false),
     mySCL(false),
     myTimerActive(false),
@@ -252,9 +255,9 @@ void MT24LC256::jpee_data_stop()
     {
       myDataChanged = true;
       myPageHit[jpee_address / PAGE_SIZE] = true;
-      bool devSettings = mySystem.oSystem().settings().getBool("dev.settings");
-      if(mySystem.oSystem().settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-        mySystem.oSystem().frameBuffer().showMessage("AtariVox/SaveKey EEPROM write");
+      bool devSettings = myOSystem.settings().getBool("dev.settings");
+      if(myOSystem.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+        myOSystem.frameBuffer().showMessage("AtariVox/SaveKey EEPROM write");
       myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
       if (!(jpee_address & jpee_pagemask))
         break;  /* Writes can't cross page boundary! */
@@ -354,9 +357,9 @@ void MT24LC256::jpee_clock_fall()
       myPageHit[jpee_address / PAGE_SIZE] = true;
 
       {
-        bool devSettings = mySystem.oSystem().settings().getBool("dev.settings");
-        if(mySystem.oSystem().settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-          mySystem.oSystem().frameBuffer().showMessage("AtariVox/SaveKey EEPROM read");
+        bool devSettings = myOSystem.settings().getBool("dev.settings");
+        if(myOSystem.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+          myOSystem.frameBuffer().showMessage("AtariVox/SaveKey EEPROM read");
       }
       jpee_nb = (myData[jpee_address & jpee_sizemask] << 1) | 1;  /* Fall through */
       JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2);

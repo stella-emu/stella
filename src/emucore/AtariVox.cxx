@@ -17,13 +17,14 @@
 
 #include "SerialPort.hxx"
 #include "System.hxx"
+#include "OSystem.hxx"
 #include "AtariVox.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
+AtariVox::AtariVox(Jack jack, const Event& event, const System& system, const OSystem& osystem,
                    const SerialPort& port, const string& portname,
                    const string& eepromfile)
-  : SaveKey(jack, event, system, eepromfile, Controller::AtariVox),
+  : SaveKey(jack, event, system, osystem, eepromfile, Controller::AtariVox),
     mySerialPort(const_cast<SerialPort&>(port)),
     myShiftCount(0),
     myShiftRegister(0),
