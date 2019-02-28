@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <chrono>
+#include <cmath>
 
 #include "ProfilingRunner.hxx"
 #include "FSNode.hxx"
@@ -27,7 +28,11 @@
 #include "M6532.hxx"
 #include "TIA.hxx"
 #include "ConsoleTiming.hxx"
-#include "DummyFrameManager.hxx"
+#include "FrameManager.hxx"
+#include "YStartDetector.hxx"
+#include "FrameLayoutDetector.hxx"
+#include "EmulationTiming.hxx"
+#include "ConsoleTiming.hxx"
 #include "System.hxx"
 #include "Joystick.hxx"
 #include "Random.hxx"
@@ -37,7 +42,6 @@ using namespace std::chrono;
 
 namespace {
   static constexpr uInt32 RUNTIME_DEFAULT = 60;
-  static constexpr uInt32 cyclesPerSecond = 262 * 76 * 60;
 
   void updateProgress(uInt32 from, uInt32 to) {
     while (from < to) {
@@ -70,6 +74,8 @@ ProfilingRunner::ProfilingRunner(int argc, char* argv[])
       run.runtime = runtime > 0 ? runtime : RUNTIME_DEFAULT;
     }
   }
+
+  mySettings.setValue("fastscbios", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,7 +121,6 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
   IO consoleIO;
   Random rng(0);
   Event event;
-  DummyFrameManager frameManager;
 
   M6502 cpu(mySettings);
   M6532 riot(consoleIO, mySettings);
@@ -126,15 +131,54 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
   consoleIO.myRightControl = make_unique<Joystick>(Controller::Right, event, system);
   consoleIO.mySwitches = make_unique<Switches>(event, myProps, mySettings);
 
-  tia.setFrameManager(&frameManager);
   tia.bindToControllers();
   cartridge->setStartBankFromPropsFunc([]() { return -1; });
-
   system.initialize();
+
+  FrameLayoutDetector frameLayoutDetector;
+  tia.setFrameManager(&frameLayoutDetector);
   system.reset();
 
+  (cout << "detecting frame layout... ").flush();
+  for(int i = 0; i < 60; ++i) tia.update();
+
+  FrameLayout frameLayout = frameLayoutDetector.detectedLayout();
+  ConsoleTiming consoleTiming;
+
+  switch (frameLayout) {
+    case FrameLayout::ntsc:
+      cout << "NTSC";
+      consoleTiming = ConsoleTiming::ntsc;
+      break;
+
+    case FrameLayout::pal:
+      cout << "PAL";
+      consoleTiming = ConsoleTiming::pal;
+      break;
+  }
+
+  (cout << endl).flush();
+
+  YStartDetector ystartDetector;
+  tia.setFrameManager(&ystartDetector);
+  system.reset();
+
+  (cout << "detecting ystart... ").flush();
+  for (int i = 0; i < 80; i++) tia.update();
+
+  uInt32 yStart = ystartDetector.detectedYStart();
+  (cout << yStart << endl).flush();
+
+  FrameManager frameManager;
+  tia.setFrameManager(&frameManager);
+  tia.setLayout(frameLayout);
+  tia.setYStart(yStart);
+
+  system.reset();
+
+  EmulationTiming emulationTiming(frameLayout, consoleTiming);
   uInt64 cycles = 0;
-  uInt64 cyclesTarget = run.runtime * cyclesPerSecond;
+  uInt64 cyclesTarget = run.runtime * emulationTiming.cyclesPerSecond();
 
   DispatchResult dispatchResult;
   dispatchResult.setOk(0);
@@ -147,6 +191,8 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
   while (cycles < cyclesTarget && dispatchResult.getStatus() == DispatchResult::Status::ok) {
     tia.update(dispatchResult);
     cycles += dispatchResult.getCycles();
+
+    if (tia.newFramePending()) tia.renderToFrameBuffer();
 
     uInt32 percentNow = std::min((100 * cycles) / cyclesTarget, static_cast<uInt64>(100));
     updateProgress(percent, percentNow);
