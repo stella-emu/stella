@@ -1291,18 +1291,21 @@ void TIA::tickMovement()
   if (!myMovementInProgress) return;
 
   if ((myHctr & 0x03) == 0) {
-    const bool apply = myHstate == HState::blank;
-    bool m = false;
+    const bool hblank = myHstate == HState::blank;
     uInt8 movementCounter = myMovementClock > 15 ? 0 : myMovementClock;
 
-    m = myMissile0.movementTick(movementCounter, myHctr, apply) || m;
-    m = myMissile1.movementTick(movementCounter, myHctr, apply) || m;
-    m = myPlayer0.movementTick(movementCounter, apply) || m;
-    m = myPlayer1.movementTick(movementCounter, apply) || m;
-    m = myBall.movementTick(movementCounter, apply) || m;
+    myMissile0.movementTick(movementCounter, myHctr, hblank);
+    myMissile1.movementTick(movementCounter, myHctr, hblank);
+    myPlayer0.movementTick(movementCounter, hblank);
+    myPlayer1.movementTick(movementCounter, hblank);
+    myBall.movementTick(movementCounter, hblank);
 
-    myMovementInProgress = m;
-    myCollisionUpdateRequired = m;
+    myMovementInProgress =
+      myMissile0.isMoving |
+      myMissile1.isMoving |
+      myPlayer0.isMoving  |
+      myPlayer1.isMoving  |
+      myBall.isMoving;
 
     ++myMovementClock;
   }

@@ -43,8 +43,7 @@ void Missile::reset()
   myResmp = 0;
   myHmmClocks = 0;
   myCounter = 0;
-  myIsMoving = false;
-  myLastMovementTick = 0;
+  isMoving = false;
   myWidth = 1;
   myEffectiveWidth = 1;
   myIsRendering = false;
@@ -161,23 +160,7 @@ void Missile::nusiz(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::startMovement()
 {
-  myIsMoving = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Missile::movementTick(uInt8 clock, uInt8 hclock, bool apply)
-{
-  myLastMovementTick = myCounter;
-
-  if(clock == myHmmClocks)
-    myIsMoving = false;
-  else if(myIsMoving)
-  {
-    if(apply) tick(hclock, false);
-    else myInvertedPhaseClock = true;
-  }
-
-  return myIsMoving;
+  isMoving = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,7 +174,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
 
   myIsVisible =
     myIsRendering &&
-    (myRenderCounter >= 0 || (myIsMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
+    (myRenderCounter >= 0 || (isMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
 
   collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
@@ -201,7 +184,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
   } else if (myIsRendering) {
 
       if (myRenderCounter == -1) {
-        if (myIsMoving && isReceivingMclock) {
+        if (isMoving && isReceivingMclock) {
           switch ((hclock + 1) % 4) {
             case 3:
               myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
@@ -221,7 +204,7 @@ void Missile::tick(uInt8 hclock, bool isReceivingMclock)
         }
       }
 
-      if (++myRenderCounter >= (myIsMoving ? myEffectiveWidth : myWidth)) myIsRendering = false;
+      if (++myRenderCounter >= (isMoving ? myEffectiveWidth : myWidth)) myIsRendering = false;
   }
 
   if (++myCounter >= TIA::H_PIXEL) myCounter = 0;
@@ -334,10 +317,9 @@ bool Missile::save(Serializer& out) const
 
     out.putByte(myHmmClocks);
     out.putByte(myCounter);
-    out.putBool(myIsMoving);
+    out.putBool(isMoving);
     out.putByte(myWidth);
     out.putByte(myEffectiveWidth);
-    out.putByte(myLastMovementTick);
 
     out.putBool(myIsVisible);
     out.putBool(myIsRendering);
@@ -375,10 +357,9 @@ bool Missile::load(Serializer& in)
 
     myHmmClocks = in.getByte();
     myCounter = in.getByte();
-    myIsMoving = in.getBool();
+    isMoving = in.getBool();
     myWidth = in.getByte();
     myEffectiveWidth = in.getByte();
-    myLastMovementTick = in.getByte();
 
     myIsVisible = in.getBool();
     myIsRendering = in.getBool();

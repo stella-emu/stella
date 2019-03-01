@@ -40,7 +40,7 @@ void Player::reset()
   myDecodes = DrawCounterDecodes::get().playerDecodes()[myDecodesOffset];
   myHmmClocks = 0;
   myCounter = 0;
-  myIsMoving = false;
+  isMoving = false;
   myIsRendering = false;
   myRenderCounter = 0;
   myPatternOld = 0;
@@ -262,21 +262,7 @@ void Player::setInvertedPhaseClock(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::startMovement()
 {
-  myIsMoving = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Player::movementTick(uInt32 clock, bool apply)
-{
-  if (clock == myHmmClocks)
-    myIsMoving = false;
-  else if(myIsMoving)
-  {
-    if(apply) tick();
-    else myInvertedPhaseClock = true;
-  }
-
-  return myIsMoving;
+  isMoving = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -472,7 +458,7 @@ bool Player::save(Serializer& out) const
 
     out.putByte(myHmmClocks);
     out.putByte(myCounter);
-    out.putBool(myIsMoving);
+    out.putBool(isMoving);
 
     out.putBool(myIsRendering);
     out.putByte(myRenderCounter);
@@ -518,7 +504,7 @@ bool Player::load(Serializer& in)
 
     myHmmClocks = in.getByte();
     myCounter = in.getByte();
-    myIsMoving = in.getBool();
+    isMoving = in.getBool();
 
     myIsRendering = in.getBool();
     myRenderCounter = in.getByte();

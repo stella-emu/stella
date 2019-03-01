@@ -48,7 +48,16 @@ class Missile : public Serializable
 
     void startMovement();
 
-    bool movementTick(uInt8 clock, uInt8 hclock, bool apply);
+    void movementTick(uInt8 clock, uInt8 hclock, bool hblank)
+    {
+      if(clock == myHmmClocks) isMoving = false;
+
+      if (isMoving)
+      {
+        if (hblank) tick(hclock, false);
+        myInvertedPhaseClock = !hblank;
+      }
+    }
 
     void tick(uInt8 hclock, bool isReceivingMclock = true);
 
@@ -82,6 +91,7 @@ class Missile : public Serializable
   public:
 
     uInt32 collision;
+    bool isMoving;
 
   private:
 
@@ -100,10 +110,9 @@ class Missile : public Serializable
 
     uInt8 myHmmClocks;
     uInt8 myCounter;
-    bool myIsMoving;
+
     uInt8 myWidth;
     uInt8 myEffectiveWidth;
-    uInt8 myLastMovementTick;
 
     bool myIsRendering;
     bool myIsVisible;

@@ -60,7 +60,20 @@ class Ball : public Serializable
 
     void startMovement();
 
-    bool movementTick(uInt32 clock, bool apply);
+    void movementTick(uInt32 clock, bool hblank)
+    {
+      myLastMovementTick = myCounter;
+
+      if (clock == myHmmClocks)
+        isMoving = false;
+
+      if(isMoving)
+      {
+        if (hblank) tick(false);
+        myInvertedPhaseClock = !hblank;
+      }
+    }
+
 
     void tick(bool isReceivingMclock = true);
 
@@ -88,6 +101,7 @@ class Ball : public Serializable
   public:
 
     uInt32 collision;
+    bool isMoving;
 
   private:
 
@@ -112,7 +126,6 @@ class Ball : public Serializable
 
     uInt8 myHmmClocks;
     uInt8 myCounter;
-    bool myIsMoving;
     uInt8 myWidth;
     uInt8 myEffectiveWidth;
     uInt8 myLastMovementTick;

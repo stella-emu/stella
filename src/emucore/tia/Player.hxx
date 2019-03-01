@@ -61,7 +61,17 @@ class Player : public Serializable
 
     void startMovement();
 
-    bool movementTick(uInt32 clock, bool apply);
+    void movementTick(uInt32 clock, bool hblank)
+    {
+      if (clock == myHmmClocks)
+        isMoving = false;
+
+      if(isMoving)
+      {
+        if (hblank) tick();
+        myInvertedPhaseClock = !hblank;
+      }
+    }
 
     void tick();
 
@@ -93,6 +103,7 @@ class Player : public Serializable
   public:
 
     uInt32 collision;
+    bool isMoving;
 
   private:
 
@@ -113,7 +124,6 @@ class Player : public Serializable
 
     uInt8 myHmmClocks;
     uInt8 myCounter;
-    bool myIsMoving;
 
     bool myIsRendering;
     Int8 myRenderCounter;

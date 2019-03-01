@@ -44,7 +44,7 @@ void Ball::reset()
   myIsVisible = false;
   myHmmClocks = 0;
   myCounter = 0;
-  myIsMoving = false;
+  isMoving = false;
   myEffectiveWidth = 1;
   myLastMovementTick = 0;
   myWidth = 1;
@@ -166,23 +166,7 @@ void Ball::setInvertedPhaseClock(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::startMovement()
 {
-  myIsMoving = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Ball::movementTick(uInt32 clock, bool apply)
-{
-  myLastMovementTick = myCounter;
-
-  if (clock == myHmmClocks)
-    myIsMoving = false;
-  else if(myIsMoving)
-  {
-    if(apply) tick(false);
-    else myInvertedPhaseClock = true;
-  }
-
-  return myIsMoving;
+  isMoving = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -197,7 +181,7 @@ void Ball::tick(bool isReceivingMclock)
   myIsVisible = myIsRendering && myRenderCounter >= 0;
   collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 
-  bool starfieldEffect = myIsMoving && isReceivingMclock;
+  bool starfieldEffect = isMoving && isReceivingMclock;
 
   if (myCounter == 156) {
     myIsRendering = true;
@@ -325,7 +309,7 @@ bool Ball::save(Serializer& out) const
 
     out.putByte(myHmmClocks);
     out.putByte(myCounter);
-    out.putBool(myIsMoving);
+    out.putBool(isMoving);
     out.putByte(myWidth);
     out.putByte(myEffectiveWidth);
     out.putByte(myLastMovementTick);
@@ -366,7 +350,7 @@ bool Ball::load(Serializer& in)
 
     myHmmClocks = in.getByte();
     myCounter = in.getByte();
-    myIsMoving = in.getBool();
+    isMoving = in.getBool();
     myWidth = in.getByte();
     myEffectiveWidth = in.getByte();
     myLastMovementTick = in.getByte();
