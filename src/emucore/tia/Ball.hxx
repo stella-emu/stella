@@ -20,6 +20,7 @@
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
+#include "TIAConstants.hxx"
 
 class TIA;
 
@@ -60,23 +61,6 @@ class Ball : public Serializable
 
     void startMovement();
 
-    void movementTick(uInt32 clock, bool hblank)
-    {
-      myLastMovementTick = myCounter;
-
-      if (clock == myHmmClocks)
-        isMoving = false;
-
-      if(isMoving)
-      {
-        if (hblank) tick(false);
-        myInvertedPhaseClock = !hblank;
-      }
-    }
-
-
-    void tick(bool isReceivingMclock = true);
-
     void nextLine();
 
     bool isOn() const { return (collision & 0x8000); }
@@ -98,6 +82,61 @@ class Ball : public Serializable
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
+    void movementTick(uInt32 clock, bool hblank)
+    {
+      myLastMovementTick = myCounter;
+
+      if (clock == myHmmClocks)
+        isMoving = false;
+
+      if(isMoving)
+      {
+        if (hblank) tick(false);
+        myInvertedPhaseClock = !hblank;
+      }
+    }
+
+    void tick(bool isReceivingMclock = false)
+    {
+      if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+      {
+        myInvertedPhaseClock = false;
+        return;
+      }
+
+      myIsVisible = myIsRendering && myRenderCounter >= 0;
+      collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+
+      bool starfieldEffect = isMoving && isReceivingMclock;
+
+      if (myCounter == 156) {
+        myIsRendering = true;
+        myRenderCounter = renderCounterOffset;
+
+        uInt8 starfieldDelta = (myCounter + TIAConstants::H_PIXEL - myLastMovementTick) % 4;
+        if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) ++myRenderCounter;
+
+        switch (starfieldDelta) {
+          case 3:
+            myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
+            break;
+
+          case 2:
+            myEffectiveWidth = 0;
+            break;
+
+          default:
+            myEffectiveWidth = myWidth;
+            break;
+        }
+
+      } else if (myIsRendering && ++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth))
+        myIsRendering = false;
+
+      if (++myCounter >= TIAConstants::H_PIXEL)
+          myCounter = 0;
+    }
+
   public:
 
     uInt32 collision;
@@ -107,6 +146,12 @@ class Ball : public Serializable
 
     void updateEnabled();
     void applyColors();
+
+  private:
+
+    enum Count: Int8 {
+      renderCounterOffset = -4
+    };
 
   private:
 

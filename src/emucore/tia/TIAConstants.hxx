@@ -26,6 +26,11 @@ namespace TIAConstants {
   constexpr uInt32 maxYStart = 64;
   constexpr uInt32 minViewableHeight = 210, maxViewableHeight = 256;
   constexpr uInt32 initialGarbageFrames = 10;
+
+  static constexpr uInt16
+    H_PIXEL = 160, H_CYCLES = 76, CYCLE_CLOCKS = 3,
+    H_CLOCKS = H_CYCLES * CYCLE_CLOCKS,   // = 228
+    H_BLANK_CLOCKS = H_CLOCKS - H_PIXEL;  // = 68
 }
 
 enum TIABit {

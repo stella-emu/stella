@@ -19,10 +19,6 @@
 #include "DrawCounterDecodes.hxx"
 #include "TIA.hxx"
 
-enum Count: Int8 {
-  renderCounterOffset = -5,
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Player::Player(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
@@ -106,7 +102,7 @@ void Player::nusiz(uInt8 value, bool hblank)
     myDecodes != oldDecodes &&
     myIsRendering &&
     (myRenderCounter - Count::renderCounterOffset) < 2 &&
-    !myDecodes[(myCounter - myRenderCounter + Count::renderCounterOffset + TIA::H_PIXEL - 1) % TIA::H_PIXEL]
+    !myDecodes[(myCounter - myRenderCounter + Count::renderCounterOffset + TIAConstants::H_PIXEL - 1) % TIAConstants::H_PIXEL]
   ) {
     myIsRendering = false;
   }
@@ -266,53 +262,6 @@ void Player::startMovement()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Player::tick()
-{
-  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
-  {
-    myInvertedPhaseClock = false;
-    return;
-  }
-
-  if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
-    collision = myCollisionMaskDisabled;
-  else
-    collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-
-  if (myDecodes[myCounter]) {
-    myIsRendering = true;
-    mySampleCounter = 0;
-    myRenderCounter = Count::renderCounterOffset;
-  } else if (myIsRendering) {
-    ++myRenderCounter;
-
-    switch (myDivider) {
-      case 1:
-        if (myRenderCounter > 0)
-          ++mySampleCounter;
-
-        if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
-          setDivider(myDividerPending);
-
-        break;
-
-      default:
-        if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
-          ++mySampleCounter;
-
-        if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
-          setDivider(myDividerPending);
-
-        break;
-    }
-
-    if (mySampleCounter > 7) myIsRendering = false;
-  }
-
-  if (++myCounter >= TIA::H_PIXEL) myCounter = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Player::nextLine()
 {
   if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
@@ -340,13 +289,13 @@ uInt8 Player::getRespClock() const
   switch (myDivider)
   {
     case 1:
-      return (myCounter + TIA::H_PIXEL - 5) % TIA::H_PIXEL;
+      return (myCounter + TIAConstants::H_PIXEL - 5) % TIAConstants::H_PIXEL;
 
     case 2:
-      return (myCounter + TIA::H_PIXEL - 9) % TIA::H_PIXEL;
+      return (myCounter + TIAConstants::H_PIXEL - 9) % TIAConstants::H_PIXEL;
 
     case 4:
-      return (myCounter + TIA::H_PIXEL - 12) % TIA::H_PIXEL;
+      return (myCounter + TIAConstants::H_PIXEL - 12) % TIAConstants::H_PIXEL;
 
     default:
       throw runtime_error("invalid width");
@@ -427,7 +376,7 @@ uInt8 Player::getPosition() const
   // The result may be negative, so we add TIA::H_PIXEL and do the modulus -> 317 = 156 + TIA::H_PIXEL + 1
   //
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (317 - myCounter - Count::renderCounterOffset + shift + myTIA->getPosition()) % TIA::H_PIXEL;
+  return (317 - myCounter - Count::renderCounterOffset + shift + myTIA->getPosition()) % TIAConstants::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -438,7 +387,7 @@ void Player::setPosition(uInt8 newPosition)
   const uInt8 shift = myDivider == 1 ? 0 : 1;
 
   // See getPosition for an explanation
-  myCounter = (317 - newPosition - Count::renderCounterOffset + shift + myTIA->getPosition()) % TIA::H_PIXEL;
+  myCounter = (317 - newPosition - Count::renderCounterOffset + shift + myTIA->getPosition()) % TIAConstants::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

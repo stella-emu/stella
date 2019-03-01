@@ -20,6 +20,7 @@
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
+#include "TIAConstants.hxx"
 
 class TIA;
 
@@ -61,20 +62,6 @@ class Player : public Serializable
 
     void startMovement();
 
-    void movementTick(uInt32 clock, bool hblank)
-    {
-      if (clock == myHmmClocks)
-        isMoving = false;
-
-      if(isMoving)
-      {
-        if (hblank) tick();
-        myInvertedPhaseClock = !hblank;
-      }
-    }
-
-    void tick();
-
     void nextLine();
 
     uInt8 getClock() const { return myCounter; }
@@ -100,6 +87,64 @@ class Player : public Serializable
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
+    void movementTick(uInt32 clock, bool hblank)
+    {
+      if (clock == myHmmClocks)
+        isMoving = false;
+
+      if(isMoving)
+      {
+        if (hblank) tick();
+        myInvertedPhaseClock = !hblank;
+      }
+    }
+
+    void tick()
+    {
+      if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+      {
+        myInvertedPhaseClock = false;
+        return;
+      }
+
+      if (!myIsRendering || myRenderCounter < myRenderCounterTripPoint)
+        collision = myCollisionMaskDisabled;
+      else
+        collision = (myPattern & (1 << mySampleCounter)) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+
+      if (myDecodes[myCounter]) {
+        myIsRendering = true;
+        mySampleCounter = 0;
+        myRenderCounter = renderCounterOffset;
+      } else if (myIsRendering) {
+        ++myRenderCounter;
+
+        switch (myDivider) {
+          case 1:
+            if (myRenderCounter > 0)
+              ++mySampleCounter;
+
+            if (myRenderCounter >= 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+              setDivider(myDividerPending);
+
+            break;
+
+          default:
+            if (myRenderCounter > 1 && (((myRenderCounter - 1) % myDivider) == 0))
+              ++mySampleCounter;
+
+            if (myRenderCounter > 0 && myDividerChangeCounter >= 0 && myDividerChangeCounter-- == 0)
+              setDivider(myDividerPending);
+
+            break;
+        }
+
+        if (mySampleCounter > 7) myIsRendering = false;
+      }
+
+      if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
+    }
+
   public:
 
     uInt32 collision;
@@ -110,6 +155,12 @@ class Player : public Serializable
     void updatePattern();
     void applyColors();
     void setDivider(uInt8 divider);
+
+  private:
+
+    enum Count: Int8 {
+      renderCounterOffset = -5,
+    };
 
   private:
 

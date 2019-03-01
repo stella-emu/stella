@@ -19,10 +19,6 @@
 #include "DrawCounterDecodes.hxx"
 #include "TIA.hxx"
 
-enum Count: Int8 {
-  renderCounterOffset = -4
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Missile::Missile(uInt32 collisionMask)
   : myCollisionMaskDisabled(collisionMask),
@@ -164,53 +160,6 @@ void Missile::startMovement()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Missile::tick(uInt8 hclock, bool isReceivingMclock)
-{
-  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
-  {
-    myInvertedPhaseClock = false;
-    return;
-  }
-
-  myIsVisible =
-    myIsRendering &&
-    (myRenderCounter >= 0 || (isMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
-
-  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-
-  if (myDecodes[myCounter] && !myResmp) {
-    myIsRendering = true;
-    myRenderCounter = Count::renderCounterOffset;
-  } else if (myIsRendering) {
-
-      if (myRenderCounter == -1) {
-        if (isMoving && isReceivingMclock) {
-          switch ((hclock + 1) % 4) {
-            case 3:
-              myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
-              if (myWidth < 4) ++myRenderCounter;
-              break;
-
-            case 2:
-              myEffectiveWidth = 0;
-              break;
-
-            default:
-              myEffectiveWidth = myWidth;
-              break;
-          }
-        } else {
-          myEffectiveWidth = myWidth;
-        }
-      }
-
-      if (++myRenderCounter >= (isMoving ? myEffectiveWidth : myWidth)) myIsRendering = false;
-  }
-
-  if (++myCounter >= TIA::H_PIXEL) myCounter = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::nextLine()
 {
   myIsVisible = myIsRendering && (myRenderCounter >= 0);
@@ -289,7 +238,7 @@ uInt8 Missile::getPosition() const
   // The result may be negative, so we add 160 and do the modulus
   //
   // Mind the sign of renderCounterOffset: it's defined negative above
-  return (317 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % TIA::H_PIXEL;
+  return (317 - myCounter - Count::renderCounterOffset + myTIA->getPosition()) % TIAConstants::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -298,7 +247,7 @@ void Missile::setPosition(uInt8 newPosition)
   myTIA->flushLineCache();
 
   // See getPosition for an explanation
-  myCounter = (317 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % TIA::H_PIXEL;
+  myCounter = (317 - newPosition - Count::renderCounterOffset + myTIA->getPosition()) % TIAConstants::H_PIXEL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

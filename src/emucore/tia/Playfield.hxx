@@ -20,6 +20,7 @@
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
+#include "TIAConstants.hxx"
 
 class TIA;
 
@@ -57,8 +58,6 @@ class Playfield : public Serializable
 
     void applyColorLoss();
 
-    void tick(uInt32 x);
-
     void nextLine();
 
     bool isOn() const { return (collision & 0x8000); }
@@ -69,6 +68,29 @@ class Playfield : public Serializable
     */
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
+
+    void tick(uInt32 x)
+    {
+      myX = x;
+
+      if (myX == TIAConstants::H_PIXEL / 2 || myX == 0) myRefp = myReflected;
+
+      if (x & 0x03) return;
+
+      uInt32 currentPixel;
+
+      if (myEffectivePattern == 0) {
+          currentPixel = 0;
+      } else if (x < TIAConstants::H_PIXEL / 2) {
+          currentPixel = myEffectivePattern & (1 << (x >> 2));
+      } else if (myRefp) {
+          currentPixel = myEffectivePattern & (1 << (39 - (x >> 2)));
+      } else {
+          currentPixel = myEffectivePattern & (1 << ((x >> 2) - 20));
+      }
+
+      collision = currentPixel ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+    }
 
   public:
 
