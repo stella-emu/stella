@@ -67,6 +67,12 @@ void parseCommandLine(int ac, char* av[],
 */
 void checkForCustomBaseDir(Settings::Options& options);
 
+/**
+  Checks whether the commandline contains an argument corresponding to
+  starting a profile session.
+*/
+bool isProfilingRun(int ac, char* av[]);
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void parseCommandLine(int ac, char* av[],
