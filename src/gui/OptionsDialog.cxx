@@ -28,7 +28,6 @@
 #include "InputDialog.hxx"
 #include "UIDialog.hxx"
 #include "SnapshotDialog.hxx"
-#include "ConfigPathDialog.hxx"
 #include "RomAuditDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "LoggerDialog.hxx"
@@ -90,8 +89,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("Snapshots" + ELLIPSIS, kSnapCmd);
   wid.push_back(b);
 
-  b = ADD_OD_BUTTON("Paths" + ELLIPSIS, kCfgPathsCmd);
-  wid.push_back(b);
+  yoffset += rowHeight;
 
   b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd);
   wid.push_back(b);
@@ -128,9 +126,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   myVideoDialog    = make_unique<VideoDialog>(osystem, parent, _font, max_w, max_h);
   myAudioDialog    = make_unique<AudioDialog>(osystem, parent, _font);
   myInputDialog    = make_unique<InputDialog>(osystem, parent, _font, max_w, max_h);
-  myUIDialog       = make_unique<UIDialog>(osystem, parent, _font);
+  myUIDialog       = make_unique<UIDialog>(osystem, parent, _font, boss, max_w, max_h);
   mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, _font, max_w, max_h);
-  myConfigPathDialog = make_unique<ConfigPathDialog>(osystem, parent, _font, boss, max_w, max_h);
   myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, _font, max_w, max_h);
   myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, _font, this, max_w, max_h);
 #ifdef CHEATCODE_SUPPORT
@@ -237,21 +234,6 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
                                                        instance().frameBuffer().font(), w, h);
       }
       mySnapshotDialog->open();
-      break;
-    }
-
-    case kCfgPathsCmd:
-    {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      uInt32 w = 0, h = 0;
-
-      if(myConfigPathDialog == nullptr || myConfigPathDialog->shouldResize(w, h))
-      {
-        myConfigPathDialog = make_unique<ConfigPathDialog>(instance(), parent(),
-                                                           instance().frameBuffer().font(), _boss, w, h);
-      }
-      myConfigPathDialog->open();
       break;
     }
 

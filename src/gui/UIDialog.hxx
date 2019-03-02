@@ -18,23 +18,13 @@
 #ifndef UI_DIALOG_HXX
 #define UI_DIALOG_HXX
 
-class CommandSender;
-class Dialog;
-class DialogContainer;
-class CheckboxWidget;
-class PopUpWidget;
-class SliderWidget;
-class StaticTextWidget;
-class TabWidget;
 class BrowserDialog;
-class OSystem;
 
-#include "bspf.hxx"
-
-class UIDialog : public Dialog
+class UIDialog : public Dialog, public CommandSender
 {
   public:
-    UIDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font);
+    UIDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
+             GuiObject* boss, int max_w, int max_h);
     virtual ~UIDialog();
 
   private:
@@ -51,6 +41,7 @@ class UIDialog : public Dialog
     {
       kListDelay  = 'UILd',
       kMouseWheel = 'UIMw',
+      kChooseRomDirCmd = 'LOrm', // rom select
       kLauncherSize = 'UIls',
       kRomViewer = 'UIRv',
       kChooseSnapLoadDirCmd = 'UIsl', // snapshot dir (load files)
@@ -61,6 +52,7 @@ class UIDialog : public Dialog
     TabWidget* myTab;
 
     // Launcher options
+    EditTextWidget*   myRomPath;
     SliderWidget*     myLauncherWidthSlider;
     SliderWidget*     myLauncherHeightSlider;
     PopUpWidget*      myLauncherFontPopup;
@@ -75,6 +67,9 @@ class UIDialog : public Dialog
     SliderWidget*     myWheelLinesPopup;
 
     unique_ptr<BrowserDialog> myBrowser;
+
+    // Indicates if this dialog is used for global (vs. in-game) settings
+    bool myIsGlobal;
 
   private:
     // Following constructors and assignment operators not supported

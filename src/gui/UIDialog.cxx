@@ -29,6 +29,7 @@
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "LauncherDialog.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
 #endif
@@ -36,29 +37,31 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
-                   const GUI::Font& font)
+                   const GUI::Font& font, GuiObject* boss, int max_w, int max_h)
   : Dialog(osystem, parent, font, "User interface settings"),
-    myFont(font)
+    CommandSender(boss),
+    myFont(font),
+    myIsGlobal(boss != nullptr)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Image path" + ELLIPSIS) + 20 + 1,
             buttonHeight = font.getLineHeight() + 4;
 
   const int VBORDER = 8;
   const int HBORDER = 10;
   const int INDENT = 16;
+  const int V_GAP = 4;
   int xpos, ypos, tabID;
-  int lwidth, pwidth;
+  int lwidth, pwidth, bwidth;
   WidgetArray wid;
   VariantList items;
   const GUI::Size& ds = instance().frameBuffer().desktopSize();
 
   // Set real dimensions
-  _w = (39+15) * fontWidth + 10 * 2;
-  _h = (10+1) * (lineHeight + 4) + VBORDER + _th;
+  setSize(64 * fontWidth + HBORDER * 2, 11 * (lineHeight + V_GAP) + V_GAP * 9 + VBORDER + _th,
+          max_w, max_h);
 
   // The tab widget
   myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2*2, _h - _th - buttonHeight - 20);
@@ -81,7 +84,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    items, "Theme     ", lwidth);
   wid.push_back(myPalettePopup);
-  ypos += lineHeight + 4 * 4;
+  ypos += lineHeight + V_GAP * 4;
 
   // Delay between quick-selecting characters in ListWidget
   int swidth = myPalettePopup->getWidth() - lwidth;
@@ -93,7 +96,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myListDelayPopup->setStepValue(50);
   myListDelayPopup->setTickmarkInterval(5);
   wid.push_back(myListDelayPopup);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + V_GAP;
 
   // Number of lines a mouse wheel will scroll
   myWheelLinesPopup = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
@@ -114,6 +117,19 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   lwidth = font.getStringWidth("Launcher height ");
   xpos = HBORDER;  ypos = VBORDER;
 
+  // ROM path
+  bwidth = font.getStringWidth("ROM path" + ELLIPSIS) + 20 + 1;
+  ButtonWidget* romButton =
+    new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
+                     "ROM path" + ELLIPSIS, kChooseRomDirCmd);
+  wid.push_back(romButton);
+  xpos = romButton->getRight() + 8;
+  myRomPath = new EditTextWidget(myTab, font, xpos, ypos + 1,
+                                 _w - xpos - HBORDER - 2, lineHeight, "");
+  wid.push_back(myRomPath);
+  xpos = HBORDER;
+  ypos += lineHeight + V_GAP * 4;
+
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher width ",
                                            lwidth, kLauncherSize, 6 * fontWidth, "px");
@@ -123,7 +139,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // one tickmark every ~100 pixel
   myLauncherWidthSlider->setTickmarkInterval((ds.w - FrameBuffer::kFBMinW + 50) / 100);
   wid.push_back(myLauncherWidthSlider);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + V_GAP;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher height ",
                                             lwidth, kLauncherSize, 6 * fontWidth, "px");
@@ -133,7 +149,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // one tickmark every ~100 pixel
   myLauncherHeightSlider->setTickmarkInterval((ds.h - FrameBuffer::kFBMinH + 50) / 100);
   wid.push_back(myLauncherHeightSlider);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + V_GAP;
 
   // Launcher font
   pwidth = font.getStringWidth("2x (1000x760)");
@@ -145,7 +161,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
                     "Launcher font ", lwidth);
   wid.push_back(myLauncherFontPopup);
-  ypos += lineHeight +  4 * 4;
+  ypos += lineHeight + V_GAP * 4;
 
   // ROM launcher info/snapshot viewer
   items.clear();
@@ -156,20 +172,21 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
                     "ROM info viewer ", lwidth, kRomViewer);
   wid.push_back(myRomViewerPopup);
-  ypos += lineHeight + 4;
+  ypos += lineHeight + V_GAP;
 
   // Snapshot path (load files)
   xpos = HBORDER + INDENT;
-  myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, buttonWidth, buttonHeight,
+  bwidth = font.getStringWidth("Image path" + ELLIPSIS) + 20 + 1,
+  myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   wid.push_back(myOpenBrowserButton);
   //ypos += lineHeight + 4;
   xpos = myOpenBrowserButton->getRight() + 8;
 
   mySnapLoadPath = new EditTextWidget(myTab, font, xpos, ypos + 1,
-                                      _w - xpos - HBORDER, lineHeight, "");
+                                      _w - xpos - HBORDER - 2, lineHeight, "");
   wid.push_back(mySnapLoadPath);
-  ypos += lineHeight + 4 * 5;
+  ypos += lineHeight + V_GAP * 4;
 
   // Exit to Launcher
   xpos = HBORDER;
@@ -186,6 +203,13 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
+
+  // All ROM settings are disabled while in game mode
+  if(!myIsGlobal)
+  {
+    romButton->clearFlags(WIDGET_ENABLED);
+    myRomPath->setEditable(false);
+  }
 
   // Activate the first tab
   myTab->setActiveTab(0);
@@ -204,8 +228,13 @@ UIDialog::~UIDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::loadConfig()
 {
+  const Settings& settings = instance().settings();
+
+  // ROM path
+  myRomPath->setText(settings.getString("romdir"));
+
   // Launcher size
-  const GUI::Size& ls = instance().settings().getSize("launcherres");
+  const GUI::Size& ls = settings.getSize("launcherres");
   uInt32 w = ls.w, h = ls.h;
 
   w = std::max(w, uInt32(FrameBuffer::kFBMinW));
@@ -217,30 +246,30 @@ void UIDialog::loadConfig()
   myLauncherHeightSlider->setValue(h);
 
   // Launcher font
-  const string& font = instance().settings().getString("launcherfont");
+  const string& font = settings.getString("launcherfont");
   myLauncherFontPopup->setSelected(font, "medium");
 
   // ROM launcher info viewer
-  const string& viewer = instance().settings().getString("romviewer");
+  const string& viewer = settings.getString("romviewer");
   myRomViewerPopup->setSelected(viewer, "0");
 
   // ROM launcher info viewer image path
-  mySnapLoadPath->setText(instance().settings().getString("snaploaddir"));
+  mySnapLoadPath->setText(settings.getString("snaploaddir"));
 
   // Exit to launcher
-  bool exitlauncher = instance().settings().getBool("exitlauncher");
+  bool exitlauncher = settings.getBool("exitlauncher");
   myLauncherExitWidget->setState(exitlauncher);
 
   // UI palette
-  const string& pal = instance().settings().getString("uipalette");
+  const string& pal = settings.getString("uipalette");
   myPalettePopup->setSelected(pal, "standard");
 
   // Listwidget quick delay
-  int delay = instance().settings().getInt("listdelay");
+  int delay = settings.getInt("listdelay");
   myListDelayPopup->setValue(delay);
 
   // Mouse wheel lines
-  int mw = instance().settings().getInt("mwheel");
+  int mw = settings.getInt("mwheel");
   myWheelLinesPopup->setValue(mw);
 
   handleRomViewer();
@@ -251,37 +280,46 @@ void UIDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::saveConfig()
 {
+  Settings& settings = instance().settings();
+
+  // ROM path
+  settings.setValue("romdir", myRomPath->getText());
+
   // Launcher size
-  instance().settings().setValue("launcherres",
+  settings.setValue("launcherres",
     GUI::Size(myLauncherWidthSlider->getValue(),
               myLauncherHeightSlider->getValue()));
 
   // Launcher font
-  instance().settings().setValue("launcherfont",
+  settings.setValue("launcherfont",
     myLauncherFontPopup->getSelectedTag().toString());
 
   // ROM launcher info viewer
-  instance().settings().setValue("romviewer",
+  settings.setValue("romviewer",
     myRomViewerPopup->getSelectedTag().toString());
 
   // ROM launcher info viewer image path
-  instance().settings().setValue("snaploaddir", mySnapLoadPath->getText());
+  settings.setValue("snaploaddir", mySnapLoadPath->getText());
 
   // Exit to Launcher
-  instance().settings().setValue("exitlauncher", myLauncherExitWidget->getState());
+  settings.setValue("exitlauncher", myLauncherExitWidget->getState());
 
   // UI palette
-  instance().settings().setValue("uipalette",
+  settings.setValue("uipalette",
     myPalettePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
 
   // Listwidget quick delay
-  instance().settings().setValue("listdelay", myListDelayPopup->getValue());
+  settings.setValue("listdelay", myListDelayPopup->getValue());
   ListWidget::setQuickSelectDelay(myListDelayPopup->getValue());
 
   // Mouse wheel lines
-  instance().settings().setValue("mwheel", myWheelLinesPopup->getValue());
+  settings.setValue("mwheel", myWheelLinesPopup->getValue());
   ScrollBarWidget::setWheelLines(myWheelLinesPopup->getValue());
+
+  // Flush changes to disk and inform the OSystem
+  instance().saveConfig();
+  instance().setConfigPaths();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -296,6 +334,8 @@ void UIDialog::setDefaults()
       break;
     case 1:  // Launcher options
     {
+      FilesystemNode node("~");
+      myRomPath->setText(node.getShortPath());
       uInt32 w = std::min(instance().frameBuffer().desktopSize().w, 900u);
       uInt32 h = std::min(instance().frameBuffer().desktopSize().h, 600u);
       myLauncherWidthSlider->setValue(w);
@@ -319,6 +359,8 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case GuiObject::kOKCmd:
       saveConfig();
       close();
+      if(myIsGlobal)  // Let the boss know romdir has changed
+        sendCommand(LauncherDialog::kRomDirChosenCmd, 0, 0);
       break;
 
     case GuiObject::kDefaultsCmd:
@@ -346,6 +388,18 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
         myWheelLinesPopup->setValueUnit(" line");
       else
         myWheelLinesPopup->setValueUnit(" lines");
+      break;
+
+    case kChooseRomDirCmd:
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      createBrowser("Select ROM directory");
+      myBrowser->show(myRomPath->getText(),
+                      BrowserDialog::Directories, LauncherDialog::kRomDirChosenCmd);
+      break;
+
+    case LauncherDialog::kRomDirChosenCmd:
+      myRomPath->setText(myBrowser->getResult().getShortPath());
       break;
 
     case kLauncherSize:

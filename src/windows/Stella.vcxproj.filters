@@ -375,9 +375,6 @@
     <ClCompile Include="..\gui\EventMappingWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\gui\ConfigPathDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\gui\Font.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -1314,9 +1311,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\EventMappingWidget.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\gui\ConfigPathDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\Font.hxx">

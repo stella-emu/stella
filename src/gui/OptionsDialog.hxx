@@ -27,9 +27,8 @@ class AudioDialog;
 class InputDialog;
 class UIDialog;
 class SnapshotDialog;
-class ConfigPathDialog;
-class RomAuditDialog;
 class GameInfoDialog;
+class RomAuditDialog;
 #ifdef CHEATCODE_SUPPORT
   class CheatCodeDialog;
 #endif
@@ -38,7 +37,6 @@ class AboutDialog;
 class LoggerDialog;
 
 #include "Dialog.hxx"
-#include "bspf.hxx"
 
 class DeveloperDialog;
 
@@ -67,7 +65,6 @@ class OptionsDialog : public Dialog
     unique_ptr<InputDialog>      myInputDialog;
     unique_ptr<UIDialog>         myUIDialog;
     unique_ptr<SnapshotDialog>   mySnapshotDialog;
-    unique_ptr<ConfigPathDialog> myConfigPathDialog;
     unique_ptr<DeveloperDialog>  myDeveloperDialog;
     unique_ptr<GameInfoDialog>   myGameInfoDialog;
   #ifdef CHEATCODE_SUPPORT
@@ -93,7 +90,6 @@ class OptionsDialog : public Dialog
       kInptCmd     = 'INPT',
       kUsrIfaceCmd = 'URIF',
       kSnapCmd     = 'SNAP',
-      kCfgPathsCmd = 'CFGP',
       kAuditCmd    = 'RAUD',
       kInfoCmd     = 'INFO',
       kCheatCmd    = 'CHET',
