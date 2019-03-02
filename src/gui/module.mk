@@ -8,7 +8,7 @@ MODULE_OBJS := \
 	src/gui/ColorWidget.o \
 	src/gui/ComboDialog.o \
 	src/gui/CommandDialog.o \
-	src/gui/CommandMenu.o \	
+	src/gui/CommandMenu.o \
 	src/gui/ContextMenu.o \
 	src/gui/DeveloperDialog.o \
 	src/gui/DialogContainer.o \

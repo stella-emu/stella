@@ -176,7 +176,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Snapshot path (load files)
   xpos = HBORDER + INDENT;
-  bwidth = font.getStringWidth("Image path" + ELLIPSIS) + 20 + 1,
+  bwidth = font.getStringWidth("Image path" + ELLIPSIS) + 20 + 1;
   myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   wid.push_back(myOpenBrowserButton);
