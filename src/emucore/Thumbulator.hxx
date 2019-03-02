@@ -59,8 +59,9 @@ class Thumbulator
       DPCplus   // cartridges of type DPC+
     };
 
-    Thumbulator(const uInt16* rom, uInt16* ram, uInt32 romSize, bool traponfatal,
-                Thumbulator::ConfigureFor configurefor, Cartridge* cartridge);
+    Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
+                bool traponfatal, Thumbulator::ConfigureFor configurefor,
+                Cartridge* cartridge);
 
     /**
       Run the ARM code, and return when finished.  A runtime_error exception is

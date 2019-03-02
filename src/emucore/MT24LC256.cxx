@@ -27,6 +27,11 @@
 
 #define DEBUG_EEPROM 0
 
+// FIXME - Change to more proper C++ code, to eliminate warnings from clang8
+//         It seems we only need OSystem here to print a message; I think this
+//         can be abstracted away from the class; perhaps use a lambda to
+//         register a callback when a write happens??
+
 #if DEBUG_EEPROM
   char jpee_msg[256];
   #define JPEE_LOG0(msg) jpee_logproc(msg)

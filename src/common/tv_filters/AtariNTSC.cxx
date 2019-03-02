@@ -135,47 +135,47 @@ void AtariNTSC::renderThread(const uInt8* atari_in, const uInt32 in_width,
     for(uInt32 n = chunk_count; n; --n)
     {
       // order of input and output pixels must not be altered
-      ATARI_NTSC_COLOR_IN(0, line_in[0]);
-      ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
-      ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
-      ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
-      ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+      ATARI_NTSC_COLOR_IN(0, line_in[0])
+      ATARI_NTSC_RGB_OUT_8888(0, line_out[0])
+      ATARI_NTSC_RGB_OUT_8888(1, line_out[1])
+      ATARI_NTSC_RGB_OUT_8888(2, line_out[2])
+      ATARI_NTSC_RGB_OUT_8888(3, line_out[3])
 
-      ATARI_NTSC_COLOR_IN(1, line_in[1]);
-      ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
-      ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
-      ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+      ATARI_NTSC_COLOR_IN(1, line_in[1])
+      ATARI_NTSC_RGB_OUT_8888(4, line_out[4])
+      ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
+      ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
 
       line_in += 2;
       line_out += 7;
     }
 
     // finish final pixels
-    ATARI_NTSC_COLOR_IN(0, line_in[0]);
-    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
-    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
-    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
-    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+    ATARI_NTSC_COLOR_IN(0, line_in[0])
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0])
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1])
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2])
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3])
 
-    ATARI_NTSC_COLOR_IN(1, NTSC_black);
-    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
-    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
-    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+    ATARI_NTSC_COLOR_IN(1, NTSC_black)
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4])
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
 
     line_in += 2;
     line_out += 7;
 
-    ATARI_NTSC_COLOR_IN(0, NTSC_black);
-    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
-    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
-    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
-    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+    ATARI_NTSC_COLOR_IN(0, NTSC_black)
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0])
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1])
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2])
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3])
 
-    ATARI_NTSC_COLOR_IN(1, NTSC_black);
-    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+    ATARI_NTSC_COLOR_IN(1, NTSC_black)
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4])
 #if 0
-    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
-    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
 #endif
 
     atari_in += in_width;
@@ -208,47 +208,47 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
     for(uInt32 n = chunk_count; n; --n)
     {
       // order of input and output pixels must not be altered
-      ATARI_NTSC_COLOR_IN(0, line_in[0]);
-      ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
-      ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
-      ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
-      ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+      ATARI_NTSC_COLOR_IN(0, line_in[0])
+      ATARI_NTSC_RGB_OUT_8888(0, line_out[0])
+      ATARI_NTSC_RGB_OUT_8888(1, line_out[1])
+      ATARI_NTSC_RGB_OUT_8888(2, line_out[2])
+      ATARI_NTSC_RGB_OUT_8888(3, line_out[3])
 
-      ATARI_NTSC_COLOR_IN(1, line_in[1]);
-      ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
-      ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
-      ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+      ATARI_NTSC_COLOR_IN(1, line_in[1])
+      ATARI_NTSC_RGB_OUT_8888(4, line_out[4])
+      ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
+      ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
 
       line_in += 2;
       line_out += 7;
     }
 
     // finish final pixels
-    ATARI_NTSC_COLOR_IN(0, line_in[0]);
-    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
-    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
-    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
-    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+    ATARI_NTSC_COLOR_IN(0, line_in[0])
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0])
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1])
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2])
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3])
 
-    ATARI_NTSC_COLOR_IN(1, NTSC_black);
-    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
-    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
-    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+    ATARI_NTSC_COLOR_IN(1, NTSC_black)
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4])
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
 
     line_in += 2;
     line_out += 7;
 
-    ATARI_NTSC_COLOR_IN(0, NTSC_black);
-    ATARI_NTSC_RGB_OUT_8888(0, line_out[0]);
-    ATARI_NTSC_RGB_OUT_8888(1, line_out[1]);
-    ATARI_NTSC_RGB_OUT_8888(2, line_out[2]);
-    ATARI_NTSC_RGB_OUT_8888(3, line_out[3]);
+    ATARI_NTSC_COLOR_IN(0, NTSC_black)
+    ATARI_NTSC_RGB_OUT_8888(0, line_out[0])
+    ATARI_NTSC_RGB_OUT_8888(1, line_out[1])
+    ATARI_NTSC_RGB_OUT_8888(2, line_out[2])
+    ATARI_NTSC_RGB_OUT_8888(3, line_out[3])
 
-    ATARI_NTSC_COLOR_IN(1, NTSC_black);
-    ATARI_NTSC_RGB_OUT_8888(4, line_out[4]);
+    ATARI_NTSC_COLOR_IN(1, NTSC_black)
+    ATARI_NTSC_RGB_OUT_8888(4, line_out[4])
 #if 0
-    ATARI_NTSC_RGB_OUT_8888(5, line_out[5]);
-    ATARI_NTSC_RGB_OUT_8888(6, line_out[6]);
+    ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
+    ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
 #endif
 
     // Do phosphor mode (blend the resulting frames)
@@ -304,8 +304,8 @@ inline uInt32 AtariNTSC::getRGBPhosphor(const uInt32 c, const uInt32 p) const
     const uInt8 green = uInt8(color >> 8);\
     const uInt8 blue  = uInt8(color);
 
-  TO_RGB(c, rc, gc, bc);
-  TO_RGB(p, rp, gp, bp);
+  TO_RGB(c, rc, gc, bc)
+  TO_RGB(p, rp, gp, bp)
 
   // Mix current calculated frame with previous displayed frame
   const uInt8 rn = myPhosphorPalette[rc][rp];

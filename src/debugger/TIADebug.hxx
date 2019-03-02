@@ -29,11 +29,6 @@ using TiaMethod = int (TIADebug::*)() const;
 #include "DebuggerSystem.hxx"
 #include "bspf.hxx"
 
-// Indices for various IntArray in TiaState
-enum {
-  P0, P1, M0, M1, BL
-};
-
 class TiaState : public DebuggerState
 {
   public:
@@ -50,6 +45,9 @@ class TiaState : public DebuggerState
     IntArray size;
     IntArray aud;
     IntArray info;
+
+    // Indices for various IntArray above
+    enum { P0, P1, M0, M1, BL };
 };
 
 class TIADebug : public DebuggerSystem

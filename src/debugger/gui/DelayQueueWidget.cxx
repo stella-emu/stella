@@ -52,7 +52,7 @@ void DelayQueueWidget::loadConfig() {
     if (!delayQueueIterator->isValid()) {
       line = "";
       continue;
-    };
+    }
 
     stringstream ss;
     const auto address = delayQueueIterator->address();

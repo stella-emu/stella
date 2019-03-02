@@ -996,7 +996,7 @@ string CartDebug::saveDisassembly()
   settings.fFlag = DiStella::settings.fFlag;
   settings.rFlag = DiStella::settings.rFlag;
   settings.bytesWidth = 8+1;  // same as Stella debugger
-  settings.bFlag = DiStella::settings.bFlag;; // process break routine (TODO)
+  settings.bFlag = DiStella::settings.bFlag; // process break routine (TODO)
 
   Disassembly disasm;
   disasm.list.reserve(2048);

@@ -39,13 +39,17 @@ PNGLibrary::PNGLibrary(OSystem& osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
 {
-  #define loadImageERROR(s) { err_message = s; goto done; }
-
   png_structp png_ptr = nullptr;
   png_infop info_ptr = nullptr;
   png_uint_32 iwidth, iheight;
   int bit_depth, color_type, interlace_type;
-  const char* err_message = nullptr;
+
+  auto loadImageERROR = [&](const char* s) {
+    if(png_ptr)
+      png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : nullptr, nullptr);
+    if(s)
+      throw runtime_error(s);
+  };
 
   ifstream in(filename, std::ios_base::binary);
   if(!in.is_open())
@@ -113,12 +117,8 @@ void PNGLibrary::loadImage(const string& filename, FBSurface& surface)
   loadImagetoSurface(surface);
 
   // Cleanup
-done:
   if(png_ptr)
     png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : nullptr, nullptr);
-
-  if(err_message)
-    throw runtime_error(err_message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,11 +178,15 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
 void PNGLibrary::saveImageToDisk(ofstream& out, const unique_ptr<png_bytep[]>& rows,
     png_uint_32 width, png_uint_32 height, const VariantList& comments)
 {
-  #define saveImageERROR(s) { err_message = s; goto done; }
-
   png_structp png_ptr = nullptr;
   png_infop info_ptr = nullptr;
-  const char* err_message = nullptr;
+
+  auto saveImageERROR = [&](const char* s) {
+    if(png_ptr)
+      png_destroy_write_struct(&png_ptr, &info_ptr);
+    if(s)
+      throw runtime_error(s);
+  };
 
   // Create the PNG saving context structure
   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr,
@@ -228,11 +232,8 @@ void PNGLibrary::saveImageToDisk(ofstream& out, const unique_ptr<png_bytep[]>& r
   png_write_end(png_ptr, info_ptr);
 
   // Cleanup
-done:
   if(png_ptr)
     png_destroy_write_struct(&png_ptr, &info_ptr);
-  if(err_message)
-    throw runtime_error(err_message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

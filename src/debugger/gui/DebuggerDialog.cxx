@@ -392,7 +392,7 @@ void DebuggerDialog::createFont()
           myLFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
           myNFont = make_unique<GUI::Font>(GUI::consoleMediumDesc);
           break;
-      };
+      }
     }
   else
   {

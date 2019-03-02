@@ -77,28 +77,28 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   bits->setList(off, on);
 
   // SWCHA bits in 'poke' mode
-  CREATE_IO_REGS("SWCHA(W)", mySWCHAWriteBits, kSWCHABitsID, true);
+  CREATE_IO_REGS("SWCHA(W)", mySWCHAWriteBits, kSWCHABitsID, true)
   col = xpos + 20;  // remember this for adding widgets to the second column
 
   // SWACNT bits
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWACNT", mySWACNTBits, kSWACNTBitsID, true);
+  CREATE_IO_REGS("SWACNT", mySWACNTBits, kSWACNTBitsID, true)
 
   // SWCHA bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, kSWCHARBitsID, true);
+  CREATE_IO_REGS("SWCHA(R)", mySWCHAReadBits, kSWCHARBitsID, true)
 
   // SWCHB bits in 'poke' mode
   xpos = 10;  ypos += 2 * lineHeight;
-  CREATE_IO_REGS("SWCHB(W)", mySWCHBWriteBits, kSWCHBBitsID, true);
+  CREATE_IO_REGS("SWCHB(W)", mySWCHBWriteBits, kSWCHBBitsID, true)
 
   // SWBCNT bits
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWBCNT", mySWBCNTBits, kSWBCNTBitsID, true);
+  CREATE_IO_REGS("SWBCNT", mySWBCNTBits, kSWBCNTBitsID, true)
 
   // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, 0, false);
+  CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, 0, false)
 
   // Timer registers (R/W)
   const char* const writeNames[] = { "TIM1T", "TIM8T", "TIM64T", "T1024T" };
@@ -257,22 +257,22 @@ void RiotWidget::loadConfig()
   const RiotState& oldstate = static_cast<const RiotState&>(riot.getOldState());
 
   // Update the SWCHA register booleans (poke mode)
-  IO_REGS_UPDATE(mySWCHAWriteBits, swchaWriteBits);
+  IO_REGS_UPDATE(mySWCHAWriteBits, swchaWriteBits)
 
   // Update the SWACNT register booleans
-  IO_REGS_UPDATE(mySWACNTBits, swacntBits);
+  IO_REGS_UPDATE(mySWACNTBits, swacntBits)
 
   // Update the SWCHA register booleans (peek mode)
-  IO_REGS_UPDATE(mySWCHAReadBits, swchaReadBits);
+  IO_REGS_UPDATE(mySWCHAReadBits, swchaReadBits)
 
   // Update the SWCHB register booleans (poke mode)
-  IO_REGS_UPDATE(mySWCHBWriteBits, swchbWriteBits);
+  IO_REGS_UPDATE(mySWCHBWriteBits, swchbWriteBits)
 
   // Update the SWBCNT register booleans
-  IO_REGS_UPDATE(mySWBCNTBits, swbcntBits);
+  IO_REGS_UPDATE(mySWBCNTBits, swbcntBits)
 
   // Update the SWCHB register booleans (peek mode)
-  IO_REGS_UPDATE(mySWCHBReadBits, swchbReadBits);
+  IO_REGS_UPDATE(mySWCHBReadBits, swchbReadBits)
 
   // Update TIA INPTx registers
   alist.clear();  vlist.clear();  changed.clear();

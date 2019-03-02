@@ -1003,22 +1003,24 @@ void TiaWidget::loadConfig()
     myGRP0Old->setColor(kBGColorLo);
     myGRP0Old->setCrossed(true);
   }
-  myGRP0->setIntState(state.gr[P0], false);
-  myGRP0Old->setIntState(state.gr[P0+2], false);
+  myGRP0->setIntState(state.gr[TiaState::P0], false);
+  myGRP0Old->setIntState(state.gr[TiaState::P0+2], false);
 
   // posP0
-  myPosP0->setList(0, state.pos[P0], state.pos[P0] != oldstate.pos[P0]);
+  myPosP0->setList(0, state.pos[TiaState::P0],
+      state.pos[TiaState::P0] != oldstate.pos[TiaState::P0]);
 
   // hmP0
-  myHMP0->setList(0, state.hm[P0], state.hm[P0] != oldstate.hm[P0]);
+  myHMP0->setList(0, state.hm[TiaState::P0],
+      state.hm[TiaState::P0] != oldstate.hm[TiaState::P0]);
 
   // refP0 & vdelP0
-  myRefP0->setState(tia.refP0(), state.ref[P0] != oldstate.ref[P0]);
-  myDelP0->setState(tia.vdelP0(), state.vdel[P0] != oldstate.vdel[P0]);
+  myRefP0->setState(tia.refP0(), state.ref[TiaState::P0] != oldstate.ref[TiaState::P0]);
+  myDelP0->setState(tia.vdelP0(), state.vdel[TiaState::P0] != oldstate.vdel[TiaState::P0]);
 
   // NUSIZ0 (player portion)
-  bool nusiz0changed = state.size[P0] != oldstate.size[P0];
-  myNusizP0->setList(0, state.size[P0], nusiz0changed);
+  bool nusiz0changed = state.size[TiaState::P0] != oldstate.size[TiaState::P0];
+  myNusizP0->setList(0, state.size[TiaState::P0], nusiz0changed);
   myNusizP0Text->setText(tia.nusizP0String(), nusiz0changed);
 
   ////////////////////////////
@@ -1037,22 +1039,24 @@ void TiaWidget::loadConfig()
     myGRP1Old->setColor(kBGColorLo);
     myGRP1Old->setCrossed(true);
   }
-  myGRP1->setIntState(state.gr[P1], false);
-  myGRP1Old->setIntState(state.gr[P1+2], false);
+  myGRP1->setIntState(state.gr[TiaState::P1], false);
+  myGRP1Old->setIntState(state.gr[TiaState::P1+2], false);
 
   // posP1
-  myPosP1->setList(0, state.pos[P1], state.pos[P1] != oldstate.pos[P1]);
+  myPosP1->setList(0, state.pos[TiaState::P1],
+      state.pos[TiaState::P1] != oldstate.pos[TiaState::P1]);
 
   // hmP1
-  myHMP1->setList(0, state.hm[P1], state.hm[P1] != oldstate.hm[P1]);
+  myHMP1->setList(0, state.hm[TiaState::P1],
+      state.hm[TiaState::P1] != oldstate.hm[TiaState::P1]);
 
   // refP1 & vdelP1
-  myRefP1->setState(tia.refP1(), state.ref[P1] != oldstate.ref[P1]);
-  myDelP1->setState(tia.vdelP1(), state.vdel[P1] != oldstate.vdel[P1]);
+  myRefP1->setState(tia.refP1(), state.ref[TiaState::P1] != oldstate.ref[TiaState::P1]);
+  myDelP1->setState(tia.vdelP1(), state.vdel[TiaState::P1] != oldstate.vdel[TiaState::P1]);
 
   // NUSIZ1 (player portion)
-  bool nusiz1changed = state.size[P1] != oldstate.size[P1];
-  myNusizP1->setList(0, state.size[P1], nusiz1changed);
+  bool nusiz1changed = state.size[TiaState::P1] != oldstate.size[TiaState::P1];
+  myNusizP1->setList(0, state.size[TiaState::P1], nusiz1changed);
   myNusizP1Text->setText(tia.nusizP1String(), nusiz1changed);
 
   ////////////////////////////
@@ -1063,16 +1067,19 @@ void TiaWidget::loadConfig()
   myEnaM0->setIntState(tia.enaM0() ? 1 : 0, false);
 
   // posM0
-  myPosM0->setList(0, state.pos[M0], state.pos[M0] != oldstate.pos[M0]);
+  myPosM0->setList(0, state.pos[TiaState::M0],
+      state.pos[TiaState::M0] != oldstate.pos[TiaState::M0]);
 
   // hmM0
-  myHMM0->setList(0, state.hm[M0], state.hm[M0] != oldstate.hm[M0]);
+  myHMM0->setList(0, state.hm[TiaState::M0],
+      state.hm[TiaState::M0] != oldstate.hm[TiaState::M0]);
 
   // NUSIZ0 (missile portion)
-  myNusizM0->setList(0, state.size[M0], state.size[M0] != oldstate.size[M0]);
+  myNusizM0->setList(0, state.size[TiaState::M0],
+      state.size[TiaState::M0] != oldstate.size[TiaState::M0]);
 
   // resMP0
-  myResMP0->setState(tia.resMP0(), state.res[P0] != oldstate.res[P0]);
+  myResMP0->setState(tia.resMP0(), state.res[TiaState::P0] != oldstate.res[TiaState::P0]);
 
   ////////////////////////////
   // M1 register info
@@ -1082,16 +1089,19 @@ void TiaWidget::loadConfig()
   myEnaM1->setIntState(tia.enaM1() ? 1 : 0, false);
 
   // posM1
-  myPosM1->setList(0, state.pos[M1], state.pos[M1] != oldstate.pos[M1]);
+  myPosM1->setList(0, state.pos[TiaState::M1],
+      state.pos[TiaState::M1] != oldstate.pos[TiaState::M1]);
 
   // hmM1
-  myHMM1->setList(0, state.hm[M1], state.hm[M1] != oldstate.hm[M1]);
+  myHMM1->setList(0, state.hm[TiaState::M1],
+      state.hm[TiaState::M1] != oldstate.hm[TiaState::M1]);
 
   // NUSIZ1 (missile portion)
-  myNusizM1->setList(0, state.size[M1], state.size[M1] != oldstate.size[M1]);
+  myNusizM1->setList(0, state.size[TiaState::M1],
+      state.size[TiaState::M1] != oldstate.size[TiaState::M1]);
 
   // resMP1
-  myResMP1->setState(tia.resMP1(),state.res[P1] != oldstate.res[P1]);
+  myResMP1->setState(tia.resMP1(),state.res[TiaState::P1] != oldstate.res[TiaState::P1]);
 
   ////////////////////////////
   // BL register info
@@ -1113,13 +1123,16 @@ void TiaWidget::loadConfig()
   myEnaBLOld->setIntState(state.gr[5], false);
 
   // posBL
-  myPosBL->setList(0, state.pos[BL], state.pos[BL] != oldstate.pos[BL]);
+  myPosBL->setList(0, state.pos[TiaState::BL],
+      state.pos[TiaState::BL] != oldstate.pos[TiaState::BL]);
 
   // hmBL
-  myHMBL->setList(0, state.hm[BL], state.hm[BL] != oldstate.hm[BL]);
+  myHMBL->setList(0, state.hm[TiaState::BL],
+      state.hm[TiaState::BL] != oldstate.hm[TiaState::BL]);
 
   // CTRLPF (size portion)
-  mySizeBL->setList(0, state.size[BL], state.size[BL] != oldstate.size[BL]);
+  mySizeBL->setList(0, state.size[TiaState::BL],
+      state.size[TiaState::BL] != oldstate.size[TiaState::BL]);
 
   // vdelBL
   myDelBL->setState(tia.vdelBL(), state.vdel[2] != oldstate.vdel[2]);

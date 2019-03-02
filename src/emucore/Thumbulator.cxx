@@ -53,10 +53,11 @@ using Common::Base;
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 romSize, bool traponfatal,
-                         Thumbulator::ConfigureFor configurefor, Cartridge* cartridge)
+Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
+                         bool traponfatal, Thumbulator::ConfigureFor configurefor,
+                         Cartridge* cartridge)
   : rom(rom_ptr),
-    romSize(romSize),
+    romSize(rom_size),
     decodedRom(new Op[romSize / 2]),
     ram(ram_ptr),
     T1TCR(0),
@@ -1218,7 +1219,7 @@ int Thumbulator::execute()
       {
         //branch to thumb
         rb = read_register(14);
-        rb += (inst & ((1 << 11) - 1)) << 1;;
+        rb += (inst & ((1 << 11) - 1)) << 1;
         rb += 2;
         DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
         write_register(14, (pc-2) | 1);
@@ -1230,7 +1231,7 @@ int Thumbulator::execute()
         //fprintf(stderr,"cannot branch to arm 0x%08X 0x%04X\n",pc,inst);
         // fxq: this should exit the code without having to detect it
         rb = read_register(14);
-        rb += (inst & ((1 << 11) - 1)) << 1;;
+        rb += (inst & ((1 << 11) - 1)) << 1;
         rb &= 0xFFFFFFFC;
         rb += 2;
         DO_DISS(statusMsg << "bl 0x" << Base::HEX8 << (rb-3) << endl);
@@ -1487,8 +1488,6 @@ int Thumbulator::execute()
 
         return 1;
       }
-
-      break;
     }
 
     //CMN

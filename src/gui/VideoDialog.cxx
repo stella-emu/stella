@@ -255,16 +255,16 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myTV ## obj);                                            \
   ypos += lineHeight + VGAP;
 
-  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ");
-  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ");
-  CREATE_CUSTOM_SLIDERS(Hue, "Hue ");
-  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ");
-  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ");
-  CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness ");
-  CREATE_CUSTOM_SLIDERS(Res, "Resolution ");
-  CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts ");
-  CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ");
-  CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ");
+  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ")
+  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ")
+  CREATE_CUSTOM_SLIDERS(Hue, "Hue ")
+  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ")
+  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ")
+  CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness ")
+  CREATE_CUSTOM_SLIDERS(Res, "Resolution ")
+  CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts ")
+  CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ")
+  CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ")
 
   xpos += myTVContrast->getWidth() + 30;
   ypos = VBORDER;
@@ -279,7 +279,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // TV Phosphor blend level
   xpos += INDENT;
   swidth = font.getMaxCharWidth() * 10;
-  CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend     ");
+  CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend     ")
   ypos += 6;
 
   // Scanline intensity and interpolation
@@ -288,7 +288,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight;
 
   xpos += INDENT;
-  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ");
+  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ")
 
   myTVScanInterpolate = new CheckboxWidget(myTab, font, xpos, ypos, "Interpolation");
   wid.push_back(myTVScanInterpolate);
@@ -302,14 +302,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     new ButtonWidget(myTab, font, xpos, ypos, cloneWidth, buttonHeight,\
                      desc, kClone ## obj ##Cmd);                       \
   wid.push_back(myClone ## obj);                                       \
-  ypos += lineHeight + 4 + VGAP
+  ypos += lineHeight + 4 + VGAP;
 
   ypos += VGAP;
-  CREATE_CLONE_BUTTON(Composite, "Clone Composite");
-  CREATE_CLONE_BUTTON(Svideo, "Clone S-Video");
-  CREATE_CLONE_BUTTON(RGB, "Clone RGB");
-  CREATE_CLONE_BUTTON(Bad, "Clone Bad adjust");
-  CREATE_CLONE_BUTTON(Custom, "Revert");
+  CREATE_CLONE_BUTTON(Composite, "Clone Composite")
+  CREATE_CLONE_BUTTON(Svideo, "Clone S-Video")
+  CREATE_CLONE_BUTTON(RGB, "Clone RGB")
+  CREATE_CLONE_BUTTON(Bad, "Clone Bad adjust")
+  CREATE_CLONE_BUTTON(Custom, "Revert")
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);

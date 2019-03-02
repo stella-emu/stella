@@ -261,8 +261,8 @@ inline uInt32 TIASurface::getRGBPhosphor(const uInt32 c, const uInt32 p) const
   #define TO_RGB(color, red, green, blue) \
     const uInt8 red = color >> 16; const uInt8 green = color >> 8; const uInt8 blue = color;
 
-  TO_RGB(c, rc, gc, bc);
-  TO_RGB(p, rp, gp, bp);
+  TO_RGB(c, rc, gc, bc)
+  TO_RGB(p, rp, gp, bp)
 
   // Mix current calculated frame with previous displayed frame
   const uInt8 rn = myPhosphorPalette[rc][rp];
@@ -328,8 +328,8 @@ inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
   uInt32 p = myPrevRGBFramebuffer[bufOfs];
 
   // Split into RGB values
-  TO_RGB(c, rc, gc, bc);
-  TO_RGB(p, rp, gp, bp);
+  TO_RGB(c, rc, gc, bc)
+  TO_RGB(p, rp, gp, bp)
 
   // Mix current calculated buffer with previous calculated buffer (50:50)
   const uInt8 rn = (rc + rp) / 2;
