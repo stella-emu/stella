@@ -24,6 +24,7 @@ _build_joystick=yes
 _build_cheats=yes
 _build_static=no
 _build_profile=no
+_build_debug=no
 
 # more defaults
 _ranlib=ranlib
@@ -204,6 +205,8 @@ Optional Features:
   --disable-static
   --enable-profile       build binary with profiling info [disabled]
   --disable-profile
+	--enable-debug				 build with debugging symbols [disabled]
+	--disable-debug
   --force-builtin-libpng force use of built-in libpng library [auto]
 
 Optional Libraries:
@@ -241,6 +244,8 @@ for ac_option in $@; do
       --disable-static)         _build_static=no     ;;
       --enable-profile)         _build_profile=yes   ;;
       --disable-profile)        _build_profile=no    ;;
+			--enable-debug)						_build_debug=yes		 ;;
+			--disable-debug)          _build_debug=false	 ;;
       --force-builtin-libpng)   _libpng=no           ;;
       --with-sdl-prefix=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
@@ -404,6 +409,8 @@ if test "$have_clang" = yes; then
 			cxx_version="$cxx_version, bad"
 			cxx_verc_fail=yes
 		fi
+
+		_make_def_CLANG_WARNINGS='CLANG_WARNINGS = 1'
 	else
     # Need at least version 3.5
 		if [ $clang_major -ge 4 ] || [ $clang_major -eq 3 -a $clang_minor -ge 5 ]; then
@@ -420,9 +427,8 @@ if test "$have_clang" = yes; then
 		fi
 	fi
 	CXXFLAGS="$CXXFLAGS"
-	_make_def_HAVE_GCC3='HAVE_GCC3 = 1'
+	_make_def_HAVE_CLANG='HAVE_CLANG = 1'
 	add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
-	_make_def_HAVE_GCC='HAVE_GCC = 1'
 	echo "$cxx_version"
 
 elif test "$have_gcc" = yes; then
@@ -448,7 +454,6 @@ elif test "$have_gcc" = yes; then
 			;;
 	esac
 	CXXFLAGS="$CXXFLAGS"
-	_make_def_HAVE_GCC3='HAVE_GCC3 = 1'
 	add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
 	_make_def_HAVE_GCC='HAVE_GCC = 1'
 	echo "$cxx_version"
@@ -670,11 +675,20 @@ fi
 if test "$_build_profile" = yes ; then
 	echo_n "   Profiling enabled"
 	echo
+
+	_build_debug=yes
 else
 	echo_n "   Profiling disabled"
 	echo
 fi
 
+if test "$_build_debug" = yes ; then
+	echo_n "   Debug symbols enabled"
+	echo
+else
+	echo_n "   Debug symbols disabled"
+	echo
+fi
 
 #
 # Now, add the appropriate defines/libraries/headers
@@ -774,6 +788,9 @@ if test "$_build_profile" = no ; then
 	_build_profile=
 fi
 
+if test "$_build_debug" = no ; then
+	_build_debug=
+fi
 
 echo "Creating config.mak"
 cat > config.mak << EOF
@@ -795,6 +812,8 @@ ZIP := $_zip
 CP := $_cp
 WINDOWSPATH=$_windowspath
 STRIP := $_strip
+LLVM_PROFDATA := llvm-profdata
+BINARY_LOADER :=
 
 MODULES += $MODULES
 MODULE_DIRS += $MODULE_DIRS
@@ -805,9 +824,10 @@ BINDIR := $_bindir
 DOCDIR := $_docdir
 DATADIR := $_datadir
 PROFILE := $_build_profile
+DEBUG   := $_build_debug
 
 $_make_def_HAVE_GCC
-$_make_def_HAVE_GCC3
+$_make_def_HAVE_CLANG
 $_make_def_CLANG_WARNINGS
 
 INCLUDES += $INCLUDES
@@ -818,12 +838,11 @@ $_config_mk_data
 EOF
 
 # This should be taken care of elsewhere, but I'm not sure where
-rm -f stella-conf*
+rm -f stella-conf stella-conf.cxx
 
 if test "$_host_os" = darwin; then
 	cat <<EOI
 
-WARNING: plain UNIX-style builds on macOS without XCode have degraded functionality
-and are unsupported. Continue on your own risk...
+WARNING: plain UNIX-style builds on macOS without XCode are unsupported. Continue on your own risk...
 EOI
 fi

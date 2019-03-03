@@ -49,10 +49,17 @@ ifdef CXXFLAGS
 else
   CXXFLAGS:= -O2 -x c++
 endif
+
 CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers
+
 ifdef HAVE_GCC
   CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14
 endif
+
+ifdef HAVE_CLANG
+  CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14
+endif
+
 ifdef CLANG_WARNINGS
   CXXFLAGS+= -Weverything -Wno-c++17-extensions -Wno-c++98-compat -Wno-c++98-compat-pedantic \
     -Wno-double-promotion -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
@@ -62,23 +69,60 @@ ifdef CLANG_WARNINGS
 endif
 
 ifdef PROFILE
-  PROF:= -g -pg -fprofile-arcs -ftest-coverage
+  PROF:= -pg -fprofile-arcs -ftest-coverage
   CXXFLAGS+= $(PROF)
+endif
+
+ifdef DEBUG
+	CXXFLAGS += -g
 else
   ifdef HAVE_GCC
     CXXFLAGS+= -fomit-frame-pointer
   endif
-endif
 
+	ifdef HAVE_CLANG
+		CXXFLAGS+= -fomit-frame-pointer
+	endif
+endif
 
 #######################################################################
 # Misc stuff - you should never have to edit this                     #
 #######################################################################
 
-EXECUTABLE  := stella$(EXEEXT)
+EXECUTABLE := stella$(EXEEXT)
+EXECUTABLE_PROFILE_GENERATE := stella-pgo-generate$(EXEEXT)
+EXECUTABLE_PROFILE_USE := stella-pgo$(EXEEXT)
+
+PROFILE_DIR = $(CURDIR)/profile
+PROFILE_OUT = $(PROFILE_DIR)/out
+PROFILE_STAMP = profile.stamp
+
+CXXFLAGS_PROFILE_GENERATE = $(CXXFLAGS)
+CXXFLAGS_PROFILE_USE = $(CXXFLAGS)
+LDFLAGS_PROFILE_GENERATE = $(LDFLAGS)
+STELLA_PROFILE_GENERATE = $(BINARY_LOADER) ./$(EXECUTABLE_PROFILE_GENERATE) -profile \
+	$(PROFILE_DIR)/128.bin:10 \
+	$(PROFILE_DIR)/catharsis_theory.bin:60
+
+ifdef HAVE_CLANG
+	CXXFLAGS_PROFILE_GENERATE += -fprofile-generate=$(PROFILE_OUT)
+	CXXFLAGS_PROFILE_USE += -fprofile-use=$(PROFILE_OUT)
+	LDFLAGS_PROFILE_GENERATE += -fprofile-generate
+	STELLA_PROFILE_GENERATE := \
+		LLVM_PROFILE_FILE="$(PROFILE_OUT)/default.profraw" $(STELLA_PROFILE_GENERATE) && \
+		$(LLVM_PROFDATA) merge -o $(PROFILE_OUT)/default.profdata $(PROFILE_OUT)/default.profraw
+endif
+
+ifdef HAVE_GCC
+	CXXFLAGS_PROFILE_GENERATE += -fprofile-generate -fprofile-dir=$(PROFILE_OUT)
+	CXXFLAGS_PROFILE_USE += -fprofile-use -fprofile-dir=$(PROFILE_OUT)
+	LDFLAGS_PROFILE_GENERATE += -fprofile-generate
+	LDFLAGS_PROFILE_USE += -fprofile-generate
+endif
 
 all: $(EXECUTABLE)
 
+pgo: $(EXECUTABLE_PROFILE_USE)
 
 ######################################################################
 # Various minor settings
@@ -119,56 +163,117 @@ CPPFLAGS:= $(DEFINES) $(INCLUDES)
 DEPDIRS = $(addsuffix /$(DEPDIR),$(MODULE_DIRS))
 DEPFILES =
 
+OBJS_PROFILE_GENERATE=$(OBJS:.o=.pgen.o)
+OBJS_PROFILE_USE=$(OBJS:.o=.pgo.o)
+
 # The build rule for the Stella executable
-$(EXECUTABLE):  $(OBJS)
+$(EXECUTABLE): $(OBJS)
 	$(LD) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
+
+$(EXECUTABLE_PROFILE_GENERATE): $(OBJS_PROFILE_GENERATE)
+	$(LD) $(LDFLAGS_PROFILE_GENERATE) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
+
+$(EXECUTABLE_PROFILE_USE): $(OBJS_PROFILE_USE)
+	$(LD) $(LDFLAGS_PROFILE_USE) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
 
 distclean: clean
 	$(RM_REC) $(DEPDIRS)
 	$(RM) build.rules config.h config.mak config.log
 
 clean:
-	$(RM) $(OBJS) $(EXECUTABLE)
+	-$(RM) -fr \
+		$(OBJS) $(OBJS_PROFILE_GENERATE) $(OBJS_PROFILE_USE) \
+		$(EXECUTABLE) $(EXECUTABLE_PROFILE_GENERATE) $(EXECUTABLE_PROFILE_USE) \
+		$(PROFILE_OUT) $(PROFILE_STAMP)
 
 .PHONY: all clean dist distclean
 
 .SUFFIXES: .cxx
 
+define create_depdir
+$(MKDIR) $(*D)/$(DEPDIR)
+endef
+
+define merge_dep
+$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
+$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
+$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
+endef
 
 ifndef CXX_UPDATE_DEP_FLAG
 # If you use GCC, disable the above and enable this for intelligent
 # dependency tracking.
 CXX_UPDATE_DEP_FLAG = -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2"
-.cxx.o:
-	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
-	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
-	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
-	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
 
-.c.o:
-	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
-	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
-	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
-	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
+%.o: %.cxx
+	$(create_depdir)
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
+	$(merge_dep)
+
+%.o: %.c
+	$(create_depdir)
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
+	$(merge_dep)
+
+%.pgen.o: %.cxx
+	$(create_depdir)
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
+	$(merge_dep)
+
+%.pgen.o: %.cxx
+	$(create_depdir)
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
+	$(merge_dep)
+
+%.pgo.o: %.cxx $(PROFILE_STAMP)
+	$(create_depdir)
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
+	$(merge_dep)
+
+%.pgo.o: %.cxx $(PROFILE_STAMP)
+	$(create_depdir)
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
+	$(merge_dep)
+
 else
 # If you even have GCC 3.x, you can use this build rule, which is safer; the above
 # rule can get you into a bad state if you Ctrl-C at the wrong moment.
 # Also, with this GCC inserts additional dummy rules for the involved headers,
 # which ensures a smooth compilation even if said headers become obsolete.
-.cxx.o:
-	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+%.o: %.cxx
+	$(create_depdir)
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
 
-.c.o:
-	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+%.o: %.c
+	$(create_depdir)
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
+
+%.pgen.o: %.cxx
+	$(create_depdir)
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
+
+%.pgen.o: %.c
+	$(create_depdir)
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
+
+%.pgo.o: %.cxx $(PROFILE_STAMP)
+	$(create_depdir)
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
+
+%.pgo.o: %.c $(PROFILE_STAMP)
+	$(create_depdir)
+	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
+
 endif
 
 # Include the dependency tracking files. We add /dev/null at the end
 # of the list to avoid a warning/error if no .d file exist
 -include $(wildcard $(addsuffix /*.d,$(DEPDIRS))) /dev/null
+
+$(PROFILE_STAMP): $(EXECUTABLE_PROFILE_GENERATE)
+	-rm -fr $(PROFILE_OUT)
+	$(STELLA_PROFILE_GENERATE)
+	touch $(PROFILE_STAMP)
 
 # check if configure has been run or has been changed since last run
 config.mak: $(srcdir)/configure
