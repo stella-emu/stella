@@ -89,6 +89,10 @@ endif
 # Misc stuff - you should never have to edit this                     #
 #######################################################################
 
+OBJECT_ROOT := out
+OBJECT_ROOT_PROFILE_GENERERATE := out.pgen
+OBJECT_ROOT_PROFILE_USE := out.pgo
+
 EXECUTABLE := stella$(EXEEXT)
 EXECUTABLE_PROFILE_GENERATE := stella-pgo-generate$(EXEEXT)
 EXECUTABLE_PROFILE_USE := stella-pgo$(EXEEXT)
@@ -117,6 +121,9 @@ ifdef HAVE_GCC
 	CXXFLAGS_PROFILE_GENERATE += -fprofile-generate -fprofile-dir=$(PROFILE_OUT)
 	CXXFLAGS_PROFILE_USE += -fprofile-use -fprofile-dir=$(PROFILE_OUT)
 	LDFLAGS_PROFILE_GENERATE += -fprofile-generate
+	STELLA_PROFILE_GENERATE := $(STELLA_PROFILE_GENERATE) && \
+	  rm -fr $(PROFILE_OUT)/$(OBJECT_ROOT_PROFILE_USE) && \
+		mv $(PROFILE_OUT)/$(OBJECT_ROOT_PROFILE_GENERERATE) $(PROFILE_OUT)/$(OBJECT_ROOT_PROFILE_USE)
 endif
 
 all: $(EXECUTABLE)
@@ -162,17 +169,18 @@ CPPFLAGS:= $(DEFINES) $(INCLUDES)
 DEPDIRS = $(addsuffix /$(DEPDIR),$(MODULE_DIRS))
 DEPFILES =
 
-OBJS_PROFILE_GENERATE=$(OBJS:.o=.pgen.o)
-OBJS_PROFILE_USE=$(OBJS:.o=.pgo.o)
+OBJ=$(addprefix $(OBJECT_ROOT)/,$(OBJS))
+OBJ_PROFILE_GENERATE=$(addprefix $(OBJECT_ROOT_PROFILE_GENERERATE)/,$(OBJS))
+OBJ_PROFILE_USE=$(addprefix $(OBJECT_ROOT_PROFILE_USE)/,$(OBJS))
 
 # The build rule for the Stella executable
-$(EXECUTABLE): $(OBJS)
+$(EXECUTABLE): $(OBJ)
 	$(LD) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
 
-$(EXECUTABLE_PROFILE_GENERATE): $(OBJS_PROFILE_GENERATE)
+$(EXECUTABLE_PROFILE_GENERATE): $(OBJ_PROFILE_GENERATE)
 	$(LD) $(LDFLAGS_PROFILE_GENERATE) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
 
-$(EXECUTABLE_PROFILE_USE): $(OBJS_PROFILE_USE)
+$(EXECUTABLE_PROFILE_USE): $(OBJ_PROFILE_USE)
 	$(LD) $(LDFLAGS) $(PRE_OBJS_FLAGS) $+ $(POST_OBJS_FLAGS) $(LIBS) $(PROF) -o $@
 
 distclean: clean
@@ -181,7 +189,7 @@ distclean: clean
 
 clean:
 	-$(RM) -fr \
-		$(OBJS) $(OBJS_PROFILE_GENERATE) $(OBJS_PROFILE_USE) \
+		$(OBJECT_ROOT) $(OBJECT_ROOT_PROFILE_GENERERATE) $(OBJECT_ROOT_PROFILE_USE) \
 		$(EXECUTABLE) $(EXECUTABLE_PROFILE_GENERATE) $(EXECUTABLE_PROFILE_USE) \
 		$(PROFILE_OUT) $(PROFILE_STAMP)
 
@@ -189,8 +197,9 @@ clean:
 
 .SUFFIXES: .cxx
 
-define create_depdir
-$(MKDIR) $(*D)/$(DEPDIR)
+define create_dir
+$(MKDIR) -p $(*D)/$(DEPDIR)
+$(MKDIR) -p $(@D)
 endef
 
 define merge_dep
@@ -204,33 +213,33 @@ ifndef CXX_UPDATE_DEP_FLAG
 # dependency tracking.
 CXX_UPDATE_DEP_FLAG = -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2"
 
-%.o: %.cxx
-	$(create_depdir)
+$(OBJECT_ROOT)/%.o: %.cxx
+	$(create_dir)
 	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
-%.o: %.c
-	$(create_depdir)
+$(OBJECT_ROOT)/%.o: %.c
+	$(create_dir)
 	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
-%.pgen.o: %.cxx
-	$(create_depdir)
+$(OBJECT_ROOT_PROFILE_GENERERATE)/%.pgen.o: %.cxx
+	$(create_dir)
 	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
-%.pgen.o: %.cxx
-	$(create_depdir)
+$(OBJECT_ROOT_PROFILE_GENERERATE)/%.pgen.o: %.cxx
+	$(create_dir)
 	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
-%.pgo.o: %.cxx $(PROFILE_STAMP)
-	$(create_depdir)
+$(OBJECT_ROOT_PROFILE_USE)/%.pgo.o: %.cxx $(PROFILE_STAMP)
+	$(create_dir)
 	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
-%.pgo.o: %.cxx $(PROFILE_STAMP)
-	$(create_depdir)
+$(OBJECT_ROOT_PROFILE_USE)/%.pgo.o: %.cxx $(PROFILE_STAMP)
+	$(create_dir)
 	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
 	$(merge_dep)
 
@@ -239,28 +248,28 @@ else
 # rule can get you into a bad state if you Ctrl-C at the wrong moment.
 # Also, with this GCC inserts additional dummy rules for the involved headers,
 # which ensures a smooth compilation even if said headers become obsolete.
-%.o: %.cxx
-	$(create_depdir)
+$(OBJECT_ROOT)/%.o: %.cxx
+	$(create_dir)
 	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
 
-%.o: %.c
-	$(create_depdir)
+$(OBJECT_ROOT)/%.o: %.c
+	$(create_dir)
 	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $@
 
-%.pgen.o: %.cxx
-	$(create_depdir)
+$(OBJECT_ROOT_PROFILE_GENERERATE)/%.o: %.cxx
+	$(create_dir)
 	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
 
-%.pgen.o: %.c
-	$(create_depdir)
+$(OBJECT_ROOT_PROFILE_GENERERATE)/%.o: %.c
+	$(create_dir)
 	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_GENERATE) $(CPPFLAGS) -c $(<) -o $@
 
-%.pgo.o: %.cxx $(PROFILE_STAMP)
-	$(create_depdir)
+$(OBJECT_ROOT_PROFILE_USE)/%.o: %.cxx $(PROFILE_STAMP)
+	$(create_dir)
 	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
 
-%.pgo.o: %.c $(PROFILE_STAMP)
-	$(create_depdir)
+$(OBJECT_ROOT_PROFILE_USE)/%.o: %.c $(PROFILE_STAMP)
+	$(create_dir)
 	$(CC) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS_PROFILE_USE) $(CPPFLAGS) -c $(<) -o $@
 
 endif
