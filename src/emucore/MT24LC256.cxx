@@ -18,29 +18,25 @@
 #include <cstdio>
 
 #include "System.hxx"
-
 #include "OSystem.hxx"
-
 #include "Settings.hxx"
-
 #include "MT24LC256.hxx"
 
-#define DEBUG_EEPROM 0
+//#define DEBUG_EEPROM
 
-// FIXME - Change to more proper C++ code, to eliminate warnings from clang8
-//         It seems we only need OSystem here to print a message; I think this
+// FIXME - It seems we only need OSystem here to print a message; I think this
 //         can be abstracted away from the class; perhaps use a lambda to
 //         register a callback when a write happens??
 
-#if DEBUG_EEPROM
-  char jpee_msg[256];
+#ifdef DEBUG_EEPROM
+  static char jpee_msg[256];
   #define JPEE_LOG0(msg) jpee_logproc(msg)
   #define JPEE_LOG1(msg,arg1) sprintf(jpee_msg,(msg),(arg1)), jpee_logproc(jpee_msg)
   #define JPEE_LOG2(msg,arg1,arg2) sprintf(jpee_msg,(msg),(arg1),(arg2)), jpee_logproc(jpee_msg)
 #else
-  #define JPEE_LOG0(msg) { }
-  #define JPEE_LOG1(msg,arg1) { }
-  #define JPEE_LOG2(msg,arg1,arg2) { }
+  #define JPEE_LOG0(msg)
+  #define JPEE_LOG1(msg,arg1)
+  #define JPEE_LOG2(msg,arg1,arg2)
 #endif
 
 /*
@@ -147,7 +143,7 @@ void MT24LC256::update()
   // we only do the write when they have the same 'timestamp'
   if(myCyclesWhenSDASet == myCyclesWhenSCLSet)
   {
-#if DEBUG_EEPROM
+#ifdef DEBUG_EEPROM
     cerr << endl << "  I2C_PIN_WRITE(SCL = " << mySCL
          << ", SDA = " << mySDA << ")" << " @ " << mySystem.cycles() << endl;
 #endif
@@ -414,7 +410,7 @@ bool MT24LC256::jpee_timercheck(int mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int MT24LC256::jpee_logproc(char const *st)
+int MT24LC256::jpee_logproc(const char* const st)
 {
   cerr << "    " << st << endl;
   return 0;
