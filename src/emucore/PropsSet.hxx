@@ -58,8 +58,10 @@ class PropertiesSet
 
       @param filename  Full pathname of output file to use
 
-      @return  True on success, false on failure
-               Failure occurs if file couldn't be opened for writing
+      @return  True on success, false on failure or save not needed
+               Failure occurs if file couldn't be opened for writing,
+               or if the file doesn't exist and a zero-byte file
+               would be created
     */
     bool save(const string& filename) const;
 

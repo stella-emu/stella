@@ -203,11 +203,8 @@ void OSystem::saveConfig()
   logMessage("Saving config options ...", 2);
   mySettings->save(configFile());
 
-  if(myPropSet)
-  {
+  if(myPropSet && myPropSet->save(myPropertiesFile))
     logMessage("Saving properties set ...", 2);
-    myPropSet->save(myPropertiesFile);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

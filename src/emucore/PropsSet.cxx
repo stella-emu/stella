@@ -42,6 +42,11 @@ void PropertiesSet::load(const string& filename)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PropertiesSet::save(const string& filename) const
 {
+  // Only save properties when it won't create an empty file
+  FilesystemNode props(filename);
+  if(!props.exists() && myExternalProps.size() == 0)
+    return false;
+
   ofstream out(filename);
   if(!out)
     return false;
