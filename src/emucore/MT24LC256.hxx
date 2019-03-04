@@ -18,10 +18,9 @@
 #ifndef MT24LC256_HXX
 #define MT24LC256_HXX
 
-class Controller;
 class System;
-class OSystem;
 
+#include "Control.hxx"
 #include "bspf.hxx"
 
 /**
@@ -37,11 +36,12 @@ class MT24LC256
     /**
       Create a new 24LC256 with its data stored in the given file
 
-      @param filename Data file containing the EEPROM data
-      @param system   The system using the controller of this device
-      @param osystem  The OSystem abstraction
+      @param filename  Data file containing the EEPROM data
+      @param system    The system using the controller of this device
+      @param callback  Called to pass messages back to the parent controller
     */
-    MT24LC256(const string& filename, const System& system, const OSystem& osystem);
+    MT24LC256(const string& filename, const System& system,
+              Controller::onMessageCallback callback);
     ~MT24LC256();
 
   private:
@@ -89,8 +89,9 @@ class MT24LC256
     // The system of the parent controller
     const System& mySystem;
 
-    // The OSystem abstraction
-    const OSystem& myOSystem;
+    // Sends messages back to the parent class
+    // Currently used for indicating read/write access
+    Controller::onMessageCallback myCallback;
 
     // The EEPROM data
     uInt8 myData[FLASH_SIZE];

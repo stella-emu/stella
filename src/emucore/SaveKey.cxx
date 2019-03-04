@@ -21,19 +21,19 @@
 #include "SaveKey.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SaveKey::SaveKey(Jack jack, const Event& event, const System& system, const OSystem& osystem,
-                 const string& eepromfile, Type type)
+SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
+                 const string& eepromfile, onMessageCallback callback, Type type)
   : Controller(jack, event, system, type)
 {
-  myEEPROM = make_unique<MT24LC256>(eepromfile, system, osystem);
+  myEEPROM = make_unique<MT24LC256>(eepromfile, system, callback);
 
   myDigitalPinState[One] = myDigitalPinState[Two] = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SaveKey::SaveKey(Jack jack, const Event& event, const System& system, const OSystem& osystem,
-                 const string& eepromfile)
-  : SaveKey(jack, event, system, osystem, eepromfile, Controller::SaveKey)
+SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
+                 const string& eepromfile, onMessageCallback callback)
+  : SaveKey(jack, event, system, eepromfile, callback, Controller::SaveKey)
 {
 }
 

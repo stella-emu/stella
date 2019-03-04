@@ -99,6 +99,11 @@ class Controller : public Serializable
     */
     using onAnalogPinUpdateCallback = std::function<void(AnalogPin)>;
 
+    /**
+      Callback type for general controller messages
+    */
+    using onMessageCallback = std::function<void(const string&)>;
+
   public:
     /**
       Create a new controller plugged into the specified jack

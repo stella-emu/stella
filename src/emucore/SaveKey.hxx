@@ -41,11 +41,11 @@ class SaveKey : public Controller
       @param jack       The jack the controller is plugged into
       @param event      The event object to use for events
       @param system     The system using this controller
-      @param osystem    The OSystem abstraction
       @param eepromfile The file containing the EEPROM data
+      @param callback   Called to pass messages back to the parent controller
     */
-    SaveKey(Jack jack, const Event& event, const System& system, const OSystem& osystem,
-            const string& eepromfile);
+    SaveKey(Jack jack, const Event& event, const System& system,
+            const string& eepromfile, onMessageCallback callback);
     virtual ~SaveKey();
 
   protected:
@@ -53,8 +53,8 @@ class SaveKey : public Controller
       Delegating constructor currently used by both this class and classes
       that inherit from SaveKey (currently, AtariVox)
     */
-    SaveKey(Jack jack, const Event& event, const System& system, const OSystem& osystem,
-            const string& eepromfile, Type type);
+    SaveKey(Jack jack, const Event& event, const System& system,
+            const string& eepromfile, onMessageCallback callback, Type type);
 
   public:
     using Controller::read;

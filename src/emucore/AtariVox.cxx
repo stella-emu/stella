@@ -21,9 +21,10 @@
 #include "AtariVox.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariVox::AtariVox(Jack jack, const Event& event, const System& system, const OSystem& osystem,
-                   const string& portname, const string& eepromfile)
-  : SaveKey(jack, event, system, osystem, eepromfile, Controller::AtariVox),
+AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
+                   const string& portname, const string& eepromfile,
+                   onMessageCallback callback)
+  : SaveKey(jack, event, system, eepromfile, callback, Controller::AtariVox),
     myShiftCount(0),
     myShiftRegister(0),
     myLastDataWriteCycle(0)

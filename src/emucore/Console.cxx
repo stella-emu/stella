@@ -936,14 +936,23 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
   else if(controllerName == "ATARIVOX")
   {
     const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
-    controller = make_unique<AtariVox>(port, myEvent,
-        *mySystem, myOSystem, myOSystem.settings().getString("avoxport"), nvramfile);
+    Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
+      bool devSettings = os.settings().getBool("dev.settings");
+      if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+        os.frameBuffer().showMessage(msg);
+    };
+    controller = make_unique<AtariVox>(port, myEvent, *mySystem,
+        myOSystem.settings().getString("avoxport"), nvramfile, callback);
   }
   else if(controllerName == "SAVEKEY")
   {
     const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
-    controller = make_unique<SaveKey>(port, myEvent, *mySystem, myOSystem,
-                                      nvramfile);
+    Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
+      bool devSettings = os.settings().getBool("dev.settings");
+      if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+        os.frameBuffer().showMessage(msg);
+    };
+    controller = make_unique<SaveKey>(port, myEvent, *mySystem, nvramfile, callback);
   }
   else if(controllerName == "GENESIS")
   {

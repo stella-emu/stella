@@ -18,15 +18,9 @@
 #include <cstdio>
 
 #include "System.hxx"
-#include "OSystem.hxx"
-#include "Settings.hxx"
 #include "MT24LC256.hxx"
 
 //#define DEBUG_EEPROM
-
-// FIXME - It seems we only need OSystem here to print a message; I think this
-//         can be abstracted away from the class; perhaps use a lambda to
-//         register a callback when a write happens??
 
 #ifdef DEBUG_EEPROM
   static char jpee_msg[256];
@@ -49,9 +43,10 @@
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MT24LC256::MT24LC256(const string& filename, const System& system, const OSystem& osystem)
+MT24LC256::MT24LC256(const string& filename, const System& system,
+                     Controller::onMessageCallback callback)
   : mySystem(system),
-    myOSystem(osystem),
+    myCallback(callback),
     mySDA(false),
     mySCL(false),
     myTimerActive(false),
@@ -256,9 +251,9 @@ void MT24LC256::jpee_data_stop()
     {
       myDataChanged = true;
       myPageHit[jpee_address / PAGE_SIZE] = true;
-      bool devSettings = myOSystem.settings().getBool("dev.settings");
-      if(myOSystem.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-        myOSystem.frameBuffer().showMessage("AtariVox/SaveKey EEPROM write");
+
+      myCallback("AtariVox/SaveKey EEPROM write");
+
       myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
       if (!(jpee_address & jpee_pagemask))
         break;  /* Writes can't cross page boundary! */
@@ -357,11 +352,8 @@ void MT24LC256::jpee_clock_fall()
       jpee_state=3;
       myPageHit[jpee_address / PAGE_SIZE] = true;
 
-      {
-        bool devSettings = myOSystem.settings().getBool("dev.settings");
-        if(myOSystem.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-          myOSystem.frameBuffer().showMessage("AtariVox/SaveKey EEPROM read");
-      }
+      myCallback("AtariVox/SaveKey EEPROM read");
+
       jpee_nb = (myData[jpee_address & jpee_sizemask] << 1) | 1;  /* Fall through */
       JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2);
       [[fallthrough]];

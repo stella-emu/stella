@@ -42,12 +42,13 @@ class AtariVox : public SaveKey
       @param jack       The jack the controller is plugged into
       @param event      The event object to use for events
       @param system     The system using this controller
-      @param osystem    The OSystem abstraction
       @param portname   Name of the serial port used for reading and writing
       @param eepromfile The file containing the EEPROM data
+      @param callback   Called to pass messages back to the parent controller
     */
-    AtariVox(Jack jack, const Event& event, const System& system, const OSystem& osystem,
-             const string& portname, const string& eepromfile);
+    AtariVox(Jack jack, const Event& event, const System& system,
+             const string& portname, const string& eepromfile,
+             onMessageCallback callback);
     virtual ~AtariVox() = default;
 
   public:
