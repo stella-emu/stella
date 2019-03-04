@@ -2,7 +2,12 @@ config.log
 config.mak
 src/**/*/.deps
 src/**/*.o
+out
+out.pgo
+out.pgen
 stella
+stella-pgo
+stella-pgo-generate
 *.diff
 project.xcworkspace/
 xcuserdata/
