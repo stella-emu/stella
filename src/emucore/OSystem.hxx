@@ -33,7 +33,6 @@ class PNGLibrary;
 class Properties;
 class PropertiesSet;
 class Random;
-class SerialPort;
 class Sound;
 class StateManager;
 class TimerManager;
@@ -130,13 +129,6 @@ class OSystem
       @return The audio settings object
     */
     AudioSettings& audioSettings() { return *myAudioSettings; }
-
-    /**
-      Get the serial port of the system.
-
-      @return The serial port object
-    */
-    SerialPort& serialPort() const { return *mySerialPort; }
 
     /**
       Get the settings menu of the system.
@@ -474,9 +466,6 @@ class OSystem
 
     // Pointer to audio settings object
     unique_ptr<AudioSettings> myAudioSettings;
-
-    // Pointer to the serial port object
-    unique_ptr<SerialPort> mySerialPort;
 
     // Pointer to the Menu object
     unique_ptr<Menu> myMenu;

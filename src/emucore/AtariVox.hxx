@@ -18,11 +18,11 @@
 #ifndef ATARIVOX_HXX
 #define ATARIVOX_HXX
 
-class SerialPort;
 class OSystem;
 
 #include "Control.hxx"
 #include "SaveKey.hxx"
+#include "SerialPort.hxx"
 
 /**
   Richard Hutchinson's AtariVox "controller": A speech synthesizer and
@@ -43,13 +43,11 @@ class AtariVox : public SaveKey
       @param event      The event object to use for events
       @param system     The system using this controller
       @param osystem    The OSystem abstraction
-      @param port       The serial port object
-      @param portname   Name of the port used for reading and writing
+      @param portname   Name of the serial port used for reading and writing
       @param eepromfile The file containing the EEPROM data
     */
     AtariVox(Jack jack, const Event& event, const System& system, const OSystem& osystem,
-             const SerialPort& port, const string& portname,
-             const string& eepromfile);
+             const string& portname, const string& eepromfile);
     virtual ~AtariVox() = default;
 
   public:
@@ -95,7 +93,7 @@ class AtariVox : public SaveKey
     // Instance of an real serial port on the system
     // Assuming there's a real AtariVox attached, we can send SpeakJet
     // bytes directly to it
-    SerialPort& mySerialPort;
+    unique_ptr<SerialPort> mySerialPort;
 
     // How many bits have been shifted into the shift register?
     uInt8 myShiftCount;

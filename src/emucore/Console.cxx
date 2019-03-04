@@ -937,8 +937,7 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
   {
     const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
     controller = make_unique<AtariVox>(port, myEvent,
-        *mySystem, myOSystem, myOSystem.serialPort(),
-        myOSystem.settings().getString("avoxport"), nvramfile);
+        *mySystem, myOSystem, myOSystem.settings().getString("avoxport"), nvramfile);
   }
   else if(controllerName == "SAVEKEY")
   {

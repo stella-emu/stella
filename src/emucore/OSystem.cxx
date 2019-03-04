@@ -48,7 +48,6 @@
 #include "Widget.hxx"
 #include "Console.hxx"
 #include "Random.hxx"
-#include "SerialPort.hxx"
 #include "StateManager.hxx"
 #include "TimerManager.hxx"
 #include "Version.hxx"
@@ -151,11 +150,6 @@ bool OSystem::create()
   // opened until needed, so this is non-blocking (on those systems
   // that only have a single sound device (no hardware mixing))
   createSound();
-
-  // Create the serial port object
-  // This is used by any controller that wants to directly access
-  // a real serial port on the system
-  mySerialPort = MediaFactory::createSerialPort();
 
   // Create random number generator
   myRandom = make_unique<Random>(uInt32(TimerManager::getTicks()));

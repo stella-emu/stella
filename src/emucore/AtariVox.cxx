@@ -15,22 +15,21 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "SerialPort.hxx"
+#include "MediaFactory.hxx"
 #include "System.hxx"
 #include "OSystem.hxx"
 #include "AtariVox.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::AtariVox(Jack jack, const Event& event, const System& system, const OSystem& osystem,
-                   const SerialPort& port, const string& portname,
-                   const string& eepromfile)
+                   const string& portname, const string& eepromfile)
   : SaveKey(jack, event, system, osystem, eepromfile, Controller::AtariVox),
-    mySerialPort(const_cast<SerialPort&>(port)),
     myShiftCount(0),
     myShiftRegister(0),
     myLastDataWriteCycle(0)
 {
-  if(mySerialPort.openPort(portname))
+  mySerialPort = MediaFactory::createSerialPort();
+  if(mySerialPort->openPort(portname))
     myAboutString = " (using serial port \'" + portname + "\')";
   else
     myAboutString = " (invalid serial port \'" + portname + "\')";
@@ -106,7 +105,7 @@ void AtariVox::clockDataIn(bool value)
       else
       {
         uInt8 data = ((myShiftRegister >> 1) & 0xff);
-        mySerialPort.writeByte(&data);
+        mySerialPort->writeByte(&data);
       }
       myShiftRegister = 0;
     }
