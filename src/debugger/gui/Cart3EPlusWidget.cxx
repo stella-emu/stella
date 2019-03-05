@@ -34,12 +34,14 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
        << "  4-64K ROM (1K banks), 32K RAM (512b banks)\n"
        << "Each 1K ROM selected by writing to $3F\n"
           "Each 512b RAM selected by writing to $3E\n"
-          "  Lower 512B of bank x (R)\n"
-          "  Upper 512B of bank x (+$200) (W)\n"
+          "  Lower 512b of bank x (R)\n"
+          "  Upper 512b of bank x (+$200) (W)\n"
        << "Startup bank = 0/-1/-1/0 (ROM)\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
+  //uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
+  // Currently the cart starts at bank 0. If we change that, we have to change this too.
+  uInt16 start = (cart.myImage[0x400-3] << 8) | cart.myImage[0x400 - 4];
   start -= start % 0x1000;
   info << "Bank RORG" << " = $" << Common::Base::HEX4 << start << "\n";
 
@@ -291,8 +293,8 @@ string Cartridge3EPlusWidget::internalRamDescription()
 {
   ostringstream desc;
   desc << "Accessible 512b at a time via:\n"
-       << "  $F000/$F400/$F800/etc used for Read Access\n"
-       << "  $F200/$F600/$FA00/etc used for Write Access (+$200)";
+       << "  $f000/$f400/$f800/$fc00 for Read Access\n"
+       << "  $f200/$f600/$fa00/$fe00 for Write Access (+$200)";
 
   return desc.str();
 }
