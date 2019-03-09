@@ -1201,6 +1201,9 @@ int Thumbulator::execute()
       statusMsg << "bkpt 0x" << Base::HEX2 << rb << endl;
       return 1;
     }
+#else
+    case Op::bkpt:
+      break;
 #endif
 
     //BL/BLX(1)
@@ -1566,6 +1569,9 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "cps TODO" << endl);
       return 1;
     }
+#else
+    case Op::cps:
+      break;
 #endif
 
     //CPY copy high register
@@ -2202,6 +2208,9 @@ int Thumbulator::execute()
       statusMsg << "setend not implemented" << endl;
       return 1;
     }
+#else
+    case Op::setend:
+      break;
 #endif
 
     //STMIA
@@ -2490,10 +2499,8 @@ int Thumbulator::execute()
       return 0;
     }
 
-#ifndef UNSAFE_OPTIMIZATIONS
     case Op::invalid:
       break;
-#endif
   }
 
 #ifndef UNSAFE_OPTIMIZATIONS
@@ -2536,12 +2543,10 @@ int Thumbulator::reset()
   // fxq: don't care about below so much (maybe to guess timing???)
 #ifndef UNSAFE_OPTIMIZATIONS
   instructions = 0;
+  statusMsg.str("");
 #endif
 #ifndef NO_THUMB_STATS
   fetches = reads = writes = 0;
-#endif
-#ifndef UNSAFE_OPTIMIZATIONS
-  statusMsg.str("");
 #endif
 
   return 0;

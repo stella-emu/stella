@@ -143,7 +143,7 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
   for(int i = 0; i < 60; ++i) tia.update();
 
   FrameLayout frameLayout = frameLayoutDetector.detectedLayout();
-  ConsoleTiming consoleTiming;
+  ConsoleTiming consoleTiming = ConsoleTiming::ntsc;
 
   switch (frameLayout) {
     case FrameLayout::ntsc:

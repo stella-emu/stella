@@ -30,7 +30,6 @@ class Cartridge;
 #include "bspf.hxx"
 #include "Console.hxx"
 
-//#define RETRON77
 #ifdef RETRON77
   #define UNSAFE_OPTIMIZATIONS
   #define NO_THUMB_STATS
