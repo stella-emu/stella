@@ -87,6 +87,8 @@ using BytePtr = std::unique_ptr<uInt8[]>;
 
 static const string EmptyString("");
 
+#undef PAGE_SIZE
+
 namespace BSPF
 {
   // Defines to help with path handling
