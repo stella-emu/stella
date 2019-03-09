@@ -87,6 +87,7 @@ using BytePtr = std::unique_ptr<uInt8[]>;
 
 static const string EmptyString("");
 
+// This is defined by some systems, but Stella has other uses for it
 #undef PAGE_SIZE
 
 namespace BSPF

@@ -48,8 +48,7 @@
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
                              GuiObject* boss, int max_w, int max_h, stellaMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
-    myMode(mode),
-    _boss(boss)
+    myMode(mode)
 {
   const int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + 20,
             buttonHeight = _font.getLineHeight() + 6,

@@ -82,8 +82,6 @@ class OptionsDialog : public Dialog
     // Indicates if this dialog is used for global (vs. in-game) settings
     stellaMode myMode;
 
-    GuiObject* _boss;
-
     enum {
       kVidCmd      = 'VIDO',
       kAudCmd      = 'AUDO',

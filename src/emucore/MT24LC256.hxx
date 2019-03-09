@@ -77,8 +77,8 @@ class MT24LC256
     void jpee_data_start();
     void jpee_data_stop();
     void jpee_clock_fall();
-    int  jpee_logproc(const char* const st);
     bool jpee_timercheck(int mode);
+    void jpee_logproc(const char* const st) { cerr << "    " << st << endl; }
 
     void update();
 

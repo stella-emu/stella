@@ -24,9 +24,9 @@
 
 #ifdef DEBUG_EEPROM
   static char jpee_msg[256];
-  #define JPEE_LOG0(msg) jpee_logproc(msg)
-  #define JPEE_LOG1(msg,arg1) sprintf(jpee_msg,(msg),(arg1)), jpee_logproc(jpee_msg)
-  #define JPEE_LOG2(msg,arg1,arg2) sprintf(jpee_msg,(msg),(arg1),(arg2)), jpee_logproc(jpee_msg)
+  #define JPEE_LOG0(msg) jpee_logproc(msg);
+  #define JPEE_LOG1(msg,arg1) sprintf(jpee_msg,(msg),(arg1)), jpee_logproc(jpee_msg);
+  #define JPEE_LOG2(msg,arg1,arg2) sprintf(jpee_msg,(msg),(arg1),(arg2)), jpee_logproc(jpee_msg);
 #else
   #define JPEE_LOG0(msg)
   #define JPEE_LOG1(msg,arg1)
@@ -202,21 +202,21 @@ void MT24LC256::jpee_data_start()
   /* We have a start condition */
   if (jpee_state == 1 && (jpee_nb != 1 || jpee_pptr != 3))
   {
-    JPEE_LOG0("I2C_WARNING ABANDON WRITE");
+    JPEE_LOG0("I2C_WARNING ABANDON WRITE")
     jpee_ad_known = 0;
   }
   if (jpee_state == 3)
   {
-    JPEE_LOG0("I2C_WARNING ABANDON READ");
+    JPEE_LOG0("I2C_WARNING ABANDON READ")
   }
   if (!jpee_timercheck(0))
   {
-    JPEE_LOG0("I2C_START");
+    JPEE_LOG0("I2C_START")
     jpee_state = 2;
   }
   else
   {
-    JPEE_LOG0("I2C_BUSY");
+    JPEE_LOG0("I2C_BUSY")
     jpee_state = 0;
   }
   jpee_pptr = 0;
@@ -229,23 +229,23 @@ void MT24LC256::jpee_data_stop()
 {
   if (jpee_state == 1 && jpee_nb != 1)
   {
-    JPEE_LOG0("I2C_WARNING ABANDON_WRITE");
+    JPEE_LOG0("I2C_WARNING ABANDON_WRITE")
     jpee_ad_known = 0;
   }
   if (jpee_state == 3)
   {
-    JPEE_LOG0("I2C_WARNING ABANDON_READ");
+    JPEE_LOG0("I2C_WARNING ABANDON_READ")
     jpee_ad_known = 0;
   }
   /* We have a stop condition. */
   if (jpee_state == 1 && jpee_nb == 1 && jpee_pptr > 3)
   {
     jpee_timercheck(1);
-    JPEE_LOG2("I2C_STOP(Write %d bytes at %04X)",jpee_pptr-3,jpee_address);
+    JPEE_LOG2("I2C_STOP(Write %d bytes at %04X)",jpee_pptr-3,jpee_address)
     if (((jpee_address + jpee_pptr-4) ^ jpee_address) & ~jpee_pagemask)
     {
       jpee_pptr = 4+jpee_pagemask-(jpee_address & jpee_pagemask);
-      JPEE_LOG1("I2C_WARNING PAGECROSSING!(Truncate to %d bytes)",jpee_pptr-3);
+      JPEE_LOG1("I2C_WARNING PAGECROSSING!(Truncate to %d bytes)",jpee_pptr-3)
     }
     for (int i=3; i<jpee_pptr; i++)
     {
@@ -260,8 +260,10 @@ void MT24LC256::jpee_data_stop()
     }
     jpee_ad_known = 0;
   }
+#ifdef DEBUG_EEPROM
   else
-    JPEE_LOG0("I2C_STOP");
+    jpee_logproc("I2C_STOP");
+#endif
 
   jpee_state = 0;
 }
@@ -282,28 +284,31 @@ void MT24LC256::jpee_clock_fall()
           if (jpee_smallmode && ((jpee_nb & 0xF0) == 0xA0))
           {
             jpee_packet[1] = (jpee_nb >> 1) & 7;
+          #ifdef DEBUG_EEPROM
             if (jpee_packet[1] != (jpee_address >> 8) && (jpee_packet[0] & 1))
-              JPEE_LOG0("I2C_WARNING ADDRESS MSB CHANGED");
+              jpee_logproc("I2C_WARNING ADDRESS MSB CHANGED");
+          #endif
             jpee_nb &= 0x1A1;
           }
           if (jpee_nb == 0x1A0)
           {
-            JPEE_LOG1("I2C_SENT(%02X--start write)",jpee_packet[0]);
+            JPEE_LOG1("I2C_SENT(%02X--start write)",jpee_packet[0])
             jpee_state = 2;
             jpee_sdat = 0;
           }
           else if (jpee_nb == 0x1A1)
           {
             jpee_state = 4;
-            JPEE_LOG2("I2C_SENT(%02X--start read @%04X)",
-            jpee_packet[0],jpee_address);
+            JPEE_LOG2("I2C_SENT(%02X--start read @%04X)", jpee_packet[0],jpee_address)
+          #ifdef DEBUG_EEPROM
             if (!jpee_ad_known)
-              JPEE_LOG0("I2C_WARNING ADDRESS IS UNKNOWN");
+              jpee_logproc("I2C_WARNING ADDRESS IS UNKNOWN");
+          #endif
             jpee_sdat = 0;
           }
           else
           {
-            JPEE_LOG1("I2C_WARNING ODDBALL FIRST BYTE!(%02X)",jpee_nb & 0xFF);
+            JPEE_LOG1("I2C_WARNING ODDBALL FIRST BYTE!(%02X)",jpee_nb & 0xFF)
             jpee_state = 0;
           }
         }
@@ -328,14 +333,16 @@ void MT24LC256::jpee_clock_fall()
         }
         else if (jpee_pptr < 70)
         {
-          JPEE_LOG1("I2C_SENT(%02X)",jpee_nb & 0xFF);
+          JPEE_LOG1("I2C_SENT(%02X)",jpee_nb & 0xFF)
           jpee_packet[jpee_pptr++] = uInt8(jpee_nb);
           jpee_address = (jpee_packet[1] << 8) | jpee_packet[2];
           if (jpee_pptr > 2)
             jpee_ad_known = 1;
         }
+      #ifdef DEBUG_EEPROM
         else
-          JPEE_LOG0("I2C_WARNING OUTPUT_OVERFLOW!");
+          jpee_logproc("I2C_WARNING OUTPUT_OVERFLOW!");
+      #endif
       }
       jpee_sdat = 1;
       jpee_nb = 1;
@@ -345,7 +352,7 @@ void MT24LC256::jpee_clock_fall()
     case 4:
       if (jpee_mdat && jpee_sdat)
       {
-        JPEE_LOG0("I2C_READ_NAK");
+        JPEE_LOG0("I2C_READ_NAK")
         jpee_state=0;
         break;
       }
@@ -355,7 +362,7 @@ void MT24LC256::jpee_clock_fall()
       myCallback("AtariVox/SaveKey EEPROM read");
 
       jpee_nb = (myData[jpee_address & jpee_sizemask] << 1) | 1;  /* Fall through */
-      JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2);
+      JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2)
       [[fallthrough]];
 
     case 3:
@@ -373,7 +380,7 @@ void MT24LC256::jpee_clock_fall()
       /* Do nothing */
       break;
   }
-  JPEE_LOG2("I2C_CLOCK (dat=%d/%d)",jpee_mdat,jpee_sdat);
+  JPEE_LOG2("I2C_CLOCK (dat=%d/%d)",jpee_mdat,jpee_sdat)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -399,11 +406,4 @@ bool MT24LC256::jpee_timercheck(int mode)
     }
     return myTimerActive;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int MT24LC256::jpee_logproc(const char* const st)
-{
-  cerr << "    " << st << endl;
-  return 0;
 }
