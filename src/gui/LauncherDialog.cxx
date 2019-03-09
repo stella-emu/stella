@@ -39,6 +39,7 @@
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "Version.hxx"
 #include "LauncherDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,6 +52,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myQuitButton(nullptr),
     myList(nullptr),
     myPattern(nullptr),
+    myAllFiles(nullptr),
     myRomInfoWidget(nullptr),
     mySelectedItem(0)
 {
@@ -64,8 +66,10 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
             bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1)),
             bheight = lineHeight + 4,
             LBL_GAP = fontWidth;
-  int xpos, ypos = 0, lwidth = 0, lwidth2 = 0;
+  int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0;
   WidgetArray wid;
+
+  const bool useMinimalUI = instance().settings().getBool("minimal_ui");
 
   string lblRom = "Select a ROM from the list" + ELLIPSIS;
   const string& lblFilter = "Filter";
@@ -84,17 +88,31 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     lwidth = font.getStringWidth(lblRom);
   }
 
+  if(useMinimalUI)
+  {
+  #if defined(RETRON77)
+    // App information
+    ostringstream ver;
+    ver << "Stella " << STELLA_VERSION << " for RetroN 77";
+    ypos += 8;
+    new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
+                         ver.str(), TextAlign::Center);
+    ypos += fontHeight;
+  #endif
+  }
+
   // Show the header
-  xpos = HBORDER;  ypos += 8;
+  xpos += HBORDER;  ypos += 8;
   new StaticTextWidget(this, font, xpos, ypos, lblRom);
   // Shop the files counter
   xpos = _w - HBORDER - lwidth4;
   myRomCount = new StaticTextWidget(this, font, xpos, ypos,
                                     lwidth4, fontHeight,
                                     "", TextAlign::Right);
+
   // Add filter that can narrow the results shown in the listing
   // It has to fit between both labels
-  if(w >= 640)
+  if(!useMinimalUI && w >= 640)
   {
     int fwidth = std::min(15 * fontWidth, xpos - lwidth3 - lwidth2 - lwidth - HBORDER - LBL_GAP * 8);
     // Show the filter input field
@@ -113,7 +131,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   xpos = HBORDER;  ypos += lineHeight + 4;
   int romWidth = 0;
   int romSize = instance().settings().getInt("romviewer");
-  if(romSize > 1 && w >= 1000 && h >= 760)
+  if(romSize > 1 && w >= 1000 && h >= 720)
     romWidth = 660;
   else if(romSize > 0 && w >= 640 && h >= 480)
     romWidth = 365;
@@ -146,41 +164,44 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   myDir->setEditable(false, true);
   myDir->clearFlags(WIDGET_RETAIN_FOCUS);
 
-  // Add four buttons at the bottom
-  xpos = HBORDER;  ypos += myDir->getHeight() + 8;
-#ifndef BSPF_MACOS
-  myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
-                                  "Select", kLoadROMCmd);
-  wid.push_back(myStartButton);
-    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
-  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
-                                     "Go Up", kPrevDirCmd);
-  wid.push_back(myPrevDirButton);
-    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
-    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
+  if(!useMinimalUI)
+  {
+    // Add four buttons at the bottom
+    xpos = HBORDER;  ypos += myDir->getHeight() + 8;
+  #ifndef BSPF_MACOS
+    myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
+                                     "Select", kLoadROMCmd);
+    wid.push_back(myStartButton);
+      xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
+                                       "Go Up", kPrevDirCmd);
+    wid.push_back(myPrevDirButton);
+      xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+      myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
+                                         "Options" + ELLIPSIS, kOptionsCmd);
+    wid.push_back(myOptionsButton);
+      xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
+                                  "Quit", kQuitCmd);
+    wid.push_back(myQuitButton);
+  #else
+    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
+                                    "Quit", kQuitCmd);
+    wid.push_back(myQuitButton);
+      xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
-  wid.push_back(myOptionsButton);
-    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
-  myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
-                                  "Quit", kQuitCmd);
-  wid.push_back(myQuitButton);
-#else
-  myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
-                                  "Quit", kQuitCmd);
-  wid.push_back(myQuitButton);
-    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
-  myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
-                                     "Options" + ELLIPSIS, kOptionsCmd);
-  wid.push_back(myOptionsButton);
-    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
-  myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
-                                      "Go Up", kPrevDirCmd);
-  wid.push_back(myPrevDirButton);
-    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
-  myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
-                                   "Select", kLoadROMCmd);
-  wid.push_back(myStartButton);
-#endif
+    wid.push_back(myOptionsButton);
+      xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
+                                       "Go Up", kPrevDirCmd);
+    wid.push_back(myPrevDirButton);
+      xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+    myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
+                                     "Select", kLoadROMCmd);
+    wid.push_back(myStartButton);
+  #endif
+  }
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 
   // Create an options dialog, similar to the in-game one
@@ -205,7 +226,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Do we show only ROMs or all files?
   bool onlyROMs = instance().settings().getBool("launcherroms");
   showOnlyROMs(onlyROMs);
-  myAllFiles->setState(!onlyROMs);
+  if(myAllFiles)
+    myAllFiles->setState(!onlyROMs);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -249,7 +271,8 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list)
   if(myList->getList().empty())
   {
-    myPrevDirButton->setEnabled(false);
+    if(myPrevDirButton)
+      myPrevDirButton->setEnabled(false);
     myCurrentNode = FilesystemNode(romdir == "" ? "~" : romdir);
     if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))
       myCurrentNode = FilesystemNode("~");
@@ -278,7 +301,8 @@ void LauncherDialog::updateListing(const string& nameToSelect)
   loadDirListing();
 
   // Only hilite the 'up' button if there's a parent directory
-  myPrevDirButton->setEnabled(myCurrentNode.hasParent());
+  if(myPrevDirButton)
+    myPrevDirButton->setEnabled(myCurrentNode.hasParent());
 
   // Show current directory
   myDir->setText(myCurrentNode.getShortPath());
@@ -455,7 +479,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kAllfilesCmd:
-      showOnlyROMs(!myAllFiles->getState());
+      showOnlyROMs(myAllFiles ? !myAllFiles->getState() : true);
       updateListing();
       break;
     case kLoadROMCmd:

@@ -59,7 +59,8 @@ SettingsR77::SettingsR77()
   setPermanent("romviewer", "2");
   setPermanent("exitlauncher", "true");
 
-  setPermanent("dev.settings", "false");
+  setTemporary("minimal_ui", true);
+  setPermanent("dev.settings", false);
   setPermanent("plr.timemachine", false);
 
   // FIXME - these are out of date, since the # of events has changed since 3.x
