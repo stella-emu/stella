@@ -257,13 +257,6 @@ class Console : public Serializable, public ConsoleIO
     void changeYStart(int direction);
 
     /**
-      Change the "Display.Height" variable.
-
-      @param direction +1 indicates increase, -1 indicates decrease.
-    */
-    void changeHeight(int direction);
-
-    /**
       Returns the current framerate.
     */
     float getFramerate() const;

@@ -24,7 +24,7 @@ namespace TIAConstants {
 
   constexpr uInt32 frameBufferHeight = 320;
   constexpr uInt32 maxYStart = 64;
-  constexpr uInt32 minViewableHeight = 240, maxViewableHeight = 240; // FIXME - remove this (or at least use only one)
+  constexpr uInt32 viewableHeight = 240;
   constexpr uInt32 initialGarbageFrames = 10;
 
   static constexpr uInt16

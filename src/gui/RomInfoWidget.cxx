@@ -35,8 +35,8 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w, h),
     mySurfaceIsValid(false),
     myHaveProperties(false),
-    myAvail(w > 400 ? GUI::Size(640, TIAConstants::maxViewableHeight*2) :
-                      GUI::Size(320, TIAConstants::maxViewableHeight))
+    myAvail(w > 400 ? GUI::Size(640, TIAConstants::viewableHeight*2) :
+                      GUI::Size(320, TIAConstants::viewableHeight))
 {
   _flags = WIDGET_ENABLED;
   _bgcolor = kDlgColor;
@@ -84,7 +84,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   // only draw certain parts of it
   if(mySurface == nullptr)
   {
-    mySurface = instance().frameBuffer().allocateSurface(320*2, TIAConstants::maxViewableHeight*2);
+    mySurface = instance().frameBuffer().allocateSurface(320*2, TIAConstants::viewableHeight*2);
     mySurface->attributes().smoothing = true;
     mySurface->applyAttributes();
 

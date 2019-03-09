@@ -22,9 +22,8 @@ my %prop_type = (
   "Controller.MouseAxis"    => 16,
   "Display.Format"          => 17,
   "Display.YStart"          => 18,
-  "Display.Height"          => 19,
-  "Display.Phosphor"        => 20,
-  "Display.PPBlend"         => 21
+  "Display.Phosphor"        => 19,
+  "Display.PPBlend"         => 20
 );
 my @prop_type_as_string = (
   "Cartridge.MD5",
@@ -46,7 +45,6 @@ my @prop_type_as_string = (
   "Controller.MouseAxis",
   "Display.Format",
   "Display.YStart",
-  "Display.Height",
   "Display.Phosphor",
   "Display.PPBlend"
 );
@@ -70,7 +68,6 @@ my @prop_defaults = (
   "NO",
   "AUTO",
   "AUTO",
-  "0",
   "0",
   "NO",
   "0"

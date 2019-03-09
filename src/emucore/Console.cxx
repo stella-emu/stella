@@ -744,38 +744,6 @@ void Console::updateYStart(uInt32 ystart)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeHeight(int direction)
-{
-  uInt32 height = myTIA->height();
-  uInt32 dheight = myOSystem.frameBuffer().desktopSize().h;
-
-  if(direction == +1)       // increase Height
-  {
-    ++height;
-    if(height > TIAConstants::maxViewableHeight || height > dheight)
-    {
-      myOSystem.frameBuffer().showMessage("Height at maximum");
-      return;
-    }
-  }
-  else if(direction == -1)  // decrease Height
-  {
-    --height;
-    if(height < TIAConstants::minViewableHeight) height = 0;
-  }
-  else
-    return;
-
-  myTIA->setHeight(height);
-  initializeVideo();  // takes care of refreshing the screen
-
-  ostringstream val;
-  val << height;
-  myOSystem.frameBuffer().showMessage("Height " + val.str());
-  myProperties.set(Display_Height, val.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setTIAProperties()
 {
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
@@ -786,9 +754,10 @@ void Console::setTIAProperties()
     myYStartAutodetected = true;
   }
 
-  uInt32 height = atoi(myProperties.get(Display_Height).c_str());
-  if(height != 0)
-    height = BSPF::clamp(height, TIAConstants::minViewableHeight, TIAConstants::maxViewableHeight);
+// FIXME -  Remove concept of 'height' entirely
+//          The height will eventually be constant, and the aspect scaling will take care
+//          of differences in NTSC vs. PAL
+  uInt32 height = TIAConstants::viewableHeight;
 
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
      myDisplayFormat == "SECAM60")
@@ -800,7 +769,7 @@ void Console::setTIAProperties()
   {
     // Assume we've got ~312 scanlines (PAL-like format)
     // PAL ROMs normally need at least 250 lines
-    if (height != 0) height = std::max(height, 250u);
+    height = std::max(height, 250u);
 
     myTIA->setLayout(FrameLayout::pal);
   }

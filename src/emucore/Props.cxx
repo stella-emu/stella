@@ -253,7 +253,6 @@ void Properties::print() const
        << get(Controller_MouseAxis)   << "|"
        << get(Display_Format)         << "|"
        << get(Display_YStart)         << "|"
-       << get(Display_Height)         << "|"
        << get(Display_Phosphor)       << "|"
        << get(Display_PPBlend)
        << endl;
@@ -299,7 +298,6 @@ void Properties::printHeader()
        << "Controller_MouseAxis|"
        << "Display_Format|"
        << "Display_YStart|"
-       << "Display_Height|"
        << "Display_Phosphor|"
        << "Display_PPBlend"
        << endl;
@@ -326,7 +324,6 @@ string Properties::ourDefaultProperties[LastPropType] = {
   "AUTO",      // Controller.MouseAxis
   "AUTO",      // Display.Format
   "0",         // Display.YStart
-  "0",         // Display.Height
   "NO",        // Display.Phosphor
   "0"          // Display.PPBlend
 };
@@ -352,7 +349,6 @@ const char* const Properties::ourPropertyNames[LastPropType] = {
   "Controller.MouseAxis",
   "Display.Format",
   "Display.YStart",
-  "Display.Height",
   "Display.Phosphor",
   "Display.PPBlend"
 };

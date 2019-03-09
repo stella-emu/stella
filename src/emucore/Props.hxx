@@ -40,7 +40,6 @@ enum PropertyType {
   Controller_MouseAxis,
   Display_Format,
   Display_YStart,
-  Display_Height,
   Display_Phosphor,
   Display_PPBlend,
   LastPropType

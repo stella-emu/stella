@@ -516,7 +516,6 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     CMDLINE_PROPS_UPDATE("tv", Console_TelevisionType);
     CMDLINE_PROPS_UPDATE("format", Display_Format);
     CMDLINE_PROPS_UPDATE("ystart", Display_YStart);
-    CMDLINE_PROPS_UPDATE("height", Display_Height);
     CMDLINE_PROPS_UPDATE("pp", Display_Phosphor);
     CMDLINE_PROPS_UPDATE("ppblend", Display_PPBlend);
 

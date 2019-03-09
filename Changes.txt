@@ -25,6 +25,8 @@
      - delayed player 1 swap
      - stuffed player move
 
+  * Completely removed 'Display_Height' stuff. (TODO: doc)
+
   * Disabled some developer options for 'Player settings'. (TODO: doc)
 
   * Enhanced command dialog. (TODO: doc)

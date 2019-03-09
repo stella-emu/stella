@@ -84,7 +84,7 @@ class FrameBuffer
 {
   public:
     enum {
-      kTIAMinW = 320u, kTIAMinH = TIAConstants::minViewableHeight,
+      kTIAMinW = 320u, kTIAMinH = TIAConstants::viewableHeight,
       kFBMinW  = 640u, kFBMinH  = 480u
     };
 

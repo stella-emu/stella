@@ -516,14 +516,6 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
           myOSystem.reloadConsole();
           break;
 
-        case KBDK_PAGEUP:    // Ctrl-PageUp increases Height
-          myOSystem.console().changeHeight(+1);
-          break;
-
-        case KBDK_PAGEDOWN:  // Ctrl-PageDown decreases Height
-          myOSystem.console().changeHeight(-1);
-          break;
-
         case KBDK_RIGHTBRACKET: // Ctrl-] toggles sound
           myOSystem.sound().toggleMute();
           break;
