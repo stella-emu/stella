@@ -15,6 +15,12 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#if defined(RETRON77)
+  #define ROOT_DIR "/mnt/games/"
+#else
+  #define ROOT_DIR "/"
+#endif
+
 #include "FSNodePOSIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -38,7 +44,7 @@ void FilesystemNodePOSIX::setFlags()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodePOSIX::FilesystemNodePOSIX()
-  : _path("/"),          // The root dir.
+  : _path(ROOT_DIR),
     _displayName(_path),
     _isValid(true),
     _isFile(false),
@@ -230,7 +236,7 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFSNodePtr FilesystemNodePOSIX::getParent() const
 {
-  if (_path == "/")
+  if (_path == ROOT_DIR)
     return nullptr;
 
   const char* start = _path.c_str();

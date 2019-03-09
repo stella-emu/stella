@@ -64,14 +64,15 @@ bool SettingsR77::saveConfigFile(const string& cfgfile) const
   // most of them.  This may also fix reported issues of the config file
   // becoming corrupt.
   //
-  // There is currently only one setting that can be changed - 'fullscreen'
-  // It determines whether to use 4:3 or 16:9 mode
+  // There are currently only a few settings that can be changed
+  // These will be expanded as more support is added
 
   ofstream out(cfgfile);
   if(!out || !out.is_open())
     return false;
 
   out << "fullscreen = " << getString("fullscreen") << endl;
+  out << "lastrom = " << getString("lastrom") << endl;
 
   out.flush();
   out.close();
