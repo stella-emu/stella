@@ -34,6 +34,16 @@ SettingsR77::SettingsR77()
 
   setPermanent("tia.zoom", "3");
 
+  setPermanent("audio.buffer_size", "6");
+  setPermanent("audio.enabled", "1");
+  setPermanent("audio.fragment_size", "512");
+  setPermanent("audio.headroom", "5");
+  setPermanent("audio.preset", "1");
+  setPermanent("audio.resampling_quality", "2");
+  setPermanent("audio.sample_rate", "48000");
+  setPermanent("audio.stereo", "0");
+  setPermanent("audio.volume", "80");
+
   // TODO - use new argument that differentiates between fullscreen and
   //        fullscreen without aspect correction
   //        Re-add ability to use a specific fullscreen resolution
