@@ -823,15 +823,13 @@ void Console::setControllers(const string& rommd5)
     const uInt8* image = myCart->getImage(size);
     const bool swappedPorts = myProperties.get(Console_SwapPorts) != "NO";
 
-    // try to detect controllers
+    // Try to detect controllers
     if(image != nullptr || size != 0)
     {
       left = ControllerDetector::detectType(image, size, left,
-                                            !swappedPorts ? Controller::Left : Controller::Right,
-                                            myOSystem.settings());
+          !swappedPorts ? Controller::Left : Controller::Right, myOSystem.settings());
       right = ControllerDetector::detectType(image, size, right,
-                                             !swappedPorts ? Controller::Right : Controller::Left,
-                                             myOSystem.settings());
+          !swappedPorts ? Controller::Right : Controller::Left, myOSystem.settings());
     }
 
     unique_ptr<Controller> leftC = getControllerPort(rommd5, left, Controller::Left),
