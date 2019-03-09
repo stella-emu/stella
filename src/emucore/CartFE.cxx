@@ -48,12 +48,12 @@ void CartridgeFE::install(System& system)
 
   // The hotspot $01FE is in a mirror of zero-page RAM
   // We need to claim access to it here, and deal with it in peek/poke below
-  System::PageAccess access(this, System::PA_READWRITE);
+  System::PageAccess access(this, System::PageAccessType::READWRITE);
   for(uInt16 addr = 0x180; addr < 0x200; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
   // Map all of the cart accesses to call peek and poke
-  access.type = System::PA_READ;
+  access.type = System::PageAccessType::READ;
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 }

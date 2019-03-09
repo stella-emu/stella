@@ -61,7 +61,7 @@ void Cartridge2K::install(System& system)
   // Map ROM image into the system
   // Note that we don't need our own peek/poke methods, since the mapping
   // takes care of the entire address space
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[addr & myMask];

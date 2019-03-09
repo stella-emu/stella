@@ -245,7 +245,7 @@ void TIA::installDelegate(System& system, Device& device)
   mySystem = &system;
 
   // All accesses are to the given device
-  System::PageAccess access(&device, System::PA_READWRITE);
+  System::PageAccess access(&device, System::PageAccessType::READWRITE);
 
   // Map all peek/poke to mirrors of TIA address space to this class
   // That is, all mirrors of ($00 - $3F) in the lower 4K of the 2600

@@ -68,7 +68,7 @@ void CartridgeDPC::install(System& system)
   mySystem = &system;
 
   // Set the page accessing method for the DPC reading & writing pages
-  System::PageAccess access(this, System::PA_READWRITE);
+  System::PageAccess access(this, System::PageAccessType::READWRITE);
   for(uInt16 addr = 0x1000; addr < 0x1080; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
@@ -380,7 +380,7 @@ bool CartridgeDPC::bank(uInt16 bank)
   // Remember what bank we're in
   myBankOffset = bank << 12;
 
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt16 addr = (0x1FF8 & ~System::PAGE_MASK); addr < 0x2000;

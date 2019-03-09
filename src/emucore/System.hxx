@@ -243,10 +243,10 @@ class System : public Serializable
     /**
       Describes how a page can be accessed
     */
-    enum PageAccessType {
-      PA_READ      = 1 << 0,
-      PA_WRITE     = 1 << 1,
-      PA_READWRITE = PA_READ | PA_WRITE
+    enum class PageAccessType : uInt8 {
+      READ      = 1 << 0,
+      WRITE     = 1 << 1,
+      READWRITE = READ | WRITE
     };
 
     /**
@@ -297,7 +297,7 @@ class System : public Serializable
           directPokeBase(nullptr),
           codeAccessBase(nullptr),
           device(nullptr),
-          type(System::PA_READ) { }
+          type(System::PageAccessType::READ) { }
 
       PageAccess(Device* dev, PageAccessType access)
         : directPeekBase(nullptr),

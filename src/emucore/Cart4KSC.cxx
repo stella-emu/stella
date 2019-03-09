@@ -41,12 +41,12 @@ void Cartridge4KSC::install(System& system)
 {
   mySystem = &system;
 
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Set the page accessing method for the RAM writing pages
   // Map access to this class, since we need to inspect all accesses to
   // check if RWP happens
-  access.type = System::PA_WRITE;
+  access.type = System::PageAccessType::WRITE;
   for(uInt16 addr = 0x1000; addr < 0x1080; addr += System::PAGE_SIZE)
   {
     access.codeAccessBase = &myCodeAccessBase[addr & 0x007F];
@@ -54,7 +54,7 @@ void Cartridge4KSC::install(System& system)
   }
 
   // Set the page accessing method for the RAM reading pages
-  access.type = System::PA_READ;
+  access.type = System::PageAccessType::READ;
   for(uInt16 addr = 0x1080; addr < 0x1100; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myRAM[addr & 0x007F];

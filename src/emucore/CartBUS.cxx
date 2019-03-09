@@ -123,7 +123,7 @@ void CartridgeBUS::install(System& system)
   mySystem = &system;
 
   // Map all of the accesses to call peek and poke
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x1000; addr < 0x1040; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
@@ -437,7 +437,7 @@ bool CartridgeBUS::bank(uInt16 bank)
   myBankOffset = bank << 12;
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Map Program ROM image into the system
   for(uInt16 addr = 0x1040; addr < 0x2000; addr += System::PAGE_SIZE)

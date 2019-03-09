@@ -47,14 +47,14 @@ void Cartridge3F::install(System& system)
 {
   mySystem = &system;
 
-  System::PageAccess access(this, System::PA_READWRITE);
+  System::PageAccess access(this, System::PageAccessType::READWRITE);
 
   // The hotspot ($3F) is in TIA address space, so we claim it here
   for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
   // Setup the second segment to always point to the last ROM slice
-  access.type = System::PA_READ;
+  access.type = System::PageAccessType::READ;
   for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[(mySize - 2048) + (addr & 0x07FF)];
@@ -112,7 +112,7 @@ bool Cartridge3F::bank(uInt16 bank)
   uInt32 offset = myCurrentBank << 11;
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Map ROM image into the system
   for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)

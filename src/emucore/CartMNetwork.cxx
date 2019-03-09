@@ -68,9 +68,9 @@ void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
 
   for(uInt16 addr = addrFrom; addr < addrFrom + size; addr += System::PAGE_SIZE)
   {
-    if(type == System::PA_READ)
+    if(type == System::PageAccessType::READ)
       access.directPeekBase = &directData[directOffset + (addr & addrMask)];
-    else if(type == System::PA_WRITE)  // all RAM writes mapped to ::poke()
+    else if(type == System::PageAccessType::WRITE)  // all RAM writes mapped to ::poke()
       access.directPokeBase = nullptr;
     access.codeAccessBase = &myCodeAccessBase[codeOffset + (addr & addrMask)];
     mySystem->setPageAccess(addr, access);
@@ -82,7 +82,7 @@ void CartridgeMNetwork::install(System& system)
 {
   mySystem = &system;
 
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;
@@ -96,7 +96,7 @@ void CartridgeMNetwork::install(System& system)
 
   // Setup the second segment to always point to the last ROM slice
   setAccess(0x1A00, 0x1FE0U & (~System::PAGE_MASK - 0x1A00),
-            myRAMSlice * BANK_SIZE, myImage.get(), myRAMSlice * BANK_SIZE, System::PA_READ, BANK_SIZE - 1);
+            myRAMSlice * BANK_SIZE, myImage.get(), myRAMSlice * BANK_SIZE, System::PageAccessType::READ, BANK_SIZE - 1);
   myCurrentSlice[1] = myRAMSlice;
 
   // Install some default banks for the RAM and first segment
@@ -162,9 +162,9 @@ void CartridgeMNetwork::bankRAM(uInt16 bank)
 
   // Setup the page access methods for the current bank
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  setAccess(0x1800, 0x100, 1024 + offset, myRAM, romSize() + BANK_SIZE / 2, System::PA_WRITE);
+  setAccess(0x1800, 0x100, 1024 + offset, myRAM, romSize() + BANK_SIZE / 2, System::PageAccessType::WRITE);
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  setAccess(0x1900, 0x100, 1024 + offset, myRAM, romSize() + BANK_SIZE / 2, System::PA_READ);
+  setAccess(0x1900, 0x100, 1024 + offset, myRAM, romSize() + BANK_SIZE / 2, System::PageAccessType::READ);
 
   myBankChanged = true;
 }
@@ -183,14 +183,14 @@ bool CartridgeMNetwork::bank(uInt16 slice)
     uInt16 offset = slice << 11; // * BANK_SIZE (2048)
 
     // Map ROM image into first segment
-    setAccess(0x1000, BANK_SIZE, offset, myImage.get(), offset, System::PA_READ);
+    setAccess(0x1000, BANK_SIZE, offset, myImage.get(), offset, System::PageAccessType::READ);
   }
   else
   {
     // Set the page accessing method for the 1K slice of RAM writing pages
-    setAccess(0x1000,                 BANK_SIZE / 2, 0, myRAM, romSize(), System::PA_WRITE);
+    setAccess(0x1000,                 BANK_SIZE / 2, 0, myRAM, romSize(), System::PageAccessType::WRITE);
     // Set the page accessing method for the 1K slice of RAM reading pages
-    setAccess(0x1000 + BANK_SIZE / 2, BANK_SIZE / 2, 0, myRAM, romSize(), System::PA_READ);
+    setAccess(0x1000 + BANK_SIZE / 2, BANK_SIZE / 2, 0, myRAM, romSize(), System::PageAccessType::READ);
   }
   return myBankChanged = true;
 }

@@ -40,7 +40,7 @@ System::System(Random& random, M6502& m6502, M6532& m6532,
     mySystemInAutodetect(false)
 {
   // Initialize page access table
-  PageAccess access(&myNullDevice, System::PA_READ);
+  PageAccess access(&myNullDevice, System::PageAccessType::READ);
   for(int page = 0; page < NUM_PAGES; ++page)
   {
     myPageAccessTable[page] = access;

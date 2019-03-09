@@ -54,7 +54,7 @@ void CartridgeE0::install(System& system)
 {
   mySystem = &system;
 
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Set the page acessing methods for the first part of the last segment
   for(uInt16 addr = 0x1C00; addr < (0x1FE0U & ~System::PAGE_MASK);
@@ -68,7 +68,7 @@ void CartridgeE0::install(System& system)
   // Set the page accessing methods for the hot spots in the last segment
   access.directPeekBase = nullptr;
   access.codeAccessBase = &myCodeAccessBase[8128];
-  access.type = System::PA_READ;
+  access.type = System::PageAccessType::READ;
   for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;
       addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
@@ -127,7 +127,7 @@ void CartridgeE0::segmentZero(uInt16 slice)
   uInt16 offset = slice << 10;
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
   {
@@ -148,7 +148,7 @@ void CartridgeE0::segmentOne(uInt16 slice)
   uInt16 offset = slice << 10;
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
   {
@@ -169,7 +169,7 @@ void CartridgeE0::segmentTwo(uInt16 slice)
   uInt16 offset = slice << 10;
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   for(uInt16 addr = 0x1800; addr < 0x1C00; addr += System::PAGE_SIZE)
   {

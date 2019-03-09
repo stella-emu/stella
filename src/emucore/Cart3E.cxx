@@ -49,14 +49,14 @@ void Cartridge3E::install(System& system)
 {
   mySystem = &system;
 
-  System::PageAccess access(this, System::PA_READWRITE);
+  System::PageAccess access(this, System::PageAccessType::READWRITE);
 
   // The hotspots ($3E and $3F) are in TIA address space, so we claim it here
   for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
   // Setup the second segment to always point to the last ROM slice
-  access.type = System::PA_READ;
+  access.type = System::PageAccessType::READ;
   for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[(mySize - 2048) + (addr & 0x07FF)];
@@ -140,7 +140,7 @@ bool Cartridge3E::bank(uInt16 bank)
     uInt32 offset = myCurrentBank << 11;
 
     // Setup the page access methods for the current bank
-    System::PageAccess access(this, System::PA_READ);
+    System::PageAccess access(this, System::PageAccessType::READ);
 
     // Map ROM image into the system
     for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
@@ -159,7 +159,7 @@ bool Cartridge3E::bank(uInt16 bank)
     uInt32 offset = bank << 10;
 
     // Setup the page access methods for the current bank
-    System::PageAccess access(this, System::PA_READ);
+    System::PageAccess access(this, System::PageAccessType::READ);
 
     // Map read-port RAM image into the system
     for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
@@ -170,7 +170,7 @@ bool Cartridge3E::bank(uInt16 bank)
     }
 
     access.directPeekBase = nullptr;
-    access.type = System::PA_WRITE;
+    access.type = System::PageAccessType::WRITE;
 
     // Map write-port RAM image into the system
     // Map access to this class, since we need to inspect all accesses to

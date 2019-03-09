@@ -44,12 +44,12 @@ void CartridgeF8SC::install(System& system)
 {
   mySystem = &system;
 
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Set the page accessing method for the RAM writing pages
   // Map access to this class, since we need to inspect all accesses to
   // check if RWP happens
-  access.type = System::PA_WRITE;
+  access.type = System::PageAccessType::WRITE;
   for(uInt16 addr = 0x1000; addr < 0x1080; addr += System::PAGE_SIZE)
   {
     access.codeAccessBase = &myCodeAccessBase[addr & 0x007F];
@@ -57,7 +57,7 @@ void CartridgeF8SC::install(System& system)
   }
 
   // Set the page accessing method for the RAM reading pages
-  access.type = System::PA_READ;
+  access.type = System::PageAccessType::READ;
   for(uInt16 addr = 0x1080; addr < 0x1100; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myRAM[addr & 0x007F];
@@ -130,7 +130,7 @@ bool CartridgeF8SC::bank(uInt16 bank)
   // Remember what bank we're in
   myBankOffset = bank << 12;
 
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt16 addr = (0x1FF8 & ~System::PAGE_MASK); addr < 0x2000;

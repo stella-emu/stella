@@ -168,7 +168,7 @@ void M6532::installDelegate(System& system, Device& device)
   mySystem = &system;
 
   // All accesses are to the given device
-  System::PageAccess access(&device, System::PA_READWRITE);
+  System::PageAccess access(&device, System::PageAccessType::READWRITE);
 
   // Map all peek/poke to mirrors of RIOT address space to this class
   // That is, all mirrors of ZP RAM ($80 - $FF) and IO ($280 - $29F) in the

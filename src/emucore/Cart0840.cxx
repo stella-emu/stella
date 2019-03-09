@@ -54,7 +54,7 @@ void Cartridge0840::install(System& system)
   myHotSpotPageAccess[7] = mySystem->getPageAccess(0x0F00);
 
   // Set the page accessing methods for the hot spots
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x0800; addr < 0x0FFF; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
@@ -132,7 +132,7 @@ bool Cartridge0840::bank(uInt16 bank)
   myBankOffset = bank << 12;
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Map ROM image into the system
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)

@@ -61,7 +61,7 @@ void CartridgeDASH::install(System& system)
 {
   mySystem = &system;
 
-  System::PageAccess access(this, System::PA_READWRITE);
+  System::PageAccess access(this, System::PageAccessType::READWRITE);
 
   // The hotspots are in TIA address space, so we claim it here
   for (uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
@@ -171,17 +171,17 @@ void CartridgeDASH::bankRAMSlot(uInt16 bank)
   uInt32 startCurrentBank = currentBank << RAM_BANK_TO_POWER;  // Effectively * 512 bytes
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   if(upper)    // We're mapping the write port
   {
     bankInUse[bankNumber + 4] = Int16(bank);
-    access.type = System::PA_WRITE;
+    access.type = System::PageAccessType::WRITE;
   }
   else         // We're mapping the read port
   {
     bankInUse[bankNumber] = Int16(bank);
-    access.type = System::PA_READ;
+    access.type = System::PageAccessType::READ;
   }
 
   uInt16 start = 0x1000 + (bankNumber << RAM_BANK_TO_POWER) + (upper ? RAM_WRITE_OFFSET : 0);
@@ -227,7 +227,7 @@ void CartridgeDASH::bankROMSlot(uInt16 bank)
   uInt32 startCurrentBank = currentBank << ROM_BANK_TO_POWER;     // Effectively *1K
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   uInt16 start = 0x1000 + (bankNumber << ROM_BANK_TO_POWER) + (upper ? ROM_BANK_SIZE / 2 : 0);
   uInt16 end = start + ROM_BANK_SIZE / 2 - 1;
@@ -249,7 +249,7 @@ void CartridgeDASH::initializeBankState()
     if(bankInUse[b] == BANK_UNDEFINED)
     {
       // All accesses point to peek/poke above
-      System::PageAccess access(this, System::PA_READ);
+      System::PageAccess access(this, System::PageAccessType::READ);
       uInt16 start = 0x1000 + (b << RAM_BANK_TO_POWER);
       uInt16 end = start + RAM_BANK_SIZE - 1;
       for (uInt16 addr = start; addr <= end; addr += System::PAGE_SIZE)

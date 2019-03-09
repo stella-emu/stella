@@ -49,7 +49,7 @@ void CartridgeCVPlus::install(System& system)
 {
   mySystem = &system;
 
-  System::PageAccess access(this, System::PA_READWRITE);
+  System::PageAccess access(this, System::PageAccessType::READWRITE);
 
   // The hotspot ($3D) is in TIA address space, so we claim it here
   for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
@@ -60,7 +60,7 @@ void CartridgeCVPlus::install(System& system)
   // check if RWP happens
   access.directPeekBase = access.directPokeBase = nullptr;
   access.codeAccessBase = nullptr;
-  access.type = System::PA_WRITE;
+  access.type = System::PageAccessType::WRITE;
   for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
   {
     access.codeAccessBase = &myCodeAccessBase[mySize + (addr & 0x03FF)];
@@ -68,7 +68,7 @@ void CartridgeCVPlus::install(System& system)
   }
 
   // Set the page accessing method for the RAM reading pages
-  access.type = System::PA_READ;
+  access.type = System::PageAccessType::READ;
   for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myRAM[addr & 0x03FF];
@@ -130,7 +130,7 @@ bool CartridgeCVPlus::bank(uInt16 bank)
   uInt32 offset = myCurrentBank << 11;
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Map ROM image into the system
   for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)

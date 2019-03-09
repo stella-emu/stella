@@ -47,7 +47,7 @@ void CartridgeX07::install(System& system)
   // Set the page accessing methods for the hot spots
   // The hotspots use almost all addresses below 0x1000, so we simply grab them
   // all and forward the TIA/RIOT calls from the peek and poke methods.
-  System::PageAccess access(this, System::PA_READWRITE);
+  System::PageAccess access(this, System::PageAccessType::READWRITE);
   for(uInt16 addr = 0x00; addr < 0x1000; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
@@ -110,7 +110,7 @@ bool CartridgeX07::bank(uInt16 bank)
   uInt32 offset = myCurrentBank << 12;
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Map ROM image into the system
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)

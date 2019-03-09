@@ -123,7 +123,7 @@ bool CartridgeF6::bank(uInt16 bank)
   // Remember what bank we're in
   myBankOffset = bank << 12;
 
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt16 addr = (0x1FF6 & ~System::PAGE_MASK); addr < 0x2000;

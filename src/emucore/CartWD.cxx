@@ -53,7 +53,7 @@ void CartridgeWD::install(System& system)
   mySystem = &system;
 
   // Set the page accessing method for the RAM reading pages
-  System::PageAccess read(this, System::PA_READ);
+  System::PageAccess read(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x1000; addr < 0x1040; addr += System::PAGE_SIZE)
   {
     read.directPeekBase = &myRAM[addr & 0x003F];
@@ -64,7 +64,7 @@ void CartridgeWD::install(System& system)
   // Set the page accessing method for the RAM writing pages
   // Map access to this class, since we need to inspect all accesses to
   // check if RWP happens
-  System::PageAccess write(this, System::PA_WRITE);
+  System::PageAccess write(this, System::PageAccessType::WRITE);
   for(uInt16 addr = 0x1040; addr < 0x1080; addr += System::PAGE_SIZE)
   {
     write.codeAccessBase = &myCodeAccessBase[addr & 0x003F];
@@ -153,7 +153,7 @@ bool CartridgeWD::bank(uInt16 bank)
 void CartridgeWD::segmentZero(uInt8 slice)
 {
   uInt16 offset = slice << 10;
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Skip first 128 bytes; it is always RAM
   for(uInt16 addr = 0x1080; addr < 0x1400; addr += System::PAGE_SIZE)
@@ -168,7 +168,7 @@ void CartridgeWD::segmentZero(uInt8 slice)
 void CartridgeWD::segmentOne(uInt8 slice)
 {
   uInt16 offset = slice << 10;
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
   {
@@ -182,7 +182,7 @@ void CartridgeWD::segmentOne(uInt8 slice)
 void CartridgeWD::segmentTwo(uInt8 slice)
 {
   uInt16 offset = slice << 10;
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   for(uInt16 addr = 0x1800; addr < 0x1C00; addr += System::PAGE_SIZE)
   {
@@ -207,7 +207,7 @@ void CartridgeWD::segmentThree(uInt8 slice, bool map3bytes)
     mySegment3[0x3FE] = myImage[0x2000+2];
   }
 
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   for(uInt16 addr = 0x1C00; addr < 0x2000; addr += System::PAGE_SIZE)
   {

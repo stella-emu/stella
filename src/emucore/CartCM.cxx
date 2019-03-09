@@ -115,7 +115,7 @@ bool CartridgeCM::bank(uInt16 bank)
   // The upper 2K of cart address space can point to either the 2K of RAM or
   // the upper 2K of the current ROM bank
 
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
 
   // Lower 2K (always ROM)
   for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
@@ -128,7 +128,7 @@ bool CartridgeCM::bank(uInt16 bank)
   // Upper 2K (RAM or ROM)
   for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.type = System::PA_READWRITE;
+    access.type = System::PageAccessType::READWRITE;
 
     if(mySWCHA & 0x10)
     {

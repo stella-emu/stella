@@ -79,7 +79,7 @@ void CartridgeAR::install(System& system)
   mySystem = &system;
 
   // Map all of the accesses to call peek and poke (we don't yet indicate RAM areas)
-  System::PageAccess access(this, System::PA_READ);
+  System::PageAccess access(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 
