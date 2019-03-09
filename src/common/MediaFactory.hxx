@@ -26,8 +26,13 @@
 #include "SerialPort.hxx"
 #if defined(BSPF_UNIX)
   #include "SerialPortUNIX.hxx"
-  #include "SettingsUNIX.hxx"
-  #include "OSystemUNIX.hxx"
+  #if defined(RETRON77)
+    #include "SettingsR77.hxx"
+    #include "OSystemR77.hxx"
+  #else
+    #include "SettingsUNIX.hxx"
+    #include "OSystemUNIX.hxx"
+  #endif
 #elif defined(BSPF_WINDOWS)
   #include "SerialPortWINDOWS.hxx"
   #include "SettingsWINDOWS.hxx"
@@ -70,7 +75,11 @@ class MediaFactory
     static unique_ptr<OSystem> createOSystem()
     {
     #if defined(BSPF_UNIX)
-      return make_unique<OSystemUNIX>();
+      #if defined(RETRON77)
+        return make_unique<OSystemR77>();
+      #else
+        return make_unique<OSystemUNIX>();
+      #endif
     #elif defined(BSPF_WINDOWS)
       return make_unique<OSystemWINDOWS>();
     #elif defined(BSPF_MACOS)
@@ -83,7 +92,11 @@ class MediaFactory
     static unique_ptr<Settings> createSettings()
     {
     #if defined(BSPF_UNIX)
-      return make_unique<SettingsUNIX>();
+      #if defined(RETRON77)
+        return make_unique<SettingsR77>();
+      #else
+        return make_unique<SettingsUNIX>();
+      #endif
     #elif defined(BSPF_WINDOWS)
       return make_unique<SettingsWINDOWS>();
     #elif defined(BSPF_MACOS)

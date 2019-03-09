@@ -205,8 +205,8 @@ Optional Features:
   --disable-static
   --enable-profile       build binary with profiling info [disabled]
   --disable-profile
-	--enable-debug				 build with debugging symbols [disabled]
-	--disable-debug
+  --enable-debug         build with debugging symbols [disabled]
+  --disable-debug
   --force-builtin-libpng force use of built-in libpng library [auto]
 
 Optional Libraries:
@@ -297,10 +297,8 @@ case $_host in
 #	_host_os=amigaos
 #	_host_cpu=ppc
 #	;;
-gp2x)
-	_host_os=gp2x
-	_host_cpu=arm
-	_host_prefix=arm-open2x-linux
+retron77)
+	_host_os=retron77
 	;;
 mingw32-cross)
 	_host_os=mingw32msvc
@@ -357,7 +355,7 @@ if test -n "$CXX"; then
 	echo $CXX
 else
 	if test -n "$_host"; then
-		compilers="$_host_prefix-g++ $_host_prefix-c++ $_host_cpu-$_host_os-g++ $_host_cpu-$_host_os-c++"
+		compilers="$_host_prefix-g++ $_host_prefix-c++ $_host_cpu-$_host_os-g++ $_host_cpu-$_host_os-c++ g++ c++"
 	else
 		compilers="g++ c++"
 	fi
@@ -514,6 +512,12 @@ fi
 if test -n "$_host"; then
 	# Cross-compiling mode - add your target here if needed
 	case "$_host" in
+    retron77)
+      echo "Compiling for $_host, disabling windowed mode, debugger and cheats."
+      _build_windowed=no
+      _build_debugger=no
+      _build_cheats=no
+      ;;
 		mingw32-cross)
 			echo "Cross-compiling for Windows using MinGW."
 			DEFINES="$DEFINES -DWIN32"
@@ -549,6 +553,10 @@ else
 		mingw*)
 			DEFINES="$DEFINES -DWIN32"
 			_host_os=win32
+			;;
+		os2*)
+			DEFINES="$DEFINES -DUNIX -DOS2"
+			_host_os=unix
 			;;
 		cygwin*)
 			DEFINES="$DEFINES -mno-cygwin -DWIN32"
@@ -734,6 +742,11 @@ case $_host_os in
 			MODULES="$MODULES $SRC/unix"
 			INCLUDES="$INCLUDES -I$SRC/unix"
 			;;
+    retron77)
+      DEFINES="$DEFINES -DBSPF_UNIX -DRETRON77"
+      MODULES="$MODULES $SRC/unix $SRC/unix/r77"
+      INCLUDES="$INCLUDES -I$SRC/unix -I$SRC/unix/r77"
+      ;;
 		win32)
 			DEFINES="$DEFINES -DBSPF_WINDOWS"
 			MODULES="$MODULES $SRC/windows"
