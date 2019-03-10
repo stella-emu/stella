@@ -185,20 +185,16 @@ class TIASurface
     };
     Filter myFilter;
 
-    enum {
-      kTIAW  = 160,
-      kTIAH  = TIAConstants::frameBufferHeight,
-      kScanH = kTIAH*2
-    };
-
     // NTSC object to use in TIA rendering mode
     NTSCFilter myNTSCFilter;
 
     /////////////////////////////////////////////////////////////
     // Phosphor mode items (aka reduced flicker on 30Hz screens)
     // RGB frame buffer
-    uInt32 myRGBFramebuffer[AtariNTSC::outWidth(kTIAW) * kTIAH];
-    uInt32 myPrevRGBFramebuffer[AtariNTSC::outWidth(kTIAW) * kTIAH];
+    uInt32 myRGBFramebuffer[AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
+                            TIAConstants::frameBufferHeight];
+    uInt32 myPrevRGBFramebuffer[AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
+                                TIAConstants::frameBufferHeight];
 
     // Use phosphor effect
     bool myUsePhosphor;

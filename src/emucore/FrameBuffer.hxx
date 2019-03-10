@@ -83,11 +83,6 @@ class VideoMode
 class FrameBuffer
 {
   public:
-    enum {
-      kTIAMinW = 320u, kTIAMinH = TIAConstants::viewableHeight,
-      kFBMinW  = 640u, kFBMinH  = 480u
-    };
-
     /**
       Creates a new Frame Buffer
     */

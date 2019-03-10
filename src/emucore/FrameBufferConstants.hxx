@@ -18,7 +18,14 @@
 #ifndef FRAMEBUFFER_CONSTANTS_HXX
 #define FRAMEBUFFER_CONSTANTS_HXX
 
+#include "TIAConstants.hxx"
 #include "bspf.hxx"
+
+// Minimum size for a framebuffer window
+namespace FBMinimum {
+  static constexpr uInt32 Width = TIAConstants::viewableWidth * 2;
+  static constexpr uInt32 Height = TIAConstants::viewableHeight * 2;
+}
 
 // Return values for initialization of framebuffer window
 enum class FBInitStatus {

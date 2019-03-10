@@ -133,21 +133,21 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher width ",
                                            lwidth, kLauncherSize, 6 * fontWidth, "px");
-  myLauncherWidthSlider->setMinValue(FrameBuffer::kFBMinW);
+  myLauncherWidthSlider->setMinValue(FBMinimum::Width);
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
   // one tickmark every ~100 pixel
-  myLauncherWidthSlider->setTickmarkInterval((ds.w - FrameBuffer::kFBMinW + 50) / 100);
+  myLauncherWidthSlider->setTickmarkInterval((ds.w - FBMinimum::Width + 50) / 100);
   wid.push_back(myLauncherWidthSlider);
   ypos += lineHeight + V_GAP;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher height ",
                                             lwidth, kLauncherSize, 6 * fontWidth, "px");
-  myLauncherHeightSlider->setMinValue(FrameBuffer::kFBMinH);
+  myLauncherHeightSlider->setMinValue(FBMinimum::Height);
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
   // one tickmark every ~100 pixel
-  myLauncherHeightSlider->setTickmarkInterval((ds.h - FrameBuffer::kFBMinH + 50) / 100);
+  myLauncherHeightSlider->setTickmarkInterval((ds.h - FBMinimum::Height + 50) / 100);
   wid.push_back(myLauncherHeightSlider);
   ypos += lineHeight + V_GAP;
 
@@ -237,8 +237,8 @@ void UIDialog::loadConfig()
   const GUI::Size& ls = settings.getSize("launcherres");
   uInt32 w = ls.w, h = ls.h;
 
-  w = std::max(w, uInt32(FrameBuffer::kFBMinW));
-  h = std::max(h, uInt32(FrameBuffer::kFBMinH));
+  w = std::max(w, FBMinimum::Width);
+  h = std::max(h, FBMinimum::Height);
   w = std::min(w, instance().frameBuffer().desktopSize().w);
   h = std::min(h, instance().frameBuffer().desktopSize().h);
 

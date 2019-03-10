@@ -16,7 +16,7 @@
 //============================================================================
 
 #include "Dialog.hxx"
-#include "FrameBuffer.hxx"
+#include "FrameBufferConstants.hxx"
 #include "OptionsDialog.hxx"
 #include "bspf.hxx"
 #include "Menu.hxx"
@@ -26,5 +26,5 @@ Menu::Menu(OSystem& osystem)
   : DialogContainer(osystem)
 {
   myBaseDialog = new OptionsDialog(myOSystem, *this, nullptr,
-      FrameBuffer::kFBMinW, FrameBuffer::kFBMinH, OptionsDialog::emulator);
+      FBMinimum::Width, FBMinimum::Height, OptionsDialog::emulator);
 }

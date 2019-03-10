@@ -23,7 +23,7 @@
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "TIA.hxx"
-    #include "PNGLibrary.hxx"
+#include "PNGLibrary.hxx"
 #include "TIASurface.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -42,19 +42,22 @@ TIASurface::TIASurface(OSystem& system)
   myNTSCFilter.loadConfig(myOSystem.settings());
 
   // Create a surface for the TIA image and scanlines; we'll need them eventually
-  myTiaSurface = myFB.allocateSurface(AtariNTSC::outWidth(kTIAW), kTIAH);
+  myTiaSurface = myFB.allocateSurface(AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
+                                      TIAConstants::frameBufferHeight);
 
   // Generate scanline data, and a pre-defined scanline surface
-  uInt32 scanData[kScanH];
-  for(int i = 0; i < kScanH; i+=2)
+  constexpr uInt32 scanHeight = TIAConstants::frameBufferHeight * 2;
+  uInt32 scanData[scanHeight];
+  for(uInt32 i = 0; i < scanHeight; i += 2)
   {
     scanData[i]   = 0x00000000;
     scanData[i+1] = 0xff000000;
   }
-  mySLineSurface = myFB.allocateSurface(1, kScanH, scanData);
+  mySLineSurface = myFB.allocateSurface(1, scanHeight, scanData);
 
   // Base TIA surface for use in taking snapshots in 1x mode
-  myBaseTiaSurface = myFB.allocateSurface(kTIAW*2, kTIAH);
+  myBaseTiaSurface = myFB.allocateSurface(TIAConstants::frameBufferWidth*2,
+                                          TIAConstants::frameBufferHeight);
 
   memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
 
@@ -278,8 +281,8 @@ void TIASurface::enableNTSC(bool enable)
   myFilter = Filter(enable ? uInt8(myFilter) | 0x10 : uInt8(myFilter) & 0x01);
 
   // Normal vs NTSC mode uses different source widths
-  myTiaSurface->setSrcSize(enable ?
-      AtariNTSC::outWidth(kTIAW) : uInt32(kTIAW), myTIA->height());
+  myTiaSurface->setSrcSize(enable ? AtariNTSC::outWidth(TIAConstants::frameBufferWidth)
+      : TIAConstants::frameBufferWidth, myTIA->height());
 
   FBSurface::Attributes& tia_attr = myTiaSurface->attributes();
   tia_attr.smoothing = myOSystem.settings().getBool("tia.inter");

@@ -814,7 +814,7 @@ bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
 {
   const GUI::Rect& r = instance().frameBuffer().imageRect();
 
-  if(r.width() <= FrameBuffer::kFBMinW || r.height() <= FrameBuffer::kFBMinH)
+  if(r.width() <= FBMinimum::Width || r.height() <= FBMinimum::Height)
   {
     w = r.width();
     h = r.height();

@@ -16,14 +16,14 @@
 //============================================================================
 
 #include "Dialog.hxx"
-#include "FrameBuffer.hxx"
+#include "FrameBufferConstants.hxx"
 #include "TimeMachineDialog.hxx"
 #include "TimeMachine.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachine::TimeMachine(OSystem& osystem)
   : DialogContainer(osystem),
-    myWidth(FrameBuffer::kFBMinW)
+    myWidth(FBMinimum::Width)
 {
   myBaseDialog = new TimeMachineDialog(myOSystem, *this, myWidth);
 }

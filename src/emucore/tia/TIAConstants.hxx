@@ -22,10 +22,12 @@
 
 namespace TIAConstants {
 
-  constexpr uInt32 frameBufferHeight = 320;
-  constexpr uInt32 maxYStart = 64;
-  constexpr uInt32 viewableHeight = 240;
-  constexpr uInt32 initialGarbageFrames = 10;
+  static constexpr uInt32 frameBufferWidth = 160;
+  static constexpr uInt32 frameBufferHeight = 320;
+  static constexpr uInt32 maxYStart = 64;  // TODO - this may be removed
+  static constexpr uInt32 viewableWidth = 320;
+  static constexpr uInt32 viewableHeight = 240;
+  static constexpr uInt32 initialGarbageFrames = 10;
 
   static constexpr uInt16
     H_PIXEL = 160, H_CYCLES = 76, CYCLE_CLOCKS = 3,

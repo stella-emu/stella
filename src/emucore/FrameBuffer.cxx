@@ -75,8 +75,8 @@ bool FrameBuffer::initialize()
     query_h = s.h;
   }
   // Various parts of the codebase assume a minimum screen size
-  myDesktopSize.w = std::max(query_w, uInt32(kFBMinW));
-  myDesktopSize.h = std::max(query_h, uInt32(kFBMinH));
+  myDesktopSize.w = std::max(query_w, FBMinimum::Width);
+  myDesktopSize.h = std::max(query_h, FBMinimum::Height);
 
   ////////////////////////////////////////////////////////////////////
   // Create fonts to draw text
@@ -88,7 +88,8 @@ bool FrameBuffer::initialize()
   //       We can probably add ifdefs to take care of corner cases,
   //       but that means we've failed to abstract it enough ...
   ////////////////////////////////////////////////////////////////////
-  bool smallScreen = myDesktopSize.w < kFBMinW || myDesktopSize.h < kFBMinH;
+  bool smallScreen = myDesktopSize.w < FBMinimum::Width ||
+                     myDesktopSize.h < FBMinimum::Height;
 
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
@@ -120,8 +121,9 @@ bool FrameBuffer::initialize()
     myLauncherFont = make_unique<GUI::Font>(GUI::stellaDesc);
 
   // Determine possible TIA windowed zoom levels
-  uInt32 maxZoom = maxWindowSizeForScreen(uInt32(kTIAMinW), uInt32(kTIAMinH),
-                     myDesktopSize.w, myDesktopSize.h);
+  uInt32 maxZoom = maxWindowSizeForScreen(
+      TIAConstants::viewableWidth, TIAConstants::viewableHeight,
+      myDesktopSize.w, myDesktopSize.h);
 
   // Figure our the smallest zoom level we can use
   uInt32 firstZoom = smallScreen ? 1 : 2;
@@ -186,7 +188,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // we're running on a 'large' system, and the window size requirements
   // can be relaxed
   // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
-  if(myDesktopSize.w < kFBMinW && myDesktopSize.h < kFBMinH &&
+  if(myDesktopSize.w < FBMinimum::Width && myDesktopSize.h < FBMinimum::Height &&
     (myDesktopSize.w < width || myDesktopSize.h < height))
     return FBInitStatus::FailTooLarge;
 
@@ -254,7 +256,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   }
 
   if(!myMsg.surface)
-    myMsg.surface = allocateSurface(kFBMinW, font().getFontHeight()+10);
+    myMsg.surface = allocateSurface(FBMinimum::Width, font().getFontHeight()+10);
 
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
@@ -837,7 +839,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 
     // Figure our the smallest zoom level we can use
     uInt32 firstZoom = 2;
-    if(myDesktopSize.w < kFBMinW || myDesktopSize.h < kFBMinH)
+    if(myDesktopSize.w < FBMinimum::Width || myDesktopSize.h < FBMinimum::Height)
       firstZoom = 1;
     for(uInt32 zoom = firstZoom; zoom <= maxZoom; ++zoom)
     {
@@ -924,8 +926,8 @@ VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     zoom(z),
     description(desc)
 {
-  sw = std::max(sw, uInt32(FrameBuffer::kTIAMinW));
-  sh = std::max(sh, uInt32(FrameBuffer::kTIAMinH));
+  sw = std::max(sw, TIAConstants::viewableWidth);
+  sh = std::max(sh, TIAConstants::viewableHeight);
   iw = std::min(iw, sw);
   ih = std::min(ih, sh);
   int ix = (sw - iw) >> 1;
