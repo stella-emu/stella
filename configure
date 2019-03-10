@@ -523,6 +523,11 @@ if test -n "$_host"; then
 			DEFINES="$DEFINES -DWIN32"
 			_host_os=win32
 			;;
+		*linux*)
+			echo "Cross-compiling to $_host target"
+			DEFINES="$DEFINES -DUNIX"
+			_host_os=unix
+			;;
 		*)
 			echo "Cross-compiling to unknown target, please add your target to configure."
 			exit 1
