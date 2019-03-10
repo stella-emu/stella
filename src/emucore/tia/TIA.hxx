@@ -252,9 +252,8 @@ class TIA : public Device
     uInt32 ystart() const { return myFrameManager->ystart(); }
 
     /**
-      Changes the current Height/YStart properties.
+      Changes the current YStart property.
     */
-    void setHeight(uInt32 height) { myFrameManager->setFixedHeight(height); }
     void setYStart(uInt32 ystart) { myFrameManager->setYstart(ystart); }
 
     void setLayout(FrameLayout layout) { myFrameManager->setLayout(layout); }

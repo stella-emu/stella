@@ -38,8 +38,6 @@ class FrameManager: public AbstractFrameManager {
 
     uInt32 height() const override { return myHeight; }
 
-    void setFixedHeight(uInt32 height) override;
-
     uInt32 getY() const override { return myY; }
 
     uInt32 scanlines() const override { return myCurrentFrameTotalLines; }
@@ -91,7 +89,6 @@ class FrameManager: public AbstractFrameManager {
     uInt32 myOverscanLines;
     uInt32 myFrameLines;
     uInt32 myHeight;
-    uInt32 myFixedHeight;
     uInt32 myYStart;
 
     bool myJitterEnabled;

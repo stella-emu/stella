@@ -746,6 +746,7 @@ void Console::updateYStart(uInt32 ystart)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setTIAProperties()
 {
+  // FIXME - ystart is probably disappearing soon, or at least autodetection is
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
   if(ystart != 0)
     ystart = BSPF::clamp(ystart, 0u, TIAConstants::maxYStart);
@@ -753,11 +754,6 @@ void Console::setTIAProperties()
     ystart = myAutodetectedYstart;
     myYStartAutodetected = true;
   }
-
-// FIXME -  Remove concept of 'height' entirely
-//          The height will eventually be constant, and the aspect scaling will take care
-//          of differences in NTSC vs. PAL
-  uInt32 height = TIAConstants::viewableHeight;
 
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
      myDisplayFormat == "SECAM60")
@@ -768,14 +764,10 @@ void Console::setTIAProperties()
   else
   {
     // Assume we've got ~312 scanlines (PAL-like format)
-    // PAL ROMs normally need at least 250 lines
-    height = std::max(height, 250u);
-
     myTIA->setLayout(FrameLayout::pal);
   }
 
   myTIA->setYStart(ystart);
-  myTIA->setHeight(height);
 
   myEmulationTiming.updateFrameLayout(myTIA->frameLayout());
   myEmulationTiming.updateConsoleTiming(myConsoleTiming);

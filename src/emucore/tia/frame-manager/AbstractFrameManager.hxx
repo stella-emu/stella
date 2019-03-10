@@ -149,12 +149,6 @@ class AbstractFrameManager : public Serializable
     virtual uInt32 height() const { return 0; }
 
     /**
-     * Configure a fixed frame height (the default is determined by the frame
-     * layout).
-     */
-    virtual void setFixedHeight(uInt32 height) {}
-
-    /**
      * The current y coordinate (valid only during rendering).
      */
     virtual uInt32 getY() const { return 0; }

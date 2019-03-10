@@ -45,7 +45,6 @@ FrameManager::FrameManager()
     myOverscanLines(0),
     myFrameLines(0),
     myHeight(0),
-    myFixedHeight(0),
     myYStart(0),
     myJitterEnabled(false)
 {
@@ -189,15 +188,7 @@ void FrameManager::onLayoutChange()
   }
 
   myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
-  if (myFixedHeight == 0)
-    myHeight = myKernelLines + Metrics::visibleOverscan;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setFixedHeight(uInt32 height)
-{
-  myFixedHeight = height;
-  myHeight = myFixedHeight > 0 ? myFixedHeight : (myKernelLines + Metrics::visibleOverscan);
+  myHeight = myKernelLines + Metrics::visibleOverscan;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -221,7 +212,6 @@ bool FrameManager::onSave(Serializer& out) const
   out.putInt(myOverscanLines);
   out.putInt(myFrameLines);
   out.putInt(myHeight);
-  out.putInt(myFixedHeight);
   out.putInt(myYStart);
 
   out.putBool(myJitterEnabled);
@@ -245,7 +235,6 @@ bool FrameManager::onLoad(Serializer& in)
   myOverscanLines = in.getInt();
   myFrameLines = in.getInt();
   myHeight = in.getInt();
-  myFixedHeight = in.getInt();
   myYStart = in.getInt();
 
   myJitterEnabled = in.getBool();
