@@ -1201,9 +1201,6 @@ int Thumbulator::execute()
       statusMsg << "bkpt 0x" << Base::HEX2 << rb << endl;
       return 1;
     }
-#else
-    case Op::bkpt:
-      break;
 #endif
 
     //BL/BLX(1)
@@ -1569,9 +1566,6 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "cps TODO" << endl);
       return 1;
     }
-#else
-    case Op::cps:
-      break;
 #endif
 
     //CPY copy high register
@@ -2208,9 +2202,6 @@ int Thumbulator::execute()
       statusMsg << "setend not implemented" << endl;
       return 1;
     }
-#else
-    case Op::setend:
-      break;
 #endif
 
     //STMIA
@@ -2499,8 +2490,13 @@ int Thumbulator::execute()
       return 0;
     }
 
+#ifndef UNSAFE_OPTIMIZATIONS
     case Op::invalid:
       break;
+#else
+    default:
+      break;
+#endif
   }
 
 #ifndef UNSAFE_OPTIMIZATIONS
