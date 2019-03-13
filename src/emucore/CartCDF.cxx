@@ -27,16 +27,18 @@
 #include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
 
-// Location of data within the RAM copy of the CDF Driver.
-//  Version                   0       1
-const uInt16 DSxPTR[]   = {0x06E0, 0x00A0};
-const uInt16 DSxINC[]   = {0x0768, 0x0128};
-const uInt16 WAVEFORM[] = {0x07F0, 0x01B0};
+namespace {
+  // Location of data within the RAM copy of the CDF Driver.
+  //  Version                   0       1
+  const uInt16 DSxPTR[]   = {0x06E0, 0x00A0};
+  const uInt16 DSxINC[]   = {0x0768, 0x0128};
+  const uInt16 WAVEFORM[] = {0x07F0, 0x01B0};
+}
+
 #define DSRAM         0x0800
 
-#define COMMSTREAM    0x20
-#define JUMPSTREAM    0x21
-#define AMPLITUDE     0x22
+#define COMMSTREAM        0x20
+#define JUMPSTREAM_BASE   0x21
 
 #define FAST_FETCH_ON ((myMode & 0x0F) == 0)
 #define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
@@ -71,7 +73,7 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
   bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myCDFRAM), 32768,
-    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, myVersion ?
+    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, myCDFVersion ?
     Thumbulator::ConfigureFor::CDF1 : Thumbulator::ConfigureFor::CDF, this);
 
   setInitialState();
@@ -196,10 +198,10 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     --myFastJumpActive;
     ++myJMPoperandAddress;
 
-    pointer = getDatastreamPointer(JUMPSTREAM);
+    pointer = getDatastreamPointer(myFastJumpStream);
     value = myDisplayImage[ pointer >> 20 ];
     pointer += 0x100000;  // always increment by 1
-    setDatastreamPointer(JUMPSTREAM, pointer);
+    setDatastreamPointer(myFastJumpStream, pointer);
 
     return value;
   }
@@ -207,11 +209,12 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   // test for JMP FASTJUMP where FASTJUMP = $0000
   if (FAST_FETCH_ON
       && peekvalue == 0x4C
-      && myProgramImage[myBankOffset + address+1] == 0
+      && (myProgramImage[myBankOffset + address+1] & myFastjumpStreamIndexMask) == 0
       && myProgramImage[myBankOffset + address+2] == 0)
   {
     myFastJumpActive = 2; // return next two peeks from datastream 31
     myJMPoperandAddress = address + 1;
+    myFastJumpStream = myProgramImage[myBankOffset + address+1] + JUMPSTREAM_BASE;
     return peekvalue;
   }
 
@@ -223,10 +226,10 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   //  3) peek value is 0-34
   if(FAST_FETCH_ON
      && myLDAimmediateOperandAddress == address
-     && peekvalue <= AMPLITUDE)
+     && peekvalue <= myAmplitudeStream)
   {
     myLDAimmediateOperandAddress = 0;
-    if (peekvalue == AMPLITUDE)
+    if (peekvalue == myAmplitudeStream)
     {
       updateMusicModeDataFetchers();
 
@@ -556,7 +559,7 @@ bool CartridgeCDF::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getDatastreamPointer(uInt8 index) const
 {
-  uInt16 address = DSxPTR[myVersion] + index * 4;
+  uInt16 address = myDatastreamBase + index * 4;
 
   return myCDFRAM[address + 0]        +  // low byte
         (myCDFRAM[address + 1] << 8)  +
@@ -567,7 +570,7 @@ uInt32 CartridgeCDF::getDatastreamPointer(uInt8 index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::setDatastreamPointer(uInt8 index, uInt32 value)
 {
-  uInt16 address = DSxPTR[myVersion] + index * 4;
+  uInt16 address = myDatastreamBase + index * 4;
 
   myCDFRAM[address + 0] = value & 0xff;          // low byte
   myCDFRAM[address + 1] = (value >> 8) & 0xff;
@@ -578,7 +581,7 @@ void CartridgeCDF::setDatastreamPointer(uInt8 index, uInt32 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getDatastreamIncrement(uInt8 index) const
 {
-  uInt16 address = DSxINC[myVersion] + index * 4;
+  uInt16 address = myDatastreamIncrementBase + index * 4;
 
   return myCDFRAM[address + 0]        +   // low byte
         (myCDFRAM[address + 1] << 8)  +
@@ -590,7 +593,7 @@ uInt32 CartridgeCDF::getDatastreamIncrement(uInt8 index) const
 uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 {
   uInt32 result;
-  uInt16 address = WAVEFORM[myVersion] + index * 4;
+  uInt16 address = myWaveformBase + index * 4;
 
   result = myCDFRAM[address + 0]        +  // low byte
           (myCDFRAM[address + 1] << 8)  +
@@ -609,7 +612,7 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 uInt32 CartridgeCDF::getSample()
 {
   uInt32 result;
-  uInt16 address = WAVEFORM[myVersion];
+  uInt16 address = myWaveformBase;
 
   result = myCDFRAM[address + 0]        +  // low byte
           (myCDFRAM[address + 1] << 8)  +
@@ -649,7 +652,7 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::setVersion()
 {
-  myVersion = 0;
+  uInt8 subversion = 0;
 
   for(uInt32 i = 0; i < 2048; i += 4)
   {
@@ -658,8 +661,24 @@ void CartridgeCDF::setVersion()
       if (  myImage[i+1] == 0x44 && myImage[i + 5] == 0x44 && myImage[i + 9] == 0x44) // D
         if (myImage[i+2] == 0x46 && myImage[i + 6] == 0x46 && myImage[i +10] == 0x46) // F
         {
-          myVersion = myImage[i+3];
+          subversion = myImage[i+3];
           break;
         }
   }
+
+  if (subversion == 0x4a) {
+    myCDFVersion = 1;
+    myCDFSubtype = CDFSubtype::CDFJ;
+    myAmplitudeStream = 0x23;
+    myFastjumpStreamIndexMask = 0xfe;
+  } else {
+    myCDFVersion = subversion;
+    myCDFSubtype = CDFSubtype::CDF;
+    myAmplitudeStream = 0x22;
+    myFastjumpStreamIndexMask = 0xff;
+  }
+
+  myDatastreamBase = DSxPTR[myCDFVersion];
+  myDatastreamIncrementBase = DSxINC[myCDFVersion];
+  myWaveformBase = WAVEFORM[myCDFVersion];
 }

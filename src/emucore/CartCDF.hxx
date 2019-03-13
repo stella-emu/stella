@@ -203,6 +203,13 @@ class CartridgeCDF : public Cartridge
     void setVersion();
 
   private:
+
+    enum class CDFSubtype {
+      CDF,
+      CDFJ
+    };
+
+  private:
     // The 32K ROM image of the cartridge
     uInt8 myImage[32768];
 
@@ -277,8 +284,29 @@ class CartridgeCDF : public Cartridge
 
     uInt8 myFastJumpActive;
 
-    // version of CDF
-    uInt16 myVersion;
+    // Pointer to the array of datastream pointers
+    uInt16 myDatastreamBase;
+
+    // Pointer to the array of datastream increments
+    uInt16 myDatastreamIncrementBase;
+
+    // Pointer to the beginning of the waveform data block
+    uInt16 myWaveformBase;
+
+    // Amplitude stream index
+    uInt8 myAmplitudeStream;
+
+    // Mask for determining the index of the datastream during fastjump
+    uInt8 myFastjumpStreamIndexMask;
+
+    // The currently selected fastjump stream
+    uInt8 myFastJumpStream;
+
+    // CDF version
+    uInt8 myCDFVersion;
+
+    // CDF subtype
+    CDFSubtype myCDFSubtype;
 
   private:
     // Following constructors and assignment operators not supported

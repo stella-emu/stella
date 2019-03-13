@@ -30,7 +30,8 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   uInt16 size = 8 * 4096;
 
   ostringstream info;
-  info << "CDF cartridge (version " << cart.myVersion << ")\n"
+  info << (cart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJ ? "CDFJ" : "CDF")
+  << " cartridge (version " << cart.myCDFVersion << ")\n"
   << "32K ROM, seven 4K banks are accessible to 2600\n"
   << "8K CDF RAM\n"
   << "CDF registers accessible @ $FFF0 - $FFF3\n"
