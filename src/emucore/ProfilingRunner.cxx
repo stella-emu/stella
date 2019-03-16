@@ -194,7 +194,7 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
 
     if (tia.newFramePending()) tia.renderToFrameBuffer();
 
-    uInt32 percentNow = std::min((100 * cycles) / cyclesTarget, static_cast<uInt64>(100));
+    uInt32 percentNow = uInt32(std::min((100 * cycles) / cyclesTarget, static_cast<uInt64>(100)));
     updateProgress(percent, percentNow);
 
     percent = percentNow;

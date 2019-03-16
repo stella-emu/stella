@@ -566,8 +566,6 @@
 		DCDDEAC51F5DBF0400C67366 /* RewindManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDDEAC11F5DBF0400C67366 /* RewindManager.hxx */; };
 		DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDDEAC21F5DBF0400C67366 /* StateManager.cxx */; };
 		DCDDEAC71F5DBF0400C67366 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */; };
-		DCDE17FA17724E5D00EB1AC6 /* ConfigPathDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */; };
-		DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */; };
 		DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */; };
 		DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */; };
 		DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */; };
@@ -621,6 +619,9 @@
 		DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DA10A762FC007A2870 /* CartF0.hxx */; };
 		DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF7B0DB10A762FC007A2870 /* CartFA.cxx */; };
 		DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DC10A762FC007A2870 /* CartFA.hxx */; };
+		DCF7F127223D796000701A47 /* ProfilingRunner.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF7F124223D795F00701A47 /* ProfilingRunner.cxx */; };
+		DCF7F128223D796000701A47 /* ConsoleIO.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7F125223D795F00701A47 /* ConsoleIO.hxx */; };
+		DCF7F129223D796000701A47 /* ProfilingRunner.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7F126223D795F00701A47 /* ProfilingRunner.hxx */; };
 		DCF8621621C9D3CE00F95F52 /* EmulationWarning.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF8621521C9D3CE00F95F52 /* EmulationWarning.hxx */; };
 		DCF8621921C9D43300F95F52 /* StaggeredLogger.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF8621721C9D43300F95F52 /* StaggeredLogger.cxx */; };
 		DCF8621A21C9D43300F95F52 /* StaggeredLogger.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF8621821C9D43300F95F52 /* StaggeredLogger.hxx */; };
@@ -1273,8 +1274,6 @@
 		DCDDEAC11F5DBF0400C67366 /* RewindManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RewindManager.hxx; sourceTree = "<group>"; };
 		DCDDEAC21F5DBF0400C67366 /* StateManager.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StateManager.cxx; sourceTree = "<group>"; };
 		DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StateManager.hxx; sourceTree = "<group>"; };
-		DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConfigPathDialog.cxx; sourceTree = "<group>"; };
-		DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConfigPathDialog.hxx; sourceTree = "<group>"; };
 		DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SnapshotDialog.cxx; sourceTree = "<group>"; };
 		DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SnapshotDialog.hxx; sourceTree = "<group>"; };
 		DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DispatchResult.cxx; sourceTree = "<group>"; };
@@ -1328,6 +1327,9 @@
 		DCF7B0DA10A762FC007A2870 /* CartF0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartF0.hxx; sourceTree = "<group>"; };
 		DCF7B0DB10A762FC007A2870 /* CartFA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA.cxx; sourceTree = "<group>"; };
 		DCF7B0DC10A762FC007A2870 /* CartFA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFA.hxx; sourceTree = "<group>"; };
+		DCF7F124223D795F00701A47 /* ProfilingRunner.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProfilingRunner.cxx; sourceTree = "<group>"; };
+		DCF7F125223D795F00701A47 /* ConsoleIO.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConsoleIO.hxx; sourceTree = "<group>"; };
+		DCF7F126223D795F00701A47 /* ProfilingRunner.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ProfilingRunner.hxx; sourceTree = "<group>"; };
 		DCF8621521C9D3CE00F95F52 /* EmulationWarning.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = EmulationWarning.hxx; path = exception/EmulationWarning.hxx; sourceTree = "<group>"; };
 		DCF8621721C9D43300F95F52 /* StaggeredLogger.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StaggeredLogger.cxx; sourceTree = "<group>"; };
 		DCF8621821C9D43300F95F52 /* StaggeredLogger.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StaggeredLogger.hxx; sourceTree = "<group>"; };
@@ -1827,6 +1829,7 @@
 				DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */,
 				2DE2DF380627AE07006BEC99 /* Console.cxx */,
 				2DE2DF390627AE07006BEC99 /* Console.hxx */,
+				DCF7F125223D795F00701A47 /* ConsoleIO.hxx */,
 				E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */,
 				2DE2DF3A0627AE07006BEC99 /* Control.cxx */,
 				2DE2DF3B0627AE07006BEC99 /* Control.hxx */,
@@ -1879,6 +1882,8 @@
 				2DE2DF830627AE34006BEC99 /* Paddles.hxx */,
 				DC53B6AD1F3622DA00AA6BFB /* PointingDevice.cxx */,
 				DC3DAFAB1F2E233B00A64410 /* PointingDevice.hxx */,
+				DCF7F124223D795F00701A47 /* ProfilingRunner.cxx */,
+				DCF7F126223D795F00701A47 /* ProfilingRunner.hxx */,
 				2DE2DF840627AE34006BEC99 /* Props.cxx */,
 				2DE2DF850627AE34006BEC99 /* Props.hxx */,
 				2DE2DF860627AE34006BEC99 /* PropsSet.cxx */,
@@ -1927,8 +1932,6 @@
 				2D73959408C3EB4E0060BB99 /* CommandDialog.hxx */,
 				2D73959508C3EB4E0060BB99 /* CommandMenu.cxx */,
 				2D73959608C3EB4E0060BB99 /* CommandMenu.hxx */,
-				DCDE17F617724E5D00EB1AC6 /* ConfigPathDialog.cxx */,
-				DCDE17F717724E5D00EB1AC6 /* ConfigPathDialog.hxx */,
 				DC5BE4B117C913AC0091FD64 /* ConsoleBFont.hxx */,
 				2D9217FA0857CC88001D664B /* ConsoleFont.hxx */,
 				DC5BE4B217C913AC0091FD64 /* ConsoleMediumBFont.hxx */,
@@ -2426,6 +2429,7 @@
 				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
 				DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */,
 				DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */,
+				DCF7F128223D796000701A47 /* ConsoleIO.hxx in Headers */,
 				DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */,
 				DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */,
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
@@ -2498,6 +2502,7 @@
 				DCE395F116CB0B5F008DB1E5 /* FSNodeZIP.hxx in Headers */,
 				DCE395F316CB0B5F008DB1E5 /* ZipHandler.hxx in Headers */,
 				DCAAE5D41715887B0080BB82 /* Cart2KWidget.hxx in Headers */,
+				DCF7F129223D796000701A47 /* ProfilingRunner.hxx in Headers */,
 				DCAAE5D61715887B0080BB82 /* Cart3FWidget.hxx in Headers */,
 				DCAAE5D81715887B0080BB82 /* Cart4KWidget.hxx in Headers */,
 				DCAAE5DA1715887B0080BB82 /* Cart0840Widget.hxx in Headers */,
@@ -2541,7 +2546,6 @@
 				DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */,
 				DC13B540176FF2F500B8B4BB /* RomListSettings.hxx in Headers */,
 				DC3EE85D1E2C0E6D00905161 /* gzguts.h in Headers */,
-				DCDE17FB17724E5D00EB1AC6 /* ConfigPathDialog.hxx in Headers */,
 				DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */,
 				DC79F81317A88D9E00288B91 /* Base.hxx in Headers */,
 				DC2AADB1194F389C0026C7A4 /* TIASurface.hxx in Headers */,
@@ -2890,6 +2894,7 @@
 				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
 				E09F4142201E9050004A3391 /* Audio.cxx in Sources */,
+				DCF7F127223D796000701A47 /* ProfilingRunner.cxx in Sources */,
 				DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */,
 				DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */,
 				DCCF49B714B7544A00814FAB /* PaddleWidget.cxx in Sources */,
@@ -2948,7 +2953,6 @@
 				DC676A5B1729A0B000E4E73D /* CartX07Widget.cxx in Sources */,
 				DC7A24DF173B1DBC00B20FE9 /* FileListWidget.cxx in Sources */,
 				DC13B53F176FF2F500B8B4BB /* RomListSettings.cxx in Sources */,
-				DCDE17FA17724E5D00EB1AC6 /* ConfigPathDialog.cxx in Sources */,
 				DC3EE8581E2C0E6D00905161 /* crc32.c in Sources */,
 				DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */,
 				DC79F81217A88D9E00288B91 /* Base.cxx in Sources */,
