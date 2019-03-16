@@ -53,7 +53,7 @@ using Common::Base;
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
+Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt16 rom_size,
                          bool traponfatal, Thumbulator::ConfigureFor configurefor,
                          Cartridge* cartridge)
   : rom(rom_ptr),
@@ -65,7 +65,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size
     configuration(configurefor),
     myCartridge(cartridge)
 {
-  for (uint32_t i = 0; i < romSize / 2; i++)
+  for(uInt16 i = 0; i < romSize / 2; ++i)
     decodedRom[i] = decodeInstructionWord(CONV_RAMROM(rom[i]));
 
   setConsoleTiming(ConsoleTiming::ntsc);

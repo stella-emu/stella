@@ -58,7 +58,7 @@ class Thumbulator
       DPCplus   // cartridges of type DPC+
     };
 
-    Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt32 rom_size,
+    Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt16 rom_size,
                 bool traponfatal, Thumbulator::ConfigureFor configurefor,
                 Cartridge* cartridge);
 
