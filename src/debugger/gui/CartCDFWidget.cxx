@@ -15,10 +15,32 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "CartCDF.hxx"
 #include "DataGridWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "CartCDFWidget.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeCDFWidget::describeCDFVersion(CartridgeCDF::CDFSubtype subtype) {
+  switch (subtype) {
+    case CartridgeCDF::CDFSubtype::CDF0:
+      return "CDF (v0)";
+
+    case CartridgeCDF::CDFSubtype::CDF1:
+      return "CDF (v1)";
+
+    case CartridgeCDF::CDFSubtype::CDFJ:
+      return "CDFJ";
+
+    default:
+      throw runtime_error("unreachable");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCDFWidget::isCDFJ() const
+{
+  return myCart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJ;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDFWidget::CartridgeCDFWidget(
@@ -30,8 +52,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   uInt16 size = 8 * 4096;
 
   ostringstream info;
-  info << (cart.myCDFSubtype == CartridgeCDF::CDFSubtype::CDFJ ? "CDFJ" : "CDF")
-  << " cartridge (version " << cart.myCDFVersion << ")\n"
+  info << describeCDFVersion(cart.myCDFSubtype) << " cartridge\n"
   << "32K ROM, seven 4K banks are accessible to 2600\n"
   << "8K CDF RAM\n"
   << "CDF registers accessible @ $FFF0 - $FFF3\n"
@@ -82,10 +103,16 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myDatastreamPointers->setTarget(this);
   myDatastreamPointers->setEditable(false);
 
-  myDatastreamPointers2 = new DataGridWidget(boss, _nfont, DS_X + myDatastreamPointers->getWidth() * 3 / 4, ypos+myLineHeight-2 + 8*myLineHeight, 1, 2, 6, 32, Common::Base::F_16_3_2);
-  myDatastreamPointers2->setTarget(this);
-  myDatastreamPointers2->setEditable(false);
+  myCommandStreamPointer = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 3 / 4, ypos+myLineHeight-2 + 8*myLineHeight, 1, 1, 6, 32, Common::Base::F_16_3_2);
+  myCommandStreamPointer->setTarget(this);
+  myCommandStreamPointer->setEditable(false);
 
+  if (isCDFJ())
+    myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 2 / 4, ypos+myLineHeight-2 + 9*myLineHeight, 2, 1, 6, 32, Common::Base::F_16_3_2);
+  else
+    myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 3 / 4, ypos+myLineHeight-2 + 9*myLineHeight, 1, 1, 6, 32, Common::Base::F_16_3_2);
+  myJumpStreamPointers->setTarget(this);
+  myJumpStreamPointers->setEditable(false);
 
   uInt32 row;
   for(row = 0; row < 8; ++row)
@@ -96,15 +123,17 @@ CartridgeCDFWidget::CartridgeCDFWidget(
                          myFontWidth*2, myFontHeight, "", TextAlign::Left);
     myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4, Common::Base::F_16_2));
   }
-  lwidth = _font.getStringWidth("Write Data (stream 20)");
+  lwidth = _font.getStringWidth("Jump Data (21+22)");
   myDatastreamLabels[8] =
   new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
                        ypos+myLineHeight-2 + 8*myLineHeight + 2,
-                       lwidth, myFontHeight, "Write Data (stream 20)", TextAlign::Left);
+                       lwidth, myFontHeight, "Write Data (20)", TextAlign::Left);
   myDatastreamLabels[9] =
   new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
                        ypos+myLineHeight-2 + 9*myLineHeight + 2,
-                       lwidth, myFontHeight, "Jump Data (stream 21)", TextAlign::Left);
+                       lwidth, myFontHeight,
+                       isCDFJ() ? "Jmp Data (21+22)" : "Jump Data (21)",
+                       TextAlign::Left);
 
   // Datastream Increments
   xpos = DS_X + myDatastreamPointers->getWidth() + 20;
@@ -115,9 +144,13 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   myDatastreamIncrements->setTarget(this);
   myDatastreamIncrements->setEditable(false);
 
-  myDatastreamIncrements2 = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2 + 8*myLineHeight, 1, 2, 5, 32, Common::Base::F_16_2_2);
-  myDatastreamIncrements2->setTarget(this);
-  myDatastreamIncrements2->setEditable(false);
+  myCommandStreamIncrement = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2 + 8*myLineHeight, 1, 1, 5, 32, Common::Base::F_16_2_2);
+  myCommandStreamIncrement->setTarget(this);
+  myCommandStreamIncrement->setEditable(false);
+
+  myJumpStreamIncrements = new DataGridWidget(boss, _nfont, xpos, ypos+myLineHeight-2 + 9*myLineHeight, isCDFJ() ? 2 : 1, 1, 5, 32, Common::Base::F_16_2_2);
+  myJumpStreamIncrements->setTarget(this);
+  myJumpStreamIncrements->setEditable(false);
 
   // Music counters
   xpos = 10;  ypos += myLineHeight*12 + 4;
@@ -194,7 +227,7 @@ void CartridgeCDFWidget::saveOldState()
   myOldState.internalram.clear();
   myOldState.samplepointer.clear();
 
-  for(uInt32 i = 0; i < 34; ++i)
+  for(uInt32 i = 0; i < (isCDFJ() ? 35 : 34); ++i)
   {
     // Pointers are stored as:
     // PPPFF---
@@ -262,7 +295,21 @@ void CartridgeCDFWidget::loadConfig()
     alist.push_back(0);  vlist.push_back(pointervalue);
     changed.push_back(pointervalue != myOldState.datastreampointers[i]);
   }
-  myDatastreamPointers2->setList(alist, vlist, changed);
+
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);
+  vlist.push_back(myCart.getDatastreamPointer(0x20) >> 12);
+  changed.push_back(static_cast<Int32>(myCart.getDatastreamPointer(0x20)) != myOldState.datastreampointers[0x20]);
+  myCommandStreamPointer->setList(alist, vlist, changed);
+
+  alist.clear();  vlist.clear();  changed.clear();
+  for(int i = 0; i < (isCDFJ() ? 2 : 1); ++i)
+  {
+    Int32 pointervalue = myCart.getDatastreamPointer(0x21 + i) >> 12;
+    alist.push_back(0);  vlist.push_back(pointervalue);
+    changed.push_back(pointervalue != myOldState.datastreampointers[0x21 + i]);
+  }
+  myJumpStreamPointers->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 32; ++i)
@@ -274,13 +321,19 @@ void CartridgeCDFWidget::loadConfig()
   myDatastreamIncrements->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
-  for(int i = 32; i < 34; ++i)
+  alist.push_back(0);
+  vlist.push_back(myCart.getDatastreamIncrement(0x20));
+  changed.push_back(static_cast<Int32>(myCart.getDatastreamIncrement(0x20)) != myOldState.datastreamincrements[0x20]);
+  myCommandStreamIncrement->setList(alist, vlist, changed);
+
+  alist.clear();  vlist.clear();  changed.clear();
+  for(int i = 0; i < (isCDFJ() ? 2 : 1); ++i)
   {
-    Int32 incrementvalue = myCart.getDatastreamIncrement(i);
-    alist.push_back(0);  vlist.push_back(incrementvalue);
-    changed.push_back(incrementvalue != myOldState.datastreamincrements[i]);
+    Int32 pointervalue = myCart.getDatastreamIncrement(0x21 + i) >> 12;
+    alist.push_back(0);  vlist.push_back(pointervalue);
+    changed.push_back(pointervalue != myOldState.datastreamincrements[0x21 + i]);
   }
-  myDatastreamIncrements2->setList(alist, vlist, changed);
+  myJumpStreamIncrements->setList(alist, vlist, changed);
 
   alist.clear();  vlist.clear();  changed.clear();
   for(int i = 0; i < 3; ++i)

@@ -18,12 +18,12 @@
 #ifndef CARTRIDGECDF_WIDGET_HXX
 #define CARTRIDGECDF_WIDGET_HXX
 
-class CartridgeCDF;
 class PopUpWidget;
 class CheckboxWidget;
 class DataGridWidget;
 class StaticTextWidget;
 
+#include "CartCDF.hxx"
 #include "CartDebugWidget.hxx"
 
 class CartridgeCDFWidget : public CartDebugWidget
@@ -56,8 +56,10 @@ class CartridgeCDFWidget : public CartDebugWidget
 
     DataGridWidget* myDatastreamPointers;
     DataGridWidget* myDatastreamIncrements;
-    DataGridWidget* myDatastreamPointers2;
-    DataGridWidget* myDatastreamIncrements2;
+    DataGridWidget* myCommandStreamPointer;
+    DataGridWidget* myCommandStreamIncrement;
+    DataGridWidget* myJumpStreamPointers;
+    DataGridWidget* myJumpStreamIncrements;
     DataGridWidget* myMusicCounters;
     DataGridWidget* myMusicFrequencies;
     DataGridWidget* myMusicWaveforms;
@@ -72,6 +74,10 @@ class CartridgeCDFWidget : public CartDebugWidget
     enum { kBankChanged = 'bkCH' };
 
   private:
+    bool isCDFJ() const;
+
+    static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);
+
     void saveOldState() override;
 
     void loadConfig() override;

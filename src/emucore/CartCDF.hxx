@@ -20,9 +20,7 @@
 
 class System;
 class Thumbulator;
-#ifdef DEBUGGER_SUPPORT
-  #include "CartCDFWidget.hxx"
-#endif
+class CartridgeCDFWidget;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
@@ -42,7 +40,7 @@ class Thumbulator;
 */
 class CartridgeCDF : public Cartridge
 {
-  friend class CartridgeCDFWidget;
+  friend CartridgeCDFWidget;
   friend class CartridgeRamCDFWidget;
 
   public:
@@ -149,10 +147,7 @@ class CartridgeCDF : public Cartridge
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                 const GUI::Font& nfont, int x, int y, int w, int h) override
-    {
-      return new CartridgeCDFWidget(boss, lfont, nfont, x, y, w, h, *this);
-    }
+                                 const GUI::Font& nfont, int x, int y, int w, int h) override;
 #endif
 
   public:
@@ -205,7 +200,8 @@ class CartridgeCDF : public Cartridge
   private:
 
     enum class CDFSubtype {
-      CDF,
+      CDF0,
+      CDF1,
       CDFJ
     };
 
@@ -301,9 +297,6 @@ class CartridgeCDF : public Cartridge
 
     // The currently selected fastjump stream
     uInt8 myFastJumpStream;
-
-    // CDF version
-    uInt8 myCDFVersion;
 
     // CDF subtype
     CDFSubtype myCDFSubtype;

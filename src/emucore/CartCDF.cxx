@@ -19,6 +19,7 @@
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
+  #include "CartCDFWidget.hxx"
 #endif
 
 #include "System.hxx"
@@ -26,14 +27,6 @@
 #include "CartCDF.hxx"
 #include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
-
-namespace {
-  // Location of data within the RAM copy of the CDF Driver.
-  //  Version                   0       1
-  const uInt16 DSxPTR[]   = {0x06E0, 0x00A0};
-  const uInt16 DSxINC[]   = {0x0768, 0x0128};
-  const uInt16 WAVEFORM[] = {0x07F0, 0x01B0};
-}
 
 #define DSRAM         0x0800
 
@@ -73,8 +66,8 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
   bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myCDFRAM), 32768,
-    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, myCDFVersion ?
-    Thumbulator::ConfigureFor::CDF1 : Thumbulator::ConfigureFor::CDF, this);
+    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, myCDFSubtype == CDFSubtype::CDF0 ?
+    Thumbulator::ConfigureFor::CDF : Thumbulator::ConfigureFor::CDF1, this);
 
   setInitialState();
 }
@@ -666,19 +659,45 @@ void CartridgeCDF::setVersion()
         }
   }
 
-  if (subversion == 0x4a) {
-    myCDFVersion = 1;
-    myCDFSubtype = CDFSubtype::CDFJ;
-    myAmplitudeStream = 0x23;
-    myFastjumpStreamIndexMask = 0xfe;
-  } else {
-    myCDFVersion = subversion;
-    myCDFSubtype = CDFSubtype::CDF;
-    myAmplitudeStream = 0x22;
-    myFastjumpStreamIndexMask = 0xff;
-  }
+  switch (subversion) {
+    case 0x4a:
+      myCDFSubtype = CDFSubtype::CDFJ;
 
-  myDatastreamBase = DSxPTR[myCDFVersion];
-  myDatastreamIncrementBase = DSxINC[myCDFVersion];
-  myWaveformBase = WAVEFORM[myCDFVersion];
+      myAmplitudeStream = 0x23;
+      myFastjumpStreamIndexMask = 0xfe;
+      myDatastreamBase = 0x0098;
+      myDatastreamIncrementBase = 0x0124;
+      myWaveformBase = 0x01b0;
+
+      break;
+
+    case 0:
+      myCDFSubtype = CDFSubtype::CDF0;
+
+      myAmplitudeStream = 0x22;
+      myFastjumpStreamIndexMask = 0xf4;
+      myDatastreamBase = 0x06e0;
+      myDatastreamIncrementBase = 0x0768;
+      myWaveformBase = 0x07f0;
+
+      break;
+
+    default:
+      myCDFSubtype = CDFSubtype::CDF1;
+
+      myAmplitudeStream = 0x22;
+      myFastjumpStreamIndexMask = 0xf4;
+      myDatastreamBase = 0x00a0;
+      myDatastreamIncrementBase = 0x0128;
+      myWaveformBase = 0x01b0;
+  }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#ifdef DEBUGGER_SUPPORT
+  CartDebugWidget* CartridgeCDF::debugWidget(GuiObject* boss, const GUI::Font& lfont,
+                               const GUI::Font& nfont, int x, int y, int w, int h)
+  {
+    return new CartridgeCDFWidget(boss, lfont, nfont, x, y, w, h, *this);
+  }
+#endif
