@@ -227,7 +227,7 @@ void CartridgeCDFWidget::saveOldState()
   myOldState.internalram.clear();
   myOldState.samplepointer.clear();
 
-  for(uInt32 i = 0; i < (isCDFJ() ? 35 : 34); ++i)
+  for(uInt32 i = 0; i < static_cast<uInt32>(isCDFJ() ? 35 : 34); ++i)
   {
     // Pointers are stored as:
     // PPPFF---
