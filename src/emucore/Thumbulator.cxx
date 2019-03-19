@@ -369,6 +369,9 @@ bool Thumbulator::isProtected(uInt32 addr)
     case ConfigureFor::CDF1:
       return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x00a0) && (addr < (0x00a0 + 284)));
 
+    case ConfigureFor::CDFJ:
+      return  (addr < 0x0800) && (addr > 0x0028) && !((addr >= 0x0098) && (addr < (0x0098 + 292)));
+
     case ConfigureFor::BUS:
       return  (addr < 0x06d8) && (addr > 0x0028);
   }
@@ -1412,6 +1415,7 @@ int Thumbulator::execute()
             break;
 
           case ConfigureFor::CDF1:
+          case ConfigureFor::CDFJ:
             // this subroutine interface is used in the CDF driver,
             // it starts at address 0x00000750
             // _SetNote:
@@ -2517,6 +2521,7 @@ int Thumbulator::reset()
     case ConfigureFor::BUS:
     case ConfigureFor::CDF:
     case ConfigureFor::CDF1:
+    case ConfigureFor::CDFJ:
       reg_norm[14] = 0x00000800; // Link Register
       reg_norm[15] = 0x0000080B; // Program Counter
       break;

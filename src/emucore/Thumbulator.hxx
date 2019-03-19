@@ -51,10 +51,11 @@ class Thumbulator
   public:
     // control cartridge specific features of the Thumbulator class,
     // such as the start location for calling custom code
-    enum ConfigureFor {
+    enum class ConfigureFor {
       BUS,      // cartridges of type BUS
       CDF,      // cartridges of type CDF
       CDF1,     // cartridges of type CDF version 1
+      CDFJ,     // cartrdiges of type CDFJ
       DPCplus   // cartridges of type DPC+
     };
 

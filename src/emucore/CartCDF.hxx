@@ -46,6 +46,14 @@ class CartridgeCDF : public Cartridge
   friend class CartridgeRamCDFWidget;
 
   public:
+
+    enum class CDFSubtype {
+      CDF0,
+      CDF1,
+      CDFJ
+    };
+
+  public:
     /**
       Create a new cartridge using the specified image
 
@@ -199,15 +207,7 @@ class CartridgeCDF : public Cartridge
     uInt32 getWaveform(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
-    void setVersion();
-
-  private:
-
-    enum class CDFSubtype {
-      CDF0,
-      CDF1,
-      CDFJ
-    };
+    void setupVersion();
 
   private:
     // The 32K ROM image of the cartridge

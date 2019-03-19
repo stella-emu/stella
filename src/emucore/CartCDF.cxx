@@ -37,6 +37,25 @@
 #define FAST_FETCH_ON ((myMode & 0x0F) == 0)
 #define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
 
+namespace {
+  Thumbulator::ConfigureFor thumulatorConfiguration(CartridgeCDF::CDFSubtype subtype)
+  {
+    switch (subtype) {
+      case CartridgeCDF::CDFSubtype::CDF0:
+        return Thumbulator::ConfigureFor::CDF;
+
+      case CartridgeCDF::CDFSubtype::CDF1:
+        return Thumbulator::ConfigureFor::CDF1;
+
+      case CartridgeCDF::CDFSubtype::CDFJ:
+        return Thumbulator::ConfigureFor::CDFJ;
+
+      default:
+        throw runtime_error("unreachable");
+    }
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
                            const string& md5, const Settings& settings)
@@ -61,14 +80,13 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
   // Pointer to the display RAM
   myDisplayImage = myCDFRAM + DSRAM;
 
-  setVersion();
+  setupVersion();
 
   // Create Thumbulator ARM emulator
   bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myCDFRAM), 32768,
-    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, myCDFSubtype == CDFSubtype::CDF0 ?
-    Thumbulator::ConfigureFor::CDF : Thumbulator::ConfigureFor::CDF1, this);
+    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, thumulatorConfiguration(myCDFSubtype), this);
 
   setInitialState();
 }
@@ -644,7 +662,7 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCDF::setVersion()
+void CartridgeCDF::setupVersion()
 {
   uInt8 subversion = 0;
 
