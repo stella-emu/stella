@@ -694,7 +694,7 @@ void CartridgeCDF::setupVersion()
       myCDFSubtype = CDFSubtype::CDF0;
 
       myAmplitudeStream = 0x22;
-      myFastjumpStreamIndexMask = 0xf4;
+      myFastjumpStreamIndexMask = 0xff;
       myDatastreamBase = 0x06e0;
       myDatastreamIncrementBase = 0x0768;
       myWaveformBase = 0x07f0;
@@ -705,7 +705,7 @@ void CartridgeCDF::setupVersion()
       myCDFSubtype = CDFSubtype::CDF1;
 
       myAmplitudeStream = 0x22;
-      myFastjumpStreamIndexMask = 0xf4;
+      myFastjumpStreamIndexMask = 0xff;
       myDatastreamBase = 0x00a0;
       myDatastreamIncrementBase = 0x0128;
       myWaveformBase = 0x01b0;
