@@ -44,18 +44,17 @@ CartRamWidget::CartRamWidget(
 
   EditTextWidget* etw = nullptr;
   ostringstream buf;
-  int xpos = 2, ypos = 5;
+  int xpos = 2, ypos = 8;
 
   // Add RAM size
-  new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "RAM Size ", TextAlign::Left);
+  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "RAM Size ");
 
   uInt32 ramsize = cartDebug.internalRamSize();
   buf << ramsize << " bytes";
   if(ramsize >= 1024)
     buf << " / " << (ramsize/1024) << "KB";
 
-  etw = new EditTextWidget(boss, nfont, xpos+lwidth, ypos,
+  etw = new EditTextWidget(boss, nfont, xpos+lwidth, ypos - 1,
                          fwidth, myLineHeight, buf.str());
   etw->setEditable(false);
   ypos += myLineHeight + 4;
@@ -69,9 +68,8 @@ CartRamWidget::CartRamWidget(
   if(lines < 3) lines = 3;
   if(lines > maxlines) lines = maxlines;
 
-  new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
-                       myFontHeight, "Description ", TextAlign::Left);
-  myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos,
+  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Description ");
+  myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos - 1,
                                 fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);
   myDesc->setList(sl);

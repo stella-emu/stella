@@ -200,13 +200,26 @@ class Cartridge : public Device
     virtual uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) { return 0; }
 
     /**
+      Get optional debugger widget responsible for displaying info about the cart.
+      This can be used when the debugWidget runs out of space.
+    */
+    virtual CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
+                                        const GUI::Font& nfont, int x, int y, int w, int h)
+    {
+      return nullptr;
+    }
+
+    /**
       Get debugger widget responsible for accessing the inner workings
       of the cart.  This will need to be overridden and implemented by
       each specific cart type, since the bankswitching/inner workings
       of each cart type can be very different from each other.
     */
     virtual CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-        const GUI::Font& nfont, int x, int y, int w, int h) { return nullptr; }
+                                         const GUI::Font& nfont, int x, int y, int w, int h)
+    {
+      return nullptr;
+    }
 
   protected:
     /**

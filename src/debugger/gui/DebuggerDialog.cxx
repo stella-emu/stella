@@ -632,14 +632,26 @@ void DebuggerDialog::addRomArea()
   addTabWidget(myRomTab);
 
   // The main disassembly tab
-  tabID = myRomTab->addTab("   Disassembly   ");
+  tabID = myRomTab->addTab("  Disassembly  ", TabWidget::AUTO_WIDTH);
   myRom = new RomWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
                         tabHeight - myRomTab->getTabHeight() - 2);
   myRomTab->setParentWidget(tabID, myRom);
   addToFocusList(myRom->getFocusList(), myRomTab, tabID);
 
-  // The 'cart-specific' information tab
-  tabID = myRomTab->addTab(instance().console().cartridge().name());
+  // The 'cart-specific' information tab (optional)
+
+  tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
+  myCartInfo = instance().console().cartridge().infoWidget(
+    myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
+    tabHeight - myRomTab->getTabHeight() - 2);
+  if(myCartInfo != nullptr)
+  {
+    myRomTab->setParentWidget(tabID, myCartInfo);
+    addToFocusList(myCartInfo->getFocusList(), myRomTab, tabID);
+    tabID = myRomTab->addTab("    States    ", TabWidget::AUTO_WIDTH);
+  }
+
+  // The 'cart-specific' state tab
   myCartDebug = instance().console().cartridge().debugWidget(
         myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
         tabHeight - myRomTab->getTabHeight() - 2);
@@ -651,7 +663,7 @@ void DebuggerDialog::addRomArea()
     // The cartridge RAM tab
     if (myCartDebug->internalRamSize() > 0)
     {
-      tabID = myRomTab->addTab(" Cartridge RAM ");
+      tabID = myRomTab->addTab(" Cartridge RAM ", TabWidget::AUTO_WIDTH);
       myCartRam =
         new CartRamWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
                 tabHeight - myRomTab->getTabHeight() - 2, *myCartDebug);

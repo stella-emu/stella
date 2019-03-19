@@ -954,6 +954,9 @@
     <ClCompile Include="..\emucore\ProfilingRunner.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartCDFInfoWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1948,6 +1951,9 @@
     </ClInclude>
     <ClInclude Include="..\emucore\ProfilingRunner.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartCDFInfoWidget.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

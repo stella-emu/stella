@@ -661,8 +661,10 @@ void DataGridWidget::drawWidget(bool hilite)
 
   // Cross out the grid?
   if(_crossGrid)
-    for(row = 1; row < 4; ++row)
-      s.hLine(_x, _y + (row * lineheight/4), _x + linewidth, kColor);
+  {
+    s.line(_x + 1, _y + 1, _x + _w - 2, _y + _h - 1, kColor);
+    s.line(_x + _w - 2, _y + 1, _x + 1, _y + _h - 1, kColor);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

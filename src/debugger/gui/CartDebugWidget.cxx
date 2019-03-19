@@ -45,24 +45,22 @@ int CartDebugWidget::addBaseInformation(int bytes, const string& manufacturer,
   EditTextWidget* w = nullptr;
   ostringstream buf;
 
-  int x = 10, y = 10;
+  int x = 2, y = 8;
 
   // Add ROM size, manufacturer and bankswitch info
-  new StaticTextWidget(_boss, _font, x, y, lwidth,
-        myFontHeight, "ROM Size ", TextAlign::Left);
+  new StaticTextWidget(_boss, _font, x, y + 1, "ROM Size ");
   buf << bytes << " bytes";
   if(bytes >= 1024)
     buf << " / " << (bytes/1024) << "KB";
 
-  w = new EditTextWidget(_boss, _nfont, x+lwidth, y,
-        fwidth, myLineHeight, buf.str());
+  w = new EditTextWidget(_boss, _nfont, x+lwidth, y - 1,
+                         fwidth, myLineHeight, buf.str());
   w->setEditable(false);
   y += myLineHeight + 4;
 
-  new StaticTextWidget(_boss, _font, x, y, lwidth,
-        myFontHeight, "Manufacturer ", TextAlign::Left);
-  w = new EditTextWidget(_boss, _nfont, x+lwidth, y,
-        fwidth, myLineHeight, manufacturer);
+  new StaticTextWidget(_boss, _font, x, y + 1, "Manufacturer ");
+  w = new EditTextWidget(_boss, _nfont, x+lwidth, y - 1,
+                         fwidth, myLineHeight, manufacturer);
   w->setEditable(false);
   y += myLineHeight + 4;
 
@@ -72,10 +70,9 @@ int CartDebugWidget::addBaseInformation(int bytes, const string& manufacturer,
   if(lines < 3) lines = 3;
   if(lines > maxlines) lines = maxlines;
 
-  new StaticTextWidget(_boss, _font, x, y, lwidth,
-        myFontHeight, "Description ", TextAlign::Left);
-  myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y,
-               fwidth, lines * myLineHeight, false);
+  new StaticTextWidget(_boss, _font, x, y + 1, "Description ");
+  myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y - 1,
+                                fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);
   myDesc->setList(sl);
 
@@ -93,5 +90,5 @@ void CartDebugWidget::invalidate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebugWidget::loadConfig()
 {
-  myDesc->setSelected(0);
+  //myDesc->setSelected(0);
 }

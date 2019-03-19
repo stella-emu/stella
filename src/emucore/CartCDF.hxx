@@ -21,6 +21,7 @@
 class System;
 class Thumbulator;
 class CartridgeCDFWidget;
+class CartridgeCDFInfoWidget;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
@@ -41,6 +42,7 @@ class CartridgeCDFWidget;
 class CartridgeCDF : public Cartridge
 {
   friend CartridgeCDFWidget;
+  friend CartridgeCDFInfoWidget;
   friend class CartridgeRamCDFWidget;
 
   public:
@@ -134,7 +136,7 @@ class CartridgeCDF : public Cartridge
 
       @return The name of the object
     */
-    string name() const override { return "CartridgeCDF"; }
+    string name() const override;
 
     /**
       Used for Thumbulator to pass values back to the cartridge
@@ -148,6 +150,8 @@ class CartridgeCDF : public Cartridge
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
                                  const GUI::Font& nfont, int x, int y, int w, int h) override;
+    CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
+                                const GUI::Font& nfont, int x, int y, int w, int h) override;
 #endif
 
   public:

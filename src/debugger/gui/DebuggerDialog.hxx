@@ -124,6 +124,7 @@ class DebuggerDialog : public Dialog
     CpuWidget*       myCpu;
     RamWidget*       myRam;
     RomWidget*       myRom;
+    CartDebugWidget* myCartInfo;
     CartDebugWidget* myCartDebug;
     CartRamWidget*   myCartRam;
     EditTextWidget*  myMessageBox;

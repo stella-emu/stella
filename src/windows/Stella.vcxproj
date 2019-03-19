@@ -402,6 +402,7 @@
     <ClCompile Include="..\debugger\gui\CartBFSCWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartBFWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartBUSWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\CartCDFInfoWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartCDFWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartCMWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartCTYWidget.cxx" />
@@ -1098,6 +1099,7 @@
     <ClInclude Include="..\debugger\gui\CartBFSCWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartBFWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartBUSWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\CartCDFInfoWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartCDFWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartCMWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartCTYWidget.hxx" />

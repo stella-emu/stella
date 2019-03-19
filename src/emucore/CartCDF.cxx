@@ -20,6 +20,7 @@
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "CartCDFWidget.hxx"
+  #include "CartCDFInfoWidget.hxx"
 #endif
 
 #include "System.hxx"
@@ -694,10 +695,32 @@ void CartridgeCDF::setVersion()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeCDF::name() const
+{
+  switch(myCDFSubtype)
+  {
+    case CDFSubtype::CDF0:
+      return "CartridgeCDF0";
+    case CDFSubtype::CDF1:
+      return "CartridgeCDF1";
+    case CDFSubtype::CDFJ:
+      return "CartridgeCDFJ";
+    default:
+      return "Cart unknown";
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #ifdef DEBUGGER_SUPPORT
   CartDebugWidget* CartridgeCDF::debugWidget(GuiObject* boss, const GUI::Font& lfont,
                                const GUI::Font& nfont, int x, int y, int w, int h)
   {
     return new CartridgeCDFWidget(boss, lfont, nfont, x, y, w, h, *this);
+  }
+
+  CartDebugWidget* CartridgeCDF::infoWidget(GuiObject* boss, const GUI::Font& lfont,
+                                             const GUI::Font& nfont, int x, int y, int w, int h)
+  {
+    return new CartridgeCDFInfoWidget(boss, lfont, nfont, x, y, w, h, *this);
   }
 #endif
