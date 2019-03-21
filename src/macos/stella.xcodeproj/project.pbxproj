@@ -652,6 +652,8 @@
 		E09F4142201E9050004A3391 /* Audio.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413E201E904F004A3391 /* Audio.cxx */; };
 		E09F4143201E9050004A3391 /* AudioChannel.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413F201E904F004A3391 /* AudioChannel.cxx */; };
 		E09F4144201E9050004A3391 /* AudioChannel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4140201E904F004A3391 /* AudioChannel.hxx */; };
+		E0A755782244294600101889 /* CartCDFInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0A755762244294600101889 /* CartCDFInfoWidget.hxx */; };
+		E0A755792244294600101889 /* CartCDFInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0A755772244294600101889 /* CartCDFInfoWidget.cxx */; };
 		E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */; };
 		E0DCD3A820A64E96000B614E /* LanczosResampler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */; };
 		E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */; };
@@ -1358,6 +1360,8 @@
 		E09F413E201E904F004A3391 /* Audio.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Audio.cxx; sourceTree = "<group>"; };
 		E09F413F201E904F004A3391 /* AudioChannel.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioChannel.cxx; sourceTree = "<group>"; };
 		E09F4140201E904F004A3391 /* AudioChannel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioChannel.hxx; sourceTree = "<group>"; };
+		E0A755762244294600101889 /* CartCDFInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCDFInfoWidget.hxx; sourceTree = "<group>"; };
+		E0A755772244294600101889 /* CartCDFInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCDFInfoWidget.cxx; sourceTree = "<group>"; };
 		E0DCD3A320A64E95000B614E /* LanczosResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LanczosResampler.hxx; path = audio/LanczosResampler.hxx; sourceTree = "<group>"; };
 		E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LanczosResampler.cxx; path = audio/LanczosResampler.cxx; sourceTree = "<group>"; };
 		E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ConvolutionBuffer.hxx; path = audio/ConvolutionBuffer.hxx; sourceTree = "<group>"; };
@@ -1516,6 +1520,8 @@
 				CFE3F6091E84A9A200A8204E /* CartCDFWidget.cxx */,
 				CFE3F60A1E84A9A200A8204E /* CartCDFWidget.hxx */,
 				DC676A2B1729A0B000E4E73D /* CartCMWidget.cxx */,
+				E0A755772244294600101889 /* CartCDFInfoWidget.cxx */,
+				E0A755762244294600101889 /* CartCDFInfoWidget.hxx */,
 				DC676A2C1729A0B000E4E73D /* CartCMWidget.hxx */,
 				DC676A2D1729A0B000E4E73D /* CartCTYWidget.cxx */,
 				DC676A2E1729A0B000E4E73D /* CartCTYWidget.hxx */,
@@ -2299,6 +2305,7 @@
 				2D91740209BA90380026E9FF /* BrowserDialog.hxx in Headers */,
 				2D91740309BA90380026E9FF /* Command.hxx in Headers */,
 				DC3EE85B1E2C0E6D00905161 /* deflate.h in Headers */,
+				E0A755782244294600101889 /* CartCDFInfoWidget.hxx in Headers */,
 				2D91740409BA90380026E9FF /* Dialog.hxx in Headers */,
 				E09F4144201E9050004A3391 /* AudioChannel.hxx in Headers */,
 				2D91740509BA90380026E9FF /* DialogContainer.hxx in Headers */,
@@ -2674,6 +2681,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */,
+				E0A755792244294600101889 /* CartCDFInfoWidget.cxx in Sources */,
 				E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */,
 				2D91747409BA90380026E9FF /* SDLMain.m in Sources */,
 				2D91747509BA90380026E9FF /* Booster.cxx in Sources */,
