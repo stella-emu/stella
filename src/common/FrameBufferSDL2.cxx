@@ -346,8 +346,8 @@ void FrameBufferSDL2::setWindowIcon()
 {
   ASSERT_MAIN_THREAD;
 
-#ifndef BSPF_MACOS          // Currently not needed for macOS
-#include "stella_icon.hxx"  // The Stella icon
+#if !defined(BSPF_MACOS) && !defined(RETRON77)
+#include "stella_icon.hxx"
 
   SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(stella_icon, 32, 32, 32,
                          32 * 4, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);
