@@ -31,9 +31,6 @@ class CartridgeCDFInfoWidget : public CartDebugWidget
     virtual ~CartridgeCDFInfoWidget() = default;
 
   private:
-    CartridgeCDF& myCart;
-
-  private:
     static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);
 
     // Following constructors and assignment operators not supported
