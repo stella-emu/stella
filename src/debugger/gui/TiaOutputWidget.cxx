@@ -78,7 +78,9 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
                height = instance().console().tia().height();
   FBSurface& s = dialog().surface();
 
-  GUI::Rect rect(_x, _y, _x + width*2, _y + height);
+  // to skip borders, add 1 to origin
+  int x = _x + 1, y = _y + 1;
+  GUI::Rect rect(x, y, x + width*2, y + height);
   string message = "Snapshot saved";
   try
   {
