@@ -179,12 +179,12 @@ void OSystem::loadConfig(const Settings::Options& options)
   FilesystemNode save(myDefaultSaveDir);
   if(!save.isDirectory())
     save.makeDir();
-  myDefaultSaveDir = node.getPath();
+  myDefaultSaveDir = save.getShortPath();
 
   FilesystemNode load(myDefaultLoadDir);
   if(!load.isDirectory())
     load.makeDir();
-  myDefaultLoadDir = node.getPath();
+  myDefaultLoadDir = load.getShortPath();
 
   logMessage("Loading config options ...", 2);
   mySettings->load(configFile(), options);

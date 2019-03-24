@@ -35,31 +35,21 @@ void OSystemWINDOWS::getBaseDirAndConfig(string& basedir, string& cfgfile,
       basedir += '\\';
     basedir += "Stella\\";
   }
-  savedir = loaddir = "~/"; // FIXME - change this to 'Desktop'
+  FilesystemNode defaultLoadSaveDir(homefinder.getDesktopPath());
+  savedir = loaddir = defaultLoadSaveDir.getShortPath();
 
   // Check to see if basedir overrides are active
   if(useappdir)
-    cout << "ERROR: base dir in app folder not supported" << endl;
-  else if(usedir != "")
   {
-    basedir = FilesystemNode(usedir).getPath();
-    savedir = loaddir = basedir;
+    char filename[MAX_PATH];
+    GetModuleFileNameA(NULL, filename, sizeof(filename));
+    FilesystemNode appdir(filename);
+    appdir = appdir.getParent();
+    if(appdir.isDirectory())
+      savedir = loaddir = basedir = appdir.getPath();
   }
+  else if(usedir != "")
+    savedir = loaddir = basedir = FilesystemNode(usedir).getPath();
 
   cfgfile = basedir + "stella.ini";
 }
-#if 0
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWINDOWS::defaultSaveDir() const
-{
-  HomeFinder homefinder;
-  FilesystemNode documents(homefinder.getDocumentsPath());
-  return documents.isDirectory() ? documents.getShortPath() + "\\Stella\\" : "~\\";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWINDOWS::defaultLoadDir() const
-{
-  return defaultSaveDir();
-}
-#endif

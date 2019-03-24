@@ -30,19 +30,6 @@ class HomeFinder
     HomeFinder() = default;
     ~HomeFinder() = default;
 
-    // Return the 'HOME/User' folder, or an empty string if the folder couldn't be determined.
-    const string& getHomePath() const
-    {
-      if(ourHomePath == "")
-      {
-        char folder_path[MAX_PATH];
-        HRESULT const result = SHGetFolderPathA(NULL, CSIDL_PROFILE | CSIDL_FLAG_CREATE,
-          NULL, 0, folder_path);
-        ourHomePath = (result == S_OK) ? folder_path : EmptyString;
-      }
-      return ourHomePath;
-    }
-
     // Return the 'APPDATA' folder, or an empty string if the folder couldn't be determined.
     const string& getAppDataPath() const
     {
@@ -54,6 +41,19 @@ class HomeFinder
         ourAppDataPath = (result == S_OK) ? folder_path : EmptyString;
       }
       return ourAppDataPath;
+    }
+
+    // Return the 'Desktop' folder, or an empty string if the folder couldn't be determined.
+    const string& getDesktopPath() const
+    {
+      if(ourDesktopPath == "")
+      {
+        char folder_path[MAX_PATH];
+        HRESULT const result = SHGetFolderPathA(NULL, CSIDL_DESKTOPDIRECTORY | CSIDL_FLAG_CREATE,
+          NULL, 0, folder_path);
+        ourDesktopPath = (result == S_OK) ? folder_path : EmptyString;
+      }
+      return ourDesktopPath;
     }
 
     // Return the 'My Documents' folder, or an empty string if the folder couldn't be determined.
@@ -69,8 +69,21 @@ class HomeFinder
       return ourDocumentsPath;
     }
 
+    // Return the 'HOME/User' folder, or an empty string if the folder couldn't be determined.
+    const string& getHomePath() const
+    {
+      if(ourHomePath == "")
+      {
+        char folder_path[MAX_PATH];
+        HRESULT const result = SHGetFolderPathA(NULL, CSIDL_PROFILE | CSIDL_FLAG_CREATE,
+          NULL, 0, folder_path);
+        ourHomePath = (result == S_OK) ? folder_path : EmptyString;
+      }
+      return ourHomePath;
+    }
+
   private:
-    static string ourHomePath, ourAppDataPath, ourDocumentsPath, ourDesktopPath;
+    static string ourHomePath, ourAppDataPath, ourDesktopPath, ourDocumentsPath;
 
     // Following constructors and assignment operators not supported
     HomeFinder(const HomeFinder&) = delete;
