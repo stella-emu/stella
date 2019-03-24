@@ -125,6 +125,7 @@ void Playfield::toggleEnabled(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Playfield::toggleCollisions(bool enabled)
 {
+  // Only keep bit 15 active if collisions are disabled.
   myCollisionMaskEnabled = enabled ? 0xFFFF : (0x8000 | myCollisionMaskDisabled);
 }
 
