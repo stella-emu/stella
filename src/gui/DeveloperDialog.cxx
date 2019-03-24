@@ -789,6 +789,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 void DeveloperDialog::loadConfig()
 {
   bool devSettings = instance().settings().getBool("dev.settings");
+  handleSettings(devSettings);
   mySettings = devSettings;
   mySettingsGroupEmulation->setSelected(devSettings ? 1 : 0);
   mySettingsGroupTia->setSelected(devSettings ? 1 : 0);
