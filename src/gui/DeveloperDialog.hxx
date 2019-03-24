@@ -78,11 +78,7 @@ class DeveloperDialog : public Dialog
       kDFontSizeChanged     = 'UIfs',
   #endif
     };
-    enum SettingsSet
-    {
-      player,
-      developer
-    };
+    enum SettingsSet { player = 0, developer = 1 };
 
     // MUST be aligned with RewindManager!
     static const int NUM_INTERVALS = 7;

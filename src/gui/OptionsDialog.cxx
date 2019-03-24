@@ -46,7 +46,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
-                             GuiObject* boss, int max_w, int max_h, stellaMode mode)
+                             GuiObject* boss, int max_w, int max_h, AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
     myMode(mode)
 {
@@ -139,7 +139,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   // Certain buttons are disabled depending on mode
-  if(myMode == launcher)
+  if(myMode == AppMode::launcher)
   {
     myCheatCodeButton->clearFlags(WIDGET_ENABLED);
   }
@@ -301,7 +301,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      if(myMode != emulator)
+      if(myMode != AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

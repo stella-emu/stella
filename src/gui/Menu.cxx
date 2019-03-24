@@ -26,5 +26,5 @@ Menu::Menu(OSystem& osystem)
   : DialogContainer(osystem)
 {
   myBaseDialog = new OptionsDialog(myOSystem, *this, nullptr,
-      FBMinimum::Width, FBMinimum::Height, OptionsDialog::emulator);
+      FBMinimum::Width, FBMinimum::Height, OptionsDialog::AppMode::emulator);
 }

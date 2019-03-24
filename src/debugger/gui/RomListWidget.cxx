@@ -86,7 +86,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
         CheckboxWidget::kCheckActionCmd);
     t->setTarget(this);
     t->setID(i);
-    t->setFill(CheckboxWidget::Circle);
+    t->setFill(CheckboxWidget::FillType::Circle);
     t->setTextColor(kTextColorEm);
     ypos += _fontHeight;
 

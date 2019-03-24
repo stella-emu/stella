@@ -110,7 +110,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
   else         // center text
     _textY = (14 - _font.getFontHeight()) / 2;
 
-  setFill(CheckboxWidget::Normal);
+  setFill(CheckboxWidget::FillType::Normal);
   myGroup->addWidget(this);
 }
 
@@ -143,10 +143,10 @@ void RadioButtonWidget::setFill(FillType type)
 {
   switch(type)
   {
-    case CheckboxWidget::Normal:
+    case CheckboxWidget::FillType::Normal:
       _img = radio_img_active;
       break;
-    case CheckboxWidget::Inactive:
+    case CheckboxWidget::FillType::Inactive:
       _img = radio_img_inactive;
       break;
     default:

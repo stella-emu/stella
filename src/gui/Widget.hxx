@@ -264,7 +264,7 @@ class CheckboxWidget : public ButtonWidget
 {
   public:
     enum { kCheckActionCmd  = 'CBAC' };
-    enum FillType { Normal, Inactive, Circle };
+    enum class FillType { Normal, Inactive, Circle };
 
   public:
     CheckboxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,

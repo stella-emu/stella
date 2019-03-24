@@ -44,15 +44,10 @@ class OptionsDialog : public Dialog
 {
   public:
     // Current Stella mode
-    enum stellaMode
-    {
-      launcher,
-      emulator,
-      debugger
-    };
+    enum class AppMode { launcher, emulator, debugger };
 
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
-                  int max_w, int max_h, stellaMode mode);
+                  int max_w, int max_h, AppMode mode);
     virtual ~OptionsDialog();
 
   private:
@@ -80,7 +75,7 @@ class OptionsDialog : public Dialog
     ButtonWidget* myCheatCodeButton;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
-    stellaMode myMode;
+    AppMode myMode;
 
     enum {
       kVidCmd      = 'VIDO',

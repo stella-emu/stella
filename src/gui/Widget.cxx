@@ -561,7 +561,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
   else         // center text
     _textY = (14 - _font.getFontHeight()) / 2;
 
-  setFill(CheckboxWidget::Normal);
+  setFill(CheckboxWidget::FillType::Normal);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -599,7 +599,7 @@ void CheckboxWidget::setEditable(bool editable)
   else
   {
     _bgcolor = kBGColorHi;
-    setFill(CheckboxWidget::Inactive);
+    setFill(CheckboxWidget::FillType::Inactive);
   }
   setDirty();
 }
@@ -609,15 +609,15 @@ void CheckboxWidget::setFill(FillType type)
 {
   switch(type)
   {
-    case CheckboxWidget::Normal:
+    case CheckboxWidget::FillType::Normal:
       _img = checked_img_active;
       _drawBox = true;
       break;
-    case CheckboxWidget::Inactive:
+    case CheckboxWidget::FillType::Inactive:
       _img = checked_img_inactive;
       _drawBox = true;
       break;
-    case CheckboxWidget::Circle:
+    case CheckboxWidget::FillType::Circle:
       _img = checked_img_circle;
       _drawBox = false;
       break;
