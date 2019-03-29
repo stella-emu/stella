@@ -229,9 +229,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // TV Mode
   items.clear();
   VarList::push_back(items, "Disabled", NTSCFilter::PRESET_OFF);
-  VarList::push_back(items, "Composite", NTSCFilter::PRESET_COMPOSITE);
-  VarList::push_back(items, "S-Video", NTSCFilter::PRESET_SVIDEO);
   VarList::push_back(items, "RGB", NTSCFilter::PRESET_RGB);
+  VarList::push_back(items, "S-Video", NTSCFilter::PRESET_SVIDEO);
+  VarList::push_back(items, "Composite", NTSCFilter::PRESET_COMPOSITE);
   VarList::push_back(items, "Bad adjust", NTSCFilter::PRESET_BAD);
   VarList::push_back(items, "Custom", NTSCFilter::PRESET_CUSTOM);
   lwidth = font.getStringWidth("TV Mode ");
@@ -305,9 +305,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + 4 + VGAP;
 
   ypos += VGAP;
-  CREATE_CLONE_BUTTON(Composite, "Clone Composite")
-  CREATE_CLONE_BUTTON(Svideo, "Clone S-Video")
   CREATE_CLONE_BUTTON(RGB, "Clone RGB")
+  CREATE_CLONE_BUTTON(Svideo, "Clone S-Video")
+  CREATE_CLONE_BUTTON(Composite, "Clone Composite")
   CREATE_CLONE_BUTTON(Bad, "Clone Bad adjust")
   CREATE_CLONE_BUTTON(Custom, "Revert")
 
