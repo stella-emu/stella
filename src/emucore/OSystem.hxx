@@ -60,6 +60,7 @@ class OSystem
 {
   friend class EventHandler;
   friend class VideoDialog;
+  friend class StellaSettingsDialog;
   friend class DeveloperDialog;
 
   public:

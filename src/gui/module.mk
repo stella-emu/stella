@@ -39,6 +39,7 @@ MODULE_OBJS := \
 	src/gui/RomInfoWidget.o \
 	src/gui/ScrollBarWidget.o \
 	src/gui/SnapshotDialog.o \
+	src/gui/StellaSettingsDialog.o \
 	src/gui/StringListWidget.o \
 	src/gui/TabWidget.o \
 	src/gui/TimeLineWidget.o \

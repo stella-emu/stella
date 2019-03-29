@@ -32,6 +32,7 @@
 #include "GameInfoDialog.hxx"
 #include "LoggerDialog.hxx"
 #include "DeveloperDialog.hxx"
+#include "StellaSettingsDialog.hxx"
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
@@ -88,7 +89,11 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("Snapshots" + ELLIPSIS, kSnapCmd);
   wid.push_back(b);
 
-  yoffset += rowHeight;
+  //yoffset += rowHeight;
+  // R77 TEST
+  b = ADD_OD_BUTTON("Stella Options" + ELLIPSIS, kStellaOptionsCmd);
+  wid.push_back(b);
+
 
   b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd);
   wid.push_back(b);
@@ -127,6 +132,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   myInputDialog    = make_unique<InputDialog>(osystem, parent, _font, max_w, max_h);
   myUIDialog       = make_unique<UIDialog>(osystem, parent, _font, boss, max_w, max_h);
   mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, _font, max_w, max_h);
+  myStellaOptionsDialog = make_unique<StellaSettingsDialog>(osystem, parent, _font, max_w, max_h);
   myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, _font, max_w, max_h);
   myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, _font, this, max_w, max_h);
 #ifdef CHEATCODE_SUPPORT
@@ -248,6 +254,21 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
                                                          instance().frameBuffer().font(), w, h);
       }
       myDeveloperDialog->open();
+      break;
+    }
+
+    case kStellaOptionsCmd:
+    {
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      uInt32 w = 0, h = 0;
+
+      if (myStellaOptionsDialog == nullptr || myStellaOptionsDialog->shouldResize(w, h))
+      {
+        myStellaOptionsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
+          instance().frameBuffer().font(), w, h);
+      }
+      myStellaOptionsDialog->open();
       break;
     }
 

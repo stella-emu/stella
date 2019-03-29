@@ -39,6 +39,7 @@ class LoggerDialog;
 #include "Dialog.hxx"
 
 class DeveloperDialog;
+class StellaSettingsDialog;
 
 class OptionsDialog : public Dialog
 {
@@ -61,6 +62,7 @@ class OptionsDialog : public Dialog
     unique_ptr<UIDialog>         myUIDialog;
     unique_ptr<SnapshotDialog>   mySnapshotDialog;
     unique_ptr<DeveloperDialog>  myDeveloperDialog;
+    unique_ptr<StellaSettingsDialog>  myStellaOptionsDialog;
     unique_ptr<GameInfoDialog>   myGameInfoDialog;
   #ifdef CHEATCODE_SUPPORT
     unique_ptr<CheatCodeDialog>  myCheatCodeDialog;
@@ -88,6 +90,7 @@ class OptionsDialog : public Dialog
       kCheatCmd    = 'CHET',
       kLoggerCmd   = 'LOGG',
       kDevelopCmd  = 'DEVL',
+      kStellaOptionsCmd = 'STOP',
       kHelpCmd     = 'HELP',
       kAboutCmd    = 'ABOU',
       kExitCmd     = 'EXIM'

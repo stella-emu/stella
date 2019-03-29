@@ -500,7 +500,7 @@
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="..\gui\RadioButtonWidget.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
-    <ClCompile Include="..\gui\StellaOptionsDialog.cxx" />
+    <ClCompile Include="..\gui\StellaSettingsDialog.cxx" />
     <ClCompile Include="..\gui\TimeLineWidget.cxx" />
     <ClCompile Include="..\gui\TimeMachine.cxx" />
     <ClCompile Include="..\gui\TimeMachineDialog.cxx" />
@@ -1218,7 +1218,7 @@
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
     <ClInclude Include="..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\gui\SnapshotDialog.hxx" />
-    <ClInclude Include="..\gui\StellaOptionsDialog.hxx" />
+    <ClInclude Include="..\gui\StellaSettingsDialog.hxx" />
     <ClInclude Include="..\gui\TimeLineWidget.hxx" />
     <ClInclude Include="..\gui\TimeMachine.hxx" />
     <ClInclude Include="..\gui\TimeMachineDialog.hxx" />
