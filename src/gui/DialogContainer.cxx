@@ -175,14 +175,14 @@ void DialogContainer::handleTextEvent(char text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod, bool state)
+void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod, bool pressed)
 {
   if(myDialogStack.empty())
     return;
 
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
-  if(state)
+  if(pressed)
   {
     myCurrentKeyDown.key = key;
     myCurrentKeyDown.mod = mod;
@@ -290,7 +290,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyBtnEvent(int stick, int button, uInt8 state)
+void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
 {
   if(myDialogStack.empty())
     return;
@@ -298,7 +298,7 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, uInt8 state)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
-  if(state == 1)
+  if(pressed)
   {
     myCurrentButtonDown.stick  = stick;
     myCurrentButtonDown.button = button;

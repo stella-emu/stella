@@ -237,7 +237,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool state)
+void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pressed)
 {
   // Swallow KBDK_TAB under certain conditions
   // See commments on 'myAltKeyCounter' for more information
@@ -253,17 +253,17 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
   EventHandlerState estate = myHandler.state();
 
   // Immediately store the key state
-  myEvent.setKey(key, state);
+  myEvent.setKey(key, pressed);
 
   // An attempt to speed up event processing; we quickly check for
   // Control or Alt/Cmd combos first
-  if(StellaModTest::isAlt(mod) && state)
+  if(StellaModTest::isAlt(mod) && pressed)
   {
 #ifdef BSPF_MACOS
     // These keys work in all states
     if(key == KBDK_Q)
     {
-      myHandler.handleEvent(Event::Quit, 1);
+      myHandler.handleEvent(Event::Quit);
     }
     else
 #endif
@@ -283,11 +283,12 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
       switch(key)
       {
         case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
-          myHandler.enterTimeMachineMenuMode((StellaModTest::isShift(mod) && state) ? 10 : 1, false);
+          //if (!myEvent.getKeys()[KBDK_SPACE])
+          myHandler.enterTimeMachineMenuMode((StellaModTest::isShift(mod) && pressed) ? 10 : 1, false);
           break;
 
         case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
-          myHandler.enterTimeMachineMenuMode((StellaModTest::isShift(mod) && state) ? 10 : 1, true);
+          myHandler.enterTimeMachineMenuMode((StellaModTest::isShift(mod) && pressed) ? 10 : 1, true);
           break;
 
         case KBDK_DOWN:  // Alt-down rewinds to start of list
@@ -471,12 +472,12 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
     else
       handled = false;
   }
-  else if(StellaModTest::isControl(mod) && state && myUseCtrlKeyFlag)
+  else if(StellaModTest::isControl(mod) && pressed && myUseCtrlKeyFlag)
   {
     // These keys work in all states
     if(key == KBDK_Q)
     {
-      myHandler.handleEvent(Event::Quit, 1);
+      myHandler.handleEvent(Event::Quit);
     }
     // These only work when in emulation mode
     else if(estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE)
@@ -539,7 +540,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
   {
     // Special handling for Escape key
     // Basically, exit whichever mode we're currently in
-    if(state && key == KBDK_ESCAPE)
+    if(pressed && key == KBDK_ESCAPE)
     {
       switch(estate)
       {
@@ -563,7 +564,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
     }
 
     // Handle keys which switch eventhandler state
-    if(!state && myHandler.changeStateByEvent(myKeyTable[key][kEmulationMode]))
+    if(!pressed && myHandler.changeStateByEvent(myKeyTable[key][kEmulationMode]))
       return;
   }
 
@@ -571,7 +572,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
   switch(estate)
   {
     case EventHandlerState::EMULATION:
-      myHandler.handleEvent(myKeyTable[key][kEmulationMode], state);
+      myHandler.handleEvent(myKeyTable[key][kEmulationMode], pressed);
       break;
 
     case EventHandlerState::PAUSE:
@@ -579,7 +580,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
       {
         case Event::TakeSnapshot:
         case Event::DebuggerMode:
-          myHandler.handleEvent(myKeyTable[key][kEmulationMode], state);
+          myHandler.handleEvent(myKeyTable[key][kEmulationMode], pressed);
           break;
 
         default:
@@ -589,7 +590,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
 
     default:
       if(myHandler.hasOverlay())
-        myHandler.overlay().handleKeyEvent(key, mod, state);
+        myHandler.overlay().handleKeyEvent(key, mod, pressed);
       break;
   }
 }

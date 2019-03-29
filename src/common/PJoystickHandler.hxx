@@ -80,7 +80,7 @@ class PhysicalJoystickHandler
 
     /** Handle a physical joystick event. */
     void handleAxisEvent(int stick, int axis, int value);
-    void handleBtnEvent(int stick, int button, uInt8 state);
+    void handleBtnEvent(int stick, int button, bool pressed);
     void handleHatEvent(int stick, int hat, int value);
 
     Event::Type eventForAxis(int stick, int axis, int value, EventMode mode) const {

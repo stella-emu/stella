@@ -68,11 +68,11 @@ class DialogContainer
     /**
       Handle a keyboard single-key event.
 
-      @param key    Actual key symbol
-      @param mod    Modifiers
-      @param state  Pressed (true) or released (false)
+      @param key      Actual key symbol
+      @param mod      Modifiers
+      @param pressed  Pressed (true) or released (false)
     */
-    void handleKeyEvent(StellaKey key, StellaMod mod, bool state);
+    void handleKeyEvent(StellaKey key, StellaMod mod, bool pressed);
 
     /**
       Handle a mouse motion event.
@@ -97,9 +97,9 @@ class DialogContainer
 
       @param stick   The joystick number
       @param button  The joystick button
-      @param state   The state (pressed or released)
+      @param pressed Pressed (true) or released (false)
     */
-    void handleJoyBtnEvent(int stick, int button, uInt8 state);
+    void handleJoyBtnEvent(int stick, int button, bool pressed);
 
     /**
       Handle a joystick axis event.

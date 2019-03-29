@@ -123,7 +123,7 @@ void EventHandlerSDL2::pollEvent()
       case SDL_JOYBUTTONDOWN:
       {
         handleJoyBtnEvent(myEvent.jbutton.which, myEvent.jbutton.button,
-                          myEvent.jbutton.state == SDL_PRESSED ? 1 : 0);
+                          myEvent.jbutton.state == SDL_PRESSED);
         break;
       }
 
@@ -165,7 +165,7 @@ void EventHandlerSDL2::pollEvent()
 
       case SDL_QUIT:
       {
-        handleEvent(Event::Quit, 1);
+        handleEvent(Event::Quit);
         break;  // SDL_QUIT
       }
 

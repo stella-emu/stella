@@ -160,10 +160,10 @@ class Event
     /**
       Set the value associated with the event of the specified type.
     */
-    void setKey(StellaKey key, bool state) {
+    void setKey(StellaKey key, bool pressed) {
       std::lock_guard<std::mutex> lock(myMutex);
 
-      myKeyTable[key] = state;
+      myKeyTable[key] = pressed;
     }
 
     /**

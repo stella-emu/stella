@@ -312,7 +312,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleEvent(Event::Type event, Int32 state)
+void EventHandler::handleEvent(Event::Type event, bool pressed)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
@@ -321,93 +321,93 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
     ////////////////////////////////////////////////////////////////////////
     // If enabled, make sure 'impossible' joystick directions aren't allowed
     case Event::JoystickZeroUp:
-      if(!myAllowAllDirectionsFlag && state)
+      if(!myAllowAllDirectionsFlag && pressed)
         myEvent.set(Event::JoystickZeroDown, 0);
       break;
 
     case Event::JoystickZeroDown:
-      if(!myAllowAllDirectionsFlag && state)
+      if(!myAllowAllDirectionsFlag && pressed)
         myEvent.set(Event::JoystickZeroUp, 0);
       break;
 
     case Event::JoystickZeroLeft:
-      if(!myAllowAllDirectionsFlag && state)
+      if(!myAllowAllDirectionsFlag && pressed)
         myEvent.set(Event::JoystickZeroRight, 0);
       break;
 
     case Event::JoystickZeroRight:
-      if(!myAllowAllDirectionsFlag && state)
+      if(!myAllowAllDirectionsFlag && pressed)
         myEvent.set(Event::JoystickZeroLeft, 0);
       break;
 
     case Event::JoystickOneUp:
-      if(!myAllowAllDirectionsFlag && state)
+      if(!myAllowAllDirectionsFlag && pressed)
         myEvent.set(Event::JoystickOneDown, 0);
       break;
 
     case Event::JoystickOneDown:
-      if(!myAllowAllDirectionsFlag && state)
+      if(!myAllowAllDirectionsFlag && pressed)
         myEvent.set(Event::JoystickOneUp, 0);
       break;
 
     case Event::JoystickOneLeft:
-      if(!myAllowAllDirectionsFlag && state)
+      if(!myAllowAllDirectionsFlag && pressed)
         myEvent.set(Event::JoystickOneRight, 0);
       break;
 
     case Event::JoystickOneRight:
-      if(!myAllowAllDirectionsFlag && state)
+      if(!myAllowAllDirectionsFlag && pressed)
         myEvent.set(Event::JoystickOneLeft, 0);
       break;
     ////////////////////////////////////////////////////////////////////////
 
     case Event::Fry:
-      if(myPKeyHandler->useCtrlKey()) myFryingFlag = bool(state);
+      if(myPKeyHandler->useCtrlKey()) myFryingFlag = bool(pressed);
       return;
 
     case Event::VolumeDecrease:
-      if(state) myOSystem.sound().adjustVolume(-1);
+      if(pressed) myOSystem.sound().adjustVolume(-1);
       return;
 
     case Event::VolumeIncrease:
-      if(state) myOSystem.sound().adjustVolume(+1);
+      if(pressed) myOSystem.sound().adjustVolume(+1);
       return;
 
     case Event::SoundToggle:
-      if(state) myOSystem.sound().toggleMute();
+      if(pressed) myOSystem.sound().toggleMute();
       return;
 
     case Event::SaveState:
-      if(state) myOSystem.state().saveState();
+      if(pressed) myOSystem.state().saveState();
       return;
 
     case Event::ChangeState:
-      if(state) myOSystem.state().changeState();
+      if(pressed) myOSystem.state().changeState();
       return;
 
     case Event::LoadState:
-      if(state) myOSystem.state().loadState();
+      if(pressed) myOSystem.state().loadState();
       return;
 
     case Event::TakeSnapshot:
-      if(state) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
+      if(pressed) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
 
     case Event::LauncherMode:
       if((myState == EventHandlerState::EMULATION || myState == EventHandlerState::CMDMENU ||
-          myState == EventHandlerState::DEBUGGER) && state)
+          myState == EventHandlerState::DEBUGGER) && pressed)
       {
         // Go back to the launcher, or immediately quit
         if(myOSystem.settings().getBool("exitlauncher") ||
            myOSystem.launcherUsed())
           myOSystem.createLauncher();
         else
-          handleEvent(Event::Quit, 1);
+          handleEvent(Event::Quit);
       }
       return;
 
     case Event::Quit:
-      if(state)
+      if(pressed)
       {
         saveKeyMapping();
         saveJoyMapping();
@@ -436,28 +436,28 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
     case Event::Combo16:
       for(int i = 0, combo = event - Event::Combo1; i < kEventsPerCombo; ++i)
         if(myComboTable[combo][i] != Event::NoType)
-          handleEvent(myComboTable[combo][i], state);
+          handleEvent(myComboTable[combo][i], pressed);
       return;
     ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////
     // Events which relate to switches()
     case Event::ConsoleColor:
-      if(state)
+      if(pressed)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause released" : "Color Mode");
       }
       break;
     case Event::ConsoleBlackWhite:
-      if(state)
+      if(pressed)
       {
         myEvent.set(Event::ConsoleColor, 0);
         myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
       }
       break;
     case Event::ConsoleColorToggle:
-      if(state)
+      if(pressed)
       {
         if(myOSystem.console().switches().tvColor())
         {
@@ -476,7 +476,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       return;
 
     case Event::Console7800Pause:
-      if(state)
+      if(pressed)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myEvent.set(Event::ConsoleColor, 0);
@@ -486,21 +486,21 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       break;
 
     case Event::ConsoleLeftDiffA:
-      if(state)
+      if(pressed)
       {
         myEvent.set(Event::ConsoleLeftDiffB, 0);
         myOSystem.frameBuffer().showMessage("Left Difficulty A");
       }
       break;
     case Event::ConsoleLeftDiffB:
-      if(state)
+      if(pressed)
       {
         myEvent.set(Event::ConsoleLeftDiffA, 0);
         myOSystem.frameBuffer().showMessage("Left Difficulty B");
       }
       break;
     case Event::ConsoleLeftDiffToggle:
-      if(state)
+      if(pressed)
       {
         if(myOSystem.console().switches().leftDifficultyA())
         {
@@ -519,21 +519,21 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
       return;
 
     case Event::ConsoleRightDiffA:
-      if(state)
+      if(pressed)
       {
         myEvent.set(Event::ConsoleRightDiffB, 0);
         myOSystem.frameBuffer().showMessage("Right Difficulty A");
       }
       break;
     case Event::ConsoleRightDiffB:
-      if(state)
+      if(pressed)
       {
         myEvent.set(Event::ConsoleRightDiffA, 0);
         myOSystem.frameBuffer().showMessage("Right Difficulty B");
       }
       break;
     case Event::ConsoleRightDiffToggle:
-      if(state)
+      if(pressed)
       {
         if(myOSystem.console().switches().rightDifficultyA())
         {
@@ -560,7 +560,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 state)
   }
 
   // Otherwise, pass it to the emulation core
-  myEvent.set(event, state);
+  myEvent.set(event, pressed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -569,40 +569,40 @@ void EventHandler::handleConsoleStartupEvents()
   bool update = false;
   if(myOSystem.settings().getBool("holdreset"))
   {
-    handleEvent(Event::ConsoleReset, 1);
+    handleEvent(Event::ConsoleReset);
     update = true;
   }
   if(myOSystem.settings().getBool("holdselect"))
   {
-    handleEvent(Event::ConsoleSelect, 1);
+    handleEvent(Event::ConsoleSelect);
     update = true;
   }
 
   const string& holdjoy0 = myOSystem.settings().getString("holdjoy0");
   update = update || holdjoy0 != "";
   if(BSPF::containsIgnoreCase(holdjoy0, "U"))
-    handleEvent(Event::JoystickZeroUp, 1);
+    handleEvent(Event::JoystickZeroUp);
   if(BSPF::containsIgnoreCase(holdjoy0, "D"))
-    handleEvent(Event::JoystickZeroDown, 1);
+    handleEvent(Event::JoystickZeroDown);
   if(BSPF::containsIgnoreCase(holdjoy0, "L"))
-    handleEvent(Event::JoystickZeroLeft, 1);
+    handleEvent(Event::JoystickZeroLeft);
   if(BSPF::containsIgnoreCase(holdjoy0, "R"))
-    handleEvent(Event::JoystickZeroRight, 1);
+    handleEvent(Event::JoystickZeroRight);
   if(BSPF::containsIgnoreCase(holdjoy0, "F"))
-    handleEvent(Event::JoystickZeroFire, 1);
+    handleEvent(Event::JoystickZeroFire);
 
   const string& holdjoy1 = myOSystem.settings().getString("holdjoy1");
   update = update || holdjoy1 != "";
   if(BSPF::containsIgnoreCase(holdjoy1, "U"))
-    handleEvent(Event::JoystickOneUp, 1);
+    handleEvent(Event::JoystickOneUp);
   if(BSPF::containsIgnoreCase(holdjoy1, "D"))
-    handleEvent(Event::JoystickOneDown, 1);
+    handleEvent(Event::JoystickOneDown);
   if(BSPF::containsIgnoreCase(holdjoy1, "L"))
-    handleEvent(Event::JoystickOneLeft, 1);
+    handleEvent(Event::JoystickOneLeft);
   if(BSPF::containsIgnoreCase(holdjoy1, "R"))
-    handleEvent(Event::JoystickOneRight, 1);
+    handleEvent(Event::JoystickOneRight);
   if(BSPF::containsIgnoreCase(holdjoy1, "F"))
-    handleEvent(Event::JoystickOneFire, 1);
+    handleEvent(Event::JoystickOneFire);
 
   if(update)
     myOSystem.console().riot().update();

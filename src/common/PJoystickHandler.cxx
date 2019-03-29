@@ -528,9 +528,9 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
           {
             // Otherwise, we know the event is digital
             if(value > Joystick::deadzone())
-              myHandler.handleEvent(eventAxisPos, 1);
+              myHandler.handleEvent(eventAxisPos);
             else if(value < -Joystick::deadzone())
-              myHandler.handleEvent(eventAxisNeg, 1);
+              myHandler.handleEvent(eventAxisNeg);
             else
             {
               // Treat any deadzone value as zero
@@ -542,8 +542,8 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
               {
                 // Turn off both events, since we don't know exactly which one
                 // was previously activated.
-                myHandler.handleEvent(eventAxisNeg, 0);
-                myHandler.handleEvent(eventAxisPos, 0);
+                myHandler.handleEvent(eventAxisNeg, false);
+                myHandler.handleEvent(eventAxisPos, false);
               }
             }
             j->axisLastValue[axis] = value;
@@ -593,7 +593,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, uInt8 state)
+void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed)
 {
   const PhysicalJoystickPtr j = joy(stick);
   if(!j)  return;
@@ -603,14 +603,14 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, uInt8 state)
   {
     case PhysicalJoystick::JT_REGULAR:
       // Handle buttons which switch eventhandler state
-      if(state && myHandler.changeStateByEvent(j->btnTable[button][kEmulationMode]))
+      if(pressed && myHandler.changeStateByEvent(j->btnTable[button][kEmulationMode]))
         return;
 
       // Determine which mode we're in, then send the event to the appropriate place
       if(myHandler.state() == EventHandlerState::EMULATION)
-        myHandler.handleEvent(j->btnTable[button][kEmulationMode], state);
+        myHandler.handleEvent(j->btnTable[button][kEmulationMode], pressed);
       else if(myHandler.hasOverlay())
-        myHandler.overlay().handleJoyBtnEvent(stick, button, state);
+        myHandler.overlay().handleJoyBtnEvent(stick, button, pressed);
       break;  // Regular button
 
     // These events don't have to pass through handleEvent, since
@@ -620,7 +620,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, uInt8 state)
       // The 'type-2' here refers to the fact that 'PhysicalJoystick::JT_STELLADAPTOR_LEFT'
       // and 'PhysicalJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
       // enum; subtracting two gives us Controller 0 and 1
-      if(button < 2) myEvent.set(SA_Button[j->type-2][button], state);
+      if(button < 2) myEvent.set(SA_Button[j->type-2][button], pressed ? 1 : 0);
       break;  // Stelladaptor button
     case PhysicalJoystick::JT_2600DAPTOR_LEFT:
     case PhysicalJoystick::JT_2600DAPTOR_RIGHT:
@@ -632,18 +632,18 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, uInt8 state)
         switch(myOSystem.console().leftController().type())
         {
           case Controller::Keyboard:
-            if(button < 12) myEvent.set(SA_Key[j->type-4][button], state);
+            if(button < 12) myEvent.set(SA_Key[j->type-4][button], pressed ? 1 : 0);
             break;
           default:
-            if(button < 4) myEvent.set(SA_Button[j->type-4][button], state);
+            if(button < 4) myEvent.set(SA_Button[j->type-4][button], pressed ? 1 : 0);
         }
         switch(myOSystem.console().rightController().type())
         {
           case Controller::Keyboard:
-            if(button < 12) myEvent.set(SA_Key[j->type-4][button], state);
+            if(button < 12) myEvent.set(SA_Key[j->type-4][button], pressed ? 1 : 0);
             break;
           default:
-            if(button < 4) myEvent.set(SA_Button[j->type-4][button], state);
+            if(button < 4) myEvent.set(SA_Button[j->type-4][button], pressed ? 1 : 0);
         }
       }
       break;  // 2600DAPTOR button

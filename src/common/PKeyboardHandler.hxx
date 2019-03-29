@@ -52,7 +52,7 @@ class PhysicalKeyboardHandler
     bool addMapping(Event::Type event, EventMode mode, StellaKey key);
 
     /** Handle a physical keyboard event. */
-    void handleEvent(StellaKey key, StellaMod mod, bool state);
+    void handleEvent(StellaKey key, StellaMod mod, bool pressed);
 
     Event::Type eventForKey(StellaKey key, EventMode mode) const {
       return myKeyTable[key][mode];

@@ -185,7 +185,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSnapshotCmd:
       instance().eventHandler().leaveMenuMode();
-      instance().eventHandler().handleEvent(Event::TakeSnapshot, 1);
+      instance().eventHandler().handleEvent(Event::TakeSnapshot);
       break;
 
     case kTimeMachineCmd:
@@ -194,7 +194,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      instance().eventHandler().handleEvent(Event::LauncherMode, 1);
+      instance().eventHandler().handleEvent(Event::LauncherMode);
       break;
 
     // Column 3
@@ -227,18 +227,18 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
   }
 
-  // Console commands show be performed right away, after leaving the menu
+  // Console commands should be performed right away, after leaving the menu
   // State commands require you to exit the menu manually
   if(consoleCmd)
   {
     instance().eventHandler().leaveMenuMode();
-    instance().eventHandler().handleEvent(event, 1);
+    instance().eventHandler().handleEvent(event);
     instance().console().switches().update();
     instance().console().tia().update();
-    instance().eventHandler().handleEvent(event, 0);
+    instance().eventHandler().handleEvent(event, false);
   }
   else if(stateCmd)
-    instance().eventHandler().handleEvent(event, 1);
+    instance().eventHandler().handleEvent(event);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

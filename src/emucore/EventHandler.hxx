@@ -115,7 +115,7 @@ class EventHandler
     /**
       This method indicates that the system should terminate.
     */
-    void quit() { handleEvent(Event::Quit, 1); }
+    void quit() { handleEvent(Event::Quit, true); }
 
     /**
       Sets the mouse axes and buttons to act as the controller specified in
@@ -137,10 +137,10 @@ class EventHandler
       Send an event directly to the event handler.
       These events cannot be remapped.
 
-      @param type  The event
-      @param value The value for the event
+      @param type    The event
+      @param pressed Pressed (true) or released (false)
     */
-    void handleEvent(Event::Type type, Int32 value);
+    void handleEvent(Event::Type type, bool pressed = true);
 
     /**
       Handle events that must be processed each time a new console is
@@ -314,11 +314,11 @@ class EventHandler
     void handleTextEvent(char text);
     void handleMouseMotionEvent(int x, int y, int xrel, int yrel);
     void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y);
-    void handleKeyEvent(StellaKey key, StellaMod mod, bool state) {
-      myPKeyHandler->handleEvent(key, mod, state);
+    void handleKeyEvent(StellaKey key, StellaMod mod, bool pressed) {
+      myPKeyHandler->handleEvent(key, mod, pressed);
     }
-    void handleJoyBtnEvent(int stick, int button, uInt8 state) {
-      myPJoyHandler->handleBtnEvent(stick, button, state);
+    void handleJoyBtnEvent(int stick, int button, bool pressed) {
+      myPJoyHandler->handleBtnEvent(stick, button, pressed);
     }
     void handleJoyAxisEvent(int stick, int axis, int value) {
       myPJoyHandler->handleAxisEvent(stick, axis, value);
