@@ -37,7 +37,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth();
   int xpos, ypos;
-    
+
   WidgetArray wid;
   VariantList items;
 
@@ -197,7 +197,7 @@ void StellaSettingsDialog::loadConfig()
 
   // TV Mode
   myTVMode->setSelected(
-    settings.getString("tv.filter"), "0");  
+    settings.getString("tv.filter"), "0");
 
   // TV scanline intensity and interpolation
   myTVScanIntense->setValue(settings.getInt("tv.scanlines"));
@@ -260,7 +260,7 @@ void StellaSettingsDialog::saveConfig()
   {
     instance().console().setProperties(myGameProperties);
   }
-  
+
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();
 }

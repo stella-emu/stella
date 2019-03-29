@@ -327,16 +327,16 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool sta
           myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_OFF);
           break;
 
-        case KBDK_2:  // Alt-2 turns on 'composite' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_COMPOSITE);
+        case KBDK_2:  // Alt-2 turns on 'rgb' NTSC filtering
+          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_RGB);
           break;
 
         case KBDK_3:  // Alt-3 turns on 'svideo' NTSC filtering
           myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_SVIDEO);
           break;
 
-        case KBDK_4:  // Alt-4 turns on 'rgb' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_RGB);
+        case KBDK_4:  // Alt-4 turns on 'composite' NTSC filtering
+          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::PRESET_COMPOSITE);
           break;
 
         case KBDK_5:  // Alt-5 turns on 'bad' NTSC filtering

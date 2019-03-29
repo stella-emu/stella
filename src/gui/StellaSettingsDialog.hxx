@@ -41,7 +41,7 @@ class StellaSettingsDialog : public Dialog
     void addVideoOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
     void addUIOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
     void addGameOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
-    
+
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleTVModeChange();
     void handlePhosphorChange();
