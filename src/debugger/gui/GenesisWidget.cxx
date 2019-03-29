@@ -72,14 +72,14 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GenesisWidget::loadConfig()
 {
-  myPins[kJUp]->setState(!myController.read(ourPinNo[kJUp]));
-  myPins[kJDown]->setState(!myController.read(ourPinNo[kJDown]));
-  myPins[kJLeft]->setState(!myController.read(ourPinNo[kJLeft]));
-  myPins[kJRight]->setState(!myController.read(ourPinNo[kJRight]));
-  myPins[kJBbtn]->setState(!myController.read(ourPinNo[kJBbtn]));
+  myPins[kJUp]->setState(!myController->getPin(ourPinNo[kJUp]));
+  myPins[kJDown]->setState(!myController->getPin(ourPinNo[kJDown]));
+  myPins[kJLeft]->setState(!myController->getPin(ourPinNo[kJLeft]));
+  myPins[kJRight]->setState(!myController->getPin(ourPinNo[kJRight]));
+  myPins[kJBbtn]->setState(!myController->getPin(ourPinNo[kJBbtn]));
 
   myPins[kJCbtn]->setState(
-    myController.read(Controller::Five) == Controller::MAX_RESISTANCE);
+    myController->getPin(Controller::AnalogPin::Five) == Controller::MAX_RESISTANCE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,10 +95,10 @@ void GenesisWidget::handleCommand(
       case kJLeft:
       case kJRight:
       case kJBbtn:
-        myController.set(ourPinNo[id], !myPins[id]->getState());
+        myController->setPin(ourPinNo[id], !myPins[id]->getState());
         break;
       case kJCbtn:
-        myController.set(Controller::Five,
+        myController->setPin(Controller::AnalogPin::Five,
           myPins[id]->getState() ? Controller::MAX_RESISTANCE :
                                    Controller::MIN_RESISTANCE);
         break;
@@ -108,6 +108,6 @@ void GenesisWidget::handleCommand(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::DigitalPin GenesisWidget::ourPinNo[5] = {
-  Controller::One, Controller::Two, Controller::Three, Controller::Four,
-  Controller::Six
+  Controller::DigitalPin::One, Controller::DigitalPin::Two, Controller::DigitalPin::Three, Controller::DigitalPin::Four,
+  Controller::DigitalPin::Six
 };

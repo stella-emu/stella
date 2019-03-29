@@ -21,21 +21,16 @@
 #ifndef CONSOLE_IO_HXX
 #define CONSOLE_IO_HXX
 
-class ConsoleIO {
+class ConsoleIO
+{
   public:
-
     /**
       Get the controller plugged into the specified jack
 
       @return The specified controller
     */
     virtual Controller& leftController() const = 0;
-
     virtual Controller& rightController() const = 0;
-
-    Controller& controller(Controller::Jack jack) const {
-      return jack == Controller::Left ? leftController() : rightController();
-    }
 
     /**
       Get the console switches

@@ -20,24 +20,24 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MindLink::MindLink(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::MindLink),
+  : Controller(jack, event, system, Controller::Type::MindLink),
     myMindlinkPos(0x2800),
     myMindlinkShift(1),
     myMouseEnabled(false)
 {
-  myDigitalPinState[One]   = true;
-  myDigitalPinState[Two]   = true;
-  myDigitalPinState[Three] = true;
-  myDigitalPinState[Four]  = true;
+  setPin(DigitalPin::One, true);
+  setPin(DigitalPin::Two, true);
+  setPin(DigitalPin::Three, true);
+  setPin(DigitalPin::Four, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MindLink::update()
 {
-  myDigitalPinState[One]   =
-  myDigitalPinState[Two]   =
-  myDigitalPinState[Three] =
-  myDigitalPinState[Four]  = true;
+  setPin(DigitalPin::One, true);
+  setPin(DigitalPin::Two, true);
+  setPin(DigitalPin::Three, true);
+  setPin(DigitalPin::Four, true);
 
   if(!myMouseEnabled)
     return;
@@ -60,12 +60,12 @@ void MindLink::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MindLink::nextMindlinkBit()
 {
-  if(myDigitalPinState[One])
+  if(getPin(DigitalPin::One))
   {
-    myDigitalPinState[Three] = false;
-    myDigitalPinState[Four]  = false;
+    setPin(DigitalPin::Three, false);
+    setPin(DigitalPin::Four, false);
     if(myMindlinkPos & myMindlinkShift)
-      myDigitalPinState[Four] = true;
+      setPin(DigitalPin::Four, true);
     myMindlinkShift <<= 1;
 	}
 }

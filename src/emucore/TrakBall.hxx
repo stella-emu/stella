@@ -31,9 +31,14 @@ class TrakBall : public PointingDevice
       @param system The system using this controller
     */
     TrakBall(Jack jack, const Event& event, const System& system)
-      : PointingDevice(jack, event, system, Controller::TrakBall,
+      : PointingDevice(jack, event, system, Controller::Type::TrakBall,
         trackballSensitivity) { }
     virtual ~TrakBall() = default;
+
+    /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "TrakBall"; }
 
   protected:
     uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) override

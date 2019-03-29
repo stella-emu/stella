@@ -59,7 +59,7 @@ class MindLink : public Controller
       @param pin The pin of the controller jack to write to
       @param value The value to write to the pin
     */
-    void write(DigitalPin pin, bool value) override { myDigitalPinState[pin] = value; }
+    void write(DigitalPin pin, bool value) override { setPin(pin, value); }
 
     /**
       Called after *all* digital pins have been written on Port A.
@@ -71,6 +71,11 @@ class MindLink : public Controller
       events currently set.
     */
     void update() override;
+
+    /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "MindLink"; }
 
     /**
       Answers whether the controller is intrinsically an analog controller.

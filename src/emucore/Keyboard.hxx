@@ -57,6 +57,11 @@ class Keyboard : public Controller
     */
     void update() override { }
 
+    /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "Keyboard"; }
+
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()

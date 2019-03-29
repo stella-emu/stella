@@ -31,9 +31,14 @@ class AtariMouse : public PointingDevice
       @param system The system using this controller
     */
     AtariMouse(Jack jack, const Event& event, const System& system)
-      : PointingDevice(jack, event, system, Controller::AtariMouse,
+      : PointingDevice(jack, event, system, Controller::Type::AtariMouse,
         trackballSensitivity) { }
     virtual ~AtariMouse() = default;
+
+    /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "AtariMouse"; }
 
   protected:
     uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8, uInt8) override

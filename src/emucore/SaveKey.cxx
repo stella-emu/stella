@@ -27,13 +27,14 @@ SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
 {
   myEEPROM = make_unique<MT24LC256>(eepromfile, system, callback);
 
-  myDigitalPinState[One] = myDigitalPinState[Two] = true;
+  setPin(DigitalPin::One, true);
+  setPin(DigitalPin::Two, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
                  const string& eepromfile, onMessageCallback callback)
-  : SaveKey(jack, event, system, eepromfile, callback, Controller::SaveKey)
+  : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::SaveKey)
 {
 }
 
@@ -52,8 +53,8 @@ bool SaveKey::read(DigitalPin pin)
   {
     // Pin 3: EEPROM SDA
     //        input data from the 24LC256 EEPROM using the I2C protocol
-    case Three:
-      return myDigitalPinState[Three] = myEEPROM->readSDA();
+    case DigitalPin::Three:
+      return setPin(pin, myEEPROM->readSDA());
 
     default:
       return Controller::read(pin);
@@ -68,15 +69,15 @@ void SaveKey::write(DigitalPin pin, bool value)
   {
     // Pin 3: EEPROM SDA
     //        output data to the 24LC256 EEPROM using the I2C protocol
-    case Three:
-      myDigitalPinState[Three] = value;
+    case DigitalPin::Three:
+      setPin(pin, value);
       myEEPROM->writeSDA(value);
       break;
 
     // Pin 4: EEPROM SCL
     //        output clock data to the 24LC256 EEPROM using the I2C protocol
-    case Four:
-      myDigitalPinState[Four] = value;
+    case DigitalPin::Four:
+      setPin(pin, value);
       myEEPROM->writeSCL(value);
       break;
 

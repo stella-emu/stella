@@ -116,8 +116,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // For now, we just add dummy joystick controllers, since autodetection
   // runs the emulation for a while, and this may interfere with 'smart'
   // controllers such as the AVox and SaveKey
-  myLeftControl  = make_unique<Joystick>(Controller::Left, myEvent, *mySystem);
-  myRightControl = make_unique<Joystick>(Controller::Right, myEvent, *mySystem);
+  myLeftControl  = make_unique<Joystick>(Controller::Jack::Left, myEvent, *mySystem);
+  myRightControl = make_unique<Joystick>(Controller::Jack::Right, myEvent, *mySystem);
 
   // Let the cart know how to query for the 'Cartridge.StartBank' property
   myCart->setStartBankFromPropsFunc([this]() {
@@ -819,13 +819,13 @@ void Console::setControllers(const string& rommd5)
     if(image != nullptr || size != 0)
     {
       left = ControllerDetector::detectType(image, size, left,
-          !swappedPorts ? Controller::Left : Controller::Right, myOSystem.settings());
+          !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right, myOSystem.settings());
       right = ControllerDetector::detectType(image, size, right,
-          !swappedPorts ? Controller::Right : Controller::Left, myOSystem.settings());
+          !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left, myOSystem.settings());
     }
 
-    unique_ptr<Controller> leftC = getControllerPort(rommd5, left, Controller::Left),
-      rightC = getControllerPort(rommd5, right, Controller::Right);
+    unique_ptr<Controller> leftC = getControllerPort(rommd5, left, Controller::Jack::Left),
+      rightC = getControllerPort(rommd5, right, Controller::Jack::Right);
 
     // Swap the ports if necessary
     if(!swappedPorts)

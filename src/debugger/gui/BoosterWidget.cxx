@@ -78,16 +78,16 @@ BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BoosterWidget::loadConfig()
 {
-  myPins[kJUp]->setState(!myController.read(ourPinNo[kJUp]));
-  myPins[kJDown]->setState(!myController.read(ourPinNo[kJDown]));
-  myPins[kJLeft]->setState(!myController.read(ourPinNo[kJLeft]));
-  myPins[kJRight]->setState(!myController.read(ourPinNo[kJRight]));
-  myPins[kJFire]->setState(!myController.read(ourPinNo[kJFire]));
+  myPins[kJUp]->setState(!myController->getPin(ourPinNo[kJUp]));
+  myPins[kJDown]->setState(!myController->getPin(ourPinNo[kJDown]));
+  myPins[kJLeft]->setState(!myController->getPin(ourPinNo[kJLeft]));
+  myPins[kJRight]->setState(!myController->getPin(ourPinNo[kJRight]));
+  myPins[kJFire]->setState(!myController->getPin(ourPinNo[kJFire]));
 
   myPins[kJBooster]->setState(
-    myController.read(Controller::Five) == Controller::MIN_RESISTANCE);
+    myController->getPin(Controller::AnalogPin::Five) == Controller::MIN_RESISTANCE);
   myPins[kJTrigger]->setState(
-    myController.read(Controller::Nine) == Controller::MIN_RESISTANCE);
+    myController->getPin(Controller::AnalogPin::Nine) == Controller::MIN_RESISTANCE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -103,15 +103,15 @@ void BoosterWidget::handleCommand(
       case kJLeft:
       case kJRight:
       case kJFire:
-        myController.set(ourPinNo[id], !myPins[id]->getState());
+        myController->setPin(ourPinNo[id], !myPins[id]->getState());
         break;
       case kJBooster:
-        myController.set(Controller::Five,
+        myController->setPin(Controller::AnalogPin::Five,
           myPins[id]->getState() ? Controller::MIN_RESISTANCE :
                                    Controller::MAX_RESISTANCE);
         break;
       case kJTrigger:
-        myController.set(Controller::Nine,
+        myController->setPin(Controller::AnalogPin::Nine,
           myPins[id]->getState() ? Controller::MIN_RESISTANCE :
                                    Controller::MAX_RESISTANCE);
         break;
@@ -121,6 +121,6 @@ void BoosterWidget::handleCommand(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::DigitalPin BoosterWidget::ourPinNo[5] = {
-  Controller::One, Controller::Two, Controller::Three, Controller::Four,
-  Controller::Six
+  Controller::DigitalPin::One, Controller::DigitalPin::Two, Controller::DigitalPin::Three, Controller::DigitalPin::Four,
+  Controller::DigitalPin::Six
 };

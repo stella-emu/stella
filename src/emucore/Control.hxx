@@ -19,6 +19,7 @@
 #define CONTROLLER_HXX
 
 class Controller;
+class ControllerLowLevel;
 class Event;
 class System;
 
@@ -64,30 +65,30 @@ class Controller : public Serializable
   /**
     Various classes that need special access to the underlying controller state
   */
-  friend class M6532;
-  friend class RiotDebug;
+  friend class M6532;     // FIXME - only needs two methods from this class
   friend class CompuMate;
+  friend class ControllerLowLevel;
 
   public:
     /**
       Enumeration of the controller jacks
     */
-    enum Jack { Left = 0, Right = 1 };
+    enum class Jack { Left = 0, Right = 1 };
 
     /**
       Enumeration of the digital pins of a controller port
     */
-    enum DigitalPin { One, Two, Three, Four, Six };
+    enum class DigitalPin { One, Two, Three, Four, Six };
 
     /**
       Enumeration of the analog pins of a controller port
     */
-    enum AnalogPin { Five, Nine };
+    enum class AnalogPin { Five, Nine };
 
     /**
       Enumeration of the controller types
     */
-    enum Type
+    enum class Type
     {
       AmigaMouse, AtariMouse, AtariVox, BoosterGrip, CompuMate,
       Driving, Genesis, Joystick, Keyboard, KidVid, MindLink,
@@ -177,6 +178,11 @@ class Controller : public Serializable
     virtual void update() = 0;
 
     /**
+      Returns the name of this controller.
+    */
+    virtual string name() const = 0;
+
+    /**
       Answers whether the controller is intrinsically an analog controller.
       Specific controllers should override and implement this method.
     */
@@ -221,21 +227,9 @@ class Controller : public Serializable
     */
     virtual string about(bool swappedPorts) const
     {
-      return name() + " in " + (((myJack == Left) ^ swappedPorts) ?
+      return name() + " in " + (((myJack == Jack::Left) ^ swappedPorts) ?
           "left port" : "right port");
     }
-
-    /**
-      The following two functions are used by the debugger to set
-      the specified pins to the given value.  Note that this isn't the
-      same as a write; the debugger is allowed special access and is
-      actually 'below' the controller level.
-
-      @param pin The pin of the controller jack to modify
-      @param value The value to set on the pin
-    */
-    void set(DigitalPin pin, bool value);
-    void set(AnalogPin pin, Int32 value);
 
     /**
       Saves the current state of this controller to the given Serializer.
@@ -254,11 +248,6 @@ class Controller : public Serializable
     bool load(Serializer& in) override;
 
     /**
-      Returns the name of this controller.
-    */
-    string name() const { return myName; }
-
-    /**
       Inject a callback to be notified on analog pin updates.
     */
     void setOnAnalogPinUpdateCallback(onAnalogPinUpdateCallback callback) {
@@ -273,7 +262,35 @@ class Controller : public Serializable
     static constexpr Int32 MIN_RESISTANCE = 0x00000000;
 
   protected:
-    void updateAnalogPin(AnalogPin, Int32 value);
+    /**
+      Derived classes *must* use these accessor/mutator methods.
+      The read/write methods above are meant to be used at a higher level.
+    */
+    inline bool setPin(DigitalPin pin, bool value) {
+      return myDigitalPinState[static_cast<int>(pin)] = value;
+    }
+    inline bool getPin(DigitalPin pin) const {
+      return myDigitalPinState[static_cast<int>(pin)];
+    }
+    inline void setPin(AnalogPin pin, Int32 value) {
+      myAnalogPinValue[static_cast<int>(pin)] = value;
+      if(myOnAnalogPinUpdateCallback)
+        myOnAnalogPinUpdateCallback(pin);
+    }
+    inline Int32 getPin(AnalogPin pin) const {
+      return myAnalogPinValue[static_cast<int>(pin)];
+    }
+    inline void resetDigitalPins() {
+      setPin(DigitalPin::One,   true);
+      setPin(DigitalPin::Two,   true);
+      setPin(DigitalPin::Three, true);
+      setPin(DigitalPin::Four,  true);
+      setPin(DigitalPin::Six,   true);
+    }
+    inline void resetAnalogPins() {
+      setPin(AnalogPin::Five, MAX_RESISTANCE);
+      setPin(AnalogPin::Nine, MAX_RESISTANCE);
+    }
 
   protected:
     /// Specifies which jack the controller is plugged in
@@ -288,16 +305,13 @@ class Controller : public Serializable
     /// Specifies which type of controller this is (defined by child classes)
     const Type myType;
 
-    /// Specifies the name of this controller based on type
-    string myName;
-
-    /// The boolean value on each digital pin
-    bool myDigitalPinState[5];
-
     /// The callback that is dispatched whenver an analog pin has changed
     onAnalogPinUpdateCallback myOnAnalogPinUpdateCallback;
 
   private:
+    /// The boolean value on each digital pin
+    bool myDigitalPinState[5];
+
     /// The analog value on each analog pin
     Int32 myAnalogPinValue[2];
 

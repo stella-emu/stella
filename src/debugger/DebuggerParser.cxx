@@ -22,6 +22,7 @@
 #include "CartDebug.hxx"
 #include "CpuDebug.hxx"
 #include "RiotDebug.hxx"
+#include "ControlLowLevel.hxx"
 #include "TIADebug.hxx"
 #include "TiaOutputWidget.hxx"
 #include "DebuggerParser.hxx"
@@ -1270,110 +1271,110 @@ void DebuggerParser::executeHelp()
 // "joy0up"
 void DebuggerParser::executeJoy0Up()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  ControllerLowLevel lport(debugger.myOSystem.console().leftController());
   if(argCount == 0)
-    controller.set(Controller::One, !controller.read(Controller::One));
+    lport.togglePin(Controller::DigitalPin::One);
   else if(argCount == 1)
-    controller.set(Controller::One, args[0] != 0);
+    lport.setPin(Controller::DigitalPin::One, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "joy0down"
 void DebuggerParser::executeJoy0Down()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  ControllerLowLevel lport(debugger.myOSystem.console().leftController());
   if(argCount == 0)
-    controller.set(Controller::Two, !controller.read(Controller::Two));
+    lport.togglePin(Controller::DigitalPin::Two);
   else if(argCount == 1)
-    controller.set(Controller::Two, args[0] != 0);
+    lport.setPin(Controller::DigitalPin::Two, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "joy0left"
 void DebuggerParser::executeJoy0Left()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  ControllerLowLevel lport(debugger.myOSystem.console().leftController());
   if(argCount == 0)
-    controller.set(Controller::Three, !controller.read(Controller::Three));
+    lport.togglePin(Controller::DigitalPin::Three);
   else if(argCount == 1)
-    controller.set(Controller::Three, args[0] != 0);
+    lport.setPin(Controller::DigitalPin::Three, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "joy0right"
 void DebuggerParser::executeJoy0Right()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  ControllerLowLevel lport(debugger.myOSystem.console().leftController());
   if(argCount == 0)
-    controller.set(Controller::Four, !controller.read(Controller::Four));
+    lport.togglePin(Controller::DigitalPin::Four);
   else if(argCount == 1)
-    controller.set(Controller::Four, args[0] != 0);
+    lport.setPin(Controller::DigitalPin::Four, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "joy0fire"
 void DebuggerParser::executeJoy0Fire()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Left);
+  ControllerLowLevel lport(debugger.myOSystem.console().leftController());
   if(argCount == 0)
-    controller.set(Controller::Six, !controller.read(Controller::Six));
+    lport.togglePin(Controller::DigitalPin::Six);
   else if(argCount == 1)
-    controller.set(Controller::Six, args[0] != 0);
+    lport.setPin(Controller::DigitalPin::Six, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "joy1up"
 void DebuggerParser::executeJoy1Up()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  ControllerLowLevel rport(debugger.myOSystem.console().rightController());
   if(argCount == 0)
-    controller.set(Controller::One, !controller.read(Controller::One));
+    rport.togglePin(Controller::DigitalPin::One);
   else if(argCount == 1)
-    controller.set(Controller::One, args[0] != 0);
+    rport.setPin(Controller::DigitalPin::One, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "joy1down"
 void DebuggerParser::executeJoy1Down()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  ControllerLowLevel rport(debugger.myOSystem.console().rightController());
   if(argCount == 0)
-    controller.set(Controller::Two, !controller.read(Controller::Two));
+    rport.togglePin(Controller::DigitalPin::Two);
   else if(argCount == 1)
-    controller.set(Controller::Two, args[0] != 0);
+    rport.setPin(Controller::DigitalPin::Two, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "joy1left"
 void DebuggerParser::executeJoy1Left()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  ControllerLowLevel rport(debugger.myOSystem.console().rightController());
   if(argCount == 0)
-    controller.set(Controller::Three, !controller.read(Controller::Three));
+    rport.togglePin(Controller::DigitalPin::Three);
   else if(argCount == 1)
-    controller.set(Controller::Three, args[0] != 0);
+    rport.setPin(Controller::DigitalPin::Three, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "joy1right"
 void DebuggerParser::executeJoy1Right()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  ControllerLowLevel rport(debugger.myOSystem.console().rightController());
   if(argCount == 0)
-    controller.set(Controller::Four, !controller.read(Controller::Four));
+    rport.togglePin(Controller::DigitalPin::Four);
   else if(argCount == 1)
-    controller.set(Controller::Four, args[0] != 0);
+    rport.setPin(Controller::DigitalPin::Four, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "joy1fire"
 void DebuggerParser::executeJoy1Fire()
 {
-  Controller& controller = debugger.riotDebug().controller(Controller::Right);
+  ControllerLowLevel rport(debugger.myOSystem.console().rightController());
   if(argCount == 0)
-    controller.set(Controller::Six, !controller.read(Controller::Six));
+    rport.togglePin(Controller::DigitalPin::Six);
   else if(argCount == 1)
-    controller.set(Controller::Six, args[0] != 0);
+    rport.setPin(Controller::DigitalPin::Six, args[0] != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1596,16 +1597,12 @@ void DebuggerParser::executeReset()
 {
   debugger.reset();
   debugger.rom().invalidate();
-  debugger.riotDebug().controller(Controller::Left).set(Controller::One, true);
-  debugger.riotDebug().controller(Controller::Left).set(Controller::Two, true);
-  debugger.riotDebug().controller(Controller::Left).set(Controller::Three, true);
-  debugger.riotDebug().controller(Controller::Left).set(Controller::Four, true);
-  debugger.riotDebug().controller(Controller::Left).set(Controller::Six, true);
-  debugger.riotDebug().controller(Controller::Right).set(Controller::One, true);
-  debugger.riotDebug().controller(Controller::Right).set(Controller::Two, true);
-  debugger.riotDebug().controller(Controller::Right).set(Controller::Three, true);
-  debugger.riotDebug().controller(Controller::Right).set(Controller::Four, true);
-  debugger.riotDebug().controller(Controller::Right).set(Controller::Six, true);
+
+  ControllerLowLevel lport(debugger.myOSystem.console().leftController());
+  ControllerLowLevel rport(debugger.myOSystem.console().rightController());
+  lport.resetDigitalPins();
+  rport.resetDigitalPins();
+
   commandResult << "reset system";
 }
 

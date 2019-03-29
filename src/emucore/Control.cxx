@@ -29,105 +29,31 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
     myType(type),
     myOnAnalogPinUpdateCallback(nullptr)
 {
-  myDigitalPinState[One]   =
-  myDigitalPinState[Two]   =
-  myDigitalPinState[Three] =
-  myDigitalPinState[Four]  =
-  myDigitalPinState[Six]   = true;
-
-  myAnalogPinValue[Five] =
-  myAnalogPinValue[Nine] = MAX_RESISTANCE;
-
-  switch(myType)
-  {
-    case Joystick:
-      myName = "Joystick";
-      break;
-    case Paddles:
-      myName = "Paddles";
-      break;
-    case BoosterGrip:
-      myName = "BoosterGrip";
-      break;
-    case Driving:
-      myName = "Driving";
-      break;
-    case Keyboard:
-      myName = "Keyboard";
-      break;
-    case AmigaMouse:
-      myName = "AmigaMouse";
-      break;
-    case AtariMouse:
-      myName = "AtariMouse";
-      break;
-    case TrakBall:
-      myName = "TrakBall";
-      break;
-    case AtariVox:
-      myName = "AtariVox";
-      break;
-    case SaveKey:
-      myName = "SaveKey";
-      break;
-    case KidVid:
-      myName = "KidVid";
-      break;
-    case Genesis:
-      myName = "Genesis";
-      break;
-    case MindLink:
-      myName = "MindLink";
-      break;
-    case CompuMate:
-      myName = "CompuMate";
-      break;
-  }
+  resetDigitalPins();
+  resetAnalogPins();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Controller::read()
 {
-  uInt8 ioport = 0x00;
-  if(read(One))   ioport |= 0x01;
-  if(read(Two))   ioport |= 0x02;
-  if(read(Three)) ioport |= 0x04;
-  if(read(Four))  ioport |= 0x08;
+  uInt8 ioport = 0b0000;
+  if(read(DigitalPin::One))   ioport |= 0b0001;
+  if(read(DigitalPin::Two))   ioport |= 0b0010;
+  if(read(DigitalPin::Three)) ioport |= 0b0100;
+  if(read(DigitalPin::Four))  ioport |= 0b1000;
   return ioport;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Controller::read(DigitalPin pin)
 {
-  return myDigitalPinState[pin];
+  return getPin(pin);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 Controller::read(AnalogPin pin)
 {
-  return myAnalogPinValue[pin];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::set(DigitalPin pin, bool value)
-{
-  myDigitalPinState[pin] = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::set(AnalogPin pin, Int32 value)
-{
-  updateAnalogPin(pin, value);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::updateAnalogPin(AnalogPin pin, Int32 value)
-{
-  myAnalogPinValue[pin] = value;
-
-  if (myOnAnalogPinUpdateCallback) {
-    myOnAnalogPinUpdateCallback(pin);
-  }
+  return getPin(pin);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,15 +62,15 @@ bool Controller::save(Serializer& out) const
   try
   {
     // Output the digital pins
-    out.putBool(myDigitalPinState[One]);
-    out.putBool(myDigitalPinState[Two]);
-    out.putBool(myDigitalPinState[Three]);
-    out.putBool(myDigitalPinState[Four]);
-    out.putBool(myDigitalPinState[Six]);
+    out.putBool(getPin(DigitalPin::One));
+    out.putBool(getPin(DigitalPin::Two));
+    out.putBool(getPin(DigitalPin::Three));
+    out.putBool(getPin(DigitalPin::Four));
+    out.putBool(getPin(DigitalPin::Six));
 
     // Output the analog pins
-    out.putInt(myAnalogPinValue[Five]);
-    out.putInt(myAnalogPinValue[Nine]);
+    out.putInt(getPin(AnalogPin::Five));
+    out.putInt(getPin(AnalogPin::Nine));
   }
   catch(...)
   {
@@ -160,15 +86,15 @@ bool Controller::load(Serializer& in)
   try
   {
     // Input the digital pins
-    myDigitalPinState[One]   = in.getBool();
-    myDigitalPinState[Two]   = in.getBool();
-    myDigitalPinState[Three] = in.getBool();
-    myDigitalPinState[Four]  = in.getBool();
-    myDigitalPinState[Six]   = in.getBool();
+    setPin(DigitalPin::One,   in.getBool());
+    setPin(DigitalPin::Two,   in.getBool());
+    setPin(DigitalPin::Three, in.getBool());
+    setPin(DigitalPin::Four,  in.getBool());
+    setPin(DigitalPin::Six,   in.getBool());
 
     // Input the analog pins
-    myAnalogPinValue[Five] = in.getInt();
-    myAnalogPinValue[Nine] = in.getInt();
+    setPin(AnalogPin::Five, in.getInt());
+    setPin(AnalogPin::Nine, in.getInt());
   }
   catch(...)
   {

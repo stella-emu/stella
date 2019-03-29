@@ -71,10 +71,10 @@ uInt8 PointingDevice::read()
 
   uInt8 portA = ioPortA(myCountH, myCountV, myTrackBallLeft, myTrackBallDown);
 
-  myDigitalPinState[One]   = portA & 0b0001;
-  myDigitalPinState[Two]   = portA & 0b0010;
-  myDigitalPinState[Three] = portA & 0b0100;
-  myDigitalPinState[Four]  = portA & 0b1000;
+  setPin(DigitalPin::One,   portA & 0b0001);
+  setPin(DigitalPin::Two,   portA & 0b0010);
+  setPin(DigitalPin::Three, portA & 0b0100);
+  setPin(DigitalPin::Four,  portA & 0b1000);
 
   return portA;
 }
@@ -94,8 +94,8 @@ void PointingDevice::update()
       myTrackBallDown, myTrackBallLinesV, myScanCountV, myFirstScanOffsetV);
 
   // Get mouse button state
-  myDigitalPinState[Six] = (myEvent.get(Event::MouseButtonLeftValue)  == 0) &&
-                           (myEvent.get(Event::MouseButtonRightValue) == 0);
+  setPin(DigitalPin::Six, (myEvent.get(Event::MouseButtonLeftValue)  == 0) &&
+                          (myEvent.get(Event::MouseButtonRightValue) == 0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

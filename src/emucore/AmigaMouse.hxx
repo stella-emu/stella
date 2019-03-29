@@ -31,9 +31,14 @@ class AmigaMouse : public PointingDevice
       @param system The system using this controller
     */
     AmigaMouse(Jack jack, const Event& event, const System& system)
-      : PointingDevice(jack, event, system, Controller::AmigaMouse,
+      : PointingDevice(jack, event, system, Controller::Type::AmigaMouse,
         trackballSensitivity) { }
     virtual ~AmigaMouse() = default;
+
+    /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "AmigaMouse"; }
 
   protected:
     uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8, uInt8) override

@@ -515,13 +515,13 @@ uInt8 TIA::peek(uInt16 address)
 
     case INPT4:
       result =
-        myInput0.inpt(!myConsole.leftController().read(Controller::Six)) |
+        myInput0.inpt(!myConsole.leftController().read(Controller::DigitalPin::Six)) |
         (lastDataBusValue & 0x40);
       break;
 
     case INPT5:
       result =
-        myInput1.inpt(!myConsole.rightController().read(Controller::Six)) |
+        myInput1.inpt(!myConsole.rightController().read(Controller::DigitalPin::Six)) |
         (lastDataBusValue & 0x40);
       break;
 
@@ -1673,19 +1673,19 @@ void TIA::updatePaddle(uInt8 idx)
   Int32 resistance;
   switch (idx) {
     case 0:
-      resistance = myConsole.leftController().read(Controller::Nine);
+      resistance = myConsole.leftController().read(Controller::AnalogPin::Nine);
       break;
 
     case 1:
-      resistance = myConsole.leftController().read(Controller::Five);
+      resistance = myConsole.leftController().read(Controller::AnalogPin::Five);
       break;
 
     case 2:
-      resistance = myConsole.rightController().read(Controller::Nine);
+      resistance = myConsole.rightController().read(Controller::AnalogPin::Nine);
       break;
 
     case 3:
-      resistance = myConsole.rightController().read(Controller::Five);
+      resistance = myConsole.rightController().read(Controller::AnalogPin::Five);
       break;
 
     default:

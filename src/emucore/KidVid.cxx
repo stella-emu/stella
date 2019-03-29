@@ -23,8 +23,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KidVid::KidVid(Jack jack, const Event& event, const System& system,
                const string& rommd5)
-  : Controller(jack, event, system, Controller::KidVid),
-    myEnabled(myJack == Right),
+  : Controller(jack, event, system, Controller::Type::KidVid),
+    myEnabled(myJack == Jack::Right),
 //     mySampleFile(nullptr),
 //     mySharedSampleFile(nullptr),
     myFileOpened(false),
@@ -104,16 +104,16 @@ cerr << "myTape = " << myTape << endl;
   }
 
   // Convert separate pin states into a 'register'
-  uInt8 IOPortA = 0xf0;
-  if(myDigitalPinState[One])   IOPortA |= 0x01;
-  if(myDigitalPinState[Two])   IOPortA |= 0x02;
-  if(myDigitalPinState[Three]) IOPortA |= 0x04;
-  if(myDigitalPinState[Four])  IOPortA |= 0x08;
+  uInt8 IOPortA = 0b11110000;
+  if(getPin(DigitalPin::One))   IOPortA |= 0b0001;
+  if(getPin(DigitalPin::Two))   IOPortA |= 0b0010;
+  if(getPin(DigitalPin::Three)) IOPortA |= 0b0100;
+  if(getPin(DigitalPin::Four))  IOPortA |= 0b1000;
 
   // Is the tape running?
-  if((myTape != 0) && ((IOPortA & 0x01) == 0x01) && !myTapeBusy)
+  if((myTape != 0) && ((IOPortA & 0b0001) == 0b0001) && !myTapeBusy)
   {
-    IOPortA = (IOPortA & 0xf7) | (((ourKVData[myIdx >> 3] << (myIdx & 0x07)) & 0x80) >> 4);
+    IOPortA = (IOPortA & 0b11110111) | (((ourKVData[myIdx >> 3] << (myIdx & 0x07)) & 0x80) >> 4);
 
     // increase to next bit
     ++myIdx;
@@ -153,10 +153,10 @@ cerr << "myTape = " << myTape << endl;
   }
 
   // Now convert the register back into separate boolean values
-  myDigitalPinState[One]   = IOPortA & 0x01;
-  myDigitalPinState[Two]   = IOPortA & 0x02;
-  myDigitalPinState[Three] = IOPortA & 0x04;
-  myDigitalPinState[Four]  = IOPortA & 0x08;
+  setPin(DigitalPin::One,   IOPortA & 0b0001);
+  setPin(DigitalPin::Two,   IOPortA & 0b0010);
+  setPin(DigitalPin::Three, IOPortA & 0b0100);
+  setPin(DigitalPin::Four,  IOPortA & 0b1000);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

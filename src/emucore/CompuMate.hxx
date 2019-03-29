@@ -100,7 +100,7 @@ class CompuMate
         */
         CMControl(class CompuMate& handler, Controller::Jack jack, const Event& event,
                   const System& system)
-          : Controller(jack, event, system, Controller::CompuMate),
+          : Controller(jack, event, system, Controller::Type::CompuMate),
             myHandler(handler) { }
         virtual ~CMControl() = default;
 
@@ -111,7 +111,7 @@ class CompuMate
           happen at the same cycle and is redundant.
         */
         void controlWrite(uInt8) override {
-          if(myJack == Controller::Left) myHandler.update();
+          if(myJack == Controller::Jack::Left) myHandler.update();
         }
 
         /**
@@ -119,6 +119,11 @@ class CompuMate
           events currently set.
         */
         void update() override { }
+
+        /**
+          Returns the name of this controller.
+        */
+        string name() const override { return "CompuMate"; }
 
       private:
         class CompuMate& myHandler;

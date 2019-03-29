@@ -65,11 +65,11 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoystickWidget::loadConfig()
 {
-  myPins[kJUp]->setState(!myController.read(ourPinNo[kJUp]));
-  myPins[kJDown]->setState(!myController.read(ourPinNo[kJDown]));
-  myPins[kJLeft]->setState(!myController.read(ourPinNo[kJLeft]));
-  myPins[kJRight]->setState(!myController.read(ourPinNo[kJRight]));
-  myPins[kJFire]->setState(!myController.read(ourPinNo[kJFire]));
+  myPins[kJUp]->setState(!myController->getPin(ourPinNo[kJUp]));
+  myPins[kJDown]->setState(!myController->getPin(ourPinNo[kJDown]));
+  myPins[kJLeft]->setState(!myController->getPin(ourPinNo[kJLeft]));
+  myPins[kJRight]->setState(!myController->getPin(ourPinNo[kJRight]));
+  myPins[kJFire]->setState(!myController->getPin(ourPinNo[kJFire]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,11 +77,11 @@ void JoystickWidget::handleCommand(
     CommandSender* sender, int cmd, int data, int id)
 {
   if(cmd == CheckboxWidget::kCheckActionCmd)
-    myController.set(ourPinNo[id], !myPins[id]->getState());
+    myController->setPin(ourPinNo[id], !myPins[id]->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::DigitalPin JoystickWidget::ourPinNo[5] = {
-  Controller::One, Controller::Two, Controller::Three, Controller::Four,
-  Controller::Six
+  Controller::DigitalPin::One, Controller::DigitalPin::Two, Controller::DigitalPin::Three, Controller::DigitalPin::Four,
+  Controller::DigitalPin::Six
 };

@@ -55,6 +55,11 @@ class Paddles : public Controller
     void update() override;
 
     /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "Paddles"; }
+
+    /**
       Answers whether the controller is intrinsically an analog controller.
     */
     bool isAnalog() const override { return true; }

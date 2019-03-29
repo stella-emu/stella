@@ -101,7 +101,7 @@ void M6532::update()
   Controller& port1 = myConsole.rightController();
 
   // Get current PA7 state
-  bool prevPA7 = port0.myDigitalPinState[Controller::Four];
+  bool prevPA7 = port0.getPin(Controller::DigitalPin::Four);
 
   // Update entire port state
   port0.update();
@@ -109,7 +109,7 @@ void M6532::update()
   myConsole.switches().update();
 
   // Get new PA7 state
-  bool currPA7 = port0.myDigitalPinState[Controller::Four];
+  bool currPA7 = port0.getPin(Controller::DigitalPin::Four);
 
   // PA7 Flag is set on active transition in appropriate direction
   if((!myEdgeDetectPositive && prevPA7 && !currPA7) ||
@@ -347,14 +347,14 @@ void M6532::setPinState(bool swcha)
 
   uInt8 ioport = myOutA | ~myDDRA;
 
-  port0.write(Controller::One,   ioport & 0x10);
-  port0.write(Controller::Two,   ioport & 0x20);
-  port0.write(Controller::Three, ioport & 0x40);
-  port0.write(Controller::Four,  ioport & 0x80);
-  port1.write(Controller::One,   ioport & 0x01);
-  port1.write(Controller::Two,   ioport & 0x02);
-  port1.write(Controller::Three, ioport & 0x04);
-  port1.write(Controller::Four,  ioport & 0x08);
+  port0.write(Controller::DigitalPin::One,   ioport & 0b00010000);
+  port0.write(Controller::DigitalPin::Two,   ioport & 0b00100000);
+  port0.write(Controller::DigitalPin::Three, ioport & 0b01000000);
+  port0.write(Controller::DigitalPin::Four,  ioport & 0b10000000);
+  port1.write(Controller::DigitalPin::One,   ioport & 0b00000001);
+  port1.write(Controller::DigitalPin::Two,   ioport & 0b00000010);
+  port1.write(Controller::DigitalPin::Three, ioport & 0b00000100);
+  port1.write(Controller::DigitalPin::Four,  ioport & 0b00001000);
 
   if(swcha)
   {

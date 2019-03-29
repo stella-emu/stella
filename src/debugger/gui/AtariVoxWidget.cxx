@@ -29,7 +29,7 @@ AtariVoxWidget::AtariVoxWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVoxWidget::eraseCurrent()
 {
-  AtariVox& avox = static_cast<AtariVox&>(myController);
+  AtariVox& avox = static_cast<AtariVox&>(myController->base());
 
   avox.eraseCurrent();
 }
@@ -37,7 +37,7 @@ void AtariVoxWidget::eraseCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AtariVoxWidget::isPageUsed(uInt32 page)
 {
-  AtariVox& avox = static_cast<AtariVox&>(myController);
+  AtariVox& avox = static_cast<AtariVox&>(myController->base());
 
   return avox.isPageUsed(page);
 }

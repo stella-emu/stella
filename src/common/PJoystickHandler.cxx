@@ -631,7 +631,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
       {
         switch(myOSystem.console().leftController().type())
         {
-          case Controller::Keyboard:
+          case Controller::Type::Keyboard:
             if(button < 12) myEvent.set(SA_Key[j->type-4][button], pressed ? 1 : 0);
             break;
           default:
@@ -639,7 +639,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
         }
         switch(myOSystem.console().rightController().type())
         {
-          case Controller::Keyboard:
+          case Controller::Type::Keyboard:
             if(button < 12) myEvent.set(SA_Key[j->type-4][button], pressed ? 1 : 0);
             break;
           default:

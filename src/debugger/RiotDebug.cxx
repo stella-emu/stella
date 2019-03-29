@@ -232,13 +232,6 @@ Int32 RiotDebug::timDivider() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller& RiotDebug::controller(Controller::Jack jack) const
-{
-  return jack == Controller::Left ? myConsole.leftController() :
-                                    myConsole.rightController();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RiotDebug::diffP0(int newVal)
 {
   uInt8& switches = myConsole.switches().mySwitches;

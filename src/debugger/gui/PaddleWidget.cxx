@@ -68,11 +68,11 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
 void PaddleWidget::loadConfig()
 {
   myP0Resistance->setValue(Int32(Paddles::MAX_RESISTANCE -
-      myController.read(Controller::Nine)));
+      myController->getPin(Controller::AnalogPin::Nine)));
   myP1Resistance->setValue(Int32(Paddles::MAX_RESISTANCE -
-      myController.read(Controller::Five)));
-  myP0Fire->setState(!myController.read(Controller::Four));
-  myP1Fire->setState(!myController.read(Controller::Three));
+      myController->getPin(Controller::AnalogPin::Five)));
+  myP0Fire->setState(!myController->getPin(Controller::DigitalPin::Four));
+  myP1Fire->setState(!myController->getPin(Controller::DigitalPin::Three));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,18 +82,18 @@ void PaddleWidget::handleCommand(
   switch(cmd)
   {
     case kP0Changed:
-      myController.set(Controller::Nine,
-                       Int32(Paddles::MAX_RESISTANCE - myP0Resistance->getValue()));
+      myController->setPin(Controller::AnalogPin::Nine,
+                           Int32(Paddles::MAX_RESISTANCE - myP0Resistance->getValue()));
       break;
     case kP1Changed:
-      myController.set(Controller::Five,
-                       Int32(Paddles::MAX_RESISTANCE - myP1Resistance->getValue()));
+      myController->setPin(Controller::AnalogPin::Five,
+                           Int32(Paddles::MAX_RESISTANCE - myP1Resistance->getValue()));
       break;
     case kP0Fire:
-      myController.set(Controller::Four, !myP0Fire->getState());
+      myController->setPin(Controller::DigitalPin::Four, !myP0Fire->getState());
       break;
     case kP1Fire:
-      myController.set(Controller::Three, !myP1Fire->getState());
+      myController->setPin(Controller::DigitalPin::Three, !myP1Fire->getState());
       break;
   }
 }

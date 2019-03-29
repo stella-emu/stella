@@ -29,7 +29,7 @@ SaveKeyWidget::SaveKeyWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SaveKeyWidget::eraseCurrent()
 {
-  SaveKey& skey = static_cast<SaveKey&>(myController);
+  SaveKey& skey = static_cast<SaveKey&>(myController->base());
 
   skey.eraseCurrent();
 }
@@ -37,7 +37,7 @@ void SaveKeyWidget::eraseCurrent()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SaveKeyWidget::isPageUsed(uInt32 page)
 {
-  SaveKey& skey = static_cast<SaveKey&>(myController);
+  SaveKey& skey = static_cast<SaveKey&>(myController->base());
 
   return skey.isPageUsed(page);
 }

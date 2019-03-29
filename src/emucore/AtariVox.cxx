@@ -24,7 +24,7 @@
 AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
                    const string& portname, const string& eepromfile,
                    onMessageCallback callback)
-  : SaveKey(jack, event, system, eepromfile, callback, Controller::AtariVox),
+  : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::AtariVox),
     myShiftCount(0),
     myShiftRegister(0),
     myLastDataWriteCycle(0)
@@ -35,7 +35,8 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
   else
     myAboutString = " (invalid serial port \'" + portname + "\')";
 
-  myDigitalPinState[Three] = myDigitalPinState[Four] = true;
+  setPin(DigitalPin::Three, true);
+  setPin(DigitalPin::Four, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,9 +48,9 @@ bool AtariVox::read(DigitalPin pin)
   switch(pin)
   {
     // Pin 2: SpeakJet READY
-    case Two:
+    case DigitalPin::Two:
       // For now, we just assume the device is always ready
-      return myDigitalPinState[Two] = true;
+      return setPin(pin, true);
 
     default:
       return SaveKey::read(pin);
@@ -64,8 +65,8 @@ void AtariVox::write(DigitalPin pin, bool value)
   {
     // Pin 1: SpeakJet DATA
     //        output serial data to the speakjet
-    case One:
-      myDigitalPinState[One] = value;
+    case DigitalPin::One:
+      setPin(pin, value);
       clockDataIn(value);
       break;
 

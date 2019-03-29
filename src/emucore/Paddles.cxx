@@ -21,15 +21,15 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Paddles::Paddles(Jack jack, const Event& event, const System& system,
                  bool swappaddle, bool swapaxis, bool swapdir)
-  : Controller(jack, event, system, Controller::Paddles),
+  : Controller(jack, event, system, Controller::Type::Paddles),
     myMPaddleID(-1),
     myMPaddleIDX(-1),
     myMPaddleIDY(-1)
 {
   // We must start with minimum resistance; see commit
   // 38b452e1a047a0dca38c5bcce7c271d40f76736e for more information
-  updateAnalogPin(Five, MIN_RESISTANCE);
-  updateAnalogPin(Nine, MIN_RESISTANCE);
+  setPin(AnalogPin::Five, MIN_RESISTANCE);
+  setPin(AnalogPin::Nine, MIN_RESISTANCE);
 
   // The following logic reflects that mapping paddles to different
   // devices can be extremely complex
@@ -46,7 +46,7 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   // a given port; this will speed up processing in update()
 
   // Consider whether this is the left or right port
-  if(myJack == Left)
+  if(myJack == Jack::Left)
   {
     if(!swappaddle)  // First paddle is 0, second is 1
     {
@@ -215,9 +215,9 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   }
 
   // Digital pins 1, 2 and 6 are not connected
-  myDigitalPinState[One] =
-  myDigitalPinState[Two] =
-  myDigitalPinState[Six] = true;
+  setPin(DigitalPin::One, true);
+  setPin(DigitalPin::Two, true);
+  setPin(DigitalPin::Six, true);
 
   // Digital emulation of analog paddle movement
   myKeyRepeat0 = myKeyRepeat1 = false;
@@ -230,13 +230,14 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::update()
 {
-  myDigitalPinState[Three] = myDigitalPinState[Four] = true;
+  setPin(DigitalPin::Three, true);
+  setPin(DigitalPin::Four, true);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  myDigitalPinState[Three] =
-    (myEvent.get(myP1FireEvent1) == 0 && myEvent.get(myP1FireEvent2) == 0);
-  myDigitalPinState[Four]  =
-    (myEvent.get(myP0FireEvent1) == 0 && myEvent.get(myP0FireEvent2) == 0);
+  setPin(DigitalPin::Three,
+      myEvent.get(myP1FireEvent1) == 0 && myEvent.get(myP1FireEvent2) == 0);
+  setPin(DigitalPin::Four,
+      myEvent.get(myP0FireEvent1) == 0 && myEvent.get(myP0FireEvent2) == 0);
 
   // Paddle movement is a very difficult thing to accurately emulate,
   // since it originally came from an analog device that had very
@@ -261,12 +262,12 @@ void Paddles::update()
   int sa_yaxis = myEvent.get(myP1AxisValue);
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
-    updateAnalogPin(Nine, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0)));
+    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0)));
     sa_changed = true;
   }
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
-    updateAnalogPin(Five, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0)));
+    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0)));
     sa_changed = true;
   }
   myLastAxisX = sa_xaxis;
@@ -284,7 +285,7 @@ void Paddles::update()
         TRIGMIN, TRIGRANGE);
     if(myEvent.get(Event::MouseButtonLeftValue) ||
        myEvent.get(Event::MouseButtonRightValue))
-      myDigitalPinState[ourButtonPin[myMPaddleID]] = false;
+      setPin(ourButtonPin[myMPaddleID], false);
   }
   else
   {
@@ -296,7 +297,7 @@ void Paddles::update()
           (myEvent.get(Event::MouseAxisXValue) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
       if(myEvent.get(Event::MouseButtonLeftValue))
-        myDigitalPinState[ourButtonPin[myMPaddleIDX]] = false;
+        setPin(ourButtonPin[myMPaddleIDX], false);
     }
     if(myMPaddleIDY > -1)
     {
@@ -304,7 +305,7 @@ void Paddles::update()
           (myEvent.get(Event::MouseAxisYValue) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
       if(myEvent.get(Event::MouseButtonRightValue))
-        myDigitalPinState[ourButtonPin[myMPaddleIDY]] = false;
+        setPin(ourButtonPin[myMPaddleIDY], false);
     }
   }
 
@@ -353,9 +354,9 @@ void Paddles::update()
 
   // Only change state if the charge has actually changed
   if(myCharge[1] != myLastCharge[1])
-    updateAnalogPin(Five, Int32(MAX_RESISTANCE * (myCharge[1] / float(TRIGMAX))));
+    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * (myCharge[1] / float(TRIGMAX))));
   if(myCharge[0] != myLastCharge[0])
-    updateAnalogPin(Nine, Int32(MAX_RESISTANCE * (myCharge[0] / float(TRIGMAX))));
+    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * (myCharge[0] / float(TRIGMAX))));
 
   myLastCharge[1] = myCharge[1];
   myLastCharge[0] = myCharge[0];
@@ -368,10 +369,10 @@ bool Paddles::setMouseControl(
   // In 'automatic' mode, both axes on the mouse map to a single paddle,
   // and the paddle axis and direction settings are taken into account
   // This overrides any other mode
-  if(xtype == Controller::Paddles && ytype == Controller::Paddles && xid == yid)
+  if(xtype == Controller::Type::Paddles && ytype == Controller::Type::Paddles && xid == yid)
   {
-    myMPaddleID = ((myJack == Left && (xid == 0 || xid == 1)) ||
-                   (myJack == Right && (xid == 2 || xid == 3))
+    myMPaddleID = ((myJack == Jack::Left && (xid == 0 || xid == 1)) ||
+                   (myJack == Jack::Right && (xid == 2 || xid == 3))
                   ) ? xid & 0x01 : -1;
     myMPaddleIDX = myMPaddleIDY = -1;
   }
@@ -380,12 +381,12 @@ bool Paddles::setMouseControl(
     // The following is somewhat complex, but we need to pre-process as much
     // as possible, so that ::update() can run quickly
     myMPaddleID = -1;
-    if(myJack == Left && xtype == Controller::Paddles)
+    if(myJack == Jack::Left && xtype == Controller::Type::Paddles)
     {
       myMPaddleIDX = (xid == 0 || xid == 1) ? xid & 0x01 : -1;
       myMPaddleIDY = (yid == 0 || yid == 1) ? yid & 0x01 : -1;
     }
-    else if(myJack == Right && ytype == Controller::Paddles)
+    else if(myJack == Jack::Right && ytype == Controller::Type::Paddles)
     {
       myMPaddleIDX = (xid == 2 || xid == 3) ? xid & 0x01 : -1;
       myMPaddleIDY = (yid == 2 || yid == 3) ? yid & 0x01 : -1;
@@ -422,4 +423,6 @@ int Paddles::DIGITAL_DISTANCE = -1;
 int Paddles::MOUSE_SENSITIVITY = -1;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Controller::DigitalPin Paddles::ourButtonPin[2] = { Four, Three };
+const Controller::DigitalPin Paddles::ourButtonPin[2] = {
+  DigitalPin::Four, DigitalPin::Three
+};

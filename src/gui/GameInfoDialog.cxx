@@ -620,10 +620,10 @@ void GameInfoDialog::updateControllerStates()
     const Controller& rport = instance().console().rightController();
 
     // we only enable the button if we have a valid previous and new controller.
-    enableEEEraseButton = ((lport.type() == Controller::SaveKey && contrLeft == "SAVEKEY") ||
-                           (rport.type() == Controller::SaveKey && contrRight == "SAVEKEY") ||
-                           (lport.type() == Controller::AtariVox && contrLeft == "ATARIVOX") ||
-                           (rport.type() == Controller::AtariVox && contrRight == "ATARIVOX"));
+    enableEEEraseButton = ((lport.type() == Controller::Type::SaveKey && contrLeft == "SAVEKEY") ||
+                           (rport.type() == Controller::Type::SaveKey && contrRight == "SAVEKEY") ||
+                           (lport.type() == Controller::Type::AtariVox && contrLeft == "ATARIVOX") ||
+                           (rport.type() == Controller::Type::AtariVox && contrRight == "ATARIVOX"));
   }
 
   myLeftPortLabel->setEnabled(enableSelectControl);
@@ -645,13 +645,13 @@ void GameInfoDialog::eraseEEPROM()
   Controller& lport = instance().console().leftController();
   Controller& rport = instance().console().rightController();
 
-  if(lport.type() == Controller::SaveKey || lport.type() == Controller::AtariVox)
+  if(lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox)
   {
     SaveKey& skey = static_cast<SaveKey&>(lport);
     skey.eraseCurrent();
   }
 
-  if(rport.type() == Controller::SaveKey || rport.type() == Controller::AtariVox)
+  if(rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox)
   {
     SaveKey& skey = static_cast<SaveKey&>(rport);
     skey.eraseCurrent();

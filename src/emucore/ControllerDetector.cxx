@@ -107,7 +107,7 @@ bool ControllerDetector::searchForBytes(const uInt8* image, uInt32 imagesize,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Controller::Jack port)
 {
-  if(port == Controller::Left)
+  if(port == Controller::Jack::Left)
   {
     // check for INPT4 access
     const int NUM_SIGS_0 = 17;
@@ -164,7 +164,7 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       if(searchForBytes(image, size, signature_2[i], SIG_SIZE_2))
         return true;
   }
-  else if(port == Controller::Right)
+  else if(port == Controller::Jack::Right)
   {
     // check for INPT5 and indexed INPT4 access
     const int NUM_SIGS_0 = 13;
@@ -217,7 +217,7 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controller::Jack port)
 {
-  if(port == Controller::Left)
+  if(port == Controller::Jack::Left)
   {
     // check for INPT0 *AND* INPT1 access
     const int NUM_SIGS_0_0 = 4;
@@ -279,7 +279,7 @@ bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controlle
         }
     }
   }
-  else if(port == Controller::Right)
+  else if(port == Controller::Jack::Right)
   {
     // check for INPT2 *AND* INPT3 access
     const int NUM_SIGS_0_0 = 3;
@@ -347,7 +347,7 @@ bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controlle
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Controller::Jack port)
 {
-  if(port == Controller::Left)
+  if(port == Controller::Jack::Left)
   {
     // check for INPT1 access
     const int NUM_SIGS_0 = 13;
@@ -371,7 +371,7 @@ bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Cont
       if(searchForBytes(image, size, signature_0[i], SIG_SIZE_0))
         return true;
   }
-  else if(port == Controller::Right)
+  else if(port == Controller::Jack::Right)
   {
     // check for INPT3 access
     const int NUM_SIGS_0 = 9;
@@ -398,7 +398,7 @@ bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Cont
 bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
                                     Controller::Jack port, const Settings& settings)
 {
-  if(port == Controller::Left)
+  if(port == Controller::Jack::Left)
   {
     // check for INPT0 access
     const int NUM_SIGS_0 = 12;
@@ -448,7 +448,7 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
       if(searchForBytes(image, size, signature_2[i], SIG_SIZE_2))
         return true;
   }
-  else if(port == Controller::Right)
+  else if(port == Controller::Jack::Right)
   {
     // check for INPT2 and indexed INPT0 access
     const int NUM_SIGS_0 = 18;
@@ -564,7 +564,7 @@ bool ControllerDetector::isProbablyAmigaMouse(const uInt8* image, uInt32 size)
 bool ControllerDetector::isProbablySaveKey(const uInt8* image, uInt32 size, Controller::Jack port)
 {
   // check for known SaveKey code, only supports right port
-  if(port == Controller::Right)
+  if(port == Controller::Jack::Right)
   {
     const int NUM_SIGS = 4;
     const int SIG_SIZE = 9;

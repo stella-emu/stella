@@ -133,13 +133,12 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myTimDivider->setEditable(false);
 
   // Controller ports
-  const RiotDebug& riot = instance().debugger().riotDebug();
   xpos = col;  ypos = 10;
   myLeftControl = addControlWidget(boss, lfont, xpos, ypos,
-      riot.controller(Controller::Left));
+      instance().console().leftController());
   xpos += myLeftControl->getWidth() + 15;
   myRightControl = addControlWidget(boss, lfont, xpos, ypos,
-      riot.controller(Controller::Right));
+      instance().console().rightController());
 
   // TIA INPTx registers (R), left port
   const char* const contLeftReadNames[] = { "INPT0", "INPT1", "INPT4" };
@@ -397,16 +396,18 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           break;
         case kSWCHARBitsID:
         {
+#if 0
           // TODO: Check if there is a nicer way to do this
           value = Debugger::get_bits(mySWCHAReadBits->getState());
-          riot.controller(Controller::Left).set(Controller::One, value & 0b00010000);
-          riot.controller(Controller::Left).set(Controller::Two, value & 0b00100000);
-          riot.controller(Controller::Left).set(Controller::Three, value & 0b01000000);
-          riot.controller(Controller::Left).set(Controller::Four, value & 0b10000000);
-          riot.controller(Controller::Right).set(Controller::One, value & 0b00000001);
-          riot.controller(Controller::Right).set(Controller::Two, value & 0b00000010);
-          riot.controller(Controller::Right).set(Controller::Three, value & 0b00000100);
-          riot.controller(Controller::Right).set(Controller::Four, value & 0b00001000);
+          riot.controller(Controller::Jack::Left).set(Controller::DigitalPin::One, value & 0b00010000);
+          riot.controller(Controller::Jack::Left).set(Controller::DigitalPin::Two, value & 0b00100000);
+          riot.controller(Controller::Jack::Left).set(Controller::DigitalPin::Three, value & 0b01000000);
+          riot.controller(Controller::Jack::Left).set(Controller::DigitalPin::Four, value & 0b10000000);
+          riot.controller(Controller::Jack::Right).set(Controller::DigitalPin::One, value & 0b00000001);
+          riot.controller(Controller::Jack::Right).set(Controller::DigitalPin::Two, value & 0b00000010);
+          riot.controller(Controller::Jack::Right).set(Controller::DigitalPin::Three, value & 0b00000100);
+          riot.controller(Controller::Jack::Right).set(Controller::DigitalPin::Four, value & 0b00001000);
+#endif
           break;
         }
       }
@@ -447,29 +448,29 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
 {
   switch(controller.type())
   {
-    case Controller::AmigaMouse:
+    case Controller::Type::AmigaMouse:
       return new AmigaMouseWidget(boss, font, x, y, controller);
-    case Controller::AtariMouse:
+    case Controller::Type::AtariMouse:
       return new AtariMouseWidget(boss, font, x, y, controller);
-    case Controller::AtariVox:
+    case Controller::Type::AtariVox:
       return new AtariVoxWidget(boss, font, x, y, controller);
-    case Controller::BoosterGrip:
+    case Controller::Type::BoosterGrip:
       return new BoosterWidget(boss, font, x, y, controller);
-    case Controller::Driving:
+    case Controller::Type::Driving:
       return new DrivingWidget(boss, font, x, y, controller);
-    case Controller::Genesis:
+    case Controller::Type::Genesis:
       return new GenesisWidget(boss, font, x, y, controller);
-    case Controller::Joystick:
+    case Controller::Type::Joystick:
       return new JoystickWidget(boss, font, x, y, controller);
-    case Controller::Keyboard:
+    case Controller::Type::Keyboard:
       return new KeyboardWidget(boss, font, x, y, controller);
-//    case Controller::KidVid:      // TODO - implement this
-//    case Controller::MindLink:    // TODO - implement this
-    case Controller::Paddles:
+//    case Controller::Type::KidVid:      // TODO - implement this
+//    case Controller::Type::MindLink:    // TODO - implement this
+    case Controller::Type::Paddles:
       return new PaddleWidget(boss, font, x, y, controller);
-    case Controller::SaveKey:
+    case Controller::Type::SaveKey:
       return new SaveKeyWidget(boss, font, x, y, controller);
-    case Controller::TrakBall:
+    case Controller::Type::TrakBall:
       return new TrakBallWidget(boss, font, x, y, controller);
     default:
       return new NullControlWidget(boss, font, x, y, controller);

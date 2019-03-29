@@ -20,10 +20,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::BoosterGrip),
+  : Controller(jack, event, system, Controller::Type::BoosterGrip),
     myControlID(-1)
 {
-  if(myJack == Left)
+  if(myJack == Jack::Left)
   {
     myUpEvent      = Event::JoystickZeroUp;
     myDownEvent    = Event::JoystickZeroDown;
@@ -48,28 +48,28 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
     myYAxisValue   = Event::SARightAxis1Value;
   }
 
-  updateAnalogPin(Five, MAX_RESISTANCE);
-  updateAnalogPin(Nine, MAX_RESISTANCE);
+  setPin(AnalogPin::Five, MAX_RESISTANCE);
+  setPin(AnalogPin::Nine, MAX_RESISTANCE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BoosterGrip::update()
 {
   // Digital events (from keyboard or joystick hats & buttons)
-  myDigitalPinState[One]   = (myEvent.get(myUpEvent) == 0);
-  myDigitalPinState[Two]   = (myEvent.get(myDownEvent) == 0);
-  myDigitalPinState[Three] = (myEvent.get(myLeftEvent) == 0);
-  myDigitalPinState[Four]  = (myEvent.get(myRightEvent) == 0);
-  myDigitalPinState[Six]   = (myEvent.get(myFireEvent) == 0);
+  setPin(DigitalPin::One, myEvent.get(myUpEvent) == 0);
+  setPin(DigitalPin::Two, myEvent.get(myDownEvent) == 0);
+  setPin(DigitalPin::Three, myEvent.get(myLeftEvent) == 0);
+  setPin(DigitalPin::Four, myEvent.get(myRightEvent) == 0);
+  setPin(DigitalPin::Six, myEvent.get(myFireEvent) == 0);
 
   // The CBS Booster-grip has two more buttons on it.  These buttons are
   // connected to the inputs usually used by paddles.
-  updateAnalogPin(
-    Five,
+  setPin(
+    AnalogPin::Five,
     (myEvent.get(myTriggerEvent) != 0) ? MIN_RESISTANCE : MAX_RESISTANCE
   );
-  updateAnalogPin(
-    Nine,
+  setPin(
+    AnalogPin::Nine,
     (myEvent.get(myBoosterEvent) != 0) ? MIN_RESISTANCE : MAX_RESISTANCE
   );
 
@@ -78,22 +78,22 @@ void BoosterGrip::update()
   int yaxis = myEvent.get(myYAxisValue);
   if(xaxis > 16384-4096)
   {
-    myDigitalPinState[Four] = false;
+    setPin(DigitalPin::Four, false);
     // Stelladaptor sends "half moved right" for L+R pushed together
     if(xaxis < 16384+4096)
-      myDigitalPinState[Three] = false;
+      setPin(DigitalPin::Three, false);
   }
   else if(xaxis < -16384)
-    myDigitalPinState[Three] = false;
+    setPin(DigitalPin::Three, false);
   if(yaxis > 16384-4096)
   {
-    myDigitalPinState[Two] = false;
+    setPin(DigitalPin::Two, false);
     // Stelladaptor sends "half moved down" for U+D pushed together
     if(yaxis < 16384+4096)
-      myDigitalPinState[One] = false;
+      setPin(DigitalPin::One, false);
   }
   else if(yaxis < -16384)
-    myDigitalPinState[One] = false;
+    setPin(DigitalPin::One, false);
 
   // Mouse motion and button events
   if(myControlID > -1)
@@ -107,24 +107,24 @@ void BoosterGrip::update()
       if((!(abs(mousey) > abs(mousex) << 1)) && (abs(mousex) >= MJ_Threshold))
       {
         if(mousex < 0)
-          myDigitalPinState[Three] = false;
+          setPin(DigitalPin::Three, false);
         else if (mousex > 0)
-          myDigitalPinState[Four] = false;
+          setPin(DigitalPin::Four, false);
       }
 
       if((!(abs(mousex) > abs(mousey) << 1)) && (abs(mousey) >= MJ_Threshold))
       {
         if(mousey < 0)
-          myDigitalPinState[One] = false;
+          setPin(DigitalPin::One, false);
         else if(mousey > 0)
-          myDigitalPinState[Two] = false;
+          setPin(DigitalPin::Two, false);
       }
     }
     // Get mouse button state
     if(myEvent.get(Event::MouseButtonLeftValue))
-      myDigitalPinState[Six] = false;
+      setPin(DigitalPin::Six, false);
     if(myEvent.get(Event::MouseButtonRightValue))
-      updateAnalogPin(Nine, MIN_RESISTANCE);
+      setPin(AnalogPin::Nine, MIN_RESISTANCE);
   }
 }
 
@@ -135,11 +135,11 @@ bool BoosterGrip::setMouseControl(
   // Currently, the booster-grip takes full control of the mouse, using both
   // axes for its two degrees of movement, and the left/right buttons for
   // fire and booster, respectively
-  if(xtype == Controller::BoosterGrip && ytype == Controller::BoosterGrip &&
+  if(xtype == Controller::Type::BoosterGrip && ytype == Controller::Type::BoosterGrip &&
      xid == yid)
   {
-    myControlID = ((myJack == Left && xid == 0) ||
-                   (myJack == Right && xid == 1)
+    myControlID = ((myJack == Jack::Left && xid == 0) ||
+                   (myJack == Jack::Right && xid == 1)
                   ) ? xid : -1;
   }
   else

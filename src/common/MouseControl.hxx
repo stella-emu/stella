@@ -81,8 +81,8 @@ class MouseControl
       string message;
 
       explicit MouseMode(const string& msg = "")
-        : xtype(Controller::Joystick),
-          ytype(Controller::Joystick),
+        : xtype(Controller::Type::Joystick),
+          ytype(Controller::Type::Joystick),
           xid(-1),
           yid(-1),
           message(msg)  { }
@@ -97,8 +97,8 @@ class MouseControl
 
       friend ostream& operator<<(ostream& os, const MouseMode& mm)
       {
-        os << "xtype=" << mm.xtype << ", xid=" << mm.xid
-           << ", ytype=" << mm.ytype << ", yid=" << mm.yid
+        os << "xtype=" << int(mm.xtype) << ", xid=" << mm.xid
+           << ", ytype=" << int(mm.ytype) << ", yid=" << mm.yid
            << ", msg=" << mm.message;
         return os;
       }

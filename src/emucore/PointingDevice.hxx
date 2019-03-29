@@ -95,6 +95,8 @@ class PointingDevice : public Controller
     // IOPortA values are calculated
     virtual uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) = 0;
 
+//    virtual string pointingDeviceName() const = 0;
+
   private:
     void updateDirection(int counter, float& counterRemainder,
                          bool& trackBallDir, int& trackBallLines,

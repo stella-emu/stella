@@ -84,9 +84,6 @@ class RiotDebug : public DebuggerSystem
     Int32 intimClocks() const;
     Int32 timDivider() const;
 
-    /* Controller ports */
-    Controller& controller(Controller::Jack jack) const;
-
     /* Console switches */
     bool diffP0(int newVal = -1);
     bool diffP1(int newVal = -1);

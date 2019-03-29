@@ -70,9 +70,9 @@ void StateManager::toggleRecordMode()
     // normal, and those states files wouldn't be compatible with normal
     // controllers.
     myMovieWriter.putString(
-      myOSystem.console().controller(Controller::Left).name());
+      myOSystem.console().controller(Controller::Jack::Left).name());
     myMovieWriter.putString(
-      myOSystem.console().controller(Controller::Right).name());
+      myOSystem.console().controller(Controller::Jack::Right).name());
 
     // If we get this far, we're really in movie record mode
     myActiveMode = kMovieRecordMode;
@@ -112,8 +112,8 @@ void StateManager::toggleRecordMode()
     const string& left  = myMovieReader.getString();
     const string& right = myMovieReader.getString();
 
-    if(left != myOSystem.console().controller(Controller::Left).name() ||
-       right != myOSystem.console().controller(Controller::Right).name())
+    if(left != myOSystem.console().controller(Controller::Jack::Left).name() ||
+       right != myOSystem.console().controller(Controller::Jack::Right).name())
       return false;
 
     // If we get this far, we're really in movie record mode
@@ -184,14 +184,14 @@ void StateManager::update()
 
 #if 0
     case Mode::MovieRecord:
-      myOSystem.console().controller(Controller::Left).save(myMovieWriter);
-      myOSystem.console().controller(Controller::Right).save(myMovieWriter);
+      myOSystem.console().controller(Controller::Jack::Left).save(myMovieWriter);
+      myOSystem.console().controller(Controller::Jack::Right).save(myMovieWriter);
       myOSystem.console().switches().save(myMovieWriter);
       break;
 
     case Mode::MoviePlayback:
-      myOSystem.console().controller(Controller::Left).load(myMovieReader);
-      myOSystem.console().controller(Controller::Right).load(myMovieReader);
+      myOSystem.console().controller(Controller::Jack::Left).load(myMovieReader);
+      myOSystem.console().controller(Controller::Jack::Right).load(myMovieReader);
       myOSystem.console().switches().load(myMovieReader);
       break;
 #endif

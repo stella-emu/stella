@@ -282,8 +282,8 @@ void InputDialog::loadConfig()
     Controller& lport = instance().console().leftController();
     Controller& rport = instance().console().rightController();
 
-    myEraseEEPROMButton->setEnabled(lport.type() == Controller::SaveKey || lport.type() == Controller::AtariVox ||
-                                    rport.type() == Controller::SaveKey || rport.type() == Controller::AtariVox);
+    myEraseEEPROMButton->setEnabled(lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox ||
+                                    rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox);
   }
   else
     myEraseEEPROMButton->setEnabled(false);
@@ -459,13 +459,13 @@ void InputDialog::eraseEEPROM()
   Controller& lport = instance().console().leftController();
   Controller& rport = instance().console().rightController();
 
-  if(lport.type() == Controller::SaveKey || lport.type() == Controller::AtariVox)
+  if(lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox)
   {
     SaveKey& skey = static_cast<SaveKey&>(lport);
     skey.eraseCurrent();
   }
 
-  if(rport.type() == Controller::SaveKey || rport.type() == Controller::AtariVox)
+  if(rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox)
   {
     SaveKey& skey = static_cast<SaveKey&>(rport);
     skey.eraseCurrent();

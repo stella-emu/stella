@@ -84,6 +84,11 @@ class SaveKey : public Controller
     void update() override { }
 
     /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "SaveKey"; }
+
+    /**
       Notification method invoked by the system after its reset method has
       been called.  It may be necessary to override this method for
       controllers that need to know a reset has occurred.

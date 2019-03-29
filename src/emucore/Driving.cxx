@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Driving::Driving(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::Driving),
+  : Controller(jack, event, system, Controller::Type::Driving),
     myCounter(0),
     myGrayIndex(0),
     myLastYaxis(0),
@@ -30,7 +30,7 @@ Driving::Driving(Jack jack, const Event& event, const System& system)
     myControlIDX(-1),
     myControlIDY(-1)
 {
-  if(myJack == Left)
+  if(myJack == Jack::Left)
   {
     myCCWEvent   = Event::JoystickZeroLeft;
     myCWEvent    = Event::JoystickZeroRight;
@@ -48,7 +48,8 @@ Driving::Driving(Jack jack, const Event& event, const System& system)
   }
 
   // Digital pins 3 and 4 are not connected
-  myDigitalPinState[Three] = myDigitalPinState[Four] = true;
+  setPin(DigitalPin::Three, true);
+  setPin(DigitalPin::Four, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,7 +60,7 @@ void Driving::update()
   myCounter = (myGrayIndex << 2) | (myCounter & 3);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  myDigitalPinState[Six] = (myEvent.get(myFireEvent) == 0);
+  setPin(DigitalPin::Six, myEvent.get(myFireEvent) == 0);
   int d_axis = myEvent.get(myXAxisValue);
   if(myEvent.get(myCCWEvent) != 0 || d_axis < -16384)     --myCounter;
   else if(myEvent.get(myCWEvent) != 0 || d_axis > 16384)  ++myCounter;
@@ -72,7 +73,7 @@ void Driving::update()
     else if(m_axis > 2) ++myCounter;
     if(myEvent.get(Event::MouseButtonLeftValue) ||
        myEvent.get(Event::MouseButtonRightValue))
-      myDigitalPinState[Six] = false;
+      setPin(DigitalPin::Six, false);
   }
   else
   {
@@ -84,7 +85,7 @@ void Driving::update()
       if(m_axis < -2)     --myCounter;
       else if(m_axis > 2) ++myCounter;
       if(myEvent.get(Event::MouseButtonLeftValue))
-        myDigitalPinState[Six] = false;
+        setPin(DigitalPin::Six, false);
     }
     if(myControlIDY > -1)
     {
@@ -92,7 +93,7 @@ void Driving::update()
       if(m_axis < -2)     --myCounter;
       else if(m_axis > 2) ++myCounter;
       if(myEvent.get(Event::MouseButtonRightValue))
-        myDigitalPinState[Six] = false;
+        setPin(DigitalPin::Six, false);
     }
   }
 
@@ -123,8 +124,8 @@ void Driving::update()
 
   // Determine which bits are set
   uInt8 gray = graytable[myGrayIndex];
-  myDigitalPinState[One] = (gray & 0x1) != 0;
-  myDigitalPinState[Two] = (gray & 0x2) != 0;
+  setPin(DigitalPin::One, (gray & 0x1) != 0);
+  setPin(DigitalPin::Two, (gray & 0x2) != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,10 +134,10 @@ bool Driving::setMouseControl(
 {
   // When the mouse emulates a single driving controller, only the X-axis is
   // used, and both mouse buttons map to the same 'fire' event
-  if(xtype == Controller::Driving && ytype == Controller::Driving && xid == yid)
+  if(xtype == Controller::Type::Driving && ytype == Controller::Type::Driving && xid == yid)
   {
-    myControlID = ((myJack == Left && xid == 0) ||
-                   (myJack == Right && xid == 1)
+    myControlID = ((myJack == Jack::Left && xid == 0) ||
+                   (myJack == Jack::Right && xid == 1)
                   ) ? xid : -1;
     myControlIDX = myControlIDY = -1;
   }
@@ -145,15 +146,15 @@ bool Driving::setMouseControl(
     // Otherwise, each axis can be mapped to a separate driving controller,
     // and the buttons map to separate (corresponding) controllers
     myControlID = -1;
-    if(myJack == Left)
+    if(myJack == Jack::Left)
     {
-      myControlIDX = (xtype == Controller::Driving && xid == 0) ? 0 : -1;
-      myControlIDY = (ytype == Controller::Driving && yid == 0) ? 0 : -1;
+      myControlIDX = (xtype == Controller::Type::Driving && xid == 0) ? 0 : -1;
+      myControlIDY = (ytype == Controller::Type::Driving && yid == 0) ? 0 : -1;
     }
     else  // myJack == Right
     {
-      myControlIDX = (xtype == Controller::Driving && xid == 1) ? 1 : -1;
-      myControlIDY = (ytype == Controller::Driving && yid == 1) ? 1 : -1;
+      myControlIDX = (xtype == Controller::Type::Driving && xid == 1) ? 1 : -1;
+      myControlIDY = (ytype == Controller::Type::Driving && yid == 1) ? 1 : -1;
     }
   }
 

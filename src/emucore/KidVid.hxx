@@ -58,6 +58,11 @@ class KidVid : public Controller
     */
     void update() override;
 
+    /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "KidVid"; }
+
   private:
     // Open/close a WAV sample file
     void openSampleFile();

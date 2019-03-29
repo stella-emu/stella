@@ -46,7 +46,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
     Axis yaxis = Axis(int(m_mode[1]) - '0');
     ostringstream msg;
     msg << "Mouse X-axis is ";
-    Controller::Type xtype = Controller::Joystick, ytype = Controller::Joystick;
+    Controller::Type xtype = Controller::Type::Joystick, ytype = Controller::Type::Joystick;
     int xid = -1, yid = -1;
     switch(xaxis)
     {
@@ -54,42 +54,42 @@ MouseControl::MouseControl(Console& console, const string& mode)
         msg << "not used";
         break;
       case Paddle0:
-        xtype = Controller::Paddles;
+        xtype = Controller::Type::Paddles;
         xid = 0;
         msg << "Paddle 0";
         break;
       case Paddle1:
-        xtype = Controller::Paddles;
+        xtype = Controller::Type::Paddles;
         xid = 1;
         msg << "Paddle 1";
         break;
       case Paddle2:
-        xtype = Controller::Paddles;
+        xtype = Controller::Type::Paddles;
         xid = 2;
         msg << "Paddle 2";
         break;
       case Paddle3:
-        xtype = Controller::Paddles;
+        xtype = Controller::Type::Paddles;
         xid = 3;
         msg << "Paddle 3";
         break;
       case Driving0:
-        xtype = Controller::Driving;
+        xtype = Controller::Type::Driving;
         xid = 0;
         msg << "Driving 0";
         break;
       case Driving1:
-        xtype = Controller::Driving;
+        xtype = Controller::Type::Driving;
         xid = 1;
         msg << "Driving 1";
         break;
       case MindLink0:
-        xtype = Controller::MindLink;
+        xtype = Controller::Type::MindLink;
         xid = 0;
         msg << "MindLink 0";
         break;
       case MindLink1:
-        xtype = Controller::MindLink;
+        xtype = Controller::Type::MindLink;
         xid = 1;
         msg << "MindLink 1";
         break;
@@ -101,42 +101,42 @@ MouseControl::MouseControl(Console& console, const string& mode)
         msg << "not used";
         break;
       case Paddle0:
-        ytype = Controller::Paddles;
+        ytype = Controller::Type::Paddles;
         yid = 0;
         msg << "Paddle 0";
         break;
       case Paddle1:
-        ytype = Controller::Paddles;
+        ytype = Controller::Type::Paddles;
         yid = 1;
         msg << "Paddle 1";
         break;
       case Paddle2:
-        ytype = Controller::Paddles;
+        ytype = Controller::Type::Paddles;
         yid = 2;
         msg << "Paddle 2";
         break;
       case Paddle3:
-        ytype = Controller::Paddles;
+        ytype = Controller::Type::Paddles;
         yid = 3;
         msg << "Paddle 3";
         break;
       case Driving0:
-        ytype = Controller::Driving;
+        ytype = Controller::Type::Driving;
         yid = 0;
         msg << "Driving 0";
         break;
       case Driving1:
-        ytype = Controller::Driving;
+        ytype = Controller::Type::Driving;
         yid = 1;
         msg << "Driving 1";
         break;
       case MindLink0:
-        ytype = Controller::MindLink;
+        ytype = Controller::Type::MindLink;
         yid = 0;
         msg << "MindLink 0";
         break;
       case MindLink1:
-        ytype = Controller::MindLink;
+        ytype = Controller::Type::MindLink;
         yid = 1;
         msg << "MindLink 1";
         break;
@@ -192,7 +192,7 @@ void MouseControl::addLeftControllerModes(bool noswap)
 {
   if(controllerSupportsMouse(myLeftController))
   {
-    if(myLeftController.type() == Controller::Paddles)
+    if(myLeftController.type() == Controller::Type::Paddles)
     {
       if(noswap)  addPaddleModes(0, 1, 0, 1);
       else        addPaddleModes(2, 3, 0, 1);
@@ -213,7 +213,7 @@ void MouseControl::addRightControllerModes(bool noswap)
 {
   if(controllerSupportsMouse(myRightController))
   {
-    if(myRightController.type() == Controller::Paddles)
+    if(myRightController.type() == Controller::Type::Paddles)
     {
       if(noswap)  addPaddleModes(2, 3, 2, 3);
       else        addPaddleModes(0, 1, 2, 3);
@@ -232,7 +232,7 @@ void MouseControl::addRightControllerModes(bool noswap)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
 {
-  Controller::Type type = Controller::Paddles;
+  Controller::Type type = Controller::Type::Paddles;
   ostringstream msg;
   msg << "Mouse is Paddle " << lname << " controller";
   MouseMode mode0(type, lport, type, lport, msg.str());
@@ -260,5 +260,5 @@ bool MouseControl::controllerSupportsMouse(Controller& controller)
   // We can pass in dummy values here, since the controllers will be
   // initialized by a call to next() once the system is up and running
   return controller.setMouseControl(
-      Controller::Joystick, -1, Controller::Joystick, -1);
+      Controller::Type::Joystick, -1, Controller::Type::Joystick, -1);
 }

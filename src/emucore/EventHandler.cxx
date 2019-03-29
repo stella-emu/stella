@@ -1093,8 +1093,8 @@ void EventHandler::setMouseControllerMode(const string& enable)
       usemouse = false;
     else  // 'analog'
     {
-      usemouse = myOSystem.console().controller(Controller::Left).isAnalog() ||
-                 myOSystem.console().controller(Controller::Right).isAnalog();
+      usemouse = myOSystem.console().leftController().isAnalog() ||
+                 myOSystem.console().rightController().isAnalog();
     }
 
     const string& control = usemouse ?
@@ -1202,7 +1202,7 @@ void EventHandler::setState(EventHandlerState state)
     case EventHandlerState::EMULATION:
       myOSystem.sound().mute(false);
       enableTextEvents(false);
-      if(myOSystem.console().leftController().type() == Controller::CompuMate)
+      if(myOSystem.console().leftController().type() == Controller::Type::CompuMate)
         myPKeyHandler->useCtrlKey() = false;
       break;
 

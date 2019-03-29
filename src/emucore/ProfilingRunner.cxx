@@ -127,8 +127,8 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
   TIA tia(consoleIO, []() { return ConsoleTiming::ntsc; }, mySettings);
   System system(rng, cpu, riot, tia, *cartridge);
 
-  consoleIO.myLeftControl = make_unique<Joystick>(Controller::Left, event, system);
-  consoleIO.myRightControl = make_unique<Joystick>(Controller::Right, event, system);
+  consoleIO.myLeftControl = make_unique<Joystick>(Controller::Jack::Left, event, system);
+  consoleIO.myRightControl = make_unique<Joystick>(Controller::Jack::Right, event, system);
   consoleIO.mySwitches = make_unique<Switches>(event, myProps, mySettings);
 
   tia.bindToControllers();

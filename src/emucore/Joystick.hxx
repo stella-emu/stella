@@ -48,6 +48,11 @@ class Joystick : public Controller
     void update() override;
 
     /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "Joystick"; }
+
+    /**
       Determines how this controller will treat values received from the
       X/Y axis and left/right buttons of the mouse.  Since not all controllers
       use the mouse the same way (or at all), it's up to the specific class to
