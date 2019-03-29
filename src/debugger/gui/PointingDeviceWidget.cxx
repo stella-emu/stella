@@ -75,7 +75,7 @@ void PointingDeviceWidget::loadConfig()
 {
   setGrayCodeH();
   setGrayCodeV();
-  myFire->setState(!myController->getPin(Controller::DigitalPin::Six));
+  myFire->setState(!getPin(Controller::DigitalPin::Six));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,7 +83,7 @@ void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int dat
 {
   // since the PointingDevice uses its own, internal state (not reading the controller),
   // we have to communicate directly with it
-  PointingDevice& pDev = static_cast<PointingDevice&>(myController->base());
+  PointingDevice& pDev = static_cast<PointingDevice&>(controller());
 
   switch(cmd)
   {
@@ -108,7 +108,7 @@ void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int dat
       setGrayCodeV();
       break;
     case kTBFire:
-      myController->setPin(Controller::DigitalPin::Six, !myFire->getState());
+      setPin(Controller::DigitalPin::Six, !myFire->getState());
       break;
   }
 }
@@ -116,7 +116,7 @@ void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int dat
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDeviceWidget::setGrayCodeH()
 {
-  PointingDevice& pDev = static_cast<PointingDevice&>(myController->base());
+  PointingDevice& pDev = static_cast<PointingDevice&>(controller());
 
   pDev.myCountH &= 0b11;
   setValue(myGrayValueH, pDev.myCountH, pDev.myTrackBallLeft);
@@ -125,7 +125,7 @@ void PointingDeviceWidget::setGrayCodeH()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PointingDeviceWidget::setGrayCodeV()
 {
-  PointingDevice& pDev = static_cast<PointingDevice&>(myController->base());
+  PointingDevice& pDev = static_cast<PointingDevice&>(controller());
 
   pDev.myCountV &= 0b11;
   setValue(myGrayValueV, pDev.myCountV, !pDev.myTrackBallDown);

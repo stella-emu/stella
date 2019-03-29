@@ -27,38 +27,32 @@ class ButtonWidget;
 #include "Command.hxx"
 #include "ControlLowLevel.hxx"
 
-
-class ControllerWidget : public Widget, public CommandSender
+class ControllerWidget : public Widget, public CommandSender, public ControllerLowLevel
 {
   public:
     ControllerWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                      Controller& controller)
       : Widget(boss, font, x, y, 16, 16),
         CommandSender(boss),
-        myController(make_unique<ControllerLowLevel>(controller))
+        ControllerLowLevel(controller)
     {
       _w = 18 * font.getMaxCharWidth();
       _h = 8 * font.getLineHeight();
     }
-
     virtual ~ControllerWidget() = default;
 
     virtual void loadConfig() override { }
 
   protected:
-    unique_ptr<ControllerLowLevel> myController;
-
-  protected:
     bool isLeftPort()
     {
       bool swappedPorts = instance().console().properties().get(Console_SwapPorts) == "YES";
-
-      return (myController->base().jack() == Controller::Jack::Left) ^ swappedPorts;
+      return (controller().jack() == Controller::Jack::Left) ^ swappedPorts;
     }
 
     string getHeader()
     {
-      return (isLeftPort() ? "Left (" : "Right (") + myController->base().name() + ")";
+      return (isLeftPort() ? "Left (" : "Right (") + controller().name() + ")";
     }
 
   private:

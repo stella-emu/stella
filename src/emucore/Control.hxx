@@ -66,7 +66,7 @@ class Controller : public Serializable
     Various classes that need special access to the underlying controller state
   */
   friend class M6532;     // FIXME - only needs two methods from this class
-  friend class CompuMate;
+  friend class CompuMate; // FIXME - should go through CMControl instead
   friend class ControllerLowLevel;
 
   public:

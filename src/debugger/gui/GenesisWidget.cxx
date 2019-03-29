@@ -72,14 +72,14 @@ GenesisWidget::GenesisWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GenesisWidget::loadConfig()
 {
-  myPins[kJUp]->setState(!myController->getPin(ourPinNo[kJUp]));
-  myPins[kJDown]->setState(!myController->getPin(ourPinNo[kJDown]));
-  myPins[kJLeft]->setState(!myController->getPin(ourPinNo[kJLeft]));
-  myPins[kJRight]->setState(!myController->getPin(ourPinNo[kJRight]));
-  myPins[kJBbtn]->setState(!myController->getPin(ourPinNo[kJBbtn]));
+  myPins[kJUp]->setState(!getPin(ourPinNo[kJUp]));
+  myPins[kJDown]->setState(!getPin(ourPinNo[kJDown]));
+  myPins[kJLeft]->setState(!getPin(ourPinNo[kJLeft]));
+  myPins[kJRight]->setState(!getPin(ourPinNo[kJRight]));
+  myPins[kJBbtn]->setState(!getPin(ourPinNo[kJBbtn]));
 
   myPins[kJCbtn]->setState(
-    myController->getPin(Controller::AnalogPin::Five) == Controller::MAX_RESISTANCE);
+    getPin(Controller::AnalogPin::Five) == Controller::MAX_RESISTANCE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,10 +95,10 @@ void GenesisWidget::handleCommand(
       case kJLeft:
       case kJRight:
       case kJBbtn:
-        myController->setPin(ourPinNo[id], !myPins[id]->getState());
+        setPin(ourPinNo[id], !myPins[id]->getState());
         break;
       case kJCbtn:
-        myController->setPin(Controller::AnalogPin::Five,
+        setPin(Controller::AnalogPin::Five,
           myPins[id]->getState() ? Controller::MAX_RESISTANCE :
                                    Controller::MIN_RESISTANCE);
         break;

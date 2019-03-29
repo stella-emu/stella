@@ -56,7 +56,7 @@ class ControllerLowLevel
     inline void resetAnalogPins() {
       myController.resetAnalogPins();
     }
-    inline Controller& base() const { return myController; }
+    inline Controller& controller() const { return myController; }
 
   protected:
     Controller& myController;

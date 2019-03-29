@@ -78,16 +78,16 @@ BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BoosterWidget::loadConfig()
 {
-  myPins[kJUp]->setState(!myController->getPin(ourPinNo[kJUp]));
-  myPins[kJDown]->setState(!myController->getPin(ourPinNo[kJDown]));
-  myPins[kJLeft]->setState(!myController->getPin(ourPinNo[kJLeft]));
-  myPins[kJRight]->setState(!myController->getPin(ourPinNo[kJRight]));
-  myPins[kJFire]->setState(!myController->getPin(ourPinNo[kJFire]));
+  myPins[kJUp]->setState(!getPin(ourPinNo[kJUp]));
+  myPins[kJDown]->setState(!getPin(ourPinNo[kJDown]));
+  myPins[kJLeft]->setState(!getPin(ourPinNo[kJLeft]));
+  myPins[kJRight]->setState(!getPin(ourPinNo[kJRight]));
+  myPins[kJFire]->setState(!getPin(ourPinNo[kJFire]));
 
   myPins[kJBooster]->setState(
-    myController->getPin(Controller::AnalogPin::Five) == Controller::MIN_RESISTANCE);
+    getPin(Controller::AnalogPin::Five) == Controller::MIN_RESISTANCE);
   myPins[kJTrigger]->setState(
-    myController->getPin(Controller::AnalogPin::Nine) == Controller::MIN_RESISTANCE);
+    getPin(Controller::AnalogPin::Nine) == Controller::MIN_RESISTANCE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -103,15 +103,15 @@ void BoosterWidget::handleCommand(
       case kJLeft:
       case kJRight:
       case kJFire:
-        myController->setPin(ourPinNo[id], !myPins[id]->getState());
+        setPin(ourPinNo[id], !myPins[id]->getState());
         break;
       case kJBooster:
-        myController->setPin(Controller::AnalogPin::Five,
+        setPin(Controller::AnalogPin::Five,
           myPins[id]->getState() ? Controller::MIN_RESISTANCE :
                                    Controller::MAX_RESISTANCE);
         break;
       case kJTrigger:
-        myController->setPin(Controller::AnalogPin::Nine,
+        setPin(Controller::AnalogPin::Nine,
           myPins[id]->getState() ? Controller::MIN_RESISTANCE :
                                    Controller::MAX_RESISTANCE);
         break;

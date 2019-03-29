@@ -60,8 +60,8 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
 void DrivingWidget::loadConfig()
 {
   uInt8 gray = 0;
-  if(myController->getPin(Controller::DigitalPin::One)) gray += 1;
-  if(myController->getPin(Controller::DigitalPin::Two)) gray += 2;
+  if(getPin(Controller::DigitalPin::One)) gray += 1;
+  if(getPin(Controller::DigitalPin::Two)) gray += 2;
 
   for(myGrayIndex = 0; myGrayIndex < 4; ++myGrayIndex)
   {
@@ -72,7 +72,7 @@ void DrivingWidget::loadConfig()
     }
   }
 
-  myFire->setState(!myController->getPin(Controller::DigitalPin::Six));
+  myFire->setState(!getPin(Controller::DigitalPin::Six));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,18 +83,18 @@ void DrivingWidget::handleCommand(
   {
     case kGrayUpCmd:
       myGrayIndex = (myGrayIndex + 1) % 4;
-      myController->setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
-      myController->setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
+      setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
+      setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
       setValue(myGrayIndex);
       break;
     case kGrayDownCmd:
       myGrayIndex = myGrayIndex == 0 ? 3 : myGrayIndex - 1;
-      myController->setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
-      myController->setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
+      setPin(Controller::DigitalPin::One, (ourGrayTable[myGrayIndex] & 0x1) != 0);
+      setPin(Controller::DigitalPin::Two, (ourGrayTable[myGrayIndex] & 0x2) != 0);
       setValue(myGrayIndex);
       break;
     case kFireCmd:
-      myController->setPin(Controller::DigitalPin::Six, !myFire->getState());
+      setPin(Controller::DigitalPin::Six, !myFire->getState());
       break;
   }
 }
