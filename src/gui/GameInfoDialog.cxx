@@ -210,7 +210,7 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + VGAP;
 
   myLeftPortDetected = new StaticTextWidget(myTab, ifont, myLeftPort->getLeft(), ypos,
-                                            "BoosterGrip detected");
+                                            "Sega Genesis detected");
   ypos += ifont.getLineHeight() + VGAP;
 
   myRightPortLabel = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Right port       ");
@@ -220,7 +220,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myRightPort);
   ypos += lineHeight + VGAP;
   myRightPortDetected = new StaticTextWidget(myTab, ifont, myRightPort->getLeft(), ypos,
-                                             "BoosterGrip detected");
+                                             "Sega Genesis detected");
   ypos += ifont.getLineHeight() + VGAP + 4;
 
   mySwapPorts = new CheckboxWidget(myTab, font, myLeftPort->getRight() + fontWidth*4,
@@ -591,7 +591,7 @@ void GameInfoDialog::setDefaults()
       loadCartridgeProperties(defaultProperties);
       break;
 
-    default: // make the complier happy
+    default: // make the compiler happy
       break;
   }
 }
