@@ -97,19 +97,19 @@ void M6532::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::update()
 {
-  Controller& port0 = myConsole.leftController();
-  Controller& port1 = myConsole.rightController();
+  Controller& lport = myConsole.leftController();
+  Controller& rport = myConsole.rightController();
 
   // Get current PA7 state
-  bool prevPA7 = port0.getPin(Controller::DigitalPin::Four);
+  bool prevPA7 = lport.getPin(Controller::DigitalPin::Four);
 
   // Update entire port state
-  port0.update();
-  port1.update();
+  lport.update();
+  rport.update();
   myConsole.switches().update();
 
   // Get new PA7 state
-  bool currPA7 = port0.getPin(Controller::DigitalPin::Four);
+  bool currPA7 = lport.getPin(Controller::DigitalPin::Four);
 
   // PA7 Flag is set on active transition in appropriate direction
   if((!myEdgeDetectPositive && prevPA7 && !currPA7) ||
@@ -342,24 +342,24 @@ void M6532::setPinState(bool swcha)
       if(DDR bit is input)       set output as 1
       else if(DDR bit is output) set output as bit in ORA
   */
-  Controller& port0 = myConsole.leftController();
-  Controller& port1 = myConsole.rightController();
+  Controller& lport = myConsole.leftController();
+  Controller& rport = myConsole.rightController();
 
   uInt8 ioport = myOutA | ~myDDRA;
 
-  port0.write(Controller::DigitalPin::One,   ioport & 0b00010000);
-  port0.write(Controller::DigitalPin::Two,   ioport & 0b00100000);
-  port0.write(Controller::DigitalPin::Three, ioport & 0b01000000);
-  port0.write(Controller::DigitalPin::Four,  ioport & 0b10000000);
-  port1.write(Controller::DigitalPin::One,   ioport & 0b00000001);
-  port1.write(Controller::DigitalPin::Two,   ioport & 0b00000010);
-  port1.write(Controller::DigitalPin::Three, ioport & 0b00000100);
-  port1.write(Controller::DigitalPin::Four,  ioport & 0b00001000);
+  lport.write(Controller::DigitalPin::One,   ioport & 0b00010000);
+  lport.write(Controller::DigitalPin::Two,   ioport & 0b00100000);
+  lport.write(Controller::DigitalPin::Three, ioport & 0b01000000);
+  lport.write(Controller::DigitalPin::Four,  ioport & 0b10000000);
+  rport.write(Controller::DigitalPin::One,   ioport & 0b00000001);
+  rport.write(Controller::DigitalPin::Two,   ioport & 0b00000010);
+  rport.write(Controller::DigitalPin::Three, ioport & 0b00000100);
+  rport.write(Controller::DigitalPin::Four,  ioport & 0b00001000);
 
   if(swcha)
   {
-    port0.controlWrite(ioport);
-    port1.controlWrite(ioport);
+    lport.controlWrite(ioport);
+    rport.controlWrite(ioport);
   }
 }
 
