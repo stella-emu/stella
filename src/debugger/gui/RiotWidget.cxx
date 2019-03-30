@@ -396,18 +396,17 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           break;
         case kSWCHARBitsID:
         {
-#if 0
-          // TODO: Check if there is a nicer way to do this
           value = Debugger::get_bits(mySWCHAReadBits->getState());
-          riot.controller(Controller::Jack::Left).set(Controller::DigitalPin::One, value & 0b00010000);
-          riot.controller(Controller::Jack::Left).set(Controller::DigitalPin::Two, value & 0b00100000);
-          riot.controller(Controller::Jack::Left).set(Controller::DigitalPin::Three, value & 0b01000000);
-          riot.controller(Controller::Jack::Left).set(Controller::DigitalPin::Four, value & 0b10000000);
-          riot.controller(Controller::Jack::Right).set(Controller::DigitalPin::One, value & 0b00000001);
-          riot.controller(Controller::Jack::Right).set(Controller::DigitalPin::Two, value & 0b00000010);
-          riot.controller(Controller::Jack::Right).set(Controller::DigitalPin::Three, value & 0b00000100);
-          riot.controller(Controller::Jack::Right).set(Controller::DigitalPin::Four, value & 0b00001000);
-#endif
+          ControllerLowLevel lport(instance().console().leftController());
+          ControllerLowLevel rport(instance().console().rightController());
+          lport.setPin(Controller::DigitalPin::One,   value & 0b00010000);
+          lport.setPin(Controller::DigitalPin::Two,   value & 0b00100000);
+          lport.setPin(Controller::DigitalPin::Three, value & 0b01000000);
+          lport.setPin(Controller::DigitalPin::Four,  value & 0b10000000);
+          rport.setPin(Controller::DigitalPin::One,   value & 0b00000001);
+          rport.setPin(Controller::DigitalPin::Two,   value & 0b00000010);
+          rport.setPin(Controller::DigitalPin::Three, value & 0b00000100);
+          rport.setPin(Controller::DigitalPin::Four,  value & 0b00001000);
           break;
         }
       }
