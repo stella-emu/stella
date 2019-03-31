@@ -519,6 +519,9 @@
 		DCC6A4B320A2622500863C59 /* SimpleResampler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */; };
 		DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCA26B11FA64D5E000EE4D8 /* AbstractFrameManager.hxx */; };
 		DCCA26B41FA64D5E000EE4D8 /* FrameManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCA26B21FA64D5E000EE4D8 /* FrameManager.hxx */; };
+		DCCE0355225104BF008C246F /* StellaSettingsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */; };
+		DCCE0356225104BF008C246F /* StellaSettingsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCE0354225104BF008C246F /* StellaSettingsDialog.hxx */; };
+		DCCE03582251050C008C246F /* ControlLowLevel.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCE03572251050C008C246F /* ControlLowLevel.hxx */; };
 		DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */; };
 		DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */; };
 		DCCF47E014B60DEE00814FAB /* JoystickWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */; };
@@ -1229,6 +1232,9 @@
 		DCC6A4B020A2622500863C59 /* SimpleResampler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SimpleResampler.hxx; path = audio/SimpleResampler.hxx; sourceTree = "<group>"; };
 		DCCA26B11FA64D5E000EE4D8 /* AbstractFrameManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AbstractFrameManager.hxx; sourceTree = "<group>"; };
 		DCCA26B21FA64D5E000EE4D8 /* FrameManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameManager.hxx; sourceTree = "<group>"; };
+		DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StellaSettingsDialog.cxx; sourceTree = "<group>"; };
+		DCCE0354225104BF008C246F /* StellaSettingsDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaSettingsDialog.hxx; sourceTree = "<group>"; };
+		DCCE03572251050C008C246F /* ControlLowLevel.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControlLowLevel.hxx; sourceTree = "<group>"; };
 		DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControllerWidget.hxx; sourceTree = "<group>"; };
 		DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JoystickWidget.cxx; sourceTree = "<group>"; };
 		DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JoystickWidget.hxx; sourceTree = "<group>"; };
@@ -1517,11 +1523,11 @@
 				DCAACB09188D636F00A4D282 /* CartBFWidget.hxx */,
 				CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */,
 				CFE3F6081E84A9A200A8204E /* CartBUSWidget.hxx */,
+				E0A755772244294600101889 /* CartCDFInfoWidget.cxx */,
+				E0A755762244294600101889 /* CartCDFInfoWidget.hxx */,
 				CFE3F6091E84A9A200A8204E /* CartCDFWidget.cxx */,
 				CFE3F60A1E84A9A200A8204E /* CartCDFWidget.hxx */,
 				DC676A2B1729A0B000E4E73D /* CartCMWidget.cxx */,
-				E0A755772244294600101889 /* CartCDFInfoWidget.cxx */,
-				E0A755762244294600101889 /* CartCDFInfoWidget.hxx */,
 				DC676A2C1729A0B000E4E73D /* CartCMWidget.hxx */,
 				DC676A2D1729A0B000E4E73D /* CartCTYWidget.cxx */,
 				DC676A2E1729A0B000E4E73D /* CartCTYWidget.hxx */,
@@ -1841,6 +1847,7 @@
 				2DE2DF3B0627AE07006BEC99 /* Control.hxx */,
 				DC71C398221623D9005DE92F /* ControllerDetector.cxx */,
 				DC71C397221623D8005DE92F /* ControllerDetector.hxx */,
+				DCCE03572251050C008C246F /* ControlLowLevel.hxx */,
 				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,
 				DCC527C910B9DA19005E1287 /* Device.hxx */,
 				DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */,
@@ -2007,6 +2014,8 @@
 				DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */,
 				DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */,
 				DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */,
+				DCCE0353225104BE008C246F /* StellaSettingsDialog.cxx */,
+				DCCE0354225104BF008C246F /* StellaSettingsDialog.hxx */,
 				2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */,
 				2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */,
 				2DDBEAD0084578BF00812C11 /* TabWidget.cxx */,
@@ -2461,6 +2470,7 @@
 				DC6B2BA511037FF200F199A7 /* CartDebug.hxx in Headers */,
 				DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */,
 				DCD3F7C611340AAF00DBA3AE /* Genesis.hxx in Headers */,
+				DCCE0356225104BF008C246F /* StellaSettingsDialog.hxx in Headers */,
 				DCAD60A91152F8BD00BC4184 /* CartDPCPlus.hxx in Headers */,
 				DCD6FC7111C281ED005DA767 /* png.h in Headers */,
 				DCD6FC7211C281ED005DA767 /* pngconf.h in Headers */,
@@ -2548,6 +2558,7 @@
 				DC676A561729A0B000E4E73D /* CartFEWidget.hxx in Headers */,
 				DC676A5A1729A0B000E4E73D /* CartSBWidget.hxx in Headers */,
 				DC676A5C1729A0B000E4E73D /* CartX07Widget.hxx in Headers */,
+				DCCE03582251050C008C246F /* ControlLowLevel.hxx in Headers */,
 				DC3DAFAC1F2E233B00A64410 /* PointingDevice.hxx in Headers */,
 				DC7A24D5173B1CF600B20FE9 /* Variant.hxx in Headers */,
 				DC7A24E0173B1DBC00B20FE9 /* FileListWidget.hxx in Headers */,
@@ -2713,6 +2724,7 @@
 				2D91748609BA90380026E9FF /* CartFE.cxx in Sources */,
 				2D91748909BA90380026E9FF /* Console.cxx in Sources */,
 				DC6DC91E205DB879004A5FC3 /* PhysicalJoystick.cxx in Sources */,
+				DCCE0355225104BF008C246F /* StellaSettingsDialog.cxx in Sources */,
 				2D91748A09BA90380026E9FF /* Control.cxx in Sources */,
 				2D91748C09BA90380026E9FF /* Driving.cxx in Sources */,
 				E0306E101F93E916003DDD52 /* FrameLayoutDetector.cxx in Sources */,
