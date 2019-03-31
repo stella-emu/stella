@@ -96,7 +96,7 @@ class Ball : public Serializable
       }
     }
 
-    void tick(bool isReceivingMclock = false)
+    void tick(bool isReceivingMclock = true)
     {
       if(myUseInvertedPhaseClock && myInvertedPhaseClock)
       {
