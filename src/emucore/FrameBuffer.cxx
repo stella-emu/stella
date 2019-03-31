@@ -663,6 +663,7 @@ void FrameBuffer::stateChanged(EventHandlerState state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
+#ifdef WINDOWED_SUPPORT
   // Switching between fullscreen and windowed modes will invariably mean
   // that the 'window' resolution changes.  Currently, dialogs are not
   // able to resize themselves when they are actively being shown
@@ -701,6 +702,7 @@ void FrameBuffer::setFullscreen(bool enable)
     setCursorState();
   }
   myOSystem.sound().mute(oldMuteState);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
