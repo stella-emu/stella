@@ -199,6 +199,8 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // where requesting a window that's too large will probably cause a crash
   if(myDesktopSize.w < width || myDesktopSize.h < height)
     return FBInitStatus::FailTooLarge;
+
+  useFullscreen = true;
 #endif
 
   // Set the available video modes for this framebuffer

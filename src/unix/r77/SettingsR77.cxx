@@ -33,6 +33,7 @@ SettingsR77::SettingsR77()
   setPermanent("vsync", "true");
 
   setPermanent("tia.zoom", "3");
+  setPermanent("tia.fsfill", "true");
 
   setPermanent("audio.buffer_size", "6");
   setPermanent("audio.enabled", "1");
@@ -47,8 +48,7 @@ SettingsR77::SettingsR77()
   // TODO - use new argument that differentiates between fullscreen and
   //        fullscreen without aspect correction
   //        Re-add ability to use a specific fullscreen resolution
-  setPermanent("fullscreen", "false");  // start in 16:9 mode by default
-  setPermanent("fullres", "1280x720");
+  setPermanent("fullscreen", "true");  // start in 16:9 mode by default
 
   setPermanent("romdir", "/mnt/games");
   setPermanent("snapsavedir", "/mnt/stella/snapshots");
