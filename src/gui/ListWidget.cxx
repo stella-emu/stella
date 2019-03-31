@@ -366,12 +366,14 @@ bool ListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIPgUp:
+    case Event::UILeft:
       _selectedItem -= _rows - 1;
       if (_selectedItem < 0)
         _selectedItem = 0;
       break;
 
     case Event::UIPgDown:
+    case Event::UIRight:
       _selectedItem += _rows - 1;
       if (_selectedItem >= size)
         _selectedItem = size - 1;
