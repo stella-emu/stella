@@ -1173,6 +1173,7 @@
     <ClInclude Include="..\emucore\CartWD.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\ControllerDetector.hxx" />
+    <ClInclude Include="..\emucore\ControlLowLevel.hxx" />
     <ClInclude Include="..\emucore\DispatchResult.hxx" />
     <ClInclude Include="..\emucore\EmulationTiming.hxx" />
     <ClInclude Include="..\emucore\EmulationWorker.hxx" />

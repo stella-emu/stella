@@ -1961,6 +1961,9 @@
     <ClInclude Include="..\gui\StellaSettingsDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
+    <ClInclude Include="..\emucore\ControlLowLevel.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
