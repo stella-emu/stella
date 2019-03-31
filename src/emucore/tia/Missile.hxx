@@ -87,7 +87,7 @@ class Missile : public Serializable
       }
     }
 
-    void tick(uInt8 hclock, bool isReceivingMclock = false)
+    void tick(uInt8 hclock, bool isReceivingMclock = true)
     {
       if(myUseInvertedPhaseClock && myInvertedPhaseClock)
       {
