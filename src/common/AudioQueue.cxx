@@ -87,8 +87,8 @@ Int16* AudioQueue::enqueue(Int16* fragment)
     return newFragment;
   }
 
-  const uInt8 capacity = uInt8(myFragmentQueue.size());
-  const uInt8 fragmentIndex = (myNextFragment + mySize) % capacity;
+  const uInt16 capacity = uInt16(myFragmentQueue.size());
+  const uInt16 fragmentIndex = (myNextFragment + mySize) % capacity;
 
   newFragment = myFragmentQueue.at(fragmentIndex);
   myFragmentQueue.at(fragmentIndex) = fragment;
