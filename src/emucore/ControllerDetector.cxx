@@ -85,21 +85,22 @@ string ControllerDetector::autodetectPort(const uInt8* image, uInt32 size,
 bool ControllerDetector::searchForBytes(const uInt8* image, uInt32 imagesize,
                                         const uInt8* signature, uInt32 sigsize)
 {
-  for(uInt32 i = 0; i < imagesize - sigsize; ++i)
-  {
-    uInt32 matches = 0;
-    for(uInt32 j = 0; j < sigsize; ++j)
+  if (imagesize >= sigsize)
+    for(uInt32 i = 0; i < imagesize - sigsize; ++i)
     {
-      if(image[i + j] == signature[j])
-        ++matches;
-      else
-        break;
+      uInt32 matches = 0;
+      for(uInt32 j = 0; j < sigsize; ++j)
+      {
+        if(image[i + j] == signature[j])
+          ++matches;
+        else
+          break;
+      }
+      if(matches == sigsize)
+      {
+        return true;
+      }
     }
-    if(matches == sigsize)
-    {
-      return true;
-    }
-  }
 
   return false;
 }
