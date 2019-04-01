@@ -29,9 +29,9 @@
 
   * Disabled some developer options for 'Player settings'. (TODO: doc)
 
-  * Enhanced command dialog. (TODO: doc)
+  * Enhanced command dialog to display current state. 
 
-  * Added automatic controller detection. (TODO: doc, Stella.pro cleanup)
+  * Added automatic controller detection. (TODO: Stella.pro cleanup)
 
   * Removed superfluous controller option 'PADDLES_IDIR'.
 

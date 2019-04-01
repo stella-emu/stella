@@ -610,20 +610,17 @@ void GameInfoDialog::updateControllerStates()
     BSPF::startsWithIgnoreCase(contrRight, "PADDLES");
   if(instance().hasConsole())
   {
-    enableSwapPaddles |= BSPF::equalsIgnoreCase(instance().console().leftController().name(), "Paddles");
-    enableSwapPaddles |= BSPF::equalsIgnoreCase(instance().console().rightController().name(), "Paddles");
-  }
-
-  if(instance().hasConsole())
-  {
     const Controller& lport = instance().console().leftController();
     const Controller& rport = instance().console().rightController();
 
+    enableSwapPaddles |= BSPF::equalsIgnoreCase(instance().console().leftController().name(), "Paddles");
+    enableSwapPaddles |= BSPF::equalsIgnoreCase(instance().console().rightController().name(), "Paddles");
+
     // we only enable the button if we have a valid previous and new controller.
-    enableEEEraseButton = ((lport.type() == Controller::Type::SaveKey && contrLeft == "SAVEKEY") ||
-                           (rport.type() == Controller::Type::SaveKey && contrRight == "SAVEKEY") ||
-                           (lport.type() == Controller::Type::AtariVox && contrLeft == "ATARIVOX") ||
-                           (rport.type() == Controller::Type::AtariVox && contrRight == "ATARIVOX"));
+    enableEEEraseButton = ((contrLeft == "AUTO" || contrLeft == "SAVEKEY" || contrLeft == "ATARIVOX") &&
+      (lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox) ||
+      (contrRight == "AUTO" || contrRight == "SAVEKEY" || contrRight == "ATARIVOX") &&
+      (rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox));
   }
 
   myLeftPortLabel->setEnabled(enableSelectControl);

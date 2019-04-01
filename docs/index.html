@@ -276,6 +276,7 @@
       including mapping of CompuMate 'Backspace', 'Space' and 'Enter' functionality to
       to the actual keys on your keyboard</li>
     <li>Emulates the Mindlink Controller using your computer's mouse</li>
+	<li>Supports autodetection for most common controller types</li>
     <li>Support for real Atari 2600 controllers using the
       <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> and
       <a href="http://2600-daptor.com">2600-daptor/2600-daptor II</a></li>
@@ -605,9 +606,9 @@
   <p><img src="graphics/commandmenu.png"></p>
 
   <p>This dialog contains a set of buttons that represent the same functionality
-  as the function keys. You may find this useful if you cannot remember all
-  the function key events, or you wish to use Stella without a keyboard (ie,
-  in a standalone gaming system).</p>
+  as the function keys and display the current state. You may find this useful if
+  you cannot remember all the function key events, or you wish to use Stella
+  without a keyboard (ie, in a standalone gaming system).</p>
   </blockquote>
 
   <h2><b><a name="Keyboard">Keyboard Layout</a></b></h2>
@@ -3590,7 +3591,7 @@ Ms Pac-Man (Stella extended codes):
       <td>Indicates the bank-switching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
       (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
-      document</a> or the documentation in each cartridge's source code file). Types marked
+      document</a> or the documentation in each cartridge's source code file) types. Types marked
       as (&#185;) do not currently have reliable auto-detection, those marked as (&#178;)
       are not fully supported in the debugger:
       <table cellpadding="2" border="1">
@@ -3674,24 +3675,25 @@ Ms Pac-Man (Stella extended codes):
     <tr>
       <td VALIGN="TOP"><i>Controller.Left:</i><br><i>Controller.Right:</i></td>
       <td>Indicates what type of controller the left and right player
-      uses. The value must be one of the following types:
+      uses. The value must be either <b>Auto</b> or one of the following types. Types marked
+      as (&#185;) do not have auto-detection yet.
       <table cellpadding="2" border="1">
         <tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
-        <tr><td>Joystick </td><td>Atari's famous black joystick that was originally included with the system.</td></tr>
-        <tr><td>BoosterGrip </td><td>A controller add-in that plugs directly into the joystick port and provides a pass-through for the joystick. In doing so, it provides the two independent buttons.</td></tr>
+        <tr><td>Joystick</td><td>Atari's famous black joystick that was originally included with the system.</td></tr>
+        <tr><td>BoosterGrip &#185</td><td>A controller add-in that plugs directly into the joystick port and provides a pass-through for the joystick. In doing so, it provides the two independent buttons.</td></tr>
         <tr><td>Paddles </td><td>Standard paddle controllers for use with games such as Breakout and Warlords. One pair of controller per connector (allows for 4-player Warlords).</td></tr>
-        <tr><td>Paddles_IAxis </td><td>Same as Paddles, except the axes are inverted.</td></tr>
-        <tr><td>Paddles_IAxDr </td><td>Same as Paddles, except both the axes and direction of movement are inverted.</td></tr>
-        <tr><td>Driving </td><td>Looks like a paddle, but allows 360° movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
-        <tr><td>Keyboard </td><td>Also known as the Star Raiders controller, functionally identical to the Kid's Controller and Keyboard Controller. Game included an overlay with commands, for use with Star Raiders.</td></tr>
+        <tr><td>Paddles_IAxis &#185</td><td>Same as Paddles, except the axes are inverted.</td></tr>
+        <tr><td>Paddles_IAxDr &#185</td><td>Same as Paddles, except both the axes and direction of movement are inverted.</td></tr>
+        <tr><td>Driving &#185 </td><td>Looks like a paddle, but allows 360° movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
+        <tr><td>Keyboard</td><td>Also known as the Star Raiders controller, functionally identical to the Kid's Controller and Keyboard Controller. Game included an overlay with commands, for use with Star Raiders.</td></tr>
         <tr><td>AmigaMouse</td><td>Commodore Amiga computer mouse.</td></tr>
-        <tr><td>AtariMouse </td><td>Atari ST computer mouse.</td></tr>
-        <tr><td>Trakball </td><td>Standard Atari 2600 CX22/CX80 'Trak-Ball' controller.</td></tr>
-        <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
-        <tr><td>SaveKey </td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
-        <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
-        <tr><td>CompuMate </td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
-        <tr><td>Mindlink </td><td>Mindlink controller.</td></tr>
+        <tr><td>AtariMouse</td><td>Atari ST computer mouse.</td></tr>
+        <tr><td>Trakball</td><td>Standard Atari 2600 CX22/CX80 'Trak-Ball' controller.</td></tr>
+        <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox &#185</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
+        <tr><td>SaveKey</td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
+        <tr><td>Genesis	</td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
+        <tr><td>CompuMate &#185</td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
+        <tr><td>Mindlink &#185</td><td>Mindlink controller.</td></tr>
       </table></td>
     </tr>
 
