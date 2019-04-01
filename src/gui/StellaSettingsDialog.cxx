@@ -73,8 +73,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
 void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font)
 {
   const int VGAP = 4;
-  const int lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth();
+  const int lineHeight = font.getLineHeight();
   VariantList items;
   int pwidth = font.getStringWidth("Bad adjust");
 
@@ -148,8 +147,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
 void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font)
 {
   const int VGAP = 4;
-  const int lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth();
+  const int lineHeight = font.getLineHeight();
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   VariantList ctrls;
 

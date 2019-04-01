@@ -617,10 +617,13 @@ void GameInfoDialog::updateControllerStates()
     enableSwapPaddles |= BSPF::equalsIgnoreCase(instance().console().rightController().name(), "Paddles");
 
     // we only enable the button if we have a valid previous and new controller.
-    enableEEEraseButton = ((contrLeft == "AUTO" || contrLeft == "SAVEKEY" || contrLeft == "ATARIVOX") &&
-      (lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox) ||
+    bool enableBtnForLeft =
+      (contrLeft == "AUTO" || contrLeft == "SAVEKEY" || contrLeft == "ATARIVOX") &&
+      (lport.type() == Controller::Type::SaveKey || lport.type() == Controller::Type::AtariVox);
+    bool enableBtnForRight =
       (contrRight == "AUTO" || contrRight == "SAVEKEY" || contrRight == "ATARIVOX") &&
-      (rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox));
+      (rport.type() == Controller::Type::SaveKey || rport.type() == Controller::Type::AtariVox);
+    enableEEEraseButton = enableBtnForLeft || enableBtnForRight;
   }
 
   myLeftPortLabel->setEnabled(enableSelectControl);
