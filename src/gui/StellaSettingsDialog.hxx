@@ -44,7 +44,6 @@ class StellaSettingsDialog : public Dialog
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleTVModeChange();
-    void handlePhosphorChange();
 
     // load the properties for the controller settings
     void loadControllerProperties(const Properties& props);
@@ -78,9 +77,7 @@ class StellaSettingsDialog : public Dialog
     StaticTextWidget* myRightPortDetected;
 
     enum {
-      kTVModeChanged    = 'VDtv',
-      kScanlinesChanged = 'VDsc',
-      kPhosphorChanged  = 'VDph',
+      kTVModeChanged = 'SStv',
     };
 
     // Game properties for currently loaded ROM

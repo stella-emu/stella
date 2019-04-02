@@ -192,15 +192,12 @@ void StellaSettingsDialog::loadConfig()
   myTVMode->setSelected(
     settings.getString("tv.filter"), "0");
 
-  // TV scanline intensity and interpolation
+  // TV scanline intensity
   myTVScanIntense->setValue(valueToLevel(settings.getInt("tv.scanlines")));
   handleTVModeChange();
 
-  // TV phosphor mode
-  //myTVPhosphor->setState(settings.getString("tv.phosphor") == "always");
   // TV phosphor blend
   myTVPhosLevel->setValue(valueToLevel(settings.getInt("tv.phosblend")));
-  handlePhosphorChange();
 
   // Controllers
   Properties props;
@@ -232,15 +229,15 @@ void StellaSettingsDialog::saveConfig()
     myTVMode->getSelectedTag().toString());
 
   // TV phosphor mode
-  //instance().settings().setValue("tv.phosphor",
-  //  myTVPhosphor->getState() ? "always" : "byrom");
   instance().settings().setValue("tv.phosphor",
     myTVPhosLevel->getValue() > 0 ? "always" : "byrom");
   // TV phosphor blend
-  instance().settings().setValue("tv.phosblend", levelToValue(myTVPhosLevel->getValue()));
+  instance().settings().setValue("tv.phosblend", 
+    levelToValue(myTVPhosLevel->getValue()));
 
   // TV scanline intensity and interpolation
-  instance().settings().setValue("tv.scanlines", levelToValue(myTVScanIntense->getValue()));
+  instance().settings().setValue("tv.scanlines", 
+    levelToValue(myTVScanIntense->getValue()));
 
   // Controller properties
   myGameProperties.set(Controller_Left, myLeftPort->getSelectedTag().toString());
@@ -268,15 +265,12 @@ void StellaSettingsDialog::setDefaults()
 
   // TV effects
   myTVMode->setSelected("0", "0");
-
   // TV scanline intensity
   myTVScanIntense->setValue(4); // = 26%
-
   // TV phosphor blend
   myTVPhosLevel->setValue(6); // = 45%
 
   handleTVModeChange();
-  handlePhosphorChange();
 
   // Load the default game properties
   Properties defaultProperties;
@@ -303,12 +297,7 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kTVModeChanged:
-    case kScanlinesChanged:
       handleTVModeChange();
-      break;
-
-    case kPhosphorChanged:
-      handlePhosphorChange();
       break;
 
     default:
@@ -412,18 +401,12 @@ void StellaSettingsDialog::handleTVModeChange()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::handlePhosphorChange()
-{
-  //myTVPhosLevel->setEnabled(myTVPhosphor->getState());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int StellaSettingsDialog::levelToValue(int level)
 {
   const int NUM_LEVELS = 11;
   uInt8 values[NUM_LEVELS] = { 0, 5, 11, 18, 26, 35, 45, 56, 68, 81, 95 };
-
-  return values[level];
+  
+  return values[std::min(level, NUM_LEVELS - 1)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
