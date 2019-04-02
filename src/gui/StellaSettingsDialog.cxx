@@ -112,7 +112,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
     items, "TV mode ", lwidth, kTVModeChanged);
   wid.push_back(myTVMode);
   ypos += lineHeight + VGAP * 2;
-       
+
   lwidth = font.getStringWidth("Intensity ");
   swidth = font.getMaxCharWidth() * 10;
 
@@ -120,21 +120,21 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   myTVScanlines = new StaticTextWidget(this, font, xpos, ypos + 1, "Scanlines:");
   ypos += lineHeight;
   myTVScanIntense = new SliderWidget(this, font, xpos + INDENT, ypos-1, swidth, lineHeight,
-    "Intensity ", lwidth, 0, fontWidth * 2);
-  myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);            
-  myTVScanIntense->setTickmarkInterval(2);  
+    "Intensity ", lwidth, kScanlinesChanged, fontWidth * 3);
+  myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
+  myTVScanIntense->setTickmarkInterval(2);
   wid.push_back(myTVScanIntense);
-  ypos += lineHeight + VGAP;  
+  ypos += lineHeight + VGAP;
 
   // TV Phosphor effect
   new StaticTextWidget(this, font, xpos, ypos + 1, "Phosphor effect:");
   ypos += lineHeight;
   // TV Phosphor blend level
   myTVPhosLevel = new SliderWidget(this, font, xpos + INDENT, ypos-1, swidth, lineHeight,
-    "Blend     ", lwidth, 0, fontWidth * 2);
-  myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);          
-  myTVPhosLevel->setTickmarkInterval(2);                                     
-  wid.push_back(myTVPhosLevel); 
+    "Blend     ", lwidth, kPhosphorChanged, fontWidth * 3);
+  myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
+  myTVPhosLevel->setTickmarkInterval(2);
+  wid.push_back(myTVPhosLevel);
   ypos += lineHeight + VGAP;
 }
 
@@ -232,11 +232,11 @@ void StellaSettingsDialog::saveConfig()
   instance().settings().setValue("tv.phosphor",
     myTVPhosLevel->getValue() > 0 ? "always" : "byrom");
   // TV phosphor blend
-  instance().settings().setValue("tv.phosblend", 
+  instance().settings().setValue("tv.phosblend",
     levelToValue(myTVPhosLevel->getValue()));
 
   // TV scanline intensity and interpolation
-  instance().settings().setValue("tv.scanlines", 
+  instance().settings().setValue("tv.scanlines",
     levelToValue(myTVScanIntense->getValue()));
 
   // Controller properties
@@ -298,6 +298,16 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kTVModeChanged:
       handleTVModeChange();
+      break;
+
+    case kScanlinesChanged:
+      if(myTVScanIntense->getValue() == 0)
+        myTVScanIntense->setValueLabel("off");
+      break;
+
+    case kPhosphorChanged:
+      if(myTVPhosLevel->getValue() == 0)
+        myTVPhosLevel->setValueLabel("off");
       break;
 
     default:
@@ -405,7 +415,7 @@ int StellaSettingsDialog::levelToValue(int level)
 {
   const int NUM_LEVELS = 11;
   uInt8 values[NUM_LEVELS] = { 0, 5, 11, 18, 26, 35, 45, 56, 68, 81, 95 };
-  
+
   return values[std::min(level, NUM_LEVELS - 1)];
 }
 

@@ -63,7 +63,7 @@ class StellaSettingsDialog : public Dialog
     StaticTextWidget* myTVScanlines;
     SliderWidget*     myTVScanIntense;
 
-    // TV phosphor effect    
+    // TV phosphor effect
     SliderWidget*     myTVPhosLevel;
 
     // Controller properties
@@ -77,7 +77,9 @@ class StellaSettingsDialog : public Dialog
     StaticTextWidget* myRightPortDetected;
 
     enum {
-      kTVModeChanged = 'SStv',
+      kTVModeChanged    = 'SStv',
+      kScanlinesChanged = 'SSsc',
+      kPhosphorChanged  = 'SSph'
     };
 
     // Game properties for currently loaded ROM

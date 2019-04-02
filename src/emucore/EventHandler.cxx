@@ -362,7 +362,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
     ////////////////////////////////////////////////////////////////////////
 
     case Event::Fry:
-      if(myPKeyHandler->useCtrlKey()) myFryingFlag = bool(pressed);
+      if(myPKeyHandler->useCtrlKey()) myFryingFlag = pressed;
       return;
 
     case Event::VolumeDecrease:
