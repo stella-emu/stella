@@ -49,6 +49,10 @@ class StellaSettingsDialog : public Dialog
     // load the properties for the controller settings
     void loadControllerProperties(const Properties& props);
 
+    // convert internal setting values to user friendly levels
+    int levelToValue(int level);
+    int valueToLevel(int value);
+
   private:
     // UI theme
     PopUpWidget*      myThemePopup;
@@ -60,8 +64,7 @@ class StellaSettingsDialog : public Dialog
     StaticTextWidget* myTVScanlines;
     SliderWidget*     myTVScanIntense;
 
-    // TV phosphor effect
-    CheckboxWidget*   myTVPhosphor;
+    // TV phosphor effect    
     SliderWidget*     myTVPhosLevel;
 
     // Controller properties
