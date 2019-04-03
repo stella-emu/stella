@@ -540,7 +540,6 @@ void VideoDialog::setDefaults()
 void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
 {
   bool enable = preset == NTSCFilter::PRESET_CUSTOM;
-  bool scanenable = preset != NTSCFilter::PRESET_OFF;
 
   myTVSharp->setEnabled(enable);
   myTVHue->setEnabled(enable);
@@ -557,10 +556,6 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
   myCloneRGB->setEnabled(enable);
   myCloneBad->setEnabled(enable);
   myCloneCustom->setEnabled(enable);
-
-  myTVScanLabel->setEnabled(scanenable);
-  myTVScanIntense->setEnabled(scanenable);
-  myTVScanInterpolate->setEnabled(scanenable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

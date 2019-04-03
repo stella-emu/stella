@@ -43,7 +43,6 @@ class StellaSettingsDialog : public Dialog
     void addGameOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void handleTVModeChange();
 
     // load the properties for the controller settings
     void loadControllerProperties(const Properties& props);
@@ -77,7 +76,6 @@ class StellaSettingsDialog : public Dialog
     StaticTextWidget* myRightPortDetected;
 
     enum {
-      kTVModeChanged    = 'SStv',
       kScanlinesChanged = 'SSsc',
       kPhosphorChanged  = 'SSph'
     };

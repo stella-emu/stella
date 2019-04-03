@@ -97,7 +97,7 @@ void TIASurface::initialize(const Console& console, const VideoMode& mode)
   // so rounding is performed to eliminate it
   // This won't be 100% accurate, but non-integral scaling isn't 100%
   // accurate anyway
-  mySLineSurface->setSrcSize(1, int(2 * float(mode.image.height()) /
+  mySLineSurface->setSrcSize(1, 2 * int(float(mode.image.height()) /
     floor((float(mode.image.height()) / myTIA->height()) + 0.5)));
 
 #if 0
@@ -288,7 +288,7 @@ void TIASurface::enableNTSC(bool enable)
   tia_attr.smoothing = myOSystem.settings().getBool("tia.inter");
   myTiaSurface->applyAttributes();
 
-  myScanlinesEnabled = enable;
+  myScanlinesEnabled = myOSystem.settings().getInt("tv.scanlines") > 0;
   FBSurface::Attributes& sl_attr = mySLineSurface->attributes();
   sl_attr.smoothing  = myOSystem.settings().getBool("tv.scaninter");
   sl_attr.blending   = myScanlinesEnabled;

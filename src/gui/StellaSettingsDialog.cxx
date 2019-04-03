@@ -109,7 +109,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   int pwidth = font.getStringWidth("Bad adjust");
 
   myTVMode = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-    items, "TV mode ", lwidth, kTVModeChanged);
+    items, "TV mode ", lwidth);
   wid.push_back(myTVMode);
   ypos += lineHeight + VGAP * 2;
 
@@ -194,7 +194,6 @@ void StellaSettingsDialog::loadConfig()
 
   // TV scanline intensity
   myTVScanIntense->setValue(valueToLevel(settings.getInt("tv.scanlines")));
-  handleTVModeChange();
 
   // TV phosphor blend
   myTVPhosLevel->setValue(valueToLevel(settings.getInt("tv.phosblend")));
@@ -270,8 +269,6 @@ void StellaSettingsDialog::setDefaults()
   // TV phosphor blend
   myTVPhosLevel->setValue(6); // = 45%
 
-  handleTVModeChange();
-
   // Load the default game properties
   Properties defaultProperties;
   const string& md5 = myGameProperties.get(Cartridge_MD5);
@@ -294,10 +291,6 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case GuiObject::kDefaultsCmd:
       setDefaults();
-      break;
-
-    case kTVModeChanged:
-      handleTVModeChange();
       break;
 
     case kScanlinesChanged:
@@ -398,16 +391,6 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
     myLeftPortDetected->setLabel("");
     myRightPortDetected->setLabel("");
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::handleTVModeChange()
-{
-  NTSCFilter::Preset preset = NTSCFilter::Preset(myTVMode->getSelectedTag().toInt());
-  bool scanenable = preset != NTSCFilter::PRESET_OFF;
-
-  myTVScanlines->setEnabled(scanenable);
-  myTVScanIntense->setEnabled(scanenable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
