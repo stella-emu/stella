@@ -274,25 +274,22 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // TV Phosphor effect
   myTVPhosphor = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Phosphor for all ROMs", kPhosphorChanged);
   wid.push_back(myTVPhosphor);
-  ypos += lineHeight + VGAP;
+  ypos += lineHeight + VGAP / 2;
 
   // TV Phosphor blend level
   xpos += INDENT;
   swidth = font.getMaxCharWidth() * 10;
   CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend     ")
-  ypos += 6;
+  ypos += 8;
 
   // Scanline intensity and interpolation
   xpos -= INDENT;
-  myTVScanLabel = new StaticTextWidget(myTab, font, xpos, ypos, "Scanline settings");
-  ypos += lineHeight;
+  myTVScanLabel = new StaticTextWidget(myTab, font, xpos, ypos, "Scanlines:");
+  ypos += lineHeight + VGAP / 2;
 
   xpos += INDENT;
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ")
-
-  myTVScanInterpolate = new CheckboxWidget(myTab, font, xpos, ypos, "Interpolation");
-  wid.push_back(myTVScanInterpolate);
-  ypos += lineHeight + 6;
+  ypos += lineHeight + 2;
 
   // Adjustable presets
   xpos -= INDENT;
@@ -399,7 +396,6 @@ void VideoDialog::loadConfig()
 
   // TV scanline intensity and interpolation
   myTVScanIntense->setValue(instance().settings().getInt("tv.scanlines"));
-  myTVScanInterpolate->setState(instance().settings().getBool("tv.scaninter"));
 
   myTab->loadConfig();
 }
@@ -479,9 +475,8 @@ void VideoDialog::saveConfig()
   // TV phosphor blend
   instance().settings().setValue("tv.phosblend", myTVPhosLevel->getValueLabel());
 
-  // TV scanline intensity and interpolation
+  // TV scanline intensity
   instance().settings().setValue("tv.scanlines", myTVScanIntense->getValueLabel());
-  instance().settings().setValue("tv.scaninter", myTVScanInterpolate->getState());
 
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();
@@ -525,7 +520,6 @@ void VideoDialog::setDefaults()
 
       // TV scanline intensity and interpolation
       myTVScanIntense->setValue(25);
-      myTVScanInterpolate->setState(true);
 
       // Make sure that mutually-exclusive items are not enabled at the same time
       handleTVModeChange(NTSCFilter::PRESET_OFF);

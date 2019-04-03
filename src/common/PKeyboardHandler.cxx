@@ -249,16 +249,85 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   }
 #endif
 
-  bool handled = true;
-  EventHandlerState estate = myHandler.state();
-
   // Immediately store the key state
   myEvent.setKey(key, pressed);
 
   // An attempt to speed up event processing; we quickly check for
   // Control or Alt/Cmd combos first
+  // and don't pass the key on if we've already taken care of it
+  if(handleAltEvent(key, mod, pressed) || handleControlEvent(key, mod, pressed))
+    return;
+
+  EventHandlerState estate = myHandler.state();
+
+  // Arrange the logic to take advantage of short-circuit evaluation
+  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
+  {
+    // Special handling for Escape key
+    // Basically, exit whichever mode we're currently in
+    if(pressed && key == KBDK_ESCAPE)
+    {
+      switch(estate)
+      {
+        case EventHandlerState::PAUSE:
+          myHandler.changeStateByEvent(Event::PauseMode);
+          return;
+        case EventHandlerState::CMDMENU:
+          myHandler.changeStateByEvent(Event::CmdMenuMode);
+          return;
+        case EventHandlerState::TIMEMACHINE:
+          myHandler.changeStateByEvent(Event::TimeMachineMode);
+          return;
+#if 0 // FIXME - exits ROM too, when it should just go back to ROM
+        case EventHandlerState::DEBUGGER:
+          myHandler.changeStateByEvent(Event::DebuggerMode);
+          return;
+#endif
+        default:
+          break;
+      }
+    }
+
+    // Handle keys which switch eventhandler state
+    if(!pressed && myHandler.changeStateByEvent(myKeyTable[key][kEmulationMode]))
+      return;
+  }
+
+  // Otherwise, let the event handler deal with it
+  switch(estate)
+  {
+    case EventHandlerState::EMULATION:
+      myHandler.handleEvent(myKeyTable[key][kEmulationMode], pressed);
+      break;
+
+    case EventHandlerState::PAUSE:
+      switch(myKeyTable[key][kEmulationMode])
+      {
+        case Event::TakeSnapshot:
+        case Event::DebuggerMode:
+          myHandler.handleEvent(myKeyTable[key][kEmulationMode], pressed);
+          break;
+
+        default:
+          break;
+      }
+      break;
+
+    default:
+      if(myHandler.hasOverlay())
+        myHandler.overlay().handleKeyEvent(key, mod, pressed);
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool pressed)
+{
+  bool handled = true;
+
   if(StellaModTest::isAlt(mod) && pressed)
   {
+    EventHandlerState estate = myHandler.state();
 #ifdef BSPF_MACOS
     // These keys work in all states
     if(key == KBDK_Q)
@@ -271,7 +340,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
     {
       // Swallow Alt-Tab, but remember that it happened
       myAltKeyCounter = 1;
-      return;
+      return true;
     }
     else if(key == KBDK_RETURN)
     {
@@ -299,7 +368,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
           myHandler.enterTimeMachineMenuMode(1000, true);
           break;
 
-        // These can work in pause mode too
+          // These can work in pause mode too
         case KBDK_EQUALS:
           myOSystem.frameBuffer().changeWindowedVidMode(+1);
           break;
@@ -353,10 +422,6 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
             myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-5);
           else
             myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+5);
-          break;
-
-        case KBDK_8:  // Alt-8 turns toggles scanline interpolation
-          myOSystem.frameBuffer().tiaSurface().toggleScanlineInterpolation();
           break;
 
         case KBDK_9:  // Alt-9 selects various custom adjustables for NTSC filtering
@@ -467,13 +532,25 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
         default:
           handled = false;
           break;
-      }
+      } // switch
     }
     else
       handled = false;
-  }
-  else if(StellaModTest::isControl(mod) && pressed && myUseCtrlKeyFlag)
+  } // alt
+  else
+    handled = false;
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalKeyboardHandler::handleControlEvent(StellaKey key, StellaMod mod, bool pressed)
+{
+  bool handled = true;
+
+  if(StellaModTest::isControl(mod) && pressed && myUseCtrlKeyFlag)
   {
+    EventHandlerState estate = myHandler.state();
     // These keys work in all states
     if(key == KBDK_Q)
     {
@@ -524,73 +601,13 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
         default:
           handled = false;
           break;
-      }
+      } // switch
     }
     else
       handled = false;
-  }
+  } // control
   else
     handled = false;
 
-  // Don't pass the key on if we've already taken care of it
-  if(handled) return;
-
-  // Arrange the logic to take advantage of short-circuit evaluation
-  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
-  {
-    // Special handling for Escape key
-    // Basically, exit whichever mode we're currently in
-    if(pressed && key == KBDK_ESCAPE)
-    {
-      switch(estate)
-      {
-        case EventHandlerState::PAUSE:
-          myHandler.changeStateByEvent(Event::PauseMode);
-          return;
-        case EventHandlerState::CMDMENU:
-          myHandler.changeStateByEvent(Event::CmdMenuMode);
-          return;
-        case EventHandlerState::TIMEMACHINE:
-          myHandler.changeStateByEvent(Event::TimeMachineMode);
-          return;
-#if 0 // FIXME - exits ROM too, when it should just go back to ROM
-        case EventHandlerState::DEBUGGER:
-          myHandler.changeStateByEvent(Event::DebuggerMode);
-          return;
-#endif
-        default:
-          break;
-      }
-    }
-
-    // Handle keys which switch eventhandler state
-    if(!pressed && myHandler.changeStateByEvent(myKeyTable[key][kEmulationMode]))
-      return;
-  }
-
-  // Otherwise, let the event handler deal with it
-  switch(estate)
-  {
-    case EventHandlerState::EMULATION:
-      myHandler.handleEvent(myKeyTable[key][kEmulationMode], pressed);
-      break;
-
-    case EventHandlerState::PAUSE:
-      switch(myKeyTable[key][kEmulationMode])
-      {
-        case Event::TakeSnapshot:
-        case Event::DebuggerMode:
-          myHandler.handleEvent(myKeyTable[key][kEmulationMode], pressed);
-          break;
-
-        default:
-          break;
-      }
-      break;
-
-    default:
-      if(myHandler.hasOverlay())
-        myHandler.overlay().handleKeyEvent(key, mod, pressed);
-      break;
-  }
+  return handled;
 }

@@ -52,7 +52,6 @@ Settings::Settings()
   setPermanent("tv.phosphor", "byrom");
   setPermanent("tv.phosblend", "50");
   setPermanent("tv.scanlines", "25");
-  setPermanent("tv.scaninter", "true");
   // TV options when using 'custom' mode
   setPermanent("tv.contrast", "0.0");
   setPermanent("tv.brightness", "0.0");
@@ -400,7 +399,6 @@ void Settings::usage() const
     << "  -tv.phosblend <0-100>         Set default blend level in phosphor mode\n"
     << "  -tv.scanlines <0-100>         Set scanline intensity to percentage\n"
     << "                                 (0 disables completely)\n"
-    << "  -tv.scaninter <1|0>           Enable interpolated (smooth) scanlines\n"
     << "  -tv.contrast    <-1.0 - 1.0>  Set TV effects custom contrast\n"
     << "  -tv.brightness  <-1.0 - 1.0>  Set TV effects custom brightness\n"
     << "  -tv.hue         <-1.0 - 1.0>  Set TV effects custom hue\n"

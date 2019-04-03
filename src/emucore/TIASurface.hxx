@@ -93,11 +93,6 @@ class TIASurface
     void setScanlineIntensity(int relative);
 
     /**
-      Toggles interpolation/smoothing of scanlines in TV modes.
-    */
-    void toggleScanlineInterpolation();
-
-    /**
       Change scanline intensity and interpolation.
 
       @param relative  If non-zero, change current intensity by

@@ -65,12 +65,17 @@ class PhysicalKeyboardHandler
     bool& useCtrlKey() { return myUseCtrlKeyFlag; }
 
   private:
+    bool handleAltEvent(StellaKey key, StellaMod mod, bool pressed);
+    bool handleControlEvent(StellaKey key, StellaMod mod, bool pressed);
+
     OSystem& myOSystem;
     EventHandler& myHandler;
     Event& myEvent;
 
     // Array of key events, indexed by StellaKey
     Event::Type myKeyTable[KBDK_LAST][kNumModes];
+    // Array of mod keys, indexed by StellaKey
+    StellaMod myModKeyTable[KBDK_LAST][kNumModes];
 
     // Sometimes key combos with the Alt key become 'stuck' after the
     // window changes state, and we want to ignore that event

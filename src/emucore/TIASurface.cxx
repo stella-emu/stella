@@ -197,23 +197,6 @@ void TIASurface::setScanlineIntensity(int amount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::toggleScanlineInterpolation()
-{
-  ostringstream buf;
-  if(ntscEnabled())
-  {
-    bool enable = !myOSystem.settings().getBool("tv.scaninter");
-    enableScanlineInterpolation(enable);
-    buf << "Scanline interpolation " << (enable ? "enabled" : "disabled");
-    myOSystem.settings().setValue("tv.scaninter", enable);
-  }
-  else
-    buf << "Scanlines only available in TV filtering mode";
-
-  myFB.showMessage(buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 TIASurface::enableScanlines(int relative, int absolute)
 {
   FBSurface::Attributes& attr = mySLineSurface->attributes();
@@ -224,14 +207,6 @@ uInt32 TIASurface::enableScanlines(int relative, int absolute)
   mySLineSurface->applyAttributes();
 
   return attr.blendalpha;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::enableScanlineInterpolation(bool enable)
-{
-  FBSurface::Attributes& attr = mySLineSurface->attributes();
-  attr.smoothing = enable;
-  mySLineSurface->applyAttributes();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -290,7 +265,7 @@ void TIASurface::enableNTSC(bool enable)
 
   myScanlinesEnabled = myOSystem.settings().getInt("tv.scanlines") > 0;
   FBSurface::Attributes& sl_attr = mySLineSurface->attributes();
-  sl_attr.smoothing  = myOSystem.settings().getBool("tv.scaninter");
+  sl_attr.smoothing  = true;
   sl_attr.blending   = myScanlinesEnabled;
   sl_attr.blendalpha = myOSystem.settings().getInt("tv.scanlines");
   mySLineSurface->applyAttributes();
