@@ -100,7 +100,7 @@ void TIASurface::initialize(const Console& console, const VideoMode& mode)
   mySLineSurface->setSrcSize(1, 2 * int(float(mode.image.height()) /
     floor((float(mode.image.height()) / myTIA->height()) + 0.5)));
 
-#if 0
+#if 1
 cerr << "INITIALIZE:\n"
      << "TIA:\n"
      << "src: " << myTiaSurface->srcRect() << endl

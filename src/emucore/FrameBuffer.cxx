@@ -88,8 +88,6 @@ bool FrameBuffer::initialize()
   //       We can probably add ifdefs to take care of corner cases,
   //       but that means we've failed to abstract it enough ...
   ////////////////////////////////////////////////////////////////////
-  bool smallScreen = myDesktopSize.w < FBMinimum::Width ||
-                     myDesktopSize.h < FBMinimum::Height;
 
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
@@ -98,27 +96,20 @@ bool FrameBuffer::initialize()
 
   // The general font used in all UI elements
   // This is determined by the size of the framebuffer
-  myFont = make_unique<GUI::Font>(smallScreen ? GUI::stellaDesc : GUI::stellaMediumDesc);
+  myFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
 
   // The info font used in all UI elements
   // This is determined by the size of the framebuffer
-  myInfoFont = make_unique<GUI::Font>(smallScreen ? GUI::stellaDesc : GUI::consoleDesc);
+  myInfoFont = make_unique<GUI::Font>(GUI::consoleDesc);
 
   // The font used by the ROM launcher
-  // Normally, this is configurable by the user, except in the case of
-  // very small screens
-  if(!smallScreen)
-  {
-    const string& lf = myOSystem.settings().getString("launcherfont");
-    if(lf == "small")
-      myLauncherFont = make_unique<GUI::Font>(GUI::consoleDesc);
-    else if(lf == "medium")
-      myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
-    else
-      myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);
-  }
+  const string& lf = myOSystem.settings().getString("launcherfont");
+  if(lf == "small")
+    myLauncherFont = make_unique<GUI::Font>(GUI::consoleDesc);
+  else if(lf == "medium")
+    myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
   else
-    myLauncherFont = make_unique<GUI::Font>(GUI::stellaDesc);
+    myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);
 
   // Determine possible TIA windowed zoom levels
   uInt32 maxZoom = maxWindowSizeForScreen(
@@ -126,8 +117,7 @@ bool FrameBuffer::initialize()
       myDesktopSize.w, myDesktopSize.h);
 
   // Figure our the smallest zoom level we can use
-  uInt32 firstZoom = smallScreen ? 1 : 2;
-  for(uInt32 zoom = firstZoom; zoom <= maxZoom; ++zoom)
+  for(uInt32 zoom = 2; zoom <= maxZoom; ++zoom)
   {
     ostringstream desc;
     desc << "Zoom " << zoom << "x";
@@ -841,11 +831,8 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     uInt32 aspect = myOSystem.settings().getInt(myOSystem.console().tia().frameLayout() == FrameLayout::ntsc ?
                                                 "tia.aspectn" : "tia.aspectp");
 
-    // Figure our the smallest zoom level we can use
-    uInt32 firstZoom = 2;
-    if(myDesktopSize.w < FBMinimum::Width || myDesktopSize.h < FBMinimum::Height)
-      firstZoom = 1;
-    for(uInt32 zoom = firstZoom; zoom <= maxZoom; ++zoom)
+    // Determine all zoom levels
+    for(uInt32 zoom = 2; zoom <= maxZoom; ++zoom)
     {
       ostringstream desc;
       desc << "Zoom " << zoom << "x";
