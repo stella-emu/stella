@@ -265,9 +265,9 @@ void StellaSettingsDialog::setDefaults()
   // TV effects
   myTVMode->setSelected("0", "0");
   // TV scanline intensity
-  myTVScanIntense->setValue(4); // = 26%
+  myTVScanIntense->setValue(0); // = off
   // TV phosphor blend
-  myTVPhosLevel->setValue(6); // = 45%
+  myTVPhosLevel->setValue(0); // = off
 
   // Load the default game properties
   Properties defaultProperties;
@@ -295,12 +295,12 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kScanlinesChanged:
       if(myTVScanIntense->getValue() == 0)
-        myTVScanIntense->setValueLabel("off");
+        myTVScanIntense->setValueLabel("Off");
       break;
 
     case kPhosphorChanged:
       if(myTVPhosLevel->getValue() == 0)
-        myTVPhosLevel->setValueLabel("off");
+        myTVPhosLevel->setValueLabel("Off");
       break;
 
     default:

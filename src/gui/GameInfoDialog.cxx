@@ -111,14 +111,14 @@ GameInfoDialog::GameInfoDialog(
   myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 8, ypos + 4, "SECAM60 detected");
 
   // Phosphor
-  ypos += lineHeight + VGAP;
-  myPhosphor = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Phosphor", kPhosphorChanged);
+  ypos += lineHeight + VGAP * 2;
+  myPhosphor = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Phosphor (enabled for all ROMs)", kPhosphorChanged);
   wid.push_back(myPhosphor);
 
   ypos += lineHeight + VGAP;
   myPPBlend = new SliderWidget(myTab, font,
                                HBORDER + 20, ypos,
-                               "Blend ", 0, kPPBlendChanged, 7 * fontWidth, "%");
+                               "Blend ", 0, kPPBlendChanged, 4 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   myPPBlend->setTickmarkInterval(2);
   wid.push_back(myPPBlend);
@@ -392,12 +392,14 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   bool usePhosphor = props.get(Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
   myPhosphor->setEnabled(!alwaysPhosphor);
+  if (alwaysPhosphor)
+    myPhosphor->setLabel("Phosphor (enabled for all ROMs)");
+  else
+    myPhosphor->setLabel("Phosphor");
   myPPBlend->setEnabled(!alwaysPhosphor && usePhosphor);
 
   const string& blend = props.get(Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));
-  myPPBlend->setValueLabel(blend == "0" ? "Default" : blend);
-  myPPBlend->setValueUnit(blend == "0" ? "" : "%");
 
   mySound->setState(props.get(Cartridge_Sound) == "STEREO");
   // if stereo is always enabled, disable game specific stereo setting
@@ -511,7 +513,7 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
   myGameProperties.set(Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
 
-  myGameProperties.set(Display_PPBlend, myPPBlend->getValueLabel() == "Default" ? "0" :
+  myGameProperties.set(Display_PPBlend, myPPBlend->getValueLabel() == "Off" ? "0" :
                        myPPBlend->getValueLabel());
   myGameProperties.set(Cartridge_Sound, mySound->getState() ? "STEREO" : "MONO");
 
@@ -700,7 +702,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     case kPPBlendChanged:
       if(myPPBlend->getValue() == 0)
       {
-        myPPBlend->setValueLabel("Default");
+        myPPBlend->setValueLabel("Off");
         myPPBlend->setValueUnit("");
       }
       else

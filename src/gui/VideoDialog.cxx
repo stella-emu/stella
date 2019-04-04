@@ -246,25 +246,25 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   xpos += INDENT - 2; ypos += 0;
   lwidth = font.getStringWidth("Saturation ");
 
-#define CREATE_CUSTOM_SLIDERS(obj, desc)                                 \
+#define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
   myTV ## obj =                                                          \
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,      \
-                     desc, lwidth, 0, fontWidth*4, "%");                 \
+                     desc, lwidth, cmd, fontWidth*4, "%");                 \
   myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
   myTV ## obj->setTickmarkInterval(2);                                   \
   wid.push_back(myTV ## obj);                                            \
   ypos += lineHeight + VGAP;
 
-  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ")
-  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ")
-  CREATE_CUSTOM_SLIDERS(Hue, "Hue ")
-  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ")
-  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ")
-  CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness ")
-  CREATE_CUSTOM_SLIDERS(Res, "Resolution ")
-  CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts ")
-  CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ")
-  CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ")
+  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", 0)
+  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ", 0)
+  CREATE_CUSTOM_SLIDERS(Hue, "Hue ", 0)
+  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ", 0)
+  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", 0)
+  CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness ", 0)
+  CREATE_CUSTOM_SLIDERS(Res, "Resolution ", 0)
+  CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts ", 0)
+  CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ", 0)
+  CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ", 0)
 
   xpos += myTVContrast->getWidth() + 30;
   ypos = VBORDER;
@@ -279,7 +279,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // TV Phosphor blend level
   xpos += INDENT;
   swidth = font.getMaxCharWidth() * 10;
-  CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend     ")
+  CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend     ", kPhosBlendChanged)
   ypos += 8;
 
   // Scanline intensity and interpolation
@@ -288,7 +288,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP / 2;
 
   xpos += INDENT;
-  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ")
+  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ", kScanlinesChanged)
   ypos += lineHeight + 2;
 
   // Adjustable presets
@@ -580,7 +580,7 @@ void VideoDialog::handlePhosphorChange()
 void VideoDialog::handleCommand(CommandSender* sender, int cmd,
                                 int data, int id)
 {
-  switch(cmd)
+  switch (cmd)
   {
     case GuiObject::kOKCmd:
       saveConfig();
@@ -610,8 +610,28 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
     case kCloneCustomCmd: loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
       break;
 
+    case kScanlinesChanged:
+      if (myTVScanIntense->getValue() == 0)
+      {
+        myTVScanIntense->setValueLabel("Off");
+        myTVScanIntense->setValueUnit("");
+      }
+      else
+        myTVScanIntense->setValueUnit("%");
+      break;
+
     case kPhosphorChanged:
       handlePhosphorChange();
+      break;
+
+    case kPhosBlendChanged:
+      if (myTVPhosLevel->getValue() == 0)
+      {
+        myTVPhosLevel->setValueLabel("Off");
+        myTVPhosLevel->setValueUnit("");
+      }
+      else
+        myTVPhosLevel->setValueUnit("%");
       break;
 
     default:

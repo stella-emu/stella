@@ -106,7 +106,9 @@ class VideoDialog : public Dialog
       kCloneRGBCmd        = 'CLrb',
       kCloneBadCmd        = 'CLbd',
       kCloneCustomCmd     = 'CLcu',
-      kPhosphorChanged    = 'VDph'
+      kPhosphorChanged    = 'VDph',
+      kPhosBlendChanged   = 'VDbl',
+      kScanlinesChanged   = 'VDsc'
     };
 
   private:
