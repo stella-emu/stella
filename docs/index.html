@@ -1961,35 +1961,8 @@
     <tr>
       <td><pre>-tv.filter &lt;0 - 5&gt;</pre></td>
       <td>Blargg TV effects, 0 is disabled, next numbers in
-        sequence represent presets for 'Composite', 'S-Video', 'RGB', 'Bad Adjust',
+        sequence represent presets for 'RGB', 'S-Video', 'Composite', 'Bad Adjust',
         and 'Custom' modes.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.phosphor &lt;always|byrom&gt;</pre></td>
-      <td>Determines how phosphor mode is enabled. If 'always', then the
-        ROM properties entry is ignored, and phosphor mode is always turned
-        on. Otherwise, the ROM properties determine whether phosphor mode
-        is used for each ROM.
-      </td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.phosblend &lt;0 - 100&gt;</pre></td>
-      <td>Enable phosphor blending level; 0 implies no mixing, and 100
-        is full mixing (not recommended). Note that this doesn't actually
-        enable phosphor mode; that is done for each ROM in the ROM properties.
-        Higher blend values will intensify the phosphor effect. Depending on your
-        display and personal preferences, the optimal default for you may vary.
-        Slow LCDs (especially for office use) may only need a low blend of
-        around 30, while fast switching gamer LCDs may need about 70 to look
-        similar to a CRT.
-      </td>
-    </tr>
-
-    <tr>
-      <td><pre>-tv.scanlines &lt;0 - 100&gt;</pre></td>
-      <td>TV effects scanline intensity, where 0 means completely off. Note: No scanlines in 1x mode snapshots.</td>
     </tr>
 
     <tr>
@@ -2050,6 +2023,33 @@
       <td><pre>-tv.bleed &lt;number&gt;</pre></td>
       <td>Blargg TV effects 'bleed' (only available in custom mode,
         range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.phosphor &lt;always|byrom&gt;</pre></td>
+      <td>Determines how phosphor mode is enabled. If 'always', then the
+        ROM properties entry is ignored, and phosphor mode is always turned
+        on. Otherwise, the ROM properties determine whether phosphor mode
+        is used for each ROM.
+      </td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.phosblend &lt;0 - 100&gt;</pre></td>
+      <td>Enable phosphor blending level; 0 implies no mixing, and 100
+        is full mixing (not recommended). Note that this doesn't actually
+        enable phosphor mode; that is done for each ROM in the ROM properties.
+        Higher blend values will intensify the phosphor effect. Depending on your
+        display and personal preferences, the optimal default for you may vary.
+        Slow LCDs (especially for office use) may only need a low blend of
+        around 30, while fast switching gamer LCDs may need about 70 to look
+        similar to a CRT.
+      </td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv.scanlines &lt;0 - 100&gt;</pre></td>
+      <td>TV effects scanline intensity, where 0 means completely off. Note: No scanlines in 1x mode snapshots.</td>
     </tr>
 
     <tr>
