@@ -203,7 +203,7 @@ bool SoundSDL2::toggleMute()
   message += !enabled ? "unmuted" : "muted";
 
   myOSystem.frameBuffer().showMessage(message);
-    
+
   return enabled;
 }
 
@@ -278,8 +278,8 @@ string SoundSDL2::about() const
     case AudioSettings::Preset::highQualityLowLag:
       buf << "High quality, low lag" << endl;
       break;
-    case AudioSettings::Preset::veryHighQualityVeryLowLag:
-      buf << "Very high quality, very low lag" << endl;
+    case AudioSettings::Preset::ultraQualityMinimalLag:
+      buf << "Ultra quality, minimal lag" << endl;
       break;
   }
   buf << "    Fragment size: " << uInt32(myHardwareSpec.samples) << " bytes" << endl

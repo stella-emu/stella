@@ -27,11 +27,11 @@ class AudioSettings
   public:
 
     enum class Preset {
-      custom                    = 1,
-      lowQualityMediumLag       = 2,
-      highQualityMediumLag      = 3,
-      highQualityLowLag         = 4,
-      veryHighQualityVeryLowLag = 5
+      custom                 = 1,
+      lowQualityMediumLag    = 2,
+      highQualityMediumLag   = 3,
+      highQualityLowLag      = 4,
+      ultraQualityMinimalLag = 5
     };
 
     enum class ResamplingQuality {
