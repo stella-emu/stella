@@ -101,8 +101,6 @@
 "Cartridge.ModelNo" "AR-4302"
 "Cartridge.Name" "Party Mix (1983) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 56"
 ""
 
@@ -406,7 +404,6 @@
 "Cartridge.ModelNo" "931507"
 "Cartridge.Name" "Star Wars - Jedi Arena (1983) (Parker Bros) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
-"Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 50"
 ""
@@ -419,7 +416,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "05ccf96247af12eef59698f1a060a54f"
@@ -465,7 +461,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -674,7 +669,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -723,8 +717,6 @@
 "Cartridge.Name" "Oscar's Trash Race (10-20-1982) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 "Display.YStart" "34"
 ""
 
@@ -732,7 +724,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -741,8 +732,6 @@
 "Cartridge.ModelNo" "AR-4302"
 "Cartridge.Name" "Party Mix - Tug of War (2 of 3) (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "02"
 ""
 
@@ -888,7 +877,6 @@
 "Cartridge.ModelNo" "CX2608 - 49-75165"
 "Cartridge.Name" "Super Breakout (1982 - 1981) (Atari) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 45"
 ""
 
@@ -896,7 +884,6 @@
 "Cartridge.Name" "Solaris (Genesis)"
 "Cartridge.Note" "Genesis controller (C switches to map mode)"
 "Cartridge.Rarity" "Hack of Solaris"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "0ae3497e731ca0bf6a77b23441d9d9f9"
@@ -1053,8 +1040,6 @@
 "Cartridge.ModelNo" "CX2610"
 "Cartridge.Name" "Warlords (1981) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -1083,7 +1068,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -1099,7 +1083,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Control - Atari Mouse Hack v1.15 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "0d09cff0d28033c02c3290edfc3a5cea"
@@ -1197,7 +1180,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -1260,7 +1242,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "0f14c03050b35d6b1d8850b07578722d"
@@ -1362,8 +1343,6 @@
 "Cartridge.ModelNo" "CX2642 - 6-99814"
 "Cartridge.Name" "Hunt & Score - Memory Match (1978) (Atari)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "103d4c890c2108cb536372c98d093e5f"
@@ -1511,7 +1490,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Amiga Mouse) v4 (Omegamatrix)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "12123b534bdee79ed7563b9ad74f1cbd"
@@ -1945,7 +1923,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -2017,7 +1994,6 @@
 "Cartridge.ModelNo" "VC2004"
 "Cartridge.Name" "Picnic (1983) (U.S. Games)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 45"
 ""
 
@@ -2058,7 +2034,6 @@
 "Cartridge.Name" "Missile Command (Amiga Mouse) (2002) (TJ) (PAL)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Phosphor" "YES"
 ""
 
@@ -2087,7 +2062,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -2156,7 +2130,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "199985cae1c0123ab1aef921daace8be"
@@ -2304,8 +2277,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Marble Craze - Atari Mouse Hack v1.0 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controllers"
-"Controller.Left" "ATARIMOUSE"
-"Controller.Right" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "1c3f3133a3e5b023c77ecba94fd65995"
@@ -2325,8 +2296,6 @@
 "Cartridge.Manufacturer" "Nukey Shay, Omegamatrix"
 "Cartridge.Name" "Double Dragon (Genesis) (PAL60) V2"
 "Cartridge.Note" "Genesis controller"
-"Controller.Left" "GENESIS"
-"Controller.Right" "GENESIS"
 "Display.Format" "PAL60"
 ""
 
@@ -2429,7 +2398,6 @@
 "Cartridge.Name" "Sweat! - The Decathlon Game (3 of 3) (1983) (Arcadia) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "1e0ef01e330e5b91387f75f700ccaf8f"
@@ -2667,7 +2635,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -2762,7 +2729,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "218b76f5a4142dc2ea9051a768583d70"
@@ -2871,7 +2837,6 @@
 "Cartridge.Name" "Scramble (PAL60)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Right" "SAVEKEY"
 "Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
@@ -2887,7 +2852,6 @@
 "Cartridge.Name" "Missile Command (Atari Mouse) (2002) (TJ)"
 "Cartridge.Note" "Uses Atari ST Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "ATARIMOUSE"
 "Display.Phosphor" "YES"
 ""
 
@@ -2963,7 +2927,6 @@
 "Cartridge.ModelNo" "USC2004"
 "Cartridge.Name" "Picnic (1983) (Carrere Video) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 45"
 ""
 
@@ -3190,7 +3153,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "SpaceMaster X-7 (Amiga Mouse) (PAL60) (Omegamatrix)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -3254,7 +3216,6 @@
 "Cartridge.Name" "Defender MegaDrive (PAL) (Genesis)"
 "Cartridge.Note" "Genesis controller (C is smartbomb)"
 "Cartridge.Rarity" "Hack of Defender"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "278f14887d601b5e5b620f1870bc09f6"
@@ -3262,7 +3223,6 @@
 "Cartridge.Name" "SWOOPS! (v0.96) (TJ)"
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Right" "PADDLES"
 "Display.YStart" "28"
 ""
 
@@ -3270,7 +3230,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Atari Trak-Ball) v4 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "27c4c2af4b46394bb98638af8e0f6e9d"
@@ -3463,7 +3422,6 @@
 "Cartridge.Name" "S.I.PLIX 2 (Hack) [a]"
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -3579,7 +3537,6 @@
 "Cartridge.ModelNo" "USC2003"
 "Cartridge.Name" "Eggomania (1983) (Carrere Video) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 60"
 ""
 
@@ -3787,7 +3744,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Atari Mouse) (Y_Inverted) v4 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "2d405da70af82b20a6b3ecc3d1d2c4ec"
@@ -3800,7 +3756,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "2d63b452f897818c52b3fceeb080a4d0"
@@ -3997,7 +3952,6 @@
 "Cartridge.Name" "Yars' Revenge (Genesis)"
 "Cartridge.Note" "Genesis controller (C is zorlon cannon)"
 "Cartridge.Rarity" "Hack of Yars' Revenge"
-"Controller.Left" "GENESIS"
 "Display.Phosphor" "YES"
 ""
 
@@ -4092,7 +4046,6 @@
 "Cartridge.ModelNo" "CX2630, CX2630P"
 "Cartridge.Name" "Circus Atari (1980) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 55"
 ""
 
@@ -4120,7 +4073,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "313243fc41e49ef6bd3aa9ebc0d372dd"
@@ -4200,8 +4152,6 @@
 "Cartridge.ModelNo" "CX2642"
 "Cartridge.Name" "Game of Concentration (1980) (Atari) (4K)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "31fcbce1cfa6ec9f5b6de318e1f57647"
@@ -4352,7 +4302,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Omega Race (Genesis) V2"
 "Cartridge.Note" "Genesis controller"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "3391f7c4c656793f92299f4187e139f7"
@@ -4474,7 +4423,6 @@
 "Cartridge.Name" "Mouse Trap (Genesis)"
 "Cartridge.Note" "Genesis controller (C changes to dog)"
 "Cartridge.Rarity" "Hack of Mouse Trap"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "35163b56f4a692a232ae96ad3e23310f"
@@ -4607,8 +4555,6 @@
 "Cartridge.ModelNo" "AR-4302"
 "Cartridge.Name" "Party Mix - Bop a Buggy (1 of 3) (1983) (Arcadia)"
 "Cartridge.Note" "Uses Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 56"
 ""
 
@@ -4671,7 +4617,6 @@
 "Cartridge.Note" "Genesis controller (C is vertical fire)"
 "Cartridge.Rarity" "Hack of Mission Survive)"
 "Console.RightDifficulty" "A"
-"Controller.Left" "GENESIS"
 "Display.Phosphor" "YES"
 ""
 
@@ -4743,7 +4688,6 @@
 "Cartridge.ModelNo" "AR-4300"
 "Cartridge.Name" "Fireball (1982) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -4809,7 +4753,6 @@
 "Cartridge.ModelNo" "CX2633 - 49-75119"
 "Cartridge.Name" "Night Driver (1980) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
@@ -4839,8 +4782,6 @@
 "Cartridge.ModelNo" "CX2612 - 99804, 49-75103"
 "Cartridge.Name" "Street Racer (1977) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
 ""
@@ -4849,8 +4790,6 @@
 "Cartridge.Manufacturer" "Alessandro Ciceri"
 "Cartridge.Name" "MagiCard+ (alex_79) WIP_20150118"
 "Cartridge.Note" "MagiCard hack"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "39790a2e9030751d7db414e13f1b6960"
@@ -4918,7 +4857,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "3a526e6a1f9fe918af0f2ce997dfea73"
@@ -5063,7 +5001,6 @@
 
 "Cartridge.MD5" "3c21a89bc38d8cd0b010a2916bcff5c2"
 "Cartridge.Name" "Colony 7 - CX-22 Hack v0.4 (NTSC)"
-"Controller.Left" "TRAKBALL"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "50"
 ""
@@ -5076,7 +5013,6 @@
 "Cartridge.Name" "Defender (Genesis)"
 "Cartridge.Note" "Genesis controller (C is smartbomb)"
 "Cartridge.Rarity" "Hack of Defender"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "3c4a6f613ca8ba27ce9e43c6c92a3128"
@@ -5271,7 +5207,6 @@
 "Cartridge.Name" "Asteroids (Genesis)"
 "Cartridge.Note" "Genesis controller (C is hyperspace)"
 "Cartridge.Rarity" "Hack of Asteroids"
-"Controller.Left" "GENESIS"
 "Display.Phosphor" "YES"
 ""
 
@@ -5461,8 +5396,6 @@
 "Cartridge.Manufacturer" "Nukey Shay, Omegamatrix"
 "Cartridge.Name" "Double Dragon (Genesis) V2"
 "Cartridge.Note" "Genesis controller"
-"Controller.Left" "GENESIS"
-"Controller.Right" "GENESIS"
 ""
 
 "Cartridge.MD5" "402b1ca3c230a60fb279d4a2a10fa677"
@@ -5599,7 +5532,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "41c4e3d45a06df9d21b7aae6ae7e9912"
@@ -5662,7 +5594,6 @@
 "Cartridge.ModelNo" "VC2003"
 "Cartridge.Name" "Eggomania (1982) (U.S. Games)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 60"
 "Display.YStart" "26"
 ""
@@ -5757,7 +5688,6 @@
 "Cartridge.Name" "Kangaroo (Genesis)"
 "Cartridge.Note" "Genesis controller (B is punch, C is jump)"
 "Cartridge.Rarity" "Hack of Kangaroo"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "44560e324ffb30741a483218ba5b4342"
@@ -5785,7 +5715,6 @@
 "Cartridge.Name" "Moon Patrol Arcade (Genesis)"
 "Cartridge.Note" "Genesis controller (C is jump)"
 "Cartridge.Rarity" "Hack of Moon Patrol"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "44f71e70b89dcc7cf39dfd622cfb9a27"
@@ -5945,7 +5874,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "SpaceMaster X-7 (Atari Mouse) (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "46e9428848c9ea71a4d8f91ff81ac9cc"
@@ -5973,7 +5901,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "47464694e9cce07fdbfd096605bf39d4"
@@ -5986,7 +5913,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Atari Trak-Ball) v4 (PAL60) (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -6080,7 +6006,6 @@
 "Cartridge.Manufacturer" "Nukey Shay"
 "Cartridge.Name" "Montezuma's Revenge (Genesis) (F6_Conversion)"
 "Cartridge.Note" "Genesis controller"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "48411c9ef7e2cef1d6b2bee0e6055c27"
@@ -6105,7 +6030,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "4884b1297500bd1243659e43c7e7579e"
@@ -6120,7 +6044,6 @@
 "Cartridge.Name" "Tac-Scan (Canal 3)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Console.SwapPorts" "YES"
-"Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
 "Display.Height" "215"
@@ -6208,7 +6131,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "SpaceMaster X-7 (Atari Trak-Ball) (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "497f3d2970c43e5224be99f75e97cbbb"
@@ -6288,7 +6210,6 @@
 "Cartridge.Name" "Montezuma's Revenge (PAL) (Genesis)"
 "Cartridge.Note" "Genesis controller (B jumps left, C jumps right)"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "4ab4af3adcdae8cdacc3d06084fc8d6a"
@@ -6309,7 +6230,6 @@
 "Cartridge.Name" "Grover's Music Maker (12-29-1982) (Atari) (Prototype)"
 "Cartridge.Note" "Uses Keypad Controller"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "4ae8c76cd6f24a2e181ae874d4d2aa3d"
@@ -6354,7 +6274,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "SpaceMaster X-7 (Atari Mouse) (PAL60) (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -6409,7 +6328,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -6424,8 +6342,6 @@
 "Cartridge.ModelNo" "AR-4302"
 "Cartridge.Name" "Party Mix (Preview) (1983) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "4c205f166157154df2f1ef60d87e552f"
@@ -6583,8 +6499,6 @@
 "Cartridge.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cartridge.Name" "Breakout (1978) (Atari) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 60"
 ""
 
@@ -6776,7 +6690,6 @@
 "Cartridge.Name" "SWOOPS! (v0.94) (TJ)"
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Right" "PADDLES"
 "Display.YStart" "28"
 ""
 
@@ -6866,7 +6779,6 @@
 "Cartridge.ModelNo" "133-001"
 "Cartridge.Name" "Encounter at L-5 (1983) (Gameworld) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 50"
 ""
 
@@ -6909,7 +6821,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Millipede (Amiga Mouse) v6.5 (Omegamatrix)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "522c9cf684ecd72db2f85053e6f6f720"
@@ -7013,7 +6924,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Atari Trak-Ball) (Y Inverted) v4 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "5336f86f6b982cc925532f2e80aa1e17"
@@ -7085,7 +6995,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "53f147b9746fdc997c62f3dd67888ee5"
@@ -7110,7 +7019,6 @@
 "Cartridge.ModelNo" "AG-010, AG-010-04"
 "Cartridge.Name" "Kaboom! (1981) (Activision)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -7126,7 +7034,6 @@
 "Cartridge.ModelNo" "3 AR-4300"
 "Cartridge.Name" "Fireball (1982) (Arcadia) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "543b4b8ff1d616fa250c648be428a75c"
@@ -7172,7 +7079,6 @@
 "Cartridge.Name" "Halloween III Revision (Hack)"
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -7268,7 +7174,6 @@
 "Cartridge.Name" "Moon Patrol (Genesis)"
 "Cartridge.Note" "Genesis controller (C is jump)"
 "Cartridge.Rarity" "Hack of Moon Patrol"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "5678ebaa09ca3b699516dba4671643ed"
@@ -7286,7 +7191,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Amiga Mouse) v4 (PAL60) (Omegamatrix)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -7333,7 +7237,6 @@
 "Cartridge.ModelNo" "CX26102"
 "Cartridge.Name" "Cookie Monster Munch (1983) (Atari)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
-"Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
 
@@ -7347,8 +7250,6 @@
 "Cartridge.ModelNo" "CX2643 - 6-99815"
 "Cartridge.Name" "Codebreaker (1978) (Atari)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "58513bae774360b96866a07ca0e8fd8e"
@@ -7478,7 +7379,6 @@
 "Cartridge.Name" "Beat 'Em & Eat 'Em (1982) (PlayAround)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Extremely Rare"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 45"
 ""
 
@@ -7494,7 +7394,6 @@
 "Cartridge.Name" "Super Cobra Arcade (PAL60)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Right" "SAVEKEY"
 "Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
@@ -7522,7 +7421,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "5a5390f91437af9951a5f8455b61cd43"
@@ -7625,7 +7523,6 @@
 "Cartridge.Name" "Omega Race (Genesis)"
 "Cartridge.Note" "Genesis controller (B is thrust, C is fire)"
 "Cartridge.Rarity" "Hack of Omega Race"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "5b6f5bcbbde42fc77d0bdb3146693565"
@@ -7682,7 +7579,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "5bc9998b7e9a970e31d2cb60e8696cc4"
@@ -7711,8 +7607,6 @@
 "Cartridge.ModelNo" "CX2642"
 "Cartridge.Name" "Hunt & Score (1978) (Atari) (PAL)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "5c0227ad63300670a647fcebf595ea37"
@@ -7819,7 +7713,6 @@
 "Cartridge.Name" "SWOOPS! (v0.96) (TJ) (PAL)"
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Right" "PADDLES"
 "Display.YStart" "28"
 ""
 
@@ -7928,7 +7821,6 @@
 "Cartridge.Name" "Sweat! - The Decathlon Game (2 of 3) (1983) (Arcadia) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "5eeb81292992e057b290a5cd196f155d"
@@ -7977,7 +7869,6 @@
 "Cartridge.Manufacturer" "Canal 3 - Intellivision"
 "Cartridge.Name" "Eggomania (Canal 3)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 60"
 ""
 
@@ -8022,7 +7913,6 @@
 "Cartridge.Name" "Super Cobra (Genesis)"
 "Cartridge.Note" "Genesis controller (B is bomb, C is laser)"
 "Cartridge.Rarity" "Hack of Super Cobra"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "5f950a2d1eb331a1276819520705df94"
@@ -8101,7 +7991,6 @@
 "Cartridge.Name" "Secret Agent (1983) (Data Age) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 45"
 ""
 
@@ -8220,8 +8109,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controllers"
-"Controller.Left" "ATARIMOUSE"
-"Controller.Right" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "624e0a77f9ec67d628211aaf24d8aea6"
@@ -8510,7 +8397,6 @@
 "Cartridge.Name" "Steeplechase (1981) (Sears)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "AUTO 60"
 ""
 
@@ -8534,7 +8420,6 @@
 "Cartridge.ModelNo" "GCG 1001T"
 "Cartridge.Name" "Music Machine, The (1983) (Sparrow)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 45"
 ""
 
@@ -8628,7 +8513,6 @@
 "Cartridge.Name" "Grover's Music Maker (01-18-1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses Keypad Controller"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "66b92ede655b73b402ecd1f4d8cd9c50"
@@ -8642,7 +8526,6 @@
 "Cartridge.ModelNo" "AR-4300"
 "Cartridge.Name" "Fireball (Preview) (1982) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -8713,7 +8596,6 @@
 "Cartridge.ModelNo" "DA1002"
 "Cartridge.Name" "Warplock (1982) (Data Age)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 40"
 "Display.Phosphor" "YES"
 ""
@@ -8753,7 +8635,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "SpaceMaster X-7 (Atari Trak-Ball) (PAL60) (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -8772,7 +8653,6 @@
 
 "Cartridge.MD5" "681206a6bde73e71c19743607e96c4bb"
 "Cartridge.Name" "Casino (Unknown) (PAL)"
-"Controller.Left" "PADDLES"
 "Display.YStart" "49"
 ""
 
@@ -8780,7 +8660,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -8789,7 +8668,6 @@
 "Cartridge.ModelNo" "AR-4300"
 "Cartridge.Name" "Fireball (1982) (Arcadia) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -8822,7 +8700,6 @@
 "Cartridge.Name" "Bugs (1982) (Data Age)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 50"
 ""
 
@@ -8863,7 +8740,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Atari Mouse) v4 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "68cd2adc6b1fc9a1f263ab4561112f30"
@@ -8890,7 +8766,6 @@
 "Cartridge.Name" "Monster Cise (1984) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Keypad Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "691d67910b08b63de8631901d1887c1f"
@@ -8913,7 +8788,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (NTSC) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "6979f30204149be3e227558cffe21c1d"
@@ -8963,7 +8837,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Command Atari Trak-Ball Hack v1.3 (PAL) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "69fac82cd2312dd9ce5d90e22e2f070a"
@@ -8983,7 +8856,6 @@
 "Cartridge.Name" "Guardian (1982) (Apollo) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controller (left only)"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -9026,7 +8898,6 @@
 "Cartridge.Name" "Spy Hunter (Genesis)"
 "Cartridge.Note" "Genesis controller (C is oil/smoke)"
 "Cartridge.Rarity" "Hack of Spy Hunter"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "6a9b30ca46b0dba9e719f4cbd340e01c"
@@ -9172,7 +9043,6 @@
 "Cartridge.Manufacturer" "Dynacom"
 "Cartridge.Name" "Beat 'Em & Eat 'Em (1983) (Dynacom)"
 "Cartridge.Note" "Uses the Paddle Controller (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 45"
 ""
 
@@ -9191,8 +9061,6 @@
 "Cartridge.ModelNo" "CX2622, CX2622P"
 "Cartridge.Name" "Breakout (1978) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 60"
 ""
 
@@ -9353,7 +9221,6 @@
 "Cartridge.Name" "Party Mix - Down on the Line (3 of 3) (1983) (Arcadia)"
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 70"
 ""
 
@@ -9384,7 +9251,6 @@
 "Cartridge.Name" "Defender Arcade (Genesis)"
 "Cartridge.Note" "Genesis controller (C is smartbomb)"
 "Cartridge.Rarity" "Hack of Defender 2"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "6f74ed915ffe73b524ef0f63819e2a1d"
@@ -9447,7 +9313,6 @@
 "Cartridge.ModelNo" "CX2612 - 99804, 49-75103"
 "Cartridge.Name" "Street Racer (1977) (Atari) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
-"Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 60"
 ""
@@ -9510,7 +9375,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "70a8480cfaf08776e5420365732159d2"
@@ -9604,8 +9468,6 @@
 "Cartridge.ModelNo" "CX2643"
 "Cartridge.Name" "Codebreaker (1978) (Atari) (PAL) (4K) [a]"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 "Display.YStart" "57"
 ""
 
@@ -9675,7 +9537,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -9785,7 +9646,6 @@
 "Cartridge.Name" "Double Dragon (PAL) (Genesis)"
 "Cartridge.Note" "Genesis controller (C is jumpkick)"
 "Cartridge.Rarity" "Hack of Double Dragon"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "740b47df422372fbef700b42cea4e0bf"
@@ -9880,7 +9740,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (PAL) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "753375d183c713cfa0aa7298d1f3067b"
@@ -10017,7 +9876,6 @@
 "Cartridge.Name" "H.E.R.O. (Genesis)"
 "Cartridge.Note" "Genesis controller (B is laser, C is dynamite)"
 "Cartridge.Rarity" "Hack of H.E.R.0."
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "76a9bf05a6de8418a3ebc7fc254b71b4"
@@ -10128,8 +9986,6 @@
 "Cartridge.Manufacturer" "Alessandro Ciceri"
 "Cartridge.Name" "MagiCard (TV format conversion) (alex_79) (PAL)"
 "Cartridge.Note" "MagiCard PAL conversion hack"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "7860716fa5dbc0fffab93fb9a4cb4132"
@@ -10208,7 +10064,6 @@
 "Cartridge.ModelNo" "CX26102"
 "Cartridge.Name" "Cookie Monster Munch (1983) (Atari) (PAL) [a]"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
-"Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
 
@@ -10317,7 +10172,6 @@
 "Cartridge.Name" "Santa's Helper (Hack)"
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -10330,7 +10184,6 @@
 "Cartridge.ModelNo" "AP-2008"
 "Cartridge.Name" "Guardian (1982) (Apollo)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 65"
 ""
 
@@ -10397,7 +10250,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Atari Trak-Ball) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -10411,7 +10263,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "7b6f3348dbf71ada88db0fdaf7feefe0"
@@ -10537,7 +10388,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -10579,7 +10429,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "7d903411807704e725cf3fafbeb97255"
@@ -10597,8 +10446,6 @@
 "Cartridge.ModelNo" "AR-4302"
 "Cartridge.Name" "Party Mix (Preview) (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "7d9c96b215d1941e87b6fb412eb9204f"
@@ -10610,8 +10457,6 @@
 "Cartridge.ModelNo" "CM-001"
 "Cartridge.Name" "MagiCard (1981) (CommaVid) (4K)"
 "Cartridge.Note" "Uses the Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 "Display.YStart" "24"
 ""
 
@@ -10752,8 +10597,6 @@
 "Cartridge.ModelNo" "AR-4302"
 "Cartridge.Name" "Party Mix (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -10944,7 +10787,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "8101efafcf0af32fedda4579c941e6f4"
@@ -10957,7 +10799,6 @@
 "Cartridge.Name" "Sadoom (TJ) (PAL60) (Hack)"
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 "Display.Format" "PAL60"
 ""
@@ -11158,8 +10999,6 @@
 "Cartridge.ModelNo" "CX2643 - 6-99815"
 "Cartridge.Name" "Codebreaker (1978) (Atari) (4K)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "83fafd7bd12e3335166c6314b3bde528"
@@ -11180,7 +11019,6 @@
 "Cartridge.Name" "Super Cobra Arcade (NTSC)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Right" "SAVEKEY"
 "Display.Phosphor" "YES"
 ""
 
@@ -11516,7 +11354,6 @@
 "Cartridge.ModelNo" "CX2608 - 49-75165"
 "Cartridge.Name" "Super Breakout (1982 - 1981) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 45"
 ""
 
@@ -11675,7 +11512,6 @@
 "Cartridge.Manufacturer" "128-in-1 Junior Console"
 "Cartridge.Name" "Street Racer (128-in-1 Junior Console) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
-"Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 75"
 ""
@@ -11795,7 +11631,6 @@
 "Cartridge.Name" "Missile Command (Trakball) (2002) (TJ) (PAL)"
 "Cartridge.Note" "Uses the Trakball Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "TRAKBALL"
 "Display.Phosphor" "YES"
 ""
 
@@ -11815,7 +11650,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Amiga Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -11866,7 +11700,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "8cd26dcf249456fe4aeb8db42d49df74"
@@ -11880,7 +11713,6 @@
 "Cartridge.Name" "Missile Command (Trakball) (2002) (TJ)"
 "Cartridge.Note" "Uses the Trakball Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "TRAKBALL"
 "Display.Phosphor" "YES"
 ""
 
@@ -11901,7 +11733,6 @@
 "Cartridge.Name" "Missile Command (Amiga Mouse) (2002) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Phosphor" "YES"
 ""
 
@@ -12023,7 +11854,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -12041,8 +11871,6 @@
 "Cartridge.Name" "Alpha Beam with Ernie (12-22-1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "8f60551db6d1535ef0030f155018c738"
@@ -12074,7 +11902,6 @@
 "Cartridge.Name" "Sea Hawk (Genesis)"
 "Cartridge.Note" "Genesis controller (C drops bomb)"
 "Cartridge.Rarity" "Hack of Sea Hawk"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "8fbabaa87941cdf3a377c15e95bdb0f3"
@@ -12136,7 +11963,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "90b1799dddb8bf748ee286d22e609480"
@@ -12394,7 +12220,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -12418,7 +12243,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Amiga Mouse) (Y Inverted) v4 (Omegamatrix)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "9436b7ad131b5a1f7753ce4309ba3dee"
@@ -12432,8 +12256,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controllers"
-"Controller.Left" "AMIGAMOUSE"
-"Controller.Right" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -12441,7 +12263,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "9469d18238345d87768e8965f9f4a6b2"
@@ -12584,7 +12405,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "9671b658286e276cc4a3d02aa25931d2"
@@ -12625,7 +12445,6 @@
 "Cartridge.Name" "Missile Command (Atari Mouse) (2002) (TJ) (PAL)"
 "Cartridge.Note" "Uses Atari ST Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Left" "ATARIMOUSE"
 "Display.Phosphor" "YES"
 ""
 
@@ -12675,7 +12494,6 @@
 "Cartridge.ModelNo" "720113-1A, 03206"
 "Cartridge.Name" "Solar Storm (1983) (Imagic)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 45"
 ""
 
@@ -12713,7 +12531,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Control - Amiga Mouse Hack v1.15 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "9813b9e4b8a6fd919c86a40c6bda8c93"
@@ -12873,8 +12690,6 @@
 "Cartridge.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cartridge.Name" "Breakout (1978) (Atari) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 60"
 ""
 
@@ -13033,7 +12848,6 @@
 "Cartridge.Name" "Star Voyager (Genesis)"
 "Cartridge.Note" "Genesis controller (C is secondary lasers)"
 "Cartridge.Rarity" "Hack of Star Voyager"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "9d37a1be4a6e898026414b8fee2fc826"
@@ -13082,8 +12896,6 @@
 "Cartridge.Name" "Alpha Beam with Ernie (1983) (Atari)"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "9e192601829f5f5c2d3b51f8ae25dbe5"
@@ -13109,7 +12921,6 @@
 "Cartridge.MD5" "9e5007131695621d06902ab3c960622a"
 "Cartridge.Manufacturer" "Sega"
 "Cartridge.Name" "Tac Scan (1983) (Sega) [h1]"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 60"
 "Display.Height" "215"
 "Display.Phosphor" "YES"
@@ -13179,8 +12990,6 @@
 "Cartridge.Name" "Basic Programming (1979) (Atari)"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 "Display.Phosphor" "YES"
 ""
 
@@ -13241,7 +13050,6 @@
 "Cartridge.Name" "Tomarc the Barbarian (1983) (Xonox)"
 "Cartridge.Note" "Genesis controller (B is jump and throw, C switches between players)"
 "Cartridge.Rarity" "Hack of Tomarc the Barbarian"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "a0028f057d496f22b549fd8deecc6f78"
@@ -13279,7 +13087,6 @@
 "Cartridge.ModelNo" "CX26102"
 "Cartridge.Name" "Cookie Monster Munch (1983) (Atari) (PAL)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
-"Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
 
@@ -13344,7 +13151,6 @@
 "Cartridge.Name" "Steeplechase (1980) (Sears) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "a1770ef47146ab7b12e2c4beccd68806"
@@ -13424,7 +13230,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "a23ffc86804240ce77134a1c91926685"
@@ -13467,7 +13272,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Atari Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -13492,7 +13296,6 @@
 "Cartridge.Manufacturer" "Nukey Shay"
 "Cartridge.Name" "Montezuma's Revenge (Genesis) (PAL60) (F6_Conversion)"
 "Cartridge.Note" "Genesis controller"
-"Controller.Left" "GENESIS"
 "Display.Format" "PAL60"
 ""
 
@@ -13556,7 +13359,6 @@
 "Cartridge.ModelNo" "AR-4300"
 "Cartridge.Name" "Fireball (Preview) (1982) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -13622,16 +13424,12 @@
 "Cartridge.ModelNo" "CX2643"
 "Cartridge.Name" "Codebreaker (1978) (Atari) (PAL)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "a484638990de7b12c62947c79dafa4c6"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controllers"
-"Controller.Left" "ATARIMOUSE"
-"Controller.Right" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -13841,7 +13639,6 @@
 "Cartridge.ModelNo" "CX2630 - 49-75122"
 "Cartridge.Name" "Circus Atari (1980) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 55"
 ""
 
@@ -13957,7 +13754,6 @@
 "Cartridge.Name" "Enduro (Genesis)"
 "Cartridge.Note" "Genesis controller (B is acceleration, C is brakes)"
 "Cartridge.Rarity" "Hack of Enduro"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "a91d0858a52de3a2e6468437212d93e8"
@@ -13974,7 +13770,6 @@
 "Cartridge.Name" "Kabul! (Jess Ragan) (Hack)"
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -14108,8 +13903,6 @@
 "Cartridge.ModelNo" "AR-4302"
 "Cartridge.Name" "Party Mix - Tug of War (2 of 3) (1983) (Arcadia)"
 "Cartridge.Note" "Uses Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "02"
 ""
 
@@ -14177,7 +13970,6 @@
 "Cartridge.Name" "Star Trek (Genesis)"
 "Cartridge.Note" "Genesis controller (B is phaser, C is warp)"
 "Cartridge.Rarity" "Hack of Star Trek"
-"Controller.Left" "GENESIS"
 "Display.Phosphor" "YES"
 ""
 
@@ -14302,7 +14094,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -14430,7 +14221,6 @@
 "Cartridge.ModelNo" "AG-010, AG-010-04"
 "Cartridge.Name" "Kaboom! (1981) (Activision) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -14514,7 +14304,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "b049fc8ac50be7c2f28418817979c637"
@@ -14536,8 +14325,6 @@
 "Cartridge.Name" "Basic Programming (1979) (Atari) (PAL)"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Common"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 "Display.Phosphor" "YES"
 ""
 
@@ -14550,7 +14337,6 @@
 "Cartridge.ModelNo" "EAG-010, PAG-010 - 711 010-720"
 "Cartridge.Name" "Kaboom! (1981) (Activision) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -14558,8 +14344,6 @@
 "Cartridge.Manufacturer" "Atari, Michael Callahan, Preston Stuart"
 "Cartridge.ModelNo" "CX26103"
 "Cartridge.Name" "Alpha Beam with Ernie (1983) (Atari) (PAL) [a]"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "b0c47e426c7f799aee2c40422df8f56a"
@@ -14585,16 +14369,12 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Marble Craze - Amiga Mouse Hack v1.0 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controllers"
-"Controller.Left" "AMIGAMOUSE"
-"Controller.Right" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "b129d7541cff79ebe33852a83057c524"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controllers"
-"Controller.Left" "TRAKBALL"
-"Controller.Right" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "b12a7f63787a6bb08e683837a8ed3f18"
@@ -14641,7 +14421,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -14705,8 +14484,6 @@
 "Cartridge.ModelNo" "CX2642"
 "Cartridge.Name" "Hunt & Score (1978) (Atari) (PAL) (4K)"
 "Cartridge.Note" "Uses the Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "b2737034f974535f5c0c6431ab8caf73"
@@ -14790,7 +14567,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Star Wars Arcade (Atari Mouse) v4 (PAL60) (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -14887,7 +14663,6 @@
 "Cartridge.Manufacturer" "Mystique - American Multiple Industries, Joel H. Martin"
 "Cartridge.Name" "Beat 'Em & Eat 'Em (1982) (Mystique) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controller (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 45"
 ""
 
@@ -15223,7 +14998,6 @@
 "Cartridge.ModelNo" "931511"
 "Cartridge.Name" "Action Force (1983) (Parker Bros) (PAL)"
 "Cartridge.Note" "AKA G.I. Joe - Cobra Strike"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 55"
 ""
 
@@ -15299,7 +15073,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -15331,7 +15104,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "SpaceMaster X-7 (Amiga Mouse) (Omegamatrix)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "bb9f06b288b5275bc0d38b6731b2526a"
@@ -15543,7 +15315,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Amiga Mouse Hack v1.3 (NTSC) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "bf52327c2197d9d2c4544be053caded1"
@@ -15561,7 +15332,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Demons to Diamonds (CCE)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 57"
 ""
@@ -15586,7 +15356,6 @@
 "Cartridge.ModelNo" "165"
 "Cartridge.Name" "Star Castle Arcade (2014) (AtariAge)"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Right" "SAVEKEY"
 "Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
@@ -15696,7 +15465,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Millipede (Atari Trak-Ball) v6.5 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "c150c76cbde2c9b5a97eb5399d46c64f"
@@ -15725,7 +15493,6 @@
 "Cartridge.ModelNo" "CX2660"
 "Cartridge.Name" "Star Raiders (1982) (Atari) (PAL)"
 "Cartridge.Note" "Uses Joystick (left) and Keypad (right) Controllers"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "c1b038ce5cb6d85e956c5509b0e0d0d8"
@@ -15767,7 +15534,6 @@
 "Cartridge.ModelNo" "PB5920"
 "Cartridge.Name" "G.I. Joe - Cobra Strike (1983) (Parker Bros)"
 "Cartridge.Note" "Uses the Paddle (left) and Joystick (right) Controllers"
-"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "c20f15282a1aa8724d70c117e5c9709e"
@@ -15867,14 +15633,12 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "c2dea467f4a02fa1f06d66f52bc12e6e"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Command Atari Trak-Ball Hack v1.3 (NTSC) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "c2fbef02b6eea37d8df3e91107f89950"
@@ -16054,7 +15818,6 @@
 "Cartridge.Name" "S.I.PLIX 2 (Hack)"
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -16064,8 +15827,6 @@
 "Cartridge.Name" "Holey Moley (02-29-1984) (Atari) (Prototype)"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "c5301f549d0722049bb0add6b10d1e09"
@@ -16175,7 +15936,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "c5fe45f2734afd47e27ca3b04a90213c"
@@ -16183,8 +15943,6 @@
 "Cartridge.ModelNo" "CX2622, CX2622P"
 "Cartridge.Name" "Breakout (1978) (Atari) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -16266,8 +16024,6 @@
 "Cartridge.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cartridge.Name" "Breakout (1978) (Atari) (16K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 60"
 ""
 
@@ -16298,7 +16054,6 @@
 "Cartridge.Name" "Sweat! - The Decathlon Game (1 of 3) (1983) (Arcadia) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "c77c35a6fc3c0f12bf9e8bae48cba54b"
@@ -16389,8 +16144,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL60) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controllers"
-"Controller.Left" "TRAKBALL"
-"Controller.Right" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -16434,7 +16187,6 @@
 "Cartridge.ModelNo" "PB5000"
 "Cartridge.Name" "Star Wars - Jedi Arena (1983) (Parker Bros)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
-"Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 50"
 ""
@@ -16472,7 +16224,6 @@
 "Cartridge.ModelNo" "201"
 "Cartridge.Name" "Philly Flasher (1982) (PlayAround)"
 "Cartridge.Note" "Uses the Paddle Controllers, AKA Beat 'Em & Eat 'Em"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 45"
 ""
 
@@ -16522,7 +16273,6 @@
 
 "Cartridge.MD5" "cb18d8d5fbdcb1cd7bd36c5423348859"
 "Cartridge.Name" "RAM-Pong (NTSC) v1.0"
-"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "cb24210dc86d92df97b38cf2a51782da"
@@ -16593,7 +16343,6 @@
 "Cartridge.ModelNo" "CX2660 - 49-75187"
 "Cartridge.Name" "Star Raiders (1982) (Atari)"
 "Cartridge.Note" "Uses Joystick (left) and Keypad (right) Controllers"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "cbe5a166550a8129a5e6d374901dffad"
@@ -16601,8 +16350,6 @@
 "Cartridge.ModelNo" "CX2610 - 49-75127"
 "Cartridge.Name" "Warlords (1981) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "AUTO 50"
 ""
 
@@ -16647,7 +16394,6 @@
 "Cartridge.Name" "Oscar's Trash Race (03-30-1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
 
@@ -16802,7 +16548,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -16811,7 +16556,6 @@
 "Cartridge.ModelNo" "AR-4300"
 "Cartridge.Name" "Fireball (1982) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -16826,8 +16570,6 @@
 "Cartridge.ModelNo" "CM-001"
 "Cartridge.Name" "MagiCard (1981) (CommaVid)"
 "Cartridge.Note" "Uses the Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "ce17325834bf8b0a0d0d8de08478d436"
@@ -16874,7 +16616,6 @@
 "Cartridge.Name" "Defender 2 (Genesis)"
 "Cartridge.Note" "Genesis controller (C is smartbomb)"
 "Cartridge.Rarity" "Hack of Defender 2"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "ce8467ae2a3a5bc88ca72a2ce44ce28c"
@@ -16907,7 +16648,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -17055,7 +16795,6 @@
 "Cartridge.Name" "Tomarc the Barbarian (1983) (Xonox) (PAL60)"
 "Cartridge.Note" "Genesis controller (B is jump and throw, C switches between players)"
 "Cartridge.Rarity" "Hack of Tomarc the Barbarian"
-"Controller.Left" "GENESIS"
 "Display.Format" "PAL60"
 ""
 
@@ -17065,8 +16804,6 @@
 "Cartridge.Name" "Medieval Mayhem (PAL)"
 "Cartridge.Rarity" "Homebrew"
 "Cartridge.Sound" "STEREO"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "AUTO 55"
 ""
 
@@ -17186,7 +16923,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "d0e15a3ce322c5af60f07343594392af"
@@ -17252,7 +16988,6 @@
 "Cartridge.ModelNo" "133-002"
 "Cartridge.Name" "Warplock (1983) (Gameworld) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01"
 "Display.Phosphor" "YES"
 ""
@@ -17368,7 +17103,6 @@
 "Cartridge.ModelNo" "VC2005"
 "Cartridge.Name" "Piece o' Cake (1983) (U.S. Games)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 60"
 ""
 
@@ -17424,7 +17158,6 @@
 "Cartridge.Name" "Tac-Scan (1983) (Sega)"
 "Cartridge.Note" "Uses the Paddle Controllers (right only)"
 "Console.SwapPorts" "YES"
-"Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
 "Display.YStart" "31"
@@ -17504,7 +17237,6 @@
 "Cartridge.ModelNo" "931511"
 "Cartridge.Name" "Action Force (1983) (Parker Bros) (PAL) [a]"
 "Cartridge.Note" "AKA G.I. Joe - Cobra Strike"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 55"
 ""
 
@@ -17576,7 +17308,6 @@
 "Cartridge.ModelNo" "CX2615"
 "Cartridge.Name" "Demons to Diamonds (1982) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 57"
 ""
@@ -17642,7 +17373,6 @@
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Blackjack (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Display.YStart" "63"
 ""
 
@@ -17692,8 +17422,6 @@
 
 "Cartridge.MD5" "d7b58303ec8d8c4dbcbf54d3b9734c7e"
 "Cartridge.Name" "Paddle Demo (Joe Grand) (PD)"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "d7dd56677e4ec1e6627419478a4a9668"
@@ -17797,7 +17525,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "d97e3d0b4575ce0b9a6132e19cfeac6e"
@@ -17830,7 +17557,6 @@
 "Cartridge.Name" "Last Starfighter (1984) (Atari) (Prototype)"
 "Cartridge.Note" "Genesis controller (C switches to map mode)"
 "Cartridge.Rarity" "Hack of Last Starfighter (Solaris prototype)"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "d9c9cece2e769c7985494b1403a25721"
@@ -17847,7 +17573,6 @@
 "Cartridge.ModelNo" "CX2633, CX2633P"
 "Cartridge.Name" "Night Driver (1980) (Atari) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
@@ -18030,7 +17755,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Trak-Ball Hack v1.3 (NTSC) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "dbc7485ad5814d466de780a3e7ed3b46"
@@ -18045,7 +17769,6 @@
 "Cartridge.ModelNo" "DA1001"
 "Cartridge.Name" "Encounter at L-5 (1982) (Data Age)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 50"
 ""
 
@@ -18053,7 +17776,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Kaboom! (CCE)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -18151,7 +17873,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "dd1422ffd538e2e33b339ebeef4f259d"
@@ -18379,8 +18100,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controllers"
-"Controller.Left" "AMIGAMOUSE"
-"Controller.Right" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "df95e4af466c809619299f49ece92365"
@@ -18389,8 +18108,6 @@
 "Cartridge.Name" "Alpha Beam with Ernie (06-03-1983) (Atari) (Prototype) (PAL)"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "dfad86dd85a11c80259f3ddb6151f48f"
@@ -18521,8 +18238,6 @@
 "Cartridge.ModelNo" "CX2612, CX2612P"
 "Cartridge.Name" "Street Racer (1977) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 75"
 ""
@@ -18555,7 +18270,6 @@
 "Cartridge.ModelNo" "AG-010, AG-010-04"
 "Cartridge.Name" "Kaboom! (1981) (Activision) (16K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -18805,8 +18519,6 @@
 "Cartridge.Name" "Peek-A-Boo (1984) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "e42b937c30c617241ca9e01e4510c3f6"
@@ -18824,7 +18536,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 "Display.Format" "PAL60"
 ""
 
@@ -18832,7 +18543,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Kaboom! (CCE) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -18911,7 +18621,6 @@
 "Cartridge.Name" "Sweat! - The Decathlon Game (1983) (Arcadia) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "e5359cbbbff9c6d7fe8aeff5fb471b46"
@@ -18948,8 +18657,6 @@
 "Cartridge.Manufacturer" "Alessandro Ciceri"
 "Cartridge.Name" "MagiCard+ (alex_79) WIP_20150118 (PAL)"
 "Cartridge.Note" "MagiCard hack"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "e5a6e0bb7d56e2f08b237e15076e5699"
@@ -18960,7 +18667,6 @@
 "Cartridge.Name" "Starmaster (Genesis)"
 "Cartridge.Note" "Genesis controller (C switches to map mode)"
 "Cartridge.Rarity" "Hack of Starmaster"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "e5d5085123a98c1e61818caa2971e999"
@@ -19023,7 +18729,6 @@
 "Cartridge.ModelNo" "133-005"
 "Cartridge.Name" "Bugs (1983) (Gameworld) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 50"
 ""
 
@@ -19082,7 +18787,6 @@
 "Cartridge.ModelNo" "720113-2A, 13206"
 "Cartridge.Name" "Solar Storm (1983) (Imagic) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 45"
 ""
 
@@ -19102,7 +18806,6 @@
 "Cartridge.Name" "Sadoom (TJ) (PAL) (Hack)"
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -19307,7 +19010,6 @@
 "Cartridge.Manufacturer" "Omegamatrix"
 "Cartridge.Name" "Millipede (Atari Mouse) v6.5 (Omegamatrix)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -19330,7 +19032,6 @@
 "Cartridge.Name" "Scramble (NTSC)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
-"Controller.Right" "SAVEKEY"
 "Display.Phosphor" "YES"
 ""
 
@@ -19364,7 +19065,6 @@
 "Cartridge.Name" "Quest for Quintana Roo (1989) (Telegames)"
 "Cartridge.Note" "Genesis controller (B is action button, C chooses tool or weapon)"
 "Cartridge.Rarity" "Hack of Quest for Quintana Roo"
-"Controller.Left" "GENESIS"
 ""
 
 "Cartridge.MD5" "ead60451c28635b55ca8fea198444e16"
@@ -19495,7 +19195,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Amiga Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "ebf2dff78a08733251bf3838f02f7938"
@@ -19617,7 +19316,6 @@
 "Cartridge.ModelNo" "AG-010, AG-010-04"
 "Cartridge.Name" "Kaboom! (1981) (Activision) (8K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -19661,7 +19359,6 @@
 "Cartridge.ModelNo" "CX2608"
 "Cartridge.Name" "Super Breakout (1982 - 1981) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 45"
 ""
 
@@ -19742,7 +19439,6 @@
 "Cartridge.Name" "Sound Paddle V2 (Dennis Caswell & Jim Nitchals) (PD)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Console.SwapPorts" "YES"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -19808,7 +19504,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Centipede - Atari Mouse Hack v1.4 (NTSC) (Half-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "efffafc17b7cb01b9ca35324aa767364"
@@ -19842,7 +19537,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (NTSC) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 ""
 
 "Cartridge.MD5" "f0536303f49006806bac3aec15738336"
@@ -19908,7 +19602,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
 "Cartridge.Note" "Uses Atari Mouse Controller"
-"Controller.Left" "ATARIMOUSE"
 "Display.Format" "PAL60"
 ""
 
@@ -20059,7 +19752,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
-"Controller.Left" "AMIGAMOUSE"
 ""
 
 "Cartridge.MD5" "f240ba9f8092d2e8a4c7d82c554bf509"
@@ -20100,8 +19792,6 @@
 "Cartridge.Name" "Alpha Beam with Ernie (1983) (Atari) (PAL)"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "f2d4d6187903cac2d5ea8ed90dad120d"
@@ -20160,8 +19850,6 @@
 "Cartridge.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cartridge.Name" "Breakout (1978) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 60"
 ""
 
@@ -20184,7 +19872,6 @@
 "Cartridge.Manufacturer" "AtariAge"
 "Cartridge.Name" "Toyshop Trouble (AtariAge)"
 "Cartridge.Note" "F8 Emulator Release"
-"Controller.Right" "PADDLES"
 "Display.YStart" "32"
 ""
 
@@ -20251,7 +19938,6 @@
 "Cartridge.ModelNo" "CX2633 - 49-75119"
 "Cartridge.Name" "Night Driver (1980) (Atari) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
@@ -20270,7 +19956,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controller"
-"Controller.Left" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "f4ab6bd5f80d8988141edde4c84b23b5"
@@ -20489,7 +20174,6 @@
 "Cartridge.Note" "Genesis controller (B is fire up, C is fire down)"
 "Cartridge.Rarity" "Hack of Plaque Attack"
 "Controller.Left" "GENESIS"
-"Controller.Right" "GENESIS"
 ""
 
 "Cartridge.MD5" "f74ad642552385c3daa203a2a6fc2291"
@@ -20511,8 +20195,6 @@
 "Cartridge.Name" "Steeplechase (04-15-1980) (Sears) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "f777444fc21a5925e066b68b1d350575"
@@ -20535,7 +20217,6 @@
 "Cartridge.Name" "Sound Paddle V1 (Dennis Caswell & Jim Nitchals) (PD)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Console.SwapPorts" "YES"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01"
 ""
 
@@ -20585,8 +20266,6 @@
 "Cartridge.Name" "Medieval Mayhem (NTSC)"
 "Cartridge.Rarity" "Homebrew"
 "Cartridge.Sound" "STEREO"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "AUTO 55"
 ""
 
@@ -20678,7 +20357,6 @@
 "Cartridge.ModelNo" "CX2615 - 49-75140"
 "Cartridge.Name" "Demons to Diamonds (1982) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10 57"
 ""
@@ -20748,8 +20426,6 @@
 "Cartridge.Manufacturer" "Nukey Shay, Omegamatrix"
 "Cartridge.Name" "Double Dragon (Genesis) (PAL) V2"
 "Cartridge.Note" "Genesis controller"
-"Controller.Left" "GENESIS"
-"Controller.Right" "GENESIS"
 ""
 
 "Cartridge.MD5" "f992a39b46aa48188fab12ad3809ae4a"
@@ -20790,7 +20466,6 @@
 "Cartridge.ModelNo" "EAG-010, PAG-010 - 711 010-720"
 "Cartridge.Name" "Kaboom! (1981) (Activision) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "01 50"
 ""
 
@@ -21229,7 +20904,6 @@
 "Cartridge.ModelNo" "CX2633, CX2633P"
 "Cartridge.Name" "Night Driver (1980) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Controller.Left" "PADDLES"
 "Controller.MouseAxis" "AUTO 65"
 "Display.Phosphor" "YES"
 ""
@@ -21248,8 +20922,6 @@
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL) (TJ)"
 "Cartridge.Note" "Uses Atari Trak-Ball Controllers"
-"Controller.Left" "TRAKBALL"
-"Controller.Right" "TRAKBALL"
 ""
 
 "Cartridge.MD5" "ff3bd0c684f7144aeaa18758d8281a78"
@@ -21278,8 +20950,6 @@
 "Cartridge.ModelNo" "AR-4302"
 "Cartridge.Name" "Party Mix - Bop a Buggy (1 of 3) (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.MouseAxis" "01 56"
 ""
 
@@ -21339,5 +21009,4 @@
 "Cartridge.Manufacturer" "Andrew Davie & Thomas Jentsch"
 "Cartridge.Name" "Boulder Dash - Demo V2 (2014)"
 "Cartridge.Rarity" "New Release"
-"Controller.Right" "SAVEKEY"
 ""
