@@ -44,14 +44,27 @@
   extern "C" {
     int stellaMain(int argc, char* argv[]);
   }
+#elif defined(__LIB_RETRO__)
+  #include "SettingsLIBRETRO.hxx"
+  #include "OSystemLIBRETRO.hxx"
 #else
   #error Unsupported platform!
 #endif
 
-#include "FrameBufferSDL2.hxx"
-#include "EventHandlerSDL2.hxx"
-#ifdef SOUND_SUPPORT
-  #include "SoundSDL2.hxx"
+#if defined(__LIB_RETRO__)
+  #include "EventHandlerLIBRETRO.hxx"
+  #include "FrameBufferLIBRETRO.hxx"
+#else
+  #include "EventHandlerSDL2.hxx"
+  #include "FrameBufferSDL2.hxx"
+#endif
+
+#if defined(SOUND_SUPPORT)
+  #if defined(__LIB_RETRO__)
+    #include "SoundLIBRETRO.hxx"
+  #else
+    #include "SoundSDL2.hxx"
+  #endif
 #else
   #include "SoundNull.hxx"
 #endif
@@ -84,6 +97,8 @@ class MediaFactory
       return make_unique<OSystemWINDOWS>();
     #elif defined(BSPF_MACOS)
       return make_unique<OSystemMACOS>();
+    #elif defined(__LIB_RETRO__)
+      return make_unique<OSystemLIBRETRO>();
     #else
       #error Unsupported platform for OSystem!
     #endif
@@ -101,6 +116,8 @@ class MediaFactory
       return make_unique<SettingsWINDOWS>();
     #elif defined(BSPF_MACOS)
       return make_unique<SettingsMACOS>();
+    #elif defined(__LIB_RETRO__)
+      return make_unique<SettingsLIBRETRO>();
     #else
       #error Unsupported platform for Settings!
     #endif
@@ -121,13 +138,21 @@ class MediaFactory
 
     static unique_ptr<FrameBuffer> createVideo(OSystem& osystem)
     {
+    #if defined(__LIB_RETRO__)
+      return make_unique<FrameBufferLIBRETRO>(osystem);
+    #else
       return make_unique<FrameBufferSDL2>(osystem);
+    #endif
     }
 
     static unique_ptr<Sound> createAudio(OSystem& osystem, AudioSettings& audioSettings)
     {
     #ifdef SOUND_SUPPORT
-      return make_unique<SoundSDL2>(osystem, audioSettings);
+      #if defined(__LIB_RETRO__)
+        return make_unique<SoundLIBRETRO>(osystem, audioSettings);
+      #elif defined(SOUND_SUPPORT)
+        return make_unique<SoundSDL2>(osystem, audioSettings);
+	  #endif
     #else
       return make_unique<SoundNull>(osystem);
     #endif
@@ -135,7 +160,11 @@ class MediaFactory
 
     static unique_ptr<EventHandler> createEventHandler(OSystem& osystem)
     {
-      return make_unique<EventHandlerSDL2>(osystem);
+    #if defined(__LIB_RETRO__)
+	  return make_unique<EventHandlerLIBRETRO>(osystem);
+	#else
+	  return make_unique<EventHandlerSDL2>(osystem);
+	#endif
     }
 
     static void cleanUp()

@@ -207,8 +207,11 @@ class Serializer
     */
     void putBool(bool b);
 
+  public:
     /**
-      Returns the write ptr location
+      Returns the output stream length
+	  
+	  @result The value of the output stream ptr
     */
     uInt32 size() const;
 
