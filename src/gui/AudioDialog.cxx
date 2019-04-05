@@ -77,7 +77,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Low quality, medium lag", static_cast<int>(AudioSettings::Preset::lowQualityMediumLag));
   VarList::push_back(items, "High quality, medium lag", static_cast<int>(AudioSettings::Preset::highQualityMediumLag));
   VarList::push_back(items, "High quality, low lag", static_cast<int>(AudioSettings::Preset::highQualityLowLag));
-  VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::veryHighQualityVeryLowLag));
+  VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag));
   VarList::push_back(items, "Custom", static_cast<int>(AudioSettings::Preset::custom));
   myModePopup = new PopUpWidget(this, font, xpos, ypos,
                                    font.getStringWidth("Ultry quality, minimal lag"), lineHeight,

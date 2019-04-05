@@ -28,7 +28,7 @@ namespace {
   {
     return (
       numericPreset >= static_cast<int>(AudioSettings::Preset::custom) &&
-      numericPreset <= static_cast<int>(AudioSettings::Preset::veryHighQualityVeryLowLag)
+      numericPreset <= static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag)
     ) ? static_cast<AudioSettings::Preset>(numericPreset) : AudioSettings::DEFAULT_PRESET;
   }
 
@@ -194,7 +194,7 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
       myPresetResamplingQuality = ResamplingQuality::lanczos_2;
       break;
 
-    case Preset::veryHighQualityVeryLowLag:
+    case Preset::ultraQualityMinimalLag:
       myPresetSampleRate = 96000;
       myPresetFragmentSize = 128;
       myPresetBufferSize = 0;
