@@ -2559,6 +2559,30 @@
       <td>When enabled, each read or write access to the AtariVox/SaveKey EEPROM is
         signalled by a message.</td>
     </tr><tr>
+      <td><pre>-dev.tia.type &lt;standard|koolaidman|</br>  cosmicark|pesco|quickstep|heman|custom&gt;</pre></td>
+      <td>Set emulated TIA type.</td>
+    </tr><tr>
+      <td><pre>-dev.tia.plinvphase &lt;1|0&gt;</pre></td>
+      <td>Enable/disable inverted HMOVE clock phase for players (Kool Aid Man glitch).</td>
+    </tr><tr>
+      <td><pre>-dev.tia.msinvphase &lt;1|0&gt;</pre></td>
+      <td>Enable/disable inverted HMOVE clock phase for missiles (Cosmic Ark stars glitch).</td>
+    </tr><tr>
+      <td><pre>-dev.tia.blinvphase &lt;1|0&gt;</pre></td>
+      <td>Enable/disable inverted HMOVE clock phase for ball.</td>
+    </tr><tr>
+      <td><pre>-dev.tia.delaypfbits &lt;1|0&gt;</pre></td>
+      <td>Enable/disable playfield bits delayed by one color clock (stray playfield pixels in Pesco).</td>
+    </tr><tr>
+      <td><pre>-dev.tia.delaypfcolor &lt;1|0&gt;</pre></td>
+      <td>Enable/disable playfield color delayed by one color clock (colored step borders in Quick Step!).</td>
+    </tr><tr>
+      <td><pre>-dev.tia.delayplswap &lt;1|0&gt;</pre></td>
+      <td>Enable/disable player swap delayed by one color clock (He-Man title glitch).</td>
+    </tr><tr>
+      <td><pre>-dev.tia.delayblswap &lt;1|0&gt;</pre></td>
+      <td>Enable/disable ball swap delayed by one color clock.</td>
+    </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;tv.jitter &lt;1|0&gt;</pre></td>
       <td>Enable TV jitter/roll effect, when there are too many or too few scanlines
         per frame.</td>
@@ -2574,22 +2598,22 @@
       <td>Enable/disable the fixed debug colors.</td>
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;timemachine &lt;1|0&gt;</pre></td>
-      <td>Enables the Time Machine</td>
+      <td>Enable/disable the Time Machine</td>
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;tm.size &lt;20 - 1000&gt;</pre></td>
-      <td>Defines the Time Machine buffer size.</td>
+      <td>Define the Time Machine buffer size.</td>
     </tr><tr>
     </tr><tr>
       <td><pre>-&lt;plr.|dev.&gt;tm.uncompressed &lt;0 - 1000&gt;</pre></td>
-      <td>Defines the uncompressed Time Machine buffer size. Must be &lt;= Time Machine buffer size.</td>
+      <td>Define the uncompressed Time Machine buffer size. Must be &lt;= Time Machine buffer size.</td>
     </tr><tr>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;tm.interval &lt;1f|3f|10f|30f|1s|3s|10s&gt;</pre></td>
-      <td>Defines the interval between two save states.</td>
+      <td><pre>-&lt;plr.|dev.&gt;tm.interval &lt;1f|3f|10f|30f|</br>  1s|3s|10s&gt;</pre></td>
+      <td>Define the interval between two save states.</td>
     </tr><tr>
     </tr><tr>
-      <td><pre>-&lt;plr.|dev.&gt;tm.horizon &lt;3s|10s|30s|1m|3m|10m|30m|60m&gt;</pre></td>
-      <td>Defines the horizon of the Time Machine.</td>
+      <td><pre>-&lt;plr.|dev.&gt;tm.horizon &lt;3s|10s|30s|1m|3m|</br>  10m|30m|60m&gt;</pre></td>
+      <td>Define the horizon of the Time Machine.</td>
     </tr>
   </table>
   </blockquote>
@@ -3155,6 +3179,33 @@
           </tr>
           <tr><td>Display AtariVox...</td><td>Display a message when the AtariVox/SaveKey EEPROM is read or written</td><td>-plr.eepromaccess<br/>-dev.eepromaccess</td></tr>
         </table>
+      </td>
+    </tr>
+  </table>
+
+  <p><b>Developer Settings</b> dialog (TIA):</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/options_developer_tia.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+		<tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+		<tr><td>Chip type</td><td>Type of emulated TIA chip. Allows testing for
+			TIA versions which exhibit timing problems in certain games. The
+			'Custom' option allows testing for glitch combinations.</td><td>-dev.tia.type</td></tr>
+		<tr><td>Inverted HMOVE clock...</td><td>Emulates the Kool-Aid Man
+			collision and Cosmic Ark stars glitches for the given objects.</td>
+			<td>-dev.tia.plinvphase</br>-dev.tia.msinvphase</br>-dev.tia.blinvphase</td></tr>
+		<tr><td>Delayed Playfield</td><td>Emulates playfield registers delayed
+			by one color clock. This e.g. causes glitches in Pesco (stray playfield
+			pixel) and Quick Step! (colored step borders)</td>
+			<td>-dev.tia.delaypfbits</br>-dev.tia.delaypfcolor</td></tr>
+		<tr><td>Delayed VDEL... swap for</td><td>Emulates a VDELP0/P1/BL swap
+			delayed by one color clock. This e.g cause glitches in the He-Man title
+			screen.</td>
+			<td>-dev.tia.delayplswap</br>-dev.tia.delayblswap</td></tr>
+		</table>
       </td>
     </tr>
   </table>
