@@ -21000,3 +21000,10 @@
 "Cartridge.Name" "Boulder Dash - Demo V2 (2014)"
 "Cartridge.Rarity" "New Release"
 ""
+
+"Cartridge.MD5" "7761418d46af069b8cd80c29fe6cd814"
+"Cartridge.Name" "Amoeba Jump (DionoiD)"
+"Cartridge.ModelNo" "RetroN 77 edition"
+"Cartridge.Manufacturer" "Dion Olsthoorn"
+"Cartridge.Rarity" "Homebrew"
+""
