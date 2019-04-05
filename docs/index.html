@@ -1899,28 +1899,52 @@
         shown.</td>
     </tr>
 
-    <tr>
-      <td><pre>-sound &lt;1|0&gt;</pre></td>
-      <td>Enable or disable sound generation.</td>
-    </tr>
+	<tr>
+	  <td><pre>-audio.enabled &lt;1|0&gt;</pre></td>
+	  <td>Enable or disable sound generation.</td>
+	</tr>
 
-    <tr>
-      <td><pre>-fragsize &lt;number&gt;</pre></td>
-      <td>Specify the sound fragment size to use. Linux/Mac seems to work
-        with 512, Windows usually needs 1024.</td>
-    </tr>
+	<tr>
+	  <td><pre>-audio.volume &lt;0 - 100&gt;</pre></td>
+	  <td>Set the volume.</td>
+	</tr>
 
-    <tr>
-      <td><pre>-freq &lt;number&gt;</pre></td>
-      <td>Set sound sample output frequency (11025, 22050, 31400, 44100, 48000)
-        Default is 31400. Do not change unless you experience sound
-        issues.</td>
-    </tr>
+	<tr>
+	  <td><pre>-audio.preset &lt;1 - 5&gt;</pre></td>
+	  <td>Set an audio preset. Numbers in sequence represent presets for
+	  'custom', 'low quality, 'medium lag', 'high quality, medium lag',
+	  'high quality, low lag' and 'very high quality, very low lag'.</td>
+	</tr>
 
-    <tr>
-      <td><pre>-volume &lt;number&gt;</pre></td>
-      <td>Set the volume (0 - 100).</td>
-    </tr>
+	<tr>
+	  <td><pre>-audio.fragment_size &lt;128|256|512|1024|2048|4096&gt;</pre></td>
+	  <td>Set the number of samples in a single fragment processed by the audio driver.</td>
+	</tr>
+
+	<tr>
+	  <td><pre>-audio.sample_rate &lt;44100|48000|96000&gt;</pre></td>
+	  <td>Set sound sample output frequency.</td>
+	</tr>
+
+	<tr>
+	  <td><pre>-audio.resampling_quality &lt;1|2|3&gt;</pre></td>
+	  <td>Set resampling quality to low (1), high (2) or ultra (3).</td>
+	</tr>
+
+	<tr>
+	  <td><pre>-audio.headroom &lt;0 - 20&gt;</pre></td>
+	  <td>Set number of additional half-frames to prebuffer.</td>
+	</tr>
+
+	<tr>
+	  <td><pre>-audio.buffer_size &lt;0 - 20&gt;</pre></td>
+	  <td>Set maximum number of additional half-frames to buffer.</td>
+	</tr>
+
+	<tr>
+	  <td><pre>-audio.stereo &lt;1|0&gt;</pre></td>
+	  <td>Enable or disable stereo mode for all ROMs.</td>
+	</tr>
 
     <tr>
       <td><pre>-tia.zoom &lt;zoom&gt;</pre></td>
@@ -1961,7 +1985,7 @@
     <tr>
       <td><pre>-tv.filter &lt;0 - 5&gt;</pre></td>
       <td>Blargg TV effects, 0 is disabled, next numbers in
-        sequence represent presets for 'RGB', 'S-Video', 'Composite', 'Bad Adjust',
+        sequence represent presets for 'RGB', 'S-Video', 'Composite', 'Bad Adjust'
         and 'Custom' modes.</td>
     </tr>
 
@@ -2659,6 +2683,7 @@
           </td><td>-audio.resampling_quality</td></tr>
           <tr><td>Headroom</td><td>Number of frames to buffer before playback starts. Higher values increase latency, but reduce the potential for dropouts.</td><td>-audio.headroom</td></tr>
           <tr><td>Buffer size</td><td>Maximum size of the audio buffer. Higher values increase maximum latency, but reduce the potential for dropouts</td><td>-audio.buffer_size</td></tr>
+		  <tr><td>Stereo for all ROMs</td><td>Enables stereo mode for all ROMs.</td><td>-audio.stereo</td></tr>
         </table>
         <p>
           <strong>IMPORTANT:</strong> In order to maintain a stable stream of audio data, emulation speed must be

@@ -67,13 +67,13 @@ Settings::Settings()
   // Sound options
   setPermanent(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
   setPermanent(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
-  setPermanent(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
   setPermanent(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
-  setPermanent(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
   setPermanent(AudioSettings::SETTING_FRAGMENT_SIZE, AudioSettings::DEFAULT_FRAGMENT_SIZE);
-  setPermanent(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
-  setPermanent(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
+  setPermanent(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
   setPermanent(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+  setPermanent(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
+  setPermanent(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
+  setPermanent(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
 
   // Input event options
   setPermanent("keymap", "");
@@ -367,18 +367,17 @@ void Settings::usage() const
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << endl
   #ifdef SOUND_SUPPORT
-    << "  -audio.enabled            <1|0>        Enable audio\n"
-    << "  -audio.volume             <number>     Vokume (0-100)\n"
-    << "  -audio.stereo             <1|0>        Enable stereo mode for all ROMs\n"
-    << "  -audio.preset             <1-5>        Audio preset (or 1 for custom)\n"
-    << "  -audio.sample_rate        <number>     Output sample rate (44100|48000|96000)\n"
-    << "  -audio.fragment_size      <number>     Fragment size (128|256|512|1024|\n"
-    << "                                          2048|4096)\n"
-    << "  -audio.buffer_size        <number>     Max. number of additional half-\n"
-    << "                                         frames to buffer(0-20)\n"
-    << "  -audio.headroom           <number>     Additional half-frames to prebuffer\n"
-    << "                                          (0-20)\n"
-    << "  -audio.resampling_quality <1-3>        Resampling quality\n"
+    << "  -audio.enabled            <1|0>      Enable audio\n"
+    << "  -audio.volume             <0-100>    Volume\n"
+    << "  -audio.preset             <1-5>      Audio preset (or 1 for custom)\n"
+    << "  -audio.sample_rate        <number>   Output sample rate (44100|48000|96000)\n"
+    << "  -audio.fragment_size      <number>   Fragment size (128|256|512|1024|\n"
+    << "                                        2048|4096)\n"
+    << "  -audio.resampling_quality <1-3>      Resampling quality\n"
+    << "  -audio.headroom           <0-20>     Additional half-frames to prebuffer\n"
+    << "  -audio.buffer_size        <0-20>     Max. number of additional half-\n"
+    << "                                        frames to buffer\n"
+    << "  -audio.stereo             <1|0>      Enable stereo mode for all ROMs\n"
     << endl
   #endif
     << "  -tia.zoom      <zoom>         Use the specified zoom level (windowed mode)\n"
