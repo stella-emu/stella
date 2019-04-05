@@ -3621,8 +3621,6 @@
 "Cartridge.Manufacturer" "Paul Slocum"
 "Cartridge.Name" "Synthcart (2002) (Paul Slocum)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 "Display.Phosphor" "YES"
 ""
 
@@ -11425,8 +11423,6 @@
 "Cartridge.MD5" "8933976f2029c0d8492ebd8f4eb21492"
 "Cartridge.Name" "Synthcart Plus (09-02-2003) (Paul Slocum)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "8953bc11352d794431d3303e31d3b892"
@@ -11439,8 +11435,6 @@
 "Cartridge.MD5" "896ec58f26e930e02f5e4f046602c3a1"
 "Cartridge.Name" "Synthcart (Beta) (2002) (Paul Slocum)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 "Display.Phosphor" "YES"
 ""
 
@@ -11577,8 +11571,6 @@
 "Cartridge.MD5" "8b556c3d9ca8e5e6e665bd759b93ffae"
 "Cartridge.Name" "Synthcart (2002) (Paul Slocum) (PAL) [!]"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 "Display.Phosphor" "YES"
 ""
 
@@ -16901,8 +16893,6 @@
 "Cartridge.MD5" "d0b9f705aa5f61f47a748a66009ae2d2"
 "Cartridge.Name" "Synthcart (14-01-2002) (Paul Slocum)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Controller.Left" "KEYBOARD"
-"Controller.Right" "KEYBOARD"
 "Display.Phosphor" "YES"
 ""
 

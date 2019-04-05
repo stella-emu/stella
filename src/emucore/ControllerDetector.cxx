@@ -226,13 +226,14 @@ bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controlle
   if(port == Controller::Jack::Left)
   {
     // check for INPT0 *AND* INPT1 access
-    const int NUM_SIGS_0_0 = 4;
+    const int NUM_SIGS_0_0 = 5;
     const int SIG_SIZE_0_0 = 3;
     uInt8 signature_0_0[NUM_SIGS_0_0][SIG_SIZE_0_0] = {
       { 0x24, 0x38, 0x30 }, // bit INPT0|$30; bmi
       { 0xa5, 0x38, 0x10 }, // lda INPT0|$30; bpl
       { 0xa4, 0x38, 0x30 }, // ldy INPT0|$30; bmi
       { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi
+      { 0x24, 0x08, 0x30 }, // bit INPT0; bmi
     };
     const int NUM_SIGS_0_2 = 1;
     const int SIG_SIZE_0_2 = 5;
@@ -240,14 +241,15 @@ bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controlle
       { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT0,x; and #80; bne
     };
 
-    const int NUM_SIGS_1_0 = 5;
+    const int NUM_SIGS_1_0 = 6;
     const int SIG_SIZE_1_0 = 3;
     uInt8 signature_1_0[NUM_SIGS_1_0][SIG_SIZE_1_0] = {
-      { 0x24, 0x39, 0x10 }, // bit INPT1|$30;
-      { 0x24, 0x39, 0x30 }, // bit INPT1|$30;
-      { 0xa5, 0x39, 0x10 }, // lda INPT1|$30;
+      { 0x24, 0x39, 0x10 }, // bit INPT1|$30; bpl
+      { 0x24, 0x39, 0x30 }, // bit INPT1|$30; bmi
+      { 0xa5, 0x39, 0x10 }, // lda INPT1|$30; bpl
       { 0xa4, 0x39, 0x30 }, // ldy INPT1|$30; bmi
       { 0xb5, 0x38, 0x30 }, // lda INPT0|$30,x; bmi
+      { 0x24, 0x09, 0x30 }, // bit INPT1; bmi
     };
     const int NUM_SIGS_1_2 = 1;
     const int SIG_SIZE_1_2 = 5;
@@ -288,12 +290,13 @@ bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controlle
   else if(port == Controller::Jack::Right)
   {
     // check for INPT2 *AND* INPT3 access
-    const int NUM_SIGS_0_0 = 3;
+    const int NUM_SIGS_0_0 = 4;
     const int SIG_SIZE_0_0 = 3;
     uInt8 signature_0_0[NUM_SIGS_0_0][SIG_SIZE_0_0] = {
       { 0x24, 0x3a, 0x30 }, // bit INPT2|$30; bmi
       { 0xa5, 0x3a, 0x10 }, // lda INPT2|$30; bpl
       { 0xa4, 0x3a, 0x30 }, // ldy INPT2|$30; bmi
+      { 0x24, 0x0a, 0x30 }, // bit INPT2; bmi
     };
     const int NUM_SIGS_0_2 = 1;
     const int SIG_SIZE_0_2 = 5;
@@ -301,12 +304,13 @@ bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controlle
       { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT2,x; and #80; bne
     };
 
-    const int NUM_SIGS_1_0 = 3;
+    const int NUM_SIGS_1_0 = 4;
     const int SIG_SIZE_1_0 = 3;
     uInt8 signature_1_0[NUM_SIGS_1_0][SIG_SIZE_1_0] = {
-      { 0x24, 0x3b, 0x30 }, // bit INPT3|$30;
-      { 0xa5, 0x3b, 0x10 }, // lda INPT3|$30;
+      { 0x24, 0x3b, 0x30 }, // bit INPT3|$30; bmi
+      { 0xa5, 0x3b, 0x10 }, // lda INPT3|$30; bpl
       { 0xa4, 0x3b, 0x30 }, // ldy INPT3|$30; bmi
+      { 0x24, 0x0b, 0x30 }, // bit INPT3; bmi
     };
     const int NUM_SIGS_1_2 = 1;
     const int SIG_SIZE_1_2 = 5;
