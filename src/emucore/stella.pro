@@ -21002,7 +21002,7 @@
 ""
 
 "Cartridge.MD5" "7761418d46af069b8cd80c29fe6cd814"
-"Cartridge.Name" "Amoeba Jump (DionoiD)"
+"Cartridge.Name" "Amoeba Jump (R77) (DionoiD)"
 "Cartridge.ModelNo" "RetroN 77 edition"
 "Cartridge.Manufacturer" "Dion Olsthoorn"
 "Cartridge.Rarity" "Homebrew"
