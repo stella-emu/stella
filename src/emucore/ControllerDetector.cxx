@@ -135,7 +135,7 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       { 0xa6, 0x3c, 0x30 }, // ldx INPT4; bmi (joystick games only)
       { 0xa5, 0x0c, 0x0a }, // lda INPT4; asl (joystick games only)
     };
-    const int NUM_SIGS_1 = 5;
+    const int NUM_SIGS_1 = 9;
     const int SIG_SIZE_1 = 4;
     uInt8 signature_1[NUM_SIGS_1][SIG_SIZE_1] = {
       { 0xb9, 0x0c, 0x00, 0x10 }, // lda INPT4,y; bpl (joystick games only)
@@ -143,8 +143,12 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       { 0xb9, 0x3c, 0x00, 0x10 }, // lda INPT4,y; bpl (joystick games only)
       { 0xb9, 0x3c, 0x00, 0x30 }, // lda INPT4,y; bmi (joystick games only)
       { 0xa5, 0x0c, 0x0a, 0xb0 }, // lda INPT4; asl; bcs (joystick games only)
+      { 0xb5, 0x0c, 0x29, 0x80 }, // lda INPT4,x; and #$80 (joystick games only)
+      { 0xb5, 0x3c, 0x29, 0x80 }, // lda INPT4|$30,x; and #$80 (joystick games only)
+      { 0xa5, 0x0c, 0x29, 0x80 }, // lda INPT4; and #$80 (joystick games only)
+      { 0xa5, 0x3c, 0x29, 0x80 }, // lda INPT4|$30; and #$80 (joystick games only)
     };
-    const int NUM_SIGS_2 = 7;
+    const int NUM_SIGS_2 = 9;
     const int SIG_SIZE_2 = 5;
     uInt8 signature_2[NUM_SIGS_2][SIG_SIZE_2] = {
       { 0xa5, 0x0c, 0x25, 0x0d, 0x10 }, // lda INPT4; and INPT5; bpl (joystick games only)
@@ -153,7 +157,9 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       { 0xa5, 0x3c, 0x25, 0x3d, 0x30 }, // lda INPT4|$30; and INPT5|$30; bmi (joystick games only)
       { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT0|$30,y; and #$80; bne (Basic Programming)
       { 0xa9, 0x80, 0x24, 0x0c, 0xd0 }, // lda #$80; bit INPT4; bne (bBasic)
-      { 0xa5, 0x0c, 0x29, 0x80, 0xd0 }, // lda INPT4; and #$80, bne (joystick games only)
+      { 0xa5, 0x0c, 0x29, 0x80, 0xd0 }, // lda INPT4; and #$80; bne (joystick games only)
+      { 0xa5, 0x3c, 0x29, 0x80, 0xd0 }, // lda INPT4|$30; and #$80; bne (joystick games only)
+      { 0xad, 0x0c, 0x00, 0x29, 0x80 }, // lda.w INPT4|$30; and #$80 (joystick games only)
     };
 
     for(uInt32 i = 0; i < NUM_SIGS_0; ++i)
@@ -190,19 +196,23 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       { 0xa5, 0x0d, 0x25 }, // lda INPT4; and (joystick games only)
       { 0xa6, 0x3d, 0x30 }, // ldx INPT4; bmi (joystick games only)
     };
-    const int NUM_SIGS_1 = 4;
+    const int NUM_SIGS_1 = 7;
     const int SIG_SIZE_1 = 4;
     uInt8 signature_1[NUM_SIGS_1][SIG_SIZE_1] = {
       { 0xb9, 0x0c, 0x00, 0x10 }, // lda INPT4,y; bpl (joystick games only)
       { 0xb9, 0x0c, 0x00, 0x30 }, // lda INPT4,y; bmi (joystick games only)
       { 0xb9, 0x3c, 0x00, 0x10 }, // lda INPT4,y; bpl (joystick games only)
       { 0xb9, 0x3c, 0x00, 0x30 }, // lda INPT4,y; bmi (joystick games only)
+      { 0xb5, 0x0c, 0x29, 0x80 }, // lda INPT4,x; and #$80 (joystick games only)
+      { 0xb5, 0x3c, 0x29, 0x80 }, // lda INPT4|$30,x; and #$80 (joystick games only)
+      { 0xa5, 0x3d, 0x29, 0x80 }, // lda INPT5|$30; and #$80 (joystick games only)
     };
-    const int NUM_SIGS_2 = 2;
+    const int NUM_SIGS_2 = 3;
     const int SIG_SIZE_2 = 5;
     uInt8 signature_2[NUM_SIGS_2][SIG_SIZE_2] = {
       { 0xb5, 0x38, 0x29, 0x80, 0xd0 }, // lda INPT0|$30,y; and #$80; bne (Basic Programming)
-      { 0xa9, 0x80, 0x24, 0x0c, 0xd0 }, // lda #$80; bit INPT4; bne (bBasic)
+      { 0xa9, 0x80, 0x24, 0x0d, 0xd0 }, // lda #$80; bit INPT5; bne (bBasic)
+      { 0xad, 0x0d, 0x00, 0x29, 0x80 }, // lda.w INPT5|$30; and #$80 (joystick games only)
     };
 
     for(uInt32 i = 0; i < NUM_SIGS_0; ++i)

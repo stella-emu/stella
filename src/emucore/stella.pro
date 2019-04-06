@@ -2837,7 +2837,7 @@
 "Cartridge.Name" "Scramble (PAL60)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
-"Display.Format" "PAL60"
+"Controller.Left" "GENESIS""Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -2852,6 +2852,8 @@
 "Cartridge.Name" "Missile Command (Atari Mouse) (2002) (TJ)"
 "Cartridge.Note" "Uses Atari ST Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "ATARIMOUSE"
+"Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
 ""
 
@@ -7392,7 +7394,7 @@
 "Cartridge.Name" "Super Cobra Arcade (PAL60)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
-"Display.Format" "PAL60"
+"Controller.Left" "GENESIS""Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -11017,7 +11019,7 @@
 "Cartridge.Name" "Super Cobra Arcade (NTSC)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
-"Display.Phosphor" "YES"
+"Controller.Left" "GENESIS""Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "841b7bc1cad05f5408302308777d49dc"
@@ -11623,6 +11625,8 @@
 "Cartridge.Name" "Missile Command (Trakball) (2002) (TJ) (PAL)"
 "Cartridge.Note" "Uses the Trakball Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "TRAKBALL"
+"Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
 ""
 
@@ -11705,6 +11709,8 @@
 "Cartridge.Name" "Missile Command (Trakball) (2002) (TJ)"
 "Cartridge.Note" "Uses the Trakball Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "TRAKBALL"
+"Controller.Right" "TRAKBALL"
 "Display.Phosphor" "YES"
 ""
 
@@ -12437,6 +12443,8 @@
 "Cartridge.Name" "Missile Command (Atari Mouse) (2002) (TJ) (PAL)"
 "Cartridge.Note" "Uses Atari ST Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "ATARIMOUSE"
+"Controller.Right" "ATARIMOUSE"
 "Display.Phosphor" "YES"
 ""
 
@@ -18866,6 +18874,8 @@
 "Cartridge.ModelNo" "SV-010"
 "Cartridge.Name" "CompuMate (1983) (Spectravideo) (PAL)"
 "Cartridge.Type" "CM"
+"Controller.Left" "COMPUMATE"
+"Controller.Right" "COMPUMATE"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "80"
 ""
@@ -19022,7 +19032,7 @@
 "Cartridge.Name" "Scramble (NTSC)"
 "Cartridge.Note" "Compatible with Genesis controller"
 "Cartridge.Rarity" "Homebrew"
-"Display.Phosphor" "YES"
+"Controller.Left" "GENESIS""Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "ea38fcfc06ad87a0aed1a3d1588744e4"
@@ -19364,6 +19374,7 @@
 "Cartridge.Name" "Berenstain Bears (1983) (Coleco)"
 "Cartridge.Note" "Uses the KidVid Controller"
 "Cartridge.Rarity" "Unbelievably Rare"
+"Controller.Left" "KEYBOARD"
 "Display.YStart" "25"
 ""
 
