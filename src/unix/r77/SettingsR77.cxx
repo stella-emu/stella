@@ -93,7 +93,7 @@ bool SettingsR77::saveConfigFile(const string& cfgfile) const
 
   out.flush();
   out.close();
-// FIXME   system("/bin/fsync /mnt/stella/stellarc&");
+  system("/bin/fsync /mnt/stella/stellarc&");
 
   return true;
 }
