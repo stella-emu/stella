@@ -219,6 +219,16 @@ class FBSurface
         ColorId color, TextAlign align = TextAlign::Left,
         int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
 
+    /**
+      This method should be called to check if the given coordinates are in
+      bounds of the surface.
+
+      @param x      The x coordinate to check
+      @param y      The y coordinate to check
+      @return       True if coordinates are in bounds
+    */
+    virtual bool checkBounds(const int x, const int y) const;
+
     //////////////////////////////////////////////////////////////////////////
     // Note:  The following methods are FBSurface-specific, and must be
     //        implemented in child classes.
