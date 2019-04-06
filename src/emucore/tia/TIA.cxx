@@ -1301,11 +1301,13 @@ void TIA::tickMovement()
     myBall.movementTick(movementCounter, hblank);
 
     myMovementInProgress =
-      myMissile0.isMoving |
-      myMissile1.isMoving |
-      myPlayer0.isMoving  |
-      myPlayer1.isMoving  |
+      myMissile0.isMoving ||
+      myMissile1.isMoving ||
+      myPlayer0.isMoving  ||
+      myPlayer1.isMoving  ||
       myBall.isMoving;
+
+    myCollisionUpdateRequired = myCollisionUpdateRequired || myMovementInProgress;
 
     ++myMovementClock;
   }
