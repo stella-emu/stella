@@ -26,6 +26,9 @@ class GameList;
 class BrowserDialog;
 class OptionsDialog;
 class GlobalPropsDialog;
+#ifdef RETRON77
+class StellaSettingsDialog;
+#endif
 class OSystem;
 class Properties;
 class EditTextWidget;
@@ -102,6 +105,9 @@ class LauncherDialog : public Dialog
     unique_ptr<GameList> myGameList;
     unique_ptr<ContextMenu> myMenu;
     unique_ptr<GlobalPropsDialog> myGlobalProps;
+#ifdef RETRON77
+    unique_ptr<StellaSettingsDialog> myStellaSettingsDialog;
+#endif
     unique_ptr<BrowserDialog> myRomDir;
 
     ButtonWidget* myStartButton;

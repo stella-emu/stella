@@ -27,6 +27,9 @@
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
 #include "GlobalPropsDialog.hxx"
+#ifdef RETRON77
+#include "StellaSettingsDialog.hxx"
+#endif
 #include "MessageBox.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -223,6 +226,9 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
   myGlobalProps = make_unique<GlobalPropsDialog>(this, osystem.frameBuffer().font());
+#ifdef RETRON77
+  myStellaSettingsDialog = make_unique<StellaSettingsDialog>(osystem, parent, _font, w, h);
+#endif
 
   // Do we show only ROMs or all files?
   bool onlyROMs = instance().settings().getBool("launcherroms");
@@ -456,6 +462,12 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
   // Control-R (reload ROM listing)
   if(StellaModTest::isControl(mod) && key == KBDK_R)
     updateListing();
+#ifdef RETRON77
+  else if(key == KBDK_F1)
+  {
+    myStellaSettingsDialog->open();
+  }
+#endif
   else
     Dialog::handleKeyDown(key, mod);
 }
