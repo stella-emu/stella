@@ -42,8 +42,8 @@ Settings::Settings()
   // TIA specific options
   setPermanent("tia.zoom", "3");
   setPermanent("tia.inter", "false");
-  setPermanent("tia.aspectn", "91");
-  setPermanent("tia.aspectp", "109");
+  setPermanent("tia.aspectn", "100");
+  setPermanent("tia.aspectp", "100");
   setPermanent("tia.fsfill", "false");
   setPermanent("tia.dbgcolors", "roygpb");
 
