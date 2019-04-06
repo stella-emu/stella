@@ -200,8 +200,8 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
     bby = desc.bbx[chr].y;
   }
 
-  int cx = tx + bbx;
-  int cy = ty + desc.ascent - bby - bbh;
+  uInt32 cx = tx + bbx;
+  uInt32 cy = ty + desc.ascent - bby - bbh;
 
   if(!checkBounds(cx , cy) || !checkBounds(cx + bbw - 1, cy + bbh - 1))
     return;
@@ -361,9 +361,9 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FBSurface::checkBounds(const int x, const int y) const
+bool FBSurface::checkBounds(const uInt32 x, const uInt32 y) const
 {
-  if (x >= 0 && x <= (int)width() && y >= 0 && y <= (int)height())
+  if (x <= width() && y <= height())
     return true;
 
   cerr << "FBSurface::checkBounds() failed: "
