@@ -88,12 +88,12 @@ bool SettingsR77::saveConfigFile(const string& cfgfile) const
 
   out << "fullscreen = " << getString("fullscreen") << endl;
   out << "lastrom = " << getString("lastrom") << endl;
-  out << "keymap = " << getString("keymap") << endl;
-  out << "joymap = " << getString("joymap") << endl;
+//   out << "keymap = " << getString("keymap") << endl;
+//   out << "joymap = " << getString("joymap") << endl;
 
   out.flush();
   out.close();
-// FIXME   system("/bin/fsync /mnt/stella/stellarc&");
+  system("/bin/fsync /mnt/stella/stellarc&");
 
   return true;
 }

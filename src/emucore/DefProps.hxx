@@ -1649,7 +1649,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "76f66ce3b83d7a104a899b4b3354a2f2", "UA Limited", "", "Cat Trax (1983) (UA Limited) (1)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "77057d9d14b99e465ea9e29783af0ae3", "Activision, David Crane", "AG-001", "Dragster (1980) (Activision)", "AKA Drag Strip", "", "", "", "", "", "", "", "", "", "", "", "", "", "20", "", "" },
   { "7732e4e4cc2644f163d6650ddcc9d9df", "HES", "771-333", "2 Pak Special - Challenge, Surfing (1990) (HES) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "7761418d46af069b8cd80c29fe6cd814", "Dion Olsthoorn", "RetroN 77 edition", "Amoeba Jump (DionoiD)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "7761418d46af069b8cd80c29fe6cd814", "Dion Olsthoorn", "RetroN 77 edition", "Amoeba Jump (R77) (DionoiD)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "7778ac65d775a079f537e97cbdad541c", "", "", "Spider Fighter (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "777aece98d7373998ffb8bc0b5eff1a2", "", "", "2600 Collison Demo 2 (Piero Cavina) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "77887e4192a6b0a781530e6cf9be7199", "Atari", "CX2604", "Space War (1978) (Atari) [b1]", "", "Uncommon", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
