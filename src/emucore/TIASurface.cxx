@@ -397,8 +397,8 @@ void TIASurface::render()
 
   if(mySaveSnapFlag)
   {
-    myOSystem.png().takeSnapshot();
     mySaveSnapFlag = false;
+    myOSystem.png().takeSnapshot();
   }
 }
 
