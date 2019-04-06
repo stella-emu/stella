@@ -75,7 +75,8 @@ class PhysicalKeyboardHandler
     // Array of key events, indexed by StellaKey
     Event::Type myKeyTable[KBDK_LAST][kNumModes];
     // Array of mod keys, indexed by StellaKey
-    StellaMod myModKeyTable[KBDK_LAST][kNumModes];
+    // TODO - uncomment when this is ready
+    //StellaMod myModKeyTable[KBDK_LAST][kNumModes];
 
     // Sometimes key combos with the Alt key become 'stuck' after the
     // window changes state, and we want to ignore that event

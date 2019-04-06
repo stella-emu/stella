@@ -111,6 +111,10 @@ namespace BSPF
     static const string ARCH = "x86_64";
   #elif defined(__powerpc__) || defined(__ppc__)
     static const string ARCH = "ppc";
+  #elif defined(__arm__) || defined(__thumb__)
+    static const string ARCH = "arm32";
+  #elif defined(__aarch64__)
+    static const string ARCH = "arm64";
   #else
     static const string ARCH = "NOARCH";
   #endif
