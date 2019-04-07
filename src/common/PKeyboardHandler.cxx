@@ -139,7 +139,6 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey( KBDK_6,         Event::JoystickOneFire5  );
       setDefaultKey( KBDK_7,         Event::JoystickOneFire9  );
 
-
       setDefaultKey( KBDK_F1,        Event::ConsoleSelect     );
       setDefaultKey( KBDK_F2,        Event::ConsoleReset      );
       setDefaultKey( KBDK_F3,        Event::ConsoleColor      );
@@ -159,6 +158,17 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey( KBDK_T,         Event::TimeMachineMode   );
       setDefaultKey( KBDK_GRAVE,     Event::DebuggerMode      );
       setDefaultKey( KBDK_ESCAPE,    Event::LauncherMode      );
+
+    // FIXME - use the R77 define in the final release
+    //         use the '1' define for testing
+    #if defined(RETRON77)
+//    #if 1
+      setDefaultKey( KBDK_F4,        Event::ConsoleColorToggle     );
+      setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffToggle  );
+      setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffToggle );
+      setDefaultKey( KBDK_F13,       Event::FullscreenFillToggle   );
+      setDefaultKey( KBDK_BACKSPACE, Event::LauncherMode           );
+    #endif
       break;
 
     case kMenuMode:
@@ -175,9 +185,10 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey( KBDK_RETURN,    Event::UISelect  );
       setDefaultKey( KBDK_ESCAPE,    Event::UICancel  );
 
-//#ifndef RETRON77 // debugging only, FIX ME!
-//      setDefaultKey(KBDK_BACKSPACE, Event::UIPrevDir);
-//#else
+    // FIXME - use the R77 define in the final release
+    //         use the '1' define for testing
+    #if defined(RETRON77)
+//    #if 1
       setDefaultKey( KBDK_F9,        Event::UIUp );
       setDefaultKey( KBDK_F2,        Event::UIDown );
       setDefaultKey( KBDK_F11,       Event::UINavPrev );
@@ -185,7 +196,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey( KBDK_F6,        Event::UISelect );
       setDefaultKey( KBDK_F13,       Event::UIPgUp );
       setDefaultKey( KBDK_BACKSPACE, Event::UIPgDown );
-//#endif // debugging only, FIX ME!
+    #endif
       break;
 
     default:

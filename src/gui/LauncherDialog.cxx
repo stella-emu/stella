@@ -55,7 +55,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myPattern(nullptr),
     myAllFiles(nullptr),
     myRomInfoWidget(nullptr),
-    myStellaSettingsDialog(nullptr),
     mySelectedItem(0)
 {
   myUseMinimalUI = instance().settings().getBool("minimal_ui");

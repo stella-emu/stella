@@ -1281,6 +1281,7 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::VolumeDecrease,         "Decrease volume",          "", false },
   { Event::VolumeIncrease,         "Increase volume",          "", false },
   { Event::SoundToggle,            "Toggle sound",             "", false },
+  { Event::FullscreenFillToggle,   "Toggle fullscreen fill",   "", false },
   { Event::PauseMode,              "Pause",                    "", false },
   { Event::OptionsMenuMode,        "Enter options menu UI",    "", false },
   { Event::CmdMenuMode,            "Toggle command menu UI",   "", false },

@@ -32,7 +32,7 @@ class Event
     /**
       Enumeration of all possible events in Stella, including both
       console and controller event types as well as events that aren't
-      technically part of the emulation core
+      technically part of the emulation core.
     */
     enum Type
     {
@@ -74,7 +74,7 @@ class Event
 
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
       PauseMode, OptionsMenuMode, CmdMenuMode, TimeMachineMode, DebuggerMode, LauncherMode,
-      Fry, VolumeDecrease, VolumeIncrease, SoundToggle,
+      Fry, VolumeDecrease, VolumeIncrease, SoundToggle, FullscreenFillToggle,
 
       UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
       UISelect, UINavPrev, UINavNext, UIOK, UICancel, UIPrevDir,
