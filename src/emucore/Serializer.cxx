@@ -78,6 +78,12 @@ Serializer::Serializer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Serializer::size() const
+{
+  return myStream->tellp();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::rewind()
 {
   myStream->clear();
