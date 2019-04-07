@@ -176,9 +176,15 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey( KBDK_ESCAPE,    Event::UICancel  );
 
       setDefaultKey( KBDK_BACKSPACE, Event::UIPrevDir );
-#ifdef RETRON77
-      setDefaultKey( KBDK_F1,        Event::CmdMenuMode);
-#endif
+//#ifdef RETRON77 // debugging only, FIX ME!
+      setDefaultKey( KBDK_F9,        Event::UIUp );
+      setDefaultKey( KBDK_F2,        Event::UIDown );
+      setDefaultKey( KBDK_F11,       Event::UINavPrev );
+      setDefaultKey( KBDK_F1,        Event::UINavNext );
+      setDefaultKey( KBDK_F6,        Event::UISelect );
+      setDefaultKey( KBDK_F13,       Event::UIPgUp );
+      setDefaultKey( KBDK_BACKSPACE, Event::UIPgDown );
+//#endif // debugging only, FIX ME!
       break;
 
     default:

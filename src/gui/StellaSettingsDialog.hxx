@@ -20,9 +20,7 @@
 
 class PopUpWidget;
 
-#ifdef RETRON77
-  #include "Props.hxx"
-#endif
+#include "Props.hxx"
 #include "Dialog.hxx"
 
 namespace GUI {

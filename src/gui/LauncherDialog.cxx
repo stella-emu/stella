@@ -27,9 +27,7 @@
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
 #include "GlobalPropsDialog.hxx"
-#ifdef RETRON77
 #include "StellaSettingsDialog.hxx"
-#endif
 #include "MessageBox.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -57,8 +55,11 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myPattern(nullptr),
     myAllFiles(nullptr),
     myRomInfoWidget(nullptr),
+    myStellaSettingsDialog(nullptr),
     mySelectedItem(0)
 {
+  myUseMinimalUI = instance().settings().getBool("minimal_ui");
+
   const GUI::Font& font = instance().frameBuffer().launcherFont();
 
   const int HBORDER = 10;
@@ -67,12 +68,10 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
             bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1)),
-            bheight = lineHeight + 4,
+            bheight = myUseMinimalUI ? lineHeight - 4 : lineHeight + 4,
             LBL_GAP = fontWidth;
   int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0;
   WidgetArray wid;
-
-  const bool useMinimalUI = instance().settings().getBool("minimal_ui");
 
   string lblRom = "Select a ROM from the list" + ELLIPSIS;
   const string& lblFilter = "Filter";
@@ -91,7 +90,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     lwidth = font.getStringWidth(lblRom);
   }
 
-  if(useMinimalUI)
+  if(myUseMinimalUI)
   {
   #if defined(RETRON77)
     // App information
@@ -100,7 +99,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     ypos += 8;
     new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
                          ver.str(), TextAlign::Center);
-    ypos += fontHeight;
+    ypos += fontHeight - 4;
   #endif
   }
 
@@ -115,7 +114,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add filter that can narrow the results shown in the listing
   // It has to fit between both labels
-  if(!useMinimalUI && w >= 640)
+  if(!myUseMinimalUI && w >= 640)
   {
     int fwidth = std::min(15 * fontWidth, xpos - lwidth3 - lwidth2 - lwidth - HBORDER - LBL_GAP * 8);
     // Show the filter input field
@@ -167,7 +166,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   myDir->setEditable(false, true);
   myDir->clearFlags(WIDGET_RETAIN_FOCUS);
 
-  if(!useMinimalUI)
+  if(!myUseMinimalUI)
   {
     // Add four buttons at the bottom
     xpos = HBORDER;  ypos += myDir->getHeight() + 8;
@@ -226,9 +225,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
   myGlobalProps = make_unique<GlobalPropsDialog>(this, osystem.frameBuffer().font());
-#ifdef RETRON77
-  myStellaSettingsDialog = make_unique<StellaSettingsDialog>(osystem, parent, _font, w, h);
-#endif
+  if (myUseMinimalUI)
+    myStellaSettingsDialog = make_unique<StellaSettingsDialog>(osystem, parent, _font, w, h);
 
   // Do we show only ROMs or all files?
   bool onlyROMs = instance().settings().getBool("launcherroms");
@@ -462,12 +460,34 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
   // Control-R (reload ROM listing)
   if(StellaModTest::isControl(mod) && key == KBDK_R)
     updateListing();
-#ifdef RETRON77
-  else if(key == KBDK_F1)
-  {
-    myStellaSettingsDialog->open();
-  }
-#endif
+//#ifdef RETRON77 // debugging only, FIX ME!
+  else if(myUseMinimalUI)
+    // handle keys used by R77
+    switch(key)
+    {
+      case KBDK_F8:
+        myStellaSettingsDialog->open();
+        break;
+
+      case KBDK_F4:
+        myGlobalProps->open();
+        break;
+
+      case KBDK_F11:
+        // convert unused previous item key into page-up key
+        Dialog::handleKeyDown(KBDK_F13, mod);
+        break;
+
+      case KBDK_F1:
+        // convert unused next item key into page-down key
+        Dialog::handleKeyDown(KBDK_BACKSPACE, mod);
+        break;
+
+      default:
+        Dialog::handleKeyDown(key, mod);
+        break;
+    }
+//#endif // debugging only, FIX ME!
   else
     Dialog::handleKeyDown(key, mod);
 }
@@ -499,44 +519,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case ListWidget::kActivatedCmd:
     case ListWidget::kDoubleClickedCmd:
     {
-      int item = myList->getSelected();
-      if(item >= 0)
-      {
-        const FilesystemNode romnode(myGameList->path(item));
-
-        // Directory's should be selected (ie, enter them and redisplay)
-        if(romnode.isDirectory())
-        {
-          string dirname = "";
-          if(myGameList->name(item) == " [..]")
-          {
-            myCurrentNode = myCurrentNode.getParent();
-            if(!myNodeNames.empty())
-              dirname = myNodeNames.pop();
-          }
-          else
-          {
-            myCurrentNode = romnode;
-            myNodeNames.push(myGameList->name(item));
-          }
-          updateListing(dirname);
-        }
-        else
-        {
-          const string& result =
-            instance().createConsole(romnode, myGameList->md5(item));
-          if(result == EmptyString)
-          {
-            instance().settings().setValue("lastrom", myList->getSelectedString());
-
-            // If romdir has never been set, set it now based on the selected rom
-            if(instance().settings().getString("romdir") == EmptyString)
-              instance().settings().setValue("romdir", romnode.getParent().getShortPath());
-          }
-          else
-            instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
-        }
-      }
+      startGame();
       break;
     }
 
@@ -584,3 +567,47 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       Dialog::handleCommand(sender, cmd, data, 0);
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::startGame()
+{
+  int item = myList->getSelected();
+  if(item >= 0)
+  {
+    const FilesystemNode romnode(myGameList->path(item));
+
+    // Directory's should be selected (ie, enter them and redisplay)
+    if(romnode.isDirectory())
+    {
+      string dirname = "";
+      if(myGameList->name(item) == " [..]")
+      {
+        myCurrentNode = myCurrentNode.getParent();
+        if(!myNodeNames.empty())
+          dirname = myNodeNames.pop();
+      }
+      else
+      {
+        myCurrentNode = romnode;
+        myNodeNames.push(myGameList->name(item));
+      }
+      updateListing(dirname);
+    }
+    else
+    {
+      const string& result =
+        instance().createConsole(romnode, myGameList->md5(item));
+      if(result == EmptyString)
+      {
+        instance().settings().setValue("lastrom", myList->getSelectedString());
+
+        // If romdir has never been set, set it now based on the selected rom
+        if(instance().settings().getString("romdir") == EmptyString)
+          instance().settings().setValue("romdir", romnode.getParent().getShortPath());
+      }
+      else
+        instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
+    }
+  }
+}
+
