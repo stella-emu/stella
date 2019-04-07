@@ -207,6 +207,11 @@ class Serializer
     */
     void putBool(bool b);
 
+    /**
+      Returns the write ptr location
+    */
+    uInt32 size() const;
+
   private:
     // The stream to send the serialized data to.
     unique_ptr<iostream> myStream;
