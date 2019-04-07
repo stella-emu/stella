@@ -177,8 +177,12 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   ypos += myHoldSelect->getHeight() + VGAP;
   myHoldReset = new CheckboxWidget(this, font, xpos, ypos, "Reset");
 
+  const int TAB_ORDER[10] = {
+    kJ0Up, kJ0Left, kJ0Right, kJ0Down, kJ0Fire,
+    kJ1Up, kJ1Left, kJ1Right, kJ1Down, kJ1Fire
+  };
   for(int i = kJ0Up; i <= kJ1Fire; ++i)
-    wid.push_back(myJoy[i]);
+    wid.push_back(myJoy[TAB_ORDER[i]]);
 
   wid.push_back(myHoldSelect);
   wid.push_back(myHoldReset);
