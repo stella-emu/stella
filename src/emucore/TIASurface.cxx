@@ -17,7 +17,6 @@
 
 #include <cmath>
 
-#include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
 #include "Settings.hxx"
 #include "OSystem.hxx"
@@ -66,7 +65,8 @@ TIASurface::TIASurface(OSystem& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::initialize(const Console& console, const VideoMode& mode)
+void TIASurface::initialize(const Console& console,
+                            const FrameBuffer::VideoMode& mode)
 {
   myTIA = &(console.tia());
 
@@ -100,7 +100,7 @@ void TIASurface::initialize(const Console& console, const VideoMode& mode)
   mySLineSurface->setSrcSize(1, 2 * int(float(mode.image.height()) /
     floor((float(mode.image.height()) / myTIA->height()) + 0.5)));
 
-#if 1
+#if 0
 cerr << "INITIALIZE:\n"
      << "TIA:\n"
      << "src: " << myTiaSurface->srcRect() << endl

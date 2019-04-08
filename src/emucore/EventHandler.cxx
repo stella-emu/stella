@@ -377,6 +377,14 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       if(pressed) myOSystem.sound().toggleMute();
       return;
 
+    case Event::VidmodeDecrease:
+      if(pressed) myOSystem.frameBuffer().changeVidMode(-1);
+      return;
+
+    case Event::VidmodeIncrease:
+      if(pressed) myOSystem.frameBuffer().changeVidMode(+1);
+      return;
+
     case Event::SaveState:
       if(pressed) myOSystem.state().saveState();
       return;
@@ -1281,7 +1289,8 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::VolumeDecrease,         "Decrease volume",          "", false },
   { Event::VolumeIncrease,         "Increase volume",          "", false },
   { Event::SoundToggle,            "Toggle sound",             "", false },
-  { Event::FullscreenFillToggle,   "Toggle fullscreen fill",   "", false },
+  { Event::VidmodeDecrease,        "Previous video mode",      "", false },
+  { Event::VidmodeIncrease,        "Next video mode",          "", false },
   { Event::PauseMode,              "Pause",                    "", false },
   { Event::OptionsMenuMode,        "Enter options menu UI",    "", false },
   { Event::CmdMenuMode,            "Toggle command menu UI",   "", false },

@@ -166,7 +166,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey( KBDK_F4,        Event::ConsoleColorToggle     );
       setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffToggle  );
       setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffToggle );
-      setDefaultKey( KBDK_F13,       Event::FullscreenFillToggle   );
+      setDefaultKey( KBDK_F13,       Event::VidmodeIncrease        );
       setDefaultKey( KBDK_BACKSPACE, Event::LauncherMode           );
     #endif
       break;
@@ -390,20 +390,20 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
           break;
 
           // These can work in pause mode too
-        case KBDK_EQUALS:
-          myOSystem.frameBuffer().changeWindowedVidMode(+1);
+        case KBDK_MINUS:
+          myHandler.handleEvent(Event::VidmodeDecrease, pressed);
           break;
 
-        case KBDK_MINUS:
-          myOSystem.frameBuffer().changeWindowedVidMode(-1);
+        case KBDK_EQUALS:
+          myHandler.handleEvent(Event::VidmodeIncrease, pressed);
           break;
 
         case KBDK_LEFTBRACKET:
-          myOSystem.sound().adjustVolume(-1);
+          myHandler.handleEvent(Event::VolumeDecrease, pressed);
           break;
 
         case KBDK_RIGHTBRACKET:
-          myOSystem.sound().adjustVolume(+1);
+          myHandler.handleEvent(Event::VolumeIncrease, pressed);
           break;
 
         case KBDK_PAGEUP:    // Alt-PageUp increases YStart

@@ -21,13 +21,12 @@
 class TIA;
 class Console;
 class OSystem;
-class FrameBuffer;
 class FBSurface;
-class VideoMode;
 
 #include <thread>
 
 #include "Rect.hxx"
+#include "FrameBuffer.hxx"
 #include "NTSCFilter.hxx"
 #include "bspf.hxx"
 #include "TIAConstants.hxx"
@@ -52,7 +51,7 @@ class TIASurface
     /**
       Set the TIA object, which is needed for actually rendering the TIA image.
     */
-    void initialize(const Console& console, const VideoMode& mode);
+    void initialize(const Console& console, const FrameBuffer::VideoMode& mode);
 
     /**
       Set the palette for TIA rendering.  This currently consists of two

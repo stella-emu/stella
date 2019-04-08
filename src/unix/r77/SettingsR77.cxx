@@ -79,6 +79,7 @@ bool SettingsR77::saveConfigFile(const string& cfgfile) const
 
   out << "fullscreen = " << getString("fullscreen") << endl;
   out << "lastrom = " << getString("lastrom") << endl;
+  out << "tia.fsfill = " << getString("tia.fsfill") << endl;
 //   out << "keymap = " << getString("keymap") << endl;
 //   out << "joymap = " << getString("joymap") << endl;
 

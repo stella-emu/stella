@@ -37,39 +37,6 @@ namespace GUI {
 #include "EventHandlerConstants.hxx"
 #include "bspf.hxx"
 
-// Contains all relevant info for the dimensions of a video screen
-// Also takes care of the case when the image should be 'centered'
-// within the given screen:
-//   'image' is the image dimensions into the screen
-//   'screen' are the dimensions of the screen itself
-class VideoMode
-{
-  friend class FrameBuffer;
-
-  public:
-    GUI::Rect image;
-    GUI::Size screen;
-    Int32 fsIndex;
-    uInt32 zoom;
-    string description;
-
-  public:
-    VideoMode();
-    VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Int32 full,
-      uInt32 z = 1, const string& desc = "");
-
-    friend ostream& operator<<(ostream& os, const VideoMode& vm)
-    {
-      os << "image=" << vm.image << "  screen=" << vm.screen
-         << " full= " << vm.fsIndex << "  zoom=" << vm.zoom
-         << "  desc=" << vm.description;
-      return os;
-    }
-
-  private:
-    void applyAspectCorrection(uInt32 aspect, bool stretch = false);
-};
-
 /**
   This class encapsulates all video buffers and is the basis for the video
   display in Stella.  All graphics ports should derive from this class for
@@ -82,6 +49,37 @@ class VideoMode
 */
 class FrameBuffer
 {
+  public:
+    // Contains all relevant info for the dimensions of a video screen
+    // Also takes care of the case when the image should be 'centered'
+    // within the given screen:
+    //   'image' is the image dimensions into the screen
+    //   'screen' are the dimensions of the screen itself
+    struct VideoMode
+    {
+      enum class Stretch { Preserve, Fill };
+
+      GUI::Rect image;
+      GUI::Size screen;
+      Stretch stretch;
+      string description;
+      uInt32 zoom;
+      Int32 fsIndex;
+
+      VideoMode();
+      VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode,
+                const string& desc = "", uInt32 zoomLevel = 1, Int32 fsindex = -1);
+
+      friend ostream& operator<<(ostream& os, const VideoMode& vm)
+      {
+        os << "image=" << vm.image << "  screen=" << vm.screen
+           << "  stretch= " << (vm.stretch == Stretch::Preserve ? "preserve" : "fill")
+           << "  desc=" << vm.description << "  zoom=" << vm.zoom
+           << "  fsIndex= " << vm.fsIndex;
+        return os;
+      }
+    };
+
   public:
     /**
       Creates a new Frame Buffer
@@ -221,14 +219,16 @@ class FrameBuffer
     void toggleFullscreen();
 
     /**
-      This method is called when the user wants to switch to the next available
-      windowed video mode.
-      direction = -1 means go to the next lower windowed video mode
-      direction = +1 means go to the next higher windowed video mode
+      This method is called when the user wants to switch to the next
+      available video mode.  In windowed mode, this typically means going to
+      the next/previous zoom level.  In fullscreen mode, this typically means
+      switching between normal aspect and fully filling the screen.
+        direction = -1 means go to the next lower video mode
+        direction = +1 means go to the next higher video mode
 
       @param direction  Described above
     */
-    bool changeWindowedVidMode(int direction);
+    bool changeVidMode(int direction);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -242,14 +242,14 @@ class FrameBuffer
     void enableGrabMouse(bool enable);
 
     /**
+      Sets the use of grabmouse.
+    */
+    bool grabMouseEnabled() const { return myGrabMouse; }
+
+    /**
       Toggles the use of grabmouse (only has effect in emulation mode).
     */
     void toggleGrabMouse();
-
-    /**
-      Sets the use of grabmouse.
-    */
-    bool grabMouseEnabled() { return myGrabMouse; }
 
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.
@@ -338,7 +338,8 @@ class FrameBuffer
 
       @return  False on any errors, else true
     */
-    virtual bool setVideoMode(const string& title, const VideoMode& mode) = 0;
+    virtual bool setVideoMode(const string& title,
+                              const FrameBuffer::VideoMode& mode) = 0;
 
     /**
       This method is called to invalidate the contents of the entire
@@ -428,7 +429,7 @@ class FrameBuffer
       @param fullscreen  Whether to use a windowed or fullscreen mode
       @return  A valid VideoMode for this framebuffer
     */
-    const VideoMode& getSavedVidMode(bool fullscreen);
+    const FrameBuffer::VideoMode& getSavedVidMode(bool fullscreen);
 
   private:
     /**
@@ -441,17 +442,18 @@ class FrameBuffer
         VideoModeList(const VideoModeList&) = default;
         VideoModeList& operator=(const VideoModeList&) = default;
 
-        void add(const VideoMode& mode);
+        void add(const FrameBuffer::VideoMode& mode);
         void clear();
 
         bool empty() const;
         uInt32 size() const;
 
         void previous();
-        const VideoMode& current() const;
+        const FrameBuffer::VideoMode& current() const;
         void next();
 
-        void setZoom(uInt32 zoom);
+        void setByZoom(uInt32 zoom);
+        void setByStretch(FrameBuffer::VideoMode::Stretch stretch);
 
         friend ostream& operator<<(ostream& os, const VideoModeList& l)
         {
@@ -461,7 +463,7 @@ class FrameBuffer
         }
 
       private:
-        vector<VideoMode> myModeList;
+        vector<FrameBuffer::VideoMode> myModeList;
         int myIdx;
     };
 

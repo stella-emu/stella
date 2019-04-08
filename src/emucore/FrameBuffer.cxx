@@ -198,7 +198,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 
   // Initialize video subsystem (make sure we get a valid mode)
   string pre_about = about();
-  const VideoMode& mode = getSavedVidMode(useFullscreen);
+  const FrameBuffer::VideoMode& mode = getSavedVidMode(useFullscreen);
   if(width <= mode.screen.w && height <= mode.screen.h)
   {
     // Changing the video mode can take some time, during which the last
@@ -702,15 +702,14 @@ void FrameBuffer::toggleFullscreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::changeWindowedVidMode(int direction)
+bool FrameBuffer::changeVidMode(int direction)
 {
-#ifdef WINDOWED_SUPPORT
   EventHandlerState state = myOSystem.eventHandler().state();
   bool tiaMode = (state != EventHandlerState::DEBUGGER &&
                   state != EventHandlerState::LAUNCHER);
 
-  // Ignore any attempts to change video size while in invalid modes
-  if(!tiaMode || fullScreen())
+  // Only applicable when in TIA/emulation mode
+  if(!tiaMode)
     return false;
 
   if(direction == +1)
@@ -736,12 +735,18 @@ bool FrameBuffer::changeWindowedVidMode(int direction)
 
     resetSurfaces();
     showMessage(mode.description);
-    myOSystem.settings().setValue("tia.zoom", mode.zoom);
     myOSystem.sound().mute(oldMuteState);
+
+    if(fullScreen())
+      myOSystem.settings().setValue("tia.fsfill",
+          mode.stretch == VideoMode::Stretch::Fill);
+    else
+      myOSystem.settings().setValue("tia.zoom", mode.zoom);
+
     return true;
   }
   myOSystem.sound().mute(oldMuteState);
-#endif
+
   return false;
 }
 
@@ -827,9 +832,12 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     uInt32 maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
                      myDesktopSize.w, myDesktopSize.h);
 
+  #if 0  // FIXME - does this apply any longer??
     // Aspect ratio
-    uInt32 aspect = myOSystem.settings().getInt(myOSystem.console().tia().frameLayout() == FrameLayout::ntsc ?
-                                                "tia.aspectn" : "tia.aspectp");
+    uInt32 aspect = myOSystem.settings().getInt(
+        myOSystem.console().tia().frameLayout() == FrameLayout::ntsc ?
+        "tia.aspectn" : "tia.aspectp");
+  #endif
 
     // Determine all zoom levels
     for(uInt32 zoom = 2; zoom <= maxZoom; ++zoom)
@@ -837,9 +845,8 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
       ostringstream desc;
       desc << "Zoom " << zoom << "x";
 
-      VideoMode mode(baseWidth*zoom, baseHeight*zoom,
-              baseWidth*zoom, baseHeight*zoom, -1, zoom, desc.str());
-      mode.applyAspectCorrection(aspect);
+      VideoMode mode(baseWidth*zoom, baseHeight*zoom, baseWidth*zoom, baseHeight*zoom,
+                     VideoMode::Stretch::Fill, desc.str(), zoom);
       myWindowedModeList.add(mode);
     }
 
@@ -848,29 +855,40 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     {
       maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
                                        myDisplays[i].w, myDisplays[i].h);
-      VideoMode mode(baseWidth*maxZoom, baseHeight*maxZoom,
-                     myDisplays[i].w, myDisplays[i].h, i);
-      mode.applyAspectCorrection(aspect, myOSystem.settings().getBool("tia.fsfill"));
-      myFullscreenModeLists[i].add(mode);
+
+      // Add both normal aspect and filled modes
+      // It's easier to define them both now, and simply switch between
+      // them when necessary
+      VideoMode mode1(baseWidth*maxZoom, baseHeight*maxZoom,
+                      myDisplays[i].w, myDisplays[i].h,
+                      VideoMode::Stretch::Preserve,
+                      "Preserve aspect, no stretch", maxZoom, i);
+      myFullscreenModeLists[i].add(mode1);
+      VideoMode mode2(baseWidth*maxZoom, baseHeight*maxZoom,
+                      myDisplays[i].w, myDisplays[i].h,
+                      VideoMode::Stretch::Fill,
+                      "Ignore aspect, full stretch", maxZoom, i);
+      myFullscreenModeLists[i].add(mode2);
     }
   }
   else  // UI mode
   {
     // Windowed and fullscreen mode differ only in screen size
     myWindowedModeList.add(
-        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, -1)
+        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, VideoMode::Stretch::Fill)
     );
     for(uInt32 i = 0; i < myDisplays.size(); ++i)
     {
       myFullscreenModeLists[i].add(
-          VideoMode(baseWidth, baseHeight, myDisplays[i].w, myDisplays[i].h, i)
+          VideoMode(baseWidth, baseHeight, myDisplays[i].w, myDisplays[i].h,
+                    VideoMode::Stretch::Fill, "", 1, i)
       );
     }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
+const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 {
   EventHandlerState state = myOSystem.eventHandler().state();
 
@@ -891,9 +909,15 @@ const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
   // UI modes (launcher and debugger) have only one supported resolution
   // so the 'current' one is the only valid one
   if(state == EventHandlerState::DEBUGGER || state == EventHandlerState::LAUNCHER)
-    myCurrentModeList->setZoom(1);
-  else
-    myCurrentModeList->setZoom(myOSystem.settings().getInt("tia.zoom"));
+    myCurrentModeList->setByZoom(1);
+  else  // TIA mode
+  {
+    if(fullscreen)
+      myCurrentModeList->setByStretch(myOSystem.settings().getBool("tia.fsfill")
+        ? VideoMode::Stretch::Fill : VideoMode::Stretch::Preserve);
+    else
+      myCurrentModeList->setByZoom(myOSystem.settings().getInt("tia.zoom"));
+  }
 
   return myCurrentModeList->current();
 }
@@ -903,20 +927,24 @@ const VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 // VideoMode implementation
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VideoMode::VideoMode()
-  : fsIndex(-1),
+FrameBuffer::VideoMode::VideoMode()
+  : stretch(VideoMode::Stretch::Fill),
+    description(""),
     zoom(1),
-    description("")
+    fsIndex(-1)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                     Int32 full, uInt32 z, const string& desc)
-  : fsIndex(full),
-    zoom(z),
-    description(desc)
+FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
+                                  Stretch smode, const string& desc,
+                                  uInt32 zoomLevel, Int32 fsindex)
+  : stretch(smode),
+    description(desc),
+    zoom(zoomLevel),
+    fsIndex(fsindex)
 {
+  // First set default size and positioning
   sw = std::max(sw, TIAConstants::viewableWidth);
   sh = std::max(sh, TIAConstants::viewableHeight);
   iw = std::min(iw, sw);
@@ -925,59 +953,51 @@ VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   int iy = (sh - ih) >> 1;
   image = GUI::Rect(ix, iy, ix+iw, iy+ih);
   screen = GUI::Size(sw, sh);
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
-{
-#if 0  // FIXME - more work is required here for issue #368
-  // Height is modified by aspect ratio; other factors may be applied below
-  uInt32 iw = image.width();
-  uInt32 ih = image.height() / aspect * 100.0;
-#else
-  // Width is modified by aspect ratio; other factors may be applied below
-  uInt32 iw = uInt32(float(image.width() * aspect) / 100.0);
-  uInt32 ih = image.height();
-#endif
+  // Now resize based on windowed/fullscreen mode and stretch factor
+  iw = image.width();
+  ih = image.height();
 
   if(fsIndex != -1)
   {
-    // Fullscreen mode stretching
-    float stretchFactor = 1.0;
-    float scaleX = float(iw) / screen.w;
-    float scaleY = float(ih) / screen.h;
+    switch(stretch)
+    {
+      case Stretch::Preserve:
+      {
+        float stretchFactor = 1.0;
+        float scaleX = float(iw) / screen.w;
+        float scaleY = float(ih) / screen.h;
 
-    // Scale to actual or integral factors
-    if(stretch)
-    {
-      // Scale to full (non-integral) available space
-      if(scaleX > scaleY)
-        stretchFactor = float(screen.w) / iw;
-      else
-        stretchFactor = float(screen.h) / ih;
-    }
-    else
-    {
-      // Only scale to an integral amount
-      if(scaleX > scaleY)
-      {
-        int bw = iw / zoom;
-        stretchFactor = float(int(screen.w / bw) * bw) / iw;
+        // Scale to all available space, keep aspect correct
+        if(scaleX > scaleY)
+          stretchFactor = float(screen.w) / iw;
+        else
+          stretchFactor = float(screen.h) / ih;
+
+        iw = uInt32(stretchFactor * iw);
+        ih = uInt32(stretchFactor * ih);
+        break;
       }
-      else
-      {
-        int bh = ih / zoom;
-        stretchFactor = float(int(screen.h / bh) * bh) / ih;
-      }
+
+      case Stretch::Fill:
+        // Scale to all available space
+        iw = screen.w;
+        ih = screen.h;
+        break;
     }
-    iw = uInt32(stretchFactor * iw);
-    ih = uInt32(stretchFactor * ih);
   }
   else
   {
-    // In windowed mode, the screen size changes to match the image width
-    // Height is never modified in this mode
-    screen.w = iw;
+    // In windowed mode, currently the size is scaled to the screen
+    // TODO - this may be updated if/when we allow variable-sized windows
+    switch(stretch)
+    {
+      case Stretch::Preserve:
+      case Stretch::Fill:
+        screen.w = iw;
+        screen.h = ih;
+        break;
+    }
   }
 
   // Now re-calculate the dimensions
@@ -988,6 +1008,7 @@ void VideoMode::applyAspectCorrection(uInt32 aspect, bool stretch)
   image.setWidth(iw);
   image.setHeight(ih);
 }
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
@@ -1031,7 +1052,7 @@ void FrameBuffer::VideoModeList::previous()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const VideoMode& FrameBuffer::VideoModeList::current() const
+const FrameBuffer::VideoMode& FrameBuffer::VideoModeList::current() const
 {
   return myModeList[myIdx];
 }
@@ -1043,11 +1064,25 @@ void FrameBuffer::VideoModeList::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::setZoom(uInt32 zoom)
+void FrameBuffer::VideoModeList::setByZoom(uInt32 zoom)
 {
   for(uInt32 i = 0; i < myModeList.size(); ++i)
   {
     if(myModeList[i].zoom == zoom)
+    {
+      myIdx = i;
+      return;
+    }
+  }
+  myIdx = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::VideoModeList::setByStretch(FrameBuffer::VideoMode::Stretch stretch)
+{
+  for(uInt32 i = 0; i < myModeList.size(); ++i)
+  {
+    if(myModeList[i].stretch == stretch)
     {
       myIdx = i;
       return;
