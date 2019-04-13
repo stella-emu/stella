@@ -85,7 +85,7 @@ class PhysicalJoystickHandler
 
     Event::Type eventForAxis(int stick, int axis, int value, EventMode mode) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return j ? j->axisTable[axis][(value > 0)][mode] : Event::NoType;
+      return (j && value != 0) ? j->axisTable[axis][(value > 0)][mode] : Event::NoType;
     }
     Event::Type eventForButton(int stick, int button, EventMode mode) const {
       const PhysicalJoystickPtr j = joy(stick);
