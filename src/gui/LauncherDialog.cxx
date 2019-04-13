@@ -223,9 +223,11 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
-  myGlobalProps = make_unique<GlobalPropsDialog>(this, osystem.frameBuffer().font());
+  myGlobalProps = make_unique<GlobalPropsDialog>(this,
+    myUseMinimalUI ? osystem.frameBuffer().launcherFont() : osystem.frameBuffer().font());
   if (myUseMinimalUI)
-    myStellaSettingsDialog = make_unique<StellaSettingsDialog>(osystem, parent, _font, w, h);
+    myStellaSettingsDialog =
+      make_unique<StellaSettingsDialog>(osystem, parent, osystem.frameBuffer().launcherFont(), w, h);
 
   // Do we show only ROMs or all files?
   bool onlyROMs = instance().settings().getBool("launcherroms");
