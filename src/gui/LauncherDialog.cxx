@@ -91,15 +91,16 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   if(myUseMinimalUI)
   {
-  #if defined(RETRON77)
     // App information
     ostringstream ver;
-    ver << "Stella " << STELLA_VERSION << " for RetroN 77";
+    ver << "Stella " << STELLA_VERSION;
+  #if defined(RETRON77)
+    ver << " for RetroN 77";
+  #endif
     ypos += 8;
     new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
                          ver.str(), TextAlign::Center);
     ypos += fontHeight - 4;
-  #endif
   }
 
   // Show the header
