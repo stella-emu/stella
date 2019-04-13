@@ -88,7 +88,7 @@ class LauncherDialog : public Dialog
     void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    Event::Type LauncherDialog::getJoyAxisEvent(int stick, int axis, int value) override;
+    Event::Type getJoyAxisEvent(int stick, int axis, int value) override;
 
     void loadConfig() override;
     void updateListing(const string& nameToSelect = "");
