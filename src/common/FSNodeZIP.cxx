@@ -25,7 +25,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP()
-  : _error(ZIPERR_NOT_A_FILE),
+  : _error(zip_error::NOT_A_FILE),
     _numFiles(0),
     _isDirectory(false),
     _isFile(false)
@@ -34,7 +34,7 @@ FilesystemNodeZIP::FilesystemNodeZIP()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
-  : _error(ZIPERR_NONE),
+  : _error(zip_error::NONE),
     _numFiles(0),
     _isDirectory(false),
     _isFile(false)
@@ -55,13 +55,13 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   {
     // TODO: Actually present the error passed in back to the user
     //       For now, we just indicate that no ROMs were found
-    _error = ZIPERR_NO_ROMS;
+    _error = zip_error::NO_ROMS;
     return;
   }
   _numFiles = myZipHandler->romFiles();
   if(_numFiles == 0)
   {
-    _error = ZIPERR_NO_ROMS;
+    _error = zip_error::NO_ROMS;
     return;
   }
 
@@ -93,7 +93,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   else
     _isDirectory = true;
 
-  _realNode = FilesystemNodeFactory::create(_zipFile, FilesystemNodeFactory::SYSTEM);
+  _realNode = FilesystemNodeFactory::create(_zipFile, FilesystemNodeFactory::Type::SYSTEM);
 
   setFlags(_zipFile, _virtualPath, _realNode);
 }
@@ -102,7 +102,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 FilesystemNodeZIP::FilesystemNodeZIP(
     const string& zipfile, const string& virtualpath,
     AbstractFSNodePtr realnode, bool isdir)
-  : _error(ZIPERR_NONE),
+  : _error(zip_error::NONE),
     _numFiles(0),
     _isDirectory(isdir),
     _isFile(!isdir)
@@ -130,11 +130,11 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
     _name = lastPathComponent(_path);
   }
 
-  _error = ZIPERR_NONE;
+  _error = zip_error::NONE;
   if(!_realNode->isFile())
-    _error = ZIPERR_NOT_A_FILE;
+    _error = zip_error::NOT_A_FILE;
   if(!_realNode->isReadable())
-    _error = ZIPERR_NOT_READABLE;
+    _error = zip_error::NOT_READABLE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -142,7 +142,7 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
                                     bool hidden) const
 {
   // Files within ZIP archives don't contain children
-  if(!isDirectory() || _error != ZIPERR_NONE)
+  if(!isDirectory() || _error != zip_error::NONE)
     return false;
 
   std::set<string> dirs;
@@ -181,10 +181,10 @@ uInt32 FilesystemNodeZIP::read(BytePtr& image) const
 {
   switch(_error)
   {
-    case ZIPERR_NONE:         break;
-    case ZIPERR_NOT_A_FILE:   throw runtime_error("ZIP file contains errors/not found");
-    case ZIPERR_NOT_READABLE: throw runtime_error("ZIP file not readable");
-    case ZIPERR_NO_ROMS:      throw runtime_error("ZIP file doesn't contain any ROMs");
+    case zip_error::NONE:         break;
+    case zip_error::NOT_A_FILE:   throw runtime_error("ZIP file contains errors/not found");
+    case zip_error::NOT_READABLE: throw runtime_error("ZIP file not readable");
+    case zip_error::NO_ROMS:      throw runtime_error("ZIP file doesn't contain any ROMs");
   }
 
   myZipHandler->open(_zipFile);

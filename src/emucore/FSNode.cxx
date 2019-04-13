@@ -40,9 +40,9 @@ FilesystemNode::FilesystemNode(const string& p)
 {
   // Is this potentially a ZIP archive?
   if(BSPF::containsIgnoreCase(p, ".zip"))
-    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::ZIP);
+    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::Type::ZIP);
   else
-    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::SYSTEM);
+    _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::Type::SYSTEM);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

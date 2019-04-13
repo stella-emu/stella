@@ -37,21 +37,21 @@ class AbstractFSNode;
 class FilesystemNodeFactory
 {
   public:
-    enum Type { SYSTEM, ZIP };
+    enum class Type { SYSTEM, ZIP };
 
   public:
     static unique_ptr<AbstractFSNode> create(const string& path, Type type)
     {
       switch(type)
       {
-        case SYSTEM:
+        case Type::SYSTEM:
       #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
           return make_unique<FilesystemNodePOSIX>(path);
       #elif defined(BSPF_WINDOWS)
           return make_unique<FilesystemNodeWINDOWS>(path);
       #endif
           break;
-        case ZIP:
+        case Type::ZIP:
           return make_unique<FilesystemNodeZIP>(path);
           break;
       }

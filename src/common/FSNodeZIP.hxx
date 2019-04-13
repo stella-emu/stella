@@ -83,12 +83,12 @@ class FilesystemNodeZIP : public AbstractFSNode
 
   private:
     /* Error types */
-    enum zip_error
+    enum class zip_error
     {
-      ZIPERR_NONE = 0,
-      ZIPERR_NOT_A_FILE,
-      ZIPERR_NOT_READABLE,
-      ZIPERR_NO_ROMS
+      NONE,
+      NOT_A_FILE,
+      NOT_READABLE,
+      NO_ROMS
     };
 
     AbstractFSNodePtr _realNode;

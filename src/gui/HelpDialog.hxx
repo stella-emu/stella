@@ -40,15 +40,15 @@ class HelpDialog : public Dialog
     void loadConfig() override { displayInfo(); }
 
   private:
-    enum { kLINES_PER_PAGE = 10 };
+    static constexpr uInt32 LINES_PER_PAGE = 10;
     ButtonWidget* myNextButton;
     ButtonWidget* myPrevButton;
 
     StaticTextWidget* myTitle;
-    StaticTextWidget* myKey[kLINES_PER_PAGE];
-    StaticTextWidget* myDesc[kLINES_PER_PAGE];
-    string myKeyStr[kLINES_PER_PAGE];
-    string myDescStr[kLINES_PER_PAGE];
+    StaticTextWidget* myKey[LINES_PER_PAGE];
+    StaticTextWidget* myDesc[LINES_PER_PAGE];
+    string myKeyStr[LINES_PER_PAGE];
+    string myDescStr[LINES_PER_PAGE];
 
     uInt8 myPage;
     uInt8 myNumPages;

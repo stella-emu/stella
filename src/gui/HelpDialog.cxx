@@ -67,7 +67,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 
   int lwidth = 12 * fontWidth;
   xpos += 5;  ypos += lineHeight + 4;
-  for(uInt8 i = 0; i < kLINES_PER_PAGE; ++i)
+  for(uInt8 i = 0; i < LINES_PER_PAGE; ++i)
   {
     myKey[i] =
       new StaticTextWidget(this, font, xpos, ypos, lwidth,
@@ -176,10 +176,10 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 void HelpDialog::displayInfo()
 {
   string titleStr;
-  updateStrings(myPage, kLINES_PER_PAGE, titleStr);
+  updateStrings(myPage, LINES_PER_PAGE, titleStr);
 
   myTitle->setLabel(titleStr);
-  for(uInt8 i = 0; i < kLINES_PER_PAGE; ++i)
+  for(uInt8 i = 0; i < LINES_PER_PAGE; ++i)
   {
     myKey[i]->setLabel(myKeyStr[i]);
     myDesc[i]->setLabel(myDescStr[i]);
