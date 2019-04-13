@@ -492,6 +492,33 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type LauncherDialog::getJoyAxisEvent(int stick, int axis, int value)
+{
+  Event::Type e = instance().eventHandler().eventForJoyAxis(stick, axis, value, kMenuMode);
+
+  if(myUseMinimalUI)
+  {
+    // map axis events for launcher
+    switch(e)
+    {
+      case Event::UINavPrev:
+        // convert unused previous item event into page-up event
+        e = Event::UIPgUp;
+        break;
+
+      case Event::UINavNext:
+        // convert unused next item event into page-down event
+        e = Event::UIPgDown;
+        break;
+
+      default:
+        break;
+    }
+  }
+  return e;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
   // Grab right mouse button for context menu, send left to base class

@@ -302,21 +302,18 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
       break;
 
     case kMenuMode:  // Default menu/UI events
-      if(stick == 0)
-      {
-        setDefaultAxis( 0, 0, 0, Event::UILeft  );
-        setDefaultAxis( 0, 0, 1, Event::UIRight );
-        setDefaultAxis( 0, 1, 0, Event::UIUp    );
-        setDefaultAxis( 0, 1, 1, Event::UIDown  );
+      setDefaultAxis( stick, 0, 0, Event::UINavPrev );
+      setDefaultAxis( stick, 0, 1, Event::UINavNext );
+      setDefaultAxis( stick, 1, 0, Event::UIUp      );
+      setDefaultAxis( stick, 1, 1, Event::UIDown    );
 
-        // Left joystick (assume joystick zero, button zero)
-        setDefaultBtn( 0, 0, Event::UISelect );
+      // Left joystick (assume joystick zero, button zero)
+      setDefaultBtn( stick, 0, Event::UISelect );
 
-        setDefaultHat( 0, 0, JoyHat::LEFT,  Event::UILeft  );
-        setDefaultHat( 0, 0, JoyHat::RIGHT, Event::UIRight );
-        setDefaultHat( 0, 0, JoyHat::UP,    Event::UIUp    );
-        setDefaultHat( 0, 0, JoyHat::DOWN,  Event::UIDown  );
-      }
+      setDefaultHat( stick, 0, JoyHat::LEFT,  Event::UINavPrev );
+      setDefaultHat( stick, 0, JoyHat::RIGHT, Event::UINavNext );
+      setDefaultHat( stick, 0, JoyHat::UP,    Event::UIUp      );
+      setDefaultHat( stick, 0, JoyHat::DOWN,  Event::UIDown    );
       break;
 
     default:

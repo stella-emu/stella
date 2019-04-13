@@ -573,10 +573,15 @@ void Dialog::handleJoyUp(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type Dialog::getJoyAxisEvent(int stick, int axis, int value)
+{
+  return instance().eventHandler().eventForJoyAxis(stick, axis, value, kMenuMode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleJoyAxis(int stick, int axis, int value)
 {
-  Event::Type e =
-    instance().eventHandler().eventForJoyAxis(stick, axis, value, kMenuMode);
+  Event::Type e = getJoyAxisEvent(stick, axis, value);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
