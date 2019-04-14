@@ -33,7 +33,7 @@ SettingsR77::SettingsR77()
   setPermanent("vsync", "true");
 
   setPermanent("tia.zoom", "3");
-  setPermanent("tia.fsfill", "false");  // start in 4:3 by default
+  setPermanent("tia.fs_stretch", "false");  // start in 4:3 by default
 
   setPermanent("audio.buffer_size", "6");
   setPermanent("audio.enabled", "1");
@@ -79,7 +79,7 @@ bool SettingsR77::saveConfigFile(const string& cfgfile) const
 
   out << "fullscreen = " << getString("fullscreen") << endl;
   out << "lastrom = " << getString("lastrom") << endl;
-  out << "tia.fsfill = " << getString("tia.fsfill") << endl;
+  out << "tia.fs_stretch = " << getString("tia.fs_stretch") << endl;
 //   out << "keymap = " << getString("keymap") << endl;
 //   out << "joymap = " << getString("joymap") << endl;
 

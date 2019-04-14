@@ -44,7 +44,7 @@ Settings::Settings()
   setPermanent("tia.inter", "false");
   setPermanent("tia.aspectn", "100");
   setPermanent("tia.aspectp", "100");
-  setPermanent("tia.fsfill", "false");
+  setPermanent("tia.fs_stretch", "false");
   setPermanent("tia.dbgcolors", "roygpb");
 
   // TV filtering options
@@ -388,7 +388,7 @@ void Settings::usage() const
     << "                                 mode\n"
     << "  -tia.aspectp   <number>       Scale TIA width by the given percentage in PAL\n"
     << "                                 mode\n"
-    << "  -tia.fsfill    <1|0>          Stretch TIA image to fill fullscreen mode\n"
+    << "  -tia.fs_stretch <1|0>         Stretch TIA image to fill fullscreen mode\n"
     << "  -tia.dbgcolors <string>       Debug colors to use for each object (see manual\n"
     << "                                 for description)\n"
     << endl

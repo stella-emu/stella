@@ -191,7 +191,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;*/
 
   // FS stretch
-  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen fill");
+  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen stretch");
   wid.push_back(myUseStretch);
   ypos += (lineHeight + VGAP) * 2;
 
@@ -361,7 +361,7 @@ void VideoDialog::loadConfig()
   myFullScreenMode->setSelected(mode);*/
 
   // Fullscreen stretch setting
-  myUseStretch->setState(instance().settings().getBool("tia.fsfill"));
+  myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
 
   // Use sync to vertical blank
   myUseVSync->setState(instance().settings().getBool("vsync"));
@@ -432,7 +432,7 @@ void VideoDialog::saveConfig()
   /*instance().settings().setValue("fullscreenmode",
                                  myFullScreenMode->getSelectedTag().toString());*/
   // Fullscreen stretch setting
-  instance().settings().setValue("tia.fsfill", myUseStretch->getState());
+  instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
 
   // Use sync to vertical blank
   instance().settings().setValue("vsync", myUseVSync->getState());

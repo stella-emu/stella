@@ -738,7 +738,7 @@ bool FrameBuffer::changeVidMode(int direction)
     myOSystem.sound().mute(oldMuteState);
 
     if(fullScreen())
-      myOSystem.settings().setValue("tia.fsfill",
+      myOSystem.settings().setValue("tia.fs_stretch",
           mode.stretch == VideoMode::Stretch::Fill);
     else
       myOSystem.settings().setValue("tia.zoom", mode.zoom);
@@ -913,7 +913,7 @@ const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
   else  // TIA mode
   {
     if(fullscreen)
-      myCurrentModeList->setByStretch(myOSystem.settings().getBool("tia.fsfill")
+      myCurrentModeList->setByStretch(myOSystem.settings().getBool("tia.fs_stretch")
         ? VideoMode::Stretch::Fill : VideoMode::Stretch::Preserve);
     else
       myCurrentModeList->setByZoom(myOSystem.settings().getInt("tia.zoom"));
