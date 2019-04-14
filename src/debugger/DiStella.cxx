@@ -230,12 +230,12 @@ FIX_LAST:
       // Add operand(s) for PC values outside the app data range
       if (myPC >= myAppData.end) {
         switch (addrMode) {
-          case ABSOLUTE:
-          case ABSOLUTE_X:
-          case ABSOLUTE_Y:
-          case INDIRECT_X:
-          case INDIRECT_Y:
-          case ABS_INDIRECT:
+          case AddressingMode::ABSOLUTE:
+          case AddressingMode::ABSOLUTE_X:
+          case AddressingMode::ABSOLUTE_Y:
+          case AddressingMode::INDIRECT_X:
+          case AddressingMode::INDIRECT_Y:
+          case AddressingMode::ABS_INDIRECT:
           {
             if (pass == 3) {
               /* Line information is already printed; append .byte since last
@@ -263,11 +263,11 @@ FIX_LAST:
             return;
           }
 
-          case ZERO_PAGE:
-          case IMMEDIATE:
-          case ZERO_PAGE_X:
-          case ZERO_PAGE_Y:
-          case RELATIVE:
+          case AddressingMode::ZERO_PAGE:
+          case AddressingMode::IMMEDIATE:
+          case AddressingMode::ZERO_PAGE_X:
+          case AddressingMode::ZERO_PAGE_Y:
+          case AddressingMode::RELATIVE:
           {
             if (pass == 3) {
               /* Line information is already printed, but we can remove the
@@ -291,14 +291,14 @@ FIX_LAST:
       ad = d1 = 0; // not WSYNC by default!
       /* Version 2.1 added the extensions to mnemonics */
       switch (addrMode) {
-        case ACCUMULATOR:
+        case AddressingMode::ACCUMULATOR:
         {
           if (pass == 3 && mySettings.aFlag)
             nextLine << "     A";
           break;
         }
 
-        case ABSOLUTE:
+        case AddressingMode::ABSOLUTE:
         {
           ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
           labelFound = mark(ad, CartDebug::REFERENCED);
@@ -328,7 +328,7 @@ FIX_LAST:
           break;
         }
 
-        case ZERO_PAGE:
+        case AddressingMode::ZERO_PAGE:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           labelFound = mark(d1, CartDebug::REFERENCED);
@@ -340,7 +340,7 @@ FIX_LAST:
           break;
         }
 
-        case IMMEDIATE:
+        case AddressingMode::IMMEDIATE:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           if (pass == 3) {
@@ -350,7 +350,7 @@ FIX_LAST:
           break;
         }
 
-        case ABSOLUTE_X:
+        case AddressingMode::ABSOLUTE_X:
         {
           ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
           labelFound = mark(ad, CartDebug::REFERENCED);
@@ -389,7 +389,7 @@ FIX_LAST:
           break;
         }
 
-        case ABSOLUTE_Y:
+        case AddressingMode::ABSOLUTE_Y:
         {
           ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
           labelFound = mark(ad, CartDebug::REFERENCED);
@@ -428,7 +428,7 @@ FIX_LAST:
           break;
         }
 
-        case INDIRECT_X:
+        case AddressingMode::INDIRECT_X:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           if (pass == 3) {
@@ -441,7 +441,7 @@ FIX_LAST:
           break;
         }
 
-        case INDIRECT_Y:
+        case AddressingMode::INDIRECT_Y:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           if (pass == 3) {
@@ -454,7 +454,7 @@ FIX_LAST:
           break;
         }
 
-        case ZERO_PAGE_X:
+        case AddressingMode::ZERO_PAGE_X:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           labelFound = mark(d1, CartDebug::REFERENCED);
@@ -467,7 +467,7 @@ FIX_LAST:
           break;
         }
 
-        case ZERO_PAGE_Y:
+        case AddressingMode::ZERO_PAGE_Y:
         {
           d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
           labelFound = mark(d1, CartDebug::REFERENCED);
@@ -480,7 +480,7 @@ FIX_LAST:
           break;
         }
 
-        case RELATIVE:
+        case AddressingMode::RELATIVE:
         {
           // SA - 04-06-2010: there seemed to be a bug in distella,
           // where wraparound occurred on a 32-bit int, and subsequent
@@ -501,7 +501,7 @@ FIX_LAST:
           break;
         }
 
-        case ABS_INDIRECT:
+        case AddressingMode::ABS_INDIRECT:
         {
           ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
           labelFound = mark(ad, CartDebug::REFERENCED);
@@ -542,10 +542,10 @@ FIX_LAST:
         // A complete line of disassembly (text, cycle count, and bytes)
         myDisasmBuf << nextLine.str() << "'"
           << ";" << std::dec << int(ourLookup[opcode].cycles)
-          << (addrMode == RELATIVE ? (ad & 0xf00) != ((myPC + myOffset) & 0xf00) ? "/3!" : "/3 " : "   ");
+          << (addrMode == AddressingMode::RELATIVE ? (ad & 0xf00) != ((myPC + myOffset) & 0xf00) ? "/3!" : "/3 " : "   ");
         if ((opcode == 0x40 || opcode == 0x60 || opcode == 0x4c || opcode == 0x00 // code block end
             || checkBit(myPC, CartDebug::REFERENCED)                              // referenced address
-            || (ourLookup[opcode].rw_mode == WRITE && d1 == WSYNC))               // strobe WSYNC
+            || (ourLookup[opcode].rw_mode == RWMode::WRITE && d1 == WSYNC))       // strobe WSYNC
             && cycles > 0) {
           // output cycles for previous code block
           myDisasmBuf << "'= " << std::setw(3) << std::setfill(' ') << std::dec << cycles;
@@ -701,20 +701,20 @@ void DiStella::disasmFromAddress(uInt32 distart)
     // Add operand(s) for PC values outside the app data range
     if (myPC >= myAppData.end) {
       switch (addrMode) {
-        case ABSOLUTE:
-        case ABSOLUTE_X:
-        case ABSOLUTE_Y:
-        case INDIRECT_X:
-        case INDIRECT_Y:
-        case ABS_INDIRECT:
+        case AddressingMode::ABSOLUTE:
+        case AddressingMode::ABSOLUTE_X:
+        case AddressingMode::ABSOLUTE_Y:
+        case AddressingMode::INDIRECT_X:
+        case AddressingMode::INDIRECT_Y:
+        case AddressingMode::ABS_INDIRECT:
           myPCEnd = myAppData.end + myOffset;
           return;
 
-        case ZERO_PAGE:
-        case IMMEDIATE:
-        case ZERO_PAGE_X:
-        case ZERO_PAGE_Y:
-        case RELATIVE:
+        case AddressingMode::ZERO_PAGE:
+        case AddressingMode::IMMEDIATE:
+        case AddressingMode::ZERO_PAGE_X:
+        case AddressingMode::ZERO_PAGE_Y:
+        case AddressingMode::RELATIVE:
           if (myPC > myAppData.end) {
             ++myPC;
             myPCEnd = myAppData.end + myOffset;
@@ -729,11 +729,11 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
     // Add operand(s)
     switch (addrMode) {
-      case ABSOLUTE:
+      case AddressingMode::ABSOLUTE:
         ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
         mark(ad, CartDebug::REFERENCED);
         // handle JMP/JSR
-        if (ourLookup[opcode].source == M_ADDR) {
+        if (ourLookup[opcode].source == AccessMode::ADDR) {
           // do NOT use flags set by debugger, else known CODE will not analyzed statically.
           if (!checkBit(ad & myAppData.end, CartDebug::CODE, false)) {
             if (ad > 0xfff)
@@ -744,44 +744,44 @@ void DiStella::disasmFromAddress(uInt32 distart)
           mark(ad, CartDebug::DATA);
         break;
 
-      case ZERO_PAGE:
+      case AddressingMode::ZERO_PAGE:
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
         mark(d1, CartDebug::REFERENCED);
         break;
 
-      case IMMEDIATE:
+      case AddressingMode::IMMEDIATE:
         ++myPC;
         break;
 
-      case ABSOLUTE_X:
+      case AddressingMode::ABSOLUTE_X:
         ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
         mark(ad, CartDebug::REFERENCED);
         break;
 
-      case ABSOLUTE_Y:
+      case AddressingMode::ABSOLUTE_Y:
         ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
         mark(ad, CartDebug::REFERENCED);
         break;
 
-      case INDIRECT_X:
+      case AddressingMode::INDIRECT_X:
         ++myPC;
         break;
 
-      case INDIRECT_Y:
+      case AddressingMode::INDIRECT_Y:
         ++myPC;
         break;
 
-      case ZERO_PAGE_X:
+      case AddressingMode::ZERO_PAGE_X:
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
         mark(d1, CartDebug::REFERENCED);
         break;
 
-      case ZERO_PAGE_Y:
+      case AddressingMode::ZERO_PAGE_Y:
         d1 = Debugger::debugger().peek(myPC + myOffset);  ++myPC;
         mark(d1, CartDebug::REFERENCED);
         break;
 
-      case RELATIVE:
+      case AddressingMode::RELATIVE:
         // SA - 04-06-2010: there seemed to be a bug in distella,
         // where wraparound occurred on a 32-bit int, and subsequent
         // indexing into the labels array caused a crash
@@ -795,7 +795,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
         }
         break;
 
-      case ABS_INDIRECT:
+      case AddressingMode::ABS_INDIRECT:
         ad = Debugger::debugger().dpeek(myPC + myOffset);  myPC += 2;
         mark(ad, CartDebug::REFERENCED);
         break;
@@ -1134,327 +1134,327 @@ DiStella::Settings DiStella::settings = {
 const DiStella::Instruction_tag DiStella::ourLookup[256] = {
   /****  Positive  ****/
 
-  /* 00 */{"brk", IMPLIED,     M_NONE, NONE,  7, 1}, /* Pseudo Absolute */
-  /* 01 */{"ora", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
-  /* 02 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* 03 */{"SLO", INDIRECT_X,  M_INDX, WRITE, 8, 2},
+  /* 00 */{"brk", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  7, 1}, /* Pseudo Absolute */
+  /* 01 */{"ora", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::READ,  6, 2}, /* (Indirect,X) */
+  /* 02 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* 03 */{"SLO", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::WRITE, 8, 2},
 
-  /* 04 */{"NOP", ZERO_PAGE,   M_NONE, NONE,  3, 2},
-  /* 05 */{"ora", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* 06 */{"asl", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
-  /* 07 */{"SLO", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
+  /* 04 */{"NOP", AddressingMode::ZERO_PAGE,   AccessMode::NONE, RWMode::NONE,  3, 2},
+  /* 05 */{"ora", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* 06 */{"asl", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2}, /* Zeropage */
+  /* 07 */{"SLO", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2},
 
-  /* 08 */{"php", IMPLIED,     M_SR,   NONE,  3, 1},
-  /* 09 */{"ora", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* 0a */{"asl", ACCUMULATOR, M_AC,   WRITE, 2, 1}, /* Accumulator */
-  /* 0b */{"ANC", IMMEDIATE,   M_ACIM, READ,  2, 2},
+  /* 08 */{"php", AddressingMode::IMPLIED,     AccessMode::SR,   RWMode::NONE,  3, 1},
+  /* 09 */{"ora", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* 0a */{"asl", AddressingMode::ACCUMULATOR, AccessMode::AC,   RWMode::WRITE, 2, 1}, /* Accumulator */
+  /* 0b */{"ANC", AddressingMode::IMMEDIATE,   AccessMode::ACIM, RWMode::READ,  2, 2},
 
-  /* 0c */{"NOP", ABSOLUTE,    M_NONE, NONE,  4, 3},
-  /* 0d */{"ora", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* 0e */{"asl", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
-  /* 0f */{"SLO", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
+  /* 0c */{"NOP", AddressingMode::ABSOLUTE,    AccessMode::NONE, RWMode::NONE,  4, 3},
+  /* 0d */{"ora", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* 0e */{"asl", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3}, /* Absolute */
+  /* 0f */{"SLO", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3},
 
-  /* 10 */{"bpl", RELATIVE,    M_REL,  READ,  2, 2},
-  /* 11 */{"ora", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
-  /* 12 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* 13 */{"SLO", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
+  /* 10 */{"bpl", AddressingMode::RELATIVE,    AccessMode::REL,  RWMode::READ,  2, 2},
+  /* 11 */{"ora", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::READ,  5, 2}, /* (Indirect),Y */
+  /* 12 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* 13 */{"SLO", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::WRITE, 8, 2},
 
-  /* 14 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
-  /* 15 */{"ora", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
-  /* 16 */{"asl", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
-  /* 17 */{"SLO", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
+  /* 14 */{"NOP", AddressingMode::ZERO_PAGE_X, AccessMode::NONE, RWMode::NONE,  4, 2},
+  /* 15 */{"ora", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::READ,  4, 2}, /* Zeropage,X */
+  /* 16 */{"asl", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2}, /* Zeropage,X */
+  /* 17 */{"SLO", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2},
 
-  /* 18 */{"clc", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* 19 */{"ora", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
-  /* 1a */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* 1b */{"SLO", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
+  /* 18 */{"clc", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* 19 */{"ora", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::READ,  4, 3}, /* Absolute,Y */
+  /* 1a */{"NOP", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* 1b */{"SLO", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::WRITE, 7, 3},
 
-  /* 1c */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
-  /* 1d */{"ora", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
-  /* 1e */{"asl", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
-  /* 1f */{"SLO", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
+  /* 1c */{"NOP", AddressingMode::ABSOLUTE_X,  AccessMode::NONE, RWMode::NONE,  4, 3},
+  /* 1d */{"ora", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::READ,  4, 3}, /* Absolute,X */
+  /* 1e */{"asl", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3}, /* Absolute,X */
+  /* 1f */{"SLO", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3},
 
-  /* 20 */{"jsr", ABSOLUTE,    M_ADDR, READ,  6, 3},
-  /* 21 */{"and", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect ,X) */
-  /* 22 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* 23 */{"RLA", INDIRECT_X,  M_INDX, WRITE, 8, 2},
+  /* 20 */{"jsr", AddressingMode::ABSOLUTE,    AccessMode::ADDR, RWMode::READ,  6, 3},
+  /* 21 */{"and", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::READ,  6, 2}, /* (Indirect ,X) */
+  /* 22 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* 23 */{"RLA", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::WRITE, 8, 2},
 
-  /* 24 */{"bit", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* 25 */{"and", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* 26 */{"rol", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
-  /* 27 */{"RLA", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
+  /* 24 */{"bit", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* 25 */{"and", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* 26 */{"rol", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2}, /* Zeropage */
+  /* 27 */{"RLA", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2},
 
-  /* 28 */{"plp", IMPLIED,     M_NONE, NONE,  4, 1},
-  /* 29 */{"and", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* 2a */{"rol", ACCUMULATOR, M_AC,   WRITE, 2, 1}, /* Accumulator */
-  /* 2b */{"ANC", IMMEDIATE,   M_ACIM, READ,  2, 2},
+  /* 28 */{"plp", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  4, 1},
+  /* 29 */{"and", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* 2a */{"rol", AddressingMode::ACCUMULATOR, AccessMode::AC,   RWMode::WRITE, 2, 1}, /* Accumulator */
+  /* 2b */{"ANC", AddressingMode::IMMEDIATE,   AccessMode::ACIM, RWMode::READ,  2, 2},
 
-  /* 2c */{"bit", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* 2d */{"and", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* 2e */{"rol", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
-  /* 2f */{"RLA", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
+  /* 2c */{"bit", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* 2d */{"and", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* 2e */{"rol", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3}, /* Absolute */
+  /* 2f */{"RLA", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3},
 
-  /* 30 */{"bmi", RELATIVE,    M_REL,  READ,  2, 2},
-  /* 31 */{"and", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
-  /* 32 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* 33 */{"RLA", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
+  /* 30 */{"bmi", AddressingMode::RELATIVE,    AccessMode::REL,  RWMode::READ,  2, 2},
+  /* 31 */{"and", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::READ,  5, 2}, /* (Indirect),Y */
+  /* 32 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* 33 */{"RLA", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::WRITE, 8, 2},
 
-  /* 34 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
-  /* 35 */{"and", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
-  /* 36 */{"rol", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
-  /* 37 */{"RLA", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
+  /* 34 */{"NOP", AddressingMode::ZERO_PAGE_X, AccessMode::NONE, RWMode::NONE,  4, 2},
+  /* 35 */{"and", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::READ,  4, 2}, /* Zeropage,X */
+  /* 36 */{"rol", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2}, /* Zeropage,X */
+  /* 37 */{"RLA", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2},
 
-  /* 38 */{"sec", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* 39 */{"and", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
-  /* 3a */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* 3b */{"RLA", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
+  /* 38 */{"sec", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* 39 */{"and", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::READ,  4, 3}, /* Absolute,Y */
+  /* 3a */{"NOP", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* 3b */{"RLA", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::WRITE, 7, 3},
 
-  /* 3c */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
-  /* 3d */{"and", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
-  /* 3e */{"rol", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
-  /* 3f */{"RLA", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
+  /* 3c */{"NOP", AddressingMode::ABSOLUTE_X,  AccessMode::NONE, RWMode::NONE,  4, 3},
+  /* 3d */{"and", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::READ,  4, 3}, /* Absolute,X */
+  /* 3e */{"rol", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3}, /* Absolute,X */
+  /* 3f */{"RLA", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3},
 
-  /* 40 */{"rti", IMPLIED,     M_NONE, NONE,  6, 1},
-  /* 41 */{"eor", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
-  /* 42 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* 43 */{"SRE", INDIRECT_X,  M_INDX, WRITE, 8, 2},
+  /* 40 */{"rti", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  6, 1},
+  /* 41 */{"eor", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::READ,  6, 2}, /* (Indirect,X) */
+  /* 42 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* 43 */{"SRE", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::WRITE, 8, 2},
 
-  /* 44 */{"NOP", ZERO_PAGE,   M_NONE, NONE,  3, 2},
-  /* 45 */{"eor", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* 46 */{"lsr", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
-  /* 47 */{"SRE", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
+  /* 44 */{"NOP", AddressingMode::ZERO_PAGE,   AccessMode::NONE, RWMode::NONE,  3, 2},
+  /* 45 */{"eor", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* 46 */{"lsr", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2}, /* Zeropage */
+  /* 47 */{"SRE", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2},
 
-  /* 48 */{"pha", IMPLIED,     M_AC,   NONE,  3, 1},
-  /* 49 */{"eor", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* 4a */{"lsr", ACCUMULATOR, M_AC,   WRITE, 2, 1}, /* Accumulator */
-  /* 4b */{"ASR", IMMEDIATE,   M_ACIM, READ,  2, 2}, /* (AC & IMM) >>1 */
+  /* 48 */{"pha", AddressingMode::IMPLIED,     AccessMode::AC,   RWMode::NONE,  3, 1},
+  /* 49 */{"eor", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* 4a */{"lsr", AddressingMode::ACCUMULATOR, AccessMode::AC,   RWMode::WRITE, 2, 1}, /* Accumulator */
+  /* 4b */{"ASR", AddressingMode::IMMEDIATE,   AccessMode::ACIM, RWMode::READ,  2, 2}, /* (AC & IMM) >>1 */
 
-  /* 4c */{"jmp", ABSOLUTE,    M_ADDR, READ,  3, 3}, /* Absolute */
-  /* 4d */{"eor", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* 4e */{"lsr", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
-  /* 4f */{"SRE", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
+  /* 4c */{"jmp", AddressingMode::ABSOLUTE,    AccessMode::ADDR, RWMode::READ,  3, 3}, /* Absolute */
+  /* 4d */{"eor", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* 4e */{"lsr", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3}, /* Absolute */
+  /* 4f */{"SRE", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3},
 
-  /* 50 */{"bvc", RELATIVE,    M_REL,  READ,  2, 2},
-  /* 51 */{"eor", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
-  /* 52 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* 53 */{"SRE", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
+  /* 50 */{"bvc", AddressingMode::RELATIVE,    AccessMode::REL,  RWMode::READ,  2, 2},
+  /* 51 */{"eor", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::READ,  5, 2}, /* (Indirect),Y */
+  /* 52 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* 53 */{"SRE", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::WRITE, 8, 2},
 
-  /* 54 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
-  /* 55 */{"eor", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
-  /* 56 */{"lsr", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
-  /* 57 */{"SRE", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
+  /* 54 */{"NOP", AddressingMode::ZERO_PAGE_X, AccessMode::NONE, RWMode::NONE,  4, 2},
+  /* 55 */{"eor", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::READ,  4, 2}, /* Zeropage,X */
+  /* 56 */{"lsr", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2}, /* Zeropage,X */
+  /* 57 */{"SRE", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2},
 
-  /* 58 */{"cli", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* 59 */{"eor", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
-  /* 5a */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* 5b */{"SRE", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
+  /* 58 */{"cli", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* 59 */{"eor", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::READ,  4, 3}, /* Absolute,Y */
+  /* 5a */{"NOP", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* 5b */{"SRE", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::WRITE, 7, 3},
 
-  /* 5c */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
-  /* 5d */{"eor", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
-  /* 5e */{"lsr", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
-  /* 5f */{"SRE", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
+  /* 5c */{"NOP", AddressingMode::ABSOLUTE_X,  AccessMode::NONE, RWMode::NONE,  4, 3},
+  /* 5d */{"eor", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::READ,  4, 3}, /* Absolute,X */
+  /* 5e */{"lsr", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3}, /* Absolute,X */
+  /* 5f */{"SRE", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3},
 
-  /* 60 */{"rts", IMPLIED,     M_NONE, NONE,  6, 1},
-  /* 61 */{"adc", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
-  /* 62 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* 63 */{"RRA", INDIRECT_X,  M_INDX, WRITE, 8, 2},
+  /* 60 */{"rts", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  6, 1},
+  /* 61 */{"adc", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::READ,  6, 2}, /* (Indirect,X) */
+  /* 62 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* 63 */{"RRA", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::WRITE, 8, 2},
 
-  /* 64 */{"NOP", ZERO_PAGE,   M_NONE, NONE,  3, 2},
-  /* 65 */{"adc", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* 66 */{"ror", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
-  /* 67 */{"RRA", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
+  /* 64 */{"NOP", AddressingMode::ZERO_PAGE,   AccessMode::NONE, RWMode::NONE,  3, 2},
+  /* 65 */{"adc", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* 66 */{"ror", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2}, /* Zeropage */
+  /* 67 */{"RRA", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2},
 
-  /* 68 */{"pla", IMPLIED,     M_NONE, NONE,  4, 1},
-  /* 69 */{"adc", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* 6a */{"ror", ACCUMULATOR, M_AC,   WRITE, 2, 1}, /* Accumulator */
-  /* 6b */{"ARR", IMMEDIATE,   M_ACIM, READ,  2, 2}, /* ARR isn't typo */
+  /* 68 */{"pla", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  4, 1},
+  /* 69 */{"adc", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* 6a */{"ror", AddressingMode::ACCUMULATOR, AccessMode::AC,   RWMode::WRITE, 2, 1}, /* Accumulator */
+  /* 6b */{"ARR", AddressingMode::IMMEDIATE,   AccessMode::ACIM, RWMode::READ,  2, 2}, /* ARR isn't typo */
 
-  /* 6c */{"jmp", ABS_INDIRECT,M_AIND, READ,  5, 3}, /* Indirect */
-  /* 6d */{"adc", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* 6e */{"ror", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
-  /* 6f */{"RRA", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
+  /* 6c */{"jmp", AddressingMode::ABS_INDIRECT,AccessMode::AIND, RWMode::READ,  5, 3}, /* Indirect */
+  /* 6d */{"adc", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* 6e */{"ror", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3}, /* Absolute */
+  /* 6f */{"RRA", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3},
 
-  /* 70 */{"bvs", RELATIVE,    M_REL,  READ,  2, 2},
-  /* 71 */{"adc", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
-  /* 72 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT relative? */
-  /* 73 */{"RRA", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
+  /* 70 */{"bvs", AddressingMode::RELATIVE,    AccessMode::REL,  RWMode::READ,  2, 2},
+  /* 71 */{"adc", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::READ,  5, 2}, /* (Indirect),Y */
+  /* 72 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT relative? */
+  /* 73 */{"RRA", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::WRITE, 8, 2},
 
-  /* 74 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
-  /* 75 */{"adc", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
-  /* 76 */{"ror", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
-  /* 77 */{"RRA", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
+  /* 74 */{"NOP", AddressingMode::ZERO_PAGE_X, AccessMode::NONE, RWMode::NONE,  4, 2},
+  /* 75 */{"adc", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::READ,  4, 2}, /* Zeropage,X */
+  /* 76 */{"ror", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2}, /* Zeropage,X */
+  /* 77 */{"RRA", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2},
 
-  /* 78 */{"sei", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* 79 */{"adc", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
-  /* 7a */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* 7b */{"RRA", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
+  /* 78 */{"sei", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* 79 */{"adc", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::READ,  4, 3}, /* Absolute,Y */
+  /* 7a */{"NOP", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* 7b */{"RRA", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::WRITE, 7, 3},
 
-  /* 7c */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
-  /* 7d */{"adc", ABSOLUTE_X,  M_ABSX, READ,  4, 3},  /* Absolute,X */
-  /* 7e */{"ror", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},  /* Absolute,X */
-  /* 7f */{"RRA", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
+  /* 7c */{"NOP", AddressingMode::ABSOLUTE_X,  AccessMode::NONE, RWMode::NONE,  4, 3},
+  /* 7d */{"adc", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::READ,  4, 3},  /* Absolute,X */
+  /* 7e */{"ror", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3},  /* Absolute,X */
+  /* 7f */{"RRA", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3},
 
   /****  Negative  ****/
 
-  /* 80 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2},
-  /* 81 */{"sta", INDIRECT_X,  M_AC,   WRITE, 6, 2}, /* (Indirect,X) */
-  /* 82 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2},
-  /* 83 */{"SAX", INDIRECT_X,  M_ANXR, WRITE, 6, 2},
+  /* 80 */{"NOP", AddressingMode::IMMEDIATE,   AccessMode::NONE, RWMode::NONE,  2, 2},
+  /* 81 */{"sta", AddressingMode::INDIRECT_X,  AccessMode::AC,   RWMode::WRITE, 6, 2}, /* (Indirect,X) */
+  /* 82 */{"NOP", AddressingMode::IMMEDIATE,   AccessMode::NONE, RWMode::NONE,  2, 2},
+  /* 83 */{"SAX", AddressingMode::INDIRECT_X,  AccessMode::ANXR, RWMode::WRITE, 6, 2},
 
-  /* 84 */{"sty", ZERO_PAGE,   M_YR,   WRITE, 3, 2}, /* Zeropage */
-  /* 85 */{"sta", ZERO_PAGE,   M_AC,   WRITE, 3, 2}, /* Zeropage */
-  /* 86 */{"stx", ZERO_PAGE,   M_XR,   WRITE, 3, 2}, /* Zeropage */
-  /* 87 */{"SAX", ZERO_PAGE,   M_ANXR, WRITE, 3, 2},
+  /* 84 */{"sty", AddressingMode::ZERO_PAGE,   AccessMode::YR,   RWMode::WRITE, 3, 2}, /* Zeropage */
+  /* 85 */{"sta", AddressingMode::ZERO_PAGE,   AccessMode::AC,   RWMode::WRITE, 3, 2}, /* Zeropage */
+  /* 86 */{"stx", AddressingMode::ZERO_PAGE,   AccessMode::XR,   RWMode::WRITE, 3, 2}, /* Zeropage */
+  /* 87 */{"SAX", AddressingMode::ZERO_PAGE,   AccessMode::ANXR, RWMode::WRITE, 3, 2},
 
-  /* 88 */{"dey", IMPLIED,     M_YR,   NONE,  2, 1},
-  /* 89 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2},
-  /* 8a */{"txa", IMPLIED,     M_XR,   NONE,  2, 1},
+  /* 88 */{"dey", AddressingMode::IMPLIED,     AccessMode::YR,   RWMode::NONE,  2, 1},
+  /* 89 */{"NOP", AddressingMode::IMMEDIATE,   AccessMode::NONE, RWMode::NONE,  2, 2},
+  /* 8a */{"txa", AddressingMode::IMPLIED,     AccessMode::XR,   RWMode::NONE,  2, 1},
   /****  very abnormal: usually AC = AC | #$EE & XR & #$oper  ****/
-  /* 8b */{"ANE", IMMEDIATE,   M_AXIM, READ,  2, 2},
+  /* 8b */{"ANE", AddressingMode::IMMEDIATE,   AccessMode::AXIM, RWMode::READ,  2, 2},
 
-  /* 8c */{"sty", ABSOLUTE,    M_YR,   WRITE, 4, 3}, /* Absolute */
-  /* 8d */{"sta", ABSOLUTE,    M_AC,   WRITE, 4, 3}, /* Absolute */
-  /* 8e */{"stx", ABSOLUTE,    M_XR,   WRITE, 4, 3}, /* Absolute */
-  /* 8f */{"SAX", ABSOLUTE,    M_ANXR, WRITE, 4, 3},
+  /* 8c */{"sty", AddressingMode::ABSOLUTE,    AccessMode::YR,   RWMode::WRITE, 4, 3}, /* Absolute */
+  /* 8d */{"sta", AddressingMode::ABSOLUTE,    AccessMode::AC,   RWMode::WRITE, 4, 3}, /* Absolute */
+  /* 8e */{"stx", AddressingMode::ABSOLUTE,    AccessMode::XR,   RWMode::WRITE, 4, 3}, /* Absolute */
+  /* 8f */{"SAX", AddressingMode::ABSOLUTE,    AccessMode::ANXR, RWMode::WRITE, 4, 3},
 
-  /* 90 */{"bcc", RELATIVE,    M_REL,  READ,  2, 2},
-  /* 91 */{"sta", INDIRECT_Y,  M_AC,   WRITE, 6, 2}, /* (Indirect),Y */
-  /* 92 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT relative? */
-  /* 93 */{"SHA", INDIRECT_Y,  M_ANXR, WRITE, 6, 2},
+  /* 90 */{"bcc", AddressingMode::RELATIVE,    AccessMode::REL,  RWMode::READ,  2, 2},
+  /* 91 */{"sta", AddressingMode::INDIRECT_Y,  AccessMode::AC,   RWMode::WRITE, 6, 2}, /* (Indirect),Y */
+  /* 92 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT relative? */
+  /* 93 */{"SHA", AddressingMode::INDIRECT_Y,  AccessMode::ANXR, RWMode::WRITE, 6, 2},
 
-  /* 94 */{"sty", ZERO_PAGE_X, M_YR,   WRITE, 4, 2}, /* Zeropage,X */
-  /* 95 */{"sta", ZERO_PAGE_X, M_AC,   WRITE, 4, 2}, /* Zeropage,X */
-  /* 96 */{"stx", ZERO_PAGE_Y, M_XR,   WRITE, 4, 2}, /* Zeropage,Y */
-  /* 97 */{"SAX", ZERO_PAGE_Y, M_ANXR, WRITE, 4, 2},
+  /* 94 */{"sty", AddressingMode::ZERO_PAGE_X, AccessMode::YR,   RWMode::WRITE, 4, 2}, /* Zeropage,X */
+  /* 95 */{"sta", AddressingMode::ZERO_PAGE_X, AccessMode::AC,   RWMode::WRITE, 4, 2}, /* Zeropage,X */
+  /* 96 */{"stx", AddressingMode::ZERO_PAGE_Y, AccessMode::XR,   RWMode::WRITE, 4, 2}, /* Zeropage,Y */
+  /* 97 */{"SAX", AddressingMode::ZERO_PAGE_Y, AccessMode::ANXR, RWMode::WRITE, 4, 2},
 
-  /* 98 */{"tya", IMPLIED,     M_YR,   NONE,  2, 1},
-  /* 99 */{"sta", ABSOLUTE_Y,  M_AC,   WRITE, 5, 3}, /* Absolute,Y */
-  /* 9a */{"txs", IMPLIED,     M_XR,   NONE,  2, 1},
+  /* 98 */{"tya", AddressingMode::IMPLIED,     AccessMode::YR,   RWMode::NONE,  2, 1},
+  /* 99 */{"sta", AddressingMode::ABSOLUTE_Y,  AccessMode::AC,   RWMode::WRITE, 5, 3}, /* Absolute,Y */
+  /* 9a */{"txs", AddressingMode::IMPLIED,     AccessMode::XR,   RWMode::NONE,  2, 1},
   /*** This is very mysterious command ... */
-  /* 9b */{"SHS", ABSOLUTE_Y,  M_ANXR, WRITE, 5, 3},
+  /* 9b */{"SHS", AddressingMode::ABSOLUTE_Y,  AccessMode::ANXR, RWMode::WRITE, 5, 3},
 
-  /* 9c */{"SHY", ABSOLUTE_X,  M_YR,   WRITE, 5, 3},
-  /* 9d */{"sta", ABSOLUTE_X,  M_AC,   WRITE, 5, 3}, /* Absolute,X */
-  /* 9e */{"SHX", ABSOLUTE_Y,  M_XR  , WRITE, 5, 3},
-  /* 9f */{"SHA", ABSOLUTE_Y,  M_ANXR, WRITE, 5, 3},
+  /* 9c */{"SHY", AddressingMode::ABSOLUTE_X,  AccessMode::YR,   RWMode::WRITE, 5, 3},
+  /* 9d */{"sta", AddressingMode::ABSOLUTE_X,  AccessMode::AC,   RWMode::WRITE, 5, 3}, /* Absolute,X */
+  /* 9e */{"SHX", AddressingMode::ABSOLUTE_Y,  AccessMode::XR  , RWMode::WRITE, 5, 3},
+  /* 9f */{"SHA", AddressingMode::ABSOLUTE_Y,  AccessMode::ANXR, RWMode::WRITE, 5, 3},
 
-  /* a0 */{"ldy", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* a1 */{"lda", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (indirect,X) */
-  /* a2 */{"ldx", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* a3 */{"LAX", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (indirect,X) */
+  /* a0 */{"ldy", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* a1 */{"lda", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::READ,  6, 2}, /* (indirect,X) */
+  /* a2 */{"ldx", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* a3 */{"LAX", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::READ,  6, 2}, /* (indirect,X) */
 
-  /* a4 */{"ldy", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* a5 */{"lda", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* a6 */{"ldx", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* a7 */{"LAX", ZERO_PAGE,   M_ZERO, READ,  3, 2},
+  /* a4 */{"ldy", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* a5 */{"lda", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* a6 */{"ldx", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* a7 */{"LAX", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2},
 
-  /* a8 */{"tay", IMPLIED,     M_AC,   NONE,  2, 1},
-  /* a9 */{"lda", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* aa */{"tax", IMPLIED,     M_AC,   NONE,  2, 1},
-  /* ab */{"LXA", IMMEDIATE,   M_ACIM, READ,  2, 2}, /* LXA isn't a typo */
+  /* a8 */{"tay", AddressingMode::IMPLIED,     AccessMode::AC,   RWMode::NONE,  2, 1},
+  /* a9 */{"lda", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* aa */{"tax", AddressingMode::IMPLIED,     AccessMode::AC,   RWMode::NONE,  2, 1},
+  /* ab */{"LXA", AddressingMode::IMMEDIATE,   AccessMode::ACIM, RWMode::READ,  2, 2}, /* LXA isn't a typo */
 
-  /* ac */{"ldy", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* ad */{"lda", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* ae */{"ldx", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* af */{"LAX", ABSOLUTE,    M_ABS,  READ,  4, 3},
+  /* ac */{"ldy", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* ad */{"lda", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* ae */{"ldx", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* af */{"LAX", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3},
 
-  /* b0 */{"bcs", RELATIVE,    M_REL,  READ,  2, 2},
-  /* b1 */{"lda", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (indirect),Y */
-  /* b2 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* b3 */{"LAX", INDIRECT_Y,  M_INDY, READ,  5, 2},
+  /* b0 */{"bcs", AddressingMode::RELATIVE,    AccessMode::REL,  RWMode::READ,  2, 2},
+  /* b1 */{"lda", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::READ,  5, 2}, /* (indirect),Y */
+  /* b2 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* b3 */{"LAX", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::READ,  5, 2},
 
-  /* b4 */{"ldy", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
-  /* b5 */{"lda", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
-  /* b6 */{"ldx", ZERO_PAGE_Y, M_ZERY, READ,  4, 2}, /* Zeropage,Y */
-  /* b7 */{"LAX", ZERO_PAGE_Y, M_ZERY, READ,  4, 2},
+  /* b4 */{"ldy", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::READ,  4, 2}, /* Zeropage,X */
+  /* b5 */{"lda", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::READ,  4, 2}, /* Zeropage,X */
+  /* b6 */{"ldx", AddressingMode::ZERO_PAGE_Y, AccessMode::ZERY, RWMode::READ,  4, 2}, /* Zeropage,Y */
+  /* b7 */{"LAX", AddressingMode::ZERO_PAGE_Y, AccessMode::ZERY, RWMode::READ,  4, 2},
 
-  /* b8 */{"clv", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* b9 */{"lda", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
-  /* ba */{"tsx", IMPLIED,     M_SP,   NONE,  2, 1},
-  /* bb */{"LAS", ABSOLUTE_Y,  M_SABY, READ,  4, 3},
+  /* b8 */{"clv", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* b9 */{"lda", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::READ,  4, 3}, /* Absolute,Y */
+  /* ba */{"tsx", AddressingMode::IMPLIED,     AccessMode::SP,   RWMode::NONE,  2, 1},
+  /* bb */{"LAS", AddressingMode::ABSOLUTE_Y,  AccessMode::SABY, RWMode::READ,  4, 3},
 
-  /* bc */{"ldy", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
-  /* bd */{"lda", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
-  /* be */{"ldx", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
-  /* bf */{"LAX", ABSOLUTE_Y,  M_ABSY, READ,  4, 3},
+  /* bc */{"ldy", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::READ,  4, 3}, /* Absolute,X */
+  /* bd */{"lda", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::READ,  4, 3}, /* Absolute,X */
+  /* be */{"ldx", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::READ,  4, 3}, /* Absolute,Y */
+  /* bf */{"LAX", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::READ,  4, 3},
 
-  /* c0 */{"cpy", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* c1 */{"cmp", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
-  /* c2 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2}, /* occasional TILT */
-  /* c3 */{"DCP", INDIRECT_X,  M_INDX, WRITE, 8, 2},
+  /* c0 */{"cpy", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* c1 */{"cmp", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::READ,  6, 2}, /* (Indirect,X) */
+  /* c2 */{"NOP", AddressingMode::IMMEDIATE,   AccessMode::NONE, RWMode::NONE,  2, 2}, /* occasional TILT */
+  /* c3 */{"DCP", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::WRITE, 8, 2},
 
-  /* c4 */{"cpy", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* c5 */{"cmp", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* c6 */{"dec", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
-  /* c7 */{"DCP", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
+  /* c4 */{"cpy", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* c5 */{"cmp", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* c6 */{"dec", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2}, /* Zeropage */
+  /* c7 */{"DCP", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2},
 
-  /* c8 */{"iny", IMPLIED,     M_YR,   NONE,  2, 1},
-  /* c9 */{"cmp", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* ca */{"dex", IMPLIED,     M_XR,   NONE,  2, 1},
-  /* cb */{"SBX", IMMEDIATE,   M_IMM,  READ,  2, 2},
+  /* c8 */{"iny", AddressingMode::IMPLIED,     AccessMode::YR,   RWMode::NONE,  2, 1},
+  /* c9 */{"cmp", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* ca */{"dex", AddressingMode::IMPLIED,     AccessMode::XR,   RWMode::NONE,  2, 1},
+  /* cb */{"SBX", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2},
 
-  /* cc */{"cpy", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* cd */{"cmp", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* ce */{"dec", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
-  /* cf */{"DCP", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
+  /* cc */{"cpy", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* cd */{"cmp", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* ce */{"dec", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3}, /* Absolute */
+  /* cf */{"DCP", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3},
 
-  /* d0 */{"bne", RELATIVE,    M_REL,  READ,  2, 2},
-  /* d1 */{"cmp", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
-  /* d2 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* d3 */{"DCP", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
+  /* d0 */{"bne", AddressingMode::RELATIVE,    AccessMode::REL,  RWMode::READ,  2, 2},
+  /* d1 */{"cmp", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::READ,  5, 2}, /* (Indirect),Y */
+  /* d2 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* d3 */{"DCP", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::WRITE, 8, 2},
 
-  /* d4 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
-  /* d5 */{"cmp", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
-  /* d6 */{"dec", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
-  /* d7 */{"DCP", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
+  /* d4 */{"NOP", AddressingMode::ZERO_PAGE_X, AccessMode::NONE, RWMode::NONE,  4, 2},
+  /* d5 */{"cmp", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::READ,  4, 2}, /* Zeropage,X */
+  /* d6 */{"dec", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2}, /* Zeropage,X */
+  /* d7 */{"DCP", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2},
 
-  /* d8 */{"cld", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* d9 */{"cmp", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
-  /* da */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* db */{"DCP", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
+  /* d8 */{"cld", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* d9 */{"cmp", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::READ,  4, 3}, /* Absolute,Y */
+  /* da */{"NOP", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* db */{"DCP", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::WRITE, 7, 3},
 
-  /* dc */{"NOP", ABSOLUTE_X,  M_NONE, NONE,  4, 3},
-  /* dd */{"cmp", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
-  /* de */{"dec", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
-  /* df */{"DCP", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3},
+  /* dc */{"NOP", AddressingMode::ABSOLUTE_X,  AccessMode::NONE, RWMode::NONE,  4, 3},
+  /* dd */{"cmp", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::READ,  4, 3}, /* Absolute,X */
+  /* de */{"dec", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3}, /* Absolute,X */
+  /* df */{"DCP", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3},
 
-  /* e0 */{"cpx", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* e1 */{"sbc", INDIRECT_X,  M_INDX, READ,  6, 2}, /* (Indirect,X) */
-  /* e2 */{"NOP", IMMEDIATE,   M_NONE, NONE,  2, 2},
-  /* e3 */{"ISB", INDIRECT_X,  M_INDX, WRITE, 8, 2},
+  /* e0 */{"cpx", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* e1 */{"sbc", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::READ,  6, 2}, /* (Indirect,X) */
+  /* e2 */{"NOP", AddressingMode::IMMEDIATE,   AccessMode::NONE, RWMode::NONE,  2, 2},
+  /* e3 */{"ISB", AddressingMode::INDIRECT_X,  AccessMode::INDX, RWMode::WRITE, 8, 2},
 
-  /* e4 */{"cpx", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* e5 */{"sbc", ZERO_PAGE,   M_ZERO, READ,  3, 2}, /* Zeropage */
-  /* e6 */{"inc", ZERO_PAGE,   M_ZERO, WRITE, 5, 2}, /* Zeropage */
-  /* e7 */{"ISB", ZERO_PAGE,   M_ZERO, WRITE, 5, 2},
+  /* e4 */{"cpx", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* e5 */{"sbc", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::READ,  3, 2}, /* Zeropage */
+  /* e6 */{"inc", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2}, /* Zeropage */
+  /* e7 */{"ISB", AddressingMode::ZERO_PAGE,   AccessMode::ZERO, RWMode::WRITE, 5, 2},
 
-  /* e8 */{"inx", IMPLIED,     M_XR,   NONE,  2, 1},
-  /* e9 */{"sbc", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* Immediate */
-  /* ea */{"nop", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* eb */{"SBC", IMMEDIATE,   M_IMM,  READ,  2, 2}, /* same as e9 */
+  /* e8 */{"inx", AddressingMode::IMPLIED,     AccessMode::XR,   RWMode::NONE,  2, 1},
+  /* e9 */{"sbc", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* Immediate */
+  /* ea */{"nop", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* eb */{"SBC", AddressingMode::IMMEDIATE,   AccessMode::IMM,  RWMode::READ,  2, 2}, /* same as e9 */
 
-  /* ec */{"cpx", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* ed */{"sbc", ABSOLUTE,    M_ABS,  READ,  4, 3}, /* Absolute */
-  /* ee */{"inc", ABSOLUTE,    M_ABS,  WRITE, 6, 3}, /* Absolute */
-  /* ef */{"ISB", ABSOLUTE,    M_ABS,  WRITE, 6, 3},
+  /* ec */{"cpx", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* ed */{"sbc", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::READ,  4, 3}, /* Absolute */
+  /* ee */{"inc", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3}, /* Absolute */
+  /* ef */{"ISB", AddressingMode::ABSOLUTE,    AccessMode::ABS,  RWMode::WRITE, 6, 3},
 
-  /* f0 */{"beq", RELATIVE,    M_REL,  READ,  2, 2},
-  /* f1 */{"sbc", INDIRECT_Y,  M_INDY, READ,  5, 2}, /* (Indirect),Y */
-  /* f2 */{".JAM",IMPLIED,     M_NONE, NONE,  0, 1}, /* TILT */
-  /* f3 */{"ISB", INDIRECT_Y,  M_INDY, WRITE, 8, 2},
+  /* f0 */{"beq", AddressingMode::RELATIVE,    AccessMode::REL,  RWMode::READ,  2, 2},
+  /* f1 */{"sbc", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::READ,  5, 2}, /* (Indirect),Y */
+  /* f2 */{".JAM",AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  0, 1}, /* TILT */
+  /* f3 */{"ISB", AddressingMode::INDIRECT_Y,  AccessMode::INDY, RWMode::WRITE, 8, 2},
 
-  /* f4 */{"NOP", ZERO_PAGE_X, M_NONE, NONE,  4, 2},
-  /* f5 */{"sbc", ZERO_PAGE_X, M_ZERX, READ,  4, 2}, /* Zeropage,X */
-  /* f6 */{"inc", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2}, /* Zeropage,X */
-  /* f7 */{"ISB", ZERO_PAGE_X, M_ZERX, WRITE, 6, 2},
+  /* f4 */{"NOP", AddressingMode::ZERO_PAGE_X, AccessMode::NONE, RWMode::NONE,  4, 2},
+  /* f5 */{"sbc", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::READ,  4, 2}, /* Zeropage,X */
+  /* f6 */{"inc", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2}, /* Zeropage,X */
+  /* f7 */{"ISB", AddressingMode::ZERO_PAGE_X, AccessMode::ZERX, RWMode::WRITE, 6, 2},
 
-  /* f8 */{"sed", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* f9 */{"sbc", ABSOLUTE_Y,  M_ABSY, READ,  4, 3}, /* Absolute,Y */
-  /* fa */{"NOP", IMPLIED,     M_NONE, NONE,  2, 1},
-  /* fb */{"ISB", ABSOLUTE_Y,  M_ABSY, WRITE, 7, 3},
+  /* f8 */{"sed", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* f9 */{"sbc", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::READ,  4, 3}, /* Absolute,Y */
+  /* fa */{"NOP", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  2, 1},
+  /* fb */{"ISB", AddressingMode::ABSOLUTE_Y,  AccessMode::ABSY, RWMode::WRITE, 7, 3},
 
-  /* fc */{"NOP" ,ABSOLUTE_X,  M_NONE, NONE,  4, 3},
-  /* fd */{"sbc", ABSOLUTE_X,  M_ABSX, READ,  4, 3}, /* Absolute,X */
-  /* fe */{"inc", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}, /* Absolute,X */
-  /* ff */{"ISB", ABSOLUTE_X,  M_ABSX, WRITE, 7, 3}
+  /* fc */{"NOP" ,AddressingMode::ABSOLUTE_X,  AccessMode::NONE, RWMode::NONE,  4, 3},
+  /* fd */{"sbc", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::READ,  4, 3}, /* Absolute,X */
+  /* fe */{"inc", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3}, /* Absolute,X */
+  /* ff */{"ISB", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3}
 };

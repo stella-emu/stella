@@ -101,10 +101,10 @@ class DiStella
     }
     inline void labelA12Low(stringstream& buf, uInt8 op, uInt16 addr, int labfound)
     {
-      myDbg.getLabel(buf, addr, ourLookup[op].rw_mode == READ, 2);
+      myDbg.getLabel(buf, addr, ourLookup[op].rw_mode == RWMode::READ, 2);
       if (labfound == 2)
       {
-        if(ourLookup[op].rw_mode == READ)
+        if(ourLookup[op].rw_mode == RWMode::READ)
           myReserved.TIARead[addr & 0x0F] = true;
         else
           myReserved.TIAWrite[addr & 0x3F] = true;
@@ -141,7 +141,7 @@ class DiStella
     /**
       Enumeration of the 6502 addressing modes
     */
-    enum AddressingMode
+    enum class AddressingMode : uInt8
     {
       IMPLIED, ACCUMULATOR, IMMEDIATE,
       ZERO_PAGE, ZERO_PAGE_X, ZERO_PAGE_Y,
@@ -153,31 +153,31 @@ class DiStella
     /**
       Enumeration of the 6502 access modes
     */
-    enum AccessMode
+    enum class AccessMode : uInt8
     {
-      M_NONE, M_AC, M_XR, M_YR, M_SP, M_SR, M_PC, M_IMM, M_ZERO, M_ZERX, M_ZERY,
-      M_ABS, M_ABSX, M_ABSY, M_AIND, M_INDX, M_INDY, M_REL, M_FC, M_FD, M_FI,
-      M_FV, M_ADDR, M_,
+      NONE, AC, XR, YR, SP, SR, PC, IMM, ZERO, ZERX, ZERY,
+      ABS, ABSX, ABSY, AIND, INDX, INDY, REL, FC, FD, FI,
+      FV, ADDR,
 
-      M_ACIM, /* Source: AC & IMMED (bus collision) */
-      M_ANXR, /* Source: AC & XR (bus collision) */
-      M_AXIM, /* Source: (AC | #EE) & XR & IMMED (bus collision) */
-      M_ACNC, /* Dest: M_AC and Carry = Negative */
-      M_ACXR, /* Dest: M_AC, M_XR */
+      ACIM, /* Source: AC & IMMED (bus collision) */
+      ANXR, /* Source: AC & XR (bus collision) */
+      AXIM, /* Source: (AC | #EE) & XR & IMMED (bus collision) */
+      ACNC, /* Dest: AC and Carry = Negative */
+      ACXR, /* Dest: AC, XR */
 
-      M_SABY, /* Source: (ABS_Y & SP) (bus collision) */
-      M_ACXS, /* Dest: M_AC, M_XR, M_SP */
-      M_STH0, /* Dest: Store (src & Addr_Hi+1) to (Addr +0x100) */
-      M_STH1,
-      M_STH2,
-      M_STH3
+      SABY, /* Source: (ABS_Y & SP) (bus collision) */
+      ACXS, /* Dest: AC, XR, SP */
+      STH0, /* Dest: Store (src & Addr_Hi+1) to (Addr +0x100) */
+      STH1,
+      STH2,
+      STH3
     };
 
     /**
       Enumeration of the 6502 read/write mode
       (if the opcode is reading or writing its operand)
     */
-    enum ReadWriteMode
+    enum class RWMode : uInt8
     {
       READ, WRITE, NONE
     };
@@ -186,7 +186,7 @@ class DiStella
       const char* const mnemonic;
       AddressingMode addr_mode;
       AccessMode     source;
-      ReadWriteMode  rw_mode;
+      RWMode         rw_mode;
       uInt8          cycles;
       uInt8          bytes;
     };

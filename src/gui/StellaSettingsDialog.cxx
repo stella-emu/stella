@@ -100,11 +100,11 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
 
   // TV Mode
   items.clear();
-  VarList::push_back(items, "Disabled", NTSCFilter::PRESET_OFF);
-  VarList::push_back(items, "RGB", NTSCFilter::PRESET_RGB);
-  VarList::push_back(items, "S-Video", NTSCFilter::PRESET_SVIDEO);
-  VarList::push_back(items, "Composite", NTSCFilter::PRESET_COMPOSITE);
-  VarList::push_back(items, "Bad adjust", NTSCFilter::PRESET_BAD);
+  VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
+  VarList::push_back(items, "RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
+  VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
+  VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
+  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
   int lwidth = font.getStringWidth("TV mode  ");
   int pwidth = font.getStringWidth("Bad adjust");
 

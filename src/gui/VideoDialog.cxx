@@ -228,12 +228,12 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // TV Mode
   items.clear();
-  VarList::push_back(items, "Disabled", NTSCFilter::PRESET_OFF);
-  VarList::push_back(items, "RGB", NTSCFilter::PRESET_RGB);
-  VarList::push_back(items, "S-Video", NTSCFilter::PRESET_SVIDEO);
-  VarList::push_back(items, "Composite", NTSCFilter::PRESET_COMPOSITE);
-  VarList::push_back(items, "Bad adjust", NTSCFilter::PRESET_BAD);
-  VarList::push_back(items, "Custom", NTSCFilter::PRESET_CUSTOM);
+  VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
+  VarList::push_back(items, "RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
+  VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
+  VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
+  VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
+  VarList::push_back(items, "Custom", static_cast<uInt32>(NTSCFilter::Preset::CUSTOM));
   lwidth = font.getStringWidth("TV Mode ");
   pwidth = font.getStringWidth("Bad adjust");
   myTVMode =
@@ -385,7 +385,7 @@ void VideoDialog::loadConfig()
   handleTVModeChange(NTSCFilter::Preset(preset));
 
   // TV Custom adjustables
-  loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+  loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
 
   // TV phosphor mode
   myTVPhosphor->setState(instance().settings().getString("tv.phosphor") == "always");
@@ -522,9 +522,9 @@ void VideoDialog::setDefaults()
       myTVScanIntense->setValue(25);
 
       // Make sure that mutually-exclusive items are not enabled at the same time
-      handleTVModeChange(NTSCFilter::PRESET_OFF);
+      handleTVModeChange(NTSCFilter::Preset::OFF);
       handlePhosphorChange();
-      loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+      loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
       break;
     }
   }
@@ -533,7 +533,7 @@ void VideoDialog::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
 {
-  bool enable = preset == NTSCFilter::PRESET_CUSTOM;
+  bool enable = preset == NTSCFilter::Preset::CUSTOM;
 
   myTVSharp->setEnabled(enable);
   myTVHue->setEnabled(enable);
@@ -599,15 +599,15 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       handleTVModeChange(NTSCFilter::Preset(myTVMode->getSelectedTag().toInt()));
       break;
 
-    case kCloneCompositeCmd: loadTVAdjustables(NTSCFilter::PRESET_COMPOSITE);
+    case kCloneCompositeCmd: loadTVAdjustables(NTSCFilter::Preset::COMPOSITE);
       break;
-    case kCloneSvideoCmd: loadTVAdjustables(NTSCFilter::PRESET_SVIDEO);
+    case kCloneSvideoCmd: loadTVAdjustables(NTSCFilter::Preset::SVIDEO);
       break;
-    case kCloneRGBCmd: loadTVAdjustables(NTSCFilter::PRESET_RGB);
+    case kCloneRGBCmd: loadTVAdjustables(NTSCFilter::Preset::RGB);
       break;
-    case kCloneBadCmd: loadTVAdjustables(NTSCFilter::PRESET_BAD);
+    case kCloneBadCmd: loadTVAdjustables(NTSCFilter::Preset::BAD);
       break;
-    case kCloneCustomCmd: loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+    case kCloneCustomCmd: loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
       break;
 
     case kScanlinesChanged:

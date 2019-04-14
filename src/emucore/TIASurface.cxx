@@ -164,7 +164,7 @@ uInt32 TIASurface::mapIndexedPixel(uInt8 indexedColor, uInt8 shift)
 void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 {
   ostringstream buf;
-  if(preset == NTSCFilter::PRESET_OFF)
+  if(preset == NTSCFilter::Preset::OFF)
   {
     enableNTSC(false);
     buf << "TV filtering disabled";

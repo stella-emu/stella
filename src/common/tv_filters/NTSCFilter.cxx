@@ -26,7 +26,7 @@ constexpr uInt32 scaleTo100(double x)   { return uInt32(50*(x+1.0)); }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NTSCFilter::NTSCFilter()
   : mySetup(AtariNTSC::TV_Composite),
-    myPreset(PRESET_OFF),
+    myPreset(Preset::OFF),
     myCurrentAdjustable(0)
 {
 }
@@ -38,23 +38,23 @@ string NTSCFilter::setPreset(Preset preset)
   string msg = "disabled";
   switch(myPreset)
   {
-    case PRESET_COMPOSITE:
+    case Preset::COMPOSITE:
       mySetup = AtariNTSC::TV_Composite;
       msg = "COMPOSITE";
       break;
-    case PRESET_SVIDEO:
+    case Preset::SVIDEO:
       mySetup = AtariNTSC::TV_SVideo;
       msg = "S-VIDEO";
       break;
-    case PRESET_RGB:
+    case Preset::RGB:
       mySetup = AtariNTSC::TV_RGB;
       msg = "RGB";
       break;
-    case PRESET_BAD:
+    case Preset::BAD:
       mySetup = AtariNTSC::TV_Bad;
       msg = "BAD ADJUST";
       break;
-    case PRESET_CUSTOM:
+    case Preset::CUSTOM:
       mySetup = myCustomSetup;
       msg = "CUSTOM";
       break;
@@ -70,11 +70,11 @@ string NTSCFilter::getPreset() const
 {
   switch(myPreset)
   {
-    case PRESET_COMPOSITE:  return "COMPOSITE";
-    case PRESET_SVIDEO:     return "S-VIDEO";
-    case PRESET_RGB:        return "RGB";
-    case PRESET_BAD:        return "BAD ADJUST";
-    case PRESET_CUSTOM:     return "CUSTOM";
+    case Preset::COMPOSITE:  return "COMPOSITE";
+    case Preset::SVIDEO:     return "S-VIDEO";
+    case Preset::RGB:        return "RGB";
+    case Preset::BAD:        return "BAD ADJUST";
+    case Preset::CUSTOM:     return "CUSTOM";
     default:                return "Disabled";
   }
 }
@@ -82,7 +82,7 @@ string NTSCFilter::getPreset() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setNextAdjustable()
 {
-  if(myPreset != PRESET_CUSTOM)
+  if(myPreset != Preset::CUSTOM)
     return "'Custom' TV mode not selected";
 
   myCurrentAdjustable = (myCurrentAdjustable + 1) % 10;
@@ -96,7 +96,7 @@ string NTSCFilter::setNextAdjustable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setPreviousAdjustable()
 {
-  if(myPreset != PRESET_CUSTOM)
+  if(myPreset != Preset::CUSTOM)
     return "'Custom' TV mode not selected";
 
   if(myCurrentAdjustable == 0) myCurrentAdjustable = 9;
@@ -111,7 +111,7 @@ string NTSCFilter::setPreviousAdjustable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::increaseAdjustable()
 {
-  if(myPreset != PRESET_CUSTOM)
+  if(myPreset != Preset::CUSTOM)
     return "'Custom' TV mode not selected";
 
   uInt32 newval = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
@@ -129,7 +129,7 @@ string NTSCFilter::increaseAdjustable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::decreaseAdjustable()
 {
-  if(myPreset != PRESET_CUSTOM)
+  if(myPreset != Preset::CUSTOM)
     return "'Custom' TV mode not selected";
 
   uInt32 newval = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
@@ -182,15 +182,15 @@ void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset) const
 {
   switch(preset)
   {
-    case PRESET_COMPOSITE:
+    case Preset::COMPOSITE:
       convertToAdjustable(adjustable, AtariNTSC::TV_Composite);  break;
-    case PRESET_SVIDEO:
+    case Preset::SVIDEO:
       convertToAdjustable(adjustable, AtariNTSC::TV_SVideo);  break;
-    case PRESET_RGB:
+    case Preset::RGB:
       convertToAdjustable(adjustable, AtariNTSC::TV_RGB);  break;
-    case PRESET_BAD:
+    case Preset::BAD:
       convertToAdjustable(adjustable, AtariNTSC::TV_Bad);  break;
-    case PRESET_CUSTOM:
+    case Preset::CUSTOM:
       convertToAdjustable(adjustable, myCustomSetup);  break;
     default:
       break;

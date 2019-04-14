@@ -48,10 +48,7 @@
 class AtariNTSC
 {
   public:
-    enum {
-      palette_size = 256,
-      entry_size = 2 * 14,
-    };
+    static constexpr uInt32 palette_size = 256, entry_size = 2 * 14;
 
     // By default, threading is turned off
     AtariNTSC() { enableThreading(false); }
@@ -132,7 +129,7 @@ class AtariNTSC
     uInt32 getRGBPhosphor(const uInt32 c, const uInt32 cp) const;
 
   private:
-    enum {
+    static constexpr Int32
       PIXEL_in_chunk  = 2,   // number of input pixels read per chunk
       PIXEL_out_chunk = 7,   // number of output pixels generated per chunk
       NTSC_black      = 0,   // palette index for black
@@ -155,7 +152,7 @@ class AtariNTSC
 
       std_decoder_hue = 0,
       ext_decoder_hue = std_decoder_hue + 15
-    };
+    ;
 
     #define artifacts_mid   1.5f
     #define artifacts_max   2.5f

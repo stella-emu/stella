@@ -152,10 +152,6 @@ class StateManager
     RewindManager& rewindManager() const { return *myRewindManager; }
 
   private:
-    enum {
-      kVersion = 001
-    };
-
     // The parent OSystem object
     OSystem& myOSystem;
 
