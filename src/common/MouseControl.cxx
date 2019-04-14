@@ -42,105 +42,67 @@ MouseControl::MouseControl(Console& console, const string& mode)
           m_mode[0] >= '0' && m_mode[0] <= '8' &&
           m_mode[1] >= '0' && m_mode[1] <= '8')
   {
-    Axis xaxis = Axis(int(m_mode[0]) - '0');
-    Axis yaxis = Axis(int(m_mode[1]) - '0');
+    MouseControl::Type xaxis = MouseControl::Type(int(m_mode[0]) - '0');
+    MouseControl::Type yaxis = MouseControl::Type(int(m_mode[1]) - '0');
     ostringstream msg;
-    msg << "Mouse X-axis is ";
     Controller::Type xtype = Controller::Type::Joystick, ytype = Controller::Type::Joystick;
     int xid = -1, yid = -1;
-    switch(xaxis)
-    {
-      case NoControl:
-        msg << "not used";
-        break;
-      case Paddle0:
-        xtype = Controller::Type::Paddles;
-        xid = 0;
-        msg << "Paddle 0";
-        break;
-      case Paddle1:
-        xtype = Controller::Type::Paddles;
-        xid = 1;
-        msg << "Paddle 1";
-        break;
-      case Paddle2:
-        xtype = Controller::Type::Paddles;
-        xid = 2;
-        msg << "Paddle 2";
-        break;
-      case Paddle3:
-        xtype = Controller::Type::Paddles;
-        xid = 3;
-        msg << "Paddle 3";
-        break;
-      case Driving0:
-        xtype = Controller::Type::Driving;
-        xid = 0;
-        msg << "Driving 0";
-        break;
-      case Driving1:
-        xtype = Controller::Type::Driving;
-        xid = 1;
-        msg << "Driving 1";
-        break;
-      case MindLink0:
-        xtype = Controller::Type::MindLink;
-        xid = 0;
-        msg << "MindLink 0";
-        break;
-      case MindLink1:
-        xtype = Controller::Type::MindLink;
-        xid = 1;
-        msg << "MindLink 1";
-        break;
-    }
+
+    auto MControlToController = [&msg](MouseControl::Type axis,
+                                       Controller::Type& type, int& id) {
+      switch(axis)
+      {
+        case MouseControl::Type::NoControl:
+          msg << "not used";
+          break;
+        case MouseControl::Type::Paddle0:
+          type = Controller::Type::Paddles;
+          id = 0;
+          msg << "Paddle 0";
+          break;
+        case MouseControl::Type::Paddle1:
+          type = Controller::Type::Paddles;
+          id = 1;
+          msg << "Paddle 1";
+          break;
+        case MouseControl::Type::Paddle2:
+          type = Controller::Type::Paddles;
+          id = 2;
+          msg << "Paddle 2";
+          break;
+        case MouseControl::Type::Paddle3:
+          type = Controller::Type::Paddles;
+          id = 3;
+          msg << "Paddle 3";
+          break;
+        case MouseControl::Type::Driving0:
+          type = Controller::Type::Driving;
+          id = 0;
+          msg << "Driving 0";
+          break;
+        case MouseControl::Type::Driving1:
+          type = Controller::Type::Driving;
+          id = 1;
+          msg << "Driving 1";
+          break;
+        case MouseControl::Type::MindLink0:
+          type = Controller::Type::MindLink;
+          id = 0;
+          msg << "MindLink 0";
+          break;
+        case MouseControl::Type::MindLink1:
+          type = Controller::Type::MindLink;
+          id = 1;
+          msg << "MindLink 1";
+          break;
+      }
+    };
+
+    msg << "Mouse X-axis is ";
+    MControlToController(xaxis, xtype, xid);
     msg << ", Y-axis is ";
-    switch(yaxis)
-    {
-      case NoControl:
-        msg << "not used";
-        break;
-      case Paddle0:
-        ytype = Controller::Type::Paddles;
-        yid = 0;
-        msg << "Paddle 0";
-        break;
-      case Paddle1:
-        ytype = Controller::Type::Paddles;
-        yid = 1;
-        msg << "Paddle 1";
-        break;
-      case Paddle2:
-        ytype = Controller::Type::Paddles;
-        yid = 2;
-        msg << "Paddle 2";
-        break;
-      case Paddle3:
-        ytype = Controller::Type::Paddles;
-        yid = 3;
-        msg << "Paddle 3";
-        break;
-      case Driving0:
-        ytype = Controller::Type::Driving;
-        yid = 0;
-        msg << "Driving 0";
-        break;
-      case Driving1:
-        ytype = Controller::Type::Driving;
-        yid = 1;
-        msg << "Driving 1";
-        break;
-      case MindLink0:
-        ytype = Controller::Type::MindLink;
-        yid = 0;
-        msg << "MindLink 0";
-        break;
-      case MindLink1:
-        ytype = Controller::Type::MindLink;
-        yid = 1;
-        msg << "MindLink 1";
-        break;
-    }
+    MControlToController(yaxis, ytype, yid);
+
     myModeList.push_back(MouseMode(xtype, xid, ytype, yid, msg.str()));
   }
 

@@ -41,7 +41,7 @@ class MouseControl
     /**
       Enumeration of mouse axis control types
     */
-    enum Axis
+    enum class Type
     {
       Paddle0 = 0, Paddle1, Paddle2, Paddle3,
       Driving0, Driving1, MindLink0, MindLink1,

@@ -247,15 +247,15 @@ GameInfoDialog::GameInfoDialog(
   // Mouse controller specific axis
   pwidth = font.getStringWidth("MindLink 0");
   items.clear();
-  VarList::push_back(items, "None",       MouseControl::NoControl);
-  VarList::push_back(items, "Paddle 0",   MouseControl::Paddle0);
-  VarList::push_back(items, "Paddle 1",   MouseControl::Paddle1);
-  VarList::push_back(items, "Paddle 2",   MouseControl::Paddle2);
-  VarList::push_back(items, "Paddle 3",   MouseControl::Paddle3);
-  VarList::push_back(items, "Driving 0",  MouseControl::Driving0);
-  VarList::push_back(items, "Driving 1",  MouseControl::Driving1);
-  VarList::push_back(items, "MindLink 0", MouseControl::MindLink0);
-  VarList::push_back(items, "MindLink 1", MouseControl::MindLink1);
+  VarList::push_back(items, "None",       static_cast<uInt32>(MouseControl::Type::NoControl));
+  VarList::push_back(items, "Paddle 0",   static_cast<uInt32>(MouseControl::Type::Paddle0));
+  VarList::push_back(items, "Paddle 1",   static_cast<uInt32>(MouseControl::Type::Paddle1));
+  VarList::push_back(items, "Paddle 2",   static_cast<uInt32>(MouseControl::Type::Paddle2));
+  VarList::push_back(items, "Paddle 3",   static_cast<uInt32>(MouseControl::Type::Paddle3));
+  VarList::push_back(items, "Driving 0",  static_cast<uInt32>(MouseControl::Type::Driving0));
+  VarList::push_back(items, "Driving 1",  static_cast<uInt32>(MouseControl::Type::Driving1));
+  VarList::push_back(items, "MindLink 0", static_cast<uInt32>(MouseControl::Type::MindLink0));
+  VarList::push_back(items, "MindLink 1", static_cast<uInt32>(MouseControl::Type::MindLink1));
 
   xpos += 20;
   ypos += lineHeight + VGAP;
