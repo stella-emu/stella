@@ -35,6 +35,8 @@ class CommandDialog : public Dialog
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void updateSlot(int slot);
+    void updateTVFormat();
+    void updatePalette();
 
     // column 0
     ButtonWidget* myColorButton;

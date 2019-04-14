@@ -115,16 +115,8 @@ void CommandDialog::loadConfig()
   myTimeMachineButton->setLabel(instance().state().mode() == StateManager::Mode::TimeMachine ?
                                 "Time Machine On" : "No Time Machine");
   // Column 3
-  myTVFormatButton->setLabel(instance().console().getFormatString() + " Mode");
-  string palette, label;
-  palette = instance().settings().getString("palette");
-  if(BSPF::equalsIgnoreCase(palette, "standard"))
-    label = "Stella Palette";
-  else if(BSPF::equalsIgnoreCase(palette, "z26"))
-    label = "Z26 Palette";
-  else
-    label = "User Palette";
-  myPaletteButton->setLabel(label);
+  updateTVFormat();
+  updatePalette();
   myPhosphorButton->setLabel(instance().frameBuffer().tiaSurface().phosphorEnabled() ? "Phosphor On" : "Phosphor Off");
   mySoundButton->setLabel(instance().audioSettings().enabled() ? "Sound On" : "Sound Off");
 }
@@ -199,13 +191,13 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     // Column 3
     case kFormatCmd:
-      instance().eventHandler().leaveMenuMode();
       instance().console().toggleFormat();
+      updateTVFormat();
       break;
 
     case kPaletteCmd:
-      instance().eventHandler().leaveMenuMode();
       instance().console().togglePalette();
+      updatePalette();
       break;
 
     case kPhosphorCmd:
@@ -250,4 +242,25 @@ void CommandDialog::updateSlot(int slot)
   mySaveStateButton->setLabel("Save State" + buf.str());
   myStateSlotButton->setLabel("State Slot" + buf.str());
   myLoadStateButton->setLabel("Load State" + buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CommandDialog::updateTVFormat()
+{
+  myTVFormatButton->setLabel(instance().console().getFormatString() + " Mode");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CommandDialog::updatePalette()
+{
+  string palette, label;
+
+  palette = instance().settings().getString("palette");
+  if(BSPF::equalsIgnoreCase(palette, "standard"))
+    label = "Stella Palette";
+  else if(BSPF::equalsIgnoreCase(palette, "z26"))
+    label = "Z26 Palette";
+  else
+    label = "User Palette";
+  myPaletteButton->setLabel(label);
 }
