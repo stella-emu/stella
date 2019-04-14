@@ -260,7 +260,7 @@ void Cartridge3EPlus::initializeBankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3EPlus::patch(uInt16 address, uInt8 value)
 {
-#if 1
+#if 0
   // Patch the cartridge ROM (for debugger)
 
   myBankChanged = true;
