@@ -266,7 +266,7 @@ bool Cartridge3EPlus::patch(uInt16 address, uInt8 value)
   myBankChanged = true;
 
   uInt32 bankNumber = (address >> RAM_BANK_TO_POWER) & 7;   // now 512 byte bank # (ie: 0-7)
-  Int16 whichBankIsThere = bankInUse[bankNumber];           // ROM or RAM bank reference
+  uInt16 whichBankIsThere = bankInUse[bankNumber];           // ROM or RAM bank reference
 
   if (whichBankIsThere == BANK_UNDEFINED) {
 

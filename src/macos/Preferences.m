@@ -35,6 +35,9 @@ void prefsSave(void)
 }
 
 @implementation Preferences
+{
+  NSUserDefaults *defaults;    /* Defaults pointer */
+}
 
 static Preferences *sharedInstance = nil;
 

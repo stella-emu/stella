@@ -17,6 +17,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+void prefsSetString(const char* key, const char* value);
+void prefsGetString(const char* key, char* value, int size);
+void prefsSave(void);
+
 /**
   Preferences class and support functions for the macOS
   SDL2 port of Stella.
@@ -24,9 +28,6 @@
   @author  Mark Grebe <atarimac@cox.net>
 */
 @interface Preferences : NSObject
-{
-  NSUserDefaults *defaults;    /* Defaults pointer */
-}
 
 + (Preferences *)sharedInstance;
 - (void)setString:(const char *)key : (const char *)value;

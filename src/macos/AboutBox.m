@@ -18,6 +18,16 @@
 #import "AboutBox.h"
 
 @implementation AboutBox
+{
+  IBOutlet NSTextField *appNameField;
+  IBOutlet NSTextView *creditsField;
+  IBOutlet NSTextField *versionField;
+  NSTimer *scrollTimer;
+  CGFloat currentPosition;
+  CGFloat maxScrollHeight;
+  NSTimeInterval startTime;
+  BOOL restartAtTop;
+}
 
 static AboutBox *sharedInstance = nil;
 

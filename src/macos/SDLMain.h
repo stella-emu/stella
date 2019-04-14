@@ -6,8 +6,7 @@
 #import <Cocoa/Cocoa.h>
 
 @interface SDLMain : NSObject
-{
-}
+
 + (SDLMain*) sharedInstance;
 
 @end

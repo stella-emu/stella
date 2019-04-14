@@ -24,16 +24,6 @@
   @author  Mark Grebe <atarimac@cox.net>
 */
 @interface AboutBox : NSObject
-{
-  IBOutlet NSTextField *appNameField;
-  IBOutlet NSTextView *creditsField;
-  IBOutlet NSTextField *versionField;
-  NSTimer *scrollTimer;
-  CGFloat currentPosition;
-  CGFloat maxScrollHeight;
-  NSTimeInterval startTime;
-  BOOL restartAtTop;
-}
 
 + (AboutBox *)sharedInstance;
 - (IBAction)showPanel:(id)sender;
