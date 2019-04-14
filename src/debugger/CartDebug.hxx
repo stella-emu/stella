@@ -47,7 +47,7 @@ class CartDebug : public DebuggerSystem
   friend class DiStella;
 
   public:
-    enum DisasmType {
+    enum DisasmType {  // TODO - make this 'enum class'
       NONE        = 0,
       REFERENCED  = 1 << 0, /* 0x01, code somewhere in the program references it,
                                i.e. LDA $F372 referenced $F372 */
@@ -86,12 +86,7 @@ class CartDebug : public DebuggerSystem
     };
 
     // Determine 'type' of address (ie, what part of the system accessed)
-    enum AddrType {
-      ADDR_TIA,
-      ADDR_IO,
-      ADDR_ZPRAM,
-      ADDR_ROM
-    };
+    enum class AddrType { TIA, IO, ZPRAM, ROM };
     AddrType addressType(uInt16 addr) const;
 
   public:

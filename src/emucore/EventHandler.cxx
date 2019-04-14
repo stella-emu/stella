@@ -75,8 +75,8 @@ EventHandler::EventHandler(OSystem& osystem)
   myPJoyHandler = make_unique<PhysicalJoystickHandler>(osystem, *this, myEvent);
 
   // Erase the 'combo' array
-  for(int i = 0; i < kComboSize; ++i)
-    for(int j = 0; j < kEventsPerCombo; ++j)
+  for(int i = 0; i < COMBO_SIZE; ++i)
+    for(int j = 0; j < EVENTS_PER_COMBO; ++j)
       myComboTable[i][j] = Event::NoType;
 }
 
@@ -442,7 +442,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
     case Event::Combo14:
     case Event::Combo15:
     case Event::Combo16:
-      for(int i = 0, combo = event - Event::Combo1; i < kEventsPerCombo; ++i)
+      for(int i = 0, combo = event - Event::Combo1; i < EVENTS_PER_COMBO; ++i)
         if(myComboTable[combo][i] != Event::NoType)
           handleEvent(myComboTable[combo][i], pressed);
       return;
@@ -690,11 +690,11 @@ void EventHandler::setActionMappings(EventMode mode)
   switch(mode)
   {
     case kEmulationMode:
-      listsize = kEmulActionListSize;
+      listsize = EMUL_ACTIONLIST_SIZE;
       list     = ourEmulActionList;
       break;
     case kMenuMode:
-      listsize = kMenuActionListSize;
+      listsize = MENU_ACTIONLIST_SIZE;
       list     = ourMenuActionList;
       break;
     default:
@@ -768,8 +768,8 @@ void EventHandler::setComboMap()
 
   // Erase the 'combo' array
   auto ERASE_ALL = [&]() {
-    for(int i = 0; i < kComboSize; ++i)
-      for(int j = 0; j < kEventsPerCombo; ++j)
+    for(int i = 0; i < COMBO_SIZE; ++i)
+      for(int j = 0; j < EVENTS_PER_COMBO; ++j)
         myComboTable[i][j] = Event::NoType;
   };
 
@@ -781,18 +781,18 @@ void EventHandler::setComboMap()
   {
     string key;
     buf >> key;
-    if(atoi(key.c_str()) == kComboSize)
+    if(atoi(key.c_str()) == COMBO_SIZE)
     {
       // Fill the combomap table with events for as long as they exist
       int combocount = 0;
-      while(buf >> key && combocount < kComboSize)
+      while(buf >> key && combocount < COMBO_SIZE)
       {
         // Each event in a comboevent is separated by a comma
         replace(key.begin(), key.end(), ',', ' ');
         istringstream buf2(key);
 
         int eventcount = 0;
-        while(buf2 >> key && eventcount < kEventsPerCombo)
+        while(buf2 >> key && eventcount < EVENTS_PER_COMBO)
         {
           myComboTable[combocount][eventcount] = Event::Type(atoi(key.c_str()));
           ++eventcount;
@@ -931,11 +931,11 @@ void EventHandler::saveComboMapping()
   // For each combo event, create a comma-separated list of its events
   // Prepend the event count, so we can check it on next load
   ostringstream buf;
-  buf << kComboSize;
-  for(int i = 0; i < kComboSize; ++i)
+  buf << COMBO_SIZE;
+  for(int i = 0; i < COMBO_SIZE; ++i)
   {
     buf << ":" << myComboTable[i][0];
-    for(int j = 1; j < kEventsPerCombo; ++j)
+    for(int j = 1; j < EVENTS_PER_COMBO; ++j)
       buf << "," << myComboTable[i][j];
   }
   myOSystem.settings().setValue("combomap", buf.str());
@@ -948,11 +948,11 @@ StringList EventHandler::getActionList(EventMode mode) const
   switch(mode)
   {
     case kEmulationMode:
-      for(uInt32 i = 0; i < kEmulActionListSize; ++i)
+      for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
         l.push_back(EventHandler::ourEmulActionList[i].action);
       break;
     case kMenuMode:
-      for(uInt32 i = 0; i < kMenuActionListSize; ++i)
+      for(uInt32 i = 0; i < MENU_ACTIONLIST_SIZE; ++i)
         l.push_back(EventHandler::ourMenuActionList[i].action);
       break;
     default:
@@ -969,7 +969,7 @@ VariantList EventHandler::getComboList(EventMode /**/) const
   ostringstream buf;
 
   VarList::push_back(l, "None", "-1");
-  for(uInt32 i = 0; i < kEmulActionListSize; ++i)
+  for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
   {
     if(EventHandler::ourEmulActionList[i].allow_combo)
     {
@@ -989,10 +989,10 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
     int combo = event - Event::Combo1;
-    for(uInt32 i = 0; i < kEventsPerCombo; ++i)
+    for(uInt32 i = 0; i < EVENTS_PER_COMBO; ++i)
     {
       Event::Type e = myComboTable[combo][i];
-      for(uInt32 j = 0; j < kEmulActionListSize; ++j)
+      for(uInt32 j = 0; j < EMUL_ACTIONLIST_SIZE; ++j)
       {
         if(EventHandler::ourEmulActionList[j].event == e &&
            EventHandler::ourEmulActionList[j].allow_combo)
@@ -1020,7 +1020,7 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
     for(int i = 0; i < 8; ++i)
     {
       int idx = atoi(events[i].c_str());
-      if(idx >=0 && idx < kEmulActionListSize)
+      if(idx >= 0 && idx < EMUL_ACTIONLIST_SIZE)
         myComboTable[combo][i] = EventHandler::ourEmulActionList[idx].event;
       else
         myComboTable[combo][i] = Event::NoType;
@@ -1035,12 +1035,12 @@ Event::Type EventHandler::eventAtIndex(int idx, EventMode mode) const
   switch(mode)
   {
     case kEmulationMode:
-      if(idx < 0 || idx >= kEmulActionListSize)
+      if(idx < 0 || idx >= EMUL_ACTIONLIST_SIZE)
         return Event::NoType;
       else
         return ourEmulActionList[idx].event;
     case kMenuMode:
-      if(idx < 0 || idx >= kMenuActionListSize)
+      if(idx < 0 || idx >= MENU_ACTIONLIST_SIZE)
         return Event::NoType;
       else
         return ourMenuActionList[idx].event;
@@ -1055,12 +1055,12 @@ string EventHandler::actionAtIndex(int idx, EventMode mode) const
   switch(mode)
   {
     case kEmulationMode:
-      if(idx < 0 || idx >= kEmulActionListSize)
+      if(idx < 0 || idx >= EMUL_ACTIONLIST_SIZE)
         return EmptyString;
       else
         return ourEmulActionList[idx].action;
     case kMenuMode:
-      if(idx < 0 || idx >= kMenuActionListSize)
+      if(idx < 0 || idx >= MENU_ACTIONLIST_SIZE)
         return EmptyString;
       else
         return ourMenuActionList[idx].action;
@@ -1075,12 +1075,12 @@ string EventHandler::keyAtIndex(int idx, EventMode mode) const
   switch(mode)
   {
     case kEmulationMode:
-      if(idx < 0 || idx >= kEmulActionListSize)
+      if(idx < 0 || idx >= EMUL_ACTIONLIST_SIZE)
         return EmptyString;
       else
         return ourEmulActionList[idx].key;
     case kMenuMode:
-      if(idx < 0 || idx >= kMenuActionListSize)
+      if(idx < 0 || idx >= MENU_ACTIONLIST_SIZE)
         return EmptyString;
       else
         return ourMenuActionList[idx].key;
@@ -1268,7 +1268,7 @@ void EventHandler::setState(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = {
+EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] = {
   { Event::ConsoleSelect,          "Select",                   "", true  },
   { Event::ConsoleReset,           "Reset",                    "", true  },
   { Event::ConsoleColor,           "Color TV",                 "", true  },
@@ -1380,7 +1380,7 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandler::ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = {
+EventHandler::ActionList EventHandler::ourMenuActionList[MENU_ACTIONLIST_SIZE] = {
   { Event::UIUp,        "Move Up",              "", false },
   { Event::UIDown,      "Move Down",            "", false },
   { Event::UILeft,      "Move Left",            "", false },

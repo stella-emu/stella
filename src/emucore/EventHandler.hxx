@@ -360,12 +360,12 @@ class EventHandler
     void removePhysicalJoystick(int index);
 
   private:
-    enum {
-      kComboSize          = 16,
-      kEventsPerCombo     = 8,
-      kEmulActionListSize = 83 + kComboSize,
-      kMenuActionListSize = 14
-    };
+    static constexpr Int32
+      COMBO_SIZE           = 16,
+      EVENTS_PER_COMBO     = 8,
+      EMUL_ACTIONLIST_SIZE = 83 + COMBO_SIZE,
+      MENU_ACTIONLIST_SIZE = 14
+    ;
 
     /**
       The following methods take care of assigning action mappings.
@@ -403,7 +403,7 @@ class EventHandler
     unique_ptr<MouseControl> myMouseControl;
 
     // The event(s) assigned to each combination event
-    Event::Type myComboTable[kComboSize][kEventsPerCombo];
+    Event::Type myComboTable[COMBO_SIZE][EVENTS_PER_COMBO];
 
     // Indicates the current state of the system (ie, which mode is current)
     EventHandlerState myState;
@@ -423,8 +423,8 @@ class EventHandler
     bool myIs7800;
 
     // Holds static strings for the remap menu (emulation and menu events)
-    static ActionList ourEmulActionList[kEmulActionListSize];
-    static ActionList ourMenuActionList[kMenuActionListSize];
+    static ActionList ourEmulActionList[EMUL_ACTIONLIST_SIZE];
+    static ActionList ourMenuActionList[MENU_ACTIONLIST_SIZE];
 
     // Following constructors and assignment operators not supported
     EventHandler() = delete;

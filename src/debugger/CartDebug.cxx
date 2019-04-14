@@ -523,8 +523,8 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
   // Only user-defined labels can be added or redefined
   switch(addressType(address))
   {
-    case ADDR_TIA:
-    case ADDR_IO:
+    case AddrType::TIA:
+    case AddrType::IO:
       return false;
     default:
       removeLabel(label);
@@ -562,7 +562,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
 {
   switch(addressType(addr))
   {
-    case ADDR_TIA:
+    case AddrType::TIA:
     {
       if(isRead)
       {
@@ -591,7 +591,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
       return true;
     }
 
-    case ADDR_IO:
+    case AddrType::IO:
     {
       uInt16 a = addr & 0xFF, offset = addr & 0xFD00;
       if(a <= 0x97)
@@ -611,7 +611,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
       return true;
     }
 
-    case ADDR_ZPRAM:
+    case AddrType::ZPRAM:
     {
       // RAM can use user-defined labels; otherwise we default to
       // standard mnemonics
@@ -634,7 +634,7 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
       return true;
     }
 
-    case ADDR_ROM:
+    case AddrType::ROM:
     {
       // These addresses can never be in the system labels list
       const auto& iter = myUserLabels.find(addr);
@@ -1317,21 +1317,21 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
   if(addr % 0x2000 < 0x1000)
   {
     if((addr & 0x00ff) < 0x80)
-      return ADDR_TIA;
+      return AddrType::TIA;
     else
     {
       switch(addr & 0x0f00)
       {
         case 0x000:  case 0x100:  case 0x400:  case 0x500:
         case 0x800:  case 0x900:  case 0xc00:  case 0xd00:
-          return ADDR_ZPRAM;
+          return AddrType::ZPRAM;
         case 0x200:  case 0x300:  case 0x600:  case 0x700:
         case 0xa00:  case 0xb00:  case 0xe00:  case 0xf00:
-          return ADDR_IO;
+          return AddrType::IO;
       }
     }
   }
-  return ADDR_ROM;
+  return AddrType::ROM;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

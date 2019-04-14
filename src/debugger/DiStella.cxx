@@ -81,7 +81,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       // multi-byte instruction, then we make note of that address for reference
       //
       // However, we only do this for labels pointing to ROM (above $1000)
-      if (myDbg.addressType(k + myOffset) == CartDebug::ADDR_ROM) {
+      if (myDbg.addressType(k + myOffset) == CartDebug::AddrType::ROM) {
         reservedLabel.str("");
         reservedLabel << "L" << Base::HEX4 << (k + myOffset);
         myReserved.Label.emplace(k + myOffset, reservedLabel.str());
@@ -877,11 +877,11 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
   // Check for equates before ROM/ZP-RAM accesses, because the original logic
   // of Distella assumed either equates or ROM; it didn't take ZP-RAM into account
   CartDebug::AddrType type = myDbg.addressType(address);
-  if (type == CartDebug::ADDR_TIA) {
+  if (type == CartDebug::AddrType::TIA) {
     return 2;
-  } else if (type == CartDebug::ADDR_IO) {
+  } else if (type == CartDebug::AddrType::IO) {
     return 3;
-  } else if (type == CartDebug::ADDR_ZPRAM && myOffset != 0) {
+  } else if (type == CartDebug::AddrType::ZPRAM && myOffset != 0) {
     return 5;
   } else if (address >= uInt32(myOffset) && address <= uInt32(myAppData.end + myOffset)) {
     myLabels[address - myOffset] = myLabels[address - myOffset] | mask;

@@ -155,13 +155,6 @@ class M6532 : public Device
   #endif // DEBUGGER_SUPPORT
 
   private:
-    // Accessible bits in the interrupt flag register
-    // All other bits are always zeroed
-    enum {
-      TimerBit = 0x80,
-      PA7Bit = 0x40
-    };
-
     // Reference to the console
     const ConsoleIO& myConsole;
 
@@ -211,6 +204,10 @@ class M6532 : public Device
 
     // Last value written to the timer registers
     uInt8 myOutTimer[4];
+
+    // Accessible bits in the interrupt flag register
+    // All other bits are always zeroed
+    static constexpr uInt8 TimerBit = 0x80, PA7Bit = 0x40;
 
 #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of RIOT

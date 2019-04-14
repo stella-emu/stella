@@ -326,13 +326,12 @@ class M6502 : public Serializable
       handled such as stopping execution, fatal errors, maskable interrupts
       and non-maskable interrupts (in myExecutionStatus)
     */
-    enum
-    {
-      StopExecutionBit = 0x01,
-      FatalErrorBit = 0x02,
-      MaskableInterruptBit = 0x04,
+    static constexpr uInt8
+      StopExecutionBit        = 0x01,
+      FatalErrorBit           = 0x02,
+      MaskableInterruptBit    = 0x04,
       NonmaskableInterruptBit = 0x08
-    };
+    ;
     uInt8 myExecutionStatus;
 
     /// Pointer to the system the processor is installed in or the null pointer
@@ -397,12 +396,6 @@ class M6502 : public Serializable
     bool myHaltRequested;
 
 #ifdef DEBUGGER_SUPPORT
-    enum CondAction
-    {
-      breakAction,
-      saveStateAction
-    };
-
     Int32 evalCondBreaks() {
       for(uInt32 i = 0; i < myCondBreaks.size(); i++)
         if(myCondBreaks[i]->evaluate())

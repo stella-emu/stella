@@ -66,38 +66,40 @@ class DebuggerParser
     string saveScriptFile(string file);
 
   private:
-    enum { kNumCommands = 92 };
-
     // Constants for argument processing
-    enum {
-      kIN_COMMAND,
-      kIN_SPACE,
-      kIN_BRACE,
-      kIN_ARG
+    enum class ParseState {
+      IN_COMMAND,
+      IN_SPACE,
+      IN_BRACE,
+      IN_ARG
     };
 
-    enum parameters {
-      kARG_WORD,        // single 16-bit value
-      kARG_DWORD,       // single 32-bit value
-      kARG_MULTI_WORD,  // multiple 16-bit values (must occur last)
-      kARG_BYTE,        // single 8-bit value
-      kARG_MULTI_BYTE,  // multiple 8-bit values (must occur last)
-      kARG_BOOL,        // 0 or 1 only
-      kARG_LABEL,       // label (need not be defined, treated as string)
-      kARG_FILE,        // filename
-      kARG_BASE_SPCL,   // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
-      kARG_END_ARGS     // sentinel, occurs at end of list
+    enum class Parameters {
+      ARG_WORD,        // single 16-bit value
+      ARG_DWORD,       // single 32-bit value
+      ARG_MULTI_WORD,  // multiple 16-bit values (must occur last)
+      ARG_BYTE,        // single 8-bit value
+      ARG_MULTI_BYTE,  // multiple 8-bit values (must occur last)
+      ARG_BOOL,        // 0 or 1 only
+      ARG_LABEL,       // label (need not be defined, treated as string)
+      ARG_FILE,        // filename
+      ARG_BASE_SPCL,   // base specifier: 2, 10, or 16 (or "bin" "dec" "hex")
+      ARG_END_ARGS     // sentinel, occurs at end of list
     };
 
+    // List of commands available
+    static constexpr uInt32 NumCommands = 92;
     struct Command {
       string cmdString;
       string description;
       string extendedDesc;
       bool parmsRequired;
       bool refreshRequired;
-      parameters parms[10];
+      Parameters parms[10];
       std::function<void (DebuggerParser*)> executor;
     };
+    static Command commands[NumCommands];
+
     struct Trap
     {
       bool read;
@@ -232,9 +234,6 @@ class DebuggerParser
     void executeX();
     void executeY();
     void executeZ();
-
-    // List of commands available
-    static Command commands[kNumCommands];
 
   private:
     // Following constructors and assignment operators not supported

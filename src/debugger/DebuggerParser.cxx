@@ -110,7 +110,7 @@ string DebuggerParser::run(const string& command)
   getArgs(command, verb);
   commandResult.str("");
 
-  for(int i = 0; i < kNumCommands; ++i)
+  for(uInt32 i = 0; i < NumCommands; ++i)
   {
     if(BSPF::equalsIgnoreCase(verb, commands[i].cmdString))
     {
@@ -177,7 +177,7 @@ void DebuggerParser::outputCommandError(const string& errorMsg, int command)
 void DebuggerParser::getCompletions(const char* in, StringList& completions) const
 {
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
-  for(int i = 0; i < kNumCommands; ++i)
+  for(uInt32 i = 0; i < NumCommands; ++i)
   {
     if(BSPF::matches(commands[i].cmdString, in))
       completions.push_back(commands[i].cmdString);
@@ -332,7 +332,8 @@ string DebuggerParser::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DebuggerParser::getArgs(const string& command, string& verb)
 {
-  int state = kIN_COMMAND, i = 0, length = int(command.length());
+  ParseState state = ParseState::IN_COMMAND;
+  uInt32 i = 0, length = uInt32(command.length());
   string curArg = "";
   verb = "";
 
@@ -348,23 +349,23 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
     char c = command[i++];
     switch(state)
     {
-      case kIN_COMMAND:
+      case ParseState::IN_COMMAND:
         if(c == ' ')
-          state = kIN_SPACE;
+          state = ParseState::IN_SPACE;
         else
           verb += c;
         break;
-      case kIN_SPACE:
+      case ParseState::IN_SPACE:
         if(c == '{')
-          state = kIN_BRACE;
+          state = ParseState::IN_BRACE;
         else if(c != ' ') {
-          state = kIN_ARG;
+          state = ParseState::IN_ARG;
           curArg += c;
         }
         break;
-      case kIN_BRACE:
+      case ParseState::IN_BRACE:
         if(c == '}') {
-          state = kIN_SPACE;
+          state = ParseState::IN_SPACE;
           argStrings.push_back(curArg);
           //  cerr << "{" << curArg << "}" << endl;
           curArg = "";
@@ -372,9 +373,9 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
           curArg += c;
         }
         break;
-      case kIN_ARG:
+      case ParseState::IN_ARG:
         if(c == ' ') {
-          state = kIN_SPACE;
+          state = ParseState::IN_SPACE;
           argStrings.push_back(curArg);
           curArg = "";
         } else {
@@ -410,7 +411,7 @@ bool DebuggerParser::validateArgs(int cmd)
 {
   // cerr << "entering validateArgs(" << cmd << ")" << endl;
   bool required = commands[cmd].parmsRequired;
-  parameters* p = commands[cmd].parms;
+  Parameters* p = commands[cmd].parms;
 
   if(argCount == 0)
   {
@@ -426,7 +427,7 @@ bool DebuggerParser::validateArgs(int cmd)
 
   // Figure out how many arguments are required by the command
   uInt32 count = 0, argRequiredCount = 0;
-  while(*p != kARG_END_ARGS && *p != kARG_MULTI_BYTE)
+  while(*p != Parameters::ARG_END_ARGS && *p != Parameters::ARG_MULTI_BYTE)
   {
     ++count;
     ++p;
@@ -434,7 +435,7 @@ bool DebuggerParser::validateArgs(int cmd)
 
   // Evil hack: some commands intentionally take multiple arguments
   // In this case, the required number of arguments is unbounded
-  argRequiredCount = (*p == kARG_END_ARGS) ? count : argCount;
+  argRequiredCount = (*p == Parameters::ARG_END_ARGS) ? count : argCount;
 
   p = commands[cmd].parms;
   uInt32 curCount = 0;
@@ -448,7 +449,7 @@ bool DebuggerParser::validateArgs(int cmd)
 
     switch(*p)
     {
-      case kARG_DWORD:
+      case Parameters::ARG_DWORD:
       #if 0   // TODO - do we need error checking at all here?
         if(curArgInt > 0xffffffff)
         {
@@ -458,7 +459,7 @@ bool DebuggerParser::validateArgs(int cmd)
       #endif
         break;
 
-      case kARG_WORD:
+      case Parameters::ARG_WORD:
         if(curArgInt > 0xffff)
         {
           commandResult.str(red("invalid word argument (must be 0-$ffff)"));
@@ -466,7 +467,7 @@ bool DebuggerParser::validateArgs(int cmd)
         }
         break;
 
-      case kARG_BYTE:
+      case Parameters::ARG_BYTE:
         if(curArgInt > 0xff)
         {
           commandResult.str(red("invalid byte argument (must be 0-$ff)"));
@@ -474,7 +475,7 @@ bool DebuggerParser::validateArgs(int cmd)
         }
         break;
 
-      case kARG_BOOL:
+      case Parameters::ARG_BOOL:
         if(curArgInt != 0 && curArgInt != 1)
         {
           commandResult.str(red("invalid boolean argument (must be 0 or 1)"));
@@ -482,7 +483,7 @@ bool DebuggerParser::validateArgs(int cmd)
         }
         break;
 
-      case kARG_BASE_SPCL:
+      case Parameters::ARG_BASE_SPCL:
         if(curArgInt != 2 && curArgInt != 10 && curArgInt != 16
            && curArgStr != "hex" && curArgStr != "dec" && curArgStr != "bin")
         {
@@ -491,21 +492,21 @@ bool DebuggerParser::validateArgs(int cmd)
         }
         break;
 
-      case kARG_LABEL:
-      case kARG_FILE:
+      case Parameters::ARG_LABEL:
+      case Parameters::ARG_FILE:
         break; // TODO: validate these (for now any string's allowed)
 
-      case kARG_MULTI_BYTE:
-      case kARG_MULTI_WORD:
+      case Parameters::ARG_MULTI_BYTE:
+      case Parameters::ARG_MULTI_WORD:
         break; // FIXME: validate these (for now, any number's allowed)
 
-      case kARG_END_ARGS:
+      case Parameters::ARG_END_ARGS:
         break;
     }
     ++curCount;
     ++p;
 
-  } while(*p != kARG_END_ARGS && curCount < argRequiredCount);
+  } while(*p != Parameters::ARG_END_ARGS && curCount < argRequiredCount);
 
 /*
 cerr << "curCount         = " << curCount << endl
@@ -1240,14 +1241,14 @@ void DebuggerParser::executeHelp()
   {
     // Find length of longest command
     uInt32 clen = 0;
-    for(int i = 0; i < kNumCommands; ++i)
+    for(uInt32 i = 0; i < NumCommands; ++i)
     {
       uInt32 len = uInt32(commands[i].cmdString.length());
       if(len > clen)  clen = len;
     }
 
     commandResult << setfill(' ');
-    for(int i = 0; i < kNumCommands; ++i)
+    for(uInt32 i = 0; i < NumCommands; ++i)
       commandResult << setw(clen) << right << commands[i].cmdString
                     << " - " << commands[i].description << endl;
 
@@ -1255,7 +1256,7 @@ void DebuggerParser::executeHelp()
   }
   else  // get help for specific command
   {
-    for(int i = 0; i < kNumCommands; ++i)
+    for(uInt32 i = 0; i < NumCommands; ++i)
     {
       if(argStrings[0] == commands[i].cmdString)
       {
@@ -2040,7 +2041,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
 {
   switch(debugger.cartDebug().addressType(addr))
   {
-    case CartDebug::ADDR_TIA:
+    case CartDebug::AddrType::TIA:
     {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
@@ -2055,7 +2056,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
       }
       break;
     }
-    case CartDebug::ADDR_IO:
+    case CartDebug::AddrType::IO:
     {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
@@ -2069,7 +2070,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
       }
       break;
     }
-    case CartDebug::ADDR_ZPRAM:
+    case CartDebug::AddrType::ZPRAM:
     {
       for(uInt32 i = 0; i <= 0xFFFF; ++i)
       {
@@ -2083,7 +2084,7 @@ void DebuggerParser::executeTrapRW(uInt32 addr, bool read, bool write, bool add)
       }
       break;
     }
-    case CartDebug::ADDR_ROM:
+    case CartDebug::AddrType::ROM:
     {
       if(addr >= 0x1000 && addr <= 0xFFFF)
       {
@@ -2220,14 +2221,14 @@ void DebuggerParser::executeZ()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // List of all commands available to the parser
-DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
+DebuggerParser::Command DebuggerParser::commands[NumCommands] = {
   {
     "a",
     "Set Accumulator to <value>",
     "Valid value is 0 - ff\nExample: a ff, a #10",
     true,
     true,
-    { kARG_BYTE, kARG_END_ARGS },
+    { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeA)
   },
 
@@ -2237,7 +2238,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Base is #2, #10, #16, bin, dec or hex\nExample: base hex",
     true,
     true,
-    { kARG_BASE_SPCL, kARG_END_ARGS },
+    { Parameters::ARG_BASE_SPCL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeBase)
   },
 
@@ -2248,7 +2249,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: break, break f000",
     false,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeBreak)
   },
 
@@ -2258,7 +2259,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Condition can include multiple items, see documentation\nExample: breakif _scan>100",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeBreakif)
   },
 
@@ -2268,7 +2269,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: c, c 0, c 1",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeC)
   },
 
@@ -2278,7 +2279,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: cheat 0040, cheat abff00",
     false,
     false,
-    { kARG_LABEL, kARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeCheat)
   },
 
@@ -2288,7 +2289,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: clearbreaks (no parameters)",
     false,
     true,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeClearbreaks)
   },
 
@@ -2298,7 +2299,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: clearconfig 0, clearconfig 1",
     false,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeClearconfig)
   },
 
@@ -2308,7 +2309,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: clearsavestateifss (no parameters)",
     false,
     true,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeClearsavestateifs)
   },
 
@@ -2318,7 +2319,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "All traps cleared, including any mirrored ones\nExample: cleartraps (no parameters)",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeCleartraps)
   },
 
@@ -2328,7 +2329,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: clearwatches (no parameters)",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeClearwatches)
   },
 
@@ -2338,7 +2339,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Completely clears screen, but keeps history of commands",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeCls)
   },
 
@@ -2348,7 +2349,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Start and end of range required\nExample: code f000 f010",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeCode)
   },
 
@@ -2358,7 +2359,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Shows a color swatch for the given value\nExample: colortest 1f",
     true,
     false,
-    { kARG_BYTE, kARG_END_ARGS },
+    { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeColortest)
   },
 
@@ -2368,7 +2369,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: d, d 0, d 1",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeD)
   },
 
@@ -2378,7 +2379,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Start and end of range required\nExample: data f000 f010",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeData)
   },
 
@@ -2388,7 +2389,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: debugcolors (no parameters)",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDebugColors)
   },
 
@@ -2398,7 +2399,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: define LABEL1 f100",
     true,
     true,
-    { kARG_LABEL, kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDefine)
   },
 
@@ -2408,7 +2409,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: delbreakif 0",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDelbreakif)
   },
 
@@ -2418,7 +2419,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: delfunction FUNC1",
     true,
     false,
-    { kARG_LABEL, kARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDelfunction)
   },
 
@@ -2428,7 +2429,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: delsavestateif 0",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDelsavestateif)
   },
 
@@ -2438,7 +2439,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: deltrap 0",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDeltrap)
   },
 
@@ -2448,7 +2449,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: delwatch 0",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeDelwatch)
   },
 
@@ -2459,7 +2460,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: disasm, disasm f000 100",
     false,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeDisasm)
   },
 
@@ -2472,7 +2473,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "  dump f000 f0ff 7 - dumps all bytes from f000 to f0ff, CPU state and input registers into a file",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeDump)
   },
 
@@ -2482,7 +2483,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: exec script.dat, exec auto.txt",
     true,
     true,
-    { kARG_FILE, kARG_LABEL, kARG_MULTI_BYTE },
+    { Parameters::ARG_FILE, Parameters::ARG_LABEL, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeExec)
   },
 
@@ -2492,7 +2493,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Self-explanatory",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeExitRom)
   },
 
@@ -2502,7 +2503,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: frame, frame 100",
     false,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeFrame)
   },
 
@@ -2512,7 +2513,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: function FUNC1 { ... }",
     true,
     false,
-    { kARG_LABEL, kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeFunction)
   },
 
@@ -2522,7 +2523,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Start and end of range required\nExample: gfx f000 f010",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeGfx)
   },
 
@@ -2533,7 +2534,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: help, help code",
     false,
     false,
-    { kARG_LABEL, kARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeHelp)
   },
 
@@ -2543,7 +2544,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy0up 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy0Up)
   },
 
@@ -2553,7 +2554,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy0down 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy0Down)
   },
 
@@ -2563,7 +2564,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy0left 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy0Left)
   },
 
@@ -2573,7 +2574,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy0left 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy0Right)
   },
 
@@ -2583,7 +2584,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy0fire 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy0Fire)
   },
 
@@ -2593,7 +2594,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy1up 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy1Up)
   },
 
@@ -2603,7 +2604,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy1down 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy1Down)
   },
 
@@ -2613,7 +2614,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy1left 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy1Left)
   },
 
@@ -2623,7 +2624,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy1left 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy1Right)
   },
 
@@ -2633,7 +2634,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: joy1fire 0",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJoy1Fire)
   },
 
@@ -2643,7 +2644,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Moves disassembly listing to address <xx>\nExample: jump f400",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeJump)
   },
 
@@ -2653,7 +2654,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: listbreaks (no parameters)",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeListbreaks)
   },
 
@@ -2663,7 +2664,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: listconfig 0, listconfig 1",
     false,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeListconfig)
   },
 
@@ -2673,7 +2674,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: listfunctions (no parameters)",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeListfunctions)
   },
 
@@ -2683,7 +2684,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: listsavestateifs (no parameters)",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeListsavestateifs)
   },
 
@@ -2693,7 +2694,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Lists all traps (read and/or write)\nExample: listtraps (no parameters)",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeListtraps)
   },
 
@@ -2703,7 +2704,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: loadconfig file.cfg",
     false,
     true,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeLoadconfig)
   },
 
@@ -2713,7 +2714,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: loadstate 0, loadstate 9",
     true,
     true,
-    { kARG_BYTE, kARG_END_ARGS },
+    { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeLoadstate)
   },
 
@@ -2723,7 +2724,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: n, n 0, n 1",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeN)
   },
 
@@ -2733,7 +2734,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: palette (no parameters)",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executePalette)
   },
 
@@ -2743,7 +2744,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: pc f000",
     true,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executePc)
   },
 
@@ -2753,7 +2754,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Start and end of range required\nExample: pgfx f000 f010",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executePGfx)
   },
 
@@ -2764,7 +2765,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: print pc, print f000",
     true,
     false,
-    { kARG_DWORD, kARG_END_ARGS },
+    { Parameters::ARG_DWORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executePrint)
   },
 
@@ -2774,7 +2775,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: ram, ram 80 00 ...",
     false,
     true,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeRam)
   },
 
@@ -2784,7 +2785,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "System is completely reset, just as if it was just powered on",
     false,
     true,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeReset)
   },
 
@@ -2794,7 +2795,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: rewind, rewind 5",
     false,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeRewind)
   },
 
@@ -2804,7 +2805,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Display text-based output of the contents of the RIOT tab",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeRiot)
   },
 
@@ -2815,7 +2816,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: rom f000 00 01 ff ...",
     true,
     true,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeRom)
   },
 
@@ -2825,7 +2826,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Start and end of range required\nExample: row f000 f010",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeRow)
   },
 
@@ -2835,7 +2836,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Self-explanatory",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeRun)
   },
 
@@ -2846,7 +2847,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: runto lda",
     true,
     true,
-    { kARG_LABEL, kARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeRunTo)
   },
 
@@ -2856,7 +2857,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: runtopc f200",
     true,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeRunToPc)
   },
 
@@ -2866,7 +2867,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Accepts 8-bit value, Example: s f0",
     true,
     true,
-    { kARG_BYTE, kARG_END_ARGS },
+    { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeS)
   },
 
@@ -2876,7 +2877,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: save commands.script",
     true,
     false,
-    { kARG_FILE, kARG_END_ARGS },
+    { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSave)
   },
 
@@ -2886,7 +2887,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: saveconfig",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSaveconfig)
   },
 
@@ -2897,7 +2898,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "NOTE: saves to default save location",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSavedisassembly)
   },
 
@@ -2908,7 +2909,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "NOTE: saves to default save location",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSaverom)
   },
 
@@ -2919,7 +2920,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "NOTE: saves to default save location",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSaveses)
   },
 
@@ -2930,7 +2931,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: savesnap (no parameters)",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSavesnap)
   },
 
@@ -2940,7 +2941,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: savestate 0, savestate 9",
     true,
     false,
-    { kARG_BYTE, kARG_END_ARGS },
+    { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSavestate)
   },
 
@@ -2950,7 +2951,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Condition can include multiple items, see documentation\nExample: savestateif pc==f000",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSavestateif)
   },
 
@@ -2960,7 +2961,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: scanline, scanline 100",
     false,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeScanline)
   },
 
@@ -2970,7 +2971,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: step, step 100",
     false,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeStep)
   },
 
@@ -2980,7 +2981,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: stepwhile pc!=$f2a9",
     true,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeStepwhile)
   },
 
@@ -2990,7 +2991,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Display text-based output of the contents of the TIA tab",
     false,
     false,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeTia)
   },
 
@@ -3000,7 +3001,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: trace, trace 100",
     false,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeTrace)
   },
 
@@ -3011,7 +3012,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: trap f000, trap f000 f100",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeTrap)
   },
 
@@ -3022,7 +3023,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: trapif _scan>#100 GRP0, trapif _bank==1 f000 f100",
       true,
       false,
-      { kARG_WORD, kARG_MULTI_BYTE },
+      { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
       std::mem_fn(&DebuggerParser::executeTrapif)
   },
 
@@ -3033,7 +3034,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: trapread f000, trapread f000 f100",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeTrapread)
   },
 
@@ -3044,7 +3045,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: trapreadif _scan>#100 GRP0, trapreadif _bank==1 f000 f100",
       true,
       false,
-      { kARG_WORD, kARG_MULTI_BYTE },
+      { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
       std::mem_fn(&DebuggerParser::executeTrapreadif)
   },
 
@@ -3055,7 +3056,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: trapwrite f000, trapwrite f000 f100",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeTrapwrite)
   },
 
@@ -3066,7 +3067,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: trapwriteif _scan>#100 GRP0, trapwriteif _bank==1 f000 f100",
       true,
       false,
-      { kARG_WORD, kARG_MULTI_BYTE },
+      { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
       std::mem_fn(&DebuggerParser::executeTrapwriteif)
   },
 
@@ -3076,7 +3077,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: type f000, type f000 f010",
     true,
     false,
-    { kARG_WORD, kARG_MULTI_BYTE },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeType)
   },
 
@@ -3087,7 +3088,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: uhex (no parameters)",
     false,
     true,
-    { kARG_END_ARGS },
+    { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeUHex)
   },
 
@@ -3097,7 +3098,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: undef LABEL1",
     true,
     true,
-    { kARG_LABEL, kARG_END_ARGS },
+    { Parameters::ARG_LABEL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeUndef)
   },
 
@@ -3107,7 +3108,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: unwind, unwind 5",
     false,
     true,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeUnwind)
   },
 
@@ -3117,7 +3118,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: v, v 0, v 1",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeV)
   },
 
@@ -3127,7 +3128,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: watch ram_80",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeWatch)
   },
 
@@ -3137,7 +3138,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Valid value is 0 - ff\nExample: x ff, x #10",
     true,
     true,
-    { kARG_BYTE, kARG_END_ARGS },
+    { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeX)
   },
 
@@ -3147,7 +3148,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Valid value is 0 - ff\nExample: y ff, y #10",
     true,
     true,
-    { kARG_BYTE, kARG_END_ARGS },
+    { Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeY)
   },
 
@@ -3157,7 +3158,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Example: z, z 0, z 1",
     false,
     true,
-    { kARG_BOOL, kARG_END_ARGS },
+    { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeZ)
   }
 };
