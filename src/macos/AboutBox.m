@@ -38,10 +38,7 @@ static AboutBox *sharedInstance = nil;
 
 - (id)init
 {
-  if (sharedInstance)
-    [self release];
-  else
-    sharedInstance = [super init];
+  if (!sharedInstance) sharedInstance = [super init];
 
   return sharedInstance;
 }

@@ -49,7 +49,7 @@ static Preferences *sharedInstance = nil;
 - (id)init
 {
   if (self = [super init]) {
-    defaults = [[NSUserDefaults standardUserDefaults] retain];
+    defaults = [NSUserDefaults standardUserDefaults];
     sharedInstance = self;
   }
   return(self);
@@ -57,42 +57,39 @@ static Preferences *sharedInstance = nil;
 
 - (void)dealloc
 {
-  [defaults release];
   if (self == sharedInstance) {
     sharedInstance = nil;
   }
   
-  [super dealloc];
 }
 
 - (void)setString:(const char *)key : (const char *)value
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  NSString* theKey   = [NSString stringWithCString:key encoding:NSUTF8StringEncoding];
-  NSString* theValue = [NSString stringWithCString:value encoding:NSUTF8StringEncoding];
+  @autoreleasepool {
+    NSString* theKey   = [NSString stringWithCString:key encoding:NSUTF8StringEncoding];
+    NSString* theValue = [NSString stringWithCString:value encoding:NSUTF8StringEncoding];
 
-  [defaults setObject:theValue forKey:theKey];
-  [pool release];
+    [defaults setObject:theValue forKey:theKey];
+  }
 }
 
 - (void)getString:(const char *)key : (char *)value : (int)size
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  NSString* theKey   = [NSString stringWithCString:key encoding:NSUTF8StringEncoding];
-  NSString* theValue = [defaults objectForKey:theKey];
-  if (theValue != nil)
-    strncpy(value, [theValue cStringUsingEncoding: NSUTF8StringEncoding], size);
-  else
-    value[0] = 0;
-
-  [pool release];
+  @autoreleasepool {
+    NSString* theKey   = [NSString stringWithCString:key encoding:NSUTF8StringEncoding];
+    NSString* theValue = [defaults objectForKey:theKey];
+    if (theValue != nil)
+      strncpy(value, [theValue cStringUsingEncoding: NSUTF8StringEncoding], size);
+    else
+      value[0] = 0;
+  }
 }
 
 - (void)save
 {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  [defaults synchronize];
-  [pool release];
+  @autoreleasepool {
+    [defaults synchronize];
+  }
 }
 
 @end
