@@ -68,11 +68,7 @@ class FilesystemNode
     /**
      * Flag to tell listDir() which kind of files to list.
      */
-    enum ListMode {
-      kListFilesOnly = 1,
-      kListDirectoriesOnly = 2,
-      kListAll = 3
-    };
+    enum class ListMode { FilesOnly, DirectoriesOnly, All };
 
     /**
      * Create a new pathless FilesystemNode. Since there's no path associated
@@ -143,7 +139,7 @@ class FilesystemNode
      * @return true if successful, false otherwise (e.g. when the directory
      *         does not exist).
      */
-    bool getChildren(FSList& fslist, ListMode mode = kListDirectoriesOnly,
+    bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
                      bool hidden = false) const;
 
     /**

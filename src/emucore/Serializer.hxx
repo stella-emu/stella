@@ -211,10 +211,7 @@ class Serializer
     // The stream to send the serialized data to.
     unique_ptr<iostream> myStream;
 
-    enum {
-      TruePattern  = 0xfe,
-      FalsePattern = 0x01
-    };
+    static constexpr uInt8 TruePattern = 0xfe, FalsePattern = 0x01;
 
   private:
     // Following constructors and assignment operators not supported

@@ -174,8 +174,8 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
       continue;
 
     // Honor the chosen mode
-    if ((mode == FilesystemNode::kListFilesOnly && !entry._isFile) ||
-        (mode == FilesystemNode::kListDirectoriesOnly && !entry._isDirectory))
+    if ((mode == FilesystemNode::ListMode::FilesOnly && !entry._isFile) ||
+        (mode == FilesystemNode::ListMode::DirectoriesOnly && !entry._isDirectory))
       continue;
 
     myList.emplace_back(new FilesystemNodePOSIX(entry));

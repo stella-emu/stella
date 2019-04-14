@@ -24,7 +24,7 @@
 FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : StringListWidget(boss, font, x, y, w, h),
-    _fsmode(FilesystemNode::kListAll),
+    _fsmode(FilesystemNode::ListMode::All),
     _extension("")
 {
   // This widget is special, in that it catches signals and redirects them
