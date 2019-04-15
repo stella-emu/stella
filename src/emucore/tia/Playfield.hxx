@@ -127,31 +127,9 @@ class Playfield : public Serializable
     bool load(Serializer& in) override;
 
     /**
-      Tick one color clock. Inline for performance.
+      Tick one color clock. Inline for performance (implementation below).
      */
-    void tick(uInt32 x)
-    {
-      myX = x;
-
-      // Reflected flag is updated only at x = 0 or x = 79
-      if (myX == TIAConstants::H_PIXEL / 2 || myX == 0) myRefp = myReflected;
-
-      if (x & 0x03) return;
-
-      uInt32 currentPixel;
-
-      if (myEffectivePattern == 0) {
-          currentPixel = 0;
-      } else if (x < TIAConstants::H_PIXEL / 2) {
-          currentPixel = myEffectivePattern & (1 << (x >> 2));
-      } else if (myRefp) {
-          currentPixel = myEffectivePattern & (1 << (39 - (x >> 2)));
-      } else {
-          currentPixel = myEffectivePattern & (1 << ((x >> 2) - 20));
-      }
-
-      collision = currentPixel ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-    }
+    inline void tick(uInt32 x);
 
   public:
 
@@ -267,5 +245,34 @@ class Playfield : public Serializable
     Playfield& operator=(const Playfield&) = delete;
     Playfield& operator=(Playfield&&) = delete;
 };
+
+// ############################################################################
+// Implementation
+// ############################################################################
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Playfield::tick(uInt32 x)
+{
+  myX = x;
+
+  // Reflected flag is updated only at x = 0 or x = 79
+  if (myX == TIAConstants::H_PIXEL / 2 || myX == 0) myRefp = myReflected;
+
+  if (x & 0x03) return;
+
+  uInt32 currentPixel;
+
+  if (myEffectivePattern == 0) {
+      currentPixel = 0;
+  } else if (x < TIAConstants::H_PIXEL / 2) {
+      currentPixel = myEffectivePattern & (1 << (x >> 2));
+  } else if (myRefp) {
+      currentPixel = myEffectivePattern & (1 << (39 - (x >> 2)));
+  } else {
+      currentPixel = myEffectivePattern & (1 << ((x >> 2) - 20));
+  }
+
+  collision = currentPixel ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+}
 
 #endif // TIA_PLAYFIELD

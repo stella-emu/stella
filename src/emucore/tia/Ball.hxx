@@ -82,60 +82,9 @@ class Ball : public Serializable
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
-    void movementTick(uInt32 clock, bool hblank)
-    {
-      myLastMovementTick = myCounter;
+    inline void movementTick(uInt32 clock, bool hblank);
 
-      if (clock == myHmmClocks)
-        isMoving = false;
-
-      if(isMoving)
-      {
-        if (hblank) tick(false);
-        myInvertedPhaseClock = !hblank;
-      }
-    }
-
-    void tick(bool isReceivingMclock = true)
-    {
-      if(myUseInvertedPhaseClock && myInvertedPhaseClock)
-      {
-        myInvertedPhaseClock = false;
-        return;
-      }
-
-      myIsVisible = myIsRendering && myRenderCounter >= 0;
-      collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-
-      bool starfieldEffect = isMoving && isReceivingMclock;
-
-      if (myCounter == 156) {
-        myIsRendering = true;
-        myRenderCounter = renderCounterOffset;
-
-        uInt8 starfieldDelta = (myCounter + TIAConstants::H_PIXEL - myLastMovementTick) % 4;
-        if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) ++myRenderCounter;
-
-        switch (starfieldDelta) {
-          case 3:
-            myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
-            break;
-
-          case 2:
-            myEffectiveWidth = 0;
-            break;
-
-          default:
-            myEffectiveWidth = myWidth;
-            break;
-        }
-
-      } else if (myIsRendering && ++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth))
-        myIsRendering = false;
-
-      if (++myCounter >= TIAConstants::H_PIXEL)
-          myCounter = 0;
-    }
+    inline void tick(bool isReceivingMclock = true);
 
   public:
 
@@ -190,5 +139,66 @@ class Ball : public Serializable
     Ball& operator=(const Ball&) = delete;
     Ball& operator=(Ball&&);
 };
+
+// ############################################################################
+// Implementation
+// ############################################################################
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::movementTick(uInt32 clock, bool hblank)
+{
+  myLastMovementTick = myCounter;
+
+  if (clock == myHmmClocks)
+    isMoving = false;
+
+  if(isMoving)
+  {
+    if (hblank) tick(false);
+    myInvertedPhaseClock = !hblank;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Ball::tick(bool isReceivingMclock)
+{
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+  {
+    myInvertedPhaseClock = false;
+    return;
+  }
+
+  myIsVisible = myIsRendering && myRenderCounter >= 0;
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+
+  bool starfieldEffect = isMoving && isReceivingMclock;
+
+  if (myCounter == 156) {
+    myIsRendering = true;
+    myRenderCounter = renderCounterOffset;
+
+    uInt8 starfieldDelta = (myCounter + TIAConstants::H_PIXEL - myLastMovementTick) % 4;
+    if (starfieldEffect && starfieldDelta == 3 && myWidth < 4) ++myRenderCounter;
+
+    switch (starfieldDelta) {
+      case 3:
+        myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
+        break;
+
+      case 2:
+        myEffectiveWidth = 0;
+        break;
+
+      default:
+        myEffectiveWidth = myWidth;
+        break;
+    }
+
+  } else if (myIsRendering && ++myRenderCounter >= (starfieldEffect ? myEffectiveWidth : myWidth))
+    myIsRendering = false;
+
+  if (++myCounter >= TIAConstants::H_PIXEL)
+      myCounter = 0;
+}
 
 #endif // TIA_BALL
