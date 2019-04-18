@@ -76,62 +76,9 @@ class Missile : public Serializable
     bool save(Serializer& out) const override;
     bool load(Serializer& in) override;
 
-    void movementTick(uInt8 clock, uInt8 hclock, bool hblank)
-    {
-      if(clock == myHmmClocks) isMoving = false;
+    inline void movementTick(uInt8 clock, uInt8 hclock, bool hblank);
 
-      if (isMoving)
-      {
-        if (hblank) tick(hclock, false);
-        myInvertedPhaseClock = !hblank;
-      }
-    }
-
-    void tick(uInt8 hclock, bool isReceivingMclock = true)
-    {
-      if(myUseInvertedPhaseClock && myInvertedPhaseClock)
-      {
-        myInvertedPhaseClock = false;
-        return;
-      }
-
-      myIsVisible =
-        myIsRendering &&
-        (myRenderCounter >= 0 || (isMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
-
-      collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
-
-      if (myDecodes[myCounter] && !myResmp) {
-        myIsRendering = true;
-        myRenderCounter = renderCounterOffset;
-      } else if (myIsRendering) {
-
-          if (myRenderCounter == -1) {
-            if (isMoving && isReceivingMclock) {
-              switch ((hclock + 1) % 4) {
-                case 3:
-                  myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
-                  if (myWidth < 4) ++myRenderCounter;
-                  break;
-
-                case 2:
-                  myEffectiveWidth = 0;
-                  break;
-
-                default:
-                  myEffectiveWidth = myWidth;
-                  break;
-              }
-            } else {
-              myEffectiveWidth = myWidth;
-            }
-          }
-
-          if (++myRenderCounter >= (isMoving ? myEffectiveWidth : myWidth)) myIsRendering = false;
-      }
-
-      if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
-    }
+    inline void tick(uInt8 hclock, bool isReceivingMclock = true);
 
   public:
 
@@ -187,5 +134,68 @@ class Missile : public Serializable
     Missile& operator=(const Missile&) = delete;
     Missile& operator=(Missile&&) = delete;
 };
+
+// ############################################################################
+// Implementation
+// ############################################################################
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::movementTick(uInt8 clock, uInt8 hclock, bool hblank)
+{
+  if(clock == myHmmClocks) isMoving = false;
+
+  if (isMoving)
+  {
+    if (hblank) tick(hclock, false);
+    myInvertedPhaseClock = !hblank;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Missile::tick(uInt8 hclock, bool isReceivingMclock)
+{
+  if(myUseInvertedPhaseClock && myInvertedPhaseClock)
+  {
+    myInvertedPhaseClock = false;
+    return;
+  }
+
+  myIsVisible =
+    myIsRendering &&
+    (myRenderCounter >= 0 || (isMoving && isReceivingMclock && myRenderCounter == -1 && myWidth < 4 && ((hclock + 1) % 4 == 3)));
+
+  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+
+  if (myDecodes[myCounter] && !myResmp) {
+    myIsRendering = true;
+    myRenderCounter = renderCounterOffset;
+  } else if (myIsRendering) {
+
+      if (myRenderCounter == -1) {
+        if (isMoving && isReceivingMclock) {
+          switch ((hclock + 1) % 4) {
+            case 3:
+              myEffectiveWidth = myWidth == 1 ? 2 : myWidth;
+              if (myWidth < 4) ++myRenderCounter;
+              break;
+
+            case 2:
+              myEffectiveWidth = 0;
+              break;
+
+            default:
+              myEffectiveWidth = myWidth;
+              break;
+          }
+        } else {
+          myEffectiveWidth = myWidth;
+        }
+      }
+
+      if (++myRenderCounter >= (isMoving ? myEffectiveWidth : myWidth)) myIsRendering = false;
+  }
+
+  if (++myCounter >= TIAConstants::H_PIXEL) myCounter = 0;
+}
 
 #endif // TIA_MISSILE
