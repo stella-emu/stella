@@ -1,3 +1,4 @@
+
 //============================================================================
 //
 //   SSSS    tt          lll  lll
@@ -111,7 +112,7 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
   if(port == Controller::Jack::Left)
   {
     // check for INPT4 access
-    const int NUM_SIGS_0 = 20;
+    const int NUM_SIGS_0 = 22;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x0c, 0x10 }, // bit INPT4; bpl (joystick games only)
@@ -129,6 +130,8 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
       { 0xb4, 0x0c, 0x30 }, // ldy INPT4|$30,x; bmi (joystick games only)
       { 0xa5, 0x3c, 0x2a }, // ldy INPT4|$30; rol (joystick games only)
       { 0xa6, 0x3c, 0x8e }, // ldx INPT4|$30; stx (joystick games only)
+      { 0xa4, 0x3c, 0x8c }, // ldy INPT4; sty (joystick games only, Scramble)
+      { 0xa5, 0x0c, 0x8d }, // lda INPT4; sta (joystick games only, Super Cobra Arcade)
       { 0xa4, 0x0c, 0x30 }, // ldy INPT4|; bmi (only Game of Concentration)
       { 0xa4, 0x3c, 0x30 }, // ldy INPT4|$30; bmi (only Game of Concentration)
       { 0xa5, 0x0c, 0x25 }, // lda INPT4; and (joystick games only)
@@ -370,7 +373,7 @@ bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Cont
   if(port == Controller::Jack::Left)
   {
     // check for INPT1 access
-    const int NUM_SIGS_0 = 16;
+    const int NUM_SIGS_0 = 18;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x09, 0x10 }, // bit INPT1; bpl (Genesis only)
@@ -386,6 +389,8 @@ bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Cont
       { 0xa4, 0x39, 0x30 }, // ldy INPT1|$30; bmi (keyboard ROMS too)
       { 0xa5, 0x39, 0x6a }, // lda INPT1|$30; ror (Genesis only)
       { 0xa6, 0x39, 0x8e }, // ldx INPT1|$30; stx (Genesis only)
+      { 0xa4, 0x39, 0x8c }, // ldy INPT1|$30; sty (Genesis only, Scramble)
+      { 0xa5, 0x09, 0x8d }, // lda INPT1; sta (Genesis only, Super Cobra Arcade)
       { 0xa5, 0x09, 0x29 }, // lda INPT1; and (Genesis only)
       { 0x25, 0x39, 0x30 }, // and INPT1|$30; bmi (Genesis only)
       { 0x25, 0x09, 0x10 }, // and INPT1; bpl (Genesis only)
