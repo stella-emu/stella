@@ -145,7 +145,7 @@ void RomAuditDialog::auditRoms()
       const string& md5 = MD5::hash(files[idx]);
       if(instance().propSet().getMD5(md5, props))
       {
-        const string& name = props.get(Cartridge_Name);
+        const string& name = props.get(PropType::Cart_Name);
 
         // Only rename the file if we found a valid properties entry
         if(name != "" && name != files[idx].getName())

@@ -363,7 +363,7 @@ void GameInfoDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadEmulationProperties(const Properties& props)
 {
-  myBSType->setSelected(props.get(Cartridge_Type), "AUTO");
+  myBSType->setSelected(props.get(PropType::Cart_Type), "AUTO");
 
   if(instance().hasConsole() && myBSType->getSelectedTag().toString() == "AUTO")
   {
@@ -377,7 +377,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   else
     myTypeDetected->setLabel("");
 
-  myFormat->setSelected(props.get(Display_Format), "AUTO");
+  myFormat->setSelected(props.get(PropType::Display_Format), "AUTO");
   if(instance().hasConsole() && myFormat->getSelectedTag().toString() == "AUTO")
   {
     const string& format = instance().console().about().DisplayFormat;
@@ -389,7 +389,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
 
   // if phosphor is always enabled, disable game specific phosphor settings
   bool alwaysPhosphor = instance().settings().getString("tv.phosphor") == "always";
-  bool usePhosphor = props.get(Display_Phosphor) == "YES";
+  bool usePhosphor = props.get(PropType::Display_Phosphor) == "YES";
   myPhosphor->setState(usePhosphor);
   myPhosphor->setEnabled(!alwaysPhosphor);
   if (alwaysPhosphor)
@@ -398,10 +398,10 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
     myPhosphor->setLabel("Phosphor");
   myPPBlend->setEnabled(!alwaysPhosphor && usePhosphor);
 
-  const string& blend = props.get(Display_PPBlend);
+  const string& blend = props.get(PropType::Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));
 
-  mySound->setState(props.get(Cartridge_Sound) == "STEREO");
+  mySound->setState(props.get(PropType::Cart_Sound) == "STEREO");
   // if stereo is always enabled, disable game specific stereo setting
   mySound->setEnabled(!instance().audioSettings().stereo());
 }
@@ -409,18 +409,18 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConsoleProperties(const Properties& props)
 {
-  myLeftDiffGroup->setSelected(props.get(Console_LeftDifficulty) == "A" ? 0 : 1);
-  myRightDiffGroup->setSelected(props.get(Console_RightDifficulty) == "A" ? 0 : 1);
-  myTVTypeGroup->setSelected(props.get(Console_TelevisionType) == "BW" ? 1 : 0);
+  myLeftDiffGroup->setSelected(props.get(PropType::Console_LeftDiff) == "A" ? 0 : 1);
+  myRightDiffGroup->setSelected(props.get(PropType::Console_RightDiff) == "A" ? 0 : 1);
+  myTVTypeGroup->setSelected(props.get(PropType::Console_TVType) == "BW" ? 1 : 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadControllerProperties(const Properties& props)
 {
-  bool swapPorts = props.get(Console_SwapPorts) == "YES";
+  bool swapPorts = props.get(PropType::Console_SwapPorts) == "YES";
   bool autoDetect = false;
   BytePtr image;
-  string md5 = props.get(Cartridge_MD5);
+  string md5 = props.get(PropType::Cart_MD5);
   uInt32 size = 0;
   const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
 
@@ -430,7 +430,7 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
     autoDetect = true;
 
   string label = "";
-  string controller = props.get(Controller_Left);
+  string controller = props.get(PropType::Controller_Left);
 
   myLeftPort->setSelected(controller, "AUTO");
   if(myLeftPort->getSelectedTag().toString() == "AUTO")
@@ -446,7 +446,7 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   myLeftPortDetected->setLabel(label);
 
   label = "";
-  controller = props.get(Controller_Right);
+  controller = props.get(PropType::Controller_Right);
 
   myRightPort->setSelected(controller, "AUTO");
   if(myRightPort->getSelectedTag().toString() == "AUTO")
@@ -461,11 +461,11 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   }
   myRightPortDetected->setLabel(label);
 
-  mySwapPorts->setState(props.get(Console_SwapPorts) == "YES");
-  mySwapPaddles->setState(props.get(Controller_SwapPaddles) == "YES");
+  mySwapPorts->setState(props.get(PropType::Console_SwapPorts) == "YES");
+  mySwapPaddles->setState(props.get(PropType::Controller_SwapPaddles) == "YES");
 
   // MouseAxis property (potentially contains 'range' information)
-  istringstream m_axis(props.get(Controller_MouseAxis));
+  istringstream m_axis(props.get(PropType::Controller_MouseAxis));
   string m_control, m_range;
   m_axis >> m_control;
   bool autoAxis = BSPF::equalsIgnoreCase(m_control, "AUTO");
@@ -497,36 +497,36 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 {
-  myName->setText(props.get(Cartridge_Name));
-  myMD5->setText(props.get(Cartridge_MD5));
-  myManufacturer->setText(props.get(Cartridge_Manufacturer));
-  myModelNo->setText(props.get(Cartridge_ModelNo));
-  myRarity->setText(props.get(Cartridge_Rarity));
-  myNote->setText(props.get(Cartridge_Note));
+  myName->setText(props.get(PropType::Cart_Name));
+  myMD5->setText(props.get(PropType::Cart_MD5));
+  myManufacturer->setText(props.get(PropType::Cart_Manufacturer));
+  myModelNo->setText(props.get(PropType::Cart_ModelNo));
+  myRarity->setText(props.get(PropType::Cart_Rarity));
+  myNote->setText(props.get(PropType::Cart_Note));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::saveConfig()
 {
   // Emulation properties
-  myGameProperties.set(Cartridge_Type, myBSType->getSelectedTag().toString());
-  myGameProperties.set(Display_Format, myFormat->getSelectedTag().toString());
-  myGameProperties.set(Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
+  myGameProperties.set(PropType::Cart_Type, myBSType->getSelectedTag().toString());
+  myGameProperties.set(PropType::Display_Format, myFormat->getSelectedTag().toString());
+  myGameProperties.set(PropType::Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
 
-  myGameProperties.set(Display_PPBlend, myPPBlend->getValueLabel() == "Off" ? "0" :
+  myGameProperties.set(PropType::Display_PPBlend, myPPBlend->getValueLabel() == "Off" ? "0" :
                        myPPBlend->getValueLabel());
-  myGameProperties.set(Cartridge_Sound, mySound->getState() ? "STEREO" : "MONO");
+  myGameProperties.set(PropType::Cart_Sound, mySound->getState() ? "STEREO" : "MONO");
 
   // Console properties
-  myGameProperties.set(Console_LeftDifficulty, myLeftDiffGroup->getSelected() ? "B" : "A");
-  myGameProperties.set(Console_RightDifficulty, myRightDiffGroup->getSelected() ? "B" : "A");
-  myGameProperties.set(Console_TelevisionType, myTVTypeGroup->getSelected() ? "BW" : "COLOR");
+  myGameProperties.set(PropType::Console_LeftDiff, myLeftDiffGroup->getSelected() ? "B" : "A");
+  myGameProperties.set(PropType::Console_RightDiff, myRightDiffGroup->getSelected() ? "B" : "A");
+  myGameProperties.set(PropType::Console_TVType, myTVTypeGroup->getSelected() ? "BW" : "COLOR");
 
   // Controller properties
-  myGameProperties.set(Controller_Left, myLeftPort->getSelectedTag().toString());
-  myGameProperties.set(Controller_Right, myRightPort->getSelectedTag().toString());
-  myGameProperties.set(Console_SwapPorts, (mySwapPorts->isEnabled() && mySwapPorts->getState()) ? "YES" : "NO");
-  myGameProperties.set(Controller_SwapPaddles, (/*mySwapPaddles->isEnabled() &&*/ mySwapPaddles->getState()) ? "YES" : "NO");
+  myGameProperties.set(PropType::Controller_Left, myLeftPort->getSelectedTag().toString());
+  myGameProperties.set(PropType::Controller_Right, myRightPort->getSelectedTag().toString());
+  myGameProperties.set(PropType::Console_SwapPorts, (mySwapPorts->isEnabled() && mySwapPorts->getState()) ? "YES" : "NO");
+  myGameProperties.set(PropType::Controller_SwapPaddles, (/*mySwapPaddles->isEnabled() &&*/ mySwapPaddles->getState()) ? "YES" : "NO");
 
   // MouseAxis property (potentially contains 'range' information)
   string mcontrol = "AUTO";
@@ -536,14 +536,14 @@ void GameInfoDialog::saveConfig()
   string range = myMouseRange->getValueLabel();
   if(range != "100")
     mcontrol += " " + range;
-  myGameProperties.set(Controller_MouseAxis, mcontrol);
+  myGameProperties.set(PropType::Controller_MouseAxis, mcontrol);
 
   // Cartridge properties
-  myGameProperties.set(Cartridge_Name, myName->getText());
-  myGameProperties.set(Cartridge_Manufacturer, myManufacturer->getText());
-  myGameProperties.set(Cartridge_ModelNo, myModelNo->getText());
-  myGameProperties.set(Cartridge_Rarity, myRarity->getText());
-  myGameProperties.set(Cartridge_Note, myNote->getText());
+  myGameProperties.set(PropType::Cart_Name, myName->getText());
+  myGameProperties.set(PropType::Cart_Manufacturer, myManufacturer->getText());
+  myGameProperties.set(PropType::Cart_ModelNo, myModelNo->getText());
+  myGameProperties.set(PropType::Cart_Rarity, myRarity->getText());
+  myGameProperties.set(PropType::Cart_Note, myNote->getText());
 
   // Always insert; if the properties are already present, nothing will happen
   instance().propSet().insert(myGameProperties);
@@ -571,7 +571,7 @@ void GameInfoDialog::setDefaults()
 {
   // Load the default properties
   Properties defaultProperties;
-  const string& md5 = myGameProperties.get(Cartridge_MD5);
+  const string& md5 = myGameProperties.get(PropType::Cart_MD5);
 
   instance().propSet().getMD5(md5, defaultProperties, true);
 

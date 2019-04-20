@@ -239,8 +239,8 @@ void StellaSettingsDialog::saveConfig()
     levelToValue(myTVScanIntense->getValue()));
 
   // Controller properties
-  myGameProperties.set(Controller_Left, myLeftPort->getSelectedTag().toString());
-  myGameProperties.set(Controller_Right, myRightPort->getSelectedTag().toString());
+  myGameProperties.set(PropType::Controller_Left, myLeftPort->getSelectedTag().toString());
+  myGameProperties.set(PropType::Controller_Right, myRightPort->getSelectedTag().toString());
 
   // Always insert; if the properties are already present, nothing will happen
   instance().propSet().insert(myGameProperties);
@@ -271,7 +271,7 @@ void StellaSettingsDialog::setDefaults()
 
   // Load the default game properties
   Properties defaultProperties;
-  const string& md5 = myGameProperties.get(Cartridge_MD5);
+  const string& md5 = myGameProperties.get(PropType::Cart_MD5);
 
   instance().propSet().getMD5(md5, defaultProperties, true);
 
@@ -342,7 +342,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
   {
     bool autoDetect = false;
     BytePtr image;
-    string md5 = props.get(Cartridge_MD5);
+    string md5 = props.get(PropType::Cart_MD5);
     uInt32 size = 0;
     const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
 
@@ -352,8 +352,8 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
       autoDetect = true;
 
     string label = "";
-    string controller = props.get(Controller_Left);
-    bool swapPorts = props.get(Console_SwapPorts) == "YES";
+    string controller = props.get(PropType::Controller_Left);
+    bool swapPorts = props.get(PropType::Console_SwapPorts) == "YES";
 
     myLeftPort->setSelected(controller, "AUTO");
     if (myLeftPort->getSelectedTag().toString() == "AUTO")
@@ -369,7 +369,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
     myLeftPortDetected->setLabel(label);
 
     label = "";
-    controller = props.get(Controller_Right);
+    controller = props.get(PropType::Controller_Right);
 
     myRightPort->setSelected(controller, "AUTO");
     if (myRightPort->getSelectedTag().toString() == "AUTO")

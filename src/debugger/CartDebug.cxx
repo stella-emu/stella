@@ -815,7 +815,7 @@ string CartDebug::loadConfigFile()
   if(myCfgFile == "")
   {
     const string& propsname =
-      myConsole.properties().get(Cartridge_Name) + ".cfg";
+      myConsole.properties().get(PropType::Cart_Name) + ".cfg";
 
     FilesystemNode case1(myOSystem.romFile().getParent().getPath() + propsname);
     FilesystemNode case2(myOSystem.cfgDir() + propsname);
@@ -930,13 +930,13 @@ string CartDebug::saveConfigFile()
   else
   {
     const string& propsname =
-      myConsole.properties().get(Cartridge_Name) + ".cfg";
+      myConsole.properties().get(PropType::Cart_Name) + ".cfg";
 
     node = FilesystemNode(myOSystem.cfgDir() + propsname);
   }
 
-  const string& name = myConsole.properties().get(Cartridge_Name);
-  const string& md5 = myConsole.properties().get(Cartridge_MD5);
+  const string& name = myConsole.properties().get(PropType::Cart_Name);
+  const string& md5 = myConsole.properties().get(PropType::Cart_MD5);
 
   ofstream out(node.getPath());
   if(!out.is_open())
@@ -965,7 +965,7 @@ string CartDebug::saveDisassembly()
   if(myDisasmFile == "")
   {
     const string& propsname =
-      myConsole.properties().get(Cartridge_Name) + ".asm";
+      myConsole.properties().get(PropType::Cart_Name) + ".asm";
 
     myDisasmFile = FilesystemNode(myOSystem.defaultSaveDir() + propsname).getPath();
   }
@@ -1080,8 +1080,8 @@ string CartDebug::saveDisassembly()
   out << "; Disassembly of " << myOSystem.romFile().getShortPath() << "\n"
       << "; Disassembled " << std::put_time(&timeinfo, "%c\n")
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
-      << "; ROM properties name : " << myConsole.properties().get(Cartridge_Name) << "\n"
-      << "; ROM properties MD5  : " << myConsole.properties().get(Cartridge_MD5) << "\n"
+      << "; ROM properties name : " << myConsole.properties().get(PropType::Cart_Name) << "\n"
+      << "; ROM properties MD5  : " << myConsole.properties().get(PropType::Cart_MD5) << "\n"
       << "; Bankswitch type     : " << myConsole.cartridge().about() << "\n;\n"
       << "; Legend: * = CODE not yet run (tentative code)\n"
       << ";         D = DATA directive (referenced in some way)\n"
@@ -1212,7 +1212,7 @@ string CartDebug::saveDisassembly()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveRom()
 {
-  const string& rom = myConsole.properties().get(Cartridge_Name) + ".a26";
+  const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".a26";
 
   FilesystemNode node(myOSystem.defaultSaveDir() + rom);
   ofstream out(node.getPath(), std::ios::binary);

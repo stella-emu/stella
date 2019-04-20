@@ -15,8 +15,16 @@ if (@ARGV != 2)
     usage();
   }
   # Saves me from having to type these paths *every single time*
-  $infile  = "../emucore/stella.pro";
-  $outfile = "../emucore/DefProps.hxx";
+  if (-f "src/emucore/stella.pro") {
+    $infile  = "src/emucore/stella.pro";
+  } else {
+    $infile  = "../emucore/stella.pro";
+  }
+  if (-f "src/emucore/DefProps.hxx") {
+    $outfile = "src/emucore/DefProps.hxx";
+  } else {
+    $outfile = "../emucore/DefProps.hxx";
+  }
 }
 else
 {

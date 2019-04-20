@@ -475,49 +475,52 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     myPropSet->getMD5(md5, props);
 
     // Local helper method
-    auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropertyType prop)
+    auto CMDLINE_PROPS_UPDATE = [&](const string& name, PropType prop)
     {
       const string& s = mySettings->getString(name);
       if(s != "") props.set(prop, s);
     };
 
-    CMDLINE_PROPS_UPDATE("bs", Cartridge_Type);
-    CMDLINE_PROPS_UPDATE("type", Cartridge_Type);
+    CMDLINE_PROPS_UPDATE("bs", PropType::Cart_Type);
+    CMDLINE_PROPS_UPDATE("type", PropType::Cart_Type);
 
     // Now create the cartridge
     string cartmd5 = md5;
-    const string& type = props.get(Cartridge_Type);
+    const string& type = props.get(PropType::Cart_Type);
     unique_ptr<Cartridge> cart =
       CartDetector::create(romfile, image, size, cartmd5, type, *mySettings);
 
     // It's possible that the cart created was from a piece of the image,
     // and that the md5 (and hence the cart) has changed
-    if(props.get(Cartridge_MD5) != cartmd5)
+    if(props.get(PropType::Cart_MD5) != cartmd5)
     {
       if(!myPropSet->getMD5(cartmd5, props))
       {
         // Cart md5 wasn't found, so we create a new props for it
-        props.set(Cartridge_MD5, cartmd5);
-        props.set(Cartridge_Name, props.get(Cartridge_Name)+cart->multiCartID());
+        props.set(PropType::Cart_MD5, cartmd5);
+        props.set(PropType::Cart_Name, props.get(PropType::Cart_Name)+cart->multiCartID());
         myPropSet->insert(props, false);
       }
     }
 
-    CMDLINE_PROPS_UPDATE("sp", Console_SwapPorts);
-    CMDLINE_PROPS_UPDATE("lc", Controller_Left);
-    CMDLINE_PROPS_UPDATE("rc", Controller_Right);
+    CMDLINE_PROPS_UPDATE("sp", PropType::Console_SwapPorts);
+    CMDLINE_PROPS_UPDATE("lc", PropType::Controller_Left);
+    CMDLINE_PROPS_UPDATE("rc", PropType::Controller_Right);
     const string& s = mySettings->getString("bc");
-    if(s != "") { props.set(Controller_Left, s); props.set(Controller_Right, s); }
-    CMDLINE_PROPS_UPDATE("cp", Controller_SwapPaddles);
-    CMDLINE_PROPS_UPDATE("ma", Controller_MouseAxis);
-    CMDLINE_PROPS_UPDATE("channels", Cartridge_Sound);
-    CMDLINE_PROPS_UPDATE("ld", Console_LeftDifficulty);
-    CMDLINE_PROPS_UPDATE("rd", Console_RightDifficulty);
-    CMDLINE_PROPS_UPDATE("tv", Console_TelevisionType);
-    CMDLINE_PROPS_UPDATE("format", Display_Format);
-    CMDLINE_PROPS_UPDATE("ystart", Display_YStart);
-    CMDLINE_PROPS_UPDATE("pp", Display_Phosphor);
-    CMDLINE_PROPS_UPDATE("ppblend", Display_PPBlend);
+    if(s != "") {
+      props.set(PropType::Controller_Left, s);
+      props.set(PropType::Controller_Right, s);
+    }
+    CMDLINE_PROPS_UPDATE("cp", PropType::Controller_SwapPaddles);
+    CMDLINE_PROPS_UPDATE("ma", PropType::Controller_MouseAxis);
+    CMDLINE_PROPS_UPDATE("channels", PropType::Cart_Sound);
+    CMDLINE_PROPS_UPDATE("ld", PropType::Console_LeftDiff);
+    CMDLINE_PROPS_UPDATE("rd", PropType::Console_RightDiff);
+    CMDLINE_PROPS_UPDATE("tv", PropType::Console_TVType);
+    CMDLINE_PROPS_UPDATE("format", PropType::Display_Format);
+    CMDLINE_PROPS_UPDATE("ystart", PropType::Display_YStart);
+    CMDLINE_PROPS_UPDATE("pp", PropType::Display_Phosphor);
+    CMDLINE_PROPS_UPDATE("ppblend", PropType::Display_PPBlend);
 
     // Finally, create the cart with the correct properties
     if(cart)
@@ -534,7 +537,7 @@ void OSystem::closeConsole()
   {
   #ifdef CHEATCODE_SUPPORT
     // If a previous console existed, save cheats before creating a new one
-    myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
+    myCheatManager->saveCheats(myConsole->properties().get(PropType::Cart_MD5));
   #endif
     myConsole.reset();
   }
@@ -717,7 +720,7 @@ void OSystem::mainLoop()
   // Cleanup time
 #ifdef CHEATCODE_SUPPORT
   if(myConsole)
-    myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
+    myCheatManager->saveCheats(myConsole->properties().get(PropType::Cart_MD5));
 
   myCheatManager->saveCheatDatabase();
 #endif

@@ -1062,7 +1062,8 @@ void DebuggerParser::executeDump()
   else
   {
     ostringstream file;
-    file << debugger.myOSystem.defaultSaveDir() << debugger.myOSystem.console().properties().get(Cartridge_Name) << "_dbg_";
+    file << debugger.myOSystem.defaultSaveDir()
+         << debugger.myOSystem.console().properties().get(PropType::Cart_Name) << "_dbg_";
     if(execDepth > 0)
     {
       file << execPrefix;

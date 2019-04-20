@@ -109,7 +109,7 @@ void EventHandler::initialize()
   Common::Base::setHexUppercase(myOSystem.settings().getBool("dbg.uhex"));
 
   // Default phosphor blend
-  Properties::setDefault(Display_PPBlend,
+  Properties::setDefault(PropType::Display_PPBlend,
                          myOSystem.settings().getString("tv.phosblend"));
 }
 
@@ -1106,7 +1106,7 @@ void EventHandler::setMouseControllerMode(const string& enable)
     }
 
     const string& control = usemouse ?
-      myOSystem.console().properties().get(Controller_MouseAxis) : "none";
+      myOSystem.console().properties().get(PropType::Controller_MouseAxis) : "none";
 
     myMouseControl = make_unique<MouseControl>(myOSystem.console(), control);
     myMouseControl->next();  // set first available mode

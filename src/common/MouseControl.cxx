@@ -108,7 +108,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
 
   // Now consider the possible modes for the mouse based on the left
   // and right controllers
-  bool noswap = BSPF::equalsIgnoreCase(myProps.get(Console_SwapPorts), "NO");
+  bool noswap = BSPF::equalsIgnoreCase(myProps.get(PropType::Console_SwapPorts), "NO");
   if(noswap)
   {
     addLeftControllerModes(noswap);
@@ -203,7 +203,7 @@ void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
   msg << "Mouse is Paddle " << rname << " controller";
   MouseMode mode1(type, rport, type, rport, msg.str());
 
-  if(BSPF::equalsIgnoreCase(myProps.get(Controller_SwapPaddles), "NO"))
+  if(BSPF::equalsIgnoreCase(myProps.get(PropType::Controller_SwapPaddles), "NO"))
   {
     myModeList.push_back(mode0);
     myModeList.push_back(mode1);

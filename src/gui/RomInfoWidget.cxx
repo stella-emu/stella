@@ -100,7 +100,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
   // Get a valid filename representing a snapshot file for this rom
   const string& filename = instance().snapshotLoadDir() +
-      myProperties.get(Cartridge_Name) + ".png";
+      myProperties.get(PropType::Cart_Name) + ".png";
 
   // Read the PNG file
   try
@@ -121,20 +121,20 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
     mySurface->setVisible(mySurfaceIsValid);
 
   // Now add some info for the message box below the image
-  myRomInfo.push_back("Name: " + myProperties.get(Cartridge_Name));
-  myRomInfo.push_back("Manufacturer: " + myProperties.get(Cartridge_Manufacturer));
-  myRomInfo.push_back("Model: " + myProperties.get(Cartridge_ModelNo));
-  myRomInfo.push_back("Rarity: " + myProperties.get(Cartridge_Rarity));
-  myRomInfo.push_back("Note: " + myProperties.get(Cartridge_Note));
-  bool swappedPorts = myProperties.get(Console_SwapPorts) == "YES";
+  myRomInfo.push_back("Name: " + myProperties.get(PropType::Cart_Name));
+  myRomInfo.push_back("Manufacturer: " + myProperties.get(PropType::Cart_Manufacturer));
+  myRomInfo.push_back("Model: " + myProperties.get(PropType::Cart_ModelNo));
+  myRomInfo.push_back("Rarity: " + myProperties.get(PropType::Cart_Rarity));
+  myRomInfo.push_back("Note: " + myProperties.get(PropType::Cart_Note));
+  bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
   // Load the image for controller auto detection
-  string left = myProperties.get(Controller_Left);
-  string right = myProperties.get(Controller_Right);
+  string left = myProperties.get(PropType::Controller_Left);
+  string right = myProperties.get(PropType::Controller_Right);
   try
   {
     BytePtr image;
-    string md5 = myProperties.get(Cartridge_MD5);
+    string md5 = myProperties.get(PropType::Cart_MD5);
     uInt32 size = 0;
 
     if(node.exists() && !node.isDirectory() &&

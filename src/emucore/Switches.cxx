@@ -27,7 +27,7 @@ Switches::Switches(const Event& event, const Properties& properties,
     mySwitches(0xFF),
     myIs7800(false)
 {
-  if(properties.get(Console_RightDifficulty) == "B")
+  if(properties.get(PropType::Console_RightDiff) == "B")
   {
     mySwitches &= ~0x80;
   }
@@ -36,7 +36,7 @@ Switches::Switches(const Event& event, const Properties& properties,
     mySwitches |= 0x80;
   }
 
-  if(properties.get(Console_LeftDifficulty) == "B")
+  if(properties.get(PropType::Console_LeftDiff) == "B")
   {
     mySwitches &= ~0x40;
   }
@@ -45,7 +45,7 @@ Switches::Switches(const Event& event, const Properties& properties,
     mySwitches |= 0x40;
   }
 
-  if(properties.get(Console_TelevisionType) == "COLOR")
+  if(properties.get(PropType::Console_TVType) == "COLOR")
   {
     mySwitches |= 0x08;
   }

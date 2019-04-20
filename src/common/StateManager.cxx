@@ -209,7 +209,7 @@ void StateManager::loadState(int slot)
 
     ostringstream buf;
     buf << myOSystem.stateDir()
-        << myOSystem.console().properties().get(Cartridge_Name)
+        << myOSystem.console().properties().get(PropType::Cart_Name)
         << ".st" << slot;
 
     // Make sure the file can be opened in read-only mode
@@ -255,7 +255,7 @@ void StateManager::saveState(int slot)
 
     ostringstream buf;
     buf << myOSystem.stateDir()
-        << myOSystem.console().properties().get(Cartridge_Name)
+        << myOSystem.console().properties().get(PropType::Cart_Name)
         << ".st" << slot;
 
     // Make sure the file can be opened for writing

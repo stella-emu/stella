@@ -31,7 +31,9 @@
 
   * Added proper Retron77 port. (TODO: doc)
 
-  * Completely removed 'Display_Height' stuff. (TODO: doc)
+  * Reworked ROM properties database, making it load faster in certain
+    cases.  Related to this, completely removed 'Display_Height' stuff.
+    (TODO: doc)
 
   * Disabled some developer options for 'Player settings'. (TODO: doc)
 

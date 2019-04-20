@@ -121,7 +121,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   // Let the cart know how to query for the 'Cartridge.StartBank' property
   myCart->setStartBankFromPropsFunc([this]() {
-    const string& startbank = myProperties.get(Cartridge_StartBank);
+    const string& startbank = myProperties.get(PropType::Cart_StartBank);
     return startbank == EmptyString ? -1 : atoi(startbank.c_str());
   });
 
@@ -130,11 +130,11 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   // Auto-detect NTSC/PAL mode if it's requested
   string autodetected = "";
-  myDisplayFormat = myProperties.get(Display_Format);
+  myDisplayFormat = myProperties.get(PropType::Display_Format);
 
   // Add the real controllers for this system
   // This must be done before the debugger is initialized
-  const string& md5 = myProperties.get(Cartridge_MD5);
+  const string& md5 = myProperties.get(PropType::Cart_MD5);
   setControllers(md5);
 
   // Mute audio and clear framebuffer while autodetection runs
@@ -145,7 +145,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   {
     autodetectFrameLayout();
 
-    if(myProperties.get(Display_Format) == "AUTO")
+    if(myProperties.get(PropType::Display_Format) == "AUTO")
     {
       autodetected = "*";
       myCurrentFormat = 0;
@@ -153,7 +153,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     }
   }
 
-  if (atoi(myProperties.get(Display_YStart).c_str()) == 0) {
+  if (atoi(myProperties.get(PropType::Display_YStart).c_str()) == 0) {
     autodetectYStart();
   }
 
@@ -203,9 +203,9 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   mySystem->reset();
 
   // Finally, add remaining info about the console
-  myConsoleInfo.CartName   = myProperties.get(Cartridge_Name);
-  myConsoleInfo.CartMD5    = myProperties.get(Cartridge_MD5);
-  bool swappedPorts = properties().get(Console_SwapPorts) == "YES";
+  myConsoleInfo.CartName   = myProperties.get(PropType::Cart_Name);
+  myConsoleInfo.CartMD5    = myProperties.get(PropType::Cart_MD5);
+  bool swappedPorts = properties().get(PropType::Console_SwapPorts) == "YES";
   myConsoleInfo.Control0   = myLeftControl->about(swappedPorts);
   myConsoleInfo.Control1   = myRightControl->about(swappedPorts);
   myConsoleInfo.BankSwitch = myCart->about();
@@ -430,7 +430,7 @@ void Console::setFormat(uInt32 format)
       myFormatAutodetected = false;
       break;
   }
-  myProperties.set(Display_Format, saveformat);
+  myProperties.set(PropType::Display_Format, saveformat);
 
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
@@ -550,13 +550,13 @@ void Console::togglePhosphor()
 {
   if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
   {
-    myProperties.set(Display_Phosphor, "NO");
+    myProperties.set(PropType::Display_Phosphor, "NO");
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(false);
     myOSystem.frameBuffer().showMessage("Phosphor effect disabled");
   }
   else
   {
-    myProperties.set(Display_Phosphor, "YES");
+    myProperties.set(PropType::Display_Phosphor, "YES");
     myOSystem.frameBuffer().tiaSurface().enablePhosphor(true);
     myOSystem.frameBuffer().showMessage("Phosphor effect enabled");
   }
@@ -565,7 +565,7 @@ void Console::togglePhosphor()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePhosphor(int direction)
 {
-  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
+  int blend = atoi(myProperties.get(PropType::Display_PPBlend).c_str());
 
   if(direction == +1)       // increase blend
   {
@@ -594,7 +594,7 @@ void Console::changePhosphor(int direction)
 
   ostringstream val;
   val << blend;
-  myProperties.set(Display_PPBlend, val.str());
+  myProperties.set(PropType::Display_PPBlend, val.str());
   myOSystem.frameBuffer().showMessage("Phosphor blend " + val.str());
   myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
 }
@@ -614,7 +614,7 @@ FBInitStatus Console::initializeVideo(bool full)
   {
     bool devSettings = myOSystem.settings().getBool("dev.settings");
     const string& title = string("Stella ") + STELLA_VERSION +
-                   ": \"" + myProperties.get(Cartridge_Name) + "\"";
+                   ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
         TIAConstants::viewableWidth, TIAConstants::viewableHeight);
     if(fbstatus != FBInitStatus::Success)
@@ -707,13 +707,13 @@ void Console::changeYStart(int direction)
     ystart = myAutodetectedYstart;
     myYStartAutodetected = true;
 
-    myProperties.set(Display_YStart, "0");
+    myProperties.set(PropType::Display_YStart, "0");
   }
   else {
     ostringstream ss;
     ss << ystart;
 
-    myProperties.set(Display_YStart, ss.str());
+    myProperties.set(PropType::Display_YStart, ss.str());
   }
 
   if (ystart != myTIA->ystart()) myTIA->setYStart(ystart);
@@ -747,7 +747,7 @@ void Console::updateYStart(uInt32 ystart)
 void Console::setTIAProperties()
 {
   // FIXME - ystart is probably disappearing soon, or at least autodetection is
-  uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
+  uInt32 ystart = atoi(myProperties.get(PropType::Display_YStart).c_str());
   if(ystart != 0)
     ystart = BSPF::clamp(ystart, 0u, TIAConstants::maxYStart);
   else {
@@ -777,7 +777,7 @@ void Console::setTIAProperties()
 void Console::createAudioQueue()
 {
   bool useStereo = myOSystem.settings().getBool(AudioSettings::SETTING_STEREO)
-    || myProperties.get(Cartridge_Sound) == "STEREO";
+    || myProperties.get(PropType::Cart_Sound) == "STEREO";
 
   myAudioQueue = make_shared<AudioQueue>(
     myEmulationTiming.audioFragmentSize(),
@@ -809,11 +809,11 @@ void Console::setControllers(const string& rommd5)
   else
   {
     // Setup the controllers based on properties
-    string left = myProperties.get(Controller_Left);
-    string right = myProperties.get(Controller_Right);
+    string left = myProperties.get(PropType::Controller_Left);
+    string right = myProperties.get(PropType::Controller_Right);
     uInt32 size = 0;
     const uInt8* image = myCart->getImage(size);
-    const bool swappedPorts = myProperties.get(Console_SwapPorts) != "NO";
+    const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) != "NO";
 
     // Try to detect controllers
     if(image != nullptr || size != 0)
@@ -871,7 +871,7 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
   else if(BSPF::startsWithIgnoreCase(controllerName, "PADDLES"))
   {
     // Also check if we should swap the paddles plugged into a jack
-    bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
+    bool swapPaddles = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
     bool swapAxis = false, swapDir = false;
     if(controllerName == "PADDLES_IAXIS")
       swapAxis = true;

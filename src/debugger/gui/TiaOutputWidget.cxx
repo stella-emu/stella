@@ -66,7 +66,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
   }
   ostringstream sspath;
   sspath << instance().snapshotSaveDir()
-         << instance().console().properties().get(Cartridge_Name);
+         << instance().console().properties().get(PropType::Cart_Name);
   sspath << "_dbg_";
   if (execDepth > 0 && !execPrefix.empty()) {
     sspath << execPrefix << "_";

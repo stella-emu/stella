@@ -101,13 +101,14 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
     while(low <= high)
     {
       int i = (low + high) / 2;
-      int cmp = BSPF::compareIgnoreCase(md5, DefProps[i][Cartridge_MD5]);
+      int cmp = BSPF::compareIgnoreCase(md5,
+          DefProps[i][static_cast<uInt8>(PropType::Cart_MD5)]);
 
       if(cmp == 0)  // found it
       {
-        for(int p = 0; p < LastPropType; ++p)
+        for(uInt8 p = 0; p < static_cast<uInt8>(PropType::NumTypes); ++p)
           if(DefProps[i][p][0] != 0)
-            properties.set(PropertyType(p), DefProps[i][p]);
+            properties.set(PropType(p), DefProps[i][p]);
 
         found = true;
         break;
@@ -128,9 +129,9 @@ void PropertiesSet::getMD5WithInsert(const FilesystemNode& rom,
 {
   if(!getMD5(md5, properties))
   {
-    properties.set(Cartridge_MD5, md5);
+    properties.set(PropType::Cart_MD5, md5);
     // Create a name suitable for using in properties
-    properties.set(Cartridge_Name, rom.getNameWithExt(""));
+    properties.set(PropType::Cart_Name, rom.getNameWithExt(""));
 
     insert(properties, false);
   }
@@ -149,7 +150,7 @@ void PropertiesSet::insert(const Properties& properties, bool save)
   // most people tend not to do
 
   // Since the PropSet is keyed by md5, we can't insert without a valid one
-  const string& md5 = properties.get(Cartridge_MD5);
+  const string& md5 = properties.get(PropType::Cart_MD5);
   if(md5 == "")
     return;
 
@@ -196,11 +197,11 @@ void PropertiesSet::print() const
   for(int i = 0; i < DEF_PROPS_SIZE; ++i)
   {
     properties.setDefaults();
-    for(int p = 0; p < LastPropType; ++p)
+    for(uInt8 p = 0; p < static_cast<uInt8>(PropType::NumTypes); ++p)
       if(DefProps[i][p][0] != 0)
-        properties.set(PropertyType(p), DefProps[i][p]);
+        properties.set(PropType(p), DefProps[i][p]);
 
-    list.emplace(DefProps[i][Cartridge_MD5], properties);
+    list.emplace(DefProps[i][static_cast<uInt8>(PropType::Cart_MD5)], properties);
   }
 
   // Now, print the resulting list
