@@ -324,9 +324,16 @@ class FrameBuffer
   protected:
     /**
       This method is called to query and initialize the video hardware
-      for desktop and fullscreen resolution information.
+      for desktop and fullscreen resolution information.  Since several
+      monitors may be attached, we need the resolution for all of them.
+
+      @param fullscreenRes  Maximum resolution supported in fullscreen mode
+      @param windowedRes    Maximum resolution supported in windowed mode
+      @param renderers      List of renderer names (internal name -> end-user name)
     */
-    virtual void queryHardware(vector<GUI::Size>& mons, VariantList& ren) = 0;
+    virtual void queryHardware(vector<GUI::Size>& fullscreenRes,
+                               vector<GUI::Size>& windowedRes,
+                               VariantList& renderers) = 0;
 
     virtual Int32 getCurrentDisplayIndex() = 0;
 
@@ -491,9 +498,10 @@ class FrameBuffer
     // Maximum dimensions of the desktop area
     GUI::Size myDesktopSize;
 
-    // The resolution of the attached displays
-    // The primary display is first in the array
-    vector<GUI::Size> myDisplays;
+    // The resolution of the attached displays in fullscreen mode
+    // The primary display is typically the first in the array
+    // Windowed modes use myDesktopSize directly
+    vector<GUI::Size> myFullscreenDisplays;
 
     // Supported renderers
     VariantList myRenderers;

@@ -63,8 +63,9 @@ FrameBuffer::~FrameBuffer()
 bool FrameBuffer::initialize()
 {
   // Get desktop resolution and supported renderers
-  queryHardware(myDisplays, myRenderers);
-  uInt32 query_w = myDisplays[0].w, query_h = myDisplays[0].h;
+  vector<GUI::Size> windowedDisplays;
+  queryHardware(myFullscreenDisplays, windowedDisplays, myRenderers);
+  uInt32 query_w = windowedDisplays[0].w, query_h = windowedDisplays[0].h;
 
   // Check the 'maxres' setting, which is an undocumented developer feature
   // that specifies the desktop size (not normally set)
@@ -815,7 +816,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 
   for(auto& mode: myFullscreenModeLists)
     mode.clear();
-  for(size_t i = myFullscreenModeLists.size(); i < myDisplays.size(); ++i)
+  for(size_t i = myFullscreenModeLists.size(); i < myFullscreenDisplays.size(); ++i)
     myFullscreenModeLists.push_back(VideoModeList());
 
   // Check if zooming is allowed for this state (currently only allowed
@@ -851,21 +852,21 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     }
 
     // TIA fullscreen mode
-    for(uInt32 i = 0; i < myDisplays.size(); ++i)
+    for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
     {
       maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
-                                       myDisplays[i].w, myDisplays[i].h);
+                    myFullscreenDisplays[i].w, myFullscreenDisplays[i].h);
 
       // Add both normal aspect and filled modes
       // It's easier to define them both now, and simply switch between
       // them when necessary
       VideoMode mode1(baseWidth*maxZoom, baseHeight*maxZoom,
-                      myDisplays[i].w, myDisplays[i].h,
+                      myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
                       VideoMode::Stretch::Preserve,
                       "Preserve aspect, no stretch", maxZoom, i);
       myFullscreenModeLists[i].add(mode1);
       VideoMode mode2(baseWidth*maxZoom, baseHeight*maxZoom,
-                      myDisplays[i].w, myDisplays[i].h,
+                      myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
                       VideoMode::Stretch::Fill,
                       "Ignore aspect, full stretch", maxZoom, i);
       myFullscreenModeLists[i].add(mode2);
@@ -877,10 +878,10 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     myWindowedModeList.add(
         VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, VideoMode::Stretch::Fill)
     );
-    for(uInt32 i = 0; i < myDisplays.size(); ++i)
+    for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
     {
       myFullscreenModeLists[i].add(
-          VideoMode(baseWidth, baseHeight, myDisplays[i].w, myDisplays[i].h,
+          VideoMode(baseWidth, baseHeight, myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
                     VideoMode::Stretch::Fill, "", 1, i)
       );
     }

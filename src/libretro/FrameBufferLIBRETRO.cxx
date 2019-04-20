@@ -30,9 +30,12 @@ FrameBufferLIBRETRO::FrameBufferLIBRETRO(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferLIBRETRO::queryHardware(vector<GUI::Size>& displays, VariantList& renderers)
+void FrameBufferLIBRETRO::queryHardware(vector<GUI::Size>& fullscreenRes,
+                                        vector<GUI::Size>& windowedRes,
+                                        VariantList& renderers)
 {
-  displays.emplace_back(1920, 1080);
+  fullscreenRes.emplace_back(1920, 1080);
+  windowedRes.emplace_back(1920, 1080);
 
   VarList::push_back(renderers, "software", "Software");
 }
@@ -41,12 +44,12 @@ void FrameBufferLIBRETRO::queryHardware(vector<GUI::Size>& displays, VariantList
 unique_ptr<FBSurface>
     FrameBufferLIBRETRO::createSurface(uInt32 w, uInt32 h, const uInt32* data) const
 {
-  unique_ptr<FBSurface> ptr = make_unique<FBSurfaceLIBRETRO>(const_cast<FrameBufferLIBRETRO&>(*this), w, h, data);
+  unique_ptr<FBSurface> ptr = make_unique<FBSurfaceLIBRETRO>
+      (const_cast<FrameBufferLIBRETRO&>(*this), w, h, data);
 
   if(w == 565 && h == 320)
   {
     uInt32 pitch;
-
     ptr.get()->basePtr(myRenderSurface, pitch);
   }
 

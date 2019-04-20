@@ -82,27 +82,38 @@ FrameBufferSDL2::~FrameBufferSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::queryHardware(vector<GUI::Size>& displays,
+void FrameBufferSDL2::queryHardware(vector<GUI::Size>& fullscreenRes,
+                                    vector<GUI::Size>& windowedRes,
                                     VariantList& renderers)
 {
   ASSERT_MAIN_THREAD;
 
-  // First get the maximum windowed desktop resolution
+  // Get number of displays (for most systems, this will be '1')
   int maxDisplays = SDL_GetNumVideoDisplays();
+
+  // First get the maximum fullscreen desktop resolution
+  SDL_DisplayMode display;
+  for(int i = 0; i < maxDisplays; ++i)
+  {
+    SDL_GetDesktopDisplayMode(i, &display);
+    fullscreenRes.emplace_back(display.w, display.h);
+  }
+
+  // Now get the maximum windowed desktop resolution
+  // Try to take into account taskbars, etc, if available
 #if SDL_VERSION_ATLEAST(2,0,5)
   SDL_Rect r;
   for(int i = 0; i < maxDisplays; ++i)
   {
     // Display bounds minus dock
     SDL_GetDisplayUsableBounds(i, &r);  // Requires SDL-2.0.5 or higher
-    displays.emplace_back(r.w, r.h);
+    windowedRes.emplace_back(r.w, r.h);
   }
 #else
-  SDL_DisplayMode display;
   for(int i = 0; i < maxDisplays; ++i)
   {
     SDL_GetDesktopDisplayMode(i, &display);
-    displays.emplace_back(display.w, display.h);
+    windowedRes.emplace_back(display.w, display.h);
   }
 #endif
 

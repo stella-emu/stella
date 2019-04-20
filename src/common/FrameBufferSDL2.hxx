@@ -108,9 +108,16 @@ class FrameBufferSDL2 : public FrameBuffer
     //////////////////////////////////////////////////////////////////////
     /**
       This method is called to query and initialize the video hardware
-      for desktop and fullscreen resolution information.
+      for desktop and fullscreen resolution information.  Since several
+      monitors may be attached, we need the resolution for all of them.
+
+      @param fullscreenRes  Maximum resolution supported in fullscreen mode
+      @param windowedRes    Maximum resolution supported in windowed mode
+      @param renderers      List of renderer names (internal name -> end-user name)
     */
-    void queryHardware(vector<GUI::Size>& displays, VariantList& renderers) override;
+    void queryHardware(vector<GUI::Size>& fullscreenRes,
+                       vector<GUI::Size>& windowedRes,
+                       VariantList& renderers) override;
 
     /**
       This method is called to query the video hardware for the index

@@ -29,6 +29,9 @@
      - delayed player 1 swap
      - stuffed player move
 
+  * Fullscreen TIA modes no longer assume that desktop taskbars, etc
+    are present, hence they are scaled to the proper fullscreen size.
+
   * Added proper Retron77 port. (TODO: doc)
 
   * Reworked ROM properties database, making it load faster in certain
