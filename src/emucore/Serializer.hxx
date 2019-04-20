@@ -62,6 +62,11 @@ class Serializer
     void rewind();
 
     /**
+      Returns the current write pointer location.
+    */
+    uInt32 size() const;
+
+    /**
       Reads a byte value (unsigned 8-bit) from the current input stream.
 
       @result The byte value which has been read from the stream.
@@ -206,11 +211,6 @@ class Serializer
       @param b The boolean value to write to the output stream.
     */
     void putBool(bool b);
-
-    /**
-      Returns the write ptr location
-    */
-    uInt32 size() const;
 
   private:
     // The stream to send the serialized data to.

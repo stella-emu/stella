@@ -78,17 +78,17 @@ Serializer::Serializer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Serializer::size() const
-{
-  return myStream->tellp();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::rewind()
 {
   myStream->clear();
   myStream->seekg(ios_base::beg);
   myStream->seekp(ios_base::beg);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Serializer::size() const
+{
+  return myStream->tellp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
