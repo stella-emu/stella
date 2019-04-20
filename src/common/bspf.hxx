@@ -93,20 +93,6 @@ static const string EmptyString("");
 
 namespace BSPF
 {
-  // Defines to help with path handling
-  #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
-    static const string PATH_SEPARATOR = "/";
-    #define ATTRIBUTE_FMT_PRINTF __attribute__((__format__ (__printf__, 2, 0)))
-  #elif defined(BSPF_WINDOWS)
-    static const string PATH_SEPARATOR = "\\";
-    #define ATTRIBUTE_FMT_PRINTF
-  #elif defined(__LIB_RETRO__)
-    static const string PATH_SEPARATOR = "/";
-    #define ATTRIBUTE_FMT_PRINTF
-  #else
-    #error Update src/common/bspf.hxx for path separator
-  #endif
-
   // CPU architecture type
   // This isn't complete yet, but takes care of all the major platforms
   #if defined(__i386__) || defined(_M_IX86)

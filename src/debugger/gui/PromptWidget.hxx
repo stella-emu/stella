@@ -27,6 +27,13 @@ class FilesystemNode;
 #include "Command.hxx"
 #include "bspf.hxx"
 
+// TODO - remove this once we clean up the printf stuff
+#if defined(BSPF_UNIX) || defined(BSPF_MACOS)
+  #define ATTRIBUTE_FMT_PRINTF __attribute__((__format__ (__printf__, 2, 0)))
+#else
+  #define ATTRIBUTE_FMT_PRINTF
+#endif
+
 class PromptWidget : public Widget, public CommandSender
 {
   public:

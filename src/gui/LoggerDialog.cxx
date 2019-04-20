@@ -106,12 +106,15 @@ void LoggerDialog::saveConfig()
 void LoggerDialog::saveLogFile()
 {
   ostringstream path;
-  path << "~" << BSPF::PATH_SEPARATOR << "stella.log";
+  path << instance().defaultSaveDir() << "stella.log";
   FilesystemNode node(path.str());
 
   ofstream out(node.getPath());
   if(out.is_open())
+  {
     out << instance().logMessages();
+    instance().frameBuffer().showMessage("Saving log file to " + path.str());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
