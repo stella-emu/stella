@@ -78,7 +78,7 @@ static void update_input()
   EVENT(Event::ConsoleBlackWhite, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R3));
   EVENT(Event::ConsoleSelect, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_SELECT));
   EVENT(Event::ConsoleReset, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_START));
-  
+
 #undef EVENT
 }
 
@@ -107,7 +107,6 @@ static void update_variables(bool init = false)
 {
   bool geometry_update = false;
 
-  char key[256];
   struct retro_variable var;
 
 #define RETRO_GET(x) \

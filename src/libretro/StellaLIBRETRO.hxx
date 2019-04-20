@@ -49,8 +49,8 @@ class StellaLIBRETRO
 
     void runFrame();
 
-    bool loadState(const void* data, uInt32 size);
-    bool saveState(void* data, uInt32 size);
+    bool loadState(const void* data, size_t size);
+    bool saveState(void* data, size_t size);
 
   public:
     const char* getCoreName() { return "Stella"; }
@@ -93,7 +93,7 @@ class StellaLIBRETRO
     Int16* getAudioBuffer() { return audio_buffer.get(); }
 
   public:
-    void   setROM(const void* data, uInt32 size);
+    void   setROM(const void* data, size_t size);
 
     void   setConsoleFormat(uInt32 mode);
 

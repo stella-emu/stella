@@ -41,7 +41,7 @@ StellaLIBRETRO::StellaLIBRETRO()
   video_aspect_pal = 0;
 
   video_palette = "standard";
-  video_filter = NTSCFilter::PRESET_OFF;
+  video_filter = NTSCFilter::Preset::OFF;
   video_ready = false;
 
   audio_samples = 0;
@@ -49,7 +49,7 @@ StellaLIBRETRO::StellaLIBRETRO()
 
   video_phosphor = "byrom";
   video_phosphor_blend = 60;
-  
+
   rom_image = make_unique<uInt8[]>(getROMMax());
 
   system_ready = false;
@@ -108,7 +108,7 @@ bool StellaLIBRETRO::create(bool logging)
   //fastscbios
   // Fast loading of Supercharger BIOS
 
-  settings.setValue("tv.filter", video_filter);
+  settings.setValue("tv.filter", static_cast<int>(video_filter));
 
   settings.setValue("tv.phosphor", video_phosphor);
   settings.setValue("tv.phosblend", video_phosphor_blend);
@@ -214,11 +214,11 @@ void StellaLIBRETRO::updateAudio()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StellaLIBRETRO::loadState(const void* data, uInt32 size)
+bool StellaLIBRETRO::loadState(const void* data, size_t size)
 {
   Serializer state;
 
-  state.putByteArray(reinterpret_cast<const uInt8*>(data), size);
+  state.putByteArray(reinterpret_cast<const uInt8*>(data), static_cast<uInt32>(size));
 
   if (!myOSystem->state().loadState(state))
     return false;
@@ -227,7 +227,7 @@ bool StellaLIBRETRO::loadState(const void* data, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool StellaLIBRETRO::saveState(void* data, uInt32 size)
+bool StellaLIBRETRO::saveState(void* data, size_t size)
 {
   Serializer state;
 
@@ -262,7 +262,7 @@ float StellaLIBRETRO::getVideoAspect()
   {
     if (!video_aspect_ntsc)
       // non-interlace square pixel clock -- 1.0 pixel @ color burst -- double-width pixels
-      par = (6.1363635 / 3.579545454) / 2;
+      par = (6.1363635f / 3.579545454f) / 2;
     else
       par = video_aspect_ntsc / 100.0;
   }
@@ -270,7 +270,7 @@ float StellaLIBRETRO::getVideoAspect()
   {
     if (!video_aspect_pal)
       // non-interlace square pixel clock -- 0.8 pixel @ color burst -- double-width pixels
-      par = (7.3750000 / (4.43361875 * 4/5)) / 2;
+      par = (7.3750000f / (4.43361875f * 4/5)) / 2;
     else
       par = video_aspect_pal / 100.0;
   }
@@ -313,11 +313,11 @@ bool StellaLIBRETRO::getVideoResize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaLIBRETRO::setROM(const void* data, uInt32 size)
+void StellaLIBRETRO::setROM(const void* data, size_t size)
 {
   memcpy(rom_image.get(), data, size);
 
-  rom_size = size;
+  rom_size = static_cast<uInt32>(size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -341,20 +341,10 @@ void StellaLIBRETRO::setConsoleFormat(uInt32 mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaLIBRETRO::setVideoFilter(uInt32 mode)
 {
-  switch (mode)
+  if (system_ready && mode <= 5)
   {
-  case 0: video_filter = NTSCFilter::PRESET_OFF; break;
-  case 1: video_filter = NTSCFilter::PRESET_COMPOSITE; break;
-  case 2: video_filter = NTSCFilter::PRESET_SVIDEO; break;
-  case 3: video_filter = NTSCFilter::PRESET_RGB; break;
-  case 4: video_filter = NTSCFilter::PRESET_BAD; break;
-  case 5: video_filter = NTSCFilter::PRESET_CUSTOM; break;
-  }
-
-  if (system_ready)
-  {
-    myOSystem->settings().setValue("tv.filter", static_cast<int>(video_filter));
-    myOSystem->frameBuffer().tiaSurface().setNTSC(video_filter);
+    myOSystem->settings().setValue("tv.filter", mode);
+    myOSystem->frameBuffer().tiaSurface().setNTSC(static_cast<NTSCFilter::Preset>(mode));
   }
 }
 
