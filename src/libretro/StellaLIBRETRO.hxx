@@ -63,7 +63,7 @@ class StellaLIBRETRO
     //uInt8* getRAM() { return myOSystem->console().system().m6532().getRAM(); }
     //uInt32 getRAMSize() { return 128; }
 
-    uInt32 getStateSize();
+    size_t getStateSize();
 
     bool   getConsoleNTSC() { return console_timing == ConsoleTiming::ntsc; }
 

@@ -220,10 +220,7 @@ bool StellaLIBRETRO::loadState(const void* data, size_t size)
 
   state.putByteArray(reinterpret_cast<const uInt8*>(data), static_cast<uInt32>(size));
 
-  if (!myOSystem->state().loadState(state))
-    return false;
-
-  return true;
+  return myOSystem->state().loadState(state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -237,12 +234,12 @@ bool StellaLIBRETRO::saveState(void* data, size_t size)
   if (state.size() > size)
     return false;
 
-  state.getByteArray(reinterpret_cast<uInt8*>(data), state.size());
+  state.getByteArray(reinterpret_cast<uInt8*>(data), static_cast<uInt32>(state.size()));
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 StellaLIBRETRO::getStateSize()
+size_t StellaLIBRETRO::getStateSize()
 {
   Serializer state;
 
