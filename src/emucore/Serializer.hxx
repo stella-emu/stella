@@ -64,7 +64,7 @@ class Serializer
     /**
       Returns the current write pointer location.
     */
-    uInt32 size() const;
+    size_t size() const;
 
     /**
       Reads a byte value (unsigned 8-bit) from the current input stream.
