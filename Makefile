@@ -61,8 +61,8 @@ ifdef HAVE_CLANG
 endif
 
 ifdef CLANG_WARNINGS
-  CXXFLAGS+= -Weverything -Wno-c++17-extensions -Wno-c++98-compat -Wno-c++98-compat-pedantic \
-    -Wno-double-promotion -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
+  CXXFLAGS+= -Weverything -Wno-c++17-extensions  -Wno-c++98-compat-pedantic \
+    -Wno-switch-enum -Wno-conversion -Wno-covered-switch-default \
     -Wno-inconsistent-missing-destructor-override -Wno-float-equal \
     -Wno-exit-time-destructors -Wno-global-constructors -Wno-weak-vtables \
     -Wno-four-char-constants -Wno-padded

@@ -16,9 +16,6 @@
 //============================================================================
 
 #include <cmath>
-#ifndef M_PI
-  #define M_PI 3.14159265358979323846f
-#endif
 
 #include "LanczosResampler.hxx"
 
@@ -45,7 +42,7 @@ namespace {
     // We calculate the sinc with double precision in order to compensate for precision loss
     // around zero
     return x == 0.f ? 1 : static_cast<float>(
-        sin(M_PI * static_cast<double>(x)) / M_PI / static_cast<double>(x)
+        sin(BSPF::PI_d * static_cast<double>(x)) / BSPF::PI_d / static_cast<double>(x)
     );
   }
 

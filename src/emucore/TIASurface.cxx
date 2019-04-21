@@ -98,7 +98,7 @@ void TIASurface::initialize(const Console& console,
   // This won't be 100% accurate, but non-integral scaling isn't 100%
   // accurate anyway
   mySLineSurface->setSrcSize(1, 2 * int(float(mode.image.height()) /
-    floor((float(mode.image.height()) / myTIA->height()) + 0.5)));
+    floorf((float(mode.image.height()) / myTIA->height()) + 0.5f)));
 
 #if 0
 cerr << "INITIALIZE:\n"

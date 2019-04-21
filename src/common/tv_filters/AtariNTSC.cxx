@@ -318,15 +318,15 @@ inline uInt32 AtariNTSC::getRGBPhosphor(const uInt32 c, const uInt32 p) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::init(init_t& impl, const Setup& setup)
 {
-  impl.brightness = float(setup.brightness) * (0.5f * rgb_unit) + rgb_offset;
-  impl.contrast   = float(setup.contrast)   * (0.5f * rgb_unit) + rgb_unit;
+  impl.brightness = setup.brightness * (0.5f * rgb_unit) + rgb_offset;
+  impl.contrast   = setup.contrast   * (0.5f * rgb_unit) + rgb_unit;
 
-  impl.artifacts = float(setup.artifacts);
+  impl.artifacts = setup.artifacts;
   if ( impl.artifacts > 0 )
     impl.artifacts *= artifacts_max - artifacts_mid;
   impl.artifacts = impl.artifacts * artifacts_mid + artifacts_mid;
 
-  impl.fringing = float(setup.fringing);
+  impl.fringing = setup.fringing;
   if ( impl.fringing > 0 )
     impl.fringing *= fringing_max - fringing_mid;
   impl.fringing = impl.fringing * fringing_mid + fringing_mid;
@@ -337,22 +337,22 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
   if (true)  /* was (gamma_size > 1) */
   {
     float const to_float = 1.0f / (gamma_size - 1/*(gamma_size > 1)*/);
-    float const gamma = 1.1333f - float(setup.gamma) * 0.5f;
+    float const gamma = 1.1333f - setup.gamma * 0.5f;
     /* match common PC's 2.2 gamma to TV's 2.65 gamma */
     int i;
     for ( i = 0; i < gamma_size; i++ )
       impl.to_float [i] =
-          float(pow( i * to_float, gamma )) * impl.contrast + impl.brightness;
+          powf( i * to_float, gamma ) * impl.contrast + impl.brightness;
   }
 
   /* setup decoder matricies */
   {
-    float hue = float(setup.hue) * PI + PI / 180 * ext_decoder_hue;
-    float sat = float(setup.saturation) + 1;
-    hue += PI / 180 * (std_decoder_hue - ext_decoder_hue);
+    float hue = setup.hue * BSPF::PI_f + BSPF::PI_f / 180 * ext_decoder_hue;
+    float sat = setup.saturation + 1;
+    hue += BSPF::PI_f / 180 * (std_decoder_hue - ext_decoder_hue);
 
-    float s = float(sin( hue )) * sat;
-    float c = float(cos( hue )) * sat;
+    float s = sinf( hue ) * sat;
+    float c = cosf( hue ) * sat;
     float* out = impl.to_rgb;
     int n;
 
@@ -386,27 +386,26 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
   /* generate luma (y) filter using sinc kernel */
   {
     /* sinc with rolloff (dsf) */
-    float const rolloff = 1 + float(setup.sharpness) * 0.032f;
-    float const maxh = 32;
-    float const pow_a_n = float(pow( rolloff, maxh ));
+    float const rolloff = 1 + setup.sharpness * 0.032f;
+    constexpr float maxh = 32;
+    float const pow_a_n = powf( rolloff, maxh );
     float sum;
-    int i;
     /* quadratic mapping to reduce negative (blurring) range */
-    float to_angle = float(setup.resolution) + 1;
-    to_angle = PI / maxh * float(LUMA_CUTOFF) * (to_angle * to_angle + 1);
+    float to_angle = setup.resolution + 1;
+    to_angle = BSPF::PI_f / maxh * LUMA_CUTOFF * (to_angle * to_angle + 1.f);
 
     kernels [kernel_size * 3 / 2] = maxh; /* default center value */
-    for ( i = 0; i < kernel_half * 2 + 1; i++ )
+    for ( int i = 0; i < kernel_half * 2 + 1; i++ )
     {
       int x = i - kernel_half;
       float angle = x * to_angle;
       /* instability occurs at center point with rolloff very close to 1.0 */
-      if ( x || pow_a_n > 1.056 || pow_a_n < 0.981 )
+      if ( x || pow_a_n > 1.056f || pow_a_n < 0.981f )
       {
-        float rolloff_cos_a = rolloff * float(cos( angle ));
+        float rolloff_cos_a = rolloff * cosf( angle );
         float num = 1 - rolloff_cos_a -
-            pow_a_n * float(cos( maxh * angle )) +
-            pow_a_n * rolloff * float(cos( (maxh - 1) * angle ));
+            pow_a_n * cosf( maxh * angle ) +
+            pow_a_n * rolloff * cosf( (maxh - 1) * angle );
         float den = 1 - rolloff_cos_a - rolloff_cos_a + rolloff * rolloff;
         float dsf = num / den;
         kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - 0.5f;
@@ -415,16 +414,16 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
 
     /* apply blackman window and find sum */
     sum = 0;
-    for ( i = 0; i < kernel_half * 2 + 1; i++ )
+    for ( int i = 0; i < kernel_half * 2 + 1; i++ )
     {
-      float x = PI * 2 / (kernel_half * 2) * i;
-      float blackman = 0.42f - 0.5f * float(cos( x )) + 0.08f * float(cos( x * 2 ));
+      float x = BSPF::PI_f * 2 / (kernel_half * 2) * i;
+      float blackman = 0.42f - 0.5f * cosf( x ) + 0.08f * cosf( x * 2 );
       sum += (kernels [kernel_size * 3 / 2 - kernel_half + i] *= blackman);
     }
 
     /* normalize kernel */
     sum = 1.0f / sum;
-    for ( i = 0; i < kernel_half * 2 + 1; i++ )
+    for ( int i = 0; i < kernel_half * 2 + 1; i++ )
     {
       int x = kernel_size * 3 / 2 - kernel_half + i;
       kernels [x] *= sum;
@@ -433,9 +432,8 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
 
   /* generate chroma (iq) filter using gaussian kernel */
   {
-    float const cutoff_factor = -0.03125f;
-    float cutoff = float(setup.bleed);
-    int i;
+    constexpr float cutoff_factor = -0.03125f;
+    float cutoff = setup.bleed;
 
     if ( cutoff < 0 )
     {
@@ -447,11 +445,11 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
     }
     cutoff = cutoff_factor - 0.65f * cutoff_factor * cutoff;
 
-    for ( i = -kernel_half; i <= kernel_half; i++ )
-      kernels [kernel_size / 2 + i] = float(exp( i * i * cutoff ));
+    for ( int i = -kernel_half; i <= kernel_half; i++ )
+      kernels [kernel_size / 2 + i] = expf( i * i * cutoff );
 
     /* normalize even and odd phases separately */
-    for ( i = 0; i < 2; i++ )
+    for ( int i = 0; i < 2; i++ )
     {
       float sum = 0;
       int x;
@@ -473,9 +471,8 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
   do
   {
     float remain = 0;
-    int i;
     weight -= 1.0f / rescale_in;
-    for ( i = 0; i < kernel_size * 2; i++ )
+    for ( int i = 0; i < kernel_size * 2; i++ )
     {
       float cur = kernels [i];
       float m = cur * weight;

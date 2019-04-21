@@ -15,19 +15,16 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cmath>
-#ifndef M_PI
-  #define M_PI 3.14159265358979323846f
-#endif
-
+#include "bspf.hxx"
 #include "HighPass.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighPass::HighPass(float cutOffFrequency, float frequency)
   : myLastValueIn(0),
     myLastValueOut(0),
-    myAlpha(1.f / (1.f + 2.f*M_PI*cutOffFrequency/frequency))
-{}
+    myAlpha(1.f / (1.f + 2.f*BSPF::PI_f*cutOffFrequency/frequency))
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float HighPass::apply(float valueIn)

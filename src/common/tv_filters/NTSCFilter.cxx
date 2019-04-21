@@ -20,8 +20,8 @@
 
 #include "NTSCFilter.hxx"
 
-constexpr double scaleFrom100(double x) { return (x/50.0) - 1.0;     }
-constexpr uInt32 scaleTo100(double x)   { return uInt32(50*(x+1.0)); }
+constexpr float scaleFrom100(float x) { return (x/50.f) - 1.f;     }
+constexpr uInt32 scaleTo100(float x)  { return uInt32(50*(x+1.f)); }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NTSCFilter::NTSCFilter()

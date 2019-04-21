@@ -153,7 +153,7 @@ class NTSCFilter
 
     struct AdjustableTag {
       const char* const type;
-      double* value;
+      float* value;
     };
     uInt32 myCurrentAdjustable;
     static const AdjustableTag ourCustomAdjustables[10];

@@ -354,9 +354,9 @@ void Paddles::update()
 
   // Only change state if the charge has actually changed
   if(myCharge[1] != myLastCharge[1])
-    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * (myCharge[1] / float(TRIGMAX))));
+    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * (myCharge[1] / double(TRIGMAX))));
   if(myCharge[0] != myLastCharge[0])
-    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * (myCharge[0] / float(TRIGMAX))));
+    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * (myCharge[0] / double(TRIGMAX))));
 
   myLastCharge[1] = myCharge[1];
   myLastCharge[0] = myCharge[0];

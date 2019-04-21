@@ -98,7 +98,7 @@ EmulationTiming& EmulationTiming::updateAudioQueueHeadroom(uInt32 audioQueueHead
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EmulationTiming& EmulationTiming::updateSpeedFactor(float speedFactor)
 {
-  mySpeedFactor = speedFactor;
+  mySpeedFactor = static_cast<double>(speedFactor);
   recalculate();
 
   return *this;

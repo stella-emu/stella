@@ -58,18 +58,18 @@ class AtariNTSC
     struct Setup
     {
       // Basic parameters
-      double hue;        // -1 = -180 degrees     +1 = +180 degrees
-      double saturation; // -1 = grayscale (0.0)  +1 = oversaturated colors (2.0)
-      double contrast;   // -1 = dark (0.5)       +1 = light (1.5)
-      double brightness; // -1 = dark (0.5)       +1 = light (1.5)
-      double sharpness;  // edge contrast enhancement/blurring
+      float hue;        // -1 = -180 degrees     +1 = +180 degrees
+      float saturation; // -1 = grayscale (0.0)  +1 = oversaturated colors (2.0)
+      float contrast;   // -1 = dark (0.5)       +1 = light (1.5)
+      float brightness; // -1 = dark (0.5)       +1 = light (1.5)
+      float sharpness;  // edge contrast enhancement/blurring
 
       // Advanced parameters
-      double gamma;      // -1 = dark (1.5)       +1 = light (0.5)
-      double resolution; // image resolution
-      double artifacts;  // artifacts caused by color changes
-      double fringing;   // color artifacts caused by brightness changes
-      double bleed;      // color bleed (color resolution reduction)
+      float gamma;      // -1 = dark (1.5)       +1 = light (0.5)
+      float resolution; // image resolution
+      float artifacts;  // artifacts caused by color changes
+      float fringing;   // color artifacts caused by brightness changes
+      float bleed;      // color bleed (color resolution reduction)
     };
 
     // Video format presets
@@ -160,9 +160,7 @@ class AtariNTSC
     #define fringing_max    2.0f
     #define rgb_offset      (rgb_unit * 2 + 0.5f)
 
-    #undef PI
-    #define PI 3.14159265358979323846f
-    #define LUMA_CUTOFF 0.20
+    #define LUMA_CUTOFF 0.20f
 
     uInt32 myColorTable[palette_size][entry_size];
     uInt8 myPhosphorPalette[256][256];
