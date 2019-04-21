@@ -543,16 +543,16 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const AtariNTSC::Setup AtariNTSC::TV_Composite = {
-  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.15, 0.0, 0.0, 0.0
+  0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.0f
 };
 const AtariNTSC::Setup AtariNTSC::TV_SVideo = {
-  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.45, -1.0, -1.0, 0.0
+  0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.45f, -1.0f, -1.0f, 0.0f
 };
 const AtariNTSC::Setup AtariNTSC::TV_RGB = {
-  0.0, 0.0, 0.0, 0.0, 0.2, 0.0, 0.70, -1.0, -1.0, -1.0
+  0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.70f, -1.0f, -1.0f, -1.0f
 };
 const AtariNTSC::Setup AtariNTSC::TV_Bad = {
-  0.1, -0.3, 0.3, 0.25, 0.2, 0.0, 0.1, 0.5, 0.5, 0.5
+  0.1f, -0.3f, 0.3f, 0.25f, 0.2f, 0.0f, 0.1f, 0.5f, 0.5f, 0.5f
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
