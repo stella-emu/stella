@@ -398,7 +398,9 @@ void TIASurface::render()
   if(mySaveSnapFlag)
   {
     mySaveSnapFlag = false;
+  #ifdef PNG_SUPPORT
     myOSystem.png().takeSnapshot();
+  #endif
   }
 }
 

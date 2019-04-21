@@ -22,6 +22,7 @@ _build_sound=yes
 _build_debugger=yes
 _build_joystick=yes
 _build_cheats=yes
+_build_png=yes
 _build_static=no
 _build_profile=no
 _build_debug=no
@@ -198,6 +199,8 @@ Optional Features:
   --disable-joystick
   --enable-cheats        enable/disable cheatcode support [enabled]
   --disable-cheats
+  --enable-png           enable/disable PNG image support [enabled]
+  --disable-png
   --enable-windowed      enable/disable windowed rendering modes [enabled]
   --disable-windowed
   --enable-shared        build shared binary [enabled]
@@ -237,6 +240,8 @@ for ac_option in $@; do
       --disable-joystick)       _build_joystick=no   ;;
       --enable-cheats)          _build_cheats=yes    ;;
       --disable-cheats)         _build_cheats=no     ;;
+      --enable-png)             _build_png=yes       ;;
+      --disable-png)            _build_png=no        ;;
       --enable-windowed)        _build_windowed=yes  ;;
       --disable-windowed)       _build_windowed=no   ;;
       --enable-shared)          _build_static=no     ;;
@@ -669,6 +674,14 @@ else
 	echo
 fi
 
+if test "$_build_png" = yes ; then
+	echo_n "   PNG image support enabled"
+	echo
+else
+	echo_n "   PNG image support disabled"
+	echo
+fi
+
 if test "$_build_windowed" = "yes" ; then
 	echo_n "   Windowed rendering modes enabled"
 	echo
@@ -800,6 +813,10 @@ if test "$_build_cheats" = yes ; then
 	DEFINES="$DEFINES -DCHEATCODE_SUPPORT"
 	MODULES="$MODULES $CHEAT"
 	INCLUDES="$INCLUDES -I$CHEAT"
+fi
+
+if test "$_build_png" = yes ; then
+	DEFINES="$DEFINES -DPNG_SUPPORT"
 fi
 
 if test "$_build_profile" = no ; then

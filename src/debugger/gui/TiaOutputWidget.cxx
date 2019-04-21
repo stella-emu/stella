@@ -61,9 +61,10 @@ void TiaOutputWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
 {
-  if (execDepth > 0) {
+#ifdef PNG_SUPPORT
+  if(execDepth > 0)
     drawWidget(false);
-  }
+
   ostringstream sspath;
   sspath << instance().snapshotSaveDir()
          << instance().console().properties().get(PropType::Cart_Name);
@@ -93,6 +94,9 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
   if (execDepth == 0) {
     instance().frameBuffer().showMessage(message);
   }
+#else
+  instance().frameBuffer().showMessage("PNG image saving not supported");
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

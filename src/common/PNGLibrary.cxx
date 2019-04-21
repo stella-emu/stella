@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#if defined(PNG_SUPPORT)
+
 #include <cmath>
 
 #include "bspf.hxx"
@@ -493,3 +495,5 @@ void PNGLibrary::png_user_error(png_structp ctx, png_const_charp str)
 PNGLibrary::ReadInfoType PNGLibrary::ReadInfo = {
   nullptr, nullptr, 0, 0, 0, 0, 0
 };
+
+#endif  // PNG_SUPPORT

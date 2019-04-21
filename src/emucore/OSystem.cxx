@@ -81,7 +81,10 @@ OSystem::OSystem()
     myFeatures += "Debugger ";
   #endif
   #ifdef CHEATCODE_SUPPORT
-    myFeatures += "Cheats";
+    myFeatures += "Cheats ";
+  #endif
+  #ifdef PNG_SUPPORT
+    myFeatures += "PNG";
   #endif
 
   // Get build info
@@ -154,8 +157,10 @@ bool OSystem::create()
   // Create random number generator
   myRandom = make_unique<Random>(uInt32(TimerManager::getTicks()));
 
+#ifdef PNG_SUPPORT
   // Create PNG handler
   myPNGLib = make_unique<PNGLibrary>(*this);
+#endif
 
   return true;
 }

@@ -18,6 +18,9 @@
 #ifndef OSYSTEM_HXX
 #define OSYSTEM_HXX
 
+#ifdef PNG_SUPPORT
+class PNGLibrary;
+#endif
 #ifdef CHEATCODE_SUPPORT
 class CheatManager;
 #endif
@@ -29,7 +32,6 @@ class Menu;
 class TimeMachine;
 class FrameBuffer;
 class EventHandler;
-class PNGLibrary;
 class Properties;
 class PropertiesSet;
 class Random;
@@ -174,13 +176,6 @@ class OSystem
     TimerManager& timer() const { return *myTimerManager; }
 
     /**
-      Get the PNG handler of the system.
-
-      @return The PNGlib object
-    */
-    PNGLibrary& png() const { return *myPNGLib; }
-
-    /**
       This method should be called to initiate the process of loading settings
       from the config file.  It takes care of loading settings, applying
       commandline overrides, and finally validating all settings.
@@ -210,6 +205,15 @@ class OSystem
       @return The cheatmanager object
     */
     CheatManager& cheat() const { return *myCheatManager; }
+#endif
+
+#ifdef PNG_SUPPORT
+    /**
+      Get the PNG handler of the system.
+
+      @return The PNGlib object
+    */
+    PNGLibrary& png() const { return *myPNGLib; }
 #endif
 
     /**
@@ -491,14 +495,16 @@ class OSystem
     unique_ptr<CheatManager> myCheatManager;
   #endif
 
+  #ifdef PNG_SUPPORT
+    // PNG object responsible for loading/saving PNG images
+    unique_ptr<PNGLibrary> myPNGLib;
+  #endif
+
     // Pointer to the StateManager object
     unique_ptr<StateManager> myStateManager;
 
     // Pointer to the TimerManager object
     unique_ptr<TimerManager> myTimerManager;
-
-    // PNG object responsible for loading/saving PNG images
-    unique_ptr<PNGLibrary> myPNGLib;
 
     // The list of log messages
     string myLogMessages;

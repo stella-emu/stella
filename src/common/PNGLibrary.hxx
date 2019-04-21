@@ -18,6 +18,8 @@
 #ifndef PNGLIBRARY_HXX
 #define PNGLIBRARY_HXX
 
+#if defined(PNG_SUPPORT)
+
 #include <png.h>
 
 class OSystem;
@@ -196,5 +198,7 @@ class PNGLibrary
     PNGLibrary& operator=(const PNGLibrary&) = delete;
     PNGLibrary& operator=(PNGLibrary&&) = delete;
 };
+
+#endif  // PNG_SUPPORT
 
 #endif

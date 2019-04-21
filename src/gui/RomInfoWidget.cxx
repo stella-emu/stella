@@ -95,9 +95,10 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
   // Initialize to empty properties entry
   mySurfaceErrorMsg = "";
-  mySurfaceIsValid = true;
+  mySurfaceIsValid = false;
   myRomInfo.clear();
 
+#ifdef PNG_SUPPORT
   // Get a valid filename representing a snapshot file for this rom
   const string& filename = instance().snapshotLoadDir() +
       myProperties.get(PropType::Cart_Name) + ".png";
@@ -111,12 +112,15 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
     const GUI::Rect& src = mySurface->srcRect();
     float scale = std::min(float(myAvail.w) / src.width(), float(myAvail.h) / src.height());
     mySurface->setDstSize(uInt32(src.width() * scale), uInt32(src.height() * scale));
+    mySurfaceIsValid = true;
   }
   catch(const runtime_error& e)
   {
-    mySurfaceIsValid = false;
     mySurfaceErrorMsg = e.what();
   }
+#else
+  mySurfaceErrorMsg = "PNG image loading not supported";
+#endif
   if(mySurface)
     mySurface->setVisible(mySurfaceIsValid);
 

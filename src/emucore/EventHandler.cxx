@@ -118,7 +118,9 @@ void EventHandler::reset(EventHandlerState state)
 {
   setState(state);
   myOSystem.state().reset();
+#ifdef PNG_SUPPORT
   myOSystem.png().setContinuousSnapInterval(0);
+#endif
 
   // Reset events almost immediately after starting emulation mode
   // We wait a little while (0.5s), since 'hold' events may be present,
@@ -219,9 +221,11 @@ void EventHandler::poll(uInt64 time)
       cheat->evaluate();
   #endif
 
+  #ifdef PNG_SUPPORT
     // Handle continuous snapshots
     if(myOSystem.png().continuousSnapEnabled())
       myOSystem.png().updateTime(time);
+  #endif
   }
   else if(myOverlay)
   {

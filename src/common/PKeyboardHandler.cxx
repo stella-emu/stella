@@ -546,9 +546,11 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
           myOSystem.state().toggleTimeMachine();
           break;
 
+    #ifdef PNG_SUPPORT
         case KBDK_S:
           myOSystem.png().toggleContinuousSnapshots(StellaModTest::isShift(mod));
           break;
+    #endif
 
         default:
           handled = false;

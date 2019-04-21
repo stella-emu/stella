@@ -59,6 +59,9 @@
 
   * Fixed 'Dancing Plate (Unknown) (PAL)' to use joystick.
 
+  * PNG image support is now conditionally compiled into Stella.  All
+    major ports (Linux/macOS/Windows) have it enabled by default.
+
 -Have fun!
 
 
