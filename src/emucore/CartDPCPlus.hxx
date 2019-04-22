@@ -270,6 +270,12 @@ class CartridgeDPCPlus : public Cartridge
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
 
+    // Indicates whether 'jitter' should be emulated
+    // This is the default option, and should always be enabled
+    // However, certain ROMs were released with older DPC+ ARM drivers,
+    // before the scheme was finalized; this allows those ROMs to run
+    bool myJitterEnabled;
+
   private:
     // Following constructors and assignment operators not supported
     CartridgeDPCPlus() = delete;

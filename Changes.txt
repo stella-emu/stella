@@ -59,6 +59,10 @@
 
   * Fixed 'Dancing Plate (Unknown) (PAL)' to use joystick.
 
+  * Allow the DPC+ scheme to not enable 'jitter' effect for certain older
+    DPC+ driver versions; this allows 'Epic Adventure' ROM to finally
+    work in Stella.
+
   * PNG image support is now conditionally compiled into Stella.  All
     major ports (Linux/macOS/Windows) have it enabled by default.
 
