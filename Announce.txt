@@ -24,13 +24,10 @@ number of other platforms and is currently maintained by Stephen Anthony.
 This is the 6.0 release of Stella for Linux, macOS and Windows.  The
 distributions currently available are:
 
-  * Binaries for Windows XP_SP3(*)/Vista/7/8/10 :
+  * Binaries for Windows Vista/7/8/10 :
       Stella-6.0-win32.exe   (32-bit EXE installer)
       Stella-6.0-x64.exe     (64-bit EXE installer)
       Stella-6.0-windows.zip (32/64 bit versions)
-
-      (*) Note: Support for Windows XP is problematic on some systems,
-          and will probably be discontinued in a future release.
 
   * Binary distribution for macOS 10.7 and above :
       Stella-6.0-macos.dmg (64-bit Intel)

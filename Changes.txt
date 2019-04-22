@@ -18,6 +18,10 @@
           reset to defaults; if you had custom mappings, they will need to
           be re-entered again.
 
+  * Note2:Support for Windows XP has been discontinued as of this version.
+          WinXP is now completely out of support from Microsoft, so we
+          are doing the same.
+
   * Updated internal ROM properties database to ROM-Hunter version 15
     (thanks go to RomHunter for his tireless research in this area).
     Related to this, updated the snapshot collection.
