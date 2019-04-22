@@ -110,7 +110,7 @@ class Playfield : public Serializable
     void nextLine();
 
     /**
-      Is the playfield signal active? This is determined by looking at bit 8
+      Is the playfield visible? This is determined by looking at bit 15
       of the collision mask.
      */
     bool isOn() const { return (collision & 0x8000); }
@@ -136,8 +136,8 @@ class Playfield : public Serializable
     /**
       16 bit Collision mask. Each sprite is represented by a single bit in the mask
       (1 = active, 0 = inactive). All other bits are always 1. The highest bit is
-      abused to store the active / inactive state (as the actual collision bit will
-      always be zero if collisions are disabled).
+      abused to store visibility (as the actual collision bit will always be zero
+      if collisions are disabled).
      */
     uInt32 collision;
 
@@ -234,7 +234,7 @@ class Playfield : public Serializable
     uInt32 myX;
 
     /**
-      TIA instance.
+      TIA instance. Required for flushing the line cache.
      */
     TIA* myTIA;
 

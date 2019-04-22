@@ -37,7 +37,7 @@ void Ball::reset()
   myIsEnabledNew = false;
   myIsEnabled = false;
   myIsDelaying = false;
-  myIsVisible = false;
+  mySignalActive = false;
   myHmmClocks = 0;
   myCounter = 0;
   isMoving = false;
@@ -168,8 +168,11 @@ void Ball::startMovement()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::nextLine()
 {
-  myIsVisible = myIsRendering && myRenderCounter >= 0;
-  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+  // Reevalute the collision mask in order to properly account for collisions during
+  // hblank. Usually, this will be taken care off in the next tick, but there is no
+  // next tick before hblank ends.
+  mySignalActive = myIsRendering && myRenderCounter >= 0;
+  collision = (mySignalActive && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -199,7 +202,7 @@ void Ball::updateEnabled()
 {
   myIsEnabled = !myIsSuppressed && (myIsDelaying ? myIsEnabledOld : myIsEnabledNew);
 
-  collision = (myIsVisible && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
+  collision = (mySignalActive && myIsEnabled) ? myCollisionMaskEnabled : myCollisionMaskDisabled;
   myTIA->scheduleCollisionUpdate();
 }
 
@@ -259,7 +262,7 @@ bool Ball::save(Serializer& out) const
     out.putBool(myIsEnabled);
     out.putBool(myIsSuppressed);
     out.putBool(myIsDelaying);
-    out.putBool(myIsVisible);
+    out.putBool(mySignalActive);
 
     out.putByte(myHmmClocks);
     out.putByte(myCounter);
@@ -300,7 +303,7 @@ bool Ball::load(Serializer& in)
     myIsEnabled = in.getBool();
     myIsSuppressed = in.getBool();
     myIsDelaying = in.getBool();
-    myIsVisible = in.getBool();
+    mySignalActive = in.getBool();
 
     myHmmClocks = in.getByte();
     myCounter = in.getByte();
