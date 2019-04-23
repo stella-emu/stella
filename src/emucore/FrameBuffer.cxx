@@ -97,7 +97,10 @@ bool FrameBuffer::initialize()
 
   // The general font used in all UI elements
   // This is determined by the size of the framebuffer
-  myFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
+  if(myOSystem.settings().getBool("minimal_ui"))
+    myFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);
+  else
+    myFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
 
   // The info font used in all UI elements
   // This is determined by the size of the framebuffer
