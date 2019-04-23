@@ -18,6 +18,8 @@
 #ifndef SDL_LIB_HXX
 #define SDL_LIB_HXX
 
+#include "bspf.hxx"
+
 /*
  * We can't control the quality of code from outside projects, so for now
  * just disable warnings for it.
@@ -43,4 +45,13 @@
 #undef pixel
 #undef bool
 
-#endif
+static inline string SDLVersion()
+{
+  ostringstream buf;
+  SDL_version ver;
+  SDL_GetVersion(&ver);
+  buf << "SDL " << int(ver.major) << "." << int(ver.minor) << "." << int(ver.patch);
+  return buf.str();
+}
+
+#endif  // SDL_LIB_HXX

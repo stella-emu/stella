@@ -18,7 +18,9 @@
 #ifndef STELLA_KEYS_HXX
 #define STELLA_KEYS_HXX
 
-#include "SDL_lib.hxx"
+#ifdef SDL_SUPPORT
+  #include "SDL_lib.hxx"
+#endif
 
 /**
   This class implements a thin wrapper around the SDL keysym enumerations,
@@ -439,7 +441,11 @@ namespace StellaKeyName
 {
   inline const char* const forKey(StellaKey key)
   {
+  #ifdef SDL_SUPPORT
     return SDL_GetScancodeName(SDL_Scancode(key));
+  #else
+    return "";
+  #endif
   }
 };
 

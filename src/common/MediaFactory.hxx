@@ -19,7 +19,9 @@
 #define MEDIA_FACTORY_HXX
 
 #include "bspf.hxx"
-#include "SDL_lib.hxx"
+#if defined(SDL_SUPPORT)
+  #include "SDL_lib.hxx"
+#endif
 
 #include "OSystem.hxx"
 #include "Settings.hxx"
@@ -54,16 +56,20 @@
 #if defined(__LIB_RETRO__)
   #include "EventHandlerLIBRETRO.hxx"
   #include "FrameBufferLIBRETRO.hxx"
-#else
+#elif defined(SDL_SUPPORT)
   #include "EventHandlerSDL2.hxx"
   #include "FrameBufferSDL2.hxx"
+#else
+  #error Unsupported backend!
 #endif
 
 #if defined(SOUND_SUPPORT)
   #if defined(__LIB_RETRO__)
     #include "SoundLIBRETRO.hxx"
-  #else
+  #elif defined(SDL_SUPPORT)
     #include "SoundSDL2.hxx"
+  #else
+    #include "SoundNull.hxx"
   #endif
 #else
   #include "SoundNull.hxx"
@@ -140,19 +146,23 @@ class MediaFactory
     {
     #if defined(__LIB_RETRO__)
       return make_unique<FrameBufferLIBRETRO>(osystem);
-    #else
+    #elif defined(SDL_SUPPORT)
       return make_unique<FrameBufferSDL2>(osystem);
+    #else
+      #error Unsupported platform for FrameBuffer!
     #endif
     }
 
     static unique_ptr<Sound> createAudio(OSystem& osystem, AudioSettings& audioSettings)
     {
-    #ifdef SOUND_SUPPORT
+    #if defined(SOUND_SUPPORT)
       #if defined(__LIB_RETRO__)
         return make_unique<SoundLIBRETRO>(osystem, audioSettings);
-      #elif defined(SOUND_SUPPORT)
+      #elif defined(SOUND_SUPPORT) && defined(SDL_SUPPORT)
         return make_unique<SoundSDL2>(osystem, audioSettings);
-	  #endif
+      #else
+        return make_unique<SoundNull>(osystem);
+      #endif
     #else
       return make_unique<SoundNull>(osystem);
     #endif
@@ -161,25 +171,28 @@ class MediaFactory
     static unique_ptr<EventHandler> createEventHandler(OSystem& osystem)
     {
     #if defined(__LIB_RETRO__)
-	  return make_unique<EventHandlerLIBRETRO>(osystem);
-	#else
-	  return make_unique<EventHandlerSDL2>(osystem);
-	#endif
+      return make_unique<EventHandlerLIBRETRO>(osystem);
+    #elif defined(SDL_SUPPORT)
+      return make_unique<EventHandlerSDL2>(osystem);
+    #else
+      #error Unsupported platform for EventHandler!
+    #endif
     }
 
     static void cleanUp()
     {
+    #if defined(SDL_SUPPORT)
       SDL_Quit();
+    #endif
     }
 
     static string backendName()
     {
-      ostringstream buf;
-      SDL_version ver;
-      SDL_GetVersion(&ver);
-      buf << "SDL " << int(ver.major) << "." << int(ver.minor) << "." << int(ver.patch);
-
-      return buf.str();
+    #if defined(SDL_SUPPORT)
+      return SDLVersion();
+    #else
+      return "Custom backend";
+    #endif
     }
 
   private:
