@@ -10,6 +10,9 @@ BACKSLASH := \$(BACKSLASH)
 filter_out1 = $(filter-out $(firstword $1),$1)
 filter_out2 = $(call filter_out1,$(call filter_out1,$1))
 
+CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers
+CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14
+
 ifeq ($(platform),)
    platform = unix
    ifeq ($(shell uname -s),)
@@ -113,8 +116,8 @@ else ifeq ($(platform), libnx)
 # Platform affix = classic_<ISA>_<µARCH>
 # Help at https://modmyclassic.com/comp
 
-# (armv7 a7, hard point, neon based) ### 
-# NESC, SNESC, C64 mini 
+# (armv7 a7, hard point, neon based) ###
+# NESC, SNESC, C64 mini
 else ifeq ($(platform), classic_armv7_a7)
 	TARGET := $(TARGET_NAME)_libretro.so
 	fpic := -fPIC
@@ -142,7 +145,7 @@ else ifeq ($(platform), classic_armv7_a7)
 	  endif
 	endif
 #######################################
-   
+
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
    CFLAGS += $(LTO) $(PTHREAD_FLAGS)
@@ -605,14 +608,14 @@ ifeq (,$(findstring msvc,$(platform)))
    ifeq ($(HAVE_STRINGS_H), 1)
       CXXFLAGS += -DHAVE_STRINGS_H
    endif
-   CXXFLAGS += -fno-rtti -pedantic 
+   CXXFLAGS += -fno-rtti -pedantic
    ifneq ($(HAVE_EXCEPTIONS), 1)
       CXXFLAGS += -fno-exceptions
    endif
 endif
 
 OBJOUT   = -o
-LINKOUT  = -o 
+LINKOUT  = -o
 
 ifneq (,$(findstring msvc,$(platform)))
 	OBJOUT = -Fo

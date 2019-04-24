@@ -435,7 +435,7 @@ namespace StellaModTest
   {
     return (mod & KBDM_SHIFT);
   }
-};
+}
 
 namespace StellaKeyName
 {
@@ -447,6 +447,6 @@ namespace StellaKeyName
     return "";
   #endif
   }
-};
+}
 
 #endif /* StellaKeys */
