@@ -548,7 +548,6 @@ class TIA : public Device
     string myFixedColorNames[7];
 
   private:
-
     /**
      * This callback is invoked by FrameManager when a new frame starts.
      */
@@ -646,8 +645,8 @@ class TIA : public Device
     uInt8 collCXBLPF() const;
 
     /**
-      Toggle the specified collision bits
-    */
+     * Toggle the specified collision bits
+     */
     void toggleCollP0PF();
     void toggleCollP0BL();
     void toggleCollP0M1();
@@ -663,6 +662,13 @@ class TIA : public Device
     void toggleCollM1PF();
     void toggleCollM1BL();
     void toggleCollBLPF();
+
+    /**
+     * Re-apply developer settings from the settings object.
+     * This should be done each time the device is reset, or after
+     * a state load occurs.
+     */
+    void applyDeveloperSettings();
 
   #ifdef DEBUGGER_SUPPORT
     void createAccessBase();
@@ -683,9 +689,8 @@ class TIA : public Device
   #endif // DEBUGGER_SUPPORT
 
   private:
-
     ConsoleIO& myConsole;
-      ConsoleTimingProvider myTimingProvider;
+    ConsoleTimingProvider myTimingProvider;
     Settings& mySettings;
 
     /**
@@ -717,7 +722,7 @@ class TIA : public Device
      * The frame manager is responsible for detecting frame boundaries and the visible
      * region of each frame.
      */
-    AbstractFrameManager *myFrameManager;
+    AbstractFrameManager* myFrameManager;
 
     /**
      * The various TIA objects.
@@ -771,13 +776,14 @@ class TIA : public Device
     /**
      * Master line counter
      */
-
     uInt8 myHctr;
+
     /**
      * Delta between master line counter and actual color clock. Nonzero after
      * RSYNC (before the scanline terminates)
      */
     Int32 myHctrDelta;
+
     /**
      * Electron beam x at rendering start (used for blanking out any pixels from
      * the last frame that are not overwritten)
@@ -804,10 +810,12 @@ class TIA : public Device
      * movement.
      */
     uInt32 myMovementClock;
+
     /**
      * Movement mode --- are we sending movement clocks?
      */
     bool myMovementInProgress;
+
     /**
      * Do we have an extended hblank this line? Get set by strobing HMOVE and
      * cleared when the line wraps.
@@ -830,6 +838,7 @@ class TIA : public Device
      * The index of the last CPU cycle that was included in the simulation.
      */
     uInt64 myLastCycle;
+
     /**
      * Keeps track of a possible fractional number of clocks that still need
      * to be simulated.

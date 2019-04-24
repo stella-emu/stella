@@ -80,9 +80,6 @@ TIA::TIA(ConsoleIO& console, ConsoleTimingProvider timingProvider, Settings& set
     mySpriteEnabledBits(0xFF),
     myCollisionsEnabledBits(0xFF)
 {
-  bool devSettings = mySettings.getBool("dev.settings");
-  myTIAPinsDriven = devSettings ? mySettings.getBool("dev.tiadriven") : false;
-
   myBackground.setTIA(this);
   myPlayfield.setTIA(this);
   myPlayer0.setTIA(this);
@@ -91,14 +88,11 @@ TIA::TIA(ConsoleIO& console, ConsoleTimingProvider timingProvider, Settings& set
   myMissile1.setTIA(this);
   myBall.setTIA(this);
 
-  myEnableJitter = mySettings.getBool(devSettings ? "dev.tv.jitter" : "plr.tv.jitter");
-  myJitterFactor = mySettings.getInt(devSettings ? "dev.tv.jitter_recovery" : "plr.tv.jitter_recovery");
-
   reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setFrameManager(AbstractFrameManager *frameManager)
+void TIA::setFrameManager(AbstractFrameManager* frameManager)
 {
   clearFrameManager();
 
@@ -171,61 +165,28 @@ void TIA::reset()
   for (PaddleReader& paddleReader : myPaddleReaders)
     paddleReader.reset(myTimestamp);
 
-  bool devSettings = mySettings.getBool("dev.settings");
-  if(devSettings)
-  {
-    bool custom = BSPF::equalsIgnoreCase("custom", mySettings.getString("dev.tia.type"));
-
-    setPlInvertedPhaseClock(custom
-                            ? mySettings.getBool("dev.tia.plinvphase")
-                            : BSPF::equalsIgnoreCase("koolaidman", mySettings.getString("dev.tia.type")));
-    setMsInvertedPhaseClock(custom
-                            ? mySettings.getBool("dev.tia.msinvphase")
-                            : BSPF::equalsIgnoreCase("cosmicark", mySettings.getString("dev.tia.type")));
-    setBlInvertedPhaseClock(custom ? mySettings.getBool("dev.tia.blinvphase") : false);
-    setPFBitsDelay(custom
-                   ? mySettings.getBool("dev.tia.delaypfbits")
-                   : BSPF::equalsIgnoreCase("pesco", mySettings.getString("dev.tia.type")));
-    setPFColorDelay(custom
-                    ? mySettings.getBool("dev.tia.delaypfcolor")
-                    : BSPF::equalsIgnoreCase("quickstep", mySettings.getString("dev.tia.type")));
-    setPlSwapDelay(custom
-                   ? mySettings.getBool("dev.tia.delayplswap")
-                   : BSPF::equalsIgnoreCase("heman", mySettings.getString("dev.tia.type")));
-    setBlSwapDelay(custom ? mySettings.getBool("dev.tia.delayblswap") : false);
-  }
-  else
-  {
-    setPlInvertedPhaseClock(false);
-    setMsInvertedPhaseClock(false);
-    setBlInvertedPhaseClock(false);
-    setPFBitsDelay(false);
-    setPFColorDelay(false);
-    setPlSwapDelay(false);
-    setBlSwapDelay(false);
-  }
   myDelayQueue.reset();
 
   myCyclesAtFrameStart = 0;
 
   if (myFrameManager)
-  {
     myFrameManager->reset();
-    enableColorLoss(mySettings.getBool(devSettings ? "dev.colorloss" : "plr.colorloss"));
-  }
 
   myFrontBufferScanlines = myFrameBufferScanlines = 0;
 
   myFramesSinceLastRender = 0;
 
-  // Must be done last, after all other items have reset
-  enableFixedColors(mySettings.getBool(devSettings ? "dev.debugcolors" : "plr.debugcolors"));
-  setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
-
   // Blank the various framebuffers; they may contain graphical garbage
-  memset(myBackBuffer, 0, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
+  memset(myBackBuffer, 0,  TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
   memset(myFrontBuffer, 0, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
   memset(myFramebuffer, 0, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
+
+  applyDeveloperSettings();
+
+  // Must be done last, after all other items have reset
+  bool devSettings = mySettings.getBool("dev.settings");
+  enableFixedColors(mySettings.getBool(devSettings ? "dev.debugcolors" : "plr.debugcolors"));
+  setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
 
 #ifdef DEBUGGER_SUPPORT
   createAccessBase();
@@ -283,8 +244,6 @@ bool TIA::save(Serializer& out) const
 
     if(!myInput0.save(out)) return false;
     if(!myInput1.save(out)) return false;
-
-    out.putBool(myTIAPinsDriven);
 
     out.putInt(int(myHstate));
 
@@ -357,8 +316,6 @@ bool TIA::load(Serializer& in)
     if(!myInput0.load(in)) return false;
     if(!myInput1.load(in)) return false;
 
-    myTIAPinsDriven = in.getBool();
-
     myHstate = HState(in.getInt());
 
     myHctr = in.getInt();
@@ -397,6 +354,9 @@ bool TIA::load(Serializer& in)
     myPFBitsDelay = in.getByte();
     myPFColorDelay = in.getByte();
     myPlSwapDelay = in.getByte();
+
+    // Re-apply dev settings
+    applyDeveloperSettings();
   }
   catch(...)
   {
@@ -831,7 +791,7 @@ bool TIA::saveDisplay(Serializer& out) const
   try
   {
     out.putByteArray(myFramebuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
-    out.putByteArray(myBackBuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
+    out.putByteArray(myBackBuffer,  TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
     out.putByteArray(myFrontBuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
     out.putInt(myFramesSinceLastRender);
   }
@@ -851,7 +811,7 @@ bool TIA::loadDisplay(Serializer& in)
   {
     // Reset frame buffer pointer and data
     in.getByteArray(myFramebuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
-    in.getByteArray(myBackBuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
+    in.getByteArray(myBackBuffer,  TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
     in.getByteArray(myFrontBuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
     myFramesSinceLastRender = in.getInt();
   }
@@ -862,6 +822,52 @@ bool TIA::loadDisplay(Serializer& in)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::applyDeveloperSettings()
+{
+  bool devSettings = mySettings.getBool("dev.settings");
+  if(devSettings)
+  {
+    bool custom = BSPF::equalsIgnoreCase("custom", mySettings.getString("dev.tia.type"));
+
+    setPlInvertedPhaseClock(custom
+                            ? mySettings.getBool("dev.tia.plinvphase")
+                            : BSPF::equalsIgnoreCase("koolaidman", mySettings.getString("dev.tia.type")));
+    setMsInvertedPhaseClock(custom
+                            ? mySettings.getBool("dev.tia.msinvphase")
+                            : BSPF::equalsIgnoreCase("cosmicark", mySettings.getString("dev.tia.type")));
+    setBlInvertedPhaseClock(custom ? mySettings.getBool("dev.tia.blinvphase") : false);
+    setPFBitsDelay(custom
+                   ? mySettings.getBool("dev.tia.delaypfbits")
+                   : BSPF::equalsIgnoreCase("pesco", mySettings.getString("dev.tia.type")));
+    setPFColorDelay(custom
+                    ? mySettings.getBool("dev.tia.delaypfcolor")
+                    : BSPF::equalsIgnoreCase("quickstep", mySettings.getString("dev.tia.type")));
+    setPlSwapDelay(custom
+                   ? mySettings.getBool("dev.tia.delayplswap")
+                   : BSPF::equalsIgnoreCase("heman", mySettings.getString("dev.tia.type")));
+    setBlSwapDelay(custom ? mySettings.getBool("dev.tia.delayblswap") : false);
+  }
+  else
+  {
+    setPlInvertedPhaseClock(false);
+    setMsInvertedPhaseClock(false);
+    setBlInvertedPhaseClock(false);
+    setPFBitsDelay(false);
+    setPFColorDelay(false);
+    setPlSwapDelay(false);
+    setBlSwapDelay(false);
+  }
+
+  myTIAPinsDriven = devSettings ? mySettings.getBool("dev.tiadriven") : false;
+
+  myEnableJitter = mySettings.getBool(devSettings ? "dev.tv.jitter" : "plr.tv.jitter");
+  myJitterFactor = mySettings.getInt(devSettings ? "dev.tv.jitter_recovery" : "plr.tv.jitter_recovery");
+
+  if(myFrameManager)
+    enableColorLoss(mySettings.getBool(devSettings ? "dev.colorloss" : "plr.colorloss"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
