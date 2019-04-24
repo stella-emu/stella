@@ -25,8 +25,6 @@ class AudioQueue;
 class EmulationTiming;
 class AudioSettings;
 
-#include "SDL_lib.hxx"
-
 #include "bspf.hxx"
 #include "Sound.hxx"
 #include "AudioQueue.hxx"
@@ -111,7 +109,7 @@ class SoundLIBRETRO : public Sound
   public:
     /**
       Empties the playback buffer.
-      
+
       @param stream   Output audio buffer
       @param samples  Number of audio samples read
     */

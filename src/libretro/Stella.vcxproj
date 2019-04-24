@@ -512,6 +512,7 @@
     <ClInclude Include="..\gui\UIDialog.hxx" />
     <ClInclude Include="..\gui\VideoDialog.hxx" />
     <ClInclude Include="..\gui\Widget.hxx" />
+    <ClInclude Include="SoundLIBRETRO.hxx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

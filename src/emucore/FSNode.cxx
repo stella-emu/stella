@@ -18,7 +18,6 @@
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "bspf.hxx"
 #include "FSNodeFactory.hxx"
 #include "FSNode.hxx"
 

@@ -21,7 +21,7 @@
 #ifndef FS_NODE_HXX
 #define FS_NODE_HXX
 
-#include <algorithm>
+#include "bspf.hxx"
 
 /*
  * The API described in this header is meant to allow for file system browsing in a
