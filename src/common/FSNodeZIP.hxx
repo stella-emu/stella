@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#if defined(ZIP_SUPPORT)
+
 #ifndef FS_NODE_ZIP_HXX
 #define FS_NODE_ZIP_HXX
 
@@ -119,3 +121,5 @@ class FilesystemNodeZIP : public AbstractFSNode
 };
 
 #endif
+
+#endif  // ZIP_SUPPORT

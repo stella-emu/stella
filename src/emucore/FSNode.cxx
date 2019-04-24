@@ -18,8 +18,6 @@
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include <zlib.h>
-
 #include "bspf.hxx"
 #include "FSNodeFactory.hxx"
 #include "FSNode.hxx"
@@ -39,9 +37,11 @@ FilesystemNode::FilesystemNode(AbstractFSNodePtr realNode)
 FilesystemNode::FilesystemNode(const string& p)
 {
   // Is this potentially a ZIP archive?
+#if defined(ZIP_SUPPORT)
   if(BSPF::containsIgnoreCase(p, ".zip"))
     _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::Type::ZIP);
   else
+#endif
     _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::Type::SYSTEM);
 }
 
@@ -108,15 +108,6 @@ string FilesystemNode::getPathWithExt(const string& ext) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getShortPathWithExt(const string& ext) const
-{
-  string s = _realNode->getShortPath();
-
-  size_t pos = s.find_last_of(".");
-  return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::hasParent() const
 {
   return _realNode ? (_realNode->getParent() != nullptr) : false;
@@ -173,27 +164,31 @@ uInt32 FilesystemNode::read(BytePtr& image) const
 {
   uInt32 size = 0;
 
-  // First let the private subclass attempt to open the file
-  if((size = _realNode->read(image)) > 0)
-    return size;
-
   // File must actually exist
   if(!(exists() && isReadable()))
     throw runtime_error("File not found/readable");
 
-  // Otherwise, assume the file is either gzip'ed or not compressed at all
-  gzFile f = gzopen(getPath().c_str(), "rb");
-  if(f)
-  {
-    image = make_unique<uInt8[]>(512 * 1024);
-    size = gzread(f, image.get(), 512 * 1024);
-    gzclose(f);
+  // First let the private subclass attempt to open the file
+  if((size = _realNode->read(image)) > 0)
+    return size;
 
-    if(size == 0)
+  // Otherwise, the default behaviour is to read from a normal C++ ifstream
+  image = make_unique<uInt8[]>(512 * 1024);
+  ifstream in(getPath(), std::ios::binary);
+  if(in)
+  {
+    in.seekg(0, std::ios::end);
+    std::streampos length = in.tellg();
+    in.seekg(0, std::ios::beg);
+
+    if(length == 0)
       throw runtime_error("Zero-byte file");
 
-    return size;
+    size = std::min(uInt32(length), 512u * 1024u);
+    in.read(reinterpret_cast<char*>(image.get()), size);
   }
   else
-    throw runtime_error("ZLIB open/read error");
+    throw runtime_error("File open/read error");
+
+  return size;
 }

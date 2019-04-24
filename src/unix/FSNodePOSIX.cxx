@@ -178,7 +178,7 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
         (mode == FilesystemNode::ListMode::DirectoriesOnly && !entry._isDirectory))
       continue;
 
-    myList.emplace_back(new FilesystemNodePOSIX(entry));
+    myList.emplace_back(make_shared<FilesystemNodePOSIX>(entry));
   }
   closedir(dirp);
 

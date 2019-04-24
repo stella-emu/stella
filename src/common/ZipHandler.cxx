@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#if defined(ZIP_SUPPORT)
+
 #include <zlib.h>
 
 #include "Bankswitch.hxx"
@@ -540,3 +542,5 @@ ZipHandler::ZipEcd::ZipEcd()
     cdStartDiskOffset(0)
 {
 }
+
+#endif  /* ZIP_SUPPORT */

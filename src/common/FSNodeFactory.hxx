@@ -19,6 +19,10 @@
 #define FSNODE_FACTORY_HXX
 
 class AbstractFSNode;
+
+#if defined(ZIP_SUPPORT)
+  #include "FSNodeZIP.hxx"
+#endif
 #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
   #include "FSNodePOSIX.hxx"
 #elif defined(BSPF_WINDOWS)
@@ -28,11 +32,9 @@ class AbstractFSNode;
 #else
   #error Unsupported platform in FSNodeFactory!
 #endif
-#include "FSNodeZIP.hxx"
 
 /**
   This class deals with creating the different FSNode implementations.
-  I think you can see why this mess was put into a factory class :)
 
   @author  Stephen Anthony
 */
@@ -47,16 +49,18 @@ class FilesystemNodeFactory
       switch(type)
       {
         case Type::SYSTEM:
-      #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
+        #if defined(BSPF_UNIX) || defined(BSPF_MACOS)
           return make_unique<FilesystemNodePOSIX>(path);
-      #elif defined(BSPF_WINDOWS)
+        #elif defined(BSPF_WINDOWS)
           return make_unique<FilesystemNodeWINDOWS>(path);
-      #elif defined(__LIB_RETRO__)
+        #elif defined(__LIB_RETRO__)
           return make_unique<FilesystemNodeLIBRETRO>(path);
-      #endif
+        #endif
           break;
         case Type::ZIP:
+        #if defined(ZIP_SUPPORT)
           return make_unique<FilesystemNodeZIP>(path);
+        #endif
           break;
       }
       return nullptr;

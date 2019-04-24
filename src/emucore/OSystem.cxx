@@ -84,7 +84,10 @@ OSystem::OSystem()
     myFeatures += "Cheats ";
   #endif
   #ifdef PNG_SUPPORT
-    myFeatures += "PNG";
+    myFeatures += "PNG ";
+  #endif
+  #ifdef ZIP_SUPPORT
+    myFeatures += "ZIP";
   #endif
 
   // Get build info
@@ -651,10 +654,10 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
     case DispatchResult::Status::fatal:
       #ifdef DEBUGGER_SUPPORT
         myDebugger->startWithFatalError(dispatchResult.getMessage());
-        break;
       #else
-        throw runtime_error(dispatchResult.getMessage());
+        cerr << dispatchResult.getMessage() << endl;
       #endif
+        break;
 
     default:
       throw runtime_error("invalid emulation dispatch result");

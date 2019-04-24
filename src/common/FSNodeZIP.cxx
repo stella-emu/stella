@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#if defined(ZIP_SUPPORT)
+
 #include <set>
 
 #include "bspf.hxx"
@@ -210,3 +212,5 @@ AbstractFSNodePtr FilesystemNodeZIP::getParent() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<ZipHandler> FilesystemNodeZIP::myZipHandler = make_unique<ZipHandler>();
+
+#endif  // ZIP_SUPPORT

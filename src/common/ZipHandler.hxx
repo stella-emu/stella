@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#if defined(ZIP_SUPPORT)
+
 #ifndef ZIP_HANDLER_HXX
 #define ZIP_HANDLER_HXX
 
@@ -318,3 +320,5 @@ class ZipHandler
 };
 
 #endif  /* ZIP_HANDLER_HXX */
+
+#endif  /* ZIP_SUPPORT */
