@@ -37,7 +37,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
     myARMCycles(0),
     myFractionalClocks(0.0),
     myBankOffset(0),
-    myJitterEnabled(true)
+    myFractionalLowMask(0x0F00FF)
 {
   // Image is always 32K, but in the case of ROM > 29K, the image is
   // copied to the end of the buffer
@@ -65,10 +65,10 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
        Thumbulator::ConfigureFor::DPCplus,
        this);
 
-  // Disable jitter on certain DPC+ driver versions
-  string driverMD5;
-  driverMD5 = MD5::hash(image, 3*1024);
-  myJitterEnabled = driverMD5 != "8dd73b44fd11c488326ce507cbeb19d1";
+  // Currently only one known DPC+ ARM driver exhibits a problem
+  // with the default mask to use for DFxFRACLOW
+  if(MD5::hash(image, 3*1024) == "8dd73b44fd11c488326ce507cbeb19d1")
+    myFractionalLowMask = 0x0F0000;
 
   setInitialState();
 }
@@ -403,10 +403,10 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 
     switch(function)
     {
-      //DFxFRACLOW - fractional data pointer low byte
+      // DFxFRACLOW - fractional data pointer low byte
       case 0x00:
         myFractionalCounters[index] =
-          (myFractionalCounters[index] & (myJitterEnabled ? 0x0F00FF : 0x0F0000)) | (uInt16(value) << 8);
+          (myFractionalCounters[index] & myFractionalLowMask) | (uInt16(value) << 8);
         break;
 
       // DFxFRACHI - fractional data pointer high byte
@@ -685,9 +685,6 @@ bool CartridgeDPCPlus::save(Serializer& out) const
 
     // Clock info for Thumbulator
     out.putLong(myARMCycles);
-
-    // Jitter effect
-    out.putBool(myJitterEnabled);
   }
   catch(...)
   {
@@ -749,9 +746,6 @@ bool CartridgeDPCPlus::load(Serializer& in)
 
     // Clock info for Thumbulator
     myARMCycles = in.getLong();
-
-    // Jitter effect
-    myJitterEnabled = in.getBool();
   }
   catch(...)
   {

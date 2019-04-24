@@ -270,11 +270,12 @@ class CartridgeDPCPlus : public Cartridge
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
 
-    // Indicates whether 'jitter' should be emulated
-    // This is the default option, and should always be enabled
-    // However, certain ROMs were released with older DPC+ ARM drivers,
-    // before the scheme was finalized; this allows those ROMs to run
-    bool myJitterEnabled;
+    // Older DPC+ driver code had different behaviour wrt the mask used
+    // to retrieve 'DFxFRACLOW' (fractional data pointer low byte)
+    // ROMs built with an old DPC+ driver and using the newer mask can
+    // result in 'jittering' in the playfield display
+    // For current versions, this is 0x0F00FF; older versions need 0x0F0000
+    uInt32 myFractionalLowMask;
 
   private:
     // Following constructors and assignment operators not supported
