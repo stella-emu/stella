@@ -5,7 +5,6 @@
 
 #import "SDL.h"
 #import "SDLMain.h"
-#import "Preferences.h"
 
 #define SDL_main stellaMain
 extern int stellaMain(int argc, char* argv[]);
@@ -158,8 +157,6 @@ static int IsFinderLaunch(const int argc, char **argv)
 // Main entry point to executable - should *not* be SDL_main!
 int main (int argc, char* argv[])
 {
-	static Preferences *myPrefs;
-
   // Copy the arguments into a global variable
   // This is passed if we are launched by double-clicking
   if (IsFinderLaunch(argc, argv))
@@ -178,8 +175,6 @@ int main (int argc, char* argv[])
       gArgv[i] = argv[i];
     gFinderLaunch = NO;
   }
-
-	myPrefs = [Preferences sharedInstance];
 
   NSApplicationMain (argc, (const char**)argv);
 

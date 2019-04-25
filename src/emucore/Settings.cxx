@@ -26,10 +26,13 @@
 #endif
 
 #include "Settings.hxx"
+#include "repository/KeyValueRepositoryNoop.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings()
 {
+  myRespository = make_shared<KeyValueRepositoryNoop>();
+
   // Video-related options
   setPermanent("video", "");
   setPermanent("speed", "1.0");
@@ -190,16 +193,17 @@ Settings::Settings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::load(const string& cfgfile, const Options& options)
+void Settings::setRepository(shared_ptr<KeyValueRepository> repository)
 {
-  // First load from the platform-specific config file
-  // Different ports may override this functionality
-  if(!loadConfigFile(cfgfile))
-  {
-    // FIXME - make logger available everywhere
-    // myOSystem.logMessage("ERROR: Couldn't load settings file", 0);
-    cout << "ERROR: Couldn't load settings file" << endl;
-  }
+  myRespository = repository;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::load(const Options& options)
+{
+  Options fromFile =  myRespository->load();
+  for (const auto& opt: fromFile)
+    setValue(opt.first, opt.second);
 
   // Apply commandline options, which override those from settings file
   for(const auto& opt: options)
@@ -211,14 +215,9 @@ void Settings::load(const string& cfgfile, const Options& options)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::save(const string& cfgfile) const
+void Settings::save()
 {
-  if(!saveConfigFile(cfgfile))
-  {
-    // FIXME - make logger available everywhere
-    // myOSystem.logMessage("ERROR: Couldn't save settings file", 0);
-    cout << "ERROR: Couldn't save settings file" << endl;
-  }
+  myRespository->save(myPermanentSettings);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -597,73 +596,6 @@ void Settings::setValue(const string& key, const Variant& value)
     it->second = value;
   else
     myTemporarySettings[key] = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Settings::loadConfigFile(const string& cfgfile)
-{
-  string line, key, value;
-  string::size_type equalPos, garbage;
-
-  ifstream in(cfgfile);
-  if(!in || !in.is_open())
-    return false;
-
-  while(getline(in, line))
-  {
-    // Strip all whitespace and tabs from the line
-    while((garbage = line.find("\t")) != string::npos)
-      line.erase(garbage, 1);
-
-    // Ignore commented and empty lines
-    if((line.length() == 0) || (line[0] == ';'))
-      continue;
-
-    // Search for the equal sign and discard the line if its not found
-    if((equalPos = line.find("=")) == string::npos)
-      continue;
-
-    // Split the line into key/value pairs and trim any whitespace
-    key   = trim(line.substr(0, equalPos));
-    value = trim(line.substr(equalPos + 1, line.length() - key.length() - 1));
-
-    // Skip absent key
-    if(key.length() == 0)
-      continue;
-
-    // Only settings which have been previously set are valid
-    setValue(key, value);
-  }
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Settings::saveConfigFile(const string& cfgfile) const
-{
-  ofstream out(cfgfile);
-  if(!out || !out.is_open())
-    return false;
-
-  out << ";  Stella configuration file" << endl
-      << ";" << endl
-      << ";  Lines starting with ';' are comments and are ignored." << endl
-      << ";  Spaces and tabs are ignored." << endl
-      << ";" << endl
-      << ";  Format MUST be as follows:" << endl
-      << ";    command = value" << endl
-      << ";" << endl
-      << ";  Commands are the same as those specified on the commandline," << endl
-      << ";  without the '-' character." << endl
-      << ";" << endl
-      << ";  Values are the same as those allowed on the commandline." << endl
-      << ";  Boolean values are specified as 1 (or true) and 0 (or false)" << endl
-      << ";" << endl;
-
-  // Write out each of the key and value pairs
-  for(const auto& s: myPermanentSettings)
-    out << s.first << " = " << s.second << endl;
-
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

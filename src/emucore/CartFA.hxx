@@ -46,7 +46,7 @@ class CartridgeFA : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeFA(const BytePtr& image, uInt32 size, const string& md5,
+    CartridgeFA(const ByteBuffer& image, uInt32 size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeFA() = default;
 

@@ -34,7 +34,7 @@ KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const string& filenam
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::map<string, Variant> KeyValueRepositoryConfigfile::load()
 {
-  std::map<string, Variant> pairs;
+  std::map<string, Variant> values;
 
   string line, key, value;
   string::size_type equalPos, garbage;
@@ -44,7 +44,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
     // FIXME - make logger available everywhere
     cout << "ERROR: Couldn't load from settings file " << myFilename << endl;
 
-    return pairs;
+    return values;
   }
 
   while(getline(in, line))
@@ -69,14 +69,14 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
     if(key.length() == 0)
       continue;
 
-    pairs[key] = value;
+    values[key] = value;
   }
 
-  return pairs;
+  return values;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyValueRepositoryConfigfile::save(std::map<string, Variant>& values)
+void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
 {
 ofstream out(myFilename);
   if(!out || !out.is_open()) {

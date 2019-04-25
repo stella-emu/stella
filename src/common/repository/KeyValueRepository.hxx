@@ -31,7 +31,7 @@ class KeyValueRepository
 
     virtual std::map<string, Variant> load() = 0;
 
-    virtual void save(std::map<string, Variant>& values) = 0;
+    virtual void save(const std::map<string, Variant>& values) = 0;
 };
 
 #endif // KEY_VALUE_REPOSITORY_HXX

@@ -34,19 +34,6 @@ class SettingsMACOS : public Settings
     explicit SettingsMACOS();
     virtual ~SettingsMACOS() = default;
 
-  public:
-    /**
-      This method should be called to load the current settings from the
-      standard Mac preferences.
-    */
-    bool loadConfigFile(const string&) override;
-
-    /**
-      This method should be called to save the current settings to the
-      standard Mac preferences.
-    */
-    bool saveConfigFile(const string&) const override;
-
   private:
     // Following constructors and assignment operators not supported
     SettingsMACOS(const SettingsMACOS&) = delete;

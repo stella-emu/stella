@@ -17,6 +17,7 @@
 
 #include "FSNode.hxx"
 #include "OSystemMACOS.hxx"
+#include "SettingsRepositoryMACOS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemMACOS::getBaseDirAndConfig(string& basedir, string& cfgfile,
@@ -24,7 +25,6 @@ void OSystemMACOS::getBaseDirAndConfig(string& basedir, string& cfgfile,
         bool useappdir, const string& usedir)
 {
   basedir = "~/Library/Application Support/Stella/";
-  cfgfile = "~/Library/Application Support/Stella/stellarc";  // FIXME - actually use this
 
 #if 0
   // Check to see if basedir overrides are active
@@ -39,4 +39,10 @@ void OSystemMACOS::getBaseDirAndConfig(string& basedir, string& cfgfile,
 
   FilesystemNode desktop("~/Desktop/");
   savedir = loaddir = desktop.isDirectory() ? desktop.getShortPath() : "~/";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+shared_ptr<KeyValueRepository> OSystemMACOS::createSettingsRepository()
+{
+  return make_shared<SettingsRepositoryMACOS>();
 }

@@ -15,27 +15,36 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "System.hxx"
-#include "CartE78K.hxx"
+#import <Cocoa/Cocoa.h>
+
+#include "SettingsRepositoryMACOS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE78K::CartridgeE78K(const ByteBuffer& image, uInt32 size,
-                             const string& md5, const Settings& settings)
-  : CartridgeMNetwork(image, size, md5, settings)
+std::map<string, Variant> SettingsRepositoryMACOS::load()
 {
-  initialize(image, size);
+  std::map<string, Variant> values;
+
+  @autoreleasepool {
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSArray* keys = [[defaults dictionaryRepresentation] allKeys];
+
+    for (NSString* key in keys) {
+      NSString* value = [defaults stringForKey:key];
+      if (value != nil)
+        values[[key UTF8String]] = string([value UTF8String]);
+    }
+  }
+
+  return values;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE78K::checkSwitchBank(uInt16 address)
+void SettingsRepositoryMACOS::save(const std::map<string, Variant>& values)
 {
-  // Switch banks if necessary
-  if((address >= 0x0FE4) && (address <= 0x0FE7))
-  {
-    bank(address & 0x0003);
-  }
-  else if((address >= 0x0FE8) && (address <= 0x0FEB))
-  {
-    bankRAM(address & 0x0003);
+  @autoreleasepool {
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+
+    for(const auto& pair: values)
+      [defaults setObject:[NSString stringWithUTF8String:pair.second.toCString()] forKey:[NSString stringWithUTF8String:pair.first.c_str()]];
   }
 }

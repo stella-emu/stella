@@ -19,7 +19,7 @@
 #include "Cart2K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge2K::Cartridge2K(const BytePtr& image, uInt32 size,
+Cartridge2K::Cartridge2K(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5)
 {

@@ -20,7 +20,7 @@
 #include "Cart3F.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge3F::Cartridge3F(const BytePtr& image, uInt32 size,
+Cartridge3F::Cartridge3F(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),

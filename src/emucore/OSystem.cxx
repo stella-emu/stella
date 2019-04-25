@@ -55,6 +55,9 @@
 #include "DispatchResult.hxx"
 #include "EmulationWorker.hxx"
 #include "AudioSettings.hxx"
+#include "repository/KeyValueRepositoryNoop.hxx"
+#include "repository/KeyValueRepositoryConfigfile.hxx"
+
 
 #include "OSystem.hxx"
 
@@ -115,9 +118,13 @@ bool OSystem::create()
       << "  Features: " << myFeatures << endl
       << "  " << myBuildInfo << endl << endl
       << "Base directory:       '"
-      << FilesystemNode(myBaseDir).getShortPath() << "'" << endl
+      << FilesystemNode(myBaseDir).getShortPath() << "'" << endl;
+
+  if (!myConfigFile.empty()) buf
       << "Configuration file:   '"
-      << FilesystemNode(myConfigFile).getShortPath() << "'" << endl
+      << FilesystemNode(myConfigFile).getShortPath() << "'" << endl;
+
+  buf
       << "User game properties: '"
       << FilesystemNode(myPropertiesFile).getShortPath() << "'" << endl;
   logMessage(buf.str(), 1);
@@ -182,7 +189,7 @@ void OSystem::loadConfig(const Settings::Options& options)
   if(!node.isDirectory())
     node.makeDir();
   myBaseDir = node.getPath();
-  myConfigFile = FilesystemNode(myConfigFile).getPath();
+  if (!myConfigFile.empty()) myConfigFile = FilesystemNode(myConfigFile).getPath();
 
   FilesystemNode save(myDefaultSaveDir);
   if(!save.isDirectory())
@@ -194,8 +201,10 @@ void OSystem::loadConfig(const Settings::Options& options)
     load.makeDir();
   myDefaultLoadDir = load.getShortPath();
 
+  mySettings->setRepository(createSettingsRepository());
+
   logMessage("Loading config options ...", 2);
-  mySettings->load(configFile(), options);
+  mySettings->load(options);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -209,7 +218,7 @@ void OSystem::saveConfig()
   }
 
   logMessage("Saving config options ...", 2);
-  mySettings->save(configFile());
+  mySettings->save();
 
   if(myPropSet && myPropSet->save(myPropertiesFile))
     logMessage("Saving properties set ...", 2);
@@ -473,7 +482,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
   unique_ptr<Console> console;
 
   // Open the cartridge image and read it in
-  BytePtr image;
+  ByteBuffer image;
   uInt32 size = 0;
   if((image = openROM(romfile, md5, size)) != nullptr)
   {
@@ -552,14 +561,14 @@ void OSystem::closeConsole()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BytePtr OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
+ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
 {
   // This method has a documented side-effect:
   // It not only loads a ROM and creates an array with its contents,
   // but also adds a properties entry if the one for the ROM doesn't
   // contain a valid name
 
-  BytePtr image;
+  ByteBuffer image;
   if((size = rom.read(image)) == 0)
     return nullptr;
 
@@ -732,6 +741,15 @@ void OSystem::mainLoop()
 
   myCheatManager->saveCheatDatabase();
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+shared_ptr<KeyValueRepository> OSystem::createSettingsRepository()
+{
+  if (myConfigFile.empty())
+    return make_shared<KeyValueRepositoryNoop>();
+
+  return make_shared<KeyValueRepositoryConfigfile>(myConfigFile);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

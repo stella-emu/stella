@@ -15,23 +15,17 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#import <Cocoa/Cocoa.h>
+#ifndef SETTINGS_REPOSITORY_MACOS_HXX
+#define SETTINGS_REPOSITORY_MACOS_HXX
 
-void prefsSetString(const char* key, const char* value);
-void prefsGetString(const char* key, char* value, int size);
-void prefsSave(void);
+#include "repository/KeyValueRepository.hxx"
 
-/**
-  Preferences class and support functions for the macOS
-  SDL2 port of Stella.
+class SettingsRepositoryMACOS : public KeyValueRepository
+{
+public:
+  virtual std::map<string, Variant> load();
 
-  @author  Mark Grebe <atarimac@cox.net>
-*/
-@interface Preferences : NSObject
+  virtual void save(const std::map<string, Variant>& values);
+};
 
-+ (Preferences *)sharedInstance;
-- (void)setString:(const char *)key : (const char *)value;
-- (void)getString:(const char *)key : (char *)value : (int)size;
-- (void)save;
-
-@end
+#endif // SETTINGS_REPOSITORY_MACOS_HXX

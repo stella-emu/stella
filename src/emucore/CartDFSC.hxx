@@ -46,7 +46,7 @@ class CartridgeDFSC : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeDFSC(const BytePtr& image, uInt32 size, const string& md5,
+    CartridgeDFSC(const ByteBuffer& image, uInt32 size, const string& md5,
                   const Settings& settings);
     virtual ~CartridgeDFSC() = default;
 

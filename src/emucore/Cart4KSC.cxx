@@ -19,7 +19,7 @@
 #include "Cart4KSC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4KSC::Cartridge4KSC(const BytePtr& image, uInt32 size,
+Cartridge4KSC::Cartridge4KSC(const ByteBuffer& image, uInt32 size,
                              const string& md5, const Settings& settings)
   : Cartridge(settings, md5)
 {

@@ -24,7 +24,6 @@ void OSystemLIBRETRO::getBaseDirAndConfig(string& basedir, string& cfgfile,
         bool useappdir, const string& usedir)
 {
   basedir = ".";
-  cfgfile = ".";
 
 #if 0
   // Check to see if basedir overrides are active

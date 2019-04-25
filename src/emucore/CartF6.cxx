@@ -19,7 +19,7 @@
 #include "CartF6.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6::CartridgeF6(const BytePtr& image, uInt32 size,
+CartridgeF6::CartridgeF6(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     myBankOffset(0)

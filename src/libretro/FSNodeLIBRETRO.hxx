@@ -50,7 +50,7 @@ class FilesystemNodeLIBRETRO : public AbstractFSNode
     bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const override;
     AbstractFSNodePtr getParent() const override;
 
-    uInt32 read(BytePtr& image) const override;
+    uInt32 read(ByteBuffer& image) const override;
 
   protected:
     string _displayName;

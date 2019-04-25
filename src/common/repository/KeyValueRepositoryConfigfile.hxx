@@ -28,7 +28,7 @@ class KeyValueRepositoryConfigfile : public KeyValueRepository
 
     virtual std::map<string, Variant> load();
 
-    virtual void save(std::map<string, Variant>& values);
+    virtual void save(const std::map<string, Variant>& values);
 
   private:
 

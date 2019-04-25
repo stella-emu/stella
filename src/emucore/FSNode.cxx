@@ -159,7 +159,7 @@ bool FilesystemNode::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FilesystemNode::read(BytePtr& image) const
+uInt32 FilesystemNode::read(ByteBuffer& image) const
 {
   uInt32 size = 0;
 

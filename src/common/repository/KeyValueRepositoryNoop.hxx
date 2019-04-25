@@ -28,7 +28,7 @@ class KeyValueRepositoryNoop : public KeyValueRepository
       return std::map<string, Variant>();
     }
 
-    virtual void save(std::map<string, Variant>& values) {}
+    virtual void save(const std::map<string, Variant>& values) {}
 };
 
 #endif // KEY_VALUE_REPOSITORY_NOOP_HXX
