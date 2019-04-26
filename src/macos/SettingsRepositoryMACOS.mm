@@ -44,7 +44,10 @@ void SettingsRepositoryMACOS::save(const std::map<string, Variant>& values)
   @autoreleasepool {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
 
-    for(const auto& pair: values)
-      [defaults setObject:[NSString stringWithUTF8String:pair.second.toCString()] forKey:[NSString stringWithUTF8String:pair.first.c_str()]];
+    for (const auto& pair: values)
+      [defaults
+        setObject:[NSString stringWithUTF8String:pair.second.toCString()]
+        forKey:[NSString stringWithUTF8String:pair.first.c_str()]
+      ];
   }
 }
