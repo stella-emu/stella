@@ -31,6 +31,7 @@ MODULE_OBJS := \
 	src/gui/LoggerDialog.o \
 	src/gui/Menu.o \
 	src/gui/MessageBox.o \
+	src/gui/MinUICommandDialog.o\
 	src/gui/OptionsDialog.o \
 	src/gui/PopUpWidget.o \
 	src/gui/ProgressDialog.o \

@@ -1,0 +1,255 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2019 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#include "Console.hxx"
+#include "TIA.hxx"
+#include "Switches.hxx"
+#include "Dialog.hxx"
+#include "Font.hxx"
+#include "EventHandler.hxx"
+#include "StateManager.hxx"
+#include "OSystem.hxx"
+#include "Widget.hxx"
+#include "StellaSettingsDialog.hxx"
+#include "TIASurface.hxx"
+#include "MinUICommandDialog.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent)
+  : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
+{
+  const int HBORDER = 10;
+  const int VBORDER = 10;
+  const int HGAP = 8;
+  const int VGAP = 5;
+  const int buttonWidth = _font.getStringWidth(" Load State 0") + 20,
+    buttonHeight = _font.getLineHeight() + 8,
+    rowHeight = buttonHeight + VGAP;
+
+  // Set real dimensions
+  _w = 3 * (buttonWidth + 5) + HBORDER * 2;
+  _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
+  ButtonWidget* bw = nullptr;
+  WidgetArray wid;
+  int xoffset = HBORDER, yoffset = VBORDER + _th;
+
+  auto ADD_CD_BUTTON = [&](const string& label, int cmd)
+  {
+    ButtonWidget* b = new ButtonWidget(this, _font, xoffset, yoffset,
+                                       buttonWidth, buttonHeight, label, cmd);
+    yoffset += buttonHeight + VGAP;
+    return b;
+  };
+
+  // Column 1
+  bw = ADD_CD_BUTTON("Select", kSelectCmd);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("Reset", kResetCmd);
+  wid.push_back(bw);
+  myColorButton = ADD_CD_BUTTON("", kColorCmd);
+  wid.push_back(myColorButton);
+  myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
+  wid.push_back(myLeftDiffButton);
+  myRightDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
+  wid.push_back(myRightDiffButton);
+
+  // Column 2
+  xoffset += buttonWidth + HGAP;
+  yoffset = VBORDER + _th;
+
+  mySaveStateButton = ADD_CD_BUTTON("", kSaveStateCmd);
+  wid.push_back(mySaveStateButton);
+  myStateSlotButton = ADD_CD_BUTTON("", kStateSlotCmd);
+  wid.push_back(myStateSlotButton);
+  myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd);
+  wid.push_back(myLoadStateButton);
+  bw = ADD_CD_BUTTON("Rewind", kRewindCmd);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("Unwind", kUnwindCmd);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("Close", kCloseCmd);
+  wid.push_back(bw);
+
+  // Column 3
+  xoffset += buttonWidth + HGAP;
+  yoffset = VBORDER + _th;
+
+  myTVFormatButton = ADD_CD_BUTTON("", kFormatCmd);
+  wid.push_back(myTVFormatButton);
+  myStretchButton = ADD_CD_BUTTON("", kStretchCmd);
+  wid.push_back(myStretchButton);
+  myPhosphorButton = ADD_CD_BUTTON("", kPhosphorCmd);
+  wid.push_back(myPhosphorButton);
+  bw = ADD_CD_BUTTON("Settings"+ ELLIPSIS, kSettings);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("Exit Game", kExitGameCmd);
+  wid.push_back(bw);
+
+  addToFocusList(wid);
+
+  myStellaSettingsDialog = make_unique<StellaSettingsDialog>(osystem, parent, _font,
+                                                             FBMinimum::Width, FBMinimum::Height);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MinUICommandDialog::loadConfig()
+{
+  // Column 1
+  myColorButton->setLabel(instance().console().switches().tvColor() ? "Color Mode" : "B/W Mode");
+  myLeftDiffButton->setLabel(instance().console().switches().leftDifficultyA() ? "P1 Skill A" : "P1 Skill B");
+  myRightDiffButton->setLabel(instance().console().switches().rightDifficultyA() ? "P2 Skill A" : "P2 Skill B");
+  // Column 2
+  updateSlot(instance().state().currentSlot());
+
+  // Column 3
+  updateTVFormat();
+  myStretchButton->setLabel(instance().settings().getBool("tia.fs_stretch") ? "Stretched" : "4:3 Format");
+  myPhosphorButton->setLabel(instance().frameBuffer().tiaSurface().phosphorEnabled() ? "Phosphor On" : "Phosphor Off");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
+                                  int data, int id)
+{
+  bool consoleCmd = false, stateCmd = false;
+  Event::Type event = Event::NoType;
+
+  switch(cmd)
+  {
+    // Column 1
+    case kSelectCmd:
+      event = Event::ConsoleSelect;
+      consoleCmd = true;
+      break;
+
+    case kResetCmd:
+      event = Event::ConsoleReset;
+      consoleCmd = true;
+      break;
+
+    case kColorCmd:
+      event = Event::ConsoleColorToggle;
+      consoleCmd = true;
+      break;
+
+    case kLeftDiffCmd:
+      event = Event::ConsoleLeftDiffToggle;
+      consoleCmd = true;
+      break;
+
+    case kRightDiffCmd:
+      event = Event::ConsoleRightDiffToggle;
+      consoleCmd = true;
+      break;
+
+      // Column 2
+    case kSaveStateCmd:
+      event = Event::SaveState;
+      consoleCmd = true;
+      break;
+
+    case kStateSlotCmd:
+    {
+      event = Event::ChangeState;
+      stateCmd = true;
+      int slot = (instance().state().currentSlot() + 1) % 10;
+      updateSlot(slot);
+      break;
+    }
+    case kLoadStateCmd:
+      event = Event::LoadState;
+      consoleCmd = true;
+      break;
+
+    case kRewindCmd:
+      instance().state().toggleTimeMachine();  // TODO
+      break;
+
+    case kUnwindCmd:
+      instance().state().toggleTimeMachine(); // TODO
+      break;
+
+    case kCloseCmd:
+      instance().eventHandler().leaveMenuMode();
+      break;
+
+      // Column 3
+    case kFormatCmd:
+      instance().console().toggleFormat();
+      updateTVFormat();
+      break;
+
+    case kStretchCmd:
+      instance().settings().setValue("tia.fs_stretch", !instance().settings().getBool("tia.fs_stretch"));
+      instance().eventHandler().leaveMenuMode();
+      break;
+
+    case kPhosphorCmd:
+      instance().eventHandler().leaveMenuMode();
+      instance().console().togglePhosphor();
+      break;
+
+    case kSettings:
+    {
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      uInt32 w = 0, h = 0;
+
+      if(myStellaSettingsDialog == nullptr || myStellaSettingsDialog->shouldResize(w, h))
+      {
+        myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
+                                                                   instance().frameBuffer().font(), w, h);
+      }
+      myStellaSettingsDialog->open();
+      break;
+    }
+
+    case kExitGameCmd:
+      instance().eventHandler().handleEvent(Event::LauncherMode);
+      break;
+  }
+
+  // Console commands should be performed right away, after leaving the menu
+  // State commands require you to exit the menu manually
+  if(consoleCmd)
+  {
+    instance().eventHandler().leaveMenuMode();
+    instance().eventHandler().handleEvent(event);
+    instance().console().switches().update();
+    instance().console().tia().update();
+    instance().eventHandler().handleEvent(event, false);
+  }
+  else if(stateCmd)
+    instance().eventHandler().handleEvent(event);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MinUICommandDialog::updateSlot(int slot)
+{
+  ostringstream buf;
+  buf << " " << slot;
+
+  mySaveStateButton->setLabel("Save State" + buf.str());
+  myStateSlotButton->setLabel("State Slot" + buf.str());
+  myLoadStateButton->setLabel("Load State" + buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MinUICommandDialog::updateTVFormat()
+{
+  myTVFormatButton->setLabel(instance().console().getFormatString() + " Mode");
+}

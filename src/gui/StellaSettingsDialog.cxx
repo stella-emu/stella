@@ -30,19 +30,19 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Stella settings")
 {
-  const int VGAP = 4;
   const int VBORDER = 8;
   const int HBORDER = 10;
   const int INDENT = 20;
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth();
+  const int VGAP = 5;
   int xpos, ypos;
 
   WidgetArray wid;
   VariantList items;
 
   // Set real dimensions
-  setSize(33 * fontWidth + HBORDER * 2, 15 * (lineHeight + VGAP) + _th, max_w, max_h);
+  setSize(33 * fontWidth + HBORDER * 2, 13 * (lineHeight + VGAP) + VGAP * 8 + 6 + _th, max_w, max_h);
 
   xpos = HBORDER;
   ypos = VBORDER + _th;
@@ -321,6 +321,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
   switch (instance().eventHandler().state())
   {
     case EventHandlerState::OPTIONSMENU: // game is running!
+    case EventHandlerState::CMDMENU: // game is running!
       enable = true;
       break;
     case EventHandlerState::LAUNCHER:
