@@ -649,8 +649,6 @@
 		E06508C12272447200B341AC /* KeyValueRepositoryConfigfile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */; };
 		E06508CA2272493200B341AC /* SettingsRepositoryMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508C82272493200B341AC /* SettingsRepositoryMACOS.hxx */; };
 		E06508CB2272493200B341AC /* SettingsRepositoryMACOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E06508C92272493200B341AC /* SettingsRepositoryMACOS.mm */; };
-		E06508D22272671600B341AC /* SettingsMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E06508D02272671600B341AC /* SettingsMACOS.cxx */; };
-		E06508D32272671600B341AC /* SettingsMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508D12272671600B341AC /* SettingsMACOS.hxx */; };
 		E0893AF2211B9842008B170D /* HighPass.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0893AF0211B9841008B170D /* HighPass.cxx */; };
 		E0893AF3211B9842008B170D /* HighPass.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0893AF1211B9841008B170D /* HighPass.hxx */; };
 		E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4139201E901C004A3391 /* AudioQueue.hxx */; };
@@ -1363,8 +1361,6 @@
 		E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositoryConfigfile.cxx; sourceTree = "<group>"; };
 		E06508C82272493200B341AC /* SettingsRepositoryMACOS.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SettingsRepositoryMACOS.hxx; sourceTree = "<group>"; };
 		E06508C92272493200B341AC /* SettingsRepositoryMACOS.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsRepositoryMACOS.mm; sourceTree = "<group>"; };
-		E06508D02272671600B341AC /* SettingsMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsMACOS.cxx; sourceTree = "<group>"; };
-		E06508D12272671600B341AC /* SettingsMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SettingsMACOS.hxx; sourceTree = "<group>"; };
 		E07C2326226393BD00B78631 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E0893AF0211B9841008B170D /* HighPass.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HighPass.cxx; path = audio/HighPass.cxx; sourceTree = "<group>"; };
 		E0893AF1211B9841008B170D /* HighPass.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HighPass.hxx; path = audio/HighPass.hxx; sourceTree = "<group>"; };
@@ -1726,8 +1722,6 @@
 		2D6050C60898771C00C6DE89 /* macos */ = {
 			isa = PBXGroup;
 			children = (
-				E06508D02272671600B341AC /* SettingsMACOS.cxx */,
-				E06508D12272671600B341AC /* SettingsMACOS.hxx */,
 				DC21E5B921CA903E007D0E1A /* OSystemMACOS.cxx */,
 				DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */,
 				DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */,
@@ -2407,7 +2401,6 @@
 				DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */,
 				DCF3A6E81DFC75E3008A8AF3 /* Background.hxx in Headers */,
 				DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */,
-				E06508D32272671600B341AC /* SettingsMACOS.hxx in Headers */,
 				DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */,
 				DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */,
 				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,
@@ -3016,7 +3009,6 @@
 				DC368F5818A2FB710084199C /* SoundSDL2.cxx in Sources */,
 				DCFF14CD18B0260300A20364 /* EventHandlerSDL2.cxx in Sources */,
 				DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */,
-				E06508D22272671600B341AC /* SettingsMACOS.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

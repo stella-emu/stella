@@ -12,7 +12,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/libretro/FBSurfaceLIBRETRO.cxx \
 	$(CORE_DIR)/libretro/FrameBufferLIBRETRO.cxx \
 	$(CORE_DIR)/libretro/OSystemLIBRETRO.cxx \
-	$(CORE_DIR)/libretro/SettingsLIBRETRO.cxx \
 	$(CORE_DIR)/libretro/SoundLIBRETRO.cxx \
 	$(CORE_DIR)/libretro/StellaLIBRETRO.cxx \
 	$(CORE_DIR)/common/AudioQueue.cxx \
