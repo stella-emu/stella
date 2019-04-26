@@ -32,7 +32,6 @@
 #include "GameInfoDialog.hxx"
 #include "LoggerDialog.hxx"
 #include "DeveloperDialog.hxx"
-#include "StellaSettingsDialog.hxx"
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
@@ -51,10 +50,10 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
     myMode(mode)
 {
-  const int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + 20,
-            buttonHeight = _font.getLineHeight() + 6,
+  const int buttonHeight = _font.getLineHeight() + 6,
             rowHeight = _font.getLineHeight() + 10;
   const int VBORDER = 10 + _th;
+  int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + 20;
 
   _w = 2 * buttonWidth + 30;
   _h = 7 * rowHeight + 15 + _th;
@@ -90,11 +89,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
 
   //yoffset += rowHeight;
-  // R77 TEST
-  b = ADD_OD_BUTTON("Stella Options" + ELLIPSIS, kStellaOptionsCmd);
-  wid.push_back(b);
-
-
   b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd);
   wid.push_back(b);
 
@@ -122,6 +116,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd);
   wid.push_back(b);
 
+  buttonWidth = _font.getStringWidth("   Close   ") + 20,
+  xoffset -= (buttonWidth + 10) / 2;
   b = ADD_OD_BUTTON("Close", kExitCmd);
   wid.push_back(b);
   addCancelWidget(b);
@@ -132,7 +128,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   myInputDialog    = make_unique<InputDialog>(osystem, parent, _font, max_w, max_h);
   myUIDialog       = make_unique<UIDialog>(osystem, parent, _font, boss, max_w, max_h);
   mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, _font, max_w, max_h);
-  myStellaOptionsDialog = make_unique<StellaSettingsDialog>(osystem, parent, _font, max_w, max_h);
   myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, _font, max_w, max_h);
   myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, _font, this, max_w, max_h);
 #ifdef CHEATCODE_SUPPORT
@@ -254,21 +249,6 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
                                                          instance().frameBuffer().font(), w, h);
       }
       myDeveloperDialog->open();
-      break;
-    }
-
-    case kStellaOptionsCmd:
-    {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      uInt32 w = 0, h = 0;
-
-      if (myStellaOptionsDialog == nullptr || myStellaOptionsDialog->shouldResize(w, h))
-      {
-        myStellaOptionsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-          instance().frameBuffer().font(), w, h);
-      }
-      myStellaOptionsDialog->open();
       break;
     }
 
