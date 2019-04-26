@@ -163,11 +163,11 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
     //         use the '1' define for testing
     #if defined(RETRON77)
 //    #if 1
-      setDefaultKey( KBDK_F4,        Event::ConsoleColorToggle     );
-      setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffToggle  );
-      setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffToggle );
-      setDefaultKey( KBDK_F13,       Event::VidmodeIncrease        );
-      setDefaultKey( KBDK_BACKSPACE, Event::LauncherMode           );
+      setDefaultKey( KBDK_F4,        Event::ConsoleColorToggle     ); // back
+      setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffToggle  ); // front
+      setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffToggle ); // front
+      setDefaultKey( KBDK_F13,       Event::CmdMenuMode)           ); // back
+      setDefaultKey( KBDK_BACKSPACE, Event::LauncherMode           ); // back
     #endif
       break;
 
@@ -189,13 +189,13 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
     //         use the '1' define for testing
     #if defined(RETRON77)
 //    #if 1
-      setDefaultKey( KBDK_F9,        Event::UIUp );
-      setDefaultKey( KBDK_F2,        Event::UIDown );
-      setDefaultKey( KBDK_F11,       Event::UINavPrev );
-      setDefaultKey( KBDK_F1,        Event::UINavNext );
-      setDefaultKey( KBDK_F6,        Event::UISelect );
-      setDefaultKey( KBDK_F13,       Event::UIPgUp );
-      setDefaultKey( KBDK_BACKSPACE, Event::UIPgDown );
+      setDefaultKey( KBDK_F9,        Event::UIUp      ); // front
+      setDefaultKey( KBDK_F2,        Event::UIDown    ); // front
+      setDefaultKey( KBDK_F11,       Event::UINavPrev ); // front
+      setDefaultKey( KBDK_F1,        Event::UINavNext ); // front
+      setDefaultKey( KBDK_F6,        Event::UISelect  ); // front
+      setDefaultKey( KBDK_F13,       Event::UIPgUp    ); // back (redundant)
+      setDefaultKey( KBDK_BACKSPACE, Event::UIPgDown  ); // back (redundant)
     #endif
       break;
 
