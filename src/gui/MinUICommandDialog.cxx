@@ -22,6 +22,7 @@
 #include "Font.hxx"
 #include "EventHandler.hxx"
 #include "StateManager.hxx"
+#include "RewindManager.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
 #include "StellaSettingsDialog.hxx"
@@ -77,10 +78,10 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(myStateSlotButton);
   myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd);
   wid.push_back(myLoadStateButton);
-  bw = ADD_CD_BUTTON("Rewind", kRewindCmd);
-  wid.push_back(bw);
-  bw = ADD_CD_BUTTON("Unwind", kUnwindCmd);
-  wid.push_back(bw);
+  myRewindButton = ADD_CD_BUTTON("Rewind", kRewindCmd);
+  wid.push_back(myRewindButton);
+  myUnwindButton = ADD_CD_BUTTON("Unwind", kUnwindCmd);
+  wid.push_back(myUnwindButton);
   bw = ADD_CD_BUTTON("Close", kCloseCmd);
   wid.push_back(bw);
 
@@ -114,6 +115,7 @@ void MinUICommandDialog::loadConfig()
   myRightDiffButton->setLabel(instance().console().switches().rightDifficultyA() ? "P2 Skill A" : "P2 Skill B");
   // Column 2
   updateSlot(instance().state().currentSlot());
+  updateWinds();
 
   // Column 3
   updateTVFormat();
@@ -170,17 +172,22 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       updateSlot(slot);
       break;
     }
+
     case kLoadStateCmd:
       event = Event::LoadState;
       consoleCmd = true;
       break;
 
     case kRewindCmd:
-      instance().state().toggleTimeMachine();  // TODO
-      break;
+      // rewind 3s 
+      instance().state().rewindStates(1);
+      updateWinds();
+	    break; 
 
     case kUnwindCmd:
-      instance().state().toggleTimeMachine(); // TODO
+      // unwind 3s   
+		  instance().state().unwindStates(1);
+      updateWinds();
       break;
 
     case kCloseCmd:
@@ -194,8 +201,8 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kStretchCmd:
-      instance().settings().setValue("tia.fs_stretch", !instance().settings().getBool("tia.fs_stretch"));
       instance().eventHandler().leaveMenuMode();
+      instance().settings().setValue("tia.fs_stretch", !instance().settings().getBool("tia.fs_stretch"));
       break;
 
     case kPhosphorCmd:
@@ -253,3 +260,13 @@ void MinUICommandDialog::updateTVFormat()
 {
   myTVFormatButton->setLabel(instance().console().getFormatString() + " Mode");
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MinUICommandDialog::updateWinds()
+{
+  RewindManager& r = instance().state().rewindManager();
+  
+  myRewindButton->setEnabled(!r.atFirst());
+  myUnwindButton->setEnabled(!r.atLast());
+}
+

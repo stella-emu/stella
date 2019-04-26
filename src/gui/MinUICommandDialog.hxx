@@ -36,6 +36,7 @@ class MinUICommandDialog : public Dialog
   void loadConfig() override;
   void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
   void updateSlot(int slot);
+  void updateWinds();
   void updateTVFormat();
 
   // column 0
