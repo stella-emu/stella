@@ -179,14 +179,14 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kRewindCmd:
-      // rewind 3s 
-      instance().state().rewindStates(1);
+      // rewind 5s 
+      instance().state().rewindStates(5);
       updateWinds();
 	    break; 
 
     case kUnwindCmd:
-      // unwind 3s   
-		  instance().state().unwindStates(1);
+      // unwind 5s   
+		  instance().state().unwindStates(5);
       updateWinds();
       break;
 

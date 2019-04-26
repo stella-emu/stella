@@ -56,11 +56,11 @@ SettingsR77::SettingsR77()
 
   setTemporary("minimal_ui", true);
   setPermanent("dev.settings", false);
-  // record states for 150 seconds
+  // record states for 60 seconds
   setPermanent("plr.timemachine", true);
-  setPermanent("plr.tm.size", 50);
-  setPermanent("plr.tm.uncompressed", 50);
-  setPermanent("plr.tm.interval", "3s"); 
+  setPermanent("plr.tm.size", 60);
+  setPermanent("plr.tm.uncompressed", 60);
+  setPermanent("plr.tm.interval", "1s"); 
   
   setPermanent("threads", "1");
   
