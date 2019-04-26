@@ -95,6 +95,11 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
   else
     _isDirectory = true;
 
+  // Create a concrete FSNode to use
+  // This *must not* be a ZIP file; it must be a real FSNode object that
+  // has direct access to the actual filesystem (aka, a 'System' node)
+  // Behind the scenes, this node is actually a platform-specific object
+  // for whatever system we are running on
   _realNode = FilesystemNodeFactory::create(_zipFile, FilesystemNodeFactory::Type::SYSTEM);
 
   setFlags(_zipFile, _virtualPath, _realNode);
