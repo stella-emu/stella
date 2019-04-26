@@ -21,6 +21,7 @@ _build_joystick=yes
 _build_cheats=yes
 _build_png=yes
 _build_zip=yes
+_build_sqlite=no
 _build_static=no
 _build_profile=no
 _build_debug=no
@@ -201,6 +202,8 @@ Optional Features:
   --disable-png
   --enable-zip           enable/disable ZIP file support [enabled]
   --disable-zip
+  --enable-sqlite        enable SQLite for storing settings and preferences [disabled]
+  --disable-sqlite
   --enable-windowed      enable/disable windowed rendering modes [enabled]
   --disable-windowed
   --enable-shared        build shared binary [enabled]
@@ -215,6 +218,7 @@ Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl2-config script is installed (optional)
   --with-libpng-prefix=DIR Prefix where libpng is installed (optional)
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
+  --with-sqlite-prefix=DIR PREFIX where sqlite is installed (optional)
 
 Some influential environment variables:
   LDFLAGS	linker flags, e.g. -L<lib dir> if you have libraries in a
@@ -243,13 +247,15 @@ for ac_option in $@; do
       --disable-png)            _build_png=no        ;;
       --enable-zip)             _build_zip=yes       ;;
       --disable-zip)            _build_zip=no        ;;
+      --enable-sqlite)          _build_sqlite=yes    ;;
+      --disable-sqlite)         _build_sqlite=no     ;;
       --enable-windowed)        _build_windowed=yes  ;;
       --disable-windowed)       _build_windowed=no   ;;
       --enable-shared)          _build_static=no     ;;
       --enable-static)          _build_static=yes    ;;
       --disable-static)         _build_static=no     ;;
       --enable-profile)         _build_profile=yes   ;;
-      --disable-profile)        _build_profile=no    ;;
+      # --disable-profile)        _build_profile=no    ;;
 			--enable-debug)						_build_debug=yes		 ;;
 			--disable-debug)          _build_debug=false	 ;;
       --with-sdl-prefix=*)
@@ -265,6 +271,11 @@ for ac_option in $@; do
         _prefix=`echo $ac_option | cut -d '=' -f 2`
         ZLIB_CFLAGS="-I$_prefix/include"
         ZLIB_LIBS="-L$_prefix/lib"
+        ;;
+			--with-sqlite-prefix=*)
+        _prefix=`echo $ac_option | cut -d '=' -f 2`
+        SQLITE_CFLAGS="-I$_prefix/include"
+        SQLITE_LIBS="-L$_prefix/lib"
         ;;
       --host=*)
         _host=`echo $ac_option | cut -d '=' -f 2`
@@ -641,6 +652,30 @@ else
 fi
 
 #
+# Check for SQLite
+#
+echocheck "SQLite"
+if test "$_build_sqlite" = yes ; then
+	_sqlite=no
+	cat > $TMPC << EOF
+#include <stdio.h>
+#include <sqlite3.h>
+int main(void) { printf("%s\n", SQLITE_VERSION); }
+EOF
+	cc_check $LDFLAGS $CXXFLAGS $SQLITE_CFLAGS $SQLITE_LIBS -lsqlite3 && _sqlite=yes
+
+  if test "$_sqlite" = yes ; then
+    echo "$_sqlite"
+  else
+    echo "disabled"
+    _build_sqlite=no
+  fi
+else
+  echo "disabled"
+  _build_sqlite=no
+fi
+
+#
 # figure out installation directories
 #
 test -z "$_bindir" && _bindir="$_prefix/bin"
@@ -699,6 +734,14 @@ else
 	echo
 fi
 
+if test "$_build_sqlite" = yes ; then
+	echo_n "   SQLite enabled"
+	echo
+else
+	echo_n "   SQLite disabled"
+	echo
+fi
+
 if test "$_build_windowed" = "yes" ; then
 	echo_n "   Windowed rendering modes enabled"
 	echo
@@ -752,6 +795,7 @@ YACC="$SRC/yacc"
 CHEAT="$SRC/cheat"
 LIBPNG="$SRC/libpng"
 ZLIB="$SRC/zlib"
+SQLITE="$SRC/common/repository/sqlite"
 
 INCLUDES="-I$CORE -I$COMMON -I$TV -I$GUI -I$TIA -I$TIA_FRAME_MANAGER"
 
@@ -826,6 +870,12 @@ if test "$_build_png" = yes ; then
     MODULES="$MODULES $LIBPNG"
     INCLUDES="$INCLUDES -I$LIBPNG"
   fi
+fi
+
+if test "$_build_sqlite" = yes; then
+	DEFINES="$DEFINES -DSQLITE_SUPPORT"
+	MODULES="$MODULES $SQLITE"
+	INCLUDES="$INCLUDES -I$SQLITE"
 fi
 
 if test "$_build_zip" = yes ; then

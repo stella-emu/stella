@@ -30,6 +30,10 @@
   #include "CheatManager.hxx"
 #endif
 
+#ifdef SQLITE_SUPPORT
+  #include "KeyValueRepositorySqlite.hxx"
+#endif
+
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "Cart.hxx"
@@ -746,10 +750,14 @@ void OSystem::mainLoop()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<KeyValueRepository> OSystem::createSettingsRepository()
 {
-  if (myConfigFile.empty())
-    return make_shared<KeyValueRepositoryNoop>();
+  #ifdef SQLITE_SUPPORT
+    return make_shared<KeyValueRepositorySqlite>(myBaseDir, "settings");
+  #else
+    if (myConfigFile.empty())
+      return make_shared<KeyValueRepositoryNoop>();
 
-  return make_shared<KeyValueRepositoryConfigfile>(myConfigFile);
+    return make_shared<KeyValueRepositoryConfigfile>(myConfigFile);
+  #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
