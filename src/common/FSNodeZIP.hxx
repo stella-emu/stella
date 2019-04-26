@@ -93,7 +93,10 @@ class FilesystemNodeZIP : public AbstractFSNode
       NO_ROMS
     };
 
+    // Since a ZIP file is itself an abstraction, it still needs access to
+    // an actual concrete filesystem node
     AbstractFSNodePtr _realNode;
+
     string _zipFile, _virtualPath;
     string _name, _path, _shortPath;
     zip_error _error;

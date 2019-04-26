@@ -137,7 +137,7 @@ Bankswitch::Description Bankswitch::BSList[int(Bankswitch::Type::NumSchemes)] = 
   { "UA",       "UA (8K UA Ltd.)"               },
   { "WD",       "WD (Experimental)"             },
   { "X07",      "X07 (64K AtariAge)"            },
-#ifdef CUSTOM_ARM
+#if defined(CUSTOM_ARM)
   { "CUSTOM",   "CUSTOM (ARM)"                  }
 #endif
 };
@@ -149,11 +149,12 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "a26", Bankswitch::Type::_AUTO },
   { "bin", Bankswitch::Type::_AUTO },
   { "rom", Bankswitch::Type::_AUTO },
-  { "gz",  Bankswitch::Type::_AUTO },
+#if defined(ZIP_SUPPORT)
   { "zip", Bankswitch::Type::_AUTO },
+#endif
   { "cu",  Bankswitch::Type::_AUTO },
 
-  // All bankswitch types (tose that UnoCart and HarmonyCart support have the same name)
+  // All bankswitch types (those that UnoCart and HarmonyCart support have the same name)
   { "084", Bankswitch::Type::_0840   },
   { "2N1", Bankswitch::Type::_2IN1   },
   { "4N1", Bankswitch::Type::_4IN1   },
