@@ -116,7 +116,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd);
   wid.push_back(b);
 
-  buttonWidth = _font.getStringWidth("   Close   ") + 20,
+  buttonWidth = _font.getStringWidth("   Close   ") + 20;
   xoffset -= (buttonWidth + 10) / 2;
   b = ADD_OD_BUTTON("Close", kExitCmd);
   wid.push_back(b);

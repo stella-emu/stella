@@ -22,6 +22,7 @@ class Properties;
 class CommandSender;
 class DialogContainer;
 class OSystem;
+class StellaSettingsDialog;
 
 #include "Dialog.hxx"
 
