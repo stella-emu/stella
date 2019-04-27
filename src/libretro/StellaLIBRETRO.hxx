@@ -23,9 +23,11 @@
 
 #include "Console.hxx"
 #include "ConsoleTiming.hxx"
+#include "Control.hxx"
 #include "EmulationTiming.hxx"
 #include "EventHandler.hxx"
 #include "M6532.hxx"
+#include "Paddles.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
 #include "TIASurface.hxx"
@@ -107,6 +109,17 @@ class StellaLIBRETRO
     void   setAudioStereo(int mode);
 
     void   setInputEvent(Event::Type type, Int32 state) { myOSystem->eventHandler().handleEvent(type, state); }
+
+	Controller::Type   getLeftControllerType() { return myOSystem->console().leftController().type(); }
+	Controller::Type   getRightControllerType() { return myOSystem->console().rightController().type(); }
+
+	void   setPaddleJoypadSensitivity(int sensitivity)
+	{
+		if(getLeftControllerType() == Controller::Type::Paddles)
+			static_cast<Paddles&>(myOSystem->console().leftController()).setDigitalSensitivity(sensitivity);
+		if(getRightControllerType() == Controller::Type::Paddles)
+			static_cast<Paddles&>(myOSystem->console().rightController()).setDigitalSensitivity(sensitivity);
+	}
 
   protected:
     void   updateInput();
