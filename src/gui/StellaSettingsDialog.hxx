@@ -23,10 +23,10 @@ class PopUpWidget;
 #include "Props.hxx"
 #include "Menu.hxx"
 #include "Dialog.hxx"
+#include "MessageBox.hxx"
 
 namespace GUI {
   class Font;
-  class MessageBox;
 }
 
 class StellaSettingsDialog : public Dialog

@@ -298,7 +298,7 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case GuiObject::kOKCmd:
       saveConfig();
-      // falls through
+      [[fallthrough]];
     case GuiObject::kCloseCmd:
       if (myMode != Menu::AppMode::emulator)
         close();
