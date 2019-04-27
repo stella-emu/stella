@@ -69,6 +69,7 @@ class StellaLIBRETRO
 
     bool   getConsoleNTSC() { return console_timing == ConsoleTiming::ntsc; }
 
+    float  getVideoAspectPar();
     float  getVideoAspect();
     bool   getVideoNTSC();
     float  getVideoRate() { return getVideoNTSC() ? 60.0 : 50.0; }
@@ -110,16 +111,16 @@ class StellaLIBRETRO
 
     void   setInputEvent(Event::Type type, Int32 state) { myOSystem->eventHandler().handleEvent(type, state); }
 
-	Controller::Type   getLeftControllerType() { return myOSystem->console().leftController().type(); }
-	Controller::Type   getRightControllerType() { return myOSystem->console().rightController().type(); }
+    Controller::Type   getLeftControllerType() { return myOSystem->console().leftController().type(); }
+    Controller::Type   getRightControllerType() { return myOSystem->console().rightController().type(); }
 
-	void   setPaddleJoypadSensitivity(int sensitivity)
-	{
-		if(getLeftControllerType() == Controller::Type::Paddles)
-			static_cast<Paddles&>(myOSystem->console().leftController()).setDigitalSensitivity(sensitivity);
-		if(getRightControllerType() == Controller::Type::Paddles)
-			static_cast<Paddles&>(myOSystem->console().rightController()).setDigitalSensitivity(sensitivity);
-	}
+    void   setPaddleJoypadSensitivity(int sensitivity)
+    {
+      if(getLeftControllerType() == Controller::Type::Paddles)
+        static_cast<Paddles&>(myOSystem->console().leftController()).setDigitalSensitivity(sensitivity);
+      if(getRightControllerType() == Controller::Type::Paddles)
+        static_cast<Paddles&>(myOSystem->console().rightController()).setDigitalSensitivity(sensitivity);
+    }
 
   protected:
     void   updateInput();
@@ -149,7 +150,7 @@ class StellaLIBRETRO
     unique_ptr<Int16[]> audio_buffer;
     uInt32 audio_samples;
 
-	// (31440 rate / 50 Hz) * 16-bit stereo * 1.25x padding
+    // (31440 rate / 50 Hz) * 16-bit stereo * 1.25x padding
     static const uInt32 audio_buffer_max = (31440 / 50 * 4 * 5) / 4;
 
   private:
