@@ -33,6 +33,7 @@ static int setting_ntsc, setting_pal;
 static int setting_stereo, setting_filter, setting_palette;
 static int setting_phosphor, setting_console, setting_phosphor_blend;
 static int stella_paddle_joypad_sensitivity;
+static int setting_crop_hoverscan, crop_left;
 
 static bool system_reset;
 
@@ -63,63 +64,63 @@ static void update_input()
 
   switch(input_type[0])
   {
-	case Controller::Type::BoosterGrip:
-	  EVENT(Event::JoystickZeroFire5, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
-	  EVENT(Event::JoystickZeroFire9, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
-	  // Fallthrough
+    case Controller::Type::BoosterGrip:
+      EVENT(Event::JoystickZeroFire5, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
+      EVENT(Event::JoystickZeroFire9, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
+      // Fallthrough
 
     case Controller::Type::Joystick:
     default:
-	  EVENT(Event::JoystickZeroUp, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP));
-	  EVENT(Event::JoystickZeroDown, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN));
-	  // Fallthrough
+      EVENT(Event::JoystickZeroUp, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP));
+      EVENT(Event::JoystickZeroDown, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN));
+      // Fallthrough
 
-	case Controller::Type::Driving:
-	  EVENT(Event::JoystickZeroLeft, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-	  EVENT(Event::JoystickZeroRight, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-	  EVENT(Event::JoystickZeroFire, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+    case Controller::Type::Driving:
+      EVENT(Event::JoystickZeroLeft, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
+      EVENT(Event::JoystickZeroRight, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
+      EVENT(Event::JoystickZeroFire, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
       break;
 
-	case Controller::Type::Paddles:
-	  EVENT(Event::PaddleZeroIncrease, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-	  EVENT(Event::PaddleZeroDecrease, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-	  EVENT(Event::PaddleZeroFire, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
-	  //WIP = Event::PaddleZeroAnalog
+    case Controller::Type::Paddles:
+      EVENT(Event::PaddleZeroIncrease, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
+      EVENT(Event::PaddleZeroDecrease, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
+      EVENT(Event::PaddleZeroFire, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      //WIP = Event::PaddleZeroAnalog
 
-	  EVENT(Event::PaddleOneIncrease, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-	  EVENT(Event::PaddleOneDecrease, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-	  EVENT(Event::PaddleOneFire, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      EVENT(Event::PaddleOneIncrease, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
+      EVENT(Event::PaddleOneDecrease, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
+      EVENT(Event::PaddleOneFire, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
       break;
   }
 
 
   switch(input_type[1])
   {
-	case Controller::Type::BoosterGrip:
-	  EVENT(Event::JoystickOneFire5, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
-	  EVENT(Event::JoystickOneFire9, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
-	  // Fallthrough
+    case Controller::Type::BoosterGrip:
+      EVENT(Event::JoystickOneFire5, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
+      EVENT(Event::JoystickOneFire9, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
+      // Fallthrough
 
-	case Controller::Type::Joystick:
+    case Controller::Type::Joystick:
     default:
       EVENT(Event::JoystickOneUp, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP));
       EVENT(Event::JoystickOneDown, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN));
-	  // Fallthrough
+      // Fallthrough
 
-	case Controller::Type::Driving:
+    case Controller::Type::Driving:
       EVENT(Event::JoystickOneLeft, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
       EVENT(Event::JoystickOneRight, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
       EVENT(Event::JoystickOneFire, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
       break;
 
-	case Controller::Type::Paddles:
-	  EVENT(Event::PaddleTwoIncrease, input_state_cb(2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-	  EVENT(Event::PaddleTwoDecrease, input_state_cb(2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-	  EVENT(Event::PaddleTwoFire, input_state_cb(2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+    case Controller::Type::Paddles:
+      EVENT(Event::PaddleTwoIncrease, input_state_cb(2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
+      EVENT(Event::PaddleTwoDecrease, input_state_cb(2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
+      EVENT(Event::PaddleTwoFire, input_state_cb(2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
 
-	  EVENT(Event::PaddleThreeIncrease, input_state_cb(3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
-	  EVENT(Event::PaddleThreeDecrease, input_state_cb(3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
-	  EVENT(Event::PaddleThreeFire, input_state_cb(3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
+      EVENT(Event::PaddleThreeIncrease, input_state_cb(3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT));
+      EVENT(Event::PaddleThreeDecrease, input_state_cb(3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT));
+      EVENT(Event::PaddleThreeFire, input_state_cb(3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
       break;
   }
 
@@ -166,7 +167,7 @@ static void update_variables(bool init = false)
 #define RETRO_GET(x) \
   var.key = x; \
   var.value = NULL; \
-  if(environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+  if(environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
 
   RETRO_GET("stella_filter")
   {
@@ -185,6 +186,13 @@ static void update_variables(bool init = false)
       geometry_update = true;
       setting_filter = value;
     }
+  }
+
+  RETRO_GET("stella_crop_hoverscan")
+  {
+    setting_crop_hoverscan = !strcmp(var.value, "enabled");
+
+    geometry_update = true;
   }
 
   RETRO_GET("stella_ntsc_aspect")
@@ -317,6 +325,8 @@ static void update_variables(bool init = false)
 
   if(!init && !system_reset)
   {
+    crop_left = setting_crop_hoverscan ? (stella.getVideoZoom() == 2 ? 25 : 8) : 0;
+
     if(geometry_update) update_geometry();
   }
 
@@ -329,21 +339,22 @@ static bool reset_system()
   // clean restart
   stella.destroy();
 
-  // apply libretro settings first
+  // apply pre-boot settings first
   update_variables(true);
 
   // start system
   if(!stella.create(log_cb ? true : false)) return false;
 
-  // reset libretro window
-  update_geometry();
-  
   // get auto-detect controllers
   input_type[0] = stella.getLeftControllerType();
   input_type[1] = stella.getRightControllerType();
   stella.setPaddleJoypadSensitivity(stella_paddle_joypad_sensitivity);
 
   system_reset = false;
+
+  // reset libretro window, apply post-boot settings
+  update_variables(false);
+  
   return true;
 }
 
@@ -389,13 +400,13 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
   info->timing.fps            = stella.getVideoRate();
   info->timing.sample_rate    = stella.getAudioRate();
 
-  info->geometry.base_width   = stella.getRenderWidth();
+  info->geometry.base_width   = stella.getRenderWidth() - crop_left * (stella.getVideoZoom() == 1 ? 2 : 1);
   info->geometry.base_height  = stella.getRenderHeight();
 
   info->geometry.max_width    = stella.getVideoWidthMax();
   info->geometry.max_height   = stella.getVideoHeightMax();
 
-  info->geometry.aspect_ratio = stella.getVideoAspect();
+  info->geometry.aspect_ratio = stella.getVideoAspectPar() * (float) info->geometry.base_width / (float) info->geometry.base_height;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -405,25 +416,25 @@ void retro_set_controller_port_device(unsigned port, unsigned device)
   {
     switch (device)
     {
-    case RETRO_DEVICE_NONE:
-      input_devices[port] = RETRO_DEVICE_NONE;
-      break;
+      case RETRO_DEVICE_NONE:
+        input_devices[port] = RETRO_DEVICE_NONE;
+        break;
 
-    case RETRO_DEVICE_JOYPAD:
-      input_devices[port] = RETRO_DEVICE_JOYPAD;
-      break;
+      case RETRO_DEVICE_JOYPAD:
+        input_devices[port] = RETRO_DEVICE_JOYPAD;
+        break;
 
-    case RETRO_DEVICE_MOUSE:
-      input_devices[port] = RETRO_DEVICE_MOUSE;
-      break;
+      case RETRO_DEVICE_MOUSE:
+        input_devices[port] = RETRO_DEVICE_MOUSE;
+        break;
 
-    case RETRO_DEVICE_KEYBOARD:
-      input_devices[port] = RETRO_DEVICE_KEYBOARD;
-      break;
+      case RETRO_DEVICE_KEYBOARD:
+        input_devices[port] = RETRO_DEVICE_KEYBOARD;
+        break;
 
-    default:
-      if (log_cb) log_cb(RETRO_LOG_ERROR, "%s\n", "[libretro]: Invalid device, setting type to RETRO_DEVICE_JOYPAD ...");
-      input_devices[port] = RETRO_DEVICE_JOYPAD;
+      default:
+        if (log_cb) log_cb(RETRO_LOG_ERROR, "%s\n", "[libretro]: Invalid device, setting type to RETRO_DEVICE_JOYPAD ...");
+        input_devices[port] = RETRO_DEVICE_JOYPAD;
     }
   }
 }
@@ -439,11 +450,12 @@ void retro_set_environment(retro_environment_t cb)
     { "stella_filter", "TV effects; disabled|composite|s-video|rgb|badly adjusted" },
     { "stella_ntsc_aspect", "NTSC aspect %; par|86|87|88|89|90|91|92|93|94|95|96|97|98|99|100|101|102|103|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85" },
     { "stella_pal_aspect", "PAL aspect %; par|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85|86|87|88|89|90|91|92|93|94|95|96|97|98|99|100|101|102|103" },
+    { "stella_crop_hoverscan", "Crop horizontal overscan; disabled|enabled" },
     { "stella_stereo", "Stereo sound; auto|off|on" },
     { "stella_palette", "Palette colors; standard|z26" },
     { "stella_phosphor", "Phosphor mode; auto|off|on" },
     { "stella_phosphor_blend", "Phosphor blend %; 60|65|70|75|80|85|90|95|100|0|5|10|15|20|25|30|35|40|45|50|55" },
-	{ "stella_paddle_joypad_sensitivity", "Paddle joypad sensitivity; 3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|1|2" },
+    { "stella_paddle_joypad_sensitivity", "Paddle joypad sensitivity; 3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|1|2" },
     { NULL, NULL },
   };
 
@@ -560,7 +572,7 @@ void retro_run()
   //printf("retro_run - %d %d %d - %d\n", stella.getVideoWidth(), stella.getVideoHeight(), stella.getVideoPitch(), stella.getAudioSize() );
 
   if(stella.getVideoReady())
-    video_cb(stella.getVideoBuffer(), stella.getVideoWidth(), stella.getVideoHeight(), stella.getVideoPitch());
+    video_cb(reinterpret_cast<uInt32*>(stella.getVideoBuffer()) + crop_left, stella.getVideoWidth() - crop_left, stella.getVideoHeight(), stella.getVideoPitch());
 
   if(stella.getAudioReady())
     audio_batch_cb(stella.getAudioBuffer(), stella.getAudioSize());
