@@ -237,6 +237,8 @@
 		DC21E5C221CA903E007D0E1A /* SerialPortMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */; };
 		DC21E5C321CA903E007D0E1A /* SettingsMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5BD21CA903E007D0E1A /* SettingsMACOS.cxx */; };
 		DC21E5C421CA903E007D0E1A /* SettingsMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BE21CA903E007D0E1A /* SettingsMACOS.hxx */; };
+		DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */; };
+		DC2410E42274BDA8007A4CBF /* MinUICommandDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */; };
 		DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2874061F8F2278004BF21A /* TrapArray.hxx */; };
 		DC2AADAE194F389C0026C7A4 /* CartDASH.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2AADAA194F389C0026C7A4 /* CartDASH.cxx */; };
 		DC2AADAF194F389C0026C7A4 /* CartDASH.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2AADAB194F389C0026C7A4 /* CartDASH.hxx */; };
@@ -947,6 +949,8 @@
 		DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOS.hxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BD21CA903E007D0E1A /* SettingsMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsMACOS.cxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BE21CA903E007D0E1A /* SettingsMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SettingsMACOS.hxx; sourceTree = SOURCE_ROOT; };
+		DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MinUICommandDialog.hxx; sourceTree = "<group>"; };
+		DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MinUICommandDialog.cxx; sourceTree = "<group>"; };
 		DC2874061F8F2278004BF21A /* TrapArray.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrapArray.hxx; sourceTree = "<group>"; };
 		DC2AADAA194F389C0026C7A4 /* CartDASH.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartDASH.cxx; sourceTree = "<group>"; };
 		DC2AADAB194F389C0026C7A4 /* CartDASH.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDASH.hxx; sourceTree = "<group>"; };
@@ -1994,6 +1998,8 @@
 				2DDBEAC3084578BF00812C11 /* Menu.hxx */,
 				DC98F35411F5B56200AA520F /* MessageBox.cxx */,
 				DC98F35511F5B56200AA520F /* MessageBox.hxx */,
+				DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */,
+				DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */,
 				2DDBEAC4084578BF00812C11 /* OptionsDialog.cxx */,
 				2DDBEAC5084578BF00812C11 /* OptionsDialog.hxx */,
 				2DDBEAC6084578BF00812C11 /* PopUpWidget.cxx */,
@@ -2550,6 +2556,7 @@
 				DC676A4A1729A0B000E4E73D /* CartCTYWidget.hxx in Headers */,
 				DC676A4C1729A0B000E4E73D /* CartDPCPlusWidget.hxx in Headers */,
 				DC676A4E1729A0B000E4E73D /* CartDPCWidget.hxx in Headers */,
+				DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */,
 				DCCA26B31FA64D5E000EE4D8 /* AbstractFrameManager.hxx in Headers */,
 				DC3EE8631E2C0E6D00905161 /* inffast.h in Headers */,
 				DC676A501729A0B000E4E73D /* CartE0Widget.hxx in Headers */,
@@ -2792,6 +2799,7 @@
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
 				DC6DC920205DB879004A5FC3 /* PJoystickHandler.cxx in Sources */,
+				DC2410E42274BDA8007A4CBF /* MinUICommandDialog.cxx in Sources */,
 				DC74E5C6198AF12700F37E36 /* CartDASHWidget.cxx in Sources */,
 				2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */,
 				2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */,
