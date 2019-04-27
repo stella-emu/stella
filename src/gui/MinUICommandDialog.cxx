@@ -31,7 +31,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent)
-  : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
+  : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands"),
+    myStellaSettingsDialog(nullptr)
 {
   const int HBORDER = 10;
   const int VBORDER = 10;
@@ -101,9 +102,6 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(bw);
 
   addToFocusList(wid);
-
-  myStellaSettingsDialog = make_unique<StellaSettingsDialog>(osystem, parent, _font,
-                                                             FBMinimum::Width, FBMinimum::Height);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,13 +177,13 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kRewindCmd:
-      // rewind 5s 
+      // rewind 5s
       instance().state().rewindStates(5);
       updateWinds();
-	    break; 
+	    break;
 
     case kUnwindCmd:
-      // unwind 5s   
+      // unwind 5s
 		  instance().state().unwindStates(5);
       updateWinds();
       break;
@@ -219,7 +217,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       if(myStellaSettingsDialog == nullptr || myStellaSettingsDialog->shouldResize(w, h))
       {
         myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-                                                                   instance().frameBuffer().font(), w, h);
+          instance().frameBuffer().font(), w, h, Menu::AppMode::emulator);
       }
       myStellaSettingsDialog->open();
       break;
@@ -265,7 +263,7 @@ void MinUICommandDialog::updateTVFormat()
 void MinUICommandDialog::updateWinds()
 {
   RewindManager& r = instance().state().rewindManager();
-  
+
   myRewindButton->setEnabled(!r.atFirst());
   myUnwindButton->setEnabled(!r.atLast());
 }

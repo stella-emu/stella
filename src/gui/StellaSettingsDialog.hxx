@@ -21,17 +21,19 @@
 class PopUpWidget;
 
 #include "Props.hxx"
+#include "Menu.hxx"
 #include "Dialog.hxx"
 
 namespace GUI {
   class Font;
+  class MessageBox;
 }
 
 class StellaSettingsDialog : public Dialog
 {
   public:
     StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-      const GUI::Font& font, int max_w, int max_h);
+      const GUI::Font& font, int max_w, int max_h, Menu::AppMode mode);
     virtual ~StellaSettingsDialog() = default;
 
   private:
@@ -45,6 +47,9 @@ class StellaSettingsDialog : public Dialog
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    // switch to advanced settings after user confirmation
+    void switchSettingsMode();
+
     // load the properties for the controller settings
     void loadControllerProperties(const Properties& props);
 
@@ -53,6 +58,9 @@ class StellaSettingsDialog : public Dialog
     int valueToLevel(int value);
 
   private:
+    // advanced settings mode:
+    ButtonWidget*     myAdvancedSettings;
+
     // UI theme
     PopUpWidget*      myThemePopup;
 
@@ -76,7 +84,14 @@ class StellaSettingsDialog : public Dialog
     PopUpWidget*      myRightPort;
     StaticTextWidget* myRightPortDetected;
 
+    unique_ptr<GUI::MessageBox> myConfirmMsg;
+
+    // Indicates if this dialog is used for global (vs. in-game) settings
+    Menu::AppMode myMode;
+
     enum {
+      kAdvancedSettings = 'SSad',
+      kConfirmSwitchCmd = 'SScf',
       kScanlinesChanged = 'SSsc',
       kPhosphorChanged  = 'SSph'
     };

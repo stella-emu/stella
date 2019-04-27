@@ -37,6 +37,7 @@
 #include "OptionsDialog.hxx"
 #include "Launcher.hxx"
 #include "Settings.hxx"
+#include "Menu.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatCodeDialog.hxx"
@@ -46,10 +47,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
-                             GuiObject* boss, int max_w, int max_h, AppMode mode)
+                             GuiObject* boss, int max_w, int max_h, Menu::AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
     myMode(mode)
 {
+  // do not show basic settings options in debugger
+  bool minSettings = osystem.settings().getBool("minimal_ui") && mode != Menu::AppMode::debugger;
   const int buttonHeight = _font.getLineHeight() + 6,
             rowHeight = _font.getLineHeight() + 10;
   const int VBORDER = 10 + _th;
@@ -61,6 +64,15 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   int xoffset = 10, yoffset = VBORDER;
   WidgetArray wid;
   ButtonWidget* b = nullptr;
+
+  if (minSettings)
+  {
+    ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
+      _w - 10 * 2, buttonHeight, "Switch to Basic Settings" + ELLIPSIS, kBasSetCmd);
+    wid.push_back(bw);
+    yoffset += rowHeight + 8;
+    _h += rowHeight + 8;
+  }
 
   auto ADD_OD_BUTTON = [&](const string& label, int cmd)
   {
@@ -93,7 +105,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
 
   // Move to second column
-  xoffset += buttonWidth + 10;  yoffset = VBORDER;
+  xoffset += buttonWidth + 10;  yoffset = minSettings ? VBORDER + rowHeight + 8 : VBORDER;
 
   myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd);
   wid.push_back(myGameInfoButton);
@@ -140,7 +152,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   // Certain buttons are disabled depending on mode
-  if(myMode == AppMode::launcher)
+  if(myMode == Menu::AppMode::launcher)
   {
     myCheatCodeButton->clearFlags(WIDGET_ENABLED);
   }
@@ -183,6 +195,15 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
+    case kBasSetCmd:
+      // enable basic settings
+      instance().settings().setValue("basic_settings", true);
+      if (myMode != Menu::AppMode::emulator)
+        close();
+      else
+        instance().eventHandler().leaveMenuMode();
+      break;
+
     case kVidCmd:
     {
       // This dialog is resizable under certain conditions, so we need
@@ -302,7 +323,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      if(myMode != AppMode::emulator)
+      if(myMode != Menu::AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

@@ -19,6 +19,8 @@
 #define MENU_HXX
 
 class OSystem;
+class StellaSettingsDialog;
+class OptionsDialog;
 
 #include "DialogContainer.hxx"
 
@@ -30,11 +32,19 @@ class OSystem;
 class Menu : public DialogContainer
 {
   public:
+    // Current Stella mode
+    enum class AppMode { launcher, emulator, debugger };
+
     /**
       Create a new menu stack
     */
     explicit Menu(OSystem& osystem);
     virtual ~Menu() = default;
+
+    StellaSettingsDialog* stellaSettingDialog;
+    OptionsDialog* optionsDialog;
+
+    Dialog* getBaseDialog() override;
 
   private:
     // Following constructors and assignment operators not supported

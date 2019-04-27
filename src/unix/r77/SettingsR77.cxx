@@ -55,15 +55,17 @@ SettingsR77::SettingsR77()
   setPermanent("exitlauncher", "true");
 
   setTemporary("minimal_ui", true);
+  setPermanent("basic_settings", true);
+
   setPermanent("dev.settings", false);
   // record states for 60 seconds
   setPermanent("plr.timemachine", true);
   setPermanent("plr.tm.size", 60);
   setPermanent("plr.tm.uncompressed", 60);
-  setPermanent("plr.tm.interval", "1s"); 
-  
+  setPermanent("plr.tm.interval", "1s");
+
   setPermanent("threads", "1");
-  
+
   // all TV effects off by default (aligned to StellaSettingsDialog defaults!)
   setPermanent("tv.filter", "0");
   setPermanent("tv.phosphor", "always");

@@ -142,6 +142,11 @@ class DialogContainer
     const Dialog* baseDialog() const { return myBaseDialog; }
 
     /**
+      Return the bottom-most dialog of this container. Can be overwritten.
+    */
+    virtual Dialog* getBaseDialog() { return myBaseDialog; }
+
+    /**
       Inform the container that it should resize according to the current
       screen dimensions.  We make this virtual, since the container may or
       may not choose to do a resize, and even if it does, *how* it does it

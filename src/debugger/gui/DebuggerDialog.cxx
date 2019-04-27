@@ -67,7 +67,7 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
   myTiaOutput->setZoomWidget(myTiaZoom);
 
   myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h,
-                                         OptionsDialog::AppMode::debugger);
+                                         Menu::AppMode::debugger);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

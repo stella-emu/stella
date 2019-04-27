@@ -55,7 +55,9 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myPattern(nullptr),
     myAllFiles(nullptr),
     myRomInfoWidget(nullptr),
-    mySelectedItem(0)
+    mySelectedItem(0),
+    myStellaSettingsDialog(nullptr),
+    myOptionsDialog(nullptr)
 {
   myUseMinimalUI = instance().settings().getBool("minimal_ui");
 
@@ -206,10 +208,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   }
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 
-  // Create an options dialog, similar to the in-game one
-  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h,
-                                         OptionsDialog::AppMode::launcher);
-
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
   myGameList = make_unique<GameList>();
@@ -226,9 +224,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // ROM properties
   myGlobalProps = make_unique<GlobalPropsDialog>(this,
     myUseMinimalUI ? osystem.frameBuffer().launcherFont() : osystem.frameBuffer().font());
-  if (myUseMinimalUI)
-    myStellaSettingsDialog =
-      make_unique<StellaSettingsDialog>(osystem, parent, osystem.frameBuffer().launcherFont(), w, h);
 
   // Do we show only ROMs or all files?
   bool onlyROMs = instance().settings().getBool("launcherroms");
@@ -468,7 +463,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
     switch(key)
     {
       case KBDK_F8:
-        myStellaSettingsDialog->open();
+        openSettings();
         break;
 
       case KBDK_F4:
@@ -553,7 +548,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kOptionsCmd:
-      myOptions->open();
+      openSettings();
       break;
 
     case kPrevDirCmd:
@@ -640,3 +635,22 @@ void LauncherDialog::startGame()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openSettings()
+{
+  // Create an options dialog, similar to the in-game one
+  if (instance().settings().getBool("basic_settings"))
+  {
+    if (myStellaSettingsDialog == nullptr)
+      myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
+        instance().frameBuffer().launcherFont(), _w, _h, Menu::AppMode::launcher);
+    myStellaSettingsDialog->open();
+  }
+  else
+  {
+    if (myOptionsDialog == nullptr)
+      myOptionsDialog = make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
+        Menu::AppMode::launcher);
+    myOptionsDialog->open();
+  }
+}

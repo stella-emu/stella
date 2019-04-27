@@ -118,6 +118,7 @@ Settings::Settings()
   setPermanent("uipalette", "standard");
   setPermanent("listdelay", "300");
   setPermanent("mwheel", "4");
+  setPermanent("basic_settings", false);
 
   // Misc options
   setPermanent("autoslot", "false");
