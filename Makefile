@@ -89,7 +89,11 @@ endif
 # Misc stuff - you should never have to edit this                     #
 #######################################################################
 
-OBJECT_ROOT := out
+ifdef STELLA_BUILD_ROOT
+  OBJECT_ROOT := $(STELLA_BUILD_ROOT)/stella-out
+else
+  OBJECT_ROOT := out
+endif
 OBJECT_ROOT_PROFILE_GENERERATE := out.pgen
 OBJECT_ROOT_PROFILE_USE := out.pgo
 
