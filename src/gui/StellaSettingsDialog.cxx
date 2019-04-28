@@ -83,7 +83,7 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos, 
   const int VGAP = 4;
   const int lineHeight = font.getLineHeight();
   VariantList items;
-  int pwidth = font.getStringWidth("Bad adjust");
+  int pwidth = font.getStringWidth("Bad adjust"); // align width with other popup
 
   ypos += 1;
   VarList::push_back(items, "Standard", "standard");

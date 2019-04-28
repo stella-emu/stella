@@ -23,6 +23,7 @@ class CommandSender;
 class DialogContainer;
 class OSystem;
 class StellaSettingsDialog;
+class OptionsDialog;
 
 #include "Dialog.hxx"
 
@@ -34,10 +35,12 @@ class MinUICommandDialog : public Dialog
 
   protected:
   void loadConfig() override;
+  void handleKeyDown(StellaKey key, StellaMod mod) override;
   void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
   void updateSlot(int slot);
   void updateWinds();
   void updateTVFormat();
+  void openSettings();
 
   // column 0
   ButtonWidget* myColorButton;
@@ -55,6 +58,7 @@ class MinUICommandDialog : public Dialog
   ButtonWidget* myPhosphorButton;
 
   unique_ptr<StellaSettingsDialog>  myStellaSettingsDialog;
+  unique_ptr<OptionsDialog>  myOptionsDialog;
 
   enum
   {
@@ -74,7 +78,6 @@ class MinUICommandDialog : public Dialog
     kPhosphorCmd = 'Cpho',
     kSettings = 'Cscn',
     kExitGameCmd = 'Cext',
-    kCloseCmd = 'Ccls'
   };
 
   private:

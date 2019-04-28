@@ -26,13 +26,15 @@
 #include "OSystem.hxx"
 #include "Widget.hxx"
 #include "StellaSettingsDialog.hxx"
+#include "OptionsDialog.hxx"
 #include "TIASurface.hxx"
 #include "MinUICommandDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands"),
-    myStellaSettingsDialog(nullptr)
+    myStellaSettingsDialog(nullptr),
+    myOptionsDialog(nullptr)
 {
   const int HBORDER = 10;
   const int VBORDER = 10;
@@ -83,7 +85,7 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(myRewindButton);
   myUnwindButton = ADD_CD_BUTTON("Unwind", kUnwindCmd);
   wid.push_back(myUnwindButton);
-  bw = ADD_CD_BUTTON("Close", kCloseCmd);
+  bw = ADD_CD_BUTTON("Close", GuiObject::kCloseCmd);
   wid.push_back(bw);
 
   // Column 3
@@ -119,6 +121,21 @@ void MinUICommandDialog::loadConfig()
   updateTVFormat();
   myStretchButton->setLabel(instance().settings().getBool("tia.fs_stretch") ? "Stretched" : "4:3 Format");
   myPhosphorButton->setLabel(instance().frameBuffer().tiaSurface().phosphorEnabled() ? "Phosphor On" : "Phosphor Off");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MinUICommandDialog::handleKeyDown(StellaKey key, StellaMod mod)
+{
+  switch (key)
+  {
+    case KBDK_F8: // front  ("Skill P2")
+      instance().eventHandler().leaveMenuMode();
+      break;
+
+    default:
+      Dialog::handleKeyDown(key, mod);
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,7 +205,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       updateWinds();
       break;
 
-    case kCloseCmd:
+    case GuiObject::kCloseCmd:
       instance().eventHandler().leaveMenuMode();
       break;
 
@@ -209,19 +226,8 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kSettings:
-    {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      uInt32 w = 0, h = 0;
-
-      if(myStellaSettingsDialog == nullptr || myStellaSettingsDialog->shouldResize(w, h))
-      {
-        myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-          instance().frameBuffer().font(), w, h, Menu::AppMode::emulator);
-      }
-      myStellaSettingsDialog->open();
+      openSettings();
       break;
-    }
 
     case kExitGameCmd:
       instance().eventHandler().handleEvent(Event::LauncherMode);
@@ -268,3 +274,22 @@ void MinUICommandDialog::updateWinds()
   myUnwindButton->setEnabled(!r.atLast());
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MinUICommandDialog::openSettings()
+{
+  // Create an options dialog, similar to the in-game one
+  if (instance().settings().getBool("basic_settings"))
+  {
+    if (myStellaSettingsDialog == nullptr)
+      myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
+        instance().frameBuffer().launcherFont(), FBMinimum::Width, FBMinimum::Height, Menu::AppMode::launcher);
+    myStellaSettingsDialog->open();
+  }
+  else
+  {
+    if (myOptionsDialog == nullptr)
+      myOptionsDialog = make_unique<OptionsDialog>(instance(), parent(), this,
+        FBMinimum::Width, FBMinimum::Height, Menu::AppMode::launcher);
+    myOptionsDialog->open();
+  }
+}

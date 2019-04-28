@@ -163,11 +163,11 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
     //         use the '1' define for testing
     #if defined(RETRON77)
 //    #if 1
-      setDefaultKey( KBDK_F4,        Event::ConsoleColorToggle     ); // back
-      setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffToggle  ); // front
-      setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffToggle ); // front
-      setDefaultKey( KBDK_F13,       Event::CmdMenuMode)           ); // back
-      setDefaultKey( KBDK_BACKSPACE, Event::LauncherMode           ); // back
+      setDefaultKey( KBDK_F4,        Event::ConsoleColorToggle     ); // back ("COLOR","B/W")
+      setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffToggle  ); // front ("SKILL P1")
+      setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffToggle ); // front ("SKILL P2")
+      setDefaultKey( KBDK_F13,       Event::CmdMenuMode            ); // back ("4:3","16:9")
+      setDefaultKey( KBDK_BACKSPACE, Event::LauncherMode           ); // back ("FRY")
     #endif
       break;
 
@@ -189,13 +189,14 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
     //         use the '1' define for testing
     #if defined(RETRON77)
 //    #if 1
-      setDefaultKey( KBDK_F9,        Event::UIUp      ); // front
-      setDefaultKey( KBDK_F2,        Event::UIDown    ); // front
-      setDefaultKey( KBDK_F11,       Event::UINavPrev ); // front
-      setDefaultKey( KBDK_F1,        Event::UINavNext ); // front
-      setDefaultKey( KBDK_F6,        Event::UISelect  ); // front
-      setDefaultKey( KBDK_F13,       Event::UIPgUp    ); // back (redundant)
-      setDefaultKey( KBDK_BACKSPACE, Event::UIPgDown  ); // back (redundant)
+      setDefaultKey( KBDK_F9,        Event::UIUp      ); // front ("SAVE")
+      setDefaultKey( KBDK_F2,        Event::UIDown    ); // front ("RESET")
+      setDefaultKey( KBDK_F11,       Event::UINavPrev ); // front ("LOAD")
+      setDefaultKey( KBDK_F1,        Event::UINavNext ); // front ("MODE")
+      setDefaultKey( KBDK_F6,        Event::UISelect  ); // front ("SKILL P1")
+      setDefaultKey( KBDK_F8,        Event::UICancel  ); // front ("SKILL P2")
+      setDefaultKey( KBDK_F13,       Event::UIPgUp    ); // back ("4:3","16:9")(redundant)
+      setDefaultKey( KBDK_BACKSPACE, Event::UIPgDown  ); // back (FRY)(redundant)
     #endif
       break;
 

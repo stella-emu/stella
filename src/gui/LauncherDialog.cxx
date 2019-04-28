@@ -460,20 +460,20 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
     // handle keys used by R77
     switch(key)
     {
-      case KBDK_F8:
+      case KBDK_F8: // front  ("Skill P2")
         openSettings();
         break;
 
-      case KBDK_F4:
+      case KBDK_F4: // back ("COLOR", "B/W")
         myGlobalProps->open();
         break;
 
-      case KBDK_F11:
+      case KBDK_F11: // front ("LOAD")
         // convert unused previous item key into page-up key
         Dialog::handleKeyDown(KBDK_F13, mod);
         break;
 
-      case KBDK_F1:
+      case KBDK_F1: // front ("MODE")
         // convert unused next item key into page-down key
         Dialog::handleKeyDown(KBDK_BACKSPACE, mod);
         break;
