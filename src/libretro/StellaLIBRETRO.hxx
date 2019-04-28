@@ -160,7 +160,7 @@ class StellaLIBRETRO
 
     uInt32 video_aspect_ntsc;
     uInt32 video_aspect_pal;
-    NTSCFilter::Preset video_filter;
+    uInt32 video_filter;
 
     string audio_mode;
 

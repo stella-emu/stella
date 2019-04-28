@@ -41,7 +41,7 @@ StellaLIBRETRO::StellaLIBRETRO()
   video_aspect_pal = 0;
 
   video_palette = "standard";
-  video_filter = NTSCFilter::Preset::OFF;
+  video_filter = 0;
   video_ready = false;
 
   audio_samples = 0;
@@ -108,7 +108,7 @@ bool StellaLIBRETRO::create(bool logging)
   //fastscbios
   // Fast loading of Supercharger BIOS
 
-  settings.setValue("tv.filter", static_cast<int>(video_filter));
+  settings.setValue("tv.filter", video_filter);
 
   settings.setValue("tv.phosphor", video_phosphor);
   settings.setValue("tv.phosblend", video_phosphor_blend);
@@ -131,6 +131,7 @@ bool StellaLIBRETRO::create(bool logging)
   if(myOSystem->createConsole(rom) != EmptyString)
     return false;
 
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   if(video_phosphor == "never") setVideoPhosphor(1, video_phosphor_blend);
 
@@ -345,7 +346,9 @@ void StellaLIBRETRO::setConsoleFormat(uInt32 mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaLIBRETRO::setVideoFilter(uInt32 mode)
 {
-  if (system_ready && mode <= 5)
+  video_filter = mode;
+
+  if (system_ready)
   {
     myOSystem->settings().setValue("tv.filter", mode);
     myOSystem->frameBuffer().tiaSurface().setNTSC(static_cast<NTSCFilter::Preset>(mode));
