@@ -123,12 +123,14 @@ class M6532 : public Device
      */
     void updateEmulation();
 
+  #ifdef __LIB_RETRO__
     /**
       Get a pointer to the RAM contents.
 
       @return  Pointer to RAM array.
     */
     uInt8* getRAM() { return myRAM; }
+  #endif
 
   private:
 
