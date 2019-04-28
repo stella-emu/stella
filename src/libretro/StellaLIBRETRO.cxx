@@ -257,19 +257,39 @@ float StellaLIBRETRO::getVideoAspectPar()
 
   if (getVideoNTSC())
   {
-    if (!video_aspect_ntsc)
-      // non-interlace square pixel clock -- 1.0 pixel @ color burst -- double-width pixels
-      par = (6.1363635f / 3.579545454f) / 2.0;
-    else
-      par = video_aspect_ntsc / 100.0;
+	if (!video_aspect_ntsc)
+	{
+	  if (!video_filter)
+	  {
+		// non-interlace square pixel clock -- 1.0 pixel @ color burst -- double-width pixels
+		par = (6.1363635f / 3.579545454f) / 2.0;
+	  }
+	  else
+	  {
+		// blargg filter
+		par = 1.0;
+	  }
+	}
+	else
+	  par = video_aspect_ntsc / 100.0;
   }
   else
   {
-    if (!video_aspect_pal)
-      // non-interlace square pixel clock -- 0.8 pixel @ color burst -- double-width pixels
-      par = (7.3750000f / (4.43361875f * 4.0f / 5.0f)) / 2.0f;
-    else
-      par = video_aspect_pal / 100.0;
+	if (!video_aspect_pal)
+	{
+	  if (!video_filter)
+	  {
+		// non-interlace square pixel clock -- 0.8 pixel @ color burst -- double-width pixels
+		par = (7.3750000f / (4.43361875f * 4.0f / 5.0f)) / 2.0f;
+	  }
+	  else
+	  {
+		// blargg filter
+		par = 1.0;
+	  }
+	}
+	else
+	  par = video_aspect_pal / 100.0;
   }
   
   return par;
