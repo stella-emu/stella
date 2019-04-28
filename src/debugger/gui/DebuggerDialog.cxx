@@ -67,7 +67,7 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
   myTiaOutput->setZoomWidget(myTiaZoom);
 
   myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h,
-                                         OptionsDialog::AppMode::debugger);
+                                         Menu::AppMode::debugger);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -504,7 +504,7 @@ void DebuggerDialog::addStatusArea()
                                     xpos, ypos, myTiaZoom->getWidth(),
                                     myLFont->getLineHeight(), "");
   myMessageBox->setEditable(false, false);
-  myMessageBox->clearFlags(WIDGET_RETAIN_FOCUS);
+  myMessageBox->clearFlags(Widget::FLAG_RETAIN_FOCUS);
   myMessageBox->setTextColor(kTextColorEm);
 }
 
@@ -577,7 +577,7 @@ void DebuggerDialog::addRomArea()
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
                      bwidth, bheight, LEFT_ARROW, 7, 11, kDDRewindCmd);
-  myRewindButton->clearFlags(WIDGET_ENABLED);
+  myRewindButton->clearFlags(Widget::FLAG_ENABLED);
 
   buttonY += bheight + 4;
   bheight = (myLFont->getLineHeight() + 2) * 2 + 4 * 1;
@@ -585,7 +585,7 @@ void DebuggerDialog::addRomArea()
   myUnwindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
                      bwidth, bheight, RIGHT_ARROW, 7, 11, kDDUnwindCmd);
-  myUnwindButton->clearFlags(WIDGET_ENABLED);
+  myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
 
   int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 30;
 

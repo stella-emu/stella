@@ -22,34 +22,42 @@
 #include "ControllerDetector.hxx"
 #include "NTSCFilter.hxx"
 #include "PopUpWidget.hxx"
+#include "MessageBox.hxx"
 
 #include "StellaSettingsDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-  const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, font, "Stella settings")
+  const GUI::Font& font, int max_w, int max_h, Menu::AppMode mode)
+  : Dialog(osystem, parent, font, "Stella settings"),
+    myMode(mode)
 {
-  const int VGAP = 4;
   const int VBORDER = 8;
   const int HBORDER = 10;
   const int INDENT = 20;
-  const int lineHeight = font.getLineHeight(),
+  const int buttonHeight = font.getLineHeight() + 6,
+    lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth();
+  const int VGAP = 5;
   int xpos, ypos;
 
   WidgetArray wid;
   VariantList items;
 
   // Set real dimensions
-  setSize(33 * fontWidth + HBORDER * 2, 15 * (lineHeight + VGAP) + _th, max_w, max_h);
+  setSize(33 * fontWidth + HBORDER * 2, 14 * (lineHeight + VGAP) + VGAP * 9 + 6 + _th, max_w, max_h);
 
   xpos = HBORDER;
   ypos = VBORDER + _th;
 
+  myAdvancedSettings = new ButtonWidget(this, font, xpos, ypos, _w - HBORDER * 2, buttonHeight,
+    "Switch to Advanced Settings" + ELLIPSIS, kAdvancedSettings);
+  ypos += lineHeight + VGAP*4;
+
   new StaticTextWidget(this, font, xpos, ypos + 1, "Global settings:");
   xpos += INDENT;
   ypos += lineHeight + VGAP;
+
 
   addUIOptions(wid, xpos, ypos, font);
   ypos += VGAP * 4;
@@ -75,7 +83,7 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos, 
   const int VGAP = 4;
   const int lineHeight = font.getLineHeight();
   VariantList items;
-  int pwidth = font.getStringWidth("Bad adjust");
+  int pwidth = font.getStringWidth("Bad adjust"); // align width with other popup
 
   ypos += 1;
   VarList::push_back(items, "Standard", "standard");
@@ -284,13 +292,30 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch (cmd)
   {
-    case GuiObject::kOKCmd:
-      saveConfig();
-      close();
-      break;
-
     case GuiObject::kDefaultsCmd:
       setDefaults();
+      break;
+
+    case GuiObject::kOKCmd:
+      saveConfig();
+      [[fallthrough]];
+    case GuiObject::kCloseCmd:
+      if (myMode != Menu::AppMode::emulator)
+        close();
+      else
+        instance().eventHandler().leaveMenuMode();
+      break;
+
+    case kAdvancedSettings:
+      switchSettingsMode();
+      break;
+
+    case kConfirmSwitchCmd:
+      instance().settings().setValue("basic_settings", false);
+      if (myMode != Menu::AppMode::emulator)
+        close();
+      else
+        instance().eventHandler().leaveMenuMode();
       break;
 
     case kScanlinesChanged:
@@ -310,6 +335,26 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StellaSettingsDialog::switchSettingsMode()
+{
+  StringList msg;
+
+  msg.push_back("Warning!");
+  msg.push_back("");
+  msg.push_back("Advanced settings should be");
+  msg.push_back("handled with care! When in");
+  msg.push_back("doubt, read the manual.");
+  msg.push_back("");
+  msg.push_back("If you are sure you want to");
+  msg.push_back("proceed with the switch, click");
+  msg.push_back("'OK', otherwise click 'Cancel'.");
+
+  myConfirmMsg = make_unique<GUI::MessageBox>(this, instance().frameBuffer().font(), msg,
+      _w-16, _h, kConfirmSwitchCmd, "OK", "Cancel", "Switch settings mode", false);
+  myConfirmMsg->show();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::loadControllerProperties(const Properties& props)
 {
   // Determine whether we should enable the "Game settings:"
@@ -321,6 +366,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
   switch (instance().eventHandler().state())
   {
     case EventHandlerState::OPTIONSMENU: // game is running!
+    case EventHandlerState::CMDMENU: // game is running!
       enable = true;
       break;
     case EventHandlerState::LAUNCHER:

@@ -559,8 +559,8 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 #endif
   if(!debuggerAvailable)
   {
-    myDebuggerWidthSlider->clearFlags(WIDGET_ENABLED);
-    myDebuggerHeightSlider->clearFlags(WIDGET_ENABLED);
+    myDebuggerWidthSlider->clearFlags(Widget::FLAG_ENABLED);
+    myDebuggerHeightSlider->clearFlags(Widget::FLAG_ENABLED);
   }
 #else
   new StaticTextWidget(myTab, font, 0, 20, _w - 20, font.getFontHeight(),
@@ -1331,8 +1331,8 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
 
   if(!instance().hasConsole())
   {
-    myDbgColour[idx]->clearFlags(WIDGET_ENABLED);
-    myDbgColourSwatch[idx]->clearFlags(WIDGET_ENABLED);
+    myDbgColour[idx]->clearFlags(Widget::FLAG_ENABLED);
+    myDbgColourSwatch[idx]->clearFlags(Widget::FLAG_ENABLED);
     return;
   }
 

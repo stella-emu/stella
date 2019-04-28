@@ -49,14 +49,14 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::handleMouseLeft()
 {
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 
@@ -70,12 +70,12 @@ void CheckListWidget::setList(const StringList& list, const BoolArray& state)
 
   // Enable all checkboxes
   for(int i = 0; i < _rows; ++i)
-    _checkList[i]->setFlags(WIDGET_ENABLED);
+    _checkList[i]->setFlags(Widget::FLAG_ENABLED);
 
   // Then turn off any extras
   if(int(_stateList.size()) < _rows)
     for(int i = int(_stateList.size()); i < _rows; ++i)
-      _checkList[i]->clearFlags(WIDGET_ENABLED);
+      _checkList[i]->clearFlags(Widget::FLAG_ENABLED);
 
   ListWidget::recalc();
 }

@@ -501,6 +501,7 @@
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
+    <ClCompile Include="..\gui\MinUICommandDialog.cxx" />
     <ClCompile Include="..\gui\RadioButtonWidget.cxx" />
     <ClCompile Include="..\gui\SnapshotDialog.cxx" />
     <ClCompile Include="..\gui\StellaSettingsDialog.cxx" />
@@ -1219,6 +1220,7 @@
     <ClInclude Include="..\gui\FileListWidget.hxx" />
     <ClInclude Include="..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
+    <ClInclude Include="..\gui\MinUICommandDialog.hxx" />
     <ClInclude Include="..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\gui\SnapshotDialog.hxx" />
     <ClInclude Include="..\gui\StellaSettingsDialog.hxx" />

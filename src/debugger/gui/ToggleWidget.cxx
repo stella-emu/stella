@@ -36,21 +36,21 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
     _clicksToChange(clicksToChange),
     _editable(true)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_WANTS_RAWDATA;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
+           Widget::FLAG_WANTS_RAWDATA;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleWidget::handleMouseLeft()
 {
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 

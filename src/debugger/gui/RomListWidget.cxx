@@ -43,7 +43,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
     myDisasm(nullptr),
     myBPState(nullptr)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _textcolor = kTextColor;
@@ -130,12 +130,12 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm,
 
   // Enable all checkboxes
   for(int i = 0; i < _rows; ++i)
-    myCheckList[i]->setFlags(WIDGET_ENABLED);
+    myCheckList[i]->setFlags(Widget::FLAG_ENABLED);
 
   // Then turn off any extras
   if(int(myDisasm->list.size()) < _rows)
     for(int i = int(myDisasm->list.size()); i < _rows; ++i)
-      myCheckList[i]->clearFlags(WIDGET_ENABLED);
+      myCheckList[i]->clearFlags(Widget::FLAG_ENABLED);
 
   recalc();
 }
@@ -290,14 +290,14 @@ void RomListWidget::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::handleMouseLeft()
 {
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 

@@ -177,8 +177,8 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   _w = width;  // Parent determines our width (based on window size)
   _h = V_BORDER * 2 + rowHeight + buttonHeight + 2;
 
-  this->clearFlags(WIDGET_CLEARBG); // does only work combined with blending (0..100)!
-  this->clearFlags(WIDGET_BORDER);
+  this->clearFlags(Widget::FLAG_CLEARBG); // does only work combined with blending (0..100)!
+  this->clearFlags(Widget::FLAG_BORDER);
 
   xpos = H_BORDER;
   ypos = V_BORDER;

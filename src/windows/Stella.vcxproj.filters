@@ -957,6 +957,9 @@
     <ClCompile Include="..\gui\StellaSettingsDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\MinUICommandDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1957,6 +1960,9 @@
     </ClInclude>
     <ClInclude Include="..\emucore\ControlLowLevel.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\MinUICommandDialog.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -43,7 +43,7 @@ SettingsR77::SettingsR77()
   setPermanent("audio.resampling_quality", "2");
   setPermanent("audio.sample_rate", "48000");
   setPermanent("audio.stereo", "0");
-  setPermanent("audio.volume", "80");
+  setPermanent("audio.volume", "100");
 
   setPermanent("romdir", "/mnt/games");
   setPermanent("snapsavedir", "/mnt/stella/snapshots");
@@ -55,12 +55,22 @@ SettingsR77::SettingsR77()
   setPermanent("exitlauncher", "true");
 
   setTemporary("minimal_ui", true);
+  setPermanent("basic_settings", true);
+
   setPermanent("dev.settings", false);
-  setPermanent("plr.timemachine", false);
+  // record states for 60 seconds
+  setPermanent("plr.timemachine", true);
+  setPermanent("plr.tm.size", 60);
+  setPermanent("plr.tm.uncompressed", 60);
+  setPermanent("plr.tm.interval", "1s");
 
   setPermanent("threads", "1");
-  setPermanent("tv.filter", "3");
+
+  // all TV effects off by default (aligned to StellaSettingsDialog defaults!)
+  setPermanent("tv.filter", "0");
   setPermanent("tv.phosphor", "always");
+  setPermanent("tv.phosblend", "0");
+  setPermanent("tv.scanlines", "0");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

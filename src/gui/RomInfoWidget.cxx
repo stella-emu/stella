@@ -39,7 +39,7 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
       GUI::Size(TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2) :
       GUI::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight))
 {
-  _flags = WIDGET_ENABLED;
+  _flags = Widget::FLAG_ENABLED;
   _bgcolor = kDlgColor;
   _bgcolorlo = kBGColorLo;
 }

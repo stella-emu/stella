@@ -164,7 +164,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   xpos += lwidth;
   myDir = new EditTextWidget(this, font, xpos, ypos, _w - xpos - HBORDER, lineHeight, "");
   myDir->setEditable(false, true);
-  myDir->clearFlags(WIDGET_RETAIN_FOCUS);
+  myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
 
   if(!myUseMinimalUI)
   {
@@ -206,10 +206,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   }
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 
-  // Create an options dialog, similar to the in-game one
-  myOptions = make_unique<OptionsDialog>(osystem, parent, this, w, h,
-                                         OptionsDialog::AppMode::launcher);
-
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
   myGameList = make_unique<GameList>();
@@ -226,9 +222,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // ROM properties
   myGlobalProps = make_unique<GlobalPropsDialog>(this,
     myUseMinimalUI ? osystem.frameBuffer().launcherFont() : osystem.frameBuffer().font());
-  if (myUseMinimalUI)
-    myStellaSettingsDialog =
-      make_unique<StellaSettingsDialog>(osystem, parent, osystem.frameBuffer().launcherFont(), w, h);
 
   // Do we show only ROMs or all files?
   bool onlyROMs = instance().settings().getBool("launcherroms");
@@ -467,20 +460,20 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
     // handle keys used by R77
     switch(key)
     {
-      case KBDK_F8:
-        myStellaSettingsDialog->open();
+      case KBDK_F8: // front  ("Skill P2")
+        openSettings();
         break;
 
-      case KBDK_F4:
+      case KBDK_F4: // back ("COLOR", "B/W")
         myGlobalProps->open();
         break;
 
-      case KBDK_F11:
+      case KBDK_F11: // front ("LOAD")
         // convert unused previous item key into page-up key
         Dialog::handleKeyDown(KBDK_F13, mod);
         break;
 
-      case KBDK_F1:
+      case KBDK_F1: // front ("MODE")
         // convert unused next item key into page-down key
         Dialog::handleKeyDown(KBDK_BACKSPACE, mod);
         break;
@@ -553,7 +546,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kOptionsCmd:
-      myOptions->open();
+      openSettings();
       break;
 
     case kPrevDirCmd:
@@ -640,3 +633,22 @@ void LauncherDialog::startGame()
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openSettings()
+{
+  // Create an options dialog, similar to the in-game one
+  if (instance().settings().getBool("basic_settings"))
+  {
+    if (myStellaSettingsDialog == nullptr)
+      myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
+        instance().frameBuffer().launcherFont(), _w, _h, Menu::AppMode::launcher);
+    myStellaSettingsDialog->open();
+  }
+  else
+  {
+    if (myOptionsDialog == nullptr)
+      myOptionsDialog = make_unique<OptionsDialog>(instance(), parent(), this, _w, _h,
+        Menu::AppMode::launcher);
+    myOptionsDialog->open();
+  }
+}

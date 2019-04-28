@@ -41,8 +41,8 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
     _firstTime(true),
     _exitedEarly(false)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_WANTS_TAB | WIDGET_WANTS_RAWDATA;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS |
+           Widget::FLAG_WANTS_TAB | Widget::FLAG_WANTS_RAWDATA;
   _textcolor = kTextColor;
   _bgcolor = kWidColor;
   _bgcolorlo = kDlgColor;

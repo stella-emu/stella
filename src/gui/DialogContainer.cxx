@@ -157,7 +157,7 @@ void DialogContainer::reStack()
   while(!myDialogStack.empty())
     myDialogStack.top()->close();
 
-  myBaseDialog->open();
+  getBaseDialog()->open();
 
   // Reset all continuous events
   reset();

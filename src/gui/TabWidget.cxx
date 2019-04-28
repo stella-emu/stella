@@ -35,7 +35,7 @@ TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
 {
   _id = 0;  // For dialogs with multiple tab widgets, they should specifically
             // call ::setID to differentiate among them
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
@@ -219,14 +219,14 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::handleMouseLeft()
 {
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 

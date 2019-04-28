@@ -35,20 +35,16 @@ class RomAuditDialog;
 class HelpDialog;
 class AboutDialog;
 class LoggerDialog;
-
-#include "Dialog.hxx"
-
 class DeveloperDialog;
-class StellaSettingsDialog;
+
+#include "Menu.hxx"
+#include "Dialog.hxx"
 
 class OptionsDialog : public Dialog
 {
   public:
-    // Current Stella mode
-    enum class AppMode { launcher, emulator, debugger };
-
     OptionsDialog(OSystem& osystem, DialogContainer& parent, GuiObject* boss,
-                  int max_w, int max_h, AppMode mode);
+                  int max_w, int max_h, Menu::AppMode mode);
     virtual ~OptionsDialog();
 
   private:
@@ -62,7 +58,6 @@ class OptionsDialog : public Dialog
     unique_ptr<UIDialog>         myUIDialog;
     unique_ptr<SnapshotDialog>   mySnapshotDialog;
     unique_ptr<DeveloperDialog>  myDeveloperDialog;
-    unique_ptr<StellaSettingsDialog>  myStellaOptionsDialog;
     unique_ptr<GameInfoDialog>   myGameInfoDialog;
   #ifdef CHEATCODE_SUPPORT
     unique_ptr<CheatCodeDialog>  myCheatCodeDialog;
@@ -77,9 +72,10 @@ class OptionsDialog : public Dialog
     ButtonWidget* myCheatCodeButton;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
-    AppMode myMode;
+    Menu::AppMode myMode;
 
     enum {
+      kBasSetCmd   = 'BAST',
       kVidCmd      = 'VIDO',
       kAudCmd      = 'AUDO',
       kInptCmd     = 'INPT',
@@ -90,7 +86,6 @@ class OptionsDialog : public Dialog
       kCheatCmd    = 'CHET',
       kLoggerCmd   = 'LOGG',
       kDevelopCmd  = 'DEVL',
-      kStellaOptionsCmd = 'STOP',
       kHelpCmd     = 'HELP',
       kAboutCmd    = 'ABOU',
       kExitCmd     = 'EXIM'

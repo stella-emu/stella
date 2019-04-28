@@ -32,8 +32,8 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG |
-           WIDGET_RETAIN_FOCUS | WIDGET_TRACK_MOUSE;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG |
+           Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_TRACK_MOUSE;
   _bgcolor = _bgcolorhi = kDlgColor;
 
   // Use all available space, up to the maximum bounds of the TIA image
@@ -167,14 +167,14 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseLeft()
 {
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
   setDirty();
   myMouseMoving = false;
 }

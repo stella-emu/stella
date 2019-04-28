@@ -17,11 +17,15 @@
 
 #include "Dialog.hxx"
 #include "CommandDialog.hxx"
+#include "MinUICommandDialog.hxx"
 #include "CommandMenu.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandMenu::CommandMenu(OSystem& osystem)
   : DialogContainer(osystem)
 {
-  myBaseDialog = new CommandDialog(myOSystem, *this);
+  if (osystem.settings().getBool("minimal_ui"))
+    myBaseDialog = new MinUICommandDialog(myOSystem, *this);
+  else
+    myBaseDialog = new CommandDialog(myOSystem, *this);
 }

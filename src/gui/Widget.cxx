@@ -81,7 +81,7 @@ void Widget::draw()
 
   bool onTop = _boss->dialog().isOnTop();
 
-  bool hasBorder = _flags & WIDGET_BORDER; // currently only used by Dialog widget
+  bool hasBorder = _flags & Widget::FLAG_BORDER; // currently only used by Dialog widget
   int oldX = _x, oldY = _y;
 
   // Account for our relative position in the dialog
@@ -89,20 +89,20 @@ void Widget::draw()
   _y = getAbsY();
 
   // Clear background (unless alpha blending is enabled)
-  if(_flags & WIDGET_CLEARBG)
+  if(_flags & Widget::FLAG_CLEARBG)
   {
     int x = _x, y = _y, w = _w, h = _h;
     if(hasBorder)
     {
       x++; y++; w-=2; h-=2;
     }
-    s.fillRect(x, y, w, h, !onTop ? _bgcolorlo : (_flags & WIDGET_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
+    s.fillRect(x, y, w, h, !onTop ? _bgcolorlo : (_flags & Widget::FLAG_HILITED) && isEnabled() ? _bgcolorhi : _bgcolor);
   }
 
   // Draw border
   if(hasBorder)
   {
-    s.frameRect(_x, _y, _w, _h, !onTop ? kColor : (_flags & WIDGET_HILITED) && isEnabled() ? kWidColorHi : kColor);
+    s.frameRect(_x, _y, _w, _h, !onTop ? kColor : (_flags & Widget::FLAG_HILITED) && isEnabled() ? kWidColorHi : kColor);
     _x += 4;
     _y += 4;
     _w -= 8;
@@ -110,7 +110,7 @@ void Widget::draw()
   }
 
   // Now perform the actual widget draw
-  drawWidget((_flags & WIDGET_HILITED) ? true : false);
+  drawWidget((_flags & Widget::FLAG_HILITED) ? true : false);
 
   // Restore x/y
   if (hasBorder)
@@ -156,8 +156,8 @@ void Widget::lostFocus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::setEnabled(bool e)
 {
-  if(e) setFlags(WIDGET_ENABLED);
-  else  clearFlags(WIDGET_ENABLED);
+  if(e) setFlags(Widget::FLAG_ENABLED);
+  else  clearFlags(Widget::FLAG_ENABLED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -311,7 +311,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w, h),
     _align(align)
 {
-  _flags = WIDGET_ENABLED;
+  _flags = Widget::FLAG_ENABLED;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
   _textcolor = kTextColor;
@@ -373,7 +373,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
     _bmw(0),
     _bmh(0)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;
   _bgcolorlo = kColor;
@@ -416,13 +416,13 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseLeft()
 {
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -447,7 +447,7 @@ void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
   if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
-    clearFlags(WIDGET_HILITED);
+    clearFlags(Widget::FLAG_HILITED);
     sendCommand(_cmd, 0, _id);
   }
 }
@@ -541,7 +541,7 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
     _boxY(0),
     _textY(0)
 {
-  _flags = WIDGET_ENABLED;
+  _flags = Widget::FLAG_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
   _bgcolorlo = kDlgColor;
 
@@ -567,13 +567,13 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::handleMouseLeft()
 {
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -677,7 +677,7 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
     _valueLabelWidth(valueLabelWidth),
     _numIntervals(0)
 {
-  _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 

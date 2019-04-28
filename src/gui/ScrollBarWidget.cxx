@@ -68,7 +68,7 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
     _sliderPos(0),
     _sliderDeltaMouseDownPos(0)
 {
-  _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
 }
@@ -208,7 +208,7 @@ void ScrollBarWidget::checkBounds(int old_pos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 
@@ -216,7 +216,7 @@ void ScrollBarWidget::handleMouseEntered()
 void ScrollBarWidget::handleMouseLeft()
 {
   _part = kNoPart;
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 

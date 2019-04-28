@@ -18,13 +18,33 @@
 #include "Dialog.hxx"
 #include "FrameBufferConstants.hxx"
 #include "OptionsDialog.hxx"
+#include "StellaSettingsDialog.hxx"
+#include "FrameBuffer.hxx"
 #include "bspf.hxx"
 #include "Menu.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Menu::Menu(OSystem& osystem)
-  : DialogContainer(osystem)
+  : DialogContainer(osystem),
+    stellaSettingDialog(nullptr),
+    optionsDialog(nullptr)
+{}
+
+Dialog* Menu::getBaseDialog()
 {
-  myBaseDialog = new OptionsDialog(myOSystem, *this, nullptr,
-      FBMinimum::Width, FBMinimum::Height, OptionsDialog::AppMode::emulator);
+  if (myOSystem.settings().getBool("basic_settings"))
+  {
+    if (stellaSettingDialog == nullptr)
+      stellaSettingDialog = new StellaSettingsDialog(myOSystem, *this, myOSystem.frameBuffer().font(),
+        FBMinimum::Width, FBMinimum::Height, AppMode::emulator);
+    return stellaSettingDialog;
+  }
+  else
+  {
+    if (optionsDialog == nullptr)
+      optionsDialog = new OptionsDialog(myOSystem, *this, nullptr,
+        FBMinimum::Width, FBMinimum::Height, AppMode::emulator);
+    return optionsDialog;
+  }
 }
+

@@ -99,13 +99,14 @@ class LauncherDialog : public Dialog
     void showOnlyROMs(bool state);
     bool matchPattern(const string& s, const string& pattern) const;
     void startGame();
+    void openSettings();
 
   private:
-    unique_ptr<OptionsDialog> myOptions;
+    unique_ptr<OptionsDialog> myOptionsDialog;
+    unique_ptr<StellaSettingsDialog> myStellaSettingsDialog;
     unique_ptr<GameList> myGameList;
     unique_ptr<ContextMenu> myMenu;
     unique_ptr<GlobalPropsDialog> myGlobalProps;
-    unique_ptr<StellaSettingsDialog> myStellaSettingsDialog;
     unique_ptr<BrowserDialog> myRomDir;
 
     ButtonWidget* myStartButton;

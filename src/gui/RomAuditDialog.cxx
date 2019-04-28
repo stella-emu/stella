@@ -36,7 +36,6 @@
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Audit ROMs"),
-    myConfirmMsg(nullptr),
     myMaxWidth(max_w),
     myMaxHeight(max_h)
 {

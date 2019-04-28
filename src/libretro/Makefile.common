@@ -79,6 +79,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/gui/FileListWidget.cxx \
 	$(CORE_DIR)/gui/JoystickDialog.cxx \
 	$(CORE_DIR)/gui/LoggerDialog.cxx \
+	$(CORE_DIR)/gui/MinUICommandDialog.cxx \
 	$(CORE_DIR)/gui/RadioButtonWidget.cxx \
 	$(CORE_DIR)/gui/SnapshotDialog.cxx \
 	$(CORE_DIR)/gui/TimeLineWidget.cxx \

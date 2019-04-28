@@ -32,12 +32,12 @@
 #include "GameInfoDialog.hxx"
 #include "LoggerDialog.hxx"
 #include "DeveloperDialog.hxx"
-#include "StellaSettingsDialog.hxx"
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
 #include "Launcher.hxx"
 #include "Settings.hxx"
+#include "Menu.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatCodeDialog.hxx"
@@ -47,14 +47,16 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
-                             GuiObject* boss, int max_w, int max_h, AppMode mode)
+                             GuiObject* boss, int max_w, int max_h, Menu::AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
     myMode(mode)
 {
-  const int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + 20,
-            buttonHeight = _font.getLineHeight() + 6,
+  // do not show basic settings options in debugger
+  bool minSettings = osystem.settings().getBool("minimal_ui") && mode != Menu::AppMode::debugger;
+  const int buttonHeight = _font.getLineHeight() + 6,
             rowHeight = _font.getLineHeight() + 10;
   const int VBORDER = 10 + _th;
+  int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + 20;
 
   _w = 2 * buttonWidth + 30;
   _h = 7 * rowHeight + 15 + _th;
@@ -62,6 +64,15 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   int xoffset = 10, yoffset = VBORDER;
   WidgetArray wid;
   ButtonWidget* b = nullptr;
+
+  if (minSettings)
+  {
+    ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
+      _w - 10 * 2, buttonHeight, "Switch to Basic Settings" + ELLIPSIS, kBasSetCmd);
+    wid.push_back(bw);
+    yoffset += rowHeight + 8;
+    _h += rowHeight + 8;
+  }
 
   auto ADD_OD_BUTTON = [&](const string& label, int cmd)
   {
@@ -76,7 +87,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   b = ADD_OD_BUTTON("Audio" + ELLIPSIS, kAudCmd);
 #ifndef SOUND_SUPPORT
-  b->clearFlags(WIDGET_ENABLED);
+  b->clearFlags(Widget::FLAG_ENABLED);
 #endif
   wid.push_back(b);
 
@@ -90,23 +101,18 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
 
   //yoffset += rowHeight;
-  // R77 TEST
-  b = ADD_OD_BUTTON("Stella Options" + ELLIPSIS, kStellaOptionsCmd);
-  wid.push_back(b);
-
-
   b = ADD_OD_BUTTON("Developer" + ELLIPSIS, kDevelopCmd);
   wid.push_back(b);
 
   // Move to second column
-  xoffset += buttonWidth + 10;  yoffset = VBORDER;
+  xoffset += buttonWidth + 10;  yoffset = minSettings ? VBORDER + rowHeight + 8 : VBORDER;
 
   myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd);
   wid.push_back(myGameInfoButton);
 
   myCheatCodeButton = ADD_OD_BUTTON("Cheat Codes" + ELLIPSIS, kCheatCmd);
 #ifndef CHEATCODE_SUPPORT
-  myCheatCodeButton->clearFlags(WIDGET_ENABLED);
+  myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
 #endif
   wid.push_back(myCheatCodeButton);
 
@@ -122,6 +128,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd);
   wid.push_back(b);
 
+  buttonWidth = _font.getStringWidth("   Close   ") + 20;
+  xoffset -= (buttonWidth + 10) / 2;
   b = ADD_OD_BUTTON("Close", kExitCmd);
   wid.push_back(b);
   addCancelWidget(b);
@@ -132,7 +140,6 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   myInputDialog    = make_unique<InputDialog>(osystem, parent, _font, max_w, max_h);
   myUIDialog       = make_unique<UIDialog>(osystem, parent, _font, boss, max_w, max_h);
   mySnapshotDialog = make_unique<SnapshotDialog>(osystem, parent, _font, max_w, max_h);
-  myStellaOptionsDialog = make_unique<StellaSettingsDialog>(osystem, parent, _font, max_w, max_h);
   myDeveloperDialog = make_unique<DeveloperDialog>(osystem, parent, _font, max_w, max_h);
   myGameInfoDialog = make_unique<GameInfoDialog>(osystem, parent, _font, this, max_w, max_h);
 #ifdef CHEATCODE_SUPPORT
@@ -145,13 +152,13 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   // Certain buttons are disabled depending on mode
-  if(myMode == AppMode::launcher)
+  if(myMode == Menu::AppMode::launcher)
   {
-    myCheatCodeButton->clearFlags(WIDGET_ENABLED);
+    myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
   }
   else
   {
-    myRomAuditButton->clearFlags(WIDGET_ENABLED);
+    myRomAuditButton->clearFlags(Widget::FLAG_ENABLED);
   }
 }
 
@@ -169,13 +176,13 @@ void OptionsDialog::loadConfig()
   switch(instance().eventHandler().state())
   {
     case EventHandlerState::EMULATION:
-      myGameInfoButton->setFlags(WIDGET_ENABLED);
+      myGameInfoButton->setFlags(Widget::FLAG_ENABLED);
       break;
     case EventHandlerState::LAUNCHER:
       if(instance().launcher().selectedRomMD5() != "")
-        myGameInfoButton->setFlags(WIDGET_ENABLED);
+        myGameInfoButton->setFlags(Widget::FLAG_ENABLED);
       else
-        myGameInfoButton->clearFlags(WIDGET_ENABLED);
+        myGameInfoButton->clearFlags(Widget::FLAG_ENABLED);
       break;
     default:
       break;
@@ -188,6 +195,15 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
+    case kBasSetCmd:
+      // enable basic settings
+      instance().settings().setValue("basic_settings", true);
+      if (myMode != Menu::AppMode::emulator)
+        close();
+      else
+        instance().eventHandler().leaveMenuMode();
+      break;
+
     case kVidCmd:
     {
       // This dialog is resizable under certain conditions, so we need
@@ -257,21 +273,6 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kStellaOptionsCmd:
-    {
-      // This dialog is resizable under certain conditions, so we need
-      // to re-create it as necessary
-      uInt32 w = 0, h = 0;
-
-      if (myStellaOptionsDialog == nullptr || myStellaOptionsDialog->shouldResize(w, h))
-      {
-        myStellaOptionsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-          instance().frameBuffer().font(), w, h);
-      }
-      myStellaOptionsDialog->open();
-      break;
-    }
-
     case kInfoCmd:
     {
       // This dialog is resizable under certain conditions, so we need
@@ -322,7 +323,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      if(myMode != AppMode::emulator)
+      if(myMode != Menu::AppMode::emulator)
         close();
       else
         instance().eventHandler().leaveMenuMode();

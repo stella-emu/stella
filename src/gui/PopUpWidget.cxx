@@ -45,7 +45,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
     _labelWidth(labelWidth),
     _changed(false)
 {
-  _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;     // do not highlight the background
   _textcolor = kTextColor;
@@ -143,14 +143,14 @@ void PopUpWidget::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleMouseLeft()
 {
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 

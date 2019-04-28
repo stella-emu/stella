@@ -23,9 +23,11 @@
 
 #include "Console.hxx"
 #include "ConsoleTiming.hxx"
+#include "Control.hxx"
 #include "EmulationTiming.hxx"
 #include "EventHandler.hxx"
 #include "M6532.hxx"
+#include "Paddles.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
 #include "TIASurface.hxx"
@@ -60,13 +62,14 @@ class StellaLIBRETRO
     uInt32 getROMSize() { return rom_size; }
     uInt32 getROMMax() { return 512 * 1024; }
 
-    //uInt8* getRAM() { return myOSystem->console().system().m6532().getRAM(); }
-    //uInt32 getRAMSize() { return 128; }
+    uInt8* getRAM() { return system_ram; }
+    uInt32 getRAMSize() { return 128; }
 
     size_t getStateSize();
 
     bool   getConsoleNTSC() { return console_timing == ConsoleTiming::ntsc; }
 
+    float  getVideoAspectPar();
     float  getVideoAspect();
     bool   getVideoNTSC();
     float  getVideoRate() { return getVideoNTSC() ? 60.0 : 50.0; }
@@ -108,6 +111,17 @@ class StellaLIBRETRO
 
     void   setInputEvent(Event::Type type, Int32 state) { myOSystem->eventHandler().handleEvent(type, state); }
 
+    Controller::Type   getLeftControllerType() { return myOSystem->console().leftController().type(); }
+    Controller::Type   getRightControllerType() { return myOSystem->console().rightController().type(); }
+
+    void   setPaddleJoypadSensitivity(int sensitivity)
+    {
+      if(getLeftControllerType() == Controller::Type::Paddles)
+        static_cast<Paddles&>(myOSystem->console().leftController()).setDigitalSensitivity(sensitivity);
+      if(getRightControllerType() == Controller::Type::Paddles)
+        static_cast<Paddles&>(myOSystem->console().rightController()).setDigitalSensitivity(sensitivity);
+    }
+
   protected:
     void   updateInput();
     void   updateVideo();
@@ -136,8 +150,10 @@ class StellaLIBRETRO
     unique_ptr<Int16[]> audio_buffer;
     uInt32 audio_samples;
 
-	// (31440 rate / 50 Hz) * 16-bit stereo * 1.25x padding
-    static const uInt32 audio_buffer_max = (31440 / 50 * 4 * 5) / 4;
+    // (31440 rate / 50 Hz) * 16-bit stereo * 1.25x padding
+    const uInt32 audio_buffer_max = (31440 / 50 * 4 * 5) / 4;
+
+    uInt8 system_ram[128];
 
   private:
     string video_palette;
@@ -146,7 +162,7 @@ class StellaLIBRETRO
 
     uInt32 video_aspect_ntsc;
     uInt32 video_aspect_pal;
-    NTSCFilter::Preset video_filter;
+    uInt32 video_filter;
 
     string audio_mode;
 
