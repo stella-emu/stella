@@ -117,23 +117,23 @@ void BrowserDialog::show(const string& startpath,
       _fileList->setFileListMode(FilesystemNode::ListMode::All);
       _fileList->setFileExtension(ext);
       _selected->setEditable(false);
-      _selected->clearFlags(WIDGET_INVISIBLE);
-      _type->clearFlags(WIDGET_INVISIBLE);
+      _selected->clearFlags(Widget::FLAG_INVISIBLE);
+      _type->clearFlags(Widget::FLAG_INVISIBLE);
       break;
 
     case FileSave:
       _fileList->setFileListMode(FilesystemNode::ListMode::All);
       _fileList->setFileExtension(ext);
       _selected->setEditable(false);  // FIXME - disable user input for now
-      _selected->clearFlags(WIDGET_INVISIBLE);
-      _type->clearFlags(WIDGET_INVISIBLE);
+      _selected->clearFlags(Widget::FLAG_INVISIBLE);
+      _type->clearFlags(Widget::FLAG_INVISIBLE);
       break;
 
     case Directories:
       _fileList->setFileListMode(FilesystemNode::ListMode::DirectoriesOnly);
       _selected->setEditable(false);
-      _selected->setFlags(WIDGET_INVISIBLE);
-      _type->setFlags(WIDGET_INVISIBLE);
+      _selected->setFlags(Widget::FLAG_INVISIBLE);
+      _type->setFlags(Widget::FLAG_INVISIBLE);
       break;
   }
 

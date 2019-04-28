@@ -62,7 +62,7 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _th(0),
     _surface(nullptr),
     _tabID(0),
-    _flags(WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG),
+    _flags(Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG),
     _max_w(0),
     _max_h(0)
 {
@@ -198,7 +198,7 @@ void Dialog::addFocusWidget(Widget* w)
     return;
 
   // All focusable widgets should retain focus
-  w->setFlags(WIDGET_RETAIN_FOCUS);
+  w->setFlags(Widget::FLAG_RETAIN_FOCUS);
 
   _myFocus.widget = w;
   _myFocus.list.push_back(w);
@@ -209,7 +209,7 @@ void Dialog::addToFocusList(WidgetArray& list)
 {
   // All focusable widgets should retain focus
   for(const auto& w: list)
-    w->setFlags(WIDGET_RETAIN_FOCUS);
+    w->setFlags(Widget::FLAG_RETAIN_FOCUS);
 
   Vec::append(_myFocus.list, list);
   _focusList = _myFocus.list;
@@ -222,14 +222,14 @@ void Dialog::addToFocusList(WidgetArray& list)
 void Dialog::addToFocusList(WidgetArray& list, TabWidget* w, int tabId)
 {
   // Only add the list if the tab actually exists
-  if(!w || w->getID() < 0 || uInt32(w->getID()) >= _myTabList.size())
+  if(!w || w->getID() >= _myTabList.size())
     return;
 
   assert(w == _myTabList[w->getID()].widget);
 
   // All focusable widgets should retain focus
   for(const auto& fw: list)
-    fw->setFlags(WIDGET_RETAIN_FOCUS);
+    fw->setFlags(Widget::FLAG_RETAIN_FOCUS);
 
   // First get the appropriate focus list
   FocusList& focus = _myTabList[w->getID()].focus;
@@ -254,7 +254,7 @@ void Dialog::addToFocusList(WidgetArray& list, TabWidget* w, int tabId)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::addTabWidget(TabWidget* w)
 {
-  if(!w || w->getID() < 0)
+  if(!w)
     return;
 
   // Make sure the array is large enough
@@ -341,7 +341,7 @@ void Dialog::drawDialog()
     || (parent().myDialogStack.get(parent().myDialogStack.size() - 2) == this
     && !parent().myDialogStack.top()->hasTitle());
 
-  if(_flags & WIDGET_CLEARBG)
+  if(_flags & Widget::FLAG_CLEARBG)
   {
     //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
     s.fillRect(_x, _y + _th, _w, _h - _th, _onTop ? kDlgColor : kBGColorLo);
@@ -354,7 +354,7 @@ void Dialog::drawDialog()
   }
   else
     s.invalidate();
-  if(_flags & WIDGET_BORDER) // currently only used by Dialog itself
+  if(_flags & Widget::FLAG_BORDER) // currently only used by Dialog itself
     s.frameRect(_x, _y, _w, _h, _onTop ? kColor : kShadowColor);
 
   // Make all child widget dirty
@@ -459,7 +459,7 @@ void Dialog::handleMouseUp(int x, int y, MouseButton b, int clickCount)
   if(_focusedWidget)
   {
     // Lose focus on mouseup unless the widget requested to retain the focus
-    if(! (_focusedWidget->getFlags() & WIDGET_RETAIN_FOCUS ))
+    if(! (_focusedWidget->getFlags() & Widget::FLAG_RETAIN_FOCUS ))
       releaseFocus();
   }
 
@@ -531,7 +531,7 @@ void Dialog::handleMouseMoved(int x, int y)
     _mouseWidget = w;
   }
 
-  if (w && (w->getFlags() & WIDGET_TRACK_MOUSE))
+  if (w && (w->getFlags() & Widget::FLAG_TRACK_MOUSE))
     w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y));
 }
 

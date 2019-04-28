@@ -64,9 +64,9 @@ class EditableWidget : public Widget, public CommandSender
     void setTextFilter(const TextFilter& filter) { _filter = filter; }
 
   protected:
-    virtual void startEditMode() { setFlags(WIDGET_WANTS_RAWDATA);   }
-    virtual void endEditMode()   { clearFlags(WIDGET_WANTS_RAWDATA); }
-    virtual void abortEditMode() { clearFlags(WIDGET_WANTS_RAWDATA); }
+    virtual void startEditMode() { setFlags(Widget::FLAG_WANTS_RAWDATA);   }
+    virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
+    virtual void abortEditMode() { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
 
     virtual GUI::Rect getEditRect() const = 0;
     virtual int getCaretOffset() const;

@@ -34,18 +34,6 @@ namespace GUI {
 #include "GuiObject.hxx"
 #include "Font.hxx"
 
-enum {
-  WIDGET_ENABLED       = 1 << 0,
-  WIDGET_INVISIBLE     = 1 << 1,
-  WIDGET_HILITED       = 1 << 2,
-  WIDGET_BORDER        = 1 << 3,
-  WIDGET_CLEARBG       = 1 << 4,
-  WIDGET_TRACK_MOUSE   = 1 << 5,
-  WIDGET_RETAIN_FOCUS  = 1 << 6,
-  WIDGET_WANTS_TAB     = 1 << 7,
-  WIDGET_WANTS_RAWDATA = 1 << 8
-};
-
 /**
   This is the base class for all widgets.
 
@@ -54,6 +42,19 @@ enum {
 class Widget : public GuiObject
 {
   friend class Dialog;
+
+  public:
+    enum : uInt32 {
+      FLAG_ENABLED       = 1 << 0,
+      FLAG_INVISIBLE     = 1 << 1,
+      FLAG_HILITED       = 1 << 2,
+      FLAG_BORDER        = 1 << 3,
+      FLAG_CLEARBG       = 1 << 4,
+      FLAG_TRACK_MOUSE   = 1 << 5,
+      FLAG_RETAIN_FOCUS  = 1 << 6,
+      FLAG_WANTS_TAB     = 1 << 7,
+      FLAG_WANTS_RAWDATA = 1 << 8
+    };
 
   public:
     Widget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
@@ -91,21 +92,21 @@ class Widget : public GuiObject
       Vec::append(_focusList, list);
     }
 
-    /** Set/clear WIDGET_ENABLED flag */
+    /** Set/clear FLAG_ENABLED */
     void setEnabled(bool e);
 
-    void setFlags(int flags)    { _flags |= flags;  setDirty(); }
-    void clearFlags(int flags)  { _flags &= ~flags; setDirty(); }
-    int  getFlags() const       { return _flags; }
+    void setFlags(uInt32 flags)    { _flags |= flags;  setDirty(); }
+    void clearFlags(uInt32 flags)  { _flags &= ~flags; setDirty(); }
+    uInt32 getFlags() const        { return _flags; }
 
-    bool isEnabled() const          { return _flags & WIDGET_ENABLED;         }
-    bool isVisible() const override { return !(_flags & WIDGET_INVISIBLE);    }
-    virtual bool wantsFocus() const { return _flags & WIDGET_RETAIN_FOCUS;    }
-    bool wantsTab() const           { return _flags & WIDGET_WANTS_TAB;       }
-    bool wantsRaw() const           { return _flags & WIDGET_WANTS_RAWDATA;   }
+    bool isEnabled() const          { return _flags & FLAG_ENABLED;         }
+    bool isVisible() const override { return !(_flags & FLAG_INVISIBLE);    }
+    virtual bool wantsFocus() const { return _flags & FLAG_RETAIN_FOCUS;    }
+    bool wantsTab() const           { return _flags & FLAG_WANTS_TAB;       }
+    bool wantsRaw() const           { return _flags & FLAG_WANTS_RAWDATA;   }
 
-    void setID(int id)  { _id = id;   }
-    int  getID() const  { return _id; }
+    void setID(uInt32 id) { _id = id;   }
+    uInt32 getID() const  { return _id; }
 
     virtual const GUI::Font& font() const { return _font; }
 
@@ -135,8 +136,8 @@ class Widget : public GuiObject
     GuiObject* _boss;
     const GUI::Font& _font;
     Widget*    _next;
-    int        _id;
-    int        _flags;
+    uInt32     _id;
+    uInt32     _flags;
     bool       _hasFocus;
     int        _fontWidth;
     int        _fontHeight;

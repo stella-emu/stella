@@ -164,7 +164,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   xpos += lwidth;
   myDir = new EditTextWidget(this, font, xpos, ypos, _w - xpos - HBORDER, lineHeight, "");
   myDir->setEditable(false, true);
-  myDir->clearFlags(WIDGET_RETAIN_FOCUS);
+  myDir->clearFlags(Widget::FLAG_RETAIN_FOCUS);
 
   if(!myUseMinimalUI)
   {

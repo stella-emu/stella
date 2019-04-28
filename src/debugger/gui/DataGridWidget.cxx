@@ -50,7 +50,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _opsWidget(nullptr),
     _scrollBar(nullptr)
 {
-  _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS | WIDGET_WANTS_RAWDATA;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_WANTS_RAWDATA;
   _editMode = false;
 
   // The item is selected, thus _bgcolor is used to draw the caret and
@@ -252,14 +252,14 @@ void DataGridWidget::setRange(int lower, int upper)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::handleMouseEntered()
 {
-  setFlags(WIDGET_HILITED);
+  setFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::handleMouseLeft()
 {
-  clearFlags(WIDGET_HILITED);
+  clearFlags(Widget::FLAG_HILITED);
   setDirty();
 }
 

@@ -61,7 +61,7 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
   xpos -= buttonWidth + 8;
   myRemoveBtn = new ButtonWidget(this, font, xpos, ypos,
       buttonWidth, buttonHeight, "Remove", kRemoveCmd);
-  myRemoveBtn->clearFlags(WIDGET_ENABLED);
+  myRemoveBtn->clearFlags(Widget::FLAG_ENABLED);
 
   // Now we can finally add the widgets to the focus list
   wid.push_back(myRemoveBtn);

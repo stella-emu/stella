@@ -91,7 +91,7 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
   : CheckboxWidget(boss, font, x, y, label, cmd),
     myGroup(group)
 {
-  _flags = WIDGET_ENABLED;
+  _flags = Widget::FLAG_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
 
   _editable = true;

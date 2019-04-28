@@ -136,7 +136,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
                                   "Mouse cursor visibility ", lwidth);
   wid.push_back(myCursorState);
 #ifndef WINDOWED_SUPPORT
-  myCursorState->clearFlags(WIDGET_ENABLED);
+  myCursorState->clearFlags(Widget::FLAG_ENABLED);
 #endif
 
   lwidth = font.getStringWidth("Digital paddle sensitivity ");
@@ -196,7 +196,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 	                "Grab mouse in emulation mode");
   wid.push_back(myGrabMouse);
 #ifndef WINDOWED_SUPPORT
-  myGrabMouse->clearFlags(WIDGET_ENABLED);
+  myGrabMouse->clearFlags(Widget::FLAG_ENABLED);
 #endif
 
   // Enable/disable control key-combos

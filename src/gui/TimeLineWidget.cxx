@@ -39,7 +39,7 @@ TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
     _isDragging(false),
     _labelWidth(labelWidth)
 {
-  _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE;
+  _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
 

@@ -158,8 +158,8 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   myInputBox->setTarget(this);
 
   // Start with these buttons disabled
-  myCompareButton->clearFlags(WIDGET_ENABLED);
-  myRestartButton->clearFlags(WIDGET_ENABLED);
+  myCompareButton->clearFlags(Widget::FLAG_ENABLED);
+  myRestartButton->clearFlags(Widget::FLAG_ENABLED);
 
   // Calculate final height
   if(_h == 0)  _h = ypos + myLineHeight - y;

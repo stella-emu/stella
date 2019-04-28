@@ -47,7 +47,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Previous", GuiObject::kPrevCmd);
-  myPrevButton->clearFlags(WIDGET_ENABLED);
+  myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
   xpos += buttonWidth + 8;
@@ -237,9 +237,9 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
     case GuiObject::kNextCmd:
       myPage++;
       if(myPage >= myNumPages)
-        myNextButton->clearFlags(WIDGET_ENABLED);
+        myNextButton->clearFlags(Widget::FLAG_ENABLED);
       if(myPage >= 2)
-        myPrevButton->setFlags(WIDGET_ENABLED);
+        myPrevButton->setFlags(Widget::FLAG_ENABLED);
 
       displayInfo();
       break;
@@ -247,9 +247,9 @@ void AboutDialog::handleCommand(CommandSender* sender, int cmd, int data, int id
     case GuiObject::kPrevCmd:
       myPage--;
       if(myPage <= myNumPages)
-        myNextButton->setFlags(WIDGET_ENABLED);
+        myNextButton->setFlags(Widget::FLAG_ENABLED);
       if(myPage <= 1)
-        myPrevButton->clearFlags(WIDGET_ENABLED);
+        myPrevButton->clearFlags(Widget::FLAG_ENABLED);
 
       displayInfo();
       break;

@@ -87,7 +87,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   b = ADD_OD_BUTTON("Audio" + ELLIPSIS, kAudCmd);
 #ifndef SOUND_SUPPORT
-  b->clearFlags(WIDGET_ENABLED);
+  b->clearFlags(Widget::FLAG_ENABLED);
 #endif
   wid.push_back(b);
 
@@ -112,7 +112,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 
   myCheatCodeButton = ADD_OD_BUTTON("Cheat Codes" + ELLIPSIS, kCheatCmd);
 #ifndef CHEATCODE_SUPPORT
-  myCheatCodeButton->clearFlags(WIDGET_ENABLED);
+  myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
 #endif
   wid.push_back(myCheatCodeButton);
 
@@ -154,11 +154,11 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   // Certain buttons are disabled depending on mode
   if(myMode == Menu::AppMode::launcher)
   {
-    myCheatCodeButton->clearFlags(WIDGET_ENABLED);
+    myCheatCodeButton->clearFlags(Widget::FLAG_ENABLED);
   }
   else
   {
-    myRomAuditButton->clearFlags(WIDGET_ENABLED);
+    myRomAuditButton->clearFlags(Widget::FLAG_ENABLED);
   }
 }
 
@@ -176,13 +176,13 @@ void OptionsDialog::loadConfig()
   switch(instance().eventHandler().state())
   {
     case EventHandlerState::EMULATION:
-      myGameInfoButton->setFlags(WIDGET_ENABLED);
+      myGameInfoButton->setFlags(Widget::FLAG_ENABLED);
       break;
     case EventHandlerState::LAUNCHER:
       if(instance().launcher().selectedRomMD5() != "")
-        myGameInfoButton->setFlags(WIDGET_ENABLED);
+        myGameInfoButton->setFlags(Widget::FLAG_ENABLED);
       else
-        myGameInfoButton->clearFlags(WIDGET_ENABLED);
+        myGameInfoButton->clearFlags(Widget::FLAG_ENABLED);
       break;
     default:
       break;

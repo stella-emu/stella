@@ -78,7 +78,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                        buttonWidth, buttonHeight,
                                        "Cancel", kStopMapCmd);
   myCancelMapButton->setTarget(this);
-  myCancelMapButton->clearFlags(WIDGET_ENABLED);
+  myCancelMapButton->clearFlags(Widget::FLAG_ENABLED);
   addFocusWidget(myCancelMapButton);
 
   ypos += lineHeight + 20;
@@ -119,7 +119,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 8, ypos,
                                     _w - xpos - t->getWidth() - 8 - HBORDER, lineHeight, "");
   myKeyMapping->setEditable(false, true);
-  myKeyMapping->clearFlags(WIDGET_RETAIN_FOCUS);
+  myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
 
   // Add information for hardcoded keys
   ypos += lineHeight + 8;
@@ -178,7 +178,7 @@ void EventMappingWidget::startRemapping()
 
   // Make sure that this widget receives all raw data, before any
   // pre-processing occurs
-  myActionsList->setFlags(WIDGET_WANTS_RAWDATA);
+  myActionsList->setFlags(Widget::FLAG_WANTS_RAWDATA);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -223,7 +223,7 @@ void EventMappingWidget::stopRemapping()
   drawKeyMapping();
 
   // Widget is now free to process events normally
-  myActionsList->clearFlags(WIDGET_WANTS_RAWDATA);
+  myActionsList->clearFlags(Widget::FLAG_WANTS_RAWDATA);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

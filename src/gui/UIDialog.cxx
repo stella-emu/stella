@@ -207,7 +207,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // All ROM settings are disabled while in game mode
   if(!myIsGlobal)
   {
-    romButton->clearFlags(WIDGET_ENABLED);
+    romButton->clearFlags(Widget::FLAG_ENABLED);
     myRomPath->setEditable(false);
   }
 
