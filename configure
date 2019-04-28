@@ -255,7 +255,7 @@ for ac_option in $@; do
       --enable-static)          _build_static=yes    ;;
       --disable-static)         _build_static=no     ;;
       --enable-profile)         _build_profile=yes   ;;
-      # --disable-profile)        _build_profile=no    ;;
+      --disable-profile)        _build_profile=no    ;;
 			--enable-debug)						_build_debug=yes		 ;;
 			--disable-debug)          _build_debug=false	 ;;
       --with-sdl-prefix=*)
