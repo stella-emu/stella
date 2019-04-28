@@ -325,7 +325,7 @@ static void update_variables(bool init = false)
 
   if(!init && !system_reset)
   {
-    crop_left = setting_crop_hoverscan ? (stella.getVideoZoom() == 2 ? 25 : 8) : 0;
+    crop_left = setting_crop_hoverscan ? (stella.getVideoZoom() == 2 ? 26 : 8) : 0;
 
     if(geometry_update) update_geometry();
   }
