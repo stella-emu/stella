@@ -18,6 +18,8 @@
 #ifndef KEY_VALUE_REPOSITORY_SQLITE_HXX
 #define KEY_VALUE_REPOSITORY_SQLITE_HXX
 
+#include <sqlite3.h>
+
 #include "repository/KeyValueRepository.hxx"
 
 class KeyValueRepositorySqlite : public KeyValueRepository
@@ -31,6 +33,18 @@ class KeyValueRepositorySqlite : public KeyValueRepository
     virtual std::map<string, Variant> load();
 
     virtual void save(const std::map<string, Variant>& values);
+
+  private:
+
+    void initializeDb();
+
+  private:
+
+    string myDatabaseFile;
+
+    sqlite3* myDbHandle;
+    bool myDbInitialized;
+
 };
 
 #endif // KEY_VALUE_REPOSITORY_SQLITE_HXX

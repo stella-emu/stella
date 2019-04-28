@@ -876,6 +876,7 @@ if test "$_build_sqlite" = yes; then
 	DEFINES="$DEFINES -DSQLITE_SUPPORT"
 	MODULES="$MODULES $SQLITE"
 	INCLUDES="$INCLUDES -I$SQLITE"
+	LIBS="$LIBS -lsqlite3"
 fi
 
 if test "$_build_zip" = yes ; then
