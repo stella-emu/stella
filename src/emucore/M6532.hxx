@@ -123,6 +123,13 @@ class M6532 : public Device
      */
     void updateEmulation();
 
+    /**
+      Get a pointer to the RAM contents.
+
+      @return  Pointer to RAM array.
+    */
+    uInt8* getRAM() { return myRAM; }
+
   private:
 
     void setTimerRegister(uInt8 data, uInt8 interval);
