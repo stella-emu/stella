@@ -62,8 +62,8 @@ class StellaLIBRETRO
     uInt32 getROMSize() { return rom_size; }
     uInt32 getROMMax() { return 512 * 1024; }
 
-    //uInt8* getRAM() { return myOSystem->console().system().m6532().getRAM(); }
-    //uInt32 getRAMSize() { return 128; }
+    uInt8* getRAM() { return myOSystem->console().system().m6532().getRAM(); }
+    uInt32 getRAMSize() { return 128; }
 
     size_t getStateSize();
 

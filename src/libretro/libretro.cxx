@@ -613,8 +613,11 @@ void *retro_get_memory_data(unsigned id)
 {
   switch (id)
   {
-    //case RETRO_MEMORY_SYSTEM_RAM: return stella.getRAM();
-    default: return NULL;
+    case RETRO_MEMORY_SYSTEM_RAM:
+      return stella.getRAM();
+
+    default:
+      return NULL;
   }
 }
 
@@ -623,8 +626,11 @@ size_t retro_get_memory_size(unsigned id)
 {
   switch (id)
   {
-    //case RETRO_MEMORY_SYSTEM_RAM: return stella.getRAMSize();
-    default: return 0;
+    case RETRO_MEMORY_SYSTEM_RAM:
+      return stella.getRAMSize();
+
+    default:
+      return 0;
   }
 }
 
