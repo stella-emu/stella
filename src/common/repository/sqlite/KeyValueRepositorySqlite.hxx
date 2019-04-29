@@ -42,8 +42,9 @@ class KeyValueRepositorySqlite : public KeyValueRepository
 
     string myDatabaseFile;
 
+    bool myIsFailed;
+
     sqlite3* myDbHandle;
-    bool myDbInitialized;
 
 };
 

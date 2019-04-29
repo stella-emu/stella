@@ -27,13 +27,50 @@
   #define SEPARATOR "/"
 #endif
 
+namespace {
+  struct SqliteError {
+    SqliteError(const string _message) : message(_message) {}
+
+    const string message;
+  };
+
+  class Statement {
+    public:
+
+      Statement(sqlite3* handle, string sql) : myStmt(nullptr)
+      {
+        if (sqlite3_prepare_v2(handle, sql.c_str(), -1, &myStmt, nullptr) != SQLITE_OK)
+          throw SqliteError(sqlite3_errmsg(handle));
+      }
+
+      ~Statement()
+      {
+        if (myStmt) sqlite3_finalize(myStmt);
+      }
+
+      operator sqlite3_stmt*() const { return myStmt; }
+
+    private:
+
+      sqlite3_stmt* myStmt;
+
+    private:
+
+      Statement() = delete;
+      Statement(const Statement&) = delete;
+      Statement(Statement&&) = delete;
+      Statement& operator=(const Statement&) = delete;
+      Statement& operator=(Statement&&) = delete;
+  };
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositorySqlite::KeyValueRepositorySqlite(
   const string& databaseDirectory,
   const string& databaseName
 ) : myDatabaseFile(databaseDirectory + SEPARATOR + databaseName + ".sqlite3"),
-    myDbHandle(nullptr),
-    myDbInitialized(false)
+    myIsFailed(false),
+    myDbHandle(nullptr)
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,26 +83,19 @@ KeyValueRepositorySqlite::~KeyValueRepositorySqlite()
 std::map<string, Variant> KeyValueRepositorySqlite::load()
 {
   std::map<string, Variant> values;
+  if (myIsFailed) return values;
 
-  initializeDb();
+  try {
+    initializeDb();
+    Statement stmt(myDbHandle, "SELECT `key`, `VALUE` FROM `values`");
 
-  if (!myDbInitialized) {
-    cout << "Unable to load from sqlite DB " << myDatabaseFile << endl;
-    return values;
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+      values[reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0))] =
+        reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
   }
-
-  sqlite3_stmt* stmt;
-  if (sqlite3_prepare_v2(
-    myDbHandle,
-    "SELECT `key`, `VALUE` FROM `values`",
-    -1, &stmt, nullptr
-  ) != SQLITE_OK) return values;
-
-  while (sqlite3_step(stmt) == SQLITE_ROW)
-    values[reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0))] =
-      reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
-
-  sqlite3_finalize(stmt);
+  catch (SqliteError err) {
+    cout << "failed to load from sqlite DB " << myDatabaseFile << ": " << err.message << endl;
+  }
 
   return values;
 }
@@ -73,52 +103,66 @@ std::map<string, Variant> KeyValueRepositorySqlite::load()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
 {
-  initializeDb();
+  if (myIsFailed) return;
 
-  if (!myDbInitialized) {
-    cout << "Unable to save to sqlite DB " << myDatabaseFile << endl;
-    return;
+  try {
+    initializeDb();
+    Statement stmt(myDbHandle, "INSERT OR REPLACE INTO `values` VALUES (?, ?)");
+
+    if (sqlite3_exec(myDbHandle, "BEGIN TRANSACTION", nullptr, nullptr, nullptr) != SQLITE_OK)
+      throw SqliteError(sqlite3_errmsg(myDbHandle));
+
+    for (const auto& pair: values) {
+      sqlite3_bind_text(stmt, 1, pair.first.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 2, pair.second.toCString(), -1, SQLITE_STATIC);
+      sqlite3_step(stmt);
+
+      if (sqlite3_reset(stmt) != SQLITE_OK) throw SqliteError(sqlite3_errmsg(myDbHandle));
+    }
+
+    if (sqlite3_exec(myDbHandle, "COMMIT", nullptr, nullptr, nullptr) != SQLITE_OK)
+      throw SqliteError(sqlite3_errmsg(myDbHandle));
   }
-
-  sqlite3_stmt* stmt;
-  if (sqlite3_prepare_v2(
-    myDbHandle,
-    "INSERT OR REPLACE INTO `values` VALUES (?, ?)",
-    -1, &stmt, nullptr
-  ) != SQLITE_OK) return;
-
-  for (const auto& pair: values) {
-    sqlite3_bind_text(stmt, 1, pair.first.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(stmt, 2, pair.second.toCString(), -1, SQLITE_STATIC);
-    sqlite3_step(stmt);
-
-    if (sqlite3_reset(stmt) != SQLITE_OK) break;
+  catch (SqliteError err) {
+    cout << "failed to write to sqlite DB " << myDatabaseFile << ": " << err.message << endl;
   }
-
-  sqlite3_finalize(stmt);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyValueRepositorySqlite::initializeDb()
 {
-  if (myDbHandle) return;
+  if (myIsFailed || myDbHandle) return;
 
-  for (int tries = 1; tries < 3 && !myDbInitialized; tries++) {
-    myDbInitialized = (sqlite3_open(myDatabaseFile.c_str(), &myDbHandle) == SQLITE_OK);
+  bool dbInitialized = false;
 
-    myDbInitialized = myDbInitialized && (sqlite3_exec(
+  for (int tries = 1; tries < 3 && !dbInitialized; tries++) {
+    dbInitialized = (sqlite3_open(myDatabaseFile.c_str(), &myDbHandle) == SQLITE_OK);
+
+    dbInitialized = dbInitialized && (sqlite3_exec(
       myDbHandle,
       "CREATE TABLE IF NOT EXISTS `values` (`key` TEXT PRIMARY KEY, `value` TEXT) WITHOUT ROWID",
       nullptr, nullptr, nullptr
     ) == SQLITE_OK);
 
-    if (!myDbInitialized && tries == 1) {
+    if (!dbInitialized && tries == 1) {
       cout << "sqlite DB " << myDatabaseFile << " seems to be corrupt, removing and retrying..." << endl;
 
       remove(myDatabaseFile.c_str());
     }
   }
 
-  if (!myDbInitialized)
-    cout << "unable to initialize sqlite DB " << myDatabaseFile << endl;
+  myIsFailed = !dbInitialized;
+
+  if (myIsFailed) {
+    if (myDbHandle) {
+      string emsg = sqlite3_errmsg(myDbHandle);
+
+      sqlite3_close(myDbHandle);
+      myDbHandle = nullptr;
+
+      throw SqliteError(emsg);
+    }
+
+    throw SqliteError("unable to initialize sqlite DB  " + myDatabaseFile);
+  };
 }
