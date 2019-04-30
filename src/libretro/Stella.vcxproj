@@ -157,6 +157,7 @@
     <ClCompile Include="..\common\StateManager.cxx" />
     <ClCompile Include="..\common\ThreadDebugging.cxx" />
     <ClCompile Include="..\common\TimerManager.cxx" />
+    <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx" />
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
