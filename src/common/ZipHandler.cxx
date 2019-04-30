@@ -105,7 +105,7 @@ const string& ZipHandler::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 ZipHandler::decompress(BytePtr& image)
+uInt64 ZipHandler::decompress(ByteBuffer& image)
 {
   if(myZip && myZip->myHeader.uncompressedLength > 0)
   {
@@ -269,7 +269,7 @@ void ZipHandler::ZipFile::close()
 void ZipHandler::ZipFile::readEcd()
 {
   uInt64 buflen = 1024;
-  BytePtr buffer;
+  ByteBuffer buffer;
 
   // We may need multiple tries
   while(buflen < 65536)
@@ -323,7 +323,7 @@ void ZipHandler::ZipFile::readEcd()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ZipHandler::ZipFile::readStream(BytePtr& out, uInt64 offset,
+bool ZipHandler::ZipFile::readStream(ByteBuffer& out, uInt64 offset,
                                      uInt64 length, uInt64& actual)
 {
   try
@@ -367,7 +367,7 @@ const ZipHandler::ZipHeader* const ZipHandler::ZipFile::nextFile()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ZipHandler::ZipFile::decompress(BytePtr& out, uInt64 length)
+void ZipHandler::ZipFile::decompress(ByteBuffer& out, uInt64 length)
 {
   // If we don't have enough buffer, error
   if(length < myHeader.uncompressedLength)
@@ -434,7 +434,7 @@ uInt64 ZipHandler::ZipFile::getCompressedDataOffset()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ZipHandler::ZipFile::decompressDataType0(
-    uInt64 offset, BytePtr& out, uInt64 length)
+    uInt64 offset, ByteBuffer& out, uInt64 length)
 {
   // The data is uncompressed; just read it
   uInt64 read_length = 0;
@@ -447,7 +447,7 @@ void ZipHandler::ZipFile::decompressDataType0(
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ZipHandler::ZipFile::decompressDataType8(
-    uInt64 offset, BytePtr& out, uInt64 length)
+    uInt64 offset, ByteBuffer& out, uInt64 length)
 {
   uInt64 input_remaining = myHeader.compressedLength;
 

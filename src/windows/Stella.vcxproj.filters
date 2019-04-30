@@ -81,9 +81,6 @@
     <ClCompile Include="SerialPortWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SettingsWINDOWS.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\SoundSDL2.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -981,9 +978,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SerialPortWINDOWS.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SettingsWINDOWS.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\SoundSDL2.hxx">

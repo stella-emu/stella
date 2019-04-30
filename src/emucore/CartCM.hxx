@@ -120,7 +120,7 @@ class CartridgeCM : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeCM(const BytePtr& image, uInt32 size, const string& md5,
+    CartridgeCM(const ByteBuffer& image, uInt32 size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeCM() = default;
 

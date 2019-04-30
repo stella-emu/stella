@@ -307,7 +307,7 @@ static void Decode(uInt32* output, const uInt8* input, uInt32 len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string hash(const BytePtr& buffer, uInt32 length)
+string hash(const ByteBuffer& buffer, uInt32 length)
 {
   return hash(buffer.get(), length);
 }
@@ -336,7 +336,7 @@ string hash(const uInt8* buffer, uInt32 length)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string hash(const FilesystemNode& node)
 {
-  BytePtr image;
+  ByteBuffer image;
   uInt32 size = 0;
   try
   {

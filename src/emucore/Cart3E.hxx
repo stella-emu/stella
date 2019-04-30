@@ -74,7 +74,7 @@ class Cartridge3E : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge3E(const BytePtr& image, uInt32 size, const string& md5,
+    Cartridge3E(const ByteBuffer& image, uInt32 size, const string& md5,
                 const Settings& settings);
     virtual ~Cartridge3E() = default;
 
@@ -180,7 +180,7 @@ class Cartridge3E : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    BytePtr myImage;
+    ByteBuffer myImage;
 
     // RAM contents. For now every ROM gets all 32K of potential RAM
     uInt8 myRAM[32 * 1024];

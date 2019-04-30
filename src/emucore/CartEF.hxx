@@ -46,7 +46,7 @@ class CartridgeEF : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeEF(const BytePtr& image, uInt32 size, const string& md5,
+    CartridgeEF(const ByteBuffer& image, uInt32 size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeEF() = default;
 

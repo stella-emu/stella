@@ -184,7 +184,7 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FilesystemNodeZIP::read(BytePtr& image) const
+uInt32 FilesystemNodeZIP::read(ByteBuffer& image) const
 {
   switch(_error)
   {

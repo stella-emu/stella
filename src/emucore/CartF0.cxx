@@ -19,7 +19,7 @@
 #include "CartF0.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF0::CartridgeF0(const BytePtr& image, uInt32 size,
+CartridgeF0::CartridgeF0(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     myBankOffset(0)

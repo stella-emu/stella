@@ -50,6 +50,7 @@ class AudioSettings;
 #include "FpsMeter.hxx"
 #include "Settings.hxx"
 #include "bspf.hxx"
+#include "repository/KeyValueRepository.hxx"
 
 /**
   This class provides an interface for accessing operating system specific
@@ -257,13 +258,6 @@ class OSystem
     const string& cheatFile() const { return myCheatFile; }
 
     /**
-      This method should be called to get the full path of the config file.
-
-      @return String representing the full path of the config filename.
-    */
-    const string& configFile() const { return myConfigFile; }
-
-    /**
       This method should be called to get the full path of the
       (optional) palette file.
 
@@ -298,7 +292,7 @@ class OSystem
 
       @return  Unique pointer to the array
     */
-    BytePtr openROM(const FilesystemNode& rom, string& md5, uInt32& size);
+    ByteBuffer openROM(const FilesystemNode& rom, string& md5, uInt32& size);
 
     /**
       Creates a new game console from the specified romfile, and correctly
@@ -423,6 +417,9 @@ class OSystem
     virtual void stateChanged(EventHandlerState state) { }
 
   protected:
+
+    virtual shared_ptr<KeyValueRepository> createSettingsRepository();
+
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and *must* be
     // implemented in derived classes.

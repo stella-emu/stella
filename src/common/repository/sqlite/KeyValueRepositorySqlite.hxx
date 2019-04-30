@@ -15,23 +15,37 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#import <Cocoa/Cocoa.h>
+#ifndef KEY_VALUE_REPOSITORY_SQLITE_HXX
+#define KEY_VALUE_REPOSITORY_SQLITE_HXX
 
-void prefsSetString(const char* key, const char* value);
-void prefsGetString(const char* key, char* value, int size);
-void prefsSave(void);
+#include <sqlite3.h>
 
-/**
-  Preferences class and support functions for the macOS
-  SDL2 port of Stella.
+#include "repository/KeyValueRepository.hxx"
 
-  @author  Mark Grebe <atarimac@cox.net>
-*/
-@interface Preferences : NSObject
+class KeyValueRepositorySqlite : public KeyValueRepository
+{
+  public:
 
-+ (Preferences *)sharedInstance;
-- (void)setString:(const char *)key : (const char *)value;
-- (void)getString:(const char *)key : (char *)value : (int)size;
-- (void)save;
+    KeyValueRepositorySqlite(const string& databaseDirectory, const string& databaseName);
 
-@end
+    ~KeyValueRepositorySqlite();
+
+    virtual std::map<string, Variant> load();
+
+    virtual void save(const std::map<string, Variant>& values);
+
+  private:
+
+    void initializeDb();
+
+  private:
+
+    string myDatabaseFile;
+
+    bool myIsFailed;
+
+    sqlite3* myDbHandle;
+
+};
+
+#endif // KEY_VALUE_REPOSITORY_SQLITE_HXX

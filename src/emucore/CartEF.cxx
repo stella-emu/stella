@@ -19,7 +19,7 @@
 #include "CartEF.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeEF::CartridgeEF(const BytePtr& image, uInt32 size,
+CartridgeEF::CartridgeEF(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     myBankOffset(0)

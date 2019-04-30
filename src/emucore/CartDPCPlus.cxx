@@ -26,7 +26,7 @@
 #include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
+CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, uInt32 size,
                                    const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(std::min(size, 32768u)),

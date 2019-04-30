@@ -21,7 +21,8 @@ MODULE_OBJS := \
 	src/common/AudioSettings.o \
 	src/common/FpsMeter.o \
 	src/common/ThreadDebugging.o \
-	src/common/StaggeredLogger.o
+	src/common/StaggeredLogger.o \
+	src/common/repository/KeyValueRepositoryConfigfile.o
 
 MODULE_DIRS += \
 	src/common
