@@ -1662,7 +1662,6 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				E06508B72272447200B341AC /* repository */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
@@ -1695,6 +1694,7 @@
 				DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */,
 				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
 				DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */,
+				E06508B72272447200B341AC /* repository */,
 				DCDDEAC01F5DBF0400C67366 /* RewindManager.cxx */,
 				DCDDEAC11F5DBF0400C67366 /* RewindManager.hxx */,
 				DCA078331F8C1B04008EFEE5 /* SDL_lib.hxx */,
@@ -2238,10 +2238,10 @@
 		E06508B72272447200B341AC /* repository */ = {
 			isa = PBXGroup;
 			children = (
-				E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */,
 				E06508B92272447200B341AC /* KeyValueRepository.hxx */,
-				E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */,
 				E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */,
+				E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */,
+				E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */,
 			);
 			path = repository;
 			sourceTree = "<group>";
