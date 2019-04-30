@@ -308,7 +308,7 @@ static void update_variables(bool init = false)
       setting_phosphor_blend = value;
     }
   }
-  
+
   RETRO_GET("stella_paddle_joypad_sensitivity")
   {
     int value = 0;
@@ -354,7 +354,7 @@ static bool reset_system()
 
   // reset libretro window, apply post-boot settings
   update_variables(false);
-  
+
   return true;
 }
 
