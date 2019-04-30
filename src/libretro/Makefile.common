@@ -27,6 +27,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/common/StaggeredLogger.cxx \
 	$(CORE_DIR)/common/StateManager.cxx \
 	$(CORE_DIR)/common/TimerManager.cxx \
+	$(CORE_DIR)/common/repository/KeyValueRepositoryConfigfile.cxx \
 	$(CORE_DIR)/common/tv_filters/AtariNTSC.cxx \
 	$(CORE_DIR)/common/tv_filters/NTSCFilter.cxx \
 	$(CORE_DIR)/common/ZipHandler.cxx \
