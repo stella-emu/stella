@@ -22,6 +22,7 @@
 
 #include "Variant.hxx"
 #include "bspf.hxx"
+#include "repository/KeyValueRepository.hxx"
 
 /**
   This class provides an interface for accessing all configurable options,
@@ -56,21 +57,22 @@ class Settings
     */
     void usage() const;
 
+    void setRepository(shared_ptr<KeyValueRepository> repository);
+
     /**
       This method is called to load settings from the settings file,
       and apply commandline options specified by the given parameter.
 
-      @param cfgfile  The full path to the configuration file
       @param options  A list of options that overrides ones in the
                       settings file
     */
-    void load(const string& cfgfile, const Options& options);
+    void load(const Options& options);
 
     /**
       This method is called to save the current settings to the
       settings file.
     */
-    void save(const string& cfgfile) const;
+    void save();
 
     /**
       Get the value assigned to the specified key.
@@ -110,28 +112,6 @@ class Settings
     void setPermanent(const string& key, const Variant& value);
     void setTemporary(const string& key, const Variant& value);
 
-    /**
-      This method will be called to load the settings from the
-      platform-specific settings file.  Since different ports can have
-      different behaviour here, we mark it as virtual so derived
-      classes can override as needed.
-
-      @param cfgfile  The full path to the configuration file
-      @return  False on any error, else true
-    */
-    virtual bool loadConfigFile(const string& cfgfile);
-
-    /**
-      This method will be called to save the current settings to the
-      platform-specific settings file.  Since different ports can have
-      different behaviour here, we mark it as virtual so derived
-      classes can override as needed.
-
-      @param cfgfile  The full path to the configuration file
-      @return  False on any error, else true
-    */
-    virtual bool saveConfigFile(const string& cfgfile) const;
-
     // Trim leading and following whitespace from a string
     static string trim(const string& str)
     {
@@ -161,6 +141,8 @@ class Settings
     // Holds auxiliary key/value pairs that shouldn't be saved on
     // program exit.
     Options myTemporarySettings;
+
+    shared_ptr<KeyValueRepository> myRespository;
 
   private:
     // Following constructors and assignment operators not supported

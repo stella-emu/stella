@@ -15,31 +15,23 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SETTINGS_UNIX_HXX
-#define SETTINGS_UNIX_HXX
+#ifndef KEY_VALUE_REPOSITORY_HXX
+#define KEY_VALUE_REPOSITORY_HXX
 
-#include "Settings.hxx"
+#include <map>
 
-/**
-  This class defines UNIX-like OS's (Linux) system specific settings.
+#include "Variant.hxx"
+#include "bspf.hxx"
 
-  @author  Stephen Anthony
-*/
-class SettingsUNIX : public Settings
+class KeyValueRepository
 {
   public:
-    /**
-      Create a new UNIX settings object
-    */
-    explicit SettingsUNIX();
-    virtual ~SettingsUNIX() = default;
 
-  private:
-    // Following constructors and assignment operators not supported
-    SettingsUNIX(const SettingsUNIX&) = delete;
-    SettingsUNIX(SettingsUNIX&&) = delete;
-    SettingsUNIX& operator=(const SettingsUNIX&) = delete;
-    SettingsUNIX& operator=(SettingsUNIX&&) = delete;
+    virtual ~KeyValueRepository() = default;
+
+    virtual std::map<string, Variant> load() = 0;
+
+    virtual void save(const std::map<string, Variant>& values) = 0;
 };
 
-#endif
+#endif // KEY_VALUE_REPOSITORY_HXX

@@ -20,7 +20,7 @@
 #include "CartDASH.hxx"
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDASH::CartridgeDASH(const BytePtr& image, uInt32 size,
+CartridgeDASH::CartridgeDASH(const ByteBuffer& image, uInt32 size,
                              const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size)

@@ -67,7 +67,6 @@
 		2D91741909BA90380026E9FF /* CartUA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEB7108457B7D00812C11 /* CartUA.hxx */; };
 		2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEB7308457B7D00812C11 /* FSNode.hxx */; };
 		2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEB7508457B7D00812C11 /* OSystem.hxx */; };
-		2D91741D09BA90380026E9FF /* Preferences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEBE3084582C400812C11 /* Preferences.h */; };
 		2D91741F09BA90380026E9FF /* AboutBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D1A6CD4085135F9007CDBA8 /* AboutBox.h */; };
 		2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9217FA0857CC88001D664B /* ConsoleFont.hxx */; };
 		2D91742109BA90380026E9FF /* Font.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9217FC0857CC88001D664B /* Font.hxx */; };
@@ -166,7 +165,6 @@
 		2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEB7008457B7D00812C11 /* CartUA.cxx */; };
 		2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEB7208457B7D00812C11 /* FSNode.cxx */; };
 		2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEB7408457B7D00812C11 /* OSystem.cxx */; };
-		2D9174C209BA90380026E9FF /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEBE4084582C400812C11 /* Preferences.m */; };
 		2D9174C409BA90380026E9FF /* AboutBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D1A6CD5085135F9007CDBA8 /* AboutBox.m */; };
 		2D9174C509BA90380026E9FF /* Font.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9217FB0857CC88001D664B /* Font.cxx */; };
 		2D9174C609BA90380026E9FF /* Debugger.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D659E2D085D3DD6005D96C8 /* Debugger.cxx */; };
@@ -235,8 +233,6 @@
 		DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */; };
 		DC21E5C121CA903E007D0E1A /* SerialPortMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */; };
 		DC21E5C221CA903E007D0E1A /* SerialPortMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */; };
-		DC21E5C321CA903E007D0E1A /* SettingsMACOS.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC21E5BD21CA903E007D0E1A /* SettingsMACOS.cxx */; };
-		DC21E5C421CA903E007D0E1A /* SettingsMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC21E5BE21CA903E007D0E1A /* SettingsMACOS.hxx */; };
 		DC2410E32274BDA8007A4CBF /* MinUICommandDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */; };
 		DC2410E42274BDA8007A4CBF /* MinUICommandDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */; };
 		DC2874071F8F2278004BF21A /* TrapArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC2874061F8F2278004BF21A /* TrapArray.hxx */; };
@@ -649,6 +645,12 @@
 		E034A5EF209FB25D00C89E9E /* EmulationTiming.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */; };
 		E0406FB61F81A85400A82AE0 /* AbstractFrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */; };
 		E0406FB81F81A85400A82AE0 /* FrameManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */; };
+		E06508BE2272447200B341AC /* KeyValueRepositoryNoop.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */; };
+		E06508BF2272447200B341AC /* KeyValueRepository.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508B92272447200B341AC /* KeyValueRepository.hxx */; };
+		E06508C02272447200B341AC /* KeyValueRepositoryConfigfile.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */; };
+		E06508C12272447200B341AC /* KeyValueRepositoryConfigfile.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */; };
+		E06508CA2272493200B341AC /* SettingsRepositoryMACOS.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E06508C82272493200B341AC /* SettingsRepositoryMACOS.hxx */; };
+		E06508CB2272493200B341AC /* SettingsRepositoryMACOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E06508C92272493200B341AC /* SettingsRepositoryMACOS.mm */; };
 		E0893AF2211B9842008B170D /* HighPass.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0893AF0211B9841008B170D /* HighPass.cxx */; };
 		E0893AF3211B9842008B170D /* HighPass.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0893AF1211B9841008B170D /* HighPass.hxx */; };
 		E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4139201E901C004A3391 /* AudioQueue.hxx */; };
@@ -846,8 +848,6 @@
 		2DDBEB7308457B7D00812C11 /* FSNode.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = FSNode.hxx; sourceTree = "<group>"; };
 		2DDBEB7408457B7D00812C11 /* OSystem.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = OSystem.cxx; sourceTree = "<group>"; };
 		2DDBEB7508457B7D00812C11 /* OSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = OSystem.hxx; sourceTree = "<group>"; };
-		2DDBEBE3084582C400812C11 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = SOURCE_ROOT; };
-		2DDBEBE4084582C400812C11 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = SOURCE_ROOT; };
 		2DE2DF100627AE07006BEC99 /* Booster.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Booster.cxx; sourceTree = "<group>"; };
 		2DE2DF110627AE07006BEC99 /* Booster.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Booster.hxx; sourceTree = "<group>"; };
 		2DE2DF120627AE07006BEC99 /* Cart.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Cart.cxx; sourceTree = "<group>"; };
@@ -947,8 +947,6 @@
 		DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = OSystemMACOS.hxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOS.cxx; sourceTree = SOURCE_ROOT; };
 		DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOS.hxx; sourceTree = SOURCE_ROOT; };
-		DC21E5BD21CA903E007D0E1A /* SettingsMACOS.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SettingsMACOS.cxx; sourceTree = SOURCE_ROOT; };
-		DC21E5BE21CA903E007D0E1A /* SettingsMACOS.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SettingsMACOS.hxx; sourceTree = SOURCE_ROOT; };
 		DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MinUICommandDialog.hxx; sourceTree = "<group>"; };
 		DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MinUICommandDialog.cxx; sourceTree = "<group>"; };
 		DC2874061F8F2278004BF21A /* TrapArray.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TrapArray.hxx; sourceTree = "<group>"; };
@@ -1361,6 +1359,12 @@
 		E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JitterEmulation.hxx; sourceTree = "<group>"; };
 		E034A5EC209FB25C00C89E9E /* EmulationTiming.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmulationTiming.cxx; sourceTree = "<group>"; };
 		E034A5ED209FB25C00C89E9E /* EmulationTiming.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EmulationTiming.hxx; sourceTree = "<group>"; };
+		E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryNoop.hxx; sourceTree = "<group>"; };
+		E06508B92272447200B341AC /* KeyValueRepository.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepository.hxx; sourceTree = "<group>"; };
+		E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyValueRepositoryConfigfile.hxx; sourceTree = "<group>"; };
+		E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyValueRepositoryConfigfile.cxx; sourceTree = "<group>"; };
+		E06508C82272493200B341AC /* SettingsRepositoryMACOS.hxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SettingsRepositoryMACOS.hxx; sourceTree = "<group>"; };
+		E06508C92272493200B341AC /* SettingsRepositoryMACOS.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsRepositoryMACOS.mm; sourceTree = "<group>"; };
 		E07C2326226393BD00B78631 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E0893AF0211B9841008B170D /* HighPass.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HighPass.cxx; path = audio/HighPass.cxx; sourceTree = "<group>"; };
 		E0893AF1211B9841008B170D /* HighPass.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HighPass.hxx; path = audio/HighPass.hxx; sourceTree = "<group>"; };
@@ -1405,10 +1409,10 @@
 			children = (
 				2D1A6CD4085135F9007CDBA8 /* AboutBox.h */,
 				2D1A6CD5085135F9007CDBA8 /* AboutBox.m */,
-				2DDBEBE3084582C400812C11 /* Preferences.h */,
-				2DDBEBE4084582C400812C11 /* Preferences.m */,
 				F5A47A9D01A0482F01D3D55B /* SDLMain.h */,
 				F5A47A9E01A0483001D3D55B /* SDLMain.m */,
+				E06508C82272493200B341AC /* SettingsRepositoryMACOS.hxx */,
+				E06508C92272493200B341AC /* SettingsRepositoryMACOS.mm */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1658,6 +1662,7 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				E06508B72272447200B341AC /* repository */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
@@ -1725,8 +1730,6 @@
 				DC21E5BA21CA903E007D0E1A /* OSystemMACOS.hxx */,
 				DC21E5BB21CA903E007D0E1A /* SerialPortMACOS.cxx */,
 				DC21E5BC21CA903E007D0E1A /* SerialPortMACOS.hxx */,
-				DC21E5BD21CA903E007D0E1A /* SettingsMACOS.cxx */,
-				DC21E5BE21CA903E007D0E1A /* SettingsMACOS.hxx */,
 			);
 			path = macos;
 			sourceTree = "<group>";
@@ -2232,6 +2235,17 @@
 			path = tia;
 			sourceTree = "<group>";
 		};
+		E06508B72272447200B341AC /* repository */ = {
+			isa = PBXGroup;
+			children = (
+				E06508B82272447200B341AC /* KeyValueRepositoryNoop.hxx */,
+				E06508B92272447200B341AC /* KeyValueRepository.hxx */,
+				E06508BA2272447200B341AC /* KeyValueRepositoryConfigfile.hxx */,
+				E06508BB2272447200B341AC /* KeyValueRepositoryConfigfile.cxx */,
+			);
+			path = repository;
+			sourceTree = "<group>";
+		};
 		E0DFDD731F81A358000F3505 /* frame-manager */ = {
 			isa = PBXGroup;
 			children = (
@@ -2301,6 +2315,7 @@
 				2D9173E809BA90380026E9FF /* MD5.hxx in Headers */,
 				2D9173EA09BA90380026E9FF /* Paddles.hxx in Headers */,
 				2D9173EB09BA90380026E9FF /* Props.hxx in Headers */,
+				E06508CA2272493200B341AC /* SettingsRepositoryMACOS.hxx in Headers */,
 				DC5ACB5C1FBFCE8E00A213FD /* DeveloperDialog.hxx in Headers */,
 				2D9173EC09BA90380026E9FF /* PropsSet.hxx in Headers */,
 				2D9173ED09BA90380026E9FF /* Random.hxx in Headers */,
@@ -2349,7 +2364,6 @@
 				DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
-				2D91741D09BA90380026E9FF /* Preferences.h in Headers */,
 				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
 				2D91741F09BA90380026E9FF /* AboutBox.h in Headers */,
 				2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */,
@@ -2456,7 +2470,9 @@
 				DCBDDE9F1D6A5F2F009DF1E9 /* Cart3EPlus.hxx in Headers */,
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
 				DC2B85E81EF5EF2300379EB9 /* AtariNTSC.hxx in Headers */,
+				E06508BE2272447200B341AC /* KeyValueRepositoryNoop.hxx in Headers */,
 				DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */,
+				E06508C02272447200B341AC /* KeyValueRepositoryConfigfile.hxx in Headers */,
 				DC68F8901FA64C5300F4A2CC /* TIAConstants.hxx in Headers */,
 				DCA82C721FEB4E780059340F /* TimeMachine.hxx in Headers */,
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
@@ -2533,7 +2549,6 @@
 				DC71C399221623D9005DE92F /* ControllerDetector.hxx in Headers */,
 				DCAAE5DD1715887B0080BB82 /* CartDebugWidget.hxx in Headers */,
 				DC6DC921205DB879004A5FC3 /* PJoystickHandler.hxx in Headers */,
-				DC21E5C421CA903E007D0E1A /* SettingsMACOS.hxx in Headers */,
 				DCAAE5DF1715887B0080BB82 /* CartEFSCWidget.hxx in Headers */,
 				DCAAE5E11715887B0080BB82 /* CartEFWidget.hxx in Headers */,
 				DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */,
@@ -2549,6 +2564,7 @@
 				DCAAE5F11715887B0080BB82 /* CartFAWidget.hxx in Headers */,
 				DCAAE5F31715887B0080BB82 /* CartUAWidget.hxx in Headers */,
 				DC676A421729A0B000E4E73D /* Cart3EWidget.hxx in Headers */,
+				E06508BF2272447200B341AC /* KeyValueRepository.hxx in Headers */,
 				DC676A441729A0B000E4E73D /* Cart4A50Widget.hxx in Headers */,
 				CFE3F6141E84A9CE00A8204E /* CartBUS.hxx in Headers */,
 				DC676A461729A0B000E4E73D /* CartARWidget.hxx in Headers */,
@@ -2782,7 +2798,6 @@
 				2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */,
 				DCF3A6FE1DFC75E3008A8AF3 /* TIA.cxx in Sources */,
 				2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */,
-				2D9174C209BA90380026E9FF /* Preferences.m in Sources */,
 				DC53B6AE1F3622DA00AA6BFB /* PointingDevice.cxx in Sources */,
 				2D9174C409BA90380026E9FF /* AboutBox.m in Sources */,
 				DC96162C1F817830008A2206 /* AmigaMouseWidget.cxx in Sources */,
@@ -2795,6 +2810,7 @@
 				2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */,
 				DC6A18F819B3E65500DEB242 /* CartMDMWidget.cxx in Sources */,
 				DC62E6491960E87B007AEF05 /* SaveKeyWidget.cxx in Sources */,
+				E06508CB2272493200B341AC /* SettingsRepositoryMACOS.mm in Sources */,
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
@@ -2804,6 +2820,7 @@
 				2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */,
 				2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */,
 				2D9174F409BA90380026E9FF /* CommandDialog.cxx in Sources */,
+				E06508C12272447200B341AC /* KeyValueRepositoryConfigfile.cxx in Sources */,
 				DC2B85E71EF5EF2300379EB9 /* AtariNTSC.cxx in Sources */,
 				2D9174F509BA90380026E9FF /* CommandMenu.cxx in Sources */,
 				2D9174F709BA90380026E9FF /* CpuWidget.cxx in Sources */,
@@ -2887,7 +2904,6 @@
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 				CFE3F6151E84A9CE00A8204E /* CartCDF.cxx in Sources */,
 				DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */,
-				DC21E5C321CA903E007D0E1A /* SettingsMACOS.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,
 				DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */,
 				DC5ACB5B1FBFCE8E00A213FD /* DeveloperDialog.cxx in Sources */,

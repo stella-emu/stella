@@ -19,7 +19,7 @@
 #include "CartSB.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeSB::CartridgeSB(const BytePtr& image, uInt32 size,
+CartridgeSB::CartridgeSB(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),

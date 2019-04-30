@@ -46,7 +46,7 @@ class CartridgeBF : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeBF(const BytePtr& image, uInt32 size, const string& md5,
+    CartridgeBF(const ByteBuffer& image, uInt32 size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeBF() = default;
 

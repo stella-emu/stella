@@ -20,7 +20,7 @@
 #include "CartAR.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeAR::CartridgeAR(const BytePtr& image, uInt32 size,
+CartridgeAR::CartridgeAR(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(std::max(size, 8448u)),

@@ -19,7 +19,7 @@
 #include "CartMNetwork.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMNetwork::CartridgeMNetwork(const BytePtr& image, uInt32 size,
+CartridgeMNetwork::CartridgeMNetwork(const ByteBuffer& image, uInt32 size,
                                      const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),
@@ -29,7 +29,7 @@ CartridgeMNetwork::CartridgeMNetwork(const BytePtr& image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetwork::initialize(const BytePtr& image, uInt32 size)
+void CartridgeMNetwork::initialize(const ByteBuffer& image, uInt32 size)
 {
   // Allocate array for the ROM image
   myImage = make_unique<uInt8[]>(size);

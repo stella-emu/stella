@@ -52,7 +52,7 @@ class CartridgeAR : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeAR(const BytePtr& image, uInt32 size, const string& md5,
+    CartridgeAR(const ByteBuffer& image, uInt32 size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeAR() = default;
 
@@ -197,7 +197,7 @@ class CartridgeAR : public Cartridge
     uInt32 mySize;
 
     // All of the 8448 byte loads associated with the game
-    BytePtr myLoadImages;
+    ByteBuffer myLoadImages;
 
     // Indicates how many 8448 loads there are
     uInt8 myNumberOfLoadImages;

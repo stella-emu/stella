@@ -21,7 +21,7 @@
 #include "CartX07.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeX07::CartridgeX07(const BytePtr& image, uInt32 size,
+CartridgeX07::CartridgeX07(const ByteBuffer& image, uInt32 size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     myCurrentBank(0)

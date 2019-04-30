@@ -889,10 +889,10 @@ class TIA : public Device
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
-    BytePtr myAccessBase;
+    ByteBuffer myAccessBase;
 
     // The array used to skip the first two TIA access trackings
-    BytePtr myAccessDelay;
+    ByteBuffer myAccessDelay;
   #endif // DEBUGGER_SUPPORT
 
     static constexpr uInt16

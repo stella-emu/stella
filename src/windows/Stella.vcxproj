@@ -512,7 +512,6 @@
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\common\PNGLibrary.cxx" />
     <ClCompile Include="SerialPortWINDOWS.cxx" />
-    <ClCompile Include="SettingsWINDOWS.cxx" />
     <ClCompile Include="..\common\SoundSDL2.cxx" />
     <ClCompile Include="..\emucore\AtariVox.cxx" />
     <ClCompile Include="..\emucore\Booster.cxx" />
@@ -1237,7 +1236,6 @@
     <ClInclude Include="OSystemWINDOWS.hxx" />
     <ClInclude Include="..\common\PNGLibrary.hxx" />
     <ClInclude Include="SerialPortWINDOWS.hxx" />
-    <ClInclude Include="SettingsWINDOWS.hxx" />
     <ClInclude Include="..\common\SoundSDL2.hxx" />
     <ClInclude Include="..\common\Stack.hxx" />
     <ClInclude Include="..\common\Version.hxx" />

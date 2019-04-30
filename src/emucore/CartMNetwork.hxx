@@ -73,7 +73,7 @@ class CartridgeMNetwork : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeMNetwork(const BytePtr& image, uInt32 size, const string& md5,
+    CartridgeMNetwork(const ByteBuffer& image, uInt32 size, const string& md5,
                       const Settings& settings);
     virtual ~CartridgeMNetwork() = default;
 
@@ -162,7 +162,7 @@ class CartridgeMNetwork : public Cartridge
     /**
       Class initialization
     */
-    void initialize(const BytePtr& image, uInt32 size);
+    void initialize(const ByteBuffer& image, uInt32 size);
 
     /**
       Install pages for the specified 256 byte bank of RAM
@@ -195,7 +195,7 @@ class CartridgeMNetwork : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    BytePtr myImage;
+    ByteBuffer myImage;
     // The 16K ROM image of the cartridge (works for E78K too)
     //uInt8 myImage[BANK_SIZE * 8];
 

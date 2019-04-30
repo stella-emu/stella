@@ -141,7 +141,6 @@
     <ClCompile Include="FSNodeLIBRETRO.cxx" />
     <ClCompile Include="FrameBufferLIBRETRO.cxx" />
     <ClCompile Include="OSystemLIBRETRO.cxx" />
-    <ClCompile Include="SettingsLIBRETRO.cxx" />
     <ClCompile Include="SoundLIBRETRO.cxx" />
     <ClCompile Include="StellaLIBRETRO.cxx" />
     <ClCompile Include="..\common\AudioQueue.cxx" />

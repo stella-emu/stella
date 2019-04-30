@@ -84,7 +84,7 @@ AbstractFSNodePtr FilesystemNodeLIBRETRO::getParent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FilesystemNodeLIBRETRO::read(BytePtr& image) const
+uInt32 FilesystemNodeLIBRETRO::read(ByteBuffer& image) const
 {
   image = make_unique<uInt8[]>(512 * 1024);
 

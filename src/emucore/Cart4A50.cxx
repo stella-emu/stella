@@ -21,7 +21,7 @@
 #include "Cart4A50.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4A50::Cartridge4A50(const BytePtr& image, uInt32 size,
+Cartridge4A50::Cartridge4A50(const ByteBuffer& image, uInt32 size,
                              const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),

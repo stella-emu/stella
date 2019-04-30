@@ -102,7 +102,7 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
     return false;
   }
 
-  BytePtr image;
+  ByteBuffer image;
   uInt32 size = imageFile.read(image);
   if (size == 0) {
     cout << "ERROR: unable to read " << run.romFile << endl;
