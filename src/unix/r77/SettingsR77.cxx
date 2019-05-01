@@ -55,9 +55,9 @@ SettingsR77::SettingsR77()
   setTemporary("exitlauncher", "true");
 
   setTemporary("minimal_ui", true);
-  setPermanent("basic_settings", true);
+  setTemporary("basic_settings", true);
 
-  setTemporary("dev.settings", false);
+  setPermanent("dev.settings", false);
   // record states for 60 seconds
   setPermanent("plr.timemachine", true);
   setTemporary("plr.tm.size", 60);
