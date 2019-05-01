@@ -105,6 +105,8 @@ OSystem::OSystem()
   myBuildInfo = info.str();
 
   mySettings = MediaFactory::createSettings();
+
+  myPropSet = make_unique<PropertiesSet>();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,8 +117,6 @@ OSystem::~OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::create()
 {
-  // Get updated paths for all configuration files
-  setConfigPaths();
   ostringstream buf;
   buf << "Stella " << STELLA_VERSION << endl
       << "  Features: " << myFeatures << endl
@@ -145,9 +145,6 @@ bool OSystem::create()
   // Create the event handler for the system
   myEventHandler = MediaFactory::createEventHandler(*this);
   myEventHandler->initialize();
-
-  // Create the ROM properties database
-  myPropSet = make_unique<PropertiesSet>(myPropertiesFile);
 
 #ifdef CHEATCODE_SUPPORT
   myCheatManager = make_unique<CheatManager>(*this);
@@ -205,10 +202,20 @@ void OSystem::loadConfig(const Settings::Options& options)
     load.makeDir();
   myDefaultLoadDir = load.getShortPath();
 
+  // Get updated paths for all configuration files
+  setConfigPaths();
+
+#ifdef SQLITE_SUPPORT
+  mySettingsDb = make_shared<SettingsDb>(myBaseDir, "settings");
+  if (!mySettingsDb->initialize()) mySettingsDb.reset();
+#endif
+
   mySettings->setRepository(createSettingsRepository());
 
   logMessage("Loading config options ...", 2);
   mySettings->load(options);
+
+  myPropSet->load(myPropertiesFile);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -751,7 +758,9 @@ void OSystem::mainLoop()
 shared_ptr<KeyValueRepository> OSystem::createSettingsRepository()
 {
   #ifdef SQLITE_SUPPORT
-    return make_shared<KeyValueRepositorySqlite>(myBaseDir, "settings");
+    return mySettingsDb
+      ? shared_ptr<KeyValueRepository>(mySettingsDb, &mySettingsDb->settingsRepository())
+      : make_shared<KeyValueRepositoryNoop>();
   #else
     if (myConfigFile.empty())
       return make_shared<KeyValueRepositoryNoop>();

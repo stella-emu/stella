@@ -18,34 +18,37 @@
 #ifndef KEY_VALUE_REPOSITORY_SQLITE_HXX
 #define KEY_VALUE_REPOSITORY_SQLITE_HXX
 
-#include <sqlite3.h>
-
+#include "bspf.hxx"
 #include "repository/KeyValueRepository.hxx"
+#include "SqliteDatabase.hxx"
+#include "SqliteStatement.hxx"
 
 class KeyValueRepositorySqlite : public KeyValueRepository
 {
   public:
 
-    KeyValueRepositorySqlite(const string& databaseDirectory, const string& databaseName);
-
-    ~KeyValueRepositorySqlite();
+    KeyValueRepositorySqlite(SqliteDatabase& db, const string& tableName);
 
     virtual std::map<string, Variant> load();
 
     virtual void save(const std::map<string, Variant>& values);
 
-  private:
-
-    void initializeDb();
+    void initialize();
 
   private:
 
-    string myDatabaseFile;
+    string myTableName;
+    SqliteDatabase& myDb;
 
-    bool myIsFailed;
+    unique_ptr<SqliteStatement> myStmtInsert;
+    unique_ptr<SqliteStatement> myStmtSelect;
 
-    sqlite3* myDbHandle;
+  private:
 
+    KeyValueRepositorySqlite(const KeyValueRepositorySqlite&) = delete;
+    KeyValueRepositorySqlite(KeyValueRepositorySqlite&&) = delete;
+    KeyValueRepositorySqlite& operator=(const KeyValueRepositorySqlite&) = delete;
+    KeyValueRepositorySqlite operator=(KeyValueRepositorySqlite&&) = delete;
 };
 
 #endif // KEY_VALUE_REPOSITORY_SQLITE_HXX
