@@ -35,9 +35,6 @@ class SettingsR77 : public Settings
     explicit SettingsR77();
     virtual ~SettingsR77() = default;
 
-  protected:
-    bool saveConfigFile(const string& cfgfile) const;
-
   private:
     // Following constructors and assignment operators not supported
     SettingsR77(const SettingsR77&) = delete;
