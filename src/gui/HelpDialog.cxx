@@ -132,9 +132,9 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
     case 3:
       title = "TV Filters";
       ADD_BIND(ALT_" 1", "Disable filtering");
-      ADD_BIND(ALT_" 2", "Enable 'Composite' mode");
+      ADD_BIND(ALT_" 2", "Enable 'RGB' mode");
       ADD_BIND(ALT_" 3", "Enable 'S-Video' mode");
-      ADD_BIND(ALT_" 4", "Enable 'RGB' mode");
+      ADD_BIND(ALT_" 4", "Enable 'Composite' mode");
       ADD_BIND(ALT_" 5", "Enable 'Bad adjust' mode");
       ADD_BIND(ALT_" 6", "Enable 'Custom' mode");
       ADD_BIND(ALT_" 7", "Adjust scanline intensity");
