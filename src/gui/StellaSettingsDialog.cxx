@@ -29,7 +29,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Font& font, int max_w, int max_h, Menu::AppMode mode)
-  : Dialog(osystem, parent, font, "Stella settings"),
+  : Dialog(osystem, parent, font, "Basic settings"),
     myMode(mode)
 {
   const int VBORDER = 8;
@@ -271,11 +271,11 @@ void StellaSettingsDialog::setDefaults()
   myThemePopup->setSelected("standard");
 
   // TV effects
-  myTVMode->setSelected("0", "0");
+  myTVMode->setSelected("RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
   // TV scanline intensity
-  myTVScanIntense->setValue(0); // = off
+  myTVScanIntense->setValue(3); // 18
   // TV phosphor blend
-  myTVPhosLevel->setValue(0); // = off
+  myTVPhosLevel->setValue(6); // = 45
 
   // Load the default game properties
   Properties defaultProperties;

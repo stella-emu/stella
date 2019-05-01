@@ -67,10 +67,10 @@ SettingsR77::SettingsR77()
   setPermanent("threads", "1");
 
   // all TV effects off by default (aligned to StellaSettingsDialog defaults!)
-  setPermanent("tv.filter", "0");
+  setPermanent("tv.filter", "1"); // RGB
   setPermanent("tv.phosphor", "always");
-  setPermanent("tv.phosblend", "0");
-  setPermanent("tv.scanlines", "0");
+  setPermanent("tv.phosblend", "45"); // level 6
+  setPermanent("tv.scanlines", "18"); // level 3
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
