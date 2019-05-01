@@ -72,30 +72,3 @@ SettingsR77::SettingsR77()
   setPermanent("tv.phosblend", "45"); // level 6
   setPermanent("tv.scanlines", "18"); // level 3
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SettingsR77::saveConfigFile(const string& cfgfile) const
-{
-  // Almost no settings can be changed, so we completely disable saving
-  // most of them.  This may also fix reported issues of the config file
-  // becoming corrupt.
-  //
-  // There are currently only a few settings that can be changed
-  // These will be expanded as more support is added
-
-  ofstream out(cfgfile);
-  if(!out || !out.is_open())
-    return false;
-
-  out << "fullscreen = " << getString("fullscreen") << endl;
-  out << "lastrom = " << getString("lastrom") << endl;
-  out << "tia.fs_stretch = " << getString("tia.fs_stretch") << endl;
-//   out << "keymap = " << getString("keymap") << endl;
-//   out << "joymap = " << getString("joymap") << endl;
-
-  out.flush();
-  out.close();
-  system("/bin/fsync /mnt/stella/stellarc&");
-
-  return true;
-}
