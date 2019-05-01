@@ -117,6 +117,9 @@ OSystem::~OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::create()
 {
+  // Get updated paths for all configuration files
+  setConfigPaths();
+
   ostringstream buf;
   buf << "Stella " << STELLA_VERSION << endl
       << "  Features: " << myFeatures << endl
@@ -202,9 +205,6 @@ void OSystem::loadConfig(const Settings::Options& options)
     load.makeDir();
   myDefaultLoadDir = load.getShortPath();
 
-  // Get updated paths for all configuration files
-  setConfigPaths();
-
 #ifdef SQLITE_SUPPORT
   mySettingsDb = make_shared<SettingsDb>(myBaseDir, "settings");
   if (!mySettingsDb->initialize()) mySettingsDb.reset();
@@ -265,7 +265,7 @@ void OSystem::setConfigPaths()
   myPropertiesFile = FilesystemNode(myBaseDir + "stella.pro").getPath();
 
 #if 0
-  // TODO - remove this
+  // Debug code
   auto dbgPath = [](const string& desc, const string& location)
   {
     cerr << desc << ": " << location << endl;
