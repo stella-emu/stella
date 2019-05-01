@@ -126,6 +126,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     // Show the checkbox for all files
     xpos -= lwidth2 + LBL_GAP * 3;
     myAllFiles = new CheckboxWidget(this, font, xpos, ypos, lblAllFiles, kAllfilesCmd);
+    wid.push_back(myAllFiles);
+    wid.push_back(myPattern);
   }
 
   // Add list with game titles
@@ -143,7 +145,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                 listWidth, _h - 43 - bheight - fontHeight - lineHeight);
   myList->setEditable(false);
   wid.push_back(myList);
-  if(myPattern)  wid.push_back(myPattern);  // Add after the list for tab order
 
   // Add ROM info area (if enabled)
   if(romWidth > 0)
@@ -204,7 +205,10 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     wid.push_back(myStartButton);
   #endif
   }
-  mySelectedItem = 0;  // Highlight 'Rom Listing'
+  if (myUseMinimalUI) // Highlight 'Rom Listing'
+    mySelectedItem = 0;
+  else
+    mySelectedItem = 2;
 
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs

@@ -72,7 +72,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.clear();
   tabID = myTab->addTab(" Look & Feel ");
   lwidth = font.getStringWidth("Mouse wheel scroll ");
-  pwidth = font.getStringWidth("Standard");
+  pwidth = font.getStringWidth("Right bottom");
   xpos = HBORDER;  ypos = VBORDER;
 
   // UI Palette
@@ -82,8 +82,20 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   items, "Theme     ", lwidth);
+                                   items, "Theme      ", lwidth);
   wid.push_back(myPalettePopup);
+  ypos += lineHeight + V_GAP;
+
+  // Dialog position
+  items.clear();
+  VarList::push_back(items, "Centered", 0);
+  VarList::push_back(items, "Left top", 1);
+  VarList::push_back(items, "Right top", 2);
+  VarList::push_back(items, "Right bottom", 3);
+  VarList::push_back(items, "Left bottom", 4);
+  myPositionPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+    items, "Dialogs position ", lwidth);
+  wid.push_back(myPositionPopup);
   ypos += lineHeight + V_GAP * 4;
 
   // Delay between quick-selecting characters in ListWidget
@@ -264,6 +276,9 @@ void UIDialog::loadConfig()
   const string& pal = settings.getString("uipalette");
   myPalettePopup->setSelected(pal, "standard");
 
+  // Dialog position
+  myPositionPopup->setSelected(settings.getString("dialogpos"), "0");
+
   // Listwidget quick delay
   int delay = settings.getInt("listdelay");
   myListDelayPopup->setValue(delay);
@@ -309,6 +324,9 @@ void UIDialog::saveConfig()
     myPalettePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
 
+  // Dialog position
+  settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
+
   // Listwidget quick delay
   settings.setValue("listdelay", myListDelayPopup->getValue());
   ListWidget::setQuickSelectDelay(myListDelayPopup->getValue());
@@ -329,6 +347,7 @@ void UIDialog::setDefaults()
   {
     case 0:  // Misc. options
       myPalettePopup->setSelected("standard");
+      myPositionPopup->setSelected("0");
       myListDelayPopup->setValue(300);
       myWheelLinesPopup->setValue(4);
       break;

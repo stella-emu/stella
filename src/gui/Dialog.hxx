@@ -162,6 +162,7 @@ class Dialog : public GuiObject
 
     /** Define the size (allowed) for the dialog. */
     void setSize(uInt32 w, uInt32 h, uInt32 max_w, uInt32 max_h);
+    void positionAt(uInt32 pos);
 
   private:
     void buildCurrentFocusList(int tabID = -1);

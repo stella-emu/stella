@@ -122,6 +122,7 @@ Settings::Settings()
   setPermanent("listdelay", "300");
   setPermanent("mwheel", "4");
   setPermanent("basic_settings", false);
+  setPermanent("dialogpos", 0);
 
   // Misc options
   setPermanent("autoslot", "false");
@@ -463,6 +464,8 @@ void Settings::usage() const
     << "                                (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in\n"
     << "                                UI\n"
+    << "  -basic_settings <0|1>        Display only a basic settings dialog\n"
+    << "  -dialogpos    <0..4>         Display all dialogs at given positions\n"
     << "  -romdir       <dir>          Directory in which to load ROM files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is\n"
     << "                                connected\n"
