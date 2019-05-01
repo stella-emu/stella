@@ -19,6 +19,7 @@
 #include <map>
 
 #include "bspf.hxx"
+#include "Logger.hxx"
 
 #include "Base.hxx"
 #include "CommandMenu.hxx"
@@ -145,7 +146,7 @@ void EventHandler::addPhysicalJoystick(PhysicalJoystickPtr joy)
   ostringstream buf;
   buf << "Added joystick " << ID << ":" << endl
       << "  " << joy->about() << endl;
-  myOSystem.logMessage(buf.str(), 1);
+  Logger::log(buf.str(), 1);
 #endif
 }
 

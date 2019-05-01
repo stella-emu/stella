@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Logger.hxx"
 #include "OSystem.hxx"
 #include "EventHandlerSDL2.hxx"
 
@@ -31,9 +32,9 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL joystick support: " << SDL_GetError() << endl;
-    osystem.logMessage(buf.str(), 0);
+    Logger::log(buf.str(), 0);
   }
-  osystem.logMessage("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK", 2);
+  Logger::log("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK", 2);
 #endif
 }
 

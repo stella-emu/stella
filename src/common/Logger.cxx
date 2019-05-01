@@ -15,36 +15,40 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "SettingsDb.hxx"
 #include "Logger.hxx"
-#include "SqliteError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsDb::SettingsDb(
-  const string& databaseDirectory,
-  const string& databaseName
-) : myDatabaseDirectory(databaseDirectory),
-    myDatabaseName(databaseName)
-{}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SettingsDb::initialize()
+Logger& Logger::instance()
 {
-  try {
-    myDb = make_unique<SqliteDatabase>(myDatabaseDirectory, myDatabaseName);
-    myDb->initialize();
+  static Logger loggerInstance;
 
-    mySettingsRepository = make_unique<KeyValueRepositorySqlite>(*myDb, "settings");
-    mySettingsRepository->initialize();
-  }
-  catch (SqliteError err) {
-    Logger::log("sqlite DB " + myDb->fileName() + " failed to initialize: " + err.message, 1);
+  return loggerInstance;
+}
 
-    myDb.reset();
-    mySettingsRepository.reset();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Logger::log(const string& message, uInt8 level)
+{
+  instance().logMessage(message, level);
+}
 
-    return false;
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Logger::logMessage(const string& message, uInt8 level) const
+{
+  if (myLogCallback)
+    myLogCallback(message, level);
 
-  return true;
+  else
+    cout << message << endl << std::flush;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Logger::setLogCallback(Logger::logCallback callback)
+{
+  myLogCallback = callback;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Logger::clearLogCallback()
+{
+  myLogCallback = logCallback();
 }

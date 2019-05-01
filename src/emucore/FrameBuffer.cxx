@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "Logger.hxx"
 
 #include "Console.hxx"
 #include "EventHandler.hxx"
@@ -228,7 +229,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
     }
     else
     {
-      myOSystem.logMessage("ERROR: Couldn't initialize video subsystem", 0);
+      Logger::log("ERROR: Couldn't initialize video subsystem", 0);
       return FBInitStatus::FailNotSupported;
     }
   }
@@ -257,13 +258,13 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
   {
-    myOSystem.logMessage(about(), 1);
+    Logger::log(about(), 1);
   }
   else
   {
     string post_about = about();
     if(post_about != pre_about)
-      myOSystem.logMessage(post_about, 1);
+      Logger::log(post_about, 1);
   }
 
   return FBInitStatus::Success;

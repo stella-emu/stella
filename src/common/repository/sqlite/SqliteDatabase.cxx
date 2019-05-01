@@ -18,6 +18,7 @@
 #include <cstdio>
 
 #include "SqliteDatabase.hxx"
+#include "Logger.hxx"
 #include "SqliteError.hxx"
 
 #ifdef BSPF_WINDOWS
@@ -54,7 +55,7 @@ void SqliteDatabase::initialize()
       dbInitialized = sqlite3_exec(myHandle, "PRAGMA schema_version", nullptr, nullptr, nullptr) == SQLITE_OK;
 
     if (!dbInitialized && tries == 1) {
-      cout << "sqlite DB " << myDatabaseFile << " seems to be corrupt, removing and retrying..." << endl;
+      Logger::log("sqlite DB " + myDatabaseFile + " seems to be corrupt, removing and retrying...", 1);
 
       remove(myDatabaseFile.c_str());
       if (myHandle) sqlite3_close_v2(myHandle);

@@ -21,6 +21,7 @@
 #include <cassert>
 #include <cmath>
 
+#include "Logger.hxx"
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
@@ -45,8 +46,8 @@ SoundLIBRETRO::SoundLIBRETRO(OSystem& osystem, AudioSettings& audioSettings)
 {
   ASSERT_MAIN_THREAD;
 
-  myOSystem.logMessage("SoundLIBRETRO::SoundLIBRETRO started ...", 2);
-  myOSystem.logMessage("SoundLIBRETRO::SoundLIBRETRO initialized", 2);
+  Logger::log("SoundLIBRETRO::SoundLIBRETRO started ...", 2);
+  Logger::log("SoundLIBRETRO::SoundLIBRETRO initialized", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,7 +61,7 @@ void SoundLIBRETRO::open(shared_ptr<AudioQueue> audioQueue,
 {
   myEmulationTiming = emulationTiming;
 
-  myOSystem.logMessage("SoundLIBRETRO::open started ...", 2);
+  Logger::log("SoundLIBRETRO::open started ...", 2);
 
   audioQueue->ignoreOverflows(!myAudioSettings.enabled());
 
@@ -68,7 +69,7 @@ void SoundLIBRETRO::open(shared_ptr<AudioQueue> audioQueue,
   myUnderrun = true;
   myCurrentFragment = nullptr;
 
-  myOSystem.logMessage("SoundLIBRETRO::open finished", 2);
+  Logger::log("SoundLIBRETRO::open finished", 2);
 
   myIsInitializedFlag = true;
 }
@@ -82,7 +83,7 @@ void SoundLIBRETRO::close()
   myAudioQueue.reset();
   myCurrentFragment = nullptr;
 
-  myOSystem.logMessage("SoundLIBRETRO::close", 2);
+  Logger::log("SoundLIBRETRO::close", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

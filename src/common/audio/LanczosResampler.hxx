@@ -30,13 +30,10 @@ class LanczosResampler : public Resampler
       Resampler::Format formatFrom,
       Resampler::Format formatTo,
       Resampler::NextFragmentCallback nextFragmentCallback,
-      uInt32 kernelParameter,
-      StaggeredLogger::Logger logger
+      uInt32 kernelParameter
     );
 
     void fillFragment(float* fragment, uInt32 length) override;
-
-    virtual ~LanczosResampler() = default;
 
   private:
 

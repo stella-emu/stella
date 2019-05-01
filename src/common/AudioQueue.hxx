@@ -45,7 +45,7 @@ class AudioQueue
        @param capacity      The number of fragments that can be queued before wrapping.
        @param isStereo      Whether samples are stereo or mono.
      */
-    AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo, StaggeredLogger::Logger logger);
+    AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo);
 
     /**
        Capacity getter.

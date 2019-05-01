@@ -34,23 +34,15 @@
 class StaggeredLogger {
   public:
 
-    typedef std::function<void(const string&)> Logger;
-
-  public:
-
-    StaggeredLogger(const string& message, Logger logger = Logger());
+    StaggeredLogger(const string& message, uInt8 level);
 
     ~StaggeredLogger();
 
     void log();
 
-    void setLogger(Logger logger);
-
   private:
 
     void _log();
-
-    void _setLogger(Logger logger);
 
     void onTimerExpired(uInt32 timerId);
 
@@ -62,8 +54,8 @@ class StaggeredLogger {
 
     void logLine();
 
-    Logger myLogger;
     string myMessage;
+    uInt8 myLevel;
 
     uInt32 myCurrentEventCount;
     bool myIsCurrentlyCollecting;

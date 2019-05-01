@@ -665,6 +665,8 @@
 		E0DCD3A820A64E96000B614E /* LanczosResampler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A420A64E95000B614E /* LanczosResampler.cxx */; };
 		E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0DCD3A520A64E96000B614E /* ConvolutionBuffer.hxx */; };
 		E0DCD3AA20A64E96000B614E /* ConvolutionBuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */; };
+		E0EA1FFF227A42D0008BA944 /* Logger.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0EA1FFD227A42D0008BA944 /* Logger.hxx */; };
+		E0EA2000227A42D0008BA944 /* Logger.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0EA1FFE227A42D0008BA944 /* Logger.cxx */; };
 		E0FABEEB20E9948200EB8E28 /* AudioSettings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */; };
 		E0FABEEC20E9948200EB8E28 /* AudioSettings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */; };
 		E0FABEEE20E994A600EB8E28 /* ConsoleTiming.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */; };
@@ -1382,6 +1384,8 @@
 		E0DCD3A620A64E96000B614E /* ConvolutionBuffer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConvolutionBuffer.cxx; path = audio/ConvolutionBuffer.cxx; sourceTree = "<group>"; };
 		E0DFDD781F81A358000F3505 /* AbstractFrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractFrameManager.cxx; sourceTree = "<group>"; };
 		E0DFDD7B1F81A358000F3505 /* FrameManager.cxx */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FrameManager.cxx; sourceTree = "<group>"; };
+		E0EA1FFD227A42D0008BA944 /* Logger.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Logger.hxx; sourceTree = "<group>"; };
+		E0EA1FFE227A42D0008BA944 /* Logger.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Logger.cxx; sourceTree = "<group>"; };
 		E0FABEE920E9948000EB8E28 /* AudioSettings.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioSettings.hxx; sourceTree = "<group>"; };
 		E0FABEEA20E9948100EB8E28 /* AudioSettings.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioSettings.cxx; sourceTree = "<group>"; };
 		E0FABEED20E994A500EB8E28 /* ConsoleTiming.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConsoleTiming.hxx; sourceTree = "<group>"; };
@@ -1662,6 +1666,8 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				E0EA1FFE227A42D0008BA944 /* Logger.cxx */,
+				E0EA1FFD227A42D0008BA944 /* Logger.hxx */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
@@ -2434,6 +2440,7 @@
 				DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */,
 				DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */,
 				DC5AAC291FCB24AB00C420A6 /* FrameBufferConstants.hxx in Headers */,
+				E0EA1FFF227A42D0008BA944 /* Logger.hxx in Headers */,
 				E0306E0D1F93E916003DDD52 /* FrameLayoutDetector.hxx in Headers */,
 				DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */,
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
@@ -2974,6 +2981,7 @@
 				DC2AADB0194F389C0026C7A4 /* TIASurface.cxx in Sources */,
 				DCBDDE9E1D6A5F2F009DF1E9 /* Cart3EPlus.cxx in Sources */,
 				DCAAE5E61715887B0080BB82 /* CartF4Widget.cxx in Sources */,
+				E0EA2000227A42D0008BA944 /* Logger.cxx in Sources */,
 				DCAAE5E81715887B0080BB82 /* CartF6SCWidget.cxx in Sources */,
 				DCAAE5EA1715887B0080BB82 /* CartF6Widget.cxx in Sources */,
 				DCAAE5EC1715887B0080BB82 /* CartF8SCWidget.cxx in Sources */,

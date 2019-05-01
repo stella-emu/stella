@@ -16,8 +16,10 @@
 //============================================================================
 
 #include <cassert>
+#include <functional>
 
 #include "bspf.hxx"
+#include "Logger.hxx"
 
 #include "MediaFactory.hxx"
 #include "Sound.hxx"
@@ -107,11 +109,16 @@ OSystem::OSystem()
   mySettings = MediaFactory::createSettings();
 
   myPropSet = make_unique<PropertiesSet>();
+
+  Logger::instance().setLogCallback(
+    std::bind(&OSystem::logMessage, this, std::placeholders::_1, std::placeholders::_2)
+  );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
+  Logger::instance().clearLogCallback();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -134,7 +141,7 @@ bool OSystem::create()
   buf
       << "User game properties: '"
       << FilesystemNode(myPropertiesFile).getShortPath() << "'" << endl;
-  logMessage(buf.str(), 1);
+  Logger::log(buf.str(), 1);
 
   // NOTE: The framebuffer MUST be created before any other object!!!
   // Get relevant information about the video hardware
@@ -212,7 +219,7 @@ void OSystem::loadConfig(const Settings::Options& options)
 
   mySettings->setRepository(createSettingsRepository());
 
-  logMessage("Loading config options ...", 2);
+  Logger::log("Loading config options ...", 2);
   mySettings->load(options);
 
   myPropSet->load(myPropertiesFile);
@@ -224,15 +231,15 @@ void OSystem::saveConfig()
   // Ask all subsystems to save their settings
   if(myFrameBuffer)
   {
-    logMessage("Saving TV effects options ...", 2);
+    Logger::log("Saving TV effects options ...", 2);
     myFrameBuffer->tiaSurface().ntsc().saveConfig(settings());
   }
 
-  logMessage("Saving config options ...", 2);
+  Logger::log("Saving config options ...", 2);
   mySettings->save();
 
   if(myPropSet && myPropSet->save(myPropertiesFile))
-    logMessage("Saving properties set ...", 2);
+    Logger::log("Saving properties set ...", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -312,7 +319,7 @@ FBInitStatus OSystem::createFrameBuffer()
       break;
 
     case EventHandlerState::NONE:  // Should never happen
-      logMessage("ERROR: Unknown emulation state in createFrameBuffer()", 0);
+      Logger::log("ERROR: Unknown emulation state in createFrameBuffer()", 0);
       break;
   }
   return fbstatus;
@@ -360,7 +367,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   catch(const runtime_error& e)
   {
     buf << "ERROR: Couldn't create console (" << e.what() << ")";
-    logMessage(buf.str(), 0);
+    Logger::log(buf.str(), 0);
     return buf.str();
   }
 
@@ -378,7 +385,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     myEventHandler->setMouseControllerMode(mySettings->getString("usemouse"));
     if(createFrameBuffer() != FBInitStatus::Success)  // Takes care of initializeVideo()
     {
-      logMessage("ERROR: Couldn't create framebuffer for console", 0);
+      Logger::log("ERROR: Couldn't create framebuffer for console", 0);
       myEventHandler->reset(EventHandlerState::LAUNCHER);
       return "ERROR: Couldn't create framebuffer for console";
     }
@@ -396,7 +403,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     buf << "Game console created:" << endl
         << "  ROM file: " << myRomFile.getShortPath() << endl << endl
         << getROMInfo(*myConsole);
-    logMessage(buf.str(), 1);
+    Logger::log(buf.str(), 1);
 
     myFrameBuffer->setCursorState();
 
@@ -440,7 +447,7 @@ bool OSystem::createLauncher(const string& startdir)
     status = true;
   }
   else
-    logMessage("ERROR: Couldn't create launcher", 0);
+    Logger::log("ERROR: Couldn't create launcher", 0);
 
   myLauncherUsed = myLauncherUsed || status;
   return status;

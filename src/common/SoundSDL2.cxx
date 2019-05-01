@@ -22,6 +22,7 @@
 #include <cmath>
 
 #include "SDL_lib.hxx"
+#include "Logger.hxx"
 #include "FrameBuffer.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
@@ -51,14 +52,14 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
 {
   ASSERT_MAIN_THREAD;
 
-  myOSystem.logMessage("SoundSDL2::SoundSDL2 started ...", 2);
+  Logger::log("SoundSDL2::SoundSDL2 started ...", 2);
 
   if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
     ostringstream buf;
 
     buf << "WARNING: Failed to initialize SDL audio system! " << endl
         << "         " << SDL_GetError() << endl;
-    myOSystem.logMessage(buf.str(), 0);
+    Logger::log(buf.str(), 0);
     return;
   }
 
@@ -68,7 +69,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
 
   mute(true);
 
-  myOSystem.logMessage("SoundSDL2::SoundSDL2 initialized", 2);
+  Logger::log("SoundSDL2::SoundSDL2 initialized", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,7 +107,7 @@ bool SoundSDL2::openDevice()
 
     buf << "WARNING: Couldn't open SDL audio device! " << endl
         << "         " << SDL_GetError() << endl;
-    myOSystem.logMessage(buf.str(), 0);
+    Logger::log(buf.str(), 0);
 
     return myIsInitializedFlag = false;
   }
@@ -119,7 +120,7 @@ void SoundSDL2::setEnabled(bool state)
   myAudioSettings.setEnabled(state);
   if (myAudioQueue) myAudioQueue->ignoreOverflows(!state);
 
-  myOSystem.logMessage(state ? "SoundSDL2::setEnabled(true)" :
+  Logger::log(state ? "SoundSDL2::setEnabled(true)" :
                                "SoundSDL2::setEnabled(false)", 2);
 }
 
@@ -137,13 +138,13 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
 
   myEmulationTiming = emulationTiming;
 
-  myOSystem.logMessage("SoundSDL2::open started ...", 2);
+  Logger::log("SoundSDL2::open started ...", 2);
   mute(true);
 
   audioQueue->ignoreOverflows(!myAudioSettings.enabled());
   if(!myAudioSettings.enabled())
   {
-    myOSystem.logMessage("Sound disabled\n", 1);
+    Logger::log("Sound disabled\n", 1);
     return;
   }
 
@@ -159,12 +160,12 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   // Show some info
   myAboutString = about();
   if(myAboutString != pre_about)
-    myOSystem.logMessage(myAboutString, 1);
+    Logger::log(myAboutString, 1);
 
   // And start the SDL sound subsystem ...
   mute(false);
 
-  myOSystem.logMessage("SoundSDL2::open finished", 2);
+  Logger::log("SoundSDL2::open finished", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,8 +178,6 @@ void SoundSDL2::close()
   if (myAudioQueue) myAudioQueue->closeSink(myCurrentFragment);
   myAudioQueue.reset();
   myCurrentFragment = nullptr;
-
-  myOSystem.logMessage("SoundSDL2::close", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -330,8 +329,6 @@ void SoundSDL2::initResampler()
     return nextFragment;
   };
 
-  StaggeredLogger::Logger logger = [this](string msg) { myOSystem.logMessage(msg, 1); };
-
   Resampler::Format formatFrom =
     Resampler::Format(myEmulationTiming->audioSampleRate(), myAudioQueue->fragmentSize(), myAudioQueue->isStereo());
   Resampler::Format formatTo =
@@ -339,15 +336,15 @@ void SoundSDL2::initResampler()
 
   switch (myAudioSettings.resamplingQuality()) {
     case AudioSettings::ResamplingQuality::nearestNeightbour:
-      myResampler = make_unique<SimpleResampler>(formatFrom, formatTo, nextFragmentCallback, logger);
+      myResampler = make_unique<SimpleResampler>(formatFrom, formatTo, nextFragmentCallback);
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_2:
-      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 2, logger);
+      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 2);
       break;
 
     case AudioSettings::ResamplingQuality::lanczos_3:
-      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 3, logger);
+      myResampler = make_unique<LanczosResampler>(formatFrom, formatTo, nextFragmentCallback, 3);
       break;
 
     default:

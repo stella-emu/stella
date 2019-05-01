@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "StaggeredLogger.hxx"
+#include "Logger.hxx"
 
 #include <ctime>
 
@@ -35,8 +36,9 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaggeredLogger::StaggeredLogger(const string& message, Logger logger)
+StaggeredLogger::StaggeredLogger(const string& message, uInt8 level)
   : myMessage(message),
+    myLevel(level),
     myCurrentEventCount(0),
     myIsCurrentlyCollecting(false),
     myCurrentIntervalSize(100),
@@ -45,9 +47,7 @@ StaggeredLogger::StaggeredLogger(const string& message, Logger logger)
     myCooldownTime(1000),
     myTimer(new TimerManager()),
     myTimerCallbackId(0)
-{
-  if (logger) myLogger = logger;
-}
+{}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaggeredLogger::~StaggeredLogger()
@@ -59,20 +59,6 @@ StaggeredLogger::~StaggeredLogger()
 
   // the worker thread has joined and there will be no more reentrant calls ->
   // continue with destruction
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaggeredLogger::setLogger(Logger logger)
-{
-  std::lock_guard<std::mutex> lock(myMutex);
-
-  _setLogger(logger);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StaggeredLogger::_setLogger(Logger logger)
-{
-  myLogger = logger;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -94,8 +80,6 @@ void StaggeredLogger::_log()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaggeredLogger::logLine()
 {
-  if (!myLogger) return;
-
   high_resolution_clock::time_point now = high_resolution_clock::now();
   Int64 millisecondsSinceIntervalStart =
     duration_cast<duration<Int64, std::milli>>(now - myLastIntervalStartTimestamp).count();
@@ -108,7 +92,7 @@ void StaggeredLogger::logLine()
       << millisecondsSinceIntervalStart << "  milliseconds"
     << ")";
 
-  myLogger(ss.str());
+  Logger::log(ss.str(), myLevel);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

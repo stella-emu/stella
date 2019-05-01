@@ -50,11 +50,11 @@ class Resampler {
 
   public:
 
-    Resampler(Format formatFrom, Format formatTo, NextFragmentCallback nextFragmentCallback, StaggeredLogger::Logger logger) :
+    Resampler(Format formatFrom, Format formatTo, NextFragmentCallback nextFragmentCallback) :
       myFormatFrom(formatFrom),
       myFormatTo(formatTo),
       myNextFragmentCallback(nextFragmentCallback),
-      myUnderrunLogger("audio buffer underrun", logger)
+      myUnderrunLogger("audio buffer underrun", 1)
     {}
 
     virtual void fillFragment(float* fragment, uInt32 length) = 0;
