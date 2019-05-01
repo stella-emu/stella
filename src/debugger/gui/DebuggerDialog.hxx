@@ -74,7 +74,7 @@ class DebuggerDialog : public Dialog
     void showFatalMessage(const string& msg);
 
   private:
-    void center() { positionAt(0); }
+    void center() override { positionAt(0); }
     void loadConfig() override;
     void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

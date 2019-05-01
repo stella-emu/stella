@@ -85,11 +85,11 @@ class LauncherDialog : public Dialog
     void reload() { updateListing(); }
 
   private:
-    void center() { positionAt(0); }
+    void center() override { positionAt(0); }
     void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void handleJoyDown(int stick, int button);
+    void handleJoyDown(int stick, int button) override;
     Event::Type getJoyAxisEvent(int stick, int axis, int value) override;
 
     void loadConfig() override;
