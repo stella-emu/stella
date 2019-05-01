@@ -593,8 +593,10 @@ const Variant& Settings::value(const string& key) const
 void Settings::setValue(const string& key, const Variant& value)
 {
   auto it = myPermanentSettings.find(key);
-  if(it != myPermanentSettings.end())
+  if(it != myPermanentSettings.end()) {
     it->second = value;
+    myRespository->save(key, value);
+  }
   else
     myTemporarySettings[key] = value;
 }

@@ -71,6 +71,24 @@ void KeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void KeyValueRepositorySqlite::save(const string& key, const Variant& value)
+{
+  try {
+    myStmtInsert->reset();
+
+    (*myStmtInsert)
+      .bind(1, key.c_str())
+      .bind(2, value.toCString())
+      .step();
+
+    myStmtInsert->reset();
+  }
+  catch (SqliteError err) {
+    cout << err.message << endl;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyValueRepositorySqlite::initialize()
 {
   myDb.exec(

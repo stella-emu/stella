@@ -26,9 +26,11 @@ class KeyValueRepositoryConfigfile : public KeyValueRepository
 
     KeyValueRepositoryConfigfile(const string& filename);
 
-    virtual std::map<string, Variant> load();
+    std::map<string, Variant> load() override;
 
-    virtual void save(const std::map<string, Variant>& values);
+    void save(const std::map<string, Variant>& values) override;
+
+    void save(const string& key, const Variant& value) override {}
 
   private:
 
