@@ -464,11 +464,11 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
     switch(key)
     {
       case KBDK_F8: // front  ("Skill P2")
-        openSettings();
+        myGlobalProps->open();
         break;
 
       case KBDK_F4: // back ("COLOR", "B/W")
-        myGlobalProps->open();
+        openSettings();
         break;
 
       case KBDK_F11: // front ("LOAD")
@@ -489,6 +489,18 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
   else
     Dialog::handleKeyDown(key, mod);
   #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::handleJoyDown(int stick, int button)
+{
+  // open power-up options for 2nd button if not mapped otherwise
+  Event::Type e = instance().eventHandler().eventForJoyButton(stick, button, kMenuMode);
+
+  if (button == 1 && (e == Event::UICancel || e == Event::NoType))
+    myGlobalProps->open();
+  else
+    Dialog::handleJoyDown(stick, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -541,6 +553,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       showOnlyROMs(myAllFiles ? !myAllFiles->getState() : true);
       updateListing();
       break;
+
     case kLoadROMCmd:
     case ListWidget::kActivatedCmd:
     case ListWidget::kDoubleClickedCmd:

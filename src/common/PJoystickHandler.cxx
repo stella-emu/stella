@@ -307,8 +307,9 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
       setDefaultAxis( stick, 1, 0, Event::UIUp      );
       setDefaultAxis( stick, 1, 1, Event::UIDown    );
 
-      // Left joystick (assume joystick zero, button zero)
+      // joystick (assume buttons zero and one)
       setDefaultBtn( stick, 0, Event::UISelect );
+      setDefaultBtn( stick, 1, Event::UICancel );
 
       setDefaultHat( stick, 0, JoyHat::LEFT,  Event::UINavPrev );
       setDefaultHat( stick, 0, JoyHat::RIGHT, Event::UINavNext );
