@@ -40,11 +40,10 @@ class PropertiesSet
 {
   public:
     /**
-      Create a properties set object from the specified properties file.
+      Trivial constructor.
     */
-    explicit PropertiesSet(const string& propsfile);
+   PropertiesSet() = default;
 
-  public:
     /**
       Load properties from the specified file, and create an internal
       searchable list.
@@ -119,7 +118,6 @@ class PropertiesSet
 
   private:
     // Following constructors and assignment operators not supported
-    PropertiesSet() = delete;
     PropertiesSet(const PropertiesSet&) = delete;
     PropertiesSet(PropertiesSet&&) = delete;
     PropertiesSet& operator=(const PropertiesSet&) = delete;

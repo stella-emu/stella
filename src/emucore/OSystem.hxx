@@ -52,6 +52,10 @@ class AudioSettings;
 #include "bspf.hxx"
 #include "repository/KeyValueRepository.hxx"
 
+#ifdef SQLITE_SUPPORT
+#include "SettingsDb.hxx"
+#endif
+
 /**
   This class provides an interface for accessing operating system specific
   functions.  It also comprises an overall parent object, to which all the
@@ -537,6 +541,10 @@ class OSystem
     // Derived classes are free to ignore it and use their own defaults
     static string ourOverrideBaseDir;
     static bool ourOverrideBaseDirWithApp;
+
+  #ifdef SQLITE_SUPPORT
+    shared_ptr<SettingsDb> mySettingsDb;
+  #endif
 
   private:
     /**

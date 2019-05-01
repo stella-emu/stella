@@ -24,12 +24,6 @@
 #include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PropertiesSet::PropertiesSet(const string& propsfile)
-{
-  load(propsfile);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::load(const string& filename)
 {
   ifstream in(filename);
