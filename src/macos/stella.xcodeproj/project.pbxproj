@@ -1666,8 +1666,6 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				E0EA1FFE227A42D0008BA944 /* Logger.cxx */,
-				E0EA1FFD227A42D0008BA944 /* Logger.hxx */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
@@ -1688,6 +1686,8 @@
 				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
 				DCA078321F8C1B04008EFEE5 /* LinkedObjectPool.hxx */,
+				E0EA1FFE227A42D0008BA944 /* Logger.cxx */,
+				E0EA1FFD227A42D0008BA944 /* Logger.hxx */,
 				DCB20EC61A0C506C0048F595 /* main.cxx */,
 				DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */,
 				DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */,
