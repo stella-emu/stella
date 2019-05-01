@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "KeyValueRepositorySqlite.hxx"
+#include "Logger.hxx"
 #include "SqliteError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,7 +41,7 @@ std::map<string, Variant> KeyValueRepositorySqlite::load()
     myStmtSelect->reset();
   }
   catch (SqliteError err) {
-    cout << err.message << std::endl;
+    Logger::log(err.message, 1);
   }
 
   return values;
@@ -66,7 +67,7 @@ void KeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
     myDb.exec("COMMIT");
   }
   catch (SqliteError err) {
-    cout << err.message << endl;
+    Logger::log(err.message, 1);
   }
 }
 
@@ -84,7 +85,7 @@ void KeyValueRepositorySqlite::save(const string& key, const Variant& value)
     myStmtInsert->reset();
   }
   catch (SqliteError err) {
-    cout << err.message << endl;
+    Logger::log(err.message, 1);
   }
 }
 

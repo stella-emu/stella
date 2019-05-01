@@ -57,10 +57,9 @@ LanczosResampler::LanczosResampler(
   Resampler::Format formatFrom,
   Resampler::Format formatTo,
   Resampler::NextFragmentCallback nextFragmentCallback,
-  uInt32 kernelParameter,
-  StaggeredLogger::Logger logger)
+  uInt32 kernelParameter)
 :
-  Resampler(formatFrom, formatTo, nextFragmentCallback, logger),
+  Resampler(formatFrom, formatTo, nextFragmentCallback),
   // In order to find the number of kernels we need to precompute, we need to find N minimal such that
   //
   // N / formatTo.sampleRate = M / formatFrom.sampleRate

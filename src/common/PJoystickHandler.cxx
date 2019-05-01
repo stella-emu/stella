@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "Logger.hxx"
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "Joystick.hxx"
@@ -153,7 +154,7 @@ bool PhysicalJoystickHandler::remove(int id)
       ostringstream buf;
       buf << "Removed joystick " << mySticks[id]->ID << ":" << endl
           << "  " << mySticks[id]->about() << endl;
-      myOSystem.logMessage(buf.str(), 1);
+      Logger::log(buf.str(), 1);
 
       // Remove joystick, but remember mapping
       it->second.mapping = stick->getMap();

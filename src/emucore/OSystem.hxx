@@ -366,16 +366,6 @@ class OSystem
     void quit() { myQuitLoop = true; }
 
     /**
-      Append a message to the internal log
-      (a newline is automatically added).
-
-      @param message  The message to be appended
-      @param level    If 0, always output the message, only append when
-                      level is less than or equal to that in 'loglevel'
-    */
-    void logMessage(const string& message, uInt8 level);
-
-    /**
       Get the system messages logged up to this point.
 
       @return The list of log messages
@@ -423,6 +413,16 @@ class OSystem
   protected:
 
     virtual shared_ptr<KeyValueRepository> createSettingsRepository();
+
+    /**
+      Append a message to the internal log
+      (a newline is automatically added).
+
+      @param message  The message to be appended
+      @param level    If 0, always output the message, only append when
+                      level is less than or equal to that in 'loglevel'
+    */
+    void logMessage(const string& message, uInt8 level);
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and *must* be

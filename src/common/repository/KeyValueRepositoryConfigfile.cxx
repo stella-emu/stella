@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "KeyValueRepositoryConfigfile.hxx"
+#include "Logger.hxx"
 
 namespace {
   string trim(const string& str)
@@ -41,8 +42,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
 
   ifstream in(myFilename);
   if(!in || !in.is_open()) {
-    // FIXME - make logger available everywhere
-    cout << "ERROR: Couldn't load from settings file " << myFilename << endl;
+    Logger::log("ERROR: Couldn't load from settings file " + myFilename, 1);
 
     return values;
   }
@@ -80,8 +80,7 @@ void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
 {
 ofstream out(myFilename);
   if(!out || !out.is_open()) {
-    // FIXME - make logger available everywhere
-    cout << "ERROR: Couldn't save to settings file " << myFilename << endl;
+    Logger::log("ERROR: Couldn't save to settings file " + myFilename, 1);
 
     return;
   }

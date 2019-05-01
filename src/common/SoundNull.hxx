@@ -19,6 +19,7 @@
 #define SOUND_NULL_HXX
 
 #include "bspf.hxx"
+#include "Logger.hxx"
 #include "Sound.hxx"
 #include "OSystem.hxx"
 #include "AudioQueue.hxx"
@@ -39,7 +40,7 @@ class SoundNull : public Sound
     */
     explicit SoundNull(OSystem& osystem) : Sound(osystem)
     {
-      myOSystem.logMessage("Sound disabled.\n", 1);
+      Logger::log("Sound disabled.\n", 1);
     }
 
     /**
