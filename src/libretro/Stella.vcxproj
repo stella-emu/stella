@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\Logger.cxx" />
     <ClCompile Include="libretro.cxx" />
     <ClCompile Include="EventHandlerLIBRETRO.cxx" />
     <ClCompile Include="FBSurfaceLIBRETRO.cxx" />
@@ -318,6 +319,7 @@
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\LinkedObjectPool.hxx" />
+    <ClInclude Include="..\common\Logger.hxx" />
     <ClInclude Include="..\common\MediaFactory.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
     <ClInclude Include="..\common\PhysicalJoystick.hxx" />
