@@ -387,7 +387,7 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
   if (enable)
   {
     bool autoDetect = false;
-    BytePtr image;
+    ByteBuffer image;
     string md5 = props.get(PropType::Cart_MD5);
     uInt32 size = 0;
     const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());

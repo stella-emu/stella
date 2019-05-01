@@ -32,22 +32,18 @@
     #include "SettingsR77.hxx"
     #include "OSystemR77.hxx"
   #else
-    #include "SettingsUNIX.hxx"
     #include "OSystemUNIX.hxx"
   #endif
 #elif defined(BSPF_WINDOWS)
   #include "SerialPortWINDOWS.hxx"
-  #include "SettingsWINDOWS.hxx"
   #include "OSystemWINDOWS.hxx"
 #elif defined(BSPF_MACOS)
   #include "SerialPortMACOS.hxx"
-  #include "SettingsMACOS.hxx"
   #include "OSystemMACOS.hxx"
   extern "C" {
     int stellaMain(int argc, char* argv[]);
   }
 #elif defined(__LIB_RETRO__)
-  #include "SettingsLIBRETRO.hxx"
   #include "OSystemLIBRETRO.hxx"
 #else
   #error Unsupported platform!
@@ -112,20 +108,10 @@ class MediaFactory
 
     static unique_ptr<Settings> createSettings()
     {
-    #if defined(BSPF_UNIX)
-      #if defined(RETRON77)
-        return make_unique<SettingsR77>();
-      #else
-        return make_unique<SettingsUNIX>();
-      #endif
-    #elif defined(BSPF_WINDOWS)
-      return make_unique<SettingsWINDOWS>();
-    #elif defined(BSPF_MACOS)
-      return make_unique<SettingsMACOS>();
-    #elif defined(__LIB_RETRO__)
-      return make_unique<SettingsLIBRETRO>();
+    #ifdef RETRON77
+      return make_unique<SettingsR77>();
     #else
-      #error Unsupported platform for Settings!
+      return make_unique<Settings>();
     #endif
     }
 

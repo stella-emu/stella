@@ -20,7 +20,7 @@
 #include "Cart3EPlus.hxx"
 
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge3EPlus::Cartridge3EPlus(const BytePtr& image, uInt32 size,
+Cartridge3EPlus::Cartridge3EPlus(const ByteBuffer& image, uInt32 size,
                                  const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size)

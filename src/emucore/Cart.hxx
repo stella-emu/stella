@@ -302,7 +302,7 @@ class Cartridge : public Device
 
     // The array containing information about every byte of ROM indicating
     // whether it is used as code.
-    BytePtr myCodeAccessBase;
+    ByteBuffer myCodeAccessBase;
 
   private:
     // The startup bank to use (where to look for the reset vector address)

@@ -47,7 +47,7 @@ class ZipHandler
 
     // Decompress the currently selected file and return its length
     // An exception will be thrown on any errors
-    uInt64 decompress(BytePtr& image);
+    uInt64 decompress(ByteBuffer& image);
 
     // Answer the number of ROM files (with a valid extension) found
     uInt16 romFiles() const { return myZip ? myZip->myRomfiles : 0; }
@@ -112,11 +112,11 @@ class ZipHandler
 
       ZipEcd    myEcd;    // end of central directory
 
-      BytePtr   myCd;     // central directory raw data
+      ByteBuffer   myCd;     // central directory raw data
       uInt64    myCdPos;  // position in central directory
       ZipHeader myHeader; // current file header
 
-      BytePtr myBuffer;   // buffer for decompression
+      ByteBuffer myBuffer;   // buffer for decompression
 
       /** Constructor */
       explicit ZipFile(const string& filename);
@@ -134,22 +134,22 @@ class ZipHandler
       void readEcd();
 
       /** Read data from stream */
-      bool readStream(BytePtr& out, uInt64 offset, uInt64 length, uInt64& actual);
+      bool readStream(ByteBuffer& out, uInt64 offset, uInt64 length, uInt64& actual);
 
       /** Return the next entry in the ZIP file */
       const ZipHeader* const nextFile();
 
       /** Decompress the most recently found file in the ZIP into target buffer */
-      void decompress(BytePtr& out, uInt64 length);
+      void decompress(ByteBuffer& out, uInt64 length);
 
       /** Return the offset of the compressed data */
       uInt64 getCompressedDataOffset();
 
       /** Decompress type 0 data (which is uncompressed) */
-      void decompressDataType0(uInt64 offset, BytePtr& out, uInt64 length);
+      void decompressDataType0(uInt64 offset, ByteBuffer& out, uInt64 length);
 
       /** Decompress type 8 data (which is deflated) */
-      void decompressDataType8(uInt64 offset, BytePtr& out, uInt64 length);
+      void decompressDataType8(uInt64 offset, ByteBuffer& out, uInt64 length);
     };
     using ZipFilePtr = unique_ptr<ZipFile>;
 

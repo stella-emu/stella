@@ -19,7 +19,7 @@
 #include "CartDPC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPC::CartridgeDPC(const BytePtr& image, uInt32 size,
+CartridgeDPC::CartridgeDPC(const ByteBuffer& image, uInt32 size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),

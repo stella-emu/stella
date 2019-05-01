@@ -19,7 +19,7 @@
 #include "CartE78K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE78K::CartridgeE78K(const BytePtr& image, uInt32 size,
+CartridgeE78K::CartridgeE78K(const ByteBuffer& image, uInt32 size,
                              const string& md5, const Settings& settings)
   : CartridgeMNetwork(image, size, md5, settings)
 {

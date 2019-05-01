@@ -21,7 +21,7 @@
 #include "CartCM.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCM::CartridgeCM(const BytePtr& image, uInt32 size,
+CartridgeCM::CartridgeCM(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySWCHA(0xFF),   // portA is all 1's

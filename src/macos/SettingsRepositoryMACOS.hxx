@@ -15,10 +15,17 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "SettingsUNIX.hxx"
+#ifndef SETTINGS_REPOSITORY_MACOS_HXX
+#define SETTINGS_REPOSITORY_MACOS_HXX
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsUNIX::SettingsUNIX()
-  : Settings()
+#include "repository/KeyValueRepository.hxx"
+
+class SettingsRepositoryMACOS : public KeyValueRepository
 {
-}
+public:
+  virtual std::map<string, Variant> load();
+
+  virtual void save(const std::map<string, Variant>& values);
+};
+
+#endif // SETTINGS_REPOSITORY_MACOS_HXX

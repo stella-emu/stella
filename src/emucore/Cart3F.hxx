@@ -51,7 +51,7 @@ class Cartridge3F : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge3F(const BytePtr& image, uInt32 size, const string& md5,
+    Cartridge3F(const ByteBuffer& image, uInt32 size, const string& md5,
                 const Settings& settings);
     virtual ~Cartridge3F() = default;
 
@@ -157,7 +157,7 @@ class Cartridge3F : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    BytePtr myImage;
+    ByteBuffer myImage;
 
     // Size of the ROM image
     uInt32 mySize;

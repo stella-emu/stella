@@ -54,7 +54,7 @@ class Cartridge3EPlus: public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge3EPlus(const BytePtr& image, uInt32 size, const string& md5,
+    Cartridge3EPlus(const ByteBuffer& image, uInt32 size, const string& md5,
                     const Settings& settings);
     virtual ~Cartridge3EPlus() = default;
 
@@ -178,7 +178,7 @@ class Cartridge3EPlus: public Cartridge
 
     static constexpr uInt16 RAM_WRITE_OFFSET = 0x200;
 
-    BytePtr myImage;  // Pointer to a dynamically allocated ROM image of the cartridge
+    ByteBuffer myImage;  // Pointer to a dynamically allocated ROM image of the cartridge
     uInt32  mySize;   // Size of the ROM image
     uInt8 myRAM[RAM_TOTAL_SIZE];
 

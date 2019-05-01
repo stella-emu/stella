@@ -15,28 +15,20 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef SETTINGS_LIBRETRO_HXX
-#define SETTINGS_LIBRETRO_HXX
+#ifndef KEY_VALUE_REPOSITORY_NOOP_HXX
+#define KEY_VALUE_REPOSITORY_NOOP_HXX
 
-class OSystem;
+#include "KeyValueRepository.hxx"
 
-#include "Settings.hxx"
-
-class SettingsLIBRETRO : public Settings
+class KeyValueRepositoryNoop : public KeyValueRepository
 {
   public:
-    /**
-      Create a new LIBRETRO settings object
-    */
-    explicit SettingsLIBRETRO();
-    virtual ~SettingsLIBRETRO() = default;
 
-  private:
-    // Following constructors and assignment operators not supported
-    SettingsLIBRETRO(const SettingsLIBRETRO&) = delete;
-    SettingsLIBRETRO(SettingsLIBRETRO&&) = delete;
-    SettingsLIBRETRO& operator=(const SettingsLIBRETRO&) = delete;
-    SettingsLIBRETRO& operator=(SettingsLIBRETRO&&) = delete;
+    virtual std::map<string, Variant> load() {
+      return std::map<string, Variant>();
+    }
+
+    virtual void save(const std::map<string, Variant>& values) {}
 };
 
-#endif
+#endif // KEY_VALUE_REPOSITORY_NOOP_HXX

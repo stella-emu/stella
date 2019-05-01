@@ -137,7 +137,7 @@ class PNGLibrary
     // The following data remains between invocations of allocateStorage,
     // and is only changed when absolutely necessary.
     struct ReadInfoType {
-      BytePtr buffer;
+      ByteBuffer buffer;
       unique_ptr<png_bytep[]> row_pointers;
       png_uint_32 width, height, pitch;
       uInt32 buffer_size, row_size;

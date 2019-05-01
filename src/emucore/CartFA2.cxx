@@ -22,7 +22,7 @@
 #include "CartFA2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA2::CartridgeFA2(const BytePtr& image, uInt32 size,
+CartridgeFA2::CartridgeFA2(const ByteBuffer& image, uInt32 size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(28 * 1024),
