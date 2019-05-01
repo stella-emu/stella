@@ -48,7 +48,7 @@ class CartridgeCV : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeCV(const BytePtr& image, uInt32 size, const string& md5,
+    CartridgeCV(const ByteBuffer& image, uInt32 size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeCV() = default;
 
@@ -138,7 +138,7 @@ class CartridgeCV : public Cartridge
   private:
     // Pointer to the initial RAM data from the cart
     // This doesn't always exist, so we don't pre-allocate it
-    BytePtr myInitialRAM;
+    ByteBuffer myInitialRAM;
 
     // Initial size of the cart data
     uInt32 mySize;

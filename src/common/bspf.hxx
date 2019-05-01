@@ -83,7 +83,7 @@ using BoolArray = std::vector<bool>;
 using ByteArray = std::vector<uInt8>;
 using ShortArray = std::vector<uInt16>;
 using StringList = std::vector<std::string>;
-using BytePtr = std::unique_ptr<uInt8[]>;
+using ByteBuffer = std::unique_ptr<uInt8[]>;
 
 static const string EmptyString("");
 

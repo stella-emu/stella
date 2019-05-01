@@ -381,6 +381,7 @@
     <ClCompile Include="..\common\PhysicalJoystick.cxx" />
     <ClCompile Include="..\common\PJoystickHandler.cxx" />
     <ClCompile Include="..\common\PKeyboardHandler.cxx" />
+    <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx" />
     <ClCompile Include="..\common\RewindManager.cxx" />
     <ClCompile Include="..\common\StaggeredLogger.cxx" />
     <ClCompile Include="..\common\StateManager.cxx" />
@@ -512,7 +513,6 @@
     <ClCompile Include="OSystemWINDOWS.cxx" />
     <ClCompile Include="..\common\PNGLibrary.cxx" />
     <ClCompile Include="SerialPortWINDOWS.cxx" />
-    <ClCompile Include="SettingsWINDOWS.cxx" />
     <ClCompile Include="..\common\SoundSDL2.cxx" />
     <ClCompile Include="..\emucore\AtariVox.cxx" />
     <ClCompile Include="..\emucore\Booster.cxx" />
@@ -1076,6 +1076,9 @@
     <ClInclude Include="..\common\PhysicalJoystick.hxx" />
     <ClInclude Include="..\common\PJoystickHandler.hxx" />
     <ClInclude Include="..\common\PKeyboardHandler.hxx" />
+    <ClInclude Include="..\common\repository\KeyValueRepository.hxx" />
+    <ClInclude Include="..\common\repository\KeyValueRepositoryConfigfile.hxx" />
+    <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx" />
     <ClInclude Include="..\common\RewindManager.hxx" />
     <ClInclude Include="..\common\StaggeredLogger.hxx" />
     <ClInclude Include="..\common\StateManager.hxx" />
@@ -1237,7 +1240,6 @@
     <ClInclude Include="OSystemWINDOWS.hxx" />
     <ClInclude Include="..\common\PNGLibrary.hxx" />
     <ClInclude Include="SerialPortWINDOWS.hxx" />
-    <ClInclude Include="SettingsWINDOWS.hxx" />
     <ClInclude Include="..\common\SoundSDL2.hxx" />
     <ClInclude Include="..\common\Stack.hxx" />
     <ClInclude Include="..\common\Version.hxx" />

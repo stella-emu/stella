@@ -64,6 +64,12 @@
     <Filter Include="Header Files\emucore\exception">
       <UniqueIdentifier>{fb5429b5-4ffb-4574-a98d-54ba865e4199}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\repository">
+      <UniqueIdentifier>{6960ed3f-a5e0-4af6-af20-e9308167ae63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\repository">
+      <UniqueIdentifier>{1aab46fa-ee39-415d-9e41-d5ad3ee14ce7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\FrameBufferSDL2.cxx">
@@ -79,9 +85,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SerialPortWINDOWS.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SettingsWINDOWS.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\SoundSDL2.cxx">
@@ -963,6 +966,9 @@
     <ClCompile Include="..\gui\MinUICommandDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx">
+      <Filter>Source Files\repository</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -981,9 +987,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SerialPortWINDOWS.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SettingsWINDOWS.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\SoundSDL2.hxx">
@@ -1969,6 +1972,15 @@
     </ClInclude>
     <ClInclude Include="..\gui\MinUICommandDialog.hxx">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\KeyValueRepository.hxx">
+      <Filter>Header Files\repository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\KeyValueRepositoryConfigfile.hxx">
+      <Filter>Header Files\repository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx">
+      <Filter>Header Files\repository</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

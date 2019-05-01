@@ -41,7 +41,7 @@
 #define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
+CartridgeBUS::CartridgeBUS(const ByteBuffer& image, uInt32 size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     myAudioCycles(0),

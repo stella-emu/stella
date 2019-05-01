@@ -62,7 +62,7 @@ class StellaLIBRETRO
     uInt32 getROMSize() { return rom_size; }
     uInt32 getROMMax() { return 512 * 1024; }
 
-    uInt8* getRAM() { return myOSystem->console().system().m6532().getRAM(); }
+    uInt8* getRAM() { return system_ram; }
     uInt32 getRAMSize() { return 128; }
 
     size_t getStateSize();
@@ -151,7 +151,9 @@ class StellaLIBRETRO
     uInt32 audio_samples;
 
     // (31440 rate / 50 Hz) * 16-bit stereo * 1.25x padding
-    static const uInt32 audio_buffer_max = (31440 / 50 * 4 * 5) / 4;
+    const uInt32 audio_buffer_max = (31440 / 50 * 4 * 5) / 4;
+
+    uInt8 system_ram[128];
 
   private:
     string video_palette;

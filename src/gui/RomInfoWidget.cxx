@@ -137,7 +137,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   string right = myProperties.get(PropType::Controller_Right);
   try
   {
-    BytePtr image;
+    ByteBuffer image;
     string md5 = myProperties.get(PropType::Cart_MD5);
     uInt32 size = 0;
 

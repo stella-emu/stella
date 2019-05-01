@@ -15,34 +15,39 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "FSNode.hxx"
-#include "OSystemMACOS.hxx"
+#import <Cocoa/Cocoa.h>
+
 #include "SettingsRepositoryMACOS.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemMACOS::getBaseDirAndConfig(string& basedir, string& cfgfile,
-        string& savedir, string& loaddir,
-        bool useappdir, const string& usedir)
+std::map<string, Variant> SettingsRepositoryMACOS::load()
 {
-  basedir = "~/Library/Application Support/Stella/";
+  std::map<string, Variant> values;
 
-#if 0
-  // Check to see if basedir overrides are active
-  if(useappdir)
-    cout << "ERROR: base dir in app folder not supported" << endl;
-  else if(usedir != "")
-  {
-    basedir = FilesystemNode(usedir).getPath();
-    savedir = loaddir = basedir;
+  @autoreleasepool {
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSArray* keys = [[defaults dictionaryRepresentation] allKeys];
+
+    for (NSString* key in keys) {
+      NSString* value = [defaults stringForKey:key];
+      if (value != nil)
+        values[[key UTF8String]] = string([value UTF8String]);
+    }
   }
-#endif
 
-  FilesystemNode desktop("~/Desktop/");
-  savedir = loaddir = desktop.isDirectory() ? desktop.getShortPath() : "~/";
+  return values;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<KeyValueRepository> OSystemMACOS::createSettingsRepository()
+void SettingsRepositoryMACOS::save(const std::map<string, Variant>& values)
 {
-  return make_shared<SettingsRepositoryMACOS>();
+  @autoreleasepool {
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+
+    for (const auto& pair: values)
+      [defaults
+        setObject:[NSString stringWithUTF8String:pair.second.toCString()]
+        forKey:[NSString stringWithUTF8String:pair.first.c_str()]
+      ];
+  }
 }

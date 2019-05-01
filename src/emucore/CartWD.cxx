@@ -21,7 +21,7 @@
 #include "CartWD.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeWD::CartridgeWD(const BytePtr& image, uInt32 size,
+CartridgeWD::CartridgeWD(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(std::min(8195u, size)),

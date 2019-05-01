@@ -123,14 +123,12 @@ class M6532 : public Device
      */
     void updateEmulation();
 
-  #ifdef __LIB_RETRO__
     /**
       Get a pointer to the RAM contents.
 
       @return  Pointer to RAM array.
     */
-    uInt8* getRAM() { return myRAM; }
-  #endif
+    const uInt8* getRAM() const { return myRAM; }
 
   private:
 
@@ -221,11 +219,11 @@ class M6532 : public Device
 #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of RIOT
     // indicating whether and how (RW) it is used.
-    BytePtr myRAMAccessBase;
-    BytePtr myStackAccessBase;
-    BytePtr myIOAccessBase;
+    ByteBuffer myRAMAccessBase;
+    ByteBuffer myStackAccessBase;
+    ByteBuffer myIOAccessBase;
     // The array used to skip the first ZP access tracking
-    BytePtr myZPAccessDelay;
+    ByteBuffer myZPAccessDelay;
 
     static constexpr uInt16
       RAM_SIZE = 0x80, RAM_MASK = RAM_SIZE - 1,

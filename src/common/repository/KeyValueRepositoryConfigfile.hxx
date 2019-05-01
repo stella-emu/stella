@@ -15,10 +15,24 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "SettingsLIBRETRO.hxx"
+#ifndef KEY_VALUE_REPOSITORY_CONFIGFILE_HXX
+#define KEY_VALUE_REPOSITORY_CONFIGFILE_HXX
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SettingsLIBRETRO::SettingsLIBRETRO()
-  : Settings()
+#include "KeyValueRepository.hxx"
+
+class KeyValueRepositoryConfigfile : public KeyValueRepository
 {
-}
+  public:
+
+    KeyValueRepositoryConfigfile(const string& filename);
+
+    virtual std::map<string, Variant> load();
+
+    virtual void save(const std::map<string, Variant>& values);
+
+  private:
+
+    const string& myFilename;
+};
+
+#endif // KEY_VALUE_REPOSITORY_CONFIGFILE_HXX

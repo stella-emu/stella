@@ -57,7 +57,7 @@ class CartridgeCVPlus : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeCVPlus(const BytePtr& image, uInt32 size, const string& md5,
+    CartridgeCVPlus(const ByteBuffer& image, uInt32 size, const string& md5,
                     const Settings& settings);
     virtual ~CartridgeCVPlus() = default;
 
@@ -163,7 +163,7 @@ class CartridgeCVPlus : public Cartridge
 
   private:
     // Pointer to a dynamically allocated ROM image of the cartridge
-    BytePtr myImage;
+    ByteBuffer myImage;
 
     // The 1024 bytes of RAM
     uInt8 myRAM[1024];

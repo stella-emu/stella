@@ -57,7 +57,7 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
+CartridgeCDF::CartridgeCDF(const ByteBuffer& image, uInt32 size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     myAudioCycles(0),

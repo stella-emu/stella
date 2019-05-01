@@ -32,7 +32,7 @@ namespace MD5 {
   @param length The length of the message
   @return The message-digest
 */
-string hash(const BytePtr& buffer, uInt32 length);
+string hash(const ByteBuffer& buffer, uInt32 length);
 string hash(const uInt8* buffer, uInt32 length);
 
 /**

@@ -45,7 +45,7 @@ class Cartridge4K : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    Cartridge4K(const BytePtr& image, uInt32 size, const string& md5,
+    Cartridge4K(const ByteBuffer& image, uInt32 size, const string& md5,
                 const Settings& settings);
     virtual ~Cartridge4K() = default;
 
