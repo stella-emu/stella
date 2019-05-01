@@ -969,6 +969,9 @@
     <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx">
       <Filter>Source Files\repository</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\Logger.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1981,6 +1984,9 @@
     </ClInclude>
     <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx">
       <Filter>Header Files\repository</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\Logger.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
