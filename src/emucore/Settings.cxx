@@ -608,10 +608,12 @@ void Settings::setValue(const string& key, const Variant& value)
 void Settings::setPermanent(const string& key, const Variant& value)
 {
   myPermanentSettings[key] = value;
+  myTemporarySettings.erase(key);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setTemporary(const string& key, const Variant& value)
 {
   myTemporarySettings[key] = value;
+  myPermanentSettings.erase(key);
 }
