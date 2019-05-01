@@ -40,9 +40,9 @@ class NTSCFilter
     // Set one of the available preset adjustments (Composite, S-Video, RGB, etc)
     enum class Preset {
       OFF,
-      COMPOSITE,
-      SVIDEO,
       RGB,
+      SVIDEO,
+      COMPOSITE,
       BAD,
       CUSTOM
     };

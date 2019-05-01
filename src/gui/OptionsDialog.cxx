@@ -54,24 +54,26 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   // do not show basic settings options in debugger
   bool minSettings = osystem.settings().getBool("minimal_ui") && mode != Menu::AppMode::debugger;
   const int buttonHeight = _font.getLineHeight() + 6,
-            rowHeight = _font.getLineHeight() + 10;
-  const int VBORDER = 10 + _th;
-  int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + 20;
+    GAP = buttonHeight > 26 ? 5 : 4,
+    rowHeight = buttonHeight + GAP;
+  const int VBORDER = GAP * 2 + 2;
+  const int HBORDER = GAP * 2 + 2;
+  int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + GAP * 5;
 
-  _w = 2 * buttonWidth + 30;
-  _h = 7 * rowHeight + 15 + _th;
+  _w = 2 * buttonWidth + HBORDER * 3;
+  _h = 7 * rowHeight + VBORDER * 2 - GAP + _th;
 
-  int xoffset = 10, yoffset = VBORDER;
+  int xoffset = HBORDER, yoffset = VBORDER + _th;
   WidgetArray wid;
   ButtonWidget* b = nullptr;
 
   if (minSettings)
   {
     ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
-      _w - 10 * 2, buttonHeight, "Switch to Basic Settings" + ELLIPSIS, kBasSetCmd);
+      _w - HBORDER * 2, buttonHeight, "Switch to Basic Settings" + ELLIPSIS, kBasSetCmd);
     wid.push_back(bw);
-    yoffset += rowHeight + 8;
-    _h += rowHeight + 8;
+    yoffset += rowHeight + GAP * 2;
+    _h += rowHeight + GAP * 2;
   }
 
   auto ADD_OD_BUTTON = [&](const string& label, int cmd)
@@ -105,7 +107,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
 
   // Move to second column
-  xoffset += buttonWidth + 10;  yoffset = minSettings ? VBORDER + rowHeight + 8 : VBORDER;
+  xoffset += buttonWidth + HBORDER;
+  yoffset = minSettings ? VBORDER + _th + rowHeight + GAP * 2 : VBORDER + _th;
 
   myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd);
   wid.push_back(myGameInfoButton);
@@ -128,8 +131,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd);
   wid.push_back(b);
 
-  buttonWidth = _font.getStringWidth("   Close   ") + 20;
-  xoffset -= (buttonWidth + 10) / 2;
+  buttonWidth = _font.getStringWidth("   Close   ") + GAP * 5;
+  xoffset -= (buttonWidth + HBORDER) / 2;
   b = ADD_OD_BUTTON("Close", kExitCmd);
   wid.push_back(b);
   addCancelWidget(b);
