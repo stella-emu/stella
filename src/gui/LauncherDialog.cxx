@@ -455,8 +455,11 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
   // Control-R (reload ROM listing)
   if(StellaModTest::isControl(mod) && key == KBDK_R)
     updateListing();
-//#ifdef RETRON77 // debugging only, FIX ME!
-  else if(myUseMinimalUI)
+  // FIXME - use the R77 define in the final release
+  //         use the '1' define for testing
+  #if defined(RETRON77)
+//  #if 1
+  else
     // handle keys used by R77
     switch(key)
     {
@@ -469,22 +472,23 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
         break;
 
       case KBDK_F11: // front ("LOAD")
-        // convert unused previous item key into page-up key
-        Dialog::handleKeyDown(KBDK_F13, mod);
+        // convert unused previous item key into page-up event
+        _focusedWidget->handleEvent(Event::UIPgUp);
         break;
 
       case KBDK_F1: // front ("MODE")
-        // convert unused next item key into page-down key
-        Dialog::handleKeyDown(KBDK_BACKSPACE, mod);
+        // convert unused next item key into page-down event
+        _focusedWidget->handleEvent(Event::UIPgDown);
         break;
 
       default:
         Dialog::handleKeyDown(key, mod);
         break;
     }
-//#endif // debugging only, FIX ME!
+  #else
   else
     Dialog::handleKeyDown(key, mod);
+  #endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

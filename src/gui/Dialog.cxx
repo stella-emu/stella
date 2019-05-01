@@ -416,6 +416,17 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
     }
   }
 
+  // FIXME - use the R77 define in the final release
+  //         use the '1' define for testing
+  #if defined(RETRON77)
+//  #if 1
+  // special keys used for R77
+  if (key == KBDK_F13 && cycleTab(-1))
+    return;
+  if (key == KBDK_BACKSPACE && cycleTab(1))
+    return;
+  #endif
+
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
   if(e == Event::NoType)
