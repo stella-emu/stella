@@ -45,13 +45,14 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   VariantList items;
 
   // Set real dimensions
-  setSize(33 * fontWidth + HBORDER * 2, 14 * (lineHeight + VGAP) + VGAP * 9 + 6 + _th, max_w, max_h);
+  setSize(33 * fontWidth + HBORDER * 2 + 3, 15 * (lineHeight + VGAP) + VGAP * 9 + 6 + _th, max_w, max_h);
 
   xpos = HBORDER;
   ypos = VBORDER + _th;
 
   myAdvancedSettings = new ButtonWidget(this, font, xpos, ypos, _w - HBORDER * 2, buttonHeight,
     "Switch to Advanced Settings" + ELLIPSIS, kAdvancedSettings);
+  wid.push_back(myAdvancedSettings);
   ypos += lineHeight + VGAP*4;
 
   new StaticTextWidget(this, font, xpos, ypos + 1, "Global settings:");
@@ -83,14 +84,26 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos, 
   const int VGAP = 4;
   const int lineHeight = font.getLineHeight();
   VariantList items;
-  int pwidth = font.getStringWidth("Bad adjust"); // align width with other popup
+  int pwidth = font.getStringWidth("Right bottom"); // align width with other popup
 
   ypos += 1;
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
-  myThemePopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items, "UI theme ");
+  myThemePopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items, "UI theme         ");
   wid.push_back(myThemePopup);
+  ypos += lineHeight + VGAP;
+
+  // Dialog position
+  items.clear();
+  VarList::push_back(items, "Centered", 0);
+  VarList::push_back(items, "Left top", 1);
+  VarList::push_back(items, "Right top", 2);
+  VarList::push_back(items, "Right bottom", 3);
+  VarList::push_back(items, "Left bottom", 4);
+  myPositionPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+    items, "Dialogs position ");
+  wid.push_back(myPositionPopup);
   ypos += lineHeight + VGAP;
 }
 
@@ -113,11 +126,11 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
   VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
-  int lwidth = font.getStringWidth("TV mode  ");
+  int lwidth = font.getStringWidth("TV mode    ");
   int pwidth = font.getStringWidth("Bad adjust");
 
   myTVMode = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-    items, "TV mode ", lwidth);
+    items, "TV mode     ");
   wid.push_back(myTVMode);
   ypos += lineHeight + VGAP * 2;
 
@@ -128,7 +141,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   myTVScanlines = new StaticTextWidget(this, font, xpos, ypos + 1, "Scanlines:");
   ypos += lineHeight;
   myTVScanIntense = new SliderWidget(this, font, xpos + INDENT, ypos-1, swidth, lineHeight,
-    "Intensity ", lwidth, kScanlinesChanged, fontWidth * 3);
+    "Intensity ", lwidth, kScanlinesChanged, fontWidth * 2);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
   myTVScanIntense->setTickmarkInterval(2);
   wid.push_back(myTVScanIntense);
@@ -139,7 +152,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   ypos += lineHeight;
   // TV Phosphor blend level
   myTVPhosLevel = new SliderWidget(this, font, xpos + INDENT, ypos-1, swidth, lineHeight,
-    "Blend     ", lwidth, kPhosphorChanged, fontWidth * 3);
+    "Blend     ", lwidth, kPhosphorChanged, fontWidth * 2);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
   myTVPhosLevel->setTickmarkInterval(2);
   wid.push_back(myTVPhosLevel);
@@ -195,6 +208,8 @@ void StellaSettingsDialog::loadConfig()
   // UI palette
   const string& theme = settings.getString("uipalette");
   myThemePopup->setSelected(theme, "standard");
+  // Dialog position
+  myPositionPopup->setSelected(settings.getString("dialogpos"), "0");
 
   // TV Mode
   myTVMode->setSelected(
@@ -230,6 +245,9 @@ void StellaSettingsDialog::saveConfig()
   settings.setValue("uipalette",
     myThemePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
+
+  // Dialog position
+  settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
 
   // TV Mode
   instance().settings().setValue("tv.filter",
@@ -269,6 +287,8 @@ void StellaSettingsDialog::setDefaults()
 {
   // UI Theme
   myThemePopup->setSelected("standard");
+  // Dialog position
+  myPositionPopup->setSelected("0");
 
   // TV effects
   myTVMode->setSelected("RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));

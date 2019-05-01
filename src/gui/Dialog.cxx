@@ -95,7 +95,7 @@ void Dialog::open()
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
   // dialogs cause drawing to occur within loadConfig()
-  if(_surface == nullptr)
+  if (_surface == nullptr)
     _surface = instance().frameBuffer().allocateSurface(_w, _h);
   parent().addDialog(this);
 
@@ -107,6 +107,13 @@ void Dialog::open()
       buildCurrentFocusList(tabfocus.widget->getID());
   else
     buildCurrentFocusList();
+
+  /*if (!_surface->attributes().blending)
+  {
+    _surface->attributes().blending = true;
+    _surface->attributes().blendalpha = 90;
+    _surface->applyAttributes();
+  }*/
 
   loadConfig(); // has to be done AFTER (re)building the focus list
 
@@ -149,9 +156,43 @@ void Dialog::setTitle(const string& title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::center()
 {
+  positionAt(instance().settings().getInt("dialogpos"));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::positionAt(uInt32 pos)
+{
   const GUI::Size& screen = instance().frameBuffer().screenSize();
   const GUI::Rect& dst = _surface->dstRect();
-  _surface->setDstPos((screen.w - dst.width()) >> 1, (screen.h - dst.height()) >> 1);
+
+  int top = std::min(screen.h - dst.height(), screen.h >> 5);
+  int btm = std::min(screen.h - dst.height(), screen.h - dst.height() - (screen.h >> 5));
+  int left = std::min(screen.w - dst.width(), screen.w >> 5);
+  int right = std::min(screen.w - dst.width(), screen.w - dst.width() - (screen.w >> 5));
+
+  switch (pos)
+  {
+    case 1:
+      _surface->setDstPos(left, top);
+      break;
+
+    case 2:
+      _surface->setDstPos(right, top);
+      break;
+
+    case 3:
+      _surface->setDstPos(right, btm);
+      break;
+
+    case 4:
+      _surface->setDstPos(left, btm);
+      break;
+
+    default:
+      // center
+      _surface->setDstPos((screen.w - dst.width()) >> 1, (screen.h - dst.height()) >> 1);
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

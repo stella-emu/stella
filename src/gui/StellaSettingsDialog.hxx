@@ -63,6 +63,7 @@ class StellaSettingsDialog : public Dialog
 
     // UI theme
     PopUpWidget*      myThemePopup;
+    PopUpWidget*      myPositionPopup;
 
     // TV effects
     PopUpWidget*      myTVMode;
