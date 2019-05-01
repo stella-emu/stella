@@ -1,6 +1,9 @@
 config.log
 config.mak
 src/**/*/.deps
+src/**/*.so
+src/**/*.dylib
+src/**/*.dll
 src/**/*.o
 out
 out.pgo
