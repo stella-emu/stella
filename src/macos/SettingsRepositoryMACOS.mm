@@ -51,3 +51,14 @@ void SettingsRepositoryMACOS::save(const std::map<string, Variant>& values)
       ];
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SettingsRepositoryMACOS::save(const string& key, const Variant& value)
+{
+  @autoreleasepool {
+    [[NSUserDefaults standardUserDefaults]
+      setObject:[NSString stringWithUTF8String:value.toCString()]
+      forKey:[NSString stringWithUTF8String:key.c_str()]
+    ];
+  }
+}

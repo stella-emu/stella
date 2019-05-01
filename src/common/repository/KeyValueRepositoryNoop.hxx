@@ -24,11 +24,13 @@ class KeyValueRepositoryNoop : public KeyValueRepository
 {
   public:
 
-    virtual std::map<string, Variant> load() {
+    virtual std::map<string, Variant> load() override {
       return std::map<string, Variant>();
     }
 
-    virtual void save(const std::map<string, Variant>& values) {}
+    void save(const std::map<string, Variant>& values) override {}
+
+    void save(const string& key, const Variant& value) override {}
 };
 
 #endif // KEY_VALUE_REPOSITORY_NOOP_HXX
