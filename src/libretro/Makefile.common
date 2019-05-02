@@ -19,6 +19,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/common/Base.cxx \
 	$(CORE_DIR)/common/FpsMeter.cxx \
 	$(CORE_DIR)/common/FSNodeZIP.cxx \
+	$(CORE_DIR)/common/Logger.cxx \
 	$(CORE_DIR)/common/MouseControl.cxx \
 	$(CORE_DIR)/common/PhysicalJoystick.cxx \
 	$(CORE_DIR)/common/PJoystickHandler.cxx \
