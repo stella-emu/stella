@@ -1376,9 +1376,6 @@
     <ClInclude Include="..\gui\ProgressDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\gui\Rect.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
     <ClInclude Include="..\gui\RomAuditDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
@@ -1986,6 +1983,9 @@
       <Filter>Header Files\repository</Filter>
     </ClInclude>
     <ClInclude Include="..\common\Logger.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\Rect.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
