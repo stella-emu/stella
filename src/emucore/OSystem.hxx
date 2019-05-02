@@ -24,12 +24,16 @@ class PNGLibrary;
 #ifdef CHEATCODE_SUPPORT
 class CheatManager;
 #endif
+#ifdef USE_GUI
 class CommandMenu;
+#endif
 class Console;
+#ifdef USE_GUI
 class Debugger;
 class Launcher;
 class Menu;
 class TimeMachine;
+#endif
 class FrameBuffer;
 class EventHandler;
 class Properties;
@@ -138,6 +142,7 @@ class OSystem
     */
     AudioSettings& audioSettings() { return *myAudioSettings; }
 
+#ifdef USE_GUI  
     /**
       Get the settings menu of the system.
 
@@ -165,6 +170,7 @@ class OSystem
       @return The time machine object
     */
     TimeMachine& timeMachine() const { return *myTimeMachine; }
+#endif
 
     /**
       Get the state manager of the system.
@@ -473,6 +479,7 @@ class OSystem
     // Pointer to audio settings object
     unique_ptr<AudioSettings> myAudioSettings;
 
+#ifdef USE_GUI
     // Pointer to the Menu object
     unique_ptr<Menu> myMenu;
 
@@ -481,10 +488,13 @@ class OSystem
 
     // Pointer to the Launcher object
     unique_ptr<Launcher> myLauncher;
+#endif
     bool myLauncherUsed;
 
+#ifdef USE_GUI
     // Pointer to the TimeMachine object
     unique_ptr<TimeMachine> myTimeMachine;
+#endif
 
   #ifdef DEBUGGER_SUPPORT
     // Pointer to the Debugger object

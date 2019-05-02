@@ -46,10 +46,12 @@
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
+#ifdef USE_GUI
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
 #include "Launcher.hxx"
 #include "TimeMachine.hxx"
+#endif
 #include "PNGLibrary.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
@@ -162,10 +164,12 @@ bool OSystem::create()
 #endif
 
   // Create various subsystems (menu and launcher GUI objects, etc)
+#ifdef USE_GUI
   myMenu = make_unique<Menu>(*this);
   myCommandMenu = make_unique<CommandMenu>(*this);
   myTimeMachine = make_unique<TimeMachine>(*this);
   myLauncher = make_unique<Launcher>(*this);
+#endif
   myStateManager = make_unique<StateManager>(*this);
   myTimerManager = make_unique<TimerManager>();
   myAudioSettings = make_unique<AudioSettings>(*mySettings);
@@ -307,8 +311,10 @@ FBInitStatus OSystem::createFrameBuffer()
       break;
 
     case EventHandlerState::LAUNCHER:
+#ifdef USE_GUI
       if((fbstatus = myLauncher->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
+#endif
       break;
 
     case EventHandlerState::DEBUGGER:
@@ -441,7 +447,9 @@ bool OSystem::createLauncher(const string& startdir)
   myEventHandler->reset(EventHandlerState::LAUNCHER);
   if(createFrameBuffer() == FBInitStatus::Success)
   {
+#ifdef USE_GUI
     myLauncher->reStack();
+#endif
     myFrameBuffer->setCursorState();
 
     status = true;

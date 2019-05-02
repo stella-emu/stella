@@ -313,40 +313,48 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::OPTIONSMENU:
     {
+#ifdef USE_GUI
       force |= myOSystem.menu().needsRedraw();
       if(force)
       {
         myTIASurface->render();
         myOSystem.menu().draw(force);
       }
+#endif
       break;  // EventHandlerState::OPTIONSMENU
     }
 
     case EventHandlerState::CMDMENU:
     {
+#ifdef USE_GUI
       force |= myOSystem.commandMenu().needsRedraw();
       if(force)
       {
         myTIASurface->render();
         myOSystem.commandMenu().draw(force);
       }
+#endif
       break;  // EventHandlerState::CMDMENU
     }
 
     case EventHandlerState::TIMEMACHINE:
     {
+#ifdef USE_GUI
       force |= myOSystem.timeMachine().needsRedraw();
       if(force)
       {
         myTIASurface->render();
         myOSystem.timeMachine().draw(force);
       }
+#endif
       break;  // EventHandlerState::TIMEMACHINE
     }
 
     case EventHandlerState::LAUNCHER:
     {
+#ifdef USE_GUI
       force |= myOSystem.launcher().draw(force);
+#endif
       break;  // EventHandlerState::LAUNCHER
     }
 

@@ -100,11 +100,13 @@ void EventHandler::initialize()
   Paddles::setMouseSensitivity(myOSystem.settings().getInt("msense"));
   PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));
 
+#ifdef USE_GUI
   // Set quick select delay when typing characters in listwidgets
   ListWidget::setQuickSelectDelay(myOSystem.settings().getInt("listdelay"));
 
   // Set number of lines a mousewheel will scroll
   ScrollBarWidget::setWheelLines(myOSystem.settings().getInt("mwheel"));
+#endif
 
   // Integer to string conversions (for HEX) use upper or lower-case
   Common::Base::setHexUppercase(myOSystem.settings().getBool("dbg.uhex"));
@@ -228,12 +230,14 @@ void EventHandler::poll(uInt64 time)
       myOSystem.png().updateTime(time);
   #endif
   }
+#ifdef USE_GUI
   else if(myOverlay)
   {
     // Update the current dialog container at regular intervals
     // Used to implement continuous events
     myOverlay->updateTime(time);
   }
+#endif
 
   // Turn off all mouse-related items; if they haven't been taken care of
   // in the previous ::update() methods, they're now invalid
@@ -244,9 +248,11 @@ void EventHandler::poll(uInt64 time)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleTextEvent(char text)
 {
+#ifdef USE_GUI
   // Text events are only used in GUI mode
   if(myOverlay)
     myOverlay->handleTextEvent(text);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -262,8 +268,10 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
     }
     mySkipMouseMotion = false;
   }
+#ifdef USE_GUI
   else if(myOverlay)
     myOverlay->handleMouseMotionEvent(x, y);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -285,8 +293,10 @@ void EventHandler::handleMouseButtonEvent(MouseButton b, bool pressed,
         return;
     }
   }
+#ifdef USE_GUI
   else if(myOverlay)
     myOverlay->handleMouseButtonEvent(b, pressed, x, y);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1122,7 +1132,9 @@ void EventHandler::setMouseControllerMode(const string& enable)
 void EventHandler::enterMenuMode(EventHandlerState state)
 {
   setState(state);
+#ifdef USE_GUI
   myOverlay->reStack();
+#endif
   myOSystem.sound().mute(true);
 }
 
@@ -1187,6 +1199,7 @@ void EventHandler::leaveDebugMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
 {
+#ifdef USE_GUI
   // add one extra state if we are in Time Machine mode
   // TODO: maybe remove this state if we leave the menu at this new state
   myOSystem.state().addExtraState("enter Time Machine dialog"); // force new state
@@ -1196,6 +1209,7 @@ void EventHandler::enterTimeMachineMenuMode(uInt32 numWinds, bool unwind)
     myOSystem.timeMachine().setEnterWinds(unwind ? numWinds : -numWinds);
 
   enterMenuMode(EventHandlerState::TIMEMACHINE);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1225,24 +1239,32 @@ void EventHandler::setState(EventHandlerState state)
       break;
 
     case EventHandlerState::OPTIONSMENU:
+#ifdef USE_GUI
       myOverlay = &myOSystem.menu();
       enableTextEvents(true);
+#endif
       break;
 
     case EventHandlerState::CMDMENU:
+#ifdef USE_GUI
       myOverlay = &myOSystem.commandMenu();
       enableTextEvents(true);
+#endif
       break;
 
     case EventHandlerState::TIMEMACHINE:
+#ifdef USE_GUI
       myOSystem.timeMachine().requestResize();
       myOverlay = &myOSystem.timeMachine();
       enableTextEvents(true);
+#endif
       break;
 
     case EventHandlerState::LAUNCHER:
+#ifdef USE_GUI
       myOverlay = &myOSystem.launcher();
       enableTextEvents(true);
+#endif
       break;
 
     case EventHandlerState::DEBUGGER:
