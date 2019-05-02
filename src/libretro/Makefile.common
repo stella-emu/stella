@@ -75,17 +75,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/tia/Player.cxx \
 	$(CORE_DIR)/emucore/tia/Playfield.cxx \
 	$(CORE_DIR)/emucore/tia/TIA.cxx \
-	$(CORE_DIR)/gui/ColorWidget.cxx \
-	$(CORE_DIR)/gui/DeveloperDialog.cxx \
-	$(CORE_DIR)/gui/FileListWidget.cxx \
-	$(CORE_DIR)/gui/JoystickDialog.cxx \
-	$(CORE_DIR)/gui/LoggerDialog.cxx \
-	$(CORE_DIR)/gui/MinUICommandDialog.cxx \
-	$(CORE_DIR)/gui/RadioButtonWidget.cxx \
-	$(CORE_DIR)/gui/SnapshotDialog.cxx \
-	$(CORE_DIR)/gui/TimeLineWidget.cxx \
-	$(CORE_DIR)/gui/TimeMachine.cxx \
-	$(CORE_DIR)/gui/TimeMachineDialog.cxx \
 	$(CORE_DIR)/common/PNGLibrary.cxx \
 	$(CORE_DIR)/emucore/AtariVox.cxx \
 	$(CORE_DIR)/emucore/Booster.cxx \
@@ -140,42 +129,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Switches.cxx \
 	$(CORE_DIR)/emucore/System.cxx \
 	$(CORE_DIR)/emucore/Thumbulator.cxx \
-	$(CORE_DIR)/gui/AboutDialog.cxx \
-	$(CORE_DIR)/gui/AudioDialog.cxx \
-	$(CORE_DIR)/gui/BrowserDialog.cxx \
-	$(CORE_DIR)/gui/CheckListWidget.cxx \
-	$(CORE_DIR)/gui/ComboDialog.cxx \
-	$(CORE_DIR)/gui/CommandDialog.cxx \
-	$(CORE_DIR)/gui/CommandMenu.cxx \
-	$(CORE_DIR)/gui/ContextMenu.cxx \
-	$(CORE_DIR)/gui/Dialog.cxx \
-	$(CORE_DIR)/gui/DialogContainer.cxx \
-	$(CORE_DIR)/gui/EditableWidget.cxx \
-	$(CORE_DIR)/gui/EditTextWidget.cxx \
-	$(CORE_DIR)/gui/EventMappingWidget.cxx \
-	$(CORE_DIR)/gui/Font.cxx \
-	$(CORE_DIR)/gui/GameInfoDialog.cxx \
-	$(CORE_DIR)/gui/GameList.cxx \
-	$(CORE_DIR)/gui/GlobalPropsDialog.cxx \
-	$(CORE_DIR)/gui/HelpDialog.cxx \
-	$(CORE_DIR)/gui/InputDialog.cxx \
-	$(CORE_DIR)/gui/InputTextDialog.cxx \
-	$(CORE_DIR)/gui/Launcher.cxx \
-	$(CORE_DIR)/gui/LauncherDialog.cxx \
-	$(CORE_DIR)/gui/ListWidget.cxx \
-	$(CORE_DIR)/gui/Menu.cxx \
-	$(CORE_DIR)/gui/MessageBox.cxx \
-	$(CORE_DIR)/gui/OptionsDialog.cxx \
-	$(CORE_DIR)/gui/PopUpWidget.cxx \
-	$(CORE_DIR)/gui/ProgressDialog.cxx \
-	$(CORE_DIR)/gui/RomAuditDialog.cxx \
-	$(CORE_DIR)/gui/RomInfoWidget.cxx \
-	$(CORE_DIR)/gui/ScrollBarWidget.cxx \
-	$(CORE_DIR)/gui/StellaSettingsDialog.cxx \
-	$(CORE_DIR)/gui/StringListWidget.cxx \
-	$(CORE_DIR)/gui/TabWidget.cxx \
-	$(CORE_DIR)/gui/UIDialog.cxx \
-	$(CORE_DIR)/gui/VideoDialog.cxx \
-	$(CORE_DIR)/gui/Widget.cxx
+	$(CORE_DIR)/gui/Font.cxx
 
 SOURCES_C :=
