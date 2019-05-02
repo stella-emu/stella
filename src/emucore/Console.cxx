@@ -50,8 +50,6 @@
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "OSystem.hxx"
-#include "Menu.hxx"
-#include "CommandMenu.hxx"
 #include "Serializable.hxx"
 #include "Serializer.hxx"
 #include "TimerManager.hxx"
@@ -64,12 +62,11 @@
 #include "frame-manager/FrameLayoutDetector.hxx"
 #include "frame-manager/YStartDetector.hxx"
 
-#ifdef DEBUGGER_SUPPORT
-  #include "Debugger.hxx"
-#endif
-
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
+#endif
+#ifdef DEBUGGER_SUPPORT
+  #include "Debugger.hxx"
 #endif
 
 #include "Console.hxx"

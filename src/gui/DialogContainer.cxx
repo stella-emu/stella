@@ -128,7 +128,7 @@ bool DialogContainer::needsRedraw() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::addDialog(Dialog* d)
 {
-  const GUI::Rect& r = myOSystem.frameBuffer().imageRect();
+  const Common::Rect& r = myOSystem.frameBuffer().imageRect();
   if(uInt32(d->getWidth()) > r.width() || uInt32(d->getHeight()) > r.height())
     myOSystem.frameBuffer().showMessage(
         "Unable to show dialog box; FIX THE CODE");

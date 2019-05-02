@@ -21,15 +21,6 @@
 #include "Console.hxx"
 #include "EventHandler.hxx"
 #include "Event.hxx"
-#include "Font.hxx"
-#include "StellaFont.hxx"
-#include "StellaMediumFont.hxx"
-#include "StellaLargeFont.hxx"
-#include "ConsoleFont.hxx"
-#include "Launcher.hxx"
-#include "Menu.hxx"
-#include "CommandMenu.hxx"
-#include "TimeMachine.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "TIA.hxx"
@@ -41,6 +32,17 @@
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
+#endif
+#ifdef GUI_SUPPORT
+  #include "Font.hxx"
+  #include "StellaFont.hxx"
+  #include "StellaMediumFont.hxx"
+  #include "StellaLargeFont.hxx"
+  #include "ConsoleFont.hxx"
+  #include "Launcher.hxx"
+  #include "Menu.hxx"
+  #include "CommandMenu.hxx"
+  #include "TimeMachine.hxx"
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -64,13 +66,13 @@ FrameBuffer::~FrameBuffer()
 bool FrameBuffer::initialize()
 {
   // Get desktop resolution and supported renderers
-  vector<GUI::Size> windowedDisplays;
+  vector<Common::Size> windowedDisplays;
   queryHardware(myFullscreenDisplays, windowedDisplays, myRenderers);
   uInt32 query_w = windowedDisplays[0].w, query_h = windowedDisplays[0].h;
 
   // Check the 'maxres' setting, which is an undocumented developer feature
   // that specifies the desktop size (not normally set)
-  const GUI::Size& s = myOSystem.settings().getSize("maxres");
+  const Common::Size& s = myOSystem.settings().getSize("maxres");
   if(s.valid())
   {
     query_w = s.w;
@@ -80,6 +82,7 @@ bool FrameBuffer::initialize()
   myDesktopSize.w = std::max(query_w, FBMinimum::Width);
   myDesktopSize.h = std::max(query_h, FBMinimum::Height);
 
+#ifdef GUI_SUPPORT
   ////////////////////////////////////////////////////////////////////
   // Create fonts to draw text
   // NOTE: the logic determining appropriate font sizes is done here,
@@ -115,6 +118,7 @@ bool FrameBuffer::initialize()
     myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
   else
     myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);
+#endif
 
   // Determine possible TIA windowed zoom levels
   uInt32 maxZoom = maxWindowSizeForScreen(
@@ -236,6 +240,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   else
     return FBInitStatus::FailTooLarge;
 
+#ifdef GUI_SUPPORT
   // Erase any messages from a previous run
   myMsg.counter = 0;
 
@@ -254,6 +259,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
 
   if(!myMsg.surface)
     myMsg.surface = allocateSurface(FBMinimum::Width, font().getFontHeight()+10);
+#endif
 
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
@@ -311,6 +317,7 @@ void FrameBuffer::update(bool force)
       break;  // EventHandlerState::PAUSE
     }
 
+  #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
     {
       force |= myOSystem.menu().needsRedraw();
@@ -349,14 +356,17 @@ void FrameBuffer::update(bool force)
       force |= myOSystem.launcher().draw(force);
       break;  // EventHandlerState::LAUNCHER
     }
+  #endif
 
+  #ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
     {
-  #ifdef DEBUGGER_SUPPORT
       force |= myOSystem.debugger().draw(force);
-  #endif
       break;  // EventHandlerState::DEBUGGER
     }
+  #endif
+    default:
+      break;
   }
 
   // Draw any pending messages
@@ -403,6 +413,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
 void FrameBuffer::showMessage(const string& message, MessagePosition position,
                               bool force)
 {
+#ifdef GUI_SUPPORT
   // Only show messages if they've been enabled
   if(myMsg.surface == nullptr || !(force || myOSystem.settings().getBool("uimessages")))
     return;
@@ -419,11 +430,13 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   myMsg.surface->setDstSize(myMsg.w, myMsg.h);
   myMsg.position = position;
   myMsg.enabled = true;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::drawFrameStats(float framesPerSecond)
 {
+#ifdef GUI_SUPPORT
   const ConsoleInfo& info = myOSystem.console().about();
   int xPos = 2, yPos = 0;
   const int dy = font().getFontHeight() + 2;
@@ -469,6 +482,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
 
   myStatsMsg.surface->setDstPos(myImageRect.x() + 10, myImageRect.y() + 8);
   myStatsMsg.surface->render();
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -508,6 +522,7 @@ void FrameBuffer::enableMessages(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline bool FrameBuffer::drawMessage()
 {
+#ifdef GUI_SUPPORT
   // Either erase the entire message (when time is reached),
   // or show again this frame
   if(myMsg.counter == 0)
@@ -522,7 +537,7 @@ inline bool FrameBuffer::drawMessage()
   }
 
   // Draw the bounded box and text
-  const GUI::Rect& dst = myMsg.surface->dstRect();
+  const Common::Rect& dst = myMsg.surface->dstRect();
 
   switch(myMsg.position)
   {
@@ -579,6 +594,7 @@ inline bool FrameBuffer::drawMessage()
                             myMsg.w, myMsg.color, TextAlign::Left);
   myMsg.surface->render();
   myMsg.counter--;
+#endif
 
   return true;
 }
@@ -956,8 +972,8 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   ih = std::min(ih, sh);
   int ix = (sw - iw) >> 1;
   int iy = (sh - ih) >> 1;
-  image = GUI::Rect(ix, iy, ix+iw, iy+ih);
-  screen = GUI::Size(sw, sh);
+  image = Common::Rect(ix, iy, ix+iw, iy+ih);
+  screen = Common::Size(sw, sh);
 
   // Now resize based on windowed/fullscreen mode and stretch factor
   iw = image.width();

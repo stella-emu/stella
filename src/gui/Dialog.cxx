@@ -162,8 +162,8 @@ void Dialog::center()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::positionAt(uInt32 pos)
 {
-  const GUI::Size& screen = instance().frameBuffer().screenSize();
-  const GUI::Rect& dst = _surface->dstRect();
+  const Common::Size& screen = instance().frameBuffer().screenSize();
+  const Common::Rect& dst = _surface->dstRect();
 
   int top = std::min(screen.h - dst.height(), screen.h >> 5);
   int btm = std::min(screen.h - dst.height(), screen.h - dst.height() - (screen.h >> 5));
@@ -869,7 +869,7 @@ Widget* Dialog::TabFocus::getNewFocus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
 {
-  const GUI::Rect& r = instance().frameBuffer().imageRect();
+  const Common::Rect& r = instance().frameBuffer().imageRect();
 
   if(r.width() <= FBMinimum::Width || r.height() <= FBMinimum::Height)
   {

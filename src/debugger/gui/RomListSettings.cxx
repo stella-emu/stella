@@ -102,7 +102,7 @@ void RomListSettings::center()
 {
   // Make sure the menu is exactly where it should be, in case the image
   // offset has changed
-  const GUI::Rect& image = instance().frameBuffer().imageRect();
+  const Common::Rect& image = instance().frameBuffer().imageRect();
   uInt32 x = image.x() + _xorig;
   uInt32 y = image.y() + _yorig;
   uInt32 tx = image.x() + image.width();

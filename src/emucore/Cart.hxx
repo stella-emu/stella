@@ -27,7 +27,9 @@ class GuiObject;
 #include "bspf.hxx"
 #include "Device.hxx"
 #include "Settings.hxx"
-#include "Font.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "Font.hxx"
+#endif
 
 /**
   A cartridge is a device which contains the machine code for a
@@ -199,6 +201,7 @@ class Cartridge : public Device
     */
     virtual uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) { return 0; }
 
+  #ifdef DEBUGGER_SUPPORT
     /**
       Get optional debugger widget responsible for displaying info about the cart.
       This can be used when the debugWidget runs out of space.
@@ -220,6 +223,7 @@ class Cartridge : public Device
     {
       return nullptr;
     }
+  #endif
 
   protected:
     /**

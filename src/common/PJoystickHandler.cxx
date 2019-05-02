@@ -21,8 +21,11 @@
 #include "Joystick.hxx"
 #include "Settings.hxx"
 #include "EventHandler.hxx"
-#include "DialogContainer.hxx"
 #include "PJoystickHandler.hxx"
+
+#ifdef GUI_SUPPORT
+  #include "DialogContainer.hxx"
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::PhysicalJoystickHandler(
@@ -565,7 +568,9 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
         // (only pass on the event if the state has changed)
         if(value != j->axisLastValue[axis])
         {
+        #ifdef GUI_SUPPORT
           myHandler.overlay().handleJoyAxisEvent(stick, axis, value);
+        #endif
           j->axisLastValue[axis] = value;
         }
       }
@@ -608,8 +613,10 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
       // Determine which mode we're in, then send the event to the appropriate place
       if(myHandler.state() == EventHandlerState::EMULATION)
         myHandler.handleEvent(j->btnTable[button][kEmulationMode], pressed);
+    #ifdef GUI_SUPPORT
       else if(myHandler.hasOverlay())
         myHandler.overlay().handleJoyBtnEvent(stick, button, pressed);
+    #endif
       break;  // Regular button
 
     // These events don't have to pass through handleEvent, since
@@ -671,6 +678,7 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
     myHandler.handleEvent(j->hatTable[hat][int(JoyHat::LEFT)][kEmulationMode],
         value & EVENT_HATLEFT_M);
   }
+#ifdef GUI_SUPPORT
   else if(myHandler.hasOverlay())
   {
     if(value == EVENT_HATCENTER_M)
@@ -687,6 +695,7 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
         myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHat::LEFT);
     }
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

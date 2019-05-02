@@ -70,6 +70,10 @@
   * PNG/ZIP image support is now conditionally compiled into Stella.
     All major ports (Linux/macOS/Windows) have it enabled by default.
 
+  * SDL/GUI support is now conditionally compiled into Stella.  All major
+    ports (Linux/macOS/Windows) have it enabled by default.  This is
+    currently used only by the libretro port.
+
 -Have fun!
 
 

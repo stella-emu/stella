@@ -36,8 +36,8 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
     mySurfaceIsValid(false),
     myHaveProperties(false),
     myAvail(w > 400 ?
-      GUI::Size(TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2) :
-      GUI::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight))
+      Common::Size(TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2) :
+      Common::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight))
 {
   _flags = Widget::FLAG_ENABLED;
   _bgcolor = kDlgColor;
@@ -109,7 +109,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
     instance().png().loadImage(filename, *mySurface);
 
     // Scale surface to available image area
-    const GUI::Rect& src = mySurface->srcRect();
+    const Common::Rect& src = mySurface->srcRect();
     float scale = std::min(float(myAvail.w) / src.width(), float(myAvail.h) / src.height());
     mySurface->setDstSize(uInt32(src.width() * scale), uInt32(src.height() * scale));
     mySurfaceIsValid = true;
@@ -178,13 +178,13 @@ void RomInfoWidget::drawWidget(bool hilite)
 
   if(mySurfaceIsValid)
   {
-    const GUI::Rect& dst = mySurface->dstRect();
+    const Common::Rect& dst = mySurface->dstRect();
     uInt32 x = _x + ((_w - dst.width()) >> 1);
     uInt32 y = _y + ((yoff - dst.height()) >> 1);
 
     // Make sure when positioning the snapshot surface that we take
     // the dialog surface position into account
-    const GUI::Rect& s_dst = s.dstRect();
+    const Common::Rect& s_dst = s.dstRect();
     mySurface->setDstPos(x + s_dst.x(), y + s_dst.y());
   }
   else if(mySurfaceErrorMsg != "")

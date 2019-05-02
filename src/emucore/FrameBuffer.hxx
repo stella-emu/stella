@@ -59,8 +59,8 @@ class FrameBuffer
     {
       enum class Stretch { Preserve, Fill };
 
-      GUI::Rect image;
-      GUI::Size screen;
+      Common::Rect image;
+      Common::Size screen;
       Stretch stretch;
       string description;
       uInt32 zoom;
@@ -169,19 +169,19 @@ class FrameBuffer
       Note that this will take into account the current scaling (if any)
       as well as image 'centering'.
     */
-    const GUI::Rect& imageRect() const { return myImageRect; }
+    const Common::Rect& imageRect() const { return myImageRect; }
 
     /**
       Returns the current dimensions of the framebuffer window.
       This is the entire area containing the framebuffer image as well as any
       'unusable' area.
     */
-    const GUI::Size& screenSize() const { return myScreenSize; }
+    const Common::Size& screenSize() const { return myScreenSize; }
 
     /**
       Returns the current dimensions of the users' desktop.
     */
-    const GUI::Size& desktopSize() const { return myDesktopSize; }
+    const Common::Size& desktopSize() const { return myDesktopSize; }
 
     /**
       Get the supported renderers for the video hardware.
@@ -194,14 +194,6 @@ class FrameBuffer
       Get the supported TIA zoom levels (windowed mode) for the framebuffer.
     */
     const VariantList& supportedTIAZoomLevels() const { return myTIAZoomLevels; }
-
-    /**
-      Get the font object(s) of the framebuffer
-    */
-    const GUI::Font& font() const { return *myFont; }
-    const GUI::Font& infoFont() const { return *myInfoFont; }
-    const GUI::Font& smallFont() const { return *mySmallFont; }
-    const GUI::Font& launcherFont() const { return *myLauncherFont; }
 
     /**
       Get the TIA surface associated with the framebuffer.
@@ -263,6 +255,16 @@ class FrameBuffer
     */
     void stateChanged(EventHandlerState state);
 
+  #ifdef GUI_SUPPORT
+    /**
+      Get the font object(s) of the framebuffer
+    */
+    const GUI::Font& font() const { return *myFont; }
+    const GUI::Font& infoFont() const { return *myInfoFont; }
+    const GUI::Font& smallFont() const { return *mySmallFont; }
+    const GUI::Font& launcherFont() const { return *myLauncherFont; }
+  #endif
+
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and can/must be
   // implemented in derived classes.
@@ -314,7 +316,7 @@ class FrameBuffer
       @param pitch   The pitch (in bytes) for the pixel data
       @param rect    The bounding rectangle for the buffer
     */
-    virtual void readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const = 0;
+    virtual void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const = 0;
 
     /**
       Clear the framebuffer.
@@ -331,8 +333,8 @@ class FrameBuffer
       @param windowedRes    Maximum resolution supported in windowed mode
       @param renderers      List of renderer names (internal name -> end-user name)
     */
-    virtual void queryHardware(vector<GUI::Size>& fullscreenRes,
-                               vector<GUI::Size>& windowedRes,
+    virtual void queryHardware(vector<Common::Size>& fullscreenRes,
+                               vector<Common::Size>& windowedRes,
                                VariantList& renderers) = 0;
 
     virtual Int32 getCurrentDisplayIndex() = 0;
@@ -490,22 +492,23 @@ class FrameBuffer
 
     // Dimensions of the actual image, after zooming, and taking into account
     // any image 'centering'
-    GUI::Rect myImageRect;
+    Common::Rect myImageRect;
 
     // Dimensions of the main window (not always the same as the image)
-    GUI::Size myScreenSize;
+    Common::Size myScreenSize;
 
     // Maximum dimensions of the desktop area
-    GUI::Size myDesktopSize;
+    Common::Size myDesktopSize;
 
     // The resolution of the attached displays in fullscreen mode
     // The primary display is typically the first in the array
     // Windowed modes use myDesktopSize directly
-    vector<GUI::Size> myFullscreenDisplays;
+    vector<Common::Size> myFullscreenDisplays;
 
     // Supported renderers
     VariantList myRenderers;
 
+  #ifdef GUI_SUPPORT
     // The font object to use for the normal in-game GUI
     unique_ptr<GUI::Font> myFont;
 
@@ -517,6 +520,7 @@ class FrameBuffer
 
     // The font object to use for the ROM launcher
     unique_ptr<GUI::Font> myLauncherFont;
+  #endif
 
     // The TIASurface class takes responsibility for TIA rendering
     unique_ptr<TIASurface> myTIASurface;

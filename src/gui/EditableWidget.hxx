@@ -68,7 +68,7 @@ class EditableWidget : public Widget, public CommandSender
     virtual void endEditMode()   { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
     virtual void abortEditMode() { clearFlags(Widget::FLAG_WANTS_RAWDATA); }
 
-    virtual GUI::Rect getEditRect() const = 0;
+    virtual Common::Rect getEditRect() const = 0;
     virtual int getCaretOffset() const;
     void drawCaret();
     bool setCaretPos(int newPos);

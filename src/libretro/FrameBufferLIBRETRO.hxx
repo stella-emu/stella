@@ -91,7 +91,7 @@ class FrameBufferLIBRETRO : public FrameBuffer
       @param pitch   The pitch (in bytes) for the pixel data
       @param rect    The bounding rectangle for the buffer
     */
-    void readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const override { }
+    void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const override { }
 
     /**
       Clear the frame buffer
@@ -111,8 +111,8 @@ class FrameBufferLIBRETRO : public FrameBuffer
       @param windowedRes    Maximum resolution supported in windowed mode
       @param renderers      List of renderer names (internal name -> end-user name)
     */
-    void queryHardware(vector<GUI::Size>& fullscreenRes,
-                       vector<GUI::Size>& windowedRes,
+    void queryHardware(vector<Common::Size>& fullscreenRes,
+                       vector<Common::Size>& windowedRes,
                        VariantList& renderers) override;
 
     /**

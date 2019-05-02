@@ -488,7 +488,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
     fontHeight = font.getFontHeight(),
     lineHeight = font.getLineHeight();
   int xpos, ypos, pwidth;
-  const GUI::Size& ds = instance().frameBuffer().desktopSize();
+  const Common::Size& ds = instance().frameBuffer().desktopSize();
 
   xpos = HBORDER;
   ypos = VBORDER;
@@ -809,7 +809,7 @@ void DeveloperDialog::loadConfig()
   uInt32 w, h;
 
   // Debugger size
-  const GUI::Size& ds = instance().settings().getSize("dbg.res");
+  const Common::Size& ds = instance().settings().getSize("dbg.res");
   w = ds.w; h = ds.h;
 
   myDebuggerWidthSlider->setValue(w);
@@ -887,7 +887,7 @@ void DeveloperDialog::saveConfig()
                                  myDebuggerFontStyle->getSelectedTag().toString());
   // Debugger size
   instance().settings().setValue("dbg.res",
-                                 GUI::Size(myDebuggerWidthSlider->getValue(),
+                                 Common::Size(myDebuggerWidthSlider->getValue(),
                                  myDebuggerHeightSlider->getValue()));
   // Debugger font size
   instance().settings().setValue("dbg.fontsize", myDebuggerFontSize->getSelectedTag().toString());

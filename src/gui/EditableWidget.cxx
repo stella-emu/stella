@@ -202,7 +202,7 @@ void EditableWidget::drawCaret()
   if (!_editable || !isVisible() || !_boss->isVisible() || !_hasFocus)
     return;
 
-  const GUI::Rect& editRect = getEditRect();
+  const Common::Rect& editRect = getEditRect();
   int x = editRect.left;
   int y = editRect.top;
 

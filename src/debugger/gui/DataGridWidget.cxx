@@ -668,9 +668,9 @@ void DataGridWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect DataGridWidget::getEditRect() const
+Common::Rect DataGridWidget::getEditRect() const
 {
-  GUI::Rect r(1, 0, _colWidth, _rowHeight);
+  Common::Rect r(1, 0, _colWidth, _rowHeight);
   const int rowoffset = _currentRow * _rowHeight;
   const int coloffset = _currentCol * _colWidth + 4;
   r.top += rowoffset;

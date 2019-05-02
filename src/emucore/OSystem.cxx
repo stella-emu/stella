@@ -46,12 +46,7 @@
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"
-#include "Menu.hxx"
-#include "CommandMenu.hxx"
-#include "Launcher.hxx"
-#include "TimeMachine.hxx"
 #include "PNGLibrary.hxx"
-#include "Widget.hxx"
 #include "Console.hxx"
 #include "Random.hxx"
 #include "StateManager.hxx"
@@ -64,6 +59,13 @@
 #include "repository/KeyValueRepositoryNoop.hxx"
 #include "repository/KeyValueRepositoryConfigfile.hxx"
 
+#ifdef GUI_SUPPORT
+  #include "Menu.hxx"
+  #include "CommandMenu.hxx"
+  #include "Launcher.hxx"
+  #include "TimeMachine.hxx"
+  #include "Widget.hxx"
+#endif
 
 #include "OSystem.hxx"
 
@@ -156,16 +158,6 @@ bool OSystem::create()
   myEventHandler = MediaFactory::createEventHandler(*this);
   myEventHandler->initialize();
 
-#ifdef CHEATCODE_SUPPORT
-  myCheatManager = make_unique<CheatManager>(*this);
-  myCheatManager->loadCheatDatabase();
-#endif
-
-  // Create various subsystems (menu and launcher GUI objects, etc)
-  myMenu = make_unique<Menu>(*this);
-  myCommandMenu = make_unique<CommandMenu>(*this);
-  myTimeMachine = make_unique<TimeMachine>(*this);
-  myLauncher = make_unique<Launcher>(*this);
   myStateManager = make_unique<StateManager>(*this);
   myTimerManager = make_unique<TimerManager>();
   myAudioSettings = make_unique<AudioSettings>(*mySettings);
@@ -177,6 +169,19 @@ bool OSystem::create()
 
   // Create random number generator
   myRandom = make_unique<Random>(uInt32(TimerManager::getTicks()));
+
+#ifdef CHEATCODE_SUPPORT
+  myCheatManager = make_unique<CheatManager>(*this);
+  myCheatManager->loadCheatDatabase();
+#endif
+
+#ifdef GUI_SUPPORT
+  // Create various subsystems (menu and launcher GUI objects, etc)
+  myMenu = make_unique<Menu>(*this);
+  myCommandMenu = make_unique<CommandMenu>(*this);
+  myTimeMachine = make_unique<TimeMachine>(*this);
+  myLauncher = make_unique<Launcher>(*this);
+#endif
 
 #ifdef PNG_SUPPORT
   // Create PNG handler
@@ -299,26 +304,31 @@ FBInitStatus OSystem::createFrameBuffer()
   {
     case EventHandlerState::EMULATION:
     case EventHandlerState::PAUSE:
+  #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
     case EventHandlerState::CMDMENU:
     case EventHandlerState::TIMEMACHINE:
+  #endif
       if((fbstatus = myConsole->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
       break;
 
+  #ifdef GUI_SUPPORT
     case EventHandlerState::LAUNCHER:
       if((fbstatus = myLauncher->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
       break;
+  #endif
 
-    case EventHandlerState::DEBUGGER:
   #ifdef DEBUGGER_SUPPORT
+    case EventHandlerState::DEBUGGER:
       if((fbstatus = myDebugger->initializeVideo()) != FBInitStatus::Success)
         return fbstatus;
-  #endif
       break;
+  #endif
 
     case EventHandlerState::NONE:  // Should never happen
+    default:
       Logger::log("ERROR: Unknown emulation state in createFrameBuffer()", 0);
       break;
   }
@@ -430,6 +440,7 @@ bool OSystem::hasConsole() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createLauncher(const string& startdir)
 {
+#ifdef GUI_SUPPORT
   closeConsole();
 
   if(mySound)
@@ -451,6 +462,9 @@ bool OSystem::createLauncher(const string& startdir)
 
   myLauncherUsed = myLauncherUsed || status;
   return status;
+#else
+  return false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

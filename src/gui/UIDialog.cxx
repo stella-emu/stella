@@ -57,7 +57,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   int lwidth, pwidth, bwidth;
   WidgetArray wid;
   VariantList items;
-  const GUI::Size& ds = instance().frameBuffer().desktopSize();
+  const Common::Size& ds = instance().frameBuffer().desktopSize();
 
   // Set real dimensions
   setSize(64 * fontWidth + HBORDER * 2, 11 * (lineHeight + V_GAP) + V_GAP * 9 + VBORDER + _th,
@@ -246,7 +246,7 @@ void UIDialog::loadConfig()
   myRomPath->setText(settings.getString("romdir"));
 
   // Launcher size
-  const GUI::Size& ls = settings.getSize("launcherres");
+  const Common::Size& ls = settings.getSize("launcherres");
   uInt32 w = ls.w, h = ls.h;
 
   w = std::max(w, FBMinimum::Width);
@@ -302,7 +302,7 @@ void UIDialog::saveConfig()
 
   // Launcher size
   settings.setValue("launcherres",
-    GUI::Size(myLauncherWidthSlider->getValue(),
+    Common::Size(myLauncherWidthSlider->getValue(),
               myLauncherHeightSlider->getValue()));
 
   // Launcher font

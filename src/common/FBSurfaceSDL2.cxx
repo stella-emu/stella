@@ -77,13 +77,13 @@ uInt32 FBSurfaceSDL2::height() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const GUI::Rect& FBSurfaceSDL2::srcRect() const
+const Common::Rect& FBSurfaceSDL2::srcRect() const
 {
   return mySrcGUIR;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const GUI::Rect& FBSurfaceSDL2::dstRect() const
+const Common::Rect& FBSurfaceSDL2::dstRect() const
 {
   return myDstGUIR;
 }

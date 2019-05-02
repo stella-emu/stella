@@ -69,7 +69,7 @@ class TIASurface
     /**
       Get the TIA base surface for use in saving to a PNG image.
     */
-    const FBSurface& baseSurface(GUI::Rect& rect) const;
+    const FBSurface& baseSurface(Common::Rect& rect) const;
 
     /**
       Use the palette to map a single indexed pixel color. This is used by the TIA output widget.

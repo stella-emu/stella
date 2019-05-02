@@ -131,7 +131,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
     throw runtime_error("ERROR: Couldn't create snapshot file");
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const GUI::Rect& rect = fb.imageRect();
+  const Common::Rect& rect = fb.imageRect();
   png_uint_32 width = rect.width(), height = rect.height();
 
   // Get framebuffer pixel data (we get ABGR format)
@@ -149,7 +149,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
-                           const GUI::Rect& rect, const VariantList& comments)
+                           const Common::Rect& rect, const VariantList& comments)
 {
   ofstream out(filename, std::ios_base::binary);
   if(!out.is_open())
@@ -347,7 +347,7 @@ void PNGLibrary::takeSnapshot(uInt32 number)
     string message = "Snapshot saved";
     try
     {
-      GUI::Rect rect;
+      Common::Rect rect;
       const FBSurface& surface = myOSystem.frameBuffer().tiaSurface().baseSurface(rect);
       myOSystem.png().saveImage(filename, surface, rect, comments);
     }

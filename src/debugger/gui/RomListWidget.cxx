@@ -469,8 +469,8 @@ void RomListWidget::drawWidget(bool hilite)
   int i, pos, xpos, ypos, len = int(dlist.size());
   ColorId textColor = onTop ? kTextColor : kColor;
 
-  const GUI::Rect& r = getEditRect();
-  const GUI::Rect& l = getLineRect();
+  const Common::Rect& r = getEditRect();
+  const Common::Rect& l = getLineRect();
 
   // Draw a thin frame around the list and to separate columns
   s.frameRect(_x, _y, _w + 1, _h, hilite ? kWidColorHi : kColor);
@@ -568,9 +568,9 @@ void RomListWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect RomListWidget::getLineRect() const
+Common::Rect RomListWidget::getLineRect() const
 {
-  GUI::Rect r(2, 1, _w, _fontHeight);
+  Common::Rect r(2, 1, _w, _fontHeight);
   const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
             xoffset = CheckboxWidget::boxSize() + 10;
   r.top    += yoffset;
@@ -582,9 +582,9 @@ GUI::Rect RomListWidget::getLineRect() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect RomListWidget::getEditRect() const
+Common::Rect RomListWidget::getEditRect() const
 {
-  GUI::Rect r(2, 1, _w, _fontHeight);
+  Common::Rect r(2, 1, _w, _fontHeight);
   const int yoffset = (_selectedItem - _currentPos) * _fontHeight;
   r.top    += yoffset;
   r.bottom += yoffset;

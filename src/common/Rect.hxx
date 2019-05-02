@@ -25,7 +25,7 @@
 
 #include "bspf.hxx"
 
-namespace GUI {
+namespace Common {
 
 /*
   This small class is an helper for position and size values.
@@ -163,6 +163,6 @@ struct Rect
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const Rect EmptyRect;
 
-}  // End of namespace GUI
+}  // End of namespace Common
 
 #endif

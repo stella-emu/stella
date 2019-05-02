@@ -40,7 +40,7 @@ class EditTextWidget : public EditableWidget
     void endEditMode() override;
     void abortEditMode() override;
 
-    GUI::Rect getEditRect() const override;
+    Common::Rect getEditRect() const override;
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseEntered() override;

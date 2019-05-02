@@ -430,7 +430,7 @@ void DebuggerDialog::showFatalMessage(const string& msg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTiaArea()
 {
-  const GUI::Rect& r = getTiaBounds();
+  const Common::Rect& r = getTiaBounds();
   myTiaOutput =
     new TiaOutputWidget(this, *myNFont, r.left, r.top, r.width(), r.height());
 }
@@ -438,7 +438,7 @@ void DebuggerDialog::addTiaArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTabArea()
 {
-  const GUI::Rect& r = getTabBounds();
+  const Common::Rect& r = getTabBounds();
   const int vBorder = 4;
 
   // The tab widget
@@ -488,7 +488,7 @@ void DebuggerDialog::addTabArea()
 void DebuggerDialog::addStatusArea()
 {
   const int lineHeight = myLFont->getLineHeight();
-  const GUI::Rect& r = getStatusBounds();
+  const Common::Rect& r = getStatusBounds();
   int xpos, ypos;
 
   xpos = r.left;  ypos = r.top;
@@ -540,7 +540,7 @@ void DebuggerDialog::addRomArea()
     0b0100000
   };
 
-  const GUI::Rect& r = getRomBounds();
+  const Common::Rect& r = getRomBounds();
   const int VBORDER = 4;
   WidgetArray wid1, wid2;
   ButtonWidget* b;
@@ -681,47 +681,47 @@ void DebuggerDialog::addRomArea()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect DebuggerDialog::getTiaBounds() const
+Common::Rect DebuggerDialog::getTiaBounds() const
 {
   // The area showing the TIA image (NTSC and PAL supported, up to 260 lines)
-  GUI::Rect r(0, 0, 320, std::max(260, int(_h * 0.35)));
+  Common::Rect r(0, 0, 320, std::max(260, int(_h * 0.35)));
   return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect DebuggerDialog::getRomBounds() const
+Common::Rect DebuggerDialog::getRomBounds() const
 {
   // The ROM area is the full area to the right of the tabs
-  const GUI::Rect& status = getStatusBounds();
-  GUI::Rect r(status.right + 1, 0, _w, _h);
+  const Common::Rect& status = getStatusBounds();
+  Common::Rect r(status.right + 1, 0, _w, _h);
 
   return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect DebuggerDialog::getStatusBounds() const
+Common::Rect DebuggerDialog::getStatusBounds() const
 {
   // The status area is the full area to the right of the TIA image
   // extending as far as necessary
   // 30% of any space above 1030 pixels will be allocated to this area
-  const GUI::Rect& tia = getTiaBounds();
+  const Common::Rect& tia = getTiaBounds();
 
   int x1 = tia.right + 1;
   int y1 = 0;
   int x2 = tia.right + 225 + (_w > 1030 ? int(0.35 * (_w - 1030)) : 0);
   int y2 = tia.bottom;
-  GUI::Rect r(x1, y1, x2, y2);
+  Common::Rect r(x1, y1, x2, y2);
 
   return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect DebuggerDialog::getTabBounds() const
+Common::Rect DebuggerDialog::getTabBounds() const
 {
   // The tab area is the full area below the TIA image
-  const GUI::Rect& tia    = getTiaBounds();
-  const GUI::Rect& status = getStatusBounds();
-  GUI::Rect r(0, tia.bottom + 1, status.right + 1, _h);
+  const Common::Rect& tia    = getTiaBounds();
+  const Common::Rect& status = getStatusBounds();
+  Common::Rect r(0, tia.bottom + 1, status.right + 1, _h);
 
   return r;
 }

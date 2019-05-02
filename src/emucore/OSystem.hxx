@@ -18,12 +18,6 @@
 #ifndef OSYSTEM_HXX
 #define OSYSTEM_HXX
 
-#ifdef PNG_SUPPORT
-class PNGLibrary;
-#endif
-#ifdef CHEATCODE_SUPPORT
-class CheatManager;
-#endif
 class CommandMenu;
 class Console;
 class Debugger;
@@ -41,6 +35,13 @@ class TimerManager;
 class VideoDialog;
 class EmulationWorker;
 class AudioSettings;
+class SettingsDb;
+#ifdef PNG_SUPPORT
+  class PNGLibrary;
+#endif
+#ifdef CHEATCODE_SUPPORT
+  class CheatManager;
+#endif
 
 #include <chrono>
 
@@ -51,10 +52,6 @@ class AudioSettings;
 #include "Settings.hxx"
 #include "bspf.hxx"
 #include "repository/KeyValueRepository.hxx"
-
-#ifdef SQLITE_SUPPORT
-#include "SettingsDb.hxx"
-#endif
 
 /**
   This class provides an interface for accessing operating system specific
@@ -139,34 +136,6 @@ class OSystem
     AudioSettings& audioSettings() { return *myAudioSettings; }
 
     /**
-      Get the settings menu of the system.
-
-      @return The settings menu object
-    */
-    Menu& menu() const { return *myMenu; }
-
-    /**
-      Get the command menu of the system.
-
-      @return The command menu object
-    */
-    CommandMenu& commandMenu() const { return *myCommandMenu; }
-
-    /**
-      Get the ROM launcher of the system.
-
-      @return The launcher object
-    */
-    Launcher& launcher() const { return *myLauncher; }
-
-    /**
-      Get the time machine of the system (manages state files).
-
-      @return The time machine object
-    */
-    TimeMachine& timeMachine() const { return *myTimeMachine; }
-
-    /**
       Get the state manager of the system.
 
       @return The statemanager object
@@ -194,32 +163,62 @@ class OSystem
     */
     void saveConfig();
 
-#ifdef DEBUGGER_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
     /**
       Get the ROM debugger of the system.
 
       @return The debugger object
     */
     Debugger& debugger() const { return *myDebugger; }
-#endif
+  #endif
 
-#ifdef CHEATCODE_SUPPORT
+  #ifdef CHEATCODE_SUPPORT
     /**
       Get the cheat manager of the system.
 
       @return The cheatmanager object
     */
     CheatManager& cheat() const { return *myCheatManager; }
-#endif
+  #endif
 
-#ifdef PNG_SUPPORT
+  #ifdef PNG_SUPPORT
     /**
       Get the PNG handler of the system.
 
       @return The PNGlib object
     */
     PNGLibrary& png() const { return *myPNGLib; }
-#endif
+  #endif
+
+  #ifdef GUI_SUPPORT
+    /**
+      Get the settings menu of the system.
+
+      @return The settings menu object
+    */
+    Menu& menu() const { return *myMenu; }
+
+    /**
+      Get the command menu of the system.
+
+      @return The command menu object
+    */
+    CommandMenu& commandMenu() const { return *myCommandMenu; }
+
+    /**
+      Get the ROM launcher of the system.
+
+      @return The launcher object
+    */
+    Launcher& launcher() const { return *myLauncher; }
+
+    /**
+      Get the time machine of the system (manages state files).
+
+      @return The time machine object
+    */
+    TimeMachine& timeMachine() const { return *myTimeMachine; }
+  #endif
 
     /**
       Set all config file paths for the OSystem.
@@ -473,6 +472,7 @@ class OSystem
     // Pointer to audio settings object
     unique_ptr<AudioSettings> myAudioSettings;
 
+  #ifdef GUI_SUPPORT
     // Pointer to the Menu object
     unique_ptr<Menu> myMenu;
 
@@ -481,10 +481,10 @@ class OSystem
 
     // Pointer to the Launcher object
     unique_ptr<Launcher> myLauncher;
-    bool myLauncherUsed;
 
     // Pointer to the TimeMachine object
     unique_ptr<TimeMachine> myTimeMachine;
+  #endif
 
   #ifdef DEBUGGER_SUPPORT
     // Pointer to the Debugger object
@@ -509,6 +509,9 @@ class OSystem
 
     // The list of log messages
     string myLogMessages;
+
+    // Indicates whether ROM launcher was ever opened during this run
+    bool myLauncherUsed;
 
     // Indicates whether to stop the main loop
     bool myQuitLoop;

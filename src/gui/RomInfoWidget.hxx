@@ -64,7 +64,7 @@ class RomInfoWidget : public Widget
     string mySurfaceErrorMsg;
 
     // How much space available for the PNG image
-    GUI::Size myAvail;
+    Common::Size myAvail;
 
   private:
     // Following constructors and assignment operators not supported

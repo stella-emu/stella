@@ -15,10 +15,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#if defined(PNG_SUPPORT)
+
 #ifndef PNGLIBRARY_HXX
 #define PNGLIBRARY_HXX
-
-#if defined(PNG_SUPPORT)
 
 #include <png.h>
 
@@ -82,7 +82,7 @@ class PNGLibrary
              more detailed error message.
     */
     void saveImage(const string& filename, const FBSurface& surface,
-                   const GUI::Rect& rect = GUI::EmptyRect,
+                   const Common::Rect& rect = Common::EmptyRect,
                    const VariantList& comments = EmptyVarList);
 
     /**
@@ -199,6 +199,6 @@ class PNGLibrary
     PNGLibrary& operator=(PNGLibrary&&) = delete;
 };
 
-#endif  // PNG_SUPPORT
-
 #endif
+
+#endif  // PNG_SUPPORT
