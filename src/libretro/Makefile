@@ -102,8 +102,8 @@ else ifeq ($(platform), osx)
    OSXVER = $(shell sw_vers -productVersion | cut -d. -f 2)
    OSX_GT_MOJAVE = $(shell (( $(OSXVER) >= 14)) && echo "YES")
    ifneq ($(OSX_GT_MOJAVE),YES)
-	#this breaks compiling on Mac OS Mojave
-      fpic += -mmacosx-version-min=10.1
+      #this breaks compiling on Mac OS Mojave
+      fpic += -mmacosx-version-min=10.7
    endif
 
 # Nintendo Switch (libnx)
