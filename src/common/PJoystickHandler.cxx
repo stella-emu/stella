@@ -550,6 +550,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
           }
         }
       }
+#ifdef USE_GUI
       else if(myHandler.hasOverlay())
       {
         // First, clamp the values to simulate digital input
@@ -569,6 +570,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
           j->axisLastValue[axis] = value;
         }
       }
+#endif
       break;  // Regular joystick axis
 
     // Since the various controller classes deal with Stelladaptor
@@ -608,8 +610,10 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
       // Determine which mode we're in, then send the event to the appropriate place
       if(myHandler.state() == EventHandlerState::EMULATION)
         myHandler.handleEvent(j->btnTable[button][kEmulationMode], pressed);
+#ifdef USE_GUI
       else if(myHandler.hasOverlay())
         myHandler.overlay().handleJoyBtnEvent(stick, button, pressed);
+#endif
       break;  // Regular button
 
     // These events don't have to pass through handleEvent, since
@@ -671,6 +675,7 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
     myHandler.handleEvent(j->hatTable[hat][int(JoyHat::LEFT)][kEmulationMode],
         value & EVENT_HATLEFT_M);
   }
+#ifdef USE_GUI
   else if(myHandler.hasOverlay())
   {
     if(value == EVENT_HATCENTER_M)
@@ -687,6 +692,7 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
         myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHat::LEFT);
     }
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

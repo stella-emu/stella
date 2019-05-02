@@ -337,8 +337,10 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
       break;
 
     default:
+#ifdef USE_GUI
       if(myHandler.hasOverlay())
         myHandler.overlay().handleKeyEvent(key, mod, pressed);
+#endif
       break;
   }
 }
