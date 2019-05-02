@@ -29,8 +29,8 @@
 Launcher::Launcher(OSystem& osystem)
   : DialogContainer(osystem)
 {
-  const GUI::Size& s = myOSystem.settings().getSize("launcherres");
-  const GUI::Size& d = myOSystem.frameBuffer().desktopSize();
+  const Common::Size& s = myOSystem.settings().getSize("launcherres");
+  const Common::Size& d = myOSystem.frameBuffer().desktopSize();
   myWidth = s.w;  myHeight = s.h;
 
   // The launcher dialog is resizable, within certain bounds
@@ -40,7 +40,7 @@ Launcher::Launcher(OSystem& osystem)
   myWidth  = std::min(myWidth,  uInt32(d.w));
   myHeight = std::min(myHeight, uInt32(d.h));
 
-  myOSystem.settings().setValue("launcherres", GUI::Size(myWidth, myHeight));
+  myOSystem.settings().setValue("launcherres", Common::Size(myWidth, myHeight));
 
   myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
 }

@@ -35,7 +35,7 @@ class StringListWidget : public ListWidget
     void handleMouseEntered() override;
     void handleMouseLeft() override;
     void drawWidget(bool hilite) override;
-    GUI::Rect getEditRect() const override;
+    Common::Rect getEditRect() const override;
 
   protected:
     bool _hilite;

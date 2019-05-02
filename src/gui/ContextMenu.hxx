@@ -94,7 +94,7 @@ class ContextMenu : public Dialog, public CommandSender
 
     void drawDialog() override;
 
-    void recalc(const GUI::Rect& image);
+    void recalc(const Common::Rect& image);
 
     int findItem(int x, int y) const;
     void drawCurrentSelection(int item);

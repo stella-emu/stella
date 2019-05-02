@@ -82,7 +82,7 @@ void StringListWidget::drawWidget(bool hilite)
         s.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, onTop ? kWidColorHi : kBGColorLo);
     }
 
-    GUI::Rect r(getEditRect());
+    Common::Rect r(getEditRect());
     if (_selectedItem == pos && _editMode)
     {
       adjustOffset();
@@ -101,9 +101,9 @@ void StringListWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect StringListWidget::getEditRect() const
+Common::Rect StringListWidget::getEditRect() const
 {
-  GUI::Rect r(2, 1, _w - 2, _fontHeight);
+  Common::Rect r(2, 1, _w - 2, _fontHeight);
   const int offset = std::max(0, (_selectedItem - _currentPos) * _fontHeight);
   r.top += offset;
   r.bottom += offset;

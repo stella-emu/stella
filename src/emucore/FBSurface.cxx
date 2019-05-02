@@ -17,10 +17,13 @@
 
 #include <cmath>
 
-#include "Font.hxx"
 #include "Rect.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
+
+#ifdef GUI_SUPPORT
+  #include "Font.hxx"
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurface::FBSurface()
@@ -37,7 +40,7 @@ FBSurface::FBSurface()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const
+void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const
 {
   uInt8* src = reinterpret_cast<uInt8*>(myPixels + rect.y() * myPitch + rect.x());
 
@@ -166,6 +169,7 @@ void FBSurface::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color)
 void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
                          uInt32 tx, uInt32 ty, ColorId color, ColorId shadowColor)
 {
+#ifdef GUI_SUPPORT
   if(shadowColor != kNone)
   {
     drawChar(font, chr, tx + 1, ty + 0, shadowColor);
@@ -220,6 +224,7 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
 
     buffer += myPitch;
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,6 +315,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
                            ColorId color, TextAlign align,
                            int deltax, bool useEllipsis, ColorId shadowColor)
 {
+#ifdef GUI_SUPPORT
   const string ELLIPSIS = "\x1d"; // "..."
   const int leftX = x, rightX = x + w;
   uInt32 i;
@@ -358,6 +364,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
 
     x += w;
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

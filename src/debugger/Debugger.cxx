@@ -91,8 +91,8 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
-  const GUI::Size& s = myOSystem.settings().getSize("dbg.res");
-  const GUI::Size& d = myOSystem.frameBuffer().desktopSize();
+  const Common::Size& s = myOSystem.settings().getSize("dbg.res");
+  const Common::Size& d = myOSystem.frameBuffer().desktopSize();
   myWidth = s.w;  myHeight = s.h;
 
   // The debugger dialog is resizable, within certain bounds
@@ -102,7 +102,7 @@ void Debugger::initialize()
   myWidth  = std::min(myWidth,  uInt32(d.w));
   myHeight = std::min(myHeight, uInt32(d.h));
 
-  myOSystem.settings().setValue("dbg.res", GUI::Size(myWidth, myHeight));
+  myOSystem.settings().setValue("dbg.res", Common::Size(myWidth, myHeight));
 
   delete myBaseDialog;  myBaseDialog = myDialog = nullptr;
   myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, myWidth, myHeight);

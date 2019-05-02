@@ -124,7 +124,7 @@ void TIASurface::setPalette(const uInt32* tia_palette, const uInt32* rgb_palette
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FBSurface& TIASurface::baseSurface(GUI::Rect& rect) const
+const FBSurface& TIASurface::baseSurface(Common::Rect& rect) const
 {
   uInt32 tiaw = myTIA->width(), width = tiaw * 2, height = myTIA->height();
   rect.setBounds(0, 0, width, height);

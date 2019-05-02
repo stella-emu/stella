@@ -23,6 +23,8 @@ class TIASurface;
 
 namespace GUI {
   class Font;
+}
+namespace Common {
   struct Rect;
 }
 
@@ -63,7 +65,7 @@ class FBSurface
       @param pitch   The pitch (in bytes) for the pixel data
       @param rect    The bounding rectangle for the buffer
     */
-    void readPixels(uInt8* buffer, uInt32 pitch, const GUI::Rect& rect) const;
+    void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const;
 
     //////////////////////////////////////////////////////////////////////////
     // Note:  The drawing primitives below will work, but do not take
@@ -238,8 +240,8 @@ class FBSurface
       These methods answer the current *rendering* dimensions of the
       specified surface.
     */
-    virtual const GUI::Rect& srcRect() const = 0;
-    virtual const GUI::Rect& dstRect() const = 0;
+    virtual const Common::Rect& srcRect() const = 0;
+    virtual const Common::Rect& dstRect() const = 0;
 
     /**
       These methods set the origin point and width/height for the

@@ -70,8 +70,8 @@ class RomListWidget : public EditableWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;
-    GUI::Rect getLineRect() const;
-    GUI::Rect getEditRect() const override;
+    Common::Rect getLineRect() const;
+    Common::Rect getEditRect() const override;
 
     int findItem(int x, int y) const;
     void recalc();

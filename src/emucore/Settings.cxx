@@ -106,7 +106,7 @@ Settings::Settings()
 
   // ROM browser options
   setPermanent("exitlauncher", "false");
-  setPermanent("launcherres", GUI::Size(900, 600));
+  setPermanent("launcherres", Common::Size(900, 600));
   setPermanent("launcherfont", "medium");
   setPermanent("launcherroms", "true");
   setPermanent("romviewer", "1");
@@ -115,8 +115,8 @@ Settings::Settings()
   // UI-related options
 #ifdef DEBUGGER_SUPPORT
   setPermanent("dbg.res",
-    GUI::Size(DebuggerDialog::kMediumFontMinW,
-              DebuggerDialog::kMediumFontMinH));
+    Common::Size(DebuggerDialog::kMediumFontMinW,
+                 DebuggerDialog::kMediumFontMinH));
 #endif
   setPermanent("uipalette", "standard");
   setPermanent("listdelay", "300");

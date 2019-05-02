@@ -92,7 +92,7 @@ class DataGridWidget : public EditableWidget
     void endEditMode() override;
     void abortEditMode() override;
 
-    GUI::Rect getEditRect() const override;
+    Common::Rect getEditRect() const override;
 
     void receivedFocusWidget() override;
     void lostFocusWidget() override;

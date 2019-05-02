@@ -30,8 +30,8 @@ FrameBufferLIBRETRO::FrameBufferLIBRETRO(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferLIBRETRO::queryHardware(vector<GUI::Size>& fullscreenRes,
-                                        vector<GUI::Size>& windowedRes,
+void FrameBufferLIBRETRO::queryHardware(vector<Common::Size>& fullscreenRes,
+                                        vector<Common::Size>& windowedRes,
                                         VariantList& renderers)
 {
   fullscreenRes.emplace_back(1920, 1080);

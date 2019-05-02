@@ -98,10 +98,10 @@ class DebuggerDialog : public Dialog
     void addStatusArea();
     void addRomArea();
 
-    GUI::Rect getTiaBounds() const;
-    GUI::Rect getRomBounds() const;
-    GUI::Rect getStatusBounds() const;
-    GUI::Rect getTabBounds() const;
+    Common::Rect getTiaBounds() const;
+    Common::Rect getRomBounds() const;
+    Common::Rect getStatusBounds() const;
+    Common::Rect getTabBounds() const;
 
   private:
     enum {

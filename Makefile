@@ -150,13 +150,12 @@ MODULES := $(MODULES)
 
 # After the game specific modules follow the shared modules
 MODULES += \
+	src/common \
+	src/common/audio \
+	src/common/tv_filters \
 	src/emucore \
 	src/emucore/tia \
-	src/emucore/tia/frame-manager \
-	src/gui \
-	src/common \
-	src/common/tv_filters \
-	src/common/audio
+	src/emucore/tia/frame-manager
 
 ######################################################################
 # The build rules follow - normally you should have no need to

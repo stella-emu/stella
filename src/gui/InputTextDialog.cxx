@@ -133,7 +133,7 @@ void InputTextDialog::center()
   {
     // Make sure the menu is exactly where it should be, in case the image
     // offset has changed
-    const GUI::Rect& image = instance().frameBuffer().imageRect();
+    const Common::Rect& image = instance().frameBuffer().imageRect();
     uInt32 x = image.x() + myXOrig;
     uInt32 y = image.y() + myYOrig;
     uInt32 tx = image.x() + image.width();

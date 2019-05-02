@@ -119,8 +119,8 @@ void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   if(isEnabled() && !myMenu->isVisible())
   {
     // Add menu just underneath parent widget
-    const GUI::Rect& image = instance().frameBuffer().imageRect();
-    const GUI::Rect& srect = dialog().surface().dstRect();
+    const Common::Rect& image = instance().frameBuffer().imageRect();
+    const Common::Rect& srect = dialog().surface().dstRect();
     uInt32 tx = srect.x(), ty = srect.y();
     tx += getAbsX() + _labelWidth - image.x();
     ty += getAbsY() + getHeight() - image.y();

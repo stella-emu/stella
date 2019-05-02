@@ -20,14 +20,12 @@
 #include "Logger.hxx"
 
 #include "Console.hxx"
-#include "Font.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 
+#include "ThreadDebugging.hxx"
 #include "FBSurfaceSDL2.hxx"
 #include "FrameBufferSDL2.hxx"
-
-#include "ThreadDebugging.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
@@ -83,8 +81,8 @@ FrameBufferSDL2::~FrameBufferSDL2()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::queryHardware(vector<GUI::Size>& fullscreenRes,
-                                    vector<GUI::Size>& windowedRes,
+void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
+                                    vector<Common::Size>& windowedRes,
                                     VariantList& renderers)
 {
   ASSERT_MAIN_THREAD;
@@ -377,7 +375,7 @@ unique_ptr<FBSurface>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::readPixels(uInt8* pixels, uInt32 pitch,
-                                 const GUI::Rect& rect) const
+                                 const Common::Rect& rect) const
 {
   ASSERT_MAIN_THREAD;
 

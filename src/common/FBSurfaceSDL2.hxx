@@ -45,8 +45,8 @@ class FBSurfaceSDL2 : public FBSurface
     uInt32 width() const override;
     uInt32 height() const override;
 
-    const GUI::Rect& srcRect() const override;
-    const GUI::Rect& dstRect() const override;
+    const Common::Rect& srcRect() const override;
+    const Common::Rect& dstRect() const override;
     void setSrcPos(uInt32 x, uInt32 y) override;
     void setSrcSize(uInt32 w, uInt32 h) override;
     void setDstPos(uInt32 x, uInt32 y) override;
@@ -92,7 +92,7 @@ class FBSurfaceSDL2 : public FBSurface
     unique_ptr<uInt32[]> myStaticData; // The data to use when the buffer contents are static
     uInt32 myStaticPitch;              // The number of bytes in a row of static data
 
-    GUI::Rect mySrcGUIR, myDstGUIR;
+    Common::Rect mySrcGUIR, myDstGUIR;
 };
 
 #endif

@@ -113,7 +113,7 @@ void CheckListWidget::drawWidget(bool hilite)
     const int y = _y + 2 + _fontHeight * i + 2;
     ColorId textColor = kTextColor;
 
-    GUI::Rect r(getEditRect());
+    Common::Rect r(getEditRect());
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos)
@@ -147,9 +147,9 @@ void CheckListWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect CheckListWidget::getEditRect() const
+Common::Rect CheckListWidget::getEditRect() const
 {
-  GUI::Rect r(2, 1, _w, _fontHeight);
+  Common::Rect r(2, 1, _w, _fontHeight);
   const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
             xoffset = CheckboxWidget::boxSize() + 10;
   r.top    += yoffset;

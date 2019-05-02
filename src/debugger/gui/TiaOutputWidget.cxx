@@ -81,7 +81,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
 
   // to skip borders, add 1 to origin
   int x = _x + 1, y = _y + 1;
-  GUI::Rect rect(x, y, x + width*2, y + height);
+  Common::Rect rect(x, y, x + width*2, y + height);
   string message = "Snapshot saved";
   try
   {

@@ -42,8 +42,8 @@ class FBSurfaceLIBRETRO : public FBSurface
     uInt32 width() const override { return myWidth; }
     uInt32 height() const override { return myHeight; }
 
-    const GUI::Rect& srcRect() const override { return mySrcGUIR; }
-    const GUI::Rect& dstRect() const override { return myDstGUIR; }
+    const Common::Rect& srcRect() const override { return mySrcGUIR; }
+    const Common::Rect& dstRect() const override { return myDstGUIR; }
     void setSrcPos(uInt32 x, uInt32 y) override { }
     void setSrcSize(uInt32 w, uInt32 h) override { }
     void setDstPos(uInt32 x, uInt32 y) override { }
@@ -73,7 +73,7 @@ class FBSurfaceLIBRETRO : public FBSurface
   private:
     FrameBufferLIBRETRO& myFB;
 
-    GUI::Rect mySrcGUIR, myDstGUIR;
+    Common::Rect mySrcGUIR, myDstGUIR;
 
   private:
     unique_ptr<uInt32[]> myPixelData;

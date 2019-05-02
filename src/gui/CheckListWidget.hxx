@@ -51,7 +51,7 @@ class CheckListWidget : public ListWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void drawWidget(bool hilite) override;
-    GUI::Rect getEditRect() const override;
+    Common::Rect getEditRect() const override;
 
   protected:
     BoolArray     _stateList;

@@ -25,11 +25,13 @@
 #include "StellaKeys.hxx"
 #include "TIASurface.hxx"
 #include "PNGLibrary.hxx"
-#include "DialogContainer.hxx"
 #include "PKeyboardHandler.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
+#endif
+#ifdef GUI_SUPPORT
+  #include "DialogContainer.hxx"
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -337,8 +339,10 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
       break;
 
     default:
+    #ifdef GUI_SUPPORT
       if(myHandler.hasOverlay())
         myHandler.overlay().handleKeyEvent(key, mod, pressed);
+    #endif
       break;
   }
 }
