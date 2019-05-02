@@ -226,7 +226,11 @@ bool StellaLIBRETRO::loadState(const void* data, size_t size)
 
   state.putByteArray(reinterpret_cast<const uInt8*>(data), static_cast<uInt32>(size));
 
-  return myOSystem->state().loadState(state);
+  if(!myOSystem->state().loadState(state))
+    return false;
+
+  memcpy(system_ram, myOSystem->console().system().m6532().getRAM(), 128);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
