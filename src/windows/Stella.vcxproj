@@ -1078,6 +1078,7 @@
     <ClInclude Include="..\common\PhysicalJoystick.hxx" />
     <ClInclude Include="..\common\PJoystickHandler.hxx" />
     <ClInclude Include="..\common\PKeyboardHandler.hxx" />
+    <ClInclude Include="..\common\Rect.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepository.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepositoryConfigfile.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx" />
@@ -1370,7 +1371,6 @@
     <ClInclude Include="..\gui\OptionsDialog.hxx" />
     <ClInclude Include="..\gui\PopUpWidget.hxx" />
     <ClInclude Include="..\gui\ProgressDialog.hxx" />
-    <ClInclude Include="..\gui\Rect.hxx" />
     <ClInclude Include="..\gui\RomAuditDialog.hxx" />
     <ClInclude Include="..\gui\RomInfoWidget.hxx" />
     <ClInclude Include="..\gui\ScrollBarWidget.hxx" />
