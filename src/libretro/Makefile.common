@@ -128,5 +128,3 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Switches.cxx \
 	$(CORE_DIR)/emucore/System.cxx \
 	$(CORE_DIR)/emucore/Thumbulator.cxx
-
-SOURCES_C :=
