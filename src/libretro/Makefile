@@ -146,8 +146,8 @@ else ifeq ($(platform), classic_armv7_a7)
 
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
-   CXXFLAGS += $(LTO) $(PTHREAD_FLAGS)
-   LDFLAGS += $(LTO) $(PTHREAD_FLAGS)
+   CXXFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
+   LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
