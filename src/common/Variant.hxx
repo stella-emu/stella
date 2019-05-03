@@ -56,23 +56,23 @@ class Variant
 
     // Conversion methods
     const string& toString() const { return data; }
-    const char* const toCString() const { return data.c_str(); }
-    const Int32 toInt() const {
+    const char* toCString() const { return data.c_str(); }
+    Int32 toInt() const {
       istringstream ss(data);
       Int32 parsed;
       ss >> parsed;
 
       return parsed;
     }
-    const float toFloat() const {
+    float toFloat() const {
       istringstream ss(data);
       float parsed;
       ss >> parsed;
 
       return parsed;
     }
-    const bool toBool() const      { return data == "1" || data == "true"; }
-    const Common::Size toSize() const { return Common::Size(data); }
+    bool toBool() const         { return data == "1" || data == "true"; }
+    Common::Size toSize() const { return Common::Size(data); }
 
     // Comparison
     bool operator==(const Variant& v) const { return data == v.data; }

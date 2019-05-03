@@ -50,7 +50,7 @@ else
   CXXFLAGS:= -O2 -x c++
 endif
 
-CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers
+CXXFLAGS+= -Wall -Wextra -Wno-unused-parameter
 
 ifdef HAVE_GCC
   CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti -Woverloaded-virtual -Wnon-virtual-dtor -std=c++14
@@ -74,15 +74,15 @@ ifdef PROFILE
 endif
 
 ifdef DEBUG
-	CXXFLAGS += -g
+  CXXFLAGS += -g
 else
   ifdef HAVE_GCC
     CXXFLAGS+= -fomit-frame-pointer
   endif
 
-	ifdef HAVE_CLANG
-		CXXFLAGS+= -fomit-frame-pointer
-	endif
+  ifdef HAVE_CLANG
+    CXXFLAGS+= -fomit-frame-pointer
+  endif
 endif
 
 #######################################################################

@@ -341,7 +341,7 @@ bool ZipHandler::ZipFile::readStream(ByteBuffer& out, uInt64 offset,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ZipHandler::ZipHeader* const ZipHandler::ZipFile::nextFile()
+const ZipHandler::ZipHeader* ZipHandler::ZipFile::nextFile()
 {
   // Make sure we have enough data
   // If we're at or past the end, we're done
