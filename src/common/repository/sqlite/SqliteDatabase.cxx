@@ -22,7 +22,7 @@
 #include "SqliteError.hxx"
 
 #ifdef BSPF_WINDOWS
-  #define SEPARATOR "\"
+  #define SEPARATOR "\""
 #else
   #define SEPARATOR "/"
 #endif
