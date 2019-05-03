@@ -18,12 +18,7 @@
 #ifndef OSYSTEM_HXX
 #define OSYSTEM_HXX
 
-class CommandMenu;
 class Console;
-class Debugger;
-class Launcher;
-class Menu;
-class TimeMachine;
 class FrameBuffer;
 class EventHandler;
 class Properties;
@@ -32,15 +27,26 @@ class Random;
 class Sound;
 class StateManager;
 class TimerManager;
-class VideoDialog;
 class EmulationWorker;
 class AudioSettings;
-class SettingsDb;
+#ifdef CHEATCODE_SUPPORT
+  class CheatManager;
+#endif
+#ifdef DEBUGGER_SUPPORT
+  class Debugger;
+#endif
+#ifdef GUI_SUPPORT
+  class CommandMenu;
+  class Launcher;
+  class Menu;
+  class TimeMachine;
+  class VideoDialog;
+#endif
 #ifdef PNG_SUPPORT
   class PNGLibrary;
 #endif
-#ifdef CHEATCODE_SUPPORT
-  class CheatManager;
+#ifdef SQLITE_SUPPORT
+  class SettingsDb;
 #endif
 
 #include <chrono>
@@ -63,9 +69,11 @@ class SettingsDb;
 class OSystem
 {
   friend class EventHandler;
+#ifdef GUI_SUPPORT
   friend class VideoDialog;
   friend class StellaSettingsDialog;
   friend class DeveloperDialog;
+#endif
 
   public:
     OSystem();
