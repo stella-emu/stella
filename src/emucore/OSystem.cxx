@@ -24,16 +24,22 @@
 #include "MediaFactory.hxx"
 #include "Sound.hxx"
 
-#ifdef DEBUGGER_SUPPORT
-  #include "Debugger.hxx"
-#endif
-
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
 #endif
-
+#ifdef DEBUGGER_SUPPORT
+  #include "Debugger.hxx"
+#endif
+#ifdef GUI_SUPPORT
+  #include "Menu.hxx"
+  #include "CommandMenu.hxx"
+  #include "Launcher.hxx"
+  #include "TimeMachine.hxx"
+  #include "Widget.hxx"
+#endif
 #ifdef SQLITE_SUPPORT
   #include "KeyValueRepositorySqlite.hxx"
+  #include "SettingsDb.hxx"
 #endif
 
 #include "FSNode.hxx"
@@ -58,14 +64,6 @@
 #include "AudioSettings.hxx"
 #include "repository/KeyValueRepositoryNoop.hxx"
 #include "repository/KeyValueRepositoryConfigfile.hxx"
-
-#ifdef GUI_SUPPORT
-  #include "Menu.hxx"
-  #include "CommandMenu.hxx"
-  #include "Launcher.hxx"
-  #include "TimeMachine.hxx"
-  #include "Widget.hxx"
-#endif
 
 #include "OSystem.hxx"
 
