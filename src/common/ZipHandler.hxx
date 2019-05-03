@@ -137,7 +137,7 @@ class ZipHandler
       bool readStream(ByteBuffer& out, uInt64 offset, uInt64 length, uInt64& actual);
 
       /** Return the next entry in the ZIP file */
-      const ZipHeader* const nextFile();
+      const ZipHeader* nextFile();
 
       /** Decompress the most recently found file in the ZIP into target buffer */
       void decompress(ByteBuffer& out, uInt64 length);

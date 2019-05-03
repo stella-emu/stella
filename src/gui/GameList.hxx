@@ -37,7 +37,7 @@ class GameList
       { return i < myArray.size() ? myArray[i]._path : EmptyString; }
     const string& md5(uInt32 i) const
       { return i < myArray.size() ? myArray[i]._md5 : EmptyString; }
-    const bool isDir(uInt32 i) const
+    bool isDir(uInt32 i) const
       { return i < myArray.size() ? myArray[i]._isdir: false; }
 
     void setMd5(uInt32 i, const string& md5)

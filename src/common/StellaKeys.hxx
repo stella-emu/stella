@@ -439,7 +439,7 @@ namespace StellaModTest
 
 namespace StellaKeyName
 {
-  inline const char* const forKey(StellaKey key)
+  inline const char* forKey(StellaKey key)
   {
   #ifdef SDL_SUPPORT
     return SDL_GetScancodeName(SDL_Scancode(key));
