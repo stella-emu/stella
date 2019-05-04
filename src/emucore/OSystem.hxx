@@ -537,6 +537,8 @@ class OSystem
     string myDefaultSaveDir;
     string myDefaultLoadDir;
 
+    bool mySettingsLoaded;
+
     string myCheatFile;
     string myConfigFile;
     string myPaletteFile;

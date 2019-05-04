@@ -77,6 +77,7 @@ namespace {
 OSystem::OSystem()
   : myLauncherUsed(false),
     myQuitLoop(false),
+    mySettingsLoaded(false),
     myFpsMeter(FPS_METER_QUEUE_SIZE)
 {
   // Get built-in features
@@ -224,6 +225,7 @@ void OSystem::loadConfig(const Settings::Options& options)
 
   Logger::log("Loading config options ...", 2);
   mySettings->load(options);
+  mySettingsLoaded = true;
 
   myPropSet->load(myPropertiesFile);
 }
@@ -492,7 +494,7 @@ void OSystem::logMessage(const string& message, uInt8 level)
     cout << message << endl << std::flush;
     myLogMessages += message + "\n";
   }
-  else if(level <= uInt8(mySettings->getInt("loglevel")))
+  else if(level <= uInt8(mySettings->getInt("loglevel")) || !mySettingsLoaded)
   {
     if(mySettings->getBool("logtoconsole"))
       cout << message << endl << std::flush;

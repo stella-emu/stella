@@ -75,10 +75,22 @@ void SqliteDatabase::initialize()
     throw SqliteError("unable to initialize sqlite DB for unknown reason");
   };
 
+  Logger::log("successfully opened " + myDatabaseFile, 2);
+
   exec("PRAGMA journal_mode=WAL");
 
-  if (sqlite3_wal_checkpoint_v2(myHandle, nullptr, SQLITE_CHECKPOINT_TRUNCATE, nullptr, nullptr) != SQLITE_OK)
-    throw SqliteError(sqlite3_errmsg(myHandle));
+  switch (sqlite3_wal_checkpoint_v2(myHandle, nullptr, SQLITE_CHECKPOINT_TRUNCATE, nullptr, nullptr)) {
+    case SQLITE_OK:
+      break;
+
+    case SQLITE_MISUSE:
+      Logger::log("failed to checkpoint WAL on " + myDatabaseFile + " - WAL probably unavailable", 1);
+      break;
+
+    default:
+      Logger::log("failed to checkpoint WAL on " + myDatabaseFile + " : " + sqlite3_errmsg(myHandle), 1);
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
