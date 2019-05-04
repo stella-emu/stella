@@ -498,11 +498,13 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleJoyDown(int stick, int button)
 {
-  // open power-up options for 2nd button if not mapped otherwise
+  // open power-up options and settings for 2nd and 4th button if not mapped otherwise
   Event::Type e = instance().eventHandler().eventForJoyButton(stick, button, kMenuMode);
 
   if (button == 1 && (e == Event::UICancel || e == Event::NoType))
     myGlobalProps->open();
+  if (button == 3 && e == Event::NoType)
+    openSettings();
   else
     Dialog::handleJoyDown(stick, button);
 }

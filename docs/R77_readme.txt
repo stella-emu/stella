@@ -11,36 +11,37 @@ Stella can be controlled via the console buttons or a joystick in left or
 right port.
 
 Inside Launcher:
-  Joystick   Button     Action
-  --------------------------------------------------
-  Up         SAVE       previous game
-  Down       RESET      next game
-  Left       LOAD       page up
-  Right      MODE       page down
-  Button     SKILL P1   start selected game
-  Button #2  SKILL P2   open Power-on options dialog
-  -          COLOR,B/W  open Settings dialog
+  Joystick   Button      Action
+  ----------------------------------------------------
+  Up         SAVE        previous game
+  Down       RESET       next game
+  Left       LOAD        page up
+  Right      MODE        page down
+  Button 1   SKILL P1    start selected game
+  Button 2   SKILL P2    open Power-on options dialog
+  Button 4   COLOR,B/W   open Settings dialog
 
 Inside a dialog:
-  Joystick   Button     Action
-  ----------------------------------------------------
-  Up         SAVE       change/increase current option
-  Down       RESET      change/decrease current option
-  Left       LOAD       previous dialog element
-  Right      MODE       next dialog element
-  Button     SKILL P1   select
-  Button #2  SKILL P2   cancel
-  -          4:3,16:9   previous tab
-  -          FRY        next tab
+  Joystick   Button      Action
+  -----------------------------------------------------
+  Up         SAVE        change/increase current option
+  Down       RESET       change/decrease current option
+  Left       LOAD        previous dialog element
+  Right      MODE        next dialog element
+  Button 1   SKILL P1    select
+  Button 2   SKILL P2    cancel
+  Button 3   4:3,16:9    previous tab
+  Button 4   FRY         next tab
 
 During emulation:
   The joysticks work normal and all console buttons as labeled except of the
   following.
 
-  Button     Action
-  ----------------------------------
-  4:3,16:9   open the Command dialog
-  FRY        return to Launcher
+  Joystick  ´Button      Action
+  ----------------------------------------------
+  Button 3   4:3,16:9    open the Command dialog
+  Button 4   -           open Settings dialog
+  Button 5   FRY         return to Launcher
 
 Note: If you have a keyboard attached via OTG all keys work as described in
 the Stella User's Guide.
