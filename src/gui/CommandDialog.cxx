@@ -101,6 +101,10 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   wid.push_back(bw);
 
   addToFocusList(wid);
+
+  // We don't have a close/cancel button, but we still want the cancel
+  // event to be processed
+  processCancelWithoutWidget(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,6 +235,12 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
   }
   else if(stateCmd)
     instance().eventHandler().handleEvent(event);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CommandDialog::processCancel()
+{
+  instance().eventHandler().leaveMenuMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

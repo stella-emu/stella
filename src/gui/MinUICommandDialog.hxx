@@ -30,63 +30,64 @@ class OptionsDialog;
 class MinUICommandDialog : public Dialog
 {
   public:
-  MinUICommandDialog(OSystem& osystem, DialogContainer& parent);
-  virtual ~MinUICommandDialog() = default;
+    MinUICommandDialog(OSystem& osystem, DialogContainer& parent);
+    virtual ~MinUICommandDialog() = default;
 
   protected:
-  void loadConfig() override;
-  void handleKeyDown(StellaKey key, StellaMod mod) override;
-  void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-  void updateSlot(int slot);
-  void updateWinds();
-  void updateTVFormat();
-  void openSettings();
+    void loadConfig() override;
+    void handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void updateSlot(int slot);
+    void updateWinds();
+    void updateTVFormat();
+    void openSettings();
+    void processCancel() override;
 
-  // column 0
-  ButtonWidget* myColorButton;
-  ButtonWidget* myLeftDiffButton;
-  ButtonWidget* myRightDiffButton;
-  // column 1
-  ButtonWidget* mySaveStateButton;
-  ButtonWidget* myStateSlotButton;
-  ButtonWidget* myLoadStateButton;
-  ButtonWidget* myRewindButton;
-  ButtonWidget* myUnwindButton;
-  // column 2
-  ButtonWidget* myTVFormatButton;
-  ButtonWidget* myStretchButton;
-  ButtonWidget* myPhosphorButton;
+    // column 0
+    ButtonWidget* myColorButton;
+    ButtonWidget* myLeftDiffButton;
+    ButtonWidget* myRightDiffButton;
+    // column 1
+    ButtonWidget* mySaveStateButton;
+    ButtonWidget* myStateSlotButton;
+    ButtonWidget* myLoadStateButton;
+    ButtonWidget* myRewindButton;
+    ButtonWidget* myUnwindButton;
+    // column 2
+    ButtonWidget* myTVFormatButton;
+    ButtonWidget* myStretchButton;
+    ButtonWidget* myPhosphorButton;
 
-  unique_ptr<StellaSettingsDialog>  myStellaSettingsDialog;
-  unique_ptr<OptionsDialog>  myOptionsDialog;
+    unique_ptr<StellaSettingsDialog>  myStellaSettingsDialog;
+    unique_ptr<OptionsDialog>  myOptionsDialog;
 
-  enum
-  {
-    kSelectCmd = 'Csel',
-    kResetCmd = 'Cres',
-    kColorCmd = 'Ccol',
-    kLeftDiffCmd = 'Cldf',
-    kRightDiffCmd = 'Crdf',
-    kSaveStateCmd = 'Csst',
-    kStateSlotCmd = 'Ccst',
-    kLoadStateCmd = 'Clst',
-    kSnapshotCmd = 'Csnp',
-    kRewindCmd = 'Crew',
-    kUnwindCmd = 'Cunw',
-    kFormatCmd = 'Cfmt',
-    kStretchCmd = 'Cstr',
-    kPhosphorCmd = 'Cpho',
-    kSettings = 'Cscn',
-    kExitGameCmd = 'Cext',
-  };
+    enum
+    {
+      kSelectCmd = 'Csel',
+      kResetCmd = 'Cres',
+      kColorCmd = 'Ccol',
+      kLeftDiffCmd = 'Cldf',
+      kRightDiffCmd = 'Crdf',
+      kSaveStateCmd = 'Csst',
+      kStateSlotCmd = 'Ccst',
+      kLoadStateCmd = 'Clst',
+      kSnapshotCmd = 'Csnp',
+      kRewindCmd = 'Crew',
+      kUnwindCmd = 'Cunw',
+      kFormatCmd = 'Cfmt',
+      kStretchCmd = 'Cstr',
+      kPhosphorCmd = 'Cpho',
+      kSettings = 'Cscn',
+      kExitGameCmd = 'Cext',
+    };
 
   private:
-  // Following constructors and assignment operators not supported
-  MinUICommandDialog() = delete;
-  MinUICommandDialog(const MinUICommandDialog&) = delete;
-  MinUICommandDialog(MinUICommandDialog&&) = delete;
-  MinUICommandDialog& operator=(const MinUICommandDialog&) = delete;
-  MinUICommandDialog& operator=(MinUICommandDialog&&) = delete;
+    // Following constructors and assignment operators not supported
+    MinUICommandDialog() = delete;
+    MinUICommandDialog(const MinUICommandDialog&) = delete;
+    MinUICommandDialog(MinUICommandDialog&&) = delete;
+    MinUICommandDialog& operator=(const MinUICommandDialog&) = delete;
+    MinUICommandDialog& operator=(MinUICommandDialog&&) = delete;
 };
 
 #endif
