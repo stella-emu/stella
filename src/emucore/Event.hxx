@@ -78,6 +78,7 @@ class Event
 
       UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
       UISelect, UINavPrev, UINavNext, UIOK, UICancel, UIPrevDir,
+      UITabPrev, UITabNext,
 
       LastType
     };

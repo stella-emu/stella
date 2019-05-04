@@ -442,10 +442,10 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
     if(StellaModTest::isControl(mod))
     {
       // tab header navigation
-      if(StellaModTest::isShift(mod) && cycleTab(-1))
-        return;
-      else if(!StellaModTest::isShift(mod) && cycleTab(+1))
-        return;
+      if(StellaModTest::isShift(mod))
+        e = Event::UITabPrev;
+      else
+        e = Event::UITabNext;
     }
     else
     {
@@ -456,16 +456,15 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
         e = Event::UINavNext;
     }
   }
-
   // FIXME - use the R77 define in the final release
   //         use the '1' define for testing
-  #if defined(RETRON77)
-//  #if 1
+  // #if defined(RETRON77)
+  #if 1
   // special keys used for R77
-  if (key == KBDK_F13 && cycleTab(-1))
-    return;
-  if (key == KBDK_BACKSPACE && cycleTab(1))
-    return;
+  else if (key == KBDK_F13)
+    e = Event::UITabPrev;
+  else if (key == KBDK_BACKSPACE)
+    e = Event::UITabNext;
   #endif
 
   // Check the keytable now, since we might get one of the above events,
@@ -669,6 +668,16 @@ bool Dialog::handleNavEvent(Event::Type e)
 {
   switch(e)
   {
+    case Event::UITabPrev:
+      if (cycleTab(-1))
+        return true;
+      break;
+
+    case Event::UITabNext:
+      if (cycleTab(1))
+        return true;
+      break;
+
     case Event::UINavPrev:
       if(_focusedWidget && !_focusedWidget->wantsTab())
       {
