@@ -159,6 +159,7 @@ class Dialog : public GuiObject
                                    bool focusOKButton = true);
 
     void processCancelWithoutWidget(bool state) { _processCancel = state; }
+    virtual void processCancel() { close(); }
 
     /** Define the size (allowed) for the dialog. */
     void setSize(uInt32 w, uInt32 h, uInt32 max_w, uInt32 max_h);

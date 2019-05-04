@@ -722,7 +722,7 @@ bool Dialog::handleNavEvent(Event::Type e)
       {
         // Some dialogs want the ability to cancel without actually having
         // a corresponding cancel button
-        close();
+        processCancel();
         return true;
       }
       break;

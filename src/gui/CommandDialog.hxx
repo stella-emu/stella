@@ -37,6 +37,7 @@ class CommandDialog : public Dialog
     void updateSlot(int slot);
     void updateTVFormat();
     void updatePalette();
+    void processCancel() override;
 
     // column 0
     ButtonWidget* myColorButton;
