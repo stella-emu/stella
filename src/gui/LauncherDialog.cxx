@@ -503,7 +503,7 @@ void LauncherDialog::handleJoyDown(int stick, int button)
 
   if (button == 1 && (e == Event::UICancel || e == Event::NoType))
     myGlobalProps->open();
-  if (button == 3 && e == Event::NoType)
+  if (button == 3 && (e == Event::Event::UITabNext || e == Event::NoType))
     openSettings();
   else
     Dialog::handleJoyDown(stick, button);
