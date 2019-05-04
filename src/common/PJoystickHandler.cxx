@@ -269,39 +269,66 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
   switch(mode)
   {
     case kEmulationMode:  // Default emulation events
-      if(stick == 0)
+      switch (stick)
       {
-        // Left joystick left/right directions (assume joystick zero)
-        setDefaultAxis( 0, 0, 0, Event::JoystickZeroLeft  );
-        setDefaultAxis( 0, 0, 1, Event::JoystickZeroRight );
-        // Left joystick up/down directions (assume joystick zero)
-        setDefaultAxis( 0, 1, 0, Event::JoystickZeroUp    );
-        setDefaultAxis( 0, 1, 1, Event::JoystickZeroDown  );
-        // Left joystick (assume joystick zero, button zero)
-        setDefaultBtn( 0, 0, Event::JoystickZeroFire );
-        // Left joystick left/right directions (assume joystick zero and hat 0)
-        setDefaultHat( 0, 0, JoyHat::LEFT,  Event::JoystickZeroLeft  );
-        setDefaultHat( 0, 0, JoyHat::RIGHT, Event::JoystickZeroRight );
-        // Left joystick up/down directions (assume joystick zero and hat 0)
-        setDefaultHat( 0, 0, JoyHat::UP,    Event::JoystickZeroUp    );
-        setDefaultHat( 0, 0, JoyHat::DOWN,  Event::JoystickZeroDown  );
-      }
-      else if(stick == 1)
-      {
-        // Right joystick left/right directions (assume joystick one)
-        setDefaultAxis( 1, 0, 0, Event::JoystickOneLeft  );
-        setDefaultAxis( 1, 0, 1, Event::JoystickOneRight );
-        // Right joystick left/right directions (assume joystick one)
-        setDefaultAxis( 1, 1, 0, Event::JoystickOneUp    );
-        setDefaultAxis( 1, 1, 1, Event::JoystickOneDown  );
-        // Right joystick (assume joystick one, button zero)
-        setDefaultBtn( 1, 0, Event::JoystickOneFire );
-        // Right joystick left/right directions (assume joystick one and hat 0)
-        setDefaultHat( 1, 0, JoyHat::LEFT,  Event::JoystickOneLeft  );
-        setDefaultHat( 1, 0, JoyHat::RIGHT, Event::JoystickOneRight );
-        // Right joystick up/down directions (assume joystick one and hat 0)
-        setDefaultHat( 1, 0, JoyHat::UP,    Event::JoystickOneUp    );
-        setDefaultHat( 1, 0, JoyHat::DOWN,  Event::JoystickOneDown  );
+        case 0:
+        case 2:
+          // Left joystick left/right directions (assume joystick zero or two)
+          setDefaultAxis(stick, 0, 0, Event::JoystickZeroLeft);
+          setDefaultAxis(stick, 0, 1, Event::JoystickZeroRight);
+          // Left joystick up/down directions (assume joystick zero or two)
+          setDefaultAxis(stick, 1, 0, Event::JoystickZeroUp);
+          setDefaultAxis(stick, 1, 1, Event::JoystickZeroDown);
+          // Left joystick (assume joystick zero or two, buttons zero..two)
+          setDefaultBtn(stick, 0, Event::JoystickZeroFire);
+          setDefaultBtn(stick, 1, Event::JoystickZeroFire5);
+          setDefaultBtn(stick, 2, Event::JoystickZeroFire9);
+          // Left joystick left/right directions (assume joystick zero or two and hat 0)
+          setDefaultHat(stick, 0, JoyHat::LEFT, Event::JoystickZeroLeft);
+          setDefaultHat(stick, 0, JoyHat::RIGHT, Event::JoystickZeroRight);
+          // Left joystick up/down directions (assume joystick zero or two and hat 0)
+          setDefaultHat(stick, 0, JoyHat::UP, Event::JoystickZeroUp);
+          setDefaultHat(stick, 0, JoyHat::DOWN, Event::JoystickZeroDown);
+        // FIXME - use the R77 define in the final release
+        //         use the '1' define for testing
+        #if defined(RETRON77)
+        // #if 1
+          // Left joystick (assume joystick zero or two, buttons two..four)
+          setDefaultBtn(stick, 2, Event::CmdMenuMode);
+          setDefaultBtn(stick, 3, Event::OptionsMenuMode);
+          setDefaultBtn(stick, 4, Event::LauncherMode);
+        #endif
+          break;
+        case 1:
+        case 3:
+          // Right joystick left/right directions (assume joystick one or three)
+          setDefaultAxis(stick, 0, 0, Event::JoystickOneLeft);
+          setDefaultAxis(stick, 0, 1, Event::JoystickOneRight);
+          // Right joystick left/right directions (assume joystick one or three)
+          setDefaultAxis(stick, 1, 0, Event::JoystickOneUp);
+          setDefaultAxis(stick, 1, 1, Event::JoystickOneDown);
+          // Right joystick (assume joystick one or three, buttons zero..two)
+          setDefaultBtn(stick, 0, Event::JoystickOneFire);
+          setDefaultBtn(stick, 1, Event::JoystickOneFire5);
+          setDefaultBtn(stick, 2, Event::JoystickOneFire9);
+          // Right joystick left/right directions (assume joystick one or three and hat 0)
+          setDefaultHat(stick, 0, JoyHat::LEFT, Event::JoystickOneLeft);
+          setDefaultHat(stick, 0, JoyHat::RIGHT, Event::JoystickOneRight);
+          // Right joystick up/down directions (assume joystick one or three and hat 0)
+          setDefaultHat(stick, 0, JoyHat::UP, Event::JoystickOneUp);
+          setDefaultHat(stick, 0, JoyHat::DOWN, Event::JoystickOneDown);
+        // FIXME - use the R77 define in the final release
+        //         use the '1' define for testing
+        #if defined(RETRON77)
+        // #if 1
+          // Right joystick (assume joystick one or three, buttons two..four)
+          setDefaultBtn(stick, 2, Event::CmdMenuMode);
+          setDefaultBtn(stick, 3, Event::OptionsMenuMode);
+          setDefaultBtn(stick, 4, Event::LauncherMode);
+        #endif
+          break;
+        default:
+          break;
       }
       break;
 
@@ -311,9 +338,11 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
       setDefaultAxis( stick, 1, 0, Event::UIUp      );
       setDefaultAxis( stick, 1, 1, Event::UIDown    );
 
-      // joystick (assume buttons zero and one)
-      setDefaultBtn( stick, 0, Event::UISelect );
-      setDefaultBtn( stick, 1, Event::UICancel );
+      // joystick (assume buttons zero..three)
+      setDefaultBtn( stick, 0, Event::UISelect  );
+      setDefaultBtn( stick, 1, Event::UICancel  );
+      setDefaultBtn( stick, 2, Event::UITabPrev );
+      setDefaultBtn( stick, 3, Event::UITabNext );
 
       setDefaultHat( stick, 0, JoyHat::LEFT,  Event::UINavPrev );
       setDefaultHat( stick, 0, JoyHat::RIGHT, Event::UINavNext );

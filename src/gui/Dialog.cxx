@@ -458,8 +458,8 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
   }
   // FIXME - use the R77 define in the final release
   //         use the '1' define for testing
-  // #if defined(RETRON77)
-  #if 1
+  #if defined(RETRON77)
+  // #if 1
   // special keys used for R77
   else if (key == KBDK_F13)
     e = Event::UITabPrev;
