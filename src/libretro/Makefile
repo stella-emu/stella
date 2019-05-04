@@ -14,8 +14,7 @@ CXXFLAGS += -Wall -Wunused -fno-rtti -Woverloaded-virtual
 CXXFLAGS += -Wnon-virtual-dtor -std=c++14
 
 ifeq (,$(findstring msvc,$(platform)))
-   CXXFLAGS += -Wextra -Wno-unused-parameter -Wno-ignored-qualifiers \
-               -Wno-multichar
+   CXXFLAGS += -Wextra -Wno-unused-parameter -Wno-multichar
 endif
 
 ifeq ($(platform),)
