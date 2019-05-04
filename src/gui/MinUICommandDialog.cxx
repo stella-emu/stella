@@ -229,9 +229,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kStretchCmd:
       instance().eventHandler().leaveMenuMode();
-      instance().settings().setValue("tia.fs_stretch", !instance().settings().getBool("tia.fs_stretch"));
-      // Issue a complete framebuffer re-initialization
-      instance().createFrameBuffer();
+      instance().eventHandler().handleEvent(Event::VidmodeIncrease);
       break;
 
     case kPhosphorCmd:
