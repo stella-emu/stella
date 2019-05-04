@@ -28,6 +28,7 @@
 #include "StellaSettingsDialog.hxx"
 #include "OptionsDialog.hxx"
 #include "TIASurface.hxx"
+
 #include "MinUICommandDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,8 +86,6 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(myRewindButton);
   myUnwindButton = ADD_CD_BUTTON("Unwind", kUnwindCmd);
   wid.push_back(myUnwindButton);
-  bw = ADD_CD_BUTTON("Close", GuiObject::kCloseCmd);
-  wid.push_back(bw);
 
   // Column 3
   xoffset += buttonWidth + HGAP;
@@ -100,7 +99,16 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(myPhosphorButton);
   bw = ADD_CD_BUTTON("Settings"+ ELLIPSIS, kSettings);
   wid.push_back(bw);
+  bw = ADD_CD_BUTTON("Fry", kFry);
+  wid.push_back(bw);
+
+  //  Bottom row
+  xoffset = HBORDER + (buttonWidth + HGAP) / 2;
   bw = ADD_CD_BUTTON("Exit Game", kExitGameCmd);
+  wid.push_back(bw);
+  xoffset += buttonWidth + HGAP;
+  yoffset -= buttonHeight + VGAP;
+  bw = ADD_CD_BUTTON("Close", GuiObject::kCloseCmd);
   wid.push_back(bw);
 
   addToFocusList(wid);
@@ -222,6 +230,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
     case kStretchCmd:
       instance().eventHandler().leaveMenuMode();
       instance().settings().setValue("tia.fs_stretch", !instance().settings().getBool("tia.fs_stretch"));
+      // Issue a complete framebuffer re-initialization
       instance().createFrameBuffer();
       break;
 
@@ -232,6 +241,11 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSettings:
       openSettings();
+      break;
+
+    case kFry:
+      instance().eventHandler().leaveMenuMode();
+      instance().console().fry();
       break;
 
     case kExitGameCmd:

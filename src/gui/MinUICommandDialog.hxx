@@ -78,6 +78,7 @@ class MinUICommandDialog : public Dialog
       kStretchCmd = 'Cstr',
       kPhosphorCmd = 'Cpho',
       kSettings = 'Cscn',
+      kFry = 'Cfry',
       kExitGameCmd = 'Cext',
     };
 
