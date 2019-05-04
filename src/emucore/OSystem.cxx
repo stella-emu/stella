@@ -713,6 +713,11 @@ double OSystem::dispatchEmulation(EmulationWorker& emulationWorker)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::mainLoop()
 {
+  cout
+    << "enter OSystem::mainLoop(): "
+    << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()
+    << endl << std::flush;
+
   // 6507 time
   time_point<high_resolution_clock> virtualTime = high_resolution_clock::now();
   // The emulation worker

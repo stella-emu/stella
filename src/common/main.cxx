@@ -16,6 +16,7 @@
 //============================================================================
 
 #include <cstdlib>
+#include <chrono>
 
 #include "bspf.hxx"
 #include "Logger.hxx"
@@ -162,6 +163,11 @@ int main(int ac, char* av[])
 #endif
 {
   SET_MAIN_THREAD;
+
+  cout
+    << "enter main(): "
+    << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()
+    << endl << std::flush;
 
   std::ios_base::sync_with_stdio(false);
 

@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <chrono>
+
 #include "bspf.hxx"
 
 #include "OSystem.hxx"
@@ -597,7 +599,14 @@ void Settings::setValue(const string& key, const Variant& value, bool persist)
 {
   auto it = myPermanentSettings.find(key);
   if(it != myPermanentSettings.end()) {
-    if (persist && it->second != value) myRespository->save(key, value);
+    if (persist && it->second != value) {
+      std::chrono::high_resolution_clock::time_point ts = std::chrono::high_resolution_clock::now();
+
+      myRespository->save(key, value);
+
+      double duration = std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::high_resolution_clock::now() - ts).count();
+      cout << "persistence " << key << " -> " << value << " took " << duration << "seconds" << endl << std::flush;
+    }
     it->second = value;
   }
   else
