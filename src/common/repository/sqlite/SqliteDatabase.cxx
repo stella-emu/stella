@@ -74,6 +74,11 @@ void SqliteDatabase::initialize()
 
     throw SqliteError("unable to initialize sqlite DB for unknown reason");
   };
+
+  exec("PRAGMA journal_mode=WAL");
+
+  if (sqlite3_wal_checkpoint_v2(myHandle, nullptr, SQLITE_CHECKPOINT_TRUNCATE, nullptr, nullptr) != SQLITE_OK)
+    throw SqliteError(sqlite3_errmsg(myHandle));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
