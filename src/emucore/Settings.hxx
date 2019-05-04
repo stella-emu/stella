@@ -88,7 +88,7 @@ class Settings
       @param key   The key of the setting
       @param value The value to assign to the key
     */
-    void setValue(const string& key, const Variant& value);
+    void setValue(const string& key, const Variant& value, bool persist = true);
 
     /**
       Convenience methods to return specific types.
