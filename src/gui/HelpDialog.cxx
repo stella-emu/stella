@@ -19,6 +19,7 @@
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+
 #include "HelpDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,12 +121,12 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 
     case 2:
       title = "Special commands";
-      ADD_BIND("Ctrl g", "Grab mouse (keep in window)");
       ADD_BIND("Ctrl f", "Switch between NTSC/PAL/SECAM");
-      ADD_BIND("Ctrl s", "Save game properties to a");
-      ADD_BIND("",       "  new file");
+      ADD_BIND("Alt p",  "Toggle 'phosphor' effect");
+      ADD_BIND("Ctrl p", "Switch palette");
       ADD_LINE();
-      ADD_BIND("Ctrl 0", "Toggle controller for Mouse");
+      ADD_BIND("Ctrl g", "Grab mouse (keep in window)");
+      ADD_BIND("Ctrl 0", "Toggle controller for mouse");
       ADD_BIND("Ctrl 1", "Toggle Stelladaptor left/right");
       break;
 

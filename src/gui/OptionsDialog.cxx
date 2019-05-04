@@ -70,7 +70,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   if (minSettings)
   {
     ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
-      _w - HBORDER * 2, buttonHeight, "Switch to Basic Settings" + ELLIPSIS, kBasSetCmd);
+      _w - HBORDER * 2, buttonHeight, "Use Basic Settings", kBasSetCmd);
     wid.push_back(bw);
     yoffset += rowHeight + GAP * 2;
     _h += rowHeight + GAP * 2;

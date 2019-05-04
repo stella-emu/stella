@@ -35,6 +35,7 @@ MODULE_OBJS := \
 	src/gui/OptionsDialog.o \
 	src/gui/PopUpWidget.o \
 	src/gui/ProgressDialog.o \
+	src/gui/R77HelpDialog.o \
 	src/gui/RadioButtonWidget.o \
 	src/gui/RomAuditDialog.o \
 	src/gui/RomInfoWidget.o \

@@ -23,6 +23,14 @@
 #include "NTSCFilter.hxx"
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
+// FIXME - use the R77 define in the final release
+//         use the '1' define for testing
+#if defined(RETRON77)
+// #if 1
+#include "R77HelpDialog.hxx"
+#else
+#include "HelpDialog.hxx"
+#endif
 
 #include "StellaSettingsDialog.hxx"
 
@@ -30,16 +38,19 @@
 StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Font& font, int max_w, int max_h, Menu::AppMode mode)
   : Dialog(osystem, parent, font, "Basic settings"),
-    myMode(mode)
+    myMode(mode),
+    myHelpDialog(nullptr)
 {
   const int VBORDER = 8;
   const int HBORDER = 10;
   const int INDENT = 20;
   const int buttonHeight = font.getLineHeight() + 6,
     lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth();
+    fontWidth = font.getMaxCharWidth(),
+    buttonWidth = _font.getStringWidth("Help" + ELLIPSIS) + 32;
   const int VGAP = 5;
   int xpos, ypos;
+  ButtonWidget* bw = nullptr;
 
   WidgetArray wid;
   VariantList items;
@@ -50,9 +61,13 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   xpos = HBORDER;
   ypos = VBORDER + _th;
 
-  myAdvancedSettings = new ButtonWidget(this, font, xpos, ypos, _w - HBORDER * 2, buttonHeight,
-    "Switch to Advanced Settings" + ELLIPSIS, kAdvancedSettings);
-  wid.push_back(myAdvancedSettings);
+  bw = new ButtonWidget(this, font, xpos, ypos, _w - HBORDER * 2 - buttonWidth - 8, buttonHeight,
+    "Use Advanced Settings" + ELLIPSIS, kAdvancedSettings);
+  wid.push_back(bw);
+  bw = new ButtonWidget(this, font, bw->getRight() + 8, ypos, buttonWidth, buttonHeight,
+    "Help" + ELLIPSIS, kHelp);
+  wid.push_back(bw);
+
   ypos += lineHeight + VGAP*4;
 
   new StaticTextWidget(this, font, xpos, ypos + 1, "Global settings:");
@@ -338,6 +353,10 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
         instance().eventHandler().leaveMenuMode();
       break;
 
+    case kHelp:
+      openHelp();
+      break;
+
     case kScanlinesChanged:
       if(myTVScanIntense->getValue() == 0)
         myTVScanIntense->setValueLabel("Off");
@@ -480,4 +499,20 @@ int StellaSettingsDialog::valueToLevel(int value)
       return i;
   }
   return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StellaSettingsDialog::openHelp()
+{
+  // Create an help dialog, similar to the in-game one
+  // FIXME - use the R77 define in the final release
+  //         use the '1' define for testing
+  if (myHelpDialog == nullptr)
+  #if defined(RETRON77)
+  // #if 1
+    myHelpDialog = make_unique<R77HelpDialog>(instance(), parent(), _font);
+  #else
+    myHelpDialog = make_unique<HelpDialog>(instance(), parent(), _font);
+  #endif
+  myHelpDialog->open();
 }
