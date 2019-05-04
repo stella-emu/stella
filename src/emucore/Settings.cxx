@@ -205,11 +205,11 @@ void Settings::load(const Options& options)
 {
   Options fromFile =  myRespository->load();
   for (const auto& opt: fromFile)
-    setValue(opt.first, opt.second);
+    setValue(opt.first, opt.second, false);
 
   // Apply commandline options, which override those from settings file
   for(const auto& opt: options)
-    setValue(opt.first, opt.second);
+    setValue(opt.first, opt.second, false);
 
   // Finally, validate some settings, so the rest of the codebase
   // can assume the values are valid
@@ -593,12 +593,12 @@ const Variant& Settings::value(const string& key) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Settings::setValue(const string& key, const Variant& value)
+void Settings::setValue(const string& key, const Variant& value, bool persist)
 {
   auto it = myPermanentSettings.find(key);
   if(it != myPermanentSettings.end()) {
+    if (persist && it->second != value) myRespository->save(key, value);
     it->second = value;
-    myRespository->save(key, value);
   }
   else
     myTemporarySettings[key] = value;
