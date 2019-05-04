@@ -69,11 +69,6 @@ class AudioSettings;
 class OSystem
 {
   friend class EventHandler;
-#ifdef GUI_SUPPORT
-  friend class VideoDialog;
-  friend class StellaSettingsDialog;
-  friend class DeveloperDialog;
-#endif
 
   public:
     OSystem();
@@ -83,6 +78,14 @@ class OSystem
       Create all child objects which belong to this OSystem
     */
     virtual bool create();
+
+    /**
+      Creates the various framebuffers/renderers available in this system.
+      Note that it will only create one type per run of Stella.
+
+      @return  Success or failure of the framebuffer creation
+    */
+    FBInitStatus createFrameBuffer();
 
   public:
     /**
@@ -558,14 +561,6 @@ class OSystem
   #endif
 
   private:
-    /**
-      Creates the various framebuffers/renderers available in this system.
-      Note that it will only create one type per run of Stella.
-
-      @return  Success or failure of the framebuffer creation
-    */
-    FBInitStatus createFrameBuffer();
-
     /**
       Creates the various sound devices available in this system
     */
