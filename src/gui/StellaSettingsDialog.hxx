@@ -19,6 +19,14 @@
 #define STELLA_OPTIONS_DIALOG_HXX
 
 class PopUpWidget;
+// FIXME - use the R77 define in the final release
+//         use the '1' define for testing
+#if defined(RETRON77)
+// #if 1
+class R77HelpDialog;
+#else
+class HelpDialog;
+#endif
 
 #include "Props.hxx"
 #include "Menu.hxx"
@@ -57,6 +65,8 @@ class StellaSettingsDialog : public Dialog
     int levelToValue(int level);
     int valueToLevel(int value);
 
+    void openHelp();
+
   private:
     // advanced settings mode:
     ButtonWidget*     myAdvancedSettings;
@@ -86,6 +96,14 @@ class StellaSettingsDialog : public Dialog
     StaticTextWidget* myRightPortDetected;
 
     unique_ptr<GUI::MessageBox> myConfirmMsg;
+    // FIXME - use the R77 define in the final release
+    //         use the '1' define for testing
+  #if defined(RETRON77)
+  // #if 1
+    unique_ptr<R77HelpDialog> myHelpDialog;
+  #else
+    unique_ptr<HelpDialog> myHelpDialog;
+  #endif
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     Menu::AppMode myMode;
@@ -93,6 +111,7 @@ class StellaSettingsDialog : public Dialog
     enum {
       kAdvancedSettings = 'SSad',
       kConfirmSwitchCmd = 'SScf',
+      kHelp             = 'SShl',
       kScanlinesChanged = 'SSsc',
       kPhosphorChanged  = 'SSph'
     };

@@ -97,9 +97,9 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(myStretchButton);
   myPhosphorButton = ADD_CD_BUTTON("", kPhosphorCmd);
   wid.push_back(myPhosphorButton);
-  bw = ADD_CD_BUTTON("Settings"+ ELLIPSIS, kSettings);
-  wid.push_back(bw);
   bw = ADD_CD_BUTTON("Fry", kFry);
+  wid.push_back(bw);
+  bw = ADD_CD_BUTTON("Settings" + ELLIPSIS, kSettings);
   wid.push_back(bw);
 
   //  Bottom row
@@ -185,7 +185,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       consoleCmd = true;
       break;
 
-      // Column 2
+    // Column 2
     case kSaveStateCmd:
       event = Event::SaveState;
       consoleCmd = true;
@@ -217,11 +217,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       updateWinds();
       break;
 
-    case GuiObject::kCloseCmd:
-      instance().eventHandler().leaveMenuMode();
-      break;
-
-      // Column 3
+    // Column 3
     case kFormatCmd:
       instance().console().toggleFormat();
       updateTVFormat();
@@ -237,13 +233,18 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       instance().console().togglePhosphor();
       break;
 
+    case kFry:
+      instance().eventHandler().leaveMenuMode();
+      instance().console().fry();
+      break;
+
     case kSettings:
       openSettings();
       break;
 
-    case kFry:
+    // Bottom row
+    case GuiObject::kCloseCmd:
       instance().eventHandler().leaveMenuMode();
-      instance().console().fry();
       break;
 
     case kExitGameCmd:
@@ -316,3 +317,4 @@ void MinUICommandDialog::openSettings()
     myOptionsDialog->open();
   }
 }
+
