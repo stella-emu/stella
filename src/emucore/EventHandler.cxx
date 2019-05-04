@@ -762,6 +762,10 @@ void EventHandler::setActionMappings(EventMode mode)
       prepend = "Tab (*)";
     else if(event == Event::UINavPrev)
       prepend = "Shift + Tab (*)";
+    else if (event == Event::UITabNext)
+      prepend = modifier + " + Tab (*)";
+    else if (event == Event::UITabPrev)
+      prepend = modifier + " + Shift + Tab (*)";
     else if(event == Event::UIPrevDir)
       prepend = "Backspace (*)";
     // else if ...
@@ -1425,6 +1429,8 @@ EventHandler::ActionList EventHandler::ourMenuActionList[MENU_ACTIONLIST_SIZE] =
 
   { Event::UINavPrev,   "Previous object",      "", false },
   { Event::UINavNext,   "Next object",          "", false },
+  { Event::UITabPrev,   "Previous tab",         "", false },
+  { Event::UITabNext,   "Next tab",             "", false },
 
   { Event::UIPrevDir,   "Parent directory",     "", false }
 };
