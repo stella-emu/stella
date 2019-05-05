@@ -60,12 +60,12 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _processCancel(false),
     _title(title),
     _th(0),
+    _layer(0),
     _surface(nullptr),
     _tabID(0),
     _flags(Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG),
     _max_w(0),
-    _max_h(0),
-    _layer(0)
+    _max_h(0)
 {
   setTitle(title);
   setDirty();

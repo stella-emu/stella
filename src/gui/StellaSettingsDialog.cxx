@@ -24,23 +24,13 @@
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
 
-// FIXME - use the R77 define in the final release
-//         use the '1' define for testing
-#if defined(RETRON77)
-// #if 1
-#include "R77HelpDialog.hxx"
-#else
-#include "HelpDialog.hxx"
-#endif
-
 #include "StellaSettingsDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Font& font, int max_w, int max_h, Menu::AppMode mode)
   : Dialog(osystem, parent, font, "Basic settings"),
-    myMode(mode),
-    myHelpDialog(nullptr)
+    myMode(mode)
 {
   const int VBORDER = 8;
   const int HBORDER = 10;
