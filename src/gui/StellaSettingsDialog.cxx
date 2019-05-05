@@ -23,6 +23,7 @@
 #include "NTSCFilter.hxx"
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
+
 // FIXME - use the R77 define in the final release
 //         use the '1' define for testing
 #if defined(RETRON77)

@@ -88,6 +88,13 @@ R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void R77HelpDialog::loadConfig()
+{
+  displayInfo();
+  setFocus(getFocusList()[1]); // skip disabled 'Previous' button
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
 #ifdef BSPF_MACOS
@@ -107,20 +114,22 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   switch (page)
   {
     case 1:
-      title = "Emulation commands";
+      title = "\\C\\c5Emulation commands";
       ADD_BIND("The joystic", "ks work nor", "mal and all console");
       ADD_BIND("buttons as ", "labeled exc", "ept of the following:");
       ADD_BIND();
       ADD_BIND("Joystick", "Button", "Command");
       ADD_LINE();
-      ADD_BIND("Button 3", "4:3,16:9", "Open command dialog");
-      ADD_BIND("Button 4", "-", "Open settings");
-      ADD_BIND("Button 5", "FRY", "Return to launcher");
-
+      ADD_BIND("\\c2Button 3", "4:3,16:9", "Open command dialog");
+      ADD_BIND("\\c2Button 4", "\\c2-", "Open settings");
+      ADD_BIND("\\c2Button 5", "FRY", "Return to launcher");
+      ADD_BIND("\\c2Button 6", "-", "Rewind game");
+      ADD_BIND("\\c2Button 8", "MODE", "Select");
+      ADD_BIND("\\c2Button 9", "RESET", "Reset");
       break;
 
     case 2:
-      title = "Launcher commands";
+      title = "\\C\\c5Launcher commands";
       ADD_BIND("Joystick", "Button", "Command");
       ADD_LINE();
       ADD_BIND("Up", "SAVE", "Previous game");
@@ -128,26 +137,27 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("Left", "LOAD", "Page up");
       ADD_BIND("Right", "MODE", "Page down");
       ADD_BIND("Button 1", "SKILL P1", "Start selected game");
-      ADD_BIND("Button 2", "SKILL P2", "Open power-on options");
-      ADD_BIND("Button 4", "Color,B/W", "Open settings");
+      ADD_BIND("\\c2Button 2", "SKILL P2", "Open power-on options");
+      ADD_BIND("\\c2Button 4", "Color,B/W", "Open settings");
       break;
 
     case 3:
-      title = "Dialog commands";
+      title = "\\C\\c5Dialog commands";
       ADD_BIND("Joystick", "Button", "Command");
       ADD_LINE();
       ADD_BIND("Up", "SAVE", "Increase current setting");
       ADD_BIND("Down", "RESET", "Decrease current setting");
       ADD_BIND("Left", "LOAD", "Previous dialog element");
       ADD_BIND("Right", "MODE", "Next dialog element");
-      ADD_BIND("Button 1", "SKILL P1", "Select");
-      ADD_BIND("Button 2", "SKILL P2", "Cancel dialog");
-      ADD_BIND("Button 3", "4:3,16:9", "Previous tab");
-      ADD_BIND("Button 4", "FRY", "Next tab");
+      ADD_BIND("Button 1", "SKILL P1", "Select element");
+      ADD_BIND("\\c2Button 2", "SKILL P2", "OK");
+      ADD_BIND("\\c2Button 3", "4:3,16:9", "Previous tab");
+      ADD_BIND("\\c2Button 4", "FRY", "Next tab");
+      ADD_BIND("\\c2Button 6", "\\c2-", "Cancel");
       break;
 
     case 4:
-      title = "All commands";
+      title = "\\C\\c5All commands";
       ADD_BIND();
       ADD_BIND("Remapped Ev", "ents", "");
       ADD_BIND();
@@ -169,13 +179,73 @@ void R77HelpDialog::displayInfo()
   string titleStr;
   updateStrings(myPage, LINES_PER_PAGE, titleStr);
 
-  myTitle->setLabel(titleStr);
+  formatWidget(titleStr, myTitle);
   for (uInt8 i = 0; i < LINES_PER_PAGE; ++i)
   {
-    myJoy[i]->setLabel(myJoyStr[i]);
-    myBtn[i]->setLabel(myBtnStr[i]);
-    myDesc[i]->setLabel(myDescStr[i]);
+    formatWidget(myJoyStr[i], myJoy[i]);
+    formatWidget(myBtnStr[i], myBtn[i]);
+    formatWidget(myDescStr[i], myDesc[i]);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void R77HelpDialog::formatWidget(const string& label, StaticTextWidget* widget)
+{
+  const char* str = label.c_str();
+  TextAlign align = TextAlign::Left;
+  ColorId color = kTextColor;
+
+  while (str[0] == '\\')
+  {
+    switch (str[1])
+    {
+      case 'C':
+        align = TextAlign::Center;
+        break;
+
+      case 'L':
+        align = TextAlign::Left;
+        break;
+
+      case 'R':
+        align = TextAlign::Right;
+        break;
+
+      case 'c':
+        switch (str[2])
+        {
+          case '0':
+            color = kTextColor;
+            break;
+          case '1':
+            color = kTextColorHi;
+            break;
+          case '2':
+            color = kColor;
+            break;
+          case '3':
+            color = kShadowColor;
+            break;
+          case '4':
+            color = kBGColor;
+            break;
+          case '5':
+            color = kTextColorEm;
+            break;
+          default:
+            break;
+        }
+        str++;
+        break;
+
+      default:
+        break;
+    }
+    str += 2;
+  }
+  widget->setAlign(align);
+  widget->setTextColor(color);
+  widget->setLabel(str);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

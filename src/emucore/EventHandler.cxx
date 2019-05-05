@@ -414,6 +414,14 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       if(pressed) myOSystem.state().loadState();
       return;
 
+    case Event::Rewind:
+      if (pressed) myOSystem.state().rewindStates();
+      return;
+
+    case Event::Unwind:
+      if (pressed) myOSystem.state().unwindStates();
+      return;
+
     case Event::TakeSnapshot:
       if(pressed) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
@@ -1327,6 +1335,8 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::OptionsMenuMode,        "Enter options menu UI",       "", false },
   { Event::CmdMenuMode,            "Toggle command menu UI",      "", false },
   { Event::TimeMachineMode,        "Toggle time machine UI",      "", false },
+  { Event::Rewind,                 "Rewind game",                 "", false },
+  { Event::Unwind,                 "Unwind game",                 "", false },
   { Event::DebuggerMode,           "Toggle debugger mode",        "", false },
   { Event::LauncherMode,           "Enter ROM launcher",          "", false },
   { Event::Quit,                   "Quit",                        "", false },

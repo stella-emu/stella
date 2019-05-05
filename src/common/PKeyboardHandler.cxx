@@ -379,7 +379,6 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
       switch(key)
       {
         case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
-          //if (!myEvent.getKeys()[KBDK_SPACE])
           myHandler.enterTimeMachineMenuMode((StellaModTest::isShift(mod) && pressed) ? 10 : 1, false);
           break;
 
