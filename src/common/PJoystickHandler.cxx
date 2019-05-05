@@ -325,7 +325,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
           setDefaultBtn(stick, 2, Event::CmdMenuMode);
           setDefaultBtn(stick, 3, Event::OptionsMenuMode);
           setDefaultBtn(stick, 4, Event::LauncherMode);
-          setDefaultBtn(stick, 5, Event::Rewind10);
+          setDefaultBtn(stick, 5, Event::Rewind);
         #endif
           break;
         default:
