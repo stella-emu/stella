@@ -25,7 +25,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Font& font)
-  : Dialog(osystem, parent, font, "Basic Help"),
+  : Dialog(osystem, parent, font, "RetroN 77 Help"),
   myPage(1),
   myNumPages(4)
 {
