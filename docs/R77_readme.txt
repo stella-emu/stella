@@ -10,38 +10,42 @@ TODOs:
 Stella can be controlled via the console buttons or a joystick in left or
 right port.
 
-Inside Launcher:
-  Joystick   Button      Action
-  ----------------------------------------------------
-  Up         SAVE        previous game
-  Down       RESET       next game
-  Left       LOAD        page up
-  Right      MODE        page down
-  Button 1   SKILL P1    start selected game
-  Button 2   SKILL P2    open Power-on options dialog
-  Button 4   COLOR,B/W   open Settings dialog
-
-Inside a dialog:
-  Joystick   Button      Action
-  -----------------------------------------------------
-  Up         SAVE        change/increase current option
-  Down       RESET       change/decrease current option
-  Left       LOAD        previous dialog element
-  Right      MODE        next dialog element
-  Button 1   SKILL P1    select
-  Button 2   SKILL P2    cancel
-  Button 3   4:3,16:9    previous tab
-  Button 4   FRY         next tab
-
 During emulation:
   The joysticks work normal and all console buttons as labeled except of the
   following.
 
   Joystick  ´Button      Action
   ----------------------------------------------
-  Button 3   4:3,16:9    open the Command dialog
-  Button 4   -           open Settings dialog
-  Button 5   FRY         return to Launcher
+  Button 3   4:3,16:9    Open the command dialog
+  Button 4   -           Open settings
+  Button 5   FRY         Return to launcher
+  Button 6   -           Rewind game
+  Button 8   MODE        Select
+  Button 9   RESET       Reset
+
+Inside Launcher:
+  Joystick   Button      Action
+  --------------------------------------------
+  Up         SAVE        Previous game
+  Down       RESET       Next game
+  Left       LOAD        Page up
+  Right      MODE        Page down
+  Button 1   SKILL P1    Start selected game
+  Button 2   SKILL P2    Open power-on options
+  Button 4   COLOR,B/W   Open settings
+
+Inside a dialog:
+  Joystick   Button      Action
+  -----------------------------------------------------
+  Up         SAVE        Increase current setting
+  Down       RESET       Decrease current setting
+  Left       LOAD        Previous dialog element
+  Right      MODE        Next dialog element
+  Button 1   SKILL P1    Select element
+  Button 2   SKILL P2    OK
+  Button 3   4:3,16:9    Previous tab
+  Button 4   FRY         Next tab
+  Button 6   -           Cancel
 
 Note: If you have a keyboard attached via OTG all keys work as described in
 the Stella User's Guide.
