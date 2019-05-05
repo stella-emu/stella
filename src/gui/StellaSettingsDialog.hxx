@@ -68,9 +68,6 @@ class StellaSettingsDialog : public Dialog
     void openHelp();
 
   private:
-    // advanced settings mode:
-    ButtonWidget*     myAdvancedSettings;
-
     // UI theme
     PopUpWidget*      myThemePopup;
     PopUpWidget*      myPositionPopup;

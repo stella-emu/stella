@@ -97,10 +97,13 @@ void R77HelpDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
+// FIXME - this currently isn't used
+#if 0
 #ifdef BSPF_MACOS
-#define ALT_ "Cmd"
+  #define ALT_ "Cmd"
 #else
-#define ALT_ "Alt"
+  #define ALT_ "Alt"
+#endif
 #endif
 
   int i = 0;
