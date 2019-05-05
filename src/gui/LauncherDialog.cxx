@@ -501,9 +501,9 @@ void LauncherDialog::handleJoyDown(int stick, int button)
   // open power-up options and settings for 2nd and 4th button if not mapped otherwise
   Event::Type e = instance().eventHandler().eventForJoyButton(stick, button, kMenuMode);
 
-  if (button == 1 && (e == Event::UICancel || e == Event::NoType))
+  if (button == 1 && (e == Event::UIOK || e == Event::NoType))
     myGlobalProps->open();
-  if (button == 3 && (e == Event::Event::UITabNext || e == Event::NoType))
+  if (button == 3 && (e == Event::Event::UITabPrev || e == Event::NoType))
     openSettings();
   else
     Dialog::handleJoyDown(stick, button);
