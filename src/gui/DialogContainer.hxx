@@ -160,7 +160,7 @@ class DialogContainer
     /**
       Add a dialog box to the stack.
     */
-    void addDialog(Dialog* d);
+    int addDialog(Dialog* d);
 
     /**
       Remove the topmost dialog box from the stack.
