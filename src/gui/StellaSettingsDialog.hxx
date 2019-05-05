@@ -19,19 +19,19 @@
 #define STELLA_OPTIONS_DIALOG_HXX
 
 class PopUpWidget;
-// FIXME - use the R77 define in the final release
-//         use the '1' define for testing
-#if defined(RETRON77)
-// #if 1
-class R77HelpDialog;
-#else
-class HelpDialog;
-#endif
 
 #include "Props.hxx"
 #include "Menu.hxx"
 #include "Dialog.hxx"
 #include "MessageBox.hxx"
+// FIXME - use the R77 define in the final release
+//         use the '1' define for testing
+#if defined(RETRON77)
+// #if 1
+#include "R77HelpDialog.hxx"
+#else
+#include "HelpDialog.hxx"
+#endif
 
 namespace GUI {
   class Font;
