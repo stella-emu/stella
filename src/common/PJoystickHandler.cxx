@@ -325,6 +325,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
           setDefaultBtn(stick, 2, Event::CmdMenuMode);
           setDefaultBtn(stick, 3, Event::OptionsMenuMode);
           setDefaultBtn(stick, 4, Event::LauncherMode);
+          setDefaultBtn(stick, 5, Event::Rewind10);
         #endif
           break;
         default:
@@ -340,9 +341,10 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
 
       // joystick (assume buttons zero..three)
       setDefaultBtn( stick, 0, Event::UISelect  );
-      setDefaultBtn( stick, 1, Event::UICancel  );
-      setDefaultBtn( stick, 2, Event::UITabPrev );
-      setDefaultBtn( stick, 3, Event::UITabNext );
+      setDefaultBtn( stick, 1, Event::UIOK      );
+      setDefaultBtn( stick, 2, Event::UITabNext);
+      setDefaultBtn( stick, 3, Event::UITabPrev );
+      setDefaultBtn( stick, 5, Event::UICancel);
 
       setDefaultHat( stick, 0, JoyHat::LEFT,  Event::UINavPrev );
       setDefaultHat( stick, 0, JoyHat::RIGHT, Event::UINavNext );
