@@ -126,7 +126,7 @@ bool DialogContainer::needsRedraw() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::addDialog(Dialog* d)
+int DialogContainer::addDialog(Dialog* d)
 {
   const Common::Rect& r = myOSystem.frameBuffer().imageRect();
   if(uInt32(d->getWidth()) > r.width() || uInt32(d->getHeight()) > r.height())
@@ -137,6 +137,7 @@ void DialogContainer::addDialog(Dialog* d)
     d->setDirty();
     myDialogStack.push(d);
   }
+  return myDialogStack.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

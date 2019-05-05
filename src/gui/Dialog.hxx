@@ -186,6 +186,7 @@ class Dialog : public GuiObject
     bool    _processCancel;
     string  _title;
     int     _th;
+    int     _layer;
 
     Common::FixedStack<shared_ptr<FBSurface>> mySurfaceStack;
 

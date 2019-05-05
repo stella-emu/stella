@@ -64,7 +64,8 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _tabID(0),
     _flags(Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG),
     _max_w(0),
-    _max_h(0)
+    _max_h(0),
+    _layer(0)
 {
   setTitle(title);
   setDirty();
@@ -97,7 +98,7 @@ void Dialog::open()
   // dialogs cause drawing to occur within loadConfig()
   if (_surface == nullptr)
     _surface = instance().frameBuffer().allocateSurface(_w, _h);
-  parent().addDialog(this);
+  _layer = parent().addDialog(this);
 
   center();
 
@@ -164,11 +165,12 @@ void Dialog::positionAt(uInt32 pos)
 {
   const Common::Size& screen = instance().frameBuffer().screenSize();
   const Common::Rect& dst = _surface->dstRect();
-
-  int top = std::min(screen.h - dst.height(), screen.h >> 5);
-  int btm = std::min(screen.h - dst.height(), screen.h - dst.height() - (screen.h >> 5));
-  int left = std::min(screen.w - dst.width(), screen.w >> 5);
-  int right = std::min(screen.w - dst.width(), screen.w - dst.width() - (screen.w >> 5));
+  // shift stacked dialogs
+  uInt32 gap = (screen.w >> 6) * _layer;
+  int top = std::min(screen.h - dst.height(), gap);
+  int btm = std::min(screen.h - dst.height(), screen.h - dst.height() - gap);
+  int left = std::min(screen.w - dst.width(), gap);
+  int right = std::min(screen.w - dst.width(), screen.w - dst.width() - gap);
 
   switch (pos)
   {
