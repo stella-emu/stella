@@ -65,8 +65,11 @@ static void update_input()
   switch(input_type[0])
   {
     case Controller::Type::BoosterGrip:
-      EVENT(Event::JoystickZeroFire5, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
       EVENT(Event::JoystickZeroFire9, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
+      // Fallthrough
+
+    case Controller::Type::Genesis:
+      EVENT(Event::JoystickZeroFire5, input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
       // Fallthrough
 
     case Controller::Type::Joystick:
@@ -97,8 +100,11 @@ static void update_input()
   switch(input_type[1])
   {
     case Controller::Type::BoosterGrip:
-      EVENT(Event::JoystickOneFire5, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
       EVENT(Event::JoystickOneFire9, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
+      // Fallthrough
+
+    case Controller::Type::Genesis:
+      EVENT(Event::JoystickOneFire5, input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
       // Fallthrough
 
     case Controller::Type::Joystick:
