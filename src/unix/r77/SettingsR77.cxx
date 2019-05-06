@@ -71,4 +71,10 @@ SettingsR77::SettingsR77()
   setPermanent("tv.phosphor", "always");
   setPermanent("tv.phosblend", "45"); // level 6
   setPermanent("tv.scanlines", "18"); // level 3
+
+  setPermanent("joymap",
+    string("joymap") +
+    "|126^i2c_controller|2 31 31 35 35 119 120 110 111|8 19 20 100 99 103 0 0 0 118 122 124 125 0 0 0 0" +
+    "|0^i2c_controller #2|2 39 39 43 43 119 120 110 111|8 26 27 100 99 103 0 0 0 118 122 124 125 0 0 0 0|0"
+  );
 }
