@@ -303,6 +303,9 @@ class EventHandler
     */
     void handleMouseControl();
 
+    void saveKeyMapping();
+    void saveJoyMapping();
+
   protected:
     // Global OSystem object
     OSystem& myOSystem;
@@ -373,8 +376,6 @@ class EventHandler
     void setActionMappings(EventMode mode);
     void setDefaultKeymap(Event::Type, EventMode mode);
     void setDefaultJoymap(Event::Type, EventMode mode);
-    void saveKeyMapping();
-    void saveJoyMapping();
     void saveComboMapping();
 
   private:
