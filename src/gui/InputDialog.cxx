@@ -345,6 +345,10 @@ void InputDialog::saveConfig()
 
   // Enable/disable control key-combos
   instance().settings().setValue("ctrlcombo", myCtrlCombo->getState());
+
+  instance().eventHandler().saveKeyMapping();
+  instance().eventHandler().saveJoyMapping();
+//  instance().saveConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
