@@ -52,7 +52,7 @@ class Paddles : public Controller
     static constexpr int MAX_DIGITAL_SENSE = 20;
     static constexpr int MAX_MOUSE_SENSE = 20;
     static constexpr int MIN_DEJITTER = 0;
-    static constexpr int MAX_DEJITTER = 20;
+    static constexpr int MAX_DEJITTER = 10;
 
     /**
       Update the entire digital and analog pin state according to the
