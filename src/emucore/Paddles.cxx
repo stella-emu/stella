@@ -263,30 +263,25 @@ void Paddles::update()
   int sa_xaxis = myEvent.get(myP0AxisValue);
   int sa_yaxis = myEvent.get(myP1AxisValue);
 
-  const double fac1[MAX_DEJITTER - MIN_DEJITTER + 1] = {
+  const double bFac[MAX_DEJITTER - MIN_DEJITTER + 1] = {
     // higher values mean more dejitter strength
     0, // off
-    0.5, 0.6, 0.7, 0.8, 0.9,
-    0.5, 0.6, 0.7, 0.8, 0.9,
-    0.5, 0.6, 0.7, 0.8, 0.9,
-    0.5, 0.6, 0.7, 0.8, 0.9
+    0.50, 0.59, 0.67, 0.74, 0.80,
+    0.85, 0.89, 0.92, 0.94, 0.95
   };
-  const double fac2[MAX_DEJITTER - MIN_DEJITTER + 1] = {
+  const double dFac[MAX_DEJITTER - MIN_DEJITTER + 1] = {
     // lower values mean more dejitter strength
     1, // off
-    1.0 / 32 , 1.0 / 32 , 1.0 / 32 , 1.0 / 32 , 1.0 / 32 ,
-    1.0 / 64 , 1.0 / 64 , 1.0 / 64 , 1.0 / 64 , 1.0 / 64 ,
-    1.0 / 128, 1.0 / 128, 1.0 / 128, 1.0 / 128, 1.0 / 128,
-    1.0 / 256, 1.0 / 256, 1.0 / 256, 1.0 / 256, 1.0 / 256,
-
+    1.0 / 45 , 1.0 / 64 , 1.0 / 90 , 1.0 / 128, 1.0 / 181,
+    1.0 / 256, 1.0 / 362, 1.0 / 512, 1.0 / 724, 1.0 / 1024
   };
-  const double factor1 = fac1[DEJITTER];
-  const double factor2 = fac2[DEJITTER];
+  const double baseFactor = bFac[DEJITTER];
+  const double diffFactor = dFac[DEJITTER];
 
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
     // anti jitter, suppress small changes only
-    double dejitter = std::pow(factor1, abs(sa_xaxis - myLastAxisX) * factor2);
+    double dejitter = std::pow(baseFactor, abs(sa_xaxis - myLastAxisX) * diffFactor);
     sa_xaxis = sa_xaxis * (1 - dejitter) + myLastAxisX * dejitter;
 
     setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0)));
@@ -295,7 +290,7 @@ void Paddles::update()
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
     // anti jitter, suppress small changes only
-    double dejitter = std::pow(factor1, abs(sa_yaxis - myLastAxisY) * factor2);
+    double dejitter = std::pow(baseFactor, abs(sa_yaxis - myLastAxisY) * diffFactor);
     sa_yaxis = sa_yaxis * (1 - dejitter) + myLastAxisY * dejitter;
 
     setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0)));
