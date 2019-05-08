@@ -260,13 +260,24 @@ void Paddles::update()
   bool sa_changed = false;
   int sa_xaxis = myEvent.get(myP0AxisValue);
   int sa_yaxis = myEvent.get(myP1AxisValue);
+  const double factor1 = 0.2; // TODO: configurable
+  const double factor2 = 1.0 / 256;
+
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
+    // anti jitter
+    double dFactor = std::pow(factor1, 1 / (abs(sa_xaxis - myLastAxisX) * factor2));
+    sa_xaxis = sa_xaxis * dFactor + myLastAxisX * (1 - dFactor);
+
     setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0)));
     sa_changed = true;
   }
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
+    // anti jitter
+    double dFactor = std::pow(factor1, 1 / (abs(sa_yaxis - myLastAxisY) * factor2));
+    sa_yaxis = sa_yaxis * dFactor + myLastAxisY * (1 - dFactor);
+
     setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0)));
     sa_changed = true;
   }
