@@ -48,6 +48,12 @@ class Paddles : public Controller
     virtual ~Paddles() = default;
 
   public:
+
+    static constexpr int MAX_DIGITAL_SENSE = 20;
+    static constexpr int MAX_MOUSE_SENSE = 20;
+    static constexpr int MIN_DEJITTER = 0;
+    static constexpr int MAX_DEJITTER = 20;
+
     /**
       Update the entire digital and analog pin state according to the
       events currently set.
@@ -82,6 +88,11 @@ class Paddles : public Controller
     */
     bool setMouseControl(Controller::Type xtype, int xid,
                          Controller::Type ytype, int yid) override;
+
+    /**
+      @param strength  Value from 0 to 20
+    */
+    static void setDejitter(int strength);
 
     /**
       Sets the sensitivity for digital emulation of paddle movement.
@@ -141,9 +152,8 @@ class Paddles : public Controller
     static constexpr int TRIGMAX = 4096;
     static int TRIGRANGE;  // This one is variable for the upper range
 
-    static constexpr int MAX_DIGITAL_SENSE = 20;
-    static constexpr int MAX_MOUSE_SENSE = 20;
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
+    static int DEJITTER;
     static int MOUSE_SENSITIVITY;
 
     // Lookup table for associating paddle buttons with controller pins

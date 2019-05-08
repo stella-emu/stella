@@ -87,6 +87,7 @@ Settings::Settings()
   setPermanent("usemouse", "analog");
   setPermanent("grabmouse", "true");
   setPermanent("cursor", "2");
+  setPermanent("dejitter", "0");
   setPermanent("dsense", "10");
   setPermanent("msense", "10");
   setPermanent("tsense", "10");

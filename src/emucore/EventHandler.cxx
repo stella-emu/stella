@@ -98,6 +98,7 @@ void EventHandler::initialize()
   setActionMappings(kMenuMode);
 
   Joystick::setDeadZone(myOSystem.settings().getInt("joydeadzone"));
+  Paddles::setDejitter(myOSystem.settings().getInt("dejitter"));
   Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
   Paddles::setMouseSensitivity(myOSystem.settings().getInt("msense"));
   PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));

@@ -262,23 +262,41 @@ void Paddles::update()
   bool sa_changed = false;
   int sa_xaxis = myEvent.get(myP0AxisValue);
   int sa_yaxis = myEvent.get(myP1AxisValue);
-  const double factor1 = 0.2; // TODO: configurable
-  const double factor2 = 1.0 / 256;
+
+  const double fac1[MAX_DEJITTER - MIN_DEJITTER + 1] = {
+    // higher values mean more dejitter strength
+    0, // off
+    0.5, 0.6, 0.7, 0.8, 0.9,
+    0.5, 0.6, 0.7, 0.8, 0.9,
+    0.5, 0.6, 0.7, 0.8, 0.9,
+    0.5, 0.6, 0.7, 0.8, 0.9
+  };
+  const double fac2[MAX_DEJITTER - MIN_DEJITTER + 1] = {
+    // lower values mean more dejitter strength
+    1, // off
+    1.0 / 32 , 1.0 / 32 , 1.0 / 32 , 1.0 / 32 , 1.0 / 32 ,
+    1.0 / 64 , 1.0 / 64 , 1.0 / 64 , 1.0 / 64 , 1.0 / 64 ,
+    1.0 / 128, 1.0 / 128, 1.0 / 128, 1.0 / 128, 1.0 / 128,
+    1.0 / 256, 1.0 / 256, 1.0 / 256, 1.0 / 256, 1.0 / 256,
+
+  };
+  const double factor1 = fac1[DEJITTER];
+  const double factor2 = fac2[DEJITTER];
 
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
-    // anti jitter
-    double dFactor = std::pow(factor1, 1 / (abs(sa_xaxis - myLastAxisX) * factor2));
-    sa_xaxis = sa_xaxis * dFactor + myLastAxisX * (1 - dFactor);
+    // anti jitter, suppress small changes only
+    double dejitter = std::pow(factor1, abs(sa_xaxis - myLastAxisX) * factor2);
+    sa_xaxis = sa_xaxis * (1 - dejitter) + myLastAxisX * dejitter;
 
     setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0)));
     sa_changed = true;
   }
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
-    // anti jitter
-    double dFactor = std::pow(factor1, 1 / (abs(sa_yaxis - myLastAxisY) * factor2));
-    sa_yaxis = sa_yaxis * dFactor + myLastAxisY * (1 - dFactor);
+    // anti jitter, suppress small changes only
+    double dejitter = std::pow(factor1, abs(sa_yaxis - myLastAxisY) * factor2);
+    sa_yaxis = sa_yaxis * (1 - dejitter) + myLastAxisY * dejitter;
 
     setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0)));
     sa_changed = true;
@@ -410,6 +428,12 @@ bool Paddles::setMouseControl(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::setDejitter(int strength)
+{
+  DEJITTER = BSPF::clamp(strength, MIN_DEJITTER, MAX_DEJITTER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDigitalSensitivity(int sensitivity)
 {
   DIGITAL_SENSITIVITY = BSPF::clamp(sensitivity, 1, MAX_DIGITAL_SENSE);
@@ -434,6 +458,7 @@ int Paddles::TRIGRANGE = Paddles::TRIGMAX;
 int Paddles::DIGITAL_SENSITIVITY = -1;
 int Paddles::DIGITAL_DISTANCE = -1;
 int Paddles::MOUSE_SENSITIVITY = -1;
+int Paddles::DEJITTER = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Controller::DigitalPin Paddles::ourButtonPin[2] = {

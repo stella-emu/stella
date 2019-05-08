@@ -60,6 +60,7 @@ class InputDialog : public Dialog
   private:
     enum {
       kDeadzoneChanged   = 'DZch',
+      kDejitterChanged   = 'Pjch',
       kDPSpeedChanged    = 'PDch',
       kMPSpeedChanged    = 'PMch',
       kTBSpeedChanged    = 'TBch',
@@ -81,9 +82,11 @@ class InputDialog : public Dialog
 
     SliderWidget*     myDeadzone;
     StaticTextWidget* myDeadzoneLabel;
+    SliderWidget*     myDejitter;
     SliderWidget*     myDPaddleSpeed;
     SliderWidget*     myMPaddleSpeed;
     SliderWidget*     myTrackBallSpeed;
+    StaticTextWidget* myDejitterLabel;
     StaticTextWidget* myDPaddleLabel;
     StaticTextWidget* myMPaddleLabel;
     StaticTextWidget* myTrackBallLabel;
