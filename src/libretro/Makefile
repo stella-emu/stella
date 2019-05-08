@@ -62,7 +62,7 @@ endif
 
 # Unix
 ifneq (,$(findstring unix,$(platform)))
-   CXXFLAGS += $(LTO) $(PTHREAD_FLAGS)
+   CXXFLAGS += $(LTO)
    LDFLAGS += $(LTO) $(PTHREAD_FLAGS)
    TARGET := $(TARGET_NAME)_libretro.so
    fpic := -fPIC
