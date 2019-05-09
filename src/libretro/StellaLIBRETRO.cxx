@@ -379,7 +379,7 @@ void StellaLIBRETRO::setVideoPalette(uInt32 mode)
   {
     case 0: video_palette = "standard"; break;
     case 1: video_palette = "z26"; break;
-    case 2: video_palette = "custom"; break;
+    case 2: video_palette = "user"; break;
   }
 
   if (system_ready)
