@@ -143,7 +143,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add joystick deadzone setting
   ypos += lineHeight + VGAP*3;
-  myDeadzone = new SliderWidget(myTab, font, HBORDER, ypos,
+  myDeadzone = new SliderWidget(myTab, font, HBORDER, ypos, 13 * fontWidth, lineHeight,
                                 "Joystick deadzone size ", lwidth, kDeadzoneChanged);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   myDeadzone->setTickmarkInterval(4);
@@ -153,18 +153,25 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add dejitter (Stelladaptor emulation for now only)
   ypos += lineHeight + VGAP;
-  myDejitter = new SliderWidget(myTab, font, HBORDER, ypos,
-                                "Paddle dejitter strength",
-                                lwidth, kDejitterChanged);
-  myDejitter->setMinValue(Paddles::MIN_DEJITTER); myDejitter->setMaxValue(Paddles::MAX_DEJITTER);
-  myDejitter->setTickmarkInterval(4);
-  xpos = HBORDER + myDejitter->getWidth() + 5;
-  myDejitterLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, 24, lineHeight, "");
-  wid.push_back(myDejitter);
+  myDejitterBase = new SliderWidget(myTab, font, HBORDER, ypos, 6 * fontWidth, lineHeight,
+                                    "Paddle dejitter strength", lwidth, kDejitterChanged);
+  myDejitterBase->setMinValue(Paddles::MIN_DEJITTER); myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
+  myDejitterBase->setTickmarkInterval(2);
+  xpos = HBORDER + myDejitterBase->getWidth() + fontWidth;
+  wid.push_back(myDejitterBase);
+
+  myDejitterDiff = new SliderWidget(myTab, font, xpos, ypos, 6 * fontWidth, lineHeight,
+                                    "", 0, kDejitterChanged);
+  myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER); myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
+  myDejitterDiff->setTickmarkInterval(2);
+  xpos += myDejitterDiff->getWidth() + 5;
+  wid.push_back(myDejitterDiff);
+
+  myDejitterLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, 7 * fontWidth, lineHeight, "");
 
   // Add paddle speed (digital emulation)
   ypos += lineHeight + VGAP;
-  myDPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos,
+  myDPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos, 13 * fontWidth, lineHeight,
                                     "Digital paddle sensitivity ",
                                     lwidth, kDPSpeedChanged);
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
@@ -175,7 +182,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add paddle speed (mouse emulation)
   ypos += lineHeight + VGAP;
-  myMPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos,
+  myMPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos, 13 * fontWidth, lineHeight,
                                     "Mouse paddle sensitivity ",
                                     lwidth, kMPSpeedChanged);
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
@@ -186,7 +193,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add trackball speed
   ypos += lineHeight + VGAP;
-  myTrackBallSpeed = new SliderWidget(myTab, font, HBORDER, ypos,
+  myTrackBallSpeed = new SliderWidget(myTab, font, HBORDER, ypos, 13 * fontWidth, lineHeight,
                                       "Trackball sensitivity ",
                                       lwidth, kTBSpeedChanged);
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
@@ -275,8 +282,9 @@ void InputDialog::loadConfig()
   myDeadzoneLabel->setValue(Joystick::deadzone());
 
   // Paddle speed (digital and mouse)
-  myDejitter->setValue(instance().settings().getInt("dejitter"));
-  myDejitterLabel->setLabel(instance().settings().getString("dejitter"));
+  myDejitterBase->setValue(instance().settings().getInt("dejitterBase"));
+  myDejitterDiff->setValue(instance().settings().getInt("dejitterDiff"));
+  UpdateDejitter();
   myDPaddleSpeed->setValue(instance().settings().getInt("dsense"));
   myDPaddleLabel->setLabel(instance().settings().getString("dsense"));
   myMPaddleSpeed->setValue(instance().settings().getInt("msense"));
@@ -330,9 +338,12 @@ void InputDialog::saveConfig()
   Joystick::setDeadZone(deadzone);
 
   // Paddle speed (digital and mouse)
-  int dejitter = myDejitter->getValue();
-  instance().settings().setValue("dejitter", dejitter);
-  Paddles::setDejitter(dejitter);
+  int dejitter = myDejitterBase->getValue();
+  instance().settings().setValue("dejitterBase", dejitter);
+  Paddles::setDejitterBase(dejitter);
+  dejitter = myDejitterDiff->getValue();
+  instance().settings().setValue("dejitterDiff", dejitter);
+  Paddles::setDejitterDiff(dejitter);
 
   int sensitivity = myDPaddleSpeed->getValue();
   instance().settings().setValue("dsense", sensitivity);
@@ -402,8 +413,9 @@ void InputDialog::setDefaults()
       myDPaddleLabel->setLabel("10");
       myMPaddleSpeed->setValue(10);
       myMPaddleLabel->setLabel("10");
-      myDejitter->setValue(0);
-      myDejitterLabel->setLabel("0");
+      myDejitterBase->setValue(0);
+      myDejitterDiff->setValue(0);
+      UpdateDejitter();
       myTrackBallSpeed->setValue(10);
       myTrackBallLabel->setLabel("10");
 
@@ -529,7 +541,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDejitterChanged:
-      myDejitterLabel->setValue(myDejitter->getValue());
+      UpdateDejitter();
       break;
 
     case kTBSpeedChanged:
@@ -572,4 +584,26 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::UpdateDejitter()
+{
+  int strength = myDejitterBase->getValue();
+  stringstream label;
+
+  if (strength)
+    label << myDejitterBase->getValue();
+  else
+    label << "Off";
+
+  label << " ";
+  strength = myDejitterDiff->getValue();
+
+  if (strength)
+    label << myDejitterDiff->getValue();
+  else
+    label << "Off";
+
+  myDejitterLabel->setLabel(label.str());
 }
