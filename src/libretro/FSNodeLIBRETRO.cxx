@@ -32,6 +32,26 @@ FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO(const string& p)
 {
+#ifdef _WIN32
+  char slash = '\\';
+#else
+  char slash = '/';
+#endif
+
+  if(BSPF::endsWithIgnoreCase(p, "nvram"))
+  {
+    extern char *libretro_get_save_path();
+    _path = libretro_get_save_path();
+    _path += slash;
+  }
+
+  else if(BSPF::endsWithIgnoreCase(p, "stella.pal"))
+  {
+    extern char *libretro_get_system_path();
+    _path = libretro_get_system_path();
+    _path += slash;
+    _path += "stella.pal";
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -54,6 +54,28 @@ uint32_t libretro_read_rom(void* data)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+char *libretro_get_save_path()
+{
+  char *folder;
+
+  if(environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &folder) && folder)
+    return folder;
+
+  return ".";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+char *libretro_get_system_path()
+{
+  char *folder;
+
+  if(environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &folder) && folder)
+    return folder;
+
+  return ".";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static void update_input()
 {
   if(!input_poll_cb) return;
