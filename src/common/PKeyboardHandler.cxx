@@ -198,8 +198,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey( KBDK_F6,        Event::UISelect  ); // front ("SKILL P1")
       setDefaultKey( KBDK_F8,        Event::UICancel  ); // front ("SKILL P2")
       //setDefaultKey( KBDK_F4,        Event::NoType    ); // back ("COLOR","B/W")
-      //setDefaultKey( KBDK_F13,       Event::NoType    ); // back ("4:3","16:9")
-      //setDefaultKey( KBDK_BACKSPACE, Event::NoType    ); // back (FRY)
+      setDefaultKey( KBDK_F13,       Event::UITabPrev ); // back ("4:3","16:9")
+      setDefaultKey( KBDK_BACKSPACE, Event::UITabNext ); // back (FRY)
     #endif
       break;
 
