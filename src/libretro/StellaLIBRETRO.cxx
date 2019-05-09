@@ -62,29 +62,14 @@ bool StellaLIBRETRO::create(bool logging)
 
   FilesystemNode rom("rom");
 
-  // auto-detect properties
   destroy();
 
-  myOSystem = make_unique<OSystemLIBRETRO>();
-  myOSystem->create();
-
-  myOSystem->settings().setValue("format", console_format);
-
-  if(myOSystem->createConsole(rom) != EmptyString)
-    return false;
-
-
-  // auto-detect settings
-  console_timing = myOSystem->console().timing();
-  phosphor_default = myOSystem->frameBuffer().tiaSurface().phosphorEnabled();
-
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // build play system
-  destroy();
-
   myOSystem = make_unique<OSystemLIBRETRO>();
   myOSystem->create();
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   Settings& settings = myOSystem->settings();
 
@@ -132,6 +117,9 @@ bool StellaLIBRETRO::create(bool logging)
     return false;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  console_timing = myOSystem->console().timing();
+  phosphor_default = myOSystem->frameBuffer().tiaSurface().phosphorEnabled();
 
   if(video_phosphor == "never") setVideoPhosphor(1, video_phosphor_blend);
 
