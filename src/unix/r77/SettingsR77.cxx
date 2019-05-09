@@ -72,6 +72,10 @@ SettingsR77::SettingsR77()
   setPermanent("tv.phosblend", "45"); // level 6
   setPermanent("tv.scanlines", "18"); // level 3
 
+  // enable dejitter by default
+  setPermanent("dejitterBase", "2");
+  setPermanent("dejitterDiff", "6");
+
   setPermanent("joymap",
     string() +
     "128^i2c_controller|4 17 18 15 16 31 31 35 35 121 122 112 113 0 0 0 0|8 19 20 100 99 103 0 0 0 120 123 127 126 0 124 0 0|" +

@@ -262,6 +262,7 @@ void Paddles::update()
   bool sa_changed = false;
   int sa_xaxis = myEvent.get(myP0AxisValue);
   int sa_yaxis = myEvent.get(myP1AxisValue);
+  int new_val;
 
   const double bFac[MAX_DEJITTER - MIN_DEJITTER + 1] = {
     // higher values mean more dejitter strength
@@ -280,18 +281,26 @@ void Paddles::update()
 
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
-    // anti jitter, suppress small changes only
+    // dejitter, suppress small changes only
     double dejitter = std::pow(baseFactor, abs(sa_xaxis - myLastAxisX) * diffFactor);
-    sa_xaxis = sa_xaxis * (1 - dejitter) + myLastAxisX * dejitter;
+    new_val = sa_xaxis * (1 - dejitter) + myLastAxisX * dejitter;
+
+    // only use new dejittered value for larger differences
+    if (abs(new_val - sa_xaxis) > 10)
+      sa_xaxis = new_val;
 
     setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0)));
     sa_changed = true;
   }
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
-    // anti jitter, suppress small changes only
+    // dejitter, suppress small changes only
     double dejitter = std::pow(baseFactor, abs(sa_yaxis - myLastAxisY) * diffFactor);
-    sa_yaxis = sa_yaxis * (1 - dejitter) + myLastAxisY * dejitter;
+    new_val = sa_yaxis * (1 - dejitter) + myLastAxisY * dejitter;
+
+    // only use new dejittered value for larger differences
+    if (abs(new_val - sa_yaxis) > 10)
+      sa_yaxis = new_val;
 
     setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0)));
     sa_changed = true;
