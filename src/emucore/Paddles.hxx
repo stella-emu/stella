@@ -90,9 +90,14 @@ class Paddles : public Controller
                          Controller::Type ytype, int yid) override;
 
     /**
-      @param strength  Value from 0 to 20
+      @param strength  Value from 0 to 10
     */
-    static void setDejitter(int strength);
+    static void setDejitterBase(int strength);
+
+    /**
+      @param strength  Value from 0 to 10
+    */
+    static void setDejitterDiff(int strength);
 
     /**
       Sets the sensitivity for digital emulation of paddle movement.
@@ -153,7 +158,7 @@ class Paddles : public Controller
     static int TRIGRANGE;  // This one is variable for the upper range
 
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
-    static int DEJITTER;
+    static int DEJITTER_BASE, DEJITTER_DIFF;
     static int MOUSE_SENSITIVITY;
 
     // Lookup table for associating paddle buttons with controller pins

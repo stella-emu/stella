@@ -272,11 +272,11 @@ void Paddles::update()
   const double dFac[MAX_DEJITTER - MIN_DEJITTER + 1] = {
     // lower values mean more dejitter strength
     1, // off
-    1.0 / 45 , 1.0 / 64 , 1.0 / 90 , 1.0 / 128, 1.0 / 181,
-    1.0 / 256, 1.0 / 362, 1.0 / 512, 1.0 / 724, 1.0 / 1024
+    1.0 /  181, 1.0 /  256, 1.0 /  362, 1.0 /  512, 1.0 /  724,
+    1.0 / 1024, 1.0 / 1448, 1.0 / 2048, 1.0 / 2896, 1.0 / 4096
   };
-  const double baseFactor = bFac[DEJITTER];
-  const double diffFactor = dFac[DEJITTER];
+  const double baseFactor = bFac[DEJITTER_BASE];
+  const double diffFactor = dFac[DEJITTER_DIFF];
 
   if(abs(myLastAxisX - sa_xaxis) > 10)
   {
@@ -423,9 +423,15 @@ bool Paddles::setMouseControl(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::setDejitter(int strength)
+void Paddles::setDejitterBase(int strength)
 {
-  DEJITTER = BSPF::clamp(strength, MIN_DEJITTER, MAX_DEJITTER);
+  DEJITTER_BASE = BSPF::clamp(strength, MIN_DEJITTER, MAX_DEJITTER);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::setDejitterDiff(int strength)
+{
+  DEJITTER_DIFF = BSPF::clamp(strength, MIN_DEJITTER, MAX_DEJITTER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -453,7 +459,8 @@ int Paddles::TRIGRANGE = Paddles::TRIGMAX;
 int Paddles::DIGITAL_SENSITIVITY = -1;
 int Paddles::DIGITAL_DISTANCE = -1;
 int Paddles::MOUSE_SENSITIVITY = -1;
-int Paddles::DEJITTER = 0;
+int Paddles::DEJITTER_BASE = 0;
+int Paddles::DEJITTER_DIFF = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Controller::DigitalPin Paddles::ourButtonPin[2] = {

@@ -56,6 +56,7 @@ class InputDialog : public Dialog
     void addDevicePortTab(const GUI::Font& font);
 
     void eraseEEPROM();
+    void UpdateDejitter();
 
   private:
     enum {
@@ -82,7 +83,8 @@ class InputDialog : public Dialog
 
     SliderWidget*     myDeadzone;
     StaticTextWidget* myDeadzoneLabel;
-    SliderWidget*     myDejitter;
+    SliderWidget*     myDejitterBase;
+    SliderWidget*     myDejitterDiff;
     SliderWidget*     myDPaddleSpeed;
     SliderWidget*     myMPaddleSpeed;
     SliderWidget*     myTrackBallSpeed;
