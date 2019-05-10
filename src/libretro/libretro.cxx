@@ -616,7 +616,17 @@ void retro_deinit()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t retro_serialize_size()
 {
-  return stella.getStateSize();
+  size_t size = stella.getStateSize();
+
+  int runahead = -1;
+  if(environ_cb(RETRO_ENVIRONMENT_GET_AUDIO_VIDEO_ENABLE, &runahead))
+  {
+    // future expanding size
+    if(runahead & 4)
+      size += 0x10000;
+  }
+
+  return size;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
