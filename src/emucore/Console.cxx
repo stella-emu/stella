@@ -613,7 +613,7 @@ FBInitStatus Console::initializeVideo(bool full)
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
-        TIAConstants::viewableWidth, TIAConstants::viewableHeight);
+        TIAConstants::viewableWidth, TIAConstants::viewableHeight, false);
     if(fbstatus != FBInitStatus::Success)
       return fbstatus;
 

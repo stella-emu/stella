@@ -53,6 +53,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myStatsEnabled(false),
     myLastScanlines(0),
     myGrabMouse(false),
+    myHiDPIEnabled(false),
     myCurrentModeList(nullptr)
 {
 }
@@ -79,8 +80,22 @@ bool FrameBuffer::initialize()
     query_h = s.h;
   }
   // Various parts of the codebase assume a minimum screen size
-  myDesktopSize.w = std::max(query_w, FBMinimum::Width);
-  myDesktopSize.h = std::max(query_h, FBMinimum::Height);
+  myAbsDesktopSize.w = std::max(query_w, FBMinimum::Width);
+  myAbsDesktopSize.h = std::max(query_h, FBMinimum::Height);
+  myDesktopSize = myAbsDesktopSize;
+
+  // Check for HiDPI mode (is it activated, and can we use it?)
+  myHiDPIEnabled = myOSystem.settings().getBool("hidpi") &&
+      ((myAbsDesktopSize.w / 2) >= FBMinimum::Width) &&
+      ((myAbsDesktopSize.h / 2) >= FBMinimum::Height);
+
+  // In HiDPI mode, the desktop resolution is essentially halved
+  // Later, the output is scaled and rendered in 2x mode
+  if(hidpiEnabled())
+  {
+    myDesktopSize.w = myAbsDesktopSize.w / hidpiScaleFactor();
+    myDesktopSize.h = myAbsDesktopSize.h / hidpiScaleFactor();
+  }
 
 #ifdef GUI_SUPPORT
   ////////////////////////////////////////////////////////////////////
@@ -121,12 +136,11 @@ bool FrameBuffer::initialize()
 #endif
 
   // Determine possible TIA windowed zoom levels
+  uInt32 minZoom = 2 * hidpiScaleFactor();
   uInt32 maxZoom = maxWindowSizeForScreen(
       TIAConstants::viewableWidth, TIAConstants::viewableHeight,
-      myDesktopSize.w, myDesktopSize.h);
-
-  // Figure our the smallest zoom level we can use
-  for(uInt32 zoom = 2; zoom <= maxZoom; ++zoom)
+      myAbsDesktopSize.w, myAbsDesktopSize.h);
+  for(uInt32 zoom = minZoom; zoom <= maxZoom; ++zoom)
   {
     ostringstream desc;
     desc << "Zoom " << zoom << "x";
@@ -166,10 +180,18 @@ void FrameBuffer::setUIPalette()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::createDisplay(const string& title,
-                                        uInt32 width, uInt32 height)
+                                        uInt32 width, uInt32 height,
+                                        bool honourHiDPI)
 {
   ++myInitializedCount;
   myScreenTitle = title;
+
+  // In HiDPI mode, all created displays must be scaled by 2x
+  if(honourHiDPI && hidpiEnabled())
+  {
+    width  *= hidpiScaleFactor();
+    height *= hidpiScaleFactor();
+  }
 
   // A 'windowed' system is defined as one where the window size can be
   // larger than the screen size, as there's some sort of window manager
@@ -245,9 +267,10 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   myMsg.counter = 0;
 
   // Create surfaces for TIA statistics and general messages
+  const GUI::Font& f = hidpiEnabled() ? infoFont() : font();
   myStatsMsg.color = kColorInfo;
-  myStatsMsg.w = font().getMaxCharWidth() * 40 + 3;
-  myStatsMsg.h = (font().getFontHeight() + 2) * 3;
+  myStatsMsg.w = f.getMaxCharWidth() * 40 + 3;
+  myStatsMsg.h = (f.getFontHeight() + 2) * 3;
 
   if(!myStatsMsg.surface)
   {
@@ -427,7 +450,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   myMsg.w = font().getStringWidth(myMsg.text) + 10;
   myMsg.h = font().getFontHeight() + 8;
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
-  myMsg.surface->setDstSize(myMsg.w, myMsg.h);
+  myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
   myMsg.position = position;
   myMsg.enabled = true;
 #endif
@@ -439,7 +462,8 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
 #ifdef GUI_SUPPORT
   const ConsoleInfo& info = myOSystem.console().about();
   int xPos = 2, yPos = 0;
-  const int dy = font().getFontHeight() + 2;
+  const GUI::Font& f = hidpiEnabled() ? infoFont() : font();
+  const int dy = f.getFontHeight() + 2;
 
   ostringstream ss;
 
@@ -456,7 +480,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
     << "Hz => "
     << info.DisplayFormat;
 
-  myStatsMsg.surface->drawString(font(), ss.str(), xPos, yPos,
+  myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
                                  myStatsMsg.w, color, TextAlign::Left, 0, true, kBGColor);
 
   yPos += dy;
@@ -468,7 +492,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
     << std::fixed << std::setprecision(0) << 100 * myOSystem.settings().getFloat("speed")
     << "% speed";
 
-  myStatsMsg.surface->drawString(font(), ss.str(), xPos, yPos,
+  myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
                                  myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   yPos += dy;
@@ -477,10 +501,12 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   ss << info.BankSwitch;
   if (myOSystem.settings().getBool("dev.settings")) ss << "| Developer";
 
-  myStatsMsg.surface->drawString(font(), ss.str(), xPos, yPos,
-                                 myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+  myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
+      myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   myStatsMsg.surface->setDstPos(myImageRect.x() + 10, myImageRect.y() + 8);
+  myStatsMsg.surface->setDstSize(myStatsMsg.w * hidpiScaleFactor(),
+                                 myStatsMsg.h * hidpiScaleFactor());
   myStatsMsg.surface->render();
 #endif
 }
@@ -850,8 +876,9 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   if(tiaMode)
   {
     // TIA windowed modes
+    uInt32 minZoom = 2 * hidpiScaleFactor();
     uInt32 maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
-                     myDesktopSize.w, myDesktopSize.h);
+                     myAbsDesktopSize.w, myAbsDesktopSize.h);
 
   #if 0  // FIXME - does this apply any longer??
     // Aspect ratio
@@ -861,7 +888,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   #endif
 
     // Determine all zoom levels
-    for(uInt32 zoom = 2; zoom <= maxZoom; ++zoom)
+    for(uInt32 zoom = minZoom; zoom <= maxZoom; ++zoom)
     {
       ostringstream desc;
       desc << "Zoom " << zoom << "x";
