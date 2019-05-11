@@ -104,10 +104,14 @@ class FrameBuffer
       @param title   The title of the application / window
       @param width   The width of the framebuffer
       @param height  The height of the framebuffer
+      @param honourHiDPI  If true, consult the 'hidpi' setting and enlarge
+                          the display size accordingly; if false, use the
+                          exact dimensions as given
 
       @return  Status of initialization (see FBInitStatus 'enum')
     */
-    FBInitStatus createDisplay(const string& title, uInt32 width, uInt32 height);
+    FBInitStatus createDisplay(const string& title, uInt32 width, uInt32 height,
+                               bool honourHiDPI = true);
 
     /**
       Updates the display, which depending on the current mode could mean
@@ -254,6 +258,13 @@ class FrameBuffer
       Informs the Framebuffer of a change in EventHandler state.
     */
     void stateChanged(EventHandlerState state);
+
+    /**
+      Answer whether hidpi mode is enabled.  In this mode, all FBSurfaces
+      are scaled to 2x normal size.
+    */
+    bool hidpiEnabled() const { return myHiDPIEnabled; }
+    uInt32 hidpiScaleFactor() const { return myHiDPIEnabled ? 2 : 1; }
 
   #ifdef GUI_SUPPORT
     /**
@@ -498,7 +509,12 @@ class FrameBuffer
     Common::Size myScreenSize;
 
     // Maximum dimensions of the desktop area
+    // Note that this takes 'hidpi' mode into account, so in some cases
+    // it will be less than the absolute desktop size
     Common::Size myDesktopSize;
+
+    // Maximum absolute dimensions of the desktop area
+    Common::Size myAbsDesktopSize;
 
     // The resolution of the attached displays in fullscreen mode
     // The primary display is typically the first in the array
@@ -546,6 +562,7 @@ class FrameBuffer
     uInt32 myLastScanlines;
 
     bool myGrabMouse;
+    bool myHiDPIEnabled;
 
     // The list of all available video modes for this framebuffer
     VideoModeList* myCurrentModeList;

@@ -459,11 +459,8 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
   // Control-R (reload ROM listing)
   if(StellaModTest::isControl(mod) && key == KBDK_R)
     updateListing();
-  // FIXME - use the R77 define in the final release
-  //         use the '1' define for testing
-  #if defined(RETRON77)
-//  #if 1
   else
+#if defined(RETRON77)
     // handle keys used by R77
     switch(key)
     {
@@ -489,10 +486,9 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
         Dialog::handleKeyDown(key, mod);
         break;
     }
-  #else
-  else
+#else
     Dialog::handleKeyDown(key, mod);
-  #endif
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -100,6 +100,9 @@ void Dialog::open()
     _surface = instance().frameBuffer().allocateSurface(_w, _h);
   _layer = parent().addDialog(this);
 
+  if(instance().frameBuffer().hidpiEnabled())
+    _surface->setDstSize(_w*2, _h*2);
+
   center();
 
   if(_myTabList.size())

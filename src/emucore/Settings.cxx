@@ -41,6 +41,7 @@ Settings::Settings()
   setPermanent("center", "false");
   setPermanent("palette", "standard");
   setPermanent("uimessages", "true");
+  setPermanent("hidpi", "false");
 
   // TIA specific options
   setPermanent("tia.zoom", "3");
