@@ -140,6 +140,7 @@ void Widget::receivedFocus()
     return;
 
   _hasFocus = true;
+  setFlags(Widget::FLAG_HILITED);
   receivedFocusWidget();
 }
 
@@ -150,6 +151,7 @@ void Widget::lostFocus()
     return;
 
   _hasFocus = false;
+  clearFlags(Widget::FLAG_HILITED);
   lostFocusWidget();
 }
 
