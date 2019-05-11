@@ -154,6 +154,10 @@ struct Rect
     moveTo(p.x, p.y);
   }
 
+  bool contains(uInt32 x, uInt32 y) const {
+    return x >= left && y >= top && x < right && y < bottom;
+  }
+
   friend ostream& operator<<(ostream& os, const Rect& r) {
     os << r.point() << "," << r.size();
     return os;

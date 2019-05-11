@@ -90,8 +90,8 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListSettings::show(uInt32 x, uInt32 y, int data)
 {
-  _xorig = x;
-  _yorig = y;
+  _xorig = x * instance().frameBuffer().hidpiScaleFactor();
+  _yorig = y * instance().frameBuffer().hidpiScaleFactor();
   _item = data;
 
   open();
@@ -103,12 +103,13 @@ void RomListSettings::center()
   // Make sure the menu is exactly where it should be, in case the image
   // offset has changed
   const Common::Rect& image = instance().frameBuffer().imageRect();
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
   uInt32 x = image.x() + _xorig;
   uInt32 y = image.y() + _yorig;
   uInt32 tx = image.x() + image.width();
   uInt32 ty = image.y() + image.height();
-  if(x + _w > tx) x -= (x + _w - tx);
-  if(y + _h > ty) y -= (y + _h - ty);
+  if(x + _w*scale > tx) x -= (x + _w*scale - tx);
+  if(y + _h*scale > ty) y -= (y + _h*scale - ty);
 
   surface().setDstPos(x, y);
 }

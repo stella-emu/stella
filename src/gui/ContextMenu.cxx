@@ -68,10 +68,16 @@ void ContextMenu::addItems(const VariantList& items)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::show(uInt32 x, uInt32 y, int item)
+void ContextMenu::show(uInt32 x, uInt32 y,  const Common::Rect& bossRect, int item)
 {
-  _xorig = x;
-  _yorig = y;
+  const Common::Rect& image = instance().frameBuffer().imageRect();
+  uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  _xorig = bossRect.x() + scale * x - image.x();
+  _yorig = bossRect.y() + scale * y - image.y();
+
+  // Only show if we're inside the visible area
+  if(!bossRect.contains(_xorig, _yorig))
+    return;
 
   recalc(instance().frameBuffer().imageRect());
   open();

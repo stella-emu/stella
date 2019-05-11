@@ -116,7 +116,7 @@ void TiaZoomWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   else if(b == MouseButton::RIGHT)
   {
     // Add menu at current x,y mouse location
-    myMenu->show(x + getAbsX(), y + getAbsY());
+    myMenu->show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
   }
 }
 

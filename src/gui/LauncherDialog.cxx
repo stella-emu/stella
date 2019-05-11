@@ -31,6 +31,7 @@
 #include "MessageBox.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "FBSurface.hxx"
 #include "EventHandler.hxx"
 #include "StellaKeys.hxx"
 #include "Props.hxx"
@@ -539,7 +540,7 @@ void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount
   if(b == MouseButton::RIGHT)
   {
     // Add menu at current x,y mouse location
-    myMenu->show(x + getAbsX(), y + getAbsY());
+    myMenu->show(x + getAbsX(), y + getAbsY(), surface().dstRect());
   }
   else
     Dialog::handleMouseDown(x, y, b, clickCount);
