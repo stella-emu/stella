@@ -122,8 +122,9 @@ void PopUpWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     const Common::Rect& image = instance().frameBuffer().imageRect();
     const Common::Rect& srect = dialog().surface().dstRect();
     uInt32 tx = srect.x(), ty = srect.y();
-    tx += getAbsX() + _labelWidth - image.x();
-    ty += getAbsY() + getHeight() - image.y();
+    uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+    tx += scale * (getAbsX() + _labelWidth) - image.x();
+    ty += scale * (getAbsY() + getHeight()) - image.y();
     myMenu->show(tx, ty, myMenu->getSelected());
   }
 }
