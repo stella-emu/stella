@@ -109,7 +109,7 @@ void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCoun
     myClickY = y;
 
     // Add menu at current x,y mouse location
-    myMenu->show(x + getAbsX(), y + getAbsY());
+    myMenu->show(x + getAbsX(), y + getAbsY(), dialog().surface().dstRect());
   }
 }
 

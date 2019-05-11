@@ -100,8 +100,9 @@ void Dialog::open()
     _surface = instance().frameBuffer().allocateSurface(_w, _h);
   _layer = parent().addDialog(this);
 
-  if(instance().frameBuffer().hidpiEnabled())
-    _surface->setDstSize(_w*2, _h*2);
+  // Take hidpi scaling into account
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  _surface->setDstSize(_w * scale, _h * scale);
 
   center();
 
@@ -129,7 +130,7 @@ void Dialog::open()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::close()
 {
-  if (_mouseWidget)
+  if(_mouseWidget)
   {
     _mouseWidget->handleMouseLeft();
     _mouseWidget = nullptr;

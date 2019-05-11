@@ -49,7 +49,7 @@ class ContextMenu : public Dialog, public CommandSender
     void addItems(const VariantList& items);
 
     /** Show context menu onscreen at the specified coordinates */
-    void show(uInt32 x, uInt32 y, int item = -1);
+    void show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int item = -1);
 
     /** Select the first entry matching the given tag. */
     void setSelected(const Variant& tag, const Variant& defaultTag);
