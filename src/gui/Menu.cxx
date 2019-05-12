@@ -28,9 +28,18 @@ Menu::Menu(OSystem& osystem)
   : DialogContainer(osystem),
     stellaSettingDialog(nullptr),
     optionsDialog(nullptr)
-{}
+{
+}
 
-Dialog* Menu::getBaseDialog()
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Menu::~Menu()
+{
+  delete stellaSettingDialog;  stellaSettingDialog = nullptr;
+  delete optionsDialog;  optionsDialog = nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Dialog* Menu::baseDialog()
 {
   if (myOSystem.settings().getBool("basic_settings"))
   {
@@ -47,4 +56,3 @@ Dialog* Menu::getBaseDialog()
     return optionsDialog;
   }
 }
-

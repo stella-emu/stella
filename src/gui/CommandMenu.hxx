@@ -35,7 +35,15 @@ class CommandMenu : public DialogContainer
       Create a new menu stack
     */
     explicit CommandMenu(OSystem& osystem);
-    virtual ~CommandMenu() = default;
+    virtual ~CommandMenu();
+
+    /**
+      Return (and possibly create) the bottom-most dialog of this container.
+    */
+    Dialog* baseDialog() override;
+
+  private:
+    Dialog* myBaseDialog;
 
   private:
     // Following constructors and assignment operators not supported

@@ -47,7 +47,7 @@ class DialogContainer
       Create a new DialogContainer stack
     */
     explicit DialogContainer(OSystem& osystem);
-    virtual ~DialogContainer();
+    virtual ~DialogContainer() = default;
 
   public:
     /**
@@ -132,19 +132,15 @@ class DialogContainer
     bool needsRedraw() const;
 
     /**
+      Answers whether the base dialog is currently active
+      (ie, there are no overlaid dialogs other than the bottom one)
+    */
+    bool baseDialogIsActive() const;
+
+    /**
       Reset dialog stack to the main configuration menu.
     */
     void reStack();
-
-    /**
-      Return the bottom-most dialog of this container.
-    */
-    const Dialog* baseDialog() const { return myBaseDialog; }
-
-    /**
-      Return the bottom-most dialog of this container. Can be overwritten.
-    */
-    virtual Dialog* getBaseDialog() { return myBaseDialog; }
 
     /**
       Inform the container that it should resize according to the current
@@ -153,6 +149,11 @@ class DialogContainer
       is determined by the specific container.
     */
     virtual void requestResize() { }
+
+    /**
+      Return (and possibly create) the bottom-most dialog of this container.
+    */
+    virtual Dialog* baseDialog() = 0;
 
   private:
     void reset();
@@ -169,7 +170,6 @@ class DialogContainer
 
   protected:
     OSystem& myOSystem;
-    Dialog*  myBaseDialog;
     Common::FixedStack<Dialog*> myDialogStack;
 
   private:

@@ -27,7 +27,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem& osystem)
-  : DialogContainer(osystem)
+  : DialogContainer(osystem),
+    myBaseDialog(nullptr)
 {
   const Common::Size& s = myOSystem.settings().getSize("launcherres");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize();
@@ -43,6 +44,12 @@ Launcher::Launcher(OSystem& osystem)
   myOSystem.settings().setValue("launcherres", Common::Size(myWidth, myHeight));
 
   myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Launcher::~Launcher()
+{
+  delete myBaseDialog;  myBaseDialog = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,4 +81,10 @@ const FilesystemNode& Launcher::currentNode() const
 void Launcher::reload()
 {
   (static_cast<LauncherDialog*>(myBaseDialog))->reload();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Dialog* Launcher::baseDialog()
+{
+  return myBaseDialog;
 }
