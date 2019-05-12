@@ -31,7 +31,7 @@ class TimeMachine : public DialogContainer
 {
   public:
     explicit TimeMachine(OSystem& osystem);
-    virtual ~TimeMachine() = default;
+    virtual ~TimeMachine();
 
     /**
       This dialog has an adjustable size.  We need to make sure the
@@ -40,11 +40,18 @@ class TimeMachine : public DialogContainer
     void requestResize() override;
 
     /**
+      Return (and possibly create) the bottom-most dialog of this container.
+    */
+    Dialog* baseDialog() override;
+
+    /**
       Set number of winds when entering the dialog.
     */
     void setEnterWinds(Int32 numWinds);
 
   private:
+    Dialog* myBaseDialog;
+
     uInt32 myWidth;
 
   private:

@@ -23,9 +23,16 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachine::TimeMachine(OSystem& osystem)
   : DialogContainer(osystem),
+    myBaseDialog(nullptr),
     myWidth(FBMinimum::Width)
 {
   myBaseDialog = new TimeMachineDialog(myOSystem, *this, myWidth);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TimeMachine::~TimeMachine()
+{
+  delete myBaseDialog;  myBaseDialog = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,6 +61,12 @@ void TimeMachine::requestResize()
         });
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Dialog* TimeMachine::baseDialog()
+{
+  return myBaseDialog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

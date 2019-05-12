@@ -86,6 +86,7 @@ Debugger::Debugger(OSystem& osystem, Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::~Debugger()
 {
+  delete myDialog;  myDialog = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -104,9 +105,8 @@ void Debugger::initialize()
 
   myOSystem.settings().setValue("dbg.res", Common::Size(myWidth, myHeight));
 
-  delete myBaseDialog;  myBaseDialog = myDialog = nullptr;
+  delete myDialog;  myDialog = nullptr;
   myDialog = new DebuggerDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
-  myBaseDialog = myDialog;
 
   myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 
@@ -796,7 +796,7 @@ void Debugger::unlockSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::canExit() const
 {
-  return !myDialogStack.empty() && myDialogStack.top() == baseDialog();
+  return baseDialogIsActive();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

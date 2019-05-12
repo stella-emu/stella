@@ -121,7 +121,7 @@ string DebuggerParser::run(const string& command)
       }
 
       if(commands[i].refreshRequired)
-        debugger.myBaseDialog->loadConfig();
+        debugger.baseDialog()->loadConfig();
 
       return commandResult.str();
     }
@@ -1690,7 +1690,7 @@ void DebuggerParser::executeRunTo()
   // disassembly, since this may be a time-consuming operation
   ostringstream buf;
   buf << "RunTo searching through " << max_iterations << " disassembled instructions";
-  ProgressDialog progress(debugger.myBaseDialog, debugger.lfont(), buf.str());
+  ProgressDialog progress(debugger.baseDialog(), debugger.lfont(), buf.str());
   progress.setRange(0, max_iterations, 5);
 
   bool done = false;

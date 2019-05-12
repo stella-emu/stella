@@ -37,7 +37,7 @@ class Launcher : public DialogContainer
       Create a new menu stack
     */
     explicit Launcher(OSystem& osystem);
-    virtual ~Launcher() = default;
+    virtual ~Launcher();
 
     /**
       Initialize the video subsystem wrt this class.
@@ -64,7 +64,14 @@ class Launcher : public DialogContainer
     */
     void reload();
 
+    /**
+      Return (and possibly create) the bottom-most dialog of this container.
+    */
+    Dialog* baseDialog() override;
+
   private:
+    Dialog* myBaseDialog;
+
     // The width and height of this dialog
     uInt32 myWidth;
     uInt32 myHeight;

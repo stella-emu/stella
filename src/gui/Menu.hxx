@@ -39,12 +39,12 @@ class Menu : public DialogContainer
       Create a new menu stack
     */
     explicit Menu(OSystem& osystem);
-    virtual ~Menu() = default;
+    virtual ~Menu();
 
+  private:
+    Dialog* baseDialog() override;
     StellaSettingsDialog* stellaSettingDialog;
     OptionsDialog* optionsDialog;
-
-    Dialog* getBaseDialog() override;
 
   private:
     // Following constructors and assignment operators not supported

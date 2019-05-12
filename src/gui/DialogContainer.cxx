@@ -28,7 +28,6 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem& osystem)
   : myOSystem(osystem),
-    myBaseDialog(nullptr),
     myTime(0),
     myKeyRepeatTime(0),
     myClickRepeatTime(0),
@@ -37,12 +36,6 @@ DialogContainer::DialogContainer(OSystem& osystem)
     myHatRepeatTime(0)
 {
   reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DialogContainer::~DialogContainer()
-{
-  delete myBaseDialog;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -126,6 +119,12 @@ bool DialogContainer::needsRedraw() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DialogContainer::baseDialogIsActive() const
+{
+  return myDialogStack.size() == 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int DialogContainer::addDialog(Dialog* d)
 {
   const Common::Rect& r = myOSystem.frameBuffer().imageRect();
@@ -158,7 +157,7 @@ void DialogContainer::reStack()
   while(!myDialogStack.empty())
     myDialogStack.top()->close();
 
-  getBaseDialog()->open();
+  baseDialog()->open();
 
   // Reset all continuous events
   reset();

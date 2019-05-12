@@ -245,6 +245,11 @@ class Debugger : public DialogContainer
     */
     bool canExit() const;
 
+    /**
+      Return (and possibly create) the bottom-most dialog of this container.
+    */
+    Dialog* baseDialog() override { return myDialog; }
+
   private:
     /**
       Save state of each debugger subsystem and, by default, mark all

@@ -22,10 +22,23 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandMenu::CommandMenu(OSystem& osystem)
-  : DialogContainer(osystem)
+  : DialogContainer(osystem),
+    myBaseDialog(nullptr)
 {
   if (osystem.settings().getBool("minimal_ui"))
     myBaseDialog = new MinUICommandDialog(myOSystem, *this);
   else
     myBaseDialog = new CommandDialog(myOSystem, *this);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CommandMenu::~CommandMenu()
+{
+  delete myBaseDialog;  myBaseDialog = nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Dialog* CommandMenu::baseDialog()
+{
+  return myBaseDialog;
 }
