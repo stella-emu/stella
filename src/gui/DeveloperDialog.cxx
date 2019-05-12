@@ -433,7 +433,11 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myStateSizeWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, swidth, lineHeight,
                                        "Buffer size (*)   ", 0, kSizeChanged, lwidth, " states");
   myStateSizeWidget->setMinValue(20);
+#ifdef RETRON77
+  myStateSizeWidget->setMaxValue(100);
+#else
   myStateSizeWidget->setMaxValue(1000);
+#endif
   myStateSizeWidget->setStepValue(20);
   myStateSizeWidget->setTickmarkInterval(5);
   wid.push_back(myStateSizeWidget);
@@ -442,7 +446,11 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myUncompressedWidget = new SliderWidget(myTab, font, HBORDER + INDENT * 2, ypos - 1, swidth, lineHeight,
                                           "Uncompressed size ", 0, kUncompressedChanged, lwidth, " states");
   myUncompressedWidget->setMinValue(0);
+#ifdef RETRON77
+  myUncompressedWidget->setMaxValue(100);
+#else
   myUncompressedWidget->setMaxValue(1000);
+#endif
   myUncompressedWidget->setStepValue(20);
   myUncompressedWidget->setTickmarkInterval(5);
   wid.push_back(myUncompressedWidget);
