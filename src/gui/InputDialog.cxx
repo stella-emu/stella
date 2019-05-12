@@ -282,8 +282,8 @@ void InputDialog::loadConfig()
   myDeadzoneLabel->setValue(Joystick::deadzone());
 
   // Paddle speed (digital and mouse)
-  myDejitterBase->setValue(instance().settings().getInt("dejitterBase"));
-  myDejitterDiff->setValue(instance().settings().getInt("dejitterDiff"));
+  myDejitterBase->setValue(instance().settings().getInt("dejitter.base"));
+  myDejitterDiff->setValue(instance().settings().getInt("dejitter.diff"));
   UpdateDejitter();
   myDPaddleSpeed->setValue(instance().settings().getInt("dsense"));
   myDPaddleLabel->setLabel(instance().settings().getString("dsense"));
@@ -339,10 +339,10 @@ void InputDialog::saveConfig()
 
   // Paddle speed (digital and mouse)
   int dejitter = myDejitterBase->getValue();
-  instance().settings().setValue("dejitterBase", dejitter);
+  instance().settings().setValue("dejitter.base", dejitter);
   Paddles::setDejitterBase(dejitter);
   dejitter = myDejitterDiff->getValue();
-  instance().settings().setValue("dejitterDiff", dejitter);
+  instance().settings().setValue("dejitter.diff", dejitter);
   Paddles::setDejitterDiff(dejitter);
 
   int sensitivity = myDPaddleSpeed->getValue();
