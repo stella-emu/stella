@@ -31,6 +31,16 @@
 
 #include "MinUICommandDialog.hxx"
 
+#ifdef RETRON77
+  static const string SELECT = "Mode";
+  static const string LEFT_DIFF = "P1 Skill";
+  static const string RIGHT_DIFF = "P2 Skill";
+#else
+  static const string SELECT = "Select";
+  static const string LEFT_DIFF = "Left Diff";
+  static const string RIGHT_DIFF = "Right Diff";
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands"),
@@ -61,7 +71,7 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   };
 
   // Column 1
-  bw = ADD_CD_BUTTON("Select", kSelectCmd);
+  bw = ADD_CD_BUTTON(SELECT, kSelectCmd);
   wid.push_back(bw);
   bw = ADD_CD_BUTTON("Reset", kResetCmd);
   wid.push_back(bw);
@@ -123,8 +133,8 @@ void MinUICommandDialog::loadConfig()
 {
   // Column 1
   myColorButton->setLabel(instance().console().switches().tvColor() ? "Color Mode" : "B/W Mode");
-  myLeftDiffButton->setLabel(instance().console().switches().leftDifficultyA() ? "P1 Skill A" : "P1 Skill B");
-  myRightDiffButton->setLabel(instance().console().switches().rightDifficultyA() ? "P2 Skill A" : "P2 Skill B");
+  myLeftDiffButton->setLabel(LEFT_DIFF + (instance().console().switches().leftDifficultyA() ? " A" : " B"));
+  myRightDiffButton->setLabel(RIGHT_DIFF + (instance().console().switches().rightDifficultyA() ? " A" : " B"));
   // Column 2
   updateSlot(instance().state().currentSlot());
   updateWinds();

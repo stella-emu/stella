@@ -28,6 +28,16 @@
 #include "LauncherDialog.hxx"
 #include "GlobalPropsDialog.hxx"
 
+#ifdef RETRON77
+  static const string SELECT = "Mode";
+  static const string LEFT_DIFFICULTY = "P1 Skill";
+  static const string RIGHT_DIFFICULTY = "P2 Skill";
+#else
+  static const string SELECT = "Select";
+  static const string LEFT_DIFFICULTY = "Left Difficulty";
+  static const string RIGHT_DIFFICULTY = "Right Difficulty";
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   : Dialog(boss->instance(), boss->parent(), font, "Power-on options"),
@@ -74,7 +84,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   // Left difficulty
-  new StaticTextWidget(this, font, xpos, ypos+1, "Left difficulty");
+  new StaticTextWidget(this, font, xpos, ypos+1, LEFT_DIFFICULTY);
   items.clear();
   VarList::push_back(items, "Default", "DEFAULT");
   VarList::push_back(items, "A (Expert)", "A");
@@ -85,7 +95,7 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
   // Right difficulty
-  new StaticTextWidget(this, font, xpos, ypos+1, "Right difficulty");
+  new StaticTextWidget(this, font, xpos, ypos+1, RIGHT_DIFFICULTY);
   // ... use same items as above
   myRightDiff = new PopUpWidget(this, font, xpos+lwidth, ypos,
                                 pwidth, lineHeight, items, "");
@@ -173,7 +183,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   // Console Select/Reset
   t = new StaticTextWidget(this, font, xpos, ypos+2, "Console");
   ypos += t->getHeight() + VGAP;
-  myHoldSelect = new CheckboxWidget(this, font, xpos, ypos, "Select");
+  myHoldSelect = new CheckboxWidget(this, font, xpos, ypos, SELECT);
   ypos += myHoldSelect->getHeight() + VGAP;
   myHoldReset = new CheckboxWidget(this, font, xpos, ypos, "Reset");
 

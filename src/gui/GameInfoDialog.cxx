@@ -137,12 +137,23 @@ GameInfoDialog::GameInfoDialog(
 
   //////////////////////////////////////////////////////////////////////////////
   // 2) Console properties
+#ifdef RETRON77
+  static const string TV_TYPE          = "TV type  ";
+  static const string LEFT_DIFFICULTY  = "P1 Skill ";
+  static const string RIGHT_DIFFICULTY = "P2 Skill ";
+
+#else
+  static const string TV_TYPE          = "TV type          ";
+  static const string LEFT_DIFFICULTY  = "Left Difficulty  ";
+  static const string RIGHT_DIFFICULTY = "Right Difficulty ";
+#endif
+
   wid.clear();
   tabID = myTab->addTab("Console");
 
   xpos = HBORDER; ypos = VBORDER;
 
-  StaticTextWidget* s = new StaticTextWidget(myTab, font, xpos, ypos + 1, "TV type          ");
+  StaticTextWidget* s = new StaticTextWidget(myTab, font, xpos, ypos + 1, TV_TYPE);
   myTVTypeGroup = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
                             "Color", myTVTypeGroup);
@@ -153,10 +164,10 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(r);
   ypos += lineHeight + VGAP * 2;
 
-  s = new StaticTextWidget(myTab, font, xpos, ypos+1, "Left difficulty  ");
+  s = new StaticTextWidget(myTab, font, xpos, ypos+1, LEFT_DIFFICULTY);
   myLeftDiffGroup = new RadioButtonGroup();
   r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
-                                               "A (Expert)", myLeftDiffGroup);
+                            "A (Expert)", myLeftDiffGroup);
   wid.push_back(r);
   ypos += lineHeight;
   r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
@@ -164,7 +175,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(r);
   ypos += lineHeight + VGAP * 2;
 
-  s = new StaticTextWidget(myTab, font, xpos, ypos+1, "Right difficulty ");
+  s = new StaticTextWidget(myTab, font, xpos, ypos+1, RIGHT_DIFFICULTY);
   myRightDiffGroup = new RadioButtonGroup();
   r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
                             "A (Expert)", myRightDiffGroup);
