@@ -88,8 +88,8 @@ Settings::Settings()
   setPermanent("usemouse", "analog");
   setPermanent("grabmouse", "true");
   setPermanent("cursor", "2");
-  setPermanent("dejitterBase", "0");
-  setPermanent("dejitterDiff", "0");
+  setPermanent("dejitter.base", "0");
+  setPermanent("dejitter.diff", "0");
   setPermanent("dsense", "10");
   setPermanent("msense", "10");
   setPermanent("tsense", "10");
@@ -427,12 +427,11 @@ void Settings::usage() const
     << "                                properties in given mode(see manual)\n"
     << "  -grabmouse    <1|0>          Locks the mouse cursor in the TIA window\n"
     << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
-    << "  -dsense       <number>       Sensitivity of digital emulated paddle movement\n"
-    << "                                (1-20)\n"
-    << "  -msense       <number>       Sensitivity of mouse emulated paddle movement\n"
-    << "                                (1-20)\n"
-    << "  -tsense       <number>       Sensitivity of mouse emulated trackball movement\n"
-    << "                                (1-20)\n"
+    << "  -dejitter.base <0-10>        Strength of paddle value averaging\n"
+    << "  -dejitter.diff <0-10>        Strength of paddle reaction to fast movements\n"
+    << "  -dsense       <1-20>         Sensitivity of digital emulated paddle movement\n"
+    << "  -msense       <1-20>         Sensitivity of mouse emulated paddle movement\n"
+    << "  -tsense       <1-20>         Sensitivity of mouse emulated trackball movement\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
     << "                                Stelladaptor/2600-daptors\n"
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key\n"
@@ -558,24 +557,24 @@ void Settings::usage() const
     << "  -dev.tiadriven    <1|0>          Drive unused TIA pins randomly on a\n"
     << "                                    read/peek\n"
 #ifdef DEBUGGER_SUPPORT
-    << "  -dev.rwportbreak <1|0>           Debugger breaks on reads from write ports\n"
+    << "  -dev.rwportbreak      <1|0>      Debugger breaks on reads from write ports\n"
 #endif
-    << "  -dev.thumb.trapfatal <1|0>       Determines whether errors in ARM emulation\n"
+    << "  -dev.thumb.trapfatal  <1|0>      Determines whether errors in ARM emulation\n"
     << "                                    throw an exception\n"
-    << "  -dev.eepromaccess <1|0>          Enable messages for AtariVox/SaveKey access\n"
+    << "  -dev.eepromaccess     <1|0>      Enable messages for AtariVox/SaveKey access\n"
     << "                                    messages\n"
     << "  -dev.tia.type <standard|custom|  Selects a TIA type\n"
     << "                 koolaidman|\n"
     << "                 cosmicark|pesco|\n"
     << "                 quickstep|heman|>\n"
-    << "  -dev.tia.plinvphase <1|0>        Enable inverted HMOVE clock phase for players\n"
-    << "  -dev.tia.msinvphase <1|0>        Enable inverted HMOVE clock phase for\n"
+    << "  -dev.tia.plinvphase   <1|0>      Enable inverted HMOVE clock phase for players\n"
+    << "  -dev.tia.msinvphase   <1|0>      Enable inverted HMOVE clock phase for\n"
     << "                                    missiles\n"
-    << "  -dev.tia.blinvphase <1|0>        Enable inverted HMOVE clock phase for ball\n"
-    << "  -dev.tia.delaypfbits <1|0>       Enable extra delay cycle for PF bits access\n"
+    << "  -dev.tia.blinvphase   <1|0>      Enable inverted HMOVE clock phase for ball\n"
+    << "  -dev.tia.delaypfbits  <1|0>      Enable extra delay cycle for PF bits access\n"
     << "  -dev.tia.delaypfcolor <1|0>      Enable extra delay cycle for PF color\n"
-    << "  -dev.tia.delayplswap <1|0>       Enable extra delay cycle for VDELP0/1 swap\n"
-    << "  -dev.tia.delayblswap <1|0>       Enable extra delay cycle for VDELBL swap\n"
+    << "  -dev.tia.delayplswap  <1|0>      Enable extra delay cycle for VDELP0/1 swap\n"
+    << "  -dev.tia.delayblswap  <1|0>      Enable extra delay cycle for VDELBL swap\n"
     << endl << std::flush;
 }
 

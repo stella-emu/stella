@@ -73,8 +73,8 @@ SettingsR77::SettingsR77()
   setPermanent("tv.scanlines", "18"); // level 3
 
   // enable dejitter by default
-  setPermanent("dejitterBase", "2");
-  setPermanent("dejitterDiff", "6");
+  setPermanent("dejitter.base", "2");
+  setPermanent("dejitter.diff", "6");
 
   setPermanent("joymap",
     string() +
