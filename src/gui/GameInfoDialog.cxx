@@ -137,51 +137,41 @@ GameInfoDialog::GameInfoDialog(
 
   //////////////////////////////////////////////////////////////////////////////
   // 2) Console properties
-#ifdef RETRON77
-  static const string TV_TYPE          = "TV type  ";
-  static const string LEFT_DIFFICULTY  = "P1 Skill ";
-  static const string RIGHT_DIFFICULTY = "P2 Skill ";
-
-#else
-  static const string TV_TYPE          = "TV type          ";
-  static const string LEFT_DIFFICULTY  = "Left Difficulty  ";
-  static const string RIGHT_DIFFICULTY = "Right Difficulty ";
-#endif
-
   wid.clear();
   tabID = myTab->addTab("Console");
 
   xpos = HBORDER; ypos = VBORDER;
+  lwidth = font.getStringWidth(GUI::RIGHT_DIFFICULTY + " ");
 
-  StaticTextWidget* s = new StaticTextWidget(myTab, font, xpos, ypos + 1, TV_TYPE);
+  StaticTextWidget* s = new StaticTextWidget(myTab, font, xpos, ypos + 1, "TV type");
   myTVTypeGroup = new RadioButtonGroup();
-  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
+  RadioButtonWidget* r = new RadioButtonWidget(myTab, font, xpos + lwidth, ypos + 1,
                             "Color", myTVTypeGroup);
   wid.push_back(r);
   ypos += lineHeight;
-  r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
+  r = new RadioButtonWidget(myTab, font, xpos + lwidth, ypos + 1,
                             "B/W", myTVTypeGroup);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 2;
 
-  s = new StaticTextWidget(myTab, font, xpos, ypos+1, LEFT_DIFFICULTY);
+  s = new StaticTextWidget(myTab, font, xpos, ypos+1, GUI::LEFT_DIFFICULTY);
   myLeftDiffGroup = new RadioButtonGroup();
-  r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
+  r = new RadioButtonWidget(myTab, font, xpos + lwidth, ypos + 1,
                             "A (Expert)", myLeftDiffGroup);
   wid.push_back(r);
   ypos += lineHeight;
-  r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
+  r = new RadioButtonWidget(myTab, font, xpos + lwidth, ypos + 1,
                             "B (Novice)", myLeftDiffGroup);
   wid.push_back(r);
   ypos += lineHeight + VGAP * 2;
 
-  s = new StaticTextWidget(myTab, font, xpos, ypos+1, RIGHT_DIFFICULTY);
+  s = new StaticTextWidget(myTab, font, xpos, ypos+1, GUI::RIGHT_DIFFICULTY);
   myRightDiffGroup = new RadioButtonGroup();
-  r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
+  r = new RadioButtonWidget(myTab, font, xpos + lwidth, ypos + 1,
                             "A (Expert)", myRightDiffGroup);
   wid.push_back(r);
   ypos += lineHeight;
-  r = new RadioButtonWidget(myTab, font, s->getRight(), ypos + 1,
+  r = new RadioButtonWidget(myTab, font, xpos + lwidth, ypos + 1,
                             "B (Novice)", myRightDiffGroup);
   wid.push_back(r);
 
