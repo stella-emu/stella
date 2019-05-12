@@ -62,4 +62,21 @@ enum EventMode {
   kNumModes      = 2
 };
 
+namespace GUI
+{
+#ifdef RETRON77
+  static const string SELECT = "Mode";
+  static const string LEFT_DIFFICULTY = "P1 skill";
+  static const string RIGHT_DIFFICULTY = "P2 skill";
+  static const string LEFT_DIFF = "P1 Skill";
+  static const string RIGHT_DIFF = "P2 Skill";
+#else
+  static const string SELECT = "Select";
+  static const string LEFT_DIFFICULTY = "Left difficulty";
+  static const string RIGHT_DIFFICULTY = "Right difficulty";
+  static const string LEFT_DIFF = "Left Diff";
+  static const string RIGHT_DIFF = "Right Diff";
+#endif
+}
+
 #endif // EVENTHANDLER_CONSTANTS_HXX

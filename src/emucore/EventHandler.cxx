@@ -333,14 +333,6 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleEvent(Event::Type event, bool pressed)
 {
-#ifdef RETRON77
-  static const string LEFT_DIFFICULTY = "P1 Skill";
-  static const string RIGHT_DIFFICULTY = "P2 Skill";
-#else
-  static const string LEFT_DIFFICULTY = "Left Difficulty";
-  static const string RIGHT_DIFFICULTY = "Right Difficulty";
-#endif
-
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
   switch(event)
@@ -532,14 +524,14 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       if(pressed)
       {
         myEvent.set(Event::ConsoleLeftDiffB, 0);
-        myOSystem.frameBuffer().showMessage(LEFT_DIFFICULTY + " A");
+        myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " A");
       }
       break;
     case Event::ConsoleLeftDiffB:
       if(pressed)
       {
         myEvent.set(Event::ConsoleLeftDiffA, 0);
-        myOSystem.frameBuffer().showMessage(LEFT_DIFFICULTY + " B");
+        myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " B");
       }
       break;
     case Event::ConsoleLeftDiffToggle:
@@ -549,13 +541,13 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
         {
           myEvent.set(Event::ConsoleLeftDiffA, 0);
           myEvent.set(Event::ConsoleLeftDiffB, 1);
-          myOSystem.frameBuffer().showMessage(LEFT_DIFFICULTY + " B");
+          myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " B");
         }
         else
         {
           myEvent.set(Event::ConsoleLeftDiffA, 1);
           myEvent.set(Event::ConsoleLeftDiffB, 0);
-          myOSystem.frameBuffer().showMessage(LEFT_DIFFICULTY + " A");
+          myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " A");
         }
         myOSystem.console().switches().update();
       }
@@ -565,14 +557,14 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       if(pressed)
       {
         myEvent.set(Event::ConsoleRightDiffB, 0);
-        myOSystem.frameBuffer().showMessage(RIGHT_DIFFICULTY + " A");
+        myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " A");
       }
       break;
     case Event::ConsoleRightDiffB:
       if(pressed)
       {
         myEvent.set(Event::ConsoleRightDiffA, 0);
-        myOSystem.frameBuffer().showMessage(RIGHT_DIFFICULTY + " B");
+        myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " B");
       }
       break;
     case Event::ConsoleRightDiffToggle:
@@ -582,13 +574,13 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
         {
           myEvent.set(Event::ConsoleRightDiffA, 0);
           myEvent.set(Event::ConsoleRightDiffB, 1);
-          myOSystem.frameBuffer().showMessage(RIGHT_DIFFICULTY + " B");
+          myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " B");
         }
         else
         {
           myEvent.set(Event::ConsoleRightDiffA, 1);
           myEvent.set(Event::ConsoleRightDiffB, 0);
-          myOSystem.frameBuffer().showMessage(RIGHT_DIFFICULTY + " A");
+          myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " A");
         }
         myOSystem.console().switches().update();
       }
