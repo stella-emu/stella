@@ -57,7 +57,7 @@ class FrameBuffer
     //   'screen' are the dimensions of the screen itself
     struct VideoMode
     {
-      enum class Stretch { Preserve, Fill };
+      enum class Stretch { Preserve, Fill, None };
 
       Common::Rect image;
       Common::Size screen;

@@ -88,30 +88,31 @@ RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListSettings::show(uInt32 x, uInt32 y, int data)
+void RomListSettings::show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int data)
 {
-  _xorig = x * instance().frameBuffer().hidpiScaleFactor();
-  _yorig = y * instance().frameBuffer().hidpiScaleFactor();
-  _item = data;
+  uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  _xorig = bossRect.x() + x * scale;
+  _yorig = bossRect.y() + y * scale;
 
+  // Only show if we're inside the visible area
+  if(!bossRect.contains(_xorig, _yorig))
+    return;
+
+  _item = data;
   open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListSettings::center()
 {
-  // Make sure the menu is exactly where it should be, in case the image
-  // offset has changed
-  const Common::Rect& image = instance().frameBuffer().imageRect();
-  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
-  uInt32 x = image.x() + _xorig;
-  uInt32 y = image.y() + _yorig;
-  uInt32 tx = image.x() + image.width();
-  uInt32 ty = image.y() + image.height();
-  if(x + _w*scale > tx) x -= (x + _w*scale - tx);
-  if(y + _h*scale > ty) y -= (y + _h*scale - ty);
+  // First set position according to original coordinates
+  surface().setDstPos(_xorig, _yorig);
 
-  surface().setDstPos(x, y);
+  // Now make sure that the entire menu can fit inside the image bounds
+  // If not, we reset its position
+  if(!instance().frameBuffer().imageRect().contains(
+      _xorig, _yorig, surface().dstRect()))
+    surface().setDstPos(_xorig, _yorig);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -95,7 +95,7 @@ struct Size
   Another very wide spread approach to rectangle classes treats (bottom,right)
   also as a part of the rectangle.
 
-  Coneptually, both are sound, but the approach we use saves many intermediate
+  Conceptually, both are sound, but the approach we use saves many intermediate
   computations (like computing the height in our case is done by doing this:
     height = bottom - top;
   while in the alternate system, it would be
@@ -156,6 +156,18 @@ struct Rect
 
   bool contains(uInt32 x, uInt32 y) const {
     return x >= left && y >= top && x < right && y < bottom;
+  }
+
+  // Tests whether 'r' is completely contained within this rectangle.
+  // If it isn't, then set 'x' and 'y' such that moving 'r' to this
+  // position will make it be contained.
+  bool contains(uInt32& x, uInt32& y, const Rect& r) const {
+    if(r.left < left)  x = left;
+    else if(r.right > right) x = r.left - (r.right - right);
+    if(r.top < top)  y = top;
+    else if(r.bottom > bottom) y = r.top - (r.bottom - bottom);
+
+    return r.left != x || r.top != y;
   }
 
   friend ostream& operator<<(ostream& os, const Rect& r) {

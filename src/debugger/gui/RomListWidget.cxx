@@ -248,7 +248,8 @@ void RomListWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
     // Set selected and add menu at current x,y mouse location
     _selectedItem = findItem(x, y);
     scrollToSelected();
-    myMenu->show(x + getAbsX(), y + getAbsY(), _selectedItem);
+    myMenu->show(x + getAbsX(), y + getAbsY(),
+                 dialog().surface().dstRect(), _selectedItem);
   }
   else
   {

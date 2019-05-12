@@ -926,13 +926,13 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   {
     // Windowed and fullscreen mode differ only in screen size
     myWindowedModeList.add(
-        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, VideoMode::Stretch::Fill)
+        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, VideoMode::Stretch::None)
     );
     for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
     {
       myFullscreenModeLists[i].add(
           VideoMode(baseWidth, baseHeight, myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
-                    VideoMode::Stretch::Fill, "", 1, i)
+                    VideoMode::Stretch::None, "", 1, i)
       );
     }
   }
@@ -941,8 +941,6 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 {
-  EventHandlerState state = myOSystem.eventHandler().state();
-
   if(fullscreen)
   {
     Int32 i = getCurrentDisplayIndex();
@@ -959,6 +957,7 @@ const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
   // Now select the best resolution depending on the state
   // UI modes (launcher and debugger) have only one supported resolution
   // so the 'current' one is the only valid one
+  EventHandlerState state = myOSystem.eventHandler().state();
   if(state == EventHandlerState::DEBUGGER || state == EventHandlerState::LAUNCHER)
     myCurrentModeList->setByZoom(1);
   else  // TIA mode
@@ -979,7 +978,7 @@ const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::VideoMode::VideoMode()
-  : stretch(VideoMode::Stretch::Fill),
+  : stretch(VideoMode::Stretch::None),
     description(""),
     zoom(1),
     fsIndex(-1)
@@ -1035,6 +1034,10 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
         iw = screen.w;
         ih = screen.h;
         break;
+
+      case Stretch::None:
+        // Don't do any scaling at all
+        break;
     }
   }
   else
@@ -1045,6 +1048,7 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     {
       case Stretch::Preserve:
       case Stretch::Fill:
+      case Stretch::None:
         screen.w = iw;
         screen.h = ih;
         break;

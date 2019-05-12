@@ -36,7 +36,7 @@ class RomListSettings : public Dialog, public CommandSender
 
     /** Show dialog onscreen at the specified coordinates
         ('data' will be the currently selected line number in RomListWidget) */
-    void show(uInt32 x, uInt32 y, int data = -1);
+    void show(uInt32 x, uInt32 y, const Common::Rect& bossRect, int data = -1);
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
     void center() override;
