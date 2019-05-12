@@ -1,0 +1,48 @@
+#ifndef STD_MUTEX_H
+#define STD_MUTEX_H
+
+namespace std
+{
+	class mutex_base
+	{
+	public:
+		mutex_base() {}
+		~mutex_base() {}
+
+		void lock() {}
+		bool try_lock() { return true; }
+		void unlock() {}
+		
+		bool owns_lock() { return true; }
+	};
+
+
+	class mutex : public mutex_base
+	{
+	public:
+		mutex() {}
+		~mutex() {}
+	};
+
+
+	template <class _Mutex>
+	class lock_guard  : public mutex_base
+	{
+	public:
+		lock_guard() {}
+		lock_guard(_Mutex& m) {}
+		~lock_guard() {}
+	};
+
+
+	template<class _Mutex>
+	class unique_lock : public mutex_base
+	{
+	public:
+		unique_lock() {}
+		unique_lock(_Mutex& m) {}
+		~unique_lock() {}
+	};
+}
+
+#endif

@@ -1,0 +1,43 @@
+#ifndef STD_THREAD_H
+#define STD_THREAD_H
+
+namespace std
+{
+	class thread
+	{
+	public:
+		thread() {}
+
+		template<class _Fn>
+		thread(_Fn&& _Fx) : thread() {}
+
+		template<class _Fn, class _Args>
+		thread(_Fn&& _Fx, _Args _Ax) : thread() {}
+
+		template<class _Fn, class _Args1, class _Args2, class _Args3>
+		thread(_Fn&& _Fx, _Args1 _Ax1, _Args2 _Ax2, _Args3 _Ax3) : thread() {}
+
+		~thread() {}
+
+		typedef int id;
+		id get_id() { return (int) &thread_id; }
+
+		bool joinable() { return true; }
+		void join() {}
+
+		static int hardware_concurrency() { return 1; }
+
+	private:
+		int thread_id;
+	};
+
+	namespace this_thread
+	{
+		static inline thread::id get_id() { return -1; }
+
+		template <typename T>
+		void sleep_until(T time) { }
+	}
+}
+
+#endif

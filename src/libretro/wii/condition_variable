@@ -1,0 +1,30 @@
+#ifndef STD_CONDITION_VARIABLE_H
+#define STD_CONDITION_VARIABLE_H
+
+#include <mutex>
+
+namespace std
+{
+    using Lock = mutex;
+    using ScopedLock = unique_lock<Lock>;
+
+	class condition_variable
+	{
+	public:
+		condition_variable() {}
+		~condition_variable() {}
+
+		void notify_one() {}
+		void notify_all() {}
+
+		void wait(ScopedLock lck) {}
+
+		template <typename F>
+		void wait(ScopedLock lck, F&& lambda) {}
+
+		template <typename T>
+		void wait_until(ScopedLock lck, T next) {}
+	};
+}
+
+#endif

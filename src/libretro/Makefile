@@ -259,8 +259,8 @@ else ifneq (,$(filter $(platform), ngc wii wiiu))
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_$(platform).bc
    STATIC_LINKING = 1
-   CXXFLAGS += $(PTHREAD_FLAGS) -std=c++14
-   LDFLAGS += $(PTHREAD_FLAGS) -std=c++14
+   CXXFLAGS += $(PTHREAD_FLAGS)
+   LDFLAGS += $(PTHREAD_FLAGS)
 
 # Genode
 else ifeq ($(platform), genode)
