@@ -91,21 +91,12 @@ R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
 void R77HelpDialog::loadConfig()
 {
   displayInfo();
-  setFocus(getFocusList()[1]); // skip disabled 'Previous' button
+  setFocus(getFocusList()[1]); // skip initially disabled 'Previous' button
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
-// FIXME - this currently isn't used
-#if 0
-#ifdef BSPF_MACOS
-  #define ALT_ "Cmd"
-#else
-  #define ALT_ "Alt"
-#endif
-#endif
-
   int i = 0;
   auto ADD_BIND = [&](const string & j = "", const string & b = "", const string & d = "")
   {
