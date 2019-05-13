@@ -260,6 +260,12 @@ class FrameBuffer
     void stateChanged(EventHandlerState state);
 
     /**
+      Answer whether hidpi mode is allowed.  In this mode, all FBSurfaces
+      are scaled to 2x normal size.
+    */
+    bool hidpiAllowed() const { return myHiDPIAllowed; }
+
+    /**
       Answer whether hidpi mode is enabled.  In this mode, all FBSurfaces
       are scaled to 2x normal size.
     */
@@ -562,6 +568,7 @@ class FrameBuffer
     uInt32 myLastScanlines;
 
     bool myGrabMouse;
+    bool myHiDPIAllowed;
     bool myHiDPIEnabled;
 
     // The list of all available video modes for this framebuffer

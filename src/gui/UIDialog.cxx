@@ -96,6 +96,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myPositionPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
     items, "Dialogs position ", lwidth);
   wid.push_back(myPositionPopup);
+  ypos += lineHeight + V_GAP;
+
+  // Enable HiDPI mode
+  myHidpiWidget = new CheckboxWidget(myTab, font, xpos, ypos, "HiDPI mode");
+  wid.push_back(myHidpiWidget);
   ypos += lineHeight + V_GAP * 4;
 
   // Delay between quick-selecting characters in ListWidget
@@ -276,6 +281,17 @@ void UIDialog::loadConfig()
   const string& pal = settings.getString("uipalette");
   myPalettePopup->setSelected(pal, "standard");
 
+  // Enable HiDPI mode
+  if (!instance().frameBuffer().hidpiAllowed())
+  {
+    myHidpiWidget->setState(false);
+    myHidpiWidget->setEnabled(false);
+  }
+  else
+  {
+    myHidpiWidget->setState(settings.getBool("hidpi"));
+  }
+
   // Dialog position
   myPositionPopup->setSelected(settings.getString("dialogpos"), "0");
 
@@ -324,6 +340,9 @@ void UIDialog::saveConfig()
     myPalettePopup->getSelectedTag().toString());
   instance().frameBuffer().setUIPalette();
 
+  // Enable HiDPI mode
+  settings.setValue("hidpi", myHidpiWidget->getState());
+
   // Dialog position
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
 
@@ -347,6 +366,7 @@ void UIDialog::setDefaults()
   {
     case 0:  // Misc. options
       myPalettePopup->setSelected("standard");
+      myHidpiWidget->setState(false);
       myPositionPopup->setSelected("0");
       myListDelayPopup->setValue(300);
       myWheelLinesPopup->setValue(4);
