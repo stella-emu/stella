@@ -440,7 +440,6 @@ bool OSystem::hasConsole() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createLauncher(const string& startdir)
 {
-#ifdef GUI_SUPPORT
   closeConsole();
 
   if(mySound)
@@ -449,6 +448,7 @@ bool OSystem::createLauncher(const string& startdir)
   mySettings->setValue("tmpromdir", startdir);
   bool status = false;
 
+#ifdef GUI_SUPPORT
   myEventHandler->reset(EventHandlerState::LAUNCHER);
   if(createFrameBuffer() == FBInitStatus::Success)
   {
@@ -459,12 +459,10 @@ bool OSystem::createLauncher(const string& startdir)
   }
   else
     Logger::log("ERROR: Couldn't create launcher", 0);
+#endif
 
   myLauncherUsed = myLauncherUsed || status;
   return status;
-#else
-  return false;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
