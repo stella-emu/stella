@@ -41,7 +41,6 @@ Settings::Settings()
   setPermanent("center", "false");
   setPermanent("palette", "standard");
   setPermanent("uimessages", "true");
-  setPermanent("hidpi", "false");
 
   // TIA specific options
   setPermanent("tia.zoom", "3");
@@ -122,6 +121,7 @@ Settings::Settings()
                  DebuggerDialog::kMediumFontMinH));
 #endif
   setPermanent("uipalette", "standard");
+  setPermanent("hidpi", "false");
   setPermanent("listdelay", "300");
   setPermanent("mwheel", "4");
   setPermanent("basic_settings", false);
@@ -462,13 +462,16 @@ void Settings::usage() const
     << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
     << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (0 for off)\n"
+    << "  -uipalette    <standard|     Selects GUI theme\n"
+    << "                 classic|light>\n"
+    << "  -hidpi        <0|1>          Enable HiDPI mode\n"
+    << "  -dialogpos    <0..4>         Display all dialogs at given positions\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets\n"
     << "                                (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in\n"
     << "                                UI\n"
     << "  -basic_settings <0|1>        Display only a basic settings dialog\n"
-    << "  -dialogpos    <0..4>         Display all dialogs at given positions\n"
-    << "  -romdir       <dir>          Directory in which to load ROM files\n"
+    << "  -romdir       <dir>          Directory from which to load ROM files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is\n"
     << "                                connected\n"
     << "  -holdreset                   Start the emulator with the Game Reset switch\n"

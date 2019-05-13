@@ -53,6 +53,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myStatsEnabled(false),
     myLastScanlines(0),
     myGrabMouse(false),
+    myHiDPIAllowed(false),
     myHiDPIEnabled(false),
     myCurrentModeList(nullptr)
 {
@@ -85,9 +86,9 @@ bool FrameBuffer::initialize()
   myDesktopSize = myAbsDesktopSize;
 
   // Check for HiDPI mode (is it activated, and can we use it?)
-  myHiDPIEnabled = myOSystem.settings().getBool("hidpi") &&
-      ((myAbsDesktopSize.w / 2) >= FBMinimum::Width) &&
-      ((myAbsDesktopSize.h / 2) >= FBMinimum::Height);
+  myHiDPIAllowed = ((myAbsDesktopSize.w / 2) >= FBMinimum::Width) &&
+    ((myAbsDesktopSize.h / 2) >= FBMinimum::Height);
+  myHiDPIEnabled = myHiDPIAllowed && myOSystem.settings().getBool("hidpi");
 
   // In HiDPI mode, the desktop resolution is essentially halved
   // Later, the output is scaled and rendered in 2x mode
