@@ -736,7 +736,7 @@ VariantList PhysicalJoystickHandler::database() const
 {
   VariantList db;
   for(const auto& i: myDatabase)
-    VarList::push_back(db, i.first, i.second.joy ? i.second.joy->ID : -1);
+    VarList::push_back(db, i.first, i.second.joy ? i.second.joy->ID : -1L);
 
   return db;
 }

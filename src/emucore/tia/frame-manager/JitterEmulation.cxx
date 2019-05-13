@@ -65,8 +65,8 @@ void JitterEmulation::frameComplete(uInt32 scanlineCount)
 
   myLastFrameScanlines = scanlineCount;
 
-  if (myJitter > 0) myJitter = std::max(myJitter - myJitterFactor, 0);
-  if (myJitter < 0) myJitter = std::min(myJitter + myJitterFactor, 0);
+  if (myJitter > 0) myJitter = std::max(myJitter - myJitterFactor, 0l);
+  if (myJitter < 0) myJitter = std::min(myJitter + myJitterFactor, 0l);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

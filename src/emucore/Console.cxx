@@ -746,7 +746,7 @@ void Console::setTIAProperties()
   // FIXME - ystart is probably disappearing soon, or at least autodetection is
   uInt32 ystart = atoi(myProperties.get(PropType::Display_YStart).c_str());
   if(ystart != 0)
-    ystart = BSPF::clamp(ystart, 0u, TIAConstants::maxYStart);
+    ystart = BSPF::clamp(ystart, 0ul, TIAConstants::maxYStart);
   else {
     ystart = myAutodetectedYstart;
     myYStartAutodetected = true;

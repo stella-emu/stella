@@ -103,7 +103,7 @@ bool RewindManager::addState(const string& message, bool timeMachine)
     // adjust frame timed intervals to actual scanlines (vs 262)
     if(interval >= 76 * 262 && interval <= 76 * 262 * 30)
     {
-      const uInt32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
+      const uInt32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240ul);
 
       interval = interval * scanlines / 262;
     }
@@ -278,7 +278,7 @@ string RewindManager::loadState(Int64 startCycles, uInt32 numStates)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getUnitString(Int64 cycles)
 {
-  const Int32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
+  const Int32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240ul);
   const bool isNTSC = scanlines <= 287;
   const Int32 NTSC_FREQ = 1193182; // ~76*262*60
   const Int32 PAL_FREQ = 1182298; // ~76*312*50

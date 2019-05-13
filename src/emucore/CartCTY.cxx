@@ -35,15 +35,15 @@ CartridgeCTY::CartridgeCTY(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(32768u, size));
+  memcpy(myImage, image.get(), std::min(32768ul, size));
   createCodeAccessBase(32768);
 
   // Default to no tune data in case user is utilizing an old ROM
   memset(myTuneData, 0, 28*1024);
 
   // Extract tune data if it exists
-  if(size > 32768u)
-    memcpy(myTuneData, image.get() + 32768u, size - 32768u);
+  if(size > 32768ul)
+    memcpy(myTuneData, image.get() + 32768ul, size - 32768u);
 
   // Point to the first tune
   myFrequencyImage = myTuneData;

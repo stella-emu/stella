@@ -65,7 +65,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, uInt32 size,
     myFractionalClocks(0.0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(32768u, size));
+  memcpy(myImage, image.get(), std::min(32768ul, size));
 
   // even though the ROM is 32K, only 28K is accessible to the 6507
   createCodeAccessBase(4096 * 7);

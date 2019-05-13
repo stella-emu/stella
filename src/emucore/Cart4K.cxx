@@ -24,7 +24,7 @@ Cartridge4K::Cartridge4K(const ByteBuffer& image, uInt32 size,
   : Cartridge(settings, md5)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(4096u, size));
+  memcpy(myImage, image.get(), std::min(4096ul, size));
   createCodeAccessBase(4096);
 }
 

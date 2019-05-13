@@ -90,7 +90,7 @@ bool StellaLIBRETRO::create(bool logging)
 
   if(logging)
   {
-    settings.setValue("loglevel", 999);
+    settings.setValue("loglevel", 999ul);
     settings.setValue("logtoconsole", true);
   }
 
@@ -100,10 +100,10 @@ bool StellaLIBRETRO::create(bool logging)
   settings.setValue("format", console_format);
   settings.setValue("palette", video_palette);
 
-  settings.setValue("tia.zoom", 1);
+  settings.setValue("tia.zoom", 1ul);
   settings.setValue("tia.inter", false);
-  settings.setValue("tia.aspectn", 100);
-  settings.setValue("tia.aspectp", 100);
+  settings.setValue("tia.aspectn", 100ul);
+  settings.setValue("tia.aspectp", 100ul);
 
   //fastscbios
   // Fast loading of Supercharger BIOS
@@ -119,13 +119,13 @@ bool StellaLIBRETRO::create(bool logging)
   fs:2 hz:50 bs:314.4 -- not supported,      0 frame lag ideal
   fs:128 hz:50 bs:4.9 -- lowest supported, 0-1 frame lag measured
   */
-  settings.setValue(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::Preset::custom));
+  settings.setValue(AudioSettings::SETTING_PRESET, static_cast<Int32>(AudioSettings::Preset::custom));
   settings.setValue(AudioSettings::SETTING_SAMPLE_RATE, getAudioRate());
-  settings.setValue(AudioSettings::SETTING_FRAGMENT_SIZE, 128);
-  settings.setValue(AudioSettings::SETTING_BUFFER_SIZE, 8);
-  settings.setValue(AudioSettings::SETTING_HEADROOM, 0);
-  settings.setValue(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::ResamplingQuality::nearestNeightbour));
-  settings.setValue(AudioSettings::SETTING_VOLUME, 100);
+  settings.setValue(AudioSettings::SETTING_FRAGMENT_SIZE, 128ul);
+  settings.setValue(AudioSettings::SETTING_BUFFER_SIZE, 8ul);
+  settings.setValue(AudioSettings::SETTING_HEADROOM, 0ul);
+  settings.setValue(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<Int32>(AudioSettings::ResamplingQuality::nearestNeightbour));
+  settings.setValue(AudioSettings::SETTING_VOLUME, 100ul);
   settings.setValue(AudioSettings::SETTING_STEREO, audio_mode);
 
   if(myOSystem->createConsole(rom) != EmptyString)

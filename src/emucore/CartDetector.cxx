@@ -576,10 +576,10 @@ bool CartDetector::isProbablyARM(const ByteBuffer& image, uInt32 size)
     { 0xA0, 0xC1, 0x1F, 0xE0 },
     { 0x00, 0x80, 0x02, 0xE0 }
   };
-  if(searchForBytes(image.get(), std::min(size, 1024u), signature[0], 4, 1))
+  if(searchForBytes(image.get(), std::min(size, 1024ul), signature[0], 4, 1))
     return true;
   else
-    return searchForBytes(image.get(), std::min(size, 1024u), signature[1], 4, 1);
+    return searchForBytes(image.get(), std::min(size, 1024ul), signature[1], 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -944,7 +944,7 @@ bool CartDetector::isProbablyMDM(const ByteBuffer& image, uInt32 size)
 {
   // MDM cart is identified key 'MDMC' in the first 8K of ROM
   uInt8 mdmc[] = { 'M', 'D', 'M', 'C' };
-  return searchForBytes(image.get(), std::min(size, 8192u), mdmc, 4, 1);
+  return searchForBytes(image.get(), std::min(size, 8192ul), mdmc, 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

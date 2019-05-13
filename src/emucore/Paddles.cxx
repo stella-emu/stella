@@ -317,7 +317,7 @@ void Paddles::update()
     // We're in auto mode, where a single axis is used for one paddle only
     myCharge[myMPaddleID] = BSPF::clamp(myCharge[myMPaddleID] -
         (myEvent.get(myAxisMouseMotion) * MOUSE_SENSITIVITY),
-        TRIGMIN, TRIGRANGE);
+        static_cast<Int32>(TRIGMIN), static_cast<Int32>(TRIGRANGE));
     if(myEvent.get(Event::MouseButtonLeftValue) ||
        myEvent.get(Event::MouseButtonRightValue))
       setPin(ourButtonPin[myMPaddleID], false);
@@ -330,7 +330,7 @@ void Paddles::update()
     {
       myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
           (myEvent.get(Event::MouseAxisXValue) * MOUSE_SENSITIVITY),
-          TRIGMIN, TRIGRANGE);
+          static_cast<Int32>(TRIGMIN), static_cast<Int32>(TRIGRANGE));
       if(myEvent.get(Event::MouseButtonLeftValue))
         setPin(ourButtonPin[myMPaddleIDX], false);
     }
@@ -338,7 +338,7 @@ void Paddles::update()
     {
       myCharge[myMPaddleIDY] = BSPF::clamp(myCharge[myMPaddleIDY] -
           (myEvent.get(Event::MouseAxisYValue) * MOUSE_SENSITIVITY),
-          TRIGMIN, TRIGRANGE);
+          static_cast<Int32>(TRIGMIN), static_cast<Int32>(TRIGRANGE));
       if(myEvent.get(Event::MouseButtonRightValue))
         setPin(ourButtonPin[myMPaddleIDY], false);
     }
