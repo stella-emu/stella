@@ -203,11 +203,9 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   wid.push_back(myOpenBrowserButton);
-  //ypos += lineHeight + 4;
-  xpos = myOpenBrowserButton->getRight() + 8;
 
-  mySnapLoadPath = new EditTextWidget(myTab, font, xpos, ypos + 1,
-                                      _w - xpos - HBORDER - 2, lineHeight, "");
+  mySnapLoadPath = new EditTextWidget(myTab, font, HBORDER + lwidth, ypos + 1,
+                                      _w - lwidth - HBORDER * 2 - 2, lineHeight, "");
   wid.push_back(mySnapLoadPath);
   ypos += lineHeight + V_GAP * 4;
 
