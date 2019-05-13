@@ -99,7 +99,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + V_GAP;
 
   // Enable HiDPI mode
-  myHidpiWidget = new CheckboxWidget(myTab, font, xpos, ypos, "HiDPI mode");
+  myHidpiWidget = new CheckboxWidget(myTab, font, xpos, ypos, "HiDPI mode (*)");
   wid.push_back(myHidpiWidget);
   ypos += lineHeight + V_GAP * 4;
 
@@ -123,6 +123,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myWheelLinesPopup->setMaxValue(10);
   myWheelLinesPopup->setTickmarkInterval(3);
   wid.push_back(myWheelLinesPopup);
+
+  // Add message concerning usage
+  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
+  lwidth = ifont.getStringWidth("(*) Change requires application restart");
+  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w - 20), fontHeight,
+    "(*) Change requires application restart");
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -215,8 +221,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
   lwidth = ifont.getStringWidth("(*) Changes require application restart");
   new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w - 20), fontHeight,
-                       "(*) Changes require application restart",
-                       TextAlign::Left);
+                       "(*) Changes require application restart");
 
   // Add items for tab 1
   addToFocusList(wid, myTab, tabID);
