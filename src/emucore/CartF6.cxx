@@ -25,7 +25,7 @@ CartridgeF6::CartridgeF6(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(16384u, size));
+  memcpy(myImage, image.get(), std::min(uInt32(16384u), size));
   createCodeAccessBase(16384);
 }
 

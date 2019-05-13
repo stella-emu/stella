@@ -24,7 +24,7 @@
 CartridgeWD::CartridgeWD(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::min(8195u, size)),
+    mySize(std::min(uInt32(8195u), size)),
     myCyclesAtBankswitchInit(0),
     myPendingBank(0),
     myCurrentBank(0)

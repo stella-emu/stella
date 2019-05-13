@@ -28,7 +28,7 @@ CartridgeDPC::CartridgeDPC(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Make a copy of the entire image
-  memcpy(myImage, image.get(), std::min(size, 8192u + 2048u + 256u));
+  memcpy(myImage, image.get(), std::min(size, uInt32(8192u + 2048u + 256u)));
   createCodeAccessBase(8192);
 
   // Pointer to the program ROM (8K @ 0 byte offset)

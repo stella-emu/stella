@@ -175,7 +175,7 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
     const string& mode = myNTSCFilter.setPreset(preset);
     buf << "TV filtering (" << mode << " mode)";
   }
-  myOSystem.settings().setValue("tv.filter", int(preset));
+  myOSystem.settings().setValue("tv.filter", static_cast<Int32>(preset));
 
   if(show) myFB.showMessage(buf.str());
 }
@@ -202,7 +202,7 @@ uInt32 TIASurface::enableScanlines(int relative, int absolute)
   FBSurface::Attributes& attr = mySLineSurface->attributes();
   if(relative == 0)  attr.blendalpha = absolute;
   else               attr.blendalpha += relative;
-  attr.blendalpha = std::min(100u, attr.blendalpha);
+  attr.blendalpha = std::min(uInt32(100u), attr.blendalpha);
 
   mySLineSurface->applyAttributes();
 

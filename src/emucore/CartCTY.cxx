@@ -35,7 +35,7 @@ CartridgeCTY::CartridgeCTY(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(32768u, size));
+  memcpy(myImage, image.get(), std::min(uInt32(32768u), size));
   createCodeAccessBase(32768);
 
   // Default to no tune data in case user is utilizing an old ROM

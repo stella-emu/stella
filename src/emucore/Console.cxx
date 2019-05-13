@@ -528,7 +528,10 @@ void Console::setPalette(const string& type)
   else if(type == "z26")
     paletteNum = 1;
   else if(type == "user" && myUserPaletteDefined)
+  {
     paletteNum = 2;
+    loadUserPalette();
+  }
 
   // Now consider the current display format
   const uInt32* palette =
@@ -613,7 +616,7 @@ FBInitStatus Console::initializeVideo(bool full)
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
     fbstatus = myOSystem.frameBuffer().createDisplay(title,
-        TIAConstants::viewableWidth, TIAConstants::viewableHeight, false);
+        TIAConstants::viewableWidth, TIAConstants::viewableHeight);
     if(fbstatus != FBInitStatus::Success)
       return fbstatus;
 
@@ -746,7 +749,7 @@ void Console::setTIAProperties()
   // FIXME - ystart is probably disappearing soon, or at least autodetection is
   uInt32 ystart = atoi(myProperties.get(PropType::Display_YStart).c_str());
   if(ystart != 0)
-    ystart = BSPF::clamp(ystart, 0u, TIAConstants::maxYStart);
+    ystart = BSPF::clamp(ystart, uInt32(0u), TIAConstants::maxYStart);
   else {
     ystart = myAutodetectedYstart;
     myYStartAutodetected = true;

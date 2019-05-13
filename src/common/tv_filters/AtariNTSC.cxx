@@ -77,7 +77,7 @@ void AtariNTSC::enableThreading(bool enable)
   }
   else
   {
-    systemThreads = std::max(1u, std::min(4u, systemThreads - 1));
+    systemThreads = std::max(uInt32(1u), std::min(uInt32(4u), systemThreads - 1));
 
     myWorkerThreads = systemThreads - 1;
     myTotalThreads  = systemThreads;

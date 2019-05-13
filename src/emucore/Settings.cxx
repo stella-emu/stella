@@ -41,7 +41,6 @@ Settings::Settings()
   setPermanent("center", "false");
   setPermanent("palette", "standard");
   setPermanent("uimessages", "true");
-  setPermanent("hidpi", "false");
 
   // TIA specific options
   setPermanent("tia.zoom", "3");
@@ -71,10 +70,10 @@ Settings::Settings()
   // Sound options
   setPermanent(AudioSettings::SETTING_ENABLED, AudioSettings::DEFAULT_ENABLED);
   setPermanent(AudioSettings::SETTING_VOLUME, AudioSettings::DEFAULT_VOLUME);
-  setPermanent(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::DEFAULT_PRESET));
+  setPermanent(AudioSettings::SETTING_PRESET, static_cast<Int32>(AudioSettings::DEFAULT_PRESET));
   setPermanent(AudioSettings::SETTING_FRAGMENT_SIZE, AudioSettings::DEFAULT_FRAGMENT_SIZE);
   setPermanent(AudioSettings::SETTING_SAMPLE_RATE, AudioSettings::DEFAULT_SAMPLE_RATE);
-  setPermanent(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+  setPermanent(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<Int32>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
   setPermanent(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
   setPermanent(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
   setPermanent(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
@@ -125,7 +124,7 @@ Settings::Settings()
   setPermanent("listdelay", "300");
   setPermanent("mwheel", "4");
   setPermanent("basic_settings", false);
-  setPermanent("dialogpos", 0);
+  setPermanent("dialogpos", Int32(0));
 
   // Misc options
   setPermanent("autoslot", "false");
@@ -161,8 +160,8 @@ Settings::Settings()
   setPermanent("plr.debugcolors", "false");
   setPermanent("plr.console", "2600"); // 7800
   setPermanent("plr.timemachine", true);
-  setPermanent("plr.tm.size", 200);
-  setPermanent("plr.tm.uncompressed", 60);
+  setPermanent("plr.tm.size", Int32(200));
+  setPermanent("plr.tm.uncompressed", Int32(60));
   setPermanent("plr.tm.interval", "30f"); // = 0.5 seconds
   setPermanent("plr.tm.horizon", "10m"); // = ~10 minutes
   setPermanent("plr.eepromaccess", "false");
@@ -188,8 +187,8 @@ Settings::Settings()
   setPermanent("dev.tia.delayplswap", "true");
   setPermanent("dev.tia.delayblswap", "true");
   setPermanent("dev.timemachine", true);
-  setPermanent("dev.tm.size", 1000);
-  setPermanent("dev.tm.uncompressed", 600);
+  setPermanent("dev.tm.size", Int32(1000));
+  setPermanent("dev.tm.uncompressed", Int32(600));
   setPermanent("dev.tm.interval", "1f"); // = 1 frame
   setPermanent("dev.tm.horizon", "30s"); // = ~30 seconds
   // Thumb ARM emulation options
@@ -259,12 +258,12 @@ void Settings::validate()
   int size = getInt("dev.tm.size");
   if(size < 20 || size > 1000)
   {
-    setValue("dev.tm.size", 20);
+    setValue("dev.tm.size", Int32(20));
     size = 20;
   }
 
   i = getInt("dev.tm.uncompressed");
-  if(i < 0 || i > size) setValue("dev.tm.uncompressed", size);
+  if(i < 0 || i > size) setValue("dev.tm.uncompressed", static_cast<Int32>(size));
 
   /*i = getInt("dev.tm.interval");
   if(i < 0 || i > 5) setValue("dev.tm.interval", 0);
@@ -278,12 +277,12 @@ void Settings::validate()
   size = getInt("plr.tm.size");
   if(size < 20 || size > 1000)
   {
-    setValue("plr.tm.size", 20);
+    setValue("plr.tm.size", Int32(20));
     size = 20;
   }
 
   i = getInt("plr.tm.uncompressed");
-  if(i < 0 || i > size) setValue("plr.tm.uncompressed", size);
+  if(i < 0 || i > size) setValue("plr.tm.uncompressed", static_cast<Int32>(size));
 
   /*i = getInt("plr.tm.interval");
   if(i < 0 || i > 5) setValue("plr.tm.interval", 3);

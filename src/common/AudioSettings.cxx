@@ -54,7 +54,7 @@ void AudioSettings::normalize(Settings& settings)
 {
   int settingPreset = settings.getInt(SETTING_PRESET);
   Preset preset = normalizedPreset(settingPreset);
-  if (static_cast<int>(preset) != settingPreset) settings.setValue(SETTING_PRESET, static_cast<int>(DEFAULT_PRESET));
+  if (static_cast<int>(preset) != settingPreset) settings.setValue(SETTING_PRESET, static_cast<Int32>(DEFAULT_PRESET));
 
   switch (settings.getInt(SETTING_SAMPLE_RATE)) {
     case 44100:
@@ -90,7 +90,7 @@ void AudioSettings::normalize(Settings& settings)
   int settingResamplingQuality = settings.getInt(SETTING_RESAMPLING_QUALITY);
   ResamplingQuality resamplingQuality = normalizeResamplingQuality(settingResamplingQuality);
   if (static_cast<int>(resamplingQuality) != settingResamplingQuality)
-    settings.setValue(SETTING_RESAMPLING_QUALITY, static_cast<int>(DEFAULT_RESAMPLING_QUALITY));
+    settings.setValue(SETTING_RESAMPLING_QUALITY, static_cast<Int32>(DEFAULT_RESAMPLING_QUALITY));
 
   int settingVolume = settings.getInt(SETTING_VOLUME);
   if (settingVolume < 0 || settingVolume > 100) settings.setValue(SETTING_VOLUME, DEFAULT_VOLUME);
@@ -206,7 +206,7 @@ void AudioSettings::setPreset(AudioSettings::Preset preset)
       throw runtime_error("invalid preset");
   }
 
-  if (myIsPersistent) mySettings.setValue(SETTING_PRESET, static_cast<int>(myPreset));
+  if (myIsPersistent) mySettings.setValue(SETTING_PRESET, static_cast<Int32>(myPreset));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -250,7 +250,7 @@ void AudioSettings::setResamplingQuality(AudioSettings::ResamplingQuality resamp
 {
   if (!myIsPersistent) return;
 
-  mySettings.setValue(SETTING_RESAMPLING_QUALITY, static_cast<int>(resamplingQuality));
+  mySettings.setValue(SETTING_RESAMPLING_QUALITY, static_cast<Int32>(resamplingQuality));
   normalize(mySettings);
 }
 

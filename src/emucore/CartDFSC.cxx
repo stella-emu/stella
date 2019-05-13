@@ -25,7 +25,7 @@ CartridgeDFSC::CartridgeDFSC(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(131072u, size));
+  memcpy(myImage, image.get(), std::min(uInt32(131072u), size));
   createCodeAccessBase(131072);
 }
 

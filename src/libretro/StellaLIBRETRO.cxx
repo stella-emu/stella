@@ -68,29 +68,11 @@ bool StellaLIBRETRO::create(bool logging)
   myOSystem = make_unique<OSystemLIBRETRO>();
   myOSystem->create();
 
-  myOSystem->settings().setValue("format", console_format);
-
-  if(myOSystem->createConsole(rom) != EmptyString)
-    return false;
-
-
-  // auto-detect settings
-  console_timing = myOSystem->console().timing();
-  phosphor_default = myOSystem->frameBuffer().tiaSurface().phosphorEnabled();
-
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  // build play system
-  destroy();
-
-  myOSystem = make_unique<OSystemLIBRETRO>();
-  myOSystem->create();
-
   Settings& settings = myOSystem->settings();
 
   if(logging)
   {
-    settings.setValue("loglevel", 999);
+    settings.setValue("loglevel", Int32(999));
     settings.setValue("logtoconsole", true);
   }
 
@@ -100,10 +82,10 @@ bool StellaLIBRETRO::create(bool logging)
   settings.setValue("format", console_format);
   settings.setValue("palette", video_palette);
 
-  settings.setValue("tia.zoom", 1);
+  settings.setValue("tia.zoom", Int32(1));
   settings.setValue("tia.inter", false);
-  settings.setValue("tia.aspectn", 100);
-  settings.setValue("tia.aspectp", 100);
+  settings.setValue("tia.aspectn", Int32(100));
+  settings.setValue("tia.aspectp", Int32(100));
 
   //fastscbios
   // Fast loading of Supercharger BIOS
@@ -119,19 +101,22 @@ bool StellaLIBRETRO::create(bool logging)
   fs:2 hz:50 bs:314.4 -- not supported,      0 frame lag ideal
   fs:128 hz:50 bs:4.9 -- lowest supported, 0-1 frame lag measured
   */
-  settings.setValue(AudioSettings::SETTING_PRESET, static_cast<int>(AudioSettings::Preset::custom));
+  settings.setValue(AudioSettings::SETTING_PRESET, static_cast<Int32>(AudioSettings::Preset::custom));
   settings.setValue(AudioSettings::SETTING_SAMPLE_RATE, getAudioRate());
-  settings.setValue(AudioSettings::SETTING_FRAGMENT_SIZE, 128);
-  settings.setValue(AudioSettings::SETTING_BUFFER_SIZE, 8);
-  settings.setValue(AudioSettings::SETTING_HEADROOM, 0);
-  settings.setValue(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::ResamplingQuality::nearestNeightbour));
-  settings.setValue(AudioSettings::SETTING_VOLUME, 100);
+  settings.setValue(AudioSettings::SETTING_FRAGMENT_SIZE, Int32(128));
+  settings.setValue(AudioSettings::SETTING_BUFFER_SIZE, Int32(8));
+  settings.setValue(AudioSettings::SETTING_HEADROOM, Int32(0));
+  settings.setValue(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<Int32>(AudioSettings::ResamplingQuality::nearestNeightbour));
+  settings.setValue(AudioSettings::SETTING_VOLUME, Int32(100));
   settings.setValue(AudioSettings::SETTING_STEREO, audio_mode);
 
   if(myOSystem->createConsole(rom) != EmptyString)
     return false;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  console_timing = myOSystem->console().timing();
+  phosphor_default = myOSystem->frameBuffer().tiaSurface().phosphorEnabled();
 
   if(video_phosphor == "never") setVideoPhosphor(1, video_phosphor_blend);
 
@@ -391,7 +376,7 @@ void StellaLIBRETRO::setVideoPalette(uInt32 mode)
   {
     case 0: video_palette = "standard"; break;
     case 1: video_palette = "z26"; break;
-    case 2: video_palette = "custom"; break;
+    case 2: video_palette = "user"; break;
   }
 
   if (system_ready)
