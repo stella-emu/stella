@@ -120,7 +120,7 @@ GameInfoDialog::GameInfoDialog(
                                HBORDER + 20, ypos,
                                "Blend ", 0, kPPBlendChanged, 4 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
-  myPPBlend->setTickmarkInterval(2);
+  myPPBlend->setTickmarkIntervals(2);
   wid.push_back(myPPBlend);
 
   ypos += lineHeight + VGAP * 4;
@@ -273,7 +273,7 @@ GameInfoDialog::GameInfoDialog(
   myMouseRange = new SliderWidget(myTab, font, HBORDER, ypos,
                                   "Mouse axes range ", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
-  myMouseRange->setTickmarkInterval(4);
+  myMouseRange->setTickmarkIntervals(4);
   wid.push_back(myMouseRange);
 
   // Add message concerning usage

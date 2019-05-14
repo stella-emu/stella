@@ -68,7 +68,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   myVolumeSlider = new SliderWidget(this, font, xpos, ypos,
                                     "Volume", lwidth, 0, 4 * fontWidth, "%");
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
-  myVolumeSlider->setTickmarkInterval(4);
+  myVolumeSlider->setTickmarkIntervals(4);
   wid.push_back(myVolumeSlider);
   ypos += lineHeight + VGAP;
 
@@ -129,7 +129,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   myHeadroomSlider = new SliderWidget(this, font, xpos, ypos, swidth, lineHeight,
                                       "Headroom           ", 0, kHeadroomChanged, 10 * fontWidth);
   myHeadroomSlider->setMinValue(0); myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
-  myHeadroomSlider->setTickmarkInterval(5);
+  myHeadroomSlider->setTickmarkIntervals(5);
   wid.push_back(myHeadroomSlider);
   ypos += lineHeight + VGAP;
 
@@ -137,7 +137,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   myBufferSizeSlider = new SliderWidget(this, font, xpos, ypos, swidth, lineHeight,
                                         "Buffer size        ", 0, kBufferSizeChanged, 10 * fontWidth);
   myBufferSizeSlider->setMinValue(0); myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
-  myBufferSizeSlider->setTickmarkInterval(5);
+  myBufferSizeSlider->setTickmarkIntervals(5);
   wid.push_back(myBufferSizeSlider);
   ypos += lineHeight + VGAP;
 

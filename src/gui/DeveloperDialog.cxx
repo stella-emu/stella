@@ -299,7 +299,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
                                          myTVJitterWidget->getRight() + fontWidth * 3, ypos - 1,
                                          "Recovery ", 0, kTVJitterChanged);
   myTVJitterRecWidget->setMinValue(1); myTVJitterRecWidget->setMaxValue(20);
-  myTVJitterRecWidget->setTickmarkInterval(5);
+  myTVJitterRecWidget->setTickmarkIntervals(5);
   wid.push_back(myTVJitterRecWidget);
   myTVJitterRecLabelWidget = new StaticTextWidget(myTab, font,
                                                   myTVJitterRecWidget->getRight() + 4,
@@ -439,7 +439,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myStateSizeWidget->setMaxValue(1000);
 #endif
   myStateSizeWidget->setStepValue(20);
-  myStateSizeWidget->setTickmarkInterval(5);
+  myStateSizeWidget->setTickmarkIntervals(5);
   wid.push_back(myStateSizeWidget);
   ypos += lineHeight + VGAP;
 
@@ -452,7 +452,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   myUncompressedWidget->setMaxValue(1000);
 #endif
   myUncompressedWidget->setStepValue(20);
-  myUncompressedWidget->setTickmarkInterval(5);
+  myUncompressedWidget->setTickmarkIntervals(5);
   wid.push_back(myUncompressedWidget);
   ypos += lineHeight + VGAP;
 
@@ -534,7 +534,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerWidthSlider->setMaxValue(ds.w);
   myDebuggerWidthSlider->setStepValue(10);
   // one tickmark every ~100 pixel
-  myDebuggerWidthSlider->setTickmarkInterval((ds.w - DebuggerDialog::kSmallFontMinW + 50) / 100);
+  myDebuggerWidthSlider->setTickmarkIntervals((ds.w - DebuggerDialog::kSmallFontMinW + 50) / 100);
   wid.push_back(myDebuggerWidthSlider);
   ypos += lineHeight + VGAP;
 
@@ -544,7 +544,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   myDebuggerHeightSlider->setMaxValue(ds.h);
   myDebuggerHeightSlider->setStepValue(10);
   // one tickmark every ~100 pixel
-  myDebuggerHeightSlider->setTickmarkInterval((ds.h - DebuggerDialog::kSmallFontMinH + 50) / 100);
+  myDebuggerHeightSlider->setTickmarkIntervals((ds.h - DebuggerDialog::kSmallFontMinH + 50) / 100);
   wid.push_back(myDebuggerHeightSlider);
   ypos += lineHeight + VGAP * 4;
 
