@@ -143,7 +143,7 @@ GameInfoDialog::GameInfoDialog(
   xpos = HBORDER; ypos = VBORDER;
   lwidth = font.getStringWidth(GUI::RIGHT_DIFFICULTY + " ");
 
-  StaticTextWidget* s = new StaticTextWidget(myTab, font, xpos, ypos + 1, "TV type");
+  new StaticTextWidget(myTab, font, xpos, ypos + 1, "TV type");
   myTVTypeGroup = new RadioButtonGroup();
   RadioButtonWidget* r = new RadioButtonWidget(myTab, font, xpos + lwidth, ypos + 1,
                             "Color", myTVTypeGroup);
@@ -154,7 +154,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(r);
   ypos += lineHeight + VGAP * 2;
 
-  s = new StaticTextWidget(myTab, font, xpos, ypos+1, GUI::LEFT_DIFFICULTY);
+  new StaticTextWidget(myTab, font, xpos, ypos+1, GUI::LEFT_DIFFICULTY);
   myLeftDiffGroup = new RadioButtonGroup();
   r = new RadioButtonWidget(myTab, font, xpos + lwidth, ypos + 1,
                             "A (Expert)", myLeftDiffGroup);
@@ -165,7 +165,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(r);
   ypos += lineHeight + VGAP * 2;
 
-  s = new StaticTextWidget(myTab, font, xpos, ypos+1, GUI::RIGHT_DIFFICULTY);
+  new StaticTextWidget(myTab, font, xpos, ypos+1, GUI::RIGHT_DIFFICULTY);
   myRightDiffGroup = new RadioButtonGroup();
   r = new RadioButtonWidget(myTab, font, xpos + lwidth, ypos + 1,
                             "A (Expert)", myRightDiffGroup);
