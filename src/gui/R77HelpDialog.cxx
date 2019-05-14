@@ -25,14 +25,14 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Font& font)
-  : Dialog(osystem, parent, font, "RetroN 77 Help"),
+  : Dialog(osystem, parent, font, "RetroN 77 help"),
   myPage(1),
   myNumPages(4)
 {
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth(),
     fontHeight = font.getFontHeight(),
-    buttonWidth = font.getStringWidth("Defaults") + 20,
+    buttonWidth = font.getStringWidth("Previous") + 20,
     buttonHeight = font.getLineHeight() + 4;
   const int HBORDER = 10;
   int xpos, ypos;
@@ -112,7 +112,7 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND("The joystic", "ks work nor", "mal and all console");
       ADD_BIND("buttons as ", "labeled exc", "ept of the following:");
       ADD_BIND();
-      ADD_BIND("Joystick", "Button", "Command");
+      ADD_BIND("Joystick", "Console", "Command");
       ADD_LINE();
       ADD_BIND("\\c2Button 3", "4:3,16:9", "Open command dialog");
       ADD_BIND("\\c2Button 4", "\\c2-", "Open settings");
@@ -124,7 +124,7 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 
     case 2:
       title = "\\C\\c5Launcher commands";
-      ADD_BIND("Joystick", "Button", "Command");
+      ADD_BIND("Joystick", "Console", "Command");
       ADD_LINE();
       ADD_BIND("Up", "SAVE", "Previous game");
       ADD_BIND("Down", "RESET", "Next game");
