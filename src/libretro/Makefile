@@ -200,6 +200,7 @@ else ifeq ($(platform), vita)
    CXX = arm-vita-eabi-g++$(EXE_EXT)
    AR = arm-vita-eabi-ar$(EXE_EXT)
    CXXFLAGS += -DVITA
+   CXXFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    HAVE_EXCEPTIONS = 1
 
 # PS3
@@ -223,6 +224,21 @@ else ifneq (,$(filter $(platform), ps3 sncps3 psl1ght))
       CXX = $(PS3DEV)/ppu/bin/ppu-g++$(EXE_EXT)
       AR = $(PS3DEV)/ppu/bin/ppu-ar$(EXE_EXT)
    endif
+
+# CTR (3DS)
+else ifeq ($(platform), ctr)
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   CXX = $(DEVKITARM)/bin/arm-none-eabi-g++$(EXE_EXT)
+   AR = $(DEVKITARM)/bin/arm-none-eabi-ar$(EXE_EXT)
+   ENDIANNESS_DEFINES := -DLSB_FIRST
+   CXXFLAGS += -DARM11 -D_3DS
+   CXXFLAGS += -march=armv6k -mtune=mpcore -mfloat-abi=hard
+   CXXFLAGS += -mword-relocations
+   CXXFLAGS += -fomit-frame-pointer -fstrict-aliasing -ffast-math
+   CXXFLAGS += -fno-rtti
+   CXXFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
+   STATIC_LINKING = 1
+   LOAD_FROM_MEMORY = 0
 
 # Xbox 360
 else ifeq ($(platform), xenon)
