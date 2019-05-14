@@ -137,10 +137,11 @@ bool FrameBuffer::initialize()
 #endif
 
   // Determine possible TIA windowed zoom levels
+  double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
   uInt32 minZoom = 2 * hidpiScaleFactor();
   uInt32 maxZoom = maxWindowSizeForScreen(
       TIAConstants::viewableWidth, TIAConstants::viewableHeight,
-      myAbsDesktopSize.w, myAbsDesktopSize.h);
+      myAbsDesktopSize.w * overscan, myAbsDesktopSize.h * overscan);
   for(uInt32 zoom = minZoom; zoom <= maxZoom; ++zoom)
   {
     ostringstream desc;
@@ -874,6 +875,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   EventHandlerState state = myOSystem.eventHandler().state();
   bool tiaMode = (state != EventHandlerState::DEBUGGER &&
                   state != EventHandlerState::LAUNCHER);
+  double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
 
   // TIA mode allows zooming at integral factors in windowed modes,
   // and also non-integral factors in fullscreen mode
@@ -882,7 +884,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     // TIA windowed modes
     uInt32 minZoom = 2 * hidpiScaleFactor();
     uInt32 maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
-                     myAbsDesktopSize.w, myAbsDesktopSize.h);
+                     myAbsDesktopSize.w * overscan, myAbsDesktopSize.h * overscan);
 
   #if 0  // FIXME - does this apply any longer??
     // Aspect ratio
@@ -898,7 +900,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
       desc << "Zoom " << zoom << "x";
 
       VideoMode mode(baseWidth*zoom, baseHeight*zoom, baseWidth*zoom, baseHeight*zoom,
-                     VideoMode::Stretch::Fill, desc.str(), zoom);
+                     VideoMode::Stretch::Fill, overscan, desc.str(), zoom);
       myWindowedModeList.add(mode);
     }
 
@@ -906,19 +908,19 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
     {
       maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
-                    myFullscreenDisplays[i].w, myFullscreenDisplays[i].h);
+                    myFullscreenDisplays[i].w * overscan, myFullscreenDisplays[i].h * overscan);
 
       // Add both normal aspect and filled modes
       // It's easier to define them both now, and simply switch between
       // them when necessary
       VideoMode mode1(baseWidth*maxZoom, baseHeight*maxZoom,
                       myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
-                      VideoMode::Stretch::Preserve,
+                      VideoMode::Stretch::Preserve, overscan,
                       "Preserve aspect, no stretch", maxZoom, i);
       myFullscreenModeLists[i].add(mode1);
       VideoMode mode2(baseWidth*maxZoom, baseHeight*maxZoom,
                       myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
-                      VideoMode::Stretch::Fill,
+                      VideoMode::Stretch::Fill, overscan,
                       "Ignore aspect, full stretch", maxZoom, i);
       myFullscreenModeLists[i].add(mode2);
     }
@@ -932,8 +934,9 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
     {
       myFullscreenModeLists[i].add(
-          VideoMode(baseWidth, baseHeight, myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
-                    VideoMode::Stretch::None, "", 1, i)
+          VideoMode(baseWidth, baseHeight,
+                    myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
+                    VideoMode::Stretch::None, 1.0, "", 1, i)
       );
     }
   }
@@ -988,7 +991,7 @@ FrameBuffer::VideoMode::VideoMode()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                                  Stretch smode, const string& desc,
+                                  Stretch smode, double overscan, const string& desc,
                                   uInt32 zoomLevel, Int32 fsindex)
   : stretch(smode),
     description(desc),
@@ -1011,6 +1014,7 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
 
   if(fsIndex != -1)
   {
+    //double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
     switch(stretch)
     {
       case Stretch::Preserve:
@@ -1025,19 +1029,21 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
         else
           stretchFactor = float(screen.h) / ih;
 
-        iw = uInt32(stretchFactor * iw);
-        ih = uInt32(stretchFactor * ih);
+        iw = uInt32(stretchFactor * iw) * overscan;
+        ih = uInt32(stretchFactor * ih) * overscan;
         break;
       }
 
       case Stretch::Fill:
         // Scale to all available space
-        iw = screen.w;
-        ih = screen.h;
+        iw = screen.w * overscan;
+        ih = screen.h * overscan;
         break;
 
       case Stretch::None:
-        // Don't do any scaling at all
+        // Don't do any scaling at all, but obey overscan
+        iw = std::min(iw, screen.w) * overscan;
+        ih = std::min(ih, screen.h) * overscan;
         break;
     }
   }

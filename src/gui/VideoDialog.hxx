@@ -45,6 +45,8 @@ class VideoDialog : public Dialog
 
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
+    void handleFullScreenChange();
+    void handleOverscanChange();
     void handlePhosphorChange();
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -63,6 +65,7 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myFullscreen;
     //PopUpWidget*      myFullScreenMode;
     CheckboxWidget*   myUseStretch;
+    SliderWidget*     myUseOverscan;
     CheckboxWidget*   myUseVSync;
     CheckboxWidget*   myUIMessages;
     CheckboxWidget*   myCenter;
@@ -99,6 +102,8 @@ class VideoDialog : public Dialog
 
     enum {
       kSpeedupChanged     = 'VDSp',
+      kFullScreenChanged  = 'VDFs',
+      kOverscanChanged    = 'VDOv',
 
       kTVModeChanged      = 'VDtv',
       kCloneCompositeCmd  = 'CLcp',

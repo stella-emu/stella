@@ -37,7 +37,6 @@ Settings::Settings()
   setPermanent("video", "");
   setPermanent("speed", "1.0");
   setPermanent("vsync", "true");
-  setPermanent("fullscreen", "false");
   setPermanent("center", "false");
   setPermanent("palette", "standard");
   setPermanent("uimessages", "true");
@@ -47,7 +46,9 @@ Settings::Settings()
   setPermanent("tia.inter", "false");
   setPermanent("tia.aspectn", "100");
   setPermanent("tia.aspectp", "100");
+  setPermanent("fullscreen", "false");
   setPermanent("tia.fs_stretch", "false");
+  setPermanent("tia.fs_overscan", "0");
   setPermanent("tia.dbgcolors", "roygpb");
 
   // TV filtering options
@@ -393,6 +394,7 @@ void Settings::usage() const
     << "  -tia.aspectp   <number>       Scale TIA width by the given percentage in PAL\n"
     << "                                 mode\n"
     << "  -tia.fs_stretch <1|0>         Stretch TIA image to fill fullscreen mode\n"
+    << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fill fullscreen mode\n"
     << "  -tia.dbgcolors <string>       Debug colors to use for each object (see manual\n"
     << "                                 for description)\n"
     << endl
