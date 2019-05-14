@@ -257,9 +257,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 #define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
   myTV ## obj =                                                          \
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,      \
-                     desc, lwidth, cmd, fontWidth*4, "%");                 \
+                     desc, lwidth, cmd, fontWidth*4, "%");               \
   myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
-  myTV ## obj->setTickmarkInterval(2);                                   \
+  myTV ## obj->setTickmarkIntervals(2);                                  \
   wid.push_back(myTV ## obj);                                            \
   ypos += lineHeight + VGAP;
 
