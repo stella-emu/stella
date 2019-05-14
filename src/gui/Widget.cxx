@@ -764,7 +764,7 @@ void SliderWidget::setValueUnit(const string& valueUnit)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SliderWidget::setTickmarkInterval(int numIntervals)
+void SliderWidget::setTickmarkIntervals(int numIntervals)
 {
   _numIntervals = numIntervals;
   setDirty();

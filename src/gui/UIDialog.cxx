@@ -111,7 +111,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myListDelayPopup->setMinValue(0);
   myListDelayPopup->setMaxValue(1000);
   myListDelayPopup->setStepValue(50);
-  myListDelayPopup->setTickmarkInterval(5);
+  myListDelayPopup->setTickmarkIntervals(5);
   wid.push_back(myListDelayPopup);
   ypos += lineHeight + V_GAP;
 
@@ -121,7 +121,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                                        font.getStringWidth("10 lines"));
   myWheelLinesPopup->setMinValue(1);
   myWheelLinesPopup->setMaxValue(10);
-  myWheelLinesPopup->setTickmarkInterval(3);
+  myWheelLinesPopup->setTickmarkIntervals(3);
   wid.push_back(myWheelLinesPopup);
 
   // Add message concerning usage
@@ -160,7 +160,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
   // one tickmark every ~100 pixel
-  myLauncherWidthSlider->setTickmarkInterval((ds.w - FBMinimum::Width + 50) / 100);
+  myLauncherWidthSlider->setTickmarkIntervals((ds.w - FBMinimum::Width + 50) / 100);
   wid.push_back(myLauncherWidthSlider);
   ypos += lineHeight + V_GAP;
 
@@ -170,7 +170,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
   // one tickmark every ~100 pixel
-  myLauncherHeightSlider->setTickmarkInterval((ds.h - FBMinimum::Height + 50) / 100);
+  myLauncherHeightSlider->setTickmarkIntervals((ds.h - FBMinimum::Height + 50) / 100);
   wid.push_back(myLauncherHeightSlider);
   ypos += lineHeight + V_GAP;
 

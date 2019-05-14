@@ -147,7 +147,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                      "NTSC aspect ", lwidth, 0,
                      fontWidth * 4, "%");
   myNAspectRatio->setMinValue(80); myNAspectRatio->setMaxValue(120);
-  myNAspectRatio->setTickmarkInterval(2);
+  myNAspectRatio->setTickmarkIntervals(2);
   wid.push_back(myNAspectRatio);
   ypos += lineHeight + VGAP;
 
@@ -157,7 +157,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                      "PAL aspect ", lwidth, 0,
                      fontWidth * 4, "%");
   myPAspectRatio->setMinValue(80); myPAspectRatio->setMaxValue(120);
-  myPAspectRatio->setTickmarkInterval(2);
+  myPAspectRatio->setTickmarkIntervals(2);
   wid.push_back(myPAspectRatio);
   ypos += lineHeight + VGAP;
 
@@ -167,7 +167,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                      "Emul. speed ", lwidth, kSpeedupChanged, fontWidth * 5, "%");
   mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
   mySpeed->setStepValue(SPEED_STEP);
-  mySpeed->setTickmarkInterval(2);
+  mySpeed->setTickmarkIntervals(2);
   wid.push_back(mySpeed);
   ypos += lineHeight + VGAP;
 
@@ -199,7 +199,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   myUseOverscan = new SliderWidget(myTab, font, xpos + INDENT, ypos - 1, swidth, lineHeight,
     "Overscan", font.getStringWidth("Overscan "), kOverscanChanged, fontWidth * 3, "%");
   myUseOverscan->setMinValue(0); myUseOverscan->setMaxValue(10);
-  myUseOverscan->setTickmarkInterval(2);
+  myUseOverscan->setTickmarkIntervals(2);
   wid.push_back(myUseOverscan);
   ypos += (lineHeight + VGAP) * 2;
 

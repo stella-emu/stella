@@ -149,7 +149,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   myTVScanIntense = new SliderWidget(this, font, xpos + INDENT, ypos-1, swidth, lineHeight,
     "Intensity ", lwidth, kScanlinesChanged, fontWidth * 2);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
-  myTVScanIntense->setTickmarkInterval(2);
+  myTVScanIntense->setTickmarkIntervals(2);
   wid.push_back(myTVScanIntense);
   ypos += lineHeight + VGAP;
 
@@ -160,7 +160,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   myTVPhosLevel = new SliderWidget(this, font, xpos + INDENT, ypos-1, swidth, lineHeight,
     "Blend     ", lwidth, kPhosphorChanged, fontWidth * 2);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
-  myTVPhosLevel->setTickmarkInterval(2);
+  myTVPhosLevel->setTickmarkIntervals(2);
   wid.push_back(myTVPhosLevel);
   ypos += lineHeight + VGAP;
 }

@@ -334,7 +334,7 @@ class SliderWidget : public ButtonWidget
     const string& getValueLabel() const { return _valueLabel; }
     void setValueUnit(const string& valueUnit);
 
-    void setTickmarkInterval(int numIntervals);
+    void setTickmarkIntervals(int numIntervals);
 
   protected:
     void handleMouseMoved(int x, int y) override;
