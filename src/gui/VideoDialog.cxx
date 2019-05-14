@@ -180,7 +180,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos = VBORDER;
 
   // Fullscreen
-  myFullscreen = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen");
+  myFullscreen = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen", kFullScreenChanged);
   wid.push_back(myFullscreen);
   ypos += lineHeight + VGAP;
 
@@ -191,8 +191,16 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;*/
 
   // FS stretch
-  myUseStretch = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen stretch");
+  myUseStretch = new CheckboxWidget(myTab, font, xpos + INDENT, ypos + 1, "Stretch");
   wid.push_back(myUseStretch);
+  ypos += lineHeight + VGAP;
+
+  // FS overscan
+  myUseOverscan = new SliderWidget(myTab, font, xpos + INDENT, ypos - 1, swidth, lineHeight,
+    "Overscan", font.getStringWidth("Overscan "), kOverscanChanged, fontWidth * 3, "%");
+  myUseOverscan->setMinValue(0); myUseOverscan->setMaxValue(10);
+  myUseOverscan->setTickmarkInterval(2);
+  wid.push_back(myUseOverscan);
   ypos += (lineHeight + VGAP) * 2;
 
   // Skip progress load bars for SuperCharger ROMs
@@ -359,9 +367,10 @@ void VideoDialog::loadConfig()
   myFullscreen->setState(instance().settings().getBool("fullscreen"));
   /*string mode = instance().settings().getString("fullscreenmode");
   myFullScreenMode->setSelected(mode);*/
-
   // Fullscreen stretch setting
   myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
+  // Fullscreen overscan setting
+  myUseOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
 
   // Use sync to vertical blank
   myUseVSync->setState(instance().settings().getBool("vsync"));
@@ -433,6 +442,8 @@ void VideoDialog::saveConfig()
                                  myFullScreenMode->getSelectedTag().toString());*/
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
+  // Fullscreen overscan
+  instance().settings().setValue("tia.fs_overscan", myUseOverscan->getValueLabel());
 
   // Use sync to vertical blank
   instance().settings().setValue("vsync", myUseVSync->getState());
@@ -571,6 +582,26 @@ void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handleFullScreenChange()
+{
+  bool enable = myFullscreen->getState();
+  myUseStretch->setEnabled(enable);
+  myUseOverscan->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handleOverscanChange()
+{
+  if (myUseOverscan->getValue() == 0)
+  {
+    myUseOverscan->setValueLabel("Off");
+    myUseOverscan->setValueUnit("");
+  }
+  else
+    myUseOverscan->setValueUnit("%");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::handlePhosphorChange()
 {
   myTVPhosLevel->setEnabled(myTVPhosphor->getState());
@@ -593,6 +624,14 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSpeedupChanged:
       mySpeed->setValueLabel(formatSpeed(mySpeed->getValue()));
+      break;
+
+    case kFullScreenChanged:
+      handleFullScreenChange();
+      break;
+
+    case kOverscanChanged:
+      handleOverscanChange();
       break;
 
     case kTVModeChanged:

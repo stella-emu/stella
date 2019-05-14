@@ -67,7 +67,7 @@ class FrameBuffer
       Int32 fsIndex;
 
       VideoMode();
-      VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode,
+      VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode, double overscan = 1.0,
                 const string& desc = "", uInt32 zoomLevel = 1, Int32 fsindex = -1);
 
       friend ostream& operator<<(ostream& os, const VideoMode& vm)
