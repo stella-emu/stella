@@ -885,17 +885,18 @@ Widget* Dialog::TabFocus::getNewFocus()
 bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
 {
   const Common::Rect& r = instance().frameBuffer().imageRect();
+  const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
 
   if(r.width() <= FBMinimum::Width || r.height() <= FBMinimum::Height)
   {
-    w = r.width();
-    h = r.height();
+    w = r.width() / scale;
+    h = r.height() / scale;
     return false;
   }
   else
   {
-    w = uInt32(0.95 * r.width());
-    h = uInt32(0.95 * r.height());
+    w = uInt32(0.95 * r.width() / scale);
+    h = uInt32(0.95 * r.height() / scale);
     return true;
   }
 }

@@ -118,10 +118,16 @@ void InputTextDialog::show()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputTextDialog::show(uInt32 x, uInt32 y)
+void InputTextDialog::show(uInt32 x, uInt32 y, const Common::Rect& bossRect)
 {
-  myXOrig = x;
-  myYOrig = y;
+  uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
+  myXOrig = bossRect.x() + x * scale;
+  myYOrig = bossRect.y() + y * scale;
+
+  // Only show dialog if we're inside the visible area
+  if(!bossRect.contains(myXOrig, myYOrig))
+    return;
+
   myEnableCenter = false;
   open();
 }
@@ -131,17 +137,14 @@ void InputTextDialog::center()
 {
   if(!myEnableCenter)
   {
-    // Make sure the menu is exactly where it should be, in case the image
-    // offset has changed
-    const Common::Rect& image = instance().frameBuffer().imageRect();
-    uInt32 x = image.x() + myXOrig;
-    uInt32 y = image.y() + myYOrig;
-    uInt32 tx = image.x() + image.width();
-    uInt32 ty = image.y() + image.height();
-    if(x + _w > tx) x -= (x + _w - tx);
-    if(y + _h > ty) y -= (y + _h - ty);
+    // First set position according to original coordinates
+    surface().setDstPos(myXOrig, myYOrig);
 
-    surface().setDstPos(x, y);
+    // Now make sure that the entire menu can fit inside the image bounds
+    // If not, we reset its position
+    if(!instance().frameBuffer().imageRect().contains(
+        myXOrig, myXOrig, surface().dstRect()))
+      surface().setDstPos(myXOrig, myYOrig);
   }
   else
     Dialog::center();

@@ -42,8 +42,7 @@ class RomAuditDialog : public Dialog
   private:
     void loadConfig() override;
     void auditRoms();
-    void openBrowser(const string& title, const string& startpath,
-                     FilesystemNode::ListMode mode, int cmd);
+    void createBrowser(const string& title);
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -55,6 +54,7 @@ class RomAuditDialog : public Dialog
 
     // Select a new ROM audit path
     unique_ptr<BrowserDialog> myBrowser;
+    const GUI::Font& myFont;
 
     // ROM audit path
     EditTextWidget* myRomPath;
