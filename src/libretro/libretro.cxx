@@ -447,12 +447,12 @@ void retro_set_environment(retro_environment_t cb)
   struct retro_variable variables[] = {
     // Adding more variables and rearranging them is safe.
     { "stella_console", "Console display; auto|ntsc|pal|secam|ntsc50|pal60|secam60" },
+    { "stella_palette", "Palette colors; standard|z26" },
     { "stella_filter", "TV effects; disabled|composite|s-video|rgb|badly adjusted" },
-    { "stella_ntsc_aspect", "NTSC aspect %; par|86|87|88|89|90|91|92|93|94|95|96|97|98|99|100|101|102|103|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85" },
-    { "stella_pal_aspect", "PAL aspect %; par|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85|86|87|88|89|90|91|92|93|94|95|96|97|98|99|100|101|102|103" },
+    { "stella_ntsc_aspect", "NTSC aspect %; par|100|101|102|103|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85|86|87|88|89|90|91|92|93|94|95|96|97|98|99" },
+    { "stella_pal_aspect", "PAL aspect %; par|100|101|102|103|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85|86|87|88|89|90|91|92|93|94|95|96|97|98|99" },
     { "stella_crop_hoverscan", "Crop horizontal overscan; disabled|enabled" },
     { "stella_stereo", "Stereo sound; auto|off|on" },
-    { "stella_palette", "Palette colors; standard|z26" },
     { "stella_phosphor", "Phosphor mode; auto|off|on" },
     { "stella_phosphor_blend", "Phosphor blend %; 60|65|70|75|80|85|90|95|100|0|5|10|15|20|25|30|35|40|45|50|55" },
     { "stella_paddle_joypad_sensitivity", "Paddle joypad sensitivity; 3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|1|2" },
