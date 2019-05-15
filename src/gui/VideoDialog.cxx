@@ -196,11 +196,11 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;
 
   // FS overscan
-  myUseOverscan = new SliderWidget(myTab, font, xpos + INDENT, ypos - 1, swidth, lineHeight,
+  myTVOverscan = new SliderWidget(myTab, font, xpos + INDENT, ypos - 1, swidth, lineHeight,
     "Overscan", font.getStringWidth("Overscan "), kOverscanChanged, fontWidth * 3, "%");
-  myUseOverscan->setMinValue(0); myUseOverscan->setMaxValue(10);
-  myUseOverscan->setTickmarkIntervals(2);
-  wid.push_back(myUseOverscan);
+  myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
+  myTVOverscan->setTickmarkIntervals(2);
+  wid.push_back(myTVOverscan);
   ypos += (lineHeight + VGAP) * 2;
 
   // Skip progress load bars for SuperCharger ROMs
@@ -370,7 +370,8 @@ void VideoDialog::loadConfig()
   // Fullscreen stretch setting
   myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
   // Fullscreen overscan setting
-  myUseOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
+  myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
+  handleFullScreenChange();
 
   // Use sync to vertical blank
   myUseVSync->setState(instance().settings().getBool("vsync"));
@@ -443,7 +444,7 @@ void VideoDialog::saveConfig()
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
   // Fullscreen overscan
-  instance().settings().setValue("tia.fs_overscan", myUseOverscan->getValueLabel());
+  instance().settings().setValue("tia.fs_overscan", myTVOverscan->getValueLabel());
 
   // Use sync to vertical blank
   instance().settings().setValue("vsync", myUseVSync->getState());
@@ -586,19 +587,19 @@ void VideoDialog::handleFullScreenChange()
 {
   bool enable = myFullscreen->getState();
   myUseStretch->setEnabled(enable);
-  myUseOverscan->setEnabled(enable);
+  myTVOverscan->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::handleOverscanChange()
 {
-  if (myUseOverscan->getValue() == 0)
+  if (myTVOverscan->getValue() == 0)
   {
-    myUseOverscan->setValueLabel("Off");
-    myUseOverscan->setValueUnit("");
+    myTVOverscan->setValueLabel("Off");
+    myTVOverscan->setValueUnit("");
   }
   else
-    myUseOverscan->setValueUnit("%");
+    myTVOverscan->setValueUnit("%");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

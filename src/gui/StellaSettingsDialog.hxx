@@ -54,6 +54,7 @@ class StellaSettingsDialog : public Dialog
     void addGameOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleOverscanChange();
 
     // switch to advanced settings after user confirmation
     void switchSettingsMode();
@@ -81,6 +82,9 @@ class StellaSettingsDialog : public Dialog
 
     // TV phosphor effect
     SliderWidget*     myTVPhosLevel;
+
+    // TV Overscan
+    SliderWidget*     myTVOverscan;
 
     // Controller properties
     StaticTextWidget* myGameSettings;
@@ -110,7 +114,8 @@ class StellaSettingsDialog : public Dialog
       kConfirmSwitchCmd = 'SScf',
       kHelp             = 'SShl',
       kScanlinesChanged = 'SSsc',
-      kPhosphorChanged  = 'SSph'
+      kPhosphorChanged  = 'SSph',
+      kOverscanChanged  = 'SSov'
     };
 
     // Game properties for currently loaded ROM

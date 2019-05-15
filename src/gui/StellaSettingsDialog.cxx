@@ -47,7 +47,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   VariantList items;
 
   // Set real dimensions
-  setSize(33 * fontWidth + HBORDER * 2 + 3, 15 * (lineHeight + VGAP) + VGAP * 9 + 6 + _th, max_w, max_h);
+  setSize(35 * fontWidth + HBORDER * 2 + 3, 14 * (lineHeight + VGAP) + VGAP * 9 + 10 + _th, max_w, max_h);
 
   xpos = HBORDER;
   ypos = VBORDER + _th;
@@ -96,7 +96,7 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos, 
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
-  myThemePopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items, "UI theme         ");
+  myThemePopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items, "UI theme           ");
   wid.push_back(myThemePopup);
   ypos += lineHeight + VGAP;
 
@@ -108,7 +108,7 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos, 
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
   myPositionPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-    items, "Dialogs position ");
+    items, "Dialogs position   ");
   wid.push_back(myPositionPopup);
   ypos += lineHeight + VGAP;
 }
@@ -123,7 +123,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   VariantList items;
 
   // TV effects options
-  int swidth = font.getMaxCharWidth() * 8 - 4;
+  int swidth = font.getMaxCharWidth() * 11;
 
   // TV Mode
   items.clear();
@@ -132,36 +132,36 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
   VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
-  int lwidth = font.getStringWidth("TV mode    ");
-  int pwidth = font.getStringWidth("Bad adjust");
+  int pwidth = font.getStringWidth("Right bottom");
+  int lwidth = font.getStringWidth("Scanline intensity ");
 
   myTVMode = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-    items, "TV mode     ");
+    items, "TV mode            ");
   wid.push_back(myTVMode);
-  ypos += lineHeight + VGAP * 2;
-
-  lwidth = font.getStringWidth("Intensity ");
-  swidth = font.getMaxCharWidth() * 10;
+  ypos += lineHeight + VGAP;
 
   // Scanline intensity
-  myTVScanlines = new StaticTextWidget(this, font, xpos, ypos + 1, "Scanlines:");
-  ypos += lineHeight;
-  myTVScanIntense = new SliderWidget(this, font, xpos + INDENT, ypos-1, swidth, lineHeight,
-    "Intensity ", lwidth, kScanlinesChanged, fontWidth * 2);
+  myTVScanIntense = new SliderWidget(this, font, xpos, ypos-1, swidth, lineHeight,
+    "Scanline intensity", lwidth, kScanlinesChanged, fontWidth * 3);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
   myTVScanIntense->setTickmarkIntervals(2);
   wid.push_back(myTVScanIntense);
   ypos += lineHeight + VGAP;
 
-  // TV Phosphor effect
-  new StaticTextWidget(this, font, xpos, ypos + 1, "Phosphor effect:");
-  ypos += lineHeight;
   // TV Phosphor blend level
-  myTVPhosLevel = new SliderWidget(this, font, xpos + INDENT, ypos-1, swidth, lineHeight,
-    "Blend     ", lwidth, kPhosphorChanged, fontWidth * 2);
+  myTVPhosLevel = new SliderWidget(this, font, xpos, ypos-1, swidth, lineHeight,
+    "Phosphor blend  ", lwidth, kPhosphorChanged, fontWidth * 3);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
   myTVPhosLevel->setTickmarkIntervals(2);
   wid.push_back(myTVPhosLevel);
+  ypos += lineHeight + VGAP;
+
+  // FS overscan
+  myTVOverscan = new SliderWidget(this, font, xpos, ypos - 1, swidth, lineHeight,
+    "Overscan        ", lwidth, kOverscanChanged, fontWidth * 3);
+  myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
+  myTVOverscan->setTickmarkIntervals(2);
+  wid.push_back(myTVOverscan);
   ypos += lineHeight + VGAP;
 }
 
@@ -227,6 +227,11 @@ void StellaSettingsDialog::loadConfig()
   // TV phosphor blend
   myTVPhosLevel->setValue(valueToLevel(settings.getInt("tv.phosblend")));
 
+  // TV overscan
+  myTVOverscan->setValue(settings.getInt("tia.fs_overscan"));
+
+  handleOverscanChange();
+
   // Controllers
   Properties props;
 
@@ -270,6 +275,9 @@ void StellaSettingsDialog::saveConfig()
   instance().settings().setValue("tv.scanlines",
     levelToValue(myTVScanIntense->getValue()));
 
+  // TV overscan
+  instance().settings().setValue("tia.fs_overscan", myTVOverscan->getValueLabel());
+
   // Controller properties
   myGameProperties.set(PropType::Controller_Left, myLeftPort->getSelectedTag().toString());
   myGameProperties.set(PropType::Controller_Right, myRightPort->getSelectedTag().toString());
@@ -302,6 +310,8 @@ void StellaSettingsDialog::setDefaults()
   myTVScanIntense->setValue(3); // 18
   // TV phosphor blend
   myTVPhosLevel->setValue(6); // = 45
+  // TV overscan
+  myTVOverscan->setValue(0);
 
   // Load the default game properties
   Properties defaultProperties;
@@ -358,11 +368,28 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
         myTVPhosLevel->setValueLabel("Off");
       break;
 
+    case kOverscanChanged:
+      handleOverscanChange();
+      break;
+
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StellaSettingsDialog::handleOverscanChange()
+{
+  if (myTVOverscan->getValue() == 0)
+  {
+    myTVOverscan->setValueLabel("Off");
+    myTVOverscan->setValueUnit("");
+  }
+  else
+    myTVOverscan->setValueUnit("%");
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::switchSettingsMode()
