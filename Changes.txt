@@ -48,6 +48,10 @@
 
   * Added automatic controller detection. (TODO: Stella.pro cleanup)
 
+  * Added 'HiDPI' mode, which scales the UI by 2x when enabled.  This is
+    meant for 4k and above monitors, but can actually be used at any
+    lower resolution that is large enough to display the scaled UI.
+
   * Removed 'tia.fsfill' option, replacing it with 'tia.fs_stretch'.  This
     new option allows to preserve TIA image aspect ratio in fullscreen
     mode, or stretch to fill the entire screen.

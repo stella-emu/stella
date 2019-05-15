@@ -39,7 +39,7 @@ class InputTextDialog : public Dialog, public CommandSender
     void show();
 
     /** Show input dialog onscreen at the specified coordinates */
-    void show(uInt32 x, uInt32 y);
+    void show(uInt32 x, uInt32 y, const Common::Rect& bossRect);
 
     const string& getResult(int idx = 0);
 

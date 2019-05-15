@@ -96,7 +96,9 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
   new StaticTextWidget(this, font, xpos, ypos+1, "Startup mode");
   items.clear();
   VarList::push_back(items, "Console", "false");
+#ifdef DEBUGGER_SUPPORT
   VarList::push_back(items, "Debugger", "true");
+#endif
   myDebug = new PopUpWidget(this, font, xpos+lwidth, ypos,
                             pwidth, lineHeight, items, "");
   wid.push_back(myDebug);

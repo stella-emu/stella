@@ -23,6 +23,7 @@
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "Font.hxx"
+#include "FBSurface.hxx"
 #include "Widget.hxx"
 #include "RamWidget.hxx"
 
@@ -330,7 +331,7 @@ void RamWidget::showInputBox(int cmd)
   uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
   uInt32 y = getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
 
-  myInputBox->show(x, y);
+  myInputBox->show(x, y, dialog().surface().dstRect());
   myInputBox->setText("");
   myInputBox->setMessage("");
   myInputBox->setFocus(0);
