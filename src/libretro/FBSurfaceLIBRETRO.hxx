@@ -71,8 +71,6 @@ class FBSurfaceLIBRETRO : public FBSurface
     FBSurfaceLIBRETRO& operator=(FBSurfaceLIBRETRO&&) = delete;
 
   private:
-    FrameBufferLIBRETRO& myFB;
-
     Common::Rect mySrcGUIR, myDstGUIR;
 
   private:

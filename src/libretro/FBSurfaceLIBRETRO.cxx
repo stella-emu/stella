@@ -18,12 +18,11 @@
 #include "FBSurfaceLIBRETRO.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceLIBRETRO::FBSurfaceLIBRETRO(FrameBufferLIBRETRO& buffer,
+FBSurfaceLIBRETRO::FBSurfaceLIBRETRO(FrameBufferLIBRETRO&,
                                      uInt32 width, uInt32 height, const uInt32* data)
-  : myFB(buffer)
 {
   createSurface(width, height, data);
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceLIBRETRO::createSurface(uInt32 width, uInt32 height,
