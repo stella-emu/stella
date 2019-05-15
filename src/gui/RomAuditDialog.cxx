@@ -36,6 +36,7 @@
 RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
                                const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Audit ROMs"),
+    myFont(font),
     myMaxWidth(max_w),
     myMaxHeight(max_h)
 {
@@ -87,9 +88,6 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
   // Add OK and Cancel buttons
   addOKCancelBGroup(wid, font, "Audit", "Close");
   addBGroupToFocusList(wid);
-
-  // Create file browser dialog
-  myBrowser = make_unique<BrowserDialog>(this, font, myMaxWidth, myMaxHeight, "Select ROM directory to audit");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -187,9 +185,8 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
         msg.push_back("If you're sure you want to proceed with the");
         msg.push_back("audit, click 'OK', otherwise click 'Cancel'.");
         myConfirmMsg = make_unique<GUI::MessageBox>
-                          (this, instance().frameBuffer().font(), msg,
-                          myMaxWidth, myMaxHeight, kConfirmAuditCmd,
-                           "OK", "Cancel", "ROM Audit", false);
+          (this, myFont, msg, myMaxWidth, myMaxHeight, kConfirmAuditCmd,
+          "OK", "Cancel", "ROM Audit", false);
       }
       myConfirmMsg->show();
       break;
@@ -200,6 +197,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseAuditDirCmd:
+      createBrowser("Select ROM directory to audit");
       myBrowser->show(myRomPath->getText(),
                       BrowserDialog::Directories, kAuditDirChosenCmd);
       break;
@@ -217,4 +215,18 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomAuditDialog::createBrowser(const string& title)
+{
+  uInt32 w = 0, h = 0;
+  getDynamicBounds(w, h);
+
+  // Create file browser dialog
+  if(!myBrowser || uInt32(myBrowser->getWidth()) != w ||
+     uInt32(myBrowser->getHeight()) != h)
+    myBrowser = make_unique<BrowserDialog>(this, myFont, w, h, title);
+  else
+    myBrowser->setTitle(title);
 }
