@@ -10,11 +10,10 @@ BACKSLASH := \$(BACKSLASH)
 filter_out1 = $(filter-out $(firstword $1),$1)
 filter_out2 = $(call filter_out1,$(call filter_out1,$1))
 
-CXXFLAGS += -std=c++14 -Wall
-
 ifeq (,$(findstring msvc,$(platform)))
    CXXFLAGS += -Wextra -Wno-unused-parameter -Wno-multichar -Wunused -fno-rtti \
                -Woverloaded-virtual -Wnon-virtual-dtor
+               -std=c++14 -Wall
 endif
 
 ifeq ($(platform),)
