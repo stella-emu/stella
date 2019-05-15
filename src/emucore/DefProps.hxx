@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3439
+#define DEF_PROPS_SIZE 3440
 
 static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1300,7 +1300,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "5e201d6bfc520424a28f129ee5e56835", "Universal Gamex Corporation, Miguel Castillo, H.K. Poon", "GX-001", "X-Man (1983) (Universal) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5e2495d43b981010304af55efed1e798", "Jone Yuan Telephonic Enterprise Co", "", "Math Gran Prix (Jone Yuan)", "2600 Screen Search Console", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5e2928f089490017e88e9f9e5a881a25", "", "", "Star Fire - Faster Skipping 1 (24-10-2002) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "5e43c0391f7412ae64fae6f3742d6ee9", "Thomas Jentsch", "", "Thrust (v1.27)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "5e43c0391f7412ae64fae6f3742d6ee9", "Thomas Jentzsch", "", "Thrust+ (v1.27)", "", "New Release, supports BoosterGrip", "", "", "", "", "", "", "", "BOOSTERGRIP", "DRIVING", "", "", "", "", "", "" },
   { "5e99aa93d0acc741dcda8752c4e813ce", "", "", "2600 Digital Clock (V b2) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5ec73ac7d2ac95ac9530c6d33e713d14", "Arcadia Corporation, Scott Nelson", "13", "Sweat! - The Decathlon Game (2 of 3) (1983) (Arcadia) (Prototype)", "Uses the Paddle Controllers (left only)", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5eeb81292992e057b290a5cd196f155d", "Wizard Video Games - VSS, Ed Salvo", "008", "Texas Chainsaw Massacre, The (1983) (Wizard Video)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2029,6 +2029,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "94102febc53b4a78342d11b645342ed4", "", "", "Joustpong (14-07-2002) (Kirk Israel) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9433770890f087bfcf3e50122694d8c0", "Omegamatrix", "", "Star Wars Arcade (Amiga Mouse) (Y Inverted) v4 (Omegamatrix)", "Uses Amiga Mouse Controller", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9436b7ad131b5a1f7753ce4309ba3dee", "Kyle Pittman", "", "War of The Worlds (Kyle Pittman) (Hack)", "Hack of Defender", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "943798452ceba9357e2c56303cadb4f7", "Thomas Jentzsch", "", "Thrust+ (v1.28)", "", "New Release, supports BoosterGrip and Genesis (switched by Color/B+W)", "", "", "", "", "", "", "", "", "DRIVING", "", "", "", "", "", "" },
   { "9446940866c9417f210f8552cf6c3078", "Thomas Jentzsch", "", "Marble Craze - Amiga Mouse Hack v1.0 (PAL60) (TJ)", "Uses Amiga Mouse Controllers", "", "", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "" },
   { "94507dee401b0a072a481c00d7699ffe", "Thomas Jentzsch", "", "Missile Control - Atari Trak-Ball Hack v1.15 (PAL) (TJ)", "Uses Atari Trak-Ball Controller", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9469d18238345d87768e8965f9f4a6b2", "CCE", "", "Ms. Pac-Man (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2053,7 +2054,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "95fd6097dc27c20666f039cfe34f7c69", "", "", "Oh No! (Version 1) (17-01-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "961112b74a920a5242e233480326c356", "Activision, Alan Miller", "AG-007, CAG-007", "Tennis (1981) (Activision) (16K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "962ffd3eaf865230a7a312b80e6c5cfd", "Imagic, Wilfredo 'Willy' Aguilar, Michael Becker, Rob Fulop", "13205", "Fathom (1983) (Imagic) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
-  { "96662271ae50b6859017bffbdda75525", "Andrew Davie & Thomas Jentsch", "", "Boulder Dash - Demo (2011)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "96662271ae50b6859017bffbdda75525", "Andrew Davie & Thomas Jentzsch", "", "Boulder Dash - Demo (2011)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "96670d0bf3610da2afcabd8e21d8eabf", "", "", "Boring Pitfall (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "966b11d3c147d894dd9e4ebb971ea309", "", "", "Marble Craze Song (Paul Slocum) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "966c955e4aaca7082d9ffb9a68e3f3ed", "Thomas Jentzsch", "", "Centipede - Atari Mouse Hack v1.4 (PAL) (Full-Speed) (TJ)", "Uses Atari Mouse Controller", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2311,7 +2312,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "ab2ea35dcc1098c87455bb8210b018cf", "", "", "Fu Kung! (V0.04 Single Line Resolution) (10-01-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ab301d3d7f2f4fe3fdd8a3540b7a74f5", "Jone Yuan Telephonic Enterprise Co", "", "IQ 180 (Jone Yuan)", "2600 Screen Search Console", "", "", "", "", "", "", "", "", "", "", "", "", "", "27", "", "" },
   { "ab434f4c942d6472e75d5490cc4dd128", "HES", "773-875", "2 Pak Special - Hoppy, Alien Force (1992) (HES) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "ab48c4af46c8b34c3613d210e1206132", "Andrew Davie & Thomas Jentsch", "", "Boulder Dash - Demo V2 (2014)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "ab48c4af46c8b34c3613d210e1206132", "Andrew Davie & Thomas Jentzsch", "", "Boulder Dash - Demo V2 (2014)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ab4ac994865fb16ebb85738316309457", "Atari, Alan Miller - Sears", "CX2624 - 6-99826, 49-75113", "Basketball (1978) (Atari)", "Console ports are swapped", "Common", "", "", "", "", "", "", "YES", "", "", "", "", "", "", "", "" },
   { "ab56f1b2542a05bebc4fbccfc4803a38", "Activision - Imagineering, Dan Kitchen, David Lubar", "AK-048-04", "River Raid II (1988) (Activision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ab5bf1ef5e463ad1cbb11b6a33797228", "Imagic, Rob Fulop", "720104-1A, 720104-1B, IA3204", "Cosmic Ark (1982) (Imagic)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2460,7 +2461,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "b79fe32320388a197ac3a0b932cc2189", "Imagic, Bob Smith", "13207, EIZ-001-04I", "Moonsweeper (1983) (Imagic) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "b7a7e34e304e4b7bc565ec01ba33ea27", "Parker Brothers", "PB5820", "Mr. Do!'s Castle (1984) (Parker Bros) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "b7b1d3ce07e75976c43a2dca3866237e", "Atari", "CX26163P", "Freeway Chicken (32 in 1) (1988) (Atari) (PAL) (4K)", "AKA Freeway", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "b7d0aae399781b3c18679debda6d32b1", "Thomas Jentsch", "", "Three.s (v1.02)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "b7d0aae399781b3c18679debda6d32b1", "Thomas Jentzsch", "", "Three.s (v1.02)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b7d7c76e37f372f4e4979b380ed95a58", "AtariAge - Michael Haas", "RC2", "Flappy (2014) (AtariAge) (PAL60)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "" },
   { "b7e459d5416eeb196aaa8e092db14463", "", "", "Push (V0.02) (1998) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b7f184013991823fc02a6557341d2a7a", "", "", "Blue Rod Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2978,7 +2979,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "de62f8a30298e2325249fe112ecb5c10", "CCE", "C-810", "Enduro (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "de78b3a064d374390ac0710f95edde92", "Bomb - Onbase", "CA281", "Assault (1983) (Bomb)", "AKA Sky Alien", "Extremely Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "de7a64108074098ba333cc0c70eef18a", "", "", "Nuts (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "de7bca4e569ad9d3fd08ff1395e53d2d", "Thomas Jentzsch", "", "Thrust (V1.22) (2000) (TJ)", "Won't work with Stella < V1.2, supports Booster Grip", "New Release", "", "", "", "", "", "", "", "BOOSTERGRIP", "", "", "", "", "", "", "" },
+  { "de7bca4e569ad9d3fd08ff1395e53d2d", "Thomas Jentzsch", "", "Thrust (V1.22) (2000) (TJ)", "Supports BoosterGrip", "New Release", "", "", "", "", "", "", "", "BOOSTERGRIP", "", "", "", "", "", "", "" },
   { "de8443ff47283e7b274a7838cb071fb6", "Atari, Lou Harp", "CX26122", "Sinistar (01-04-1984) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "dea0ade296f7093e71185e802b500db8", "CCE", "", "Fishing Derby (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "deb39482e77f984d4ce73be9fd8adabd", "Activision, David Lubar", "AK-048-04", "River Raid II (1988) (Activision) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3032,7 +3033,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "e1b90f1e01b1a316d7bbf141525cc00e", "", "", "Sky Jinks (Unknown) (PAL) (4K) (Hack)", "", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e1d5c8213e82820128fa9c4775f1e166", "Jess Ragan", "", "Jungle King (2003) (Jess Ragan) (Hack)", "Hack of Jungle Hunt", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e1d79e4e7c150f3861256c541ec715a1", "", "", "Space Jockey (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "e1e09e2f280e8e142121a377d0dc1b46", "Thomas Jentzsch", "", "Thrust (V1.21) (2000) (TJ)", "Won't work with Stella < V1.2, bugfixed", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "e1e09e2f280e8e142121a377d0dc1b46", "Thomas Jentzsch", "", "Thrust (V1.21) (2000) (TJ)", "Bugfixed", "New Release", "", "", "", "", "", "", "", "BOOSTERGRIP", "", "", "", "", "", "", "" },
   { "e1efe2ef7664bb6758b1a22ff8ea16a1", "Dynacom", "", "Enduro (1983) (Dynacom)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e1f88da6da8a7d521ca1dcbf2bc6978b", "Activision, Bob Whitehead - Ariola", "EAG-005, PAG-005, EAG-005-04B - 711 005-715", "Skiing (1980) (Activision) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "e21ee3541ebd2c23e817ffb449939c37", "Tigervision - Software Electronics Corp., Karl T. Olinger - Teldec", "7-001", "King Kong (1982) (Tigervision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "28", "", "" },
