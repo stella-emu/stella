@@ -402,7 +402,7 @@ else ifneq (,$(findstring windows_msvc2017,$(platform)))
    PATH := $(PATH):$(shell IFS=$$'\n'; cygpath "$(VsInstallRoot)/Common7/IDE")
    INCLUDE := $(shell IFS=$$'\n'; cygpath -w "$(VcCompilerToolsDir)/include")
    ifneq (,$(findstring uwp,$(PlatformSuffix)))
-      LIB := $(shell IFS=$$'\n'; cygpath -w "$(LIB)/store")
+      LIB := $(shell IFS=$$'\n'; cygpath -w "$(VcCompilerToolsDir)/lib/$(TargetArchMoniker/store)")
    else
       LIB := $(shell IFS=$$'\n'; cygpath -w "$(VcCompilerToolsDir)/lib/$(TargetArchMoniker)")
    endif
