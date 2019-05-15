@@ -48,7 +48,9 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   VarList::push_back(l, "Fill to scanline", "scanline");
   VarList::push_back(l, "Toggle breakpoint", "bp");
   VarList::push_back(l, "Set zoom position", "zoom");
+#ifdef PNG_SUPPORT
   VarList::push_back(l, "Save snapshot", "snap");
+#endif
   myMenu = make_unique<ContextMenu>(this, font, l);
 }
 

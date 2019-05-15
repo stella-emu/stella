@@ -174,15 +174,6 @@ class OSystem
     */
     void saveConfig();
 
-  #ifdef DEBUGGER_SUPPORT
-    /**
-      Get the ROM debugger of the system.
-
-      @return The debugger object
-    */
-    Debugger& debugger() const { return *myDebugger; }
-  #endif
-
   #ifdef CHEATCODE_SUPPORT
     /**
       Get the cheat manager of the system.
@@ -192,13 +183,13 @@ class OSystem
     CheatManager& cheat() const { return *myCheatManager; }
   #endif
 
-  #ifdef PNG_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
     /**
-      Get the PNG handler of the system.
+      Get the ROM debugger of the system.
 
-      @return The PNGlib object
+      @return The debugger object
     */
-    PNGLibrary& png() const { return *myPNGLib; }
+    Debugger& debugger() const { return *myDebugger; }
   #endif
 
   #ifdef GUI_SUPPORT
@@ -231,6 +222,15 @@ class OSystem
     TimeMachine& timeMachine() const { return *myTimeMachine; }
   #endif
 
+  #ifdef PNG_SUPPORT
+    /**
+      Get the PNG handler of the system.
+
+      @return The PNGlib object
+    */
+    PNGLibrary& png() const { return *myPNGLib; }
+  #endif
+
     /**
       Set all config file paths for the OSystem.
     */
@@ -247,29 +247,35 @@ class OSystem
     const string& stateDir() const { return myStateDir; }
 
     /**
-      Return the full/complete directory name for saving and loading
-      PNG snapshots.
-    */
-    const string& snapshotSaveDir() const { return mySnapshotSaveDir; }
-    const string& snapshotLoadDir() const { return mySnapshotLoadDir; }
-
-    /**
       Return the full/complete directory name for storing nvram
       (flash/EEPROM) files.
     */
     const string& nvramDir() const { return myNVRamDir; }
 
-    /**
-      Return the full/complete directory name for storing Distella cfg files.
-    */
-    const string& cfgDir() const { return myCfgDir; }
-
+  #ifdef CHEATCODE_SUPPORT
     /**
       This method should be called to get the full path of the cheat file.
 
       @return String representing the full path of the cheat filename.
     */
     const string& cheatFile() const { return myCheatFile; }
+  #endif
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Return the full/complete directory name for storing Distella cfg files.
+    */
+    const string& cfgDir() const { return myCfgDir; }
+  #endif
+
+  #ifdef PNG_SUPPORT
+    /**
+      Return the full/complete directory name for saving and loading
+      PNG snapshots.
+    */
+    const string& snapshotSaveDir() const { return mySnapshotSaveDir; }
+    const string& snapshotLoadDir() const { return mySnapshotLoadDir; }
+  #endif
 
     /**
       This method should be called to get the full path of the
@@ -483,6 +489,16 @@ class OSystem
     // Pointer to audio settings object
     unique_ptr<AudioSettings> myAudioSettings;
 
+  #ifdef CHEATCODE_SUPPORT
+    // Pointer to the CheatManager object
+    unique_ptr<CheatManager> myCheatManager;
+  #endif
+
+  #ifdef DEBUGGER_SUPPORT
+    // Pointer to the Debugger object
+    unique_ptr<Debugger> myDebugger;
+  #endif
+
   #ifdef GUI_SUPPORT
     // Pointer to the Menu object
     unique_ptr<Menu> myMenu;
@@ -495,16 +511,6 @@ class OSystem
 
     // Pointer to the TimeMachine object
     unique_ptr<TimeMachine> myTimeMachine;
-  #endif
-
-  #ifdef DEBUGGER_SUPPORT
-    // Pointer to the Debugger object
-    unique_ptr<Debugger> myDebugger;
-  #endif
-
-  #ifdef CHEATCODE_SUPPORT
-    // Pointer to the CheatManager object
-    unique_ptr<CheatManager> myCheatManager;
   #endif
 
   #ifdef PNG_SUPPORT
