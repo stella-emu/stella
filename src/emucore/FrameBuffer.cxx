@@ -1014,7 +1014,6 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
 
   if(fsIndex != -1)
   {
-    //double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
     switch(stretch)
     {
       case Stretch::Preserve:

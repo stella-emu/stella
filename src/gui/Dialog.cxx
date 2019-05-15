@@ -167,14 +167,17 @@ void Dialog::center()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::positionAt(uInt32 pos)
 {
+  const bool fullscreen = instance().settings().getBool("fullscreen");
+  const double overscan = fullscreen ? instance().settings().getInt("tia.fs_overscan") / 200.0 : 0.0;
   const Common::Size& screen = instance().frameBuffer().screenSize();
   const Common::Rect& dst = _surface->dstRect();
   // shift stacked dialogs
-  uInt32 gap = (screen.w >> 6) * _layer;
-  int top = std::min(screen.h - dst.height(), gap);
-  int btm = std::min(screen.h - dst.height(), screen.h - dst.height() - gap);
-  int left = std::min(screen.w - dst.width(), gap);
-  int right = std::min(screen.w - dst.width(), screen.w - dst.width() - gap);
+  Int32 hgap = (screen.w >> 6) * _layer + screen.w * overscan;
+  Int32 vgap = (screen.w >> 6) * _layer + screen.h * overscan;
+  int top = std::min(std::max(0, Int32(screen.h - dst.height())), vgap);
+  int btm = std::max(0, Int32(screen.h - dst.height() - vgap));
+  int left = std::min(std::max(0, Int32(screen.w - dst.width())), hgap);
+  int right = std::max(0, Int32(screen.w - dst.width() - hgap));
 
   switch (pos)
   {

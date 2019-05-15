@@ -65,7 +65,7 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myFullscreen;
     //PopUpWidget*      myFullScreenMode;
     CheckboxWidget*   myUseStretch;
-    SliderWidget*     myUseOverscan;
+    SliderWidget*     myTVOverscan;
     CheckboxWidget*   myUseVSync;
     CheckboxWidget*   myUIMessages;
     CheckboxWidget*   myCenter;
