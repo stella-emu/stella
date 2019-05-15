@@ -528,7 +528,10 @@ void Console::setPalette(const string& type)
   else if(type == "z26")
     paletteNum = 1;
   else if(type == "user" && myUserPaletteDefined)
+  {
     paletteNum = 2;
+    loadUserPalette();
+  }
 
   // Now consider the current display format
   const uInt32* palette =
