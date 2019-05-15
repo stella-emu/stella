@@ -593,6 +593,14 @@ void retro_deinit()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 size_t retro_serialize_size()
 {
+  int runahead = -1;
+  if(environ_cb(RETRO_ENVIRONMENT_GET_AUDIO_VIDEO_ENABLE, &runahead))
+  {
+    // maximum state size possible
+    if(runahead & 4)
+      return 0x100000;
+  }
+
   return stella.getStateSize();
 }
 
