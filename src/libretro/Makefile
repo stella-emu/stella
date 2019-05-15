@@ -10,13 +10,6 @@ BACKSLASH := \$(BACKSLASH)
 filter_out1 = $(filter-out $(firstword $1),$1)
 filter_out2 = $(call filter_out1,$(call filter_out1,$1))
 
-CXXFLAGS += -std=c++14 -Wall
-
-ifeq (,$(findstring msvc,$(platform)))
-   CXXFLAGS += -Wextra -Wno-unused-parameter -Wno-multichar -Wunused -fno-rtti \
-               -Woverloaded-virtual -Wnon-virtual-dtor
-endif
-
 ifeq ($(platform),)
    platform = unix
    ifeq ($(shell uname -s),)
@@ -50,6 +43,7 @@ TARGET_NAME = stella
 
 
 ifeq (,$(findstring msvc,$(platform)))
+   CXXFLAGS += -std=c++14 -fno-rtti
    LIBS := -lm
 else
    LIBS :=
