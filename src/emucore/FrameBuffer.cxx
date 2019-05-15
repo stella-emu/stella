@@ -137,11 +137,10 @@ bool FrameBuffer::initialize()
 #endif
 
   // Determine possible TIA windowed zoom levels
-  double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
   uInt32 minZoom = 2 * hidpiScaleFactor();
   uInt32 maxZoom = maxWindowSizeForScreen(
       TIAConstants::viewableWidth, TIAConstants::viewableHeight,
-      myAbsDesktopSize.w * overscan, myAbsDesktopSize.h * overscan);
+      myAbsDesktopSize.w, myAbsDesktopSize.h);
   for(uInt32 zoom = minZoom; zoom <= maxZoom; ++zoom)
   {
     ostringstream desc;
@@ -884,7 +883,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     // TIA windowed modes
     uInt32 minZoom = 2 * hidpiScaleFactor();
     uInt32 maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
-                     myAbsDesktopSize.w * overscan, myAbsDesktopSize.h * overscan);
+                     myAbsDesktopSize.w, myAbsDesktopSize.h);
 
   #if 0  // FIXME - does this apply any longer??
     // Aspect ratio
@@ -900,7 +899,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
       desc << "Zoom " << zoom << "x";
 
       VideoMode mode(baseWidth*zoom, baseHeight*zoom, baseWidth*zoom, baseHeight*zoom,
-                     VideoMode::Stretch::Fill, overscan, desc.str(), zoom);
+                     VideoMode::Stretch::Fill, 1.0, desc.str(), zoom);
       myWindowedModeList.add(mode);
     }
 
