@@ -32,14 +32,15 @@ Launcher::Launcher(OSystem& osystem)
 {
   const Common::Size& s = myOSystem.settings().getSize("launcherres");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize();
+  double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
   myWidth = s.w;  myHeight = s.h;
 
   // The launcher dialog is resizable, within certain bounds
   // We check those bounds now
   myWidth  = std::max(myWidth,  FBMinimum::Width);
   myHeight = std::max(myHeight, FBMinimum::Height);
-  myWidth  = std::min(myWidth,  uInt32(d.w));
-  myHeight = std::min(myHeight, uInt32(d.h));
+  myWidth  = std::min(myWidth,  uInt32(d.w * overscan));
+  myHeight = std::min(myHeight, uInt32(d.h * overscan));
 
   myOSystem.settings().setValue("launcherres", Common::Size(myWidth, myHeight));
 
