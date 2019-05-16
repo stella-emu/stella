@@ -180,12 +180,9 @@ void StellaLIBRETRO::updateVideo()
 
   while (1)
   {
-    uInt32 beam_x, beam_y;
-
     tia.updateScanline();
 
-    tia.electronBeamPos(beam_x, beam_y);
-    if(!beam_y) break;
+    if(tia.scanlines() == 0) break;
   }
 
 
