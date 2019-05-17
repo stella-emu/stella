@@ -110,6 +110,9 @@ static void update_input()
       EVENT(Event::JoystickZeroFire5, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
       EVENT(Event::JoystickZeroFire9, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
       break;
+
+    default:
+      break;
   }
   pad++;
 
@@ -160,6 +163,9 @@ static void update_input()
       EVENT(Event::JoystickOneFire, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B));
       EVENT(Event::JoystickOneFire5, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_A));
       EVENT(Event::JoystickOneFire9, input_state_cb(pad, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_Y));
+      break;
+
+    default:
       break;
   }
 
