@@ -98,6 +98,23 @@ class FrameBufferSDL2 : public FrameBuffer
     void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const override;
 
     /**
+      This method is called to query the video hardware for the index
+      of the display the current window is displayed on
+
+      @return  the current display index or a negative value if no
+               window is displayed
+    */
+    Int32 getCurrentDisplayIndex() override;
+
+    /**
+      This method is called to query the current window position.
+
+      @param x  The x-position retrieved
+      @param y  The y-position retrieved
+    */
+    void getCurrentWindowPos(int& x, int& y) override;
+
+    /**
       Clear the frame buffer
     */
     void clear() override;
@@ -118,15 +135,6 @@ class FrameBufferSDL2 : public FrameBuffer
     void queryHardware(vector<Common::Size>& fullscreenRes,
                        vector<Common::Size>& windowedRes,
                        VariantList& renderers) override;
-
-    /**
-      This method is called to query the video hardware for the index
-      of the display the current window is displayed on
-
-      @return  the current display index or a negative value if no
-               window is displayed
-    */
-    Int32 getCurrentDisplayIndex() override;
 
     /**
       This method is called to change to the given video mode.
@@ -183,6 +191,9 @@ class FrameBufferSDL2 : public FrameBuffer
 
     // Used by mapRGB (when palettes are created)
     SDL_PixelFormat* myPixelFormat;
+
+    // center setting of curent window
+    bool myCenter;
 
   private:
     // Following constructors and assignment operators not supported

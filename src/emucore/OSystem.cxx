@@ -233,6 +233,11 @@ void OSystem::loadConfig(const Settings::Options& options)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::saveConfig()
 {
+  // Save the current window position and display on system shutdown
+  int x, y;
+  myFrameBuffer->getCurrentWindowPos(x, y);
+  settings().setValue("display", myFrameBuffer->getCurrentDisplayIndex());
+
   // Ask all subsystems to save their settings
   if(myFrameBuffer)
   {

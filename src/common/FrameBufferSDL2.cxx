@@ -31,7 +31,8 @@
 FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   : FrameBuffer(osystem),
     myWindow(nullptr),
-    myRenderer(nullptr)
+    myRenderer(nullptr),
+    myCenter(false)
 {
   ASSERT_MAIN_THREAD;
 
@@ -88,11 +89,11 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
   ASSERT_MAIN_THREAD;
 
   // Get number of displays (for most systems, this will be '1')
-  int maxDisplays = SDL_GetNumVideoDisplays();
+  myNumDisplays = SDL_GetNumVideoDisplays();
 
   // First get the maximum fullscreen desktop resolution
   SDL_DisplayMode display;
-  for(int i = 0; i < maxDisplays; ++i)
+  for(int i = 0; i < myNumDisplays; ++i)
   {
     SDL_GetDesktopDisplayMode(i, &display);
     fullscreenRes.emplace_back(display.w, display.h);
@@ -102,14 +103,14 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
   // Try to take into account taskbars, etc, if available
 #if SDL_VERSION_ATLEAST(2,0,5)
   SDL_Rect r;
-  for(int i = 0; i < maxDisplays; ++i)
+  for(int i = 0; i < myNumDisplays; ++i)
   {
     // Display bounds minus dock
     SDL_GetDisplayUsableBounds(i, &r);  // Requires SDL-2.0.5 or higher
     windowedRes.emplace_back(r.w, r.h);
   }
 #else
-  for(int i = 0; i < maxDisplays; ++i)
+  for(int i = 0; i < myNumDisplays; ++i)
   {
     SDL_GetDesktopDisplayMode(i, &display);
     windowedRes.emplace_back(display.w, display.h);
@@ -163,6 +164,27 @@ Int32 FrameBufferSDL2::getCurrentDisplayIndex()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSDL2::getCurrentWindowPos(int& x, int&y)
+{
+  ASSERT_MAIN_THREAD;
+
+  if (myCenter ||
+    !myWindow || (SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP))
+  {
+    // restore to last saved window position
+    x = myOSystem.settings().getInt("pos.x");
+    y = myOSystem.settings().getInt("pos.y");
+  }
+  else
+  {
+    // save current window position
+    SDL_GetWindowPosition(myWindow, &x, &y);
+    myOSystem.settings().setValue("pos.x", x);
+    myOSystem.settings().setValue("pos.y", y);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 {
   ASSERT_MAIN_THREAD;
@@ -171,15 +193,8 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
 
-  // Always recreate renderer (some systems need this)
-  if(myRenderer)
-  {
-    SDL_DestroyRenderer(myRenderer);
-    myRenderer = nullptr;
-  }
-
   Int32 displayIndex = mode.fsIndex;
-  if(displayIndex == -1)
+  if (displayIndex == -1)
   {
     // windowed mode
     if (myWindow)
@@ -187,16 +202,27 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
       // Show it on same screen as the previous window
       displayIndex = SDL_GetWindowDisplayIndex(myWindow);
     }
-    if(displayIndex < 0)
+    if (displayIndex < 0)
     {
-      // fallback to the first screen
-      displayIndex = 0;
+      // fallback to the last used screen if still existing
+      displayIndex = std::min(myNumDisplays, myOSystem.settings().getInt("display"));
     }
   }
 
-  uInt32 pos = myOSystem.settings().getBool("center")
-                 ? SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex)
-                 : SDL_WINDOWPOS_UNDEFINED_DISPLAY(displayIndex);
+  // get current windows position
+  int posX, posY;
+  getCurrentWindowPos(posX, posY);
+
+  // Always recreate renderer (some systems need this)
+  if(myRenderer)
+  {
+    SDL_DestroyRenderer(myRenderer);
+    myRenderer = nullptr;
+  }
+
+  myCenter = myOSystem.settings().getBool("center");
+  if (myCenter)
+    posX = posY = SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex);
   uInt32 flags = mode.fsIndex != -1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
 
   // macOS seems to have issues with destroying the window, and wants to
@@ -221,6 +247,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   {
     // Even though window size stayed the same, the title may have changed
     SDL_SetWindowTitle(myWindow, title.c_str());
+    SDL_SetWindowPosition(myWindow, posX, posY);
   }
 #else
   // macOS wants to *never* re-create the window
@@ -236,7 +263,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
 #endif
   else
   {
-    myWindow = SDL_CreateWindow(title.c_str(), pos, pos,
+    myWindow = SDL_CreateWindow(title.c_str(), posX, posY,
                                 mode.screen.w, mode.screen.h, flags);
     if(myWindow == nullptr)
     {
@@ -310,6 +337,7 @@ string FrameBufferSDL2::about() const
 void FrameBufferSDL2::invalidate()
 {
   ASSERT_MAIN_THREAD;
+
 
   SDL_RenderClear(myRenderer);
 }
