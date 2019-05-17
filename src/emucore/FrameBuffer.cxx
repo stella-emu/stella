@@ -55,7 +55,8 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myGrabMouse(false),
     myHiDPIAllowed(false),
     myHiDPIEnabled(false),
-    myCurrentModeList(nullptr)
+    myCurrentModeList(nullptr),
+    myNumDisplays(1)
 {
 }
 

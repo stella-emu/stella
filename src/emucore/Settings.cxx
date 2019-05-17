@@ -37,7 +37,10 @@ Settings::Settings()
   setPermanent("video", "");
   setPermanent("speed", "1.0");
   setPermanent("vsync", "true");
-  setPermanent("center", "false");
+  setPermanent("center", "true");
+  setPermanent("pos.x", 50);
+  setPermanent("pos.y", 50);
+  setPermanent("display", 0);
   setPermanent("palette", "standard");
   setPermanent("uimessages", "true");
 

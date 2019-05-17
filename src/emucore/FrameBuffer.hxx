@@ -336,6 +336,23 @@ class FrameBuffer
     virtual void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const = 0;
 
     /**
+      This method is called to query the video hardware for the index
+      of the display the current window is displayed on
+
+      @return  the current display index or a negative value if no
+               window is displayed
+    */
+    virtual Int32 getCurrentDisplayIndex() = 0;
+
+    /**
+      This method is called to query the current window position.
+
+      @param x  The x-position retrieved
+      @param y  The y-position retrieved
+    */
+    virtual void getCurrentWindowPos(int& x, int& y) = 0;
+
+    /**
       Clear the framebuffer.
     */
     virtual void clear() = 0;
@@ -353,8 +370,6 @@ class FrameBuffer
     virtual void queryHardware(vector<Common::Size>& fullscreenRes,
                                vector<Common::Size>& windowedRes,
                                VariantList& renderers) = 0;
-
-    virtual Int32 getCurrentDisplayIndex() = 0;
 
     /**
       This method is called to change to the given video mode.
@@ -497,6 +512,14 @@ class FrameBuffer
     // Title of the main window/screen
     string myScreenTitle;
 
+    // Number of displays
+    int myNumDisplays;
+
+    // The resolution of the attached displays in fullscreen mode
+    // The primary display is typically the first in the array
+    // Windowed modes use myDesktopSize directly
+    vector<Common::Size> myFullscreenDisplays;
+
   private:
     // Draws the frame stats overlay
     void drawFrameStats(float framesPerSecond);
@@ -521,11 +544,6 @@ class FrameBuffer
 
     // Maximum absolute dimensions of the desktop area
     Common::Size myAbsDesktopSize;
-
-    // The resolution of the attached displays in fullscreen mode
-    // The primary display is typically the first in the array
-    // Windowed modes use myDesktopSize directly
-    vector<Common::Size> myFullscreenDisplays;
 
     // Supported renderers
     VariantList myRenderers;
