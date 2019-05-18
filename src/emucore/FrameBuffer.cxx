@@ -835,10 +835,10 @@ void FrameBuffer::toggleGrabMouse()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-double FrameBuffer::maxZoomForScreen(uInt32 baseWidth, uInt32 baseHeight,
-                    uInt32 screenWidth, uInt32 screenHeight) const
+float FrameBuffer::maxZoomForScreen(uInt32 baseWidth, uInt32 baseHeight,
+                                    uInt32 screenWidth, uInt32 screenHeight) const
 {
-  double multiplier = 1;
+  float multiplier = 1;
   for(;;)
   {
     // Figure out the zoomed size of the window
@@ -868,7 +868,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   EventHandlerState state = myOSystem.eventHandler().state();
   bool tiaMode = (state != EventHandlerState::DEBUGGER &&
                   state != EventHandlerState::LAUNCHER);
-  double overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
+  float overscan = 1 - myOSystem.settings().getInt("tia.fs_overscan") / 100.0;
 
   // TIA mode allows zooming at integral factors in windowed modes,
   // and also non-integral factors in fullscreen mode
@@ -887,7 +887,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   #endif
 
     // Determine all zoom levels
-    for(double zoom = minZoom; zoom <= myTIAMaxZoom; zoom += ZOOM_STEPS)
+    for(float zoom = minZoom; zoom <= myTIAMaxZoom; zoom += ZOOM_STEPS)
     {
       ostringstream desc;
       desc << "Zoom " << zoom << "x";
@@ -901,7 +901,8 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
     {
       myTIAMaxZoom = maxZoomForScreen(baseWidth, baseHeight,
-                    myFullscreenDisplays[i].w * overscan, myFullscreenDisplays[i].h * overscan);
+          myFullscreenDisplays[i].w * overscan,
+          myFullscreenDisplays[i].h * overscan);
 
       // Add both normal aspect and filled modes
       // It's easier to define them both now, and simply switch between
@@ -984,8 +985,8 @@ FrameBuffer::VideoMode::VideoMode()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
-                                  Stretch smode, double overscan, const string& desc,
-                                  double zoomLevel, Int32 fsindex)
+                                  Stretch smode, float overscan, const string& desc,
+                                  float zoomLevel, Int32 fsindex)
   : stretch(smode),
     description(desc),
     zoom(zoomLevel),
@@ -1118,7 +1119,7 @@ void FrameBuffer::VideoModeList::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::setByZoom(double zoom)
+void FrameBuffer::VideoModeList::setByZoom(float zoom)
 {
   for(uInt32 i = 0; i < myModeList.size(); ++i)
   {
