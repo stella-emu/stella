@@ -187,8 +187,8 @@ else ifeq ($(platform), qnx)
 
 # Vita
 else ifeq ($(platform), vita)
-   CXXFLAGS += $(LTO)
-   LDFLAGS += $(LTO)
+   CXXFLAGS += $(LTO) $(PTHREAD_FLAGS)
+   LDFLAGS += $(LTO) $(PTHREAD_FLAGS)
    TARGET := $(TARGET_NAME)_libretro_$(platform).so
    fpic := -fPIC
    CXX = arm-vita-eabi-g++$(EXE_EXT)
