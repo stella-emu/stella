@@ -223,6 +223,24 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   {
     posX = myWindowedPos.x,
     posY = myWindowedPos.y;
+
+    // make sure the window is at least partially visibile
+    int x0 = 0, y0 = 0, x1 = 0, y1 = 0;
+
+    for (int display = SDL_GetNumVideoDisplays() - 1; display >= 0; display--)
+    {
+      SDL_Rect rect;
+
+      if (!SDL_GetDisplayUsableBounds(display, &rect))
+      {
+        x0 = std::min(x0, rect.x);
+        y0 = std::min(y0, rect.y);
+        x1 = std::max(x1, rect.x + rect.w);
+        y1 = std::max(y1, rect.y + rect.h);
+      }
+    }
+    posX = BSPF::clamp(posX, x0 - Int32(mode.screen.w) + 50, x1 - 50);
+    posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
   uInt32 flags = mode.fsIndex != -1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
 
