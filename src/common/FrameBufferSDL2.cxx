@@ -221,7 +221,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     posX = posY = SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex);
   else
   {
-    posX = myWindowedPos.x,
+    posX = myWindowedPos.x;
     posY = myWindowedPos.y;
 
     // make sure the window is at least partially visibile

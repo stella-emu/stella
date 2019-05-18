@@ -337,6 +337,7 @@ void VideoDialog::loadConfig()
   // TIA zoom levels
   // These are dynamically loaded, since they depend on the size of
   // the desktop and which renderer we're using
+  myTIAZoom->setMinValue(instance().frameBuffer().supportedTIAMinZoom() * 100);
   myTIAZoom->setMaxValue(instance().frameBuffer().supportedTIAMaxZoom() * 100);
   myTIAZoom->setTickmarkIntervals((instance().frameBuffer().supportedTIAMaxZoom() - 2) * 2);
   myTIAZoom->setValue(instance().settings().getFloat("tia.zoom") * 100);
