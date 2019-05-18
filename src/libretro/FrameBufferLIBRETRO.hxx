@@ -125,6 +125,14 @@ class FrameBufferLIBRETRO : public FrameBuffer
     Int32 getCurrentDisplayIndex() override { return 0; }
 
     /**
+      This method is called to query the current window position.
+
+      @param x  The x-position retrieved
+      @param y  The y-position retrieved
+    */
+    void getCurrentWindowPos(int&, int&) override { }
+
+    /**
       This method is called to change to the given video mode.
 
       @param title The title for the created window

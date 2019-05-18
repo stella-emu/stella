@@ -114,10 +114,10 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos, 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font)
+void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypos,
+                                           const GUI::Font& font)
 {
   const int VGAP = 4;
-  const int INDENT = 20;
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth();
   VariantList items;

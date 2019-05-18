@@ -48,6 +48,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem& osystem)
   : myOSystem(osystem),
+    myNumDisplays(1),
     myInitializedCount(0),
     myPausedCount(0),
     myStatsEnabled(false),
@@ -55,8 +56,7 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myGrabMouse(false),
     myHiDPIAllowed(false),
     myHiDPIEnabled(false),
-    myCurrentModeList(nullptr),
-    myNumDisplays(1)
+    myCurrentModeList(nullptr)
 {
 }
 
