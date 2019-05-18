@@ -63,12 +63,12 @@ class FrameBuffer
       Common::Size screen;
       Stretch stretch;
       string description;
-      uInt32 zoom;
+      double zoom;
       Int32 fsIndex;
 
       VideoMode();
       VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode, double overscan = 1.0,
-                const string& desc = "", uInt32 zoomLevel = 1, Int32 fsindex = -1);
+                const string& desc = "", double zoomLevel = 1, Int32 fsindex = -1);
 
       friend ostream& operator<<(ostream& os, const VideoMode& vm)
       {
@@ -79,6 +79,9 @@ class FrameBuffer
         return os;
       }
     };
+
+    // Zoom level step interval
+    static constexpr double ZOOM_STEPS = 0.25;
 
   public:
     /**
@@ -195,9 +198,9 @@ class FrameBuffer
     const VariantList& supportedRenderers() const { return myRenderers; }
 
     /**
-      Get the supported TIA zoom levels (windowed mode) for the framebuffer.
+      Get the maximum supported TIA zoom level (windowed mode) for the framebuffer.
     */
-    const VariantList& supportedTIAZoomLevels() const { return myTIAZoomLevels; }
+    const double supportedTIAMaxZoom() const { return myTIAMaxZoom;  }
 
     /**
       Get the TIA surface associated with the framebuffer.
@@ -451,7 +454,7 @@ class FrameBuffer
       Calculate the maximum level by which the base window can be zoomed and
       still fit in the given screen dimensions.
     */
-    uInt32 maxWindowSizeForScreen(uInt32 baseWidth, uInt32 baseHeight,
+    double maxZoomForScreen(uInt32 baseWidth, uInt32 baseHeight,
                uInt32 screenWidth, uInt32 screenHeight) const;
 
     /**
@@ -490,7 +493,7 @@ class FrameBuffer
         const FrameBuffer::VideoMode& current() const;
         void next();
 
-        void setByZoom(uInt32 zoom);
+        void setByZoom(double zoom);
         void setByStretch(FrameBuffer::VideoMode::Stretch stretch);
 
         friend ostream& operator<<(ostream& os, const VideoModeList& l)
@@ -591,8 +594,8 @@ class FrameBuffer
     VideoModeList myWindowedModeList;
     vector<VideoModeList> myFullscreenModeLists;
 
-    // Names of the TIA zoom levels that can be used for this framebuffer
-    VariantList myTIAZoomLevels;
+    // Maximum TIA zoom level that can be used for this framebuffer
+    double myTIAMaxZoom;
 
     // Holds a reference to all the surfaces that have been created
     vector<shared_ptr<FBSurface>> mySurfaceList;

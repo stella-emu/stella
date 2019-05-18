@@ -123,22 +123,16 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myTIAPalette);
   ypos += lineHeight + VGAP;
 
-  // TIA filters (will be dynamically filled later)
-  myTIAZoom = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                              lineHeight, items, "TIA zoom ", lwidth);
-  wid.push_back(myTIAZoom);
-  ypos += lineHeight + VGAP;
-
-  /*SliderWidget* s = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
-                                     "TIA zoom", lwidth, 0, fontWidth * 4, "%");
-  s->setMinValue(200); s->setMaxValue(500);
-  s->setTickmarkInterval(3); // just for testing now; TODO: remove or redefine
-  wid.push_back(s);
-  ypos += lineHeight + VGAP;*/
-
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, font, xpos, ypos + 1, "TIA interpolation ");
   wid.push_back(myTIAInterpolate);
+  ypos += lineHeight + VGAP;
+
+  // TIA zoom levels (will be dynamically filled later)
+  myTIAZoom = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
+    "TIA zoom", lwidth, 0, fontWidth * 4, "%");
+  myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
+  wid.push_back(myTIAZoom);
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (NTSC mode)
@@ -340,12 +334,12 @@ void VideoDialog::loadConfig()
   // Renderer settings
   myRenderer->setSelected(instance().settings().getString("video"), "default");
 
-  // TIA Filter
+  // TIA zoom levels
   // These are dynamically loaded, since they depend on the size of
   // the desktop and which renderer we're using
-  const VariantList& items = instance().frameBuffer().supportedTIAZoomLevels();
-  myTIAZoom->addItems(items);
-  myTIAZoom->setSelected(instance().settings().getString("tia.zoom"), "3");
+  myTIAZoom->setMaxValue(instance().frameBuffer().supportedTIAMaxZoom() * 100);
+  myTIAZoom->setTickmarkIntervals((instance().frameBuffer().supportedTIAMaxZoom() - 2) * 2);
+  myTIAZoom->setValue(instance().settings().getFloat("tia.zoom") * 100);
 
   // TIA Palette
   myTIAPalette->setSelected(
@@ -417,9 +411,8 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("video",
     myRenderer->getSelectedTag().toString());
 
-  // TIA Filter
-  instance().settings().setValue("tia.zoom",
-    myTIAZoom->getSelectedTag().toString());
+  // TIA zoom levels
+  instance().settings().setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
 
   // TIA Palette
   instance().settings().setValue("palette",
@@ -502,7 +495,7 @@ void VideoDialog::setDefaults()
     case 0:  // General
     {
       myRenderer->setSelectedIndex(0);
-      myTIAZoom->setSelected("3", "");
+      myTIAZoom->setValue(300);
       myTIAPalette->setSelected("standard", "");
       myTIAInterpolate->setState(false);
       myNAspectRatio->setValue(91);
