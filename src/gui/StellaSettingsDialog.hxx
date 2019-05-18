@@ -24,13 +24,11 @@ class PopUpWidget;
 #include "Menu.hxx"
 #include "Dialog.hxx"
 #include "MessageBox.hxx"
-// FIXME - use the R77 define in the final release
-//         use the '1' define for testing
+
 #if defined(RETRON77)
-// #if 1
-#include "R77HelpDialog.hxx"
+  #include "R77HelpDialog.hxx"
 #else
-#include "HelpDialog.hxx"
+  #include "HelpDialog.hxx"
 #endif
 
 namespace GUI {
@@ -77,7 +75,6 @@ class StellaSettingsDialog : public Dialog
     PopUpWidget*      myTVMode;
 
     // TV scanline intensity
-    StaticTextWidget* myTVScanlines;
     SliderWidget*     myTVScanIntense;
 
     // TV phosphor effect
