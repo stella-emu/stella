@@ -138,16 +138,9 @@ bool FrameBuffer::initialize()
 #endif
 
   // Determine possible TIA windowed zoom levels
-  uInt32 minZoom = 2 * hidpiScaleFactor();
-  uInt32 maxZoom = maxWindowSizeForScreen(
+  myTIAMaxZoom = maxZoomForScreen(
       TIAConstants::viewableWidth, TIAConstants::viewableHeight,
       myAbsDesktopSize.w, myAbsDesktopSize.h);
-  for(uInt32 zoom = minZoom; zoom <= maxZoom; ++zoom)
-  {
-    ostringstream desc;
-    desc << "Zoom " << zoom << "x";
-    VarList::push_back(myTIAZoomLevels, desc.str(), zoom);
-  }
 
   setUIPalette();
 
@@ -842,10 +835,10 @@ void FrameBuffer::toggleGrabMouse()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBuffer::maxWindowSizeForScreen(uInt32 baseWidth, uInt32 baseHeight,
+double FrameBuffer::maxZoomForScreen(uInt32 baseWidth, uInt32 baseHeight,
                     uInt32 screenWidth, uInt32 screenHeight) const
 {
-  uInt32 multiplier = 1;
+  double multiplier = 1;
   for(;;)
   {
     // Figure out the zoomed size of the window
@@ -855,9 +848,9 @@ uInt32 FrameBuffer::maxWindowSizeForScreen(uInt32 baseWidth, uInt32 baseHeight,
     if((width > screenWidth) || (height > screenHeight))
       break;
 
-    ++multiplier;
+    multiplier += ZOOM_STEPS;
   }
-  return multiplier > 1 ? multiplier - 1 : 1;
+  return multiplier > 1 ? multiplier - ZOOM_STEPS : 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -883,7 +876,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   {
     // TIA windowed modes
     uInt32 minZoom = 2 * hidpiScaleFactor();
-    uInt32 maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
+    myTIAMaxZoom = maxZoomForScreen(baseWidth, baseHeight,
                      myAbsDesktopSize.w, myAbsDesktopSize.h);
 
   #if 0  // FIXME - does this apply any longer??
@@ -894,7 +887,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   #endif
 
     // Determine all zoom levels
-    for(uInt32 zoom = minZoom; zoom <= maxZoom; ++zoom)
+    for(double zoom = minZoom; zoom <= myTIAMaxZoom; zoom += ZOOM_STEPS)
     {
       ostringstream desc;
       desc << "Zoom " << zoom << "x";
@@ -907,21 +900,21 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     // TIA fullscreen mode
     for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
     {
-      maxZoom = maxWindowSizeForScreen(baseWidth, baseHeight,
+      myTIAMaxZoom = maxZoomForScreen(baseWidth, baseHeight,
                     myFullscreenDisplays[i].w * overscan, myFullscreenDisplays[i].h * overscan);
 
       // Add both normal aspect and filled modes
       // It's easier to define them both now, and simply switch between
       // them when necessary
-      VideoMode mode1(baseWidth*maxZoom, baseHeight*maxZoom,
+      VideoMode mode1(baseWidth * myTIAMaxZoom, baseHeight * myTIAMaxZoom,
                       myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
                       VideoMode::Stretch::Preserve, overscan,
-                      "Preserve aspect, no stretch", maxZoom, i);
+                      "Preserve aspect, no stretch", myTIAMaxZoom, i);
       myFullscreenModeLists[i].add(mode1);
-      VideoMode mode2(baseWidth*maxZoom, baseHeight*maxZoom,
+      VideoMode mode2(baseWidth * myTIAMaxZoom, baseHeight * myTIAMaxZoom,
                       myFullscreenDisplays[i].w, myFullscreenDisplays[i].h,
                       VideoMode::Stretch::Fill, overscan,
-                      "Ignore aspect, full stretch", maxZoom, i);
+                      "Ignore aspect, full stretch", myTIAMaxZoom, i);
       myFullscreenModeLists[i].add(mode2);
     }
   }
@@ -970,7 +963,7 @@ const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
       myCurrentModeList->setByStretch(myOSystem.settings().getBool("tia.fs_stretch")
         ? VideoMode::Stretch::Fill : VideoMode::Stretch::Preserve);
     else
-      myCurrentModeList->setByZoom(myOSystem.settings().getInt("tia.zoom"));
+      myCurrentModeList->setByZoom(myOSystem.settings().getFloat("tia.zoom"));
   }
 
   return myCurrentModeList->current();
@@ -992,7 +985,7 @@ FrameBuffer::VideoMode::VideoMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
                                   Stretch smode, double overscan, const string& desc,
-                                  uInt32 zoomLevel, Int32 fsindex)
+                                  double zoomLevel, Int32 fsindex)
   : stretch(smode),
     description(desc),
     zoom(zoomLevel),
@@ -1125,7 +1118,7 @@ void FrameBuffer::VideoModeList::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::VideoModeList::setByZoom(uInt32 zoom)
+void FrameBuffer::VideoModeList::setByZoom(double zoom)
 {
   for(uInt32 i = 0; i < myModeList.size(); ++i)
   {
