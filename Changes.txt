@@ -27,11 +27,9 @@
     Related to this, updated the snapshot collection.
 
   * Added various developer options for oddball TIAs: (TODO: doc)
-     - delayed playfield bits
-     - delayed playfield color
-     - delayed player 0 swap
-     - delayed player 1 swap
-     - stuffed player move
+     - stuffed player, missiles and ball move
+     - delayed playfield bits and color
+     - delayed players and ball VDEL swap
 
   * Fullscreen TIA modes no longer assume that desktop taskbars, etc
     are present, hence they are scaled to the proper fullscreen size.
@@ -40,30 +38,44 @@
 
   * Reworked ROM properties database, making it load faster in certain
     cases.  Related to this, completely removed 'Display_Height' stuff.
-    (TODO: doc)
+    (TODO: Stella.pro cleanup, doc)
 
-  * Disabled some developer options for 'Player settings'. (TODO: doc)
+  * Disabled some developer options for 'Player settings'.
 
-  * Enhanced command dialog to display current state.
+  * Enhanced 'Command' menu to display current state and more commands.
 
-  * Added automatic controller detection. (TODO: Stella.pro cleanup)
+  * Added automatic controller detection. (TODO: doc)
 
-  * Added 'HiDPI' mode, which scales the UI by 2x when enabled.  This is
-    meant for 4k and above monitors, but can actually be used at any
-    lower resolution that is large enough to display the scaled UI.
-
-  * Removed 'tia.fsfill' option, replacing it with 'tia.fs_stretch'.  This
-    new option allows to preserve TIA image aspect ratio in fullscreen
-    mode, or stretch to fill the entire screen.
+  * Added configurable paddle dejittering. (TODO: doc)
 
   * Removed superfluous controller option 'PADDLES_IDIR'.
 
+  * Added 'HiDPI' mode, which scales the UI by 2x when enabled.  This is
+    meant for 4k and above monitors, but can actually be used at any
+    lower resolution that is large enough to display the scaled UI. (TODO: doc)
+
+  * Added configurable 'Overscan' option for fullscreen modes. (TODO: doc)
+
+  * Added fractional TIA zooms (TODO: doc)
+
+  * Removed 'tia.fsfill' option, replacing it with 'tia.fs_stretch'.  This
+    new option allows to preserve TIA image aspect ratio in fullscreen
+    mode, or stretch to fill the entire screen. (TODO: doc)
+
   * Added hotkey for sound on/off.
+
+  * Added support for CDFJ bankswitching type.
+
+  * Added option to display dialogs in screen corners. (TODO: doc)
+
+  * Fixed TIA 'Center' option, Stella now remembers the last windowed position. (TODO: doc)
 
   * Fixed not working 7800 pause key.
 
   * Fixed display of negative values in debugger; sometimes they were
     shown as positive.
+
+  * Fixed cheatcode handling in 2K and 4K ROMs.
 
   * Fixed 'Dancing Plate (Unknown) (PAL)' to use joystick.
 
