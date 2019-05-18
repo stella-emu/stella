@@ -107,12 +107,9 @@ class FrameBufferSDL2 : public FrameBuffer
     Int32 getCurrentDisplayIndex() override;
 
     /**
-      This method is called to query the current window position.
-
-      @param x  The x-position retrieved
-      @param y  The y-position retrieved
+      This method is called to preserve the last current windowed position.
     */
-    void getCurrentWindowPos(int& x, int& y) override;
+    void updateWindowedPos() override;
 
     /**
       Clear the frame buffer
@@ -194,6 +191,10 @@ class FrameBufferSDL2 : public FrameBuffer
 
     // center setting of curent window
     bool myCenter;
+
+    // last position of windowed window
+    int myPosX;
+    int myPosY;
 
   private:
     // Following constructors and assignment operators not supported

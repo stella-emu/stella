@@ -345,12 +345,9 @@ class FrameBuffer
     virtual Int32 getCurrentDisplayIndex() = 0;
 
     /**
-      This method is called to query the current window position.
-
-      @param x  The x-position retrieved
-      @param y  The y-position retrieved
+      This method is called to preserve the last current windowed position.
     */
-    virtual void getCurrentWindowPos(int& x, int& y) = 0;
+    virtual void updateWindowedPos() = 0;
 
     /**
       Clear the framebuffer.

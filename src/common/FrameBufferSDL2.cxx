@@ -51,6 +51,9 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   // since the structure may be needed before any FBSurface's have
   // been created
   myPixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
+
+  myPosX = myOSystem.settings().getInt("pos.x");
+  myPosY = myOSystem.settings().getInt("pos.y");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -164,23 +167,17 @@ Int32 FrameBufferSDL2::getCurrentDisplayIndex()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::getCurrentWindowPos(int& x, int&y)
+void FrameBufferSDL2::updateWindowedPos()
 {
   ASSERT_MAIN_THREAD;
 
-  if (myCenter ||
-    !myWindow || (SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP))
+  // only save if the window is not centered and not in full screen mode
+  if (!myCenter && myWindow && !(SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP))
   {
-    // restore to last saved window position
-    x = myOSystem.settings().getInt("pos.x");
-    y = myOSystem.settings().getInt("pos.y");
-  }
-  else
-  {
-    // save current window position
-    SDL_GetWindowPosition(myWindow, &x, &y);
-    myOSystem.settings().setValue("pos.x", x);
-    myOSystem.settings().setValue("pos.y", y);
+    // save current windowed position
+    SDL_GetWindowPosition(myWindow, &myPosX, &myPosY);
+    myOSystem.settings().setValue("pos.x", myPosX);
+    myOSystem.settings().setValue("pos.y", myPosY);
   }
 }
 
@@ -209,9 +206,8 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     }
   }
 
-  // get current windows position
-  int posX, posY;
-  getCurrentWindowPos(posX, posY);
+  // save and get last windowed window's position
+  updateWindowedPos();
 
   // Always recreate renderer (some systems need this)
   if(myRenderer)
@@ -220,9 +216,16 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     myRenderer = nullptr;
   }
 
+  int posX, posY;
+
   myCenter = myOSystem.settings().getBool("center");
   if (myCenter)
     posX = posY = SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex);
+  else
+  {
+    posX = myPosX,
+    posY = myPosY;
+  }
   uInt32 flags = mode.fsIndex != -1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
 
   // macOS seems to have issues with destroying the window, and wants to
@@ -257,7 +260,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   {
     SDL_SetWindowFullscreen(myWindow, flags);
     SDL_SetWindowSize(myWindow, mode.screen.w, mode.screen.h);
-    SDL_SetWindowPosition(myWindow, pos, pos);
+    SDL_SetWindowPosition(myWindow, posX, posY);
     SDL_SetWindowTitle(myWindow, title.c_str());
   }
 #endif
