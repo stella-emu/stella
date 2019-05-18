@@ -38,8 +38,7 @@ Settings::Settings()
   setPermanent("speed", "1.0");
   setPermanent("vsync", "true");
   setPermanent("center", "true");
-  setPermanent("pos.x", 50);
-  setPermanent("pos.y", 50);
+  setPermanent("windowedpos", Common::Point(50, 50));
   setPermanent("display", 0);
   setPermanent("palette", "standard");
   setPermanent("uimessages", "true");

@@ -53,6 +53,7 @@ class Variant
     Variant(double d) { buf().str(""); buf() << d; data = buf().str(); }
     Variant(bool b)   { buf().str(""); buf() << b; data = buf().str(); }
     Variant(const Common::Size& s) { buf().str(""); buf() << s; data = buf().str(); }
+    Variant(const Common::Point& s) { buf().str(""); buf() << s; data = buf().str(); }
 
     // Conversion methods
     const string& toString() const { return data; }
@@ -73,6 +74,7 @@ class Variant
     }
     bool toBool() const         { return data == "1" || data == "true"; }
     Common::Size toSize() const { return Common::Size(data); }
+    Common::Point toPoint() const { return Common::Point(data); }
 
     // Comparison
     bool operator==(const Variant& v) const { return data == v.data; }

@@ -193,8 +193,7 @@ class FrameBufferSDL2 : public FrameBuffer
     bool myCenter;
 
     // last position of windowed window
-    int myPosX;
-    int myPosY;
+    Common::Point myWindowedPos;
 
   private:
     // Following constructors and assignment operators not supported

@@ -52,8 +52,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   // been created
   myPixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
 
-  myPosX = myOSystem.settings().getInt("pos.x");
-  myPosY = myOSystem.settings().getInt("pos.y");
+  myWindowedPos = myOSystem.settings().getPoint("windowedpos");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -175,9 +174,8 @@ void FrameBufferSDL2::updateWindowedPos()
   if (!myCenter && myWindow && !(SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP))
   {
     // save current windowed position
-    SDL_GetWindowPosition(myWindow, &myPosX, &myPosY);
-    myOSystem.settings().setValue("pos.x", myPosX);
-    myOSystem.settings().setValue("pos.y", myPosY);
+    SDL_GetWindowPosition(myWindow, &myWindowedPos.x, &myWindowedPos.y);
+    myOSystem.settings().setValue("windowedpos", myWindowedPos);
   }
 }
 
@@ -223,8 +221,8 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     posX = posY = SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex);
   else
   {
-    posX = myPosX,
-    posY = myPosY;
+    posX = myWindowedPos.x,
+    posY = myWindowedPos.y;
   }
   uInt32 flags = mode.fsIndex != -1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
 

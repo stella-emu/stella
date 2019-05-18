@@ -101,6 +101,7 @@ class Settings
     bool getBool(const string& key) const   { return value(key).toBool();  }
     const string& getString(const string& key) const { return value(key).toString(); }
     const Common::Size getSize(const string& key) const { return value(key).toSize(); }
+    const Common::Point getPoint(const string& key) const { return value(key).toPoint(); }
 
   protected:
     /**
