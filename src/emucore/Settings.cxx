@@ -102,6 +102,7 @@ Settings::Settings()
   setPermanent("snapsavedir", "");
   setPermanent("snaploaddir", "");
   setPermanent("snapname", "int");
+  setPermanent("autoslot", "false");
   setPermanent("sssingle", "false");
   setPermanent("ss1x", "false");
   setPermanent("ssinterval", "2");
@@ -131,7 +132,6 @@ Settings::Settings()
   setPermanent("dialogpos", 0);
 
   // Misc options
-  setPermanent("autoslot", "false");
   setPermanent("loglevel", "1");
   setPermanent("logtoconsole", "0");
   setPermanent("avoxport", "");
@@ -368,6 +368,7 @@ void Settings::usage() const
     << "  -fullscreen   <1|0>          Enable fullscreen mode\n"
     << "  -center       <1|0>          Centers game window in windowed modes\n"
     << "  -windowedpos  <XxY>          Sets the window position in windowed modes\n"
+    << "  -display      <number>       Sets the display for Stella\n"
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
     << "                 user>\n"
@@ -441,8 +442,6 @@ void Settings::usage() const
     << "                                Stelladaptor/2600-daptors\n"
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key\n"
     << "                                (Control-Q for quit may be disabled!)\n"
-    << "  -autoslot     <1|0>          Automatically switch to next save slot when\n"
-    << "                                state saving\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
     << "  -threads      <1|0>          Whether to using multi-threading during\n"
     << "                                emulation\n"
@@ -450,6 +449,8 @@ void Settings::usage() const
     << "  -snaploaddir  <path>         The directory to load snapshot files from\n"
     << "  -snapname     <int|rom>      Name snapshots according to internal database or\n"
     << "                                ROM\n"
+    << "  -autoslot     <1|0>          Automatically switch to next save slot when\n"
+    << "                                state saving\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore\n"
     << "                                scaling/effects)\n"
@@ -467,6 +468,8 @@ void Settings::usage() const
     << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
     << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (0 for off)\n"
+    << "  -lastrom       <name>        Last played ROM, automatically selected in launcher\n"
+    << "  -romloadcount <number>       Number of ROM to load next from multicard\n"
     << "  -uipalette    <standard|     Selects GUI theme\n"
     << "                 classic|light>\n"
     << "  -hidpi        <0|1>          Enable HiDPI mode\n"
