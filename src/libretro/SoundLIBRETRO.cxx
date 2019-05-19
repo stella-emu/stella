@@ -44,8 +44,6 @@ SoundLIBRETRO::SoundLIBRETRO(OSystem& osystem, AudioSettings& audioSettings)
     myUnderrun(false),
     myAudioSettings(audioSettings)
 {
-  ASSERT_MAIN_THREAD;
-
   Logger::log("SoundLIBRETRO::SoundLIBRETRO started ...", 2);
   Logger::log("SoundLIBRETRO::SoundLIBRETRO initialized", 2);
 }
@@ -57,7 +55,7 @@ SoundLIBRETRO::~SoundLIBRETRO()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundLIBRETRO::open(shared_ptr<AudioQueue> audioQueue,
-                     EmulationTiming* emulationTiming)
+                         EmulationTiming* emulationTiming)
 {
   myEmulationTiming = emulationTiming;
 
