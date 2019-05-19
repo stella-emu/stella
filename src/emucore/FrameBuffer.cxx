@@ -875,7 +875,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   if(tiaMode)
   {
     // TIA windowed modes
-    uInt32 minZoom = 2 * hidpiScaleFactor();
+    uInt32 minZoom = supportedTIAMinZoom();
     myTIAMaxZoom = maxZoomForScreen(baseWidth, baseHeight,
                      myAbsDesktopSize.w, myAbsDesktopSize.h);
 
