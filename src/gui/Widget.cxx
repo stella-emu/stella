@@ -284,8 +284,10 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
 
   if(emitFocusEvents)
     tmp->receivedFocus();
-  else
+  else {
     tmp->_hasFocus = true;
+    tmp->setFlags(Widget::FLAG_HILITED);
+  }
 
   if (onTop)
       s.frameRect(x, y, w, h, kWidFrameColor, FrameStyle::Dashed);
