@@ -128,7 +128,9 @@ bool DialogContainer::baseDialogIsActive() const
 int DialogContainer::addDialog(Dialog* d)
 {
   const Common::Rect& r = myOSystem.frameBuffer().imageRect();
-  if(uInt32(d->getWidth()) > r.width() || uInt32(d->getHeight()) > r.height())
+  const uInt32 scale = myOSystem.frameBuffer().hidpiScaleFactor();
+
+  if(uInt32(d->getWidth() * scale) > r.width() || uInt32(d->getHeight() * scale) > r.height())
     myOSystem.frameBuffer().showMessage(
         "Unable to show dialog box; FIX THE CODE");
   else
