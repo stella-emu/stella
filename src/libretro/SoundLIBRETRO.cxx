@@ -33,8 +33,6 @@
 #include "AudioSettings.hxx"
 #include "StaggeredLogger.hxx"
 
-#include "ThreadDebugging.hxx"
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundLIBRETRO::SoundLIBRETRO(OSystem& osystem, AudioSettings& audioSettings)
   : Sound(osystem),
