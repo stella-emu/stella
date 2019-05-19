@@ -366,7 +366,8 @@ void Settings::usage() const
     << endl
     << "  -vsync        <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
     << "  -fullscreen   <1|0>          Enable fullscreen mode\n"
-    << "  -center       <1|0>          Centers game window (if possible)\n"
+    << "  -center       <1|0>          Centers game window in windowed modes\n"
+    << "  -windowedpos  <XxY>          Sets the window position in windowed modes\n"
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
     << "                 user>\n"
@@ -524,7 +525,6 @@ void Settings::usage() const
     << "   -cp          <arg>          Sets the 'Controller.SwapPaddles' property\n"
     << "   -format      <arg>          Sets the 'Display.Format' property\n"
     << "   -ystart      <arg>          Sets the 'Display.YStart' property\n"
-    << "   -height      <arg>          Sets the 'Display.Height' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
     << endl
