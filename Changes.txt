@@ -79,6 +79,8 @@
 
   * Fixed 'Dancing Plate (Unknown) (PAL)' to use joystick.
 
+  * Fixed bug where frying one ROM was continued with the next ROM.
+
   * Allow the DPC+ scheme to not enable playfield 'jitter' effect for
     certain older DPC+ driver versions; this allows 'Epic Adventure' ROM
     to finally work in Stella.
