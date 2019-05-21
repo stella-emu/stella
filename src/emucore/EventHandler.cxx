@@ -128,6 +128,7 @@ void EventHandler::reset(EventHandlerState state)
 #ifdef PNG_SUPPORT
   myOSystem.png().setContinuousSnapInterval(0);
 #endif
+  myFryingFlag = false;
 
   // Reset events almost immediately after starting emulation mode
   // We wait a little while (0.5s), since 'hold' events may be present,
