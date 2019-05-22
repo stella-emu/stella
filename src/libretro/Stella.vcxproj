@@ -157,7 +157,6 @@
     <ClCompile Include="..\common\RewindManager.cxx" />
     <ClCompile Include="..\common\StaggeredLogger.cxx" />
     <ClCompile Include="..\common\StateManager.cxx" />
-    <ClCompile Include="..\common\ThreadDebugging.cxx" />
     <ClCompile Include="..\common\TimerManager.cxx" />
     <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx" />
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
@@ -281,7 +280,6 @@
     <ClInclude Include="..\common\StateManager.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
-    <ClInclude Include="..\common\ThreadDebugging.hxx" />
     <ClInclude Include="..\common\TimerManager.hxx" />
     <ClInclude Include="..\common\tv_filters\AtariNTSC.hxx" />
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
