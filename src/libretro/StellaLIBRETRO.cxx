@@ -284,7 +284,7 @@ float StellaLIBRETRO::getVideoAspectPar()
 	else
 	  par = video_aspect_pal / 100.0;
   }
-  
+
   return par;
 }
 
