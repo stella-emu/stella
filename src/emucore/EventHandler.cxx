@@ -765,8 +765,6 @@ void EventHandler::setActionMappings(EventMode mode)
       prepend = "Alt + ']' (*)";
     else if(event == Event::SoundToggle)
       prepend = modifier + " + ']' (*)";
-    else if(event == Event::Fry)
-      prepend = "Backspace (*)";
     else if(event == Event::OptionsMenuMode)
       prepend = "Tab (*)";
     else if(event == Event::UINavNext)
@@ -777,8 +775,6 @@ void EventHandler::setActionMappings(EventMode mode)
       prepend = modifier + " + Tab (*)";
     else if (event == Event::UITabPrev)
       prepend = modifier + " + Shift + Tab (*)";
-    else if(event == Event::UIPrevDir)
-      prepend = "Backspace (*)";
     // else if ...
 
     if(key == "")
