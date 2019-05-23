@@ -422,11 +422,12 @@ void Dialog::drawDialog()
   // Draw outlines for focused widgets
   // Don't change focus, since this will trigger lost and received
   // focus events
-  if (_focusedWidget)
+  if(_focusedWidget)
   {
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
       _focusedWidget, 0, false);
-    _focusedWidget->draw(); // make sure the highlight color is drawn initially
+    if(_focusedWidget)
+      _focusedWidget->draw(); // make sure the highlight color is drawn initially
   }
 }
 
