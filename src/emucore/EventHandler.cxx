@@ -759,6 +759,10 @@ void EventHandler::setActionMappings(EventMode mode)
 
     if(event == Event::Quit)
       prepend = modifier + " + Q (*)";
+    else if (event == Event::VidmodeIncrease)
+      prepend = "Alt + '=' (*)";
+    else if (event == Event::VidmodeDecrease)
+      prepend = "Alt + '-' (*)";
     else if(event == Event::VolumeDecrease)
       prepend = "Alt + '[' (*)";
     else if(event == Event::VolumeIncrease)
@@ -1328,8 +1332,8 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::VolumeDecrease,         "Decrease volume",             "", false },
   { Event::VolumeIncrease,         "Increase volume",             "", false },
   { Event::SoundToggle,            "Toggle sound",                "", false },
-  { Event::VidmodeDecrease,        "Previous video mode",         "", false },
-  { Event::VidmodeIncrease,        "Next video mode",             "", false },
+  { Event::VidmodeDecrease,        "Previous zoom level",         "", false },
+  { Event::VidmodeIncrease,        "Next zoom level",             "", false },
   { Event::PauseMode,              "Pause",                       "", false },
   { Event::OptionsMenuMode,        "Enter options menu UI",       "", false },
   { Event::CmdMenuMode,            "Toggle command menu UI",      "", false },
