@@ -187,6 +187,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey( KBDK_RETURN,    Event::UISelect  );
       setDefaultKey( KBDK_ESCAPE,    Event::UICancel  );
 
+      setDefaultKey( KBDK_BACKSPACE, Event::UIPrevDir);
+
     // FIXME - use the R77 define in the final release
     //         use the '1' define for testing
     #if defined(RETRON77)
