@@ -769,8 +769,6 @@ void EventHandler::setActionMappings(EventMode mode)
       prepend = "Alt + ']' (*)";
     else if(event == Event::SoundToggle)
       prepend = modifier + " + ']' (*)";
-    else if(event == Event::OptionsMenuMode)
-      prepend = "Tab (*)";
     else if(event == Event::UINavNext)
       prepend = "Tab (*)";
     else if(event == Event::UINavPrev)

@@ -214,7 +214,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 void PhysicalKeyboardHandler::eraseMapping(Event::Type event, EventMode mode)
 {
   for(int i = 0; i < KBDK_LAST; ++i)
-    if(myKeyTable[i][mode] == event && i != KBDK_TAB)
+    // This key cannot be remapped
+    if(myKeyTable[i][mode] == event && !(i == KBDK_TAB && mode == EventMode::kMenuMode))
       myKeyTable[i][mode] = Event::NoType;
 }
 
@@ -255,7 +256,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
                                          StellaKey key)
 {
   // These keys cannot be remapped
-  if(key == KBDK_TAB || Event::isAnalog(event))
+  if(key == KBDK_TAB && mode == EventMode::kMenuMode || Event::isAnalog(event))
     return false;
   else
     myKeyTable[key][mode] = event;
