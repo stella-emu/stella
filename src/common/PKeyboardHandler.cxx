@@ -256,7 +256,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
                                          StellaKey key)
 {
   // These keys cannot be remapped
-  if(key == KBDK_TAB && mode == EventMode::kMenuMode || Event::isAnalog(event))
+  if((key == KBDK_TAB && mode == EventMode::kMenuMode) || Event::isAnalog(event))
     return false;
   else
     myKeyTable[key][mode] = event;
