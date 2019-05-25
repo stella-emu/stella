@@ -449,26 +449,6 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
   // Shift-Tab sets previous widget in current tab
   Event::Type e = Event::NoType;
 
-  // Detect selection of previous and next tab headers and objects
-  if(key == KBDK_TAB)
-  {
-    if(StellaModTest::isControl(mod))
-    {
-      // tab header navigation
-      if(StellaModTest::isShift(mod))
-        e = Event::UITabPrev;
-      else
-        e = Event::UITabNext;
-    }
-    else
-    {
-      // object navigation
-      if(StellaModTest::isShift(mod))
-        e = Event::UINavPrev;
-      else
-        e = Event::UINavNext;
-    }
-  }
   // FIXME - use the R77 define in the final release
   //         use the '1' define for testing
   #if defined(RETRON77)
