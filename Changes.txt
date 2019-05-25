@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.0 to 6.x: (MM dd, 2019)
+6.0 to 6.1: (MM dd, 2019)
 
   * Note: because of major event remapping changes, all remappings will be
           reset to defaults; if you had custom mappings, they will need to
@@ -91,6 +91,8 @@
   * SDL/GUI support is now conditionally compiled into Stella.  All major
     ports (Linux/macOS/Windows) have it enabled by default.  This is
     currently used only by the libretro port.
+
+  * Updated included PNG library to latest stable version.
 
 -Have fun!
 
