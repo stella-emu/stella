@@ -317,7 +317,6 @@
 		DC5BE4B417C913AC0091FD64 /* ConsoleMediumBFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5BE4B217C913AC0091FD64 /* ConsoleMediumBFont.hxx */; };
 		DC5C768F14C26F7C0031EBC7 /* StellaKeys.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */; };
 		DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */; };
-		DC5D2C520F117CFD004D1660 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4E0F117CFD004D1660 /* Rect.hxx */; };
 		DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */; };
 		DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */; };
 		DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */; };
@@ -501,6 +500,9 @@
 		DCB2ECAF1F0AECA3009738A6 /* CartDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB2ECAC1F0AECA3009738A6 /* CartDetector.cxx */; };
 		DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */; };
 		DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */; };
+		DCBD31E82299ADB400567357 /* KeyMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E52299ADB400567357 /* KeyMap.hxx */; };
+		DCBD31E92299ADB400567357 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD31E62299ADB400567357 /* Rect.hxx */; };
+		DCBD31EA2299ADB400567357 /* KeyMap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBD31E72299ADB400567357 /* KeyMap.cxx */; };
 		DCBDDE9A1D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDE981D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx */; };
 		DCBDDE9B1D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */; };
 		DCBDDE9E1D6A5F2F009DF1E9 /* Cart3EPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */; };
@@ -1033,7 +1035,6 @@
 		DC5BE4B217C913AC0091FD64 /* ConsoleMediumBFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConsoleMediumBFont.hxx; sourceTree = "<group>"; };
 		DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaKeys.hxx; sourceTree = "<group>"; };
 		DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stack.hxx; sourceTree = "<group>"; };
-		DC5D2C4E0F117CFD004D1660 /* Rect.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Rect.hxx; sourceTree = "<group>"; };
 		DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaFont.hxx; sourceTree = "<group>"; };
 		DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaLargeFont.hxx; sourceTree = "<group>"; };
 		DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StellaMediumFont.hxx; sourceTree = "<group>"; };
@@ -1219,6 +1220,9 @@
 		DCB2ECAD1F0AECA3009738A6 /* CartDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartDetector.hxx; sourceTree = "<group>"; };
 		DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MediaFactory.hxx; sourceTree = "<group>"; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCBD31E52299ADB400567357 /* KeyMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KeyMap.hxx; sourceTree = "<group>"; };
+		DCBD31E62299ADB400567357 /* Rect.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Rect.hxx; sourceTree = "<group>"; };
+		DCBD31E72299ADB400567357 /* KeyMap.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyMap.cxx; sourceTree = "<group>"; };
 		DCBDDE981D6A5F0E009DF1E9 /* Cart3EPlusWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3EPlusWidget.cxx; sourceTree = "<group>"; };
 		DCBDDE991D6A5F0E009DF1E9 /* Cart3EPlusWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Cart3EPlusWidget.hxx; sourceTree = "<group>"; };
 		DCBDDE9C1D6A5F2F009DF1E9 /* Cart3EPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cart3EPlus.cxx; sourceTree = "<group>"; };
@@ -1685,6 +1689,8 @@
 				DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */,
 				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
+				DCBD31E72299ADB400567357 /* KeyMap.cxx */,
+				DCBD31E52299ADB400567357 /* KeyMap.hxx */,
 				DCA078321F8C1B04008EFEE5 /* LinkedObjectPool.hxx */,
 				E0EA1FFE227A42D0008BA944 /* Logger.cxx */,
 				E0EA1FFD227A42D0008BA944 /* Logger.hxx */,
@@ -1700,6 +1706,7 @@
 				DC1BC6652066B4390076F74A /* PKeyboardHandler.hxx */,
 				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
 				DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */,
+				DCBD31E62299ADB400567357 /* Rect.hxx */,
 				E06508B72272447200B341AC /* repository */,
 				DCDDEAC01F5DBF0400C67366 /* RewindManager.cxx */,
 				DCDDEAC11F5DBF0400C67366 /* RewindManager.hxx */,
@@ -2017,7 +2024,6 @@
 				2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */,
 				DC5AAC2A1FCB24DF00C420A6 /* RadioButtonWidget.cxx */,
 				DC5AAC2B1FCB24DF00C420A6 /* RadioButtonWidget.hxx */,
-				DC5D2C4E0F117CFD004D1660 /* Rect.hxx */,
 				DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */,
 				DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */,
 				DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */,
@@ -2368,6 +2374,7 @@
 				2D91741809BA90380026E9FF /* Widget.hxx in Headers */,
 				2D91741909BA90380026E9FF /* CartUA.hxx in Headers */,
 				DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */,
+				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				DC6A18F919B3E65500DEB242 /* CartMDMWidget.hxx in Headers */,
@@ -2411,6 +2418,7 @@
 				2D91745809BA90380026E9FF /* DebuggerDialog.hxx in Headers */,
 				DC2C5EDB1F8F2403007D2A09 /* smartmod.hxx in Headers */,
 				DCE5CDE41BA10024005CD08A /* RiotRamWidget.hxx in Headers */,
+				DCBD31E82299ADB400567357 /* KeyMap.hxx in Headers */,
 				DCF3A6E81DFC75E3008A8AF3 /* Background.hxx in Headers */,
 				DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */,
 				DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */,
@@ -2462,7 +2470,6 @@
 				DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */,
 				DC0DF86A0F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx in Headers */,
 				E0DCD3A920A64E96000B614E /* ConvolutionBuffer.hxx in Headers */,
-				DC5D2C520F117CFD004D1660 /* Rect.hxx in Headers */,
 				DC71EAA81FDA070D008827CB /* CartMNetworkWidget.hxx in Headers */,
 				DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */,
 				DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */,
@@ -2916,6 +2923,7 @@
 				DC5ACB5B1FBFCE8E00A213FD /* DeveloperDialog.cxx in Sources */,
 				DCD6FC7011C281ED005DA767 /* png.c in Sources */,
 				DCD6FC7311C281ED005DA767 /* pngerror.c in Sources */,
+				DCBD31EA2299ADB400567357 /* KeyMap.cxx in Sources */,
 				DCF3A6E71DFC75E3008A8AF3 /* Background.cxx in Sources */,
 				DCD6FC7411C281ED005DA767 /* pngget.c in Sources */,
 				DCD6FC7511C281ED005DA767 /* pngmem.c in Sources */,
@@ -3176,7 +3184,7 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_FLOAT_CONVERSION = YES;
+				CLANG_WARN_FLOAT_CONVERSION = NO;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
@@ -3253,7 +3261,7 @@
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_FLOAT_CONVERSION = YES;
+				CLANG_WARN_FLOAT_CONVERSION = NO;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
