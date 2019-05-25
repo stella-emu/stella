@@ -40,9 +40,9 @@ class KeyMap
 
       Mapping() : mode(EventMode(0)), key(StellaKey(0)), mod(StellaMod(0)) { }
       Mapping(const Mapping& k) : mode(k.mode), key(k.key), mod(k.mod) { }
-      explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod = StellaMod::KBDM_NONE)
+      explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)
         : mode(c_mode), key(c_key), mod(c_mod) { }
-      explicit Mapping(int c_mode, int c_key, int c_mod = StellaMod::KBDM_NONE)
+      explicit Mapping(int c_mode, int c_key, int c_mod)
         : mode(EventMode(c_mode)), key(StellaKey(c_key)), mod(StellaMod(c_mod)) { }
 
       bool operator==(const Mapping& other) const
@@ -58,22 +58,22 @@ class KeyMap
 
     /** Add new mapping for given event */
     void add(const Event::Type event, const Mapping& input);
-    void add(const Event::Type event, const int mode, const int key, const int mod = StellaMod::KBDM_NONE);
+    void add(const Event::Type event, const int mode, const int key, const int mod);
 
     /** Erase mapping */
     void erase(const Mapping& input);
-    void erase(const int mode, const int key, const int mod = StellaMod::KBDM_NONE);
+    void erase(const int mode, const int key, const int mod);
 
     /** Get event for mapping */
     Event::Type get(const Mapping& input) const;
-    Event::Type get(const int mode, const int key, const int mod = StellaMod::KBDM_NONE) const;
+    Event::Type get(const int mode, const int key, const int mod) const;
 
     /** Get the mapping(s) description for given event and mode */
     string getEventMappingDesc(const Event::Type event, const int mode) const;
 
     /** Get mapping description */
     string getDesc(const Mapping& input) const;
-    string getDesc(const int mode, const int key, const int mod = StellaMod::KBDM_NONE) const;
+    string getDesc(const int mode, const int key, const int mod) const;
 
     string saveMapping(const int mode) const;
     int loadMapping(string& list, const int mode);

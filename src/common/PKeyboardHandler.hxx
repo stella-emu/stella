@@ -56,8 +56,8 @@ class PhysicalKeyboardHandler
     /** Handle a physical keyboard event. */
     void handleEvent(StellaKey key, StellaMod mod, bool pressed);
 
-    Event::Type eventForKey(StellaKey key, EventMode mode) const {
-      return myKeyMap.get(mode, key);
+    Event::Type eventForKey(EventMode mode, StellaKey key, StellaMod mod) const {
+      return myKeyMap.get(mode, key, mod);
     }
 
     /** See comments on 'myAltKeyCounter' for more information. */
