@@ -759,14 +759,6 @@ void EventHandler::setActionMappings(EventMode mode)
 
     if(event == Event::Quit)
       prepend = modifier + "+Q (*)";
-    else if(event == Event::UINavNext)
-      prepend = "Tab (*)";
-    else if(event == Event::UINavPrev)
-      prepend = "Shift+Tab (*)";
-    else if (event == Event::UITabNext)
-      prepend = modifier + "+Tab (*)";
-    else if (event == Event::UITabPrev)
-      prepend = modifier + "+Shift+Tab (*)";
     // else if ...
 
     if(key == "")

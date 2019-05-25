@@ -66,7 +66,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
     // Erase all mappings of given mode
     myKeyMap.eraseMode(mode);
 
-  auto setDefaultKey = [&](Event::Type k_event, StellaKey key, StellaMod mod = StellaMod::KBDM_NONE)
+  auto setDefaultKey = [&](Event::Type k_event, StellaKey key, int mod = StellaMod::KBDM_NONE)
   {
     if (eraseAll || k_event == event)
     {
@@ -173,6 +173,11 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::UISelect  , KBDK_RETURN);
       setDefaultKey(Event::UICancel  , KBDK_ESCAPE);
 
+      setDefaultKey(Event::UINavPrev , KBDK_TAB, KBDM_SHIFT);
+      setDefaultKey(Event::UINavNext , KBDK_TAB);
+      setDefaultKey(Event::UITabPrev , KBDK_TAB, KBDM_SHIFT|KBDM_CTRL);
+      setDefaultKey(Event::UITabNext , KBDK_TAB, KBDM_CTRL);
+
       setDefaultKey(Event::UIPrevDir , KBDK_BACKSPACE);
 
     // FIXME - use the R77 define in the final release
@@ -199,9 +204,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::eraseMapping(Event::Type event, EventMode mode)
 {
-  // This key cannot be remapped
-  if (event != Event::UINavNext || mode != EventMode::kMenuMode)
-    myKeyMap.eraseEvent(event, mode);
+  myKeyMap.eraseEvent(event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -222,7 +225,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
                                          StellaKey key, StellaMod mod)
 {
   // These keys cannot be remapped
-  if((key == KBDK_TAB && mode == EventMode::kMenuMode) || Event::isAnalog(event))
+  if(Event::isAnalog(event))
     return false;
   else
     myKeyMap.add(event, mode, key, mod);
