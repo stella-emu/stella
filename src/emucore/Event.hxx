@@ -36,12 +36,13 @@ class Event
     */
     enum Type
     {
-      NoType,
-      ConsoleOn, ConsoleOff, ConsoleColor, ConsoleBlackWhite,
+      NoType = 0,
+      ConsoleOn = 1, ConsoleOff = 2, ConsoleColor = 3, ConsoleBlackWhite = 4,
       ConsoleLeftDiffA, ConsoleLeftDiffB,
       ConsoleRightDiffA, ConsoleRightDiffB,
       ConsoleSelect, ConsoleReset,
-      ConsoleLeftDiffToggle, ConsoleRightDiffToggle, ConsoleColorToggle, Console7800Pause,
+      ConsoleLeftDiffToggle, ConsoleRightDiffToggle, ConsoleColorToggle,
+      Console7800Pause,
 
       JoystickZeroUp, JoystickZeroDown, JoystickZeroLeft, JoystickZeroRight,
         JoystickZeroFire, JoystickZeroFire5, JoystickZeroFire9,
@@ -80,6 +81,11 @@ class Event
       UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
       UISelect, UINavPrev, UINavNext, UIOK, UICancel, UIPrevDir,
       UITabPrev, UITabNext,
+
+      ToggleFullScreen,
+      VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,
+      PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
+      ScanlinesDecrease, ScanlinesIncrease,
 
       LastType
     };
@@ -147,10 +153,10 @@ class Event
     {
       std::lock_guard<std::mutex> lock(myMutex);
 
-      for(uInt32 i = 0; i < LastType; ++i)
+      for(Int32 i = 0; i < LastType; ++i)
         myValues[i] = Event::NoType;
 
-      for(uInt32 i = 0; i < KBDK_LAST; ++i)
+      for(Int32 i = 0; i < KBDK_LAST; ++i)
         myKeyTable[i] = false;
     }
 

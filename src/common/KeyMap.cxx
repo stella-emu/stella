@@ -89,6 +89,18 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const int mode) cons
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+std::vector<KeyMap::Mapping> KeyMap::getEventMapping(const Event::Type event, const int mode) const
+{
+  std::vector<KeyMap::Mapping> map;
+
+  for (auto item : myMap)
+    if (item.second == event && item.first.mode == mode)
+      map.push_back(item.first);
+
+  return map;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string KeyMap::saveMapping(const int mode) const
 {
   ostringstream buf;

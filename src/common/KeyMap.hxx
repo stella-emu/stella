@@ -75,6 +75,8 @@ class KeyMap
     string getDesc(const Mapping& input) const;
     string getDesc(const int mode, const int key, const int mod) const;
 
+    std::vector<Mapping> getEventMapping(const Event::Type event, const int mode) const;
+
     string saveMapping(const int mode) const;
     int loadMapping(string& list, const int mode);
 
