@@ -158,8 +158,8 @@ class EventHandler
     void setComboListForEvent(Event::Type event, const StringList& events);
 
     /** Convert keys and physical joystick events into Stella events. */
-    Event::Type eventForKey(StellaKey key, EventMode mode) const {
-      return myPKeyHandler->eventForKey(key, mode);
+    Event::Type eventForKey(EventMode mode, StellaKey key, StellaMod mod) const {
+      return myPKeyHandler->eventForKey(mode, key, mod);
     }
     Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const {
       return myPJoyHandler->eventForAxis(stick, axis, value, mode);

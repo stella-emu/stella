@@ -483,7 +483,7 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
   if(e == Event::NoType)
-    e = instance().eventHandler().eventForKey(key, kMenuMode);
+    e = instance().eventHandler().eventForKey(kMenuMode, key, mod);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
