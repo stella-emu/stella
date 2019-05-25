@@ -149,17 +149,23 @@ string KeyMap::getDesc(const int mode, const int key, const int mod) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseMode(const int mode)
 {
-  for (auto item : myMap)
-    if (item.first.mode == mode)
-      erase(item.first);
+  for (auto i = myMap.begin(); i != myMap.end();)
+    if (i->first.mode == mode) {
+      auto _i = i++;
+      erase(_i->first);
+    }
+    else i++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseEvent(const Event::Type event, const int mode)
 {
-  for (auto item : myMap)
-    if (item.second == event && item.first.mode == mode)
-      erase(item.first);
+  for (auto i = myMap.begin(); i != myMap.end();)
+    if (i->second == event && i->first.mode == mode) {
+      auto _i = i++;
+      erase(_i->first);
+    }
+    else i++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
