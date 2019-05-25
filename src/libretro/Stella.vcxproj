@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\KeyMap.cxx" />
     <ClCompile Include="..\common\Logger.cxx" />
     <ClCompile Include="libretro.cxx" />
     <ClCompile Include="EventHandlerLIBRETRO.cxx" />
@@ -267,6 +268,7 @@
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\FpsMeter.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
+    <ClInclude Include="..\common\KeyMap.hxx" />
     <ClInclude Include="..\common\LinkedObjectPool.hxx" />
     <ClInclude Include="..\common\Logger.hxx" />
     <ClInclude Include="..\common\MediaFactory.hxx" />
