@@ -758,25 +758,15 @@ void EventHandler::setActionMappings(EventMode mode)
 #endif
 
     if(event == Event::Quit)
-      prepend = modifier + " + Q (*)";
-    else if (event == Event::VidmodeIncrease)
-      prepend = "Alt + '=' (*)";
-    else if (event == Event::VidmodeDecrease)
-      prepend = "Alt + '-' (*)";
-    else if(event == Event::VolumeDecrease)
-      prepend = "Alt + '[' (*)";
-    else if(event == Event::VolumeIncrease)
-      prepend = "Alt + ']' (*)";
-    else if(event == Event::SoundToggle)
-      prepend = modifier + " + ']' (*)";
+      prepend = modifier + "+Q (*)";
     else if(event == Event::UINavNext)
       prepend = "Tab (*)";
     else if(event == Event::UINavPrev)
-      prepend = "Shift + Tab (*)";
+      prepend = "Shift+Tab (*)";
     else if (event == Event::UITabNext)
-      prepend = modifier + " + Tab (*)";
+      prepend = modifier + "+Tab (*)";
     else if (event == Event::UITabPrev)
-      prepend = modifier + " + Shift + Tab (*)";
+      prepend = modifier + "+Shift+Tab (*)";
     // else if ...
 
     if(key == "")
