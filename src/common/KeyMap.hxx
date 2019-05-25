@@ -18,6 +18,8 @@
 #ifndef KEYMAP_HXX
 #define KEYMAP_HXX
 
+#include <unordered_map>
+
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 
@@ -38,10 +40,10 @@ class KeyMap
 
       Mapping() : mode(EventMode(0)), key(StellaKey(0)), mod(StellaMod(0)) { }
       Mapping(const Mapping& k) : mode(k.mode), key(k.key), mod(k.mod) { }
-      explicit Mapping(EventMode mode, StellaKey key, StellaMod mod = StellaMod::KBDM_NONE)
-        : mode(mode), key(key), mod(mod) { }
-      explicit Mapping(int mode, int key, int mod = StellaMod::KBDM_NONE)
-        : mode(EventMode(mode)), key(StellaKey(key)), mod(StellaMod(mod)) { }
+      explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod = StellaMod::KBDM_NONE)
+        : mode(c_mode), key(c_key), mod(c_mod) { }
+      explicit Mapping(int c_mode, int c_key, int c_mod = StellaMod::KBDM_NONE)
+        : mode(EventMode(c_mode)), key(StellaKey(c_key)), mod(StellaMod(c_mod)) { }
 
       bool operator==(const Mapping& other) const
       {
@@ -90,9 +92,9 @@ class KeyMap
 
     struct KeyHash {
       size_t operator()(const Mapping& k)const {
-        return std::hash<long long>()(((long long)k.mode)
-          ^ (((long long)k.key) << 16)
-          ^ (((long long)k.mod) << 32));
+        return std::hash<uInt64>()((uInt64(k.mode))
+          ^ ((uInt64(k.key)) << 16)
+          ^ ((uInt64(k.mod)) << 32));
       }
     };
 
