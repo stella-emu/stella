@@ -70,11 +70,11 @@ string NTSCFilter::getPreset() const
 {
   switch(myPreset)
   {
-    case Preset::COMPOSITE:  return "COMPOSITE";
-    case Preset::SVIDEO:     return "S-VIDEO";
-    case Preset::RGB:        return "RGB";
-    case Preset::BAD:        return "BAD ADJUST";
-    case Preset::CUSTOM:     return "CUSTOM";
+    case Preset::COMPOSITE: return "COMPOSITE";
+    case Preset::SVIDEO:    return "S-VIDEO";
+    case Preset::RGB:       return "RGB";
+    case Preset::BAD:       return "BAD ADJUST";
+    case Preset::CUSTOM:    return "CUSTOM";
     default:                return "Disabled";
   }
 }

@@ -405,6 +405,78 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       if(pressed) myOSystem.frameBuffer().changeVidMode(+1);
       return;
 
+    case Event::ToggleFullScreen:
+      if (pressed) myOSystem.frameBuffer().toggleFullscreen();
+      return;
+
+    case Event::VidmodeStd:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::OFF);
+      return;
+
+    case Event::VidmodeRGB:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::RGB);
+      return;
+
+    case Event::VidmodeSVideo:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::SVIDEO);
+      return;
+
+    case Event::VidModeComposite:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::COMPOSITE);
+      return;
+
+    case Event::VidModeBad:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::BAD);
+      return;
+
+    case Event::VidModeCustom:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
+      return;
+
+    case Event::ScanlinesDecrease:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-5);
+      return;
+
+    case Event::ScanlinesIncrease:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+5);
+      return;
+
+    case Event::PreviousAttribute:
+      if (pressed)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
+        myOSystem.frameBuffer().showMessage(
+          myOSystem.frameBuffer().tiaSurface().ntsc().setPreviousAdjustable());
+      }
+      return;
+
+    case Event::NextAttribute:
+      if (pressed)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
+        myOSystem.frameBuffer().showMessage(
+          myOSystem.frameBuffer().tiaSurface().ntsc().setNextAdjustable());
+      }
+      return;
+
+    case Event::DecreaseAttribute:
+      if (pressed)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
+        myOSystem.frameBuffer().showMessage(
+          myOSystem.frameBuffer().tiaSurface().ntsc().decreaseAdjustable());
+      }
+      return;
+
+    case Event::IncreaseAttribute:
+      if (pressed)
+      {
+        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
+        myOSystem.frameBuffer().showMessage(
+          myOSystem.frameBuffer().tiaSurface().ntsc().increaseAdjustable());
+      }
+      return;
+
     case Event::SaveState:
       if(pressed) myOSystem.state().saveState();
       return;
@@ -1309,11 +1381,25 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::LoadState,              "Load state",                  "", false },
   { Event::TakeSnapshot,           "Snapshot",                    "", false },
   { Event::Fry,                    "Fry cartridge",               "", false },
+  { Event::VidmodeDecrease,        "Previous zoom level",         "", false },
+  { Event::VidmodeIncrease,        "Next zoom level",             "", false },
+  { Event::ToggleFullScreen,       "Toggle fullscreen",           "", false },
+
+  { Event::VidmodeStd,             "Disable TV effects",          "", false },
+  { Event::VidmodeRGB,             "Select 'RGB' preset",         "", false },
+  { Event::VidmodeSVideo,          "Select 'S-Video' preset",     "", false },
+  { Event::VidModeComposite,       "Select 'Composite' preset",   "", false },
+  { Event::VidModeBad,             "Select 'Badly adjusted' preset",       "", false },
+  { Event::VidModeCustom,          "Select 'Custom' preset",               "", false },
+  { Event::PreviousAttribute,      "Select previous 'Custom' attribute",   "", false },
+  { Event::NextAttribute,          "Select next 'Custom' attribute",       "", false },
+  { Event::DecreaseAttribute,      "Decrease selected 'Custom' attribute", "", false },
+  { Event::IncreaseAttribute,      "Increase selected 'Custom' attribute", "", false },
+  { Event::ScanlinesDecrease,      "Decrease scanlines",          "", false },
+  { Event::ScanlinesIncrease,      "Increase scanlines",          "", false },
   { Event::VolumeDecrease,         "Decrease volume",             "", false },
   { Event::VolumeIncrease,         "Increase volume",             "", false },
   { Event::SoundToggle,            "Toggle sound",                "", false },
-  { Event::VidmodeDecrease,        "Previous zoom level",         "", false },
-  { Event::VidmodeIncrease,        "Next zoom level",             "", false },
   { Event::PauseMode,              "Pause",                       "", false },
   { Event::OptionsMenuMode,        "Enter options menu UI",       "", false },
   { Event::CmdMenuMode,            "Toggle command menu UI",      "", false },

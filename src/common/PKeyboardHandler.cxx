@@ -49,26 +49,29 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(
   list = myOSystem.settings().getString("keymap_ui");
   i += myKeyMap.loadMapping(list, kMenuMode);
 
-  if (!i)
-  {
-    setDefaultMapping(Event::NoType, kEmulationMode);
-    setDefaultMapping(Event::NoType, kMenuMode);
-  }
+  setDefaultMapping(Event::NoType, kEmulationMode);
+  setDefaultMapping(Event::NoType, kMenuMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mode)
 {
-  // If event is 'NoType', erase and reset all mappings
-  // Otherwise, only reset the given event
-  bool eraseAll = (event == Event::NoType);
-  if(eraseAll)
-    // Erase all mappings of given mode
-    myKeyMap.eraseMode(mode);
+  // If event is 'NoType', check for missing default mappings
+  bool defaultMissing = (event == Event::NoType);
 
-  auto setDefaultKey = [&](Event::Type k_event, StellaKey key, int mod = StellaMod::KBDM_NONE)
+  auto setDefaultKey = [&](Event::Type k_event, StellaKey key, int mod = KBDM_NONE)
   {
-    if (eraseAll || k_event == event)
+    if (defaultMissing)
+    {
+      // if there is no existing mapping for the event and
+      //  the default mapping for the event is unused, set default key for event
+      if (myKeyMap.getEventMapping(k_event, mode).size() == 0 &&
+          myKeyMap.get(mode, key, mod) == Event::Type::NoType)
+      {
+        myKeyMap.add(k_event, mode, key, mod);
+      }
+    }
+    else if (k_event == event)
     {
       myKeyMap.eraseEvent(k_event, mode);
       myKeyMap.add(k_event, mode, key, mod);
@@ -146,6 +149,20 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::VolumeDecrease     , KBDK_LEFTBRACKET, KBDM_ALT);
       setDefaultKey(Event::VolumeIncrease     , KBDK_RIGHTBRACKET, KBDM_ALT);
       setDefaultKey(Event::SoundToggle        , KBDK_RIGHTBRACKET, KBDM_CTRL);
+
+      setDefaultKey(Event::ToggleFullScreen   , KBDK_RETURN, KBDM_ALT);
+      setDefaultKey(Event::VidmodeStd         , KBDK_1, KBDM_ALT);
+      setDefaultKey(Event::VidmodeRGB         , KBDK_2, KBDM_ALT);
+      setDefaultKey(Event::VidmodeSVideo      , KBDK_3, KBDM_ALT);
+      setDefaultKey(Event::VidModeComposite   , KBDK_4, KBDM_ALT);
+      setDefaultKey(Event::VidModeBad         , KBDK_5, KBDM_ALT);
+      setDefaultKey(Event::VidModeCustom      , KBDK_6, KBDM_ALT);
+      setDefaultKey(Event::ScanlinesDecrease  , KBDK_7, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ScanlinesIncrease  , KBDK_7, KBDM_ALT);
+      setDefaultKey(Event::PreviousAttribute  , KBDK_9, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::NextAttribute      , KBDK_9, KBDM_ALT);
+      setDefaultKey(Event::DecreaseAttribute  , KBDK_0, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::IncreaseAttribute  , KBDK_0, KBDM_ALT);
 
     // FIXME - use the R77 define in the final release
     //         use the '1' define for testing
@@ -294,20 +311,8 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   switch(estate)
   {
     case EventHandlerState::EMULATION:
-      myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed);
-      break;
-
     case EventHandlerState::PAUSE:
-      switch (myKeyMap.get(kEmulationMode, key, mod))
-      {
-        case Event::TakeSnapshot:
-        case Event::DebuggerMode:
-          myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed);
-          break;
-
-        default:
-          break;
-      }
+      myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed);
       break;
 
     default:
@@ -341,10 +346,6 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
       myAltKeyCounter = 1;
       return true;
     }
-    else if(key == KBDK_RETURN)
-    {
-      myOSystem.frameBuffer().toggleFullscreen();
-    }
     // State rewinding must work in pause mode too
     else if(estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE)
     {
@@ -372,61 +373,6 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
 
         case KBDK_PAGEDOWN:  // Alt-PageDown decreases YStart
           myOSystem.console().changeYStart(-1);
-          break;
-
-        case KBDK_1:  // Alt-1 turns off NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::OFF);
-          break;
-
-        case KBDK_2:  // Alt-2 turns on 'rgb' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::RGB);
-          break;
-
-        case KBDK_3:  // Alt-3 turns on 'svideo' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::SVIDEO);
-          break;
-
-        case KBDK_4:  // Alt-4 turns on 'composite' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::COMPOSITE);
-          break;
-
-        case KBDK_5:  // Alt-5 turns on 'bad' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::BAD);
-          break;
-
-        case KBDK_6:  // Alt-6 turns on 'custom' NTSC filtering
-          myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
-          break;
-
-        case KBDK_7:  // Alt-7 changes scanline intensity for NTSC filtering
-          if(StellaModTest::isShift(mod))
-            myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-5);
-          else
-            myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+5);
-          break;
-
-        case KBDK_9:  // Alt-9 selects various custom adjustables for NTSC filtering
-          if(myOSystem.frameBuffer().tiaSurface().ntscEnabled())
-          {
-            if(StellaModTest::isShift(mod))
-              myOSystem.frameBuffer().showMessage(
-                myOSystem.frameBuffer().tiaSurface().ntsc().setPreviousAdjustable());
-            else
-              myOSystem.frameBuffer().showMessage(
-                myOSystem.frameBuffer().tiaSurface().ntsc().setNextAdjustable());
-          }
-          break;
-
-        case KBDK_0:  // Alt-0 changes custom adjustables for NTSC filtering
-          if(myOSystem.frameBuffer().tiaSurface().ntscEnabled())
-          {
-            if(StellaModTest::isShift(mod))
-              myOSystem.frameBuffer().showMessage(
-                myOSystem.frameBuffer().tiaSurface().ntsc().decreaseAdjustable());
-            else
-              myOSystem.frameBuffer().showMessage(
-                myOSystem.frameBuffer().tiaSurface().ntsc().increaseAdjustable());
-          }
           break;
 
         case KBDK_Z:

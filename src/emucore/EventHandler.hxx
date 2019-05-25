@@ -367,7 +367,7 @@ class EventHandler
     static constexpr Int32
       COMBO_SIZE           = 16,
       EVENTS_PER_COMBO     = 8,
-      EMUL_ACTIONLIST_SIZE = 85 + COMBO_SIZE,
+      EMUL_ACTIONLIST_SIZE = 98 + COMBO_SIZE,
       MENU_ACTIONLIST_SIZE = 16
     ;
 
