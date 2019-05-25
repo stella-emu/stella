@@ -68,8 +68,11 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 
   auto setDefaultKey = [&](StellaKey key, Event::Type k_event, StellaMod mod = StellaMod::KBDM_NONE)
   {
-    if(eraseAll || k_event == event)
+    if (eraseAll || k_event == event)
+    {
+      myKeyMap.eraseEvent(k_event, mode);
       myKeyMap.add(k_event, mode, key, mod);
+    }
   };
 
   switch(mode)
