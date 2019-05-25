@@ -66,7 +66,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
     // Erase all mappings of given mode
     myKeyMap.eraseMode(mode);
 
-  auto setDefaultKey = [&](StellaKey key, Event::Type k_event, StellaMod mod = StellaMod::KBDM_NONE)
+  auto setDefaultKey = [&](Event::Type k_event, StellaKey key, StellaMod mod = StellaMod::KBDM_NONE)
   {
     if (eraseAll || k_event == event)
     {
@@ -78,110 +78,116 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
   switch(mode)
   {
     case kEmulationMode:
-      setDefaultKey( KBDK_1,         Event::KeyboardZero1     );
-      setDefaultKey( KBDK_2,         Event::KeyboardZero2     );
-      setDefaultKey( KBDK_3,         Event::KeyboardZero3     );
-      setDefaultKey( KBDK_Q,         Event::KeyboardZero4     );
-      setDefaultKey( KBDK_W,         Event::KeyboardZero5     );
-      setDefaultKey( KBDK_E,         Event::KeyboardZero6     );
-      setDefaultKey( KBDK_A,         Event::KeyboardZero7     );
-      setDefaultKey( KBDK_S,         Event::KeyboardZero8     );
-      setDefaultKey( KBDK_D,         Event::KeyboardZero9     );
-      setDefaultKey( KBDK_Z,         Event::KeyboardZeroStar  );
-      setDefaultKey( KBDK_X,         Event::KeyboardZero0     );
-      setDefaultKey( KBDK_C,         Event::KeyboardZeroPound );
+      setDefaultKey(Event::KeyboardZero1      , KBDK_1);
+      setDefaultKey(Event::KeyboardZero2      , KBDK_2);
+      setDefaultKey(Event::KeyboardZero3      , KBDK_3);
+      setDefaultKey(Event::KeyboardZero4      , KBDK_Q);
+      setDefaultKey(Event::KeyboardZero5      , KBDK_W);
+      setDefaultKey(Event::KeyboardZero6      , KBDK_E);
+      setDefaultKey(Event::KeyboardZero7      , KBDK_A);
+      setDefaultKey(Event::KeyboardZero8      , KBDK_S);
+      setDefaultKey(Event::KeyboardZero9      , KBDK_D);
+      setDefaultKey(Event::KeyboardZeroStar   , KBDK_Z);
+      setDefaultKey(Event::KeyboardZero0      , KBDK_X);
+      setDefaultKey(Event::KeyboardZeroPound  , KBDK_C);
 
-      setDefaultKey( KBDK_8,         Event::KeyboardOne1      );
-      setDefaultKey( KBDK_9,         Event::KeyboardOne2      );
-      setDefaultKey( KBDK_0,         Event::KeyboardOne3      );
-      setDefaultKey( KBDK_I,         Event::KeyboardOne4      );
-      setDefaultKey( KBDK_O,         Event::KeyboardOne5      );
-      setDefaultKey( KBDK_P,         Event::KeyboardOne6      );
-      setDefaultKey( KBDK_K,         Event::KeyboardOne7      );
-      setDefaultKey( KBDK_L,         Event::KeyboardOne8      );
-      setDefaultKey( KBDK_SEMICOLON, Event::KeyboardOne9      );
-      setDefaultKey( KBDK_COMMA,     Event::KeyboardOneStar   );
-      setDefaultKey( KBDK_PERIOD,    Event::KeyboardOne0      );
-      setDefaultKey( KBDK_SLASH,     Event::KeyboardOnePound  );
+      setDefaultKey(Event::KeyboardOne1       , KBDK_8);
+      setDefaultKey(Event::KeyboardOne2       , KBDK_9);
+      setDefaultKey(Event::KeyboardOne3       , KBDK_0);
+      setDefaultKey(Event::KeyboardOne4       , KBDK_I);
+      setDefaultKey(Event::KeyboardOne5       , KBDK_O);
+      setDefaultKey(Event::KeyboardOne6       , KBDK_P);
+      setDefaultKey(Event::KeyboardOne7       , KBDK_K);
+      setDefaultKey(Event::KeyboardOne8       , KBDK_L);
+      setDefaultKey(Event::KeyboardOne9       , KBDK_SEMICOLON);
+      setDefaultKey(Event::KeyboardOneStar    , KBDK_COMMA);
+      setDefaultKey(Event::KeyboardOne0       , KBDK_PERIOD);
+      setDefaultKey(Event::KeyboardOnePound   , KBDK_SLASH);
 
-      setDefaultKey( KBDK_UP,        Event::JoystickZeroUp    );
-      setDefaultKey( KBDK_DOWN,      Event::JoystickZeroDown  );
-      setDefaultKey( KBDK_LEFT,      Event::JoystickZeroLeft  );
-      setDefaultKey( KBDK_RIGHT,     Event::JoystickZeroRight );
-      setDefaultKey( KBDK_SPACE,     Event::JoystickZeroFire  );
-      setDefaultKey( KBDK_LCTRL,     Event::JoystickZeroFire  );
-      setDefaultKey( KBDK_4,         Event::JoystickZeroFire5 );
-      setDefaultKey( KBDK_5,         Event::JoystickZeroFire9 );
+      setDefaultKey(Event::JoystickZeroUp     , KBDK_UP);
+      setDefaultKey(Event::JoystickZeroDown   , KBDK_DOWN);
+      setDefaultKey(Event::JoystickZeroLeft   , KBDK_LEFT);
+      setDefaultKey(Event::JoystickZeroRight  , KBDK_RIGHT);
+      setDefaultKey(Event::JoystickZeroFire   , KBDK_SPACE);
+      setDefaultKey(Event::JoystickZeroFire   , KBDK_LCTRL);
+      setDefaultKey(Event::JoystickZeroFire5  , KBDK_4);
+      setDefaultKey(Event::JoystickZeroFire9  , KBDK_5);
 
-      setDefaultKey( KBDK_Y,         Event::JoystickOneUp     );
-      setDefaultKey( KBDK_H,         Event::JoystickOneDown   );
-      setDefaultKey( KBDK_G,         Event::JoystickOneLeft   );
-      setDefaultKey( KBDK_J,         Event::JoystickOneRight  );
-      setDefaultKey( KBDK_F,         Event::JoystickOneFire   );
-      setDefaultKey( KBDK_6,         Event::JoystickOneFire5  );
-      setDefaultKey( KBDK_7,         Event::JoystickOneFire9  );
+      setDefaultKey(Event::JoystickOneUp      , KBDK_Y);
+      setDefaultKey(Event::JoystickOneDown    , KBDK_H);
+      setDefaultKey(Event::JoystickOneLeft    , KBDK_G);
+      setDefaultKey(Event::JoystickOneRight   , KBDK_J);
+      setDefaultKey(Event::JoystickOneFire    , KBDK_F);
+      setDefaultKey(Event::JoystickOneFire5   , KBDK_6);
+      setDefaultKey(Event::JoystickOneFire9   , KBDK_7);
 
-      setDefaultKey( KBDK_F1,        Event::ConsoleSelect     );
-      setDefaultKey( KBDK_F2,        Event::ConsoleReset      );
-      setDefaultKey( KBDK_F3,        Event::ConsoleColor      );
-      setDefaultKey( KBDK_F4,        Event::ConsoleBlackWhite );
-      setDefaultKey( KBDK_F5,        Event::ConsoleLeftDiffA  );
-      setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffB  );
-      setDefaultKey( KBDK_F7,        Event::ConsoleRightDiffA );
-      setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffB );
-      setDefaultKey( KBDK_F9,        Event::SaveState         );
-      setDefaultKey( KBDK_F10,       Event::ChangeState       );
-      setDefaultKey( KBDK_F11,       Event::LoadState         );
-      setDefaultKey( KBDK_F12,       Event::TakeSnapshot      );
-      setDefaultKey( KBDK_BACKSPACE, Event::Fry               );
-      setDefaultKey( KBDK_PAUSE,     Event::PauseMode         );
-      setDefaultKey( KBDK_TAB,       Event::OptionsMenuMode   );
-      setDefaultKey( KBDK_BACKSLASH, Event::CmdMenuMode       );
-      setDefaultKey( KBDK_T,         Event::TimeMachineMode   );
-      setDefaultKey( KBDK_GRAVE,     Event::DebuggerMode      );
-      setDefaultKey( KBDK_ESCAPE,    Event::LauncherMode      );
+      setDefaultKey(Event::ConsoleSelect      , KBDK_F1);
+      setDefaultKey(Event::ConsoleReset       , KBDK_F2);
+      setDefaultKey(Event::ConsoleColor       , KBDK_F3);
+      setDefaultKey(Event::ConsoleBlackWhite  , KBDK_F4);
+      setDefaultKey(Event::ConsoleLeftDiffA   , KBDK_F5);
+      setDefaultKey(Event::ConsoleLeftDiffB   , KBDK_F6);
+      setDefaultKey(Event::ConsoleRightDiffA  , KBDK_F7);
+      setDefaultKey(Event::ConsoleRightDiffB  , KBDK_F8);
+      setDefaultKey(Event::SaveState          , KBDK_F9);
+      setDefaultKey(Event::ChangeState        , KBDK_F10);
+      setDefaultKey(Event::LoadState          , KBDK_F11);
+      setDefaultKey(Event::TakeSnapshot       , KBDK_F12);
+      setDefaultKey(Event::Fry                , KBDK_BACKSPACE);
+      setDefaultKey(Event::PauseMode          , KBDK_PAUSE);
+      setDefaultKey(Event::OptionsMenuMode    , KBDK_TAB);
+      setDefaultKey(Event::CmdMenuMode        , KBDK_BACKSLASH);
+      setDefaultKey(Event::TimeMachineMode    , KBDK_T);
+      setDefaultKey(Event::DebuggerMode       , KBDK_GRAVE);
+      setDefaultKey(Event::LauncherMode       , KBDK_ESCAPE);
+
+      setDefaultKey(Event::VidmodeDecrease    , KBDK_MINUS, KBDM_ALT);
+      setDefaultKey(Event::VidmodeIncrease    , KBDK_EQUALS, KBDM_ALT);
+      setDefaultKey(Event::VolumeDecrease     , KBDK_LEFTBRACKET, KBDM_ALT);
+      setDefaultKey(Event::VolumeIncrease     , KBDK_RIGHTBRACKET, KBDM_ALT);
+      setDefaultKey(Event::SoundToggle        , KBDK_RIGHTBRACKET, KBDM_CTRL);
 
     // FIXME - use the R77 define in the final release
     //         use the '1' define for testing
     #if defined(RETRON77)
 //    #if 1
-      setDefaultKey( KBDK_F4,        Event::ConsoleColorToggle     ); // back ("COLOR","B/W")
-      setDefaultKey( KBDK_F6,        Event::ConsoleLeftDiffToggle  ); // front ("SKILL P1")
-      setDefaultKey( KBDK_F8,        Event::ConsoleRightDiffToggle ); // front ("SKILL P2")
-      setDefaultKey( KBDK_F13,       Event::CmdMenuMode            ); // back ("4:3","16:9")
-      setDefaultKey( KBDK_BACKSPACE, Event::LauncherMode           ); // back ("FRY")
+      setDefaultKey(Event::ConsoleColorToggle     , KBDK_F4);         // back ("COLOR","B/W")
+      setDefaultKey(Event::ConsoleLeftDiffToggle  , KBDK_F6);         // front ("SKILL P1")
+      setDefaultKey(Event::ConsoleRightDiffToggle , KBDK_F8);         // front ("SKILL P2")
+      setDefaultKey(Event::CmdMenuMode            , KBDK_F13);        // back ("4:3","16:9")
+      setDefaultKey(Event::LauncherMode           , KBDK_BACKSPACE);  // back ("FRY")
     #endif
       break;
 
     case kMenuMode:
-      setDefaultKey( KBDK_UP,        Event::UIUp      );
-      setDefaultKey( KBDK_DOWN,      Event::UIDown    );
-      setDefaultKey( KBDK_LEFT,      Event::UILeft    );
-      setDefaultKey( KBDK_RIGHT,     Event::UIRight   );
+      setDefaultKey(Event::UIUp      , KBDK_UP);
+      setDefaultKey(Event::UIDown    , KBDK_DOWN);
+      setDefaultKey(Event::UILeft    , KBDK_LEFT);
+      setDefaultKey(Event::UIRight   , KBDK_RIGHT);
 
-      setDefaultKey( KBDK_HOME,      Event::UIHome    );
-      setDefaultKey( KBDK_END,       Event::UIEnd     );
-      setDefaultKey( KBDK_PAGEUP,    Event::UIPgUp    );
-      setDefaultKey( KBDK_PAGEDOWN,  Event::UIPgDown  );
+      setDefaultKey(Event::UIHome    , KBDK_HOME);
+      setDefaultKey(Event::UIEnd     , KBDK_END);
+      setDefaultKey(Event::UIPgUp    , KBDK_PAGEUP);
+      setDefaultKey(Event::UIPgDown  , KBDK_PAGEDOWN);
 
-      setDefaultKey( KBDK_RETURN,    Event::UISelect  );
-      setDefaultKey( KBDK_ESCAPE,    Event::UICancel  );
+      setDefaultKey(Event::UISelect  , KBDK_RETURN);
+      setDefaultKey(Event::UICancel  , KBDK_ESCAPE);
 
-      setDefaultKey( KBDK_BACKSPACE, Event::UIPrevDir);
+      setDefaultKey(Event::UIPrevDir , KBDK_BACKSPACE);
 
     // FIXME - use the R77 define in the final release
     //         use the '1' define for testing
     #if defined(RETRON77)
 //    #if 1
-      setDefaultKey( KBDK_F9,        Event::UIUp      ); // front ("SAVE")
-      setDefaultKey( KBDK_F2,        Event::UIDown    ); // front ("RESET")
-      setDefaultKey( KBDK_F11,       Event::UINavPrev ); // front ("LOAD")
-      setDefaultKey( KBDK_F1,        Event::UINavNext ); // front ("MODE")
-      setDefaultKey( KBDK_F6,        Event::UISelect  ); // front ("SKILL P1")
-      setDefaultKey( KBDK_F8,        Event::UICancel  ); // front ("SKILL P2")
-      //setDefaultKey( KBDK_F4,        Event::NoType    ); // back ("COLOR","B/W")
-      setDefaultKey( KBDK_F13,       Event::UITabPrev ); // back ("4:3","16:9")
-      setDefaultKey( KBDK_BACKSPACE, Event::UITabNext ); // back (FRY)
+      setDefaultKey(Event::UIUp       , KBDK_F9);         // front ("SAVE")
+      setDefaultKey(Event::UIDown     , KBDK_F2);         // front ("RESET")
+      setDefaultKey(Event::UINavPrev  , KBDK_F11);        // front ("LOAD")
+      setDefaultKey(Event::UINavNext  , KBDK_F1);         // front ("MODE")
+      setDefaultKey(Event::UISelect   , KBDK_F6);         // front ("SKILL P1")
+      setDefaultKey(Event::UICancel   , KBDK_F8);         // front ("SKILL P2")
+      //setDefaultKey(Event::NoType     , KBDK_F4);         // back ("COLOR","B/W")
+      setDefaultKey(Event::UITabPrev  , KBDK_F13);        // back ("4:3","16:9")
+      setDefaultKey(Event::UITabNext  , KBDK_BACKSPACE);  // back (FRY)
     #endif
       break;
 
@@ -355,23 +361,6 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
 
         case KBDK_UP:  // Alt-up rewinds to end of list
           myHandler.enterTimeMachineMenuMode(1000, true);
-          break;
-
-          // These can work in pause mode too
-        case KBDK_MINUS:
-          myHandler.handleEvent(Event::VidmodeDecrease, pressed);
-          break;
-
-        case KBDK_EQUALS:
-          myHandler.handleEvent(Event::VidmodeIncrease, pressed);
-          break;
-
-        case KBDK_LEFTBRACKET:
-          myHandler.handleEvent(Event::VolumeDecrease, pressed);
-          break;
-
-        case KBDK_RIGHTBRACKET:
-          myHandler.handleEvent(Event::VolumeIncrease, pressed);
           break;
 
         case KBDK_PAGEUP:    // Alt-PageUp increases YStart
@@ -583,10 +572,6 @@ bool PhysicalKeyboardHandler::handleControlEvent(StellaKey key, StellaMod mod, b
 
         case KBDK_R:  // Ctrl-r reloads the currently loaded ROM
           myOSystem.reloadConsole();
-          break;
-
-        case KBDK_RIGHTBRACKET: // Ctrl-] toggles sound
-          myOSystem.sound().toggleMute();
           break;
 
         default:
