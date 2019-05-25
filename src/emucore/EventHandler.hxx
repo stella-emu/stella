@@ -181,8 +181,9 @@ class EventHandler
       @param event  The event we are remapping
       @param mode   The mode where this event is active
       @param key    The key to bind to this event
+      @param mod    The modifier to bind to this event
     */
-    bool addKeyMapping(Event::Type event, EventMode mode, StellaKey key);
+    bool addKeyMapping(Event::Type event, EventMode mode, StellaKey key, StellaMod mod);
 
     /**
       Bind a physical joystick axis direction to an event/action and regenerate

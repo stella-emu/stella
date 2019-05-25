@@ -448,15 +448,15 @@ void InputDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::handleKeyDown(StellaKey key, StellaMod mod)
+void InputDialog::handleKeyUp(StellaKey key, StellaMod mod)
 {
   // Remap key events in remap mode, otherwise pass to parent dialog
-  if(myEmulEventMapper->remapMode())
-    myEmulEventMapper->handleKeyDown(key, mod);
-  else if(myMenuEventMapper->remapMode())
-    myMenuEventMapper->handleKeyDown(key, mod);
+  if (myEmulEventMapper->remapMode())
+    myEmulEventMapper->handleKeyUp(key, mod);
+  else if (myMenuEventMapper->remapMode())
+    myMenuEventMapper->handleKeyUp(key, mod);
   else
-    Dialog::handleKeyDown(key, mod);
+    Dialog::handleKeyUp(key, mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

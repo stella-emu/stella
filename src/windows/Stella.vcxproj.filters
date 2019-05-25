@@ -903,6 +903,9 @@
     <ClCompile Include="..\common\PKeyboardHandler.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\KeyMap.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\emucore\tia\Audio.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
@@ -1994,12 +1997,17 @@
     <ClInclude Include="..\gui\R77HelpDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\KeyMap.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\emucore\tia\frame-manager\module.mk" />
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="stella.rc">

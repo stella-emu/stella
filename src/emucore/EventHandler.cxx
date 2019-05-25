@@ -848,9 +848,9 @@ void EventHandler::removePhysicalJoystickFromDatabase(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, StellaKey key)
+bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, StellaKey key, StellaMod mod)
 {
-  bool mapped = myPKeyHandler->addMapping(event, mode, key);
+  bool mapped = myPKeyHandler->addMapping(event, mode, key, mod);
   if(mapped)
     setActionMappings(mode);
 

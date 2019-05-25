@@ -26,6 +26,7 @@ class Event;
 
 #include "bspf.hxx"
 #include "EventHandlerConstants.hxx"
+#include "KeyMap.hxx"
 
 /**
   This class handles all physical keyboard-related operations in Stella.
@@ -41,6 +42,7 @@ class Event;
 class PhysicalKeyboardHandler
 {
   public:
+
     PhysicalKeyboardHandler(OSystem& system, EventHandler& handler, Event& event);
 
     void setDefaultMapping(Event::Type type, EventMode mode);
@@ -49,13 +51,13 @@ class PhysicalKeyboardHandler
     string getMappingDesc(Event::Type, EventMode mode) const;
 
     /** Bind a physical keyboard event to a virtual event/action. */
-    bool addMapping(Event::Type event, EventMode mode, StellaKey key);
+    bool addMapping(Event::Type event, EventMode mode, StellaKey key, StellaMod mod);
 
     /** Handle a physical keyboard event. */
     void handleEvent(StellaKey key, StellaMod mod, bool pressed);
 
     Event::Type eventForKey(StellaKey key, EventMode mode) const {
-      return myKeyTable[key][mode];
+      return myKeyMap.get(mode, key);
     }
 
     /** See comments on 'myAltKeyCounter' for more information. */
@@ -72,11 +74,8 @@ class PhysicalKeyboardHandler
     EventHandler& myHandler;
     Event& myEvent;
 
-    // Array of key events, indexed by StellaKey
-    Event::Type myKeyTable[KBDK_LAST][kNumModes];
-    // Array of mod keys, indexed by StellaKey
-    // TODO - uncomment when this is ready
-    //StellaMod myModKeyTable[KBDK_LAST][kNumModes];
+    // Hashmap of key events
+    KeyMap myKeyMap;
 
     // Sometimes key combos with the Alt key become 'stuck' after the
     // window changes state, and we want to ignore that event
