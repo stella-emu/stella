@@ -82,7 +82,8 @@ Settings::Settings()
   setPermanent(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
 
   // Input event options
-  setPermanent("keymap", "");
+  setPermanent("keymap_emu", "");
+  setPermanent("keymap_ui", "");
   setPermanent("joymap", "");
   setPermanent("combomap", "");
   setPermanent("joydeadzone", "13");

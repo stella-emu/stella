@@ -254,14 +254,14 @@ void EventMappingWidget::enableButtons(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
+bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
 {
   // Remap keys in remap mode
-  if(myRemapStatus && myActionSelected >= 0)
+  if (myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event =
       instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if(instance().eventHandler().addKeyMapping(event, myEventMode, key))
+    if (instance().eventHandler().addKeyMapping(event, myEventMode, key, mod))
       stopRemapping();
   }
   return true;

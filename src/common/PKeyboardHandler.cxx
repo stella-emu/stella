@@ -26,6 +26,7 @@
 #include "TIASurface.hxx"
 #include "PNGLibrary.hxx"
 #include "PKeyboardHandler.hxx"
+#include "KeyMap.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -43,33 +44,12 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(
     myAltKeyCounter(0),
     myUseCtrlKeyFlag(myOSystem.settings().getBool("ctrlcombo"))
 {
-  // Since istringstream swallows whitespace, we have to make the
-  // delimiters be spaces
-  string list = myOSystem.settings().getString("keymap");
-  replace(list.begin(), list.end(), ':', ' ');
-  istringstream buf(list);
+  string list = myOSystem.settings().getString("keymap_emu");
+  int i = myKeyMap.loadMapping(list, kEmulationMode);
+  list = myOSystem.settings().getString("keymap_ui");
+  i += myKeyMap.loadMapping(list, kMenuMode);
 
-  IntArray map;
-  int value;
-  Event::Type e;
-
-  // Get event count, which should be the first int in the list
-  buf >> value;
-  e = Event::Type(value);
-  if(e == Event::LastType)
-    while(buf >> value)
-      map.push_back(value);
-
-  // Only fill the key mapping array if the data is valid
-  if(e == Event::LastType && map.size() == KBDK_LAST * kNumModes)
-  {
-    // Fill the keymap table with events
-    auto ev = map.cbegin();
-    for(int mode = 0; mode < kNumModes; ++mode)
-      for(int i = 0; i < KBDK_LAST; ++i)
-        myKeyTable[i][mode] = Event::Type(*ev++);
-  }
-  else
+  if (!i)
   {
     setDefaultMapping(Event::NoType, kEmulationMode);
     setDefaultMapping(Event::NoType, kMenuMode);
@@ -83,16 +63,13 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
   // Otherwise, only reset the given event
   bool eraseAll = (event == Event::NoType);
   if(eraseAll)
-  {
-    // Erase all mappings
-    for(int i = 0; i < KBDK_LAST; ++i)
-      myKeyTable[i][mode] = Event::NoType;
-  }
+    // Erase all mappings of given mode
+    myKeyMap.eraseMode(mode);
 
-  auto setDefaultKey = [&](StellaKey key, Event::Type k_event)
+  auto setDefaultKey = [&](StellaKey key, Event::Type k_event, StellaMod mod = StellaMod::KBDM_NONE)
   {
     if(eraseAll || k_event == event)
-      myKeyTable[key][mode] = k_event;
+      myKeyMap.add(k_event, mode, key, mod);
   };
 
   switch(mode)
@@ -213,53 +190,33 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::eraseMapping(Event::Type event, EventMode mode)
 {
-  for(int i = 0; i < KBDK_LAST; ++i)
-    // This key cannot be remapped
-    if(myKeyTable[i][mode] == event && !(i == KBDK_TAB && mode == EventMode::kMenuMode))
-      myKeyTable[i][mode] = Event::NoType;
+  // This key cannot be remapped
+  if (event != Event::UINavNext || mode != EventMode::kMenuMode)
+    myKeyMap.eraseEvent(event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::saveMapping()
 {
-  // Iterate through the keymap table and create a colon-separated list
-  // Prepend the event count, so we can check it on next load
-  ostringstream keybuf;
-  keybuf << Event::LastType;
-  for(int mode = 0; mode < kNumModes; ++mode)
-    for(int i = 0; i < KBDK_LAST; ++i)
-      keybuf << ":" << myKeyTable[i][mode];
-
-  myOSystem.settings().setValue("keymap", keybuf.str());
+  myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(kEmulationMode));
+  myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(kMenuMode));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PhysicalKeyboardHandler::getMappingDesc(Event::Type event, EventMode mode) const
 {
-  ostringstream buf;
-
-  for(int k = 0; k < KBDK_LAST; ++k)
-  {
-    if(myKeyTable[k][mode] == event)
-    {
-      if(buf.str() != "")
-        buf << ", ";
-      buf << StellaKeyName::forKey(StellaKey(k));
-    }
-  }
-
-  return buf.str();
+  return myKeyMap.getEventMappingDesc(event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
-                                         StellaKey key)
+                                         StellaKey key, StellaMod mod)
 {
   // These keys cannot be remapped
   if((key == KBDK_TAB && mode == EventMode::kMenuMode) || Event::isAnalog(event))
     return false;
   else
-    myKeyTable[key][mode] = event;
+    myKeyMap.add(event, mode, key, mod);
 
   return true;
 }
@@ -317,7 +274,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
     }
 
     // Handle keys which switch eventhandler state
-    if(!pressed && myHandler.changeStateByEvent(myKeyTable[key][kEmulationMode]))
+    if (!pressed && myHandler.changeStateByEvent(myKeyMap.get(kEmulationMode, key, mod)))
       return;
   }
 
@@ -325,15 +282,15 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   switch(estate)
   {
     case EventHandlerState::EMULATION:
-      myHandler.handleEvent(myKeyTable[key][kEmulationMode], pressed);
+      myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed);
       break;
 
     case EventHandlerState::PAUSE:
-      switch(myKeyTable[key][kEmulationMode])
+      switch (myKeyMap.get(kEmulationMode, key, mod))
       {
         case Event::TakeSnapshot:
         case Event::DebuggerMode:
-          myHandler.handleEvent(myKeyTable[key][kEmulationMode], pressed);
+          myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed);
           break;
 
         default:
