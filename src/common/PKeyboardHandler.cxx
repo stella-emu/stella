@@ -67,10 +67,10 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
   {
     if (updateDefaults)
     {
-      // if there is no existing mapping for the event and
+      // if there is no existing mapping for the event or
       //  the default mapping for the event is unused, set default key for event
-      if (myKeyMap.getEventMapping(k_event, mode).size() == 0 &&
-          myKeyMap.get(mode, key, mod) == Event::Type::NoType)
+      if (myKeyMap.getEventMapping(k_event, mode).size() == 0 ||
+          !myKeyMap.check(mode, key, mod))
       {
         myKeyMap.add(k_event, mode, key, mod);
       }
@@ -200,6 +200,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::UITabNext , KBDK_TAB, KBDM_CTRL);
 
       setDefaultKey(Event::UIPrevDir , KBDK_BACKSPACE);
+      setDefaultKey(Event::ToggleFullScreen, KBDK_RETURN, KBDM_ALT);
 
     // FIXME - use the R77 define in the final release
     //         use the '1' define for testing
