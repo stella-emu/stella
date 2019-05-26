@@ -368,7 +368,7 @@ class EventHandler
       COMBO_SIZE           = 16,
       EVENTS_PER_COMBO     = 8,
       EMUL_ACTIONLIST_SIZE = 98 + COMBO_SIZE,
-      MENU_ACTIONLIST_SIZE = 16
+      MENU_ACTIONLIST_SIZE = 18
     ;
 
     /**
