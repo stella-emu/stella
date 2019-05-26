@@ -820,24 +820,6 @@ void EventHandler::setActionMappings(EventMode mode)
     }
 #endif
 
-    // There are some keys which are hardcoded.  These should be represented too.
-    string prepend = "";
-    string modifier;
-#ifndef BSPF_MACOS
-    modifier = "Ctrl";
-#else
-    modifier = "Cmd";
-#endif
-
-    if(event == Event::Quit)
-      prepend = modifier + "+Q (*)";
-    // else if ...
-
-    if(key == "")
-      key = prepend;
-    else if(prepend != "")
-      key = prepend + ", " + key;
-
     if(key != "")
       list[i].key = key;
   }
@@ -1492,24 +1474,26 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::ActionList EventHandler::ourMenuActionList[MENU_ACTIONLIST_SIZE] = {
-  { Event::UIUp,        "Move Up",              "", false },
-  { Event::UIDown,      "Move Down",            "", false },
-  { Event::UILeft,      "Move Left",            "", false },
-  { Event::UIRight,     "Move Right",           "", false },
+  { Event::UIUp,              "Move Up",              "", false },
+  { Event::UIDown,            "Move Down",            "", false },
+  { Event::UILeft,            "Move Left",            "", false },
+  { Event::UIRight,           "Move Right",           "", false },
 
-  { Event::UIHome,      "Home",                 "", false },
-  { Event::UIEnd,       "End",                  "", false },
-  { Event::UIPgUp,      "Page Up",              "", false },
-  { Event::UIPgDown,    "Page Down",            "", false },
+  { Event::UIHome,            "Home",                 "", false },
+  { Event::UIEnd,             "End",                  "", false },
+  { Event::UIPgUp,            "Page Up",              "", false },
+  { Event::UIPgDown,          "Page Down",            "", false },
 
-  { Event::UIOK,        "OK",                   "", false },
-  { Event::UICancel,    "Cancel",               "", false },
-  { Event::UISelect,    "Select item",          "", false },
+  { Event::UIOK,              "OK",                   "", false },
+  { Event::UICancel,          "Cancel",               "", false },
+  { Event::UISelect,          "Select item",          "", false },
 
-  { Event::UINavPrev,   "Previous object",      "", false },
-  { Event::UINavNext,   "Next object",          "", false },
-  { Event::UITabPrev,   "Previous tab",         "", false },
-  { Event::UITabNext,   "Next tab",             "", false },
+  { Event::UINavPrev,         "Previous object",      "", false },
+  { Event::UINavNext,         "Next object",          "", false },
+  { Event::UITabPrev,         "Previous tab",         "", false },
+  { Event::UITabNext,         "Next tab",             "", false },
 
-  { Event::UIPrevDir,   "Parent directory",     "", false }
+  { Event::UIPrevDir,         "Parent directory",     "", false },
+  { Event::ToggleFullScreen,  "Toggle fullscreen",    "", false },
+  { Event::Quit,              "Quit",                 "", false }
 };

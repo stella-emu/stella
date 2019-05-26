@@ -148,6 +148,11 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::TimeMachineMode    , KBDK_T);
       setDefaultKey(Event::DebuggerMode       , KBDK_GRAVE);
       setDefaultKey(Event::LauncherMode       , KBDK_ESCAPE);
+    #ifdef BSPF_MACOS
+      setDefaultKey(Event::Quit               , KBDK_Q, KBDM_ALT);
+    #else
+      setDefaultKey(Event::Quit               , KBDK_Q, KBDM_CTRL);
+    #endif
 
       setDefaultKey(Event::VidmodeDecrease    , KBDK_MINUS, KBDM_ALT);
       setDefaultKey(Event::VidmodeIncrease    , KBDK_EQUALS, KBDM_ALT);
@@ -182,26 +187,31 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       break;
 
     case kMenuMode:
-      setDefaultKey(Event::UIUp      , KBDK_UP);
-      setDefaultKey(Event::UIDown    , KBDK_DOWN);
-      setDefaultKey(Event::UILeft    , KBDK_LEFT);
-      setDefaultKey(Event::UIRight   , KBDK_RIGHT);
+      setDefaultKey(Event::UIUp             , KBDK_UP);
+      setDefaultKey(Event::UIDown           , KBDK_DOWN);
+      setDefaultKey(Event::UILeft           , KBDK_LEFT);
+      setDefaultKey(Event::UIRight          , KBDK_RIGHT);
 
-      setDefaultKey(Event::UIHome    , KBDK_HOME);
-      setDefaultKey(Event::UIEnd     , KBDK_END);
-      setDefaultKey(Event::UIPgUp    , KBDK_PAGEUP);
-      setDefaultKey(Event::UIPgDown  , KBDK_PAGEDOWN);
+      setDefaultKey(Event::UIHome           , KBDK_HOME);
+      setDefaultKey(Event::UIEnd            , KBDK_END);
+      setDefaultKey(Event::UIPgUp           , KBDK_PAGEUP);
+      setDefaultKey(Event::UIPgDown         , KBDK_PAGEDOWN);
 
-      setDefaultKey(Event::UISelect  , KBDK_RETURN);
-      setDefaultKey(Event::UICancel  , KBDK_ESCAPE);
+      setDefaultKey(Event::UISelect         , KBDK_RETURN);
+      setDefaultKey(Event::UICancel         , KBDK_ESCAPE);
 
-      setDefaultKey(Event::UINavPrev , KBDK_TAB, KBDM_SHIFT);
-      setDefaultKey(Event::UINavNext , KBDK_TAB);
-      setDefaultKey(Event::UITabPrev , KBDK_TAB, KBDM_SHIFT|KBDM_CTRL);
-      setDefaultKey(Event::UITabNext , KBDK_TAB, KBDM_CTRL);
+      setDefaultKey(Event::UINavPrev        , KBDK_TAB, KBDM_SHIFT);
+      setDefaultKey(Event::UINavNext        , KBDK_TAB);
+      setDefaultKey(Event::UITabPrev        , KBDK_TAB, KBDM_SHIFT|KBDM_CTRL);
+      setDefaultKey(Event::UITabNext        , KBDK_TAB, KBDM_CTRL);
 
-      setDefaultKey(Event::UIPrevDir , KBDK_BACKSPACE);
-      setDefaultKey(Event::ToggleFullScreen, KBDK_RETURN, KBDM_ALT);
+      setDefaultKey(Event::UIPrevDir        , KBDK_BACKSPACE);
+      setDefaultKey(Event::ToggleFullScreen , KBDK_RETURN, KBDM_ALT);
+    #ifdef BSPF_MACOS
+      setDefaultKey(Event::Quit             , KBDK_Q, KBDM_ALT);
+    #else
+      setDefaultKey(Event::Quit             , KBDK_Q, KBDM_CTRL);
+    #endif
 
     // FIXME - use the R77 define in the final release
     //         use the '1' define for testing
@@ -323,9 +333,10 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
 
     default:
     #ifdef GUI_SUPPORT
-      if(myHandler.hasOverlay())
+      if (myHandler.hasOverlay())
         myHandler.overlay().handleKeyEvent(key, mod, pressed);
     #endif
+      myHandler.handleEvent(myKeyMap.get(kMenuMode, key, mod), pressed);
       break;
   }
 }
@@ -338,19 +349,6 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
   if(StellaModTest::isAlt(mod) && pressed)
   {
     EventHandlerState estate = myHandler.state();
-#ifdef BSPF_MACOS
-    // These keys work in all states
-    if(key == KBDK_Q)
-    {
-      myHandler.handleEvent(Event::Quit);
-    }
-    else
-#endif
-
-    if (key == KBDK_RETURN)
-    {
-      int i = 0;
-    }
 
     if(key == KBDK_TAB)
     {
@@ -358,8 +356,9 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
       myAltKeyCounter = 1;
       return true;
     }
+
     // State rewinding must work in pause mode too
-    else if(estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE)
+    if(estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE)
     {
       switch(key)
       {
@@ -492,13 +491,8 @@ bool PhysicalKeyboardHandler::handleControlEvent(StellaKey key, StellaMod mod, b
   if(StellaModTest::isControl(mod) && pressed && myUseCtrlKeyFlag)
   {
     EventHandlerState estate = myHandler.state();
-    // These keys work in all states
-    if(key == KBDK_Q)
-    {
-      myHandler.handleEvent(Event::Quit);
-    }
     // These only work when in emulation mode
-    else if(estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE)
+    if(estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE)
     {
       switch(key)
       {
