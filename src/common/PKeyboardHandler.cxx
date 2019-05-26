@@ -62,6 +62,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
   if (eraseAll)
     // Erase all mappings of given mode
     myKeyMap.eraseMode(mode);
+  else
+    myKeyMap.eraseEvent(event, mode);
 
   auto setDefaultKey = [&](Event::Type k_event, StellaKey key, int mod = KBDM_NONE)
   {
@@ -77,7 +79,6 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
     }
     else if (eraseAll || k_event == event)
     {
-      myKeyMap.eraseEvent(k_event, mode);
       myKeyMap.add(k_event, mode, key, mod);
     }
   };
@@ -345,6 +346,12 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
     }
     else
 #endif
+
+    if (key == KBDK_RETURN)
+    {
+      int i = 0;
+    }
+
     if(key == KBDK_TAB)
     {
       // Swallow Alt-Tab, but remember that it happened
