@@ -45,7 +45,7 @@ class PhysicalKeyboardHandler
 
     PhysicalKeyboardHandler(OSystem& system, EventHandler& handler, Event& event);
 
-    void setDefaultMapping(Event::Type type, EventMode mode);
+    void setDefaultMapping(Event::Type type, EventMode mode, bool updateDefaults = false);
     void eraseMapping(Event::Type event, EventMode mode);
     void saveMapping();
     string getMappingDesc(Event::Type, EventMode mode) const;

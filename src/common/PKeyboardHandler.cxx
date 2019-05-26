@@ -45,23 +45,27 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(
     myUseCtrlKeyFlag(myOSystem.settings().getBool("ctrlcombo"))
 {
   string list = myOSystem.settings().getString("keymap_emu");
-  int i = myKeyMap.loadMapping(list, kEmulationMode);
+  myKeyMap.loadMapping(list, kEmulationMode);
   list = myOSystem.settings().getString("keymap_ui");
-  i += myKeyMap.loadMapping(list, kMenuMode);
+  myKeyMap.loadMapping(list, kMenuMode);
 
-  setDefaultMapping(Event::NoType, kEmulationMode);
-  setDefaultMapping(Event::NoType, kMenuMode);
+  setDefaultMapping(Event::NoType, kEmulationMode, true);
+  setDefaultMapping(Event::NoType, kMenuMode, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mode)
+void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mode, bool updateDefaults)
 {
-  // If event is 'NoType', check for missing default mappings
-  bool defaultMissing = (event == Event::NoType);
+  // If event is 'NoType', erase and reset all mappings
+    // Otherwise, only reset the given event
+  bool eraseAll = !updateDefaults && (event == Event::NoType);
+  if (eraseAll)
+    // Erase all mappings of given mode
+    myKeyMap.eraseMode(mode);
 
   auto setDefaultKey = [&](Event::Type k_event, StellaKey key, int mod = KBDM_NONE)
   {
-    if (defaultMissing)
+    if (updateDefaults)
     {
       // if there is no existing mapping for the event and
       //  the default mapping for the event is unused, set default key for event
@@ -71,7 +75,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
         myKeyMap.add(k_event, mode, key, mod);
       }
     }
-    else if (k_event == event)
+    else if (eraseAll || k_event == event)
     {
       myKeyMap.eraseEvent(k_event, mode);
       myKeyMap.add(k_event, mode, key, mod);
