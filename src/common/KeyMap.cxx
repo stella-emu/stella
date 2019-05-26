@@ -71,6 +71,20 @@ Event::Type KeyMap::get(const int mode, const int key, const int mod) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool KeyMap::check(const Mapping& mapping) const
+{
+  auto find = myMap.find(convertMod(mapping));
+
+  return (find != myMap.end());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool KeyMap::check(const int mode, const int key, const int mod) const
+{
+  return check(Mapping(mode, key, mod));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string KeyMap::getDesc(const Mapping& mapping) const
 {
   ostringstream buf;
@@ -136,6 +150,8 @@ std::vector<KeyMap::Mapping> KeyMap::getEventMapping(const Event::Type event, co
   for (auto item : myMap)
     if (item.second == event && item.first.mode == mode)
       map.push_back(item.first);
+
+  int i = 0;
 
   return map;
 }

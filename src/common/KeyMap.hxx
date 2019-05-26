@@ -69,6 +69,10 @@ class KeyMap
     Event::Type get(const Mapping& mapping) const;
     Event::Type get(const int mode, const int key, const int mod) const;
 
+    /** Check if a mapping exists */
+    bool check(const Mapping& mapping) const;
+    bool check(const int mode, const int key, const int mod) const;
+
     /** Get mapping description */
     string getDesc(const Mapping& mapping) const;
     string getDesc(const int mode, const int key, const int mod) const;
