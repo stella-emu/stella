@@ -39,7 +39,7 @@ class KeyMap
       StellaMod mod;
 
       Mapping() : mode(EventMode(0)), key(StellaKey(0)), mod(StellaMod(0)) { }
-      Mapping(const Mapping& k) : mode(k.mode), key(k.key), mod(k.mod) { }
+      Mapping(const Mapping& m) : mode(m.mode), key(m.key), mod(m.mod) { }
       explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)
         : mode(c_mode), key(c_key), mod(c_mod) { }
       explicit Mapping(int c_mode, int c_key, int c_mod)
@@ -47,9 +47,10 @@ class KeyMap
 
       bool operator==(const Mapping& other) const
       {
-        return (mode == other.mode
-          && key == other.key
-          && mod == other.mod);
+        return (//&& mod == other.mod
+          (mod | other.mod ? mod & other.mod : true)
+          && mode == other.mode
+          && key == other.key);
       }
     };
 
@@ -57,23 +58,23 @@ class KeyMap
     virtual ~KeyMap() = default;
 
     /** Add new mapping for given event */
-    void add(const Event::Type event, const Mapping& input);
+    void add(const Event::Type event, const Mapping& mapping);
     void add(const Event::Type event, const int mode, const int key, const int mod);
 
     /** Erase mapping */
-    void erase(const Mapping& input);
+    void erase(const Mapping& mapping);
     void erase(const int mode, const int key, const int mod);
 
     /** Get event for mapping */
-    Event::Type get(const Mapping& input) const;
+    Event::Type get(const Mapping& mapping) const;
     Event::Type get(const int mode, const int key, const int mod) const;
 
-    /** Get the mapping(s) description for given event and mode */
-    string getEventMappingDesc(const Event::Type event, const int mode) const;
-
     /** Get mapping description */
-    string getDesc(const Mapping& input) const;
+    string getDesc(const Mapping& mapping) const;
     string getDesc(const int mode, const int key, const int mod) const;
+
+    /** Get the mapping description(s) for given event and mode */
+    string getEventMappingDesc(const Event::Type event, const int mode) const;
 
     std::vector<Mapping> getEventMapping(const Event::Type event, const int mode) const;
 
@@ -90,13 +91,16 @@ class KeyMap
 
   private:
     //** Convert modifiers */
-    Mapping convertMod(const Mapping& input) const;
+    Mapping convertMod(const Mapping& mapping) const;
 
     struct KeyHash {
-      size_t operator()(const Mapping& k)const {
-        return std::hash<uInt64>()((uInt64(k.mode))
-          ^ ((uInt64(k.key)) << 16)
-          ^ ((uInt64(k.mod)) << 32));
+      size_t operator()(const Mapping& m)const {
+        return std::hash<uInt64>()((uInt64(m.mode)) //  1 bit
+          ^ ((uInt64(m.key)) << 1)                  //  8 bits
+          // no mod in hash to allow mapping left and right modifiers as one
+          // also see '==' above
+          /* ^ ((uInt64(m.mod)) << 9)*/);                // 15 bits
+
       }
     };
 

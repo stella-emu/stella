@@ -14,7 +14,6 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
-
 #include "KeyMap.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -23,9 +22,9 @@ KeyMap::KeyMap(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::add(const Event::Type event, const Mapping& input)
+void KeyMap::add(const Event::Type event, const Mapping& mapping)
 {
-	myMap[convertMod(input)] = event;
+	myMap[convertMod(mapping)] = event;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -35,9 +34,9 @@ void KeyMap::add(const Event::Type event, const int mode, const int key, const i
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::erase(const Mapping& input)
+void KeyMap::erase(const Mapping& mapping)
 {
-	myMap.erase(convertMod(input));
+	myMap.erase(convertMod(mapping));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,10 +46,18 @@ void KeyMap::erase(const int mode, const int key, const int mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type KeyMap::get(const Mapping& input) const
+Event::Type KeyMap::get(const Mapping& mapping) const
 {
-  auto find = myMap.find(convertMod(input));
+  Mapping m = convertMod(mapping);
 
+  auto find = myMap.find(m);
+  if (find != myMap.end())
+    return find->second;
+
+  // mapping not found, try without modifiers
+  m.mod = StellaMod(0);
+
+  find = myMap.find(m);
   if (find != myMap.end())
     return find->second;
 
@@ -61,6 +68,42 @@ Event::Type KeyMap::get(const Mapping& input) const
 Event::Type KeyMap::get(const int mode, const int key, const int mod) const
 {
   return get(Mapping(mode, key, mod));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string KeyMap::getDesc(const Mapping& mapping) const
+{
+  ostringstream buf;
+#ifndef BSPF_MACOS
+  string modifier = "Ctrl";
+#else
+  string modifier = "Cmd";
+#endif
+
+  if ((mapping.mod & KBDM_CTRL) == KBDM_CTRL) buf << modifier;
+  else if (mapping.mod & KBDM_LCTRL) buf << "Left " << modifier;
+  else if (mapping.mod & KBDM_RCTRL) buf << "Right " << modifier;
+
+  if ((mapping.mod & KBDM_ALT) && buf.tellp()) buf << "+";
+  if ((mapping.mod & KBDM_ALT) == KBDM_ALT) buf << "Alt";
+  else if (mapping.mod & KBDM_LALT) buf << "Left Alt";
+  else if (mapping.mod & KBDM_RALT) buf << "Right Alt";
+
+  if ((mapping.mod & KBDM_SHIFT) && buf.tellp()) buf << "+";
+  if ((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) buf << "Shift";
+  else if (mapping.mod & KBDM_LSHIFT) buf << "Left Shift";
+  else if (mapping.mod & KBDM_RSHIFT) buf << "Right Shift";
+
+  if (buf.tellp()) buf << "+";
+  buf << StellaKeyName::forKey(mapping.key);
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string KeyMap::getDesc(const int mode, const int key, const int mod) const
+{
+  return getDesc(Mapping(mode, key, mod));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,10 +122,7 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const int mode) cons
     {
       if (buf.str() != "")
         buf << ", ";
-      if (item.first.mod & StellaMod::KBDM_CTRL) buf << modifier << "+";
-      if (item.first.mod & StellaMod::KBDM_ALT) buf << "Alt+";
-      if (item.first.mod & StellaMod::KBDM_SHIFT) buf << "Shift+";
-      buf << StellaKeyName::forKey(item.first.key);
+      buf << getDesc(item.first);
     }
   }
   return buf.str();
@@ -135,51 +175,38 @@ int KeyMap::loadMapping(string& list, const int mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getDesc(const Mapping& input) const
-{
-  return "TODO";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getDesc(const int mode, const int key, const int mod) const
-{
-  return getDesc(Mapping(mode, key, mod));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseMode(const int mode)
 {
-  for (auto i = myMap.begin(); i != myMap.end();)
-    if (i->first.mode == mode) {
-      auto _i = i++;
-      erase(_i->first);
+  for (auto item = myMap.begin(); item != myMap.end();)
+    if (item->first.mode == mode) {
+      auto _item = item++;
+      erase(_item->first);
     }
-    else i++;
+    else item++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::eraseEvent(const Event::Type event, const int mode)
 {
-  for (auto i = myMap.begin(); i != myMap.end();)
-    if (i->second == event && i->first.mode == mode) {
-      auto _i = i++;
-      erase(_i->first);
+  for (auto item = myMap.begin(); item != myMap.end();)
+    if (item->second == event && item->first.mode == mode) {
+      auto _item = item++;
+      erase(_item->first);
     }
-    else i++;
+    else item++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyMap::Mapping KeyMap::convertMod(const Mapping& input) const
+KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping) const
 {
-  Mapping i = input;
+  Mapping m = mapping;
 
-  // limit to modifiers we want to support
-  i.mod = StellaMod(i.mod & (StellaMod::KBDM_SHIFT | StellaMod::KBDM_ALT | StellaMod::KBDM_CTRL));
+  if (m.key >= KBDK_LCTRL && m.key <= KBDK_RGUI)
+    // handle solo modifier keys differently
+    m.mod = KBDM_NONE;
+  else
+    // limit to modifiers we want to support
+    m.mod = StellaMod(m.mod & (KBDM_SHIFT | KBDM_ALT | KBDM_CTRL));
 
-  // merge left and right modifiers
-  if (i.mod & KBDM_CTRL) i.mod = StellaMod(i.mod | KBDM_CTRL);
-  if (i.mod & KBDM_SHIFT) i.mod = StellaMod(i.mod | KBDM_SHIFT);
-  if (i.mod & KBDM_ALT) i.mod = StellaMod(i.mod | KBDM_ALT);
-
-  return i;
+  return m;
 }
