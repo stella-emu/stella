@@ -47,10 +47,12 @@ class KeyMap
 
       bool operator==(const Mapping& other) const
       {
-        return (//&& mod == other.mod
-          (mod | other.mod ? mod & other.mod : true)
+        return (key == other.key
           && mode == other.mode
-          && key == other.key);
+          && (((mod | other.mod) & KBDM_SHIFT) ? (mod & other.mod & KBDM_SHIFT) : true)
+          && (((mod | other.mod) & KBDM_ALT  ) ? (mod & other.mod & KBDM_ALT  ) : true)
+          && (((mod | other.mod) & KBDM_CTRL ) ? (mod & other.mod & KBDM_CTRL ) : true)
+          );
       }
     };
 
@@ -99,12 +101,11 @@ class KeyMap
 
     struct KeyHash {
       size_t operator()(const Mapping& m)const {
-        return std::hash<uInt64>()((uInt64(m.mode)) //  1 bit
-          ^ ((uInt64(m.key)) << 1)                  //  8 bits
-          // no mod in hash to allow mapping left and right modifiers as one
-          // also see '==' above
-          /* ^ ((uInt64(m.mod)) << 9)*/);                // 15 bits
-
+        return std::hash<uInt64>()((uInt64(m.mode))       // 1 bit
+          ^ ((uInt64(m.key)) << 1)                        // 8 bits
+          ^ ((uInt64((m.mod & KBDM_SHIFT) != 0) <<  9))   // 1 bit
+          ^ ((uInt64((m.mod & KBDM_ALT  ) != 0) << 10))   // 1 bit
+          ^ ((uInt64((m.mod & KBDM_CTRL ) != 0) << 11))); // 1 bit
       }
     };
 

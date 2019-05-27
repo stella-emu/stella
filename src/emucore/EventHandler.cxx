@@ -477,6 +477,81 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       }
       return;
 
+    case Event::ToggleP0Collision:
+      if (pressed)
+        myOSystem.console().toggleP0Collision();
+      return;
+
+    case Event::ToggleP0Bit:
+      if (pressed)
+        myOSystem.console().toggleP0Bit();
+      return;
+
+    case Event::ToggleP1Collision:
+      if (pressed)
+        myOSystem.console().toggleP1Collision();
+      return;
+
+    case Event::ToggleP1Bit:
+      if (pressed)
+        myOSystem.console().toggleP1Bit();
+      return;
+
+    case Event::ToggleM0Collision:
+      if (pressed)
+        myOSystem.console().toggleM0Collision();
+      return;
+
+    case Event::ToggleM0Bit:
+      if (pressed)
+        myOSystem.console().toggleM0Bit();
+      return;
+
+    case Event::ToggleM1Collision:
+      if (pressed)
+        myOSystem.console().toggleM1Collision();
+      return;
+
+    case Event::ToggleM1Bit:
+      if (pressed)
+        myOSystem.console().toggleM1Bit();
+      return;
+
+    case Event::ToggleBLCollision:
+      if (pressed)
+        myOSystem.console().toggleBLCollision();
+      return;
+
+    case Event::ToggleBLBit:
+      if (pressed)
+        myOSystem.console().toggleBLBit();
+      return;
+
+    case Event::TogglePFCollision:
+      if (pressed)
+        myOSystem.console().togglePFCollision();
+      return;
+
+    case Event::TogglePFBit:
+      if (pressed)
+        myOSystem.console().togglePFBit();
+      return;
+
+    case Event::ToggleFixedColors:
+      if (pressed)
+        myOSystem.console().toggleFixedColors();
+      return;
+
+    case Event::ToggleCollisions:
+      if (pressed)
+        myOSystem.console().toggleCollisions();
+      return;
+
+    case Event::ToggleBits:
+      if (pressed)
+        myOSystem.console().toggleBits();
+      return;
+
     case Event::SaveState:
       if(pressed) myOSystem.state().saveState();
       return;
@@ -1469,7 +1544,23 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::Combo13,             "Combo 13",                       "", false },
   { Event::Combo14,             "Combo 14",                       "", false },
   { Event::Combo15,             "Combo 15",                       "", false },
-  { Event::Combo16,             "Combo 16",                       "", false }
+  { Event::Combo16,             "Combo 16",                       "", false },
+
+  { Event::ToggleP0Bit,         "Toggle TIA Player0 object",      "", false },
+  { Event::ToggleP0Collision,   "Toggle TIA Player0 collisions",  "", false },
+  { Event::ToggleP1Bit,         "Toggle TIA Player1 object",      "", false },
+  { Event::ToggleP1Collision,   "Toggle TIA Player1 collisions",  "", false },
+  { Event::ToggleM0Bit,         "Toggle TIA Missile0 object",     "", false },
+  { Event::ToggleM0Collision,   "Toggle TIA Missile0 collisions", "", false },
+  { Event::ToggleM1Bit,         "Toggle TIA Missile1 object",     "", false },
+  { Event::ToggleM1Collision,   "Toggle TIA Missile1 collisions", "", false },
+  { Event::ToggleBLBit,         "Toggle TIA Ball object",         "", false },
+  { Event::ToggleBLCollision,   "Toggle TIA Ball collisions",     "", false },
+  { Event::TogglePFBit,         "Toggle TIA Playfield object",    "", false },
+  { Event::TogglePFCollision,   "Toggle TIA Playfield collisions","", false },
+  { Event::ToggleFixedColors,   "Toggle TIA 'Fixed Debug Colors' mode","", false },
+  { Event::ToggleBits,          "Toggle all TIA objects",         "", false },
+  { Event::ToggleCollisions,    "Toggle all TIA collisions",      "", false }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -174,6 +174,22 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::DecreaseAttribute  , KBDK_0, KBDM_SHIFT | KBDM_ALT);
       setDefaultKey(Event::IncreaseAttribute  , KBDK_0, KBDM_ALT);
 
+      setDefaultKey(Event::ToggleP0Collision  , KBDK_Z, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ToggleP0Bit        , KBDK_Z, KBDM_ALT);
+      setDefaultKey(Event::ToggleP1Collision  , KBDK_X, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ToggleP1Bit        , KBDK_X, KBDM_ALT);
+      setDefaultKey(Event::ToggleM0Collision  , KBDK_C, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ToggleM0Bit        , KBDK_C, KBDM_ALT);
+      setDefaultKey(Event::ToggleM1Collision  , KBDK_V, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ToggleM1Bit        , KBDK_V, KBDM_ALT);
+      setDefaultKey(Event::ToggleBLCollision  , KBDK_B, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ToggleBLBit        , KBDK_B, KBDM_ALT);
+      setDefaultKey(Event::TogglePFCollision  , KBDK_N, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::TogglePFBit        , KBDK_N, KBDM_ALT);
+      setDefaultKey(Event::ToggleFixedColors  , KBDK_COMMA, KBDM_ALT);
+      setDefaultKey(Event::ToggleCollisions   , KBDK_PERIOD, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ToggleBits         , KBDK_PERIOD, KBDM_ALT);
+
     // FIXME - use the R77 define in the final release
     //         use the '1' define for testing
     #if defined(RETRON77)
@@ -384,59 +400,6 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
 
         case KBDK_PAGEDOWN:  // Alt-PageDown decreases YStart
           myOSystem.console().changeYStart(-1);
-          break;
-
-        case KBDK_Z:
-          if(StellaModTest::isShift(mod))
-            myOSystem.console().toggleP0Collision();
-          else
-            myOSystem.console().toggleP0Bit();
-          break;
-
-        case KBDK_X:
-          if(StellaModTest::isShift(mod))
-            myOSystem.console().toggleP1Collision();
-          else
-            myOSystem.console().toggleP1Bit();
-          break;
-
-        case KBDK_C:
-          if(StellaModTest::isShift(mod))
-            myOSystem.console().toggleM0Collision();
-          else
-            myOSystem.console().toggleM0Bit();
-          break;
-
-        case KBDK_V:
-          if(StellaModTest::isShift(mod))
-            myOSystem.console().toggleM1Collision();
-          else
-            myOSystem.console().toggleM1Bit();
-          break;
-
-        case KBDK_B:
-          if(StellaModTest::isShift(mod))
-            myOSystem.console().toggleBLCollision();
-          else
-            myOSystem.console().toggleBLBit();
-          break;
-
-        case KBDK_N:
-          if(StellaModTest::isShift(mod))
-            myOSystem.console().togglePFCollision();
-          else
-            myOSystem.console().togglePFBit();
-          break;
-
-        case KBDK_COMMA:
-          myOSystem.console().toggleFixedColors();
-          break;
-
-        case KBDK_PERIOD:
-          if(StellaModTest::isShift(mod))
-            myOSystem.console().toggleCollisions();
-          else
-            myOSystem.console().toggleBits();
           break;
 
         case KBDK_I:  // Alt-i decreases phosphor blend

@@ -98,12 +98,12 @@ string KeyMap::getDesc(const Mapping& mapping) const
   else if (mapping.mod & KBDM_LCTRL) buf << "Left " << modifier;
   else if (mapping.mod & KBDM_RCTRL) buf << "Right " << modifier;
 
-  if ((mapping.mod & KBDM_ALT) && buf.tellp()) buf << "+";
+  if ((mapping.mod & (KBDM_ALT)) && buf.tellp()) buf << "+";
   if ((mapping.mod & KBDM_ALT) == KBDM_ALT) buf << "Alt";
   else if (mapping.mod & KBDM_LALT) buf << "Left Alt";
   else if (mapping.mod & KBDM_RALT) buf << "Right Alt";
 
-  if ((mapping.mod & KBDM_SHIFT) && buf.tellp()) buf << "+";
+  if ((mapping.mod & (KBDM_SHIFT)) && buf.tellp()) buf << "+";
   if ((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) buf << "Shift";
   else if (mapping.mod & KBDM_LSHIFT) buf << "Left Shift";
   else if (mapping.mod & KBDM_RSHIFT) buf << "Right Shift";
@@ -150,8 +150,6 @@ std::vector<KeyMap::Mapping> KeyMap::getEventMapping(const Event::Type event, co
   for (auto item : myMap)
     if (item.second == event && item.first.mode == mode)
       map.push_back(item.first);
-
-  int i = 0;
 
   return map;
 }
@@ -221,8 +219,10 @@ KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping) const
     // handle solo modifier keys differently
     m.mod = KBDM_NONE;
   else
+  {
     // limit to modifiers we want to support
     m.mod = StellaMod(m.mod & (KBDM_SHIFT | KBDM_ALT | KBDM_CTRL));
+  }
 
   return m;
 }
