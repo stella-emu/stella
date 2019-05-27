@@ -87,6 +87,11 @@ class Event
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease,
 
+      ToggleP0Collision, ToggleP0Bit, ToggleP1Collision, ToggleP1Bit,
+      ToggleM0Collision, ToggleM0Bit, ToggleM1Collision, ToggleM1Bit,
+      ToggleBLCollision, ToggleBLBit, TogglePFCollision, TogglePFBit,
+      ToggleCollisions, ToggleBits, ToggleFixedColors,
+
       LastType
     };
 
