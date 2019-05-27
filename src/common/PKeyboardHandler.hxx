@@ -68,7 +68,6 @@ class PhysicalKeyboardHandler
 
   private:
     bool handleAltEvent(StellaKey key, StellaMod mod, bool pressed);
-    bool handleControlEvent(StellaKey key, StellaMod mod, bool pressed);
 
     OSystem& myOSystem;
     EventHandler& myHandler;
