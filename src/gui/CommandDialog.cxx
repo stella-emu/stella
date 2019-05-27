@@ -190,7 +190,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      instance().eventHandler().handleEvent(Event::LauncherMode);
+      instance().eventHandler().handleEvent(Event::ExitMode);
       break;
 
     // Column 3

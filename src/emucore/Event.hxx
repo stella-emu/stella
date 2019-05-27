@@ -74,7 +74,7 @@ class Event
       MouseButtonLeftValue, MouseButtonRightValue,
 
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
-      PauseMode, OptionsMenuMode, CmdMenuMode, TimeMachineMode, DebuggerMode, LauncherMode,
+      PauseMode, OptionsMenuMode, CmdMenuMode, TimeMachineMode, DebuggerMode, ExitMode,
       Fry, VolumeDecrease, VolumeIncrease, SoundToggle, VidmodeDecrease, VidmodeIncrease,
       Rewind, Unwind,
 
@@ -91,6 +91,16 @@ class Event
       ToggleM0Collision, ToggleM0Bit, ToggleM1Collision, ToggleM1Bit,
       ToggleBLCollision, ToggleBLBit, TogglePFCollision, TogglePFBit,
       ToggleCollisions, ToggleBits, ToggleFixedColors,
+
+      DecreasePhosphor, IncreasePhosphor, TogglePhosphor, ToggleJitter,
+      ToggleFrameStats, ToggleTimeMachine,
+  #ifdef PNG_SUPPORT
+      ToggleContSnapshots, ToggleContSnapshotsFrame,
+  #endif*/
+      ToggleColorLoss, TogglePalette,
+
+      HandleMouseControl, ToggleGrabMouse, ToggleSAPortOrder,
+      DecreaseFormat, IncreaseFormat, ReloadConsole,
 
       LastType
     };

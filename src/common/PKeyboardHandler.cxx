@@ -147,12 +147,13 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::CmdMenuMode        , KBDK_BACKSLASH);
       setDefaultKey(Event::TimeMachineMode    , KBDK_T);
       setDefaultKey(Event::DebuggerMode       , KBDK_GRAVE);
-      setDefaultKey(Event::LauncherMode       , KBDK_ESCAPE);
+      setDefaultKey(Event::ExitMode       , KBDK_ESCAPE);
     #ifdef BSPF_MACOS
       setDefaultKey(Event::Quit               , KBDK_Q, KBDM_ALT);
     #else
       setDefaultKey(Event::Quit               , KBDK_Q, KBDM_CTRL);
     #endif
+      setDefaultKey(Event::ReloadConsole      , KBDK_R, KBDM_CTRL);
 
       setDefaultKey(Event::VidmodeDecrease    , KBDK_MINUS, KBDM_ALT);
       setDefaultKey(Event::VidmodeIncrease    , KBDK_EQUALS, KBDM_ALT);
@@ -173,6 +174,23 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::NextAttribute      , KBDK_9, KBDM_ALT);
       setDefaultKey(Event::DecreaseAttribute  , KBDK_0, KBDM_SHIFT | KBDM_ALT);
       setDefaultKey(Event::IncreaseAttribute  , KBDK_0, KBDM_ALT);
+      setDefaultKey(Event::DecreasePhosphor   , KBDK_I, KBDM_ALT);
+      setDefaultKey(Event::IncreasePhosphor   , KBDK_O, KBDM_ALT);
+      setDefaultKey(Event::TogglePhosphor     , KBDK_P, KBDM_ALT);
+      setDefaultKey(Event::ToggleColorLoss    , KBDK_L, KBDM_CTRL);
+      setDefaultKey(Event::TogglePalette      , KBDK_P, KBDM_CTRL);
+      setDefaultKey(Event::ToggleJitter       , KBDK_J, KBDM_ALT);
+      setDefaultKey(Event::ToggleFrameStats   , KBDK_L, KBDM_ALT);
+      setDefaultKey(Event::ToggleTimeMachine  , KBDK_T, KBDM_ALT);
+    #ifdef PNG_SUPPORT
+      setDefaultKey(Event::ToggleContSnapshots     , KBDK_S, KBDM_ALT);
+      setDefaultKey(Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | KBDM_ALT);
+    #endif
+      setDefaultKey(Event::HandleMouseControl , KBDK_0, KBDM_CTRL);
+      setDefaultKey(Event::ToggleGrabMouse    , KBDK_G, KBDM_CTRL);
+      setDefaultKey(Event::ToggleSAPortOrder  , KBDK_1, KBDM_CTRL);
+      setDefaultKey(Event::DecreaseFormat     , KBDK_F, KBDM_SHIFT | KBDM_CTRL);
+      setDefaultKey(Event::IncreaseFormat     , KBDK_F, KBDM_CTRL);
 
       setDefaultKey(Event::ToggleP0Collision  , KBDK_Z, KBDM_SHIFT | KBDM_ALT);
       setDefaultKey(Event::ToggleP0Bit        , KBDK_Z, KBDM_ALT);
@@ -198,7 +216,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::ConsoleLeftDiffToggle  , KBDK_F6);         // front ("SKILL P1")
       setDefaultKey(Event::ConsoleRightDiffToggle , KBDK_F8);         // front ("SKILL P2")
       setDefaultKey(Event::CmdMenuMode            , KBDK_F13);        // back ("4:3","16:9")
-      setDefaultKey(Event::LauncherMode           , KBDK_BACKSPACE);  // back ("FRY")
+      setDefaultKey(Event::ExitMode               , KBDK_BACKSPACE);  // back ("FRY")
     #endif
       break;
 
@@ -301,39 +319,15 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   // An attempt to speed up event processing; we quickly check for
   // Control or Alt/Cmd combos first
   // and don't pass the key on if we've already taken care of it
-  if(handleAltEvent(key, mod, pressed) || handleControlEvent(key, mod, pressed))
+  if(handleAltEvent(key, mod, pressed))
     return;
+  // TODO: myUseCtrlKeyFlag?
 
   EventHandlerState estate = myHandler.state();
 
   // Arrange the logic to take advantage of short-circuit evaluation
   if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
   {
-    // Special handling for Escape key
-    // Basically, exit whichever mode we're currently in
-    if(pressed && key == KBDK_ESCAPE)
-    {
-      switch(estate)
-      {
-        case EventHandlerState::PAUSE:
-          myHandler.changeStateByEvent(Event::PauseMode);
-          return;
-        case EventHandlerState::CMDMENU:
-          myHandler.changeStateByEvent(Event::CmdMenuMode);
-          return;
-        case EventHandlerState::TIMEMACHINE:
-          myHandler.changeStateByEvent(Event::TimeMachineMode);
-          return;
-#if 0 // FIXME - exits ROM too, when it should just go back to ROM
-        case EventHandlerState::DEBUGGER:
-          myHandler.changeStateByEvent(Event::DebuggerMode);
-          return;
-#endif
-        default:
-          break;
-      }
-    }
-
     // Handle keys which switch eventhandler state
     if (!pressed && myHandler.changeStateByEvent(myKeyMap.get(kEmulationMode, key, mod)))
       return;
@@ -402,36 +396,6 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
           myOSystem.console().changeYStart(-1);
           break;
 
-        case KBDK_I:  // Alt-i decreases phosphor blend
-          myOSystem.console().changePhosphor(-1);
-          break;
-
-        case KBDK_O:  // Alt-o increases phosphor blend
-          myOSystem.console().changePhosphor(+1);
-          break;
-
-        case KBDK_P:  // Alt-p toggles phosphor effect
-          myOSystem.console().togglePhosphor();
-          break;
-
-        case KBDK_J:  // Alt-j toggles scanline jitter
-          myOSystem.console().toggleJitter();
-          break;
-
-        case KBDK_L:
-          myOSystem.frameBuffer().toggleFrameStats();
-          break;
-
-        case KBDK_T:  // Alt-t toggles Time Machine
-          myOSystem.state().toggleTimeMachine();
-          break;
-
-    #ifdef PNG_SUPPORT
-        case KBDK_S:
-          myOSystem.png().toggleContinuousSnapshots(StellaModTest::isShift(mod));
-          break;
-    #endif
-
         default:
           handled = false;
           break;
@@ -440,66 +404,6 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
     else
       handled = false;
   } // alt
-  else
-    handled = false;
-
-  return handled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::handleControlEvent(StellaKey key, StellaMod mod, bool pressed)
-{
-  bool handled = true;
-
-  if(StellaModTest::isControl(mod) && pressed && myUseCtrlKeyFlag)
-  {
-    EventHandlerState estate = myHandler.state();
-    // These only work when in emulation mode
-    if(estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE)
-    {
-      switch(key)
-      {
-        case KBDK_0:  // Ctrl-0 switches between mouse control modes
-          myHandler.handleMouseControl();
-          break;
-
-        case KBDK_1:  // Ctrl-1 swaps Stelladaptor/2600-daptor ports
-          myHandler.toggleSAPortOrder();
-          break;
-
-        case KBDK_F:  // (Shift) Ctrl-f toggles NTSC/PAL/SECAM mode
-          myOSystem.console().toggleFormat(StellaModTest::isShift(mod) ? -1 : 1);
-          break;
-
-        case KBDK_G:  // Ctrl-g (un)grabs mouse
-          if(!myOSystem.frameBuffer().fullScreen())
-          {
-            myOSystem.frameBuffer().toggleGrabMouse();
-            myOSystem.frameBuffer().showMessage(myOSystem.frameBuffer().grabMouseEnabled()
-                                                ? "Grab mouse enabled" : "Grab mouse disabled");
-          }
-          break;
-
-        case KBDK_L:  // Ctrl-l toggles PAL color-loss effect
-          myOSystem.console().toggleColorLoss();
-          break;
-
-        case KBDK_P:  // Ctrl-p toggles different palettes
-          myOSystem.console().togglePalette();
-          break;
-
-        case KBDK_R:  // Ctrl-r reloads the currently loaded ROM
-          myOSystem.reloadConsole();
-          break;
-
-        default:
-          handled = false;
-          break;
-      } // switch
-    }
-    else
-      handled = false;
-  } // control
   else
     handled = false;
 

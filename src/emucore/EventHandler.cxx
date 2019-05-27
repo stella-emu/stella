@@ -385,6 +385,10 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       if(myPKeyHandler->useCtrlKey()) myFryingFlag = pressed;
       return;
 
+    case Event::ReloadConsole:
+      if (pressed) myOSystem.reloadConsole();
+      return;
+
     case Event::VolumeDecrease:
       if(pressed) myOSystem.sound().adjustVolume(-1);
       return;
@@ -477,79 +481,131 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       }
       return;
 
+    case Event::DecreasePhosphor:
+      if (pressed) myOSystem.console().changePhosphor(-1);
+      return;
+
+    case Event::IncreasePhosphor:
+      if (pressed) myOSystem.console().changePhosphor(1);
+      return;
+
+    case Event::TogglePhosphor:
+      if (pressed) myOSystem.console().togglePhosphor();
+      return;
+
+    case Event::ToggleColorLoss:
+      if (pressed) myOSystem.console().toggleColorLoss();
+      return;
+
+    case Event::TogglePalette:
+      if (pressed) myOSystem.console().togglePalette();
+      return;
+
+    case Event::ToggleJitter:
+      if (pressed) myOSystem.console().toggleJitter();
+      return;
+
+    case Event::ToggleFrameStats:
+      if (pressed) myOSystem.frameBuffer().toggleFrameStats();
+      return;
+
+    case Event::ToggleTimeMachine:
+      if (pressed) myOSystem.state().toggleTimeMachine();
+      return;
+
+  #ifdef PNG_SUPPORT
+    case Event::ToggleContSnapshots:
+      if (pressed) myOSystem.png().toggleContinuousSnapshots(false);
+      return;
+
+    case Event::ToggleContSnapshotsFrame:
+      if (pressed) myOSystem.png().toggleContinuousSnapshots(true);
+      return;
+  #endif
+
+    case Event::HandleMouseControl:
+      if (pressed) handleMouseControl();
+      return;
+
+    case Event::ToggleSAPortOrder:
+      if (pressed) toggleSAPortOrder();
+      return;
+
+    case Event::DecreaseFormat:
+      if (pressed) myOSystem.console().toggleFormat(-1);
+      return;
+
+    case Event::IncreaseFormat:
+      if (pressed) myOSystem.console().toggleFormat(1);
+      return;
+
+    case Event::ToggleGrabMouse:
+      if (pressed && !myOSystem.frameBuffer().fullScreen())
+      {
+        myOSystem.frameBuffer().toggleGrabMouse();
+        myOSystem.frameBuffer().showMessage(myOSystem.frameBuffer().grabMouseEnabled()
+                                            ? "Grab mouse enabled" : "Grab mouse disabled");
+      }
+      return;
+
     case Event::ToggleP0Collision:
-      if (pressed)
-        myOSystem.console().toggleP0Collision();
+      if (pressed) myOSystem.console().toggleP0Collision();
       return;
 
     case Event::ToggleP0Bit:
-      if (pressed)
-        myOSystem.console().toggleP0Bit();
+      if (pressed) myOSystem.console().toggleP0Bit();
       return;
 
     case Event::ToggleP1Collision:
-      if (pressed)
-        myOSystem.console().toggleP1Collision();
+      if (pressed) myOSystem.console().toggleP1Collision();
       return;
 
     case Event::ToggleP1Bit:
-      if (pressed)
-        myOSystem.console().toggleP1Bit();
+      if (pressed) myOSystem.console().toggleP1Bit();
       return;
 
     case Event::ToggleM0Collision:
-      if (pressed)
-        myOSystem.console().toggleM0Collision();
+      if (pressed) myOSystem.console().toggleM0Collision();
       return;
 
     case Event::ToggleM0Bit:
-      if (pressed)
-        myOSystem.console().toggleM0Bit();
+      if (pressed) myOSystem.console().toggleM0Bit();
       return;
 
     case Event::ToggleM1Collision:
-      if (pressed)
-        myOSystem.console().toggleM1Collision();
+      if (pressed) myOSystem.console().toggleM1Collision();
       return;
 
     case Event::ToggleM1Bit:
-      if (pressed)
-        myOSystem.console().toggleM1Bit();
+      if (pressed) myOSystem.console().toggleM1Bit();
       return;
 
     case Event::ToggleBLCollision:
-      if (pressed)
-        myOSystem.console().toggleBLCollision();
+      if (pressed) myOSystem.console().toggleBLCollision();
       return;
 
     case Event::ToggleBLBit:
-      if (pressed)
-        myOSystem.console().toggleBLBit();
+      if (pressed) myOSystem.console().toggleBLBit();
       return;
 
     case Event::TogglePFCollision:
-      if (pressed)
-        myOSystem.console().togglePFCollision();
+      if (pressed) myOSystem.console().togglePFCollision();
       return;
 
     case Event::TogglePFBit:
-      if (pressed)
-        myOSystem.console().togglePFBit();
+      if (pressed) myOSystem.console().togglePFBit();
       return;
 
     case Event::ToggleFixedColors:
-      if (pressed)
-        myOSystem.console().toggleFixedColors();
+      if (pressed) myOSystem.console().toggleFixedColors();
       return;
 
     case Event::ToggleCollisions:
-      if (pressed)
-        myOSystem.console().toggleCollisions();
+      if (pressed) myOSystem.console().toggleCollisions();
       return;
 
     case Event::ToggleBits:
-      if (pressed)
-        myOSystem.console().toggleBits();
+      if (pressed) myOSystem.console().toggleBits();
       return;
 
     case Event::SaveState:
@@ -576,18 +632,44 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       if(pressed) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
 
-    case Event::LauncherMode:
-      if((myState == EventHandlerState::EMULATION || myState == EventHandlerState::CMDMENU ||
-          myState == EventHandlerState::DEBUGGER) && pressed)
+    case Event::ExitMode:
+      // Special handling for Escape key
+      // Basically, exit whichever mode we're currently in
+      switch (myState)
       {
-        // Go back to the launcher, or immediately quit
-        if(myOSystem.settings().getBool("exitlauncher") ||
-           myOSystem.launcherUsed())
-          myOSystem.createLauncher();
-        else
-          handleEvent(Event::Quit);
+        case EventHandlerState::PAUSE:
+          if (pressed) changeStateByEvent(Event::PauseMode);
+          return;
+
+        case EventHandlerState::CMDMENU:
+          if (pressed) changeStateByEvent(Event::CmdMenuMode);
+          return;
+
+        case EventHandlerState::TIMEMACHINE:
+          if (pressed) changeStateByEvent(Event::TimeMachineMode);
+          return;
+
+        #if 0 // FIXME - exits ROM too, when it should just go back to ROM
+        case EventHandlerState::DEBUGGER:
+          if (pressed) changeStateByEvent(Event::DebuggerMode);
+          return;
+        #endif
+
+        case EventHandlerState::EMULATION:
+          if (pressed)
+          {
+            // Go back to the launcher, or immediately quit
+            if (myOSystem.settings().getBool("exitlauncher") ||
+              myOSystem.launcherUsed())
+              myOSystem.createLauncher();
+            else
+              handleEvent(Event::Quit);
+          }
+          return;
+
+        default:
+          return;
       }
-      return;
 
     case Event::Quit:
       if(pressed)
@@ -1421,146 +1503,166 @@ void EventHandler::setState(EventHandlerState state)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] = {
-  { Event::ConsoleSelect,          "Select",                      "", true  },
-  { Event::ConsoleReset,           "Reset",                       "", true  },
-  { Event::ConsoleColor,           "Color TV",                    "", true  },
-  { Event::ConsoleBlackWhite,      "Black & White TV",            "", true  },
-  { Event::ConsoleColorToggle,     "Swap Color / B&W TV",         "", true  },
-  { Event::Console7800Pause,       "7800 Pause Key",              "", true  },
-  { Event::ConsoleLeftDiffA,       "P0 Difficulty A",             "", true  },
-  { Event::ConsoleLeftDiffB,       "P0 Difficulty B",             "", true  },
-  { Event::ConsoleLeftDiffToggle,  "P0 swap Difficulty",          "", true  },
-  { Event::ConsoleRightDiffA,      "P1 Difficulty A",             "", true  },
-  { Event::ConsoleRightDiffB,      "P1 Difficulty B",             "", true  },
-  { Event::ConsoleRightDiffToggle, "P1 swap Difficulty",          "", true  },
-  { Event::SaveState,              "Save state",                  "", false },
-  { Event::ChangeState,            "Change state",                "", false },
-  { Event::LoadState,              "Load state",                  "", false },
-  { Event::TakeSnapshot,           "Snapshot",                    "", false },
-  { Event::Fry,                    "Fry cartridge",               "", false },
-  { Event::VidmodeDecrease,        "Previous zoom level",         "", false },
-  { Event::VidmodeIncrease,        "Next zoom level",             "", false },
-  { Event::ToggleFullScreen,       "Toggle fullscreen",           "", false },
+  { Event::ConsoleSelect,           "Select",                                "", true  },
+  { Event::ConsoleReset,            "Reset",                                 "", true  },
+  { Event::ConsoleColor,            "Color TV",                              "", true  },
+  { Event::ConsoleBlackWhite,       "Black & White TV",                      "", true  },
+  { Event::ConsoleColorToggle,      "Swap Color / B&W TV",                   "", true  },
+  { Event::Console7800Pause,        "7800 Pause Key",                        "", true  },
+  { Event::ConsoleLeftDiffA,        "P0 Difficulty A",                       "", true  },
+  { Event::ConsoleLeftDiffB,        "P0 Difficulty B",                       "", true  },
+  { Event::ConsoleLeftDiffToggle,   "P0 swap Difficulty",                    "", true  },
+  { Event::ConsoleRightDiffA,       "P1 Difficulty A",                       "", true  },
+  { Event::ConsoleRightDiffB,       "P1 Difficulty B",                       "", true  },
+  { Event::ConsoleRightDiffToggle,  "P1 swap Difficulty",                    "", true  },
+  { Event::SaveState,               "Save state",                            "", false },
+  { Event::ChangeState,             "Change state",                          "", false },
+  { Event::LoadState,               "Load state",                            "", false },
+  { Event::TakeSnapshot,            "Snapshot",                              "", false },
+  { Event::Fry,                     "Fry cartridge",                         "", false },
+  { Event::VidmodeDecrease,         "Previous zoom level",                   "", false },
+  { Event::VidmodeIncrease,         "Next zoom level",                       "", false },
+  { Event::ToggleFullScreen,        "Toggle fullscreen",                     "", false },
 
-  { Event::VidmodeStd,             "Disable TV effects",          "", false },
-  { Event::VidmodeRGB,             "Select 'RGB' preset",         "", false },
-  { Event::VidmodeSVideo,          "Select 'S-Video' preset",     "", false },
-  { Event::VidModeComposite,       "Select 'Composite' preset",   "", false },
-  { Event::VidModeBad,             "Select 'Badly adjusted' preset",       "", false },
-  { Event::VidModeCustom,          "Select 'Custom' preset",               "", false },
-  { Event::PreviousAttribute,      "Select previous 'Custom' attribute",   "", false },
-  { Event::NextAttribute,          "Select next 'Custom' attribute",       "", false },
-  { Event::DecreaseAttribute,      "Decrease selected 'Custom' attribute", "", false },
-  { Event::IncreaseAttribute,      "Increase selected 'Custom' attribute", "", false },
-  { Event::ScanlinesDecrease,      "Decrease scanlines",          "", false },
-  { Event::ScanlinesIncrease,      "Increase scanlines",          "", false },
-  { Event::VolumeDecrease,         "Decrease volume",             "", false },
-  { Event::VolumeIncrease,         "Increase volume",             "", false },
-  { Event::SoundToggle,            "Toggle sound",                "", false },
-  { Event::PauseMode,              "Pause",                       "", false },
-  { Event::OptionsMenuMode,        "Enter options menu UI",       "", false },
-  { Event::CmdMenuMode,            "Toggle command menu UI",      "", false },
-  { Event::TimeMachineMode,        "Toggle time machine UI",      "", false },
-  { Event::Rewind,                 "Rewind game",                 "", false },
-  { Event::Unwind,                 "Unwind game",                 "", false },
-  { Event::DebuggerMode,           "Toggle debugger mode",        "", false },
-  { Event::LauncherMode,           "Enter ROM launcher",          "", false },
-  { Event::Quit,                   "Quit",                        "", false },
+  { Event::VidmodeStd,              "Disable TV effects",                    "", false },
+  { Event::VidmodeRGB,              "Select 'RGB' preset",                   "", false },
+  { Event::VidmodeSVideo,           "Select 'S-Video' preset",               "", false },
+  { Event::VidModeComposite,        "Select 'Composite' preset",             "", false },
+  { Event::VidModeBad,              "Select 'Badly adjusted' preset",        "", false },
+  { Event::VidModeCustom,           "Select 'Custom' preset",                "", false },
+  { Event::PreviousAttribute,       "Select previous 'Custom' attribute",    "", false },
+  { Event::NextAttribute,           "Select next 'Custom' attribute",        "", false },
+  { Event::DecreaseAttribute,       "Decrease selected 'Custom' attribute",  "", false },
+  { Event::IncreaseAttribute,       "Increase selected 'Custom' attribute",  "", false },
+  { Event::ScanlinesDecrease,       "Decrease scanlines",                    "", false },
+  { Event::ScanlinesIncrease,       "Increase scanlines",                    "", false },
+  { Event::TogglePhosphor,          "Toggle 'phosphor' effect",              "", false },
+  { Event::DecreasePhosphor,        "Decrease 'phosphor' blend",             "", false },
+  { Event::IncreasePhosphor,        "Increase 'phosphor' blend",             "", false },
+  { Event::DecreaseFormat,          "Decrease display format",               "", false },
+  { Event::IncreaseFormat,          "Increase display format",               "", false },
+  { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "", false },
+  { Event::ToggleColorLoss,         "Toggle PAL color-loss effect",          "", false },
+#ifdef PNG_SUPPORT
+  { Event::ToggleContSnapshots,     "Save cont. PNG snapsh. (as defined)",   "", false },
+  { Event::ToggleContSnapshotsFrame,"Save cont. PNG snapsh. (every frame)",  "", false },
+#endif
+  { Event::ToggleTimeMachine,       "Toggle 'Time Machine' mode",            "", false },
 
-  { Event::JoystickZeroUp,      "P0 Joystick Up",                 "", true  },
-  { Event::JoystickZeroDown,    "P0 Joystick Down",               "", true  },
-  { Event::JoystickZeroLeft,    "P0 Joystick Left",               "", true  },
-  { Event::JoystickZeroRight,   "P0 Joystick Right",              "", true  },
-  { Event::JoystickZeroFire,    "P0 Joystick Fire",               "", true  },
-  { Event::JoystickZeroFire5,   "P0 Booster Top Booster Button",  "", true  },
-  { Event::JoystickZeroFire9,   "P0 Booster Handle Grip Trigger", "", true  },
+  { Event::VolumeDecrease,          "Decrease volume",                       "", false },
+  { Event::VolumeIncrease,          "Increase volume",                       "", false },
+  { Event::SoundToggle,             "Toggle sound",                          "", false },
+  { Event::PauseMode,               "Pause",                                 "", false },
+  { Event::OptionsMenuMode,         "Enter options menu UI",                 "", false },
+  { Event::CmdMenuMode,             "Toggle command menu UI",                "", false },
+  { Event::TimeMachineMode,         "Toggle time machine UI",                "", false },
+  { Event::Rewind,                  "Rewind game",                           "", false },
+  { Event::Unwind,                  "Unwind game",                           "", false },
+  { Event::DebuggerMode,            "Toggle debugger mode",                  "", false },
+  { Event::ReloadConsole,           "Reload current ROM/load next game",     "", false },
+  { Event::ExitMode,                "Exit current Stella mode",              "", false },
+  { Event::Quit,                    "Quit",                                  "", false },
 
-  { Event::JoystickOneUp,       "P1 Joystick Up",                 "", true  },
-  { Event::JoystickOneDown,     "P1 Joystick Down",               "", true  },
-  { Event::JoystickOneLeft,     "P1 Joystick Left",               "", true  },
-  { Event::JoystickOneRight,    "P1 Joystick Right",              "", true  },
-  { Event::JoystickOneFire,     "P1 Joystick Fire",               "", true  },
-  { Event::JoystickOneFire5,    "P1 Booster Top Booster Button",  "", true  },
-  { Event::JoystickOneFire9,    "P1 Booster Handle Grip Trigger", "", true  },
+  { Event::HandleMouseControl,      "Disable TV effects",                    "", false },
+  { Event::ToggleGrabMouse,         "Select 'RGB' preset",                   "", false },
+  { Event::ToggleSAPortOrder,       "Select 'S-Video' preset",               "", false },
 
-  { Event::PaddleZeroAnalog,    "Paddle 0 Analog",                "", true  },
-  { Event::PaddleZeroDecrease,  "Paddle 0 Decrease",              "", true  },
-  { Event::PaddleZeroIncrease,  "Paddle 0 Increase",              "", true  },
-  { Event::PaddleZeroFire,      "Paddle 0 Fire",                  "", true  },
+  { Event::JoystickZeroUp,          "P0 Joystick Up",                        "", true  },
+  { Event::JoystickZeroDown,        "P0 Joystick Down",                      "", true  },
+  { Event::JoystickZeroLeft,        "P0 Joystick Left",                      "", true  },
+  { Event::JoystickZeroRight,       "P0 Joystick Right",                     "", true  },
+  { Event::JoystickZeroFire,        "P0 Joystick Fire",                      "", true  },
+  { Event::JoystickZeroFire5,       "P0 Booster Top Booster Button",         "", true  },
+  { Event::JoystickZeroFire9,       "P0 Booster Handle Grip Trigger",        "", true  },
 
-  { Event::PaddleOneAnalog,     "Paddle 1 Analog",                "", true  },
-  { Event::PaddleOneDecrease,   "Paddle 1 Decrease",              "", true  },
-  { Event::PaddleOneIncrease,   "Paddle 1 Increase",              "", true  },
-  { Event::PaddleOneFire,       "Paddle 1 Fire",                  "", true  },
+  { Event::JoystickOneUp,           "P1 Joystick Up",                        "", true  },
+  { Event::JoystickOneDown,         "P1 Joystick Down",                      "", true  },
+  { Event::JoystickOneLeft,         "P1 Joystick Left",                      "", true  },
+  { Event::JoystickOneRight,        "P1 Joystick Right",                     "", true  },
+  { Event::JoystickOneFire,         "P1 Joystick Fire",                      "", true  },
+  { Event::JoystickOneFire5,        "P1 Booster Top Booster Button",         "", true  },
+  { Event::JoystickOneFire9,        "P1 Booster Handle Grip Trigger",        "", true  },
 
-  { Event::PaddleTwoAnalog,     "Paddle 2 Analog",                "", true  },
-  { Event::PaddleTwoDecrease,   "Paddle 2 Decrease",              "", true  },
-  { Event::PaddleTwoIncrease,   "Paddle 2 Increase",              "", true  },
-  { Event::PaddleTwoFire,       "Paddle 2 Fire",                  "", true  },
+  { Event::PaddleZeroAnalog,        "Paddle 0 Analog",                       "", true  },
+  { Event::PaddleZeroDecrease,      "Paddle 0 Decrease",                     "", true  },
+  { Event::PaddleZeroIncrease,      "Paddle 0 Increase",                     "", true  },
+  { Event::PaddleZeroFire,          "Paddle 0 Fire",                         "", true  },
 
-  { Event::PaddleThreeAnalog,   "Paddle 3 Analog",                "", true  },
-  { Event::PaddleThreeDecrease, "Paddle 3 Decrease",              "", true  },
-  { Event::PaddleThreeIncrease, "Paddle 3 Increase",              "", true  },
-  { Event::PaddleThreeFire,     "Paddle 3 Fire",                  "", true  },
+  { Event::PaddleOneAnalog,         "Paddle 1 Analog",                       "", true  },
+  { Event::PaddleOneDecrease,       "Paddle 1 Decrease",                     "", true  },
+  { Event::PaddleOneIncrease,       "Paddle 1 Increase",                     "", true  },
+  { Event::PaddleOneFire,           "Paddle 1 Fire",                         "", true  },
 
-  { Event::KeyboardZero1,       "P0 Keyboard 1",                  "", true  },
-  { Event::KeyboardZero2,       "P0 Keyboard 2",                  "", true  },
-  { Event::KeyboardZero3,       "P0 Keyboard 3",                  "", true  },
-  { Event::KeyboardZero4,       "P0 Keyboard 4",                  "", true  },
-  { Event::KeyboardZero5,       "P0 Keyboard 5",                  "", true  },
-  { Event::KeyboardZero6,       "P0 Keyboard 6",                  "", true  },
-  { Event::KeyboardZero7,       "P0 Keyboard 7",                  "", true  },
-  { Event::KeyboardZero8,       "P0 Keyboard 8",                  "", true  },
-  { Event::KeyboardZero9,       "P0 Keyboard 9",                  "", true  },
-  { Event::KeyboardZeroStar,    "P0 Keyboard *",                  "", true  },
-  { Event::KeyboardZero0,       "P0 Keyboard 0",                  "", true  },
-  { Event::KeyboardZeroPound,   "P0 Keyboard #",                  "", true  },
+  { Event::PaddleTwoAnalog,         "Paddle 2 Analog",                       "", true  },
+  { Event::PaddleTwoDecrease,       "Paddle 2 Decrease",                     "", true  },
+  { Event::PaddleTwoIncrease,       "Paddle 2 Increase",                     "", true  },
+  { Event::PaddleTwoFire,           "Paddle 2 Fire",                         "", true  },
 
-  { Event::KeyboardOne1,        "P1 Keyboard 1",                  "", true  },
-  { Event::KeyboardOne2,        "P1 Keyboard 2",                  "", true  },
-  { Event::KeyboardOne3,        "P1 Keyboard 3",                  "", true  },
-  { Event::KeyboardOne4,        "P1 Keyboard 4",                  "", true  },
-  { Event::KeyboardOne5,        "P1 Keyboard 5",                  "", true  },
-  { Event::KeyboardOne6,        "P1 Keyboard 6",                  "", true  },
-  { Event::KeyboardOne7,        "P1 Keyboard 7",                  "", true  },
-  { Event::KeyboardOne8,        "P1 Keyboard 8",                  "", true  },
-  { Event::KeyboardOne9,        "P1 Keyboard 9",                  "", true  },
-  { Event::KeyboardOneStar,     "P1 Keyboard *",                  "", true  },
-  { Event::KeyboardOne0,        "P1 Keyboard 0",                  "", true  },
-  { Event::KeyboardOnePound,    "P1 Keyboard #",                  "", true  },
+  { Event::PaddleThreeAnalog,       "Paddle 3 Analog",                       "", true  },
+  { Event::PaddleThreeDecrease,     "Paddle 3 Decrease",                     "", true  },
+  { Event::PaddleThreeIncrease,     "Paddle 3 Increase",                     "", true  },
+  { Event::PaddleThreeFire,         "Paddle 3 Fire",                         "", true  },
 
-  { Event::Combo1,              "Combo 1",                        "", false },
-  { Event::Combo2,              "Combo 2",                        "", false },
-  { Event::Combo3,              "Combo 3",                        "", false },
-  { Event::Combo4,              "Combo 4",                        "", false },
-  { Event::Combo5,              "Combo 5",                        "", false },
-  { Event::Combo6,              "Combo 6",                        "", false },
-  { Event::Combo7,              "Combo 7",                        "", false },
-  { Event::Combo8,              "Combo 8",                        "", false },
-  { Event::Combo9,              "Combo 9",                        "", false },
-  { Event::Combo10,             "Combo 10",                       "", false },
-  { Event::Combo11,             "Combo 11",                       "", false },
-  { Event::Combo12,             "Combo 12",                       "", false },
-  { Event::Combo13,             "Combo 13",                       "", false },
-  { Event::Combo14,             "Combo 14",                       "", false },
-  { Event::Combo15,             "Combo 15",                       "", false },
-  { Event::Combo16,             "Combo 16",                       "", false },
+  { Event::KeyboardZero1,           "P0 Keyboard 1",                         "", true  },
+  { Event::KeyboardZero2,           "P0 Keyboard 2",                         "", true  },
+  { Event::KeyboardZero3,           "P0 Keyboard 3",                         "", true  },
+  { Event::KeyboardZero4,           "P0 Keyboard 4",                         "", true  },
+  { Event::KeyboardZero5,           "P0 Keyboard 5",                         "", true  },
+  { Event::KeyboardZero6,           "P0 Keyboard 6",                         "", true  },
+  { Event::KeyboardZero7,           "P0 Keyboard 7",                         "", true  },
+  { Event::KeyboardZero8,           "P0 Keyboard 8",                         "", true  },
+  { Event::KeyboardZero9,           "P0 Keyboard 9",                         "", true  },
+  { Event::KeyboardZeroStar,        "P0 Keyboard *",                         "", true  },
+  { Event::KeyboardZero0,           "P0 Keyboard 0",                         "", true  },
+  { Event::KeyboardZeroPound,       "P0 Keyboard #",                         "", true  },
 
-  { Event::ToggleP0Bit,         "Toggle TIA Player0 object",      "", false },
-  { Event::ToggleP0Collision,   "Toggle TIA Player0 collisions",  "", false },
-  { Event::ToggleP1Bit,         "Toggle TIA Player1 object",      "", false },
-  { Event::ToggleP1Collision,   "Toggle TIA Player1 collisions",  "", false },
-  { Event::ToggleM0Bit,         "Toggle TIA Missile0 object",     "", false },
-  { Event::ToggleM0Collision,   "Toggle TIA Missile0 collisions", "", false },
-  { Event::ToggleM1Bit,         "Toggle TIA Missile1 object",     "", false },
-  { Event::ToggleM1Collision,   "Toggle TIA Missile1 collisions", "", false },
-  { Event::ToggleBLBit,         "Toggle TIA Ball object",         "", false },
-  { Event::ToggleBLCollision,   "Toggle TIA Ball collisions",     "", false },
-  { Event::TogglePFBit,         "Toggle TIA Playfield object",    "", false },
-  { Event::TogglePFCollision,   "Toggle TIA Playfield collisions","", false },
-  { Event::ToggleFixedColors,   "Toggle TIA 'Fixed Debug Colors' mode","", false },
-  { Event::ToggleBits,          "Toggle all TIA objects",         "", false },
-  { Event::ToggleCollisions,    "Toggle all TIA collisions",      "", false }
+  { Event::KeyboardOne1,            "P1 Keyboard 1",                         "", true  },
+  { Event::KeyboardOne2,            "P1 Keyboard 2",                         "", true  },
+  { Event::KeyboardOne3,            "P1 Keyboard 3",                         "", true  },
+  { Event::KeyboardOne4,            "P1 Keyboard 4",                         "", true  },
+  { Event::KeyboardOne5,            "P1 Keyboard 5",                         "", true  },
+  { Event::KeyboardOne6,            "P1 Keyboard 6",                         "", true  },
+  { Event::KeyboardOne7,            "P1 Keyboard 7",                         "", true  },
+  { Event::KeyboardOne8,            "P1 Keyboard 8",                         "", true  },
+  { Event::KeyboardOne9,            "P1 Keyboard 9",                         "", true  },
+  { Event::KeyboardOneStar,         "P1 Keyboard *",                         "", true  },
+  { Event::KeyboardOne0,            "P1 Keyboard 0",                         "", true  },
+  { Event::KeyboardOnePound,        "P1 Keyboard #",                         "", true  },
+
+  { Event::Combo1,                  "Combo 1",                               "", false },
+  { Event::Combo2,                  "Combo 2",                               "", false },
+  { Event::Combo3,                  "Combo 3",                               "", false },
+  { Event::Combo4,                  "Combo 4",                               "", false },
+  { Event::Combo5,                  "Combo 5",                               "", false },
+  { Event::Combo6,                  "Combo 6",                               "", false },
+  { Event::Combo7,                  "Combo 7",                               "", false },
+  { Event::Combo8,                  "Combo 8",                               "", false },
+  { Event::Combo9,                  "Combo 9",                               "", false },
+  { Event::Combo10,                 "Combo 10",                              "", false },
+  { Event::Combo11,                 "Combo 11",                              "", false },
+  { Event::Combo12,                 "Combo 12",                              "", false },
+  { Event::Combo13,                 "Combo 13",                              "", false },
+  { Event::Combo14,                 "Combo 14",                              "", false },
+  { Event::Combo15,                 "Combo 15",                              "", false },
+  { Event::Combo16,                 "Combo 16",                              "", false },
+
+  { Event::ToggleFrameStats,        "Toggle frame stats",                    "", false },
+  { Event::ToggleP0Bit,             "Toggle TIA Player0 object",             "", false },
+  { Event::ToggleP0Collision,       "Toggle TIA Player0 collisions",         "", false },
+  { Event::ToggleP1Bit,             "Toggle TIA Player1 object",             "", false },
+  { Event::ToggleP1Collision,       "Toggle TIA Player1 collisions",         "", false },
+  { Event::ToggleM0Bit,             "Toggle TIA Missile0 object",            "", false },
+  { Event::ToggleM0Collision,       "Toggle TIA Missile0 collisions",        "", false },
+  { Event::ToggleM1Bit,             "Toggle TIA Missile1 object",            "", false },
+  { Event::ToggleM1Collision,       "Toggle TIA Missile1 collisions",        "", false },
+  { Event::ToggleBLBit,             "Toggle TIA Ball object",                "", false },
+  { Event::ToggleBLCollision,       "Toggle TIA Ball collisions",            "", false },
+  { Event::TogglePFBit,             "Toggle TIA Playfield object",           "", false },
+  { Event::TogglePFCollision,       "Toggle TIA Playfield collisions",       "", false },
+  { Event::ToggleFixedColors,       "Toggle TIA 'Fixed Debug Colors' mode",  "", false },
+  { Event::ToggleBits,              "Toggle all TIA objects",                "", false },
+  { Event::ToggleCollisions,        "Toggle all TIA collisions",             "", false },
+  { Event::ToggleJitter,            "Toggle TV 'Jitter' effect",             "", false }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -296,7 +296,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
           // Left joystick (assume joystick zero or two, buttons two..four)
           setDefaultBtn(stick, 2, Event::CmdMenuMode);
           setDefaultBtn(stick, 3, Event::OptionsMenuMode);
-          setDefaultBtn(stick, 4, Event::LauncherMode);
+          setDefaultBtn(stick, 4, Event::ExitMode);
         #endif
           break;
         case 1:
@@ -324,7 +324,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
           // Right joystick (assume joystick one or three, buttons two..four)
           setDefaultBtn(stick, 2, Event::CmdMenuMode);
           setDefaultBtn(stick, 3, Event::OptionsMenuMode);
-          setDefaultBtn(stick, 4, Event::LauncherMode);
+          setDefaultBtn(stick, 4, Event::ExitMode);
           setDefaultBtn(stick, 5, Event::Rewind);
           setDefaultBtn(stick, 7, Event::ConsoleSelect);
           setDefaultBtn(stick, 8, Event::ConsoleReset);

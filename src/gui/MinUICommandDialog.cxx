@@ -248,7 +248,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitGameCmd:
-      instance().eventHandler().handleEvent(Event::LauncherMode);
+      instance().eventHandler().handleEvent(Event::ExitMode);
       break;
   }
 
