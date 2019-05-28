@@ -741,38 +741,6 @@
       <td>&nbsp;</td>
     </tr>
 
-    <tr>
-      <td>Switch to next <i>larger</i> zoom level in windowed mode,
-      </br>toggle stretching in fullscreen mode</td>
-      <td>Alt + =</td>
-      <td>Cmd + =</td>
-    </tr>
-
-    <tr>
-      <td>Switch to next <i>smaller</i> zoom level in windowed mode,
-      </br>toggle stretching in fullscreen mode</td>
-      <td>Alt + -</td>
-      <td>Cmd + -</td>
-    </tr>
-
-    <tr>
-      <td>Decrease volume</td>
-      <td>Alt + [</td>
-      <td>Cmd + [</td>
-    </tr>
-
-    <tr>
-      <td>Increase volume</td>
-      <td>Alt + ]</td>
-      <td>Cmd + ]</td>
-    </tr>
-
-    <tr>
-      <td>Toggle sound on/off</td>
-      <td>Control + ]</td>
-      <td>Control + ]</td>
-    </tr>
-
   </table>
 
 
@@ -1287,7 +1255,7 @@
 
   </table>
 
-  <p><b>TV effects (cannot be remapped, only active in TIA mode)</b></p>
+  <p><b>TV effects (can be remapped, only active in TIA mode)</b></p>
 
   <table BORDER=2 cellpadding=4>
     <tr>
@@ -1326,35 +1294,55 @@
       <td>Cmd + 6</td>
     </tr>
     <tr>
-      <td>Decrease scanline intensity</td>
+      <td>Select previous 'Custom' mode attribute (*)</td>
       <td>Shift-Alt + 7</td>
       <td>Shift-Cmd + 7</td>
     </tr>
     <tr>
-      <td>Increase scanline intensity</td>
+      <td>Select next 'Custom' mode attribute (*)</td>
       <td>Alt + 7</td>
       <td>Cmd + 7</td>
     </tr>
     <tr>
-      <td>Select previous 'Custom' mode attribute (*)</td>
+      <td>Decrease 'Custom' selected attribute value (*)</td>
+      <td>Shift-Alt + 8</td>
+      <td>Shift-Cmd + 8</td>
+    </tr>
+    <tr>
+      <td>Increase 'Custom' selected attribute value (*)</td>
+      <td>Alt + 8</td>
+      <td>Cmd + 8</td>
+    </tr>
+
+    <tr>
+      <td>Toggle 'phosphor' effect</td>
+      <td>Alt + p</td>
+      <td>Cmd + p</td>
+    </tr>
+
+    <tr>
+      <td>Decrease 'phosphor' blend in phosphor mode</td>
       <td>Shift-Alt + 9</td>
       <td>Shift-Cmd + 9</td>
     </tr>
+
     <tr>
-      <td>Select next 'Custom' mode attribute (*)</td>
+      <td>Increase 'phosphor' blend in phosphor mode</td>
       <td>Alt + 9</td>
       <td>Cmd + 9</td>
     </tr>
+
     <tr>
-      <td>Decrease 'Custom' selected attribute value (*)</td>
+      <td>Decrease scanline intensity</td>
       <td>Shift-Alt + 0</td>
       <td>Shift-Cmd + 0</td>
     </tr>
     <tr>
-      <td>Increase 'Custom' selected attribute value (*)</td>
+      <td>Increase scanline intensity</td>
       <td>Alt + 0</td>
       <td>Cmd + 0</td>
     </tr>
+
     <tr>
       <td colspan="3"><center><font size="-1">
       Items marked as (*) are only available in 'Custom' preset mode</font></center></td>
@@ -1362,7 +1350,7 @@
   </table>
 
   <a name="DeveloperKeys"></a>
-  <p><b>Developer Keys in TIA mode (cannot be remapped)</b></p>
+  <p><b>Developer Keys in TIA mode (can be remapped)</b></p>
 
   <table BORDER=2 cellpadding=4>
     <tr>
@@ -1426,6 +1414,12 @@
     </tr>
 
     <tr>
+      <td>Toggle all TIA objects</td>
+      <td>Alt + Comma</td>
+      <td>Cmd + Comma</td>
+    </tr>
+
+    <tr>
       <td>Toggle TIA Player0 collisions</td>
       <td>Shift-Alt + z</td>
       <td>Shift-Cmd + z</td>
@@ -1462,37 +1456,51 @@
     </tr>
 
     <tr>
-      <td>Toggle TIA 'Fixed Debug Colors' mode</td>
-      <td>Alt + Comma</td>
-      <td>Cmd + Comma</td>
+      <td>Toggle all TIA collisions</td>
+      <td>Shift-Alt + Comma</td>
+      <td>Shift-Cmd + Comma</td>
     </tr>
 
     <tr>
-      <td>Toggle all TIA objects</td>
+      <td>Toggle TIA 'Fixed Debug Colors' mode</td>
       <td>Alt + .</td>
       <td>Cmd + .</td>
     </tr>
 
     <tr>
-      <td>Toggle all TIA collisions</td>
-      <td>Shift-Alt + .</td>
-      <td>Shift-Cmd + .</td>
+      <td>Toggle PAL color-loss effect</td>
+      <td>Control + L</td>
+      <td>Control + L</td>
     </tr>
 
     <tr>
-      <td>Toggle TV 'jitter' effect</td>
+      <td>Toggle TV 'Jitter' effect</td>
       <td>Alt + j</td>
       <td>Cmd + j</td>
     </tr>
   </table>
 
-  <p><b>Other Keys (cannot be remapped, except those marked with (*) which can be mapped to a 2nd key)</b></p>
+  <p><b>Other Keys (can be remapped)</b></p>
 
   <table BORDER=2 cellpadding=4>
     <tr>
       <th>Function</th>
       <th>Key (Standard)</th>
       <th>Key (macOS)</th>
+    </tr>
+
+    <tr>
+      <td>Switch to next <i>larger</i> zoom level in windowed mode,
+      </br>toggle stretching in fullscreen mode</td>
+      <td>Alt + =</td>
+      <td>Cmd + =</td>
+    </tr>
+
+    <tr>
+      <td>Switch to next <i>smaller</i> zoom level in windowed mode,
+      </br>toggle stretching in fullscreen mode</td>
+      <td>Alt + -</td>
+      <td>Cmd + -</td>
     </tr>
 
     <tr>
@@ -1511,6 +1519,30 @@
       <td>Switch display format in <i>decreasing</i> order (NTSC/PAL/SECAM etc.)</td>
       <td>Shift-Control + f</td>
       <td>Shift-Control + f</td>
+    </tr>
+
+    <tr>
+      <td>Switch palette (Standard/Z26/User)</td>
+      <td>Control + p</td>
+      <td>Control + p</td>
+    </tr>
+
+    <tr>
+      <td>Toggle sound on/off</td>
+      <td>Control + ]</td>
+      <td>Control + ]</td>
+    </tr>
+
+    <tr>
+      <td>Decrease volume</td>
+      <td>Alt + [</td>
+      <td>Cmd + [</td>
+    </tr>
+
+    <tr>
+      <td>Increase volume</td>
+      <td>Alt + ]</td>
+      <td>Cmd + ]</td>
     </tr>
 
     <tr>
@@ -1545,45 +1577,15 @@
     </tr>
 
     <tr>
-      <td>Emulate 'frying' effect (TIA mode) (*)</td>
+      <td>Emulate 'frying' effect (TIA mode)</td>
       <td>Backspace</td>
       <td>Backspace</td>
     </tr>
 
     <tr>
-      <td>Go to parent directory (UI mode) (*)</td>
+      <td>Go to parent directory (UI mode)</td>
       <td>Backspace</td>
       <td>Backspace</td>
-    </tr>
-
-    <tr>
-      <td>Toggle 'phosphor' effect</td>
-      <td>Alt + p</td>
-      <td>Cmd + p</td>
-    </tr>
-
-    <tr>
-      <td>Decrease 'phosphor' blend in phosphor mode</td>
-      <td>Alt + i</td>
-      <td>Cmd + i</td>
-    </tr>
-
-    <tr>
-      <td>Increase 'phosphor' blend in phosphor mode</td>
-      <td>Alt + o</td>
-      <td>Cmd + o</td>
-    </tr>
-
-    <tr>
-      <td>Switch palette (Standard/Z26/User)</td>
-      <td>Control + p</td>
-      <td>Control + p</td>
-    </tr>
-
-    <tr>
-      <td>Toggle PAL color-loss effect</td>
-      <td>Control + L</td>
-      <td>Control + L</td>
     </tr>
 
     <tr>
