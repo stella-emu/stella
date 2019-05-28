@@ -50,8 +50,12 @@ class KeyMap
         return (key == other.key
           && mode == other.mode
           && (((mod | other.mod) & KBDM_SHIFT) ? (mod & other.mod & KBDM_SHIFT) : true)
-          && (((mod | other.mod) & KBDM_ALT  ) ? (mod & other.mod & KBDM_ALT  ) : true)
           && (((mod | other.mod) & KBDM_CTRL ) ? (mod & other.mod & KBDM_CTRL ) : true)
+#if defined(BSPF_MACOS) || defined(MACOS_KEYS)
+          && (((mod | other.mod) & KBDM_GUI  ) ? (mod & other.mod & KBDM_GUI  ) : true)
+#else
+          && (((mod | other.mod) & KBDM_ALT  ) ? (mod & other.mod & KBDM_ALT  ) : true)
+#endif
           );
       }
     };

@@ -88,20 +88,28 @@ bool KeyMap::check(const int mode, const int key, const int mod) const
 string KeyMap::getDesc(const Mapping& mapping) const
 {
   ostringstream buf;
-#ifndef BSPF_MACOS
-  string modifier = "Ctrl";
+#ifdef BSPF_MACOS
+  string control = "Cmd";
+  string alt = "Ctrl";
+  int ALT = KBDM_GUI;
+  int LALT = KBDM_LGUI;
+  int RALT = KBDM_RGUI;
 #else
-  string modifier = "Cmd";
+  string control = "Ctrl";
+  string alt = "Alt";
+  int ALT = KBDM_ALT;
+  int LALT = KBDM_LALT;
+  int RALT = KBDM_RALT;
 #endif
 
-  if ((mapping.mod & KBDM_CTRL) == KBDM_CTRL) buf << modifier;
-  else if (mapping.mod & KBDM_LCTRL) buf << "Left " << modifier;
-  else if (mapping.mod & KBDM_RCTRL) buf << "Right " << modifier;
+  if ((mapping.mod & KBDM_CTRL) == KBDM_CTRL) buf << control;
+  else if (mapping.mod & KBDM_LCTRL) buf << "Left " << control;
+  else if (mapping.mod & KBDM_RCTRL) buf << "Right " << control;
 
-  if ((mapping.mod & (KBDM_ALT)) && buf.tellp()) buf << "+";
-  if ((mapping.mod & KBDM_ALT) == KBDM_ALT) buf << "Alt";
-  else if (mapping.mod & KBDM_LALT) buf << "Left Alt";
-  else if (mapping.mod & KBDM_RALT) buf << "Right Alt";
+  if ((mapping.mod & (ALT)) && buf.tellp()) buf << "+";
+  if ((mapping.mod & ALT) == ALT) buf << alt;
+  else if (mapping.mod & LALT) buf << alt;
+  else if (mapping.mod & RALT) buf << alt;
 
   if ((mapping.mod & (KBDM_SHIFT)) && buf.tellp()) buf << "+";
   if ((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) buf << "Shift";
@@ -127,7 +135,7 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const int mode) cons
 #ifndef BSPF_MACOS
   string modifier = "Ctrl";
 #else
-  string modifier = "Cmd";
+  string control = "Cmd";
 #endif
 
   for (auto item : myMap)
@@ -221,7 +229,11 @@ KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping) const
   else
   {
     // limit to modifiers we want to support
-    m.mod = StellaMod(m.mod & (KBDM_SHIFT | KBDM_ALT | KBDM_CTRL));
+#if defined(BSPF_MACOS) || defined(MACOS_KEYS)
+    m.mod = StellaMod(m.mod & (KBDM_SHIFT | KBDM_CTRL | KBDM_GUI));
+#else
+    m.mod = StellaMod(m.mod & (KBDM_SHIFT | KBDM_CTRL | KBDM_ALT));
+#endif
   }
 
   return m;
