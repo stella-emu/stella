@@ -94,9 +94,7 @@ class Event
 
       DecreasePhosphor, IncreasePhosphor, TogglePhosphor, ToggleJitter,
       ToggleFrameStats, ToggleTimeMachine,
-  #ifdef PNG_SUPPORT
       ToggleContSnapshots, ToggleContSnapshotsFrame,
-  #endif*/
       ToggleColorLoss, TogglePalette,
 
       HandleMouseControl, ToggleGrabMouse, ToggleSAPortOrder,
