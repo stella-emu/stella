@@ -628,6 +628,30 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       if (pressed) myOSystem.state().unwindStates();
       return;
 
+    case Event::Rewind1Menu:
+      if (pressed) enterTimeMachineMenuMode(1, false);
+      return;
+
+    case Event::Rewind10Menu:
+      if (pressed) enterTimeMachineMenuMode(10, false);
+      return;
+
+    case Event::RewindAllMenu:
+      if (pressed) enterTimeMachineMenuMode(1000, false);
+      return;
+
+    case Event::Unwind1Menu:
+      if (pressed) enterTimeMachineMenuMode(1, true);
+      return;
+
+    case Event::Unwind10Menu:
+      if (pressed) enterTimeMachineMenuMode(10, true);
+      return;
+
+    case Event::UnwindAllMenu:
+      if (pressed) enterTimeMachineMenuMode(1000, true);
+      return;
+
     case Event::TakeSnapshot:
       if(pressed) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
@@ -1554,9 +1578,17 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::PauseMode,               "Pause",                                 "", false },
   { Event::OptionsMenuMode,         "Enter options menu UI",                 "", false },
   { Event::CmdMenuMode,             "Toggle command menu UI",                "", false },
-  { Event::TimeMachineMode,         "Toggle time machine UI",                "", false },
-  { Event::Rewind,                  "Rewind game",                           "", false },
-  { Event::Unwind,                  "Unwind game",                           "", false },
+
+  { Event::TimeMachineMode,         "Toggle Time Machine UI",                "", false },
+  { Event::Rewind,                  "Rewind game one state",                 "", false },
+  { Event::Unwind,                  "Unwind game one state",                 "", false },
+  { Event::Rewind1Menu,             "Rewind one state & enter TM UI",        "", false },
+  { Event::Rewind10Menu,            "Rewind 10 states & enter TM UI",        "", false },
+  { Event::RewindAllMenu,           "Rewind all states & enter TM UI",       "", false },
+  { Event::Unwind1Menu,             "Unwind one state & enter TM UI",        "", false },
+  { Event::Unwind10Menu,            "Unwind 10 states & enter TM UI",        "", false },
+  { Event::UnwindAllMenu,           "Unwind all states & enter TM UI",       "", false },
+
   { Event::DebuggerMode,            "Toggle debugger mode",                  "", false },
   { Event::ReloadConsole,           "Reload current ROM/load next game",     "", false },
   { Event::ExitMode,                "Exit current Stella mode",              "", false },

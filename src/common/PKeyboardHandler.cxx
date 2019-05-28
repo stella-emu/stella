@@ -208,6 +208,13 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::ToggleCollisions   , KBDK_PERIOD, KBDM_SHIFT | KBDM_ALT);
       setDefaultKey(Event::ToggleBits         , KBDK_PERIOD, KBDM_ALT);
 
+      setDefaultKey(Event::Rewind1Menu        , KBDK_LEFT, KBDM_ALT);
+      setDefaultKey(Event::Rewind10Menu       , KBDK_LEFT, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::RewindAllMenu      , KBDK_DOWN, KBDM_ALT);
+      setDefaultKey(Event::Unwind1Menu        , KBDK_RIGHT, KBDM_ALT);
+      setDefaultKey(Event::Unwind10Menu       , KBDK_RIGHT, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::UnwindAllMenu      , KBDK_UP,   KBDM_ALT);
+
     #if defined(RETRON77)
       setDefaultKey(Event::ConsoleColorToggle     , KBDK_F4);         // back ("COLOR","B/W")
       setDefaultKey(Event::ConsoleLeftDiffToggle  , KBDK_F6);         // front ("SKILL P1")
@@ -366,22 +373,6 @@ bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool 
     {
       switch(key)
       {
-        case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
-          myHandler.enterTimeMachineMenuMode((StellaModTest::isShift(mod) && pressed) ? 10 : 1, false);
-          break;
-
-        case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
-          myHandler.enterTimeMachineMenuMode((StellaModTest::isShift(mod) && pressed) ? 10 : 1, true);
-          break;
-
-        case KBDK_DOWN:  // Alt-down rewinds to start of list
-          myHandler.enterTimeMachineMenuMode(1000, false);
-          break;
-
-        case KBDK_UP:  // Alt-up rewinds to end of list
-          myHandler.enterTimeMachineMenuMode(1000, true);
-          break;
-
         case KBDK_PAGEUP:    // Alt-PageUp increases YStart
           myOSystem.console().changeYStart(+1);
           break;

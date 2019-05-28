@@ -100,6 +100,9 @@ class Event
       HandleMouseControl, ToggleGrabMouse, ToggleSAPortOrder,
       DecreaseFormat, IncreaseFormat, ReloadConsole,
 
+      Rewind1Menu, Rewind10Menu, RewindAllMenu,
+      Unwind1Menu, Unwind10Menu, UnwindAllMenu,
+
       LastType
     };
 
