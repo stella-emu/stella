@@ -26,7 +26,6 @@ static retro_input_state_t input_state_cb;
 static retro_environment_t environ_cb;
 static retro_audio_sample_t audio_cb;
 static retro_audio_sample_batch_t audio_batch_cb;
-static struct retro_system_av_info g_av_info;
 
 // libretro UI settings
 static int setting_ntsc, setting_pal;
@@ -489,7 +488,7 @@ void retro_set_environment(retro_environment_t cb)
 {
   environ_cb = cb;
 
-  struct retro_variable variables[] = {
+  static struct retro_variable variables[] = {
     // Adding more variables and rearranging them is safe.
     { "stella_console", "Console display; auto|ntsc|pal|secam|ntsc50|pal60|secam60" },
     { "stella_palette", "Palette colors; standard|z26" },
@@ -524,7 +523,7 @@ bool retro_load_game(const struct retro_game_info *info)
 {
   enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_XRGB8888;
 
-  struct retro_input_descriptor desc[] = {
+  static struct retro_input_descriptor desc[] = {
     { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,   "Left" },
     { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,     "Up" },
     { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_DOWN,   "Down" },
@@ -558,7 +557,7 @@ bool retro_load_game(const struct retro_game_info *info)
     { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_RIGHT,  "Right" },
     { 3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_B,      "Fire" },
 
-    { 0 },
+    { 0, 0, 0, 0, NULL },
   };
 
   if(!info || info->size >= stella.getROMMax()) return false;
