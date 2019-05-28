@@ -37,16 +37,16 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   int xpos, ypos;
   WidgetArray wid;
 
+  // Get maximum width of popupwidget
+  int pwidth = 0;
+  for (const auto& s : combolist)
+    pwidth = std::max(font.getStringWidth(s.first), pwidth);
+
   // Set real dimensions
-  _w = 33 * fontWidth + 10*2;
+  _w = 11 * fontWidth + pwidth-4 + 10 * 2;
   _h = 10 * (lineHeight + 4) + 10 + _th;
   xpos = 10;
   ypos = 10 + _th;
-
-  // Get maximum width of popupwidget
-  int pwidth = 0;
-  for(const auto& s: combolist)
-    pwidth = std::max(font.getStringWidth(s.first), pwidth);
 
   // Add event popup for 8 events
   auto ADD_EVENT_POPUP = [&](int idx, const string& label)
