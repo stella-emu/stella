@@ -168,15 +168,15 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::VidModeComposite   , KBDK_4, KBDM_ALT);
       setDefaultKey(Event::VidModeBad         , KBDK_5, KBDM_ALT);
       setDefaultKey(Event::VidModeCustom      , KBDK_6, KBDM_ALT);
-      setDefaultKey(Event::ScanlinesDecrease  , KBDK_7, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::ScanlinesIncrease  , KBDK_7, KBDM_ALT);
-      setDefaultKey(Event::PreviousAttribute  , KBDK_9, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::NextAttribute      , KBDK_9, KBDM_ALT);
-      setDefaultKey(Event::DecreaseAttribute  , KBDK_0, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::IncreaseAttribute  , KBDK_0, KBDM_ALT);
-      setDefaultKey(Event::DecreasePhosphor   , KBDK_I, KBDM_ALT);
-      setDefaultKey(Event::IncreasePhosphor   , KBDK_O, KBDM_ALT);
+      setDefaultKey(Event::PreviousAttribute  , KBDK_7, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::NextAttribute      , KBDK_7, KBDM_ALT);
+      setDefaultKey(Event::DecreaseAttribute  , KBDK_8, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::IncreaseAttribute  , KBDK_8, KBDM_ALT);
+      setDefaultKey(Event::DecreasePhosphor   , KBDK_9, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::IncreasePhosphor   , KBDK_9, KBDM_ALT);
       setDefaultKey(Event::TogglePhosphor     , KBDK_P, KBDM_ALT);
+      setDefaultKey(Event::ScanlinesDecrease  , KBDK_0, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ScanlinesIncrease  , KBDK_0, KBDM_ALT);
       setDefaultKey(Event::ToggleColorLoss    , KBDK_L, KBDM_CTRL);
       setDefaultKey(Event::TogglePalette      , KBDK_P, KBDM_CTRL);
       setDefaultKey(Event::ToggleJitter       , KBDK_J, KBDM_ALT);
@@ -204,9 +204,9 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::ToggleBLBit        , KBDK_B, KBDM_ALT);
       setDefaultKey(Event::TogglePFCollision  , KBDK_N, KBDM_SHIFT | KBDM_ALT);
       setDefaultKey(Event::TogglePFBit        , KBDK_N, KBDM_ALT);
-      setDefaultKey(Event::ToggleFixedColors  , KBDK_COMMA, KBDM_ALT);
-      setDefaultKey(Event::ToggleCollisions   , KBDK_PERIOD, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::ToggleBits         , KBDK_PERIOD, KBDM_ALT);
+      setDefaultKey(Event::ToggleCollisions   , KBDK_COMMA, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ToggleBits         , KBDK_COMMA, KBDM_ALT);
+      setDefaultKey(Event::ToggleFixedColors  , KBDK_PERIOD, KBDM_ALT);
 
       setDefaultKey(Event::Rewind1Menu        , KBDK_LEFT, KBDM_ALT);
       setDefaultKey(Event::Rewind10Menu       , KBDK_LEFT, KBDM_SHIFT | KBDM_ALT);

@@ -132,11 +132,6 @@ string KeyMap::getDesc(const int mode, const int key, const int mod) const
 string KeyMap::getEventMappingDesc(const Event::Type event, const int mode) const
 {
   ostringstream buf;
-#ifndef BSPF_MACOS
-  string modifier = "Ctrl";
-#else
-  string control = "Cmd";
-#endif
 
   for (auto item : myMap)
   {
