@@ -289,10 +289,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
           // Left joystick up/down directions (assume joystick zero or two and hat 0)
           setDefaultHat(stick, 0, JoyHat::UP, Event::JoystickZeroUp);
           setDefaultHat(stick, 0, JoyHat::DOWN, Event::JoystickZeroDown);
-        // FIXME - use the R77 define in the final release
-        //         use the '1' define for testing
         #if defined(RETRON77)
-        // #if 1
           // Left joystick (assume joystick zero or two, buttons two..four)
           setDefaultBtn(stick, 2, Event::CmdMenuMode);
           setDefaultBtn(stick, 3, Event::OptionsMenuMode);
@@ -317,10 +314,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
           // Right joystick up/down directions (assume joystick one or three and hat 0)
           setDefaultHat(stick, 0, JoyHat::UP, Event::JoystickOneUp);
           setDefaultHat(stick, 0, JoyHat::DOWN, Event::JoystickOneDown);
-        // FIXME - use the R77 define in the final release
-        //         use the '1' define for testing
         #if defined(RETRON77)
-        // #if 1
           // Right joystick (assume joystick one or three, buttons two..four)
           setDefaultBtn(stick, 2, Event::CmdMenuMode);
           setDefaultBtn(stick, 3, Event::OptionsMenuMode);

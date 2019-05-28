@@ -523,11 +523,8 @@ int StellaSettingsDialog::valueToLevel(int value)
 void StellaSettingsDialog::openHelp()
 {
   // Create an help dialog, similar to the in-game one
-  // FIXME - use the R77 define in the final release
-  //         use the '1' define for testing
   if (myHelpDialog == nullptr)
   #if defined(RETRON77)
-  // #if 1
     myHelpDialog = make_unique<R77HelpDialog>(instance(), parent(), _font);
   #else
     myHelpDialog = make_unique<HelpDialog>(instance(), parent(), _font);

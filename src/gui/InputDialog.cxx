@@ -413,10 +413,7 @@ void InputDialog::setDefaults()
       myDPaddleLabel->setLabel("10");
       myMPaddleSpeed->setValue(10);
       myMPaddleLabel->setLabel("10");
-    // FIXME - use the R77 define in the final release
-    //         use the '1' define for testing
     #if defined(RETRON77)
-//    #if 1
       myDejitterBase->setValue(2);
       myDejitterDiff->setValue(6);
     #else

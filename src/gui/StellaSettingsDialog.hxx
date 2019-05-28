@@ -94,10 +94,7 @@ class StellaSettingsDialog : public Dialog
     StaticTextWidget* myRightPortDetected;
 
     unique_ptr<GUI::MessageBox> myConfirmMsg;
-    // FIXME - use the R77 define in the final release
-    //         use the '1' define for testing
   #if defined(RETRON77)
-  // #if 1
     unique_ptr<R77HelpDialog> myHelpDialog;
   #else
     unique_ptr<HelpDialog> myHelpDialog;

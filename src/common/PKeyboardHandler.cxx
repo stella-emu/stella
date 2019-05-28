@@ -147,7 +147,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::CmdMenuMode        , KBDK_BACKSLASH);
       setDefaultKey(Event::TimeMachineMode    , KBDK_T);
       setDefaultKey(Event::DebuggerMode       , KBDK_GRAVE);
-      setDefaultKey(Event::ExitMode       , KBDK_ESCAPE);
+      setDefaultKey(Event::ExitMode           , KBDK_ESCAPE);
     #ifdef BSPF_MACOS
       setDefaultKey(Event::Quit               , KBDK_Q, KBDM_ALT);
     #else
@@ -208,10 +208,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::ToggleCollisions   , KBDK_PERIOD, KBDM_SHIFT | KBDM_ALT);
       setDefaultKey(Event::ToggleBits         , KBDK_PERIOD, KBDM_ALT);
 
-    // FIXME - use the R77 define in the final release
-    //         use the '1' define for testing
     #if defined(RETRON77)
-//    #if 1
       setDefaultKey(Event::ConsoleColorToggle     , KBDK_F4);         // back ("COLOR","B/W")
       setDefaultKey(Event::ConsoleLeftDiffToggle  , KBDK_F6);         // front ("SKILL P1")
       setDefaultKey(Event::ConsoleRightDiffToggle , KBDK_F8);         // front ("SKILL P2")
@@ -247,10 +244,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::Quit             , KBDK_Q, KBDM_CTRL);
     #endif
 
-    // FIXME - use the R77 define in the final release
-    //         use the '1' define for testing
     #if defined(RETRON77)
-//    #if 1
       setDefaultKey(Event::UIUp       , KBDK_F9);         // front ("SAVE")
       setDefaultKey(Event::UIDown     , KBDK_F2);         // front ("RESET")
       setDefaultKey(Event::UINavPrev  , KBDK_F11);        // front ("LOAD")
