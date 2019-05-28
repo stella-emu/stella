@@ -165,6 +165,9 @@ void EventMappingWidget::startRemapping()
   // Reset all previous events for determining correct axis/hat values
   myLastStick = myLastAxis = myLastHat = myLastValue = -1;
 
+  // Reset the previously aggregated key mappings
+  myMod = myKey = 0;
+
   // Disable all other widgets while in remap mode, except enable 'Cancel'
   enableButtons(false);
 
@@ -254,14 +257,27 @@ void EventMappingWidget::enableButtons(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
+bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Remap keys in remap mode
   if (myRemapStatus && myActionSelected >= 0)
   {
+    myKey = key;
+    myMod |= mod;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
+{
+  // Remap keys in remap mode
+  if (myRemapStatus && myActionSelected >= 0
+    && (mod & (KBDM_ALT | KBDM_CTRL | KBDM_SHIFT)) == 0)
+  {
     Event::Type event =
       instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if (instance().eventHandler().addKeyMapping(event, myEventMode, key, mod))
+    if (instance().eventHandler().addKeyMapping(event, myEventMode, StellaKey(myKey), StellaMod(myMod)))
       stopRemapping();
   }
   return true;

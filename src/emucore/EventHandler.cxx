@@ -1542,7 +1542,6 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::DecreaseFormat,          "Decrease display format",               "", false },
   { Event::IncreaseFormat,          "Increase display format",               "", false },
   { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "", false },
-  { Event::ToggleColorLoss,         "Toggle PAL color-loss effect",          "", false },
 #ifdef PNG_SUPPORT
   { Event::ToggleContSnapshots,     "Save cont. PNG snapsh. (as defined)",   "", false },
   { Event::ToggleContSnapshotsFrame,"Save cont. PNG snapsh. (every frame)",  "", false },
@@ -1662,6 +1661,7 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::ToggleFixedColors,       "Toggle TIA 'Fixed Debug Colors' mode",  "", false },
   { Event::ToggleBits,              "Toggle all TIA objects",                "", false },
   { Event::ToggleCollisions,        "Toggle all TIA collisions",             "", false },
+  { Event::ToggleColorLoss,         "Toggle PAL color-loss effect",          "", false },
   { Event::ToggleJitter,            "Toggle TV 'Jitter' effect",             "", false }
 };
 

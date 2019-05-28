@@ -57,6 +57,7 @@ class EventMappingWidget : public Widget, public CommandSender
       kComboCmd    = 'cmbo'
     };
 
+    bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleJoyDown(int stick, int button) override;
     void handleJoyAxis(int stick, int axis, int value) override;
@@ -103,6 +104,11 @@ class EventMappingWidget : public Widget, public CommandSender
     // than on their first occurrence (aka, when they're 'pressed')
     // As a result, we need to keep track of their old values
     int myLastStick, myLastAxis, myLastHat, myLastValue;
+
+    // Aggregates the modifier flags of the mapping
+    int myMod;
+    // Saves the last *pressed* key
+    int myKey;
 
     bool myFirstTime;
 
