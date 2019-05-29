@@ -32,12 +32,12 @@ namespace Common {
 */
 struct Point
 {
-  uInt32 x;  //!< The horizontal part of the point
-  uInt32 y;  //!< The vertical part of the point
+  Int32 x;  //!< The horizontal part of the point
+  Int32 y;  //!< The vertical part of the point
 
   Point() : x(0), y(0) { }
   Point(const Point& p) : x(p.x), y(p.y) { }
-  explicit Point(uInt32 x1, uInt32 y1) : x(x1), y(y1) { }
+  explicit Point(Int32 x1, Int32 y1) : x(x1), y(y1) { }
   explicit Point(const string& p) : x(0), y(0) {
     char c = '\0';
     istringstream buf(p);

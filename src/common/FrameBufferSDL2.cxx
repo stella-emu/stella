@@ -174,9 +174,7 @@ void FrameBufferSDL2::updateWindowedPos()
   if (!myCenter && myWindow && !(SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP))
   {
     // save current windowed position
-    Int32 x = 0, y = 0;
-    SDL_GetWindowPosition(myWindow, &x, &y);
-    myWindowedPos = Common::Point(x, y);
+    SDL_GetWindowPosition(myWindow, &myWindowedPos.x, &myWindowedPos.y);
     myOSystem.settings().setValue("windowedpos", myWindowedPos);
   }
 }
