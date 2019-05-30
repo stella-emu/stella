@@ -44,10 +44,16 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(
     myAltKeyCounter(0),
     myUseCtrlKeyFlag(myOSystem.settings().getBool("ctrlcombo"))
 {
-  string list = myOSystem.settings().getString("keymap_emu");
-  myKeyMap.loadMapping(list, kEmulationMode);
-  list = myOSystem.settings().getString("keymap_ui");
-  myKeyMap.loadMapping(list, kMenuMode);
+  Int32 version = myOSystem.settings().getInt("event_ver");
+
+  // Compare if event list version has changed so that key maps became invalid
+  if (version == Event::VERSION)
+  {
+    string list = myOSystem.settings().getString("keymap_emu");
+    myKeyMap.loadMapping(list, kEmulationMode);
+    list = myOSystem.settings().getString("keymap_ui");
+    myKeyMap.loadMapping(list, kMenuMode);
+  }
 
   setDefaultMapping(Event::NoType, kEmulationMode, true);
   setDefaultMapping(Event::NoType, kMenuMode, true);
@@ -278,6 +284,7 @@ void PhysicalKeyboardHandler::eraseMapping(Event::Type event, EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::saveMapping()
 {
+  myOSystem.settings().setValue("event_ver", Event::VERSION);
   myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(kEmulationMode));
   myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(kMenuMode));
 }
