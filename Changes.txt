@@ -62,6 +62,8 @@
     new option allows to preserve TIA image aspect ratio in fullscreen
     mode, or stretch to fill the entire screen. (TODO: doc)
 
+  * Allow mapping of modifier-key combinations
+
   * Added hotkey for sound on/off.
 
   * Added support for CDFJ bankswitching type.
