@@ -662,7 +662,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       switch (myState)
       {
         case EventHandlerState::PAUSE:
-          if (pressed) changeStateByEvent(Event::PauseMode);
+          if (pressed) changeStateByEvent(Event::TogglePauseMode);
           return;
 
         case EventHandlerState::CMDMENU:
@@ -702,6 +702,11 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
         saveJoyMapping();
         myOSystem.quit();
       }
+      return;
+
+    case Event::StartPauseMode:
+      if (pressed && myState == EventHandlerState::EMULATION)
+        setState(EventHandlerState::PAUSE);
       return;
 
     ////////////////////////////////////////////////////////////////////////
@@ -772,7 +777,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
         if (myIs7800)
           myOSystem.frameBuffer().showMessage("Pause pressed");
       }
-      break;
+      return;
 
     case Event::ConsoleLeftDiffA:
       if(pressed)
@@ -780,14 +785,14 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
         myEvent.set(Event::ConsoleLeftDiffB, 0);
         myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " A");
       }
-      break;
+      return;
     case Event::ConsoleLeftDiffB:
       if(pressed)
       {
         myEvent.set(Event::ConsoleLeftDiffA, 0);
         myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " B");
       }
-      break;
+      return;
     case Event::ConsoleLeftDiffToggle:
       if(pressed)
       {
@@ -813,14 +818,14 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
         myEvent.set(Event::ConsoleRightDiffB, 0);
         myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " A");
       }
-      break;
+      return;
     case Event::ConsoleRightDiffB:
       if(pressed)
       {
         myEvent.set(Event::ConsoleRightDiffA, 0);
         myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " B");
       }
-      break;
+      return;
     case Event::ConsoleRightDiffToggle:
       if(pressed)
       {
@@ -909,7 +914,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
 
   switch(type)
   {
-    case Event::PauseMode:
+    case Event::TogglePauseMode:
       if(myState == EventHandlerState::EMULATION)
         setState(EventHandlerState::PAUSE);
       else if(myState == EventHandlerState::PAUSE)
@@ -1528,10 +1533,10 @@ void EventHandler::setState(EventHandlerState state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] = {
   { Event::Quit,                    "Quit",                                  "", false },
-  { Event::ExitMode,                "Exit current Stella mode",              "", false },
-  { Event::OptionsMenuMode,         "Enter options menu UI",                 "", false },
-  { Event::CmdMenuMode,             "Toggle command menu UI",                "", false },
-  { Event::DebuggerMode,            "Toggle debugger mode",                  "", false },
+  { Event::ExitMode,                "Exit current Stella menu/mode",         "", false },
+  { Event::OptionsMenuMode,         "Enter Options menu UI",                 "", false },
+  { Event::CmdMenuMode,             "Toggle Commands menu UI",               "", false },
+  { Event::DebuggerMode,            "Toggle Debugger mode",                  "", false },
 
   { Event::ConsoleSelect,           "Select",                                "", true  },
   { Event::ConsoleReset,            "Reset",                                 "", true  },
@@ -1541,15 +1546,16 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::Console7800Pause,        "7800 Pause Key",                        "", true  },
   { Event::ConsoleLeftDiffA,        "P0 Difficulty A",                       "", true  },
   { Event::ConsoleLeftDiffB,        "P0 Difficulty B",                       "", true  },
-  { Event::ConsoleLeftDiffToggle,   "P0 swap Difficulty",                    "", true  },
+  { Event::ConsoleLeftDiffToggle,   "P0 Swap Difficulty",                    "", true  },
   { Event::ConsoleRightDiffA,       "P1 Difficulty A",                       "", true  },
   { Event::ConsoleRightDiffB,       "P1 Difficulty B",                       "", true  },
-  { Event::ConsoleRightDiffToggle,  "P1 swap Difficulty",                    "", true  },
+  { Event::ConsoleRightDiffToggle,  "P1 Swap Difficulty",                    "", true  },
   { Event::SaveState,               "Save state",                            "", false },
   { Event::ChangeState,             "Change state",                          "", false },
   { Event::LoadState,               "Load state",                            "", false },
   { Event::TakeSnapshot,            "Snapshot",                              "", false },
-  { Event::PauseMode,               "Pause",                                 "", false },
+  { Event::TogglePauseMode,         "Toggle pause mode",                     "", true },
+  { Event::StartPauseMode,          "Start pause mode",                      "", true },
 
   { Event::JoystickZeroUp,          "P0 Joystick Up",                        "", true  },
   { Event::JoystickZeroDown,        "P0 Joystick Down",                      "", true  },
@@ -1670,11 +1676,11 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
 #endif
   { Event::ToggleTimeMachine,       "Toggle 'Time Machine' mode",            "", false },
   { Event::TimeMachineMode,         "Toggle 'Time Machine' UI",              "", false },
-  { Event::Rewind,                  "Rewind game one state",                 "", false },
+  { Event::Rewind,                  "Rewind game one state",                 "", true },
   { Event::Rewind1Menu,             "Rewind one state & enter TM UI",        "", false },
   { Event::Rewind10Menu,            "Rewind 10 states & enter TM UI",        "", false },
   { Event::RewindAllMenu,           "Rewind all states & enter TM UI",       "", false },
-  { Event::Unwind,                  "Unwind game one state",                 "", false },
+  { Event::Unwind,                  "Unwind game one state",                 "", true },
   { Event::Unwind1Menu,             "Unwind one state & enter TM UI",        "", false },
   { Event::Unwind10Menu,            "Unwind 10 states & enter TM UI",        "", false },
   { Event::UnwindAllMenu,           "Unwind all states & enter TM UI",       "", false },

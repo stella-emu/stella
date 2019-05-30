@@ -142,7 +142,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::LoadState          , KBDK_F11);
       setDefaultKey(Event::TakeSnapshot       , KBDK_F12);
       setDefaultKey(Event::Fry                , KBDK_BACKSPACE);
-      setDefaultKey(Event::PauseMode          , KBDK_PAUSE);
+      setDefaultKey(Event::TogglePauseMode    , KBDK_PAUSE);
       setDefaultKey(Event::OptionsMenuMode    , KBDK_TAB);
       setDefaultKey(Event::CmdMenuMode        , KBDK_BACKSLASH);
       setDefaultKey(Event::TimeMachineMode    , KBDK_T);

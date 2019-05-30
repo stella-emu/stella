@@ -74,7 +74,7 @@ class Event
       MouseButtonLeftValue, MouseButtonRightValue,
 
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
-      PauseMode, OptionsMenuMode, CmdMenuMode, TimeMachineMode, DebuggerMode, ExitMode,
+      TogglePauseMode, OptionsMenuMode, CmdMenuMode, TimeMachineMode, DebuggerMode, ExitMode,
       Fry, VolumeDecrease, VolumeIncrease, SoundToggle, VidmodeDecrease, VidmodeIncrease,
       Rewind, Unwind,
 
@@ -102,6 +102,8 @@ class Event
 
       Rewind1Menu, Rewind10Menu, RewindAllMenu,
       Unwind1Menu, Unwind10Menu, UnwindAllMenu,
+
+      StartPauseMode,
 
       LastType
     };
