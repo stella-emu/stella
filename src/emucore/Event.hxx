@@ -37,7 +37,7 @@ class Event
     enum Type
     {
       NoType = 0,
-      ConsoleOn = 1, ConsoleOff = 2, ConsoleColor = 3, ConsoleBlackWhite = 4,
+      ConsoleOn, ConsoleOff, ConsoleColor, ConsoleBlackWhite,
       ConsoleLeftDiffA, ConsoleLeftDiffB,
       ConsoleRightDiffA, ConsoleRightDiffB,
       ConsoleSelect, ConsoleReset,
@@ -107,6 +107,9 @@ class Event
 
       LastType
     };
+
+    // Event list version, update if the id of existing event types changed
+    static constexpr Int32 VERSION = 1;
 
     class KeyTable {
       public:

@@ -389,7 +389,6 @@ class EventHandler
       Event::Type event;
       string action;
       string key;
-      bool allow_combo;
     };
 
     // Global Event object
