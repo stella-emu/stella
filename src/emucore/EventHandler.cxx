@@ -382,7 +382,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
     ////////////////////////////////////////////////////////////////////////
 
     case Event::Fry:
-      if(myPKeyHandler->useCtrlKey()) myFryingFlag = pressed;
+      /*if(myPKeyHandler->useModKeys())*/ myFryingFlag = pressed;
       return;
 
     case Event::ReloadConsole:
@@ -1461,9 +1461,9 @@ void EventHandler::setState(EventHandlerState state)
 {
   myState = state;
 
-  // Normally, the usage of Control key is determined by 'ctrlcombo'
+  // Normally, the usage of modifier keys is determined by 'modcombo'
   // For certain ROMs it may be forced off, whatever the setting
-  myPKeyHandler->useCtrlKey() = myOSystem.settings().getBool("ctrlcombo");
+  myPKeyHandler->useModKeys() = myOSystem.settings().getBool("modcombo");
 
   // Only enable text input in GUI modes, since in emulation mode the
   // keyboard acts as one large joystick with many (single) buttons
@@ -1474,7 +1474,7 @@ void EventHandler::setState(EventHandlerState state)
       myOSystem.sound().mute(false);
       enableTextEvents(false);
       if(myOSystem.console().leftController().type() == Controller::Type::CompuMate)
-        myPKeyHandler->useCtrlKey() = false;
+        myPKeyHandler->useModKeys() = false;
       break;
 
     case EventHandlerState::PAUSE:

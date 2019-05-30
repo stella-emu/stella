@@ -98,6 +98,8 @@ class KeyMap
     // void clear() { myMap.clear(); }
     size_t size() { return myMap.size(); }
 
+    bool& enableMod() { return myModEnabled;  }
+
   private:
     //** Convert modifiers */
     Mapping convertMod(const Mapping& mapping) const;
@@ -113,6 +115,12 @@ class KeyMap
     };
 
     std::unordered_map<Mapping, Event::Type, KeyHash> myMap;
+
+    // Indicates whether the key-combos tied to a modifier key are
+    // being used or not (e.g. Ctrl by default is the fire button,
+    // pressing it with a movement key could inadvertantly activate
+    // a Ctrl combo when it isn't wanted)
+    bool myModEnabled;
 };
 
 #endif

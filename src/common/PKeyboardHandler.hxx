@@ -63,8 +63,8 @@ class PhysicalKeyboardHandler
     /** See comments on 'myAltKeyCounter' for more information. */
     uInt8& altKeyCount() { return myAltKeyCounter; }
 
-    /** See comments on 'myUseCtrlKeyFlag' for more information. */
-    bool& useCtrlKey() { return myUseCtrlKeyFlag; }
+    /** See comments on KeyMap.myModEnabled for more information. */
+    bool& useModKeys() { return myKeyMap.enableMod(); }
 
   private:
     bool handleAltEvent(StellaKey key, StellaMod mod, bool pressed);
@@ -88,12 +88,6 @@ class PhysicalKeyboardHandler
     // TODO - This may be a bug in SDL, and might be removed in the future
     //        It only seems to be an issue in Linux
     uInt8 myAltKeyCounter;
-
-    // Indicates whether the key-combos tied to the Control key are
-    // being used or not (since Ctrl by default is the fire button,
-    // pressing it with a movement key could inadvertantly activate
-    // a Ctrl combo when it isn't wanted)
-    bool myUseCtrlKeyFlag;
 };
 
 #endif
