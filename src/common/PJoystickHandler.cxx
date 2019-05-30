@@ -34,13 +34,14 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
     myHandler(handler),
     myEvent(event)
 {
+  Int32 version = myOSystem.settings().getInt("event_ver");
   // Load previously saved joystick mapping (if any) from settings
   istringstream buf(myOSystem.settings().getString("joymap"));
   string joymap, joyname;
 
-  // First check the event type, and disregard the entire mapping if it's invalid
-  getline(buf, joymap, '^');
-  if(atoi(joymap.c_str()) == Event::LastType)
+  // First compare if event list version has changed, and disregard the entire mapping if true
+  getline(buf, joymap, '^'); // event list size, ignore
+  if(version != Event::VERSION)
   {
     // Otherwise, put each joystick mapping entry into the database
     while(getline(buf, joymap, '^'))
@@ -250,10 +251,10 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
 {
   bool eraseAll = (event == Event::NoType);
 
-  auto setDefaultAxis = [&](int a_stick, int a_axis, int a_value, Event::Type a_event)
+  auto setDefaultAxis = [&](int a_stick, JoyAxis a_axis, JoyDir a_value, Event::Type a_event)
   {
     if(eraseAll || a_event == event)
-      myHandler.addJoyAxisMapping(a_event, mode, a_stick, a_axis, a_value, false);
+      myHandler.addJoyAxisMapping(a_event, mode, a_stick, int(a_axis), int(a_value), false);
   };
   auto setDefaultBtn = [&](int b_stick, int b_button, Event::Type b_event)
   {
@@ -274,11 +275,11 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
         case 0:
         case 2:
           // Left joystick left/right directions (assume joystick zero or two)
-          setDefaultAxis(stick, 0, 0, Event::JoystickZeroLeft);
-          setDefaultAxis(stick, 0, 1, Event::JoystickZeroRight);
+          setDefaultAxis(stick, JoyAxis::X, JoyDir::NEG, Event::JoystickZeroLeft);
+          setDefaultAxis(stick, JoyAxis::X, JoyDir::POS, Event::JoystickZeroRight);
           // Left joystick up/down directions (assume joystick zero or two)
-          setDefaultAxis(stick, 1, 0, Event::JoystickZeroUp);
-          setDefaultAxis(stick, 1, 1, Event::JoystickZeroDown);
+          setDefaultAxis(stick, JoyAxis::Y, JoyDir::NEG, Event::JoystickZeroUp);
+          setDefaultAxis(stick, JoyAxis::Y, JoyDir::POS, Event::JoystickZeroDown);
           // Left joystick (assume joystick zero or two, buttons zero..two)
           setDefaultBtn(stick, 0, Event::JoystickZeroFire);
           setDefaultBtn(stick, 1, Event::JoystickZeroFire5);
@@ -299,11 +300,11 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
         case 1:
         case 3:
           // Right joystick left/right directions (assume joystick one or three)
-          setDefaultAxis(stick, 0, 0, Event::JoystickOneLeft);
-          setDefaultAxis(stick, 0, 1, Event::JoystickOneRight);
+          setDefaultAxis(stick, JoyAxis::X, JoyDir::NEG, Event::JoystickOneLeft);
+          setDefaultAxis(stick, JoyAxis::X, JoyDir::POS, Event::JoystickOneRight);
           // Right joystick left/right directions (assume joystick one or three)
-          setDefaultAxis(stick, 1, 0, Event::JoystickOneUp);
-          setDefaultAxis(stick, 1, 1, Event::JoystickOneDown);
+          setDefaultAxis(stick, JoyAxis::Y, JoyDir::NEG, Event::JoystickOneUp);
+          setDefaultAxis(stick, JoyAxis::Y, JoyDir::POS, Event::JoystickOneDown);
           // Right joystick (assume joystick one or three, buttons zero..two)
           setDefaultBtn(stick, 0, Event::JoystickOneFire);
           setDefaultBtn(stick, 1, Event::JoystickOneFire5);
@@ -330,10 +331,10 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
       break;
 
     case kMenuMode:  // Default menu/UI events
-      setDefaultAxis( stick, 0, 0, Event::UINavPrev );
-      setDefaultAxis( stick, 0, 1, Event::UINavNext );
-      setDefaultAxis( stick, 1, 0, Event::UIUp      );
-      setDefaultAxis( stick, 1, 1, Event::UIDown    );
+      setDefaultAxis( stick, JoyAxis::X, JoyDir::NEG, Event::UINavPrev );
+      setDefaultAxis( stick, JoyAxis::X, JoyDir::POS, Event::UINavNext );
+      setDefaultAxis( stick, JoyAxis::Y, JoyDir::NEG, Event::UIUp      );
+      setDefaultAxis( stick, JoyAxis::Y, JoyDir::POS, Event::UIDown    );
 
       // joystick (assume buttons zero..three)
       setDefaultBtn( stick, 0, Event::UISelect  );
@@ -465,7 +466,7 @@ bool PhysicalJoystickHandler::addAxisMapping(Event::Type event, EventMode mode,
   const PhysicalJoystickPtr j = joy(stick);
   if(j)
   {
-    if(axis >= 0 && axis < j->numAxes && event < Event::LastType)
+    if(int(axis) >= 0 && int(axis) < j->numAxes && event < Event::LastType)
     {
       // This confusing code is because each axis has two associated values,
       // but analog events only affect one of the axis.
