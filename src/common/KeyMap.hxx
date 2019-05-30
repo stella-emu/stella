@@ -19,7 +19,6 @@
 #define KEYMAP_HXX
 
 #include <unordered_map>
-
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 
