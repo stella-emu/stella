@@ -217,11 +217,11 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myGrabMouse->clearFlags(Widget::FLAG_ENABLED);
 #endif
 
-  // Enable/disable control key-combos
+  // Enable/disable modifier key-combos
   ypos += lineHeight + VGAP;
-  myCtrlCombo = new CheckboxWidget(myTab, font, HBORDER, ypos,
-	                "Use control key combos");
-  wid.push_back(myCtrlCombo);
+  myModCombo = new CheckboxWidget(myTab, font, HBORDER, ypos,
+	                "Use modifier key combos");
+  wid.push_back(myModCombo);
   ypos += lineHeight + VGAP;
 
   // Stelladaptor mappings
@@ -315,8 +315,8 @@ void InputDialog::loadConfig()
   // Grab mouse
   myGrabMouse->setState(instance().settings().getBool("grabmouse"));
 
-  // Enable/disable control key-combos
-  myCtrlCombo->setState(instance().settings().getBool("ctrlcombo"));
+  // Enable/disable modifier key-combos
+  myModCombo->setState(instance().settings().getBool("modcombo"));
 
   myTab->loadConfig();
 }
@@ -372,8 +372,8 @@ void InputDialog::saveConfig()
   instance().settings().setValue("grabmouse", myGrabMouse->getState());
   instance().frameBuffer().enableGrabMouse(myGrabMouse->getState());
 
-  // Enable/disable control key-combos
-  instance().settings().setValue("ctrlcombo", myCtrlCombo->getState());
+  // Enable/disable modifier key-combos
+  instance().settings().setValue("modcombo", myModCombo->getState());
 
   instance().eventHandler().saveKeyMapping();
   instance().eventHandler().saveJoyMapping();
@@ -433,8 +433,8 @@ void InputDialog::setDefaults()
       // Grab mouse
       myGrabMouse->setState(true);
 
-      // Enable/disable control key-combos
-      myCtrlCombo->setState(true);
+      // Enable/disable modifier key-combos
+      myModCombo->setState(true);
 
       break;
     }

@@ -95,7 +95,7 @@ class InputDialog : public Dialog
     StaticTextWidget* myTrackBallLabel;
     CheckboxWidget*   myAllowAll4;
     CheckboxWidget*   myGrabMouse;
-    CheckboxWidget*   myCtrlCombo;
+    CheckboxWidget*   myModCombo;
 
     ButtonWidget*     myJoyDlgButton;
     ButtonWidget*     myEraseEEPROMButton;

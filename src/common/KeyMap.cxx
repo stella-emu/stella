@@ -18,6 +18,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyMap::KeyMap(void)
+  : myModEnabled(true)
 {
 }
 
@@ -50,14 +51,17 @@ Event::Type KeyMap::get(const Mapping& mapping) const
 {
   Mapping m = convertMod(mapping);
 
-  auto find = myMap.find(m);
-  if (find != myMap.end())
-    return find->second;
+  if (myModEnabled)
+  {
+    auto find = myMap.find(m);
+    if (find != myMap.end())
+      return find->second;
+  }
 
   // mapping not found, try without modifiers
   m.mod = StellaMod(0);
 
-  find = myMap.find(m);
+  auto find = myMap.find(m);
   if (find != myMap.end())
     return find->second;
 

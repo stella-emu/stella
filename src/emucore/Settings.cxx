@@ -98,7 +98,7 @@ Settings::Settings()
   setPermanent("msense", "10");
   setPermanent("tsense", "10");
   setPermanent("saport", "lr");
-  setPermanent("ctrlcombo", "true");
+  setPermanent("modcombo", "true");
 
   // Snapshot options
   setPermanent("snapsavedir", "");
@@ -442,8 +442,8 @@ void Settings::usage() const
     << "  -tsense       <1-20>         Sensitivity of mouse emulated trackball movement\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
     << "                                Stelladaptor/2600-daptors\n"
-    << "  -ctrlcombo    <1|0>          Use key combos involving the Control key\n"
-    << "                                (Control-Q for quit may be disabled!)\n"
+    << "  -modcombo     <1|0>          Enable modifer key combos\n"
+    << "                                (Control-Q for quit may not work when disabled!)\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
     << "  -threads      <1|0>          Whether to using multi-threading during\n"
     << "                                emulation\n"

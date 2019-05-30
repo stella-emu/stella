@@ -41,8 +41,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(
   : myOSystem(system),
     myHandler(handler),
     myEvent(event),
-    myAltKeyCounter(0),
-    myUseCtrlKeyFlag(myOSystem.settings().getBool("ctrlcombo"))
+    myAltKeyCounter(0)
 {
   Int32 version = myOSystem.settings().getInt("event_ver");
 
@@ -54,6 +53,7 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(
     list = myOSystem.settings().getString("keymap_ui");
     myKeyMap.loadMapping(list, kMenuMode);
   }
+  myKeyMap.enableMod() = myOSystem.settings().getBool("modcombo");
 
   setDefaultMapping(Event::NoType, kEmulationMode, true);
   setDefaultMapping(Event::NoType, kMenuMode, true);
@@ -329,7 +329,6 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   // and don't pass the key on if we've already taken care of it
   if(handleAltEvent(key, mod, pressed))
     return;
-  // TODO: myUseCtrlKeyFlag?
 
   EventHandlerState estate = myHandler.state();
 
