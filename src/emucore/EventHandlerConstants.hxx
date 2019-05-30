@@ -38,6 +38,17 @@ enum class MouseButton {
   NONE
 };
 
+enum class JoyAxis {
+  X = 0,
+  Y = 1,
+};
+
+enum class JoyDir {
+  NEG = 0,
+  POS = 1,
+};
+
+
 enum class JoyHat {
   UP     = 0,  // make sure these are set correctly,
   DOWN   = 1,  // since they'll be used as array indices
