@@ -223,6 +223,9 @@ uInt32 RewindManager::windStates(uInt32 numStates, bool unwind)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::saveAllStates()
 {
+  if (getLastIdx() == 0)
+    return "Nothing to save";
+
   try
   {
     ostringstream buf;
