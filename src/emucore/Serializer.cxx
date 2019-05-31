@@ -22,10 +22,10 @@ using std::ios;
 using std::ios_base;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Serializer::Serializer(const string& filename, bool readonly)
+Serializer::Serializer(const string& filename, Mode m)
   : myStream(nullptr)
 {
-  if(readonly)
+  if(m == Mode::ReadOnly)
   {
     FilesystemNode node(filename);
     if(node.isFile() && node.isReadable())
@@ -51,7 +51,10 @@ Serializer::Serializer(const string& filename, bool readonly)
     fstream temp(filename, ios::out | ios::app);
     temp.close();
 
-    unique_ptr<fstream> str = make_unique<fstream>(filename, ios::in | ios::out | ios::binary);
+    ios_base::openmode stream_mode = ios::in | ios::out | ios::binary;
+    if(m == Mode::ReadWriteTrunc)
+      stream_mode |= ios::trunc;
+    unique_ptr<fstream> str = make_unique<fstream>(filename, stream_mode);
     if(str && str->is_open())
     {
       myStream = std::move(str);
@@ -222,7 +225,7 @@ void Serializer::putDouble(double value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putString(const string& str)
 {
-  int len = int(str.length());
+  uInt32 len = uInt32(str.length());
   putInt(len);
   myStream->write(str.data(), len);
 }

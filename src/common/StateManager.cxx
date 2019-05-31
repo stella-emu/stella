@@ -212,7 +212,7 @@ void StateManager::loadState(int slot)
         << ".st" << slot;
 
     // Make sure the file can be opened in read-only mode
-    Serializer in(buf.str(), true);
+    Serializer in(buf.str(), Serializer::Mode::ReadOnly);
     if(!in)
     {
       buf.str("");

@@ -494,7 +494,7 @@ void CartridgeCTY::updateTune()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::loadScore(uInt8 index)
 {
-  Serializer serializer(myEEPROMFile, true);
+  Serializer serializer(myEEPROMFile, Serializer::Mode::ReadOnly);
   if(serializer)
   {
     uInt8 scoreRAM[256];
