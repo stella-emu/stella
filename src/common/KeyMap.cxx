@@ -92,7 +92,7 @@ bool KeyMap::check(const int mode, const int key, const int mod) const
 string KeyMap::getDesc(const Mapping& mapping) const
 {
   ostringstream buf;
-#ifdef BSPF_MACOS || defined(MACOS_KEYS)
+#if defined(BSPF_MACOS) || defined(MACOS_KEYS)
   string control = "Ctrl";
   string alt = "Cmd";
   int ALT = KBDM_GUI;
