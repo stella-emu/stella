@@ -35,6 +35,9 @@
 class Serializer
 {
   public:
+    enum class Mode { ReadOnly, ReadWrite, ReadWriteTrunc };
+
+  public:
     /**
       Creates a new Serializer device for streaming binary data.
 
@@ -46,7 +49,7 @@ class Serializer
       The valid() method must immediately be called to verify the stream
       was correctly initialized.
     */
-    Serializer(const string& filename, bool readonly = false);
+    Serializer(const string& filename, Mode m = Mode::ReadWrite);
     Serializer();
 
   public:

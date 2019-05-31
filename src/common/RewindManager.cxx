@@ -223,7 +223,6 @@ uInt32 RewindManager::windStates(uInt32 numStates, bool unwind)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::saveAllStates()
 {
-  uInt8* buffer = NULL;
   try
   {
     ostringstream buf;
@@ -231,15 +230,9 @@ string RewindManager::saveAllStates()
       << myOSystem.console().properties().get(PropType::Cart_Name)
       << ".sta";
 
-    // Truncate existing file to 0
-    FILE* fp;
-    errno_t err = fopen_s(&fp, buf.str().c_str(), "w");
-    // Make sure the file can be opened for writing
-    if (err != NULL)
+    Serializer out(buf.str(), Serializer::Mode::ReadWriteTrunc);
+    if (!out)
       return "Can't save to all states file";
-    fclose(fp);
-
-    Serializer out(buf.str());
 
     int numStates = rewindStates(1000) + 1;
     // Save header
@@ -248,7 +241,7 @@ string RewindManager::saveAllStates()
     out.putShort(numStates);
     out.putInt(myStateSize);
 
-    buffer = new uInt8[myStateSize];
+    unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(myStateSize);
     for (int i = 0; i < numStates; i++)
     {
       RewindState& state = myStateList.current();
@@ -256,15 +249,14 @@ string RewindManager::saveAllStates()
       // Rewind Serializer internal buffers
       s.rewind();
       // Save state
-      s.getByteArray(buffer, myStateSize);
-      out.putByteArray(buffer, myStateSize);
+      s.getByteArray(buffer.get(), myStateSize);
+      out.putByteArray(buffer.get(), myStateSize);
       out.putString(state.message);
       out.putLong(state.cycles);
 
       if (i < numStates)
         unwindStates(1);
     }
-    delete[] buffer;
 
     buf.str("");
     buf << "Saved " << numStates << " states";
@@ -272,17 +264,13 @@ string RewindManager::saveAllStates()
   }
   catch (...)
   {
-    if (buffer)
-      delete[] buffer;
-
-    return "Error loading all states";
+    return "Error saving all states";
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::loadAllStates()
 {
-  uInt8* buffer = NULL;
   try
   {
     ostringstream buf;
@@ -291,7 +279,7 @@ string RewindManager::loadAllStates()
       << ".sta";
 
     // Make sure the file can be opened for reading
-    Serializer in(buf.str(), true);
+    Serializer in(buf.str(), Serializer::Mode::ReadOnly);
     if (!in)
       return "Can't load from all states file";
 
@@ -306,7 +294,7 @@ string RewindManager::loadAllStates()
     numStates = in.getShort();
     myStateSize = in.getInt();
 
-    buffer = new uInt8[myStateSize];
+    unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(myStateSize);
     for (int i = 0; i < numStates; i++)
     {
       if (myStateList.full())
@@ -321,12 +309,11 @@ string RewindManager::loadAllStates()
       s.rewind();
 
       // Fill new state with saved values
-      in.getByteArray(buffer, myStateSize);
-      s.putByteArray(buffer, myStateSize);
+      in.getByteArray(buffer.get(), myStateSize);
+      s.putByteArray(buffer.get(), myStateSize);
       state.message = in.getString();
       state.cycles = in.getLong();
     }
-    delete[] buffer;
 
     // initialize current state (parameters ignored)
     loadState(0, 0);
@@ -337,10 +324,7 @@ string RewindManager::loadAllStates()
   }
   catch (...)
   {
-    if (buffer)
-      delete[] buffer;
-
-    return "Error saving all states";
+    return "Error loading all states";
   }
 }
 
