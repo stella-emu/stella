@@ -109,7 +109,11 @@ class KeyMap
         return std::hash<uInt64>()((uInt64(m.mode))       // 1 bit
           ^ ((uInt64(m.key)) << 1)                        // 8 bits
           ^ ((uInt64((m.mod & KBDM_SHIFT) != 0) <<  9))   // 1 bit
+        #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
+          ^ ((uInt64((m.mod & KBDM_GUI  ) != 0) << 10))   // 1 bit
+        #else
           ^ ((uInt64((m.mod & KBDM_ALT  ) != 0) << 10))   // 1 bit
+        #endif
           ^ ((uInt64((m.mod & KBDM_CTRL ) != 0) << 11))); // 1 bit
       }
     };
