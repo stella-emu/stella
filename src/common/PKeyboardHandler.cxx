@@ -89,6 +89,12 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
     }
   };
 
+#if defined(BSPF_MACOS) || defined(MACOS_KEYS)
+  static constexpr int ALT = KBDM_GUI;
+#else
+  static constexpr int ALT = KBDM_ALT;
+#endif
+
   switch(mode)
   {
     case kEmulationMode:
@@ -144,10 +150,10 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::ConsoleRightDiffA  , KBDK_F7);
       setDefaultKey(Event::ConsoleRightDiffB  , KBDK_F8);
       setDefaultKey(Event::SaveState          , KBDK_F9);
-      setDefaultKey(Event::SaveAllStates      , KBDK_F9, KBDM_ALT);
+      setDefaultKey(Event::SaveAllStates      , KBDK_F9, ALT);
       setDefaultKey(Event::ChangeState        , KBDK_F10);
       setDefaultKey(Event::LoadState          , KBDK_F11);
-      setDefaultKey(Event::LoadAllStates      , KBDK_F11, KBDM_ALT);
+      setDefaultKey(Event::LoadAllStates      , KBDK_F11, ALT);
       setDefaultKey(Event::TakeSnapshot       , KBDK_F12);
       setDefaultKey(Event::Fry                , KBDK_BACKSPACE);
       setDefaultKey(Event::TogglePauseMode    , KBDK_PAUSE);
@@ -157,42 +163,42 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::DebuggerMode       , KBDK_GRAVE);
       setDefaultKey(Event::ExitMode           , KBDK_ESCAPE);
     #ifdef BSPF_MACOS
-      setDefaultKey(Event::Quit               , KBDK_Q, KBDM_ALT);
+      setDefaultKey(Event::Quit               , KBDK_Q, ALT);
     #else
       setDefaultKey(Event::Quit               , KBDK_Q, KBDM_CTRL);
     #endif
       setDefaultKey(Event::ReloadConsole      , KBDK_R, KBDM_CTRL);
 
-      setDefaultKey(Event::VidmodeDecrease    , KBDK_MINUS, KBDM_ALT);
-      setDefaultKey(Event::VidmodeIncrease    , KBDK_EQUALS, KBDM_ALT);
-      setDefaultKey(Event::VolumeDecrease     , KBDK_LEFTBRACKET, KBDM_ALT);
-      setDefaultKey(Event::VolumeIncrease     , KBDK_RIGHTBRACKET, KBDM_ALT);
+      setDefaultKey(Event::VidmodeDecrease    , KBDK_MINUS, ALT);
+      setDefaultKey(Event::VidmodeIncrease    , KBDK_EQUALS, ALT);
+      setDefaultKey(Event::VolumeDecrease     , KBDK_LEFTBRACKET, ALT);
+      setDefaultKey(Event::VolumeIncrease     , KBDK_RIGHTBRACKET, ALT);
       setDefaultKey(Event::SoundToggle        , KBDK_RIGHTBRACKET, KBDM_CTRL);
 
-      setDefaultKey(Event::ToggleFullScreen   , KBDK_RETURN, KBDM_ALT);
-      setDefaultKey(Event::VidmodeStd         , KBDK_1, KBDM_ALT);
-      setDefaultKey(Event::VidmodeRGB         , KBDK_2, KBDM_ALT);
-      setDefaultKey(Event::VidmodeSVideo      , KBDK_3, KBDM_ALT);
-      setDefaultKey(Event::VidModeComposite   , KBDK_4, KBDM_ALT);
-      setDefaultKey(Event::VidModeBad         , KBDK_5, KBDM_ALT);
-      setDefaultKey(Event::VidModeCustom      , KBDK_6, KBDM_ALT);
-      setDefaultKey(Event::PreviousAttribute  , KBDK_7, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::NextAttribute      , KBDK_7, KBDM_ALT);
-      setDefaultKey(Event::DecreaseAttribute  , KBDK_8, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::IncreaseAttribute  , KBDK_8, KBDM_ALT);
-      setDefaultKey(Event::DecreasePhosphor   , KBDK_9, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::IncreasePhosphor   , KBDK_9, KBDM_ALT);
-      setDefaultKey(Event::TogglePhosphor     , KBDK_P, KBDM_ALT);
-      setDefaultKey(Event::ScanlinesDecrease  , KBDK_0, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::ScanlinesIncrease  , KBDK_0, KBDM_ALT);
+      setDefaultKey(Event::ToggleFullScreen   , KBDK_RETURN, ALT);
+      setDefaultKey(Event::VidmodeStd         , KBDK_1, ALT);
+      setDefaultKey(Event::VidmodeRGB         , KBDK_2, ALT);
+      setDefaultKey(Event::VidmodeSVideo      , KBDK_3, ALT);
+      setDefaultKey(Event::VidModeComposite   , KBDK_4, ALT);
+      setDefaultKey(Event::VidModeBad         , KBDK_5, ALT);
+      setDefaultKey(Event::VidModeCustom      , KBDK_6, ALT);
+      setDefaultKey(Event::PreviousAttribute  , KBDK_7, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::NextAttribute      , KBDK_7, ALT);
+      setDefaultKey(Event::DecreaseAttribute  , KBDK_8, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::IncreaseAttribute  , KBDK_8, ALT);
+      setDefaultKey(Event::DecreasePhosphor   , KBDK_9, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::IncreasePhosphor   , KBDK_9, ALT);
+      setDefaultKey(Event::TogglePhosphor     , KBDK_P, ALT);
+      setDefaultKey(Event::ScanlinesDecrease  , KBDK_0, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::ScanlinesIncrease  , KBDK_0, ALT);
       setDefaultKey(Event::ToggleColorLoss    , KBDK_L, KBDM_CTRL);
       setDefaultKey(Event::TogglePalette      , KBDK_P, KBDM_CTRL);
-      setDefaultKey(Event::ToggleJitter       , KBDK_J, KBDM_ALT);
-      setDefaultKey(Event::ToggleFrameStats   , KBDK_L, KBDM_ALT);
-      setDefaultKey(Event::ToggleTimeMachine  , KBDK_T, KBDM_ALT);
+      setDefaultKey(Event::ToggleJitter       , KBDK_J, ALT);
+      setDefaultKey(Event::ToggleFrameStats   , KBDK_L, ALT);
+      setDefaultKey(Event::ToggleTimeMachine  , KBDK_T, ALT);
     #ifdef PNG_SUPPORT
-      setDefaultKey(Event::ToggleContSnapshots     , KBDK_S, KBDM_ALT);
-      setDefaultKey(Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | KBDM_ALT);
+      setDefaultKey(Event::ToggleContSnapshots     , KBDK_S, ALT);
+      setDefaultKey(Event::ToggleContSnapshotsFrame, KBDK_S, KBDM_SHIFT | ALT);
     #endif
       setDefaultKey(Event::HandleMouseControl , KBDK_0, KBDM_CTRL);
       setDefaultKey(Event::ToggleGrabMouse    , KBDK_G, KBDM_CTRL);
@@ -200,28 +206,28 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::DecreaseFormat     , KBDK_F, KBDM_SHIFT | KBDM_CTRL);
       setDefaultKey(Event::IncreaseFormat     , KBDK_F, KBDM_CTRL);
 
-      setDefaultKey(Event::ToggleP0Collision  , KBDK_Z, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::ToggleP0Bit        , KBDK_Z, KBDM_ALT);
-      setDefaultKey(Event::ToggleP1Collision  , KBDK_X, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::ToggleP1Bit        , KBDK_X, KBDM_ALT);
-      setDefaultKey(Event::ToggleM0Collision  , KBDK_C, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::ToggleM0Bit        , KBDK_C, KBDM_ALT);
-      setDefaultKey(Event::ToggleM1Collision  , KBDK_V, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::ToggleM1Bit        , KBDK_V, KBDM_ALT);
-      setDefaultKey(Event::ToggleBLCollision  , KBDK_B, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::ToggleBLBit        , KBDK_B, KBDM_ALT);
-      setDefaultKey(Event::TogglePFCollision  , KBDK_N, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::TogglePFBit        , KBDK_N, KBDM_ALT);
-      setDefaultKey(Event::ToggleCollisions   , KBDK_COMMA, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::ToggleBits         , KBDK_COMMA, KBDM_ALT);
-      setDefaultKey(Event::ToggleFixedColors  , KBDK_PERIOD, KBDM_ALT);
+      setDefaultKey(Event::ToggleP0Collision  , KBDK_Z, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::ToggleP0Bit        , KBDK_Z, ALT);
+      setDefaultKey(Event::ToggleP1Collision  , KBDK_X, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::ToggleP1Bit        , KBDK_X, ALT);
+      setDefaultKey(Event::ToggleM0Collision  , KBDK_C, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::ToggleM0Bit        , KBDK_C, ALT);
+      setDefaultKey(Event::ToggleM1Collision  , KBDK_V, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::ToggleM1Bit        , KBDK_V, ALT);
+      setDefaultKey(Event::ToggleBLCollision  , KBDK_B, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::ToggleBLBit        , KBDK_B, ALT);
+      setDefaultKey(Event::TogglePFCollision  , KBDK_N, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::TogglePFBit        , KBDK_N, ALT);
+      setDefaultKey(Event::ToggleCollisions   , KBDK_COMMA, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::ToggleBits         , KBDK_COMMA, ALT);
+      setDefaultKey(Event::ToggleFixedColors  , KBDK_PERIOD, ALT);
 
-      setDefaultKey(Event::Rewind1Menu        , KBDK_LEFT, KBDM_ALT);
-      setDefaultKey(Event::Rewind10Menu       , KBDK_LEFT, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::RewindAllMenu      , KBDK_DOWN, KBDM_ALT);
-      setDefaultKey(Event::Unwind1Menu        , KBDK_RIGHT, KBDM_ALT);
-      setDefaultKey(Event::Unwind10Menu       , KBDK_RIGHT, KBDM_SHIFT | KBDM_ALT);
-      setDefaultKey(Event::UnwindAllMenu      , KBDK_UP,   KBDM_ALT);
+      setDefaultKey(Event::Rewind1Menu        , KBDK_LEFT, ALT);
+      setDefaultKey(Event::Rewind10Menu       , KBDK_LEFT, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::RewindAllMenu      , KBDK_DOWN, ALT);
+      setDefaultKey(Event::Unwind1Menu        , KBDK_RIGHT, ALT);
+      setDefaultKey(Event::Unwind10Menu       , KBDK_RIGHT, KBDM_SHIFT | ALT);
+      setDefaultKey(Event::UnwindAllMenu      , KBDK_UP,   ALT);
 
     #if defined(RETRON77)
       setDefaultKey(Event::ConsoleColorToggle     , KBDK_F4);         // back ("COLOR","B/W")
@@ -252,9 +258,9 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::UITabNext        , KBDK_TAB, KBDM_CTRL);
 
       setDefaultKey(Event::UIPrevDir        , KBDK_BACKSPACE);
-      setDefaultKey(Event::ToggleFullScreen , KBDK_RETURN, KBDM_ALT);
+      setDefaultKey(Event::ToggleFullScreen , KBDK_RETURN, ALT);
     #ifdef BSPF_MACOS
-      setDefaultKey(Event::Quit             , KBDK_Q, KBDM_ALT);
+      setDefaultKey(Event::Quit             , KBDK_Q, ALT);
     #else
       setDefaultKey(Event::Quit             , KBDK_Q, KBDM_CTRL);
     #endif
