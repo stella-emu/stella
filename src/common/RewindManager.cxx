@@ -237,7 +237,10 @@ string RewindManager::saveAllStates()
     if (!out)
       return "Can't save to all states file";
 
-    int numStates = rewindStates(1000) + 1;
+    uInt32 curIdx = getCurrentIdx();
+    rewindStates(1000);
+    uInt32 numStates = uInt32(cyclesList().size());
+
     // Save header
     buf.str("");
     out.putString(STATE_HEADER);
@@ -245,7 +248,7 @@ string RewindManager::saveAllStates()
     out.putInt(myStateSize);
 
     unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(myStateSize);
-    for (int i = 0; i < numStates; i++)
+    for (uInt32 i = 0; i < numStates; i++)
     {
       RewindState& state = myStateList.current();
       Serializer& s = state.data;
@@ -260,6 +263,8 @@ string RewindManager::saveAllStates()
       if (i < numStates)
         unwindStates(1);
     }
+    // restore old state position
+    rewindStates(numStates - curIdx);
 
     buf.str("");
     buf << "Saved " << numStates << " states";
@@ -287,7 +292,7 @@ string RewindManager::loadAllStates()
       return "Can't load from all states file";
 
     clear();
-    int numStates;
+    uInt32 numStates;
 
     // Load header
     buf.str("");
@@ -298,7 +303,7 @@ string RewindManager::loadAllStates()
     myStateSize = in.getInt();
 
     unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(myStateSize);
-    for (int i = 0; i < numStates; i++)
+    for (uInt32 i = 0; i < numStates; i++)
     {
       if (myStateList.full())
         compressStates();
