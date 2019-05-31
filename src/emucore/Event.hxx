@@ -103,7 +103,7 @@ class Event
       Rewind1Menu, Rewind10Menu, RewindAllMenu,
       Unwind1Menu, Unwind10Menu, UnwindAllMenu,
 
-      StartPauseMode,
+      StartPauseMode, SaveAllStates, LoadAllStates,
 
       LastType
     };

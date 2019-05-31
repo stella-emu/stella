@@ -36,6 +36,7 @@ RewindManager::RewindManager(OSystem& system, StateManager& statemgr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::setup()
 {
+  myStateSize = 0;
   myLastTimeMachineAdd = false;
 
   const string& prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
@@ -128,6 +129,7 @@ bool RewindManager::addState(const string& message, bool timeMachine)
   s.rewind();  // rewind Serializer internal buffers
   if(myStateManager.saveState(s) && myOSystem.console().tia().saveDisplay(s))
   {
+    myStateSize = std::max(myStateSize, uInt32(s.size()));
     state.message = message;
     state.cycles = myOSystem.console().tia().cycles();
     myLastTimeMachineAdd = timeMachine;
@@ -218,6 +220,129 @@ uInt32 RewindManager::windStates(uInt32 numStates, bool unwind)
     return rewindStates(numStates);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string RewindManager::saveAllStates()
+{
+  uInt8* buffer = NULL;
+  try
+  {
+    ostringstream buf;
+    buf << myOSystem.stateDir()
+      << myOSystem.console().properties().get(PropType::Cart_Name)
+      << ".sta";
+
+    // Truncate existing file to 0
+    FILE* fp;
+    errno_t err = fopen_s(&fp, buf.str().c_str(), "w");
+    // Make sure the file can be opened for writing
+    if (err != NULL)
+      return "Can't save to all states file";
+    fclose(fp);
+
+    Serializer out(buf.str());
+
+    int numStates = rewindStates(1000) + 1;
+    // Save header
+    buf.str("");
+    out.putString(STATE_HEADER);
+    out.putShort(numStates);
+    out.putInt(myStateSize);
+
+    buffer = new uInt8[myStateSize];
+    for (int i = 0; i < numStates; i++)
+    {
+      RewindState& state = myStateList.current();
+      Serializer& s = state.data;
+      // Rewind Serializer internal buffers
+      s.rewind();
+      // Save state
+      s.getByteArray(buffer, myStateSize);
+      out.putByteArray(buffer, myStateSize);
+      out.putString(state.message);
+      out.putLong(state.cycles);
+
+      if (i < numStates)
+        unwindStates(1);
+    }
+    delete[] buffer;
+
+    buf.str("");
+    buf << "Saved " << numStates << " states";
+    return buf.str();
+  }
+  catch (...)
+  {
+    if (buffer)
+      delete[] buffer;
+
+    return "Error loading all states";
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string RewindManager::loadAllStates()
+{
+  uInt8* buffer = NULL;
+  try
+  {
+    ostringstream buf;
+    buf << myOSystem.stateDir()
+      << myOSystem.console().properties().get(PropType::Cart_Name)
+      << ".sta";
+
+    // Make sure the file can be opened for reading
+    Serializer in(buf.str(), true);
+    if (!in)
+      return "Can't load from all states file";
+
+    clear();
+    int numStates;
+
+    // Load header
+    buf.str("");
+    // Check compatibility
+    if (in.getString() != STATE_HEADER)
+      return "Incompatible all states file";
+    numStates = in.getShort();
+    myStateSize = in.getInt();
+
+    buffer = new uInt8[myStateSize];
+    for (int i = 0; i < numStates; i++)
+    {
+      if (myStateList.full())
+        compressStates();
+
+      // Add new state at the end of the list (queue adds at end)
+      // This updates the 'current' iterator inside the list
+      myStateList.addLast();
+      RewindState& state = myStateList.current();
+      Serializer& s = state.data;
+      // Rewind Serializer internal buffers
+      s.rewind();
+
+      // Fill new state with saved values
+      in.getByteArray(buffer, myStateSize);
+      s.putByteArray(buffer, myStateSize);
+      state.message = in.getString();
+      state.cycles = in.getLong();
+    }
+    delete[] buffer;
+
+    // initialize current state (parameters ignored)
+    loadState(0, 0);
+
+    buf.str("");
+    buf << "Loaded " << numStates << " states";
+    return buf.str();
+  }
+  catch (...)
+  {
+    if (buffer)
+      delete[] buffer;
+
+    return "Error saving all states";
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RewindManager::compressStates()

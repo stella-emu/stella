@@ -158,6 +158,41 @@ static uInt32 UNWIND_ALL[BUTTON_H] =
   0b11000011000011,
   0
 };
+static uInt32 SAVE_ALL[BUTTON_H] =
+{
+  0b00000111100000,
+  0b00000111100000,
+  0b00000111100000,
+  0b00000111100000,
+  0b11111111111111,
+  0b01111111111110,
+  0b00111111111100,
+  0b00011111111000,
+  0b00001111110000,
+  0b00000111100000,
+  0b00000011000000,
+  0b00000000000000,
+  0b11111111111111,
+  0b11111111111111,
+};
+static uInt32 LOAD_ALL[BUTTON_H] =
+{
+  0b00000011000000,
+  0b00000111100000,
+  0b00001111110000,
+  0b00011111111000,
+  0b00111111111100,
+  0b01111111111110,
+  0b11111111111111,
+  0b00000111100000,
+  0b00000111100000,
+  0b00000111100000,
+  0b00000111100000,
+  0b00000000000000,
+  0b11111111111111,
+  0b11111111111111,
+};
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
@@ -232,6 +267,14 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                        BUTTON_W, BUTTON_H, kUnwindAll);
   xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 4;
 
+  mySaveAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, SAVE_ALL,
+    BUTTON_W, BUTTON_H, kSaveAll);
+  xpos = mySaveAllWidget->getRight() + BUTTON_GAP;
+
+  myLoadAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, LOAD_ALL,
+    BUTTON_W, BUTTON_H, kLoadAll);
+  xpos = myLoadAllWidget->getRight() + BUTTON_GAP * 4;
+
   // Add message
   myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ",
                                          TextAlign::Left, kBGColor);
@@ -250,14 +293,6 @@ void TimeMachineDialog::center()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::loadConfig()
 {
-  RewindManager& r = instance().state().rewindManager();
-  IntArray cycles = r.cyclesList();
-
-  // Set range and intervals for timeline
-  uInt32 maxValue = cycles.size() > 1 ? uInt32(cycles.size() - 1) : 0;
-  myTimeline->setMaxValue(maxValue);
-  myTimeline->setStepValues(cycles);
-
   // Enable blending (only once is necessary)
   if(!surface().attributes().blending)
   {
@@ -266,10 +301,7 @@ void TimeMachineDialog::loadConfig()
     surface().applyAttributes();
   }
 
-  myMessageWidget->setLabel("");
-  handleWinds(_enterWinds);
-  _enterWinds = 0;
-  handleToggle();
+  initBar();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -355,9 +387,36 @@ void TimeMachineDialog::handleCommand(CommandSender* sender, int cmd,
       handleWinds(1000);
       break;
 
+    case kSaveAll:
+      instance().frameBuffer().showMessage(instance().state().rewindManager().saveAllStates());
+      break;
+
+    case kLoadAll:
+      instance().frameBuffer().showMessage(instance().state().rewindManager().loadAllStates());
+      initBar();
+      break;
+
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TimeMachineDialog::initBar()
+{
+  RewindManager& r = instance().state().rewindManager();
+  IntArray cycles = r.cyclesList();
+
+  // Set range and intervals for timeline
+  uInt32 maxValue = cycles.size() > 1 ? uInt32(cycles.size() - 1) : 0;
+  myTimeline->setMaxValue(maxValue);
+  myTimeline->setStepValues(cycles);
+
+  myMessageWidget->setLabel("");
+  handleWinds(_enterWinds);
+  _enterWinds = 0;
+
+  handleToggle();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -416,6 +475,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
   myRewind1Widget->setEnabled(!r.atFirst());
   myUnwindAllWidget->setEnabled(!r.atLast());
   myUnwind1Widget->setEnabled(!r.atLast());
+  mySaveAllWidget->setEnabled(r.getLastIdx() != 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -424,4 +484,3 @@ void TimeMachineDialog::handleToggle()
   myToggleWidget->setBitmap(instance().state().mode() == StateManager::Mode::Off ? RECORD : STOP,
                             BUTTON_W, BUTTON_H);
 }
-

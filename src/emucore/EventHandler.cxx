@@ -35,6 +35,7 @@
 #include "Settings.hxx"
 #include "Sound.hxx"
 #include "StateManager.hxx"
+#include "RewindManager.hxx"
 #include "TimerManager.hxx"
 #include "Switches.hxx"
 #include "M6532.hxx"
@@ -612,12 +613,22 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       if(pressed) myOSystem.state().saveState();
       return;
 
+    case Event::SaveAllStates:
+      if (pressed)
+        myOSystem.frameBuffer().showMessage(myOSystem.state().rewindManager().saveAllStates());
+      return;
+
     case Event::ChangeState:
       if(pressed) myOSystem.state().changeState();
       return;
 
     case Event::LoadState:
       if(pressed) myOSystem.state().loadState();
+      return;
+
+    case Event::LoadAllStates:
+      if (pressed)
+        myOSystem.frameBuffer().showMessage(myOSystem.state().rewindManager().loadAllStates());
       return;
 
     case Event::Rewind:
@@ -1687,6 +1698,8 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::Unwind1Menu,             "Unwind one state & enter TM UI",        "" },
   { Event::Unwind10Menu,            "Unwind 10 states & enter TM UI",        "" },
   { Event::UnwindAllMenu,           "Unwind all states & enter TM UI",       "" },
+  { Event::SaveAllStates,           "Save all TM states of current game",    "" },
+  { Event::LoadAllStates,           "Load saved TM states for current game", "" },
 
   { Event::Combo1,                  "Combo 1",                               "" },
   { Event::Combo2,                  "Combo 2",                               "" },
