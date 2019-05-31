@@ -136,10 +136,16 @@ class RewindManager
     */
     uInt32 windStates(uInt32 numStates, bool unwind);
 
+    string saveAllStates();
+    string loadAllStates();
+
     bool atFirst() const { return myStateList.atFirst(); }
     bool atLast() const  { return myStateList.atLast();  }
     void resize(uInt32 size) { myStateList.resize(size); }
-    void clear() { myStateList.clear(); }
+    void clear() {
+      myStateSize = 0;
+      myStateList.clear();
+    }
 
     /**
       Convert the cycles into a unit string.
@@ -169,6 +175,7 @@ class RewindManager
     uInt64 myHorizon;
     double myFactor;
     bool   myLastTimeMachineAdd;
+    uInt32 myStateSize;
 
     struct RewindState {
       Serializer data;  // actual save state

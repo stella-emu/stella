@@ -40,6 +40,9 @@ class TimeMachineDialog : public Dialog
     void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    /** initialize timeline bar */
+    void initBar();
+
     /** This dialog uses its own positioning, so we override Dialog::center() */
     void center() override;
 
@@ -62,6 +65,8 @@ class TimeMachineDialog : public Dialog
       kUnwindAll = 'TMua',
       kUnwind10  = 'TMu1',
       kUnwind1   = 'TMun',
+      kSaveAll      = 'TMsv',
+      kLoadAll      = 'TMld',
     };
 
     TimeLineWidget* myTimeline;
@@ -72,6 +77,8 @@ class TimeMachineDialog : public Dialog
     ButtonWidget* myRewind1Widget;
     ButtonWidget* myUnwind1Widget;
     ButtonWidget* myUnwindAllWidget;
+    ButtonWidget* mySaveAllWidget;
+    ButtonWidget* myLoadAllWidget;
 
     StaticTextWidget* myCurrentTimeWidget;
     StaticTextWidget* myLastTimeWidget;

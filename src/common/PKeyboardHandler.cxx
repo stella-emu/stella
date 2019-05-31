@@ -144,8 +144,10 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::ConsoleRightDiffA  , KBDK_F7);
       setDefaultKey(Event::ConsoleRightDiffB  , KBDK_F8);
       setDefaultKey(Event::SaveState          , KBDK_F9);
+      setDefaultKey(Event::SaveAllStates      , KBDK_F9, KBDM_ALT);
       setDefaultKey(Event::ChangeState        , KBDK_F10);
       setDefaultKey(Event::LoadState          , KBDK_F11);
+      setDefaultKey(Event::LoadAllStates      , KBDK_F11, KBDM_ALT);
       setDefaultKey(Event::TakeSnapshot       , KBDK_F12);
       setDefaultKey(Event::Fry                , KBDK_BACKSPACE);
       setDefaultKey(Event::TogglePauseMode    , KBDK_PAUSE);
