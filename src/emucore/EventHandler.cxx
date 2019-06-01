@@ -439,11 +439,11 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeat)
       return;
 
     case Event::ScanlinesDecrease:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-5);
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-2);
       return;
 
     case Event::ScanlinesIncrease:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+5);
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+2);
       return;
 
     case Event::PreviousAttribute:
