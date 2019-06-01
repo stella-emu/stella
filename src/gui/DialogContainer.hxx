@@ -182,13 +182,6 @@ class DialogContainer
     // Indicates the most current time (in milliseconds) as set by updateTime()
     uInt64 myTime;
 
-    // For continuous 'key down' events
-    struct {
-      StellaKey key;
-      StellaMod mod;
-    } myCurrentKeyDown;
-    uInt64 myKeyRepeatTime;
-
     // For continuous 'mouse down' events
     struct {
       int x;
