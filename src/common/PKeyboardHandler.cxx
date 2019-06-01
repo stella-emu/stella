@@ -317,7 +317,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pressed)
+void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pressed, bool repeat)
 {
   // Swallow KBDK_TAB under certain conditions
   // See commments on 'myAltKeyCounter' for more information
@@ -353,15 +353,15 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   {
     case EventHandlerState::EMULATION:
     case EventHandlerState::PAUSE:
-      myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed);
+      myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed, repeat);
       break;
 
     default:
     #ifdef GUI_SUPPORT
       if (myHandler.hasOverlay())
-        myHandler.overlay().handleKeyEvent(key, mod, pressed);
+        myHandler.overlay().handleKeyEvent(key, mod, pressed, repeat);
     #endif
-      myHandler.handleEvent(myKeyMap.get(kMenuMode, key, mod), pressed);
+      myHandler.handleEvent(myKeyMap.get(kMenuMode, key, mod), pressed, repeat);
       break;
   }
 }
