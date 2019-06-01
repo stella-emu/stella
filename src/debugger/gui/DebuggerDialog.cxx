@@ -550,19 +550,19 @@ void DebuggerDialog::addRomArea()
   int buttonX = r.right - bwidth - 5, buttonY = r.top + 5;
 
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Step", kDDStepCmd);
+                       bwidth, bheight, "Step", kDDStepCmd, true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Trace", kDDTraceCmd);
+                       bwidth, bheight, "Trace", kDDTraceCmd, true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Scan +1", kDDSAdvCmd);
+                       bwidth, bheight, "Scan +1", kDDSAdvCmd, true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Frame +1", kDDAdvCmd);
+                       bwidth, bheight, "Frame +1", kDDAdvCmd, true);
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
@@ -576,7 +576,7 @@ void DebuggerDialog::addRomArea()
 
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, LEFT_ARROW, 7, 11, kDDRewindCmd);
+                     bwidth, bheight, LEFT_ARROW, 7, 11, kDDRewindCmd, true);
   myRewindButton->clearFlags(Widget::FLAG_ENABLED);
 
   buttonY += bheight + 4;
@@ -584,7 +584,7 @@ void DebuggerDialog::addRomArea()
 
   myUnwindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, RIGHT_ARROW, 7, 11, kDDUnwindCmd);
+                     bwidth, bheight, RIGHT_ARROW, 7, 11, kDDUnwindCmd, true);
   myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
 
   int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 30;
