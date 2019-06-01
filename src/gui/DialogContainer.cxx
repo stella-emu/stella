@@ -29,7 +29,6 @@
 DialogContainer::DialogContainer(OSystem& osystem)
   : myOSystem(osystem),
     myTime(0),
-    myKeyRepeatTime(0),
     myClickRepeatTime(0),
     myButtonRepeatTime(0),
     myAxisRepeatTime(0),
@@ -49,13 +48,6 @@ void DialogContainer::updateTime(uInt64 time)
 
   // Check for pending continuous events and send them to the active dialog box
   Dialog* activeDialog = myDialogStack.top();
-
-  // Key still pressed
-  if(myCurrentKeyDown.key != KBDK_UNKNOWN && myKeyRepeatTime < myTime)
-  {
-    activeDialog->handleKeyDown(myCurrentKeyDown.key, myCurrentKeyDown.mod);
-    myKeyRepeatTime = myTime + kRepeatSustainDelay;
-  }
 
   // Mouse button still pressed
   if(myCurrentMouseDown.b != MouseButton::NONE && myClickRepeatTime < myTime)
@@ -185,21 +177,9 @@ void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod, bool pressed,
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
   if(pressed)
-  {
-    myCurrentKeyDown.key = key;
-    myCurrentKeyDown.mod = mod;
-    myKeyRepeatTime = myTime + kRepeatInitialDelay;
-
     activeDialog->handleKeyDown(key, mod);
-  }
   else
-  {
     activeDialog->handleKeyUp(key, mod);
-
-    // Only stop firing events if it's the current key
-    if(key == myCurrentKeyDown.key)
-      myCurrentKeyDown.key = KBDK_UNKNOWN;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -365,8 +345,6 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::reset()
 {
-  myCurrentKeyDown.key = KBDK_UNKNOWN;
-  myCurrentKeyDown.mod = KBDM_NONE;
   myCurrentMouseDown.b = MouseButton::NONE;
   myLastClick.x = myLastClick.y = 0;
   myLastClick.time = 0;
