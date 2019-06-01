@@ -368,10 +368,11 @@ void StaticTextWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
-                           const string& label, int cmd)
+                           const string& label, int cmd, bool repeat)
   : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
     CommandSender(boss),
     _cmd(cmd),
+    _repeat(repeat),
     _useBitmap(false),
     _bitmap(nullptr),
     _bmw(0),
@@ -391,16 +392,16 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int dw,
-                           const string& label, int cmd)
-  : ButtonWidget(boss, font, x, y, font.getStringWidth(label) + dw, font.getLineHeight() + 4, label, cmd)
+                           const string& label, int cmd, bool repeat)
+  : ButtonWidget(boss, font, x, y, font.getStringWidth(label) + dw, font.getLineHeight() + 4, label, cmd, repeat)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
-                           const string& label, int cmd)
-  : ButtonWidget(boss, font, x, y, 20, label, cmd)
+                           const string& label, int cmd, bool repeat)
+  : ButtonWidget(boss, font, x, y, 20, label, cmd, repeat)
 {
 }
 
@@ -408,8 +409,8 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            uInt32* bitmap, int bmw, int bmh,
-                           int cmd)
-  : ButtonWidget(boss, font, x, y, w, h, "", cmd)
+                           int cmd, bool repeat)
+  : ButtonWidget(boss, font, x, y, w, h, "", cmd, repeat)
 {
   _bitmap = bitmap;
   _bmh = bmh;
@@ -446,10 +447,25 @@ bool ButtonWidget::handleEvent(Event::Type e)
   }
 }
 
+bool ButtonWidget::handleMouseClicks(int x, int y, MouseButton b)
+{
+  return _repeat;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ButtonWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
+{
+  if(_repeat && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  {
+    clearFlags(Widget::FLAG_HILITED);
+    sendCommand(_cmd, 0, _id);
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 {
-  if(isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
+  if (!_repeat && isEnabled() && x >= 0 && x < _w && y >= 0 && y < _h)
   {
     clearFlags(Widget::FLAG_HILITED);
     sendCommand(_cmd, 0, _id);

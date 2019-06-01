@@ -219,17 +219,17 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
   public:
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
-                 const string& label, int cmd = 0);
+                 const string& label, int cmd = 0, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int dw,
-                 const string& label, int cmd = 0);
+                 const string& label, int cmd = 0, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
-                 const string& label, int cmd = 0);
+                 const string& label, int cmd = 0, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int dw, int dh,
                  uInt32* bitmap, int bmw, int bmh,
-                 int cmd = 0);
+                 int cmd = 0, bool repeat = false);
 
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
@@ -237,6 +237,8 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void setBitmap(uInt32* bitmap, int bmw, int bmh);
 
   protected:
+    bool handleMouseClicks(int x, int y, MouseButton b) override;
+    void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseUp(int x, int y, MouseButton b, int clickCount) override;
     void handleMouseEntered() override;
     void handleMouseLeft() override;
@@ -246,6 +248,7 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
 
   protected:
     int     _cmd;
+    bool    _repeat; // button repeats
     bool    _useBitmap;
     uInt32* _bitmap;
     int     _bmw, _bmh;
