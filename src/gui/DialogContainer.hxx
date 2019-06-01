@@ -72,7 +72,7 @@ class DialogContainer
       @param mod      Modifiers
       @param pressed  Pressed (true) or released (false)
     */
-    void handleKeyEvent(StellaKey key, StellaMod mod, bool pressed);
+    void handleKeyEvent(StellaKey key, StellaMod mod, bool pressed, bool repeat);
 
     /**
       Handle a mouse motion event.

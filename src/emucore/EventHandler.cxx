@@ -333,7 +333,7 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleEvent(Event::Type event, bool pressed)
+void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeat)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
@@ -383,11 +383,11 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
     ////////////////////////////////////////////////////////////////////////
 
     case Event::Fry:
-      /*if(myPKeyHandler->useModKeys())*/ myFryingFlag = pressed;
+      if (!repeat) myFryingFlag = pressed;
       return;
 
     case Event::ReloadConsole:
-      if (pressed) myOSystem.reloadConsole();
+      if (pressed && !repeat) myOSystem.reloadConsole();
       return;
 
     case Event::VolumeDecrease:
@@ -399,7 +399,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::SoundToggle:
-      if(pressed) myOSystem.sound().toggleMute();
+      if(pressed && !repeat) myOSystem.sound().toggleMute();
       return;
 
     case Event::VidmodeDecrease:
@@ -411,31 +411,31 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::ToggleFullScreen:
-      if (pressed) myOSystem.frameBuffer().toggleFullscreen();
+      if (pressed && !repeat) myOSystem.frameBuffer().toggleFullscreen();
       return;
 
     case Event::VidmodeStd:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::OFF);
+      if (pressed && !repeat) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::OFF);
       return;
 
     case Event::VidmodeRGB:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::RGB);
+      if (pressed && !repeat) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::RGB);
       return;
 
     case Event::VidmodeSVideo:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::SVIDEO);
+      if (pressed && !repeat) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::SVIDEO);
       return;
 
     case Event::VidModeComposite:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::COMPOSITE);
+      if (pressed && !repeat) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::COMPOSITE);
       return;
 
     case Event::VidModeBad:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::BAD);
+      if (pressed && !repeat) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::BAD);
       return;
 
     case Event::VidModeCustom:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
+      if (pressed && !repeat) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
       return;
 
     case Event::ScanlinesDecrease:
@@ -491,19 +491,19 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::TogglePhosphor:
-      if (pressed) myOSystem.console().togglePhosphor();
+      if (pressed && !repeat) myOSystem.console().togglePhosphor();
       return;
 
     case Event::ToggleColorLoss:
-      if (pressed) myOSystem.console().toggleColorLoss();
+      if (pressed && !repeat) myOSystem.console().toggleColorLoss();
       return;
 
     case Event::TogglePalette:
-      if (pressed) myOSystem.console().togglePalette();
+      if (pressed && !repeat) myOSystem.console().togglePalette();
       return;
 
     case Event::ToggleJitter:
-      if (pressed) myOSystem.console().toggleJitter();
+      if (pressed && !repeat) myOSystem.console().toggleJitter();
       return;
 
     case Event::ToggleFrameStats:
@@ -511,25 +511,25 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::ToggleTimeMachine:
-      if (pressed) myOSystem.state().toggleTimeMachine();
+      if (pressed && !repeat) myOSystem.state().toggleTimeMachine();
       return;
 
   #ifdef PNG_SUPPORT
     case Event::ToggleContSnapshots:
-      if (pressed) myOSystem.png().toggleContinuousSnapshots(false);
+      if (pressed && !repeat) myOSystem.png().toggleContinuousSnapshots(false);
       return;
 
     case Event::ToggleContSnapshotsFrame:
-      if (pressed) myOSystem.png().toggleContinuousSnapshots(true);
+      if (pressed && !repeat) myOSystem.png().toggleContinuousSnapshots(true);
       return;
   #endif
 
     case Event::HandleMouseControl:
-      if (pressed) handleMouseControl();
+      if (pressed && !repeat) handleMouseControl();
       return;
 
     case Event::ToggleSAPortOrder:
-      if (pressed) toggleSAPortOrder();
+      if (pressed && !repeat) toggleSAPortOrder();
       return;
 
     case Event::DecreaseFormat:
@@ -541,7 +541,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::ToggleGrabMouse:
-      if (pressed && !myOSystem.frameBuffer().fullScreen())
+      if (pressed && !repeat && !myOSystem.frameBuffer().fullScreen())
       {
         myOSystem.frameBuffer().toggleGrabMouse();
         myOSystem.frameBuffer().showMessage(myOSystem.frameBuffer().grabMouseEnabled()
@@ -550,39 +550,39 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::ToggleP0Collision:
-      if (pressed) myOSystem.console().toggleP0Collision();
+      if (pressed && !repeat) myOSystem.console().toggleP0Collision();
       return;
 
     case Event::ToggleP0Bit:
-      if (pressed) myOSystem.console().toggleP0Bit();
+      if (pressed && !repeat) myOSystem.console().toggleP0Bit();
       return;
 
     case Event::ToggleP1Collision:
-      if (pressed) myOSystem.console().toggleP1Collision();
+      if (pressed && !repeat) myOSystem.console().toggleP1Collision();
       return;
 
     case Event::ToggleP1Bit:
-      if (pressed) myOSystem.console().toggleP1Bit();
+      if (pressed && !repeat) myOSystem.console().toggleP1Bit();
       return;
 
     case Event::ToggleM0Collision:
-      if (pressed) myOSystem.console().toggleM0Collision();
+      if (pressed && !repeat) myOSystem.console().toggleM0Collision();
       return;
 
     case Event::ToggleM0Bit:
-      if (pressed) myOSystem.console().toggleM0Bit();
+      if (pressed && !repeat) myOSystem.console().toggleM0Bit();
       return;
 
     case Event::ToggleM1Collision:
-      if (pressed) myOSystem.console().toggleM1Collision();
+      if (pressed && !repeat) myOSystem.console().toggleM1Collision();
       return;
 
     case Event::ToggleM1Bit:
-      if (pressed) myOSystem.console().toggleM1Bit();
+      if (pressed && !repeat) myOSystem.console().toggleM1Bit();
       return;
 
     case Event::ToggleBLCollision:
-      if (pressed) myOSystem.console().toggleBLCollision();
+      if (pressed && !repeat) myOSystem.console().toggleBLCollision();
       return;
 
     case Event::ToggleBLBit:
@@ -590,11 +590,11 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::TogglePFCollision:
-      if (pressed) myOSystem.console().togglePFCollision();
+      if (pressed && !repeat) myOSystem.console().togglePFCollision();
       return;
 
     case Event::TogglePFBit:
-      if (pressed) myOSystem.console().togglePFBit();
+      if (pressed && !repeat) myOSystem.console().togglePFBit();
       return;
 
     case Event::ToggleFixedColors:
@@ -602,19 +602,19 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::ToggleCollisions:
-      if (pressed) myOSystem.console().toggleCollisions();
+      if (pressed && !repeat) myOSystem.console().toggleCollisions();
       return;
 
     case Event::ToggleBits:
-      if (pressed) myOSystem.console().toggleBits();
+      if (pressed && !repeat) myOSystem.console().toggleBits();
       return;
 
     case Event::SaveState:
-      if(pressed) myOSystem.state().saveState();
+      if(pressed && !repeat) myOSystem.state().saveState();
       return;
 
     case Event::SaveAllStates:
-      if (pressed)
+      if (pressed && !repeat)
         myOSystem.frameBuffer().showMessage(myOSystem.state().rewindManager().saveAllStates());
       return;
 
@@ -623,11 +623,11 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::LoadState:
-      if(pressed) myOSystem.state().loadState();
+      if(pressed && !repeat) myOSystem.state().loadState();
       return;
 
     case Event::LoadAllStates:
-      if (pressed)
+      if (pressed && !repeat)
         myOSystem.frameBuffer().showMessage(myOSystem.state().rewindManager().loadAllStates());
       return;
 
@@ -664,7 +664,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::TakeSnapshot:
-      if(pressed) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
+      if(pressed && !repeat) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
 
     case Event::ExitMode:
@@ -673,25 +673,25 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       switch (myState)
       {
         case EventHandlerState::PAUSE:
-          if (pressed) changeStateByEvent(Event::TogglePauseMode);
+          if (pressed && !repeat) changeStateByEvent(Event::TogglePauseMode);
           return;
 
         case EventHandlerState::CMDMENU:
-          if (pressed) changeStateByEvent(Event::CmdMenuMode);
+          if (pressed && !repeat) changeStateByEvent(Event::CmdMenuMode);
           return;
 
         case EventHandlerState::TIMEMACHINE:
-          if (pressed) changeStateByEvent(Event::TimeMachineMode);
+          if (pressed && !repeat) changeStateByEvent(Event::TimeMachineMode);
           return;
 
         #if 0 // FIXME - exits ROM too, when it should just go back to ROM
         case EventHandlerState::DEBUGGER:
-          if (pressed) changeStateByEvent(Event::DebuggerMode);
+          if (pressed && !repeat) changeStateByEvent(Event::DebuggerMode);
           return;
         #endif
 
         case EventHandlerState::EMULATION:
-          if (pressed)
+          if (pressed && !repeat)
           {
             // Go back to the launcher, or immediately quit
             if (myOSystem.settings().getBool("exitlauncher") ||
@@ -707,7 +707,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       }
 
     case Event::Quit:
-      if(pressed)
+      if(pressed && !repeat)
       {
         saveKeyMapping();
         saveJoyMapping();
@@ -716,7 +716,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::StartPauseMode:
-      if (pressed && myState == EventHandlerState::EMULATION)
+      if (pressed && !repeat && myState == EventHandlerState::EMULATION)
         setState(EventHandlerState::PAUSE);
       return;
 
@@ -741,28 +741,28 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
     case Event::Combo16:
       for(int i = 0, combo = event - Event::Combo1; i < EVENTS_PER_COMBO; ++i)
         if(myComboTable[combo][i] != Event::NoType)
-          handleEvent(myComboTable[combo][i], pressed);
+          handleEvent(myComboTable[combo][i], pressed, repeat);
       return;
     ////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////
     // Events which relate to switches()
     case Event::ConsoleColor:
-      if(pressed)
+      if(pressed && !repeat)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause released" : "Color Mode");
       }
       break;
     case Event::ConsoleBlackWhite:
-      if(pressed)
+      if(pressed && !repeat)
       {
         myEvent.set(Event::ConsoleColor, 0);
         myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
       }
       break;
     case Event::ConsoleColorToggle:
-      if(pressed)
+      if(pressed && !repeat)
       {
         if(myOSystem.console().switches().tvColor())
         {
@@ -781,7 +781,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::Console7800Pause:
-      if(pressed)
+      if(pressed && !repeat)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myEvent.set(Event::ConsoleColor, 0);
@@ -791,21 +791,21 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::ConsoleLeftDiffA:
-      if(pressed)
+      if(pressed && !repeat)
       {
         myEvent.set(Event::ConsoleLeftDiffB, 0);
         myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " A");
       }
       return;
     case Event::ConsoleLeftDiffB:
-      if(pressed)
+      if(pressed && !repeat)
       {
         myEvent.set(Event::ConsoleLeftDiffA, 0);
         myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " B");
       }
       return;
     case Event::ConsoleLeftDiffToggle:
-      if(pressed)
+      if(pressed && !repeat)
       {
         if(myOSystem.console().switches().leftDifficultyA())
         {
@@ -824,21 +824,21 @@ void EventHandler::handleEvent(Event::Type event, bool pressed)
       return;
 
     case Event::ConsoleRightDiffA:
-      if(pressed)
+      if(pressed && !repeat)
       {
         myEvent.set(Event::ConsoleRightDiffB, 0);
         myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " A");
       }
       return;
     case Event::ConsoleRightDiffB:
-      if(pressed)
+      if(pressed && !repeat)
       {
         myEvent.set(Event::ConsoleRightDiffA, 0);
         myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " B");
       }
       return;
     case Event::ConsoleRightDiffToggle:
-      if(pressed)
+      if(pressed && !repeat)
       {
         if(myOSystem.console().switches().rightDifficultyA())
         {

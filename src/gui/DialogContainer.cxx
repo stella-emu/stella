@@ -177,7 +177,7 @@ void DialogContainer::handleTextEvent(char text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod, bool pressed)
+void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod, bool pressed, bool repeat)
 {
   if(myDialogStack.empty())
     return;
