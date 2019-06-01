@@ -50,11 +50,8 @@ class KeyMap
           && mode == other.mode
           && (((mod | other.mod) & KBDM_SHIFT) ? (mod & other.mod & KBDM_SHIFT) : true)
           && (((mod | other.mod) & KBDM_CTRL ) ? (mod & other.mod & KBDM_CTRL ) : true)
-#if defined(BSPF_MACOS) || defined(MACOS_KEYS)
-          && (((mod | other.mod) & KBDM_GUI  ) ? (mod & other.mod & KBDM_GUI  ) : true)
-#else
           && (((mod | other.mod) & KBDM_ALT  ) ? (mod & other.mod & KBDM_ALT  ) : true)
-#endif
+          && (((mod | other.mod) & KBDM_GUI  ) ? (mod & other.mod & KBDM_GUI  ) : true)
           );
       }
     };
@@ -109,12 +106,9 @@ class KeyMap
         return std::hash<uInt64>()((uInt64(m.mode))       // 1 bit
           ^ ((uInt64(m.key)) << 1)                        // 8 bits
           ^ ((uInt64((m.mod & KBDM_SHIFT) != 0) <<  9))   // 1 bit
-        #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
-          ^ ((uInt64((m.mod & KBDM_GUI  ) != 0) << 10))   // 1 bit
-        #else
           ^ ((uInt64((m.mod & KBDM_ALT  ) != 0) << 10))   // 1 bit
-        #endif
-          ^ ((uInt64((m.mod & KBDM_CTRL ) != 0) << 11))); // 1 bit
+          ^ ((uInt64((m.mod & KBDM_GUI  ) != 0) << 11))   // 1 bit
+          ^ ((uInt64((m.mod & KBDM_CTRL ) != 0) << 12))); // 1 bit
       }
     };
 
