@@ -256,11 +256,11 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   xpos += buttonWidth + BUTTON_GAP;
 
   myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_1,
-                                     BUTTON_W, BUTTON_H, kRewind1);
+                                     BUTTON_W, BUTTON_H, kRewind1, true);
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_1,
-                                     BUTTON_W, BUTTON_H, kUnwind1);
+                                     BUTTON_W, BUTTON_H, kUnwind1, true);
   xpos += buttonWidth + BUTTON_GAP;
 
   myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_ALL,
