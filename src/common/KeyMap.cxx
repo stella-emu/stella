@@ -93,27 +93,38 @@ string KeyMap::getDesc(const Mapping& mapping) const
 {
   ostringstream buf;
 #if defined(BSPF_MACOS) || defined(MACOS_KEYS)
-  string control = "Ctrl";
-  string alt = "Cmd";
-  int ALT = KBDM_GUI;
-  int LALT = KBDM_LGUI;
-  int RALT = KBDM_RGUI;
+  string mod2 = "Option";
+  int MOD2 = KBDM_ALT;
+  int LMOD2 = KBDM_LALT;
+  int RMOD2 = KBDM_RALT;
+  string mod3 = "Cmd";
+  int MOD3 = KBDM_GUI;
+  int LMOD3 = KBDM_LGUI;
+  int RMOD3 = KBDM_RGUI;
 #else
-  string control = "Ctrl";
-  string alt = "Alt";
-  int ALT = KBDM_ALT;
-  int LALT = KBDM_LALT;
-  int RALT = KBDM_RALT;
+  string mod2 = "Windows";
+  int MOD2 = KBDM_GUI;
+  int LMOD2 = KBDM_LGUI;
+  int RMOD2 = KBDM_RGUI;
+  string mod3 = "Alt";
+  int MOD3 = KBDM_ALT;
+  int LMOD3 = KBDM_LALT;
+  int RMOD3 = KBDM_RALT;
 #endif
 
-  if ((mapping.mod & KBDM_CTRL) == KBDM_CTRL) buf << control;
-  else if (mapping.mod & KBDM_LCTRL) buf << "Left " << control;
-  else if (mapping.mod & KBDM_RCTRL) buf << "Right " << control;
+  if ((mapping.mod & KBDM_CTRL) == KBDM_CTRL) buf << "Ctrl";
+  else if (mapping.mod & KBDM_LCTRL) buf << "Left Ctrl";
+  else if (mapping.mod & KBDM_RCTRL) buf << "Right Ctrl";
 
-  if ((mapping.mod & (ALT)) && buf.tellp()) buf << "+";
-  if ((mapping.mod & ALT) == ALT) buf << alt;
-  else if (mapping.mod & LALT) buf << alt;
-  else if (mapping.mod & RALT) buf << alt;
+  if ((mapping.mod & (MOD2)) && buf.tellp()) buf << "+";
+  if ((mapping.mod & MOD2) == MOD2) buf << mod2;
+  else if (mapping.mod & LMOD2) buf << "Left " << mod2;
+  else if (mapping.mod & RMOD2) buf << "Right " << mod2;
+
+  if ((mapping.mod & (MOD3)) && buf.tellp()) buf << "+";
+  if ((mapping.mod & MOD3) == MOD3) buf << mod3;
+  else if (mapping.mod & LMOD3) buf << "Left " << mod3;
+  else if (mapping.mod & RMOD3) buf << "Right " << mod3;
 
   if ((mapping.mod & (KBDM_SHIFT)) && buf.tellp()) buf << "+";
   if ((mapping.mod & KBDM_SHIFT) == KBDM_SHIFT) buf << "Shift";
@@ -228,11 +239,7 @@ KeyMap::Mapping KeyMap::convertMod(const Mapping& mapping) const
   else
   {
     // limit to modifiers we want to support
-#if defined(BSPF_MACOS) || defined(MACOS_KEYS)
-    m.mod = StellaMod(m.mod & (KBDM_SHIFT | KBDM_CTRL | KBDM_GUI));
-#else
-    m.mod = StellaMod(m.mod & (KBDM_SHIFT | KBDM_CTRL | KBDM_ALT));
-#endif
+    m.mod = StellaMod(m.mod & (KBDM_SHIFT | KBDM_CTRL | KBDM_ALT | KBDM_GUI));
   }
 
   return m;

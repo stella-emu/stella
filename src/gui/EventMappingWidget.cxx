@@ -273,11 +273,7 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
 {
   // Remap keys in remap mode
   if (myRemapStatus && myActionSelected >= 0
-#if defined(BSPF_MACOS) || defined(MACOS_KEYS)
-    && (mod & (KBDM_CTRL | KBDM_SHIFT | KBDM_GUI)) == 0)
-#else
-    && (mod & (KBDM_CTRL | KBDM_SHIFT | KBDM_ALT)) == 0)
-#endif
+    && (mod & (KBDM_CTRL | KBDM_SHIFT | KBDM_ALT | KBDM_GUI)) == 0)
   {
     Event::Type event =
       instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
