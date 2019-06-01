@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2019 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -269,6 +269,13 @@ class CartridgeDPCPlus : public Cartridge
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
+
+    // Older DPC+ driver code had different behaviour wrt the mask used
+    // to retrieve 'DFxFRACLOW' (fractional data pointer low byte)
+    // ROMs built with an old DPC+ driver and using the newer mask can
+    // result in 'jittering' in the playfield display
+    // For current versions, this is 0x0F00FF; older versions need 0x0F0000
+    uInt32 myFractionalLowMask;
 
   private:
     // Following constructors and assignment operators not supported

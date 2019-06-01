@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2019 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -19,6 +19,8 @@
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
+  #include "CartCDFWidget.hxx"
+  #include "CartCDFInfoWidget.hxx"
 #endif
 
 #include "System.hxx"
@@ -27,19 +29,32 @@
 #include "TIA.hxx"
 #include "exception/FatalEmulationError.hxx"
 
-// Location of data within the RAM copy of the CDF Driver.
-//  Version                   0       1
-const uInt16 DSxPTR[]   = {0x06E0, 0x00A0};
-const uInt16 DSxINC[]   = {0x0768, 0x0128};
-const uInt16 WAVEFORM[] = {0x07F0, 0x01B0};
 #define DSRAM         0x0800
 
-#define COMMSTREAM    0x20
-#define JUMPSTREAM    0x21
-#define AMPLITUDE     0x22
+#define COMMSTREAM        0x20
+#define JUMPSTREAM_BASE   0x21
 
 #define FAST_FETCH_ON ((myMode & 0x0F) == 0)
 #define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
+
+namespace {
+  Thumbulator::ConfigureFor thumulatorConfiguration(CartridgeCDF::CDFSubtype subtype)
+  {
+    switch (subtype) {
+      case CartridgeCDF::CDFSubtype::CDF0:
+        return Thumbulator::ConfigureFor::CDF;
+
+      case CartridgeCDF::CDFSubtype::CDF1:
+        return Thumbulator::ConfigureFor::CDF1;
+
+      case CartridgeCDF::CDFSubtype::CDFJ:
+        return Thumbulator::ConfigureFor::CDFJ;
+
+      default:
+        throw runtime_error("unreachable");
+    }
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
@@ -65,14 +80,13 @@ CartridgeCDF::CartridgeCDF(const BytePtr& image, uInt32 size,
   // Pointer to the display RAM
   myDisplayImage = myCDFRAM + DSRAM;
 
-  setVersion();
+  setupVersion();
 
   // Create Thumbulator ARM emulator
-  const string& prefix = settings.getBool("dev.settings") ? "dev." : "plr.";
+  bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
-    reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myCDFRAM),
-    settings.getBool(prefix + "thumb.trapfatal"), myVersion ?
-    Thumbulator::ConfigureFor::CDF1 : Thumbulator::ConfigureFor::CDF, this);
+    reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myCDFRAM), 32768,
+    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, thumulatorConfiguration(myCDFSubtype), this);
 
   setInitialState();
 }
@@ -196,10 +210,10 @@ uInt8 CartridgeCDF::peek(uInt16 address)
     --myFastJumpActive;
     ++myJMPoperandAddress;
 
-    pointer = getDatastreamPointer(JUMPSTREAM);
+    pointer = getDatastreamPointer(myFastJumpStream);
     value = myDisplayImage[ pointer >> 20 ];
     pointer += 0x100000;  // always increment by 1
-    setDatastreamPointer(JUMPSTREAM, pointer);
+    setDatastreamPointer(myFastJumpStream, pointer);
 
     return value;
   }
@@ -207,11 +221,12 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   // test for JMP FASTJUMP where FASTJUMP = $0000
   if (FAST_FETCH_ON
       && peekvalue == 0x4C
-      && myProgramImage[myBankOffset + address+1] == 0
+      && (myProgramImage[myBankOffset + address+1] & myFastjumpStreamIndexMask) == 0
       && myProgramImage[myBankOffset + address+2] == 0)
   {
     myFastJumpActive = 2; // return next two peeks from datastream 31
     myJMPoperandAddress = address + 1;
+    myFastJumpStream = myProgramImage[myBankOffset + address+1] + JUMPSTREAM_BASE;
     return peekvalue;
   }
 
@@ -223,10 +238,10 @@ uInt8 CartridgeCDF::peek(uInt16 address)
   //  3) peek value is 0-34
   if(FAST_FETCH_ON
      && myLDAimmediateOperandAddress == address
-     && peekvalue <= AMPLITUDE)
+     && peekvalue <= myAmplitudeStream)
   {
     myLDAimmediateOperandAddress = 0;
-    if (peekvalue == AMPLITUDE)
+    if (peekvalue == myAmplitudeStream)
     {
       updateMusicModeDataFetchers();
 
@@ -556,7 +571,7 @@ bool CartridgeCDF::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getDatastreamPointer(uInt8 index) const
 {
-  uInt16 address = DSxPTR[myVersion] + index * 4;
+  uInt16 address = myDatastreamBase + index * 4;
 
   return myCDFRAM[address + 0]        +  // low byte
         (myCDFRAM[address + 1] << 8)  +
@@ -567,7 +582,7 @@ uInt32 CartridgeCDF::getDatastreamPointer(uInt8 index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::setDatastreamPointer(uInt8 index, uInt32 value)
 {
-  uInt16 address = DSxPTR[myVersion] + index * 4;
+  uInt16 address = myDatastreamBase + index * 4;
 
   myCDFRAM[address + 0] = value & 0xff;          // low byte
   myCDFRAM[address + 1] = (value >> 8) & 0xff;
@@ -578,7 +593,7 @@ void CartridgeCDF::setDatastreamPointer(uInt8 index, uInt32 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getDatastreamIncrement(uInt8 index) const
 {
-  uInt16 address = DSxINC[myVersion] + index * 4;
+  uInt16 address = myDatastreamIncrementBase + index * 4;
 
   return myCDFRAM[address + 0]        +   // low byte
         (myCDFRAM[address + 1] << 8)  +
@@ -590,7 +605,7 @@ uInt32 CartridgeCDF::getDatastreamIncrement(uInt8 index) const
 uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 {
   uInt32 result;
-  uInt16 address = WAVEFORM[myVersion] + index * 4;
+  uInt16 address = myWaveformBase + index * 4;
 
   result = myCDFRAM[address + 0]        +  // low byte
           (myCDFRAM[address + 1] << 8)  +
@@ -609,7 +624,7 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 uInt32 CartridgeCDF::getSample()
 {
   uInt32 result;
-  uInt16 address = WAVEFORM[myVersion];
+  uInt16 address = myWaveformBase;
 
   result = myCDFRAM[address + 0]        +  // low byte
           (myCDFRAM[address + 1] << 8)  +
@@ -647,9 +662,9 @@ uInt8 CartridgeCDF::readFromDatastream(uInt8 index)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCDF::setVersion()
+void CartridgeCDF::setupVersion()
 {
-  myVersion = 0;
+  uInt8 subversion = 0;
 
   for(uInt32 i = 0; i < 2048; i += 4)
   {
@@ -658,8 +673,72 @@ void CartridgeCDF::setVersion()
       if (  myImage[i+1] == 0x44 && myImage[i + 5] == 0x44 && myImage[i + 9] == 0x44) // D
         if (myImage[i+2] == 0x46 && myImage[i + 6] == 0x46 && myImage[i +10] == 0x46) // F
         {
-          myVersion = myImage[i+3];
+          subversion = myImage[i+3];
           break;
         }
   }
+
+  switch (subversion) {
+    case 0x4a:
+      myCDFSubtype = CDFSubtype::CDFJ;
+
+      myAmplitudeStream = 0x23;
+      myFastjumpStreamIndexMask = 0xfe;
+      myDatastreamBase = 0x0098;
+      myDatastreamIncrementBase = 0x0124;
+      myWaveformBase = 0x01b0;
+
+      break;
+
+    case 0:
+      myCDFSubtype = CDFSubtype::CDF0;
+
+      myAmplitudeStream = 0x22;
+      myFastjumpStreamIndexMask = 0xff;
+      myDatastreamBase = 0x06e0;
+      myDatastreamIncrementBase = 0x0768;
+      myWaveformBase = 0x07f0;
+
+      break;
+
+    default:
+      myCDFSubtype = CDFSubtype::CDF1;
+
+      myAmplitudeStream = 0x22;
+      myFastjumpStreamIndexMask = 0xff;
+      myDatastreamBase = 0x00a0;
+      myDatastreamIncrementBase = 0x0128;
+      myWaveformBase = 0x01b0;
+  }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeCDF::name() const
+{
+  switch(myCDFSubtype)
+  {
+    case CDFSubtype::CDF0:
+      return "CartridgeCDF0";
+    case CDFSubtype::CDF1:
+      return "CartridgeCDF1";
+    case CDFSubtype::CDFJ:
+      return "CartridgeCDFJ";
+    default:
+      return "Cart unknown";
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#ifdef DEBUGGER_SUPPORT
+  CartDebugWidget* CartridgeCDF::debugWidget(GuiObject* boss, const GUI::Font& lfont,
+                               const GUI::Font& nfont, int x, int y, int w, int h)
+  {
+    return new CartridgeCDFWidget(boss, lfont, nfont, x, y, w, h, *this);
+  }
+
+  CartDebugWidget* CartridgeCDF::infoWidget(GuiObject* boss, const GUI::Font& lfont,
+                                             const GUI::Font& nfont, int x, int y, int w, int h)
+  {
+    return new CartridgeCDFInfoWidget(boss, lfont, nfont, x, y, w, h, *this);
+  }
+#endif

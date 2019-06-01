@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2019 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -26,6 +26,9 @@
 class TabWidget : public Widget, public CommandSender
 {
   public:
+    static const int NO_WIDTH = 0;
+    static const int AUTO_WIDTH = -1;
+
     enum {
       kTabChangedCmd = 'TBCH'
     };
@@ -40,7 +43,7 @@ class TabWidget : public Widget, public CommandSender
 // First off, widget should allow non-dialog bosses, (i.e. also other widgets)
 // Could add a common base class for Widgets and Dialogs.
 // Then you add tabs using the following method, which returns a unique ID
-    int addTab(const string& title);
+    int addTab(const string& title, int tabWidth = NO_WIDTH);
 // Maybe we need to remove tabs again? Hm
     //void removeTab(int tabID);
 // Setting the active tab:
@@ -76,10 +79,11 @@ class TabWidget : public Widget, public CommandSender
       Widget* firstWidget;
       Widget* parentWidget;
       bool enabled;
+      int tabWidth;
 
-      Tab(const string& t = "", Widget* first = nullptr, Widget* parent = nullptr,
-          bool e = true)
-        : title(t), firstWidget(first), parentWidget(parent), enabled(e) { }
+      Tab(const string& t, int tw = NO_WIDTH,
+          Widget* first = nullptr, Widget* parent = nullptr, bool e = true)
+        : title(t), firstWidget(first), parentWidget(parent), enabled(e), tabWidth(tw) { }
     };
     using TabList = vector<Tab>;
 

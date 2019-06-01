@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2019 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -20,9 +20,8 @@
 
 class System;
 class Thumbulator;
-#ifdef DEBUGGER_SUPPORT
-  #include "CartCDFWidget.hxx"
-#endif
+class CartridgeCDFWidget;
+class CartridgeCDFInfoWidget;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
@@ -42,8 +41,17 @@ class Thumbulator;
 */
 class CartridgeCDF : public Cartridge
 {
-  friend class CartridgeCDFWidget;
+  friend CartridgeCDFWidget;
+  friend CartridgeCDFInfoWidget;
   friend class CartridgeRamCDFWidget;
+
+  public:
+
+    enum class CDFSubtype {
+      CDF0,
+      CDF1,
+      CDFJ
+    };
 
   public:
     /**
@@ -136,7 +144,7 @@ class CartridgeCDF : public Cartridge
 
       @return The name of the object
     */
-    string name() const override { return "CartridgeCDF"; }
+    string name() const override;
 
     /**
       Used for Thumbulator to pass values back to the cartridge
@@ -149,10 +157,9 @@ class CartridgeCDF : public Cartridge
       of the cart.
     */
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-                                 const GUI::Font& nfont, int x, int y, int w, int h) override
-    {
-      return new CartridgeCDFWidget(boss, lfont, nfont, x, y, w, h, *this);
-    }
+                                 const GUI::Font& nfont, int x, int y, int w, int h) override;
+    CartDebugWidget* infoWidget(GuiObject* boss, const GUI::Font& lfont,
+                                const GUI::Font& nfont, int x, int y, int w, int h) override;
 #endif
 
   public:
@@ -200,7 +207,7 @@ class CartridgeCDF : public Cartridge
     uInt32 getWaveform(uInt8 index) const;
     uInt32 getWaveformSize(uInt8 index) const;
     uInt32 getSample();
-    void setVersion();
+    void setupVersion();
 
   private:
     // The 32K ROM image of the cartridge
@@ -277,8 +284,26 @@ class CartridgeCDF : public Cartridge
 
     uInt8 myFastJumpActive;
 
-    // version of CDF
-    uInt16 myVersion;
+    // Pointer to the array of datastream pointers
+    uInt16 myDatastreamBase;
+
+    // Pointer to the array of datastream increments
+    uInt16 myDatastreamIncrementBase;
+
+    // Pointer to the beginning of the waveform data block
+    uInt16 myWaveformBase;
+
+    // Amplitude stream index
+    uInt8 myAmplitudeStream;
+
+    // Mask for determining the index of the datastream during fastjump
+    uInt8 myFastjumpStreamIndexMask;
+
+    // The currently selected fastjump stream
+    uInt8 myFastJumpStream;
+
+    // CDF subtype
+    CDFSubtype myCDFSubtype;
 
   private:
     // Following constructors and assignment operators not supported

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2019 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -65,10 +65,10 @@ CartridgeBUS::CartridgeBUS(const BytePtr& image, uInt32 size,
   myDisplayImage = myBUSRAM + DSRAM;
 
   // Create Thumbulator ARM emulator
-  const string& prefix = settings.getBool("dev.settings") ? "dev." : "plr.";
+  bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
-    reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myBUSRAM),
-    settings.getBool(prefix + "thumb.trapfatal"), Thumbulator::ConfigureFor::BUS, this
+    reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myBUSRAM), 32768,
+    devSettings ? settings.getBool("dev.thumb.trapfatal") : false, Thumbulator::ConfigureFor::BUS, this
   );
 
   setInitialState();

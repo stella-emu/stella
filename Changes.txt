@@ -12,6 +12,17 @@
                               Release History
 ===========================================================================
 
+6.0 to 6.0.1: (June xx, 2019)
+
+  * Added support for CDFJ bankswitching type (Galaga, Wizard of War, etc).
+
+  * Allow the DPC+ scheme to not enable playfield 'jitter' effect for
+    certain older DPC+ driver versions; this allows 'Epic Adventure' ROM
+    to finally work in Stella.
+
+-Have fun!
+
+
 5.1.3 to 6.0: (December 23, 2018)
 
   * Note: because of major TIA sound changes, the state file format has
@@ -145,8 +156,6 @@
     SSE2 anymore.
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 5.1.2 to 5.1.3: (June 10, 2018)

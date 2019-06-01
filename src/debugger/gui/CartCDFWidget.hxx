@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2019 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -18,12 +18,12 @@
 #ifndef CARTRIDGECDF_WIDGET_HXX
 #define CARTRIDGECDF_WIDGET_HXX
 
-class CartridgeCDF;
 class PopUpWidget;
 class CheckboxWidget;
 class DataGridWidget;
 class StaticTextWidget;
 
+#include "CartCDF.hxx"
 #include "CartDebugWidget.hxx"
 
 class CartridgeCDFWidget : public CartDebugWidget
@@ -56,8 +56,10 @@ class CartridgeCDFWidget : public CartDebugWidget
 
     DataGridWidget* myDatastreamPointers;
     DataGridWidget* myDatastreamIncrements;
-    DataGridWidget* myDatastreamPointers2;
-    DataGridWidget* myDatastreamIncrements2;
+    DataGridWidget* myCommandStreamPointer;
+    DataGridWidget* myCommandStreamIncrement;
+    DataGridWidget* myJumpStreamPointers;
+    DataGridWidget* myJumpStreamIncrements;
     DataGridWidget* myMusicCounters;
     DataGridWidget* myMusicFrequencies;
     DataGridWidget* myMusicWaveforms;
@@ -72,6 +74,10 @@ class CartridgeCDFWidget : public CartDebugWidget
     enum { kBankChanged = 'bkCH' };
 
   private:
+    bool isCDFJ() const;
+
+    static string describeCDFVersion(CartridgeCDF::CDFSubtype subtype);
+
     void saveOldState() override;
 
     void loadConfig() override;

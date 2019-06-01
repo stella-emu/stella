@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2019 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -63,20 +63,38 @@ int TabWidget::getChildY() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int TabWidget::addTab(const string& title)
+int TabWidget::addTab(const string& title, int tabWidth)
 {
   // Add a new tab page
-  _tabs.push_back(Tab(title));
+  int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
+
+  if(tabWidth == AUTO_WIDTH)
+    _tabs.push_back(Tab(title, newWidth));
+  else
+    _tabs.push_back(Tab(title, tabWidth));
   int numTabs = int(_tabs.size());
 
   // Determine the new tab width
-  int newWidth = _font.getStringWidth(title) + 2 * kTabPadding;
-  if (_tabWidth < newWidth)
-    _tabWidth = newWidth;
+  int fixedWidth = 0, fixedTabs = 0;
+  for(int i = 0; i < int(_tabs.size()); ++i)
+  {
+    if(_tabs[i].tabWidth != NO_WIDTH)
+    {
+      fixedWidth += _tabs[i].tabWidth;
+      fixedTabs++;
+    }
+  }
 
-  int maxWidth = (_w - kTabLeftOffset) / numTabs - kTabLeftOffset;
-  if (_tabWidth > maxWidth)
-    _tabWidth = maxWidth;
+  if(tabWidth == NO_WIDTH)
+    if(_tabWidth < newWidth)
+      _tabWidth = newWidth;
+
+  if(numTabs - fixedTabs)
+  {
+    int maxWidth = (_w - kTabLeftOffset - fixedWidth) / (numTabs - fixedTabs) - kTabLeftOffset;
+    if(_tabWidth > maxWidth)
+      _tabWidth = maxWidth;
+  }
 
   // Activate the new tab
   setActiveTab(numTabs - 1);
@@ -126,7 +144,7 @@ void TabWidget::updateActiveTab()
   setDirty();
 
   // Redraw focused areas
-  _boss->redrawFocus();
+  _boss->redrawFocus(); // TJ: Does nothing!
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,11 +196,16 @@ void TabWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   // Determine which tab was clicked
   int tabID = -1;
   x -= kTabLeftOffset;
-  if (x >= 0 && x % (_tabWidth + kTabSpacing) < _tabWidth)
+
+  for(int i = 0; i < int(_tabs.size()); ++i)
   {
-    tabID = x / (_tabWidth + kTabSpacing);
-    if (tabID >= int(_tabs.size()))
-      tabID = -1;
+    int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
+    if(x >= 0 && x < tabWidth)
+    {
+      tabID = i;
+      break;
+    }
+    x -= (tabWidth + kTabSpacing);
   }
 
   // If a tab was clicked, switch to that pane
@@ -264,24 +287,25 @@ void TabWidget::drawWidget(bool hilite)
   int i, x = _x + kTabLeftOffset;
   for (i = 0; i < int(_tabs.size()); ++i)
   {
+    int tabWidth = _tabs[i].tabWidth ? _tabs[i].tabWidth : _tabWidth;
     ColorId fontcolor = _tabs[i].enabled && onTop? kTextColor : kColor;
     int yOffset = (i == _activeTab) ? 0 : 1;
-    s.fillRect(x, _y + 1, _tabWidth, _tabHeight - 1,
+    s.fillRect(x, _y + 1, tabWidth, _tabHeight - 1,
               (i == _activeTab)
                ? onTop ? kDlgColor : kBGColorLo
                : onTop ? kBGColorHi : kDlgColor); // ? kWidColor : kDlgColor
     s.drawString(_font, _tabs[i].title, x + kTabPadding + yOffset,
                  _y + yOffset + (_tabHeight - _fontHeight - 1),
-                 _tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
+                 tabWidth - 2 * kTabPadding, fontcolor, TextAlign::Center);
     if(i == _activeTab)
     {
-      s.hLine(x, _y, x + _tabWidth - 1, onTop ? kWidColor : kDlgColor);
-      s.vLine(x + _tabWidth, _y + 1, _y + _tabHeight - 1, onTop ? kBGColorLo : kColor);
+      s.hLine(x, _y, x + tabWidth - 1, onTop ? kWidColor : kDlgColor);
+      s.vLine(x + tabWidth, _y + 1, _y + _tabHeight - 1, onTop ? kBGColorLo : kColor);
     }
     else
-      s.hLine(x, _y + _tabHeight, x + _tabWidth, onTop ? kWidColor : kDlgColor);
+      s.hLine(x, _y + _tabHeight, x + tabWidth, onTop ? kWidColor : kDlgColor);
 
-    x += _tabWidth + kTabSpacing;
+    x += tabWidth + kTabSpacing;
   }
 
   // fill empty right space

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2019 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -18,6 +18,7 @@
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
+#include "MD5.hxx"
 #include "System.hxx"
 #include "Thumbulator.hxx"
 #include "CartDPCPlus.hxx"
@@ -35,7 +36,8 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
     myAudioCycles(0),
     myARMCycles(0),
     myFractionalClocks(0.0),
-    myBankOffset(0)
+    myBankOffset(0),
+    myFractionalLowMask(0x0F00FF)
 {
   // Image is always 32K, but in the case of ROM > 29K, the image is
   // copied to the end of the buffer
@@ -54,13 +56,19 @@ CartridgeDPCPlus::CartridgeDPCPlus(const BytePtr& image, uInt32 size,
   myFrequencyImage = myDisplayImage + 0x1000;
 
   // Create Thumbulator ARM emulator
-  const string& prefix = settings.getBool("dev.settings") ? "dev." : "plr.";
+  bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>
       (reinterpret_cast<uInt16*>(myImage),
        reinterpret_cast<uInt16*>(myDPCRAM),
-       settings.getBool(prefix + "thumb.trapfatal"),
+       32768,
+       devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
        Thumbulator::ConfigureFor::DPCplus,
        this);
+
+  // Currently only one known DPC+ ARM driver exhibits a problem
+  // with the default mask to use for DFxFRACLOW
+  if(MD5::hash(image, 3*1024) == "8dd73b44fd11c488326ce507cbeb19d1")
+    myFractionalLowMask = 0x0F0000;
 
   setInitialState();
 }
@@ -395,9 +403,10 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 
     switch(function)
     {
-      //DFxFRACLOW - fractional data pointer low byte
+      // DFxFRACLOW - fractional data pointer low byte
       case 0x00:
-        myFractionalCounters[index] = (myFractionalCounters[index] & 0x0F00FF) | (uInt16(value) << 8);
+        myFractionalCounters[index] =
+          (myFractionalCounters[index] & myFractionalLowMask) | (uInt16(value) << 8);
         break;
 
       // DFxFRACHI - fractional data pointer high byte
