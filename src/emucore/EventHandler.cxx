@@ -865,7 +865,8 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeat)
   }
 
   // Otherwise, pass it to the emulation core
-  myEvent.set(event, pressed);
+  if (!repeat)
+    myEvent.set(event, pressed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
