@@ -29,7 +29,6 @@
 "Cart.ModelNo" "006-01"
 "Cart.Name" "Congo Bongo (1983) (Sega)"
 "Display.YStart" "26"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "00ce0bdd43aed84a983bef38fe7f5ee3"
@@ -67,7 +66,6 @@
 "Cart.ModelNo" "SS-001"
 "Cart.Name" "Time Race (1983) (Rainbow Vision) (PAL)"
 "Cart.Note" "AKA Space Jockey"
-"Display.Height" "240"
 ""
 
 "Cart.MD5" "00f7985c20b8bdf3c557fac4d3f26775"
@@ -481,10 +479,6 @@
 "Cart.Rarity" "Homebrew"
 ""
 
-"Cart.MD5" "06953ed762220dba63d63930d4ad0cc3"
-"Cart.Name" "Star Fire - Eckhard WIP (MP)"
-""
-
 "Cart.MD5" "069c17beb1e8e0557adb8539fdcf6cba"
 "Cart.Name" "Phantom II & Pirate (PAL60)"
 "Cart.Rarity" "Homebrew"
@@ -661,10 +655,6 @@
 "Cart.Rarity" "Prototype"
 ""
 
-"Cart.MD5" "0890a5b089191f45d0f08dd1e3235687"
-"Cart.Name" "Star Fire - 4K Version (25-10-2002) (MP)"
-""
-
 "Cart.MD5" "0891252ee4e307689febccf3cfd8a8ab"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Half-Speed) (TJ)"
@@ -759,7 +749,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 "Display.YStart" "6"
-"Display.Height" "240"
 ""
 
 "Cart.MD5" "09388bf390cd9a86dc0849697b96c7dc"
@@ -811,10 +800,6 @@
 "Cart.Name" "Super Football (1988) (Atari)"
 ""
 
-"Cart.MD5" "09d19274c20768f842e8fae84b766abe"
-"Cart.Name" "Star Fire - Animated Patricles (06-10-2002) (MP)"
-""
-
 "Cart.MD5" "09e1ecf9bd2a3030d5670dba7a65e78d"
 "Cart.Manufacturer" "Atari, James Andreasen"
 "Cart.ModelNo" "CX2654"
@@ -848,7 +833,6 @@
 "Cart.Name" "Towering Inferno (1982) (U.S. Games)"
 "Cart.Note" "Uses the Joystick Controllers (swapped)"
 "Console.SwapPorts" "YES"
-"Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
 
@@ -1023,7 +1007,6 @@
 "Cart.Name" "Air-Sea Battle (1977) (Atari) (PAL)"
 "Cart.Note" "AKA Anti-Aircraft"
 "Cart.Rarity" "Uncommon"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "0c7bd935d9a7f2522155e48315f44fa0"
@@ -1191,7 +1174,6 @@
 "Cart.Manufacturer" "Home Vision - Gem International Corp. - VDI"
 "Cart.ModelNo" "VCS83105"
 "Cart.Name" "Panda Chase (1983) (Home Vision) (PAL)"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "0e7e73421606873b544e858c59dc283e"
@@ -1235,7 +1217,13 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Larry Caplan, Steve Mayer, Larry Wagner"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Combat (32 in 1) (1988) (Atari) (PAL)"
-"Display.Height" "256"
+""
+
+"Cart.MD5" "0efc91e45f61023cda9d086a7d3c402f"
+"Cart.Manufacturer" "B.J. Best (aka bjbest60)"
+"Cart.Name" "Space Cactus Canyon (2017)"
+"Cart.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "0effef4a341f8eebab65621c60c48787"
@@ -1270,6 +1258,14 @@
 "Cart.ModelNo" "CX26111"
 "Cart.Name" "Snoopy and the Red Baron (05-27-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "0f604cd4c9d2795cf5746e8af7948064"
+"Cart.Manufacturer" "Champ Games"
+"Cart.ModelNo" "CG-02-N"
+"Cart.Name" "Conquest Of Mars (2010) (NTSC)"
+"Cart.Note" "Rev 2 release"
+"Cart.Rarity" "Homebrew"
 ""
 
 "Cart.MD5" "0f643c34e40e3f1daafd9c524d3ffe64"
@@ -1323,7 +1319,6 @@
 "Cart.ModelNo" "SS-027"
 "Cart.Name" "Zoo Fun (1983) (Suntek) (PAL)"
 "Cart.Note" "AKA Panda Chase"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "0fd72a13b3b6103fc825a692c71963b4"
@@ -1343,10 +1338,6 @@
 "Cart.ModelNo" "CX2642 - 6-99814"
 "Cart.Name" "Hunt & Score - Memory Match (1978) (Atari)"
 "Cart.Note" "Uses Keypad Controllers"
-""
-
-"Cart.MD5" "103d4c890c2108cb536372c98d093e5f"
-"Cart.Name" "Star Fire - Star Background (MP)"
 ""
 
 "Cart.MD5" "103e9d616328969f5d7b4e0a381b25d5"
@@ -1468,10 +1459,6 @@
 "Cart.Rarity" "Prototype"
 ""
 
-"Cart.MD5" "11cf751bc8173db105eabd119c5844ba"
-"Cart.Name" "Star Fire - Crosshair (12-02-2002) (MP)"
-""
-
 "Cart.MD5" "11e7e0d9437ec98fa085284cf16d0eb4"
 "Cart.Name" "Bowling (208 in 1) (Unknown) (PAL)"
 ""
@@ -1581,7 +1568,6 @@
 "Cart.Name" "E.T. Book Cart (PAL)"
 "Cart.Note" "Charles F. Gray & Michael Rideout"
 "Display.YStart" "24"
-"Display.Height" "280"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "55"
 ""
@@ -1847,7 +1833,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 "Console.RightDiff" "A"
-"Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
 
@@ -1897,10 +1882,6 @@
 "Cart.Rarity" "New Release"
 ""
 
-"Cart.MD5" "16fbb36a6124567405a235821e8f69ee"
-"Cart.Name" "Star Fire (28-11-2002) (MP)"
-""
-
 "Cart.MD5" "170e7589a48739cfb9cc782cbb0fe25a"
 "Cart.Manufacturer" "M Network - INTV - APh Technological Consulting, Hal Finney"
 "Cart.ModelNo" "MT5666"
@@ -1930,7 +1911,6 @@
 "Cart.Name" "Boring Journey Escape (Hack)"
 "Cart.Note" "Hack of Journey - Escape"
 "Cart.Rarity" "Hack"
-"Display.Height" "230"
 ""
 
 "Cart.MD5" "1738b2e3f25ab3eef3cecb95e1d0d957"
@@ -2016,7 +1996,6 @@
 "Cart.Name" "Acid Drop (1992) (Salu) (PAL)"
 "Cart.Rarity" "Extremely Rare"
 "Display.YStart" "50"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "1802cc46b879b229272501998c5de04f"
@@ -2042,10 +2021,6 @@
 "Cart.Name" "128-in-1 Junior Console (Chip 1 of 4) (1991) (Atari) (PAL)"
 "Cart.Note" "Actually contains only 16 games, not 32"
 "Cart.Type" "16IN1"
-""
-
-"Cart.MD5" "18760f1f9ca5e18610115cf7b815b824"
-"Cart.Name" "Star Fire (23-10-2002) (MP)"
 ""
 
 "Cart.MD5" "18a970bea7ac4d29707c8d5cd559d03a"
@@ -2416,10 +2391,6 @@
 "Display.Phosphor" "YES"
 ""
 
-"Cart.MD5" "1e1817d9cbcc3ba75043b7db4e6c228f"
-"Cart.Name" "Star Fire (07-10-2002) (MP)"
-""
-
 "Cart.MD5" "1e272d09c0e55f5ef14fcb76a735f6d7"
 "Cart.Manufacturer" "Atari, David Crane"
 "Cart.ModelNo" "CX26163P"
@@ -2642,7 +2613,6 @@
 "Cart.Manufacturer" "CBS Electronics - Woodside Design Associates, Harley H. Puthuff Jr."
 "Cart.ModelNo" "4L1802"
 "Cart.Name" "Donkey Kong Junior (1983) (CBS Electronics) (PAL)"
-"Display.Height" "251"
 ""
 
 "Cart.MD5" "20ae62fb69c6cc6e8098cca8cd080487"
@@ -2696,7 +2666,6 @@
 "Cart.Manufacturer" "K-Tel Vision"
 "Cart.Name" "Spider Maze (1982) (K-Tel Vision)"
 "Cart.Note" "AKA Spider Kong"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "212d0b200ed8b45d8795ad899734d7d7"
@@ -2708,7 +2677,6 @@
 "Cart.Manufacturer" "Sancho - Tang's Electronic Co."
 "Cart.ModelNo" "TEC006"
 "Cart.Name" "Forest (1983) (Sancho) (PAL)"
-"Display.Height" "256"
 "Display.Phosphor" "YES"
 ""
 
@@ -2877,7 +2845,6 @@
 "Console.LeftDiff" "A"
 "Console.RightDiff" "A"
 "Console.SwapPorts" "YES"
-"Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
 
@@ -2938,7 +2905,6 @@
 "Cart.Name" "Parachute (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.Height" "240"
 ""
 
 "Cart.MD5" "24759be31e8fe55d2829fd86bdf3181f"
@@ -2994,7 +2960,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 "Display.YStart" "15"
-"Display.Height" "240"
 "Display.Phosphor" "YES"
 ""
 
@@ -3178,7 +3143,6 @@
 "Controller.Left" "PADDLES_IAXIS"
 "Controller.MouseAxis" "AUTO 65"
 "Display.YStart" "22"
-"Display.Height" "222"
 "Display.Phosphor" "YES"
 ""
 
@@ -3336,7 +3300,6 @@
 "Cart.Name" "Open, Sesame! (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Sesam, Offne Dich"
 "Display.YStart" "38"
-"Display.Height" "256"
 "Display.Phosphor" "YES"
 ""
 
@@ -3433,7 +3396,6 @@
 "Cart.Name" "E.T. Book Cart (NTSC)"
 "Cart.Note" "Charles F. Gray & Michael Rideout"
 "Display.YStart" "15"
-"Display.Height" "240"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "55"
 ""
@@ -3522,7 +3484,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 "Display.YStart" "40"
-"Display.Height" "240"
 "Display.Phosphor" "YES"
 ""
 
@@ -3725,7 +3686,6 @@
 
 "Cart.MD5" "2d1cf85fbc732856bf76470cd4060f4a"
 "Cart.Name" "Daredevil (V1) (Stunt_Cycle_Rules!) (PD)"
-"Display.Height" "216"
 ""
 
 "Cart.MD5" "2d2c5f0761e609e3c5228766f446f7f8"
@@ -3826,7 +3786,6 @@
 "Cart.Note" "Charles F. Gray & Michael Rideout"
 "Display.Format" "PAL60"
 "Display.YStart" "15"
-"Display.Height" "240"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "55"
 ""
@@ -3839,10 +3798,6 @@
 "Cart.MD5" "2e0aed5bb619edcefa3fafb4fbe7c551"
 "Cart.Name" "Qb (2.06) (Retroactive) (NTSC)"
 "Display.Phosphor" "YES"
-""
-
-"Cart.MD5" "2e2885e68fa1045871ce1382b68f6efc"
-"Cart.Name" "Star Fire - Return of the Crosshair (MP)"
 ""
 
 "Cart.MD5" "2e2acef8513edcca991e7e5149412e11"
@@ -4775,7 +4730,6 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Lilly Adventure (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
-"Display.Height" "230"
 ""
 
 "Cart.MD5" "396f7bc90ab4fa4975f8c74abe4e81f0"
@@ -4910,7 +4864,6 @@
 "Cart.ModelNo" "7-008"
 "Cart.Name" "Miner 2049er (1983) (Tigervision) [fixed]"
 "Display.YStart" "28"
-"Display.Height" "214"
 ""
 
 "Cart.MD5" "3b097a7ed5bd2a84dc3d3ed361e9c31c"
@@ -5086,7 +5039,6 @@
 "Cart.Note" "AKA Bobby Vai Para Casa"
 "Cart.Rarity" "Rare"
 "Display.YStart" "36"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "3cdd91e1c28d28e856c0063d602da166"
@@ -5125,7 +5077,6 @@
 "Cart.ModelNo" "C-833"
 "Cart.Name" "Target Practice (1983) (CCE)"
 "Cart.Note" "AKA Carnival"
-"Display.Height" "214"
 ""
 
 "Cart.MD5" "3d7749fb9c2f91a276dfe494495234c5"
@@ -5141,7 +5092,6 @@
 "Cart.Rarity" "Prototype"
 "Controller.Right" "MINDLINK"
 "Controller.MouseAxis" "78"
-"Display.Height" "215"
 ""
 
 "Cart.MD5" "3d8a2d6493123a53ade45e3e2c5cafa0"
@@ -5434,7 +5384,6 @@
 
 "Cart.MD5" "4093382187f8387e6d011883e8ea519b"
 "Cart.Name" "Go Go Home (Unknown)"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "40aa851e8d0f1c555176a5e209a5fabb"
@@ -5451,10 +5400,6 @@
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Skiing (32 in 1) (1988) (Atari) (PAL) (4K)"
-""
-
-"Cart.MD5" "40d7ccd460c9b1198238af6ceea1737d"
-"Cart.Name" "Star Fire - Enemy Mine (2002) (MP)"
 ""
 
 "Cart.MD5" "40d8ed6a5106245aa79f05642a961485"
@@ -5629,7 +5574,6 @@
 "Cart.MD5" "4311a4115fb7bc68477c96cf44cebacf"
 "Cart.Name" "Challenge (Unknown)"
 "Display.YStart" "14"
-"Display.Height" "240"
 ""
 
 "Cart.MD5" "4326edb70ff20d0ee5ba58fa5cb09d60"
@@ -5660,10 +5604,6 @@
 "Cart.Name" "M.A.S.H (1983) (20th Century Fox) (PAL)"
 ""
 
-"Cart.MD5" "43e6c5159c3a093fca88656628c6ef34"
-"Cart.Name" "Star Fire (17-02-2003) (MP)"
-""
-
 "Cart.MD5" "43f33c6dfdeaf5138ce6e6968ad7c5ce"
 "Cart.Manufacturer" "Jeffry Johnston"
 "Cart.Name" "Radial Pong - Version 11 (Jeffry Johnston) (PD)"
@@ -5689,10 +5629,6 @@
 "Cart.Name" "Kangaroo (Genesis)"
 "Cart.Note" "Genesis controller (B is punch, C is jump)"
 "Cart.Rarity" "Hack of Kangaroo"
-""
-
-"Cart.MD5" "44560e324ffb30741a483218ba5b4342"
-"Cart.Name" "Star Fire - Faster Skipping 2 (24-10-2002) (MP)"
 ""
 
 "Cart.MD5" "4474b3ad3bf6aabe719a2d7f1d1fb4cc"
@@ -5942,7 +5878,6 @@
 "Cart.Manufacturer" "Konami"
 "Cart.ModelNo" "RC 100-X 02"
 "Cart.Name" "Pooyan (1983) (Konami)"
-"Display.Height" "215"
 ""
 
 "Cart.MD5" "47aad247cce2534fd70c412cb483c7e0"
@@ -5970,10 +5905,6 @@
 "Cart.Note" "Hack of Asteroids"
 "Cart.Rarity" "Hack"
 "Display.Phosphor" "YES"
-""
-
-"Cart.MD5" "47bb1c677fe7ba5f376372ae7358e790"
-"Cart.Name" "Star Fire (10-10-2002) (MP)"
 ""
 
 "Cart.MD5" "47cd61f83457a0890de381e478f5cf5f"
@@ -6047,7 +5978,6 @@
 "Console.SwapPorts" "YES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
-"Display.Height" "215"
 ""
 
 "Cart.MD5" "48bcf2c5a8c80f18b24c55db96845472"
@@ -6146,7 +6076,6 @@
 "Cart.ModelNo" "VCS83136"
 "Cart.Name" "Cosmic War (1983) (Home Vision) (PAL)"
 "Cart.Note" "AKA Space Tunnel"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "4999b45be0ab5a85bac1b7c0e551542b"
@@ -6303,7 +6232,6 @@
 "Cart.MD5" "4b9581c3100a1ef05eac1535d25385aa"
 "Cart.Name" "IQ 180 (Unknown)"
 "Display.YStart" "20"
-"Display.Height" "235"
 ""
 
 "Cart.MD5" "4baada22435320d185c95b7dd2bcdb24"
@@ -6422,7 +6350,6 @@
 "Cart.Manufacturer" "Tigervision - Software Electronics Corporation - Teldec"
 "Cart.ModelNo" "7-006"
 "Cart.Name" "Springer (1983) (Tigervision)"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "4d0a28443f7df5f883cf669894164cfa"
@@ -6766,7 +6693,6 @@
 "Cart.ModelNo" "PB5550"
 "Cart.Name" "Q-bert's Qubes (1984) (Parker Bros)"
 "Display.YStart" "30"
-"Display.Height" "214"
 ""
 
 "Cart.MD5" "517923e655755086a3b72c0b17b430e6"
@@ -6836,7 +6762,6 @@
 "Cart.ModelNo" "C-804"
 "Cart.Name" "Open, Sesame! (1983) (CCE)"
 "Cart.Note" "AKA Abre-te, Sesamo!"
-"Display.Height" "214"
 "Display.Phosphor" "YES"
 ""
 
@@ -6962,10 +6887,6 @@
 "Cart.Name" "Combat Rock (PD) (Hack)"
 "Cart.Note" "Hack of Combat"
 "Cart.Rarity" "Hack"
-""
-
-"Cart.MD5" "539b7038acec0ccedeae40f238998579"
-"Cart.Name" "Star Fire (25-10-2002) (MP)"
 ""
 
 "Cart.MD5" "539d26b6e9df0da8e7465f0f5ad863b7"
@@ -7097,10 +7018,6 @@
 "Cart.Rarity" "Hack"
 ""
 
-"Cart.MD5" "551ef75593ec18d078e8f5cc0229e1c4"
-"Cart.Name" "Star Fire - New Paulstar WIP (MP)"
-""
-
 "Cart.MD5" "5524718a19107a04ec3265c93136a7b5"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "RealSports Basketball (Thomas Jentzsch)"
@@ -7149,14 +7066,6 @@
 "Cart.Manufacturer" "Atari - Roklan, Joe Gaucher, Alex Leavens"
 "Cart.ModelNo" "CX2683"
 "Cart.Name" "Crazy Climber (1983) (Atari)"
-""
-
-"Cart.MD5" "562acb1b7ff182aba133bda8e21ad7c1"
-"Cart.Name" "Space Treat Deluxe (08-03-2003) (Fabrizio Zavagli)"
-""
-
-"Cart.MD5" "562bf02f5031d51c6b53b03972a56b22"
-"Cart.Name" "Star Fire - Framework Done (30-10-2002) (MP)"
 ""
 
 "Cart.MD5" "56300ed31fef018bd96768ccc982f7b4"
@@ -7348,7 +7257,6 @@
 "Cart.Name" "Miner 2049er (1982) (Tigervision) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.YStart" "28"
-"Display.Height" "214"
 ""
 
 "Cart.MD5" "599cbf919d47a05af975ad447df29497"
@@ -7513,7 +7421,6 @@
 "Controller.Left" "PADDLES_IAXIS"
 "Controller.MouseAxis" "AUTO 65"
 "Display.YStart" "22"
-"Display.Height" "222"
 "Display.Phosphor" "YES"
 ""
 
@@ -7745,7 +7652,6 @@
 "Cart.ModelNo" "83-212"
 "Cart.Name" "Time Race (1983) (Goliath) (PAL)"
 "Cart.Note" "AKA Space Jockey"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "5dccf215fdb9bbf5d4a6d0139e5e8bcb"
@@ -7809,8 +7715,12 @@
 "Cart.Note" "2600 Screen Search Console"
 ""
 
-"Cart.MD5" "5e2928f089490017e88e9f9e5a881a25"
-"Cart.Name" "Star Fire - Faster Skipping 1 (24-10-2002) (MP)"
+"Cart.MD5" "5e43c0391f7412ae64fae6f3742d6ee9"
+"Cart.Manufacturer" "Thomas Jentzsch"
+"Cart.Name" "Thrust+ (v1.27)"
+"Cart.Rarity" "New Release, supports BoosterGrip"
+"Controller.Left" "BOOSTERGRIP"
+"Controller.Right" "DRIVING"
 ""
 
 "Cart.MD5" "5e99aa93d0acc741dcda8752c4e813ce"
@@ -7879,10 +7789,6 @@
 "Cart.ModelNo" "CX2655 - 49-75167"
 "Cart.Name" "Yars' Revenge (1982) (Atari) [a]"
 "Display.Phosphor" "YES"
-""
-
-"Cart.MD5" "5f69453a69f21dc49697a80d2e933491"
-"Cart.Name" "Star Fire - Reduced Flickering (06-10-2002) (MP)"
 ""
 
 "Cart.MD5" "5f708ca39627697e859d1c53f8d8d7d2"
@@ -7985,7 +7891,6 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Air-Sea Battle (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Display.YStart" "40"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "605fd59bfef88901c8c4794193a4cbad"
@@ -8160,7 +8065,6 @@
 "Cart.Name" "Pharaoh's Curse (Unknown)"
 "Display.Format" "PAL60"
 "Display.YStart" "20"
-"Display.Height" "225"
 "Display.Phosphor" "YES"
 ""
 
@@ -8339,7 +8243,6 @@
 "Cart.Name" "Lilly Adventure (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.Height" "230"
 ""
 
 "Cart.MD5" "64fab9d15df937915b1c392fc119b83b"
@@ -8693,7 +8596,6 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "PG201"
 "Cart.Name" "Sea Monster (1982) (BitCorp) (PAL)"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "68597264c8e57ada93be3a5be4565096"
@@ -8729,7 +8631,6 @@
 "Cart.ModelNo" "C-809"
 "Cart.Name" "Squirrel (1983) (CCE)"
 "Cart.Note" "AKA Snail Against Squirrel"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "68c80e7e1d30df98a0cf67ecbf39cc67"
@@ -8904,7 +8805,6 @@
 
 "Cart.MD5" "6a9b30ca46b0dba9e719f4cbd340e01c"
 "Cart.Name" "Frostbite (Unknown) (PAL) (Hack)"
-"Display.Height" "240"
 ""
 
 "Cart.MD5" "6a9e0c72fab92df70084eccd9061fdbd"
@@ -9197,10 +9097,6 @@
 "Cart.Name" "Pac-Man (1982) (Atari)"
 ""
 
-"Cart.MD5" "6e4521989a60a0ddf4ff1fc6e6e5fc3d"
-"Cart.Name" "Star Fire (01-05-2002) (MP)"
-""
-
 "Cart.MD5" "6e59dd52f88c00d5060eac56c1a0b0d3"
 "Cart.Manufacturer" "Atari, Bob Smith"
 "Cart.ModelNo" "CX2648"
@@ -9259,10 +9155,6 @@
 "Cart.Manufacturer" "Eckhard Stolberg"
 "Cart.Name" "An Exercise In Minimalism (V2) (1999) (Eckhard Stolberg)"
 "Cart.Rarity" "Homebrew"
-""
-
-"Cart.MD5" "6f75d72e4cf996100ccdd163d57bdac2"
-"Cart.Name" "Star Fire (200203) (MP)"
 ""
 
 "Cart.MD5" "6fa0ac6943e33637d8e77df14962fbfc"
@@ -9520,7 +9412,6 @@
 "Cart.Name" "Die Ente und der Wolf (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Pooyan"
 "Display.YStart" "26"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "72a46e0c21f825518b7261c267ab886e"
@@ -9528,7 +9419,6 @@
 "Cart.ModelNo" "99005, 6220, 6250"
 "Cart.Name" "Robin Hood (1983) (Xonox)"
 "Display.YStart" "31"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "72a5b5052272ac785fa076709d16cef4"
@@ -9621,7 +9511,6 @@
 
 "Cart.MD5" "73cb1f1666f3fd30b52b4f3d760c928f"
 "Cart.Name" "Mines of Minos (Unknown) (PAL)"
-"Display.Height" "225"
 "Display.Phosphor" "YES"
 ""
 
@@ -9692,10 +9581,6 @@
 "Cart.ModelNo" "SA-205"
 "Cart.Name" "China Syndrome (1982) (Spectravision)"
 "Display.Phosphor" "YES"
-""
-
-"Cart.MD5" "74ca9bdc91ee387a5bd929b73aec5c2c"
-"Cart.Name" "Star Fire - New Shields (03-04-2003) (MP)"
 ""
 
 "Cart.MD5" "74d072e8a34560c36cacbc57b2462360"
@@ -9789,6 +9674,15 @@
 "Cart.Manufacturer" "Activision, David Crane - Ariola"
 "Cart.ModelNo" "EAX-014, PAX-014, EAX-014-04B, EAX-014-04I - 711 014-720"
 "Cart.Name" "Grand Prix (1982) (Activision) (PAL)"
+""
+
+"Cart.MD5" "75893a9dc5de4b91cc426959b82a1da0"
+"Cart.Manufacturer" "Champ Games"
+"Cart.ModelNo" "CG-02-P"
+"Cart.Name" "Conquest Of Mars (2010) (PAL60)"
+"Cart.Note" "Rev 2 release"
+"Cart.Rarity" "Homebrew"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "75a303fd46ad12457ed8e853016815a0"
@@ -9930,6 +9824,13 @@
 "Cart.Manufacturer" "HES"
 "Cart.ModelNo" "771-333"
 "Cart.Name" "2 Pak Special - Challenge, Surfing (1990) (HES) (PAL)"
+""
+
+"Cart.MD5" "7761418d46af069b8cd80c29fe6cd814"
+"Cart.Manufacturer" "Dion Olsthoorn"
+"Cart.ModelNo" "RetroN 77 edition"
+"Cart.Name" "Amoeba Jump (R77) (DionoiD)"
+"Cart.Rarity" "Homebrew"
 ""
 
 "Cart.MD5" "7778ac65d775a079f537e97cbdad541c"
@@ -10245,7 +10146,6 @@
 "Cart.Manufacturer" "Syncro, Daniel Wolf"
 "Cart.Name" "Kamikaze Saucers (1983) (Syncro) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.Height" "222"
 ""
 
 "Cart.MD5" "7b4be337ac4d73eda75c848355f6f480"
@@ -10358,7 +10258,6 @@
 
 "Cart.MD5" "7ccf350354ee15cd9b85564a2014b08c"
 "Cart.Name" "Big Dig (13-04-2003) (CT)"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "7cd379da92c93679f3b6d2548617746a"
@@ -10370,7 +10269,6 @@
 "Cart.Name" "Bi! Bi! (Jone Yuan) (PAL)"
 "Cart.Note" "AKA Skindiver"
 "Display.YStart" "36"
-"Display.Height" "250"
 ""
 
 "Cart.MD5" "7ced6709f091e79a2ab9575d3516a4ac"
@@ -10485,7 +10383,6 @@
 "Cart.ModelNo" "C-833"
 "Cart.Name" "Target Practice (1983) (CCE) [a]"
 "Cart.Note" "AKA Carnival"
-"Display.Height" "214"
 ""
 
 "Cart.MD5" "7dfd100bda9abb0f3744361bc7112681"
@@ -10647,10 +10544,6 @@
 "Cart.Name" "Cakewalk (1983) (CommaVid)"
 ""
 
-"Cart.MD5" "7f73ac39e5e3e13e40fd8ad885561a0f"
-"Cart.Name" "Star Fire - Warping Star (13-04-2003) (MP)"
-""
-
 "Cart.MD5" "7f790939f7eaa8c47a246c4283981f84"
 "Cart.Name" "This Planet Sucks Demo 3 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
@@ -10671,7 +10564,6 @@
 "Cart.Manufacturer" "PlayAround - J.H.M."
 "Cart.ModelNo" "203"
 "Cart.Name" "Knight on the Town (1982) (PlayAround)"
-"Display.Height" "216"
 "Display.Phosphor" "YES"
 ""
 
@@ -10681,7 +10573,6 @@
 "Cart.Name" "Space Tunnel (1983) (CCE)"
 "Cart.Note" "AKA O Tunel Espacial"
 "Display.YStart" "32"
-"Display.Height" "215"
 ""
 
 "Cart.MD5" "7ff53f6922708119e7bf478d7d618c86"
@@ -10845,7 +10736,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 "Console.RightDiff" "A"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "814210c0e121f7dbc25661b93c06311c"
@@ -10927,7 +10817,6 @@
 "Cart.ModelNo" "SS-035"
 "Cart.Name" "Panda (1983) (Quest) (Suntek) (PAL)"
 "Cart.Note" "AKA Panda Chase"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "82c25d1c35e6ac6f893d1d7c2fc2f9c8"
@@ -11188,7 +11077,6 @@
 "Cart.ModelNo" "4362"
 "Cart.Name" "Survival Run (1983) (Milton Bradley)"
 "Cart.Note" "AKA Cosmic Commander"
-"Display.Height" "225"
 "Display.Phosphor" "YES"
 ""
 
@@ -11227,10 +11115,6 @@
 
 "Cart.MD5" "86b4aa76bbeb70e1a4f9211a9880ba8e"
 "Cart.Name" "Incoming (1 Player Version) (05-11-2002) (Ben Larson)"
-""
-
-"Cart.MD5" "86f5e55ca9a9bde7338a157570828e79"
-"Cart.Name" "Star Fire - Creating a Universe (09-09-2002) (MP) [a1]"
 ""
 
 "Cart.MD5" "8712cceec5644aacc2c21203d9ebe2ec"
@@ -11422,7 +11306,6 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "PG202"
 "Cart.Name" "Space Tunnel (1982) (BitCorp) (PAL) [a]"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "8933976f2029c0d8492ebd8f4eb21492"
@@ -11539,7 +11422,6 @@
 "Cart.Manufacturer" "Atari, Larry Kaplan"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Air-Sea Battle (32 in 1) (1988) (Atari) (PAL)"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "8ac18076d01a6b63acf6e2cab4968940"
@@ -11638,7 +11520,6 @@
 "Cart.Name" "Laser Base (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.Height" "240"
 ""
 
 "Cart.MD5" "8c136e97c0a4af66da4a249561ed17db"
@@ -12106,10 +11987,6 @@
 "Cart.Name" "Raft Rider (1983) (U.S. Games)"
 ""
 
-"Cart.MD5" "92c5abb7a8bb1c3fc66c92ba353a3d21"
-"Cart.Name" "Star Fire - Sorting Fixed (MP)"
-""
-
 "Cart.MD5" "92d1f6ac179ebe5963868d6bc1bdda8d"
 "Cart.Manufacturer" "HES"
 "Cart.ModelNo" "498"
@@ -12119,10 +11996,6 @@
 "Cart.MD5" "92e72f7cc569584c44c9530d645ae04e"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Spider Fighter (Canal 3)"
-""
-
-"Cart.MD5" "92ede72ed8f61d255bc58d2f166dc6b6"
-"Cart.Name" "Star Fire - Shootable (26-09-2002) (MP)"
 ""
 
 "Cart.MD5" "931b91a8ea2d39fe4dca1a23832b591a"
@@ -12253,6 +12126,14 @@
 "Cart.Rarity" "Hack"
 ""
 
+"Cart.MD5" "943798452ceba9357e2c56303cadb4f7"
+"Cart.Manufacturer" "Thomas Jentzsch"
+"Cart.Name" "Thrust+ (v1.28)"
+"Cart.Rarity" "New Release, supports BoosterGrip and Genesis (switched by Color/B+W)"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "DRIVING"
+""
+
 "Cart.MD5" "9446940866c9417f210f8552cf6c3078"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL60) (TJ)"
@@ -12357,7 +12238,6 @@
 "Cart.Manufacturer" "PlayAround - J.H.M."
 "Cart.ModelNo" "204"
 "Cart.Name" "Lady in Wading (1982) (PlayAround)"
-"Display.Height" "216"
 "Display.Phosphor" "YES"
 ""
 
@@ -12390,6 +12270,12 @@
 "Cart.ModelNo" "13205"
 "Cart.Name" "Fathom (1983) (Imagic) (PAL) [a]"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "96662271ae50b6859017bffbdda75525"
+"Cart.Manufacturer" "Andrew Davie & Thomas Jentzsch"
+"Cart.Name" "Boulder Dash - Demo (2011)"
+"Cart.Rarity" "New Release"
 ""
 
 "Cart.MD5" "96670d0bf3610da2afcabd8e21d8eabf"
@@ -12748,7 +12634,6 @@
 "Cart.ModelNo" "C-838"
 "Cart.Name" "Immies & Aggies (1983) (CCE)"
 "Display.YStart" "18"
-"Display.Height" "223"
 ""
 
 "Cart.MD5" "9b246683f44c963a50e41d6b485bee77"
@@ -12794,7 +12679,6 @@
 "Cart.ModelNo" "VC1002"
 "Cart.Name" "Sneak 'n Peek (1982) (U.S. Games)"
 "Cart.Note" "AKA Hide 'n Seek"
-"Display.Height" "215"
 ""
 
 "Cart.MD5" "9c6fd6ed3599978ab7b6f900484b9be6"
@@ -12901,6 +12785,12 @@
 "Cart.Rarity" "Rare"
 ""
 
+"Cart.MD5" "9e135f5dce61e3435314f5cddb33752f"
+"Cart.Manufacturer" "Fabrizio Zavagli"
+"Cart.Name" "Space Treat Deluxe (2003)"
+"Cart.Rarity" "Homebrew"
+""
+
 "Cart.MD5" "9e192601829f5f5c2d3b51f8ae25dbe5"
 "Cart.Manufacturer" "PlayAround - J.H.M."
 "Cart.ModelNo" "201"
@@ -12925,12 +12815,7 @@
 "Cart.Manufacturer" "Sega"
 "Cart.Name" "Tac Scan (1983) (Sega) [h1]"
 "Controller.MouseAxis" "AUTO 60"
-"Display.Height" "215"
 "Display.Phosphor" "YES"
-""
-
-"Cart.MD5" "9e6fa031ece07919c816fba5dc8de43e"
-"Cart.Name" "Star Fire - Meteor Dance (13-11-2002) (MP)"
 ""
 
 "Cart.MD5" "9e792a59f8795664cbaaff1ba152d731"
@@ -13235,10 +13120,6 @@
 "Cart.Note" "Uses Atari Mouse Controller"
 ""
 
-"Cart.MD5" "a23ffc86804240ce77134a1c91926685"
-"Cart.Name" "Star Fire - Paulstar WIP (MP)"
-""
-
 "Cart.MD5" "a2424c1a0c783d7585d701b1c71b5fdc"
 "Cart.Name" "Video Pinball (Unknown) (PAL)"
 ""
@@ -13408,10 +13289,6 @@
 "Cart.Name" "Dark Cavern (1982) (M Network)"
 ""
 
-"Cart.MD5" "a443d8557d712845c8cd3699363a42e6"
-"Cart.Name" "Star Fire (07-01-2003) (MP)"
-""
-
 "Cart.MD5" "a47878a760f5fa3aa99f95c3fdc70a0b"
 "Cart.Name" "Demo Image Series #5 - Baboon (19-02-2003) (AD)"
 ""
@@ -13457,7 +13334,6 @@
 "Cart.ModelNo" "C-805"
 "Cart.Name" "Sea Monster (1983) (CCE)"
 "Cart.Note" "O Monstro Marinho"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "a4b99aa5ed85cfdb7d101923147de035"
@@ -13485,7 +13361,6 @@
 "Cart.ModelNo" "6210, 7210, 06003. 99001"
 "Cart.Name" "Spike's Peak (1983) (Xonox)"
 "Display.YStart" "28"
-"Display.Height" "223"
 ""
 
 "Cart.MD5" "a4ecb54f877cd94515527b11e698608c"
@@ -13538,7 +13413,6 @@
 "Cart.Manufacturer" "Atari, David Crane"
 "Cart.Name" "Boggle (08-07-1978) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
 
@@ -13742,7 +13616,6 @@
 "Cart.Manufacturer" "Puzzy - Bit Corporation"
 "Cart.ModelNo" "PG201"
 "Cart.Name" "Seamonster (1982) (Puzzy)"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "a8d0a4a77cd71ac601bd71df5a060e4c"
@@ -13870,6 +13743,12 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cart.MD5" "aa8c75d6f99548309949916ad6cf33bc"
+"Cart.Manufacturer" "Bob Montgomery (aka vdub_bobby)"
+"Cart.Name" "Squish 'Em (2007)"
+"Cart.Rarity" "Homebrew"
+""
+
 "Cart.MD5" "aa8e4b2cb8a78ffe6b20580033f4dec9"
 "Cart.Name" "Bitmap Demo (13-01-2003) (AD)"
 ""
@@ -13934,13 +13813,18 @@
 "Cart.Name" "IQ 180 (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
 "Display.YStart" "27"
-"Display.Height" "230"
 ""
 
 "Cart.MD5" "ab434f4c942d6472e75d5490cc4dd128"
 "Cart.Manufacturer" "HES"
 "Cart.ModelNo" "773-875"
 "Cart.Name" "2 Pak Special - Hoppy, Alien Force (1992) (HES) (PAL)"
+""
+
+"Cart.MD5" "ab48c4af46c8b34c3613d210e1206132"
+"Cart.Manufacturer" "Andrew Davie & Thomas Jentzsch"
+"Cart.Name" "Boulder Dash - Demo V2 (2014)"
+"Cart.Rarity" "New Release"
 ""
 
 "Cart.MD5" "ab4ac994865fb16ebb85738316309457"
@@ -14271,7 +14155,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 "Display.YStart" "23"
-"Display.Height" "245"
 ""
 
 "Cart.MD5" "afe88aae81d99e0947c0cfb687b16251"
@@ -14392,7 +14275,6 @@
 "Cart.ModelNo" "83-215"
 "Cart.Name" "Dream Flight (1983) (Goliath) (PAL)"
 "Cart.Note" "AKA Nightmare"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "b1486e12de717013376447ac6f7f3a80"
@@ -14765,7 +14647,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 "Console.RightDiff" "A"
-"Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
 
@@ -14859,6 +14740,12 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Freeway Chicken (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Cart.Note" "AKA Freeway"
+""
+
+"Cart.MD5" "b7d0aae399781b3c18679debda6d32b1"
+"Cart.Manufacturer" "Thomas Jentzsch"
+"Cart.Name" "Three.s (v1.02)"
+"Cart.Rarity" "New Release"
 ""
 
 "Cart.MD5" "b7d7c76e37f372f4e4979b380ed95a58"
@@ -14987,7 +14874,6 @@
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.YStart" "23"
-"Display.Height" "245"
 ""
 
 "Cart.MD5" "b9d1e3be30b131324482345959aed5e5"
@@ -15061,10 +14947,6 @@
 "Cart.Name" "Radar Lock (1989) (Atari)"
 ""
 
-"Cart.MD5" "bb07f917611cde42b7d83746ee27147d"
-"Cart.Name" "Star Fire - Warping!! (13-04-2003) (MP)"
-""
-
 "Cart.MD5" "bb18189021d58362d9e4d317cd2e28b7"
 "Cart.Manufacturer" "Activision, David Crane - Ariola"
 "Cart.ModelNo" "EAG-001, PAG-001, EAG-001-04B, EAG-001-04I - 711 001-715"
@@ -15109,10 +14991,6 @@
 "Cart.Note" "Uses Amiga Mouse Controller"
 ""
 
-"Cart.MD5" "bb9f06b288b5275bc0d38b6731b2526a"
-"Cart.Name" "Star Fire - Meteor Dance 2 (18-11-2002) (MP)"
-""
-
 "Cart.MD5" "bbf8c7c9ed280151934aabe138e41ba7"
 "Cart.Manufacturer" "Amiga"
 "Cart.ModelNo" "1130"
@@ -15154,13 +15032,6 @@
 "Cart.Name" "SwordQuest - WaterWorld (1983) (Atari)"
 ""
 
-"Cart.MD5" "bc6432cbed32c695658514c4eb41d905"
-"Cart.Manufacturer" "Manuel Polik"
-"Cart.Name" "Star Fire (MP) (2002) (PD)"
-"Cart.Note" "Won't work with Stella < V1.2"
-"Cart.Rarity" "New Release"
-""
-
 "Cart.MD5" "bc703ea6afb20bc089f04d8c9d79a2bd"
 "Cart.Name" "Gunfight 2600 - Not mergeable with Colbert wizardry... (2001) (MP)"
 ""
@@ -15172,6 +15043,13 @@
 "Cart.MD5" "bcb31f22856b0028c00d12f0e4c0a952"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Thunderground (Canal 3)"
+""
+
+"Cart.MD5" "bcb73b534ed7c613ac379ecd726effb5"
+"Cart.Manufacturer" "Bob Montgomery (aka vdub_bobby)"
+"Cart.Name" "Squish 'Em (2007) (PAL60)"
+"Cart.Rarity" "Homebrew"
+"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "bccb4e2cfad5efc93f6d55dc992118ce"
@@ -15278,7 +15156,6 @@
 "Cart.Name" "Space Tunnel (1982) (Puzzy)"
 "Cart.Note" "AKA Le Tunnel de L'Estace"
 "Display.YStart" "34"
-"Display.Height" "215"
 ""
 
 "Cart.MD5" "be41463cd918daef107d249f8cde3409"
@@ -15327,10 +15204,6 @@
 "Cart.Note" "AKA Activision Decathlon"
 ""
 
-"Cart.MD5" "bf5e2079586cb307bf5eb2413e2e61af"
-"Cart.Name" "Star Fire - 1LK Intro (13-11-2002) (TJ)"
-""
-
 "Cart.MD5" "bf84f528de44225dd733c0e6a8e400a0"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Demons to Diamonds (CCE)"
@@ -15346,10 +15219,6 @@
 "Cart.Note" "AKA Adventure II, SwordQuest II - FireWorld"
 ""
 
-"Cart.MD5" "bf9ddc5dd9056633d4ac0dac8b871dfe"
-"Cart.Name" "Star Fire - Cockpit View (10-10-2002) (MP)"
-""
-
 "Cart.MD5" "bfa58198c6b9cd8062ee76a2b38e9b33"
 "Cart.Name" "20 Sprites at Once Demo 4 (PD)"
 ""
@@ -15361,10 +15230,6 @@
 "Cart.Rarity" "Homebrew"
 "Display.YStart" "30"
 "Display.Phosphor" "YES"
-""
-
-"Cart.MD5" "bfcabc6995ef42d0b6c06786993dc4d6"
-"Cart.Name" "Star Fire - Creating a Universe (09-09-2002) (MP)"
 ""
 
 "Cart.MD5" "bff8f8f53a8aeb1ee804004ccbb08313"
@@ -15439,7 +15304,6 @@
 "Cart.Manufacturer" "Sega - Beck-Tech, Steve Beck"
 "Cart.ModelNo" "010-01"
 "Cart.Name" "Tapper (1984) (Sega)"
-"Display.Height" "225"
 ""
 
 "Cart.MD5" "c118854d670289a8b5d5156aa74b0c49"
@@ -15584,7 +15448,6 @@
 "Cart.Name" "Star Wars - Ewok Adventure (Thomas Jentzsch) (Prototype)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.Height" "240"
 ""
 
 "Cart.MD5" "c2778507b83d9540e9be5713758ff945"
@@ -15711,7 +15574,6 @@
 "Cart.Name" "Pick 'n Pile (2003) (TJ)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
 
@@ -15753,10 +15615,6 @@
 "Cart.Manufacturer" "Atari - GCC, Mike Feinstein, John Allred"
 "Cart.ModelNo" "CX2688, CX2688P"
 "Cart.Name" "Jungle Hunt (1983) (Atari) (PAL) [a1]"
-""
-
-"Cart.MD5" "c473b222b7c5308d0773326416094272"
-"Cart.Name" "Star Fire (28-11-2002) (MP) [a1]"
 ""
 
 "Cart.MD5" "c47b7389e76974fd0de3f088fea35576"
@@ -15847,7 +15705,6 @@
 "Cart.ModelNo" "PG202"
 "Cart.Name" "Space Tunnel (1982) (BitCorp) (PAL)"
 "Cart.Note" "AKA Weltraum-Tunnel"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "c541a5f6fc23b40a211196dd78233780"
@@ -15997,10 +15854,6 @@
 "Cart.Name" "Human Cannonball (128-in-1 Junior Console) (PAL) (4K)"
 ""
 
-"Cart.MD5" "c6cedb25b7d390b580ea8edb614b168b"
-"Cart.Name" "Star Fire - Radar Completed (22-10-2002) (MP)"
-""
-
 "Cart.MD5" "c6d48c6ae6461e0e82753540a985ac9e"
 "Cart.Manufacturer" "Ed Federmeyer"
 "Cart.Name" "Edtris (1994) (Ed Federmeyer)"
@@ -16129,7 +15982,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
 "Display.YStart" "20"
-"Display.Height" "254"
 "Display.Phosphor" "YES"
 ""
 
@@ -16525,7 +16377,6 @@
 
 "Cart.MD5" "cd8fa2e9f6255ef3d3b9b5a4f24a54f7"
 "Cart.Name" "Daredevil (V2) (Stunt_Cycle_Rules!) (PD)"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "cd98be8a48ebf610c9609a688b9c57f2"
@@ -16585,7 +16436,6 @@
 "Cart.Manufacturer" "Home Vision - Gem International Corp. - VDI"
 "Cart.Name" "Jacky Jump (1983) (Home Vision) (PAL)"
 "Cart.Note" "AKA Bobby Is Going Home"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "ce4bbe11d682c15a490ae15a4a8716cf"
@@ -16841,7 +16691,12 @@
 "Cart.ModelNo" "006-01"
 "Cart.Name" "Congo Bongo (1983) (Sega) [a]"
 "Display.YStart" "26"
-"Display.Height" "220"
+""
+
+"Cart.MD5" "d0796a0317abf9018d6745086bef411f"
+"Cart.Manufacturer" "Edward Smith"
+"Cart.Name" "Alien Attack (2018)"
+"Cart.Rarity" "Homebrew"
 ""
 
 "Cart.MD5" "d08fccfbebaa531c4a4fa7359393a0a9"
@@ -16955,7 +16810,6 @@
 "Cart.Manufacturer" "Suntek"
 "Cart.ModelNo" "SS-032"
 "Cart.Name" "Walker (1983) (Suntek) (PAL) [a]"
-"Display.Height" "230"
 ""
 
 "Cart.MD5" "d17a671029b1532b197defca5f3649a7"
@@ -17033,10 +16887,6 @@
 "Cart.Name" "Fish Revenge (2003) (Greg Zumwalt) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
 "Cart.Rarity" "Hack"
-""
-
-"Cart.MD5" "d2c305a443dfc49e8430964d7c1bd1b7"
-"Cart.Name" "Star Fire - Advice on radar needed (16-10-2002) (MP)"
 ""
 
 "Cart.MD5" "d2c4f8a4a98a905a9deef3ba7380ed64"
@@ -17135,7 +16985,6 @@
 "Cart.Name" "Funky Fish (1983) (UA Limited) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.YStart" "28"
-"Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
 
@@ -17162,7 +17011,6 @@
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
 "Display.YStart" "31"
-"Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
 
@@ -17417,10 +17265,6 @@
 "Cart.Name" "Bars and Text Demo 2 (PD)"
 ""
 
-"Cart.MD5" "d79df06894e3c1585a47c2807332b319"
-"Cart.Name" "Star Fire - Explosions! (10-10-2002) (MP)"
-""
-
 "Cart.MD5" "d7b58303ec8d8c4dbcbf54d3b9734c7e"
 "Cart.Name" "Paddle Demo (Joe Grand) (PD)"
 ""
@@ -17606,10 +17450,6 @@
 "Cart.Name" "Title Match Pro Wrestling (1987) (Absolute) [a]"
 ""
 
-"Cart.MD5" "da64f33d0521d5c9958e5d2d4434ff95"
-"Cart.Name" "Star Fire - Return of the Starfield (MP)"
-""
-
 "Cart.MD5" "da66d75e4b47fab99733529743f86f4f"
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "Chopper Command (1983) (Digitel)"
@@ -17629,7 +17469,6 @@
 "Cart.Name" "Pick 'n' Pile (1990) (Salu) (PAL)"
 "Console.SwapPorts" "YES"
 "Display.YStart" "40"
-"Display.Height" "256"
 "Display.Phosphor" "YES"
 ""
 
@@ -17728,11 +17567,6 @@
 "Cart.Name" "Gamma-Attack (1983) (Gammation)"
 "Cart.Note" "Uses right joystick controller"
 "Console.SwapPorts" "YES"
-"Display.Height" "220"
-""
-
-"Cart.MD5" "dba2692a216cb6c262c78f8b111a813e"
-"Cart.Name" "Star Fire (08-10-2002) (MP)"
 ""
 
 "Cart.MD5" "dba270850ae997969a18ee0001675821"
@@ -17797,10 +17631,6 @@
 "Cart.ModelNo" "SS-033"
 "Cart.Name" "I.Q. Memory Teaser (1983) (Suntek) (PAL)"
 "Cart.Note" "AKA IQ 180"
-""
-
-"Cart.MD5" "dc6aa0bb21a6e66e80e75ba5edc5c0dd"
-"Cart.Name" "Star Fire - Kernel Done (MP)"
 ""
 
 "Cart.MD5" "dc81c4805bf23959fcf2c649700b82bf"
@@ -18048,7 +17878,6 @@
 "Cart.ModelNo" "PG202"
 "Cart.Name" "Space Tunnel (1982) (BitCorp)"
 "Cart.Note" "AKA Weltraum-Tunnel"
-"Display.Height" "222"
 ""
 
 "Cart.MD5" "df3e6a9b6927cf59b7afb626f6fd7eea"
@@ -18227,7 +18056,6 @@
 "Cart.Manufacturer" "Parker Brothers, Dawn Stockbridge"
 "Cart.ModelNo" "PB5910"
 "Cart.Name" "Strawberry Shortcake - Musical Match-Ups (1983) (Parker Bros)"
-"Display.Height" "225"
 ""
 
 "Cart.MD5" "e1143b72a30d4d3fee385eec38b4aa4d"
@@ -18248,7 +18076,6 @@
 "Cart.ModelNo" "C-839"
 "Cart.Name" "Misterious Thief, A (1983) (CCE)"
 "Cart.Note" "AKA A Mysterious Thief"
-"Display.Height" "216"
 "Display.Phosphor" "YES"
 ""
 
@@ -18387,6 +18214,12 @@
 "Cart.Note" "AKA Pro Football"
 ""
 
+"Cart.MD5" "e27d518993b0a010f16e92b971ecdcdd"
+"Cart.Manufacturer" "Manuel Polik"
+"Cart.Name" "Star Fire (2003) (XYPE) (PAL)"
+"Cart.Rarity" "Homebrew"
+""
+
 "Cart.MD5" "e28113d10c0c14cc3b5f430b0d142fcb"
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-816"
@@ -18437,7 +18270,6 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Combat (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Display.YStart" "40"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "e314b42761cd13c03def744b4afc7b1b"
@@ -18712,7 +18544,6 @@
 "Cart.MD5" "e5fcc62e1d73706be7b895e887e90f84"
 "Cart.Name" "Air-Sea Battle (Unknown) (PAL) (4K)"
 "Display.YStart" "40"
-"Display.Height" "260"
 ""
 
 "Cart.MD5" "e600f5e98a20fafa47676198efe6834d"
@@ -18738,7 +18569,6 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "End of the World (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
-"Display.Height" "240"
 ""
 
 "Cart.MD5" "e63a87c231ee9a506f9599aa4ef7dfb9"
@@ -18828,7 +18658,6 @@
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Apples and Dolls (CCE)"
 "Cart.Note" "AKA Open, Sesame!"
-"Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
 
@@ -18920,7 +18749,6 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Larry Caplan, Steve Mayer, Larry Wagner"
 "Cart.ModelNo" "CX2601, CX2601P"
 "Cart.Name" "Combat (1977) (Atari) (PAL)"
-"Display.Height" "260"
 ""
 
 "Cart.MD5" "e8e7b9bdf4bf04930c2bcaa0278ee637"
@@ -19076,7 +18904,6 @@
 "Cart.Manufacturer" "Sancho - Tang's Electronic Co."
 "Cart.ModelNo" "TEC004"
 "Cart.Name" "Nightmare (1983) (Sancho) (PAL)"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "eada0dd61ce13f8317de774dc1e68604"
@@ -19208,16 +19035,11 @@
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype) [a2]"
 "Cart.Rarity" "Prototype"
 "Display.YStart" "23"
-"Display.Height" "240"
 ""
 
 "Cart.MD5" "ebf9038e927e6a0db3e0d170c59911e6"
 "Cart.Name" "Pac-2600 (PD)"
 "Cart.Rarity" "New Release"
-""
-
-"Cart.MD5" "ec26fdc87b1d35f1d60ea89cda4f4dd4"
-"Cart.Name" "Star Fire - Crash Scene (04-11-2002) (MP)"
 ""
 
 "Cart.MD5" "ec3beb6d8b5689e867bafb5d5f507491"
@@ -19322,10 +19144,6 @@
 "Cart.Name" "Kaboom! (1981) (Activision) (8K)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.MouseAxis" "01 50"
-""
-
-"Cart.MD5" "ed9999911b406dc5f75c850dcc17bdf4"
-"Cart.Name" "Star Fire - Shootable (Friendlier Collision Detection) (26-09-2002) (MP)"
 ""
 
 "Cart.MD5" "eddef10fdc0029301064115ae0cd41d4"
@@ -19864,7 +19682,6 @@
 "Cart.ModelNo" "708-111 - GN-040"
 "Cart.Name" "Cosmic Corridor (1983) (ZiMAG)"
 "Cart.Note" "AKA Space Tunnel"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "f38358cd8f5ecfedffd5aca1aa939f18"
@@ -20146,11 +19963,16 @@
 "Cart.Name" "Pooyan (Jone Yuan) (Hack)"
 "Cart.Note" "2600 Screen Search Console"
 "Cart.Rarity" "Hack"
-"Display.Height" "215"
 ""
 
 "Cart.MD5" "f714a223954c28eccf459295517dcae6"
 "Cart.Name" "Big - Move This Demo (PD)"
+""
+
+"Cart.MD5" "f7154add27b95cd90464dbed8cfd7557"
+"Cart.Manufacturer" "Fabrizio Zavagli"
+"Cart.Name" "Space Treat Deluxe (2003) (PAL)"
+"Cart.Rarity" "Homebrew"
 ""
 
 "Cart.MD5" "f724d3dd2471ed4cf5f191dbb724b69f"
@@ -20257,7 +20079,6 @@
 "Cart.ModelNo" "TP-617"
 "Cart.Name" "Farmyard Fun (Ariola)"
 "Cart.Note" "AKA Play Farm"
-"Display.Height" "215"
 ""
 
 "Cart.MD5" "f7f50d9c9d28bcc9f7d3075668b7ac89"
@@ -20315,7 +20136,6 @@
 
 "Cart.MD5" "f8582bc6ca7046adb8e18164e8cecdbc"
 "Cart.Name" "Panda Chase (Unknown) (PAL)"
-"Display.Height" "256"
 ""
 
 "Cart.MD5" "f8648d0c6ad1266434f6c485ff69ec40"
@@ -20349,7 +20169,6 @@
 
 "Cart.MD5" "f8ff34b53d86f55bd52d7a520af6d1dc"
 "Cart.Name" "Big Dig (04-04-2003) (CT)"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "f90b5da189f24d7e1a2117d8c8abc952"
@@ -20396,7 +20215,6 @@
 "Cart.ModelNo" "ASC2001"
 "Cart.Name" "Confrontation (1983) (Answer) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
 
@@ -20415,7 +20233,6 @@
 "Cart.Manufacturer" "Avalon Hill, Jean Baer, Bill 'Rebecca Ann' Heineman, Jim Jacob"
 "Cart.ModelNo" "5005002"
 "Cart.Name" "Out of Control (1983) (Avalon Hill)"
-"Display.Height" "216"
 ""
 
 "Cart.MD5" "f98d2276d4a25b286135566255aea9d0"
@@ -20480,7 +20297,6 @@
 "Cart.ModelNo" "7-008"
 "Cart.Name" "Miner 2049er (1983) (Tigervision)"
 "Display.YStart" "28"
-"Display.Height" "214"
 ""
 
 "Cart.MD5" "fa1b060fd8e0bca0c2a097dcffce93d3"
@@ -20632,12 +20448,17 @@
 "Cart.Manufacturer" "ITT Family Games"
 "Cart.Name" "Pumuckl I (1983) (ITT Family Games) (PAL)"
 "Cart.Note" "AKA Panda Chase"
-"Display.Height" "220"
 ""
 
 "Cart.MD5" "fb884ffd89013331a6f01ae3f6abd214"
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.Name" "Venetian Blinds Demo (1982) (Activision) (PAL)"
+""
+
+"Cart.MD5" "fb88baa01afd34e0e4b601e1d29bc806"
+"Cart.Manufacturer" "Manuel Polik"
+"Cart.Name" "Star Fire (2003) (XYPE)"
+"Cart.Rarity" "Homebrew"
 ""
 
 "Cart.MD5" "fb88c400d602fe759ae74ef1716ee84e"
@@ -20675,10 +20496,6 @@
 "Cart.Manufacturer" "Digitel"
 "Cart.Name" "River Raid III (1985) (Digitel)"
 "Cart.Note" "AKA River Raid"
-""
-
-"Cart.MD5" "fbd6102e17a5c02c6e1911381b7203f9"
-"Cart.Name" "Star Fire - Warping!! (10-04-2003) (MP)"
 ""
 
 "Cart.MD5" "fbe554aa8f759226d251ba6b64a9cce4"
@@ -20991,46 +20808,5 @@
 
 "Cart.MD5" "ffebb0070689b9d322687edd9c0a2bae"
 "Cart.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
-""
-
-"Cart.MD5" "b7d0aae399781b3c18679debda6d32b1"
-"Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Three.s (v1.02)"
-"Cart.Rarity" "New Release"
-""
-
-"Cart.MD5" "5e43c0391f7412ae64fae6f3742d6ee9"
-"Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust+ (v1.27)"
-"Cart.Rarity" "New Release, supports BoosterGrip"
-"Controller.Left" "BOOSTERGRIP"
-"Controller.Right" "DRIVING"
-""
-
-"Cart.MD5" "96662271ae50b6859017bffbdda75525"
-"Cart.Manufacturer" "Andrew Davie & Thomas Jentzsch"
-"Cart.Name" "Boulder Dash - Demo (2011)"
-"Cart.Rarity" "New Release"
-""
-
-"Cart.MD5" "ab48c4af46c8b34c3613d210e1206132"
-"Cart.Manufacturer" "Andrew Davie & Thomas Jentzsch"
-"Cart.Name" "Boulder Dash - Demo V2 (2014)"
-"Cart.Rarity" "New Release"
-""
-
-"Cart.MD5" "7761418d46af069b8cd80c29fe6cd814"
-"Cart.Name" "Amoeba Jump (R77) (DionoiD)"
-"Cart.ModelNo" "RetroN 77 edition"
-"Cart.Manufacturer" "Dion Olsthoorn"
-"Cart.Rarity" "Homebrew"
-""
-
-"Cart.MD5" "943798452ceba9357e2c56303cadb4f7"
-"Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust+ (v1.28)"
-"Cart.Rarity" "New Release, supports BoosterGrip and Genesis (switched by Color/B+W)"
-"Controller.Left" "JOYSTICK"
-"Controller.Right" "DRIVING"
 ""
 
