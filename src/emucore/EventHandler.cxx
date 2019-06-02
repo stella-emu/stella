@@ -761,14 +761,14 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
         myEvent.set(Event::ConsoleBlackWhite, 0);
         myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause released" : "Color Mode");
       }
-      break;
+      break; // needs further processing!
     case Event::ConsoleBlackWhite:
       if(pressed && !repeated)
       {
         myEvent.set(Event::ConsoleColor, 0);
         myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
       }
-      break;
+      break; // needs further processing!
     case Event::ConsoleColorToggle:
       if(pressed && !repeated)
       {
@@ -796,7 +796,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
         if (myIs7800)
           myOSystem.frameBuffer().showMessage("Pause pressed");
       }
-      return;
+      break; // needs further processing!
 
     case Event::ConsoleLeftDiffA:
       if(pressed && !repeated)
@@ -804,14 +804,14 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
         myEvent.set(Event::ConsoleLeftDiffB, 0);
         myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " A");
       }
-      return;
+      break; // needs further processing!
     case Event::ConsoleLeftDiffB:
       if(pressed && !repeated)
       {
         myEvent.set(Event::ConsoleLeftDiffA, 0);
         myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " B");
       }
-      return;
+      break; // needs further processing!
     case Event::ConsoleLeftDiffToggle:
       if(pressed && !repeated)
       {
@@ -837,14 +837,14 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
         myEvent.set(Event::ConsoleRightDiffB, 0);
         myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " A");
       }
-      return;
+      break; // needs further processing!
     case Event::ConsoleRightDiffB:
       if(pressed && !repeated)
       {
         myEvent.set(Event::ConsoleRightDiffA, 0);
         myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " B");
       }
-      return;
+      break; // needs further processing!
     case Event::ConsoleRightDiffToggle:
       if(pressed && !repeated)
       {
