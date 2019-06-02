@@ -49,7 +49,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myLastValue(0),
     myFirstTime(true)
 {
-  const GUI::Font& ifont = boss->instance().frameBuffer().infoFont();
   const int fontHeight   = font.getFontHeight(),
             lineHeight   = font.getLineHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 10,
@@ -59,7 +58,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   int xpos = HBORDER, ypos = VBORDER;
 
   myActionsList = new StringListWidget(boss, font, xpos, ypos,
-                                       _w - buttonWidth - HBORDER * 2 - 8, _h - 4*lineHeight - VBORDER);
+                                       _w - buttonWidth - HBORDER * 2 - 8, _h - 3*lineHeight - VBORDER);
   myActionsList->setTarget(this);
   myActionsList->setEditable(false);
   myActionsList->setList(actions);
@@ -120,10 +119,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                     _w - xpos - t->getWidth() - 8 - HBORDER, lineHeight, "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
-
-  // Add information for hardcoded keys
-  ypos += lineHeight + 8;
-  new StaticTextWidget(boss, ifont, xpos, ypos, "(*) Hardcoded action, cannot be erased");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
