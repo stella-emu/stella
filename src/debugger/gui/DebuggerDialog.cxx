@@ -92,117 +92,84 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
     // Swallow backtick, so we don't see it when exiting the debugger
     instance().eventHandler().enableTextEvents(false);
   }
-  else if(key == KBDK_F12)
+
+  // handle emulation keys (can be remapped)
+  Event::Type event = instance().eventHandler().eventForKey(kEmulationMode, key, mod);
+  switch (event)
   {
-    instance().debugger().parser().run("savesnap");
-    return;
+    // events which can be handled 1:1
+    case Event::ToggleP0Collision:
+    case Event::ToggleP0Bit:
+    case Event::ToggleP1Collision:
+    case Event::ToggleP1Bit:
+    case Event::ToggleM0Collision:
+    case Event::ToggleM0Bit:
+    case Event::ToggleM1Collision:
+    case Event::ToggleM1Bit:
+    case Event::ToggleBLCollision:
+    case Event::ToggleBLBit:
+    case Event::TogglePFCollision:
+    case Event::TogglePFBit:
+    case Event::ToggleFixedColors:
+    case Event::ToggleCollisions:
+    case Event::ToggleBits:
+
+    case Event::ToggleTimeMachine:
+
+    case Event::SaveState:
+    case Event::SaveAllStates:
+    case Event::ChangeState:
+    case Event::LoadState:
+    case Event::LoadAllStates:
+
+    case Event::ConsoleColor:
+    case Event::ConsoleBlackWhite:
+    case Event::ConsoleColorToggle:
+    case Event::Console7800Pause:
+    case Event::ConsoleLeftDiffA:
+    case Event::ConsoleLeftDiffB:
+    case Event::ConsoleLeftDiffToggle:
+    case Event::ConsoleRightDiffA:
+    case Event::ConsoleRightDiffB:
+    case Event::ConsoleRightDiffToggle:
+      instance().eventHandler().handleEvent(event);
+      return;
+
+    // events which need special handling in debugger
+    case Event::TakeSnapshot:
+      instance().debugger().parser().run("savesnap");
+      return;
+
+    case Event::Rewind1Menu:
+      doRewind();
+      return;
+
+    case Event::Rewind10Menu:
+      doRewind10();
+      return;
+
+    case Event::RewindAllMenu:
+      doRewindAll();
+      return;
+
+    case Event::Unwind1Menu:
+      doUnwind();
+      return;
+
+    case Event::Unwind10Menu:
+      doUnwind10();
+      return;
+
+    case Event::UnwindAllMenu:
+      doUnwindAll();
+      return;
   }
-  else if(StellaModTest::isAlt(mod) && !StellaModTest::isControl(mod))
+
+  // special debugger keys (cannot be remapped)
+  if(StellaModTest::isControl(mod))
   {
     switch(key)
     {
-      case KBDK_LEFT:  // Alt-left(-shift) rewinds 1(10) states
-        if(StellaModTest::isShift(mod))
-          doRewind10();
-        else
-          doRewind();
-        return;
-      case KBDK_RIGHT:  // Alt-right(-shift) unwinds 1(10) states
-        if(StellaModTest::isShift(mod))
-          doUnwind10();
-        else
-          doUnwind();
-        return;
-      case KBDK_DOWN:  // Alt-down rewinds to start of list
-        doRewindAll();
-        return;
-      case KBDK_UP:  // Alt-up rewinds to end of list
-        doUnwindAll();
-        return;
-
-      case KBDK_Z:
-        if(StellaModTest::isShift(mod))
-          instance().console().toggleP0Collision();
-        else
-          instance().console().toggleP0Bit();
-        return;
-
-      case KBDK_X:
-        if(StellaModTest::isShift(mod))
-          instance().console().toggleP1Collision();
-        else
-          instance().console().toggleP1Bit();
-        return;
-
-      case KBDK_C:
-        if(StellaModTest::isShift(mod))
-          instance().console().toggleM0Collision();
-        else
-          instance().console().toggleM0Bit();
-        return;
-
-      case KBDK_V:
-        if(StellaModTest::isShift(mod))
-          instance().console().toggleM1Collision();
-        else
-          instance().console().toggleM1Bit();
-        return;
-
-      case KBDK_B:
-        if(StellaModTest::isShift(mod))
-          instance().console().toggleBLCollision();
-        else
-          instance().console().toggleBLBit();
-        return;
-
-      case KBDK_N:
-        if(StellaModTest::isShift(mod))
-          instance().console().togglePFCollision();
-        else
-          instance().console().togglePFBit();
-        return;
-
-      case KBDK_COMMA:
-        instance().console().toggleFixedColors();
-        return;
-
-      case KBDK_PERIOD:
-        if(StellaModTest::isShift(mod))
-          instance().console().toggleCollisions();
-        else
-          instance().console().toggleBits();
-        return;
-
-      case KBDK_T:  // Alt-t toggles Time Machine
-        instance().state().toggleTimeMachine();
-        break;
-
-      default:
-        break;
-    }
-  }
-  else if(StellaModTest::isControl(mod))
-  {
-    switch(key)
-    {
-#if 0
-      case KBDK_R:
-        if(StellaModTest::isAlt(mod))
-          doRewindAll();
-        else if(StellaModTest::isShift(mod))
-          doRewind10();
-        else
-          doRewind();
-        return;
-      case KBDK_Y:
-        if(StellaModTest::isAlt(mod))
-          doUnwindAll();
-        else if(StellaModTest::isShift(mod))
-          doUnwind10();
-        else
-          doUnwind();
-        return;
-#endif
       case KBDK_S:
         doStep();
         return;
