@@ -176,6 +176,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::SoundToggle        , KBDK_RIGHTBRACKET, KBDM_CTRL);
 
       setDefaultKey(Event::ToggleFullScreen   , KBDK_RETURN, MOD3);
+      setDefaultKey(Event::DecreaseOverscan   , KBDK_PAGEDOWN, MOD3);
+      setDefaultKey(Event::IncreaseOverScan   , KBDK_PAGEUP, MOD3);
       setDefaultKey(Event::VidmodeStd         , KBDK_1, MOD3);
       setDefaultKey(Event::VidmodeRGB         , KBDK_2, MOD3);
       setDefaultKey(Event::VidmodeSVideo      , KBDK_3, MOD3);
@@ -259,6 +261,7 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 
       setDefaultKey(Event::UIPrevDir        , KBDK_BACKSPACE);
       setDefaultKey(Event::ToggleFullScreen , KBDK_RETURN, MOD3);
+
     #ifdef BSPF_MACOS
       setDefaultKey(Event::Quit             , KBDK_Q, MOD3);
     #else
@@ -317,7 +320,7 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pressed, bool repeat)
+void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pressed, bool repeated)
 {
   // Swallow KBDK_TAB under certain conditions
   // See commments on 'myAltKeyCounter' for more information
@@ -353,15 +356,15 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   {
     case EventHandlerState::EMULATION:
     case EventHandlerState::PAUSE:
-      myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed, repeat);
+      myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed, repeated);
       break;
 
     default:
     #ifdef GUI_SUPPORT
       if (myHandler.hasOverlay())
-        myHandler.overlay().handleKeyEvent(key, mod, pressed, repeat);
+        myHandler.overlay().handleKeyEvent(key, mod, pressed, repeated);
     #endif
-      myHandler.handleEvent(myKeyMap.get(kMenuMode, key, mod), pressed, repeat);
+      myHandler.handleEvent(myKeyMap.get(kMenuMode, key, mod), pressed, repeated);
       break;
   }
 }
@@ -369,42 +372,12 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool pressed)
 {
-  bool handled = true;
-
-  if(StellaModTest::isAlt(mod) && pressed)
+  if(StellaModTest::isAlt(mod) && pressed && key == KBDK_TAB)
   {
-    EventHandlerState estate = myHandler.state();
-
-    if(key == KBDK_TAB)
-    {
-      // Swallow Alt-Tab, but remember that it happened
-      myAltKeyCounter = 1;
-      return true;
-    }
-
-    // State rewinding must work in pause mode too
-    if(estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE)
-    {
-      switch(key)
-      {
-        case KBDK_PAGEUP:    // Alt-PageUp increases YStart
-          myOSystem.console().changeYStart(+1);
-          break;
-
-        case KBDK_PAGEDOWN:  // Alt-PageDown decreases YStart
-          myOSystem.console().changeYStart(-1);
-          break;
-
-        default:
-          handled = false;
-          break;
-      } // switch
-    }
-    else
-      handled = false;
+    // Swallow Alt-Tab, but remember that it happened
+    myAltKeyCounter = 1;
+    return true;
   } // alt
-  else
-    handled = false;
 
-  return handled;
+  return false;
 }

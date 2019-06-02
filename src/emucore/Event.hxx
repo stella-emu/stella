@@ -104,6 +104,7 @@ class Event
       Unwind1Menu, Unwind10Menu, UnwindAllMenu,
 
       StartPauseMode, SaveAllStates, LoadAllStates,
+      DecreaseOverscan, IncreaseOverScan,
 
       LastType
     };
