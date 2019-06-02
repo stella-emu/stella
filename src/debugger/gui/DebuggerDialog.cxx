@@ -185,6 +185,9 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
     case Event::UnwindAllMenu:
       doUnwindAll();
       return;
+
+    default:
+      break;
   }
 
   Dialog::handleKeyDown(key, mod);
