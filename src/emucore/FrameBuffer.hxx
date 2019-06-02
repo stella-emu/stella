@@ -220,6 +220,13 @@ class FrameBuffer
     void toggleFullscreen();
 
     /**
+      Changes the fullscreen overscan.
+        direction = -1 means less overscan
+        direction = +1 means more overscan
+    */
+    void changeOverscan(int direction);
+
+    /**
       This method is called when the user wants to switch to the next
       available video mode.  In windowed mode, this typically means going to
       the next/previous zoom level.  In fullscreen mode, this typically means

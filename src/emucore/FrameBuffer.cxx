@@ -747,6 +747,24 @@ void FrameBuffer::toggleFullscreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::changeOverscan(int direction)
+{
+  if (fullScreen())
+  {
+    int oldOverscan = myOSystem.settings().getInt("tia.fs_overscan");
+    int overscan = BSPF::clamp(oldOverscan + direction, 0, 10);
+
+    if (overscan != oldOverscan)
+    {
+      myOSystem.settings().setValue("tia.fs_overscan", overscan);
+
+      // issue a complete framebuffer re-initialization
+      myOSystem.createFrameBuffer();
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::changeVidMode(int direction)
 {
   EventHandlerState state = myOSystem.eventHandler().state();

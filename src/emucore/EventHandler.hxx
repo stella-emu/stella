@@ -115,7 +115,7 @@ class EventHandler
     /**
       This method indicates that the system should terminate.
     */
-    void quit() { handleEvent(Event::Quit, true); }
+    void quit() { handleEvent(Event::Quit); }
 
     /**
       Sets the mouse axes and buttons to act as the controller specified in
@@ -137,11 +137,11 @@ class EventHandler
       Send an event directly to the event handler.
       These events cannot be remapped.
 
-      @param type    The event
-      @param pressed Pressed (true) or released (false)
-      @param repeat  Repeated key (true) or first press/release (false)
+      @param type      The event
+      @param pressed   Pressed (true) or released (false)
+      @param repeated  Repeated key (true) or first press/release (false)
     */
-    void handleEvent(Event::Type type, bool pressed = true, bool repeat = false);
+    void handleEvent(Event::Type type, bool pressed = true, bool repeated = false);
 
     /**
       Handle events that must be processed each time a new console is
@@ -319,8 +319,8 @@ class EventHandler
     void handleTextEvent(char text);
     void handleMouseMotionEvent(int x, int y, int xrel, int yrel);
     void handleMouseButtonEvent(MouseButton b, bool pressed, int x, int y);
-    void handleKeyEvent(StellaKey key, StellaMod mod, bool pressed, bool repeat) {
-      myPKeyHandler->handleEvent(key, mod, pressed, repeat);
+    void handleKeyEvent(StellaKey key, StellaMod mod, bool pressed, bool repeated) {
+      myPKeyHandler->handleEvent(key, mod, pressed, repeated);
     }
     void handleJoyBtnEvent(int stick, int button, bool pressed) {
       myPJoyHandler->handleBtnEvent(stick, button, pressed);
@@ -373,7 +373,7 @@ class EventHandler
     #else
       PNG_SIZE             = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 136 + PNG_SIZE + COMBO_SIZE,
+      EMUL_ACTIONLIST_SIZE = 138 + PNG_SIZE + COMBO_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 
