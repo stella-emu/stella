@@ -449,7 +449,7 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
 
   if(numWinds)
   {
-    uInt64 startCycles = instance().console().tia().cycles();
+    uInt64 startCycles = r.getCurrentCycles();
     if(numWinds < 0)      r.rewindStates(-numWinds);
     else if(numWinds > 0) r.unwindStates(numWinds);
 
