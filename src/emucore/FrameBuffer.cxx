@@ -761,6 +761,9 @@ void FrameBuffer::changeOverscan(int direction)
       // issue a complete framebuffer re-initialization
       myOSystem.createFrameBuffer();
     }
+    ostringstream msg;
+    msg << "Overscan at " << overscan << "%";
+    showMessage(msg.str());
   }
 }
 
