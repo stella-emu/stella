@@ -184,14 +184,9 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
 void TIASurface::setScanlineIntensity(int amount)
 {
   ostringstream buf;
-  if(ntscEnabled())
-  {
-    uInt32 intensity = enableScanlines(amount);
-    buf << "Scanline intensity at " << intensity  << "%";
-    myOSystem.settings().setValue("tv.scanlines", intensity);
-  }
-  else
-    buf << "Scanlines only available in TV filtering mode";
+  uInt32 intensity = enableScanlines(amount);
+  buf << "Scanline intensity at " << intensity  << "%";
+  myOSystem.settings().setValue("tv.scanlines", intensity);
 
   myFB.showMessage(buf.str());
 }
