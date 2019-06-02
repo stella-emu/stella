@@ -54,15 +54,21 @@
     meant for 4k and above monitors, but can actually be used at any
     lower resolution that is large enough to display the scaled UI. (TODO: doc)
 
+  * Huge improvements to event remapping.  (TODO: doc)
+
   * Added configurable 'Overscan' option for fullscreen modes. (TODO: doc)
 
-  * Added fractional TIA zooms (TODO: doc)
+  * Added fractional TIA zooms (1/4 increments). (TODO: doc)
 
   * Removed 'tia.fsfill' option, replacing it with 'tia.fs_stretch'.  This
     new option allows to preserve TIA image aspect ratio in fullscreen
     mode, or stretch to fill the entire screen. (TODO: doc)
 
-  * Allow mapping of modifier-key combinations
+  * Allow mapping of modifier-key combinations.
+
+  * Key-repeat mode improved; entering Time Machine by holding down a key
+    combo continues to send events (previously, you had to release and then
+    press the combo again).
 
   * Added hotkey for sound on/off.
 
@@ -87,12 +93,16 @@
     certain older DPC+ driver versions; this allows 'Epic Adventure' ROM
     to finally work in Stella.
 
+  * Certain buttons in the UI can now be activated repeatedly by holding
+    down the mouse button (Time Machine, debugger step/trace/frame advance,
+    etc.)
+
   * PNG/ZIP image support is now conditionally compiled into Stella.
     All major ports (Linux/macOS/Windows) have it enabled by default.
 
   * SDL/GUI support is now conditionally compiled into Stella.  All major
     ports (Linux/macOS/Windows) have it enabled by default.  This is
-    currently used only by the libretro port.
+    currently needed by the libretro port.
 
   * Updated included PNG library to latest stable version.
 
