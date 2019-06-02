@@ -255,6 +255,8 @@
 		DC368F5918A2FB710084199C /* SoundSDL2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC368F5318A2FB710084199C /* SoundSDL2.hxx */; };
 		DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */; };
 		DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */; };
+		DC37B77D22A3515100B0A1A2 /* CartCDFInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC37B77B22A3515100B0A1A2 /* CartCDFInfoWidget.cxx */; };
+		DC37B77E22A3515100B0A1A2 /* CartCDFInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC37B77C22A3515100B0A1A2 /* CartCDFInfoWidget.hxx */; };
 		DC3DAFAC1F2E233B00A64410 /* PointingDevice.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3DAFAB1F2E233B00A64410 /* PointingDevice.hxx */; };
 		DC3EE8561E2C0E6D00905161 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83C1E2C0E6D00905161 /* adler32.c */; };
 		DC3EE8571E2C0E6D00905161 /* compress.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE83D1E2C0E6D00905161 /* compress.c */; };
@@ -958,6 +960,8 @@
 		DC368F5318A2FB710084199C /* SoundSDL2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoundSDL2.hxx; sourceTree = "<group>"; };
 		DC36D2C614CAFAB0007DC821 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartFA2.cxx; sourceTree = "<group>"; };
 		DC36D2C714CAFAB0007DC821 /* CartFA2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartFA2.hxx; sourceTree = "<group>"; };
+		DC37B77B22A3515100B0A1A2 /* CartCDFInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartCDFInfoWidget.cxx; sourceTree = "<group>"; };
+		DC37B77C22A3515100B0A1A2 /* CartCDFInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = CartCDFInfoWidget.hxx; sourceTree = "<group>"; };
 		DC3DAFAB1F2E233B00A64410 /* PointingDevice.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PointingDevice.hxx; sourceTree = "<group>"; };
 		DC3EE83C1E2C0E6D00905161 /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = adler32.c; sourceTree = "<group>"; };
 		DC3EE83D1E2C0E6D00905161 /* compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = compress.c; sourceTree = "<group>"; };
@@ -1507,6 +1511,8 @@
 				DCAACB09188D636F00A4D282 /* CartBFWidget.hxx */,
 				CFE3F6071E84A9A200A8204E /* CartBUSWidget.cxx */,
 				CFE3F6081E84A9A200A8204E /* CartBUSWidget.hxx */,
+				DC37B77B22A3515100B0A1A2 /* CartCDFInfoWidget.cxx */,
+				DC37B77C22A3515100B0A1A2 /* CartCDFInfoWidget.hxx */,
 				CFE3F6091E84A9A200A8204E /* CartCDFWidget.cxx */,
 				CFE3F60A1E84A9A200A8204E /* CartCDFWidget.hxx */,
 				DC676A2B1729A0B000E4E73D /* CartCMWidget.cxx */,
@@ -2313,6 +2319,7 @@
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
 				2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */,
 				DCB2ECB01F0AECA3009738A6 /* CartDetector.hxx in Headers */,
+				DC37B77E22A3515100B0A1A2 /* CartCDFInfoWidget.hxx in Headers */,
 				2D91741709BA90380026E9FF /* VideoDialog.hxx in Headers */,
 				2D91741809BA90380026E9FF /* Widget.hxx in Headers */,
 				2D91741909BA90380026E9FF /* CartUA.hxx in Headers */,
@@ -2837,6 +2844,7 @@
 				E0893AF2211B9842008B170D /* HighPass.cxx in Sources */,
 				DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */,
 				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,
+				DC37B77D22A3515100B0A1A2 /* CartCDFInfoWidget.cxx in Sources */,
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
 				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
