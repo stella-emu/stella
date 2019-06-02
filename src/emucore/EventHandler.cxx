@@ -759,16 +759,20 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
       if(pressed && !repeated)
       {
         myEvent.set(Event::ConsoleBlackWhite, 0);
+        myEvent.set(Event::ConsoleColor, 1);
         myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause released" : "Color Mode");
+        myOSystem.console().switches().update();
       }
-      break; // needs further processing!
+      return;
     case Event::ConsoleBlackWhite:
       if(pressed && !repeated)
       {
+        myEvent.set(Event::ConsoleBlackWhite, 1);
         myEvent.set(Event::ConsoleColor, 0);
         myOSystem.frameBuffer().showMessage(myIs7800 ? "Pause pushed" : "B/W Mode");
+        myOSystem.console().switches().update();
       }
-      break; // needs further processing!
+      return;
     case Event::ConsoleColorToggle:
       if(pressed && !repeated)
       {
@@ -795,23 +799,28 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
         myEvent.set(Event::ConsoleColor, 0);
         if (myIs7800)
           myOSystem.frameBuffer().showMessage("Pause pressed");
+        myOSystem.console().switches().update();
       }
-      break; // needs further processing!
+      return;
 
     case Event::ConsoleLeftDiffA:
       if(pressed && !repeated)
       {
+        myEvent.set(Event::ConsoleLeftDiffA, 1);
         myEvent.set(Event::ConsoleLeftDiffB, 0);
         myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " A");
+        myOSystem.console().switches().update();
       }
-      break; // needs further processing!
+      return;
     case Event::ConsoleLeftDiffB:
       if(pressed && !repeated)
       {
         myEvent.set(Event::ConsoleLeftDiffA, 0);
+        myEvent.set(Event::ConsoleLeftDiffB, 1);
         myOSystem.frameBuffer().showMessage(GUI::LEFT_DIFFICULTY + " B");
+        myOSystem.console().switches().update();
       }
-      break; // needs further processing!
+      return;
     case Event::ConsoleLeftDiffToggle:
       if(pressed && !repeated)
       {
@@ -834,17 +843,21 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
     case Event::ConsoleRightDiffA:
       if(pressed && !repeated)
       {
+        myEvent.set(Event::ConsoleRightDiffA, 1);
         myEvent.set(Event::ConsoleRightDiffB, 0);
         myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " A");
+        myOSystem.console().switches().update();
       }
-      break; // needs further processing!
+      return;
     case Event::ConsoleRightDiffB:
       if(pressed && !repeated)
       {
         myEvent.set(Event::ConsoleRightDiffA, 0);
+        myEvent.set(Event::ConsoleRightDiffB, 1);
         myOSystem.frameBuffer().showMessage(GUI::RIGHT_DIFFICULTY + " B");
+        myOSystem.console().switches().update();
       }
-      break; // needs further processing!
+      return;
     case Event::ConsoleRightDiffToggle:
       if(pressed && !repeated)
       {
