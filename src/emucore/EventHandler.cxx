@@ -639,12 +639,16 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
         myOSystem.frameBuffer().showMessage(myOSystem.state().rewindManager().loadAllStates());
       return;
 
-    case Event::Rewind:
+    case Event::RewindPause:
       if (pressed) myOSystem.state().rewindStates();
+      if (myState == EventHandlerState::EMULATION)
+        setState(EventHandlerState::PAUSE);
       return;
 
-    case Event::Unwind:
+    case Event::UnwindPause:
       if (pressed) myOSystem.state().unwindStates();
+      if (myState == EventHandlerState::EMULATION)
+        setState(EventHandlerState::PAUSE);
       return;
 
     case Event::Rewind1Menu:
@@ -1714,11 +1718,11 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
 #endif
   { Event::ToggleTimeMachine,       "Toggle 'Time Machine' mode",            "" },
   { Event::TimeMachineMode,         "Toggle 'Time Machine' UI",              "" },
-  { Event::Rewind,                  "Rewind game one state",                 "" },
+  { Event::RewindPause,             "Rewind one state and enter pause mode", "" },
   { Event::Rewind1Menu,             "Rewind one state & enter TM UI",        "" },
   { Event::Rewind10Menu,            "Rewind 10 states & enter TM UI",        "" },
   { Event::RewindAllMenu,           "Rewind all states & enter TM UI",       "" },
-  { Event::Unwind,                  "Unwind game one state",                 "" },
+  { Event::UnwindPause,             "Unwind one state and enter pause mode", "" },
   { Event::Unwind1Menu,             "Unwind one state & enter TM UI",        "" },
   { Event::Unwind10Menu,            "Unwind 10 states & enter TM UI",        "" },
   { Event::UnwindAllMenu,           "Unwind all states & enter TM UI",       "" },

@@ -320,7 +320,7 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
           setDefaultBtn(stick, 2, Event::CmdMenuMode);
           setDefaultBtn(stick, 3, Event::OptionsMenuMode);
           setDefaultBtn(stick, 4, Event::ExitMode);
-          setDefaultBtn(stick, 5, Event::Rewind);
+          setDefaultBtn(stick, 5, Event::RewindPause);
           setDefaultBtn(stick, 7, Event::ConsoleSelect);
           setDefaultBtn(stick, 8, Event::ConsoleReset);
         #endif

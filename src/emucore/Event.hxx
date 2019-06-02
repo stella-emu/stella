@@ -76,7 +76,7 @@ class Event
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
       TogglePauseMode, OptionsMenuMode, CmdMenuMode, TimeMachineMode, DebuggerMode, ExitMode,
       Fry, VolumeDecrease, VolumeIncrease, SoundToggle, VidmodeDecrease, VidmodeIncrease,
-      Rewind, Unwind,
+      RewindPause, UnwindPause,
 
       UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
       UISelect, UINavPrev, UINavNext, UIOK, UICancel, UIPrevDir,

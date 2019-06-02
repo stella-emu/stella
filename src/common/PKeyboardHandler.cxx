@@ -224,9 +224,11 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
       setDefaultKey(Event::ToggleBits         , KBDK_COMMA, MOD3);
       setDefaultKey(Event::ToggleFixedColors  , KBDK_PERIOD, MOD3);
 
+      setDefaultKey(Event::RewindPause        , KBDK_LEFT, KBDM_SHIFT);
       setDefaultKey(Event::Rewind1Menu        , KBDK_LEFT, MOD3);
       setDefaultKey(Event::Rewind10Menu       , KBDK_LEFT, KBDM_SHIFT | MOD3);
       setDefaultKey(Event::RewindAllMenu      , KBDK_DOWN, MOD3);
+      setDefaultKey(Event::UnwindPause        , KBDK_LEFT, KBDM_SHIFT);
       setDefaultKey(Event::Unwind1Menu        , KBDK_RIGHT, MOD3);
       setDefaultKey(Event::Unwind10Menu       , KBDK_RIGHT, KBDM_SHIFT | MOD3);
       setDefaultKey(Event::UnwindAllMenu      , KBDK_UP,   MOD3);
