@@ -1718,11 +1718,11 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
 #endif
   { Event::ToggleTimeMachine,       "Toggle 'Time Machine' mode",            "" },
   { Event::TimeMachineMode,         "Toggle 'Time Machine' UI",              "" },
-  { Event::RewindPause,             "Rewind one state and enter pause mode", "" },
+  { Event::RewindPause,             "Rewind one state & enter pause mode",   "" },
   { Event::Rewind1Menu,             "Rewind one state & enter TM UI",        "" },
   { Event::Rewind10Menu,            "Rewind 10 states & enter TM UI",        "" },
   { Event::RewindAllMenu,           "Rewind all states & enter TM UI",       "" },
-  { Event::UnwindPause,             "Unwind one state and enter pause mode", "" },
+  { Event::UnwindPause,             "Unwind one state & enter pause mode",   "" },
   { Event::Unwind1Menu,             "Unwind one state & enter TM UI",        "" },
   { Event::Unwind10Menu,            "Unwind 10 states & enter TM UI",        "" },
   { Event::UnwindAllMenu,           "Unwind all states & enter TM UI",       "" },
