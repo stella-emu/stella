@@ -93,7 +93,29 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
     instance().eventHandler().enableTextEvents(false);
   }
 
-  // handle emulation keys (can be remapped)
+  // special debugger keys first (cannot be remapped)
+  if (StellaModTest::isControl(mod))
+  {
+    switch (key)
+    {
+      case KBDK_S:
+        doStep();
+        return;
+      case KBDK_T:
+        doTrace();
+        return;
+      case KBDK_L:
+        doScanlineAdvance();
+        return;
+      case KBDK_F:
+        doAdvance();
+        return;
+      default:
+        break;
+    }
+  }
+
+  // handle emulation keys second (can be remapped)
   Event::Type event = instance().eventHandler().eventForKey(kEmulationMode, key, mod);
   switch (event)
   {
@@ -165,27 +187,6 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
       return;
   }
 
-  // special debugger keys (cannot be remapped)
-  if(StellaModTest::isControl(mod))
-  {
-    switch(key)
-    {
-      case KBDK_S:
-        doStep();
-        return;
-      case KBDK_T:
-        doTrace();
-        return;
-      case KBDK_L:
-        doScanlineAdvance();
-        return;
-      case KBDK_F:
-        doAdvance();
-        return;
-      default:
-        break;
-    }
-  }
   Dialog::handleKeyDown(key, mod);
 }
 
