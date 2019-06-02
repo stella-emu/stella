@@ -2006,7 +2006,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "94102febc53b4a78342d11b645342ed4", "", "", "Joustpong (14-07-2002) (Kirk Israel) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9433770890f087bfcf3e50122694d8c0", "Omegamatrix", "", "Star Wars Arcade (Amiga Mouse) (Y Inverted) v4 (Omegamatrix)", "Uses Amiga Mouse Controller", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9436b7ad131b5a1f7753ce4309ba3dee", "Kyle Pittman", "", "War of The Worlds (Kyle Pittman) (Hack)", "Hack of Defender", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "943798452ceba9357e2c56303cadb4f7", "Thomas Jentzsch", "", "Thrust+ (v1.28)", "", "New Release, supports BoosterGrip and Genesis (switched by Color/B+W)", "", "", "", "", "", "", "", "", "DRIVING", "", "", "", "", "", "" },
+  { "943798452ceba9357e2c56303cadb4f7", "Thomas Jentzsch", "", "Thrust+ (v1.28)", "", "New Release, supports BoosterGrip and Genesis (switched by Color/B+W)", "", "", "", "", "", "", "", "JOYSTICK", "DRIVING", "", "", "", "", "", "" },
   { "9446940866c9417f210f8552cf6c3078", "Thomas Jentzsch", "", "Marble Craze - Amiga Mouse Hack v1.0 (PAL60) (TJ)", "Uses Amiga Mouse Controllers", "", "", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "" },
   { "94507dee401b0a072a481c00d7699ffe", "Thomas Jentzsch", "", "Missile Control - Atari Trak-Ball Hack v1.15 (PAL) (TJ)", "Uses Atari Trak-Ball Controller", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9469d18238345d87768e8965f9f4a6b2", "CCE", "", "Ms. Pac-Man (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
