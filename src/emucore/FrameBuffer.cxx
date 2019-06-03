@@ -341,6 +341,7 @@ void FrameBuffer::update(bool force)
       force |= myOSystem.menu().needsRedraw();
       if(force)
       {
+        clear();
         myTIASurface->render();
         myOSystem.menu().draw(force);
       }
@@ -352,6 +353,7 @@ void FrameBuffer::update(bool force)
       force |= myOSystem.commandMenu().needsRedraw();
       if(force)
       {
+        clear();
         myTIASurface->render();
         myOSystem.commandMenu().draw(force);
       }
@@ -363,6 +365,7 @@ void FrameBuffer::update(bool force)
       force |= myOSystem.timeMachine().needsRedraw();
       if(force)
       {
+        clear();
         myTIASurface->render();
         myOSystem.timeMachine().draw(force);
       }
@@ -371,7 +374,12 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::LAUNCHER:
     {
-      force |= myOSystem.launcher().draw(force);
+      force |= myOSystem.launcher().needsRedraw();
+      if(force)
+      {
+        clear();
+        myOSystem.launcher().draw(force);
+      }
       break;  // EventHandlerState::LAUNCHER
     }
   #endif
@@ -379,7 +387,12 @@ void FrameBuffer::update(bool force)
   #ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
     {
-      force |= myOSystem.debugger().draw(force);
+      force |= myOSystem.debugger().needsRedraw();
+      if(force)
+      {
+        clear();
+        myOSystem.debugger().draw(force);
+      }
       break;  // EventHandlerState::DEBUGGER
     }
   #endif
