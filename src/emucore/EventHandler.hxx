@@ -308,6 +308,8 @@ class EventHandler
     void saveKeyMapping();
     void saveJoyMapping();
 
+    void exitEmulation();
+
   protected:
     // Global OSystem object
     OSystem& myOSystem;

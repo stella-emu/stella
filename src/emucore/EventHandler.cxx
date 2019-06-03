@@ -705,6 +705,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
         case EventHandlerState::EMULATION:
           if (pressed && !repeated)
           {
+            exitEmulation();
             // Go back to the launcher, or immediately quit
             if (myOSystem.settings().getBool("exitlauncher") ||
               myOSystem.launcherUsed())
@@ -723,6 +724,8 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
       {
         saveKeyMapping();
         saveJoyMapping();
+        if (myState != EventHandlerState::LAUNCHER)
+          exitEmulation();
         myOSystem.quit();
       }
       return;
@@ -1568,6 +1571,18 @@ void EventHandler::setState(EventHandlerState state)
   // Erase any previously set events, since a state change implies
   // that old events are now invalid
   myEvent.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::exitEmulation()
+{
+  // TODO: confirm message
+  string saveOnExit = myOSystem.settings().getString("saveonexit");
+
+  if (saveOnExit == "all")
+    handleEvent(Event::SaveAllStates);
+  else if (saveOnExit == "current")
+    handleEvent(Event::SaveState);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

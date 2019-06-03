@@ -104,10 +104,11 @@ Settings::Settings()
   setPermanent("snapsavedir", "");
   setPermanent("snaploaddir", "");
   setPermanent("snapname", "int");
-  setPermanent("autoslot", "false");
   setPermanent("sssingle", "false");
   setPermanent("ss1x", "false");
   setPermanent("ssinterval", "2");
+  setPermanent("autoslot", "false");
+  setPermanent("saveonexit", "ALL");
 
   // Config files and paths
   setPermanent("romdir", "");
@@ -451,13 +452,15 @@ void Settings::usage() const
     << "  -snaploaddir  <path>         The directory to load snapshot files from\n"
     << "  -snapname     <int|rom>      Name snapshots according to internal database or\n"
     << "                                ROM\n"
-    << "  -autoslot     <1|0>          Automatically switch to next save slot when\n"
-    << "                                state saving\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore\n"
     << "                                scaling/effects)\n"
-    << "  -ssinterval   <number        Number of seconds between snapshots in\n"
+    << "  -ssinterval   <number>       Number of seconds between snapshots in\n"
     << "                                continuous snapshot mode\n"
+    << "  -autoslot     <1|0>          Automatically switch to next save slot when\n"
+    << "                                state saving\n"
+    << "  -saveonexit   <none|current  Automatically save state(s) when exiting emulation\n"
+    << "                 all>\n"
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM\n"

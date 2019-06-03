@@ -134,6 +134,7 @@ class DeveloperDialog : public Dialog
     SliderWidget*       myUncompressedWidget;
     PopUpWidget*        myStateIntervalWidget;
     PopUpWidget*        myStateHorizonWidget;
+    RadioButtonGroup*   mySaveOnExitGroup;
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
