@@ -73,7 +73,8 @@ class FrameBuffer
       friend ostream& operator<<(ostream& os, const VideoMode& vm)
       {
         os << "image=" << vm.image << "  screen=" << vm.screen
-           << "  stretch= " << (vm.stretch == Stretch::Preserve ? "preserve" : "fill")
+           << "  stretch=" << (vm.stretch == Stretch::Preserve ? "preserve" :
+                               vm.stretch == Stretch::Fill ? "fill" : "none")
            << "  desc=" << vm.description << "  zoom=" << vm.zoom
            << "  fsIndex= " << vm.fsIndex;
         return os;
@@ -390,13 +391,6 @@ class FrameBuffer
     */
     virtual bool setVideoMode(const string& title,
                               const FrameBuffer::VideoMode& mode) = 0;
-
-    /**
-      This method is called to invalidate the contents of the entire
-      framebuffer (ie, mark the current content as invalid, and erase it on
-      the next drawing pass).
-    */
-    virtual void invalidate() = 0;
 
     /**
       This method is called to create a surface with the given attributes.

@@ -944,7 +944,8 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   {
     // Windowed and fullscreen mode differ only in screen size
     myWindowedModeList.add(
-        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight, VideoMode::Stretch::None)
+        VideoMode(baseWidth, baseHeight, baseWidth, baseHeight,
+        VideoMode::Stretch::None)
     );
     for(uInt32 i = 0; i < myFullscreenDisplays.size(); ++i)
     {
@@ -1069,10 +1070,11 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
     {
       case Stretch::Preserve:
       case Stretch::Fill:
-      case Stretch::None:
         screen.w = iw;
         screen.h = ih;
         break;
+      case Stretch::None:
+        break;  // Do not change image or screen rects whatsoever
     }
   }
 
