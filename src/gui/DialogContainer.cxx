@@ -93,9 +93,7 @@ bool DialogContainer::draw(bool full)
     myDialogStack.top()->setDirty();
 
   // If the top dialog is dirty, then all below it must be redrawn too
-  bool dirty = needsRedraw();
-  if(dirty)
-    myOSystem.frameBuffer().clear();
+  const bool dirty = needsRedraw();
 
   myDialogStack.applyAll([&](Dialog*& d){
     if(dirty)
