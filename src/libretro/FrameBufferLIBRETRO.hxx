@@ -140,13 +140,6 @@ class FrameBufferLIBRETRO : public FrameBuffer
     bool setVideoMode(const string& title, const VideoMode& mode) override { return true; }
 
     /**
-      This method is called to invalidate the contents of the entire
-      framebuffer (ie, mark the current content as invalid, and erase it on
-      the next drawing pass).
-    */
-    void invalidate() override { }
-
-    /**
       This method is called to create a surface with the given attributes.
 
       @param w     The requested width of the new surface.
