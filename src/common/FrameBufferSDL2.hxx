@@ -112,7 +112,7 @@ class FrameBufferSDL2 : public FrameBuffer
     void updateWindowedPos() override;
 
     /**
-      Clear the frame buffer
+      Clear the frame buffer.
     */
     void clear() override;
 
@@ -142,13 +142,6 @@ class FrameBufferSDL2 : public FrameBuffer
       @return  False on any errors, else true
     */
     bool setVideoMode(const string& title, const VideoMode& mode) override;
-
-    /**
-      This method is called to invalidate the contents of the entire
-      framebuffer (ie, mark the current content as invalid, and erase it on
-      the next drawing pass).
-    */
-    void invalidate() override;
 
     /**
       This method is called to create a surface with the given attributes.
@@ -189,7 +182,7 @@ class FrameBufferSDL2 : public FrameBuffer
     // Used by mapRGB (when palettes are created)
     SDL_PixelFormat* myPixelFormat;
 
-    // center setting of curent window
+    // Center setting of current window
     bool myCenter;
 
     // last position of windowed window

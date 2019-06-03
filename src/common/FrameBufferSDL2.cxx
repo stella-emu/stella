@@ -306,11 +306,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     Logger::log(msg, 0);
     return false;
   }
-
-  // Always clear the (double-buffered) renderer surface
-  SDL_RenderClear(myRenderer);
-  SDL_RenderPresent(myRenderer);
-  SDL_RenderClear(myRenderer);
+  clear();
 
   SDL_RendererInfo renderinfo;
   if(SDL_GetRendererInfo(myRenderer, &renderinfo) >= 0)
@@ -350,15 +346,6 @@ string FrameBufferSDL2::about() const
         << endl;
   }
   return out.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::invalidate()
-{
-  ASSERT_MAIN_THREAD;
-
-
-  SDL_RenderClear(myRenderer);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -436,6 +423,7 @@ void FrameBufferSDL2::readPixels(uInt8* pixels, uInt32 pitch,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSDL2::clear()
 {
-  invalidate();
-  renderToScreen();
+  ASSERT_MAIN_THREAD;
+
+  SDL_RenderClear(myRenderer);
 }
