@@ -132,7 +132,7 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
   const Common::Rect& rect = fb.imageRect();
-  png_uint_32 width = rect.width(), height = rect.height();
+  png_uint_32 width = rect.w(), height = rect.h();
 
   // Get framebuffer pixel data (we get ABGR format)
   unique_ptr<png_byte[]> buffer = make_unique<png_byte[]>(width * height * 4);
@@ -156,7 +156,7 @@ void PNGLibrary::saveImage(const string& filename, const FBSurface& surface,
     throw runtime_error("ERROR: Couldn't create snapshot file");
 
   // Do we want the entire surface or just a section?
-  png_uint_32 width = rect.width(), height = rect.height();
+  png_uint_32 width = rect.w(), height = rect.h();
   if(rect.empty())
   {
     width = surface.width();

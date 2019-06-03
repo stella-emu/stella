@@ -415,7 +415,7 @@ void FrameBufferSDL2::readPixels(uInt8* pixels, uInt32 pitch,
 
   SDL_Rect r;
   r.x = rect.x();  r.y = rect.y();
-  r.w = rect.width();  r.h = rect.height();
+  r.w = rect.w();  r.h = rect.h();
 
   SDL_RenderReadPixels(myRenderer, &r, 0, pixels, pitch);
 }

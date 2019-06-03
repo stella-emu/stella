@@ -105,75 +105,78 @@ struct Size
 */
 struct Rect
 {
-  uInt32 top, left;        //!< The point at the top left of the rectangle (part of the rect).
-  uInt32 bottom, right;    //!< The point at the bottom right of the rectangle (not part of the rect).
+  private:
+    uInt32 top, left;        //!< The point at the top left of the rectangle (part of the rect).
+    uInt32 bottom, right;    //!< The point at the bottom right of the rectangle (not part of the rect).
 
-  Rect() : top(0), left(0), bottom(0), right(0) { assert(valid()); }
-  Rect(const Rect& s) : top(s.top), left(s.left), bottom(s.bottom), right(s.right) { assert(valid()); }
-  Rect& operator=(const Rect&) = default;
-  Rect(uInt32 w, uInt32 h) : top(0), left(0), bottom(h), right(w) { assert(valid()); }
-  Rect(const Point& p, uInt32 w, uInt32 h) : top(p.y), left(p.x), bottom(h), right(w) { assert(valid()); }
-  Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top(y1), left(x1), bottom(y2), right(x2) { assert(valid()); }
+  public:
+    Rect() : top(0), left(0), bottom(0), right(0) { assert(valid()); }
+    Rect(const Rect& s) : top(s.top), left(s.left), bottom(s.bottom), right(s.right) { assert(valid()); }
+    Rect(const Size& s) : top(0), left(0), bottom(s.h), right(s.w) { assert(valid()); }
+    Rect& operator=(const Rect&) = default;
+    Rect(uInt32 w, uInt32 h) : top(0), left(0), bottom(h), right(w) { assert(valid()); }
+    Rect(const Point& p, uInt32 w, uInt32 h) : top(p.y), left(p.x), bottom(h), right(w) { assert(valid()); }
+    Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top(y1), left(x1), bottom(y2), right(x2) { assert(valid()); }
 
-  uInt32 x() const { return left; }
-  uInt32 y() const { return top; }
-  Point point() const { return Point(x(), y()); }
+    uInt32 x() const { return left; }
+    uInt32 y() const { return top;  }
+    Point point() const { return Point(x(), y()); }
 
-  uInt32 width() const  { return right - left; }
-  uInt32 height() const { return bottom - top; }
-  Size size() const { return Size(width(), height()); }
+    uInt32 w() const { return right - left; }
+    uInt32 h() const { return bottom - top; }
+    Size size() const { return Size(w(), h()); }
 
-  void setWidth(uInt32 aWidth)   { right = left + aWidth;  }
-  void setHeight(uInt32 aHeight) { bottom = top + aHeight; }
-  void setSize(const Size& size) { setWidth(size.w); setHeight(size.h); }
+    void setWidth(uInt32 aWidth)   { right = left + aWidth;  }
+    void setHeight(uInt32 aHeight) { bottom = top + aHeight; }
+    void setSize(const Size& size) { setWidth(size.w); setHeight(size.h); }
 
-  void setBounds(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) {
-    top = y1;
-    left = x1;
-    bottom = y2;
-    right = x2;
-    assert(valid());
-  }
+    void setBounds(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) {
+      top = y1;
+      left = x1;
+      bottom = y2;
+      right = x2;
+      assert(valid());
+    }
 
-  bool valid() const {
-    return (left <= right && top <= bottom);
-  }
+    bool valid() const {
+      return (left <= right && top <= bottom);
+    }
 
-  bool empty() const {
-    return top == 0 && left == 0 && bottom == 0 && right == 0;
-  }
+    bool empty() const {
+      return top == 0 && left == 0 && bottom == 0 && right == 0;
+    }
 
-  void moveTo(uInt32 x, uInt32 y) {
-    bottom += y - top;
-    right += x - left;
-    top = y;
-    left = x;
-  }
+    void moveTo(uInt32 x, uInt32 y) {
+      bottom += y - top;
+      right += x - left;
+      top = y;
+      left = x;
+    }
 
-  void moveTo(const Point& p) {
-    moveTo(p.x, p.y);
-  }
+    void moveTo(const Point& p) {
+      moveTo(p.x, p.y);
+    }
 
-  bool contains(uInt32 x, uInt32 y) const {
-    return x >= left && y >= top && x < right && y < bottom;
-  }
+    bool contains(uInt32 x, uInt32 y) const {
+      return x >= left && y >= top && x < right && y < bottom;
+    }
 
-  // Tests whether 'r' is completely contained within this rectangle.
-  // If it isn't, then set 'x' and 'y' such that moving 'r' to this
-  // position will make it be contained.
-  bool contains(uInt32& x, uInt32& y, const Rect& r) const {
-    if(r.left < left)  x = left;
-    else if(r.right > right) x = r.left - (r.right - right);
-    if(r.top < top)  y = top;
-    else if(r.bottom > bottom) y = r.top - (r.bottom - bottom);
+    // Tests whether 'r' is completely contained within this rectangle.
+    // If it isn't, then set 'x' and 'y' such that moving 'r' to this
+    // position will make it be contained.
+    bool contains(uInt32& x, uInt32& y, const Rect& r) const {
+      if(r.left < left)  x = left;
+      else if(r.right > right) x = r.left - (r.right - right);
+      if(r.top < top)  y = top;
+      else if(r.bottom > bottom) y = r.top - (r.bottom - bottom);
 
-    return r.left != x || r.top != y;
-  }
+      return r.left != x || r.top != y;
+    }
 
-  friend ostream& operator<<(ostream& os, const Rect& r) {
-    os << r.point() << "," << r.size();
-    return os;
-  }
+    friend ostream& operator<<(ostream& os, const Rect& r) {
+      os << r.point() << "," << r.size();
+      return os;
+    }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

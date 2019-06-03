@@ -108,9 +108,9 @@ void RomListSettings::center()
   // First set position according to original coordinates
   surface().setDstPos(_xorig, _yorig);
 
-  // Now make sure that the entire menu can fit inside the image bounds
+  // Now make sure that the entire menu can fit inside the screen bounds
   // If not, we reset its position
-  if(!instance().frameBuffer().imageRect().contains(
+  if(!instance().frameBuffer().screenRect().contains(
       _xorig, _yorig, surface().dstRect()))
     surface().setDstPos(_xorig, _yorig);
 }

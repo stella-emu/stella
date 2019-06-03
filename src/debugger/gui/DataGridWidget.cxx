@@ -670,15 +670,11 @@ void DataGridWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect DataGridWidget::getEditRect() const
 {
-  Common::Rect r(1, 0, _colWidth, _rowHeight);
   const int rowoffset = _currentRow * _rowHeight;
   const int coloffset = _currentCol * _colWidth + 4;
-  r.top += rowoffset;
-  r.bottom += rowoffset;
-  r.left += coloffset;
-  r.right += coloffset - 5;
 
-  return r;
+  return Common::Rect(1 + coloffset, rowoffset,
+                      _colWidth + coloffset - 5, _rowHeight + rowoffset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

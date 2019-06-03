@@ -58,7 +58,7 @@ void EditableWidget::setText(const string& str, bool)
 
   _caretPos = int(_editString.size());
 
-  _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().width()));
+  _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().w()));
   if (_editScrollOffset < 0)
     _editScrollOffset = 0;
 
@@ -203,8 +203,8 @@ void EditableWidget::drawCaret()
     return;
 
   const Common::Rect& editRect = getEditRect();
-  int x = editRect.left;
-  int y = editRect.top;
+  int x = editRect.x();
+  int y = editRect.y();
 
   x += getCaretOffset();
 
@@ -212,7 +212,7 @@ void EditableWidget::drawCaret()
   y += _y;
 
   FBSurface& s = _boss->dialog().surface();
-  s.vLine(x, y+2, y + editRect.height() - 2, kTextColorHi);
+  s.vLine(x, y+2, y + editRect.h() - 2, kTextColorHi);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -234,7 +234,7 @@ bool EditableWidget::adjustOffset()
   // this method should always return true.
 
   int caretpos = getCaretOffset();
-  const int editWidth = getEditRect().width();
+  const int editWidth = getEditRect().w();
 
   if (caretpos < 0)
   {

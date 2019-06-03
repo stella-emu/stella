@@ -120,23 +120,23 @@ void CheckListWidget::drawWidget(bool hilite)
     {
       if(_hasFocus && !_editMode)
       {
-        s.fillRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
-                   _w - r.left, _fontHeight, kTextColorHi);
+        s.fillRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
+                   _w - r.x(), _fontHeight, kTextColorHi);
         textColor = kTextColorInv;
       }
       else
-        s.frameRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
-                    _w - r.left, _fontHeight, onTop ? kTextColorHi : kColor);
+        s.frameRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
+                    _w - r.x(), _fontHeight, onTop ? kTextColorHi : kColor);
     }
 
     if (_selectedItem == pos && _editMode)
     {
       adjustOffset();
-      s.drawString(_font, editString(), _x + r.left, y, r.width(), onTop ? kTextColor : kColor,
+      s.drawString(_font, editString(), _x + r.x(), y, r.w(), onTop ? kTextColor : kColor,
                    TextAlign::Left, -_editScrollOffset, false);
     }
     else
-      s.drawString(_font, _list[pos], _x + r.left, y, r.width(),
+      s.drawString(_font, _list[pos], _x + r.x(), y, r.w(),
                    onTop ? textColor : kColor);
   }
 
@@ -149,15 +149,11 @@ void CheckListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect CheckListWidget::getEditRect() const
 {
-  Common::Rect r(2, 1, _w, _fontHeight);
   const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
             xoffset = CheckboxWidget::boxSize() + 10;
-  r.top    += yoffset;
-  r.bottom += yoffset;
-  r.left  += xoffset;
-  r.right -= xoffset - 15;
 
-  return r;
+  return Common::Rect(2 + xoffset, 1 + yoffset,
+                      _w - (xoffset - 15), _fontHeight + yoffset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

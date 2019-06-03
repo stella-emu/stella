@@ -185,6 +185,7 @@ class FrameBuffer
       'unusable' area.
     */
     const Common::Size& screenSize() const { return myScreenSize; }
+    const Common::Rect& screenRect() const { return myScreenRect; }
 
     /**
       Returns the current dimensions of the users' desktop.
@@ -538,7 +539,10 @@ class FrameBuffer
     Common::Rect myImageRect;
 
     // Dimensions of the main window (not always the same as the image)
+    // Use 'size' version when only wxh are required
+    // Use 'rect' version when x/y, wxh are required
     Common::Size myScreenSize;
+    Common::Rect myScreenRect;
 
     // Maximum dimensions of the desktop area
     // Note that this takes 'hidpi' mode into account, so in some cases

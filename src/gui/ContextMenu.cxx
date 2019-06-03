@@ -90,9 +90,9 @@ void ContextMenu::center()
   // First set position according to original coordinates
   surface().setDstPos(_xorig, _yorig);
 
-  // Now make sure that the entire menu can fit inside the image bounds
+  // Now make sure that the entire menu can fit inside the screen bounds
   // If not, we reset its position
-  if(!instance().frameBuffer().imageRect().contains(
+  if(!instance().frameBuffer().screenRect().contains(
       _xorig, _yorig, surface().dstRect()))
     surface().setDstPos(_xorig, _yorig);
 }
@@ -102,7 +102,7 @@ void ContextMenu::recalc(const Common::Rect& image)
 {
   // Now is the time to adjust the height
   // If it's higher than the screen, we need to scroll through
-  uInt32 maxentries = std::min(18u, (image.height() - 2) / _rowHeight);
+  uInt32 maxentries = std::min(18u, (image.h() - 2) / _rowHeight);
   if(_entries.size() > maxentries)
   {
     // We show two less than the max, so we have room for two scroll buttons

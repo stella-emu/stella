@@ -403,7 +403,7 @@ void DebuggerDialog::addTiaArea()
 {
   const Common::Rect& r = getTiaBounds();
   myTiaOutput =
-    new TiaOutputWidget(this, *myNFont, r.left, r.top, r.width(), r.height());
+    new TiaOutputWidget(this, *myNFont, r.x(), r.y(), r.w(), r.h());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -415,13 +415,13 @@ void DebuggerDialog::addTabArea()
   // The tab widget
   // Since there are two tab widgets in this dialog, we specifically
   // assign an ID of 0
-  myTab = new TabWidget(this, *myLFont, r.left, r.top + vBorder,
-                        r.width(), r.height() - vBorder);
+  myTab = new TabWidget(this, *myLFont, r.x(), r.y() + vBorder,
+                        r.w(), r.h() - vBorder);
   myTab->setID(0);
   addTabWidget(myTab);
 
-  const int widWidth  = r.width() - vBorder;
-  const int widHeight = r.height() - myTab->getTabHeight() - vBorder - 4;
+  const int widWidth  = r.w() - vBorder;
+  const int widHeight = r.h() - myTab->getTabHeight() - vBorder - 4;
   int tabID;
 
   // The Prompt/console tab
@@ -462,12 +462,12 @@ void DebuggerDialog::addStatusArea()
   const Common::Rect& r = getStatusBounds();
   int xpos, ypos;
 
-  xpos = r.left;  ypos = r.top;
-  myTiaInfo = new TiaInfoWidget(this, *myLFont, *myNFont, xpos, ypos, r.width());
+  xpos = r.x();  ypos = r.y();
+  myTiaInfo = new TiaInfoWidget(this, *myLFont, *myNFont, xpos, ypos, r.w());
 
   ypos += myTiaInfo->getHeight() + 10;
   myTiaZoom = new TiaZoomWidget(this, *myNFont, xpos+10, ypos,
-                                r.width()-10, r.height()-lineHeight-ypos-10);
+                                r.w()-10, r.h()-lineHeight-ypos-10);
   addToFocusList(myTiaZoom->getFocusList());
 
   xpos += 10;  ypos += myTiaZoom->getHeight() + 10;
@@ -518,7 +518,7 @@ void DebuggerDialog::addRomArea()
 
   int bwidth  = myLFont->getStringWidth("Frame +1 "),
       bheight = myLFont->getLineHeight() + 2;
-  int buttonX = r.right - bwidth - 5, buttonY = r.top + 5;
+  int buttonX = r.x() + r.w() - bwidth - 5, buttonY = r.y() + 5;
 
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Step", kDDStepCmd, true);
@@ -543,7 +543,7 @@ void DebuggerDialog::addRomArea()
   bwidth = bheight; // 7 + 12;
   bheight = bheight * 3 + 4 * 2;
   buttonX -= (bwidth + 5);
-  buttonY = r.top + 5;
+  buttonY = r.y() + 5;
 
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
@@ -563,7 +563,7 @@ void DebuggerDialog::addRomArea()
   bwidth = myLFont->getStringWidth("Options " + ELLIPSIS);
   bheight = myLFont->getLineHeight() + 2;
 
-  b = new ButtonWidget(this, *myLFont, xpos, r.top + 5, bwidth, bheight,
+  b = new ButtonWidget(this, *myLFont, xpos, r.y() + 5, bwidth, bheight,
                        "Options" + ELLIPSIS, kDDOptionsCmd);
   wid1.push_back(b);
   wid1.push_back(myRewindButton);
@@ -571,16 +571,16 @@ void DebuggerDialog::addRomArea()
 
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, *myLFont, xpos, ypos);
 
-  int max_w = xpos - r.left - 10;
-  xpos = r.left + 10;  ypos = 10;
+  int max_w = xpos - r.x() - 10;
+  xpos = r.x() + 10;  ypos = 10;
   myCpu = new CpuWidget(this, *myLFont, *myNFont, xpos, ypos, max_w);
   addToFocusList(myCpu->getFocusList());
 
   addToFocusList(wid1);
   addToFocusList(wid2);
 
-  xpos = r.left + 10;  ypos += myCpu->getHeight() + 10;
-  myRam = new RiotRamWidget(this, *myLFont, *myNFont, xpos, ypos, r.width() - 10);
+  xpos = r.x() + 10;  ypos += myCpu->getHeight() + 10;
+  myRam = new RiotRamWidget(this, *myLFont, *myNFont, xpos, ypos, r.w() - 10);
   addToFocusList(myRam->getFocusList());
 
   // Add the DataGridOpsWidget to any widgets which contain a
@@ -591,9 +591,9 @@ void DebuggerDialog::addRomArea()
   ////////////////////////////////////////////////////////////////////
   // Disassembly area
 
-  xpos = r.left + VBORDER;  ypos += myRam->getHeight() + 5;
-  const int tabWidth  = r.width() - VBORDER - 1;
-  const int tabHeight = r.height() - ypos - 1;
+  xpos = r.x() + VBORDER;  ypos += myRam->getHeight() + 5;
+  const int tabWidth  = r.w() - VBORDER - 1;
+  const int tabHeight = r.h() - ypos - 1;
   int tabID;
 
   // Since there are two tab widgets in this dialog, we specifically
@@ -664,9 +664,7 @@ Common::Rect DebuggerDialog::getRomBounds() const
 {
   // The ROM area is the full area to the right of the tabs
   const Common::Rect& status = getStatusBounds();
-  Common::Rect r(status.right + 1, 0, _w, _h);
-
-  return r;
+  return Common::Rect(status.x() + status.w() + 1, 0, _w, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -677,13 +675,12 @@ Common::Rect DebuggerDialog::getStatusBounds() const
   // 30% of any space above 1030 pixels will be allocated to this area
   const Common::Rect& tia = getTiaBounds();
 
-  int x1 = tia.right + 1;
+  int x1 = tia.x() + tia.w() + 1;
   int y1 = 0;
-  int x2 = tia.right + 225 + (_w > 1030 ? int(0.35 * (_w - 1030)) : 0);
-  int y2 = tia.bottom;
-  Common::Rect r(x1, y1, x2, y2);
+  int x2 = tia.x() + tia.w() + 225 + (_w > 1030 ? int(0.35 * (_w - 1030)) : 0);
+  int y2 = tia.y() + tia.h();
 
-  return r;
+  return Common::Rect(x1, y1, x2, y2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -692,7 +689,7 @@ Common::Rect DebuggerDialog::getTabBounds() const
   // The tab area is the full area below the TIA image
   const Common::Rect& tia    = getTiaBounds();
   const Common::Rect& status = getStatusBounds();
-  Common::Rect r(0, tia.bottom + 1, status.right + 1, _h);
 
-  return r;
+  return Common::Rect(0, tia.y() + tia.h() + 1,
+                      status.x() + status.w() + 1, _h);
 }

@@ -71,9 +71,9 @@ void TIASurface::initialize(const Console& console,
   myTIA = &(console.tia());
 
   myTiaSurface->setDstPos(mode.image.x(), mode.image.y());
-  myTiaSurface->setDstSize(mode.image.width(), mode.image.height());
+  myTiaSurface->setDstSize(mode.image.w(), mode.image.h());
   mySLineSurface->setDstPos(mode.image.x(), mode.image.y());
-  mySLineSurface->setDstSize(mode.image.width(), mode.image.height());
+  mySLineSurface->setDstSize(mode.image.w(), mode.image.h());
 
   // Phosphor mode can be enabled either globally or per-ROM
   int p_blend = 0;
@@ -97,8 +97,8 @@ void TIASurface::initialize(const Console& console,
   // so rounding is performed to eliminate it
   // This won't be 100% accurate, but non-integral scaling isn't 100%
   // accurate anyway
-  mySLineSurface->setSrcSize(1, 2 * int(float(mode.image.height()) /
-    floorf((float(mode.image.height()) / myTIA->height()) + 0.5f)));
+  mySLineSurface->setSrcSize(1, 2 * int(float(mode.image.h()) /
+    floorf((float(mode.image.h()) / myTIA->height()) + 0.5f)));
 
 #if 0
 cerr << "INITIALIZE:\n"
