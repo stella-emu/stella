@@ -48,8 +48,8 @@ void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect
     memcpy(buffer, src, width() * height() * 4);
   else
   {
-    uInt32 w = std::min(rect.width(), width());
-    uInt32 h = std::min(rect.height(), height());
+    uInt32 w = std::min(rect.w(), width());
+    uInt32 h = std::min(rect.h(), height());
 
     // Copy 'height' lines of width 'pitch' (in bytes for both)
     uInt8* dst = buffer;

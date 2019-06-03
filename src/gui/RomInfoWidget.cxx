@@ -110,9 +110,9 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
 
     // Scale surface to available image area
     const Common::Rect& src = mySurface->srcRect();
-    float scale = std::min(float(myAvail.w) / src.width(), float(myAvail.h) / src.height()) *
+    float scale = std::min(float(myAvail.w) / src.w(), float(myAvail.h) / src.h()) *
         instance().frameBuffer().hidpiScaleFactor();
-    mySurface->setDstSize(uInt32(src.width() * scale), uInt32(src.height() * scale));
+    mySurface->setDstSize(uInt32(src.w() * scale), uInt32(src.h() * scale));
     mySurfaceIsValid = true;
   }
   catch(const runtime_error& e)
@@ -181,8 +181,8 @@ void RomInfoWidget::drawWidget(bool hilite)
   {
     const Common::Rect& dst = mySurface->dstRect();
     const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
-    uInt32 x = _x*scale + ((_w*scale - dst.width()) >> 1);
-    uInt32 y = _y*scale + ((yoff*scale - dst.height()) >> 1);
+    uInt32 x = _x*scale + ((_w*scale - dst.w()) >> 1);
+    uInt32 y = _y*scale + ((yoff*scale - dst.h()) >> 1);
 
     // Make sure when positioning the snapshot surface that we take
     // the dialog surface position into account

@@ -140,9 +140,9 @@ void InputTextDialog::center()
     // First set position according to original coordinates
     surface().setDstPos(myXOrig, myYOrig);
 
-    // Now make sure that the entire menu can fit inside the image bounds
+    // Now make sure that the entire menu can fit inside the screen bounds
     // If not, we reset its position
-    if(!instance().frameBuffer().imageRect().contains(
+    if(!instance().frameBuffer().screenRect().contains(
         myXOrig, myXOrig, surface().dstRect()))
       surface().setDstPos(myXOrig, myYOrig);
   }

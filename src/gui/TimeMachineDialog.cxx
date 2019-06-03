@@ -287,7 +287,7 @@ void TimeMachineDialog::center()
   // Place on the bottom of the screen, centered horizontally
   const Common::Size& screen = instance().frameBuffer().screenSize();
   const Common::Rect& dst = surface().dstRect();
-  surface().setDstPos((screen.w - dst.width()) >> 1, screen.h - dst.height() - 10);
+  surface().setDstPos((screen.w - dst.w()) >> 1, screen.h - dst.h() - 10);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

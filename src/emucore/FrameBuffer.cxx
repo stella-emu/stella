@@ -235,6 +235,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
     {
       myImageRect = mode.image;
       myScreenSize = mode.screen;
+      myScreenRect = Common::Rect(mode.screen);
 
       // Inform TIA surface about new mode
       if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
@@ -581,43 +582,43 @@ inline bool FrameBuffer::drawMessage()
       break;
 
     case MessagePosition::TopCenter:
-      myMsg.x = (myImageRect.width() - dst.width()) >> 1;
+      myMsg.x = (myImageRect.w() - dst.w()) >> 1;
       myMsg.y = 5;
       break;
 
     case MessagePosition::TopRight:
-      myMsg.x = myImageRect.width() - dst.width() - 5;
+      myMsg.x = myImageRect.w() - dst.w() - 5;
       myMsg.y = 5;
       break;
 
     case MessagePosition::MiddleLeft:
       myMsg.x = 5;
-      myMsg.y = (myImageRect.height() - dst.height()) >> 1;
+      myMsg.y = (myImageRect.h() - dst.h()) >> 1;
       break;
 
     case MessagePosition::MiddleCenter:
-      myMsg.x = (myImageRect.width() - dst.width()) >> 1;
-      myMsg.y = (myImageRect.height() - dst.height()) >> 1;
+      myMsg.x = (myImageRect.w() - dst.w()) >> 1;
+      myMsg.y = (myImageRect.h() - dst.h()) >> 1;
       break;
 
     case MessagePosition::MiddleRight:
-      myMsg.x = myImageRect.width() - dst.width() - 5;
-      myMsg.y = (myImageRect.height() - dst.height()) >> 1;
+      myMsg.x = myImageRect.w() - dst.w() - 5;
+      myMsg.y = (myImageRect.h() - dst.h()) >> 1;
       break;
 
     case MessagePosition::BottomLeft:
       myMsg.x = 5;
-      myMsg.y = myImageRect.height() - dst.height() - 5;
+      myMsg.y = myImageRect.h() - dst.h() - 5;
       break;
 
     case MessagePosition::BottomCenter:
-      myMsg.x = (myImageRect.width() - dst.width()) >> 1;
-      myMsg.y = myImageRect.height() - dst.height() - 5;
+      myMsg.x = (myImageRect.w() - dst.w()) >> 1;
+      myMsg.y = myImageRect.h() - dst.h() - 5;
       break;
 
     case MessagePosition::BottomRight:
-      myMsg.x = myImageRect.width() - dst.width() - 5;
-      myMsg.y = myImageRect.height() - dst.height() - 5;
+      myMsg.x = myImageRect.w() - dst.w() - 5;
+      myMsg.y = myImageRect.h() - dst.h() - 5;
       break;
   }
 
@@ -738,6 +739,7 @@ void FrameBuffer::setFullscreen(bool enable)
   {
     myImageRect = mode.image;
     myScreenSize = mode.screen;
+    myScreenRect = Common::Rect(mode.screen);
 
     // Inform TIA surface about new mode
     if(myOSystem.eventHandler().state() != EventHandlerState::LAUNCHER &&
@@ -808,6 +810,7 @@ bool FrameBuffer::changeVidMode(int direction)
   {
     myImageRect = mode.image;
     myScreenSize = mode.screen;
+    myScreenRect = Common::Rect(mode.screen);
 
     // Inform TIA surface about new mode
     myTIASurface->initialize(myOSystem.console(), mode);
@@ -1038,8 +1041,8 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   screen = Common::Size(sw, sh);
 
   // Now resize based on windowed/fullscreen mode and stretch factor
-  iw = image.width();
-  ih = image.height();
+  iw = image.w();
+  ih = image.h();
 
   if(fsIndex != -1)
   {

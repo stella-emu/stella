@@ -480,7 +480,7 @@ void RomListWidget::drawWidget(bool hilite)
   // Draw the list items
   int cycleCountW = _fontWidth * 8,
       noTypeDisasmW = _w - l.x() - _labelWidth,
-      noCodeDisasmW = noTypeDisasmW - r.width(),
+      noCodeDisasmW = noTypeDisasmW - r.w(),
       codeDisasmW = noCodeDisasmW - cycleCountW,
       actualWidth = myDisasm->fieldwidth * _fontWidth;
   if(actualWidth < codeDisasmW)
@@ -505,11 +505,11 @@ void RomListWidget::drawWidget(bool hilite)
     {
       if(!_editMode)
       {
-        s.fillRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kTextColorHi);
+        s.fillRect(_x + r.x() - 3, ypos - 1, r.w(), _fontHeight, kTextColorHi);
         bytesColor = kTextColorInv;
       }
       else
-        s.frameRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kWidColorHi);
+        s.frameRect(_x + r.x() - 3, ypos - 1, r.w(), _fontHeight, kWidColorHi);
     }
 
     // Draw labels
@@ -548,14 +548,14 @@ void RomListWidget::drawWidget(bool hilite)
         if (_selectedItem == pos && _editMode)
         {
           adjustOffset();
-          s.drawString(_font, editString(), _x + r.x(), ypos, r.width(), textColor,
+          s.drawString(_font, editString(), _x + r.x(), ypos, r.w(), textColor,
                        TextAlign::Left, -_editScrollOffset, false);
 
           drawCaret();
         }
         else
         {
-          s.drawString(_font, dlist[pos].bytes, _x + r.x(), ypos, r.width(), bytesColor);
+          s.drawString(_font, dlist[pos].bytes, _x + r.x(), ypos, r.w(), bytesColor);
         }
       }
     }
@@ -571,28 +571,20 @@ void RomListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect RomListWidget::getLineRect() const
 {
-  Common::Rect r(2, 1, _w, _fontHeight);
   const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
             xoffset = CheckboxWidget::boxSize() + 10;
-  r.top    += yoffset;
-  r.bottom += yoffset;
-  r.left   += xoffset;
-  r.right  -= xoffset - 15;
 
-  return r;
+  return Common::Rect(2 + xoffset, 1 + yoffset,
+                      _w - (xoffset - 15), _fontHeight + yoffset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect RomListWidget::getEditRect() const
 {
-  Common::Rect r(2, 1, _w, _fontHeight);
   const int yoffset = (_selectedItem - _currentPos) * _fontHeight;
-  r.top    += yoffset;
-  r.bottom += yoffset;
-  r.left   += _w - _bytesWidth;
-  r.right   = _w;
 
-  return r;
+  return Common::Rect(2 + _w - _bytesWidth, 1 + yoffset,
+                      _w, _fontHeight + yoffset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

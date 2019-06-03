@@ -174,10 +174,10 @@ void Dialog::positionAt(uInt32 pos)
   // shift stacked dialogs
   Int32 hgap = (screen.w >> 6) * _layer + screen.w * overscan;
   Int32 vgap = (screen.w >> 6) * _layer + screen.h * overscan;
-  int top = std::min(std::max(0, Int32(screen.h - dst.height())), vgap);
-  int btm = std::max(0, Int32(screen.h - dst.height() - vgap));
-  int left = std::min(std::max(0, Int32(screen.w - dst.width())), hgap);
-  int right = std::max(0, Int32(screen.w - dst.width() - hgap));
+  int top = std::min(std::max(0, Int32(screen.h - dst.h())), vgap);
+  int btm = std::max(0, Int32(screen.h - dst.h() - vgap));
+  int left = std::min(std::max(0, Int32(screen.w - dst.w())), hgap);
+  int right = std::max(0, Int32(screen.w - dst.w() - hgap));
 
   switch (pos)
   {
@@ -199,7 +199,7 @@ void Dialog::positionAt(uInt32 pos)
 
     default:
       // center
-      _surface->setDstPos((screen.w - dst.width()) >> 1, (screen.h - dst.height()) >> 1);
+      _surface->setDstPos((screen.w - dst.w()) >> 1, (screen.h - dst.h()) >> 1);
       break;
   }
 }
@@ -872,16 +872,16 @@ bool Dialog::getDynamicBounds(uInt32& w, uInt32& h) const
   const Common::Rect& r = instance().frameBuffer().imageRect();
   const uInt32 scale = instance().frameBuffer().hidpiScaleFactor();
 
-  if(r.width() <= FBMinimum::Width || r.height() <= FBMinimum::Height)
+  if(r.w() <= FBMinimum::Width || r.h() <= FBMinimum::Height)
   {
-    w = r.width() / scale;
-    h = r.height() / scale;
+    w = r.w() / scale;
+    h = r.h() / scale;
     return false;
   }
   else
   {
-    w = uInt32(0.95 * r.width() / scale);
-    h = uInt32(0.95 * r.height() / scale);
+    w = uInt32(0.95 * r.w() / scale);
+    h = uInt32(0.95 * r.h() / scale);
     return true;
   }
 }

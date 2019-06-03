@@ -87,11 +87,11 @@ void StringListWidget::drawWidget(bool hilite)
     {
       adjustOffset();
 
-      s.drawString(_font, editString(), _x + r.left, y, r.width(), textColor,
+      s.drawString(_font, editString(), _x + r.x(), y, r.w(), textColor,
                    TextAlign::Left, -_editScrollOffset, false);
     }
     else
-      s.drawString(_font, _list[pos], _x + r.left, y, r.width(), textColor);
+      s.drawString(_font, _list[pos], _x + r.x(), y, r.w(), textColor);
   }
 
   // Only draw the caret while editing, and if it's in the current viewport
@@ -103,10 +103,6 @@ void StringListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect StringListWidget::getEditRect() const
 {
-  Common::Rect r(2, 1, _w - 2, _fontHeight);
   const int offset = std::max(0, (_selectedItem - _currentPos) * _fontHeight);
-  r.top += offset;
-  r.bottom += offset;
-
-  return r;
+  return Common::Rect(2, 1 + offset, _w - 2, _fontHeight + offset);
 }
