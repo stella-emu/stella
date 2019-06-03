@@ -472,6 +472,24 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
                                          lineHeight, items, "Horizon         ~ ", 0, kHorizonChanged);
   wid.push_back(myStateHorizonWidget);
 
+  ypos += lineHeight + VGAP * 2;
+  new StaticTextWidget(myTab, font, HBORDER, ypos + 1,
+    "When exiting emulation:");
+  ypos += lineHeight + VGAP;
+  mySaveOnExitGroup = new RadioButtonGroup();
+  r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+    "Save nothing", mySaveOnExitGroup);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP;
+  r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+    "Save current state in current slot", mySaveOnExitGroup);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP;
+  r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
+    "Save all states", mySaveOnExitGroup);
+  wid.push_back(r);
+  ypos += lineHeight + VGAP;
+
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
@@ -625,6 +643,8 @@ void DeveloperDialog::loadSettings(SettingsSet set)
   myUncompressed[set] = instance().settings().getInt(prefix + "tm.uncompressed");
   myStateInterval[set] = instance().settings().getString(prefix + "tm.interval");
   myStateHorizon[set] = instance().settings().getString(prefix + "tm.horizon");
+
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -813,6 +833,10 @@ void DeveloperDialog::loadConfig()
   // Debug colours
   handleDebugColours(instance().settings().getString("tia.dbgcolors"));
 
+  // Save on exit
+  string saveOnExit = instance().settings().getString("saveonexit");
+  mySaveOnExitGroup->setSelected(saveOnExit == "all" ? 2 : saveOnExit == "current" ? 1 : 0);
+
 #ifdef DEBUGGER_SUPPORT
   uInt32 w, h;
 
@@ -888,6 +912,11 @@ void DeveloperDialog::saveConfig()
   instance().state().rewindManager().setup();
   instance().state().setRewindMode(myTimeMachineWidget->getState() ?
                                    StateManager::Mode::TimeMachine : StateManager::Mode::Off);
+
+  // Save on exit
+  int saveOnExit = mySaveOnExitGroup->getSelected();
+  instance().settings().setValue("saveonexit",
+    saveOnExit == 0 ? "none" : saveOnExit == 1 ? "current" : "all");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger font style
@@ -975,6 +1004,7 @@ void DeveloperDialog::setDefaults()
       myStateHorizon[set] = devSettings ? "30s" : "10m";
 
       setWidgetStates(set);
+      mySaveOnExitGroup->setSelected(0);
       break;
 
     case 4: // Debugger options
