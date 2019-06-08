@@ -125,9 +125,6 @@ OSystem::~OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::create()
 {
-  // Get updated paths for all configuration files
-  setConfigPaths();
-
   ostringstream buf;
   buf << "Stella " << STELLA_VERSION << endl
       << "  Features: " << myFeatures << endl
@@ -187,6 +184,8 @@ bool OSystem::create()
   myPNGLib = make_unique<PNGLibrary>(*this);
 #endif
 
+  myPropSet->load(myPropertiesFile);
+
   return true;
 }
 
@@ -227,7 +226,8 @@ void OSystem::loadConfig(const Settings::Options& options)
   mySettings->load(options);
   mySettingsLoaded = true;
 
-  myPropSet->load(myPropertiesFile);
+  // Get updated paths for all configuration files
+  setConfigPaths();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
