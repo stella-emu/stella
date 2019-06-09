@@ -477,7 +477,7 @@ void UIDialog::handleRomViewer()
   myOpenBrowserButton->setEnabled(enable);
   mySnapLoadPath->setEnabled(enable);
 
-  /*items.clear();
+  items.clear();
   VarList::push_back(items, "Off", "0");
   VarList::push_back(items, "1x (640x480) ", "1");
   if(myLauncherWidthSlider->getValue() >= 1000 &&
@@ -487,7 +487,8 @@ void UIDialog::handleRomViewer()
   }
   myRomViewerPopup->addItems(items);
 
-  //myRomViewerPopup->setSelected("1x(640x480) ");*/
+  // FIXME (remove when done)  - Thomas, you can continue from here ...
+  //myRomViewerPopup->setSelected("1x(640x480) ");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
