@@ -424,6 +424,7 @@ void FrameBuffer::updateInEmulationMode(float framesPerSecond)
   // We don't worry about selective rendering here; the rendering
   // always happens at the full framerate
 
+  clear();  // TODO - test this: it may cause slowdowns on older systems
   myTIASurface->render();
 
   // Show frame statistics
