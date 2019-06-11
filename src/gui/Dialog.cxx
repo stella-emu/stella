@@ -98,7 +98,7 @@ void Dialog::open()
   // dialogs cause drawing to occur within loadConfig()
   if (_surface == nullptr)
     _surface = instance().frameBuffer().allocateSurface(_w, _h);
-  else if (_w > _surface->width() || _h > _surface->height())
+  else if (uInt32(_w) > _surface->width() || uInt32(_h) > _surface->height())
     _surface->resize(_w, _h);
   _surface->setSrcSize(_w, _h);
   _layer = parent().addDialog(this);
