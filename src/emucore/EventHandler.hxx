@@ -382,7 +382,7 @@ class EventHandler
     #else
       PNG_SIZE             = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 138 + PNG_SIZE + COMBO_SIZE,
+      EMUL_ACTIONLIST_SIZE = 139 + PNG_SIZE + COMBO_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 
