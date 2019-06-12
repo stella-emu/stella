@@ -19,6 +19,7 @@
 #define PHYSICAL_KEYBOARD_HANDLER_HXX
 
 #include <map>
+#include <set>
 
 class OSystem;
 class EventHandler;
@@ -27,6 +28,8 @@ class Event;
 #include "bspf.hxx"
 #include "EventHandlerConstants.hxx"
 #include "KeyMap.hxx"
+
+using EventSet = std::set<Event::Type>;
 
 /**
   This class handles all physical keyboard-related operations in Stella.
@@ -46,6 +49,10 @@ class PhysicalKeyboardHandler
     PhysicalKeyboardHandler(OSystem& system, EventHandler& handler, Event& event);
 
     void setDefaultMapping(Event::Type type, EventMode mode, bool updateDefaults = false);
+
+    /** enable mappings for current controllers */
+    void enableControllerEvents(const string& controllerName, Controller::Jack port);
+
     void eraseMapping(Event::Type event, EventMode mode);
     void saveMapping();
     string getMappingDesc(Event::Type, EventMode mode) const;
@@ -67,7 +74,36 @@ class PhysicalKeyboardHandler
     bool& useModKeys() { return myKeyMap.enableMod(); }
 
   private:
+
+    // Structure used for action menu items
+    struct EventMapping {
+      Event::Type event;
+      StellaKey key;
+      int mod = KBDM_NONE;
+    };
+    using EventMappingArray = std::vector<EventMapping>;
+
+    void setDefaultKey(EventMapping map, Event::Type event = Event::NoType,
+      EventMode mode = kEmulationMode, bool updateDefaults = false);
+
     bool handleAltEvent(StellaKey key, StellaMod mod, bool pressed);
+
+    /** returns the event's controller mode */
+    EventMode getEventMode(const Event::Type event, const EventMode mode) const;
+    /** Checks event type. */
+    bool isJoystickEvent(const Event::Type event) const;
+    bool isPaddleEvent(const Event::Type event) const;
+    bool isKeypadEvent(const Event::Type event) const;
+
+    void enableControllerEvents();
+
+    void enableLeftJoystickMapping(bool enable = true);
+    void enableRightJoystickMapping(bool enable = true);
+    void enableLeftPaddlesMapping(bool enable = true);
+    void enableRightPaddlesMapping(bool enable = true);
+    void enableLeftKeypadMapping(bool enable = true);
+    void enableRightKeypadMapping(bool enable = true);
+    void enableMappings(Event::Type event, std::vector<KeyMap::Mapping> mappings, bool enable);
 
     OSystem& myOSystem;
     EventHandler& myHandler;
@@ -75,6 +111,9 @@ class PhysicalKeyboardHandler
 
     // Hashmap of key events
     KeyMap myKeyMap;
+
+    EventMode myLeftMode;
+    EventMode myRightMode;
 
     // Sometimes key combos with the Alt key become 'stuck' after the
     // window changes state, and we want to ignore that event
@@ -88,6 +127,20 @@ class PhysicalKeyboardHandler
     // TODO - This may be a bug in SDL, and might be removed in the future
     //        It only seems to be an issue in Linux
     uInt8 myAltKeyCounter;
+
+    // Hold controller related events
+    static EventSet LeftJoystickEvents;
+    static EventSet RightJoystickEvents;
+    static EventSet LeftPaddlesEvents;
+    static EventSet RightPaddlesEvents;
+    static EventSet LeftKeypadEvents;
+    static EventSet RightKeypadEvents;
+
+    static EventMappingArray DefaultEmuMapping;
+    static EventMappingArray DefaultMenuMapping;
+    static EventMappingArray DefaultJoystickMapping;
+    static EventMappingArray DefaultPaddleMapping;
+    static EventMappingArray DefaultKeypadMapping;
 };
 
 #endif

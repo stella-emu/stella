@@ -70,8 +70,12 @@ enum JoyHatMask {
 enum EventMode {
   kEmulationMode = 0,  // make sure these are set correctly,
   kMenuMode      = 1,  // since they'll be used as array indices
-  kNumModes      = 2
+  kNumModes      = 2,
+  kJoystickMode  = kNumModes,     // 3 extra modes for mapping controller keys separately
+  kPaddlesMode   = kNumModes + 1,
+  kKeypadMode    = kNumModes + 2
 };
+
 
 namespace GUI
 {
