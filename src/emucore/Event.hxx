@@ -112,7 +112,7 @@ class Event
     };
 
     // Event list version, update if the id of existing event types changed
-    static constexpr Int32 VERSION = 3;
+    static constexpr Int32 VERSION = 2;
 
     class KeyTable {
       public:
