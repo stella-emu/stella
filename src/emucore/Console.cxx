@@ -845,6 +845,8 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
 {
   unique_ptr<Controller> controller = std::move(myLeftControl);
 
+  myOSystem.eventHandler().enableKeyControllerEvents(controllerName, port);
+
   if(controllerName == "JOYSTICK")
   {
     // Already created in c'tor

@@ -84,6 +84,9 @@ Settings::Settings()
   // Input event options
   setPermanent("event_ver", "1");
   setPermanent("keymap_emu", "");
+  setPermanent("keymap_joy", "");
+  setPermanent("keymap_pad", "");
+  setPermanent("keymap_key", "");
   setPermanent("keymap_ui", "");
   setPermanent("joymap", "");
   setPermanent("combomap", "");

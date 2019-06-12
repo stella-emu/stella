@@ -187,6 +187,13 @@ class EventHandler
     bool addKeyMapping(Event::Type event, EventMode mode, StellaKey key, StellaMod mod);
 
     /**
+      Enable controller specific keyboard events.
+    */
+    void enableKeyControllerEvents(const string& controllerName, Controller::Jack port) {
+      myPKeyHandler->enableControllerEvents(controllerName, port);
+    }
+
+    /**
       Bind a physical joystick axis direction to an event/action and regenerate
       the mapping array(s).
 
