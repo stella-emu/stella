@@ -72,15 +72,15 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event, EventMode mode,
-  bool updateDefaults)
-  // Depending on parmeters, this method does the following:
-  // 1. update all events with default (event == Event::NoType, updateDefault == true)
-  // 2. reset all events to default    (event == Event::NoType, updateDefault == false)
-  // 3. reset one event to default     (event != Event::NoType)
+// Depending on parameters, this method does the following:
+// 1. update all events with default (event == Event::NoType, updateDefault == true)
+// 2. reset all events to default    (event == Event::NoType, updateDefault == false)
+// 3. reset one event to default     (event != Event::NoType)
+void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
+                                            EventMode mode, bool updateDefaults)
 {
   // If event is 'NoType', erase and reset all mappings
-    // Otherwise, only reset the given event
+  // Otherwise, only reset the given event
   bool eraseAll = !updateDefaults && (event == Event::NoType);
 
   if (updateDefaults)
@@ -101,28 +101,29 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mode, bool updateDefaults)
-// Depending on parmeters, this method does the following:
+// Depending on parameters, this method does the following:
 // 1. update all events with default (event == Event::NoType, updateDefault == true)
 // 2. reset all events to default    (event == Event::NoType, updateDefault == false)
 // 3. reset one event to default     (event != Event::NoType)
+void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mode,
+                                                bool updateDefaults)
 {
   switch(mode)
   {
     case kEmulationMode:
-      for each (EventMapping item in DefaultEmuMapping)
+      for (const auto& item: DefaultEmuMapping)
         setDefaultKey(item, event, kEmulationMode, updateDefaults);
       // put all controller events into their own mode's mappings
-      for each (EventMapping item in DefaultJoystickMapping)
+      for (const auto& item: DefaultJoystickMapping)
         setDefaultKey(item, event, kJoystickMode, updateDefaults);
-      for each (EventMapping item in DefaultPaddleMapping)
+      for (const auto& item: DefaultPaddleMapping)
         setDefaultKey(item, event, kPaddlesMode, updateDefaults);
-      for each (EventMapping item in DefaultKeypadMapping)
+      for (const auto& item: DefaultKeypadMapping)
         setDefaultKey(item, event, kKeypadMode, updateDefaults);
       break;
 
     case kMenuMode:
-      for each (EventMapping item in DefaultMenuMapping)
+      for (const auto& item: DefaultMenuMapping)
         setDefaultKey(item, event, kMenuMode, updateDefaults);
       break;
 
@@ -197,7 +198,7 @@ void PhysicalKeyboardHandler::enableControllerEvents()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::enableLeftJoystickMapping(bool enable)
 {
-  for each (Event::Type event in LeftJoystickEvents)
+  for (const auto& event: LeftJoystickEvents)
   {
     // copy from controller specific mode into emulation mode
     std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kJoystickMode);
@@ -208,7 +209,7 @@ void PhysicalKeyboardHandler::enableLeftJoystickMapping(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::enableRightJoystickMapping(bool enable)
 {
-  for each (Event::Type event in RightJoystickEvents)
+  for (const auto& event: RightJoystickEvents)
   {
     // copy from controller specific mode into emulation mode
     std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kJoystickMode);
@@ -219,7 +220,7 @@ void PhysicalKeyboardHandler::enableRightJoystickMapping(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::enableLeftPaddlesMapping(bool enable)
 {
-  for each (Event::Type event in LeftPaddlesEvents)
+  for (const auto& event: LeftPaddlesEvents)
   {
     // copy from controller mode into emulation mode
     std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kPaddlesMode);
@@ -230,7 +231,7 @@ void PhysicalKeyboardHandler::enableLeftPaddlesMapping(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::enableRightPaddlesMapping(bool enable)
 {
-  for each (Event::Type event in RightPaddlesEvents)
+  for (const auto& event: RightPaddlesEvents)
   {
     // copy from controller mode into emulation mode
     std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kPaddlesMode);
@@ -241,7 +242,7 @@ void PhysicalKeyboardHandler::enableRightPaddlesMapping(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::enableLeftKeypadMapping(bool enable)
 {
-  for each (Event::Type event in LeftKeypadEvents)
+  for (const auto& event: LeftKeypadEvents)
   {
     // copy from controller mode into emulation mode
     std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kKeypadMode);
@@ -252,7 +253,7 @@ void PhysicalKeyboardHandler::enableLeftKeypadMapping(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::enableRightKeypadMapping(bool enable)
 {
-  for each (Event::Type event in RightKeypadEvents)
+  for (const auto& event: RightKeypadEvents)
   {
     // copy from controller mode into emulation mode
     std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kKeypadMode);
@@ -263,10 +264,10 @@ void PhysicalKeyboardHandler::enableRightKeypadMapping(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::enableMappings(Event::Type event, std::vector<KeyMap::Mapping> mappings, bool enable)
 {
-  for each (KeyMap::Mapping map in mappings)
+  for (const auto& mapping: mappings)
   {
     if (enable)
-      myKeyMap.add(event, kEmulationMode, map.key, map.mod);
+      myKeyMap.add(event, kEmulationMode, mapping.key, mapping.mod);
     else
       myKeyMap.eraseEvent(event, kEmulationMode);
   }
