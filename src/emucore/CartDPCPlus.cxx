@@ -76,9 +76,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCPlus::reset()
 {
-  myAudioCycles = myARMCycles = 0;
-  myFractionalClocks = 0.0;
-
   setInitialState();
 
   // DPC+ always starts in bank 5
@@ -110,6 +107,11 @@ void CartridgeDPCPlus::setInitialState()
 
   // Initialize the DPC's random number generator register (must be non-zero)
   myRandomNumber = 0x2B435044; // "DPC+"
+
+  // Initialize various other parameters
+  myFastFetch = myLDAimmediate = false;
+  myAudioCycles = myARMCycles = 0;
+  myFractionalClocks = 0.0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

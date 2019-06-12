@@ -60,6 +60,10 @@ void CartridgeCTY::reset()
 
   myRAM[0] = myRAM[1] = myRAM[2] = myRAM[3] = 0xFF;
 
+  myLDAimmediate = false;
+  myRandomNumber = 0x2B435044;
+  myRamAccessTimeout = 0;
+
   myAudioCycles = 0;
   myFractionalClocks = 0.0;
 
