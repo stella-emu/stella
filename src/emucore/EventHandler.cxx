@@ -630,6 +630,10 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
       if(pressed) myOSystem.state().changeState();
       return;
 
+    case Event::ToggleAutoSlot:
+      if (pressed) myOSystem.state().toggleAutoSlot();
+      return;
+
     case Event::LoadState:
       if(pressed && !repeated) myOSystem.state().loadState();
       return;
@@ -1606,7 +1610,8 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::ConsoleRightDiffB,       "P1 Difficulty B",                       "" },
   { Event::ConsoleRightDiffToggle,  "P1 Swap Difficulty",                    "" },
   { Event::SaveState,               "Save state",                            "" },
-  { Event::ChangeState,             "Change state",                          "" },
+  { Event::ChangeState,             "Change state slot",                     "" },
+  { Event::ToggleAutoSlot,          "Toggle automatic state slot change",    "" },
   { Event::LoadState,               "Load state",                            "" },
   { Event::TakeSnapshot,            "Snapshot",                              "" },
   { Event::TogglePauseMode,         "Toggle pause mode",                     "" },

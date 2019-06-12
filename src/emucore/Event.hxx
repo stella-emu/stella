@@ -106,11 +106,13 @@ class Event
       StartPauseMode, SaveAllStates, LoadAllStates,
       DecreaseOverscan, IncreaseOverScan,
 
+      ToggleAutoSlot,
+
       LastType
     };
 
     // Event list version, update if the id of existing event types changed
-    static constexpr Int32 VERSION = 2;
+    static constexpr Int32 VERSION = 3;
 
     class KeyTable {
       public:

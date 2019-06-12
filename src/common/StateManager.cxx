@@ -288,7 +288,7 @@ void StateManager::saveState(int slot)
       if(myOSystem.settings().getBool("autoslot"))
       {
         myCurrentSlot = (slot + 1) % 10;
-        buf << ", switching to slot " << slot;
+        buf << ", switching to slot " << myCurrentSlot;
       }
     }
     else
@@ -307,6 +307,19 @@ void StateManager::changeState()
   ostringstream buf;
   buf << "Changed to slot " << myCurrentSlot;
   myOSystem.frameBuffer().showMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StateManager::toggleAutoSlot()
+{
+  bool autoSlot = !myOSystem.settings().getBool("autoslot");
+
+  // Print appropriate message
+  ostringstream buf;
+  buf << "Automatic slot change " << (autoSlot ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showMessage(buf.str());
+
+  myOSystem.settings().setValue("autoslot", autoSlot);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

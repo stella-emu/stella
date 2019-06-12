@@ -475,6 +475,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultEmuMa
   {Event::SaveState,                KBDK_F9},
   {Event::SaveAllStates,            KBDK_F9, MOD3},
   {Event::ChangeState,              KBDK_F10},
+  {Event::ToggleAutoSlot,           KBDK_F10, MOD3},
   {Event::LoadState,                KBDK_F11},
   {Event::LoadAllStates,            KBDK_F11, MOD3},
   {Event::TakeSnapshot,             KBDK_F12},

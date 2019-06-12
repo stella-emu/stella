@@ -119,6 +119,11 @@ class StateManager
     void changeState();
 
     /**
+      Toggles auto slot mode.
+    */
+    void toggleAutoSlot();
+
+    /**
       Load a state into the current system from the given Serializer.
       No messages are printed to the screen.
 
