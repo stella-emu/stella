@@ -103,9 +103,9 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
     case 1:
       title = "Common commands";
       ADD_EVENT(Event::Quit,                "Quit emulation");
-      ADD_EVENT(Event::ExitMode,            "Exit current game");
-      ADD_EVENT(Event::OptionsMenuMode,     "Enter 'Options' menu");
-      ADD_EVENT(Event::CmdMenuMode,         "Toggle command menu");
+      ADD_EVENT(Event::ExitMode,            "Exit current mode/menu");
+      ADD_EVENT(Event::OptionsMenuMode,     "Enter Options menu");
+      ADD_EVENT(Event::CmdMenuMode,         "Toggle Command menu");
       ADD_EVENT(Event::VidmodeIncrease,     "Increase window size");
       ADD_EVENT(Event::VidmodeDecrease,     "Decrease window size");
       ADD_EVENT(Event::ToggleFullScreen,    "Toggle fullscreen /");
@@ -129,22 +129,22 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       break;
 
     case 3:
-      title = "TV Filters";
-      ADD_EVENT(Event::VidmodeStd,          "Disable filtering");
+      title = "TV effects";
+      ADD_EVENT(Event::VidmodeStd,          "Disable TV effects");
       ADD_EVENT(Event::VidmodeRGB,          "Enable 'RGB' mode");
       ADD_EVENT(Event::VidmodeSVideo,       "Enable 'S-Video' mode");
       ADD_EVENT(Event::VidModeComposite,    "Enable 'Composite' mode");
-      ADD_EVENT(Event::VidModeBad,          "Enable 'Bad adjust' mode");
+      ADD_EVENT(Event::VidModeBad,          "Enable 'Badly adjusted' mode");
       ADD_EVENT(Event::VidModeCustom,       "Enable 'Custom' mode");
-      ADD_EVENT(Event::NextAttribute,       "Select 'Custom' adjustable");
-      ADD_EVENT(Event::IncreaseAttribute,   "Modify 'Custom' adjustable");
+      ADD_EVENT(Event::NextAttribute,       "Select 'Custom' attribute");
+      ADD_EVENT(Event::IncreaseAttribute,   "Modify 'Custom' attribute");
       ADD_EVENT(Event::IncreasePhosphor,    "Adjust phosphor blend");
       ADD_EVENT(Event::ScanlinesIncrease,   "Adjust scanline intensity");
       break;
 
     case 4:
       title = "Developer commands";
-      ADD_EVENT(Event::DebuggerMode,        "Enter/exit debugger");
+      ADD_EVENT(Event::DebuggerMode,        "Toggle debugger mode");
       ADD_EVENT(Event::ToggleFrameStats,    "Toggle frame stats");
       ADD_EVENT(Event::ToggleJitter,        "Toggle TV 'jitter'");
       ADD_EVENT(Event::ToggleColorLoss,     "Toggle PAL color loss");
