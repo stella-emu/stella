@@ -172,6 +172,12 @@ class EventHandler
       return myPJoyHandler->eventForHat(stick, hat, value, mode);
     }
 
+    /** Get description of given event and mode. */
+    string getMappingDesc(Event::Type event, EventMode mode) const {
+      return myPKeyHandler->getMappingDesc(event, mode);
+    }
+
+
     Event::Type eventAtIndex(int idx, EventMode mode) const;
     string actionAtIndex(int idx, EventMode mode) const;
     string keyAtIndex(int idx, EventMode mode) const;

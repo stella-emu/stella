@@ -15,7 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "bspf.hxx"
+#include "OSystem.hxx"
+#include "EventHandler.hxx"
 #include "Dialog.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
@@ -66,7 +67,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 10, fontHeight,
                                  "", TextAlign::Center);
 
-  int lwidth = 12 * fontWidth;
+  int lwidth = 13 * fontWidth;
   xpos += 5;  ypos += lineHeight + 4;
   for(uInt8 i = 0; i < LINES_PER_PAGE; ++i)
   {
@@ -85,16 +86,14 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
-#ifdef BSPF_MACOS
-  #define ALT_ "Cmd"
-#else
-  #define ALT_ "Alt"
-#endif
-
   int i = 0;
   auto ADD_BIND = [&](const string& k, const string& d)
   {
     myKeyStr[i] = k;  myDescStr[i] = d;  i++;
+  };
+  auto ADD_EVENT = [&](const Event::Type e, const string & d)
+  {
+    ADD_BIND(instance().eventHandler().getMappingDesc(e, kEmulationMode), d);
   };
   auto ADD_TEXT = [&](const string& d) { ADD_BIND("", d); };
   auto ADD_LINE = [&]() { ADD_BIND("", ""); };
@@ -103,65 +102,64 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   {
     case 1:
       title = "Common commands";
-#ifndef BSPF_MACOS
-      ADD_BIND("Ctrl Q",    "Quit emulation");
-#else
-      ADD_BIND("Cmd Q",     "Quit emulation");
-#endif
-      ADD_BIND("Escape",     "Exit current game");
-      ADD_BIND("Tab",        "Enter 'Options' menu");
-      ADD_BIND("\\",         "Toggle command menu");
-      ADD_BIND(ALT_" =",     "Increase window size");
-      ADD_BIND(ALT_" -",     "Decrease window size");
-      ADD_BIND(ALT_" Enter", "Toggle fullscreen /");
-      ADD_BIND("",           "  windowed mode");
-      ADD_BIND(ALT_" ]",     "Increase volume by 2%");
-      ADD_BIND(ALT_" [",     "Decrease volume by 2%");
+      ADD_EVENT(Event::Quit,                "Quit emulation");
+      ADD_EVENT(Event::ExitMode,            "Exit current game");
+      ADD_EVENT(Event::OptionsMenuMode,     "Enter 'Options' menu");
+      ADD_EVENT(Event::CmdMenuMode,         "Toggle command menu");
+      ADD_EVENT(Event::VidmodeIncrease,     "Increase window size");
+      ADD_EVENT(Event::VidmodeDecrease,     "Decrease window size");
+      ADD_EVENT(Event::ToggleFullScreen,    "Toggle fullscreen /");
+      ADD_BIND("",                          "  windowed mode");
+      ADD_EVENT(Event::IncreaseOverScan,    "Increase overscan in FS mode");
+      ADD_EVENT(Event::DecreaseOverscan,    "Decrease overscan in FS mode");
       break;
 
     case 2:
       title = "Special commands";
-      ADD_BIND("Ctrl f", "Switch between NTSC/PAL/SECAM");
-      ADD_BIND("Alt p",  "Toggle 'phosphor' effect");
-      ADD_BIND("Ctrl p", "Switch palette");
+      ADD_EVENT(Event::IncreaseFormat,      "Switch between NTSC/PAL/SECAM");
+      ADD_EVENT(Event::TogglePalette,       "Switch palette");
+      ADD_EVENT(Event::TogglePhosphor,      "Toggle 'phosphor' effect");
       ADD_LINE();
-      ADD_BIND("Ctrl g", "Grab mouse (keep in window)");
-      ADD_BIND("Ctrl 0", "Toggle controller for mouse");
-      ADD_BIND("Ctrl 1", "Toggle Stelladaptor left/right");
+      ADD_EVENT(Event::ToggleGrabMouse,     "Grab mouse (keep in window)");
+      ADD_EVENT(Event::HandleMouseControl,  "Toggle controller for mouse");
+      ADD_EVENT(Event::ToggleSAPortOrder,   "Toggle Stelladaptor left/right");
+      ADD_LINE();
+      ADD_EVENT(Event::VolumeIncrease,      "Increase volume by 2%");
+      ADD_EVENT(Event::VolumeDecrease,      "Decrease volume by 2%");
       break;
 
     case 3:
       title = "TV Filters";
-      ADD_BIND(ALT_" 1", "Disable filtering");
-      ADD_BIND(ALT_" 2", "Enable 'RGB' mode");
-      ADD_BIND(ALT_" 3", "Enable 'S-Video' mode");
-      ADD_BIND(ALT_" 4", "Enable 'Composite' mode");
-      ADD_BIND(ALT_" 5", "Enable 'Bad adjust' mode");
-      ADD_BIND(ALT_" 6", "Enable 'Custom' mode");
-      ADD_BIND(ALT_" 7", "Adjust scanline intensity");
-      ADD_BIND(ALT_" 8", "Toggle scanline interpol.");
-      ADD_BIND(ALT_" 9", "Select 'Custom' adjustable");
-      ADD_BIND(ALT_" 0", "Modify 'Custom' adjustable");
+      ADD_EVENT(Event::VidmodeStd,          "Disable filtering");
+      ADD_EVENT(Event::VidmodeRGB,          "Enable 'RGB' mode");
+      ADD_EVENT(Event::VidmodeSVideo,       "Enable 'S-Video' mode");
+      ADD_EVENT(Event::VidModeComposite,    "Enable 'Composite' mode");
+      ADD_EVENT(Event::VidModeBad,          "Enable 'Bad adjust' mode");
+      ADD_EVENT(Event::VidModeCustom,       "Enable 'Custom' mode");
+      ADD_EVENT(Event::NextAttribute,       "Select 'Custom' adjustable");
+      ADD_EVENT(Event::IncreaseAttribute,   "Modify 'Custom' adjustable");
+      ADD_EVENT(Event::IncreasePhosphor,    "Adjust phosphor blend");
+      ADD_EVENT(Event::ScanlinesIncrease,   "Adjust scanline intensity");
       break;
 
     case 4:
       title = "Developer commands";
-      ADD_BIND("`",         "Enter/exit debugger");
+      ADD_EVENT(Event::DebuggerMode,        "Enter/exit debugger");
+      ADD_EVENT(Event::ToggleFrameStats,    "Toggle frame stats");
+      ADD_EVENT(Event::ToggleJitter,        "Toggle TV 'jitter'");
+      ADD_EVENT(Event::ToggleColorLoss,     "Toggle PAL color loss");
+      ADD_EVENT(Event::ToggleCollisions,    "Toggle collisions");
+      ADD_EVENT(Event::ToggleFixedColors,   "Toggle 'Debug colors' mode");
       ADD_LINE();
-      ADD_BIND(ALT_" PgUp", "Increase Display.YStart");
-      ADD_BIND(ALT_" PgDn", "Decrease Display.YStart");
-      ADD_BIND("Ctrl PgUp", "Increase Display.Height");
-      ADD_BIND("Ctrl PgDn", "Decrease Display.Height");
-      ADD_LINE();
-      ADD_BIND(ALT_" L", "Toggle frame stats");
-      ADD_BIND(ALT_" ,", "Toggle 'Debug colors' mode");
-      ADD_BIND(ALT_" t", "Toggle 'Time Machine' mode");
+      ADD_EVENT(Event::ToggleTimeMachine,   "Toggle 'Time Machine' mode");
+      ADD_EVENT(Event::SaveAllStates,       "Save all 'Time Machine' states");
+      ADD_EVENT(Event::LoadAllStates,       "Load all 'Time Machine' states");
       break;
 
     case 5:
       title = "All other commands";
       ADD_LINE();
-      ADD_BIND("Remapped Eve", "nts");
+      ADD_BIND("Remapped Even", "ts");
       ADD_TEXT("Most other commands can be");
       ADD_TEXT("remapped. Please consult the");
       ADD_TEXT("'Options/Input" + ELLIPSIS + "' dialog for");
