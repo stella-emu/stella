@@ -55,7 +55,10 @@ class PhysicalKeyboardHandler
 
     void eraseMapping(Event::Type event, EventMode mode);
     void saveMapping();
-    string getMappingDesc(Event::Type, EventMode mode) const;
+
+    string getMappingDesc(Event::Type event, EventMode mode) const {
+      return myKeyMap.getEventMappingDesc(event, getEventMode(event, mode));
+    }
 
     /** Bind a physical keyboard event to a virtual event/action. */
     bool addMapping(Event::Type event, EventMode mode, StellaKey key, StellaMod mod);
@@ -83,6 +86,9 @@ class PhysicalKeyboardHandler
     };
     using EventMappingArray = std::vector<EventMapping>;
 
+    // Used for CompuMate keys only
+    using StellaKeySet = std::set<StellaKey>;
+
     void setDefaultKey(EventMapping map, Event::Type event = Event::NoType,
       EventMode mode = kEmulationMode, bool updateDefaults = false);
 
@@ -97,13 +103,7 @@ class PhysicalKeyboardHandler
 
     void enableControllerEvents();
 
-    void enableLeftJoystickMapping(bool enable = true);
-    void enableRightJoystickMapping(bool enable = true);
-    void enableLeftPaddlesMapping(bool enable = true);
-    void enableRightPaddlesMapping(bool enable = true);
-    void enableLeftKeypadMapping(bool enable = true);
-    void enableRightKeypadMapping(bool enable = true);
-    void enableMappings(Event::Type event, std::vector<KeyMap::Mapping> mappings, bool enable);
+    void enableMappings(const EventSet events, EventMode mode, bool enable = true);
 
     OSystem& myOSystem;
     EventHandler& myHandler;
@@ -141,6 +141,8 @@ class PhysicalKeyboardHandler
     static EventMappingArray DefaultJoystickMapping;
     static EventMappingArray DefaultPaddleMapping;
     static EventMappingArray DefaultKeypadMapping;
+
+    static StellaKeySet CompuMateKeys;
 };
 
 #endif

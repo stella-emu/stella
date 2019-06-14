@@ -1517,8 +1517,6 @@ void EventHandler::setState(EventHandlerState state)
     case EventHandlerState::EMULATION:
       myOSystem.sound().mute(false);
       enableTextEvents(false);
-      if(myOSystem.console().leftController().type() == Controller::Type::CompuMate)
-        myPKeyHandler->useModKeys() = false;
       break;
 
     case EventHandlerState::PAUSE:
