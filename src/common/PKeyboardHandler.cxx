@@ -167,109 +167,49 @@ void PhysicalKeyboardHandler::enableControllerEvents()
   switch (myRightMode)
   {
     case kPaddlesMode:
-      enableRightPaddlesMapping();
+      enableMappings(RightPaddlesEvents, kPaddlesMode);
       break;
 
     case kKeypadMode:
-      enableRightKeypadMapping();
+      enableMappings(RightKeypadEvents, kKeypadMode);
       break;
 
     default:
-      enableRightJoystickMapping();
+      enableMappings(RightJoystickEvents, kJoystickMode);
       break;
   }
 
   switch (myLeftMode)
   {
     case kPaddlesMode:
-      enableLeftPaddlesMapping();
+      enableMappings(LeftPaddlesEvents, kPaddlesMode);
       break;
 
     case kKeypadMode:
-      enableLeftKeypadMapping();
+      enableMappings(LeftKeypadEvents, kKeypadMode);
       break;
 
     default:
-      enableLeftJoystickMapping();
+      enableMappings(LeftJoystickEvents, kJoystickMode);
       break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableLeftJoystickMapping(bool enable)
+void PhysicalKeyboardHandler::enableMappings(const EventSet events, EventMode mode, bool enable)
 {
-  for (const auto& event: LeftJoystickEvents)
-  {
-    // copy from controller specific mode into emulation mode
-    std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kJoystickMode);
-    enableMappings(event, mappings, enable);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableRightJoystickMapping(bool enable)
-{
-  for (const auto& event: RightJoystickEvents)
-  {
-    // copy from controller specific mode into emulation mode
-    std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kJoystickMode);
-    enableMappings(event, mappings, enable);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableLeftPaddlesMapping(bool enable)
-{
-  for (const auto& event: LeftPaddlesEvents)
+  for (const auto& event : events)
   {
     // copy from controller mode into emulation mode
-    std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kPaddlesMode);
-    enableMappings(event, mappings, enable);
-  }
-}
+    std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, mode);
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableRightPaddlesMapping(bool enable)
-{
-  for (const auto& event: RightPaddlesEvents)
-  {
-    // copy from controller mode into emulation mode
-    std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kPaddlesMode);
-    enableMappings(event, mappings, enable);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableLeftKeypadMapping(bool enable)
-{
-  for (const auto& event: LeftKeypadEvents)
-  {
-    // copy from controller mode into emulation mode
-    std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kKeypadMode);
-    enableMappings(event, mappings, enable);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableRightKeypadMapping(bool enable)
-{
-  for (const auto& event: RightKeypadEvents)
-  {
-    // copy from controller mode into emulation mode
-    std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, kKeypadMode);
-    enableMappings(event, mappings, enable);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableMappings(Event::Type event, std::vector<KeyMap::Mapping> mappings, bool enable)
-{
-  for (const auto& mapping: mappings)
-  {
-    if (enable)
-      myKeyMap.add(event, kEmulationMode, mapping.key, mapping.mod);
-    else
-      myKeyMap.eraseEvent(event, kEmulationMode);
+    for (const auto& mapping : mappings)
+    {
+      if (enable)
+        myKeyMap.add(event, kEmulationMode, mapping.key, mapping.mod);
+      else
+        myKeyMap.eraseEvent(event, kEmulationMode);
+    }
   }
 }
 
@@ -321,12 +261,12 @@ void PhysicalKeyboardHandler::saveMapping()
 {
   myOSystem.settings().setValue("event_ver", Event::VERSION);
   // remove controller specific events in emulation mode mapping
-  enableLeftJoystickMapping(false);
-  enableRightJoystickMapping(false);
-  enableLeftPaddlesMapping(false);
-  enableRightPaddlesMapping(false);
-  enableLeftKeypadMapping(false);
-  enableRightKeypadMapping(false);
+  enableMappings(LeftJoystickEvents, kJoystickMode, false);
+  enableMappings(LeftPaddlesEvents, kPaddlesMode, false);
+  enableMappings(LeftKeypadEvents, kKeypadMode, false);
+  enableMappings(RightJoystickEvents, kJoystickMode, false);
+  enableMappings(RightPaddlesEvents, kPaddlesMode, false);
+  enableMappings(RightKeypadEvents, kKeypadMode, false);
   myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(kEmulationMode));
   // restore current controller's event mappings
   enableControllerEvents();
@@ -334,12 +274,6 @@ void PhysicalKeyboardHandler::saveMapping()
   myOSystem.settings().setValue("keymap_pad", myKeyMap.saveMapping(kPaddlesMode));
   myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(kKeypadMode));
   myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(kMenuMode));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string PhysicalKeyboardHandler::getMappingDesc(Event::Type event, EventMode mode) const
-{
-  return myKeyMap.getEventMappingDesc(event, getEventMode(event, mode));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -384,6 +318,16 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
     return;
 
   EventHandlerState estate = myHandler.state();
+
+  // special handling for CompuMate in emulation modes
+  if ((estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE) &&
+      myOSystem.console().leftController().type() == Controller::Type::CompuMate)
+  {
+    if (myKeyMap.get(kEmulationMode, key, mod) != Event::ExitMode &&
+        CompuMateKeys.find(key) != CompuMateKeys.end())
+      // supress all events (except exit mode) using CompuMate keys
+      return;
+  }
 
   // Arrange the logic to take advantage of short-circuit evaluation
   if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
@@ -668,4 +612,26 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultKeypa
   {Event::KeyboardOneStar,          KBDK_COMMA},
   {Event::KeyboardOne0,             KBDK_PERIOD},
   {Event::KeyboardOnePound,         KBDK_SLASH},
+};
+
+PhysicalKeyboardHandler::StellaKeySet PhysicalKeyboardHandler::CompuMateKeys = {
+  {KBDK_0}, {KBDK_1}, {KBDK_2}, {KBDK_3}, {KBDK_4},
+  {KBDK_5}, {KBDK_6}, {KBDK_7}, {KBDK_8}, {KBDK_9},
+  {KBDK_A}, {KBDK_B}, {KBDK_C}, {KBDK_D}, {KBDK_E},
+  {KBDK_F}, {KBDK_G}, {KBDK_H}, {KBDK_I}, {KBDK_J},
+  {KBDK_K}, {KBDK_L}, {KBDK_M}, {KBDK_N}, {KBDK_O},
+  {KBDK_P}, {KBDK_Q}, {KBDK_R}, {KBDK_S}, {KBDK_T},
+  {KBDK_U}, {KBDK_V}, {KBDK_W}, {KBDK_X}, {KBDK_Y},
+  {KBDK_Z},
+  {KBDK_COMMA},
+  {KBDK_PERIOD},
+  {KBDK_RETURN}, {KBDK_KP_ENTER},
+  {KBDK_SPACE},
+  {KBDK_BACKSPACE},
+  {KBDK_EQUALS},
+  {KBDK_MINUS},
+  {KBDK_SLASH},
+  {KBDK_LEFTBRACKET},
+  {KBDK_RIGHTBRACKET},
+  {KBDK_APOSTROPHE}
 };
