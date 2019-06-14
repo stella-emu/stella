@@ -102,13 +102,13 @@ class KeyMap
     Mapping convertMod(const Mapping& mapping) const;
 
     struct KeyHash {
-      size_t operator()(const Mapping& m)const {
-        return std::hash<uInt64>()((uInt64(m.mode))       // 1 bit
-          ^ ((uInt64(m.key)) << 1)                        // 8 bits
-          ^ ((uInt64((m.mod & KBDM_SHIFT) != 0) <<  9))   // 1 bit
-          ^ ((uInt64((m.mod & KBDM_ALT  ) != 0) << 10))   // 1 bit
-          ^ ((uInt64((m.mod & KBDM_GUI  ) != 0) << 11))   // 1 bit
-          ^ ((uInt64((m.mod & KBDM_CTRL ) != 0) << 12))); // 1 bit
+      size_t operator()(const Mapping& m) const {
+        return std::hash<uInt64>()((uInt64(m.mode))               // 3 bits
+          + ((uInt64(m.key)) * 7)                                 // 8 bits
+          + (((uInt64((m.mod & KBDM_SHIFT) != 0) << 0))           // 1 bit
+           | ((uInt64((m.mod & KBDM_ALT  ) != 0) << 1))           // 1 bit
+           | ((uInt64((m.mod & KBDM_GUI  ) != 0) << 2))           // 1 bit
+           | ((uInt64((m.mod & KBDM_CTRL ) != 0) << 3))) * 2047); // 1 bit
       }
     };
 
