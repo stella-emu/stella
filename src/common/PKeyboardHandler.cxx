@@ -285,7 +285,7 @@ EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event, const E
   if (isKeypadEvent(event))
     return kKeypadMode;
 
-  return kEmulationMode;
+  return mode;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -436,7 +436,6 @@ EventSet PhysicalKeyboardHandler::RightJoystickEvents = {
   Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9
 };
 
-
 EventSet PhysicalKeyboardHandler::LeftPaddlesEvents = {
   Event::PaddleZeroDecrease, Event::PaddleZeroIncrease, Event::PaddleZeroAnalog, Event::PaddleZeroFire,
   Event::PaddleOneDecrease, Event::PaddleOneIncrease, Event::PaddleOneAnalog, Event::PaddleOneFire,
@@ -446,7 +445,6 @@ EventSet PhysicalKeyboardHandler::RightPaddlesEvents = {
   Event::PaddleTwoDecrease, Event::PaddleTwoIncrease, Event::PaddleTwoAnalog, Event::PaddleTwoFire,
   Event::PaddleThreeDecrease, Event::PaddleThreeIncrease, Event::PaddleThreeAnalog, Event::PaddleThreeFire,
 };
-
 
 EventSet PhysicalKeyboardHandler::LeftKeypadEvents = {
   Event::KeyboardZero1, Event::KeyboardZero2, Event::KeyboardZero3,
