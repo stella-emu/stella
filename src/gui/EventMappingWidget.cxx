@@ -375,7 +375,6 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
-/*
     case ListWidget::kDoubleClickedCmd:
       if(myActionsList->getSelected() >= 0)
       {
@@ -383,7 +382,6 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
         startRemapping();
       }
       break;
-*/
 
     case kStartMapCmd:
       startRemapping();
