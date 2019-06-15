@@ -136,6 +136,7 @@ class DebuggerDialog : public Dialog
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text
+    bool myFirstLoad;
 
   private:
     // Following constructors and assignment operators not supported

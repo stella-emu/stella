@@ -445,17 +445,12 @@ void Dialog::handleText(char text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
-  // Test for TAB character
-  // Control-Tab selects next tab
-  // Shift-Control-Tab selects previous tab
-  // Tab sets next widget in current tab
-  // Shift-Tab sets previous widget in current tab
   Event::Type e = Event::NoType;
 
 // FIXME - I don't think this will compile!
 #if defined(RETRON77)
   // special keys used for R77
-  else if (key == KBDK_F13)
+  if (key == KBDK_F13)
     e = Event::UITabPrev;
   else if (key == KBDK_BACKSPACE)
     e = Event::UITabNext;

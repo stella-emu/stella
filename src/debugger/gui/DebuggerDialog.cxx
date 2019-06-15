@@ -54,7 +54,8 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, x, y, w, h),
     myTab(nullptr),
     myRomTab(nullptr),
-    myFatalError(nullptr)
+    myFatalError(nullptr),
+    myFirstLoad(true)
 {
   createFont();  // Font is sized according to available space
 
@@ -73,6 +74,14 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
+  // set initial focus to myPrompt
+  if (myFirstLoad)
+  {
+    setFocus(myPrompt);
+    myFirstLoad = false;
+  }
+
+
   myTab->loadConfig();
   myTiaInfo->loadConfig();
   myTiaOutput->loadConfig();
