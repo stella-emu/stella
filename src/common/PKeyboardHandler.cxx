@@ -398,16 +398,19 @@ EventSet PhysicalKeyboardHandler::RightJoystickEvents = {
   Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventSet PhysicalKeyboardHandler::LeftPaddlesEvents = {
   Event::PaddleZeroDecrease, Event::PaddleZeroIncrease, Event::PaddleZeroAnalog, Event::PaddleZeroFire,
   Event::PaddleOneDecrease, Event::PaddleOneIncrease, Event::PaddleOneAnalog, Event::PaddleOneFire,
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventSet PhysicalKeyboardHandler::RightPaddlesEvents = {
   Event::PaddleTwoDecrease, Event::PaddleTwoIncrease, Event::PaddleTwoAnalog, Event::PaddleTwoFire,
   Event::PaddleThreeDecrease, Event::PaddleThreeIncrease, Event::PaddleThreeAnalog, Event::PaddleThreeFire,
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventSet PhysicalKeyboardHandler::LeftKeypadEvents = {
   Event::KeyboardZero1, Event::KeyboardZero2, Event::KeyboardZero3,
   Event::KeyboardZero4, Event::KeyboardZero5, Event::KeyboardZero6,
@@ -415,6 +418,7 @@ EventSet PhysicalKeyboardHandler::LeftKeypadEvents = {
   Event::KeyboardZeroStar, Event::KeyboardZero0, Event::KeyboardZeroPound,
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventSet PhysicalKeyboardHandler::RightKeypadEvents = {
   Event::KeyboardOne1, Event::KeyboardOne2, Event::KeyboardOne3,
   Event::KeyboardOne4, Event::KeyboardOne5, Event::KeyboardOne6,
@@ -526,6 +530,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
 #endif
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuMapping = {
   {Event::UIUp,                     KBDK_UP},
   {Event::UIDown,                   KBDK_DOWN},
@@ -567,6 +572,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
 #endif
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoystickMapping = {
   {Event::JoystickZeroUp,           KBDK_UP},
   {Event::JoystickZeroDown,         KBDK_DOWN},
@@ -586,6 +592,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
   {Event::JoystickOneFire9,         KBDK_7},
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultPaddleMapping = {
   {Event::PaddleZeroDecrease,       KBDK_RIGHT},
   {Event::PaddleZeroIncrease,       KBDK_LEFT},
@@ -604,6 +611,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultPaddl
   {Event::PaddleThreeFire,          KBDK_6},
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultKeypadMapping = {
   {Event::KeyboardZero1,            KBDK_1},
   {Event::KeyboardZero2,            KBDK_2},
@@ -632,24 +640,25 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultKeypa
   {Event::KeyboardOnePound,         KBDK_SLASH},
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::StellaKeySet PhysicalKeyboardHandler::CompuMateKeys = {
-  {KBDK_0}, {KBDK_1}, {KBDK_2}, {KBDK_3}, {KBDK_4},
-  {KBDK_5}, {KBDK_6}, {KBDK_7}, {KBDK_8}, {KBDK_9},
-  {KBDK_A}, {KBDK_B}, {KBDK_C}, {KBDK_D}, {KBDK_E},
-  {KBDK_F}, {KBDK_G}, {KBDK_H}, {KBDK_I}, {KBDK_J},
-  {KBDK_K}, {KBDK_L}, {KBDK_M}, {KBDK_N}, {KBDK_O},
-  {KBDK_P}, {KBDK_Q}, {KBDK_R}, {KBDK_S}, {KBDK_T},
-  {KBDK_U}, {KBDK_V}, {KBDK_W}, {KBDK_X}, {KBDK_Y},
-  {KBDK_Z},
-  {KBDK_COMMA},
-  {KBDK_PERIOD},
-  {KBDK_RETURN}, {KBDK_KP_ENTER},
-  {KBDK_SPACE},
-  {KBDK_BACKSPACE},
-  {KBDK_EQUALS},
-  {KBDK_MINUS},
-  {KBDK_SLASH},
-  {KBDK_LEFTBRACKET},
-  {KBDK_RIGHTBRACKET},
-  {KBDK_APOSTROPHE}
+  KBDK_0, KBDK_1, KBDK_2, KBDK_3, KBDK_4,
+  KBDK_5, KBDK_6, KBDK_7, KBDK_8, KBDK_9,
+  KBDK_A, KBDK_B, KBDK_C, KBDK_D, KBDK_E,
+  KBDK_F, KBDK_G, KBDK_H, KBDK_I, KBDK_J,
+  KBDK_K, KBDK_L, KBDK_M, KBDK_N, KBDK_O,
+  KBDK_P, KBDK_Q, KBDK_R, KBDK_S, KBDK_T,
+  KBDK_U, KBDK_V, KBDK_W, KBDK_X, KBDK_Y,
+  KBDK_Z,
+  KBDK_COMMA,
+  KBDK_PERIOD,
+  KBDK_RETURN, KBDK_KP_ENTER,
+  KBDK_SPACE,
+  KBDK_BACKSPACE,
+  KBDK_EQUALS,
+  KBDK_MINUS,
+  KBDK_SLASH,
+  KBDK_LEFTBRACKET,
+  KBDK_RIGHTBRACKET,
+  KBDK_APOSTROPHE
 };
