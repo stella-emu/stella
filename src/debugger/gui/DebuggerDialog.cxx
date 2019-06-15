@@ -664,8 +664,7 @@ void DebuggerDialog::addRomArea()
 Common::Rect DebuggerDialog::getTiaBounds() const
 {
   // The area showing the TIA image (NTSC and PAL supported, up to 260 lines)
-  Common::Rect r(0, 0, 320, std::max(260, int(_h * 0.35)));
-  return r;
+  return Common::Rect(0, 0, 320, std::max(260, int(_h * 0.35)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
