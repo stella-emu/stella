@@ -73,7 +73,8 @@ enum EventMode {
   kNumModes      = 2,
   kJoystickMode  = kNumModes,     // 3 extra modes for mapping controller keys separately
   kPaddlesMode   = kNumModes + 1,
-  kKeypadMode    = kNumModes + 2
+  kKeypadMode    = kNumModes + 2,
+  kCommonMode    = kNumModes + 3
 };
 
 

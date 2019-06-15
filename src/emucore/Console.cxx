@@ -133,6 +133,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // This must be done before the debugger is initialized
   const string& md5 = myProperties.get(PropType::Cart_MD5);
   setControllers(md5);
+  // now that we know the controllers, enable the event mappings
+  myOSystem.eventHandler().enableEmulationKeyMappings();
 
   // Mute audio and clear framebuffer while autodetection runs
   myOSystem.sound().mute(1);
@@ -845,7 +847,7 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
 {
   unique_ptr<Controller> controller = std::move(myLeftControl);
 
-  myOSystem.eventHandler().enableKeyControllerEvents(controllerName, port);
+  myOSystem.eventHandler().defineKeyControllerMappings(controllerName, port);
 
   if(controllerName == "JOYSTICK")
   {

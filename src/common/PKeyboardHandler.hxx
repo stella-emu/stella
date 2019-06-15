@@ -50,8 +50,10 @@ class PhysicalKeyboardHandler
 
     void setDefaultMapping(Event::Type type, EventMode mode, bool updateDefaults = false);
 
-    /** enable mappings for current controllers */
-    void enableControllerEvents(const string& controllerName, Controller::Jack port);
+    /** define mappings for current controllers */
+    void defineControllerMappings(const string& controllerName, Controller::Jack port);
+    /** enable mappings for emulation mode */
+    void enableEmulationMappings();
 
     void eraseMapping(Event::Type event, EventMode mode);
     void saveMapping();
@@ -100,10 +102,12 @@ class PhysicalKeyboardHandler
     bool isJoystickEvent(const Event::Type event) const;
     bool isPaddleEvent(const Event::Type event) const;
     bool isKeypadEvent(const Event::Type event) const;
+    bool isCommonEvent(const Event::Type event) const;
 
-    void enableControllerEvents();
+    void enableCommonMappings();
 
-    void enableMappings(const EventSet events, EventMode mode, bool enable = true);
+    void enableMappings(const EventSet events, EventMode mode);
+    void enableMapping(const Event::Type event, EventMode mode);
 
     OSystem& myOSystem;
     EventHandler& myHandler;
@@ -136,8 +140,8 @@ class PhysicalKeyboardHandler
     static EventSet LeftKeypadEvents;
     static EventSet RightKeypadEvents;
 
-    static EventMappingArray DefaultEmuMapping;
     static EventMappingArray DefaultMenuMapping;
+    static EventMappingArray DefaultCommonMapping;
     static EventMappingArray DefaultJoystickMapping;
     static EventMappingArray DefaultPaddleMapping;
     static EventMappingArray DefaultKeypadMapping;
