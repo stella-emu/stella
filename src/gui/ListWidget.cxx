@@ -37,7 +37,6 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
     _selectedItem(-1),
     _highlightedItem(-1),
     _editMode(false),
-    _currentKeyDown(KBDK_UNKNOWN),
     _quickSelect(quickSelect),
     _quickSelectTime(0)
 {
@@ -321,16 +320,7 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod)
     }
   }
 
-  _currentKeyDown = key;
   return handled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ListWidget::handleKeyUp(StellaKey key, StellaMod mod)
-{
-  if (key == _currentKeyDown)
-    _currentKeyDown = KBDK_UNKNOWN;
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
