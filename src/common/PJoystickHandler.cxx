@@ -41,7 +41,7 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
 
   // First compare if event list version has changed, and disregard the entire mapping if true
   getline(buf, joymap, '^'); // event list size, ignore
-  if(version != Event::VERSION)
+  if(version == Event::VERSION)
   {
     // Otherwise, put each joystick mapping entry into the database
     while(getline(buf, joymap, '^'))
