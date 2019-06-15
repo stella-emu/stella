@@ -111,7 +111,7 @@ Settings::Settings()
   setPermanent("ss1x", "false");
   setPermanent("ssinterval", "2");
   setPermanent("autoslot", "false");
-  setPermanent("saveonexit", "ALL");
+  setPermanent("saveonexit", "none");
 
   // Config files and paths
   setPermanent("romdir", "");

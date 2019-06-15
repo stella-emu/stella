@@ -193,10 +193,17 @@ class EventHandler
     bool addKeyMapping(Event::Type event, EventMode mode, StellaKey key, StellaMod mod);
 
     /**
-      Enable controller specific keyboard events.
+      Enable controller specific keyboard event mappings.
     */
-    void enableKeyControllerEvents(const string& controllerName, Controller::Jack port) {
-      myPKeyHandler->enableControllerEvents(controllerName, port);
+    void defineKeyControllerMappings(const string& controllerName, Controller::Jack port) {
+      myPKeyHandler->defineControllerMappings(controllerName, port);
+    }
+
+    /**
+      Enable emulation keyboard event mappings.
+    */
+    void enableEmulationKeyMappings() {
+      myPKeyHandler->enableEmulationMappings();
     }
 
     /**
