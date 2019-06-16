@@ -72,8 +72,10 @@ class PhysicalKeyboardHandler
       return myKeyMap.get(mode, key, mod);
     }
 
+  #ifdef BSPF_UNIX
     /** See comments on 'myAltKeyCounter' for more information. */
     uInt8& altKeyCount() { return myAltKeyCounter; }
+  #endif
 
     /** See comments on KeyMap.myModEnabled for more information. */
     bool& useModKeys() { return myKeyMap.enableMod(); }
@@ -88,13 +90,8 @@ class PhysicalKeyboardHandler
     };
     using EventMappingArray = std::vector<EventMapping>;
 
-    // Used for CompuMate keys only
-    using StellaKeySet = std::set<StellaKey>;
-
     void setDefaultKey(EventMapping map, Event::Type event = Event::NoType,
       EventMode mode = kEmulationMode, bool updateDefaults = false);
-
-    bool handleAltEvent(StellaKey key, StellaMod mod, bool pressed);
 
     /** returns the event's controller mode */
     EventMode getEventMode(const Event::Type event, const EventMode mode) const;
@@ -119,6 +116,7 @@ class PhysicalKeyboardHandler
     EventMode myLeftMode;
     EventMode myRightMode;
 
+  #ifdef BSPF_UNIX
     // Sometimes key combos with the Alt key become 'stuck' after the
     // window changes state, and we want to ignore that event
     // For example, press Alt-Tab and then upon re-entering the window,
@@ -131,6 +129,7 @@ class PhysicalKeyboardHandler
     // TODO - This may be a bug in SDL, and might be removed in the future
     //        It only seems to be an issue in Linux
     uInt8 myAltKeyCounter;
+  #endif
 
     // Hold controller related events
     static EventSet LeftJoystickEvents;
@@ -145,8 +144,7 @@ class PhysicalKeyboardHandler
     static EventMappingArray DefaultJoystickMapping;
     static EventMappingArray DefaultPaddleMapping;
     static EventMappingArray DefaultKeypadMapping;
-
-    static StellaKeySet CompuMateKeys;
+    static EventMappingArray CompuMateMapping;
 };
 
 #endif

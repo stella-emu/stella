@@ -108,42 +108,26 @@ class Event
 
       ToggleAutoSlot,
 
+      CompuMateFunc, CompuMateShift,
+      CompuMate0, CompuMate1, CompuMate2, CompuMate3, CompuMate4,
+      CompuMate5, CompuMate6, CompuMate7, CompuMate8, CompuMate9,
+      CompuMateA, CompuMateB, CompuMateC, CompuMateD, CompuMateE,
+      CompuMateF, CompuMateG, CompuMateH, CompuMateI, CompuMateJ,
+      CompuMateK, CompuMateL, CompuMateM, CompuMateN, CompuMateO,
+      CompuMateP, CompuMateQ, CompuMateR, CompuMateS, CompuMateT,
+      CompuMateU, CompuMateV, CompuMateW, CompuMateX, CompuMateY,
+      CompuMateZ,
+      CompuMateComma, CompuMatePeriod, CompuMateEnter, CompuMateSpace,
+      CompuMateQuestion, CompuMateLeftBracket, CompuMateRightBracket, CompuMateMinus,
+      CompuMateQuote, CompuMateBackspace, CompuMateEquals, CompuMatePlus,
+      CompuMateSlash,
+
       LastType
+
     };
 
     // Event list version, update if the id of existing event types changed
     static constexpr Int32 VERSION = 2;
-
-    class KeyTable {
-      public:
-
-        KeyTable(const bool* keyTable, std::mutex& mutex)
-          : myKeyTable(keyTable),
-            myMutex(mutex),
-            myIsEnabled(true)
-        {
-        }
-
-        bool operator[](int type) const {
-          if (!myIsEnabled) return false;
-
-          std::lock_guard<std::mutex> lock(myMutex);
-
-          return myKeyTable[type];
-        }
-
-        void enable(bool isEnabled) {
-          myIsEnabled = isEnabled;
-        }
-
-      private:
-
-        const bool *myKeyTable;
-        std::mutex& myMutex;
-
-        bool myIsEnabled;
-
-    };
 
   public:
     /**
@@ -179,24 +163,8 @@ class Event
 
       for(Int32 i = 0; i < LastType; ++i)
         myValues[i] = Event::NoType;
-
-      for(Int32 i = 0; i < KBDK_LAST; ++i)
-        myKeyTable[i] = false;
     }
 
-    /**
-      Get the keytable associated with this event.
-    */
-    KeyTable getKeys() const { return KeyTable(myKeyTable, myMutex); }
-
-    /**
-      Set the value associated with the event of the specified type.
-    */
-    void setKey(StellaKey key, bool pressed) {
-      std::lock_guard<std::mutex> lock(myMutex);
-
-      myKeyTable[key] = pressed;
-    }
 
     /**
       Tests if a given event represents continuous or analog values.
@@ -220,7 +188,7 @@ class Event
     Int32 myValues[LastType];
 
     // Array of keyboard key states
-    bool myKeyTable[KBDK_LAST];
+    //bool myKeyTable[KBDK_LAST];
 
     mutable std::mutex myMutex;
 

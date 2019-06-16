@@ -803,6 +803,7 @@ void Console::setControllers(const string& rommd5)
 
     myLeftControl  = std::move(myCMHandler->leftController());
     myRightControl = std::move(myCMHandler->rightController());
+    myOSystem.eventHandler().defineKeyControllerMappings("CM", Controller::Jack::Left);
   }
   else
   {
@@ -1091,9 +1092,7 @@ void Console::attachDebugger(Debugger& dbg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::stateChanged(EventHandlerState state)
 {
-  // For now, only the CompuMate cares about state changes
-  if(myCMHandler)
-    myCMHandler->enableKeyHandling(state == EventHandlerState::EMULATION);
+  // only the CompuMate used to care about state changes
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
