@@ -70,7 +70,7 @@ EventHandler::EventHandler(OSystem& osystem)
     myIs7800(false)
 {
   // Create keyboard handler (to handle all physical keyboard functionality)
-  myPKeyHandler = make_unique<PhysicalKeyboardHandler>(osystem, *this, myEvent);
+  myPKeyHandler = make_unique<PhysicalKeyboardHandler>(osystem, *this);
 
   // Create joystick handler (to handle all physical joystick functionality)
   myPJoyHandler = make_unique<PhysicalJoystickHandler>(osystem, *this, myEvent);
