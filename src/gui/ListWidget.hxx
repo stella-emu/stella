@@ -71,7 +71,6 @@ class ListWidget : public EditableWidget
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleText(char text) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
-    bool handleKeyUp(StellaKey key, StellaMod mod) override;
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -100,7 +99,6 @@ class ListWidget : public EditableWidget
     int  _selectedItem;
     int  _highlightedItem;
     bool _editMode;
-    StellaKey _currentKeyDown;
 
     ScrollBarWidget* _scrollBar;
 
