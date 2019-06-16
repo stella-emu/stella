@@ -26,7 +26,7 @@
 #include "TIASurface.hxx"
 #include "PNGLibrary.hxx"
 #include "PKeyboardHandler.hxx"
-#include "KeyMap.hxx"
+
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
