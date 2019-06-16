@@ -59,21 +59,6 @@ class CompuMate
     unique_ptr<Controller>& leftController()  { return myLeftController;  }
     unique_ptr<Controller>& rightController() { return myRightController; }
 
-    /**
-      In normal key-handling mode, the update handler receives key events
-      from the keyboard.  This is meant to be used during emulation.
-
-      Otherwise, the update handler ignores keys from the keyboard and uses
-      its own internal buffer, which essentially can only be set directly
-      within the class itself (by the debugger).
-
-      This is necessary since Stella is otherwise event-based, whereas
-      reading from the keyboard (in the current code) bypasses the event
-      system.  This leads to issues where typing commands in the debugger
-      would then be processed by the update handler as if they were
-      entered on the CompuMate keyboard.
-    */
-    void enableKeyHandling(bool enable);
 
     /** Needed for communication with CartCM class */
     uInt8& column() { return myColumn; }
@@ -146,8 +131,8 @@ class CompuMate
     // Column currently active
     uInt8 myColumn;
 
-    // The keyboard state array (tells us the current state of the keyboard)
-    Event::KeyTable myKeyTable;
+    /// Reference to the event object this controller uses
+    const Event& myEvent;
 
   private:
     // Following constructors and assignment operators not supported

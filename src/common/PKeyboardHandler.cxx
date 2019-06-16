@@ -46,8 +46,10 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(
       OSystem& system, EventHandler& handler, Event& event)
   : myOSystem(system),
     myHandler(handler),
-    myEvent(event),
-    myAltKeyCounter(0)
+#ifdef BSPF_UNIX
+    myAltKeyCounter(0),
+#endif
+    myEvent(event)
 {
   Int32 version = myOSystem.settings().getInt("event_ver");
 
@@ -120,6 +122,8 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
         setDefaultKey(item, event, kPaddlesMode, updateDefaults);
       for (const auto& item: DefaultKeypadMapping)
         setDefaultKey(item, event, kKeypadMode, updateDefaults);
+      for (const auto& item : CompuMateMapping)
+        setDefaultKey(item, event, kCompuMateMode, updateDefaults);
       break;
 
     case kMenuMode:
@@ -150,6 +154,10 @@ void PhysicalKeyboardHandler::defineControllerMappings(const string& controllerN
     else
       myRightMode = kPaddlesMode;
   }
+  else if (controllerName == "CM")
+  {
+    myLeftMode = myRightMode = kCompuMateMode;
+  }
   else
   {
     if (port == Controller::Jack::Left)
@@ -177,6 +185,11 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       enableMappings(RightKeypadEvents, kKeypadMode);
       break;
 
+    case kCompuMateMode:
+      // see below
+      break;
+
+
     default:
       enableMappings(RightJoystickEvents, kJoystickMode);
       break;
@@ -190,6 +203,11 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
 
     case kKeypadMode:
       enableMappings(LeftKeypadEvents, kKeypadMode);
+      break;
+
+    case kCompuMateMode:
+      for (const auto& item : CompuMateMapping)
+        enableMapping(item.event, kCompuMateMode);
       break;
 
     default:
@@ -316,24 +334,21 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pressed, bool repeated)
 {
+#ifdef BSPF_UNIX
   // Swallow KBDK_TAB under certain conditions
   // See commments on 'myAltKeyCounter' for more information
-#ifdef BSPF_UNIX
   if(myAltKeyCounter > 1 && key == KBDK_TAB)
   {
     myAltKeyCounter = 0;
     return;
   }
-#endif
-
-  // Immediately store the key state
-  myEvent.setKey(key, pressed);
-
-  // An attempt to speed up event processing; we quickly check for
-  // Control or Alt/Cmd combos first
-  // and don't pass the key on if we've already taken care of it
-  if(handleAltEvent(key, mod, pressed))
+  if (key == KBDK_TAB && pressed && StellaModTest::isAlt(mod))
+  {
+    // Swallow Alt-Tab, but remember that it happened
+    myAltKeyCounter = 1;
     return;
+  }
+#endif
 
   EventHandlerState estate = myHandler.state();
 
@@ -341,19 +356,21 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   if ((estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE) &&
       myOSystem.console().leftController().type() == Controller::Type::CompuMate)
   {
+    Event::Type event = myKeyMap.get(kCompuMateMode, key, mod);
+
+    // (potential) CompuMate events are handled directly.
     if (myKeyMap.get(kEmulationMode, key, mod) != Event::ExitMode &&
-        CompuMateKeys.find(key) != CompuMateKeys.end())
-      // supress all events (except exit mode) using CompuMate keys
+      !StellaModTest::isAlt(mod) && event != Event::NoType)
+    {
+      myHandler.handleEvent(event, pressed, repeated);
       return;
+    }
   }
 
   // Arrange the logic to take advantage of short-circuit evaluation
-  if(!(StellaModTest::isControl(mod) || StellaModTest::isShift(mod) || StellaModTest::isAlt(mod)))
-  {
-    // Handle keys which switch eventhandler state
-    if (!pressed && myHandler.changeStateByEvent(myKeyMap.get(kEmulationMode, key, mod)))
-      return;
-  }
+  // Handle keys which switch eventhandler state
+  if (!pressed && myHandler.changeStateByEvent(myKeyMap.get(kEmulationMode, key, mod)))
+    return;
 
   // Otherwise, let the event handler deal with it
   switch(estate)
@@ -371,19 +388,6 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
       myHandler.handleEvent(myKeyMap.get(kMenuMode, key, mod), pressed, repeated);
       break;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::handleAltEvent(StellaKey key, StellaMod mod, bool pressed)
-{
-  if(StellaModTest::isAlt(mod) && pressed && key == KBDK_TAB)
-  {
-    // Swallow Alt-Tab, but remember that it happened
-    myAltKeyCounter = 1;
-    return true;
-  } // alt
-
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -640,25 +644,62 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultKeypa
   {Event::KeyboardOnePound,         KBDK_SLASH},
 };
 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalKeyboardHandler::StellaKeySet PhysicalKeyboardHandler::CompuMateKeys = {
-  KBDK_0, KBDK_1, KBDK_2, KBDK_3, KBDK_4,
-  KBDK_5, KBDK_6, KBDK_7, KBDK_8, KBDK_9,
-  KBDK_A, KBDK_B, KBDK_C, KBDK_D, KBDK_E,
-  KBDK_F, KBDK_G, KBDK_H, KBDK_I, KBDK_J,
-  KBDK_K, KBDK_L, KBDK_M, KBDK_N, KBDK_O,
-  KBDK_P, KBDK_Q, KBDK_R, KBDK_S, KBDK_T,
-  KBDK_U, KBDK_V, KBDK_W, KBDK_X, KBDK_Y,
-  KBDK_Z,
-  KBDK_COMMA,
-  KBDK_PERIOD,
-  KBDK_RETURN, KBDK_KP_ENTER,
-  KBDK_SPACE,
-  KBDK_BACKSPACE,
-  KBDK_EQUALS,
-  KBDK_MINUS,
-  KBDK_SLASH,
-  KBDK_LEFTBRACKET,
-  KBDK_RIGHTBRACKET,
-  KBDK_APOSTROPHE
+PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::CompuMateMapping = {
+  {Event::CompuMateShift,         KBDK_LSHIFT},
+  {Event::CompuMateShift,         KBDK_RSHIFT},
+  {Event::CompuMateFunc,          KBDK_LCTRL},
+  {Event::CompuMateFunc,          KBDK_RCTRL},
+  {Event::CompuMate0,             KBDK_0},
+  {Event::CompuMate1,             KBDK_1},
+  {Event::CompuMate2,             KBDK_2},
+  {Event::CompuMate3,             KBDK_3},
+  {Event::CompuMate4,             KBDK_4},
+  {Event::CompuMate5,             KBDK_5},
+  {Event::CompuMate6,             KBDK_6},
+  {Event::CompuMate7,             KBDK_7},
+  {Event::CompuMate8,             KBDK_8},
+  {Event::CompuMate9,             KBDK_9},
+  {Event::CompuMateA,             KBDK_A},
+  {Event::CompuMateB,             KBDK_B},
+  {Event::CompuMateC,             KBDK_C},
+  {Event::CompuMateD,             KBDK_D},
+  {Event::CompuMateE,             KBDK_E},
+  {Event::CompuMateF,             KBDK_F},
+  {Event::CompuMateG,             KBDK_G},
+  {Event::CompuMateH,             KBDK_H},
+  {Event::CompuMateI,             KBDK_I},
+  {Event::CompuMateJ,             KBDK_J},
+  {Event::CompuMateK,             KBDK_K},
+  {Event::CompuMateL,             KBDK_L},
+  {Event::CompuMateM,             KBDK_M},
+  {Event::CompuMateN,             KBDK_N},
+  {Event::CompuMateO,             KBDK_O},
+  {Event::CompuMateP,             KBDK_P},
+  {Event::CompuMateQ,             KBDK_Q},
+  {Event::CompuMateR,             KBDK_R},
+  {Event::CompuMateS,             KBDK_S},
+  {Event::CompuMateT,             KBDK_T},
+  {Event::CompuMateU,             KBDK_U},
+  {Event::CompuMateV,             KBDK_V},
+  {Event::CompuMateW,             KBDK_W},
+  {Event::CompuMateX,             KBDK_X},
+  {Event::CompuMateY,             KBDK_Y},
+  {Event::CompuMateZ,             KBDK_Z},
+  {Event::CompuMateComma,         KBDK_COMMA},
+  {Event::CompuMatePeriod,        KBDK_PERIOD},
+  {Event::CompuMateEnter,         KBDK_RETURN},
+  {Event::CompuMateEnter,         KBDK_KP_ENTER},
+  {Event::CompuMateSpace,         KBDK_SPACE},
+  // extra emulated keys
+  {Event::CompuMateQuestion,      KBDK_SLASH, KBDM_SHIFT},
+  {Event::CompuMateLeftBracket,   KBDK_LEFTBRACKET},
+  {Event::CompuMateRightBracket,  KBDK_RIGHTBRACKET},
+  {Event::CompuMateMinus,         KBDK_MINUS},
+  {Event::CompuMateQuote,         KBDK_APOSTROPHE, KBDM_SHIFT},
+  {Event::CompuMateBackspace,     KBDK_BACKSPACE},
+  {Event::CompuMateEquals,        KBDK_EQUALS},
+  {Event::CompuMatePlus,          KBDK_EQUALS, KBDM_SHIFT},
+  {Event::CompuMateSlash,         KBDK_SLASH}
 };
