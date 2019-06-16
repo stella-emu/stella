@@ -23,7 +23,6 @@
 
 class OSystem;
 class EventHandler;
-class Event;
 
 #include "bspf.hxx"
 #include "EventHandlerConstants.hxx"
@@ -46,7 +45,7 @@ class PhysicalKeyboardHandler
 {
   public:
 
-    PhysicalKeyboardHandler(OSystem& system, EventHandler& handler, Event& event);
+    PhysicalKeyboardHandler(OSystem& system, EventHandler& handler);
 
     void setDefaultMapping(Event::Type type, EventMode mode, bool updateDefaults = false);
 
@@ -108,7 +107,6 @@ class PhysicalKeyboardHandler
 
     OSystem& myOSystem;
     EventHandler& myHandler;
-    Event& myEvent;
 
     // Hashmap of key events
     KeyMap myKeyMap;
