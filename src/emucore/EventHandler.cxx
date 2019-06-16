@@ -18,18 +18,15 @@
 #include <sstream>
 #include <map>
 
-#include "bspf.hxx"
 #include "Logger.hxx"
 
 #include "Base.hxx"
 #include "Console.hxx"
-#include "Event.hxx"
 #include "FrameBuffer.hxx"
 #include "FSNode.hxx"
 #include "OSystem.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
-#include "PJoystickHandler.hxx"
 #include "PointingDevice.hxx"
 #include "PropsSet.hxx"
 #include "Settings.hxx"
