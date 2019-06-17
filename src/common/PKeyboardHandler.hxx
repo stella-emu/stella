@@ -25,6 +25,7 @@ class OSystem;
 class EventHandler;
 
 #include "bspf.hxx"
+#include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "KeyMap.hxx"
 
