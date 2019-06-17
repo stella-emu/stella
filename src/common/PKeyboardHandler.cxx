@@ -19,7 +19,6 @@
 #include "Console.hxx"
 #include "Settings.hxx"
 #include "EventHandler.hxx"
-#include "Event.hxx"
 #include "Sound.hxx"
 #include "StateManager.hxx"
 #include "StellaKeys.hxx"
@@ -45,7 +44,7 @@ static constexpr int MOD3 = KBDM_ALT;
 PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& handler)
   : myOSystem(system),
     myHandler(handler)
-#ifdef BSPF_UNIX  // FIXME - this may no longer be relevant
+#ifdef BSPF_UNIX
     , myAltKeyCounter(0)
 #endif
 {
