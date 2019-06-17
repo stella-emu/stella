@@ -470,7 +470,7 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::handleRomViewer()
 {
-  //string size = myRomViewerPopup->getSelectedName();
+  int size = myRomViewerPopup->getSelected();
   bool enable = myRomViewerPopup->getSelectedName() != "Off";
   VariantList items;
 
@@ -485,10 +485,12 @@ void UIDialog::handleRomViewer()
   {
     VarList::push_back(items, "2x (1000x720)", "2");
   }
-  myRomViewerPopup->addItems(items);
+  else if (size == 2)
+  {
+    myRomViewerPopup->setSelected(1);
+  }
 
-  // FIXME (remove when done)  - Thomas, you can continue from here ...
-  //myRomViewerPopup->setSelected("1x(640x480) ");
+  myRomViewerPopup->addItems(items);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
