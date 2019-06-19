@@ -65,9 +65,9 @@ class PhysicalJoystick
     int ID;
     string name;
     int numAxes, numButtons, numHats;
-    Event::Type (*axisTable)[2][kNumModes];
+    Event::Type (*axisTable)[NUM_JOY_DIRS][kNumModes];
     Event::Type (*btnTable)[kNumModes];
-    Event::Type (*hatTable)[4][kNumModes];
+    Event::Type (*hatTable)[NUM_JOY_HAT_DIRS][kNumModes];
     int* axisLastValue;
 
   private:

@@ -83,17 +83,18 @@ class PhysicalJoystickHandler
     void handleBtnEvent(int stick, int button, bool pressed);
     void handleHatEvent(int stick, int hat, int value);
 
-    Event::Type eventForAxis(int stick, int axis, int value, EventMode mode) const {
+    Event::Type eventForAxis(int stick, int axis, int joyDir, EventMode mode) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return (j && value != 0) ? j->axisTable[axis][(value > 0)][mode] : Event::NoType;
+      return (j && joyDir != int(JoyDir::NEG))
+        ? j->axisTable[axis][(joyDir > int(JoyDir::NEG))][mode] : Event::NoType;
     }
     Event::Type eventForButton(int stick, int button, EventMode mode) const {
       const PhysicalJoystickPtr j = joy(stick);
       return j ? j->btnTable[button][mode] : Event::NoType;
     }
-    Event::Type eventForHat(int stick, int hat, JoyHat value, EventMode mode) const {
+    Event::Type eventForHat(int stick, int hat, JoyHat hatDir, EventMode mode) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return j ? j->hatTable[hat][int(value)][mode] : Event::NoType;
+      return j ? j->hatTable[hat][int(hatDir)][mode] : Event::NoType;
     }
 
     /** Returns a list of pairs consisting of joystick name and associated ID. */
@@ -126,9 +127,12 @@ class PhysicalJoystickHandler
     friend ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh);
 
     // Static lookup tables for Stelladaptor/2600-daptor axis/button support
-    static const Event::Type SA_Axis[2][2];
-    static const Event::Type SA_Button[2][4];
-    static const Event::Type SA_Key[2][12];
+    static const int NUM_JOY_BTN = 4;
+    static const int NUM_KEY_BTN = 12;
+
+    static const Event::Type SA_Axis[NUM_PORTS][NUM_JOY_AXIS];
+    static const Event::Type SA_Button[NUM_PORTS][NUM_JOY_BTN];
+    static const Event::Type SA_Key[NUM_PORTS][NUM_KEY_BTN];
 };
 
 #endif

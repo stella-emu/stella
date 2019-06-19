@@ -66,6 +66,11 @@ enum JoyHatMask {
   EVENT_HATCENTER_M = 1<<4
 };
 
+static const int NUM_PORTS = 2;
+static const int NUM_JOY_AXIS = 2;
+static const int NUM_JOY_DIRS = 2;
+static const int NUM_JOY_HAT_DIRS = 4;
+
 // TODO - make this 'enum class' somehow
 enum EventMode {
   kEmulationMode = 0,  // make sure these are set correctly,

@@ -127,13 +127,13 @@ int PhysicalJoystickHandler::add(PhysicalJoystickPtr stick)
   // We're potentially swapping out an input device behind the back of
   // the Event system, so we make sure all Stelladaptor-generated events
   // are reset
-  for(int i = 0; i < 2; ++i)
+  for(int i = 0; i < NUM_PORTS; ++i)
   {
-    for(int j = 0; j < 2; ++j)
+    for(int j = 0; j < NUM_JOY_AXIS; ++j)
       myEvent.set(SA_Axis[i][j], 0);
-    for(int j = 0; j < 4; ++j)
+    for(int j = 0; j < NUM_JOY_BTN; ++j)
       myEvent.set(SA_Button[i][j], 0);
-    for(int j = 0; j < 12; ++j)
+    for(int j = 0; j < NUM_KEY_BTN; ++j)
       myEvent.set(SA_Key[i][j], 0);
   }
 
@@ -197,7 +197,7 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
   // We know there will be only two such devices (at most), since the logic
   // in setupJoysticks take care of that
   int saCount = 0;
-  int saOrder[2] = { 1, 2 };
+  int saOrder[NUM_PORTS] = { 1, 2 };
   if(BSPF::equalsIgnoreCase(saport, "rl"))
   {
     saOrder[0] = 2; saOrder[1] = 1;
@@ -414,7 +414,7 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
     // Joystick axis mapping/labeling
     for(int axis = 0; axis < j->numAxes; ++axis)
     {
-      for(int dir = 0; dir < 2; ++dir)
+      for(int dir = 0; dir < NUM_JOY_DIRS; ++dir)
       {
         if(j->axisTable[axis][dir][mode] == event)
         {
@@ -423,7 +423,7 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
           buf << "J" << stick << "/A" << axis;
           if(Event::isAnalog(event))
           {
-            dir = 2;  // Immediately exit the inner loop after this iteration
+            dir = NUM_JOY_DIRS;  // Immediately exit the inner loop after this iteration
             buf << "/+|-";
           }
           else if(dir == 0)
@@ -437,7 +437,7 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
     // Joystick hat mapping/labeling
     for(int hat = 0; hat < j->numHats; ++hat)
     {
-      for(int dir = 0; dir < 4; ++dir)
+      for(int dir = 0; dir < NUM_JOY_HAT_DIRS; ++dir)
       {
         if(j->hatTable[hat][dir][mode] == event)
         {
@@ -471,16 +471,16 @@ bool PhysicalJoystickHandler::addAxisMapping(Event::Type event, EventMode mode,
       // This confusing code is because each axis has two associated values,
       // but analog events only affect one of the axis.
       if(Event::isAnalog(event))
-        j->axisTable[axis][0][mode] = j->axisTable[axis][1][mode] = event;
+        j->axisTable[axis][int(JoyDir::NEG)][mode] = j->axisTable[axis][int(JoyDir::POS)][mode] = event;
       else
       {
         // Otherwise, turn off the analog event(s) for this axis
-        if(Event::isAnalog(j->axisTable[axis][0][mode]))
-          j->axisTable[axis][0][mode] = Event::NoType;
-        if(Event::isAnalog(j->axisTable[axis][1][mode]))
-          j->axisTable[axis][1][mode] = Event::NoType;
+        if(Event::isAnalog(j->axisTable[axis][int(JoyDir::NEG)][mode]))
+          j->axisTable[axis][int(JoyDir::NEG)][mode] = Event::NoType;
+        if(Event::isAnalog(j->axisTable[axis][int(JoyDir::POS)][mode]))
+          j->axisTable[axis][int(JoyDir::POS)][mode] = Event::NoType;
 
-        j->axisTable[axis][(value > 0)][mode] = event;
+        j->axisTable[axis][(value > int(JoyDir::NEG))][mode] = event;
       }
       return true;
     }
@@ -534,8 +534,8 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
       if(myHandler.state() == EventHandlerState::EMULATION)
       {
         // Every axis event has two associated values, negative and positive
-        Event::Type eventAxisNeg = j->axisTable[axis][0][kEmulationMode];
-        Event::Type eventAxisPos = j->axisTable[axis][1][kEmulationMode];
+        Event::Type eventAxisNeg = j->axisTable[axis][int(JoyDir::NEG)][kEmulationMode];
+        Event::Type eventAxisPos = j->axisTable[axis][int(JoyDir::POS)][kEmulationMode];
 
         // Check for analog events, which are handled differently
         // We'll pass them off as Stelladaptor events, and let the controllers
@@ -611,13 +611,13 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
     // they can never be remapped
     case PhysicalJoystick::JT_STELLADAPTOR_LEFT:
     case PhysicalJoystick::JT_2600DAPTOR_LEFT:
-      if(axis < 2)
-        myEvent.set(SA_Axis[0][axis], value);
+      if(axis < NUM_JOY_AXIS)
+        myEvent.set(SA_Axis[int(Controller::Jack::Left)][axis], value);
       break;  // axis on left controller (0)
     case PhysicalJoystick::JT_STELLADAPTOR_RIGHT:
     case PhysicalJoystick::JT_2600DAPTOR_RIGHT:
-      if(axis < 2)
-        myEvent.set(SA_Axis[1][axis], value);
+      if(axis < NUM_JOY_AXIS)
+        myEvent.set(SA_Axis[int(Controller::Jack::Right)][axis], value);
       break;  // axis on right controller (1)
     default:
       break;
@@ -654,7 +654,8 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
       // The 'type-2' here refers to the fact that 'PhysicalJoystick::JT_STELLADAPTOR_LEFT'
       // and 'PhysicalJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
       // enum; subtracting two gives us Controller 0 and 1
-      if(button < 2) myEvent.set(SA_Button[j->type-2][button], pressed ? 1 : 0);
+      if(button < 2)
+        myEvent.set(SA_Button[j->type-PhysicalJoystick::JT_STELLADAPTOR_LEFT][button], pressed ? 1 : 0);
       break;  // Stelladaptor button
     case PhysicalJoystick::JT_2600DAPTOR_LEFT:
     case PhysicalJoystick::JT_2600DAPTOR_RIGHT:
@@ -666,18 +667,20 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
         switch(myOSystem.console().leftController().type())
         {
           case Controller::Type::Keyboard:
-            if(button < 12) myEvent.set(SA_Key[j->type-4][button], pressed ? 1 : 0);
+            if(button < NUM_KEY_BTN)
+              myEvent.set(SA_Key[j->type-PhysicalJoystick::JT_2600DAPTOR_LEFT][button], pressed ? 1 : 0);
             break;
           default:
-            if(button < 4) myEvent.set(SA_Button[j->type-4][button], pressed ? 1 : 0);
+            if(button < NUM_JOY_BTN) myEvent.set(SA_Button[j->type-PhysicalJoystick::JT_2600DAPTOR_LEFT][button], pressed ? 1 : 0);
         }
         switch(myOSystem.console().rightController().type())
         {
           case Controller::Type::Keyboard:
-            if(button < 12) myEvent.set(SA_Key[j->type-4][button], pressed ? 1 : 0);
+            if(button < NUM_KEY_BTN)
+              myEvent.set(SA_Key[j->type-PhysicalJoystick::JT_2600DAPTOR_LEFT][button], pressed ? 1 : 0);
             break;
           default:
-            if(button < 4) myEvent.set(SA_Button[j->type-4][button], pressed ? 1 : 0);
+            if(button < NUM_JOY_BTN) myEvent.set(SA_Button[j->type-PhysicalJoystick::JT_2600DAPTOR_LEFT][button], pressed ? 1 : 0);
         }
       }
       break;  // 2600DAPTOR button
@@ -756,7 +759,7 @@ ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Used by the Stelladaptor to send absolute axis values
-const Event::Type PhysicalJoystickHandler::SA_Axis[2][2] = {
+const Event::Type PhysicalJoystickHandler::SA_Axis[NUM_PORTS][NUM_JOY_AXIS] = {
   { Event::SALeftAxis0Value,  Event::SALeftAxis1Value  },
   { Event::SARightAxis0Value, Event::SARightAxis1Value }
 };
@@ -764,7 +767,7 @@ const Event::Type PhysicalJoystickHandler::SA_Axis[2][2] = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Used by the Stelladaptor to map button presses to joystick or paddles
 //  (driving controllers and boostergrip are considered the same as joysticks)
-const Event::Type PhysicalJoystickHandler::SA_Button[2][4] = {
+const Event::Type PhysicalJoystickHandler::SA_Button[NUM_PORTS][NUM_JOY_BTN] = {
   { Event::JoystickZeroFire,  Event::JoystickZeroFire9,
     Event::JoystickZeroFire5, Event::JoystickZeroFire9 },
   { Event::JoystickOneFire,   Event::JoystickOneFire9,
@@ -773,7 +776,7 @@ const Event::Type PhysicalJoystickHandler::SA_Button[2][4] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Used by the 2600-daptor to map button presses to keypad keys
-const Event::Type PhysicalJoystickHandler::SA_Key[2][12] = {
+const Event::Type PhysicalJoystickHandler::SA_Key[NUM_PORTS][NUM_KEY_BTN] = {
   { Event::KeyboardZero1,    Event::KeyboardZero2,  Event::KeyboardZero3,
     Event::KeyboardZero4,    Event::KeyboardZero5,  Event::KeyboardZero6,
     Event::KeyboardZero7,    Event::KeyboardZero8,  Event::KeyboardZero9,
