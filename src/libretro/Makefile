@@ -497,7 +497,7 @@ else ifeq ($(platform), windows_msvc2005_x86)
 # Windows
 else
    TARGET := $(TARGET_NAME)_libretro.dll
-   CXX = g++
+   CXX ?= g++
    SHARED := -shared -static-libgcc -static-libstdc++ -s -Wl,--version-script=link.T
    CXXFLAGS += -D__WIN32__
 endif
