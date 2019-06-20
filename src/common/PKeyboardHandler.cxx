@@ -236,7 +236,7 @@ void PhysicalKeyboardHandler::enableMappings(const EventSet events, EventMode mo
 void PhysicalKeyboardHandler::enableMapping(const Event::Type event, EventMode mode)
 {
   // copy from controller mode into emulation mode
-  std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, mode);
+  KeyMap::MappingArray mappings = myKeyMap.getEventMapping(event, mode);
 
   for (const auto& mapping : mappings)
     myKeyMap.add(event, kEmulationMode, mapping.key, mapping.mod);

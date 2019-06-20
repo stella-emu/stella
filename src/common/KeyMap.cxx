@@ -161,9 +161,9 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const int mode) cons
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-std::vector<KeyMap::Mapping> KeyMap::getEventMapping(const Event::Type event, const int mode) const
+KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const int mode) const
 {
-  std::vector<KeyMap::Mapping> map;
+  MappingArray map;
 
   for (auto item : myMap)
     if (item.second == event && item.first.mode == mode)

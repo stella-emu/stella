@@ -374,8 +374,9 @@
     <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
     <ClCompile Include="..\common\FpsMeter.cxx" />
-    <ClCompile Include="..\common\FrameBufferSDL2.cxx" />    
+    <ClCompile Include="..\common\FrameBufferSDL2.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
+    <ClCompile Include="..\common\ControllerMap.cxx" />
     <ClCompile Include="..\common\KeyMap.cxx" />
     <ClCompile Include="..\common\Logger.cxx" />
     <ClCompile Include="..\common\main.cxx" />
@@ -1073,6 +1074,7 @@
     <ClInclude Include="..\common\FrameBufferSDL2.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
+    <ClInclude Include="..\common\ControllerMap.hxx" />
     <ClInclude Include="..\common\KeyMap.hxx" />
     <ClInclude Include="..\common\LinkedObjectPool.hxx" />
     <ClInclude Include="..\common\Logger.hxx" />

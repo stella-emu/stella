@@ -426,7 +426,7 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
             dir = NUM_JOY_DIRS;  // Immediately exit the inner loop after this iteration
             buf << "/+|-";
           }
-          else if(dir == 0)
+          else if(dir == int(JoyDir::NEG))
             buf << "/-";
           else
             buf << "/+";
@@ -520,6 +520,15 @@ bool PhysicalJoystickHandler::addHatMapping(Event::Type event, EventMode mode,
   }
   return false;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::addMapping(Event::Type event, EventMode mode, int stick,
+  int button, JoyAxis axis, JoyDir adir, int hat, JoyHat hdir)
+{
+  myControllerMap.add(event, mode, stick, button, axis, adir, hat, hdir);
+
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
