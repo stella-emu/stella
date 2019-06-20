@@ -978,6 +978,9 @@
     <ClCompile Include="..\gui\R77HelpDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\ControllerMap.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1998,6 +2001,9 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\common\KeyMap.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ControllerMap.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

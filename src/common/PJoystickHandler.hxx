@@ -28,6 +28,7 @@ class Event;
 #include "EventHandlerConstants.hxx"
 #include "PhysicalJoystick.hxx"
 #include "Variant.hxx"
+#include "ControllerMap.hxx"
 
 using PhysicalJoystickPtr = shared_ptr<PhysicalJoystick>;
 
@@ -77,6 +78,12 @@ class PhysicalJoystickHandler
     bool addAxisMapping(Event::Type event, EventMode mode, int stick, int axis, int value);
     bool addBtnMapping(Event::Type event, EventMode mode, int stick, int button);
     bool addHatMapping(Event::Type event, EventMode mode, int stick, int hat, JoyHat value);
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    void addMapping(Event::Type event, EventMode mode, int stick,
+      int button, JoyAxis axis, JoyDir adir, int hat, JoyHat hdir);
+
+
 
     /** Handle a physical joystick event. */
     void handleAxisEvent(int stick, int axis, int value);
@@ -133,6 +140,9 @@ class PhysicalJoystickHandler
     static const Event::Type SA_Axis[NUM_PORTS][NUM_JOY_AXIS];
     static const Event::Type SA_Button[NUM_PORTS][NUM_JOY_BTN];
     static const Event::Type SA_Key[NUM_PORTS][NUM_KEY_BTN];
+
+    // Hashmap of controller events
+    ControllerMap myControllerMap;
 };
 
 #endif

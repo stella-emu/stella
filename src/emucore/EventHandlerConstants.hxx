@@ -38,6 +38,8 @@ enum class MouseButton {
   NONE
 };
 
+static constexpr int CTRL_NONE = -1;
+
 enum class JoyAxis {
   X = 0,
   Y = 1,
