@@ -20,6 +20,8 @@
 
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
+#include "JoyMap.hxx"
+#include "JoyHatMap.hxx"
 
 /**
   An abstraction of a physical (real) joystick in Stella.
@@ -69,6 +71,10 @@ class PhysicalJoystick
     Event::Type (*btnTable)[kNumModes];
     Event::Type (*hatTable)[NUM_JOY_HAT_DIRS][kNumModes];
     int* axisLastValue;
+
+    // Hashmaps of controller events
+    JoyMap joyMap;
+    JoyHatMap joyHatMap;
 
   private:
     void getValues(const string& list, IntArray& map) const;

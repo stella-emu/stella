@@ -15,41 +15,47 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "ControllerMap.hxx"
+#include "JoyMap.hxx"
+
+// TODOs
+// - two maps per controller (joydirs, hatdirs)
+// - both maps combined with buttons
+// - directions can work alone and with a button combination
+// - buttons can work without a direction (mapped in joydir)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ControllerMap::ControllerMap(void)
+JoyMap::JoyMap(void)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ControllerMap::add(const Event::Type event, const ControllerMapping& mapping)
+void JoyMap::add(const Event::Type event, const JoyMapping& mapping)
 {
   myMap[mapping] = event;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ControllerMap::add(const Event::Type event, const EventMode mode, const int stick, const int button,
-  const JoyAxis axis, const JoyDir adir, const int hat, const JoyHat hdir)
+void JoyMap::add(const Event::Type event, const EventMode mode, const int button,
+  const JoyAxis axis, const JoyDir adir)
 {
-  add(event, ControllerMapping(mode, stick, button, axis, adir, hat, hdir));
+  add(event, JoyMapping(mode, button, axis, adir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ControllerMap::erase(const ControllerMapping& mapping)
+void JoyMap::erase(const JoyMapping& mapping)
 {
   myMap.erase(mapping);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ControllerMap::erase(const EventMode mode, const int stick, const int button,
-  const JoyAxis axis, const JoyDir adir, const int hat, const JoyHat hdir)
+void JoyMap::erase(const EventMode mode, const int button,
+  const JoyAxis axis, const JoyDir adir)
 {
-  erase(ControllerMapping(mode, stick, button, axis, adir, hat, hdir));
+  erase(JoyMapping(mode, button, axis, adir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type ControllerMap::get(const ControllerMapping& mapping) const
+Event::Type JoyMap::get(const JoyMapping& mapping) const
 {
   auto find = myMap.find(mapping);
   if (find != myMap.end())
@@ -59,14 +65,14 @@ Event::Type ControllerMap::get(const ControllerMapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type ControllerMap::get(const EventMode mode, const int stick, const int button,
-  const JoyAxis axis, const JoyDir adir, const int hat, const JoyHat hdir) const
+Event::Type JoyMap::get(const EventMode mode, const int button,
+  const JoyAxis axis, const JoyDir adir) const
 {
-  return get(ControllerMapping(mode, stick, button, axis, adir, hat, hdir));
+  return get(JoyMapping(mode, button, axis, adir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerMap::check(const ControllerMapping & mapping) const
+bool JoyMap::check(const JoyMapping & mapping) const
 {
   auto find = myMap.find(mapping);
 
@@ -74,18 +80,18 @@ bool ControllerMap::check(const ControllerMapping & mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerMap::check(const EventMode mode, const int stick, const int button,
-  const JoyAxis axis, const JoyDir adir, const int hat, const JoyHat hdir) const
+bool JoyMap::check(const EventMode mode, const int button,
+  const JoyAxis axis, const JoyDir adir) const
 {
-  return check(ControllerMapping(mode, stick, button, axis, adir, hat, hdir));
+  return check(JoyMapping(mode, button, axis, adir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerMap::getDesc(const Event::Type event, const ControllerMapping& mapping) const
+string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping) const
 {
   ostringstream buf;
 
-  buf << "J" << mapping.stick;
+  //buf << "J" << mapping.stick;
 
   // button description
   if (mapping.button != CTRL_NONE)
@@ -94,7 +100,7 @@ string ControllerMap::getDesc(const Event::Type event, const ControllerMapping& 
   // axis description
   if (int(mapping.axis) != CTRL_NONE)
   {
-    buf << "/A" << mapping.hat;
+    buf << "/A";
     switch (mapping.axis)
     {
       case JoyAxis::X: buf << "X"; break;
@@ -110,33 +116,18 @@ string ControllerMap::getDesc(const Event::Type event, const ControllerMapping& 
       buf << "+";
   }
 
-  // hat description
-  if (mapping.hat != CTRL_NONE)
-  {
-    buf << "/H" << mapping.hat;
-    switch (mapping.hdir)
-    {
-      case JoyHat::UP:    buf << "/up";    break;
-      case JoyHat::DOWN:  buf << "/down";  break;
-      case JoyHat::LEFT:  buf << "/left";  break;
-      case JoyHat::RIGHT: buf << "/right"; break;
-      default:                             break;
-    }
-  }
-
-
   return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerMap::getDesc(const Event::Type event, const EventMode mode, const int stick, const int button,
-  const JoyAxis axis, const JoyDir adir, const int hat, const JoyHat hdir) const
+string JoyMap::getDesc(const Event::Type event, const EventMode mode, const int button,
+  const JoyAxis axis, const JoyDir adir) const
 {
-  return getDesc(event, ControllerMapping(mode, stick, button, axis, adir, hat, hdir));
+  return getDesc(event, JoyMapping(mode, button, axis, adir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerMap::getEventMappingDesc(const Event::Type event, const EventMode mode) const
+string JoyMap::getEventMappingDesc(const Event::Type event, const EventMode mode) const
 {
   ostringstream buf;
 
@@ -153,9 +144,9 @@ string ControllerMap::getEventMappingDesc(const Event::Type event, const EventMo
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ControllerMap::ControllerMappingArray ControllerMap::getEventMapping(const Event::Type event, const EventMode mode) const
+JoyMap::JoyMappingArray JoyMap::getEventMapping(const Event::Type event, const EventMode mode) const
 {
-  ControllerMappingArray map;
+  JoyMappingArray map;
 
   for (auto item : myMap)
     if (item.second == event && item.first.mode == mode)
@@ -165,7 +156,7 @@ ControllerMap::ControllerMappingArray ControllerMap::getEventMapping(const Event
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerMap::saveMapping(const EventMode mode) const
+string JoyMap::saveMapping(const EventMode mode) const
 {
   ostringstream buf;
 
@@ -175,15 +166,15 @@ string ControllerMap::saveMapping(const EventMode mode) const
     {
       if (buf.str() != "")
         buf << "|";
-      buf << item.second << ":" << item.first.stick << "," << item.first.button << ","
-        << int(item.first.axis) << "," << int(item.first.adir) << "," << item.first.hat << "," << int(item.first.hdir);
+      buf << item.second << ":" /*<< item.first.stick*/ << "," << item.first.button << ","
+        << int(item.first.axis) << "," << int(item.first.adir);
     }
   }
   return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int ControllerMap::loadMapping(string& list, const EventMode mode)
+int JoyMap::loadMapping(string& list, const EventMode mode)
 {
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
@@ -191,17 +182,17 @@ int ControllerMap::loadMapping(string& list, const EventMode mode)
   std::replace(list.begin(), list.end(), ':', ' ');
   std::replace(list.begin(), list.end(), ',', ' ');
   istringstream buf(list);
-  int event, stick, button, axis, adir, hat, hdir, i = 0;
+  int event, stick, button, axis, adir, i = 0;
 
   while (buf >> event && buf >> stick && buf >> button
-      && buf >> axis && buf >> adir && buf >> hat && buf >> hdir && ++i)
-    add(Event::Type(event), EventMode(mode), stick, button, JoyAxis(axis), JoyDir(adir), hat, JoyHat(hdir));
+      && buf >> axis && buf >> adir && ++i)
+    add(Event::Type(event), EventMode(mode), button, JoyAxis(axis), JoyDir(adir));
 
   return i;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ControllerMap::eraseMode(const EventMode mode)
+void JoyMap::eraseMode(const EventMode mode)
 {
   for (auto item = myMap.begin(); item != myMap.end();)
     if (item->first.mode == mode) {
@@ -212,7 +203,7 @@ void ControllerMap::eraseMode(const EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ControllerMap::eraseEvent(const Event::Type event, const EventMode mode)
+void JoyMap::eraseEvent(const Event::Type event, const EventMode mode)
 {
   for (auto item = myMap.begin(); item != myMap.end();)
     if (item->second == event && item->first.mode == mode) {
