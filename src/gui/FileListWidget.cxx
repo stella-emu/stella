@@ -18,6 +18,8 @@
 #include "ScrollBarWidget.hxx"
 #include "FileListWidget.hxx"
 
+#include "Bankswitch.hxx"
+#include "MD5.hxx"
 #include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -25,7 +27,7 @@ FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : StringListWidget(boss, font, x, y, w, h),
     _fsmode(FilesystemNode::ListMode::All),
-    _extension("")
+    _selectedPos(0)
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
@@ -91,6 +93,26 @@ void FileListWidget::selectParent()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::reload()
+{
+  if(_node.exists())
+    setLocation(_node, _gameList.name(_selectedPos));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& FileListWidget::selectedMD5()
+{
+  if(_selected.isDirectory() || !Bankswitch::isValidRomName(_selected))
+    return EmptyString;
+
+  // Make sure we have a valid md5 for this ROM
+  if(_gameList.md5(_selectedPos) == "")
+    _gameList.setMd5(_selectedPos, MD5::hash(_selected));
+
+  return _gameList.md5(_selectedPos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch (cmd)
@@ -102,6 +124,7 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
     case ListWidget::kSelectionChangedCmd:
       cmd = ItemChanged;
       _selected = FilesystemNode(_gameList.path(data));
+      _selectedPos = data;
       break;
 
     case ListWidget::kActivatedCmd:
@@ -116,7 +139,6 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
       }
       else
         cmd = ItemActivated;
-
       break;
 
     default:
