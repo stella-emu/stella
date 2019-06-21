@@ -67,10 +67,12 @@ class PhysicalJoystick
     int ID;
     string name;
     int numAxes, numButtons, numHats;
-    Event::Type (*axisTable)[NUM_JOY_DIRS][kNumModes];
+    /*Event::Type (*axisTable)[NUM_JOY_DIRS][kNumModes];
     Event::Type (*btnTable)[kNumModes];
-    Event::Type (*hatTable)[NUM_JOY_HAT_DIRS][kNumModes];
+    Event::Type (*hatTable)[NUM_JOY_HAT_DIRS][kNumModes];*/
     int* axisLastValue;
+    int* buttonLast;
+
 
     // Hashmaps of controller events
     JoyMap joyMap;

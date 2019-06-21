@@ -31,20 +31,22 @@ PhysicalJoystick::PhysicalJoystick()
     numAxes(0),
     numButtons(0),
     numHats(0),
-    axisTable(nullptr),
+    /*axisTable(nullptr),
     btnTable(nullptr),
-    hatTable(nullptr),
-    axisLastValue(nullptr)
+    hatTable(nullptr),*/
+    axisLastValue(nullptr),
+    buttonLast(nullptr)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystick::~PhysicalJoystick()
 {
-  delete[] axisTable;
+  /*delete[] axisTable;
   delete[] btnTable;
-  delete[] hatTable;
+  delete[] hatTable;*/
   delete[] axisLastValue;
+  delete[] buttonLast;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,24 +61,28 @@ void PhysicalJoystick::initialize(int index, const string& desc,
   numAxes    = axes;
   numButtons = buttons;
   numHats    = hats;
-  if(numAxes)
+  /*if(numAxes)
     axisTable = new Event::Type[numAxes][NUM_JOY_DIRS][kNumModes];
   if(numButtons)
     btnTable = new Event::Type[numButtons][kNumModes];
   if(numHats)
-    hatTable = new Event::Type[numHats][NUM_JOY_HAT_DIRS][kNumModes];
+    hatTable = new Event::Type[numHats][NUM_JOY_HAT_DIRS][kNumModes];*/
   axisLastValue = new int[numAxes];
+  buttonLast = new int[numButtons];
+
+  for (int b = 0; b < numButtons; ++b)
+    buttonLast[b] = JOY_CTRL_NONE;
 
   // Erase the joystick axis mapping array and last axis value
   for(int a = 0; a < numAxes; ++a)
   {
     axisLastValue[a] = 0;
-    for(int m = 0; m < kNumModes; ++m)
+    /*for(int m = 0; m < kNumModes; ++m)
       for (int d = 0; d < NUM_JOY_DIRS; ++d)
-        axisTable[a][d][m] = Event::NoType;
+        axisTable[a][d][m] = Event::NoType;*/
   }
 
-  // Erase the joystick button mapping array
+  /*// Erase the joystick button mapping array
   for(int b = 0; b < numButtons; ++b)
     for(int m = 0; m < kNumModes; ++m)
       btnTable[b][m] = Event::NoType;
@@ -85,7 +91,10 @@ void PhysicalJoystick::initialize(int index, const string& desc,
   for(int h = 0; h < numHats; ++h)
     for(int m = 0; m < kNumModes; ++m)
       for (int d = 0; d < NUM_JOY_HAT_DIRS; ++d)
-        hatTable[h][d][m] = Event::NoType;
+        hatTable[h][d][m] = Event::NoType;*/
+
+  for (int m = 0; m < kNumModes; ++m)
+    eraseMap(EventMode(m));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,7 +106,7 @@ string PhysicalJoystick::getMap() const
   if(type == JT_REGULAR)
   {
     ostringstream joybuf;
-    joybuf << name << "|" << numAxes;
+    /*joybuf << name << "|" << numAxes;
     for(int m = 0; m < kNumModes; ++m)
       for(int a = 0; a < numAxes; ++a)
         for (int d = 0; d < NUM_JOY_DIRS; ++d)
@@ -110,7 +119,12 @@ string PhysicalJoystick::getMap() const
     for(int m = 0; m < kNumModes; ++m)
       for(int h = 0; h < numHats; ++h)
         for (int d = 0; d < NUM_JOY_HAT_DIRS; ++d)
-          joybuf << " " << hatTable[h][d][m];
+          joybuf << " " << hatTable[h][d][m];*/
+
+    // new:
+    joybuf << name;
+    for (int m = 0; m < kNumModes; ++m)
+      joybuf << "|" << m << "|" << joyMap.saveMapping(EventMode(m));
 
     return joybuf.str();
   }
@@ -133,7 +147,7 @@ bool PhysicalJoystick::setMap(const string& mapString)
   IntArray map;
 
   // Parse axis/button/hat values
-  getValues(items[1], map);
+  /*getValues(items[1], map);
   if(int(map.size()) == numAxes * NUM_JOY_DIRS * kNumModes)
   {
     // Fill the axes table with events
@@ -161,7 +175,7 @@ bool PhysicalJoystick::setMap(const string& mapString)
       for(int h = 0; h < numHats; ++h)
         for (int d = 0; d < NUM_JOY_HAT_DIRS; ++d)
           hatTable[h][d][m] = Event::Type(*event++);
-  }
+  }*/
 
   return true;
 }
@@ -169,7 +183,7 @@ bool PhysicalJoystick::setMap(const string& mapString)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::eraseMap(EventMode mode)
 {
-  // Erase axis mappings
+  /*// Erase axis mappings
   for(int a = 0; a < numAxes; ++a)
     for (int d = 0; d < NUM_JOY_DIRS; ++d)
       axisTable[a][d][mode] = Event::NoType;
@@ -181,13 +195,18 @@ void PhysicalJoystick::eraseMap(EventMode mode)
   // Erase hat mappings
   for(int h = 0; h < numHats; ++h)
     for (int d = 0; d < NUM_JOY_HAT_DIRS; ++d)
-      hatTable[h][d][mode] = Event::NoType;
+      hatTable[h][d][mode] = Event::NoType;*/
+
+  // Erase button and axis mappings
+  joyMap.eraseMode(mode);
+  // Erase button and axis mappings
+  joyHatMap.eraseMode(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::eraseEvent(Event::Type event, EventMode mode)
 {
-  // Erase axis mappings
+  /*// Erase axis mappings
   for(int a = 0; a < numAxes; ++a)
     for (int d = 0; d < NUM_JOY_DIRS; ++d)
       if(axisTable[a][d][mode] == event)
@@ -202,7 +221,12 @@ void PhysicalJoystick::eraseEvent(Event::Type event, EventMode mode)
   for(int h = 0; h < numHats; ++h)
     for (int d = 0; d < NUM_JOY_HAT_DIRS; ++d)
       if(hatTable[h][d][mode] == event)
-        hatTable[h][d][mode] = Event::NoType;
+        hatTable[h][d][mode] = Event::NoType;*/
+
+  // Erase button and axis mappings
+  joyMap.eraseEvent(event, mode);
+  // Erase hat mappings
+  joyHatMap.eraseEvent(event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

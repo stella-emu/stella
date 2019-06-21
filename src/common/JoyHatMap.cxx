@@ -35,9 +35,10 @@ void JoyHatMap::add(const Event::Type event, const JoyHatMapping& mapping)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoyHatMap::add(const Event::Type event, const EventMode mode, const int hat, const JoyHat hdir)
+void JoyHatMap::add(const Event::Type event, const EventMode mode,
+                    const int button, const int hat, const JoyHat hdir)
 {
-  add(event, JoyHatMapping(mode, hat, hdir));
+  add(event, JoyHatMapping(mode, button, hat, hdir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,9 +48,10 @@ void JoyHatMap::erase(const JoyHatMapping& mapping)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoyHatMap::erase(const EventMode mode, const int hat, const JoyHat hdir)
+void JoyHatMap::erase(const EventMode mode,
+                      const int button, const int hat, const JoyHat hdir)
 {
-  erase(JoyHatMapping(mode, hat, hdir));
+  erase(JoyHatMapping(mode, button, hat, hdir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,9 +65,10 @@ Event::Type JoyHatMap::get(const JoyHatMapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type JoyHatMap::get(const EventMode mode, const int hat, const JoyHat hdir) const
+Event::Type JoyHatMap::get(const EventMode mode,
+                           const int button, const int hat, const JoyHat hdir) const
 {
-  return get(JoyHatMapping(mode, hat, hdir));
+  return get(JoyHatMapping(mode, button, hat, hdir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,9 +80,10 @@ bool JoyHatMap::check(const JoyHatMapping & mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool JoyHatMap::check(const EventMode mode, const int hat, const JoyHat hdir) const
+bool JoyHatMap::check(const EventMode mode,
+                      const int button, const int hat, const JoyHat hdir) const
 {
-  return check(JoyHatMapping(mode, hat, hdir));
+  return check(JoyHatMapping(mode, button, hat, hdir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,7 +94,7 @@ string JoyHatMap::getDesc(const Event::Type event, const JoyHatMapping & mapping
   //buf << "J" << mapping.stick;
 
   // hat description
-  if (mapping.hat != CTRL_NONE)
+  if (mapping.hat != JOY_CTRL_NONE)
   {
     buf << "/H" << mapping.hat;
     switch (mapping.hdir)
@@ -108,13 +112,14 @@ string JoyHatMap::getDesc(const Event::Type event, const JoyHatMapping & mapping
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string JoyHatMap::getDesc(const Event::Type event, const EventMode mode, const int hat, const JoyHat hdir) const
+string JoyHatMap::getDesc(const Event::Type event, const EventMode mode,
+                          const int button, const int hat, const JoyHat hdir) const
 {
-  return getDesc(event, JoyHatMapping(mode, hat, hdir));
+  return getDesc(event, JoyHatMapping(mode, button, hat, hdir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string JoyHatMap::getEventMappingDesc(const Event::Type event, const EventMode mode) const
+string JoyHatMap::getEventMappingDesc(const int stick, const Event::Type event, const EventMode mode) const
 {
   ostringstream buf;
 
@@ -124,7 +129,7 @@ string JoyHatMap::getEventMappingDesc(const Event::Type event, const EventMode m
     {
       if (buf.str() != "")
         buf << ", ";
-      buf << getDesc(event, item.first);
+      buf << "J" << stick << getDesc(event, item.first);
     }
   }
   return buf.str();
@@ -169,10 +174,10 @@ int JoyHatMap::loadMapping(string & list, const EventMode mode)
   std::replace(list.begin(), list.end(), ':', ' ');
   std::replace(list.begin(), list.end(), ',', ' ');
   istringstream buf(list);
-  int event, stick, hat, hdir, i = 0;
+  int event, stick, button, hat, hdir, i = 0;
 
-  while (buf >> event && buf >> stick && buf >> hat && buf >> hdir && ++i)
-    add(Event::Type(event), EventMode(mode), hat, JoyHat(hdir));
+  while (buf >> event && buf >> stick && buf >> button && buf >> hat && buf >> hdir && ++i)
+    add(Event::Type(event), EventMode(mode), button, hat, JoyHat(hdir));
 
   return i;
 }

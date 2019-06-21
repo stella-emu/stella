@@ -219,7 +219,7 @@ class EventHandler
                           we want to do this, unless there are a batch of
                           'adds', in which case it's delayed until the end
     */
-    bool addJoyAxisMapping(Event::Type event, EventMode mode,
+    /*bool addJoyAxisMapping(Event::Type event, EventMode mode,
                            int stick, int axis, int value,
                            bool updateMenus = true);
 
@@ -235,7 +235,7 @@ class EventHandler
                           we want to do this, unless there are a batch of
                           'adds', in which case it's delayed until the end
     */
-    bool addJoyButtonMapping(Event::Type event, EventMode mode, int stick, int button,
+    /*bool addJoyButtonMapping(Event::Type event, EventMode mode, int stick, int button,
                              bool updateMenus = true);
 
     /**
@@ -251,9 +251,17 @@ class EventHandler
                           we want to do this, unless there are a batch of
                           'adds', in which case it's delayed until the end
     */
-    bool addJoyHatMapping(Event::Type event, EventMode mode,
+    /*bool addJoyHatMapping(Event::Type event, EventMode mode,
                           int stick, int hat, JoyHat value,
+                          bool updateMenus = true);*/
+
+    bool addJoyMapping(Event::Type event, EventMode mode,
+                       int stick, int button, JoyAxis axis = JoyAxis::NONE, int value = 0,
+                       bool updateMenus = true);
+    bool addJoyHatMapping(Event::Type event, EventMode mode,
+                          int stick, int button, int hat, JoyHat dir,
                           bool updateMenus = true);
+
 
     /**
       Erase the specified mapping.

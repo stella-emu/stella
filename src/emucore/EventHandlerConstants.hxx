@@ -38,16 +38,19 @@ enum class MouseButton {
   NONE
 };
 
-static constexpr int CTRL_NONE = -1;
+static constexpr int JOY_CTRL_NONE = -1;
 
 enum class JoyAxis {
   X = 0,
   Y = 1,
+  Z = 2,
+  NONE = JOY_CTRL_NONE
 };
 
 enum class JoyDir {
   NEG = 0,
   POS = 1,
+  NONE = JOY_CTRL_NONE
 };
 
 
