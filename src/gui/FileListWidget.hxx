@@ -35,7 +35,7 @@ class CommandSender;
 
   Note that for the current implementation, the ItemActivated signal is
   not sent when activating a directory (instead the code descends into
-  the directory).  This may be changed in a future revision.
+  the directory).
 */
 class FileListWidget : public StringListWidget
 {
@@ -60,19 +60,30 @@ class FileListWidget : public StringListWidget
     /** Select parent directory (if applicable) */
     void selectParent();
 
+    /** Reload current location (file or directory) */
+    void reload();
+
     /** Gets current node(s) */
     const FilesystemNode& selected() const   { return _selected;  }
     const FilesystemNode& currentDir() const { return _node;      }
 
-  protected:
+    /** Gets MD5sum of the current node, if it is a file, and caches the result.
+        Otherwise, does nothing.
+
+        @return  MD5sum of selected file, else EmptyString
+    */
+    const string& selectedMD5();
+
+  private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     FilesystemNode::ListMode _fsmode;
     FilesystemNode _node, _selected;
-    string _extension;
-
     GameList _gameList;
+
+    string _extension;
+    uInt32 _selectedPos;
 
   private:
     // Following constructors and assignment operators not supported
