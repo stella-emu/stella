@@ -480,7 +480,7 @@ bool PhysicalJoystickHandler::addAxisMapping(Event::Type event, EventMode mode,
         if(Event::isAnalog(j->axisTable[axis][int(JoyDir::POS)][mode]))
           j->axisTable[axis][int(JoyDir::POS)][mode] = Event::NoType;
 
-        j->axisTable[axis][(value > int(JoyDir::NEG))][mode] = event;
+        j->axisTable[axis][int(value > 0 ? JoyDir::POS : JoyDir::NEG)][mode] = event;
       }
       return true;
     }
@@ -522,13 +522,22 @@ bool PhysicalJoystickHandler::addHatMapping(Event::Type event, EventMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::addMapping(Event::Type event, EventMode mode, int stick,
-  int button, JoyAxis axis, JoyDir adir, int hat, JoyHat hdir)
+void PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, int stick,
+  int button, JoyAxis axis, JoyDir adir)
 {
-  myControllerMap.add(event, mode, stick, button, axis, adir, hat, hdir);
+  const PhysicalJoystickPtr j = joy(stick);
 
+  j->joyMap.add(event, mode, button, axis, adir);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode, int stick,
+  int hat, JoyHat hdir)
+{
+  const PhysicalJoystickPtr j = joy(stick);
+
+  j->joyHatMap.add(event, mode, hat, hdir);
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
