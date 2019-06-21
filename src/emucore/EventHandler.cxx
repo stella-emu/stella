@@ -1124,7 +1124,7 @@ bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, StellaKey ke
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::addJoyAxisMapping(Event::Type event, EventMode mode,
+/*bool EventHandler::addJoyAxisMapping(Event::Type event, EventMode mode,
                                      int stick, int axis, int value,
                                      bool updateMenus)
 {
@@ -1169,7 +1169,40 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
 #else
   return false;
 #endif
+}*/
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::addJoyMapping(Event::Type event, EventMode mode,
+                                 int stick, int button, JoyAxis axis, int value,
+                                 bool updateMenus)
+{
+#ifdef JOYSTICK_SUPPORT
+  bool mapped = myPJoyHandler->addJoyMapping(event, mode, stick, button, axis, value);
+  if (mapped && updateMenus)
+    setActionMappings(mode);
+
+  return mapped;
+#else
+  return false;
+#endif
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
+                                    int stick, int button, int hat, JoyHat dir,
+                                    bool updateMenus)
+{
+#ifdef JOYSTICK_SUPPORT
+  bool mapped = myPJoyHandler->addJoyHatMapping(event, mode, stick, button, hat, dir);
+  if (mapped && updateMenus)
+    setActionMappings(mode);
+
+  return mapped;
+#else
+  return false;
+#endif
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::eraseMapping(Event::Type event, EventMode mode)

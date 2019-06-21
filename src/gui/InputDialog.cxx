@@ -481,6 +481,18 @@ void InputDialog::handleJoyDown(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::handleJoyUp(int stick, int button)
+{
+  // Remap joystick buttons in remap mode, otherwise pass to parent dialog
+  if (myEmulEventMapper->remapMode())
+    myEmulEventMapper->handleJoyUp(stick, button);
+  else if (myMenuEventMapper->remapMode())
+    myMenuEventMapper->handleJoyUp(stick, button);
+  else
+    Dialog::handleJoyUp(stick, button);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleJoyAxis(int stick, int axis, int value)
 {
   // Remap joystick axis in remap mode, otherwise pass to parent dialog

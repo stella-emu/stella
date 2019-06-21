@@ -36,7 +36,7 @@ void JoyMap::add(const Event::Type event, const JoyMapping& mapping)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::add(const Event::Type event, const EventMode mode, const int button,
-  const JoyAxis axis, const JoyDir adir)
+                 const JoyAxis axis, const JoyDir adir)
 {
   add(event, JoyMapping(mode, button, axis, adir));
 }
@@ -49,7 +49,7 @@ void JoyMap::erase(const JoyMapping& mapping)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::erase(const EventMode mode, const int button,
-  const JoyAxis axis, const JoyDir adir)
+                   const JoyAxis axis, const JoyDir adir)
 {
   erase(JoyMapping(mode, button, axis, adir));
 }
@@ -66,7 +66,7 @@ Event::Type JoyMap::get(const JoyMapping& mapping) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type JoyMap::get(const EventMode mode, const int button,
-  const JoyAxis axis, const JoyDir adir) const
+                        const JoyAxis axis, const JoyDir adir) const
 {
   return get(JoyMapping(mode, button, axis, adir));
 }
@@ -81,7 +81,7 @@ bool JoyMap::check(const JoyMapping & mapping) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool JoyMap::check(const EventMode mode, const int button,
-  const JoyAxis axis, const JoyDir adir) const
+                   const JoyAxis axis, const JoyDir adir) const
 {
   return check(JoyMapping(mode, button, axis, adir));
 }
@@ -94,18 +94,19 @@ string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping) const
   //buf << "J" << mapping.stick;
 
   // button description
-  if (mapping.button != CTRL_NONE)
+  if (mapping.button != JOY_CTRL_NONE)
     buf << "/B" << mapping.button;
 
   // axis description
-  if (int(mapping.axis) != CTRL_NONE)
+  if (mapping.axis != JoyAxis::NONE)
   {
     buf << "/A";
     switch (mapping.axis)
     {
       case JoyAxis::X: buf << "X"; break;
       case JoyAxis::Y: buf << "Y"; break;
-      default:                     break;
+      case JoyAxis::Z: buf << "Z"; break;
+      default:         buf << int(mapping.axis); break;
     }
 
     if (Event::isAnalog(event))
@@ -121,13 +122,13 @@ string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string JoyMap::getDesc(const Event::Type event, const EventMode mode, const int button,
-  const JoyAxis axis, const JoyDir adir) const
+                       const JoyAxis axis, const JoyDir adir) const
 {
   return getDesc(event, JoyMapping(mode, button, axis, adir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string JoyMap::getEventMappingDesc(const Event::Type event, const EventMode mode) const
+string JoyMap::getEventMappingDesc(int stick, const Event::Type event, const EventMode mode) const
 {
   ostringstream buf;
 
@@ -137,7 +138,7 @@ string JoyMap::getEventMappingDesc(const Event::Type event, const EventMode mode
     {
       if (buf.str() != "")
         buf << ", ";
-      buf << getDesc(event, item.first);
+      buf << "J" << stick << getDesc(event, item.first);
     }
   }
   return buf.str();
@@ -166,7 +167,7 @@ string JoyMap::saveMapping(const EventMode mode) const
     {
       if (buf.str() != "")
         buf << "|";
-      buf << item.second << ":" /*<< item.first.stick*/ << "," << item.first.button << ","
+      buf << item.second << ":" << item.first.button << ","
         << int(item.first.axis) << "," << int(item.first.adir);
     }
   }

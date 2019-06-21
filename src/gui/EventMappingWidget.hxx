@@ -60,6 +60,7 @@ class EventMappingWidget : public Widget, public CommandSender
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleJoyDown(int stick, int button) override;
+    void handleJoyUp(int stick, int button) override;
     void handleJoyAxis(int stick, int axis, int value) override;
     bool handleJoyHat(int stick, int hat, JoyHat value) override;
 
@@ -108,7 +109,9 @@ class EventMappingWidget : public Widget, public CommandSender
     // Aggregates the modifier flags of the mapping
     int myMod;
     // Saves the last *pressed* key
-    int myKey;
+    int myLastKey;
+    // Saves the last *pressed* button
+    int myLastButton;
 
     bool myFirstTime;
 

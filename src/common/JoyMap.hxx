@@ -66,30 +66,30 @@ class JoyMap
     /** Add new mapping for given event */
     void add(const Event::Type event, const JoyMapping& mapping);
     void add(const Event::Type event, const EventMode mode, const int button,
-      const JoyAxis axis, const JoyDir adir);
+             const JoyAxis axis, const JoyDir adir);
 
     /** Erase mapping */
     void erase(const JoyMapping& mapping);
     void erase(const EventMode mode, const int button,
-      const JoyAxis axis, const JoyDir adir);
+               const JoyAxis axis, const JoyDir adir);
 
     /** Get event for mapping */
     Event::Type get(const JoyMapping& mapping) const;
     Event::Type get(const EventMode mode, const int button,
-      const JoyAxis axis, const JoyDir adir) const;
+                    const JoyAxis axis = JoyAxis::NONE, const JoyDir adir = JoyDir::NONE) const;
 
     /** Check if a mapping exists */
     bool check(const JoyMapping& mapping) const;
     bool check(const EventMode mode, const int button,
-      const JoyAxis axis, const JoyDir adir) const;
+               const JoyAxis axis, const JoyDir adir) const;
 
     /** Get mapping description */
     string getDesc(const Event::Type event, const JoyMapping& mapping) const;
     string getDesc(const Event::Type event, const EventMode mode, const int button,
-      const JoyAxis axis, const JoyDir adir) const;
+                   const JoyAxis axis, const JoyDir adir) const;
 
-    /** Get the mapping description(s) for given event and mode */
-    string getEventMappingDesc(const Event::Type event, const EventMode mode) const;
+    /** Get the mapping description(s) for given stick, event and mode */
+    string getEventMappingDesc(int stick, const Event::Type event, const EventMode mode) const;
 
     JoyMappingArray getEventMapping(const Event::Type event, const EventMode mode) const;
 
