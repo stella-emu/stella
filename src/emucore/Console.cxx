@@ -804,6 +804,7 @@ void Console::setControllers(const string& rommd5)
     myLeftControl  = std::move(myCMHandler->leftController());
     myRightControl = std::move(myCMHandler->rightController());
     myOSystem.eventHandler().defineKeyControllerMappings("CM", Controller::Jack::Left);
+    myOSystem.eventHandler().defineJoyControllerMappings("CM", Controller::Jack::Left);
   }
   else
   {
@@ -849,6 +850,7 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
   unique_ptr<Controller> controller = std::move(myLeftControl);
 
   myOSystem.eventHandler().defineKeyControllerMappings(controllerName, port);
+  myOSystem.eventHandler().defineJoyControllerMappings(controllerName, port);
 
   if(controllerName == "JOYSTICK")
   {

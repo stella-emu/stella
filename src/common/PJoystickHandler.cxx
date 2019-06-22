@@ -113,12 +113,12 @@ int PhysicalJoystickHandler::add(PhysicalJoystickPtr stick)
 
   // Add stick to database
   auto it = myDatabase.find(stick->name);
-  if(it != myDatabase.end())    // already present
+  if(it != myDatabase.end()) // already present
   {
     it->second.joy = stick;
     stick->setMap(it->second.mapping);
   }
-  else    // adding for the first time
+  else // adding for the first time
   {
     StickInfo info("", stick);
     myDatabase.emplace(stick->name, info);
@@ -126,7 +126,7 @@ int PhysicalJoystickHandler::add(PhysicalJoystickPtr stick)
     setStickDefaultMapping(stick->ID, Event::NoType, kMenuMode);
   }
 
-  // We're potentially swapping out an input device behind the back of
+  /*// We're potentially swapping out an input device behind the back of
   // the Event system, so we make sure all Stelladaptor-generated events
   // are reset
   for(int i = 0; i < NUM_PORTS; ++i)
@@ -137,7 +137,7 @@ int PhysicalJoystickHandler::add(PhysicalJoystickPtr stick)
       myEvent.set(SA_Button[i][j], 0);
     for(int j = 0; j < NUM_KEY_BTN; ++j)
       myEvent.set(SA_Key[i][j], 0);
-  }
+  }*/
 
   return stick->ID;
 }
@@ -340,7 +340,10 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
 
     case kMenuMode:  // Default menu/UI events
       setDefaultAxis(Event::UINavPrev,              stick, JoyAxis::X, JoyDir::NEG);
+      setDefaultAxis(Event::UITabPrev,              stick, JoyAxis::X, JoyDir::NEG, 0);
       setDefaultAxis(Event::UINavNext,              stick, JoyAxis::X, JoyDir::POS);
+      setDefaultAxis(Event::UITabNext,              stick, JoyAxis::X, JoyDir::POS, 0);
+
       setDefaultAxis(Event::UIUp,                   stick, JoyAxis::Y, JoyDir::NEG);
       setDefaultAxis(Event::UIDown,                 stick, JoyAxis::Y, JoyDir::POS);
 
@@ -360,6 +363,179 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick,
     default:
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::defineControllerMappings(const string& controllerName, Controller::Jack port)
+{
+  // determine controller events to use
+  if ((controllerName == "KEYBOARD") || (controllerName == "KEYPAD"))
+  {
+    if (port == Controller::Jack::Left)
+      myLeftMode = kKeypadMode;
+    else
+      myRightMode = kKeypadMode;
+  }
+  else if (BSPF::startsWithIgnoreCase(controllerName, "PADDLES"))
+  {
+    if (port == Controller::Jack::Left)
+      myLeftMode = kPaddlesMode;
+    else
+      myRightMode = kPaddlesMode;
+  }
+  else if (controllerName == "CM")
+  {
+    myLeftMode = myRightMode = kCompuMateMode;
+  }
+  else
+  {
+    if (port == Controller::Jack::Left)
+      myLeftMode = kJoystickMode;
+    else
+      myRightMode = kJoystickMode;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::enableEmulationMappings()
+{
+  for (auto& stick : mySticks)
+  {
+    const PhysicalJoystickPtr j = stick.second;
+
+    // start from scratch and enable common mappings
+    j->joyMap.eraseMode(kEmulationMode);
+    j->joyHatMap.eraseMode(kEmulationMode);
+  }
+
+  enableCommonMappings();
+
+  // enable right mode first, so that in case of mapping clashes the left controller has preference
+  switch (myRightMode)
+  {
+    case kPaddlesMode:
+      enableMappings(RightPaddlesEvents, kPaddlesMode);
+      break;
+
+    case kKeypadMode:
+      enableMappings(RightKeypadEvents, kKeypadMode);
+      break;
+
+    /*case kCompuMateMode:
+      // see below
+      break;*/
+
+    default:
+      enableMappings(RightJoystickEvents, kJoystickMode);
+      break;
+  }
+
+  switch (myLeftMode)
+  {
+    case kPaddlesMode:
+      enableMappings(LeftPaddlesEvents, kPaddlesMode);
+      break;
+
+    case kKeypadMode:
+      enableMappings(LeftKeypadEvents, kKeypadMode);
+      break;
+
+    /*case kCompuMateMode:
+      for (const auto& item : CompuMateMapping)
+        enableMapping(item.event, kCompuMateMode);
+      break;*/
+
+    default:
+      enableMappings(LeftJoystickEvents, kJoystickMode);
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::enableCommonMappings()
+{
+  for (int i = Event::NoType + 1; i < Event::LastType; i++)
+  {
+    Event::Type event = static_cast<Event::Type>(i);
+
+    if (isCommonEvent(event))
+      enableMapping(event, kCommonMode);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::enableMappings(const Event::EventSet events, EventMode mode)
+{
+  for (const auto& event : events)
+    enableMapping(event, mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::enableMapping(const Event::Type event, EventMode mode)
+{
+  // copy from controller mode into emulation mode
+  for (auto& stick : mySticks)
+  {
+    const PhysicalJoystickPtr j = stick.second;
+
+    JoyMap::JoyMappingArray joyMappings = j->joyMap.getEventMapping(event, mode);
+
+    for (const auto& mapping : joyMappings)
+      j->joyMap.add(event, kEmulationMode, mapping.button, mapping.axis, mapping.adir);
+
+    JoyHatMap::JoyHatMappingArray joyHatMappings = j->joyHatMap.getEventMapping(event, mode);
+
+    for (const auto& mapping : joyHatMappings)
+      j->joyHatMap.add(event, kEmulationMode, mapping.button, mapping.hat, mapping.hdir);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+EventMode PhysicalJoystickHandler::getEventMode(const Event::Type event, const EventMode mode) const
+{
+  if (mode == kEmulationMode)
+  {
+    if (isJoystickEvent(event))
+      return kJoystickMode;
+
+    if (isPaddleEvent(event))
+      return kPaddlesMode;
+
+    if (isKeypadEvent(event))
+      return kKeypadMode;
+
+    if (isCommonEvent(event))
+      return kCommonMode;
+  }
+
+  return mode;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalJoystickHandler::isJoystickEvent(const Event::Type event) const
+{
+  return LeftJoystickEvents.find(event) != LeftJoystickEvents.end()
+    || RightJoystickEvents.find(event) != RightJoystickEvents.end();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalJoystickHandler::isPaddleEvent(const Event::Type event) const
+{
+  return LeftPaddlesEvents.find(event) != LeftPaddlesEvents.end()
+    || RightPaddlesEvents.find(event) != RightPaddlesEvents.end();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalJoystickHandler::isKeypadEvent(const Event::Type event) const
+{
+  return LeftKeypadEvents.find(event) != LeftKeypadEvents.end()
+    || RightKeypadEvents.find(event) != RightKeypadEvents.end();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalJoystickHandler::isCommonEvent(const Event::Type event) const
+{
+  return !(isJoystickEvent(event) || isPaddleEvent(event) || isKeypadEvent(event));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -404,140 +580,28 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
   {
     uInt32 stick = s.first;
     const PhysicalJoystickPtr j = s.second;
-    if(!j)  continue;
 
-    /*// Joystick button mapping/labeling
-    for(int button = 0; button < j->numButtons; ++button)
+    if (j)
     {
-      if(j->btnTable[button][mode] == event)
+      //Joystick button + axis mapping / labeling
+      if (j->joyMap.getEventMapping(event, mode).size())
       {
-        if(buf.str() != "")
+        if (buf.str() != "")
           buf << ", ";
-        buf << "J" << stick << "/B" << button;
+        buf << j->joyMap.getEventMappingDesc(stick, event, mode);
+      }
+      // Joystick hat mapping / labeling
+      if (j->joyHatMap.getEventMapping(event, mode).size())
+      {
+        if (buf.str() != "")
+          buf << ", ";
+        buf << j->joyHatMap.getEventMappingDesc(stick, event, mode);
       }
     }
-
-    // Joystick axis mapping/labeling
-    for(int axis = 0; axis < j->numAxes; ++axis)
-    {
-      for(int dir = 0; dir < NUM_JOY_DIRS; ++dir)
-      {
-        if(j->axisTable[axis][dir][mode] == event)
-        {
-          if(buf.str() != "")
-            buf << ", ";
-          buf << "J" << stick << "/A" << axis;
-          if(Event::isAnalog(event))
-          {
-            dir = NUM_JOY_DIRS;  // Immediately exit the inner loop after this iteration
-            buf << "/+|-";
-          }
-          else if(dir == int(JoyDir::NEG))
-            buf << "/-";
-          else
-            buf << "/+";
-        }
-      }
-    }
-
-    // Joystick hat mapping/labeling
-    for(int hat = 0; hat < j->numHats; ++hat)
-    {
-      for(int dir = 0; dir < NUM_JOY_HAT_DIRS; ++dir)
-      {
-        if(j->hatTable[hat][dir][mode] == event)
-        {
-          if(buf.str() != "")
-            buf << ", ";
-          buf << "J" << stick << "/H" << hat;
-          switch(JoyHat(dir))
-          {
-            case JoyHat::UP:    buf << "/up";    break;
-            case JoyHat::DOWN:  buf << "/down";  break;
-            case JoyHat::LEFT:  buf << "/left";  break;
-            case JoyHat::RIGHT: buf << "/right"; break;
-            default:                             break;
-          }
-        }
-      }
-    }*/
-
-    // new:
-    //Joystick button + axis mapping / labeling
-    if (buf.str() != "")
-      buf << ", ";
-    if (j->joyMap.getEventMapping(event, mode).size())
-      buf << j->joyMap.getEventMappingDesc(stick, event, mode);
-    // Joystick hat mapping/labeling
-    if (j->joyHatMap.getEventMapping(event, mode).size())
-      buf << j->joyHatMap.getEventMappingDesc(stick, event, mode);
   }
   return buf.str();
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*bool PhysicalJoystickHandler::addAxisMapping(Event::Type event, EventMode mode,
-    int stick, int axis, int value)
-{
-  const PhysicalJoystickPtr j = joy(stick);
-  if(j)
-  {
-    if(int(axis) >= 0 && int(axis) < j->numAxes && event < Event::LastType)
-    {
-      // This confusing code is because each axis has two associated values,
-      // but analog events only affect one of the axis.
-      if(Event::isAnalog(event))
-        j->axisTable[axis][int(JoyDir::NEG)][mode] = j->axisTable[axis][int(JoyDir::POS)][mode] = event;
-      else
-      {
-        // Otherwise, turn off the analog event(s) for this axis
-        if(Event::isAnalog(j->axisTable[axis][int(JoyDir::NEG)][mode]))
-          j->axisTable[axis][int(JoyDir::NEG)][mode] = Event::NoType;
-        if(Event::isAnalog(j->axisTable[axis][int(JoyDir::POS)][mode]))
-          j->axisTable[axis][int(JoyDir::POS)][mode] = Event::NoType;
-
-        j->axisTable[axis][int(value > 0 ? JoyDir::POS : JoyDir::NEG)][mode] = event;
-      }
-      return true;
-    }
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::addBtnMapping(Event::Type event, EventMode mode,
-    int stick, int button)
-{
-  const PhysicalJoystickPtr j = joy(stick);
-  if(j)
-  {
-    if(button >= 0 && button < j->numButtons && event < Event::LastType)
-    {
-      j->btnTable[button][mode] = event;
-      return true;
-    }
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalJoystickHandler::addHatMapping(Event::Type event, EventMode mode,
-    int stick, int hat, JoyHat value)
-{
-  const PhysicalJoystickPtr j = joy(stick);
-  if(j)
-  {
-    if(hat >= 0 && hat < j->numHats && event < Event::LastType &&
-       value != JoyHat::CENTER)
-    {
-      j->hatTable[hat][int(value)][mode] = event;
-      return true;
-    }
-  }
-  return false;
-}*/
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, int stick,
     int button, JoyAxis axis, int value)
@@ -563,8 +627,7 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
       if (Event::isAnalog(j->joyMap.get(mode, button, axis, JoyDir::POS)))
         j->joyMap.erase(mode, button, axis, JoyDir::POS);
 
-      j->joyMap.add(event, mode, button, axis,
-                    value == int(JoyDir::NONE) ? JoyDir::NONE : value > 0 ? JoyDir::POS : JoyDir::NEG);
+      j->joyMap.add(event, mode, button, axis, convertAxisValue(value));
     }
     return true;
   }
@@ -600,6 +663,10 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
     switch (j->type)
     {
       case PhysicalJoystick::JT_REGULAR:
+      case PhysicalJoystick::JT_STELLADAPTOR_LEFT:
+      case PhysicalJoystick::JT_2600DAPTOR_LEFT:
+      case PhysicalJoystick::JT_STELLADAPTOR_RIGHT:
+      case PhysicalJoystick::JT_2600DAPTOR_RIGHT:
         if (myHandler.state() == EventHandlerState::EMULATION)
         {
           // Every axis event has two associated values, negative and positive
@@ -666,6 +733,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
           if (value != j->axisLastValue[axis])
           {
           #ifdef GUI_SUPPORT
+            cerr << "axis event" << endl;
             myHandler.overlay().handleJoyAxisEvent(stick, axis, value, button);
           #endif
             j->axisLastValue[axis] = value;
@@ -673,7 +741,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
         }
         break;  // Regular joystick axis
 
-      // Since the various controller classes deal with Stelladaptor
+      /*// Since the various controller classes deal with Stelladaptor
       // devices differently, we send the raw X and Y axis data directly,
       // and let the controller handle it
       // These events don't have to pass through handleEvent, since
@@ -687,7 +755,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
       case PhysicalJoystick::JT_2600DAPTOR_RIGHT:
         if (axis < NUM_JOY_AXIS)
           myEvent.set(SA_Axis[int(Controller::Jack::Right)][axis], value);
-        break;  // axis on right controller (1)
+        break;  // axis on right controller (1)*/
       default:
         break;
     }
@@ -707,6 +775,11 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
     switch (j->type)
     {
       case PhysicalJoystick::JT_REGULAR:
+      case PhysicalJoystick::JT_STELLADAPTOR_LEFT:
+      case PhysicalJoystick::JT_STELLADAPTOR_RIGHT:
+      case PhysicalJoystick::JT_2600DAPTOR_LEFT:
+      case PhysicalJoystick::JT_2600DAPTOR_RIGHT:
+
         // Handle buttons which switch eventhandler state
         if (pressed && myHandler.changeStateByEvent(j->joyMap.get(kEmulationMode, button)))
           return;
@@ -720,7 +793,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
       #endif
         break;  // Regular button
 
-      // These events don't have to pass through handleEvent, since
+      /*// These events don't have to pass through handleEvent, since
       // they can never be remapped
       case PhysicalJoystick::JT_STELLADAPTOR_LEFT:
       case PhysicalJoystick::JT_STELLADAPTOR_RIGHT:
@@ -757,7 +830,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
               if (button < NUM_JOY_BTN) myEvent.set(SA_Button[j->type - PhysicalJoystick::JT_2600DAPTOR_LEFT][button], pressed ? 1 : 0);
           }
         }
-        break;  // 2600DAPTOR button
+        break;  // 2600DAPTOR button*/
 
       default:
         break;
@@ -839,7 +912,7 @@ ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Used by the Stelladaptor to send absolute axis values
+/*// Used by the Stelladaptor to send absolute axis values
 const Event::Type PhysicalJoystickHandler::SA_Axis[NUM_PORTS][NUM_JOY_AXIS] = {
   { Event::SALeftAxis0Value,  Event::SALeftAxis1Value  },
   { Event::SARightAxis0Value, Event::SARightAxis1Value }
@@ -866,4 +939,4 @@ const Event::Type PhysicalJoystickHandler::SA_Key[NUM_PORTS][NUM_KEY_BTN] = {
     Event::KeyboardOne4,     Event::KeyboardOne5,   Event::KeyboardOne6,
     Event::KeyboardOne7,     Event::KeyboardOne8,   Event::KeyboardOne9,
     Event::KeyboardOneStar,  Event::KeyboardOne0,   Event::KeyboardOnePound  }
-};
+};*/

@@ -310,11 +310,8 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
 
       cerr << "remap button stop" << endl;
       // This maps solo button presses only
-      if (eh.addJoyMapping(event, myEventMode, stick, button)) // new
+      if (eh.addJoyMapping(event, myEventMode, stick, button))
         stopRemapping();
-
-      //if (eh.addJoyButtonMapping(event, myEventMode, stick, button))
-      //  stopRemapping();
     }
   }
 }
@@ -346,10 +343,7 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value, int butto
 
       cerr << "remap stop" << endl;
       if (eh.addJoyMapping(event, myEventMode, stick, myLastButton, JoyAxis(axis), myLastValue))
-        stopRemapping(); // new
-
-      //if(eh.addJoyAxisMapping(event, myEventMode, stick, axis, myLastValue))
-      //  stopRemapping();
+        stopRemapping();
     }
   }
 }
@@ -384,11 +378,6 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHat value, int butt
         stopRemapping();
         return true;
       }
-      /*if(eh.addJoyHatMapping(event, myEventMode, stick, hat, myLastValue))
-      {
-        stopRemapping();
-        return true;
-      }*/
     }
   }
 

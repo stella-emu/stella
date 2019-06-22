@@ -55,6 +55,15 @@ Event::Type JoyHatMap::get(const JoyHatMapping& mapping) const
   if (find != myMap.end())
     return find->second;
 
+  // try without button as modifier
+  JoyHatMapping m = mapping;
+
+  m.button = JOY_CTRL_NONE;
+
+  find = myMap.find(m);
+  if (find != myMap.end())
+    return find->second;
+
   return Event::Type::NoType;
 }
 
