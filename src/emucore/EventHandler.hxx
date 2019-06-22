@@ -47,7 +47,7 @@ class PhysicalJoystick;
   unchanged to the menu class, where (among other things) changing key
   mapping can take place.
 
-  @author  Stephen Anthony
+  @author  Stephen Anthony, Thomas Jentzsch
 */
 class EventHandler
 {
@@ -162,14 +162,14 @@ class EventHandler
     Event::Type eventForKey(EventMode mode, StellaKey key, StellaMod mod) const {
       return myPKeyHandler->eventForKey(mode, key, mod);
     }
-    Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const {
-      return myPJoyHandler->eventForAxis(stick, axis, value, mode);
+    Event::Type eventForJoyAxis(EventMode mode, int stick, int axis, int value, int button) const {
+      return myPJoyHandler->eventForAxis(mode, stick, axis, value, button);
     }
-    Event::Type eventForJoyButton(int stick, int button, EventMode mode) const {
-      return myPJoyHandler->eventForButton(stick, button, mode);
+    Event::Type eventForJoyButton(EventMode mode, int stick, int button) const {
+      return myPJoyHandler->eventForButton(mode, stick, button);
     }
-    Event::Type eventForJoyHat(int stick, int hat, JoyHat value, EventMode mode) const {
-      return myPJoyHandler->eventForHat(stick, hat, value, mode);
+    Event::Type eventForJoyHat(EventMode mode, int stick, int hat, JoyHat value, int button) const {
+      return myPJoyHandler->eventForHat(mode, stick, hat, value, button);
     }
 
     /** Get description of given event and mode. */

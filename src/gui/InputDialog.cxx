@@ -493,27 +493,27 @@ void InputDialog::handleJoyUp(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::handleJoyAxis(int stick, int axis, int value)
+void InputDialog::handleJoyAxis(int stick, int axis, int value, int button)
 {
   // Remap joystick axis in remap mode, otherwise pass to parent dialog
   if(myEmulEventMapper->remapMode())
-    myEmulEventMapper->handleJoyAxis(stick, axis, value);
+    myEmulEventMapper->handleJoyAxis(stick, axis, value, button);
   else if(myMenuEventMapper->remapMode())
-    myMenuEventMapper->handleJoyAxis(stick, axis, value);
+    myMenuEventMapper->handleJoyAxis(stick, axis, value, button);
   else
-    Dialog::handleJoyAxis(stick, axis, value);
+    Dialog::handleJoyAxis(stick, axis, value, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool InputDialog::handleJoyHat(int stick, int hat, JoyHat value)
+bool InputDialog::handleJoyHat(int stick, int hat, JoyHat value, int button)
 {
   // Remap joystick hat in remap mode, otherwise pass to parent dialog
   if(myEmulEventMapper->remapMode())
-    return myEmulEventMapper->handleJoyHat(stick, hat, value);
+    return myEmulEventMapper->handleJoyHat(stick, hat, value, button);
   else if(myMenuEventMapper->remapMode())
-    return myMenuEventMapper->handleJoyHat(stick, hat, value);
+    return myMenuEventMapper->handleJoyHat(stick, hat, value, button);
   else
-    return Dialog::handleJoyHat(stick, hat, value);
+    return Dialog::handleJoyHat(stick, hat, value, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

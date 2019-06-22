@@ -299,7 +299,7 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
+void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value, int button)
 {
   if(myDialogStack.empty())
     return;
@@ -317,11 +317,11 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
     myCurrentAxisDown.value = value;
     myAxisRepeatTime = myTime + kRepeatInitialDelay;
   }
-  myDialogStack.top()->handleJoyAxis(stick, axis, value);
+  myDialogStack.top()->handleJoyAxis(stick, axis, value, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value)
+void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value, int button)
 {
   if(myDialogStack.empty())
     return;
@@ -339,7 +339,7 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value)
     myCurrentHatDown.value = value;
     myHatRepeatTime = myTime + kRepeatInitialDelay;
   }
-  myDialogStack.top()->handleJoyHat(stick, hat, value);
+  myDialogStack.top()->handleJoyHat(stick, hat, value, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

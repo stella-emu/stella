@@ -17,12 +17,6 @@
 
 #include "JoyHatMap.hxx"
 
-// TODOs
-// - two maps per controller (joydirs, hatdirs)
-// - both maps combined with buttons
-// - directions can work alone and with a button combination
-// - buttons can work without a direction (mapped in joydir)
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JoyHatMap::JoyHatMap(void)
 {
@@ -91,8 +85,6 @@ string JoyHatMap::getDesc(const Event::Type event, const JoyHatMapping & mapping
 {
   ostringstream buf;
 
-  //buf << "J" << mapping.stick;
-
   // hat description
   if (mapping.hat != JOY_CTRL_NONE)
   {
@@ -158,7 +150,7 @@ string JoyHatMap::saveMapping(const EventMode mode) const
     {
       if (buf.str() != "")
         buf << "|";
-      buf << item.second << ":" /*<< item.first.stick*/ << "," <<
+      buf << item.second << ":" << item.first.button << "," <<
         item.first.hat << "," << int(item.first.hdir);
     }
   }
@@ -174,9 +166,9 @@ int JoyHatMap::loadMapping(string & list, const EventMode mode)
   std::replace(list.begin(), list.end(), ':', ' ');
   std::replace(list.begin(), list.end(), ',', ' ');
   istringstream buf(list);
-  int event, stick, button, hat, hdir, i = 0;
+  int event, button, hat, hdir, i = 0;
 
-  while (buf >> event && buf >> stick && buf >> button && buf >> hat && buf >> hdir && ++i)
+  while (buf >> event && buf >> button && buf >> hat && buf >> hdir && ++i)
     add(Event::Type(event), EventMode(mode), button, hat, JoyHat(hdir));
 
   return i;

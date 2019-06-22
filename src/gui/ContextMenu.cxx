@@ -288,20 +288,20 @@ void ContextMenu::handleKeyDown(StellaKey key, StellaMod mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::handleJoyDown(int stick, int button)
 {
-  handleEvent(instance().eventHandler().eventForJoyButton(stick, button, kMenuMode));
+  handleEvent(instance().eventHandler().eventForJoyButton(kMenuMode, stick, button));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleJoyAxis(int stick, int axis, int value)
+void ContextMenu::handleJoyAxis(int stick, int axis, int value, int button)
 {
   if(value != 0)  // we don't care about 'axis up' events
-    handleEvent(instance().eventHandler().eventForJoyAxis(stick, axis, value, kMenuMode));
+    handleEvent(instance().eventHandler().eventForJoyAxis(kMenuMode, stick, axis, value, button));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ContextMenu::handleJoyHat(int stick, int hat, JoyHat value)
+bool ContextMenu::handleJoyHat(int stick, int hat, JoyHat value, int button)
 {
-  handleEvent(instance().eventHandler().eventForJoyHat(stick, hat, value, kMenuMode));
+  handleEvent(instance().eventHandler().eventForJoyHat(kMenuMode, stick, hat, value, button));
   return true;
 }
 

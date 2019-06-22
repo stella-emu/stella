@@ -152,6 +152,7 @@ void EventMappingWidget::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::startRemapping()
 {
+  cerr << "startRemapping" << endl;
   if(myActionSelected < 0 || myRemapStatus)
     return;
 
@@ -212,6 +213,7 @@ void EventMappingWidget::stopRemapping()
 {
   // Turn off remap mode
   myRemapStatus = false;
+  cerr << "stopRemapping " << myRemapStatus << endl;
 
   // Reset all previous events for determining correct axis/hat values
   myLastStick = myLastAxis = myLastHat = myLastValue = -1;
@@ -288,6 +290,7 @@ void EventMappingWidget::handleJoyDown(int stick, int button)
   // Remap joystick buttons in remap mode
   if(myRemapStatus && myActionSelected >= 0)
   {
+    cerr << "remap button start " << myRemapStatus << endl;
     myLastStick = stick;
     myLastButton = button;
   }
@@ -305,7 +308,7 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
       EventHandler& eh = instance().eventHandler();
       Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
 
-      cerr << "remap" << endl;
+      cerr << "remap button stop" << endl;
       // This maps solo button presses only
       if (eh.addJoyMapping(event, myEventMode, stick, button)) // new
         stopRemapping();
@@ -317,7 +320,7 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
+void EventMappingWidget::handleJoyAxis(int stick, int axis, int value, int button)
 {
   cerr << "handleJoyAxis:" << axis << ", " << value << ", (" << stick << ", " << myLastStick << "), (" << axis << ", " << myLastAxis << ")" << endl;
   // Remap joystick axes in remap mode
@@ -352,7 +355,7 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHat value)
+bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHat value, int button)
 {
   // Remap joystick hats in remap mode
   // There are two phases to detection:

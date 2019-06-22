@@ -41,7 +41,7 @@ using PhysicalJoystickPtr = shared_ptr<PhysicalJoystick>;
   Essentially, this class is an extension of the EventHandler class, but
   handling only joystick-specific functionality.
 
-  @author  Stephen Anthony
+  @author  Stephen Anthony, Thomas Jentzsch
 */
 class PhysicalJoystickHandler
 {
@@ -74,11 +74,6 @@ class PhysicalJoystickHandler
     string getMappingDesc(Event::Type, EventMode mode) const;
 
     /** Bind a physical joystick event to a virtual event/action. */
-    /*bool addAxisMapping(Event::Type event, EventMode mode, int stick, int axis, int value);
-    bool addBtnMapping(Event::Type event, EventMode mode, int stick, int button);
-    bool addHatMapping(Event::Type event, EventMode mode, int stick, int hat, JoyHat value);*/
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     bool addJoyMapping(Event::Type event, EventMode mode, int stick,
                        int button, JoyAxis axis, int value);
     bool addJoyHatMapping(Event::Type event, EventMode mode, int stick,
@@ -89,21 +84,18 @@ class PhysicalJoystickHandler
     void handleBtnEvent(int stick, int button, bool pressed);
     void handleHatEvent(int stick, int hat, int value);
 
-    Event::Type eventForAxis(int stick, int axis, int joyDir, EventMode mode) const {
+    Event::Type eventForAxis(EventMode mode, int stick, int axis, int value, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      //return (j && joyDir != int(JoyDir::NEG))
-      //  ? j->axisTable[axis][(joyDir > int(JoyDir::NEG))][mode] : Event::NoType;
-      return j->joyMap.get(mode, JOY_CTRL_NONE, JoyAxis(axis), JoyDir(joyDir));
+      return j->joyMap.get(mode, button, JoyAxis(axis),
+                           value == int(JoyDir::NONE) ? JoyDir::NONE : value > 0 ? JoyDir::POS : JoyDir::NEG);
     }
-    Event::Type eventForButton(int stick, int button, EventMode mode) const {
+    Event::Type eventForButton(EventMode mode, int stick, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      // return j ? j->btnTable[button][mode] : Event::NoType;
       return j->joyMap.get(mode, button);
     }
-    Event::Type eventForHat(int stick, int hat, JoyHat hatDir, EventMode mode) const {
+    Event::Type eventForHat(EventMode mode, int stick, int hat, JoyHat hatDir, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      //return j ? j->hatTable[hat][int(hatDir)][mode] : Event::NoType;
-      return j->joyHatMap.get(mode, JOY_CTRL_NONE, hat, hatDir);
+      return j->joyHatMap.get(mode, button, hat, hatDir);
     }
 
     /** Returns a list of pairs consisting of joystick name and associated ID. */
