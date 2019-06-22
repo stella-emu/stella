@@ -17,12 +17,6 @@
 
 #include "JoyMap.hxx"
 
-// TODOs
-// - two maps per controller (joydirs, hatdirs)
-// - both maps combined with buttons
-// - directions can work alone and with a button combination
-// - buttons can work without a direction (mapped in joydir)
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JoyMap::JoyMap(void)
 {
@@ -183,9 +177,9 @@ int JoyMap::loadMapping(string& list, const EventMode mode)
   std::replace(list.begin(), list.end(), ':', ' ');
   std::replace(list.begin(), list.end(), ',', ' ');
   istringstream buf(list);
-  int event, stick, button, axis, adir, i = 0;
+  int event, button, axis, adir, i = 0;
 
-  while (buf >> event && buf >> stick && buf >> button
+  while (buf >> event && buf >> button
       && buf >> axis && buf >> adir && ++i)
     add(Event::Type(event), EventMode(mode), button, JoyAxis(axis), JoyDir(adir));
 

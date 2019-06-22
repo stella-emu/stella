@@ -108,7 +108,7 @@ class DialogContainer
       @param axis   The joystick axis
       @param value  Value associated with given axis
     */
-    void handleJoyAxisEvent(int stick, int axis, int value);
+    void handleJoyAxisEvent(int stick, int axis, int value, int button);
 
     /**
       Handle a joystick hat event.
@@ -117,7 +117,7 @@ class DialogContainer
       @param hat    The joystick hat
       @param value  Value associated with given hat
     */
-    void handleJoyHatEvent(int stick, int hat, JoyHat value);
+    void handleJoyHatEvent(int stick, int hat, JoyHat value, int button);
 
     /**
       Draw the stack of menus (full indicates to redraw all items).

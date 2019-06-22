@@ -40,7 +40,7 @@ using EventSet = std::set<Event::Type>;
   Essentially, this class is an extension of the EventHandler class, but
   handling only keyboard-specific functionality.
 
-  @author  Stephen Anthony
+  @author  Stephen Anthony, Thomas Jentzsch
 */
 class PhysicalKeyboardHandler
 {
