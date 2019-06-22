@@ -16,15 +16,14 @@
 //============================================================================
 
 #include "bspf.hxx"
-#include "Bankswitch.hxx"
 #include "BrowserDialog.hxx"
 #include "ContextMenu.hxx"
 #include "DialogContainer.hxx"
 #include "Dialog.hxx"
 #include "EditTextWidget.hxx"
+#include "FileListWidget.hxx"
 #include "FSNode.hxx"
 #include "GameList.hxx"
-#include "MD5.hxx"
 #include "OptionsDialog.hxx"
 #include "GlobalPropsDialog.hxx"
 #include "StellaSettingsDialog.hxx"
@@ -38,11 +37,17 @@
 #include "PropsSet.hxx"
 #include "RomInfoWidget.hxx"
 #include "Settings.hxx"
-#include "StringListWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "Version.hxx"
 #include "LauncherDialog.hxx"
+
+/**
+  TODO:
+    - show all files / only ROMs
+    - connect to 'matchPattern'
+    - history of selected folders/files
+*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
@@ -142,9 +147,10 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     romWidth = 365;
 
   int listWidth = _w - (romWidth > 0 ? romWidth+8 : 0) - 20;
-  myList = new StringListWidget(this, font, xpos, ypos,
-                                listWidth, _h - 43 - bheight - fontHeight - lineHeight);
+  myList = new FileListWidget(this, font, xpos, ypos,
+                              listWidth, _h - 43 - bheight - fontHeight - lineHeight);
   myList->setEditable(false);
+  myList->setFileListMode(FilesystemNode::ListMode::All);
   wid.push_back(myList);
 
   // Add ROM info area (if enabled)
@@ -211,10 +217,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   else
     mySelectedItem = 2;
 
-  // Create a game list, which contains all the information about a ROM that
-  // the launcher needs
-  myGameList = make_unique<GameList>();
-
   addToFocusList(wid);
 
   // Create context menu for ROM list options
@@ -236,31 +238,27 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& LauncherDialog::selectedRom()
+const string& LauncherDialog::selectedRom() const
 {
-  int item = myList->getSelected();
-  if(item < 0)
-    return EmptyString;
-
-  return myGameList->path(item);
+  return currentNode().getPath();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& LauncherDialog::selectedRomMD5()
 {
-  int item = myList->getSelected();
-  if(item < 0)
-    return EmptyString;
+  return myList->selectedMD5();
+}
 
-  const FilesystemNode node(myGameList->path(item));
-  if(node.isDirectory() || !Bankswitch::isValidRomName(node))
-    return EmptyString;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FilesystemNode& LauncherDialog::currentNode() const
+{
+  return myList->selected();
+}
 
-  // Make sure we have a valid md5 for this ROM
-  if(myGameList->md5(item) == "")
-    myGameList->setMd5(item, MD5::hash(node));
-
-  return myGameList->md5(item);
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::reload()
+{
+  myList->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -276,26 +274,43 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list)
   if(myList->getList().empty())
   {
-    if(myPrevDirButton)
-      myPrevDirButton->setEnabled(false);
-    myCurrentNode = FilesystemNode(romdir == "" ? "~" : romdir);
-    if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))
-      myCurrentNode = FilesystemNode("~");
+    FilesystemNode node(romdir == "" ? "~" : romdir);
+    if(!(node.exists() && node.isDirectory()))
+      node = FilesystemNode("~");
 
-    updateListing();
+    myList->setLocation(node);
+    updateUI(instance().settings().getString("lastrom"));
   }
   Dialog::setFocus(getFocusList()[mySelectedItem]);
 
   if(myRomInfoWidget)
-  {
-    int item = myList->getSelected();
-    if(item < 0) return;
-    const FilesystemNode node(myGameList->path(item));
-
-    myRomInfoWidget->reloadProperties(node);
-  }
+    myRomInfoWidget->reloadProperties(currentNode());
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::updateUI(const string& nameToSelect)
+{
+  // Only hilite the 'up' button if there's a parent directory
+  if(myPrevDirButton)
+    myPrevDirButton->setEnabled(myList->currentDir().hasParent());
+
+  // Show current directory
+  myDir->setText(myList->currentDir().getShortPath());
+
+  // Indicate how many files were found
+  ostringstream buf;
+  buf << (myList->getList().size() - 1) << " items found";
+  myRomCount->setLabel(buf.str());
+
+  // Restore last selection
+  if(nameToSelect != "")
+    myList->setSelected(nameToSelect);
+
+  // Update ROM info UI item
+  loadRomInfo();
+}
+
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::updateListing(const string& nameToSelect)
 {
@@ -365,26 +380,22 @@ void LauncherDialog::loadDirListing()
   // Sort the list by rom name (since that's what we see in the listview)
   myGameList->sortByName();
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
 {
-  if(!myRomInfoWidget) return;
-  int item = myList->getSelected();
-  if(item < 0) return;
+  if(!myRomInfoWidget)
+    return;
 
-  const FilesystemNode node(myGameList->path(item));
-  if(!node.isDirectory() && Bankswitch::isValidRomName(node))
+  const string& md5 = selectedRomMD5();
+  if(md5 != EmptyString)
   {
-    // Make sure we have a valid md5 for this ROM
-    if(myGameList->md5(item) == "")
-      myGameList->setMd5(item, MD5::hash(node));
-
     // Get the properties for this entry
     Properties props;
-    instance().propSet().getMD5WithInsert(node, myGameList->md5(item), props);
+    instance().propSet().getMD5WithInsert(currentNode(), md5, props);
 
-    myRomInfoWidget->setProperties(props, node);
+    myRomInfoWidget->setProperties(props, currentNode());
   }
   else
     myRomInfoWidget->clearProperties();
@@ -396,13 +407,9 @@ void LauncherDialog::handleContextMenu()
   const string& cmd = myMenu->getSelectedTag().toString();
 
   if(cmd == "override")
-  {
     myGlobalProps->open();
-  }
   else if(cmd == "reload")
-  {
-    updateListing();
-  }
+    reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -459,7 +466,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
   // Grab the key before passing it to the actual dialog and check for
   // Control-R (reload ROM listing)
   if(StellaModTest::isControl(mod) && key == KBDK_R)
-    updateListing();
+    reload();
   else
 #if defined(RETRON77)
     // handle keys used by R77
@@ -554,14 +561,16 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
   {
     case kAllfilesCmd:
       showOnlyROMs(myAllFiles ? !myAllFiles->getState() : true);
-      updateListing();
+      reload();
       break;
 
     case kLoadROMCmd:
-    case ListWidget::kActivatedCmd:
-    case ListWidget::kDoubleClickedCmd:
+    case FileListWidget::ItemActivated:
     {
-      startGame();
+      if(currentNode().isDirectory())
+        myList->setLocation(currentNode());
+      else
+        loadRom();
       break;
     }
 
@@ -570,13 +579,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPrevDirCmd:
-    case ListWidget::kPrevDirCmd:
-      myCurrentNode = myCurrentNode.getParent();
-      updateListing(myNodeNames.empty() ? "" : myNodeNames.pop());
+      myList->selectParent();
       break;
 
-    case ListWidget::kSelectionChangedCmd:
-      loadRomInfo();
+    case FileListWidget::ItemChanged:
+      updateUI();
       break;
 
     case kQuitCmd:
@@ -585,24 +592,16 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kRomDirChosenCmd:
-      myCurrentNode = FilesystemNode(instance().settings().getString("romdir"));
-      if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))
-        myCurrentNode = FilesystemNode("~");
-      updateListing();
+    {
+      FilesystemNode node(instance().settings().getString("romdir"));
+      if(!(node.exists() && node.isDirectory()))
+        node = FilesystemNode("~");
+      myList->setLocation(node);
       break;
-
-    case kReloadRomDirCmd:
-      updateListing();
-      break;
+    }
 
     case ContextMenu::kItemSelectedCmd:
       handleContextMenu();
-      break;
-
-    case EditableWidget::kAcceptCmd:
-    case EditableWidget::kChangedCmd:
-      // The updateListing() method knows what to do when the text changes
-      updateListing();
       break;
 
     default:
@@ -611,46 +610,19 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::startGame()
+void LauncherDialog::loadRom()
 {
-  int item = myList->getSelected();
-  if(item >= 0)
+  const string& result = instance().createConsole(currentNode(), myList->selectedMD5());
+  if(result == EmptyString)
   {
-    const FilesystemNode romnode(myGameList->path(item));
+    instance().settings().setValue("lastrom", myList->getSelectedString());
 
-    // Directory's should be selected (ie, enter them and redisplay)
-    if(romnode.isDirectory())
-    {
-      string dirname = "";
-      if(myGameList->name(item) == " [..]")
-      {
-        myCurrentNode = myCurrentNode.getParent();
-        if(!myNodeNames.empty())
-          dirname = myNodeNames.pop();
-      }
-      else
-      {
-        myCurrentNode = romnode;
-        myNodeNames.push(myGameList->name(item));
-      }
-      updateListing(dirname);
-    }
-    else
-    {
-      const string& result =
-        instance().createConsole(romnode, myGameList->md5(item));
-      if(result == EmptyString)
-      {
-        instance().settings().setValue("lastrom", myList->getSelectedString());
-
-        // If romdir has never been set, set it now based on the selected rom
-        if(instance().settings().getString("romdir") == EmptyString)
-          instance().settings().setValue("romdir", romnode.getParent().getShortPath());
-      }
-      else
-        instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
-    }
+    // If romdir has never been set, set it now based on the selected rom
+    if(instance().settings().getString("romdir") == EmptyString)
+      instance().settings().setValue("romdir", currentNode().getParent().getShortPath());
   }
+  else
+    instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -22,7 +22,6 @@ class ButtonWidget;
 class CommandSender;
 class ContextMenu;
 class DialogContainer;
-class GameList;
 class BrowserDialog;
 class OptionsDialog;
 class GlobalPropsDialog;
@@ -30,9 +29,9 @@ class StellaSettingsDialog;
 class OSystem;
 class Properties;
 class EditTextWidget;
+class FileListWidget;
 class RomInfoWidget;
 class StaticTextWidget;
-class StringListWidget;
 namespace GUI {
   class MessageBox;
 }
@@ -49,8 +48,7 @@ class LauncherDialog : public Dialog
     enum {
       kAllfilesCmd     = 'lalf',  // show all files (or ROMs only)
       kLoadROMCmd      = 'STRT',  // load currently selected ROM
-      kRomDirChosenCmd = 'romc',  // rom dir chosen
-      kReloadRomDirCmd = 'rdrl',  // reload the current listing
+      kRomDirChosenCmd = 'romc'   // rom dir chosen
     };
 
   public:
@@ -59,30 +57,32 @@ class LauncherDialog : public Dialog
     virtual ~LauncherDialog() = default;
 
     /**
-      Get path for the currently selected file
+      Get path for the currently selected file.
 
       @return path if a valid ROM file, else the empty string
     */
-    const string& selectedRom();
+    const string& selectedRom() const;
 
     /**
-      Get MD5sum for the currently selected file
+      Get MD5sum for the currently selected file.
+      If the MD5 hasn't already been calculated, it will be
+      calculated (and cached) for future use.
 
       @return md5sum if a valid ROM file, else the empty string
     */
     const string& selectedRomMD5();
 
     /**
-      Get node for the currently selected directory
+      Get node for the currently selected directory.
 
       @return FilesystemNode currently active
     */
-    const FilesystemNode& currentNode() const { return myCurrentNode; }
+    const FilesystemNode& currentNode() const;
 
     /**
       Reload the current listing
     */
-    void reload() { updateListing(); }
+    void reload();
 
   private:
     void center() override { positionAt(0); }
@@ -93,20 +93,18 @@ class LauncherDialog : public Dialog
     Event::Type getJoyAxisEvent(int stick, int axis, int value, int button) override;
 
     void loadConfig() override;
-    void updateListing(const string& nameToSelect = "");
+    void updateUI(const string& nameToSelect = "");
 
-    void loadDirListing();
+    void loadRom();
     void loadRomInfo();
     void handleContextMenu();
     void showOnlyROMs(bool state);
     bool matchPattern(const string& s, const string& pattern) const;
-    void startGame();
     void openSettings();
 
   private:
     unique_ptr<OptionsDialog> myOptionsDialog;
     unique_ptr<StellaSettingsDialog> myStellaSettingsDialog;
-    unique_ptr<GameList> myGameList;
     unique_ptr<ContextMenu> myMenu;
     unique_ptr<GlobalPropsDialog> myGlobalProps;
     unique_ptr<BrowserDialog> myRomDir;
@@ -116,7 +114,7 @@ class LauncherDialog : public Dialog
     ButtonWidget* myOptionsButton;
     ButtonWidget* myQuitButton;
 
-    StringListWidget* myList;
+    FileListWidget*   myList;
     StaticTextWidget* myDirLabel;
     EditTextWidget*   myDir;
     StaticTextWidget* myRomCount;
@@ -126,8 +124,6 @@ class LauncherDialog : public Dialog
     RomInfoWidget* myRomInfoWidget;
 
     int mySelectedItem;
-    FilesystemNode myCurrentNode;
-    Common::FixedStack<string> myNodeNames;
 
     bool myShowOnlyROMs;
     bool myUseMinimalUI;
