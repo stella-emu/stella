@@ -384,9 +384,6 @@
     <ClCompile Include="..\gui\GameInfoDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\gui\GameList.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\gui\GlobalPropsDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -1338,9 +1335,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\GameInfoDialog.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\gui\GameList.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\GlobalPropsDialog.hxx">
