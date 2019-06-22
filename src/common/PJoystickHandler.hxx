@@ -69,6 +69,12 @@ class PhysicalJoystickHandler
     bool remove(const string& name);
     void mapStelladaptors(const string& saport);
     void setDefaultMapping(Event::Type type, EventMode mode);
+
+    /** define mappings for current controllers */
+    void defineControllerMappings(const string& controllerName, Controller::Jack port);
+    /** enable mappings for emulation mode */
+    void enableEmulationMappings();
+
     void eraseMapping(Event::Type event, EventMode mode);
     void saveMapping();
     string getMappingDesc(Event::Type, EventMode mode) const;
@@ -86,8 +92,7 @@ class PhysicalJoystickHandler
 
     Event::Type eventForAxis(EventMode mode, int stick, int axis, int value, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return j->joyMap.get(mode, button, JoyAxis(axis),
-                           value == int(JoyDir::NONE) ? JoyDir::NONE : value > 0 ? JoyDir::POS : JoyDir::NEG);
+      return j->joyMap.get(mode, button, JoyAxis(axis), convertAxisValue(value));
     }
     Event::Type eventForButton(EventMode mode, int stick, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
@@ -127,13 +132,34 @@ class PhysicalJoystickHandler
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh);
 
+    JoyDir convertAxisValue(int value) const {
+      return value == int(JoyDir::NONE) ? JoyDir::NONE : value > 0 ? JoyDir::POS : JoyDir::NEG;
+    }
+
+    /** returns the event's controller mode */
+    EventMode getEventMode(const Event::Type event, const EventMode mode) const;
+    /** Checks event type. */
+    bool isJoystickEvent(const Event::Type event) const;
+    bool isPaddleEvent(const Event::Type event) const;
+    bool isKeypadEvent(const Event::Type event) const;
+    bool isCommonEvent(const Event::Type event) const;
+
+    void enableCommonMappings();
+
+    void enableMappings(const Event::EventSet events, EventMode mode);
+    void enableMapping(const Event::Type event, EventMode mode);
+
+
+    EventMode myLeftMode;
+    EventMode myRightMode;
+
     // Static lookup tables for Stelladaptor/2600-daptor axis/button support
-    static const int NUM_JOY_BTN = 4;
+    /*static const int NUM_JOY_BTN = 4;
     static const int NUM_KEY_BTN = 12;
 
     static const Event::Type SA_Axis[NUM_PORTS][NUM_JOY_AXIS];
     static const Event::Type SA_Button[NUM_PORTS][NUM_JOY_BTN];
-    static const Event::Type SA_Key[NUM_PORTS][NUM_KEY_BTN];
+    static const Event::Type SA_Key[NUM_PORTS][NUM_KEY_BTN];*/
 };
 
 #endif

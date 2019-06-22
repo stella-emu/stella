@@ -77,21 +77,16 @@ string PhysicalJoystick::getMap() const
   // The mapping structure (for remappable devices) is defined as follows:
   // <NAME>'$'<MODE>['|'(<EVENT>':'<BUTTON>','<AXIS>','<VALUE>)|(<EVENT>':'<BUTTON>','<HAT>','<HATDIR>)]
 
-  /* if(type == JT_REGULAR)
-  {*/
-    ostringstream joybuf;
+  ostringstream joybuf;
 
-    // new:
-    joybuf << name;
-    for (int m = 0; m < kNumModes; ++m)
-    {
-      joybuf << MODE_DELIM << m << "|" << joyMap.saveMapping(EventMode(m));
-      joybuf << MODE_DELIM << m << "|" << joyHatMap.saveMapping(EventMode(m));
-    }
+  joybuf << name;
+  for (int m = 0; m < kNumModes; ++m)
+  {
+    joybuf << MODE_DELIM << m << "|" << joyMap.saveMapping(EventMode(m));
+    joybuf << MODE_DELIM << m << "|" << joyHatMap.saveMapping(EventMode(m));
+  }
 
-    return joybuf.str();
-  /*}
-  return EmptyString;*/
+  return joybuf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

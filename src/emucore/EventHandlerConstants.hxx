@@ -48,9 +48,9 @@ enum class JoyAxis {
 };
 
 enum class JoyDir {
-  NEG = 0,
+  NEG = -1,
   POS = 1,
-  NONE = JOY_CTRL_NONE
+  NONE = 0
 };
 
 

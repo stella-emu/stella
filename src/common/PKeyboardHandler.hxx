@@ -19,7 +19,6 @@
 #define PHYSICAL_KEYBOARD_HANDLER_HXX
 
 #include <map>
-#include <set>
 
 class OSystem;
 class EventHandler;
@@ -28,8 +27,6 @@ class EventHandler;
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "KeyMap.hxx"
-
-using EventSet = std::set<Event::Type>;
 
 /**
   This class handles all physical keyboard-related operations in Stella.
@@ -103,7 +100,7 @@ class PhysicalKeyboardHandler
 
     void enableCommonMappings();
 
-    void enableMappings(const EventSet events, EventMode mode);
+    void enableMappings(const Event::EventSet events, EventMode mode);
     void enableMapping(const Event::Type event, EventMode mode);
 
     OSystem& myOSystem;
@@ -130,16 +127,10 @@ class PhysicalKeyboardHandler
     uInt8 myAltKeyCounter;
   #endif
 
-    // Hold controller related events
-    static EventSet LeftJoystickEvents;
-    static EventSet RightJoystickEvents;
-    static EventSet LeftPaddlesEvents;
-    static EventSet RightPaddlesEvents;
-    static EventSet LeftKeypadEvents;
-    static EventSet RightKeypadEvents;
-
+    // Controller menu and common emulation mappings
     static EventMappingArray DefaultMenuMapping;
     static EventMappingArray DefaultCommonMapping;
+    // Controller specific mappings
     static EventMappingArray DefaultJoystickMapping;
     static EventMappingArray DefaultPaddleMapping;
     static EventMappingArray DefaultKeypadMapping;
