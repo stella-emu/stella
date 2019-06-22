@@ -95,18 +95,6 @@ class FilesystemNode
     FilesystemNode& operator=(const FilesystemNode&) = default;
 
     /**
-     * Compare the name of this node to the name of another. Directories
-     * go before normal files.
-     */
-    inline bool operator<(const FilesystemNode& node) const
-    {
-      if (isDirectory() != node.isDirectory())
-        return isDirectory();
-
-      return BSPF::compareIgnoreCase(getName(), node.getName()) < 0;
-    }
-
-    /**
      * Compare the name of this node to the name of another, testing for
      * equality,
      */
@@ -139,11 +127,10 @@ class FilesystemNode
      * @return true if successful, false otherwise (e.g. when the directory
      *         does not exist).
      */
-    bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
-                     bool hidden = false) const;
+    bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly) const;
 
     /**
-     * Return a string representation of the name of the file. This is can be
+     * Set/get a string representation of the name of the file. This is can be
      * used e.g. by detection code that relies on matching the name of a given
      * file. But it is *not* suitable for use with fopen / File::open, nor
      * should it be archived.
@@ -151,6 +138,7 @@ class FilesystemNode
      * @return the file name
      */
     const string& getName() const;
+    void setName(const string& name);
 
     /**
      * Return a string representation of the file which can be passed to fopen().
@@ -300,12 +288,11 @@ class AbstractFSNode
      *
      * @param list List to put the contents of the directory in.
      * @param mode Mode to use while listing the directory.
-     * @param hidden Whether to include hidden files or not in the results.
      *
      * @return true if successful, false otherwise (e.g. when the directory
      *         does not exist).
      */
-    virtual bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const = 0;
+    virtual bool getChildren(AbstractFSList& list, ListMode mode) const = 0;
 
     /**
      * Returns the last component of the path pointed by this FilesystemNode.
@@ -318,6 +305,7 @@ class AbstractFSNode
      *       implementation for more information.
      */
     virtual const string& getName() const = 0;
+    virtual void setName(const string& name) = 0;
 
     /**
      * Returns the 'path' of the current node, usable in fopen().
@@ -329,6 +317,17 @@ class AbstractFSNode
      */
 
     virtual string getShortPath() const = 0;
+
+    /**
+     * Determine whether this node has a parent.
+     */
+    virtual bool hasParent() const = 0;
+
+    /**
+     * The parent node of this directory.
+     * The parent of the root is 'nullptr'.
+     */
+    virtual AbstractFSNodePtr getParent() const = 0;
 
     /**
      * Indicates whether this path refers to a directory or not.
@@ -392,12 +391,6 @@ class AbstractFSNode
      *          a try-catch block.
      */
     virtual uInt32 read(ByteBuffer& buffer) const { return 0; }
-
-    /**
-     * The parent node of this directory.
-     * The parent of the root is the root itself.
-     */
-    virtual AbstractFSNodePtr getParent() const = 0;
 };
 
 #endif

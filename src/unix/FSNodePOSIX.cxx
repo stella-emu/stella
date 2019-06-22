@@ -53,13 +53,13 @@ FilesystemNodePOSIX::FilesystemNodePOSIX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodePOSIX::FilesystemNodePOSIX(const string& p, bool verify)
+FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
   : _isValid(true),
     _isFile(false),
     _isDirectory(true)
 {
   // Default to home directory
-  _path = p.length() > 0 ? p : "~";
+  _path = path.length() > 0 ? path : "~";
 
   // Expand '~' to the HOME environment variable
   if(_path[0] == '~')
@@ -99,8 +99,13 @@ string FilesystemNodePOSIX::getShortPath() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
-                                      bool hidden) const
+bool FilesystemNodePOSIX::hasParent() const
+{
+  return _path != "" && _path != ROOT_DIR;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode) const
 {
   assert(_isDirectory);
 
@@ -112,12 +117,8 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
   struct dirent* dp;
   while ((dp = readdir(dirp)) != nullptr)
   {
-    // Skip 'invisible' files if necessary
-    if (dp->d_name[0] == '.' && !hidden)
-      continue;
-
-    // Skip '.' and '..' to avoid cycles
-    if ((dp->d_name[0] == '.' && dp->d_name[1] == 0) || (dp->d_name[0] == '.' && dp->d_name[1] == '.'))
+    // Ignore all hidden files
+    if (dp->d_name[0] == '.')
       continue;
 
     string newPath(_path);

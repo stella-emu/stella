@@ -61,9 +61,11 @@ class FilesystemNodePOSIX : public AbstractFSNode
     FilesystemNodePOSIX(const string& path, bool verify = true);
 
     bool exists() const override { return access(_path.c_str(), F_OK) == 0; }
-    const string& getName() const override { return _displayName; }
+    const string& getName() const override    { return _displayName; }
+    void setName(const string& name) override { _displayName = name; }
     const string& getPath() const override { return _path; }
     string getShortPath() const override;
+    bool hasParent() const override;
     bool isDirectory() const override { return _isDirectory; }
     bool isFile() const override      { return _isFile;      }
     bool isReadable() const override  { return access(_path.c_str(), R_OK) == 0; }
@@ -71,7 +73,7 @@ class FilesystemNodePOSIX : public AbstractFSNode
     bool makeDir() override;
     bool rename(const string& newfile) override;
 
-    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const override;
+    bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;
 
   protected:

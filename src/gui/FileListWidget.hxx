@@ -21,7 +21,6 @@
 class CommandSender;
 
 #include "FSNode.hxx"
-#include "GameList.hxx"
 #include "StringListWidget.hxx"
 
 /**
@@ -64,26 +63,19 @@ class FileListWidget : public StringListWidget
     void reload();
 
     /** Gets current node(s) */
-    const FilesystemNode& selected() const   { return _selected;  }
-    const FilesystemNode& currentDir() const { return _node;      }
-
-    /** Gets MD5sum of the current node, if it is a file, and caches the result.
-        Otherwise, does nothing.
-
-        @return  MD5sum of selected file, else EmptyString
-    */
-    const string& selectedMD5();
+    const FilesystemNode& selected() const   { return _fileList[_selected]; }
+    const FilesystemNode& currentDir() const { return _node; }
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     FilesystemNode::ListMode _fsmode;
-    FilesystemNode _node, _selected;
-    GameList _gameList;
+    FilesystemNode _node;
+    FSList _fileList;
 
     string _extension;
-    uInt32 _selectedPos;
+    uInt32 _selected;
 
   private:
     // Following constructors and assignment operators not supported
