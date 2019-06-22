@@ -19,14 +19,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO()
+  : _name("rom"),
+    _isDirectory(false),
+    _isFile(true),
+    _isValid(true)
 {
-  _displayName = "rom";
-  _path = "";
-
-  _isDirectory = false;
-  _isFile = true;
-  _isPseudoRoot = false;
-  _isValid = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,7 +57,7 @@ string FilesystemNodeLIBRETRO::getShortPath() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeLIBRETRO::
-    getChildren(AbstractFSList& myList, ListMode mode, bool hidden) const
+    getChildren(AbstractFSList& myList, ListMode mode) const
 {
   return false;
 }

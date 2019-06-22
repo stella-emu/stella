@@ -36,6 +36,8 @@ namespace GUI {
   class MessageBox;
 }
 
+#include <unordered_map>
+
 #include "bspf.hxx"
 #include "Dialog.hxx"
 #include "FSNode.hxx"
@@ -122,6 +124,7 @@ class LauncherDialog : public Dialog
     CheckboxWidget*   myAllFiles;
 
     RomInfoWidget* myRomInfoWidget;
+    std::unordered_map<string,string> myMD5List;
 
     int mySelectedItem;
 

@@ -18,16 +18,21 @@
 #include "ScrollBarWidget.hxx"
 #include "FileListWidget.hxx"
 
-#include "Bankswitch.hxx"
-#include "MD5.hxx"
 #include "bspf.hxx"
+
+/**
+  TODO:
+    - extension handling not handled
+    - add lambda filter to selectively choose files based on pattern
+    - history of selected folders/files
+*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : StringListWidget(boss, font, x, y, w, h),
     _fsmode(FilesystemNode::ListMode::All),
-    _selectedPos(0)
+    _selected(0)
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
@@ -45,36 +50,15 @@ void FileListWidget::setLocation(const FilesystemNode& node, string select)
     _node = _node.getParent();
   }
 
-  // Start with empty list
-  _gameList.clear();
-
-  // Read in the data from the file system
-  FSList content;
-  content.reserve(512);
-  _node.getChildren(content, _fsmode);
-
-  // Add '[..]' to indicate previous folder
-  if(_node.hasParent())
-    _gameList.appendGame(" [..]", _node.getParent().getPath(), "", true);
-
-  // Now add the directory entries
-  for(const auto& file: content)
-  {
-    string name = file.getName();
-    bool isDir = file.isDirectory();
-    if(isDir)
-      name = " [" + name + "]";
-    else if(!BSPF::endsWithIgnoreCase(name, _extension))
-      continue;
-
-    _gameList.appendGame(name, file.getPath(), "", isDir);
-  }
-  _gameList.sortByName();
+  // Read in the data from the file system (start with an empty list)
+  _fileList.clear();
+  _fileList.reserve(512);
+  _node.getChildren(_fileList, _fsmode);
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
-  for(uInt32 i = 0; i < _gameList.size(); ++i)
-    l.push_back(_gameList.name(i));
+  for(const auto& file: _fileList)
+    l.push_back(file.getName());
 
   setList(l);
   setSelected(select);
@@ -96,20 +80,7 @@ void FileListWidget::selectParent()
 void FileListWidget::reload()
 {
   if(_node.exists())
-    setLocation(_node, _gameList.name(_selectedPos));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& FileListWidget::selectedMD5()
-{
-  if(_selected.isDirectory() || !Bankswitch::isValidRomName(_selected))
-    return EmptyString;
-
-  // Make sure we have a valid md5 for this ROM
-  if(_gameList.md5(_selectedPos) == "")
-    _gameList.setMd5(_selectedPos, MD5::hash(_selected));
-
-  return _gameList.md5(_selectedPos);
+    setLocation(_node, selected().getName());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,19 +94,16 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
 
     case ListWidget::kSelectionChangedCmd:
       cmd = ItemChanged;
-      _selected = FilesystemNode(_gameList.path(data));
-      _selectedPos = data;
+      _selected = data;
       break;
 
     case ListWidget::kActivatedCmd:
     case ListWidget::kDoubleClickedCmd:
-      if(_gameList.isDir(data))
+      _selected = data;
+      if(selected().isDirectory())
       {
         cmd = ItemChanged;
-        if(_gameList.name(data) == " [..]")
-          selectParent();
-        else
-          setLocation(FilesystemNode(_gameList.path(data)));
+        setLocation(selected());
       }
       else
         cmd = ItemActivated;

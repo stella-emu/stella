@@ -37,7 +37,7 @@ FilesystemNode::FilesystemNode(const string& p)
 {
   // Is this potentially a ZIP archive?
 #if defined(ZIP_SUPPORT)
-  if(BSPF::containsIgnoreCase(p, ".zip"))
+  if (BSPF::containsIgnoreCase(p, ".zip"))
     _realNode = FilesystemNodeFactory::create(p, FilesystemNodeFactory::Type::ZIP);
   else
 #endif
@@ -51,7 +51,7 @@ bool FilesystemNode::exists() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) const
+bool FilesystemNode::getChildren(FSList& fslist, ListMode mode) const
 {
   if (!_realNode || !_realNode->isDirectory())
     return false;
@@ -59,11 +59,48 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) con
   AbstractFSList tmp;
   tmp.reserve(fslist.capacity());
 
-  if (!_realNode->getChildren(tmp, mode, hidden))
+  if (!_realNode->getChildren(tmp, mode))
     return false;
 
+  std::sort(tmp.begin(), tmp.end(),
+    [](const AbstractFSNodePtr& node1, const AbstractFSNodePtr& node2)
+    {
+      if (node1->isDirectory() != node2->isDirectory())
+        return node1->isDirectory();
+      else
+        return BSPF::compareIgnoreCase(node1->getName(), node2->getName()) < 0;
+    }
+  );
+
+  // Add parent node, if it is valid to do so
+  if (hasParent())
+  {
+    FilesystemNode parent = getParent();
+    parent.setName(" [..]");
+    fslist.emplace_back(parent);
+  }
+
+  // And now add the rest of the entries
   for (const auto& i: tmp)
-    fslist.emplace_back(FilesystemNode(i));
+  {
+  #if defined(ZIP_SUPPORT)
+    // Force ZIP c'tor to be called
+    if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
+    {
+      AbstractFSNodePtr ptr = FilesystemNodeFactory::create(i->getPath(),
+          FilesystemNodeFactory::Type::ZIP);
+      fslist.emplace_back(FilesystemNode(ptr));
+    }
+    else
+  #endif
+    {
+      // Make directories stand out
+      if (i->isDirectory())
+        i->setName(" [" + i->getName() + "]");
+
+      fslist.emplace_back(FilesystemNode(i));
+    }
+  }
 
   return true;
 }
@@ -73,6 +110,13 @@ const string& FilesystemNode::getName() const
 {
   return _realNode->getName();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FilesystemNode::setName(const string& name)
+{
+  _realNode->setName(name);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& FilesystemNode::getPath() const
@@ -109,7 +153,7 @@ string FilesystemNode::getPathWithExt(const string& ext) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::hasParent() const
 {
-  return _realNode ? (_realNode->getParent() != nullptr) : false;
+  return _realNode ? _realNode->hasParent() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -164,23 +208,23 @@ uInt32 FilesystemNode::read(ByteBuffer& image) const
   uInt32 size = 0;
 
   // File must actually exist
-  if(!(exists() && isReadable()))
+  if (!(exists() && isReadable()))
     throw runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
-  if((size = _realNode->read(image)) > 0)
+  if ((size = _realNode->read(image)) > 0)
     return size;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
   image = make_unique<uInt8[]>(512 * 1024);
   ifstream in(getPath(), std::ios::binary);
-  if(in)
+  if (in)
   {
     in.seekg(0, std::ios::end);
     std::streampos length = in.tellg();
     in.seekg(0, std::ios::beg);
 
-    if(length == 0)
+    if (length == 0)
       throw runtime_error("Zero-byte file");
 
     size = std::min(uInt32(length), 512u * 1024u);

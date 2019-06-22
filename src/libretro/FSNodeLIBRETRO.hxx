@@ -20,9 +20,6 @@
 
 #include "FSNode.hxx"
 
-// TODO - fix isFile() functionality so that it actually determines if something
-//        is a file; for now, it assumes a file if it isn't a directory
-
 /*
  * Implementation of the Stella file system API based on LIBRETRO API.
  *
@@ -37,9 +34,11 @@ class FilesystemNodeLIBRETRO : public AbstractFSNode
     explicit FilesystemNodeLIBRETRO(const string& path);
 
     bool exists() const override;
-    const string& getName() const override   { return _displayName; }
-    const string& getPath() const override   { return _path; }
+    const string& getName() const override    { return _name; }
+    void setName(const string& name) override { _name = name; }
+    const string& getPath() const override { return _path; }
     string getShortPath() const override;
+    bool hasParent() const override { return false; }
     bool isDirectory() const override { return _isDirectory; }
     bool isFile() const override      { return _isFile;      }
     bool isReadable() const override;
@@ -47,13 +46,13 @@ class FilesystemNodeLIBRETRO : public AbstractFSNode
     bool makeDir() override;
     bool rename(const string& newfile) override;
 
-    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const override;
+    bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;
 
     uInt32 read(ByteBuffer& image) const override;
 
   protected:
-    string _displayName;
+    string _name;
     string _path;
     bool _isDirectory;
     bool _isFile;

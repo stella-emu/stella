@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "Bankswitch.hxx"
 #include "BrowserDialog.hxx"
 #include "ContextMenu.hxx"
 #include "DialogContainer.hxx"
@@ -23,7 +24,7 @@
 #include "EditTextWidget.hxx"
 #include "FileListWidget.hxx"
 #include "FSNode.hxx"
-#include "GameList.hxx"
+#include "MD5.hxx"
 #include "OptionsDialog.hxx"
 #include "GlobalPropsDialog.hxx"
 #include "StellaSettingsDialog.hxx"
@@ -46,7 +47,7 @@
   TODO:
     - show all files / only ROMs
     - connect to 'matchPattern'
-    - history of selected folders/files
+    - create lambda filter to pass these to FileListWidget
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -246,7 +247,19 @@ const string& LauncherDialog::selectedRom() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& LauncherDialog::selectedRomMD5()
 {
-  return myList->selectedMD5();
+  if(currentNode().isDirectory() || !Bankswitch::isValidRomName(currentNode()))
+    return EmptyString;
+
+  // Attempt to conserve memory
+  if(myMD5List.size() > 500)
+    myMD5List.clear();
+
+  // Lookup MD5, and if not present, cache it
+  auto iter = myMD5List.find(currentNode().getPath());
+  if(iter == myMD5List.end())
+    myMD5List[currentNode().getPath()] = MD5::hash(currentNode());
+
+  return myMD5List[currentNode().getPath()];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -612,7 +625,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRom()
 {
-  const string& result = instance().createConsole(currentNode(), myList->selectedMD5());
+  const string& result = instance().createConsole(currentNode(), selectedRomMD5());
   if(result == EmptyString)
   {
     instance().settings().setValue("lastrom", myList->getSelectedString());

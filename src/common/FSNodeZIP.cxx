@@ -134,8 +134,8 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
   {
     _path += ("/" + _virtualPath);
     _shortPath += ("/" + _virtualPath);
-    _name = lastPathComponent(_path);
   }
+  _name = lastPathComponent(_path);
 
   _error = zip_error::NONE;
   if(!_realNode->isFile())
@@ -145,8 +145,7 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
-                                    bool hidden) const
+bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode) const
 {
   // Files within ZIP archives don't contain children
   if(!isDirectory() || _error != zip_error::NONE)
