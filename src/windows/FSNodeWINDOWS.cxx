@@ -217,11 +217,9 @@ string FilesystemNodeWINDOWS::getShortPath() const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeWINDOWS::
-    getChildren(AbstractFSList& myList, ListMode mode, bool hidden) const
+    getChildren(AbstractFSList& myList, ListMode mode) const
 {
   assert(_isDirectory);
-
-  //TODO: honor the hidden flag
 
   if(_isPseudoRoot)
   {

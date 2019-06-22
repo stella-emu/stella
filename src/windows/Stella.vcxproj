@@ -374,7 +374,7 @@
     <ClCompile Include="..\common\EventHandlerSDL2.cxx" />
     <ClCompile Include="..\common\FBSurfaceSDL2.cxx" />
     <ClCompile Include="..\common\FpsMeter.cxx" />
-    <ClCompile Include="..\common\FrameBufferSDL2.cxx" />    
+    <ClCompile Include="..\common\FrameBufferSDL2.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\KeyMap.cxx" />
     <ClCompile Include="..\common\Logger.cxx" />
@@ -615,7 +615,6 @@
     <ClCompile Include="..\gui\EventMappingWidget.cxx" />
     <ClCompile Include="..\gui\Font.cxx" />
     <ClCompile Include="..\gui\GameInfoDialog.cxx" />
-    <ClCompile Include="..\gui\GameList.cxx" />
     <ClCompile Include="..\gui\GlobalPropsDialog.cxx" />
     <ClCompile Include="..\gui\HelpDialog.cxx" />
     <ClCompile Include="..\gui\InputDialog.cxx" />
@@ -1361,7 +1360,6 @@
     <ClInclude Include="..\gui\EventMappingWidget.hxx" />
     <ClInclude Include="..\gui\Font.hxx" />
     <ClInclude Include="..\gui\GameInfoDialog.hxx" />
-    <ClInclude Include="..\gui\GameList.hxx" />
     <ClInclude Include="..\gui\GlobalPropsDialog.hxx" />
     <ClInclude Include="..\gui\GuiObject.hxx" />
     <ClInclude Include="..\gui\HelpDialog.hxx" />

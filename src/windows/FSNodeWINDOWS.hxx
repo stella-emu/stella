@@ -58,9 +58,11 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
     explicit FilesystemNodeWINDOWS(const string& path);
 
     bool exists() const override;
-    const string& getName() const override   { return _displayName; }
-    const string& getPath() const override   { return _path; }
+    const string& getName() const override    { return _displayName; }
+    void setName(const string& name) override { _displayName = name; }
+    const string& getPath() const override { return _path; }
     string getShortPath() const override;
+    bool hasParent() const override { return !_isPseudoRoot; }
     bool isDirectory() const override { return _isDirectory; }
     bool isFile() const override      { return _isFile;      }
     bool isReadable() const override;
@@ -68,7 +70,7 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
     bool makeDir() override;
     bool rename(const string& newfile) override;
 
-    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const override;
+    bool getChildren(AbstractFSList& list, ListMode mode) const override;
     AbstractFSNodePtr getParent() const override;
 
   protected:
