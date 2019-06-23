@@ -7,7 +7,6 @@ MODULE_OBJS := \
 	src/common/FrameBufferSDL2.o \
 	src/common/FSNodeZIP.o \
 	src/common/JoyMap.o \
-	src/common/JoyHatMap.o \
 	src/common/KeyMap.o \
 	src/common/Logger.o \
 	src/common/main.o \

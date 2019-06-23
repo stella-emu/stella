@@ -978,9 +978,6 @@
     <ClCompile Include="..\gui\R77HelpDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\JoyHatMap.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\JoyMap.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2004,9 +2001,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\common\KeyMap.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\JoyHatMap.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\JoyMap.hxx">

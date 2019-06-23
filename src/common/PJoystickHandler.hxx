@@ -100,7 +100,7 @@ class PhysicalJoystickHandler
     }
     Event::Type eventForHat(EventMode mode, int stick, int hat, JoyHat hatDir, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return j->joyHatMap.get(mode, button, hat, hatDir);
+      return j->joyMap.get(mode, button, hat, hatDir);
     }
 
     /** Returns a list of pairs consisting of joystick name and associated ID. */
@@ -174,11 +174,13 @@ class PhysicalJoystickHandler
     // Controller specific mappings
     static EventMappingArray DefaultLeftJoystickMapping;
     static EventMappingArray DefaultRightJoystickMapping;
+    static EventMappingArray DefaultLeftPaddlesMapping;
+    static EventMappingArray DefaultRightPaddlesMapping;
     static EventMappingArray DefaultLeftKeypadMapping;
     static EventMappingArray DefaultRightKeypadMapping;
 
-    // Static lookup tables for Stelladaptor/2600-daptor axis/button support
-    /*static const int NUM_JOY_BTN = 4;
+    /*// Static lookup tables for Stelladaptor/2600-daptor axis/button support
+    static const int NUM_JOY_BTN = 4;
     static const int NUM_KEY_BTN = 12;
 
     static const Event::Type SA_Axis[NUM_PORTS][NUM_JOY_AXIS];

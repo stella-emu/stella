@@ -377,7 +377,6 @@
     <ClCompile Include="..\common\FrameBufferSDL2.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\JoyMap.cxx" />
-    <ClCompile Include="..\common\JoyHatMap.cxx" />
     <ClCompile Include="..\common\KeyMap.cxx" />
     <ClCompile Include="..\common\Logger.cxx" />
     <ClCompile Include="..\common\main.cxx" />
@@ -1076,7 +1075,6 @@
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\JoyMap.hxx" />
-    <ClInclude Include="..\common\JoyHatMap.hxx" />
     <ClInclude Include="..\common\KeyMap.hxx" />
     <ClInclude Include="..\common\LinkedObjectPool.hxx" />
     <ClInclude Include="..\common\Logger.hxx" />

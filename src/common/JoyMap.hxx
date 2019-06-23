@@ -37,17 +37,33 @@ class JoyMap
       int button;   // button number
       JoyAxis axis; // horizontal/vertical
       JoyDir adir;  // axis direction (neg/pos)
+      int hat;      // hat number
+      JoyHat hdir;  // hat direction (left/right/up/down)
 
       JoyMapping()
         : mode(EventMode(0)), button(0),
-          axis(JoyAxis(0)), adir(JoyDir(0)) { }
+          axis(JoyAxis(0)), adir(JoyDir(0)),
+          hat(0), hdir(JoyHat(0)) { }
       JoyMapping(const JoyMapping& m)
         : mode(m.mode), button(m.button),
-          axis(m.axis), adir(m.adir) { }
+          axis(m.axis), adir(m.adir),
+          hat(m.hat), hdir(m.hdir) { }
       explicit JoyMapping(EventMode c_mode, int c_button,
-        JoyAxis c_axis, JoyDir c_adir)
+                          JoyAxis c_axis, JoyDir c_adir,
+                          int c_hat, JoyHat c_hdir)
         : mode(c_mode), button(c_button),
-          axis(c_axis), adir(c_adir) { }
+          axis(c_axis), adir(c_adir),
+          hat(c_hat), hdir(c_hdir) { }
+      explicit JoyMapping(EventMode c_mode, int c_button,
+                          JoyAxis c_axis, JoyDir c_adir)
+        : mode(c_mode), button(c_button),
+          axis(c_axis), adir(c_adir),
+          hat(JOY_CTRL_NONE), hdir(JoyHat::CENTER) { }
+      explicit JoyMapping(EventMode c_mode, int c_button,
+                          int c_hat, JoyHat c_hdir)
+        : mode(c_mode), button(c_button),
+          axis(JoyAxis::NONE), adir(JoyDir::NONE),
+          hat(c_hat), hdir(c_hdir) { }
 
       bool operator==(const JoyMapping& other) const
       {
@@ -55,6 +71,8 @@ class JoyMap
           && button == other.button
           && axis == other.axis
           && adir == other.adir
+          && hat == other.hat
+          && hdir == other.hdir
         );
       }
     };
@@ -66,27 +84,39 @@ class JoyMap
     /** Add new mapping for given event */
     void add(const Event::Type event, const JoyMapping& mapping);
     void add(const Event::Type event, const EventMode mode, const int button,
-             const JoyAxis axis, const JoyDir adir);
+             const JoyAxis axis, const JoyDir adir, 
+             const int hat = JOY_CTRL_NONE, const JoyHat hdir = JoyHat::CENTER);
+    void add(const Event::Type event, const EventMode mode,
+             const int button, const int hat, const JoyHat hdir);
 
     /** Erase mapping */
     void erase(const JoyMapping& mapping);
     void erase(const EventMode mode, const int button,
                const JoyAxis axis, const JoyDir adir);
+    void erase(const EventMode mode,
+               const int button, const int hat, const JoyHat hdir);
+
 
     /** Get event for mapping */
     Event::Type get(const JoyMapping& mapping) const;
     Event::Type get(const EventMode mode, const int button,
                     const JoyAxis axis = JoyAxis::NONE, const JoyDir adir = JoyDir::NONE) const;
+    Event::Type get(const EventMode mode,
+                    const int button, const int hat, const JoyHat hdir) const;
 
     /** Check if a mapping exists */
     bool check(const JoyMapping& mapping) const;
     bool check(const EventMode mode, const int button,
                const JoyAxis axis, const JoyDir adir) const;
+    bool check(const EventMode mode,
+               const int button, const int hat, const JoyHat hdir) const;
 
     /** Get mapping description */
     string getDesc(const Event::Type event, const JoyMapping& mapping) const;
     string getDesc(const Event::Type event, const EventMode mode, const int button,
                    const JoyAxis axis, const JoyDir adir) const;
+    string getDesc(const Event::Type event, const EventMode mode,
+                   const int button, const int hat, const JoyHat hdir) const;
 
     /** Get the mapping description(s) for given stick, event and mode */
     string getEventMappingDesc(int stick, const Event::Type event, const EventMode mode) const;
@@ -111,6 +141,8 @@ class JoyMap
           ^ ((uInt64(m.button)) << 2)  // 2 bits
           ^ ((uInt64(m.axis)) << 4)    // 1 bit
           ^ ((uInt64(m.adir)) << 5)    // 1 bit
+          ^ ((uInt64(m.hat)) << 6)     // 1 bit
+          ^ ((uInt64(m.hdir)) << 7)    // 2 bits
           );
       }
     };

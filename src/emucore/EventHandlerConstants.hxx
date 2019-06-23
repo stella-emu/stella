@@ -50,7 +50,8 @@ enum class JoyAxis {
 enum class JoyDir {
   NEG = -1,
   POS = 1,
-  NONE = 0
+  NONE = 0,
+  ANALOG = 2
 };
 
 
