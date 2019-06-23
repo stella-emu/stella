@@ -46,7 +46,7 @@ bool FilesystemNodeLIBRETRO::isReadable() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeLIBRETRO::isWritable() const
 {
-  return false;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
