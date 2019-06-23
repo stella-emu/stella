@@ -128,13 +128,28 @@ class PhysicalJoystickHandler
     }
 
     // Set default mapping for given joystick when no mappings already exist
-    void setStickDefaultMapping(int stick, Event::Type type, EventMode mode);
+    void setStickDefaultMapping(int stick, Event::Type type, EventMode mode,
+                                bool updateDefaults = false);
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh);
 
     JoyDir convertAxisValue(int value) const {
       return value == int(JoyDir::NONE) ? JoyDir::NONE : value > 0 ? JoyDir::POS : JoyDir::NEG;
     }
+
+    // Structures used for action menu items
+    struct EventMapping {
+      Event::Type event;
+      int button;
+      JoyAxis axis = JoyAxis::NONE;
+      JoyDir adir = JoyDir::NONE;
+      int hat = JOY_CTRL_NONE;
+      JoyHat hdir = JoyHat::CENTER;
+    };
+    using EventMappingArray = std::vector<EventMapping>;
+
+    void setDefaultAction(EventMapping map, Event::Type event = Event::NoType,
+                          EventMode mode = kEmulationMode, bool updateDefaults = false);
 
     /** returns the event's controller mode */
     EventMode getEventMode(const Event::Type event, const EventMode mode) const;
@@ -152,6 +167,15 @@ class PhysicalJoystickHandler
 
     EventMode myLeftMode;
     EventMode myRightMode;
+
+
+    // Controller menu and common emulation mappings
+    static EventMappingArray DefaultMenuMapping;
+    // Controller specific mappings
+    static EventMappingArray DefaultLeftJoystickMapping;
+    static EventMappingArray DefaultRightJoystickMapping;
+    static EventMappingArray DefaultLeftKeypadMapping;
+    static EventMappingArray DefaultRightKeypadMapping;
 
     // Static lookup tables for Stelladaptor/2600-daptor axis/button support
     /*static const int NUM_JOY_BTN = 4;
