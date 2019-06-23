@@ -50,7 +50,6 @@
 		2D91740409BA90380026E9FF /* Dialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAAC084578BF00812C11 /* Dialog.hxx */; };
 		2D91740509BA90380026E9FF /* DialogContainer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAAE084578BF00812C11 /* DialogContainer.hxx */; };
 		2D91740609BA90380026E9FF /* GameInfoDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAB3084578BF00812C11 /* GameInfoDialog.hxx */; };
-		2D91740709BA90380026E9FF /* GameList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAB5084578BF00812C11 /* GameList.hxx */; };
 		2D91740809BA90380026E9FF /* GuiObject.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAB6084578BF00812C11 /* GuiObject.hxx */; };
 		2D91740A09BA90380026E9FF /* HelpDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAB9084578BF00812C11 /* HelpDialog.hxx */; };
 		2D91740B09BA90380026E9FF /* Launcher.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEABB084578BF00812C11 /* Launcher.hxx */; };
@@ -149,7 +148,6 @@
 		2D9174AD09BA90380026E9FF /* Dialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAAB084578BF00812C11 /* Dialog.cxx */; };
 		2D9174AE09BA90380026E9FF /* DialogContainer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAAD084578BF00812C11 /* DialogContainer.cxx */; };
 		2D9174AF09BA90380026E9FF /* GameInfoDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAB2084578BF00812C11 /* GameInfoDialog.cxx */; };
-		2D9174B009BA90380026E9FF /* GameList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAB4084578BF00812C11 /* GameList.cxx */; };
 		2D9174B109BA90380026E9FF /* HelpDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAB8084578BF00812C11 /* HelpDialog.cxx */; };
 		2D9174B209BA90380026E9FF /* Launcher.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEABA084578BF00812C11 /* Launcher.cxx */; };
 		2D9174B309BA90380026E9FF /* LauncherDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEABC084578BF00812C11 /* LauncherDialog.cxx */; };
@@ -819,8 +817,6 @@
 		2DDBEAAE084578BF00812C11 /* DialogContainer.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = DialogContainer.hxx; sourceTree = "<group>"; };
 		2DDBEAB2084578BF00812C11 /* GameInfoDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GameInfoDialog.cxx; sourceTree = "<group>"; };
 		2DDBEAB3084578BF00812C11 /* GameInfoDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = GameInfoDialog.hxx; sourceTree = "<group>"; };
-		2DDBEAB4084578BF00812C11 /* GameList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GameList.cxx; sourceTree = "<group>"; };
-		2DDBEAB5084578BF00812C11 /* GameList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = GameList.hxx; sourceTree = "<group>"; };
 		2DDBEAB6084578BF00812C11 /* GuiObject.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = GuiObject.hxx; sourceTree = "<group>"; };
 		2DDBEAB8084578BF00812C11 /* HelpDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = HelpDialog.cxx; sourceTree = "<group>"; };
 		2DDBEAB9084578BF00812C11 /* HelpDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = HelpDialog.hxx; sourceTree = "<group>"; };
@@ -1989,8 +1985,6 @@
 				2D9217FC0857CC88001D664B /* Font.hxx */,
 				2DDBEAB2084578BF00812C11 /* GameInfoDialog.cxx */,
 				2DDBEAB3084578BF00812C11 /* GameInfoDialog.hxx */,
-				2DDBEAB4084578BF00812C11 /* GameList.cxx */,
-				2DDBEAB5084578BF00812C11 /* GameList.hxx */,
 				DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */,
 				DC0DF8680F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx */,
 				2DDBEAB6084578BF00812C11 /* GuiObject.hxx */,
@@ -2354,7 +2348,6 @@
 				DC6D39881A3CE65000171E71 /* CartWDWidget.hxx in Headers */,
 				2D91740609BA90380026E9FF /* GameInfoDialog.hxx in Headers */,
 				DCE9158C201543B900960CC0 /* TimeLineWidget.hxx in Headers */,
-				2D91740709BA90380026E9FF /* GameList.hxx in Headers */,
 				2D91740809BA90380026E9FF /* GuiObject.hxx in Headers */,
 				DC73BD861915E5B1003FAFAD /* FBSurfaceSDL2.hxx in Headers */,
 				2D91740A09BA90380026E9FF /* HelpDialog.hxx in Headers */,
@@ -2787,7 +2780,6 @@
 				2D9174AD09BA90380026E9FF /* Dialog.cxx in Sources */,
 				2D9174AE09BA90380026E9FF /* DialogContainer.cxx in Sources */,
 				2D9174AF09BA90380026E9FF /* GameInfoDialog.cxx in Sources */,
-				2D9174B009BA90380026E9FF /* GameList.cxx in Sources */,
 				2D9174B109BA90380026E9FF /* HelpDialog.cxx in Sources */,
 				2D9174B209BA90380026E9FF /* Launcher.cxx in Sources */,
 				2D9174B309BA90380026E9FF /* LauncherDialog.cxx in Sources */,
