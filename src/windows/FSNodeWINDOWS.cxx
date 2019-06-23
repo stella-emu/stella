@@ -148,7 +148,7 @@ void FilesystemNodeWINDOWS::addFile(AbstractFSList& list, ListMode mode,
   entry._isValid = true;
   entry._isPseudoRoot = false;
 
-  list.emplace_back(new FilesystemNodeWINDOWS(entry));
+  list.emplace_back(make_shared<FilesystemNodeWINDOWS>(entry));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,7 +241,7 @@ bool FilesystemNodeWINDOWS::
       entry._isValid = true;
       entry._isPseudoRoot = false;
       entry._path = toAscii(current_drive);
-      myList.emplace_back(new FilesystemNodeWINDOWS(entry));
+      myList.emplace_back(make_shared<FilesystemNodeWINDOWS>(entry));
     }
   }
   else
