@@ -84,12 +84,15 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode) const
   for (const auto& i: tmp)
   {
   #if defined(ZIP_SUPPORT)
-    // Force ZIP c'tor to be called
     if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
     {
+      // Force ZIP c'tor to be called
       AbstractFSNodePtr ptr = FilesystemNodeFactory::create(i->getPath(),
           FilesystemNodeFactory::Type::ZIP);
-      fslist.emplace_back(FilesystemNode(ptr));
+      if (ptr->getName() != EmptyString)
+        fslist.emplace_back(FilesystemNode(ptr));
+      else
+        fslist.emplace_back(FilesystemNode(i));
     }
     else
   #endif
@@ -108,31 +111,35 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& FilesystemNode::getName() const
 {
-  return _realNode->getName();
+  return _realNode ? _realNode->getName() : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FilesystemNode::setName(const string& name)
 {
-  _realNode->setName(name);
+  if (_realNode)
+    _realNode->setName(name);
 }
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& FilesystemNode::getPath() const
 {
-  return _realNode->getPath();
+  return _realNode ? _realNode->getPath() : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FilesystemNode::getShortPath() const
 {
-  return _realNode->getShortPath();
+  return _realNode ? _realNode->getShortPath() : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FilesystemNode::getNameWithExt(const string& ext) const
 {
+  if (!_realNode)
+    return EmptyString;
+
   size_t pos = _realNode->getName().find_last_of("/\\");
   string s = pos == string::npos ? _realNode->getName() :
         _realNode->getName().substr(pos+1);
@@ -144,6 +151,9 @@ string FilesystemNode::getNameWithExt(const string& ext) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FilesystemNode::getPathWithExt(const string& ext) const
 {
+  if (!_realNode)
+    return EmptyString;
+
   string s = _realNode->getPath();
 
   size_t pos = s.find_last_of(".");
@@ -159,7 +169,7 @@ bool FilesystemNode::hasParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode FilesystemNode::getParent() const
 {
-  if (_realNode == nullptr)
+  if (!_realNode)
     return *this;
 
   AbstractFSNodePtr node = _realNode->getParent();
@@ -212,7 +222,7 @@ uInt32 FilesystemNode::read(ByteBuffer& image) const
     throw runtime_error("File not found/readable");
 
   // First let the private subclass attempt to open the file
-  if ((size = _realNode->read(image)) > 0)
+  if (_realNode && (size = _realNode->read(image)) > 0)
     return size;
 
   // Otherwise, the default behaviour is to read from a normal C++ ifstream
