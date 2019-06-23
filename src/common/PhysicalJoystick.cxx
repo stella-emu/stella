@@ -83,7 +83,6 @@ string PhysicalJoystick::getMap() const
   for (int m = 0; m < kNumModes; ++m)
   {
     joybuf << MODE_DELIM << m << "|" << joyMap.saveMapping(EventMode(m));
-    joybuf << MODE_DELIM << m << "|" << joyHatMap.saveMapping(EventMode(m));
   }
 
   return joybuf.str();
@@ -103,13 +102,12 @@ bool PhysicalJoystick::setMap(const string& mapString)
     mappings.push_back(map);
   }
   // Error checking
-  if(mappings.size() != 1 + kNumModes * 2)
+  if(mappings.size() != 1 + kNumModes)
     return false;
 
   for (int m = 0; m < kNumModes; ++m)
   {
-    joyMap.loadMapping(mappings[1 + m * 2], EventMode(m));
-    joyHatMap.loadMapping(mappings[2 + m * 2], EventMode(m));
+    joyMap.loadMapping(mappings[1 + m], EventMode(m));
   }
 
   return true;
@@ -118,19 +116,13 @@ bool PhysicalJoystick::setMap(const string& mapString)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::eraseMap(EventMode mode)
 {
-  // Erase button and axis mappings
   joyMap.eraseMode(mode);
-  // Erase button and axis mappings
-  joyHatMap.eraseMode(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::eraseEvent(Event::Type event, EventMode mode)
 {
-  // Erase button and axis mappings
   joyMap.eraseEvent(event, mode);
-  // Erase hat mappings
-  joyHatMap.eraseEvent(event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

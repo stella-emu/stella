@@ -135,6 +135,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   setControllers(md5);
   // now that we know the controllers, enable the event mappings
   myOSystem.eventHandler().enableEmulationKeyMappings();
+  myOSystem.eventHandler().enableEmulationJoyMappings();
 
   // Mute audio and clear framebuffer while autodetection runs
   myOSystem.sound().mute(1);
