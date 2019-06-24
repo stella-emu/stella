@@ -17,6 +17,12 @@
 
 #include "FSNodeLIBRETRO.hxx"
 
+#ifdef _WIN32
+  const string slash = "\\";
+#else
+  const string slash = "/";
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO()
   : _name("rom"),
@@ -24,11 +30,20 @@ FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO()
     _isFile(true),
     _isValid(true)
 {
+  _path = "." + slash;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO(const string& p)
+  : _name(p),
+    _path(p),
+    _isDirectory(false),
+    _isFile(true),
+    _isValid(true)
 {
+  // TODO: use retro_vfs_mkdir_t (file) or RETRO_MEMORY_SAVE_RAM (stream) or libretro save path
+  if(p == "." + slash + "nvram")
+    _path = "." + slash;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,7 +67,7 @@ bool FilesystemNodeLIBRETRO::isWritable() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FilesystemNodeLIBRETRO::getShortPath() const
 {
-  return "";
+  return ".";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
