@@ -18,24 +18,16 @@
 #include "FSNode.hxx"
 #include "OSystemLIBRETRO.hxx"
 
+#ifdef _WIN32
+  const string slash = "\\";
+#else
+  const string slash = "/";
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemLIBRETRO::getBaseDirAndConfig(string& basedir, string& cfgfile,
         string& savedir, string& loaddir,
         bool useappdir, const string& usedir)
 {
-  basedir = ".";
-
-#if 0
-  // Check to see if basedir overrides are active
-  if(useappdir)
-    cout << "ERROR: base dir in app folder not supported" << endl;
-  else if(usedir != "")
-  {
-    basedir = FilesystemNode(usedir).getPath();
-    savedir = loaddir = basedir;
-  }
-#endif
-
-  FilesystemNode desktop(".");
-  savedir = ".";
+  loaddir = savedir = cfgfile = basedir = "." + slash;
 }

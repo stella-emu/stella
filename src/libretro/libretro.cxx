@@ -277,6 +277,7 @@ static void update_variables(bool init = false)
 
     if(!strcmp(var.value, "standard")) value = 0;
     else if(!strcmp(var.value, "z26")) value = 1;
+    else if(!strcmp(var.value, "user")) value = 2;
 
     if(setting_palette != value)
     {
@@ -491,7 +492,7 @@ void retro_set_environment(retro_environment_t cb)
   static struct retro_variable variables[] = {
     // Adding more variables and rearranging them is safe.
     { "stella_console", "Console display; auto|ntsc|pal|secam|ntsc50|pal60|secam60" },
-    { "stella_palette", "Palette colors; standard|z26" },
+    { "stella_palette", "Palette colors; standard|z26|user" },
     { "stella_filter", "TV effects; disabled|composite|s-video|rgb|badly adjusted" },
     { "stella_ntsc_aspect", "NTSC aspect %; par|100|101|102|103|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85|86|87|88|89|90|91|92|93|94|95|96|97|98|99" },
     { "stella_pal_aspect", "PAL aspect %; par|100|101|102|103|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85|86|87|88|89|90|91|92|93|94|95|96|97|98|99" },
