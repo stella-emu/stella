@@ -68,9 +68,6 @@ class Event
       Combo1, Combo2, Combo3, Combo4, Combo5, Combo6, Combo7, Combo8,
       Combo9, Combo10, Combo11, Combo12, Combo13, Combo14, Combo15, Combo16,
 
-      SALeftAxis0Value, SALeftAxis1Value,
-      SARightAxis0Value, SARightAxis1Value,
-
       MouseAxisXValue, MouseAxisYValue,
       MouseButtonLeftValue, MouseButtonRightValue,
 

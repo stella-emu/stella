@@ -30,8 +30,8 @@ Joystick::Joystick(Jack jack, const Event& event, const System& system)
     myLeftEvent  = Event::JoystickZeroLeft;
     myRightEvent = Event::JoystickZeroRight;
     myFireEvent  = Event::JoystickZeroFire;
-    myXAxisValue = Event::SALeftAxis0Value;
-    myYAxisValue = Event::SALeftAxis1Value;
+    myXAxisValue = Event::PaddleZeroAnalog;
+    myYAxisValue = Event::PaddleOneAnalog;
   }
   else
   {
@@ -40,8 +40,8 @@ Joystick::Joystick(Jack jack, const Event& event, const System& system)
     myLeftEvent  = Event::JoystickOneLeft;
     myRightEvent = Event::JoystickOneRight;
     myFireEvent  = Event::JoystickOneFire;
-    myXAxisValue = Event::SARightAxis0Value;
-    myYAxisValue = Event::SARightAxis1Value;
+    myXAxisValue = Event::PaddleTwoAnalog;
+    myYAxisValue = Event::PaddleThreeAnalog;
   }
 }
 

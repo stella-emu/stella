@@ -35,16 +35,16 @@ Driving::Driving(Jack jack, const Event& event, const System& system)
     myCCWEvent   = Event::JoystickZeroLeft;
     myCWEvent    = Event::JoystickZeroRight;
     myFireEvent  = Event::JoystickZeroFire;
-    myXAxisValue = Event::SALeftAxis0Value;
-    myYAxisValue = Event::SALeftAxis1Value;
+    myXAxisValue = Event::PaddleZeroAnalog;
+    myYAxisValue = Event::PaddleOneAnalog;
   }
   else
   {
     myCCWEvent   = Event::JoystickOneLeft;
     myCWEvent    = Event::JoystickOneRight;
     myFireEvent  = Event::JoystickOneFire;
-    myXAxisValue = Event::SARightAxis0Value;
-    myYAxisValue = Event::SARightAxis1Value;
+    myXAxisValue = Event::PaddleTwoAnalog;
+    myYAxisValue = Event::PaddleThreeAnalog;
   }
 
   // Digital pins 3 and 4 are not connected

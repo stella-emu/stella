@@ -331,10 +331,12 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
+void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
+  bool pressed = (value != 0);
+
   switch(event)
   {
     ////////////////////////////////////////////////////////////////////////
@@ -896,7 +898,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
 
   // Otherwise, pass it to the emulation core
   if (!repeated)
-    myEvent.set(event, pressed);
+    myEvent.set(event, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
