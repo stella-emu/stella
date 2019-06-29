@@ -141,7 +141,7 @@ class EventHandler
       @param pressed   Pressed (true) or released (false)
       @param repeated  Repeated key (true) or first press/release (false)
     */
-    void handleEvent(Event::Type type, bool pressed = true, bool repeated = false);
+    void handleEvent(Event::Type type, Int32 value = 1, bool repeated = false);
 
     /**
       Handle events that must be processed each time a new console is
