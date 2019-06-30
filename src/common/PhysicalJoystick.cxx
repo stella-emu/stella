@@ -67,8 +67,11 @@ void PhysicalJoystick::initialize(int index, const string& desc,
     axisLastValue[a] = 0;
 
   // Erase the mappings
-  for (int m = 0; m < kNumModes; ++m)
-    eraseMap(EventMode(m));
+  eraseMap(kJoystickMode);
+  eraseMap(kPaddlesMode);
+  eraseMap(kKeypadMode);
+  eraseMap(kMenuMode);
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,10 +83,12 @@ string PhysicalJoystick::getMap() const
   ostringstream joybuf;
 
   joybuf << name;
-  for (int m = 0; m < kNumModes; ++m)
-  {
-    joybuf << MODE_DELIM << m << "|" << joyMap.saveMapping(EventMode(m));
-  }
+  joybuf << MODE_DELIM << int(kMenuMode) << "|" << joyMap.saveMapping(kMenuMode);
+  joybuf << MODE_DELIM << int(kJoystickMode) << "|" << joyMap.saveMapping(kJoystickMode);
+  joybuf << MODE_DELIM << int(kPaddlesMode) << "|" << joyMap.saveMapping(kPaddlesMode);
+  joybuf << MODE_DELIM << int(kKeypadMode) << "|" << joyMap.saveMapping(kKeypadMode);
+  joybuf << MODE_DELIM << int(kCommonMode) << "|" << joyMap.saveMapping(kCommonMode);
+
 
   return joybuf.str();
 }
@@ -102,13 +107,14 @@ bool PhysicalJoystick::setMap(const string& mapString)
     mappings.push_back(map);
   }
   // Error checking
-  if(mappings.size() != 1 + kNumModes)
+  if(mappings.size() != 1 + 5)
     return false;
 
-  for (int m = 0; m < kNumModes; ++m)
-  {
-    joyMap.loadMapping(mappings[1 + m], EventMode(m));
-  }
+  joyMap.loadMapping(mappings[1], kMenuMode);
+  joyMap.loadMapping(mappings[2], kJoystickMode);
+  joyMap.loadMapping(mappings[3], kPaddlesMode);
+  joyMap.loadMapping(mappings[4], kKeypadMode);
+  joyMap.loadMapping(mappings[5], kCommonMode);
 
   return true;
 }
@@ -141,10 +147,8 @@ void PhysicalJoystick::getValues(const string& list, IntArray& map) const
 string PhysicalJoystick::about() const
 {
   ostringstream buf;
-  buf << name;
-  //if(type == JT_REGULAR)
-    buf << " with: " << numAxes << " axes, " << numButtons << " buttons, "
-        << numHats << " hats";
+  buf << " with: " << numAxes << " axes, " << numButtons << " buttons, "
+    << numHats << " hats";
 
   return buf.str();
 }

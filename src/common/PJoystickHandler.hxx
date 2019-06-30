@@ -148,7 +148,8 @@ class PhysicalJoystickHandler
     };
     using EventMappingArray = std::vector<EventMapping>;
 
-    void setDefaultAction(EventMapping map, Event::Type event = Event::NoType,
+    void setDefaultAction(const PhysicalJoystickPtr& j,
+                          EventMapping map, Event::Type event = Event::NoType,
                           EventMode mode = kEmulationMode, bool updateDefaults = false);
 
     /** returns the event's controller mode */
@@ -164,10 +165,9 @@ class PhysicalJoystickHandler
     void enableMappings(const Event::EventSet events, EventMode mode);
     void enableMapping(const Event::Type event, EventMode mode);
 
-
+  private:
     EventMode myLeftMode;
     EventMode myRightMode;
-
 
     // Controller menu and common emulation mappings
     static EventMappingArray DefaultMenuMapping;
@@ -178,14 +178,6 @@ class PhysicalJoystickHandler
     static EventMappingArray DefaultRightPaddlesMapping;
     static EventMappingArray DefaultLeftKeypadMapping;
     static EventMappingArray DefaultRightKeypadMapping;
-
-    /*// Static lookup tables for Stelladaptor/2600-daptor axis/button support
-    static const int NUM_JOY_BTN = 4;
-    static const int NUM_KEY_BTN = 12;
-
-    static const Event::Type SA_Axis[NUM_PORTS][NUM_JOY_AXIS];
-    static const Event::Type SA_Button[NUM_PORTS][NUM_JOY_BTN];
-    static const Event::Type SA_Key[NUM_PORTS][NUM_KEY_BTN];*/
 };
 
 #endif
