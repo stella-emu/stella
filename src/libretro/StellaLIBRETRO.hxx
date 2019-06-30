@@ -103,7 +103,7 @@ class StellaLIBRETRO
     void   setVideoAspectNTSC(uInt32 value) { video_aspect_ntsc = value; };
     void   setVideoAspectPAL(uInt32 value) { video_aspect_pal = value; };
 
-    void   setVideoFilter(uInt32 mode);
+    void   setVideoFilter(NTSCFilter::Preset mode);
     void   setVideoPalette(uInt32 mode);
     void   setVideoPhosphor(uInt32 mode, uInt32 blend);
 
@@ -162,7 +162,7 @@ class StellaLIBRETRO
 
     uInt32 video_aspect_ntsc;
     uInt32 video_aspect_pal;
-    uInt32 video_filter;
+    NTSCFilter::Preset video_filter;
 
     string audio_mode;
 

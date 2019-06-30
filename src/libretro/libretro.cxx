@@ -14,6 +14,7 @@
 
 #include "StellaLIBRETRO.hxx"
 #include "Event.hxx"
+#include "NTSCFilter.hxx"
 #include "Version.hxx"
 
 
@@ -29,10 +30,11 @@ static retro_audio_sample_batch_t audio_batch_cb;
 
 // libretro UI settings
 static int setting_ntsc, setting_pal;
-static int setting_stereo, setting_filter, setting_palette;
+static int setting_stereo, setting_palette;
 static int setting_phosphor, setting_console, setting_phosphor_blend;
 static int stella_paddle_joypad_sensitivity;
 static int setting_crop_hoverscan, crop_left;
+static NTSCFilter::Preset setting_filter;
 
 static bool system_reset;
 
@@ -215,13 +217,13 @@ static void update_variables(bool init = false)
 
   RETRO_GET("stella_filter")
   {
-    int value = 0;
+    NTSCFilter::Preset value = NTSCFilter::Preset::OFF;
 
-    if(!strcmp(var.value, "disabled")) value = 0;
-    else if(!strcmp(var.value, "composite")) value = 1;
-    else if(!strcmp(var.value, "s-video")) value = 2;
-    else if(!strcmp(var.value, "rgb")) value = 3;
-    else if(!strcmp(var.value, "badly adjusted")) value = 4;
+    if(!strcmp(var.value, "disabled"))            value = NTSCFilter::Preset::OFF;
+    else if(!strcmp(var.value, "composite"))      value = NTSCFilter::Preset::COMPOSITE;
+    else if(!strcmp(var.value, "s-video"))        value = NTSCFilter::Preset::SVIDEO;
+    else if(!strcmp(var.value, "rgb"))            value = NTSCFilter::Preset::RGB;
+    else if(!strcmp(var.value, "badly adjusted")) value = NTSCFilter::Preset::BAD;
 
     if(setting_filter != value)
     {
