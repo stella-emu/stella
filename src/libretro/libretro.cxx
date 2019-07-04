@@ -450,7 +450,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
   info->geometry.base_width   = stella.getRenderWidth() - crop_left * (stella.getVideoZoom() == 1 ? 2 : 1);
   info->geometry.base_height  = stella.getRenderHeight();
 
-  info->geometry.max_width    = stella.getVideoWidthMax();
+  info->geometry.max_width    = ((stella.getVideoWidthMax() + 3) / 4) * 4;
   info->geometry.max_height   = stella.getVideoHeightMax();
 
   info->geometry.aspect_ratio = stella.getVideoAspectPar() * (float) info->geometry.base_width / (float) info->geometry.base_height;
