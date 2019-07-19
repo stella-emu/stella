@@ -80,10 +80,9 @@ void FileListWidget::selectParent()
     // Make sure 'selected' has the proper directory naming scheme
     string select = _node.getName();
     if(select.back() == '/' || select.back() == '\\')
-    {
       select.pop_back();
+    if(!BSPF::startsWithIgnoreCase(select, " ["))
       select = " [" + select + "]";
-    }
 
     setLocation(_node.getParent(), select);
   }
