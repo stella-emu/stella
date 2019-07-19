@@ -126,7 +126,6 @@ void RomAuditDialog::auditRoms()
                           "Auditing ROM files ...");
   progress.setRange(0, int(files.size()) - 1, 5);
 
-  // Create a entry for the GameList for each file
   Properties props;
   int renamed = 0, notfound = 0;
   for(uInt32 idx = 0; idx < files.size(); ++idx)

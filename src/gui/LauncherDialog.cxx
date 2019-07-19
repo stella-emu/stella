@@ -49,6 +49,34 @@
     - connect to 'matchPattern'
     - create lambda filter to pass these to FileListWidget
 */
+#if 0
+  // TODO - rough contents of lambda filter
+  FSList files;
+  files.reserve(2048);
+  myCurrentNode.getChildren(files, FilesystemNode::ListMode::All);
+
+  // Add '[..]' to indicate previous folder
+  if(myCurrentNode.hasParent())
+    myGameList->appendGame(" [..]", "", "", true);
+
+  // Now add the directory entries
+  bool domatch = myPattern && myPattern->getText() != "";
+  for(const auto& f: files)
+  {
+    bool isDir = f.isDirectory();
+    const string& name = isDir ? (" [" + f.getName() + "]") : f.getName();
+
+    // Do we want to show only ROMs or all files?
+    if(!isDir && myShowOnlyROMs && !Bankswitch::isValidRomName(f))
+      continue;
+
+    // Skip over files that don't match the pattern in the 'pattern' textbox
+    if(domatch && !isDir && !matchPattern(name, myPattern->getText()))
+      continue;
+
+    myGameList->appendGame(name, f.getPath(), "", isDir);
+  }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
@@ -151,7 +179,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   myList = new FileListWidget(this, font, xpos, ypos,
                               listWidth, _h - 43 - bheight - fontHeight - lineHeight);
   myList->setEditable(false);
-  myList->setFileListMode(FilesystemNode::ListMode::All);
+  myList->setListMode(FilesystemNode::ListMode::All);
   wid.push_back(myList);
 
   // Add ROM info area (if enabled)
@@ -292,8 +320,8 @@ void LauncherDialog::loadConfig()
     if(!(node.exists() && node.isDirectory()))
       node = FilesystemNode("~");
 
-    myList->setLocation(node);
-    updateUI(instance().settings().getString("lastrom"));
+    myList->setDirectory(node, instance().settings().getString("lastrom"));
+    updateUI();
   }
   Dialog::setFocus(getFocusList()[mySelectedItem]);
 
@@ -302,7 +330,7 @@ void LauncherDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::updateUI(const string& nameToSelect)
+void LauncherDialog::updateUI()
 {
   // Only hilite the 'up' button if there's a parent directory
   if(myPrevDirButton)
@@ -316,85 +344,9 @@ void LauncherDialog::updateUI(const string& nameToSelect)
   buf << (myList->getList().size() - 1) << " items found";
   myRomCount->setLabel(buf.str());
 
-  // Restore last selection
-  if(nameToSelect != "")
-    myList->setSelected(nameToSelect);
-
   // Update ROM info UI item
   loadRomInfo();
 }
-
-#if 0
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::updateListing(const string& nameToSelect)
-{
-  // Start with empty list
-  myGameList->clear();
-  myDir->setText("");
-
-  loadDirListing();
-
-  // Only hilite the 'up' button if there's a parent directory
-  if(myPrevDirButton)
-    myPrevDirButton->setEnabled(myCurrentNode.hasParent());
-
-  // Show current directory
-  myDir->setText(myCurrentNode.getShortPath());
-
-  // Now fill the list widget with the contents of the GameList
-  StringList l;
-  for(uInt32 i = 0; i < myGameList->size(); ++i)
-    l.push_back(myGameList->name(i));
-
-  myList->setList(l);
-
-  // Indicate how many files were found
-  ostringstream buf;
-  buf << (myGameList->size() - 1) << " items found";
-  myRomCount->setLabel(buf.str());
-
-  // Restore last selection
-  const string& find =
-    nameToSelect == "" ? instance().settings().getString("lastrom") : nameToSelect;
-  myList->setSelected(find);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::loadDirListing()
-{
-  if(!myCurrentNode.isDirectory())
-    return;
-
-  FSList files;
-  files.reserve(2048);
-  myCurrentNode.getChildren(files, FilesystemNode::ListMode::All);
-
-  // Add '[..]' to indicate previous folder
-  if(myCurrentNode.hasParent())
-    myGameList->appendGame(" [..]", "", "", true);
-
-  // Now add the directory entries
-  bool domatch = myPattern && myPattern->getText() != "";
-  for(const auto& f: files)
-  {
-    bool isDir = f.isDirectory();
-    const string& name = isDir ? (" [" + f.getName() + "]") : f.getName();
-
-    // Do we want to show only ROMs or all files?
-    if(!isDir && myShowOnlyROMs && !Bankswitch::isValidRomName(f))
-      continue;
-
-    // Skip over files that don't match the pattern in the 'pattern' textbox
-    if(domatch && !isDir && !matchPattern(name, myPattern->getText()))
-      continue;
-
-    myGameList->appendGame(name, f.getPath(), "", isDir);
-  }
-
-  // Sort the list by rom name (since that's what we see in the listview)
-  myGameList->sortByName();
-}
-#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
@@ -580,13 +532,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kLoadROMCmd:
     case FileListWidget::ItemActivated:
-    {
-      if(currentNode().isDirectory())
-        myList->setLocation(currentNode());
-      else
-        loadRom();
+      loadRom();
       break;
-    }
 
     case kOptionsCmd:
       openSettings();
@@ -610,7 +557,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       FilesystemNode node(instance().settings().getString("romdir"));
       if(!(node.exists() && node.isDirectory()))
         node = FilesystemNode("~");
-      myList->setLocation(node);
+      myList->setDirectory(node);
       break;
     }
 

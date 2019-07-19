@@ -114,7 +114,7 @@ void BrowserDialog::show(const string& startpath,
   switch(_mode)
   {
     case FileLoad:
-      _fileList->setFileListMode(FilesystemNode::ListMode::All);
+      _fileList->setListMode(FilesystemNode::ListMode::All);
       _fileList->setFileExtension(ext);
       _selected->setEditable(false);
       _selected->clearFlags(Widget::FLAG_INVISIBLE);
@@ -122,7 +122,7 @@ void BrowserDialog::show(const string& startpath,
       break;
 
     case FileSave:
-      _fileList->setFileListMode(FilesystemNode::ListMode::All);
+      _fileList->setListMode(FilesystemNode::ListMode::All);
       _fileList->setFileExtension(ext);
       _selected->setEditable(false);  // FIXME - disable user input for now
       _selected->clearFlags(Widget::FLAG_INVISIBLE);
@@ -130,7 +130,7 @@ void BrowserDialog::show(const string& startpath,
       break;
 
     case Directories:
-      _fileList->setFileListMode(FilesystemNode::ListMode::DirectoriesOnly);
+      _fileList->setListMode(FilesystemNode::ListMode::DirectoriesOnly);
       _selected->setEditable(false);
       _selected->setFlags(Widget::FLAG_INVISIBLE);
       _type->setFlags(Widget::FLAG_INVISIBLE);
@@ -138,7 +138,7 @@ void BrowserDialog::show(const string& startpath,
   }
 
   // Set start path
-  _fileList->setLocation(FilesystemNode(startpath));
+  _fileList->setDirectory(FilesystemNode(startpath));
 
   updateUI();
 
@@ -193,7 +193,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kBaseDirCmd:
-      _fileList->setLocation(FilesystemNode(instance().baseDir()));
+      _fileList->setDirectory(FilesystemNode(instance().baseDir()));
       break;
 
     case FileListWidget::ItemChanged:
