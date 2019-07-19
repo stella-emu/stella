@@ -121,7 +121,6 @@ void FilesystemNode::setName(const string& name)
     _realNode->setName(name);
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& FilesystemNode::getPath() const
 {

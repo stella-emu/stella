@@ -21,6 +21,7 @@
 class CommandSender;
 
 #include "FSNode.hxx"
+#include "LinkedObjectPool.hxx"
 #include "StringListWidget.hxx"
 
 /**
@@ -32,9 +33,8 @@ class CommandSender;
   can query the selected() and/or currentDir() methods to determine the
   current state.
 
-  Note that for the current implementation, the ItemActivated signal is
-  not sent when activating a directory (instead the code descends into
-  the directory).
+  Note that the ItemActivated signal is not sent when activating a
+  directory; instead the selection descends into the directory.
 */
 class FileListWidget : public StringListWidget
 {
@@ -50,11 +50,17 @@ class FileListWidget : public StringListWidget
     virtual ~FileListWidget() = default;
 
     /** Determines how to display files/folders */
-    void setFileListMode(FilesystemNode::ListMode mode) { _fsmode = mode; }
-    void setFileExtension(const string& ext) { _extension = ext; }
+    void setListMode(FilesystemNode::ListMode mode) { _fsmode = mode; }
+    void setFileExtension(const string& ext) { _extension = ext; }  // TODO - re-implement this
 
-    /** Set current location (file or directory) */
-    void setLocation(const FilesystemNode& node, string select = "");
+    /**
+      Set initial directory, and optionally select the given item.
+
+        @param node  The directory to display.  If this is a file, its parent
+                     will instead be used, and the file will be selected
+        @param select  An optional entry to select (if applicable)
+    */
+    void setDirectory(const FilesystemNode& node, string select = "");
 
     /** Select parent directory (if applicable) */
     void selectParent();
@@ -67,12 +73,17 @@ class FileListWidget : public StringListWidget
     const FilesystemNode& currentDir() const { return _node; }
 
   private:
+    /** Very similar to setDirectory(), but also updates the history */
+    void setLocation(const FilesystemNode& node, string select);
+
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
     FilesystemNode::ListMode _fsmode;
     FilesystemNode _node;
     FSList _fileList;
+
+    Common::LinkedObjectPool<string> _history;
 
     string _extension;
     uInt32 _selected;

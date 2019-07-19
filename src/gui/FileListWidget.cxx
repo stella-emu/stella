@@ -39,11 +39,11 @@ FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setLocation(const FilesystemNode& node, string select)
+void FileListWidget::setDirectory(const FilesystemNode& node, string select)
 {
   _node = node;
 
-  // Generally, we always want a directory listing
+  // We always want a directory listing
   if(!_node.isDirectory() && _node.hasParent())
   {
     select = _node.getName();
@@ -55,7 +55,7 @@ void FileListWidget::setLocation(const FilesystemNode& node, string select)
   _fileList.reserve(512);
   _node.getChildren(_fileList, _fsmode);
 
-  // Now fill the list widget with the contents of the GameList
+  // Now fill the list widget with the names from the file list
   StringList l;
   for(const auto& file: _fileList)
     l.push_back(file.getName());
@@ -67,12 +67,25 @@ void FileListWidget::setLocation(const FilesystemNode& node, string select)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::setLocation(const FilesystemNode& node, string select)
+{
+  setDirectory(node, select);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::selectParent()
 {
   if(_node.hasParent())
   {
-    const string& curr = " [" + _node.getName() + "]";
-    setLocation(_node.getParent(), curr);
+    // Make sure 'selected' has the proper directory naming scheme
+    string select = _node.getName();
+    if(select.back() == '/' || select.back() == '\\')
+    {
+      select.pop_back();
+      select = " [" + select + "]";
+    }
+
+    setLocation(_node.getParent(), select);
   }
 }
 
@@ -93,8 +106,8 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
       break;
 
     case ListWidget::kSelectionChangedCmd:
-      cmd = ItemChanged;
       _selected = data;
+      cmd = ItemChanged;
       break;
 
     case ListWidget::kActivatedCmd:
@@ -103,7 +116,7 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
       if(selected().isDirectory())
       {
         cmd = ItemChanged;
-        setLocation(selected());
+        setLocation(selected(), "");
       }
       else
         cmd = ItemActivated;

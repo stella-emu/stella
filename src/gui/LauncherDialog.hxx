@@ -95,7 +95,7 @@ class LauncherDialog : public Dialog
     Event::Type getJoyAxisEvent(int stick, int axis, int value) override;
 
     void loadConfig() override;
-    void updateUI(const string& nameToSelect = "");
+    void updateUI();
 
     void loadRom();
     void loadRomInfo();
