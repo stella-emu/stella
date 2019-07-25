@@ -89,7 +89,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   xpos += INDENT;
 
   // Fragment size
-  pwidth = font.getStringWidth("512 samples");
+  pwidth = font.getStringWidth("512 samples") + 7;
   lwidth = font.getStringWidth("Resampling quality ");
   items.clear();
   VarList::push_back(items, "128 samples", 128);
@@ -150,8 +150,8 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myStereoSoundCheckbox);
   ypos += lineHeight + VGAP;
 
-  myDpcPitch = new SliderWidget(this, font, xpos, ypos,
-                                "DPC Pitch ", 0, 0, 5 * fontWidth);
+  myDpcPitch = new SliderWidget(this, font, xpos, ypos, swidth - 16, lineHeight,
+                                "Pitfall II music pitch ", 0, 0, 5 * fontWidth);
   myDpcPitch->setMinValue(10000); myDpcPitch->setMaxValue(30000);
   myDpcPitch->setStepValue(100);
   myDpcPitch->setTickmarkIntervals(2);
