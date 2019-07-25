@@ -125,6 +125,8 @@ class CartridgeDPC : public Cartridge
     */
     string name() const override { return "CartridgeDPC"; }
 
+    void setDpcPitch(double pitch) { myDpcPitch = pitch; }
+
   #ifdef DEBUGGER_SUPPORT
     /**
       Get debugger widget responsible for accessing the inner workings
@@ -205,6 +207,9 @@ class CartridgeDPC : public Cartridge
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
+
+    // DPC pitch
+    double myDpcPitch;
 
   private:
     // Following constructors and assignment operators not supported

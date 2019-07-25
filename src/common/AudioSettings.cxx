@@ -161,6 +161,12 @@ bool AudioSettings::enabled() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 AudioSettings::dpcPitch() const
+{
+  return lboundInt(mySettings.getInt(SETTING_DPC_PITCH), 10000);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioSettings::setPreset(AudioSettings::Preset preset)
 {
   if (preset == myPreset) return;
@@ -260,6 +266,14 @@ void AudioSettings::setStereo(bool allROMs)
   if(!myIsPersistent) return;
 
   mySettings.setValue(SETTING_STEREO, allROMs);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AudioSettings::setDpcPitch(uInt32 pitch)
+{
+  if (!myIsPersistent) return;
+
+  mySettings.setValue(SETTING_DPC_PITCH, pitch);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

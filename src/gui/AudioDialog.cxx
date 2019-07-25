@@ -20,6 +20,8 @@
 #include "bspf.hxx"
 
 #include "Console.hxx"
+#include "Cart.hxx"
+#include "CartDPC.hxx"
 #include "Control.hxx"
 #include "Dialog.hxx"
 #include "Font.hxx"
@@ -53,7 +55,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = 48 * fontWidth + HBORDER * 2;
-  _h = 11 * (lineHeight + VGAP) + VBORDER + _th;
+  _h = 12 * (lineHeight + VGAP) + VBORDER + _th;
 
   xpos = HBORDER;  ypos = VBORDER + _th;
 
@@ -146,6 +148,14 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
   myStereoSoundCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                              "Stereo for all ROMs");
   wid.push_back(myStereoSoundCheckbox);
+  ypos += lineHeight + VGAP;
+
+  myDpcPitch = new SliderWidget(this, font, xpos, ypos,
+                                "DPC Pitch ", 0, 0, 5 * fontWidth);
+  myDpcPitch->setMinValue(10000); myDpcPitch->setMaxValue(30000);
+  myDpcPitch->setStepValue(100);
+  myDpcPitch->setTickmarkIntervals(2); 
+  wid.push_back(myDpcPitch);
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
@@ -166,6 +176,9 @@ void AudioDialog::loadConfig()
 
   // Stereo
   myStereoSoundCheckbox->setState(audioSettings.stereo());
+
+  // DPC Pitch
+  myDpcPitch->setValue(audioSettings.dpcPitch());
 
   // Preset / mode
   myModePopup->setSelected(static_cast<int>(audioSettings.preset()));
@@ -210,6 +223,15 @@ void AudioDialog::saveConfig()
   // Stereo
   audioSettings.setStereo(myStereoSoundCheckbox->getState());
 
+  // DPC Pitch
+  audioSettings.setDpcPitch(myDpcPitch->getValue());
+  // update if current cart is Pitfall II
+  if (instance().hasConsole() && instance().console().cartridge().name() == "CartridgeDPC")
+  {
+    CartridgeDPC& cart = (CartridgeDPC&)instance().console().cartridge();
+    cart.setDpcPitch(myDpcPitch->getValue());
+  }
+
   AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
   audioSettings.setPreset(preset);
 
@@ -234,6 +256,7 @@ void AudioDialog::setDefaults()
   mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
   myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
   myStereoSoundCheckbox->setState(AudioSettings::DEFAULT_STEREO);
+  myDpcPitch->setValue(AudioSettings::DEFAULT_DPC_PITCH);
   myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
 
   if (AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
@@ -256,8 +279,10 @@ void AudioDialog::updateEnabledState()
   bool userMode = preset == AudioSettings::Preset::custom;
 
   myVolumeSlider->setEnabled(active);
-  myStereoSoundCheckbox->setEnabled(active);
+  myStereoSoundCheckbox->setEnabled(active);  
   myModePopup->setEnabled(active);
+  // enable only for Pitfall II cart
+  myDpcPitch->setEnabled(active && instance().hasConsole() && instance().console().cartridge().name() == "CartridgeDPC");
 
   myFragsizePopup->setEnabled(active && userMode);
   myFreqPopup->setEnabled(active && userMode);
@@ -279,7 +304,6 @@ void AudioDialog::updatePreset()
 
   updateSettingsWithPreset(audioSettings);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::handleCommand(CommandSender* sender, int cmd,

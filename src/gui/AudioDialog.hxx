@@ -63,6 +63,7 @@ class AudioDialog : public Dialog
     PopUpWidget*      myResamplingPopup;
     SliderWidget*     myHeadroomSlider;
     SliderWidget*     myBufferSizeSlider;
+    SliderWidget*     myDpcPitch;
 
   private:
     // Following constructors and assignment operators not supported
