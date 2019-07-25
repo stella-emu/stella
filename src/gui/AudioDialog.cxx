@@ -154,7 +154,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
                                 "DPC Pitch ", 0, 0, 5 * fontWidth);
   myDpcPitch->setMinValue(10000); myDpcPitch->setMaxValue(30000);
   myDpcPitch->setStepValue(100);
-  myDpcPitch->setTickmarkIntervals(2); 
+  myDpcPitch->setTickmarkIntervals(2);
   wid.push_back(myDpcPitch);
 
   // Add Defaults, OK and Cancel buttons
@@ -228,7 +228,7 @@ void AudioDialog::saveConfig()
   // update if current cart is Pitfall II
   if (instance().hasConsole() && instance().console().cartridge().name() == "CartridgeDPC")
   {
-    CartridgeDPC& cart = (CartridgeDPC&)instance().console().cartridge();
+    CartridgeDPC& cart = static_cast<CartridgeDPC&>(instance().console().cartridge());
     cart.setDpcPitch(myDpcPitch->getValue());
   }
 
@@ -279,7 +279,7 @@ void AudioDialog::updateEnabledState()
   bool userMode = preset == AudioSettings::Preset::custom;
 
   myVolumeSlider->setEnabled(active);
-  myStereoSoundCheckbox->setEnabled(active);  
+  myStereoSoundCheckbox->setEnabled(active);
   myModePopup->setEnabled(active);
   // enable only for Pitfall II cart
   myDpcPitch->setEnabled(active && instance().hasConsole() && instance().console().cartridge().name() == "CartridgeDPC");
