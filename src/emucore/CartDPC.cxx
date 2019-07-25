@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "System.hxx"
+#include "AudioSettings.hxx"
 #include "CartDPC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,7 +49,7 @@ CartridgeDPC::CartridgeDPC(const ByteBuffer& image, uInt32 size,
   myMusicMode[0] = myMusicMode[1] = myMusicMode[2] = false;
 
   // Initialize the DPC's random number generator register (must be non-zero)
-  myRandomNumber = 1;
+  myRandomNumber = 1;  
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,6 +61,8 @@ void CartridgeDPC::reset()
   // Upon reset we switch to the startup bank
   initializeStartBank(1);
   bank(startBank());
+
+  myDpcPitch = mySettings.getInt(AudioSettings::SETTING_DPC_PITCH);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,7 +105,7 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
   myAudioCycles = mySystem->cycles();
 
   // Calculate the number of DPC OSC clocks since the last update
-  double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
+  double clocks = ((myDpcPitch * cycles) / 1193191.66666667) + myFractionalClocks;
   uInt32 wholeClocks = uInt32(clocks);
   myFractionalClocks = clocks - double(wholeClocks);
 

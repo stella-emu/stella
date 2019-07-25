@@ -80,6 +80,7 @@ Settings::Settings()
   setPermanent(AudioSettings::SETTING_HEADROOM, AudioSettings::DEFAULT_HEADROOM);
   setPermanent(AudioSettings::SETTING_BUFFER_SIZE, AudioSettings::DEFAULT_BUFFER_SIZE);
   setPermanent(AudioSettings::SETTING_STEREO, AudioSettings::DEFAULT_STEREO);
+  setPermanent(AudioSettings::SETTING_DPC_PITCH, AudioSettings::DEFAULT_DPC_PITCH);
 
   // Input event options
   setPermanent("event_ver", "1");
