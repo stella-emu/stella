@@ -53,7 +53,6 @@ using std::right;
 
 #include "DebuggerParser.hxx"
 
-
 // TODO - use C++ streams instead of nasty C-strings and pointers
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -323,7 +322,6 @@ string DebuggerParser::showWatches()
   }
   return buf.str();
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Private methods below
@@ -1482,7 +1480,6 @@ void DebuggerParser::executeListsavestateifs()
     commandResult << "no savestateifs defined";
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listtraps"
 void DebuggerParser::executeListtraps()
@@ -1511,6 +1508,13 @@ void DebuggerParser::executeListtraps()
   }
   else
     commandResult << "no traps set";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "loadallstates"
+void DebuggerParser::executeLoadallstates()
+{
+  debugger.loadAllStates();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1802,6 +1806,13 @@ void DebuggerParser::executeSaveses()
 void DebuggerParser::executeSavesnap()
 {
   debugger.tiaOutput().saveSnapshot(execDepth, execPrefix);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "saveallstates"
+void DebuggerParser::executeSaveallstates()
+{
+  debugger.saveAllStates();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2702,11 +2713,21 @@ DebuggerParser::Command DebuggerParser::commands[NumCommands] = {
   {
     "loadconfig",
     "Load Distella config file",
-    "Example: loadconfig file.cfg",
+    "Example: loadconfig",
     false,
     true,
     { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeLoadconfig)
+  },
+
+  {
+    "loadallstates",
+    "Load all emulator states",
+    "Example: loadallstates (no parameters)",
+    false,
+    true,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeLoadallstates)
   },
 
   {
@@ -2934,6 +2955,16 @@ DebuggerParser::Command DebuggerParser::commands[NumCommands] = {
     false,
     { Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSavesnap)
+  },
+
+  {
+    "saveallstates",
+    "Save all emulator states",
+    "Example: saveallstates (no parameters)",
+    false,
+    false,
+    { Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeSaveallstates)
   },
 
   {

@@ -52,7 +52,6 @@ class RewindManager;
 using FunctionMap = std::map<string, unique_ptr<Expression>>;
 using FunctionDefMap = std::map<string, string>;
 
-
 /**
   The base dialog for all debugging widgets in Stella.  Also acts as the parent
   for all debugging operations in Stella (parser, 6502 debugger, etc).
@@ -299,7 +298,9 @@ class Debugger : public DialogContainer
     void clearAllBreakPoints();
 
     void saveState(int state);
+    void saveAllStates();
     void loadState(int state);
+    void loadAllStates();
 
   private:
     Console& myConsole;
