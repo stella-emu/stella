@@ -263,6 +263,14 @@ void Debugger::saveState(int state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::saveAllStates()
+{
+  // Saving states is implicitly a read-only operation, so we keep the
+  // system locked, so no changes can occur
+  myOSystem.state().rewindManager().saveAllStates();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::loadState(int state)
 {
   // We're loading a new state, so we start with a clean slate
@@ -271,6 +279,18 @@ void Debugger::loadState(int state)
   // State loading could initiate a bankswitch, so we allow it temporarily
   unlockSystem();
   myOSystem.state().loadState(state);
+  lockSystem();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::loadAllStates()
+{
+  // We're loading new states, so we start with a clean slate
+  mySystem.clearDirtyPages();
+
+  // State loading could initiate a bankswitch, so we allow it temporarily
+  unlockSystem();
+  myOSystem.state().rewindManager().loadAllStates();
   lockSystem();
 }
 

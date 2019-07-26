@@ -88,7 +88,7 @@ class DebuggerParser
     };
 
     // List of commands available
-    static constexpr uInt32 NumCommands = 92;
+    static constexpr uInt32 NumCommands = 94;
     struct Command {
       string cmdString;
       string description;
@@ -186,6 +186,7 @@ class DebuggerParser
     void executeListfunctions();
     void executeListsavestateifs();
     void executeListtraps();
+    void executeLoadallstates();
     void executeLoadconfig();
     void executeLoadstate();
     void executeN();
@@ -204,6 +205,7 @@ class DebuggerParser
     void executeRunToPc();
     void executeS();
     void executeSave();
+    void executeSaveallstates();
     void executeSaveconfig();
     void executeSavedisassembly();
     void executeSaverom();
