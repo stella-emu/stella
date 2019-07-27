@@ -170,8 +170,12 @@ void RomListWidget::setHighlighted(int item)
     _highlightedItem = item;
 
     // Only scroll the list if we're about to pass the page boundary
-    if(_currentPos == 0)
-      _currentPos = _highlightedItem;
+    if (_highlightedItem < _currentPos)
+    {
+      _currentPos -= _rows;
+      if (_currentPos < 0)
+        _currentPos = 0;
+    }
     else if(_highlightedItem == _currentPos + _rows)
       _currentPos += _rows;
 
