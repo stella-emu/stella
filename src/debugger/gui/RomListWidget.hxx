@@ -94,7 +94,7 @@ class RomListWidget : public EditableWidget
     int  _bytesWidth;
     int  _rows;
     int  _cols;
-    int  _currentPos;
+    int  _currentPos; // position of first line in visible window
     int  _selectedItem;
     int  _highlightedItem;
     bool _editMode;
