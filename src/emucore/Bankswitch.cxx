@@ -135,6 +135,7 @@ Bankswitch::Description Bankswitch::BSList[int(Bankswitch::Type::NumSchemes)] = 
   { "MDM"     , "MDM (Menu Driven Megacart)"  },
   { "SB"      , "SB (128-256K SUPERbank)"     },
   { "UA"      , "UA (8K UA Ltd.)"             },
+  { "UASW"    , "UASW (8K UA swapped banks)"  },
   { "WD"      , "WD (Experimental)"           },
   { "X07"     , "X07 (64K AtariAge)"          },
 #if defined(CUSTOM_ARM)
@@ -219,6 +220,7 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "MDM"   , Bankswitch::Type::_MDM    },
   { "SB"    , Bankswitch::Type::_SB     },
   { "UA"    , Bankswitch::Type::_UA     },
+  { "UASW"  , Bankswitch::Type::_UASW   },
   { "WD"    , Bankswitch::Type::_WD     },
   { "X07"   , Bankswitch::Type::_X07    }
 };
@@ -273,6 +275,7 @@ Bankswitch::NameToTypeMap Bankswitch::ourNameToTypes = {
   { "MDM"     , Bankswitch::Type::_MDM    },
   { "SB"      , Bankswitch::Type::_SB     },
   { "UA"      , Bankswitch::Type::_UA     },
+  { "UASW"    , Bankswitch::Type::_UASW   },
   { "WD"      , Bankswitch::Type::_WD     },
   { "X07"     , Bankswitch::Type::_X07    }
 };

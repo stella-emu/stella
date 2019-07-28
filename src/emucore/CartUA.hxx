@@ -40,13 +40,14 @@ class CartridgeUA : public Cartridge
     /**
       Create a new cartridge using the specified image
 
-      @param image     Pointer to the ROM image
-      @param size      The size of the ROM image
-      @param md5       The md5sum of the ROM image
-      @param settings  A reference to the various settings (read-only)
+      @param image         Pointer to the ROM image
+      @param size          The size of the ROM image
+      @param md5           The md5sum of the ROM image
+      @param settings      A reference to the various settings (read-only)
+      @param swapHotspots  Swap hotspots
     */
     CartridgeUA(const ByteBuffer& image, uInt32 size, const string& md5,
-                const Settings& settings);
+                const Settings& settings, bool swapHotspots = false);
     virtual ~CartridgeUA() = default;
 
   public:
@@ -118,7 +119,7 @@ class CartridgeUA : public Cartridge
 
       @return The name of the object
     */
-    string name() const override { return "CartridgeUA"; }
+    string name() const override { return mySwappedHotspots ? "CartridgeUASW" : "CartridgeUA"; }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -128,7 +129,7 @@ class CartridgeUA : public Cartridge
     CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
         const GUI::Font& nfont, int x, int y, int w, int h) override
     {
-      return new CartridgeUAWidget(boss, lfont, nfont, x, y, w, h, *this);
+      return new CartridgeUAWidget(boss, lfont, nfont, x, y, w, h, *this, mySwappedHotspots);
     }
   #endif
 
@@ -158,6 +159,9 @@ class CartridgeUA : public Cartridge
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
+
+    // Indicates if banks are swapped ("Mickey" cart)
+    bool mySwappedHotspots;
 
   private:
     // Following constructors and assignment operators not supported

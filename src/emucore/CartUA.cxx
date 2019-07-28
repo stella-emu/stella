@@ -20,9 +20,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeUA::CartridgeUA(const ByteBuffer& image, uInt32 size,
-                         const string& md5, const Settings& settings)
+                         const string& md5, const Settings& settings,
+                         bool swapHotspots)
   : Cartridge(settings, md5),
-    myBankOffset(0)
+    myBankOffset(0),
+    mySwappedHotspots(swapHotspots)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image.get(), std::min(8192u, size));
@@ -68,12 +70,12 @@ uInt8 CartridgeUA::peek(uInt16 address)
   {
     case 0x0220:
       // Set the current bank to the lower 4k bank
-      bank(0);
+      bank(mySwappedHotspots ? 1 : 0);
       break;
 
     case 0x0240:
       // Set the current bank to the upper 4k bank
-      bank(1);
+      bank(mySwappedHotspots ? 0 : 1);
       break;
 
     default:
@@ -96,12 +98,12 @@ bool CartridgeUA::poke(uInt16 address, uInt8 value)
   {
     case 0x0220:
       // Set the current bank to the lower 4k bank
-      bank(0);
+      bank(mySwappedHotspots ? 1 : 0);
       break;
 
     case 0x0240:
       // Set the current bank to the upper 4k bank
-      bank(1);
+      bank(mySwappedHotspots ? 0 : 1);
       break;
 
     default:
@@ -175,7 +177,7 @@ bool CartridgeUA::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeUA::save" << endl;
+    cerr << "ERROR: " << name() << "::save" << endl;
     return false;
   }
 
@@ -191,7 +193,7 @@ bool CartridgeUA::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeUA::load" << endl;
+    cerr << "ERROR: " << name() << "::load" << endl;
     return false;
   }
 

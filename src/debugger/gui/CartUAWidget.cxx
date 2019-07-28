@@ -22,19 +22,20 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeUAWidget::CartridgeUAWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
-      int x, int y, int w, int h, CartridgeUA& cart)
+      int x, int y, int w, int h, CartridgeUA& cart, bool swapHotspots)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+    myCart(cart),
+    mySwappedHotspots(swapHotspots)
 {
   uInt16 size = 2 * 4096;
 
   ostringstream info;
-  info << "8K UA cartridge, two 4K banks\n"
+  info << "8K UA cartridge" << (mySwappedHotspots ? " (swapped banks)" : "") << ", two 4K banks\n"
        << "Startup bank = " << cart.startBank() << " or undetermined\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0x220; i < 2;
-      ++i, offset += 0x1000, spot += 0x20)
+  for(uInt32 i = 0, offset = 0xFFC, spot = mySwappedHotspots ? 0x240 : 0x220; i < 2;
+      ++i, offset += 0x1000, spot += mySwappedHotspots ? -0x20 : 0x20)
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
@@ -46,8 +47,16 @@ CartridgeUAWidget::CartridgeUAWidget(
       ypos = addBaseInformation(size, "UA Limited", info.str()) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0 ($220, $2A0)");
-  VarList::push_back(items, "1 ($240, $2C0)");
+  if (swapHotspots)
+  {
+    VarList::push_back(items, "0 ($240, $2C0)");
+    VarList::push_back(items, "1 ($220, $2A0)");
+  }
+  else
+  {
+    VarList::push_back(items, "0 ($220, $2A0)");
+    VarList::push_back(items, "1 ($240, $2C0)");
+  }
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx, $FFx)"),
                     myLineHeight, items, "Set bank ",
@@ -89,7 +98,7 @@ string CartridgeUAWidget::bankState()
 
   static const char* const spot[] = { "$220, $2A0", "$240, $2C0" };
   buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspots = " << spot[myCart.getBank()];
+      << ", hotspots = " << spot[myCart.getBank() ^ (mySwappedHotspots ? 1u : 0u)];
 
   return buf.str();
 }
