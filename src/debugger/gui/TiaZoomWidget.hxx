@@ -24,7 +24,6 @@ class ContextMenu;
 #include "Widget.hxx"
 #include "Command.hxx"
 
-
 class TiaZoomWidget : public Widget, public CommandSender
 {
   public:
@@ -61,7 +60,7 @@ class TiaZoomWidget : public Widget, public CommandSender
     int myXOff, myYOff;
 
     bool myMouseMoving;
-    int myXClick, myYClick;
+    int myClickX, myClickY;
 
   private:
     // Following constructors and assignment operators not supported
