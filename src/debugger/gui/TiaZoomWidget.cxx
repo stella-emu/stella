@@ -85,15 +85,15 @@ void TiaZoomWidget::zoom(int level)
   if(myZoomLevel == level)
     return;
 
-  // TODO: zoom to center
-  //int x = myXOff + myNumCols / 2;
-  //int y = myYOff + myNumRows / 2;
+  // zoom to click position
+  int x = (myXOff << 1) + myClickX / myZoomLevel;
+  int y = myYOff + myClickY / myZoomLevel;
 
   myZoomLevel = level;
   myNumCols = ((_w - 4) >> 1) / myZoomLevel;
   myNumRows = (_h - 4) / myZoomLevel;
 
-  //setPos(x, y);
+  setPos(x, y);
 
   recalc();
 }
@@ -140,6 +140,19 @@ void TiaZoomWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseWheel(int x, int y, int direction)
 {
+  /*
+  // TODO: zoom towards mouse point
+  myClickX = (x - getAbsX()) / myZoomLevel + myXOff * 1;
+  myClickY = (y - getAbsY()) / myZoomLevel + myYOff * 1;
+  setPos(myClickX, myClickY);
+
+  if(direction > 0)
+  {
+  }
+  else
+  {
+  }*/
+
   if(direction > 0)
     handleEvent(Event::UIDown);
   else
