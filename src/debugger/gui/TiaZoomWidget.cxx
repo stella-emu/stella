@@ -17,6 +17,8 @@
 
 #include "OSystem.hxx"
 #include "Console.hxx"
+#include "Debugger.hxx"
+#include "DebuggerParser.hxx"
 #include "TIA.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
@@ -49,10 +51,12 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   myXOff = myYOff = 0;
 
   myMouseMoving = false;
-  myXClick = myYClick = 0;
+  myClickX = myClickY = 0;
 
   // Create context menu for zoom levels
   VariantList l;
+  VarList::push_back(l, "Fill to scanline", "scanline");
+  VarList::push_back(l, "Toggle breakpoint", "bp");
   VarList::push_back(l, "2x zoom", "2");
   VarList::push_back(l, "4x zoom", "4");
   VarList::push_back(l, "8x zoom", "8");
@@ -81,9 +85,15 @@ void TiaZoomWidget::zoom(int level)
   if(myZoomLevel == level)
     return;
 
+  // TODO: zoom to center
+  //int x = myXOff + myNumCols / 2;
+  //int y = myYOff + myNumRows / 2;
+
   myZoomLevel = level;
   myNumCols = ((_w - 4) >> 1) / myZoomLevel;
   myNumRows = (_h - 4) / myZoomLevel;
+
+  //setPos(x, y);
 
   recalc();
 }
@@ -104,14 +114,15 @@ void TiaZoomWidget::recalc()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
+  myClickX = x;
+  myClickY = y;
+
   // Button 1 is for 'drag'/movement of the image
   // Button 2 is for context menu
   if(b == MouseButton::LEFT)
   {
     // Indicate mouse drag started/in progress
     myMouseMoving = true;
-    myXClick = x;
-    myYClick = y;
   }
   else if(b == MouseButton::RIGHT)
   {
@@ -150,10 +161,7 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
 //    myXClick = x;
 //    myYClick = y;
 
-
-
 //cerr << diffx << " " << diffy << endl;
-
 
     myXOff -= diffx;
     myYOff -= diffy;
@@ -236,9 +244,37 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
   {
     case ContextMenu::kItemSelectedCmd:
     {
-      int level = myMenu->getSelectedTag().toInt();
-      if(level > 0)
-        zoom(level);
+      uInt32 ystart = instance().console().tia().ystart();
+      const string& rmb = myMenu->getSelectedTag().toString();
+
+      if(rmb == "scanline")
+      {
+        ostringstream command;
+        int lines = myClickY / myZoomLevel + myYOff + ystart - instance().console().tia().scanlines();
+
+        if (lines < 0)
+          lines += instance().console().tia().scanlinesLastFrame();
+        if(lines > 0)
+        {
+          command << "scanline #" << lines;
+          string message = instance().debugger().parser().run(command.str());
+          instance().frameBuffer().showMessage(message);
+        }
+      }
+      else if(rmb == "bp")
+      {
+        ostringstream command;
+        int scanline = myClickY / myZoomLevel + myYOff + ystart;
+        command << "breakif _scan==#" << scanline;
+        string message = instance().debugger().parser().run(command.str());
+        instance().frameBuffer().showMessage(message);
+      }
+      else
+      {
+        int level = myMenu->getSelectedTag().toInt();
+        if(level > 0)
+          zoom(level);
+      }
       break;
     }
   }

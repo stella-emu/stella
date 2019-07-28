@@ -104,8 +104,10 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
+  if (b == MouseButton::LEFT)
+    myZoom->setPos(x, y);
   // Grab right mouse button for command context menu
-  if(b == MouseButton::RIGHT)
+  else if(b == MouseButton::RIGHT)
   {
     myClickX = x;
     myClickY = y;
