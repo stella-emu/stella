@@ -29,12 +29,14 @@ class CartridgeUAWidget : public CartDebugWidget
     CartridgeUAWidget(GuiObject* boss, const GUI::Font& lfont,
                       const GUI::Font& nfont,
                       int x, int y, int w, int h,
-                      CartridgeUA& cart);
+                      CartridgeUA& cart, bool swapHotspots);
     virtual ~CartridgeUAWidget() = default;
 
   private:
     CartridgeUA& myCart;
     PopUpWidget* myBank;
+
+    bool mySwappedHotspots;
 
     enum { kBankChanged = 'bkCH' };
 

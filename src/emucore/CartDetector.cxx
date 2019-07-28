@@ -322,6 +322,8 @@ CartDetector::createFromImage(const ByteBuffer& image, uInt32 size, Bankswitch::
       return make_unique<CartridgeMDM>(image, size, md5, settings);
     case Bankswitch::Type::_UA:
       return make_unique<CartridgeUA>(image, size, md5, settings);
+    case Bankswitch::Type::_UASW:
+      return make_unique<CartridgeUA>(image, size, md5, settings, true);
     case Bankswitch::Type::_SB:
       return make_unique<CartridgeSB>(image, size, md5, settings);
     case Bankswitch::Type::_WD:
