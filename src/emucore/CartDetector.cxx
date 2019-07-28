@@ -966,12 +966,17 @@ bool CartDetector::isProbablyUA(const ByteBuffer& image, uInt32 size)
 {
   // UA cart bankswitching switches to bank 1 by accessing address 0x240
   // using 'STA $240' or 'LDA $240'
-  uInt8 signature[3][3] = {
+  // Similar Brazilian cart bankswitching switches to bank 1 by accessing address 0x2C0
+  // using 'BIT $2C0', 'STA $2C0' or 'LDA $2C0'
+  uInt8 signature[6][3] = {
     { 0x8D, 0x40, 0x02 },  // STA $240
     { 0xAD, 0x40, 0x02 },  // LDA $240
-    { 0xBD, 0x1F, 0x02 }   // LDA $21F,X
+    { 0xBD, 0x1F, 0x02 },  // LDA $21F,X
+    { 0x2C, 0xC0, 0x02 },  // BIT $2C0
+    { 0x8D, 0xC0, 0x02 },  // STA $2C0
+    { 0xAD, 0xC0, 0x02 }   // LDA $2C0
   };
-  for(uInt32 i = 0; i < 3; ++i)
+  for(uInt32 i = 0; i < 6; ++i)
     if(searchForBytes(image.get(), size, signature[i], 3, 1))
       return true;
 

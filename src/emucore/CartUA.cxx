@@ -44,12 +44,15 @@ void CartridgeUA::install(System& system)
 
   // Get the page accessing methods for the hot spots since they overlap
   // areas within the TIA we'll need to forward requests to the TIA
-  myHotSpotPageAccess = mySystem->getPageAccess(0x0220);
+  myHotSpotPageAccess[0] = mySystem->getPageAccess(0x0220);
+  myHotSpotPageAccess[1] = mySystem->getPageAccess(0x0220 | 0x80);
 
   // Set the page accessing methods for the hot spots
   System::PageAccess access(this, System::PageAccessType::READ);
   mySystem->setPageAccess(0x0220, access);
   mySystem->setPageAccess(0x0240, access);
+  mySystem->setPageAccess(0x0220 | 0x80, access);
+  mySystem->setPageAccess(0x0240 | 0x80, access);
 
   // Install pages for the startup bank
   bank(startBank());
@@ -61,7 +64,7 @@ uInt8 CartridgeUA::peek(uInt16 address)
   address &= 0x1FFF;
 
   // Switch banks if necessary
-  switch(address)
+  switch(address & 0x1260)
   {
     case 0x0220:
       // Set the current bank to the lower 4k bank
@@ -79,7 +82,8 @@ uInt8 CartridgeUA::peek(uInt16 address)
 
   // Because of the way accessing is set up, we will only get here
   // when doing a TIA read
-  return myHotSpotPageAccess.device->peek(address);
+  int hotspot = ((address & 0x80) >> 7);
+  return myHotSpotPageAccess[hotspot].device->peek(address);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,7 +92,7 @@ bool CartridgeUA::poke(uInt16 address, uInt8 value)
   address &= 0x1FFF;
 
   // Switch banks if necessary
-  switch(address)
+  switch(address & 0x1260)
   {
     case 0x0220:
       // Set the current bank to the lower 4k bank
@@ -106,8 +110,11 @@ bool CartridgeUA::poke(uInt16 address, uInt8 value)
 
   // Because of the way accessing is set up, we will may get here by
   // doing a write to TIA or cart; we ignore the cart write
-  if(!(address & 0x1000))
-    myHotSpotPageAccess.device->poke(address, value);
+  if (!(address & 0x1000))
+  {
+    int hotspot = ((address & 0x80) >> 7);
+    myHotSpotPageAccess[hotspot].device->poke(address, value);
+  }
 
   return false;
 }

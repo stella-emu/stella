@@ -39,17 +39,17 @@ CartridgeUAWidget::CartridgeUAWidget(
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << i << " @ $" << Common::Base::HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << spot << ")\n";
+         << "$" << (start + 0xFFF) << " (hotspots = $" << spot << ", $" << (spot | 0x80) << ")\n";
   }
 
   int xpos = 10,
       ypos = addBaseInformation(size, "UA Limited", info.str()) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0 ($220)");
-  VarList::push_back(items, "1 ($240)");
+  VarList::push_back(items, "0 ($220, $2A0)");
+  VarList::push_back(items, "1 ($240, $2C0)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFx, $FFx)"),
                     myLineHeight, items, "Set bank ",
                     _font.getStringWidth("Set bank "), kBankChanged);
   myBank->setTarget(this);
@@ -87,9 +87,9 @@ string CartridgeUAWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* const spot[] = { "$220", "$240" };
+  static const char* const spot[] = { "$220, $2A0", "$240, $2C0" };
   buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << spot[myCart.getBank()];
+      << ", hotspots = " << spot[myCart.getBank()];
 
   return buf.str();
 }

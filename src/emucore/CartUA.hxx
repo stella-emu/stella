@@ -154,7 +154,7 @@ class CartridgeUA : public Cartridge
     uInt8 myImage[8192];
 
     // Previous Device's page access
-    System::PageAccess myHotSpotPageAccess;
+    System::PageAccess myHotSpotPageAccess[2];
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
