@@ -94,7 +94,7 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
   }
   else if (eraseAll || map.event == event)
   {
-    myKeyMap.eraseEvent(map.event, mode);
+    //myKeyMap.eraseEvent(map.event, mode);
     myKeyMap.add(map.event, mode, map.key, map.mod);
   }
 }
@@ -107,6 +107,12 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
 void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mode,
                                                 bool updateDefaults)
 {
+  if (!updateDefaults)
+  {
+    myKeyMap.eraseEvent(event, mode);
+    myKeyMap.eraseEvent(event, getEventMode(event, mode));
+  }
+
   switch(mode)
   {
     case kEmulationMode:
