@@ -57,7 +57,8 @@ class TiaZoomWidget : public Widget, public CommandSender
 
     int myZoomLevel;
     int myNumCols, myNumRows;
-    int myXOff, myYOff;
+    int myOffX, myOffY;
+    int myOffXLo, myOffYLo;
 
     bool myMouseMoving;
     int myClickX, myClickY;
