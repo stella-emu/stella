@@ -259,18 +259,10 @@ void PhysicalJoystickHandler::setDefaultAction(const PhysicalJoystickPtr& j,
   else if (eraseAll || map.event == event)
   {
     // TODO: allow for multiple defaults
-    j->joyMap.eraseEvent(map.event, mode);
+    //j->joyMap.eraseEvent(map.event, mode);
     j->joyMap.add(map.event, mode, map.button, map.axis, map.adir, map.hat, map.hdir);
   }
 
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::setDefaultMapping(Event::Type event, EventMode mode)
-{
-  eraseMapping(event, mode);
-  for(auto& i: mySticks)
-    setStickDefaultMapping(i.first, event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -315,6 +307,14 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
         break;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PhysicalJoystickHandler::setDefaultMapping(Event::Type event, EventMode mode)
+{
+  eraseMapping(event, mode);
+  for (auto& i : mySticks)
+    setStickDefaultMapping(i.first, event, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -485,7 +485,13 @@ void PhysicalJoystickHandler::eraseMapping(Event::Type event, EventMode mode)
     for (auto& stick : mySticks)
     {
       stick.second->eraseMap(mode);          // erase all events
-      stick.second->eraseMap(getEventMode(event, mode));
+      if (mode == kEmulationMode)
+      {
+        stick.second->eraseMap(kCommonMode);
+        stick.second->eraseMap(kJoystickMode);
+        stick.second->eraseMap(kPaddlesMode);
+        stick.second->eraseMap(kKeypadMode);        
+      }
     }
   }
   else
@@ -774,11 +780,11 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftJ
   {Event::JoystickZeroUp,     JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
   {Event::JoystickZeroDown,   JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
   // Left joystick left/right directions (assume hat 0)
-  /*{Event::JoystickZeroLeft,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::LEFT},
+  {Event::JoystickZeroLeft,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::LEFT},
   {Event::JoystickZeroRight,  JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::RIGHT},
   // Left joystick up/down directions (assume hat 0)
   {Event::JoystickZeroUp,     JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::UP},
-  {Event::JoystickZeroDown,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::DOWN},*/
+  {Event::JoystickZeroDown,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::DOWN},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
