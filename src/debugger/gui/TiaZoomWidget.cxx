@@ -48,7 +48,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   myZoomLevel = 2;
   myNumCols = ((_w - 4) >> 1) / myZoomLevel;
   myNumRows = (_h - 4) / myZoomLevel;
-  myXOff = myYOff = 0;
+  myOffX = myOffY = 0;
 
   myMouseMoving = false;
   myClickX = myClickY = 0;
@@ -73,8 +73,8 @@ void TiaZoomWidget::loadConfig()
 void TiaZoomWidget::setPos(int x, int y)
 {
   // Center on given x,y point
-  myXOff = (x >> 1) - (myNumCols >> 1);
-  myYOff = y - (myNumRows >> 1);
+  myOffX = (x >> 1) - (myNumCols >> 1);
+  myOffY = y - (myNumRows >> 1);
 
   recalc();
 }
@@ -86,8 +86,8 @@ void TiaZoomWidget::zoom(int level)
     return;
 
   // zoom to click position
-  int x = (myXOff << 1) + myClickX / myZoomLevel;
-  int y = myYOff + myClickY / myZoomLevel;
+  int x = (myOffX << 1) + myClickX / myZoomLevel;
+  int y = myOffY + myClickY / myZoomLevel;
 
   myZoomLevel = level;
   myNumCols = ((_w - 4) >> 1) / myZoomLevel;
@@ -105,8 +105,8 @@ void TiaZoomWidget::recalc()
             th = instance().console().tia().height();
 
   // Don't go past end of framebuffer
-  myXOff = BSPF::clamp(myXOff, 0, tw - myNumCols);
-  myYOff = BSPF::clamp(myYOff, 0, th - myNumRows);
+  myOffX = BSPF::clamp(myOffX, 0, tw - myNumCols);
+  myOffY = BSPF::clamp(myOffY, 0, th - myNumRows);
 
   setDirty();
 }
@@ -123,6 +123,7 @@ void TiaZoomWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
   {
     // Indicate mouse drag started/in progress
     myMouseMoving = true;
+    myOffXLo = myOffYLo = 0;
   }
   else if(b == MouseButton::RIGHT)
   {
@@ -162,27 +163,25 @@ void TiaZoomWidget::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseMoved(int x, int y)
 {
-  // TODO: Not yet working - finish for next release
-#if 0
   if(myMouseMoving)
   {
-    if(x < 0 || y < 0 || x > _w || y > _h)
-      return;
+    /*if(x < 0 || y < 0 || x > _w || y > _h)
+      return;*/
 
-    int diffx = ((x - myXClick) >> 1);// / myZoomLevel;
-    int diffy = (y - myYClick);// / myZoomLevel;
-//    myXClick = x;
-//    myYClick = y;
+    int diffx = x + myOffXLo - myClickX;
+    int diffy = y + myOffYLo - myClickY;
 
-//cerr << diffx << " " << diffy << endl;
+    myClickX = x;
+    myClickY = y;
 
-    myXOff -= diffx;
-    myYOff -= diffy;
+    myOffX -= diffx / (myZoomLevel << 1);
+    myOffY -= diffy / myZoomLevel;
+    // handle remainder
+    myOffXLo = diffx % (myZoomLevel << 1);
+    myOffYLo = diffy % myZoomLevel;
 
     recalc();
-//    cerr << x << ", " << y << endl;
   }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -208,35 +207,35 @@ bool TiaZoomWidget::handleEvent(Event::Type event)
   switch(event)
   {
     case Event::UIUp:
-      myYOff -= 4;
+      myOffY -= 4;
       break;
 
     case Event::UIDown:
-      myYOff += 4;
+      myOffY += 4;
       break;
 
     case Event::UILeft:
-      myXOff -= 2;
+      myOffX -= 2;
       break;
 
     case Event::UIRight:
-      myXOff += 2;
+      myOffX += 2;
       break;
 
     case Event::UIPgUp:
-      myYOff = 0;
+      myOffY = 0;
       break;
 
     case Event::UIPgDown:
-      myYOff = _h;
+      myOffY = _h;
       break;
 
     case Event::UIHome:
-      myXOff = 0;
+      myOffX = 0;
       break;
 
     case Event::UIEnd:
-      myXOff = _w;
+      myOffX = _w;
       break;
 
     default:
@@ -263,7 +262,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       if(rmb == "scanline")
       {
         ostringstream command;
-        int lines = myClickY / myZoomLevel + myYOff + ystart - instance().console().tia().scanlines();
+        int lines = myClickY / myZoomLevel + myOffY + ystart - instance().console().tia().scanlines();
 
         if (lines < 0)
           lines += instance().console().tia().scanlinesLastFrame();
@@ -277,7 +276,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       else if(rmb == "bp")
       {
         ostringstream command;
-        int scanline = myClickY / myZoomLevel + myYOff + ystart;
+        int scanline = myClickY / myZoomLevel + myOffY + ystart;
         command << "breakif _scan==#" << scanline;
         string message = instance().debugger().parser().run(command.str());
         instance().frameBuffer().showMessage(message);
@@ -317,9 +316,9 @@ void TiaZoomWidget::drawWidget(bool hilite)
   scanoffset = width * scany + scanx;
 
   int x, y, col, row;
-  for(y = myYOff, row = 0; y < myNumRows+myYOff; ++y, row += hzoom)
+  for(y = myOffY, row = 0; y < myNumRows+myOffY; ++y, row += hzoom)
   {
-    for(x = myXOff, col = 0; x < myNumCols+myXOff; ++x, col += wzoom)
+    for(x = myOffX, col = 0; x < myNumCols+myOffX; ++x, col += wzoom)
     {
       uInt32 idx = y*width + x;
       ColorId color = ColorId(currentFrame[idx] | (idx > scanoffset ? 1 : 0));
