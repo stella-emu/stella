@@ -25,6 +25,7 @@
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "ContextMenu.hxx"
+#include <math.h>
 
 #include "TiaZoomWidget.hxx"
 
@@ -46,7 +47,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
 
   // Initialize positions
   myZoomLevel = 2;
-  myNumCols = ((_w - 4) >> 1) / myZoomLevel;
+  myNumCols = (_w - 4) / myZoomLevel;
   myNumRows = (_h - 4) / myZoomLevel;
   myOffX = myOffY = 0;
 
@@ -73,7 +74,7 @@ void TiaZoomWidget::loadConfig()
 void TiaZoomWidget::setPos(int x, int y)
 {
   // Center on given x,y point
-  myOffX = (x >> 1) - (myNumCols >> 1);
+  myOffX = x - (myNumCols >> 1);
   myOffY = y - (myNumRows >> 1);
 
   recalc();
@@ -85,15 +86,13 @@ void TiaZoomWidget::zoom(int level)
   if(myZoomLevel == level)
     return;
 
-  // zoom to click position
-  int x = (myOffX << 1) + myClickX / myZoomLevel;
-  int y = myOffY + myClickY / myZoomLevel;
+  // zoom towards mouse position
+  myOffX = round(myOffX + myClickX / myZoomLevel - myClickX / level);
+  myOffY = round(myOffY + myClickY / myZoomLevel - myClickY / level);
 
   myZoomLevel = level;
-  myNumCols = ((_w - 4) >> 1) / myZoomLevel;
+  myNumCols = (_w - 4) / myZoomLevel & 0xfffe; // must be even!
   myNumRows = (_h - 4) / myZoomLevel;
-
-  setPos(x, y);
 
   recalc();
 }
@@ -105,7 +104,7 @@ void TiaZoomWidget::recalc()
             th = instance().console().tia().height();
 
   // Don't go past end of framebuffer
-  myOffX = BSPF::clamp(myOffX, 0, tw - myNumCols);
+  myOffX = BSPF::clamp(myOffX, 0, (tw << 1) - myNumCols);
   myOffY = BSPF::clamp(myOffY, 0, th - myNumRows);
 
   setDirty();
@@ -141,23 +140,20 @@ void TiaZoomWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleMouseWheel(int x, int y, int direction)
 {
-  /*
-  // TODO: zoom towards mouse point
-  myClickX = (x - getAbsX()) / myZoomLevel + myXOff * 1;
-  myClickY = (y - getAbsY()) / myZoomLevel + myYOff * 1;
-  setPos(myClickX, myClickY);
+  // zoom towards mouse position
+  myClickX = x;
+  myClickY = y;
 
   if(direction > 0)
   {
+    if (myZoomLevel > 1)
+      zoom(myZoomLevel - 1);
   }
   else
   {
-  }*/
-
-  if(direction > 0)
-    handleEvent(Event::UIDown);
-  else
-    handleEvent(Event::UIUp);
+    if (myZoomLevel < 8)
+      zoom(myZoomLevel + 1);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,19 +161,16 @@ void TiaZoomWidget::handleMouseMoved(int x, int y)
 {
   if(myMouseMoving)
   {
-    /*if(x < 0 || y < 0 || x > _w || y > _h)
-      return;*/
-
     int diffx = x + myOffXLo - myClickX;
     int diffy = y + myOffYLo - myClickY;
 
     myClickX = x;
     myClickY = y;
 
-    myOffX -= diffx / (myZoomLevel << 1);
+    myOffX -= diffx / myZoomLevel;
     myOffY -= diffy / myZoomLevel;
     // handle remainder
-    myOffXLo = diffx % (myZoomLevel << 1);
+    myOffXLo = diffx % myZoomLevel;
     myOffYLo = diffy % myZoomLevel;
 
     recalc();
@@ -215,11 +208,11 @@ bool TiaZoomWidget::handleEvent(Event::Type event)
       break;
 
     case Event::UILeft:
-      myOffX -= 2;
+      myOffX -= 4;
       break;
 
     case Event::UIRight:
-      myOffX += 2;
+      myOffX += 4;
       break;
 
     case Event::UIPgUp:
@@ -318,7 +311,7 @@ void TiaZoomWidget::drawWidget(bool hilite)
   int x, y, col, row;
   for(y = myOffY, row = 0; y < myNumRows+myOffY; ++y, row += hzoom)
   {
-    for(x = myOffX, col = 0; x < myNumCols+myOffX; ++x, col += wzoom)
+    for(x = myOffX >> 1, col = 0; x < (myNumCols+myOffX) >> 1; ++x, col += wzoom)
     {
       uInt32 idx = y*width + x;
       ColorId color = ColorId(currentFrame[idx] | (idx > scanoffset ? 1 : 0));
