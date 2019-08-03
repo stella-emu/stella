@@ -129,8 +129,12 @@ void AtariNTSC::renderThread(const uInt8* atari_in, const uInt32 in_width,
   {
     const uInt8* line_in = atari_in;
     ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);
-    uInt32* restrict line_out = static_cast<uInt32*>(rgb_out) + 2; // shift right by 2 pixel
+    uInt32* restrict line_out = static_cast<uInt32*>(rgb_out);
     ++line_in;
+
+    // shift right by 2 pixel
+    line_out[0] = line_out[1] = 0;
+    line_out += 2;
 
     for(uInt32 n = chunk_count; n; --n)
     {
@@ -202,8 +206,12 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
   {
     const uInt8* line_in = atari_in;
     ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);
-    uInt32* restrict line_out = static_cast<uInt32*>(rgb_out) + 2; // shift right by 2 pixel
+    uInt32* restrict line_out = static_cast<uInt32*>(rgb_out);
     ++line_in;
+
+    // shift right by 2 pixel
+    line_out[0] = line_out[1] = 0;
+    line_out += 2;
 
     for(uInt32 n = chunk_count; n; --n)
     {
@@ -274,7 +282,7 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
       ++bufofs;
     }
-    // finish final pixels
+    // finish final 565 % 8 = 5 pixels
     /*rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
     ++bufofs;
     rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
