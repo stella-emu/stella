@@ -129,7 +129,7 @@ void AtariNTSC::renderThread(const uInt8* atari_in, const uInt32 in_width,
   {
     const uInt8* line_in = atari_in;
     ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);
-    uInt32* restrict line_out = static_cast<uInt32*>(rgb_out);
+    uInt32* restrict line_out = static_cast<uInt32*>(rgb_out) + 2; // shift right by 2 pixel
     ++line_in;
 
     for(uInt32 n = chunk_count; n; --n)
@@ -202,7 +202,7 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
   {
     const uInt8* line_in = atari_in;
     ATARI_NTSC_BEGIN_ROW(NTSC_black, line_in[0]);
-    uInt32* restrict line_out = static_cast<uInt32*>(rgb_out);
+    uInt32* restrict line_out = static_cast<uInt32*>(rgb_out) + 2; // shift right by 2 pixel
     ++line_in;
 
     for(uInt32 n = chunk_count; n; --n)
@@ -252,8 +252,9 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
 #endif
 
     // Do phosphor mode (blend the resulting frames)
-    // Note: The code assumes that AtariNTSC::outWidth(kTIAW) == outPitch == 565
-    for (uInt32 x = AtariNTSC::outWidth(in_width) / 8; x; --x)
+    // Note: The code assumed that AtariNTSC::outWidth(kTIAW) == outPitch == 565
+    // Now this got changed to 568 which affects unrolling (thus "- 8")
+    for (uInt32 x = AtariNTSC::outWidth(in_width - 8) / 8; x; --x)
     {
       // Store back into displayed frame buffer (for next frame)
       rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);

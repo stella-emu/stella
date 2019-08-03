@@ -100,15 +100,15 @@ class AtariNTSC
     // Number of input pixels that will fit within given output width.
     // Might be rounded down slightly; use outWidth() on result to find
     // rounded value.
-    static constexpr uInt32 inWidth( uInt32 out_width ) {
-      return (((out_width-5) / PIXEL_out_chunk - 1) * PIXEL_in_chunk + 1);
-    }
+    /*static constexpr uInt32 inWidth( uInt32 out_width ) {
+      return (((out_width - 8) / PIXEL_out_chunk - 1) * PIXEL_in_chunk + 1);
+    }*/
 
     // Number of output pixels written by blitter for given input width.
     // Width might be rounded down slightly; use inWidth() on result to
     // find rounded value. Guaranteed not to round 160 down at all.
     static constexpr uInt32 outWidth(uInt32 in_width) {
-      return ((((in_width) - 1) / PIXEL_in_chunk + 1)* PIXEL_out_chunk) + 5;
+      return ((((in_width) - 1) / PIXEL_in_chunk + 1)* PIXEL_out_chunk) + 8;
     }
 
   private:
