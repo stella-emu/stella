@@ -18,6 +18,8 @@
 #include "bspf.hxx"
 
 #include "OSystem.hxx"
+#include "AtariNTSC.hxx"
+#include "TIAConstants.hxx"
 
 #include "FBSurfaceLIBRETRO.hxx"
 #include "FrameBufferLIBRETRO.hxx"
@@ -47,7 +49,8 @@ unique_ptr<FBSurface>
   unique_ptr<FBSurface> ptr = make_unique<FBSurfaceLIBRETRO>
       (const_cast<FrameBufferLIBRETRO&>(*this), w, h, data);
 
-  if(w == 565 && h == 320)
+  if(w == AtariNTSC::outWidth(TIAConstants::frameBufferWidth) &&
+     h == TIAConstants::frameBufferHeight)
   {
     uInt32 pitch;
     ptr.get()->basePtr(myRenderSurface, pitch);
