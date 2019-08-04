@@ -14,6 +14,8 @@
 
 6.0 to 6.1: (MM dd, 2019)
 
+  TODO: sorting
+
   * Note: because of major event remapping changes, all remappings will be
           reset to defaults; if you had custom mappings, they will need to
           be re-entered again.
@@ -21,6 +23,19 @@
   * Note2:Support for Windows XP has been discontinued as of this version.
           WinXP is now completely out of support from Microsoft, so we
           are doing the same.
+
+  * Improved debugger's TIA display and zoom windows (TODO: doc)
+
+  * Enhanced UA bankswitching to support certain Brazilian carts.
+
+  * Added option to save and load all TimeMachine states at once (TODO: doc)
+
+  * Added option to change pitch if Pitfall II (TODO: doc)
+
+  * Added that Stella now remembers last window position (TODO: doc)
+
+  * Fixed display for OpenGLES renderers used by Libretro 
+    * and much more for Libretro support
 
   * Updated internal ROM properties database to ROM-Hunter version 15
     (thanks go to RomHunter for his tireless research in this area).
@@ -54,7 +69,10 @@
     meant for 4k and above monitors, but can actually be used at any
     lower resolution that is large enough to display the scaled UI. (TODO: doc)
 
-  * Huge improvements to event remapping.  (TODO: doc)
+  * Huge improvements to event remapping. (TODO: doc)
+    * keyboard mapping
+    * controller mapping
+    * more events
 
   * Added configurable 'Overscan' option for fullscreen modes. (TODO: doc)
 
