@@ -591,7 +591,7 @@ bool Dialog::handleMouseClicks(int x, int y, MouseButton b)
 void Dialog::handleJoyDown(int stick, int button)
 {
   Event::Type e =
-    instance().eventHandler().eventForJoyButton(stick, button, kMenuMode);
+    instance().eventHandler().eventForJoyButton(kMenuMode, stick, button);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
@@ -613,39 +613,39 @@ void Dialog::handleJoyUp(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type Dialog::getJoyAxisEvent(int stick, int axis, int value)
+Event::Type Dialog::getJoyAxisEvent(int stick, int axis, int value, int button)
 {
-  return instance().eventHandler().eventForJoyAxis(stick, axis, value, kMenuMode);
+  return instance().eventHandler().eventForJoyAxis(kMenuMode, stick, axis, value, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleJoyAxis(int stick, int axis, int value)
+void Dialog::handleJoyAxis(int stick, int axis, int value, int button)
 {
-  Event::Type e = getJoyAxisEvent(stick, axis, value);
+  Event::Type e = getJoyAxisEvent(stick, axis, value, button);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
   if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
-      _focusedWidget->handleJoyAxis(stick, axis, value);
+      _focusedWidget->handleJoyAxis(stick, axis, value, button);
     else if(value != 0)
       _focusedWidget->handleEvent(e);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::handleJoyHat(int stick, int hat, JoyHat value)
+bool Dialog::handleJoyHat(int stick, int hat, JoyHat value, int button)
 {
   Event::Type e =
-    instance().eventHandler().eventForJoyHat(stick, hat, value, kMenuMode);
+    instance().eventHandler().eventForJoyHat(kMenuMode, stick, hat, value, button);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
   if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
-      return _focusedWidget->handleJoyHat(stick, hat, value);
+      return _focusedWidget->handleJoyHat(stick, hat, value, button);
     else
       return _focusedWidget->handleEvent(e);
   }

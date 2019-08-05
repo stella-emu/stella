@@ -20,6 +20,7 @@
 
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
+#include "JoyMap.hxx"
 
 /**
   An abstraction of a physical (real) joystick in Stella.
@@ -31,11 +32,16 @@
   Specific backend class(es) will inherit from this class, and implement
   functionality specific to the device.
 
-  @author  Stephen Anthony
+  @author  Stephen Anthony, Thomas Jentzsch
 */
+
+
+
 class PhysicalJoystick
 {
   friend class PhysicalJoystickHandler;
+
+  static constexpr char MODE_DELIM = '§'; // must not be '^', '|' or '#'
 
   public:
     PhysicalJoystick();
@@ -65,10 +71,12 @@ class PhysicalJoystick
     int ID;
     string name;
     int numAxes, numButtons, numHats;
-    Event::Type (*axisTable)[NUM_JOY_DIRS][kNumModes];
-    Event::Type (*btnTable)[kNumModes];
-    Event::Type (*hatTable)[NUM_JOY_HAT_DIRS][kNumModes];
     int* axisLastValue;
+    int* buttonLast;
+
+
+    // Hashmaps of controller events
+    JoyMap joyMap;
 
   private:
     void getValues(const string& list, IntArray& map) const;

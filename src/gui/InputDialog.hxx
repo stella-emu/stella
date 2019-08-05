@@ -46,8 +46,9 @@ class InputDialog : public Dialog
     void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleJoyDown(int stick, int button) override;
-    void handleJoyAxis(int stick, int axis, int value) override;
-    bool handleJoyHat(int stick, int hat, JoyHat value) override;
+    void handleJoyUp(int stick, int button) override;
+    void handleJoyAxis(int stick, int axis, int value, int button) override;
+    bool handleJoyHat(int stick, int hat, JoyHat value, int button) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     void loadConfig() override;

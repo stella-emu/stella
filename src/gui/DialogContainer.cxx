@@ -299,7 +299,7 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
+void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value, int button)
 {
   if(myDialogStack.empty())
     return;
@@ -307,21 +307,23 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
   // Only stop firing events if it's the current stick
   if(myCurrentAxisDown.stick == stick && value == 0)
   {
+    cerr << "handleJoyAxisEvent 0" << endl;
     myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
   }
   else if(value != 0)  // never repeat the 'off' event
   {
+    cerr << "handleJoyAxisEvent repeat" << endl;
     // Now account for repeated axis events (press and hold)
     myCurrentAxisDown.stick = stick;
     myCurrentAxisDown.axis  = axis;
     myCurrentAxisDown.value = value;
     myAxisRepeatTime = myTime + kRepeatInitialDelay;
   }
-  myDialogStack.top()->handleJoyAxis(stick, axis, value);
+  myDialogStack.top()->handleJoyAxis(stick, axis, value, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value)
+void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value, int button)
 {
   if(myDialogStack.empty())
     return;
@@ -339,7 +341,7 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value)
     myCurrentHatDown.value = value;
     myHatRepeatTime = myTime + kRepeatInitialDelay;
   }
-  myDialogStack.top()->handleJoyHat(stick, hat, value);
+  myDialogStack.top()->handleJoyHat(stick, hat, value, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -47,7 +47,7 @@ class PhysicalJoystick;
   unchanged to the menu class, where (among other things) changing key
   mapping can take place.
 
-  @author  Stephen Anthony
+  @author  Stephen Anthony, Thomas Jentzsch
 */
 class EventHandler
 {
@@ -141,7 +141,7 @@ class EventHandler
       @param pressed   Pressed (true) or released (false)
       @param repeated  Repeated key (true) or first press/release (false)
     */
-    void handleEvent(Event::Type type, bool pressed = true, bool repeated = false);
+    void handleEvent(Event::Type type, Int32 value = 1, bool repeated = false);
 
     /**
       Handle events that must be processed each time a new console is
@@ -162,14 +162,14 @@ class EventHandler
     Event::Type eventForKey(EventMode mode, StellaKey key, StellaMod mod) const {
       return myPKeyHandler->eventForKey(mode, key, mod);
     }
-    Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const {
-      return myPJoyHandler->eventForAxis(stick, axis, value, mode);
+    Event::Type eventForJoyAxis(EventMode mode, int stick, int axis, int value, int button) const {
+      return myPJoyHandler->eventForAxis(mode, stick, axis, value, button);
     }
-    Event::Type eventForJoyButton(int stick, int button, EventMode mode) const {
-      return myPJoyHandler->eventForButton(stick, button, mode);
+    Event::Type eventForJoyButton(EventMode mode, int stick, int button) const {
+      return myPJoyHandler->eventForButton(mode, stick, button);
     }
-    Event::Type eventForJoyHat(int stick, int hat, JoyHat value, EventMode mode) const {
-      return myPJoyHandler->eventForHat(stick, hat, value, mode);
+    Event::Type eventForJoyHat(EventMode mode, int stick, int hat, JoyHat value, int button) const {
+      return myPJoyHandler->eventForHat(mode, stick, hat, value, button);
     }
 
     /** Get description of given event and mode. */
@@ -208,52 +208,54 @@ class EventHandler
 
     /**
       Bind a physical joystick axis direction to an event/action and regenerate
-      the mapping array(s).
+      the mapping array(s). The axis can be combined with a button. The button
+      can also be mapped without an axis.
 
       @param event  The event we are remapping
       @param mode   The mode where this event is active
       @param stick  The joystick number
+      @param button The joystick button
       @param axis   The joystick axis
       @param value  The value on the given axis
       @param updateMenus  Whether to update the action mappings (normally
                           we want to do this, unless there are a batch of
                           'adds', in which case it's delayed until the end
     */
-    bool addJoyAxisMapping(Event::Type event, EventMode mode,
-                           int stick, int axis, int value,
-                           bool updateMenus = true);
+    bool addJoyMapping(Event::Type event, EventMode mode, int stick,
+                       int button, JoyAxis axis = JoyAxis::NONE, int value = 0,
+                       bool updateMenus = true);
 
     /**
-      Bind a physical joystick button to an event/action and regenerate the
-      mapping array(s).
+      Bind a physical joystick hat direction to an event/action and regenerate
+      the mapping array(s). The hat can be combined with a button.
 
       @param event  The event we are remapping
       @param mode   The mode where this event is active
       @param stick  The joystick number
       @param button The joystick button
-      @param updateMenus  Whether to update the action mappings (normally
-                          we want to do this, unless there are a batch of
-                          'adds', in which case it's delayed until the end
-    */
-    bool addJoyButtonMapping(Event::Type event, EventMode mode, int stick, int button,
-                             bool updateMenus = true);
-
-    /**
-      Bind a physical joystick hat direction to an event/action and regenerate
-      the mapping array(s).
-
-      @param event  The event we are remapping
-      @param mode   The mode where this event is active
-      @param stick  The joystick number
       @param hat    The joystick hat
       @param value  The value on the given hat
       @param updateMenus  Whether to update the action mappings (normally
                           we want to do this, unless there are a batch of
                           'adds', in which case it's delayed until the end
     */
-    bool addJoyHatMapping(Event::Type event, EventMode mode,
-                          int stick, int hat, JoyHat value,
+    bool addJoyHatMapping(Event::Type event, EventMode mode, int stick,
+                          int button, int hat, JoyHat dir,
                           bool updateMenus = true);
+
+    /**
+      Enable controller specific keyboard event mappings.
+    */
+    void defineJoyControllerMappings(const string& controllerName, Controller::Jack port) {
+      myPJoyHandler->defineControllerMappings(controllerName, port);
+    }
+
+    /**
+      Enable emulation keyboard event mappings.
+    */
+    void enableEmulationJoyMappings() {
+      myPJoyHandler->enableEmulationMappings();
+    }
 
     /**
       Erase the specified mapping.

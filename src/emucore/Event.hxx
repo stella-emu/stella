@@ -19,12 +19,13 @@
 #define EVENT_HXX
 
 #include <mutex>
+#include <set>
 
 #include "bspf.hxx"
 #include "StellaKeys.hxx"
 
 /**
-  @author  Stephen Anthony, Christian Speckner
+  @author  Stephen Anthony, Christian Speckner, Thomas Jentzsch
 */
 class Event
 {
@@ -66,9 +67,6 @@ class Event
 
       Combo1, Combo2, Combo3, Combo4, Combo5, Combo6, Combo7, Combo8,
       Combo9, Combo10, Combo11, Combo12, Combo13, Combo14, Combo15, Combo16,
-
-      SALeftAxis0Value, SALeftAxis1Value,
-      SARightAxis0Value, SARightAxis1Value,
 
       MouseAxisXValue, MouseAxisYValue,
       MouseButtonLeftValue, MouseButtonRightValue,
@@ -127,7 +125,9 @@ class Event
     };
 
     // Event list version, update if the id of existing event types changed
-    static constexpr Int32 VERSION = 2;
+    static constexpr Int32 VERSION = 3;
+
+    using EventSet = std::set<Event::Type>;
 
   public:
     /**
@@ -198,6 +198,46 @@ class Event
     Event(Event&&) = delete;
     Event& operator=(const Event&) = delete;
     Event& operator=(Event&&) = delete;
+};
+
+// Hold controller related events
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet LeftJoystickEvents = {
+  Event::JoystickZeroUp, Event::JoystickZeroDown, Event::JoystickZeroLeft, Event::JoystickZeroRight,
+  Event::JoystickZeroFire, Event::JoystickZeroFire5, Event::JoystickZeroFire9,
+};
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet RightJoystickEvents = {
+  Event::JoystickOneUp, Event::JoystickOneDown, Event::JoystickOneLeft, Event::JoystickOneRight,
+  Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet LeftPaddlesEvents = {
+  Event::PaddleZeroDecrease, Event::PaddleZeroIncrease, Event::PaddleZeroAnalog, Event::PaddleZeroFire,
+  Event::PaddleOneDecrease, Event::PaddleOneIncrease, Event::PaddleOneAnalog, Event::PaddleOneFire,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet RightPaddlesEvents = {
+  Event::PaddleTwoDecrease, Event::PaddleTwoIncrease, Event::PaddleTwoAnalog, Event::PaddleTwoFire,
+  Event::PaddleThreeDecrease, Event::PaddleThreeIncrease, Event::PaddleThreeAnalog, Event::PaddleThreeFire,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet LeftKeypadEvents = {
+  Event::KeyboardZero1, Event::KeyboardZero2, Event::KeyboardZero3,
+  Event::KeyboardZero4, Event::KeyboardZero5, Event::KeyboardZero6,
+  Event::KeyboardZero7, Event::KeyboardZero8, Event::KeyboardZero9,
+  Event::KeyboardZeroStar, Event::KeyboardZero0, Event::KeyboardZeroPound,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+static const Event::EventSet RightKeypadEvents = {
+  Event::KeyboardOne1, Event::KeyboardOne2, Event::KeyboardOne3,
+  Event::KeyboardOne4, Event::KeyboardOne5, Event::KeyboardOne6,
+  Event::KeyboardOne7, Event::KeyboardOne8, Event::KeyboardOne9,
+  Event::KeyboardOneStar, Event::KeyboardOne0, Event::KeyboardOnePound,
 };
 
 #endif

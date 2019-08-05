@@ -53,8 +53,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     if(!swappaddle)  // First paddle is 0, second is 1
     {
       // These aren't affected by changes in axis orientation
-      myP0AxisValue  = Event::SALeftAxis0Value;
-      myP1AxisValue  = Event::SALeftAxis1Value;
+      myP0AxisValue  = Event::PaddleZeroAnalog;
+      myP1AxisValue  = Event::PaddleOneAnalog;
       myP0FireEvent1 = Event::PaddleZeroFire;
       myP0FireEvent2 = Event::JoystickZeroFire;
       myP1FireEvent1 = Event::PaddleOneFire;
@@ -89,8 +89,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     else           // First paddle is 1, second is 0
     {
       // These aren't affected by changes in axis orientation
-      myP0AxisValue  = Event::SALeftAxis1Value;
-      myP1AxisValue  = Event::SALeftAxis0Value;
+      myP0AxisValue  = Event::PaddleOneAnalog;
+      myP1AxisValue  = Event::PaddleZeroAnalog;
       myP0FireEvent1 = Event::PaddleOneFire;
       myP0FireEvent2 = Event::JoystickZeroFire9;
       myP1FireEvent1 = Event::PaddleZeroFire;
@@ -128,8 +128,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     if(!swappaddle)  // First paddle is 2, second is 3
     {
       // These aren't affected by changes in axis orientation
-      myP0AxisValue  = Event::SARightAxis0Value;
-      myP1AxisValue  = Event::SARightAxis1Value;
+      myP0AxisValue  = Event::PaddleTwoAnalog;
+      myP1AxisValue  = Event::PaddleThreeAnalog;
       myP0FireEvent1 = Event::PaddleTwoFire;
       myP0FireEvent2 = Event::JoystickOneFire;
       myP1FireEvent1 = Event::PaddleThreeFire;
@@ -164,8 +164,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
     else           // First paddle is 3, second is 2
     {
       // These aren't affected by changes in axis orientation
-      myP0AxisValue  = Event::SARightAxis1Value;
-      myP1AxisValue  = Event::SARightAxis0Value;
+      myP0AxisValue  = Event::PaddleThreeAnalog;
+      myP1AxisValue  = Event::PaddleTwoAnalog;
       myP0FireEvent1 = Event::PaddleThreeFire;
       myP0FireEvent2 = Event::JoystickOneFire9;
       myP1FireEvent1 = Event::PaddleTwoFire;

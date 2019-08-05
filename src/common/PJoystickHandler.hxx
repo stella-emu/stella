@@ -41,7 +41,7 @@ using PhysicalJoystickPtr = shared_ptr<PhysicalJoystick>;
   Essentially, this class is an extension of the EventHandler class, but
   handling only joystick-specific functionality.
 
-  @author  Stephen Anthony
+  @author  Stephen Anthony, Thomas Jentzsch
 */
 class PhysicalJoystickHandler
 {
@@ -69,32 +69,38 @@ class PhysicalJoystickHandler
     bool remove(const string& name);
     void mapStelladaptors(const string& saport);
     void setDefaultMapping(Event::Type type, EventMode mode);
+
+    /** define mappings for current controllers */
+    void defineControllerMappings(const string& controllerName, Controller::Jack port);
+    /** enable mappings for emulation mode */
+    void enableEmulationMappings();
+
     void eraseMapping(Event::Type event, EventMode mode);
     void saveMapping();
     string getMappingDesc(Event::Type, EventMode mode) const;
 
     /** Bind a physical joystick event to a virtual event/action. */
-    bool addAxisMapping(Event::Type event, EventMode mode, int stick, int axis, int value);
-    bool addBtnMapping(Event::Type event, EventMode mode, int stick, int button);
-    bool addHatMapping(Event::Type event, EventMode mode, int stick, int hat, JoyHat value);
+    bool addJoyMapping(Event::Type event, EventMode mode, int stick,
+                       int button, JoyAxis axis, int value);
+    bool addJoyHatMapping(Event::Type event, EventMode mode, int stick,
+                          int button, int hat, JoyHat hdir);
 
     /** Handle a physical joystick event. */
     void handleAxisEvent(int stick, int axis, int value);
     void handleBtnEvent(int stick, int button, bool pressed);
     void handleHatEvent(int stick, int hat, int value);
 
-    Event::Type eventForAxis(int stick, int axis, int joyDir, EventMode mode) const {
+    Event::Type eventForAxis(EventMode mode, int stick, int axis, int value, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return (j && joyDir != int(JoyDir::NEG))
-        ? j->axisTable[axis][(joyDir > int(JoyDir::NEG))][mode] : Event::NoType;
+      return j->joyMap.get(mode, button, JoyAxis(axis), convertAxisValue(value));
     }
-    Event::Type eventForButton(int stick, int button, EventMode mode) const {
+    Event::Type eventForButton(EventMode mode, int stick, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return j ? j->btnTable[button][mode] : Event::NoType;
+      return j->joyMap.get(mode, button);
     }
-    Event::Type eventForHat(int stick, int hat, JoyHat hatDir, EventMode mode) const {
+    Event::Type eventForHat(EventMode mode, int stick, int hat, JoyHat hatDir, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return j ? j->hatTable[hat][int(hatDir)][mode] : Event::NoType;
+      return j->joyMap.get(mode, button, hat, hatDir);
     }
 
     /** Returns a list of pairs consisting of joystick name and associated ID. */
@@ -122,17 +128,56 @@ class PhysicalJoystickHandler
     }
 
     // Set default mapping for given joystick when no mappings already exist
-    void setStickDefaultMapping(int stick, Event::Type type, EventMode mode);
+    void setStickDefaultMapping(int stick, Event::Type type, EventMode mode,
+                                bool updateDefaults = false);
 
     friend ostream& operator<<(ostream& os, const PhysicalJoystickHandler& jh);
 
-    // Static lookup tables for Stelladaptor/2600-daptor axis/button support
-    static const int NUM_JOY_BTN = 4;
-    static const int NUM_KEY_BTN = 12;
+    JoyDir convertAxisValue(int value) const {
+      return value == int(JoyDir::NONE) ? JoyDir::NONE : value > 0 ? JoyDir::POS : JoyDir::NEG;
+    }
 
-    static const Event::Type SA_Axis[NUM_PORTS][NUM_JOY_AXIS];
-    static const Event::Type SA_Button[NUM_PORTS][NUM_JOY_BTN];
-    static const Event::Type SA_Key[NUM_PORTS][NUM_KEY_BTN];
+    // Structures used for action menu items
+    struct EventMapping {
+      Event::Type event;
+      int button;
+      JoyAxis axis = JoyAxis::NONE;
+      JoyDir adir = JoyDir::NONE;
+      int hat = JOY_CTRL_NONE;
+      JoyHat hdir = JoyHat::CENTER;
+    };
+    using EventMappingArray = std::vector<EventMapping>;
+
+    void setDefaultAction(const PhysicalJoystickPtr& j,
+                          EventMapping map, Event::Type event = Event::NoType,
+                          EventMode mode = kEmulationMode, bool updateDefaults = false);
+
+    /** returns the event's controller mode */
+    EventMode getEventMode(const Event::Type event, const EventMode mode) const;
+    /** Checks event type. */
+    bool isJoystickEvent(const Event::Type event) const;
+    bool isPaddleEvent(const Event::Type event) const;
+    bool isKeypadEvent(const Event::Type event) const;
+    bool isCommonEvent(const Event::Type event) const;
+
+    void enableCommonMappings();
+
+    void enableMappings(const Event::EventSet events, EventMode mode);
+    void enableMapping(const Event::Type event, EventMode mode);
+
+  private:
+    EventMode myLeftMode;
+    EventMode myRightMode;
+
+    // Controller menu and common emulation mappings
+    static EventMappingArray DefaultMenuMapping;
+    // Controller specific mappings
+    static EventMappingArray DefaultLeftJoystickMapping;
+    static EventMappingArray DefaultRightJoystickMapping;
+    static EventMappingArray DefaultLeftPaddlesMapping;
+    static EventMappingArray DefaultRightPaddlesMapping;
+    static EventMappingArray DefaultLeftKeypadMapping;
+    static EventMappingArray DefaultRightKeypadMapping;
 };
 
 #endif
