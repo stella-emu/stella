@@ -97,7 +97,7 @@ void EditTextWidget::drawWidget(bool hilite)
                _changed && onTop && isEnabled()
                ? kDbgChangedTextColor
                : onTop && isEnabled() ? _textcolor : kColor,
-               TextAlign::Left, -_editScrollOffset, false);
+               TextAlign::Left, isEditable() ? -_editScrollOffset : 0, !isEditable());
 
   // Draw the caret
   drawCaret();
