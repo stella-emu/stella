@@ -138,7 +138,7 @@ class EventHandler
       These events cannot be remapped.
 
       @param type      The event
-      @param pressed   Pressed (true) or released (false)
+      @param value     The value to use for the event
       @param repeated  Repeated key (true) or first press/release (false)
     */
     void handleEvent(Event::Type type, Int32 value = 1, bool repeated = false);
@@ -234,7 +234,7 @@ class EventHandler
       @param stick  The joystick number
       @param button The joystick button
       @param hat    The joystick hat
-      @param value  The value on the given hat
+      @param dir    The value on the given hat
       @param updateMenus  Whether to update the action mappings (normally
                           we want to do this, unless there are a batch of
                           'adds', in which case it's delayed until the end

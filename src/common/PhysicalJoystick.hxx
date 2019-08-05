@@ -35,13 +35,11 @@
   @author  Stephen Anthony, Thomas Jentzsch
 */
 
-
-
 class PhysicalJoystick
 {
   friend class PhysicalJoystickHandler;
 
-  static constexpr char MODE_DELIM = '§'; // must not be '^', '|' or '#'
+  static constexpr char MODE_DELIM = 0xA7; //'§', must not be '^', '|' or '#'
 
   public:
     PhysicalJoystick();
