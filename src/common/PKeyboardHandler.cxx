@@ -26,7 +26,6 @@
 #include "PNGLibrary.hxx"
 #include "PKeyboardHandler.hxx"
 
-
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
@@ -509,6 +508,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
   {Event::UIPgDown,                 KBDK_PAGEDOWN},
 
   {Event::UISelect,                 KBDK_RETURN},
+  {Event::UISelect,                 KBDK_KP_ENTER},
   {Event::UICancel,                 KBDK_ESCAPE},
 
   {Event::UINavPrev,                KBDK_TAB, KBDM_SHIFT},
@@ -544,10 +544,17 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
   {Event::JoystickZeroDown,         KBDK_DOWN},
   {Event::JoystickZeroLeft,         KBDK_LEFT},
   {Event::JoystickZeroRight,        KBDK_RIGHT},
+  {Event::JoystickZeroUp,           KBDK_KP_8},
+  {Event::JoystickZeroDown,         KBDK_KP_2},
+  {Event::JoystickZeroLeft,         KBDK_KP_4},
+  {Event::JoystickZeroRight,        KBDK_KP_6},
   {Event::JoystickZeroFire,         KBDK_SPACE},
   {Event::JoystickZeroFire,         KBDK_LCTRL},
+  {Event::JoystickZeroFire,         KBDK_KP_5},
   {Event::JoystickZeroFire5,        KBDK_4},
+  {Event::JoystickZeroFire5,        KBDK_KP_9},
   {Event::JoystickZeroFire9,        KBDK_5},
+  {Event::JoystickZeroFire9,        KBDK_KP_3},
 
   {Event::JoystickOneUp,            KBDK_Y},
   {Event::JoystickOneDown,          KBDK_H},
