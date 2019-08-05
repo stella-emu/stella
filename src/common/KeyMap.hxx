@@ -55,6 +55,7 @@ class KeyMap
           );
       }
     };
+    using MappingArray = std::vector<Mapping>;
 
     KeyMap();
     virtual ~KeyMap() = default;
@@ -82,7 +83,7 @@ class KeyMap
     /** Get the mapping description(s) for given event and mode */
     string getEventMappingDesc(const Event::Type event, const int mode) const;
 
-    std::vector<Mapping> getEventMapping(const Event::Type event, const int mode) const;
+    MappingArray getEventMapping(const Event::Type event, const int mode) const;
 
     string saveMapping(const int mode) const;
     int loadMapping(string& list, const int mode);

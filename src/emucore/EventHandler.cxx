@@ -331,10 +331,12 @@ void EventHandler::handleSystemEvent(SystemEvent e, int, int)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
+void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
+  bool pressed = (value != 0);
+
   switch(event)
   {
     ////////////////////////////////////////////////////////////////////////
@@ -896,7 +898,7 @@ void EventHandler::handleEvent(Event::Type event, bool pressed, bool repeated)
 
   // Otherwise, pass it to the emulation core
   if (!repeated)
-    myEvent.set(event, pressed);
+    myEvent.set(event, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1124,29 +1126,13 @@ bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, StellaKey ke
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::addJoyAxisMapping(Event::Type event, EventMode mode,
-                                     int stick, int axis, int value,
-                                     bool updateMenus)
+bool EventHandler::addJoyMapping(Event::Type event, EventMode mode,
+                                 int stick, int button, JoyAxis axis, int value,
+                                 bool updateMenus)
 {
 #ifdef JOYSTICK_SUPPORT
-  bool mapped = myPJoyHandler->addAxisMapping(event, mode, stick, axis, value);
-  if(mapped && updateMenus)
-    setActionMappings(mode);
-
-  return mapped;
-#else
-  return false;
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::addJoyButtonMapping(Event::Type event, EventMode mode,
-                                       int stick, int button,
-                                       bool updateMenus)
-{
-#ifdef JOYSTICK_SUPPORT
-  bool mapped = myPJoyHandler->addBtnMapping(event, mode, stick, button);
-  if(mapped && updateMenus)
+  bool mapped = myPJoyHandler->addJoyMapping(event, mode, stick, button, axis, value);
+  if (mapped && updateMenus)
     setActionMappings(mode);
 
   return mapped;
@@ -1157,12 +1143,12 @@ bool EventHandler::addJoyButtonMapping(Event::Type event, EventMode mode,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
-                                    int stick, int hat, JoyHat value,
+                                    int stick, int button, int hat, JoyHat dir,
                                     bool updateMenus)
 {
 #ifdef JOYSTICK_SUPPORT
-  bool mapped = myPJoyHandler->addHatMapping(event, mode, stick, hat, value);
-  if(mapped && updateMenus)
+  bool mapped = myPJoyHandler->addJoyHatMapping(event, mode, stick, button, hat, dir);
+  if (mapped && updateMenus)
     setActionMappings(mode);
 
   return mapped;
@@ -1170,6 +1156,7 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
   return false;
 #endif
 }
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::eraseMapping(Event::Type event, EventMode mode)

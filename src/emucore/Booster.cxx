@@ -32,8 +32,8 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
     myFireEvent    = Event::JoystickZeroFire;
     myTriggerEvent = Event::JoystickZeroFire5;
     myBoosterEvent = Event::JoystickZeroFire9;
-    myXAxisValue   = Event::SALeftAxis0Value;
-    myYAxisValue   = Event::SALeftAxis1Value;
+    myXAxisValue   = Event::PaddleZeroAnalog;
+    myYAxisValue   = Event::PaddleOneAnalog;
   }
   else
   {
@@ -44,8 +44,8 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event, const System& system)
     myFireEvent    = Event::JoystickOneFire;
     myTriggerEvent = Event::JoystickOneFire5;
     myBoosterEvent = Event::JoystickOneFire9;
-    myXAxisValue   = Event::SARightAxis0Value;
-    myYAxisValue   = Event::SARightAxis1Value;
+    myXAxisValue   = Event::PaddleTwoAnalog;
+    myYAxisValue   = Event::PaddleThreeAnalog;
   }
 
   setPin(AnalogPin::Five, MAX_RESISTANCE);

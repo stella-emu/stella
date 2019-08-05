@@ -26,7 +26,6 @@
 #include "PNGLibrary.hxx"
 #include "PKeyboardHandler.hxx"
 
-
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
@@ -94,7 +93,7 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
   }
   else if (eraseAll || map.event == event)
   {
-    myKeyMap.eraseEvent(map.event, mode);
+    //myKeyMap.eraseEvent(map.event, mode);
     myKeyMap.add(map.event, mode, map.key, map.mod);
   }
 }
@@ -107,6 +106,12 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
 void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mode,
                                                 bool updateDefaults)
 {
+  if (!updateDefaults)
+  {
+    myKeyMap.eraseEvent(event, mode);
+    myKeyMap.eraseEvent(event, getEventMode(event, mode));
+  }
+
   switch(mode)
   {
     case kEmulationMode:
@@ -186,7 +191,6 @@ void PhysicalKeyboardHandler::enableEmulationMappings()
       // see below
       break;
 
-
     default:
       enableMappings(RightJoystickEvents, kJoystickMode);
       break;
@@ -226,7 +230,7 @@ void PhysicalKeyboardHandler::enableCommonMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableMappings(const EventSet events, EventMode mode)
+void PhysicalKeyboardHandler::enableMappings(const Event::EventSet events, EventMode mode)
 {
   for (const auto& event : events)
     enableMapping(event, mode);
@@ -236,7 +240,7 @@ void PhysicalKeyboardHandler::enableMappings(const EventSet events, EventMode mo
 void PhysicalKeyboardHandler::enableMapping(const Event::Type event, EventMode mode)
 {
   // copy from controller mode into emulation mode
-  std::vector<KeyMap::Mapping> mappings = myKeyMap.getEventMapping(event, mode);
+  KeyMap::MappingArray mappings = myKeyMap.getEventMapping(event, mode);
 
   for (const auto& mapping : mappings)
     myKeyMap.add(event, kEmulationMode, mapping.key, mapping.mod);
@@ -388,46 +392,6 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventSet PhysicalKeyboardHandler::LeftJoystickEvents = {
-  Event::JoystickZeroUp, Event::JoystickZeroDown, Event::JoystickZeroLeft, Event::JoystickZeroRight,
-  Event::JoystickZeroFire, Event::JoystickZeroFire5, Event::JoystickZeroFire9,
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventSet PhysicalKeyboardHandler::RightJoystickEvents = {
-  Event::JoystickOneUp, Event::JoystickOneDown, Event::JoystickOneLeft, Event::JoystickOneRight,
-  Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventSet PhysicalKeyboardHandler::LeftPaddlesEvents = {
-  Event::PaddleZeroDecrease, Event::PaddleZeroIncrease, Event::PaddleZeroAnalog, Event::PaddleZeroFire,
-  Event::PaddleOneDecrease, Event::PaddleOneIncrease, Event::PaddleOneAnalog, Event::PaddleOneFire,
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventSet PhysicalKeyboardHandler::RightPaddlesEvents = {
-  Event::PaddleTwoDecrease, Event::PaddleTwoIncrease, Event::PaddleTwoAnalog, Event::PaddleTwoFire,
-  Event::PaddleThreeDecrease, Event::PaddleThreeIncrease, Event::PaddleThreeAnalog, Event::PaddleThreeFire,
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventSet PhysicalKeyboardHandler::LeftKeypadEvents = {
-  Event::KeyboardZero1, Event::KeyboardZero2, Event::KeyboardZero3,
-  Event::KeyboardZero4, Event::KeyboardZero5, Event::KeyboardZero6,
-  Event::KeyboardZero7, Event::KeyboardZero8, Event::KeyboardZero9,
-  Event::KeyboardZeroStar, Event::KeyboardZero0, Event::KeyboardZeroPound,
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventSet PhysicalKeyboardHandler::RightKeypadEvents = {
-  Event::KeyboardOne1, Event::KeyboardOne2, Event::KeyboardOne3,
-  Event::KeyboardOne4, Event::KeyboardOne5, Event::KeyboardOne6,
-  Event::KeyboardOne7, Event::KeyboardOne8, Event::KeyboardOne9,
-  Event::KeyboardOneStar, Event::KeyboardOne0, Event::KeyboardOnePound,
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommonMapping = {
   {Event::ConsoleSelect,            KBDK_F1},
   {Event::ConsoleReset,             KBDK_F2},
@@ -544,6 +508,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
   {Event::UIPgDown,                 KBDK_PAGEDOWN},
 
   {Event::UISelect,                 KBDK_RETURN},
+  {Event::UISelect,                 KBDK_KP_ENTER},
   {Event::UICancel,                 KBDK_ESCAPE},
 
   {Event::UINavPrev,                KBDK_TAB, KBDM_SHIFT},
@@ -579,11 +544,17 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
   {Event::JoystickZeroDown,         KBDK_DOWN},
   {Event::JoystickZeroLeft,         KBDK_LEFT},
   {Event::JoystickZeroRight,        KBDK_RIGHT},
+  {Event::JoystickZeroUp,           KBDK_KP_8},
+  {Event::JoystickZeroDown,         KBDK_KP_2},
+  {Event::JoystickZeroLeft,         KBDK_KP_4},
+  {Event::JoystickZeroRight,        KBDK_KP_6},
   {Event::JoystickZeroFire,         KBDK_SPACE},
   {Event::JoystickZeroFire,         KBDK_LCTRL},
+  {Event::JoystickZeroFire,         KBDK_KP_5},
   {Event::JoystickZeroFire5,        KBDK_4},
+  {Event::JoystickZeroFire5,        KBDK_KP_9},
   {Event::JoystickZeroFire9,        KBDK_5},
-
+  {Event::JoystickZeroFire9,        KBDK_KP_3},
   {Event::JoystickOneUp,            KBDK_Y},
   {Event::JoystickOneDown,          KBDK_H},
   {Event::JoystickOneLeft,          KBDK_G},
@@ -640,7 +611,6 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultKeypa
   {Event::KeyboardOne0,             KBDK_PERIOD},
   {Event::KeyboardOnePound,         KBDK_SLASH},
 };
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::CompuMateMapping = {

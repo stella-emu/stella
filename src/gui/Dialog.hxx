@@ -139,10 +139,10 @@ class Dialog : public GuiObject
     virtual bool handleMouseClicks(int x, int y, MouseButton b);
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyUp(int stick, int button);
-    virtual void handleJoyAxis(int stick, int axis, int value);
-    virtual bool handleJoyHat(int stick, int hat, JoyHat value);
+    virtual void handleJoyAxis(int stick, int axis, int value, int button = JOY_CTRL_NONE);
+    virtual bool handleJoyHat(int stick, int hat, JoyHat value, int button = JOY_CTRL_NONE);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    virtual Event::Type getJoyAxisEvent(int stick, int axis, int value);
+    virtual Event::Type getJoyAxisEvent(int stick, int axis, int value, int button);
 
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any
 
