@@ -211,6 +211,26 @@ class FBSurface
       @param x      The x coordinate
       @param y      The y coordinate
       @param w      The width of the string area
+      @param h      The height of the string area (for multi line strings)
+      @param color  The color of the text
+      @param align  The alignment of the text in the string width area
+      @param deltax FIXME
+      @param useEllipsis  Whether to use '...' when the string is too long
+    */
+
+    virtual void drawString(
+      const GUI::Font& font, const string& s, int x, int y, int w, int h,
+      ColorId color, TextAlign align = TextAlign::Left,
+      int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
+
+    /**
+      This method should be called to draw the specified string.
+
+      @param font   The font to draw the string with
+      @param s      The string to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the string area
       @param color  The color of the text
       @param align  The alignment of the text in the string width area
       @param deltax FIXME
@@ -343,6 +363,15 @@ class FBSurface
       @return       True if coordinates are in bounds
     */
     bool checkBounds(const uInt32 x, const uInt32 y) const;
+
+    void wrapString(const string inStr, int pos, string& leftStr, string& rightStr) const;
+
+    /**
+      Check if the given character is a whitespace.
+      @param c      Character to check
+      @return       True if whitespace character
+    */
+    bool isWhiteSpace(const char s) const;
 
   protected:
     static const uInt32* myPalette;

@@ -56,10 +56,11 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
             buttonHeight = font.getLineHeight() + 4;
   const int HBORDER = 8;
   const int VBORDER = 8;
+  const int ACTION_LINES = 2;
   int xpos = HBORDER, ypos = VBORDER;
 
   myActionsList = new StringListWidget(boss, font, xpos, ypos,
-                                       _w - buttonWidth - HBORDER * 2 - 8, _h - 3*lineHeight - VBORDER);
+                                       _w - buttonWidth - HBORDER * 2 - 8, _h - (2 + ACTION_LINES) * lineHeight - VBORDER);
   myActionsList->setTarget(this);
   myActionsList->setEditable(false);
   myActionsList->setList(actions);
@@ -117,7 +118,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                            fontHeight, "Action", TextAlign::Left);
 
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 8, ypos,
-                                    _w - xpos - t->getWidth() - 8 - HBORDER, lineHeight, "");
+                                    _w - xpos - t->getWidth() - 8 - HBORDER, lineHeight * ACTION_LINES, "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
 }
