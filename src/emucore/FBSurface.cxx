@@ -312,9 +312,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::wrapString(const string inStr, int pos, string& leftStr, string& rightStr) const
 {
-  int i;
-
-  for(i = pos; i > 0; --i)
+  for(int i = pos; i > 0; --i)
   {
     if(isWhiteSpace(inStr[i]))
     {
@@ -333,9 +331,8 @@ void FBSurface::wrapString(const string inStr, int pos, string& leftStr, string&
 bool FBSurface::isWhiteSpace(const char s) const
 {
   const string WHITESPACES = " ,.;:+-";
-  int i;
 
-  for(i = 0; i < WHITESPACES.length(); ++i)
+  for(size_t i = 0; i < WHITESPACES.length(); ++i)
     if(s == WHITESPACES[i])
       return true;
 
@@ -348,6 +345,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
   ColorId color, TextAlign align,
   int deltax, bool useEllipsis, ColorId shadowColor)
 {
+#ifdef GUI_SUPPORT
   string inStr = s;
 
   // draw multiline string
@@ -375,6 +373,7 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     inStr = rightStr;
   }
   drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
