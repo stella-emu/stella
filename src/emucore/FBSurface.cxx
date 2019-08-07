@@ -310,6 +310,74 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::wrapString(const string inStr, int pos, string& leftStr, string& rightStr) const
+{
+  int i;
+
+  for(i = pos; i > 0; --i)
+  {
+    if(isWhiteSpace(inStr[i]))
+    {
+      leftStr = inStr.substr(0, i);
+      if(inStr[i] == ' ') // skip leading space after line break
+        i++;
+      rightStr = inStr.substr(i);
+      return;
+    }
+  }
+  leftStr = inStr.substr(0, pos);
+  rightStr = inStr.substr(pos);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FBSurface::isWhiteSpace(const char s) const
+{
+  const string WHITESPACES = " ,.;:+-";
+  int i;
+
+  for(i = 0; i < WHITESPACES.length(); ++i)
+    if(s == WHITESPACES[i])
+      return true;
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurface::drawString(const GUI::Font& font, const string& s,
+  int x, int y, int w, int h,
+  ColorId color, TextAlign align,
+  int deltax, bool useEllipsis, ColorId shadowColor)
+{
+  string inStr = s;
+
+  // draw multiline string
+  while (font.getStringWidth(inStr) > w && h >= font.getFontHeight() * 2)
+  {
+    // String is too wide.
+    uInt32 i;
+    string leftStr, rightStr;
+    int w2 = 0;
+
+    // SLOW algorithm to find the acceptable length. But it is good enough for now.
+    for(i = 0; i < inStr.size(); ++i)
+    {
+      int charWidth = font.getCharWidth(inStr[i]);
+      if(w2 + charWidth > w)
+        break;
+
+      w2 += charWidth;
+      //str += inStr[i];
+    }
+    wrapString(inStr, i, leftStr, rightStr);
+    drawString(font, leftStr, x, y, w, color, align, deltax, false, shadowColor);
+    h -= font.getFontHeight();
+    y += font.getFontHeight();
+    inStr = rightStr;
+  }
+  drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::drawString(const GUI::Font& font, const string& s,
                            int x, int y, int w,
                            ColorId color, TextAlign align,
