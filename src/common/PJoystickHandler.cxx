@@ -490,7 +490,7 @@ void PhysicalJoystickHandler::eraseMapping(Event::Type event, EventMode mode)
         stick.second->eraseMap(kCommonMode);
         stick.second->eraseMap(kJoystickMode);
         stick.second->eraseMap(kPaddlesMode);
-        stick.second->eraseMap(kKeypadMode);        
+        stick.second->eraseMap(kKeypadMode);
       }
     }
   }
@@ -729,8 +729,8 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
           myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHat::LEFT, button);
       }
     }
-  }
 #endif
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
