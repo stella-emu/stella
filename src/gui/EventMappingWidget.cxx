@@ -263,8 +263,12 @@ bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
   // Remap keys in remap mode
   if (myRemapStatus && myActionSelected >= 0)
   {
-    myLastKey = key;
+    // TODO: further improve logic here
+    // Avoid overwriting normal keys with modifier keys
+    if (!myMod || (key < KBDK_LCTRL || key > KBDK_RGUI))
+      myLastKey = key;
     myMod |= mod;
+    // cerr << myLastKey << ", " << key << endl;
   }
   return true;
 }
@@ -278,7 +282,7 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
   {
     Event::Type event =
       instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if (instance().eventHandler().addKeyMapping(event, myEventMode, StellaKey(myLastKey), StellaMod(myMod)))
+    if (myLastKey == 0 || instance().eventHandler().addKeyMapping(event, myEventMode, StellaKey(myLastKey), StellaMod(myMod)))
       stopRemapping();
   }
   return true;
