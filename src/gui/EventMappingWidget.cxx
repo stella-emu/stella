@@ -263,12 +263,14 @@ bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
   // Remap keys in remap mode
   if (myRemapStatus && myActionSelected >= 0)
   {
-    // TODO: further improve logic here
-    // Avoid overwriting normal keys with modifier keys
-    if (!myMod || (key < KBDK_LCTRL || key > KBDK_RGUI))
+    // Mod keys are only recorded if no other key has been recorded before
+    if (key < KBDK_LCTRL || key > KBDK_RGUI
+      || (!myLastKey || myLastKey >= KBDK_LCTRL && myLastKey <= KBDK_RGUI))
+    {
       myLastKey = key;
+    }
     myMod |= mod;
-    // cerr << myLastKey << ", " << key << endl;
+    cerr << myMod << ", " << myLastKey << " | " << mod << ", " << key << endl;
   }
   return true;
 }
@@ -282,7 +284,20 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
   {
     Event::Type event =
       instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if (myLastKey == 0 || instance().eventHandler().addKeyMapping(event, myEventMode, StellaKey(myLastKey), StellaMod(myMod)))
+
+    // if not pressed alone, map left and right modifier keys
+    if(myLastKey < KBDK_LCTRL || myLastKey > KBDK_RGUI)
+    {
+      if(myMod & KBDM_CTRL)
+        myMod |= KBDM_CTRL;
+      if(myMod & KBDM_SHIFT)
+        myMod |= KBDM_SHIFT;
+      if(myMod & KBDM_ALT)
+        myMod |= KBDM_ALT;
+      if(myMod & KBDM_GUI)
+        myMod |= KBDM_GUI;
+    }
+    if (instance().eventHandler().addKeyMapping(event, myEventMode, StellaKey(myLastKey), StellaMod(myMod)))
       stopRemapping();
   }
   return true;
