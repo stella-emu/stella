@@ -445,6 +445,12 @@ void InputDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool InputDialog::repeatEnabled()
+{
+  return !myEmulEventMapper->isRemapping() && !myMenuEventMapper->isRemapping();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleKeyDown(StellaKey key, StellaMod mod)
 {
   // Remap key events in remap mode, otherwise pass to parent dialog
