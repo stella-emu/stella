@@ -93,7 +93,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   };
   auto ADD_EVENT = [&](const Event::Type e, const string & d)
   {
-    ADD_BIND(instance().eventHandler().getMappingDesc(e, kEmulationMode), d);
+    string desc = instance().eventHandler().getMappingDesc(e, kEmulationMode);
+    ADD_BIND(desc.length() ? desc : "None", d);
   };
   auto ADD_TEXT = [&](const string& d) { ADD_BIND("", d); };
   auto ADD_LINE = [&]() { ADD_BIND("", ""); };
