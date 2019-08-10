@@ -310,7 +310,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::wrapString(const string inStr, int pos, string& leftStr, string& rightStr) const
+void FBSurface::wrapString(const string& inStr, int pos, string& leftStr, string& rightStr) const
 {
   for(int i = pos; i > 0; --i)
   {
