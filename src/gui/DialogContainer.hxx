@@ -176,7 +176,8 @@ class DialogContainer
     enum {
       kDoubleClickDelay   = 500,
       kRepeatInitialDelay = 400,
-      kRepeatSustainDelay = 50
+      kRepeatSustainDelay = 50,
+      kRepeatNone         = 1 << 24 // loooong
     };
 
     // Indicates the most current time (in milliseconds) as set by updateTime()

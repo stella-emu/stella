@@ -33,7 +33,6 @@ class InputDialog;
 #include "Command.hxx"
 #include "bspf.hxx"
 
-
 class EventMappingWidget : public Widget, public CommandSender
 {
   friend class InputDialog;
@@ -73,6 +72,8 @@ class EventMappingWidget : public Widget, public CommandSender
     void eraseRemapping();
     void resetRemapping();
     void stopRemapping();
+
+    bool isRemapping() { return myRemapStatus; }
 
     void drawKeyMapping();
     void enableButtons(bool state);

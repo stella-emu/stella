@@ -270,7 +270,6 @@ bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
       myLastKey = key;
     }
     myMod |= mod;
-    cerr << myMod << ", " << myLastKey << " | " << mod << ", " << key << endl;
   }
   return true;
 }
@@ -329,9 +328,15 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
       Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
 
       cerr << "remap button stop" << endl;
-      // This maps solo button presses only
-      if (eh.addJoyMapping(event, myEventMode, stick, button))
-        stopRemapping();
+      // map either button/hat, solo button or button/axis combinations
+      if(myLastHat != -1)
+      {
+        if(eh.addJoyHatMapping(event, myEventMode, stick, button, myLastHat, JoyHat(myLastValue)))
+          stopRemapping();
+      }
+      else
+        if (eh.addJoyMapping(event, myEventMode, stick, button, JoyAxis(myLastAxis), myLastValue))
+          stopRemapping();
     }
   }
 }
@@ -349,7 +354,7 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value, int butto
     // Detect the first axis event that represents 'on'
     if((myLastStick == -1 || myLastStick == stick) && myLastAxis == -1 && value != 0)
     {
-      cerr << "remap start" << endl;
+      cerr << "remap axis start" << endl;
       myLastStick = stick;
       myLastAxis = axis;
       myLastValue = value;
@@ -361,7 +366,7 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value, int butto
       EventHandler& eh = instance().eventHandler();
       Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
 
-      cerr << "remap stop" << endl;
+      cerr << "remap axis stop" << endl;
       if (eh.addJoyMapping(event, myEventMode, stick, myLastButton, JoyAxis(axis), myLastValue))
         stopRemapping();
     }

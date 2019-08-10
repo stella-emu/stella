@@ -165,6 +165,8 @@ class Dialog : public GuiObject
     void setSize(uInt32 w, uInt32 h, uInt32 max_w, uInt32 max_h);
     void positionAt(uInt32 pos);
 
+    virtual bool repeatEnabled() { return true; }
+
   private:
     void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e);

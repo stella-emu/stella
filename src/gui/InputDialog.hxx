@@ -42,6 +42,10 @@ class InputDialog : public Dialog
                 const GUI::Font& font, int max_w, int max_h);
     virtual ~InputDialog();
 
+  protected:
+    // disable repeat during and directly after mapping events
+    bool repeatEnabled() override;
+
   private:
     void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;
