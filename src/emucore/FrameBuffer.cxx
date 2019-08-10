@@ -1104,7 +1104,6 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
   image.setHeight(ih);
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
 // VideoModeList implementation
@@ -1243,7 +1242,7 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xac3410, 0xd55941, 0x686868, 0xdccfa5, 0xf0f0cf, 0xf0f0cf, // buttons
     0xac3410,                                                   // checkbox
     0xac3410, 0xd55941,                                         // scrollbar
-    0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
+    0xc80000, 0xffff80, 0xc8c8ff, 0xc80000,                     // debugger
     0xac3410, 0xd55941, 0xdccfa5, 0xf0f0cf, 0xa38c61,           // slider
     0xffffff, 0xac3410, 0xf0f0cf, 0x686868, 0xdccfa5            // other
   },
