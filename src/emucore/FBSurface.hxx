@@ -364,11 +364,11 @@ class FBSurface
     */
     bool checkBounds(const uInt32 x, const uInt32 y) const;
 
-    void wrapString(const string inStr, int pos, string& leftStr, string& rightStr) const;
+    void wrapString(const string& inStr, int pos, string& leftStr, string& rightStr) const;
 
     /**
       Check if the given character is a whitespace.
-      @param c      Character to check
+      @param s      Character to check
       @return       True if whitespace character
     */
     bool isWhiteSpace(const char s) const;
