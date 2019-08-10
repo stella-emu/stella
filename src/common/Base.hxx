@@ -48,7 +48,9 @@ class Base
       F_16_8,    // base 16: 8 bytes wide
       F_10,      // base 10: 3 or 5 bytes (depending on value)
       F_10_02,   // base 10: 02 digits
+      F_10_3,    // base 10: 3 digits
       F_10_4,    // base 10: 4 digits
+      F_10_5,    // base 10: 5 digits
       F_2,       // base 2:  8 or 16 bits (depending on value)
       F_2_8,     // base 2:  1 byte (8 bits) wide
       F_2_16,    // base 2:  2 bytes (16 bits) wide
