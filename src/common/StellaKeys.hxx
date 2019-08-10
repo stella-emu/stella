@@ -330,10 +330,10 @@ enum StellaKey
     KBDK_RALT = 230, /**< alt gr, option */
     KBDK_RGUI = 231, /**< windows, command (apple), meta */
 
-    KBDK_MODE = 257,    /**< I'm not sure if this is really not covered
-                                 *   by any of the above, but since there's a
-                                 *   special KMOD_MODE for it I'm adding it here
-                                 */
+    KBDK_MODE = 257,    /**< ALT-GR(aph) key on non-American keyboards
+                         *   This is like pressing KBDK_RALT + KBDK_RCTRL
+                         *   on some keyboards
+                         */
 
     /* @} *//* Usage page 0x07 */
 
