@@ -71,7 +71,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // 1) Misc. options
   wid.clear();
   tabID = myTab->addTab(" Look & Feel ");
-  lwidth = font.getStringWidth("Mouse wheel scroll ");
+  lwidth = font.getStringWidth("Controller repeat delay ");
   pwidth = font.getStringWidth("Right bottom");
   xpos = HBORDER;  ypos = VBORDER;
 
@@ -94,7 +94,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
   myPositionPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-    items, "Dialogs position ", lwidth);
+                                    items, "Dialogs position ", lwidth);
   wid.push_back(myPositionPopup);
   ypos += lineHeight + V_GAP;
 
@@ -105,24 +105,57 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Delay between quick-selecting characters in ListWidget
   int swidth = myPalettePopup->getWidth() - lwidth;
-  myListDelayPopup = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
-                                      "List input delay   ", 0, kListDelay,
+  myListDelaySlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
+                                      "List input delay        ", 0, kListDelay,
                                       font.getStringWidth("1 second"));
-  myListDelayPopup->setMinValue(0);
-  myListDelayPopup->setMaxValue(1000);
-  myListDelayPopup->setStepValue(50);
-  myListDelayPopup->setTickmarkIntervals(5);
-  wid.push_back(myListDelayPopup);
+  myListDelaySlider->setMinValue(0);
+  myListDelaySlider->setMaxValue(1000);
+  myListDelaySlider->setStepValue(50);
+  myListDelaySlider->setTickmarkIntervals(5);
+  wid.push_back(myListDelaySlider);
   ypos += lineHeight + V_GAP;
 
   // Number of lines a mouse wheel will scroll
-  myWheelLinesPopup = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
-                                      "Mouse wheel scroll ", 0, kMouseWheel,
+  myWheelLinesSlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
+                                      "Mouse wheel scroll      ", 0, kMouseWheel,
                                        font.getStringWidth("10 lines"));
-  myWheelLinesPopup->setMinValue(1);
-  myWheelLinesPopup->setMaxValue(10);
-  myWheelLinesPopup->setTickmarkIntervals(3);
-  wid.push_back(myWheelLinesPopup);
+  myWheelLinesSlider->setMinValue(1);
+  myWheelLinesSlider->setMaxValue(10);
+  myWheelLinesSlider->setTickmarkIntervals(3);
+  wid.push_back(myWheelLinesSlider);
+  ypos += lineHeight + V_GAP;
+
+  // Mouse double click speed
+  myDoubleClickSlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
+                                         "Double-click speed      ", 0, 0,
+                                         font.getStringWidth("900 ms"), " ms");
+  myDoubleClickSlider->setMinValue(100);
+  myDoubleClickSlider->setMaxValue(900);
+  myDoubleClickSlider->setStepValue(50);
+  myDoubleClickSlider->setTickmarkIntervals(8);
+  wid.push_back(myDoubleClickSlider);
+  ypos += lineHeight + V_GAP;
+
+  // Initial delay before controller input will start repeating
+  myControllerDelaySlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
+                                             "Controller repeat delay ", 0, kControllerDelay,
+                                             font.getStringWidth("1 second"));
+  myControllerDelaySlider->setMinValue(200);
+  myControllerDelaySlider->setMaxValue(1000);
+  myControllerDelaySlider->setStepValue(100);
+  myControllerDelaySlider->setTickmarkIntervals(4);
+  wid.push_back(myControllerDelaySlider);
+  ypos += lineHeight + V_GAP;
+
+  // Controller repeat rate
+  myControllerRateSlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
+                                            "Controller repeat rate  ", 0, 0,
+                                            font.getStringWidth("30 repeats/s"), " repeats/s");
+  myControllerRateSlider->setMinValue(2);
+  myControllerRateSlider->setMaxValue(30);
+  myControllerRateSlider->setStepValue(1);
+  myControllerRateSlider->setTickmarkIntervals(14);
+  wid.push_back(myControllerRateSlider);
 
   // Add message concerning usage
   ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
@@ -300,11 +333,23 @@ void UIDialog::loadConfig()
 
   // Listwidget quick delay
   int delay = settings.getInt("listdelay");
-  myListDelayPopup->setValue(delay);
+  myListDelaySlider->setValue(delay);
 
   // Mouse wheel lines
   int mw = settings.getInt("mwheel");
-  myWheelLinesPopup->setValue(mw);
+  myWheelLinesSlider->setValue(mw);
+
+  // Mouse double click
+  int md = settings.getInt("mdouble");
+  myDoubleClickSlider->setValue(md);
+
+  // Controller input delay
+  int cs = settings.getInt("ctrldelay");
+  myControllerDelaySlider->setValue(cs);
+
+  // Controller input rate
+  int cr = settings.getInt("ctrlrate");
+  myControllerRateSlider->setValue(cr);
 
   handleRomViewer();
 
@@ -350,12 +395,24 @@ void UIDialog::saveConfig()
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
 
   // Listwidget quick delay
-  settings.setValue("listdelay", myListDelayPopup->getValue());
-  ListWidget::setQuickSelectDelay(myListDelayPopup->getValue());
+  settings.setValue("listdelay", myListDelaySlider->getValue());
+  ListWidget::setQuickSelectDelay(myListDelaySlider->getValue());
 
   // Mouse wheel lines
-  settings.setValue("mwheel", myWheelLinesPopup->getValue());
-  ScrollBarWidget::setWheelLines(myWheelLinesPopup->getValue());
+  settings.setValue("mwheel", myWheelLinesSlider->getValue());
+  ScrollBarWidget::setWheelLines(myWheelLinesSlider->getValue());
+
+  // Mouse double click
+  settings.setValue("mdouble", myDoubleClickSlider->getValue());
+  DialogContainer::setDoubleClickDelay(myDoubleClickSlider->getValue());
+
+  // Controller input delay
+  settings.setValue("ctrldelay", myControllerDelaySlider->getValue());
+  DialogContainer::setControllerDelay(myControllerDelaySlider->getValue());
+
+  // Controller input rate
+  settings.setValue("ctrlrate", myControllerRateSlider->getValue());
+  DialogContainer::setControllerRate(myControllerRateSlider->getValue());
 
   // Flush changes to disk and inform the OSystem
   instance().saveConfig();
@@ -371,8 +428,11 @@ void UIDialog::setDefaults()
       myPalettePopup->setSelected("standard");
       myHidpiWidget->setState(false);
       myPositionPopup->setSelected("0");
-      myListDelayPopup->setValue(300);
-      myWheelLinesPopup->setValue(4);
+      myListDelaySlider->setValue(300);
+      myWheelLinesSlider->setValue(4);
+      myDoubleClickSlider->setValue(500);
+      myControllerDelaySlider->setValue(400);
+      myControllerRateSlider->setValue(20);
       break;
     case 1:  // Launcher options
     {
@@ -410,26 +470,39 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kListDelay:
-      if(myListDelayPopup->getValue() == 0)
+      if(myListDelaySlider->getValue() == 0)
       {
-        myListDelayPopup->setValueLabel("Off");
-        myListDelayPopup->setValueUnit("");
+        myListDelaySlider->setValueLabel("Off");
+        myListDelaySlider->setValueUnit("");
       }
-      else if(myListDelayPopup->getValue() == 1000)
+      else if(myListDelaySlider->getValue() == 1000)
       {
-        myListDelayPopup->setValueLabel("1");
-        myListDelayPopup->setValueUnit(" second");
+        myListDelaySlider->setValueLabel("1");
+        myListDelaySlider->setValueUnit(" second");
       }
       else
       {
-        myListDelayPopup->setValueUnit(" ms");
+        myListDelaySlider->setValueUnit(" ms");
       }
       break;
+
     case kMouseWheel:
-      if(myWheelLinesPopup->getValue() == 1)
-        myWheelLinesPopup->setValueUnit(" line");
+      if(myWheelLinesSlider->getValue() == 1)
+        myWheelLinesSlider->setValueUnit(" line");
       else
-        myWheelLinesPopup->setValueUnit(" lines");
+        myWheelLinesSlider->setValueUnit(" lines");
+      break;
+
+    case kControllerDelay:
+      if(myControllerDelaySlider->getValue() == 1000)
+      {
+        myControllerDelaySlider->setValueLabel("1");
+        myControllerDelaySlider->setValueUnit(" second");
+      }
+      else
+      {
+        myControllerDelaySlider->setValueUnit(" ms");
+      }
       break;
 
     case kChooseRomDirCmd:

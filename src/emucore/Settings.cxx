@@ -135,6 +135,9 @@ Settings::Settings()
   setPermanent("hidpi", "false");
   setPermanent("listdelay", "300");
   setPermanent("mwheel", "4");
+  setPermanent("mdouble", "500");
+  setPermanent("ctrldelay", "400");
+  setPermanent("ctrlrate", "20");
   setPermanent("basic_settings", false);
   setPermanent("dialogpos", 0);
 
@@ -487,6 +490,9 @@ void Settings::usage() const
     << "                                (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in\n"
     << "                                UI\n"
+    << "  -mdouble      <speed>        Mouse double click speed in UI\n"
+    << "  -ctrldelay    <delay>        Delay before controller input is repeated in UI\n"
+    << "  -ctrlrate     <rate>         Rate per second of repeated controller input in UI\n"
     << "  -basic_settings <0|1>        Display only a basic settings dialog\n"
     << "  -romdir       <dir>          Directory from which to load ROM files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is\n"

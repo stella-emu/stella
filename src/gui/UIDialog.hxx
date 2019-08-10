@@ -41,6 +41,7 @@ class UIDialog : public Dialog, public CommandSender
     {
       kListDelay  = 'UILd',
       kMouseWheel = 'UIMw',
+      kControllerDelay = 'UIcd',
       kChooseRomDirCmd = 'LOrm', // rom select
       kLauncherSize = 'UIls',
       kRomViewer = 'UIRv',
@@ -65,8 +66,11 @@ class UIDialog : public Dialog, public CommandSender
     PopUpWidget*      myPalettePopup;
     CheckboxWidget*   myHidpiWidget;
     PopUpWidget*      myPositionPopup;
-    SliderWidget*     myListDelayPopup;
-    SliderWidget*     myWheelLinesPopup;
+    SliderWidget*     myListDelaySlider;
+    SliderWidget*     myWheelLinesSlider;
+    SliderWidget*     myControllerRateSlider;
+    SliderWidget*     myControllerDelaySlider;
+    SliderWidget*     myDoubleClickSlider;
 
     unique_ptr<BrowserDialog> myBrowser;
 
