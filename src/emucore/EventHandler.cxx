@@ -108,6 +108,15 @@ void EventHandler::initialize()
 
   // Set number of lines a mousewheel will scroll
   ScrollBarWidget::setWheelLines(myOSystem.settings().getInt("mwheel"));
+
+  // Mouse double click
+  DialogContainer::setDoubleClickDelay(myOSystem.settings().getInt("mdouble"));
+
+  // Input delay
+  DialogContainer::setControllerDelay(myOSystem.settings().getInt("inpDelay"));
+
+  // Input rate
+  DialogContainer::setControllerRate(myOSystem.settings().getInt("inpRate"));
 #endif
 
   // Integer to string conversions (for HEX) use upper or lower-case
@@ -1156,7 +1165,6 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
   return false;
 #endif
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::eraseMapping(Event::Type event, EventMode mode)

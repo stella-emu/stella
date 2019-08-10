@@ -34,6 +34,9 @@ DialogContainer::DialogContainer(OSystem& osystem)
     myAxisRepeatTime(0),
     myHatRepeatTime(0)
 {
+  _DOUBLE_CLICK_DELAY = osystem.settings().getInt("mdouble");
+  _REPEAT_INITIAL_DELAY = osystem.settings().getInt("ctrldelay");
+  setControllerRate(osystem.settings().getInt("ctrlrate"));
   reset();
 }
 
@@ -55,14 +58,14 @@ void DialogContainer::updateTime(uInt64 time)
     activeDialog->handleMouseDown(myCurrentMouseDown.x - activeDialog->_x,
                                   myCurrentMouseDown.y - activeDialog->_y,
                                   myCurrentMouseDown.b, 1);
-    myClickRepeatTime = myTime + kRepeatSustainDelay;
+    myClickRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
   }
 
   // Joystick button still pressed
   if(myCurrentButtonDown.stick != -1 && myButtonRepeatTime < myTime)
   {
     activeDialog->handleJoyDown(myCurrentButtonDown.stick, myCurrentButtonDown.button);
-    myButtonRepeatTime = myTime + kRepeatSustainDelay;
+    myButtonRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
   }
 
   // Joystick axis still pressed
@@ -70,7 +73,7 @@ void DialogContainer::updateTime(uInt64 time)
   {
     activeDialog->handleJoyAxis(myCurrentAxisDown.stick, myCurrentAxisDown.axis,
                                 myCurrentAxisDown.value);
-    myAxisRepeatTime = myTime + kRepeatSustainDelay;
+    myAxisRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
   }
 
   // Joystick hat still pressed
@@ -78,7 +81,7 @@ void DialogContainer::updateTime(uInt64 time)
   {
     activeDialog->handleJoyHat(myCurrentHatDown.stick, myCurrentHatDown.hat,
                                 myCurrentHatDown.value);
-    myHatRepeatTime = myTime + kRepeatSustainDelay;
+    myHatRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
   }
 }
 
@@ -219,7 +222,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
           myLastClick.count = 0;
         }
 
-        if(myLastClick.count && (myTime < myLastClick.time + kDoubleClickDelay)
+        if(myLastClick.count && (myTime < myLastClick.time + _DOUBLE_CLICK_DELAY)
            && std::abs(myLastClick.x - x) < 3
            && std::abs(myLastClick.y - y) < 3)
         {
@@ -240,7 +243,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, bool pressed,
           myCurrentMouseDown.x = x;
           myCurrentMouseDown.y = y;
           myCurrentMouseDown.b = b;
-          myClickRepeatTime = myTime + kRepeatInitialDelay;
+          myClickRepeatTime = myTime + _REPEAT_INITIAL_DELAY;
         }
         else
           myCurrentMouseDown.b = MouseButton::NONE;
@@ -284,7 +287,7 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
   {
     myCurrentButtonDown.stick  = stick;
     myCurrentButtonDown.button = button;
-    myButtonRepeatTime = myTime + (activeDialog->repeatEnabled() ? kRepeatInitialDelay : kRepeatNone);
+    myButtonRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : kRepeatNone);
 
     activeDialog->handleJoyDown(stick, button);
   }
@@ -323,7 +326,7 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value, int but
     myCurrentAxisDown.stick = stick;
     myCurrentAxisDown.axis  = axis;
     myCurrentAxisDown.value = value;
-    myAxisRepeatTime = myTime + (activeDialog->repeatEnabled() ? kRepeatInitialDelay : kRepeatNone);
+    myAxisRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : kRepeatNone);
   }
   activeDialog->handleJoyAxis(stick, axis, value, button);
 }
@@ -349,8 +352,7 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value, int bu
     myCurrentHatDown.stick = stick;
     myCurrentHatDown.hat  = hat;
     myCurrentHatDown.value = value;
-    myHatRepeatTime = myTime + (activeDialog->repeatEnabled() ? kRepeatInitialDelay : kRepeatNone);
-    //myHatRepeatTime = myTime + kRepeatInitialDelay;
+    myHatRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : kRepeatNone);
   }
   activeDialog->handleJoyHat(stick, hat, value, button);
 }
@@ -367,3 +369,9 @@ void DialogContainer::reset()
   myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
   myCurrentHatDown.stick = myCurrentHatDown.hat = -1;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 DialogContainer::_DOUBLE_CLICK_DELAY = 500;
+uInt64 DialogContainer::_REPEAT_INITIAL_DELAY = 400;
+uInt64 DialogContainer::_REPEAT_SUSTAIN_DELAY = 50;
+

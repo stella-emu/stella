@@ -155,6 +155,13 @@ class DialogContainer
     */
     virtual Dialog* baseDialog() = 0;
 
+    /**
+      Set input speeds
+    */
+    static void setDoubleClickDelay(int delay) { _DOUBLE_CLICK_DELAY = delay; }
+    static void setControllerDelay(int delay) { _REPEAT_INITIAL_DELAY = delay; }
+    static void setControllerRate(int rate) { _REPEAT_SUSTAIN_DELAY = 1000 / rate; }
+
   private:
     void reset();
 
@@ -174,14 +181,15 @@ class DialogContainer
 
   private:
     enum {
-      kDoubleClickDelay   = 500,
-      kRepeatInitialDelay = 400,
-      kRepeatSustainDelay = 50,
       kRepeatNone         = 1 << 24 // loooong
     };
 
     // Indicates the most current time (in milliseconds) as set by updateTime()
     uInt64 myTime;
+
+    static uInt64 _DOUBLE_CLICK_DELAY;
+    static uInt64 _REPEAT_INITIAL_DELAY;
+    static uInt64 _REPEAT_SUSTAIN_DELAY;
 
     // For continuous 'mouse down' events
     struct {
