@@ -39,7 +39,7 @@ class PhysicalJoystick
 {
   friend class PhysicalJoystickHandler;
 
-  static constexpr char MODE_DELIM = 0xA7; //'§', must not be '^', '|' or '#'
+  static constexpr char MODE_DELIM = '>'; // must not be '^', '|' or '#'
 
   public:
     PhysicalJoystick();
@@ -71,7 +71,6 @@ class PhysicalJoystick
     int numAxes, numButtons, numHats;
     int* axisLastValue;
     int* buttonLast;
-
 
     // Hashmaps of controller events
     JoyMap joyMap;
