@@ -14,8 +14,6 @@
 
 6.0 to 6.1: (MM dd, 2019)
 
-  TODO: sorting
-
   * Note: because of major event remapping changes, all remappings will be
           reset to defaults; if you had custom mappings, they will need to
           be re-entered again.
@@ -24,57 +22,38 @@
           WinXP is now completely out of support from Microsoft, so we
           are doing the same.
 
-  * Improved debugger's TIA display and zoom windows (TODO: doc)
-
-  * Enhanced UA bankswitching to support certain Brazilian carts.
-
-  * Added option to save and load all TimeMachine states at once (TODO: doc)
-
-  * Added option to change pitch if Pitfall II (TODO: doc)
-
-  * Added that Stella now remembers last window position (TODO: doc)
-
-  * Fixed display for OpenGLES renderers used by Libretro 
-    * and much more for Libretro support
-
-  * Updated internal ROM properties database to ROM-Hunter version 15
-    (thanks go to RomHunter for his tireless research in this area).
-    Related to this, updated the snapshot collection.
-
-  * Added various developer options for oddball TIAs: (TODO: doc)
-     - stuffed player, missiles and ball move
-     - delayed playfield bits and color
-     - delayed players and ball VDEL swap
-
-  * Fullscreen TIA modes no longer assume that desktop taskbars, etc
-    are present, hence they are scaled to the proper fullscreen size.
-
   * Added proper Retron77 port. (TODO: doc)
-
-  * Reworked ROM properties database, making it load faster in certain
-    cases.  Related to this, completely removed 'Display_Height' stuff.
-    (TODO: Stella.pro cleanup, doc)
-
-  * Disabled some developer options for 'Player settings'.
-
-  * Enhanced 'Command' menu to display current state and more commands.
 
   * Added automatic controller detection. (TODO: doc)
 
+  * Removed superfluous controller option 'PADDLES_IDIR'.
+
   * Added configurable paddle dejittering. (TODO: doc)
 
-  * Removed superfluous controller option 'PADDLES_IDIR'.
+  * Huge improvements to event remapping. (TODO: doc)
+    - Allow mapping of modifier-key and button-direction combinations.
+    - One controller can use the same mappings as other controllers  
+    - Much more events can be remapped
+
+  * Key-repeat mode improved; entering Time Machine by holding down a key
+    combo continues to send events (previously, you had to release and then
+    press the combo again).
+
+  * Certain buttons in the UI can now be activated repeatedly by holding
+    down the mouse button (Time Machine, debugger step/trace/frame advance,
+    etc.)
+
+  * Added option to configure mouse double click speed
+
+  * Added option to configure controller input repeat speed
+
+  * Added hotkey for sound on/off.
 
   * Added 'HiDPI' mode, which scales the UI by 2x when enabled.  This is
     meant for 4k and above monitors, but can actually be used at any
     lower resolution that is large enough to display the scaled UI. (TODO: doc)
 
-  * Huge improvements to event remapping. (TODO: doc)
-    * keyboard mapping
-    * controller mapping
-    * more events
-
-  * Added configurable 'Overscan' option for fullscreen modes. (TODO: doc)
+  * Fixed TIA 'Center' option, Stella now remembers the last windowed position. (TODO: doc)
 
   * Added fractional TIA zooms (1/4 increments). (TODO: doc)
 
@@ -82,45 +61,64 @@
     new option allows to preserve TIA image aspect ratio in fullscreen
     mode, or stretch to fill the entire screen. (TODO: doc)
 
-  * Allow mapping of modifier-key combinations.
+  * Added configurable 'Overscan' option for fullscreen modes. (TODO: doc)
 
-  * Key-repeat mode improved; entering Time Machine by holding down a key
-    combo continues to send events (previously, you had to release and then
-    press the combo again).
-
-  * Added hotkey for sound on/off.
-
-  * Added support for CDFJ bankswitching type.
+  * Fullscreen TIA modes no longer assume that desktop taskbars, etc
+    are present, hence they are scaled to the proper fullscreen size.
 
   * Added option to display dialogs in screen corners. (TODO: doc)
 
-  * Fixed TIA 'Center' option, Stella now remembers the last windowed position. (TODO: doc)
+  * Enhanced 'Command' menu to display current state and more commands.
 
-  * Fixed not working 7800 pause key.
+  * Added option to save and load all TimeMachine states at once (TODO: doc)
+
+  * Added option to change pitch of Pitfall II music (TODO: doc)
+
+  * Added various developer options for oddball TIAs: (TODO: doc)
+    - stuffed player, missiles and ball move
+    - delayed playfield bits and color
+    - delayed players and ball VDEL swap
+
+  * Disabled some developer options for 'Player settings'.
+
+  * Improved debugger's TIA display and zoom windows (TODO: doc)
 
   * Fixed display of negative values in debugger; sometimes they were
     shown as positive.
 
-  * Fixed cheatcode handling in 2K and 4K ROMs.
+  * Reworked ROM properties database, making it load faster in certain
+    cases.  Related to this, completely removed 'Display_Height' stuff.
+    (TODO: Stella.pro cleanup, doc)
+
+  * Updated internal ROM properties database to ROM-Hunter version 15
+    (thanks go to RomHunter for his tireless research in this area).
+    Related to this, updated the snapshot collection.
 
   * Fixed 'Dancing Plate (Unknown) (PAL)' to use joystick.
 
+  * Fixed cheatcode handling in 2K and 4K ROMs.
+
   * Fixed bug where frying one ROM was continued with the next ROM.
+
+  * Fixed not working 7800 pause key.
+
+  * Added support for CDFJ bankswitching type.
 
   * Allow the DPC+ scheme to not enable playfield 'jitter' effect for
     certain older DPC+ driver versions; this allows 'Epic Adventure' ROM
     to finally work in Stella.
 
-  * Fixed bug in DPC+ scheme; 'fast fetch mode' was enabled at startup,
-    when it should be disabled by default.
-
-  * Certain buttons in the UI can now be activated repeatedly by holding
-    down the mouse button (Time Machine, debugger step/trace/frame advance,
-    etc.)
+  * Enhanced UA bankswitching to support certain Brazilian carts.
 
   * Auto-detection of bankswitch scheme by file extension now includes
     more human-readable formats (not restricted to DOS 3-char length).
     See the documentation for the new names.
+
+  * Fixed bug in DPC+ scheme; 'fast fetch mode' was enabled at startup,
+    when it should be disabled by default.
+
+  * Fixed display for OpenGLES renderers used by Libretro 
+    - and much more for Libretro support       
 
   * PNG/ZIP image support is now conditionally compiled into Stella.
     All major ports (Linux/macOS/Windows) have it enabled by default.
