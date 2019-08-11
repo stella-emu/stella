@@ -24,11 +24,11 @@
 
   * Added proper Retron77 port. (TODO: doc)
 
-  * Added automatic controller detection. (TODO: doc)
+  * Added automatic controller detection. 
 
   * Removed superfluous controller option 'PADDLES_IDIR'.
 
-  * Added configurable paddle dejittering. (TODO: doc)
+  * Added configurable paddle dejittering.
 
   * Huge improvements to event remapping. (TODO: doc)
     - Allow mapping of modifier-key and button-direction combinations.
@@ -47,32 +47,34 @@
 
   * Added option to configure controller input repeat speed
 
-  * Added hotkey for sound on/off.
-
   * Added 'HiDPI' mode, which scales the UI by 2x when enabled.  This is
     meant for 4k and above monitors, but can actually be used at any
-    lower resolution that is large enough to display the scaled UI. (TODO: doc)
+    lower resolution that is large enough to display the scaled UI. 
 
-  * Fixed TIA 'Center' option, Stella now remembers the last windowed position. (TODO: doc)
+  * Fixed TIA 'Center' option, Stella now remembers the last windowed position. 
 
-  * Added fractional TIA zooms (1/4 increments). (TODO: doc)
+  * Added fractional (25% increments) TIA zooms.
 
   * Removed 'tia.fsfill' option, replacing it with 'tia.fs_stretch'.  This
     new option allows to preserve TIA image aspect ratio in fullscreen
-    mode, or stretch to fill the entire screen. (TODO: doc)
+    mode, or stretch to fill the entire screen. 
 
-  * Added configurable 'Overscan' option for fullscreen modes. (TODO: doc)
+  * Added configurable 'Overscan' option for fullscreen modes.
 
   * Fullscreen TIA modes no longer assume that desktop taskbars, etc
     are present, hence they are scaled to the proper fullscreen size.
 
-  * Added option to display dialogs in screen corners. (TODO: doc)
+  * Added option to display dialogs in screen corners.
+
+  * Added hotkey for sound on/off.
+
+  * Paths have been simplified (TODO: doc)
 
   * Enhanced 'Command' menu to display current state and more commands.
 
-  * Added option to save and load all TimeMachine states at once (TODO: doc)
+  * Added option to save and load all TimeMachine states at once 
 
-  * Added option to change pitch of Pitfall II music (TODO: doc)
+  * Added option to change pitch of Pitfall II music 
 
   * Added various developer options for oddball TIAs: (TODO: doc)
     - stuffed player, missiles and ball move
