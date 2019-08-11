@@ -17,6 +17,7 @@
 
 #include "Bankswitch.hxx"
 #include "Console.hxx"
+#include "Cart.hxx"
 #include "MouseControl.hxx"
 #include "SaveKey.hxx"
 #include "Dialog.hxx"
@@ -80,7 +81,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos = VBORDER;
 
-  t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "Type (*) ");
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "Type (*)      ");
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
   for(uInt32 i = 0; i < uInt32(Bankswitch::Type::NumSchemes); ++i)
@@ -92,10 +93,18 @@ GameInfoDialog::GameInfoDialog(
 
   myTypeDetected = new StaticTextWidget(myTab, ifont, t->getRight() + 8, ypos,
                                         "CM (SpectraVideo CompuMate) detected");
-  ypos += ifont.getLineHeight() + VGAP * 4;
+  ypos += ifont.getLineHeight() + VGAP;
+
+  // Start bank
+  myStartBankLabel = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "Start bank (*) ");
+  items.clear();
+  myStartBank = new PopUpWidget(myTab, font, myStartBankLabel->getRight(), ypos,
+                                font.getStringWidth("AUTO"), lineHeight, items, "", 0, 0);
+  wid.push_back(myStartBank);
+  ypos += lineHeight + VGAP * 4;
 
   pwidth = font.getStringWidth("Auto-detect");
-  t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "TV format ");
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "TV format      ");
   items.clear();
   VarList::push_back(items, "Auto-detect", "AUTO");
   VarList::push_back(items, "NTSC", "NTSC");
@@ -378,6 +387,28 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   else
     myTypeDetected->setLabel("");
 
+  // Start bank
+  VariantList items;
+
+  VarList::push_back(items, "Auto", "AUTO");
+  if(instance().hasConsole())
+  {
+    uInt16 numBanks = instance().console().cartridge().bankCount();
+
+    for(uInt16 i = 0; i < numBanks; ++i)
+      VarList::push_back(items, i, i);
+    myStartBank->setEnabled(true);
+  }
+  else
+  {
+    string startBank = props.get(PropType::Cart_StartBank);
+
+    VarList::push_back(items, startBank, startBank);
+    myStartBank->setEnabled(false);
+  }
+  myStartBank->addItems(items);
+  myStartBank->setSelected(props.get(PropType::Cart_StartBank), "AUTO");
+
   myFormat->setSelected(props.get(PropType::Display_Format), "AUTO");
   if(instance().hasConsole() && myFormat->getSelectedTag().toString() == "AUTO")
   {
@@ -511,17 +542,17 @@ void GameInfoDialog::saveConfig()
 {
   // Emulation properties
   myGameProperties.set(PropType::Cart_Type, myBSType->getSelectedTag().toString());
+  myGameProperties.set(PropType::Cart_StartBank, myStartBank->getSelectedTag().toString());
   myGameProperties.set(PropType::Display_Format, myFormat->getSelectedTag().toString());
   myGameProperties.set(PropType::Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
-
   myGameProperties.set(PropType::Display_PPBlend, myPPBlend->getValueLabel() == "Off" ? "0" :
                        myPPBlend->getValueLabel());
   myGameProperties.set(PropType::Cart_Sound, mySound->getState() ? "STEREO" : "MONO");
 
   // Console properties
+  myGameProperties.set(PropType::Console_TVType, myTVTypeGroup->getSelected() ? "BW" : "COLOR");
   myGameProperties.set(PropType::Console_LeftDiff, myLeftDiffGroup->getSelected() ? "B" : "A");
   myGameProperties.set(PropType::Console_RightDiff, myRightDiffGroup->getSelected() ? "B" : "A");
-  myGameProperties.set(PropType::Console_TVType, myTVTypeGroup->getSelected() ? "BW" : "COLOR");
 
   // Controller properties
   myGameProperties.set(PropType::Controller_Left, myLeftPort->getSelectedTag().toString());

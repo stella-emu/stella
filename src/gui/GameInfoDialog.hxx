@@ -63,6 +63,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     // Emulation properties
     PopUpWidget*      myBSType;
     StaticTextWidget* myTypeDetected;
+    StaticTextWidget* myStartBankLabel;
+    PopUpWidget*      myStartBank;
     PopUpWidget*      myFormat;
     StaticTextWidget* myFormatDetected;
     CheckboxWidget*   myPhosphor;
