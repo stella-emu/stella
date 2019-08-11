@@ -276,7 +276,7 @@
       including mapping of CompuMate 'Backspace', 'Space' and 'Enter' functionality to
       to the actual keys on your keyboard</li>
     <li>Emulates the Mindlink Controller using your computer's mouse</li>
-	<li>Supports autodetection for most common controller types</li>
+  <li>Supports autodetection for most common controller types</li>
     <li>Support for real Atari 2600 controllers using the
       <a href="http://www.grandideastudio.com/portfolio/stelladaptor-2600">Stelladaptor</a> and
       <a href="http://2600-daptor.com">2600-daptor/2600-daptor II</a></li>
@@ -718,7 +718,7 @@
       <td>F9</td>
     </tr>
 
-	<tr>
+  <tr>
       <td>Save all states</td>
       <td>Alt + F9</td>
       <td>Cmd + F9</td>
@@ -1812,34 +1812,34 @@
   <p>The dialog items are explained in the following two tables.</p>
 
   <p><b>Top row (left to right)</b></p>
-	<table border="1" cellpadding="4">
-	  <tr><th>Item</th><th>Description</th></tr>
-	  <tr><td>Current state</td><td>Shows the currently loaded state's number</td></tr>
-	  <tr><td>'Timeline' slider</td><td>Shows the position of the current state in the
+  <table border="1" cellpadding="4">
+    <tr><th>Item</th><th>Description</th></tr>
+    <tr><td>Current state</td><td>Shows the currently loaded state's number</td></tr>
+    <tr><td>'Timeline' slider</td><td>Shows the position of the current state in the
       recorded timeline. A state can be selected by dragging the slider with the mouse.
       To visualize state compression, small marks split the timeline into five, equally
       sized state number intervals.</td></tr>
-	  <tr><td>Total states</td><td>Shows the total number of save states in the
+    <tr><td>Total states</td><td>Shows the total number of save states in the
       Time Machine</td></tr>
-	</table>
+  </table>
   <p><b>Bottom row (left to right)</b></p>
-	<table border="1" cellpadding="4">
-	  <tr><th>Item</th><th>Description</th></tr>
-	  <tr><td>Current time</td><td>Shows the time of the currently selected status,
+  <table border="1" cellpadding="4">
+    <tr><th>Item</th><th>Description</th></tr>
+    <tr><td>Current time</td><td>Shows the time of the currently selected status,
       relative to the first one</td></tr>
-	  <tr><td>'Start/Stop' button</td><td>Starts or stops the Time Machine</td></tr>
-	  <tr><td>'Continue' button</td><td>Exits the dialog and continues emulation</td></tr>
-	  <tr><td>'Rewind All' button</td><td>Navigates back to the begin of the timeline</td></tr>
-	  <tr><td>'Rewind One' button</td><td>Navigates back by one state</td></tr>
-	  <tr><td>'Unwind One' button</td><td>Navigates forward by one state</td></tr>
-	  <tr><td>'Unwind All' button</td><td>Navigates forward to the end of the timeline</td></tr>
-	  <tr><td>'Save All' button</td><td>Saves all states to disk</td></tr>
-	  <tr><td>'Load All' button</td><td>Loades all states from disk</td></tr>
-	  <tr><td>Navigation info</td><td>Informs about the interval of the user's last
+    <tr><td>'Start/Stop' button</td><td>Starts or stops the Time Machine</td></tr>
+    <tr><td>'Continue' button</td><td>Exits the dialog and continues emulation</td></tr>
+    <tr><td>'Rewind All' button</td><td>Navigates back to the begin of the timeline</td></tr>
+    <tr><td>'Rewind One' button</td><td>Navigates back by one state</td></tr>
+    <tr><td>'Unwind One' button</td><td>Navigates forward by one state</td></tr>
+    <tr><td>'Unwind All' button</td><td>Navigates forward to the end of the timeline</td></tr>
+    <tr><td>'Save All' button</td><td>Saves all states to disk</td></tr>
+    <tr><td>'Load All' button</td><td>Loades all states from disk</td></tr>
+    <tr><td>Navigation info</td><td>Informs about the interval of the user's last
       Time Machine navigation. The interval can vary if the timeline is compressed.</td></tr>
-	  <tr><td>Total time</td><td>Shows the total time covered by the save states
+    <tr><td>Total time</td><td>Shows the total time covered by the save states
       (aka 'Horizon')</td></tr>
-	</table>
+  </table>
   <br>
 
   <p>The 'Time Machine' mode can be configured by the user. For details see
@@ -1917,57 +1917,57 @@
         shown.</td>
     </tr>
 
-	<tr>
-	  <td><pre>-audio.enabled &lt;1|0&gt;</pre></td>
-	  <td>Enable or disable sound generation.</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.enabled &lt;1|0&gt;</pre></td>
+    <td>Enable or disable sound generation.</td>
+  </tr>
 
-	<tr>
-	  <td><pre>-audio.volume &lt;0 - 100&gt;</pre></td>
-	  <td>Set the volume.</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.volume &lt;0 - 100&gt;</pre></td>
+    <td>Set the volume.</td>
+  </tr>
 
-	<tr>
-	  <td><pre>-audio.preset &lt;1 - 5&gt;</pre></td>
-	  <td>Set an audio preset. Numbers in sequence represent presets for
-	  'custom', 'low quality, 'medium lag', 'high quality, medium lag',
-	  'high quality, low lag' and 'ultra quality, minimal lag'.</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.preset &lt;1 - 5&gt;</pre></td>
+    <td>Set an audio preset. Numbers in sequence represent presets for
+    'custom', 'low quality, 'medium lag', 'high quality, medium lag',
+    'high quality, low lag' and 'ultra quality, minimal lag'.</td>
+  </tr>
 
-	<tr>
-	  <td><pre>-audio.fragment_size &lt;128|256|512|1024|2048|4096&gt;</pre></td>
-	  <td>Set the number of samples in a single fragment processed by the audio driver.</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.fragment_size &lt;128|256|512|1024|2048|4096&gt;</pre></td>
+    <td>Set the number of samples in a single fragment processed by the audio driver.</td>
+  </tr>
 
-	<tr>
-	  <td><pre>-audio.sample_rate &lt;44100|48000|96000&gt;</pre></td>
-	  <td>Set sound sample output frequency.</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.sample_rate &lt;44100|48000|96000&gt;</pre></td>
+    <td>Set sound sample output frequency.</td>
+  </tr>
 
-	<tr>
-	  <td><pre>-audio.resampling_quality &lt;1|2|3&gt;</pre></td>
-	  <td>Set resampling quality to low (1), high (2) or ultra (3).</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.resampling_quality &lt;1|2|3&gt;</pre></td>
+    <td>Set resampling quality to low (1), high (2) or ultra (3).</td>
+  </tr>
 
-	<tr>
-	  <td><pre>-audio.headroom &lt;0 - 20&gt;</pre></td>
-	  <td>Set number of additional half-frames to prebuffer.</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.headroom &lt;0 - 20&gt;</pre></td>
+    <td>Set number of additional half-frames to prebuffer.</td>
+  </tr>
 
-	<tr>
-	  <td><pre>-audio.buffer_size &lt;0 - 20&gt;</pre></td>
-	  <td>Set maximum number of additional half-frames to buffer.</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.buffer_size &lt;0 - 20&gt;</pre></td>
+    <td>Set maximum number of additional half-frames to buffer.</td>
+  </tr>
 
-	<tr>
-	  <td><pre>-audio.stereo &lt;1|0&gt;</pre></td>
-	  <td>Enable or disable stereo mode for all ROMs.</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.stereo &lt;1|0&gt;</pre></td>
+    <td>Enable or disable stereo mode for all ROMs.</td>
+  </tr>
 
-	<tr>
-	  <td><pre>-audio.dpc_pitch &lt;10000 - 30000&gt;</pre></td>
-	  <td>Set the pitch o	f Pitfall II music.</td>
-	</tr>
+  <tr>
+    <td><pre>-audio.dpc_pitch &lt;10000 - 30000&gt;</pre></td>
+    <td>Set the pitch o f Pitfall II music.</td>
+  </tr>
 
     <tr>
       <td><pre>-tia.zoom &lt;zoom&gt;</pre></td>
@@ -1996,9 +1996,9 @@
         aspect ratio.</td>
     </tr>
 
-	<tr>
-	  <td><pre>-tia.fs_overscan &lt;0 - 10&gt;</pre></td>
-	  <td>Add overscan to TIA image while in fullscreen mode</td>
+  <tr>
+    <td><pre>-tia.fs_overscan &lt;0 - 10&gt;</pre></td>
+    <td>Add overscan to TIA image while in fullscreen mode</td>
     </tr>
 
     <tr>
@@ -2608,9 +2608,9 @@
     </tr><tr>
       <td><pre>-dev.rwportbreak &lt;1|0&gt;</pre></td>
       <td>Since the 2600 has no dedicated R/W line, different addresses are used
-	    for RAM read or write access. If the code reads from such a write address, this causes
-		an unwanted, semi-random write to that address.
-		When this option is enabled, such reads interrupt emulation and the debugger is entered.</td>
+      for RAM read or write access. If the code reads from such a write address, this causes
+    an unwanted, semi-random write to that address.
+    When this option is enabled, such reads interrupt emulation and the debugger is entered.</td>
     </tr><tr>
       <td><pre>-dev.thumb.trapfatal &lt;1|0&gt;</pre></td>
       <td>When enabled, this allows the Thumb ARM emulation to
@@ -2704,14 +2704,14 @@
           <tr><td>Renderer</td><td>Use specified rendering mode</td><td>-video</td></tr>
           <tr><td>TIA palette</td><td>Palette for emulation mode</td><td>-palette</td></tr>
           <tr><td>TIA interpolation</td><td>Interpolation for TIA image</td><td>-tia.inter</td></tr>
-		  <tr><td>TIA zoom</td><td>Zoom level for emulation mode </td><td>-tia.zoom</td></tr>
+      <tr><td>TIA zoom</td><td>Zoom level for emulation mode </td><td>-tia.zoom</td></tr>
           <tr><td>NTSC aspect</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
           <tr><td>PAL aspect</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
           <tr><td>Emul. speed</td><td>Emulation speed</td><td>-speed</td></tr>
-		  <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
+      <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory</td><td>-fullscreen</td></tr>
           <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with TIA image</td><td>-tia.fs_stretch</td></tr>
-		  <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image</td><td>-tia.fs_overscan</td></tr>
+      <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image</td><td>-tia.fs_overscan</td></tr>
           <tr><td>Fast SuperCharger load</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>Overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>Attempt to center application windows, else position at last position</td><td>-center</td></tr>
@@ -2772,7 +2772,7 @@
           </td><td>-audio.resampling_quality</td></tr>
           <tr><td>Headroom</td><td>Number of frames to buffer before playback starts. Higher values increase latency, but reduce the potential for dropouts.</td><td>-audio.headroom</td></tr>
           <tr><td>Buffer size</td><td>Maximum size of the audio buffer. Higher values increase maximum latency, but reduce the potential for dropouts</td><td>-audio.buffer_size</td></tr>
-		  <tr><td>Stereo for all ROMs</td><td>Enables stereo mode for all ROMs.</td><td>-audio.stereo</td></tr>
+      <tr><td>Stereo for all ROMs</td><td>Enables stereo mode for all ROMs.</td><td>-audio.stereo</td></tr>
           <tr><td>Pitfall II music pitch</td><td>Defines the pitch of Pitfall II music (which may vary between carts).</td><td>-audio.dpc_pitch</td></tr>
        </table>
         <p>
@@ -2813,10 +2813,10 @@
           <tr><td>Dialogs position</td><td>Position of dialogs with Stella window</td><td>-dialogpos</td></tr>
           <tr><td>HiDPI mode</td><td>Scales the UI by a factor of two when enabled</td><td>-hidpi</td></tr>
           <tr><td>List input delay</td><td>Maximum delay between keypresses in list-widgets before a search string resets. </td><td>-listdelay</td></tr>
-		  <tr><td>Mouse wheel scroll</td><td>Number of lines a mouse scroll will move in list-widgets</td><td>-mwheel</td></tr>
-		  <tr><td>Double-click speed</td><td>Speed of mouse double-clicks</td><td>-mdouble</td></tr>
-		  <tr><td>Controller repeat delay</td><td>Delay before controller input repeats</td><td>-ctrldelay</td></tr>
-		  <tr><td>Controller repeat rate</td><td>Rate of controller input repeats</td><td>-ctrlrate</td></tr>
+      <tr><td>Mouse wheel scroll</td><td>Number of lines a mouse scroll will move in list-widgets</td><td>-mwheel</td></tr>
+      <tr><td>Double-click speed</td><td>Speed of mouse double-clicks</td><td>-mdouble</td></tr>
+      <tr><td>Controller repeat delay</td><td>Delay before controller input repeats</td><td>-ctrldelay</td></tr>
+      <tr><td>Controller repeat rate</td><td>Rate of controller input repeats</td><td>-ctrlrate</td></tr>
         </table>
       </td>
     </tr>
@@ -2846,7 +2846,7 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Save path</td><td>Specifies where to save snapshots</td><td>-snapsavedir</td></tr>
-   		  <!--<tr><td>Load path</td><td>Specifies where to load snapshots</td><td>-snaploaddir</td></tr>  -->
+        <!--<tr><td>Load path</td><td>Specifies where to load snapshots</td><td>-snaploaddir</td></tr>  -->
           <tr><td>Continuous snapshot interval</td><td>Interval (in seconds) between snapshots</td><td>-ssinterval</td></tr>
           <tr><td>Use actual ROM name</td><td>Use the actual ROM filename instead of the internal database name.</td><td>-snapname</td></tr>
           <tr><td>Overwrite existing files</td><td>Whether to overwrite old snapshots</td><td>-sssingle</td></tr>
@@ -2890,7 +2890,7 @@
   <p><b>Game Properties</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
-      <td><img src="graphics/options_gameinfo.png"></td>
+      <td><img src="graphics/options_gameinfo_emulation.png"></td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top"><br>This dialog allows you to change all ROM properties
         as described in <b>Advanced Configuration - <a href="#Properties">Game Properties</a></b>.
@@ -2936,8 +2936,8 @@
     use a controller direction or button. Then that key (combination) or controller
     action will be bound to the selected event. </br>
       Notes:<ul>
-	  <li>If nothing seems to happen, either Stella can't see the input device, or the
-	  selected event doesn't support being remapped to the input device.</li>
+    <li>If nothing seems to happen, either Stella can't see the input device, or the
+    selected event doesn't support being remapped to the input device.</li>
       <li>Events which are available in both event modes can be remapped individually.</li>
       <li>Left and right modifiers are mapped separately. To map them as one, press both
       modifier keys during mapping.</li>
@@ -3268,22 +3268,22 @@
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td valign="top">
         <table border="1" cellpadding="4">
-		<tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-		<tr><td>Chip type</td><td>Type of emulated TIA chip. Allows testing for
-			TIA versions which exhibit timing problems in certain games. The
-			'Custom' option allows testing for glitch combinations.</td><td>-dev.tia.type</td></tr>
-		<tr><td>Inverted HMOVE clock...</td><td>Emulates the Kool-Aid Man
-			collision and Cosmic Ark stars glitches for the given objects.</td>
-			<td>-dev.tia.plinvphase</br>-dev.tia.msinvphase</br>-dev.tia.blinvphase</td></tr>
-		<tr><td>Delayed Playfield</td><td>Emulates playfield registers delayed
-			by one color clock. This e.g. causes glitches in Pesco (stray playfield
-			pixel) and Quick Step! (colored step borders)</td>
-			<td>-dev.tia.delaypfbits</br>-dev.tia.delaypfcolor</td></tr>
-		<tr><td>Delayed VDEL... swap for</td><td>Emulates a VDELP0/P1/BL swap
-			delayed by one color clock. This e.g cause glitches in the He-Man title
-			screen.</td>
-			<td>-dev.tia.delayplswap</br>-dev.tia.delayblswap</td></tr>
-		</table>
+    <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
+    <tr><td>Chip type</td><td>Type of emulated TIA chip. Allows testing for
+      TIA versions which exhibit timing problems in certain games. The
+      'Custom' option allows testing for glitch combinations.</td><td>-dev.tia.type</td></tr>
+    <tr><td>Inverted HMOVE clock...</td><td>Emulates the Kool-Aid Man
+      collision and Cosmic Ark stars glitches for the given objects.</td>
+      <td>-dev.tia.plinvphase</br>-dev.tia.msinvphase</br>-dev.tia.blinvphase</td></tr>
+    <tr><td>Delayed Playfield</td><td>Emulates playfield registers delayed
+      by one color clock. This e.g. causes glitches in Pesco (stray playfield
+      pixel) and Quick Step! (colored step borders)</td>
+      <td>-dev.tia.delaypfbits</br>-dev.tia.delaypfcolor</td></tr>
+    <tr><td>Delayed VDEL... swap for</td><td>Emulates a VDELP0/P1/BL swap
+      delayed by one color clock. This e.g cause glitches in the He-Man title
+      screen.</td>
+      <td>-dev.tia.delayplswap</br>-dev.tia.delayblswap</td></tr>
+    </table>
       </td>
     </tr>
   </table>
@@ -3676,62 +3676,12 @@ Ms Pac-Man (Stella extended codes):
   <p>Each block in a property file consists of a set of properties for a single
   game. Stella supports the properties described below:</p>
 
-  <a><img src="graphics/options_gameinfo.png"></a>
+  <a><img src="graphics/options_gameinfo_emulation.png"></a>
   <table CELLSPACING="10">
-    <tr>
-      <td VALIGN="TOP"><i>Cartridge.MD5:</i></td>
-      <td>Indicates the MD5 checksum of the ROM image as a
-      string of hexadecimal digits. Stella uses this property while
-      attempting to match a game with its block of properties. If the
-      value of the property matches the MD5 checksum of the ROM image then
-      Stella uses that block of properties for the game. You can use the
-      GNU md5sum program, which is included with most Linux distributions,
-      to calculate the MD5 checksum of a ROM image.</td>
-    </tr>
 
-    <tr>
-      <td VALIGN="TOP"><i>Cartridge.Manufacturer:</i></td>
-      <td>Indicates the game's manufacturer.</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP"><i>Cartridge.ModelNo:</i></td>
-      <td>Indicates the manufacturer's model number for the game.</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP"><i>Cartridge.Name:</i></td>
-      <td>Indicates the actual name of the game. When you save snapshots,
-        load/save state files, or use the <a href="#ROMAudit"><b>ROM Audit Mode</b></a> functionality,
-        this is the name that will be used for the respective file(s).</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP"><i>Cartridge.Note:</i></td>
-      <td>Contains any special notes about playing the game.</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP"><i>Cartridge.Rarity:</i></td>
-      <td>Indicates how rare a cartridge is, based on the scale described on AtariAge.</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP"><i>Cartridge.Sound:</i></td>
-      <td>Indicates if the game should use 1 or 2 channels for sound output.
-      All original Atari 2600 machines supported 1 channel only,
-      but some homebrew games have been written to take advantage of stereo
-      sound mods. The value must be <b>Mono</b> or <b>Stereo</b>.</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP"><i>Cartridge.StartBank:</i></td>
-      <td>Indicates which bank to use for reading the reset vector.</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cartridge.Type:</i></a></td>
-      <td>Indicates the bank-switching type for the game.
+  <tr>
+    <td VALIGN="TOP"><a name="PropertiesCartType"><i>Cartridge.Type:</i></a></td>
+    <td>Indicates the bank-switching type for the game.
       The value of this property must be either <b>Auto</b> or one of the following
       (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
       document</a> or the documentation in each cartridge's source code file) types. Types marked
@@ -3786,13 +3736,50 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>MDM </td><td>Menu Driven Megacart </td><td>.MDM </td></tr>
         <tr><td>SB </td><td>128-256k SUPERbanking </td><td>.SB </td></tr>
         <tr><td>UA </td><td>8K UA Ltd. </td><td>.UA </td></tr>
-		<tr><td>UASW </td><td>8K UA Ltd. (swapped banks)</td><td>.UASW </td></tr>
+        <tr><td>UASW </td><td>8K UA Ltd. (swapped banks)</td><td>.UASW </td></tr>
         <tr><td>WD </td><td>Wickstead Design </td><td>.WD </td></tr>
         <tr><td>X07 &#185;</td><td>64K AtariAge </td><td>.X07 </td></tr>
       </table></td>
     </tr>
-  </table>
 
+    <tr>
+      <td VALIGN="TOP"><i>Cartridge.StartBank:</i></td>
+      <td>Indicates which bank to use for reading the reset vector.</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Display.Format:</i></td>
+      <td>Indicates the television format the game was designed for. The value
+      must be <b>Auto</b>, <b>NTSC</b>, <b>PAL</b>, <b>SECAM</b>, <b>NTSC50</b>,
+      <b>PAL60</b> or <b>SECAM60</b>.</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Display.Phosphor:</i></td>
+      <td>Indicates whether the phosphor effect should be emulated or not.
+        The value must be <b>Yes</b> or <b>No</b>.</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Display.PPBlend:</i></td>
+      <td>Indicates the amount of blending which will occur while using the
+      phosphor effect. The value must be <i>n</i> such that 0 &lt;= <i>n</i>
+      &lt;= 100. The default value is whatever is specified for tv.phosblend.</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Cartridge.Sound:</i></td>
+      <td>Indicates if the game should use 1 or 2 channels for sound output.
+      All original Atari 2600 machines supported 1 channel only,
+      but some homebrew games have been written to take advantage of stereo
+      sound mods. The value must be <b>Mono</b> or <b>Stereo</b>.</td>
+    </tr>
+
+  </table>
+<!--
+  <p><b>Note:</b> Items marked as '*' are deprecated, and will probably be
+  removed in a future release.</p>
+-->
   <a><img src="graphics/options_gameinfo_console.png"></a>
   <table CELLSPACING="10">
     <tr>
@@ -3835,7 +3822,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>Trakball</td><td>Standard Atari 2600 CX22/CX80 'Trak-Ball' controller.</td></tr>
         <tr><td><a href="http://atariage.com/store/index.php?l=product_list&c=98">AtariVox &#185</a></td><td>A SpeakJet based unlimited-vocabulary speech/sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td>SaveKey</td><td>A 32K EEPROM for saving high scores, etc. (the EEPROM portion of an AtariVox).</td></tr>
-        <tr><td>Genesis	</td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
+        <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
         <tr><td>CompuMate &#185</td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
         <tr><td>Mindlink &#185</td><td>Mindlink controller.</td></tr>
       </table></td>
@@ -3888,40 +3875,48 @@ Ms Pac-Man (Stella extended codes):
 -->
   </table>
 
-  <a><img src="graphics/options_gameinfo_display.png"></a>
+  <a><img src="graphics/options_gameinfo_cartridge.png"></a>
   <table CELLSPACING="10">
     <tr>
-      <td VALIGN="TOP"><i>Display.Format:</i></td>
-      <td>Indicates the television format the game was designed for. The value
-      must be <b>Auto</b>, <b>NTSC</b>, <b>PAL</b>, <b>SECAM</b>, <b>NTSC50</b>,
-      <b>PAL60</b> or <b>SECAM60</b>.</td>
+      <td VALIGN="TOP"><i>Cartridge.MD5:</i></td>
+      <td>Indicates the MD5 checksum of the ROM image as a
+      string of hexadecimal digits. Stella uses this property while
+      attempting to match a game with its block of properties. If the
+      value of the property matches the MD5 checksum of the ROM image then
+      Stella uses that block of properties for the game. You can use the
+      GNU md5sum program, which is included with most Linux distributions,
+      to calculate the MD5 checksum of a ROM image.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Display.YStart:</i></td>
-      <td>Indicates the scan-line to start displaying at.
-      The value must be <i>n</i> such that 0 &lt;= <i>n</i> &lt;= 64.
-      Setting <i>n</i> to zero will enable ystart autodetection, which
-      should work fine for the vast majority of ROMs.</td>
+      <td VALIGN="TOP"><i>Cartridge.Manufacturer:</i></td>
+      <td>Indicates the game's manufacturer.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Display.Phosphor:</i></td>
-      <td>Indicates whether the phosphor effect should be emulated or not.
-        The value must be <b>Yes</b> or <b>No</b>.</td>
+      <td VALIGN="TOP"><i>Cartridge.ModelNo:</i></td>
+      <td>Indicates the manufacturer's model number for the game.</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Display.PPBlend:</i></td>
-      <td>Indicates the amount of blending which will occur while using the
-      phosphor effect. The value must be <i>n</i> such that 0 &lt;= <i>n</i>
-      &lt;= 100. The default value is whatever is specified for tv.phosblend.</td>
+      <td VALIGN="TOP"><i>Cartridge.Name:</i></td>
+      <td>Indicates the actual name of the game. When you save snapshots,
+        load/save state files, or use the <a href="#ROMAudit"><b>ROM Audit Mode</b></a> functionality,
+        this is the name that will be used for the respective file(s).</td>
     </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Cartridge.Note:</i></td>
+      <td>Contains any special notes about playing the game.</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Cartridge.Rarity:</i></td>
+      <td>Indicates how rare a cartridge is, based on the scale described on AtariAge.</td>
+    </tr>
+
   </table>
-<!--
-  <p><b>Note:</b> Items marked as '*' are deprecated, and will probably be
-  removed in a future release.</p>
--->
+
   <p>The name of the properties file is configurable through the
   '<i>-propsfile</i>' commandline argument and within the application itself
   (see <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>). If the
