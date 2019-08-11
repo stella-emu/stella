@@ -1964,6 +1964,11 @@
 	  <td>Enable or disable stereo mode for all ROMs.</td>
 	</tr>
 
+	<tr>
+	  <td><pre>-audio.dpc_pitch &lt;10000 - 30000&gt;</pre></td>
+	  <td>Set the pitch o	f Pitfall II music.</td>
+	</tr>
+
     <tr>
       <td><pre>-tia.zoom &lt;zoom&gt;</pre></td>
       <td>Use the specified zoom level (integer) while in TIA/emulation mode.
@@ -1989,6 +1994,11 @@
       <td><pre>-tia.fs_stretch &lt;1|0&gt;</pre></td>
       <td>Stretch TIA image completely while in fullscreen mode, vs. keeping the correct
         aspect ratio.</td>
+    </tr>
+
+	<tr>
+	  <td><pre>-tia.fs_overscan &lt;0 - 10&gt;</pre></td>
+	  <td>Add overscan to TIA image while in fullscreen mode</td>
     </tr>
 
     <tr>
@@ -2123,6 +2133,16 @@
       <td><pre>-joyallow4 &lt;1|0&gt;</pre></td>
       <td>Allow all 4 directions on a joystick to be pressed
         simultaneously.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-dejitter.base &lt;0 - 10&gt;</pre></td>
+      <td>Strength of paddle input averaging.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-dejitter.diff &lt;0 - 10&gt;</pre></td>
+      <td>Impact of fast paddle movement on input averaging.</td>
     </tr>
 
     <tr>
@@ -2281,6 +2301,16 @@
     </tr>
 
     <tr>
+      <td><pre>-dialogpos &lt;0 - 4&gt;</pre></td>
+      <td>Set the position of dialogs within Stella windows (0 = center).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-hidpi &lt;1|0&gt;</pre></td>
+      <td>Enables the HiDPI mode which scales the UI by a factor of two.</td>
+    </tr>
+
+    <tr>
       <td><pre>-listdelay &lt;delay&gt;</pre></td>
       <td>Set the amount of time to wait between treating successive
         keypresses as a single word in list widgets (value can range
@@ -2289,7 +2319,22 @@
 
     <tr>
       <td><pre>-mwheel &lt;lines&gt;</pre></td>
-      <td>Set the number of lines a mousewheel will scroll in the UI.</td>
+      <td>Set the number of lines the mousewheel will scroll in the UI (1 - 10).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-mdouble &lt;speed&gt;</pre></td>
+      <td>Set the mouse double click speed in the UI (100 - 900 ms).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-ctrldelay &lt;delay&gt;</pre></td>
+      <td>Set the delay before controller input will start repeating in the UI (200 - 1000 ms).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-ctrlrate &lt;rate&gt;</pre></td>
+      <td>Set the controller repeat rate in the UI (2 - 30 repeats/s).</td>
     </tr>
 
     <tr>
@@ -2658,14 +2703,15 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Renderer</td><td>Use specified rendering mode</td><td>-video</td></tr>
           <tr><td>TIA palette</td><td>Palette for emulation mode</td><td>-palette</td></tr>
-          <tr><td>TIA zoom</td><td>(Integral) zoom level for emulation mode </td><td>-tia.zoom</td></tr>
           <tr><td>TIA interpolation</td><td>Interpolation for TIA image</td><td>-tia.inter</td></tr>
+		  <tr><td>TIA zoom</td><td>Zoom level for emulation mode </td><td>-tia.zoom</td></tr>
           <tr><td>NTSC aspect</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
           <tr><td>PAL aspect</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
           <tr><td>Emul. speed</td><td>Emulation speed</td><td>-speed</td></tr>
+		  <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory</td><td>-fullscreen</td></tr>
-          <tr><td>Fullscreen stretch</td><td>In fullscreen mode, completely fill screen with TIA image</td><td>-tia.fs_stretch</td></tr>
-          <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
+          <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with TIA image</td><td>-tia.fs_stretch</td></tr>
+		  <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image</td><td>-tia.fs_overscan</td></tr>
           <tr><td>Fast SuperCharger load</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>Overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>Attempt to center application windows, else position at last position</td><td>-center</td></tr>
@@ -2727,7 +2773,8 @@
           <tr><td>Headroom</td><td>Number of frames to buffer before playback starts. Higher values increase latency, but reduce the potential for dropouts.</td><td>-audio.headroom</td></tr>
           <tr><td>Buffer size</td><td>Maximum size of the audio buffer. Higher values increase maximum latency, but reduce the potential for dropouts</td><td>-audio.buffer_size</td></tr>
 		  <tr><td>Stereo for all ROMs</td><td>Enables stereo mode for all ROMs.</td><td>-audio.stereo</td></tr>
-        </table>
+          <tr><td>Pitfall II music pitch</td><td>Defines the pitch of Pitfall II music (which may vary between carts).</td><td>-audio.dpc_pitch</td></tr>
+       </table>
         <p>
           <strong>IMPORTANT:</strong> In order to maintain a stable stream of audio data, emulation speed must be
           synchronized with the audio hardware. Buffering happens in multiple places (OS = fragment size, Stella =
@@ -2763,8 +2810,13 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Theme</td><td>Theme to use for UI elements (see examples)</td><td>-uipalette</td></tr>
+          <tr><td>Dialogs position</td><td>Position of dialogs with Stella window</td><td>-dialogpos</td></tr>
+          <tr><td>HiDPI mode</td><td>Scales the UI by a factor of two when enabled</td><td>-hidpi</td></tr>
           <tr><td>List input delay</td><td>Maximum delay between keypresses in list-widgets before a search string resets. </td><td>-listdelay</td></tr>
-          <tr><td>Mouse wheel scroll</td><td>Number of lines a mouse scroll will move in list-widgets</td><td>-mscroll</td></tr>
+		  <tr><td>Mouse wheel scroll</td><td>Number of lines a mouse scroll will move in list-widgets</td><td>-mwheel</td></tr>
+		  <tr><td>Double-click speed</td><td>Speed of mouse double-clicks</td><td>-mdouble</td></tr>
+		  <tr><td>Controller repeat delay</td><td>Delay before controller input repeats</td><td>-ctrldelay</td></tr>
+		  <tr><td>Controller repeat rate</td><td>Rate of controller input repeats</td><td>-ctrlrate</td></tr>
         </table>
       </td>
     </tr>
@@ -2921,6 +2973,7 @@
           <tr><td>Use mouse as ...</td><td>Allow the mouse to emulate various controllers</td><td>-usemouse</td></tr>
           <tr><td>Mouse cursor visibility</td><td>Show/hide cursor depending on current state</td><td>-cursor</td></tr>
           <tr><td>Joystick deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
+          <tr><td>Paddle dejitter strength</td><td>Strenght of paddle input averaging (base) and reaction to fast paddle movements (diff)</td><td>-dejitter.base, -dejitter.diff</td></tr>
           <tr><td>Digital paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
           <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
           <tr><td>Trackball sensitivity</td><td>Sensitivity used when emulating a trackball device using a mouse</td><td>-tsense</td></tr>
@@ -3705,7 +3758,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>BF </td><td>CPUWIZ 256K </td><td>.BF </td></tr>
         <tr><td>BFSC </td><td>CPUWIZ 256K + ram</td><td>.BFS, .BFSC </td></tr>
         <tr><td>BUS </td><td>Experimental</td><td>.BUS </td></tr>
-        <tr><td>CDF </td><td>Chris, Darrell, Fred</td><td>.CDF </td></tr>
+        <tr><td>CDF </td><td>Chris, Darrell, Fred (includes CDFJ)</td><td>.CDF </td></tr>
         <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td><td>.CM </td></tr>
         <tr><td>CTY &#178;</td><td>CDW - Chetiry </td><td>.CTY </td></tr>
         <tr><td>CV </td><td>Commavid extra ram </td><td>.CV </td></tr>
@@ -3733,6 +3786,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>MDM </td><td>Menu Driven Megacart </td><td>.MDM </td></tr>
         <tr><td>SB </td><td>128-256k SUPERbanking </td><td>.SB </td></tr>
         <tr><td>UA </td><td>8K UA Ltd. </td><td>.UA </td></tr>
+		<tr><td>UASW </td><td>8K UA Ltd. (swapped banks)</td><td>.UASW </td></tr>
         <tr><td>WD </td><td>Wickstead Design </td><td>.WD </td></tr>
         <tr><td>X07 &#185;</td><td>64K AtariAge </td><td>.X07 </td></tr>
       </table></td>
