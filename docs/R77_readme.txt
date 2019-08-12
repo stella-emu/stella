@@ -35,17 +35,19 @@ Inside Launcher:
   Button 4   COLOR,B/W   Open settings
 
 Inside a dialog:
-  Joystick   Button      Action
-  -----------------------------------------------------
-  Up         SAVE        Increase current setting
-  Down       RESET       Decrease current setting
-  Left       LOAD        Previous dialog element
-  Right      MODE        Next dialog element
-  Button 1   SKILL P1    Select element
-  Button 2   SKILL P2    OK
-  Button 3   4:3,16:9    Previous tab
-  Button 4   FRY         Next tab
-  Button 6   -           Cancel
+  Joystick          Button      Action
+  ------------------------------------------------------
+  Up                SAVE        Increase current setting
+  Down              RESET       Decrease current setting
+  Left              LOAD        Previous dialog element
+  Right             MODE        Next dialog element
+  Button 1          SKILL P1    Select element
+  Button 2          SKILL P2    OK
+  Button 3  or      4:3,16:9    Previous tab
+  Button 1 + Left
+  Button 4  or      FRY         Next tab
+  Button 1 + Right   
+  Button 6          -           Cancel
 
 Note: If you have a keyboard attached via OTG all keys work as described in
 the Stella User's Guide.
