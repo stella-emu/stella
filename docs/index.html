@@ -1021,13 +1021,13 @@
           </tr>
 
           <tr>
-            <td>Paddle 0 decrease</td>
-            <td>Right arrow</td>
+            <td>Paddle 0 Turn Left</td>
+            <td>Left arrow</td>
           </tr>
 
           <tr>
-            <td>Paddle 0 increase</td>
-            <td>Left arrow</td>
+            <td>Paddle 0 Turn Right</td>
+            <td>Right arrow</td>
           </tr>
 
           <tr>
@@ -1036,13 +1036,13 @@
           </tr>
 
           <tr>
-            <td>Paddle 1 decrease</td>
-            <td>Down arrow</td>
+            <td>Paddle 1 Turn Left</td>
+            <td>Up arrow</td>
           </tr>
 
           <tr>
-            <td>Paddle 1 increase</td>
-            <td>Up arrow</td>
+            <td>Paddle 1 Turn Right</td>
+            <td>Down arrow</td>
           </tr>
 
           <tr>
@@ -1060,13 +1060,13 @@
           </tr>
 
           <tr>
-            <td>Paddle 2 decrease</td>
-            <td>J</td>
+            <td>Paddle 2 Turn Left</td>
+            <td>G</td>
           </tr>
 
           <tr>
-            <td>Paddle 2 increase</td>
-            <td>G</td>
+            <td>Paddle 2 Turn Right</td>
+            <td>J</td>
           </tr>
 
           <tr>
@@ -1075,13 +1075,13 @@
           </tr>
 
           <tr>
-            <td>Paddle 3 decrease</td>
-            <td>H</td>
+            <td>Paddle 3 Turn Left</td>
+            <td>Y</td>
           </tr>
 
           <tr>
-            <td>Paddle 3 increase</td>
-            <td>Y</td>
+            <td>Paddle 3 Turn Right</td>
+            <td>H</td>
           </tr>
 
           <tr>
@@ -2934,19 +2934,22 @@
   <p>To remap an event:
   <ol>
     <li>Enter <b>Options Menu</b> and click the <b>Input Settings</b> button.</li>
-    <li>If you wish to remap emulation events, click the 'Emul. Events' tab.
+    <li>If you wish to remap emulation events, click the 'Emulation Events' tab.
       Otherwise, click the 'UI Events' tab for user interface events.</li>
-    <li>Select event you want to remap and click the 'Map' button.</li>
-    <li>Press a key, a modifier key (Control, Shift...), a modifier+key combination or
-    use a controller direction or button. Then that key (combination) or controller
-    action will be bound to the selected event. </br>
-      Notes:<ul>
-    <li>If nothing seems to happen, either Stella can't see the input device, or the
-    selected event doesn't support being remapped to the input device.</li>
+    <li>Select event you want to remap and double-click or click the 'Map' button.</li>
+    <li>Now define the input:
+    <ul>
+      <li>Either press a key, a modifier key (Control, Shift...) or a modifier+key combination.</li>
+      <li>Or use a controller direction, a button or a button+controller direction combination.</li>
+    </ul>Then that key (combination) or controller action will be bound to the selected event.</br>
+    Notes:<ul>
+      <li>If nothing seems to happen, either Stella can't see the input device, or the
+      selected event doesn't support being remapped to the input device.</li>
+      <li>The same input can be used for multiple controller types (e.g. 'Right' for 'P0 Joystick Right' and 'Paddle 0 Turn Right').</li>
+      <li>If the same input is used again for the same controller type, the old mapping will be removed.</li>
       <li>Events which are available in both event modes can be remapped individually.</li>
-      <li>Left and right modifiers are mapped separately. To map them as one, press both
-      modifier keys during mapping.</li>
-      </ul></li>
+      <li>Left and right modifiers are mapped separately when used alone.</li>
+    </ul></li>
     <li>Cancel a remap in progress by clicking 'Cancel', erase the event's mappings by
       clicking 'Erase', or reset to default mapping by clicking 'Reset'</li>
     <li>Reset to default <b>all</b> mappings by clicking 'Defaults'.</li>
@@ -2956,7 +2959,7 @@
   <img src="graphics/eventmapping.png">
   <img src="graphics/eventmapping_remap.png">
 
-  <p>There is also a 'Combo' button in the 'Emul. Events' tab, accessible
+  <p>There is also a 'Combo' button in the 'Emulation Events' tab, accessible
   when a Combo event has been selected from the list of events on the left.
   Clicking 'Combo' will show a dialog similar to the following:</p>
   <img src="graphics/eventmapping_combo.png">
