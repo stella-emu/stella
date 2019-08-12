@@ -532,6 +532,7 @@ void Settings::usage() const
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
     << "   -type        <arg>          Same as using -bs\n"
+    << "   -startbank   <bank>         Sets the ROM's startup bank\n"
     << "   -channels    <arg>          Sets the 'Cartridge.Sound' property\n"
     << "   -ld          <arg>          Sets the 'Console.LeftDifficulty' property\n"
     << "   -rd          <arg>          Sets the 'Console.RightDifficulty' property\n"
