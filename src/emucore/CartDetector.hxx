@@ -49,6 +49,16 @@ class CartDetector
                  const ByteBuffer& image, uInt32 size, string& md5,
                  const string& dtype, Settings& settings);
 
+    /**
+      Try to auto-detect the bankswitching type of the cartridge
+
+      @param image  A pointer to the ROM image
+      @param size   The size of the ROM image
+
+      @return The "best guess" for the cartridge type
+    */
+    static Bankswitch::Type autodetectType(const ByteBuffer& image, uInt32 size);
+
   private:
     /**
       Create a cartridge from a multi-cart image pointer; internally this
@@ -83,16 +93,6 @@ class CartDetector
     static unique_ptr<Cartridge>
       createFromImage(const ByteBuffer& image, uInt32 size, Bankswitch::Type type,
                       const string& md5, Settings& settings);
-
-    /**
-      Try to auto-detect the bankswitching type of the cartridge
-
-      @param image  A pointer to the ROM image
-      @param size   The size of the ROM image
-
-      @return The "best guess" for the cartridge type
-    */
-    static Bankswitch::Type autodetectType(const ByteBuffer& image, uInt32 size);
 
     /**
       Search the image for the specified byte signature

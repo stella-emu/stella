@@ -25,6 +25,7 @@
 #include "RadioButtonWidget.hxx"
 #include "Launcher.hxx"
 #include "OSystem.hxx"
+#include "CartDetector.hxx"
 #include "ControllerDetector.hxx"
 #include "PopUpWidget.hxx"
 #include "Props.hxx"
@@ -373,19 +374,36 @@ void GameInfoDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadEmulationProperties(const Properties& props)
 {
-  myBSType->setSelected(props.get(PropType::Cart_Type), "AUTO");
+  string bsDetected = "";
 
-  if(instance().hasConsole() && myBSType->getSelectedTag().toString() == "AUTO")
+  myBSType->setSelected(props.get(PropType::Cart_Type), "AUTO");
+  if(myBSType->getSelectedTag().toString() == "AUTO")
   {
-    string bs = instance().console().about().BankSwitch;
-    size_t pos = bs.find_first_of('*');
-    // remove '*':
-    if(pos != string::npos)
-      bs = bs.substr(0, pos) + bs.substr(pos + 1);
-    myTypeDetected->setLabel(bs + "detected");
+    if(instance().hasConsole())
+    {
+      string bs = instance().console().about().BankSwitch;
+      size_t pos = bs.find_first_of('*');
+      // remove '*':
+      if(pos != string::npos)
+        bs = bs.substr(0, pos) + bs.substr(pos + 1);
+      bsDetected = bs + "detected";
+    }
+    else
+    {
+      const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
+      ByteBuffer image;
+      string md5 = props.get(PropType::Cart_MD5);
+      uInt32 size = 0;
+
+      // try to load the image for auto detection
+      if(!instance().hasConsole() &&
+        node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr)
+      {
+        bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image, size)) + " detected";
+      }
+    }
   }
-  else
-    myTypeDetected->setLabel("");
+  myTypeDetected->setLabel(bsDetected);
 
   // Start bank
   VariantList items;
@@ -454,13 +472,14 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   ByteBuffer image;
   string md5 = props.get(PropType::Cart_MD5);
   uInt32 size = 0;
-  const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
 
   // try to load the image for auto detection
-  if(!instance().hasConsole() &&
-     node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr)
-    autoDetect = true;
+  if(!instance().hasConsole())
+  {
+    const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
 
+    autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
+  }
   string label = "";
   string controller = props.get(PropType::Controller_Left);
 

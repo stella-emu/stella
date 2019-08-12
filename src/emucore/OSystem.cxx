@@ -538,6 +538,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
 
     CMDLINE_PROPS_UPDATE("bs", PropType::Cart_Type);
     CMDLINE_PROPS_UPDATE("type", PropType::Cart_Type);
+    CMDLINE_PROPS_UPDATE("startbank", PropType::Cart_StartBank);
 
     // Now create the cartridge
     string cartmd5 = md5;
