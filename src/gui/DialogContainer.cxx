@@ -287,7 +287,7 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
   {
     myCurrentButtonDown.stick  = stick;
     myCurrentButtonDown.button = button;
-    myButtonRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : kRepeatNone);
+    myButtonRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
 
     activeDialog->handleJoyDown(stick, button);
   }
@@ -326,7 +326,7 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value, int but
     myCurrentAxisDown.stick = stick;
     myCurrentAxisDown.axis  = axis;
     myCurrentAxisDown.value = value;
-    myAxisRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : kRepeatNone);
+    myAxisRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
   }
   activeDialog->handleJoyAxis(stick, axis, value, button);
 }
@@ -352,7 +352,7 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value, int bu
     myCurrentHatDown.stick = stick;
     myCurrentHatDown.hat  = hat;
     myCurrentHatDown.value = value;
-    myHatRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : kRepeatNone);
+    myHatRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
   }
   activeDialog->handleJoyHat(stick, hat, value, button);
 }

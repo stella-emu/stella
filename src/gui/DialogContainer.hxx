@@ -180,16 +180,13 @@ class DialogContainer
     Common::FixedStack<Dialog*> myDialogStack;
 
   private:
-    enum {
-      kRepeatNone         = 1 << 24 // loooong
-    };
-
     // Indicates the most current time (in milliseconds) as set by updateTime()
     uInt64 myTime;
 
     static uInt64 _DOUBLE_CLICK_DELAY;
     static uInt64 _REPEAT_INITIAL_DELAY;
     static uInt64 _REPEAT_SUSTAIN_DELAY;
+    static constexpr uInt64 _REPEAT_NONE = 1 << 24; // loooong
 
     // For continuous 'mouse down' events
     struct {
