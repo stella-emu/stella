@@ -265,7 +265,7 @@ bool EventMappingWidget::handleKeyDown(StellaKey key, StellaMod mod)
   {
     // Mod keys are only recorded if no other key has been recorded before
     if (key < KBDK_LCTRL || key > KBDK_RGUI
-      || (!myLastKey || myLastKey >= KBDK_LCTRL && myLastKey <= KBDK_RGUI))
+      || (!myLastKey || (myLastKey >= KBDK_LCTRL && myLastKey <= KBDK_RGUI)))
     {
       myLastKey = key;
     }
