@@ -171,6 +171,7 @@ class PhysicalJoystickHandler
 
     // Controller menu and common emulation mappings
     static EventMappingArray DefaultMenuMapping;
+    static EventMappingArray DefaultCommonMapping;
     // Controller specific mappings
     static EventMappingArray DefaultLeftJoystickMapping;
     static EventMappingArray DefaultRightJoystickMapping;

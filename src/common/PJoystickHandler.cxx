@@ -232,7 +232,6 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
   myOSystem.settings().setValue("saport", saport);
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Depending on parameters, this method does the following:
 // 1. update all events with default (event == Event::NoType, updateDefault == true)
@@ -296,6 +295,10 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
           for (const auto& item : DefaultRightKeypadMapping)
             setDefaultAction(j, item, event, kKeypadMode, updateDefaults);
         }
+        for(const auto& item : DefaultCommonMapping)
+          setDefaultAction(j, item, event, kCommonMode, updateDefaults);
+        // update running emulation mapping too
+        enableEmulationMappings();
         break;
 
       case kMenuMode:
@@ -562,14 +565,19 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
     if (Event::isAnalog(event))
     {
       j->joyMap.add(event, evMode, button, axis, JoyDir::ANALOG);
+      // update running emulation mapping too
+      j->joyMap.add(event, kEmulationMode, button, axis, JoyDir::ANALOG);
     }
     else
     {
       // Otherwise, turn off the analog event(s) for this axis
       if (Event::isAnalog(j->joyMap.get(evMode, button, axis, JoyDir::ANALOG)))
         j->joyMap.erase(evMode, button, axis, JoyDir::ANALOG);
-
       j->joyMap.add(event, evMode, button, axis, convertAxisValue(value));
+      // update running emulation mapping too
+      if(Event::isAnalog(j->joyMap.get(kEmulationMode, button, axis, JoyDir::ANALOG)))
+        j->joyMap.erase(kEmulationMode, button, axis, JoyDir::ANALOG);
+      j->joyMap.add(event, kEmulationMode, button, axis, convertAxisValue(value));
     }
     return true;
   }
@@ -587,6 +595,8 @@ bool PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode
       hat >= 0 && hat < j->numHats && dir != JoyHat::CENTER)
   {
     j->joyMap.add(event, getEventMode(event, mode), button, hat, dir);
+    // update running emulation mapping too
+    j->joyMap.add(event, kEmulationMode, button, hat, dir);
     return true;
   }
   return false;
@@ -672,7 +682,6 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
   if (j)
   {
     j->buttonLast[stick] = pressed ? button : JOY_CTRL_NONE;
-
 
     // Handle buttons which switch eventhandler state
     if (pressed && myHandler.changeStateByEvent(j->joyMap.get(kEmulationMode, button)))
@@ -767,12 +776,6 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftJ
   {Event::JoystickZeroFire,   0},
   {Event::JoystickZeroFire5,  1},
   {Event::JoystickZeroFire9,  2},
-#if defined(RETRON77)
-  // Left joystick (assume buttons two..four)
-  {Event::CmdMenuMode,        2),
-  {Event::OptionsMenuMode,    3),
-  {Event::ExitMode,           4),
-#endif
   // Left joystick left/right directions
   {Event::JoystickZeroLeft,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
   {Event::JoystickZeroRight,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
@@ -793,15 +796,6 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
   {Event::JoystickOneFire,    0},
   {Event::JoystickOneFire5,   1},
   {Event::JoystickOneFire9,   2},
-#if defined(RETRON77)
-  // Right joystick (assume buttons two..eight)
-  {Event::CmdMenuMode,        2},
-  {Event::OptionsMenuMode,    3},
-  {Event::ExitMode,           4},
-  {Event::RewindPause,        5},
-  {Event::ConsoleSelect,      7},
-  {Event::ConsoleReset,       8},
-#endif
   // Right joystick left/right directions
   {Event::JoystickOneLeft,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
   {Event::JoystickOneRight,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
@@ -870,6 +864,19 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
   {Event::KeyboardOneStar,    9},
   {Event::KeyboardOne0,       10},
   {Event::KeyboardOnePound,   11},
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultCommonMapping = {
+  // valid for all joysticks
+//#if defined(RETRON77)
+  {Event::CmdMenuMode,        2},
+  {Event::OptionsMenuMode,    3},
+  {Event::ExitMode,           4},
+  {Event::RewindPause,        5},
+  {Event::ConsoleSelect,      7},
+  {Event::ConsoleReset,       8},
+//#endif
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

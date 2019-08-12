@@ -65,7 +65,6 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   xpos += INDENT;
   ypos += lineHeight + VGAP;
 
-
   addUIOptions(wid, xpos, ypos, font);
   ypos += VGAP * 4;
   addVideoOptions(wid, xpos, ypos, font);
@@ -389,7 +388,6 @@ void StellaSettingsDialog::handleOverscanChange()
   else
     myTVOverscan->setValueUnit("%");
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::switchSettingsMode()

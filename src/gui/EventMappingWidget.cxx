@@ -161,8 +161,11 @@ void EventMappingWidget::startRemapping()
   myRemapStatus = true;
 
   // Reset all previous events for determining correct axis/hat values
-  myLastStick = myLastAxis = myLastHat = myLastValue = -1;
+  myLastStick = -1;
   myLastButton = JOY_CTRL_NONE;
+  myLastAxis = int(JoyAxis::NONE);
+  myLastHat = -1;
+  myLastValue = int(JoyDir::NONE);
 
   // Reset the previously aggregated key mappings
   myMod = myLastKey = 0;
@@ -217,8 +220,11 @@ void EventMappingWidget::stopRemapping()
   cerr << "stopRemapping " << myRemapStatus << endl;
 
   // Reset all previous events for determining correct axis/hat values
-  myLastStick = myLastAxis = myLastHat = myLastValue = -1;
+  myLastStick = -1;
   myLastButton = JOY_CTRL_NONE;
+  myLastAxis = int(JoyAxis::NONE);
+  myLastHat = -1;
+  myLastValue = int(JoyDir::NONE);
 
   // And re-enable all the widgets
   enableButtons(true);

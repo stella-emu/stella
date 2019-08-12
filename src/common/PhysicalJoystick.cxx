@@ -78,7 +78,7 @@ void PhysicalJoystick::initialize(int index, const string& desc,
 string PhysicalJoystick::getMap() const
 {
   // The mapping structure (for remappable devices) is defined as follows:
-  // <NAME>'$'<MODE>['|'(<EVENT>':'<BUTTON>','<AXIS>','<VALUE>)|(<EVENT>':'<BUTTON>','<HAT>','<HATDIR>)]
+  // <NAME>'>'<MODE>['|'(<EVENT>':'<BUTTON>','<AXIS>','<VALUE>)|(<EVENT>':'<BUTTON>','<HAT>','<HATDIR>)]
 
   ostringstream joybuf;
 
@@ -88,7 +88,6 @@ string PhysicalJoystick::getMap() const
   joybuf << MODE_DELIM << int(kPaddlesMode) << "|" << joyMap.saveMapping(kPaddlesMode);
   joybuf << MODE_DELIM << int(kKeypadMode) << "|" << joyMap.saveMapping(kKeypadMode);
   joybuf << MODE_DELIM << int(kCommonMode) << "|" << joyMap.saveMapping(kCommonMode);
-
 
   return joybuf.str();
 }
