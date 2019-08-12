@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Stella Debugger</title>
+  <title>Stella Debugger</title>
 </head>
 
 <body>
@@ -79,34 +79,34 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 
 <p>Here's a (non-comprehensive) list of what the debugger can do so far:</p>
 <ul>
-	<li>Display registers and memory.</li>
+  <li>Display registers and memory.</li>
 
-	<li>Dump state of TIA and RIOT, with things like joystick directions and
-		NUSIZx decoded into English (more-or-less).</li>
+  <li>Dump state of TIA and RIOT, with things like joystick directions and
+    NUSIZx decoded into English (more-or-less).</li>
 
-	<li>Change registers/memory, including toggles for flags in P register.</li>
+  <li>Change registers/memory, including toggles for flags in P register.</li>
 
-	<li>Single step/trace.</li>
+  <li>Single step/trace.</li>
 
-	<li>Breakpoints - break running program and enter debugger when the
-		Program Counter hits a predefined address; you can set as many
-		breakpoints as you want.</li>
+  <li>Breakpoints - break running program and enter debugger when the
+    Program Counter hits a predefined address; you can set as many
+    breakpoints as you want.</li>
 
-	<li>Conditional breakpoints - Break running program when some arbitrary
-		condition is true (e.g. "breakif {a == $7f &amp;&amp; c}" will break when the	Accumulator value is $7f and the Carry flag is true, no matter where
-		in the program this happens). Unlike the cond breaks in PCAE, Stella's
-		are *fast*: the emulation will run at full speed unless you use lots
-		of breakif's at the same time, or have a slow CPU.</li>
+  <li>Conditional breakpoints - Break running program when some arbitrary
+    condition is true (e.g. "breakif {a == $7f &amp;&amp; c}" will break when the Accumulator value is $7f and the Carry flag is true, no matter where
+    in the program this happens). Unlike the cond breaks in PCAE, Stella's
+    are *fast*: the emulation will run at full speed unless you use lots
+    of breakif's at the same time, or have a slow CPU.</li>
 
-	<li>Watches - View contents of a location/register before every
-		debugger prompt.</li>
+  <li>Watches - View contents of a location/register before every
+    debugger prompt.</li>
 
-	<li>Traps - Like breakpoints, but break on read/write/any access to
-		*any* memory location. Traps can also be combined with conditions to
+  <li>Traps - Like breakpoints, but break on read/write/any access to
+    *any* memory location. Traps can also be combined with conditions to
     become conditional traps.</li>
 
-	<li>Frame advance (automatic breakpoint at beginning of next frame)
-		You can advance multiple frames with one command.</li>
+  <li>Frame advance (automatic breakpoint at beginning of next frame)
+    You can advance multiple frames with one command.</li>
 
   <li>Rewind previous advance operations and undo rewinds.</li>
 
@@ -116,7 +116,7 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
     These directives can be entered at the debugger prompt, or (automatically)
     loaded and saved in configuration files.</li>
 
-	<li>Extensive disassembly support, both from the emulation core and with help
+  <li>Extensive disassembly support, both from the emulation core and with help
     from Distella. Where possible, the disassembly differentiates between code,
     player graphics and playfield graphics (ie, addresses stored in GRPx and PFx)
     and data (addresses used as an operand of a command). Code sections are also
@@ -127,74 +127,74 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
   <li>Supports visual representation of the bitmap data of graphics areas,
     as well as the ability to directly edit these areas in either hex or binary.</li>
 
-	<li>Support for DASM symbol files (created with DASM's -s option),
-		including automatically loading symbol files if they're named
-		romname.sym</li>
+  <li>Support for DASM symbol files (created with DASM's -s option),
+    including automatically loading symbol files if they're named
+    romname.sym</li>
 
-	<li>Support for DASM list files (created with DASM's -l option),
-		including automatically loading list files if they're named
-		romname.lst</li>
+  <li>Support for DASM list files (created with DASM's -l option),
+    including automatically loading list files if they're named
+    romname.lst</li>
 
-	<li>Built-in VCS.H symbols, if no symbol file is loaded.</li>
+  <li>Built-in VCS.H symbols, if no symbol file is loaded.</li>
 
-	<li>Symbolic names in disassembly.</li>
+  <li>Symbolic names in disassembly.</li>
 
-	<li>Symbolic names accepted as input.</li>
+  <li>Symbolic names accepted as input.</li>
 
-	<li>Ability to generate DASM-compatible disassembly files (currently single-bank
+  <li>Ability to generate DASM-compatible disassembly files (currently single-bank
     only) with all the features mentioned above.</li>
 
-	<li>Tab completion for commands, symbol names and functions.</li>
-	<li>Graphical editor for RIOT and extended RAM. Acts a lot like a spreadsheet.
-		Input in hex, with displays for label/decimal/binary for
-		currently-selected location.</li>
-	<li>GUI CPU state window.</li>
-	<!--Cheat system (similar to MAME) (still needs a way to save/load cheats)-->
-	<li>Reset the 6502.</li>
-	<li>Start emulator in debugger (via command-line option "-debug").</li>
-	<li>Save CLI session to a text file.</li>
-	<li>Supports hex, decimal, and binary input and output almost everywhere.
-		(disassembly is still hex).</li>
-	<li>Support for bank switching. You can see how many banks a cart has and the
+  <li>Tab completion for commands, symbol names and functions.</li>
+  <li>Graphical editor for RIOT and extended RAM. Acts a lot like a spreadsheet.
+    Input in hex, with displays for label/decimal/binary for
+    currently-selected location.</li>
+  <li>GUI CPU state window.</li>
+  <!--Cheat system (similar to MAME) (still needs a way to save/load cheats)-->
+  <li>Reset the 6502.</li>
+  <li>Start emulator in debugger (via command-line option "-debug").</li>
+  <li>Save CLI session to a text file.</li>
+  <li>Supports hex, decimal, and binary input and output almost everywhere.
+    (disassembly is still hex).</li>
+  <li>Support for bank switching. You can see how many banks a cart has and the
     currently selected bank, and manually change banks.</li>
-	<li>Registers/memory that get changed by the CPU during debugging are
-		highlighted when they're displayed.</li>
+  <li>Registers/memory that get changed by the CPU during debugging are
+    highlighted when they're displayed.</li>
   <li>Data sources for the CPU SP/A/X/Y registers, showing the resolved/source
     address of of load operands.</li>
-	<li>Scanline advance (like frame advance, break at beginning
-		of next scanline).</li>
-	<li>TIA display is updated during step/trace, so we can see our
-		scanlines being drawn as it happens. This isn't 100% perfect: unlike
-		a real TIA, the one in Stella only updates when it's written to.</li>
-	<li>Graphical TIA tab, with register names and GUI buttons for
-		various bits (e.g. click ENAM0 to turn it on).</li>
-	<li>GUI Disassembly window, scrollable, with checkboxes for breakpoints.</li>
-	<li>Script (batch) file support, including auto-running a script file
-		named after the ROM image.</li>
-	<li>Saving the current debugger state to a script file (including
-		breakpoints, traps, etc).</li>
-	<li>Built-in functions for use with "breakif", to support common conditions
-		(such as breaking when the user presses Game Select...)</li>
-	<li>Patching ROM in-place.</li>
-	<li>Save patched ROM</li>
+  <li>Scanline advance (like frame advance, break at beginning
+    of next scanline).</li>
+  <li>TIA display is updated during step/trace, so we can see our
+    scanlines being drawn as it happens. This isn't 100% perfect: unlike
+    a real TIA, the one in Stella only updates when it's written to.</li>
+  <li>Graphical TIA tab, with register names and GUI buttons for
+    various bits (e.g. click ENAM0 to turn it on).</li>
+  <li>GUI Disassembly window, scrollable, with checkboxes for breakpoints.</li>
+  <li>Script (batch) file support, including auto-running a script file
+    named after the ROM image.</li>
+  <li>Saving the current debugger state to a script file (including
+    breakpoints, traps, etc).</li>
+  <li>Built-in functions for use with "breakif", to support common conditions
+    (such as breaking when the user presses Game Select...)</li>
+  <li>Patching ROM in-place.</li>
+  <li>Save patched ROM</li>
 </ul>
 
 <h3>Future planned features:</h3>
 
 <ul>
-	<li>GUI for cheat codes (Cheetah and normal codes).</li>
-	<li>Perhaps 2 panes in the disassembly window (so you can see 2 parts of the
-		code at once).</li>
-	<li>Add bookmark support to disassembly window.</li>
-	<li>More "special variables" for the expression parser.</li>
-	<li>Possibly a mini-assembler</li>
-	<li>Possibly support for recording and playing back input files, like
-		MAME. This isn't a debugger feature per se, but it'll make it easier
-		to reliably trigger a bug so you can debug it.</li>
+  <li>GUI for cheat codes (Cheetah and normal codes).</li>
+  <li>Perhaps 2 panes in the disassembly window (so you can see 2 parts of the
+    code at once).</li>
+  <li>Add bookmark support to disassembly window.</li>
+  <li>More "special variables" for the expression parser.</li>
+  <li>Possibly a mini-assembler</li>
+  <li>Possibly support for recording and playing back input files, like
+    MAME. This isn't a debugger feature per se, but it'll make it easier
+    to reliably trigger a bug so you can debug it.</li>
 <!--
-	<li>Graphics ROM view, so you can see your sprite data (it might still
-		be upside-down though :)</li> -->
-	<li>Various new GUI enhancements</li>
+  <li>Graphics ROM view, so you can see your sprite data (it might still
+    be upside-down though :)</li> -->
+  <li>Various new GUI enhancements</li>
 </ul>
 
 </br>
@@ -412,22 +412,22 @@ Bash-style commands are also supported:</p>
 
 <table border="1" cellpadding=4>
   <tr><th>Key</th><th>Function</th></tr>
-	<tr><td>Home</td><td>Move cursor to beginning of line</td></tr>
-	<tr><td>End</td><td>Move cursor to end of line</td></tr>
-	<tr><td>Delete</td><td>Remove character to right of cursor</td></tr>
-	<tr><td>Backspace</td><td>Remove character to left of cursor</td></tr>
-	<tr><td>Control-a</td><td>Same function as 'Home'</td></tr>
-	<tr><td>Control-e</td><td>Same function as 'End'</td></tr>
-	<tr><td>Control-d</td><td>Same function as 'Delete'</td></tr>
-	<tr><td>Control-k</td><td>Remove all characters from cursor to end of line</td></tr>
-	<tr><td>Control-u</td><td>Remove all characters from cursor to beginning of line</td></tr>
-	<tr><td>Control-w</td><td>Remove entire word to left of cursor</td></tr>
-	<tr><td>Shift-PgUp</td><td>Scroll up through previous commands one screen/page</td></tr>
-	<tr><td>Shift-PgDown</td><td>Scroll down through previous commands one screen/page</td></tr>
-	<tr><td>Shift-Up</td><td>Scroll up through previous commands one line</td></tr>
-	<tr><td>Shift-Down</td><td>Scroll down through previous commands one line</td></tr>
-	<tr><td>Shift-Home</td><td>Scroll to beginning of commands</td></tr>
-	<tr><td>Shift-End</td><td>Scroll to end of commands</td></tr>
+  <tr><td>Home</td><td>Move cursor to beginning of line</td></tr>
+  <tr><td>End</td><td>Move cursor to end of line</td></tr>
+  <tr><td>Delete</td><td>Remove character to right of cursor</td></tr>
+  <tr><td>Backspace</td><td>Remove character to left of cursor</td></tr>
+  <tr><td>Control-a</td><td>Same function as 'Home'</td></tr>
+  <tr><td>Control-e</td><td>Same function as 'End'</td></tr>
+  <tr><td>Control-d</td><td>Same function as 'Delete'</td></tr>
+  <tr><td>Control-k</td><td>Remove all characters from cursor to end of line</td></tr>
+  <tr><td>Control-u</td><td>Remove all characters from cursor to beginning of line</td></tr>
+  <tr><td>Control-w</td><td>Remove entire word to left of cursor</td></tr>
+  <tr><td>Shift-PgUp</td><td>Scroll up through previous commands one screen/page</td></tr>
+  <tr><td>Shift-PgDown</td><td>Scroll down through previous commands one screen/page</td></tr>
+  <tr><td>Shift-Up</td><td>Scroll up through previous commands one line</td></tr>
+  <tr><td>Shift-Down</td><td>Scroll down through previous commands one line</td></tr>
+  <tr><td>Shift-Home</td><td>Scroll to beginning of commands</td></tr>
+  <tr><td>Shift-End</td><td>Scroll to end of commands</td></tr>
 </table>
 <p>You can also scroll with the mouse. Copy and paste is not yet supported.</p>
 
@@ -518,64 +518,64 @@ This is just like C or C++...</p>
 to change the meaning of an expression. The prefixes are:</p>
 
 <ul>
-	<li>Dereference prefixes:<br>
+  <li>Dereference prefixes:<br>
 
     <p><pre>'*'</pre>
-    	  Dereference a byte pointer. "*a" means "the byte at the address that
-	      the A register points to". If A is 255 (hex $ff), the result will be
-    	  the value currently stored in memory location 255. This operator
-	      will be very familiar to you if you're a C or C++ developer. It's
-    	  equivalent to the PEEK() function in most 8-bit BASICs. Also, the
-	      debugger supports array-like byte dereferences: *address can be
-    	  written as address[0]. *(address+1) can be written as address[1],
-	      etc.</p>
+        Dereference a byte pointer. "*a" means "the byte at the address that
+        the A register points to". If A is 255 (hex $ff), the result will be
+        the value currently stored in memory location 255. This operator
+        will be very familiar to you if you're a C or C++ developer. It's
+        equivalent to the PEEK() function in most 8-bit BASICs. Also, the
+        debugger supports array-like byte dereferences: *address can be
+        written as address[0]. *(address+1) can be written as address[1],
+        etc.</p>
 
     <p><pre>'@'</pre>
-    	  Dereference a pointer to a word. This is just like the "*" byte deref,
-	      except it refers to a 16-bit value, occupying 2 locations, in
-    	  low-byte-first format (standard for the 6507).</p>
+        Dereference a pointer to a word. This is just like the "*" byte deref,
+        except it refers to a 16-bit value, occupying 2 locations, in
+        low-byte-first format (standard for the 6507).</p>
 
-		<p>The following are equivalent:</p>
-		<pre>
+    <p>The following are equivalent:</p>
+    <pre>
          @address
          *address+$100**(address+1)
          address[0]+#256*address[1]
-		</pre>
+    </pre>
 
-		<p>(TODO: add (indirect),y and (indirect,x) syntax)</p>
-	</li>
+    <p>(TODO: add (indirect),y and (indirect,x) syntax)</p>
+  </li>
 
-	<li>Hi/Lo Byte Prefixes:<br>
+  <li>Hi/Lo Byte Prefixes:<br>
     <p><pre>'&lt;'</pre>
-		Take the low byte of a 16-bit value. This has no effect on an 8-bit
-		value: "a" is equal to "&lt;a". However, "&lt;$1234" equals "$34".</p>
+    Take the low byte of a 16-bit value. This has no effect on an 8-bit
+    value: "a" is equal to "&lt;a". However, "&lt;$1234" equals "$34".</p>
 
     <p><pre>'&gt;'</pre>
-		Take the high byte of a 16-bit value. For 8-bit values such as
-		the Accumulator, this will always result in zero. For 16-bit values,
-		"&lt;$1234" = "$12".</p>
-	</li>
+    Take the high byte of a 16-bit value. For 8-bit values such as
+    the Accumulator, this will always result in zero. For 16-bit values,
+    "&lt;$1234" = "$12".</p>
+  </li>
 
-	<li>Number Base Prefixes:<br>
+  <li>Number Base Prefixes:<br>
     <p><pre>'#'</pre>
-		Treat the input as a decimal number.</p>
+    Treat the input as a decimal number.</p>
 
     <p><pre>'$'</pre>
-		Treat the input as a hex number.</p>
+    Treat the input as a hex number.</p>
 
     <p><pre>'\'</pre>
-		Treat the input as a binary number.</p>
+    Treat the input as a binary number.</p>
 
-		<p>These only have meaning when they come before a number, not a
-		label or a register. "\1010" means 10 decimal. So do "$0a" and
-		"#10". "a" by itself is always the Accumulator, no matter what
-		the default base is set to.</p>
+    <p>These only have meaning when they come before a number, not a
+    label or a register. "\1010" means 10 decimal. So do "$0a" and
+    "#10". "a" by itself is always the Accumulator, no matter what
+    the default base is set to.</p>
 
-		<p>If you don't specify any number base prefix, the number is
-		assumed to be in the default base. When you first start Stella,
-		the default base is 16 (hexadecimal). You can change it with the
-		"base" command. If you want to change the default base to decimal permanently,
-		you can put a
+    <p>If you don't specify any number base prefix, the number is
+    assumed to be in the default base. When you first start Stella,
+    the default base is 16 (hexadecimal). You can change it with the
+    "base" command. If you want to change the default base to decimal permanently,
+    you can put a
     <pre>
       base #10
     </pre>
@@ -674,8 +674,8 @@ if we wanted to use it again.</p>
 "breakif function_name":</p>
 
 <pre>
-	function gameReset { !(*SWCHB &amp; 1 ) }
-	breakif gameReset
+  function gameReset { !(*SWCHB &amp; 1 ) }
+  breakif gameReset
 </pre>
 
 <p>Now we have a meaningful name for the condition, so we can use it again.
@@ -685,7 +685,7 @@ if the Game Select switch is pressed. We want to break when the user
 presses both Select and Reset:</p>
 
 <pre>
-	breakif { gameReset &amp;&amp; gameSelect }
+  breakif { gameReset &amp;&amp; gameSelect }
 </pre>
 
 <p>User-defined functions appear in "listfunctions", which shows the label
@@ -877,6 +877,11 @@ later re-use.</p>
     when you were debugging at that time.</p>
   </li>
   <li>
+  <p><b>saveallstates</b>:
+    This command works identical to the save all states hotkey (Alt + F9) during emulation.
+    The saved states can be loaded with "loadallstates".</p>
+  </li>
+  <li>
   <p><b>savestate</b>:
     This command works identical to the save state hotkey (F9) during emulation.
     Any previously saved state can be loaded with "loadstate" plus the slot
@@ -939,6 +944,7 @@ clearsavestateifs - Clear all savestate points
  listsavestateifs - List savestate points
         listtraps - List traps
        loadconfig - Load Distella config file
+    loadallstates - Load all emulator states
         loadstate - Load emulator state xx (0-9)
                 n - Negative Flag: set (0 or 1), or toggle (no arg)
           palette - Show current TIA palette
@@ -961,6 +967,7 @@ clearsavestateifs - Clear all savestate points
           saverom - Save (possibly patched) ROM (with default name)
           saveses - Save console session (with default name)
          savesnap - Save current TIA image to PNG file
+    saveallstatea - Save all emulator states
         savestate - Save emulator state xx (valid args 0-9)
       savestateif - Create savestate on &lt;condition&gt;
          scanline - Advance emulation by &lt;xx&gt; scanlines (default=1)
@@ -1088,17 +1095,18 @@ as illustrated:</p>
 <p><img src="graphics/debugger_tiaoutcmenu.png"></p>
 <p>The options are as follows:</p>
 <ul>
-	<li><b>Fill to scanline</b>: This option will draw all scanlines up to the
-  vertical position where the	mouse was clicked.</li>
-	<li><b>Toggle breakpoint</b>: Will toggle a conditional breakpoint at the
-	scanline where the mouse was clicked. You can also use
-	the Prompt Tab commands to list and turn off the breakpoint.</li>
-	<li><b>Set zoom position</b>: Influences what is shown in the TIA
+  <li><b>Fill to scanline</b>: This option will draw all scanlines up to the
+  vertical position where the mouse was clicked (see also <a href="#TIAZoom"><b>TIA Zoom</b></a>).</li>
+  <li><b>Toggle breakpoint</b>: Will toggle a conditional breakpoint at the
+  scanline where the mouse was clicked. You can also use a left-click or
+  the Prompt Tab commands to list and turn off the breakpoint
+  (see also <a href="#TIAZoom"><b>TIA Zoom</b></a>).</li>
+  <li><b>Set zoom position</b>: Influences what is shown in the TIA
   zoom area (further described in <a href="#TIAZoom"><b>TIA Zoom</b></a>).
   The zoom area will contain the area centered at the position where the
-  mouse was	clicked.</li>
-	<li><b>Save snapshot</b>: Saves the TIA image currently shown,
-	including any current 'effects' (fixed debug colors, partial fill, etc).
+  mouse was clicked.</li>
+  <li><b>Save snapshot</b>: Saves the TIA image currently shown,
+  including any current 'effects' (fixed debug colors, partial fill, etc).
   </li>
 </ul>
 
@@ -1141,8 +1149,18 @@ this one does generate frames as the real system would.</p>
 <p>You can also right-click anywhere in this window to show a context menu,
 as illustrated:</p>
 <p><img src="graphics/debugger_tiazoomcmenu.png"></p>
-<p>These options allow you to zoom in on the image for even greater detail.
-If you click on the output window, you can scroll around using the cursor,
+<p>These options allow you to:</p>
+<ul>
+  <li><b>Fill to scanline</b>: This option will draw all scanlines up to the
+  vertical position where the mouse was clicked.</li>
+  <li><b>Toggle breakpoint</b>: Will toggle a conditional breakpoint at the
+  scanline where the mouse was clicked. You can also
+  the Prompt Tab commands to list and turn off the breakpoint.</li>
+  <li><b>2x|4x|8x zoom</b>: Zoom in on the image for even greater detail.</li>
+</ul>
+If you click on the output window, you can zoom with the mouse wheel too. And you can
+either drag and drop the zoom position with the mouse or you can scroll around using
+the cursor,
 PageUp/Dn and Home/End keys. You can also select the zoom position from
 a context menu in the <a href="#TIADisplay"><b>TIA Display</b></a>.</p>
 
@@ -1270,16 +1288,16 @@ addresses and allows another search.</p>
 <p>The following is an example of inspecting all addresses that have
 decreased by 1:</p>
 <ul>
-	<li>Click 'Search...' and then 'OK' (no value entered). All address/values are highlighted</li>
-	<li>Exit debugger mode and lose a life, let your energy decrease, or
-		do whatever it is you're trying to debug</li>
-	<li>Enter debugger mode again, click 'Compare...' and and enter a '-1' for input.
-		This finds all values that have decreased by 1 (as compared to their current
-		values)</li>
-	<li>Repeatedly following these steps may help to narrow number of
-		addresses under consideration, and eventually you'll find the
-		memory address you're looking for</li>
-	<li>Click 'Reset' when you're finished</li>
+  <li>Click 'Search...' and then 'OK' (no value entered). All address/values are highlighted</li>
+  <li>Exit debugger mode and lose a life, let your energy decrease, or
+    do whatever it is you're trying to debug</li>
+  <li>Enter debugger mode again, click 'Compare...' and and enter a '-1' for input.
+    This finds all values that have decreased by 1 (as compared to their current
+    values)</li>
+  <li>Repeatedly following these steps may help to narrow number of
+    addresses under consideration, and eventually you'll find the
+    memory address you're looking for</li>
+  <li>Click 'Reset' when you're finished</li>
 </ul>
 
 
@@ -1398,10 +1416,10 @@ anywhere in the listing:</p>
 <p>The following options are available:</p>
 <ul>
 <li><b>Set PC @ current line</b>: Set the Program Counter to the address of the
-disassembly line where the mouse was clicked (highlighted in green).</li>
+disassembly line where the mouse was clicked (highlighted in yellow).</li>
 
 <li><b>RunTo PC @ current line</b>: Single-step through code until the Program Counter
-matches the address of the disassembly line where the mouse was clicked (highlighted in green)</li>
+matches the address of the disassembly line where the mouse was clicked (highlighted in yellow)</li>
 
 <li><b>Re-disassemble</b>: Self-explanatory; force the current bank to be
 disassembled, regardless of whether anything has changed.</li>
@@ -1512,25 +1530,25 @@ named "rr.a26", with properties entry "River Raid". Attempts will be made as fol
 </ul>
 <p>The location of 'configdir' will depend on the OS as follows:</p>
 
-	<p><table cellpadding=4 border="1">
-		<tr>
-			<td><b>Linux/Unix</b></td>
-			<td><i>~/.stella/cfg/</i></td>
-		</tr>
-		<tr>
-			<td><b>Macintosh</b></td>
-			<td><i>~/Library/Application Support/Stella/cfg/</i></td>
-		</tr>
-		<tr>
-			<td><b>Windows</b></td>
-			<td><i>%APPDATA%\Stella\cfg\</i>&nbsp;&nbsp;&nbsp;
-				<b>OR</b><br>
-				<i>_BASEDIR_\cfg\</i>
-					(if a file named 'basedir.txt' exists in the application
-					directory containing the full pathname for _BASEDIR_)
-			</td>
-		</tr>
-	</table>
+  <p><table cellpadding=4 border="1">
+    <tr>
+      <td><b>Linux/Unix</b></td>
+      <td><i>~/.stella/cfg/</i></td>
+    </tr>
+    <tr>
+      <td><b>Macintosh</b></td>
+      <td><i>~/Library/Application Support/Stella/cfg/</i></td>
+    </tr>
+    <tr>
+      <td><b>Windows</b></td>
+      <td><i>%APPDATA%\Stella\cfg\</i>&nbsp;&nbsp;&nbsp;
+        <b>OR</b><br>
+        <i>_BASEDIR_\cfg\</i>
+          (if a file named 'basedir.txt' exists in the application
+          directory containing the full pathname for _BASEDIR_)
+      </td>
+    </tr>
+  </table>
 </table>
 </li>
 </ol>
@@ -1545,118 +1563,118 @@ actually do something useful. No experience with debuggers is necessary,
 but it helps to know at least a little about 6502 programming.</p>
 
 <ol>
-	<li>Get the Atari Battlezone ROM image. Make sure you've got the
-		regular NTSC version. Load it up in Stella and press TAB to get to
-		the main menu. From there, click on "Game Information". For "Name", it
-		should say "Battlezone (1983) (Atari)" and for MD5Sum it should say
-		"41f252a66c6301f1e8ab3612c19bc5d4". The rest of this tutorial assumes
-		you're using this version of the ROM; it may or may not work with the
-		PAL version, or with any of the various "hacked" versions floating around
-		on the 'net.</li>
+  <li>Get the Atari Battlezone ROM image. Make sure you've got the
+    regular NTSC version. Load it up in Stella and press TAB to get to
+    the main menu. From there, click on "Game Information". For "Name", it
+    should say "Battlezone (1983) (Atari)" and for MD5Sum it should say
+    "41f252a66c6301f1e8ab3612c19bc5d4". The rest of this tutorial assumes
+    you're using this version of the ROM; it may or may not work with the
+    PAL version, or with any of the various "hacked" versions floating around
+    on the 'net.</li>
 
-	<li>Start the game. You begin the game with 5 lives (count the tank
-		symbols at the bottom of the screen).</li>
+  <li>Start the game. You begin the game with 5 lives (count the tank
+    symbols at the bottom of the screen).</li>
 
-	<li>Enter the debugger by pressing the ` (backquote) key. Don't get
-		killed before you do this, though. You should still have all 5 lives.</li>
+  <li>Enter the debugger by pressing the ` (backquote) key. Don't get
+    killed before you do this, though. You should still have all 5 lives.</li>
 
-	<li>In the RAM display, click the "Search" button and enter "5" for input.
-		This searches RAM for your value and highlights all addresses that match
-		the input. You should see two addresses highlighted: "00a5" and "00ba".
-		These are the only two addresses that currently have the value 5, so they're
-		the most likely candidates for "number of lives" counter. (However, some
-		games might actually store one less than the real number of lives, or
-		one more, so you might have to experiment a bit. Since this is a "rigged
-		demo", I already know Battlezone stores the actual number of lives.
-		Most games do, actually).</li>
+  <li>In the RAM display, click the "Search" button and enter "5" for input.
+    This searches RAM for your value and highlights all addresses that match
+    the input. You should see two addresses highlighted: "00a5" and "00ba".
+    These are the only two addresses that currently have the value 5, so they're
+    the most likely candidates for "number of lives" counter. (However, some
+    games might actually store one less than the real number of lives, or
+    one more, so you might have to experiment a bit. Since this is a "rigged
+    demo", I already know Battlezone stores the actual number of lives.
+    Most games do, actually).</li>
 
-	<li>Exit the debugger by pressing ` (backquote) again. The game will
-		pick up where you left off.</li>
+  <li>Exit the debugger by pressing ` (backquote) again. The game will
+    pick up where you left off.</li>
 
-	<li>Get killed! Ram an enemy tank, or let him shoot you. Wait for
-		the explosion to finish. You will now have 4 lives.</li>
+  <li>Get killed! Ram an enemy tank, or let him shoot you. Wait for
+    the explosion to finish. You will now have 4 lives.</li>
 
-	<li>Enter the debugger again. Click the "Compare" button in RAM widget and enter
-		a value of 4. Now the RAM widget should only show one highlighted address:
-		"00ba". What we did was search within our previous results (the ones that
-		were 5 before) for the new value 4. Address $00ba used to have the value 5,
-		but now it has 4. This means that Battlezone (almost certainly) stores the
-		current number of lives at address $00ba.</li>
+  <li>Enter the debugger again. Click the "Compare" button in RAM widget and enter
+    a value of 4. Now the RAM widget should only show one highlighted address:
+    "00ba". What we did was search within our previous results (the ones that
+    were 5 before) for the new value 4. Address $00ba used to have the value 5,
+    but now it has 4. This means that Battlezone (almost certainly) stores the
+    current number of lives at address $00ba.</li>
 
-	<li>Test your theory. Go to the RAM display and change address $ba to
-		some high number like $ff (you could use the Prompt instead: enter "ram
-		$ba $ff"). Exit the debugger again (or advance the frame). You should now see lots of lives
-		at the bottom of the screen (of course, there isn't room to display $ff
-		(255) of them!)... play the game, get killed a few times, notice that
-		you have lots of lives.</li>
+  <li>Test your theory. Go to the RAM display and change address $ba to
+    some high number like $ff (you could use the Prompt instead: enter "ram
+    $ba $ff"). Exit the debugger again (or advance the frame). You should now see lots of lives
+    at the bottom of the screen (of course, there isn't room to display $ff
+    (255) of them!)... play the game, get killed a few times, notice that
+    you have lots of lives.</li>
 
-	<li>Now it's time to decide what sort of "ROM hack" we want to
-		accomplish. We've found the "lives" counter for the game, so we can
-		either have the game start with lots of lives, or change the game
-		code so we can't get killed (AKA immortality), or change the code
-		so we always have the same number of lives (so we never run out, AKA
-		infinite lives). Let's go for infinite lives: it's a little harder than
-		just starting with lots of lives, but not as difficult as immortality
-		(for that, we have to disable the collision checking code, which means
-		we have to find and understand it first!)</li>
+  <li>Now it's time to decide what sort of "ROM hack" we want to
+    accomplish. We've found the "lives" counter for the game, so we can
+    either have the game start with lots of lives, or change the game
+    code so we can't get killed (AKA immortality), or change the code
+    so we always have the same number of lives (so we never run out, AKA
+    infinite lives). Let's go for infinite lives: it's a little harder than
+    just starting with lots of lives, but not as difficult as immortality
+    (for that, we have to disable the collision checking code, which means
+    we have to find and understand it first!)</li>
 
-	<li>Set a Write Trap on the lives counter address: "trapwrite $ba"
-		in the Prompt. Exit the debugger and play until you get killed. When
-		you die, the trap will cause the emulator to enter the debugger with the
-		Program Counter pointing to the instruction *after* the one that wrote
-		to location $ba.</li>
+  <li>Set a Write Trap on the lives counter address: "trapwrite $ba"
+    in the Prompt. Exit the debugger and play until you get killed. When
+    you die, the trap will cause the emulator to enter the debugger with the
+    Program Counter pointing to the instruction *after* the one that wrote
+    to location $ba.</li>
 
-	<li>Once in the debugger, look at the ROM display. The PC should be at address
-		$f238, instruction "LDA $e1". You want to examine a few instructions before
-		the PC, so scroll up using the mouse or arrow keys. Do you see
-		the one that affects the lives counter? That's right, it's the "DEC $ba"
-		at location $f236.</li>
+  <li>Once in the debugger, look at the ROM display. The PC should be at address
+    $f238, instruction "LDA $e1". You want to examine a few instructions before
+    the PC, so scroll up using the mouse or arrow keys. Do you see
+    the one that affects the lives counter? That's right, it's the "DEC $ba"
+    at location $f236.</li>
 
-	<li>Let's stop the DEC $ba from happening. We can't just delete the
-		instruction (it would mess up the addressing of everything afterwards,
-		if it were even possible), but we can replace it with some other
-		instruction(s).
+  <li>Let's stop the DEC $ba from happening. We can't just delete the
+    instruction (it would mess up the addressing of everything afterwards,
+    if it were even possible), but we can replace it with some other
+    instruction(s).
 
-		<p>Since we just want to get rid of the instruction, we can replace it with
-		NOP (no operation). From looking at the disassembly, you can see that
-		"DEC $ba" is a 2-byte long instruction, so we will need two one-byte
-		NOP instructions to replace it. From reading the prompt help (the "help"
-		command), you can see that the "rom" command is what we use to patch ROM.
+    <p>Since we just want to get rid of the instruction, we can replace it with
+    NOP (no operation). From looking at the disassembly, you can see that
+    "DEC $ba" is a 2-byte long instruction, so we will need two one-byte
+    NOP instructions to replace it. From reading the prompt help (the "help"
+    command), you can see that the "rom" command is what we use to patch ROM.
 
-		<p>Unfortunately, Stella doesn't contain an assembler, so we can't just
-		type NOP to put a NOP instruction in the code. We'll have to use the
-		hex opcode instead.
+    <p>Unfortunately, Stella doesn't contain an assembler, so we can't just
+    type NOP to put a NOP instruction in the code. We'll have to use the
+    hex opcode instead.
 
-		<p>Now crack open your 6502 reference manual and look up the NOP
-		instruction's opcode... OK, OK, I'll just tell you what it is: it's $EA
-		(234 decimal). We need two of them, so the bytes to insert will look like:
+    <p>Now crack open your 6502 reference manual and look up the NOP
+    instruction's opcode... OK, OK, I'll just tell you what it is: it's $EA
+    (234 decimal). We need two of them, so the bytes to insert will look like:
 
-		<pre>    $ea $ea</pre>
+    <pre>    $ea $ea</pre>
 
-		<p>Select the line at address $f236 and enter 'ROM patch' mode. This is done
-		by either double-clicking the line, or pressing enter. Then delete the bytes
-		with backspace key and enter "ea ea". Another way to do this would have been
-		to enter "rom $f236 $ea $ea" in the Prompt widget.
-	</li>
-
-	<li>Test your patch. First, set location $ba to some number of
-		lives that can be displayed on the screen ("poke $ba 3" or enter directly into
-		the RAM display). Now exit the debugger and play the game. You should see 3
-		lives on the screen.</li>
-
-	<li>The crucial test: get killed again! After the explosion, you
-		will *still* see 3 lives: Success! We've hacked Battlezone to give us
-		infinite lives.</li>
-
-	<li>Save your work. In the prompt: "saverom". You now
-		have your very own infinite-lives version of Battlezone. The file will
-		be saved in your HOME directory (NOT your ROM directory), so you might
-		want to move it to your ROM directory if it isn't the current directory.
+    <p>Select the line at address $f236 and enter 'ROM patch' mode. This is done
+    by either double-clicking the line, or pressing enter. Then delete the bytes
+    with backspace key and enter "ea ea". Another way to do this would have been
+    to enter "rom $f236 $ea $ea" in the Prompt widget.
   </li>
 
-	<li>Test the new ROM: exit Stella, and re-run it. Open your ROM
-		(or give its name on the command line) and play the game. You can play
-		forever! It worked.</li>
+  <li>Test your patch. First, set location $ba to some number of
+    lives that can be displayed on the screen ("poke $ba 3" or enter directly into
+    the RAM display). Now exit the debugger and play the game. You should see 3
+    lives on the screen.</li>
+
+  <li>The crucial test: get killed again! After the explosion, you
+    will *still* see 3 lives: Success! We've hacked Battlezone to give us
+    infinite lives.</li>
+
+  <li>Save your work. In the prompt: "saverom". You now
+    have your very own infinite-lives version of Battlezone. The file will
+    be saved in your HOME directory (NOT your ROM directory), so you might
+    want to move it to your ROM directory if it isn't the current directory.
+  </li>
+
+  <li>Test the new ROM: exit Stella, and re-run it. Open your ROM
+    (or give its name on the command line) and play the game. You can play
+    forever! It worked.</li>
 </ol>
 
 <p>Now, try the same techniques on some other ROM image (try Pac-Man). Some
