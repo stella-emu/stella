@@ -59,7 +59,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   addTabWidget(myTab);
 
   // 1) Event mapper for emulation actions
-  tabID = myTab->addTab("Emul. Events");
+  tabID = myTab->addTab(" Emulation Events ", TabWidget::AUTO_WIDTH);
   actions = instance().eventHandler().getActionList(kEmulationMode);
   myEmulEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
@@ -69,7 +69,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(myEmulEventMapper->getFocusList(), myTab, tabID);
 
   // 2) Event mapper for UI actions
-  tabID = myTab->addTab("UI Events");
+  tabID = myTab->addTab("  UI Events  ", TabWidget::AUTO_WIDTH);
   actions = instance().eventHandler().getActionList(kMenuMode);
   myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
@@ -110,7 +110,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   const int HBORDER = 8;
 
   // Devices/ports
-  tabID = myTab->addTab("Devices & Ports");
+  tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
 
   ypos = VBORDER;
   lwidth = font.getStringWidth("Digital paddle sensitivity "); // was: "Use mouse as a controller "

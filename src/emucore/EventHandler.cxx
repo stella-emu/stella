@@ -1625,23 +1625,23 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::JoystickOneFire9,        "P1 Booster Handle Grip Trigger",        "" },
 
   { Event::PaddleZeroAnalog,        "Paddle 0 Analog",                       "" },
-  { Event::PaddleZeroDecrease,      "Paddle 0 Decrease",                     "" },
-  { Event::PaddleZeroIncrease,      "Paddle 0 Increase",                     "" },
+  { Event::PaddleZeroIncrease,      "Paddle 0 Turn Left",                    "" },
+  { Event::PaddleZeroDecrease,      "Paddle 0 Turn Right",                   "" },
   { Event::PaddleZeroFire,          "Paddle 0 Fire",                         "" },
 
   { Event::PaddleOneAnalog,         "Paddle 1 Analog",                       "" },
-  { Event::PaddleOneDecrease,       "Paddle 1 Decrease",                     "" },
-  { Event::PaddleOneIncrease,       "Paddle 1 Increase",                     "" },
+  { Event::PaddleOneIncrease,       "Paddle 1 Turn Left",                    "" },
+  { Event::PaddleOneDecrease,       "Paddle 1 Turn Right",                   "" },
   { Event::PaddleOneFire,           "Paddle 1 Fire",                         "" },
 
   { Event::PaddleTwoAnalog,         "Paddle 2 Analog",                       "" },
-  { Event::PaddleTwoDecrease,       "Paddle 2 Decrease",                     "" },
-  { Event::PaddleTwoIncrease,       "Paddle 2 Increase",                     "" },
+  { Event::PaddleTwoIncrease,       "Paddle 2 Turn Left",                    "" },
+  { Event::PaddleTwoDecrease,       "Paddle 2 Turn Right",                   "" },
   { Event::PaddleTwoFire,           "Paddle 2 Fire",                         "" },
 
   { Event::PaddleThreeAnalog,       "Paddle 3 Analog",                       "" },
-  { Event::PaddleThreeDecrease,     "Paddle 3 Decrease",                     "" },
-  { Event::PaddleThreeIncrease,     "Paddle 3 Increase",                     "" },
+  { Event::PaddleThreeIncrease,     "Paddle 3 Turn Left",                    "" },
+  { Event::PaddleThreeDecrease,     "Paddle 3 Turn Right",                   "" },
   { Event::PaddleThreeFire,         "Paddle 3 Fire",                         "" },
 
   { Event::KeyboardZero1,           "P0 Keyboard 1",                         "" },

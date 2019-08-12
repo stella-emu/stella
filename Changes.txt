@@ -30,7 +30,7 @@
 
   * Added configurable paddle dejittering.
 
-  * Huge improvements to event remapping. (TODO: doc)
+  * Huge improvements to event remapping. 
     - Allow mapping of modifier-key and button-direction combinations.
     - One controller can use the same mappings as other controllers  
     - Much more events can be remapped
