@@ -76,14 +76,14 @@
 
   * Added option to change pitch of Pitfall II music 
 
-  * Added various developer options for oddball TIAs: (TODO: doc)
+  * Added various developer options for oddball TIAs: 
     - stuffed player, missiles and ball move
     - delayed playfield bits and color
     - delayed players and ball VDEL swap
 
   * Disabled some developer options for 'Player settings'.
 
-  * Improved debugger's TIA display and zoom windows (TODO: doc)
+  * Improved debugger's TIA display and zoom windows
 
   * Fixed display of negative values in debugger; sometimes they were
     shown as positive.
