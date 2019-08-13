@@ -345,9 +345,10 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
   ColorId color, TextAlign align,
   int deltax, bool useEllipsis, ColorId shadowColor)
 {
+  int lines = 1;
+
 #ifdef GUI_SUPPORT
   string inStr = s;
-  int lines = 1;
 
   // draw multiline string
   while (font.getStringWidth(inStr) > w && h >= font.getFontHeight() * 2)
@@ -375,8 +376,8 @@ int FBSurface::drawString(const GUI::Font& font, const string& s,
     lines++;
   }
   drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor);
-  return lines;
 #endif
+  return lines;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
