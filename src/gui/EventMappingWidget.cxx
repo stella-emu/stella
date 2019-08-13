@@ -309,7 +309,7 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingWidget::handleJoyDown(int stick, int button)
+void EventMappingWidget::handleJoyDown(int stick, int button, bool longPress)
 {
   cerr << "handleJoyDown" << endl;
   // Remap joystick buttons in remap mode

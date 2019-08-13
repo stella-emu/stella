@@ -79,9 +79,9 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
-                               int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h),
+  LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
+                                 int x, int y, int w, int h)
+    : Dialog(osystem, parent, x, y, w, h),
     myStartButton(nullptr),
     myPrevDirButton(nullptr),
     myOptionsButton(nullptr),
@@ -90,7 +90,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myPattern(nullptr),
     myAllFiles(nullptr),
     myRomInfoWidget(nullptr),
-    mySelectedItem(0)
+    mySelectedItem(0),
+    myEventHandled(false)
 {
   myUseMinimalUI = instance().settings().getBool("minimal_ui");
 
@@ -466,7 +467,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleJoyDown(int stick, int button)
+void LauncherDialog::handleJoyDown(int stick, int button, bool longPress)
 {
   // open power-up options and settings for 2nd and 4th button if not mapped otherwise
   Event::Type e = instance().eventHandler().eventForJoyButton(kMenuMode, stick, button);
@@ -476,7 +477,19 @@ void LauncherDialog::handleJoyDown(int stick, int button)
   if (button == 3 && (e == Event::Event::UITabPrev || e == Event::NoType))
     openSettings();
   else
-    Dialog::handleJoyDown(stick, button);
+  {
+    myEventHandled = false;
+    myList->setFlags(Widget::FLAG_WANTS_RAWDATA); // allow handling long button press
+    Dialog::handleJoyDown(stick, button, longPress);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::handleJoyUp(int stick, int button)
+{
+  if (!myEventHandled)
+    Dialog::handleJoyUp(stick, button);
+  myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // stop allowing to handle long button press
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -547,6 +560,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       updateUI();
       break;
 
+    case ListWidget::kLongButtonPressCmd:
+      myGlobalProps->open();
+      myEventHandled = true;
+      break;
+
     case kQuitCmd:
       close();
       instance().eventHandler().quit();
@@ -557,6 +575,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       FilesystemNode node(instance().settings().getString("romdir"));
       if(!(node.exists() && node.isDirectory()))
         node = FilesystemNode("~");
+
       myList->setDirectory(node);
       break;
     }

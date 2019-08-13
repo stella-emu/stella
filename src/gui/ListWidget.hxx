@@ -31,6 +31,7 @@ class ListWidget : public EditableWidget
   public:
     enum {
       kDoubleClickedCmd    = 'LIdb',  // double click on item - 'data' will be item index
+      kLongButtonPressCmd  = 'LIlb',  // long button press
       kActivatedCmd        = 'LIac',  // item activated by return/enter - 'data' will be item index
       kDataChangedCmd      = 'LIch',  // item data changed - 'data' will be item index
       kRClickedCmd         = 'LIrc',  // right click on item - 'data' will be item index
@@ -71,6 +72,8 @@ class ListWidget : public EditableWidget
     void handleMouseWheel(int x, int y, int direction) override;
     bool handleText(char text) override;
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleJoyDown(int stick, int button, bool longPress) override;
+    void handleJoyUp(int stick, int button) override;
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 

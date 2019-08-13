@@ -187,6 +187,7 @@ class DialogContainer
     static uInt64 _REPEAT_INITIAL_DELAY;
     static uInt64 _REPEAT_SUSTAIN_DELAY;
     static constexpr uInt64 _REPEAT_NONE = 1 << 24; // loooong
+    static constexpr uInt64 _LONG_PRESS_DELAY = 1000; // 1 second
 
     // For continuous 'mouse down' events
     struct {
@@ -202,6 +203,7 @@ class DialogContainer
       int button;
     } myCurrentButtonDown;
     uInt64 myButtonRepeatTime;
+    uInt64 myButtonLongPressTime;
 
     // For continuous 'joy axis down' events
     struct {

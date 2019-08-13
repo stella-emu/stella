@@ -588,7 +588,7 @@ bool Dialog::handleMouseClicks(int x, int y, MouseButton b)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleJoyDown(int stick, int button)
+void Dialog::handleJoyDown(int stick, int button, bool longPress)
 {
   Event::Type e =
     instance().eventHandler().eventForJoyButton(kMenuMode, stick, button);
@@ -598,7 +598,7 @@ void Dialog::handleJoyDown(int stick, int button)
   if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
-      _focusedWidget->handleJoyDown(stick, button);
+      _focusedWidget->handleJoyDown(stick, button, longPress);
     else
       _focusedWidget->handleEvent(e);
   }

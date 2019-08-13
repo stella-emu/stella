@@ -58,7 +58,7 @@ class EventMappingWidget : public Widget, public CommandSender
 
     bool handleKeyDown(StellaKey key, StellaMod mod) override;
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
-    void handleJoyDown(int stick, int button) override;
+    void handleJoyDown(int stick, int button, bool longPress = false) override;
     void handleJoyUp(int stick, int button) override;
     void handleJoyAxis(int stick, int axis, int value, int button) override;
     bool handleJoyHat(int stick, int hat, JoyHat value, int button) override;

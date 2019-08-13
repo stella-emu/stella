@@ -91,7 +91,8 @@ class LauncherDialog : public Dialog
     void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    void handleJoyDown(int stick, int button) override;
+    void handleJoyDown(int stick, int button, bool longPress) override;
+    void handleJoyUp(int stick, int button) override;
     Event::Type getJoyAxisEvent(int stick, int axis, int value, int button) override;
 
     void loadConfig() override;
@@ -130,6 +131,7 @@ class LauncherDialog : public Dialog
 
     bool myShowOnlyROMs;
     bool myUseMinimalUI;
+    bool myEventHandled;
 
     enum {
       kPrevDirCmd = 'PRVD',

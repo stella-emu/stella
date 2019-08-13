@@ -49,7 +49,7 @@ class InputDialog : public Dialog
   private:
     void handleKeyDown(StellaKey key, StellaMod mod) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;
-    void handleJoyDown(int stick, int button) override;
+    void handleJoyDown(int stick, int button, bool longPress) override;
     void handleJoyUp(int stick, int button) override;
     void handleJoyAxis(int stick, int axis, int value, int button) override;
     bool handleJoyHat(int stick, int hat, JoyHat value, int button) override;
