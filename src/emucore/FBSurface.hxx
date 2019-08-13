@@ -218,7 +218,7 @@ class FBSurface
       @param useEllipsis  Whether to use '...' when the string is too long
     */
 
-    virtual void drawString(
+    virtual int drawString(
       const GUI::Font& font, const string& s, int x, int y, int w, int h,
       ColorId color, TextAlign align = TextAlign::Left,
       int deltax = 0, bool useEllipsis = true, ColorId shadowColor = kNone);
@@ -235,6 +235,7 @@ class FBSurface
       @param align  The alignment of the text in the string width area
       @param deltax FIXME
       @param useEllipsis  Whether to use '...' when the string is too long
+      @return       Number of lines drawn
     */
     virtual void drawString(
         const GUI::Font& font, const string& s, int x, int y, int w,

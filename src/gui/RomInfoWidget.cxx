@@ -200,7 +200,8 @@ void RomInfoWidget::drawWidget(bool hilite)
   int xpos = _x + 8, ypos = _y + yoff + 10;
   for(const auto& info: myRomInfo)
   {
-    s.drawString(_font, info, xpos, ypos, _w - 16, onTop ? _textcolor : _shadowcolor);
-    ypos += _font.getLineHeight();
+    int lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
+                             onTop ? _textcolor : _shadowcolor);
+    ypos += _font.getLineHeight() + (lines - 1) * _font.getFontHeight();
   }
 }
