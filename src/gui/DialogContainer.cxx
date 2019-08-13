@@ -31,6 +31,7 @@ DialogContainer::DialogContainer(OSystem& osystem)
     myTime(0),
     myClickRepeatTime(0),
     myButtonRepeatTime(0),
+    myButtonLongPressTime(0),
     myAxisRepeatTime(0),
     myHatRepeatTime(0)
 {
@@ -66,6 +67,13 @@ void DialogContainer::updateTime(uInt64 time)
   {
     activeDialog->handleJoyDown(myCurrentButtonDown.stick, myCurrentButtonDown.button);
     myButtonRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
+  }
+
+  // Joystick has been pressed long
+  if(myCurrentButtonDown.stick != -1 && myButtonLongPressTime < myTime)
+  {
+    activeDialog->handleJoyDown(myCurrentButtonDown.stick, myCurrentButtonDown.button, true);
+    myButtonLongPressTime = myButtonRepeatTime = myTime + _REPEAT_NONE;
   }
 
   // Joystick axis still pressed
@@ -288,6 +296,7 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
     myCurrentButtonDown.stick  = stick;
     myCurrentButtonDown.button = button;
     myButtonRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
+    myButtonLongPressTime = myTime + _LONG_PRESS_DELAY;
 
     activeDialog->handleJoyDown(stick, button);
   }
@@ -297,7 +306,7 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
     if(stick == myCurrentButtonDown.stick)
     {
       myCurrentButtonDown.stick = myCurrentButtonDown.button = -1;
-      myButtonRepeatTime = 0;
+      myButtonRepeatTime = myButtonLongPressTime = 0;
     }
     activeDialog->handleJoyUp(stick, button);
   }
@@ -311,6 +320,9 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value, int but
 
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
+
+  // Prevent long button press in button/axis combinations
+  myButtonLongPressTime = myTime + _REPEAT_NONE;
 
   // Only stop firing events if it's the current stick
   if(myCurrentAxisDown.stick == stick && value == 0)
@@ -339,6 +351,9 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value, int bu
 
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
+
+  // Prevent long button press in button/hat combinations
+  myButtonLongPressTime = myTime + _REPEAT_NONE;
 
   // Only stop firing events if it's the current stick
   if(myCurrentHatDown.stick == stick && value == JoyHat::CENTER)

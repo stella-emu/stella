@@ -77,7 +77,7 @@ class Widget : public GuiObject
     virtual void handleMouseMoved(int x, int y) { }
     virtual void handleMouseWheel(int x, int y, int direction) { }
     virtual bool handleMouseClicks(int x, int y, MouseButton b) { return false; }
-    virtual void handleJoyDown(int stick, int button) { }
+    virtual void handleJoyDown(int stick, int button, bool longPress = false) { }
     virtual void handleJoyUp(int stick, int button) { }
     virtual void handleJoyAxis(int stick, int axis, int value, int button = JOY_CTRL_NONE) { }
     virtual bool handleJoyHat(int stick, int hat, JoyHat value, int button = JOY_CTRL_NONE) { return false; }
@@ -176,7 +176,6 @@ class Widget : public GuiObject
     Widget& operator=(Widget&&) = delete;
 };
 
-
 /* StaticTextWidget */
 class StaticTextWidget : public Widget
 {
@@ -211,7 +210,6 @@ class StaticTextWidget : public Widget
     StaticTextWidget& operator=(const StaticTextWidget&) = delete;
     StaticTextWidget& operator=(StaticTextWidget&&) = delete;
 };
-
 
 /* ButtonWidget */
 class ButtonWidget : public StaticTextWidget, public CommandSender
@@ -261,7 +259,6 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     ButtonWidget& operator=(const ButtonWidget&) = delete;
     ButtonWidget& operator=(ButtonWidget&&) = delete;
 };
-
 
 /* CheckboxWidget */
 class CheckboxWidget : public ButtonWidget

@@ -475,7 +475,7 @@ void InputDialog::handleKeyUp(StellaKey key, StellaMod mod)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::handleJoyDown(int stick, int button)
+void InputDialog::handleJoyDown(int stick, int button, bool longPress)
 {
   // Remap joystick buttons in remap mode, otherwise pass to parent dialog
   if(myEmulEventMapper->remapMode())

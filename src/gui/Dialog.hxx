@@ -137,7 +137,7 @@ class Dialog : public GuiObject
     virtual void handleMouseWheel(int x, int y, int direction);
     virtual void handleMouseMoved(int x, int y);
     virtual bool handleMouseClicks(int x, int y, MouseButton b);
-    virtual void handleJoyDown(int stick, int button);
+    virtual void handleJoyDown(int stick, int button, bool longPress = false);
     virtual void handleJoyUp(int stick, int button);
     virtual void handleJoyAxis(int stick, int axis, int value, int button = JOY_CTRL_NONE);
     virtual bool handleJoyHat(int stick, int hat, JoyHat value, int button = JOY_CTRL_NONE);

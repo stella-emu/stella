@@ -25,6 +25,7 @@
 #include "FrameBuffer.hxx"
 #include "StellaKeys.hxx"
 #include "TimerManager.hxx"
+#include "EventHandler.hxx"
 #include "ListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -321,6 +322,29 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod)
   }
 
   return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::handleJoyDown(int stick, int button, bool longPress)
+{
+  if (longPress)
+    sendCommand(ListWidget::kLongButtonPressCmd, _selectedItem, _id);
+
+  Event::Type e = _boss->instance().eventHandler().eventForJoyButton(kMenuMode, stick, button);
+
+  // handle UISelect event on button up
+  if(e != Event::UISelect)
+    handleEvent(e);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::handleJoyUp(int stick, int button)
+{
+  Event::Type e = _boss->instance().eventHandler().eventForJoyButton(kMenuMode, stick, button);
+
+  // handle UISelect event on button up
+  if(e == Event::UISelect)
+    handleEvent(e);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

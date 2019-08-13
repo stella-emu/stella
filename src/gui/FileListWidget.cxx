@@ -121,6 +121,10 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
         cmd = ItemActivated;
       break;
 
+    case ListWidget::kLongButtonPressCmd:
+      // do nothing, let boss handle this one
+      break;
+
     default:
       // If we don't know about the command, send it to the parent and exit
       StringListWidget::handleCommand(sender, cmd, data, id);
