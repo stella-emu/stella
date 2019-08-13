@@ -1172,16 +1172,6 @@ TIA& TIA::updateScanlineByStep()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA& TIA::updateScanlineByTrace(int target)
-{
-  uInt32 count = 10000;  // only try up to 10000 steps
-  while (mySystem->m6502().getPC() != target && count-- &&
-         mySystem->m6502().execute(1));
-
-  return *this;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIA::registerValue(uInt8 reg) const
 {
   return reg < 64 ? myShadowRegisters[reg] : 0;

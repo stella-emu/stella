@@ -213,6 +213,8 @@ class M6502 : public Serializable
     void attach(Debugger& debugger);
 
     PackedBitArray& breakPoints() { return myBreakPoints; }
+    // flags used for one-shot breakpoints
+    PackedBitArray& breakPointFlags() { return myBreakPointFlags; }
     TrapArray& readTraps() { return myReadTraps; }
     TrapArray& writeTraps() { return myWriteTraps; }
 
@@ -426,7 +428,8 @@ class M6502 : public Serializable
     Debugger* myDebugger;
 
     // Addresses for which the specified action should occur
-    PackedBitArray myBreakPoints;// , myReadTraps, myWriteTraps, myReadTrapIfs, myWriteTrapIfs;
+    PackedBitArray myBreakPoints;
+    PackedBitArray myBreakPointFlags;
     TrapArray myReadTraps, myWriteTraps;
 
     // Did we just now hit a trap?

@@ -150,6 +150,7 @@ class Debugger : public DialogContainer
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
 
     PackedBitArray& breakPoints() const;
+    PackedBitArray& breakPointFlags() const;
     TrapArray& readTraps() const;
     TrapArray& writeTraps() const;
 

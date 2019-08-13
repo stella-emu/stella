@@ -197,6 +197,12 @@ PackedBitArray& Debugger::breakPoints() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PackedBitArray& Debugger::breakPointFlags() const
+{
+  return mySystem.m6502().breakPointFlags();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TrapArray& Debugger::readTraps() const
 {
   return mySystem.m6502().readTraps();
@@ -329,8 +335,18 @@ int Debugger::trace()
     uInt64 startCycle = mySystem.cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
 
+    // set temporary breakpoint at target PC (if not existing already)
+    breakPoints().initialize();
+    if(!breakPoints().isSet(targetPC))
+    {
+      breakPoints().set(targetPC);
+      breakPointFlags().initialize();
+      breakPointFlags().set(targetPC);
+    }
+
     unlockSystem();
-    myOSystem.console().tia().updateScanlineByTrace(targetPC).flushLineCache();
+    mySystem.m6502().execute(11900000); // max. ~10 seconds
+    myOSystem.console().tia().flushLineCache();
     lockSystem();
 
     addState("trace");
@@ -345,6 +361,7 @@ void Debugger::toggleBreakPoint(uInt16 bp)
 {
   breakPoints().initialize();
   breakPoints().toggle(bp);
+  breakPointFlags().initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -353,6 +370,7 @@ void Debugger::setBreakPoint(uInt16 bp, bool set)
   breakPoints().initialize();
   if(set) breakPoints().set(bp);
   else    breakPoints().clear(bp);
+  breakPointFlags().initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

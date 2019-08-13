@@ -282,7 +282,14 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 
         if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC)) {
           myLastBreakCycle = mySystem->cycles();
-          result.setDebugger(currentCycles, "BP: ", PC);
+          // disable a one-shot breakpoint
+          if(myBreakPoints.isInitialized() && myBreakPointFlags.isSet(PC))
+          {
+            myBreakPoints.clear(PC);
+            myBreakPointFlags.clear(PC);
+          }
+          else
+            result.setDebugger(currentCycles, "BP: ", PC);
           return;
         }
 
