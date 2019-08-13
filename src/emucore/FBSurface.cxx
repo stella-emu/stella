@@ -340,13 +340,14 @@ bool FBSurface::isWhiteSpace(const char s) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::drawString(const GUI::Font& font, const string& s,
+int FBSurface::drawString(const GUI::Font& font, const string& s,
   int x, int y, int w, int h,
   ColorId color, TextAlign align,
   int deltax, bool useEllipsis, ColorId shadowColor)
 {
 #ifdef GUI_SUPPORT
   string inStr = s;
+  int lines = 1;
 
   // draw multiline string
   while (font.getStringWidth(inStr) > w && h >= font.getFontHeight() * 2)
@@ -371,8 +372,10 @@ void FBSurface::drawString(const GUI::Font& font, const string& s,
     h -= font.getFontHeight();
     y += font.getFontHeight();
     inStr = rightStr;
+    lines++;
   }
   drawString(font, inStr, x, y, w, color, align, deltax, useEllipsis, shadowColor);
+  return lines;
 #endif
 }
 
