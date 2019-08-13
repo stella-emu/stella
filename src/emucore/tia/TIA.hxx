@@ -472,12 +472,6 @@ class TIA : public Device
     TIA& updateScanlineByStep();
 
     /**
-      This method should be called to update the TIA with a new partial
-      scanline by tracing to target address.
-    */
-    TIA& updateScanlineByTrace(int target);
-
-    /**
       Retrieve the last value written to a certain register.
     */
     uInt8 registerValue(uInt8 reg) const;
