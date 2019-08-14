@@ -88,7 +88,7 @@ class LauncherDialog : public Dialog
 
   private:
     void center() override { positionAt(0); }
-    void handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleJoyDown(int stick, int button, bool longPress) override;

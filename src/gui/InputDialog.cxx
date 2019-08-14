@@ -451,7 +451,7 @@ bool InputDialog::repeatEnabled()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::handleKeyDown(StellaKey key, StellaMod mod)
+void InputDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // Remap key events in remap mode, otherwise pass to parent dialog
   if (myEmulEventMapper->remapMode())

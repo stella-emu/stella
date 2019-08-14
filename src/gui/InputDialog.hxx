@@ -47,7 +47,7 @@ class InputDialog : public Dialog
     bool repeatEnabled() override;
 
   private:
-    void handleKeyDown(StellaKey key, StellaMod mod) override;
+    void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleJoyDown(int stick, int button, bool longPress) override;
     void handleJoyUp(int stick, int button) override;
