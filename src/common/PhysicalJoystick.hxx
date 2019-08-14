@@ -56,6 +56,7 @@ class PhysicalJoystick
                     int axes, int buttons, int hats, int balls);
 
   private:
+    // TODO: these are not required anymore, delete or keep for future usage?
     enum JoyType {
       JT_NONE               = 0,
       JT_REGULAR            = 1,
