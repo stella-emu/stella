@@ -81,7 +81,6 @@ void DebuggerDialog::loadConfig()
     myFirstLoad = false;
   }
 
-
   myTab->loadConfig();
   myTiaInfo->loadConfig();
   myTiaOutput->loadConfig();
@@ -548,6 +547,7 @@ void DebuggerDialog::addRomArea()
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
                        bwidth, bheight, "Exit", kDDExitCmd);
   wid2.push_back(b);
+  addCancelWidget(b);
 
   bwidth = bheight; // 7 + 12;
   bheight = bheight * 3 + 4 * 2;
