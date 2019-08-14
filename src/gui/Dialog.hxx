@@ -130,7 +130,7 @@ class Dialog : public GuiObject
     void releaseFocus() override;
 
     virtual void handleText(char text);
-    virtual void handleKeyDown(StellaKey key, StellaMod modifiers);
+    virtual void handleKeyDown(StellaKey key, StellaMod modifiers, bool repeated = false);
     virtual void handleKeyUp(StellaKey key, StellaMod modifiers);
     virtual void handleMouseDown(int x, int y, MouseButton b, int clickCount);
     virtual void handleMouseUp(int x, int y, MouseButton b, int clickCount);
@@ -169,7 +169,7 @@ class Dialog : public GuiObject
 
   private:
     void buildCurrentFocusList(int tabID = -1);
-    bool handleNavEvent(Event::Type e);
+    bool handleNavEvent(Event::Type e, bool repeated = false);
     void getTabIdForWidget(Widget* w);
     bool cycleTab(int direction);
 

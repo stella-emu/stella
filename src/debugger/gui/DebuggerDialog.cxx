@@ -93,7 +93,7 @@ void DebuggerDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod)
+void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   if(key == KBDK_GRAVE && !StellaModTest::isShift(mod))
   {

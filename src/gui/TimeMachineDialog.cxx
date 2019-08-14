@@ -34,7 +34,6 @@
 #include "Base.hxx"
 using Common::Base;
 
-
 const int BUTTON_W = 14, BUTTON_H = 14;
 
 static uInt32 RECORD[BUTTON_H] =
@@ -193,7 +192,6 @@ static uInt32 LOAD_ALL[BUTTON_H] =
   0b11111111111111,
 };
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                      int width)
@@ -305,7 +303,7 @@ void TimeMachineDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod)
+void TimeMachineDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // The following 'Alt' shortcuts duplicate the shortcuts in EventHandler
   // It is best to keep them the same, so changes in EventHandler mean we

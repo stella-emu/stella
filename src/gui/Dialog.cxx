@@ -443,7 +443,7 @@ void Dialog::handleText(char text)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
+void Dialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   Event::Type e = Event::NoType;
 
@@ -463,7 +463,7 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod)
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
-  if(!handleNavEvent(e) && _focusedWidget)
+  if(!handleNavEvent(e, repeated) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
       _focusedWidget->handleKeyDown(key, mod);
@@ -653,7 +653,7 @@ bool Dialog::handleJoyHat(int stick, int hat, JoyHat value, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::handleNavEvent(Event::Type e)
+bool Dialog::handleNavEvent(Event::Type e, bool repeated)
 {
   switch(e)
   {
@@ -692,7 +692,7 @@ bool Dialog::handleNavEvent(Event::Type e)
       break;
 
     case Event::UIOK:
-      if(_okWidget && _okWidget->isEnabled())
+      if(_okWidget && _okWidget->isEnabled() && !repeated)
       {
         // Receiving 'OK' is the same as getting the 'Select' event
         _okWidget->handleEvent(Event::UISelect);
@@ -701,7 +701,7 @@ bool Dialog::handleNavEvent(Event::Type e)
       break;
 
     case Event::UICancel:
-      if(_cancelWidget && _cancelWidget->isEnabled())
+      if(_cancelWidget && _cancelWidget->isEnabled() && !repeated)
       {
         // Receiving 'Cancel' is the same as getting the 'Select' event
         _cancelWidget->handleEvent(Event::UISelect);

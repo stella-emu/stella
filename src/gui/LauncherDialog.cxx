@@ -428,7 +428,7 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod)
+void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   // Grab the key before passing it to the actual dialog and check for
   // Control-R (reload ROM listing)

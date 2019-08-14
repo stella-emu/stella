@@ -280,7 +280,7 @@ void ContextMenu::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleKeyDown(StellaKey key, StellaMod mod)
+void ContextMenu::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   handleEvent(instance().eventHandler().eventForKey(kMenuMode, key, mod));
 }

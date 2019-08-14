@@ -188,7 +188,7 @@ void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod, bool pressed,
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
   if(pressed)
-    activeDialog->handleKeyDown(key, mod);
+    activeDialog->handleKeyDown(key, mod, repeated);
   else
     activeDialog->handleKeyUp(key, mod);
 }

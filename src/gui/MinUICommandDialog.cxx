@@ -136,7 +136,7 @@ void MinUICommandDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MinUICommandDialog::handleKeyDown(StellaKey key, StellaMod mod)
+void MinUICommandDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
   switch (key)
   {
