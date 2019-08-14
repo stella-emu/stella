@@ -709,12 +709,8 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           if (pressed && !repeated) changeStateByEvent(Event::TimeMachineMode);
           return;
 
-        #if 0 // FIXME - exits ROM too, when it should just go back to ROM
+        // this event is called when exiting a ROM from the debugger, so it acts like pressing ESC in emulation
         case EventHandlerState::DEBUGGER:
-          if (pressed && !repeated) changeStateByEvent(Event::DebuggerMode);
-          return;
-        #endif
-
         case EventHandlerState::EMULATION:
           if (pressed && !repeated)
           {
