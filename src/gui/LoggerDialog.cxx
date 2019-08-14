@@ -91,7 +91,7 @@ void LoggerDialog::loadConfig()
   myLogInfo->setSelected(0);
   myLogInfo->scrollToEnd();
 
-  myLogLevel->setSelected(instance().settings().getString("loglevel"), int(Logger::Level::INFO);
+  myLogLevel->setSelected(instance().settings().getString("loglevel"), int(Logger::Level::INFO));
   myLogToConsole->setState(instance().settings().getBool("logtoconsole"));
 }
 
