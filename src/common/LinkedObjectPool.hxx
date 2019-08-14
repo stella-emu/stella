@@ -113,6 +113,22 @@ class LinkedObjectPool
     }
 
     /**
+      Advance 'current' iterator to first position in the active list.
+    */
+    void moveToFirst() {
+      if(currentIsValid())
+        myCurrent = myList.begin();
+    }
+
+    /**
+      Advance 'current' iterator to last position in the active list.
+    */
+    void moveToLast() {
+      if(currentIsValid())
+        myCurrent = std::prev(myList.end(), 1);
+    }
+
+    /**
       Return an iterator to the first node in the active list.
     */
     const_iter first() const { return myList.begin(); }
@@ -245,6 +261,13 @@ class LinkedObjectPool
     uInt32 size() const { return uInt32(myList.size()); }
     bool empty() const  { return size() == 0;           }
     bool full() const   { return size() >= capacity();  }
+
+    friend ostream& operator<<(ostream& os, const LinkedObjectPool<T>& p) {
+      for(const auto& i: p.myList)
+        os << i << (p.current() == i ? "* " : "  ");
+      return os;
+
+    }
 
   private:
     std::list<T> myList, myPool;
