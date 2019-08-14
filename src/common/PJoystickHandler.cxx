@@ -147,7 +147,7 @@ bool PhysicalJoystickHandler::remove(int id)
       ostringstream buf;
       buf << "Removed joystick " << mySticks[id]->ID << ":" << endl
           << "  " << mySticks[id]->about() << endl;
-      Logger::log(buf.str(), 1);
+      Logger::info(buf.str());
 
       // Remove joystick, but remember mapping
       it->second.mapping = stick->getMap();

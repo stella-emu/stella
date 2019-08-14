@@ -19,6 +19,7 @@
 
 #include "OSystem.hxx"
 #include "Version.hxx"
+#include "Logger.hxx"
 #include "AudioSettings.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -142,7 +143,7 @@ Settings::Settings()
   setPermanent("dialogpos", 0);
 
   // Misc options
-  setPermanent("loglevel", "1");
+  setPermanent("loglevel", int(Logger::Level::INFO));
   setPermanent("logtoconsole", "0");
   setPermanent("avoxport", "");
   setPermanent("fastscbios", "true");
@@ -349,8 +350,8 @@ void Settings::validate()
   else if(i > 2)  setValue("romviewer", "2");
 
   i = getInt("loglevel");
-  if(i < 0 || i > 2)
-    setValue("loglevel", "1");
+  if(i < int(Logger::Level::MIN) || i > int(Logger::Level::MAX))
+    setValue("loglevel", int(Logger::Level::INFO));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

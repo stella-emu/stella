@@ -23,17 +23,30 @@
 #include "bspf.hxx"
 
 class Logger {
+
   public:
 
-    using logCallback = std::function<void(const string&, uInt8)>;
+    enum class Level {
+      ERR = 0, // cannot use ERROR???
+      INFO = 1,
+      DEBUG = 2,
+      MIN = ERR,
+      MAX = DEBUG
+    };
+
+    using logCallback = std::function<void(const string&, Logger::Level)>;
 
   public:
 
     static Logger& instance();
 
-    static void log(const string& message, uInt8 level);
+    static void log(const string& message, Level level);
 
-    void logMessage(const string& message, uInt8 level) const;
+    static void error(const string& message);
+
+    static void info(const string& message);
+
+    static void debug(const string& message);
 
     void setLogCallback(logCallback callback);
 
@@ -48,6 +61,8 @@ class Logger {
     logCallback myLogCallback;
 
   private:
+
+    void logMessage(const string& message, Level level) const;
 
     Logger(const Logger&) = delete;
     Logger(Logger&&) = delete;

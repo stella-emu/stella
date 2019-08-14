@@ -56,6 +56,7 @@ class AudioSettings;
 #include "EventHandlerConstants.hxx"
 #include "FpsMeter.hxx"
 #include "Settings.hxx"
+#include "Logger.hxx"
 #include "bspf.hxx"
 #include "repository/KeyValueRepository.hxx"
 
@@ -438,7 +439,7 @@ class OSystem
       @param level    If 0, always output the message, only append when
                       level is less than or equal to that in 'loglevel'
     */
-    void logMessage(const string& message, uInt8 level);
+    void logMessage(const string& message, Logger::Level level);
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and *must* be

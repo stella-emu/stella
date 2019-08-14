@@ -52,14 +52,14 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
 {
   ASSERT_MAIN_THREAD;
 
-  Logger::log("SoundSDL2::SoundSDL2 started ...", 2);
+  Logger::debug("SoundSDL2::SoundSDL2 started ...");
 
   if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
     ostringstream buf;
 
     buf << "WARNING: Failed to initialize SDL audio system! " << endl
         << "         " << SDL_GetError() << endl;
-    Logger::log(buf.str(), 0);
+    Logger::error(buf.str());
     return;
   }
 
@@ -69,7 +69,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
 
   mute(true);
 
-  Logger::log("SoundSDL2::SoundSDL2 initialized", 2);
+  Logger::debug("SoundSDL2::SoundSDL2 initialized");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,7 +107,7 @@ bool SoundSDL2::openDevice()
 
     buf << "WARNING: Couldn't open SDL audio device! " << endl
         << "         " << SDL_GetError() << endl;
-    Logger::log(buf.str(), 0);
+    Logger::error(buf.str());
 
     return myIsInitializedFlag = false;
   }
@@ -120,8 +120,8 @@ void SoundSDL2::setEnabled(bool state)
   myAudioSettings.setEnabled(state);
   if (myAudioQueue) myAudioQueue->ignoreOverflows(!state);
 
-  Logger::log(state ? "SoundSDL2::setEnabled(true)" :
-                               "SoundSDL2::setEnabled(false)", 2);
+  Logger::debug(state ? "SoundSDL2::setEnabled(true)" :
+                "SoundSDL2::setEnabled(false)");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -138,13 +138,13 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
 
   myEmulationTiming = emulationTiming;
 
-  Logger::log("SoundSDL2::open started ...", 2);
+  Logger::debug("SoundSDL2::open started ...");
   mute(true);
 
   audioQueue->ignoreOverflows(!myAudioSettings.enabled());
   if(!myAudioSettings.enabled())
   {
-    Logger::log("Sound disabled\n", 1);
+    Logger::info("Sound disabled\n");
     return;
   }
 
@@ -160,12 +160,12 @@ void SoundSDL2::open(shared_ptr<AudioQueue> audioQueue,
   // Show some info
   myAboutString = about();
   if(myAboutString != pre_about)
-    Logger::log(myAboutString, 1);
+    Logger::info(myAboutString);
 
   // And start the SDL sound subsystem ...
   mute(false);
 
-  Logger::log("SoundSDL2::open finished", 2);
+  Logger::debug("SoundSDL2::open finished");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

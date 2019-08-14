@@ -36,7 +36,7 @@ namespace {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StaggeredLogger::StaggeredLogger(const string& message, uInt8 level)
+StaggeredLogger::StaggeredLogger(const string& message, Logger::Level level)
   : myMessage(message),
     myLevel(level),
     myCurrentEventCount(0),

@@ -26,13 +26,30 @@ Logger& Logger::instance()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::log(const string& message, uInt8 level)
+void Logger::log(const string& message, Level level)
 {
   instance().logMessage(message, level);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::logMessage(const string& message, uInt8 level) const
+void Logger::error(const string& message)
+{
+  instance().logMessage(message, Level::ERR);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Logger::info(const string& message)
+{
+  instance().logMessage(message, Level::INFO);
+}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Logger::debug(const string& message)
+{
+  instance().logMessage(message, Level::DEBUG);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Logger::logMessage(const string& message, Level level) const
 {
   if (myLogCallback)
     myLogCallback(message, level);

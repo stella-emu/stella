@@ -251,7 +251,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
     }
     else
     {
-      Logger::log("ERROR: Couldn't initialize video subsystem", 0);
+      Logger::error("ERROR: Couldn't initialize video subsystem");
       return FBInitStatus::FailNotSupported;
     }
   }
@@ -283,13 +283,13 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   // Print initial usage message, but only print it later if the status has changed
   if(myInitializedCount == 1)
   {
-    Logger::log(about(), 1);
+    Logger::info(about());
   }
   else
   {
     string post_about = about();
     if(post_about != pre_about)
-      Logger::log(post_about, 1);
+      Logger::info(post_about);
   }
 
   return FBInitStatus::Success;
