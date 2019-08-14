@@ -74,7 +74,6 @@ void checkForCustomBaseDir(Settings::Options& options);
 */
 bool isProfilingRun(int ac, char* av[]);
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void parseCommandLine(int ac, char* av[],
     Settings::Options& globalOpts, Settings::Options& localOpts)
@@ -176,7 +175,7 @@ int main(int ac, char* av[])
   auto Cleanup = [&theOSystem]() {
     if(theOSystem)
     {
-      Logger::log("Cleanup from main", 2);
+      Logger::debug("Cleanup from main");
       theOSystem->saveConfig();
       theOSystem.reset();     // Force delete of object
     }
@@ -200,10 +199,10 @@ int main(int ac, char* av[])
 
   // Create the full OSystem after the settings, since settings are
   // probably needed for defaults
-  Logger::log("Creating the OSystem ...", 2);
+  Logger::debug("Creating the OSystem ...");
   if(!theOSystem->create())
   {
-    Logger::log("ERROR: Couldn't create OSystem", 0);
+    Logger::error("ERROR: Couldn't create OSystem");
     return Cleanup();
   }
 
@@ -213,21 +212,21 @@ int main(int ac, char* av[])
   string romfile = localOpts["ROMFILE"].toString();
   if(localOpts["listrominfo"].toBool())
   {
-    Logger::log("Showing output from 'listrominfo' ...", 2);
+    Logger::debug("Showing output from 'listrominfo' ...");
     theOSystem->propSet().print();
     return Cleanup();
   }
   else if(localOpts["rominfo"].toBool())
   {
-    Logger::log("Showing output from 'rominfo' ...", 2);
+    Logger::debug("Showing output from 'rominfo' ...");
     FilesystemNode romnode(romfile);
-    Logger::log(theOSystem->getROMInfo(romnode), 0);
+    Logger::error(theOSystem->getROMInfo(romnode));
 
     return Cleanup();
   }
   else if(localOpts["help"].toBool())
   {
-    Logger::log("Displaying usage", 2);
+    Logger::debug("Displaying usage");
     theOSystem->settings().usage();
     return Cleanup();
   }
@@ -242,12 +241,12 @@ int main(int ac, char* av[])
   FilesystemNode romnode(romfile);
   if(romfile == "" || romnode.isDirectory())
   {
-    Logger::log("Attempting to use ROM launcher ...", 2);
+    Logger::debug("Attempting to use ROM launcher ...");
     bool launcherOpened = romfile != "" ?
       theOSystem->createLauncher(romnode.getPath()) : theOSystem->createLauncher();
     if(!launcherOpened)
     {
-      Logger::log("Launcher could not be started, showing usage", 2);
+      Logger::debug("Launcher could not be started, showing usage");
       theOSystem->settings().usage();
       return Cleanup();
     }
@@ -273,7 +272,7 @@ int main(int ac, char* av[])
     }
     catch(const runtime_error& e)
     {
-      Logger::log(e.what(), 0);
+      Logger::error(e.what());
       return Cleanup();
     }
 
@@ -289,9 +288,9 @@ int main(int ac, char* av[])
   }
 
   // Start the main loop, and don't exit until the user issues a QUIT command
-  Logger::log("Starting main loop ...", 2);
+  Logger::debug("Starting main loop ...");
   theOSystem->mainLoop();
-  Logger::log("Finished main loop ...", 2);
+  Logger::debug("Finished main loop ...");
 
   // Cleanup time ...
   return Cleanup();

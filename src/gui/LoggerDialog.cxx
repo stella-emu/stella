@@ -27,6 +27,7 @@
 #include "StringParser.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "Logger.hxx"
 #include "LoggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,9 +58,9 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 
   // Level of logging (how much info to print)
   VariantList items;
-  VarList::push_back(items, "None", "0");
-  VarList::push_back(items, "Basic", "1");
-  VarList::push_back(items, "Verbose", "2");
+  VarList::push_back(items, "None", int(Logger::Level::ERR));
+  VarList::push_back(items, "Basic", int(Logger::Level::INFO));
+  VarList::push_back(items, "Verbose", int(Logger::Level::DEBUG));
   myLogLevel =
     new PopUpWidget(this, font, xpos, ypos, font.getStringWidth("Verbose"),
                     lineHeight, items, "Log level ",
@@ -90,7 +91,7 @@ void LoggerDialog::loadConfig()
   myLogInfo->setSelected(0);
   myLogInfo->scrollToEnd();
 
-  myLogLevel->setSelected(instance().settings().getString("loglevel"), "1");
+  myLogLevel->setSelected(instance().settings().getString("loglevel"), int(Logger::Level::INFO);
   myLogToConsole->setState(instance().settings().getBool("logtoconsole"));
 }
 

@@ -42,7 +42,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
 
   ifstream in(myFilename);
   if(!in || !in.is_open()) {
-    Logger::log("ERROR: Couldn't load from settings file " + myFilename, 1);
+    Logger::error("ERROR: Couldn't load from settings file " + myFilename);
 
     return values;
   }
@@ -80,7 +80,7 @@ void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
 {
 ofstream out(myFilename);
   if(!out || !out.is_open()) {
-    Logger::log("ERROR: Couldn't save to settings file " + myFilename, 1);
+    Logger::error("ERROR: Couldn't save to settings file " + myFilename);
 
     return;
   }

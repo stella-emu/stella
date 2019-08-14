@@ -160,7 +160,7 @@ void EventHandler::addPhysicalJoystick(PhysicalJoystickPtr joy)
   ostringstream buf;
   buf << "Added joystick " << ID << ":" << endl
       << "  " << joy->about() << endl;
-  Logger::log(buf.str(), 1);
+  Logger::info(buf.str());
 #endif
 }
 

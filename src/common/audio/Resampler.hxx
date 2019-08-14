@@ -54,7 +54,7 @@ class Resampler {
       myFormatFrom(formatFrom),
       myFormatTo(formatTo),
       myNextFragmentCallback(nextFragmentCallback),
-      myUnderrunLogger("audio buffer underrun", 1)
+      myUnderrunLogger("audio buffer underrun", Logger::Level::INFO)
     {}
 
     virtual void fillFragment(float* fragment, uInt32 length) = 0;

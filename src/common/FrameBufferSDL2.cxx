@@ -41,10 +41,10 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
-    Logger::log(buf.str(), 0);
+    Logger::error(buf.str());
     throw runtime_error("FATAL ERROR");
   }
-  Logger::log("FrameBufferSDL2::FrameBufferSDL2 SDL_Init()", 2);
+  Logger::debug("FrameBufferSDL2::FrameBufferSDL2 SDL_Init()");
 
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceSDL2 object)
@@ -287,7 +287,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     if(myWindow == nullptr)
     {
       string msg = "ERROR: Unable to open SDL window: " + string(SDL_GetError());
-      Logger::log(msg, 0);
+      Logger::error(msg);
       return false;
     }
     setWindowIcon();
@@ -303,7 +303,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   if(myRenderer == nullptr)
   {
     string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
-    Logger::log(msg, 0);
+    Logger::error(msg);
     return false;
   }
   clear();

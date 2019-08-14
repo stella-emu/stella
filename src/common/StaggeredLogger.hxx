@@ -25,6 +25,7 @@
 
 #include "bspf.hxx"
 #include "TimerManager.hxx"
+#include "Logger.hxx"
 /**
  * This class buffers log events and logs them after a certain time window has expired.
  * The timout increases after every log line by a factor of two until a maximum is reached.
@@ -34,7 +35,7 @@
 class StaggeredLogger {
   public:
 
-    StaggeredLogger(const string& message, uInt8 level);
+    StaggeredLogger(const string& message, Logger::Level level);
 
     ~StaggeredLogger();
 
@@ -55,7 +56,7 @@ class StaggeredLogger {
     void logLine();
 
     string myMessage;
-    uInt8 myLevel;
+    Logger::Level myLevel;
 
     uInt32 myCurrentEventCount;
     bool myIsCurrentlyCollecting;

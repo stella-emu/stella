@@ -32,9 +32,9 @@ EventHandlerSDL2::EventHandlerSDL2(OSystem& osystem)
   {
     ostringstream buf;
     buf << "ERROR: Couldn't initialize SDL joystick support: " << SDL_GetError() << endl;
-    Logger::log(buf.str(), 0);
+    Logger::error(buf.str());
   }
-  Logger::log("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK", 2);
+  Logger::debug("EventHandlerSDL2::EventHandlerSDL2 SDL_INIT_JOYSTICK");
 #endif
 }
 

@@ -139,7 +139,7 @@ bool OSystem::create()
   buf
       << "User game properties: '"
       << FilesystemNode(myPropertiesFile).getShortPath() << "'" << endl;
-  Logger::log(buf.str(), 1);
+  Logger::info(buf.str());
 
   // NOTE: The framebuffer MUST be created before any other object!!!
   // Get relevant information about the video hardware
@@ -222,7 +222,7 @@ void OSystem::loadConfig(const Settings::Options& options)
 
   mySettings->setRepository(createSettingsRepository());
 
-  Logger::log("Loading config options ...", 2);
+  Logger::debug("Loading config options ...");
   mySettings->load(options);
   mySettingsLoaded = true;
 
@@ -240,15 +240,15 @@ void OSystem::saveConfig()
   // Ask all subsystems to save their settings
   if(myFrameBuffer)
   {
-    Logger::log("Saving TV effects options ...", 2);
+    Logger::debug("Saving TV effects options ...");
     myFrameBuffer->tiaSurface().ntsc().saveConfig(settings());
   }
 
-  Logger::log("Saving config options ...", 2);
+  Logger::debug("Saving config options ...");
   mySettings->save();
 
   if(myPropSet && myPropSet->save(myPropertiesFile))
-    Logger::log("Saving properties set ...", 2);
+    Logger::debug("Saving properties set ...");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -337,7 +337,7 @@ FBInitStatus OSystem::createFrameBuffer()
 
     case EventHandlerState::NONE:  // Should never happen
     default:
-      Logger::log("ERROR: Unknown emulation state in createFrameBuffer()", 0);
+      Logger::error("ERROR: Unknown emulation state in createFrameBuffer()");
       break;
   }
   return fbstatus;
@@ -385,7 +385,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   catch(const runtime_error& e)
   {
     buf << "ERROR: Couldn't create console (" << e.what() << ")";
-    Logger::log(buf.str(), 0);
+    Logger::error(buf.str());
     return buf.str();
   }
 
@@ -403,7 +403,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     myEventHandler->setMouseControllerMode(mySettings->getString("usemouse"));
     if(createFrameBuffer() != FBInitStatus::Success)  // Takes care of initializeVideo()
     {
-      Logger::log("ERROR: Couldn't create framebuffer for console", 0);
+      Logger::error("ERROR: Couldn't create framebuffer for console");
       myEventHandler->reset(EventHandlerState::LAUNCHER);
       return "ERROR: Couldn't create framebuffer for console";
     }
@@ -421,7 +421,7 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     buf << "Game console created:" << endl
         << "  ROM file: " << myRomFile.getShortPath() << endl << endl
         << getROMInfo(*myConsole);
-    Logger::log(buf.str(), 1);
+    Logger::info(buf.str());
 
     myFrameBuffer->setCursorState();
 
@@ -466,7 +466,7 @@ bool OSystem::createLauncher(const string& startdir)
     status = true;
   }
   else
-    Logger::log("ERROR: Couldn't create launcher", 0);
+    Logger::error("ERROR: Couldn't create launcher");
 #endif
 
   myLauncherUsed = myLauncherUsed || status;
@@ -493,14 +493,14 @@ string OSystem::getROMInfo(const FilesystemNode& romfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::logMessage(const string& message, uInt8 level)
+void OSystem::logMessage(const string& message, Logger::Level level)
 {
-  if(level == 0)
+  if(level == Logger::Level::ERR)
   {
     cout << message << endl << std::flush;
     myLogMessages += message + "\n";
   }
-  else if(level <= uInt8(mySettings->getInt("loglevel")) || !mySettingsLoaded)
+  else if(int(level) <= uInt8(mySettings->getInt("loglevel")) || !mySettingsLoaded)
   {
     if(mySettings->getBool("logtoconsole"))
       cout << message << endl << std::flush;
