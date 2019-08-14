@@ -689,7 +689,11 @@ void PromptWidget::textPaste()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::addToHistory(const char* str)
 {
+#if defined(BSPF_WINDOWS)
+  strncpy_s(_history[_historyIndex], kLineBufferSize, str, kLineBufferSize - 1);
+#else
   strncpy(_history[_historyIndex], str, kLineBufferSize - 1);
+#endif
   _historyIndex = (_historyIndex + 1) % kHistorySize;
   _historyLine = 0;
 
