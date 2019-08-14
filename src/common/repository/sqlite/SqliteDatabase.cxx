@@ -55,7 +55,7 @@ void SqliteDatabase::initialize()
       dbInitialized = sqlite3_exec(myHandle, "PRAGMA schema_version", nullptr, nullptr, nullptr) == SQLITE_OK;
 
     if (!dbInitialized && tries == 1) {
-      Logger::log("sqlite DB " + myDatabaseFile + " seems to be corrupt, removing and retrying...", 1);
+      Logger::info("sqlite DB " + myDatabaseFile + " seems to be corrupt, removing and retrying...");
 
       remove(myDatabaseFile.c_str());
       if (myHandle) sqlite3_close_v2(myHandle);
@@ -75,7 +75,7 @@ void SqliteDatabase::initialize()
     throw SqliteError("unable to initialize sqlite DB for unknown reason");
   };
 
-  Logger::log("successfully opened " + myDatabaseFile, 2);
+  Logger::debug("successfully opened " + myDatabaseFile);
 
   exec("PRAGMA journal_mode=WAL");
 
@@ -84,11 +84,11 @@ void SqliteDatabase::initialize()
       break;
 
     case SQLITE_MISUSE:
-      Logger::log("failed to checkpoint WAL on " + myDatabaseFile + " - WAL probably unavailable", 1);
+      Logger::info("failed to checkpoint WAL on " + myDatabaseFile + " - WAL probably unavailable");
       break;
 
     default:
-      Logger::log("failed to checkpoint WAL on " + myDatabaseFile + " : " + sqlite3_errmsg(myHandle), 1);
+      Logger::info("failed to checkpoint WAL on " + myDatabaseFile + " : " + sqlite3_errmsg(myHandle));
       break;
   }
 }

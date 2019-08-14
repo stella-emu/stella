@@ -40,7 +40,7 @@ class SoundNull : public Sound
     */
     explicit SoundNull(OSystem& osystem) : Sound(osystem)
     {
-      Logger::log("Sound disabled.\n", 1);
+      Logger::info("Sound disabled.\n");
     }
 
     /**
