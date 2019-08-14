@@ -42,8 +42,8 @@ SoundLIBRETRO::SoundLIBRETRO(OSystem& osystem, AudioSettings& audioSettings)
     myUnderrun(false),
     myAudioSettings(audioSettings)
 {
-  Logger::log("SoundLIBRETRO::SoundLIBRETRO started ...", 2);
-  Logger::log("SoundLIBRETRO::SoundLIBRETRO initialized", 2);
+  Logger::debug("SoundLIBRETRO::SoundLIBRETRO started ...");
+  Logger::debug("SoundLIBRETRO::SoundLIBRETRO initialized");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,7 +57,7 @@ void SoundLIBRETRO::open(shared_ptr<AudioQueue> audioQueue,
 {
   myEmulationTiming = emulationTiming;
 
-  Logger::log("SoundLIBRETRO::open started ...", 2);
+  Logger::debug("SoundLIBRETRO::open started ...");
 
   audioQueue->ignoreOverflows(!myAudioSettings.enabled());
 
@@ -65,7 +65,7 @@ void SoundLIBRETRO::open(shared_ptr<AudioQueue> audioQueue,
   myUnderrun = true;
   myCurrentFragment = nullptr;
 
-  Logger::log("SoundLIBRETRO::open finished", 2);
+  Logger::debug("SoundLIBRETRO::open finished");
 
   myIsInitializedFlag = true;
 }
@@ -79,7 +79,7 @@ void SoundLIBRETRO::close()
   myAudioQueue.reset();
   myCurrentFragment = nullptr;
 
-  Logger::log("SoundLIBRETRO::close", 2);
+  Logger::debug("SoundLIBRETRO::close");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
