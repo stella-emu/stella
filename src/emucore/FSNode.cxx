@@ -89,10 +89,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode) const
       // Force ZIP c'tor to be called
       AbstractFSNodePtr ptr = FilesystemNodeFactory::create(i->getPath(),
           FilesystemNodeFactory::Type::ZIP);
-      if (ptr->getName() != EmptyString)
-        fslist.emplace_back(FilesystemNode(ptr));
-      else
-        fslist.emplace_back(FilesystemNode(i));
+      fslist.emplace_back(FilesystemNode(ptr));
     }
     else
   #endif

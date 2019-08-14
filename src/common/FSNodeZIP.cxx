@@ -58,13 +58,11 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
     // TODO: Actually present the error passed in back to the user
     //       For now, we just indicate that no ROMs were found
     _error = zip_error::NO_ROMS;
-    return;
   }
   _numFiles = myZipHandler->romFiles();
   if(_numFiles == 0)
   {
     _error = zip_error::NO_ROMS;
-    return;
   }
 
   // We always need a virtual file/path
@@ -92,7 +90,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
     if(!found)
       return;
   }
-  else
+  else if(_numFiles > 1)
     _isDirectory = true;
 
   // Create a concrete FSNode to use
@@ -137,7 +135,6 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
   }
   _name = lastPathComponent(_path);
 
-  _error = zip_error::NONE;
   if(!_realNode->isFile())
     _error = zip_error::NOT_A_FILE;
   if(!_realNode->isReadable())
