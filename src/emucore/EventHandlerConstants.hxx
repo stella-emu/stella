@@ -54,7 +54,6 @@ enum class JoyDir {
   ANALOG = 2
 };
 
-
 enum class JoyHat {
   UP     = 0,  // make sure these are set correctly,
   DOWN   = 1,  // since they'll be used as array indices
@@ -79,16 +78,14 @@ static const int NUM_JOY_HAT_DIRS = 4;
 
 // TODO - make this 'enum class' somehow
 enum EventMode {
-  kEmulationMode = 0,  // make sure these are set correctly,
-  kMenuMode      = 1,  // since they'll be used as array indices
-  kNumModes      = 2,
-  kJoystickMode  = kNumModes,     // 5 extra modes for mapping controller keys separately
+  kEmulationMode, // active mapping used for emulation
+  kMenuMode,      // mapping used for dialogs
+  kJoystickMode,  // 4 extra modes for mapping controller keys separately for emulation mode
   kPaddlesMode,
   kKeypadMode,
-  kCompuMateMode,
-  kCommonMode
+  kCompuMateMode, // cannot be remapped
+  kCommonMode     // mapping common between controllers
 };
-
 
 namespace GUI
 {

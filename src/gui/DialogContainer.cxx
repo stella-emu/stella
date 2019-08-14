@@ -327,13 +327,11 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value, int but
   // Only stop firing events if it's the current stick
   if(myCurrentAxisDown.stick == stick && value == 0)
   {
-    cerr << "handleJoyAxisEvent 0" << endl;
     myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
     myAxisRepeatTime = 0;
   }
   else if(value != 0 && myAxisRepeatTime < myTime)  // never repeat the 'off' event; prevent pending repeats after enabling repeat again
   {
-    cerr << "handleJoyAxisEvent repeat" << endl;
     // Now account for repeated axis events (press and hold)
     myCurrentAxisDown.stick = stick;
     myCurrentAxisDown.axis  = axis;

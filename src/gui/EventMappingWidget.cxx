@@ -153,7 +153,6 @@ void EventMappingWidget::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::startRemapping()
 {
-  cerr << "startRemapping" << endl;
   if(myActionSelected < 0 || myRemapStatus)
     return;
 
@@ -217,7 +216,6 @@ void EventMappingWidget::stopRemapping()
 {
   // Turn off remap mode
   myRemapStatus = false;
-  cerr << "stopRemapping " << myRemapStatus << endl;
 
   // Reset all previous events for determining correct axis/hat values
   myLastStick = -1;
@@ -311,11 +309,9 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::handleJoyDown(int stick, int button, bool longPress)
 {
-  cerr << "handleJoyDown" << endl;
   // Remap joystick buttons in remap mode
   if(myRemapStatus && myActionSelected >= 0)
   {
-    cerr << "remap button start " << myRemapStatus << endl;
     myLastStick = stick;
     myLastButton = button;
   }
@@ -324,7 +320,6 @@ void EventMappingWidget::handleJoyDown(int stick, int button, bool longPress)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::handleJoyUp(int stick, int button)
 {
-  cerr << "handleJoyUp" << endl;
   // Remap joystick buttons in remap mode
   if (myRemapStatus && myActionSelected >= 0)
   {
@@ -333,7 +328,6 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
       EventHandler& eh = instance().eventHandler();
       Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
 
-      cerr << "remap button stop" << endl;
       // map either button/hat, solo button or button/axis combinations
       if(myLastHat != -1)
       {
@@ -350,7 +344,6 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::handleJoyAxis(int stick, int axis, int value, int button)
 {
-  cerr << "handleJoyAxis:" << axis << ", " << value << ", (" << stick << ", " << myLastStick << "), (" << axis << ", " << myLastAxis << ")" << endl;
   // Remap joystick axes in remap mode
   // There are two phases to detection:
   //   First, detect an axis 'on' event
@@ -360,7 +353,6 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value, int butto
     // Detect the first axis event that represents 'on'
     if((myLastStick == -1 || myLastStick == stick) && myLastAxis == -1 && value != 0)
     {
-      cerr << "remap axis start" << endl;
       myLastStick = stick;
       myLastAxis = axis;
       myLastValue = value;
@@ -372,7 +364,6 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value, int butto
       EventHandler& eh = instance().eventHandler();
       Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
 
-      cerr << "remap axis stop" << endl;
       if (eh.addJoyMapping(event, myEventMode, stick, myLastButton, JoyAxis(axis), myLastValue))
         stopRemapping();
     }

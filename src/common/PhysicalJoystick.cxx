@@ -67,11 +67,11 @@ void PhysicalJoystick::initialize(int index, const string& desc,
     axisLastValue[a] = 0;
 
   // Erase the mappings
+  eraseMap(kMenuMode);
   eraseMap(kJoystickMode);
   eraseMap(kPaddlesMode);
   eraseMap(kKeypadMode);
-  eraseMap(kMenuMode);
-
+  eraseMap(kCommonMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -96,24 +96,33 @@ string PhysicalJoystick::getMap() const
 bool PhysicalJoystick::setMap(const string& mapString)
 {
   istringstream buf(mapString);
-  StringList mappings;
   string map;
+  int i = 0;
+
+  // Skip joystick name
+  getline(buf, map, MODE_DELIM);
 
   while (getline(buf, map, MODE_DELIM))
   {
-    // remove leading "<mode>|" string
-    map.erase(0, 2);
-    mappings.push_back(map);
-  }
-  // Error checking
-  if(mappings.size() != 1 + 5)
-    return false;
+    int mode;
 
-  joyMap.loadMapping(mappings[1], kMenuMode);
-  joyMap.loadMapping(mappings[2], kJoystickMode);
-  joyMap.loadMapping(mappings[3], kPaddlesMode);
-  joyMap.loadMapping(mappings[4], kKeypadMode);
-  joyMap.loadMapping(mappings[5], kCommonMode);
+    // Get event mode
+    std::replace(map.begin(), map.end(), '|', ' ');
+    istringstream modeBuf(map);
+    modeBuf >> mode;
+
+    // Remove leading "<mode>|" string
+    map.erase(0, 2);
+
+    joyMap.loadMapping(map, EventMode(mode));
+    i++;
+  }
+  // Brief error checking
+  if(i != 5)
+  {
+    cerr << "ERROR: Invalid controller mappings found" << endl;
+    return false;
+  }
 
   return true;
 }
@@ -146,7 +155,7 @@ void PhysicalJoystick::getValues(const string& list, IntArray& map) const
 string PhysicalJoystick::about() const
 {
   ostringstream buf;
-  buf << " with: " << numAxes << " axes, " << numButtons << " buttons, "
+  buf << "'" << name << "' with: " << numAxes << " axes, " << numButtons << " buttons, "
     << numHats << " hats";
 
   return buf.str();
