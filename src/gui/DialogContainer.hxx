@@ -106,7 +106,7 @@ class DialogContainer
 
       @param stick  The joystick number
       @param axis   The joystick axis
-      @param value  Value associated with given axis
+      @param adir   Value associated with given axis
     */
     void handleJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button);
 
@@ -115,7 +115,7 @@ class DialogContainer
 
       @param stick  The joystick number
       @param hat    The joystick hat
-      @param hdir   Direction of the with given hat
+      @param hdir   Direction of the given hat
     */
     void handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int button);
 
