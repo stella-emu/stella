@@ -61,7 +61,7 @@ class PhysicalJoystickHandler
     };
 
   public:
-    PhysicalJoystickHandler(OSystem& system, EventHandler& handler, Event& event);
+    PhysicalJoystickHandler(OSystem& system, EventHandler& handler);
 
     /** Return stick ID on success, -1 on failure. */
     int add(PhysicalJoystickPtr stick);
@@ -112,7 +112,6 @@ class PhysicalJoystickHandler
 
     OSystem& myOSystem;
     EventHandler& myHandler;
-    Event& myEvent;
 
     // Contains all joysticks that Stella knows about, indexed by name
     StickDatabase myDatabase;
