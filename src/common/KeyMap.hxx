@@ -104,12 +104,14 @@ class KeyMap
 
     struct KeyHash {
       size_t operator()(const Mapping& m) const {
-        return std::hash<uInt64>()((uInt64(m.mode))               // 3 bits
-          + ((uInt64(m.key)) * 7)                                 // 8 bits
-          + (((uInt64((m.mod & KBDM_SHIFT) != 0) << 0))           // 1 bit
-           | ((uInt64((m.mod & KBDM_ALT  ) != 0) << 1))           // 1 bit
-           | ((uInt64((m.mod & KBDM_GUI  ) != 0) << 2))           // 1 bit
-           | ((uInt64((m.mod & KBDM_CTRL ) != 0) << 3))) * 2047); // 1 bit
+        return std::hash<uInt64>()((uInt64(m.mode))     // 3 bits
+          + ((uInt64(m.key)) * 7)                       // 8 bits
+          + (((uInt64((m.mod & KBDM_SHIFT) != 0) << 0)) // 1 bit
+           | ((uInt64((m.mod & KBDM_ALT  ) != 0) << 1)) // 1 bit
+           | ((uInt64((m.mod & KBDM_GUI  ) != 0) << 2)) // 1 bit
+           | ((uInt64((m.mod & KBDM_CTRL ) != 0) << 3)) // 1 bit
+            ) * 2047
+        );
       }
     };
 
