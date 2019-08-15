@@ -67,7 +67,7 @@ GameInfoDialog::GameInfoDialog(
 
   // Set real dimensions
   setSize(53 * fontWidth + 8,
-          8 * (lineHeight + VGAP) + 2 * (infoLineHeight + VGAP) + VBORDER * 2 + _th +
+          8 * (lineHeight + VGAP) + 1 * (infoLineHeight + VGAP) + VBORDER * 2 + _th +
           buttonHeight + fontHeight + ifont.getLineHeight() + 20,
           max_w, max_h);
 
@@ -191,7 +191,7 @@ GameInfoDialog::GameInfoDialog(
   //////////////////////////////////////////////////////////////////////////////
   // 3) Controller properties
   wid.clear();
-  tabID = myTab->addTab("Controller");
+  tabID = myTab->addTab("Controllers");
 
   ctrls.clear();
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
@@ -285,11 +285,6 @@ GameInfoDialog::GameInfoDialog(
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   myMouseRange->setTickmarkIntervals(4);
   wid.push_back(myMouseRange);
-
-  // Add message concerning usage
-  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
-  new StaticTextWidget(myTab, ifont, xpos, ypos,
-                       "(*) Changes to properties require a ROM reload");
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -614,6 +609,9 @@ void GameInfoDialog::saveConfig()
     instance().console().switches().setTvColor(myTVTypeGroup->getSelected() == 0);
     instance().console().switches().setLeftDifficultyA(myLeftDiffGroup->getSelected() == 0);
     instance().console().switches().setRightDifficultyA(myRightDiffGroup->getSelected() == 0);
+
+    // update 'Controllers' tab settings immediately
+    instance().console().setControllers(myGameProperties.get(PropType::Cart_MD5));
   }
 }
 
@@ -658,9 +656,12 @@ void GameInfoDialog::updateControllerStates()
 
   // Compumate bankswitching scheme doesn't allow to select controllers
   bool enableSelectControl = myBSType->getSelectedTag() != "CM";
-
+  // Enable Swap Paddles checkbox only for paddle games
   bool enableSwapPaddles = BSPF::startsWithIgnoreCase(contrLeft, "PADDLES") ||
-    BSPF::startsWithIgnoreCase(contrRight, "PADDLES");
+    BSPF::startsWithIgnoreCase(contrRight, "PADDLES") ||
+    BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "Paddles") ||
+    BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "Paddles");
+
   if(instance().hasConsole())
   {
     const Controller& lport = instance().console().leftController();

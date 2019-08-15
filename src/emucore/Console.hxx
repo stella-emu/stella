@@ -81,6 +81,12 @@ class Console : public Serializable, public ConsoleIO
     virtual ~Console();
 
   public:
+
+    /**
+      Sets the left and right controllers for the console.
+    */
+    void setControllers(const string& rommd5);
+
     /**
       Get the controller plugged into the specified jack
 
@@ -329,11 +335,6 @@ class Console : public Serializable, public ConsoleIO
       Create the audio queue
      */
     void createAudioQueue();
-
-    /**
-      Adds the left and right controllers to the console.
-    */
-    void setControllers(const string& rommd5);
 
     /**
       Selects the left or right controller depending on ROM properties

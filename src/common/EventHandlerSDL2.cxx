@@ -94,6 +94,7 @@ void EventHandlerSDL2::pollEvent()
       case SDL_MOUSEBUTTONDOWN:
       case SDL_MOUSEBUTTONUP:
       {
+        // ToDo: check support of more buttons and double-click
         switch(myEvent.button.button)
         {
           case SDL_BUTTON_LEFT:
