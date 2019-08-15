@@ -177,7 +177,6 @@ class EventHandler
       return myPKeyHandler->getMappingDesc(event, mode);
     }
 
-
     Event::Type eventAtIndex(int idx, EventMode mode) const;
     string actionAtIndex(int idx, EventMode mode) const;
     string keyAtIndex(int idx, EventMode mode) const;

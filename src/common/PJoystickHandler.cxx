@@ -117,6 +117,7 @@ int PhysicalJoystickHandler::add(PhysicalJoystickPtr stick)
   {
     it->second.joy = stick;
     stick->setMap(it->second.mapping);
+    enableEmulationMappings();
   }
   else // adding for the first time
   {

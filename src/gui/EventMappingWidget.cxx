@@ -131,6 +131,9 @@ void EventMappingWidget::loadConfig()
     myActionsList->setSelected(0);
     myFirstTime = false;
   }
+  else
+    // controller IDs may have changed in between
+    drawKeyMapping();
 
   // Make sure remapping is turned off, just in case the user didn't properly
   // exit last time
