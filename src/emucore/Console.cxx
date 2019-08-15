@@ -133,9 +133,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // This must be done before the debugger is initialized
   const string& md5 = myProperties.get(PropType::Cart_MD5);
   setControllers(md5);
-  // now that we know the controllers, enable the event mappings
-  myOSystem.eventHandler().enableEmulationKeyMappings();
-  myOSystem.eventHandler().enableEmulationJoyMappings();
 
   // Mute audio and clear framebuffer while autodetection runs
   myOSystem.sound().mute(1);
@@ -814,7 +811,7 @@ void Console::setControllers(const string& rommd5)
     string right = myProperties.get(PropType::Controller_Right);
     uInt32 size = 0;
     const uInt8* image = myCart->getImage(size);
-    const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) != "NO";
+    const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
     // Try to detect controllers
     if(image != nullptr || size != 0)
@@ -842,23 +839,27 @@ void Console::setControllers(const string& rommd5)
   }
 
   myTIA->bindToControllers();
+
+  // now that we know the controllers, enable the event mappings
+  myOSystem.eventHandler().enableEmulationKeyMappings();
+  myOSystem.eventHandler().enableEmulationJoyMappings();
+
+  myOSystem.eventHandler().setMouseControllerMode(myOSystem.settings().getString("usemouse"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
     const string& controllerName, Controller::Jack port)
 {
-  unique_ptr<Controller> controller = std::move(myLeftControl);
+  unique_ptr<Controller> controller; // = std::move(myLeftControl); // TJ: why was this there?
 
   myOSystem.eventHandler().defineKeyControllerMappings(controllerName, port);
   myOSystem.eventHandler().defineJoyControllerMappings(controllerName, port);
 
   if(controllerName == "JOYSTICK")
   {
-    // Already created in c'tor
-    // We save some time by not looking at all the other types
-    if(!controller)
-      controller = make_unique<Joystick>(port, myEvent, *mySystem);
+    // always create because it may have been changed by user dialog
+    controller = make_unique<Joystick>(port, myEvent, *mySystem);
   }
   else if(controllerName == "BOOSTERGRIP")
   {
