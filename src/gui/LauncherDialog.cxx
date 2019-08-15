@@ -470,7 +470,7 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 void LauncherDialog::handleJoyDown(int stick, int button, bool longPress)
 {
   // open power-up options and settings for 2nd and 4th button if not mapped otherwise
-  Event::Type e = instance().eventHandler().eventForJoyButton(kMenuMode, stick, button);
+  Event::Type e = instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
   if (button == 1 && (e == Event::UIOK || e == Event::NoType))
     myGlobalProps->open();
@@ -495,7 +495,7 @@ void LauncherDialog::handleJoyUp(int stick, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type LauncherDialog::getJoyAxisEvent(int stick, int axis, int value, int button)
 {
-  Event::Type e = instance().eventHandler().eventForJoyAxis(kMenuMode, stick, axis, value, button);
+  Event::Type e = instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, value, button);
 
   if(myUseMinimalUI)
   {

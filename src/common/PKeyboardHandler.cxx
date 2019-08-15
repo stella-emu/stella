@@ -53,20 +53,20 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
   if (version == Event::VERSION)
   {
     string list = myOSystem.settings().getString("keymap_emu");
-    myKeyMap.loadMapping(list, kCommonMode);
+    myKeyMap.loadMapping(list, EventMode::kCommonMode);
     list = myOSystem.settings().getString("keymap_joy");
-    myKeyMap.loadMapping(list, kJoystickMode);
+    myKeyMap.loadMapping(list, EventMode::kJoystickMode);
     list = myOSystem.settings().getString("keymap_pad");
-    myKeyMap.loadMapping(list, kPaddlesMode);
+    myKeyMap.loadMapping(list, EventMode::kPaddlesMode);
     list = myOSystem.settings().getString("keymap_key");
-    myKeyMap.loadMapping(list, kKeypadMode);
+    myKeyMap.loadMapping(list, EventMode::kKeypadMode);
     list = myOSystem.settings().getString("keymap_ui");
-    myKeyMap.loadMapping(list, kMenuMode);
+    myKeyMap.loadMapping(list, EventMode::kMenuMode);
   }
   myKeyMap.enableMod() = myOSystem.settings().getBool("modcombo");
 
-  setDefaultMapping(Event::NoType, kEmulationMode, true);
-  setDefaultMapping(Event::NoType, kMenuMode, true);
+  setDefaultMapping(Event::NoType, EventMode::kEmulationMode, true);
+  setDefaultMapping(Event::NoType, EventMode::kMenuMode, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,23 +114,23 @@ void PhysicalKeyboardHandler::setDefaultMapping(Event::Type event, EventMode mod
 
   switch(mode)
   {
-    case kEmulationMode:
+    case EventMode::kEmulationMode:
       for (const auto& item: DefaultCommonMapping)
-        setDefaultKey(item, event, kCommonMode, updateDefaults);
+        setDefaultKey(item, event, EventMode::kCommonMode, updateDefaults);
       // put all controller events into their own mode's mappings
       for (const auto& item: DefaultJoystickMapping)
-        setDefaultKey(item, event, kJoystickMode, updateDefaults);
+        setDefaultKey(item, event, EventMode::kJoystickMode, updateDefaults);
       for (const auto& item: DefaultPaddleMapping)
-        setDefaultKey(item, event, kPaddlesMode, updateDefaults);
+        setDefaultKey(item, event, EventMode::kPaddlesMode, updateDefaults);
       for (const auto& item: DefaultKeypadMapping)
-        setDefaultKey(item, event, kKeypadMode, updateDefaults);
+        setDefaultKey(item, event, EventMode::kKeypadMode, updateDefaults);
       for (const auto& item : CompuMateMapping)
-        setDefaultKey(item, event, kCompuMateMode, updateDefaults);
+        setDefaultKey(item, event, EventMode::kCompuMateMode, updateDefaults);
       break;
 
-    case kMenuMode:
+    case EventMode::kMenuMode:
       for (const auto& item: DefaultMenuMapping)
-        setDefaultKey(item, event, kMenuMode, updateDefaults);
+        setDefaultKey(item, event, EventMode::kMenuMode, updateDefaults);
       break;
 
     default:
@@ -145,27 +145,27 @@ void PhysicalKeyboardHandler::defineControllerMappings(const string& controllerN
   if ((controllerName == "KEYBOARD") || (controllerName == "KEYPAD"))
   {
     if (port == Controller::Jack::Left)
-      myLeftMode = kKeypadMode;
+      myLeftMode = EventMode::kKeypadMode;
     else
-      myRightMode = kKeypadMode;
+      myRightMode = EventMode::kKeypadMode;
   }
   else if (BSPF::startsWithIgnoreCase(controllerName, "PADDLES"))
   {
     if (port == Controller::Jack::Left)
-      myLeftMode = kPaddlesMode;
+      myLeftMode = EventMode::kPaddlesMode;
     else
-      myRightMode = kPaddlesMode;
+      myRightMode = EventMode::kPaddlesMode;
   }
   else if (controllerName == "CM")
   {
-    myLeftMode = myRightMode = kCompuMateMode;
+    myLeftMode = myRightMode = EventMode::kCompuMateMode;
   }
   else
   {
     if (port == Controller::Jack::Left)
-      myLeftMode = kJoystickMode;
+      myLeftMode = EventMode::kJoystickMode;
     else
-      myRightMode = kJoystickMode;
+      myRightMode = EventMode::kJoystickMode;
   }
 }
 
@@ -173,46 +173,46 @@ void PhysicalKeyboardHandler::defineControllerMappings(const string& controllerN
 void PhysicalKeyboardHandler::enableEmulationMappings()
 {
   // start from scratch and enable common mappings
-  myKeyMap.eraseMode(kEmulationMode);
+  myKeyMap.eraseMode(EventMode::kEmulationMode);
   enableCommonMappings();
 
   // enable right mode first, so that in case of mapping clashes the left controller has preference
   switch (myRightMode)
   {
-    case kPaddlesMode:
-      enableMappings(RightPaddlesEvents, kPaddlesMode);
+    case EventMode::kPaddlesMode:
+      enableMappings(RightPaddlesEvents, EventMode::kPaddlesMode);
       break;
 
-    case kKeypadMode:
-      enableMappings(RightKeypadEvents, kKeypadMode);
+    case EventMode::kKeypadMode:
+      enableMappings(RightKeypadEvents, EventMode::kKeypadMode);
       break;
 
-    case kCompuMateMode:
+    case EventMode::kCompuMateMode:
       // see below
       break;
 
     default:
-      enableMappings(RightJoystickEvents, kJoystickMode);
+      enableMappings(RightJoystickEvents, EventMode::kJoystickMode);
       break;
   }
 
   switch (myLeftMode)
   {
-    case kPaddlesMode:
-      enableMappings(LeftPaddlesEvents, kPaddlesMode);
+    case EventMode::kPaddlesMode:
+      enableMappings(LeftPaddlesEvents, EventMode::kPaddlesMode);
       break;
 
-    case kKeypadMode:
-      enableMappings(LeftKeypadEvents, kKeypadMode);
+    case EventMode::kKeypadMode:
+      enableMappings(LeftKeypadEvents, EventMode::kKeypadMode);
       break;
 
-    case kCompuMateMode:
+    case EventMode::kCompuMateMode:
       for (const auto& item : CompuMateMapping)
-        enableMapping(item.event, kCompuMateMode);
+        enableMapping(item.event, EventMode::kCompuMateMode);
       break;
 
     default:
-      enableMappings(LeftJoystickEvents, kJoystickMode);
+      enableMappings(LeftJoystickEvents, EventMode::kJoystickMode);
       break;
   }
 }
@@ -225,7 +225,7 @@ void PhysicalKeyboardHandler::enableCommonMappings()
     Event::Type event = static_cast<Event::Type>(i);
 
     if (isCommonEvent(event))
-      enableMapping(event, kCommonMode);
+      enableMapping(event, EventMode::kCommonMode);
   }
 }
 
@@ -243,25 +243,25 @@ void PhysicalKeyboardHandler::enableMapping(const Event::Type event, EventMode m
   KeyMap::MappingArray mappings = myKeyMap.getEventMapping(event, mode);
 
   for (const auto& mapping : mappings)
-    myKeyMap.add(event, kEmulationMode, mapping.key, mapping.mod);
+    myKeyMap.add(event, EventMode::kEmulationMode, mapping.key, mapping.mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMode PhysicalKeyboardHandler::getEventMode(const Event::Type event, const EventMode mode) const
 {
-  if (mode == kEmulationMode)
+  if (mode == EventMode::kEmulationMode)
   {
     if (isJoystickEvent(event))
-      return kJoystickMode;
+      return EventMode::kJoystickMode;
 
     if (isPaddleEvent(event))
-      return kPaddlesMode;
+      return EventMode::kPaddlesMode;
 
     if (isKeypadEvent(event))
-      return kKeypadMode;
+      return EventMode::kKeypadMode;
 
     if (isCommonEvent(event))
-      return kCommonMode;
+      return EventMode::kCommonMode;
   }
 
   return mode;
@@ -305,11 +305,11 @@ void PhysicalKeyboardHandler::eraseMapping(Event::Type event, EventMode mode)
 void PhysicalKeyboardHandler::saveMapping()
 {
   myOSystem.settings().setValue("event_ver", Event::VERSION);
-  myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(kCommonMode));
-  myOSystem.settings().setValue("keymap_joy", myKeyMap.saveMapping(kJoystickMode));
-  myOSystem.settings().setValue("keymap_pad", myKeyMap.saveMapping(kPaddlesMode));
-  myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(kKeypadMode));
-  myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(kMenuMode));
+  myOSystem.settings().setValue("keymap_emu", myKeyMap.saveMapping(EventMode::kCommonMode));
+  myOSystem.settings().setValue("keymap_joy", myKeyMap.saveMapping(EventMode::kJoystickMode));
+  myOSystem.settings().setValue("keymap_pad", myKeyMap.saveMapping(EventMode::kPaddlesMode));
+  myOSystem.settings().setValue("keymap_key", myKeyMap.saveMapping(EventMode::kKeypadMode));
+  myOSystem.settings().setValue("keymap_ui", myKeyMap.saveMapping(EventMode::kMenuMode));
   enableEmulationMappings();
 }
 
@@ -357,10 +357,10 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   if ((estate == EventHandlerState::EMULATION || estate == EventHandlerState::PAUSE) &&
       myOSystem.console().leftController().type() == Controller::Type::CompuMate)
   {
-    Event::Type event = myKeyMap.get(kCompuMateMode, key, mod);
+    Event::Type event = myKeyMap.get(EventMode::kCompuMateMode, key, mod);
 
     // (potential) CompuMate events are handled directly.
-    if (myKeyMap.get(kEmulationMode, key, mod) != Event::ExitMode &&
+    if (myKeyMap.get(EventMode::kEmulationMode, key, mod) != Event::ExitMode &&
       !StellaModTest::isAlt(mod) && event != Event::NoType)
     {
       myHandler.handleEvent(event, pressed, repeated);
@@ -370,7 +370,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
 
   // Arrange the logic to take advantage of short-circuit evaluation
   // Handle keys which switch eventhandler state
-  if (!pressed && myHandler.changeStateByEvent(myKeyMap.get(kEmulationMode, key, mod)))
+  if (!pressed && myHandler.changeStateByEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod)))
     return;
 
   // Otherwise, let the event handler deal with it
@@ -378,7 +378,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
   {
     case EventHandlerState::EMULATION:
     case EventHandlerState::PAUSE:
-      myHandler.handleEvent(myKeyMap.get(kEmulationMode, key, mod), pressed, repeated);
+      myHandler.handleEvent(myKeyMap.get(EventMode::kEmulationMode, key, mod), pressed, repeated);
       break;
 
     default:
@@ -386,7 +386,7 @@ void PhysicalKeyboardHandler::handleEvent(StellaKey key, StellaMod mod, bool pre
       if (myHandler.hasOverlay())
         myHandler.overlay().handleKeyEvent(key, mod, pressed, repeated);
     #endif
-      myHandler.handleEvent(myKeyMap.get(kMenuMode, key, mod), pressed, repeated);
+      myHandler.handleEvent(myKeyMap.get(EventMode::kMenuMode, key, mod), pressed, repeated);
       break;
   }
 }

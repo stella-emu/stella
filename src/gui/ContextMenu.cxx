@@ -282,26 +282,26 @@ void ContextMenu::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 {
-  handleEvent(instance().eventHandler().eventForKey(kMenuMode, key, mod));
+  handleEvent(instance().eventHandler().eventForKey(EventMode::kMenuMode, key, mod));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::handleJoyDown(int stick, int button, bool longPress)
 {
-  handleEvent(instance().eventHandler().eventForJoyButton(kMenuMode, stick, button));
+  handleEvent(instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::handleJoyAxis(int stick, int axis, int value, int button)
 {
   if(value != 0)  // we don't care about 'axis up' events
-    handleEvent(instance().eventHandler().eventForJoyAxis(kMenuMode, stick, axis, value, button));
+    handleEvent(instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, value, button));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ContextMenu::handleJoyHat(int stick, int hat, JoyHat value, int button)
 {
-  handleEvent(instance().eventHandler().eventForJoyHat(kMenuMode, stick, hat, value, button));
+  handleEvent(instance().eventHandler().eventForJoyHat(EventMode::kMenuMode, stick, hat, value, button));
   return true;
 }
 

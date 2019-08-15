@@ -124,7 +124,7 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   }
 
   // handle emulation keys second (can be remapped)
-  Event::Type event = instance().eventHandler().eventForKey(kEmulationMode, key, mod);
+  Event::Type event = instance().eventHandler().eventForKey(EventMode::kEmulationMode, key, mod);
   switch (event)
   {
     // events which can be handled 1:1

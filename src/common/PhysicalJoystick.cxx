@@ -67,11 +67,11 @@ void PhysicalJoystick::initialize(int index, const string& desc,
     axisLastValue[a] = 0;
 
   // Erase the mappings
-  eraseMap(kMenuMode);
-  eraseMap(kJoystickMode);
-  eraseMap(kPaddlesMode);
-  eraseMap(kKeypadMode);
-  eraseMap(kCommonMode);
+  eraseMap(EventMode::kMenuMode);
+  eraseMap(EventMode::kJoystickMode);
+  eraseMap(EventMode::kPaddlesMode);
+  eraseMap(EventMode::kKeypadMode);
+  eraseMap(EventMode::kCommonMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,11 +83,11 @@ string PhysicalJoystick::getMap() const
   ostringstream joybuf;
 
   joybuf << name;
-  joybuf << MODE_DELIM << int(kMenuMode) << "|" << joyMap.saveMapping(kMenuMode);
-  joybuf << MODE_DELIM << int(kJoystickMode) << "|" << joyMap.saveMapping(kJoystickMode);
-  joybuf << MODE_DELIM << int(kPaddlesMode) << "|" << joyMap.saveMapping(kPaddlesMode);
-  joybuf << MODE_DELIM << int(kKeypadMode) << "|" << joyMap.saveMapping(kKeypadMode);
-  joybuf << MODE_DELIM << int(kCommonMode) << "|" << joyMap.saveMapping(kCommonMode);
+  joybuf << MODE_DELIM << int(EventMode::kMenuMode) << "|" << joyMap.saveMapping(EventMode::kMenuMode);
+  joybuf << MODE_DELIM << int(EventMode::kJoystickMode) << "|" << joyMap.saveMapping(EventMode::kJoystickMode);
+  joybuf << MODE_DELIM << int(EventMode::kPaddlesMode) << "|" << joyMap.saveMapping(EventMode::kPaddlesMode);
+  joybuf << MODE_DELIM << int(EventMode::kKeypadMode) << "|" << joyMap.saveMapping(EventMode::kKeypadMode);
+  joybuf << MODE_DELIM << int(EventMode::kCommonMode) << "|" << joyMap.saveMapping(EventMode::kCommonMode);
 
   return joybuf.str();
 }

@@ -29,7 +29,7 @@ void KeyMap::add(const Event::Type event, const Mapping& mapping)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::add(const Event::Type event, const int mode, const int key, const int mod)
+void KeyMap::add(const Event::Type event, const EventMode mode, const int key, const int mod)
 {
   add(event, Mapping(mode, key, mod));
 }
@@ -41,7 +41,7 @@ void KeyMap::erase(const Mapping& mapping)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::erase(const int mode, const int key, const int mod)
+void KeyMap::erase(const EventMode mode, const int key, const int mod)
 {
   erase(Mapping(mode, key, mod));
 }
@@ -69,7 +69,7 @@ Event::Type KeyMap::get(const Mapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type KeyMap::get(const int mode, const int key, const int mod) const
+Event::Type KeyMap::get(const EventMode mode, const int key, const int mod) const
 {
   return get(Mapping(mode, key, mod));
 }
@@ -83,7 +83,7 @@ bool KeyMap::check(const Mapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool KeyMap::check(const int mode, const int key, const int mod) const
+bool KeyMap::check(const EventMode mode, const int key, const int mod) const
 {
   return check(Mapping(mode, key, mod));
 }
@@ -138,13 +138,13 @@ string KeyMap::getDesc(const Mapping& mapping) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getDesc(const int mode, const int key, const int mod) const
+string KeyMap::getDesc(const EventMode mode, const int key, const int mod) const
 {
   return getDesc(Mapping(mode, key, mod));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::getEventMappingDesc(const Event::Type event, const int mode) const
+string KeyMap::getEventMappingDesc(const Event::Type event, const EventMode mode) const
 {
   ostringstream buf;
 
@@ -161,7 +161,7 @@ string KeyMap::getEventMappingDesc(const Event::Type event, const int mode) cons
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const int mode) const
+KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const EventMode mode) const
 {
   MappingArray map;
 
@@ -173,7 +173,7 @@ KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const int 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string KeyMap::saveMapping(const int mode) const
+string KeyMap::saveMapping(const EventMode mode) const
 {
   ostringstream buf;
 
@@ -190,7 +190,7 @@ string KeyMap::saveMapping(const int mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int KeyMap::loadMapping(string& list, const int mode)
+int KeyMap::loadMapping(string& list, const EventMode mode)
 {
   // Since istringstream swallows whitespace, we have to make the
   // delimiters be spaces
@@ -207,7 +207,7 @@ int KeyMap::loadMapping(string& list, const int mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::eraseMode(const int mode)
+void KeyMap::eraseMode(const EventMode mode)
 {
   for (auto item = myMap.begin(); item != myMap.end();)
     if (item->first.mode == mode) {
@@ -218,7 +218,7 @@ void KeyMap::eraseMode(const int mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void KeyMap::eraseEvent(const Event::Type event, const int mode)
+void KeyMap::eraseEvent(const Event::Type event, const EventMode mode)
 {
   for (auto item = myMap.begin(); item != myMap.end();)
     if (item->second == event && item->first.mode == mode) {
