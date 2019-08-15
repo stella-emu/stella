@@ -88,7 +88,7 @@ void DialogContainer::updateTime(uInt64 time)
   if(myCurrentHatDown.stick != -1 && myHatRepeatTime < myTime)
   {
     activeDialog->handleJoyHat(myCurrentHatDown.stick, myCurrentHatDown.hat,
-                                myCurrentHatDown.value);
+                                myCurrentHatDown.hdir);
     myHatRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
   }
 }
@@ -343,7 +343,7 @@ void DialogContainer::handleJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, i
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHatDir value, int button)
+void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int button)
 {
   if(myDialogStack.empty())
     return;
@@ -355,20 +355,20 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHatDir value, int
   myButtonLongPressTime = myTime + _REPEAT_NONE;
 
   // Only stop firing events if it's the current stick
-  if(myCurrentHatDown.stick == stick && value == JoyHatDir::CENTER)
+  if(myCurrentHatDown.stick == stick && hdir == JoyHatDir::CENTER)
   {
     myCurrentHatDown.stick = myCurrentHatDown.hat = -1;
     myHatRepeatTime = 0;
   }
-  else if(value != JoyHatDir::CENTER && myHatRepeatTime < myTime)  // never repeat the 'center' direction; prevent pending repeats after enabling repeat again
+  else if(hdir != JoyHatDir::CENTER && myHatRepeatTime < myTime)  // never repeat the 'center' direction; prevent pending repeats after enabling repeat again
   {
     // Now account for repeated hat events (press and hold)
     myCurrentHatDown.stick = stick;
     myCurrentHatDown.hat  = hat;
-    myCurrentHatDown.value = value;
+    myCurrentHatDown.hdir = hdir;
     myHatRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
   }
-  activeDialog->handleJoyHat(stick, hat, value, button);
+  activeDialog->handleJoyHat(stick, hat, hdir, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
