@@ -666,7 +666,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
       if (value != j->axisLastValue[axis])
       {
 #ifdef GUI_SUPPORT
-        myHandler.overlay().handleJoyAxisEvent(stick, axis, value, button);
+        myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), value, button);
 #endif
         j->axisLastValue[axis] = value;
       }

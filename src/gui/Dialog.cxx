@@ -613,13 +613,13 @@ void Dialog::handleJoyUp(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type Dialog::getJoyAxisEvent(int stick, int axis, int value, int button)
+Event::Type Dialog::getJoyAxisEvent(int stick, JoyAxis axis, int value, int button)
 {
   return instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, value, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleJoyAxis(int stick, int axis, int value, int button)
+void Dialog::handleJoyAxis(int stick, JoyAxis axis, int value, int button)
 {
   Event::Type e = getJoyAxisEvent(stick, axis, value, button);
 
@@ -629,7 +629,7 @@ void Dialog::handleJoyAxis(int stick, int axis, int value, int button)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
       _focusedWidget->handleJoyAxis(stick, axis, value, button);
-    else if(value != 0)
+    else if(value != int(JoyDir::NONE))
       _focusedWidget->handleEvent(e);
   }
 }

@@ -93,7 +93,7 @@ class LauncherDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleJoyDown(int stick, int button, bool longPress) override;
     void handleJoyUp(int stick, int button) override;
-    Event::Type getJoyAxisEvent(int stick, int axis, int value, int button) override;
+    Event::Type getJoyAxisEvent(int stick, JoyAxis axis, int value, int button) override;
 
     void loadConfig() override;
     void updateUI();

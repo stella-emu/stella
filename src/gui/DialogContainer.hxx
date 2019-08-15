@@ -108,7 +108,7 @@ class DialogContainer
       @param axis   The joystick axis
       @param value  Value associated with given axis
     */
-    void handleJoyAxisEvent(int stick, int axis, int value, int button);
+    void handleJoyAxisEvent(int stick, JoyAxis axis, int value, int button);
 
     /**
       Handle a joystick hat event.
@@ -208,7 +208,7 @@ class DialogContainer
     // For continuous 'joy axis down' events
     struct {
       int stick;
-      int axis;
+      JoyAxis axis;
       int value;
     } myCurrentAxisDown;
     uInt64 myAxisRepeatTime;

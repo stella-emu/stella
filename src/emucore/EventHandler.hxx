@@ -162,7 +162,7 @@ class EventHandler
     Event::Type eventForKey(EventMode mode, StellaKey key, StellaMod mod) const {
       return myPKeyHandler->eventForKey(mode, key, mod);
     }
-    Event::Type eventForJoyAxis(EventMode mode, int stick, int axis, int value, int button) const {
+    Event::Type eventForJoyAxis(EventMode mode, int stick, JoyAxis axis, int value, int button) const {
       return myPJoyHandler->eventForAxis(mode, stick, axis, value, button);
     }
     Event::Type eventForJoyButton(EventMode mode, int stick, int button) const {

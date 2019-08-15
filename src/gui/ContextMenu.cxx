@@ -292,9 +292,9 @@ void ContextMenu::handleJoyDown(int stick, int button, bool longPress)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleJoyAxis(int stick, int axis, int value, int button)
+void ContextMenu::handleJoyAxis(int stick, JoyAxis axis, int value, int button)
 {
-  if(value != 0)  // we don't care about 'axis up' events
+  if(value != int(JoyDir::NONE))  // we don't care about 'axis off' events
     handleEvent(instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, value, button));
 }
 

@@ -44,7 +44,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myActionSelected(-1),
     myRemapStatus(false),
     myLastStick(0),
-    myLastAxis(0),
+    myLastAxis(JoyAxis::NONE),
     myLastHat(0),
     myLastValue(0),
     myLastButton(JOY_CTRL_NONE),
@@ -165,7 +165,7 @@ void EventMappingWidget::startRemapping()
   // Reset all previous events for determining correct axis/hat values
   myLastStick = -1;
   myLastButton = JOY_CTRL_NONE;
-  myLastAxis = int(JoyAxis::NONE);
+  myLastAxis = JoyAxis::NONE;
   myLastHat = -1;
   myLastValue = int(JoyDir::NONE);
 
@@ -223,7 +223,7 @@ void EventMappingWidget::stopRemapping()
   // Reset all previous events for determining correct axis/hat values
   myLastStick = -1;
   myLastButton = JOY_CTRL_NONE;
-  myLastAxis = int(JoyAxis::NONE);
+  myLastAxis = JoyAxis::NONE;
   myLastHat = -1;
   myLastValue = int(JoyDir::NONE);
 
@@ -345,7 +345,7 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingWidget::handleJoyAxis(int stick, int axis, int value, int button)
+void EventMappingWidget::handleJoyAxis(int stick, JoyAxis axis, int value, int button)
 {
   // Remap joystick axes in remap mode
   // There are two phases to detection:
@@ -354,7 +354,7 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value, int butto
   if(myRemapStatus && myActionSelected >= 0)
   {
     // Detect the first axis event that represents 'on'
-    if((myLastStick == -1 || myLastStick == stick) && myLastAxis == -1 && value != 0)
+    if((myLastStick == -1 || myLastStick == stick) && myLastAxis == JoyAxis::NONE && value != 0)
     {
       myLastStick = stick;
       myLastAxis = axis;
