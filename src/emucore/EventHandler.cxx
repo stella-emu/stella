@@ -73,7 +73,7 @@ EventHandler::EventHandler(OSystem& osystem)
   myPKeyHandler = make_unique<PhysicalKeyboardHandler>(osystem, *this);
 
   // Create joystick handler (to handle all physical joystick functionality)
-  myPJoyHandler = make_unique<PhysicalJoystickHandler>(osystem, *this, myEvent);
+  myPJoyHandler = make_unique<PhysicalJoystickHandler>(osystem, *this);
 
   // Erase the 'combo' array
   for(int i = 0; i < COMBO_SIZE; ++i)
