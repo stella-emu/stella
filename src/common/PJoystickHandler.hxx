@@ -90,9 +90,9 @@ class PhysicalJoystickHandler
     void handleBtnEvent(int stick, int button, bool pressed);
     void handleHatEvent(int stick, int hat, int value);
 
-    Event::Type eventForAxis(EventMode mode, int stick, int axis, int value, int button) const {
+    Event::Type eventForAxis(EventMode mode, int stick, JoyAxis axis, int value, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return j->joyMap.get(mode, button, JoyAxis(axis), convertAxisValue(value));
+      return j->joyMap.get(mode, button, axis, convertAxisValue(value));
     }
     Event::Type eventForButton(EventMode mode, int stick, int button) const {
       const PhysicalJoystickPtr j = joy(stick);

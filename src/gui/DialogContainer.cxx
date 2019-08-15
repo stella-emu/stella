@@ -313,7 +313,7 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value, int button)
+void DialogContainer::handleJoyAxisEvent(int stick, JoyAxis axis, int value, int button)
 {
   if(myDialogStack.empty())
     return;
@@ -327,7 +327,8 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value, int but
   // Only stop firing events if it's the current stick
   if(myCurrentAxisDown.stick == stick && value == 0)
   {
-    myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
+    myCurrentAxisDown.stick = -1;
+    myCurrentAxisDown.axis = JoyAxis::NONE;
     myAxisRepeatTime = 0;
   }
   else if(value != 0 && myAxisRepeatTime < myTime)  // never repeat the 'off' event; prevent pending repeats after enabling repeat again
@@ -379,7 +380,8 @@ void DialogContainer::reset()
   myLastClick.count = 0;
 
   myCurrentButtonDown.stick = myCurrentButtonDown.button = -1;
-  myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
+  myCurrentAxisDown.stick = -1;
+  myCurrentAxisDown.axis = JoyAxis::NONE;
   myCurrentHatDown.stick = myCurrentHatDown.hat = -1;
 }
 
