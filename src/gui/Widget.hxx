@@ -80,7 +80,7 @@ class Widget : public GuiObject
     virtual void handleJoyDown(int stick, int button, bool longPress = false) { }
     virtual void handleJoyUp(int stick, int button) { }
     virtual void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button = JOY_CTRL_NONE) { }
-    virtual bool handleJoyHat(int stick, int hat, JoyHatDir value, int button = JOY_CTRL_NONE) { return false; }
+    virtual bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button = JOY_CTRL_NONE) { return false; }
     virtual bool handleEvent(Event::Type event) { return false; }
 
     void setDirty() override;

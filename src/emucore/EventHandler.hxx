@@ -168,8 +168,8 @@ class EventHandler
     Event::Type eventForJoyButton(EventMode mode, int stick, int button) const {
       return myPJoyHandler->eventForButton(mode, stick, button);
     }
-    Event::Type eventForJoyHat(EventMode mode, int stick, int hat, JoyHatDir value, int button) const {
-      return myPJoyHandler->eventForHat(mode, stick, hat, value, button);
+    Event::Type eventForJoyHat(EventMode mode, int stick, int hat, JoyHatDir hdir, int button) const {
+      return myPJoyHandler->eventForHat(mode, stick, hat, hdir, button);
     }
 
     /** Get description of given event and mode. */

@@ -115,9 +115,9 @@ class DialogContainer
 
       @param stick  The joystick number
       @param hat    The joystick hat
-      @param value  Value associated with given hat
+      @param hdir   Direction of the with given hat
     */
-    void handleJoyHatEvent(int stick, int hat, JoyHatDir value, int button);
+    void handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int button);
 
     /**
       Draw the stack of menus (full indicates to redraw all items).
@@ -217,7 +217,7 @@ class DialogContainer
     struct {
       int stick;
       int hat;
-      JoyHatDir value;
+      JoyHatDir hdir;
     } myCurrentHatDown;
     uInt64 myHatRepeatTime;
 
