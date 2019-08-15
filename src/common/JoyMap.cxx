@@ -31,14 +31,14 @@ void JoyMap::add(const Event::Type event, const JoyMapping& mapping)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::add(const Event::Type event, const EventMode mode, const int button,
                  const JoyAxis axis, const JoyDir adir,
-                 const int hat, const JoyHat hdir)
+                 const int hat, const JoyHatDir hdir)
 {
   add(event, JoyMapping(mode, button, axis, adir, hat, hdir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::add(const Event::Type event, const EventMode mode, const int button,
-                 const int hat, const JoyHat hdir)
+                 const int hat, const JoyHatDir hdir)
 {
   add(event, JoyMapping(mode, button, hat, hdir));
 }
@@ -58,7 +58,7 @@ void JoyMap::erase(const EventMode mode, const int button,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::erase(const EventMode mode, const int button,
-                   const int hat, const JoyHat hdir)
+                   const int hat, const JoyHatDir hdir)
 {
   erase(JoyMapping(mode, button, hat, hdir));
 }
@@ -91,7 +91,7 @@ Event::Type JoyMap::get(const EventMode mode, const int button,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type JoyMap::get(const EventMode mode, const int button,
-                        const int hat, const JoyHat hdir) const
+                        const int hat, const JoyHatDir hdir) const
 {
   return get(JoyMapping(mode, button, hat, hdir));
 }
@@ -107,7 +107,7 @@ bool JoyMap::check(const JoyMapping & mapping) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool JoyMap::check(const EventMode mode, const int button,
                    const JoyAxis axis, const JoyDir adir,
-                   const int hat, const JoyHat hdir) const
+                   const int hat, const JoyHatDir hdir) const
 {
   return check(JoyMapping(mode, button, axis, adir, hat, hdir));
 }
@@ -147,10 +147,10 @@ string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping) const
     buf << "/H" << mapping.hat;
     switch (mapping.hdir)
     {
-      case JoyHat::UP:    buf << "/up";    break;
-      case JoyHat::DOWN:  buf << "/down";  break;
-      case JoyHat::LEFT:  buf << "/left";  break;
-      case JoyHat::RIGHT: buf << "/right"; break;
+      case JoyHatDir::UP:    buf << "/up";    break;
+      case JoyHatDir::DOWN:  buf << "/down";  break;
+      case JoyHatDir::LEFT:  buf << "/left";  break;
+      case JoyHatDir::RIGHT: buf << "/right"; break;
       default:                             break;
     }
   }
@@ -220,7 +220,7 @@ int JoyMap::loadMapping(string& list, const EventMode mode)
   while (buf >> event && buf >> button
          && buf >> axis && buf >> adir
          && buf >> hat && buf >> hdir && ++i)
-    add(Event::Type(event), EventMode(mode), button, JoyAxis(axis), JoyDir(adir), hat, JoyHat(hdir));
+    add(Event::Type(event), EventMode(mode), button, JoyAxis(axis), JoyDir(adir), hat, JoyHatDir(hdir));
 
   return i;
 }

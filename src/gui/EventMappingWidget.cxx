@@ -45,8 +45,9 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myRemapStatus(false),
     myLastStick(0),
     myLastAxis(JoyAxis::NONE),
+    myLastDir(JoyDir::NONE),
     myLastHat(0),
-    myLastValue(0),
+    myLastHatDir(JoyHatDir::CENTER),
     myLastButton(JOY_CTRL_NONE),
     myFirstTime(true)
 {
@@ -166,8 +167,9 @@ void EventMappingWidget::startRemapping()
   myLastStick = -1;
   myLastButton = JOY_CTRL_NONE;
   myLastAxis = JoyAxis::NONE;
+  myLastDir = JoyDir::NONE;
   myLastHat = -1;
-  myLastValue = int(JoyDir::NONE);
+  myLastHatDir = JoyHatDir::CENTER;
 
   // Reset the previously aggregated key mappings
   myMod = myLastKey = 0;
@@ -224,8 +226,9 @@ void EventMappingWidget::stopRemapping()
   myLastStick = -1;
   myLastButton = JOY_CTRL_NONE;
   myLastAxis = JoyAxis::NONE;
+  myLastDir = JoyDir::NONE;
   myLastHat = -1;
-  myLastValue = int(JoyDir::NONE);
+  myLastHatDir = JoyHatDir::CENTER;
 
   // And re-enable all the widgets
   enableButtons(true);
@@ -334,18 +337,18 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
       // map either button/hat, solo button or button/axis combinations
       if(myLastHat != -1)
       {
-        if(eh.addJoyHatMapping(event, myEventMode, stick, button, myLastHat, JoyHat(myLastValue)))
+        if(eh.addJoyHatMapping(event, myEventMode, stick, button, myLastHat, myLastHatDir))
           stopRemapping();
       }
       else
-        if (eh.addJoyMapping(event, myEventMode, stick, button, JoyAxis(myLastAxis), myLastValue))
+        if (eh.addJoyMapping(event, myEventMode, stick, button, myLastAxis, myLastDir))
           stopRemapping();
     }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventMappingWidget::handleJoyAxis(int stick, JoyAxis axis, int value, int button)
+void EventMappingWidget::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button)
 {
   // Remap joystick axes in remap mode
   // There are two phases to detection:
@@ -354,27 +357,27 @@ void EventMappingWidget::handleJoyAxis(int stick, JoyAxis axis, int value, int b
   if(myRemapStatus && myActionSelected >= 0)
   {
     // Detect the first axis event that represents 'on'
-    if((myLastStick == -1 || myLastStick == stick) && myLastAxis == JoyAxis::NONE && value != 0)
+    if((myLastStick == -1 || myLastStick == stick) && myLastAxis == JoyAxis::NONE && adir != JoyDir::NONE)
     {
       myLastStick = stick;
       myLastAxis = axis;
-      myLastValue = value;
+      myLastDir = adir;
     }
     // Detect the first axis event that matches a previously set
     // stick and axis, but turns the axis 'off'
-    else if(myLastStick == stick && axis == myLastAxis && value == 0)
+    else if(myLastStick == stick && axis == myLastAxis && adir == JoyDir::NONE)
     {
       EventHandler& eh = instance().eventHandler();
       Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
 
-      if (eh.addJoyMapping(event, myEventMode, stick, myLastButton, JoyAxis(axis), myLastValue))
+      if (eh.addJoyMapping(event, myEventMode, stick, myLastButton, axis, myLastDir))
         stopRemapping();
     }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHat value, int button)
+bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHatDir hdir, int button)
 {
   // Remap joystick hats in remap mode
   // There are two phases to detection:
@@ -383,22 +386,22 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHat value, int butt
   if(myRemapStatus && myActionSelected >= 0)
   {
     // Detect the first hat event that represents a valid direction
-    if((myLastStick == -1 || myLastStick == stick) && myLastHat == -1 && value != JoyHat::CENTER)
+    if((myLastStick == -1 || myLastStick == stick) && myLastHat == -1 && hdir != JoyHatDir::CENTER)
     {
       myLastStick = stick;
       myLastHat = hat;
-      myLastValue = int(value);
+      myLastHatDir = hdir;
 
       return true;
     }
     // Detect the first hat event that matches a previously set
     // stick and hat, but centers the hat
-    else if(myLastStick == stick && hat == myLastHat && value == JoyHat::CENTER)
+    else if(myLastStick == stick && hat == myLastHat && hdir == JoyHatDir::CENTER)
     {
       EventHandler& eh = instance().eventHandler();
       Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
 
-      if (eh.addJoyHatMapping(event, myEventMode, stick, myLastButton, hat, JoyHat(myLastValue)))
+      if (eh.addJoyHatMapping(event, myEventMode, stick, myLastButton, hat, myLastHatDir))
       {
         stopRemapping();
         return true;

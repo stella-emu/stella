@@ -60,8 +60,8 @@ class EventMappingWidget : public Widget, public CommandSender
     bool handleKeyUp(StellaKey key, StellaMod mod) override;
     void handleJoyDown(int stick, int button, bool longPress = false) override;
     void handleJoyUp(int stick, int button) override;
-    void handleJoyAxis(int stick, JoyAxis axis, int value, int button) override;
-    bool handleJoyHat(int stick, int hat, JoyHat value, int button) override;
+    void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button) override;
+    bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button) override;
 
     void loadConfig() override;
     void saveConfig();
@@ -105,8 +105,10 @@ class EventMappingWidget : public Widget, public CommandSender
     // Therefore, we map these events when they've been 'released', rather
     // than on their first occurrence (aka, when they're 'pressed')
     // As a result, we need to keep track of their old values
-    int myLastStick, myLastHat, myLastValue;
+    int myLastStick, myLastHat;
     JoyAxis myLastAxis;
+    JoyDir myLastDir;
+    JoyHatDir myLastHatDir;
 
     // Aggregates the modifier flags of the mapping
     int myMod;

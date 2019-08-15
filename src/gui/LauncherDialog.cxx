@@ -493,9 +493,9 @@ void LauncherDialog::handleJoyUp(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, int value, int button)
+Event::Type LauncherDialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button)
 {
-  Event::Type e = instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, value, button);
+  Event::Type e = instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, adir, button);
 
   if(myUseMinimalUI)
   {

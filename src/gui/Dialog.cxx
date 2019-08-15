@@ -613,29 +613,29 @@ void Dialog::handleJoyUp(int stick, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type Dialog::getJoyAxisEvent(int stick, JoyAxis axis, int value, int button)
+Event::Type Dialog::getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button)
 {
-  return instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, value, button);
+  return instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, adir, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleJoyAxis(int stick, JoyAxis axis, int value, int button)
+void Dialog::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button)
 {
-  Event::Type e = getJoyAxisEvent(stick, axis, value, button);
+  Event::Type e = getJoyAxisEvent(stick, axis, adir, button);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
   if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
-      _focusedWidget->handleJoyAxis(stick, axis, value, button);
-    else if(value != int(JoyDir::NONE))
+      _focusedWidget->handleJoyAxis(stick, axis, adir, button);
+    else if(adir != JoyDir::NONE)
       _focusedWidget->handleEvent(e);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Dialog::handleJoyHat(int stick, int hat, JoyHat value, int button)
+bool Dialog::handleJoyHat(int stick, int hat, JoyHatDir value, int button)
 {
   Event::Type e =
     instance().eventHandler().eventForJoyHat(EventMode::kMenuMode, stick, hat, value, button);

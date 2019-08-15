@@ -551,7 +551,7 @@ string PhysicalJoystickHandler::getMappingDesc(Event::Type event, EventMode mode
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, int stick,
-                                            int button, JoyAxis axis, int value)
+                                            int button, JoyAxis axis, JoyDir adir)
 {
   const PhysicalJoystickPtr j = joy(stick);
 
@@ -574,11 +574,11 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
       // Otherwise, turn off the analog event(s) for this axis
       if (Event::isAnalog(j->joyMap.get(evMode, button, axis, JoyDir::ANALOG)))
         j->joyMap.erase(evMode, button, axis, JoyDir::ANALOG);
-      j->joyMap.add(event, evMode, button, axis, convertAxisValue(value));
+      j->joyMap.add(event, evMode, button, axis, adir);
       // update running emulation mapping too
       if(Event::isAnalog(j->joyMap.get(EventMode::kEmulationMode, button, axis, JoyDir::ANALOG)))
         j->joyMap.erase(EventMode::kEmulationMode, button, axis, JoyDir::ANALOG);
-      j->joyMap.add(event, EventMode::kEmulationMode, button, axis, convertAxisValue(value));
+      j->joyMap.add(event, EventMode::kEmulationMode, button, axis, adir);
     }
     return true;
   }
@@ -587,17 +587,17 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode, int stick,
-                                               int button, int hat, JoyHat dir)
+                                               int button, int hat, JoyHatDir hdir)
 {
   const PhysicalJoystickPtr j = joy(stick);
 
   if (j && event < Event::LastType &&
       button >= JOY_CTRL_NONE && button < j->numButtons &&
-      hat >= 0 && hat < j->numHats && dir != JoyHat::CENTER)
+      hat >= 0 && hat < j->numHats && hdir != JoyHatDir::CENTER)
   {
-    j->joyMap.add(event, getEventMode(event, mode), button, hat, dir);
+    j->joyMap.add(event, getEventMode(event, mode), button, hat, hdir);
     // update running emulation mapping too
-    j->joyMap.add(event, EventMode::kEmulationMode, button, hat, dir);
+    j->joyMap.add(event, EventMode::kEmulationMode, button, hat, hdir);
     return true;
   }
   return false;
@@ -666,7 +666,7 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
       if (value != j->axisLastValue[axis])
       {
 #ifdef GUI_SUPPORT
-        myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), value, button);
+        myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), convertAxisValue(value), button);
 #endif
         j->axisLastValue[axis] = value;
       }
@@ -700,7 +700,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
 {
-  // Preprocess all hat events, converting to Stella JoyHat type
+  // Preprocess all hat events, converting to Stella JoyHatDir type
   // Generate multiple equivalent hat events representing combined direction
   // when we get a diagonal hat event
 
@@ -712,30 +712,30 @@ void PhysicalJoystickHandler::handleHatEvent(int stick, int hat, int value)
 
     if (myHandler.state() == EventHandlerState::EMULATION)
     {
-      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHat::UP),
+      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHatDir::UP),
                             value & EVENT_HATUP_M);
-      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHat::RIGHT),
+      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHatDir::RIGHT),
                             value & EVENT_HATRIGHT_M);
-      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHat::DOWN),
+      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHatDir::DOWN),
                             value & EVENT_HATDOWN_M);
-      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHat::LEFT),
+      myHandler.handleEvent(j->joyMap.get(EventMode::kEmulationMode, button, hat, JoyHatDir::LEFT),
                             value & EVENT_HATLEFT_M);
     }
 #ifdef GUI_SUPPORT
     else if (myHandler.hasOverlay())
     {
       if (value == EVENT_HATCENTER_M)
-        myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHat::CENTER, button);
+        myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::CENTER, button);
       else
       {
         if (value & EVENT_HATUP_M)
-          myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHat::UP, button);
+          myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::UP, button);
         if (value & EVENT_HATRIGHT_M)
-          myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHat::RIGHT, button);
+          myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::RIGHT, button);
         if (value & EVENT_HATDOWN_M)
-          myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHat::DOWN, button);
+          myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::DOWN, button);
         if (value & EVENT_HATLEFT_M)
-          myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHat::LEFT, button);
+          myHandler.overlay().handleJoyHatEvent(stick, hat, JoyHatDir::LEFT, button);
       }
     }
 #endif
@@ -783,11 +783,11 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftJ
   {Event::JoystickZeroUp,     JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
   {Event::JoystickZeroDown,   JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
   // Left joystick left/right directions (assume hat 0)
-  {Event::JoystickZeroLeft,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::LEFT},
-  {Event::JoystickZeroRight,  JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::RIGHT},
+  {Event::JoystickZeroLeft,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
+  {Event::JoystickZeroRight,  JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
   // Left joystick up/down directions (assume hat 0)
-  {Event::JoystickZeroUp,     JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::UP},
-  {Event::JoystickZeroDown,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::DOWN},
+  {Event::JoystickZeroUp,     JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
+  {Event::JoystickZeroDown,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -803,11 +803,11 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
   {Event::JoystickOneUp,      JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
   {Event::JoystickOneDown,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
   // Right joystick left/right directions (assume hat 0)
-  {Event::JoystickOneLeft,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::LEFT},
-  {Event::JoystickOneRight,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::RIGHT},
+  {Event::JoystickOneLeft,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
+  {Event::JoystickOneRight,   JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
   // Right joystick up/down directions (assume hat 0)
-  {Event::JoystickOneUp,      JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::UP},
-  {Event::JoystickOneDown,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::DOWN},
+  {Event::JoystickOneUp,      JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
+  {Event::JoystickOneDown,    JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -895,8 +895,8 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultMenuM
   {Event::UIUp,               JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
   {Event::UIDown,             JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
 
-  {Event::UINavPrev,          JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::LEFT},
-  {Event::UINavNext,          JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::RIGHT},
-  {Event::UIUp,               JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::UP},
-  {Event::UIDown,             JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHat::DOWN},
+  {Event::UINavPrev,          JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::LEFT},
+  {Event::UINavNext,          JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::RIGHT},
+  {Event::UIUp,               JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::UP},
+  {Event::UIDown,             JOY_CTRL_NONE, JoyAxis::NONE, JoyDir::NONE, 0, JoyHatDir::DOWN},
 };

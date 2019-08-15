@@ -292,14 +292,14 @@ void ContextMenu::handleJoyDown(int stick, int button, bool longPress)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleJoyAxis(int stick, JoyAxis axis, int value, int button)
+void ContextMenu::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button)
 {
-  if(value != int(JoyDir::NONE))  // we don't care about 'axis off' events
-    handleEvent(instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, value, button));
+  if(adir != JoyDir::NONE)  // we don't care about 'axis off' events
+    handleEvent(instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, adir, button));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ContextMenu::handleJoyHat(int stick, int hat, JoyHat value, int button)
+bool ContextMenu::handleJoyHat(int stick, int hat, JoyHatDir value, int button)
 {
   handleEvent(instance().eventHandler().eventForJoyHat(EventMode::kMenuMode, stick, hat, value, button));
   return true;
