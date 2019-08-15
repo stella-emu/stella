@@ -130,13 +130,14 @@ class JoyMap
 
     struct JoyHash {
       size_t operator()(const JoyMapping& m)const {
-        return std::hash<uInt64>()((uInt64(m.mode)) // 3 bit
-          ^ ((uInt64(m.button)) << 2)  // 2 bits
-          ^ ((uInt64(m.axis)) << 4)    // 1 bit
-          ^ ((uInt64(m.adir)) << 5)    // 1 bit
-          ^ ((uInt64(m.hat)) << 6)     // 1 bit
-          ^ ((uInt64(m.hdir)) << 7)    // 2 bits
-          );
+        return std::hash<uInt64>()((uInt64(m.mode)) // 3 bits
+          + ((uInt64(m.button)) * 7)  // 3 bits
+          + (((uInt64(m.axis)) << 0)  // 2 bits
+           | ((uInt64(m.adir)) << 2)  // 2 bits
+           | ((uInt64(m.hat )) << 4)  // 1 bit
+           | ((uInt64(m.hdir)) << 5)  // 2 bits
+            ) * 61
+        );
       }
     };
 
