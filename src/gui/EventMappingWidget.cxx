@@ -96,7 +96,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myResetButton->setTarget(this);
   addFocusWidget(myResetButton);
 
-  if(mode == kEmulationMode)
+  if(mode == EventMode::kEmulationMode)
   {
     ypos += lineHeight + 20;
     myComboButton = new ButtonWidget(boss, font, xpos, ypos,

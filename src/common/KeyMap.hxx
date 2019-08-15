@@ -41,8 +41,8 @@ class KeyMap
       Mapping(const Mapping& m) : mode(m.mode), key(m.key), mod(m.mod) { }
       explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)
         : mode(c_mode), key(c_key), mod(c_mod) { }
-      explicit Mapping(int c_mode, int c_key, int c_mod)
-        : mode(EventMode(c_mode)), key(StellaKey(c_key)), mod(StellaMod(c_mod)) { }
+      explicit Mapping(EventMode c_mode, int c_key, int c_mod)
+        : mode(c_mode), key(StellaKey(c_key)), mod(StellaMod(c_mod)) { }
 
       bool operator==(const Mapping& other) const
       {
@@ -62,36 +62,36 @@ class KeyMap
 
     /** Add new mapping for given event */
     void add(const Event::Type event, const Mapping& mapping);
-    void add(const Event::Type event, const int mode, const int key, const int mod);
+    void add(const Event::Type event, const EventMode mode, const int key, const int mod);
 
     /** Erase mapping */
     void erase(const Mapping& mapping);
-    void erase(const int mode, const int key, const int mod);
+    void erase(const EventMode mode, const int key, const int mod);
 
     /** Get event for mapping */
     Event::Type get(const Mapping& mapping) const;
-    Event::Type get(const int mode, const int key, const int mod) const;
+    Event::Type get(const EventMode mode, const int key, const int mod) const;
 
     /** Check if a mapping exists */
     bool check(const Mapping& mapping) const;
-    bool check(const int mode, const int key, const int mod) const;
+    bool check(const EventMode mode, const int key, const int mod) const;
 
     /** Get mapping description */
     string getDesc(const Mapping& mapping) const;
-    string getDesc(const int mode, const int key, const int mod) const;
+    string getDesc(const EventMode mode, const int key, const int mod) const;
 
     /** Get the mapping description(s) for given event and mode */
-    string getEventMappingDesc(const Event::Type event, const int mode) const;
+    string getEventMappingDesc(const Event::Type event, const EventMode mode) const;
 
-    MappingArray getEventMapping(const Event::Type event, const int mode) const;
+    MappingArray getEventMapping(const Event::Type event, const EventMode mode) const;
 
-    string saveMapping(const int mode) const;
-    int loadMapping(string& list, const int mode);
+    string saveMapping(const EventMode mode) const;
+    int loadMapping(string& list, const EventMode mode);
 
     /** Erase all mappings for given mode */
-    void eraseMode(const int mode);
+    void eraseMode(const EventMode mode);
     /** Erase given event's mapping for given mode */
-    void eraseEvent(const Event::Type event, const int mode);
+    void eraseEvent(const Event::Type event, const EventMode mode);
     /** clear all mappings for a modes */
     // void clear() { myMap.clear(); }
     size_t size() { return myMap.size(); }

@@ -72,12 +72,8 @@ enum JoyHatMask {
 };
 
 static const int NUM_PORTS = 2;
-static const int NUM_JOY_AXIS = 2;
-static const int NUM_JOY_DIRS = 2;
-static const int NUM_JOY_HAT_DIRS = 4;
 
-// TODO - make this 'enum class' somehow
-enum EventMode {
+enum class EventMode {
   kEmulationMode, // active mapping used for emulation
   kMenuMode,      // mapping used for dialogs
   kJoystickMode,  // 4 extra modes for mapping controller keys separately for emulation mode

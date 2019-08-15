@@ -88,7 +88,7 @@ class PhysicalKeyboardHandler
     using EventMappingArray = std::vector<EventMapping>;
 
     void setDefaultKey(EventMapping map, Event::Type event = Event::NoType,
-      EventMode mode = kEmulationMode, bool updateDefaults = false);
+      EventMode mode = EventMode::kEmulationMode, bool updateDefaults = false);
 
     /** returns the event's controller mode */
     EventMode getEventMode(const Event::Type event, const EventMode mode) const;

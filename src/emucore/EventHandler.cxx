@@ -92,8 +92,8 @@ void EventHandler::initialize()
   // Make sure the event/action mappings are correctly set,
   // and fill the ActionList structure with valid values
   setComboMap();
-  setActionMappings(kEmulationMode);
-  setActionMappings(kMenuMode);
+  setActionMappings(EventMode::kEmulationMode);
+  setActionMappings(EventMode::kMenuMode);
 
   Joystick::setDeadZone(myOSystem.settings().getInt("joydeadzone"));
   Paddles::setDejitterBase(myOSystem.settings().getInt("dejitter.base"));
@@ -154,8 +154,8 @@ void EventHandler::addPhysicalJoystick(PhysicalJoystickPtr joy)
   if(ID < 0)
     return;
 
-  setActionMappings(kEmulationMode);
-  setActionMappings(kMenuMode);
+  setActionMappings(EventMode::kEmulationMode);
+  setActionMappings(EventMode::kMenuMode);
 
   ostringstream buf;
   buf << "Added joystick " << ID << ":" << endl
@@ -1026,11 +1026,11 @@ void EventHandler::setActionMappings(EventMode mode)
 
   switch(mode)
   {
-    case kEmulationMode:
+    case EventMode::kEmulationMode:
       listsize = EMUL_ACTIONLIST_SIZE;
       list     = ourEmulActionList;
       break;
-    case kMenuMode:
+    case EventMode::kMenuMode:
       listsize = MENU_ACTIONLIST_SIZE;
       list     = ourMenuActionList;
       break;
@@ -1236,11 +1236,11 @@ StringList EventHandler::getActionList(EventMode mode) const
   StringList l;
   switch(mode)
   {
-    case kEmulationMode:
+    case EventMode::kEmulationMode:
       for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
         l.push_back(EventHandler::ourEmulActionList[i].action);
       break;
-    case kMenuMode:
+    case EventMode::kMenuMode:
       for(uInt32 i = 0; i < MENU_ACTIONLIST_SIZE; ++i)
         l.push_back(EventHandler::ourMenuActionList[i].action);
       break;
@@ -1324,12 +1324,12 @@ Event::Type EventHandler::eventAtIndex(int idx, EventMode mode) const
 {
   switch(mode)
   {
-    case kEmulationMode:
+    case EventMode::kEmulationMode:
       if(idx < 0 || idx >= EMUL_ACTIONLIST_SIZE)
         return Event::NoType;
       else
         return ourEmulActionList[idx].event;
-    case kMenuMode:
+    case EventMode::kMenuMode:
       if(idx < 0 || idx >= MENU_ACTIONLIST_SIZE)
         return Event::NoType;
       else
@@ -1344,12 +1344,12 @@ string EventHandler::actionAtIndex(int idx, EventMode mode) const
 {
   switch(mode)
   {
-    case kEmulationMode:
+    case EventMode::kEmulationMode:
       if(idx < 0 || idx >= EMUL_ACTIONLIST_SIZE)
         return EmptyString;
       else
         return ourEmulActionList[idx].action;
-    case kMenuMode:
+    case EventMode::kMenuMode:
       if(idx < 0 || idx >= MENU_ACTIONLIST_SIZE)
         return EmptyString;
       else
@@ -1364,12 +1364,12 @@ string EventHandler::keyAtIndex(int idx, EventMode mode) const
 {
   switch(mode)
   {
-    case kEmulationMode:
+    case EventMode::kEmulationMode:
       if(idx < 0 || idx >= EMUL_ACTIONLIST_SIZE)
         return EmptyString;
       else
         return ourEmulActionList[idx].key;
-    case kMenuMode:
+    case EventMode::kMenuMode:
       if(idx < 0 || idx >= MENU_ACTIONLIST_SIZE)
         return EmptyString;
       else

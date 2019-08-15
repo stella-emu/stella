@@ -459,7 +459,7 @@ void Dialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
   if(e == Event::NoType)
-    e = instance().eventHandler().eventForKey(kMenuMode, key, mod);
+    e = instance().eventHandler().eventForKey(EventMode::kMenuMode, key, mod);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
@@ -591,7 +591,7 @@ bool Dialog::handleMouseClicks(int x, int y, MouseButton b)
 void Dialog::handleJoyDown(int stick, int button, bool longPress)
 {
   Event::Type e =
-    instance().eventHandler().eventForJoyButton(kMenuMode, stick, button);
+    instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
@@ -615,7 +615,7 @@ void Dialog::handleJoyUp(int stick, int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type Dialog::getJoyAxisEvent(int stick, int axis, int value, int button)
 {
-  return instance().eventHandler().eventForJoyAxis(kMenuMode, stick, axis, value, button);
+  return instance().eventHandler().eventForJoyAxis(EventMode::kMenuMode, stick, axis, value, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -638,7 +638,7 @@ void Dialog::handleJoyAxis(int stick, int axis, int value, int button)
 bool Dialog::handleJoyHat(int stick, int hat, JoyHat value, int button)
 {
   Event::Type e =
-    instance().eventHandler().eventForJoyHat(kMenuMode, stick, hat, value, button);
+    instance().eventHandler().eventForJoyHat(EventMode::kMenuMode, stick, hat, value, button);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.

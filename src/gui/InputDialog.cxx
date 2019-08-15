@@ -60,21 +60,21 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // 1) Event mapper for emulation actions
   tabID = myTab->addTab(" Emulation Events ", TabWidget::AUTO_WIDTH);
-  actions = instance().eventHandler().getActionList(kEmulationMode);
+  actions = instance().eventHandler().getActionList(EventMode::kEmulationMode);
   myEmulEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - 4,
-                                             actions, kEmulationMode);
+                                             actions, EventMode::kEmulationMode);
   myTab->setParentWidget(tabID, myEmulEventMapper);
   addToFocusList(myEmulEventMapper->getFocusList(), myTab, tabID);
 
   // 2) Event mapper for UI actions
   tabID = myTab->addTab("  UI Events  ", TabWidget::AUTO_WIDTH);
-  actions = instance().eventHandler().getActionList(kMenuMode);
+  actions = instance().eventHandler().getActionList(EventMode::kMenuMode);
   myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - 4,
-                                             actions, kMenuMode);
+                                             actions, EventMode::kMenuMode);
   myTab->setParentWidget(tabID, myMenuEventMapper);
   addToFocusList(myMenuEventMapper->getFocusList(), myTab, tabID);
 
