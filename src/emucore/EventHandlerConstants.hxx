@@ -41,8 +41,8 @@ enum class MouseButton {
 static constexpr int JOY_CTRL_NONE = -1;
 
 enum class JoyAxis {
-  X = 0,
-  Y = 1,
+  X = 0,    // make sure these are set correctly,
+  Y = 1,    // since they'll be used as array indices
   Z = 2,
   NONE = JOY_CTRL_NONE
 };
@@ -54,7 +54,7 @@ enum class JoyDir {
   ANALOG = 2
 };
 
-enum class JoyHat {
+enum class JoyHatDir {
   UP     = 0,  // make sure these are set correctly,
   DOWN   = 1,  // since they'll be used as array indices
   LEFT   = 2,

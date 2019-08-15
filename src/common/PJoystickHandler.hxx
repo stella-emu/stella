@@ -81,24 +81,24 @@ class PhysicalJoystickHandler
 
     /** Bind a physical joystick event to a virtual event/action. */
     bool addJoyMapping(Event::Type event, EventMode mode, int stick,
-                       int button, JoyAxis axis, int value);
+                       int button, JoyAxis axis, JoyDir adir);
     bool addJoyHatMapping(Event::Type event, EventMode mode, int stick,
-                          int button, int hat, JoyHat hdir);
+                          int button, int hat, JoyHatDir hdir);
 
     /** Handle a physical joystick event. */
     void handleAxisEvent(int stick, int axis, int value);
     void handleBtnEvent(int stick, int button, bool pressed);
     void handleHatEvent(int stick, int hat, int value);
 
-    Event::Type eventForAxis(EventMode mode, int stick, JoyAxis axis, int value, int button) const {
+    Event::Type eventForAxis(EventMode mode, int stick, JoyAxis axis, JoyDir adir, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
-      return j->joyMap.get(mode, button, axis, convertAxisValue(value));
+      return j->joyMap.get(mode, button, axis, adir);
     }
     Event::Type eventForButton(EventMode mode, int stick, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
       return j->joyMap.get(mode, button);
     }
-    Event::Type eventForHat(EventMode mode, int stick, int hat, JoyHat hatDir, int button) const {
+    Event::Type eventForHat(EventMode mode, int stick, int hat, JoyHatDir hatDir, int button) const {
       const PhysicalJoystickPtr j = joy(stick);
       return j->joyMap.get(mode, button, hat, hatDir);
     }
@@ -144,7 +144,7 @@ class PhysicalJoystickHandler
       JoyAxis axis = JoyAxis::NONE;
       JoyDir adir = JoyDir::NONE;
       int hat = JOY_CTRL_NONE;
-      JoyHat hdir = JoyHat::CENTER;
+      JoyHatDir hdir = JoyHatDir::CENTER;
     };
     using EventMappingArray = std::vector<EventMapping>;
 

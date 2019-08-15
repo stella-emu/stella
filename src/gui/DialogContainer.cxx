@@ -80,7 +80,7 @@ void DialogContainer::updateTime(uInt64 time)
   if(myCurrentAxisDown.stick != -1 && myAxisRepeatTime < myTime)
   {
     activeDialog->handleJoyAxis(myCurrentAxisDown.stick, myCurrentAxisDown.axis,
-                                myCurrentAxisDown.value);
+                                myCurrentAxisDown.adir);
     myAxisRepeatTime = myTime + _REPEAT_SUSTAIN_DELAY;
   }
 
@@ -313,7 +313,7 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyAxisEvent(int stick, JoyAxis axis, int value, int button)
+void DialogContainer::handleJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button)
 {
   if(myDialogStack.empty())
     return;
@@ -325,25 +325,25 @@ void DialogContainer::handleJoyAxisEvent(int stick, JoyAxis axis, int value, int
   myButtonLongPressTime = myTime + _REPEAT_NONE;
 
   // Only stop firing events if it's the current stick
-  if(myCurrentAxisDown.stick == stick && value == 0)
+  if(myCurrentAxisDown.stick == stick && adir == JoyDir::NONE)
   {
     myCurrentAxisDown.stick = -1;
     myCurrentAxisDown.axis = JoyAxis::NONE;
     myAxisRepeatTime = 0;
   }
-  else if(value != 0 && myAxisRepeatTime < myTime)  // never repeat the 'off' event; prevent pending repeats after enabling repeat again
+  else if(adir != JoyDir::NONE && myAxisRepeatTime < myTime)  // never repeat the 'off' event; prevent pending repeats after enabling repeat again
   {
     // Now account for repeated axis events (press and hold)
     myCurrentAxisDown.stick = stick;
     myCurrentAxisDown.axis  = axis;
-    myCurrentAxisDown.value = value;
+    myCurrentAxisDown.adir = adir;
     myAxisRepeatTime = myTime + (activeDialog->repeatEnabled() ? _REPEAT_INITIAL_DELAY : _REPEAT_NONE);
   }
-  activeDialog->handleJoyAxis(stick, axis, value, button);
+  activeDialog->handleJoyAxis(stick, axis, adir, button);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value, int button)
+void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHatDir value, int button)
 {
   if(myDialogStack.empty())
     return;
@@ -355,12 +355,12 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value, int bu
   myButtonLongPressTime = myTime + _REPEAT_NONE;
 
   // Only stop firing events if it's the current stick
-  if(myCurrentHatDown.stick == stick && value == JoyHat::CENTER)
+  if(myCurrentHatDown.stick == stick && value == JoyHatDir::CENTER)
   {
     myCurrentHatDown.stick = myCurrentHatDown.hat = -1;
     myHatRepeatTime = 0;
   }
-  else if(value != JoyHat::CENTER && myHatRepeatTime < myTime)  // never repeat the 'center' direction; prevent pending repeats after enabling repeat again
+  else if(value != JoyHatDir::CENTER && myHatRepeatTime < myTime)  // never repeat the 'center' direction; prevent pending repeats after enabling repeat again
   {
     // Now account for repeated hat events (press and hold)
     myCurrentHatDown.stick = stick;

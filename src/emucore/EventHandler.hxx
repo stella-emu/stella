@@ -162,13 +162,13 @@ class EventHandler
     Event::Type eventForKey(EventMode mode, StellaKey key, StellaMod mod) const {
       return myPKeyHandler->eventForKey(mode, key, mod);
     }
-    Event::Type eventForJoyAxis(EventMode mode, int stick, JoyAxis axis, int value, int button) const {
-      return myPJoyHandler->eventForAxis(mode, stick, axis, value, button);
+    Event::Type eventForJoyAxis(EventMode mode, int stick, JoyAxis axis, JoyDir adir, int button) const {
+      return myPJoyHandler->eventForAxis(mode, stick, axis, adir, button);
     }
     Event::Type eventForJoyButton(EventMode mode, int stick, int button) const {
       return myPJoyHandler->eventForButton(mode, stick, button);
     }
-    Event::Type eventForJoyHat(EventMode mode, int stick, int hat, JoyHat value, int button) const {
+    Event::Type eventForJoyHat(EventMode mode, int stick, int hat, JoyHatDir value, int button) const {
       return myPJoyHandler->eventForHat(mode, stick, hat, value, button);
     }
 
@@ -215,13 +215,13 @@ class EventHandler
       @param stick  The joystick number
       @param button The joystick button
       @param axis   The joystick axis
-      @param value  The value on the given axis
+      @param adir   The given axis
       @param updateMenus  Whether to update the action mappings (normally
                           we want to do this, unless there are a batch of
                           'adds', in which case it's delayed until the end
     */
     bool addJoyMapping(Event::Type event, EventMode mode, int stick,
-                       int button, JoyAxis axis = JoyAxis::NONE, int value = 0,
+                       int button, JoyAxis axis = JoyAxis::NONE, JoyDir adir = JoyDir::NONE,
                        bool updateMenus = true);
 
     /**
@@ -239,7 +239,7 @@ class EventHandler
                           'adds', in which case it's delayed until the end
     */
     bool addJoyHatMapping(Event::Type event, EventMode mode, int stick,
-                          int button, int hat, JoyHat dir,
+                          int button, int hat, JoyHatDir dir,
                           bool updateMenus = true);
 
     /**

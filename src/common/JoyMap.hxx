@@ -38,19 +38,19 @@ class JoyMap
       JoyAxis axis; // horizontal/vertical
       JoyDir adir;  // axis direction (neg/pos)
       int hat;      // hat number
-      JoyHat hdir;  // hat direction (left/right/up/down)
+      JoyHatDir hdir;  // hat direction (left/right/up/down)
 
       JoyMapping()
         : mode(EventMode(0)), button(0),
           axis(JoyAxis(0)), adir(JoyDir(0)),
-          hat(0), hdir(JoyHat(0)) { }
+          hat(0), hdir(JoyHatDir(0)) { }
       JoyMapping(const JoyMapping& m)
         : mode(m.mode), button(m.button),
           axis(m.axis), adir(m.adir),
           hat(m.hat), hdir(m.hdir) { }
       explicit JoyMapping(EventMode c_mode, int c_button,
                           JoyAxis c_axis, JoyDir c_adir,
-                          int c_hat, JoyHat c_hdir)
+                          int c_hat, JoyHatDir c_hdir)
         : mode(c_mode), button(c_button),
           axis(c_axis), adir(c_adir),
           hat(c_hat), hdir(c_hdir) { }
@@ -58,9 +58,9 @@ class JoyMap
                           JoyAxis c_axis, JoyDir c_adir)
         : mode(c_mode), button(c_button),
           axis(c_axis), adir(c_adir),
-          hat(JOY_CTRL_NONE), hdir(JoyHat::CENTER) { }
+          hat(JOY_CTRL_NONE), hdir(JoyHatDir::CENTER) { }
       explicit JoyMapping(EventMode c_mode, int c_button,
-                          int c_hat, JoyHat c_hdir)
+                          int c_hat, JoyHatDir c_hdir)
         : mode(c_mode), button(c_button),
           axis(JoyAxis::NONE), adir(JoyDir::NONE),
           hat(c_hat), hdir(c_hdir) { }
@@ -85,30 +85,29 @@ class JoyMap
     void add(const Event::Type event, const JoyMapping& mapping);
     void add(const Event::Type event, const EventMode mode, const int button,
              const JoyAxis axis, const JoyDir adir,
-             const int hat = JOY_CTRL_NONE, const JoyHat hdir = JoyHat::CENTER);
-    void add(const Event::Type event, const EventMode mode, const int button, 
-             const int hat, const JoyHat hdir);
+             const int hat = JOY_CTRL_NONE, const JoyHatDir hdir = JoyHatDir::CENTER);
+    void add(const Event::Type event, const EventMode mode, const int button,
+             const int hat, const JoyHatDir hdir);
 
     /** Erase mapping */
     void erase(const JoyMapping& mapping);
     void erase(const EventMode mode, const int button,
                const JoyAxis axis, const JoyDir adir);
-    void erase(const EventMode mode, const int button, 
-               const int hat, const JoyHat hdir);
-
+    void erase(const EventMode mode, const int button,
+               const int hat, const JoyHatDir hdir);
 
     /** Get event for mapping */
     Event::Type get(const JoyMapping& mapping) const;
     Event::Type get(const EventMode mode, const int button,
                     const JoyAxis axis = JoyAxis::NONE, const JoyDir adir = JoyDir::NONE) const;
-    Event::Type get(const EventMode mode, const int button, 
-                    const int hat, const JoyHat hdir) const;
+    Event::Type get(const EventMode mode, const int button,
+                    const int hat, const JoyHatDir hdir) const;
 
     /** Check if a mapping exists */
     bool check(const JoyMapping& mapping) const;
     bool check(const EventMode mode, const int button,
                const JoyAxis axis, const JoyDir adir,
-               const int hat = JOY_CTRL_NONE, const JoyHat hdir = JoyHat::CENTER) const;
+               const int hat = JOY_CTRL_NONE, const JoyHatDir hdir = JoyHatDir::CENTER) const;
 
     /** Get mapping description */
     string getEventMappingDesc(int stick, const Event::Type event, const EventMode mode) const;
