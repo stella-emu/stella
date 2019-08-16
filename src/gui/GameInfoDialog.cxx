@@ -208,7 +208,7 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(ctrls, "AtariVox", "ATARIVOX");
   VarList::push_back(ctrls, "SaveKey", "SAVEKEY");
   VarList::push_back(ctrls, "Sega Genesis", "GENESIS");
-  //  VarList::push_back(ctrls, "KidVid",        "KIDVID"      );
+  VarList::push_back(ctrls, "KidVid", "KIDVID");
   VarList::push_back(ctrls, "MindLink", "MINDLINK");
 
   ypos = VBORDER;
