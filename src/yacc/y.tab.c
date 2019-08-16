@@ -1672,11 +1672,11 @@ yyerrorlab:
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
-  YYPOPSTACK (yylen);
+  /*YYPOPSTACK (yylen);
   yylen = 0;
   YY_STACK_PRINT (yyss, yyssp);
   yystate = *yyssp;
-  goto yyerrlab1;
+  goto yyerrlab1;*/
 
 
 /*-------------------------------------------------------------.
