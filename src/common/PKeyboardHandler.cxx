@@ -145,6 +145,7 @@ void PhysicalKeyboardHandler::defineControllerMappings(const Controller::Type ty
   switch(type)
   {
     case Controller::Type::Keyboard:
+    case Controller::Type::KidVid:
       if(port == Controller::Jack::Left)
         myLeftMode = EventMode::kKeypadMode;
       else

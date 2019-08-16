@@ -66,7 +66,7 @@ void KidVid::update()
     myTape = 0; // rewind Kid Vid tape
     closeSampleFile();
   }
-  if(myEvent.get(Event::KeyboardZero1))
+  if(myEvent.get(Event::KeyboardOne1))
   {
     myTape = 2;
     myIdx = myGame == KVBBEARS ? KVBLOCKBITS : 0;
@@ -75,7 +75,7 @@ void KidVid::update()
     openSampleFile();
 cerr << "myTape = " << myTape << endl;
   }
-  else if(myEvent.get(Event::KeyboardZero2))
+  else if(myEvent.get(Event::KeyboardOne2))
   {
     myTape = 3;
     myIdx = myGame == KVBBEARS ? KVBLOCKBITS : 0;
@@ -84,7 +84,7 @@ cerr << "myTape = " << myTape << endl;
     openSampleFile();
 cerr << "myTape = " << myTape << endl;
   }
-  else if(myEvent.get(Event::KeyboardZero3))
+  else if(myEvent.get(Event::KeyboardOne3))
   {
     if(myGame == KVBBEARS)  /* Berenstain Bears ? */
     {
