@@ -17,26 +17,27 @@
 //============================================================================
 
 #include "Settings.hxx"
+#include "Logger.hxx"
 
 #include "ControllerDetector.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerDetector::detectType(const uInt8* image, uInt32 size,
-                                      const string& controller, const Controller::Jack port,
-                                      const Settings& settings)
+Controller::Type ControllerDetector::detectType(const uInt8* image, uInt32 size,
+                                                const Controller::Type type, const Controller::Jack port,
+                                                const Settings& settings)
 {
-  string type(controller);
-
-  if(type == "AUTO" || settings.getBool("rominfo"))
+  if(type == Controller::Type::Unknown || settings.getBool("rominfo"))
   {
-    string detectedType = autodetectPort(image, size, port, settings);
+    Controller::Type detectedType = autodetectPort(image, size, port, settings);
 
-    if(type != "AUTO" && type != detectedType)
+    if(type != Controller::Type::Unknown && type != detectedType)
     {
       cerr << "Controller auto-detection not consistent: "
-        << type << ", " << detectedType << endl;
+        << Controller::getName(type) << ", " << Controller::getName(detectedType) << endl;
     }
-    type = detectedType;
+    Logger::debug(Controller::getName(detectedType) + " detected for " +
+      (port == Controller::Jack::Left ? "left" : "right") + " port");
+    return detectedType;
   }
 
   return type;
@@ -44,38 +45,39 @@ string ControllerDetector::detectType(const uInt8* image, uInt32 size,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string ControllerDetector::detectName(const uInt8* image, uInt32 size,
-                                      const string& controller, const Controller::Jack port,
+                                      const Controller::Type controller, const Controller::Jack port,
                                       const Settings& settings)
 {
-  return getControllerName(detectType(image, size, controller, port, settings));
+  return Controller::getName(detectType(image, size, controller, port, settings));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerDetector::autodetectPort(const uInt8* image, uInt32 size,
-                                          Controller::Jack port, const Settings& settings)
+Controller::Type ControllerDetector::autodetectPort(const uInt8* image, uInt32 size,
+                                                    Controller::Jack port, const Settings& settings)
 {
   // default type joystick
-  string type = "JOYSTICK"; // TODO: remove magic strings
+  Controller::Type type = Controller::Type::Joystick;
 
   if(isProbablySaveKey(image, size, port))
-    type = "SAVEKEY";
+    type = Controller::Type::SaveKey;
   else if(usesJoystickButton(image, size, port))
   {
     if(isProbablyTrakBall(image, size))
-      type = "TRAKBALL";
+      type = Controller::Type::TrakBall;
     else if(isProbablyAtariMouse(image, size))
-      type = "ATARIMOUSE";
+      type = Controller::Type::AmigaMouse;
     else if(isProbablyAmigaMouse(image, size))
-      type = "AMIGAMOUSE";
+      type = Controller::Type::AmigaMouse;
     else if(usesKeyboard(image, size, port))
-      type = "KEYBOARD";
+      type = Controller::Type::Keyboard;
     else if(usesGenesisButton(image, size, port))
-      type = "GENESIS";
+
+      type = Controller::Type::Genesis;
   }
   else
   {
     if(usesPaddle(image, size, port, settings))
-      type = "PADDLES";
+      type = Controller::Type::Paddles;
   }
   // TODO: BOOSTERGRIP, DRIVING, MINDLINK, ATARIVOX, KIDVID
   // not detectable: PADDLES_IAXIS, PADDLES_IAXDR
@@ -637,45 +639,4 @@ bool ControllerDetector::isProbablySaveKey(const uInt8* image, uInt32 size, Cont
   }
 
   return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string ControllerDetector::getControllerName(const string& controller)
-{
-  // auto detected:
-  if(BSPF::equalsIgnoreCase(controller, "JOYSTICK"))
-    return "Joystick";
-  if(BSPF::equalsIgnoreCase(controller, "SAVEKEY"))
-    return "SaveKey";
-  if(BSPF::equalsIgnoreCase(controller, "TRAKBALL"))
-    return "TrakBall";
-  if(BSPF::equalsIgnoreCase(controller, "ATARIMOUSE"))
-    return "AtariMouse";
-  if(BSPF::equalsIgnoreCase(controller, "AMIGAMOUSE"))
-    return "AmigaMouse";
-  if(BSPF::equalsIgnoreCase(controller, "KEYBOARD"))
-    return "Keyboard";
-  if(BSPF::equalsIgnoreCase(controller, "GENESIS"))
-    return "Sega Genesis";
-  if(BSPF::equalsIgnoreCase(controller, "PADDLES"))
-    return "Paddles";
-  // not auto detected:
-  if(BSPF::equalsIgnoreCase(controller, "BOOSTERGRIP"))
-    return "BoosterGrip";
-  if(BSPF::equalsIgnoreCase(controller, "DRIVING"))
-    return "Driving";
-  if(BSPF::equalsIgnoreCase(controller, "MINDLINK"))
-    return "MindLink";
-  if(BSPF::equalsIgnoreCase(controller, "ATARIVOX"))
-    return "AtariVox";
-  if(BSPF::equalsIgnoreCase(controller, "PADDLES_IAXIS"))
-    return "Paddles IAxis";
-  if(BSPF::equalsIgnoreCase(controller, "PADDLES_IAXDR"))
-    return "Paddles IAxDr";
-  if(BSPF::equalsIgnoreCase(controller, "COMPUMATE"))
-    return "CompuMate";
-  if(BSPF::equalsIgnoreCase(controller, "KIDVID"))
-    return "KidVid";
-
-  return controller;
 }

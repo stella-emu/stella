@@ -801,14 +801,14 @@ void Console::setControllers(const string& romMd5)
 
     myLeftControl  = std::move(myCMHandler->leftController());
     myRightControl = std::move(myCMHandler->rightController());
-    myOSystem.eventHandler().defineKeyControllerMappings("CM", Controller::Jack::Left);
-    myOSystem.eventHandler().defineJoyControllerMappings("CM", Controller::Jack::Left);
+    myOSystem.eventHandler().defineKeyControllerMappings(Controller::Type::CompuMate, Controller::Jack::Left);
+    myOSystem.eventHandler().defineJoyControllerMappings(Controller::Type::CompuMate, Controller::Jack::Left);
   }
   else
   {
     // Setup the controllers based on properties
-    string left = myProperties.get(PropType::Controller_Left);
-    string right = myProperties.get(PropType::Controller_Right);
+    Controller::Type leftType = Controller::getType(myProperties.get(PropType::Controller_Left));
+    Controller::Type rightType = Controller::getType(myProperties.get(PropType::Controller_Right));
     uInt32 size = 0;
     const uInt8* image = myCart->getImage(size);
     const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
@@ -816,14 +816,14 @@ void Console::setControllers(const string& romMd5)
     // Try to detect controllers
     if(image != nullptr || size != 0)
     {
-      left = ControllerDetector::detectType(image, size, left,
+      leftType = ControllerDetector::detectType(image, size, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right, myOSystem.settings());
-      right = ControllerDetector::detectType(image, size, right,
+      rightType = ControllerDetector::detectType(image, size, rightType,
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left, myOSystem.settings());
     }
 
-    unique_ptr<Controller> leftC = getControllerPort(left, Controller::Jack::Left, romMd5),
-      rightC = getControllerPort(right, Controller::Jack::Right, romMd5);
+    unique_ptr<Controller> leftC = getControllerPort(leftType, Controller::Jack::Left, romMd5),
+      rightC = getControllerPort(rightType, Controller::Jack::Right, romMd5);
 
     // Swap the ports if necessary
     if(!swappedPorts)
@@ -848,90 +848,95 @@ void Console::setControllers(const string& romMd5)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Controller> Console::getControllerPort(const string& controllerName,
-                                                  Controller::Jack port, const string& romMd5)
+unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
+                                                  const Controller::Jack port, const string& romMd5)
 {
   unique_ptr<Controller> controller;
 
-  myOSystem.eventHandler().defineKeyControllerMappings(controllerName, port);
-  myOSystem.eventHandler().defineJoyControllerMappings(controllerName, port);
+  myOSystem.eventHandler().defineKeyControllerMappings(type, port);
+  myOSystem.eventHandler().defineJoyControllerMappings(type, port);
 
-  if(controllerName == "JOYSTICK")
+  switch(type)
   {
-    // always create because it may have been changed by user dialog
-    controller = make_unique<Joystick>(port, myEvent, *mySystem);
+    case Controller::Type::BoosterGrip:
+      controller = make_unique<BoosterGrip>(port, myEvent, *mySystem);
+      break;
+
+    case Controller::Type::Driving:
+      controller = make_unique<Driving>(port, myEvent, *mySystem);
+      break;
+
+    case Controller::Type::Keyboard:
+      controller = make_unique<Keyboard>(port, myEvent, *mySystem);
+      break;
+
+    case Controller::Type::Paddles:
+    case Controller::Type::PaddlesIAxis:
+    case Controller::Type::PaddlesIAxDr:
+    {
+      // Also check if we should swap the paddles plugged into a jack
+      bool swapPaddles = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
+      bool swapAxis = false, swapDir = false;
+      if(type == Controller::Type::PaddlesIAxis)
+        swapAxis = true;
+      else if(type == Controller::Type::PaddlesIAxDr)
+        swapAxis = swapDir = true;
+      controller = make_unique<Paddles>(port, myEvent, *mySystem,
+                                        swapPaddles, swapAxis, swapDir);
+      break;
+    }
+    case Controller::Type::AmigaMouse:
+      controller = make_unique<AmigaMouse>(port, myEvent, *mySystem);
+      break;
+
+    case Controller::Type::AtariMouse:
+      controller = make_unique<AtariMouse>(port, myEvent, *mySystem);
+      break;
+
+    case Controller::Type::TrakBall:
+      controller = make_unique<TrakBall>(port, myEvent, *mySystem);
+      break;
+
+    case Controller::Type::AtariVox:
+    {
+      const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
+      Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
+        bool devSettings = os.settings().getBool("dev.settings");
+        if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+          os.frameBuffer().showMessage(msg);
+      };
+      controller = make_unique<AtariVox>(port, myEvent, *mySystem,
+          myOSystem.settings().getString("avoxport"), nvramfile, callback);
+      break;
+    }
+    case Controller::Type::SaveKey:
+    {
+      const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
+      Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
+        bool devSettings = os.settings().getBool("dev.settings");
+        if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
+          os.frameBuffer().showMessage(msg);
+      };
+      controller = make_unique<SaveKey>(port, myEvent, *mySystem, nvramfile, callback);
+      break;
+    }
+    case Controller::Type::Genesis:
+      controller = make_unique<Genesis>(port, myEvent, *mySystem);
+      break;
+
+    case Controller::Type::KidVid:
+      controller = make_unique<KidVid>(port, myEvent, *mySystem, romMd5);
+      break;
+
+    case Controller::Type::MindLink:
+      controller = make_unique<MindLink>(port, myEvent, *mySystem);
+      break;
+
+    default:
+      // What else can we do?
+      // always create because it may have been changed by user dialog
+      controller = make_unique<Joystick>(port, myEvent, *mySystem);
   }
-  else if(controllerName == "BOOSTERGRIP")
-  {
-    controller = make_unique<BoosterGrip>(port, myEvent, *mySystem);
-  }
-  else if(controllerName == "DRIVING")
-  {
-    controller = make_unique<Driving>(port, myEvent, *mySystem);
-  }
-  else if((controllerName == "KEYBOARD") || (controllerName == "KEYPAD"))
-  {
-    controller = make_unique<Keyboard>(port, myEvent, *mySystem);
-  }
-  else if(BSPF::startsWithIgnoreCase(controllerName, "PADDLES"))
-  {
-    // Also check if we should swap the paddles plugged into a jack
-    bool swapPaddles = myProperties.get(PropType::Controller_SwapPaddles) == "YES";
-    bool swapAxis = false, swapDir = false;
-    if(controllerName == "PADDLES_IAXIS")
-      swapAxis = true;
-    else if(controllerName == "PADDLES_IAXDR")
-      swapAxis = swapDir = true;
-    controller = make_unique<Paddles>(port, myEvent, *mySystem,
-                                      swapPaddles, swapAxis, swapDir);
-  }
-  else if(controllerName == "AMIGAMOUSE")
-  {
-    controller = make_unique<AmigaMouse>(port, myEvent, *mySystem);
-  }
-  else if(controllerName == "ATARIMOUSE")
-  {
-    controller = make_unique<AtariMouse>(port, myEvent, *mySystem);
-  }
-  else if(controllerName == "TRAKBALL")
-  {
-    controller = make_unique<TrakBall>(port, myEvent, *mySystem);
-  }
-  else if(controllerName == "ATARIVOX")
-  {
-    const string& nvramfile = myOSystem.nvramDir() + "atarivox_eeprom.dat";
-    Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
-      bool devSettings = os.settings().getBool("dev.settings");
-      if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-        os.frameBuffer().showMessage(msg);
-    };
-    controller = make_unique<AtariVox>(port, myEvent, *mySystem,
-        myOSystem.settings().getString("avoxport"), nvramfile, callback);
-  }
-  else if(controllerName == "SAVEKEY")
-  {
-    const string& nvramfile = myOSystem.nvramDir() + "savekey_eeprom.dat";
-    Controller::onMessageCallback callback = [&os = myOSystem](const string& msg) {
-      bool devSettings = os.settings().getBool("dev.settings");
-      if(os.settings().getBool(devSettings ? "dev.eepromaccess" : "plr.eepromaccess"))
-        os.frameBuffer().showMessage(msg);
-    };
-    controller = make_unique<SaveKey>(port, myEvent, *mySystem, nvramfile, callback);
-  }
-  else if(controllerName == "GENESIS")
-  {
-    controller = make_unique<Genesis>(port, myEvent, *mySystem);
-  }
-  else if(controllerName == "KIDVID")
-  {
-    controller = make_unique<KidVid>(port, myEvent, *mySystem, romMd5);
-  }
-  else if(controllerName == "MINDLINK")
-  {
-    controller = make_unique<MindLink>(port, myEvent, *mySystem);
-  }
-  else  // What else can we do?
-    controller = make_unique<Joystick>(port, myEvent, *mySystem);
 
   return controller;
 }

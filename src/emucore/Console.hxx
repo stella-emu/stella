@@ -339,8 +339,8 @@ class Console : public Serializable, public ConsoleIO
     /**
       Selects the left or right controller depending on ROM properties
     */
-    unique_ptr<Controller> getControllerPort(const string& controllerName,
-                                             Controller::Jack port, const string& romMd5);
+    unique_ptr<Controller> getControllerPort(const Controller::Type type,
+                                             const Controller::Jack port, const string& romMd5);
 
     /**
       Loads a user-defined palette file (from OSystem::paletteFile), filling the

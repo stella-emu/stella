@@ -136,6 +136,8 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   // Load the image for controller auto detection
   string left = myProperties.get(PropType::Controller_Left);
   string right = myProperties.get(PropType::Controller_Right);
+  Controller::Type leftType = Controller::getType(left);
+  Controller::Type rightType = Controller::getType(right);
   try
   {
     ByteBuffer image;
@@ -145,10 +147,10 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
     if(node.exists() && !node.isDirectory() &&
       (image = instance().openROM(node, md5, size)) != nullptr)
     {
-      left = ControllerDetector::detectName(image.get(), size, left,
+      left = ControllerDetector::detectName(image.get(), size, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
           instance().settings());
-      right = ControllerDetector::detectName(image.get(), size, right,
+      right = ControllerDetector::detectName(image.get(), size, rightType,
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
           instance().settings());
     }

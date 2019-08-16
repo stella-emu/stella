@@ -103,3 +103,48 @@ bool Controller::load(Serializer& in)
   }
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Controller::getName(const Type type)
+{
+  string NAMES[int(Controller::Type::LastType)] =
+  {
+    "Unknown",
+    "AmigaMouse", "AtariMouse", "AtariVox", "BoosterGrip", "CompuMate",
+    "Driving", "Sega Genesis", "Joystick", "Keyboard", "KidVid", "MindLink",
+    "Paddles", "Paddles_IAxis", "Paddles_IAxDr", "SaveKey", "TrakBall"
+  };
+
+  return NAMES[int(type)];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Controller::getPropName(const Type type)
+{
+  string PROP_NAMES[int(Controller::Type::LastType)] =
+  {
+    "AUTO",
+    "AMIGAMOUSE", "ATARIMOUSE", "ATARIVOX", "BOOSTERGRIP", "COMPUMATE",
+    "DRIVING", "GENESIS", "JOYSTICK", "KEYBOARD", "KIDVID", "MINDLINK",
+    "PADDLES", "PADDLES_IAXIS", "PADDLES_IAXDR", "SAVEKEY", "TRAKBALL"
+  };
+
+  return PROP_NAMES[int(type)];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Controller::Type Controller::getType(const string& propName)
+{
+  for(int i = 0; i < static_cast<int>(Type::LastType); ++i)
+  {
+    if(BSPF::equalsIgnoreCase(propName, getPropName(Type(i))))
+    {
+      return Type(i);
+    }
+  }
+  // special case
+  if(BSPF::equalsIgnoreCase(propName, "KEYPAD"))
+    return Type::Keyboard;
+
+  return Type::Unknown;
+}

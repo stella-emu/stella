@@ -321,33 +321,37 @@ void PhysicalJoystickHandler::setDefaultMapping(Event::Type event, EventMode mod
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::defineControllerMappings(const string& controllerName, Controller::Jack port)
+void PhysicalJoystickHandler::defineControllerMappings(const Controller::Type type, Controller::Jack port)
 {
   // determine controller events to use
-  if ((controllerName == "KEYBOARD") || (controllerName == "KEYPAD"))
+  switch(type)
   {
-    if (port == Controller::Jack::Left)
-      myLeftMode = EventMode::kKeypadMode;
-    else
-      myRightMode = EventMode::kKeypadMode;
-  }
-  else if (BSPF::startsWithIgnoreCase(controllerName, "PADDLES"))
-  {
-    if (port == Controller::Jack::Left)
-      myLeftMode = EventMode::kPaddlesMode;
-    else
-      myRightMode = EventMode::kPaddlesMode;
-  }
-  else if (controllerName == "CM")
-  {
-    myLeftMode = myRightMode = EventMode::kCompuMateMode;
-  }
-  else
-  {
-    if (port == Controller::Jack::Left)
-      myLeftMode = EventMode::kJoystickMode;
-    else
-      myRightMode = EventMode::kJoystickMode;
+    case Controller::Type::Keyboard:
+      if(port == Controller::Jack::Left)
+        myLeftMode = EventMode::kKeypadMode;
+      else
+        myRightMode = EventMode::kKeypadMode;
+      break;
+
+    case Controller::Type::Paddles:
+    case Controller::Type::PaddlesIAxDr:
+    case Controller::Type::PaddlesIAxis:
+      if(port == Controller::Jack::Left)
+        myLeftMode = EventMode::kPaddlesMode;
+      else
+        myRightMode = EventMode::kPaddlesMode;
+      break;
+
+    case Controller::Type::CompuMate:
+      myLeftMode = myRightMode = EventMode::kCompuMateMode;
+      break;
+
+    default:
+      // let's use joystick then
+      if(port == Controller::Jack::Left)
+        myLeftMode = EventMode::kJoystickMode;
+      else
+        myRightMode = EventMode::kJoystickMode;
   }
 }
 
