@@ -88,7 +88,7 @@ class KidVid : public Controller
     bool myEnabled;
 
     // The file handles for the WAV files
-    // FILE *mySampleFile, *mySharedSampleFile;
+    FILE *mySampleFile, *mySharedSampleFile;
 
     // Indicates if sample files have been successfully opened
     bool myFileOpened;
@@ -99,6 +99,7 @@ class KidVid : public Controller
     uInt32 myFilePointer, mySongCounter;
     bool myBeep, mySharedData;
     uInt8 mySampleByte;
+    bool myOddEven;
     uInt32 myGame, myTape;
     uInt32 myIdx, myBlock, myBlockIdx;
 

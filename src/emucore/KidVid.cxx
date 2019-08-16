@@ -25,8 +25,8 @@ KidVid::KidVid(Jack jack, const Event& event, const System& system,
                const string& romMd5)
   : Controller(jack, event, system, Controller::Type::KidVid),
     myEnabled(myJack == Jack::Right),
-//     mySampleFile(nullptr),
-//     mySharedSampleFile(nullptr),
+    mySampleFile(nullptr),
+    mySharedSampleFile(nullptr),
     myFileOpened(false),
     myTapeBusy(false),
     myFilePointer(0),
@@ -34,6 +34,7 @@ KidVid::KidVid(Jack jack, const Event& event, const System& system,
     myBeep(false),
     mySharedData(false),
     mySampleByte(0),
+    myOddEven(false),
     myGame(0),
     myTape(0),
     myIdx(0),
@@ -66,7 +67,7 @@ void KidVid::update()
     myTape = 0; // rewind Kid Vid tape
     closeSampleFile();
   }
-  if(myEvent.get(Event::KeyboardZero1))
+  if(myEvent.get(Event::KeyboardOne1))
   {
     myTape = 2;
     myIdx = myGame == KVBBEARS ? KVBLOCKBITS : 0;
@@ -75,7 +76,7 @@ void KidVid::update()
     openSampleFile();
 cerr << "myTape = " << myTape << endl;
   }
-  else if(myEvent.get(Event::KeyboardZero2))
+  else if(myEvent.get(Event::KeyboardOne2))
   {
     myTape = 3;
     myIdx = myGame == KVBBEARS ? KVBLOCKBITS : 0;
@@ -84,7 +85,7 @@ cerr << "myTape = " << myTape << endl;
     openSampleFile();
 cerr << "myTape = " << myTape << endl;
   }
-  else if(myEvent.get(Event::KeyboardZero3))
+  else if(myEvent.get(Event::KeyboardOne3))
   {
     if(myGame == KVBBEARS)  /* Berenstain Bears ? */
     {
@@ -152,6 +153,10 @@ cerr << "myTape = " << myTape << endl;
     }
   }
 
+  if (myFileOpened)
+    for(int i = 0; i < 1000; ++i)
+      getNextSampleByte();
+
   // Now convert the register back into separate boolean values
   setPin(DigitalPin::One,   IOPortA & 0b0001);
   setPin(DigitalPin::Two,   IOPortA & 0b0010);
@@ -162,9 +167,9 @@ cerr << "myTape = " << myTape << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::openSampleFile()
 {
-#if 0
+#if 1
   static const char* const kvNameTable[6] = {
-    "kvs3.wav", "kvs1.wav", "kvs2.wav", "kvb3.wav", "kvb1.wav", "kvb2.wav"
+    "C:\\kvs3.wav", "C:\\kvs1.wav", "C:\\kvs2.wav", "C:\\kvb3.wav", "C:\\kvb1.wav", "C:\\kvb2.wav"
   };
   static uInt32 StartSong[6] = {
     44+38, 0, 44, 44+38+42+62+80, 44+38+42, 44+38+42+62
@@ -183,7 +188,7 @@ void KidVid::openSampleFile()
     if(mySampleFile != nullptr)
     {
 cerr << "opened file: " << kvNameTable[i] << endl;
-      mySharedSampleFile = fopen("kvshared.wav", "rb");
+      mySharedSampleFile = fopen("C:\\kvshared.wav", "rb");
       if(mySharedSampleFile == nullptr)
       {
         fclose(mySampleFile);
@@ -209,7 +214,7 @@ cerr << "opened file: " << "kvshared.wav" << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KidVid::closeSampleFile()
 {
-#if 0
+#if 1
   if(myFileOpened)
   {
     fclose(mySampleFile);
@@ -230,11 +235,11 @@ void KidVid::setNextSong()
     mySharedData = (temp < 10);
     mySongCounter = ourSongStart[temp+1] - ourSongStart[temp];
 
-#if 0
+#if 1
     if(mySharedData)
-      ; // fseek(mySharedSampleFile, ourSongStart[temp], SEEK_SET);
+      fseek(mySharedSampleFile, ourSongStart[temp], SEEK_SET);
     else
-      ; // fseek(mySampleFile, ourSongStart[temp], SEEK_SET);
+      fseek(mySampleFile, ourSongStart[temp], SEEK_SET);
 #endif
 
     ++myFilePointer;
@@ -254,12 +259,13 @@ void KidVid::getNextSampleByte()
 //  static int oddeven = 0;
   if(mySongCounter == 0)
     mySampleByte = 0x80;
-#if 0
+#if 1
   else
   {
-    oddeven = oddeven^1;
-    if(oddeven & 1)
+    myOddEven = !myOddEven;
+    if(myOddEven)
     {
+      //cerr << mySongCounter << ", ";
       mySongCounter--;
       myTapeBusy = (mySongCounter > 262*48) || !myBeep;
 

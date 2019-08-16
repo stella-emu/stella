@@ -3167,7 +3167,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "ee456542b93fa8d7e6a8c689b5a0413c", "", "", "Chronocolor Donkey Kong Clean (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ee4c186123d31a279ed7a84d3578df23", "Atari, Carol Shaw, Nick 'Sandy Maiwald' Turner", "CX2608", "Super Breakout (1982 - 1981) (Atari) (PAL)", "Uses the Paddle Controllers (left only)", "", "", "", "", "", "", "", "", "", "", "", "01 45", "", "", "", "" },
   { "ee659ae50e9df886ac4f8d7ad10d046a", "Exus Corporation", "", "Video Reflex (1983) (Exus)", "AKA Foot Craz", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "ee6665683ebdb539e89ba620981cb0f6", "Coleco", "2658", "Berenstain Bears (1983) (Coleco)", "Uses the KidVid Controller", "Unbelievably Rare", "", "", "", "", "", "", "", "KEYBOARD", "", "", "", "", "25", "", "" },
+  { "ee6665683ebdb539e89ba620981cb0f6", "Coleco", "2658", "Berenstain Bears (1983) (Coleco)", "Uses the KidVid Controller", "Unbelievably Rare", "", "1", "", "", "", "", "", "KEYBOARD", "", "", "", "", "25", "", "" },
   { "ee67dc0b01746372d2b983d88f48e24f", "", "", "Scroller Demo (02-01-2003) (CT)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ee681f566aad6c07c61bbbfc66d74a27", "Activision", "", "Unknown Activision Game (10-29-1982) (Activision) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ee6cbedf6c0aac90faa0a8dbc093ffbe", "CCE", "", "My Golf (CCE) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
