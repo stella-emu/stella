@@ -71,7 +71,7 @@ class PhysicalJoystickHandler
     void setDefaultMapping(Event::Type type, EventMode mode);
 
     /** define mappings for current controllers */
-    void defineControllerMappings(const string& controllerName, Controller::Jack port);
+    void defineControllerMappings(const Controller::Type type, Controller::Jack port);
     /** enable mappings for emulation mode */
     void enableEmulationMappings();
 

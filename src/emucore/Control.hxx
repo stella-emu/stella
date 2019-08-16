@@ -90,9 +90,11 @@ class Controller : public Serializable
     */
     enum class Type
     {
+      Unknown,
       AmigaMouse, AtariMouse, AtariVox, BoosterGrip, CompuMate,
       Driving, Genesis, Joystick, Keyboard, KidVid, MindLink,
-      Paddles, SaveKey, TrakBall
+      Paddles, PaddlesIAxis, PaddlesIAxDr, SaveKey, TrakBall,
+      LastType
     };
 
     /**
@@ -253,6 +255,21 @@ class Controller : public Serializable
     void setOnAnalogPinUpdateCallback(onAnalogPinUpdateCallback callback) {
       myOnAnalogPinUpdateCallback = callback;
     }
+
+    /**
+      Returns the display name of the given controller type
+    */
+    static string getName(const Type type);
+
+    /**
+      Returns the property name of the given controller type
+    */
+    static string getPropName(const Type type);
+
+    /**
+      Returns the controller type of the given property name
+    */
+    static Type getType(const string& propName);
 
   public:
     /// Constant which represents maximum resistance for analog pins

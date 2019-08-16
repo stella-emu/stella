@@ -462,50 +462,10 @@ void GameInfoDialog::loadConsoleProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadControllerProperties(const Properties& props)
 {
-  bool swapPorts = props.get(PropType::Console_SwapPorts) == "YES";
-  bool autoDetect = false;
-  ByteBuffer image;
-  string md5 = props.get(PropType::Cart_MD5);
-  uInt32 size = 0;
-
-  // try to load the image for auto detection
-  if(!instance().hasConsole())
-  {
-    const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
-
-    autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
-  }
-  string label = "";
   string controller = props.get(PropType::Controller_Left);
-
   myLeftPort->setSelected(controller, "AUTO");
-  if(myLeftPort->getSelectedTag().toString() == "AUTO")
-  {
-    if(instance().hasConsole())
-      label = (!swapPorts ? instance().console().leftController().name()
-               : instance().console().rightController().name()) + " detected";
-    else if(autoDetect)
-      label = ControllerDetector::detectName(image.get(), size, controller,
-                                             !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
-                                             instance().settings()) + " detected";
-  }
-  myLeftPortDetected->setLabel(label);
-
-  label = "";
   controller = props.get(PropType::Controller_Right);
-
   myRightPort->setSelected(controller, "AUTO");
-  if(myRightPort->getSelectedTag().toString() == "AUTO")
-  {
-    if(instance().hasConsole())
-      label = (!swapPorts ? instance().console().rightController().name()
-               : instance().console().leftController().name()) + " detected";
-    else if(autoDetect)
-      label = ControllerDetector::detectName(image.get(), size, controller,
-                                             !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
-                                             instance().settings()) + " detected";
-  }
-  myRightPortDetected->setLabel(label);
 
   mySwapPorts->setState(props.get(PropType::Console_SwapPorts) == "YES");
   mySwapPaddles->setState(props.get(PropType::Controller_SwapPaddles) == "YES");
@@ -650,6 +610,49 @@ void GameInfoDialog::setDefaults()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::updateControllerStates()
 {
+  bool swapPorts = mySwapPorts->getState();
+  bool autoDetect = false;
+  ByteBuffer image;
+  string md5 = myGameProperties.get(PropType::Cart_MD5);
+  uInt32 size = 0;
+
+  // try to load the image for auto detection
+  if(!instance().hasConsole())
+  {
+    const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
+
+    autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
+  }
+  string label = "";
+  Controller::Type type = Controller::getType(myLeftPort->getSelectedTag().toString());
+
+  if(type == Controller::Type::Unknown)
+  {
+    if(instance().hasConsole())
+      label = (!swapPorts ? instance().console().leftController().name()
+               : instance().console().rightController().name()) + " detected";
+    else if(autoDetect)
+      label = ControllerDetector::detectName(image.get(), size, type,
+                                             !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
+                                             instance().settings()) + " detected";
+  }
+  myLeftPortDetected->setLabel(label);
+
+  label = "";
+  type = Controller::getType(myRightPort->getSelectedTag().toString());
+
+  if(type == Controller::Type::Unknown)
+  {
+    if(instance().hasConsole())
+      label = (!swapPorts ? instance().console().rightController().name()
+               : instance().console().leftController().name()) + " detected";
+    else if(autoDetect)
+      label = ControllerDetector::detectName(image.get(), size, type,
+                                             !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
+                                             instance().settings()) + " detected";
+  }
+  myRightPortDetected->setLabel(label);
+
   const string& contrLeft = myLeftPort->getSelectedTag().toString();
   const string& contrRight = myRightPort->getSelectedTag().toString();
   bool enableEEEraseButton = false;
@@ -666,9 +669,6 @@ void GameInfoDialog::updateControllerStates()
   {
     const Controller& lport = instance().console().leftController();
     const Controller& rport = instance().console().rightController();
-
-    enableSwapPaddles |= BSPF::equalsIgnoreCase(instance().console().leftController().name(), "Paddles");
-    enableSwapPaddles |= BSPF::equalsIgnoreCase(instance().console().rightController().name(), "Paddles");
 
     // we only enable the button if we have a valid previous and new controller.
     bool enableBtnForLeft =
@@ -728,7 +728,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case TabWidget::kTabChangedCmd:
-      if(data == 2)  // 'Controller' tab selected
+      if(data == 2)  // 'Controllers' tab selected
         updateControllerStates();
 
       // The underlying dialog still needs access to this command

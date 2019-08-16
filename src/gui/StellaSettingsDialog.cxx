@@ -187,7 +187,7 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos
   int pwidth = font.getStringWidth("Sega Genesis");
   myLeftPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Left port  ");
   myLeftPort = new PopUpWidget(this, font, myLeftPortLabel->getRight(),
-    myLeftPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "");
+    myLeftPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myLeftPort);
   ypos += lineHeight + VGAP;
 
@@ -197,7 +197,7 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos
 
   myRightPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Right port ");
   myRightPort = new PopUpWidget(this, font, myRightPortLabel->getRight(),
-    myRightPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "");
+    myRightPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myRightPort);
   ypos += lineHeight + VGAP;
   myRightPortDetected = new StaticTextWidget(this, ifont, myRightPort->getLeft(), ypos,
@@ -371,6 +371,11 @@ void StellaSettingsDialog::handleCommand(CommandSender* sender, int cmd,
       handleOverscanChange();
       break;
 
+    case kLeftCChanged:
+    case kRightCChanged:
+      updateControllerStates();
+      break;
+
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
@@ -441,49 +446,12 @@ void StellaSettingsDialog::loadControllerProperties(const Properties& props)
 
   if (enable)
   {
-    bool autoDetect = false;
-    ByteBuffer image;
-    string md5 = props.get(PropType::Cart_MD5);
-    uInt32 size = 0;
-    const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
-
-    // try to load the image for auto detection
-    if (!instance().hasConsole() &&
-      node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr)
-      autoDetect = true;
-
-    string label = "";
     string controller = props.get(PropType::Controller_Left);
-    bool swapPorts = props.get(PropType::Console_SwapPorts) == "YES";
-
     myLeftPort->setSelected(controller, "AUTO");
-    if (myLeftPort->getSelectedTag().toString() == "AUTO")
-    {
-      if (instance().hasConsole())
-        label = (!swapPorts ? instance().console().leftController().name()
-          : instance().console().rightController().name()) + " detected";
-      else if (autoDetect)
-        label = ControllerDetector::detectName(image.get(), size, controller,
-          !swapPorts ? Controller::Jack::Left : Controller::Jack::Right,
-          instance().settings()) + " detected";
-    }
-    myLeftPortDetected->setLabel(label);
-
-    label = "";
     controller = props.get(PropType::Controller_Right);
-
     myRightPort->setSelected(controller, "AUTO");
-    if (myRightPort->getSelectedTag().toString() == "AUTO")
-    {
-      if (instance().hasConsole())
-        label = (!swapPorts ? instance().console().rightController().name()
-          : instance().console().leftController().name()) + " detected";
-      else if (autoDetect)
-        label = ControllerDetector::detectName(image.get(), size, controller,
-          !swapPorts ? Controller::Jack::Right : Controller::Jack::Left,
-          instance().settings()) + " detected";
-    }
-    myRightPortDetected->setLabel(label);
+
+    updateControllerStates();
   }
   else
   {
@@ -529,3 +497,56 @@ void StellaSettingsDialog::openHelp()
   #endif
   myHelpDialog->open();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void StellaSettingsDialog::updateControllerStates()
+{
+  bool autoDetect = false;
+  ByteBuffer image;
+  string md5 = myGameProperties.get(PropType::Cart_MD5);
+  uInt32 size = 0;
+
+  // try to load the image for auto detection
+  if(!instance().hasConsole())
+  {
+    const FilesystemNode& node = FilesystemNode(instance().launcher().selectedRom());
+
+    autoDetect = node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr;
+  }
+  string label = "";
+  Controller::Type type = Controller::getType(myLeftPort->getSelectedTag().toString());
+
+  if(type == Controller::Type::Unknown)
+  {
+    if(instance().hasConsole())
+      label = (instance().console().leftController().name()) + " detected";
+    else if(autoDetect)
+      label = ControllerDetector::detectName(image.get(), size, type,
+                                             Controller::Jack::Left,
+                                             instance().settings()) + " detected";
+  }
+  myLeftPortDetected->setLabel(label);
+
+  label = "";
+  type = Controller::getType(myRightPort->getSelectedTag().toString());
+
+  if(type == Controller::Type::Unknown)
+  {
+    if(instance().hasConsole())
+      label = (instance().console().rightController().name()) + " detected";
+    else if(autoDetect)
+      label = ControllerDetector::detectName(image.get(), size, type,
+                                             Controller::Jack::Right,
+                                             instance().settings()) + " detected";
+  }
+  myRightPortDetected->setLabel(label);
+
+  // Compumate bankswitching scheme doesn't allow to select controllers
+  bool enableSelectControl = myGameProperties.get(PropType::Cart_Type) != "CM";
+
+  myLeftPortLabel->setEnabled(enableSelectControl);
+  myRightPortLabel->setEnabled(enableSelectControl);
+  myLeftPort->setEnabled(enableSelectControl);
+  myRightPort->setEnabled(enableSelectControl);
+}
+

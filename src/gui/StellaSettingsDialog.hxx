@@ -66,6 +66,8 @@ class StellaSettingsDialog : public Dialog
 
     void openHelp();
 
+    void updateControllerStates();
+
   private:
     // UI theme
     PopUpWidget*      myThemePopup;
@@ -109,7 +111,9 @@ class StellaSettingsDialog : public Dialog
       kHelp             = 'SShl',
       kScanlinesChanged = 'SSsc',
       kPhosphorChanged  = 'SSph',
-      kOverscanChanged  = 'SSov'
+      kOverscanChanged  = 'SSov',
+      kLeftCChanged     = 'LCch',
+      kRightCChanged    = 'RCch',
     };
 
     // Game properties for currently loaded ROM

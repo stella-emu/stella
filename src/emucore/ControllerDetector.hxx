@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-
 #ifndef CONTROLLER_DETECTOR_HXX
 #define CONTROLLER_DETECTOR_HXX
 
@@ -40,9 +39,9 @@ class ControllerDetector
       @param settings   A reference to the various settings (read-only)
       @return   The detected controller type
     */
-    static string detectType(const uInt8* image, uInt32 size,
-                             const string& controller, const Controller::Jack port,
-                             const Settings& settings);
+    static Controller::Type detectType(const uInt8* image, uInt32 size,
+                                       const Controller::Type controller, const Controller::Jack port,
+                                       const Settings& settings);
 
     /**
       Detects the controller type at the given port if no controller is provided
@@ -50,24 +49,15 @@ class ControllerDetector
 
       @param image      A pointer to the ROM image
       @param size       The size of the ROM image
-      @param controller The provided controller type of the ROM image
+      @param type       The provided controller type of the ROM image
       @param port       The port to be checked
       @param settings   A reference to the various settings (read-only)
 
       @return   The (detected) controller name
     */
     static string detectName(const uInt8* image, uInt32 size,
-                             const string& controller, const Controller::Jack port,
+                             const Controller::Type type, const Controller::Jack port,
                              const Settings& settings);
-
-    /**
-      Returns a nicer formatted name for the given controller.
-
-      @param controller The provided controller type of the ROM image
-
-      @return   The controller name
-    */
-    static const string getControllerName(const string& controller);
 
   private:
     /**
@@ -80,8 +70,8 @@ class ControllerDetector
 
       @return   The detected controller type
     */
-    static string autodetectPort(const uInt8* image, uInt32 size, Controller::Jack port,
-                                 const Settings& settings);
+    static Controller::Type autodetectPort(const uInt8* image, uInt32 size, Controller::Jack port,
+                                           const Settings& settings);
 
     /**
       Search the image for the specified byte signature.
