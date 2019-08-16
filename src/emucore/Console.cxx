@@ -784,7 +784,7 @@ void Console::createAudioQueue()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setControllers(const string& rommd5)
+void Console::setControllers(const string& romMd5)
 {
   // Check for CompuMate scheme; it is special in that a handler creates both
   // controllers for us, and associates them with the bankswitching class
@@ -822,8 +822,8 @@ void Console::setControllers(const string& rommd5)
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left, myOSystem.settings());
     }
 
-    unique_ptr<Controller> leftC = getControllerPort(rommd5, left, Controller::Jack::Left),
-      rightC = getControllerPort(rommd5, right, Controller::Jack::Right);
+    unique_ptr<Controller> leftC = getControllerPort(left, Controller::Jack::Left, romMd5),
+      rightC = getControllerPort(right, Controller::Jack::Right, romMd5);
 
     // Swap the ports if necessary
     if(!swappedPorts)
@@ -848,10 +848,10 @@ void Console::setControllers(const string& rommd5)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
-    const string& controllerName, Controller::Jack port)
+unique_ptr<Controller> Console::getControllerPort(const string& controllerName,
+                                                  Controller::Jack port, const string& romMd5)
 {
-  unique_ptr<Controller> controller; // = std::move(myLeftControl); // TJ: why was this there?
+  unique_ptr<Controller> controller;
 
   myOSystem.eventHandler().defineKeyControllerMappings(controllerName, port);
   myOSystem.eventHandler().defineJoyControllerMappings(controllerName, port);
@@ -924,7 +924,7 @@ unique_ptr<Controller> Console::getControllerPort(const string& rommd5,
   }
   else if(controllerName == "KIDVID")
   {
-    controller = make_unique<KidVid>(port, myEvent, *mySystem, rommd5);
+    controller = make_unique<KidVid>(port, myEvent, *mySystem, romMd5);
   }
   else if(controllerName == "MINDLINK")
   {

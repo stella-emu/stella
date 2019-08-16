@@ -85,7 +85,7 @@ class Console : public Serializable, public ConsoleIO
     /**
       Sets the left and right controllers for the console.
     */
-    void setControllers(const string& rommd5);
+    void setControllers(const string& roMd5);
 
     /**
       Get the controller plugged into the specified jack
@@ -339,8 +339,8 @@ class Console : public Serializable, public ConsoleIO
     /**
       Selects the left or right controller depending on ROM properties
     */
-    unique_ptr<Controller> getControllerPort(const string& rommd5,
-        const string& controllerName, Controller::Jack port);
+    unique_ptr<Controller> getControllerPort(const string& controllerName,
+                                             Controller::Jack port, const string& romMd5);
 
     /**
       Loads a user-defined palette file (from OSystem::paletteFile), filling the
