@@ -45,10 +45,10 @@ class KidVid : public Controller
       @param jack   The jack the controller is plugged into
       @param event  The event object to use for events
       @param system The system using this controller
-      @param md5sum The md5 of the ROM using this controller
+      @param romMd5 The md5 of the ROM using this controller
     */
     KidVid(Jack jack, const Event& event, const System& system,
-           const string& md5sum);
+           const string& romMd5);
     virtual ~KidVid();
 
   public:

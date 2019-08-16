@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KidVid::KidVid(Jack jack, const Event& event, const System& system,
-               const string& rommd5)
+               const string& romMd5)
   : Controller(jack, event, system, Controller::Type::KidVid),
     myEnabled(myJack == Jack::Right),
 //     mySampleFile(nullptr),
@@ -41,9 +41,9 @@ KidVid::KidVid(Jack jack, const Event& event, const System& system,
     myBlockIdx(0)
 {
   // Right now, there are only two games that use the KidVid
-  if(rommd5 == "ee6665683ebdb539e89ba620981cb0f6")
+  if(romMd5 == "ee6665683ebdb539e89ba620981cb0f6")
     myGame = KVBBEARS;    // Berenstain Bears
-  else if(rommd5 == "a204cd4fb1944c86e800120706512a64")
+  else if(romMd5 == "a204cd4fb1944c86e800120706512a64")
     myGame = KVSMURFS;    // Smurfs Save the Day
   else
     myEnabled = false;
