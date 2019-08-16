@@ -74,7 +74,7 @@ void KidVid::update()
     myBlockIdx = KVBLOCKBITS;
     myBlock = 0;
     openSampleFile();
-cerr << "myTape = " << myTape << endl;
+    cerr << "myTape = " << myTape << endl;
   }
   else if(myEvent.get(Event::KeyboardOne2))
   {
@@ -83,7 +83,7 @@ cerr << "myTape = " << myTape << endl;
     myBlockIdx = KVBLOCKBITS;
     myBlock = 0;
     openSampleFile();
-cerr << "myTape = " << myTape << endl;
+    cerr << "myTape = " << myTape << endl;
   }
   else if(myEvent.get(Event::KeyboardOne3))
   {
@@ -91,13 +91,13 @@ cerr << "myTape = " << myTape << endl;
     {
       myTape = 4;
       myIdx = KVBLOCKBITS;
-cerr << "myTape = " << myTape << endl;
+      cerr << "myTape = " << myTape << endl;
     }
     else                    /* no, Smurf Save The Day */
     {
       myTape = 1;
       myIdx = 0;
-cerr << "myTape = " << myTape << endl;
+      cerr << "myTape = " << myTape << endl;
     }
     myBlockIdx = KVBLOCKBITS;
     myBlock = 0;
@@ -114,6 +114,8 @@ cerr << "myTape = " << myTape << endl;
   // Is the tape running?
   if((myTape != 0) && ((IOPortA & 0b0001) == 0b0001) && !myTapeBusy)
   {
+    // output bit pattern from high to low bits
+    // set / clear bit 3
     IOPortA = (IOPortA & 0b11110111) | (((ourKVData[myIdx >> 3] << (myIdx & 0x07)) & 0x80) >> 4);
 
     // increase to next bit
@@ -124,13 +126,14 @@ cerr << "myTape = " << myTape << endl;
     if(myBlockIdx == 0)
     {
       if(myBlock == 0)
+        // start tape identifying byte (00h..02h, 01h..03h)
         myIdx = ((myTape * 6) + 12 - KVBLOCKS) * 8; //KVData00-KVData=12
       else
       {
         if(myGame == KVSMURFS)
         {
-          if(myBlock >= ourKVBlocks[myTape - 1])
-            myIdx = 42 * 8; //KVData80-KVData=42
+          if(myBlock >= ourKVBlocks[myTape - 1]) // after last block on tape?
+            myIdx = 42 * 8; //KVData80-KVData=42 ; start end of tape block (80h) (on tapes: 80h..82h, 81h..83h)
           else
           {
             myIdx = 36 * 8;//KVPause-KVData=36
@@ -139,8 +142,8 @@ cerr << "myTape = " << myTape << endl;
         }
         else
         {
-          if(myBlock >= ourKVBlocks[myTape + 2 - 1])
-            myIdx = 42 * 8; //KVData80-KVData=42
+          if(myBlock >= ourKVBlocks[myTape + 2 - 1]) // after last block on tape?
+            myIdx = 42 * 8; //KVData80-KVData=42 ; start end of tape block (80h) (on tapes: 80h..82h, 81h..83h)
           else
           {
             myIdx = 36 * 8;//KVPause-KVData=36
@@ -154,7 +157,8 @@ cerr << "myTape = " << myTape << endl;
   }
 
   if (myFileOpened)
-    for(int i = 0; i < 1000; ++i)
+    // pretend that the music is played (5x faster :)
+    for(int i = 0; i < 44100/60/5; ++i)
       getNextSampleByte();
 
   // Now convert the register back into separate boolean values
@@ -187,7 +191,7 @@ void KidVid::openSampleFile()
     mySampleFile = fopen(kvNameTable[i], "rb");
     if(mySampleFile != nullptr)
     {
-cerr << "opened file: " << kvNameTable[i] << endl;
+      cerr << "opened file: " << kvNameTable[i] << endl;
       mySharedSampleFile = fopen("C:\\kvshared.wav", "rb");
       if(mySharedSampleFile == nullptr)
       {
@@ -196,8 +200,8 @@ cerr << "opened file: " << kvNameTable[i] << endl;
       }
       else
       {
-cerr << "opened file: " << "kvshared.wav" << endl;
-//         fseek(mySampleFile, 45, SEEK_SET);
+        cerr << "opened file: " << "kvshared.wav" << endl;
+        //fseek(mySampleFile, 45, SEEK_SET);
         myFileOpened = true;
       }
     }
