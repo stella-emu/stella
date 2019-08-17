@@ -164,8 +164,13 @@ void ListWidget::recalc()
 {
   int size = int(_list.size());
 
-  if (_currentPos >= size)
-    _currentPos = size - 1;
+  if(_currentPos >= size)
+  {
+    if(size <= _rows)
+      _currentPos = 0;
+    else
+      _currentPos = size - _rows;
+  }
   if (_currentPos < 0)
     _currentPos = 0;
 
@@ -176,6 +181,8 @@ void ListWidget::recalc()
 
   _scrollBar->_numEntries     = int(_list.size());
   _scrollBar->_entriesPerPage = _rows;
+  // disable scrollbar if no longer necessary
+  scrollBarRecalc();
 
   // Reset to normal data entry
   abortEditMode();

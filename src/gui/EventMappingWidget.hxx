@@ -40,7 +40,7 @@ class EventMappingWidget : public Widget, public CommandSender
   public:
     EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                        int x, int y, int w, int h,
-                       const StringList& actions, EventMode mode);
+                       EventMode mode);
     virtual ~EventMappingWidget() = default;
 
     bool remapMode() { return myRemapStatus; }
@@ -49,6 +49,7 @@ class EventMappingWidget : public Widget, public CommandSender
 
   private:
     enum {
+      kFilterCmd   = 'filt',
       kStartMapCmd = 'map ',
       kStopMapCmd  = 'smap',
       kEraseCmd    = 'eras',
@@ -68,6 +69,7 @@ class EventMappingWidget : public Widget, public CommandSender
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
+    void updateActions();
     void startRemapping();
     void eraseRemapping();
     void resetRemapping();
@@ -84,6 +86,7 @@ class EventMappingWidget : public Widget, public CommandSender
     ButtonWidget*     myEraseButton;
     ButtonWidget*     myResetButton;
     ButtonWidget*     myComboButton;
+    PopUpWidget*      myFilterPopup;
     StringListWidget* myActionsList;
     EditTextWidget*   myKeyMapping;
 
@@ -92,6 +95,9 @@ class EventMappingWidget : public Widget, public CommandSender
     // Since this widget can be used for different collections of events,
     // we need to specify exactly which group of events we are remapping
     EventMode myEventMode;
+
+    // Since we can filter events, the event mode is not specific enough
+    Event::Group myEventGroup;
 
     // Indicates the event that is currently selected
     int myActionSelected;
