@@ -48,7 +48,6 @@ class LauncherDialog : public Dialog
   public:
     // These must be accessible from dialogs created by this class
     enum {
-      kAllfilesCmd     = 'lalf',  // show all files (or ROMs only)
       kLoadROMCmd      = 'STRT',  // load currently selected ROM
       kRomDirChosenCmd = 'romc'   // rom dir chosen
     };
@@ -97,12 +96,12 @@ class LauncherDialog : public Dialog
 
     void loadConfig() override;
     void updateUI();
+    void applyFiltering();
 
     void loadRom();
     void loadRomInfo();
     void handleContextMenu();
     void showOnlyROMs(bool state);
-    bool matchPattern(const string& s, const string& pattern) const;
     void openSettings();
 
   private:
@@ -134,9 +133,10 @@ class LauncherDialog : public Dialog
     bool myEventHandled;
 
     enum {
-      kPrevDirCmd = 'PRVD',
-      kOptionsCmd = 'OPTI',
-      kQuitCmd    = 'QUIT'
+      kAllfilesCmd = 'lalf',  // show all files (or ROMs only)
+      kPrevDirCmd  = 'PRVD',
+      kOptionsCmd  = 'OPTI',
+      kQuitCmd     = 'QUIT'
     };
 
   private:

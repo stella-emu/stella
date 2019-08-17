@@ -20,13 +20,6 @@
 
 #include "bspf.hxx"
 
-/**
-  TODO:
-    - extension handling not handled
-    - add lambda filter to selectively choose files based on pattern
-    - history of selected folders/files
-*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
@@ -36,6 +29,9 @@ FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
+
+  // By default, all filenames are valid
+  _filter = [](const FilesystemNode& node) { return true; };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,14 +67,14 @@ void FileListWidget::setDirectory(const FilesystemNode& node, string select)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setLocation(const FilesystemNode& node, const string& select)
+void FileListWidget::setLocation(const FilesystemNode& node, string select)
 {
   _node = node;
 
   // Read in the data from the file system (start with an empty list)
   _fileList.clear();
   _fileList.reserve(512);
-  _node.getChildren(_fileList, _fsmode);
+  _node.getChildren(_fileList, _fsmode, _filter);
 
   // Now fill the list widget with the names from the file list
   StringList l;
@@ -102,10 +98,7 @@ void FileListWidget::selectDirectory()
 void FileListWidget::selectParent()
 {
   if(_node.hasParent())
-  {
-    const string& select = !_history.empty() ? _history.pop() : EmptyString;
-    setLocation(_node.getParent(), select);
-  }
+    setLocation(_node.getParent(), !_history.empty() ? _history.pop() : EmptyString);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
