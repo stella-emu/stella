@@ -1251,6 +1251,80 @@ StringList EventHandler::getActionList(EventMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StringList EventHandler::getActionList(Event::Group group) const
+{
+  StringList l;
+
+  switch(group)
+  {
+    case Event::Group::Menu:
+      return getActionList(EventMode::kMenuMode);
+
+    case Event::Group::Emulation:
+      return getActionList(EventMode::kEmulationMode);
+
+    case Event::Group::Misc:
+      return getActionList(MiscEvents);
+
+    case Event::Group::AudioVideo:
+      return getActionList(AudioVideoEvents);
+
+    case Event::Group::States:
+      return getActionList(StateEvents);
+
+    case Event::Group::Console:
+      return getActionList(ConsoleEvents);
+
+    case Event::Group::Joystick:
+      return getActionList(JoystickEvents);
+
+    case Event::Group::Paddles:
+      return getActionList(PaddlesEvents);
+
+    case Event::Group::Keyboard:
+      return getActionList(KeyboardEvents);
+
+    case Event::Group::Debug:
+      return getActionList(DebugEvents);
+
+    case Event::Group::Combo:
+      return getActionList(ComboEvents);
+
+    default:
+      return l; // ToDo
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StringList EventHandler::getActionList(const EventList& events, EventMode mode) const
+{
+  StringList l;
+
+  switch(mode)
+  {
+    case EventMode::kMenuMode:
+      for(uInt32 i = 0; i < MENU_ACTIONLIST_SIZE; ++i)
+        for(const auto& event : events)
+          if(EventHandler::ourMenuActionList[i].event == event)
+          {
+            l.push_back(EventHandler::ourMenuActionList[i].action);
+            break;
+          }
+      break;
+
+    default:
+      for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
+        for(const auto& event : events)
+          if(EventHandler::ourEmulActionList[i].event == event)
+          {
+            l.push_back(EventHandler::ourEmulActionList[i].action);
+            break;
+          }
+  }
+  return l;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VariantList EventHandler::getComboList(EventMode /**/) const
 {
   // For now, this only works in emulation mode
@@ -1320,62 +1394,136 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::eventAtIndex(int idx, EventMode mode) const
+int EventHandler::getEmulActionListIndex(int idx, const EventList& events) const
 {
-  switch(mode)
+  // idx = index into intersection set of 'events' and 'ourEmulActionList'
+  //   ordered by 'ourEmulActionList'!
+  Event::Type event = Event::NoType;
+
+  for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
   {
-    case EventMode::kEmulationMode:
-      if(idx < 0 || idx >= EMUL_ACTIONLIST_SIZE)
-        return Event::NoType;
-      else
-        return ourEmulActionList[idx].event;
-    case EventMode::kMenuMode:
-      if(idx < 0 || idx >= MENU_ACTIONLIST_SIZE)
-        return Event::NoType;
-      else
-        return ourMenuActionList[idx].event;
+    for(const auto& item : events)
+      if(EventHandler::ourEmulActionList[i].event == item)
+      {
+        idx--;
+        if(idx < 0)
+          event = item;
+        break;
+      }
+    if(idx < 0)
+      break;
+  }
+
+  for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
+    if(EventHandler::ourEmulActionList[i].event == event)
+      return i;
+
+  return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EventHandler::getActionListIndex(int idx, Event::Group group) const
+{
+  switch(group)
+  {
+    case Event::Group::Menu:
+      return idx;
+
+    case Event::Group::Emulation:
+      return idx;
+
+    case Event::Group::Misc:
+      return getEmulActionListIndex(idx, MiscEvents);
+
+    case Event::Group::AudioVideo:
+      return getEmulActionListIndex(idx, AudioVideoEvents);
+
+    case Event::Group::States:
+      return getEmulActionListIndex(idx, StateEvents);
+
+    case Event::Group::Console:
+      return getEmulActionListIndex(idx, ConsoleEvents);
+
+    case Event::Group::Joystick:
+      return getEmulActionListIndex(idx, JoystickEvents);
+
+    case Event::Group::Paddles:
+      return getEmulActionListIndex(idx, PaddlesEvents);
+
+    case Event::Group::Keyboard:
+      return getEmulActionListIndex(idx, KeyboardEvents);
+
+    case Event::Group::Debug:
+      return getEmulActionListIndex(idx, DebugEvents);
+
+    case Event::Group::Combo:
+      return getEmulActionListIndex(idx, ComboEvents);
+
     default:
-      return Event::NoType;
+      return -1;
+  };
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Event::Type EventHandler::eventAtIndex(int idx, Event::Group group) const
+{
+  int index = getActionListIndex(idx, group);
+
+  switch(group)
+  {
+    case Event::Group::Menu:
+      if(index < 0 || index >= MENU_ACTIONLIST_SIZE)
+        return Event::NoType;
+      else
+        return ourMenuActionList[index].event;
+
+    default:
+      if(index < 0 || index >= EMUL_ACTIONLIST_SIZE)
+        return Event::NoType;
+      else
+        return ourEmulActionList[index].event;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandler::actionAtIndex(int idx, EventMode mode) const
+string EventHandler::actionAtIndex(int idx, Event::Group group) const
 {
-  switch(mode)
+  int index = getActionListIndex(idx, group);
+
+  switch(group)
   {
-    case EventMode::kEmulationMode:
-      if(idx < 0 || idx >= EMUL_ACTIONLIST_SIZE)
+    case Event::Group::Menu:
+      if(index < 0 || index >= MENU_ACTIONLIST_SIZE)
         return EmptyString;
       else
-        return ourEmulActionList[idx].action;
-    case EventMode::kMenuMode:
-      if(idx < 0 || idx >= MENU_ACTIONLIST_SIZE)
-        return EmptyString;
-      else
-        return ourMenuActionList[idx].action;
+        return ourMenuActionList[index].action;
+
     default:
-      return EmptyString;
+      if(index < 0 || index >= EMUL_ACTIONLIST_SIZE)
+        return EmptyString;
+      else
+        return ourEmulActionList[index].action;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandler::keyAtIndex(int idx, EventMode mode) const
+string EventHandler::keyAtIndex(int idx, Event::Group group) const
 {
-  switch(mode)
+  int index = getActionListIndex(idx, group);
+
+  switch(group)
   {
-    case EventMode::kEmulationMode:
-      if(idx < 0 || idx >= EMUL_ACTIONLIST_SIZE)
+    case Event::Group::Menu:
+      if(index < 0 || index >= MENU_ACTIONLIST_SIZE)
         return EmptyString;
       else
-        return ourEmulActionList[idx].key;
-    case EventMode::kMenuMode:
-      if(idx < 0 || idx >= MENU_ACTIONLIST_SIZE)
-        return EmptyString;
-      else
-        return ourMenuActionList[idx].key;
+        return ourMenuActionList[index].key;
+
     default:
-      return EmptyString;
+      if(index < 0 || index >= EMUL_ACTIONLIST_SIZE)
+        return EmptyString;
+      else
+        return ourEmulActionList[index].key;
   }
 }
 
@@ -1579,10 +1727,14 @@ void EventHandler::exitEmulation()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] = {
   { Event::Quit,                    "Quit",                                  "" },
+  { Event::ReloadConsole,           "Reload current ROM/load next game",     "" },
+  { Event::Fry,                     "Fry cartridge",                         "" },
   { Event::ExitMode,                "Exit current Stella menu/mode",         "" },
   { Event::OptionsMenuMode,         "Enter Options menu UI",                 "" },
   { Event::CmdMenuMode,             "Toggle Commands menu UI",               "" },
   { Event::DebuggerMode,            "Toggle Debugger mode",                  "" },
+  { Event::TogglePauseMode,         "Toggle Pause mode",                     "" },
+  { Event::StartPauseMode,          "Start Pause mode",                      "" },
 
   { Event::ConsoleSelect,           "Select",                                "" },
   { Event::ConsoleReset,            "Reset",                                 "" },
@@ -1600,9 +1752,11 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::ChangeState,             "Change state slot",                     "" },
   { Event::ToggleAutoSlot,          "Toggle automatic state slot change",    "" },
   { Event::LoadState,               "Load state",                            "" },
+#ifdef PNG_SUPPORT
   { Event::TakeSnapshot,            "Snapshot",                              "" },
-  { Event::TogglePauseMode,         "Toggle pause mode",                     "" },
-  { Event::StartPauseMode,          "Start pause mode",                      "" },
+  { Event::ToggleContSnapshots,     "Save continuous snapsh. (as defined)",  "" },
+  { Event::ToggleContSnapshotsFrame,"Save continuous snapsh. (every frame)", "" },
+#endif
 
   { Event::JoystickZeroUp,          "P0 Joystick Up",                        "" },
   { Event::JoystickZeroDown,        "P0 Joystick Down",                      "" },
@@ -1665,6 +1819,16 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::KeyboardOneStar,         "P1 Keyboard *",                         "" },
   { Event::KeyboardOne0,            "P1 Keyboard 0",                         "" },
   { Event::KeyboardOnePound,        "P1 Keyboard #",                         "" },
+  // Video
+  { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
+  { Event::VidmodeIncrease,         "Next zoom level",                       "" },
+  { Event::ToggleFullScreen,        "Toggle fullscreen",                     "" },
+  { Event::DecreaseOverscan,        "Decrease overscan in fullscreen mode",  "" },
+  { Event::IncreaseOverScan,        "Increase overscan in fullscreen mode",  "" },
+  { Event::DecreaseFormat,          "Decrease display format",               "" },
+  { Event::IncreaseFormat,          "Increase display format",               "" },
+  { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "" },
+
   // TV effects:
   { Event::VidmodeStd,              "Disable TV effects",                    "" },
   { Event::VidmodeRGB,              "Select 'RGB' preset",                   "" },
@@ -1701,14 +1865,6 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::ToggleColorLoss,         "Toggle PAL color-loss effect",          "" },
   { Event::ToggleJitter,            "Toggle TV 'Jitter' effect",             "" },
   // Other keys:
-  { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
-  { Event::VidmodeIncrease,         "Next zoom level",                       "" },
-  { Event::ToggleFullScreen,        "Toggle fullscreen",                     "" },
-  { Event::DecreaseOverscan,        "Decrease overscan in fullscreen mode",  "" },
-  { Event::IncreaseOverScan,        "Increase overscan in fullscreen mode",  "" },
-  { Event::DecreaseFormat,          "Decrease display format",               "" },
-  { Event::IncreaseFormat,          "Increase display format",               "" },
-  { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "" },
   { Event::SoundToggle,             "Toggle sound",                          "" },
   { Event::VolumeDecrease,          "Decrease volume",                       "" },
   { Event::VolumeIncrease,          "Increase volume",                       "" },
@@ -1716,25 +1872,19 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::HandleMouseControl,      "Switch mouse emulation modes",          "" },
   { Event::ToggleGrabMouse,         "Toggle grab mouse",                     "" },
   { Event::ToggleSAPortOrder,       "Swap Stelladaptor port ordering",       "" },
-  { Event::ReloadConsole,           "Reload current ROM/load next game",     "" },
-  { Event::Fry,                     "Fry cartridge",                         "" },
 
-#ifdef PNG_SUPPORT
-  { Event::ToggleContSnapshots,     "Save cont. PNG snapsh. (as defined)",   "" },
-  { Event::ToggleContSnapshotsFrame,"Save cont. PNG snapsh. (every frame)",  "" },
-#endif
+  { Event::SaveAllStates,           "Save all TM states of current game",    "" },
+  { Event::LoadAllStates,           "Load saved TM states for current game", "" },
   { Event::ToggleTimeMachine,       "Toggle 'Time Machine' mode",            "" },
   { Event::TimeMachineMode,         "Toggle 'Time Machine' UI",              "" },
-  { Event::RewindPause,             "Rewind one state & enter pause mode",   "" },
+  { Event::RewindPause,             "Rewind one state & enter Pause mode",   "" },
   { Event::Rewind1Menu,             "Rewind one state & enter TM UI",        "" },
   { Event::Rewind10Menu,            "Rewind 10 states & enter TM UI",        "" },
   { Event::RewindAllMenu,           "Rewind all states & enter TM UI",       "" },
-  { Event::UnwindPause,             "Unwind one state & enter pause mode",   "" },
+  { Event::UnwindPause,             "Unwind one state & enter Pause mode",   "" },
   { Event::Unwind1Menu,             "Unwind one state & enter TM UI",        "" },
   { Event::Unwind10Menu,            "Unwind 10 states & enter TM UI",        "" },
   { Event::UnwindAllMenu,           "Unwind all states & enter TM UI",       "" },
-  { Event::SaveAllStates,           "Save all TM states of current game",    "" },
-  { Event::LoadAllStates,           "Load saved TM states for current game", "" },
 
   { Event::Combo1,                  "Combo 1",                               "" },
   { Event::Combo2,                  "Combo 2",                               "" },
@@ -1779,3 +1929,94 @@ EventHandler::ActionList EventHandler::ourMenuActionList[MENU_ACTIONLIST_SIZE] =
   { Event::ToggleFullScreen,  "Toggle fullscreen",    "" },
   { Event::Quit,              "Quit",                 "" }
 };
+
+// Event groups
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const EventHandler::EventList EventHandler::MiscEvents = {
+  Event::Quit, Event::ReloadConsole, Event::Fry, Event::StartPauseMode,
+  Event::TogglePauseMode, Event::OptionsMenuMode, Event::CmdMenuMode, Event::DebuggerMode, Event::ExitMode,
+  Event::TakeSnapshot, Event::ToggleContSnapshots, Event::ToggleContSnapshotsFrame,
+  // Event::MouseAxisXValue, Event::MouseAxisYValue,
+  // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
+  Event::HandleMouseControl, Event::ToggleGrabMouse,
+  Event::ToggleSAPortOrder,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const EventHandler::EventList EventHandler::AudioVideoEvents = {
+  Event::VolumeDecrease, Event::VolumeIncrease, Event::SoundToggle,
+  Event::VidmodeDecrease, Event::VidmodeIncrease,
+  Event::ToggleFullScreen,
+  Event::VidmodeStd, Event::VidmodeRGB, Event::VidmodeSVideo, Event::VidModeComposite, Event::VidModeBad, Event::VidModeCustom,
+  Event::PreviousAttribute, Event::NextAttribute, Event::DecreaseAttribute, Event::IncreaseAttribute,
+  Event::ScanlinesDecrease, Event::ScanlinesIncrease,
+  Event::DecreasePhosphor, Event::IncreasePhosphor, Event::TogglePhosphor,
+  Event::DecreaseFormat, Event::IncreaseFormat,
+  Event::DecreaseOverscan, Event::IncreaseOverScan,
+  Event::TogglePalette,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const EventHandler::EventList EventHandler::StateEvents = {
+  Event::ChangeState, Event::LoadState, Event::SaveState, Event::TimeMachineMode,
+  Event::RewindPause, Event::UnwindPause, Event::ToggleTimeMachine,
+  Event::Rewind1Menu, Event::Rewind10Menu, Event::RewindAllMenu,
+  Event::Unwind1Menu, Event::Unwind10Menu, Event::UnwindAllMenu,
+  Event::SaveAllStates, Event::LoadAllStates, Event::ToggleAutoSlot,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const EventHandler::EventList EventHandler::ConsoleEvents = {
+  Event::ConsoleOn, Event::ConsoleOff, Event::ConsoleColor, Event::ConsoleBlackWhite,
+  Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffB,
+  Event::ConsoleRightDiffA, Event::ConsoleRightDiffB,
+  Event::ConsoleSelect, Event::ConsoleReset,
+  Event::ConsoleLeftDiffToggle, Event::ConsoleRightDiffToggle, Event::ConsoleColorToggle,
+  Event::Console7800Pause,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const EventHandler::EventList EventHandler::JoystickEvents = {
+  Event::JoystickZeroUp, Event::JoystickZeroDown, Event::JoystickZeroLeft, Event::JoystickZeroRight,
+  Event::JoystickZeroFire, Event::JoystickZeroFire5, Event::JoystickZeroFire9,
+  Event::JoystickOneUp, Event::JoystickOneDown, Event::JoystickOneLeft, Event::JoystickOneRight,
+  Event::JoystickOneFire, Event::JoystickOneFire5, Event::JoystickOneFire9,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const EventHandler::EventList EventHandler::PaddlesEvents = {
+  Event::PaddleZeroDecrease, Event::PaddleZeroIncrease, Event::PaddleZeroAnalog, Event::PaddleZeroFire,
+  Event::PaddleOneDecrease, Event::PaddleOneIncrease, Event::PaddleOneAnalog, Event::PaddleOneFire,
+  Event::PaddleTwoDecrease, Event::PaddleTwoIncrease, Event::PaddleTwoAnalog, Event::PaddleTwoFire,
+  Event::PaddleThreeDecrease, Event::PaddleThreeIncrease, Event::PaddleThreeAnalog, Event::PaddleThreeFire,
+};
+
+const EventHandler::EventList EventHandler::KeyboardEvents = {
+  Event::KeyboardZero1, Event::KeyboardZero2, Event::KeyboardZero3,
+  Event::KeyboardZero4, Event::KeyboardZero5, Event::KeyboardZero6,
+  Event::KeyboardZero7, Event::KeyboardZero8, Event::KeyboardZero9,
+  Event::KeyboardZeroStar, Event::KeyboardZero0, Event::KeyboardZeroPound,
+
+  Event::KeyboardOne1, Event::KeyboardOne2, Event::KeyboardOne3,
+  Event::KeyboardOne4, Event::KeyboardOne5, Event::KeyboardOne6,
+  Event::KeyboardOne7, Event::KeyboardOne8, Event::KeyboardOne9,
+  Event::KeyboardOneStar, Event::KeyboardOne0, Event::KeyboardOnePound,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const EventHandler::EventList EventHandler::DebugEvents = {
+  Event::ToggleFrameStats,
+  Event::ToggleP0Collision, Event::ToggleP0Bit, Event::ToggleP1Collision, Event::ToggleP1Bit,
+  Event::ToggleM0Collision, Event::ToggleM0Bit, Event::ToggleM1Collision, Event::ToggleM1Bit,
+  Event::ToggleBLCollision, Event::ToggleBLBit, Event::TogglePFCollision, Event::TogglePFBit,
+  Event::ToggleCollisions, Event::ToggleBits, Event::ToggleFixedColors,
+  Event::ToggleColorLoss,
+  Event::ToggleJitter,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const EventHandler::EventList EventHandler::ComboEvents = {
+  Event::Combo1, Event::Combo2, Event::Combo3, Event::Combo4, Event::Combo5, Event::Combo6, Event::Combo7, Event::Combo8,
+  Event::Combo9, Event::Combo10, Event::Combo11, Event::Combo12, Event::Combo13, Event::Combo14, Event::Combo15, Event::Combo16,
+};
+

@@ -21,6 +21,7 @@
 
 #include "OSystem.hxx"
 #include "GuiObject.hxx"
+#include "PopUpWidget.hxx"
 #include "FrameBuffer.hxx"
 #include "EventHandler.hxx"
 #include "Event.hxx"
@@ -36,11 +37,13 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                        int x, int y, int w, int h,
-                                       const StringList& actions, EventMode mode)
+                                       EventMode mode)
   : Widget(boss, font, x, y, w, h),
-    CommandSender(boss),
+  CommandSender(boss),
+    myFilterPopup(nullptr),
     myComboDialog(nullptr),
     myEventMode(mode),
+    myEventGroup(Event::Group::Emulation),
     myActionSelected(-1),
     myRemapStatus(false),
     myLastStick(0),
@@ -59,12 +62,37 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   const int VBORDER = 8;
   const int ACTION_LINES = 2;
   int xpos = HBORDER, ypos = VBORDER;
+  const int listWidth = _w - buttonWidth - HBORDER * 2 - 8;
+  int listHeight = _h - (2 + ACTION_LINES) * lineHeight - VBORDER + 2;
 
-  myActionsList = new StringListWidget(boss, font, xpos, ypos,
-                                       _w - buttonWidth - HBORDER * 2 - 8, _h - (2 + ACTION_LINES) * lineHeight - VBORDER);
+  if(mode == EventMode::kEmulationMode)
+  {
+    VariantList items;
+
+    items.clear();
+    VarList::push_back(items, "All", Event::Group::Emulation);
+    VarList::push_back(items, "Miscellaneous", Event::Group::Misc);
+    VarList::push_back(items, "Video & Audio", Event::Group::AudioVideo);
+    VarList::push_back(items, "States", Event::Group::States);
+    VarList::push_back(items, "Console", Event::Group::Console);
+    VarList::push_back(items, "Joystick", Event::Group::Joystick);
+    VarList::push_back(items, "Paddles", Event::Group::Paddles);
+    VarList::push_back(items, "Keyboard", Event::Group::Keyboard);
+    VarList::push_back(items, "Combo", Event::Group::Combo);
+    VarList::push_back(items, "Debug", Event::Group::Debug);
+
+    myFilterPopup = new PopUpWidget(boss, font, xpos, ypos,
+                                    listWidth - font.getStringWidth("Events ") - 23, lineHeight,
+                                    items, "Events ", 0, kFilterCmd);
+    myFilterPopup->setTarget(this);
+    addFocusWidget(myFilterPopup);
+    ypos += lineHeight + 8;
+    listHeight -= lineHeight + 8;
+  }
+
+  myActionsList = new StringListWidget(boss, font, xpos, ypos, listWidth, listHeight);
   myActionsList->setTarget(this);
   myActionsList->setEditable(false);
-  myActionsList->setList(actions);
   addFocusWidget(myActionsList);
 
   // Add remap, erase, cancel and default buttons
@@ -113,13 +141,15 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myComboButton = nullptr;
 
   // Show message for currently selected event
-  xpos = HBORDER;  ypos = VBORDER + myActionsList->getHeight() + 8;
+  xpos = HBORDER;
+  ypos = myActionsList->getBottom() + 8;
   StaticTextWidget* t;
   t = new StaticTextWidget(boss, font, xpos, ypos+2, font.getStringWidth("Action"),
                            fontHeight, "Action", TextAlign::Left);
 
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 8, ypos,
-                                    _w - xpos - t->getWidth() - 8 - HBORDER, lineHeight * ACTION_LINES, "");
+                                    _w - xpos - t->getWidth() - 8 - HBORDER,
+                                    lineHeight + font.getFontHeight() * (ACTION_LINES - 1), "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
 }
@@ -129,22 +159,37 @@ void EventMappingWidget::loadConfig()
 {
   if(myFirstTime)
   {
-    myActionsList->setSelected(0);
+    if(myFilterPopup)
+      myFilterPopup->setSelectedIndex(0);
+
     myFirstTime = false;
   }
-  else
-    // controller IDs may have changed in between
-    drawKeyMapping();
 
   // Make sure remapping is turned off, just in case the user didn't properly
   // exit last time
   if(myRemapStatus)
     stopRemapping();
+
+  updateActions();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::saveConfig()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingWidget::updateActions()
+{
+  if(myFilterPopup)
+    myEventGroup = Event::Group(myFilterPopup->getSelectedTag().toInt());
+  else
+    myEventGroup = Event::Group::Menu;
+  StringList actions = instance().eventHandler().getActionList(myEventGroup);
+
+  myActionsList->setList(actions);
+  myActionSelected = myActionsList->getSelected();
+  drawKeyMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,7 +225,7 @@ void EventMappingWidget::startRemapping()
   // And show a message indicating which key is being remapped
   ostringstream buf;
   buf << "Select action for '"
-      << instance().eventHandler().actionAtIndex(myActionSelected, myEventMode)
+      << instance().eventHandler().actionAtIndex(myActionSelected, myEventGroup)
       << "' event";
   myKeyMapping->setTextColor(kTextColorEm);
   myKeyMapping->setText(buf.str());
@@ -197,7 +242,7 @@ void EventMappingWidget::eraseRemapping()
     return;
 
   Event::Type event =
-    instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
   instance().eventHandler().eraseMapping(event, myEventMode);
 
   drawKeyMapping();
@@ -210,7 +255,7 @@ void EventMappingWidget::resetRemapping()
     return;
 
   Event::Type event =
-    instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
   instance().eventHandler().setDefaultMapping(event, myEventMode);
 
   drawKeyMapping();
@@ -246,7 +291,7 @@ void EventMappingWidget::drawKeyMapping()
   if(myActionSelected >= 0)
   {
     myKeyMapping->setTextColor(kTextColor);
-    myKeyMapping->setText(instance().eventHandler().keyAtIndex(myActionSelected, myEventMode));
+    myKeyMapping->setText(instance().eventHandler().keyAtIndex(myActionSelected, myEventGroup));
   }
 }
 
@@ -261,7 +306,7 @@ void EventMappingWidget::enableButtons(bool state)
   if(myComboButton)
   {
     Event::Type e =
-      instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+      instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
 
     myComboButton->setEnabled(state && e >= Event::Combo1 && e <= Event::Combo16);
   }
@@ -292,7 +337,7 @@ bool EventMappingWidget::handleKeyUp(StellaKey key, StellaMod mod)
     && (mod & (KBDM_CTRL | KBDM_SHIFT | KBDM_ALT | KBDM_GUI)) == 0)
   {
     Event::Type event =
-      instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+      instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup);
 
     // if not pressed alone, map left and right modifier keys
     if(myLastKey < KBDK_LCTRL || myLastKey > KBDK_RGUI)
@@ -332,7 +377,7 @@ void EventMappingWidget::handleJoyUp(int stick, int button)
     if (myLastStick == stick && myLastButton == button)
     {
       EventHandler& eh = instance().eventHandler();
-      Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
+      Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
 
       // map either button/hat, solo button or button/axis combinations
       if(myLastHat != -1)
@@ -368,7 +413,7 @@ void EventMappingWidget::handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int
     else if(myLastStick == stick && axis == myLastAxis && adir == JoyDir::NONE)
     {
       EventHandler& eh = instance().eventHandler();
-      Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
+      Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
 
       if (eh.addJoyMapping(event, myEventMode, stick, myLastButton, axis, myLastDir))
         stopRemapping();
@@ -399,7 +444,7 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, JoyHatDir hdir, int bu
     else if(myLastStick == stick && hat == myLastHat && hdir == JoyHatDir::CENTER)
     {
       EventHandler& eh = instance().eventHandler();
-      Event::Type event = eh.eventAtIndex(myActionSelected, myEventMode);
+      Event::Type event = eh.eventAtIndex(myActionSelected, myEventGroup);
 
       if (eh.addJoyHatMapping(event, myEventMode, stick, myLastButton, hat, myLastHatDir))
       {
@@ -418,6 +463,10 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
+    case kFilterCmd:
+      updateActions();
+      break;
+
     case ListWidget::kSelectionChangedCmd:
       if(myActionsList->getSelected() >= 0)
       {
@@ -454,8 +503,8 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
     case kComboCmd:
       if(myComboDialog)
         myComboDialog->show(
-          instance().eventHandler().eventAtIndex(myActionSelected, myEventMode),
-          instance().eventHandler().actionAtIndex(myActionSelected, myEventMode));
+          instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup),
+          instance().eventHandler().actionAtIndex(myActionSelected, myEventGroup));
       break;
   }
 }

@@ -151,7 +151,7 @@ class EventHandler
 
     bool frying() const { return myFryingFlag; }
 
-    StringList getActionList(EventMode mode) const;
+    StringList getActionList(Event::Group group) const;
     VariantList getComboList(EventMode mode) const;
 
     /** Used to access the list of events assigned to a specific combo event. */
@@ -177,9 +177,9 @@ class EventHandler
       return myPKeyHandler->getMappingDesc(event, mode);
     }
 
-    Event::Type eventAtIndex(int idx, EventMode mode) const;
-    string actionAtIndex(int idx, EventMode mode) const;
-    string keyAtIndex(int idx, EventMode mode) const;
+    Event::Type eventAtIndex(int idx, Event::Group group) const;
+    string actionAtIndex(int idx, Event::Group group) const;
+    string keyAtIndex(int idx, Event::Group group) const;
 
     /**
       Bind a key to an event/action and regenerate the mapping array(s).
@@ -400,6 +400,18 @@ class EventHandler
       MENU_ACTIONLIST_SIZE = 18
     ;
 
+    using EventList = std::vector<Event::Type>;
+    // Define event groups
+    static const EventList MiscEvents;
+    static const EventList StateEvents;
+    static const EventList AudioVideoEvents;
+    static const EventList ConsoleEvents;
+    static const EventList JoystickEvents;
+    static const EventList PaddlesEvents;
+    static const EventList KeyboardEvents;
+    static const EventList DebugEvents;
+    static const EventList ComboEvents;
+
     /**
       The following methods take care of assigning action mappings.
     */
@@ -407,6 +419,12 @@ class EventHandler
     void setDefaultKeymap(Event::Type, EventMode mode);
     void setDefaultJoymap(Event::Type, EventMode mode);
     void saveComboMapping();
+
+    StringList getActionList(EventMode mode) const;
+    StringList getActionList(const EventList& events, EventMode mode = EventMode::kEmulationMode) const;
+    // returns the action array index of the index in the provided group
+    int getEmulActionListIndex(int idx, const EventList& events) const;
+    int getActionListIndex(int idx, Event::Group group) const;
 
   private:
     // Structure used for action menu items

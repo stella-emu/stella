@@ -48,7 +48,6 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 4;
   int xpos, ypos, tabID;
-  StringList actions;
 
   // Set real dimensions
   setSize(51 * fontWidth + 10, 17 * (lineHeight + 4) + 16 + _th, max_w, max_h);
@@ -60,21 +59,19 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // 1) Event mapper for emulation actions
   tabID = myTab->addTab(" Emulation Events ", TabWidget::AUTO_WIDTH);
-  actions = instance().eventHandler().getActionList(EventMode::kEmulationMode);
   myEmulEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - 4,
-                                             actions, EventMode::kEmulationMode);
+                                             EventMode::kEmulationMode);
   myTab->setParentWidget(tabID, myEmulEventMapper);
   addToFocusList(myEmulEventMapper->getFocusList(), myTab, tabID);
 
   // 2) Event mapper for UI actions
   tabID = myTab->addTab("  UI Events  ", TabWidget::AUTO_WIDTH);
-  actions = instance().eventHandler().getActionList(EventMode::kMenuMode);
   myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - 4,
-                                             actions, EventMode::kMenuMode);
+                                             EventMode::kMenuMode);
   myTab->setParentWidget(tabID, myMenuEventMapper);
   addToFocusList(myMenuEventMapper->getFocusList(), myTab, tabID);
 
@@ -642,3 +639,4 @@ void InputDialog::UpdateDejitter()
 
   myDejitterLabel->setLabel(label.str());
 }
+

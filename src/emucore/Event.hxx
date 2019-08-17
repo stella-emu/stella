@@ -124,6 +124,15 @@ class Event
 
     };
 
+    // Event categorizing groups
+    enum Group
+    {
+      Menu, Emulation,
+      Misc, AudioVideo, States, Console, Joystick, Paddles, Keyboard,
+      Debug, Combo,
+      LastGroup
+    };
+
     // Event list version, update if the id of existing event types changed
     static constexpr Int32 VERSION = 3;
 
