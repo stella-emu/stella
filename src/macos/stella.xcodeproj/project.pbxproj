@@ -653,6 +653,8 @@
 		E06508CB2272493200B341AC /* SettingsRepositoryMACOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = E06508C92272493200B341AC /* SettingsRepositoryMACOS.mm */; };
 		E0893AF2211B9842008B170D /* HighPass.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0893AF0211B9841008B170D /* HighPass.cxx */; };
 		E0893AF3211B9842008B170D /* HighPass.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0893AF1211B9841008B170D /* HighPass.hxx */; };
+		E08D2F3E23089B9B000BD709 /* JoyMap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E08D2F3C23089B9B000BD709 /* JoyMap.cxx */; };
+		E08D2F3F23089B9B000BD709 /* JoyMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E08D2F3D23089B9B000BD709 /* JoyMap.hxx */; };
 		E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4139201E901C004A3391 /* AudioQueue.hxx */; };
 		E09F413C201E901D004A3391 /* AudioQueue.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413A201E901D004A3391 /* AudioQueue.cxx */; };
 		E09F4141201E9050004A3391 /* Audio.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F413D201E904F004A3391 /* Audio.hxx */; };
@@ -1370,6 +1372,8 @@
 		E07C2326226393BD00B78631 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E0893AF0211B9841008B170D /* HighPass.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HighPass.cxx; path = audio/HighPass.cxx; sourceTree = "<group>"; };
 		E0893AF1211B9841008B170D /* HighPass.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HighPass.hxx; path = audio/HighPass.hxx; sourceTree = "<group>"; };
+		E08D2F3C23089B9B000BD709 /* JoyMap.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JoyMap.cxx; sourceTree = "<group>"; };
+		E08D2F3D23089B9B000BD709 /* JoyMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JoyMap.hxx; sourceTree = "<group>"; };
 		E09F4139201E901C004A3391 /* AudioQueue.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioQueue.hxx; sourceTree = "<group>"; };
 		E09F413A201E901D004A3391 /* AudioQueue.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioQueue.cxx; sourceTree = "<group>"; };
 		E09F413D201E904F004A3391 /* Audio.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Audio.hxx; sourceTree = "<group>"; };
@@ -1666,6 +1670,8 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				E08D2F3C23089B9B000BD709 /* JoyMap.cxx */,
+				E08D2F3D23089B9B000BD709 /* JoyMap.hxx */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
@@ -2359,6 +2365,7 @@
 				2D91741009BA90380026E9FF /* OptionsDialog.hxx in Headers */,
 				DCEC58591E945125002F0246 /* DelayQueueWidget.hxx in Headers */,
 				2D91741109BA90380026E9FF /* PopUpWidget.hxx in Headers */,
+				E08D2F3F23089B9B000BD709 /* JoyMap.hxx in Headers */,
 				2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */,
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
 				2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */,
@@ -2909,6 +2916,7 @@
 				DCB20EC71A0C506C0048F595 /* main.cxx in Sources */,
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 				CFE3F6151E84A9CE00A8204E /* CartCDF.cxx in Sources */,
+				E08D2F3E23089B9B000BD709 /* JoyMap.cxx in Sources */,
 				DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,
 				DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */,
