@@ -266,7 +266,6 @@ class LinkedObjectPool
       for(const auto& i: p.myList)
         os << i << (p.current() == i ? "* " : "  ");
       return os;
-
     }
 
   private:
