@@ -43,45 +43,10 @@
 #include "Version.hxx"
 #include "LauncherDialog.hxx"
 
-/**
-  TODO:
-    - show all files / only ROMs
-    - connect to 'matchPattern'
-    - create lambda filter to pass these to FileListWidget
-*/
-#if 0
-  // TODO - rough contents of lambda filter
-  FSList files;
-  files.reserve(2048);
-  myCurrentNode.getChildren(files, FilesystemNode::ListMode::All);
-
-  // Add '[..]' to indicate previous folder
-  if(myCurrentNode.hasParent())
-    myGameList->appendGame(" [..]", "", "", true);
-
-  // Now add the directory entries
-  bool domatch = myPattern && myPattern->getText() != "";
-  for(const auto& f: files)
-  {
-    bool isDir = f.isDirectory();
-    const string& name = isDir ? (" [" + f.getName() + "]") : f.getName();
-
-    // Do we want to show only ROMs or all files?
-    if(!isDir && myShowOnlyROMs && !Bankswitch::isValidRomName(f))
-      continue;
-
-    // Skip over files that don't match the pattern in the 'pattern' textbox
-    if(domatch && !isDir && !matchPattern(name, myPattern->getText()))
-      continue;
-
-    myGameList->appendGame(name, f.getPath(), "", isDir);
-  }
-#endif
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
-                                 int x, int y, int w, int h)
-    : Dialog(osystem, parent, x, y, w, h),
+LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
+                               int x, int y, int w, int h)
+  : Dialog(osystem, parent, x, y, w, h),
     myStartButton(nullptr),
     myPrevDirButton(nullptr),
     myOptionsButton(nullptr),
@@ -350,6 +315,27 @@ void LauncherDialog::updateUI()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::applyFiltering()
+{
+  myList->setNameFilter(
+    [&](const FilesystemNode& node) {
+      if(!node.isDirectory())
+      {
+        // Do we want to show only ROMs or all files?
+        if(myShowOnlyROMs && !Bankswitch::isValidRomName(node))
+          return false;
+
+        // Skip over files that don't match the pattern in the 'pattern' textbox
+        if(myPattern && myPattern->getText() != "" &&
+          !BSPF::containsIgnoreCase(node.getName(), myPattern->getText()))
+          return false;
+      }
+      return true;
+    }
+  );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
 {
   if(!myRomInfoWidget)
@@ -384,47 +370,7 @@ void LauncherDialog::showOnlyROMs(bool state)
 {
   myShowOnlyROMs = state;
   instance().settings().setValue("launcherroms", state);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
-{
-  // This method is modelled after strcasestr, which we don't use
-  // because it isn't guaranteed to be available everywhere
-  // The strcasestr uses the KMP algorithm when the comparisons
-  // reach a certain point, but since we'll be dealing with relatively
-  // short strings, I think the overhead of building a KMP table
-  // each time would be slower than the brute force method used here
-  const char* haystack = s.c_str();
-  const char* needle = pattern.c_str();
-
-  uInt8 b = tolower(*needle);
-
-  needle++;
-  for(;; haystack++)
-  {
-    if(*haystack == '\0')  /* No match */
-      return false;
-
-    /* The first character matches */
-    if(tolower(*haystack) == b)
-    {
-      const char* rhaystack = haystack + 1;
-      const char* rneedle = needle;
-
-      for(;; rhaystack++, rneedle++)
-      {
-        if(*rneedle == '\0')   /* Found a match */
-          return true;
-        if(*rhaystack == '\0') /* No match */
-          return false;
-
-        /* Nothing in this round */
-        if(tolower(*rhaystack) != tolower(*rneedle))
-          break;
-      }
-    }
-  }
+  applyFiltering();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -563,6 +509,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case ListWidget::kLongButtonPressCmd:
       myGlobalProps->open();
       myEventHandled = true;
+      break;
+
+    case EditableWidget::kChangedCmd:
+      applyFiltering();  // pattern matching taken care of directly in this method
+      reload();
       break;
 
     case kQuitCmd:

@@ -35,6 +35,9 @@ class CommandSender;
 
   Note that the ItemActivated signal is not sent when activating a
   directory; instead the selection descends into the directory.
+
+  Widgets wishing to enforce their own filename filtering are able
+  to use a 'NameFilter' as described below.
 */
 class FileListWidget : public StringListWidget
 {
@@ -49,9 +52,10 @@ class FileListWidget : public StringListWidget
                    int x, int y, int w, int h);
     virtual ~FileListWidget() = default;
 
-    /** Determines how to display files/folders */
+    /** Determines how to display files/folders; either setDirectory or reload
+        must be called after any of these are called. */
     void setListMode(FilesystemNode::ListMode mode) { _fsmode = mode; }
-    void setFileExtension(const string& ext) { _extension = ext; }  // TODO - re-implement this
+    void setNameFilter(const FilesystemNode::NameFilter& filter) { _filter = filter; }
 
     /**
       Set initial directory, and optionally select the given item.
@@ -69,12 +73,15 @@ class FileListWidget : public StringListWidget
     void reload();
 
     /** Gets current node(s) */
-    const FilesystemNode& selected() const   { return _fileList[_selected]; }
+    const FilesystemNode& selected() {
+      _selected = BSPF::clamp(_selected, 0u, uInt32(_fileList.size()-1));
+      return _fileList[_selected];
+    }
     const FilesystemNode& currentDir() const { return _node; }
 
   private:
     /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FilesystemNode& node, const string& select = EmptyString);
+    void setLocation(const FilesystemNode& node, string select = EmptyString);
 
     /** Descend into currently selected directory */
     void selectDirectory();
@@ -83,12 +90,11 @@ class FileListWidget : public StringListWidget
 
   private:
     FilesystemNode::ListMode _fsmode;
+    FilesystemNode::NameFilter _filter;
     FilesystemNode _node;
     FSList _fileList;
 
     Common::FixedStack<string> _history;
-
-    string _extension;
     uInt32 _selected;
 
   private:

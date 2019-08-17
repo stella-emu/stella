@@ -51,7 +51,8 @@ bool FilesystemNode::exists() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::getChildren(FSList& fslist, ListMode mode) const
+bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
+                                 const NameFilter& filter) const
 {
   if (!_realNode || !_realNode->isDirectory())
     return false;
@@ -89,7 +90,9 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode) const
       // Force ZIP c'tor to be called
       AbstractFSNodePtr ptr = FilesystemNodeFactory::create(i->getPath(),
           FilesystemNodeFactory::Type::ZIP);
-      fslist.emplace_back(FilesystemNode(ptr));
+      FilesystemNode node(ptr);
+      if (filter(node))
+        fslist.emplace_back(node);
     }
     else
   #endif
@@ -98,7 +101,9 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode) const
       if (i->isDirectory())
         i->setName(" [" + i->getName() + "]");
 
-      fslist.emplace_back(FilesystemNode(i));
+      FilesystemNode node(i);
+      if (filter(node))
+        fslist.emplace_back(node);
     }
   }
 

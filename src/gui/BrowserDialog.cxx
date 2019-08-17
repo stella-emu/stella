@@ -115,7 +115,9 @@ void BrowserDialog::show(const string& startpath,
   {
     case FileLoad:
       _fileList->setListMode(FilesystemNode::ListMode::All);
-      _fileList->setFileExtension(ext);
+      _fileList->setNameFilter([&ext](const FilesystemNode& node) {
+        return BSPF::endsWithIgnoreCase(node.getName(), ext);
+      });
       _selected->setEditable(false);
       _selected->clearFlags(Widget::FLAG_INVISIBLE);
       _type->clearFlags(Widget::FLAG_INVISIBLE);
@@ -123,7 +125,9 @@ void BrowserDialog::show(const string& startpath,
 
     case FileSave:
       _fileList->setListMode(FilesystemNode::ListMode::All);
-      _fileList->setFileExtension(ext);
+      _fileList->setNameFilter([&ext](const FilesystemNode& node) {
+        return BSPF::endsWithIgnoreCase(node.getName(), ext);
+      });
       _selected->setEditable(false);  // FIXME - disable user input for now
       _selected->clearFlags(Widget::FLAG_INVISIBLE);
       _type->clearFlags(Widget::FLAG_INVISIBLE);
@@ -131,6 +135,7 @@ void BrowserDialog::show(const string& startpath,
 
     case Directories:
       _fileList->setListMode(FilesystemNode::ListMode::DirectoriesOnly);
+      _fileList->setNameFilter([](const FilesystemNode&) { return true; });
       _selected->setEditable(false);
       _selected->setFlags(Widget::FLAG_INVISIBLE);
       _type->setFlags(Widget::FLAG_INVISIBLE);

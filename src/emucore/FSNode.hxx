@@ -45,6 +45,8 @@
  * we can build upon this.
  */
 
+#include <functional>
+
 #include "bspf.hxx"
 
 class FilesystemNode;
@@ -69,6 +71,10 @@ class FilesystemNode
      * Flag to tell listDir() which kind of files to list.
      */
     enum class ListMode { FilesOnly, DirectoriesOnly, All };
+
+    /** Function used to filter the file listing.  Returns true if the filename
+        should be included, else false.*/
+    using NameFilter = std::function<bool(const FilesystemNode& node)>;
 
     /**
      * Create a new pathless FilesystemNode. Since there's no path associated
@@ -127,7 +133,8 @@ class FilesystemNode
      * @return true if successful, false otherwise (e.g. when the directory
      *         does not exist).
      */
-    bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly) const;
+    bool getChildren(FSList& fslist, ListMode mode = ListMode::DirectoriesOnly,
+                     const NameFilter& filter = [](const FilesystemNode&){ return true; }) const;
 
     /**
      * Set/get a string representation of the name of the file. This is can be
@@ -264,6 +271,7 @@ class AbstractFSNode
   protected:
     friend class FilesystemNode;
     using ListMode = FilesystemNode::ListMode;
+    using NameFilter = FilesystemNode::NameFilter;
 
   public:
     /**
