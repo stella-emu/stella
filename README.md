@@ -13,9 +13,7 @@ The Stella Team
 
 Please check the list of known issues first (see below) before reporting new ones.
 If you encounter any issues, please open a new issue on the project
-[issue tracker](https://github.com/stella-emu/stella/issues) and / or in the corresponding
-[thread](http://atariage.com/forums/topic/259633-testing-the-new-stella-tia-core/) on
-AtariAge.
+[issue tracker](https://github.com/stella-emu/stella/issues).
 
 # Known issues
 
