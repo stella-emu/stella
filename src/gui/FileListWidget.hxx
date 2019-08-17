@@ -21,7 +21,7 @@
 class CommandSender;
 
 #include "FSNode.hxx"
-#include "LinkedObjectPool.hxx"
+#include "Stack.hxx"
 #include "StringListWidget.hxx"
 
 /**
@@ -74,7 +74,10 @@ class FileListWidget : public StringListWidget
 
   private:
     /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FilesystemNode& node, string select);
+    void setLocation(const FilesystemNode& node, const string& select = EmptyString);
+
+    /** Descend into currently selected directory */
+    void selectDirectory();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
@@ -83,7 +86,7 @@ class FileListWidget : public StringListWidget
     FilesystemNode _node;
     FSList _fileList;
 
-    Common::LinkedObjectPool<string> _history;
+    Common::FixedStack<string> _history;
 
     string _extension;
     uInt32 _selected;

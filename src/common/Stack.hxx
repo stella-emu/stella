@@ -49,6 +49,13 @@ class FixedStack
     T pop() { return std::move(_stack[--_size]); }
     uInt32 size() const { return _size; }
 
+    // Reverse the contents of the stack
+    // This operation isn't needed very often, but it's handy to have
+    void reverse() {
+      for(uInt32 i = 0, j = _size - 1; i < j; ++i, --j)
+        std::swap(_stack[i], _stack[j]);
+    }
+
     // Apply the given function to every item in the stack
     // We do it this way so the stack API can be preserved,
     // and no access to individual elements is allowed outside
@@ -56,6 +63,12 @@ class FixedStack
     void applyAll(const StackFunction& func) {
       for(uInt32 i = 0; i < _size; ++i)
         func(_stack[i]);
+    }
+
+    friend ostream& operator<<(ostream& os, const FixedStack<T>& s) {
+      for(uInt32 pos = 0; pos < s._size; ++pos)
+        os << s._stack[pos] << " ";
+      return os;
     }
 
   private:

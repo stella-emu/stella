@@ -50,6 +50,31 @@ void FileListWidget::setDirectory(const FilesystemNode& node, string select)
     _node = _node.getParent();
   }
 
+  // Initialize history
+  FilesystemNode tmp = _node;
+  while(tmp.hasParent())
+  {
+    string name = tmp.getName();
+    if(name.back() == '/' || name.back() == '\\')
+      name.pop_back();
+    if(!BSPF::startsWithIgnoreCase(name, " ["))
+      name = " [" + name + "]";
+
+    _history.push(name);
+    tmp = tmp.getParent();
+  }
+  // History is in reverse order; we need to fix that
+  _history.reverse();
+
+  // Finally, go to this location
+  setLocation(_node, select);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileListWidget::setLocation(const FilesystemNode& node, const string& select)
+{
+  _node = node;
+
   // Read in the data from the file system (start with an empty list)
   _fileList.clear();
   _fileList.reserve(512);
@@ -67,9 +92,10 @@ void FileListWidget::setDirectory(const FilesystemNode& node, string select)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setLocation(const FilesystemNode& node, string select)
+void FileListWidget::selectDirectory()
 {
-  setDirectory(node, select);
+  _history.push(selected().getName());
+  setLocation(selected());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,13 +103,7 @@ void FileListWidget::selectParent()
 {
   if(_node.hasParent())
   {
-    // Make sure 'selected' has the proper directory naming scheme
-    string select = _node.getName();
-    if(select.back() == '/' || select.back() == '\\')
-      select.pop_back();
-    if(!BSPF::startsWithIgnoreCase(select, " ["))
-      select = " [" + select + "]";
-
+    const string& select = !_history.empty() ? _history.pop() : EmptyString;
     setLocation(_node.getParent(), select);
   }
 }
@@ -115,7 +135,7 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
       if(selected().isDirectory())
       {
         cmd = ItemChanged;
-        setLocation(selected(), "");
+        selectDirectory();
       }
       else
         cmd = ItemActivated;
