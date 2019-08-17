@@ -165,7 +165,6 @@ class Event
         myValues[i] = Event::NoType;
     }
 
-
     /**
       Tests if a given event represents continuous or analog values.
     */
@@ -186,9 +185,6 @@ class Event
   private:
     // Array of values associated with each event type
     Int32 myValues[LastType];
-
-    // Array of keyboard key states
-    //bool myKeyTable[KBDK_LAST];
 
     mutable std::mutex myMutex;
 
