@@ -11,12 +11,12 @@ extern int stellaMain(int argc, char* argv[]);
 
 static int    gArgc;
 static char** gArgv;
-static BOOL   gFinderLaunch;
-static BOOL   gCalledAppMainline = FALSE;
-
 
 // The main class of the application, the application's delegate
-@implementation SDLMain
+@implementation SDLMain {
+  BOOL calledMainline;
+  NSString* openFilename;
+}
 
 // ----------------------------------------------------------------------------
 static SDLMain* sharedInstance = nil;
@@ -28,20 +28,18 @@ static SDLMain* sharedInstance = nil;
 
 // ----------------------------------------------------------------------------
 // Set the working directory to the .app's parent directory
-- (void) setupWorkingDirectory:(BOOL)shouldChdir
+- (void) setupWorkingDirectory
 {
-  if (shouldChdir)
+  char parentdir[MAXPATHLEN];
+
+  CFURLRef url  = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
+  if (CFURLGetFileSystemRepresentation(url2, 1, (UInt8*)parentdir, MAXPATHLEN))
   {
-    char parentdir[MAXPATHLEN];
-    CFURLRef url  = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
-    if (CFURLGetFileSystemRepresentation(url2, 1, (UInt8*)parentdir, MAXPATHLEN))
-    {
-      chdir(parentdir);   /* chdir to the binary app's parent */
-    }
-    CFRelease(url);
-    CFRelease(url2);
+    chdir(parentdir);   /* chdir to the binary app's parent */
   }
+  CFRelease(url);
+  CFRelease(url2);
 }
 
 
@@ -63,33 +61,10 @@ static SDLMain* sharedInstance = nil;
   */
 - (BOOL)application:(NSApplication*)theApplication openFile:(NSString*)filename
 {
-  const char* temparg;
-  size_t arglen;
-  char* arg;
-  char** newargv;
+  if (calledMainline) return FALSE;
 
-  if (!gFinderLaunch)     // MacOS is passing command line args.
-    return FALSE;
-  if (gCalledAppMainline) // app has started, ignore this document.
-    return FALSE;
+  openFilename = filename;
 
-  temparg = [filename UTF8String];
-  arglen = SDL_strlen(temparg) + 1;
-  arg = (char*) SDL_malloc(arglen);
-  if (arg == NULL)
-    return FALSE;
-
-  newargv = (char **) realloc(gArgv, sizeof (char*) * (gArgc + 2));
-  if (newargv == NULL)
-  {
-    SDL_free(arg);
-    return FALSE;
-  }
-  gArgv = newargv;
-
-  SDL_strlcpy(arg, temparg, arglen);
-  gArgv[gArgc++] = arg;
-  gArgv[gArgc] = NULL;
   return TRUE;
 }
 
@@ -101,54 +76,32 @@ static SDLMain* sharedInstance = nil;
   int status;
 
   // Set the working directory to the .app's parent directory
-  [self setupWorkingDirectory:gFinderLaunch];
+  [self setupWorkingDirectory];
 
-  // Hand off to main application code
-  gCalledAppMainline = TRUE;
-  status = SDL_main (gArgc, gArgv);
+  calledMainline = TRUE;
+
+  if (openFilename) {
+    int _argc = 2;
+    char** _argv = SDL_malloc(sizeof(char*) * 2);
+
+    _argv[0] = gArgv[0];
+
+    char* filename = SDL_malloc(strlen([openFilename UTF8String]) + 1);
+    strcpy(filename, [openFilename UTF8String]);
+    _argv[1] = filename;
+
+    status = SDL_main(_argc, _argv);
+
+    SDL_free(filename);
+    SDL_free(_argv);
+  } else
+    status = SDL_main(gArgc, gArgv);
 
   // We're done, thank you for playing
   exit(status);
 }
 
 @end
-
-static int IsRootCwd()
-{
-  char buf[MAXPATHLEN];
-  char *cwd = getcwd(buf, sizeof (buf));
-  return (cwd && (strcmp(cwd, "/") == 0));
-}
-
-static int IsTenPointNineOrLater()
-{
-  /* -instancesRespondToSelector is available in 10.9, but it says that it's
-   available in 10.10. Either way, if it's there, we're on 10.9 or higher:
-   just return true so we don't clobber the user's console with this. */
-  if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)]) {
-    return 1;
-  }
-  /* Gestalt() is deprecated in 10.8, but I don't care. Stop using SDL 1.2. */
-  SInt32 major, minor;
-  Gestalt(gestaltSystemVersionMajor, &major);
-  Gestalt(gestaltSystemVersionMinor, &minor);
-  return ( ((major << 16) | minor) >= ((10 << 16) | 9) );
-}
-
-static int IsFinderLaunch(const int argc, char **argv)
-{
-  const int bIsNewerOS = IsTenPointNineOrLater();
-  /* -psn_XXX is passed if we are launched from Finder in 10.8 and earlier */
-  if ( (!bIsNewerOS) && (argc >= 2) && (strncmp(argv[1], "-psn", 4) == 0) ) {
-    return 1;
-  } else if ((bIsNewerOS) && (argc == 1) && IsRootCwd()) {
-    /* we might still be launched from the Finder; on 10.9+, you might not
-     get the -psn command line anymore. Check version, if there's no
-     command line, and if our current working directory is "/". */
-    return 1;
-  }
-  return 0;  /* not a Finder launch. */
-}
 
 #ifdef main
 #  undef main
@@ -157,24 +110,8 @@ static int IsFinderLaunch(const int argc, char **argv)
 // Main entry point to executable - should *not* be SDL_main!
 int main (int argc, char* argv[])
 {
-  // Copy the arguments into a global variable
-  // This is passed if we are launched by double-clicking
-  if (IsFinderLaunch(argc, argv))
-  {
-    gArgv = (char**) SDL_malloc(sizeof(char*) * 2);
-    gArgv[0] = argv[0];
-    gArgv[1] = NULL;
-    gArgc = 1;
-    gFinderLaunch = YES;
-  }
-  else
-  {
-    gArgc = argc;
-    gArgv = (char**) SDL_malloc(sizeof(char*) * (argc+1));
-    for (int i = 0; i <= argc; i++)
-      gArgv[i] = argv[i];
-    gFinderLaunch = NO;
-  }
+  gArgc = argc;
+  gArgv = argv;
 
   NSApplicationMain (argc, (const char**)argv);
 
