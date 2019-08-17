@@ -147,11 +147,11 @@ string JoyMap::getDesc(const Event::Type event, const JoyMapping& mapping) const
     buf << "/H" << mapping.hat;
     switch (mapping.hdir)
     {
-      case JoyHatDir::UP:    buf << "/up";    break;
-      case JoyHatDir::DOWN:  buf << "/down";  break;
-      case JoyHatDir::LEFT:  buf << "/left";  break;
-      case JoyHatDir::RIGHT: buf << "/right"; break;
-      default:                             break;
+      case JoyHatDir::UP:    buf << "Y+"; break;
+      case JoyHatDir::DOWN:  buf << "Y-"; break;
+      case JoyHatDir::LEFT:  buf << "X-"; break;
+      case JoyHatDir::RIGHT: buf << "X+"; break;
+      default:                            break;
     }
   }
 
