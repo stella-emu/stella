@@ -557,8 +557,10 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
   {Event::JoystickZeroFire,         KBDK_LCTRL},
   {Event::JoystickZeroFire,         KBDK_KP_5},
   {Event::JoystickZeroFire5,        KBDK_4},
+  {Event::JoystickZeroFire5,        KBDK_RSHIFT},
   {Event::JoystickZeroFire5,        KBDK_KP_9},
   {Event::JoystickZeroFire9,        KBDK_5},
+  {Event::JoystickZeroFire9,        KBDK_RCTRL},
   {Event::JoystickZeroFire9,        KBDK_KP_3},
   {Event::JoystickOneUp,            KBDK_Y},
   {Event::JoystickOneDown,          KBDK_H},
@@ -573,11 +575,14 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultJoyst
 PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultPaddleMapping = {
   {Event::PaddleZeroDecrease,       KBDK_RIGHT},
   {Event::PaddleZeroIncrease,       KBDK_LEFT},
+  {Event::PaddleZeroFire,           KBDK_SPACE},
   {Event::PaddleZeroFire,           KBDK_LCTRL},
+  {Event::PaddleZeroFire,           KBDK_KP_5},
 
   {Event::PaddleOneDecrease,        KBDK_DOWN},
   {Event::PaddleOneIncrease,        KBDK_UP},
   {Event::PaddleOneFire,            KBDK_4},
+  {Event::PaddleOneFire,            KBDK_RCTRL},
 
   {Event::PaddleTwoDecrease,        KBDK_J},
   {Event::PaddleTwoIncrease,        KBDK_G},
