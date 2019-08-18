@@ -294,6 +294,7 @@
 ""
 
 "Cart.MD5" "041b5e56bbc650db574bd8db3fae2696"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V1.0) (2000) (TJ)"
 "Cart.Rarity" "New Release"
 ""
@@ -339,6 +340,7 @@
 ""
 
 "Cart.MD5" "04dfb4acac1d0909e4c360fd2ac04480"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Jammed (2001) (XYPE) (NTSC)"
 ""
 
@@ -1031,6 +1033,7 @@
 ""
 
 "Cart.MD5" "0cc8224ff1edfe458e8629e9e5fe3f5b"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Trick 12 (2001) (TJ)"
 ""
 
@@ -1684,6 +1687,7 @@
 ""
 
 "Cart.MD5" "1442d1b35a6478fba22ae7dd1fcb5634"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V0.2) (2000) (TJ)"
 "Cart.Rarity" "New Release"
 ""
@@ -1793,7 +1797,7 @@
 ""
 
 "Cart.MD5" "15b498199ed0ed28057bf0dbdce9b8d8"
-"Cart.Manufacturer" "Hozer Video Games"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Jammed (V0.2) (Demo) (2001) (TJ)"
 "Cart.Rarity" "New Release"
 ""
@@ -1837,6 +1841,7 @@
 ""
 
 "Cart.MD5" "161ded4a85d3c78e44fffd40426f537f"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "JtzBall (Alpha) (TJ)"
 ""
 
@@ -4319,6 +4324,7 @@
 ""
 
 "Cart.MD5" "346555779a2d51b48833463b5433472f"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V0.1) (2000) (TJ)"
 "Cart.Rarity" "New Release"
 ""
@@ -5434,6 +5440,7 @@
 ""
 
 "Cart.MD5" "4153dd2beed648e9dc082140ebe8e836"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Coke Zero (v1.0) (NTSC)"
 "Display.YStart" "28"
 ""
@@ -5514,10 +5521,12 @@
 ""
 
 "Cart.MD5" "4251b4557ea6953e88afb22a3a868724"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Robot City (V1.1) (TJ)"
 ""
 
 "Cart.MD5" "425ee444a41d218598893d6b6e03431a"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Invaders Demo (2001) (TJ)"
 ""
 
@@ -10385,6 +10394,14 @@
 "Cart.Note" "AKA Carnival"
 ""
 
+"Cart.MD5" "7ded20e88b17c8149b4de0d55c795d37"
+"Cart.Manufacturer" "Thomas Jentzsch, Paul Slocum"
+"Cart.Name" "Thrust+ Platinum (v1.26)"
+"Cart.Rarity" "New Release, supports BoosterGrip"
+"Controller.Left" "BOOSTERGRIP"
+"Controller.Right" "DRIVING"
+""
+
 "Cart.MD5" "7dfd100bda9abb0f3744361bc7112681"
 "Cart.Manufacturer" "Telesys, Don Ruffcorn"
 "Cart.ModelNo" "1006"
@@ -10790,6 +10807,7 @@
 ""
 
 "Cart.MD5" "82337e5fe0f418ca9484ca851dfc226a"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Robot City (V1.0) (Alpha) (TJ)"
 ""
 
@@ -11883,7 +11901,7 @@
 ""
 
 "Cart.MD5" "911d385ee0805ff5b8f96c5a63da7de5"
-"Cart.Manufacturer" "Hozer Video Games"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Jammed (V0.1) (Demo) (2001) (TJ)"
 "Cart.Rarity" "New Release"
 ""
@@ -12500,6 +12518,7 @@
 ""
 
 "Cart.MD5" "98fa3ad778a668a79449350de4b3b95b"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V1.1) (2000) (TJ)"
 ""
 
@@ -13680,6 +13699,7 @@
 ""
 
 "Cart.MD5" "a9784c24cddb33bd0d14442b97784f3d"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Omega Race DC (2003) (TJ) (Omega Race Hack)"
 ""
 
@@ -14656,6 +14676,7 @@
 ""
 
 "Cart.MD5" "b6821ac51c4c1dcb283f01be2f047dc1"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Rubik's Cube 3D Demo (25-11-2002) (TJ)"
 ""
 
@@ -14689,6 +14710,7 @@
 ""
 
 "Cart.MD5" "b731d35e4ac6b3b47eba5dd0991f452f"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Rubik's Cube 3D Demo (Final) (08-01-2003) (TJ)"
 ""
 
@@ -14903,6 +14925,7 @@
 ""
 
 "Cart.MD5" "ba317f83cdfcd58cbc65aac1ccb87bc5"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Jammed (2001) (XYPE) [a1]"
 ""
 
@@ -14914,6 +14937,7 @@
 ""
 
 "Cart.MD5" "ba3b0eebccc7b791107de5b4abb671b4"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V0.9) (2000) (TJ)"
 "Cart.Rarity" "New Release"
 ""
@@ -15285,6 +15309,7 @@
 ""
 
 "Cart.MD5" "c05f367fa4767ceb27abadf0066df7f4"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "TomInv (31-07-2001) (TJ)"
 ""
 
@@ -17288,6 +17313,7 @@
 ""
 
 "Cart.MD5" "d82675ce67caf16afe5ed6b6fac8aa37"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Robot City (V0.23) (13-11-2002) (TJ)"
 ""
 
@@ -17387,6 +17413,7 @@
 ""
 
 "Cart.MD5" "d9ab6b67a17da51e5ad13717e93fa2e2"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Turbo (Coleco) Prototype Fake v0.1 (TJ)"
 ""
 
@@ -17718,6 +17745,7 @@
 ""
 
 "Cart.MD5" "dd4f4e0fbd81762533e39e6f5b55bb3a"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Turbo WIP (TJ)"
 ""
 
@@ -19197,7 +19225,8 @@
 "Cart.Name" "Berenstain Bears (1983) (Coleco)"
 "Cart.Note" "Uses the KidVid Controller"
 "Cart.Rarity" "Unbelievably Rare"
-"Controller.Left" "KEYBOARD"
+"Controller.Right" "KIDVID"
+"Console.LeftDiff" "A"
 "Display.YStart" "25"
 ""
 
@@ -20536,6 +20565,7 @@
 ""
 
 "Cart.MD5" "fc668a2251dd79cbd903d4fa0e558f96"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Thrust (V1.1) (2000) (TJ) [a1]"
 ""
 
@@ -20641,6 +20671,7 @@
 ""
 
 "Cart.MD5" "fde42e39710e75e9e4d4d75440f8e4e5"
+"Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Coke Zero (v1.0) (PAL)"
 "Display.YStart" "35"
 ""
