@@ -55,35 +55,25 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
       // These aren't affected by changes in axis orientation
       myP0AxisValue  = Event::PaddleZeroAnalog;
       myP1AxisValue  = Event::PaddleOneAnalog;
-      myP0FireEvent1 = Event::PaddleZeroFire;
-      myP0FireEvent2 = Event::JoystickZeroFire;
-      myP1FireEvent1 = Event::PaddleOneFire;
-      myP1FireEvent2 = Event::JoystickZeroFire9;
+      myP0FireEvent = Event::PaddleZeroFire;
+      myP1FireEvent = Event::PaddleOneFire;
 
       // Direction of movement is swapped
       // That is, moving in a certain direction on an axis can
       // result in either increasing or decreasing paddle movement
       if(!swapdir)
       {
-        myP0DecEvent1 = Event::PaddleZeroDecrease;
-        myP0DecEvent2 = Event::JoystickZeroRight;
-        myP0IncEvent1 = Event::PaddleZeroIncrease;
-        myP0IncEvent2 = Event::JoystickZeroLeft;
-        myP1DecEvent1 = Event::PaddleOneDecrease;
-        myP1DecEvent2 = Event::JoystickZeroDown;
-        myP1IncEvent1 = Event::PaddleOneIncrease;
-        myP1IncEvent2 = Event::JoystickZeroUp;
+        myP0DecEvent = Event::PaddleZeroDecrease;
+        myP0IncEvent = Event::PaddleZeroIncrease;
+        myP1DecEvent = Event::PaddleOneDecrease;
+        myP1IncEvent = Event::PaddleOneIncrease;
       }
       else
       {
-        myP0DecEvent1 = Event::PaddleZeroIncrease;
-        myP0DecEvent2 = Event::JoystickZeroLeft;
-        myP0IncEvent1 = Event::PaddleZeroDecrease;
-        myP0IncEvent2 = Event::JoystickZeroRight;
-        myP1DecEvent1 = Event::PaddleOneIncrease;
-        myP1DecEvent2 = Event::JoystickZeroUp;
-        myP1IncEvent1 = Event::PaddleOneDecrease;
-        myP1IncEvent2 = Event::JoystickZeroDown;
+        myP0DecEvent = Event::PaddleZeroIncrease;
+        myP0IncEvent = Event::PaddleZeroDecrease;
+        myP1DecEvent = Event::PaddleOneIncrease;
+        myP1IncEvent = Event::PaddleOneDecrease;
       }
     }
     else           // First paddle is 1, second is 0
@@ -91,35 +81,25 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
       // These aren't affected by changes in axis orientation
       myP0AxisValue  = Event::PaddleOneAnalog;
       myP1AxisValue  = Event::PaddleZeroAnalog;
-      myP0FireEvent1 = Event::PaddleOneFire;
-      myP0FireEvent2 = Event::JoystickZeroFire9;
-      myP1FireEvent1 = Event::PaddleZeroFire;
-      myP1FireEvent2 = Event::JoystickZeroFire;
+      myP0FireEvent = Event::PaddleOneFire;
+      myP1FireEvent = Event::PaddleZeroFire;
 
       // Direction of movement is swapped
       // That is, moving in a certain direction on an axis can
       // result in either increasing or decreasing paddle movement
       if(!swapdir)
       {
-        myP0DecEvent1 = Event::PaddleOneDecrease;
-        myP0DecEvent2 = Event::JoystickZeroDown;
-        myP0IncEvent1 = Event::PaddleOneIncrease;
-        myP0IncEvent2 = Event::JoystickZeroUp;
-        myP1DecEvent1 = Event::PaddleZeroDecrease;
-        myP1DecEvent2 = Event::JoystickZeroRight;
-        myP1IncEvent1 = Event::PaddleZeroIncrease;
-        myP1IncEvent2 = Event::JoystickZeroLeft;
+        myP0DecEvent = Event::PaddleOneDecrease;
+        myP0IncEvent = Event::PaddleOneIncrease;
+        myP1DecEvent = Event::PaddleZeroDecrease;
+        myP1IncEvent = Event::PaddleZeroIncrease;
       }
       else
       {
-        myP0DecEvent1 = Event::PaddleOneIncrease;
-        myP0DecEvent2 = Event::JoystickZeroUp;
-        myP0IncEvent1 = Event::PaddleOneDecrease;
-        myP0IncEvent2 = Event::JoystickZeroDown;
-        myP1DecEvent1 = Event::PaddleZeroIncrease;
-        myP1DecEvent2 = Event::JoystickZeroLeft;
-        myP1IncEvent1 = Event::PaddleZeroDecrease;
-        myP1IncEvent2 = Event::JoystickZeroRight;
+        myP0DecEvent = Event::PaddleOneIncrease;
+        myP0IncEvent = Event::PaddleOneDecrease;
+        myP1DecEvent = Event::PaddleZeroIncrease;
+        myP1IncEvent = Event::PaddleZeroDecrease;
       }
     }
   }
@@ -130,35 +110,25 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
       // These aren't affected by changes in axis orientation
       myP0AxisValue  = Event::PaddleTwoAnalog;
       myP1AxisValue  = Event::PaddleThreeAnalog;
-      myP0FireEvent1 = Event::PaddleTwoFire;
-      myP0FireEvent2 = Event::JoystickOneFire;
-      myP1FireEvent1 = Event::PaddleThreeFire;
-      myP1FireEvent2 = Event::JoystickOneFire9;
+      myP0FireEvent = Event::PaddleTwoFire;
+      myP1FireEvent = Event::PaddleThreeFire;
 
       // Direction of movement is swapped
       // That is, moving in a certain direction on an axis can
       // result in either increasing or decreasing paddle movement
       if(!swapdir)
       {
-        myP0DecEvent1 = Event::PaddleTwoDecrease;
-        myP0DecEvent2 = Event::JoystickOneRight;
-        myP0IncEvent1 = Event::PaddleTwoIncrease;
-        myP0IncEvent2 = Event::JoystickOneLeft;
-        myP1DecEvent1 = Event::PaddleThreeDecrease;
-        myP1DecEvent2 = Event::JoystickOneDown;
-        myP1IncEvent1 = Event::PaddleThreeIncrease;
-        myP1IncEvent2 = Event::JoystickOneUp;
+        myP0DecEvent = Event::PaddleTwoDecrease;
+        myP0IncEvent = Event::PaddleTwoIncrease;
+        myP1DecEvent = Event::PaddleThreeDecrease;
+        myP1IncEvent = Event::PaddleThreeIncrease;
       }
       else
       {
-        myP0DecEvent1 = Event::PaddleTwoIncrease;
-        myP0DecEvent2 = Event::JoystickOneLeft;
-        myP0IncEvent1 = Event::PaddleTwoDecrease;
-        myP0IncEvent2 = Event::JoystickOneRight;
-        myP1DecEvent1 = Event::PaddleThreeIncrease;
-        myP1DecEvent2 = Event::JoystickOneUp;
-        myP1IncEvent1 = Event::PaddleThreeDecrease;
-        myP1IncEvent2 = Event::JoystickOneDown;
+        myP0DecEvent = Event::PaddleTwoIncrease;
+        myP0IncEvent = Event::PaddleTwoDecrease;
+        myP1DecEvent = Event::PaddleThreeIncrease;
+        myP1IncEvent = Event::PaddleThreeDecrease;
       }
     }
     else           // First paddle is 3, second is 2
@@ -166,35 +136,25 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
       // These aren't affected by changes in axis orientation
       myP0AxisValue  = Event::PaddleThreeAnalog;
       myP1AxisValue  = Event::PaddleTwoAnalog;
-      myP0FireEvent1 = Event::PaddleThreeFire;
-      myP0FireEvent2 = Event::JoystickOneFire9;
-      myP1FireEvent1 = Event::PaddleTwoFire;
-      myP1FireEvent2 = Event::JoystickOneFire;
+      myP0FireEvent = Event::PaddleThreeFire;
+      myP1FireEvent = Event::PaddleTwoFire;
 
       // Direction of movement is swapped
       // That is, moving in a certain direction on an axis can
       // result in either increasing or decreasing paddle movement
       if(!swapdir)
       {
-        myP0DecEvent1 = Event::PaddleThreeDecrease;
-        myP0DecEvent2 = Event::JoystickOneDown;
-        myP0IncEvent1 = Event::PaddleThreeIncrease;
-        myP0IncEvent2 = Event::JoystickOneUp;
-        myP1DecEvent1 = Event::PaddleTwoDecrease;
-        myP1DecEvent2 = Event::JoystickOneRight;
-        myP1IncEvent1 = Event::PaddleTwoIncrease;
-        myP1IncEvent2 = Event::JoystickOneLeft;
+        myP0DecEvent = Event::PaddleThreeDecrease;
+        myP0IncEvent = Event::PaddleThreeIncrease;
+        myP1DecEvent = Event::PaddleTwoDecrease;
+        myP1IncEvent = Event::PaddleTwoIncrease;
       }
       else
       {
-        myP0DecEvent1 = Event::PaddleThreeIncrease;
-        myP0DecEvent2 = Event::JoystickOneUp;
-        myP0IncEvent1 = Event::PaddleThreeDecrease;
-        myP0IncEvent2 = Event::JoystickOneDown;
-        myP1DecEvent1 = Event::PaddleTwoIncrease;
-        myP1DecEvent2 = Event::JoystickOneLeft;
-        myP1IncEvent1 = Event::PaddleTwoDecrease;
-        myP1IncEvent2 = Event::JoystickOneRight;
+        myP0DecEvent = Event::PaddleThreeIncrease;
+        myP0IncEvent = Event::PaddleThreeDecrease;
+        myP1DecEvent = Event::PaddleTwoIncrease;
+        myP1IncEvent = Event::PaddleTwoDecrease;
       }
     }
   }
@@ -236,10 +196,8 @@ void Paddles::update()
   setPin(DigitalPin::Four, true);
 
   // Digital events (from keyboard or joystick hats & buttons)
-  setPin(DigitalPin::Three,
-      myEvent.get(myP1FireEvent1) == 0 && myEvent.get(myP1FireEvent2) == 0);
-  setPin(DigitalPin::Four,
-      myEvent.get(myP0FireEvent1) == 0 && myEvent.get(myP0FireEvent2) == 0);
+  setPin(DigitalPin::Three, myEvent.get(myP1FireEvent) == 0);
+  setPin(DigitalPin::Four, myEvent.get(myP0FireEvent) == 0);
 
   // Paddle movement is a very difficult thing to accurately emulate,
   // since it originally came from an analog device that had very
@@ -362,25 +320,25 @@ void Paddles::update()
   myKeyRepeat0 = false;
   myKeyRepeat1 = false;
 
-  if(myEvent.get(myP0DecEvent1) || myEvent.get(myP0DecEvent2))
+  if(myEvent.get(myP0DecEvent))
   {
     myKeyRepeat0 = true;
     if(myCharge[myAxisDigitalZero] > myPaddleRepeat0)
       myCharge[myAxisDigitalZero] -= myPaddleRepeat0;
   }
-  if(myEvent.get(myP0IncEvent1) || myEvent.get(myP0IncEvent2))
+  if(myEvent.get(myP0IncEvent))
   {
     myKeyRepeat0 = true;
     if((myCharge[myAxisDigitalZero] + myPaddleRepeat0) < TRIGRANGE)
       myCharge[myAxisDigitalZero] += myPaddleRepeat0;
   }
-  if(myEvent.get(myP1DecEvent1) || myEvent.get(myP1DecEvent2))
+  if(myEvent.get(myP1DecEvent))
   {
     myKeyRepeat1 = true;
     if(myCharge[myAxisDigitalOne] > myPaddleRepeat1)
       myCharge[myAxisDigitalOne] -= myPaddleRepeat1;
   }
-  if(myEvent.get(myP1IncEvent1) || myEvent.get(myP1IncEvent2))
+  if(myEvent.get(myP1IncEvent))
   {
     myKeyRepeat1 = true;
     if((myCharge[myAxisDigitalOne] + myPaddleRepeat1) < TRIGRANGE)

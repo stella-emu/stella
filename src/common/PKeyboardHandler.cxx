@@ -322,7 +322,7 @@ void PhysicalKeyboardHandler::saveMapping()
 bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
                                          StellaKey key, StellaMod mod)
 {
-  // These keys cannot be remapped
+  // These events cannot be remapped to keys
   if(Event::isAnalog(event))
     return false;
   else

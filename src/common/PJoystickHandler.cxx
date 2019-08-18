@@ -569,18 +569,27 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
     // but analog events only affect one of the axis.
     if (Event::isAnalog(event))
     {
+      // Turn off the digital event(s) for this axis, because we cannot have both
+      if(j->joyMap.get(evMode, button, axis, JoyDir::NEG) != Event::NoType)
+        j->joyMap.erase(evMode, button, axis, JoyDir::NEG);
+      if(j->joyMap.get(evMode, button, axis, JoyDir::POS) != Event::NoType)
+        j->joyMap.erase(evMode, button, axis, JoyDir::POS);
       j->joyMap.add(event, evMode, button, axis, JoyDir::ANALOG);
       // update running emulation mapping too
+      if(j->joyMap.get(EventMode::kEmulationMode, button, axis, JoyDir::NEG) != Event::NoType)
+        j->joyMap.erase(EventMode::kEmulationMode, button, axis, JoyDir::NEG);
+      if(j->joyMap.get(EventMode::kEmulationMode, button, axis, JoyDir::POS) != Event::NoType)
+        j->joyMap.erase(EventMode::kEmulationMode, button, axis, JoyDir::POS);
       j->joyMap.add(event, EventMode::kEmulationMode, button, axis, JoyDir::ANALOG);
     }
     else
     {
-      // Otherwise, turn off the analog event(s) for this axis
-      if (Event::isAnalog(j->joyMap.get(evMode, button, axis, JoyDir::ANALOG)))
+      // Otherwise, turn off the analog event(s) for this axis, because we cannot have both
+      if (j->joyMap.get(evMode, button, axis, JoyDir::ANALOG) != Event::NoType)
         j->joyMap.erase(evMode, button, axis, JoyDir::ANALOG);
       j->joyMap.add(event, evMode, button, axis, adir);
       // update running emulation mapping too
-      if(Event::isAnalog(j->joyMap.get(EventMode::kEmulationMode, button, axis, JoyDir::ANALOG)))
+      if(j->joyMap.get(EventMode::kEmulationMode, button, axis, JoyDir::ANALOG) != Event::NoType)
         j->joyMap.erase(EventMode::kEmulationMode, button, axis, JoyDir::ANALOG);
       j->joyMap.add(event, EventMode::kEmulationMode, button, axis, adir);
     }
@@ -618,10 +627,10 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 
     if (myHandler.state() == EventHandlerState::EMULATION)
     {
+      // Check for analog events, which are handled differently
       Event::Type eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::ANALOG);
 
-      // Check for analog events, which are handled differently
-      if (Event::isAnalog(eventAxisAnalog))
+      if (eventAxisAnalog != Event::NoType)
       {
         myHandler.handleEvent(eventAxisAnalog, value);
       }
@@ -817,24 +826,28 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftPaddlesMapping = {
   {Event::PaddleZeroAnalog,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
-  {Event::PaddleZeroDecrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
-  {Event::PaddleZeroIncrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  // Current code does NOT allow digital and anlog events on the same axis at the same time
+  //{Event::PaddleZeroDecrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  //{Event::PaddleZeroIncrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
   {Event::PaddleZeroFire,     0},
   {Event::PaddleOneAnalog,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
-  {Event::PaddleOneDecrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
-  {Event::PaddleOneIncrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  // Current code does NOT allow digital and anlog events on the same axis at the same
+  //{Event::PaddleOneDecrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  //{Event::PaddleOneIncrease,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
   {Event::PaddleOneFire,      1},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightPaddlesMapping = {
   {Event::PaddleTwoAnalog,    JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
-  {Event::PaddleTwoDecrease,  JOY_CTRL_NONE, JoyAxis::Z, JoyDir::POS},
-  {Event::PaddleTwoIncrease,  JOY_CTRL_NONE, JoyAxis::Z, JoyDir::NEG},
+  // Current code does NOT allow digital and anlog events on the same axis at the same
+  //{Event::PaddleTwoDecrease,  JOY_CTRL_NONE, JoyAxis::Z, JoyDir::POS},
+  //{Event::PaddleTwoIncrease,  JOY_CTRL_NONE, JoyAxis::Z, JoyDir::NEG},
   {Event::PaddleTwoFire,      2},
   {Event::PaddleThreeAnalog,  JOY_CTRL_NONE, JoyAxis(3), JoyDir::ANALOG},
-  {Event::PaddleThreeDecrease,JOY_CTRL_NONE, JoyAxis(3), JoyDir::POS},
-  {Event::PaddleThreeIncrease,JOY_CTRL_NONE, JoyAxis(3), JoyDir::NEG},
+  // Current code does NOT allow digital and anlog events on the same axis at the same
+  //{Event::PaddleThreeDecrease,JOY_CTRL_NONE, JoyAxis(3), JoyDir::POS},
+  //{Event::PaddleThreeIncrease,JOY_CTRL_NONE, JoyAxis(3), JoyDir::NEG},
   {Event::PaddleThreeFire,    3},
 };
 

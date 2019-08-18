@@ -136,9 +136,9 @@ class Paddles : public Controller
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myP0AxisValue, myP1AxisValue,
-                myP0DecEvent1, myP0DecEvent2, myP0IncEvent1, myP0IncEvent2,
-                myP1DecEvent1, myP1DecEvent2, myP1IncEvent1, myP1IncEvent2,
-                myP0FireEvent1, myP0FireEvent2, myP1FireEvent1, myP1FireEvent2,
+                myP0DecEvent, myP0IncEvent,
+                myP1DecEvent, myP1IncEvent,
+                myP0FireEvent, myP1FireEvent,
                 myAxisMouseMotion;
 
     // The following are used for the various mouse-axis modes
