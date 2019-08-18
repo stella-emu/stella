@@ -14,8 +14,6 @@
 ## See the file "License.txt" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.37 2009-01-11 21:31:21 stephena Exp $
-##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
 ##============================================================================

@@ -24,15 +24,15 @@
 
   * Added proper Retron77 port. (TODO: doc)
 
-  * Added automatic controller detection. 
+  * Added automatic controller detection.
 
   * Removed superfluous controller option 'PADDLES_IDIR'.
 
   * Added configurable paddle dejittering.
 
-  * Huge improvements to event remapping. 
+  * Huge improvements to event remapping.
     - Allow mapping of modifier-key and button-direction combinations.
-    - One controller can use the same mappings as other controllers  
+    - One controller can use the same mappings as other controllers
     - Much more events can be remapped
 
   * Key-repeat mode improved; entering Time Machine by holding down a key
@@ -49,15 +49,15 @@
 
   * Added 'HiDPI' mode, which scales the UI by 2x when enabled.  This is
     meant for 4k and above monitors, but can actually be used at any
-    lower resolution that is large enough to display the scaled UI. 
+    lower resolution that is large enough to display the scaled UI.
 
-  * Fixed TIA 'Center' option, Stella now remembers the last windowed position. 
+  * Fixed TIA 'Center' option, Stella now remembers the last windowed position.
 
   * Added fractional (25% increments) TIA zooms.
 
   * Removed 'tia.fsfill' option, replacing it with 'tia.fs_stretch'.  This
     new option allows to preserve TIA image aspect ratio in fullscreen
-    mode, or stretch to fill the entire screen. 
+    mode, or stretch to fill the entire screen.
 
   * Added configurable 'Overscan' option for fullscreen modes.
 
@@ -72,11 +72,11 @@
 
   * Enhanced 'Command' menu to display current state and more commands.
 
-  * Added option to save and load all TimeMachine states at once 
+  * Added option to save and load all TimeMachine states at once
 
-  * Added option to change pitch of Pitfall II music 
+  * Added option to change pitch of Pitfall II music
 
-  * Added various developer options for oddball TIAs: 
+  * Added various developer options for oddball TIAs:
     - stuffed player, missiles and ball move
     - delayed playfield bits and color
     - delayed players and ball VDEL swap
@@ -119,8 +119,8 @@
   * Fixed bug in DPC+ scheme; 'fast fetch mode' was enabled at startup,
     when it should be disabled by default.
 
-  * Fixed display for OpenGLES renderers used by Libretro 
-    - and much more for Libretro support       
+  * Fixed display for OpenGLES renderers used by Libretro
+    - and much more for Libretro support
 
   * PNG/ZIP image support is now conditionally compiled into Stella.
     All major ports (Linux/macOS/Windows) have it enabled by default.
@@ -132,6 +132,15 @@
   * Updated included PNG library to latest stable version.
 
 -Have fun!
+
+
+6.0 to 6.0.1: (June 5, 2019)
+
+  * Added support for CDFJ bankswitching type (Galaga, Wizard of War, etc).
+
+  * Allow the DPC+ scheme to not enable playfield 'jitter' effect for
+    certain older DPC+ driver versions; this allows 'Epic Adventure' ROM
+    to finally work in Stella.
 
 
 5.1.3 to 6.0: (December 23, 2018)

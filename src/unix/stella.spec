@@ -1,5 +1,5 @@
 %define name    stella
-%define version 6.0
+%define version 6.1
 %define rel     1
 
 %define enable_sound 1
@@ -100,188 +100,194 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
-* Sun Dec 23 2018 Stephen Anthony <stephena@users.sf.net> 6.0-1
+* ddd Sep d 2019 Stephen Anthony <sa666666@gmail.com> 6.1-1
+- Version 6.1 release
+
+* Wed Jun 5 2019 Stephen Anthony <sa666666@gmail.com> 6.0.1-1
+- Version 6.0.1 release
+
+* Sun Dec 23 2018 Stephen Anthony <sa666666@gmail.com> 6.0-1
 - Version 6.0 release
 
-* Wed Feb 21 2018 Stephen Anthony <stephena@users.sf.net> 5.1.1-1
+* Wed Feb 21 2018 Stephen Anthony <sa666666@gmail.com> 5.1.1-1
 - Version 5.1.1 release
 
-* Sun Feb 04 2018 Stephen Anthony <stephena@users.sf.net> 5.1-1
+* Sun Feb 04 2018 Stephen Anthony <sa666666@gmail.com> 5.1-1
 - Version 5.1 release
 
-* Sun Aug 20 2017 Stephen Anthony <stephena@users.sf.net> 5.0.2-1
+* Sun Aug 20 2017 Stephen Anthony <sa666666@gmail.com> 5.0.2-1
 - Version 5.0.2 release
 
-* Sun Jul 23 2017 Stephen Anthony <stephena@users.sf.net> 5.0.1-1
+* Sun Jul 23 2017 Stephen Anthony <sa666666@gmail.com> 5.0.1-1
 - Version 5.0.1 release
 
-* Sun Jul 16 2017 Stephen Anthony <stephena@users.sf.net> 5.0-1
+* Sun Jul 16 2017 Stephen Anthony <sa666666@gmail.com> 5.0-1
 - Version 5.0 release
 
-* Mon Nov 21 2016 Stephen Anthony <stephena@users.sf.net> 4.7.3-1
+* Mon Nov 21 2016 Stephen Anthony <sa666666@gmail.com> 4.7.3-1
 - Version 4.7.3 release
 
-* Fri Mar 25 2016 Stephen Anthony <stephena@users.sf.net> 4.7.2-1
+* Fri Mar 25 2016 Stephen Anthony <sa666666@gmail.com> 4.7.2-1
 - Version 4.7.2 release
 
-* Sat Feb 13 2016 Stephen Anthony <stephena@users.sf.net> 4.7.1-1
+* Sat Feb 13 2016 Stephen Anthony <sa666666@gmail.com> 4.7.1-1
 - Version 4.7.1 release
 
-* Mon Jan 25 2016 Stephen Anthony <stephena@users.sf.net> 4.7-1
+* Mon Jan 25 2016 Stephen Anthony <sa666666@gmail.com> 4.7-1
 - Version 4.7 release
 
-* Wed Oct 28 2015 Stephen Anthony <stephena@users.sf.net> 4.6.7-1
+* Wed Oct 28 2015 Stephen Anthony <sa666666@gmail.com> 4.6.7-1
 - Version 4.6.7 release
 
-* Sun Oct 11 2015 Stephen Anthony <stephena@users.sf.net> 4.6.6-1
+* Sun Oct 11 2015 Stephen Anthony <sa666666@gmail.com> 4.6.6-1
 - Version 4.6.6 release
 
-* Sat Sep 26 2015 Stephen Anthony <stephena@users.sf.net> 4.6.5-1
+* Sat Sep 26 2015 Stephen Anthony <sa666666@gmail.com> 4.6.5-1
 - Version 4.6.5 release
 
-* Wed Apr 22 2015 Stephen Anthony <stephena@users.sf.net> 4.6.1-1
+* Wed Apr 22 2015 Stephen Anthony <sa666666@gmail.com> 4.6.1-1
 - Version 4.6.1 release
 
-* Sat Mar 21 2015 Stephen Anthony <stephena@users.sf.net> 4.6-1
+* Sat Mar 21 2015 Stephen Anthony <sa666666@gmail.com> 4.6-1
 - Version 4.6 release
 
-* Thu Jan 1 2015 Stephen Anthony <stephena@users.sf.net> 4.5-1
+* Thu Jan 1 2015 Stephen Anthony <sa666666@gmail.com> 4.5-1
 - Version 4.5 release
 
-* Tue Oct 28 2014 Stephen Anthony <stephena@users.sf.net> 4.2-1
+* Tue Oct 28 2014 Stephen Anthony <sa666666@gmail.com> 4.2-1
 - Version 4.2 release
 
-* Sun Sep 14 2014 Stephen Anthony <stephena@users.sf.net> 4.1.1-1
+* Sun Sep 14 2014 Stephen Anthony <sa666666@gmail.com> 4.1.1-1
 - Version 4.1.1 release
 
-* Mon Sep 1 2014 Stephen Anthony <stephena@users.sf.net> 4.1-1
+* Mon Sep 1 2014 Stephen Anthony <sa666666@gmail.com> 4.1-1
 - Version 4.1 release
 
-* Tue Jul 1 2014 Stephen Anthony <stephena@users.sf.net> 4.0-1
+* Tue Jul 1 2014 Stephen Anthony <sa666666@gmail.com> 4.0-1
 - Version 4.0 release
 
-* Mon Jan 20 2014 Stephen Anthony <stephena@users.sf.net> 3.9.3-1
+* Mon Jan 20 2014 Stephen Anthony <sa666666@gmail.com> 3.9.3-1
 - Version 3.9.3 release
 
-* Sat Aug 31 2013 Stephen Anthony <stephena@users.sf.net> 3.9.2-1
+* Sat Aug 31 2013 Stephen Anthony <sa666666@gmail.com> 3.9.2-1
 - Version 3.9.2 release
 
-* Wed Aug 21 2013 Stephen Anthony <stephena@users.sf.net> 3.9.1-1
+* Wed Aug 21 2013 Stephen Anthony <sa666666@gmail.com> 3.9.1-1
 - Version 3.9.1 release
 
-* Thu Jun 27 2013 Stephen Anthony <stephena@users.sf.net> 3.9-1
+* Thu Jun 27 2013 Stephen Anthony <sa666666@gmail.com> 3.9-1
 - Version 3.9 release
 
-* Sun Mar 3 2013 Stephen Anthony <stephena@users.sf.net> 3.8.1-1
+* Sun Mar 3 2013 Stephen Anthony <sa666666@gmail.com> 3.8.1-1
 - Version 3.8.1 release
 
-* Thu Feb 21 2013 Stephen Anthony <stephena@users.sf.net> 3.8-1
+* Thu Feb 21 2013 Stephen Anthony <sa666666@gmail.com> 3.8-1
 - Version 3.8 release
 
-* Sat Dec 22 2012 Stephen Anthony <stephena@users.sf.net> 3.7.5-1
+* Sat Dec 22 2012 Stephen Anthony <sa666666@gmail.com> 3.7.5-1
 - Version 3.7.5 release
 
-* Wed Oct 31 2012 Stephen Anthony <stephena@users.sf.net> 3.7.4-1
+* Wed Oct 31 2012 Stephen Anthony <sa666666@gmail.com> 3.7.4-1
 - Version 3.7.4 release
 
-* Fri Oct 26 2012 Stephen Anthony <stephena@users.sf.net> 3.7.3-1
+* Fri Oct 26 2012 Stephen Anthony <sa666666@gmail.com> 3.7.3-1
 - Version 3.7.3 release
 
-* Sun Jun 10 2012 Stephen Anthony <stephena@users.sf.net> 3.7.2-1
+* Sun Jun 10 2012 Stephen Anthony <sa666666@gmail.com> 3.7.2-1
 - Version 3.7.2 release
 
-* Fri Jun 8 2012 Stephen Anthony <stephena@users.sf.net> 3.7.1-1
+* Fri Jun 8 2012 Stephen Anthony <sa666666@gmail.com> 3.7.1-1
 - Version 3.7.1 release
 
-* Fri Jun 1 2012 Stephen Anthony <stephena@users.sf.net> 3.7-1
+* Fri Jun 1 2012 Stephen Anthony <sa666666@gmail.com> 3.7-1
 - Version 3.7 release
 
-* Fri Mar 30 2012 Stephen Anthony <stephena@users.sf.net> 3.6.1-1
+* Fri Mar 30 2012 Stephen Anthony <sa666666@gmail.com> 3.6.1-1
 - Version 3.6.1 release
 
-* Fri Mar 16 2012 Stephen Anthony <stephena@users.sf.net> 3.6-1
+* Fri Mar 16 2012 Stephen Anthony <sa666666@gmail.com> 3.6-1
 - Version 3.6 release
 
-* Sat Feb 4 2012 Stephen Anthony <stephena@users.sf.net> 3.5.5-1
+* Sat Feb 4 2012 Stephen Anthony <sa666666@gmail.com> 3.5.5-1
 - Version 3.5.5 release
 
-* Thu Dec 29 2011 Stephen Anthony <stephena@users.sf.net> 3.5-1
+* Thu Dec 29 2011 Stephen Anthony <sa666666@gmail.com> 3.5-1
 - Version 3.5 release
 
-* Sat Jun 11 2011 Stephen Anthony <stephena@users.sf.net> 3.4.1-1
+* Sat Jun 11 2011 Stephen Anthony <sa666666@gmail.com> 3.4.1-1
 - Version 3.4.1 release
 
-* Sun May 29 2011 Stephen Anthony <stephena@users.sf.net> 3.4-1
+* Sun May 29 2011 Stephen Anthony <sa666666@gmail.com> 3.4-1
 - Version 3.4 release
 
-* Fri Nov 12 2010 Stephen Anthony <stephena@users.sf.net> 3.3-1
+* Fri Nov 12 2010 Stephen Anthony <sa666666@gmail.com> 3.3-1
 - Version 3.3 release
 
-* Wed Aug 25 2010 Stephen Anthony <stephena@users.sf.net> 3.2.1-1
+* Wed Aug 25 2010 Stephen Anthony <sa666666@gmail.com> 3.2.1-1
 - Version 3.2.1 release
 
-* Fri Aug 20 2010 Stephen Anthony <stephena@users.sf.net> 3.2-1
+* Fri Aug 20 2010 Stephen Anthony <sa666666@gmail.com> 3.2-1
 - Version 3.2 release
 
-* Mon May 3 2010 Stephen Anthony <stephena@users.sf.net> 3.1.2-1
+* Mon May 3 2010 Stephen Anthony <sa666666@gmail.com> 3.1.2-1
 - Version 3.1.2 release
 
-* Mon Apr 26 2010 Stephen Anthony <stephena@users.sf.net> 3.1.1-1
+* Mon Apr 26 2010 Stephen Anthony <sa666666@gmail.com> 3.1.1-1
 - Version 3.1.1 release
 
-* Thu Apr 22 2010 Stephen Anthony <stephena@users.sf.net> 3.1-1
+* Thu Apr 22 2010 Stephen Anthony <sa666666@gmail.com> 3.1-1
 - Version 3.1 release
 
-* Fri Sep 11 2009 Stephen Anthony <stephena@users.sf.net> 3.0-1
+* Fri Sep 11 2009 Stephen Anthony <sa666666@gmail.com> 3.0-1
 - Version 3.0 release
 
-* Thu Jul 4 2009 Stephen Anthony <stephena@users.sf.net> 2.8.4-1
+* Thu Jul 4 2009 Stephen Anthony <sa666666@gmail.com> 2.8.4-1
 - Version 2.8.4 release
 
-* Thu Jun 25 2009 Stephen Anthony <stephena@users.sf.net> 2.8.3-1
+* Thu Jun 25 2009 Stephen Anthony <sa666666@gmail.com> 2.8.3-1
 - Version 2.8.3 release
 
-* Tue Jun 23 2009 Stephen Anthony <stephena@users.sf.net> 2.8.2-1
+* Tue Jun 23 2009 Stephen Anthony <sa666666@gmail.com> 2.8.2-1
 - Version 2.8.2 release
 
-* Fri Jun 19 2009 Stephen Anthony <stephena@users.sf.net> 2.8.1-1
+* Fri Jun 19 2009 Stephen Anthony <sa666666@gmail.com> 2.8.1-1
 - Version 2.8.1 release
 
-* Tue Jun 9 2009 Stephen Anthony <stephena@users.sf.net> 2.8-1
+* Tue Jun 9 2009 Stephen Anthony <sa666666@gmail.com> 2.8-1
 - Version 2.8 release
 
-* Tue May 1 2009 Stephen Anthony <stephena@users.sf.net> 2.7.7-1
+* Tue May 1 2009 Stephen Anthony <sa666666@gmail.com> 2.7.7-1
 - Version 2.7.7 release
 
-* Tue Apr 14 2009 Stephen Anthony <stephena@users.sf.net> 2.7.6-1
+* Tue Apr 14 2009 Stephen Anthony <sa666666@gmail.com> 2.7.6-1
 - Version 2.7.6 release
 
-* Fri Mar 27 2009 Stephen Anthony <stephena@users.sf.net> 2.7.5-1
+* Fri Mar 27 2009 Stephen Anthony <sa666666@gmail.com> 2.7.5-1
 - Version 2.7.5 release
 
-* Mon Feb 9 2009 Stephen Anthony <stephena@users.sf.net> 2.7.3-1
+* Mon Feb 9 2009 Stephen Anthony <sa666666@gmail.com> 2.7.3-1
 - Version 2.7.3 release
 
-* Tue Jan 27 2009 Stephen Anthony <stephena@users.sf.net> 2.7.2-1
+* Tue Jan 27 2009 Stephen Anthony <sa666666@gmail.com> 2.7.2-1
 - Version 2.7.2 release
 
-* Mon Jan 26 2009 Stephen Anthony <stephena@users.sf.net> 2.7.1-1
+* Mon Jan 26 2009 Stephen Anthony <sa666666@gmail.com> 2.7.1-1
 - Version 2.7.1 release
 
-* Sat Jan 17 2009 Stephen Anthony <stephena@users.sf.net> 2.7-1
+* Sat Jan 17 2009 Stephen Anthony <sa666666@gmail.com> 2.7-1
 - Version 2.7 release
 
-* Thu May 22 2008 Stephen Anthony <stephena@users.sf.net> 2.6.1-1
+* Thu May 22 2008 Stephen Anthony <sa666666@gmail.com> 2.6.1-1
 - Version 2.6.1 release
 
-* Fri May 16 2008 Stephen Anthony <stephena@users.sf.net> 2.6-1
+* Fri May 16 2008 Stephen Anthony <sa666666@gmail.com> 2.6-1
 - Version 2.6 release
 
-* Wed Apr 9 2008 Stephen Anthony <stephena@users.sf.net> 2.5.1-1
+* Wed Apr 9 2008 Stephen Anthony <sa666666@gmail.com> 2.5.1-1
 - Version 2.5.1 release
 
-* Fri Mar 28 2008 Stephen Anthony <stephena@users.sf.net> 2.5-1
+* Fri Mar 28 2008 Stephen Anthony <sa666666@gmail.com> 2.5-1
 - Version 2.5 release
 
-* Mon Aug 27 2007 Stephen Anthony <stephena@users.sf.net> 2.4.1-1
+* Mon Aug 27 2007 Stephen Anthony <sa666666@gmail.com> 2.4.1-1
 - Version 2.4.1 release
