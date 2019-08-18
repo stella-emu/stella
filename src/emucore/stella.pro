@@ -7725,8 +7725,8 @@
 ""
 
 "Cart.MD5" "5e43c0391f7412ae64fae6f3742d6ee9"
-"Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust+ (v1.27)"
+"Cart.Manufacturer" "Thomas Jentzsch, Paul Slocum"
+"Cart.Name" "Thrust+ Platinum (v1.27)"
 "Cart.Rarity" "New Release, supports BoosterGrip"
 "Controller.Left" "BOOSTERGRIP"
 "Controller.Right" "DRIVING"
@@ -12145,8 +12145,8 @@
 ""
 
 "Cart.MD5" "943798452ceba9357e2c56303cadb4f7"
-"Cart.Manufacturer" "Thomas Jentzsch"
-"Cart.Name" "Thrust+ (v1.28)"
+"Cart.Manufacturer" "Thomas Jentzsch, Paul Slocum"
+"Cart.Name" "Thrust+ Platinum (v1.28)"
 "Cart.Rarity" "New Release, supports BoosterGrip and Genesis (switched by Color/B+W)"
 "Controller.Left" "JOYSTICK"
 "Controller.Right" "DRIVING"
