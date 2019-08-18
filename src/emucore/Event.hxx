@@ -38,7 +38,7 @@ class Event
     enum Type
     {
       NoType = 0,
-      ConsoleOn, ConsoleOff, ConsoleColor, ConsoleBlackWhite,
+      ConsoleColor, ConsoleBlackWhite,
       ConsoleLeftDiffA, ConsoleLeftDiffB,
       ConsoleRightDiffA, ConsoleRightDiffB,
       ConsoleSelect, ConsoleReset,
@@ -134,7 +134,7 @@ class Event
     };
 
     // Event list version, update if the id of existing event types changed
-    static constexpr Int32 VERSION = 3;
+    static constexpr Int32 VERSION = 1;
 
     using EventSet = std::set<Event::Type>;
 

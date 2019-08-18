@@ -1967,7 +1967,6 @@ const Event::EventSet EventHandler::StateEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::ConsoleEvents = {
-  // Event::ConsoleOn, Event::ConsoleOff,
   Event::ConsoleColor, Event::ConsoleBlackWhite,
   Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffB,
   Event::ConsoleRightDiffA, Event::ConsoleRightDiffB,
