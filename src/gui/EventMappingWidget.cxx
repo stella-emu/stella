@@ -190,6 +190,7 @@ void EventMappingWidget::updateActions()
   myActionsList->setList(actions);
   myActionSelected = myActionsList->getSelected();
   drawKeyMapping();
+  enableButtons(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

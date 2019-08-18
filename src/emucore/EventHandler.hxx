@@ -400,17 +400,16 @@ class EventHandler
       MENU_ACTIONLIST_SIZE = 18
     ;
 
-    using EventList = std::vector<Event::Type>;
     // Define event groups
-    static const EventList MiscEvents;
-    static const EventList StateEvents;
-    static const EventList AudioVideoEvents;
-    static const EventList ConsoleEvents;
-    static const EventList JoystickEvents;
-    static const EventList PaddlesEvents;
-    static const EventList KeyboardEvents;
-    static const EventList DebugEvents;
-    static const EventList ComboEvents;
+    static const Event::EventSet MiscEvents;
+    static const Event::EventSet AudioVideoEvents;
+    static const Event::EventSet StateEvents;
+    static const Event::EventSet ConsoleEvents;
+    static const Event::EventSet JoystickEvents;
+    static const Event::EventSet PaddlesEvents;
+    static const Event::EventSet KeyboardEvents;
+    static const Event::EventSet ComboEvents;
+    static const Event::EventSet DebugEvents;
 
     /**
       The following methods take care of assigning action mappings.
@@ -421,9 +420,9 @@ class EventHandler
     void saveComboMapping();
 
     StringList getActionList(EventMode mode) const;
-    StringList getActionList(const EventList& events, EventMode mode = EventMode::kEmulationMode) const;
+    StringList getActionList(const Event::EventSet& events, EventMode mode = EventMode::kEmulationMode) const;
     // returns the action array index of the index in the provided group
-    int getEmulActionListIndex(int idx, const EventList& events) const;
+    int getEmulActionListIndex(int idx, const Event::EventSet& events) const;
     int getActionListIndex(int idx, Event::Group group) const;
 
   private:

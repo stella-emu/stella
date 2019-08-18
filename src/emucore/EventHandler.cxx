@@ -1296,7 +1296,7 @@ StringList EventHandler::getActionList(Event::Group group) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getActionList(const EventList& events, EventMode mode) const
+StringList EventHandler::getActionList(const Event::EventSet& events, EventMode mode) const
 {
   StringList l;
 
@@ -1394,7 +1394,7 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EventHandler::getEmulActionListIndex(int idx, const EventList& events) const
+int EventHandler::getEmulActionListIndex(int idx, const Event::EventSet& events) const
 {
   // idx = index into intersection set of 'events' and 'ourEmulActionList'
   //   ordered by 'ourEmulActionList'!
@@ -1728,26 +1728,26 @@ void EventHandler::exitEmulation()
 EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] = {
   { Event::Quit,                    "Quit",                                  "" },
   { Event::ReloadConsole,           "Reload current ROM/load next game",     "" },
-  { Event::Fry,                     "Fry cartridge",                         "" },
   { Event::ExitMode,                "Exit current Stella menu/mode",         "" },
   { Event::OptionsMenuMode,         "Enter Options menu UI",                 "" },
   { Event::CmdMenuMode,             "Toggle Commands menu UI",               "" },
-  { Event::DebuggerMode,            "Toggle Debugger mode",                  "" },
   { Event::TogglePauseMode,         "Toggle Pause mode",                     "" },
   { Event::StartPauseMode,          "Start Pause mode",                      "" },
+  { Event::Fry,                     "Fry cartridge",                         "" },
+  { Event::DebuggerMode,            "Toggle Debugger mode",                  "" },
 
   { Event::ConsoleSelect,           "Select",                                "" },
   { Event::ConsoleReset,            "Reset",                                 "" },
   { Event::ConsoleColor,            "Color TV",                              "" },
   { Event::ConsoleBlackWhite,       "Black & White TV",                      "" },
-  { Event::ConsoleColorToggle,      "Swap Color / B&W TV",                   "" },
+  { Event::ConsoleColorToggle,      "Toggle Color / B&W TV",                 "" },
   { Event::Console7800Pause,        "7800 Pause Key",                        "" },
   { Event::ConsoleLeftDiffA,        "P0 Difficulty A",                       "" },
   { Event::ConsoleLeftDiffB,        "P0 Difficulty B",                       "" },
-  { Event::ConsoleLeftDiffToggle,   "P0 Swap Difficulty",                    "" },
+  { Event::ConsoleLeftDiffToggle,   "P0 Toggle Difficulty",                  "" },
   { Event::ConsoleRightDiffA,       "P1 Difficulty A",                       "" },
   { Event::ConsoleRightDiffB,       "P1 Difficulty B",                       "" },
-  { Event::ConsoleRightDiffToggle,  "P1 Swap Difficulty",                    "" },
+  { Event::ConsoleRightDiffToggle,  "P1 Toggle Difficulty",                  "" },
   { Event::SaveState,               "Save state",                            "" },
   { Event::ChangeState,             "Change state slot",                     "" },
   { Event::ToggleAutoSlot,          "Toggle automatic state slot change",    "" },
@@ -1932,9 +1932,9 @@ EventHandler::ActionList EventHandler::ourMenuActionList[MENU_ACTIONLIST_SIZE] =
 
 // Event groups
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const EventHandler::EventList EventHandler::MiscEvents = {
+const Event::EventSet EventHandler::MiscEvents = {
   Event::Quit, Event::ReloadConsole, Event::Fry, Event::StartPauseMode,
-  Event::TogglePauseMode, Event::OptionsMenuMode, Event::CmdMenuMode, Event::DebuggerMode, Event::ExitMode,
+  Event::TogglePauseMode, Event::OptionsMenuMode, Event::CmdMenuMode, Event::ExitMode,
   Event::TakeSnapshot, Event::ToggleContSnapshots, Event::ToggleContSnapshotsFrame,
   // Event::MouseAxisXValue, Event::MouseAxisYValue,
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
@@ -1943,7 +1943,7 @@ const EventHandler::EventList EventHandler::MiscEvents = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const EventHandler::EventList EventHandler::AudioVideoEvents = {
+const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::VolumeDecrease, Event::VolumeIncrease, Event::SoundToggle,
   Event::VidmodeDecrease, Event::VidmodeIncrease,
   Event::ToggleFullScreen,
@@ -1957,7 +1957,7 @@ const EventHandler::EventList EventHandler::AudioVideoEvents = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const EventHandler::EventList EventHandler::StateEvents = {
+const Event::EventSet EventHandler::StateEvents = {
   Event::ChangeState, Event::LoadState, Event::SaveState, Event::TimeMachineMode,
   Event::RewindPause, Event::UnwindPause, Event::ToggleTimeMachine,
   Event::Rewind1Menu, Event::Rewind10Menu, Event::RewindAllMenu,
@@ -1966,8 +1966,9 @@ const EventHandler::EventList EventHandler::StateEvents = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const EventHandler::EventList EventHandler::ConsoleEvents = {
-  Event::ConsoleOn, Event::ConsoleOff, Event::ConsoleColor, Event::ConsoleBlackWhite,
+const Event::EventSet EventHandler::ConsoleEvents = {
+  // Event::ConsoleOn, Event::ConsoleOff,
+  Event::ConsoleColor, Event::ConsoleBlackWhite,
   Event::ConsoleLeftDiffA, Event::ConsoleLeftDiffB,
   Event::ConsoleRightDiffA, Event::ConsoleRightDiffB,
   Event::ConsoleSelect, Event::ConsoleReset,
@@ -1976,7 +1977,7 @@ const EventHandler::EventList EventHandler::ConsoleEvents = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const EventHandler::EventList EventHandler::JoystickEvents = {
+const Event::EventSet EventHandler::JoystickEvents = {
   Event::JoystickZeroUp, Event::JoystickZeroDown, Event::JoystickZeroLeft, Event::JoystickZeroRight,
   Event::JoystickZeroFire, Event::JoystickZeroFire5, Event::JoystickZeroFire9,
   Event::JoystickOneUp, Event::JoystickOneDown, Event::JoystickOneLeft, Event::JoystickOneRight,
@@ -1984,14 +1985,14 @@ const EventHandler::EventList EventHandler::JoystickEvents = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const EventHandler::EventList EventHandler::PaddlesEvents = {
+const Event::EventSet EventHandler::PaddlesEvents = {
   Event::PaddleZeroDecrease, Event::PaddleZeroIncrease, Event::PaddleZeroAnalog, Event::PaddleZeroFire,
   Event::PaddleOneDecrease, Event::PaddleOneIncrease, Event::PaddleOneAnalog, Event::PaddleOneFire,
   Event::PaddleTwoDecrease, Event::PaddleTwoIncrease, Event::PaddleTwoAnalog, Event::PaddleTwoFire,
   Event::PaddleThreeDecrease, Event::PaddleThreeIncrease, Event::PaddleThreeAnalog, Event::PaddleThreeFire,
 };
 
-const EventHandler::EventList EventHandler::KeyboardEvents = {
+const Event::EventSet EventHandler::KeyboardEvents = {
   Event::KeyboardZero1, Event::KeyboardZero2, Event::KeyboardZero3,
   Event::KeyboardZero4, Event::KeyboardZero5, Event::KeyboardZero6,
   Event::KeyboardZero7, Event::KeyboardZero8, Event::KeyboardZero9,
@@ -2004,7 +2005,14 @@ const EventHandler::EventList EventHandler::KeyboardEvents = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const EventHandler::EventList EventHandler::DebugEvents = {
+const Event::EventSet EventHandler::ComboEvents = {
+  Event::Combo1, Event::Combo2, Event::Combo3, Event::Combo4, Event::Combo5, Event::Combo6, Event::Combo7, Event::Combo8,
+  Event::Combo9, Event::Combo10, Event::Combo11, Event::Combo12, Event::Combo13, Event::Combo14, Event::Combo15, Event::Combo16,
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Event::EventSet EventHandler::DebugEvents = {
+  Event::DebuggerMode,
   Event::ToggleFrameStats,
   Event::ToggleP0Collision, Event::ToggleP0Bit, Event::ToggleP1Collision, Event::ToggleP1Bit,
   Event::ToggleM0Collision, Event::ToggleM0Bit, Event::ToggleM1Collision, Event::ToggleM1Bit,
@@ -2013,10 +2021,3 @@ const EventHandler::EventList EventHandler::DebugEvents = {
   Event::ToggleColorLoss,
   Event::ToggleJitter,
 };
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const EventHandler::EventList EventHandler::ComboEvents = {
-  Event::Combo1, Event::Combo2, Event::Combo3, Event::Combo4, Event::Combo5, Event::Combo6, Event::Combo7, Event::Combo8,
-  Event::Combo9, Event::Combo10, Event::Combo11, Event::Combo12, Event::Combo13, Event::Combo14, Event::Combo15, Event::Combo16,
-};
-
