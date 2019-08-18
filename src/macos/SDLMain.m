@@ -25,24 +25,6 @@ static SDLMain* sharedInstance = nil;
     return sharedInstance;
 }
 
-
-// ----------------------------------------------------------------------------
-// Set the working directory to the .app's parent directory
-- (void) setupWorkingDirectory
-{
-  char parentdir[MAXPATHLEN];
-
-  CFURLRef url  = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-  CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
-  if (CFURLGetFileSystemRepresentation(url2, 1, (UInt8*)parentdir, MAXPATHLEN))
-  {
-    chdir(parentdir);   /* chdir to the binary app's parent */
-  }
-  CFRelease(url);
-  CFRelease(url2);
-}
-
-
 // ----------------------------------------------------------------------------
 /**
   * Catch document open requests...this lets us notice files when the app
@@ -74,9 +56,6 @@ static SDLMain* sharedInstance = nil;
 - (void) applicationDidFinishLaunching: (NSNotification *) note
 {
   int status;
-
-  // Set the working directory to the .app's parent directory
-  [self setupWorkingDirectory];
 
   calledMainline = TRUE;
 
