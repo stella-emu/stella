@@ -34,7 +34,6 @@
 #include "PromptWidget.hxx"
 #include "RomWidget.hxx"
 #include "ProgressDialog.hxx"
-#include "PackedBitArray.hxx"
 #include "TimerManager.hxx"
 #include "Vec.hxx"
 
@@ -648,10 +647,6 @@ string DebuggerParser::saveScriptFile(string file)
   for(const auto& w: myWatches)
     out << "watch " << w << endl;
 
-  for(uInt32 i = 0; i < 0x10000; ++i)
-    if(debugger.breakPoint(i))
-      out << "break " << Base::toString(i) << endl;
-
   StringList conds = debugger.m6502().getCondBreakNames();
   for(const auto& cond : conds)
     out << "breakif {" << cond << "}" << endl;
@@ -730,20 +725,35 @@ void DebuggerParser::executeBase()
 // "break"
 void DebuggerParser::executeBreak()
 {
-  uInt16 bp;
+  uInt16 addr;
+  Int8 bank;
+
   if(argCount == 0)
-    bp = debugger.cpuDebug().pc();
+    addr = debugger.cpuDebug().pc();
   else
-    bp = args[0];
-  debugger.toggleBreakPoint(bp);
+    addr = args[0];
+
+  if(argCount < 2)
+    bank = debugger.cartDebug().getBank();
+  else
+  {
+    bank = args[1];
+    if(bank >= debugger.cartDebug().bankCount())
+    {
+      commandResult << red("invalid bank");
+      return;
+    }
+  }
+
+  bool set = debugger.toggleBreakPoint(addr, bank);
   debugger.rom().invalidate();
 
-  if(debugger.breakPoint(bp))
+  if(set)
     commandResult << "set";
   else
     commandResult << "cleared";
 
-  commandResult << " breakpoint at " << Base::toString(bp);
+  commandResult << " breakpoint at " << Base::toString(addr) << " in bank " << int(bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -764,7 +774,7 @@ void DebuggerParser::executeBreakif()
       }
     }
     uInt32 ret = debugger.m6502().addCondBreak(
-                 YaccParser::getResult(), argStrings[0] );
+                 YaccParser::getResult(), argStrings[0]);
     commandResult << "added breakif " << Base::toString(ret);
   }
   else
@@ -810,7 +820,6 @@ void DebuggerParser::executeCheat()
 // "clearbreaks"
 void DebuggerParser::executeClearbreaks()
 {
-  debugger.clearAllBreakPoints();
   debugger.m6502().clearCondBreaks();
   commandResult << "all breakpoints cleared";
 }
@@ -1403,21 +1412,9 @@ void DebuggerParser::executeJump()
 // "listbreaks"
 void DebuggerParser::executeListbreaks()
 {
-  ostringstream buf;
   int count = 0;
-
-  for(uInt32 i = 0; i <= 0xffff; ++i)
-  {
-    if(debugger.breakPoints().isSet(i))
-    {
-      buf << debugger.cartDebug().getLabel(i, true, 4) << " ";
-      if(! (++count % 8) ) buf << endl;
-    }
-  }
-  if(count)
-    commandResult << "breaks:" << endl << buf.str();
-
   StringList conds = debugger.m6502().getCondBreakNames();
+
   if(conds.size() > 0)
   {
     if(count)
@@ -2256,12 +2253,12 @@ DebuggerParser::Command DebuggerParser::commands[NumCommands] = {
 
   {
     "break",
-    "Set/clear breakpoint at <address>",
-    "Command is a toggle, default is current PC\nValid address is 0 - ffff\n"
-    "Example: break, break f000",
+    "Set/clear breakpoint at <address> and <bank>",
+    "Command is a toggle, default is current PC and bank\nValid address is 0 - ffff\n"
+    "Example: break, break f000, break f000 0",
     false,
     true,
-    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeBreak)
   },
 

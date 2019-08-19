@@ -282,7 +282,7 @@ int main(int ac, char* av[])
     {
       Debugger& dbg = theOSystem->debugger();
       uInt16 bp = uInt16(dbg.stringToValue(localOpts["break"].toString()));
-      dbg.setBreakPoint(bp, true);
+      dbg.setBreakPoint(bp);
     }
 #endif
   }

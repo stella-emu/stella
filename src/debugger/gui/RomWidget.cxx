@@ -72,7 +72,7 @@ void RomWidget::loadConfig()
   myListIsDirty |= cart.disassemble(myListIsDirty);
   if(myListIsDirty)
   {
-    myRomList->setList(cart.disassembly(), dbg.breakPoints());
+    myRomList->setList(cart.disassembly());
     myListIsDirty = false;
   }
 
@@ -171,7 +171,8 @@ void RomWidget::setBreak(int disasm_line, bool state)
   if(disasm_line >= int(list.size()))  return;
 
   if(list[disasm_line].address != 0 && list[disasm_line].bytes != "")
-    instance().debugger().setBreakPoint(list[disasm_line].address, state);
+    instance().debugger().setBreakPoint(list[disasm_line].address,
+                                        instance().debugger().cartDebug().getBank(), state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

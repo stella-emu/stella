@@ -29,7 +29,6 @@ class DispatchResult;
   class CpuDebug;
 
   #include "Expression.hxx"
-  #include "PackedBitArray.hxx"
   #include "TrapArray.hxx"
 #endif
 
@@ -212,14 +211,11 @@ class M6502 : public Serializable
     // Attach the specified debugger.
     void attach(Debugger& debugger);
 
-    PackedBitArray& breakPoints() { return myBreakPoints; }
-    // flags used for one-shot breakpoints
-    PackedBitArray& breakPointFlags() { return myBreakPointFlags; }
     TrapArray& readTraps() { return myReadTraps; }
     TrapArray& writeTraps() { return myWriteTraps; }
 
     // methods for 'breakif' handling
-    uInt32 addCondBreak(Expression* e, const string& name);
+    uInt32 addCondBreak(Expression* e, const string& name, bool oneShot = false);
     bool delCondBreak(uInt32 idx);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;
@@ -399,7 +395,7 @@ class M6502 : public Serializable
 
 #ifdef DEBUGGER_SUPPORT
     Int32 evalCondBreaks() {
-      for(uInt32 i = 0; i < myCondBreaks.size(); i++)
+      for(Int32 i = Int32(myCondBreaks.size()) - 1; i >= 0; --i)
         if(myCondBreaks[i]->evaluate())
           return i;
 
@@ -408,7 +404,7 @@ class M6502 : public Serializable
 
     Int32 evalCondSaveStates()
     {
-      for(uInt32 i = 0; i < myCondSaveStates.size(); i++)
+      for(Int32 i = Int32(myCondSaveStates.size()) - 1; i >= 0; --i)
         if(myCondSaveStates[i]->evaluate())
           return i;
 
@@ -417,7 +413,7 @@ class M6502 : public Serializable
 
     Int32 evalCondTraps()
     {
-      for(uInt32 i = 0; i < myTrapConds.size(); i++)
+      for(Int32 i = Int32(myTrapConds.size()) - 1; i >= 0; --i)
         if(myTrapConds[i]->evaluate())
           return i;
 
@@ -428,8 +424,6 @@ class M6502 : public Serializable
     Debugger* myDebugger;
 
     // Addresses for which the specified action should occur
-    PackedBitArray myBreakPoints;
-    PackedBitArray myBreakPointFlags;
     TrapArray myReadTraps, myWriteTraps;
 
     // Did we just now hit a trap?
@@ -443,6 +437,7 @@ class M6502 : public Serializable
 
     vector<unique_ptr<Expression>> myCondBreaks;
     StringList myCondBreakNames;
+    BoolArray myCondBreakFlags;
     vector<unique_ptr<Expression>> myCondSaveStates;
     StringList myCondSaveStateNames;
     vector<unique_ptr<Expression>> myTrapConds;

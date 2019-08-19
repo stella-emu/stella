@@ -1324,7 +1324,6 @@
     <ClInclude Include="..\debugger\DebuggerSystem.hxx" />
     <ClInclude Include="..\debugger\DiStella.hxx" />
     <ClInclude Include="..\debugger\Expression.hxx" />
-    <ClInclude Include="..\debugger\PackedBitArray.hxx" />
     <ClInclude Include="..\debugger\gui\PromptWidget.hxx" />
     <ClInclude Include="..\debugger\gui\RamWidget.hxx" />
     <ClInclude Include="..\debugger\RiotDebug.hxx" />

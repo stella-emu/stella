@@ -18,7 +18,6 @@
 #include "bspf.hxx"
 #include "Debugger.hxx"
 #include "DiStella.hxx"
-#include "PackedBitArray.hxx"
 #include "Widget.hxx"
 #include "StellaKeys.hxx"
 #include "FBSurface.hxx"
@@ -40,8 +39,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
     _editMode(false),
     _currentKeyDown(KBDK_UNKNOWN),
     _base(Common::Base::F_DEFAULT),
-    myDisasm(nullptr),
-    myBPState(nullptr)
+    myDisasm(nullptr)//,
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kWidColor;
@@ -122,11 +120,9 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::setList(const CartDebug::Disassembly& disasm,
-                            const PackedBitArray& state)
+void RomListWidget::setList(const CartDebug::Disassembly& disasm)
 {
   myDisasm = &disasm;
-  myBPState = &state;
 
   // Enable all checkboxes
   for(int i = 0; i < _rows; ++i)
@@ -496,7 +492,9 @@ void RomListWidget::drawWidget(bool hilite)
     ColorId bytesColor = textColor;
 
     // Draw checkboxes for correct lines (takes scrolling into account)
-    myCheckList[i]->setState(myBPState->isSet(dlist[pos].address));
+    myCheckList[i]->setState(instance().debugger().
+                             checkBreakPoint(dlist[pos].address, instance().debugger().cartDebug().getBank()) != Debugger::NOT_FOUND);
+
     myCheckList[i]->setDirty();
     myCheckList[i]->draw();
 
