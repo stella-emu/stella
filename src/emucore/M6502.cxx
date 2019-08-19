@@ -19,7 +19,6 @@
   #include "Debugger.hxx"
   #include "Expression.hxx"
   #include "CartDebug.hxx"
-  #include "PackedBitArray.hxx"
   #include "Base.hxx"
 
   // Flags for disassembly types
@@ -280,24 +279,18 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           return;
         }
 
-        if(myBreakPoints.isInitialized() && myBreakPoints.isSet(PC)) {
-          myLastBreakCycle = mySystem->cycles();
-          // disable a one-shot breakpoint
-          if(myBreakPoints.isInitialized() && myBreakPointFlags.isSet(PC))
-          {
-            myBreakPoints.clear(PC);
-            myBreakPointFlags.clear(PC);
-          }
-          else
-            result.setDebugger(currentCycles, "BP: ", PC);
-          return;
-        }
-
         int cond = evalCondBreaks();
         if(cond > -1)
         {
           ostringstream msg;
-          msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
+
+          // one shot break (trace)?
+          if(myCondBreakFlags[cond])
+          {
+            delCondBreak(cond);
+          }
+          else
+            msg << "BP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
 
           myLastBreakCycle = mySystem->cycles();
           result.setDebugger(currentCycles, msg.str());
@@ -543,10 +536,11 @@ void M6502::attach(Debugger& debugger)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::addCondBreak(Expression* e, const string& name)
+uInt32 M6502::addCondBreak(Expression* e, const string& name, bool oneShot)
 {
   myCondBreaks.emplace_back(e);
   myCondBreakNames.push_back(name);
+  myCondBreakFlags.push_back(oneShot);
 
   updateStepStateByInstruction();
 
@@ -560,6 +554,7 @@ bool M6502::delCondBreak(uInt32 idx)
   {
     Vec::removeAt(myCondBreaks, idx);
     Vec::removeAt(myCondBreakNames, idx);
+    Vec::removeAt(myCondBreakFlags, idx);
 
     updateStepStateByInstruction();
 

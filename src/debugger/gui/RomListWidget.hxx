@@ -19,7 +19,6 @@
 #define ROM_LIST_WIDGET_HXX
 
 class ScrollBarWidget;
-class PackedBitArray;
 class CheckListWidget;
 class RomListSettings;
 
@@ -50,7 +49,7 @@ class RomListWidget : public EditableWidget
                     int x, int y, int w, int h);
     virtual ~RomListWidget() = default;
 
-    void setList(const CartDebug::Disassembly& disasm, const PackedBitArray& state);
+    void setList(const CartDebug::Disassembly& disasm);
 
     int getSelected() const        { return _selectedItem; }
     int getHighlighted() const     { return _highlightedItem; }
@@ -102,7 +101,6 @@ class RomListWidget : public EditableWidget
     Common::Base::Format _base;  // base used during editing
 
     const CartDebug::Disassembly* myDisasm;
-    const PackedBitArray* myBPState;
     vector<CheckboxWidget*> myCheckList;
 
   private:

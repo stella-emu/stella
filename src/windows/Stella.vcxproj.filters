@@ -1226,9 +1226,6 @@
     <ClInclude Include="..\debugger\Expression.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
-    <ClInclude Include="..\debugger\PackedBitArray.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
     <ClInclude Include="..\debugger\gui\PromptWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>

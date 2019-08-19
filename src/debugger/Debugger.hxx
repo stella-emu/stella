@@ -27,7 +27,6 @@ class TiaZoomWidget;
 class EditTextWidget;
 class RomWidget;
 class Expression;
-class PackedBitArray;
 class TrapArray;
 class PromptWidget;
 class ButtonWidget;
@@ -73,6 +72,9 @@ class Debugger : public DialogContainer
     */
     Debugger(OSystem& osystem, Console& console);
     virtual ~Debugger();
+
+  private:
+    static const Int8 ANY_BANK = -1;
 
   public:
     /**
@@ -149,10 +151,23 @@ class Debugger : public DialogContainer
     RomWidget& rom() const              { return myDialog->rom();       }
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
 
-    PackedBitArray& breakPoints() const;
-    PackedBitArray& breakPointFlags() const;
     TrapArray& readTraps() const;
     TrapArray& writeTraps() const;
+
+    /**
+      Sets or clears a breakpoint.
+
+      Returns true if successfully set or cleared
+    */
+    bool setBreakPoint(uInt16 addr, Int8 bank = ANY_BANK,
+                       bool set = true, bool oneShot = false);
+
+    /**
+      Checks for a breakpoint.
+
+      Returns -1 if not existing, else the Id
+    */
+    Int32 checkBreakPoint(uInt16 addr, Int8 bank);
 
     /**
       Run the debugger command and return the result.
@@ -224,7 +239,6 @@ class Debugger : public DialogContainer
     int getAccessFlags(uInt16 addr) const;
     void setAccessFlags(uInt16 addr, uInt8 flags);
 
-    void setBreakPoint(uInt16 bp, bool set);
     uInt32 getBaseAddress(uInt32 addr, bool read);
 
     bool patchROM(uInt16 addr, uInt8 value);
@@ -249,6 +263,8 @@ class Debugger : public DialogContainer
       Return (and possibly create) the bottom-most dialog of this container.
     */
     Dialog* baseDialog() override { return myDialog; }
+
+    static const Int32 NOT_FOUND = -1;
 
   private:
     /**
@@ -279,9 +295,9 @@ class Debugger : public DialogContainer
     uInt16 rewindStates(const uInt16 numStates, string& message);
     uInt16 unwindStates(const uInt16 numStates, string& message);
 
-    void toggleBreakPoint(uInt16 bp);
+    bool toggleBreakPoint(uInt16 addr, Int8 bank);
+    string getCondition(uInt16 addr, Int8 bank);
 
-    bool breakPoint(uInt16 bp);
     void addReadTrap(uInt16 t);
     void addWriteTrap(uInt16 t);
     void addTrap(uInt16 t);
@@ -296,7 +312,6 @@ class Debugger : public DialogContainer
     string setRAM(IntArray& args);
 
     void reset();
-    void clearAllBreakPoints();
 
     void saveState(int state);
     void saveAllStates();

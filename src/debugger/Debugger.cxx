@@ -49,12 +49,13 @@
 
 #include "RomWidget.hxx"
 #include "Expression.hxx"
-#include "PackedBitArray.hxx"
 #include "YaccParser.hxx"
 
 #include "TIA.hxx"
 #include "Debugger.hxx"
 #include "DispatchResult.hxx"
+
+using Common::Base;
 
 Debugger* Debugger::myStaticDebugger = nullptr;
 
@@ -191,18 +192,6 @@ string Debugger::autoExec(StringList* history)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PackedBitArray& Debugger::breakPoints() const
-{
-  return mySystem.m6502().breakPoints();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PackedBitArray& Debugger::breakPointFlags() const
-{
-  return mySystem.m6502().breakPointFlags();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TrapArray& Debugger::readTraps() const
 {
   return mySystem.m6502().readTraps();
@@ -336,12 +325,11 @@ int Debugger::trace()
     int targetPC = myCpuDebug->pc() + 3; // return address
 
     // set temporary breakpoint at target PC (if not existing already)
-    breakPoints().initialize();
-    if(!breakPoints().isSet(targetPC))
+    Int8 bank = myCartDebug->getBank();
+    if(checkBreakPoint(targetPC, bank) == NOT_FOUND)
     {
-      breakPoints().set(targetPC);
-      breakPointFlags().initialize();
-      breakPointFlags().set(targetPC);
+      // add temporary breakpoint and remove later
+      setBreakPoint(targetPC, bank, true, true);
     }
 
     unlockSystem();
@@ -357,26 +345,59 @@ int Debugger::trace()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleBreakPoint(uInt16 bp)
+bool Debugger::setBreakPoint(uInt16 addr, Int8 bank, bool set, bool oneShot)
 {
-  breakPoints().initialize();
-  breakPoints().toggle(bp);
-  breakPointFlags().initialize();
+  Int32 id = checkBreakPoint(addr, bank);
+
+  if(set)
+  {
+    if(id != NOT_FOUND)
+      return false;
+
+    mySystem.m6502().addCondBreak(YaccParser::getResult(), getCondition(addr, bank), oneShot);
+  }
+  else
+  {
+    if(id == NOT_FOUND)
+      return false;
+
+    m6502().delCondBreak(id);
+  }
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setBreakPoint(uInt16 bp, bool set)
+Int32 Debugger::checkBreakPoint(uInt16 addr, Int8 bank)
 {
-  breakPoints().initialize();
-  if(set) breakPoints().set(bp);
-  else    breakPoints().clear(bp);
-  breakPointFlags().initialize();
+  string condition = getCondition(addr, bank);
+
+  for(uInt32 i = 0; i < m6502().getCondBreakNames().size(); ++i)
+    if(condition == m6502().getCondBreakNames()[i])
+      return i;
+
+  return NOT_FOUND;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::breakPoint(uInt16 bp)
+string Debugger::getCondition(uInt16 addr, Int8 bank)
 {
-  return breakPoints().isSet(bp);
+  stringstream condition;
+
+  condition << "(pc == " << Base::HEX4 << addr << ")";
+  if(bank != ANY_BANK && myCartDebug->bankCount() > 1)
+    condition << " && (_bank == #" << int(bank) << ")";
+
+  YaccParser::parse(condition.str());
+
+  return condition.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::toggleBreakPoint(uInt16 addr, Int8 bank)
+{
+  setBreakPoint(addr, bank, checkBreakPoint(addr, bank) == NOT_FOUND);
+
+  return checkBreakPoint(addr, bank) != NOT_FOUND;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -605,12 +626,6 @@ uInt16 Debugger::unwindStates(const uInt16 numStates, string& message)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::clearAllBreakPoints()
-{
-  breakPoints().clearAll();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::clearAllTraps()
 {
   readTraps().clearAll();
@@ -688,7 +703,6 @@ void Debugger::setQuitState()
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
   // Somehow this feels like a hack to me, but I don't know why
-  //	if(breakPoints().isSet(myCpuDebug->pc()))
   mySystem.m6502().execute(1);
 }
 
