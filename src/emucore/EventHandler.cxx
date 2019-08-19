@@ -35,7 +35,6 @@
 #include "RewindManager.hxx"
 #include "TimerManager.hxx"
 #include "Switches.hxx"
-#include "M6532.hxx"
 #include "MouseControl.hxx"
 #include "PNGLibrary.hxx"
 #include "TIASurface.hxx"
@@ -907,7 +906,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleConsoleStartupEvents()
+void EventHandler::handleConsoleStartupEvents(const std::unique_ptr<M6532>& riot)
 {
   bool update = false;
   if(myOSystem.settings().getBool("holdreset"))
@@ -948,7 +947,11 @@ void EventHandler::handleConsoleStartupEvents()
     handleEvent(Event::JoystickOneFire);
 
   if(update)
-    myOSystem.console().riot().update();
+    if(riot != nullptr)
+      // TJ: This is ugly!
+      riot->update();
+    else
+      myOSystem.console().riot().update();
 
 #ifdef DEBUGGER_SUPPORT
   if(myOSystem.settings().getBool("debug"))
