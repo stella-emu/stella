@@ -239,7 +239,11 @@ void Console::autodetectFrameLayout(bool reset)
   FrameLayoutDetector frameLayoutDetector;
   myTIA->setFrameManager(&frameLayoutDetector);
 
-  if (reset) mySystem->reset(true);
+  if(reset)
+  {
+    mySystem->reset(true);
+    myOSystem.eventHandler().handleConsoleStartupEvents(myRiot);
+  }
 
   for(int i = 0; i < 60; ++i) myTIA->update();
 
