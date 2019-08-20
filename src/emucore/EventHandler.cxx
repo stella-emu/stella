@@ -909,20 +909,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleConsoleStartupEvents()
 {
-  bool update = false;
   if(myOSystem.settings().getBool("holdreset"))
-  {
     handleEvent(Event::ConsoleReset);
-    update = true;
-  }
+
   if(myOSystem.settings().getBool("holdselect"))
-  {
     handleEvent(Event::ConsoleSelect);
-    update = true;
-  }
 
   const string& holdjoy0 = myOSystem.settings().getString("holdjoy0");
-  update = update || holdjoy0 != "";
+
   if(BSPF::containsIgnoreCase(holdjoy0, "U"))
     handleEvent(Event::JoystickZeroUp);
   if(BSPF::containsIgnoreCase(holdjoy0, "D"))
@@ -935,7 +929,6 @@ void EventHandler::handleConsoleStartupEvents()
     handleEvent(Event::JoystickZeroFire);
 
   const string& holdjoy1 = myOSystem.settings().getString("holdjoy1");
-  update = update || holdjoy1 != "";
   if(BSPF::containsIgnoreCase(holdjoy1, "U"))
     handleEvent(Event::JoystickOneUp);
   if(BSPF::containsIgnoreCase(holdjoy1, "D"))
@@ -946,14 +939,6 @@ void EventHandler::handleConsoleStartupEvents()
     handleEvent(Event::JoystickOneRight);
   if(BSPF::containsIgnoreCase(holdjoy1, "F"))
     handleEvent(Event::JoystickOneFire);
-
-  if(update)
-    myOSystem.console().riot().update();
-
-#ifdef DEBUGGER_SUPPORT
-  if(myOSystem.settings().getBool("debug"))
-    enterDebugMode();
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

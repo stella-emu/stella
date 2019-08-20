@@ -64,6 +64,7 @@
 #include "AudioSettings.hxx"
 #include "repository/KeyValueRepositoryNoop.hxx"
 #include "repository/KeyValueRepositoryConfigfile.hxx"
+#include "M6532.hxx"
 
 #include "OSystem.hxx"
 
@@ -377,6 +378,9 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
 
   // Create an instance of the 2600 game console
   ostringstream buf;
+
+  myEventHandler->handleConsoleStartupEvents();
+
   try
   {
     closeConsole();
@@ -425,9 +429,13 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
 
     myFrameBuffer->setCursorState();
 
-    // Also check if certain virtual buttons should be held down
-    // These must be checked each time a new console is being created
     myEventHandler->handleConsoleStartupEvents();
+    myConsole->riot().update();
+
+    #ifdef DEBUGGER_SUPPORT
+      if(mySettings->getBool("debug"))
+        myEventHandler->enterDebugMode();
+    #endif
   }
   return EmptyString;
 }
