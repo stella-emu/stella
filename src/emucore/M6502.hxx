@@ -139,7 +139,7 @@ class M6502 : public Serializable
 
       @return The program counter register
     */
-    uInt16 getPC() const { return PC; }
+    // uInt16 getPC() const { return PC; }
 
     /**
       Check the type of the last peek().
