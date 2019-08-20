@@ -1177,9 +1177,16 @@ void DebuggerParser::executeExec()
            << uInt32(TimerManager::getTicks()/1000);
     execPrefix = prefix.str();
   }
+
+  // make sure the commands are added to prompt history
+  StringList history;
+
   ++execDepth;
-  commandResult << exec(node);
+  commandResult << exec(node, &history);
   --execDepth;
+
+  for(const auto& item : history)
+    debugger.prompt().addToHistory(item.c_str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -51,6 +51,8 @@ class PromptWidget : public Widget, public CommandSender
     // Clear screen and erase all history
     void clearScreen();
 
+    void addToHistory(const char *str);
+
   protected:
     int& buffer(int idx) { return _buffer[idx % kBufferSize]; }
 
@@ -75,7 +77,6 @@ class PromptWidget : public Widget, public CommandSender
     void textPaste();
 
     // History
-    void addToHistory(const char *str);
     void historyScroll(int direction);
 
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;

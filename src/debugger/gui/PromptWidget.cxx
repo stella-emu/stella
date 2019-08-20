@@ -784,7 +784,6 @@ void PromptWidget::nextLine()
   updateScrollBuffer();
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Call this (at least) when the current line changes or when a new line is added
 void PromptWidget::updateScrollBuffer()
