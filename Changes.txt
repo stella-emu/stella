@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.0 to 6.1: (MM dd, 2019)
+6.0.1 to 6.1: (MM dd, 2019)
 
   * Note: because of major event remapping changes, all remappings will be
           reset to defaults; if you had custom mappings, they will need to
@@ -26,6 +26,9 @@
 
   * Added automatic controller detection.
 
+  * Controllers can be changed during emulation (no ROM reload required 
+    anymore)
+
   * Removed superfluous controller option 'PADDLES_IDIR'.
 
   * Added configurable paddle dejittering.
@@ -34,6 +37,7 @@
     - Allow mapping of modifier-key and button-direction combinations.
     - One controller can use the same mappings as other controllers
     - Much more events can be remapped
+    - Events can be filtered by type in UI
 
   * Key-repeat mode improved; entering Time Machine by holding down a key
     combo continues to send events (previously, you had to release and then
@@ -76,6 +80,8 @@
 
   * Added option to change pitch of Pitfall II music
 
+  * Fixed bug when starting ROMs via MacOS finder
+
   * Added various developer options for oddball TIAs:
     - stuffed player, missiles and ball move
     - delayed playfield bits and color
@@ -83,7 +89,11 @@
 
   * Disabled some developer options for 'Player settings'.
 
+  * Improved breakpoints to now consider the banks
+
   * Improved debugger's TIA display and zoom windows
+
+  * Improved hotkeys, now many emulation keys work in debugger too.
 
   * Fixed display of negative values in debugger; sometimes they were
     shown as positive.
@@ -120,7 +130,7 @@
     when it should be disabled by default.
 
   * Fixed display for OpenGLES renderers used by Libretro
-    - and much more for Libretro support
+    - and much more for Libretro support (TODO)
 
   * PNG/ZIP image support is now conditionally compiled into Stella.
     All major ports (Linux/macOS/Windows) have it enabled by default.
