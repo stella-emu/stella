@@ -328,6 +328,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_DELETE:
+    case KBDK_KP_PERIOD: // actually the num delete
       killChar(+1);
       dirty = true;
       break;

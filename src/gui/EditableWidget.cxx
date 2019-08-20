@@ -142,6 +142,7 @@ bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod)
       break;
 
     case KBDK_DELETE:
+    case KBDK_KP_PERIOD:
       dirty = killChar(+1);
       if(dirty)  sendCommand(EditableWidget::kChangedCmd, key, _id);
       break;
