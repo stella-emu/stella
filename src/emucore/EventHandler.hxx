@@ -34,7 +34,6 @@ class PhysicalJoystick;
 #include "PJoystickHandler.hxx"
 #include "Variant.hxx"
 #include "bspf.hxx"
-#include "M6532.hxx"
 
 /**
   This class takes care of event remapping and dispatching for the
@@ -148,7 +147,7 @@ class EventHandler
       Handle events that must be processed each time a new console is
       created.  Typically, these are events set by commandline arguments.
     */
-    void handleConsoleStartupEvents(const std::unique_ptr<M6532>& riot = nullptr);
+    void handleConsoleStartupEvents();
 
     bool frying() const { return myFryingFlag; }
 
