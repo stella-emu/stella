@@ -198,6 +198,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 
   // Reset the system to its power-on state
   mySystem->reset();
+  myRiot->update();
 
   // Finally, add remaining info about the console
   myConsoleInfo.CartName   = myProperties.get(PropType::Cart_Name);
@@ -239,7 +240,10 @@ void Console::autodetectFrameLayout(bool reset)
   FrameLayoutDetector frameLayoutDetector;
   myTIA->setFrameManager(&frameLayoutDetector);
 
-  if (reset) mySystem->reset(true);
+  if (reset) {
+    mySystem->reset(true);
+    myRiot->update();
+  }
 
   for(int i = 0; i < 60; ++i) myTIA->update();
 
@@ -279,7 +283,10 @@ void Console::autodetectYStart(bool reset)
   ystartDetector.setLayout(myDisplayFormat == "PAL" ? FrameLayout::pal : FrameLayout::ntsc);
   myTIA->setFrameManager(&ystartDetector);
 
-  if (reset) mySystem->reset(true);
+  if (reset) {
+    mySystem->reset(true);
+    myRiot->update();
+  }
 
   for (int i = 0; i < 80; i++) myTIA->update();
 
