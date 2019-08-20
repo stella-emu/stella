@@ -73,7 +73,6 @@
 		2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D659E32085D3DD6005D96C8 /* DebuggerParser.hxx */; };
 		2D91742409BA90380026E9FF /* EditableWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BA1086116D1001E31A1 /* EditableWidget.hxx */; };
 		2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BA5086116D1001E31A1 /* EditTextWidget.hxx */; };
-		2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */; };
 		2D91742909BA90380026E9FF /* TIADebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D30F8760868A4DB00938B9D /* TIADebug.hxx */; };
 		2D91742A09BA90380026E9FF /* YaccParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D313F0B0879C4C0005BD3E5 /* YaccParser.hxx */; };
 		2D91742B09BA90380026E9FF /* Cart3E.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9555DA0880E78000466554 /* Cart3E.hxx */; };
@@ -780,7 +779,6 @@
 		2D403BA1086116D1001E31A1 /* EditableWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = EditableWidget.hxx; sourceTree = "<group>"; };
 		2D403BA4086116D1001E31A1 /* EditTextWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = EditTextWidget.cxx; sourceTree = "<group>"; };
 		2D403BA5086116D1001E31A1 /* EditTextWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = EditTextWidget.hxx; sourceTree = "<group>"; };
-		2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = PackedBitArray.hxx; sourceTree = "<group>"; };
 		2D659E2D085D3DD6005D96C8 /* Debugger.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Debugger.cxx; sourceTree = "<group>"; };
 		2D659E2E085D3DD6005D96C8 /* Debugger.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = Debugger.hxx; sourceTree = "<group>"; };
 		2D659E31085D3DD6005D96C8 /* DebuggerParser.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DebuggerParser.cxx; sourceTree = "<group>"; };
@@ -1670,8 +1668,6 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				E08D2F3C23089B9B000BD709 /* JoyMap.cxx */,
-				E08D2F3D23089B9B000BD709 /* JoyMap.hxx */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
@@ -1691,6 +1687,8 @@
 				DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */,
 				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
 				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
+				E08D2F3C23089B9B000BD709 /* JoyMap.cxx */,
+				E08D2F3D23089B9B000BD709 /* JoyMap.hxx */,
 				DCBD31E72299ADB400567357 /* KeyMap.cxx */,
 				DCBD31E52299ADB400567357 /* KeyMap.hxx */,
 				DCA078321F8C1B04008EFEE5 /* LinkedObjectPool.hxx */,
@@ -2074,7 +2072,6 @@
 				DC6B2BA311037FF200F199A7 /* DiStella.hxx */,
 				2DF971DF0892CEA400F64D23 /* Expression.hxx */,
 				2D20F9E308C603C500A73076 /* gui */,
-				2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */,
 				DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */,
 				DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */,
 				2D30F8750868A4DB00938B9D /* TIADebug.cxx */,
@@ -2389,7 +2386,6 @@
 				DCB87E581A104C1E00BF2A3B /* MediaFactory.hxx in Headers */,
 				E0FABEEB20E9948200EB8E28 /* AudioSettings.hxx in Headers */,
 				E0DCD3A720A64E96000B614E /* LanczosResampler.hxx in Headers */,
-				2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */,
 				2D91742909BA90380026E9FF /* TIADebug.hxx in Headers */,
 				2D91742A09BA90380026E9FF /* YaccParser.hxx in Headers */,
 				2D91742B09BA90380026E9FF /* Cart3E.hxx in Headers */,
