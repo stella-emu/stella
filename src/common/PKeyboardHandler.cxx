@@ -506,14 +506,24 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
   {Event::UIDown,                   KBDK_DOWN},
   {Event::UILeft,                   KBDK_LEFT},
   {Event::UIRight,                  KBDK_RIGHT},
+  {Event::UISelect,                 KBDK_RETURN},
 
   {Event::UIHome,                   KBDK_HOME},
   {Event::UIEnd,                    KBDK_END},
   {Event::UIPgUp,                   KBDK_PAGEUP},
   {Event::UIPgDown,                 KBDK_PAGEDOWN},
-
-  {Event::UISelect,                 KBDK_RETURN},
+  // same with keypad
+  {Event::UIUp,                     KBDK_KP_8},
+  {Event::UIDown,                   KBDK_KP_2},
+  {Event::UILeft,                   KBDK_KP_4},
+  {Event::UIRight,                  KBDK_KP_6},
   {Event::UISelect,                 KBDK_KP_ENTER},
+
+  {Event::UIHome,                   KBDK_KP_7},
+  {Event::UIEnd,                    KBDK_KP_1},
+  {Event::UIPgUp,                   KBDK_KP_9},
+  {Event::UIPgDown,                 KBDK_KP_3},
+
   {Event::UICancel,                 KBDK_ESCAPE},
 
   {Event::UINavPrev,                KBDK_TAB, KBDM_SHIFT},
