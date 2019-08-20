@@ -208,7 +208,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + V_GAP;
 
   // Launcher font
-  pwidth = font.getStringWidth("2x (1000x720)");
+  pwidth = font.getStringWidth("2x (1000x760)");
   items.clear();
   VarList::push_back(items, "Small", "small");
   VarList::push_back(items, "Medium", "medium");
@@ -223,7 +223,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   items.clear();
   VarList::push_back(items, "Off", "0");
   VarList::push_back(items, "1x (640x480) ", "1");
-  VarList::push_back(items, "2x (1000x720)", "2");
+  VarList::push_back(items, "2x (1000x760)", "2");
   myRomViewerPopup =
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
                     "ROM info viewer ", lwidth, kRomViewer);
@@ -556,7 +556,7 @@ void UIDialog::handleRomViewer()
   if(myLauncherWidthSlider->getValue() >= 1000 &&
      myLauncherHeightSlider->getValue() >= 760)
   {
-    VarList::push_back(items, "2x (1000x720)", "2");
+    VarList::push_back(items, "2x (1000x760)", "2");
   }
   else if (size == 2)
   {
