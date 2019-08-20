@@ -383,7 +383,7 @@ string Debugger::getCondition(uInt16 addr, Int8 bank)
 {
   stringstream condition;
 
-  condition << "(pc == " << Base::HEX4 << addr << ")";
+  condition << "((pc&1fff) == " << Base::HEX4 << (addr & 0x1fff) << ")";
   if(bank != ANY_BANK && myCartDebug->bankCount() > 1)
     condition << " && (_bank == #" << int(bank) << ")";
 
