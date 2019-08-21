@@ -385,9 +385,15 @@ string Debugger::getCondition(uInt16 addr, Int8 bank)
 
   condition << "((pc&1fff) == " << Base::HEX4 << (addr & 0x1fff) << ")";
   if(bank != ANY_BANK && myCartDebug->bankCount() > 1)
-    condition << " && (_bank == #" << int(bank) << ")";
+    condition << " && (_bank == " << Base::HEX1 << int(bank) << ")";
 
-  YaccParser::parse(condition.str());
+  // parse and validate condition expression
+  int res = YaccParser::parse(condition.str());
+  if(res != 0)
+  {
+    cerr << "Invalid condition: " << condition.str() << " (" << res << ")" << endl;
+    return "";
+  }
 
   return condition.str();
 }
