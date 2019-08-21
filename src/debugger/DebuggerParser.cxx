@@ -738,7 +738,7 @@ void DebuggerParser::executeBreak()
   else
   {
     bank = args[1];
-    if(bank >= debugger.cartDebug().bankCount())
+    if(bank < 0 || bank >= debugger.cartDebug().bankCount())
     {
       commandResult << red("invalid bank");
       return;
@@ -753,7 +753,7 @@ void DebuggerParser::executeBreak()
   else
     commandResult << "cleared";
 
-  commandResult << " breakpoint at " << Base::toString(addr) << " in bank " << int(bank);
+  commandResult << " breakpoint at $" << Base::toString(addr) << " in bank $" << Base::HEX1 << int(bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2265,7 +2265,7 @@ DebuggerParser::Command DebuggerParser::commands[NumCommands] = {
     "Example: break, break f000, break f000 0",
     false,
     true,
-    { Parameters::ARG_WORD, Parameters::ARG_BYTE, Parameters::ARG_END_ARGS },
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeBreak)
   },
 
