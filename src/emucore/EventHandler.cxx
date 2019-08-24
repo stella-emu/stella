@@ -55,7 +55,7 @@
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
-  #include "ListWidget.hxx"
+  #include "FileListWidget.hxx"
   #include "ScrollBarWidget.hxx"
 #endif
 
@@ -104,7 +104,7 @@ void EventHandler::initialize()
 
 #ifdef GUI_SUPPORT
   // Set quick select delay when typing characters in listwidgets
-  ListWidget::setQuickSelectDelay(myOSystem.settings().getInt("listdelay"));
+  FileListWidget::setQuickSelectDelay(myOSystem.settings().getInt("listdelay"));
 
   // Set number of lines a mousewheel will scroll
   ScrollBarWidget::setWheelLines(myOSystem.settings().getInt("mwheel"));
@@ -1446,7 +1446,7 @@ int EventHandler::getActionListIndex(int idx, Event::Group group) const
 
     default:
       return -1;
-  };
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
