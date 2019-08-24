@@ -5,6 +5,8 @@ src/**/*.so
 src/**/*.dylib
 src/**/*.dll
 src/**/*.o
+src/**/*.obj
+src/**/*.tlog
 out
 out.pgo
 out.pgen
@@ -18,3 +20,12 @@ build/
 src/macosx/M6502.ins
 *.dSYM
 .vscode/c_cpp_properties.json
+src/windows/sdl/*
+src/windows/x64/*
+src/windows/debug/*
+src/windows/release/*
+src/windows/Stella.vcxproj.user
+.vs/*
+.tgitconfig
+
+                                     
