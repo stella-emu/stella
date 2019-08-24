@@ -978,6 +978,9 @@
     <ClCompile Include="..\common\JoyMap.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\debugger\BreakpointMap.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1996,6 +1999,9 @@
     </ClInclude>
     <ClInclude Include="..\common\JoyMap.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\BreakpointMap.hxx">
+      <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

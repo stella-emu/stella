@@ -279,18 +279,35 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
           return;
         }
 
+        if(myBreakPoints.isInitialized())
+        {
+          uInt8 bank = mySystem->cart().getBank();
+
+          if(myBreakPoints.check(PC, bank))
+          {
+            myLastBreakCycle = mySystem->cycles();
+            // disable a one-shot breakpoint
+            if(myBreakPoints.get(PC, bank) & BreakpointMap::ONE_SHOT)
+            {
+              myBreakPoints.erase(PC, bank);
+            }
+            else
+            {
+              ostringstream msg;
+
+              msg << "BP: $" << Common::Base::HEX4 << PC << ", bank #" << std::dec << int(bank);
+              result.setDebugger(currentCycles, msg.str());
+            }
+            return;
+          }
+        }
+
         int cond = evalCondBreaks();
         if(cond > -1)
         {
           ostringstream msg;
 
-          // one shot break (trace)?
-          if(myCondBreakFlags[cond])
-          {
-            delCondBreak(cond);
-          }
-          else
-            msg << "BP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
+          msg << "CBP[" << Common::Base::HEX2 << cond << "]: " << myCondBreakNames[cond];
 
           myLastBreakCycle = mySystem->cycles();
           result.setDebugger(currentCycles, msg.str());
@@ -540,7 +557,6 @@ uInt32 M6502::addCondBreak(Expression* e, const string& name, bool oneShot)
 {
   myCondBreaks.emplace_back(e);
   myCondBreakNames.push_back(name);
-  myCondBreakFlags.push_back(oneShot);
 
   updateStepStateByInstruction();
 
@@ -554,7 +570,6 @@ bool M6502::delCondBreak(uInt32 idx)
   {
     Vec::removeAt(myCondBreaks, idx);
     Vec::removeAt(myCondBreakNames, idx);
-    Vec::removeAt(myCondBreakFlags, idx);
 
     updateStepStateByInstruction();
 

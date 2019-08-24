@@ -434,8 +434,7 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
     case CheckboxWidget::kCheckActionCmd:
       // We let the parent class handle this
       // Pass it as a kRLBreakpointChangedCmd command, since that's the intent
-      sendCommand(RomListWidget::kBPointChangedCmd, _currentPos+id,
-                  myCheckList[id]->getState());
+      sendCommand(RomListWidget::kBPointChangedCmd, _currentPos+id, 0);
       break;
 
     case GuiObject::kSetPositionCmd:
@@ -493,7 +492,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw checkboxes for correct lines (takes scrolling into account)
     myCheckList[i]->setState(instance().debugger().
-                             checkBreakPoint(dlist[pos].address, instance().debugger().cartDebug().getBank()) != Debugger::NOT_FOUND);
+                             checkBreakPoint(dlist[pos].address, instance().debugger().cartDebug().getBank()));
 
     myCheckList[i]->setDirty();
     myCheckList[i]->draw();

@@ -192,6 +192,12 @@ string Debugger::autoExec(StringList* history)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+BreakpointMap& Debugger::breakPoints() const
+{
+  return mySystem.m6502().breakPoints();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TrapArray& Debugger::readTraps() const
 {
   return mySystem.m6502().readTraps();
@@ -326,10 +332,10 @@ int Debugger::trace()
 
     // set temporary breakpoint at target PC (if not existing already)
     Int8 bank = myCartDebug->getBank();
-    if(checkBreakPoint(targetPC, bank) == NOT_FOUND)
+    if(!checkBreakPoint(targetPC, bank))
     {
       // add temporary breakpoint and remove later
-      setBreakPoint(targetPC, bank, true, true);
+      setBreakPoint(targetPC, bank, true);
     }
 
     unlockSystem();
@@ -345,65 +351,44 @@ int Debugger::trace()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::setBreakPoint(uInt16 addr, Int8 bank, bool set, bool oneShot)
+bool Debugger::setBreakPoint(uInt16 addr, Int8 bank, bool oneShot)
 {
-  Int32 id = checkBreakPoint(addr, bank);
+  bool exists = checkBreakPoint(addr, bank);
 
-  if(set)
-  {
-    if(id != NOT_FOUND)
-      return false;
+  if(exists)
+    return false;
 
-    mySystem.m6502().addCondBreak(YaccParser::getResult(), getCondition(addr, bank), oneShot);
-  }
-  else
-  {
-    if(id == NOT_FOUND)
-      return false;
-
-    m6502().delCondBreak(id);
-  }
+  breakPoints().add(addr, bank, oneShot ? BreakpointMap::ONE_SHOT : 0);
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 Debugger::checkBreakPoint(uInt16 addr, Int8 bank)
+bool Debugger::clearBreakPoint(uInt16 addr, Int8 bank)
 {
-  string condition = getCondition(addr, bank);
+  bool exists = checkBreakPoint(addr, bank);
 
-  for(uInt32 i = 0; i < m6502().getCondBreakNames().size(); ++i)
-    if(condition == m6502().getCondBreakNames()[i])
-      return i;
+  if(!exists)
+    return false;
 
-  return NOT_FOUND;
+  breakPoints().erase(addr, bank);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::getCondition(uInt16 addr, Int8 bank)
+bool Debugger::checkBreakPoint(uInt16 addr, Int8 bank)
 {
-  stringstream condition;
-
-  condition << "((pc&1fff) == " << Base::HEX4 << (addr & 0x1fff) << ")";
-  if(bank != ANY_BANK && myCartDebug->bankCount() > 1)
-    condition << " && (_bank == " << Base::HEX1 << int(bank) << ")";
-
-  // parse and validate condition expression
-  int res = YaccParser::parse(condition.str());
-  if(res != 0)
-  {
-    cerr << "Invalid condition: " << condition.str() << " (" << res << ")" << endl;
-    return "";
-  }
-
-  return condition.str();
+  return breakPoints().check(addr, bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::toggleBreakPoint(uInt16 addr, Int8 bank)
 {
-  setBreakPoint(addr, bank, checkBreakPoint(addr, bank) == NOT_FOUND);
+  if(checkBreakPoint(addr, bank))
+    clearBreakPoint(addr, bank);
+  else
+    setBreakPoint(addr, bank);
 
-  return checkBreakPoint(addr, bank) != NOT_FOUND;
+  return breakPoints().check(addr, bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -629,6 +614,12 @@ uInt16 Debugger::rewindStates(const uInt16 numStates, string& message)
 uInt16 Debugger::unwindStates(const uInt16 numStates, string& message)
 {
   return windStates(numStates, true, message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::clearAllBreakPoints()
+{
+  breakPoints().clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

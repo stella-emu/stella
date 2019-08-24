@@ -48,7 +48,7 @@ class RomWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void loadConfig() override;
 
-    void setBreak(int disasm_line, bool state);
+    void toggleBreak(int disasm_line);
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);
     void patchROM(int disasm_line, const string& bytes,
