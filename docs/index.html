@@ -576,7 +576,7 @@
   These settings are optional, and can be left at the defaults if you won't be using
   snapshots in the ROM launcher.</p>
 
-  <p>you can start emulation by selecting a ROM and pressing 'Enter' or clicking 'Select',
+  <p>You can start emulation by selecting a ROM and pressing 'Enter' or clicking 'Select',
   or double-clicking a ROM. Note that some games require you to 'Reset' the console
   before you start playing. In this case, you need to hit the virtual reset switch,
   which by default is the F2 key.  Also, some games may require that you press the
@@ -589,6 +589,12 @@
   <p>Using the 'Search' textbox in the upper-right of the ROM launcher, the
   listing can be narrowed down, showing only the ROMs that match the pattern
   you enter.</p>
+
+  <p>While the file listing is in focus, you can type some characters, and the listing
+  will 'jump' to the file that matches what you typed.  This is case-insensitive.  Hold
+  down the Shift key on the first character to select directories instead.  The delay
+  between successive keypresses being treated as part of one word is controlled by the
+  'listdelay' option; see <b>User Interface Settings</b> to change this setting.</p>
 
   <p>
   <h3><b><u>Command Menu</u></b></h3>
@@ -2313,8 +2319,8 @@
     <tr>
       <td><pre>-listdelay &lt;delay&gt;</pre></td>
       <td>Set the amount of time to wait between treating successive
-        keypresses as a single word in list widgets (value can range
-        from 300-1000). Use '0' to disable list-skipping completely,</td>
+        keypresses as a single word in file listings (value can range
+        from 300-1000). Use '0' to disable list-skipping completely.</td>
     </tr>
 
     <tr>
@@ -2817,7 +2823,7 @@
           <tr><td>Theme</td><td>Theme to use for UI elements (see examples)</td><td>-uipalette</td></tr>
           <tr><td>Dialogs position</td><td>Position of dialogs with Stella window</td><td>-dialogpos</td></tr>
           <tr><td>HiDPI mode</td><td>Scales the UI by a factor of two when enabled</td><td>-hidpi</td></tr>
-          <tr><td>List input delay</td><td>Maximum delay between keypresses in list-widgets before a search string resets. </td><td>-listdelay</td></tr>
+          <tr><td>List input delay</td><td>Maximum delay between keypresses in filelist-widgets before a search string resets. </td><td>-listdelay</td></tr>
       <tr><td>Mouse wheel scroll</td><td>Number of lines a mouse scroll will move in list-widgets</td><td>-mwheel</td></tr>
       <tr><td>Double-click speed</td><td>Speed of mouse double-clicks</td><td>-mdouble</td></tr>
       <tr><td>Controller repeat delay</td><td>Delay before controller input repeats</td><td>-ctrldelay</td></tr>

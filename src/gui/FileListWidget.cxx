@@ -15,8 +15,11 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cctype>
+
 #include "ScrollBarWidget.hxx"
 #include "FileListWidget.hxx"
+#include "TimerManager.hxx"
 
 #include "bspf.hxx"
 
@@ -25,7 +28,8 @@ FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : StringListWidget(boss, font, x, y, w, h),
     _fsmode(FilesystemNode::ListMode::All),
-    _selected(0)
+    _selected(0),
+    _quickSelectTime(0)
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
@@ -109,6 +113,42 @@ void FileListWidget::reload()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FileListWidget::handleText(char text)
+{
+  // Quick selection mode: Go to first list item starting with this key
+  // (or a substring accumulated from the last couple key presses).
+  // Only works in a useful fashion if the list entries are sorted.
+  uInt64 time = TimerManager::getTicks() / 1000;
+  if(_quickSelectTime < time)
+  {
+    if(std::isupper(text))
+    {
+      // Select directories when the first character is uppercase
+      _quickSelectStr = " [";
+      _quickSelectStr.push_back(text);
+    }
+    else
+      _quickSelectStr = text;
+  }
+  else
+    _quickSelectStr += text;
+  _quickSelectTime = time + _QUICK_SELECT_DELAY;
+
+  int selectedItem = 0;
+  for(const auto& i: _list)
+  {
+    if(BSPF::startsWithIgnoreCase(i, _quickSelectStr))
+      break;
+    selectedItem++;
+  }
+
+  if(selectedItem > 0)
+    setSelected(selectedItem);
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch (cmd)
@@ -149,3 +189,6 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
   sendCommand(cmd, data, id);
   setTarget(this);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 FileListWidget::_QUICK_SELECT_DELAY = 300;
