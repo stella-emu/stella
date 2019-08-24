@@ -92,8 +92,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   {
     case RomListWidget::kBPointChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
-      // 'id' is the state of the breakpoint at 'data'
-      setBreak(data, id);
+      toggleBreak(data);
       // Refresh the romlist, since the breakpoint may not have
       // actually changed
       myRomList->setDirty();
@@ -164,15 +163,15 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::setBreak(int disasm_line, bool state)
+void RomWidget::toggleBreak(int disasm_line)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassembly().list;
   if(disasm_line >= int(list.size()))  return;
 
   if(list[disasm_line].address != 0 && list[disasm_line].bytes != "")
-    instance().debugger().setBreakPoint(list[disasm_line].address,
-                                        instance().debugger().cartDebug().getBank(), state);
+    instance().debugger().toggleBreakPoint(list[disasm_line].address,
+                                           instance().debugger().cartDebug().getBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

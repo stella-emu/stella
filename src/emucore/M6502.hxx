@@ -30,6 +30,7 @@ class DispatchResult;
 
   #include "Expression.hxx"
   #include "TrapArray.hxx"
+  #include "BreakpointMap.hxx"
 #endif
 
 #include "bspf.hxx"
@@ -213,6 +214,8 @@ class M6502 : public Serializable
 
     TrapArray& readTraps() { return myReadTraps; }
     TrapArray& writeTraps() { return myWriteTraps; }
+
+    BreakpointMap& breakPoints() { return myBreakPoints; }
 
     // methods for 'breakif' handling
     uInt32 addCondBreak(Expression* e, const string& name, bool oneShot = false);
@@ -435,9 +438,9 @@ class M6502 : public Serializable
     };
     HitTrapInfo myHitTrapInfo;
 
+    BreakpointMap myBreakPoints;
     vector<unique_ptr<Expression>> myCondBreaks;
     StringList myCondBreakNames;
-    BoolArray myCondBreakFlags;
     vector<unique_ptr<Expression>> myCondSaveStates;
     StringList myCondSaveStateNames;
     vector<unique_ptr<Expression>> myTrapConds;

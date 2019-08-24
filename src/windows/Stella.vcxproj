@@ -393,6 +393,7 @@
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
+    <ClCompile Include="..\debugger\BreakpointMap.cxx" />
     <ClCompile Include="..\debugger\gui\AmigaMouseWidget.cxx" />
     <ClCompile Include="..\debugger\gui\AtariMouseWidget.cxx" />
     <ClCompile Include="..\debugger\gui\AtariVoxWidget.cxx" />
@@ -1098,6 +1099,7 @@
     <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\Vec.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
+    <ClInclude Include="..\debugger\BreakpointMap.hxx" />
     <ClInclude Include="..\debugger\gui\AmigaMouseWidget.hxx" />
     <ClInclude Include="..\debugger\gui\AtariMouseWidget.hxx" />
     <ClInclude Include="..\debugger\gui\AtariVoxWidget.hxx" />

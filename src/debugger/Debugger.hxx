@@ -27,6 +27,7 @@ class TiaZoomWidget;
 class EditTextWidget;
 class RomWidget;
 class Expression;
+class BreakpointMap;
 class TrapArray;
 class PromptWidget;
 class ButtonWidget;
@@ -151,23 +152,39 @@ class Debugger : public DialogContainer
     RomWidget& rom() const              { return myDialog->rom();       }
     TiaOutputWidget& tiaOutput() const  { return myDialog->tiaOutput(); }
 
+    BreakpointMap& breakPoints() const;
+
     TrapArray& readTraps() const;
     TrapArray& writeTraps() const;
 
     /**
-      Sets or clears a breakpoint.
+      Sets a breakpoint.
 
-      Returns true if successfully set or cleared
+      Returns true if successfully set
     */
     bool setBreakPoint(uInt16 addr, Int8 bank = ANY_BANK,
-                       bool set = true, bool oneShot = false);
+                       bool oneShot = false);
+
+    /**
+      Clears a breakpoint.
+
+      Returns true if successfully cleared
+    */
+    bool clearBreakPoint(uInt16 addr, Int8 bank);
+
+    /**
+      Toggles a breakpoint
+
+      Returns new state of breakpoint
+    */
+    bool toggleBreakPoint(uInt16 addr, Int8 bank);
 
     /**
       Checks for a breakpoint.
 
-      Returns -1 if not existing, else the Id
+      Returns true if existing, else false
     */
-    Int32 checkBreakPoint(uInt16 addr, Int8 bank);
+    bool checkBreakPoint(uInt16 addr, Int8 bank);
 
     /**
       Run the debugger command and return the result.
@@ -295,8 +312,7 @@ class Debugger : public DialogContainer
     uInt16 rewindStates(const uInt16 numStates, string& message);
     uInt16 unwindStates(const uInt16 numStates, string& message);
 
-    bool toggleBreakPoint(uInt16 addr, Int8 bank);
-    string getCondition(uInt16 addr, Int8 bank);
+    void clearAllBreakPoints();
 
     void addReadTrap(uInt16 t);
     void addWriteTrap(uInt16 t);

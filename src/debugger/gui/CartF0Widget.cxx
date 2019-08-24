@@ -30,7 +30,7 @@ CartridgeF0Widget::CartridgeF0Widget(
 
   ostringstream info;
   info << "64K Megaboy F0 cartridge, 16 4K banks\n"
-       << "Startup bank = " << cart.startBank() << " or undetermined\n"
+       << "Startup bank = #" << cart.startBank() << " or undetermined\n"
        << "Bankswitch triggered by accessing $1FF0\n";
 
   // Eventually, we should query this from the debugger/disassembler
@@ -64,9 +64,9 @@ CartridgeF0Widget::CartridgeF0Widget(
   VarList::push_back(items, " 14");
   VarList::push_back(items, " 15");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 15 "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 15"),
+                    myLineHeight, items, "Set bank   #",
+                    _font.getStringWidth("Set bank   #"), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
@@ -102,7 +102,7 @@ string CartridgeF0Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << std::dec << myCart.getBank() << ", hotspot = $FFF0";
+  buf << "Bank = #" << std::dec << myCart.getBank() << ", hotspot = $FFF0";
 
   return buf.str();
 }

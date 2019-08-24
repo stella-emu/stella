@@ -647,6 +647,9 @@ string DebuggerParser::saveScriptFile(string file)
   for(const auto& w: myWatches)
     out << "watch " << w << endl;
 
+  for(const auto& bp: debugger.breakPoints().getBreakpoints())
+    out << "break " << Base::toString(bp.addr) << " " << Base::toString(bp.bank) << endl;
+
   StringList conds = debugger.m6502().getCondBreakNames();
   for(const auto& cond : conds)
     out << "breakif {" << cond << "}" << endl;
@@ -738,22 +741,40 @@ void DebuggerParser::executeBreak()
   else
   {
     bank = args[1];
-    if(bank < 0 || bank >= debugger.cartDebug().bankCount())
+    if(bank < -1 || bank >= debugger.cartDebug().bankCount())
     {
       commandResult << red("invalid bank");
       return;
     }
   }
+  if(bank > -1)
+  {
+    bool set = debugger.toggleBreakPoint(addr, bank);
 
-  bool set = debugger.toggleBreakPoint(addr, bank);
-  debugger.rom().invalidate();
+    if(set)
+      commandResult << "set";
+    else
+      commandResult << "cleared";
 
-  if(set)
-    commandResult << "set";
+    commandResult << " breakpoint at $" << Base::HEX4 << addr << " in bank #" << std::dec << int(bank);
+  }
   else
-    commandResult << "cleared";
+  {
+    for(int i = 0; i < debugger.cartDebug().bankCount(); ++i)
+    {
+      bool set = debugger.toggleBreakPoint(addr, i);
 
-  commandResult << " breakpoint at $" << Base::toString(addr) << " in bank $" << Base::HEX1 << int(bank);
+      if(i)
+        commandResult << endl;
+
+      if(set)
+        commandResult << "set";
+      else
+        commandResult << "cleared";
+
+      commandResult << " breakpoint at $" << Base::HEX4 << addr << " in bank #" << std::dec << int(i);
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -820,6 +841,7 @@ void DebuggerParser::executeCheat()
 // "clearbreaks"
 void DebuggerParser::executeClearbreaks()
 {
+  debugger.clearAllBreakPoints();
   debugger.m6502().clearCondBreaks();
   commandResult << "all breakpoints cleared";
 }
@@ -1419,7 +1441,34 @@ void DebuggerParser::executeJump()
 // "listbreaks"
 void DebuggerParser::executeListbreaks()
 {
+  stringstream buf;
   int count = 0;
+  uInt32 bankCount = debugger.cartDebug().bankCount();
+
+  for(uInt32 bank = 0; bank < bankCount; ++bank)
+  {
+    for(uInt32 addr = 0; addr <= 0x1fff; ++addr)
+    {
+      if(debugger.breakPoints().check(addr, bank))
+      {
+        if(!bankCount)
+        {
+          buf << debugger.cartDebug().getLabel(addr, true, 4) << " ";
+          if(!(++count % 8)) buf << endl;
+        }
+        else
+        {
+          if(count % 6)
+            buf << ", ";
+          buf << debugger.cartDebug().getLabel(addr, true, 4) << " #" << int(bank);
+          if(!(++count % 6)) buf << endl;
+        }
+      }
+    }
+  }
+  if(count)
+    commandResult << "breaks:" << endl << buf.str();
+
   StringList conds = debugger.m6502().getCondBreakNames();
 
   if(conds.size() > 0)

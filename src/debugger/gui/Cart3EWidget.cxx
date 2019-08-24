@@ -152,7 +152,6 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender,
   invalidate();
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge3EWidget::bankState()
 {
@@ -160,9 +159,9 @@ string Cartridge3EWidget::bankState()
 
   uInt16& bank = myCart.myCurrentBank;
   if(bank < 256)
-    buf << "ROM bank " << std::dec << bank % myNumRomBanks << ", RAM inactive";
+    buf << "ROM bank #" << std::dec << bank % myNumRomBanks << ", RAM inactive";
   else
-    buf << "ROM inactive, RAM bank " << bank % myNumRomBanks;
+    buf << "ROM inactive, RAM bank #" << std::dec << bank % myNumRomBanks;
 
   return buf.str();
 }
