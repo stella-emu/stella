@@ -26,8 +26,8 @@
 
   * Added automatic controller detection.
 
-  * Controllers can be changed during emulation (no ROM reload required 
-    anymore)
+  * Controllers can be changed during emulation (no ROM reload required
+    anymore).
 
   * Removed superfluous controller option 'PADDLES_IDIR'.
 
@@ -47,9 +47,9 @@
     down the mouse button (Time Machine, debugger step/trace/frame advance,
     etc.)
 
-  * Added option to configure mouse double click speed
+  * Added option to configure mouse double click speed.
 
-  * Added option to configure controller input repeat speed
+  * Added option to configure controller input repeat speed.
 
   * Added 'HiDPI' mode, which scales the UI by 2x when enabled.  This is
     meant for 4k and above monitors, but can actually be used at any
@@ -76,11 +76,15 @@
 
   * Enhanced 'Command' menu to display current state and more commands.
 
-  * Added option to save and load all TimeMachine states at once
+  * Added option to save and load all TimeMachine states at once.
 
-  * Added option to change pitch of Pitfall II music
+  * Added option to change pitch of Pitfall II music.
 
-  * Fixed bug when starting ROMs via MacOS finder
+  * In file listings, you can now select directories by holding 'Shift' on
+    the first character entered.  Entering characters in lowercase still
+    selects files, as before.
+
+  * Fixed bug when starting ROMs via MacOS finder.
 
   * Added various developer options for oddball TIAs:
     - stuffed player, missiles and ball move
@@ -89,9 +93,9 @@
 
   * Disabled some developer options for 'Player settings'.
 
-  * Improved breakpoints to now consider the banks
+  * Improved breakpoints to now consider the banks.
 
-  * Improved debugger's TIA display and zoom windows
+  * Improved debugger's TIA display and zoom windows.
 
   * Improved hotkeys, now many emulation keys work in debugger too.
 
@@ -100,7 +104,7 @@
 
   * Reworked ROM properties database, making it load faster in certain
     cases.  Related to this, completely removed 'Display_Height' stuff.
-    (TODO: Stella.pro cleanup, doc)
+    (TODO: Stella.pro cleanup, doc).
 
   * Updated internal ROM properties database to ROM-Hunter version 15
     (thanks go to RomHunter for his tireless research in this area).
@@ -113,12 +117,6 @@
   * Fixed bug where frying one ROM was continued with the next ROM.
 
   * Fixed not working 7800 pause key.
-
-  * Added support for CDFJ bankswitching type.
-
-  * Allow the DPC+ scheme to not enable playfield 'jitter' effect for
-    certain older DPC+ driver versions; this allows 'Epic Adventure' ROM
-    to finally work in Stella.
 
   * Enhanced UA bankswitching to support certain Brazilian carts.
 

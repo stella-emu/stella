@@ -42,7 +42,7 @@ class ListWidget : public EditableWidget
 
   public:
     ListWidget(GuiObject* boss, const GUI::Font& font,
-               int x, int y, int w, int h, bool quickSelect);
+               int x, int y, int w, int h);
     virtual ~ListWidget() = default;
 
     int rows() const        { return _rows; }
@@ -63,8 +63,6 @@ class ListWidget : public EditableWidget
 
     // Account for the extra width of embedded scrollbar
     int getWidth() const override;
-
-    static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
 
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
@@ -106,13 +104,6 @@ class ListWidget : public EditableWidget
     ScrollBarWidget* _scrollBar;
 
     StringList _list;
-    string     _backupString;
-    bool       _quickSelect;
-    string     _quickSelectStr;
-    uInt64     _quickSelectTime;
-
-  private:
-    static uInt64 _QUICK_SELECT_DELAY;
 
   private:
     // Following constructors and assignment operators not supported

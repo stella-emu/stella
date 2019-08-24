@@ -21,7 +21,7 @@
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "FBSurface.hxx"
-#include "ListWidget.hxx"
+#include "FileListWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "EditTextWidget.hxx"
@@ -396,7 +396,7 @@ void UIDialog::saveConfig()
 
   // Listwidget quick delay
   settings.setValue("listdelay", myListDelaySlider->getValue());
-  ListWidget::setQuickSelectDelay(myListDelaySlider->getValue());
+  FileListWidget::setQuickSelectDelay(myListDelaySlider->getValue());
 
   // Mouse wheel lines
   settings.setValue("mwheel", myWheelLinesSlider->getValue());

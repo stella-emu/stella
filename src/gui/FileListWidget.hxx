@@ -79,6 +79,8 @@ class FileListWidget : public StringListWidget
     }
     const FilesystemNode& currentDir() const { return _node; }
 
+    static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
+
   private:
     /** Very similar to setDirectory(), but also updates the history */
     void setLocation(const FilesystemNode& node, string select = EmptyString);
@@ -86,6 +88,7 @@ class FileListWidget : public StringListWidget
     /** Descend into currently selected directory */
     void selectDirectory();
 
+    bool handleText(char text) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
@@ -96,6 +99,10 @@ class FileListWidget : public StringListWidget
 
     Common::FixedStack<string> _history;
     uInt32 _selected;
+
+    string _quickSelectStr;
+    uInt64 _quickSelectTime;
+    static uInt64 _QUICK_SELECT_DELAY;
 
   private:
     // Following constructors and assignment operators not supported
