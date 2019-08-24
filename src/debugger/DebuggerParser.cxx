@@ -1451,7 +1451,7 @@ void DebuggerParser::executeListbreaks()
     {
       if(debugger.breakPoints().check(addr, bank))
       {
-        if(!bankCount)
+        if(bankCount == 1)
         {
           buf << debugger.cartDebug().getLabel(addr, true, 4) << " ";
           if(!(++count % 8)) buf << endl;
