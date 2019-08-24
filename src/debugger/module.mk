@@ -1,7 +1,7 @@
 MODULE := src/debugger
 
 MODULE_OBJS := \
-        src/debugger/BreakpointMap.o
+        src/debugger/BreakpointMap.o \
         src/debugger/Debugger.o \
         src/debugger/DebuggerParser.o \
         src/debugger/CartDebug.o \
@@ -13,5 +13,5 @@ MODULE_OBJS := \
 MODULE_DIRS += \
         src/debugger
 
-# Include common rules 
+# Include common rules
 include $(srcdir)/common.rules
