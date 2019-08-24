@@ -23,7 +23,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
-  : ListWidget(boss, font, x, y, w, h, false)  // disable quick select
+  : ListWidget(boss, font, x, y, w, h)
 {
   int ypos = _y + 2;
 

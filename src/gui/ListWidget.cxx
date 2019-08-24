@@ -15,31 +15,25 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include <cctype>
-#include <algorithm>
-
 #include "OSystem.hxx"
 #include "Widget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Dialog.hxx"
 #include "FrameBuffer.hxx"
 #include "StellaKeys.hxx"
-#include "TimerManager.hxx"
 #include "EventHandler.hxx"
 #include "ListWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
-                       int x, int y, int w, int h, bool quickSelect)
+                       int x, int y, int w, int h)
   : EditableWidget(boss, font, x, y, 16, 16),
     _rows(0),
     _cols(0),
     _currentPos(0),
     _selectedItem(-1),
     _highlightedItem(-1),
-    _editMode(false),
-    _quickSelect(quickSelect),
-    _quickSelectTime(0)
+    _editMode(false)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kWidColor;
@@ -253,53 +247,8 @@ int ListWidget::findItem(int x, int y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ListWidget::handleText(char text)
 {
-  bool handled = true;
-  int oldSelectedItem = _selectedItem;
-
-  if (!_editMode && _quickSelect)
-  {
-    // Quick selection mode: Go to first list item starting with this key
-    // (or a substring accumulated from the last couple key presses).
-    // Only works in a useful fashion if the list entries are sorted.
-    // TODO: Maybe this should be off by default, and instead we add a
-    // method "enableQuickSelect()" or so ?
-    uInt64 time = TimerManager::getTicks() / 1000;
-    if (_quickSelectTime < time)
-      _quickSelectStr = text;
-    else
-      _quickSelectStr += text;
-    _quickSelectTime = time + _QUICK_SELECT_DELAY;
-
-    // FIXME: This is bad slow code (it scans the list linearly each time a
-    // key is pressed); it could be much faster. Only of importance if we have
-    // quite big lists to deal with -- so for now we can live with this lazy
-    // implementation :-)
-    int newSelectedItem = 0;
-    for(const auto& i: _list)
-    {
-      if(BSPF::startsWithIgnoreCase(i, _quickSelectStr))
-      {
-        _selectedItem = newSelectedItem;
-        break;
-      }
-      newSelectedItem++;
-    }
-  }
-  else if (_editMode)
-  {
-    // Class EditableWidget handles all text editing related key presses for us
-    handled = EditableWidget::handleText(text);
-  }
-
-  if (_selectedItem != oldSelectedItem)
-  {
-    _scrollBar->draw();
-    scrollToSelected();
-
-    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
-  }
-
-  return handled;
+  // Class EditableWidget handles all text editing related key presses for us
+  return _editMode ? EditableWidget::handleText(text) : true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -521,6 +470,3 @@ void ListWidget::abortEditMode()
   // Reset to normal data entry
   EditableWidget::abortEditMode();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 ListWidget::_QUICK_SELECT_DELAY = 300;
