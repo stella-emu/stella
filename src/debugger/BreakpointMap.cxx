@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <map>
 #include "BreakpointMap.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,8 +83,9 @@ bool BreakpointMap::check(const uInt16 addr, const uInt8 bank) const
 BreakpointMap::BreakpointList BreakpointMap::getBreakpoints() const
 {
   BreakpointList map;
+  std::map<Breakpoint, uInt32> ordered(myMap.begin(), myMap.end());
 
-  for(auto item : myMap)
+  for(auto item : ordered)
     map.push_back(item.first);
 
   return map;

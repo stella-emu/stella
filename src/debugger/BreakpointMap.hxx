@@ -44,13 +44,18 @@ public:
     Breakpoint()
       : addr(0), bank(0) { }
     Breakpoint(const Breakpoint& bp)
-      : addr(bp.addr), bank(bp.bank) { }
+      : addr(bp.addr & ADDRESS_MASK), bank(bp.bank) { }
     explicit Breakpoint(uInt16 c_addr, uInt8 c_bank)
-      : addr(c_addr), bank(c_bank) { }
+      : addr(c_addr & ADDRESS_MASK), bank(c_bank) { }
 
     bool operator==(const Breakpoint& other) const
     {
-      return ((addr & ADDRESS_MASK) == (other.addr & ADDRESS_MASK) && bank == other.bank);
+      return (addr == other.addr && bank == other.bank);
+    }
+    bool operator<(const Breakpoint& other) const
+    {
+      return bank < other.bank ||
+        (bank == other.bank && addr < other.addr);
     }
   };
   using BreakpointList = std::vector<Breakpoint>;
@@ -76,6 +81,7 @@ public:
   bool check(const Breakpoint& breakpoint) const;
   bool check(const uInt16 addr, const uInt8 bank) const;
 
+  /** Returns a sorted list of breakpoints */
   BreakpointList getBreakpoints() const;
 
   /** clear all breakpoints */
@@ -86,7 +92,7 @@ private:
   struct BreakpointHash {
     size_t operator()(const Breakpoint& bp) const {
       return std::hash<uInt64>()(
-        uInt64(bp.addr & ADDRESS_MASK) * 13 + uInt64(bp.bank)
+        uInt64(bp.addr) * 13 + uInt64(bp.bank)
       );
     }
   };

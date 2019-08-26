@@ -1445,25 +1445,19 @@ void DebuggerParser::executeListbreaks()
   int count = 0;
   uInt32 bankCount = debugger.cartDebug().bankCount();
 
-  for(uInt32 bank = 0; bank < bankCount; ++bank)
+  for(const auto& bp : debugger.breakPoints().getBreakpoints())
   {
-    for(uInt32 addr = 0; addr <= 0x1fff; ++addr)
+    if(bankCount == 1)
     {
-      if(debugger.breakPoints().check(addr, bank))
-      {
-        if(bankCount == 1)
-        {
-          buf << debugger.cartDebug().getLabel(addr, true, 4) << " ";
-          if(!(++count % 8)) buf << endl;
-        }
-        else
-        {
-          if(count % 6)
-            buf << ", ";
-          buf << debugger.cartDebug().getLabel(addr, true, 4) << " #" << int(bank);
-          if(!(++count % 6)) buf << endl;
-        }
-      }
+      buf << debugger.cartDebug().getLabel(bp.addr, true, 4) << " ";
+      if(!(++count % 8)) buf << endl;
+    }
+    else
+    {
+      if(count % 6)
+        buf << ", ";
+      buf << debugger.cartDebug().getLabel(bp.addr, true, 4) << " #" << int(bp.bank);
+      if(!(++count % 6)) buf << endl;
     }
   }
   if(count)
