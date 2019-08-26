@@ -729,7 +729,7 @@ void DebuggerParser::executeBase()
 void DebuggerParser::executeBreak()
 {
   uInt16 addr;
-  Int8 bank;
+  uInt8 bank;
 
   if(argCount == 0)
     addr = debugger.cpuDebug().pc();
@@ -741,13 +741,13 @@ void DebuggerParser::executeBreak()
   else
   {
     bank = args[1];
-    if(bank < -1 || bank >= debugger.cartDebug().bankCount())
+    if(bank >= debugger.cartDebug().bankCount() && bank != 0xff)
     {
       commandResult << red("invalid bank");
       return;
     }
   }
-  if(bank > -1)
+  if(bank != 0xff)
   {
     bool set = debugger.toggleBreakPoint(addr, bank);
 
@@ -2309,9 +2309,9 @@ DebuggerParser::Command DebuggerParser::commands[NumCommands] = {
 
   {
     "break",
-    "Set/clear breakpoint at <address> and <bank>",
-    "Command is a toggle, default is current PC and bank\nValid address is 0 - ffff\n"
-    "Example: break, break f000, break f000 0",
+    "Break [at address] [and bank]",
+    "Set/clear breakpoint on address (and all mirrors) and bank\nDefault are current PC and bank, valid address is 0 - ffff\n"
+    "Example: break, break f000, break 7654 3\n         break ff00 ff (= all banks)",
     false,
     true,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
