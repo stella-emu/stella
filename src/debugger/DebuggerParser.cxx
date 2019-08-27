@@ -730,6 +730,7 @@ void DebuggerParser::executeBreak()
 {
   uInt16 addr;
   uInt8 bank;
+  uInt32 bankCount = debugger.cartDebug().bankCount();
 
   if(argCount == 0)
     addr = debugger.cpuDebug().pc();
@@ -741,7 +742,7 @@ void DebuggerParser::executeBreak()
   else
   {
     bank = args[1];
-    if(bank >= debugger.cartDebug().bankCount() && bank != 0xff)
+    if(bank >= bankCount && bank != 0xff)
     {
       commandResult << red("invalid bank");
       return;
@@ -756,7 +757,9 @@ void DebuggerParser::executeBreak()
     else
       commandResult << "cleared";
 
-    commandResult << " breakpoint at $" << Base::HEX4 << addr << " in bank #" << std::dec << int(bank);
+    commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
+    if(bankCount > 1)
+      commandResult << " in bank #" << std::dec << int(bank);
   }
   else
   {
@@ -772,7 +775,9 @@ void DebuggerParser::executeBreak()
       else
         commandResult << "cleared";
 
-      commandResult << " breakpoint at $" << Base::HEX4 << addr << " in bank #" << std::dec << int(i);
+      commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
+      if(bankCount > 1)
+        commandResult << " in bank #" << std::dec << int(bank);
     }
   }
 }
