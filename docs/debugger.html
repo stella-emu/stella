@@ -257,26 +257,25 @@ more convenient.
     <table cellpadding=4 border="1">
       <tr>
         <td><b>Linux/Unix</b></td>
-        <td><i>~/.stella/autoexec.script</i></td>
+        <td><i>$HOME/.config/stella/autoexec.script</i></td>
       </tr>
       <tr>
         <td><b>Macintosh</b></td>
-        <td><i>~/Library/Application Support/Stella/autoexec.script</i></td>
+        <td><i>$HOME/Library/Application Support/Stella/autoexec.script</i></td>
       </tr>
       <tr>
         <td><b>Windows</b></td>
-        <td><i>%APPDATA%\Stella\autoexec.script</i>&nbsp;&nbsp;&nbsp;
-          <b>or</b><br>
-          <i>_BASEDIR_\autoexec.script</i>
-            (if a file named 'basedir.txt' exists in the application
-            directory containing the full pathname for _BASEDIR_)
-        </td>
+        <td><i>%APPDATA%\Stella\autoexec.script</i></td>
+      </tr>
+      <tr>
+        <td><b>If using 'basedir'<br>or 'baseinappdir'</b></td>
+        <td><i>_BASEDIR_/autoexec.script</i></td>
       </tr>
     </table>
     </p>
   </li>
   <li>
-    "&lt;rom_filename&gt;.script"</br>
+    "&lt;rom_filename&gt;.script" (located in the same directory as the ROM)</br>
     In this ROM specific, plain text file you can store breaks, traps, watches
     etc. for future re-use. Use the "save" command to create this file using
     the current settings. You can also manually edit the file and add more commands.
@@ -289,10 +288,10 @@ more convenient.
     </br></br>
   </li>
   <li>
-    "&lt;rom_filename&gt;.lst"</br>
+    "&lt;rom_filename&gt;.lst" (located in the same directory as the ROM)</br>
   </li>
   <li>
-    "&lt;rom_filename&gt;.sym"</br>
+    "&lt;rom_filename&gt;.sym" (located in the same directory as the ROM)</br>
     If you provied the -l and -s parameters DASM will create these two files during
     assembly. Stella uses the file content to display the correct labels.
   </li>
@@ -1521,34 +1520,8 @@ load a list of directives when a ROM is loaded. These files can be generated wit
 'saveconfig' command, and loaded with the 'loadconfig' command. There are also
 'listconfig' and 'clearconfig' commands to show and erase (respectively) the current
 directive listing. Upon opening the debugger for the first time, Stella attempts
-to load a configuration file from several places. For this example, assume a ROM
-named "rr.a26", with properties entry "River Raid". Attempts will be made as follows:
-<ul>
-<li>ROM dir based on properties entry name: <i>River Raid.cfg</i></li>
-<li>ROM dir based on actual ROM name: <i>rr.cfg</i></li>
-<li>CFG dir based on properties entry name: <i>configdir/River Raid.cfg</i></li>
+to load a configuration file from the folder containing the ROM.  Assuming a ROM named "rr.a26" exists, the config file must be named <i>rr.cfg</i>.
 </ul>
-<p>The location of 'configdir' will depend on the OS as follows:</p>
-
-  <p><table cellpadding=4 border="1">
-    <tr>
-      <td><b>Linux/Unix</b></td>
-      <td><i>~/.stella/cfg/</i></td>
-    </tr>
-    <tr>
-      <td><b>Macintosh</b></td>
-      <td><i>~/Library/Application Support/Stella/cfg/</i></td>
-    </tr>
-    <tr>
-      <td><b>Windows</b></td>
-      <td><i>%APPDATA%\Stella\cfg\</i>&nbsp;&nbsp;&nbsp;
-        <b>OR</b><br>
-        <i>_BASEDIR_\cfg\</i>
-          (if a file named 'basedir.txt' exists in the application
-          directory containing the full pathname for _BASEDIR_)
-      </td>
-    </tr>
-  </table>
 </table>
 </li>
 </ol>
