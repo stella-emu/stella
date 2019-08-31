@@ -30,11 +30,13 @@
 class BreakpointMap
 {
 private:
-  static const uInt16 ADDRESS_MASK = 0x1fff; // either 0x1fff or 0xffff (not needed then)
+  static const uInt16 ADDRESS_MASK = 0x1fff;  // either 0x1fff or 0xffff (not needed then)
 
 public:
   // breakpoint flags
-  static const uInt32 ONE_SHOT = 1 << 0; // used to 'trace' command
+  static const uInt32 ONE_SHOT = 1 << 0;      // used for 'trace' command
+
+  static const uInt8 ANY_BANK = 255;          // breakpoint valid in any bank
 
   struct Breakpoint
   {
@@ -44,13 +46,20 @@ public:
     Breakpoint()
       : addr(0), bank(0) { }
     Breakpoint(const Breakpoint& bp)
-      : addr(bp.addr & ADDRESS_MASK), bank(bp.bank) { }
+      : addr(bp.addr), bank(bp.bank) { }
     explicit Breakpoint(uInt16 c_addr, uInt8 c_bank)
-      : addr(c_addr & ADDRESS_MASK), bank(c_bank) { }
+      : addr(c_addr), bank(c_bank) { }
 
     bool operator==(const Breakpoint& other) const
     {
-      return (addr == other.addr && bank == other.bank);
+      if(addr == other.addr)
+      {
+        if(bank == ANY_BANK || other.bank == ANY_BANK)
+          return true;
+        else
+          return bank == other.bank;
+      }
+      return false;
     }
     bool operator<(const Breakpoint& other) const
     {
@@ -89,10 +98,12 @@ public:
   size_t size() { return myMap.size(); }
 
 private:
+  Breakpoint convertBreakpoint(const Breakpoint& breakpoint);
+
   struct BreakpointHash {
     size_t operator()(const Breakpoint& bp) const {
       return std::hash<uInt64>()(
-        uInt64(bp.addr) * 13 + uInt64(bp.bank)
+        uInt64(bp.addr) * 13 // only check for address, bank check via == operator
       );
     }
   };

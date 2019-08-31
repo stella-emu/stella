@@ -162,29 +162,29 @@ class Debugger : public DialogContainer
 
       Returns true if successfully set
     */
-    bool setBreakPoint(uInt16 addr, Int8 bank = ANY_BANK,
-                       bool oneShot = false);
+    bool setBreakPoint(uInt16 addr, uInt8 bank = ANY_BANK,
+                       uInt32 flags = 0);
 
     /**
       Clears a breakpoint.
 
       Returns true if successfully cleared
     */
-    bool clearBreakPoint(uInt16 addr, Int8 bank);
+    bool clearBreakPoint(uInt16 addr, uInt8 bank);
 
     /**
       Toggles a breakpoint
 
       Returns new state of breakpoint
     */
-    bool toggleBreakPoint(uInt16 addr, Int8 bank);
+    bool toggleBreakPoint(uInt16 addr, uInt8 bank);
 
     /**
       Checks for a breakpoint.
 
       Returns true if existing, else false
     */
-    bool checkBreakPoint(uInt16 addr, Int8 bank);
+    bool checkBreakPoint(uInt16 addr, uInt8 bank);
 
     /**
       Run the debugger command and return the result.

@@ -88,7 +88,7 @@ class DebuggerParser
     };
 
     // List of commands available
-    static constexpr uInt32 NumCommands = 94;
+    static constexpr uInt32 NumCommands = 95;
     struct Command {
       string cmdString;
       string description;
@@ -143,6 +143,7 @@ class DebuggerParser
     void executeBase();
     void executeBreak();
     void executeBreakif();
+    void executeBreaklabel();
     void executeC();
     void executeCheat();
     void executeClearbreaks();
