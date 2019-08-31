@@ -932,7 +932,7 @@ bool CartDetector::isProbablyFE(const ByteBuffer& image, uInt32 size)
     { 0x20, 0x00, 0xD0, 0xC6, 0xC5 },  // JSR $D000; DEC $C5
     { 0x20, 0xC3, 0xF8, 0xA5, 0x82 },  // JSR $F8C3; LDA $82
     { 0xD0, 0xFB, 0x20, 0x73, 0xFE },  // BNE $FB; JSR $FE73
-    { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; STY $D6
+    { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; $84, $D6
   };
   for(uInt32 i = 0; i < 4; ++i)
     if(searchForBytes(image.get(), size, signature[i], 5, 1))
