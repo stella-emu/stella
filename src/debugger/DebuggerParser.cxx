@@ -808,6 +808,23 @@ void DebuggerParser::executeBreakif()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "breaklabel"
+void DebuggerParser::executeBreaklabel()
+{
+  uInt16 addr;
+
+  if(argCount == 0)
+    addr = debugger.cpuDebug().pc();
+  else
+    addr = args[0];
+
+  bool set = debugger.toggleBreakPoint(addr, BreakpointMap::ANY_BANK);
+
+  commandResult << (set ? "set" : "cleared");
+  commandResult << " breakpoint at $" << Base::HEX4 << addr << " (no mirrors)";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "c"
 void DebuggerParser::executeC()
 {
@@ -1461,7 +1478,11 @@ void DebuggerParser::executeListbreaks()
     {
       if(count % 6)
         buf << ", ";
-      buf << debugger.cartDebug().getLabel(bp.addr, true, 4) << " #" << int(bp.bank);
+      buf << debugger.cartDebug().getLabel(bp.addr, true, 4);
+      if(bp.bank != 255)
+        buf << " #" << int(bp.bank);
+      else
+        buf << " *";
       if(!(++count % 6)) buf << endl;
     }
   }
@@ -2322,9 +2343,19 @@ DebuggerParser::Command DebuggerParser::commands[NumCommands] = {
     "Set/clear breakpoint on <condition>",
     "Condition can include multiple items, see documentation\nExample: breakif _scan>100",
     true,
-    false,
+    true,
     { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeBreakif)
+  },
+
+  {
+    "breaklabel",
+    "Set/clear breakpoint on [address] (no mirrors, all banks)",
+    "Example: breaklabel, breaklabel MainLoop",
+    false,
+    true,
+    { Parameters::ARG_WORD, Parameters::ARG_END_ARGS },
+    std::mem_fn(&DebuggerParser::executeBreaklabel)
   },
 
   {

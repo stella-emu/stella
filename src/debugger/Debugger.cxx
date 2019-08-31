@@ -335,7 +335,7 @@ int Debugger::trace()
     if(!checkBreakPoint(targetPC, bank))
     {
       // add temporary breakpoint and remove later
-      setBreakPoint(targetPC, bank, true);
+      setBreakPoint(targetPC, bank, BreakpointMap::ONE_SHOT);
     }
 
     unlockSystem();
@@ -351,19 +351,19 @@ int Debugger::trace()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::setBreakPoint(uInt16 addr, Int8 bank, bool oneShot)
+bool Debugger::setBreakPoint(uInt16 addr, uInt8 bank, uInt32 flags)
 {
   bool exists = checkBreakPoint(addr, bank);
 
   if(exists)
     return false;
 
-  breakPoints().add(addr, bank, oneShot ? BreakpointMap::ONE_SHOT : 0);
+  breakPoints().add(addr, bank, flags);
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::clearBreakPoint(uInt16 addr, Int8 bank)
+bool Debugger::clearBreakPoint(uInt16 addr, uInt8 bank)
 {
   bool exists = checkBreakPoint(addr, bank);
 
@@ -375,13 +375,13 @@ bool Debugger::clearBreakPoint(uInt16 addr, Int8 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::checkBreakPoint(uInt16 addr, Int8 bank)
+bool Debugger::checkBreakPoint(uInt16 addr, uInt8 bank)
 {
   return breakPoints().check(addr, bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::toggleBreakPoint(uInt16 addr, Int8 bank)
+bool Debugger::toggleBreakPoint(uInt16 addr, uInt8 bank)
 {
   if(checkBreakPoint(addr, bank))
     clearBreakPoint(addr, bank);

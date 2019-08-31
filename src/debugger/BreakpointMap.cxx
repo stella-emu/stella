@@ -27,8 +27,10 @@ BreakpointMap::BreakpointMap(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BreakpointMap::add(const Breakpoint& breakpoint, const uInt32 flags)
 {
+  Breakpoint bp = convertBreakpoint(breakpoint);
+
   myInitialized = true;
-  myMap[breakpoint] = flags;
+  myMap[bp] = flags;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,7 +42,14 @@ void BreakpointMap::add(const uInt16 addr, const uInt8 bank, const uInt32 flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BreakpointMap::erase(const Breakpoint& breakpoint)
 {
-  myMap.erase(breakpoint);
+  // 16 bit breakpoint
+  if(!myMap.erase(breakpoint))
+  {
+    // 13 bit breakpoint
+    Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
+
+    myMap.erase(bp13);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,7 +61,15 @@ void BreakpointMap::erase(const uInt16 addr, const uInt8 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 BreakpointMap::get(const Breakpoint& breakpoint) const
 {
+  // 16 bit breakpoint
   auto find = myMap.find(breakpoint);
+  if(find != myMap.end())
+    return find->second;
+
+  // 13 bit breakpoint
+  Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
+
+  find = myMap.find(bp13);
   if(find != myMap.end())
     return find->second;
 
@@ -66,10 +83,17 @@ uInt32 BreakpointMap::get(uInt16 addr, uInt8 bank) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool BreakpointMap::check(const Breakpoint & breakpoint) const
+bool BreakpointMap::check(const Breakpoint& breakpoint) const
 {
+  // 16 bit breakpoint
   auto find = myMap.find(breakpoint);
+  if(find != myMap.end())
+    return true;
 
+  // 13 bit breakpoint
+  Breakpoint bp13(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
+
+  find = myMap.find(bp13);
   return (find != myMap.end());
 }
 
@@ -89,4 +113,13 @@ BreakpointMap::BreakpointList BreakpointMap::getBreakpoints() const
     map.push_back(item.first);
 
   return map;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+BreakpointMap::Breakpoint BreakpointMap::convertBreakpoint(const Breakpoint& breakpoint)
+{
+  if(breakpoint.bank == ANY_BANK)
+    return Breakpoint(breakpoint.addr, ANY_BANK);
+  else
+    return Breakpoint(breakpoint.addr & ADDRESS_MASK, breakpoint.bank);
 }
