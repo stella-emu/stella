@@ -130,16 +130,23 @@ bool OSystem::create()
   buf << "Stella " << STELLA_VERSION << endl
       << "  Features: " << myFeatures << endl
       << "  " << myBuildInfo << endl << endl
-      << "Base directory:       '"
-      << FilesystemNode(myBaseDir).getShortPath() << "'" << endl;
+      << "Base directory:     '"
+      << FilesystemNode(myBaseDir).getShortPath() << "'" << endl
+      << "State directory:    '"
+      << FilesystemNode(myStateDir).getShortPath() << "'" << endl
+      << "NVRam directory:    '"
+      << FilesystemNode(myNVRamDir).getShortPath() << "'" << endl;
 
-  if (!myConfigFile.empty()) buf
-      << "Configuration file:   '"
-      << FilesystemNode(myConfigFile).getShortPath() << "'" << endl;
+  if(!myConfigFile.empty())
+    buf << "Configuration file: '"
+        << FilesystemNode(myConfigFile).getShortPath() << "'" << endl;
 
-  buf
-      << "User game properties: '"
-      << FilesystemNode(myPropertiesFile).getShortPath() << "'" << endl;
+  buf << "Game properties:    '"
+      << FilesystemNode(myPropertiesFile).getShortPath() << "'" << endl
+      << "Cheat file:         '"
+      << FilesystemNode(myCheatFile).getShortPath() << "'" << endl
+      << "Palette file:       '"
+      << FilesystemNode(myPaletteFile).getShortPath() << "'" << endl;
   Logger::info(buf.str());
 
   // NOTE: The framebuffer MUST be created before any other object!!!
@@ -204,7 +211,8 @@ void OSystem::loadConfig(const Settings::Options& options)
   if(!node.isDirectory())
     node.makeDir();
   myBaseDir = node.getPath();
-  if (!myConfigFile.empty()) myConfigFile = FilesystemNode(myConfigFile).getPath();
+  if(!myConfigFile.empty())
+    myConfigFile = FilesystemNode(myConfigFile).getPath();
 
   FilesystemNode save(myDefaultSaveDir);
   if(!save.isDirectory())
@@ -218,7 +226,8 @@ void OSystem::loadConfig(const Settings::Options& options)
 
 #ifdef SQLITE_SUPPORT
   mySettingsDb = make_shared<SettingsDb>(myBaseDir, "settings");
-  if (!mySettingsDb->initialize()) mySettingsDb.reset();
+  if(!mySettingsDb->initialize())
+    mySettingsDb.reset();
 #endif
 
   mySettings->setRepository(createSettingsRepository());
