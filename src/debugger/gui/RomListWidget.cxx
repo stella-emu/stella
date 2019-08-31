@@ -572,7 +572,7 @@ void RomListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect RomListWidget::getLineRect() const
 {
-  const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
+  const int yoffset = std::max(0, (_selectedItem - _currentPos) * _fontHeight),
             xoffset = CheckboxWidget::boxSize() + 10;
 
   return Common::Rect(2 + xoffset, 1 + yoffset,
@@ -582,7 +582,7 @@ Common::Rect RomListWidget::getLineRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect RomListWidget::getEditRect() const
 {
-  const int yoffset = (_selectedItem - _currentPos) * _fontHeight;
+  const int yoffset = std::max(0, (_selectedItem - _currentPos) * _fontHeight);
 
   return Common::Rect(2 + _w - _bytesWidth, 1 + yoffset,
                       _w, _fontHeight + yoffset);
