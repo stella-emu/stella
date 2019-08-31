@@ -495,7 +495,7 @@ void Settings::usage() const
     << "  -ctrldelay    <delay>        Delay before controller input is repeated in UI\n"
     << "  -ctrlrate     <rate>         Rate per second of repeated controller input in UI\n"
     << "  -basic_settings <0|1>        Display only a basic settings dialog\n"
-    << "  -romdir       <dir>          Directory from which to load ROM files\n"
+    << "  -romdir       <dir>          Set the directory where the ROM launcher will start\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is\n"
     << "                                connected\n"
     << "  -holdreset                   Start the emulator with the Game Reset switch\n"
@@ -508,6 +508,9 @@ void Settings::usage() const
     << "                                direction/fire button held down\n"
     << "  -maxres       <WxH>          Used by developers to force the maximum size of\n"
     << "                                the application window\n"
+    << "  -basedir  <path>             Override the base directory for all config files\n"
+    << "  -baseinappdir                Override the base directory for all config files\n"
+    << "                                by attempting to use the application directory\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl

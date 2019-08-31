@@ -72,7 +72,18 @@
 
   * Added hotkey for sound on/off.
 
-  * Paths have been simplified (TODO: doc)
+  * Paths have been simplified: (TODO - finish this)
+    - The following file/directory locations are no longer configurable
+      (statedir, nvramdir, cheatfile, palettefile, propsfile); they are
+      now all under the base directory
+    - Removed cfgdir; Distella config files are now placed with their
+      associated ROMs
+    - Added 'basedir' commandline argument, which allows to change the
+      base directory where almost all config-related items are stored;
+      related to this, discontinued the 'basedir.txt' functionality
+    - Added 'baseinappdir' commandline argument, which sets the base
+      directory to the application folder (Windows only for now); this
+      replaces the functionality of 'basedir.txt'
 
   * Enhanced 'Command' menu to display current state and more commands.
 
