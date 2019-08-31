@@ -262,13 +262,6 @@ class OSystem
     const string& cheatFile() const { return myCheatFile; }
   #endif
 
-  #ifdef DEBUGGER_SUPPORT
-    /**
-      Return the full/complete directory name for storing Distella cfg files.
-    */
-    const string& cfgDir() const { return myCfgDir; }
-  #endif
-
   #ifdef PNG_SUPPORT
     /**
       Return the full/complete directory name for saving and loading
@@ -540,7 +533,6 @@ class OSystem
     string mySnapshotSaveDir;
     string mySnapshotLoadDir;
     string myNVRamDir;
-    string myCfgDir;
     string myDefaultSaveDir;
     string myDefaultLoadDir;
 

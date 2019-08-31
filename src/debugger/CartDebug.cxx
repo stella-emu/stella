@@ -696,7 +696,7 @@ string CartDebug::loadListFile()
     if(lst.isFile() && lst.isReadable())
       myListFile = lst.getPath();
     else
-      return DebuggerParser::red("list file not found in:\n  " + lst.getShortPath());
+      return DebuggerParser::red("list file \'" + lst.getShortPath() + "\' not found");
   }
 
   FilesystemNode node(myListFile);
@@ -741,7 +741,7 @@ string CartDebug::loadListFile()
   }
   myDebugger.rom().invalidate();
 
-  return "loaded " + node.getShortPath() + " OK";
+  return "list file '" + node.getShortPath() + "' loaded OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -756,7 +756,7 @@ string CartDebug::loadSymbolFile()
     if(sym.isFile() && sym.isReadable())
       mySymbolFile = sym.getPath();
     else
-      return DebuggerParser::red("symbol file not found in:\n  " + sym.getShortPath());
+      return DebuggerParser::red("symbol file \'" + sym.getShortPath() + "\' not found");
   }
 
   FilesystemNode node(mySymbolFile);
@@ -801,32 +801,22 @@ string CartDebug::loadSymbolFile()
   }
   myDebugger.rom().invalidate();
 
-  return "loaded " + node.getShortPath() + " OK";
+  return "symbol file '" + node.getShortPath() + "' loaded OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::loadConfigFile()
 {
-  // There are two possible locations for loading config files
-  //   (in order of decreasing relevance):
-  // 1) ROM dir based on properties entry name
-  // 2) CFG dir based on properties entry name
+  // The default naming/location for config files is the ROM dir based on the
+  // actual ROM filename
 
   if(myCfgFile == "")
   {
-    const string& propsname =
-      myConsole.properties().get(PropType::Cart_Name) + ".cfg";
-
-    FilesystemNode case1(myOSystem.romFile().getParent().getPath() + propsname);
-    FilesystemNode case2(myOSystem.cfgDir() + propsname);
-
-    if(case1.isFile() && case1.isReadable())
-      myCfgFile = case1.getPath();
-    else if(case2.isFile() && case2.isReadable())
-      myCfgFile = case2.getPath();
+    FilesystemNode cfg(myOSystem.romFile().getPathWithExt("") + ".cfg");
+    if(cfg.isFile() && cfg.isReadable())
+      myCfgFile = cfg.getPath();
     else
-      return DebuggerParser::red("config file not found in:\n  " +
-          case1.getShortPath() + "\n  " + case2.getShortPath());
+      return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not found");
   }
 
   FilesystemNode node(myCfgFile);
@@ -910,7 +900,7 @@ string CartDebug::loadConfigFile()
   stringstream retVal;
   if(myConsole.cartridge().bankCount() > 1)
     retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
-  retVal << "loaded " << node.getShortPath() << " OK";
+  retVal << "config file '" << node.getShortPath() << "' loaded OK";
   return retVal.str();
 
 }
@@ -918,29 +908,25 @@ string CartDebug::loadConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveConfigFile()
 {
-  // While there are two possible locations for loading config files,
-  // the main 'config' directory is used whenever possible when saving,
-  // unless the rom-specific file already exists
+  // The default naming/location for config files is the ROM dir based on the
+  // actual ROM filename
 
-  FilesystemNode node;
-
-  FilesystemNode case0(myCfgFile);
-  if(myCfgFile != "" && case0.isFile() && case0.isWritable())
-    node = case0;
-  else
+  FilesystemNode cfg;
+  if(myCfgFile == "")
   {
-    const string& propsname =
-      myConsole.properties().get(PropType::Cart_Name) + ".cfg";
-
-    node = FilesystemNode(myOSystem.cfgDir() + propsname);
+    cfg = FilesystemNode(myOSystem.romFile().getPathWithExt("") + ".cfg");
+    if(cfg.isFile() && cfg.isWritable())
+      myCfgFile = cfg.getPath();
+    else
+      return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
   }
 
   const string& name = myConsole.properties().get(PropType::Cart_Name);
   const string& md5 = myConsole.properties().get(PropType::Cart_MD5);
 
-  ofstream out(node.getPath());
+  ofstream out(cfg.getPath());
   if(!out.is_open())
-    return "Unable to save directives to " + node.getShortPath();
+    return "Unable to save directives to " + cfg.getShortPath();
 
   // Store all bank information
   out << "//Stella.pro: \"" << name << "\"" << endl
@@ -955,7 +941,7 @@ string CartDebug::saveConfigFile()
   stringstream retVal;
   if(myConsole.cartridge().bankCount() > 1)
     retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
-  retVal << "saved " << node.getShortPath() << " OK";
+  retVal << "config file '" << cfg.getShortPath() << "' saved OK";
   return retVal.str();
 }
 

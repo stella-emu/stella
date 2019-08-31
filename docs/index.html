@@ -566,13 +566,9 @@
 
   <p>If this is your first time starting Stella, you may have to navigate to your ROMs.
   The path of the first ROM you play automatically defines the default ROM path. You
-  can change it later in the <b><a href="#ConfigPaths">Configure Paths</a></b> dialog.
-  </p>
+  can change it later in the <b><a href="#ROMInfo">ROM Launcher</a></b> dialog.</p>
 
-  <p>At this point, you may want to set the locations for snapshots and other
-  external paths. This is described in more detail in
-  <b>Advanced Configuration - <a href="#Snapshots">Snapshot Settings</a></b> and
-  <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>.
+  <p>At this point, you may want to set the locations for snapshots. This is described in more detail in <b>Advanced Configuration - <a href="#Snapshots">Snapshot Settings</a></b>.
   These settings are optional, and can be left at the defaults if you won't be using
   snapshots in the ROM launcher.</p>
 
@@ -2349,36 +2345,6 @@
     </tr>
 
     <tr>
-      <td><pre>-statedir &lt;dir&gt;</pre></td>
-      <td>Set the directory in which to access state files.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-cheatfile &lt;file&gt;</pre></td>
-      <td>Set the full pathname of the cheatfile database.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-palettefile &lt;file&gt;</pre></td>
-      <td>Set the full pathname of the user-defined palette file.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-propsfile &lt;file&gt;</pre></td>
-      <td>Set the full pathname of the ROM properties file.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-nvramdir &lt;dir&gt;</pre></td>
-      <td>Set the directory in which to access non-volatile (flash/EEPROM) files.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-cfgdir &lt;dir&gt;</pre></td>
-      <td>Set the directory in which to access Distella config files.</td>
-    </tr>
-
-    <tr>
       <td><pre>-avoxport &lt;name&gt;</pre></td>
       <td>Set the name of the serial port where an AtariVox is connected.</td>
     </tr>
@@ -2387,6 +2353,16 @@
       <td><pre>-maxres &lt;WxH&gt;</pre></td>
       <td>Useful for developers, this sets the maximum size of window that
       can be created, allowing to simulate testing on 'smaller' systems.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-basedir &lt;dir&gt;</pre></td>
+      <td>Override the base directory for all config files.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-baseinappdir</pre></td>
+      <td>Override the base directory for all config files by attempting to use the application directory.  For now this is only supported in Windows.</td>
     </tr>
 
     <tr>
@@ -2867,26 +2843,6 @@
     </tr>
   </table>
   <br>
-  <a name="ConfigPaths"></a>
-  <p><b>Configure Paths</b> dialog:</p>
-  <table border="5" cellpadding="2" frame="box" rules="none">
-    <tr>
-      <td><img src="graphics/launcher_options_files.png"></td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td valign="top">
-        <table border="1" cellpadding="4">
-          <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>ROM path</td><td>Specifies location of ROM files<br/>(only enabled in ROM launcher mode)</td><td>-romdir</td></tr>
-          <tr><td>Cheat file</td><td>Specifies location of cheatfile database</td><td>-cheatfile</td></tr>
-          <tr><td>Palette file</td><td>Specifies location of user palette</td><td>-palettefile</td></tr>
-          <tr><td>Properties file </td><td>Specifies location of external stella.pro database</td><td>-propsfile</td></tr>
-          <tr><td>State path</td><td>Specifies location of state files</td><td>-statedir</td></tr>
-          <tr><td>NVRAM path</td><td>Specifies location of NVRAM (flash/EEPROM) files</td><td>-nvramdir</td></tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-  <br>
   <p><b>Developer Settings</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
@@ -3200,33 +3156,29 @@
   This is very useful in the testing stages of creating a new game, since
   writing to a real EEPROM many times will eventually wear it out.</p>
 
-  <p>The location of the EEPROM files are configurable through the
-  '<i>-nvramdir</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>).
-  If the path for these files hasn't been set, the default location will depend on the
-  version of Stella, as follows:</p>
+  <p>The location of EEPROM files will depend on the version of Stella, as follows:</p>
 
   <p><table cellpadding="4" border="1">
     <tr>
       <td><b>Linux/Unix</b></td>
-      <td><i>~/.stella/nvram/atarivox_eeprom.dat<br>
-        ~/.stella/nvram/savekey_eeprom.dat</i></td>
+      <td><i>$HOME/.config/stella/nvram/atarivox_eeprom.dat<br>
+        $HOME/.config/stella/nvram/savekey_eeprom.dat</i></td>
     </tr>
     <tr>
       <td><b>Macintosh</b></td>
-      <td><i>~/Library/Application Support/Stella/nvram/atarivox_eeprom.dat<br>
-        ~/Library/Application Support/Stella/nvram/savekey_eeprom.dat</i></td>
+      <td><i>$HOME/Library/Application Support/Stella/nvram/atarivox_eeprom.dat<br>
+        $HOME/Library/Application Support/Stella/nvram/savekey_eeprom.dat</i></td>
     </tr>
     <tr>
       <td><b>Windows</b></td>
       <td><i>%APPDATA%\Stella\nvram\atarivox_eeprom.dat<br>
-        %APPDATA%\Stella\nvram\savekey_eeprom.dat</i>&nbsp;&nbsp;&nbsp;
-        <b>OR</b><br>
-        <i>_BASEDIR_\nvram\atarivox_eeprom.dat<br>
-          _BASEDIR_\nvram\savekey_eeprom.dat<br></i>
-          (if a file named 'basedir.txt' exists in the application
-          directory containing the full pathname for _BASEDIR_)
+        %APPDATA%\Stella\nvram\savekey_eeprom.dat</i></td>
       </td>
+    </tr>
+    <tr>
+      <td><b>If using 'basedir'<br>or 'baseinappdir'</b></td>
+      <td><i>_BASEDIR_/nvram/atarivox_eeprom.dat<br>
+        _BASEDIR_/nvram/savekey_eeprom.dat</i></td>
     </tr>
   </table>
 
@@ -3490,7 +3442,7 @@
   </table>
 
   <p>The settings file has a special name/location depending on which version of Stella
-  you use, which is currently not configurable:</p>
+  you use, which is not configurable:</p>
 
   <p><table cellpadding="4" border="1">
     <tr>
@@ -3499,16 +3451,15 @@
     </tr>
     <tr>
       <td><b>Macintosh</b></td>
-      <td>Not applicable; settings are saved in <i>~/Library/Preferences/Stella-emu.plist</i></td>
+      <td>Not applicable; settings are saved in <i>$HOME/Library/Preferences/Stella-emu.plist</i></td>
     </tr>
     <tr>
       <td><b>Windows</b></td>
-      <td><i>%APPDATA%\Stella\stella.ini</i>&nbsp;&nbsp;&nbsp;
-        <b>OR</b><br>
-        <i>_BASEDIR_\stella.ini</i>&nbsp;&nbsp;&nbsp;
-          (if a file named 'basedir.txt' exists in the application
-          directory containing the full pathname for _BASEDIR_)
-      </td>
+      <td><i>%APPDATA%\Stella\stella.ini</i></td>
+    </tr>
+    <tr>
+      <td><b>If using 'basedir'<br>or 'baseinappdir'</b></td>
+      <td><i>_BASEDIR_/stellarc (or stella.ini)</i></td>
     </tr>
   </table>
   </blockquote></br>
@@ -3585,11 +3536,7 @@ Ms Pac-Man (Stella extended codes):
    108fea1 - infinite lives
   </pre>
 
-  <p>The name of the cheat database file is configurable through the
-  '<i>-cheatfile</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>). If the
-  path for this file hasn't been set, the default filename will depend on the
-  version of Stella, as follows:</p>
+  <p>The name of the cheat database file will depend on the version of Stella, as follows:</p>
 
   <p><table cellpadding="4" border="1">
     <tr>
@@ -3598,16 +3545,15 @@ Ms Pac-Man (Stella extended codes):
     </tr>
     <tr>
       <td><b>Macintosh</b></td>
-      <td><i>~/Library/Application Support/Stella/stella.cht</i></td>
+      <td><i>$HOME/Library/Application Support/Stella/stella.cht</i></td>
     </tr>
     <tr>
       <td><b>Windows</b></td>
-      <td><i>%APPDATA%\Stella\stella.cht</i>&nbsp;&nbsp;&nbsp;
-        <b>OR</b><br>
-        <i>_BASEDIR_\stella.cht</i>&nbsp;&nbsp;&nbsp;
-          (if a file named 'basedir.txt' exists in the application
-          directory containing the full pathname for _BASEDIR_)
-      </td>
+      <td><i>%APPDATA%\Stella\stella.cht</i></td>
+    </tr>
+    <tr>
+      <td><b>If using 'basedir'<br>or 'baseinappdir'</b></td>
+      <td><i>_BASEDIR_/stella.cht</i></td>
     </tr>
   </table>
   <p>Stella will require a restart for changes to this file to take effect.</p>
@@ -3931,11 +3877,7 @@ Ms Pac-Man (Stella extended codes):
 
   </table>
 
-  <p>The name of the properties file is configurable through the
-  '<i>-propsfile</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>). If the
-  path for this file hasn't been set, the default filename will depend on the
-  version of Stella, as follows:</p>
+  <p>The name of the properties file will depend on the version of Stella, as follows:</p>
 
   <p><table cellpadding="4" border="1">
     <tr>
@@ -3944,17 +3886,15 @@ Ms Pac-Man (Stella extended codes):
     </tr>
     <tr>
       <td><b>Macintosh</b></td>
-      <td><i>~/Library/Application Support/Stella/stella.pro</i></td>
+      <td><i>$HOME/Library/Application Support/Stella/stella.pro</i></td>
     </tr>
     <tr>
       <td><b>Windows</b></td>
-      <td><i>%APPDATA%\Stella\stella.pro</i>&nbsp;&nbsp;&nbsp;
-        <b>OR</b><br>
-        <i>_BASEDIR_\stella.pro</i>&nbsp;&nbsp;&nbsp;
-          (if a file named 'basedir.txt' exists in the application
-          directory containing the full pathname for _BASEDIR_)
-      </td>
-
+      <td><i>%APPDATA%\Stella\stella.pro</i></td>
+    </tr>
+    <tr>
+      <td><b>If using 'basedir'<br>or 'baseinappdir'</b></td>
+      <td><i>_BASEDIR_/stella.pro</i></td>
     </tr>
   </table>
   <p>Stella will require a restart for changes to this file to take effect.</p>
@@ -3996,11 +3936,7 @@ Ms Pac-Man (Stella extended codes):
       need to specify those colours in the palette file.
   </ul>
 
-  <p>The name of the palette file is configurable through the
-  '<i>-palettefile</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigPaths">Configure Paths</a></b>). If the
-  path for this file hasn't been set, the default filename will depend on the
-  version of Stella, as follows:</p>
+  <p>The name of the palette file will depend on the version of Stella, as follows:</p>
 
   <p><table cellpadding="4" border="1">
     <tr>
@@ -4009,16 +3945,15 @@ Ms Pac-Man (Stella extended codes):
     </tr>
     <tr>
       <td><b>Macintosh</b></td>
-      <td><i>~/Library/Application Support/Stella/stella.pal</i></td>
+      <td><i>%HOME/Library/Application Support/Stella/stella.pal</i></td>
     </tr>
     <tr>
       <td><b>Windows</b></td>
-      <td><i>%APPDATA%\Stella\stella.pal</i>&nbsp;&nbsp;&nbsp;
-        <b>OR</b><br>
-        <i>_BASEDIR_\stella.pal</i>&nbsp;&nbsp;&nbsp;
-          (if a file named 'basedir.txt' exists in the application
-          directory containing the full pathname for _BASEDIR_)
-      </td>
+      <td><i>%APPDATA%\Stella\stella.pal</i></td>
+    </tr>
+    <tr>
+      <td><b>If using 'basedir'<br>or 'baseinappdir'</b></td>
+      <td><i>_BASEDIR_/stella.pal</i></td>
     </tr>
   </table>
   <p>Note that to actually use the external palette, the palette file must
