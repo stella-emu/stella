@@ -814,8 +814,8 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRight
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftPaddlesMapping = {
   {Event::PaddleZeroAnalog,   JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
   // Current code does NOT allow digital and anlog events on the same axis at the same time
-  {Event::PaddleZeroDecrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
-  {Event::PaddleZeroIncrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  //{Event::PaddleZeroDecrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  //{Event::PaddleZeroIncrease, JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
   {Event::PaddleZeroFire,     0},
   {Event::PaddleOneAnalog,    JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
   // Current code does NOT allow digital and anlog events on the same axis at the same
@@ -826,16 +826,16 @@ PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultLeftP
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalJoystickHandler::EventMappingArray PhysicalJoystickHandler::DefaultRightPaddlesMapping = {
-  {Event::PaddleTwoAnalog,    JOY_CTRL_NONE, JoyAxis::Z, JoyDir::ANALOG},
+  {Event::PaddleTwoAnalog,    JOY_CTRL_NONE, JoyAxis::X, JoyDir::ANALOG},
   // Current code does NOT allow digital and anlog events on the same axis at the same
-  //{Event::PaddleTwoDecrease,  JOY_CTRL_NONE, JoyAxis::Z, JoyDir::POS},
-  //{Event::PaddleTwoIncrease,  JOY_CTRL_NONE, JoyAxis::Z, JoyDir::NEG},
-  {Event::PaddleTwoFire,      2},
-  {Event::PaddleThreeAnalog,  JOY_CTRL_NONE, JoyAxis(3), JoyDir::ANALOG},
+  //{Event::PaddleTwoDecrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::POS},
+  //{Event::PaddleTwoIncrease,  JOY_CTRL_NONE, JoyAxis::X, JoyDir::NEG},
+  {Event::PaddleTwoFire,      0},
+  {Event::PaddleThreeAnalog,  JOY_CTRL_NONE, JoyAxis::Y, JoyDir::ANALOG},
   // Current code does NOT allow digital and anlog events on the same axis at the same
-  //{Event::PaddleThreeDecrease,JOY_CTRL_NONE, JoyAxis(3), JoyDir::POS},
-  //{Event::PaddleThreeIncrease,JOY_CTRL_NONE, JoyAxis(3), JoyDir::NEG},
-  {Event::PaddleThreeFire,    3},
+  //{Event::PaddleThreeDecrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::POS},
+  //{Event::PaddleThreeIncrease,JOY_CTRL_NONE, JoyAxis::Y, JoyDir::NEG},
+  {Event::PaddleThreeFire,    1},
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
