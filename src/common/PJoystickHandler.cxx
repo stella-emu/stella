@@ -610,12 +610,13 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
   if(j)
   {
     int button = j->buttonLast[stick];
+    bool isAnalog = abs(j->axisLastValue[axis] - value) < 30000;
 
     if(myHandler.state() == EventHandlerState::EMULATION)
     {
       // Check for analog events, which are handled differently
       // A value change lower than ~90% indicates analog input
-      if(abs(j->axisLastValue[axis] - value) < 30000)
+      if(isAnalog)
       {
         Event::Type eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::ANALOG);
 
@@ -648,29 +649,32 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
           }
         }
       }
-      j->axisLastValue[axis] = value;
     }
     else if(myHandler.hasOverlay())
     {
-      // First, clamp the values to simulate digital input
-      // (the only thing that the underlying code understands)
-      if(value > Joystick::deadzone())
-        value = 32000;
-      else if(value < -Joystick::deadzone())
-        value = -32000;
-      else
-        value = 0;
-
-      // Now filter out consecutive, similar values
-      // (only pass on the event if the state has changed)
-      if(value != j->axisLastValue[axis])
+      // prevent menu navigation by analog input
+      if(!isAnalog)
       {
+        // First, clamp the values to simulate digital input
+        // (the only thing that the underlying code understands)
+        if(value > Joystick::deadzone())
+          value = 32000;
+        else if(value < -Joystick::deadzone())
+          value = -32000;
+        else
+          value = 0;
+
+        // Now filter out consecutive, similar values
+        // (only pass on the event if the state has changed)
+        if(value != j->axisLastValue[axis])
+        {
 #ifdef GUI_SUPPORT
-        myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), convertAxisValue(value), button);
+          myHandler.overlay().handleJoyAxisEvent(stick, JoyAxis(axis), convertAxisValue(value), button);
 #endif
-        j->axisLastValue[axis] = value;
+        }
       }
     }
+    j->axisLastValue[axis] = value;
   }
 }
 
