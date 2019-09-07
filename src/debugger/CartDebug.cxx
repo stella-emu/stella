@@ -244,7 +244,7 @@ bool CartDebug::disassemble(bool force)
   if(changed)
   {
     // Are we disassembling from ROM or ZP RAM?
-    BankInfo& info = (PC & 0x1000) ? myBankInfo[getBank()] :
+    BankInfo& info = (PC & 0x1000) ? myBankInfo[getBank(PC)] :
         myBankInfo[myBankInfo.size()-1];
 
     // If the offset has changed, all old addresses must be 'converted'
@@ -384,7 +384,8 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
     return false;
 
   if(bank < 0)  // Do we want the current bank or ZP RAM?
-    bank = (myDebugger.cpuDebug().pc() & 0x1000) ? getBank() : int(myBankInfo.size())-1;
+    bank = (myDebugger.cpuDebug().pc() & 0x1000) ?
+      getBank(myDebugger.cpuDebug().pc()) : int(myBankInfo.size())-1;
 
   bank = std::min(bank, bankCount());
   BankInfo& info = myBankInfo[bank];
@@ -506,9 +507,15 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::getBank()
+int CartDebug::getBank(uInt16 addr)
 {
-  return myConsole.cartridge().getBank();
+  return myConsole.cartridge().getBank(addr);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::getPCBank()
+{
+  return myConsole.cartridge().getBank(myDebugger.cpuDebug().pc());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

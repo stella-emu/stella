@@ -102,7 +102,7 @@ class Cartridge3E : public Cartridge
     /**
       Get the current bank.
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 addr) const override;
 
     /**
       Query the number of banks supported by the cartridge.

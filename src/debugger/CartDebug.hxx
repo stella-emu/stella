@@ -173,7 +173,10 @@ class CartDebug : public DebuggerSystem
       Get the current bank in use by the cartridge
       (non-const because of use in YaccParser)
     */
-    int getBank();
+    int getBank(uInt16 addr);
+
+
+    int getPCBank();
 
     /**
       Get the total number of banks supported by the cartridge.

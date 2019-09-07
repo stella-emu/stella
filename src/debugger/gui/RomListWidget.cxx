@@ -492,7 +492,8 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw checkboxes for correct lines (takes scrolling into account)
     myCheckList[i]->setState(instance().debugger().
-                             checkBreakPoint(dlist[pos].address, instance().debugger().cartDebug().getBank()));
+                             checkBreakPoint(dlist[pos].address,
+                             instance().debugger().cartDebug().getBank(dlist[pos].address)));
 
     myCheckList[i]->setDirty();
     myCheckList[i]->draw();

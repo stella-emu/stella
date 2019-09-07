@@ -65,7 +65,7 @@ void Cartridge3FWidget::loadConfig()
   const CartState& state = static_cast<const CartState&>(cart.getState());
   const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
 
-  myBank->setSelectedIndex(myCart.getBank(), state.bank != oldstate.bank);
+  myBank->setSelectedIndex(myCart.getBank(0), state.bank != oldstate.bank);
 
   CartDebugWidget::loadConfig();
 }

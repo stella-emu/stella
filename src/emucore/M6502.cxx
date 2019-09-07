@@ -281,7 +281,7 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
 
         if(myBreakPoints.isInitialized())
         {
-          uInt8 bank = mySystem->cart().getBank();
+          uInt8 bank = mySystem->cart().getBank(PC);
 
           if(myBreakPoints.check(PC, bank))
           {

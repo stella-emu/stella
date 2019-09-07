@@ -331,7 +331,7 @@ int Debugger::trace()
     int targetPC = myCpuDebug->pc() + 3; // return address
 
     // set temporary breakpoint at target PC (if not existing already)
-    Int8 bank = myCartDebug->getBank();
+    Int8 bank = myCartDebug->getBank(targetPC);
     if(!checkBreakPoint(targetPC, bank))
     {
       // add temporary breakpoint and remove later
