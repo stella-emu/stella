@@ -171,7 +171,7 @@ void RomWidget::toggleBreak(int disasm_line)
 
   if(list[disasm_line].address != 0 && list[disasm_line].bytes != "")
     instance().debugger().toggleBreakPoint(list[disasm_line].address,
-                                           instance().debugger().cartDebug().getBank());
+                                           instance().debugger().cartDebug().getBank(list[disasm_line].address));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -72,6 +72,17 @@ class CartridgeE0 : public Cartridge
     */
     void install(System& system) override;
 
+
+    /**
+      Get the current bank.
+    */
+    uInt16 getBank(uInt16 addr) const override;
+
+    /**
+      Query the number of banks supported by the cartridge.
+    */
+    uInt16 bankCount() const override;
+
     /**
       Patch the cartridge ROM.
 

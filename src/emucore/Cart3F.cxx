@@ -125,15 +125,18 @@ bool Cartridge3F::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge3F::getBank() const
+uInt16 Cartridge3F::getBank(uInt16 addr) const
 {
-  return myCurrentBank;
+  if (addr & 0x800)
+    return (mySize >> 11) - 1; // 2K slices, fixed bank 
+  else
+    return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Cartridge3F::bankCount() const
 {
-  return mySize >> 11;
+  return mySize >> 11; // 2K slices
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

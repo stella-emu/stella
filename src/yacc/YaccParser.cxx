@@ -180,7 +180,7 @@ int const_to_int(char* ch)
 CartMethod getCartSpecial(char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_bank"))
-    return &CartDebug::getBank;
+    return &CartDebug::getPCBank;
   else if(BSPF::equalsIgnoreCase(ch, "__lastread"))
     return &CartDebug::lastReadBaseAddress;
   else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))

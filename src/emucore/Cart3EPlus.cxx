@@ -79,6 +79,19 @@ void Cartridge3EPlus::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 Cartridge3EPlus::getBank(uInt16 addr) const
+{
+  return bankInUse[(addr & 0xFFF) >> 10]; // 1K slices
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 Cartridge3EPlus::bankCount() const
+{
+  return mySize >> 10; // 1K slices
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge3EPlus::peek(uInt16 address)
 {
   uInt16 peekAddress = address;

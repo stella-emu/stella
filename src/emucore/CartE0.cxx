@@ -75,6 +75,18 @@ void CartridgeE0::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeE0::getBank(uInt16 addr) const
+{
+  return myCurrentSlice[(addr & 0xFFF) >> 10]; // 1K slices
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeE0::bankCount() const
+{
+  return 8;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeE0::peek(uInt16 address)
 {
   address &= 0x0FFF;

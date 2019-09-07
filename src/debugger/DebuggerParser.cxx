@@ -738,7 +738,7 @@ void DebuggerParser::executeBreak()
     addr = args[0];
 
   if(argCount < 2)
-    bank = debugger.cartDebug().getBank();
+    bank = debugger.cartDebug().getBank(addr);
   else
   {
     bank = args[1];

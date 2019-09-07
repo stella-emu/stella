@@ -147,6 +147,13 @@ class Cartridge : public Device
     virtual uInt16 getBank() const { return 0; }
 
     /**
+      Get the current bank for the provided address.
+
+      @param address  The address to get the bank for
+    */
+    virtual uInt16 getBank(uInt16 addr) const { return getBank(); }
+
+    /**
       Query the number of 'banks' supported by the cartridge.  Note that
       this information is cart-specific, where each cart basically defines
       what a 'bank' is.

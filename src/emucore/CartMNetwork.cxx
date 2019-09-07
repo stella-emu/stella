@@ -196,9 +196,9 @@ bool CartridgeMNetwork::bank(uInt16 slice)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMNetwork::getBank() const
+uInt16 CartridgeMNetwork::getBank(uInt16 addr) const
 {
-  return myCurrentSlice[0];
+  return myCurrentSlice[(addr & 0xFFF) >> 11]; // 2K slices
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
