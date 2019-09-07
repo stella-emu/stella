@@ -128,7 +128,7 @@ bool Cartridge3F::bank(uInt16 bank)
 uInt16 Cartridge3F::getBank(uInt16 addr) const
 {
   if (addr & 0x800)
-    return (mySize >> 11) - 1; // 2K slices, fixed bank 
+    return (mySize >> 11) - 1; // 2K slices, fixed bank
   else
     return myCurrentBank;
 }
