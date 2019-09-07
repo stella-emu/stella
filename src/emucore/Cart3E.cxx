@@ -187,10 +187,10 @@ bool Cartridge3E::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Cartridge3E::getBank(uInt16 addr) const
 {
-  if(addr & 0x800)
-    return (mySize >> 11) - 1; // 2K slices, fixed bank
+  if (addr & 0x800)
+    return 255; // 256 - 1 // 2K slices, fixed bank
   else
-    return 255; // 256 - 1
+    return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
