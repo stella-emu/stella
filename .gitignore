@@ -27,5 +27,8 @@ src/windows/release/*
 src/windows/Stella.vcxproj.user
 .vs/*
 .tgitconfig
+src/**/*.psess
+src/**/*.vspx
+src/**/**.pdb
 
-                                     
+
