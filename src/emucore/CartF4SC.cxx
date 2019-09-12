@@ -98,8 +98,19 @@ bool CartridgeF4SC::poke(uInt16 address, uInt8 value)
     return false;
   }
 
-  pokeRAM(myRAM[address & 0x007F], pokeAddress, value);
-  return true;
+  if(address & 0x080)
+  {
+    pokeRAM(myRAM[address & 0x007F], pokeAddress, value);
+    return true;
+  }
+  else
+  {
+    // Writing to the read port should be ignored, but (TODO) trigger a break if option enabled
+    uInt8 dummy;
+
+    pokeRAM(dummy, pokeAddress, value);
+    return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
