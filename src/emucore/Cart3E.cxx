@@ -113,9 +113,22 @@ bool Cartridge3E::poke(uInt16 address, uInt8 value)
     return mySystem->tia().poke(address, value);
   }
   else
-    pokeRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)], pokeAddress, value);
+  {
+    if(address & 0x0400)
+    {
+      pokeRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)], pokeAddress, value);
+      return true;
+    }
+    else
+    {
+      // Writing to the read port should be ignored, but (TODO) trigger a break if option enabled
+      uInt8 dummy;
 
-  return true;
+      pokeRAM(dummy, pokeAddress, value);
+      return false;
+
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
