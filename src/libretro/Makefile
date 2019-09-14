@@ -162,6 +162,19 @@ else ifneq (,$(findstring ios,$(platform)))
       CXXFLAGS += -miphoneos-version-min=5.0
    endif
 
+# tvOS
+else ifeq ($(platform), tvos-arm64)
+   CXXFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
+   LDFLAGS += $(LTO) $(PTHREAD_FLAGS) -stdlib=libc++
+   TARGET := $(TARGET_NAME)_libretro_tvos.dylib
+   fpic := -fPIC
+   SHARED := -dynamiclib
+   ifeq ($(IOSSDK),)
+      IOSSDK := $(shell xcodebuild -version -sdk appletvos Path)
+   endif
+   CXXFLAGS += -DIOS
+   CXXFLAGS += -DARM
+
 # Theos
 else ifeq ($(platform), theos_ios)
    CXXFLAGS += $(LTO)
