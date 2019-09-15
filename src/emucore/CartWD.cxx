@@ -129,9 +129,21 @@ bool CartridgeWD::poke(uInt16 address, uInt8 value)
   if(!(address & 0x1000))  // TIA addresses
     return mySystem->tia().poke(address, value);
   else
-    pokeRAM(myRAM[address & 0x003F], address, value);
+  {
+    if(address & 0x040)
+    {
+      pokeRAM(myRAM[address & 0x003F], address, value);
+      return true;
+    }
+    else
+    {
+      // Writing to the read port should be ignored, but (TODO) trigger a break if option enabled
+      uInt8 dummy;
 
-  return true;
+      pokeRAM(dummy, address, value);
+      return false;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
