@@ -99,6 +99,7 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*     myUndrivenPinsWidget;
 #ifdef DEBUGGER_SUPPORT
     CheckboxWidget*     myRWPortBreakWidget;
+    CheckboxWidget*     myWRPortBreakWidget;
 #endif
     CheckboxWidget*     myThumbExceptionWidget;
     CheckboxWidget*     myEEPROMAccessWidget;
@@ -159,6 +160,7 @@ class DeveloperDialog : public Dialog
     bool    myUndrivenPins[2];
 #ifdef DEBUGGER_SUPPORT
     bool    myRWPortBreak[2];
+    bool    myWRPortBreak[2];
 #endif
     bool    myThumbException[2];
     bool    myEEPROMAccess[2];

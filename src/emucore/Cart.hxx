@@ -111,18 +111,30 @@ class Cartridge : public Device
       To be called at the start of each instruction.
       Clears information about all accesses to cart RAM.
     */
-    void clearAllRAMAccesses() { myRAMAccesses.clear(); }
+    void clearAllRAMAccesses() {
+      myRAMAccesses.clear();
+      myRamWriteAccess = 0;
+    }
 
     /**
       To be called at the end of each instruction.
       Answers whether an access in the last instruction cycle generated
-      an illegal RAM access.
+      an illegal read RAM access.
 
       @return  Address of illegal access if one occurred, else 0
     */
-    uInt16 getIllegalRAMAccess() const {
+    uInt16 getIllegalRAMReadAccess() const {
       return myRAMAccesses.size() > 0 ? myRAMAccesses[0] : 0;
     }
+
+    /**
+      To be called at the end of each instruction.
+      Answers whether an access in the last instruction cycle generated
+      an illegal RAM write access.
+
+      @return  Address of illegal access if one occurred, else 0
+    */
+    uInt16 getIllegalRAMWriteAccess() const { return myRamWriteAccess; }
   #endif
 
   public:
@@ -314,6 +326,9 @@ class Cartridge : public Device
     // The array containing information about every byte of ROM indicating
     // whether it is used as code.
     ByteBuffer myCodeAccessBase;
+
+    // Contains address of illegal RAM write access or 0
+    uInt16 myRamWriteAccess;
 
   private:
     // The startup bank to use (where to look for the reset vector address)

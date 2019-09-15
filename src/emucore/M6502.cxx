@@ -76,6 +76,7 @@ M6502::M6502(const Settings& settings)
     myHaltRequested(false),
     myGhostReadsTrap(false),
     myReadFromWritePortBreak(false),
+    myWriteToReadPortBreak(false),
     myStepStateByInstruction(false)
 {
 #ifdef DEBUGGER_SUPPORT
@@ -125,6 +126,7 @@ void M6502::reset()
   myHaltRequested = false;
   myGhostReadsTrap = mySettings.getBool("dbg.ghostreadstrap");
   myReadFromWritePortBreak = devSettings ? mySettings.getBool("dev.rwportbreak") : false;
+  myWriteToReadPortBreak = devSettings ? mySettings.getBool("dev.wrportbreak") : false;
 
   myLastBreakCycle = ULLONG_MAX;
 }
@@ -354,11 +356,23 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
     #ifdef DEBUGGER_SUPPORT
         if(myReadFromWritePortBreak)
         {
-          uInt16 rwpAddr = mySystem->cart().getIllegalRAMAccess();
+          uInt16 rwpAddr = mySystem->cart().getIllegalRAMReadAccess();
           if(rwpAddr)
           {
             ostringstream msg;
             msg << "RWP[@ $" << Common::Base::HEX4 << rwpAddr << "]: ";
+            result.setDebugger(currentCycles, msg.str(), oldPC);
+            return;
+          }
+        }
+
+        if (myWriteToReadPortBreak)
+        {
+          uInt16 wrpAddr = mySystem->cart().getIllegalRAMWriteAccess();
+          if (wrpAddr)
+          {
+            ostringstream msg;
+            msg << "WRP[@ $" << Common::Base::HEX4 << wrpAddr << "]: ";
             result.setDebugger(currentCycles, msg.str(), oldPC);
             return;
           }

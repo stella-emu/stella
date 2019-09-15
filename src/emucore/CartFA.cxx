@@ -135,10 +135,11 @@ bool CartridgeFA::poke(uInt16 address, uInt8 value)
   }
   else
   {
-    // Writing to the read port should be ignored, but (TODO) trigger a break if option enabled
+    // Writing to the read port should be ignored, but trigger a break if option enabled
     uInt8 dummy;
 
     pokeRAM(dummy, address, value);
+    myRamWriteAccess = address;
     return false;
   }
 }

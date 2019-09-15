@@ -237,6 +237,7 @@ class M6502 : public Serializable
 
     void setGhostReadsTrap(bool enable) { myGhostReadsTrap = enable; }
     void setReadFromWritePortBreak(bool enable) { myReadFromWritePortBreak = enable; }
+    void setWriteToReadPortBreak(bool enable) { myWriteToReadPortBreak = enable; }
 #endif  // DEBUGGER_SUPPORT
 
   private:
@@ -449,6 +450,7 @@ class M6502 : public Serializable
 
     bool myGhostReadsTrap;          // trap on ghost reads
     bool myReadFromWritePortBreak;  // trap on reads from write ports
+    bool myWriteToReadPortBreak;    // trap on writes to read ports
     bool myStepStateByInstruction;
 
   private:
