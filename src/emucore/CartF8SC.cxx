@@ -118,7 +118,7 @@ bool CartridgeF8SC::poke(uInt16 address, uInt8 value)
       break;
   }
 
-  if(address & 0x080)
+  if (!(address & 0x080))
   {
     pokeRAM(myRAM[address & 0x007F], address, value);
     return true;
