@@ -161,7 +161,7 @@ class Cartridge : public Device
     /**
       Get the current bank for the provided address.
 
-      @param address  The address to get the bank for
+      @param addr  The address to get the bank for
     */
     virtual uInt16 getBank(uInt16 addr) const { return getBank(); }
 
