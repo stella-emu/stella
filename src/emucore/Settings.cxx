@@ -162,6 +162,7 @@ Settings::Settings()
   setPermanent("dis.showaddr", "true");
   setPermanent("dis.relocate", "false");
   setPermanent("dev.rwportbreak", "true");
+  setPermanent("dev.wrportbreak", "true");
 #endif
 
   // Player settings

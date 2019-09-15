@@ -56,7 +56,7 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos;
 
   // Set real dimensions
-  setSize(54 * fontWidth + 10, 15 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
+  setSize(54 * fontWidth + 10, 16 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
 
   // The tab widget
   xpos = 2; ypos = 4;
@@ -158,6 +158,11 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   myRWPortBreakWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
                                            "Break on reads from write ports");
   wid.push_back(myRWPortBreakWidget);
+  ypos += lineHeight + VGAP;
+
+  myWRPortBreakWidget = new CheckboxWidget(myTab, font, HBORDER + INDENT * 1, ypos + 1,
+                                           "Break on writes to read ports");
+  wid.push_back(myWRPortBreakWidget);
   ypos += lineHeight + VGAP;
 #endif
 
@@ -613,6 +618,8 @@ void DeveloperDialog::loadSettings(SettingsSet set)
 #ifdef DEBUGGER_SUPPORT
   // Read from write ports break
   myRWPortBreak[set] = devSettings ? instance().settings().getBool("dev.rwportbreak") : false;
+  // Write to read ports break
+  myWRPortBreak[set] = devSettings ? instance().settings().getBool("dev.wrportbreak") : false;
 #endif
   // Thumb ARM emulation exception
   myThumbException[set] = devSettings ? instance().settings().getBool("dev.thumb.trapfatal") : false;
@@ -666,9 +673,13 @@ void DeveloperDialog::saveSettings(SettingsSet set)
   if(devSettings)
     instance().settings().setValue("dev.tiadriven", myUndrivenPins[set]);
 #ifdef DEBUGGER_SUPPORT
-  if(devSettings)
+  if (devSettings)
+  {
     // Read from write ports break
     instance().settings().setValue("dev.rwportbreak", myRWPortBreak[set]);
+    // Write to read ports break
+    instance().settings().setValue("dev.wrportbreak", myWRPortBreak[set]);
+  }
 #endif
   if(devSettings)
     // Thumb ARM emulation exception
@@ -727,6 +738,7 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
 #ifdef DEBUGGER_SUPPORT
   // Read from write ports break
   myRWPortBreak[set] = myRWPortBreakWidget->getState();
+  myWRPortBreak[set] = myWRPortBreakWidget->getState();
 #endif
   // Thumb ARM emulation exception
   myThumbException[set] = myThumbExceptionWidget->getState();
@@ -778,6 +790,7 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
 #ifdef DEBUGGER_SUPPORT
   // Read from write ports break
   myRWPortBreakWidget->setState(myRWPortBreak[set]);
+  myWRPortBreakWidget->setState(myWRPortBreak[set]);
 #endif
   // Thumb ARM emulation exception
   myThumbExceptionWidget->setState(myThumbException[set]);
@@ -934,9 +947,12 @@ void DeveloperDialog::saveConfig()
   if(instance().hasConsole())
     instance().console().system().m6502().setGhostReadsTrap(myGhostReadsTrapWidget->getState());
 
-  // Read from write ports break
-  if(instance().hasConsole())
+  // Read from write ports and write to read ports breaks
+  if (instance().hasConsole())
+  {
     instance().console().system().m6502().setReadFromWritePortBreak(myRWPortBreakWidget->getState());
+    instance().console().system().m6502().setWriteToReadPortBreak(myWRPortBreakWidget->getState());
+  }
 #endif
 }
 
@@ -960,6 +976,7 @@ void DeveloperDialog::setDefaults()
     #ifdef DEBUGGER_SUPPORT
       // Reads from write ports
       myRWPortBreak[set] = devSettings ? true : false;
+      myWRPortBreak[set] = devSettings ? true : false;
     #endif
       // Thumb ARM emulation exception
       myThumbException[set] = devSettings ? true : false;
@@ -1137,6 +1154,7 @@ void DeveloperDialog::handleSettings(bool devSettings)
   myUndrivenPinsWidget->setEnabled(devSettings);
 #ifdef DEBUGGER_SUPPORT
   myRWPortBreakWidget->setEnabled(devSettings);
+  myWRPortBreakWidget->setEnabled(devSettings);
 #endif
   myThumbExceptionWidget->setEnabled(devSettings);
 
