@@ -128,8 +128,19 @@ bool CartridgeFA::poke(uInt16 address, uInt8 value)
       break;
   }
 
-  pokeRAM(myRAM[address & 0x00FF], address, value);
-  return true;
+  if (!(address & 0x100))
+  {
+    pokeRAM(myRAM[address & 0x00FF], address, value);
+    return true;
+  }
+  else
+  {
+    // Writing to the read port should be ignored, but (TODO) trigger a break if option enabled
+    uInt8 dummy;
+
+    pokeRAM(dummy, address, value);
+    return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
