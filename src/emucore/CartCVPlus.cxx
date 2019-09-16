@@ -30,14 +30,14 @@ CartridgeCVPlus::CartridgeCVPlus(const ByteBuffer& image, uInt32 size,
   myImage = make_unique<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image.get(), mySize);
-  createCodeAccessBase(mySize + 1024);
+  std::copy_n(image.get(), mySize, myImage.get());
+  createCodeAccessBase(mySize + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCVPlus::reset()
 {
-  initializeRAM(myRAM, 1024);
+  initializeRAM(myRAM.data(), myRAM.size());
   initializeStartBank(0);
 
   // We'll map the startup bank into the first segment upon reset
@@ -144,7 +144,7 @@ bool CartridgeCVPlus::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCVPlus::getBank() const
+uInt16 CartridgeCVPlus::getBank(uInt16) const
 {
   return myCurrentBank;
 }
@@ -187,7 +187,7 @@ bool CartridgeCVPlus::save(Serializer& out) const
   try
   {
     out.putShort(myCurrentBank);
-    out.putByteArray(myRAM, 1024);
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {
@@ -204,7 +204,7 @@ bool CartridgeCVPlus::load(Serializer& in)
   try
   {
     myCurrentBank = in.getShort();
-    in.getByteArray(myRAM, 1024);
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {

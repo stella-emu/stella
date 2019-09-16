@@ -34,11 +34,11 @@ CartridgeAR::CartridgeAR(const ByteBuffer& image, uInt32 size,
   // Create a load image buffer and copy the given image
   myLoadImages = make_unique<uInt8[]>(mySize);
   myNumberOfLoadImages = mySize / 8448;
-  memcpy(myLoadImages.get(), image.get(), size);
+  std::copy_n(image.get(), size, myLoadImages.get());
 
   // Add header if image doesn't include it
   if(size < 8448)
-    memcpy(myLoadImages.get()+8192, ourDefaultHeader, 256);
+    std::copy_n(ourDefaultHeader.data(), ourDefaultHeader.size(), myLoadImages.get()+myImage.size());
 
   // We use System::PageAccess.codeAccessBase, but don't allow its use
   // through a pointer, since the AR scheme doesn't support bankswitching
@@ -54,9 +54,9 @@ void CartridgeAR::reset()
 {
   // Initialize RAM
 #if 0  // TODO - figure out actual behaviour of the real cart
-  initializeRAM(myImage, 6*1024);
+  initializeRAM(myImage.data(), myImage.size());
 #else
-  memset(myImage, 0, 6 * 1024);
+  myImage.fill(0);
 #endif
 
   // Initialize SC BIOS ROM
@@ -316,10 +316,10 @@ void CartridgeAR::initializeROM()
   ourDummyROMCode[281] = mySystem->randGenerator().next();
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
-  memset(myImage + (3<<11), 0x02, 2048);
+  std::fill_n(myImage.begin() + (3<<11), 2048, 0x02);
 
   // Copy the "dummy" Supercharger BIOS code into the ROM area
-  memcpy(myImage + (3<<11), ourDummyROMCode, sizeof(ourDummyROMCode));
+  std::copy_n(ourDummyROMCode.data(), ourDummyROMCode.size(), myImage.data() + (3<<11));
 
   // Finally set 6502 vectors to point to initial load code at 0xF80A of BIOS
   myImage[(3<<11) + 2044] = 0x0A;
@@ -348,16 +348,14 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
   for(image = 0; image < myNumberOfLoadImages; ++image)
   {
     // Is this the correct load?
-    if(myLoadImages[(image * 8448) + 8192 + 5] == load)
+    if(myLoadImages[(image * 8448) + myImage.size() + 5] == load)
     {
       // Copy the load's header
-      memcpy(myHeader, myLoadImages.get() + (image * 8448) + 8192, 256);
+      std::copy_n(myLoadImages.get() + (image * 8448) + myImage.size(), myHeader.size(), myHeader.data());
 
       // Verify the load's header
-      if(checksum(myHeader, 8) != 0x55)
-      {
+      if(checksum(myHeader.data(), 8) != 0x55)
         cerr << "WARNING: The Supercharger header checksum is invalid...\n";
-      }
 
       // Load all of the pages from the load
       bool invalidPageChecksumSeen = false;
@@ -376,9 +374,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 
         // Copy page to Supercharger RAM (don't allow a copy into ROM area)
         if(bank < 3)
-        {
-          memcpy(myImage + (bank * 2048) + (page * 256), src, 256);
-        }
+          std::copy_n(src, 256, myImage.data() + (bank * 2048) + (page * 256));
       }
 
       // Copy the bank switching byte and starting address into the 2600's
@@ -407,7 +403,7 @@ bool CartridgeAR::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeAR::getBank() const
+uInt16 CartridgeAR::getBank(uInt16) const
 {
   return myCurrentBank;
 }
@@ -438,13 +434,13 @@ bool CartridgeAR::save(Serializer& out) const
   try
   {
     // Indicates the offest within the image for the corresponding bank
-    out.putIntArray(myImageOffset, 2);
+    out.putIntArray(myImageOffset.data(), myImageOffset.size());
 
     // The 6K of RAM and 2K of ROM contained in the Supercharger
-    out.putByteArray(myImage, 8192);
+    out.putByteArray(myImage.data(), myImage.size());
 
     // The 256 byte header for the current 8448 byte load
-    out.putByteArray(myHeader, 256);
+    out.putByteArray(myHeader.data(), myHeader.size());
 
     // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
@@ -483,13 +479,13 @@ bool CartridgeAR::load(Serializer& in)
   try
   {
     // Indicates the offest within the image for the corresponding bank
-    in.getIntArray(myImageOffset, 2);
+    in.getIntArray(myImageOffset.data(), myImageOffset.size());
 
     // The 6K of RAM and 2K of ROM contained in the Supercharger
-    in.getByteArray(myImage, 8192);
+    in.getByteArray(myImage.data(), myImage.size());
 
     // The 256 byte header for the current 8448 byte load
-    in.getByteArray(myHeader, 256);
+    in.getByteArray(myHeader.data(), myHeader.size());
 
     // All of the 8448 byte loads associated with the game
     // Note that the size of this array is myNumberOfLoadImages * 8448
@@ -523,7 +519,7 @@ bool CartridgeAR::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeAR::ourDummyROMCode[] = {
+std::array<uInt8, 294> CartridgeAR::ourDummyROMCode = {
   0xa5, 0xfa, 0x85, 0x80, 0x4c, 0x18, 0xf8, 0xff,
   0xff, 0xff, 0x78, 0xd8, 0xa0, 0x00, 0xa2, 0x00,
   0x94, 0x00, 0xe8, 0xd0, 0xfb, 0x4c, 0x50, 0xf8,
@@ -564,7 +560,7 @@ uInt8 CartridgeAR::ourDummyROMCode[] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 CartridgeAR::ourDefaultHeader[256] = {
+const std::array<uInt8, 256> CartridgeAR::ourDefaultHeader = {
   0xac, 0xfa, 0x0f, 0x18, 0x62, 0x00, 0x24, 0x02,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0x00, 0x04, 0x08, 0x0c, 0x10, 0x14, 0x18, 0x1c,

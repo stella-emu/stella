@@ -36,11 +36,11 @@ Cartridge4A50::Cartridge4A50(const ByteBuffer& image, uInt32 size,
 {
   // Copy the ROM image into my buffer
   // Supported file sizes are 32/64/128K, which are duplicated if necessary
-  if(size < 65536)        size = 32768;
-  else if(size < 131072)  size = 65536;
-  else                    size = 131072;
-  for(uInt32 slice = 0; slice < 131072 / size; ++slice)
-    memcpy(myImage + (slice*size), image.get(), size);
+  if(size < 64_KB)        size = 32_KB;
+  else if(size < 128_KB)  size = 64_KB;
+  else                    size = 128_KB;
+  for(uInt32 slice = 0; slice < 128_KB / size; ++slice)
+    std::copy_n(image.get(), size, myImage.begin() + (slice*size));
 
   // We use System::PageAccess.codeAccessBase, but don't allow its use
   // through a pointer, since the address space of 4A50 carts can change
@@ -49,13 +49,13 @@ Cartridge4A50::Cartridge4A50(const ByteBuffer& image, uInt32 size,
   //
   // Instead, access will be through the getAccessFlags and setAccessFlags
   // methods below
-  createCodeAccessBase(131072 + 32768);
+  createCodeAccessBase(myImage.size() + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50::reset()
 {
-  initializeRAM(myRAM, 32768);
+  initializeRAM(myRAM.data(), myRAM.size());
 
   mySliceLow = mySliceMiddle = mySliceHigh = 0;
   myIsRomLow = myIsRomMiddle = myIsRomHigh = true;
@@ -359,7 +359,7 @@ bool Cartridge4A50::patch(uInt16 address, uInt8 value)
 const uInt8* Cartridge4A50::getImage(uInt32& size) const
 {
   size = mySize;
-  return myImage;
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -368,7 +368,7 @@ bool Cartridge4A50::save(Serializer& out) const
   try
   {
     // The 32K bytes of RAM
-    out.putByteArray(myRAM, 32768);
+    out.putByteArray(myRAM.data(), myRAM.size());
 
     // Index pointers
     out.putShort(mySliceLow);
@@ -398,7 +398,7 @@ bool Cartridge4A50::load(Serializer& in)
 {
   try
   {
-    in.getByteArray(myRAM, 32768);
+    in.getByteArray(myRAM.data(), myRAM.size());
 
     // Index pointers
     mySliceLow = in.getShort();

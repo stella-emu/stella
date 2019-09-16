@@ -25,14 +25,14 @@ CartridgeF8SC::CartridgeF8SC(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(8192u, size));
-  createCodeAccessBase(8192);
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  createCodeAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8SC::reset()
 {
-  initializeRAM(myRAM, 128);
+  initializeRAM(myRAM.data(), myRAM.size());
   initializeStartBank(1);
 
   // Upon reset we switch to the startup bank
@@ -164,7 +164,7 @@ bool CartridgeF8SC::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeF8SC::getBank() const
+uInt16 CartridgeF8SC::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -196,8 +196,8 @@ bool CartridgeF8SC::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeF8SC::getImage(uInt32& size) const
 {
-  size = 8192;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,7 +206,7 @@ bool CartridgeF8SC::save(Serializer& out) const
   try
   {
     out.putShort(myBankOffset);
-    out.putByteArray(myRAM, 128);
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {
@@ -223,7 +223,7 @@ bool CartridgeF8SC::load(Serializer& in)
   try
   {
     myBankOffset = in.getShort();
-    in.getByteArray(myRAM, 128);
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {

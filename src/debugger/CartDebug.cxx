@@ -507,9 +507,9 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::getBank(uInt16 addr)
+int CartDebug::getBank(uInt16 address)
 {
-  return myConsole.cartridge().getBank(addr);
+  return myConsole.cartridge().getBank(address);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

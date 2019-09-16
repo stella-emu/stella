@@ -219,10 +219,10 @@ class Cartridge4A50 : public Cartridge
 
   private:
     // The 128K ROM image of the cartridge
-    uInt8 myImage[131072];
+    std::array<uInt8, 128_KB> myImage;
 
     // The 32K of RAM on the cartridge
-    uInt8 myRAM[32768];
+    std::array<uInt8, 32_KB> myRAM;
 
     // (Actual) Size of the ROM image
     uInt32 mySize;

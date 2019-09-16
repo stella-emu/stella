@@ -29,7 +29,7 @@
 CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, uInt32 size,
                                    const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::min(size, 32768u)),
+    mySize(std::min<uInt32>(size, myImage.size())),
     myFastFetch(false),
     myLDAimmediate(false),
     myParameterPointer(0),
@@ -41,16 +41,16 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, uInt32 size,
 {
   // Image is always 32K, but in the case of ROM > 29K, the image is
   // copied to the end of the buffer
-  if(mySize < 32768u)
-    memset(myImage, 0, 32768);
-  memcpy(myImage + (32768u - mySize), image.get(), size);
+  if(mySize < myImage.size())
+    myImage.fill(0);
+  std::copy_n(image.get(), size, myImage.begin() + (myImage.size() - mySize));
   createCodeAccessBase(4096 * 6);
 
   // Pointer to the program ROM (24K @ 3072 byte offset; ignore first 3K)
-  myProgramImage = myImage + 0xC00;
+  myProgramImage = myImage.data() + 0xC00;
 
   // Pointer to the display RAM
-  myDisplayImage = myDPCRAM + 0xC00;
+  myDisplayImage = myDPCRAM.data() + 0xC00;
 
   // Pointer to the Frequency RAM
   myFrequencyImage = myDisplayImage + 0x1000;
@@ -58,9 +58,9 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, uInt32 size,
   // Create Thumbulator ARM emulator
   bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>
-      (reinterpret_cast<uInt16*>(myImage),
-       reinterpret_cast<uInt16*>(myDPCRAM),
-       32768,
+      (reinterpret_cast<uInt16*>(myImage.data()),
+       reinterpret_cast<uInt16*>(myDPCRAM.data()),
+       myImage.size(),
        devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
        Thumbulator::ConfigureFor::DPCplus,
        this);
@@ -89,21 +89,20 @@ void CartridgeDPCPlus::reset()
 void CartridgeDPCPlus::setInitialState()
 {
   // Reset various ROM and RAM locations
-  memset(myDPCRAM, 0, 8192);
+  myDPCRAM.fill(0);
 
   // Copy initial DPC display data and Frequency table state to Harmony RAM
-  memcpy(myDisplayImage, myProgramImage + 0x6000, 0x1400);
+  std::copy_n(myProgramImage + 0x6000, 0x1400, myDisplayImage);
 
   // Initialize the DPC data fetcher registers
-  for(int i = 0; i < 8; ++i)
-  {
-    myTops[i] = myBottoms[i] = myFractionalIncrements[i] = 0;
-    myFractionalCounters[i] = 0;
-    myCounters[i] = 0;
-  }
+  myTops.fill(0);
+  myBottoms.fill(0);
+  myFractionalIncrements.fill(0);
+  myFractionalCounters.fill(0);
+  myCounters.fill(0);
 
   // Set waveforms to first waveform entry
-  myMusicWaveforms[0] = myMusicWaveforms[1] = myMusicWaveforms[2] = 0;
+  myMusicWaveforms.fill(0);
 
   // Initialize the DPC's random number generator register (must be non-zero)
   myRandomNumber = 0x2B435044; // "DPC+"
@@ -603,7 +602,7 @@ bool CartridgeDPCPlus::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDPCPlus::getBank() const
+uInt16 CartridgeDPCPlus::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -633,7 +632,7 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 const uInt8* CartridgeDPCPlus::getImage(uInt32& size) const
 {
   size = mySize;
-  return myImage + (32768u - mySize);
+  return myImage.data() + (myImage.size() - mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -645,38 +644,38 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putShort(myBankOffset);
 
     // Harmony RAM
-    out.putByteArray(myDPCRAM, 8192);
+    out.putByteArray(myDPCRAM.data(), myDPCRAM.size());
 
     // The top registers for the data fetchers
-    out.putByteArray(myTops, 8);
+    out.putByteArray(myTops.data(), myTops.size());
 
     // The bottom registers for the data fetchers
-    out.putByteArray(myBottoms, 8);
+    out.putByteArray(myBottoms.data(), myBottoms.size());
 
     // The counter registers for the data fetchers
-    out.putShortArray(myCounters, 8);
+    out.putShortArray(myCounters.data(), myCounters.size());
 
     // The counter registers for the fractional data fetchers
-    out.putIntArray(myFractionalCounters, 8);
+    out.putIntArray(myFractionalCounters.data(), myFractionalCounters.size());
 
     // The fractional registers for the data fetchers
-    out.putByteArray(myFractionalIncrements, 8);
+    out.putByteArray(myFractionalIncrements.data(), myFractionalIncrements.size());
 
     // The Fast Fetcher Enabled flag
     out.putBool(myFastFetch);
     out.putBool(myLDAimmediate);
 
     // Control Byte to update
-    out.putByteArray(myParameter, 8);
+    out.putByteArray(myParameter.data(), myParameter.size());
 
     // The music counters
-    out.putIntArray(myMusicCounters, 3);
+    out.putIntArray(myMusicCounters.data(), myMusicCounters.size());
 
     // The music frequencies
-    out.putIntArray(myMusicFrequencies, 3);
+    out.putIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
 
     // The music waveforms
-    out.putShortArray(myMusicWaveforms, 3);
+    out.putShortArray(myMusicWaveforms.data(), myMusicWaveforms.size());
 
     // The random number generator register
     out.putInt(myRandomNumber);
@@ -706,38 +705,38 @@ bool CartridgeDPCPlus::load(Serializer& in)
     myBankOffset = in.getShort();
 
     // Harmony RAM
-    in.getByteArray(myDPCRAM, 8192);
+    in.getByteArray(myDPCRAM.data(), myDPCRAM.size());
 
     // The top registers for the data fetchers
-    in.getByteArray(myTops, 8);
+    in.getByteArray(myTops.data(), myTops.size());
 
     // The bottom registers for the data fetchers
-    in.getByteArray(myBottoms, 8);
+    in.getByteArray(myBottoms.data(), myBottoms.size());
 
     // The counter registers for the data fetchers
-    in.getShortArray(myCounters, 8);
+    in.getShortArray(myCounters.data(), myCounters.size());
 
     // The counter registers for the fractional data fetchers
-    in.getIntArray(myFractionalCounters, 8);
+    in.getIntArray(myFractionalCounters.data(), myFractionalCounters.size());
 
     // The fractional registers for the data fetchers
-    in.getByteArray(myFractionalIncrements, 8);
+    in.getByteArray(myFractionalIncrements.data(), myFractionalIncrements.size());
 
     // The Fast Fetcher Enabled flag
     myFastFetch = in.getBool();
     myLDAimmediate = in.getBool();
 
     // Control Byte to update
-    in.getByteArray(myParameter, 8);
+    in.getByteArray(myParameter.data(), myParameter.size());
 
     // The music mode counters for the data fetchers
-    in.getIntArray(myMusicCounters, 3);
+    in.getIntArray(myMusicCounters.data(), myMusicCounters.size());
 
     // The music mode frequency addends for the data fetchers
-    in.getIntArray(myMusicFrequencies, 3);
+    in.getIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
 
     // The music waveforms
-    in.getShortArray(myMusicWaveforms, 3);
+    in.getShortArray(myMusicWaveforms.data(), myMusicWaveforms.size());
 
     // The random number generator register
     myRandomNumber = in.getInt();

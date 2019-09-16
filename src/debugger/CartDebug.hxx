@@ -257,6 +257,8 @@ class CartDebug : public DebuggerSystem
     using LabelToAddr = std::map<string, uInt16,
         std::function<bool(const string&, const string&)>>;
 
+    using AddrTypeArray = std::array<uInt8, 0x1000>;
+
     struct DirectiveTag {
       DisasmType type;
       uInt16 start;
@@ -277,7 +279,7 @@ class CartDebug : public DebuggerSystem
     };
 
     // Address type information determined by Distella
-    uInt8 myDisLabels[0x1000], myDisDirectives[0x1000];
+    AddrTypeArray myDisLabels, myDisDirectives;
 
     // Information on equates used in the disassembly
     struct ReservedEquates {

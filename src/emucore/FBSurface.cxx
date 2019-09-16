@@ -45,7 +45,7 @@ void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect
   uInt8* src = reinterpret_cast<uInt8*>(myPixels + rect.y() * myPitch + rect.x());
 
   if(rect.empty())
-    memcpy(buffer, src, width() * height() * 4);
+    std::copy_n(src, width() * height() * 4, buffer);
   else
   {
     uInt32 w = std::min(rect.w(), width());
@@ -55,7 +55,7 @@ void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect
     uInt8* dst = buffer;
     while(h--)
     {
-      memcpy(dst, src, w * 4);
+      std::copy_n(src, w * 4, dst);
       src += myPitch * 4;
       dst += pitch * 4;
     }

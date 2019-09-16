@@ -30,7 +30,7 @@ Cartridge3F::Cartridge3F(const ByteBuffer& image, uInt32 size,
   myImage = make_unique<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image.get(), mySize);
+  std::copy_n(image.get(), mySize, myImage.get());
   createCodeAccessBase(mySize);
 }
 
@@ -125,9 +125,9 @@ bool Cartridge3F::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge3F::getBank(uInt16 addr) const
+uInt16 Cartridge3F::getBank(uInt16 address) const
 {
-  if (addr & 0x800)
+  if (address & 0x800)
     return (mySize >> 11) - 1; // 2K slices, fixed bank
   else
     return myCurrentBank;

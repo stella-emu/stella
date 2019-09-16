@@ -52,7 +52,7 @@ class DelayQueue : public Serializable
   private:
     DelayQueueMember<capacity> myMembers[length];
     uInt8 myIndex;
-    uInt8 myIndices[0xFF];
+    std::array<uInt8, 0xFF> myIndices;
 
   private:
     DelayQueue(const DelayQueue&) = delete;
@@ -70,7 +70,7 @@ template<unsigned length, unsigned capacity>
 DelayQueue<length, capacity>::DelayQueue()
   : myIndex(0)
 {
-  memset(myIndices, 0xFF, 0xFF);
+  myIndices.fill(0xFF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -99,7 +99,7 @@ void DelayQueue<length, capacity>::reset()
     myMembers[i].clear();
 
   myIndex = 0;
-  memset(myIndices, 0xFF, 0xFF);
+  myIndices.fill(0xFF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,7 +131,7 @@ bool DelayQueue<length, capacity>::save(Serializer& out) const
       myMembers[i].save(out);
 
     out.putByte(myIndex);
-    out.putByteArray(myIndices, 0xFF);
+    out.putByteArray(myIndices.data(), myIndices.size());
   }
   catch(...)
   {
@@ -154,7 +154,7 @@ bool DelayQueue<length, capacity>::load(Serializer& in)
       myMembers[i].load(in);
 
     myIndex = in.getByte();
-    in.getByteArray(myIndices, 0xFF);
+    in.getByteArray(myIndices.data(), myIndices.size());
   }
   catch(...)
   {

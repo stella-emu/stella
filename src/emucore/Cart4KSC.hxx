@@ -133,10 +133,10 @@ class Cartridge4KSC : public Cartridge
 
   private:
     // The 4K ROM image of the cartridge
-    uInt8 myImage[4096];
+    std::array<uInt8, 4_KB> myImage;
 
     // The 128 bytes of RAM
-    uInt8 myRAM[128];
+    std::array<uInt8, 128> myRAM;
 
   private:
     // Following constructors and assignment operators not supported

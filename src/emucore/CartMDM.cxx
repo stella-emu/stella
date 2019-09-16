@@ -30,7 +30,7 @@ CartridgeMDM::CartridgeMDM(const ByteBuffer& image, uInt32 size,
   myImage = make_unique<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image.get(), mySize);
+  std::copy_n(image.get(), mySize, myImage.get());
   createCodeAccessBase(mySize);
 }
 
@@ -124,7 +124,7 @@ bool CartridgeMDM::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMDM::getBank() const
+uInt16 CartridgeMDM::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }

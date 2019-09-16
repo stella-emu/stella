@@ -30,14 +30,14 @@ Cartridge3E::Cartridge3E(const ByteBuffer& image, uInt32 size,
   myImage = make_unique<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image.get(), mySize);
-  createCodeAccessBase(mySize + 32768);
+  std::copy_n(image.get(), mySize, myImage.get());
+  createCodeAccessBase(mySize + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3E::reset()
 {
-  initializeRAM(myRAM, 32768);
+  initializeRAM(myRAM.data(), myRAM.size());
   initializeStartBank(0);
 
   // We'll map the startup bank into the first segment upon reset
@@ -198,9 +198,9 @@ bool Cartridge3E::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge3E::getBank(uInt16 addr) const
+uInt16 Cartridge3E::getBank(uInt16 address) const
 {
-  if (addr & 0x800)
+  if (address & 0x800)
     return 255; // 256 - 1 // 2K slices, fixed bank
   else
     return myCurrentBank;
@@ -248,7 +248,7 @@ bool Cartridge3E::save(Serializer& out) const
   try
   {
     out.putShort(myCurrentBank);
-    out.putByteArray(myRAM, 32768);
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {
@@ -265,7 +265,7 @@ bool Cartridge3E::load(Serializer& in)
   try
   {
     myCurrentBank = in.getShort();
-    in.getByteArray(myRAM, 32768);
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {

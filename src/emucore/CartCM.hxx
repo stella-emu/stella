@@ -147,8 +147,10 @@ class CartridgeCM : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -241,10 +243,10 @@ class CartridgeCM : public Cartridge
     shared_ptr<CompuMate> myCompuMate;
 
     // The 16K ROM image of the cartridge
-    uInt8 myImage[16384];
+    std::array<uInt8, 16_KB> myImage;
 
     // The 2K of RAM
-    uInt8 myRAM[2048];
+    std::array<uInt8, 2_KB> myRAM;
 
     // Current copy of SWCHA (controls ROM/RAM accesses)
     uInt8 mySWCHA;

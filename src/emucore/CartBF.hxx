@@ -73,8 +73,10 @@ class CartridgeBF : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -152,7 +154,7 @@ class CartridgeBF : public Cartridge
 
   private:
     // The 256K ROM image of the cartridge
-    uInt8 myImage[64 * 4096];
+    std::array<uInt8, 256_KB> myImage;
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt32 myBankOffset;

@@ -28,14 +28,14 @@ CartridgeCM::CartridgeCM(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(16384u, size));
-  createCodeAccessBase(16384);
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  createCodeAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCM::reset()
 {
-  initializeRAM(myRAM, 2048);
+  initializeRAM(myRAM.data(), myRAM.size());
 
   // On powerup, the last bank of ROM is enabled and RAM is disabled
   mySWCHA = 0xFF;
@@ -153,7 +153,7 @@ bool CartridgeCM::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCM::getBank() const
+uInt16 CartridgeCM::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -182,8 +182,8 @@ bool CartridgeCM::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeCM::getImage(uInt32& size) const
 {
-  size = 16384;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,7 +194,7 @@ bool CartridgeCM::save(Serializer& out) const
     out.putShort(myBankOffset);
     out.putByte(mySWCHA);
     out.putByte(myCompuMate->column());
-    out.putByteArray(myRAM, 2048);
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {
@@ -213,7 +213,7 @@ bool CartridgeCM::load(Serializer& in)
     myBankOffset = in.getShort();
     mySWCHA = in.getByte();
     myCompuMate->column() = in.getByte();
-    in.getByteArray(myRAM, 2048);
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {

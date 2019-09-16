@@ -85,8 +85,10 @@ class CartridgeFA2 : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -191,13 +193,13 @@ class CartridgeFA2 : public Cartridge
 
   private:
     // The 24K/28K ROM image of the cartridge
-    uInt8 myImage[28 * 1024];
+    std::array<uInt8, 28_KB> myImage;
 
     // Actual usable size of the ROM image
     uInt32 mySize;
 
     // The 256 bytes of RAM on the cartridge
-    uInt8 myRAM[256];
+    std::array<uInt8, 256> myRAM;
 
     // The time after which the first request of a load/save operation
     // will actually be completed

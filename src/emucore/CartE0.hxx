@@ -75,8 +75,10 @@ class CartridgeE0 : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank(uInt16 addr) const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -175,11 +177,11 @@ class CartridgeE0 : public Cartridge
     void segmentTwo(uInt16 slice);
 
   private:
-    // Indicates the slice mapped into each of the four segments
-    uInt16 myCurrentSlice[4];
-
     // The 8K ROM image of the cartridge
-    uInt8 myImage[8192];
+    std::array<uInt8, 8_KB> myImage;
+
+    // Indicates the slice mapped into each of the four segments
+    std::array<uInt16, 4> myCurrentSlice;
 
   private:
     // Following constructors and assignment operators not supported

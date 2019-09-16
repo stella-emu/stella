@@ -65,27 +65,29 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, uInt32 size,
     myFractionalClocks(0.0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(32768u, size));
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
 
   // even though the ROM is 32K, only 28K is accessible to the 6507
   createCodeAccessBase(4096 * 7);
 
   // Pointer to the program ROM (28K @ 0 byte offset)
   // which starts after the 2K CDF Driver and 2K C Code
-  myProgramImage = myImage + 4096;
+  myProgramImage = myImage.data() + 4096;
 
   // Pointer to CDF driver in RAM
-  myBusDriverImage = myCDFRAM;
+  myBusDriverImage = myCDFRAM.data();
 
   // Pointer to the display RAM
-  myDisplayImage = myCDFRAM + DSRAM;
+  myDisplayImage = myCDFRAM.data() + DSRAM;
 
   setupVersion();
 
   // Create Thumbulator ARM emulator
   bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
-    reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myCDFRAM), 32768,
+    reinterpret_cast<uInt16*>(myImage.data()),
+    reinterpret_cast<uInt16*>(myCDFRAM.data()),
+    myImage.size(),
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false, thumulatorConfiguration(myCDFSubtype), this);
 
   setInitialState();
@@ -94,7 +96,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::reset()
 {
-  initializeRAM(myCDFRAM+2048, 8192-2048);
+  initializeRAM(myCDFRAM.data()+2048, myCDFRAM.size()-2048);
 
   // CDF always starts in bank 6
   initializeStartBank(6);
@@ -112,10 +114,9 @@ void CartridgeCDF::reset()
 void CartridgeCDF::setInitialState()
 {
   // Copy initial CDF driver to Harmony RAM
-  memcpy(myBusDriverImage, myImage, 0x0800);
+  std::copy_n(myImage.begin(), 0x0800, myBusDriverImage);
 
-  for (int i=0; i < 3; ++i)
-    myMusicWaveformSize[i] = 27;
+  myMusicWaveformSize.fill(27);
 
   // Assuming mode starts out with Fast Fetch off and 3-Voice music,
   // need to confirm with Chris
@@ -421,7 +422,7 @@ bool CartridgeCDF::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCDF::getBank() const
+uInt16 CartridgeCDF::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -450,12 +451,11 @@ bool CartridgeCDF::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeCDF::getImage(uInt32& size) const
 {
-  size = 32768;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 {
   switch (function)
@@ -484,7 +484,6 @@ uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
   return 0;
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDF::save(Serializer& out) const
 {
@@ -504,12 +503,12 @@ bool CartridgeCDF::save(Serializer& out) const
     out.putShort(myJMPoperandAddress);
 
     // Harmony RAM
-    out.putByteArray(myCDFRAM, 8192);
+    out.putByteArray(myCDFRAM.data(), myCDFRAM.size());
 
     // Audio info
-    out.putIntArray(myMusicCounters, 3);
-    out.putIntArray(myMusicFrequencies, 3);
-    out.putByteArray(myMusicWaveformSize, 3);
+    out.putIntArray(myMusicCounters.data(), myMusicCounters.size());
+    out.putIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    out.putByteArray(myMusicWaveformSize.data(), myMusicWaveformSize.size());
 
     // Save cycles and clocks
     out.putLong(myAudioCycles);
@@ -544,12 +543,12 @@ bool CartridgeCDF::load(Serializer& in)
     myJMPoperandAddress = in.getShort();
 
     // Harmony RAM
-    in.getByteArray(myCDFRAM, 8192);
+    in.getByteArray(myCDFRAM.data(), myCDFRAM.size());
 
     // Audio info
-    in.getIntArray(myMusicCounters, 3);
-    in.getIntArray(myMusicFrequencies, 3);
-    in.getByteArray(myMusicWaveformSize, 3);
+    in.getIntArray(myMusicCounters.data(), myMusicCounters.size());
+    in.getIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    in.getByteArray(myMusicWaveformSize.data(), myMusicWaveformSize.size());
 
     // Get cycles and clocks
     myAudioCycles = in.getLong();
@@ -604,13 +603,12 @@ uInt32 CartridgeCDF::getDatastreamIncrement(uInt8 index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 {
-  uInt32 result;
   uInt16 address = myWaveformBase + index * 4;
 
-  result = myCDFRAM[address + 0]        +  // low byte
-          (myCDFRAM[address + 1] << 8)  +
-          (myCDFRAM[address + 2] << 16) +
-          (myCDFRAM[address + 3] << 24);   // high byte
+  uInt32 result = myCDFRAM[address + 0]        +  // low byte
+                 (myCDFRAM[address + 1] << 8)  +
+                 (myCDFRAM[address + 2] << 16) +
+                 (myCDFRAM[address + 3] << 24);   // high byte
 
   result -= (0x40000000 + DSRAM);
 
@@ -623,13 +621,12 @@ uInt32 CartridgeCDF::getWaveform(uInt8 index) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeCDF::getSample()
 {
-  uInt32 result;
   uInt16 address = myWaveformBase;
 
-  result = myCDFRAM[address + 0]        +  // low byte
-          (myCDFRAM[address + 1] << 8)  +
-          (myCDFRAM[address + 2] << 16) +
-          (myCDFRAM[address + 3] << 24);   // high byte
+  uInt32 result = myCDFRAM[address + 0]        +  // low byte
+                 (myCDFRAM[address + 1] << 8)  +
+                 (myCDFRAM[address + 2] << 16) +
+                 (myCDFRAM[address + 3] << 24);   // high byte
 
   return result;
 }

@@ -49,25 +49,27 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, uInt32 size,
     myFractionalClocks(0.0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(32768u, size));
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
 
-  // even though the ROM is 32K, only 28K is accessible to the 6507
-  createCodeAccessBase(4096 * 7);
+  // Even though the ROM is 32K, only 28K is accessible to the 6507
+  createCodeAccessBase(28_KB);
 
   // Pointer to the program ROM (28K @ 0 byte offset)
   // which starts after the 2K BUS Driver and 2K C Code
-  myProgramImage = myImage + 4096;
+  myProgramImage = myImage.data() + 4_KB;
 
   // Pointer to BUS driver in RAM
-  myBusDriverImage = myBUSRAM;
+  myBusDriverImage = myBUSRAM.data();
 
   // Pointer to the display RAM
-  myDisplayImage = myBUSRAM + DSRAM;
+  myDisplayImage = myBUSRAM.data() + DSRAM;
 
   // Create Thumbulator ARM emulator
   bool devSettings = settings.getBool("dev.settings");
   myThumbEmulator = make_unique<Thumbulator>(
-    reinterpret_cast<uInt16*>(myImage), reinterpret_cast<uInt16*>(myBUSRAM), 32768,
+    reinterpret_cast<uInt16*>(myImage.data()),
+    reinterpret_cast<uInt16*>(myBUSRAM.data()),
+    myImage.size(),
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false, Thumbulator::ConfigureFor::BUS, this
   );
 
@@ -77,7 +79,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, uInt32 size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeBUS::reset()
 {
-  initializeRAM(myBUSRAM+2048, 8192-2048);
+  initializeRAM(myBUSRAM.data() + 2_KB, 6_KB);
 
   // BUS always starts in bank 6
   initializeStartBank(6);
@@ -96,10 +98,9 @@ void CartridgeBUS::reset()
 void CartridgeBUS::setInitialState()
 {
   // Copy initial BUS driver to Harmony RAM
-  memcpy(myBusDriverImage, myImage, 0x0800);
+  std::copy_n(myImage.begin(), 0x0800, myBusDriverImage);
 
-  for (int i=0; i < 3; ++i)
-    myMusicWaveformSize[i] = 27;
+  myMusicWaveformSize.fill(27);
 
   // Assuming mode starts out with Fast Fetch off and 3-Voice music,
   // need to confirm with Chris
@@ -449,7 +450,7 @@ bool CartridgeBUS::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeBUS::getBank() const
+uInt16 CartridgeBUS::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -478,8 +479,8 @@ bool CartridgeBUS::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeBUS::getImage(uInt32& size) const
 {
-  size = 32768;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -547,7 +548,7 @@ bool CartridgeBUS::save(Serializer& out) const
     out.putShort(myBankOffset);
 
     // Harmony RAM
-    out.putByteArray(myBUSRAM, 8192);
+    out.putByteArray(myBUSRAM.data(), myBUSRAM.size());
 
     // Addresses for bus override logic
     out.putShort(myBusOverdriveAddress);
@@ -560,9 +561,9 @@ bool CartridgeBUS::save(Serializer& out) const
     out.putLong(myARMCycles);
 
     // Audio info
-    out.putIntArray(myMusicCounters, 3);
-    out.putIntArray(myMusicFrequencies, 3);
-    out.putByteArray(myMusicWaveformSize, 3);
+    out.putIntArray(myMusicCounters.data(), myMusicCounters.size());
+    out.putIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    out.putByteArray(myMusicWaveformSize.data(), myMusicWaveformSize.size());
 
     // Indicates current mode
     out.putByte(myMode);
@@ -588,7 +589,7 @@ bool CartridgeBUS::load(Serializer& in)
     myBankOffset = in.getShort();
 
     // Harmony RAM
-    in.getByteArray(myBUSRAM, 8192);
+    in.getByteArray(myBUSRAM.data(), myBUSRAM.size());
 
     // Addresses for bus override logic
     myBusOverdriveAddress = in.getShort();
@@ -601,9 +602,9 @@ bool CartridgeBUS::load(Serializer& in)
     myARMCycles = in.getLong();
 
     // Audio info
-    in.getIntArray(myMusicCounters, 3);
-    in.getIntArray(myMusicFrequencies, 3);
-    in.getByteArray(myMusicWaveformSize, 3);
+    in.getIntArray(myMusicCounters.data(), myMusicCounters.size());
+    in.getIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    in.getByteArray(myMusicWaveformSize.data(), myMusicWaveformSize.size());
 
     // Indicates current mode
     myMode = in.getByte();

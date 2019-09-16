@@ -25,14 +25,14 @@ CartridgeFA::CartridgeFA(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(12288u, size));
-  createCodeAccessBase(12288);
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  createCodeAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA::reset()
 {
-  initializeRAM(myRAM, 256);
+  initializeRAM(myRAM.data(), myRAM.size());
   initializeStartBank(2);
 
   // Upon reset we switch to the startup bank
@@ -174,7 +174,7 @@ bool CartridgeFA::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeFA::getBank() const
+uInt16 CartridgeFA::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -206,8 +206,8 @@ bool CartridgeFA::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeFA::getImage(uInt32& size) const
 {
-  size = 12288;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,7 +216,7 @@ bool CartridgeFA::save(Serializer& out) const
   try
   {
     out.putShort(myBankOffset);
-    out.putByteArray(myRAM, 256);
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {
@@ -233,7 +233,7 @@ bool CartridgeFA::load(Serializer& in)
   try
   {
     myBankOffset = in.getShort();
-    in.getByteArray(myRAM, 256);
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {

@@ -78,7 +78,7 @@ MT24LC256::MT24LC256(const string& filename, const System& system,
     if(uInt32(in.tellg()) == FLASH_SIZE)
     {
       in.seekg(0, std::ios::beg);
-      in.read(reinterpret_cast<char*>(myData), FLASH_SIZE);
+      in.read(reinterpret_cast<char*>(myData.data()), myData.size());
       myDataFileExists = true;
     }
   }
@@ -99,7 +99,7 @@ MT24LC256::~MT24LC256()
   {
     ofstream out(myDataFile, std::ios_base::binary);
     if(out.is_open())
-      out.write(reinterpret_cast<char*>(myData), FLASH_SIZE);
+      out.write(reinterpret_cast<char*>(myData.data()), myData.size());
   }
 }
 
@@ -150,13 +150,13 @@ void MT24LC256::update()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::systemReset()
 {
-  std::fill(myPageHit, myPageHit + PAGE_NUM, false);
+  myPageHit.fill(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::eraseAll()
 {
-  memset(myData, INIT_VALUE, FLASH_SIZE);
+  myData.fill(INIT_VALUE);
   myDataChanged = true;
 }
 
@@ -167,7 +167,7 @@ void MT24LC256::eraseCurrent()
   {
     if(myPageHit[page])
     {
-      memset(myData + page * PAGE_SIZE, INIT_VALUE, PAGE_SIZE);
+      std::fill_n(myData.begin() + page * PAGE_SIZE, PAGE_SIZE, INIT_VALUE);
       myDataChanged = true;
     }
   }
@@ -193,7 +193,7 @@ void MT24LC256::jpee_init()
   jpee_smallmode = 0;
   jpee_logmode = -1;
   if(!myDataFileExists)
-    memset(myData, INIT_VALUE, FLASH_SIZE);
+    myData.fill(INIT_VALUE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -58,7 +58,7 @@ TIASurface::TIASurface(OSystem& system)
   myBaseTiaSurface = myFB.allocateSurface(TIAConstants::frameBufferWidth*2,
                                           TIAConstants::frameBufferHeight);
 
-  memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
+  myRGBFramebuffer.fill(0);
 
   // Enable/disable threading in the NTSC TV effects renderer
   myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
@@ -216,7 +216,7 @@ void TIASurface::enablePhosphor(bool enable, int blend)
     myPhosphorPercent = blend / 100.0f;
   myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
 
-  memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
+  myRGBFramebuffer.fill(0);
 
   // Precalculate the average colors for the 'phosphor' effect
   if(myUsePhosphor)
@@ -266,7 +266,7 @@ void TIASurface::enableNTSC(bool enable)
   sl_attr.blendalpha = myOSystem.settings().getInt("tv.scanlines");
   mySLineSurface->applyAttributes();
 
-  memset(myRGBFramebuffer, 0, sizeof(myRGBFramebuffer));
+  myRGBFramebuffer.fill(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -317,8 +317,7 @@ inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::render()
 {
-  uInt32 width  = myTIA->width();
-  uInt32 height = myTIA->height();
+  uInt32 width = myTIA->width(), height = myTIA->height();
 
   uInt32 *out, outPitch;
   myTiaSurface->basePtr(out, outPitch);
@@ -346,10 +345,11 @@ void TIASurface::render()
     case Filter::Phosphor:
     {
       uInt8*  tiaIn = myTIA->frameBuffer();
-      uInt32* rgbIn = myRGBFramebuffer;
+      uInt32* rgbIn = myRGBFramebuffer.data();
 
       if (mySaveSnapFlag)
-        memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, width * height * sizeof(uInt32));
+        std::copy_n(myRGBFramebuffer.begin(), width * height,
+                    myPrevRGBFramebuffer.begin());
 
       uInt32 bufofs = 0, screenofsY = 0, pos;
       for(uInt32 y = height; y ; --y)
@@ -377,9 +377,10 @@ void TIASurface::render()
     case Filter::BlarggPhosphor:
     {
       if(mySaveSnapFlag)
-        memcpy(myPrevRGBFramebuffer, myRGBFramebuffer, height * outPitch * sizeof(uInt32));
+        std::copy_n(myRGBFramebuffer.begin(), height * outPitch,
+                    myPrevRGBFramebuffer.begin());
 
-      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer);
+      myNTSCFilter.render(myTIA->frameBuffer(), width, height, out, outPitch << 2, myRGBFramebuffer.data());
       break;
     }
   }

@@ -23,7 +23,7 @@ ConvolutionBuffer::ConvolutionBuffer(uInt32 size)
     mySize(size)
 {
   myData = make_unique<float[]>(mySize);
-  memset(myData.get(), 0, mySize * sizeof(float));
+  std::fill_n(myData.get(), mySize, 0.f);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

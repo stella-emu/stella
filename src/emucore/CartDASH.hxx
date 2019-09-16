@@ -236,8 +236,8 @@ class CartridgeDASH: public Cartridge
     // are consecutive. This allows us to determine on a read/write exactly where the data is.
 
     static constexpr uInt16 BANK_UNDEFINED = 0x8000;   // bank is undefined and inaccessible
-    uInt16 bankInUse[8];     // bank being used for ROM/RAM (eight 512 byte areas)
-    uInt16 segmentInUse[4];  // set by bank methods, to know which hotspot was accessed
+    std::array<uInt16, 8> bankInUse;    // bank being used for ROM/RAM (eight 512 byte areas)
+    std::array<uInt16, 4> segmentInUse; // set by bank methods, to know which hotspot was accessed
 
     static constexpr uInt16 BANK_SWITCH_HOTSPOT_RAM = 0x3E;   // writes to this address cause bankswitching
     static constexpr uInt16 BANK_SWITCH_HOTSPOT_ROM = 0x3F;   // writes to this address cause bankswitching
@@ -262,8 +262,8 @@ class CartridgeDASH: public Cartridge
     static constexpr uInt16 RAM_WRITE_OFFSET = 0x800;
 
     ByteBuffer myImage;  // Pointer to a dynamically allocated ROM image of the cartridge
-    uInt32  mySize;   // Size of the ROM image
-    uInt8 myRAM[RAM_TOTAL_SIZE];
+    uInt32 mySize;       // Size of the ROM image
+    std::array<uInt8, RAM_TOTAL_SIZE> myRAM;
 
   private:
     // Following constructors and assignment operators not supported

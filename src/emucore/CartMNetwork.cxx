@@ -35,8 +35,8 @@ void CartridgeMNetwork::initialize(const ByteBuffer& image, uInt32 size)
   myImage = make_unique<uInt8[]>(size);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image.get(), std::min(romSize(), size));
-  createCodeAccessBase(romSize() + RAM_SIZE);
+  std::copy_n(image.get(), std::min(romSize(), size), myImage.get());
+  createCodeAccessBase(romSize() + myRAM.size());
 
   myRAMSlice = bankCount() - 1;
 }
@@ -44,7 +44,7 @@ void CartridgeMNetwork::initialize(const ByteBuffer& image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMNetwork::reset()
 {
-  initializeRAM(myRAM, RAM_SIZE);
+  initializeRAM(myRAM.data(), myRAM.size());
 
   initializeStartBank(0);
   uInt32 ramBank = randomStartBank() ?
@@ -162,9 +162,9 @@ void CartridgeMNetwork::bankRAM(uInt16 bank)
 
   // Setup the page access methods for the current bank
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  setAccess(0x1800, 0x100, 1024 + offset, myRAM, romSize() + BANK_SIZE / 2, System::PageAccessType::WRITE);
+  setAccess(0x1800, 0x100, 1024 + offset, myRAM.data(), romSize() + BANK_SIZE / 2, System::PageAccessType::WRITE);
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  setAccess(0x1900, 0x100, 1024 + offset, myRAM, romSize() + BANK_SIZE / 2, System::PageAccessType::READ);
+  setAccess(0x1900, 0x100, 1024 + offset, myRAM.data(), romSize() + BANK_SIZE / 2, System::PageAccessType::READ);
 
   myBankChanged = true;
 }
@@ -188,17 +188,17 @@ bool CartridgeMNetwork::bank(uInt16 slice)
   else
   {
     // Set the page accessing method for the 1K slice of RAM writing pages
-    setAccess(0x1000,                 BANK_SIZE / 2, 0, myRAM, romSize(), System::PageAccessType::WRITE);
+    setAccess(0x1000,                 BANK_SIZE / 2, 0, myRAM.data(), romSize(), System::PageAccessType::WRITE);
     // Set the page accessing method for the 1K slice of RAM reading pages
-    setAccess(0x1000 + BANK_SIZE / 2, BANK_SIZE / 2, 0, myRAM, romSize(), System::PageAccessType::READ);
+    setAccess(0x1000 + BANK_SIZE / 2, BANK_SIZE / 2, 0, myRAM.data(), romSize(), System::PageAccessType::READ);
   }
   return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMNetwork::getBank(uInt16 addr) const
+uInt16 CartridgeMNetwork::getBank(uInt16 address) const
 {
-  return myCurrentSlice[(addr & 0xFFF) >> 11]; // 2K slices
+  return myCurrentSlice[(address & 0xFFF) >> 11]; // 2K slices
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,9 +243,9 @@ bool CartridgeMNetwork::save(Serializer& out) const
 {
   try
   {
-    out.putShortArray(myCurrentSlice, NUM_SEGMENTS);
+    out.putShortArray(myCurrentSlice.data(), myCurrentSlice.size());
     out.putShort(myCurrentRAM);
-    out.putByteArray(myRAM, RAM_SIZE);
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {
@@ -261,9 +261,9 @@ bool CartridgeMNetwork::load(Serializer& in)
 {
   try
   {
-    in.getShortArray(myCurrentSlice, NUM_SEGMENTS);
+    in.getShortArray(myCurrentSlice.data(), myCurrentSlice.size());
     myCurrentRAM = in.getShort();
-    in.getByteArray(myRAM, RAM_SIZE);
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {

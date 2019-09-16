@@ -145,8 +145,10 @@ class CartridgeCTY : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -258,13 +260,13 @@ class CartridgeCTY : public Cartridge
 
   private:
     // The 32K ROM image of the cartridge
-    uInt8 myImage[32768];
+    std::array<uInt8, 32_KB> myImage;
 
     // The 28K ROM image of the music
-    uInt8 myTuneData[28*1024];
+    std::array<uInt8, 28_KB> myTuneData;
 
     // The 64 bytes of RAM accessible at $1000 - $1080
-    uInt8 myRAM[64];
+    std::array<uInt8, 64> myRAM;
 
     // Operation type (written to $1000, used by hotspot $1FF4)
     uInt8 myOperationType;
@@ -277,10 +279,10 @@ class CartridgeCTY : public Cartridge
     uInt16 myTunePosition;
 
     // The music mode counters
-    uInt32 myMusicCounters[3];
+    std::array<uInt32, 3> myMusicCounters;
 
     // The music frequency
-    uInt32 myMusicFrequencies[3];
+    std::array<uInt32, 3> myMusicFrequencies;
 
     // Flags that last byte peeked was A9 (LDA #)
     bool myLDAimmediate;

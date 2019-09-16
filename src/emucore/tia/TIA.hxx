@@ -237,12 +237,12 @@ class TIA : public Device
       Return the buffer that holds the currently drawing TIA frame
       (the TIA output widget needs this).
      */
-    uInt8* outputBuffer() { return myBackBuffer; }
+    uInt8* outputBuffer() { return myBackBuffer.data(); }
 
     /**
       Returns a pointer to the internal frame buffer.
     */
-    uInt8* frameBuffer() { return static_cast<uInt8*>(myFramebuffer); }
+    uInt8* frameBuffer() { return myFramebuffer.data(); }
 
     /**
       Answers dimensional info about the framebuffer.
@@ -743,12 +743,12 @@ class TIA : public Device
     LatchedInput myInput1;
 
     // Pointer to the internal color-index-based frame buffer
-    uInt8 myFramebuffer[TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight];
+    std::array<uInt8, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight> myFramebuffer;
 
     // The frame is rendered to the backbuffer and only copied to the framebuffer
     // upon completion
-    uInt8 myBackBuffer[TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight];
-    uInt8 myFrontBuffer[TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight];
+    std::array<uInt8, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight> myBackBuffer;
+    std::array<uInt8, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight> myFrontBuffer;
 
     // We snapshot frame statistics when the back buffer is copied to the front buffer
     // and when the front buffer is copied to the frame buffer
@@ -859,7 +859,7 @@ class TIA : public Device
      * The "shadow registers" track the last written register value for the
      * debugger.
      */
-    uInt8 myShadowRegisters[64];
+    std::array<uInt8, 64> myShadowRegisters;
 
     /**
      * Indicates if color loss should be enabled or disabled.  Color loss
@@ -880,17 +880,17 @@ class TIA : public Device
     bool myEnableJitter;
     uInt8 myJitterFactor;
 
+    static constexpr uInt16
+      TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1, TIA_READ_MASK = 0x0f, TIA_BIT = 0x080, TIA_DELAY = 2;
+
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
-    ByteBuffer myAccessBase;
+    std::array<uInt8, TIA_SIZE> myAccessBase;
 
     // The array used to skip the first two TIA access trackings
-    ByteBuffer myAccessDelay;
+    std::array<uInt8, TIA_SIZE> myAccessDelay;
   #endif // DEBUGGER_SUPPORT
-
-    static constexpr uInt16
-      TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1, TIA_READ_MASK = 0x0f, TIA_BIT = 0x080, TIA_DELAY = 2;
 
   private:
     TIA() = delete;

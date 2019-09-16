@@ -24,14 +24,14 @@ Cartridge4KSC::Cartridge4KSC(const ByteBuffer& image, uInt32 size,
   : Cartridge(settings, md5)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(4096u, size));
-  createCodeAccessBase(4096);
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  createCodeAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4KSC::reset()
 {
-  initializeRAM(myRAM, 128);
+  initializeRAM(myRAM.data(), myRAM.size());
 
   myBankChanged = true;
 }
@@ -120,8 +120,8 @@ bool Cartridge4KSC::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* Cartridge4KSC::getImage(uInt32& size) const
 {
-  size = 4096;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,7 +129,7 @@ bool Cartridge4KSC::save(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myRAM, 128);
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {
@@ -145,7 +145,7 @@ bool Cartridge4KSC::load(Serializer& in)
 {
   try
   {
-    in.getByteArray(myRAM, 128);
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {

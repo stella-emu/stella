@@ -79,8 +79,10 @@ class CartridgeAR : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -185,13 +187,13 @@ class CartridgeAR : public Cartridge
 
   private:
     // Indicates the offset within the image for the corresponding bank
-    uInt32 myImageOffset[2];
+    std::array<uInt32, 2> myImageOffset;
 
     // The 6K of RAM and 2K of ROM contained in the Supercharger
-    uInt8 myImage[8192];
+    std::array<uInt8, 8_KB> myImage;
 
     // The 256 byte header for the current 8448 byte load
-    uInt8 myHeader[256];
+    std::array<uInt8, 256> myHeader;
 
     // Size of the ROM image
     uInt32 mySize;
@@ -221,11 +223,11 @@ class CartridgeAR : public Cartridge
     uInt16 myCurrentBank;
 
     // Fake SC-BIOS code to simulate the Supercharger load bars
-    static uInt8 ourDummyROMCode[294];
+    static std::array<uInt8, 294> ourDummyROMCode;
 
     // Default 256-byte header to use if one isn't included in the ROM
     // This data comes from z26
-    static const uInt8 ourDefaultHeader[256];
+    static const std::array<uInt8, 256> ourDefaultHeader;
 
   private:
     // Following constructors and assignment operators not supported

@@ -101,8 +101,10 @@ class CartridgeWD : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -211,19 +213,19 @@ class CartridgeWD : public Cartridge
 
   private:
     // The 8K ROM image of the cartridge
-    uInt8 myImage[8195];
+    std::array<uInt8, 8_KB + 3> myImage;
 
     // Indicates the actual size of the ROM image (either 8K or 8K + 3)
     uInt32 mySize;
 
     // The 64 bytes RAM of the cartridge
-    uInt8 myRAM[64];
+    std::array<uInt8, 64> myRAM;
 
     // The 1K ROM mirror of segment 3 (sometimes contains extra 3 bytes)
-    uInt8 mySegment3[1024];
+    std::array<uInt8, 1_KB> mySegment3;
 
     // Indicates the offset for each of the four segments
-    uInt16 myOffset[4];
+    std::array<uInt16, 4> myOffset;
 
     // Indicates the cycle at which a bankswitch was initiated
     uInt64 myCyclesAtBankswitchInit;
