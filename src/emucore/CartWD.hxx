@@ -74,7 +74,7 @@ class CartridgeWD : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeWD(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeWD(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeWD() = default;
 
@@ -126,7 +126,7 @@ class CartridgeWD : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -216,7 +216,7 @@ class CartridgeWD : public Cartridge
     std::array<uInt8, 8_KB + 3> myImage;
 
     // Indicates the actual size of the ROM image (either 8K or 8K + 3)
-    uInt32 mySize;
+    size_t mySize;
 
     // The 64 bytes RAM of the cartridge
     std::array<uInt8, 64> myRAM;

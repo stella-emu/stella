@@ -19,12 +19,12 @@
 #include "Cart4K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4K::Cartridge4K(const ByteBuffer& image, uInt32 size,
+Cartridge4K::Cartridge4K(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5)
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
   createCodeAccessBase(myImage.size());
 }
 
@@ -59,7 +59,7 @@ bool Cartridge4K::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* Cartridge4K::getImage(uInt32& size) const
+const uInt8* Cartridge4K::getImage(size_t& size) const
 {
   size = myImage.size();
   return myImage.data();

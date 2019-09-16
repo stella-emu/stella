@@ -26,10 +26,10 @@
 #include "exception/FatalEmulationError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, uInt32 size,
+CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
                                    const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::min<uInt32>(size, myImage.size())),
+    mySize(std::min(size, myImage.size())),
     myFastFetch(false),
     myLDAimmediate(false),
     myParameterPointer(0),
@@ -44,7 +44,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, uInt32 size,
   if(mySize < myImage.size())
     myImage.fill(0);
   std::copy_n(image.get(), size, myImage.begin() + (myImage.size() - mySize));
-  createCodeAccessBase(4096 * 6);
+  createCodeAccessBase(4_KB * 6);
 
   // Pointer to the program ROM (24K @ 3072 byte offset; ignore first 3K)
   myProgramImage = myImage.data() + 0xC00;
@@ -60,7 +60,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, uInt32 size,
   myThumbEmulator = make_unique<Thumbulator>
       (reinterpret_cast<uInt16*>(myImage.data()),
        reinterpret_cast<uInt16*>(myDPCRAM.data()),
-       myImage.size(),
+       static_cast<uInt32>(myImage.size()),
        devSettings ? settings.getBool("dev.thumb.trapfatal") : false,
        Thumbulator::ConfigureFor::DPCplus,
        this);
@@ -629,7 +629,7 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeDPCPlus::getImage(uInt32& size) const
+const uInt8* CartridgeDPCPlus::getImage(size_t& size) const
 {
   size = mySize;
   return myImage.data() + (myImage.size() - mySize);

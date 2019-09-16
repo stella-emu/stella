@@ -57,7 +57,7 @@ class CartridgeMDM : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeMDM(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeMDM(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings);
     virtual ~CartridgeMDM() = default;
 
@@ -109,7 +109,7 @@ class CartridgeMDM : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -168,7 +168,7 @@ class CartridgeMDM : public Cartridge
     ByteBuffer myImage;
 
     // Size of the ROM image
-    uInt32 mySize;
+    size_t mySize;
 
     // Previous Device's page access
     std::array<System::PageAccess, 8> myHotSpotPageAccess;

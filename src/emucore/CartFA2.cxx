@@ -22,10 +22,10 @@
 #include "CartFA2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA2::CartridgeFA2(const ByteBuffer& image, uInt32 size,
+CartridgeFA2::CartridgeFA2(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(28 * 1024),
+    mySize(28_KB),
     myRamAccessTimeout(0),
     myBankOffset(0)
 {
@@ -249,7 +249,7 @@ uInt16 CartridgeFA2::getBank(uInt16) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeFA2::bankCount() const
 {
-  return (mySize / 4_KB);
+  return uInt16(mySize / 4_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -271,7 +271,7 @@ bool CartridgeFA2::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeFA2::getImage(uInt32& size) const
+const uInt8* CartridgeFA2::getImage(size_t& size) const
 {
   size = mySize;
   return myImage.data();

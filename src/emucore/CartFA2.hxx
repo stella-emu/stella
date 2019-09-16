@@ -58,7 +58,7 @@ class CartridgeFA2 : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the settings object
     */
-    CartridgeFA2(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeFA2(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings);
     virtual ~CartridgeFA2() = default;
 
@@ -110,7 +110,7 @@ class CartridgeFA2 : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -196,7 +196,7 @@ class CartridgeFA2 : public Cartridge
     std::array<uInt8, 28_KB> myImage;
 
     // Actual usable size of the ROM image
-    uInt32 mySize;
+    size_t mySize;
 
     // The 256 bytes of RAM on the cartridge
     std::array<uInt8, 256> myRAM;

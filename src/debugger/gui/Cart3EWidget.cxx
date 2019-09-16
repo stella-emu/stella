@@ -25,10 +25,10 @@ Cartridge3EWidget::Cartridge3EWidget(
       int x, int y, int w, int h, Cartridge3E& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart),
-    myNumRomBanks(cart.mySize >> 11),
+    myNumRomBanks(uInt32(cart.mySize >> 11)),
     myNumRamBanks(32)
 {
-  uInt32 size = cart.mySize;
+  size_t size = cart.mySize;
 
   ostringstream info;
   info << "3E cartridge - (3F + RAM)\n"

@@ -21,10 +21,10 @@
 #include "CartWD.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeWD::CartridgeWD(const ByteBuffer& image, uInt32 size,
+CartridgeWD::CartridgeWD(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::min<uInt32>(8_KB + 3, size)),
+    mySize(std::min<size_t>(8_KB + 3, size)),
     myCyclesAtBankswitchInit(0),
     myPendingBank(0),
     myCurrentBank(0)
@@ -258,7 +258,7 @@ bool CartridgeWD::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeWD::getImage(uInt32& size) const
+const uInt8* CartridgeWD::getImage(size_t& size) const
 {
   size = mySize;
   return myImage.data();

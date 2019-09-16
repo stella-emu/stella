@@ -41,7 +41,7 @@ class CartridgeE78K : public CartridgeMNetwork
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeE78K(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeE78K(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings);
     virtual ~CartridgeE78K() = default;
 

@@ -271,7 +271,7 @@ class CartDebug : public DebuggerSystem
       uInt16 start;                // start of address space
       uInt16 end;                  // end of address space
       uInt16 offset;               // ORG value
-      uInt32 size;                 // size of a bank (in bytes)
+      size_t size;                 // size of a bank (in bytes)
       AddressList addressList;     // addresses which PC has hit
       DirectiveList directiveList; // overrides for automatic code determination
 

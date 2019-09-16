@@ -27,7 +27,7 @@ CartridgeDASHWidget::CartridgeDASHWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  uInt32 size = cart.mySize;
+  size_t size = cart.mySize;
 
   ostringstream info;
   info << "DASH cartridge - (64K ROM + RAM)\n"

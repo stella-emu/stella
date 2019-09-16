@@ -43,7 +43,7 @@ class CartridgeE7 : public CartridgeMNetwork
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeE7(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeE7(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeE7() = default;
 

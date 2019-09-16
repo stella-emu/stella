@@ -20,10 +20,10 @@
 #include "CartAR.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeAR::CartridgeAR(const ByteBuffer& image, uInt32 size,
+CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::max(size, 8448u)),
+    mySize(std::max<size_t>(size, 8448)),
     myWriteEnabled(false),
     myPower(true),
     myDataHoldRegister(0),
@@ -33,7 +33,7 @@ CartridgeAR::CartridgeAR(const ByteBuffer& image, uInt32 size,
 {
   // Create a load image buffer and copy the given image
   myLoadImages = make_unique<uInt8[]>(mySize);
-  myNumberOfLoadImages = mySize / 8448;
+  myNumberOfLoadImages = uInt8(mySize / 8448);
   std::copy_n(image.get(), size, myLoadImages.get());
 
   // Add header if image doesn't include it
@@ -422,7 +422,7 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeAR::getImage(uInt32& size) const
+const uInt8* CartridgeAR::getImage(size_t& size) const
 {
   size = mySize;
   return myLoadImages.get();

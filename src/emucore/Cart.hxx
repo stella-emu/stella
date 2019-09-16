@@ -192,7 +192,7 @@ class Cartridge : public Device
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    virtual const uInt8* getImage(uInt32& size) const = 0;
+    virtual const uInt8* getImage(size_t& size) const = 0;
 
     /**
       Get a descriptor for the cart name.
@@ -273,7 +273,7 @@ class Cartridge : public Device
 
       @param size  The size of the code-access array to create
     */
-    void createCodeAccessBase(uInt32 size);
+    void createCodeAccessBase(size_t size);
 
     /**
       Fill the given RAM array with (possibly random) data.
@@ -282,7 +282,7 @@ class Cartridge : public Device
       @param size The size of the RAM array
       @param val  If provided, the value to store in the RAM array
     */
-    void initializeRAM(uInt8* arr, uInt32 size, uInt8 val = 0) const;
+    void initializeRAM(uInt8* arr, size_t size, uInt8 val = 0) const;
 
     /**
       Set the start bank to be used when the cart is reset.  This method

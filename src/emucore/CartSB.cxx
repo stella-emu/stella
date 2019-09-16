@@ -19,7 +19,7 @@
 #include "CartSB.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeSB::CartridgeSB(const ByteBuffer& image, uInt32 size,
+CartridgeSB::CartridgeSB(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),
@@ -137,7 +137,7 @@ uInt16 CartridgeSB::getBank(uInt16) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeSB::bankCount() const
 {
-  return mySize >> 12;
+  return uInt16(mySize >> 12);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -148,7 +148,7 @@ bool CartridgeSB::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeSB::getImage(uInt32& size) const
+const uInt8* CartridgeSB::getImage(size_t& size) const
 {
   size = mySize;
   return myImage.get();

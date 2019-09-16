@@ -19,7 +19,7 @@
 #include "CartMNetwork.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMNetwork::CartridgeMNetwork(const ByteBuffer& image, uInt32 size,
+CartridgeMNetwork::CartridgeMNetwork(const ByteBuffer& image, size_t size,
                                      const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),
@@ -29,13 +29,13 @@ CartridgeMNetwork::CartridgeMNetwork(const ByteBuffer& image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMNetwork::initialize(const ByteBuffer& image, uInt32 size)
+void CartridgeMNetwork::initialize(const ByteBuffer& image, size_t size)
 {
   // Allocate array for the ROM image
   myImage = make_unique<uInt8[]>(size);
 
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min(romSize(), size), myImage.get());
+  std::copy_n(image.get(), std::min<size_t>(romSize(), size), myImage.get());
   createCodeAccessBase(romSize() + myRAM.size());
 
   myRAMSlice = bankCount() - 1;
@@ -232,7 +232,7 @@ bool CartridgeMNetwork::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeMNetwork::getImage(uInt32& size) const
+const uInt8* CartridgeMNetwork::getImage(size_t& size) const
 {
   size = bankCount() * BANK_SIZE;
   return myImage.get();
@@ -281,11 +281,11 @@ bool CartridgeMNetwork::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeMNetwork::bankCount() const
 {
-  return mySize >> 11;
+  return uInt16(mySize >> 11);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeMNetwork::romSize() const
+uInt16 CartridgeMNetwork::romSize() const
 {
   return bankCount() * BANK_SIZE;
 }

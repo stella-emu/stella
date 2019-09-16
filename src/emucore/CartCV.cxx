@@ -19,7 +19,7 @@
 #include "CartCV.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCV::CartridgeCV(const ByteBuffer& image, uInt32 size,
+CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size)
@@ -128,7 +128,7 @@ bool CartridgeCV::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCV::getImage(uInt32& size) const
+const uInt8* CartridgeCV::getImage(size_t& size) const
 {
   size = myImage.size();
   return myImage.data();

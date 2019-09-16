@@ -73,7 +73,7 @@ class CartridgeMNetwork : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeMNetwork(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeMNetwork(const ByteBuffer& image, size_t size, const string& md5,
                       const Settings& settings);
     virtual ~CartridgeMNetwork() = default;
 
@@ -125,7 +125,7 @@ class CartridgeMNetwork : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -164,7 +164,7 @@ class CartridgeMNetwork : public Cartridge
     /**
       Class initialization
     */
-    void initialize(const ByteBuffer& image, uInt32 size);
+    void initialize(const ByteBuffer& image, size_t size);
 
     /**
       Install pages for the specified 256 byte bank of RAM
@@ -185,7 +185,7 @@ class CartridgeMNetwork : public Cartridge
     /**
       Query the size of the BS type.
     */
-    uInt32 romSize() const;
+    uInt16 romSize() const;
 
     /**
       Check hotspots and switch bank if triggered.
@@ -202,7 +202,7 @@ class CartridgeMNetwork : public Cartridge
     //uInt8 myImage[BANK_SIZE * 8];
 
     // Size of the ROM image
-    uInt32 mySize;
+    size_t mySize;
 
     // The 2K of RAM
     std::array<uInt8, RAM_SIZE> myRAM;

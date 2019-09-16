@@ -26,7 +26,7 @@ CartridgeSBWidget::CartridgeSBWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  uInt32 size = myCart.mySize;
+  size_t size = myCart.mySize;
 
   VariantList items;
   ostringstream info, bank;

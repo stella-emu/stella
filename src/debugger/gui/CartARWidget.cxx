@@ -26,7 +26,7 @@ CartridgeARWidget::CartridgeARWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  uInt16 size = myCart.mySize;
+  size_t size = myCart.mySize;
 
   string info =
     "Supercharger cartridge, four 2K slices (3 RAM, 1 ROM)\n"

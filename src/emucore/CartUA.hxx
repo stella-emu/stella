@@ -46,7 +46,7 @@ class CartridgeUA : public Cartridge
       @param settings      A reference to the various settings (read-only)
       @param swapHotspots  Swap hotspots
     */
-    CartridgeUA(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeUA(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings, bool swapHotspots = false);
     virtual ~CartridgeUA() = default;
 
@@ -98,7 +98,7 @@ class CartridgeUA : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.

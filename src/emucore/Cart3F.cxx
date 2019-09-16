@@ -20,7 +20,7 @@
 #include "Cart3F.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge3F::Cartridge3F(const ByteBuffer& image, uInt32 size,
+Cartridge3F::Cartridge3F(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),
@@ -128,7 +128,7 @@ bool Cartridge3F::bank(uInt16 bank)
 uInt16 Cartridge3F::getBank(uInt16 address) const
 {
   if (address & 0x800)
-    return (mySize >> 11) - 1; // 2K slices, fixed bank
+    return uInt16((mySize >> 11) - 1); // 2K slices, fixed bank
   else
     return myCurrentBank;
 }
@@ -136,7 +136,7 @@ uInt16 Cartridge3F::getBank(uInt16 address) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 Cartridge3F::bankCount() const
 {
-  return mySize >> 11; // 2K slices
+  return uInt16(mySize >> 11); // 2K slices
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -153,7 +153,7 @@ bool Cartridge3F::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* Cartridge3F::getImage(uInt32& size) const
+const uInt8* Cartridge3F::getImage(size_t& size) const
 {
   size = mySize;
   return myImage.get();
