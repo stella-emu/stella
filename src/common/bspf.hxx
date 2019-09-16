@@ -39,6 +39,7 @@ using uInt64 = uint64_t;
 
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.
+#include <array>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
