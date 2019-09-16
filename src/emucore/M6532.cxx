@@ -57,13 +57,11 @@ void M6532::reset()
   // Initialize the 128 bytes of memory
   bool devSettings = mySettings.getBool("dev.settings");
   if(mySettings.getString(devSettings ? "dev.console" : "plr.console") == "7800")
-    for(uInt32 t = 0; t < 128; ++t)
-      myRAM[t] = RAM_7800[t];
+    std::copy_n(RAM_7800, 128, myRAM.begin());
   else if(mySettings.getBool(devSettings ? "dev.ramrandom" : "plr.ramrandom"))
-    for(uInt32 t = 0; t < 128; ++t)
-      myRAM[t] = mySystem->randGenerator().next();
+    for(uInt32 t = 0; t < 128; ++t)  myRAM[t] = mySystem->randGenerator().next();
   else
-    memset(myRAM, 0, 128);
+    myRAM.fill(0);
 
   myTimer = mySystem->randGenerator().next() & 0xff;
   myDivider = 1024;
@@ -368,7 +366,7 @@ bool M6532::save(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myRAM, 128);
+    out.putByteArray(myRAM.data(), myRAM.size());
 
     out.putInt(myTimer);
     out.putInt(mySubTimer);
@@ -401,7 +399,7 @@ bool M6532::load(Serializer& in)
 {
   try
   {
-    in.getByteArray(myRAM, 128);
+    in.getByteArray(myRAM.data(), myRAM.size());
 
     myTimer = in.getInt();
     mySubTimer = in.getInt();
@@ -467,15 +465,10 @@ uInt32 M6532::timerClocks() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::createAccessBases()
 {
-  myRAMAccessBase = make_unique<uInt8[]>(RAM_SIZE);
-  memset(myRAMAccessBase.get(), CartDebug::NONE, RAM_SIZE);
-  myStackAccessBase = make_unique<uInt8[]>(STACK_SIZE);
-  memset(myStackAccessBase.get(), CartDebug::NONE, STACK_SIZE);
-  myIOAccessBase = make_unique<uInt8[]>(IO_SIZE);
-  memset(myIOAccessBase.get(), CartDebug::NONE, IO_SIZE);
-
-  myZPAccessDelay = make_unique<uInt8[]>(RAM_SIZE);
-  memset(myZPAccessDelay.get(), ZP_DELAY, RAM_SIZE);
+  myRAMAccessBase.fill(CartDebug::NONE);
+  myStackAccessBase.fill(CartDebug::NONE);
+  myIOAccessBase.fill(CartDebug::NONE);
+  myZPAccessDelay.fill(ZP_DELAY);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

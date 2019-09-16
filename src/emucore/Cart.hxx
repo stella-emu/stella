@@ -153,17 +153,14 @@ class Cartridge : public Device
     virtual bool bank(uInt16) { return false; }
 
     /**
-      Get the current bank.  Carts which have only one bank (either real
-      or virtual) always report that bank as zero.
-    */
-    virtual uInt16 getBank() const { return 0; }
+      Get the current bank for the provided address. Carts which have only
+      one bank (either real or virtual) always report that bank as zero.
 
-    /**
-      Get the current bank for the provided address.
-
-      @param addr  The address to get the bank for
+      @param address  Query the bank used for this specific address
+                      Derived classes are free to ignore this; it only
+                      makes sense in some situations.
     */
-    virtual uInt16 getBank(uInt16 addr) const { return getBank(); }
+    virtual uInt16 getBank(uInt16 address = 0) const { return 0; }
 
     /**
       Query the number of 'banks' supported by the cartridge.  Note that

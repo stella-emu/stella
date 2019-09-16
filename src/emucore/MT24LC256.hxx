@@ -94,10 +94,10 @@ class MT24LC256
     Controller::onMessageCallback myCallback;
 
     // The EEPROM data
-    uInt8 myData[FLASH_SIZE];
+    std::array<uInt8, FLASH_SIZE> myData;
 
     // Track which pages are used
-    bool myPageHit[PAGE_NUM];
+    std::array<bool, PAGE_NUM> myPageHit;
 
     // Cached state of the SDA and SCL pins on the last write
     bool mySDA, mySCL;
@@ -125,7 +125,7 @@ class MT24LC256
     Int32 jpee_sizemask, jpee_pagemask, jpee_smallmode, jpee_logmode;
     Int32 jpee_pptr, jpee_state, jpee_nb;
     uInt32 jpee_address, jpee_ad_known;
-    uInt8 jpee_packet[70];
+    std::array<uInt8, 70> jpee_packet;
 
   private:
     // Following constructors and assignment operators not supported

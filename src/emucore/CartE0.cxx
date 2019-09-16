@@ -24,8 +24,8 @@ CartridgeE0::CartridgeE0(const ByteBuffer& image, uInt32 size,
   : Cartridge(settings, md5)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(8192u, size));
-  createCodeAccessBase(8192);
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  createCodeAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,9 +75,9 @@ void CartridgeE0::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeE0::getBank(uInt16 addr) const
+uInt16 CartridgeE0::getBank(uInt16 address) const
 {
-  return myCurrentSlice[(addr & 0xFFF) >> 10]; // 1K slices
+  return myCurrentSlice[(address & 0xFFF) >> 10]; // 1K slices
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,8 +203,8 @@ bool CartridgeE0::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeE0::getImage(uInt32& size) const
 {
-  size = 8192;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,7 +212,7 @@ bool CartridgeE0::save(Serializer& out) const
 {
   try
   {
-    out.putShortArray(myCurrentSlice, 4);
+    out.putShortArray(myCurrentSlice.data(), myCurrentSlice.size());
   }
   catch(...)
   {
@@ -228,7 +228,7 @@ bool CartridgeE0::load(Serializer& in)
 {
   try
   {
-    in.getShortArray(myCurrentSlice, 4);
+    in.getShortArray(myCurrentSlice.data(), myCurrentSlice.size());
   }
   catch(...)
   {

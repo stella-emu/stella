@@ -29,27 +29,26 @@ CartridgeDPC::CartridgeDPC(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Make a copy of the entire image
-  memcpy(myImage, image.get(), std::min(size, 8192u + 2048u + 256u));
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
   createCodeAccessBase(8192);
 
   // Pointer to the program ROM (8K @ 0 byte offset)
-  myProgramImage = myImage;
+  myProgramImage = myImage.data();
 
   // Pointer to the display ROM (2K @ 8K offset)
   myDisplayImage = myProgramImage + 8192;
 
   // Initialize the DPC data fetcher registers
-  for(int i = 0; i < 8; ++i)
-  {
-    myTops[i] = myBottoms[i] = myFlags[i] = 0;
-    myCounters[i] = 0;
-  }
+  myTops.fill(0);
+  myBottoms.fill(0);
+  myFlags.fill(0);
+  myCounters.fill(0);
 
   // None of the data fetchers are in music mode
-  myMusicMode[0] = myMusicMode[1] = myMusicMode[2] = false;
+  myMusicMode.fill(false);
 
   // Initialize the DPC's random number generator register (must be non-zero)
-  myRandomNumber = 1;  
+  myRandomNumber = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -405,7 +404,7 @@ bool CartridgeDPC::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDPC::getBank() const
+uInt16 CartridgeDPC::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -435,7 +434,7 @@ bool CartridgeDPC::patch(uInt16 address, uInt8 value)
 const uInt8* CartridgeDPC::getImage(uInt32& size) const
 {
   size = mySize;
-  return myImage;
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -447,20 +446,20 @@ bool CartridgeDPC::save(Serializer& out) const
     out.putShort(myBankOffset);
 
     // The top registers for the data fetchers
-    out.putByteArray(myTops, 8);
+    out.putByteArray(myTops.data(), myTops.size());
 
     // The bottom registers for the data fetchers
-    out.putByteArray(myBottoms, 8);
+    out.putByteArray(myBottoms.data(), myBottoms.size());
 
     // The counter registers for the data fetchers
-    out.putShortArray(myCounters, 8);
+    out.putShortArray(myCounters.data(), myCounters.size());
 
     // The flag registers for the data fetchers
-    out.putByteArray(myFlags, 8);
+    out.putByteArray(myFlags.data(), myFlags.size());
 
     // The music mode flags for the data fetchers
-    for(int i = 0; i < 3; ++i)
-      out.putBool(myMusicMode[i]);
+    for(const auto& mode: myMusicMode)
+      out.putBool(mode);
 
     // The random number generator register
     out.putByte(myRandomNumber);
@@ -486,20 +485,20 @@ bool CartridgeDPC::load(Serializer& in)
     myBankOffset = in.getShort();
 
     // The top registers for the data fetchers
-    in.getByteArray(myTops, 8);
+    in.getByteArray(myTops.data(), myTops.size());
 
     // The bottom registers for the data fetchers
-    in.getByteArray(myBottoms, 8);
+    in.getByteArray(myBottoms.data(), myBottoms.size());
 
     // The counter registers for the data fetchers
-    in.getShortArray(myCounters, 8);
+    in.getShortArray(myCounters.data(), myCounters.size());
 
     // The flag registers for the data fetchers
-    in.getByteArray(myFlags, 8);
+    in.getByteArray(myFlags.data(), myFlags.size());
 
     // The music mode flags for the data fetchers
-    for(int i = 0; i < 3; ++i)
-      myMusicMode[i] = in.getBool();
+    for(auto& mode: myMusicMode)
+      mode = in.getBool();
 
     // The random number generator register
     myRandomNumber = in.getByte();

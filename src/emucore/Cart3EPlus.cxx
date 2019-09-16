@@ -29,14 +29,14 @@ Cartridge3EPlus::Cartridge3EPlus(const ByteBuffer& image, uInt32 size,
   myImage = make_unique<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image.get(), mySize);
-  createCodeAccessBase(mySize + RAM_TOTAL_SIZE);
+  std::copy_n(image.get(), mySize, myImage.get());
+  createCodeAccessBase(mySize + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlus::reset()
 {
-  initializeRAM(myRAM, RAM_TOTAL_SIZE);
+  initializeRAM(myRAM.data(), myRAM.size());
 
   // Remember startup bank (0 per spec, rather than last per 3E scheme).
   // Set this to go to 3rd 1K Bank.
@@ -44,8 +44,8 @@ void Cartridge3EPlus::reset()
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
-  for(uInt32 b = 0; b < 8; ++b)
-    bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
+  for(auto& b: bankInUse)
+    b = BANK_UNDEFINED;     // bank is undefined and inaccessible!
 
   initializeBankState();
 
@@ -67,8 +67,8 @@ void Cartridge3EPlus::install(System& system)
 
   // Initialise bank values for all ROM/RAM access
   // This is used to reverse-lookup from address to bank location
-  for(uInt32 b = 0; b < 8; ++b)
-    bankInUse[b] = BANK_UNDEFINED;        // bank is undefined and inaccessible!
+  for(auto& b: bankInUse)
+    b = BANK_UNDEFINED;     // bank is undefined and inaccessible!
 
   initializeBankState();
 
@@ -79,9 +79,9 @@ void Cartridge3EPlus::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge3EPlus::getBank(uInt16 addr) const
+uInt16 Cartridge3EPlus::getBank(uInt16 address) const
 {
-  return bankInUse[(addr & 0xFFF) >> 10]; // 1K slices
+  return bankInUse[(address & 0xFFF) >> 10]; // 1K slices
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -89,7 +89,6 @@ uInt16 Cartridge3EPlus::bankCount() const
 {
   return mySize >> 10; // 1K slices
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge3EPlus::peek(uInt16 address)
@@ -319,8 +318,8 @@ bool Cartridge3EPlus::save(Serializer& out) const
 {
   try
   {
-    out.putShortArray(bankInUse, 8);
-    out.putByteArray(myRAM, RAM_TOTAL_SIZE);
+    out.putShortArray(bankInUse.data(), bankInUse.size());
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch (...)
   {
@@ -335,8 +334,8 @@ bool Cartridge3EPlus::load(Serializer& in)
 {
   try
   {
-    in.getShortArray(bankInUse, 8);
-    in.getByteArray(myRAM, RAM_TOTAL_SIZE);
+    in.getShortArray(bankInUse.data(), bankInUse.size());
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch (...)
   {

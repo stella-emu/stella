@@ -67,7 +67,8 @@ class DiStella
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
              CartDebug::BankInfo& info, const DiStella::Settings& settings,
-             uInt8* labels, uInt8* directives,
+             CartDebug::AddrTypeArray& labels,
+             CartDebug::AddrTypeArray& directives,
              CartDebug::ReservedEquates& reserved);
 
   private:
@@ -136,7 +137,8 @@ class DiStella
        the directives take priority
        The address mark type is defined in CartDebug.hxx
     */
-    uInt8 *myLabels, *myDirectives;
+    CartDebug::AddrTypeArray& myLabels;
+    CartDebug::AddrTypeArray& myDirectives;
 
     /**
       Enumeration of the 6502 addressing modes

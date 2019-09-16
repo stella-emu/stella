@@ -25,8 +25,8 @@ CartridgeDF::CartridgeDF(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(131072u, size));
-  createCodeAccessBase(131072);
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  createCodeAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,7 +101,7 @@ bool CartridgeDF::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDF::getBank() const
+uInt16 CartridgeDF::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -122,8 +122,8 @@ bool CartridgeDF::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeDF::getImage(uInt32& size) const
 {
-  size = 131072;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

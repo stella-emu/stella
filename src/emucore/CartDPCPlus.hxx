@@ -92,8 +92,10 @@ class CartridgeDPCPlus : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -198,7 +200,7 @@ class CartridgeDPCPlus : public Cartridge
 
   private:
     // The ROM image and size
-    uInt8 myImage[32768];
+    std::array<uInt8, 32_KB> myImage;
     uInt32 mySize;
 
     // Pointer to the 24K program ROM image of the cartridge
@@ -211,7 +213,7 @@ class CartridgeDPCPlus : public Cartridge
     //   3K DPC+ driver
     //   4K Display Data
     //   1K Frequency Data
-    uInt8 myDPCRAM[8192];
+    std::array<uInt8, 8_KB> myDPCRAM;
 
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;
@@ -220,19 +222,19 @@ class CartridgeDPCPlus : public Cartridge
     uInt8* myFrequencyImage;
 
     // The top registers for the data fetchers
-    uInt8 myTops[8];
+    std::array<uInt8, 8> myTops;
 
     // The bottom registers for the data fetchers
-    uInt8 myBottoms[8];
+    std::array<uInt8, 8> myBottoms;
 
     // The counter registers for the data fetchers
-    uInt16 myCounters[8];
+    std::array<uInt16, 8> myCounters;
 
     // The counter registers for the fractional data fetchers
-    uInt32 myFractionalCounters[8];
+    std::array<uInt32, 8> myFractionalCounters;
 
     // The fractional increments for the data fetchers
-    uInt8 myFractionalIncrements[8];
+    std::array<uInt8, 8> myFractionalIncrements;
 
     // The Fast Fetcher Enabled flag
     bool myFastFetch;
@@ -241,19 +243,19 @@ class CartridgeDPCPlus : public Cartridge
     bool myLDAimmediate;
 
     // Parameter for special functions
-    uInt8 myParameter[8];
+    std::array<uInt8, 8> myParameter;
 
     // Parameter pointer for special functions
     uInt8 myParameterPointer;
 
     // The music mode counters
-    uInt32 myMusicCounters[3];
+    std::array<uInt32, 3> myMusicCounters;
 
     // The music frequency
-    uInt32 myMusicFrequencies[3];
+    std::array<uInt32, 3> myMusicFrequencies;
 
     // The music waveforms
-    uInt16 myMusicWaveforms[3];
+    std::array<uInt16, 3> myMusicWaveforms;
 
     // The random number generator register
     uInt32 myRandomNumber;

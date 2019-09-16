@@ -84,8 +84,10 @@ class CartridgeCVPlus : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -166,7 +168,7 @@ class CartridgeCVPlus : public Cartridge
     ByteBuffer myImage;
 
     // The 1024 bytes of RAM
-    uInt8 myRAM[1024];
+    std::array<uInt8, 1_KB> myRAM;
 
     // Size of the ROM image
     uInt32 mySize;

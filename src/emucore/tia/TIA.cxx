@@ -146,7 +146,7 @@ void TIA::reset()
   myHctrDelta = 0;
   myXAtRenderingStart = 0;
 
-  memset(myShadowRegisters, 0, 64);
+  myShadowRegisters.fill(0);
 
   myBackground.reset();
   myPlayfield.reset();
@@ -177,9 +177,9 @@ void TIA::reset()
   myFramesSinceLastRender = 0;
 
   // Blank the various framebuffers; they may contain graphical garbage
-  memset(myBackBuffer, 0,  TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
-  memset(myFrontBuffer, 0, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
-  memset(myFramebuffer, 0, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
+  myBackBuffer.fill(0);
+  myFrontBuffer.fill(0);
+  myFramebuffer.fill(0);
 
   applyDeveloperSettings();
 
@@ -273,7 +273,7 @@ bool TIA::save(Serializer& out) const
 
     out.putLong(myTimestamp);
 
-    out.putByteArray(myShadowRegisters, 64);
+    out.putByteArray(myShadowRegisters.data(), myShadowRegisters.size());
 
     out.putLong(myCyclesAtFrameStart);
 
@@ -344,7 +344,7 @@ bool TIA::load(Serializer& in)
 
     myTimestamp = in.getLong();
 
-    in.getByteArray(myShadowRegisters, 64);
+    in.getByteArray(myShadowRegisters.data(), myShadowRegisters.size());
 
     myCyclesAtFrameStart = in.getLong();
 
@@ -790,9 +790,9 @@ bool TIA::saveDisplay(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myFramebuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
-    out.putByteArray(myBackBuffer,  TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
-    out.putByteArray(myFrontBuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
+    out.putByteArray(myFramebuffer.data(), myFramebuffer.size());
+    out.putByteArray(myBackBuffer.data(), myBackBuffer.size());
+    out.putByteArray(myFrontBuffer.data(), myFrontBuffer.size());
     out.putInt(myFramesSinceLastRender);
   }
   catch(...)
@@ -810,9 +810,9 @@ bool TIA::loadDisplay(Serializer& in)
   try
   {
     // Reset frame buffer pointer and data
-    in.getByteArray(myFramebuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
-    in.getByteArray(myBackBuffer,  TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
-    in.getByteArray(myFrontBuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
+    in.getByteArray(myFramebuffer.data(), myFramebuffer.size());
+    in.getByteArray(myBackBuffer.data(), myBackBuffer.size());
+    in.getByteArray(myFrontBuffer.data(), myFrontBuffer.size());
     myFramesSinceLastRender = in.getInt();
   }
   catch(...)
@@ -885,7 +885,7 @@ void TIA::renderToFrameBuffer()
 
   myFramesSinceLastRender = 0;
 
-  memcpy(myFramebuffer, myFrontBuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
+  myFramebuffer = myFrontBuffer;
 
   myFrameBufferScanlines = myFrontBufferScanlines;
 }
@@ -1225,14 +1225,14 @@ void TIA::onFrameComplete()
   myCyclesAtFrameStart = mySystem->cycles();
 
   if (myXAtRenderingStart > 0)
-    memset(myBackBuffer, 0, myXAtRenderingStart);
+    std::fill_n(myBackBuffer.begin(), myXAtRenderingStart, 0);
 
   // Blank out any extra lines not drawn this frame
   const Int32 missingScanlines = myFrameManager->missingScanlines();
   if (missingScanlines > 0)
-    memset(myBackBuffer + TIAConstants::H_PIXEL * myFrameManager->getY(), 0, missingScanlines * TIAConstants::H_PIXEL);
+    std::fill_n(myBackBuffer.begin() + TIAConstants::H_PIXEL * myFrameManager->getY(), missingScanlines * TIAConstants::H_PIXEL, 0);
 
-  memcpy(myFrontBuffer, myBackBuffer, TIAConstants::H_PIXEL * TIAConstants::frameBufferHeight);
+  myFrontBuffer = myBackBuffer;
 
   myFrontBufferScanlines = scanlinesLastFrame();
 
@@ -1355,7 +1355,7 @@ void TIA::applyRsync()
 
   myHctrDelta = TIAConstants::H_CLOCKS - 3 - myHctr;
   if (myFrameManager->isRendering())
-    memset(myBackBuffer + myFrameManager->getY() * TIAConstants::H_PIXEL + x, 0, TIAConstants::H_PIXEL - x);
+    std::fill_n(myBackBuffer.begin() + myFrameManager->getY() * TIAConstants::H_PIXEL + x, TIAConstants::H_PIXEL - x, 0);
 
   myHctr = TIAConstants::H_CLOCKS - 3;
 }
@@ -1394,9 +1394,8 @@ void TIA::cloneLastLine()
 
   if (!myFrameManager->isRendering() || y == 0) return;
 
-  uInt8* buffer = myBackBuffer;
-
-  memcpy(buffer + y * TIAConstants::H_PIXEL, buffer + (y-1) * TIAConstants::H_PIXEL, TIAConstants::H_PIXEL);
+  std::copy_n(myBackBuffer.begin() + (y-1) * TIAConstants::H_PIXEL, TIAConstants::H_PIXEL,
+      myBackBuffer.begin() + y * TIAConstants::H_PIXEL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1499,7 +1498,7 @@ void TIA::flushLineCache()
 void TIA::clearHmoveComb()
 {
   if (myFrameManager->isRendering() && myHstate == HState::blank)
-    memset(myBackBuffer + myFrameManager->getY() * TIAConstants::H_PIXEL, myColorHBlank, 8);
+    std::fill_n(myBackBuffer.begin() + myFrameManager->getY() * TIAConstants::H_PIXEL, 8, myColorHBlank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1867,10 +1866,8 @@ void TIA::toggleCollBLPF()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::createAccessBase()
 {
-  myAccessBase = make_unique<uInt8[]>(TIA_SIZE);
-  memset(myAccessBase.get(), CartDebug::NONE, TIA_SIZE);
-  myAccessDelay = make_unique<uInt8[]>(TIA_SIZE);
-  memset(myAccessDelay.get(), TIA_DELAY, TIA_SIZE);
+  myAccessBase.fill(CartDebug::NONE);
+  myAccessDelay.fill(TIA_DELAY);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

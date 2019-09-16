@@ -123,7 +123,7 @@ void Cartridge::createCodeAccessBase(uInt32 size)
 {
 #ifdef DEBUGGER_SUPPORT
   myCodeAccessBase = make_unique<uInt8[]>(size);
-  memset(myCodeAccessBase.get(), CartDebug::ROW, size);
+  std::fill_n(myCodeAccessBase.get(), size, CartDebug::ROW);
 #else
   myCodeAccessBase = nullptr;
 #endif
@@ -136,7 +136,7 @@ void Cartridge::initializeRAM(uInt8* arr, uInt32 size, uInt8 val) const
     for(uInt32 i = 0; i < size; ++i)
       arr[i] = mySystem->randGenerator().next();
   else
-    memset(arr, val, size);
+    std::fill_n(arr, size, val);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

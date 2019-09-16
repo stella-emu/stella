@@ -29,14 +29,14 @@ CartridgeDASH::CartridgeDASH(const ByteBuffer& image, uInt32 size,
   myImage = make_unique<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image.get(), mySize);
-  createCodeAccessBase(mySize + RAM_TOTAL_SIZE);
+  std::copy_n(image.get(), mySize, myImage.get());
+  createCodeAccessBase(mySize + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDASH::reset()
 {
-  initializeRAM(myRAM, RAM_TOTAL_SIZE);
+  initializeRAM(myRAM.data(), myRAM.size());
 
   // Remember startup bank (0 per spec, rather than last per 3E scheme).
   // Set this to go to 3rd 1K Bank.
@@ -311,9 +311,9 @@ bool CartridgeDASH::save(Serializer& out) const
 {
   try
   {
-    out.putShortArray(bankInUse, 8);
-    out.putShortArray(segmentInUse, 4);
-    out.putByteArray(myRAM, RAM_TOTAL_SIZE);
+    out.putShortArray(bankInUse.data(), bankInUse.size());
+    out.putShortArray(segmentInUse.data(), segmentInUse.size());
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch (...)
   {
@@ -328,9 +328,9 @@ bool CartridgeDASH::load(Serializer& in)
 {
   try
   {
-    in.getShortArray(bankInUse, 8);
-    in.getShortArray(segmentInUse, 4);
-    in.getByteArray(myRAM, RAM_TOTAL_SIZE);
+    in.getShortArray(bankInUse.data(), bankInUse.size());
+    in.getShortArray(segmentInUse.data(), segmentInUse.size());
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch (...)
   {

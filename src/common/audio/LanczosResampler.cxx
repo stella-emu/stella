@@ -141,7 +141,7 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
   }
 
   if (!myCurrentFragment) {
-    memset(fragment, 0, sizeof(float) * length);
+    std::fill_n(fragment, length, 0.f);
     return;
   }
 

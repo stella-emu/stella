@@ -72,8 +72,10 @@ class Cartridge3EPlus: public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank(uInt16 addr) const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -164,7 +166,7 @@ class Cartridge3EPlus: public Cartridge
     // are consecutive. This allows us to determine on a read/write exactly where the data is.
 
     static constexpr uInt16 BANK_UNDEFINED = 0x8000;   // bank is undefined and inaccessible
-    uInt16 bankInUse[8];     // bank being used for ROM/RAM (eight 512 byte areas)
+    std::array<uInt16, 8> bankInUse;  // bank being used for ROM/RAM (eight 512 byte areas)
 
     static constexpr uInt16 BANK_SWITCH_HOTSPOT_RAM = 0x3E;   // writes to this address cause bankswitching
     static constexpr uInt16 BANK_SWITCH_HOTSPOT_ROM = 0x3F;   // writes to this address cause bankswitching
@@ -188,9 +190,9 @@ class Cartridge3EPlus: public Cartridge
 
     static constexpr uInt16 RAM_WRITE_OFFSET = 0x200;
 
-    ByteBuffer myImage;  // Pointer to a dynamically allocated ROM image of the cartridge
-    uInt32  mySize;   // Size of the ROM image
-    uInt8 myRAM[RAM_TOTAL_SIZE];
+    ByteBuffer myImage; // Pointer to a dynamically allocated ROM image of the cartridge
+    uInt32 mySize;      // Size of the ROM image
+    std::array<uInt8, RAM_TOTAL_SIZE> myRAM;
 
   private:
     // Following constructors and assignment operators not supported

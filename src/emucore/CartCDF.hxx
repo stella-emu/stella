@@ -98,8 +98,10 @@ class CartridgeCDF : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -211,7 +213,7 @@ class CartridgeCDF : public Cartridge
 
   private:
     // The 32K ROM image of the cartridge
-    uInt8 myImage[32768];
+    std::array<uInt8, 32_KB> myImage;
 
     // Pointer to the 28K program ROM image of the cartridge
     uInt8* myProgramImage;
@@ -226,7 +228,7 @@ class CartridgeCDF : public Cartridge
     //   $0000 - 2K CDF driver
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
-    uInt8 myCDFRAM[8192];
+    std::array<uInt8, 8_KB> myCDFRAM;
 
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;
@@ -257,13 +259,13 @@ class CartridgeCDF : public Cartridge
       r14 = timer base  */
 
     // The music counters, ARM FIQ shadow registers r8, r9, r10
-    uInt32 myMusicCounters[3];
+    std::array<uInt32, 3> myMusicCounters;
 
     // The music frequency, ARM FIQ shadow registers r11, r12, r13
-    uInt32 myMusicFrequencies[3];
+    std::array<uInt32, 3> myMusicFrequencies;
 
     // The music waveform sizes
-    uInt8 myMusicWaveformSize[3];
+    std::array<uInt8, 3> myMusicWaveformSize;
 
     // Fractional CDF music, OSC clocks unused during the last update
     double myFractionalClocks;

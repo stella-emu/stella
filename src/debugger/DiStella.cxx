@@ -23,7 +23,8 @@ using Common::Base;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
                    CartDebug::BankInfo& info, const DiStella::Settings& s,
-                   uInt8* labels, uInt8* directives,
+                   CartDebug::AddrTypeArray& labels,
+                   CartDebug::AddrTypeArray& directives,
                    CartDebug::ReservedEquates& reserved)
   : myDbg(dbg),
     myList(list),
@@ -57,8 +58,8 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   }
   myAppData.length = info.size;
 
-  memset(myLabels, 0, 0x1000);
-  memset(myDirectives, 0, 0x1000);
+  myLabels.fill(0);
+  myDirectives.fill(0);
 
   // Process any directives first, as they override automatic code determination
   processDirectives(info.directiveList);

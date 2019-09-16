@@ -27,8 +27,8 @@ CartridgeUA::CartridgeUA(const ByteBuffer& image, uInt32 size,
     mySwappedHotspots(swapHotspots)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(8192u, size));
-  createCodeAccessBase(8192);
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  createCodeAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -143,7 +143,7 @@ bool CartridgeUA::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeUA::getBank() const
+uInt16 CartridgeUA::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -164,8 +164,8 @@ bool CartridgeUA::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeUA::getImage(uInt32& size) const
 {
-  size = 8192;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

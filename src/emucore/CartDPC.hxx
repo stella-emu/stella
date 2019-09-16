@@ -77,8 +77,10 @@ class CartridgeDPC : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -170,7 +172,7 @@ class CartridgeDPC : public Cartridge
 
   private:
     // The ROM image
-    uInt8 myImage[8192 + 2048 + 256];
+    std::array<uInt8, 8_KB + 2_KB + 256> myImage;
 
     // (Actual) Size of the ROM image
     uInt32 mySize;
@@ -182,19 +184,19 @@ class CartridgeDPC : public Cartridge
     uInt8* myDisplayImage;
 
     // The top registers for the data fetchers
-    uInt8 myTops[8];
+    std::array<uInt8, 8> myTops;
 
     // The bottom registers for the data fetchers
-    uInt8 myBottoms[8];
+    std::array<uInt8, 8> myBottoms;
 
     // The counter registers for the data fetchers
-    uInt16 myCounters[8];
+    std::array<uInt16, 8> myCounters;
 
     // The flag registers for the data fetchers
-    uInt8 myFlags[8];
+    std::array<uInt8, 8> myFlags;
 
     // The music mode DF5, DF6, & DF7 enabled flags
-    bool myMusicMode[3];
+    std::array<bool, 3> myMusicMode;
 
     // The random number generator register
     uInt8 myRandomNumber;

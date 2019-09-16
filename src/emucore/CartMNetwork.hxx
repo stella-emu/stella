@@ -100,8 +100,10 @@ class CartridgeMNetwork : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank(uInt16 addr) const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
     Query the number of banks supported by the cartridge.
@@ -203,10 +205,10 @@ class CartridgeMNetwork : public Cartridge
     uInt32 mySize;
 
     // The 2K of RAM
-    uInt8 myRAM[RAM_SIZE];
+    std::array<uInt8, RAM_SIZE> myRAM;
 
     // Indicates which slice is in the segment
-    uInt16 myCurrentSlice[NUM_SEGMENTS];
+    std::array<uInt16, NUM_SEGMENTS> myCurrentSlice;
 
     // Indicates which 256 byte bank of RAM is being used
     uInt16 myCurrentRAM;

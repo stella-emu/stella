@@ -90,8 +90,10 @@ class CartridgeBUS : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank() const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -209,7 +211,7 @@ class CartridgeBUS : public Cartridge
 
   private:
     // The 32K ROM image of the cartridge
-    uInt8 myImage[32768];
+    std::array<uInt8, 32_KB> myImage;
 
     // Pointer to the 28K program ROM image of the cartridge
     uInt8* myProgramImage;
@@ -224,7 +226,7 @@ class CartridgeBUS : public Cartridge
     //   $0000 - 2K BUS driver
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
-    uInt8 myBUSRAM[8192];
+    std::array<uInt8, 8_KB> myBUSRAM;
 
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;
@@ -249,13 +251,13 @@ class CartridgeBUS : public Cartridge
     uInt64 myARMCycles;
 
     // The music mode counters
-    uInt32 myMusicCounters[3];
+    std::array<uInt32, 3> myMusicCounters;
 
     // The music frequency
-    uInt32 myMusicFrequencies[3];
+    std::array<uInt32, 3> myMusicFrequencies;
 
     // The music waveform sizes
-    uInt8 myMusicWaveformSize[3];
+    std::array<uInt8, 3> myMusicWaveformSize;
 
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;

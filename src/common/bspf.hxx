@@ -74,7 +74,6 @@ using std::make_shared;
 using std::array;
 using std::vector;
 using std::runtime_error;
-using std::memcpy;
 
 // Common array types
 using IntArray = std::vector<Int32>;
@@ -84,6 +83,12 @@ using ByteArray = std::vector<uInt8>;
 using ShortArray = std::vector<uInt16>;
 using StringList = std::vector<std::string>;
 using ByteBuffer = std::unique_ptr<uInt8[]>;
+
+// We use KB a lot; let's make a literal for it
+constexpr size_t operator "" _KB(unsigned long long size)
+{
+   return static_cast<size_t>(size * 1024);
+}
 
 static const string EmptyString("");
 

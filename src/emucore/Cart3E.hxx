@@ -101,8 +101,10 @@ class Cartridge3E : public Cartridge
 
     /**
       Get the current bank.
+
+      @param address The address to use when querying the bank
     */
-    uInt16 getBank(uInt16 addr) const override;
+    uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Query the number of banks supported by the cartridge.
@@ -183,7 +185,7 @@ class Cartridge3E : public Cartridge
     ByteBuffer myImage;
 
     // RAM contents. For now every ROM gets all 32K of potential RAM
-    uInt8 myRAM[32 * 1024];
+    std::array<uInt8, 32_KB> myRAM;
 
     // Size of the ROM image
     uInt32 mySize;

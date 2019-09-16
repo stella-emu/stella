@@ -24,20 +24,20 @@
 CartridgeWD::CartridgeWD(const ByteBuffer& image, uInt32 size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::min(8195u, size)),
+    mySize(std::min<uInt32>(8_KB + 3, size)),
     myCyclesAtBankswitchInit(0),
     myPendingBank(0),
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), mySize);
-  createCodeAccessBase(8192);
+  std::copy_n(image.get(), mySize, myImage.begin());
+  createCodeAccessBase(8_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeWD::reset()
 {
-  initializeRAM(myRAM, 64);
+  initializeRAM(myRAM.data(), myRAM.size());
   initializeStartBank(0);
 
   myCyclesAtBankswitchInit = 0;
@@ -212,8 +212,8 @@ void CartridgeWD::segmentThree(uInt8 slice, bool map3bytes)
 
   // Make a copy of the address space pointed to by the slice
   // Then map in the extra 3 bytes, if required
-  memcpy(mySegment3, myImage+offset, 1024);
-  if(mySize == 8195 && map3bytes)
+  std::copy_n(myImage.begin()+offset, mySegment3.size(), mySegment3.begin());
+  if(mySize == 8_KB + 3 && map3bytes)
   {
     mySegment3[0x3FC] = myImage[0x2000+0];
     mySegment3[0x3FD] = myImage[0x2000+1];
@@ -231,7 +231,7 @@ void CartridgeWD::segmentThree(uInt8 slice, bool map3bytes)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeWD::getBank() const
+uInt16 CartridgeWD::getBank(uInt16) const
 {
   return myCurrentBank;
 }
@@ -261,7 +261,7 @@ bool CartridgeWD::patch(uInt16 address, uInt8 value)
 const uInt8* CartridgeWD::getImage(uInt32& size) const
 {
   size = mySize;
-  return myImage;
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -270,7 +270,7 @@ bool CartridgeWD::save(Serializer& out) const
   try
   {
     out.putShort(myCurrentBank);
-    out.putByteArray(myRAM, 64);
+    out.putByteArray(myRAM.data(), myRAM.size());
     out.putLong(myCyclesAtBankswitchInit);
     out.putShort(myPendingBank);
   }
@@ -289,7 +289,7 @@ bool CartridgeWD::load(Serializer& in)
   try
   {
     myCurrentBank = in.getShort();
-    in.getByteArray(myRAM, 64);
+    in.getByteArray(myRAM.data(), myRAM.size());
     myCyclesAtBankswitchInit = in.getLong();
     myPendingBank = in.getShort();
 

@@ -128,7 +128,7 @@ class M6532 : public Device
 
       @return  Pointer to RAM array.
     */
-    const uInt8* getRAM() const { return myRAM; }
+    const uInt8* getRAM() const { return myRAM.data(); }
 
   private:
 
@@ -169,7 +169,7 @@ class M6532 : public Device
     const Settings& mySettings;
 
     // An amazing 128 bytes of RAM
-    uInt8 myRAM[128];
+    std::array<uInt8, 128> myRAM;
 
     // Current value of the timer
     uInt8 myTimer;
@@ -217,19 +217,19 @@ class M6532 : public Device
     static constexpr uInt8 TimerBit = 0x80, PA7Bit = 0x40;
 
 #ifdef DEBUGGER_SUPPORT
-    // The arrays containing information about every byte of RIOT
-    // indicating whether and how (RW) it is used.
-    ByteBuffer myRAMAccessBase;
-    ByteBuffer myStackAccessBase;
-    ByteBuffer myIOAccessBase;
-    // The array used to skip the first ZP access tracking
-    ByteBuffer myZPAccessDelay;
-
     static constexpr uInt16
       RAM_SIZE = 0x80, RAM_MASK = RAM_SIZE - 1,
       STACK_SIZE = RAM_SIZE, STACK_MASK = RAM_MASK, STACK_BIT = 0x100,
       IO_SIZE = 0x20, IO_MASK = IO_SIZE - 1, IO_BIT = 0x200,
       ZP_DELAY = 1;
+
+    // The arrays containing information about every byte of RIOT
+    // indicating whether and how (RW) it is used.
+    std::array<uInt8, RAM_SIZE>   myRAMAccessBase;
+    std::array<uInt8, STACK_SIZE> myStackAccessBase;
+    std::array<uInt8, IO_SIZE>    myIOAccessBase;
+    // The array used to skip the first ZP access tracking
+    std::array<uInt8, RAM_SIZE>   myZPAccessDelay;
 #endif // DEBUGGER_SUPPORT
 
   private:

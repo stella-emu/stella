@@ -35,27 +35,27 @@ CartridgeCTY::CartridgeCTY(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(32768u, size));
-  createCodeAccessBase(32768);
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  createCodeAccessBase(myImage.size());
 
   // Default to no tune data in case user is utilizing an old ROM
-  memset(myTuneData, 0, 28*1024);
+  myTuneData.fill(0);
 
   // Extract tune data if it exists
-  if(size > 32768u)
-    memcpy(myTuneData, image.get() + 32768u, size - 32768u);
+  if(size > myImage.size())
+    std::copy_n(image.get() + myImage.size(), size - myImage.size(), myTuneData.begin());
 
   // Point to the first tune
-  myFrequencyImage = myTuneData;
+  myFrequencyImage = myTuneData.data();
 
-  for(uInt8 i = 0; i < 3; ++i)
-    myMusicCounters[i] = myMusicFrequencies[i] = 0;
+  myMusicCounters.fill(0);
+  myMusicFrequencies.fill(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::reset()
 {
-  initializeRAM(myRAM, 64);
+  initializeRAM(myRAM.data(), myRAM.size());
   initializeStartBank(1);
 
   myRAM[0] = myRAM[1] = myRAM[2] = myRAM[3] = 0xFF;
@@ -255,7 +255,7 @@ bool CartridgeCTY::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCTY::getBank() const
+uInt16 CartridgeCTY::getBank(uInt16) const
 {
   return myBankOffset >> 12;
 }
@@ -287,8 +287,8 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeCTY::getImage(uInt32& size) const
 {
-  size = 32768;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -297,7 +297,7 @@ bool CartridgeCTY::save(Serializer& out) const
   try
   {
     out.putShort(getBank());
-    out.putByteArray(myRAM, 64);
+    out.putByteArray(myRAM.data(), myRAM.size());
 
     out.putByte(myOperationType);
     out.putShort(myTunePosition);
@@ -305,9 +305,9 @@ bool CartridgeCTY::save(Serializer& out) const
     out.putInt(myRandomNumber);
     out.putLong(myAudioCycles);
     out.putDouble(myFractionalClocks);
-    out.putIntArray(myMusicCounters, 3);
-    out.putIntArray(myMusicFrequencies, 3);
-    out.putLong(myFrequencyImage - myTuneData);
+    out.putIntArray(myMusicCounters.data(), myMusicCounters.size());
+    out.putIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    out.putLong(myFrequencyImage - myTuneData.data()); // FIXME - storing pointer diff!
   }
   catch(...)
   {
@@ -325,7 +325,7 @@ bool CartridgeCTY::load(Serializer& in)
   {
     // Remember what bank we were in
     bank(in.getShort());
-    in.getByteArray(myRAM, 64);
+    in.getByteArray(myRAM.data(), myRAM.size());
 
     myOperationType = in.getByte();
     myTunePosition = in.getShort();
@@ -333,9 +333,9 @@ bool CartridgeCTY::load(Serializer& in)
     myRandomNumber = in.getInt();
     myAudioCycles = in.getLong();
     myFractionalClocks = in.getDouble();
-    in.getIntArray(myMusicCounters, 3);
-    in.getIntArray(myMusicFrequencies, 3);
-    myFrequencyImage = myTuneData + in.getLong();
+    in.getIntArray(myMusicCounters.data(), myMusicCounters.size());
+    in.getIntArray(myMusicFrequencies.data(), myMusicFrequencies.size());
+    myFrequencyImage = myTuneData.data() + in.getLong();
   }
   catch(...)
   {
@@ -437,7 +437,7 @@ void CartridgeCTY::loadTune(uInt8 index)
   // Each tune is offset by 4096 bytes
   // Instead of copying non-modifiable data around (as would happen on the
   // Harmony), we simply point to the appropriate tune
-  myFrequencyImage = myTuneData + (index << 12);
+  myFrequencyImage = myTuneData.data() + (index << 12);
 
   // Reset to beginning of tune
   myTunePosition = 0;
@@ -501,17 +501,18 @@ void CartridgeCTY::loadScore(uInt8 index)
   Serializer serializer(myEEPROMFile, Serializer::Mode::ReadOnly);
   if(serializer)
   {
-    uInt8 scoreRAM[256];
+    std::array<uInt8, 256> scoreRAM;
     try
     {
-      serializer.getByteArray(scoreRAM, 256);
+      serializer.getByteArray(scoreRAM.data(), scoreRAM.size());
     }
     catch(...)
     {
-      memset(scoreRAM, 0, 256);
+      scoreRAM.fill(0);
     }
+
     // Grab 60B slice @ given index (first 4 bytes are ignored)
-    memcpy(myRAM+4, scoreRAM + (index << 6) + 4, 60);
+    std::copy_n(scoreRAM.begin() + (index << 6) + 4, 60, myRAM.begin() + 4);
   }
 }
 
@@ -522,24 +523,24 @@ void CartridgeCTY::saveScore(uInt8 index)
   if(serializer)
   {
     // Load score RAM
-    uInt8 scoreRAM[256];
+    std::array<uInt8, 256> scoreRAM;
     try
     {
-      serializer.getByteArray(scoreRAM, 256);
+      serializer.getByteArray(scoreRAM.data(), scoreRAM.size());
     }
     catch(...)
     {
-      memset(scoreRAM, 0, 256);
+      scoreRAM.fill(0);
     }
 
     // Add 60B RAM to score table @ given index (first 4 bytes are ignored)
-    memcpy(scoreRAM + (index << 6) + 4, myRAM+4, 60);
+    std::copy_n(myRAM.begin() + 4, 60, scoreRAM.begin() + (index << 6) + 4);
 
     // Save score RAM
     serializer.rewind();
     try
     {
-      serializer.putByteArray(scoreRAM, 256);
+      serializer.putByteArray(scoreRAM.data(), scoreRAM.size());
     }
     catch(...)
     {
@@ -556,11 +557,10 @@ void CartridgeCTY::wipeAllScores()
   if(serializer)
   {
     // Erase score RAM
-    uInt8 scoreRAM[256];
-    memset(scoreRAM, 0, 256);
+    std::array<uInt8, 256> scoreRAM = {};
     try
     {
-      serializer.putByteArray(scoreRAM, 256);
+      serializer.putByteArray(scoreRAM.data(), scoreRAM.size());
     }
     catch(...)
     {

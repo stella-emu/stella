@@ -27,8 +27,8 @@ CartridgeX07::CartridgeX07(const ByteBuffer& image, uInt32 size,
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image.get(), std::min(65536u, size));
-  createCodeAccessBase(65536);
+  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  createCodeAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,7 +123,7 @@ bool CartridgeX07::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeX07::getBank() const
+uInt16 CartridgeX07::getBank(uInt16) const
 {
   return myCurrentBank;
 }
@@ -144,8 +144,8 @@ bool CartridgeX07::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeX07::getImage(uInt32& size) const
 {
-  size = 65536;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

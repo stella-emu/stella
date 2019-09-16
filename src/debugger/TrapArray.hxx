@@ -22,38 +22,38 @@
 
 class TrapArray
 {
-public:
-  TrapArray() : myInitialized(false) {}
+  public:
+    TrapArray() : myInitialized(false) {}
 
-  bool isSet(const uInt16 address) const { return myCount[address]; }
-  bool isClear(const uInt16 address) const { return myCount[address] == 0; }
+    bool isSet(const uInt16 address) const { return myCount[address]; }
+    bool isClear(const uInt16 address) const { return myCount[address] == 0; }
 
-  void add(const uInt16 address) { myCount[address]++; }
-  void remove(const uInt16 address) { myCount[address]--; }
-  //void toggle(uInt16 address) { myCount[address] ? remove(address) : add(address); } // TODO condition
+    void add(const uInt16 address) { myCount[address]++; }
+    void remove(const uInt16 address) { myCount[address]--; }
+    // void toggle(uInt16 address) { myCount[address] ? remove(address) : add(address); } // TODO condition
 
-  void initialize() { 
-    if(!myInitialized)
-      memset(myCount, 0, sizeof(myCount));
-    myInitialized = true; 
-  }
-  void clearAll() { myInitialized = false; memset(myCount, 0, sizeof(myCount)); }
+    void initialize() {
+      if(!myInitialized)
+        myCount.fill(0);
+      myInitialized = true;
+    }
+    void clearAll() { myInitialized = false; myCount.fill(0); }
 
-  bool isInitialized() const { return myInitialized; }
+    bool isInitialized() const { return myInitialized; }
 
-private:
-  // The actual counts
-  uInt8 myCount[0x10000];
+  private:
+    // The actual counts
+    std::array<uInt8, 0x10000> myCount;
 
-  // Indicates whether we should treat this array as initialized
-  bool myInitialized;
+    // Indicates whether we should treat this array as initialized
+    bool myInitialized;
 
-private:
-  // Following constructors and assignment operators not supported
-  TrapArray(const TrapArray&) = delete;
-  TrapArray(TrapArray&&) = delete;
-  TrapArray& operator=(const TrapArray&) = delete;
-  TrapArray& operator=(TrapArray&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    TrapArray(const TrapArray&) = delete;
+    TrapArray(TrapArray&&) = delete;
+    TrapArray& operator=(const TrapArray&) = delete;
+    TrapArray& operator=(TrapArray&&) = delete;
 };
 
 #endif

@@ -136,18 +136,17 @@ class CartridgeCV : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    // Pointer to the initial RAM data from the cart
-    // This doesn't always exist, so we don't pre-allocate it
-    ByteBuffer myInitialRAM;
+    // The 2k ROM image for the cartridge
+    std::array<uInt8, 2048> myImage;
 
     // Initial size of the cart data
     uInt32 mySize;
 
-    // The 2k ROM image for the cartridge
-    uInt8 myImage[2048];
-
     // The 1024 bytes of RAM
-    uInt8 myRAM[1024];
+    std::array<uInt8, 1024> myRAM;
+
+    // Initial RAM data from the cart (doesn't always exist)
+    std::array<uInt8, 1024> myInitialRAM;
 
   private:
     // Following constructors and assignment operators not supported

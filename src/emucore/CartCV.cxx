@@ -24,36 +24,35 @@ CartridgeCV::CartridgeCV(const ByteBuffer& image, uInt32 size,
   : Cartridge(settings, md5),
     mySize(size)
 {
-  if(mySize == 2048)
+  if(mySize == myImage.size())
   {
     // Copy the ROM data into my buffer
-    memcpy(myImage, image.get(), 2048);
+    std::copy_n(image.get(), myImage.size(), myImage.begin());
   }
-  else if(mySize == 4096)
+  else if(mySize == 4_KB)
   {
     // The game has something saved in the RAM
     // Useful for MagiCard program listings
 
     // Copy the ROM data into my buffer
-    memcpy(myImage, image.get() + 2048, 2048);
+    std::copy_n(image.get() + myImage.size(), myImage.size(), myImage.begin());
 
     // Copy the RAM image into a buffer for use in reset()
-    myInitialRAM = make_unique<uInt8[]>(1024);
-    memcpy(myInitialRAM.get(), image.get(), 1024);
+    std::copy_n(image.get(), myInitialRAM.size(), myInitialRAM.begin());
   }
-  createCodeAccessBase(2048+1024);
+  createCodeAccessBase(myImage.size() + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCV::reset()
 {
-  if(myInitialRAM)
+  if(mySize == 4_KB)
   {
     // Copy the RAM image into my buffer
-    memcpy(myRAM, myInitialRAM.get(), 1024);
+    myRAM = myInitialRAM;
   }
   else
-    initializeRAM(myRAM, 1024);
+    initializeRAM(myRAM.data(), myRAM.size());
 
   myBankChanged = true;
 }
@@ -131,8 +130,8 @@ bool CartridgeCV::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeCV::getImage(uInt32& size) const
 {
-  size = 2048;
-  return myImage;
+  size = myImage.size();
+  return myImage.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,7 +139,7 @@ bool CartridgeCV::save(Serializer& out) const
 {
   try
   {
-    out.putByteArray(myRAM, 1024);
+    out.putByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {
@@ -156,7 +155,7 @@ bool CartridgeCV::load(Serializer& in)
 {
   try
   {
-    in.getByteArray(myRAM, 1024);
+    in.getByteArray(myRAM.data(), myRAM.size());
   }
   catch(...)
   {

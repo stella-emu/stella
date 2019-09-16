@@ -24,7 +24,7 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, uInt32 size,
   : Cartridge(settings, md5)
 {
   // Size can be a maximum of 2K
-  if(size > 2048) size = 2048;
+  if(size > 2_KB)  size = 2_KB;
 
   // Set image size to closest power-of-two for the given size
   mySize = 1;
@@ -36,10 +36,10 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, uInt32 size,
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
   myImage = make_unique<uInt8[]>(mySize);
-  memset(myImage.get(), 0x02, mySize);
+  std::fill_n(myImage.get(), mySize, 0x02);
 
   // Copy the ROM image into my buffer
-  memcpy(myImage.get(), image.get(), size);
+  std::copy_n(image.get(), size, myImage.get());
   createCodeAccessBase(mySize);
 
   // Set mask for accessing the image buffer
