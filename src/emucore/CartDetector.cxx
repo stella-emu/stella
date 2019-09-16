@@ -66,7 +66,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
-    const ByteBuffer& image, uInt32 size, string& md5,
+    const ByteBuffer& image, size_t size, string& md5,
     const string& propertiesType, Settings& settings)
 {
   unique_ptr<Cartridge> cartridge;
@@ -104,7 +104,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
   {
     case Bankswitch::Type::_2IN1:
       // Make sure we have a valid sized image
-      if(size == 2*2048 || size == 2*4096 || size == 2*8192 || size == 2*16384)
+      if(size == 2*2_KB || size == 2*4_KB || size == 2*8_KB || size == 2*16_KB)
       {
         cartridge =
           createFromMultiCart(image, size, 2, md5, detectedType, id, settings);
@@ -117,7 +117,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
 
     case Bankswitch::Type::_4IN1:
       // Make sure we have a valid sized image
-      if(size == 4*2048 || size == 4*4096 || size == 4*8192)
+      if(size == 4*2_KB || size == 4*4_KB || size == 4*8_KB)
       {
         cartridge =
           createFromMultiCart(image, size, 4, md5, detectedType, id, settings);
@@ -130,7 +130,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
 
     case Bankswitch::Type::_8IN1:
       // Make sure we have a valid sized image
-      if(size == 8*2048 || size == 8*4096 || size == 8*8192)
+      if(size == 8*2_KB || size == 8*4_KB || size == 8*8_KB)
       {
         cartridge =
           createFromMultiCart(image, size, 8, md5, detectedType, id, settings);
@@ -143,7 +143,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
 
     case Bankswitch::Type::_16IN1:
       // Make sure we have a valid sized image
-      if(size == 16*2048 || size == 16*4096 || size == 16*8192)
+      if(size == 16*2_KB || size == 16*4_KB || size == 16*8_KB)
       {
         cartridge =
           createFromMultiCart(image, size, 16, md5, detectedType, id, settings);
@@ -156,7 +156,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
 
     case Bankswitch::Type::_32IN1:
       // Make sure we have a valid sized image
-      if(size == 32*2048 || size == 32*4096)
+      if(size == 32*2_KB || size == 32*4_KB)
       {
         cartridge =
           createFromMultiCart(image, size, 32, md5, detectedType, id, settings);
@@ -169,7 +169,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
 
     case Bankswitch::Type::_64IN1:
       // Make sure we have a valid sized image
-      if(size == 64*2048 || size == 64*4096)
+      if(size == 64*2_KB || size == 64*4_KB)
       {
         cartridge =
           createFromMultiCart(image, size, 64, md5, detectedType, id, settings);
@@ -182,7 +182,7 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
 
     case Bankswitch::Type::_128IN1:
       // Make sure we have a valid sized image
-      if(size == 128*2048 || size == 128*4096)
+      if(size == 128*2_KB || size == 128*4_KB)
       {
         cartridge =
           createFromMultiCart(image, size, 128, md5, detectedType, id, settings);
@@ -198,10 +198,10 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
       break;
   }
 
-  if(size < 1024)
+  if(size < 1_KB)
     buf << " (" << size << "B) ";
   else
-    buf << " (" << (size/1024) << "K) ";
+    buf << " (" << (size/1_KB) << "K) ";
 
   cartridge->setAbout(buf.str(), Bankswitch::typeToName(type), id);
 
@@ -210,17 +210,17 @@ unique_ptr<Cartridge> CartDetector::create(const FilesystemNode& file,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge>
-CartDetector::createFromMultiCart(const ByteBuffer& image, uInt32& size,
+CartDetector::createFromMultiCart(const ByteBuffer& image, size_t& size,
     uInt32 numroms, string& md5, Bankswitch::Type type, string& id, Settings& settings)
 {
   // Get a piece of the larger image
   uInt32 i = settings.getInt("romloadcount");
   size /= numroms;
   ByteBuffer slice = make_unique<uInt8[]>(size);
-  memcpy(slice.get(), image.get()+i*size, size);
+  std::copy_n(image.get()+i*size, size, slice.get());
 
   // We need a new md5 and name
-  md5 = MD5::hash(slice, size);
+  md5 = MD5::hash(slice, uInt32(size)); // FIXME
   ostringstream buf;
   buf << " [G" << (i+1) << "]";
   id = buf.str();
@@ -228,9 +228,9 @@ CartDetector::createFromMultiCart(const ByteBuffer& image, uInt32& size,
   // Move to the next game the next time this ROM is loaded
   settings.setValue("romloadcount", (i+1)%numroms);
 
-  if(size <= 2048)       type = Bankswitch::Type::_2K;
-  else if(size == 4096)  type = Bankswitch::Type::_4K;
-  else if(size == 8192)  type = Bankswitch::Type::_F8;
+  if(size <= 2_KB)       type = Bankswitch::Type::_2K;
+  else if(size == 4_KB)  type = Bankswitch::Type::_4K;
+  else if(size == 8_KB)  type = Bankswitch::Type::_F8;
   else  /* default */    type = Bankswitch::Type::_4K;
 
   return createFromImage(slice, size, type, md5, settings);
@@ -238,7 +238,7 @@ CartDetector::createFromMultiCart(const ByteBuffer& image, uInt32& size,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<Cartridge>
-CartDetector::createFromImage(const ByteBuffer& image, uInt32 size, Bankswitch::Type type,
+CartDetector::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::Type type,
                               const string& md5, Settings& settings)
 {
   // We should know the cart's type by now so let's create it
@@ -336,7 +336,7 @@ CartDetector::createFromImage(const ByteBuffer& image, uInt32 size, Bankswitch::
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 size)
+Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t size)
 {
   // Guess type based on size
   Bankswitch::Type type = Bankswitch::Type::_AUTO;
@@ -349,16 +349,16 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
   {
     type = Bankswitch::Type::_AR;
   }
-  else if(size < 2048)  // Sub2K images
+  else if(size < 2_KB)  // Sub2K images
   {
     type = Bankswitch::Type::_2K;
   }
-  else if((size == 2048) ||
-          (size == 4096 && memcmp(image.get(), image.get() + 2048, 2048) == 0))
+  else if((size == 2_KB) ||
+          (size == 4_KB && std::memcmp(image.get(), image.get() + 2_KB, 2_KB) == 0))
   {
     type = isProbablyCV(image, size) ? Bankswitch::Type::_CV : Bankswitch::Type::_2K;
   }
-  else if(size == 4096)
+  else if(size == 4_KB)
   {
     if(isProbablyCV(image, size))
       type = Bankswitch::Type::_CV;
@@ -367,7 +367,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
     else
       type = Bankswitch::Type::_4K;
   }
-  else if(size == 8*1024)  // 8K
+  else if(size == 8_KB)
   {
     // First check for *potential* F8
     uInt8 signature[2][3] = {
@@ -379,7 +379,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
 
     if(isProbablySC(image, size))
       type = Bankswitch::Type::_F8SC;
-    else if(memcmp(image.get(), image.get() + 4096, 4096) == 0)
+    else if(std::memcmp(image.get(), image.get() + 4_KB, 4_KB) == 0)
       type = Bankswitch::Type::_4K;
     else if(isProbablyE0(image, size))
       type = Bankswitch::Type::_E0;
@@ -398,7 +398,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
     else
       type = Bankswitch::Type::_F8;
   }
-  else if(size == 8*1024 + 3)  // 8195 bytes (Experimental)
+  else if(size == 8_KB + 3)  // 8195 bytes (Experimental)
   {
     type = Bankswitch::Type::_WD;
   }
@@ -406,11 +406,11 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
   {
     type = Bankswitch::Type::_DPC;
   }
-  else if(size == 12*1024)  // 12K
+  else if(size == 12_KB)
   {
     type = Bankswitch::Type::_FA;
   }
-  else if(size == 16*1024)  // 16K
+  else if(size == 16_KB)
   {
     if(isProbablySC(image, size))
       type = Bankswitch::Type::_F6SC;
@@ -425,18 +425,18 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
     else
       type = Bankswitch::Type::_F6;
   }
-  else if(size == 24*1024 || size == 28*1024)  // 24K & 28K
+  else if(size == 24_KB || size == 28_KB)
   {
     type = Bankswitch::Type::_FA2;
   }
-  else if(size == 29*1024)  // 29K
+  else if(size == 29_KB)
   {
     if(isProbablyARM(image, size))
       type = Bankswitch::Type::_FA2;
     else /*if(isProbablyDPCplus(image, size))*/
       type = Bankswitch::Type::_DPCP;
   }
-  else if(size == 32*1024)  // 32K
+  else if(size == 32_KB)
   {
     if (isProbablyCTY(image, size))
       type = Bankswitch::Type::_CTY;
@@ -457,14 +457,14 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
     else
       type = Bankswitch::Type::_F4;
   }
-  else if(size == 60*1024)  // 60K
+  else if(size == 60_KB)
   {
     if(isProbablyCTY(image, size))
       type = Bankswitch::Type::_CTY;
     else
       type = Bankswitch::Type::_F4;
   }
-  else if(size == 64*1024)  // 64K
+  else if(size == 64_KB)
   {
     if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
@@ -479,7 +479,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
     else
       type = Bankswitch::Type::_F0;
   }
-  else if(size == 128*1024)  // 128K
+  else if(size == 128_KB)
   {
     if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
@@ -492,7 +492,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
     else if(isProbablySB(image, size))
       type = Bankswitch::Type::_SB;
   }
-  else if(size == 256*1024)  // 256K
+  else if(size == 256_KB)
   {
     if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
@@ -525,7 +525,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, uInt32 si
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::searchForBytes(const uInt8* image, uInt32 imagesize,
+bool CartDetector::searchForBytes(const uInt8* image, size_t imagesize,
                                   const uInt8* signature, uInt32 sigsize,
                                   uInt32 minhits)
 {
@@ -553,24 +553,24 @@ bool CartDetector::searchForBytes(const uInt8* image, uInt32 imagesize,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablySC(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablySC(const ByteBuffer& image, size_t size)
 {
   // We assume a Superchip cart repeats the first 128 bytes for the second
   // 128 bytes in the RAM area, which is the first 256 bytes of each 4K bank
   const uInt8* ptr = image.get();
   while(size)
   {
-    if(memcmp(ptr, ptr + 128, 128) != 0)
+    if(std::memcmp(ptr, ptr + 128, 128) != 0)
       return false;
 
-    ptr  += 4096;
-    size -= 4096;
+    ptr  += 4_KB;
+    size -= 4_KB;
   }
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyARM(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyARM(const ByteBuffer& image, size_t size)
 {
   // ARM code contains the following 'loader' patterns in the first 1K
   // Thanks to Thomas Jentzsch of AtariAge for this advice
@@ -578,14 +578,14 @@ bool CartDetector::isProbablyARM(const ByteBuffer& image, uInt32 size)
     { 0xA0, 0xC1, 0x1F, 0xE0 },
     { 0x00, 0x80, 0x02, 0xE0 }
   };
-  if(searchForBytes(image.get(), std::min(size, 1024u), signature[0], 4, 1))
+  if(searchForBytes(image.get(), std::min<size_t>(size, 1_KB), signature[0], 4, 1))
     return true;
   else
-    return searchForBytes(image.get(), std::min(size, 1024u), signature[1], 4, 1);
+    return searchForBytes(image.get(), std::min<size_t>(size, 1_KB), signature[1], 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbably0840(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbably0840(const ByteBuffer& image, size_t size)
 {
   // 0840 cart bankswitching is triggered by accessing addresses 0x0800
   // or 0x0840 at least twice
@@ -610,7 +610,7 @@ bool CartDetector::isProbably0840(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbably3E(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbably3E(const ByteBuffer& image, size_t size)
 {
   // 3E cart bankswitching is triggered by storing the bank number
   // in address 3E using 'STA $3E', commonly followed by an
@@ -620,7 +620,7 @@ bool CartDetector::isProbably3E(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbably3EPlus(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbably3EPlus(const ByteBuffer& image, size_t size)
 {
   // 3E+ cart is identified key 'TJ3E' in the ROM
   uInt8 tj3e[] = { 'T', 'J', '3', 'E' };
@@ -628,7 +628,7 @@ bool CartDetector::isProbably3EPlus(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbably3F(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbably3F(const ByteBuffer& image, size_t size)
 {
   // 3F cart bankswitching is triggered by storing the bank number
   // in address 3F using 'STA $3F'
@@ -639,7 +639,7 @@ bool CartDetector::isProbably3F(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbably4A50(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbably4A50(const ByteBuffer& image, size_t size)
 {
   // 4A50 carts store address $4A50 at the NMI vector, which
   // in this scheme is always in the last page of ROM at
@@ -657,7 +657,7 @@ bool CartDetector::isProbably4A50(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbably4KSC(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbably4KSC(const ByteBuffer& image, size_t size)
 {
   // We check if the first 256 bytes are identical *and* if there's
   // an "SC" signature for one of our larger SC types at 1FFA.
@@ -674,7 +674,7 @@ bool CartDetector::isProbably4KSC(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyBF(const ByteBuffer& image, uInt32 size,
+bool CartDetector::isProbablyBF(const ByteBuffer& image, size_t size,
                                 Bankswitch::Type& type)
 {
   // BF carts store strings 'BFBF' and 'BFSC' starting at address $FFF8
@@ -696,7 +696,7 @@ bool CartDetector::isProbablyBF(const ByteBuffer& image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyBUS(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyBUS(const ByteBuffer& image, size_t size)
 {
   // BUS ARM code has 2 occurrences of the string BUS
   // Note: all Harmony/Melody custom drivers also contain the value
@@ -706,7 +706,7 @@ bool CartDetector::isProbablyBUS(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyCDF(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyCDF(const ByteBuffer& image, size_t size)
 {
   // CDF ARM code has 3 occurrences of the string CDF
   // Note: all Harmony/Melody custom drivers also contain the value
@@ -716,14 +716,14 @@ bool CartDetector::isProbablyCDF(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyCTY(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyCTY(const ByteBuffer& image, size_t size)
 {
   uInt8 lenin[] = { 'L', 'E', 'N', 'I', 'N' };
   return searchForBytes(image.get(), size, lenin, 5, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyCV(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyCV(const ByteBuffer& image, size_t size)
 {
   // CV RAM access occurs at addresses $f3ff and $f400
   // These signatures are attributed to the MESS project
@@ -738,7 +738,7 @@ bool CartDetector::isProbablyCV(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyCVPlus(const ByteBuffer& image, uInt32)
+bool CartDetector::isProbablyCVPlus(const ByteBuffer& image, size_t)
 {
   // CV+ cart is identified key 'commavidplus' @ $04 in the ROM
   // We inspect only this area to speed up the search
@@ -748,7 +748,7 @@ bool CartDetector::isProbablyCVPlus(const ByteBuffer& image, uInt32)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyDASH(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyDASH(const ByteBuffer& image, size_t size)
 {
   // DASH cart is identified key 'TJAD' in the ROM
   uInt8 tjad[] = { 'T', 'J', 'A', 'D' };
@@ -756,7 +756,7 @@ bool CartDetector::isProbablyDASH(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyDF(const ByteBuffer& image, uInt32 size,
+bool CartDetector::isProbablyDF(const ByteBuffer& image, size_t size,
                                 Bankswitch::Type& type)
 {
 
@@ -779,7 +779,7 @@ bool CartDetector::isProbablyDF(const ByteBuffer& image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyDPCplus(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyDPCplus(const ByteBuffer& image, size_t size)
 {
   // DPC+ ARM code has 2 occurrences of the string DPC+
   // Note: all Harmony/Melody custom drivers also contain the value
@@ -789,7 +789,7 @@ bool CartDetector::isProbablyDPCplus(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyE0(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyE0(const ByteBuffer& image, size_t size)
 {
   // E0 cart bankswitching is triggered by accessing addresses
   // $FE0 to $FF9 using absolute non-indexed addressing
@@ -815,7 +815,7 @@ bool CartDetector::isProbablyE0(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyE7(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyE7(const ByteBuffer& image, size_t size)
 {
   // E7 cart bankswitching is triggered by accessing addresses
   // $FE0 to $FE6 using absolute non-indexed addressing
@@ -840,7 +840,7 @@ bool CartDetector::isProbablyE7(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyE78K(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyE78K(const ByteBuffer& image, size_t size)
 {
   // E78K cart bankswitching is triggered by accessing addresses
   // $FE4 to $FE6 using absolute non-indexed addressing
@@ -859,7 +859,7 @@ bool CartDetector::isProbablyE78K(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyEF(const ByteBuffer& image, uInt32 size,
+bool CartDetector::isProbablyEF(const ByteBuffer& image, size_t size,
                                 Bankswitch::Type& type)
 {
   // Newer EF carts store strings 'EFEF' and 'EFSC' starting at address $FFF8
@@ -908,7 +908,7 @@ bool CartDetector::isProbablyEF(const ByteBuffer& image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyFA2(const ByteBuffer& image, uInt32)
+bool CartDetector::isProbablyFA2(const ByteBuffer& image, size_t)
 {
   // This currently tests only the 32K version of FA2; the 24 and 28K
   // versions are easy, in that they're the only possibility with those
@@ -923,7 +923,7 @@ bool CartDetector::isProbablyFA2(const ByteBuffer& image, uInt32)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyFE(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyFE(const ByteBuffer& image, size_t size)
 {
   // FE bankswitching is very weird, but always seems to include a
   // 'JSR $xxxx'
@@ -942,15 +942,15 @@ bool CartDetector::isProbablyFE(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyMDM(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyMDM(const ByteBuffer& image, size_t size)
 {
   // MDM cart is identified key 'MDMC' in the first 8K of ROM
   uInt8 mdmc[] = { 'M', 'D', 'M', 'C' };
-  return searchForBytes(image.get(), std::min(size, 8192u), mdmc, 4, 1);
+  return searchForBytes(image.get(), std::min<size_t>(size, 8_KB), mdmc, 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablySB(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablySB(const ByteBuffer& image, size_t size)
 {
   // SB cart bankswitching switches banks by accessing address 0x0800
   uInt8 signature[2][3] = {
@@ -964,7 +964,7 @@ bool CartDetector::isProbablySB(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyUA(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyUA(const ByteBuffer& image, size_t size)
 {
   // UA cart bankswitching switches to bank 1 by accessing address 0x240
   // using 'STA $240' or 'LDA $240'
@@ -986,7 +986,7 @@ bool CartDetector::isProbablyUA(const ByteBuffer& image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyX07(const ByteBuffer& image, uInt32 size)
+bool CartDetector::isProbablyX07(const ByteBuffer& image, size_t size)
 {
   // X07 bankswitching switches to bank 0, 1, 2, etc by accessing address 0x08xd
   uInt8 signature[6][3] = {

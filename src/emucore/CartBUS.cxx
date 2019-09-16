@@ -41,7 +41,7 @@
 #define DIGITAL_AUDIO_ON ((myMode & 0xF0) == 0)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeBUS::CartridgeBUS(const ByteBuffer& image, uInt32 size,
+CartridgeBUS::CartridgeBUS(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     myAudioCycles(0),
@@ -49,7 +49,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, uInt32 size,
     myFractionalClocks(0.0)
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
 
   // Even though the ROM is 32K, only 28K is accessible to the 6507
   createCodeAccessBase(28_KB);
@@ -69,7 +69,7 @@ CartridgeBUS::CartridgeBUS(const ByteBuffer& image, uInt32 size,
   myThumbEmulator = make_unique<Thumbulator>(
     reinterpret_cast<uInt16*>(myImage.data()),
     reinterpret_cast<uInt16*>(myBUSRAM.data()),
-    myImage.size(),
+    static_cast<uInt32>(myImage.size()),
     devSettings ? settings.getBool("dev.thumb.trapfatal") : false, Thumbulator::ConfigureFor::BUS, this
   );
 
@@ -477,7 +477,7 @@ bool CartridgeBUS::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeBUS::getImage(uInt32& size) const
+const uInt8* CartridgeBUS::getImage(size_t& size) const
 {
   size = myImage.size();
   return myImage.data();

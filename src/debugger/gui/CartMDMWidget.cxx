@@ -27,7 +27,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  uInt32 size = myCart.mySize;
+  size_t size = myCart.mySize;
 
   ostringstream info;
   info << "Menu Driven Megacart, containing up to 128 4K banks\n"

@@ -27,7 +27,7 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  uInt32 size = cart.mySize;
+  size_t size = cart.mySize;
 
   ostringstream info;
   info << "3EPlus cartridge - (64K ROM + RAM)\n"

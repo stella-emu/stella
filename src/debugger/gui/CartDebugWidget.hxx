@@ -41,7 +41,7 @@ class CartDebugWidget : public Widget, public CommandSender
     virtual ~CartDebugWidget() = default;
 
   public:
-    int addBaseInformation(int bytes, const string& manufacturer,
+    int addBaseInformation(size_t bytes, const string& manufacturer,
         const string& desc, const uInt16 maxlines = 10);
 
     // Inform the ROM Widget that the underlying cart has somehow changed

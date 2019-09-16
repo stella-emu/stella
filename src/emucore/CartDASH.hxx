@@ -136,7 +136,7 @@ class CartridgeDASH: public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeDASH(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeDASH(const ByteBuffer& image, size_t size, const string& md5,
                   const Settings& settings);
     virtual ~CartridgeDASH() = default;
 
@@ -167,7 +167,7 @@ class CartridgeDASH: public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -262,7 +262,7 @@ class CartridgeDASH: public Cartridge
     static constexpr uInt16 RAM_WRITE_OFFSET = 0x800;
 
     ByteBuffer myImage;  // Pointer to a dynamically allocated ROM image of the cartridge
-    uInt32 mySize;       // Size of the ROM image
+    size_t mySize;       // Size of the ROM image
     std::array<uInt8, RAM_TOTAL_SIZE> myRAM;
 
   private:

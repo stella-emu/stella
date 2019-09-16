@@ -104,7 +104,7 @@ uInt8 Serializer::getByte() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getByteArray(uInt8* array, uInt32 size) const
+void Serializer::getByteArray(uInt8* array, size_t size) const
 {
   myStream->read(reinterpret_cast<char*>(array), size);
 }
@@ -119,7 +119,7 @@ uInt16 Serializer::getShort() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getShortArray(uInt16* array, uInt32 size) const
+void Serializer::getShortArray(uInt16* array, size_t size) const
 {
   myStream->read(reinterpret_cast<char*>(array), sizeof(uInt16)*size);
 }
@@ -134,7 +134,7 @@ uInt32 Serializer::getInt() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::getIntArray(uInt32* array, uInt32 size) const
+void Serializer::getIntArray(uInt32* array, size_t size) const
 {
   myStream->read(reinterpret_cast<char*>(array), sizeof(uInt32)*size);
 }
@@ -181,7 +181,7 @@ void Serializer::putByte(uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putByteArray(const uInt8* array, uInt32 size)
+void Serializer::putByteArray(const uInt8* array, size_t size)
 {
   myStream->write(reinterpret_cast<const char*>(array), size);
 }
@@ -193,7 +193,7 @@ void Serializer::putShort(uInt16 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putShortArray(const uInt16* array, uInt32 size)
+void Serializer::putShortArray(const uInt16* array, size_t size)
 {
   myStream->write(reinterpret_cast<const char*>(array), sizeof(uInt16)*size);
 }
@@ -205,7 +205,7 @@ void Serializer::putInt(uInt32 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::putIntArray(const uInt32* array, uInt32 size)
+void Serializer::putIntArray(const uInt32* array, size_t size)
 {
   myStream->write(reinterpret_cast<const char*>(array), sizeof(uInt32)*size);
 }

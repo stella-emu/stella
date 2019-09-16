@@ -19,13 +19,13 @@
 #include "CartF6.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6::CartridgeF6(const ByteBuffer& image, uInt32 size,
+CartridgeF6::CartridgeF6(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
   createCodeAccessBase(myImage.size());
 }
 
@@ -164,7 +164,7 @@ bool CartridgeF6::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeF6::getImage(uInt32& size) const
+const uInt8* CartridgeF6::getImage(size_t& size) const
 {
   size = myImage.size();
   return myImage.data();

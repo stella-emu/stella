@@ -21,7 +21,7 @@
 #include "Cart4A50.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4A50::Cartridge4A50(const ByteBuffer& image, uInt32 size,
+Cartridge4A50::Cartridge4A50(const ByteBuffer& image, size_t size,
                              const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),
@@ -356,7 +356,7 @@ bool Cartridge4A50::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* Cartridge4A50::getImage(uInt32& size) const
+const uInt8* Cartridge4A50::getImage(size_t& size) const
 {
   size = mySize;
   return myImage.data();

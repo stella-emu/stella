@@ -28,7 +28,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  uInt16 size = cart.mySize;
+  size_t size = cart.mySize;
 
   ostringstream info;
   info << "Modified FA RAM+, six or seven 4K banks\n"

@@ -19,7 +19,7 @@
 #include "CartE7.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE7::CartridgeE7(const ByteBuffer& image, uInt32 size,
+CartridgeE7::CartridgeE7(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : CartridgeMNetwork(image, size, md5, settings)
 {

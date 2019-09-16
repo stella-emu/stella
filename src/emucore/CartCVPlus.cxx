@@ -20,7 +20,7 @@
 #include "CartCVPlus.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCVPlus::CartridgeCVPlus(const ByteBuffer& image, uInt32 size,
+CartridgeCVPlus::CartridgeCVPlus(const ByteBuffer& image, size_t size,
                                  const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     mySize(size),
@@ -152,7 +152,7 @@ uInt16 CartridgeCVPlus::getBank(uInt16) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeCVPlus::bankCount() const
 {
-  return mySize >> 11;
+  return uInt16(mySize >> 11);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -175,7 +175,7 @@ bool CartridgeCVPlus::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCVPlus::getImage(uInt32& size) const
+const uInt8* CartridgeCVPlus::getImage(size_t& size) const
 {
   size = mySize;
   return myImage.get();

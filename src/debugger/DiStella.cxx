@@ -43,7 +43,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   myOffset = info.offset;
   if (start & 0x1000) {
     info.start = myAppData.start = 0x0000;
-    info.end = myAppData.end = info.size - 1;
+    info.end = myAppData.end = static_cast<uInt16>(info.size - 1);
     // Keep previous offset; it may be different between banks
     if (info.offset == 0)
       info.offset = myOffset = (start - (start % info.size));
@@ -56,7 +56,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     // Resolve code is never used in ZP RAM mode
     resolve_code = false;
   }
-  myAppData.length = info.size;
+  myAppData.length = static_cast<uInt16>(info.size);
 
   myLabels.fill(0);
   myDirectives.fill(0);

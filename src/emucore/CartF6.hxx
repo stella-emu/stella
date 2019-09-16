@@ -45,7 +45,7 @@ class CartridgeF6 : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeF6(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeF6(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeF6() = default;
 
@@ -97,7 +97,7 @@ class CartridgeF6 : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.

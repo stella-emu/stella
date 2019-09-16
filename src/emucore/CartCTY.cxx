@@ -22,7 +22,7 @@
 #include "CartCTY.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCTY::CartridgeCTY(const ByteBuffer& image, uInt32 size,
+CartridgeCTY::CartridgeCTY(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
     myOperationType(0),
@@ -35,7 +35,7 @@ CartridgeCTY::CartridgeCTY(const ByteBuffer& image, uInt32 size,
     myBankOffset(0)
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min<uInt32>(myImage.size(), size), myImage.begin());
+  std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
   createCodeAccessBase(myImage.size());
 
   // Default to no tune data in case user is utilizing an old ROM
@@ -285,7 +285,7 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCTY::getImage(uInt32& size) const
+const uInt8* CartridgeCTY::getImage(size_t& size) const
 {
   size = myImage.size();
   return myImage.data();

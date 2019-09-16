@@ -59,7 +59,7 @@ void Cartridge::setAbout(const string& about, const string& type,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::saveROM(ofstream& out) const
 {
-  uInt32 size = 0;
+  size_t size = 0;
 
   const uInt8* image = getImage(size);
   if(image == nullptr || size == 0)
@@ -119,7 +119,7 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::createCodeAccessBase(uInt32 size)
+void Cartridge::createCodeAccessBase(size_t size)
 {
 #ifdef DEBUGGER_SUPPORT
   myCodeAccessBase = make_unique<uInt8[]>(size);
@@ -130,10 +130,10 @@ void Cartridge::createCodeAccessBase(uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::initializeRAM(uInt8* arr, uInt32 size, uInt8 val) const
+void Cartridge::initializeRAM(uInt8* arr, size_t size, uInt8 val) const
 {
   if(randomInitialRAM())
-    for(uInt32 i = 0; i < size; ++i)
+    for(size_t i = 0; i < size; ++i)
       arr[i] = mySystem->randGenerator().next();
   else
     std::fill_n(arr, size, val);

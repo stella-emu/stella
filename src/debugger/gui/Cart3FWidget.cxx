@@ -26,7 +26,7 @@ Cartridge3FWidget::Cartridge3FWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  uInt32 size = cart.mySize;
+  size_t size = cart.mySize;
 
   ostringstream info;
   info << "Tigervision 3F cartridge, 2-256 2K banks\n"

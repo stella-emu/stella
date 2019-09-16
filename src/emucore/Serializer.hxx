@@ -82,7 +82,7 @@ class Serializer
       @param array  The location to store the bytes read
       @param size   The size of the array (number of bytes to read)
     */
-    void getByteArray(uInt8* array, uInt32 size) const;
+    void getByteArray(uInt8* array, size_t size) const;
 
     /**
       Reads a short value (unsigned 16-bit) from the current input stream.
@@ -97,7 +97,7 @@ class Serializer
       @param array  The location to store the shorts read
       @param size   The size of the array (number of shorts to read)
     */
-    void getShortArray(uInt16* array, uInt32 size) const;
+    void getShortArray(uInt16* array, size_t size) const;
 
     /**
       Reads an int value (unsigned 32-bit) from the current input stream.
@@ -112,7 +112,7 @@ class Serializer
       @param array  The location to store the integers read
       @param size   The size of the array (number of integers to read)
     */
-    void getIntArray(uInt32* array, uInt32 size) const;
+    void getIntArray(uInt32* array, size_t size) const;
 
     /**
       Reads a long int value (unsigned 64-bit) from the current input stream.
@@ -155,7 +155,7 @@ class Serializer
       @param array  The bytes to write
       @param size   The size of the array (number of bytes to write)
     */
-    void putByteArray(const uInt8* array, uInt32 size);
+    void putByteArray(const uInt8* array, size_t size);
 
     /**
       Writes a short value (unsigned 16-bit) to the current output stream.
@@ -170,7 +170,7 @@ class Serializer
       @param array  The short to write
       @param size   The size of the array (number of shorts to write)
     */
-    void putShortArray(const uInt16* array, uInt32 size);
+    void putShortArray(const uInt16* array, size_t size);
 
     /**
       Writes an int value (unsigned 32-bit) to the current output stream.
@@ -185,7 +185,7 @@ class Serializer
       @param array  The integers to write
       @param size   The size of the array (number of integers to write)
     */
-    void putIntArray(const uInt32* array, uInt32 size);
+    void putIntArray(const uInt32* array, size_t size);
 
     /**
       Writes a long int value (unsigned 64-bit) to the current output stream.

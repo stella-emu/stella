@@ -46,7 +46,7 @@ class CartridgeSB : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeSB(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeSB(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings);
     virtual ~CartridgeSB() = default;
 
@@ -98,7 +98,7 @@ class CartridgeSB : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -155,7 +155,7 @@ class CartridgeSB : public Cartridge
   private:
     // The 128-256K ROM image and size of the cartridge
     ByteBuffer myImage;
-    uInt32 mySize;
+    size_t mySize;
 
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt32 myBankOffset;

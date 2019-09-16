@@ -57,7 +57,7 @@ class CartridgeCVPlus : public Cartridge
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeCVPlus(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeCVPlus(const ByteBuffer& image, size_t size, const string& md5,
                     const Settings& settings);
     virtual ~CartridgeCVPlus() = default;
 
@@ -109,7 +109,7 @@ class CartridgeCVPlus : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -171,7 +171,7 @@ class CartridgeCVPlus : public Cartridge
     std::array<uInt8, 1_KB> myRAM;
 
     // Size of the ROM image
-    uInt32 mySize;
+    size_t mySize;
 
     // Indicates which bank is currently active for the first segment
     uInt16 myCurrentBank;

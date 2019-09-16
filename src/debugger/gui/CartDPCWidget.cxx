@@ -27,7 +27,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  uInt16 size = cart.mySize;
+  size_t size = cart.mySize;
 
   ostringstream info;
   info << "DPC cartridge, two 4K banks + 2K display bank\n"

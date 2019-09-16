@@ -50,7 +50,7 @@ class CartridgeDPC : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeDPC(const ByteBuffer& image, uInt32 size, const string& md5,
+    CartridgeDPC(const ByteBuffer& image, size_t size, const string& md5,
                  const Settings& settings);
     virtual ~CartridgeDPC() = default;
 
@@ -102,7 +102,7 @@ class CartridgeDPC : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    const uInt8* getImage(uInt32& size) const override;
+    const uInt8* getImage(size_t& size) const override;
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -175,7 +175,7 @@ class CartridgeDPC : public Cartridge
     std::array<uInt8, 8_KB + 2_KB + 256> myImage;
 
     // (Actual) Size of the ROM image
-    uInt32 mySize;
+    size_t mySize;
 
     // Pointer to the 8K program ROM image of the cartridge
     uInt8* myProgramImage;
