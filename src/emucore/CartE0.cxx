@@ -60,14 +60,14 @@ void CartridgeE0::install(System& system)
   for(uInt16 addr = 0x1C00; addr < (0x1FE0U & ~System::PAGE_MASK);
       addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[7168 + (addr & 0x03FF)];
-    access.codeAccessBase = &myCodeAccessBase[7168 + (addr & 0x03FF)];
+    access.directPeekBase = &myImage[0x1C00 + (addr & 0x03FF)];
+    access.codeAccessBase = &myCodeAccessBase[0x1C00 + (addr & 0x03FF)];
     mySystem->setPageAccess(addr, access);
   }
 
   // Set the page accessing methods for the hot spots in the last segment
   access.directPeekBase = nullptr;
-  access.codeAccessBase = &myCodeAccessBase[8128];
+  access.codeAccessBase = &myCodeAccessBase[0x1FC0]; // TJ: is this the correct address (or 0x1FE0)?
   access.type = System::PageAccessType::READ;
   for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;
       addr += System::PAGE_SIZE)

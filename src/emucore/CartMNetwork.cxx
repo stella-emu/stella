@@ -121,7 +121,7 @@ uInt8 CartridgeMNetwork::peek(uInt16 address)
   else if((address >= 0x0800) && (address <= 0x08FF))
   {
     // Reading from the 256B write port @ $1800 triggers an unwanted write
-    return peekRAM(myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)], peekAddress);
+    return peekRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], peekAddress);
   }
   else
     return myImage[(myCurrentSlice[address >> 11] << 11) + (address & (BANK_SIZE - 1))];
@@ -144,7 +144,7 @@ bool CartridgeMNetwork::poke(uInt16 address, uInt8 value)
   }
   else if((address >= 0x0800) && (address <= 0x08FF))
   {
-    pokeRAM(myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)], pokeAddress, value);
+    pokeRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], pokeAddress, value);
     return true;
   }
 
@@ -162,9 +162,9 @@ void CartridgeMNetwork::bankRAM(uInt16 bank)
 
   // Setup the page access methods for the current bank
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  setAccess(0x1800, 0x100, 1024 + offset, myRAM.data(), romSize() + BANK_SIZE / 2, System::PageAccessType::WRITE);
+  setAccess(0x1800, 0x100, 0x0400 + offset, myRAM.data(), romSize() + BANK_SIZE / 2, System::PageAccessType::WRITE);
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  setAccess(0x1900, 0x100, 1024 + offset, myRAM.data(), romSize() + BANK_SIZE / 2, System::PageAccessType::READ);
+  setAccess(0x1900, 0x100, 0x0400 + offset, myRAM.data(), romSize() + BANK_SIZE / 2, System::PageAccessType::READ);
 
   myBankChanged = true;
 }
@@ -223,7 +223,7 @@ bool CartridgeMNetwork::patch(uInt16 address, uInt8 value)
     // Normally, a write to the read port won't do anything
     // However, the patch command is special in that ignores such
     // cart restrictions
-    myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
+    myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
   }
   else
     myImage[(myCurrentSlice[address >> 11] << 11) + (address & (BANK_SIZE-1))] = value;
