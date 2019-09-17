@@ -39,9 +39,9 @@ class ControllerDetector
       @param settings   A reference to the various settings (read-only)
       @return   The detected controller type
     */
-    static Controller::Type detectType(const uInt8* image, uInt32 size,
-                                       const Controller::Type controller, const Controller::Jack port,
-                                       const Settings& settings);
+    static Controller::Type detectType(const uInt8* image, size_t size,
+        const Controller::Type controller, const Controller::Jack port,
+        const Settings& settings);
 
     /**
       Detects the controller type at the given port if no controller is provided
@@ -55,9 +55,9 @@ class ControllerDetector
 
       @return   The (detected) controller name
     */
-    static string detectName(const uInt8* image, uInt32 size,
-                             const Controller::Type type, const Controller::Jack port,
-                             const Settings& settings);
+    static string detectName(const uInt8* image, size_t size,
+        const Controller::Type type, const Controller::Jack port,
+        const Settings& settings);
 
   private:
     /**
@@ -70,8 +70,8 @@ class ControllerDetector
 
       @return   The detected controller type
     */
-    static Controller::Type autodetectPort(const uInt8* image, uInt32 size, Controller::Jack port,
-                                           const Settings& settings);
+    static Controller::Type autodetectPort(const uInt8* image, size_t size,
+        Controller::Jack port, const Settings& settings);
 
     /**
       Search the image for the specified byte signature.
@@ -83,33 +83,33 @@ class ControllerDetector
 
       @return  True if the signature was found, else false
     */
-    static bool searchForBytes(const uInt8* image, uInt32 imagesize,
+    static bool searchForBytes(const uInt8* image, size_t imagesize,
                                const uInt8* signature, uInt32 sigsize);
 
     // Returns true if the port's joystick button access code is found.
-    static bool usesJoystickButton(const uInt8* image, uInt32 size, Controller::Jack port);
+    static bool usesJoystickButton(const uInt8* image, size_t size, Controller::Jack port);
 
     // Returns true if the port's keyboard access code is found.
-    static bool usesKeyboard(const uInt8* image, uInt32 size, Controller::Jack port);
+    static bool usesKeyboard(const uInt8* image, size_t size, Controller::Jack port);
 
     // Returns true if the port's 2nd Genesis button access code is found.
-    static bool usesGenesisButton(const uInt8* image, uInt32 size, Controller::Jack port);
+    static bool usesGenesisButton(const uInt8* image, size_t size, Controller::Jack port);
 
     // Returns true if the port's paddle button access code is found.
-    static bool usesPaddle(const uInt8* image, uInt32 size, Controller::Jack port,
+    static bool usesPaddle(const uInt8* image, size_t size, Controller::Jack port,
                            const Settings& settings);
 
     // Returns true if a Trak-Ball table is found.
-    static bool isProbablyTrakBall(const uInt8* image, uInt32 size);
+    static bool isProbablyTrakBall(const uInt8* image, size_t size);
 
     // Returns true if an Atari Mouse table is found.
-    static bool isProbablyAtariMouse(const uInt8* image, uInt32 size);
+    static bool isProbablyAtariMouse(const uInt8* image, size_t size);
 
     // Returns true if an Amiga Mouse table is found.
-    static bool isProbablyAmigaMouse(const uInt8* image, uInt32 size);
+    static bool isProbablyAmigaMouse(const uInt8* image, size_t size);
 
     // Returns true if a SaveKey code pattern is found.
-    static bool isProbablySaveKey(const uInt8* image, uInt32 size, Controller::Jack port);
+    static bool isProbablySaveKey(const uInt8* image, size_t size, Controller::Jack port);
 
   private:
     // Following constructors and assignment operators not supported

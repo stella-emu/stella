@@ -22,9 +22,8 @@
 #include "ControllerDetector.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::Type ControllerDetector::detectType(const uInt8* image, uInt32 size,
-                                                const Controller::Type type, const Controller::Jack port,
-                                                const Settings& settings)
+Controller::Type ControllerDetector::detectType(const uInt8* image, size_t size,
+    const Controller::Type type, const Controller::Jack port, const Settings& settings)
 {
   if(type == Controller::Type::Unknown || settings.getBool("rominfo"))
   {
@@ -44,16 +43,16 @@ Controller::Type ControllerDetector::detectType(const uInt8* image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string ControllerDetector::detectName(const uInt8* image, uInt32 size,
-                                      const Controller::Type controller, const Controller::Jack port,
-                                      const Settings& settings)
+string ControllerDetector::detectName(const uInt8* image, size_t size,
+    const Controller::Type controller, const Controller::Jack port,
+    const Settings& settings)
 {
   return Controller::getName(detectType(image, size, controller, port, settings));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::Type ControllerDetector::autodetectPort(const uInt8* image, uInt32 size,
-                                                    Controller::Jack port, const Settings& settings)
+Controller::Type ControllerDetector::autodetectPort(const uInt8* image, size_t size,
+    Controller::Jack port, const Settings& settings)
 {
   // default type joystick
   Controller::Type type = Controller::Type::Joystick;
@@ -85,7 +84,7 @@ Controller::Type ControllerDetector::autodetectPort(const uInt8* image, uInt32 s
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerDetector::searchForBytes(const uInt8* image, uInt32 imagesize,
+bool ControllerDetector::searchForBytes(const uInt8* image, size_t imagesize,
                                         const uInt8* signature, uInt32 sigsize)
 {
   if (imagesize >= sigsize)
@@ -109,7 +108,8 @@ bool ControllerDetector::searchForBytes(const uInt8* image, uInt32 imagesize,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Controller::Jack port)
+bool ControllerDetector::usesJoystickButton(const uInt8* image, size_t size,
+                                            Controller::Jack port)
 {
   if(port == Controller::Jack::Left)
   {
@@ -238,7 +238,8 @@ bool ControllerDetector::usesJoystickButton(const uInt8* image, uInt32 size, Con
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controller::Jack port)
+bool ControllerDetector::usesKeyboard(const uInt8* image, size_t size,
+                                      Controller::Jack port)
 {
   if(port == Controller::Jack::Left)
   {
@@ -376,7 +377,8 @@ bool ControllerDetector::usesKeyboard(const uInt8* image, uInt32 size, Controlle
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Controller::Jack port)
+bool ControllerDetector::usesGenesisButton(const uInt8* image, size_t size,
+                                           Controller::Jack port)
 {
   if(port == Controller::Jack::Left)
   {
@@ -432,7 +434,7 @@ bool ControllerDetector::usesGenesisButton(const uInt8* image, uInt32 size, Cont
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
+bool ControllerDetector::usesPaddle(const uInt8* image, size_t size,
                                     Controller::Jack port, const Settings& settings)
 {
   if(port == Controller::Jack::Left)
@@ -540,7 +542,7 @@ bool ControllerDetector::usesPaddle(const uInt8* image, uInt32 size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerDetector::isProbablyTrakBall(const uInt8* image, uInt32 size)
+bool ControllerDetector::isProbablyTrakBall(const uInt8* image, size_t size)
 {
   // check for TrakBall tables
   const int NUM_SIGS = 3;
@@ -559,7 +561,7 @@ bool ControllerDetector::isProbablyTrakBall(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerDetector::isProbablyAtariMouse(const uInt8* image, uInt32 size)
+bool ControllerDetector::isProbablyAtariMouse(const uInt8* image, size_t size)
 {
   // check for Atari Mouse tables
   const int NUM_SIGS = 3;
@@ -578,7 +580,7 @@ bool ControllerDetector::isProbablyAtariMouse(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerDetector::isProbablyAmigaMouse(const uInt8* image, uInt32 size)
+bool ControllerDetector::isProbablyAmigaMouse(const uInt8* image, size_t size)
 {
   // check for Amiga Mouse tables
   const int NUM_SIGS = 4;
@@ -598,7 +600,8 @@ bool ControllerDetector::isProbablyAmigaMouse(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ControllerDetector::isProbablySaveKey(const uInt8* image, uInt32 size, Controller::Jack port)
+bool ControllerDetector::isProbablySaveKey(const uInt8* image, size_t size,
+                                           Controller::Jack port)
 {
   // check for known SaveKey code, only supports right port
   if(port == Controller::Jack::Right)
