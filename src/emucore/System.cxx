@@ -41,11 +41,8 @@ System::System(Random& random, M6502& m6502, M6532& m6532,
 {
   // Initialize page access table
   PageAccess access(&myNullDevice, System::PageAccessType::READ);
-  for(int page = 0; page < NUM_PAGES; ++page)
-  {
-    myPageAccessTable[page] = access;
-    myPageIsDirtyTable[page] = false;
-  }
+  myPageAccessTable.fill(access);
+  myPageIsDirtyTable.fill(false);
 
   // Bus starts out unlocked (in other words, peek() changes myDataBusState)
   myDataBusLocked = false;
@@ -102,8 +99,7 @@ bool System::isPageDirty(uInt16 start_addr, uInt16 end_addr) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::clearDirtyPages()
 {
-  for(uInt32 i = 0; i < NUM_PAGES; ++i)
-    myPageIsDirtyTable[i] = false;
+  myPageIsDirtyTable.fill(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

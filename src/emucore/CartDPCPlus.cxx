@@ -44,16 +44,16 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
   if(mySize < myImage.size())
     myImage.fill(0);
   std::copy_n(image.get(), size, myImage.begin() + (myImage.size() - mySize));
-  createCodeAccessBase(4_KB * 6);
+  createCodeAccessBase(24_KB);
 
-  // Pointer to the program ROM (24K @ 3072 byte offset; ignore first 3K)
-  myProgramImage = myImage.data() + 0xC00;
+  // Pointer to the program ROM (24K @ 3K offset; ignore first 3K)
+  myProgramImage = myImage.data() + 3_KB;
 
   // Pointer to the display RAM
-  myDisplayImage = myDPCRAM.data() + 0xC00;
+  myDisplayImage = myDPCRAM.data() + 3_KB;
 
   // Pointer to the Frequency RAM
-  myFrequencyImage = myDisplayImage + 0x1000;
+  myFrequencyImage = myDisplayImage + 4_KB;
 
   // Create Thumbulator ARM emulator
   bool devSettings = settings.getBool("dev.settings");
@@ -67,7 +67,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
 
   // Currently only one known DPC+ ARM driver exhibits a problem
   // with the default mask to use for DFxFRACLOW
-  if(MD5::hash(image, 3*1024) == "8dd73b44fd11c488326ce507cbeb19d1")
+  if(MD5::hash(image, 3_KB) == "8dd73b44fd11c488326ce507cbeb19d1")
     myFractionalLowMask = 0x0F0000;
 
   setInitialState();
@@ -92,7 +92,7 @@ void CartridgeDPCPlus::setInitialState()
   myDPCRAM.fill(0);
 
   // Copy initial DPC display data and Frequency table state to Harmony RAM
-  std::copy_n(myProgramImage + 0x6000, 0x1400, myDisplayImage);
+  std::copy_n(myProgramImage + 24_KB, 5_KB, myDisplayImage);
 
   // Initialize the DPC data fetcher registers
   myTops.fill(0);

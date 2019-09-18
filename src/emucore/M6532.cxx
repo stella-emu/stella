@@ -75,7 +75,7 @@ void M6532::reset()
   myDDRA = myDDRB = myOutA = myOutB = 0x00;
 
   // Zero the timer registers
-  myOutTimer[0] = myOutTimer[1] = myOutTimer[2] = myOutTimer[3] = 0x00;
+  myOutTimer.fill(0x00);
 
   // Zero the interrupt flag register and mark D7 as invalid
   myInterruptFlag = 0x00;
@@ -383,7 +383,7 @@ bool M6532::save(Serializer& out) const
 
     out.putByte(myInterruptFlag);
     out.putBool(myEdgeDetectPositive);
-    out.putByteArray(myOutTimer, 4);
+    out.putByteArray(myOutTimer.data(), myOutTimer.size());
   }
   catch(...)
   {
@@ -416,7 +416,7 @@ bool M6532::load(Serializer& in)
 
     myInterruptFlag = in.getByte();
     myEdgeDetectPositive = in.getBool();
-    in.getByteArray(myOutTimer, 4);
+    in.getByteArray(myOutTimer.data(), myOutTimer.size());
   }
   catch(...)
   {

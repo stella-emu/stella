@@ -137,16 +137,16 @@ class CartridgeCV : public Cartridge
 
   private:
     // The 2k ROM image for the cartridge
-    std::array<uInt8, 0x0800> myImage;
+    std::array<uInt8, 2_KB> myImage;
 
     // Initial size of the cart data
     size_t mySize;
 
     // The 1024 bytes of RAM
-    std::array<uInt8, 0x0400> myRAM;
+    std::array<uInt8, 1_KB> myRAM;
 
     // Initial RAM data from the cart (doesn't always exist)
-    std::array<uInt8, 0x0400> myInitialRAM;
+    std::array<uInt8, 1_KB> myInitialRAM;
 
   private:
     // Following constructors and assignment operators not supported

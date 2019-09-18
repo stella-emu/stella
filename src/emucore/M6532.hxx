@@ -210,7 +210,7 @@ class M6532 : public Device
     bool myEdgeDetectPositive;
 
     // Last value written to the timer registers
-    uInt8 myOutTimer[4];
+    std::array<uInt8, 4> myOutTimer;
 
     // Accessible bits in the interrupt flag register
     // All other bits are always zeroed

@@ -86,7 +86,7 @@ class Cartridge4K : public Cartridge
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool save(Serializer& out) const override;
+    bool save(Serializer& out) const override { return true; }
 
     /**
       Load the current state of this cart from the given Serializer.
@@ -94,7 +94,7 @@ class Cartridge4K : public Cartridge
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool load(Serializer& in) override;
+    bool load(Serializer& in) override { return true; }
 
     /**
       Get a descriptor for the device name (used in error checking).

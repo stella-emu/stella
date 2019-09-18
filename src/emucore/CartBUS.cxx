@@ -98,7 +98,7 @@ void CartridgeBUS::reset()
 void CartridgeBUS::setInitialState()
 {
   // Copy initial BUS driver to Harmony RAM
-  std::copy_n(myImage.begin(), 0x0800, myBusDriverImage);
+  std::copy_n(myImage.begin(), 2_KB, myBusDriverImage);
 
   myMusicWaveformSize.fill(27);
 

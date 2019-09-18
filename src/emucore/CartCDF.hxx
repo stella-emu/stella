@@ -20,8 +20,6 @@
 
 class System;
 class Thumbulator;
-class CartridgeCDFWidget;
-class CartridgeCDFInfoWidget;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
@@ -41,8 +39,8 @@ class CartridgeCDFInfoWidget;
 */
 class CartridgeCDF : public Cartridge
 {
-  friend CartridgeCDFWidget;
-  friend CartridgeCDFInfoWidget;
+  friend class CartridgeCDFWidget;
+  friend class CartridgeCDFInfoWidget;
   friend class CartridgeRamCDFWidget;
 
   public:

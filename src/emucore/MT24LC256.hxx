@@ -46,7 +46,7 @@ class MT24LC256
 
   private:
     // Sizes of the EEPROM
-    static constexpr uInt32 FLASH_SIZE = 32 * 1024;
+    static constexpr uInt32 FLASH_SIZE = 32_KB;
 
   public:
     static constexpr uInt32 PAGE_SIZE = 64;
