@@ -734,7 +734,7 @@ class TIA : public Device
     /**
      * The paddle readout circuits.
      */
-    PaddleReader myPaddleReaders[4];
+    std::array<PaddleReader, 4> myPaddleReaders;
 
     /**
      * Circuits for the "latched inputs".

@@ -316,7 +316,7 @@ void CartridgeAR::initializeROM()
   ourDummyROMCode[281] = mySystem->randGenerator().next();
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
-  std::fill_n(myImage.begin() + (3<<11), 2048, 0x02);
+  std::fill_n(myImage.begin() + (3<<11), 2_KB, 0x02);
 
   // Copy the "dummy" Supercharger BIOS code into the ROM area
   std::copy_n(ourDummyROMCode.data(), ourDummyROMCode.size(), myImage.data() + (3<<11));

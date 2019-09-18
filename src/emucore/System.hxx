@@ -399,10 +399,10 @@ class System : public Serializable
     NullDevice myNullDevice;
 
     // The list of PageAccess structures
-    PageAccess myPageAccessTable[NUM_PAGES];
+    std::array<PageAccess, NUM_PAGES> myPageAccessTable;
 
     // The list of dirty pages
-    bool myPageIsDirtyTable[NUM_PAGES];
+    std::array<bool, NUM_PAGES> myPageIsDirtyTable;
 
     // The current state of the Data Bus
     uInt8 myDataBusState;

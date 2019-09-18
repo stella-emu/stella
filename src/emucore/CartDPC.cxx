@@ -30,13 +30,13 @@ CartridgeDPC::CartridgeDPC(const ByteBuffer& image, size_t size,
 {
   // Make a copy of the entire image
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createCodeAccessBase(8192);
+  createCodeAccessBase(8_KB);
 
   // Pointer to the program ROM (8K @ 0 byte offset)
   myProgramImage = myImage.data();
 
   // Pointer to the display ROM (2K @ 8K offset)
-  myDisplayImage = myProgramImage + 8192;
+  myDisplayImage = myProgramImage + 8_KB;
 
   // Initialize the DPC data fetcher registers
   myTops.fill(0);

@@ -64,15 +64,3 @@ const uInt8* Cartridge4K::getImage(size_t& size) const
   size = myImage.size();
   return myImage.data();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::save(Serializer&) const
-{
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::load(Serializer&)
-{
-  return true;
-}

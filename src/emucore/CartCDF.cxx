@@ -68,11 +68,11 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
 
   // even though the ROM is 32K, only 28K is accessible to the 6507
-  createCodeAccessBase(4096 * 7);
+  createCodeAccessBase(28_KB);
 
   // Pointer to the program ROM (28K @ 0 byte offset)
   // which starts after the 2K CDF Driver and 2K C Code
-  myProgramImage = myImage.data() + 4096;
+  myProgramImage = myImage.data() + 4_KB;
 
   // Pointer to CDF driver in RAM
   myBusDriverImage = myCDFRAM.data();
@@ -96,7 +96,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCDF::reset()
 {
-  initializeRAM(myCDFRAM.data()+2048, myCDFRAM.size()-2048);
+  initializeRAM(myCDFRAM.data()+2_KB, myCDFRAM.size()-2_KB);
 
   // CDF always starts in bank 6
   initializeStartBank(6);
@@ -114,7 +114,7 @@ void CartridgeCDF::reset()
 void CartridgeCDF::setInitialState()
 {
   // Copy initial CDF driver to Harmony RAM
-  std::copy_n(myImage.begin(), 0x0800, myBusDriverImage);
+  std::copy_n(myImage.begin(), 2_KB, myBusDriverImage);
 
   myMusicWaveformSize.fill(27);
 

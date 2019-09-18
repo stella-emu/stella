@@ -402,7 +402,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   {
     type = Bankswitch::Type::_WD;
   }
-  else if(size >= 10240 && size <= 10496)  // ~10K - Pitfall2
+  else if(size >= 10_KB && size <= 10_KB + 256)  // ~10K - Pitfall2
   {
     type = Bankswitch::Type::_DPC;
   }
@@ -915,7 +915,7 @@ bool CartDetector::isProbablyFA2(const ByteBuffer& image, size_t)
   // file sizes
 
   // 32K version has all zeros in 29K-32K area
-  for(uInt32 i = 29*1024; i < 32*1024; ++i)
+  for(uInt32 i = 29_KB; i < 32_KB; ++i)
     if(image[i] != 0)
       return false;
 

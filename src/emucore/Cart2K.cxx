@@ -32,7 +32,7 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
     mySize <<= 1;
 
   // We can't use a size smaller than the minimum page size in Stella
-  mySize = std::max<uInt32>(mySize, System::PAGE_SIZE);
+  mySize = std::max<size_t>(mySize, System::PAGE_SIZE);
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
   myImage = make_unique<uInt8[]>(mySize);
@@ -44,7 +44,7 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
 
   // Set mask for accessing the image buffer
   // This is guaranteed to work, as mySize is a power of two
-  myMask = mySize - 1;
+  myMask = static_cast<uInt16>(mySize) - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
