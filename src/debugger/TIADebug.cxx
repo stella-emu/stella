@@ -28,14 +28,6 @@ TIADebug::TIADebug(Debugger& dbg, Console& console)
   : DebuggerSystem(dbg, console),
     myTIA(console.tia())
 {
-  nusizStrings[0] = "1 copy";
-  nusizStrings[1] = "2 copies - close (8)";
-  nusizStrings[2] = "2 copies - med (24)";
-  nusizStrings[3] = "3 copies - close (8)";
-  nusizStrings[4] = "2 copies - wide (56)";
-  nusizStrings[5] = "2x (16) sized player";
-  nusizStrings[6] = "3 copies - med (24)";
-  nusizStrings[7] = "4x (32) sized player";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1160,3 +1152,15 @@ string TIADebug::toString()
   // note: last line should not contain \n, caller will add.
   return buf.str();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const std::array<string, 8> TIADebug::nusizStrings = {
+  "1 copy",
+  "2 copies - close (8)",
+  "2 copies - med (24)",
+  "3 copies - close (8)",
+  "2 copies - wide (56)",
+  "2x (16) sized player",
+  "3 copies - med (24)",
+  "4x (32) sized player"
+};

@@ -88,7 +88,6 @@ class DebuggerParser
     };
 
     // List of commands available
-    static constexpr uInt32 NumCommands = 95;
     struct Command {
       string cmdString;
       string description;
@@ -98,7 +97,7 @@ class DebuggerParser
       Parameters parms[10];
       std::function<void (DebuggerParser*)> executor;
     };
-    static Command commands[NumCommands];
+    static std::array<Command, 95> commands;
 
     struct Trap
     {

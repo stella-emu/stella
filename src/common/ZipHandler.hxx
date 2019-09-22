@@ -20,8 +20,6 @@
 #ifndef ZIP_HANDLER_HXX
 #define ZIP_HANDLER_HXX
 
-#include <array>
-
 #include "bspf.hxx"
 
 /**
@@ -305,7 +303,7 @@ class ZipHandler
     void addToCache();
 
   private:
-    static constexpr uInt32 DECOMPRESS_BUFSIZE = 16384;
+    static constexpr uInt32 DECOMPRESS_BUFSIZE = 16_KB;
     static constexpr uInt32 CACHE_SIZE = 8; // number of open files to cache
 
     ZipFilePtr myZip;

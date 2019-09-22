@@ -1132,7 +1132,7 @@ DiStella::Settings DiStella::settings = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const DiStella::Instruction_tag DiStella::ourLookup[256] = {
+const std::array<DiStella::Instruction_tag, 256> DiStella::ourLookup = { {
   /****  Positive  ****/
 
   /* 00 */{"brk", AddressingMode::IMPLIED,     AccessMode::NONE, RWMode::NONE,  7, 1}, /* Pseudo Absolute */
@@ -1458,4 +1458,4 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
   /* fd */{"sbc", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::READ,  4, 3}, /* Absolute,X */
   /* fe */{"inc", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3}, /* Absolute,X */
   /* ff */{"ISB", AddressingMode::ABSOLUTE_X,  AccessMode::ABSX, RWMode::WRITE, 7, 3}
-};
+} };

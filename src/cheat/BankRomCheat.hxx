@@ -31,7 +31,7 @@ class BankRomCheat : public Cheat
     void evaluate() override;
 
   private:
-    uInt8  savedRom[16];
+    std::array<uInt8, 16> savedRom;
     uInt16 address;
     uInt8  value;
     uInt8  count;

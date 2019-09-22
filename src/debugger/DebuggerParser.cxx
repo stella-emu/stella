@@ -108,7 +108,7 @@ string DebuggerParser::run(const string& command)
   getArgs(command, verb);
   commandResult.str("");
 
-  for(uInt32 i = 0; i < NumCommands; ++i)
+  for(size_t i = 0; i < commands.size(); ++i)
   {
     if(BSPF::equalsIgnoreCase(verb, commands[i].cmdString))
     {
@@ -175,10 +175,10 @@ void DebuggerParser::outputCommandError(const string& errorMsg, int command)
 void DebuggerParser::getCompletions(const char* in, StringList& completions) const
 {
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
-  for(uInt32 i = 0; i < NumCommands; ++i)
+  for(const auto& c: commands)
   {
-    if(BSPF::matches(commands[i].cmdString, in))
-      completions.push_back(commands[i].cmdString);
+    if(BSPF::matches(c.cmdString, in))
+      completions.push_back(c.cmdString);
   }
 }
 
@@ -639,7 +639,7 @@ string DebuggerParser::saveScriptFile(string file)
   if(!out.is_open())
     return "Unable to save script to " + node.getShortPath();
 
-  FunctionDefMap funcs = debugger.getFunctionDefMap();
+  Debugger::FunctionDefMap funcs = debugger.getFunctionDefMap();
   for(const auto& f: funcs)
     if (!debugger.isBuiltinFunction(f.first))
       out << "function " << f.first << " {" << f.second << "}" << endl;
@@ -1300,27 +1300,26 @@ void DebuggerParser::executeHelp()
   {
     // Find length of longest command
     uInt32 clen = 0;
-    for(uInt32 i = 0; i < NumCommands; ++i)
+    for(const auto& c: commands)
     {
-      uInt32 len = uInt32(commands[i].cmdString.length());
+      uInt32 len = uInt32(c.cmdString.length());
       if(len > clen)  clen = len;
     }
 
     commandResult << setfill(' ');
-    for(uInt32 i = 0; i < NumCommands; ++i)
-      commandResult << setw(clen) << right << commands[i].cmdString
-                    << " - " << commands[i].description << endl;
+    for(const auto& c: commands)
+      commandResult << setw(clen) << right << c.cmdString
+                    << " - " << c.description << endl;
 
     commandResult << debugger.builtinHelp();
   }
   else  // get help for specific command
   {
-    for(uInt32 i = 0; i < NumCommands; ++i)
+    for(const auto& c: commands)
     {
-      if(argStrings[0] == commands[i].cmdString)
+      if(argStrings[0] == c.cmdString)
       {
-        commandResult << "  " << red(commands[i].description) << endl
-                      << commands[i].extendedDesc;
+        commandResult << "  " << red(c.description) << endl << c.extendedDesc;
         break;
       }
     }
@@ -1521,7 +1520,7 @@ void DebuggerParser::executeListconfig()
 // "listfunctions"
 void DebuggerParser::executeListfunctions()
 {
-  const FunctionDefMap& functions = debugger.getFunctionDefMap();
+  const Debugger::FunctionDefMap& functions = debugger.getFunctionDefMap();
 
   if(functions.size() > 0)
   {
@@ -2306,7 +2305,7 @@ void DebuggerParser::executeZ()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // List of all commands available to the parser
-DebuggerParser::Command DebuggerParser::commands[NumCommands] = {
+std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
   {
     "a",
     "Set Accumulator to <value>",
@@ -3276,4 +3275,4 @@ DebuggerParser::Command DebuggerParser::commands[NumCommands] = {
     { Parameters::ARG_BOOL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeZ)
   }
-};
+} };

@@ -49,9 +49,6 @@ class RewindManager;
 #include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
 
-using FunctionMap = std::map<string, unique_ptr<Expression>>;
-using FunctionDefMap = std::map<string, string>;
-
 /**
   The base dialog for all debugging widgets in Stella.  Also acts as the parent
   for all debugging operations in Stella (parser, 6502 debugger, etc).
@@ -68,6 +65,9 @@ class Debugger : public DialogContainer
   friend class M6502;
 
   public:
+    using FunctionMap = std::map<string, unique_ptr<Expression>>;
+    using FunctionDefMap = std::map<string, string>;
+
     /**
       Create a new debugger parent object
     */
@@ -361,10 +361,8 @@ class Debugger : public DialogContainer
     struct PseudoRegister {
       string name, help;
     };
-    static const uInt32 NUM_BUILTIN_FUNCS = 18;
-    static const uInt32 NUM_PSEUDO_REGS = 11;
-    static BuiltinFunction ourBuiltinFunctions[NUM_BUILTIN_FUNCS];
-    static PseudoRegister ourPseudoRegisters[NUM_PSEUDO_REGS];
+    static std::array<BuiltinFunction, 18> ourBuiltinFunctions;
+    static std::array<PseudoRegister, 11> ourPseudoRegisters;
 
   private:
     // rewind/unwind n states

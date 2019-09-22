@@ -18,7 +18,6 @@
 #ifndef STACK_HXX
 #define STACK_HXX
 
-#include <array>
 #include <functional>
 
 #include "bspf.hxx"
@@ -32,7 +31,7 @@ template <class T, uInt32 CAPACITY = 50>
 class FixedStack
 {
   private:
-    array<T, CAPACITY> _stack;
+    std::array<T, CAPACITY> _stack;
     uInt32 _size;
 
   public:
