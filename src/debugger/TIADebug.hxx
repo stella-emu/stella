@@ -189,7 +189,7 @@ class TIADebug : public DebuggerSystem
 
     TIA& myTIA;
 
-    string nusizStrings[8];
+    static const std::array<string, 8> nusizStrings;
 
   private:
     // Following constructors and assignment operators not supported

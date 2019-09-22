@@ -47,7 +47,7 @@ class CartDebug : public DebuggerSystem
   friend class DiStella;
 
   public:
-    enum DisasmType {  // TODO - make this 'enum class'
+    enum DisasmType {
       NONE        = 0,
       REFERENCED  = 1 << 0, /* 0x01, code somewhere in the program references it,
                                i.e. LDA $F372 referenced $F372 */
@@ -283,10 +283,10 @@ class CartDebug : public DebuggerSystem
 
     // Information on equates used in the disassembly
     struct ReservedEquates {
-      bool TIARead[16];
-      bool TIAWrite[64];
-      bool IOReadWrite[24];
-      bool ZPRAM[128];
+      std::array<bool, 16>  TIARead;
+      std::array<bool, 64>  TIAWrite;
+      std::array<bool, 24>  IOReadWrite;
+      std::array<bool, 128> ZPRAM;
       AddrToLabel Label;
       bool breakFound;
     };

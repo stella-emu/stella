@@ -192,7 +192,7 @@ class DiStella
       uInt8          cycles;
       uInt8          bytes;
     };
-    static const Instruction_tag ourLookup[256];
+    static const std::array<Instruction_tag, 256> ourLookup;
 
   private:
     // Following constructors and assignment operators not supported

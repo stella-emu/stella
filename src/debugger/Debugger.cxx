@@ -178,13 +178,12 @@ string Debugger::autoExec(StringList* history)
   buf << myParser->exec(romname, history) << endl;
 
   // Init builtins
-  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
+  for(const auto& func: ourBuiltinFunctions)
   {
     // TODO - check this for memory leaks
-    int res = YaccParser::parse(ourBuiltinFunctions[i].defn);
+    int res = YaccParser::parse(func.defn);
     if(res == 0)
-      addFunction(ourBuiltinFunctions[i].name, ourBuiltinFunctions[i].defn,
-                  YaccParser::getResult(), true);
+      addFunction(func.name, func.defn, YaccParser::getResult(), true);
     else
       cerr << "ERROR in builtin function!" << endl;
   }
@@ -716,8 +715,8 @@ bool Debugger::addFunction(const string& name, const string& definition,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::isBuiltinFunction(const string& name)
 {
-  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
-    if(name == ourBuiltinFunctions[i].name)
+  for(const auto& func: ourBuiltinFunctions)
+    if(name == func.name)
       return true;
   return false;
 }
@@ -758,7 +757,7 @@ const string& Debugger::getFunctionDef(const string& name) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FunctionDefMap Debugger::getFunctionDefMap() const
+const Debugger::FunctionDefMap Debugger::getFunctionDefMap() const
 {
   return myFunctionDefs;
 }
@@ -770,39 +769,39 @@ string Debugger::builtinHelp() const
   uInt32 len, c_maxlen = 0, i_maxlen = 0;
 
   // Get column widths for aligned output (functions)
-  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
+  for(const auto& func: ourBuiltinFunctions)
   {
-    len = uInt32(ourBuiltinFunctions[i].name.size());
+    len = uInt32(func.name.size());
     if(len > c_maxlen)  c_maxlen = len;
-    len = uInt32(ourBuiltinFunctions[i].defn.size());
+    len = uInt32(func.defn.size());
     if(len > i_maxlen)  i_maxlen = len;
   }
 
   buf << std::setfill(' ') << endl << "Built-in functions:" << endl;
-  for(uInt32 i = 0; i < NUM_BUILTIN_FUNCS; ++i)
+  for(const auto& func: ourBuiltinFunctions)
   {
-    buf << std::setw(c_maxlen) << std::left << ourBuiltinFunctions[i].name
+    buf << std::setw(c_maxlen) << std::left << func.name
         << std::setw(2) << std::right << "{"
-        << std::setw(i_maxlen) << std::left << ourBuiltinFunctions[i].defn
+        << std::setw(i_maxlen) << std::left << func.defn
         << std::setw(4) << "}"
-        << ourBuiltinFunctions[i].help
+        << func.help
         << endl;
   }
 
   // Get column widths for aligned output (pseudo-registers)
   c_maxlen = 0;
-  for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
+  for(const auto& reg: ourPseudoRegisters)
   {
-    len = uInt32(ourPseudoRegisters[i].name.size());
+    len = uInt32(reg.name.size());
     if(len > c_maxlen)  c_maxlen = len;
   }
 
   buf << endl << "Pseudo-registers:" << endl;
-  for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
+  for(const auto& reg: ourPseudoRegisters)
   {
-    buf << std::setw(c_maxlen) << std::left << ourPseudoRegisters[i].name
+    buf << std::setw(c_maxlen) << std::left << reg.name
         << std::setw(2) << " "
-        << std::setw(i_maxlen) << std::left << ourPseudoRegisters[i].help
+        << std::setw(i_maxlen) << std::left << reg.help
         << endl;
   }
 
@@ -822,9 +821,9 @@ void Debugger::getCompletions(const char* in, StringList& list) const
         list.push_back(l);
     }
 
-    for(uInt32 i = 0; i < NUM_PSEUDO_REGS; ++i)
-      if(BSPF::matches(ourPseudoRegisters[i].name, in))
-        list.push_back(ourPseudoRegisters[i].name);
+    for(const auto& reg: ourPseudoRegisters)
+      if(BSPF::matches(reg.name, in))
+        list.push_back(reg.name);
   }
 }
 
@@ -849,7 +848,7 @@ bool Debugger::canExit() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::BuiltinFunction Debugger::ourBuiltinFunctions[NUM_BUILTIN_FUNCS] = {
+std::array<Debugger::BuiltinFunction, 18> Debugger::ourBuiltinFunctions = { {
   // left joystick:
   { "_joy0left",    "!(*SWCHA & $40)", "Left joystick moved left" },
   { "_joy0right",   "!(*SWCHA & $80)", "Left joystick moved right" },
@@ -873,11 +872,12 @@ Debugger::BuiltinFunction Debugger::ourBuiltinFunctions[NUM_BUILTIN_FUNCS] = {
   { "_diff0a",    "*SWCHB & $40",     "Left diff. set to A (hard)" },
   { "_diff1b",    "!(*SWCHB & $80)",  "Right diff. set to B (easy)" },
   { "_diff1a",    "*SWCHB & $80",     "Right diff. set to A (hard)" }
-};
+} };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Names are defined here, but processed in YaccParser
-Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
+std::array<Debugger::PseudoRegister, 11> Debugger::ourPseudoRegisters = { {
+// Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
   { "_bank",      "Currently selected bank" },
   { "_cclocks",   "Color clocks on current scanline" },
   { "_cycleshi",  "Higher 32 bits of number of cycles since emulation started" },
@@ -892,4 +892,4 @@ Debugger::PseudoRegister Debugger::ourPseudoRegisters[NUM_PSEUDO_REGS] = {
   // CPU address access functions:
   /*{ "__lastread", "last CPU read address" },
   { "__lastwrite", "last CPU write address" },*/
-};
+} };
