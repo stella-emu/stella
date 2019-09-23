@@ -25,7 +25,7 @@ Cartridge2KWidget::Cartridge2KWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
 {
   // Eventually, we should query this from the debugger/disassembler
-  uInt16 size = cart.mySize;
+  size_t size = cart.mySize;
   uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
   start -= start % size;
 

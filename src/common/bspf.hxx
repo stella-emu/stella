@@ -86,9 +86,9 @@ using StringList = std::vector<std::string>;
 using ByteBuffer = std::unique_ptr<uInt8[]>;
 
 // We use KB a lot; let's make a literal for it
-constexpr size_t operator "" _KB(unsigned long long size)
+constexpr uInt32 operator "" _KB(unsigned long long size)
 {
-   return static_cast<size_t>(size * 1024);
+   return static_cast<uInt32>(size * 1024);
 }
 
 static const string EmptyString("");
