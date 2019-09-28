@@ -76,12 +76,12 @@ void SerialPortWINDOWS::closePort()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortWINDOWS::writeByte(const uInt8* data)
+bool SerialPortWINDOWS::writeByte(uInt8 data)
 {
   if(myHandle)
   {
     DWORD written;
-    return WriteFile(myHandle, data, 1, &written, 0) == TRUE;
+    return WriteFile(myHandle, &data, 1, &written, 0) == TRUE;
   }
   return false;
 }

@@ -47,7 +47,7 @@ class SerialPort
       @param data  Destination for the byte read from the port
       @return  True if a byte was read, else false
     */
-    virtual bool readByte(uInt8* data) { return false; }
+    virtual bool readByte(uInt8& data) { return false; }
 
     /**
       Write a byte to the serial port.
@@ -55,7 +55,7 @@ class SerialPort
       @param data  The byte to write to the port
       @return  True if a byte was written, else false
     */
-    virtual bool writeByte(const uInt8* data) { return false; }
+    virtual bool writeByte(uInt8 data) { return false; }
 
   private:
     /**

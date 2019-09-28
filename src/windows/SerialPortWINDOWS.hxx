@@ -50,7 +50,7 @@ class SerialPortWINDOWS : public SerialPort
       @param data  The byte to write to the port
       @return  True if a byte was written, else false
     */
-    bool writeByte(const uInt8* data) override;
+    bool writeByte(uInt8 data) override;
 
   private:
     // Handle to serial port

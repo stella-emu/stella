@@ -107,7 +107,7 @@ void AtariVox::clockDataIn(bool value)
       else
       {
         uInt8 data = ((myShiftRegister >> 1) & 0xff);
-        mySerialPort->writeByte(&data);
+        mySerialPort->writeByte(data);
       }
       myShiftRegister = 0;
     }

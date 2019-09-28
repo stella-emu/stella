@@ -69,12 +69,12 @@ void SerialPortUNIX::closePort()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::writeByte(const uInt8* data)
+bool SerialPortUNIX::writeByte(uInt8 data)
 {
   if(myHandle)
   {
-//    cerr << "SerialPortUNIX::writeByte " << (int)(*data) << endl;
-    return write(myHandle, data, 1) == 1;
+//    cerr << "SerialPortUNIX::writeByte " << int(data) << endl;
+    return write(myHandle, &data, 1) == 1;
   }
   return false;
 }
