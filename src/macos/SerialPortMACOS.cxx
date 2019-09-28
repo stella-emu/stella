@@ -71,12 +71,12 @@ void SerialPortMACOS::closePort()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortMACOS::writeByte(const uInt8* data)
+bool SerialPortMACOS::writeByte(uInt8 data)
 {
   if(myHandle)
   {
-//    cerr << "SerialPortMACOS::writeByte " << (int)(*data) << endl;
-    return write(myHandle, data, 1) == 1;
+//    cerr << "SerialPortMACOS::writeByte " << int(data) << endl;
+    return write(myHandle, &data, 1) == 1;
   }
   return false;
 }
