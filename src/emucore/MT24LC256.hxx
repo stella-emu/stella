@@ -44,13 +44,14 @@ class MT24LC256
               Controller::onMessageCallback callback);
     ~MT24LC256();
 
-  private:
+  public:
     // Sizes of the EEPROM
     static constexpr uInt32 FLASH_SIZE = 32_KB;
-
-  public:
     static constexpr uInt32 PAGE_SIZE = 64;
     static constexpr uInt32 PAGE_NUM = FLASH_SIZE / PAGE_SIZE;
+
+    // Initial state value of flash EEPROM
+    static constexpr uInt8 INIT_VALUE = 0xff;
 
     /** Read boolean data from the SDA line */
     bool readSDA() const { return jpee_mdat && jpee_sdat; }
@@ -83,9 +84,6 @@ class MT24LC256
     void update();
 
   private:
-    // Inital state value of flash EEPROM
-    static constexpr uInt8 INIT_VALUE = 0xff;
-
     // The system of the parent controller
     const System& mySystem;
 
