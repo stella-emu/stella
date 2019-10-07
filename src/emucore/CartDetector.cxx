@@ -760,7 +760,7 @@ bool CartDetector::isProbablyDF(const ByteBuffer& image, size_t size,
                                 Bankswitch::Type& type)
 {
 
-  // BF carts store strings 'DFDF' and 'DFSC' starting at address $FFF8
+  // DF carts store strings 'DFDF' and 'DFSC' starting at address $FFF8
   // This signature is attributed to "RevEng" of AtariAge
   uInt8 df[]   = { 'D', 'F', 'D', 'F' };
   uInt8 dfsc[] = { 'D', 'F', 'S', 'C' };
