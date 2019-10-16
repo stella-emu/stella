@@ -28,32 +28,24 @@ class System;
 
 /**
   This is the cartridge class for a "Wickstead Design" prototype cart.
-  The ROM is normally 8K, but sometimes has an extra 3 bytes appended,
-  to be mapped as described below.  There is also 64 bytes of RAM.
+  The ROM has 64 bytes of RAM.
   In this bankswitching scheme the 2600's 4K cartridge address space
   is broken into four 1K segments.  The desired arrangement of 1K slices
   is selected by accessing $30 - $3F of TIA address space.  The slices
   are mapped into all 4 segments at once as follows:
 
-    $0030: 0,0,1,2
-    $0031: 0,1,3,2
-    $0032: 4,5,6,7
-    $0033: 7,4,3,2
-    $0034: 0,0,6,7
-    $0035: 0,1,7,6
-    $0036: 3,2,4,5
-    $0037: 6,0,5,1
-    $0038: 0,0,1,2
-    $0039: 0,1,3,2
-    $003A: 4,5,6,7
-    $003B: 7,4,3,2
-    $003C: 0,0,6,7*
-    $003D: 0,1,7,6*
-    $003E: 3,2,4,5*
-    $003F: 6,0,5,1*
+    $0030, $0038: 0,0,1,3
+    $0031, $0039: 0,1,2,3
+    $0032, $003A: 4,5,6,7
+    $0033, $003B: 7,4,2,3
 
-  In the last 4 cases, the extra 3 bytes of ROM past the 8K boundary are
-  mapped into $3FC - $3FE of the uppermost (third) segment.
+    $0034, $003C: 0,0,6,7
+    $0035, $003D: 0,1,7,6
+    $0036, $003E: 2,3,4,5
+    $0037, $003F: 6,0,5,1
+
+
+  In the uppermost (third) segment, the byte at $3FC is overwritten by 0.
 
   The 64 bytes of RAM are accessible at $1000 - $103F (read port) and
   $1040 - $107F (write port).  Because the RAM takes 128 bytes of address
@@ -204,16 +196,15 @@ class CartridgeWD : public Cartridge
 
     /**
       Install the specified slice for segment three.
-      Note that this method also takes care of mapping extra 3 bytes.
+      Note that this method also takes care of setting one byte to 0.
 
       @param slice      The slice to map into the segment
-      @param map3bytes  Whether to map in an extra 3 bytes
     */
-    void segmentThree(uInt8 slice, bool map3bytes);
+    void segmentThree(uInt8 slice);
 
   private:
     // The 8K ROM image of the cartridge
-    std::array<uInt8, 8_KB + 3> myImage;
+    std::array<uInt8, 8_KB> myImage;
 
     // Indicates the actual size of the ROM image (either 8K or 8K + 3)
     size_t mySize;
@@ -239,9 +230,8 @@ class CartridgeWD : public Cartridge
     // The arrangement of banks to use on each hotspot read
     struct BankOrg {
       uInt8 zero, one, two, three;
-      bool map3bytes;
     };
-    static BankOrg ourBankOrg[16];
+    static BankOrg ourBankOrg[8];
 
   private:
     // Following constructors and assignment operators not supported

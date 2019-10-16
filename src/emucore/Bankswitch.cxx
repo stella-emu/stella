@@ -136,7 +136,8 @@ Bankswitch::Description Bankswitch::BSList[int(Bankswitch::Type::NumSchemes)] = 
   { "SB"      , "SB (128-256K SUPERbank)"     },
   { "UA"      , "UA (8K UA Ltd.)"             },
   { "UASW"    , "UASW (8K UA swapped banks)"  },
-  { "WD"      , "WD (Experimental)"           },
+  { "WD"      , "WD (Pink Panther)"           },
+  { "WDSW"    , "WDSW (Pink Panther, bad)"    },
   { "X07"     , "X07 (64K AtariAge)"          },
 #if defined(CUSTOM_ARM)
   { "CUSTOM"  ,   "CUSTOM (ARM)"                  }
@@ -222,6 +223,7 @@ Bankswitch::ExtensionMap Bankswitch::ourExtensions = {
   { "UA"    , Bankswitch::Type::_UA     },
   { "UASW"  , Bankswitch::Type::_UASW   },
   { "WD"    , Bankswitch::Type::_WD     },
+  { "WDSW"  , Bankswitch::Type::_WDSW   },
   { "X07"   , Bankswitch::Type::_X07    }
 };
 
@@ -277,5 +279,6 @@ Bankswitch::NameToTypeMap Bankswitch::ourNameToTypes = {
   { "UA"      , Bankswitch::Type::_UA     },
   { "UASW"    , Bankswitch::Type::_UASW   },
   { "WD"      , Bankswitch::Type::_WD     },
+  { "WDSW"    , Bankswitch::Type::_WDSW   },
   { "X07"     , Bankswitch::Type::_X07    }
 };

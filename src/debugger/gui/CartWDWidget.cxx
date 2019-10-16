@@ -32,8 +32,7 @@ CartridgeWDWidget::CartridgeWDWidget(
     "This scheme has eight 1K slices, which can be mapped into four 1K "
     "segments in various combinations.  Each 'bank' selects a predefined "
     "segment arrangement (indicated in square brackets)\n"
-    "The last four banks swap in an extra 3 bytes from above the 8K "
-    "cart boundary into the third (uppermost) segment at $3FC - $3FE\n\n"
+    "In the third (uppermost) segment the byte at $3FC is overwritten with 0.\n\n"
     "64 bytes RAM @ $F000 - $F080\n"
     "  $F000 - $F03F (R), $F040 - $F07F (W)\n";
 
@@ -41,26 +40,26 @@ CartridgeWDWidget::CartridgeWDWidget(
       ypos = addBaseInformation(myCart.mySize, "Wickstead Design", info, 12) + myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0  ($30) [0,0,1,2]", 0);
-  VarList::push_back(items, "1  ($31) [0,1,3,2]", 1);
+  VarList::push_back(items, "0  ($30) [0,0,1,3]", 0);
+  VarList::push_back(items, "1  ($31) [0,1,2,3]", 1);
   VarList::push_back(items, "2  ($32) [4,5,6,7]", 2);
-  VarList::push_back(items, "3  ($33) [7,4,3,2]", 3);
+  VarList::push_back(items, "3  ($33) [7,4,2,3]", 3);
   VarList::push_back(items, "4  ($34) [0,0,6,7]", 4);
   VarList::push_back(items, "5  ($35) [0,1,7,6]", 5);
-  VarList::push_back(items, "6  ($36) [3,2,4,5]", 6);
+  VarList::push_back(items, "6  ($36) [2,3,4,5]", 6);
   VarList::push_back(items, "7  ($37) [6,0,5,1]", 7);
-  VarList::push_back(items, "8  ($38) [0,0,1,2]", 8);
-  VarList::push_back(items, "9  ($39) [0,1,3,2]", 9);
+  VarList::push_back(items, "8  ($38) [0,0,1,3]", 8);
+  VarList::push_back(items, "9  ($39) [0,1,2,3]", 9);
   VarList::push_back(items, "10 ($3A) [4,5,6,7]", 10);
-  VarList::push_back(items, "11 ($3B) [7,4,3,2]", 11);
-  VarList::push_back(items, "12 ($3C) [0,0,6,7*]", 12);
-  VarList::push_back(items, "13 ($3D) [0,1,7,6*]", 13);
-  VarList::push_back(items, "14 ($3E) [3,2,4,5*]", 14);
-  VarList::push_back(items, "15 ($3F) [6,0,5,1*]", 15);
+  VarList::push_back(items, "11 ($3B) [7,4,2,3]", 11);
+  VarList::push_back(items, "12 ($3C) [0,0,6,7]", 12);
+  VarList::push_back(items, "13 ($3D) [0,1,7,6]", 13);
+  VarList::push_back(items, "14 ($3E) [2,3,4,5]", 14);
+  VarList::push_back(items, "15 ($3F) [6,0,5,1]", 15);
   myBank = new PopUpWidget(boss, _font, xpos, ypos-2,
-                    _font.getStringWidth("15 ($3F) [6,0,5,1*]"),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+                    _font.getStringWidth("15 ($3F) [6,0,5,1]"),
+                    myLineHeight, items, "Set bank    ",
+                    _font.getStringWidth("Set bank    "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
@@ -103,13 +102,11 @@ string CartridgeWDWidget::bankState()
   ostringstream& buf = buffer();
 
   static const char* const segments[] = {
-    "[0,0,1,2]",  "[0,1,3,2]",  "[4,5,6,7]",  "[7,4,3,2]",
-    "[0,0,6,7]",  "[0,1,7,6]",  "[3,2,4,5]",  "[6,0,5,1]",
-    "[0,0,1,2]",  "[0,1,3,2]",  "[4,5,6,7]",  "[7,4,3,2]",
-    "[0,0,6,7*]", "[0,1,7,6*]", "[3,2,4,5*]", "[6,0,5,1*]"
+    "[0,0,1,3]",  "[0,1,2,3]",  "[4,5,6,7]",  "[7,4,2,3]",
+    "[0,0,6,7]",  "[0,1,7,6]",  "[2,3,4,5]",  "[6,0,5,1]"
   };
   uInt16 bank = myCart.getBank();
-  buf << "Bank = " << std::dec << bank << ", segments = " << segments[bank];
+  buf << "Bank = " << std::dec << bank << ", segments = " << segments[bank & 0x7];
 
   return buf.str();
 }

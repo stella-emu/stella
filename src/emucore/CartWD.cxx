@@ -30,7 +30,16 @@ CartridgeWD::CartridgeWD(const ByteBuffer& image, size_t size,
     myCurrentBank(0)
 {
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), mySize, myImage.begin());
+  if (mySize == 8_KB + 3)
+  {
+    // swap slices 2 & 3
+    std::copy_n(image.get(),            1_KB * 2, myImage.begin());
+    std::copy_n(image.get() + 1_KB * 3, 1_KB * 1, myImage.begin() + 1_KB * 2);
+    std::copy_n(image.get() + 1_KB * 2, 1_KB * 1, myImage.begin() + 1_KB * 3);
+    std::copy_n(image.get() + 1_KB * 4, 1_KB * 4, myImage.begin() + 1_KB * 4);
+  }
+  else
+    std::copy_n(image.get(), mySize, myImage.begin());
   createCodeAccessBase(8_KB);
 }
 
@@ -154,10 +163,10 @@ bool CartridgeWD::bank(uInt16 bank)
 
   myCurrentBank = bank;
 
-  segmentZero(ourBankOrg[bank].zero);
-  segmentOne(ourBankOrg[bank].one);
-  segmentTwo(ourBankOrg[bank].two);
-  segmentThree(ourBankOrg[bank].three, ourBankOrg[bank].map3bytes);
+  segmentZero(ourBankOrg[bank & 0x7].zero);
+  segmentOne(ourBankOrg[bank & 0x7].one);
+  segmentTwo(ourBankOrg[bank & 0x7].two);
+  segmentThree(ourBankOrg[bank & 0x7].three);
 
   return myBankChanged = true;
 }
@@ -206,19 +215,14 @@ void CartridgeWD::segmentTwo(uInt8 slice)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeWD::segmentThree(uInt8 slice, bool map3bytes)
+void CartridgeWD::segmentThree(uInt8 slice)
 {
   uInt16 offset = slice << 10;
 
   // Make a copy of the address space pointed to by the slice
-  // Then map in the extra 3 bytes, if required
+  // Then overwrite one byte with 0
   std::copy_n(myImage.begin()+offset, mySegment3.size(), mySegment3.begin());
-  if(mySize == 8_KB + 3 && map3bytes)
-  {
-    mySegment3[0x3FC] = myImage[0x2000+0];
-    mySegment3[0x3FD] = myImage[0x2000+1];
-    mySegment3[0x3FE] = myImage[0x2000+2];
-  }
+  mySegment3[0x3FC] = 0;
 
   System::PageAccess access(this, System::PageAccessType::READ);
 
@@ -305,21 +309,15 @@ bool CartridgeWD::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeWD::BankOrg CartridgeWD::ourBankOrg[16] = {
-  { 0, 0, 1, 2, false },  // Bank 0
-  { 0, 1, 3, 2, false },  // Bank 1
-  { 4, 5, 6, 7, false },  // Bank 2
-  { 7, 4, 3, 2, false },  // Bank 3
-  { 0, 0, 6, 7, false },  // Bank 4
-  { 0, 1, 7, 6, false },  // Bank 5
-  { 3, 2, 4, 5, false },  // Bank 6
-  { 6, 0, 5, 1, false },  // Bank 7
-  { 0, 0, 1, 2, false },  // Bank 8
-  { 0, 1, 3, 2, false },  // Bank 9
-  { 4, 5, 6, 7, false },  // Bank 10
-  { 7, 4, 3, 2, false },  // Bank 11
-  { 0, 0, 6, 7, true  },  // Bank 12
-  { 0, 1, 7, 6, true  },  // Bank 13
-  { 3, 2, 4, 5, true  },  // Bank 14
-  { 6, 0, 5, 1, true  }   // Bank 15
+CartridgeWD::BankOrg CartridgeWD::ourBankOrg[8] = {
+                   //            0 1 2 3 4 5 6 7
+  { 0, 0, 1, 3 },  // Bank 0, 8  2 1 - 1 - - - -
+  { 0, 1, 2, 3 },  // Bank 1, 9  1 1 1 1 - - - -
+  { 4, 5, 6, 7 },  // Bank 2, 10  - - - - 1 1 1 1
+  { 7, 4, 2, 3 },  // Bank 3, 11  - - 1 1 1 - - 1
+  { 0, 0, 6, 7 },  // Bank 4, 12  2 - - - - - 1 1
+  { 0, 1, 7, 6 },  // Bank 5, 13  1 1 - - - - 1 1
+  { 2, 3, 4, 5 },  // Bank 6, 14  - - 1 1 1 1 - -
+  { 6, 0, 5, 1 }   // Bank 7, 15  1 1 - - - 1 1 -
+                   // count       7 4 3 4 3 3 4 4
 };

@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3406
+#define DEF_PROPS_SIZE 3407
 
 static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1179,7 +1179,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "55ace3c775f42eb46f08bb1dca9114e7", "", "", "Shadow Keep (04-03-2003) (Andrew Towers)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "55ef6ab2321ca0c3d369e63d59c059c8", "", "", "Pitfall! (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "55ef7b65066428367844342ed59f956c", "Atari - Roklan, Joe Gaucher, Alex Leavens", "CX2683", "Crazy Climber (1983) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "56210a3b9ea6d5dd8f417a357ed8ca92", "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead", "3152VC", "Pursuit of the Pink Panther (Probe) (Prototype)", "AKA Adventures of the Pink Panther", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "56210a3b9ea6d5dd8f417a357ed8ca92", "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead", "3152VC", "Pursuit of the Pink Panther (Probe) (Prototype, bad dump)", "AKA Adventures of the Pink Panther", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "56300ed31fef018bd96768ccc982f7b4", "HES - Activision", "559", "Rad Action Pak - Kung-Fu Master, Freeway, Frostbite (1990) (HES) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5641c0ff707630d2dd829b26a9f2e98f", "Joystik", "", "Motocross (Joystik)", "AKA Motocross Racer", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5643ee916f7dc760148fca4db3aa7d10", "", "", "Moon Patrol (Genesis)", "Genesis controller (C is jump)", "Hack of Moon Patrol", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1343,6 +1343,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "62921652f6634eb1a0940ed5489c7e18", "", "", "SCSIcide (V1.09) (2001) (Joe Grand)", "", "", "", "", "", "", "", "", "", "PADDLES_IAXDR", "", "", "AUTO 65", "", "", "", "" },
   { "62992392ea651a16aa724a92e4596ed6", "Eric Mooney", "", "Invaders by Erik Mooney (Beta) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "62d1f50219edf9a429a9f004c19f31b3", "JWDA, Todd Marshall", "", "Euro Gen (02-01-83) (JWDA) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "62ee2b8f59e9cd6285bbdb674a952e8b", "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead", "3152VC", "Pursuit of the Pink Panther (Probe) (Prototype)", "AKA Adventures of the Pink Panther", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "62f74a2736841191135514422b20382d", "", "", "Pharaoh's Curse (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "PAL60", "20", "YES", "" },
   { "62ffd175cac3f781ef6e4870136a2520", "", "", "2600 Digital Clock (V x.xx) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "63166867f75869a3592b7a94ea62d147", "", "", "Indy 500 (Hack) [a1]", "Hack of Indy 500", "Hack", "", "", "", "", "", "", "", "DRIVING", "DRIVING", "", "", "", "", "", "" },

@@ -246,9 +246,15 @@ class CartDetector
     static bool isProbablyUA(const ByteBuffer& image, size_t size);
 
     /**
+      Returns true if the image is probably a Wickstead Design bankswitching cartridge
+    */
+    static bool isProbablyWD(const ByteBuffer& image, size_t size);
+
+    /**
       Returns true if the image is probably an X07 bankswitching cartridge
     */
     static bool isProbablyX07(const ByteBuffer& image, size_t size);
+
 
   private:
     // Following constructors and assignment operators not supported
