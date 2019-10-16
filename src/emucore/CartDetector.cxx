@@ -327,6 +327,7 @@ CartDetector::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::
     case Bankswitch::Type::_SB:
       return make_unique<CartridgeSB>(image, size, md5, settings);
     case Bankswitch::Type::_WD:
+    case Bankswitch::Type::_WDSW:
       return make_unique<CartridgeWD>(image, size, md5, settings);
     case Bankswitch::Type::_X07:
       return make_unique<CartridgeX07>(image, size, md5, settings);
@@ -395,12 +396,14 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_0840;
     else if(isProbablyE78K(image, size))
       type = Bankswitch::Type::_E78K;
+    else if (isProbablyWD(image,size))
+      type = Bankswitch::Type::_WD;
     else
       type = Bankswitch::Type::_F8;
   }
   else if(size == 8_KB + 3)  // 8195 bytes (Experimental)
   {
-    type = Bankswitch::Type::_WD;
+    type = Bankswitch::Type::_WDSW;
   }
   else if(size >= 10_KB && size <= 10_KB + 256)  // ~10K - Pitfall2
   {
@@ -984,6 +987,17 @@ bool CartDetector::isProbablyUA(const ByteBuffer& image, size_t size)
 
   return false;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyWD(const ByteBuffer& image, size_t size)
+{
+  // WD cart bankswitching switches banks by accessing address 0x30..0x3f
+  uInt8 signature[1][3] = {
+    { 0xA5, 0x39, 0x4C }  // LDA $39, JMP
+  };
+  return searchForBytes(image.get(), size, signature[0], 3, 1);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyX07(const ByteBuffer& image, size_t size)

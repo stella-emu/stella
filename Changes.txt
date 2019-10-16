@@ -104,6 +104,10 @@
 
   * Disabled some developer options for 'Player settings'.
 
+  * Writes to RAM read ports are ignored now.
+
+  * Added Developer setting, which breaks on writes to read ports.
+
   * Improved breakpoints to now consider the banks.
 
   * Improved debugger's TIA display and zoom windows.
@@ -130,6 +134,8 @@
   * Fixed not working 7800 pause key.
 
   * Enhanced UA bankswitching to support certain Brazilian carts.
+
+  * Fixed WD bankswitching
 
   * Auto-detection of bankswitch scheme by file extension now includes
     more human-readable formats (not restricted to DOS 3-char length).
