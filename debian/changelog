@@ -1,15 +1,22 @@
+stella (6.0.2-1) stable; urgency=high
+
+  * Version 6.0.2 release
+
+ -- Stephen Anthony <sa666666@gmail.com>  Fri, 11 Oct 2019 17:09:59 -0230
+
+
 stella (6.0.1-1) stable; urgency=high
 
   * Version 6.0.1 release
 
- -- Stephen Anthony <sa666666@gmail.com>  Wed, 5 Jun 2019
+ -- Stephen Anthony <sa666666@gmail.com>  Wed, 5 Jun 2019 17:09:59 -0230
 
 
 stella (6.0-1) stable; urgency=high
 
   * Version 6.0 release
 
- -- Stephen Anthony <sa666666@gmail.com>  Sun, 23 Dec 2018
+ -- Stephen Anthony <sa666666@gmail.com>  Sun, 23 Dec 2018 17:09:59 -0230
 
 
 stella (5.1.1-1) stable; urgency=high

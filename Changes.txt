@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.0.1 to 6.1: (MM dd, 2019)
+6.0.2 to 6.1: (MM dd, 2019)
 
   * Note: because of major event remapping changes, all remappings will be
           reset to defaults; if you had custom mappings, they will need to
@@ -157,6 +157,11 @@
   * Updated included PNG library to latest stable version.
 
 -Have fun!
+
+
+6.0.1 to 6.0.2: (October 11, 2019)
+
+  * Updated properties database for Pink Panther ROM.
 
 
 6.0 to 6.0.1: (June 5, 2019)
