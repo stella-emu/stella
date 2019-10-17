@@ -103,6 +103,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 * ddd Sep d 2019 Stephen Anthony <sa666666@gmail.com> 6.1-1
 - Version 6.1 release
 
+* Fri Oct 11 2019 Stephen Anthony <sa666666@gmail.com> 6.0.2-1
+- Version 6.0.2 release
+
 * Wed Jun 5 2019 Stephen Anthony <sa666666@gmail.com> 6.0.1-1
 - Version 6.0.1 release
 
