@@ -243,13 +243,13 @@ void OSystem::loadConfig(const Settings::Options& options)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::saveConfig()
 {
-  // Save the last windowed position and display on system shutdown
-  myFrameBuffer->updateWindowedPos();
-  settings().setValue("display", myFrameBuffer->getCurrentDisplayIndex());
-
   // Ask all subsystems to save their settings
   if(myFrameBuffer)
   {
+    // Save the last windowed position and display on system shutdown
+    myFrameBuffer->updateWindowedPos();
+    settings().setValue("display", myFrameBuffer->getCurrentDisplayIndex());
+
     Logger::debug("Saving TV effects options ...");
     myFrameBuffer->tiaSurface().ntsc().saveConfig(settings());
   }
