@@ -140,6 +140,7 @@
     <ClCompile Include="..\common\JoyMap.cxx" />
     <ClCompile Include="..\common\KeyMap.cxx" />
     <ClCompile Include="..\common\Logger.cxx" />
+    <ClCompile Include="..\emucore\CartFC.cxx" />
     <ClCompile Include="libretro.cxx" />
     <ClCompile Include="EventHandlerLIBRETRO.cxx" />
     <ClCompile Include="FBSurfaceLIBRETRO.cxx" />
@@ -306,6 +307,7 @@
     <ClInclude Include="..\emucore\CartDF.hxx" />
     <ClInclude Include="..\emucore\CartDFSC.hxx" />
     <ClInclude Include="..\emucore\CartFA2.hxx" />
+    <ClInclude Include="..\emucore\CartFC.hxx" />
     <ClInclude Include="..\emucore\CartMDM.hxx" />
     <ClInclude Include="..\emucore\CartMNetwork.hxx" />
     <ClInclude Include="..\emucore\CartE78K.hxx" />
