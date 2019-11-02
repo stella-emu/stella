@@ -44,6 +44,7 @@ MODULE_OBJS := \
 	src/debugger/gui/CartF8Widget.o \
 	src/debugger/gui/CartFA2Widget.o \
 	src/debugger/gui/CartFAWidget.o \
+	src/debugger/gui/CartFCWidget.o \
 	src/debugger/gui/CartFEWidget.o \
 	src/debugger/gui/CartMDMWidget.o \
 	src/debugger/gui/CartRamWidget.o \
