@@ -226,6 +226,11 @@ class CartDetector
     static bool isProbablyFA2(const ByteBuffer& image, size_t size);
 
     /**
+      Returns true if the image is probably an FC bankswitching cartridge
+    */
+    static bool isProbablyFC(const ByteBuffer& image, size_t size);
+
+    /**
       Returns true if the image is probably an FE bankswitching cartridge
     */
     static bool isProbablyFE(const ByteBuffer& image, size_t size);

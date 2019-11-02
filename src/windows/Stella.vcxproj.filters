@@ -981,6 +981,12 @@
     <ClCompile Include="..\debugger\BreakpointMap.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\CartFC.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartFCWidget.cxx">
+      <Filter>Source Files\debugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2001,6 +2007,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\BreakpointMap.hxx">
+      <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartFC.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartFCWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
   </ItemGroup>

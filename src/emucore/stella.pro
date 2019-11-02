@@ -7937,6 +7937,7 @@
 "Cart.ModelNo" "2110"
 "Cart.Name" "3-D Havoc (1983) (Amiga) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "60d304582d33e2957b73eb300a7495bb"
@@ -17086,11 +17087,12 @@
 ""
 
 "Cart.MD5" "d54cd41ecfd59e4b72d2c086152b9a75"
-"Cart.Manufacturer" "Amiga"
+"Cart.Manufacturer" "Amiga - Video Soft - Michael K. Glass, Jerry Lawson"
 "Cart.ModelNo" "1110"
 "Cart.Name" "Power Play Arcade Video Game Album (1983) (Amiga) (Prototype)"
-"Cart.Note" "Ghost Attack, Genesis, Havoc"
+"Cart.Note" "3-D Ghost Attack only (3-D Genesis & 3-D Havoc missing in ROM)"
 "Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "d5618464dbdc2981f6aa8b955828eeb4"
@@ -20605,6 +20607,7 @@
 "Cart.Manufacturer" "Amiga - Video Soft, Michael K. Glass, Jerry Lawson"
 "Cart.Name" "3-D Ghost Attack (1983) (Amiga) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "fcea12625c071ddc49f4e409f4038c60"

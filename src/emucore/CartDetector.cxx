@@ -53,6 +53,7 @@
 #include "CartF8SC.hxx"
 #include "CartFA.hxx"
 #include "CartFA2.hxx"
+#include "CartFC.hxx"
 #include "CartFE.hxx"
 #include "CartMDM.hxx"
 #include "CartSB.hxx"
@@ -316,6 +317,8 @@ CartDetector::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::
       return make_unique<CartridgeFA>(image, size, md5, settings);
     case Bankswitch::Type::_FA2:
       return make_unique<CartridgeFA2>(image, size, md5, settings);
+    case Bankswitch::Type::_FC:
+      return make_unique<CartridgeFC>(image, size, md5, settings);
     case Bankswitch::Type::_FE:
       return make_unique<CartridgeFE>(image, size, md5, settings);
     case Bankswitch::Type::_MDM:
@@ -419,6 +422,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_F6SC;
     else if(isProbablyE7(image, size))
       type = Bankswitch::Type::_E7;
+    else if (isProbablyFC(image, size))
+      type = Bankswitch::Type::_FC;
     else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
   /* no known 16K 3F ROMS
@@ -457,6 +462,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_DPCP;
     else if(isProbablyFA2(image, size))
       type = Bankswitch::Type::_FA2;
+    else if (isProbablyFC(image, size))
+      type = Bankswitch::Type::_FC;
     else
       type = Bankswitch::Type::_F4;
   }
@@ -924,6 +931,17 @@ bool CartDetector::isProbablyFA2(const ByteBuffer& image, size_t)
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbablyFC(const ByteBuffer& image, size_t size)
+{
+  // FC bankswitching uses consecutive writes to 3 hotspots
+  uInt8 signature[6] = {
+    0x8e, 0xf8, 0xff, 0x8c, 0xf9, 0xff // STX $FFF8, STY $FFF9
+  };
+  return (searchForBytes(image.get(), size, signature, 6, 1));
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyFE(const ByteBuffer& image, size_t size)
