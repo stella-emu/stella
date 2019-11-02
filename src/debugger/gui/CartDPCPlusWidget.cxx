@@ -48,7 +48,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   }
 #endif
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "Activision (Pitfall II)", info.str()) +
               myLineHeight;
 
@@ -60,15 +60,15 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   VarList::push_back(items, "4 ($FFFA)");
   VarList::push_back(items, "5 ($FFFB)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   // Top registers
   int lwidth = _font.getStringWidth("Counter Registers ");
-  xpos = 10;  ypos += myLineHeight + 8;
+  xpos = 2;  ypos += myLineHeight + 8;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Top Registers ", TextAlign::Left);
   xpos += lwidth;
@@ -78,7 +78,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myTops->setEditable(false);
 
   // Bottom registers
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Bottom Registers ", TextAlign::Left);
   xpos += lwidth;
@@ -88,7 +88,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myBottoms->setEditable(false);
 
   // Counter registers
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Counter Registers ", TextAlign::Left);
   xpos += lwidth;
@@ -98,7 +98,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myCounters->setEditable(false);
 
   // Fractional counter registers
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Frac Counters ", TextAlign::Left);
   xpos += lwidth;
@@ -108,7 +108,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myFracCounters->setEditable(false);
 
   // Fractional increment registers
-  xpos = 10;  ypos += myFracCounters->getHeight() + 8;
+  xpos = 2;  ypos += myFracCounters->getHeight() + 8;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Frac Increments ", TextAlign::Left);
   xpos += lwidth;
@@ -118,7 +118,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myFracIncrements->setEditable(false);
 
   // Special function parameters
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Function Params ", TextAlign::Left);
   xpos += lwidth;
@@ -128,7 +128,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myParameter->setEditable(false);
 
   // Music counters
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music Counters ", TextAlign::Left);
   xpos += lwidth;
@@ -138,7 +138,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myMusicCounters->setEditable(false);
 
   // Music frequencies
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music Frequencies ", TextAlign::Left);
   xpos += lwidth;
@@ -148,7 +148,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
   myMusicFrequencies->setEditable(false);
 
   // Music waveforms
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music Waveforms ", TextAlign::Left);
   xpos += lwidth;
@@ -159,7 +159,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
 
   // Current random number
   lwidth = _font.getStringWidth("Current random number ");
-  xpos = 10;  ypos += myLineHeight + 4;
+  xpos = 2;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Current random number ", TextAlign::Left);
   xpos += lwidth;

@@ -34,7 +34,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
     "High bank region (256B)  : $FE00 - $FEFF\n"
     "Fixed (last 256B of ROM) : $FF00 - $FFFF\n";
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(cart.mySize, "John Payson / Supercat", info) +
                myLineHeight;
 
@@ -63,7 +63,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
             flwidth = _font.getStringWidth("ROM ");
 
   // Lower bank/region configuration
-  xpos = 10;
+  xpos = 2;
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
     myFontHeight, lowerlabel, TextAlign::Left);
   ypos += myLineHeight + 8;
@@ -83,7 +83,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   addFocusWidget(myRAMLower);
 
   // Middle bank/region configuration
-  xpos = 10;  ypos += myLineHeight + 14;
+  xpos = 2;  ypos += myLineHeight + 14;
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
     myFontHeight, middlelabel, TextAlign::Left);
   ypos += myLineHeight + 8;
@@ -103,7 +103,7 @@ Cartridge4A50Widget::Cartridge4A50Widget(
   addFocusWidget(myRAMMiddle);
 
   // High bank/region configuration
-  xpos = 10;  ypos += myLineHeight + 14;
+  xpos = 2;  ypos += myLineHeight + 14;
   new StaticTextWidget(_boss, _font, xpos, ypos, lwidth,
     myFontHeight, highlabel, TextAlign::Left);
   ypos += myLineHeight + 8;

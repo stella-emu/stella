@@ -74,6 +74,7 @@ int CartDebugWidget::addBaseInformation(size_t bytes, const string& manufacturer
   myDesc = new StringListWidget(_boss, _nfont, x+lwidth, y - 1,
                                 fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);
+  myDesc->setEnabled(false);
   myDesc->setList(sl);
 
   y += myDesc->getHeight() + 4;

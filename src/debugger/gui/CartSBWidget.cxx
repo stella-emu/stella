@@ -51,13 +51,13 @@ CartridgeSBWidget::CartridgeSBWidget(
     bank.str("");
   }
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "Fred X. Quimby", info.str()) + myLineHeight;
 
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("XX ($800) "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("XX ($800)"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

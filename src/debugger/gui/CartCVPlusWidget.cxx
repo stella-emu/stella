@@ -37,7 +37,7 @@ CartridgeCVPlusWidget::CartridgeCVPlusWidget(
        << "2048 bytes ROM @ $F800 - $FFFF, by writing to $3D\n"
        << "Startup bank = " << cart.startBank() << "\n";
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "LS_Dracon / Stephen Anthony",
                                 info.str()) + myLineHeight;
 
@@ -48,7 +48,7 @@ CartridgeCVPlusWidget::CartridgeCVPlusWidget(
   ostringstream label;
   label << "Set bank ($F800 - $FFFF) ";
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("xxx ($3D) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("xxx ($3D)"),
                     myLineHeight, items, label.str(),
                     _font.getStringWidth(label.str()), kBankChanged);
   myBank->setTarget(this);

@@ -43,7 +43,7 @@ CartridgeX07Widget::CartridgeX07Widget(
          << " - " << "$" << (start + 0xFFF) << "\n";
   }
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "AtariAge / John Payson / Fred Quimby",
                                 info.str()) + myLineHeight;
 
@@ -65,9 +65,9 @@ CartridgeX07Widget::CartridgeX07Widget(
   VarList::push_back(items, " 14");
   VarList::push_back(items, " 15");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 15 "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 15"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

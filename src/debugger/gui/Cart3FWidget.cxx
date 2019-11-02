@@ -39,7 +39,7 @@ Cartridge3FWidget::Cartridge3FWidget(
   start -= start % 0x1000;
   info << "Bank RORG" << " = $" << Common::Base::HEX4 << start << "\n";
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "TigerVision", info.str()) + myLineHeight;
 
   VariantList items;

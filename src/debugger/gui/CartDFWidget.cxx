@@ -41,7 +41,7 @@ CartridgeDFWidget::CartridgeDFWidget(
          << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "CPUWIZ", info.str()) + myLineHeight;
 
   VariantList items;
@@ -79,9 +79,9 @@ CartridgeDFWidget::CartridgeDFWidget(
   VarList::push_back(items, "31 ($FFDF)");
 
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("31 ($FFDF) "),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("31 ($FFDF)"),
                     myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

@@ -45,7 +45,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
          << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "Activision (Pitfall II)", info.str()) +
               myLineHeight;
 
@@ -53,9 +53,9 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   VarList::push_back(items, "0 ($FFF8)");
   VarList::push_back(items, "1 ($FFF9)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
   ypos += myLineHeight + 8;
@@ -77,7 +77,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myTops->setEditable(false);
 
   // Bottom registers
-  xpos = 18;  ypos += myLineHeight + 4;
+  xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Bottom Registers ", TextAlign::Left);
   xpos += lwidth;
@@ -87,7 +87,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myBottoms->setEditable(false);
 
   // Counter registers
-  xpos = 18;  ypos += myLineHeight + 4;
+  xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Counter Registers ", TextAlign::Left);
   xpos += lwidth;
@@ -97,7 +97,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myCounters->setEditable(false);
 
   // Flag registers
-  xpos = 18;  ypos += myLineHeight + 4;
+  xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Flag Registers ", TextAlign::Left);
   xpos += lwidth;
@@ -107,7 +107,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myFlags->setEditable(false);
 
   // Music mode
-  xpos = 10;  ypos += myLineHeight + 12;
+  xpos = 2;  ypos += myLineHeight + 12;
   lwidth = _font.getStringWidth("Music mode (DF5/DF6/DF7) ");
   new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
         myFontHeight, "Music mode (DF5/DF6/DF7) ", TextAlign::Left);

@@ -63,6 +63,9 @@ void StringListWidget::drawWidget(bool hilite)
   // Draw a thin frame around the list.
   s.frameRect(_x, _y, _w + 1, _h, onTop && hilite && _hilite ? kWidColorHi : kColor);
 
+  if (!isEnabled())
+    s.fillRect(_x + 1, _y + 1, _w - 1, _h - 2, onTop ? kDlgColor : kBGColorLo);
+
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {

@@ -32,7 +32,7 @@ CartridgeARWidget::CartridgeARWidget(
     "Supercharger cartridge, four 2K slices (3 RAM, 1 ROM)\n"
     "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "Starpath", info) + myLineHeight;
 
   VariantList items;
@@ -69,9 +69,9 @@ CartridgeARWidget::CartridgeARWidget(
   VarList::push_back(items, " 30");
   VarList::push_back(items, " 31");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" XX "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" XX"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
