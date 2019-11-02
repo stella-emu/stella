@@ -90,6 +90,11 @@ bool CartridgeFC::poke(uInt16 address, uInt8 value)
       myTargetBank %= bankCount();
       break;
 
+    case 0x0FFC:
+      // Trigger the bank switch
+      bank(myTargetBank);
+      break;
+
     default:
       break;
   }

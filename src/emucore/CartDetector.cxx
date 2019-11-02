@@ -368,6 +368,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_CV;
     else if(isProbably4KSC(image, size))
       type = Bankswitch::Type::_4KSC;
+    else if (isProbablyFC(image, size))
+      type = Bankswitch::Type::_FC;
     else
       type = Bankswitch::Type::_4K;
   }
@@ -401,6 +403,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_E78K;
     else if (isProbablyWD(image,size))
       type = Bankswitch::Type::_WD;
+    else if (isProbablyFC(image, size))
+      type = Bankswitch::Type::_FC;
     else
       type = Bankswitch::Type::_F8;
   }
@@ -936,10 +940,16 @@ bool CartDetector::isProbablyFA2(const ByteBuffer& image, size_t)
 bool CartDetector::isProbablyFC(const ByteBuffer& image, size_t size)
 {
   // FC bankswitching uses consecutive writes to 3 hotspots
-  uInt8 signature[6] = {
-    0x8e, 0xf8, 0xff, 0x8c, 0xf9, 0xff // STX $FFF8, STY $FFF9
+  uInt8 signature[2][6] = {
+    { 0x8d, 0xf8, 0x1f, 0x4a, 0x4a, 0x8d }, // STA $1FF8, LSR, LSR, STA... Power Play Arcade Menus, 3-D Ghost Attack
+    { 0x8d, 0xf8, 0xff, 0x8d, 0xfc, 0xff }, // STA $FFF8, STA $FFFC        Surf's Up (4K)
+    //{ 0x8c, 0xf9, 0xff, 0xad, 0xfc, 0xff }  // STY $FFF9, LDA $FFFC        3-D Havoc (patched for F8, ignore!)
   };
-  return (searchForBytes(image.get(), size, signature, 6, 1));
+  for (uInt32 i = 0; i < 2; ++i)
+    if (searchForBytes(image.get(), size, signature[i], 6, 1))
+      return true;
+
+  return false;
 }
 
 
