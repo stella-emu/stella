@@ -41,9 +41,9 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   VarList::push_back(items, "4 ($FFF9)");
   VarList::push_back(items, "5 ($FFFA)");
   VarList::push_back(items, "6 ($FFFB)");
-  myBank = new PopUpWidget(boss, _font, xpos, ypos, _font.getStringWidth("0 ($FFFx) "),
+  myBank = new PopUpWidget(boss, _font, xpos, ypos, _font.getStringWidth("0 ($FFFx)"),
                            myLineHeight, items,
-                           "Set bank ", _font.getStringWidth("Set bank "), kBankChanged);
+                           "Set bank ", 0, kBankChanged);
   myBank->setTarget(this);
   //addFocusWidget(myBank);
 

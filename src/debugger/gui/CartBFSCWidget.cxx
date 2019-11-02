@@ -45,7 +45,7 @@ CartridgeBFSCWidget::CartridgeBFSCWidget(
          << " - " << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "CPUWIZ", info.str()) + myLineHeight;
 
   VariantList items;
@@ -115,9 +115,9 @@ CartridgeBFSCWidget::CartridgeBFSCWidget(
   VarList::push_back(items, "63 ($FFBF)");
 
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("63 ($FFBF) "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("63 ($FFBF)"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

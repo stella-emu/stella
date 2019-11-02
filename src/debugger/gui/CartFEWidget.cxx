@@ -33,7 +33,7 @@ CartridgeFEWidget::CartridgeFEWidget(
     "Bank 0 @ $F000 - $FFFF (DATA = 111, D5 = 1)\n"
     "Bank 1 @ $D000 - $DFFF (DATA = 110, D5 = 0)\n";
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(2 * 4096, "Activision", info) + myLineHeight;
 
   VariantList items;
@@ -42,8 +42,8 @@ CartridgeFEWidget::CartridgeFEWidget(
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2,
                     _font.getStringWidth("0 ($01FE, D5=1)"),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

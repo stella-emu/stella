@@ -37,7 +37,7 @@ void CartridgeMNetworkWidget::initialize(GuiObject* boss, CartridgeMNetwork& car
 {
   uInt32 size = cart.bankCount() * cart.BANK_SIZE;
 
-  int xpos = 10,
+  int xpos = 2,
     ypos = addBaseInformation(size, "M-Network", info.str(), 15) +
     myLineHeight;
 

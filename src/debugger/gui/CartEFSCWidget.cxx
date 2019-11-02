@@ -45,7 +45,7 @@ CartridgeEFSCWidget::CartridgeEFSCWidget(
          << " - " << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "Paul Slocum / Homestar Runner",
                                 info.str()) + myLineHeight;
 
@@ -67,9 +67,9 @@ CartridgeEFSCWidget::CartridgeEFSCWidget(
   VarList::push_back(items, "14 ($FFEE)");
   VarList::push_back(items, "15 ($FFEF)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("15 ($FFE0) "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("15 ($FFE0)"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

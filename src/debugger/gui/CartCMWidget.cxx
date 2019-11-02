@@ -42,7 +42,7 @@ CartridgeCMWidget::CartridgeCMWidget(
     "used to control the cart functionality\n"
     "Startup bank = 3 (ROM), RAM disabled\n";
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "CompuMate", info) + myLineHeight;
 
   VariantList items;
@@ -52,8 +52,8 @@ CartridgeCMWidget::CartridgeCMWidget(
   VarList::push_back(items, " 3 ");
   myBank =
     new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth(" 0 "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 

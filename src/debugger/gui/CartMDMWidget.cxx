@@ -35,7 +35,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
        << "\nBanks are selected by reading from $800 - $BFF, where the lower "
           "byte determines the 4K bank to use.";
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "Edwin Blink", info.str(), 15) + myLineHeight;
 
   VariantList items;
@@ -47,9 +47,9 @@ CartridgeMDMWidget::CartridgeMDMWidget(
   }
 
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("xxx ($0FFF) "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("xxx ($0FFF)"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 

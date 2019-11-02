@@ -59,7 +59,7 @@ CartridgeE0Widget::CartridgeE0Widget(
   start -= start % 0x1000;
   info << "Bank RORG" << " = $" << HEX4 << start << "\n";
 #endif
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "Parker Brothers", info) + myLineHeight;
 
   VariantList items0, items1, items2;

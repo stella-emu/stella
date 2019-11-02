@@ -42,16 +42,16 @@ Cartridge0840Widget::Cartridge0840Widget(
          << "$" << (start + 0xFFF) << " (hotspot = $" << spot << ")\n";
   }
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "Fred X. Quimby", info.str()) + myLineHeight;
 
   VariantList items;
   VarList::push_back(items, "0 ($800)");
   VarList::push_back(items, "1 ($840)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($800) "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($800)"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

@@ -36,7 +36,7 @@ CartridgeWDWidget::CartridgeWDWidget(
     "64 bytes RAM @ $F000 - $F080\n"
     "  $F000 - $F03F (R), $F040 - $F07F (W)\n";
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(myCart.mySize, "Wickstead Design", info, 12) + myLineHeight;
 
   VariantList items;
@@ -58,8 +58,8 @@ CartridgeWDWidget::CartridgeWDWidget(
   VarList::push_back(items, "15 ($3F) [6,0,5,1]", 15);
   myBank = new PopUpWidget(boss, _font, xpos, ypos-2,
                     _font.getStringWidth("15 ($3F) [6,0,5,1]"),
-                    myLineHeight, items, "Set bank    ",
-                    _font.getStringWidth("Set bank    "), kBankChanged);
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }

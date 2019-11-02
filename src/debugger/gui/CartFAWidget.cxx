@@ -45,7 +45,7 @@ CartridgeFAWidget::CartridgeFAWidget(
          << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
   }
 
-  int xpos = 10,
+  int xpos = 2,
       ypos = addBaseInformation(size, "CBS", info.str()) + myLineHeight;
 
   VariantList items;
@@ -53,9 +53,9 @@ CartridgeFAWidget::CartridgeFAWidget(
   VarList::push_back(items, "1 ($FFF9)");
   VarList::push_back(items, "2 ($FFFA)");
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
-                    myLineHeight, items, "Set bank ",
-                    _font.getStringWidth("Set bank "), kBankChanged);
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
+                    myLineHeight, items, "Set bank     ",
+                    0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
