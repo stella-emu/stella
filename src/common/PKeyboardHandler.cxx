@@ -42,7 +42,9 @@ static constexpr int MOD3 = KBDM_ALT;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& handler)
   : myOSystem(system),
-    myHandler(handler)
+    myHandler(handler),
+    myLeftMode(EventMode::kEmulationMode),
+    myRightMode(EventMode::kEmulationMode)
 #ifdef BSPF_UNIX
     , myAltKeyCounter(0)
 #endif

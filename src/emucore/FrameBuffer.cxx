@@ -56,7 +56,8 @@ FrameBuffer::FrameBuffer(OSystem& osystem)
     myGrabMouse(false),
     myHiDPIAllowed(false),
     myHiDPIEnabled(false),
-    myCurrentModeList(nullptr)
+    myCurrentModeList(nullptr),
+    myTIAMaxZoom(1.0)
 {
 }
 

@@ -821,7 +821,7 @@ void Console::setControllers(const string& romMd5)
     const bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
     // Try to detect controllers
-    if(image != nullptr || size != 0)
+    if(image != nullptr && size != 0)
     {
       leftType = ControllerDetector::detectType(image, size, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right, myOSystem.settings());
