@@ -46,8 +46,10 @@ StaggeredLogger::StaggeredLogger(const string& message, Logger::Level level)
     myCurrentIntervalFactor(1),
     myCooldownTime(1000),
     myTimer(new TimerManager()),
+    myTimerId(0),
     myTimerCallbackId(0)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaggeredLogger::~StaggeredLogger()

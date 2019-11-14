@@ -388,18 +388,6 @@ class EventHandler
     void removePhysicalJoystick(int index);
 
   private:
-    static constexpr Int32
-      COMBO_SIZE           = 16,
-      EVENTS_PER_COMBO     = 8,
-    #ifdef PNG_SUPPORT
-      PNG_SIZE             = 2,
-    #else
-      PNG_SIZE             = 0,
-    #endif
-      EMUL_ACTIONLIST_SIZE = 139 + PNG_SIZE + COMBO_SIZE,
-      MENU_ACTIONLIST_SIZE = 18
-    ;
-
     // Define event groups
     static const Event::EventSet MiscEvents;
     static const Event::EventSet AudioVideoEvents;
@@ -449,9 +437,6 @@ class EventHandler
     // all possible controller modes
     unique_ptr<MouseControl> myMouseControl;
 
-    // The event(s) assigned to each combination event
-    Event::Type myComboTable[COMBO_SIZE][EVENTS_PER_COMBO];
-
     // Indicates the current state of the system (ie, which mode is current)
     EventHandlerState myState;
 
@@ -469,9 +454,28 @@ class EventHandler
     // of the 7800 (for now, only the switches are notified)
     bool myIs7800;
 
+    // These constants are not meant to be used elsewhere; they are only used
+    // here to make it easier for the reader to correctly size the list(s)
+    static constexpr Int32
+      COMBO_SIZE           = 16,
+      EVENTS_PER_COMBO     = 8,
+    #ifdef PNG_SUPPORT
+      PNG_SIZE             = 3,
+    #else
+      PNG_SIZE             = 0,
+    #endif
+      EMUL_ACTIONLIST_SIZE = 138 + PNG_SIZE + COMBO_SIZE,
+      MENU_ACTIONLIST_SIZE = 18
+    ;
+
+    // The event(s) assigned to each combination event
+    Event::Type myComboTable[COMBO_SIZE][EVENTS_PER_COMBO];
+
     // Holds static strings for the remap menu (emulation and menu events)
-    static ActionList ourEmulActionList[EMUL_ACTIONLIST_SIZE];
-    static ActionList ourMenuActionList[MENU_ACTIONLIST_SIZE];
+    using EmulActionList = std::array<ActionList, EMUL_ACTIONLIST_SIZE>;
+    static EmulActionList ourEmulActionList;
+    using MenuActionList = std::array<ActionList, MENU_ACTIONLIST_SIZE>;
+    static MenuActionList ourMenuActionList;
 
     // Following constructors and assignment operators not supported
     EventHandler() = delete;

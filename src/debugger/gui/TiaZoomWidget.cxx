@@ -49,7 +49,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   myZoomLevel = 2;
   myNumCols = (_w - 4) / myZoomLevel;
   myNumRows = (_h - 4) / myZoomLevel;
-  myOffX = myOffY = 0;
+  myOffX = myOffY = myOffXLo = myOffYLo = 0;
 
   myMouseMoving = false;
   myClickX = myClickY = 0;

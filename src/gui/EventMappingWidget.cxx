@@ -39,7 +39,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                        int x, int y, int w, int h,
                                        EventMode mode)
   : Widget(boss, font, x, y, w, h),
-  CommandSender(boss),
+    CommandSender(boss),
     myFilterPopup(nullptr),
     myComboDialog(nullptr),
     myEventMode(mode),
@@ -51,6 +51,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myLastAxis(JoyAxis::NONE),
     myLastDir(JoyDir::NONE),
     myLastHatDir(JoyHatDir::CENTER),
+    myMod(0),
+    myLastKey(0),
     myLastButton(JOY_CTRL_NONE),
     myFirstTime(true)
 {

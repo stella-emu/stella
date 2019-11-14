@@ -44,7 +44,10 @@ FrameLayout FrameLayoutDetector::detectedLayout() const{
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameLayoutDetector::FrameLayoutDetector()
-  : myState(State::waitForVsyncStart)
+  : myState(State::waitForVsyncStart),
+    myNtscFrames(0),
+    myPalFrames(0),
+    myLinesWaitingForVsyncToStart(0)
 {
   reset();
 }

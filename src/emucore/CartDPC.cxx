@@ -26,7 +26,8 @@ CartridgeDPC::CartridgeDPC(const ByteBuffer& image, size_t size,
     mySize(size),
     myAudioCycles(0),
     myFractionalClocks(0.0),
-    myBankOffset(0)
+    myBankOffset(0),
+    myDpcPitch(0.0)
 {
   // Make a copy of the entire image
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());

@@ -242,14 +242,14 @@ void EventHandler::poll(uInt64 time)
       myOSystem.png().updateTime(time);
   #endif
   }
+#ifdef GUI_SUPPORT
   else if(myOverlay)
   {
-  #ifdef GUI_SUPPORT
     // Update the current dialog container at regular intervals
     // Used to implement continuous events
     myOverlay->updateTime(time);
-  #endif
   }
+#endif
 
   // Turn off all mouse-related items; if they haven't been taken care of
   // in the previous ::update() methods, they're now invalid
@@ -902,7 +902,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
   }
 
   // Otherwise, pass it to the emulation core
-  if (!repeated)
+  if(!repeated)
     myEvent.set(event, value);
 }
 
@@ -1006,42 +1006,54 @@ bool EventHandler::changeStateByEvent(Event::Type type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setActionMappings(EventMode mode)
 {
-  int listsize = 0;
-  ActionList* list = nullptr;
-
   switch(mode)
   {
     case EventMode::kEmulationMode:
-      listsize = EMUL_ACTIONLIST_SIZE;
-      list     = ourEmulActionList;
+      // Fill the EmulActionList with the current key and joystick mappings
+      for(auto& item: ourEmulActionList)
+      {
+        Event::Type event = item.event;
+        item.key = "None";
+        string key = myPKeyHandler->getMappingDesc(event, mode);
+
+    #ifdef JOYSTICK_SUPPORT
+        string joydesc = myPJoyHandler->getMappingDesc(event, mode);
+        if(joydesc != "")
+        {
+          if(key != "")
+            key += ", ";
+          key += joydesc;
+        }
+    #endif
+
+        if(key != "")
+          item.key = key;
+      }
       break;
     case EventMode::kMenuMode:
-      listsize = MENU_ACTIONLIST_SIZE;
-      list     = ourMenuActionList;
+      // Fill the MenuActionList with the current key and joystick mappings
+      for(auto& item: ourMenuActionList)
+      {
+        Event::Type event = item.event;
+        item.key = "None";
+        string key = myPKeyHandler->getMappingDesc(event, mode);
+
+    #ifdef JOYSTICK_SUPPORT
+        string joydesc = myPJoyHandler->getMappingDesc(event, mode);
+        if(joydesc != "")
+        {
+          if(key != "")
+            key += ", ";
+          key += joydesc;
+        }
+    #endif
+
+        if(key != "")
+          item.key = key;
+      }
       break;
     default:
       return;
-  }
-
-  // Fill the ActionList with the current key and joystick mappings
-  for(int i = 0; i < listsize; ++i)
-  {
-    Event::Type event = list[i].event;
-    list[i].key = "None";
-    string key = myPKeyHandler->getMappingDesc(event, mode);
-
-#ifdef JOYSTICK_SUPPORT
-    string joydesc = myPJoyHandler->getMappingDesc(event, mode);
-    if(joydesc != "")
-    {
-      if(key != "")
-        key += ", ";
-      key += joydesc;
-    }
-#endif
-
-    if(key != "")
-      list[i].key = key;
   }
 }
 
@@ -1222,12 +1234,12 @@ StringList EventHandler::getActionList(EventMode mode) const
   switch(mode)
   {
     case EventMode::kEmulationMode:
-      for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
-        l.push_back(EventHandler::ourEmulActionList[i].action);
+      for(const auto& item: ourEmulActionList)
+        l.push_back(item.action);
       break;
     case EventMode::kMenuMode:
-      for(uInt32 i = 0; i < MENU_ACTIONLIST_SIZE; ++i)
-        l.push_back(EventHandler::ourMenuActionList[i].action);
+      for(const auto& item: ourMenuActionList)
+        l.push_back(item.action);
       break;
     default:
       break;
@@ -1288,21 +1300,21 @@ StringList EventHandler::getActionList(const Event::EventSet& events, EventMode 
   switch(mode)
   {
     case EventMode::kMenuMode:
-      for(uInt32 i = 0; i < MENU_ACTIONLIST_SIZE; ++i)
+      for(const auto& item: ourMenuActionList)
         for(const auto& event : events)
-          if(EventHandler::ourMenuActionList[i].event == event)
+          if(item.event == event)
           {
-            l.push_back(EventHandler::ourMenuActionList[i].action);
+            l.push_back(item.action);
             break;
           }
       break;
 
     default:
-      for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
+      for(const auto& item: ourEmulActionList)
         for(const auto& event : events)
-          if(EventHandler::ourEmulActionList[i].event == event)
+          if(item.event == event)
           {
-            l.push_back(EventHandler::ourEmulActionList[i].action);
+            l.push_back(item.action);
             break;
           }
   }
@@ -1317,7 +1329,7 @@ VariantList EventHandler::getComboList(EventMode /**/) const
   ostringstream buf;
 
   VarList::push_back(l, "None", "-1");
-  for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
+  for(uInt32 i = 0; i < ourEmulActionList.size(); ++i)
   {
     Event::Type event = EventHandler::ourEmulActionList[i].event;
     // exclude combos events
@@ -1342,7 +1354,7 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
     for(uInt32 i = 0; i < EVENTS_PER_COMBO; ++i)
     {
       Event::Type e = myComboTable[combo][i];
-      for(uInt32 j = 0; j < EMUL_ACTIONLIST_SIZE; ++j)
+      for(uInt32 j = 0; j < ourEmulActionList.size(); ++j)
       {
         if(EventHandler::ourEmulActionList[j].event == e)
         {
@@ -1366,10 +1378,10 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
   {
     assert(events.size() == 8);
     int combo = event - Event::Combo1;
-    for(int i = 0; i < 8; ++i)
+    for(uInt32 i = 0; i < 8; ++i)
     {
-      int idx = atoi(events[i].c_str());
-      if(idx >= 0 && idx < EMUL_ACTIONLIST_SIZE)
+      uInt32 idx = atoi(events[i].c_str());
+      if(idx < ourEmulActionList.size())
         myComboTable[combo][i] = EventHandler::ourEmulActionList[idx].event;
       else
         myComboTable[combo][i] = Event::NoType;
@@ -1385,7 +1397,7 @@ int EventHandler::getEmulActionListIndex(int idx, const Event::EventSet& events)
   //   ordered by 'ourEmulActionList'!
   Event::Type event = Event::NoType;
 
-  for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
+  for(uInt32 i = 0; i < ourEmulActionList.size(); ++i)
   {
     for(const auto& item : events)
       if(EventHandler::ourEmulActionList[i].event == item)
@@ -1399,7 +1411,7 @@ int EventHandler::getEmulActionListIndex(int idx, const Event::EventSet& events)
       break;
   }
 
-  for(uInt32 i = 0; i < EMUL_ACTIONLIST_SIZE; ++i)
+  for(uInt32 i = 0; i < ourEmulActionList.size(); ++i)
     if(EventHandler::ourEmulActionList[i].event == event)
       return i;
 
@@ -1457,13 +1469,13 @@ Event::Type EventHandler::eventAtIndex(int idx, Event::Group group) const
   switch(group)
   {
     case Event::Group::Menu:
-      if(index < 0 || index >= MENU_ACTIONLIST_SIZE)
+      if(index < 0 || index >= int(ourMenuActionList.size()))
         return Event::NoType;
       else
         return ourMenuActionList[index].event;
 
     default:
-      if(index < 0 || index >= EMUL_ACTIONLIST_SIZE)
+      if(index < 0 || index >= int(ourEmulActionList.size()))
         return Event::NoType;
       else
         return ourEmulActionList[index].event;
@@ -1478,13 +1490,13 @@ string EventHandler::actionAtIndex(int idx, Event::Group group) const
   switch(group)
   {
     case Event::Group::Menu:
-      if(index < 0 || index >= MENU_ACTIONLIST_SIZE)
+      if(index < 0 || index >= int(ourMenuActionList.size()))
         return EmptyString;
       else
         return ourMenuActionList[index].action;
 
     default:
-      if(index < 0 || index >= EMUL_ACTIONLIST_SIZE)
+      if(index < 0 || index >= int(ourEmulActionList.size()))
         return EmptyString;
       else
         return ourEmulActionList[index].action;
@@ -1499,13 +1511,13 @@ string EventHandler::keyAtIndex(int idx, Event::Group group) const
   switch(group)
   {
     case Event::Group::Menu:
-      if(index < 0 || index >= MENU_ACTIONLIST_SIZE)
+      if(index < 0 || index >= int(ourMenuActionList.size()))
         return EmptyString;
       else
         return ourMenuActionList[index].key;
 
     default:
-      if(index < 0 || index >= EMUL_ACTIONLIST_SIZE)
+      if(index < 0 || index >= int(ourEmulActionList.size()))
         return EmptyString;
       else
         return ourEmulActionList[index].key;
@@ -1710,7 +1722,7 @@ void EventHandler::exitEmulation()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] = {
+EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::Quit,                    "Quit",                                  "" },
   { Event::ReloadConsole,           "Reload current ROM/load next game",     "" },
   { Event::ExitMode,                "Exit current Stella menu/mode",         "" },
@@ -1887,10 +1899,10 @@ EventHandler::ActionList EventHandler::ourEmulActionList[EMUL_ACTIONLIST_SIZE] =
   { Event::Combo14,                 "Combo 14",                              "" },
   { Event::Combo15,                 "Combo 15",                              "" },
   { Event::Combo16,                 "Combo 16",                              "" }
-};
+} };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EventHandler::ActionList EventHandler::ourMenuActionList[MENU_ACTIONLIST_SIZE] = {
+EventHandler::MenuActionList EventHandler::ourMenuActionList = { {
   { Event::UIUp,              "Move Up",              "" },
   { Event::UIDown,            "Move Down",            "" },
   { Event::UILeft,            "Move Left",            "" },
@@ -1913,7 +1925,7 @@ EventHandler::ActionList EventHandler::ourMenuActionList[MENU_ACTIONLIST_SIZE] =
   { Event::UIPrevDir,         "Parent directory",     "" },
   { Event::ToggleFullScreen,  "Toggle fullscreen",    "" },
   { Event::Quit,              "Quit",                 "" }
-};
+} };
 
 // Event groups
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

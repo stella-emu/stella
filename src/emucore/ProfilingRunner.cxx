@@ -178,7 +178,7 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
 
   EmulationTiming emulationTiming(frameLayout, consoleTiming);
   uInt64 cycles = 0;
-  uInt64 cyclesTarget = run.runtime * emulationTiming.cyclesPerSecond();
+  uInt64 cyclesTarget = uInt64(run.runtime) * emulationTiming.cyclesPerSecond();
 
   DispatchResult dispatchResult;
   dispatchResult.setOk(0);

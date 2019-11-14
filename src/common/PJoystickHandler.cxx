@@ -33,7 +33,9 @@ static constexpr char CTRL_DELIM = '^';
 PhysicalJoystickHandler::PhysicalJoystickHandler(
       OSystem& system, EventHandler& handler)
   : myOSystem(system),
-    myHandler(handler)
+    myHandler(handler),
+    myLeftMode(EventMode::kEmulationMode),
+    myRightMode(EventMode::kEmulationMode)
 {
   Int32 version = myOSystem.settings().getInt("event_ver");
   // Load previously saved joystick mapping (if any) from settings

@@ -167,7 +167,15 @@ int main(int ac, char* av[])
   if (isProfilingRun(ac, av)) {
     ProfilingRunner runner(ac, av);
 
-    return runner.run() ? 0 : 1;
+    try
+    {
+      return runner.run() ? 0 : 1;
+    }
+    catch(const runtime_error& e)
+    {
+      cerr << e.what() << endl;
+      return 0;
+    }
   }
 
   unique_ptr<OSystem> theOSystem;
