@@ -79,7 +79,7 @@ class TIA : public Device
       NTSC_RED      = 0x30,
       NTSC_ORANGE   = 0x38,
       NTSC_YELLOW   = 0x1c,
-      NTSC_GREEN    = 0xc4,
+      NTSC_GREEN    = 0xc6,
       NTSC_BLUE     = 0x9c,
       NTSC_PURPLE   = 0x66,
       NTSC_GREY     = 0x04,
@@ -87,7 +87,7 @@ class TIA : public Device
       PAL_RED       = 0x62,
       PAL_ORANGE    = 0x4a,
       PAL_YELLOW    = 0x2e,
-      PAL_GREEN     = 0x34,
+      PAL_GREEN     = 0x36,
       PAL_BLUE      = 0xbc,
       PAL_PURPLE    = 0xa6,
       PAL_GREY      = 0x06,
@@ -868,6 +868,8 @@ class TIA : public Device
      */
     bool myColorLossEnabled;
     bool myColorLossActive;
+
+    std::array<uInt32, 16> myColorCounts;
 
     /**
      * System cycles at the end of the previous frame / beginning of next frame.
