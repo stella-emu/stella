@@ -27,9 +27,9 @@ void OSystemUNIX::getBaseDirAndConfig(string& basedir, string& cfgfile,
         bool useappdir, const string& usedir)
 {
   // Use XDG_CONFIG_HOME if defined, otherwise use the default
-  const char* configDir = getenv("XDG_CONFIG_HOME");
-  if(configDir == nullptr)  configDir = "~/.config";
-  basedir = string(configDir) + "/stella";
+  string configDir = BSPF::getenv("XDG_CONFIG_HOME");
+  if(configDir == EmptyString)  configDir = "~/.config";
+  basedir = configDir + "/stella";
   savedir = loaddir = "~/";
 
   // Check to see if basedir overrides are active
