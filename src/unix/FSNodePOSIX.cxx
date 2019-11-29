@@ -64,8 +64,8 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
   // Expand '~' to the HOME environment variable
   if(_path[0] == '~')
   {
-    const char* home = getenv("HOME");
-    if(home != nullptr)
+    string home = BSPF::getenv("HOME");
+    if(home != EmptyString)
       _path.replace(0, 1, home);
   }
   // Get absolute path (only used for relative directories)
@@ -86,11 +86,11 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
 string FilesystemNodePOSIX::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
-  const char* home = getenv("HOME");
-  if(home != nullptr && BSPF::startsWithIgnoreCase(_path, home))
+  string home = BSPF::getenv("HOME");
+  if(home != EmptyString && BSPF::startsWithIgnoreCase(_path, home))
   {
     string path = "~";
-    const char* offset = _path.c_str() + strlen(home);
+    const char* offset = _path.c_str() + home.size();
     if(*offset != '/') path += "/";
     path += offset;
     return path;

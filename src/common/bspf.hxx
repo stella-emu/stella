@@ -245,6 +245,18 @@ namespace BSPF
   #endif
     return tm_snapshot;
   }
+
+  // Coverity complains if 'getenv' is used unrestricted
+  inline string getenv(const string& env_var)
+  {
+    try {
+      string result(std::getenv(env_var.c_str()));
+      return result;
+    }
+    catch(...) {
+      return EmptyString;
+    }
+  }
 } // namespace BSPF
 
 #endif

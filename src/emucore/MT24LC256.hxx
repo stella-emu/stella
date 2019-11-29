@@ -51,7 +51,7 @@ class MT24LC256
     static constexpr uInt32 PAGE_NUM = FLASH_SIZE / PAGE_SIZE;
 
     // Initial state value of flash EEPROM
-    static constexpr uInt8 INIT_VALUE = 0xff;
+    static constexpr uInt8 INITIAL_VALUE = 0xff;
 
     /** Read boolean data from the SDA line */
     bool readSDA() const { return jpee_mdat && jpee_sdat; }
