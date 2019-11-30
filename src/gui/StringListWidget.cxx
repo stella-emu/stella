@@ -81,7 +81,7 @@ void StringListWidget::drawWidget(bool hilite)
         textColor = kTextColorInv;
       }
       else
-        s.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, onTop ? kWidColorHi : kBGColorLo);
+        s.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kWidColorHi);
     }
 
     Common::Rect r(getEditRect());
