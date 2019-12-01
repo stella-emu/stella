@@ -41,11 +41,15 @@ void RewindManager::setup()
 
   const string& prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
 
-  mySize = myOSystem.settings().getInt(prefix + "tm.size");
+  // TODO - Add proper bounds checking (define constexpr variables for this)
+  //        Use those bounds in DeveloperDialog too
+  mySize = std::min<uInt32>(
+      myOSystem.settings().getInt(prefix + "tm.size"), MAX_BUF_SIZE);
   if(mySize != myStateList.capacity())
     resize(mySize);
 
-  myUncompressed = myOSystem.settings().getInt(prefix + "tm.uncompressed");
+  myUncompressed = std::min<uInt32>(
+      myOSystem.settings().getInt(prefix + "tm.uncompressed"), MAX_BUF_SIZE);
 
   myInterval = INTERVAL_CYCLES[0];
   for(int i = 0; i < NUM_INTERVALS; ++i)
@@ -238,7 +242,7 @@ string RewindManager::saveAllStates()
       return "Can't save to all states file";
 
     uInt32 curIdx = getCurrentIdx();
-    rewindStates(1000);
+    rewindStates(MAX_BUF_SIZE);
     uInt32 numStates = uInt32(cyclesList().size());
 
     // Save header

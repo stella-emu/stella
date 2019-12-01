@@ -49,6 +49,7 @@ class RewindManager
     RewindManager(OSystem& system, StateManager& statemgr);
 
   public:
+    static constexpr uInt32 MAX_BUF_SIZE = 1000;
     static constexpr int NUM_INTERVALS = 7;
     // cycle values for the intervals
     const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = {
