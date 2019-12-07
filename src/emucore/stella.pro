@@ -7077,6 +7077,14 @@
 "Cart.Name" "Crazy Climber (1983) (Atari)"
 ""
 
+"Cart.MD5" "56210a3b9ea6d5dd8f417a357ed8ca92"
+"Cart.Manufacturer" "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead"
+"Cart.ModelNo" "3152VC"
+"Cart.Name" "Pursuit of the Pink Panther (Probe) (Prototype, bad dump)"
+"Cart.Note" "AKA Adventures of the Pink Panther"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "56300ed31fef018bd96768ccc982f7b4"
 "Cart.Manufacturer" "HES - Activision"
 "Cart.ModelNo" "559"
@@ -8069,6 +8077,14 @@
 "Cart.MD5" "62d1f50219edf9a429a9f004c19f31b3"
 "Cart.Manufacturer" "JWDA, Todd Marshall"
 "Cart.Name" "Euro Gen (02-01-83) (JWDA) (PAL)"
+""
+
+"Cart.MD5" "62ee2b8f59e9cd6285bbdb674a952e8b"
+"Cart.Manufacturer" "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead"
+"Cart.ModelNo" "3152VC"
+"Cart.Name" "Pursuit of the Pink Panther (Probe) (Prototype)"
+"Cart.Note" "AKA Adventures of the Pink Panther"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "62f74a2736841191135514422b20382d"
@@ -14247,6 +14263,14 @@
 "Controller.MouseAxis" "01 50"
 ""
 
+"Cart.MD5" "b0a9c6f6c8014c4023e0341ba11ca35e"
+"Cart.Manufacturer" "The Atari 2600 Connection - John K. Harvey, Tim Duarte"
+"Cart.ModelNo" "v75"
+"Cart.Name" "Mean Santa (2009) (PAL)"
+"Cart.Note" "Released in 2019"
+"Cart.Rarity" "Homebrew"
+""
+
 "Cart.MD5" "b0ba51723b9330797985808db598fc31"
 "Cart.Manufacturer" "Atari, Michael Callahan, Preston Stuart"
 "Cart.ModelNo" "CX26103"
@@ -15731,6 +15755,14 @@
 "Cart.ModelNo" "PG202"
 "Cart.Name" "Space Tunnel (1982) (BitCorp) (PAL)"
 "Cart.Note" "AKA Weltraum-Tunnel"
+""
+
+"Cart.MD5" "c53c0d10c74325deae9ba84074281983"
+"Cart.Manufacturer" "The Atari 2600 Connection - John K. Harvey, Tim Duarte"
+"Cart.ModelNo" "v75"
+"Cart.Name" "Mean Santa (2009)"
+"Cart.Note" "Released in 2019"
+"Cart.Rarity" "Homebrew"
 ""
 
 "Cart.MD5" "c541a5f6fc23b40a211196dd78233780"
@@ -19227,8 +19259,8 @@
 "Cart.Name" "Berenstain Bears (1983) (Coleco)"
 "Cart.Note" "Uses the KidVid Controller"
 "Cart.Rarity" "Unbelievably Rare"
-"Controller.Right" "KIDVID"
 "Console.LeftDiff" "A"
+"Controller.Right" "KIDVID"
 "Display.YStart" "25"
 ""
 
@@ -20365,22 +20397,6 @@
 "Cart.ModelNo" "707-111 - GN-030"
 "Cart.Name" "Tanks But No Tanks (1983) (ZiMAG)"
 "Cart.Note" "AKA Phantom Tank"
-""
-
-"Cart.MD5" "56210a3b9ea6d5dd8f417a357ed8ca92"
-"Cart.Manufacturer" "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead"
-"Cart.ModelNo" "3152VC"
-"Cart.Name" "Pursuit of the Pink Panther (Probe) (Prototype, bad dump)"
-"Cart.Note" "AKA Adventures of the Pink Panther"
-"Cart.Rarity" "Prototype"
-""
-
-"Cart.MD5" "62ee2b8f59e9cd6285bbdb674a952e8b"
-"Cart.Manufacturer" "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead"
-"Cart.ModelNo" "3152VC"
-"Cart.Name" "Pursuit of the Pink Panther (Probe) (Prototype)"
-"Cart.Note" "AKA Adventures of the Pink Panther"
-"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "fa7ce62e7fd77e02b3e2198d70742f80"
