@@ -57,7 +57,7 @@ my @prop_defaults = (
   "",
   "",
   "MONO",
-  "",
+  "AUTO",
   "AUTO",
   "B",
   "B",

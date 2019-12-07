@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3407
+#define DEF_PROPS_SIZE 3409
 
 static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2357,6 +2357,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "b061e98a4c854a672aadefa233236e51", "Atari, Warren Robinett", "CX2620, CX2620P", "Basic Programming (1979) (Atari) (PAL)", "Uses Keypad Controllers", "Common", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "b095009004df341386d22b2a3fae3c81", "", "", "Sub-Scan (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b09b79c9628878be051e89f7f1e77378", "Activision, Larry Kaplan, David Crane - Ariola", "EAG-010, PAG-010 - 711 010-720", "Kaboom! (1981) (Activision) (PAL) (4K)", "Uses the Paddle Controllers (left only)", "", "", "", "", "", "", "", "", "", "", "", "01 50", "", "", "", "" },
+  { "b0a9c6f6c8014c4023e0341ba11ca35e", "The Atari 2600 Connection - John K. Harvey, Tim Duarte", "v75", "Mean Santa (2009) (PAL)", "Released in 2019", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b0ba51723b9330797985808db598fc31", "Atari, Michael Callahan, Preston Stuart", "CX26103", "Alpha Beam with Ernie (1983) (Atari) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b0c47e426c7f799aee2c40422df8f56a", "", "", "Space Treat (PAL) (Fabrizio Zavagli)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "b0c9cf89a6d4e612524f4fd48b5bb562", "Atari - GCC", "CX2663", "Combat Two (1982) (Atari) (Prototype)", "AKA Super Combat", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2601,6 +2602,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "c52d9bbdc5530e1ef8e8ba7be692b01e", "Atari, Robert C. Polaro", "CX26130", "Holey Moley (02-29-1984) (Atari) (Prototype)", "Uses Keypad Controllers", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "c5301f549d0722049bb0add6b10d1e09", "Atari, Carla Meninsky, Ed Riddle - Sears", "CX2611 - 99821, 49-75149", "Indy 500 (1977) (Atari)", "Uses the Driving Controllers", "", "", "", "", "", "", "", "", "DRIVING", "DRIVING", "", "45", "", "", "", "" },
   { "c5387fc1aa71f11d2fa82459e189a5f0", "Bit Corporation", "PG202", "Space Tunnel (1982) (BitCorp) (PAL)", "AKA Weltraum-Tunnel", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "c53c0d10c74325deae9ba84074281983", "The Atari 2600 Connection - John K. Harvey, Tim Duarte", "v75", "Mean Santa (2009)", "Released in 2019", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "c541a5f6fc23b40a211196dd78233780", "Atari, Carla Meninsky - Sears", "CX2660 - 49-75187", "Star Raiders (1981) (Atari) (Prototype)", "Uses Joystick (left) and Keypad (right) Controllers", "Prototype", "", "", "", "", "", "", "", "", "KEYBOARD", "", "", "", "", "", "" },
   { "c54b4207ce1d4bf72fadbb1a805d4a39", "Billy Eno", "", "Sniper (Feb 30) (2001) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "c560a3ecb7b751021953819efcfe5b41", "Omegamatrix", "", "Ghostbusters (Genesis)", "Genesis controller", "", "", "", "", "", "", "", "", "GENESIS", "", "", "", "", "", "", "" },
