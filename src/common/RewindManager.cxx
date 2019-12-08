@@ -40,16 +40,17 @@ void RewindManager::setup()
   myLastTimeMachineAdd = false;
 
   const string& prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
+  const uInt32 maxBufSize = MAX_BUF_SIZE;
 
   // TODO - Add proper bounds checking (define constexpr variables for this)
   //        Use those bounds in DeveloperDialog too
   mySize = std::min<uInt32>(
-      myOSystem.settings().getInt(prefix + "tm.size"), MAX_BUF_SIZE);
+      myOSystem.settings().getInt(prefix + "tm.size"), maxBufSize);
   if(mySize != myStateList.capacity())
     resize(mySize);
 
   myUncompressed = std::min<uInt32>(
-      myOSystem.settings().getInt(prefix + "tm.uncompressed"), MAX_BUF_SIZE);
+      myOSystem.settings().getInt(prefix + "tm.uncompressed"), maxBufSize);
 
   myInterval = INTERVAL_CYCLES[0];
   for(int i = 0; i < NUM_INTERVALS; ++i)
