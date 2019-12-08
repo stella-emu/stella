@@ -21,6 +21,7 @@
 #include "bspf.hxx"
 #include "FBSurface.hxx"
 #include "FrameBufferSDL2.hxx"
+#include "sdl_blitter/Blitter.hxx"
 
 /**
   An FBSurface suitable for the SDL2 Render2D API, making use of hardware
@@ -40,7 +41,7 @@ class FBSurfaceSDL2 : public FBSurface
     //
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color) override;
     // With hardware surfaces, it's faster to just update the entire surface
-    void setDirty() override { mySurfaceIsDirty = true; }
+    void setDirty() override {}
 
     uInt32 width() const override;
     uInt32 height() const override;
@@ -66,6 +67,8 @@ class FBSurfaceSDL2 : public FBSurface
   private:
     void createSurface(uInt32 width, uInt32 height, const uInt32* data);
 
+    void reinitializeBlitter();
+
     // Following constructors and assignment operators not supported
     FBSurfaceSDL2() = delete;
     FBSurfaceSDL2(const FBSurfaceSDL2&) = delete;
@@ -76,21 +79,13 @@ class FBSurfaceSDL2 : public FBSurface
   private:
     FrameBufferSDL2& myFB;
 
+    unique_ptr<Blitter> myBlitter;
+
     SDL_Surface* mySurface;
-    SDL_Texture* myTexture;
-    SDL_Texture* mySecondaryTexture;
     SDL_Rect mySrcR, myDstR;
 
-    bool mySurfaceIsDirty;
     bool myIsVisible;
-
-    SDL_TextureAccess myTexAccess;  // Is pixel data constant or can it change?
-    bool myInterpolate;   // Scaling is smoothed or blocky
-    bool myBlendEnabled;  // Blending is enabled
-    uInt8 myBlendAlpha;   // Alpha to use in blending mode
-
-    unique_ptr<uInt32[]> myStaticData; // The data to use when the buffer contents are static
-    uInt32 myStaticPitch;              // The number of bytes in a row of static data
+    bool myIsStatic;
 
     Common::Rect mySrcGUIR, myDstGUIR;
 };

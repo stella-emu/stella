@@ -389,4 +389,6 @@ class FBSurface
     FBSurface& operator=(FBSurface&&) = delete;
 };
 
+bool operator==(const FBSurface::Attributes& a1, const FBSurface::Attributes& a2);
+
 #endif

@@ -18,21 +18,17 @@
 #include "FBSurfaceSDL2.hxx"
 
 #include "ThreadDebugging.hxx"
+#include "sdl_blitter/BilinearBlitter.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
                              uInt32 width, uInt32 height, const uInt32* data)
   : myFB(buffer),
     mySurface(nullptr),
-    myTexture(nullptr),
-    mySecondaryTexture(nullptr),
-    mySurfaceIsDirty(true),
     myIsVisible(true),
-    myTexAccess(SDL_TEXTUREACCESS_STREAMING),
-    myInterpolate(false),
-    myBlendEnabled(false),
-    myBlendAlpha(255)
+    myIsStatic(false)
 {
+  myBlitter = make_unique<BilinearBlitter>(buffer);
   createSurface(width, height, data);
 }
 
@@ -93,6 +89,8 @@ void FBSurfaceSDL2::setSrcPos(uInt32 x, uInt32 y)
 {
   mySrcR.x = x;  mySrcR.y = y;
   mySrcGUIR.moveTo(x, y);
+
+  reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,6 +98,8 @@ void FBSurfaceSDL2::setSrcSize(uInt32 w, uInt32 h)
 {
   mySrcR.w = w;  mySrcR.h = h;
   mySrcGUIR.setWidth(w);  mySrcGUIR.setHeight(h);
+
+  reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,6 +107,8 @@ void FBSurfaceSDL2::setDstPos(uInt32 x, uInt32 y)
 {
   myDstR.x = x;  myDstR.y = y;
   myDstGUIR.moveTo(x, y);
+
+  reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,6 +116,8 @@ void FBSurfaceSDL2::setDstSize(uInt32 w, uInt32 h)
 {
   myDstR.w = w;  myDstR.h = h;
   myDstGUIR.setWidth(w);  myDstGUIR.setHeight(h);
+
+  reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,10 +136,11 @@ void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FBSurfaceSDL2::render()
 {
-  ASSERT_MAIN_THREAD;
+  // ASSERT_MAIN_THREAD;
 
   if(myIsVisible)
   {
+    /*
     SDL_Texture* texture = myTexture;
 
     if(myTexAccess == SDL_TEXTUREACCESS_STREAMING) {
@@ -145,6 +150,10 @@ bool FBSurfaceSDL2::render()
     }
 
     SDL_RenderCopy(myFB.myRenderer, texture, &mySrcR, &myDstR);
+
+    */
+
+    myBlitter->blit(*mySurface);
 
     return true;
   }
@@ -161,7 +170,7 @@ void FBSurfaceSDL2::invalidate()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::free()
-{
+{/*
   ASSERT_MAIN_THREAD;
 
   SDL_Texture* textures[] = {myTexture, mySecondaryTexture};
@@ -171,11 +180,15 @@ void FBSurfaceSDL2::free()
     SDL_DestroyTexture(myTexture);
     myTexture = nullptr;
   }
+  */
+
+  myBlitter->free();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reload()
 {
+  /*
   ASSERT_MAIN_THREAD;
 
   // Re-create texture; the underlying SDL_Surface is fine as-is
@@ -202,6 +215,9 @@ void FBSurfaceSDL2::reload()
       SDL_SetTextureAlphaMod(texture, myBlendAlpha);
     }
   }
+  */
+
+ reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -209,10 +225,13 @@ void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 {
   ASSERT_MAIN_THREAD;
 
+  /*
   // We will only resize when necessary, and not using static textures
   if((myTexAccess == SDL_TEXTUREACCESS_STATIC) || (mySurface &&
       int(width) <= mySurface->w && int(height) <= mySurface->h))
     return;  // don't need to resize at all
+
+  */
 
   if(mySurface)
     SDL_FreeSurface(mySurface);
@@ -248,21 +267,28 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 
   if(data)
   {
-    myTexAccess = SDL_TEXTUREACCESS_STATIC;
-    myStaticPitch = mySurface->w * 4;  // we need pitch in 'bytes'
-    myStaticData = make_unique<uInt32[]>(mySurface->w * mySurface->h);
-    SDL_memcpy(myStaticData.get(), data, mySurface->w * mySurface->h * 4);
+    myIsStatic = true;
+    SDL_memcpy(mySurface->pixels, data, mySurface->w * mySurface->h * 4);
   }
 
-  applyAttributes(false);
+  // applyAttributes(false);
 
   // To generate texture
-  reload();
+  // reload();
+  reinitializeBlitter();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::reinitializeBlitter()
+{
+  myBlitter->reinitialize(mySrcR, myDstR, myAttributes, myIsStatic ? mySurface : nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::applyAttributes(bool immediate)
 {
+  reinitializeBlitter();
+  /*
   myInterpolate  = myAttributes.smoothing;
   myBlendEnabled = myAttributes.blending;
   myBlendAlpha   = uInt8(myAttributes.blendalpha * 2.55);
@@ -273,4 +299,5 @@ void FBSurfaceSDL2::applyAttributes(bool immediate)
     free();
     reload();
   }
+  */
 }

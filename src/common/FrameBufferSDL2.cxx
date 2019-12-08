@@ -427,3 +427,15 @@ void FrameBufferSDL2::clear()
 
   SDL_RenderClear(myRenderer);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SDL_Renderer* FrameBufferSDL2::renderer()
+{
+  return myRenderer;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const SDL_PixelFormat& FrameBufferSDL2::pixelFormat()
+{
+  return *myPixelFormat;
+}
