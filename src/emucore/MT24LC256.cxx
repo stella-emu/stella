@@ -156,18 +156,22 @@ void MT24LC256::systemReset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::eraseAll()
 {
-  myData.fill(INITIAL_VALUE);
+  const uInt8 initialValue = INITIAL_VALUE;
+
+  myData.fill(initialValue);
   myDataChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::eraseCurrent()
 {
+  const uInt8 initialValue = INITIAL_VALUE;
+
   for(uInt32 page = 0; page < PAGE_NUM; ++page)
   {
     if(myPageHit[page])
     {
-      std::fill_n(myData.begin() + page * PAGE_SIZE, PAGE_SIZE, INITIAL_VALUE);
+      std::fill_n(myData.begin() + page * PAGE_SIZE, PAGE_SIZE, initialValue);
       myDataChanged = true;
     }
   }
@@ -185,6 +189,8 @@ bool MT24LC256::isPageUsed(uInt32 page) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_init()
 {
+  const uInt8 initialValue = INITIAL_VALUE;
+
   jpee_sdat = 1;
   jpee_address = 0;
   jpee_state=0;
@@ -193,7 +199,7 @@ void MT24LC256::jpee_init()
   jpee_smallmode = 0;
   jpee_logmode = -1;
   if(!myDataFileExists)
-    myData.fill(INITIAL_VALUE);
+    myData.fill(initialValue);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
