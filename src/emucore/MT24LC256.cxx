@@ -156,6 +156,7 @@ void MT24LC256::systemReset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::eraseAll()
 {
+  // Work around a bug in XCode 11.2 with -O0 and -O1
   const uInt8 initialValue = INITIAL_VALUE;
 
   myData.fill(initialValue);
@@ -165,6 +166,7 @@ void MT24LC256::eraseAll()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::eraseCurrent()
 {
+  // Work around a bug in XCode 11.2 with -O0 and -O1
   const uInt8 initialValue = INITIAL_VALUE;
 
   for(uInt32 page = 0; page < PAGE_NUM; ++page)
@@ -189,6 +191,7 @@ bool MT24LC256::isPageUsed(uInt32 page) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_init()
 {
+  // Work around a bug in XCode 11.2 with -O0 and -O1
   const uInt8 initialValue = INITIAL_VALUE;
 
   jpee_sdat = 1;
