@@ -250,8 +250,9 @@ namespace BSPF
   inline string getenv(const string& env_var)
   {
     try {
-      string result(std::getenv(env_var.c_str()));
-      return result;
+      const char* val = std::getenv(env_var.c_str());
+
+      return val ? string(val) : EmptyString;
     }
     catch(...) {
       return EmptyString;
