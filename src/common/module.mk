@@ -25,7 +25,8 @@ MODULE_OBJS := \
 	src/common/FpsMeter.o \
 	src/common/ThreadDebugging.o \
 	src/common/StaggeredLogger.o \
-	src/common/repository/KeyValueRepositoryConfigfile.o
+	src/common/repository/KeyValueRepositoryConfigfile.o \
+	src/common/sdl_blitter/BilinearBlitter.o
 
 MODULE_DIRS += \
 	src/common

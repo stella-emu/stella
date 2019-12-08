@@ -116,6 +116,10 @@ class FrameBufferSDL2 : public FrameBuffer
     */
     void clear() override;
 
+    SDL_Renderer* renderer();
+
+    const SDL_PixelFormat& pixelFormat();
+
   protected:
     //////////////////////////////////////////////////////////////////////
     // The following are derived from protected methods in FrameBuffer.hxx

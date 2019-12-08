@@ -451,3 +451,9 @@ bool FBSurface::checkBounds(const uInt32 x, const uInt32 y) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt32* FBSurface::myPalette = nullptr;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool operator==(const FBSurface::Attributes& a1, const FBSurface::Attributes& a2)
+{
+  return a1.blendalpha == a2.blendalpha && a1.blending == a2.blending && a1.smoothing && a2.smoothing;
+}
