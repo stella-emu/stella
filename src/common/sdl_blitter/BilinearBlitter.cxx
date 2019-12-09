@@ -55,6 +55,7 @@ void BilinearBlitter::reinitialize(
    myStaticData = staticData;
    mySrcRect = srcRect;
    myDstRect = destRect;
+   myAttributes = attributes;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
