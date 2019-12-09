@@ -19,6 +19,7 @@
 
 #include "ThreadDebugging.hxx"
 #include "sdl_blitter/BilinearBlitter.hxx"
+#include "sdl_blitter/HqBlitter.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
@@ -28,7 +29,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
     myIsVisible(true),
     myIsStatic(false)
 {
-  myBlitter = make_unique<BilinearBlitter>(buffer);
+  myBlitter = make_unique<HqBlitter>(buffer);
   createSurface(width, height, data);
 }
 
@@ -136,23 +137,8 @@ void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FBSurfaceSDL2::render()
 {
-  // ASSERT_MAIN_THREAD;
-
   if(myIsVisible)
   {
-    /*
-    SDL_Texture* texture = myTexture;
-
-    if(myTexAccess == SDL_TEXTUREACCESS_STREAMING) {
-      SDL_UpdateTexture(myTexture, &mySrcR, mySurface->pixels, mySurface->pitch);
-      myTexture = mySecondaryTexture;
-      mySecondaryTexture = texture;
-    }
-
-    SDL_RenderCopy(myFB.myRenderer, texture, &mySrcR, &myDstR);
-
-    */
-
     myBlitter->blit(*mySurface);
 
     return true;
@@ -170,68 +156,20 @@ void FBSurfaceSDL2::invalidate()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::free()
-{/*
-  ASSERT_MAIN_THREAD;
-
-  SDL_Texture* textures[] = {myTexture, mySecondaryTexture};
-  for (SDL_Texture* texture: textures) {
-    if (!texture) continue;
-
-    SDL_DestroyTexture(myTexture);
-    myTexture = nullptr;
-  }
-  */
-
+{
   myBlitter->free();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reload()
 {
-  /*
-  ASSERT_MAIN_THREAD;
-
-  // Re-create texture; the underlying SDL_Surface is fine as-is
-  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myInterpolate ? "1" : "0");
-  myTexture = SDL_CreateTexture(myFB.myRenderer, myFB.myPixelFormat->format,
-      myTexAccess, mySurface->w, mySurface->h);
-
-  if (myTexAccess == SDL_TEXTUREACCESS_STREAMING)
-    mySecondaryTexture = SDL_CreateTexture(myFB.myRenderer, myFB.myPixelFormat->format,
-        myTexAccess, mySurface->w, mySurface->h);
-
-  // If the data is static, we only upload it once
-  if(myTexAccess == SDL_TEXTUREACCESS_STATIC)
-    SDL_UpdateTexture(myTexture, nullptr, myStaticData.get(), myStaticPitch);
-
-  SDL_Texture* textures[] = {myTexture, mySecondaryTexture};
-  for (SDL_Texture* texture: textures) {
-    if (!texture) continue;
-
-    // Blending enabled?
-    if(myBlendEnabled)
-    {
-      SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-      SDL_SetTextureAlphaMod(texture, myBlendAlpha);
-    }
-  }
-  */
-
- reinitializeBlitter();
+  reinitializeBlitter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 {
   ASSERT_MAIN_THREAD;
-
-  /*
-  // We will only resize when necessary, and not using static textures
-  if((myTexAccess == SDL_TEXTUREACCESS_STATIC) || (mySurface &&
-      int(width) <= mySurface->w && int(height) <= mySurface->h))
-    return;  // don't need to resize at all
-
-  */
 
   if(mySurface)
     SDL_FreeSurface(mySurface);
@@ -271,10 +209,6 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
     SDL_memcpy(mySurface->pixels, data, mySurface->w * mySurface->h * 4);
   }
 
-  // applyAttributes(false);
-
-  // To generate texture
-  // reload();
   reinitializeBlitter();
 }
 
@@ -288,16 +222,4 @@ void FBSurfaceSDL2::reinitializeBlitter()
 void FBSurfaceSDL2::applyAttributes(bool immediate)
 {
   reinitializeBlitter();
-  /*
-  myInterpolate  = myAttributes.smoothing;
-  myBlendEnabled = myAttributes.blending;
-  myBlendAlpha   = uInt8(myAttributes.blendalpha * 2.55);
-
-  if(immediate)
-  {
-    // Re-create the texture with the new settings
-    free();
-    reload();
-  }
-  */
 }

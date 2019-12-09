@@ -26,7 +26,8 @@ MODULE_OBJS := \
 	src/common/ThreadDebugging.o \
 	src/common/StaggeredLogger.o \
 	src/common/repository/KeyValueRepositoryConfigfile.o \
-	src/common/sdl_blitter/BilinearBlitter.o
+	src/common/sdl_blitter/BilinearBlitter.o \
+	src/common/sdl_blitter/HqBlitter.o
 
 MODULE_DIRS += \
 	src/common
