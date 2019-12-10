@@ -23,6 +23,7 @@
         "tuple": "cpp",
         "utility": "cpp",
         "*.tcc": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "iomanip": "cpp"
     }
 }
