@@ -106,6 +106,8 @@ void HqBlitter::blitToIntermediate()
     SDL_Rect r = mySrcRect;
     r.x = r.y = 0;
 
+    SDL_UpdateTexture(myIntermediateTexture, nullptr, myBlankBuffer.get(), 4 * myIntermediateRect.w);
+
     SDL_SetRenderTarget(myFB.renderer(), myIntermediateTexture);
     SDL_RenderCopy(myFB.renderer(), mySrcTexture, &r, &myIntermediateRect);
 
@@ -137,6 +139,9 @@ void HqBlitter::recreateTexturesIfNecessary()
 
   mySrcTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
     texAccess, mySrcRect.w, mySrcRect.h);
+
+  myBlankBuffer = make_unique<uInt32[]>(4 * myIntermediateRect.w * myIntermediateRect.h);
+  memset(myBlankBuffer.get(), 0, 4 * myIntermediateRect.w * myIntermediateRect.h);
 
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myAttributes.smoothing ? "1" : "0");
 

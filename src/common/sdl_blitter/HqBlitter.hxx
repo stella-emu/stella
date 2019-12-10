@@ -54,6 +54,7 @@ class HqBlitter : public Blitter {
     bool myRecreateTextures;
 
     SDL_Surface* myStaticData;
+    unique_ptr<uInt32[]> myBlankBuffer;
 
     FrameBufferSDL2& myFB;
 
