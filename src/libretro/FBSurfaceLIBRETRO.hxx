@@ -58,7 +58,7 @@ class FBSurfaceLIBRETRO : public FBSurface
     void resize(uInt32 width, uInt32 height) override { }
 
   protected:
-    void applyAttributes(bool immediate) override { }
+    void applyAttributes() override { }
 
   private:
     void createSurface(uInt32 width, uInt32 height, const uInt32* data);

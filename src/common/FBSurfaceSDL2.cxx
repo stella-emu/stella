@@ -185,10 +185,10 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
   ASSERT_MAIN_THREAD;
 
   // Create a surface in the same format as the parent GL class
-  const SDL_PixelFormat* pf = myFB.myPixelFormat;
+  const SDL_PixelFormat& pf = myFB.pixelFormat();
 
   mySurface = SDL_CreateRGBSurface(0, width, height,
-      pf->BitsPerPixel, pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask);
+      pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
 
   // We start out with the src and dst rectangles containing the same
   // dimensions, indicating no scaling or re-positioning
@@ -200,7 +200,7 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
   ////////////////////////////////////////////////////
   // These *must* be set for the parent class
   myPixels = reinterpret_cast<uInt32*>(mySurface->pixels);
-  myPitch = mySurface->pitch / pf->BytesPerPixel;
+  myPitch = mySurface->pitch / pf.BytesPerPixel;
   ////////////////////////////////////////////////////
 
   if(data)
@@ -221,7 +221,7 @@ void FBSurfaceSDL2::reinitializeBlitter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSDL2::applyAttributes(bool immediate)
+void FBSurfaceSDL2::applyAttributes()
 {
   reinitializeBlitter();
 }

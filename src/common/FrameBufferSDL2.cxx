@@ -441,7 +441,7 @@ bool FrameBufferSDL2::isInitialized() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const SDL_PixelFormat& FrameBufferSDL2::pixelFormat()
+const SDL_PixelFormat& FrameBufferSDL2::pixelFormat() const
 {
   return *myPixelFormat;
 }
