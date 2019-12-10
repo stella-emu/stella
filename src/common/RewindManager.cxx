@@ -40,7 +40,6 @@ void RewindManager::setup()
   myLastTimeMachineAdd = false;
 
   const string& prefix = myOSystem.settings().getBool("dev.settings") ? "dev." : "plr.";
-  const uInt32 maxBufSize = MAX_BUF_SIZE;
 
   // Work around a bug in XCode 11.2 with -O0 and -O1
   const uInt32 maxBufSize = MAX_BUF_SIZE;
