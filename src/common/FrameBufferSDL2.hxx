@@ -34,8 +34,6 @@ class FBSurfaceSDL2;
 */
 class FrameBufferSDL2 : public FrameBuffer
 {
-  friend class FBSurfaceSDL2;
-
   public:
     /**
       Creates a new SDL2 framebuffer
@@ -116,11 +114,20 @@ class FrameBufferSDL2 : public FrameBuffer
     */
     void clear() override;
 
+    /**
+      Get a pointer to the SDL renderer.
+     */
     SDL_Renderer* renderer();
 
-    bool isInitialized() const;
+    /**
+      Get the SDL pixel format.
+     */
+    const SDL_PixelFormat& pixelFormat() const;
 
-    const SDL_PixelFormat& pixelFormat();
+    /**
+      Is the renderer initialized?
+     */
+    bool isInitialized() const;
 
   protected:
     //////////////////////////////////////////////////////////////////////

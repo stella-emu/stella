@@ -339,12 +339,8 @@ class FBSurface
     /**
       The child class chooses which (if any) of the actual attributes
       can be applied.
-
-      @param immediate  Whether to re-initialize the surface immediately
-                        with the new attributes, or wait until manually
-                        reloaded
     */
-    virtual void applyAttributes(bool immediate = true) = 0;
+    virtual void applyAttributes() = 0;
 
     static void setPalette(const uInt32* palette) { myPalette = palette; }
 
