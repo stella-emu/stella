@@ -386,6 +386,8 @@
     <ClCompile Include="..\common\PKeyboardHandler.cxx" />
     <ClCompile Include="..\common\repository\KeyValueRepositoryConfigfile.cxx" />
     <ClCompile Include="..\common\RewindManager.cxx" />
+    <ClCompile Include="..\common\sdl_blitter\BilinearBlitter.cxx" />
+    <ClCompile Include="..\common\sdl_blitter\HqBlitter.cxx" />
     <ClCompile Include="..\common\StaggeredLogger.cxx" />
     <ClCompile Include="..\common\StateManager.cxx" />
     <ClCompile Include="..\common\ThreadDebugging.cxx" />
@@ -1090,6 +1092,9 @@
     <ClInclude Include="..\common\repository\KeyValueRepositoryConfigfile.hxx" />
     <ClInclude Include="..\common\repository\KeyValueRepositoryNoop.hxx" />
     <ClInclude Include="..\common\RewindManager.hxx" />
+    <ClInclude Include="..\common\sdl_blitter\BilinearBlitter.hxx" />
+    <ClInclude Include="..\common\sdl_blitter\Blitter.hxx" />
+    <ClInclude Include="..\common\sdl_blitter\HqBlitter.hxx" />
     <ClInclude Include="..\common\StaggeredLogger.hxx" />
     <ClInclude Include="..\common\StateManager.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
