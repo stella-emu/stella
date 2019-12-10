@@ -118,6 +118,8 @@ class FrameBufferSDL2 : public FrameBuffer
 
     SDL_Renderer* renderer();
 
+    bool isInitialized() const;
+
     const SDL_PixelFormat& pixelFormat();
 
   protected:

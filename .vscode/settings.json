@@ -24,6 +24,7 @@
         "utility": "cpp",
         "*.tcc": "cpp",
         "functional": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "__cxx_version": "cpp"
     }
 }

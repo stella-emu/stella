@@ -435,6 +435,12 @@ SDL_Renderer* FrameBufferSDL2::renderer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL2::isInitialized() const
+{
+  return myRenderer != nullptr;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const SDL_PixelFormat& FrameBufferSDL2::pixelFormat()
 {
   return *myPixelFormat;
