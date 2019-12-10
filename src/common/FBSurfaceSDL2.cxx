@@ -18,8 +18,7 @@
 #include "FBSurfaceSDL2.hxx"
 
 #include "ThreadDebugging.hxx"
-#include "sdl_blitter/BilinearBlitter.hxx"
-#include "sdl_blitter/HqBlitter.hxx"
+#include "sdl_blitter/BlitterFactory.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
@@ -29,7 +28,6 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
     myIsVisible(true),
     myIsStatic(false)
 {
-  myBlitter = make_unique<HqBlitter>(buffer);
   createSurface(width, height, data);
 }
 
@@ -137,7 +135,9 @@ void FBSurfaceSDL2::translateCoords(Int32& x, Int32& y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FBSurfaceSDL2::render()
 {
-  if(myIsVisible)
+  if (!myBlitter) reinitializeBlitter();
+
+  if(myIsVisible && myBlitter)
   {
     myBlitter->blit(*mySurface);
 
@@ -157,7 +157,7 @@ void FBSurfaceSDL2::invalidate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::free()
 {
-  myBlitter->free();
+  myBlitter.release();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,7 +215,9 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reinitializeBlitter()
 {
-  myBlitter->reinitialize(mySrcR, myDstR, myAttributes, myIsStatic ? mySurface : nullptr);
+  if (!myBlitter && myFB.isInitialized()) myBlitter = BlitterFactory::createBlitter(myFB);
+
+  if (myBlitter) myBlitter->reinitialize(mySrcR, myDstR, myAttributes, myIsStatic ? mySurface : nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
