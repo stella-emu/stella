@@ -993,6 +993,9 @@
     <ClCompile Include="..\common\sdl_blitter\HqBlitter.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\sdl_blitter\BlitterFactory.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2028,6 +2031,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\sdl_blitter\HqBlitter.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\sdl_blitter\BlitterFactory.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
