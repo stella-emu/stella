@@ -76,7 +76,7 @@ class StaggeredLogger
     // We need control over the destruction porcess and over the exact point where
     // the worker thread joins -> allocate on the heap end delete explicitly in
     // our destructor.
-    TimerManager *myTimer;
+    unique_ptr<TimerManager> myTimer;
     TimerManager::TimerId myTimerId;
 
     // It is possible that the timer callback is running even after TimerManager::clear

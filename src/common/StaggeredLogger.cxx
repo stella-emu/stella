@@ -45,7 +45,7 @@ StaggeredLogger::StaggeredLogger(const string& message, Logger::Level level)
     myMaxIntervalFactor(9),
     myCurrentIntervalFactor(1),
     myCooldownTime(1000),
-    myTimer(new TimerManager()),
+    myTimer(make_unique<TimerManager>()),
     myTimerId(0),
     myTimerCallbackId(0)
 {
@@ -57,7 +57,7 @@ StaggeredLogger::~StaggeredLogger()
   myTimer->clear(myTimerId);
 
   // make sure that the worker thread joins before continuing with the destruction
-  delete myTimer;
+  myTimer.reset();
 
   // the worker thread has joined and there will be no more reentrant calls ->
   // continue with destruction

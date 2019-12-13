@@ -1147,8 +1147,8 @@ void TIA::setJitterRecoveryFactor(Int32 factor)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 shared_ptr<DelayQueueIterator> TIA::delayQueueIterator() const
 {
-  return shared_ptr<DelayQueueIterator>(
-    new DelayQueueIteratorImpl<delayQueueLength, delayQueueSize>(myDelayQueue)
+  return make_shared<DelayQueueIteratorImpl<delayQueueLength, delayQueueSize>>(
+    myDelayQueue
   );
 }
 

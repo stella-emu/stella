@@ -113,7 +113,7 @@ void FrameLayoutDetector::setState(State state)
       break;
 
     default:
-      throw new runtime_error("cannot happen");
+      throw runtime_error("cannot happen");
   }
 }
 
