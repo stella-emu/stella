@@ -27,10 +27,6 @@ unique_ptr<Blitter> BlitterFactory::createBlitter(FrameBufferSDL2& fb)
     throw runtime_error("BlitterFactory requires an initialized framebuffer!");
   }
 
-  SDL_RendererInfo info;
-
-  SDL_GetRendererInfo(fb.renderer(), &info);
-
-  return (info.flags & SDL_RENDERER_TARGETTEXTURE) ?
+  return HqBlitter::isSupported(fb) ?
     unique_ptr<Blitter>(new HqBlitter(fb)) : unique_ptr<Blitter>(new BilinearBlitter(fb));
 }

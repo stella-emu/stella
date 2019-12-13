@@ -28,6 +28,8 @@ class HqBlitter : public Blitter {
 
     HqBlitter(FrameBufferSDL2& fb);
 
+    static bool isSupported(FrameBufferSDL2 &fb);
+
     virtual ~HqBlitter();
 
     virtual void reinitialize(
