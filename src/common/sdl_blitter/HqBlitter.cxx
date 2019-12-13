@@ -37,6 +37,31 @@ HqBlitter::~HqBlitter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HqBlitter::isSupported(FrameBufferSDL2 &fb)
+{
+  ASSERT_MAIN_THREAD;
+
+  if (!fb.isInitialized()) throw runtime_error("frambuffer not initialized");
+
+  SDL_RendererInfo info;
+
+  SDL_GetRendererInfo(fb.renderer(), &info);
+
+  if (!(info.flags & SDL_RENDERER_TARGETTEXTURE)) return false;
+
+  SDL_Texture* tex = SDL_CreateTexture(fb.renderer(), fb.pixelFormat().format, SDL_TEXTUREACCESS_TARGET, 16, 16);
+
+  if (!tex) return false;
+
+  int sdlError = SDL_SetRenderTarget(fb.renderer(), tex);
+  SDL_SetRenderTarget(fb.renderer(), nullptr);
+
+  SDL_DestroyTexture(tex);
+
+  return sdlError == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HqBlitter::reinitialize(
   SDL_Rect srcRect,
   SDL_Rect destRect,
@@ -103,15 +128,17 @@ void HqBlitter::blit(SDL_Surface& surface)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HqBlitter::blitToIntermediate()
 {
-    SDL_Rect r = mySrcRect;
-    r.x = r.y = 0;
+  ASSERT_MAIN_THREAD;
 
-    SDL_UpdateTexture(myIntermediateTexture, nullptr, myBlankBuffer.get(), 4 * myIntermediateRect.w);
+  SDL_Rect r = mySrcRect;
+  r.x = r.y = 0;
 
-    SDL_SetRenderTarget(myFB.renderer(), myIntermediateTexture);
-    SDL_RenderCopy(myFB.renderer(), mySrcTexture, &r, &myIntermediateRect);
+  SDL_UpdateTexture(myIntermediateTexture, nullptr, myBlankBuffer.get(), 4 * myIntermediateRect.w);
 
-    SDL_SetRenderTarget(myFB.renderer(), nullptr);
+  SDL_SetRenderTarget(myFB.renderer(), myIntermediateTexture);
+  SDL_RenderCopy(myFB.renderer(), mySrcTexture, &r, &myIntermediateRect);
+
+  SDL_SetRenderTarget(myFB.renderer(), nullptr);
 }
 
 
