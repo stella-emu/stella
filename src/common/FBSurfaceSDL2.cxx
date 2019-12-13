@@ -20,10 +20,32 @@
 #include "ThreadDebugging.hxx"
 #include "sdl_blitter/BlitterFactory.hxx"
 
+namespace {
+  BlitterFactory::ScalingAlgorithm scalingAlgorithm(FrameBuffer::ScalingInterpolation interpolation)
+  {
+    switch (interpolation) {
+      case FrameBuffer::ScalingInterpolation::none:
+        return BlitterFactory::ScalingAlgorithm::nearestNeighbour;
+
+      case FrameBuffer::ScalingInterpolation::blur:
+        return BlitterFactory::ScalingAlgorithm::bilinear;
+
+      case FrameBuffer::ScalingInterpolation::sharp:
+        return BlitterFactory::ScalingAlgorithm::quasiInteger;
+
+      default:
+        throw runtime_error("unreachable");
+    }
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
-                             uInt32 width, uInt32 height, const uInt32* data)
+                             uInt32 width, uInt32 height,
+                             FrameBuffer::ScalingInterpolation interpolation,
+                             const uInt32* data)
   : myFB(buffer),
+    myInterpolationMode(interpolation),
     mySurface(nullptr),
     myIsVisible(true),
     myIsStatic(false)
@@ -215,7 +237,7 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reinitializeBlitter()
 {
-  if (!myBlitter && myFB.isInitialized()) myBlitter = BlitterFactory::createBlitter(myFB);
+  if (!myBlitter && myFB.isInitialized()) myBlitter = BlitterFactory::createBlitter(myFB, scalingAlgorithm(myInterpolationMode));
 
   if (myBlitter) myBlitter->reinitialize(mySrcR, myDstR, myAttributes, myIsStatic ? mySurface : nullptr);
 }

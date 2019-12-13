@@ -326,7 +326,6 @@ class FBSurface
       the specific functionality actually exists.
     */
     struct Attributes {
-      bool smoothing;    // Scaling is smoothed or blocky
       bool blending;     // Blending is enabled
       uInt32 blendalpha; // Alpha to use in blending mode (0-100%)
     };

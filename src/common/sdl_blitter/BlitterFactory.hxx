@@ -18,6 +18,8 @@
 #ifndef BLITTER_FACTORY_HXX
 #define BLITTER_FACTORY_HXX
 
+#include <string>
+
 #include "Blitter.hxx"
 #include "bspf.hxx"
 #include "FrameBufferSDL2.hxx"
@@ -25,7 +27,15 @@
 class BlitterFactory {
   public:
 
-    static unique_ptr<Blitter> createBlitter(FrameBufferSDL2& fb);
+    enum class ScalingAlgorithm {
+      nearestNeighbour,
+      bilinear,
+      quasiInteger
+    };
+
+  public:
+
+    static unique_ptr<Blitter> createBlitter(FrameBufferSDL2& fb, ScalingAlgorithm scaling);
 };
 
 #endif // BLITTER_FACTORY_HXX

@@ -41,8 +41,11 @@ TIASurface::TIASurface(OSystem& system)
   myNTSCFilter.loadConfig(myOSystem.settings());
 
   // Create a surface for the TIA image and scanlines; we'll need them eventually
-  myTiaSurface = myFB.allocateSurface(AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
-                                      TIAConstants::frameBufferHeight);
+  myTiaSurface = myFB.allocateSurface(
+    AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
+    TIAConstants::frameBufferHeight,
+    FrameBuffer::ScalingInterpolation::sharp
+  );
 
   // Generate scanline data, and a pre-defined scanline surface
   constexpr uInt32 scanHeight = TIAConstants::frameBufferHeight * 2;
@@ -52,7 +55,7 @@ TIASurface::TIASurface(OSystem& system)
     scanData[i]   = 0x00000000;
     scanData[i+1] = 0xff000000;
   }
-  mySLineSurface = myFB.allocateSurface(1, scanHeight, scanData);
+  mySLineSurface = myFB.allocateSurface(1, scanHeight, FrameBuffer::ScalingInterpolation::sharp, scanData);
 
   // Base TIA surface for use in taking snapshots in 1x mode
   myBaseTiaSurface = myFB.allocateSurface(TIAConstants::frameBufferWidth*2,
@@ -255,13 +258,8 @@ void TIASurface::enableNTSC(bool enable)
   myTiaSurface->setSrcSize(enable ? AtariNTSC::outWidth(TIAConstants::frameBufferWidth)
       : TIAConstants::frameBufferWidth, myTIA->height());
 
-  FBSurface::Attributes& tia_attr = myTiaSurface->attributes();
-  tia_attr.smoothing = myOSystem.settings().getBool("tia.inter");
-  myTiaSurface->applyAttributes();
-
   myScanlinesEnabled = myOSystem.settings().getInt("tv.scanlines") > 0;
   FBSurface::Attributes& sl_attr = mySLineSurface->attributes();
-  sl_attr.smoothing  = true;
   sl_attr.blending   = myScanlinesEnabled;
   sl_attr.blendalpha = myOSystem.settings().getInt("tv.scanlines");
   mySLineSurface->applyAttributes();
@@ -284,12 +282,11 @@ string TIASurface::effectsInfo() const
       buf << "Disabled, phosphor mode";
       break;
     case Filter::BlarggNormal:
-      buf << myNTSCFilter.getPreset() << ", scanlines=" << attr.blendalpha << "/"
-          << (attr.smoothing ? "inter" : "nointer");
+      buf << myNTSCFilter.getPreset() << ", scanlines=" << attr.blendalpha;
       break;
     case Filter::BlarggPhosphor:
       buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
-          << attr.blendalpha << "/" << (attr.smoothing ? "inter" : "nointer");
+          << attr.blendalpha;
       break;
   }
   return buf.str();

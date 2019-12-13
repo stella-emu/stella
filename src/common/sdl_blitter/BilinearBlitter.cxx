@@ -20,9 +20,10 @@
 #include "ThreadDebugging.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BilinearBlitter::BilinearBlitter(FrameBufferSDL2& fb) :
+BilinearBlitter::BilinearBlitter(FrameBufferSDL2& fb, bool interpolate) :
   myTexture(nullptr),
   mySecondaryTexture(nullptr),
+  myInterpolate(interpolate),
   myTexturesAreAllocated(false),
   myRecreateTextures(false),
   myStaticData(nullptr),
@@ -111,7 +112,7 @@ void BilinearBlitter::recreateTexturesIfNecessary()
 
   SDL_TextureAccess texAccess = myStaticData == nullptr ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_STATIC;
 
-  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myAttributes.smoothing ? "1" : "0");
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, myInterpolate ? "1" : "0");
 
   myTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
       texAccess, mySrcRect.w, mySrcRect.h);

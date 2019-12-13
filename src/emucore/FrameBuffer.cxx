@@ -643,10 +643,10 @@ void FrameBuffer::setPauseDelay()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-shared_ptr<FBSurface> FrameBuffer::allocateSurface(int w, int h, const uInt32* data)
+shared_ptr<FBSurface> FrameBuffer::allocateSurface(int w, int h, ScalingInterpolation interpolation, const uInt32* data)
 {
   // Add new surface to the list
-  mySurfaceList.push_back(createSurface(w, h, data));
+  mySurfaceList.push_back(createSurface(w, h, interpolation, data));
 
   // And return a pointer to it (pointer should be treated read-only)
   return mySurfaceList.at(mySurfaceList.size() - 1);

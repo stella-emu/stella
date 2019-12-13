@@ -21,12 +21,24 @@
 #include "BilinearBlitter.hxx"
 #include "HqBlitter.hxx"
 
-unique_ptr<Blitter> BlitterFactory::createBlitter(FrameBufferSDL2& fb)
+unique_ptr<Blitter> BlitterFactory::createBlitter(FrameBufferSDL2& fb, ScalingAlgorithm scaling)
 {
   if (!fb.isInitialized()) {
     throw runtime_error("BlitterFactory requires an initialized framebuffer!");
   }
 
-  return HqBlitter::isSupported(fb) ?
-    unique_ptr<Blitter>(new HqBlitter(fb)) : unique_ptr<Blitter>(new BilinearBlitter(fb));
+  switch (scaling) {
+    case ScalingAlgorithm::nearestNeighbour:
+      return unique_ptr<Blitter>(new BilinearBlitter(fb, false));
+
+    case ScalingAlgorithm::bilinear:
+      return unique_ptr<Blitter>(new BilinearBlitter(fb, true));
+
+    case ScalingAlgorithm::quasiInteger:
+      return HqBlitter::isSupported(fb) ?
+        unique_ptr<Blitter>(new HqBlitter(fb)) : unique_ptr<Blitter>(new BilinearBlitter(fb, true));
+
+    default:
+      throw runtime_error("unreachable");
+  }
 }

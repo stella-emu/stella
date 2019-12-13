@@ -34,7 +34,6 @@ FBSurface::FBSurface()
   // from this class
 
   // Set default attributes
-  myAttributes.smoothing = false;
   myAttributes.blending = false;
   myAttributes.blendalpha = 100;
 }
@@ -455,5 +454,5 @@ const uInt32* FBSurface::myPalette = nullptr;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool operator==(const FBSurface::Attributes& a1, const FBSurface::Attributes& a2)
 {
-  return a1.blendalpha == a2.blendalpha && a1.blending == a2.blending && a1.smoothing && a2.smoothing;
+  return a1.blendalpha == a2.blendalpha && a1.blending == a2.blending;
 }

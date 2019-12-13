@@ -26,7 +26,7 @@ class BilinearBlitter : public Blitter {
 
   public:
 
-    BilinearBlitter(FrameBufferSDL2& fb);
+    BilinearBlitter(FrameBufferSDL2& fb, bool interpolate);
 
     virtual ~BilinearBlitter();
 
@@ -48,6 +48,7 @@ class BilinearBlitter : public Blitter {
     SDL_Rect mySrcRect, myDstRect;
     FBSurface::Attributes myAttributes;
 
+    bool myInterpolate;
     bool myTexturesAreAllocated;
     bool myRecreateTextures;
 
