@@ -44,7 +44,7 @@ void FrameBufferLIBRETRO::queryHardware(vector<Common::Size>& fullscreenRes,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 unique_ptr<FBSurface>
-    FrameBufferLIBRETRO::createSurface(uInt32 w, uInt32 h, const uInt32* data) const
+    FrameBufferLIBRETRO::createSurface(uInt32 w, uInt32 h, FrameBuffer::ScalingInterpolation, const uInt32* data) const
 {
   unique_ptr<FBSurface> ptr = make_unique<FBSurfaceLIBRETRO>
       (const_cast<FrameBufferLIBRETRO&>(*this), w, h, data);

@@ -81,6 +81,12 @@ class FrameBuffer
       }
     };
 
+    enum class ScalingInterpolation {
+      none,
+      sharp,
+      blur
+    };
+
     // Zoom level step interval
     static constexpr float ZOOM_STEPS = 0.25;
 
@@ -164,13 +170,19 @@ class FrameBuffer
       Allocate a new surface.  The FrameBuffer class takes all responsibility
       for freeing this surface (ie, other classes must not delete it directly).
 
-      @param w     The requested width of the new surface.
-      @param h     The requested height of the new surface.
-      @param data  If non-null, use the given data values as a static surface
+      @param w                The requested width of the new surface.
+      @param h                The requested height of the new surface.
+      @param interpolation    Interpolation mode
+      @param data             If non-null, use the given data values as a static surface
 
       @return  A pointer to a valid surface object, or nullptr.
     */
-    shared_ptr<FBSurface> allocateSurface(int w, int h, const uInt32* data = nullptr);
+    shared_ptr<FBSurface> allocateSurface(
+      int w,
+      int h,
+      ScalingInterpolation interpolation = ScalingInterpolation::none,
+      const uInt32* data = nullptr
+    );
 
     /**
       Returns the current dimensions of the framebuffer image.
@@ -395,13 +407,19 @@ class FrameBuffer
 
     /**
       This method is called to create a surface with the given attributes.
-
-      @param w     The requested width of the new surface.
-      @param h     The requested height of the new surface.
-      @param data  If non-null, use the given data values as a static surface
+z
+      @param w                The requested width of the new surface.
+      @param h                The requested height of the new surface.
+      @param interpolation    Interpolation mode
+      @param data             If non-null, use the given data values as a static surface
     */
     virtual unique_ptr<FBSurface>
-        createSurface(uInt32 w, uInt32 h, const uInt32* data) const = 0;
+        createSurface(
+          uInt32 w,
+          uInt32 h,
+          ScalingInterpolation interpolation = ScalingInterpolation::none,
+          const uInt32* data = nullptr
+    ) const = 0;
 
     /**
       Calls 'free()' on all surfaces that the framebuffer knows about.

@@ -33,6 +33,7 @@ class FBSurfaceSDL2 : public FBSurface
 {
   public:
     FBSurfaceSDL2(FrameBufferSDL2& buffer, uInt32 width, uInt32 height,
+                  FrameBuffer::ScalingInterpolation interpolation,
                   const uInt32* data);
     virtual ~FBSurfaceSDL2();
 
@@ -80,6 +81,7 @@ class FBSurfaceSDL2 : public FBSurface
     FrameBufferSDL2& myFB;
 
     unique_ptr<Blitter> myBlitter;
+    const FrameBuffer::ScalingInterpolation myInterpolationMode;
 
     SDL_Surface* mySurface;
     SDL_Rect mySrcR, myDstR;
