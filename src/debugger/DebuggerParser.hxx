@@ -106,6 +106,9 @@ class DebuggerParser
       uInt32 begin;
       uInt32 end;
       string condition;
+
+      Trap(bool r, bool w, uInt32 b, uInt32 e, const string& c)
+        : read(r), write(w), begin(b), end(e), condition(c) {}
     };
 
     // Reference to our debugger object

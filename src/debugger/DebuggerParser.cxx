@@ -2106,8 +2106,7 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
         YaccParser::getResult(), hasCond ? argStrings[0] : "");
       commandResult << "added trap " << Base::toString(ret);
 
-      // @sa666666: please check this:
-      myTraps.emplace_back(new Trap{ read, write, begin, end, condition });
+      myTraps.emplace_back(make_unique<Trap>(read, write, begin, end, condition));
     }
 
     for(uInt32 addr = begin; addr <= end; ++addr)

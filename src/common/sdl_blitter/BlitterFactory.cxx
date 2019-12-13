@@ -29,14 +29,16 @@ unique_ptr<Blitter> BlitterFactory::createBlitter(FrameBufferSDL2& fb, ScalingAl
 
   switch (scaling) {
     case ScalingAlgorithm::nearestNeighbour:
-      return unique_ptr<Blitter>(new BilinearBlitter(fb, false));
+      return make_unique<BilinearBlitter>(fb, false);
 
     case ScalingAlgorithm::bilinear:
-      return unique_ptr<Blitter>(new BilinearBlitter(fb, true));
+      return make_unique<BilinearBlitter>(fb, true);
 
     case ScalingAlgorithm::quasiInteger:
-      return HqBlitter::isSupported(fb) ?
-        unique_ptr<Blitter>(new HqBlitter(fb)) : unique_ptr<Blitter>(new BilinearBlitter(fb, true));
+      if (HqBlitter::isSupported(fb))
+        return make_unique<HqBlitter>(fb);
+      else
+        return make_unique<BilinearBlitter>(fb, true);
 
     default:
       throw runtime_error("unreachable");
