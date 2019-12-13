@@ -119,7 +119,8 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   // Let the cart know how to query for the 'Cartridge.StartBank' property
   myCart->setStartBankFromPropsFunc([this]() {
     const string& startbank = myProperties.get(PropType::Cart_StartBank);
-    return startbank == EmptyString ? -1 : atoi(startbank.c_str());
+    return (startbank == EmptyString || BSPF::equalsIgnoreCase(startbank, "AUTO"))
+        ? -1 : atoi(startbank.c_str());
   });
 
   // We can only initialize after all the devices/components have been created

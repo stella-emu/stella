@@ -314,7 +314,7 @@ string Properties::ourDefaultProperties[static_cast<uInt8>(PropType::NumTypes)] 
   "",       // Cart.Note
   "",       // Cart.Rarity
   "MONO",   // Cart.Sound
-  "",       // Cart.StartBank
+  "AUTO",   // Cart.StartBank
   "AUTO",   // Cart.Type
   "B",      // Console.LeftDiff
   "B",      // Console.RightDiff
