@@ -125,9 +125,10 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     string stellaName;
   };
   // Create name map for all currently known SDL renderers
-  const int NUM_RENDERERS = 5;
+  const int NUM_RENDERERS = 6;
   static const RenderName RENDERER_NAMES[NUM_RENDERERS] = {
     { "direct3d",  "Direct3D"  },
+    { "metal",     "Metal"     },
     { "opengl",    "OpenGL"    },
     { "opengles",  "OpenGLES"  },
     { "opengles2", "OpenGLES2" },
