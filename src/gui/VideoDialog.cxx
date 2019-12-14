@@ -119,18 +119,24 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Z26", "z26");
   VarList::push_back(items, "User", "user");
   myTIAPalette = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                                 lineHeight, items, "TIA palette ", lwidth);
+                                 lineHeight, items, "Palette ", lwidth);
   wid.push_back(myTIAPalette);
   ypos += lineHeight + VGAP;
 
-  // TIA interpolation
-  myTIAInterpolate = new CheckboxWidget(myTab, font, xpos, ypos + 1, "TIA interpolation ");
-  wid.push_back(myTIAInterpolate);
+  // TIA Filter
+  items.clear();
+  VarList::push_back(items, "None", "none");
+  VarList::push_back(items, "Sharp", "sharp");
+  VarList::push_back(items, "Soft", "soft");
+  myTIAFilter = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
+                                  lineHeight, items, "Filter ", lwidth);
+  wid.push_back(myTIAFilter);
   ypos += lineHeight + VGAP;
+
 
   // TIA zoom levels (will be dynamically filled later)
   myTIAZoom = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
-    "TIA zoom", lwidth, 0, fontWidth * 4, "%");
+    "Zoom ", lwidth, 0, fontWidth * 4, "%");
   myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
   wid.push_back(myTIAZoom);
   ypos += lineHeight + VGAP;
@@ -349,8 +355,8 @@ void VideoDialog::loadConfig()
   myTIAPalette->setSelected(
     instance().settings().getString("palette"), "standard");
 
-  // TIA interpolation
-  myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
+  // TIA Filter
+  myTIAFilter->setSelected(instance().settings().getString("tia.filter"), "none");
 
   // Aspect ratio setting (NTSC and PAL)
   myNAspectRatio->setValue(instance().settings().getInt("tia.aspectn"));
@@ -422,8 +428,8 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("palette",
     myTIAPalette->getSelectedTag().toString());
 
-  // TIA interpolation
-  instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
+  // TIA Filter
+  instance().settings().setValue("tia.filter", myTIAFilter->getSelectedTag().toString());
 
   // Aspect ratio setting (NTSC and PAL)
   instance().settings().setValue("tia.aspectn", myNAspectRatio->getValueLabel());
@@ -501,7 +507,7 @@ void VideoDialog::setDefaults()
       myRenderer->setSelectedIndex(0);
       myTIAZoom->setValue(300);
       myTIAPalette->setSelected("standard", "");
-      myTIAInterpolate->setState(false);
+      myTIAFilter->setSelected("none", "");
       myNAspectRatio->setValue(91);
       myPAspectRatio->setValue(109);
       mySpeed->setValue(0);
