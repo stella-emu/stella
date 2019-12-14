@@ -44,7 +44,7 @@ void BilinearBlitter::reinitialize(
   SDL_Surface* staticData
 )
 {
-  myRecreateTextures = !(
+  myRecreateTextures = myRecreateTextures || !(
     mySrcRect.w == srcRect.w &&
     mySrcRect.h == srcRect.h &&
     myDstRect.w == destRect.w &&
