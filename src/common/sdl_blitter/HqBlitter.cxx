@@ -41,7 +41,7 @@ bool HqBlitter::isSupported(FrameBufferSDL2 &fb)
 {
   ASSERT_MAIN_THREAD;
 
-  if (!fb.isInitialized()) throw runtime_error("frambuffer not initialized");
+  if (!fb.isInitialized()) throw runtime_error("framebuffer not initialized");
 
   SDL_RendererInfo info;
 
