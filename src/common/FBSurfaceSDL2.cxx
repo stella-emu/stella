@@ -185,6 +185,7 @@ void FBSurfaceSDL2::free()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reload()
 {
+  free();
   reinitializeBlitter();
 }
 
@@ -195,6 +196,7 @@ void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 
   if(mySurface)
     SDL_FreeSurface(mySurface);
+
   free();
 
   createSurface(width, height, nullptr);
