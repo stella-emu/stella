@@ -26,6 +26,7 @@
         "functional": "cpp",
         "iomanip": "cpp",
         "__cxx_version": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "type_traits": "cpp"
     }
 }
