@@ -179,7 +179,7 @@ void FBSurfaceSDL2::invalidate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::free()
 {
-  myBlitter.reset();
+  myBlitter.reset(nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
