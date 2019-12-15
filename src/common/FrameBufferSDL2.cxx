@@ -99,6 +99,24 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
   {
     SDL_GetDesktopDisplayMode(i, &display);
     fullscreenRes.emplace_back(display.w, display.h);
+
+    // evaluate fullscreen display modes (debug only for now)
+    int numModes = SDL_GetNumDisplayModes(i);
+    ostringstream s;
+
+    s << "Supported video modes for display " << i << ":";
+    Logger::debug(s.str());
+    for (int m = 0; m < numModes; m++)
+    {
+      SDL_DisplayMode mode;
+
+      SDL_GetDisplayMode(i, m, &mode);
+      s.str("");
+      s << "  " << m << ": " << mode.w << "x" << mode.h << "@" << mode.refresh_rate << "Hz";
+      if (mode.w == display.w && mode.h == display.h && mode.refresh_rate == display.refresh_rate)
+        s << " (active)";
+      Logger::debug(s.str());
+    }
   }
 
   // Now get the maximum windowed desktop resolution
