@@ -23,7 +23,7 @@ class SqliteDatabase;
 class SqliteTransaction {
   public:
 
-    SqliteTransaction(SqliteDatabase& db);
+    explicit SqliteTransaction(SqliteDatabase& db);
 
     ~SqliteTransaction();
 

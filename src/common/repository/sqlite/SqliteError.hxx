@@ -22,9 +22,9 @@
 #include "bspf.hxx"
 
 struct SqliteError {
-  SqliteError(const string _message) : message(_message) {}
+  explicit SqliteError(const string& _message) : message(_message) {}
 
-  SqliteError(sqlite3* handle) : message(sqlite3_errmsg(handle)) {}
+  explicit SqliteError(sqlite3* handle) : message(sqlite3_errmsg(handle)) {}
 
   const string message;
 };

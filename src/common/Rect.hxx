@@ -112,7 +112,7 @@ struct Rect
   public:
     Rect() : top(0), left(0), bottom(0), right(0) { assert(valid()); }
     Rect(const Rect& s) : top(s.top), left(s.left), bottom(s.bottom), right(s.right) { assert(valid()); }
-    Rect(const Size& s) : top(0), left(0), bottom(s.h), right(s.w) { assert(valid()); }
+    explicit Rect(const Size& s) : top(0), left(0), bottom(s.h), right(s.w) { assert(valid()); }
     Rect& operator=(const Rect&) = default;
     Rect(uInt32 w, uInt32 h) : top(0), left(0), bottom(h), right(w) { assert(valid()); }
     Rect(const Point& p, uInt32 w, uInt32 h) : top(p.y), left(p.x), bottom(h), right(w) { assert(valid()); }

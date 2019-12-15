@@ -308,7 +308,8 @@ void SoundSDL2::processFragment(float* stream, uInt32 length)
 {
   myResampler->fillFragment(stream, length);
 
-  for (uInt32 i = 0; i < length; i++) stream[i] = stream[i] * myVolumeFactor;
+  for (uInt32 i = 0; i < length; ++i)
+    stream[i] *= myVolumeFactor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

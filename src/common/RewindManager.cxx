@@ -255,7 +255,7 @@ string RewindManager::saveAllStates()
     out.putInt(myStateSize);
 
     unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(myStateSize);
-    for (uInt32 i = 0; i < numStates; i++)
+    for (uInt32 i = 0; i < numStates; ++i)
     {
       RewindState& state = myStateList.current();
       Serializer& s = state.data;
@@ -310,7 +310,7 @@ string RewindManager::loadAllStates()
     myStateSize = in.getInt();
 
     unique_ptr<uInt8[]> buffer = make_unique<uInt8[]>(myStateSize);
-    for (uInt32 i = 0; i < numStates; i++)
+    for (uInt32 i = 0; i < numStates; ++i)
     {
       if (myStateList.full())
         compressStates();

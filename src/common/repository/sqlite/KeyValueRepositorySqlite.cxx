@@ -42,7 +42,7 @@ std::map<string, Variant> KeyValueRepositorySqlite::load()
 
     myStmtSelect->reset();
   }
-  catch (SqliteError err) {
+  catch (const SqliteError& err) {
     Logger::info(err.message);
   }
 
@@ -68,7 +68,7 @@ void KeyValueRepositorySqlite::save(const std::map<string, Variant>& values)
 
     tx.commit();
   }
-  catch (SqliteError err) {
+  catch (const SqliteError& err) {
     Logger::info(err.message);
   }
 }
@@ -86,7 +86,7 @@ void KeyValueRepositorySqlite::save(const string& key, const Variant& value)
 
     myStmtInsert->reset();
   }
-  catch (SqliteError err) {
+  catch (const SqliteError& err) {
     Logger::info(err.message);
   }
 }

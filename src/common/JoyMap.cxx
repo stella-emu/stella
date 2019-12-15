@@ -18,11 +18,6 @@
 #include "JoyMap.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JoyMap::JoyMap(void)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoyMap::add(const Event::Type event, const JoyMapping& mapping)
 {
   myMap[mapping] = event;

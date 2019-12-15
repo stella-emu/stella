@@ -26,7 +26,7 @@ class HqBlitter : public Blitter {
 
   public:
 
-    HqBlitter(FrameBufferSDL2& fb);
+    explicit HqBlitter(FrameBufferSDL2& fb);
 
     static bool isSupported(FrameBufferSDL2 &fb);
 
