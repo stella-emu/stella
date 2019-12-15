@@ -24,7 +24,7 @@ class KeyValueRepositoryConfigfile : public KeyValueRepository
 {
   public:
 
-    KeyValueRepositoryConfigfile(const string& filename);
+    explicit KeyValueRepositoryConfigfile(const string& filename);
 
     std::map<string, Variant> load() override;
 

@@ -30,7 +30,6 @@
 class JoyMap
 {
   public:
-
     struct JoyMapping
     {
       EventMode mode;
@@ -44,10 +43,6 @@ class JoyMap
         : mode(EventMode(0)), button(0),
           axis(JoyAxis(0)), adir(JoyDir(0)),
           hat(0), hdir(JoyHatDir(0)) { }
-      JoyMapping(const JoyMapping& m)
-        : mode(m.mode), button(m.button),
-          axis(m.axis), adir(m.adir),
-          hat(m.hat), hdir(m.hdir) { }
       explicit JoyMapping(EventMode c_mode, int c_button,
                           JoyAxis c_axis, JoyDir c_adir,
                           int c_hat, JoyHatDir c_hdir)
@@ -65,6 +60,11 @@ class JoyMap
           axis(JoyAxis::NONE), adir(JoyDir::NONE),
           hat(c_hat), hdir(c_hdir) { }
 
+      JoyMapping(const JoyMapping&) = default;
+      JoyMapping& operator=(const JoyMapping&) = default;
+      JoyMapping(JoyMapping&&) = default;
+      JoyMapping& operator=(JoyMapping&&) = default;
+
       bool operator==(const JoyMapping& other) const
       {
         return (mode == other.mode
@@ -78,8 +78,7 @@ class JoyMap
     };
     using JoyMappingArray = std::vector<JoyMapping>;
 
-    JoyMap();
-    virtual ~JoyMap() = default;
+    JoyMap() = default;
 
     /** Add new mapping for given event */
     void add(const Event::Type event, const JoyMapping& mapping);
@@ -142,6 +141,12 @@ class JoyMap
     };
 
     std::unordered_map<JoyMapping, Event::Type, JoyHash> myMap;
+
+    // Following constructors and assignment operators not supported
+    JoyMap(const JoyMap&) = delete;
+    JoyMap(JoyMap&&) = delete;
+    JoyMap& operator=(const JoyMap&) = delete;
+    JoyMap& operator=(JoyMap&&) = delete;
 };
 
 #endif

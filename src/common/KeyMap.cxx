@@ -14,13 +14,8 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
-#include "KeyMap.hxx"
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-KeyMap::KeyMap(void)
-  : myModEnabled(true)
-{
-}
+#include "KeyMap.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::add(const Event::Type event, const Mapping& mapping)
