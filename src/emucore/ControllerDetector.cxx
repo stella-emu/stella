@@ -34,7 +34,7 @@ Controller::Type ControllerDetector::detectType(const uInt8* image, size_t size,
       cerr << "Controller auto-detection not consistent: "
         << Controller::getName(type) << ", " << Controller::getName(detectedType) << endl;
     }
-    Logger::debug(Controller::getName(detectedType) + " detected for " +
+    Logger::debug("'" + Controller::getName(detectedType) + "' detected for " +
       (port == Controller::Jack::Left ? "left" : "right") + " port");
     return detectedType;
   }

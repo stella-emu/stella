@@ -394,7 +394,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
       if(!instance().hasConsole() &&
         node.exists() && !node.isDirectory() && (image = instance().openROM(node, md5, size)) != nullptr)
       {
-        bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image, size)) + " detected";
+        bsDetected = Bankswitch::typeToDesc(CartDetector::autodetectType(image, size)) + " detected";
       }
     }
   }

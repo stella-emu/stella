@@ -824,6 +824,7 @@ void Console::setControllers(const string& romMd5)
     // Try to detect controllers
     if(image != nullptr && size != 0)
     {
+      Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
       leftType = ControllerDetector::detectType(image, size, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right, myOSystem.settings());
       rightType = ControllerDetector::detectType(image, size, rightType,

@@ -34,6 +34,12 @@ Bankswitch::Type Bankswitch::nameToType(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Bankswitch::typeToDesc(Bankswitch::Type type)
+{
+  return BSList[int(type)].desc;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::Type Bankswitch::typeFromExtension(const FilesystemNode& file)
 {
   const string& name = file.getPath();
@@ -100,35 +106,35 @@ Bankswitch::Description Bankswitch::BSList[int(Bankswitch::Type::NumSchemes)] = 
   { "3E"      , "3E (32K Tigervision)"        },
   { "3E+"     , "3E+ (TJ modified DASH)"      },
   { "3F"      , "3F (512K Tigervision)"       },
-  { "4A50"    , "4A50 (64K 4A50 + ram)"       },
+  { "4A50"    , "4A50 (64K 4A50 + RAM)"       },
   { "4K"      , "4K (4K Atari)"               },
-  { "4KSC"    , "4KSC (CPUWIZ 4K + ram)"      },
+  { "4KSC"    , "4KSC (CPUWIZ 4K + RAM)"      },
   { "AR"      , "AR (Supercharger)"           },
   { "BF"      , "BF (CPUWIZ 256K)"            },
-  { "BFSC"    , "BFSC (CPUWIZ 256K + ram)"    },
+  { "BFSC"    , "BFSC (CPUWIZ 256K + RAM)"    },
   { "BUS"     , "BUS (Experimental)"          },
   { "CDF"     , "CDF (Chris, Darrell, Fred)"  },
   { "CM"      , "CM (SpectraVideo CompuMate)" },
   { "CTY"     , "CTY (CDW - Chetiry)"         },
-  { "CV"      , "CV (Commavid extra ram)"     },
+  { "CV"      , "CV (Commavid extra RAM)"     },
   { "CV+"     , "CV+ (Extended Commavid)"     },
   { "DASH"    , "DASH (Experimental)"         },
   { "DF"      , "DF (CPUWIZ 128K)"            },
-  { "DFSC"    , "DFSC (CPUWIZ 128K + ram)"    },
+  { "DFSC"    , "DFSC (CPUWIZ 128K + RAM)"    },
   { "DPC"     , "DPC (Pitfall II)"            },
   { "DPC+"    , "DPC+ (Enhanced DPC)"         },
   { "E0"      , "E0 (8K Parker Bros)"         },
   { "E7"      , "E7 (16K M-network)"          },
   { "E78K"    , "E78K (8K M-network)"         },
   { "EF"      , "EF (64K H. Runner)"          },
-  { "EFSC"    , "EFSC (64K H. Runner + ram)"  },
+  { "EFSC"    , "EFSC (64K H. Runner + RAM)"  },
   { "F0"      , "F0 (Dynacom Megaboy)"        },
   { "F4"      , "F4 (32K Atari)"              },
-  { "F4SC"    , "F4SC (32K Atari + ram)"      },
+  { "F4SC"    , "F4SC (32K Atari + RAM)"      },
   { "F6"      , "F6 (16K Atari)"              },
-  { "F6SC"    , "F6SC (16K Atari + ram)"      },
+  { "F6SC"    , "F6SC (16K Atari + RAM)"      },
   { "F8"      , "F8 (8K Atari)"               },
-  { "F8SC"    , "F8SC (8K Atari + ram)"       },
+  { "F8SC"    , "F8SC (8K Atari + RAM)"       },
   { "FA"      , "FA (CBS RAM Plus)"           },
   { "FA2"     , "FA2 (CBS RAM Plus 24/28K)"   },
   { "FC"      , "FC (32K Amiga)"              },
