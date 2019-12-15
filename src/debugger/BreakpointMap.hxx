@@ -29,87 +29,91 @@
 */
 class BreakpointMap
 {
-private:
-  static const uInt16 ADDRESS_MASK = 0x1fff;  // either 0x1fff or 0xffff (not needed then)
+  private:
+    static const uInt16 ADDRESS_MASK = 0x1fff;  // either 0x1fff or 0xffff (not needed then)
 
-public:
-  // breakpoint flags
-  static const uInt32 ONE_SHOT = 1 << 0;      // used for 'trace' command
+  public:
+    // breakpoint flags
+    static const uInt32 ONE_SHOT = 1 << 0;      // used for 'trace' command
 
-  static const uInt8 ANY_BANK = 255;          // breakpoint valid in any bank
+    static const uInt8 ANY_BANK = 255;          // breakpoint valid in any bank
 
-  struct Breakpoint
-  {
-    uInt16 addr;
-    uInt8 bank;
-
-    Breakpoint()
-      : addr(0), bank(0) { }
-    Breakpoint(const Breakpoint& bp)
-      : addr(bp.addr), bank(bp.bank) { }
-    explicit Breakpoint(uInt16 c_addr, uInt8 c_bank)
-      : addr(c_addr), bank(c_bank) { }
-
-    bool operator==(const Breakpoint& other) const
+    struct Breakpoint
     {
-      if(addr == other.addr)
+      uInt16 addr;
+      uInt8 bank;
+
+      Breakpoint() : addr(0), bank(0) { }
+      explicit Breakpoint(uInt16 c_addr, uInt8 c_bank) : addr(c_addr), bank(c_bank) { }
+      Breakpoint(const Breakpoint&) = default;
+      Breakpoint& operator=(const Breakpoint&) = default;
+      Breakpoint(Breakpoint&&) = default;
+      Breakpoint& operator=(Breakpoint&&) = default;
+
+      bool operator==(const Breakpoint& other) const
       {
-        if(bank == ANY_BANK || other.bank == ANY_BANK)
-          return true;
-        else
-          return bank == other.bank;
+        if(addr == other.addr)
+        {
+          if(bank == ANY_BANK || other.bank == ANY_BANK)
+            return true;
+          else
+            return bank == other.bank;
+        }
+        return false;
       }
-      return false;
-    }
-    bool operator<(const Breakpoint& other) const
-    {
-      return bank < other.bank ||
-        (bank == other.bank && addr < other.addr);
-    }
-  };
-  using BreakpointList = std::vector<Breakpoint>;
+      bool operator<(const Breakpoint& other) const
+      {
+        return bank < other.bank || (bank == other.bank && addr < other.addr);
+      }
+    };
+    using BreakpointList = std::vector<Breakpoint>;
 
-  BreakpointMap();
-  virtual ~BreakpointMap() = default;
+    BreakpointMap() : myInitialized(false) { }
 
-  bool isInitialized() const { return myInitialized; }
+    bool isInitialized() const { return myInitialized; }
 
-  /** Add new breakpoint */
-  void add(const Breakpoint& breakpoint, const uInt32 flags = 0);
-  void add(const uInt16 addr, const uInt8 bank, const uInt32 flags = 0);
+    /** Add new breakpoint */
+    void add(const Breakpoint& breakpoint, const uInt32 flags = 0);
+    void add(const uInt16 addr, const uInt8 bank, const uInt32 flags = 0);
 
-  /** Erase breakpoint */
-  void erase(const Breakpoint& breakpoint);
-  void erase(const uInt16 addr, const uInt8 bank);
+    /** Erase breakpoint */
+    void erase(const Breakpoint& breakpoint);
+    void erase(const uInt16 addr, const uInt8 bank);
 
-  /** Get info for breakpoint */
-  uInt32 get(const Breakpoint& breakpoint) const;
-  uInt32 get(uInt16 addr, uInt8 bank) const;
+    /** Get info for breakpoint */
+    uInt32 get(const Breakpoint& breakpoint) const;
+    uInt32 get(uInt16 addr, uInt8 bank) const;
 
-  /** Check if a breakpoint exists */
-  bool check(const Breakpoint& breakpoint) const;
-  bool check(const uInt16 addr, const uInt8 bank) const;
+    /** Check if a breakpoint exists */
+    bool check(const Breakpoint& breakpoint) const;
+    bool check(const uInt16 addr, const uInt8 bank) const;
 
-  /** Returns a sorted list of breakpoints */
-  BreakpointList getBreakpoints() const;
+    /** Returns a sorted list of breakpoints */
+    BreakpointList getBreakpoints() const;
 
-  /** clear all breakpoints */
-  void clear() { myMap.clear(); }
-  size_t size() { return myMap.size(); }
+    /** clear all breakpoints */
+    void clear() { myMap.clear(); }
+    size_t size() const { return myMap.size(); }
 
-private:
-  Breakpoint convertBreakpoint(const Breakpoint& breakpoint);
+  private:
+    Breakpoint convertBreakpoint(const Breakpoint& breakpoint);
 
-  struct BreakpointHash {
-    size_t operator()(const Breakpoint& bp) const {
-      return std::hash<uInt64>()(
-        uInt64(bp.addr) * 13 // only check for address, bank check via == operator
-      );
-    }
-  };
+    struct BreakpointHash {
+      size_t operator()(const Breakpoint& bp) const {
+        return std::hash<uInt64>()(
+          uInt64(bp.addr) * 13 // only check for address, bank check via == operator
+        );
+      }
+    };
 
-  std::unordered_map<Breakpoint, uInt32, BreakpointHash> myMap;
-  bool myInitialized;
+    std::unordered_map<Breakpoint, uInt32, BreakpointHash> myMap;
+    bool myInitialized;
+
+    // Following constructors and assignment operators not supported
+    BreakpointMap(const BreakpointMap&) = delete;
+    BreakpointMap(BreakpointMap&&) = delete;
+    BreakpointMap& operator=(const BreakpointMap&) = delete;
+    BreakpointMap& operator=(BreakpointMap&&) = delete;
 };
 
 #endif

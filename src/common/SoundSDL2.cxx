@@ -238,13 +238,13 @@ void SoundSDL2::adjustVolume(Int8 direction)
 
   setVolume(percent);
 
-  // enabled audio if it is currently disabled
+  // Enable audio if it is currently disabled
   bool enabled = myAudioSettings.enabled();
 
-  if (percent > 0 && !enabled)
+  if(percent > 0 && !enabled)
   {
-	  setEnabled(!enabled);
-	  myOSystem.console().initializeAudio();
+    setEnabled(!enabled);
+    myOSystem.console().initializeAudio();
   }
 
   // Now show an onscreen message

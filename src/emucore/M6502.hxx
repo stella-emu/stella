@@ -436,6 +436,8 @@ class M6502 : public Serializable
     struct HitTrapInfo {
       string message;
       int address;
+
+      HitTrapInfo() : message(""), address(0) { }
     };
     HitTrapInfo myHitTrapInfo;
 

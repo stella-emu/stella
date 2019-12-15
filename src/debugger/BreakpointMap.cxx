@@ -19,12 +19,6 @@
 #include "BreakpointMap.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BreakpointMap::BreakpointMap(void)
-  : myInitialized(false)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BreakpointMap::add(const Breakpoint& breakpoint, const uInt32 flags)
 {
   Breakpoint bp = convertBreakpoint(breakpoint);

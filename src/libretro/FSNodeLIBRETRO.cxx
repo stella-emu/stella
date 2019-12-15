@@ -26,11 +26,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO()
   : _name("rom"),
+    _path("." + slash),
     _isDirectory(false),
     _isFile(true),
+    _isPseudoRoot(false),
     _isValid(true)
 {
-  _path = "." + slash;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,6 +40,7 @@ FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO(const string& p)
     _path(p),
     _isDirectory(false),
     _isFile(true),
+    _isPseudoRoot(false),
     _isValid(true)
 {
   // TODO: use retro_vfs_mkdir_t (file) or RETRO_MEMORY_SAVE_RAM (stream) or libretro save path
