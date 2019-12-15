@@ -583,7 +583,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 #if defined(DEBUGGER_SUPPORT) && defined(WINDOWED_SUPPORT)
   // Debugger is only realistically available in windowed modes 800x600 or greater
   // (and when it's actually been compiled into the app)
-  if(ds.w < 800 || ds.h < 600);  // TODO - maybe this logic can disappear?
+  if(ds.w < 800 || ds.h < 600)  // TODO - maybe this logic can disappear?
   {
     myDebuggerWidthSlider->clearFlags(Widget::FLAG_ENABLED);
     myDebuggerHeightSlider->clearFlags(Widget::FLAG_ENABLED);

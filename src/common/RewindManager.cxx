@@ -267,8 +267,7 @@ string RewindManager::saveAllStates()
       out.putString(state.message);
       out.putLong(state.cycles);
 
-      if (i < numStates)
-        unwindStates(1);
+      unwindStates(1);
     }
     // restore old state position
     rewindStates(numStates - curIdx);
