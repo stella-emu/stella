@@ -62,6 +62,7 @@
 #include "CartX07.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
+#include "Logger.hxx"
 
 #include "CartDetector.hxx"
 
@@ -534,6 +535,11 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
     type = Bankswitch::Type::_3EP;
   else if(isProbablyMDM(image, size))
     type = Bankswitch::Type::_MDM;
+
+  ostringstream ss;
+
+  ss << "Bankswitching type '" << Bankswitch::typeToDesc(type) << "' detected";
+  Logger::debug(ss.str());
 
   return type;
 }

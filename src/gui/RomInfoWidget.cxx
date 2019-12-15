@@ -22,6 +22,9 @@
 #include "Font.hxx"
 #include "OSystem.hxx"
 #include "ControllerDetector.hxx"
+#include "Bankswitch.hxx"
+#include "CartDetector.hxx"
+#include "Logger.hxx"
 #include "Props.hxx"
 #include "PNGLibrary.hxx"
 #include "Rect.hxx"
@@ -132,11 +135,12 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   myRomInfo.push_back("Note: " + myProperties.get(PropType::Cart_Note));
   bool swappedPorts = myProperties.get(PropType::Console_SwapPorts) == "YES";
 
-  // Load the image for controller auto detection
+  // Load the image for controller and bankswitch type auto detection
   string left = myProperties.get(PropType::Controller_Left);
   string right = myProperties.get(PropType::Controller_Right);
   Controller::Type leftType = Controller::getType(left);
   Controller::Type rightType = Controller::getType(right);
+  string bsDetected = myProperties.get(PropType::Cart_Type);
   try
   {
     ByteBuffer image;
@@ -146,12 +150,15 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
     if(node.exists() && !node.isDirectory() &&
       (image = instance().openROM(node, md5, size)) != nullptr)
     {
+      Logger::debug(myProperties.get(PropType::Cart_Name) + ":");
       left = ControllerDetector::detectName(image.get(), size, leftType,
           !swappedPorts ? Controller::Jack::Left : Controller::Jack::Right,
           instance().settings());
       right = ControllerDetector::detectName(image.get(), size, rightType,
           !swappedPorts ? Controller::Jack::Right : Controller::Jack::Left,
           instance().settings());
+      if (bsDetected == "AUTO")
+        bsDetected = Bankswitch::typeToName(CartDetector::autodetectType(image, size));
     }
   }
   catch(const runtime_error&)
@@ -162,6 +169,8 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   }
   if(left != "" && right != "")
     myRomInfo.push_back("Controllers: " + (left + " (left), " + right + " (right)"));
+  if (bsDetected != "")
+    myRomInfo.push_back("Type: " + Bankswitch::typeToDesc(Bankswitch::nameToType(bsDetected)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

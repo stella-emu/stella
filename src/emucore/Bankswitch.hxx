@@ -67,6 +67,9 @@ class Bankswitch
     // Convert string to BSType enum
     static Bankswitch::Type nameToType(const string& name);
 
+    // Convert BSType enum to description string
+    static string typeToDesc(Bankswitch::Type type);
+
     // Determine bankswitch type by filename extension
     // Use '_AUTO' if unknown
     static Bankswitch::Type typeFromExtension(const FilesystemNode& file);
