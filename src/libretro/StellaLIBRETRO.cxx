@@ -49,6 +49,7 @@ StellaLIBRETRO::StellaLIBRETRO()
 
   video_phosphor = "byrom";
   video_phosphor_blend = 60;
+  phosphor_default = false;
 
   rom_image = make_unique<uInt8[]>(getROMMax());
 
