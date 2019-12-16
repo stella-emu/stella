@@ -431,13 +431,15 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
 
   {Event::VidmodeDecrease,          KBDK_MINUS, MOD3},
   {Event::VidmodeIncrease,          KBDK_EQUALS, MOD3},
+  {Event::DecreaseYStart,           KBDK_PAGEUP, MOD3},
+  {Event::IncreaseYStart,           KBDK_PAGEDOWN, MOD3},
   {Event::VolumeDecrease,           KBDK_LEFTBRACKET, MOD3},
   {Event::VolumeIncrease,           KBDK_RIGHTBRACKET, MOD3},
   {Event::SoundToggle,              KBDK_RIGHTBRACKET, KBDM_CTRL},
 
   {Event::ToggleFullScreen,         KBDK_RETURN, MOD3},
-  {Event::DecreaseOverscan,         KBDK_PAGEDOWN, MOD3},
-  {Event::IncreaseOverScan,         KBDK_PAGEUP, MOD3},
+  {Event::DecreaseOverscan,         KBDK_PAGEDOWN, KBDM_SHIFT},
+  {Event::IncreaseOverScan,         KBDK_PAGEUP, KBDM_SHIFT},
   {Event::VidmodeStd,               KBDK_1, MOD3},
   {Event::VidmodeRGB,               KBDK_2, MOD3},
   {Event::VidmodeSVideo,            KBDK_3, MOD3},

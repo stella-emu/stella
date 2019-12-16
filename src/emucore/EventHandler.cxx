@@ -419,6 +419,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed) myOSystem.frameBuffer().changeVidMode(+1);
       return;
 
+    case Event::DecreaseYStart:
+      if (pressed) myOSystem.console().changeYStart(-1); 
+      return;
+
+    case Event::IncreaseYStart:
+      if (pressed) myOSystem.console().changeYStart(+1);
+      return;
+
     case Event::ToggleFullScreen:
       if (pressed && !repeated) myOSystem.frameBuffer().toggleFullscreen();
       return;
@@ -1824,6 +1832,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::IncreaseOverScan,        "Increase overscan in fullscreen mode",  "" },
   { Event::DecreaseFormat,          "Decrease display format",               "" },
   { Event::IncreaseFormat,          "Increase display format",               "" },
+  { Event::DecreaseYStart,          "Move display up",                       "" },
+  { Event::IncreaseYStart,          "Move display down",                     "" },
   { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "" },
 
   // TV effects:
@@ -1949,6 +1959,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::ScanlinesDecrease, Event::ScanlinesIncrease,
   Event::DecreasePhosphor, Event::IncreasePhosphor, Event::TogglePhosphor,
   Event::DecreaseFormat, Event::IncreaseFormat,
+  Event::DecreaseYStart, Event::IncreaseYStart,
   Event::DecreaseOverscan, Event::IncreaseOverScan,
   Event::TogglePalette,
 };
