@@ -83,26 +83,26 @@ class Event
       ToggleFullScreen,
       VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
-      ScanlinesDecrease, ScanlinesIncrease,
+      ScanlinesDecrease, ScanlinesIncrease, YStartDecrease, YStartIncrease,
 
       ToggleP0Collision, ToggleP0Bit, ToggleP1Collision, ToggleP1Bit,
       ToggleM0Collision, ToggleM0Bit, ToggleM1Collision, ToggleM1Bit,
       ToggleBLCollision, ToggleBLBit, TogglePFCollision, TogglePFBit,
       ToggleCollisions, ToggleBits, ToggleFixedColors,
 
-      DecreasePhosphor, IncreasePhosphor, TogglePhosphor, ToggleJitter,
+      PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleJitter,
       ToggleFrameStats, ToggleTimeMachine,
       ToggleContSnapshots, ToggleContSnapshotsFrame,
       ToggleColorLoss, TogglePalette,
 
       HandleMouseControl, ToggleGrabMouse, ToggleSAPortOrder,
-      DecreaseFormat, IncreaseFormat, ReloadConsole,
+      FormatDecrease, FormatIncrease, ReloadConsole,
 
       Rewind1Menu, Rewind10Menu, RewindAllMenu,
       Unwind1Menu, Unwind10Menu, UnwindAllMenu,
 
       StartPauseMode, SaveAllStates, LoadAllStates,
-      DecreaseOverscan, IncreaseOverScan,
+      OverscanDecrease, OverScanIncrease,
 
       ToggleAutoSlot,
 

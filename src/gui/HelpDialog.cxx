@@ -111,13 +111,13 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_EVENT(Event::VidmodeDecrease,     "Decrease window size");
       ADD_EVENT(Event::ToggleFullScreen,    "Toggle fullscreen /");
       ADD_BIND("",                          "  windowed mode");
-      ADD_EVENT(Event::IncreaseOverScan,    "Increase overscan in FS mode");
-      ADD_EVENT(Event::DecreaseOverscan,    "Decrease overscan in FS mode");
+      ADD_EVENT(Event::OverScanIncrease,    "Increase overscan in FS mode");
+      ADD_EVENT(Event::OverscanDecrease,    "Decrease overscan in FS mode");
       break;
 
     case 2:
       title = "Special commands";
-      ADD_EVENT(Event::IncreaseFormat,      "Switch between NTSC/PAL/SECAM");
+      ADD_EVENT(Event::FormatIncrease,      "Switch between NTSC/PAL/SECAM");
       ADD_EVENT(Event::TogglePalette,       "Switch palette");
       ADD_EVENT(Event::TogglePhosphor,      "Toggle 'phosphor' effect");
       ADD_LINE();
@@ -139,7 +139,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_EVENT(Event::VidModeCustom,       "Enable 'Custom' mode");
       ADD_EVENT(Event::NextAttribute,       "Select 'Custom' attribute");
       ADD_EVENT(Event::IncreaseAttribute,   "Modify 'Custom' attribute");
-      ADD_EVENT(Event::IncreasePhosphor,    "Adjust phosphor blend");
+      ADD_EVENT(Event::PhosphorIncrease,    "Adjust phosphor blend");
       ADD_EVENT(Event::ScanlinesIncrease,   "Adjust scanline intensity");
       break;
 
