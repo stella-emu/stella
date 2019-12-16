@@ -120,20 +120,30 @@ GameInfoDialog::GameInfoDialog(
 
   myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 8, ypos + 4, "SECAM60 detected");
 
+
   // Phosphor
-  ypos += lineHeight + VGAP * 2;
+  ypos += lineHeight + VGAP;
   myPhosphor = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Phosphor (enabled for all ROMs)", kPhosphorChanged);
   wid.push_back(myPhosphor);
 
-  ypos += lineHeight + VGAP;
+  ypos += lineHeight + VGAP * 0;
   myPPBlend = new SliderWidget(myTab, font,
                                HBORDER + 20, ypos,
-                               "Blend ", 0, kPPBlendChanged, 4 * fontWidth, "%");
+                               "Blend  ", 0, kPPBlendChanged, 4 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   myPPBlend->setTickmarkIntervals(2);
   wid.push_back(myPPBlend);
 
-  ypos += lineHeight + VGAP * 4;
+  ypos += lineHeight + VGAP;
+  t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "V-Center ");
+  myVCenter = new SliderWidget(myTab, font, t->getRight() + 2, ypos,
+                              "", 0, kYStartChanged, 7 * fontWidth, "px");
+  myVCenter->setMinValue(TIAConstants::minYStart - TIAConstants::defaultYStart);
+  myVCenter->setMaxValue(TIAConstants::maxYStart - TIAConstants::defaultYStart);
+  myVCenter->setTickmarkIntervals(4);
+  wid.push_back(myVCenter);
+
+  ypos += lineHeight + VGAP * 3;
   mySound = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Stereo sound");
   wid.push_back(mySound);
 
@@ -446,6 +456,21 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   const string& blend = props.get(PropType::Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));
 
+  // set vertical center (y-start)
+  int vCenter = atoi(props.get(PropType::Display_YStart).c_str());
+  if (vCenter)
+  {
+    // convert y-start into v-center
+    vCenter = TIAConstants::defaultYStart - vCenter;
+    myVCenter->setValueLabel(vCenter);
+  }
+  else
+  {
+    myVCenter->setValueLabel("default");
+  }
+  myVCenter->setValue(vCenter);
+  myVCenter->setValueUnit(vCenter ? "px" : "");
+
   mySound->setState(props.get(PropType::Cart_Sound) == "STEREO");
   // if stereo is always enabled, disable game specific stereo setting
   mySound->setEnabled(!instance().audioSettings().stereo());
@@ -521,6 +546,11 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(PropType::Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
   myGameProperties.set(PropType::Display_PPBlend, myPPBlend->getValueLabel() == "Off" ? "0" :
                        myPPBlend->getValueLabel());
+  int vCenter = myVCenter->getValue();
+  if (vCenter)
+    // convert v-center into y-start
+    vCenter = TIAConstants::defaultYStart - vCenter;
+  myGameProperties.set(PropType::Display_YStart, std::to_string(vCenter));
   myGameProperties.set(PropType::Cart_Sound, mySound->getState() ? "STEREO" : "MONO");
 
   // Console properties
@@ -563,6 +593,7 @@ void GameInfoDialog::saveConfig()
     // update 'Emulation' tab settings immediately
     instance().console().setFormat(myFormat->getSelected());
     instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
+    instance().console().updateYStart(vCenter);
     instance().console().initializeAudio();
 
     // update 'Console' tab settings immediately
@@ -759,6 +790,16 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       }
       else
         myPPBlend->setValueUnit("%");
+      break;
+
+    case kYStartChanged:
+      if (myVCenter->getValue() == 0)
+      {
+        myVCenter->setValueLabel("Default");
+        myVCenter->setValueUnit("");
+      }
+      else
+        myVCenter->setValueUnit("px");
       break;
 
     case kMCtrlChanged:
