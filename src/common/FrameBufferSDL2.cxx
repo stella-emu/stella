@@ -32,7 +32,8 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   : FrameBuffer(osystem),
     myWindow(nullptr),
     myRenderer(nullptr),
-    myCenter(false)
+    myCenter(false),
+    myRenderTargetSupport(false)
 {
   ASSERT_MAIN_THREAD;
 
@@ -318,7 +319,10 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   const string& video = myOSystem.settings().getString("video");  // Render hint
   if(video != "")
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
+
   myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
+  detectFeatures();
+
   if(myRenderer == nullptr)
   {
     string msg = "ERROR: Unable to create SDL renderer: " + string(SDL_GetError());
@@ -467,4 +471,45 @@ bool FrameBufferSDL2::isInitialized() const
 const SDL_PixelFormat& FrameBufferSDL2::pixelFormat() const
 {
   return *myPixelFormat;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSDL2::detectFeatures()
+{
+  myRenderTargetSupport = detectRenderTargetSupport();
+
+  if (myRenderer) {
+    if (!myRenderTargetSupport) {
+      Logger::info("Render targets are not supported --- QIS not available");
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL2::detectRenderTargetSupport()
+{
+  if (myRenderer == nullptr) return false;
+
+  SDL_RendererInfo info;
+
+  SDL_GetRendererInfo(myRenderer, &info);
+
+  if (!(info.flags & SDL_RENDERER_TARGETTEXTURE)) return false;
+
+  SDL_Texture* tex = SDL_CreateTexture(myRenderer, myPixelFormat->format, SDL_TEXTUREACCESS_TARGET, 16, 16);
+
+  if (!tex) return false;
+
+  int sdlError = SDL_SetRenderTarget(myRenderer, tex);
+  SDL_SetRenderTarget(myRenderer, nullptr);
+
+  SDL_DestroyTexture(tex);
+
+  return sdlError == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferSDL2::hasRenderTargetSupport() const
+{
+  return myRenderTargetSupport;
 }
