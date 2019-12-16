@@ -1514,15 +1514,28 @@
 
     <tr>
       <td>Increase overscan in fullscreen mode</td>
+      <td>Shift + PageUp</td>
+      <td>Shift + PageUp</td>
+    </tr>
+
+    <tr>
+      <td>Decrease overscan in fullscreen mode</td>
+      <td>Shift + PageDown</td>
+      <td>Shift + PageDown</td>
+    </tr>
+
+    <tr>
+      <td>Move display <i>up</i> (uses "Display.YStart")</td>
       <td>Alt + PageUp</td>
       <td>Cmd + PageUp</td>
     </tr>
 
     <tr>
-      <td>Decrease overscan in fullscreen mode</td>
+      <td>Move display <i>down</i> (uses "Display.YStart")</td>
       <td>Alt + PageDown</td>
       <td>Cmd + PageDown</td>
     </tr>
+
 
     <tr>
       <td>Switch display format in <i>increasing</i> order (NTSC/PAL/SECAM etc.)</td>
@@ -3716,6 +3729,19 @@ Ms Pac-Man (Stella extended codes):
       <td>Indicates the television format the game was designed for. The value
       must be <b>Auto</b>, <b>NTSC</b>, <b>PAL</b>, <b>SECAM</b>, <b>NTSC50</b>,
       <b>PAL60</b> or <b>SECAM60</b>.</td>
+    </tr>
+
+      <td VALIGN="TOP"><i>Display.Format:</i></td>
+      <td>Indicates the television format the game was designed for. The value
+      must be <b>Auto</b>, <b>NTSC</b>, <b>PAL</b>, <b>SECAM</b>, <b>NTSC50</b>,
+      <b>PAL60</b> or <b>SECAM60</b>.</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Display.YStart:</i></td>
+      <td>Indicates the scan-line to start displaying at.
+      The value must be <i>n</i> such that 0 &lt;= <i>n</i> &lt;= 64.
+      </td>
     </tr>
 
     <tr>
