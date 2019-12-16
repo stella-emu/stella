@@ -129,6 +129,11 @@ class FrameBufferSDL2 : public FrameBuffer
      */
     bool isInitialized() const;
 
+    /**
+      Does the renderer support render targets?
+     */
+    bool hasRenderTargetSupport() const;
+
   protected:
     //////////////////////////////////////////////////////////////////////
     // The following are derived from protected methods in FrameBuffer.hxx
@@ -193,6 +198,16 @@ class FrameBufferSDL2 : public FrameBuffer
     */
     void renderToScreen() override;
 
+    /**
+      After the renderer has been created, detect the features it supports.
+     */
+    void detectFeatures();
+
+    /**
+      Detect render target support;
+     */
+    bool detectRenderTargetSupport();
+
   private:
     // The SDL video buffer
     SDL_Window* myWindow;
@@ -206,6 +221,8 @@ class FrameBufferSDL2 : public FrameBuffer
 
     // last position of windowed window
     Common::Point myWindowedPos;
+
+    bool myRenderTargetSupport;
 
   private:
     // Following constructors and assignment operators not supported
