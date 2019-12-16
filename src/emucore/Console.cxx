@@ -687,7 +687,7 @@ void Console::changeYStart(int direction)
   {
     if(ystart >= TIAConstants::maxYStart)
     {
-      myOSystem.frameBuffer().showMessage("YStart at maximum");
+      myOSystem.frameBuffer().showMessage("V-Center at minimum");
       return;
     }
 
@@ -696,9 +696,10 @@ void Console::changeYStart(int direction)
   }
   else if(direction == -1)  // decrease YStart
   {
-    if(ystart == 0)
+    if (ystart <= TIAConstants::minYStart)
     {
-      throw runtime_error("cannot happen");
+      myOSystem.frameBuffer().showMessage("V-Center at maximum");
+      return;
     }
 
     --ystart;
@@ -707,26 +708,16 @@ void Console::changeYStart(int direction)
   else
     return;
 
-  if(ystart == 0) {
-    redetectYStart();
-    ystart = myAutodetectedYstart;
-    myYStartAutodetected = true;
+  ostringstream ss;
+  ss << ystart;
 
-    myProperties.set(PropType::Display_YStart, "0");
-  }
-  else {
-    ostringstream ss;
-    ss << ystart;
-
-    myProperties.set(PropType::Display_YStart, ss.str());
-  }
-
+  myProperties.set(PropType::Display_YStart, ss.str());
   if (ystart != myTIA->ystart()) myTIA->setYStart(ystart);
 
-  ostringstream ss;
-
-  if(myAutodetectedYstart == ystart) ss << "YStart " << ystart << " (Auto)";
-  else ss << "YStart " << ystart;
+  // use vertical center instead of y-start for display
+  int vCenter = TIAConstants::defaultYStart - ystart;
+  ss.str("");
+  ss << "V-Center " << vCenter;
 
   myOSystem.frameBuffer().showMessage(ss.str());
 }

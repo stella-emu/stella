@@ -24,7 +24,9 @@ namespace TIAConstants {
 
   static constexpr uInt32 frameBufferWidth = 160;
   static constexpr uInt32 frameBufferHeight = 320;
-  static constexpr uInt32 maxYStart = 64;  // TODO - this may be removed
+  static constexpr uInt32 defaultYStart = 34; // TODO: PAL-50 might need a different value here
+  static constexpr uInt32 minYStart = defaultYStart - 15; // limit to reasonable values
+  static constexpr uInt32 maxYStart = defaultYStart + 15; // limit to reasonable values
   static constexpr uInt32 viewableWidth = 320;
   static constexpr uInt32 viewableHeight = 240;
   static constexpr uInt32 initialGarbageFrames = 10;

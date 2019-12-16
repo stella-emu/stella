@@ -67,6 +67,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget*      myStartBank;
     PopUpWidget*      myFormat;
     StaticTextWidget* myFormatDetected;
+    SliderWidget*     myVCenter;
     CheckboxWidget*   myPhosphor;
     SliderWidget*     myPPBlend;
     CheckboxWidget*   mySound;
@@ -102,8 +103,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myNote;
 
     enum {
+      kYStartChanged   = 'YSch',
       kPhosphorChanged = 'PPch',
-      kPPBlendChanged = 'PBch',
+      kPPBlendChanged  = 'PBch',
       kLeftCChanged    = 'LCch',
       kRightCChanged   = 'RCch',
       kMCtrlChanged    = 'MCch',

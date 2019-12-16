@@ -420,7 +420,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::YStartDecrease:
-      if (pressed) myOSystem.console().changeYStart(-1); 
+      if (pressed) myOSystem.console().changeYStart(-1);
       return;
 
     case Event::YStartIncrease:
@@ -1830,10 +1830,10 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ToggleFullScreen,        "Toggle fullscreen",                     "" },
   { Event::OverscanDecrease,        "Decrease overscan in fullscreen mode",  "" },
   { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
+  { Event::YStartIncrease,          "Move display up",                       "" },
+  { Event::YStartDecrease,          "Move display down",                     "" },
   { Event::FormatDecrease,          "Decrease display format",               "" },
   { Event::FormatIncrease,          "Increase display format",               "" },
-  { Event::YStartDecrease,          "Move display up",                       "" },
-  { Event::YStartIncrease,          "Move display down",                     "" },
   { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "" },
 
   // TV effects:
