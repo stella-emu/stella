@@ -249,3 +249,12 @@ void FBSurfaceSDL2::applyAttributes()
 {
   reinitializeBlitter();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSDL2::setScalingInterpolation(FrameBuffer::ScalingInterpolation interpolation)
+{
+  if (interpolation == myInterpolationMode) return;
+
+  myInterpolationMode = interpolation;
+  reload();
+}

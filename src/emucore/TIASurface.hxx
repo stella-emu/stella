@@ -156,6 +156,11 @@ class TIASurface
     */
     void saveSnapShot() { mySaveSnapFlag = true; }
 
+    /**
+      Update surface settings.
+     */
+    void updateSurfaceSettings();
+
   private:
     /**
       Average current calculated buffer's pixel with previous calculated buffer's pixel (50:50).

@@ -56,6 +56,7 @@ class FBSurfaceLIBRETRO : public FBSurface
     void free() override { }
     void reload() override { }
     void resize(uInt32 width, uInt32 height) override { }
+    void setScalingInterpolation(FrameBuffer::ScalingInterpolation) override { }
 
   protected:
     void applyAttributes() override { }

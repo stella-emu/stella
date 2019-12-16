@@ -25,6 +25,19 @@
 #include "PNGLibrary.hxx"
 #include "TIASurface.hxx"
 
+namespace {
+  FrameBuffer::ScalingInterpolation interpolationModeFromSettings(const Settings& settings)
+  {
+    const string setting = settings.getString("tia.filter");
+
+    if (setting == "sharp") return FrameBuffer::ScalingInterpolation::sharp;
+    if (setting == "soft") return FrameBuffer::ScalingInterpolation::blur;
+    if (setting == "none") return FrameBuffer::ScalingInterpolation::none;
+
+    return FrameBuffer::ScalingInterpolation::sharp;
+  }
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIASurface::TIASurface(OSystem& system)
   : myOSystem(system),
@@ -44,7 +57,7 @@ TIASurface::TIASurface(OSystem& system)
   myTiaSurface = myFB.allocateSurface(
     AtariNTSC::outWidth(TIAConstants::frameBufferWidth),
     TIAConstants::frameBufferHeight,
-    FrameBuffer::ScalingInterpolation::sharp
+    interpolationModeFromSettings(myOSystem.settings())
   );
 
   // Generate scanline data, and a pre-defined scanline surface
@@ -55,7 +68,7 @@ TIASurface::TIASurface(OSystem& system)
     scanData[i]   = 0x00000000;
     scanData[i+1] = 0xff000000;
   }
-  mySLineSurface = myFB.allocateSurface(1, scanHeight, FrameBuffer::ScalingInterpolation::sharp, scanData);
+  mySLineSurface = myFB.allocateSurface(1, scanHeight, interpolationModeFromSettings(myOSystem.settings()), scanData);
 
   // Base TIA surface for use in taking snapshots in 1x mode
   myBaseTiaSurface = myFB.allocateSurface(TIAConstants::frameBufferWidth*2,
@@ -457,4 +470,11 @@ void TIASurface::renderForSnapshot()
     if(myScanlinesEnabled)
       mySLineSurface->render();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::updateSurfaceSettings()
+{
+  myTiaSurface->setScalingInterpolation(interpolationModeFromSettings(myOSystem.settings()));
+  mySLineSurface->setScalingInterpolation(interpolationModeFromSettings(myOSystem.settings()));
 }

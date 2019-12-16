@@ -29,6 +29,7 @@ namespace Common {
 }
 
 #include "FrameBufferConstants.hxx"
+#include "FrameBuffer.hxx"
 #include "bspf.hxx"
 
 /**
@@ -334,6 +335,11 @@ class FBSurface
       Get the currently applied attributes.
     */
     Attributes& attributes() { return myAttributes; }
+
+    /**
+      Configure scaling interpolation.
+     */
+    virtual void setScalingInterpolation(FrameBuffer::ScalingInterpolation) = 0;
 
     /**
       The child class chooses which (if any) of the actual attributes
