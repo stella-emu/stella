@@ -90,19 +90,19 @@ class Event
       ToggleBLCollision, ToggleBLBit, TogglePFCollision, TogglePFBit,
       ToggleCollisions, ToggleBits, ToggleFixedColors,
 
-      DecreasePhosphor, IncreasePhosphor, TogglePhosphor, ToggleJitter,
+      PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleJitter,
       ToggleFrameStats, ToggleTimeMachine,
       ToggleContSnapshots, ToggleContSnapshotsFrame,
       ToggleColorLoss, TogglePalette,
 
       HandleMouseControl, ToggleGrabMouse, ToggleSAPortOrder,
-      DecreaseFormat, IncreaseFormat, ReloadConsole,
+      FormatDecrease, FormatIncrease, ReloadConsole,
 
       Rewind1Menu, Rewind10Menu, RewindAllMenu,
       Unwind1Menu, Unwind10Menu, UnwindAllMenu,
 
       StartPauseMode, SaveAllStates, LoadAllStates,
-      DecreaseOverscan, IncreaseOverScan,
+      OverscanDecrease, OverscanIncrease,
 
       ToggleAutoSlot,
 
@@ -120,10 +120,9 @@ class Event
       CompuMateQuote, CompuMateBackspace, CompuMateEquals, CompuMatePlus,
       CompuMateSlash,
 
-      DecreaseYStart, IncreaseYStart,
+      YStartDecrease, YStartIncrease,
 
       LastType
-
     };
 
     // Event categorizing groups
