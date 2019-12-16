@@ -419,11 +419,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed) myOSystem.frameBuffer().changeVidMode(+1);
       return;
 
-    case Event::DecreaseYStart:
+    case Event::YStartDecrease:
       if (pressed) myOSystem.console().changeYStart(-1); 
       return;
 
-    case Event::IncreaseYStart:
+    case Event::YStartIncrease:
       if (pressed) myOSystem.console().changeYStart(+1);
       return;
 
@@ -431,11 +431,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed && !repeated) myOSystem.frameBuffer().toggleFullscreen();
       return;
 
-    case Event::DecreaseOverscan:
+    case Event::OverscanDecrease:
       if (pressed) myOSystem.frameBuffer().changeOverscan(-1);
       return;
 
-    case Event::IncreaseOverScan:
+    case Event::OverscanIncrease:
       if (pressed) myOSystem.frameBuffer().changeOverscan(1);
       return;
 
@@ -507,11 +507,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       }
       return;
 
-    case Event::DecreasePhosphor:
+    case Event::PhosphorDecrease:
       if (pressed) myOSystem.console().changePhosphor(-1);
       return;
 
-    case Event::IncreasePhosphor:
+    case Event::PhosphorIncrease:
       if (pressed) myOSystem.console().changePhosphor(1);
       return;
 
@@ -557,11 +557,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed && !repeated) toggleSAPortOrder();
       return;
 
-    case Event::DecreaseFormat:
+    case Event::FormatDecrease:
       if (pressed) myOSystem.console().toggleFormat(-1);
       return;
 
-    case Event::IncreaseFormat:
+    case Event::FormatIncrease:
       if (pressed) myOSystem.console().toggleFormat(1);
       return;
 
@@ -1828,12 +1828,12 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
   { Event::VidmodeIncrease,         "Next zoom level",                       "" },
   { Event::ToggleFullScreen,        "Toggle fullscreen",                     "" },
-  { Event::DecreaseOverscan,        "Decrease overscan in fullscreen mode",  "" },
-  { Event::IncreaseOverScan,        "Increase overscan in fullscreen mode",  "" },
-  { Event::DecreaseFormat,          "Decrease display format",               "" },
-  { Event::IncreaseFormat,          "Increase display format",               "" },
-  { Event::DecreaseYStart,          "Move display up",                       "" },
-  { Event::IncreaseYStart,          "Move display down",                     "" },
+  { Event::OverscanDecrease,        "Decrease overscan in fullscreen mode",  "" },
+  { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
+  { Event::FormatDecrease,          "Decrease display format",               "" },
+  { Event::FormatIncrease,          "Increase display format",               "" },
+  { Event::YStartDecrease,          "Move display up",                       "" },
+  { Event::YStartIncrease,          "Move display down",                     "" },
   { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "" },
 
   // TV effects:
@@ -1848,8 +1848,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::DecreaseAttribute,       "Decrease selected 'Custom' attribute",  "" },
   { Event::IncreaseAttribute,       "Increase selected 'Custom' attribute",  "" },
   { Event::TogglePhosphor,          "Toggle 'phosphor' effect",              "" },
-  { Event::DecreasePhosphor,        "Decrease 'phosphor' blend",             "" },
-  { Event::IncreasePhosphor,        "Increase 'phosphor' blend",             "" },
+  { Event::PhosphorDecrease,        "Decrease 'phosphor' blend",             "" },
+  { Event::PhosphorIncrease,        "Increase 'phosphor' blend",             "" },
   { Event::ScanlinesDecrease,       "Decrease scanlines",                    "" },
   { Event::ScanlinesIncrease,       "Increase scanlines",                    "" },
   // Developer keys:
@@ -1957,10 +1957,10 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::VidmodeStd, Event::VidmodeRGB, Event::VidmodeSVideo, Event::VidModeComposite, Event::VidModeBad, Event::VidModeCustom,
   Event::PreviousAttribute, Event::NextAttribute, Event::DecreaseAttribute, Event::IncreaseAttribute,
   Event::ScanlinesDecrease, Event::ScanlinesIncrease,
-  Event::DecreasePhosphor, Event::IncreasePhosphor, Event::TogglePhosphor,
-  Event::DecreaseFormat, Event::IncreaseFormat,
-  Event::DecreaseYStart, Event::IncreaseYStart,
-  Event::DecreaseOverscan, Event::IncreaseOverScan,
+  Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,
+  Event::FormatDecrease, Event::FormatIncrease,
+  Event::YStartDecrease, Event::YStartIncrease,
+  Event::OverscanDecrease, Event::OverscanIncrease,
   Event::TogglePalette,
 };
 

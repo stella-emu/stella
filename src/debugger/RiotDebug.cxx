@@ -366,7 +366,7 @@ string RiotDebug::toString()
       << " Divider=" << myDebugger.invIfChanged(state.TIMDIV, oldstate.TIMDIV)
       << endl
 
-      << "Left/P0diff: " << diffP0String() << "   Right/P1diff: " << diffP0String()
+      << "Left/P0diff: " << diffP0String() << "   Right/P1diff: " << diffP1String()
       << endl
       << "TVType: " << tvTypeString() << "   Switches: " << switchesString()
       << endl

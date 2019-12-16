@@ -89,7 +89,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   if(mySurface == nullptr)
   {
     mySurface = instance().frameBuffer().allocateSurface(
-        TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2);
+        TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2, FrameBuffer::ScalingInterpolation::blur);
     mySurface->applyAttributes();
 
     dialog().addSurface(mySurface);
