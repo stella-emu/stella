@@ -34,6 +34,9 @@ Settings::Settings()
 {
   myRespository = make_shared<KeyValueRepositoryNoop>();
 
+  // If no version is recorded with the persisted settings, we set it to zero
+  setPermanent(SETTINGS_VERSION_KEY, 0);
+
   // Video-related options
   setPermanent("video", "");
   setPermanent("speed", "1.0");
@@ -224,6 +227,8 @@ void Settings::load(const Options& options)
   Options fromFile =  myRespository->load();
   for (const auto& opt: fromFile)
     setValue(opt.first, opt.second, false);
+
+  migrate();
 
   // Apply commandline options, which override those from settings file
   for(const auto& opt: options)
@@ -647,4 +652,30 @@ void Settings::setPermanent(const string& key, const Variant& value)
 void Settings::setTemporary(const string& key, const Variant& value)
 {
   myTemporarySettings[key] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::migrateOne()
+{
+  const int version = getInt(SETTINGS_VERSION_KEY);
+  if (version >= SETTINGS_VERSION) return;
+
+  switch (version) {
+    case 0:
+      #if defined BSPF_MACOS || defined DARWIN
+        setPermanent("video", "");
+      #endif
+
+      break;
+  }
+
+  setPermanent(SETTINGS_VERSION_KEY, version + 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::migrate()
+{
+  while (getInt(SETTINGS_VERSION_KEY) < SETTINGS_VERSION) migrateOne();
+
+  myRespository->save(SETTINGS_VERSION_KEY, SETTINGS_VERSION);
 }
