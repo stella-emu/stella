@@ -51,6 +51,9 @@ class Settings
 
     using Options = std::map<string, Variant>;
 
+    static constexpr int SETTINGS_VERSION = 1;
+    static constexpr const char* SETTINGS_VERSION_KEY = "settings.version";
+
   public:
     /**
       This method should be called to display usage information.
@@ -133,6 +136,16 @@ class Settings
       to validate (and change, if necessary) any improper settings.
     */
     void validate();
+
+    /**
+      Migrate settings over one version.
+     */
+    void migrateOne();
+
+    /**
+     Migrate settings.
+     */
+    void migrate();
 
   private:
     // Holds key/value pairs that are necessary for Stella to
