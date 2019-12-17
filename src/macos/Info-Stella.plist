@@ -61,6 +61,8 @@
 		<key>x86_64</key>
 		<string>10.7.0</string>
 	</dict>
+	<key>NSHighResolutionCapable</key>
+	<true/>
 	<key>NSMainNibFile</key>
 	<string>SDLMain</string>
 	<key>NSPrincipalClass</key>

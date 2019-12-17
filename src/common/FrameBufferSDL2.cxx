@@ -33,9 +33,7 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
     myWindow(nullptr),
     myRenderer(nullptr),
     myCenter(false),
-    myRenderTargetSupport(false),
-    myScaleX(1),
-    myScaleY(1)
+    myRenderTargetSupport(false)
 {
   ASSERT_MAIN_THREAD;
 
@@ -326,7 +324,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
 
   detectFeatures();
-  calculateScaleFactors();
+  determineDimensions();
 
   if(myRenderer == nullptr)
   {
@@ -520,28 +518,14 @@ bool FrameBufferSDL2::hasRenderTargetSupport() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::calculateScaleFactors()
+void FrameBufferSDL2::determineDimensions()
 {
+  SDL_GetWindowSize(myWindow, &myWindowW, &myWindowH);
+
   if (myRenderer == nullptr) {
-    myScaleX = myScaleY = 1;
-    return;
+    myRenderW = myWindowW;
+    myRenderH = myWindowH;
+  } else {
+    SDL_GetRendererOutputSize(myRenderer, &myRenderW, &myRenderH);
   }
-
-  int windowW, windowH, renderW, renderH;
-
-  SDL_GetWindowSize(myWindow, &windowW, &windowH);
-  SDL_GetRendererOutputSize(myRenderer, &renderW, &renderH);
-
-  myScaleX = renderW / windowW;
-  myScaleY = renderH / windowH;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 FrameBufferSDL2::scaleX() const {
-  return myScaleX;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 FrameBufferSDL2::scaleY() const {
-  return myScaleY;
 }

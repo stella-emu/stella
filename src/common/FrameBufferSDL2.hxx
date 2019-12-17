@@ -135,14 +135,14 @@ class FrameBufferSDL2 : public FrameBuffer
     bool hasRenderTargetSupport() const;
 
     /**
-      Retina scale factor, x direction;
+      Transform from window to renderer coordinates, x direction
      */
-    uInt8 scaleX() const;
+    int scaleX(int x) const { return (x * myRenderW) / myWindowW; }
 
     /**
-      Retina scale Factor, y direction;
+      Transform from window to renderer coordinates, y direction
      */
-    uInt8 scaleY() const;
+    int scaleY(int y) const { return (y * myRenderH) / myWindowH; }
 
   protected:
     //////////////////////////////////////////////////////////////////////
@@ -218,7 +218,10 @@ class FrameBufferSDL2 : public FrameBuffer
      */
     bool detectRenderTargetSupport();
 
-    void calculateScaleFactors();
+    /**
+      Determine window and renderer dimensions.
+     */
+    void determineDimensions();
 
   private:
     // The SDL video buffer
@@ -237,8 +240,8 @@ class FrameBufferSDL2 : public FrameBuffer
     // Does the renderer support render targets?
     bool myRenderTargetSupport;
 
-    // Retina scale factors
-    uInt32 myScaleX, myScaleY;
+    // Window and renderer dimensions
+    int myWindowW, myWindowH, myRenderW, myRenderH;
 
   private:
     // Following constructors and assignment operators not supported

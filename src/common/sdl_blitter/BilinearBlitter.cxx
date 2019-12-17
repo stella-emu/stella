@@ -47,21 +47,20 @@ void BilinearBlitter::reinitialize(
   myRecreateTextures = myRecreateTextures || !(
     mySrcRect.w == srcRect.w &&
     mySrcRect.h == srcRect.h &&
-    myDstRect.w == destRect.w &&
-    myDstRect.h == destRect.h &&
+    myDstRect.w == myFB.scaleX(destRect.w) &&
+    myDstRect.h == myFB.scaleY(destRect.h) &&
     attributes == myAttributes &&
     myStaticData == staticData
    );
 
    myStaticData = staticData;
    mySrcRect = srcRect;
-   myDstRect = destRect;
    myAttributes = attributes;
 
-   myDstRect.x *= myFB.scaleX();
-   myDstRect.y *= myFB.scaleY();
-   myDstRect.w *= myFB.scaleX();
-   myDstRect.h *= myFB.scaleY();
+   myDstRect.x = myFB.scaleX(destRect.x);
+   myDstRect.y = myFB.scaleY(destRect.y);
+   myDstRect.w = myFB.scaleX(destRect.w);
+   myDstRect.h = myFB.scaleY(destRect.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,13 +91,13 @@ void BilinearBlitter::blit(SDL_Surface& surface)
 
   SDL_Texture* texture = myTexture;
 
-    if(myStaticData == nullptr) {
-      SDL_UpdateTexture(myTexture, &mySrcRect, surface.pixels, surface.pitch);
-      myTexture = mySecondaryTexture;
-      mySecondaryTexture = texture;
-    }
+  if(myStaticData == nullptr) {
+    SDL_UpdateTexture(myTexture, &mySrcRect, surface.pixels, surface.pitch);
+    myTexture = mySecondaryTexture;
+    mySecondaryTexture = texture;
+  }
 
-    SDL_RenderCopy(myFB.renderer(), texture, &mySrcRect, &myDstRect);
+  SDL_RenderCopy(myFB.renderer(), texture, &mySrcRect, &myDstRect);
 }
 
 

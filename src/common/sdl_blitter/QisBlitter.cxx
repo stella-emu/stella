@@ -55,21 +55,20 @@ void QisBlitter::reinitialize(
   myRecreateTextures = myRecreateTextures || !(
     mySrcRect.w == srcRect.w &&
     mySrcRect.h == srcRect.h &&
-    myDstRect.w == destRect.w &&
-    myDstRect.h == destRect.h &&
+    myDstRect.w == myFB.scaleX(destRect.w) &&
+    myDstRect.h == myFB.scaleY(destRect.h) &&
     attributes == myAttributes &&
     myStaticData == staticData
    );
 
    myStaticData = staticData;
    mySrcRect = srcRect;
-   myDstRect = destRect;
    myAttributes = attributes;
 
-   myDstRect.x *= myFB.scaleX();
-   myDstRect.y *= myFB.scaleY();
-   myDstRect.w *= myFB.scaleX();
-   myDstRect.h *= myFB.scaleY();
+   myDstRect.x = myFB.scaleX(destRect.x);
+   myDstRect.y = myFB.scaleY(destRect.y);
+   myDstRect.w = myFB.scaleX(destRect.w);
+   myDstRect.h = myFB.scaleY(destRect.h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,16 +99,16 @@ void QisBlitter::blit(SDL_Surface& surface)
 
   SDL_Texture* texture = myIntermediateTexture;
 
-    if(myStaticData == nullptr) {
-      SDL_UpdateTexture(mySrcTexture, &mySrcRect, surface.pixels, surface.pitch);
+  if(myStaticData == nullptr) {
+    SDL_UpdateTexture(mySrcTexture, &mySrcRect, surface.pixels, surface.pitch);
 
-      blitToIntermediate();
+    blitToIntermediate();
 
-      myIntermediateTexture = mySecondaryIntermedateTexture;
-      mySecondaryIntermedateTexture = texture;
-    }
+    myIntermediateTexture = mySecondaryIntermedateTexture;
+    mySecondaryIntermedateTexture = texture;
+  }
 
-    SDL_RenderCopy(myFB.renderer(), texture, &myIntermediateRect, &myDstRect);
+  SDL_RenderCopy(myFB.renderer(), texture, &myIntermediateRect, &myDstRect);
 }
 
 
