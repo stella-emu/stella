@@ -109,13 +109,6 @@ void TIASurface::initialize(const Console& console,
 
   setNTSC(NTSCFilter::Preset(myOSystem.settings().getInt("tv.filter")), false);
 
-  // Scanline repeating is sensitive to non-integral vertical resolution,
-  // so rounding is performed to eliminate it
-  // This won't be 100% accurate, but non-integral scaling isn't 100%
-  // accurate anyway
-  mySLineSurface->setSrcSize(1, 2 * int(float(mode.image.h()) /
-    floorf((float(mode.image.h()) / myTIA->height()) + 0.5f)));
-
 #if 0
 cerr << "INITIALIZE:\n"
      << "TIA:\n"
@@ -270,6 +263,8 @@ void TIASurface::enableNTSC(bool enable)
   // Normal vs NTSC mode uses different source widths
   myTiaSurface->setSrcSize(enable ? AtariNTSC::outWidth(TIAConstants::frameBufferWidth)
       : TIAConstants::frameBufferWidth, myTIA->height());
+
+  mySLineSurface->setSrcSize(1, 2 * myTIA->height());
 
   myScanlinesEnabled = myOSystem.settings().getInt("tv.scanlines") > 0;
   FBSurface::Attributes& sl_attr = mySLineSurface->attributes();
