@@ -33,7 +33,9 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
     myWindow(nullptr),
     myRenderer(nullptr),
     myCenter(false),
-    myRenderTargetSupport(false)
+    myRenderTargetSupport(false),
+    myScaleX(1),
+    myScaleY(1)
 {
   ASSERT_MAIN_THREAD;
 
@@ -263,6 +265,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     posY = BSPF::clamp(posY, y0 + 50, y1 - 50);
   }
   uInt32 flags = mode.fsIndex != -1 ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
+  flags |= SDL_WINDOW_ALLOW_HIGHDPI;
 
   // macOS seems to have issues with destroying the window, and wants to
   // keep the same handle
@@ -321,7 +324,9 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.c_str());
 
   myRenderer = SDL_CreateRenderer(myWindow, -1, renderFlags);
+
   detectFeatures();
+  calculateScaleFactors();
 
   if(myRenderer == nullptr)
   {
@@ -512,4 +517,31 @@ bool FrameBufferSDL2::detectRenderTargetSupport()
 bool FrameBufferSDL2::hasRenderTargetSupport() const
 {
   return myRenderTargetSupport;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSDL2::calculateScaleFactors()
+{
+  if (myRenderer == nullptr) {
+    myScaleX = myScaleY = 1;
+    return;
+  }
+
+  int windowW, windowH, renderW, renderH;
+
+  SDL_GetWindowSize(myWindow, &windowW, &windowH);
+  SDL_GetRendererOutputSize(myRenderer, &renderW, &renderH);
+
+  myScaleX = renderW / windowW;
+  myScaleY = renderH / windowH;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 FrameBufferSDL2::scaleX() const {
+  return myScaleX;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 FrameBufferSDL2::scaleY() const {
+  return myScaleY;
 }
