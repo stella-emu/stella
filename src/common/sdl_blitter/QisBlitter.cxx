@@ -65,6 +65,11 @@ void QisBlitter::reinitialize(
    mySrcRect = srcRect;
    myDstRect = destRect;
    myAttributes = attributes;
+
+   myDstRect.x *= myFB.scaleX();
+   myDstRect.y *= myFB.scaleY();
+   myDstRect.w *= myFB.scaleX();
+   myDstRect.h *= myFB.scaleY();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
