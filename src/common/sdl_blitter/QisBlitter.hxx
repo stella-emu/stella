@@ -15,22 +15,22 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef HQ_BLITTER_HXX
-#define HQ_BLITTER_HXX
+#ifndef QIS_BLITTER_HXX
+#define QIS_BLITTER_HXX
 
 #include "Blitter.hxx"
 #include "FrameBufferSDL2.hxx"
 #include "SDL_lib.hxx"
 
-class HqBlitter : public Blitter {
+class QisBlitter : public Blitter {
 
   public:
 
-    explicit HqBlitter(FrameBufferSDL2& fb);
+    explicit QisBlitter(FrameBufferSDL2& fb);
 
     static bool isSupported(FrameBufferSDL2 &fb);
 
-    virtual ~HqBlitter();
+    virtual ~QisBlitter();
 
     virtual void reinitialize(
       SDL_Rect srcRect,
@@ -68,13 +68,13 @@ class HqBlitter : public Blitter {
 
   private:
 
-    HqBlitter(const HqBlitter&) = delete;
+    QisBlitter(const QisBlitter&) = delete;
 
-    HqBlitter(HqBlitter&&) = delete;
+    QisBlitter(QisBlitter&&) = delete;
 
-    HqBlitter& operator=(const HqBlitter&) = delete;
+    QisBlitter& operator=(const QisBlitter&) = delete;
 
-    HqBlitter& operator=(HqBlitter&&) = delete;
+    QisBlitter& operator=(QisBlitter&&) = delete;
 };
 
-#endif // HQ_BLITTER_CXX
+#endif // QIS_BLITTER_HXX

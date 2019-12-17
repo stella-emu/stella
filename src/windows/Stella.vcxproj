@@ -388,7 +388,7 @@
     <ClCompile Include="..\common\RewindManager.cxx" />
     <ClCompile Include="..\common\sdl_blitter\BilinearBlitter.cxx" />
     <ClCompile Include="..\common\sdl_blitter\BlitterFactory.cxx" />
-    <ClCompile Include="..\common\sdl_blitter\HqBlitter.cxx" />
+    <ClCompile Include="..\common\sdl_blitter\QisBlitter.cxx" />
     <ClCompile Include="..\common\StaggeredLogger.cxx" />
     <ClCompile Include="..\common\StateManager.cxx" />
     <ClCompile Include="..\common\ThreadDebugging.cxx" />
@@ -1096,7 +1096,7 @@
     <ClInclude Include="..\common\sdl_blitter\BilinearBlitter.hxx" />
     <ClInclude Include="..\common\sdl_blitter\Blitter.hxx" />
     <ClInclude Include="..\common\sdl_blitter\BlitterFactory.hxx" />
-    <ClInclude Include="..\common\sdl_blitter\HqBlitter.hxx" />
+    <ClInclude Include="..\common\sdl_blitter\QisBlitter.hxx" />
     <ClInclude Include="..\common\StaggeredLogger.hxx" />
     <ClInclude Include="..\common\StateManager.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />

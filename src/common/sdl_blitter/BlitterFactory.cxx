@@ -19,7 +19,7 @@
 
 #include "SDL_lib.hxx"
 #include "BilinearBlitter.hxx"
-#include "HqBlitter.hxx"
+#include "QisBlitter.hxx"
 
 unique_ptr<Blitter> BlitterFactory::createBlitter(FrameBufferSDL2& fb, ScalingAlgorithm scaling)
 {
@@ -35,8 +35,8 @@ unique_ptr<Blitter> BlitterFactory::createBlitter(FrameBufferSDL2& fb, ScalingAl
       return make_unique<BilinearBlitter>(fb, true);
 
     case ScalingAlgorithm::quasiInteger:
-      if (HqBlitter::isSupported(fb))
-        return make_unique<HqBlitter>(fb);
+      if (QisBlitter::isSupported(fb))
+        return make_unique<QisBlitter>(fb);
       else
         return make_unique<BilinearBlitter>(fb, true);
 

@@ -15,12 +15,12 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "HqBlitter.hxx"
+#include "QisBlitter.hxx"
 
 #include "ThreadDebugging.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HqBlitter::HqBlitter(FrameBufferSDL2& fb) :
+QisBlitter::QisBlitter(FrameBufferSDL2& fb) :
   mySrcTexture(nullptr),
   myIntermediateTexture(nullptr),
   mySecondaryIntermedateTexture(nullptr),
@@ -31,13 +31,13 @@ HqBlitter::HqBlitter(FrameBufferSDL2& fb) :
 {}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-HqBlitter::~HqBlitter()
+QisBlitter::~QisBlitter()
 {
   free();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HqBlitter::isSupported(FrameBufferSDL2 &fb)
+bool QisBlitter::isSupported(FrameBufferSDL2 &fb)
 {
   if (!fb.isInitialized()) throw runtime_error("framebuffer not initialized");
 
@@ -45,7 +45,7 @@ bool HqBlitter::isSupported(FrameBufferSDL2 &fb)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HqBlitter::reinitialize(
+void QisBlitter::reinitialize(
   SDL_Rect srcRect,
   SDL_Rect destRect,
   FBSurface::Attributes attributes,
@@ -68,7 +68,7 @@ void HqBlitter::reinitialize(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HqBlitter::free()
+void QisBlitter::free()
 {
   if (!myTexturesAreAllocated) {
     return;
@@ -87,7 +87,7 @@ void HqBlitter::free()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HqBlitter::blit(SDL_Surface& surface)
+void QisBlitter::blit(SDL_Surface& surface)
 {
   ASSERT_MAIN_THREAD;
 
@@ -109,7 +109,7 @@ void HqBlitter::blit(SDL_Surface& surface)
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HqBlitter::blitToIntermediate()
+void QisBlitter::blitToIntermediate()
 {
   ASSERT_MAIN_THREAD;
 
@@ -126,7 +126,7 @@ void HqBlitter::blitToIntermediate()
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HqBlitter::recreateTexturesIfNecessary()
+void QisBlitter::recreateTexturesIfNecessary()
 {
   if (myTexturesAreAllocated && !myRecreateTextures) {
     return;
