@@ -293,8 +293,6 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
       Logger::info(post_about);
   }
 
-  if (myTIASurface) myTIASurface->updateSurfaceSettings();
-
   return FBInitStatus::Success;
 }
 
