@@ -151,7 +151,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     }
   }
 
-  if (atoi(myProperties.get(PropType::Display_YStart).c_str()) == 0) {
+  if (atoi(myProperties.get(PropType::Display_VCenter).c_str()) == 0) {
     autodetectYStart();
   }
 
@@ -679,7 +679,7 @@ void Console::fry() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeYStart(int direction)
+void Console::changeVerticalCenter(int direction)
 {
   uInt32 ystart = myTIA->ystart();
 
@@ -711,7 +711,7 @@ void Console::changeYStart(int direction)
   ostringstream ss;
   ss << ystart;
 
-  myProperties.set(PropType::Display_YStart, ss.str());
+  myProperties.set(PropType::Display_VCenter, ss.str());
   if (ystart != myTIA->ystart()) myTIA->setYStart(ystart);
 
   // use vertical center instead of y-start for display
@@ -743,7 +743,7 @@ void Console::updateYStart(uInt32 ystart)
 void Console::setTIAProperties()
 {
   // FIXME - ystart is probably disappearing soon, or at least autodetection is
-  uInt32 ystart = atoi(myProperties.get(PropType::Display_YStart).c_str());
+  uInt32 ystart = atoi(myProperties.get(PropType::Display_VCenter).c_str());
   if(ystart != 0)
     ystart = BSPF::clamp(ystart, 0u, TIAConstants::maxYStart);
   else {

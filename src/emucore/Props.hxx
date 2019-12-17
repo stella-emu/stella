@@ -39,7 +39,7 @@ enum class PropType : uInt8 {
   Controller_SwapPaddles,
   Controller_MouseAxis,
   Display_Format,
-  Display_YStart,
+  Display_VCenter,
   Display_Phosphor,
   Display_PPBlend,
   NumTypes

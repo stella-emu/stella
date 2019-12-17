@@ -103,7 +103,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myNote;
 
     enum {
-      kYStartChanged   = 'YSch',
+      kVCenterChanged  = 'Vcch',
       kPhosphorChanged = 'PPch',
       kPPBlendChanged  = 'PBch',
       kLeftCChanged    = 'LCch',

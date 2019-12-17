@@ -83,7 +83,7 @@ class Event
       ToggleFullScreen,
       VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
-      ScanlinesDecrease, ScanlinesIncrease,
+      ScanlinesDecrease, ScanlinesIncrease, VCenterDecrease, VCenterIncrease,
 
       ToggleP0Collision, ToggleP0Bit, ToggleP1Collision, ToggleP1Bit,
       ToggleM0Collision, ToggleM0Bit, ToggleM1Collision, ToggleM1Bit,
@@ -119,8 +119,6 @@ class Event
       CompuMateQuestion, CompuMateLeftBracket, CompuMateRightBracket, CompuMateMinus,
       CompuMateQuote, CompuMateBackspace, CompuMateEquals, CompuMatePlus,
       CompuMateSlash,
-
-      YStartDecrease, YStartIncrease,
 
       LastType
     };

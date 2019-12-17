@@ -256,11 +256,11 @@ class Console : public Serializable, public ConsoleIO
     void fry() const;
 
     /**
-      Change the "Display.YStart" variable.
+      Change the "Display.VCenter" variable.
 
       @param direction +1 indicates increase, -1 indicates decrease.
     */
-    void changeYStart(int direction);
+    void changeVerticalCenter(int direction);
 
     /**
       Returns the current framerate.

@@ -21,7 +21,7 @@ my %prop_type = (
   "Controller.SwapPaddles"  => 15,
   "Controller.MouseAxis"    => 16,
   "Display.Format"          => 17,
-  "Display.YStart"          => 18,
+  "Display.VCenter"         => 18,
   "Display.Phosphor"        => 19,
   "Display.PPBlend"         => 20
 );
@@ -44,7 +44,7 @@ my @prop_type_as_string = (
   "Controller.SwapPaddles",
   "Controller.MouseAxis",
   "Display.Format",
-  "Display.YStart",
+  "Display.VCenter",
   "Display.Phosphor",
   "Display.PPBlend"
 );
