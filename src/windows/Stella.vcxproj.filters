@@ -990,7 +990,7 @@
     <ClCompile Include="..\common\sdl_blitter\BilinearBlitter.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\sdl_blitter\HqBlitter.cxx">
+    <ClCompile Include="..\common\sdl_blitter\QisBlitter.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\sdl_blitter\BlitterFactory.cxx">
@@ -2030,7 +2030,7 @@
     <ClInclude Include="..\common\sdl_blitter\Blitter.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\sdl_blitter\HqBlitter.hxx">
+    <ClInclude Include="..\common\sdl_blitter\QisBlitter.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\sdl_blitter\BlitterFactory.hxx">

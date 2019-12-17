@@ -660,12 +660,12 @@
 		E08B1C19231FF97B00EEF922 /* BreakpointMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E08B1C17231FF97B00EEF922 /* BreakpointMap.hxx */; };
 		E08D2F3E23089B9B000BD709 /* JoyMap.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E08D2F3C23089B9B000BD709 /* JoyMap.cxx */; };
 		E08D2F3F23089B9B000BD709 /* JoyMap.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E08D2F3D23089B9B000BD709 /* JoyMap.hxx */; };
-		E08FCD5323A037EB0051F59B /* HqBlitter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E08FCD4C23A037EB0051F59B /* HqBlitter.cxx */; };
+		E08FCD5323A037EB0051F59B /* QisBlitter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E08FCD4C23A037EB0051F59B /* QisBlitter.cxx */; };
 		E08FCD5423A037EB0051F59B /* BlitterFactory.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E08FCD4D23A037EB0051F59B /* BlitterFactory.cxx */; };
 		E08FCD5523A037EB0051F59B /* Blitter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E08FCD4E23A037EB0051F59B /* Blitter.hxx */; };
 		E08FCD5623A037EB0051F59B /* BilinearBlitter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E08FCD4F23A037EB0051F59B /* BilinearBlitter.cxx */; };
 		E08FCD5723A037EB0051F59B /* BilinearBlitter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E08FCD5023A037EB0051F59B /* BilinearBlitter.hxx */; };
-		E08FCD5823A037EB0051F59B /* HqBlitter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E08FCD5123A037EB0051F59B /* HqBlitter.hxx */; };
+		E08FCD5823A037EB0051F59B /* QisBlitter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E08FCD5123A037EB0051F59B /* QisBlitter.hxx */; };
 		E08FCD5923A037EB0051F59B /* BlitterFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E08FCD5223A037EB0051F59B /* BlitterFactory.hxx */; };
 		E09F413B201E901D004A3391 /* AudioQueue.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E09F4139201E901C004A3391 /* AudioQueue.hxx */; };
 		E09F413C201E901D004A3391 /* AudioQueue.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E09F413A201E901D004A3391 /* AudioQueue.cxx */; };
@@ -1397,12 +1397,12 @@
 		E08B1C17231FF97B00EEF922 /* BreakpointMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BreakpointMap.hxx; sourceTree = "<group>"; };
 		E08D2F3C23089B9B000BD709 /* JoyMap.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JoyMap.cxx; sourceTree = "<group>"; };
 		E08D2F3D23089B9B000BD709 /* JoyMap.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JoyMap.hxx; sourceTree = "<group>"; };
-		E08FCD4C23A037EB0051F59B /* HqBlitter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HqBlitter.cxx; path = sdl_blitter/HqBlitter.cxx; sourceTree = "<group>"; };
+		E08FCD4C23A037EB0051F59B /* QisBlitter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QisBlitter.cxx; path = sdl_blitter/QisBlitter.cxx; sourceTree = "<group>"; };
 		E08FCD4D23A037EB0051F59B /* BlitterFactory.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BlitterFactory.cxx; path = sdl_blitter/BlitterFactory.cxx; sourceTree = "<group>"; };
 		E08FCD4E23A037EB0051F59B /* Blitter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Blitter.hxx; path = sdl_blitter/Blitter.hxx; sourceTree = "<group>"; };
 		E08FCD4F23A037EB0051F59B /* BilinearBlitter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BilinearBlitter.cxx; path = sdl_blitter/BilinearBlitter.cxx; sourceTree = "<group>"; };
 		E08FCD5023A037EB0051F59B /* BilinearBlitter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = BilinearBlitter.hxx; path = sdl_blitter/BilinearBlitter.hxx; sourceTree = "<group>"; };
-		E08FCD5123A037EB0051F59B /* HqBlitter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HqBlitter.hxx; path = sdl_blitter/HqBlitter.hxx; sourceTree = "<group>"; };
+		E08FCD5123A037EB0051F59B /* QisBlitter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = QisBlitter.hxx; path = sdl_blitter/QisBlitter.hxx; sourceTree = "<group>"; };
 		E08FCD5223A037EB0051F59B /* BlitterFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = BlitterFactory.hxx; path = sdl_blitter/BlitterFactory.hxx; sourceTree = "<group>"; };
 		E09F4139201E901C004A3391 /* AudioQueue.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioQueue.hxx; sourceTree = "<group>"; };
 		E09F413A201E901D004A3391 /* AudioQueue.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioQueue.cxx; sourceTree = "<group>"; };
@@ -2302,8 +2302,8 @@
 				E08FCD4E23A037EB0051F59B /* Blitter.hxx */,
 				E08FCD4D23A037EB0051F59B /* BlitterFactory.cxx */,
 				E08FCD5223A037EB0051F59B /* BlitterFactory.hxx */,
-				E08FCD4C23A037EB0051F59B /* HqBlitter.cxx */,
-				E08FCD5123A037EB0051F59B /* HqBlitter.hxx */,
+				E08FCD4C23A037EB0051F59B /* QisBlitter.cxx */,
+				E08FCD5123A037EB0051F59B /* QisBlitter.hxx */,
 			);
 			name = sdl_blitter;
 			sourceTree = "<group>";
@@ -2475,7 +2475,7 @@
 				DCF3A6E81DFC75E3008A8AF3 /* Background.hxx in Headers */,
 				DC21E5C021CA903E007D0E1A /* OSystemMACOS.hxx in Headers */,
 				DCFB9FAC1ECA2609004FD69B /* DelayQueueIteratorImpl.hxx in Headers */,
-				E08FCD5823A037EB0051F59B /* HqBlitter.hxx in Headers */,
+				E08FCD5823A037EB0051F59B /* QisBlitter.hxx in Headers */,
 				DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */,
 				DCDA03B11A2009BB00711920 /* CartWD.hxx in Headers */,
 				2D91745909BA90380026E9FF /* PromptWidget.hxx in Headers */,
@@ -2818,7 +2818,7 @@
 				2D91748609BA90380026E9FF /* CartFE.cxx in Sources */,
 				2D91748909BA90380026E9FF /* Console.cxx in Sources */,
 				DC6DC91E205DB879004A5FC3 /* PhysicalJoystick.cxx in Sources */,
-				E08FCD5323A037EB0051F59B /* HqBlitter.cxx in Sources */,
+				E08FCD5323A037EB0051F59B /* QisBlitter.cxx in Sources */,
 				DCCE0355225104BF008C246F /* StellaSettingsDialog.cxx in Sources */,
 				2D91748A09BA90380026E9FF /* Control.cxx in Sources */,
 				2D91748C09BA90380026E9FF /* Driving.cxx in Sources */,
