@@ -302,6 +302,9 @@ string TIASurface::effectsInfo() const
           << attr.blendalpha;
       break;
   }
+
+  buf << ", filter=" << myOSystem.settings().getString("tia.filter");
+
   return buf.str();
 }
 

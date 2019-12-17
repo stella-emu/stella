@@ -27,6 +27,7 @@
         "iomanip": "cpp",
         "__cxx_version": "cpp",
         "string": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "ostream": "cpp"
     }
 }
