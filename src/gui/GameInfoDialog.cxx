@@ -137,7 +137,8 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + VGAP;
   t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "V-Center ");
   myVCenter = new SliderWidget(myTab, font, t->getRight() + 2, ypos,
-                              "", 0, kYStartChanged, 7 * fontWidth, "px");
+                              "", 0, kVCenterChanged, 7 * fontWidth, "px");
+// TODO (SA):check relationship of ystart and vcenter
   myVCenter->setMinValue(TIAConstants::minYStart - TIAConstants::defaultYStart);
   myVCenter->setMaxValue(TIAConstants::maxYStart - TIAConstants::defaultYStart);
   myVCenter->setTickmarkIntervals(4);
@@ -456,11 +457,12 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   const string& blend = props.get(PropType::Display_PPBlend);
   myPPBlend->setValue(atoi(blend.c_str()));
 
-  // set vertical center (y-start)
-  int vCenter = atoi(props.get(PropType::Display_YStart).c_str());
+  // set vertical center
+  int vCenter = atoi(props.get(PropType::Display_VCenter).c_str());
   if (vCenter)
   {
     // convert y-start into v-center
+    // TODO (SA): fix this
     vCenter = TIAConstants::defaultYStart - vCenter;
     myVCenter->setValueLabel(vCenter);
   }
@@ -548,9 +550,9 @@ void GameInfoDialog::saveConfig()
                        myPPBlend->getValueLabel());
   int vCenter = myVCenter->getValue();
   if (vCenter)
-    // convert v-center into y-start
+    // convert v-center into y-start TODO (SA): fix this
     vCenter = TIAConstants::defaultYStart - vCenter;
-  myGameProperties.set(PropType::Display_YStart, std::to_string(vCenter));
+  myGameProperties.set(PropType::Display_VCenter, std::to_string(vCenter));
   myGameProperties.set(PropType::Cart_Sound, mySound->getState() ? "STEREO" : "MONO");
 
   // Console properties
@@ -792,7 +794,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
         myPPBlend->setValueUnit("%");
       break;
 
-    case kYStartChanged:
+    case kVCenterChanged:
       if (myVCenter->getValue() == 0)
       {
         myVCenter->setValueLabel("Default");

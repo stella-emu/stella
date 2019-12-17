@@ -253,7 +253,7 @@ void Properties::print() const
        << get(PropType::Controller_SwapPaddles) << "|"
        << get(PropType::Controller_MouseAxis)   << "|"
        << get(PropType::Display_Format)         << "|"
-       << get(PropType::Display_YStart)         << "|"
+       << get(PropType::Display_VCenter)        << "|"
        << get(PropType::Display_Phosphor)       << "|"
        << get(PropType::Display_PPBlend)
        << endl;
@@ -298,7 +298,7 @@ void Properties::printHeader()
        << "Controller_SwapPaddles|"
        << "Controller_MouseAxis|"
        << "Display_Format|"
-       << "Display_YStart|"
+       << "Display_VCenter|"
        << "Display_Phosphor|"
        << "Display_PPBlend"
        << endl;
@@ -325,7 +325,7 @@ string Properties::ourDefaultProperties[static_cast<uInt8>(PropType::NumTypes)] 
   "NO",     // Controller.SwapPaddles
   "AUTO",   // Controller.MouseAxis
   "AUTO",   // Display.Format
-  "0",      // Display.YStart
+  "0",      // Display.VCenter
   "NO",     // Display.Phosphor
   "0"       // Display.PPBlend
 };
@@ -351,7 +351,7 @@ const char* const Properties::ourPropertyNames[static_cast<uInt8>(PropType::NumT
   "Controller.SwapPaddles",
   "Controller.MouseAxis",
   "Display.Format",
-  "Display.YStart",
+  "Display.VCenter",
   "Display.Phosphor",
   "Display.PPBlend"
 };

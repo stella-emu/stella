@@ -419,12 +419,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed) myOSystem.frameBuffer().changeVidMode(+1);
       return;
 
-    case Event::YStartDecrease:
-      if (pressed) myOSystem.console().changeYStart(-1);
+    case Event::VCenterDecrease:
+      if (pressed) myOSystem.console().changeVerticalCenter(-1);
       return;
 
-    case Event::YStartIncrease:
-      if (pressed) myOSystem.console().changeYStart(+1);
+    case Event::VCenterIncrease:
+      if (pressed) myOSystem.console().changeVerticalCenter(+1);
       return;
 
     case Event::ToggleFullScreen:
@@ -1830,8 +1830,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ToggleFullScreen,        "Toggle fullscreen",                     "" },
   { Event::OverscanDecrease,        "Decrease overscan in fullscreen mode",  "" },
   { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
-  { Event::YStartIncrease,          "Move display up",                       "" },
-  { Event::YStartDecrease,          "Move display down",                     "" },
+  { Event::VCenterIncrease,         "Move display up",                       "" },
+  { Event::VCenterDecrease,         "Move display down",                     "" },
   { Event::FormatDecrease,          "Decrease display format",               "" },
   { Event::FormatIncrease,          "Increase display format",               "" },
   { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "" },
@@ -1959,7 +1959,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::ScanlinesDecrease, Event::ScanlinesIncrease,
   Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,
   Event::FormatDecrease, Event::FormatIncrease,
-  Event::YStartDecrease, Event::YStartIncrease,
+  Event::VCenterDecrease, Event::VCenterIncrease,
   Event::OverscanDecrease, Event::OverscanIncrease,
   Event::TogglePalette,
 };
