@@ -49,7 +49,7 @@ Settings::Settings()
 
   // TIA specific options
   setPermanent("tia.zoom", "3");
-  setPermanent("tia.filter", "sharp");
+  setPermanent("tia.inter", "false");
   setPermanent("tia.aspectn", "100");
   setPermanent("tia.aspectp", "100");
   setPermanent("fullscreen", "false");
@@ -408,8 +408,8 @@ void Settings::usage() const
   #endif
     << "  -tia.zoom      <zoom>         Use the specified zoom level (windowed mode)\n"
     << "                                 for TIA image\n"
-    << "  -tia.filter    <none|sharp    Filter mode for scaled TIA image\n"
-    << "                  soft>\n"
+    << "  -tia.inter     <1|0>          Enable interpolated (smooth) scaling for TIA\n"
+    << "                                 image\n"
     << "  -tia.aspectn   <number>       Scale TIA width by the given percentage in NTS\n"
     << "                                 mode\n"
     << "  -tia.aspectp   <number>       Scale TIA width by the given percentage in PAL\n"

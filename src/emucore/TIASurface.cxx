@@ -28,13 +28,9 @@
 namespace {
   FrameBuffer::ScalingInterpolation interpolationModeFromSettings(const Settings& settings)
   {
-    const string setting = settings.getString("tia.filter");
-
-    if (setting == "sharp") return FrameBuffer::ScalingInterpolation::sharp;
-    if (setting == "soft") return FrameBuffer::ScalingInterpolation::blur;
-    if (setting == "none") return FrameBuffer::ScalingInterpolation::none;
-
-    return FrameBuffer::ScalingInterpolation::sharp;
+    return settings.getBool("tia.inter") ?
+      FrameBuffer::ScalingInterpolation::blur :
+      FrameBuffer::ScalingInterpolation::sharp;
   }
 }
 
@@ -298,7 +294,7 @@ string TIASurface::effectsInfo() const
       break;
   }
 
-  buf << ", filter=" << myOSystem.settings().getString("tia.filter");
+  buf << ", inter=" << myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled";
 
   return buf.str();
 }

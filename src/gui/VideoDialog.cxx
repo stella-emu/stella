@@ -123,15 +123,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myTIAPalette);
   ypos += lineHeight + VGAP;
 
-  // TIA Filter
-  items.clear();
-  VarList::push_back(items, "None", "none");
-  VarList::push_back(items, "Sharp", "sharp");
-  VarList::push_back(items, "Soft", "soft");
-  myTIAFilter = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                                  lineHeight, items, "Filter ", lwidth);
-  wid.push_back(myTIAFilter);
-  ypos += lineHeight + VGAP;
+  // TIA interpolation
+  myTIAInterpolate = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Interpolation ");
+  wid.push_back(myTIAInterpolate);  ypos += lineHeight + VGAP;
 
 
   // TIA zoom levels (will be dynamically filled later)
@@ -355,8 +349,8 @@ void VideoDialog::loadConfig()
   myTIAPalette->setSelected(
     instance().settings().getString("palette"), "standard");
 
-  // TIA Filter
-  myTIAFilter->setSelected(instance().settings().getString("tia.filter"), "none");
+  // TIA interpolation
+  myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
 
   // Aspect ratio setting (NTSC and PAL)
   myNAspectRatio->setValue(instance().settings().getInt("tia.aspectn"));
@@ -428,8 +422,8 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("palette",
     myTIAPalette->getSelectedTag().toString());
 
-  // TIA Filter
-  instance().settings().setValue("tia.filter", myTIAFilter->getSelectedTag().toString());
+  // TIA interpolation
+  instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
 
   // Aspect ratio setting (NTSC and PAL)
   instance().settings().setValue("tia.aspectn", myNAspectRatio->getValueLabel());
@@ -510,7 +504,7 @@ void VideoDialog::setDefaults()
       myRenderer->setSelectedIndex(0);
       myTIAZoom->setValue(300);
       myTIAPalette->setSelected("standard", "");
-      myTIAFilter->setSelected("none", "");
+      myTIAInterpolate->setState(false);
       myNAspectRatio->setValue(91);
       myPAspectRatio->setValue(109);
       mySpeed->setValue(0);
