@@ -527,6 +527,10 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed && !repeated) myOSystem.console().togglePalette();
       return;
 
+    case Event::ToggleInter:
+      if (pressed && !repeated) myOSystem.console().toggleInter();
+      return;
+
     case Event::ToggleJitter:
       if (pressed && !repeated) myOSystem.console().toggleJitter();
       return;
@@ -1835,6 +1839,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::FormatDecrease,          "Decrease display format",               "" },
   { Event::FormatIncrease,          "Increase display format",               "" },
   { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "" },
+  { Event::ToggleInter,             "Toggle display interpolation",          "" },
 
   // TV effects:
   { Event::VidmodeStd,              "Disable TV effects",                    "" },
@@ -1961,7 +1966,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::FormatDecrease, Event::FormatIncrease,
   Event::VCenterDecrease, Event::VCenterIncrease,
   Event::OverscanDecrease, Event::OverscanIncrease,
-  Event::TogglePalette,
+  Event::TogglePalette, Event::ToggleInter
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

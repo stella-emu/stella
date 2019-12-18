@@ -120,6 +120,8 @@ class Event
       CompuMateQuote, CompuMateBackspace, CompuMateEquals, CompuMatePlus,
       CompuMateSlash,
 
+      ToggleInter,
+
       LastType
     };
 

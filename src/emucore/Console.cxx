@@ -551,6 +551,21 @@ void Console::setPalette(const string& type)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleInter()
+{
+  bool enabled = myOSystem.settings().getBool("tia.inter");
+
+  myOSystem.settings().setValue("tia.inter", !enabled);
+
+  // ... and apply potential setting changes to the TIA surface
+  myOSystem.frameBuffer().tiaSurface().updateSurfaceSettings();
+  ostringstream ss;
+
+  ss << "Interpolation " << (!enabled ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showMessage(ss.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePhosphor()
 {
   if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())

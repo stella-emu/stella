@@ -457,6 +457,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ScanlinesIncrease,        KBDK_0, MOD3},
   {Event::ToggleColorLoss,          KBDK_L, KBDM_CTRL},
   {Event::TogglePalette,            KBDK_P, KBDM_CTRL},
+  {Event::ToggleInter,              KBDK_I, KBDM_CTRL},
   {Event::ToggleJitter,             KBDK_J, MOD3},
   {Event::ToggleFrameStats,         KBDK_L, MOD3},
   {Event::ToggleTimeMachine,        KBDK_T, MOD3},
