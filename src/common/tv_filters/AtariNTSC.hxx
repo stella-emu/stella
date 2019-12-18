@@ -206,18 +206,18 @@ class AtariNTSC
     // Begins outputting row and starts two pixels. First pixel will be cut
     // off a bit.  Use atari_ntsc_black for unused pixels.
     #define ATARI_NTSC_BEGIN_ROW( pixel0, pixel1 ) \
-    	unsigned const atari_ntsc_pixel0_ = (pixel0);\
-    	uInt32 const* kernel0  = myColorTable[atari_ntsc_pixel0_];\
-    	unsigned const atari_ntsc_pixel1_ = (pixel1);\
-    	uInt32 const* kernel1  = myColorTable[atari_ntsc_pixel1_];\
-    	uInt32 const* kernelx0;\
-    	uInt32 const* kernelx1 = kernel0
+      unsigned const atari_ntsc_pixel0_ = (pixel0);\
+      uInt32 const* kernel0  = myColorTable[atari_ntsc_pixel0_];\
+      unsigned const atari_ntsc_pixel1_ = (pixel1);\
+      uInt32 const* kernel1  = myColorTable[atari_ntsc_pixel1_];\
+      uInt32 const* kernelx0;\
+      uInt32 const* kernelx1 = kernel0
 
     // Begins input pixel
     #define ATARI_NTSC_COLOR_IN( index, color ) {\
-    	unsigned color_;\
-    	kernelx##index = kernel##index;\
-    	kernel##index = (color_ = (color), myColorTable[color_]);\
+      uintptr_t color_;\
+      kernelx##index = kernel##index;\
+      kernel##index = (color_ = (color), myColorTable[color_]);\
     }
 
     // Generates output in the specified 32-bit format (x = junk bits).
@@ -235,11 +235,11 @@ class AtariNTSC
     #define atari_ntsc_clamp_mask     (rgb_builder * 3 / 2)
     #define atari_ntsc_clamp_add      (rgb_builder * 0x101)
     #define ATARI_NTSC_CLAMP_( io, shift ) {\
-    	uInt32 sub = (io) >> (9-(shift)) & atari_ntsc_clamp_mask;\
-    	uInt32 clamp = atari_ntsc_clamp_add - sub;\
-    	io |= clamp;\
-    	clamp -= sub;\
-    	io &= clamp;\
+      uInt32 sub = (io) >> (9-(shift)) & atari_ntsc_clamp_mask;\
+      uInt32 clamp = atari_ntsc_clamp_add - sub;\
+      io |= clamp;\
+      clamp -= sub;\
+      io &= clamp;\
     }
 
     // Kernel generation
@@ -265,12 +265,12 @@ class AtariNTSC
 
     #define PIXEL_OFFSET_( ntsc, scaled ) \
       (kernel_size / 2 + ntsc + (scaled != 0) + (rescale_out - scaled) % rescale_out + \
-          (kernel_size * 2 * scaled))
+        (kernel_size * 2 * scaled))
 
     #define PIXEL_OFFSET( ntsc, scaled ) \
       PIXEL_OFFSET_( ((ntsc) - (scaled) / rescale_out * rescale_in),\
-          (((scaled) + rescale_out * 10) % rescale_out) ),\
-      (1.0f - (((ntsc) + 100) & 2))
+        (((scaled) + rescale_out * 10) % rescale_out) ),\
+        (1.0f - (((ntsc) + 100) & 2))
 
     #define DISTRIBUTE_ERROR( a, b, c ) {\
       uInt32 fourth = (error + 2 * rgb_builder) >> 2;\
@@ -282,8 +282,7 @@ class AtariNTSC
       out [i] += error - (fourth * 3);\
     }
 
-    #define RGB_PALETTE_OUT( rgb, out_ )\
-    {\
+    #define RGB_PALETTE_OUT( rgb, out_ ) {\
       unsigned char* out = (out_);\
       uInt32 clamped = (rgb);\
       ATARI_NTSC_CLAMP_( clamped, (8 - rgb_bits) );\
