@@ -216,6 +216,12 @@ class Console : public Serializable, public ConsoleIO
     void setPalette(const string& palette);
 
     /**
+      Toggle interpolation on/off
+    */
+    void toggleInter();
+
+
+    /**
       Toggles phosphor effect.
     */
     void togglePhosphor();
