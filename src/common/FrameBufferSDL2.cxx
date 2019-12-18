@@ -33,7 +33,11 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
     myWindow(nullptr),
     myRenderer(nullptr),
     myCenter(false),
-    myRenderTargetSupport(false)
+    myRenderTargetSupport(false),
+    myWindowW(0),
+    myWindowH(0),
+    myRenderW(0),
+    myRenderH(0)
 {
   ASSERT_MAIN_THREAD;
 
