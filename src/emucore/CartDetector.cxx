@@ -946,12 +946,12 @@ bool CartDetector::isProbablyFA2(const ByteBuffer& image, size_t)
 bool CartDetector::isProbablyFC(const ByteBuffer& image, size_t size)
 {
   // FC bankswitching uses consecutive writes to 3 hotspots
-  uInt8 signature[2][6] = {
+  uInt8 signature[3][6] = {
     { 0x8d, 0xf8, 0x1f, 0x4a, 0x4a, 0x8d }, // STA $1FF8, LSR, LSR, STA... Power Play Arcade Menus, 3-D Ghost Attack
     { 0x8d, 0xf8, 0xff, 0x8d, 0xfc, 0xff }, // STA $FFF8, STA $FFFC        Surf's Up (4K)
-    //{ 0x8c, 0xf9, 0xff, 0xad, 0xfc, 0xff }  // STY $FFF9, LDA $FFFC        3-D Havoc (patched for F8, ignore!)
+    { 0x8c, 0xf9, 0xff, 0xad, 0xfc, 0xff }  // STY $FFF9, LDA $FFFC        3-D Havoc
   };
-  for (uInt32 i = 0; i < 2; ++i)
+  for (uInt32 i = 0; i < 3; ++i)
     if (searchForBytes(image.get(), size, signature[i], 6, 1))
       return true;
 
