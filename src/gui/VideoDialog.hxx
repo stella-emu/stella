@@ -57,7 +57,7 @@ class VideoDialog : public Dialog
     PopUpWidget*      myRenderer;
     SliderWidget*     myTIAZoom;
     PopUpWidget*      myTIAPalette;
-    PopUpWidget*      myTIAFilter;
+    CheckboxWidget* myTIAInterpolate;
     SliderWidget*     myNAspectRatio;
     SliderWidget*     myPAspectRatio;
     SliderWidget*     mySpeed;
