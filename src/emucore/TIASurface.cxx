@@ -294,7 +294,7 @@ string TIASurface::effectsInfo() const
       break;
   }
 
-  buf << ", inter=" << myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled";
+  buf << ", inter=" << (myOSystem.settings().getBool("tia.inter") ? "enabled" : "disabled");
 
   return buf.str();
 }
