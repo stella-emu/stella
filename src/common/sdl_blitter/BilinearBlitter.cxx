@@ -21,6 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BilinearBlitter::BilinearBlitter(FrameBufferSDL2& fb, bool interpolate) :
+  mySrcRect({0, 0, 0, 0}),
+  myDstRect({0, 0, 0, 0}),
   myTexture(nullptr),
   mySecondaryTexture(nullptr),
   myInterpolate(interpolate),

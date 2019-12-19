@@ -21,6 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 QisBlitter::QisBlitter(FrameBufferSDL2& fb) :
+  mySrcRect({0, 0, 0, 0}),
+  myDstRect({0, 0, 0, 0}),
   mySrcTexture(nullptr),
   myIntermediateTexture(nullptr),
   mySecondaryIntermedateTexture(nullptr),
