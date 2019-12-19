@@ -127,6 +127,8 @@ Int32 FrameManager::missingScanlines() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::setVcenter(Int32 vcenter)
 {
+  if (vcenter < TIAConstants::minVcenter || vcenter > TIAConstants::maxVcenter) return;
+
   myVcenter = vcenter;
   updateYStart();
 }
