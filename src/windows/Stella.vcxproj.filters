@@ -885,9 +885,6 @@
     <ClCompile Include="..\emucore\tia\frame-manager\JitterEmulation.cxx">
       <Filter>Source Files\emucore\tia</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\tia\frame-manager\YStartDetector.cxx">
-      <Filter>Source Files\emucore\tia</Filter>
-    </ClCompile>
     <ClCompile Include="..\gui\TimeLineWidget.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -1896,9 +1893,6 @@
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\tia\frame-manager\JitterEmulation.hxx">
-      <Filter>Header Files\emucore\tia</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\tia\frame-manager\YStartDetector.hxx">
       <Filter>Header Files\emucore\tia</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\tia\TIAConstants.hxx">
