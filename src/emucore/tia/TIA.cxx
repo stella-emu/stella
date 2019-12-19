@@ -185,8 +185,8 @@ void TIA::reset()
 
   // Must be done last, after all other items have reset
   bool devSettings = mySettings.getBool("dev.settings");
-  enableFixedColors(mySettings.getBool(devSettings ? "dev.debugcolors" : "plr.debugcolors"));
   setFixedColorPalette(mySettings.getString("tia.dbgcolors"));
+  enableFixedColors(mySettings.getBool(devSettings ? "dev.debugcolors" : "plr.debugcolors"));
 
 #ifdef DEBUGGER_SUPPORT
   createAccessBase();
