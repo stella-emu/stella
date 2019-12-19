@@ -682,7 +682,8 @@ void Console::changeVerticalCenter(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::updateVcenter(Int32 vcenter)
 {
-  if (vcenter > TIAConstants::maxVcenter | vcenter < TIAConstants::minVcenter) return;
+  if ((vcenter > TIAConstants::maxVcenter) | (vcenter < TIAConstants::minVcenter))
+    return;
 
   if (vcenter != myTIA->vcenter()) myTIA->setVcenter(vcenter);
 }
