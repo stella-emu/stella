@@ -306,9 +306,9 @@ class Console : public Serializable, public ConsoleIO
     void toggleJitter() const;
 
     /**
-     * Update yatart and run autodetection if necessary.
+     * Update vcenter
      */
-    void updateYStart(uInt32 ystart);
+    void updateVcenter(Int32 vcenter);
 
   private:
     /**
@@ -317,22 +317,12 @@ class Console : public Serializable, public ConsoleIO
     void autodetectFrameLayout(bool reset = true);
 
     /**
-     * Dryrun the emulation and detect ystart (the first visible scanline).
-     */
-    void autodetectYStart(bool reset = true);
-
-    /**
      * Rerun frame layout autodetection
      */
     void redetectFrameLayout();
 
     /**
-     * Rerun ystart autodetection.
-     */
-    void redetectYStart();
-
-    /**
-      Sets various properties of the TIA (YStart, Height, etc) based on
+      Sets various properties of the TIA (vcenter, Height, etc) based on
       the current display format.
     */
     void setTIAProperties();
@@ -410,12 +400,6 @@ class Console : public Serializable, public ConsoleIO
 
     // Display format currently in use
     uInt32 myCurrentFormat;
-
-    // Autodetected ystart.
-    uInt32 myAutodetectedYstart;
-
-    // Is ystart currently autodetected?
-    bool myYStartAutodetected;
 
     // Is the TV format autodetected?
     bool myFormatAutodetected;

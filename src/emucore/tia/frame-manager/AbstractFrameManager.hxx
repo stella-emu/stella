@@ -22,6 +22,7 @@
 
 #include "Serializable.hxx"
 #include "FrameLayout.hxx"
+#include "bspf.hxx"
 
 class AbstractFrameManager : public Serializable
 {
@@ -160,14 +161,19 @@ class AbstractFrameManager : public Serializable
     virtual uInt32 scanlines() const { return 0; }
 
     /**
-     * Configure the ystart value.
+     * Configure the vcenter value.
      */
-    virtual void setYstart(uInt32 ystart) {}
+    virtual void setVcenter(Int32 vcenter) {}
 
     /**
-     * The configured ystart value.
+     * The configured vcenter value.
      */
-    virtual uInt32 ystart() const { return 0; }
+    virtual Int32 vcenter() const { return 0; }
+
+    /**
+     * The corresponding start line.
+     */
+    virtual uInt32 startLine() const { return 0; }
 
     /**
      * Set the frame layout. This may be a noop (on the autodetection manager).

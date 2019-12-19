@@ -138,9 +138,9 @@ GameInfoDialog::GameInfoDialog(
   t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "V-Center ");
   myVCenter = new SliderWidget(myTab, font, t->getRight() + 2, ypos,
                               "", 0, kVCenterChanged, 7 * fontWidth, "px");
-// TODO (SA):check relationship of ystart and vcenter
-  myVCenter->setMinValue(TIAConstants::minYStart - TIAConstants::defaultYStart);
-  myVCenter->setMaxValue(TIAConstants::maxYStart - TIAConstants::defaultYStart);
+
+  myVCenter->setMinValue(TIAConstants::minVcenter);
+  myVCenter->setMaxValue(TIAConstants::maxVcenter);
   myVCenter->setTickmarkIntervals(4);
   wid.push_back(myVCenter);
 
@@ -458,20 +458,10 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   myPPBlend->setValue(atoi(blend.c_str()));
 
   // set vertical center
-  int vCenter = atoi(props.get(PropType::Display_VCenter).c_str());
-  if (vCenter)
-  {
-    // convert y-start into v-center
-    // TODO (SA): fix this
-    vCenter = TIAConstants::defaultYStart - vCenter;
-    myVCenter->setValueLabel(vCenter);
-  }
-  else
-  {
-    myVCenter->setValueLabel("default");
-  }
-  myVCenter->setValue(vCenter);
-  myVCenter->setValueUnit(vCenter ? "px" : "");
+  Int32 vcenter = atoi(props.get(PropType::Display_VCenter).c_str());
+  myVCenter->setValueLabel(vcenter);
+  myVCenter->setValue(vcenter);
+  myVCenter->setValueUnit(vcenter ? "px" : "");
 
   mySound->setState(props.get(PropType::Cart_Sound) == "STEREO");
   // if stereo is always enabled, disable game specific stereo setting
@@ -548,11 +538,9 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(PropType::Display_Phosphor, myPhosphor->getState() ? "YES" : "NO");
   myGameProperties.set(PropType::Display_PPBlend, myPPBlend->getValueLabel() == "Off" ? "0" :
                        myPPBlend->getValueLabel());
-  int vCenter = myVCenter->getValue();
-  if (vCenter)
-    // convert v-center into y-start TODO (SA): fix this
-    vCenter = TIAConstants::defaultYStart - vCenter;
-  myGameProperties.set(PropType::Display_VCenter, std::to_string(vCenter));
+  Int32 vcenter = myVCenter->getValue();
+
+  myGameProperties.set(PropType::Display_VCenter, std::to_string(vcenter));
   myGameProperties.set(PropType::Cart_Sound, mySound->getState() ? "STEREO" : "MONO");
 
   // Console properties
@@ -595,7 +583,7 @@ void GameInfoDialog::saveConfig()
     // update 'Emulation' tab settings immediately
     instance().console().setFormat(myFormat->getSelected());
     instance().frameBuffer().tiaSurface().enablePhosphor(myPhosphor->getState(), myPPBlend->getValue());
-    instance().console().updateYStart(vCenter);
+    instance().console().updateVcenter(vcenter);
     instance().console().initializeAudio();
 
     // update 'Console' tab settings immediately

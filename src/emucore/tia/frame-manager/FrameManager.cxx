@@ -31,7 +31,9 @@ enum Metrics: uInt32 {
   vsync                         = 3,
   maxLinesVsync                 = 50,
   visibleOverscan               = 20,
-  initialGarbageFrames          = TIAConstants::initialGarbageFrames
+  initialGarbageFrames          = TIAConstants::initialGarbageFrames,
+  ystartNTSC                    = 34,
+  ystartPAL                     = 39
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,9 +48,11 @@ FrameManager::FrameManager()
     myFrameLines(0),
     myHeight(0),
     myYStart(0),
+    myVcenter(0),
     myJitterEnabled(false)
 {
   reset();
+  updateYStart();
   onLayoutChange();
 }
 
@@ -98,7 +102,7 @@ void FrameManager::onNextLine()
     case State::frame:
       if (myLineInState >= myHeight)
       {
-        myLastY = ystart() + myY;  // Last line drawn in this frame
+        myLastY = myYStart + myY;  // Last line drawn in this frame
         setState(State::waitForVsyncStart);
       }
       break;
@@ -121,10 +125,10 @@ Int32 FrameManager::missingScanlines() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setYstart(uInt32 ystart)
+void FrameManager::setVcenter(Int32 vcenter)
 {
-  myYStart = ystart;
-  myJitterEmulation.setYStart(ystart);
+  myVcenter = vcenter;
+  updateYStart();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -240,4 +244,10 @@ bool FrameManager::onLoad(Serializer& in)
   myJitterEnabled = in.getBool();
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::updateYStart() {
+  myYStart = (layout() == FrameLayout::ntsc ? Metrics::ystartNTSC : Metrics::ystartPAL) - myVcenter;
+  myJitterEmulation.setYStart(myYStart);
 }
