@@ -1183,6 +1183,7 @@
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Super Soccer (Digivision)"
 "Cart.Note" "AKA RealSports Soccer"
+"Cart.Type" "F8"
 "Display.Phosphor" "YES"
 ""
 
