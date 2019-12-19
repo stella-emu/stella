@@ -44,9 +44,11 @@ class FrameManager: public AbstractFrameManager {
 
     Int32 missingScanlines() const override;
 
-    void setYstart(uInt32 ystart) override;
+    void setVcenter(Int32 vcenter) override;
 
-    uInt32 ystart() const override { return myYStart; }
+    Int32 vcenter() const override { return myVcenter; }
+
+    uInt32 startLine() const override { return myYStart; }
 
     void setLayout(FrameLayout mode) override { layout(mode); }
 
@@ -77,6 +79,8 @@ class FrameManager: public AbstractFrameManager {
 
     void updateIsRendering();
 
+    void updateYStart();
+
   private:
 
     State myState;
@@ -90,6 +94,7 @@ class FrameManager: public AbstractFrameManager {
     uInt32 myFrameLines;
     uInt32 myHeight;
     uInt32 myYStart;
+    Int32 myVcenter;
 
     bool myJitterEnabled;
 

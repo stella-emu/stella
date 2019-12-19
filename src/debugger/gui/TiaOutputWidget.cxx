@@ -120,7 +120,7 @@ void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCoun
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  uInt32 ystart = instance().console().tia().ystart();
+  uInt32 startLine = instance().console().tia().startLine();
 
   switch(cmd)
   {
@@ -131,7 +131,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       if(rmb == "scanline")
       {
         ostringstream command;
-        int lines = myClickY + ystart - instance().console().tia().scanlines();
+        int lines = myClickY + startLine - instance().console().tia().scanlines();
 
         if(lines < 0)
           lines += instance().console().tia().scanlinesLastFrame();
@@ -145,7 +145,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       else if(rmb == "bp")
       {
         ostringstream command;
-        int scanline = myClickY + ystart;
+        int scanline = myClickY + startLine;
         command << "breakif _scan==#" << scanline;
         string message = instance().debugger().parser().run(command.str());
         instance().frameBuffer().showMessage(message);

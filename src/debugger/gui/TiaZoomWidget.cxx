@@ -249,13 +249,13 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
   {
     case ContextMenu::kItemSelectedCmd:
     {
-      uInt32 ystart = instance().console().tia().ystart();
+      uInt32 startLine = instance().console().tia().startLine();
       const string& rmb = myMenu->getSelectedTag().toString();
 
       if(rmb == "scanline")
       {
         ostringstream command;
-        int lines = myClickY / myZoomLevel + myOffY + ystart - instance().console().tia().scanlines();
+        int lines = myClickY / myZoomLevel + myOffY + startLine - instance().console().tia().scanlines();
 
         if (lines < 0)
           lines += instance().console().tia().scanlinesLastFrame();
@@ -269,7 +269,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
       else if(rmb == "bp")
       {
         ostringstream command;
-        int scanline = myClickY / myZoomLevel + myOffY + ystart;
+        int scanline = myClickY / myZoomLevel + myOffY + startLine;
         command << "breakif _scan==#" << scanline;
         string message = instance().debugger().parser().run(command.str());
         instance().frameBuffer().showMessage(message);

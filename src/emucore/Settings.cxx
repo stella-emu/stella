@@ -553,7 +553,7 @@ void Settings::usage() const
     << "   -bc          <arg>          Same as using both -lc and -rc\n"
     << "   -cp          <arg>          Sets the 'Controller.SwapPaddles' property\n"
     << "   -format      <arg>          Sets the 'Display.Format' property\n"
-    << "   -ystart      <arg>          Sets the 'Display.YStart' property\n"
+    << "   -vcenter     <arg>          Sets the 'Display.vcenter' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
     << endl

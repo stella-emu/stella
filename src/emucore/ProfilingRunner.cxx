@@ -29,7 +29,6 @@
 #include "TIA.hxx"
 #include "ConsoleTiming.hxx"
 #include "FrameManager.hxx"
-#include "YStartDetector.hxx"
 #include "FrameLayoutDetector.hxx"
 #include "EmulationTiming.hxx"
 #include "ConsoleTiming.hxx"
@@ -159,20 +158,9 @@ bool ProfilingRunner::runOne(const ProfilingRun run)
 
   (cout << endl).flush();
 
-  YStartDetector ystartDetector;
-  tia.setFrameManager(&ystartDetector);
-  system.reset();
-
-  (cout << "detecting ystart... ").flush();
-  for (int i = 0; i < 80; i++) tia.update();
-
-  uInt32 yStart = ystartDetector.detectedYStart();
-  (cout << yStart << endl).flush();
-
   FrameManager frameManager;
   tia.setFrameManager(&frameManager);
   tia.setLayout(frameLayout);
-  tia.setYStart(yStart);
 
   system.reset();
 

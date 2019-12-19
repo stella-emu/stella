@@ -249,12 +249,13 @@ class TIA : public Device
     */
     uInt32 width() const  { return TIAConstants::H_PIXEL; }
     uInt32 height() const { return myFrameManager->height(); }
-    uInt32 ystart() const { return myFrameManager->ystart(); }
+    Int32 vcenter() const { return myFrameManager->vcenter(); }
+    uInt32 startLine() const { return myFrameManager->startLine(); }
 
     /**
-      Changes the current YStart property.
+      Changes the current vcenter property.
     */
-    void setYStart(uInt32 ystart) { myFrameManager->setYstart(ystart); }
+    void setVcenter(Int32 vcenter) { myFrameManager->setVcenter(vcenter); }
 
     void setLayout(FrameLayout layout) { myFrameManager->setLayout(layout); }
     FrameLayout frameLayout() const { return myFrameManager->layout(); }

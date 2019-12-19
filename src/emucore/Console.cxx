@@ -60,7 +60,6 @@
 #include "AudioSettings.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "frame-manager/FrameLayoutDetector.hxx"
-#include "frame-manager/YStartDetector.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
@@ -71,10 +70,6 @@
 
 #include "Console.hxx"
 
-namespace {
-  constexpr uInt8 YSTART_EXTRA = 2;
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
                  const Properties& props, AudioSettings& audioSettings)
@@ -84,8 +79,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myCart(std::move(cart)),
     myDisplayFormat(""),  // Unknown TV format @ start
     myCurrentFormat(0),   // Unknown format @ start,
-    myAutodetectedYstart(0),
-    myYStartAutodetected(false),
     myFormatAutodetected(false),
     myUserPaletteDefined(false),
     myConsoleTiming(ConsoleTiming::ntsc),
@@ -149,10 +142,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
       myCurrentFormat = 0;
       myFormatAutodetected = true;
     }
-  }
-
-  if (atoi(myProperties.get(PropType::Display_VCenter).c_str()) == 0) {
-    autodetectYStart();
   }
 
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
@@ -265,49 +254,6 @@ void Console::redetectFrameLayout()
   save(s);
 
   autodetectFrameLayout(false);
-  if (myYStartAutodetected) autodetectYStart();
-
-  load(s);
-  initializeAudio();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::autodetectYStart(bool reset)
-{
-  // We turn off the SuperCharger progress bars, otherwise the SC BIOS
-  // will take over 250 frames!
-  // The 'fastscbios' option must be changed before the system is reset
-  bool fastscbios = myOSystem.settings().getBool("fastscbios");
-  myOSystem.settings().setValue("fastscbios", true);
-
-  YStartDetector ystartDetector;
-  ystartDetector.setLayout(myDisplayFormat == "PAL" ? FrameLayout::pal : FrameLayout::ntsc);
-  myTIA->setFrameManager(&ystartDetector);
-
-  if (reset) {
-    mySystem->reset(true);
-    myRiot->update();
-  }
-
-  for (int i = 0; i < 80; i++) myTIA->update();
-
-  myTIA->setFrameManager(myFrameManager.get());
-
-  myAutodetectedYstart = ystartDetector.detectedYStart() - YSTART_EXTRA;
-
-  // Don't forget to reset the SC progress bars again
-  myOSystem.settings().setValue("fastscbios", fastscbios);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::redetectYStart()
-{
-  Serializer s;
-
-  myOSystem.sound().close();
-  save(s);
-
-  autodetectYStart(false);
 
   load(s);
   initializeAudio();
@@ -696,75 +642,57 @@ void Console::fry() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeVerticalCenter(int direction)
 {
-  uInt32 ystart = myTIA->ystart();
+  Int32 vcenter = myTIA->vcenter();
 
-  if(direction == +1)       // increase YStart
+  if(direction == +1)       // increase vcenter
   {
-    if(ystart >= TIAConstants::maxYStart)
+    if(vcenter >= TIAConstants::maxVcenter)
     {
       myOSystem.frameBuffer().showMessage("V-Center at minimum");
       return;
     }
 
-    ++ystart;
-    myYStartAutodetected = false;
+    ++vcenter;
   }
-  else if(direction == -1)  // decrease YStart
+  else if(direction == -1)  // decrease vcenter
   {
-    if (ystart <= TIAConstants::minYStart)
+    if (vcenter <= TIAConstants::minVcenter)
     {
       myOSystem.frameBuffer().showMessage("V-Center at maximum");
       return;
     }
 
-    --ystart;
-    myYStartAutodetected = false;
+    --vcenter;
   }
   else
     return;
 
   ostringstream ss;
-  ss << ystart;
+  ss << vcenter;
 
   myProperties.set(PropType::Display_VCenter, ss.str());
-  if (ystart != myTIA->ystart()) myTIA->setYStart(ystart);
+  if (vcenter != myTIA->vcenter()) myTIA->setVcenter(vcenter);
 
-  // use vertical center instead of y-start for display
-  int vCenter = TIAConstants::defaultYStart - ystart;
   ss.str("");
-  ss << "V-Center " << vCenter;
+  ss << "V-Center " << vcenter;
 
   myOSystem.frameBuffer().showMessage(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::updateYStart(uInt32 ystart)
+void Console::updateVcenter(Int32 vcenter)
 {
-  if (ystart > TIAConstants::maxYStart) return;
+  if (vcenter > TIAConstants::maxVcenter | vcenter < TIAConstants::minVcenter) return;
 
-  if (ystart == 0) {
-    if (myYStartAutodetected) return;
-
-    redetectYStart();
-    myYStartAutodetected = true;
-    ystart = myAutodetectedYstart;
-  } else
-    myYStartAutodetected = false;
-
-  if (ystart != myTIA->ystart()) myTIA->setYStart(ystart);
+  if (vcenter != myTIA->vcenter()) myTIA->setVcenter(vcenter);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setTIAProperties()
 {
-  // FIXME - ystart is probably disappearing soon, or at least autodetection is
-  uInt32 ystart = atoi(myProperties.get(PropType::Display_VCenter).c_str());
-  if(ystart != 0)
-    ystart = BSPF::clamp(ystart, 0u, TIAConstants::maxYStart);
-  else {
-    ystart = myAutodetectedYstart;
-    myYStartAutodetected = true;
-  }
+  Int32 vcenter = BSPF::clamp(
+    static_cast<Int32>(atoi(myProperties.get(PropType::Display_VCenter).c_str())), TIAConstants::minVcenter, TIAConstants::maxVcenter
+  );
 
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
      myDisplayFormat == "SECAM60")
@@ -778,7 +706,7 @@ void Console::setTIAProperties()
     myTIA->setLayout(FrameLayout::pal);
   }
 
-  myTIA->setYStart(ystart);
+  myTIA->setVcenter(vcenter);
 
   myEmulationTiming.updateFrameLayout(myTIA->frameLayout());
   myEmulationTiming.updateConsoleTiming(myConsoleTiming);
