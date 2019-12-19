@@ -638,9 +638,7 @@
 		DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */; };
 		E007231E210FBF5E002CF343 /* FpsMeter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E007231C210FBF5C002CF343 /* FpsMeter.hxx */; };
 		E007231F210FBF5E002CF343 /* FpsMeter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E007231D210FBF5D002CF343 /* FpsMeter.cxx */; };
-		E0306E0C1F93E916003DDD52 /* YStartDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0306E061F93E915003DDD52 /* YStartDetector.cxx */; };
 		E0306E0D1F93E916003DDD52 /* FrameLayoutDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0306E071F93E915003DDD52 /* FrameLayoutDetector.hxx */; };
-		E0306E0E1F93E916003DDD52 /* YStartDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0306E081F93E915003DDD52 /* YStartDetector.hxx */; };
 		E0306E0F1F93E916003DDD52 /* JitterEmulation.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0306E091F93E915003DDD52 /* JitterEmulation.cxx */; };
 		E0306E101F93E916003DDD52 /* FrameLayoutDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = E0306E0A1F93E916003DDD52 /* FrameLayoutDetector.cxx */; };
 		E0306E111F93E916003DDD52 /* JitterEmulation.hxx in Headers */ = {isa = PBXBuildFile; fileRef = E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */; };
@@ -1376,9 +1374,7 @@
 		DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ComboDialog.hxx; sourceTree = "<group>"; };
 		E007231C210FBF5C002CF343 /* FpsMeter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FpsMeter.hxx; sourceTree = "<group>"; };
 		E007231D210FBF5D002CF343 /* FpsMeter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FpsMeter.cxx; sourceTree = "<group>"; };
-		E0306E061F93E915003DDD52 /* YStartDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YStartDetector.cxx; sourceTree = "<group>"; };
 		E0306E071F93E915003DDD52 /* FrameLayoutDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FrameLayoutDetector.hxx; sourceTree = "<group>"; };
-		E0306E081F93E915003DDD52 /* YStartDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = YStartDetector.hxx; sourceTree = "<group>"; };
 		E0306E091F93E915003DDD52 /* JitterEmulation.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JitterEmulation.cxx; sourceTree = "<group>"; };
 		E0306E0A1F93E916003DDD52 /* FrameLayoutDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameLayoutDetector.cxx; sourceTree = "<group>"; };
 		E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JitterEmulation.hxx; sourceTree = "<group>"; };
@@ -2319,8 +2315,6 @@
 				DCCA26B21FA64D5E000EE4D8 /* FrameManager.hxx */,
 				E0306E091F93E915003DDD52 /* JitterEmulation.cxx */,
 				E0306E0B1F93E916003DDD52 /* JitterEmulation.hxx */,
-				E0306E061F93E915003DDD52 /* YStartDetector.cxx */,
-				E0306E081F93E915003DDD52 /* YStartDetector.hxx */,
 			);
 			path = "frame-manager";
 			sourceTree = "<group>";
@@ -2676,7 +2670,6 @@
 				DCAACB13188D636F00A4D282 /* CartBFWidget.hxx in Headers */,
 				DCAACB15188D636F00A4D282 /* CartDFSCWidget.hxx in Headers */,
 				DC44019F1F1A5D01008C08F6 /* ColorWidget.hxx in Headers */,
-				E0306E0E1F93E916003DDD52 /* YStartDetector.hxx in Headers */,
 				DC96162D1F817830008A2206 /* AmigaMouseWidget.hxx in Headers */,
 				DCAACB17188D636F00A4D282 /* CartDFWidget.hxx in Headers */,
 				DCF3A6FF1DFC75E3008A8AF3 /* TIA.hxx in Headers */,
@@ -3031,7 +3024,6 @@
 				DCF3A6F31DFC75E3008A8AF3 /* LatchedInput.cxx in Sources */,
 				DC67270B1556F4860023653B /* CartCTY.cxx in Sources */,
 				DCE395F016CB0B5F008DB1E5 /* FSNodeZIP.cxx in Sources */,
-				E0306E0C1F93E916003DDD52 /* YStartDetector.cxx in Sources */,
 				DCE395F216CB0B5F008DB1E5 /* ZipHandler.cxx in Sources */,
 				DCAAE5D31715887B0080BB82 /* Cart2KWidget.cxx in Sources */,
 				DCAAE5D51715887B0080BB82 /* Cart3FWidget.cxx in Sources */,
