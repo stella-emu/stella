@@ -47,8 +47,12 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
   : myFB(buffer),
     myInterpolationMode(interpolation),
     mySurface(nullptr),
+    mySrcR({0, 0, 0, 0}),
+    myDstR({0, 0, 0, 0}),
     myIsVisible(true),
-    myIsStatic(false)
+    myIsStatic(false),
+    mySrcGUIR({0, 0, 0, 0}),
+    myDstGUIR({0, 0, 0, 0})
 {
   createSurface(width, height, data);
 }
