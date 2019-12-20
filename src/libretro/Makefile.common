@@ -123,7 +123,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/tia/frame-manager/FrameLayoutDetector.cxx \
 	$(CORE_DIR)/emucore/tia/frame-manager/FrameManager.cxx \
 	$(CORE_DIR)/emucore/tia/frame-manager/JitterEmulation.cxx \
-	$(CORE_DIR)/emucore/tia/frame-manager/YStartDetector.cxx \
 	$(CORE_DIR)/emucore/tia/LatchedInput.cxx \
 	$(CORE_DIR)/emucore/tia/Missile.cxx \
 	$(CORE_DIR)/emucore/tia/PaddleReader.cxx \
