@@ -202,7 +202,6 @@
     <ClCompile Include="..\emucore\tia\frame-manager\FrameLayoutDetector.cxx" />
     <ClCompile Include="..\emucore\tia\frame-manager\FrameManager.cxx" />
     <ClCompile Include="..\emucore\tia\frame-manager\JitterEmulation.cxx" />
-    <ClCompile Include="..\emucore\tia\frame-manager\YStartDetector.cxx" />
     <ClCompile Include="..\emucore\tia\LatchedInput.cxx" />
     <ClCompile Include="..\emucore\tia\Missile.cxx" />
     <ClCompile Include="..\emucore\tia\PaddleReader.cxx" />
@@ -340,7 +339,6 @@
     <ClInclude Include="..\emucore\tia\frame-manager\FrameLayoutDetector.hxx" />
     <ClInclude Include="..\emucore\tia\frame-manager\FrameManager.hxx" />
     <ClInclude Include="..\emucore\tia\frame-manager\JitterEmulation.hxx" />
-    <ClInclude Include="..\emucore\tia\frame-manager\YStartDetector.hxx" />
     <ClInclude Include="..\emucore\tia\FrameLayout.hxx" />
     <ClInclude Include="..\emucore\tia\LatchedInput.hxx" />
     <ClInclude Include="..\emucore\tia\Missile.hxx" />
