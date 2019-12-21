@@ -587,7 +587,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     CMDLINE_PROPS_UPDATE("rd", PropType::Console_RightDiff);
     CMDLINE_PROPS_UPDATE("tv", PropType::Console_TVType);
     CMDLINE_PROPS_UPDATE("format", PropType::Display_Format);
-    CMDLINE_PROPS_UPDATE("vcenter", PropType::Display_VCenter); // TODO (SA): change option
+    CMDLINE_PROPS_UPDATE("vcenter", PropType::Display_VCenter);
     CMDLINE_PROPS_UPDATE("pp", PropType::Display_Phosphor);
     CMDLINE_PROPS_UPDATE("ppblend", PropType::Display_PPBlend);
 
