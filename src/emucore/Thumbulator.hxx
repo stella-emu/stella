@@ -180,7 +180,6 @@ class Thumbulator
 
     void dump_counters();
     void dump_regs();
-    void dump_ram();
 #endif
     int execute();
     int reset();

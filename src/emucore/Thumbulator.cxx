@@ -134,7 +134,6 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* ms
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << Base::HEX8 << v1 << "), " << msg << endl;
   dump_regs();
-  dump_ram();
   if(trapOnFatal)
     throw runtime_error(statusMsg.str());
   return 0;
@@ -147,8 +146,7 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << Base::HEX8 << v1 << "," << v2 << "), " << msg << endl;
   dump_regs();
-  dump_ram();
-  if(trapOnFatal)
+    if(trapOnFatal)
     throw runtime_error(statusMsg.str());
   return 0;
 }
@@ -167,9 +165,9 @@ void Thumbulator::dump_counters()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::dump_regs()
 {
-  for (int cnt = 0; cnt < 14; cnt++)
+  for (int cnt = 0; cnt <= 12; cnt++)
   {
-    statusMsg << "R" << cnt << " = " << Base::HEX8 << reg_norm[cnt-1] << "  ";
+    statusMsg << "R" << cnt << " = " << Base::HEX8 << reg_norm[cnt] << "  ";
     if((cnt + 1) % 4 == 0)
       statusMsg << endl;
   }
@@ -178,25 +176,6 @@ void Thumbulator::dump_regs()
             << "LR = " << Base::HEX8 << reg_norm[14] << "  "
             << "PC = " << Base::HEX8 << reg_norm[15] << "  "
             << endl;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Thumbulator::dump_ram()
-{
-  statusMsg << endl << "RAM:" << endl;
-
-  // TODO: display more than the first 0.5K
-  for (int addr = 0; addr < 0x200; addr++)
-  {
-    if (addr % 16 == 0)
-      statusMsg << Base::HEX4 << addr << ": ";
-    statusMsg << Base::HEX4 << CONV_RAMROM(ram[addr]) << " ";
-    if ((addr + 1) % 16 == 0)
-      statusMsg << endl;
-    else if ((addr + 1) % 8 == 0)
-      statusMsg << " ";
-  }
-  statusMsg << Base::HEX4 << 0x200 << ": ...";
 }
 #endif
 
