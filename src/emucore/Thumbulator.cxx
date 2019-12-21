@@ -165,7 +165,7 @@ void Thumbulator::dump_counters()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::dump_regs()
 {
-  for (int cnt = 1; cnt < 14; cnt++)
+  for (int cnt = 0; cnt < 14; cnt++)
   {
     statusMsg << "R" << cnt << " = " << Base::HEX8 << reg_norm[cnt-1] << "  ";
     if(cnt % 4 == 0) statusMsg << endl;
