@@ -56,8 +56,7 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::addText(const GUI::Font& font, const StringList& text)
 {
-  const int lineHeight = font.getLineHeight(),
-            fontWidth  = font.getMaxCharWidth(),
+  const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight();
   int xpos, ypos;
 
@@ -66,7 +65,7 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
   for(const auto& s: text)
     str_w = std::max(int(s.length()), str_w);
   _w = std::min(str_w * fontWidth + 20, _w);
-  _h = std::min(uInt32((text.size() + 2) * lineHeight + 20 + _th), uInt32(_h));
+  _h = std::min(uInt32((text.size() + 2) * fontHeight + 20 + _th), uInt32(_h));
 
   xpos = 10;  ypos = 10 + _th;
   for(const auto& s: text)
