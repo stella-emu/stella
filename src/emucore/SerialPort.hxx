@@ -39,10 +39,11 @@ class SerialPort
       @param device  The name of the port
       @return  False on any errors, else true
     */
-    virtual bool openPort(const string& device) { return false; }
+    virtual bool openPort(const string& device) = 0;
 
     /**
       Read a byte from the serial port.
+      NOTE: This is for potential future use; no class currently uses this.
 
       @param data  Destination for the byte read from the port
       @return  True if a byte was read, else false
@@ -55,13 +56,7 @@ class SerialPort
       @param data  The byte to write to the port
       @return  True if a byte was written, else false
     */
-    virtual bool writeByte(uInt8 data) { return false; }
-
-  private:
-    /**
-      Close a previously opened serial port.
-    */
-    virtual void closePort() { }
+    virtual bool writeByte(uInt8 data) = 0;
 
   private:
     // Following constructors and assignment operators not supported

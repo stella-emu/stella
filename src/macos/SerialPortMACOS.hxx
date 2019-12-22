@@ -41,11 +41,6 @@ class SerialPortMACOS : public SerialPort
     bool openPort(const string& device) override;
 
     /**
-      Close a previously opened serial port.
-    */
-    void closePort() override;
-
-    /**
       Write a byte to the serial port.
 
       @param data  The byte to write to the port

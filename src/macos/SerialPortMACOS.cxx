@@ -37,7 +37,11 @@ SerialPortMACOS::SerialPortMACOS()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortMACOS::~SerialPortMACOS()
 {
-  closePort();
+  if(myHandle)
+  {
+    close(myHandle);
+    myHandle = 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,16 +62,6 @@ bool SerialPortMACOS::openPort(const string& device)
   tcsetattr(myHandle, TCSANOW, &termios);
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SerialPortMACOS::closePort()
-{
-  if(myHandle)
-  {
-    close(myHandle);
-    myHandle = 0;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
