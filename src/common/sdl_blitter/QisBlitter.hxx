@@ -41,8 +41,6 @@ class QisBlitter : public Blitter {
 
     virtual void blit(SDL_Surface& surface) override;
 
-    virtual void free() override;
-
   private:
 
     SDL_Texture* mySrcTexture;
@@ -61,6 +59,8 @@ class QisBlitter : public Blitter {
     FrameBufferSDL2& myFB;
 
   private:
+
+    void free();
 
     void recreateTexturesIfNecessary();
 

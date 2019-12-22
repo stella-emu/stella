@@ -39,8 +39,6 @@ class BilinearBlitter : public Blitter {
 
     virtual void blit(SDL_Surface& surface) override;
 
-    virtual void free() override;
-
   private:
 
     SDL_Texture* myTexture;
@@ -57,6 +55,8 @@ class BilinearBlitter : public Blitter {
     FrameBufferSDL2& myFB;
 
   private:
+
+    void free();
 
     void recreateTexturesIfNecessary();
 

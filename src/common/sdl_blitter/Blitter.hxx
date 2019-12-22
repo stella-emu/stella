@@ -37,8 +37,6 @@ class Blitter {
 
     virtual void blit(SDL_Surface& surface) = 0;
 
-    virtual void free() = 0;
-
   protected:
 
     Blitter() = default;

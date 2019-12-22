@@ -66,6 +66,23 @@ class FBSurfaceSDL2 : public FBSurface
     void applyAttributes() override;
 
   private:
+    inline void setSrcPosInternal(uInt32 x, uInt32 y) {
+      mySrcR.x = x;  mySrcR.y = y;
+      mySrcGUIR.moveTo(x, y);
+    }
+    inline void setSrcSizeInternal(uInt32 w, uInt32 h) {
+      mySrcR.w = w;  mySrcR.h = h;
+      mySrcGUIR.setWidth(w);  mySrcGUIR.setHeight(h);
+    }
+    inline void setDstPosInternal(uInt32 x, uInt32 y) {
+      myDstR.x = x;  myDstR.y = y;
+      myDstGUIR.moveTo(x, y);
+    }
+    inline void setDstSizeInternal(uInt32 w, uInt32 h) {
+      myDstR.w = w;  myDstR.h = h;
+      myDstGUIR.setWidth(w);  myDstGUIR.setHeight(h);
+    }
+
     void createSurface(uInt32 width, uInt32 height, const uInt32* data);
 
     void reinitializeBlitter();
