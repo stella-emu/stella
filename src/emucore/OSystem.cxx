@@ -78,7 +78,6 @@ namespace {
 OSystem::OSystem()
   : myLauncherUsed(false),
     myQuitLoop(false),
-    mySettingsLoaded(false),
     myFpsMeter(FPS_METER_QUEUE_SIZE)
 {
   // Get built-in features
@@ -103,7 +102,6 @@ OSystem::OSystem()
 
   // Get build info
   ostringstream info;
-
   info << "Build " << STELLA_BUILD << ", using " << MediaFactory::backendName()
        << " [" << BSPF::ARCH << "]";
   myBuildInfo = info.str();
@@ -112,15 +110,12 @@ OSystem::OSystem()
 
   myPropSet = make_unique<PropertiesSet>();
 
-  Logger::instance().setLogCallback(
-    std::bind(&OSystem::logMessage, this, std::placeholders::_1, std::placeholders::_2)
-  );
+  Logger::instance().setLogParameters(Logger::Level::MAX, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::~OSystem()
 {
-  Logger::instance().clearLogCallback();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -232,9 +227,11 @@ void OSystem::loadConfig(const Settings::Options& options)
 
   mySettings->setRepository(createSettingsRepository());
 
-  Logger::debug("Loading config options ...");
   mySettings->load(options);
-  mySettingsLoaded = true;
+
+  Logger::instance().setLogParameters(mySettings->getInt("loglevel"),
+                                      mySettings->getBool("logtoconsole"));
+  Logger::debug("Loading config options ...");
 
   // Get updated paths for all configuration files
   setConfigPaths();
@@ -503,22 +500,6 @@ string OSystem::getROMInfo(const FilesystemNode& romfile)
   }
 
   return getROMInfo(*console);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::logMessage(const string& message, Logger::Level level)
-{
-  if(level == Logger::Level::ERR)
-  {
-    cout << message << endl << std::flush;
-    myLogMessages += message + "\n";
-  }
-  else if(int(level) <= uInt8(mySettings->getInt("loglevel")) || !mySettingsLoaded)
-  {
-    if(mySettings->getBool("logtoconsole"))
-      cout << message << endl << std::flush;
-    myLogMessages += message + "\n";
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -49,23 +49,34 @@ void Logger::debug(const string& message)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::logMessage(const string& message, Level level) const
+void Logger::logMessage(const string& message, Level level)
 {
-  if (myLogCallback)
-    myLogCallback(message, level);
-
-  else
+  if(level == Logger::Level::ERR)
+  {
     cout << message << endl << std::flush;
+    myLogMessages += message + "\n";
+  }
+  else if(static_cast<int>(level) <= myLogLevel)
+  {
+    if(myLogToConsole)
+      cout << message << endl << std::flush;
+    myLogMessages += message + "\n";
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::setLogCallback(Logger::logCallback callback)
+void Logger::setLogParameters(int logLevel, bool logToConsole)
 {
-  myLogCallback = callback;
+  if(logLevel >= static_cast<int>(Level::MIN) &&
+     logLevel <= static_cast<int>(Level::MAX))
+  {
+    myLogLevel = logLevel;
+    myLogToConsole = logToConsole;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Logger::clearLogCallback()
+void Logger::setLogParameters(Level logLevel, bool logToConsole)
 {
-  myLogCallback = logCallback();
+  setLogParameters(static_cast<int>(logLevel), logToConsole);
 }

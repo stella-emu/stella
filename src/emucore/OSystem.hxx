@@ -376,13 +376,6 @@ class OSystem
     void quit() { myQuitLoop = true; }
 
     /**
-      Get the system messages logged up to this point.
-
-      @return The list of log messages
-    */
-    const string& logMessages() const { return myLogMessages; }
-
-    /**
       Reset FPS measurement.
     */
     void resetFps();
@@ -423,16 +416,6 @@ class OSystem
   protected:
 
     virtual shared_ptr<KeyValueRepository> createSettingsRepository();
-
-    /**
-      Append a message to the internal log
-      (a newline is automatically added).
-
-      @param message  The message to be appended
-      @param level    If 0, always output the message, only append when
-                      level is less than or equal to that in 'loglevel'
-    */
-    void logMessage(const string& message, Logger::Level level);
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and *must* be
@@ -518,9 +501,6 @@ class OSystem
     // Pointer to the TimerManager object
     unique_ptr<TimerManager> myTimerManager;
 
-    // The list of log messages
-    string myLogMessages;
-
     // Indicates whether ROM launcher was ever opened during this run
     bool myLauncherUsed;
 
@@ -535,8 +515,6 @@ class OSystem
     string myNVRamDir;
     string myDefaultSaveDir;
     string myDefaultLoadDir;
-
-    bool mySettingsLoaded;
 
     string myCheatFile;
     string myConfigFile;

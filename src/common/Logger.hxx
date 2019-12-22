@@ -34,8 +34,6 @@ class Logger {
       MAX = DEBUG
     };
 
-    using logCallback = std::function<void(const string&, Logger::Level)>;
-
   public:
 
     static Logger& instance();
@@ -48,21 +46,23 @@ class Logger {
 
     static void debug(const string& message);
 
-    void setLogCallback(logCallback callback);
+    void setLogParameters(int logLevel, bool logToConsole);
+    void setLogParameters(Level logLevel, bool logToConsole);
 
-    void clearLogCallback();
+    const string& logMessages() const { return myLogMessages; }
 
   protected:
-
-    Logger() = default;
-
-  private:
-
-    logCallback myLogCallback;
+    Logger() { setLogParameters(Level::MAX, true); }
 
   private:
+    int myLogLevel;
+    bool myLogToConsole;
 
-    void logMessage(const string& message, Level level) const;
+    // The list of log messages
+    string myLogMessages;
+
+  private:
+    void logMessage(const string& message, Level level);
 
     Logger(const Logger&) = delete;
     Logger(Logger&&) = delete;
