@@ -17,6 +17,7 @@
 
 #include "FBSurfaceSDL2.hxx"
 
+#include "Logger.hxx"
 #include "ThreadDebugging.hxx"
 #include "sdl_blitter/BlitterFactory.hxx"
 
@@ -43,7 +44,7 @@ namespace {
 FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
                              uInt32 width, uInt32 height,
                              FrameBuffer::ScalingInterpolation interpolation,
-                             const uInt32* data)
+                             const uInt32* staticData)
   : myFB(buffer),
     myInterpolationMode(interpolation),
     mySurface(nullptr),
@@ -54,7 +55,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
     mySrcGUIR({0, 0, 0, 0}),
     myDstGUIR({0, 0, 0, 0})
 {
-  createSurface(width, height, data);
+  createSurface(width, height, staticData);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,8 +68,6 @@ FBSurfaceSDL2::~FBSurfaceSDL2()
     SDL_FreeSurface(mySurface);
     mySurface = nullptr;
   }
-
-  free();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,37 +111,41 @@ const Common::Rect& FBSurfaceSDL2::dstRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setSrcPos(uInt32 x, uInt32 y)
 {
-  mySrcR.x = x;  mySrcR.y = y;
-  mySrcGUIR.moveTo(x, y);
-
-  reinitializeBlitter();
+  if(x != static_cast<uInt32>(mySrcR.x) || y != static_cast<uInt32>(mySrcR.y))
+  {
+    setSrcPosInternal(x, y);
+    reinitializeBlitter();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setSrcSize(uInt32 w, uInt32 h)
 {
-  mySrcR.w = w;  mySrcR.h = h;
-  mySrcGUIR.setWidth(w);  mySrcGUIR.setHeight(h);
-
-  reinitializeBlitter();
+  if(w != static_cast<uInt32>(mySrcR.w) || h != static_cast<uInt32>(mySrcR.h))
+  {
+    setSrcSizeInternal(w, h);
+    reinitializeBlitter();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setDstPos(uInt32 x, uInt32 y)
 {
-  myDstR.x = x;  myDstR.y = y;
-  myDstGUIR.moveTo(x, y);
-
-  reinitializeBlitter();
+  if(x != static_cast<uInt32>(myDstR.x) || y != static_cast<uInt32>(myDstR.y))
+  {
+    setDstPosInternal(x, y);
+    reinitializeBlitter();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::setDstSize(uInt32 w, uInt32 h)
 {
-  myDstR.w = w;  myDstR.h = h;
-  myDstGUIR.setWidth(w);  myDstGUIR.setHeight(h);
-
-  reinitializeBlitter();
+  if(w != static_cast<uInt32>(myDstR.w) || h != static_cast<uInt32>(myDstR.h))
+  {
+    setDstSizeInternal(w, h);
+    reinitializeBlitter();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,7 +186,7 @@ void FBSurfaceSDL2::invalidate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::free()
 {
-  myBlitter.reset(nullptr);
+  myBlitter.reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,6 +206,11 @@ void FBSurfaceSDL2::resize(uInt32 width, uInt32 height)
 
   free();
 
+  // NOTE: Currently, a resize changes a 'static' surface to 'streaming'
+  //       No code currently does this, but we should at least check for it
+  if(myIsStatic)
+    Logger::error("Resizing static texture!");
+
   createSurface(width, height, nullptr);
 }
 
@@ -220,10 +228,10 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 
   // We start out with the src and dst rectangles containing the same
   // dimensions, indicating no scaling or re-positioning
-  setSrcPos(0, 0);
-  setDstPos(0, 0);
-  setSrcSize(width, height);
-  setDstSize(width, height);
+  setSrcPosInternal(0, 0);
+  setDstPosInternal(0, 0);
+  setSrcSizeInternal(width, height);
+  setDstSizeInternal(width, height);
 
   ////////////////////////////////////////////////////
   // These *must* be set for the parent class
@@ -231,11 +239,9 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
   myPitch = mySurface->pitch / pf.BytesPerPixel;
   ////////////////////////////////////////////////////
 
-  if(data)
-  {
-    myIsStatic = true;
+  myIsStatic = data != nullptr;
+  if(myIsStatic)
     SDL_memcpy(mySurface->pixels, data, mySurface->w * mySurface->h * 4);
-  }
 
   reinitializeBlitter();
 }
@@ -243,9 +249,11 @@ void FBSurfaceSDL2::createSurface(uInt32 width, uInt32 height,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSDL2::reinitializeBlitter()
 {
-  if (!myBlitter && myFB.isInitialized()) myBlitter = BlitterFactory::createBlitter(myFB, scalingAlgorithm(myInterpolationMode));
+  if (!myBlitter && myFB.isInitialized())
+    myBlitter = BlitterFactory::createBlitter(myFB, scalingAlgorithm(myInterpolationMode));
 
-  if (myBlitter) myBlitter->reinitialize(mySrcR, myDstR, myAttributes, myIsStatic ? mySurface : nullptr);
+  if (myBlitter)
+    myBlitter->reinitialize(mySrcR, myDstR, myAttributes, myIsStatic ? mySurface : nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
