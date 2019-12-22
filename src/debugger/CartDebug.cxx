@@ -52,11 +52,11 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 {
   // Add case sensitive compare for user labels
   // TODO - should user labels be case insensitive too?
-  auto usrCmp = [](const string& a, const string& b) { return a < b; };
+  const auto usrCmp = [](const string& a, const string& b) { return a < b; };
   myUserAddresses = LabelToAddr(usrCmp);
 
   // Add case insensitive compare for system labels
-  auto sysCmp = [](const string& a, const string& b) {
+  const auto sysCmp = [](const string& a, const string& b) {
       return BSPF::compareIgnoreCase(a, b) < 0;
   };
   mySystemAddresses = LabelToAddr(sysCmp);

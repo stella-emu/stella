@@ -36,7 +36,11 @@ SerialPortUNIX::SerialPortUNIX()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortUNIX::~SerialPortUNIX()
 {
-  closePort();
+  if(myHandle)
+  {
+    close(myHandle);
+    myHandle = 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,16 +60,6 @@ bool SerialPortUNIX::openPort(const string& device)
   tcsetattr(myHandle, TCSANOW, &termios);
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SerialPortUNIX::closePort()
-{
-  if(myHandle)
-  {
-    close(myHandle);
-    myHandle = 0;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

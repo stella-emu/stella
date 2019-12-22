@@ -68,7 +68,6 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
     _max_h(0)
 {
   setTitle(title);
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,8 +156,6 @@ void Dialog::setTitle(const string& title)
   else
     _th = _font.getLineHeight() + 4;
   _h += _th;
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

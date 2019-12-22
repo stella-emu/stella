@@ -29,7 +29,11 @@ SerialPortWINDOWS::SerialPortWINDOWS()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortWINDOWS::~SerialPortWINDOWS()
 {
-  closePort();
+  if(myHandle)
+  {
+    CloseHandle(myHandle);
+    myHandle = 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,16 +67,6 @@ bool SerialPortWINDOWS::openPort(const string& device)
       return false;
   }
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SerialPortWINDOWS::closePort()
-{
-  if(myHandle)
-  {
-    CloseHandle(myHandle);
-    myHandle = 0;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
