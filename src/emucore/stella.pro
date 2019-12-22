@@ -20869,3 +20869,10 @@
 "Cart.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
+"Cart.MD5" "d214c7a734e133a5c18e93229435b57a"
+"Cart.Manufacturer" "Digivision"
+"Cart.Name" "Mickey"
+"Cart.Note" "AKA Sorcerer's Apprentice"
+"Cart.Type" "UASW"
+""
+
