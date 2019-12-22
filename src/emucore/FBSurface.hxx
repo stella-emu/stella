@@ -351,12 +351,6 @@ class FBSurface
 
   protected:
     /**
-      This method must be called to indicate that the surface has been
-      modified, and should be redrawn at the next interval.
-    */
-    virtual void setDirty() = 0;
-
-    /**
       This method should be called to check if the given coordinates
       are in bounds of the surface.
 

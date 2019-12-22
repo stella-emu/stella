@@ -37,7 +37,6 @@ class FBSurfaceLIBRETRO : public FBSurface
 
     // Most of the surface drawing primitives are implemented in FBSurface;
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color) override { }
-    void setDirty() override { }
 
     uInt32 width() const override { return myWidth; }
     uInt32 height() const override { return myHeight; }

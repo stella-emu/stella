@@ -41,8 +41,6 @@ class FBSurfaceSDL2 : public FBSurface
     // the ones implemented here use SDL-specific code for extra performance
     //
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, ColorId color) override;
-    // With hardware surfaces, it's faster to just update the entire surface
-    void setDirty() override {}
 
     uInt32 width() const override;
     uInt32 height() const override;
