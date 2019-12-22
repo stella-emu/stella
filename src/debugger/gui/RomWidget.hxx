@@ -52,7 +52,7 @@ class RomWidget : public Widget, public CommandSender
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);
     void patchROM(int disasm_line, const string& bytes,
-                  Common::Base::Format base);
+                  Common::Base::Fmt base);
 
   private:
     RomListWidget*   myRomList;

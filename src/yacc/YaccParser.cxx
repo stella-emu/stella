@@ -113,21 +113,21 @@ inline bool is_operator(char x)
 int const_to_int(char* ch)
 {
   // what base is the input in?
-  Common::Base::Format format = Common::Base::format();
+  Common::Base::Fmt format = Common::Base::format();
 
   switch(*ch) {
     case '\\':
-      format = Common::Base::F_2;
+      format = Common::Base::Fmt::_2;
       ch++;
       break;
 
     case '#':
-      format = Common::Base::F_10;
+      format = Common::Base::Fmt::_10;
       ch++;
       break;
 
     case '$':
-      format = Common::Base::F_16;
+      format = Common::Base::Fmt::_16;
       ch++;
       break;
 
@@ -137,7 +137,7 @@ int const_to_int(char* ch)
 
   int ret = 0;
   switch(format) {
-    case Common::Base::F_2:
+    case Common::Base::Fmt::_2:
       while(*ch) {
         if(*ch != '0' && *ch != '1')
           return -1;
@@ -147,7 +147,7 @@ int const_to_int(char* ch)
       }
       return ret;
 
-    case Common::Base::F_10:
+    case Common::Base::Fmt::_10:
       while(*ch) {
         if(!isdigit(*ch))
           return -1;
@@ -157,7 +157,7 @@ int const_to_int(char* ch)
       }
       return ret;
 
-    case Common::Base::F_16:
+    case Common::Base::Fmt::_16:
       while(*ch) { // FIXME: error check!
         if(!isxdigit(*ch))
           return -1;

@@ -63,24 +63,24 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 
   myDatastreamPointers = new DataGridWidget(boss, _nfont, DS_X,
                                             ypos+myLineHeight, 4, 8, 6, 32,
-                                            Common::Base::F_16_3_2);
+                                            Common::Base::Fmt::_16_3_2);
   myDatastreamPointers->setTarget(this);
   myDatastreamPointers->setEditable(false);
 
   myCommandStreamPointer = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 3 / 4,
                                               ypos+myLineHeight + 8*myLineHeight, 1, 1, 6, 32,
-                                              Common::Base::F_16_3_2);
+                                              Common::Base::Fmt::_16_3_2);
   myCommandStreamPointer->setTarget(this);
   myCommandStreamPointer->setEditable(false);
 
   if (isCDFJ())
     myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 2 / 4,
                                               ypos+myLineHeight + 9*myLineHeight, 2, 1, 6, 32,
-                                              Common::Base::F_16_3_2);
+                                              Common::Base::Fmt::_16_3_2);
   else
     myJumpStreamPointers = new DataGridWidget(boss, _nfont, DS_X  + myDatastreamPointers->getWidth() * 3 / 4,
                                               ypos+myLineHeight + 9*myLineHeight, 1, 1, 6, 32,
-                                              Common::Base::F_16_3_2);
+                                              Common::Base::Fmt::_16_3_2);
   myJumpStreamPointers->setTarget(this);
   myJumpStreamPointers->setEditable(false);
 
@@ -91,7 +91,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
     new StaticTextWidget(_boss, _font, DS_X - _font.getStringWidth("xx "),
                          ypos+myLineHeight + row*myLineHeight + 2, "   ");
     myDatastreamLabels[row]->setLabel(Common::Base::toString(row * 4,
-                                      Common::Base::F_16_2));
+                                      Common::Base::Fmt::_16_2));
   }
   lwidth = _font.getStringWidth("Jump Data (21|22)");
   myDatastreamLabels[8] =
@@ -110,19 +110,19 @@ CartridgeCDFWidget::CartridgeCDFWidget(
 
   myDatastreamIncrements = new DataGridWidget(boss, _nfont, xpos,
                                               ypos+myLineHeight, 4, 8, 5, 32,
-                                              Common::Base::F_16_2_2);
+                                              Common::Base::Fmt::_16_2_2);
   myDatastreamIncrements->setTarget(this);
   myDatastreamIncrements->setEditable(false);
 
   myCommandStreamIncrement = new DataGridWidget(boss, _nfont, xpos,
                                                 ypos+myLineHeight + 8*myLineHeight, 1, 1, 5, 32,
-                                                Common::Base::F_16_2_2);
+                                                Common::Base::Fmt::_16_2_2);
   myCommandStreamIncrement->setTarget(this);
   myCommandStreamIncrement->setEditable(false);
 
   myJumpStreamIncrements = new DataGridWidget(boss, _nfont, xpos,
                                               ypos+myLineHeight + 9*myLineHeight, isCDFJ() ? 2 : 1, 1, 5, 32,
-                                              Common::Base::F_16_2_2);
+                                              Common::Base::Fmt::_16_2_2);
   myJumpStreamIncrements->setTarget(this);
   myJumpStreamIncrements->setEditable(false);
   xpos = HBORDER;  ypos += myLineHeight * 11 + VGAP * 4;
@@ -138,7 +138,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   xpos += lwidth;
 
   myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32,
-                                       Common::Base::F_16_8);
+                                       Common::Base::Fmt::_16_8);
   myMusicCounters->setTarget(this);
   myMusicCounters->setEditable(false);
 
@@ -148,7 +148,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   xpos += lwidth;
 
   myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32,
-                                          Common::Base::F_16_8);
+                                          Common::Base::Fmt::_16_8);
   myMusicFrequencies->setTarget(this);
   myMusicFrequencies->setEditable(false);
 
@@ -158,7 +158,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   xpos += lwidth;
 
   myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 16,
-                                        Common::Base::F_16_2);
+                                        Common::Base::Fmt::_16_2);
   myMusicWaveforms->setTarget(this);
   myMusicWaveforms->setEditable(false);
 
@@ -168,7 +168,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   xpos += lwidth;
 
   myMusicWaveformSizes = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 16,
-                                            Common::Base::F_16_2);
+                                            Common::Base::Fmt::_16_2);
   myMusicWaveformSizes->setTarget(this);
   myMusicWaveformSizes->setEditable(false);
 
@@ -185,7 +185,7 @@ CartridgeCDFWidget::CartridgeCDFWidget(
   new StaticTextWidget(boss, _font, xpos, ypos, "Sample Pointer");
 
   mySamplePointer = new DataGridWidget(boss, _nfont, xpos + lwidth2, ypos - 2, 1, 1, 8, 32,
-                                       Common::Base::F_16_8);
+                                       Common::Base::Fmt::_16_8);
   mySamplePointer->setTarget(this);
   mySamplePointer->setEditable(false);
 }

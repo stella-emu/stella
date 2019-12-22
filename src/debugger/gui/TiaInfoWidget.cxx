@@ -129,24 +129,24 @@ void TiaInfoWidget::loadConfig()
   TIADebug& tia = dbg.tiaDebug();
   const TiaState& oldTia = static_cast<const TiaState&>(tia.getOldState());
 
-  myFrameCount->setText(Common::Base::toString(tia.frameCount(), Common::Base::F_10_5),
+  myFrameCount->setText(Common::Base::toString(tia.frameCount(), Common::Base::Fmt::_10_5),
                         tia.frameCount() != oldTia.info[0]);
-  myFrameCycles->setText(Common::Base::toString(tia.frameCycles(), Common::Base::F_10_5),
+  myFrameCycles->setText(Common::Base::toString(tia.frameCycles(), Common::Base::Fmt::_10_5),
                          tia.frameCycles() != oldTia.info[1]);
 
   myVSync->setState(tia.vsync(), tia.vsyncAsInt() != oldTia.info[2]);
   myVBlank->setState(tia.vblank(), tia.vblankAsInt() != oldTia.info[3]);
 
   int clk = tia.clocksThisLine();
-  myScanlineCount->setText(Common::Base::toString(tia.scanlines(), Common::Base::F_10_3),
+  myScanlineCount->setText(Common::Base::toString(tia.scanlines(), Common::Base::Fmt::_10_3),
                            tia.scanlines() != oldTia.info[4]);
   myScanlineCountLast->setText(
-    Common::Base::toString(tia.scanlinesLastFrame(), Common::Base::F_10_3),
+    Common::Base::toString(tia.scanlinesLastFrame(), Common::Base::Fmt::_10_3),
     tia.scanlinesLastFrame() != oldTia.info[5]);
-  myScanlineCycles->setText(Common::Base::toString(clk/3, Common::Base::F_10),
+  myScanlineCycles->setText(Common::Base::toString(clk/3, Common::Base::Fmt::_10),
                             clk != oldTia.info[6]);
-  myPixelPosition->setText(Common::Base::toString(clk-68, Common::Base::F_10),
+  myPixelPosition->setText(Common::Base::toString(clk-68, Common::Base::Fmt::_10),
                            clk != oldTia.info[6]);
-  myColorClocks->setText(Common::Base::toString(clk, Common::Base::F_10),
+  myColorClocks->setText(Common::Base::toString(clk, Common::Base::Fmt::_10),
                          clk != oldTia.info[6]);
 }

@@ -53,7 +53,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Add RAM grid (with scrollbar)
   int xpos = x + _font.getStringWidth("xxxx");
   myRamGrid = new DataGridWidget(_boss, _nfont, xpos, ypos,
-                                 16, myNumRows, 2, 8, Common::Base::F_16, true);
+                                 16, myNumRows, 2, 8, Common::Base::Fmt::_16, true);
   myRamGrid->setTarget(this);
   myRamGrid->setID(kRamHexID);
   addFocusWidget(myRamGrid);
@@ -105,7 +105,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     new StaticTextWidget(_boss, lfont, xpos + col*myRamGrid->colWidth() + 8,
                          ypos - myLineHeight,
                          myFontWidth, myFontHeight,
-                         Common::Base::toString(col, Common::Base::F_16_1),
+                         Common::Base::toString(col, Common::Base::Fmt::_16_1),
                          TextAlign::Left);
   }
 
@@ -129,7 +129,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos = x + w - 11*myFontWidth - 22;
   new StaticTextWidget(boss, lfont, xpos, ypos, "Bin");
   myBinValue = new DataGridWidget(boss, nfont, xpos + 3*myFontWidth + 5, ypos-2,
-                                  1, 1, 8, 8, Common::Base::F_2);
+                                  1, 1, 8, 8, Common::Base::Fmt::_2);
   myBinValue->setTarget(this);
   myBinValue->setID(kRamBinID);
 
@@ -137,7 +137,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   xpos -= 7*myFontWidth + 5 + 20;
   new StaticTextWidget(boss, lfont, xpos, ypos, "Dec");
   myDecValue = new DataGridWidget(boss, nfont, xpos + 3*myFontWidth + 5, ypos-2,
-                                  1, 1, 3, 8, Common::Base::F_10);
+                                  1, 1, 3, 8, Common::Base::Fmt::_10);
   myDecValue->setTarget(this);
   myDecValue->setID(kRamDecID);
 
@@ -321,7 +321,7 @@ void RamWidget::fillGrid(bool updateOld)
   buf[2] = buf[3] = 'x';
   myRamStart->setLabel(buf);
   for(uInt32 row = 0; row < myNumRows; ++row, page += 0x10)
-    myRamLabels[row]->setLabel(Common::Base::toString(page>>4, Common::Base::F_16_1));
+    myRamLabels[row]->setLabel(Common::Base::toString(page>>4, Common::Base::Fmt::_16_1));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

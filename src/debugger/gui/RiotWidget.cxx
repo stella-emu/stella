@@ -109,7 +109,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
                              lwidth, fontHeight, writeNames[row], TextAlign::Left);
   }
   xpos += t->getWidth() + 5;
-  myTimWrite = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::F_16);
+  myTimWrite = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myTimWrite->setTarget(this);
   myTimWrite->setID(kTimWriteID);
   addFocusWidget(myTimWrite);
@@ -123,12 +123,12 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
                              10*fontWidth, fontHeight, readNames[row], TextAlign::Left);
   }
   xpos += t->getWidth() + 5;
-  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 32, Common::Base::F_16);
+  myTimRead = new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 32, Common::Base::Fmt::_16);
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
 
   ypos += myTimRead->getHeight() - 1;
-  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 32, Common::Base::F_10_4);
+  myTimDivider = new DataGridWidget(boss, nfont, xpos, ypos, 1, 1, 4, 32, Common::Base::Fmt::_10_4);
   myTimDivider->setTarget(this);
   myTimDivider->setEditable(false);
 
@@ -149,7 +149,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
                          5*fontWidth, fontHeight, contLeftReadNames[row], TextAlign::Left);
   }
   xpos += 5*fontWidth + 5;
-  myLeftINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
+  myLeftINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myLeftINPT->setTarget(this);
   myLeftINPT->setEditable(false);
 
@@ -162,7 +162,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
                          5*fontWidth, fontHeight, contRightReadNames[row], TextAlign::Left);
   }
   xpos += 5*fontWidth + 5;
-  myRightINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::F_16);
+  myRightINPT = new DataGridWidget(boss, nfont, xpos, ypos, 1, 3, 2, 8, Common::Base::Fmt::_16);
   myRightINPT->setTarget(this);
   myRightINPT->setEditable(false);
 

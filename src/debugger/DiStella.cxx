@@ -974,7 +974,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
         getline(myDisasmBuf, tag.label, '\'');
       else if (mySettings.showAddresses && tag.type == CartDebug::CODE) {
         // Have addresses indented, to differentiate from actual labels
-        tag.label = " " + Base::toString(tag.address, Base::F_16_4);
+        tag.label = " " + Base::toString(tag.address, Base::Fmt::_16_4);
         tag.hllabel = false;
       }
     }
@@ -1048,8 +1048,8 @@ void DiStella::outputGraphics()
   for (uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
     myDisasmBuf << ((c > 127) ? bitString : " ");
   myDisasmBuf << "|  $" << Base::HEX4 << myPC + myOffset << "'";
-  if (mySettings.gfxFormat == Base::F_2)
-    myDisasmBuf << Base::toString(byte, Base::F_2_8);
+  if (mySettings.gfxFormat == Base::Fmt::_2)
+    myDisasmBuf << Base::toString(byte, Base::Fmt::_2_8);
   else
     myDisasmBuf << Base::HEX2 << int(byte);
 
@@ -1121,7 +1121,7 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::Settings DiStella::settings = {
-  Base::F_2, // gfxFormat
+  Base::Fmt::_2, // gfxFormat
   true,      // resolveCode (opposite of -d in Distella)
   true,      // showAddresses (not used externally; always off)
   false,     // aFlag (-a in Distella)

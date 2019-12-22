@@ -46,7 +46,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   new StaticTextWidget(boss, lfont, xpos, ypos+1, lwidth-2, fontHeight,
                        "PC ", TextAlign::Left);
   myPCGrid =
-    new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::F_16);
+    new DataGridWidget(boss, nfont, xpos + lwidth, ypos, 1, 1, 4, 16, Common::Base::Fmt::_16);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
   addFocusWidget(myPCGrid);
@@ -60,7 +60,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create a 1x4 grid with labels for the other CPU registers
   xpos = x + lwidth;  ypos += myPCGrid->getHeight() + 1;
   myCpuGrid =
-    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::F_16);
+    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 2, 8, Common::Base::Fmt::_16);
   myCpuGrid->setTarget(this);
   myCpuGrid->setID(kCpuRegID);
   addFocusWidget(myCpuGrid);
@@ -68,14 +68,14 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
   // Create a 1x4 grid with decimal and binary values for the other CPU registers
   xpos = x + lwidth + myPCGrid->getWidth() + 10;
   myCpuGridDecValue =
-    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 3, 8, Common::Base::F_10);
+    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 3, 8, Common::Base::Fmt::_10);
   myCpuGridDecValue->setTarget(this);
   myCpuGridDecValue->setID(kCpuRegDecID);
   addFocusWidget(myCpuGridDecValue);
 
   xpos += myCpuGridDecValue->getWidth() + 5;
   myCpuGridBinValue =
-    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 8, Common::Base::F_2);
+    new DataGridWidget(boss, nfont, xpos, ypos, 1, 4, 8, 8, Common::Base::Fmt::_2);
   myCpuGridBinValue->setTarget(this);
   myCpuGridBinValue->setID(kCpuRegBinID);
   addFocusWidget(myCpuGridBinValue);

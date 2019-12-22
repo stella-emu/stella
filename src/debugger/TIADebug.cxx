@@ -1077,14 +1077,14 @@ string TIADebug::toString()
       << " BK=$" << Common::Base::HEX2 << state.coluRegs[3] << "/"
       << colorSwatch(state.coluRegs[3])
       << endl
-      << "P0: GR=%" << Common::Base::toString(state.gr[TiaState::P0], Common::Base::F_2_8)
+      << "P0: GR=%" << Common::Base::toString(state.gr[TiaState::P0], Common::Base::Fmt::_2_8)
       << " pos=#" << std::dec << state.pos[TiaState::P0]
       << " HM=$" << Common::Base::HEX2 << state.hm[TiaState::P0] << " "
       << nusizP0String() << " "
       << booleanWithLabel("refl", refP0()) << " "
       << booleanWithLabel("delay", vdelP0())
       << endl
-      << "P1: GR=%" << Common::Base::toString(state.gr[TiaState::P1], Common::Base::F_2_8)
+      << "P1: GR=%" << Common::Base::toString(state.gr[TiaState::P1], Common::Base::Fmt::_2_8)
       << " pos=#" << std::dec << state.pos[TiaState::P1]
       << " HM=$" << Common::Base::HEX2 << state.hm[TiaState::P1] << " "
       << nusizP1String() << " "
@@ -1109,11 +1109,11 @@ string TIADebug::toString()
       << " size=" << std::dec << state.size[TiaState::BL] << " "
       << booleanWithLabel("delay", vdelBL())
       << endl
-      << "PF0: %" << Common::Base::toString(state.pf[0], Common::Base::F_2_8) << "/$"
+      << "PF0: %" << Common::Base::toString(state.pf[0], Common::Base::Fmt::_2_8) << "/$"
       << Common::Base::HEX2 << state.pf[0]
-      << " PF1: %" << Common::Base::toString(state.pf[1], Common::Base::F_2_8) << "/$"
+      << " PF1: %" << Common::Base::toString(state.pf[1], Common::Base::Fmt::_2_8) << "/$"
       << Common::Base::HEX2 << state.pf[1]
-      << " PF2: %" << Common::Base::toString(state.pf[2], Common::Base::F_2_8) << "/$"
+      << " PF2: %" << Common::Base::toString(state.pf[2], Common::Base::Fmt::_2_8) << "/$"
       << Common::Base::HEX2 << state.pf[2]
       << endl << "     "
       << booleanWithLabel("reflect",  refPF()) << " "

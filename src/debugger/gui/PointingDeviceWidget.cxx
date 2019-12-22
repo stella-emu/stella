@@ -35,7 +35,7 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
 
   // add gray code and up widgets
   myGrayValueV = new DataGridWidget(boss, font, xMid, ypos,
-                                    1, 1, 2, 8, Common::Base::F_16);
+                                    1, 1, 2, 8, Common::Base::Fmt::_16);
   myGrayValueV->setTarget(this);
   myGrayValueV->setEditable(false);
 
@@ -54,7 +54,7 @@ PointingDeviceWidget::PointingDeviceWidget(GuiObject* boss, const GUI::Font& fon
   myGrayRight->setTarget(this);
 
   myGrayValueH = new DataGridWidget(boss, font, xValue, ypos + 2,
-                                    1, 1, 2, 8, Common::Base::F_16);
+                                    1, 1, 2, 8, Common::Base::Fmt::_16);
   myGrayValueH->setTarget(this);
   myGrayValueH->setEditable(false);
 

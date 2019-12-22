@@ -31,7 +31,7 @@
 DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int cols, int rows,
                                int colchars, int bits,
-                               Common::Base::Format base,
+                               Common::Base::Fmt base,
                                bool useScrollbar)
   : EditableWidget(boss, font, x, y,
                    cols*(colchars * font.getMaxCharWidth() + 8) + 1,
@@ -87,23 +87,23 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   EditableWidget::TextFilter f;
   switch(base)
   {
-    case Common::Base::F_16:
-    case Common::Base::F_16_1:
-    case Common::Base::F_16_2:
-    case Common::Base::F_16_4:
-    case Common::Base::F_16_8:
+    case Common::Base::Fmt::_16:
+    case Common::Base::Fmt::_16_1:
+    case Common::Base::Fmt::_16_2:
+    case Common::Base::Fmt::_16_4:
+    case Common::Base::Fmt::_16_8:
       setTextFilter([](char c) {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
       });
       break;
-    case Common::Base::F_10:
+    case Common::Base::Fmt::_10:
       setTextFilter([](char c) {
         return (c >= '0' && c <= '9');
       });
       break;
-    case Common::Base::F_2:
-    case Common::Base::F_2_8:
-    case Common::Base::F_2_16:
+    case Common::Base::Fmt::_2:
+    case Common::Base::Fmt::_2_8:
+    case Common::Base::Fmt::_2_16:
       setTextFilter([](char c) { return (c >= '0' && c <= '1'); });
       break;
     default:
@@ -707,22 +707,22 @@ void DataGridWidget::endEditMode()
   {
     switch(_base)
     {
-      case Common::Base::F_16:
-      case Common::Base::F_16_1:
-      case Common::Base::F_16_2:
-      case Common::Base::F_16_4:
-      case Common::Base::F_16_8:
+      case Common::Base::Fmt::_16:
+      case Common::Base::Fmt::_16_1:
+      case Common::Base::Fmt::_16_2:
+      case Common::Base::Fmt::_16_4:
+      case Common::Base::Fmt::_16_8:
         editString().insert(0, 1, '$');
         break;
-      case Common::Base::F_2:
-      case Common::Base::F_2_8:
-      case Common::Base::F_2_16:
+      case Common::Base::Fmt::_2:
+      case Common::Base::Fmt::_2_8:
+      case Common::Base::Fmt::_2_16:
         editString().insert(0, 1, '\\');
         break;
-      case Common::Base::F_10:
+      case Common::Base::Fmt::_10:
         editString().insert(0, 1, '#');
         break;
-      case Common::Base::F_DEFAULT:
+      case Common::Base::Fmt::_DEFAULT:
       default:  // TODO - properly handle all other cases
         break;
     }

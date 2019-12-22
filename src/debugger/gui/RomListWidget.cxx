@@ -38,7 +38,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
     _highlightedItem(-1),
     _editMode(false),
     _currentKeyDown(KBDK_UNKNOWN),
-    _base(Common::Base::F_DEFAULT),
+    _base(Common::Base::Fmt::_DEFAULT),
     myDisasm(nullptr)//,
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
@@ -96,22 +96,22 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   {
     switch(_base)
     {
-      case Common::Base::F_16:
-      case Common::Base::F_16_1:
-      case Common::Base::F_16_2:
-      case Common::Base::F_16_4:
-      case Common::Base::F_16_8:
+      case Common::Base::Fmt::_16:
+      case Common::Base::Fmt::_16_1:
+      case Common::Base::Fmt::_16_2:
+      case Common::Base::Fmt::_16_4:
+      case Common::Base::Fmt::_16_8:
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == ' ';
 
-      case Common::Base::F_2:
-      case Common::Base::F_2_8:
-      case Common::Base::F_2_16:
+      case Common::Base::Fmt::_2:
+      case Common::Base::Fmt::_2_8:
+      case Common::Base::Fmt::_2_16:
         return c == '0' || c == '1' || c == ' ';
 
-      case Common::Base::F_10:
+      case Common::Base::Fmt::_10:
         return (c >= '0' && c <= '9') || c == ' ';
 
-      case Common::Base::F_DEFAULT:
+      case Common::Base::Fmt::_DEFAULT:
       default:  // TODO - properly handle all other cases
         return false;
     }
@@ -624,7 +624,7 @@ void RomListWidget::endEditMode()
   // Send a message that editing finished with a return/enter key press
   // The parent then calls getText() to get the newly entered data
   _editMode = false;
-  sendCommand(RomListWidget::kRomChangedCmd, _selectedItem, _base);
+  sendCommand(RomListWidget::kRomChangedCmd, _selectedItem, static_cast<int>(_base));
 
   // Reset to normal data entry
   EditableWidget::endEditMode();
