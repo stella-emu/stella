@@ -43,7 +43,7 @@ class DataGridWidget : public EditableWidget
     DataGridWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int cols, int rows,
                    int colchars, int bits,
-                   Common::Base::Format format = Common::Base::F_DEFAULT,
+                   Common::Base::Fmt format = Common::Base::Fmt::_DEFAULT,
                    bool useScrollbar = false);
     virtual ~DataGridWidget() = default;
 
@@ -119,7 +119,7 @@ class DataGridWidget : public EditableWidget
     int  _upperBound;
     bool _crossGrid;
 
-    Common::Base::Format _base;
+    Common::Base::Fmt _base;
 
     IntArray    _addrList;
     IntArray    _valueList;

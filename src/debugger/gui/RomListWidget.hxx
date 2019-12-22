@@ -98,7 +98,7 @@ class RomListWidget : public EditableWidget
     int  _highlightedItem;
     bool _editMode;
     StellaKey  _currentKeyDown;
-    Common::Base::Format _base;  // base used during editing
+    Common::Base::Fmt _base;  // base used during editing
 
     const CartDebug::Disassembly* myDisasm;
     vector<CheckboxWidget*> myCheckList;

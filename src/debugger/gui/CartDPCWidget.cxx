@@ -72,7 +72,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Top Registers ", TextAlign::Left);
   xpos += lwidth;
 
-  myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
   myTops->setTarget(this);
   myTops->setEditable(false);
 
@@ -82,7 +82,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Bottom Registers ", TextAlign::Left);
   xpos += lwidth;
 
-  myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
   myBottoms->setTarget(this);
   myBottoms->setEditable(false);
 
@@ -92,7 +92,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Counter Registers ", TextAlign::Left);
   xpos += lwidth;
 
-  myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
+  myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::Fmt::_16_4);
   myCounters->setTarget(this);
   myCounters->setEditable(false);
 
@@ -102,7 +102,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Flag Registers ", TextAlign::Left);
   xpos += lwidth;
 
-  myFlags = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myFlags = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
   myFlags->setTarget(this);
   myFlags->setEditable(false);
 
@@ -113,7 +113,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Music mode (DF5/DF6/DF7) ", TextAlign::Left);
   xpos += lwidth;
 
-  myMusicMode = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 2, 8, Common::Base::F_16);
+  myMusicMode = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 2, 8, Common::Base::Fmt::_16);
   myMusicMode->setTarget(this);
   myMusicMode->setEditable(false);
 
@@ -123,7 +123,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
         myFontHeight, "Current random number ", TextAlign::Left);
   xpos += lwidth;
 
-  myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::F_16);
+  myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::Fmt::_16);
   myRandom->setTarget(this);
   myRandom->setEditable(false);
 }

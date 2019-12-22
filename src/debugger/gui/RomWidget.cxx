@@ -102,7 +102,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case RomListWidget::kRomChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
       // 'id' is the base to use for the data to be changed
-      patchROM(data, myRomList->getText(), Common::Base::Format(id));
+      patchROM(data, myRomList->getText(), Common::Base::Fmt(id));
       break;
 
     case RomListWidget::kSetPCCmd:
@@ -141,12 +141,12 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       // 'data' is the boolean value
       if(data)
       {
-        DiStella::settings.gfxFormat = Common::Base::F_2;
+        DiStella::settings.gfxFormat = Common::Base::Fmt::_2;
         instance().settings().setValue("dis.gfxformat", "2");
       }
       else
       {
-        DiStella::settings.gfxFormat = Common::Base::F_16;
+        DiStella::settings.gfxFormat = Common::Base::Fmt::_16;
         instance().settings().setValue("dis.gfxformat", "16");
       }
       invalidate();
@@ -206,7 +206,7 @@ void RomWidget::runtoPC(int disasm_line)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::patchROM(int disasm_line, const string& bytes,
-                         Common::Base::Format base)
+                         Common::Base::Fmt base)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassembly().list;
@@ -218,7 +218,7 @@ void RomWidget::patchROM(int disasm_line, const string& bytes,
 
     // Temporarily set to correct base, so we don't have to prefix each byte
     // with the type of data
-    Common::Base::Format oldbase = Common::Base::format();
+    Common::Base::Fmt oldbase = Common::Base::format();
 
     Common::Base::setFormat(base);
     command << "rom #" << list[disasm_line].address << " " << bytes;

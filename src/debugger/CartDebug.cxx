@@ -120,7 +120,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 
   // Add settings for Distella
   DiStella::settings.gfxFormat =
-    myOSystem.settings().getInt("dis.gfxformat") == 16 ? Base::F_16 : Base::F_2;
+    myOSystem.settings().getInt("dis.gfxformat") == 16 ? Base::Fmt::_16 : Base::Fmt::_2;
   DiStella::settings.resolveCode =
     myOSystem.settings().getBool("dis.resolve");
   DiStella::settings.showAddresses =
@@ -179,16 +179,16 @@ string CartDebug::toString()
 
   switch(Base::format())
   {
-    case Base::F_16:
-    case Base::F_10:
+    case Base::Fmt::_16:
+    case Base::Fmt::_10:
       bytesPerLine = 0x10;
       break;
 
-    case Base::F_2:
+    case Base::Fmt::_2:
       bytesPerLine = 0x04;
       break;
 
-    case Base::F_DEFAULT:
+    case Base::Fmt::_DEFAULT:
     default:
       return DebuggerParser::red("invalid base, this is a BUG");
   }
@@ -1037,7 +1037,7 @@ string CartDebug::saveDisassembly()
         }
         case CartDebug::GFX:
         {
-          buf << ".byte   " << (settings.gfxFormat == Base::F_2 ? "%" : "$")
+          buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1e') ? "#" : " ");
@@ -1046,7 +1046,7 @@ string CartDebug::saveDisassembly()
         }
         case CartDebug::PGFX:
         {
-          buf << ".byte   " << (settings.gfxFormat == Base::F_2 ? "%" : "$")
+          buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1f') ? "*" : " ");
@@ -1372,11 +1372,11 @@ void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
         debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
         label     = myDisLabels[addr & 0xFFF];
 
-  buf << endl << "directive: " << Base::toString(directive, Base::F_2_8) << " ";
+  buf << endl << "directive: " << Base::toString(directive, Base::Fmt::_2_8) << " ";
   disasmTypeAsString(buf, directive);
-  buf << endl << "emulation: " << Base::toString(debugger, Base::F_2_8) << " ";
+  buf << endl << "emulation: " << Base::toString(debugger, Base::Fmt::_2_8) << " ";
   disasmTypeAsString(buf, debugger);
-  buf << endl << "tentative: " << Base::toString(label, Base::F_2_8) << " ";
+  buf << endl << "tentative: " << Base::toString(label, Base::Fmt::_2_8) << " ";
   disasmTypeAsString(buf, label);
   buf << endl;
 }

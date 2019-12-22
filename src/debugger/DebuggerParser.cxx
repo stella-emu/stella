@@ -193,11 +193,11 @@ int DebuggerParser::decipher_arg(const string& str)
   int result;
   string arg = str;
 
-  Base::Format defaultBase = Base::format();
+  Base::Fmt defaultBase = Base::format();
 
-  if(defaultBase == Base::F_2) {
+  if(defaultBase == Base::Fmt::_2) {
     bin=true; dec=false;
-  } else if(defaultBase == Base::F_10) {
+  } else if(defaultBase == Base::Fmt::_10) {
     bin=false; dec=true;
   } else {
     bin=false; dec=false;
@@ -552,10 +552,10 @@ string DebuggerParser::eval()
         buf << wlabel << "(W): ";
     }
 
-    buf << "$" << Base::toString(args[i], Base::F_16);
+    buf << "$" << Base::toString(args[i], Base::Fmt::_16);
 
     if(args[i] < 0x10000)
-      buf << " %" << Base::toString(args[i], Base::F_2);
+      buf << " %" << Base::toString(args[i], Base::Fmt::_2);
 
     buf << " #" << int(args[i]);
     if(i != argCount - 1)
@@ -698,23 +698,23 @@ void DebuggerParser::executeA()
 void DebuggerParser::executeBase()
 {
   if(args[0] == 2 || argStrings[0] == "bin")
-    Base::setFormat(Base::F_2);
+    Base::setFormat(Base::Fmt::_2);
   else if(args[0] == 10 || argStrings[0] == "dec")
-    Base::setFormat(Base::F_10);
+    Base::setFormat(Base::Fmt::_10);
   else if(args[0] == 16 || argStrings[0] == "hex")
-    Base::setFormat(Base::F_16);
+    Base::setFormat(Base::Fmt::_16);
 
   commandResult << "default number base set to ";
   switch(Base::format()) {
-    case Base::F_2:
+    case Base::Fmt::_2:
       commandResult << "#2/bin";
       break;
 
-    case Base::F_10:
+    case Base::Fmt::_10:
       commandResult << "#10/dec";
       break;
 
-    case Base::F_16:
+    case Base::Fmt::_16:
       commandResult << "#16/hex";
       break;
 

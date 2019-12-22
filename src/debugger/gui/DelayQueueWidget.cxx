@@ -75,7 +75,7 @@ void DelayQueueWidget::loadConfig() {
         if (address < 64) ss
           << delay
           << " clk, $"
-          << Base::toString(delayQueueIterator->value(), Base::Format::F_16_2)
+          << Base::toString(delayQueueIterator->value(), Base::Fmt::_16_2)
           << " -> "
           << instance().debugger().cartDebug().getLabel(address, false);
         break;

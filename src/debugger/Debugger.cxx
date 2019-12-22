@@ -221,7 +221,7 @@ const string Debugger::invIfChanged(int reg, int oldReg)
 
   bool changed = reg != oldReg;
   if(changed) ret += "\177";
-  ret += Common::Base::toString(reg, Common::Base::F_16_2);
+  ret += Common::Base::toString(reg, Common::Base::Fmt::_16_2);
   if(changed) ret += "\177";
 
   return ret;

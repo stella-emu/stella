@@ -73,7 +73,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Top Registers ", TextAlign::Left);
   xpos += lwidth;
 
-  myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
   myTops->setTarget(this);
   myTops->setEditable(false);
 
@@ -83,7 +83,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Bottom Registers ", TextAlign::Left);
   xpos += lwidth;
 
-  myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
   myBottoms->setTarget(this);
   myBottoms->setEditable(false);
 
@@ -93,7 +93,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Counter Registers ", TextAlign::Left);
   xpos += lwidth;
 
-  myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::F_16_4);
+  myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::Fmt::_16_4);
   myCounters->setTarget(this);
   myCounters->setEditable(false);
 
@@ -103,7 +103,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Frac Counters ", TextAlign::Left);
   xpos += lwidth;
 
-  myFracCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 4, 2, 8, 32, Common::Base::F_16_8);
+  myFracCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 4, 2, 8, 32, Common::Base::Fmt::_16_8);
   myFracCounters->setTarget(this);
   myFracCounters->setEditable(false);
 
@@ -113,7 +113,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Frac Increments ", TextAlign::Left);
   xpos += lwidth;
 
-  myFracIncrements = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myFracIncrements = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
   myFracIncrements->setTarget(this);
   myFracIncrements->setEditable(false);
 
@@ -123,7 +123,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Function Params ", TextAlign::Left);
   xpos += lwidth;
 
-  myParameter = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::F_16);
+  myParameter = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
   myParameter->setTarget(this);
   myParameter->setEditable(false);
 
@@ -133,7 +133,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Music Counters ", TextAlign::Left);
   xpos += lwidth;
 
-  myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
+  myMusicCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::Fmt::_16_8);
   myMusicCounters->setTarget(this);
   myMusicCounters->setEditable(false);
 
@@ -143,7 +143,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Music Frequencies ", TextAlign::Left);
   xpos += lwidth;
 
-  myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::F_16_8);
+  myMusicFrequencies = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 8, 32, Common::Base::Fmt::_16_8);
   myMusicFrequencies->setTarget(this);
   myMusicFrequencies->setEditable(false);
 
@@ -153,7 +153,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Music Waveforms ", TextAlign::Left);
   xpos += lwidth;
 
-  myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::F_16_4);
+  myMusicWaveforms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 4, 16, Common::Base::Fmt::_16_4);
   myMusicWaveforms->setTarget(this);
   myMusicWaveforms->setEditable(false);
 
@@ -164,7 +164,7 @@ CartridgeDPCPlusWidget::CartridgeDPCPlusWidget(
         myFontHeight, "Current random number ", TextAlign::Left);
   xpos += lwidth;
 
-  myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 8, 32, Common::Base::F_16_8);
+  myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 8, 32, Common::Base::Fmt::_16_8);
   myRandom->setTarget(this);
   myRandom->setEditable(false);
 

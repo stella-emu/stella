@@ -42,7 +42,7 @@ class DiStella
     // This will eventually grow to include all options supported by
     // standalone Distella
     struct Settings {
-      Common::Base::Format gfxFormat;
+      Common::Base::Fmt gfxFormat;
       bool resolveCode;    // Attempt to detect code vs. data sections
       bool showAddresses;  // Show PC addresses (always off for external output)
       bool aFlag;  // Turns 'A' off in accumulator instructions (-a in Distella)
