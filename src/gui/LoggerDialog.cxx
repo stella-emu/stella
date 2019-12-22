@@ -58,9 +58,9 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 
   // Level of logging (how much info to print)
   VariantList items;
-  VarList::push_back(items, "None", int(Logger::Level::ERR));
-  VarList::push_back(items, "Basic", int(Logger::Level::INFO));
-  VarList::push_back(items, "Verbose", int(Logger::Level::DEBUG));
+  VarList::push_back(items, "None", static_cast<int>(Logger::Level::ERR));
+  VarList::push_back(items, "Basic", static_cast<int>(Logger::Level::INFO));
+  VarList::push_back(items, "Verbose", static_cast<int>(Logger::Level::DEBUG));
   myLogLevel =
     new PopUpWidget(this, font, xpos, ypos, font.getStringWidth("Verbose"),
                     lineHeight, items, "Log level ",
@@ -86,21 +86,26 @@ LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::loadConfig()
 {
-  StringParser parser(instance().logMessages());
+  StringParser parser(Logger::instance().logMessages());
   myLogInfo->setList(parser.stringList());
   myLogInfo->setSelected(0);
   myLogInfo->scrollToEnd();
 
-  myLogLevel->setSelected(instance().settings().getString("loglevel"), int(Logger::Level::INFO));
+  myLogLevel->setSelected(instance().settings().getString("loglevel"),
+    static_cast<int>(Logger::Level::INFO));
   myLogToConsole->setState(instance().settings().getBool("logtoconsole"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveConfig()
 {
-  instance().settings().setValue("loglevel",
-    myLogLevel->getSelectedTag().toString());
-  instance().settings().setValue("logtoconsole", myLogToConsole->getState());
+  int loglevel = myLogLevel->getSelectedTag().toInt();
+  bool logtoconsole = myLogToConsole->getState();
+
+  instance().settings().setValue("loglevel", loglevel);
+  instance().settings().setValue("logtoconsole", logtoconsole);
+
+  Logger::instance().setLogParameters(loglevel, logtoconsole);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,7 +118,7 @@ void LoggerDialog::saveLogFile()
   ofstream out(node.getPath());
   if(out.is_open())
   {
-    out << instance().logMessages();
+    out << Logger::instance().logMessages();
     instance().frameBuffer().showMessage("Saving log file to " + path.str());
   }
 }
