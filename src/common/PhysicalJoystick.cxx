@@ -30,17 +30,8 @@ PhysicalJoystick::PhysicalJoystick()
     name("None"),
     numAxes(0),
     numButtons(0),
-    numHats(0),
-    axisLastValue(nullptr),
-    buttonLast(nullptr)
+    numHats(0)
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystick::~PhysicalJoystick()
-{
-  delete[] axisLastValue;
-  delete[] buttonLast;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,21 +41,11 @@ void PhysicalJoystick::initialize(int index, const string& desc,
   ID = index;
   name = desc;
 
-  // Dynamically create the various mapping arrays for this joystick,
-  // based on its specific attributes
   numAxes    = axes;
   numButtons = buttons;
   numHats    = hats;
-  axisLastValue = new int[numAxes];
-  buttonLast = new int[numButtons];
-
-  // Erase the last button
-  for (int b = 0; b < numButtons; ++b)
-    buttonLast[b] = JOY_CTRL_NONE;
-
-  // Erase the last axis value
-  for(int a = 0; a < numAxes; ++a)
-    axisLastValue[a] = 0;
+  axisLastValue.resize(numAxes, 0);
+  buttonLast.resize(numButtons, JOY_CTRL_NONE);
 
   // Erase the mappings
   eraseMap(EventMode::kMenuMode);
