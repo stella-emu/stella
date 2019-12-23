@@ -43,7 +43,6 @@ class PhysicalJoystick
 
   public:
     PhysicalJoystick();
-    virtual ~PhysicalJoystick();
 
     string getMap() const;
     bool setMap(const string& map);
@@ -70,8 +69,8 @@ class PhysicalJoystick
     int ID;
     string name;
     int numAxes, numButtons, numHats;
-    int* axisLastValue;
-    int* buttonLast;
+    IntArray axisLastValue;
+    IntArray buttonLast;
 
     // Hashmaps of controller events
     JoyMap joyMap;
@@ -84,6 +83,12 @@ class PhysicalJoystick
          << ", numbtns: " << s.numButtons << ", numhats: " << s.numHats;
       return os;
     }
+
+    // Following constructors and assignment operators not supported
+    PhysicalJoystick(const PhysicalJoystick&) = delete;
+    PhysicalJoystick(PhysicalJoystick&&) = delete;
+    PhysicalJoystick& operator=(const PhysicalJoystick&) = delete;
+    PhysicalJoystick& operator=(PhysicalJoystick&&) = delete;
 };
 
 #endif
