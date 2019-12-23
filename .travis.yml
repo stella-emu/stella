@@ -44,8 +44,9 @@ install:
       mkdir -p ~/Library/Frameworks/
       ln -s `pwd`/build/Release/SDL2.framework ~/Library/Frameworks/
     else
-      hg clone https://hg.libsdl.org/SDL SDL
-      cd SDL
+      curl -O https://www.libsdl.org/release/SDL2-2.0.10.tar.gz
+      tar xzf SDL2-2.0.10.tar.gz
+      cd SDL2-2.0.10
       mkdir build
       cd build
       ../configure
