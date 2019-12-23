@@ -88,7 +88,7 @@ class FilesystemNodePOSIX : public AbstractFSNode
      * Tests and sets the _isValid and _isDirectory/_isFile flags,
      * using the stat() function.
      */
-    virtual void setFlags();
+    void setFlags();
 
     /**
      * Returns the last component of a given path.

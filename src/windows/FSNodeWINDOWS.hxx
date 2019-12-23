@@ -86,7 +86,7 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
      * Tests and sets the _isValid and _isDirectory/_isFile flags,
      * using the GetFileAttributes() function.
      */
-    virtual void setFlags();
+    void setFlags();
 
     /**
      * Adds a single FilesystemNodeWINDOWS to a given list.
