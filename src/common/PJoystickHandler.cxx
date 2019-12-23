@@ -615,12 +615,13 @@ void PhysicalJoystickHandler::handleAxisEvent(int stick, int axis, int value)
 
     if(myHandler.state() == EventHandlerState::EMULATION)
     {
+      Event::Type eventAxisAnalog;
+
       // Check for analog events, which are handled differently
       // A value change lower than ~90% indicates analog input
-      if(abs(j->axisLastValue[axis] - value) < 30000)
+      if((abs(j->axisLastValue[axis] - value) < 30000)
+         && (eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::ANALOG)) != Event::Type::NoType)
       {
-        Event::Type eventAxisAnalog = j->joyMap.get(EventMode::kEmulationMode, button, JoyAxis(axis), JoyDir::ANALOG);
-
         myHandler.handleEvent(eventAxisAnalog, value);
       }
       else
