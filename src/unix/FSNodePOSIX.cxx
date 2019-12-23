@@ -24,25 +24,6 @@
 #include "FSNodePOSIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNodePOSIX::setFlags()
-{
-  struct stat st;
-
-  _isValid = (0 == stat(_path.c_str(), &st));
-  if(_isValid)
-  {
-    _isDirectory = S_ISDIR(st.st_mode);
-    _isFile = S_ISREG(st.st_mode);
-
-    // Add a trailing slash, if necessary
-    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
-      _path += '/';
-  }
-  else
-    _isDirectory = _isFile = false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodePOSIX::FilesystemNodePOSIX()
   : _path(ROOT_DIR),
     _displayName(_path),
@@ -80,6 +61,25 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
 
   if(verify)
     setFlags();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FilesystemNodePOSIX::setFlags()
+{
+  struct stat st;
+
+  _isValid = (0 == stat(_path.c_str(), &st));
+  if(_isValid)
+  {
+    _isDirectory = S_ISDIR(st.st_mode);
+    _isFile = S_ISREG(st.st_mode);
+
+    // Add a trailing slash, if necessary
+    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
+      _path += '/';
+  }
+  else
+    _isDirectory = _isFile = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
