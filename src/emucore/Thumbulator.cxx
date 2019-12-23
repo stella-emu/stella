@@ -2420,7 +2420,7 @@ int Thumbulator::execute()
       rb = inst & 0xFF;
       DO_DISS(statusMsg << "swi 0x" << Base::HEX2 << rb << endl);
 
-      if((inst & 0xFF) == 0xCC)
+      if(rb == 0xCC)
       {
         write_register(0, cpsr);
         return 0;

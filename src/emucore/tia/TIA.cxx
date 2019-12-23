@@ -88,7 +88,7 @@ TIA::TIA(ConsoleIO& console, ConsoleTimingProvider timingProvider, Settings& set
   myMissile1.setTIA(this);
   myBall.setTIA(this);
 
-  reset();
+  initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,7 +128,7 @@ void TIA::clearFrameManager()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::reset()
+void TIA::initialize()
 {
   myHctr = 0;
   myMovementInProgress = false;
@@ -191,6 +191,14 @@ void TIA::reset()
 #ifdef DEBUGGER_SUPPORT
   createAccessBase();
 #endif // DEBUGGER_SUPPORT
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::reset()
+{
+  // Simply call initialize(); mostly to get around calling a virtual method
+  // from the constructor
+  initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
