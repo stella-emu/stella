@@ -61,10 +61,20 @@ define(M6502_IMMEDIATE_READ, `{
   operand = peek(PC++, DISASM_CODE);
 }')
 
+define(M6502_IMMEDIATE_READ_DISCARD_OPERAND, `{
+  peek(PC++, DISASM_CODE);
+}')
+
 define(M6502_ABSOLUTE_READ, `{
   intermediateAddress = peek(PC++, DISASM_CODE);
   intermediateAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
+}')
+
+define(M6502_ABSOLUTE_READ_DISCARD_OPERAND, `{
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  intermediateAddress |= (uInt16(peek(PC++, DISASM_CODE)) << 8);
+  peek(intermediateAddress, DISASM_DATA);
 }')
 
 define(M6502_ABSOLUTE_WRITE, `{
@@ -85,13 +95,29 @@ define(M6502_ABSOLUTEX_READ, `{
   intermediateAddress = high | uInt8(low + X);
   if((low + X) > 0xFF)
   {
-    operand = peek(intermediateAddress, DISASM_NONE);
+    peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + X;
     operand = peek(intermediateAddress, DISASM_DATA);
   }
   else
   {
     operand = peek(intermediateAddress, DISASM_DATA);
+  }
+}')
+
+define(M6502_ABSOLUTEX_READ_DISCARD_OPERAND, `{
+  uInt16 low = peek(PC++, DISASM_CODE);
+  uInt16 high = (uInt16(peek(PC++, DISASM_CODE)) << 8);
+  intermediateAddress = high | uInt8(low + X);
+  if((low + X) > 0xFF)
+  {
+    peek(intermediateAddress, DISASM_NONE);
+    intermediateAddress = (high | low) + X;
+    peek(intermediateAddress, DISASM_DATA);
+  }
+  else
+  {
+    peek(intermediateAddress, DISASM_DATA);
   }
 }')
 
@@ -117,7 +143,7 @@ define(M6502_ABSOLUTEY_READ, `{
   intermediateAddress = high | uInt8(low + Y);
   if((low + Y) > 0xFF)
   {
-    operand = peek(intermediateAddress, DISASM_NONE);
+    peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
     operand = peek(intermediateAddress, DISASM_DATA);
   }
@@ -148,6 +174,11 @@ define(M6502_ZERO_READ, `{
   operand = peek(intermediateAddress, DISASM_DATA);
 }')
 
+define(M6502_ZERO_READ_DISCARD_OPERAND, `{
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+}')
+
 define(M6502_ZERO_WRITE, `{
   operandAddress = peek(PC++, DISASM_CODE);
 }')
@@ -163,6 +194,13 @@ define(M6502_ZEROX_READ, `{
   peek(intermediateAddress, DISASM_NONE);
   intermediateAddress += X;
   operand = peek(intermediateAddress, DISASM_DATA);
+}')
+
+define(M6502_ZEROX_READ_DISCARD_OPERAND, `{
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_NONE);
+  intermediateAddress += X;
+  peek(intermediateAddress, DISASM_DATA);
 }')
 
 define(M6502_ZEROX_WRITE, `{
@@ -245,7 +283,7 @@ define(M6502_INDIRECTY_READ, `{
   intermediateAddress = high | uInt8(low + Y);
   if((low + Y) > 0xFF)
   {
-    operand = peek(intermediateAddress, DISASM_NONE);
+    peek(intermediateAddress, DISASM_NONE);
     intermediateAddress = (high | low) + Y;
     operand = peek(intermediateAddress, DISASM_DATA);
   }
@@ -1750,14 +1788,14 @@ case 0x82:
 case 0x89:
 case 0xc2:
 case 0xe2:
-M6502_IMMEDIATE_READ
+M6502_IMMEDIATE_READ_DISCARD_OPERAND
 M6502_NOP
 break;
 
 case 0x04:
 case 0x44:
 case 0x64:
-M6502_ZERO_READ
+M6502_ZERO_READ_DISCARD_OPERAND
 M6502_NOP
 break;
 
@@ -1767,12 +1805,12 @@ case 0x54:
 case 0x74:
 case 0xd4:
 case 0xf4:
-M6502_ZEROX_READ
+M6502_ZEROX_READ_DISCARD_OPERAND
 M6502_NOP
 break;
 
 case 0x0c:
-M6502_ABSOLUTE_READ
+M6502_ABSOLUTE_READ_DISCARD_OPERAND
 M6502_NOP
 break;
 
@@ -1782,7 +1820,7 @@ case 0x5c:
 case 0x7c:
 case 0xdc:
 case 0xfc:
-M6502_ABSOLUTEX_READ
+M6502_ABSOLUTEX_READ_DISCARD_OPERAND
 M6502_NOP
 break;
 
