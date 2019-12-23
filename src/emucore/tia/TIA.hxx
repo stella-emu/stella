@@ -544,6 +544,11 @@ class TIA : public Device
 
   private:
     /**
+     * Called to initialize all instance variables to known state.
+     */
+    void initialize();
+
+    /**
      * This callback is invoked by FrameManager when a new frame starts.
      */
     void onFrameStart();

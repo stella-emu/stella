@@ -85,8 +85,8 @@ void FBSurface::line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, ColorId color)
     // x is major axis
     if(dx < 0)
     {
-      uInt32 tx = x; x = x2; x2 = tx;
-      uInt32 ty = y; y = y2; y2 = ty;
+      std::swap(x, x2);
+      y = y2;
       dx = -dx;
       dy = -dy;
     }
@@ -110,8 +110,8 @@ void FBSurface::line(uInt32 x, uInt32 y, uInt32 x2, uInt32 y2, ColorId color)
     // y is major axis
     if(dy < 0)
     {
-      uInt32 tx = x; x = x2; x2 = tx;
-      uInt32 ty = y; y = y2; y2 = ty;
+      x = x2;
+      std::swap(y, y2);
       dx = -dx;
       dy = -dy;
     }
