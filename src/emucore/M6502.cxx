@@ -328,13 +328,13 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       mySystem->cart().clearAllRAMAccesses();
   #endif  // DEBUGGER_SUPPORT
 
-      uInt16 operandAddress = 0, intermediateAddress = 0;
-      uInt8 operand = 0;
-
       // Reset the peek/poke address pointers
       myLastPeekAddress = myLastPokeAddress = myDataAddressForPoke = 0;
 
       try {
+        uInt16 operandAddress = 0, intermediateAddress = 0;
+        uInt8 operand = 0;
+
         icycles = 0;
     #ifdef DEBUGGER_SUPPORT
         uInt16 oldPC = PC;
