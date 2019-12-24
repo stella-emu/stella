@@ -25,10 +25,9 @@
 ""
 
 "Cart.MD5" "00b7b4cbec81570642283e7fc1ef17af"
-"Cart.Manufacturer" "Sega - Beck-Tech, Steve Beck, Phat Ho"
+"Cart.Manufacturer" "SEGA - Beck-Tech, Steve Beck, Phat Ho"
 "Cart.ModelNo" "006-01"
-"Cart.Name" "Congo Bongo (1983) (Sega)"
-"Display.YStart" "26"
+"Cart.Name" "Congo Bongo (1983) (SEGA)"
 ""
 
 "Cart.MD5" "00ce0bdd43aed84a983bef38fe7f5ee3"
@@ -91,7 +90,6 @@
 "Cart.Manufacturer" "TechnoVision - Video Technology"
 "Cart.ModelNo" "TVS1002"
 "Cart.Name" "Save Our Ship (1983) (TechnoVision) (PAL)"
-"Display.YStart" "45"
 ""
 
 "Cart.MD5" "012b8e6ef3b5fd5aabc94075c527709d"
@@ -274,9 +272,9 @@
 ""
 
 "Cart.MD5" "03c3f7ba4585e349dd12bfa7b34b7729"
-"Cart.Manufacturer" "Sega, Jeff Lorenz"
+"Cart.Manufacturer" "SEGA, Jeff Lorenz"
 "Cart.ModelNo" "004-01"
-"Cart.Name" "Star Trek - Strategic Operations Simulator (1983) (Sega)"
+"Cart.Name" "Star Trek - Strategic Operations Simulator (1983) (SEGA)"
 "Display.Phosphor" "YES"
 ""
 
@@ -613,7 +611,6 @@
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 "Controller.MouseAxis" "45"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "081e2c114c9c20b61acf25fc95c71bf4"
@@ -630,7 +627,7 @@
 ""
 
 "Cart.MD5" "0832fb2ee654bf9382bc57d2b16d2ffc"
-"Cart.Manufacturer" "Apollo, Ed Salvo"
+"Cart.Manufacturer" "Apollo - Games by Apollo, Ed Salvo"
 "Cart.ModelNo" "AP-1001"
 "Cart.Name" "Skeet Shoot (1981) (Apollo) (PAL)"
 ""
@@ -709,7 +706,6 @@
 "Cart.Name" "Oscar's Trash Race (10-20-1982) (Atari) (Prototype)"
 "Cart.Note" "Uses the Keypad Controllers"
 "Cart.Rarity" "Prototype"
-"Display.YStart" "34"
 ""
 
 "Cart.MD5" "08ea2fdaa22e5802c839ee7dfb0483dc"
@@ -740,7 +736,7 @@
 ""
 
 "Cart.MD5" "090f0a7ef8a3f885048d213faa59b2f8"
-"Cart.Manufacturer" "Carrere Video - Western Technologies - Teldec - Prism"
+"Cart.Manufacturer" "Carrere Video - Western Technologies, John Hall - Teldec - Prism"
 "Cart.ModelNo" "USC1012"
 "Cart.Name" "M.A.D. (1983) (Carrere Video) (PAL)"
 ""
@@ -750,7 +746,6 @@
 "Cart.Name" "Acid Drop (TJ)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "6"
 ""
 
 "Cart.MD5" "09388bf390cd9a86dc0849697b96c7dc"
@@ -786,7 +781,6 @@
 
 "Cart.MD5" "097074f24cde141fe6a0f26a10333265"
 "Cart.Name" "Marble Craze (V0.90) (Paul Slocum)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "097936b07e0e0117b9026ae6835eb168"
@@ -849,7 +843,6 @@
 "Cart.MD5" "0acaf71e60b89f6b6eab63db6ab84510"
 "Cart.Name" "This Planet Sucks (Greg Troutman) [a2]"
 "Cart.Rarity" "New Release"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "0aceb7c3bd13fe048b77a1928ed4267d"
@@ -961,7 +954,6 @@
 "Cart.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cart.ModelNo" "AR-4105"
 "Cart.Name" "Official Frogger (1983) (Arcadia) [a]"
-"Display.YStart" "32"
 ""
 
 "Cart.MD5" "0bfabf1e98bdb180643f35f2165995d0"
@@ -973,6 +965,12 @@
 
 "Cart.MD5" "0c0392db94a20e4d006d885abbe60d8e"
 "Cart.Name" "Dodge Demo 3 (PD)"
+""
+
+"Cart.MD5" "0c336f83b0e6e3bc86c77f368448e77b"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Circus Atari (32 in 1) (BitCorp) (Hack)"
 ""
 
 "Cart.MD5" "0c35806ff0019a270a7acae68de89d28"
@@ -1156,8 +1154,9 @@
 ""
 
 "Cart.MD5" "0e224ea74310da4e7e2103400eb1b4bf"
-"Cart.Manufacturer" "Atari, Gary Shannon, Howard Scott Warshaw"
+"Cart.Manufacturer" "Atari, Peter C. Niday, Gary Shannon, Howard Scott Warshaw"
 "Cart.Name" "Mind Maze (10-10-1984) (Atari) (Prototype)"
+"Cart.Note" "Uses the MindLink controller"
 "Cart.Rarity" "Prototype"
 "Controller.Right" "MINDLINK"
 ""
@@ -1214,7 +1213,6 @@
 "Cart.Manufacturer" "Xonox - Beck-Tech"
 "Cart.ModelNo" "6210, 06002, 06004, 99002"
 "Cart.Name" "Ghost Manor (1983) (Xonox) (4K)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "0ef64cdbecccb7049752a3de0b7ade14"
@@ -1507,6 +1505,13 @@
 "Cart.Name" "Dragonfire (Unknown) (PAL)"
 ""
 
+"Cart.MD5" "126f7f64b7b00e25dcf5e3710b4cf8b8"
+"Cart.Manufacturer" "Atari - GCC"
+"Cart.ModelNo" "CX2676"
+"Cart.Name" "Centipede (1983) (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "1278f74ca1dfaa9122df3eca3c5bcaad"
 "Cart.Manufacturer" "Rainbow Vision - Suntek"
 "Cart.ModelNo" "SS-013"
@@ -1571,7 +1576,6 @@
 "Cart.Manufacturer" "Gray Games & AtariAge"
 "Cart.Name" "E.T. Book Cart (PAL)"
 "Cart.Note" "Charles F. Gray & Michael Rideout"
-"Display.YStart" "24"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "55"
 ""
@@ -1867,6 +1871,12 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cart.MD5" "16d69f71bf5846639be5ff16483f0498"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Golf (32 in 1) (BitCorp) (Hack)"
+""
+
 "Cart.MD5" "16e04823887c547dc24bc70dff693df4"
 "Cart.Manufacturer" "Atari"
 "Cart.ModelNo" "CX26163P"
@@ -1879,7 +1889,6 @@
 "Cart.Name" "Bumper Bash (1983) (Spectravideo) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Display.YStart" "54"
 ""
 
 "Cart.MD5" "16f494f20af5dc803bc35939ef924020"
@@ -1942,7 +1951,6 @@
 "Cart.Manufacturer" "Zach Matley"
 "Cart.Name" "Combat AI (16-02-2003) (Zach Matley)"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "34"
 ""
 
 "Cart.MD5" "177504abd4260c4265e1338955e9fa47"
@@ -1976,7 +1984,7 @@
 ""
 
 "Cart.MD5" "17c0a63f9a680e7a61beba81692d9297"
-"Cart.Manufacturer" "U.S. Games Corporation - Western Technologies, Tom Sloper"
+"Cart.Manufacturer" "U.S. Games Corporation - Western Technologies, Jeff Corsiglia, David Johnson, Tom Sloper"
 "Cart.ModelNo" "VC2004"
 "Cart.Name" "Picnic (1983) (U.S. Games)"
 "Cart.Note" "Uses the Paddle Controllers"
@@ -2001,7 +2009,6 @@
 "Cart.ModelNo" "460758"
 "Cart.Name" "Acid Drop (1992) (Salu) (PAL)"
 "Cart.Rarity" "Extremely Rare"
-"Display.YStart" "50"
 ""
 
 "Cart.MD5" "1802cc46b879b229272501998c5de04f"
@@ -2039,6 +2046,12 @@
 "Cart.Rarity" "New Release"
 ""
 
+"Cart.MD5" "18b476a34ce5e6db2c032029873ac39b"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Atlantis (32 in 1) (BitCorp) (Hack)"
+""
+
 "Cart.MD5" "18be8981b8201638f3ed8ae92bb4c215"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL60) (TJ)"
@@ -2070,7 +2083,6 @@
 "Cart.ModelNo" "VCS83111"
 "Cart.Name" "Asteroid Fire (1983) (Home Vision) (PAL)"
 "Cart.Rarity" "Extremely Rare"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "19098c46da0640f2b5763167dea6c716"
@@ -2127,7 +2139,6 @@
 "Cart.Name" "Blackjack (Unknown) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
-"Display.YStart" "56"
 ""
 
 "Cart.MD5" "19abaf2144b6a7b281c4112cff154904"
@@ -2197,7 +2208,6 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Cosmic Swarm (Jone Yuan) (4K)"
 "Cart.Note" "2600 Screen Search Console"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -2251,7 +2261,6 @@
 
 "Cart.MD5" "1bf503c724001b09be79c515ecfcbd03"
 "Cart.Name" "Bumper Bash (Unknown) (PAL)"
-"Display.YStart" "54"
 ""
 
 "Cart.MD5" "1bfae770e089fa81412d04eb299f4c3f"
@@ -2323,9 +2332,9 @@
 ""
 
 "Cart.MD5" "1cf59fc7b11cdbcefe931e41641772f6"
-"Cart.Manufacturer" "Sega"
+"Cart.Manufacturer" "SEGA"
 "Cart.ModelNo" "005-01"
-"Cart.Name" "Buck Rogers - Planet of Zoom (1983) (Sega)"
+"Cart.Name" "Buck Rogers - Planet of Zoom (1983) (SEGA)"
 "Display.Phosphor" "YES"
 ""
 
@@ -2392,7 +2401,7 @@
 "Cart.MD5" "1e1290ea102e12d7ac52820961457e2b"
 "Cart.Manufacturer" "Parker Brothers, Wilfredo Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart"
 "Cart.ModelNo" "PB5540"
-"Cart.Name" "Star Wars - The Arcade Game (12-15-1983) (Parker Bros) (Prototype)"
+"Cart.Name" "Star Wars - The Arcade Game (12-15-1983) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
 ""
@@ -2401,6 +2410,13 @@
 "Cart.Manufacturer" "Atari, David Crane"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Slot Machine (32 in 1) (1988) (Atari) (PAL) (4K)"
+""
+
+"Cart.MD5" "1e31b3a48865ba98d4d1aa5205115983"
+"Cart.Manufacturer" "Atari - Roklan, Bob Curtiss"
+"Cart.Name" "Firefox (1983) (Atari) (Prototype)"
+"Cart.Note" "AKA Combat II, Fighter Command"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "1e587ca91518a47753a28217cd4fd586"
@@ -2450,7 +2466,6 @@
 
 "Cart.MD5" "1ec5bef77b91e59313cba205f15b06d7"
 "Cart.Name" "Overhead Adventure Demo 1 (PD)"
-"Display.YStart" "60"
 ""
 
 "Cart.MD5" "1ede4f365ce1386d58f121b15a775e24"
@@ -2642,7 +2657,7 @@
 "Cart.MD5" "20edcc3aa6c189259fa7e2f044a99c49"
 "Cart.Manufacturer" "Spectravision - Spectravideo"
 "Cart.ModelNo" "SA-201"
-"Cart.Name" "Gangster Alley (1982) (Spectravision)"
+"Cart.Name" "Gangster Alley (1982) (Spectravision) [fixed]"
 ""
 
 "Cart.MD5" "211774f4c5739042618be8ff67351177"
@@ -2727,7 +2742,6 @@
 
 "Cart.MD5" "21b09c40295c2d7074a83ae040f22edf"
 "Cart.Name" "Marble Craze (V0.90) (Easy Version) (Paul Slocum)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "21d2c435bcccde7792d82844b3cf60f4"
@@ -2757,7 +2771,6 @@
 "Cart.MD5" "225522777dc7155627808bde0c1d0ef0"
 "Cart.Name" "This Planet Sucks Demo 1 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "22675cacd9b71dea21800cbf8597f000"
@@ -2899,7 +2912,7 @@
 ""
 
 "Cart.MD5" "24544ee5d76f579992d9522e9b238955"
-"Cart.Manufacturer" "Carrere Video - Western Technologies, Tom Sloper - Teldec - Prism"
+"Cart.Manufacturer" "Carrere Video - Western Technologies, Jeff Corsiglia, David Johnson, Tom Sloper - Teldec - Prism"
 "Cart.ModelNo" "USC2004"
 "Cart.Name" "Picnic (1983) (Carrere Video) (PAL)"
 "Cart.Note" "Uses the Paddle Controllers"
@@ -2965,7 +2978,6 @@
 "Cart.Name" "Dragon Defender (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "15"
 "Display.Phosphor" "YES"
 ""
 
@@ -3051,9 +3063,8 @@
 "Cart.MD5" "25e73efb9a6edf119114718bd2f646ba"
 "Cart.Manufacturer" "Atari, Suki Lee"
 "Cart.ModelNo" "CX26113"
-"Cart.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype) [a]"
+"Cart.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype) (4K) [a]"
 "Cart.Rarity" "Prototype"
-"Display.YStart" "24"
 ""
 
 "Cart.MD5" "25f2e760cd7f56b88aac88d63757d41b"
@@ -3148,7 +3159,6 @@
 "Cart.Rarity" "Extremely Rare"
 "Controller.Left" "PADDLES_IAXIS"
 "Controller.MouseAxis" "AUTO 65"
-"Display.YStart" "22"
 "Display.Phosphor" "YES"
 ""
 
@@ -3196,7 +3206,6 @@
 "Cart.Name" "SWOOPS! (v0.96) (TJ)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "27baecd618e7e53dc11f2a9c559f529d"
@@ -3247,7 +3256,6 @@
 "Cart.Name" "Bobby Is Going Home (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Bobby geht Heim"
 "Cart.Rarity" "Rare"
-"Display.YStart" "42"
 ""
 
 "Cart.MD5" "2825f4d068feba6973e61c84649489fe"
@@ -3261,6 +3269,12 @@
 "Cart.ModelNo" "311388"
 "Cart.Name" "Black Hole (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Cosmic Ark (Double-Game Package)"
+""
+
+"Cart.MD5" "283cb03ee031c842beabdad1aa4e7dbc"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Demon Attack (32 in 1) (BitCorp) (Hack)"
 ""
 
 "Cart.MD5" "283dee88f295834c4c077d788f151125"
@@ -3305,7 +3319,6 @@
 "Cart.ModelNo" "PG204"
 "Cart.Name" "Open, Sesame! (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Sesam, Offne Dich"
-"Display.YStart" "38"
 "Display.Phosphor" "YES"
 ""
 
@@ -3401,7 +3414,6 @@
 "Cart.Manufacturer" "Gray Games & AtariAge"
 "Cart.Name" "E.T. Book Cart (NTSC)"
 "Cart.Note" "Charles F. Gray & Michael Rideout"
-"Display.YStart" "15"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "55"
 ""
@@ -3430,7 +3442,6 @@
 "Cart.Manufacturer" "Tigervision, Bill Hogue"
 "Cart.ModelNo" "7-011"
 "Cart.Name" "Miner 2049er Volume II (1983) (Tigervision)"
-"Display.YStart" "26"
 "Display.Phosphor" "YES"
 ""
 
@@ -3489,7 +3500,6 @@
 "Cart.Name" "Pharaoh's Curse (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "40"
 "Display.Phosphor" "YES"
 ""
 
@@ -3600,9 +3610,9 @@
 ""
 
 "Cart.MD5" "2c3b9c171e214e9e46bbaa12bdf8977e"
-"Cart.Manufacturer" "Atari, Ed Logg, Carol Shaw - Sears"
-"Cart.ModelNo" "CX2639 - 49-75162"
-"Cart.Name" "Othello (1981) (Atari) (4K) [a]"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Othello (32 in 1) (BitCorp)"
 ""
 
 "Cart.MD5" "2c45c3eb819a797237820a1816c532eb"
@@ -3791,7 +3801,6 @@
 "Cart.Name" "E.T. Book Cart (PAL60)"
 "Cart.Note" "Charles F. Gray & Michael Rideout"
 "Display.Format" "PAL60"
-"Display.YStart" "15"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "55"
 ""
@@ -3874,8 +3883,8 @@
 ""
 
 "Cart.MD5" "2f0546c4d238551c7d64d884b618100c"
-"Cart.Manufacturer" "Sega, Jeff Lorenz"
-"Cart.Name" "Ixion (1984) (Sega) (Prototype)"
+"Cart.Manufacturer" "SEGA, Jeff Lorenz"
+"Cart.Name" "Ixion (1984) (SEGA) (Prototype)"
 "Cart.Rarity" "Prototype"
 ""
 
@@ -3969,7 +3978,6 @@
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "10"
-"Display.YStart" "42"
 ""
 
 "Cart.MD5" "30685b9b6ebd9ba71536dd7632a1e3b6"
@@ -4012,16 +4020,16 @@
 ""
 
 "Cart.MD5" "30f0b49661cfcfd4ec63395fab837dc3"
-"Cart.Manufacturer" "Sega, Jeff Lorenz - Teldec"
+"Cart.Manufacturer" "SEGA, Jeff Lorenz - Teldec"
 "Cart.ModelNo" "004-01"
-"Cart.Name" "Star Trek - Strategic Operations Simulator (1983) (Sega) (PAL)"
+"Cart.Name" "Star Trek - Strategic Operations Simulator (1983) (SEGA) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "3105967f7222cc36a5ac6e5f6e89a0b4"
-"Cart.Manufacturer" "Sega, Jeff Lorenz"
+"Cart.Manufacturer" "SEGA, Jeff Lorenz"
 "Cart.ModelNo" "011-01, 011-02"
-"Cart.Name" "Spy Hunter (1984) (Sega)"
+"Cart.Name" "Spy Hunter (1984) (SEGA)"
 "Cart.Note" "Uses Joystick Coupler (Dual Control Module)"
 ""
 
@@ -4251,9 +4259,9 @@
 ""
 
 "Cart.MD5" "335a7c5cfa6fee0f35f5824d1fa09aed"
-"Cart.Manufacturer" "Sega - Beck-Tech, Steve Beck, Phat Ho - Teldec"
+"Cart.Manufacturer" "SEGA - Beck-Tech, Steve Beck, Phat Ho - Teldec"
 "Cart.ModelNo" "006-01 - 3.60105 VG"
-"Cart.Name" "Congo Bongo (1983) (Sega) (PAL)"
+"Cart.Name" "Congo Bongo (1983) (SEGA) (PAL)"
 ""
 
 "Cart.MD5" "3367eeba3269aa04720abe6169767502"
@@ -4339,7 +4347,6 @@
 
 "Cart.MD5" "34b269387fa1aa5a396636f5ecdd63dd"
 "Cart.Name" "Marble Craze (mc7_23) (Paul Slocum)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "34c808ad6577dbfa46169b73171585a3"
@@ -4408,7 +4415,6 @@
 "Cart.Manufacturer" "TechnoVision - Video Technology"
 "Cart.ModelNo" "TVS1003"
 "Cart.Name" "Pharaoh's Curse (1983) (TechnoVision) (PAL)"
-"Display.YStart" "34"
 "Display.Phosphor" "YES"
 ""
 
@@ -4460,7 +4466,7 @@
 ""
 
 "Cart.MD5" "3624e5568368929fabb55d7f9df1022e"
-"Cart.Manufacturer" "Activision - Imagineering, Dan Kitchen"
+"Cart.Manufacturer" "Activision - Imagineering, Donald Hahn, Dan Kitchen"
 "Cart.ModelNo" "EAK-050-04"
 "Cart.Name" "Double Dragon (1989) (Activision) (PAL)"
 ""
@@ -4727,10 +4733,10 @@
 ""
 
 "Cart.MD5" "393e41ca8bdd35b52bf6256a968a9b89"
-"Cart.Manufacturer" "U.S. Games Corporation - Western Technologies"
+"Cart.Manufacturer" "U.S. Games Corporation - Western Technologies, John Hall"
 "Cart.ModelNo" "VC1012"
 "Cart.Name" "M.A.D. (1983) (U.S. Games)"
-"Cart.Note" "AKA Missile Intercept"
+"Cart.Note" "AKA Missile Intercept, Mutually Assured Destruction"
 ""
 
 "Cart.MD5" "3947eb7305b0c904256cdbc5c5956c0f"
@@ -4855,7 +4861,7 @@
 ""
 
 "Cart.MD5" "3ad3dc799211ccd424d7c6d454401436"
-"Cart.Manufacturer" "Probe 2000 - North American Philips Consumer Electronics Corporation"
+"Cart.Manufacturer" "Probe 2000 - NAP"
 "Cart.Name" "Power Lords (1983) (Probe) (Prototype)"
 "Cart.Rarity" "Prototype"
 ""
@@ -4870,7 +4876,6 @@
 "Cart.Manufacturer" "Tigervision"
 "Cart.ModelNo" "7-008"
 "Cart.Name" "Miner 2049er (1983) (Tigervision) [fixed]"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "3b097a7ed5bd2a84dc3d3ed361e9c31c"
@@ -4881,7 +4886,6 @@
 "Cart.Manufacturer" "Xonox - Beck-Tech"
 "Cart.ModelNo" "6210, 06002, 06004, 99002"
 "Cart.Name" "Ghost Manor (1983) (Xonox) (PAL) [a]"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "3b2c32fcd331664d037952bcaa62df94"
@@ -4898,7 +4902,6 @@
 "Cart.MD5" "3b64a00ce147c3c29f7f8f8e531d08d8"
 "Cart.Name" "This Planet Sucks (16K) (Greg Troutman)"
 "Cart.Rarity" "New Release"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "3b69f8929373598e1752f43f8da61aa4"
@@ -5045,7 +5048,6 @@
 "Cart.Name" "Bobby Is Going Home (1983) (CCE) (PAL)"
 "Cart.Note" "AKA Bobby Vai Para Casa"
 "Cart.Rarity" "Rare"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "3cdd91e1c28d28e856c0063d602da166"
@@ -5153,7 +5155,6 @@
 "Cart.MD5" "3e33ac10dcf2dff014bc1decf8a9aea4"
 "Cart.Manufacturer" "Spectravideo - Video Games Industries Corporation, Michael Schwartz - Ralston Purina"
 "Cart.Name" "Chase the Chuckwagon (1983) (Spectravideo)"
-"Display.YStart" "22"
 "Display.Phosphor" "YES"
 ""
 
@@ -5252,7 +5253,6 @@
 "Cart.ModelNo" "6230, 7210, 06004, 99004"
 "Cart.Name" "Artillery Duel (1983) (Xonox) [a]"
 "Cart.Rarity" "Extremely Rare"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "3f251c50aa7237e61a38ab42315ebed4"
@@ -5294,7 +5294,6 @@
 "Cart.Name" "Laser Blast (Jone Yuan) (4K) (Hack)"
 "Cart.Note" "2600 Screen Search Console"
 "Cart.Rarity" "Hack"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "3f6dbf448f25e2bd06dea44248eb122d"
@@ -5358,7 +5357,6 @@
 
 "Cart.MD5" "402b1ca3c230a60fb279d4a2a10fa677"
 "Cart.Name" "3-D Tic-Tac-Toe (Unknown) (PAL) (4K)"
-"Display.YStart" "62"
 ""
 
 "Cart.MD5" "402d876ec4a73f9e3133f8f7f7992a1e"
@@ -5380,7 +5378,6 @@
 
 "Cart.MD5" "4066d7d88ec4a2c656127a67fa52dcf1"
 "Cart.Name" "Overhead Adventure Demo 2 (PD)"
-"Display.YStart" "64"
 ""
 
 "Cart.MD5" "407a0c6cc0ff777f67b669440d68a242"
@@ -5413,7 +5410,6 @@
 "Cart.Manufacturer" "Xonox - K-Tel Software - Beck-Tech, Steve Beck"
 "Cart.ModelNo" "6210, 06002, 06004, 99002"
 "Cart.Name" "Ghost Manor (1983) (Xonox) (PAL)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "40d9f5709877ecf3dd1184f9791dd35e"
@@ -5443,7 +5439,6 @@
 "Cart.MD5" "4153dd2beed648e9dc082140ebe8e836"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Coke Zero (v1.0) (NTSC)"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "415c11fcac66bbd2ace2096687774b5a"
@@ -5453,7 +5448,7 @@
 "Cart.MD5" "4181087389a79c7f59611fb51c263137"
 "Cart.Manufacturer" "Atari, Suki Lee"
 "Cart.ModelNo" "CX26113"
-"Cart.Name" "Miss Piggy's Wedding (06-24-1983) (Atari) (Prototype) (8K)"
+"Cart.Name" "Miss Piggy's Wedding (06-24-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
 ""
 
@@ -5551,7 +5546,6 @@
 "Cart.Name" "Eggomania (1982) (U.S. Games)"
 "Cart.Note" "Uses the Paddle Controllers"
 "Controller.MouseAxis" "AUTO 60"
-"Display.YStart" "26"
 ""
 
 "Cart.MD5" "42b3ab3cf661929bdc77b621a8c37574"
@@ -5583,7 +5577,6 @@
 
 "Cart.MD5" "4311a4115fb7bc68477c96cf44cebacf"
 "Cart.Name" "Challenge (Unknown)"
-"Display.YStart" "14"
 ""
 
 "Cart.MD5" "4326edb70ff20d0ee5ba58fa5cb09d60"
@@ -5642,7 +5635,7 @@
 ""
 
 "Cart.MD5" "4474b3ad3bf6aabe719a2d7f1d1fb4cc"
-"Cart.Manufacturer" "Activision - Imagineering, Dan Kitchen"
+"Cart.Manufacturer" "Activision - Imagineering, Dan Kitchen, Garry Kitchen"
 "Cart.ModelNo" "EAX-039-04B, EAX-039-04I"
 "Cart.Name" "Kung-Fu Master (1987) (Activision) (PAL)"
 ""
@@ -5962,6 +5955,14 @@
 "Cart.Name" "Q-bert (1987) (Atari)"
 ""
 
+"Cart.MD5" "4857f8bb88bb63c640d3ea5aac7f5d6d"
+"Cart.Manufacturer" "Atari, James Andreasen - Sears"
+"Cart.ModelNo" "CX2654 - 49-75141"
+"Cart.Name" "Haunted House (08-12-81) (Atari) (Prototype)"
+"Cart.Note" "AKA Mystery Mansion, Graves' Manor, Nightmare Manor"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "4868a81e1b6031ed66ecd60547e6ec85"
 "Cart.Manufacturer" "Eric Mooney"
 "Cart.Name" "Invaders by Erik Mooney (V2.1) (1-3-98) (PD)"
@@ -6001,7 +6002,6 @@
 "Cart.ModelNo" "476.774 5"
 "Cart.Name" "Bobby geht nach Hause (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Bobby Is Going Home"
-"Display.YStart" "42"
 ""
 
 "Cart.MD5" "48f18d69799a5f5451a5f0d17876acef"
@@ -6065,7 +6065,6 @@
 
 "Cart.MD5" "49571b26f46620a85f93448359324c28"
 "Cart.Name" "Save Our Ship (Unknown)"
-"Display.YStart" "37"
 ""
 
 "Cart.MD5" "497c811026367c08fd838c9c59e5041d"
@@ -6241,7 +6240,6 @@
 
 "Cart.MD5" "4b9581c3100a1ef05eac1535d25385aa"
 "Cart.Name" "IQ 180 (Unknown)"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "4baada22435320d185c95b7dd2bcdb24"
@@ -6362,6 +6360,12 @@
 "Cart.Name" "Springer (1983) (Tigervision)"
 ""
 
+"Cart.MD5" "4d06f72cc3d8934579c11ff8f375c260"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Bowling (32 in 1) (BitCorp) (Hack)"
+""
+
 "Cart.MD5" "4d0a28443f7df5f883cf669894164cfa"
 "Cart.Name" "Beast Invaders (Hack)"
 "Cart.Note" "Hack of Space Invaders"
@@ -6413,6 +6417,12 @@
 "Cart.ModelNo" "781698"
 "Cart.Name" "Volleyball (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA RealSports Volleyball (Double-Game Package)"
+""
+
+"Cart.MD5" "4dbd7e8b30e715efc8d71d215aec7fe7"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Air Raiders (32 in 1) (BitCorp) (Hack)"
 ""
 
 "Cart.MD5" "4dbf47c7f5ac767a3b07843a530d29a5"
@@ -6628,7 +6638,6 @@
 "Cart.Name" "SWOOPS! (v0.94) (TJ)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "50568c80ac61cab789d9923c9b05b68e"
@@ -6702,7 +6711,6 @@
 "Cart.Manufacturer" "Parker Brothers - JWDA, Todd Marshall"
 "Cart.ModelNo" "PB5550"
 "Cart.Name" "Q-bert's Qubes (1984) (Parker Bros)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "517923e655755086a3b72c0b17b430e6"
@@ -6751,7 +6759,6 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "PG206"
 "Cart.Name" "Bobby Is Going Home (1983) (BitCorp)"
-"Cart.Note" "AKA Bobby geht Heim"
 ""
 
 "Cart.MD5" "522b27a8afeb951b5a5a667f8d1a46a1"
@@ -6919,6 +6926,13 @@
 "Cart.Note" "AKA RealSports Tennis"
 ""
 
+"Cart.MD5" "53bd1c7c972ae634c912331a9276c6e3"
+"Cart.Manufacturer" "Atari, Nick 'Sandy Maiwald' Turner"
+"Cart.ModelNo" "CX2665"
+"Cart.Name" "Frog Pond (1982) (Atari) (Prototype) (4K)"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "53d181cde2e0219b5754caad246fcb66"
 "Cart.Name" "Missile Demo (1998) (Ruffin Bailey) (PD)"
 ""
@@ -7043,6 +7057,13 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cart.MD5" "554fd5775ca6d544818c96825032cf0d"
+"Cart.Manufacturer" "Atari - Roklan, Bob Curtiss"
+"Cart.Name" "Firefox (06-01-83) (Atari) (Prototype)"
+"Cart.Note" "AKA Combat II, Fighter Command"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "557e893616648c37a27aab5a47acbf10"
 "Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Augustin Ortiz"
 "Cart.ModelNo" "CX26169"
@@ -7079,9 +7100,9 @@
 ""
 
 "Cart.MD5" "56210a3b9ea6d5dd8f417a357ed8ca92"
-"Cart.Manufacturer" "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead"
+"Cart.Manufacturer" "Probe 2000 - NAP, Roger Booth, Todd Marshall, Robin McDaniel, Jim Wickstead"
 "Cart.ModelNo" "3152VC"
-"Cart.Name" "Pursuit of the Pink Panther (Probe) (Prototype, bad dump)"
+"Cart.Name" "Pursuit of the Pink Panther (Probe) (Prototype) [bad dump]"
 "Cart.Note" "AKA Adventures of the Pink Panther"
 "Cart.Rarity" "Prototype"
 ""
@@ -7272,9 +7293,8 @@
 "Cart.MD5" "598a4e6e12f8238b7e7555f5a7777b46"
 "Cart.Manufacturer" "Tigervision"
 "Cart.ModelNo" "7-008"
-"Cart.Name" "Miner 2049er (1982) (Tigervision) (Prototype)"
+"Cart.Name" "Miner 2049er (1983) (Tigervision) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "599cbf919d47a05af975ad447df29497"
@@ -7404,7 +7424,6 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-808"
 "Cart.Name" "Phantom Tank (1983) (CCE) (PAL)"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "5acf9865a72c0ce944979f76ff9610f0"
@@ -7424,9 +7443,9 @@
 ""
 
 "Cart.MD5" "5af9cd346266a1f2515e1fbc86f5186a"
-"Cart.Manufacturer" "Sega"
+"Cart.Manufacturer" "SEGA"
 "Cart.ModelNo" "002-01"
-"Cart.Name" "Sub-Scan (1983) (Sega)"
+"Cart.Name" "Sub-Scan (1983) (SEGA)"
 "Cart.Note" "AKA Subterfuge"
 ""
 
@@ -7438,7 +7457,6 @@
 "Cart.Rarity" "Extremely Rare"
 "Controller.Left" "PADDLES_IAXIS"
 "Controller.MouseAxis" "AUTO 65"
-"Display.YStart" "22"
 "Display.Phosphor" "YES"
 ""
 
@@ -7470,7 +7488,7 @@
 ""
 
 "Cart.MD5" "5b92a93b23523ff16e2789b820e2a4c5"
-"Cart.Manufacturer" "Activision - Imagineering, Dan Kitchen"
+"Cart.Manufacturer" "Activision - Imagineering, Dan Kitchen, Garry Kitchen"
 "Cart.ModelNo" "AG-039-04"
 "Cart.Name" "Kung-Fu Master (1987) (Activision)"
 ""
@@ -7640,7 +7658,6 @@
 "Cart.Name" "SWOOPS! (v0.96) (TJ) (PAL)"
 "Cart.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "5d8fb14860c2f198472b233874f6b0c9"
@@ -7795,6 +7812,12 @@
 "Cart.Rarity" "Uncommon"
 ""
 
+"Cart.MD5" "5f4ebf8a1e5f5f7b9ff3e3c6affff3e6"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Donkey Kong (32 in 1) (BitCorp) (Hack)"
+""
+
 "Cart.MD5" "5f560837396387455c9dcb05cdd4b053"
 "Cart.Manufacturer" "Canal 3 - Intellivision"
 "Cart.Name" "Eggomania (Canal 3)"
@@ -7842,8 +7865,8 @@
 ""
 
 "Cart.MD5" "5f950a2d1eb331a1276819520705df94"
-"Cart.Manufacturer" "20th Century Fox Video Games"
-"Cart.Name" "Unknown 20th Century Fox Game (1983) (20th Century Fox) (Prototype)"
+"Cart.Manufacturer" "20th Century Fox Video Games - Micro Computer Technologies, Jim Collas"
+"Cart.Name" "Heart Like a Wheel (1983) (20th Century Fox) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
 ""
@@ -7863,7 +7886,6 @@
 
 "Cart.MD5" "5fb71cc60e293fe10a5023f11c734e55"
 "Cart.Name" "This Planet Sucks (Fix) (27-12-2002) (Greg Troutman)"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "600d48eef5c0ec27db554b7328b3251c"
@@ -7908,7 +7930,6 @@
 "Cart.Manufacturer" "Atari, Larry Kaplan"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Air-Sea Battle (32 in 1) (1988) (Atari) (PAL) (4K)"
-"Display.YStart" "40"
 ""
 
 "Cart.MD5" "605fd59bfef88901c8c4794193a4cbad"
@@ -7968,7 +7989,6 @@
 "Cart.Name" "Boring Pac-Man (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "6141c095d0aee4e734bebfaac939030a"
@@ -8008,7 +8028,6 @@
 
 "Cart.MD5" "619de46281eb2e0adbb98255732483b4"
 "Cart.Name" "Time Warp (Unknown)"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "61dbe94f110f30ca4ec524ae5ce2d026"
@@ -8091,7 +8110,6 @@
 "Cart.MD5" "62f74a2736841191135514422b20382d"
 "Cart.Name" "Pharaoh's Curse (Unknown)"
 "Display.Format" "PAL60"
-"Display.YStart" "20"
 "Display.Phosphor" "YES"
 ""
 
@@ -8138,6 +8156,15 @@
 "Cart.Rarity" "Hack"
 ""
 
+"Cart.MD5" "6358f7f8bf0483402a080efccf250d61"
+"Cart.Manufacturer" "CommaVid, John Bronstein"
+"Cart.ModelNo" "CM-003"
+"Cart.Name" "Cosmic Swarm (1982) (CommaVid) (Prototype)"
+"Cart.Note" "AKA Termite"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
 "Cart.MD5" "635cc7a0db33773959d739d04eff96c2"
 "Cart.Name" "Minesweeper (V.90) (Soren Gust) (PD)"
 ""
@@ -8169,7 +8196,6 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AG-001"
 "Cart.Name" "Dragster (1980) (Activision) (4K)"
-"Display.YStart" "27"
 ""
 
 "Cart.MD5" "63a7445b1d3046d3cdcdbd488dca38d9"
@@ -8332,6 +8358,12 @@
 "Controller.MouseAxis" "AUTO 60"
 ""
 
+"Cart.MD5" "6588d192d9a8afce27b44271a2072325"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Basketball (32 in 1) (BitCorp) (Hack)"
+""
+
 "Cart.MD5" "65917ae29a8c9785bb1f2acb0d6aafd0"
 "Cart.Name" "Junkosoft One Year Demo (1999) (PD)"
 ""
@@ -8348,7 +8380,7 @@
 ""
 
 "Cart.MD5" "65b106eba3e45f3dab72ea907f39f8b4"
-"Cart.Manufacturer" "Sparrow - HomeComputer Software, Dan Schafer, Glenn Stohel, Jon Tedesco"
+"Cart.Manufacturer" "Christian Software Development - HomeComputer Software, Dan Schafer, Glenn Stohel, Jon Tedesco - Sparrow"
 "Cart.ModelNo" "GCG 1001T"
 "Cart.Name" "Music Machine, The (1983) (Sparrow)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
@@ -8398,7 +8430,7 @@
 "Cart.MD5" "6651e2791d38edc02c5a5fd7b47a1627"
 "Cart.Manufacturer" "Parker Brothers, Wilfredo Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart"
 "Cart.ModelNo" "PB5540"
-"Cart.Name" "Star Wars - The Arcade Game (04-05-1984) (Parker Bros) (Prototype) (8K)"
+"Cart.Name" "Star Wars - The Arcade Game (04-05-1984) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
 ""
@@ -8471,6 +8503,12 @@
 "Cart.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cart.ModelNo" "AR-4400"
 "Cart.Name" "Dragonstomper (2 of 3) (1982) (Starpath) (PAL)"
+""
+
+"Cart.MD5" "66f49b3248791b9803fa3e2f4165d072"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Football (32 in 1) (BitCorp) (Hack)"
 ""
 
 "Cart.MD5" "66fcf7643d554f5e15d4d06bab59fe70"
@@ -8585,7 +8623,6 @@
 
 "Cart.MD5" "681206a6bde73e71c19743607e96c4bb"
 "Cart.Name" "Casino (Unknown) (PAL)"
-"Display.YStart" "49"
 ""
 
 "Cart.MD5" "6833c26f385e866f3a0fa0dff311216e"
@@ -8615,7 +8652,6 @@
 
 "Cart.MD5" "6847ce70819b74febcfd03e99610243b"
 "Cart.Name" "Ruby Runner 4A50"
-"Display.YStart" "27"
 "Display.Phosphor" "YES"
 ""
 
@@ -8660,6 +8696,12 @@
 "Cart.Note" "AKA Snail Against Squirrel"
 ""
 
+"Cart.MD5" "68ac69b8e1ba83af8792f693f5ae7783"
+"Cart.Manufacturer" "Digivision"
+"Cart.Name" "Fathon (Digivision)"
+"Cart.Note" "AKA Fathom"
+""
+
 "Cart.MD5" "68c80e7e1d30df98a0cf67ecbf39cc67"
 "Cart.Manufacturer" "Hozer Video Games"
 "Cart.Name" "Gunfight 2600 - One Step Forward & Two Steps Back (2001) (MP)"
@@ -8702,7 +8744,6 @@
 "Cart.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cart.ModelNo" "AR-4401"
 "Cart.Name" "Survival Island (1983) (Arcadia) [a]"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "692202772d8b38ccf85a90c8003a1324"
@@ -8731,6 +8772,13 @@
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Earth Attack (Zellers)"
 "Cart.Note" "AKA Defender"
+""
+
+"Cart.MD5" "69877da5caded48315e3e45882a303d5"
+"Cart.Manufacturer" "Atari - Roklan, Joe Gaucher, Alex Leavens"
+"Cart.ModelNo" "CX2683"
+"Cart.Name" "Crazy Climber (1983) (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "698f569eab5a9906eec3bc7c6b3e0980"
@@ -8870,7 +8918,6 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "PG203"
 "Cart.Name" "Phantom Tank (1982) (BitCorp) (PAL)"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "6b4eb5b3df80995b8d9117cb7e9aeb3c"
@@ -8891,7 +8938,6 @@
 
 "Cart.MD5" "6b6ca32228ae352b4267e4bd2cddf10c"
 "Cart.Name" "Pac-Man 4 (Pac-Man Hack)"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "6b71f20c857574b732e7a8e840bd3cb2"
@@ -9140,6 +9186,13 @@
 "Cart.Name" "Poker Squares (V0.14) (2001) (B. Watson)"
 ""
 
+"Cart.MD5" "6e7efb0ed13ec28a00d19572de9c9f03"
+"Cart.Manufacturer" "Apollo - Games by Apollo"
+"Cart.ModelNo" "AP-2006"
+"Cart.Name" "Infiltrate (1982) (Apollo) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "6ed5012793f5ddf4353a48c11ea9b8d3"
 "Cart.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cart.ModelNo" "AR-4302"
@@ -9176,6 +9229,13 @@
 "Cart.Name" "Defender Arcade (Genesis)"
 "Cart.Note" "Genesis controller (C is smartbomb)"
 "Cart.Rarity" "Hack of Defender 2"
+""
+
+"Cart.MD5" "6f744f14aac04f7e1ea0d3f4bafcb3e4"
+"Cart.Manufacturer" "Atari - Roklan, Joe Gaucher, Alex Leavens"
+"Cart.ModelNo" "CX2683"
+"Cart.Name" "Crazy Climber (1983) (Atari) (Prototype) [a3]"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "6f74ed915ffe73b524ef0f63819e2a1d"
@@ -9243,7 +9303,6 @@
 "Cart.Name" "TP Bug (Charles Morgan) (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "700a786471c8a91ec09e2f8e47f14a04"
@@ -9389,7 +9448,6 @@
 "Cart.ModelNo" "CX2643"
 "Cart.Name" "Codebreaker (1978) (Atari) (PAL) (4K) [a]"
 "Cart.Note" "Uses Keypad Controllers"
-"Display.YStart" "57"
 ""
 
 "Cart.MD5" "71f09f128e76eb14e244be8f44848759"
@@ -9438,14 +9496,12 @@
 "Cart.ModelNo" "688.383 9"
 "Cart.Name" "Die Ente und der Wolf (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Pooyan"
-"Display.YStart" "26"
 ""
 
 "Cart.MD5" "72a46e0c21f825518b7261c267ab886e"
 "Cart.Manufacturer" "Xonox - K-Tel Software - Computer Magic"
 "Cart.ModelNo" "99005, 6220, 6250"
 "Cart.Name" "Robin Hood (1983) (Xonox)"
-"Display.YStart" "31"
 ""
 
 "Cart.MD5" "72a5b5052272ac785fa076709d16cef4"
@@ -9474,7 +9530,6 @@
 "Cart.Name" "Pac-Man (1981) (Atari) (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "72fd08deed1d6195942e0c6f392e9848"
@@ -9492,7 +9547,6 @@
 "Cart.MD5" "73158ea51d77bf521e1369311d26c27b"
 "Cart.Manufacturer" "Zellers"
 "Cart.Name" "Challenge (Zellers)"
-"Display.YStart" "25"
 ""
 
 "Cart.MD5" "73521c6b9fed6a243d9b7b161a0fb793"
@@ -9844,7 +9898,6 @@
 "Cart.ModelNo" "AG-001"
 "Cart.Name" "Dragster (1980) (Activision)"
 "Cart.Note" "AKA Drag Strip"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "7732e4e4cc2644f163d6650ddcc9d9df"
@@ -10212,7 +10265,7 @@
 "Cart.MD5" "7b8a481e0c5aa78150b5555dff01f64e"
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
 "Cart.ModelNo" "CX2692"
-"Cart.Name" "Moon Patrol (05-16-1983) (Atari) (Prototype)"
+"Cart.Name" "Moon Patrol (05-12-1983) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
 ""
 
@@ -10295,7 +10348,6 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Bi! Bi! (Jone Yuan) (PAL)"
 "Cart.Note" "AKA Skindiver"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "7ced6709f091e79a2ab9575d3516a4ac"
@@ -10384,7 +10436,6 @@
 "Cart.ModelNo" "CM-001"
 "Cart.Name" "MagiCard (1981) (CommaVid) (4K)"
 "Cart.Note" "Uses the Keypad Controllers"
-"Display.YStart" "24"
 ""
 
 "Cart.MD5" "7dbc8fa2e488e3f6b87fbe0f76c5b89f"
@@ -10428,7 +10479,7 @@
 ""
 
 "Cart.MD5" "7e2fe40a788e56765fe56a3576019968"
-"Cart.Manufacturer" "Activision - Imagineering, Dan Kitchen"
+"Cart.Manufacturer" "Activision - Imagineering, Donald Hahn, Dan Kitchen"
 "Cart.ModelNo" "AK-050-04"
 "Cart.Name" "Double Dragon (1989) (Activision)"
 ""
@@ -10607,7 +10658,6 @@
 "Cart.ModelNo" "C-807"
 "Cart.Name" "Space Tunnel (1983) (CCE)"
 "Cart.Note" "AKA O Tunel Espacial"
-"Display.YStart" "32"
 ""
 
 "Cart.MD5" "7ff53f6922708119e7bf478d7d618c86"
@@ -10656,7 +10706,7 @@
 "Cart.MD5" "8068e07b484dfd661158b3771d6621ca"
 "Cart.Manufacturer" "Epyx, Steven A. Baker, Peter Engelbrite"
 "Cart.ModelNo" "80561-00286"
-"Cart.Name" "California Games (1988) (Epyx) (PAL)"
+"Cart.Name" "California Games (1987) (Epyx) (PAL)"
 ""
 
 "Cart.MD5" "807841df228ee8aab0a06ee639ce5a8a"
@@ -10692,12 +10742,17 @@
 "Cart.Rarity" "New Release (Hack)"
 ""
 
+"Cart.MD5" "80dcbe1b55f12be731a224a53ee4ad5f"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Amidar (32 in 1) (BitCorp) (Hack)"
+""
+
 "Cart.MD5" "80e1410ec98089e0733cc09e584dba4b"
 "Cart.Manufacturer" "Dynamics"
 "Cart.ModelNo" "DY-293005"
 "Cart.Name" "Jumping Jack (1983) (Dynamics) (PAL)"
 "Cart.Note" "AKA Bobby Is Going Home"
-"Display.YStart" "40"
 ""
 
 "Cart.MD5" "80e52315919bd8a8b82a407ccd9bb13f"
@@ -10899,7 +10954,7 @@
 "Cart.MD5" "8388d6fe59c38c0b3a6ab2c58420036a"
 "Cart.Manufacturer" "Atari, Frank Hausman, Mimi Nyden, Steve Woita"
 "Cart.ModelNo" "CX2686"
-"Cart.Name" "Quadrun (12-06-1982) (Atari) (Prototype)"
+"Cart.Name" "Quadrun (12-06-1982) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
 ""
 
@@ -10915,6 +10970,12 @@
 
 "Cart.MD5" "83d15fb9843d9f84aa3710538403f434"
 "Cart.Name" "Gunfight 2600 - Release Candidate (2001) (MP) (PAL)"
+""
+
+"Cart.MD5" "83e1b9f22f29259679e1018bc04cc018"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Fast Eddie (32 in 1) (BitCorp) (Hack)"
 ""
 
 "Cart.MD5" "83f05ececae8be59ba1e51135f4bdcbf"
@@ -11017,7 +11078,6 @@
 "Cart.MD5" "8530caaaf40acbdcd118c282b5f8a37a"
 "Cart.Name" "This Planet Sucks Demo 2 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "8538c5e3ee83267774480649f83fa8d6"
@@ -11045,7 +11105,6 @@
 "Cart.Manufacturer" "Atari, Carol Shaw"
 "Cart.ModelNo" "CX2618, CX2618P"
 "Cart.Name" "3-D Tic-Tac-Toe (1980) (Atari) (PAL) (4K)"
-"Display.YStart" "44"
 ""
 
 "Cart.MD5" "85502d69fe46b7f54ef2598225678b47"
@@ -11075,9 +11134,8 @@
 "Cart.MD5" "855a42078b14714bcfd490d2cf57e68d"
 "Cart.Manufacturer" "Atari, Suki Lee"
 "Cart.ModelNo" "CX26113"
-"Cart.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype)"
+"Cart.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
-"Display.YStart" "24"
 ""
 
 "Cart.MD5" "85a4133f6dcf4180e36e70ad0fca0921"
@@ -11120,7 +11178,6 @@
 "Cart.Manufacturer" "Apollo - Games by Apollo, Steve Stringfellow"
 "Cart.ModelNo" "AP-2005"
 "Cart.Name" "Lochjaw (1982) (Apollo)"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "862cf669cbced78f9ed31a5d375b2ebe"
@@ -11224,7 +11281,6 @@
 "Cart.ModelNo" "5"
 "Cart.Name" "Open Sesame (1983) (Goliath) (PAL)"
 "Cart.Note" "AKA Open, Sesame!"
-"Display.YStart" "34"
 "Display.Phosphor" "YES"
 ""
 
@@ -11412,7 +11468,7 @@
 "Cart.MD5" "8a183b6357987db5170c5cf9f4a113e5"
 "Cart.Manufacturer" "Atari - Roklan, Joe Gaucher"
 "Cart.ModelNo" "CX2679"
-"Cart.Name" "RealSports Basketball (1983) (Atari) (Prototype) (PAL)"
+"Cart.Name" "RealSports Basketball (01-11-1983) (Atari) (Prototype) (PAL)"
 "Cart.Rarity" "Prototype"
 ""
 
@@ -11532,7 +11588,6 @@
 "Cart.ModelNo" "99007, 6240"
 "Cart.Name" "Tomarc the Barbarian (1983) (Xonox) [a]"
 "Cart.Note" "AKA Thundarr the Barbarian"
-"Display.YStart" "24"
 ""
 
 "Cart.MD5" "8bd8f65377023bdb7c5fcf46ddda5d31"
@@ -11786,7 +11841,7 @@
 "Cart.MD5" "8f5ac5139419c5d49bacc296e342a247"
 "Cart.Manufacturer" "Atari - CCW, Michael Callahan, Preston Stuart"
 "Cart.ModelNo" "CX26103"
-"Cart.Name" "Alpha Beam with Ernie (12-22-1983) (Atari) (Prototype)"
+"Cart.Name" "Alpha Beam with Ernie (12-22-1982) (Atari) (Prototype)"
 "Cart.Note" "Uses Keypad Controllers"
 "Cart.Rarity" "Prototype"
 ""
@@ -11864,7 +11919,6 @@
 "Cart.ModelNo" "PGP204"
 "Cart.Name" "Open Sesame (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cart.Note" "AKA Open, Sesame!"
-"Display.YStart" "34"
 "Display.Phosphor" "YES"
 ""
 
@@ -11874,7 +11928,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Hack"
 "Display.Format" "PAL60"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "90a3c3255f2a54225cdcb50831f8793a"
@@ -12023,6 +12076,12 @@
 "Cart.Name" "Raft Rider (1983) (U.S. Games)"
 ""
 
+"Cart.MD5" "92d1b6cb8a1b615266c4088a58464779"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Fishing Derby (32 in 1) (BitCorp) (Hack)"
+""
+
 "Cart.MD5" "92d1f6ac179ebe5963868d6bc1bdda8d"
 "Cart.Manufacturer" "HES"
 "Cart.ModelNo" "498"
@@ -12136,6 +12195,11 @@
 "Cart.MD5" "93dc15d15e77a7b23162467f95a5f22d"
 "Cart.Manufacturer" "CCE"
 "Cart.Name" "Sky Jinks (CCE)"
+""
+
+"Cart.MD5" "93e276172b521c4491097f8b1393eea7"
+"Cart.Manufacturer" "Atari"
+"Cart.Name" "Diagnostic Test Cartridge 4.2 (06-01-1982) (Atari)"
 ""
 
 "Cart.MD5" "93eb1795c8b1065b1b3d62bb9ec0ccdc"
@@ -12628,7 +12692,7 @@
 "Cart.MD5" "9ab72d3fd2cc1a0c9adb504502579037"
 "Cart.Manufacturer" "Epyx, Steven A. Baker, Peter Engelbrite"
 "Cart.ModelNo" "80561-00286"
-"Cart.Name" "California Games (1988) (Epyx)"
+"Cart.Name" "California Games (1987) (Epyx)"
 ""
 
 "Cart.MD5" "9ad362179c2eea4ea115c7640b4b003e"
@@ -12670,7 +12734,6 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-838"
 "Cart.Name" "Immies & Aggies (1983) (CCE)"
-"Display.YStart" "18"
 ""
 
 "Cart.MD5" "9b246683f44c963a50e41d6b485bee77"
@@ -12755,7 +12818,6 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AG-001"
 "Cart.Name" "Dragster (1980) (Activision) (8K)"
-"Display.YStart" "27"
 ""
 
 "Cart.MD5" "9d2938eb2b17bb73e9a79bbc06053506"
@@ -12994,7 +13056,6 @@
 "Cart.Name" "Egghead (Barry Laws Jr.) (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "a0185c06297b2818f786d11a3f9e42c3"
@@ -13046,7 +13107,6 @@
 "Cart.Name" "Muncher (David Marli) (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "a11099b6ec24e4b00b8795744fb12005"
@@ -13122,7 +13182,7 @@
 ""
 
 "Cart.MD5" "a204cd4fb1944c86e800120706512a64"
-"Cart.Manufacturer" "Coleco"
+"Cart.Manufacturer" "Coleco, Rob Harris"
 "Cart.ModelNo" "2511"
 "Cart.Name" "Smurfs Save the Day (1983) (Coleco)"
 "Cart.Note" "Uses the Kid Vid Controller"
@@ -13184,6 +13244,12 @@
 "Cart.Rarity" "Uncommon"
 ""
 
+"Cart.MD5" "a2a384d3a16d5be50afd12906f146827"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Flash Gordon (32 in 1) (BitCorp) (Hack)"
+""
+
 "Cart.MD5" "a2aae759e4e76f85c8afec3b86529317"
 "Cart.Name" "Boom Bang (Unknown)"
 "Cart.Note" "AKA Crackpots"
@@ -13201,7 +13267,6 @@
 "Cart.Name" "Cat and Mouse (George Veeder) (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
-"Display.YStart" "32"
 ""
 
 "Cart.MD5" "a2eb84cfeed55acd7fece7fefdc83fbb"
@@ -13312,7 +13377,6 @@
 "Cart.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cart.ModelNo" "AR-4000"
 "Cart.Name" "Phaser Patrol (1982) (Arcadia) [a]"
-"Display.YStart" "24"
 "Display.Phosphor" "YES"
 ""
 
@@ -13351,9 +13415,9 @@
 ""
 
 "Cart.MD5" "a499d720e7ee35c62424de882a3351b6"
-"Cart.Manufacturer" "Sega - Beck-Tech, Steve Beck, Phat Ho"
+"Cart.Manufacturer" "SEGA - Beck-Tech, Steve Beck, Phat Ho"
 "Cart.ModelNo" "009-01"
-"Cart.Name" "Up 'n Down (1984) (Sega)"
+"Cart.Name" "Up 'n Down (1984) (SEGA)"
 ""
 
 "Cart.MD5" "a4aa7630e4c0ad7ebb9837d2d81de801"
@@ -13397,7 +13461,6 @@
 "Cart.Manufacturer" "Xonox - K-Tel Software - Beck-Tech, Steve Beck"
 "Cart.ModelNo" "6210, 7210, 06003. 99001"
 "Cart.Name" "Spike's Peak (1983) (Xonox)"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "a4ecb54f877cd94515527b11e698608c"
@@ -13491,6 +13554,11 @@
 "Cart.Name" "Crystal Castles (1984) (Atari) [a]"
 ""
 
+"Cart.MD5" "a6239810564638de7e4c54e66b3014e4"
+"Cart.Manufacturer" "Personal Games Company, Robert Anthony Tokar"
+"Cart.Name" "Birthday Mania (1984) (Personal Games)"
+""
+
 "Cart.MD5" "a62e3e19280ff958407e05ca0a2d5ec7"
 "Cart.Name" "Hangman Ghost Biglist3 (Hack)"
 "Cart.Note" "Hack of Hangman"
@@ -13503,8 +13571,13 @@
 
 "Cart.MD5" "a69f5b1761a8a11c98e706ec7204937f"
 "Cart.Name" "Pharaoh's Curse (Unknown) (PAL)"
-"Display.YStart" "34"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "a6ed8d72ed691fd3aad5b6974fa17978"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Bank Heist (32 in 1) (BitCorp) (Hack)"
 ""
 
 "Cart.MD5" "a74689a08746a667a299b0507e1e6dd9"
@@ -13564,6 +13637,13 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cart.MD5" "a7d2e9408bb7cd70139ecced407ff238"
+"Cart.Manufacturer" "Atari - Roklan, Joe Gaucher, Alex Leavens"
+"Cart.ModelNo" "CX2683"
+"Cart.Name" "Crazy Climber (1983) (Atari) (Prototype) [a1]"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "a7ed7dc5cbc901388afa59030fb11d26"
 "Cart.Manufacturer" "Atari, Warren Robinett"
 "Cart.ModelNo" "CX2606, CX2606P"
@@ -13613,7 +13693,6 @@
 "Cart.Name" "Dragrace (Hack)"
 "Cart.Note" "Hack of Dragster"
 "Cart.Rarity" "Hack"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "a875f0a919129b4f1b5103ddd200d2fe"
@@ -13724,7 +13803,6 @@
 "Cart.MD5" "a98b649912b6ca19eaf5c2d2faf38562"
 "Cart.Name" "This Planet Sucks (Greg Troutman) (PAL) [!]"
 "Cart.Rarity" "New Release"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "a995b6cbdb1f0433abc74050808590e6"
@@ -13761,7 +13839,6 @@
 "Cart.Name" "Bumper Bash (1983) (Spectravideo)"
 "Cart.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "aa2c4b32656bde9a75042a4d158583e1"
@@ -13850,7 +13927,6 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "IQ 180 (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
-"Display.YStart" "27"
 ""
 
 "Cart.MD5" "ab434f4c942d6472e75d5490cc4dd128"
@@ -14082,7 +14158,7 @@
 "Cart.MD5" "ae2f1f69bb38355395c1c75c81acc644"
 "Cart.Manufacturer" "Parker Brothers, Wilfredo Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart"
 "Cart.ModelNo" "PB5540"
-"Cart.Name" "Star Wars - The Arcade Game (12-23-1983) (Parker Bros) (Prototype)"
+"Cart.Name" "Star Wars - The Arcade Game (12-23-1983) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
 ""
@@ -14130,7 +14206,7 @@
 ""
 
 "Cart.MD5" "aed0b7bd64cc384f85fdea33e28daf3b"
-"Cart.Manufacturer" "Atari, Alan J. Murphy, Robert C. Polaro"
+"Cart.Manufacturer" "Atari, Jim Huether, Alan J. Murphy, Robert C. Polaro"
 "Cart.ModelNo" "CX2666"
 "Cart.Name" "RealSports Volleyball (1982) (Atari)"
 ""
@@ -14192,7 +14268,6 @@
 "Cart.Name" "Bobby is Going Home (TJ)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "23"
 ""
 
 "Cart.MD5" "afe88aae81d99e0947c0cfb687b16251"
@@ -14359,7 +14434,6 @@
 "Cart.Manufacturer" "Joe Grand"
 "Cart.Name" "SCSIcide Pre-release 1 (Joe Grand)"
 "Cart.Rarity" "New Release"
-"Display.YStart" "38"
 ""
 
 "Cart.MD5" "b1b20536aef4eed9c79dc5804f077862"
@@ -14408,6 +14482,12 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-823"
 "Cart.Name" "Demon Attack (1983) (CCE)"
+""
+
+"Cart.MD5" "b25841173f058380b1771aacd5e7cdf3"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "PG205"
+"Cart.Name" "Dancing Plate (1982) (BitCorp)"
 ""
 
 "Cart.MD5" "b26506fbf411009e5e3f7365f442960e"
@@ -14482,7 +14562,7 @@
 ""
 
 "Cart.MD5" "b311ab95e85bc0162308390728a7361d"
-"Cart.Manufacturer" "Parker Brothers - Roklan"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1984) (Parker Bros)"
 "Display.Phosphor" "YES"
@@ -14765,7 +14845,6 @@
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Hack"
 "Display.Format" "PAL60"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -14921,11 +15000,10 @@
 "Cart.ModelNo" "CM-010"
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.YStart" "23"
 ""
 
 "Cart.MD5" "b9d1e3be30b131324482345959aed5e5"
-"Cart.Manufacturer" "Activision, Rex Bradford"
+"Cart.Manufacturer" "Activision - Boston Design Center, Rex Bradford"
 "Cart.Name" "Kabobber (07-25-1983) (Activision) (Prototype)"
 "Cart.Rarity" "Prototype"
 ""
@@ -14959,7 +15037,6 @@
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-021"
 "Cart.Name" "Spider Fighter (1983) (Activision) (16K)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "ba3b0eebccc7b791107de5b4abb671b4"
@@ -15205,7 +15282,6 @@
 "Cart.ModelNo" "PG202"
 "Cart.Name" "Space Tunnel (1982) (Puzzy)"
 "Cart.Note" "AKA Le Tunnel de L'Estace"
-"Display.YStart" "34"
 ""
 
 "Cart.MD5" "be41463cd918daef107d249f8cde3409"
@@ -15278,7 +15354,6 @@
 "Cart.ModelNo" "165"
 "Cart.Name" "Star Castle Arcade (2014) (AtariAge)"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -15352,9 +15427,16 @@
 ""
 
 "Cart.MD5" "c0d2434348de72fa6edcc6d8e40f28d7"
-"Cart.Manufacturer" "Sega - Beck-Tech, Steve Beck"
+"Cart.Manufacturer" "SEGA - Beck-Tech, Steve Beck"
 "Cart.ModelNo" "010-01"
-"Cart.Name" "Tapper (1984) (Sega)"
+"Cart.Name" "Tapper (1984) (SEGA)"
+""
+
+"Cart.MD5" "c1034a5bfb0bb13cc5bdf86cc58989a7"
+"Cart.Manufacturer" "Atari, Nick 'Sandy Maiwald' Turner"
+"Cart.ModelNo" "CX2665"
+"Cart.Name" "Frog Pond (1982) (Atari) (Prototype) (4K) [a]"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "c118854d670289a8b5d5156aa74b0c49"
@@ -15470,7 +15552,6 @@
 "Cart.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cart.Name" "Dragster (Jone Yuan)"
 "Cart.Note" "2600 Screen Search Console"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "c221607529cabc93450ef25dbac6e8d2"
@@ -15517,8 +15598,8 @@
 ""
 
 "Cart.MD5" "c29f8db680990cb45ef7fef6ab57a2c2"
-"Cart.Manufacturer" "Parker Brothers, Mike Brodie - Roklan, Paul Crowley"
-"Cart.ModelNo" "PB5320"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Paul Crowley, Bob Curtiss"
+"Cart.ModelNo" "931505"
 "Cart.Name" "Super Cobra (1983) (Parker Bros)"
 ""
 
@@ -15769,7 +15850,7 @@
 "Cart.MD5" "c541a5f6fc23b40a211196dd78233780"
 "Cart.Manufacturer" "Atari, Carla Meninsky - Sears"
 "Cart.ModelNo" "CX2660 - 49-75187"
-"Cart.Name" "Star Raiders (1981) (Atari) (Prototype)"
+"Cart.Name" "Star Raiders (1981) (Atari) (Prototype) (4K)"
 "Cart.Note" "Uses Joystick (left) and Keypad (right) Controllers"
 "Cart.Rarity" "Prototype"
 "Controller.Right" "KEYBOARD"
@@ -15790,7 +15871,6 @@
 
 "Cart.MD5" "c569e57dca93d3bee115a49923057fd7"
 "Cart.Name" "Pac-Space (Pac-Man Hack)"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "c58708c09ccb61625cda9d15ddcd8be6"
@@ -15946,7 +16026,6 @@
 "Cart.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cart.ModelNo" "9 AR-4105"
 "Cart.Name" "Official Frogger, The (1983) (Starpath)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "c745487828a1a6a743488ecebc55ad44"
@@ -15990,7 +16069,6 @@
 "Cart.Name" "Super Congo Bongo (2003) (Larry Petit) (Hack)"
 "Cart.Note" "Hack of Bongo"
 "Cart.Rarity" "Hack"
-"Display.YStart" "34"
 ""
 
 "Cart.MD5" "c7d5819b26b480a49eb26aeb63cc831e"
@@ -16011,7 +16089,7 @@
 ""
 
 "Cart.MD5" "c7f13ef38f61ee2367ada94fdcc6d206"
-"Cart.Manufacturer" "Parker Brothers, Joe Gaucher"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
 "Cart.ModelNo" "PB5370"
 "Cart.Name" "Popeye (1983) (Parker Bros)"
 "Display.Phosphor" "YES"
@@ -16040,12 +16118,18 @@
 "Cart.Name" "Open Sesame (Thomas Jentzsch)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.YStart" "20"
 "Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "c8c7da12f087e8d16d3e6a21b371a5d3"
 "Cart.Name" "Demo Image Series #9 - Genius (28-02-2003) (AD)"
+""
+
+"Cart.MD5" "c8e90fc944596718c84c82b55139b065"
+"Cart.Manufacturer" "Atari - Roklan, Bob Curtiss"
+"Cart.Name" "Firefox (1983) (Atari) (Prototype) [a]"
+"Cart.Note" "AKA Combat II, Fighter Command"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "c8fa5d69d9e555eb16068ef87b1c9c45"
@@ -16332,11 +16416,10 @@
 "Cart.ModelNo" "PG206 [demonstration cartridge]"
 "Cart.Name" "Bobby Is Going Home (1983) (BitCorp) (PAL) [demo cart]"
 "Cart.Note" "AKA Bobby geht Heim"
-"Display.YStart" "42"
 ""
 
 "Cart.MD5" "ccb5fa954fb76f09caae9a8c66462190"
-"Cart.Manufacturer" "Answer Software Corporation - TY Associates"
+"Cart.Manufacturer" "Answer Software Corporation - TY Associates, Mike Wentz"
 "Cart.ModelNo" "ASC1001"
 "Cart.Name" "Malagai (1983) (Answer Software)"
 "Display.Phosphor" "YES"
@@ -16427,9 +16510,9 @@
 ""
 
 "Cart.MD5" "cd88ef1736497288c4533bcca339f881"
-"Cart.Manufacturer" "Sega - Teldec"
+"Cart.Manufacturer" "SEGA - Teldec"
 "Cart.ModelNo" "005-10"
-"Cart.Name" "Buck Rogers - Planet of Zoom (1983) (Sega) (PAL)"
+"Cart.Name" "Buck Rogers - Planet of Zoom (1983) (SEGA) (PAL)"
 "Display.Format" "PAL"
 "Display.Phosphor" "YES"
 ""
@@ -16450,7 +16533,6 @@
 "Cart.Manufacturer" "Paul Slocum"
 "Cart.Name" "Marble Craze Demo (PD)"
 "Cart.Rarity" "New Release"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "cda38714267978b9a8b0b24bee3529ae"
@@ -16505,7 +16587,7 @@
 "Cart.MD5" "ce5524bb18e3bd8e092273ef22d36cb9"
 "Cart.Manufacturer" "Carrere Video - JWDA, Todd Marshall, Wes Trager, Henry Will IV - Teldec - Prism"
 "Cart.ModelNo" "USC1004"
-"Cart.Name" "Commando Raid (Carrere Video) (PAL)"
+"Cart.Name" "Commando Raid (1983) (Carrere Video) (PAL)"
 ""
 
 "Cart.MD5" "ce5cc62608be2cd3ed8abd844efb8919"
@@ -16598,9 +16680,9 @@
 ""
 
 "Cart.MD5" "cf507910d6e74568a68ac949537bccf9"
-"Cart.Manufacturer" "Sega, Jeff Lorenz"
+"Cart.Manufacturer" "SEGA, Jeff Lorenz"
 "Cart.ModelNo" "003-01"
-"Cart.Name" "Thunderground (1983) (Sega)"
+"Cart.Name" "Thunderground (1983) (SEGA)"
 "Cart.Note" "AKA Underground"
 "Display.Phosphor" "YES"
 ""
@@ -16746,10 +16828,9 @@
 ""
 
 "Cart.MD5" "d078d25873c5b99f78fa267245a2af02"
-"Cart.Manufacturer" "Sega - Beck-Tech, Steve Beck, Phat Ho"
+"Cart.Manufacturer" "SEGA - Beck-Tech, Steve Beck, Phat Ho"
 "Cart.ModelNo" "006-01"
-"Cart.Name" "Congo Bongo (1983) (Sega) [a]"
-"Display.YStart" "26"
+"Cart.Name" "Congo Bongo (1983) (SEGA) [a]"
 ""
 
 "Cart.MD5" "d0796a0317abf9018d6745086bef411f"
@@ -16919,6 +17000,13 @@
 "Cart.Note" "AKA Pitfall!"
 ""
 
+"Cart.MD5" "d214c7a734e133a5c18e93229435b57a"
+"Cart.Manufacturer" "Digivision"
+"Cart.Name" "Mickey (Digivision)"
+"Cart.Note" "AKA Sorcerer's Apprentice"
+"Cart.Type" "UASW"
+""
+
 "Cart.MD5" "d223bc6f13358642f02ddacfaf4a90c9"
 "Cart.Manufacturer" "Rainbow Vision - Suntek"
 "Cart.ModelNo" "SS-003"
@@ -16934,7 +17022,6 @@
 "Cart.Manufacturer" "Activision, Larry Miller"
 "Cart.ModelNo" "AX-021"
 "Cart.Name" "Spider Fighter (1983) (Activision) (8K)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "d28afe0517a046265c418181fa9dd9a1"
@@ -16992,7 +17079,7 @@
 ""
 
 "Cart.MD5" "d326db524d93fa2897ab69c42d6fb698"
-"Cart.Manufacturer" "Parker Brothers, Mike Brodie - Roklan, Paul Crowley"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Paul Crowley, Bob Curtiss"
 "Cart.ModelNo" "931505"
 "Cart.Name" "Super Cobra (1983) (Parker Bros) (PAL)"
 ""
@@ -17005,7 +17092,6 @@
 "Cart.Manufacturer" "Xonox, John Perkins"
 "Cart.ModelNo" "6230, 7210, 06004, 99004"
 "Cart.Name" "Artillery Duel (1983) (Xonox) (PAL) [a]"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "d3423d7600879174c038f53e5ebbf9d3"
@@ -17043,7 +17129,6 @@
 "Cart.Manufacturer" "UA Limited"
 "Cart.Name" "Funky Fish (1983) (UA Limited) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.YStart" "28"
 "Display.Phosphor" "YES"
 ""
 
@@ -17052,7 +17137,6 @@
 "Cart.ModelNo" "PB5065"
 "Cart.Name" "Star Wars - Ewok Adventure (1983) (Parker Bros) (Prototype)"
 "Cart.Rarity" "Prototype"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "d45bf71871b196022829aa3b96bfcfd4"
@@ -17062,14 +17146,13 @@
 ""
 
 "Cart.MD5" "d45ebf130ed9070ea8ebd56176e48a38"
-"Cart.Manufacturer" "Sega, Jeff Lorenz"
+"Cart.Manufacturer" "SEGA, Jeff Lorenz"
 "Cart.ModelNo" "001-01"
-"Cart.Name" "Tac-Scan (1983) (Sega)"
+"Cart.Name" "Tac-Scan (1983) (SEGA)"
 "Cart.Note" "Uses the Paddle Controllers (right only)"
 "Console.SwapPorts" "YES"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
-"Display.YStart" "31"
 "Display.Phosphor" "YES"
 ""
 
@@ -17086,7 +17169,6 @@
 "Cart.Name" "Desert Falcon (1987) (Atari) (PAL)"
 "Cart.Note" "AKA Nile Flyer, Sphinx"
 "Display.Format" "PAL"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "d483f65468d9a265661917bae1a54f3e"
@@ -17282,7 +17364,6 @@
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Blackjack (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Cart.Note" "Uses the Paddle Controllers"
-"Display.YStart" "63"
 ""
 
 "Cart.MD5" "d73ad614f1c2357997c88f37e75b18fe"
@@ -17299,7 +17380,6 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "AG-001"
 "Cart.Name" "Dragster (1980) (Activision) (16K)"
-"Display.YStart" "27"
 ""
 
 "Cart.MD5" "d7759fa91902edd93f1568a37dc70cdb"
@@ -17530,7 +17610,6 @@
 "Cart.ModelNo" "460673"
 "Cart.Name" "Pick 'n' Pile (1990) (Salu) (PAL)"
 "Console.SwapPorts" "YES"
-"Display.YStart" "40"
 "Display.Phosphor" "YES"
 ""
 
@@ -17562,7 +17641,6 @@
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 "Controller.MouseAxis" "45"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "dad2ab5f66f98674f12c92abcfbf3a20"
@@ -17614,7 +17692,6 @@
 "Cart.Manufacturer" "Xonox"
 "Cart.ModelNo" "99005, 6220, 6250"
 "Cart.Name" "Robin Hood (1983) (Xonox) (PAL) [a]"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "db80d8ef9087af4764236f7b5649fa12"
@@ -17707,6 +17784,13 @@
 "Cart.Rarity" "Prototype"
 ""
 
+"Cart.MD5" "dc97cbcf091a5ef4ca7fe95dc0848036"
+"Cart.Manufacturer" "Atari - Roklan, Joe Gaucher, Alex Leavens"
+"Cart.ModelNo" "CX2683"
+"Cart.Name" "Crazy Climber (1983) (Atari) (Prototype) [a2]"
+"Cart.Rarity" "Prototype"
+""
+
 "Cart.MD5" "dca90ea1084a2fdbe300d7178ca1a138"
 "Cart.Manufacturer" "Imagic, Dennis Koble"
 "Cart.ModelNo" "IA3000P"
@@ -17776,7 +17860,12 @@
 
 "Cart.MD5" "dd17711a30ad60109c8beace0d4a76e8"
 "Cart.Name" "Karate (Unknown) (PAL)"
-"Display.YStart" "20"
+""
+
+"Cart.MD5" "dd1842ba0f3f9d94dccb21eaa0f069b7"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Defender (32 in 1) (BitCorp) (Hack)"
 ""
 
 "Cart.MD5" "dd4f4e0fbd81762533e39e6f5b55bb3a"
@@ -17788,7 +17877,6 @@
 "Cart.Manufacturer" "Xonox - K-Tel Software - Computer Magic"
 "Cart.ModelNo" "99005, 6220, 6250"
 "Cart.Name" "Robin Hood (1983) (Xonox) (PAL)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "dd7884b4f93cab423ac471aa1935e3df"
@@ -17870,7 +17958,6 @@
 "Cart.ModelNo" "001"
 "Cart.Name" "Donkey Kong (Star Game)"
 "Cart.Note" "AKA Inca Gold"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "de61a0b171e909a5a4cfcf81d146dbcb"
@@ -17940,7 +18027,6 @@
 "Cart.Manufacturer" "Bit Corporation"
 "Cart.ModelNo" "PG202"
 "Cart.Name" "Space Tunnel (1982) (BitCorp)"
-"Cart.Note" "AKA Weltraum-Tunnel"
 ""
 
 "Cart.MD5" "df3e6a9b6927cf59b7afb626f6fd7eea"
@@ -17961,7 +18047,6 @@
 "Cart.Name" "Lumberman (Cracker Jack) (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "df62a658496ac98a3aa4a6ee5719c251"
@@ -18035,7 +18120,6 @@
 "Cart.MD5" "dfe6aa7443bb813cefa35a4cf4887422"
 "Cart.Name" "This Planet Sucks (Greg Troutman) [a1]"
 "Cart.Rarity" "New Release"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "dff33523ccd2fdc8912e84cab8e0d982"
@@ -18242,7 +18326,6 @@
 "Cart.Manufacturer" "Tigervision - Software Electronics Corp., Karl T. Olinger - Teldec"
 "Cart.ModelNo" "7-001"
 "Cart.Name" "King Kong (1982) (Tigervision)"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "e237ee91514d5ed535c95a14fc608c11"
@@ -18332,7 +18415,11 @@
 "Cart.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner"
 "Cart.ModelNo" "CX26163P"
 "Cart.Name" "Combat (32 in 1) (1988) (Atari) (PAL) (4K)"
-"Display.YStart" "40"
+""
+
+"Cart.MD5" "e30f3a37032da52d7815b5a409f6d4b4"
+"Cart.Manufacturer" "SEGA, Fred Mack"
+"Cart.Name" "Bear Game Demo (1983) (SEGA)"
 ""
 
 "Cart.MD5" "e314b42761cd13c03def744b4afc7b1b"
@@ -18490,7 +18577,6 @@
 "Cart.Name" "Kiss Meets Pacman (Cody Pittman) (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "e4e9125a8741977583776729359614e1"
@@ -18547,7 +18633,6 @@
 "Cart.MD5" "e56da674188ba2f02c7a0a343a01236f"
 "Cart.Name" "This Planet Sucks Demo 4 (Greg Troutman) (PD)"
 "Cart.Rarity" "New Release"
-"Display.YStart" "36"
 ""
 
 "Cart.MD5" "e59d022d524d05acc19515598c831e4d"
@@ -18588,6 +18673,7 @@
 "Cart.Manufacturer" "CommaVid, John Bronstein"
 "Cart.ModelNo" "CM-003"
 "Cart.Name" "Cosmic Swarm (1982) (CommaVid)"
+"Cart.Note" "AKA Termite"
 "Display.Phosphor" "YES"
 ""
 
@@ -18606,11 +18692,10 @@
 
 "Cart.MD5" "e5fcc62e1d73706be7b895e887e90f84"
 "Cart.Name" "Air-Sea Battle (Unknown) (PAL) (4K)"
-"Display.YStart" "40"
 ""
 
 "Cart.MD5" "e600f5e98a20fafa47676198efe6834d"
-"Cart.Manufacturer" "Parker Brothers - Roklan"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
 "Cart.ModelNo" "PB5080"
 "Cart.Name" "Gyruss (1984) (Parker Bros) (PAL)"
 "Display.Phosphor" "YES"
@@ -18638,7 +18723,6 @@
 "Cart.Manufacturer" "Tigervision, Warren Schwader"
 "Cart.ModelNo" "7-003"
 "Cart.Name" "Threshold (1982) (Tigervision)"
-"Display.YStart" "22"
 ""
 
 "Cart.MD5" "e63efdfda9a4003dcd77a854a781a06a"
@@ -18655,7 +18739,7 @@
 ""
 
 "Cart.MD5" "e64a8008812327853877a37befeb6465"
-"Cart.Manufacturer" "Answer Software Corporation - TY Associates"
+"Cart.Manufacturer" "Answer Software Corporation - TY Associates, Mike Wentz"
 "Cart.ModelNo" "ASC1002"
 "Cart.Name" "Gauntlet (1983) (Answer Software)"
 ""
@@ -18745,7 +18829,6 @@
 "Cart.ModelNo" "147.443 6"
 "Cart.Name" "Gefecht im All (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Space Jockey"
-"Display.YStart" "64"
 ""
 
 "Cart.MD5" "e7864caaf9ec49ed67b1904ce8602690"
@@ -18789,7 +18872,6 @@
 "Cart.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cart.ModelNo" "AR-4105"
 "Cart.Name" "Official Frogger (Preview) (1983) (Arcadia) [a]"
-"Display.YStart" "32"
 ""
 
 "Cart.MD5" "e879b7093ac4cfad74c88d636ca97d00"
@@ -18803,7 +18885,7 @@
 "Cart.MD5" "e8a3473bf786cf796d1336d2d03a0008"
 "Cart.Manufacturer" "Parker Brothers, Wilfredo Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart"
 "Cart.ModelNo" "PB5540"
-"Cart.Name" "Star Wars - The Arcade Game (12-05-1983) (Parker Bros) (Prototype)"
+"Cart.Name" "Star Wars - The Arcade Game (12-05-1983) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
 ""
@@ -18830,7 +18912,6 @@
 "Cart.Manufacturer" "Digivision"
 "Cart.Name" "Phanton Tank (Digivision)"
 "Cart.Note" "AKA Phantom Tank"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "e908611d99890733be31733a979c62d8"
@@ -18895,7 +18976,7 @@
 ""
 
 "Cart.MD5" "e9cb18770a41a16de63b124c1e8bd493"
-"Cart.Manufacturer" "Parker Brothers, Joe Gaucher"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
 "Cart.ModelNo" "931519"
 "Cart.Name" "Popeye (1983) (Parker Bros) (PAL)"
 "Display.Phosphor" "YES"
@@ -18934,7 +19015,7 @@
 "Cart.MD5" "ea38fcfc06ad87a0aed1a3d1588744e4"
 "Cart.Manufacturer" "Atari, Lou Harp"
 "Cart.ModelNo" "CX26122"
-"Cart.Name" "Sinistar (1984) (Atari) (Prototype)"
+"Cart.Name" "Sinistar (01-XX-1984) (Atari) (Prototype)"
 "Cart.Rarity" "Prototype"
 ""
 
@@ -19097,7 +19178,6 @@
 "Cart.ModelNo" "CM-010"
 "Cart.Name" "Rush Hour (1983) (Commavid) (Prototype) [a2]"
 "Cart.Rarity" "Prototype"
-"Display.YStart" "23"
 ""
 
 "Cart.MD5" "ebf9038e927e6a0db3e0d170c59911e6"
@@ -19182,9 +19262,9 @@
 ""
 
 "Cart.MD5" "ed1a784875538c7871d035b7a98c2433"
-"Cart.Name" "Save Our Ship (Unknown) (Hack)"
-"Cart.Rarity" "Hack"
-"Display.YStart" "37"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Save Our Ship (32 in 1) (BitCorp) (Hack)"
 ""
 
 "Cart.MD5" "ed2218b3075d15eaa34e3356025ccca3"
@@ -19262,7 +19342,6 @@
 "Cart.Rarity" "Unbelievably Rare"
 "Console.LeftDiff" "A"
 "Controller.Right" "KIDVID"
-"Display.YStart" "25"
 ""
 
 "Cart.MD5" "ee67dc0b01746372d2b983d88f48e24f"
@@ -19294,7 +19373,6 @@
 "Cart.Manufacturer" "Carrere Video, Garry Kitchen - Teldec"
 "Cart.ModelNo" "USC1001"
 "Cart.Name" "Space Jockey (1983) (Carrere Video) (PAL) (4K)"
-"Display.YStart" "59"
 ""
 
 "Cart.MD5" "eea0da9b987d661264cce69a7c13c3bd"
@@ -19308,7 +19386,6 @@
 "Cart.Name" "Corys Adventure (Cody Pittman) (Hack)"
 "Cart.Note" "Hack of Pac-Man"
 "Cart.Rarity" "Hack"
-"Display.YStart" "33"
 ""
 
 "Cart.MD5" "eec61cc4250df70939d48fe02d7122ac"
@@ -19560,6 +19637,12 @@
 "Cart.Name" "Hangman (1978) (Atari)"
 ""
 
+"Cart.MD5" "f16ef574d2042ed8fe877d6541f4dba4"
+"Cart.Manufacturer" "Spectravision - Spectravideo"
+"Cart.ModelNo" "SA-201"
+"Cart.Name" "Gangster Alley (1982) (Spectravision)"
+""
+
 "Cart.MD5" "f1929bb9b5db22d98dd992aa3fe72920"
 "Cart.Name" "Cube Conquest (Improved Interlace) (Billy Eno) (PD)"
 "Display.Phosphor" "YES"
@@ -19752,14 +19835,12 @@
 "Cart.Manufacturer" "Universal Gamex Corporation, Alan Roberts"
 "Cart.ModelNo" "1005"
 "Cart.Name" "X-Man (1983) (Universal) [a]"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "f39e4bc99845edd8621b0f3c7b8c4fd9"
 "Cart.Manufacturer" "AtariAge"
 "Cart.Name" "Toyshop Trouble (AtariAge)"
 "Cart.Note" "F8 Emulator Release"
-"Display.YStart" "32"
 ""
 
 "Cart.MD5" "f3c431930e035a457fe370ed4d230659"
@@ -19789,6 +19870,12 @@
 
 "Cart.MD5" "f3f92aad3a335f0a1ead24a0214ff446"
 "Cart.Name" "Spectrum Color Demo (PD)"
+""
+
+"Cart.MD5" "f40e437a9ebf0bdfe26204152f74f868"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Jawbreaker (32 in 1) (BitCorp) (Hack)"
 ""
 
 "Cart.MD5" "f4204fc92d17ed4cb567c40361ad58f1"
@@ -19854,7 +19941,7 @@
 "Cart.MD5" "f4b8a47a95b61895e671c3ec86ffd461"
 "Cart.Manufacturer" "Parker Brothers, Wilfredo Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart"
 "Cart.ModelNo" "PB5540"
-"Cart.Name" "Star Wars - The Arcade Game (01-03-1984) (Parker Bros) (Prototype)"
+"Cart.Name" "Star Wars - The Arcade Game (01-03-1984) (Parker Bros) (Prototype) (4K)"
 "Cart.Rarity" "Prototype"
 "Display.Phosphor" "YES"
 ""
@@ -19929,7 +20016,6 @@
 "Cart.Manufacturer" "Starpath Corporation, Stephen H. Landrum"
 "Cart.ModelNo" "9 AR-4105"
 "Cart.Name" "Official Frogger, The (Preview) (1983) (Starpath)"
-"Display.YStart" "30"
 ""
 
 "Cart.MD5" "f613aad84d2163d6b197b220bfec1b7e"
@@ -19981,7 +20067,6 @@
 "Cart.ModelNo" "710-111 - GN-010"
 "Cart.Name" "I Want My Mommy (1983) (ZiMAG)"
 "Cart.Note" "AKA Open, Sesame!"
-"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -20072,7 +20157,6 @@
 "Cart.Manufacturer" "Eckhard Stolberg"
 "Cart.Name" "Cubis (1997) (Eckhard Stolberg)"
 "Cart.Rarity" "New Release"
-"Display.YStart" "20"
 ""
 
 "Cart.MD5" "f750b5d613796963acecab1690f554ae"
@@ -20275,7 +20359,7 @@
 ""
 
 "Cart.MD5" "f965cc981cbb0822f955641f8d84e774"
-"Cart.Manufacturer" "Answer Software Corporation - TY Associates"
+"Cart.Manufacturer" "Answer Software Corporation - TY Associates, Kim Ellis"
 "Cart.ModelNo" "ASC2001"
 "Cart.Name" "Confrontation (1983) (Answer) (Prototype)"
 "Cart.Rarity" "Prototype"
@@ -20360,7 +20444,6 @@
 "Cart.Manufacturer" "Tigervision"
 "Cart.ModelNo" "7-008"
 "Cart.Name" "Miner 2049er (1983) (Tigervision)"
-"Display.YStart" "28"
 ""
 
 "Cart.MD5" "fa1b060fd8e0bca0c2a097dcffce93d3"
@@ -20423,6 +20506,13 @@
 "Controller.Right" "ATARIVOX"
 "Display.Format" "PAL60"
 "Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "fab7b04b9f42df761eb6f2bc445eaa99"
+"Cart.Manufacturer" "20th Century Fox Video Games - Sirius Software, David Lubar"
+"Cart.ModelNo" "11008"
+"Cart.Name" "Fantastic Voyage (11-04-1982) (20th Century Fox) (Prototype)"
+"Cart.Rarity" "Prototype"
 ""
 
 "Cart.MD5" "fabca526d57de46768b392f758f1a008"
@@ -20701,7 +20791,6 @@
 "Cart.MD5" "fde42e39710e75e9e4d4d75440f8e4e5"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Coke Zero (v1.0) (PAL)"
-"Display.YStart" "35"
 ""
 
 "Cart.MD5" "fdf0de38517e0cf7f0885f98ccc95836"
@@ -20869,10 +20958,340 @@
 "Cart.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
-"Cart.MD5" "d214c7a734e133a5c18e93229435b57a"
-"Cart.Manufacturer" "Digivision"
-"Cart.Name" "Mickey"
-"Cart.Note" "AKA Sorcerer's Apprentice"
-"Cart.Type" "UASW"
+"Cart.MD5" "03fbcee0bc80e31f27254aea3d920510"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Trick Shot (32 in 1) (BitCorp) (Hack)"
 ""
 
+"Cart.MD5" "04cf9e6898007024622ed6a0b295961f"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Tennis (32 in 1) (BitCorp) (Hack)"
+""
+
+"Cart.MD5" "06d2f7674cea977607f74c464ce600a2"
+"Cart.Manufacturer" "CBS Electronics, Alex Nevelson"
+"Cart.ModelNo" "4L 2737 0000"
+"Cart.Name" "Omega Race (1983) (CBS Electronics) (Prototype)"
+"Cart.Rarity" "Prototype"
+"Controller.Left" "BOOSTERGRIP"
+""
+
+"Cart.MD5" "09e9ba0762fd0c3cf3c2e072cff79cac"
+"Cart.Manufacturer" "Parker Brothers, Wilfredo Aguilar, Michael Becker, Neil McKenzie, Bob Smith, Brad Stewart"
+"Cart.ModelNo" "PB5540"
+"Cart.Name" "Star Wars - The Arcade Game (1984) (Parker Bros) (Prototype)"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "0ecdb07bf9b36ef18f3780ef48e6c709"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "PG209"
+"Cart.Name" "Mr. Postman (1983) (BitCorp)"
+""
+
+"Cart.MD5" "0fee596b974c9d3e70b367a3671599b6"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Name This Game (32 in 1) (BitCorp) (Hack)"
+""
+
+"Cart.MD5" "10c47acca2ecd212b900ad3cf6942dbb"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a4]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "15b9f5e2439bfaa08874b5184261c777"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Space Invaders (32 in 1) (BitCorp) (Hack)"
+""
+
+"Cart.MD5" "19b3b807507653516985ba95da92499d"
+"Cart.Manufacturer" "Joe Gaucher"
+"Cart.Name" "VCS Draw Demo (Joe Gaucher)"
+""
+
+"Cart.MD5" "248668b364514de590382a7eda2c9834"
+"Cart.Manufacturer" "CBS Electronics, Richard K. Balaska Jr., Bob Curtiss, Alex Leavens, Alex Nevelson"
+"Cart.Name" "Kick-Man (01-08-82) (CBS Electronics) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "3545eb3b8b1e7dc19f87d231ab0b1d4c"
+"Cart.Manufacturer" "CBS Electronics - Roklan, Joe Hellesen, Joe Wagner"
+"Cart.ModelNo" "M8774, M8794"
+"Cart.Name" "Wizard of Wor (1982) (CBS Electronics) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "3a10562937a766cbbb77203d029b00e1"
+"Cart.Manufacturer" "Carrere Video - JWDA, Garry Kitchen, Paul Willson - Teldec - Prism"
+"Cart.ModelNo" "USC1002"
+"Cart.Name" "Sneak 'n Peek (1983) (Carrere Video) (PAL)"
+"Cart.Note" "AKA Der Unsichtbare"
+""
+
+"Cart.MD5" "4427f06085bb4c22ff047027f7acecc2"
+"Cart.Manufacturer" "Parker Brothers, Rex Bradford"
+"Cart.ModelNo" "PB5000"
+"Cart.Name" "Star Wars - Jedi Arena (1983) (Parker Bros) (Prototype)"
+"Cart.Note" "Uses the Paddle Controllers (swapped)"
+"Cart.Rarity" "Prototype"
+"Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10 50"
+""
+
+"Cart.MD5" "49f2cef5269fd06218be9f9474c74f8d"
+"Cart.Manufacturer" "Rentacom"
+"Cart.Name" "Time Pilot (Rentacom)"
+""
+
+"Cart.MD5" "51c1ddc9d6d597f71fb7efb56012abec"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Lock 'n' Chase (32 in 1) (BitCorp) (Hack)"
+""
+
+"Cart.MD5" "54836a8f23913e9a77c7f2665baf36ac"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "PG204"
+"Cart.Name" "Open, Sesame! (1982) (BitCorp)"
+""
+
+"Cart.MD5" "594437a35603c3e857b5af75b9718b61"
+"Cart.Manufacturer" "HES - Activision"
+"Cart.Name" "Robot Tank (HES) (PAL)"
+""
+
+"Cart.MD5" "5d7293f1892b66c014e8d222e06f6165"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a1]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "664d9bfda6f32511f6b4aa0159fd87f5"
+"Cart.Manufacturer" "Atari - Roklan, Joe Gaucher"
+"Cart.Name" "Racer (1982) (Atari) (Prototype) [a]"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "667a70b028f581d87648693b873bc962"
+"Cart.Manufacturer" "Parker Brothers - Roklan, Joe Gaucher"
+"Cart.ModelNo" "PB5370"
+"Cart.Name" "Popeye (1983) (Parker Bros) (Prototype) (4K)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "6a222c26bcece3a510ddda21398f72c6"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "PG203"
+"Cart.Name" "Phantom Tank (1982) (BitCorp)"
+""
+
+"Cart.MD5" "6aca52e11b597ab84b33d5252e1cd9d1"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Tac-Scan (32 in 1) (BitCorp) (Hack)"
+"Controller.MouseAxis" "AUTO 60"
+""
+
+"Cart.MD5" "6cab04277e7cd552a3e40b3c0e6e1e3d"
+"Cart.Manufacturer" "Telegames - VSS"
+"Cart.ModelNo" "7062 A305"
+"Cart.Name" "Universal Chaos (1988) (Telegames) (Prototype)"
+"Cart.Note" "AKA Targ"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "6eb10fd23c7161751d18b9e8484c0004"
+"Cart.Manufacturer" "Coleco - JWDA, Todd Marshall, Robin McDaniel, Henry Will IV"
+"Cart.ModelNo" "2465"
+"Cart.Name" "Smurf - Rescue in Gargamel's Castle (1983) (Coleco) (Prototype)"
+"Cart.Note" "AKA Smurf, Smurf Action"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "764ce6801f28a9ad36f11de3e57c053b"
+"Cart.Manufacturer" "Atari, Jim Huether, Alan J. Murphy, Robert C. Polaro"
+"Cart.ModelNo" "CX2666"
+"Cart.Name" "RealSports Volleyball (1982) (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "7e9f088e15b2af9ff3411991393e6b1f"
+"Cart.Manufacturer" "Atari - Roklan, Joe Gaucher"
+"Cart.ModelNo" "CX2679"
+"Cart.Name" "RealSports Basketball (12-28-1982) (Atari) (Prototype) (PAL)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "8597f66dd37d9c855663804669d69d7a"
+"Cart.Manufacturer" "Tigervision, Warren Schwader"
+"Cart.ModelNo" "7-003"
+"Cart.Name" "Threshold (1982) (Tigervision) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "9007c3cbb55ce05ad7d1c34d4906750a"
+"Cart.Manufacturer" "Activision, David Crane"
+"Cart.ModelNo" "AX-018, AX-018-04"
+"Cart.Name" "Pitfall! (03-18-1983) (Activision) (Prototype)"
+"Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "99ac89241365b692255ba95d745edd91"
+"Cart.Manufacturer" "Atari, Frank Hausman, Mimi Nyden, Steve Woita"
+"Cart.ModelNo" "CX2686"
+"Cart.Name" "Quadrun (18-03-1982) (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "9f52271759f8a2004d207b2247ae0bb3"
+"Cart.Manufacturer" "Parker Brothers"
+"Cart.ModelNo" "PB5820"
+"Cart.Name" "Mr. Do!'s Castle (03-12-84) (Parker Bros) (Prototype) (4K)"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "a428068d3e51498907d97cec40000515"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Sky Alien (32 in 1) (BitCorp) (Hack)"
+""
+
+"Cart.MD5" "a7bf8353f77caca407ef85c2698fdff2"
+"Cart.Manufacturer" "Atari, Suki Lee - Sears"
+"Cart.ModelNo" "CX2658 - 49-75128"
+"Cart.Name" "Math Gran Prix (1982) (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "b2ab209976354ad4a0e1676fc1fe5a82"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a3]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "b8e715223ba65cf716b3620a90ca3ec1"
+"Cart.Manufacturer" "Parker Brothers"
+"Cart.ModelNo" "PB5820"
+"Cart.Name" "Mr. Do!'s Castle (1984) (Parker Bros) (Prototype)"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "bd551ff1264f5c367a3ad7cf0d2f266c"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "SpaceMaster X-7 (32 in 1) (BitCorp) (Hack)"
+""
+
+"Cart.MD5" "c0c7eddefce9015346db88ade3e1e096"
+"Cart.Manufacturer" "CBS Electronics, Bob Curtiss"
+"Cart.ModelNo" "4L 2487 5000"
+"Cart.Name" "Solar Fox (1983) (CBS Electronics) (Prototype) (4K)"
+"Cart.Note" "RAM must be zero'ed to start correctly"
+"Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "c5bf03028b2e8f4950ec8835c6811d47"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a2]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "ccd92a269a4c2bd64d58cf2c0114423c"
+"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
+"Cart.ModelNo" "CX2675"
+"Cart.Name" "Ms. Pac-Man (09-20-1983) (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "ce1cbe159b9ae5992dacf09371de5e13"
+"Cart.Manufacturer" "Atari - GCC, Kevin Osborn"
+"Cart.ModelNo" "CX2689"
+"Cart.Name" "Kangaroo (01-19-1983) (Atari) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "cfd5518c71552b8bb853b0e461e328d7"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Spider Fighter (32 in 1) (BitCorp) (Hack)"
+""
+
+"Cart.MD5" "d15655fe355fa57dd541487dc5725145"
+"Cart.Manufacturer" "Rentacom"
+"Cart.Name" "Vanguard (Rentacom)"
+""
+
+"Cart.MD5" "d1ca47b262f952413c1234117c4e4e21"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Missile Command (32 in 1) (BitCorp) (Hack)"
+""
+
+"Cart.MD5" "d7b2259f6bb57bf37eac82365c1f8ad6"
+"Cart.Manufacturer" "Parker Brothers, Mike Brodie"
+"Cart.ModelNo" "PB5320"
+"Cart.Name" "Super Cobra (1983) (Parker Bros) (Prototype)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "d89262907e70c13dff23356c4a9055d0"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "R320"
+"Cart.Name" "Video Pinball (32 in 1) (BitCorp) (Hack)"
+""
+
+"Cart.MD5" "dd45e370aceff765f1e72c619efd4399"
+"Cart.Manufacturer" "Bit Corporation"
+"Cart.ModelNo" "PG201"
+"Cart.Name" "Sea Monster (1982) (BitCorp)"
+""
+
+"Cart.MD5" "e227be19f572f6900e314213ae9a4deb"
+"Cart.Manufacturer" "Atari, Dan Hitchens, Mimi Nyden"
+"Cart.ModelNo" "CX2656"
+"Cart.Name" "SwordQuest - EarthWorld (1982) (Atari) (Prototype)"
+"Cart.Note" "AKA Adventure I, SwordQuest I - EarthWorld"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "f0ef9a1e5d4027a157636d7f19952bb5"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype) [a5]"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "f8fbe2b07345086fc867bceeaf38dc48"
+"Cart.Manufacturer" "Atari, Eric Manghise, Mimi Nyden, Joseph Tung"
+"Cart.ModelNo" "CX2640"
+"Cart.Name" "RealSports Baseball (1982) (Atari) (Prototype) (4K)"
+"Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "fb978f1c053e8061cc37a726639f43f7"
+"Cart.Manufacturer" "Atari - Axlon, Tod Frye - Heuristica, Agustin Ortiz"
+"Cart.ModelNo" "CX26169"
+"Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype)"
+"Cart.Note" "Uses the Light Gun Controller (left only)"
+"Cart.Rarity" "Prototype"
+""
