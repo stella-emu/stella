@@ -113,7 +113,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myCart->setStartBankFromPropsFunc([this]() {
     const string& startbank = myProperties.get(PropType::Cart_StartBank);
     return (startbank == EmptyString || BSPF::equalsIgnoreCase(startbank, "AUTO"))
-        ? -1 : atoi(startbank.c_str());
+        ? -1 : stoi(startbank);
   });
 
   // We can only initialize after all the devices/components have been created
@@ -531,7 +531,7 @@ void Console::togglePhosphor()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePhosphor(int direction)
 {
-  int blend = atoi(myProperties.get(PropType::Display_PPBlend).c_str());
+  int blend = stoi(myProperties.get(PropType::Display_PPBlend));
 
   if(direction == +1)       // increase blend
   {
@@ -692,7 +692,7 @@ void Console::updateVcenter(Int32 vcenter)
 void Console::setTIAProperties()
 {
   Int32 vcenter = BSPF::clamp(
-    static_cast<Int32>(atoi(myProperties.get(PropType::Display_VCenter).c_str())), TIAConstants::minVcenter, TIAConstants::maxVcenter
+    static_cast<Int32>(stoi(myProperties.get(PropType::Display_VCenter))), TIAConstants::minVcenter, TIAConstants::maxVcenter
   );
 
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
