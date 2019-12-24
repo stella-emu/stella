@@ -1095,7 +1095,7 @@ void EventHandler::setComboMap()
     // If it isn't, then we treat the entire list as invalid
     string key;
     buf >> key;
-    if(atoi(key.c_str()) == COMBO_SIZE)
+    if(stoi(key) == COMBO_SIZE)
     {
       // Fill the combomap table with events for as long as they exist
       int combocount = 0;
@@ -1108,7 +1108,7 @@ void EventHandler::setComboMap()
         int eventcount = 0;
         while(buf2 >> key && eventcount < EVENTS_PER_COMBO)
         {
-          myComboTable[combocount][eventcount] = Event::Type(atoi(key.c_str()));
+          myComboTable[combocount][eventcount] = Event::Type(stoi(key));
           ++eventcount;
         }
         ++combocount;
@@ -1392,7 +1392,7 @@ void EventHandler::setComboListForEvent(Event::Type event, const StringList& eve
     int combo = event - Event::Combo1;
     for(uInt32 i = 0; i < 8; ++i)
     {
-      uInt32 idx = atoi(events[i].c_str());
+      uInt32 idx = stoi(events[i]);
       if(idx < ourEmulActionList.size())
         myComboTable[combo][i] = EventHandler::ourEmulActionList[idx].event;
       else
