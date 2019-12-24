@@ -83,7 +83,7 @@ class FileListWidget : public StringListWidget
 
   private:
     /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FilesystemNode& node, string select = EmptyString);
+    void setLocation(const FilesystemNode& node, const string& select = EmptyString);
 
     /** Descend into currently selected directory */
     void selectDirectory();

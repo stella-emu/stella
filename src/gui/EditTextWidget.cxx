@@ -29,7 +29,7 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
 
-  startEditMode();  // We're always in edit mode
+  EditableWidget::startEditMode();  // We're always in edit mode
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

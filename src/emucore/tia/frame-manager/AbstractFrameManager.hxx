@@ -293,8 +293,8 @@ class AbstractFrameManager : public Serializable
 
     AbstractFrameManager(const AbstractFrameManager&) = delete;
     AbstractFrameManager(AbstractFrameManager&&) = delete;
-    AbstractFrameManager& operator=(const AbstractFrameManager&);
-    AbstractFrameManager& operator=(AbstractFrameManager&&);
+    AbstractFrameManager& operator=(const AbstractFrameManager&) = delete;
+    AbstractFrameManager& operator=(AbstractFrameManager&&) = delete;
 
 };
 

@@ -137,7 +137,7 @@ bool DelayQueueMember<capacity>::load(Serializer& in)
   try
   {
     mySize = in.getByte();
-    if (mySize > capacity) throw new runtime_error("invalid delay queue size");
+    if (mySize > capacity) throw runtime_error("invalid delay queue size");
     for(uInt32 i = 0; i < mySize; ++i)
     {
       Entry& e = myEntries[i];

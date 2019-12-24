@@ -166,7 +166,6 @@ void AtariNTSC::renderThread(const uInt8* atari_in, const uInt32 in_width,
     ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
     ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
 
-    line_in += 2;
     line_out += 7;
 
     ATARI_NTSC_COLOR_IN(0, NTSC_black)
@@ -243,7 +242,6 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
     ATARI_NTSC_RGB_OUT_8888(5, line_out[5])
     ATARI_NTSC_RGB_OUT_8888(6, line_out[6])
 
-    line_in += 2;
     line_out += 7;
 
     ATARI_NTSC_COLOR_IN(0, NTSC_black)
@@ -261,7 +259,7 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
 
     // Do phosphor mode (blend the resulting frames)
     // Note: The unrolled code assumed that AtariNTSC::outWidth(kTIAW) == outPitch == 565
-    // Now this got changed to 568 so he final 5 calculations got removed.
+    // Now this got changed to 568 so the final 5 calculations got removed.
     for (uInt32 x = AtariNTSC::outWidth(in_width) / 8; x; --x)
     {
       // Store back into displayed frame buffer (for next frame)

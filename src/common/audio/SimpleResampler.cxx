@@ -44,7 +44,7 @@ void SimpleResampler::fillFragment(float* fragment, uInt32 length)
   }
 
   if (!myCurrentFragment) {
-    std::fill_n(fragment, length, 0.f);
+    std::fill_n(fragment, length, 0.F);
     return;
   }
 
@@ -61,7 +61,7 @@ void SimpleResampler::fillFragment(float* fragment, uInt32 length)
         fragment[2*i + 1] = sampleR;
       }
       else
-        fragment[i] = (sampleL + sampleR) / 2.f;
+        fragment[i] = (sampleL + sampleR) / 2.F;
     } else {
       float sample = static_cast<float>(myCurrentFragment[myFragmentIndex] / static_cast<float>(0x7fff));
 

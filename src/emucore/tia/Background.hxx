@@ -61,7 +61,7 @@ class Background : public Serializable
     Background(const Background&) = delete;
     Background(Background&&) = delete;
     Background& operator=(const Background&) = delete;
-    Background& operator=(Background&&);
+    Background& operator=(Background&&) = delete;
 };
 
 #endif // TIA_BACKGROUND

@@ -99,7 +99,7 @@ static const string EmptyString("");
 
 namespace BSPF
 {
-  static constexpr float PI_f = 3.141592653589793238462643383279502884f;
+  static constexpr float PI_f = 3.141592653589793238462643383279502884F;
   static constexpr double PI_d = 3.141592653589793238462643383279502884;
 
   // CPU architecture type

@@ -253,7 +253,7 @@ class Controller : public Serializable
       Inject a callback to be notified on analog pin updates.
     */
     void setOnAnalogPinUpdateCallback(onAnalogPinUpdateCallback callback) {
-      myOnAnalogPinUpdateCallback = callback;
+      myOnAnalogPinUpdateCallback = std::move(callback);
     }
 
     /**
