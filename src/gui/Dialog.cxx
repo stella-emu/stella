@@ -373,7 +373,7 @@ void Dialog::buildCurrentFocusList(int tabID)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addSurface(shared_ptr<FBSurface> surface)
+void Dialog::addSurface(const shared_ptr<FBSurface>& surface)
 {
   mySurfaceStack.push(surface);
 }

@@ -92,7 +92,7 @@ class Cartridge : public Device
       ROM property.
     */
     void setStartBankFromPropsFunc(StartBankFromPropsFunc func) {
-      myStartBankFromPropsFunc = func;
+      myStartBankFromPropsFunc = std::move(func);
     }
 
     /**

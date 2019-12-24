@@ -59,10 +59,10 @@ class AudioChannel : public Serializable
     uInt8 myNoiseCounter;
 
   private:
-    AudioChannel(const AudioChannel&);
-    AudioChannel(AudioChannel&&);
-    AudioChannel& operator=(const AudioChannel&);
-    AudioChannel& operator=(AudioChannel&&);
+    AudioChannel(const AudioChannel&) = delete;
+    AudioChannel(AudioChannel&&) = delete;
+    AudioChannel& operator=(const AudioChannel&) = delete;
+    AudioChannel& operator=(AudioChannel&&) = delete;
 };
 
 #endif // TIA_AUDIO_CHANNEL_HXX

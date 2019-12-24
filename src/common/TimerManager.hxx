@@ -77,7 +77,7 @@ class TimerManager
       Call function every 'period' ms, starting 'period' ms from now.
     */
     TimerId setInterval(const TFunction& func, millisec period) {
-      return addTimer(period, period, std::move(func));
+      return addTimer(period, period, func);
     }
 
     /**
@@ -86,7 +86,7 @@ class TimerManager
       Call function once 'timeout' ms from now.
     */
     TimerId setTimeout(const TFunction& func, millisec timeout) {
-      return addTimer(timeout, 0, std::move(func));
+      return addTimer(timeout, 0, func);
     }
 
     /**

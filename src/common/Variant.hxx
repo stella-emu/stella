@@ -36,7 +36,7 @@ class Variant
     string data;
 
     // Use singleton so we use only one ostringstream object
-    inline ostringstream& buf() {
+    static ostringstream& buf() {
       static ostringstream buf;
       return buf;
     }

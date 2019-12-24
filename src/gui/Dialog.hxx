@@ -88,7 +88,7 @@ class Dialog : public GuiObject
       the surface render() call will always occur in such a case, the
       surface should call setVisible() to enable/disable its output.
     */
-    void addSurface(shared_ptr<FBSurface> surface);
+    void addSurface(const shared_ptr<FBSurface>& surface);
 
     void setFlags(int flags) { _flags |= flags;  setDirty(); }
     void clearFlags(int flags) { _flags &= ~flags; setDirty(); }

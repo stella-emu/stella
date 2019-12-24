@@ -333,7 +333,7 @@ class Ball : public Serializable
     Ball(const Ball&) = delete;
     Ball(Ball&&) = delete;
     Ball& operator=(const Ball&) = delete;
-    Ball& operator=(Ball&&);
+    Ball& operator=(Ball&&) = delete;
 };
 
 // ############################################################################

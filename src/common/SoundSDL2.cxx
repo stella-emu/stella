@@ -67,7 +67,7 @@ SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
   if(!openDevice())
     return;
 
-  mute(true);
+  SoundSDL2::mute(true);
 
   Logger::debug("SoundSDL2::SoundSDL2 initialized");
 }

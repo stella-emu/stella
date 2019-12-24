@@ -50,8 +50,6 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
 
   _fontWidth  = _font.getMaxCharWidth();
   _fontHeight = _font.getLineHeight();
-
-  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -71,7 +71,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node, string select)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setLocation(const FilesystemNode& node, string select)
+void FileListWidget::setLocation(const FilesystemNode& node, const string& select)
 {
   _node = node;
 
