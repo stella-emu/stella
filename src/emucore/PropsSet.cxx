@@ -121,14 +121,20 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
 void PropertiesSet::getMD5WithInsert(const FilesystemNode& rom,
                                      const string& md5, Properties& properties)
 {
+  bool toInsert = false;
+
   if(!getMD5(md5, properties))
   {
     properties.set(PropType::Cart_MD5, md5);
-    // Create a name suitable for using in properties
-    properties.set(PropType::Cart_Name, rom.getNameWithExt(""));
-
-    insert(properties, false);
+    toInsert = true;
   }
+  if(toInsert || properties.get(PropType::Cart_Name) == EmptyString)
+  {
+    properties.set(PropType::Cart_Name, rom.getNameWithExt(""));
+    toInsert = true;
+  }
+  if(toInsert)
+    insert(properties, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
