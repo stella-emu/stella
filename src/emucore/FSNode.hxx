@@ -251,7 +251,7 @@ class FilesystemNode
 
   private:
     AbstractFSNodePtr _realNode;
-    explicit FilesystemNode(AbstractFSNodePtr realNode);
+    explicit FilesystemNode(const AbstractFSNodePtr& realNode);
 };
 
 

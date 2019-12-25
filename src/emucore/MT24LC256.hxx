@@ -89,7 +89,7 @@ class MT24LC256
 
     // Sends messages back to the parent class
     // Currently used for indicating read/write access
-    const Controller::onMessageCallback myCallback;
+    Controller::onMessageCallback myCallback;
 
     // The EEPROM data
     std::array<uInt8, FLASH_SIZE> myData;

@@ -1373,7 +1373,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "62921652f6634eb1a0940ed5489c7e18", "", "", "SCSIcide (V1.09) (2001) (Joe Grand)", "", "", "", "", "", "", "", "", "", "PADDLES_IAXDR", "", "", "AUTO 65", "", "", "", "" },
   { "62992392ea651a16aa724a92e4596ed6", "Eric Mooney", "", "Invaders by Erik Mooney (Beta) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "62d1f50219edf9a429a9f004c19f31b3", "JWDA, Todd Marshall", "", "Euro Gen (02-01-83) (JWDA) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "62ee2b8f59e9cd6285bbdb674a952e8b", "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead", "3152VC", "Pursuit of the Pink Panther (Probe) (Prototype)", "AKA Adventures of the Pink Panther", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "62ee2b8f59e9cd6285bbdb674a952e8b", "Probe 2000 - NAP, Roger Booth, Todd Marshall, Robin McDaniel, Jim Wickstead", "3152VC", "Pursuit of the Pink Panther (Probe) (Prototype)", "AKA Adventures of the Pink Panther", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "62f74a2736841191135514422b20382d", "", "", "Pharaoh's Curse (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "YES", "" },
   { "62ffd175cac3f781ef6e4870136a2520", "", "", "2600 Digital Clock (V x.xx) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "63166867f75869a3592b7a94ea62d147", "", "", "Indy 500 (Hack) [a1]", "Hack of Indy 500", "Hack", "", "", "", "", "", "", "", "DRIVING", "DRIVING", "", "", "", "", "", "" },

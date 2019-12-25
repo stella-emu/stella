@@ -8100,7 +8100,7 @@
 ""
 
 "Cart.MD5" "62ee2b8f59e9cd6285bbdb674a952e8b"
-"Cart.Manufacturer" "Probe 2000, Roger Booth, Todd Marshall, Robbin Daniels, Jim Wickstead"
+"Cart.Manufacturer" "Probe 2000 - NAP, Roger Booth, Todd Marshall, Robin McDaniel, Jim Wickstead"
 "Cart.ModelNo" "3152VC"
 "Cart.Name" "Pursuit of the Pink Panther (Probe) (Prototype)"
 "Cart.Note" "AKA Adventures of the Pink Panther"
