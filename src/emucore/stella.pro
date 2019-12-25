@@ -12607,7 +12607,8 @@
 "Cart.MD5" "9905f9f4706223dadee84f6867ede8e3"
 "Cart.Manufacturer" "HES"
 "Cart.Name" "Challenge (HES) (PAL)"
-"Cart.Note" "ROM must be started in bank 1 (Surfer's Paradise if right difficulty = 'A')"
+"Cart.Note" "Surfer's Paradise if right difficulty = 'A'"
+"Cart.StartBank" "0"
 ""
 
 "Cart.MD5" "9912d06eea42200a198dd3e2be18c601"
@@ -19063,7 +19064,8 @@
 "Cart.MD5" "eae6a5510055341d3abeb45667bb3e9b"
 "Cart.Manufacturer" "HES"
 "Cart.Name" "Wall Defender (HES) (PAL)"
-"Cart.Note" "AKA Wall Break"
+"Cart.Note" "AKA Wall Break (Planet Patrol if right difficulty = 'A')"
+"Cart.StartBank" "0"
 ""
 
 "Cart.MD5" "eaf744185d5e8def899950ba7c6e7bb5"
