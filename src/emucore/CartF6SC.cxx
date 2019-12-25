@@ -173,7 +173,7 @@ bool CartridgeF6SC::bank(uInt16 bank)
   }
 
   // Setup the page access methods for the current bank
-  for(uInt16 addr = 0x1100; addr < (0x1FF6U & ~System::PAGE_MASK);
+  for(uInt16 addr = 0x1100; addr < static_cast<uInt16>(0x1FF6U & ~System::PAGE_MASK);
       addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];

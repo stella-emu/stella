@@ -237,7 +237,7 @@ void PhysicalKeyboardHandler::enableCommonMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalKeyboardHandler::enableMappings(const Event::EventSet events, EventMode mode)
+void PhysicalKeyboardHandler::enableMappings(const Event::EventSet& events, EventMode mode)
 {
   for (const auto& event : events)
     enableMapping(event, mode);

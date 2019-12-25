@@ -115,8 +115,8 @@ class TIA : public Device
       @param console   The console the TIA is associated with
       @param settings  The settings object for this TIA device
     */
-    TIA(ConsoleIO& console, ConsoleTimingProvider timingProvider, Settings& settings);
-
+    TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
+        Settings& settings);
     virtual ~TIA() = default;
 
   public:
@@ -129,7 +129,7 @@ class TIA : public Device
       Set the audio queue. This needs to be dynamic as the queue is created after
       the timing has been determined.
     */
-    void setAudioQueue(shared_ptr<AudioQueue> audioQueue);
+    void setAudioQueue(const shared_ptr<AudioQueue>& audioQueue);
 
     /**
       Clear the configured frame manager and deteach the lifecycle callbacks.

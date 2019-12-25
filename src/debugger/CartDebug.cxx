@@ -214,7 +214,7 @@ string CartDebug::toString()
     curraddr = state.rport[i];
     buf << Base::HEX2 << (curraddr & 0x00ff) << ": ";
 
-    for(uInt8 j = 0; j < bytesPerLine; ++j)
+    for(uInt32 j = 0; j < bytesPerLine; ++j)
     {
       buf << myDebugger.invIfChanged(state.ram[i+j], oldstate.ram[i+j]) << " ";
 
@@ -794,12 +794,12 @@ string CartDebug::loadSymbolFile()
       if (iter == myUserLabels.end() || !BSPF::equalsIgnoreCase(label, iter->second))
       {
         // Check for period, and strip leading number
-        string::size_type pos = label.find_first_of(".", 0);
+        string::size_type pos = label.find_first_of('.', 0);
         if(pos != string::npos)
           addLabel(label.substr(pos), value);
         else
         {
-          pos = label.find_last_of("$");
+          pos = label.find_last_of('$');
           if (pos == string::npos || pos != label.length() - 1)
             addLabel(label, value);
         }

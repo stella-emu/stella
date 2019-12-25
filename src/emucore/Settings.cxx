@@ -218,7 +218,7 @@ Settings::Settings()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::setRepository(shared_ptr<KeyValueRepository> repository)
 {
-  myRespository = repository;
+  myRespository = std::move(repository);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

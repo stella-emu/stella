@@ -293,7 +293,7 @@ class Debugger : public DialogContainer
     /**
       Saves a rewind state with the given message.
     */
-    void addState(string rewindMsg);
+    void addState(const string& rewindMsg);
 
     /**
       Set initial state before entering the debugger.

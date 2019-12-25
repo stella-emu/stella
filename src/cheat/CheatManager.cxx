@@ -147,8 +147,8 @@ shared_ptr<Cheat> CheatManager::createCheat(const string& name, const string& co
 void CheatManager::parse(const string& cheats)
 {
   StringList s;
-  string::size_type lastPos = cheats.find_first_not_of(",", 0);
-  string::size_type pos     = cheats.find_first_of(",", lastPos);
+  string::size_type lastPos = cheats.find_first_not_of(',', 0);
+  string::size_type pos     = cheats.find_first_of(',', lastPos);
   string cheat, name, code;
 
   // Split string by comma, getting each cheat
@@ -158,13 +158,13 @@ void CheatManager::parse(const string& cheats)
     cheat = cheats.substr(lastPos, pos - lastPos);
 
     // Split cheat by colon, separating each part
-    string::size_type lastColonPos = cheat.find_first_not_of(":", 0);
-    string::size_type colonPos     = cheat.find_first_of(":", lastColonPos);
+    string::size_type lastColonPos = cheat.find_first_not_of(':', 0);
+    string::size_type colonPos     = cheat.find_first_of(':', lastColonPos);
     while(string::npos != colonPos || string::npos != lastColonPos)
     {
       s.push_back(cheat.substr(lastColonPos, colonPos - lastColonPos));
-      lastColonPos = cheat.find_first_not_of(":", colonPos);
-      colonPos     = cheat.find_first_of(":", lastColonPos);
+      lastColonPos = cheat.find_first_not_of(':', colonPos);
+      colonPos     = cheat.find_first_of(':', lastColonPos);
     }
 
     // Account for variable number of items specified for cheat
@@ -190,8 +190,8 @@ void CheatManager::parse(const string& cheats)
     }
     s.clear();
 
-    lastPos = cheats.find_first_not_of(",", pos);
-    pos     = cheats.find_first_of(",", lastPos);
+    lastPos = cheats.find_first_not_of(',', pos);
+    pos     = cheats.find_first_of(',', lastPos);
   }
 }
 
@@ -228,10 +228,10 @@ void CheatManager::loadCheatDatabase()
     if(line.length() == 0)
       continue;
 
-    one = line.find("\"", 0);
-    two = line.find("\"", one + 1);
-    three = line.find("\"", two + 1);
-    four = line.find("\"", three + 1);
+    one = line.find('\"', 0);
+    two = line.find('\"', one + 1);
+    three = line.find('\"', two + 1);
+    four = line.find('\"', three + 1);
 
     // Invalid line if it doesn't contain 4 quotes
     if((one == string::npos) || (two == string::npos) ||

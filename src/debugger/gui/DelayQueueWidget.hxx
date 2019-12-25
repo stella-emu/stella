@@ -44,8 +44,8 @@ class DelayQueueWidget : public Widget
     DelayQueueWidget() = delete;
     DelayQueueWidget(const DelayQueueWidget&) = delete;
     DelayQueueWidget(DelayQueueWidget&&) = delete;
-    DelayQueueWidget& operator=(const DelayQueueWidget&);
-    DelayQueueWidget& operator=(DelayQueueWidget&&);
+    DelayQueueWidget& operator=(const DelayQueueWidget&) = delete;
+    DelayQueueWidget& operator=(DelayQueueWidget&&) = delete;
 };
 
 #endif // DELAY_QUEUE_WIDGET_HXX

@@ -50,7 +50,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
   while(getline(in, line))
   {
     // Strip all whitespace and tabs from the line
-    while((garbage = line.find("\t")) != string::npos)
+    while((garbage = line.find('\t')) != string::npos)
       line.erase(garbage, 1);
 
     // Ignore commented and empty lines
@@ -58,7 +58,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
       continue;
 
     // Search for the equal sign and discard the line if its not found
-    if((equalPos = line.find("=")) == string::npos)
+    if((equalPos = line.find('=')) == string::npos)
       continue;
 
     // Split the line into key/value pairs and trim any whitespace
@@ -78,7 +78,7 @@ std::map<string, Variant> KeyValueRepositoryConfigfile::load()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyValueRepositoryConfigfile::save(const std::map<string, Variant>& values)
 {
-ofstream out(myFilename);
+  ofstream out(myFilename);
   if(!out || !out.is_open()) {
     Logger::error("ERROR: Couldn't save to settings file " + myFilename);
 

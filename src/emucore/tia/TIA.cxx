@@ -66,7 +66,8 @@ enum ResxCounter: uInt8 {
 static constexpr uInt8 resxLateHblankThreshold = TIAConstants::H_CYCLES - 3;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(ConsoleIO& console, ConsoleTimingProvider timingProvider, Settings& settings)
+TIA::TIA(ConsoleIO& console, const ConsoleTimingProvider& timingProvider,
+         Settings& settings)
   : myConsole(console),
     myTimingProvider(timingProvider),
     mySettings(settings),
@@ -112,7 +113,7 @@ void TIA::setFrameManager(AbstractFrameManager* frameManager)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setAudioQueue(shared_ptr<AudioQueue> queue)
+void TIA::setAudioQueue(const shared_ptr<AudioQueue>& queue)
 {
   myAudio.setAudioQueue(queue);
 }

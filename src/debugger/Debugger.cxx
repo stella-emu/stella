@@ -661,7 +661,7 @@ void Debugger::saveOldState(bool clearDirtyPages)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addState(string rewindMsg)
+void Debugger::addState(const string& rewindMsg)
 {
   // Add another rewind level to the Time Machine buffer
   RewindManager& r = myOSystem.state().rewindManager();

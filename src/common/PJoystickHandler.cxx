@@ -58,7 +58,7 @@ PhysicalJoystickHandler::PhysicalJoystickHandler(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int PhysicalJoystickHandler::add(PhysicalJoystickPtr stick)
+int PhysicalJoystickHandler::add(const PhysicalJoystickPtr& stick)
 {
   // Skip if we couldn't open it for any reason
   if(stick->ID < 0)
@@ -416,7 +416,7 @@ void PhysicalJoystickHandler::enableCommonMappings()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PhysicalJoystickHandler::enableMappings(const Event::EventSet events, EventMode mode)
+void PhysicalJoystickHandler::enableMappings(const Event::EventSet& events, EventMode mode)
 {
   for (const auto& event : events)
     enableMapping(event, mode);

@@ -56,7 +56,7 @@ namespace {
 LanczosResampler::LanczosResampler(
   Resampler::Format formatFrom,
   Resampler::Format formatTo,
-  Resampler::NextFragmentCallback nextFragmentCallback,
+  const Resampler::NextFragmentCallback& nextFragmentCallback,
   uInt32 kernelParameter)
 :
   Resampler(formatFrom, formatTo, nextFragmentCallback),

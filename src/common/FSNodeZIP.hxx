@@ -71,10 +71,10 @@ class FilesystemNodeZIP : public AbstractFSNode
 
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualpath,
-        AbstractFSNodePtr realnode, bool isdir);
+        const AbstractFSNodePtr& realnode, bool isdir);
 
     void setFlags(const string& zipfile, const string& virtualpath,
-        AbstractFSNodePtr realnode);
+        const AbstractFSNodePtr& realnode);
 
     friend ostream& operator<<(ostream& os, const FilesystemNodeZIP& node)
     {

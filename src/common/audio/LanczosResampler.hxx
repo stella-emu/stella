@@ -29,7 +29,7 @@ class LanczosResampler : public Resampler
     LanczosResampler(
       Resampler::Format formatFrom,
       Resampler::Format formatTo,
-      Resampler::NextFragmentCallback nextFragmentCallback,
+      const Resampler::NextFragmentCallback& nextFragmentCallback,
       uInt32 kernelParameter
     );
 

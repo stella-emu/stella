@@ -147,7 +147,7 @@ void EventHandler::reset(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::addPhysicalJoystick(PhysicalJoystickPtr joy)
+void EventHandler::addPhysicalJoystick(const PhysicalJoystickPtr& joy)
 {
 #ifdef JOYSTICK_SUPPORT
   int ID = myPJoyHandler->add(joy);

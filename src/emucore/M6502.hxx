@@ -94,7 +94,9 @@ class M6502 : public Serializable
     /**
       Set the callback for handling a halt condition
     */
-    void setOnHaltCallback(onHaltCallback callback) { myOnHaltCallback = callback; }
+    void setOnHaltCallback(const onHaltCallback& callback) {
+      myOnHaltCallback = callback;
+    }
 
     /**
       RDY pulled low --- halt on next read.

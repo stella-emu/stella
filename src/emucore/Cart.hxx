@@ -91,8 +91,8 @@ class Cartridge : public Device
       Set the function to use when we want to query the 'Cartridge.StartBank'
       ROM property.
     */
-    void setStartBankFromPropsFunc(StartBankFromPropsFunc func) {
-      myStartBankFromPropsFunc = std::move(func);
+    void setStartBankFromPropsFunc(const StartBankFromPropsFunc& func) {
+      myStartBankFromPropsFunc = func;
     }
 
     /**

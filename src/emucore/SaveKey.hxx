@@ -45,7 +45,7 @@ class SaveKey : public Controller
       @param callback   Called to pass messages back to the parent controller
     */
     SaveKey(Jack jack, const Event& event, const System& system,
-            const string& eepromfile, onMessageCallback callback);
+            const string& eepromfile, const onMessageCallback& callback);
     virtual ~SaveKey();
 
   protected:
@@ -54,7 +54,7 @@ class SaveKey : public Controller
       that inherit from SaveKey (currently, AtariVox)
     */
     SaveKey(Jack jack, const Event& event, const System& system,
-            const string& eepromfile, onMessageCallback callback, Type type);
+            const string& eepromfile, const onMessageCallback& callback, Type type);
 
   public:
     using Controller::read;

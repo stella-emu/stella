@@ -55,7 +55,7 @@ void Audio::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Audio::setAudioQueue(shared_ptr<AudioQueue> queue)
+void Audio::setAudioQueue(const shared_ptr<AudioQueue>& queue)
 {
   myAudioQueue = queue;
 

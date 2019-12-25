@@ -48,7 +48,7 @@ class AtariVox : public SaveKey
     */
     AtariVox(Jack jack, const Event& event, const System& system,
              const string& portname, const string& eepromfile,
-             onMessageCallback callback);
+             const onMessageCallback& callback);
     virtual ~AtariVox() = default;
 
   public:

@@ -58,7 +58,7 @@ void FileListWidget::setDirectory(const FilesystemNode& node, string select)
     if(name.back() == '/' || name.back() == '\\')
       name.pop_back();
     if(!BSPF::startsWithIgnoreCase(name, " ["))
-      name = " [" + name + "]";
+      name = " [" + name.append("]");
 
     _history.push(name);
     tmp = tmp.getParent();
