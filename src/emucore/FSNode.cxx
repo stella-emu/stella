@@ -27,8 +27,8 @@ FilesystemNode::FilesystemNode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::FilesystemNode(AbstractFSNodePtr realNode)
-  : _realNode(std::move(realNode))
+FilesystemNode::FilesystemNode(const AbstractFSNodePtr& realNode)
+  : _realNode(realNode)
 {
 }
 
