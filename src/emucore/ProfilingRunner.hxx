@@ -52,7 +52,7 @@ class ProfilingRunner {
 
   private:
 
-    bool runOne(const ProfilingRun run);
+    bool runOne(const ProfilingRun& run);
 
   private:
 

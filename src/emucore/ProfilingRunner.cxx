@@ -63,7 +63,7 @@ ProfilingRunner::ProfilingRunner(int argc, char* argv[])
     ProfilingRun& run(profilingRuns[i-2]);
 
     string arg = argv[i];
-    size_t splitPoint = arg.find_first_of(":");
+    size_t splitPoint = arg.find_first_of(':');
 
     run.romFile = splitPoint == string::npos ? arg : arg.substr(0, splitPoint);
 
@@ -92,7 +92,7 @@ bool ProfilingRunner::run()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ProfilingRunner::runOne(const ProfilingRun run)
+bool ProfilingRunner::runOne(const ProfilingRun& run)
 {
   FilesystemNode imageFile(run.romFile);
 

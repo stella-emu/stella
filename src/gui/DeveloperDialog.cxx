@@ -763,7 +763,6 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myTimeMachine[set] = myTimeMachineWidget->getState();
   myStateSize[set] = myStateSizeWidget->getValue();
   myUncompressed[set] = myUncompressedWidget->getValue();
-  myStateInterval[set] = myStateIntervalWidget->getSelected();
   myStateInterval[set] = myStateIntervalWidget->getSelectedTag().toString();
   myStateHorizon[set] = myStateHorizonWidget->getSelectedTag().toString();
 }

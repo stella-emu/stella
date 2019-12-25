@@ -106,7 +106,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP(
     const string& zipfile, const string& virtualpath,
-    AbstractFSNodePtr realnode, bool isdir)
+    const AbstractFSNodePtr& realnode, bool isdir)
   : _error(zip_error::NONE),
     _numFiles(0),
     _isDirectory(isdir),
@@ -118,7 +118,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FilesystemNodeZIP::setFlags(const string& zipfile,
                                  const string& virtualpath,
-                                 AbstractFSNodePtr realnode)
+                                 const AbstractFSNodePtr& realnode)
 {
   _zipFile = zipfile;
   _virtualPath = virtualpath;

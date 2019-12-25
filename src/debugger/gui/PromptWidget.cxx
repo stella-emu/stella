@@ -810,6 +810,7 @@ void PromptWidget::updateScrollBuffer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// TODO: rewrite this (cert-dcl50-cpp)
 int PromptWidget::printf(const char* format, ...)
 {
   va_list argptr;

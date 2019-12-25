@@ -20,7 +20,7 @@
 
 class FBSurface;
 class Properties;
-namespace GUI {
+namespace Common {
   struct Size;
 }
 

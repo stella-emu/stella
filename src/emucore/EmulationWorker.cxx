@@ -336,7 +336,7 @@ void EmulationWorker::waitUntilPendingSignalHasProcessed()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EmulationWorker::fatal(string message)
+void EmulationWorker::fatal(const string& message)
 {
   (cerr << "FATAL in emulation worker: " << message << std::endl).flush();
   throw runtime_error(message);

@@ -41,7 +41,7 @@ class MT24LC256
       @param callback  Called to pass messages back to the parent controller
     */
     MT24LC256(const string& filename, const System& system,
-              Controller::onMessageCallback callback);
+              const Controller::onMessageCallback& callback);
     ~MT24LC256();
 
   public:
@@ -89,7 +89,7 @@ class MT24LC256
 
     // Sends messages back to the parent class
     // Currently used for indicating read/write access
-    Controller::onMessageCallback myCallback;
+    const Controller::onMessageCallback myCallback;
 
     // The EEPROM data
     std::array<uInt8, FLASH_SIZE> myData;

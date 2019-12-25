@@ -64,7 +64,7 @@ TimerManager::TimerId TimerManager::addTimer(
   // Assign an ID and insert it into function storage
   auto id = nextId++;
   auto iter = active.emplace(id, Timer(id, Clock::now() + Duration(msDelay),
-      Duration(msPeriod), std::move(func)));
+      Duration(msPeriod), func));
 
   // Insert a reference to the Timer into ordering queue
   Queue::iterator place = queue.emplace(iter.first->second);
@@ -240,11 +240,11 @@ TimerManager::Timer::Timer(TimerId tid)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimerManager::Timer::Timer(Timer&& r) noexcept
-  : id(std::move(r.id)),
-    next(std::move(r.next)),
-    period(std::move(r.period)),
+  : id(r.id),
+    next(r.next),
+    period(r.period),
     handler(std::move(r.handler)),
-    running(std::move(r.running))
+    running(r.running)
 {
 }
 
@@ -254,7 +254,7 @@ TimerManager::Timer::Timer(TimerId tid, Timestamp tnext, Duration tperiod,
   : id(tid),
     next(tnext),
     period(tperiod),
-    handler(std::move(func)),
+    handler(func),
     running(false)
 {
 }

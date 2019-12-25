@@ -21,7 +21,7 @@
 SimpleResampler::SimpleResampler(
   Resampler::Format formatFrom,
   Resampler::Format formatTo,
-  Resampler::NextFragmentCallback nextFragmentCallback)
+  const Resampler::NextFragmentCallback& nextFragmentCallback)
   : Resampler(formatFrom, formatTo, nextFragmentCallback),
     myCurrentFragment(nullptr),
     myTimeIndex(0),

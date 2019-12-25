@@ -127,7 +127,7 @@ void RomAuditDialog::auditRoms()
   progress.setRange(0, int(files.size()) - 1, 5);
 
   Properties props;
-  int renamed = 0, notfound = 0;
+  uInt32 renamed = 0, notfound = 0;
   for(uInt32 idx = 0; idx < files.size(); ++idx)
   {
     string extension;
@@ -162,8 +162,8 @@ void RomAuditDialog::auditRoms()
   }
   progress.close();
 
-  myResults1->setText(Variant(renamed).toString());
-  myResults2->setText(Variant(notfound).toString());
+  myResults1->setText(std::to_string(renamed));
+  myResults2->setText(std::to_string(notfound));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

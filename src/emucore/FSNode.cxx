@@ -28,7 +28,7 @@ FilesystemNode::FilesystemNode()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(AbstractFSNodePtr realNode)
-  : _realNode(realNode)
+  : _realNode(std::move(realNode))
 {
 }
 
@@ -145,7 +145,7 @@ string FilesystemNode::getNameWithExt(const string& ext) const
   string s = pos == string::npos ? _realNode->getName() :
         _realNode->getName().substr(pos+1);
 
-  pos = s.find_last_of(".");
+  pos = s.find_last_of('.');
   return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
 }
 
@@ -157,7 +157,7 @@ string FilesystemNode::getPathWithExt(const string& ext) const
 
   string s = _realNode->getPath();
 
-  size_t pos = s.find_last_of(".");
+  size_t pos = s.find_last_of('.');
   return (pos != string::npos) ? s.replace(pos, string::npos, ext) : s + ext;
 }
 

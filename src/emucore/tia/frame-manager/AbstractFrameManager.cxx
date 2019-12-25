@@ -53,9 +53,10 @@ void AbstractFrameManager::nextLine()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AbstractFrameManager::setHandlers(
-  callback frameStartCallback,
-  callback frameCompletionCallback
-) {
+  const callback& frameStartCallback,
+  const callback& frameCompletionCallback
+)
+{
   myOnFrameStart = frameStartCallback;
   myOnFrameComplete = frameCompletionCallback;
 }

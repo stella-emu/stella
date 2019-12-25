@@ -57,7 +57,7 @@ void CartridgeE0::install(System& system)
   System::PageAccess access(this, System::PageAccessType::READ);
 
   // Set the page acessing methods for the first part of the last segment
-  for(uInt16 addr = 0x1C00; addr < (0x1FE0U & ~System::PAGE_MASK);
+  for(uInt16 addr = 0x1C00; addr < static_cast<uInt16>(0x1FE0U & ~System::PAGE_MASK);
       addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[0x1C00 + (addr & 0x03FF)];

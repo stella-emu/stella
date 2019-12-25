@@ -50,7 +50,8 @@ class Resampler {
 
   public:
 
-    Resampler(Format formatFrom, Format formatTo, NextFragmentCallback nextFragmentCallback) :
+    Resampler(Format formatFrom, Format formatTo,
+              const NextFragmentCallback& nextFragmentCallback) :
       myFormatFrom(formatFrom),
       myFormatTo(formatTo),
       myNextFragmentCallback(nextFragmentCallback),

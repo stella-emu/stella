@@ -49,7 +49,7 @@ class PhysicalJoystickHandler
     struct StickInfo
     {
       StickInfo(const string& map = EmptyString, PhysicalJoystickPtr stick = nullptr)
-        : mapping(map), joy(stick) {}
+        : mapping(map), joy(std::move(stick)) {}
 
       string mapping;
       PhysicalJoystickPtr joy;
@@ -64,7 +64,7 @@ class PhysicalJoystickHandler
     PhysicalJoystickHandler(OSystem& system, EventHandler& handler);
 
     /** Return stick ID on success, -1 on failure. */
-    int add(PhysicalJoystickPtr stick);
+    int add(const PhysicalJoystickPtr& stick);
     bool remove(int id);
     bool remove(const string& name);
     void mapStelladaptors(const string& saport);
@@ -161,7 +161,7 @@ class PhysicalJoystickHandler
 
     void enableCommonMappings();
 
-    void enableMappings(const Event::EventSet events, EventMode mode);
+    void enableMappings(const Event::EventSet& events, EventMode mode);
     void enableMapping(const Event::Type event, EventMode mode);
 
   private:

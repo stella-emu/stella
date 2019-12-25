@@ -31,7 +31,7 @@ class Audio : public Serializable
 
     void reset();
 
-    void setAudioQueue(shared_ptr<AudioQueue> queue);
+    void setAudioQueue(const shared_ptr<AudioQueue>& queue);
 
     void tick();
 

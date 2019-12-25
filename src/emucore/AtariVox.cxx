@@ -23,7 +23,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
                    const string& portname, const string& eepromfile,
-                   onMessageCallback callback)
+                   const onMessageCallback& callback)
   : SaveKey(jack, event, system, eepromfile, callback, Controller::Type::AtariVox),
     myShiftCount(0),
     myShiftRegister(0),

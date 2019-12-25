@@ -425,7 +425,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   }
   else
   {
-    string startBank = props.get(PropType::Cart_StartBank);
+    const string& startBank = props.get(PropType::Cart_StartBank);
 
     VarList::push_back(items, startBank, startBank);
     myStartBank->setEnabled(false);

@@ -40,8 +40,8 @@ class AbstractFrameManager : public Serializable
      * Configure the various handler callbacks.
      */
     void setHandlers(
-      callback frameStartCallback,
-      callback frameCompletionCallback
+      const callback& frameStartCallback,
+      const callback& frameCompletionCallback
     );
 
     /**

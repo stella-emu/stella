@@ -44,7 +44,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MT24LC256::MT24LC256(const string& filename, const System& system,
-                     Controller::onMessageCallback callback)
+                     const Controller::onMessageCallback& callback)
   : mySystem(system),
     myCallback(callback),
     mySDA(false),
