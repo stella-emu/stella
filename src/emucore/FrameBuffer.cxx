@@ -309,7 +309,7 @@ void FrameBuffer::update(bool force)
   //    last, since they are always drawn on top of everything else).
 
   // Full rendering is required when messages are enabled
-  force |= myMsg.counter >= 0;
+  force = force || myMsg.counter >= 0;
 
   // Detect when a message has been turned off; one last redraw is required
   // in this case, to draw over the area that the message occupied
@@ -340,7 +340,7 @@ void FrameBuffer::update(bool force)
   #ifdef GUI_SUPPORT
     case EventHandlerState::OPTIONSMENU:
     {
-      force |= myOSystem.menu().needsRedraw();
+      force = force || myOSystem.menu().needsRedraw();
       if(force)
       {
         clear();
@@ -352,7 +352,7 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::CMDMENU:
     {
-      force |= myOSystem.commandMenu().needsRedraw();
+      force = force || myOSystem.commandMenu().needsRedraw();
       if(force)
       {
         clear();
@@ -364,7 +364,7 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::TIMEMACHINE:
     {
-      force |= myOSystem.timeMachine().needsRedraw();
+      force = force || myOSystem.timeMachine().needsRedraw();
       if(force)
       {
         clear();
@@ -376,7 +376,7 @@ void FrameBuffer::update(bool force)
 
     case EventHandlerState::LAUNCHER:
     {
-      force |= myOSystem.launcher().needsRedraw();
+      force = force || myOSystem.launcher().needsRedraw();
       if(force)
       {
         clear();
@@ -389,7 +389,7 @@ void FrameBuffer::update(bool force)
   #ifdef DEBUGGER_SUPPORT
     case EventHandlerState::DEBUGGER:
     {
-      force |= myOSystem.debugger().needsRedraw();
+      force = force || myOSystem.debugger().needsRedraw();
       if(force)
       {
         clear();
@@ -408,7 +408,7 @@ void FrameBuffer::update(bool force)
   // indicates that, and then the code at the top of this method sees
   // the change and redraws everything
   if(myMsg.enabled)
-    force |= drawMessage();
+    force = force || drawMessage();
 
   // Push buffers to screen only when necessary
   if(force)
