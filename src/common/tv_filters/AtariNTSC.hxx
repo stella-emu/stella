@@ -151,16 +151,20 @@ class AtariNTSC
       rgb_bias = rgb_unit * 2 * rgb_builder,
 
       std_decoder_hue = 0,
-      ext_decoder_hue = std_decoder_hue + 15
+      ext_decoder_hue = std_decoder_hue + 15,
+
+      atari_ntsc_clamp_mask = rgb_builder * 3 / 2,
+      atari_ntsc_clamp_add  = rgb_builder * 0x101
     ;
 
-    #define artifacts_mid   1.5f
-    #define artifacts_max   2.5f
-    #define fringing_mid    1.0f
-    #define fringing_max    2.0f
-    #define rgb_offset      (rgb_unit * 2 + 0.5f)
-
-    #define LUMA_CUTOFF 0.20f
+    static constexpr float
+      artifacts_mid = 1.5F,
+      artifacts_max = 2.5F,
+      fringing_mid  = 1.0F,
+      fringing_max  = 2.0F,
+      rgb_offset    = (rgb_unit * 2 + 0.5F),
+      luma_cutoff   = 0.20F
+    ;
 
     uInt32 myColorTable[palette_size][entry_size];
     uInt8 myPhosphorPalette[256][256];
@@ -172,18 +176,18 @@ class AtariNTSC
 
     struct init_t
     {
-      float to_rgb [burst_count * 6];
-      float to_float [gamma_size];
+      std::array<float, burst_count * 6> to_rgb;
+      std::array<float, gamma_size> to_float;
       float contrast;
       float brightness;
       float artifacts;
       float fringing;
-      float kernel [rescale_out * kernel_size * 2];
+      std::array<float, rescale_out * kernel_size * 2> kernel;
 
       init_t() : contrast(0.0), brightness(0.0), artifacts(0.0), fringing(0.0) {
-        std::fill(to_rgb, to_rgb + burst_count * 6, 0.0);
-        std::fill(to_float, to_float + gamma_size, 0.0);
-        std::fill(kernel, kernel + rescale_out * kernel_size * 2, 0.0);
+        to_rgb.fill(0.0);
+        to_float.fill(0.0);
+        kernel.fill(0.0);
       }
     };
     init_t myImpl;
@@ -192,11 +196,11 @@ class AtariNTSC
     {
       int offset;
       float negate;
-      float kernel [4];
+      std::array<float, 4> kernel;
     };
-    static const pixel_info_t atari_ntsc_pixels[alignment_count];
+    static const std::array<pixel_info_t, alignment_count> atari_ntsc_pixels;
 
-    static const float default_decoder[6];
+    static const std::array<float, 6> default_decoder;
 
     void init(init_t& impl, const Setup& setup);
     void initFilters(init_t& impl, const Setup& setup);
@@ -220,57 +224,60 @@ class AtariNTSC
       kernel##index = (color_ = (color), myColorTable[color_]);\
     }
 
-    // Generates output in the specified 32-bit format (x = junk bits).
-    //  native: xxxRRRRR RRRxxGGG GGGGGxxB BBBBBBBx (native internal format)
+    // Generates output in the specified 32-bit format.
     //  8888:   00000000 RRRRRRRR GGGGGGGG BBBBBBBB (8-8-8-8 32-bit ARGB)
     #define ATARI_NTSC_RGB_OUT_8888( index, rgb_out ) {\
       uInt32 raw_ =\
         kernel0  [index       ] + kernel1  [(index+10)%7+14] +\
         kernelx0 [(index+7)%14] + kernelx1 [(index+ 3)%7+14+7];\
-      ATARI_NTSC_CLAMP_( raw_, 0 );\
+      ATARI_NTSC_CLAMP( raw_, 0 );\
       rgb_out = (raw_>>5 & 0x00FF0000)|(raw_>>3 & 0x0000FF00)|(raw_>>1 & 0x000000FF);\
     }
 
     // Common ntsc macros
-    #define atari_ntsc_clamp_mask     (rgb_builder * 3 / 2)
-    #define atari_ntsc_clamp_add      (rgb_builder * 0x101)
-    #define ATARI_NTSC_CLAMP_( io, shift ) {\
-      uInt32 sub = (io) >> (9-(shift)) & atari_ntsc_clamp_mask;\
-      uInt32 clamp = atari_ntsc_clamp_add - sub;\
-      io |= clamp;\
-      clamp -= sub;\
-      io &= clamp;\
+    static inline constexpr void ATARI_NTSC_CLAMP( uInt32& io, uInt32 shift ) {
+      uInt32 sub = io >> (9-(shift)) & atari_ntsc_clamp_mask;
+      uInt32 clamp = atari_ntsc_clamp_add - sub;
+      io |= clamp;
+      clamp -= sub;
+      io &= clamp;
     }
 
-    // Kernel generation
+    static inline constexpr void RGB_TO_YIQ(float r, float g, float b,
+        float& y, float& i, float& q) {
+      y = r * 0.299F + g * 0.587F + b * 0.114F;
+      i = r * 0.595716F - g * 0.274453F - b * 0.321263F;
+      q = r * 0.211456F - g * 0.522591F + b * 0.311135F;
+    }
+    static inline constexpr void YIQ_TO_RGB(float y, float i, float q,
+        const float* to_rgb, int& ir, int& ig, int& ib) {
+      ir = static_cast<int>(y + to_rgb[0] * i + to_rgb[1] * q);
+      ig = static_cast<int>(y + to_rgb[2] * i + to_rgb[3] * q);
+      ib = static_cast<int>(y + to_rgb[4] * i + to_rgb[5] * q);
+    }
+
+    static inline constexpr uInt32 PACK_RGB( int r, int g, int b ) {
+      return r << 21 | g << 11 | b << 1;
+    }
+
+    // Converted from C-style macros; I don't even pretend to understand the logic here :)
+    static inline constexpr int PIXEL_OFFSET1( int ntsc, int scaled ) {
+      return (kernel_size / 2 + ((ntsc) - (scaled) / rescale_out * rescale_in) +
+        ((((scaled) + rescale_out * 10) % rescale_out) != 0) +
+        (rescale_out - (((scaled) + rescale_out * 10) % rescale_out)) % rescale_out +
+        (kernel_size * 2 * (((scaled) + rescale_out * 10) % rescale_out)));
+    }
+    static inline constexpr int PIXEL_OFFSET2( int ntsc ) {
+      return 1.0F - (((ntsc) + 100) & 2);
+    }
+
+  #if 0  // DEAD CODE
     #define ROTATE_IQ( i, q, sin_b, cos_b ) {\
       float t;\
       t = i * cos_b - q * sin_b;\
       q = i * sin_b + q * cos_b;\
       i = t;\
     }
-    #define RGB_TO_YIQ( r, g, b, y, i ) (\
-      (y = (r) * 0.299f + (g) * 0.587f + (b) * 0.114f),\
-      (i = (r) * 0.595716f - (g) * 0.274453f - (b) * 0.321263f),\
-      ((r) * 0.211456f - (g) * 0.522591f + (b) * 0.311135f)\
-    )
-    #define YIQ_TO_RGB( y, i, q, to_rgb, type, r, g ) (\
-      r = type(y + to_rgb [0] * i + to_rgb [1] * q),\
-      g = type(y + to_rgb [2] * i + to_rgb [3] * q),\
-      type(y + to_rgb [4] * i + to_rgb [5] * q)\
-    )
-    #ifndef PACK_RGB
-      #define PACK_RGB( r, g, b ) ((r) << 21 | (g) << 11 | (b) << 1)
-    #endif
-
-    #define PIXEL_OFFSET_( ntsc, scaled ) \
-      (kernel_size / 2 + ntsc + (scaled != 0) + (rescale_out - scaled) % rescale_out + \
-        (kernel_size * 2 * scaled))
-
-    #define PIXEL_OFFSET( ntsc, scaled ) \
-      PIXEL_OFFSET_( ((ntsc) - (scaled) / rescale_out * rescale_in),\
-        (((scaled) + rescale_out * 10) % rescale_out) ),\
-        (1.0f - (((ntsc) + 100) & 2))
 
     #define DISTRIBUTE_ERROR( a, b, c ) {\
       uInt32 fourth = (error + 2 * rgb_builder) >> 2;\
@@ -285,11 +292,12 @@ class AtariNTSC
     #define RGB_PALETTE_OUT( rgb, out_ ) {\
       unsigned char* out = (out_);\
       uInt32 clamped = (rgb);\
-      ATARI_NTSC_CLAMP_( clamped, (8 - rgb_bits) );\
+      ATARI_NTSC_CLAMP( clamped, (8 - rgb_bits) );\
       out [0] = (unsigned char) (clamped >> 21);\
       out [1] = (unsigned char) (clamped >> 11);\
       out [2] = (unsigned char) (clamped >>  1);\
     }
+  #endif
 };
 
 #endif

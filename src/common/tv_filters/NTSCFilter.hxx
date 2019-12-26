@@ -109,12 +109,12 @@ class NTSCFilter
 
     // Perform Blargg filtering on input buffer, place results in
     // output buffer
-    inline void render(uInt8* src_buf, uInt32 src_width, uInt32 src_height,
+    inline void render(const uInt8* src_buf, uInt32 src_width, uInt32 src_height,
                        uInt32* dest_buf, uInt32 dest_pitch)
     {
       myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch);
     }
-    inline void render(uInt8* src_buf, uInt32 src_width, uInt32 src_height,
+    inline void render(const uInt8* src_buf, uInt32 src_width, uInt32 src_height,
                        uInt32* dest_buf, uInt32 dest_pitch, uInt32* prev_buf)
     {
       myNTSC.render(src_buf, src_width, src_height, dest_buf, dest_pitch, prev_buf);
@@ -156,7 +156,7 @@ class NTSCFilter
       float* value;
     };
     uInt32 myCurrentAdjustable;
-    static const AdjustableTag ourCustomAdjustables[10];
+    static const std::array<AdjustableTag, 10> ourCustomAdjustables;
 
   private:
     // Following constructors and assignment operators not supported
