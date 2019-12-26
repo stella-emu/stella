@@ -168,37 +168,29 @@ bool CheckListWidget::getState(int line)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CheckListWidget::handleEvent(Event::Type e)
 {
-  switch(e)
+  if(e == Event::UISelect)
   {
-    case Event::UISelect:
-      // Simulate a mouse button click
-      _checkList[ListWidget::getSelected()]->handleMouseUp(0, 0, MouseButton::LEFT, 0);
-      return true;
-
-    default:
-      return ListWidget::handleEvent(e);
+    // Simulate a mouse button click
+    _checkList[ListWidget::getSelected()]->handleMouseUp(0, 0, MouseButton::LEFT, 0);
+    return true;
   }
+  else
+    return ListWidget::handleEvent(e);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckListWidget::handleCommand(CommandSender* sender, int cmd,
                                     int data, int id)
 {
-  switch(cmd)
+  if(cmd == CheckboxWidget::kCheckActionCmd)
   {
-    case CheckboxWidget::kCheckActionCmd:
-    {
-      // Figure out which line has been checked
-      int line = _currentPos + id;
-      _stateList[line] = bool(data);
+    // Figure out which line has been checked
+    int line = _currentPos + id;
+    _stateList[line] = bool(data);
 
-      // Let the boss know about it
-      sendCommand(CheckListWidget::kListItemChecked, line, _id);
-      break;
-    }
-
-    default:
-      ListWidget::handleCommand(sender, cmd, data, id);
-      break;
+    // Let the boss know about it
+    sendCommand(CheckListWidget::kListItemChecked, line, _id);
   }
+  else
+    ListWidget::handleCommand(sender, cmd, data, id);
 }
