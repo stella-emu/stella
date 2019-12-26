@@ -83,8 +83,6 @@ class AtariNTSC
 
     // Set palette for normal Blarrg mode
     void setPalette(const PaletteArray& palette);
-    // Set phosphor table, for use in calculating phosphor palette
-    void setPhosphorTable(const PhosphorLUT& table);
 
     // Set up threading
     void enableThreading(bool enable);
@@ -95,13 +93,6 @@ class AtariNTSC
     //  Out_pitch is the number of *bytes* to get to the next output row.
     void render(const uInt8* atari_in, const uInt32 in_width, const uInt32 in_height,
                 void* rgb_out, const uInt32 out_pitch, uInt32* rgb_in = nullptr);
-
-    // Number of input pixels that will fit within given output width.
-    // Might be rounded down slightly; use outWidth() on result to find
-    // rounded value.
-    /*static constexpr uInt32 inWidth( uInt32 out_width ) {
-      return (((out_width - 8) / PIXEL_out_chunk - 1) * PIXEL_in_chunk + 1);
-    }*/
 
     // Number of output pixels written by blitter for given input width.
     // Width might be rounded down slightly; use inWidth() on result to
@@ -119,16 +110,6 @@ class AtariNTSC
       const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum, void* rgb_out, const uInt32 out_pitch);
     void renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_width,
       const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum, uInt32* rgb_in, void* rgb_out, const uInt32 out_pitch);
-
-    /**
-      Used to calculate an averaged color for the 'phosphor' effect.
-
-      @param c  RGB Color 1 (current frame)
-      @param cp RGB Color 2 (previous frame)
-
-      @return  Averaged value of the two RGB colors
-    */
-    uInt32 getRGBPhosphor(const uInt32 c, const uInt32 cp) const;
 
   private:
     static constexpr Int32
@@ -172,7 +153,6 @@ class AtariNTSC
 
     std::array<uInt8, palette_size*3> myRGBPalette;
     std::array<std::array<uInt32, entry_size>, palette_size> myColorTable;
-    PhosphorLUT myPhosphorLUT;
 
     // Rendering threads
     unique_ptr<std::thread[]> myThreads;
@@ -277,6 +257,13 @@ class AtariNTSC
     }
 
   #if 0  // DEAD CODE
+    // Number of input pixels that will fit within given output width.
+    // Might be rounded down slightly; use outWidth() on result to find
+    // rounded value.
+    static constexpr uInt32 inWidth( uInt32 out_width ) {
+      return (((out_width - 8) / PIXEL_out_chunk - 1) * PIXEL_in_chunk + 1);
+    }
+
     #define ROTATE_IQ( i, q, sin_b, cos_b ) {\
       float t;\
       t = i * cos_b - q * sin_b;\

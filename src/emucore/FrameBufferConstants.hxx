@@ -107,9 +107,6 @@ using PaletteArray = std::array<uInt32, kColor>;
 using UIPaletteArray = std::array<uInt32, kNumColors-kColor>;
 using FullPaletteArray = std::array<uInt32, kNumColors>;
 
-// Lookup table for phosphor mode, for generating corresponding palette
-using PhosphorLUT = std::array<std::array<uInt8, kColor>, kColor>;
-
 // Text alignment modes for drawString()
 enum class TextAlign {
   Left,

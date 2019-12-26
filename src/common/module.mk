@@ -11,6 +11,7 @@ MODULE_OBJS := \
 	src/common/Logger.o \
 	src/common/main.o \
 	src/common/MouseControl.o \
+	src/common/PhosphorHandler.o \
 	src/common/PhysicalJoystick.o \
 	src/common/PJoystickHandler.o \
 	src/common/PKeyboardHandler.o \

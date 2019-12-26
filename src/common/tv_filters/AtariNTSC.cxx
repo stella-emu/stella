@@ -17,6 +17,7 @@
 
 #include <thread>
 #include "AtariNTSC.hxx"
+#include "PhosphorHandler.hxx"
 
 // blitter related
 #ifndef restrict
@@ -48,12 +49,6 @@ void AtariNTSC::setPalette(const PaletteArray& palette)
     *ptr++ = palette[i] & 0xff;
   }
   generateKernels();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::setPhosphorTable(const PhosphorLUT& table)
-{
-  myPhosphorLUT = table;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -281,59 +276,44 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
     for (uInt32 x = AtariNTSC::outWidth(in_width) / 8; x; --x)
     {
       // Store back into displayed frame buffer (for next frame)
-      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
       ++bufofs;
-      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
       ++bufofs;
-      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
       ++bufofs;
-      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
       ++bufofs;
-      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
       ++bufofs;
-      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
       ++bufofs;
-      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
       ++bufofs;
-      rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+      rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
       ++bufofs;
     }
     // finish final 565 % 8 = 5 pixels
-    /*rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    /*rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
     ++bufofs;
-    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
     ++bufofs;
-    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
     ++bufofs;
-    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
     ++bufofs;
-    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
     ++bufofs;*/
 #if 0
-    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
     ++bufofs;
-    rgb_in[bufofs] = getRGBPhosphor(out[bufofs], rgb_in[bufofs]);
+    rgb_in[bufofs] = PhosphorHandler::getPixel(out[bufofs], rgb_in[bufofs]);
     ++bufofs;
 #endif
 
     atari_in += in_width;
     rgb_out = static_cast<char*>(rgb_out) + out_pitch;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt32 AtariNTSC::getRGBPhosphor(const uInt32 c, const uInt32 p) const
-{
-  // Mix current calculated frame with previous displayed frame
-  const uInt8 rc = static_cast<uInt8>(c >> 16),
-              gc = static_cast<uInt8>(c >> 8),
-              bc = static_cast<uInt8>(c),
-              rp = static_cast<uInt8>(p >> 16),
-              gp = static_cast<uInt8>(p >> 8),
-              bp = static_cast<uInt8>(p);
-
-  return (myPhosphorLUT[rc][rp] << 16) | (myPhosphorLUT[gc][gp] << 8) |
-          myPhosphorLUT[bc][bp];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

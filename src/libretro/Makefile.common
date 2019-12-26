@@ -23,6 +23,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/common/KeyMap.cxx \
 	$(CORE_DIR)/common/Logger.cxx \
 	$(CORE_DIR)/common/MouseControl.cxx \
+	$(CORE_DIR)/common/PhosphorHandler.cxx \
 	$(CORE_DIR)/common/PhysicalJoystick.cxx \
 	$(CORE_DIR)/common/PJoystickHandler.cxx \
 	$(CORE_DIR)/common/PKeyboardHandler.cxx \
