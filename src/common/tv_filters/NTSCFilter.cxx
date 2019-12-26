@@ -61,7 +61,7 @@ string NTSCFilter::setPreset(Preset preset)
     default:
       return msg;
   }
-  myNTSC.initialize(mySetup, myTIAPalette);
+  myNTSC.initialize(mySetup);
   return msg;
 }
 

@@ -43,7 +43,6 @@ TIASurface::TIASurface(OSystem& system)
     myUsePhosphor(false),
     myPhosphorPercent(0.60f),
     myScanlinesEnabled(false),
-    myPalette(nullptr),
     mySaveSnapFlag(false)
 {
   // Load NTSC filter settings
@@ -119,13 +118,14 @@ cerr << "SLine:\n"
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASurface::setPalette(const uInt32* tia_palette, const uInt32* rgb_palette)
+void TIASurface::setPalette(const PaletteArray& tia_palette,
+                            const PaletteArray& rgb_palette)
 {
   myPalette = tia_palette;
 
   // The NTSC filtering needs access to the raw RGB data, since it calculates
   // its own internal palette
-  myNTSCFilter.setTIAPalette(rgb_palette);
+  myNTSCFilter.setPalette(rgb_palette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -226,29 +226,27 @@ void TIASurface::enablePhosphor(bool enable, int blend)
   // Precalculate the average colors for the 'phosphor' effect
   if(myUsePhosphor)
   {
-    for(int c = 255; c >= 0; c--)
-      for(int p = 255; p >= 0; p--)
-        myPhosphorPalette[c][p] = getPhosphor(uInt8(c), uInt8(p));
+    for(int c = 255; c >= 0; --c)
+      for(int p = 255; p >= 0; --p)
+        myPhosphorLUT[c][p] = getPhosphor(uInt8(c), uInt8(p));
 
-    myNTSCFilter.setPhosphorPalette(myPhosphorPalette);
+    myNTSCFilter.setPhosphorTable(myPhosphorLUT);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt32 TIASurface::getRGBPhosphor(const uInt32 c, const uInt32 p) const
 {
-  #define TO_RGB(color, red, green, blue) \
-    const uInt8 red = color >> 16; const uInt8 green = color >> 8; const uInt8 blue = color;
-
-  TO_RGB(c, rc, gc, bc)
-  TO_RGB(p, rp, gp, bp)
-
   // Mix current calculated frame with previous displayed frame
-  const uInt8 rn = myPhosphorPalette[rc][rp];
-  const uInt8 gn = myPhosphorPalette[gc][gp];
-  const uInt8 bn = myPhosphorPalette[bc][bp];
+  const uInt8 rc = static_cast<uInt8>(c >> 16),
+              gc = static_cast<uInt8>(c >> 8),
+              bc = static_cast<uInt8>(c),
+              rp = static_cast<uInt8>(p >> 16),
+              gp = static_cast<uInt8>(p >> 8),
+              bp = static_cast<uInt8>(p);
 
-  return (rn << 16) | (gn << 8) | bn;
+  return (myPhosphorLUT[rc][rp] << 16) | (myPhosphorLUT[gc][gp] << 8) |
+          myPhosphorLUT[bc][bp];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,12 +300,16 @@ string TIASurface::effectsInfo() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
 {
-  uInt32 c = myRGBFramebuffer[bufOfs];
-  uInt32 p = myPrevRGBFramebuffer[bufOfs];
+  const uInt32 c = myRGBFramebuffer[bufOfs];
+  const uInt32 p = myPrevRGBFramebuffer[bufOfs];
 
   // Split into RGB values
-  TO_RGB(c, rc, gc, bc)
-  TO_RGB(p, rp, gp, bp)
+  const uInt8 rc = static_cast<uInt8>(c >> 16),
+              gc = static_cast<uInt8>(c >> 8),
+              bc = static_cast<uInt8>(c),
+              rp = static_cast<uInt8>(p >> 16),
+              gp = static_cast<uInt8>(p >> 8),
+              bp = static_cast<uInt8>(p);
 
   // Mix current calculated buffer with previous calculated buffer (50:50)
   const uInt8 rn = (rc + rp) / 2;
@@ -315,7 +317,7 @@ inline uInt32 TIASurface::averageBuffers(uInt32 bufOfs)
   const uInt8 bn = (bc + bp) / 2;
 
   // return averaged value
-  return  (rn << 16) | (gn << 8) | bn;
+  return (rn << 16) | (gn << 8) | bn;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

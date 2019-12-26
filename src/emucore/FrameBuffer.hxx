@@ -103,11 +103,6 @@ class FrameBuffer
     bool initialize();
 
     /**
-      Set palette for user interface
-    */
-    void setUIPalette();
-
-    /**
       (Re)creates the framebuffer display.  This must be called before any
       calls are made to derived methods.
 
@@ -183,6 +178,19 @@ class FrameBuffer
       ScalingInterpolation interpolation = ScalingInterpolation::none,
       const uInt32* data = nullptr
     );
+
+    /**
+      Set up the TIA/emulation palette.  Due to the way the palette is stored,
+      a call to this method implicitly calls setUIPalette() too.
+
+      @param rgb_palette  The array of colors in R/G/B format
+    */
+    void setTIAPalette(const PaletteArray& rgb_palette);
+
+    /**
+      Set palette for user interface.
+    */
+    void setUIPalette();
 
     /**
       Returns the current dimensions of the framebuffer image.
@@ -272,13 +280,6 @@ class FrameBuffer
       Toggles the use of grabmouse (only has effect in emulation mode).
     */
     void toggleGrabMouse();
-
-    /**
-      Set up the TIA/emulation palette for a screen of any depth > 8.
-
-      @param raw_palette  The array of colors in R/G/B format
-    */
-    void setPalette(const uInt32* raw_palette);
 
     /**
       Informs the Framebuffer of a change in EventHandler state.
@@ -456,9 +457,6 @@ z
     // The parent system for the framebuffer
     OSystem& myOSystem;
 
-    // Color palette for TIA and UI modes
-    uInt32 myPalette[256+kNumColors];
-
   private:
     /**
       Draw pending messages.
@@ -625,8 +623,9 @@ z
     // Holds a reference to all the surfaces that have been created
     vector<shared_ptr<FBSurface>> mySurfaceList;
 
-    // Holds UI palette data (standard and classic colours)
-    static uInt32 ourGUIColors[3][kNumColors-256];
+    FullPaletteArray myFullPalette;
+    // Holds UI palette data (for each variation)
+    static UIPaletteArray ourStandardUIPalette, ourClassicUIPalette, ourLightUIPalette;
 
   private:
     // Following constructors and assignment operators not supported

@@ -31,28 +31,47 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::initialize(const Setup& setup, const uInt8* palette)
+void AtariNTSC::initialize(const Setup& setup)
 {
   init(myImpl, setup);
-  initializePalette(palette);
+  generateKernels();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariNTSC::initializePalette(const uInt8* palette)
+void AtariNTSC::setPalette(const PaletteArray& palette)
 {
-  // Palette stores R/G/B data for 'palette_size' entries
-  for ( uInt32 entry = 0; entry < palette_size; ++entry )
+  uInt8* ptr = myRGBPalette.data();
+  for(size_t i = 0; i < palette.size(); ++i)
   {
-    float r = myImpl.to_float [*palette++],
-          g = myImpl.to_float [*palette++],
-          b = myImpl.to_float [*palette++];
+    *ptr++ = (palette[i] >> 16) & 0xff;
+    *ptr++ = (palette[i] >> 8) & 0xff;
+    *ptr++ = palette[i] & 0xff;
+  }
+  generateKernels();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariNTSC::setPhosphorTable(const PhosphorLUT& table)
+{
+  myPhosphorLUT = table;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariNTSC::generateKernels()
+{
+  const uInt8* ptr = myRGBPalette.data();
+  for(size_t entry = 0; entry < myRGBPalette.size() / 3; ++entry)
+  {
+    float r = myImpl.to_float[*ptr++],
+          g = myImpl.to_float[*ptr++],
+          b = myImpl.to_float[*ptr++];
     float y, i, q;  RGB_TO_YIQ( r, g, b, y, i, q );
 
     // Generate kernel
     int ir, ig, ib;  YIQ_TO_RGB( y, i, q, myImpl.to_rgb.data(), ir, ig, ib );
     uInt32 rgb = PACK_RGB( ir, ig, ib );
 
-    uInt32* kernel = myColorTable[entry];
+    uInt32* kernel = myColorTable[entry].data();
     genKernel(myImpl, y, i, q, kernel);
 
     for ( uInt32 c = 0; c < rgb_kernel_size / 2; ++c )
@@ -306,18 +325,15 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
 inline uInt32 AtariNTSC::getRGBPhosphor(const uInt32 c, const uInt32 p) const
 {
   // Mix current calculated frame with previous displayed frame
-  const uInt8 rc = uInt8(c >> 16);
-  const uInt8 gc = uInt8(c >> 8);
-  const uInt8 bc = uInt8(c);
-  const uInt8 rp = uInt8(p >> 16);
-  const uInt8 gp = uInt8(p >> 8);
-  const uInt8 bp = uInt8(p);
+  const uInt8 rc = static_cast<uInt8>(c >> 16),
+              gc = static_cast<uInt8>(c >> 8),
+              bc = static_cast<uInt8>(c),
+              rp = static_cast<uInt8>(p >> 16),
+              gp = static_cast<uInt8>(p >> 8),
+              bp = static_cast<uInt8>(p);
 
-  const uInt8 rn = myPhosphorPalette[rc][rp];
-  const uInt8 gn = myPhosphorPalette[gc][gp];
-  const uInt8 bn = myPhosphorPalette[bc][bp];
-
-  return (rn << 16) | (gn << 8) | bn;
+  return (myPhosphorLUT[rc][rp] << 16) | (myPhosphorLUT[gc][gp] << 8) |
+          myPhosphorLUT[bc][bp];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
