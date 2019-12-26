@@ -156,11 +156,13 @@ class DialogContainer
     virtual Dialog* baseDialog() = 0;
 
     /**
-      Set input speeds
+      Set input speeds.
     */
     static void setDoubleClickDelay(int delay) { _DOUBLE_CLICK_DELAY = delay; }
     static void setControllerDelay(int delay) { _REPEAT_INITIAL_DELAY = delay; }
-    static void setControllerRate(int rate) { _REPEAT_SUSTAIN_DELAY = 1000 / rate; }
+    static void setControllerRate(int rate) {
+      _REPEAT_SUSTAIN_DELAY = (rate > 0 ? (1000 / rate) : 50);
+    }
 
   private:
     void reset();
