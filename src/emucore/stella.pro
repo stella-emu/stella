@@ -6539,6 +6539,7 @@
 "Cart.Manufacturer" "U.S. Games Corporation - JWDA, Todd Marshall"
 "Cart.Name" "3-D Zapper (12-15-82) (U.S. Games) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "4f618c2429138e0280969193ed6c107e"
@@ -21296,4 +21297,11 @@
 "Cart.Name" "Shooting Arcade (03-07-1989) (Atari) (Prototype)"
 "Cart.Note" "Uses the Light Gun Controller (left only)"
 "Cart.Rarity" "Prototype"
+""
+
+"Cart.MD5" "97f4da9f1031486f4e588f1e53572e53"
+"Cart.Manufacturer" "SpiceWare - Darrell Spice Jr."
+"Cart.Name" "Draconian"
+"Cart.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
 ""
