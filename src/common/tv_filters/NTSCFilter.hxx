@@ -63,9 +63,6 @@ class NTSCFilter
     void setPalette(const PaletteArray& palette) {
       myNTSC.setPalette(palette);
     }
-    void setPhosphorTable(const PhosphorLUT& table) {
-      myNTSC.setPhosphorTable(table);
-    }
 
     // The following are meant to be used strictly for toggling from the GUI
     string setPreset(Preset preset);

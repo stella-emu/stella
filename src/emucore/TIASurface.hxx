@@ -28,6 +28,7 @@ class FBSurface;
 #include "Rect.hxx"
 #include "FrameBuffer.hxx"
 #include "NTSCFilter.hxx"
+#include "PhosphorHandler.hxx"
 #include "bspf.hxx"
 #include "TIAConstants.hxx"
 
@@ -105,32 +106,7 @@ class TIASurface
       Enable/disable/query phosphor effect.
     */
     void enablePhosphor(bool enable, int blend = -1);
-    bool phosphorEnabled() const { return myUsePhosphor; }
-
-    /**
-      Used to calculate an averaged color for the 'phosphor' effect.
-
-      @param c1  Color 1
-      @param c2  Color 2
-
-      @return  Averaged value of the two colors
-    */
-    inline uInt8 getPhosphor(const uInt8 c1, uInt8 c2) const {
-      // Use maximum of current and decayed previous values
-      c2 = uInt8(c2 * myPhosphorPercent);
-      if(c1 > c2)  return c1; // raise (assumed immediate)
-      else         return c2; // decay
-    }
-
-    /**
-      Used to calculate an averaged color for the 'phosphor' effect.
-
-      @param c  RGB Color 1 (current frame)
-      @param cp RGB Color 2 (previous frame)
-
-      @return  Averaged value of the two RGB colors
-    */
-    uInt32 getRGBPhosphor(const uInt32 c, const uInt32 cp) const;
+    bool phosphorEnabled() const { return myPhosphorHandler.phosphorEnabled(); }
 
     /**
       Enable/disable/query NTSC filtering effects.
@@ -190,19 +166,12 @@ class TIASurface
     /////////////////////////////////////////////////////////////
     // Phosphor mode items (aka reduced flicker on 30Hz screens)
     // RGB frame buffer
+    PhosphorHandler myPhosphorHandler;
+
     std::array<uInt32, AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
         TIAConstants::frameBufferHeight> myRGBFramebuffer;
     std::array<uInt32, AtariNTSC::outWidth(TIAConstants::frameBufferWidth) *
         TIAConstants::frameBufferHeight> myPrevRGBFramebuffer;
-
-    // Use phosphor effect
-    bool myUsePhosphor;
-
-    // Amount to blend when using phosphor effect
-    float myPhosphorPercent;
-
-    // Precalculated averaged phosphor colors
-    PhosphorLUT myPhosphorLUT;
     /////////////////////////////////////////////////////////////
 
     // Use scanlines in TIA rendering mode

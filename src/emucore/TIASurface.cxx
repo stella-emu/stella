@@ -40,8 +40,6 @@ TIASurface::TIASurface(OSystem& system)
     myFB(system.frameBuffer()),
     myTIA(nullptr),
     myFilter(Filter::Normal),
-    myUsePhosphor(false),
-    myPhosphorPercent(0.60f),
     myScanlinesEnabled(false),
     mySaveSnapFlag(false)
 {
@@ -213,40 +211,11 @@ uInt32 TIASurface::enableScanlines(int relative, int absolute)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::enablePhosphor(bool enable, int blend)
 {
-  if(myUsePhosphor == enable && myPhosphorPercent == blend / 100.0f)
-    return;
-
-  myUsePhosphor = enable;
-  if(blend >= 0)
-    myPhosphorPercent = blend / 100.0f;
-  myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
-
-  myRGBFramebuffer.fill(0);
-
-  // Precalculate the average colors for the 'phosphor' effect
-  if(myUsePhosphor)
+  if(myPhosphorHandler.initialize(enable, blend))
   {
-    for(int c = 255; c >= 0; --c)
-      for(int p = 255; p >= 0; --p)
-        myPhosphorLUT[c][p] = getPhosphor(uInt8(c), uInt8(p));
-
-    myNTSCFilter.setPhosphorTable(myPhosphorLUT);
+    myFilter = Filter(enable ? uInt8(myFilter) | 0x01 : uInt8(myFilter) & 0x10);
+    myRGBFramebuffer.fill(0);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt32 TIASurface::getRGBPhosphor(const uInt32 c, const uInt32 p) const
-{
-  // Mix current calculated frame with previous displayed frame
-  const uInt8 rc = static_cast<uInt8>(c >> 16),
-              gc = static_cast<uInt8>(c >> 8),
-              bc = static_cast<uInt8>(c),
-              rp = static_cast<uInt8>(p >> 16),
-              gp = static_cast<uInt8>(p >> 8),
-              bp = static_cast<uInt8>(p);
-
-  return (myPhosphorLUT[rc][rp] << 16) | (myPhosphorLUT[gc][gp] << 8) |
-          myPhosphorLUT[bc][bp];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -364,9 +333,9 @@ void TIASurface::render()
         for(uInt32 x = width / 2; x ; --x)
         {
           // Store back into displayed frame buffer (for next frame)
-          rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+          rgbIn[bufofs] = out[pos++] = PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
           ++bufofs;
-          rgbIn[bufofs] = out[pos++] = getRGBPhosphor(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
+          rgbIn[bufofs] = out[pos++] = PhosphorHandler::getPixel(myPalette[tiaIn[bufofs]], rgbIn[bufofs]);
           ++bufofs;
         }
         screenofsY += outPitch;
@@ -457,7 +426,7 @@ void TIASurface::renderForSnapshot()
       break;
   }
 
-  if(myUsePhosphor)
+  if(myPhosphorHandler.phosphorEnabled())
   {
     // Draw TIA image
     myTiaSurface->render();
@@ -472,5 +441,7 @@ void TIASurface::renderForSnapshot()
 void TIASurface::updateSurfaceSettings()
 {
   myTiaSurface->setScalingInterpolation(interpolationModeFromSettings(myOSystem.settings()));
-  mySLineSurface->setScalingInterpolation(interpolationModeFromSettings(myOSystem.settings()));
+  mySLineSurface->setScalingInterpolation(
+      interpolationModeFromSettings(myOSystem.settings())
+  );
 }
