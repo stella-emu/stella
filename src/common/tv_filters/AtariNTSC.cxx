@@ -43,14 +43,13 @@ void AtariNTSC::initializePalette(const uInt8* palette)
   // Palette stores R/G/B data for 'palette_size' entries
   for ( uInt32 entry = 0; entry < palette_size; ++entry )
   {
-    float r = myImpl.to_float [*palette++];
-    float g = myImpl.to_float [*palette++];
-    float b = myImpl.to_float [*palette++];
-
-    float y, i, q = RGB_TO_YIQ( r, g, b, y, i );
+    float r = myImpl.to_float [*palette++],
+          g = myImpl.to_float [*palette++],
+          b = myImpl.to_float [*palette++];
+    float y, i, q;  RGB_TO_YIQ( r, g, b, y, i, q );
 
     // Generate kernel
-    int ir, ig, ib = YIQ_TO_RGB( y, i, q, myImpl.to_rgb, int, ir, ig );
+    int ir, ig, ib;  YIQ_TO_RGB( y, i, q, myImpl.to_rgb.data(), ir, ig, ib );
     uInt32 rgb = PACK_RGB( ir, ig, ib );
 
     uInt32* kernel = myColorTable[entry];
@@ -77,7 +76,7 @@ void AtariNTSC::enableThreading(bool enable)
   }
   else
   {
-    systemThreads = std::max(1u, std::min(4u, systemThreads - 1));
+    systemThreads = std::max<uInt32>(1, std::min<uInt32>(4, systemThreads - 1));
 
     myWorkerThreads = systemThreads - 1;
     myTotalThreads  = systemThreads;
@@ -306,15 +305,14 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline uInt32 AtariNTSC::getRGBPhosphor(const uInt32 c, const uInt32 p) const
 {
-#define TO_RGB(color, red, green, blue)   \
-    const uInt8 red   = uInt8(color >> 16); \
-    const uInt8 green = uInt8(color >> 8);\
-    const uInt8 blue  = uInt8(color);
-
-  TO_RGB(c, rc, gc, bc)
-  TO_RGB(p, rp, gp, bp)
-
   // Mix current calculated frame with previous displayed frame
+  const uInt8 rc = uInt8(c >> 16);
+  const uInt8 gc = uInt8(c >> 8);
+  const uInt8 bc = uInt8(c);
+  const uInt8 rp = uInt8(p >> 16);
+  const uInt8 gp = uInt8(p >> 8);
+  const uInt8 bp = uInt8(p);
+
   const uInt8 rn = myPhosphorPalette[rc][rp];
   const uInt8 gn = myPhosphorPalette[gc][gp];
   const uInt8 bn = myPhosphorPalette[bc][bp];
@@ -325,8 +323,8 @@ inline uInt32 AtariNTSC::getRGBPhosphor(const uInt32 c, const uInt32 p) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::init(init_t& impl, const Setup& setup)
 {
-  impl.brightness = setup.brightness * (0.5f * rgb_unit) + rgb_offset;
-  impl.contrast   = setup.contrast   * (0.5f * rgb_unit) + rgb_unit;
+  impl.brightness = setup.brightness * (0.5F * rgb_unit) + rgb_offset;
+  impl.contrast   = setup.contrast   * (0.5F * rgb_unit) + rgb_unit;
 
   impl.artifacts = setup.artifacts;
   if ( impl.artifacts > 0 )
@@ -343,8 +341,8 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
   /* generate gamma table */
   if (true)  /* was (gamma_size > 1) */
   {
-    float const to_float = 1.0f / (gamma_size - 1/*(gamma_size > 1)*/);
-    float const gamma = 1.1333f - setup.gamma * 0.5f;
+    float const to_float = 1.F / (gamma_size - 1/*(gamma_size > 1)*/);
+    float const gamma = 1.1333F - setup.gamma * 0.5F;
     /* match common PC's 2.2 gamma to TV's 2.65 gamma */
     int i;
     for ( i = 0; i < gamma_size; i++ )
@@ -360,13 +358,13 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
 
     float s = sinf( hue ) * sat;
     float c = cosf( hue ) * sat;
-    float* out = impl.to_rgb;
+    float* out = impl.to_rgb.data();
     int n;
 
     n = burst_count;
     do
     {
-      float const* in = default_decoder;
+      float const* in = default_decoder.data();
       int n2 = 3;
       do
       {
@@ -378,7 +376,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
       while ( --n2 );
     #if 0  // burst_count is always 0
       if ( burst_count > 1 )
-        ROTATE_IQ( s, c, 0.866025f, -0.5f ); /* +120 degrees */
+        ROTATE_IQ( s, c, 0.866025F, -0.5F ); /* +120 degrees */
     #endif
     }
     while ( --n );
@@ -388,18 +386,18 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
 {
-  float kernels [kernel_size * 2];
+  std::array<float, kernel_size * 2> kernels;
 
   /* generate luma (y) filter using sinc kernel */
   {
     /* sinc with rolloff (dsf) */
-    float const rolloff = 1 + setup.sharpness * 0.032f;
+    float const rolloff = 1 + setup.sharpness * 0.032F;
     constexpr float maxh = 32;
     float const pow_a_n = powf( rolloff, maxh );
     float sum;
     /* quadratic mapping to reduce negative (blurring) range */
     float to_angle = setup.resolution + 1;
-    to_angle = BSPF::PI_f / maxh * LUMA_CUTOFF * (to_angle * to_angle + 1.f);
+    to_angle = BSPF::PI_f / maxh * luma_cutoff * (to_angle * to_angle + 1.f);
 
     kernels [kernel_size * 3 / 2] = maxh; /* default center value */
     for ( int i = 0; i < kernel_half * 2 + 1; i++ )
@@ -407,7 +405,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
       int x = i - kernel_half;
       float angle = x * to_angle;
       /* instability occurs at center point with rolloff very close to 1.0 */
-      if ( x || pow_a_n > 1.056f || pow_a_n < 0.981f )
+      if ( x || pow_a_n > 1.056F || pow_a_n < 0.981F )
       {
         float rolloff_cos_a = rolloff * cosf( angle );
         float num = 1 - rolloff_cos_a -
@@ -415,7 +413,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
             pow_a_n * rolloff * cosf( (maxh - 1) * angle );
         float den = 1 - rolloff_cos_a - rolloff_cos_a + rolloff * rolloff;
         float dsf = num / den;
-        kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - 0.5f;
+        kernels [kernel_size * 3 / 2 - kernel_half + i] = dsf - 0.5F;
       }
     }
 
@@ -424,12 +422,12 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
     for ( int i = 0; i < kernel_half * 2 + 1; i++ )
     {
       float x = BSPF::PI_f * 2 / (kernel_half * 2) * i;
-      float blackman = 0.42f - 0.5f * cosf( x ) + 0.08f * cosf( x * 2 );
+      float blackman = 0.42F - 0.5F * cosf( x ) + 0.08F * cosf( x * 2 );
       sum += (kernels [kernel_size * 3 / 2 - kernel_half + i] *= blackman);
     }
 
     /* normalize kernel */
-    sum = 1.0f / sum;
+    sum = 1.0F / sum;
     for ( int i = 0; i < kernel_half * 2 + 1; i++ )
     {
       int x = kernel_size * 3 / 2 - kernel_half + i;
@@ -439,7 +437,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
 
   /* generate chroma (iq) filter using gaussian kernel */
   {
-    constexpr float cutoff_factor = -0.03125f;
+    constexpr float cutoff_factor = -0.03125F;
     float cutoff = setup.bleed;
 
     if ( cutoff < 0 )
@@ -448,9 +446,9 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
       cutoff *= cutoff;
       cutoff *= cutoff;
       cutoff *= cutoff;
-      cutoff *= -30.0f / 0.65f;
+      cutoff *= -30.0F / 0.65F;
     }
-    cutoff = cutoff_factor - 0.65f * cutoff_factor * cutoff;
+    cutoff = cutoff_factor - 0.65F * cutoff_factor * cutoff;
 
     for ( int i = -kernel_half; i <= kernel_half; i++ )
       kernels [kernel_size / 2 + i] = expf( i * i * cutoff );
@@ -463,7 +461,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
       for ( x = i; x < kernel_size; x += 2 )
         sum += kernels [x];
 
-      sum = 1.0f / sum;
+      sum = 1.0F / sum;
       for ( x = i; x < kernel_size; x += 2 )
       {
         kernels [x] *= sum;
@@ -472,13 +470,13 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
   }
 
   /* generate linear rescale kernels */
-  float weight = 1.0f;
-  float* out = impl.kernel;
+  float weight = 1.0F;
+  float* out = impl.kernel.data();
   int n = rescale_out;
   do
   {
     float remain = 0;
-    weight -= 1.0f / rescale_in;
+    weight -= 1.0F / rescale_in;
     for ( int i = 0; i < kernel_size * 2; i++ )
     {
       float cur = kernels [i];
@@ -495,7 +493,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
 void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
 {
   /* generate for each scanline burst phase */
-  float const* to_rgb = impl.to_rgb;
+  float const* to_rgb = impl.to_rgb.data();
   int burst_remain = burst_count;
   y -= rgb_offset;
   do
@@ -504,7 +502,7 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
     Convolve these with kernels which: filter respective components, apply
     sharpening, and rescale horizontally. Convert resulting yiq to rgb and pack
     into integer. Based on algorithm by NewRisingSun. */
-    pixel_info_t const* pixel = atari_ntsc_pixels;
+    pixel_info_t const* pixel = atari_ntsc_pixels.data();
     int alignment_remain = alignment_count;
     do
     {
@@ -538,7 +536,7 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
         else
           k -= kernel_size * 2 * (rescale_out - 1) + 2;
         {
-          int r, g, b = YIQ_TO_RGB( fy, fi, fq, to_rgb, int, r, g );
+          int r, g, b;  YIQ_TO_RGB( fy, fi, fq, to_rgb, r, g, b );
           *out++ = PACK_RGB( r, g, b ) - rgb_bias;
         }
       }
@@ -550,24 +548,26 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const AtariNTSC::Setup AtariNTSC::TV_Composite = {
-  0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.0f
+  0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.15F, 0.0F, 0.0F, 0.0F
 };
 const AtariNTSC::Setup AtariNTSC::TV_SVideo = {
-  0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.45f, -1.0f, -1.0f, 0.0f
+  0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.45F, -1.0F, -1.0F, 0.0F
 };
 const AtariNTSC::Setup AtariNTSC::TV_RGB = {
-  0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.70f, -1.0f, -1.0f, -1.0f
+  0.0F, 0.0F, 0.0F, 0.0F, 0.2F, 0.0F, 0.70F, -1.0F, -1.0F, -1.0F
 };
 const AtariNTSC::Setup AtariNTSC::TV_Bad = {
-  0.1f, -0.3f, 0.3f, 0.25f, 0.2f, 0.0f, 0.1f, 0.5f, 0.5f, 0.5f
+  0.1F, -0.3F, 0.3F, 0.25F, 0.2F, 0.0F, 0.1F, 0.5F, 0.5F, 0.5F
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const AtariNTSC::pixel_info_t AtariNTSC::atari_ntsc_pixels[alignment_count] = {
-  { PIXEL_OFFSET( -4, -9 ), { 1, 1, 1, 1            } },
-  { PIXEL_OFFSET(  0, -5 ), {            1, 1, 1, 1 } },
-};
+const std::array<AtariNTSC::pixel_info_t, AtariNTSC::alignment_count>
+AtariNTSC::atari_ntsc_pixels = { {
+  { PIXEL_OFFSET1(-4, -9), PIXEL_OFFSET2(-4), { 1, 1, 1, 1            } },
+  { PIXEL_OFFSET1( 0, -5), PIXEL_OFFSET2( 0), {            1, 1, 1, 1 } }
+} };
 
-const float AtariNTSC::default_decoder[6] = {
-  0.9563f, 0.6210f, -0.2721f, -0.6474f, -1.1070f, 1.7046f
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const std::array<float, 6> AtariNTSC::default_decoder = {
+  0.9563F, 0.6210F, -0.2721F, -0.6474F, -1.1070F, 1.7046F
 };
