@@ -213,7 +213,7 @@ void PopUpWidget::drawWidget(bool hilite)
   s.fillRect(x + w - 15, _y + 2, 13, _h - 4, onTop ? isEnabled() && hilite ? kWidColor : kBGColorHi : kBGColorLo);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   s.drawBitmap(down_arrow, x + w - 13, _y + myArrowsY + 1,
-               !(isEnabled() && onTop) ? kColor : kTextColor, 9u, 8u);
+               !(isEnabled() && onTop) ? kColor : kTextColor, 9U, 8U);
 
   // Draw the selected entry, if any
   const string& name = myMenu->getSelectedName();

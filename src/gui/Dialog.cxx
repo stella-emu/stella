@@ -759,6 +759,9 @@ void Dialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case GuiObject::kCloseCmd:
       close();
       break;
+
+    default:
+      break;
   }
 }
 

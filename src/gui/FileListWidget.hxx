@@ -74,7 +74,7 @@ class FileListWidget : public StringListWidget
 
     /** Gets current node(s) */
     const FilesystemNode& selected() {
-      _selected = BSPF::clamp(_selected, 0u, uInt32(_fileList.size()-1));
+      _selected = BSPF::clamp(_selected, 0U, uInt32(_fileList.size()-1));
       return _fileList[_selected];
     }
     const FilesystemNode& currentDir() const { return _node; }

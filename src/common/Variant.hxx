@@ -42,7 +42,7 @@ class Variant
     }
 
   public:
-    Variant() { }
+    Variant() = default;
 
     Variant(const string& s) : data(s) { }
     Variant(const char* s) : data(s) { }

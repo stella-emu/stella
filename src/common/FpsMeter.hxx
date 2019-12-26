@@ -55,12 +55,10 @@ class FpsMeter
     float myFps;
 
   private:
-
     FpsMeter(const FpsMeter&) = delete;
     FpsMeter(FpsMeter&&) = delete;
     FpsMeter& operator=(const FpsMeter&) = delete;
     FpsMeter& operator=(FpsMeter&&) = delete;
-
 };
 
 #endif // FPS_METER_HXX

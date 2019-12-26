@@ -25,7 +25,7 @@
 class DelayQueueIterator
 {
   public:
-    virtual ~DelayQueueIterator() {}
+    virtual ~DelayQueueIterator() = default;
 
   public:
     virtual bool isValid() const = 0;

@@ -102,7 +102,7 @@ void ContextMenu::recalc(const Common::Rect& image)
 {
   // Now is the time to adjust the height
   // If it's higher than the screen, we need to scroll through
-  uInt32 maxentries = std::min(18u, (image.h() - 2) / _rowHeight);
+  uInt32 maxentries = std::min<uInt32>(18, (image.h() - 2) / _rowHeight);
   if(_entries.size() > maxentries)
   {
     // We show two less than the max, so we have room for two scroll buttons
@@ -521,7 +521,7 @@ void ContextMenu::scrollDown(int distance)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::drawDialog()
 {
-  static uInt32 up_arrow[8] = {
+  static constexpr uInt32 up_arrow[8] = {
     0b00011000,
     0b00011000,
     0b00111100,
@@ -531,7 +531,7 @@ void ContextMenu::drawDialog()
     0b11111111,
     0b11111111
   };
-  static uInt32 down_arrow[8] = {
+  static constexpr uInt32 down_arrow[8] = {
     0b11111111,
     0b11111111,
     0b01111110,

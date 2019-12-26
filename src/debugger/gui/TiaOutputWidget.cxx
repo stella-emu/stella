@@ -161,6 +161,9 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       }
       break;
     }
+
+    default:
+      break;
   }
 }
 
@@ -186,7 +189,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
 
   for(uInt32 y = 0, i = 0; y < height; ++y)
   {
-    uInt32* line_ptr = myLineBuffer;
+    uInt32* line_ptr = myLineBuffer.data();
     for(uInt32 x = 0; x < width; ++x, ++i)
     {
       uInt8 shift = i >= scanoffset ? 1 : 0;
@@ -194,10 +197,10 @@ void TiaOutputWidget::drawWidget(bool hilite)
       *line_ptr++ = pixel;
       *line_ptr++ = pixel;
     }
-    s.drawPixels(myLineBuffer, _x + 1, _y + 1 + y, width << 1);
+    s.drawPixels(myLineBuffer.data(), _x + 1, _y + 1 + y, width << 1);
   }
 
   // Show electron beam position
-  if(visible && scanx < width && scany+2u < height)
+  if(visible && scanx < width && scany+2U < height)
     s.fillRect(_x + 1 + (scanx<<1), _y + 1 + scany, 3, 3, kColorInfo);
 }

@@ -44,8 +44,7 @@ class ComboDialog : public Dialog
 
   private:
     Event::Type myComboEvent;
-
-    PopUpWidget*      myEvents[8];
+    std::array<PopUpWidget*, 8> myEvents;
 
   private:
     // Following constructors and assignment operators not supported

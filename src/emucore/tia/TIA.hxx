@@ -123,7 +123,7 @@ class TIA : public Device
     /**
       Configure the frame manager.
      */
-    void setFrameManager(AbstractFrameManager *frameManager);
+    void setFrameManager(AbstractFrameManager* frameManager);
 
     /**
       Set the audio queue. This needs to be dynamic as the queue is created after
@@ -540,7 +540,7 @@ class TIA : public Device
      */
     enum FixedObject { P0, M0, P1, M1, PF, BL, BK };
     FixedColor myFixedColorPalette[3][7];
-    string myFixedColorNames[7];
+    std::array<string, 7> myFixedColorNames;
 
   private:
     /**

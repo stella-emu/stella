@@ -188,14 +188,16 @@ class Properties
     static void printHeader();
 
   private:
+    static constexpr size_t NUM_PROPS = static_cast<size_t>(PropType::NumTypes);
+
     // The array of properties
-    string myProperties[static_cast<uInt8>(PropType::NumTypes)];
+    std::array<string, NUM_PROPS> myProperties;
 
     // List of default properties to use when none have been provided
-    static string ourDefaultProperties[static_cast<uInt8>(PropType::NumTypes)];
+    static std::array<string, NUM_PROPS> ourDefaultProperties;
 
     // The text strings associated with each property type
-    static const char* const ourPropertyNames[static_cast<uInt8>(PropType::NumTypes)];
+    static std::array<string, NUM_PROPS> ourPropertyNames;
 };
 
 #endif

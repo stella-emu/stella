@@ -227,14 +227,14 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
+void FBSurface::drawBitmap(const uInt32* bitmap, uInt32 tx, uInt32 ty,
                            ColorId color, uInt32 h)
 {
   drawBitmap(bitmap, tx, ty, color, h, h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
+void FBSurface::drawBitmap(const uInt32* bitmap, uInt32 tx, uInt32 ty,
                            ColorId color, uInt32 w, uInt32 h)
 {
   if(!checkBounds(tx, ty) || !checkBounds(tx + w - 1, ty + h - 1))
@@ -254,7 +254,7 @@ void FBSurface::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
+void FBSurface::drawPixels(const uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
 {
   if(!checkBounds(tx, ty) || !checkBounds(tx + numpixels - 1, ty))
     return;

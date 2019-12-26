@@ -433,7 +433,7 @@ bool TIADebug::collision(CollisionBit id, bool toggle) const
     case CollisionBit::M1P1:
       if(toggle)
         myTIA.toggleCollP1M1();
-      return myTIA.collCXM1P() & 0x40;
+      return myTIA.collCXM1P()  & 0x40;
 
     case CollisionBit::P0PF:
       if(toggle)
