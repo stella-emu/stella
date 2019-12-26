@@ -1093,29 +1093,36 @@ void EventHandler::setComboMap()
   {
     // Get combo count, which should be the first int in the list
     // If it isn't, then we treat the entire list as invalid
-    string key;
-    buf >> key;
-    if(stoi(key) == COMBO_SIZE)
+    try
     {
-      // Fill the combomap table with events for as long as they exist
-      int combocount = 0;
-      while(buf >> key && combocount < COMBO_SIZE)
+      string key;
+      buf >> key;
+      if(stoi(key) == COMBO_SIZE)
       {
-        // Each event in a comboevent is separated by a comma
-        replace(key.begin(), key.end(), ',', ' ');
-        istringstream buf2(key);
-
-        int eventcount = 0;
-        while(buf2 >> key && eventcount < EVENTS_PER_COMBO)
+        // Fill the combomap table with events for as long as they exist
+        int combocount = 0;
+        while(buf >> key && combocount < COMBO_SIZE)
         {
-          myComboTable[combocount][eventcount] = Event::Type(stoi(key));
-          ++eventcount;
+          // Each event in a comboevent is separated by a comma
+          replace(key.begin(), key.end(), ',', ' ');
+          istringstream buf2(key);
+
+          int eventcount = 0;
+          while(buf2 >> key && eventcount < EVENTS_PER_COMBO)
+          {
+            myComboTable[combocount][eventcount] = Event::Type(stoi(key));
+            ++eventcount;
+          }
+          ++combocount;
         }
-        ++combocount;
       }
+      else
+        ERASE_ALL();
     }
-    else
+    catch(...)
+    {
       ERASE_ALL();
+    }
   }
 
   saveComboMapping();
