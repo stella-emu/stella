@@ -521,7 +521,7 @@ void ContextMenu::scrollDown(int distance)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::drawDialog()
 {
-  static constexpr uInt32 up_arrow[8] = {
+  static constexpr std::array<uInt32, 8> up_arrow = {
     0b00011000,
     0b00011000,
     0b00111100,
@@ -531,7 +531,7 @@ void ContextMenu::drawDialog()
     0b11111111,
     0b11111111
   };
-  static constexpr uInt32 down_arrow[8] = {
+  static constexpr std::array<uInt32, 8> down_arrow = {
     0b11111111,
     0b11111111,
     0b01111110,
@@ -559,7 +559,7 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y+_rowHeight-1, w+2, kColor);
-    s.drawBitmap(up_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, 8);
+    s.drawBitmap(up_arrow.data(), ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, 8);
     y += _rowHeight;
     offset--;
   }
@@ -577,7 +577,7 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y, w+2, kColor);
-    s.drawBitmap(down_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, 8);
+    s.drawBitmap(down_arrow.data(), ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, 8);
   }
 
   setDirty();

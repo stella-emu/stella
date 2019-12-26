@@ -221,6 +221,9 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       instance().eventHandler().leaveMenuMode();
       instance().reloadConsole();
       break;
+
+    default:
+      return;
   }
 
   // Console commands should be performed right away, after leaving the menu

@@ -50,7 +50,7 @@ class DelayQueue : public Serializable
     bool load(Serializer& in) override;
 
   private:
-    DelayQueueMember<capacity> myMembers[length];
+    std::array<DelayQueueMember<capacity>, length> myMembers;
     uInt8 myIndex;
     std::array<uInt8, 0xFF> myIndices;
 
