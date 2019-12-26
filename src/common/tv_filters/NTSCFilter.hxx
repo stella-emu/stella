@@ -23,6 +23,7 @@ class Settings;
 
 #include "bspf.hxx"
 #include "AtariNTSC.hxx"
+#include "FrameBufferConstants.hxx"
 
 /**
   This class is based on the Blargg NTSC filter code from Atari800,
@@ -59,21 +60,11 @@ class NTSCFilter
        uses this as a baseline for calculating its own internal palette
        in YIQ format.
     */
-    inline void setTIAPalette(const uInt32* palette) {
-      uInt8* ptr = myTIAPalette;
-
-      // Set palette for normal fill
-      for(uInt32 i = 0; i < AtariNTSC::palette_size; ++i)
-      {
-        *ptr++ = (palette[i] >> 16) & 0xff;
-        *ptr++ = (palette[i] >> 8) & 0xff;
-        *ptr++ = palette[i] & 0xff;
-      }
-      myNTSC.initializePalette(myTIAPalette);
+    void setPalette(const PaletteArray& palette) {
+      myNTSC.setPalette(palette);
     }
-
-    inline void setPhosphorPalette(uInt8 palette[256][256]) {
-      myNTSC.setPhosphorPalette(palette);
+    void setPhosphorTable(const PhosphorLUT& table) {
+      myNTSC.setPhosphorTable(table);
     }
 
     // The following are meant to be used strictly for toggling from the GUI
@@ -145,11 +136,6 @@ class NTSCFilter
 
     // Current preset in use
     Preset myPreset;
-
-    // The base 2600 palette contains 128 normal colours
-    // and 128 black&white colours (PAL colour loss)
-    // Each colour is represented by 3 bytes, in R,G,B order
-    uInt8 myTIAPalette[AtariNTSC::palette_size * 3];
 
     struct AdjustableTag {
       const char* const type;

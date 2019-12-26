@@ -329,6 +329,10 @@ class FBSurface
     struct Attributes {
       bool blending;     // Blending is enabled
       uInt32 blendalpha; // Alpha to use in blending mode (0-100%)
+
+      bool operator==(const Attributes& other) const {
+        return blendalpha == other.blendalpha && blending == other.blending;
+      }
     };
 
     /**
@@ -347,7 +351,7 @@ class FBSurface
     */
     virtual void applyAttributes() = 0;
 
-    static void setPalette(const uInt32* palette) { myPalette = palette; }
+    static void setPalette(const FullPaletteArray& palette) { myPalette = palette; }
 
   protected:
     /**
@@ -370,11 +374,12 @@ class FBSurface
     bool isWhiteSpace(const char s) const;
 
   protected:
-    static const uInt32* myPalette;
     uInt32* myPixels;
     uInt32 myPitch;
 
     Attributes myAttributes;
+
+    static FullPaletteArray myPalette;
 
   private:
     // Following constructors and assignment operators not supported
@@ -383,7 +388,5 @@ class FBSurface
     FBSurface& operator=(const FBSurface&) = delete;
     FBSurface& operator=(FBSurface&&) = delete;
 };
-
-bool operator==(const FBSurface::Attributes& a1, const FBSurface::Attributes& a2);
 
 #endif

@@ -67,7 +67,7 @@ void FBSurface::pixel(uInt32 x, uInt32 y, ColorId color)
   // Note: checkbounds() must be done in calling method
   uInt32* buffer = myPixels + y * myPitch + x;
 
-  *buffer = uInt32(myPalette[color]);
+  *buffer = myPalette[color];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,7 +140,7 @@ void FBSurface::hLine(uInt32 x, uInt32 y, uInt32 x2, ColorId color)
 
   uInt32* buffer = myPixels + y * myPitch + x;
   while(x++ <= x2)
-    *buffer++ = uInt32(myPalette[color]);
+    *buffer++ = myPalette[color];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,7 +152,7 @@ void FBSurface::vLine(uInt32 x, uInt32 y, uInt32 y2, ColorId color)
   uInt32* buffer = static_cast<uInt32*>(myPixels + y * myPitch + x);
   while(y++ <= y2)
   {
-    *buffer = uInt32(myPalette[color]);
+    *buffer = myPalette[color];
     buffer += myPitch;
   }
 }
@@ -219,7 +219,7 @@ void FBSurface::drawChar(const GUI::Font& font, uInt8 chr,
 
     for(int x = 0; x < bbw; x++, mask >>= 1)
       if(ptr & mask)
-        buffer[x] = uInt32(myPalette[color]);
+        buffer[x] = myPalette[color];
 
     buffer += myPitch;
   }
@@ -247,7 +247,7 @@ void FBSurface::drawBitmap(const uInt32* bitmap, uInt32 tx, uInt32 ty,
     uInt32 mask = 1 << (w - 1);
     for(uInt32 x = 0; x < w; ++x, mask >>= 1)
       if(bitmap[y] & mask)
-        buffer[x] = uInt32(myPalette[color]);
+        buffer[x] = myPalette[color];
 
     buffer += myPitch;
   }
@@ -449,10 +449,4 @@ bool FBSurface::checkBounds(const uInt32 x, const uInt32 y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32* FBSurface::myPalette = nullptr;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool operator==(const FBSurface::Attributes& a1, const FBSurface::Attributes& a2)
-{
-  return a1.blendalpha == a2.blendalpha && a1.blending == a2.blending;
-}
+FullPaletteArray FBSurface::myPalette = { 0 };

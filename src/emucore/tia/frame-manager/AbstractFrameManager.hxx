@@ -28,7 +28,7 @@ class AbstractFrameManager : public Serializable
 {
   public:
 
-      using callback = std::function<void()>;
+    using callback = std::function<void()>;
 
   public:
 

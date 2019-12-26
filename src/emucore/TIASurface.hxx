@@ -64,7 +64,7 @@ class TIASurface
       @param rgb_palette  The RGB components of the palette, needed for
                           calculating a phosphor palette
     */
-    void setPalette(const uInt32* tia_palette, const uInt32* rgb_palette);
+    void setPalette(const PaletteArray& tia_palette, const PaletteArray& rgb_palette);
 
     /**
       Get the TIA base surface for use in saving to a PNG image.
@@ -202,14 +202,14 @@ class TIASurface
     float myPhosphorPercent;
 
     // Precalculated averaged phosphor colors
-    uInt8 myPhosphorPalette[256][256];
+    PhosphorLUT myPhosphorLUT;
     /////////////////////////////////////////////////////////////
 
     // Use scanlines in TIA rendering mode
     bool myScanlinesEnabled;
 
     // Palette for normal TIA rendering mode
-    const uInt32* myPalette;
+    PaletteArray myPalette;
 
     // Flag for saving a snapshot
     bool mySaveSnapFlag;

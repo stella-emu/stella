@@ -43,15 +43,14 @@
 #include <cmath>
 #include <thread>
 
+#include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
 
 class AtariNTSC
 {
   public:
-    static constexpr uInt32 palette_size = 256, entry_size = 2 * 14;
-
-    // By default, threading is turned off
-    AtariNTSC() { enableThreading(false); }
+    // By default, threading is turned off and palette is blank
+    AtariNTSC() { enableThreading(false); myRGBPalette.fill(0); }
 
     // Image parameters, ranging from -1.0 to 1.0. Actual internal values shown
     // in parenthesis and should remain fairly stable in future versions.
@@ -78,17 +77,17 @@ class AtariNTSC
     static const Setup TV_RGB;       // crisp image
     static const Setup TV_Bad;       // badly adjusted TV
 
-    // Initializes and adjusts parameters.
-    void initialize(const Setup& setup, const uInt8* palette);
-    void initializePalette(const uInt8* palette);
+    // Initializes and adjusts parameters
+    // Note that this must be called before setting a palette
+    void initialize(const Setup& setup);
+
+    // Set palette for normal Blarrg mode
+    void setPalette(const PaletteArray& palette);
+    // Set phosphor table, for use in calculating phosphor palette
+    void setPhosphorTable(const PhosphorLUT& table);
 
     // Set up threading
     void enableThreading(bool enable);
-
-    // Set phosphor palette, for use in Blargg + phosphor mode
-    void setPhosphorPalette(uInt8 palette[256][256]) {
-      memcpy(myPhosphorPalette, palette, 256 * 256);
-    }
 
     // Filters one or more rows of pixels. Input pixels are 8-bit Atari
     // palette colors.
@@ -112,6 +111,9 @@ class AtariNTSC
     }
 
   private:
+    // Generate kernels from raw RGB palette
+    void generateKernels();
+
     // Threaded rendering
     void renderThread(const uInt8* atari_in, const uInt32 in_width,
       const uInt32 in_height, const uInt32 numThreads, const uInt32 threadNum, void* rgb_out, const uInt32 out_pitch);
@@ -134,6 +136,8 @@ class AtariNTSC
       PIXEL_out_chunk = 7,   // number of output pixels generated per chunk
       NTSC_black      = 0,   // palette index for black
 
+      palette_size    = 256,
+      entry_size      = 2 * 14,
       alignment_count = 2,
       burst_count     = 1,
       rescale_in      = 8,
@@ -166,8 +170,9 @@ class AtariNTSC
       luma_cutoff   = 0.20F
     ;
 
-    uInt32 myColorTable[palette_size][entry_size];
-    uInt8 myPhosphorPalette[256][256];
+    std::array<uInt8, palette_size*3> myRGBPalette;
+    std::array<std::array<uInt32, entry_size>, palette_size> myColorTable;
+    PhosphorLUT myPhosphorLUT;
 
     // Rendering threads
     unique_ptr<std::thread[]> myThreads;
@@ -211,9 +216,9 @@ class AtariNTSC
     // off a bit.  Use atari_ntsc_black for unused pixels.
     #define ATARI_NTSC_BEGIN_ROW( pixel0, pixel1 ) \
       unsigned const atari_ntsc_pixel0_ = (pixel0);\
-      uInt32 const* kernel0  = myColorTable[atari_ntsc_pixel0_];\
+      uInt32 const* kernel0  = myColorTable[atari_ntsc_pixel0_].data();\
       unsigned const atari_ntsc_pixel1_ = (pixel1);\
-      uInt32 const* kernel1  = myColorTable[atari_ntsc_pixel1_];\
+      uInt32 const* kernel1  = myColorTable[atari_ntsc_pixel1_].data();\
       uInt32 const* kernelx0;\
       uInt32 const* kernelx1 = kernel0
 
@@ -221,7 +226,7 @@ class AtariNTSC
     #define ATARI_NTSC_COLOR_IN( index, color ) {\
       uintptr_t color_;\
       kernelx##index = kernel##index;\
-      kernel##index = (color_ = (color), myColorTable[color_]);\
+      kernel##index = (color_ = (color), myColorTable[color_].data());\
     }
 
     // Generates output in the specified 32-bit format.

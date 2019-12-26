@@ -154,27 +154,6 @@ bool FrameBuffer::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setUIPalette()
-{
-  // Set palette for GUI (upper area of array)
-  int palID = 0;
-  if(myOSystem.settings().getString("uipalette") == "classic")
-    palID = 1;
-  else if(myOSystem.settings().getString("uipalette") == "light")
-    palID = 2;
-
-  for(uInt32 i = 0, j = 256; i < kNumColors - 256; ++i, ++j)
-  {
-    uInt8 r = (ourGUIColors[palID][i] >> 16) & 0xff;
-    uInt8 g = (ourGUIColors[palID][i] >> 8) & 0xff;
-    uInt8 b = ourGUIColors[palID][i] & 0xff;
-
-    myPalette[j] = mapRGB(r, g, b);
-  }
-  FBSurface::setPalette(myPalette);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::createDisplay(const string& title,
                                         uInt32 width, uInt32 height,
                                         bool honourHiDPI)
@@ -481,8 +460,8 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
   myStatsMsg.surface->invalidate();
 
   // draw scanlines
-  ColorId color = myOSystem.console().tia().frameBufferScanlinesLastFrame() != myLastScanlines ?
-      kDbgColorRed : myStatsMsg.color;
+  ColorId color = myOSystem.console().tia().frameBufferScanlinesLastFrame() !=
+    myLastScanlines ? kDbgColorRed : myStatsMsg.color;
 
   ss
     << myOSystem.console().tia().frameBufferScanlinesLastFrame()
@@ -504,7 +483,7 @@ void FrameBuffer::drawFrameStats(float framesPerSecond)
     << "% speed";
 
   myStatsMsg.surface->drawString(f, ss.str(), xPos, yPos,
-                                 myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
+      myStatsMsg.w, myStatsMsg.color, TextAlign::Left, 0, true, kBGColor);
 
   yPos += dy;
   ss.str("");
@@ -682,20 +661,48 @@ void FrameBuffer::resetSurfaces()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setPalette(const uInt32* raw_palette)
+void FrameBuffer::setTIAPalette(const PaletteArray& rgb_palette)
 {
-  // Set palette for normal fill
+  // Create a TIA palette from the raw RGB data
+  PaletteArray tia_palette;
   for(int i = 0; i < 256; ++i)
   {
-    uInt8 r = (raw_palette[i] >> 16) & 0xff;
-    uInt8 g = (raw_palette[i] >> 8) & 0xff;
-    uInt8 b = raw_palette[i] & 0xff;
+    uInt8 r = (rgb_palette[i] >> 16) & 0xff;
+    uInt8 g = (rgb_palette[i] >> 8) & 0xff;
+    uInt8 b = rgb_palette[i] & 0xff;
 
-    myPalette[i] = mapRGB(r, g, b);
+    tia_palette[i] = mapRGB(r, g, b);
   }
 
+  // Remember the TIA palette; place it at the beginning of the full palette
+  std::copy_n(tia_palette.begin(), tia_palette.size(), myFullPalette.begin());
+
   // Let the TIA surface know about the new palette
-  myTIASurface->setPalette(myPalette, raw_palette);
+  myTIASurface->setPalette(tia_palette, rgb_palette);
+
+  // Since the UI palette shares the TIA palette, we need to update it too
+  setUIPalette();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setUIPalette()
+{
+  // Set palette for UI (upper area of full palette)
+  const UIPaletteArray& ui_palette =
+     (myOSystem.settings().getString("uipalette") == "classic") ? ourClassicUIPalette :
+     (myOSystem.settings().getString("uipalette") == "light")   ? ourLightUIPalette :
+      ourStandardUIPalette;
+
+  for(size_t i = 0, j = myFullPalette.size() - ui_palette.size();
+      i < ui_palette.size(); ++i, ++j)
+  {
+    const uInt8 r = (ui_palette[i] >> 16) & 0xff,
+                g = (ui_palette[i] >> 8) & 0xff,
+                b =  ui_palette[i] & 0xff;
+
+    myFullPalette[j] = mapRGB(r, g, b);
+  }
+  FBSurface::setPalette(myFullPalette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1235,8 +1242,7 @@ void FrameBuffer::VideoModeList::setByStretch(FrameBuffer::VideoMode::Stretch st
     kColorTitleBarLo      Disabled title bar color
     kColorTitleTextLo     Disabled title text color
 */
-uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
-  // Standard
+UIPaletteArray FrameBuffer::ourStandardUIPalette = {
   { 0x686868, 0x000000, 0xa38c61, 0xdccfa5, 0x404040,           // base
     0x000000, 0xac3410, 0x9f0000, 0xf0f0cf,                     // text
     0xc9af7c, 0xf0f0cf, 0xd55941, 0xc80000,                     // UI elements
@@ -1246,8 +1252,10 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xc80000, 0xffff80, 0xc8c8ff, 0xc80000,                     // debugger
     0xac3410, 0xd55941, 0xdccfa5, 0xf0f0cf, 0xa38c61,           // slider
     0xffffff, 0xac3410, 0xf0f0cf, 0x686868, 0xdccfa5            // other
-  },
-  // Classic
+  }
+};
+
+UIPaletteArray FrameBuffer::ourClassicUIPalette = {
   { 0x686868, 0x000000, 0x404040, 0x404040, 0x404040,           // base
     0x20a020, 0x00ff00, 0xc80000, 0x000000,                     // text
     0x000000, 0x000000, 0x00ff00, 0xc80000,                     // UI elements
@@ -1257,8 +1265,10 @@ uInt32 FrameBuffer::ourGUIColors[3][kNumColors-256] = {
     0xc80000, 0x00ff00, 0xc8c8ff, 0xc80000,                     // debugger
     0x20a020, 0x00ff00, 0x404040, 0x686868, 0x404040,           // slider
     0x00ff00, 0x20a020, 0x000000, 0x686868, 0x404040            // other
-  },
-  // Light
+  }
+};
+
+UIPaletteArray FrameBuffer::ourLightUIPalette = {
   { 0x808080, 0x000000, 0xc0c0c0, 0xe1e1e1, 0x333333,           // base
     0x000000, 0xBDDEF9, 0x0078d7, 0x000000,                     // text
     0xf0f0f0, 0xffffff, 0x0078d7, 0x0f0f0f,                     // UI elements

@@ -469,10 +469,10 @@ void Console::setPalette(const string& type)
 {
   // Look at all the palettes, since we don't know which one is
   // currently active
-  static uInt32* palettes[3][3] = {
-    { &ourNTSCPalette[0],     &ourPALPalette[0],     &ourSECAMPalette[0]     },
-    { &ourNTSCPaletteZ26[0],  &ourPALPaletteZ26[0],  &ourSECAMPaletteZ26[0]  },
-    { &ourUserNTSCPalette[0], &ourUserPALPalette[0], &ourUserSECAMPalette[0] }
+  static constexpr PaletteArray* palettes[3][3] = {
+    { &ourNTSCPalette,     &ourPALPalette,     &ourSECAMPalette     },
+    { &ourNTSCPaletteZ26,  &ourPALPaletteZ26,  &ourSECAMPaletteZ26  },
+    { &ourUserNTSCPalette, &ourUserPALPalette, &ourUserSECAMPalette }
   };
 
   // See which format we should be using
@@ -485,12 +485,12 @@ void Console::setPalette(const string& type)
     paletteNum = 2;
 
   // Now consider the current display format
-  const uInt32* palette =
+  const PaletteArray* palette =
     (myDisplayFormat.compare(0, 3, "PAL") == 0)   ? palettes[paletteNum][1] :
     (myDisplayFormat.compare(0, 5, "SECAM") == 0) ? palettes[paletteNum][2] :
      palettes[paletteNum][0];
 
-  myOSystem.frameBuffer().setPalette(palette);
+  myOSystem.frameBuffer().setTIAPalette(*palette);
 
   if(myTIA->usingFixedColors())
     myTIA->enableFixedColors(true);
@@ -929,7 +929,7 @@ void Console::loadUserPalette()
     secam[(i<<1)]   = pixel;
     secam[(i<<1)+1] = 0;
   }
-  uInt32* ptr = ourUserSECAMPalette;
+  uInt32* ptr = ourUserSECAMPalette.data();
   for(int i = 0; i < 16; ++i)
   {
     uInt32* s = secam;
@@ -1049,7 +1049,7 @@ void Console::stateChanged(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourNTSCPalette[256] = {
+PaletteArray Console::ourNTSCPalette = {
   0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,
   0xaaaaaa, 0, 0xc0c0c0, 0, 0xd6d6d6, 0, 0xececec, 0,
   0x484800, 0, 0x69690f, 0, 0x86861d, 0, 0xa2a22a, 0,
@@ -1085,7 +1085,7 @@ uInt32 Console::ourNTSCPalette[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourPALPalette[256] = {
+PaletteArray Console::ourPALPalette = {
   0x000000, 0, 0x121212, 0, 0x242424, 0, 0x484848, 0, // 180 0
   0x6c6c6c, 0, 0x909090, 0, 0xb4b4b4, 0, 0xd8d8d8, 0, // was 0x111111..0xcccccc
   0x000000, 0, 0x121212, 0, 0x242424, 0, 0x484848, 0, // 198 1
@@ -1121,7 +1121,7 @@ uInt32 Console::ourPALPalette[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourSECAMPalette[256] = {
+PaletteArray Console::ourSECAMPalette = {
   0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0,
   0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0,
   0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0,
@@ -1157,7 +1157,7 @@ uInt32 Console::ourSECAMPalette[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourNTSCPaletteZ26[256] = {
+PaletteArray Console::ourNTSCPaletteZ26 = {
   0x000000, 0, 0x505050, 0, 0x646464, 0, 0x787878, 0,
   0x8c8c8c, 0, 0xa0a0a0, 0, 0xb4b4b4, 0, 0xc8c8c8, 0,
   0x445400, 0, 0x586800, 0, 0x6c7c00, 0, 0x809000, 0,
@@ -1193,7 +1193,7 @@ uInt32 Console::ourNTSCPaletteZ26[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourPALPaletteZ26[256] = {
+PaletteArray Console::ourPALPaletteZ26 = {
   0x000000, 0, 0x4c4c4c, 0, 0x606060, 0, 0x747474, 0,
   0x888888, 0, 0x9c9c9c, 0, 0xb0b0b0, 0, 0xc4c4c4, 0,
   0x000000, 0, 0x4c4c4c, 0, 0x606060, 0, 0x747474, 0,
@@ -1229,7 +1229,7 @@ uInt32 Console::ourPALPaletteZ26[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourSECAMPaletteZ26[256] = {
+PaletteArray Console::ourSECAMPaletteZ26 = {
   0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0,
   0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0,
   0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0,
@@ -1265,10 +1265,10 @@ uInt32 Console::ourSECAMPaletteZ26[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourUserNTSCPalette[256]  = { 0 }; // filled from external file
+PaletteArray Console::ourUserNTSCPalette  = { 0 }; // filled from external file
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourUserPALPalette[256]   = { 0 }; // filled from external file
+PaletteArray Console::ourUserPALPalette   = { 0 }; // filled from external file
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourUserSECAMPalette[256] = { 0 }; // filled from external file
+PaletteArray Console::ourUserSECAMPalette = { 0 }; // filled from external file

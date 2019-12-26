@@ -36,6 +36,7 @@ class AudioSettings;
 #include "Props.hxx"
 #include "TIAConstants.hxx"
 #include "FrameBuffer.hxx"
+#include "FrameBufferConstants.hxx"
 #include "Serializable.hxx"
 #include "EventHandlerConstants.hxx"
 #include "NTSCFilter.hxx"
@@ -422,19 +423,19 @@ class Console : public Serializable, public ConsoleIO
     AudioSettings& myAudioSettings;
 
     // Table of RGB values for NTSC, PAL and SECAM
-    static uInt32 ourNTSCPalette[256];
-    static uInt32 ourPALPalette[256];
-    static uInt32 ourSECAMPalette[256];
+    static PaletteArray ourNTSCPalette;
+    static PaletteArray ourPALPalette;
+    static PaletteArray ourSECAMPalette;
 
     // Table of RGB values for NTSC, PAL and SECAM - Z26 version
-    static uInt32 ourNTSCPaletteZ26[256];
-    static uInt32 ourPALPaletteZ26[256];
-    static uInt32 ourSECAMPaletteZ26[256];
+    static PaletteArray ourNTSCPaletteZ26;
+    static PaletteArray ourPALPaletteZ26;
+    static PaletteArray ourSECAMPaletteZ26;
 
     // Table of RGB values for NTSC, PAL and SECAM - user-defined
-    static uInt32 ourUserNTSCPalette[256];
-    static uInt32 ourUserPALPalette[256];
-    static uInt32 ourUserSECAMPalette[256];
+    static PaletteArray ourUserNTSCPalette;
+    static PaletteArray ourUserPALPalette;
+    static PaletteArray ourUserSECAMPalette;
 
   private:
     // Following constructors and assignment operators not supported
