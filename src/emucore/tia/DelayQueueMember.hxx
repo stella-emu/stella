@@ -49,7 +49,7 @@ class DelayQueueMember : public Serializable {
     bool load(Serializer& in) override;
 
   public:
-    Entry myEntries[capacity];
+    std::array<Entry, capacity> myEntries;
     uInt8 mySize;
 
   private:

@@ -36,7 +36,6 @@ struct Point
   Int32 y;  //!< The vertical part of the point
 
   Point() : x(0), y(0) { }
-  Point(const Point& p) : x(p.x), y(p.y) { }
   explicit Point(Int32 x1, Int32 y1) : x(x1), y(y1) { }
   explicit Point(const string& p) : x(0), y(0) {
     char c = '\0';
@@ -45,7 +44,6 @@ struct Point
     if(c != 'x')
       x = y = 0;
   }
-  Point& operator=(const Point & p) { x = p.x; y = p.y; return *this; }
   bool operator==(const Point & p) const { return x == p.x && y == p.y; }
   bool operator!=(const Point & p) const { return x != p.x || y != p.y; }
 
@@ -61,7 +59,6 @@ struct Size
   uInt32 h;  //!< The height part of the size
 
   Size() : w(0), h(0) { }
-  Size(const Size& s) : w(s.w), h(s.h) { }
   explicit Size(uInt32 w1, uInt32 h1) : w(w1), h(h1) { }
   explicit Size(const string& s) : w(0), h(0) {
     char c = '\0';
@@ -72,7 +69,6 @@ struct Size
   }
   bool valid() const { return w > 0 && h > 0; }
 
-  Size& operator=(const Size& s) { w = s.w; h = s.h; return *this; }
   bool operator==(const Size& s) const { return w == s.w && h == s.h; }
   bool operator!=(const Size& s) const { return w != s.w || h != s.h; }
   bool operator<(const Size& s)  const { return w < s.w && h < s.h;   }
@@ -111,9 +107,7 @@ struct Rect
 
   public:
     Rect() : top(0), left(0), bottom(0), right(0) { assert(valid()); }
-    Rect(const Rect& s) : top(s.top), left(s.left), bottom(s.bottom), right(s.right) { assert(valid()); }
     explicit Rect(const Size& s) : top(0), left(0), bottom(s.h), right(s.w) { assert(valid()); }
-    Rect& operator=(const Rect&) = default;
     Rect(uInt32 w, uInt32 h) : top(0), left(0), bottom(h), right(w) { assert(valid()); }
     Rect(const Point& p, uInt32 w, uInt32 h) : top(p.y), left(p.x), bottom(h), right(w) { assert(valid()); }
     Rect(uInt32 x1, uInt32 y1, uInt32 x2, uInt32 y2) : top(y1), left(x1), bottom(y2), right(x2) { assert(valid()); }

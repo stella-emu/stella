@@ -15,6 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cmath>
+
 #include "OSystem.hxx"
 #include "Console.hxx"
 #include "Debugger.hxx"
@@ -25,8 +27,6 @@
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "ContextMenu.hxx"
-#include <math.h>
-
 #include "TiaZoomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -245,42 +245,38 @@ bool TiaZoomWidget::handleEvent(Event::Type event)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  switch(cmd)
+  if(cmd == ContextMenu::kItemSelectedCmd)
   {
-    case ContextMenu::kItemSelectedCmd:
+    uInt32 startLine = instance().console().tia().startLine();
+    const string& rmb = myMenu->getSelectedTag().toString();
+
+    if(rmb == "scanline")
     {
-      uInt32 startLine = instance().console().tia().startLine();
-      const string& rmb = myMenu->getSelectedTag().toString();
+      ostringstream command;
+      int lines = myClickY / myZoomLevel + myOffY + startLine - instance().console().tia().scanlines();
 
-      if(rmb == "scanline")
+      if (lines < 0)
+        lines += instance().console().tia().scanlinesLastFrame();
+      if(lines > 0)
       {
-        ostringstream command;
-        int lines = myClickY / myZoomLevel + myOffY + startLine - instance().console().tia().scanlines();
-
-        if (lines < 0)
-          lines += instance().console().tia().scanlinesLastFrame();
-        if(lines > 0)
-        {
-          command << "scanline #" << lines;
-          string message = instance().debugger().parser().run(command.str());
-          instance().frameBuffer().showMessage(message);
-        }
-      }
-      else if(rmb == "bp")
-      {
-        ostringstream command;
-        int scanline = myClickY / myZoomLevel + myOffY + startLine;
-        command << "breakif _scan==#" << scanline;
+        command << "scanline #" << lines;
         string message = instance().debugger().parser().run(command.str());
         instance().frameBuffer().showMessage(message);
       }
-      else
-      {
-        int level = myMenu->getSelectedTag().toInt();
-        if(level > 0)
-          zoom(level);
-      }
-      break;
+    }
+    else if(rmb == "bp")
+    {
+      ostringstream command;
+      int scanline = myClickY / myZoomLevel + myOffY + startLine;
+      command << "breakif _scan==#" << scanline;
+      string message = instance().debugger().parser().run(command.str());
+      instance().frameBuffer().showMessage(message);
+    }
+    else
+    {
+      int level = myMenu->getSelectedTag().toInt();
+      if(level > 0)
+        zoom(level);
     }
   }
 }

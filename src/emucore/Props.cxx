@@ -35,8 +35,8 @@ Properties::Properties(const Properties& properties)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::set(PropType key, const string& value)
 {
-  uInt8 pos = static_cast<uInt8>(key);
-  if(pos < static_cast<uInt8>(PropType::NumTypes))
+  size_t pos = static_cast<size_t>(key);
+  if(pos < myProperties.size())
   {
     myProperties[pos] = value;
     if(BSPF::equalsIgnoreCase(myProperties[pos], "AUTO-DETECT"))
@@ -115,7 +115,7 @@ ostream& operator<<(ostream& os, const Properties& p)
 {
   // Write out each of the key and value pairs
   bool changed = false;
-  for(uInt8 i = 0; i < static_cast<uInt8>(PropType::NumTypes); ++i)
+  for(size_t i = 0; i < static_cast<size_t>(PropType::NumTypes); ++i)
   {
     // Try to save some space by only saving the items that differ from default
     if(p.myProperties[i] != Properties::ourDefaultProperties[i])
@@ -192,7 +192,7 @@ void Properties::writeQuotedString(ostream& out, const string& s)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Properties::operator==(const Properties& properties) const
 {
-  for(uInt8 i = 0; i < static_cast<uInt8>(PropType::NumTypes); ++i)
+  for(size_t i = 0; i < myProperties.size(); ++i)
     if(myProperties[i] != properties.myProperties[i])
       return false;
 
@@ -221,14 +221,14 @@ Properties& Properties::operator=(const Properties& properties)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::setDefault(PropType key, const string& value)
 {
-  ourDefaultProperties[static_cast<uInt8>(key)] = value;
+  ourDefaultProperties[static_cast<size_t>(key)] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::copy(const Properties& properties)
 {
   // Now, copy each property from properties
-  for(uInt8 i = 0; i < static_cast<uInt8>(PropType::NumTypes); ++i)
+  for(size_t i = 0; i < myProperties.size(); ++i)
     myProperties[i] = properties.myProperties[i];
 }
 
@@ -262,16 +262,16 @@ void Properties::print() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::setDefaults()
 {
-  for(uInt8 i = 0; i < static_cast<uInt8>(PropType::NumTypes); ++i)
+  for(size_t i = 0; i < myProperties.size(); ++i)
     myProperties[i] = ourDefaultProperties[i];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropType Properties::getPropType(const string& name)
 {
-  for(uInt8 i = 0; i < static_cast<uInt8>(PropType::NumTypes); ++i)
+  for(size_t i = 0; i < NUM_PROPS; ++i)
     if(ourPropertyNames[i] == name)
-      return PropType(i);
+      return static_cast<PropType>(i);
 
   // Otherwise, indicate that the item wasn't found
   return PropType::NumTypes;
@@ -305,7 +305,7 @@ void Properties::printHeader()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Properties::ourDefaultProperties[static_cast<uInt8>(PropType::NumTypes)] =
+std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
 {
   "",       // Cart.MD5
   "",       // Cart.Manufacturer
@@ -331,7 +331,7 @@ string Properties::ourDefaultProperties[static_cast<uInt8>(PropType::NumTypes)] 
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* const Properties::ourPropertyNames[static_cast<uInt8>(PropType::NumTypes)] =
+std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
 {
   "Cart.MD5",
   "Cart.Manufacturer",

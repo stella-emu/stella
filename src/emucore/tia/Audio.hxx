@@ -56,8 +56,8 @@ class Audio : public Serializable
     AudioChannel myChannel0;
     AudioChannel myChannel1;
 
-    Int16 myMixingTableSum[0x1e + 1];
-    Int16 myMixingTableIndividual[0x0f + 1];
+    std::array<Int16, 0x1e + 1> myMixingTableSum;
+    std::array<Int16, 0x0f + 1> myMixingTableIndividual;
 
     Int16* myCurrentFragment;
     uInt32 mySampleIndex;

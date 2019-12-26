@@ -819,6 +819,9 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kPF2ID:
           tia.pf2(myPF[2]->getIntState());
           break;
+
+        default:
+          break;
       }
       break;
 
@@ -922,7 +925,13 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kPriorityPFID:
           tia.priorityPF(myPriorityPF->getState() ? 1 : 0);
           break;
+
+        default:
+          break;
       }
+      break;
+
+    default:
       break;
   }
 }

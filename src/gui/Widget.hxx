@@ -188,6 +188,7 @@ class StaticTextWidget : public Widget
                      int x, int y,
                      const string& text = "", TextAlign align = TextAlign::Left,
                      ColorId shadowColor = kNone);
+    virtual ~StaticTextWidget() = default;
     void setValue(int value);
     void setLabel(const string& label);
     void setAlign(TextAlign align) { _align = align; setDirty(); }
@@ -228,6 +229,7 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
                  int x, int y, int dw, int dh,
                  uInt32* bitmap, int bmw, int bmh,
                  int cmd = 0, bool repeat = false);
+    virtual ~ButtonWidget() = default;
 
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
@@ -270,6 +272,7 @@ class CheckboxWidget : public ButtonWidget
   public:
     CheckboxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    const string& label, int cmd = 0);
+    virtual ~CheckboxWidget() = default;
 
     void setEditable(bool editable);
     void setFill(FillType type);
@@ -319,6 +322,7 @@ class SliderWidget : public ButtonWidget
                  int x, int y,
                  const string& label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, const string& valueUnit = "", int valueLabelGap = 4);
+    virtual ~SliderWidget() = default;
 
     void setValue(int value);
     int getValue() const { return _value; }

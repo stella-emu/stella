@@ -420,7 +420,7 @@ void TimeMachineDialog::initBar()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TimeMachineDialog::getTimeString(uInt64 cycles)
 {
-  const Int32 scanlines = std::max(instance().console().tia().scanlinesLastFrame(), 240u);
+  const Int32 scanlines = std::max<Int32>(instance().console().tia().scanlinesLastFrame(), 240);
   const bool isNTSC = scanlines <= 287;
   const Int32 NTSC_FREQ = 1193182; // ~76*262*60
   const Int32 PAL_FREQ  = 1182298; // ~76*312*50

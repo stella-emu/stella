@@ -148,7 +148,7 @@ class FBSurface
       @param color  The color of the bitmap
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
+    virtual void drawBitmap(const uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
                             uInt32 h = 8);
 
     /**
@@ -161,7 +161,7 @@ class FBSurface
       @param w      The width of the data image
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
+    virtual void drawBitmap(const uInt32* bitmap, uInt32 x, uInt32 y, ColorId color,
                             uInt32 w, uInt32 h);
 
     /**
@@ -174,7 +174,7 @@ class FBSurface
       @param y         The destination y-location to start drawing pixels
       @param numpixels The number of pixels to draw
     */
-    virtual void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
+    virtual void drawPixels(const uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
 
     /**
       This method should be called to draw a rectangular box with sides

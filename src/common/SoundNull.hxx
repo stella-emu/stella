@@ -82,7 +82,7 @@ class SoundNull : public Sound
 
       @return  The previous (old) mute state
     */
-    bool toggleMute() override { }
+    bool toggleMute() override { return true; }
 
     /**
       Sets the volume of the sound device to the specified level.  The

@@ -49,6 +49,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   ypos = 10 + _th;
 
   // Add event popup for 8 events
+  myEvents.fill(nullptr);
   auto ADD_EVENT_POPUP = [&](int idx, const string& label)
   {
     myEvents[idx] = new PopUpWidget(this, font, xpos, ypos,
@@ -56,15 +57,14 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
     wid.push_back(myEvents[idx]);
     ypos += lineHeight + 4;
   };
-
-  myEvents[0] = nullptr;  ADD_EVENT_POPUP(0, "Event 1 ");
-  myEvents[1] = nullptr;  ADD_EVENT_POPUP(1, "Event 2 ");
-  myEvents[2] = nullptr;  ADD_EVENT_POPUP(2, "Event 3 ");
-  myEvents[3] = nullptr;  ADD_EVENT_POPUP(3, "Event 4 ");
-  myEvents[4] = nullptr;  ADD_EVENT_POPUP(4, "Event 5 ");
-  myEvents[5] = nullptr;  ADD_EVENT_POPUP(5, "Event 6 ");
-  myEvents[6] = nullptr;  ADD_EVENT_POPUP(6, "Event 7 ");
-  myEvents[7] = nullptr;  ADD_EVENT_POPUP(7, "Event 8 ");
+  ADD_EVENT_POPUP(0, "Event 1 ");
+  ADD_EVENT_POPUP(1, "Event 2 ");
+  ADD_EVENT_POPUP(2, "Event 3 ");
+  ADD_EVENT_POPUP(3, "Event 4 ");
+  ADD_EVENT_POPUP(4, "Event 5 ");
+  ADD_EVENT_POPUP(5, "Event 6 ");
+  ADD_EVENT_POPUP(6, "Event 7 ");
+  ADD_EVENT_POPUP(7, "Event 8 ");
 
   // Add Defaults, OK and Cancel buttons
   addDefaultsOKCancelBGroup(wid, font);
@@ -91,7 +91,7 @@ void ComboDialog::loadConfig()
 {
   StringList events = instance().eventHandler().getComboListForEvent(myComboEvent);
 
-  uInt32 size = std::min(uInt32(events.size()), 8u);
+  uInt32 size = std::min<uInt32>(events.size(), 8);
   for(uInt32 i = 0; i < size; ++i)
     myEvents[i]->setSelected("", events[i]);
 

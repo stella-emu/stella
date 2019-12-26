@@ -159,6 +159,9 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           DiStella::settings.rFlag);
       invalidate();
       break;
+
+    default:
+      break;
   }
 }
 

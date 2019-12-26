@@ -126,7 +126,7 @@ class Dialog : public GuiObject
     bool shouldResize(uInt32& w, uInt32& h) const;
 
   protected:
-    virtual void draw() override { }
+    void draw() override { }
     void releaseFocus() override;
 
     virtual void handleText(char text);
@@ -141,7 +141,7 @@ class Dialog : public GuiObject
     virtual void handleJoyUp(int stick, int button);
     virtual void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button = JOY_CTRL_NONE);
     virtual bool handleJoyHat(int stick, int hat, JoyHatDir hdir, int button = JOY_CTRL_NONE);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     virtual Event::Type getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button);
 
     Widget* findWidget(int x, int y) const; // Find the widget at pos x,y if any

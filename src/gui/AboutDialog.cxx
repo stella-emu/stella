@@ -73,7 +73,7 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   {
     myDesc.push_back(new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
                                           fontHeight, "", TextAlign::Left));
-    myDescStr.push_back("");
+    myDescStr.emplace_back("");
     ypos += fontHeight;
   }
 
@@ -152,6 +152,9 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT("\\L\\c0""VCS team for giving us the magic, and to the");
       ADD_ATEXT("\\L\\c0""homebrew developers for keeping the magic alive.");
       break;
+
+    default:
+      return;
   }
 
   while(i < lines)

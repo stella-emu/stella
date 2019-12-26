@@ -47,7 +47,7 @@ class TiaWidget : public Widget, public CommandSender
     ColorWidget* myCOLUBKColor;
 
     CheckboxWidget* myFixedEnabled;
-    ColorWidget* myFixedColors[8];
+    std::array<ColorWidget*, 8> myFixedColors;
 
     TogglePixelWidget* myGRP0;
     TogglePixelWidget* myGRP0Old;
@@ -89,9 +89,9 @@ class TiaWidget : public Widget, public CommandSender
     CheckboxWidget* myResMP1;
 
     /** Collision register bits */
-    CheckboxWidget* myCollision[15];
+    std::array<CheckboxWidget*, 15> myCollision;
 
-    TogglePixelWidget* myPF[3];
+    std::array<TogglePixelWidget*, 3> myPF;
     CheckboxWidget* myRefPF;
     CheckboxWidget* myScorePF;
     CheckboxWidget* myPriorityPF;

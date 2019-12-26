@@ -171,8 +171,7 @@ class Event
     {
       std::lock_guard<std::mutex> lock(myMutex);
 
-      for(Int32 i = 0; i < LastType; ++i)
-        myValues[i] = Event::NoType;
+      myValues.fill(Event::NoType);
     }
 
     /**
@@ -194,7 +193,7 @@ class Event
 
   private:
     // Array of values associated with each event type
-    Int32 myValues[LastType];
+    std::array<Int32, LastType> myValues;
 
     mutable std::mutex myMutex;
 

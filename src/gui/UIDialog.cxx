@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "DialogContainer.hxx"
 #include "BrowserDialog.hxx"
 #include "Dialog.hxx"
 #include "OSystem.hxx"
@@ -438,8 +439,8 @@ void UIDialog::setDefaults()
     {
       FilesystemNode node("~");
       myRomPath->setText(node.getShortPath());
-      uInt32 w = std::min(instance().frameBuffer().desktopSize().w, 900u);
-      uInt32 h = std::min(instance().frameBuffer().desktopSize().h, 600u);
+      uInt32 w = std::min<uInt32>(instance().frameBuffer().desktopSize().w, 900);
+      uInt32 h = std::min<uInt32>(instance().frameBuffer().desktopSize().h, 600);
       myLauncherWidthSlider->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
