@@ -428,6 +428,8 @@
 		DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */; };
 		DCA078341F8C1B04008EFEE5 /* LinkedObjectPool.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA078321F8C1B04008EFEE5 /* LinkedObjectPool.hxx */; };
 		DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA078331F8C1B04008EFEE5 /* SDL_lib.hxx */; };
+		DCA233B023B583FE0032ABF3 /* PhosphorHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */; };
+		DCA233B123B583FE0032ABF3 /* PhosphorHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA233AF23B583FE0032ABF3 /* PhosphorHandler.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
 		DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */; };
@@ -1162,6 +1164,8 @@
 		DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = RiotDebug.hxx; sourceTree = "<group>"; };
 		DCA078321F8C1B04008EFEE5 /* LinkedObjectPool.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LinkedObjectPool.hxx; sourceTree = "<group>"; };
 		DCA078331F8C1B04008EFEE5 /* SDL_lib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SDL_lib.hxx; sourceTree = "<group>"; };
+		DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PhosphorHandler.cxx; sourceTree = "<group>"; };
+		DCA233AF23B583FE0032ABF3 /* PhosphorHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PhosphorHandler.hxx; sourceTree = "<group>"; };
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CartX07.cxx; sourceTree = "<group>"; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CartX07.hxx; sourceTree = "<group>"; };
 		DCA43BFF10DED5890070CEFD /* Info-Stella.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Stella.plist"; sourceTree = "<group>"; };
@@ -1698,7 +1702,6 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				E08FCD4B23A037D80051F59B /* sdl_blitter */,
 				DCC6A4AD20A2620D00863C59 /* audio */,
 				E09F413A201E901D004A3391 /* AudioQueue.cxx */,
 				E09F4139201E901C004A3391 /* AudioQueue.hxx */,
@@ -1729,6 +1732,8 @@
 				DCB87E571A104C1E00BF2A3B /* MediaFactory.hxx */,
 				DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */,
 				DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */,
+				DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */,
+				DCA233AF23B583FE0032ABF3 /* PhosphorHandler.hxx */,
 				DC6DC91A205DB879004A5FC3 /* PhysicalJoystick.cxx */,
 				DC6DC91B205DB879004A5FC3 /* PhysicalJoystick.hxx */,
 				DC6DC91C205DB879004A5FC3 /* PJoystickHandler.cxx */,
@@ -1741,6 +1746,7 @@
 				E06508B72272447200B341AC /* repository */,
 				DCDDEAC01F5DBF0400C67366 /* RewindManager.cxx */,
 				DCDDEAC11F5DBF0400C67366 /* RewindManager.hxx */,
+				E08FCD4B23A037D80051F59B /* sdl_blitter */,
 				DCA078331F8C1B04008EFEE5 /* SDL_lib.hxx */,
 				DC2C5EDA1F8F2403007D2A09 /* smartmod.hxx */,
 				DCF467B40F93993B00B25D7A /* SoundNull.hxx */,
@@ -2515,6 +2521,7 @@
 				DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */,
 				DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */,
 				DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */,
+				DCA233B123B583FE0032ABF3 /* PhosphorHandler.hxx in Headers */,
 				DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */,
 				DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */,
 				DC0DF86A0F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx in Headers */,
@@ -3057,6 +3064,7 @@
 				DC3EE85F1E2C0E6D00905161 /* gzread.c in Sources */,
 				DC676A471729A0B000E4E73D /* CartCMWidget.cxx in Sources */,
 				DC676A491729A0B000E4E73D /* CartCTYWidget.cxx in Sources */,
+				DCA233B023B583FE0032ABF3 /* PhosphorHandler.cxx in Sources */,
 				DC676A4B1729A0B000E4E73D /* CartDPCPlusWidget.cxx in Sources */,
 				DC676A4D1729A0B000E4E73D /* CartDPCWidget.cxx in Sources */,
 				DC676A4F1729A0B000E4E73D /* CartE0Widget.cxx in Sources */,
