@@ -122,12 +122,14 @@ void RadioButtonWidget::drawWidget(bool hilite)
   // Draw the outer bounding circle
   s.drawBitmap(radio_img_outercircle.data(), _x, _y + _boxY,
                hilite ? kWidColorHi : kColor,
-               radio_img_outercircle.size(), radio_img_outercircle.size());
+               static_cast<uInt32>(radio_img_outercircle.size()),
+               static_cast<uInt32>(radio_img_outercircle.size()));
 
   // Draw the inner bounding circle with enabled color
   s.drawBitmap(radio_img_innercircle.data(), _x + 1, _y + _boxY + 1,
                isEnabled() ? _bgcolor : kColor,
-               radio_img_innercircle.size(), radio_img_innercircle.size());
+               static_cast<uInt32>(radio_img_innercircle.size()),
+               static_cast<uInt32>(radio_img_innercircle.size()));
 
   // draw state
   if(_state)

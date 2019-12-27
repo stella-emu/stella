@@ -430,4 +430,6 @@ int Paddles::DEJITTER_BASE = 0;
 int Paddles::DEJITTER_DIFF = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const std::array<Controller::DigitalPin, 2> Paddles::ourButtonPin;
+const std::array<Controller::DigitalPin, 2> Paddles::ourButtonPin = {
+  DigitalPin::Four, DigitalPin::Three
+};
