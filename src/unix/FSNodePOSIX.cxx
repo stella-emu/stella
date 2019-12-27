@@ -52,9 +52,9 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
   // Get absolute path (only used for relative directories)
   else if(_path[0] == '.')
   {
-    char buf[MAXPATHLEN];
-    if(realpath(_path.c_str(), buf))
-      _path = buf;
+    std::array<char, MAXPATHLEN> buf;
+    if(realpath(_path.c_str(), buf.data()))
+      _path = buf.data();
   }
 
   _displayName = lastPathComponent(_path);
@@ -192,9 +192,9 @@ bool FilesystemNodePOSIX::makeDir()
   if(mkdir(_path.c_str(), 0777) == 0)
   {
     // Get absolute path
-    char buf[MAXPATHLEN];
-    if(realpath(_path.c_str(), buf))
-      _path = buf;
+    std::array<char, MAXPATHLEN> buf;
+    if(realpath(_path.c_str(), buf.data()))
+      _path = buf.data();
 
     _displayName = lastPathComponent(_path);
     setFlags();
@@ -217,9 +217,9 @@ bool FilesystemNodePOSIX::rename(const string& newfile)
     _path = newfile;
 
     // Get absolute path
-    char buf[MAXPATHLEN];
-    if(realpath(_path.c_str(), buf))
-      _path = buf;
+    std::array<char, MAXPATHLEN> buf;
+    if(realpath(_path.c_str(), buf.data()))
+      _path = buf.data();
 
     _displayName = lastPathComponent(_path);
     setFlags();

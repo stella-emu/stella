@@ -166,6 +166,9 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_TEXT("'Options/Input" + ELLIPSIS + "' dialog for");
       ADD_TEXT("more information.");
       break;
+
+    default:
+      break;
   }
 
   while(i < lines)

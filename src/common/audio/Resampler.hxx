@@ -60,7 +60,7 @@ class Resampler {
 
     virtual void fillFragment(float* fragment, uInt32 length) = 0;
 
-    virtual ~Resampler() {}
+    virtual ~Resampler() = default;
 
   protected:
 

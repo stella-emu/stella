@@ -480,6 +480,9 @@ uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
     case 3:
       myMusicWaveformSize[value1] = value2;
       break;
+
+    default:
+      break;
   }
 
   return 0;

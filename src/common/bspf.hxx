@@ -118,6 +118,10 @@ namespace BSPF
     static const string ARCH = "NOARCH";
   #endif
 
+  // Make 2D-arrays using std::array less verbose
+  template<class T, size_t ROW, size_t COL>
+  using array2D = std::array<std::array<T, COL>, ROW>;
+
   // Combines 'max' and 'min', and clamps value to the upper/lower value
   // if it is outside the specified range
   template<class T> inline T clamp(T val, T lower, T upper)

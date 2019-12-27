@@ -337,9 +337,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StaticTextWidget::setValue(int value)
 {
-  char buf[256];
-  std::snprintf(buf, 255, "%d", value);
-  _label = buf;
+  _label = std::to_string(value);
 
   setDirty();
 }
@@ -406,14 +404,14 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
-                           uInt32* bitmap, int bmw, int bmh,
+                           const uInt32* bitmap, int bmw, int bmh,
                            int cmd, bool repeat)
   : ButtonWidget(boss, font, x, y, w, h, "", cmd, repeat)
 {
-  _bitmap = bitmap;
-  _bmh = bmh;
-  _bmw = bmw;
   _useBitmap = true;
+  _bitmap = bitmap;
+  _bmw = bmw;
+  _bmh = bmh;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -431,20 +429,15 @@ void ButtonWidget::handleMouseLeft()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ButtonWidget::handleEvent(Event::Type e)
 {
-  if(!isEnabled())
+  if(!isEnabled() || e != Event::UISelect)
     return false;
 
-  switch(e)
-  {
-    case Event::UISelect:
-      // Simulate mouse event
-      handleMouseUp(0, 0, MouseButton::LEFT, 0);
-      return true;
-    default:
-      return false;
-  }
+  // Simulate mouse event
+  handleMouseUp(0, 0, MouseButton::LEFT, 0);
+  return true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool ButtonWidget::handleMouseClicks(int x, int y, MouseButton b)
 {
   return _repeat;
@@ -471,12 +464,12 @@ void ButtonWidget::handleMouseUp(int x, int y, MouseButton b, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ButtonWidget::setBitmap(uInt32* bitmap, int bmw, int bmh)
+void ButtonWidget::setBitmap(const uInt32* bitmap, int bmw, int bmh)
 {
+  _useBitmap = true;
   _bitmap = bitmap;
   _bmh = bmh;
   _bmw = bmw;
-  _useBitmap = true;
 
   setDirty();
 }
@@ -501,50 +494,6 @@ void ButtonWidget::drawWidget(bool hilite)
 
   setDirty();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/* 8x8 checkbox bitmap */
-static uInt32 checked_img_active[10] =
-{
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111
-};
-
-static uInt32 checked_img_inactive[10] =
-{
-  0b1111111111,
-  0b1111111111,
-  0b1111001111,
-  0b1110000111,
-  0b1100000011,
-  0b1100000011,
-  0b1110000111,
-  0b1111001111,
-  0b1111111111,
-  0b1111111111
-};
-
-static uInt32 checked_img_circle[10] =
-{
-  0b0001111000,
-  0b0111111110,
-  0b0111111110,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b1111111111,
-  0b0111111110,
-  0b0111111110,
-  0b0001111000
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
@@ -625,18 +574,34 @@ void CheckboxWidget::setEditable(bool editable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::setFill(FillType type)
 {
+  /* 8x8 checkbox bitmap */
+  static constexpr std::array<uInt32, 10> checked_img_active = {
+    0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,
+    0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111
+  };
+
+  static constexpr std::array<uInt32, 10> checked_img_inactive = {
+    0b1111111111,  0b1111111111,  0b1111001111,  0b1110000111,  0b1100000011,
+    0b1100000011,  0b1110000111,  0b1111001111,  0b1111111111,  0b1111111111
+  };
+
+  static constexpr std::array<uInt32, 10> checked_img_circle = {
+    0b0001111000,  0b0111111110,  0b0111111110,  0b1111111111,  0b1111111111,
+    0b1111111111,  0b1111111111,  0b0111111110,  0b0111111110,  0b0001111000
+  };
+
   switch(type)
   {
     case CheckboxWidget::FillType::Normal:
-      _img = checked_img_active;
+      _img = checked_img_active.data();
       _drawBox = true;
       break;
     case CheckboxWidget::FillType::Inactive:
-      _img = checked_img_inactive;
+      _img = checked_img_inactive.data();
       _drawBox = true;
       break;
     case CheckboxWidget::FillType::Circle:
-      _img = checked_img_circle;
+      _img = checked_img_circle.data();
       _drawBox = false;
       break;
   }
@@ -765,10 +730,7 @@ void SliderWidget::setValueLabel(const string& valueLabel)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::setValueLabel(int value)
 {
-  char buf[256];
-  std::snprintf(buf, 255, "%d", value);
-  _valueLabel = buf;
-
+  _valueLabel = std::to_string(value);
   setDirty();
 }
 

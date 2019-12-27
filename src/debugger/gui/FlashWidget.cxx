@@ -25,7 +25,7 @@ FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
   : ControllerWidget(boss, font, x, y, controller),
     myEEPROMEraseCurrent(nullptr)
 {
-  std::fill(myPage, myPage + MAX_PAGES, nullptr);
+  myPage.fill(nullptr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

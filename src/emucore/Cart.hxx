@@ -336,7 +336,7 @@ class Cartridge : public Device
     bool myBankLocked;
 
     // Semi-random values to use when a read from write port occurs
-    uInt8 myRWPRandomValues[256];
+    std::array<uInt8, 256> myRWPRandomValues;
 
     // Contains various info about this cartridge
     // This needs to be stored separately from child classes, since

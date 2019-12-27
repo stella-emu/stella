@@ -309,7 +309,7 @@ class CartridgeCTY : public Cartridge
     // Indicates the offset into the ROM image (aligns to current bank)
     uInt16 myBankOffset;
 
-    static const uInt32 ourFrequencyTable[63];
+    static const std::array<uInt32, 63> ourFrequencyTable;
 
   private:
     // Following constructors and assignment operators not supported

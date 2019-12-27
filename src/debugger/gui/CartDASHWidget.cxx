@@ -152,6 +152,8 @@ void CartridgeDASHWidget::handleCommand(CommandSender* sender,
     case kBank3Changed:
       segment = 3;
       break;
+    default:
+      break;
   }
 
   // Ignore bank if either number or type hasn't been selected
@@ -364,6 +366,6 @@ uInt8 CartridgeDASHWidget::internalRamGetValue(int addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const CartridgeDASHWidget::BankID CartridgeDASHWidget::bankEnum[4] = {
+const std::array<CartridgeDASHWidget::BankID, 4> CartridgeDASHWidget::bankEnum = {
   kBank0Changed, kBank1Changed, kBank2Changed, kBank3Changed
 };

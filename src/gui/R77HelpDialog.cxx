@@ -161,6 +161,9 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_TEXT("and consult the 'Options/Input" + ELLIPSIS + "'");
       ADD_TEXT("dialog for more information.");
       break;
+
+    default:
+      return;
   }
 
   while (i < lines)

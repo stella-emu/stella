@@ -238,7 +238,7 @@ uInt32 FilesystemNode::read(ByteBuffer& image) const
     if (length == 0)
       throw runtime_error("Zero-byte file");
 
-    size = std::min(uInt32(length), 512u * 1024u);
+    size = std::min<uInt32>(length, 512 * 1024);
     in.read(reinterpret_cast<char*>(image.get()), size);
   }
   else

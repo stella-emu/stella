@@ -137,7 +137,7 @@ void Cartridge3EPlusWidget::loadConfig()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
-                                        int cmd, int data, int id)
+                                          int cmd, int data, int id)
 {
   uInt16 segment = 0;
   switch(cmd)
@@ -153,6 +153,8 @@ void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
       break;
     case kBank3Changed:
       segment = 3;
+      break;
+    default:
       break;
   }
 
@@ -330,6 +332,6 @@ uInt8 Cartridge3EPlusWidget::internalRamGetValue(int addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Cartridge3EPlusWidget::BankID Cartridge3EPlusWidget::bankEnum[4] = {
+const std::array<Cartridge3EPlusWidget::BankID, 4> Cartridge3EPlusWidget::bankEnum = {
   kBank0Changed, kBank1Changed, kBank2Changed, kBank3Changed
 };

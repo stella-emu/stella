@@ -58,7 +58,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt16 rom_size
                          Cartridge* cartridge)
   : rom(rom_ptr),
     romSize(rom_size),
-    decodedRom(new Op[romSize / 2]),
+    decodedRom(make_unique<Op[]>(romSize / 2)),
     ram(ram_ptr),
     T1TCR(0),
     T1TC(0),
@@ -994,7 +994,7 @@ int Thumbulator::execute()
         if(rc & 0x80000000)
         {
           do_cflag_bit(1);
-          rc = ~0u;
+          rc = ~0U;
         }
         else
         {
@@ -1008,7 +1008,7 @@ int Thumbulator::execute()
         ra = rc & 0x80000000;
         rc >>= rb;
         if(ra) //asr, sign is shifted in
-          rc |= (~0u) << (32-rb);
+          rc |= (~0U) << (32-rb);
       }
       write_register(rd, rc);
       do_nflag(rc);
@@ -1034,7 +1034,7 @@ int Thumbulator::execute()
         rc >>= rb;
         if(ra) //asr, sign is shifted in
         {
-          rc |= (~0u) << (32-rb);
+          rc |= (~0U) << (32-rb);
         }
       }
       else
@@ -1042,7 +1042,7 @@ int Thumbulator::execute()
         if(rc & 0x80000000)
         {
           do_cflag_bit(1);
-          rc = (~0u);
+          rc = (~0U);
         }
         else
         {
@@ -1060,7 +1060,7 @@ int Thumbulator::execute()
     case Op::b1: {
       rb = (inst >> 0) & 0xFF;
       if(rb & 0x80)
-        rb |= (~0u) << 8;
+        rb |= (~0U) << 8;
       op=(inst >> 8) & 0xF;
       rb <<= 1;
       rb += pc;
@@ -1175,7 +1175,7 @@ int Thumbulator::execute()
     case Op::b2: {
       rb = (inst >> 0) & 0x7FF;
       if(rb & (1 << 10))
-        rb |= (~0u) << 11;
+        rb |= (~0U) << 11;
       rb <<= 1;
       rb += pc;
       rb += 2;
@@ -1771,7 +1771,7 @@ int Thumbulator::execute()
       }
       rc &= 0xFF;
       if(rc & 0x80)
-        rc |= ((~0u) << 8);
+        rc |= ((~0U) << 8);
       write_register(rd, rc);
       return 0;
     }
@@ -1786,7 +1786,7 @@ int Thumbulator::execute()
       rc = read16(rb);
       rc &= 0xFFFF;
       if(rc & 0x8000)
-        rc |= ((~0u) << 16);
+        rc |= ((~0U) << 16);
       write_register(rd, rc);
       return 0;
     }
@@ -2442,7 +2442,7 @@ int Thumbulator::execute()
       ra = read_register(rm);
       rc = ra & 0xFF;
       if(rc & 0x80)
-        rc |= (~0u) << 8;
+        rc |= (~0U) << 8;
       write_register(rd, rc);
       return 0;
     }
@@ -2455,7 +2455,7 @@ int Thumbulator::execute()
       ra = read_register(rm);
       rc = ra & 0xFFFF;
       if(rc & 0x8000)
-        rc |= (~0u) << 16;
+        rc |= (~0U) << 16;
       write_register(rd, rc);
       return 0;
     }
@@ -2513,7 +2513,7 @@ int Thumbulator::execute()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Thumbulator::reset()
 {
-  std::fill(reg_norm, reg_norm+12, 0);
+  reg_norm.fill(0);
   reg_norm[13] = 0x40001FB4;
 
   switch(configuration)

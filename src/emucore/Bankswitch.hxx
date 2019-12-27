@@ -58,7 +58,7 @@ class Bankswitch
       const char* const name;
       const char* const desc;
     };
-    static Description BSList[int(Type::NumSchemes)];
+    static const std::array<Description, static_cast<int>(Type::NumSchemes)> BSList;
 
   public:
     // Convert BSType enum to string
@@ -95,10 +95,10 @@ class Bankswitch
         return BSPF::compareIgnoreCase(a, b) < 0;
       }
     };
-    using ExtensionMap = std::map<string, Bankswitch::Type, TypeComparator>;
+    using ExtensionMap = const std::map<string, Bankswitch::Type, TypeComparator>;
     static ExtensionMap ourExtensions;
 
-    using NameToTypeMap = std::map<string, Bankswitch::Type, TypeComparator>;
+    using NameToTypeMap = const std::map<string, Bankswitch::Type, TypeComparator>;
     static NameToTypeMap ourNameToTypes;
 
   private:

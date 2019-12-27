@@ -96,9 +96,9 @@ string CartridgeUAWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* const spot[] = { "$220, $2A0", "$240, $2C0" };
+  static constexpr std::array<const char*, 2> spot = { "$220, $2A0", "$240, $2C0" };
   buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspots = " << spot[myCart.getBank() ^ (mySwappedHotspots ? 1u : 0u)];
+      << ", hotspots = " << spot[myCart.getBank() ^ (mySwappedHotspots ? 1U : 0U)];
 
   return buf.str();
 }

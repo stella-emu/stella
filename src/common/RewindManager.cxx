@@ -111,7 +111,8 @@ bool RewindManager::addState(const string& message, bool timeMachine)
     // adjust frame timed intervals to actual scanlines (vs 262)
     if(interval >= 76 * 262 && interval <= 76 * 262 * 30)
     {
-      const uInt32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
+      const uInt32 scanlines = std::max<uInt32>
+        (myOSystem.console().tia().scanlinesLastFrame(), 240);
 
       interval = interval * scanlines / 262;
     }
@@ -401,15 +402,19 @@ string RewindManager::loadState(Int64 startCycles, uInt32 numStates)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RewindManager::getUnitString(Int64 cycles)
 {
+  constexpr Int32 NTSC_FREQ = 1193182; // ~76*262*60
+  constexpr Int32 PAL_FREQ  = 1182298; // ~76*312*50
   const Int32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
   const bool isNTSC = scanlines <= 287;
-  const Int32 NTSC_FREQ = 1193182; // ~76*262*60
-  const Int32 PAL_FREQ = 1182298; // ~76*312*50
   const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 
-  const Int32 NUM_UNITS = 5;
-  const string UNIT_NAMES[NUM_UNITS] = { "cycle", "scanline", "frame", "second", "minute" };
-  const Int64 UNIT_CYCLES[NUM_UNITS + 1] = { 1, 76, 76 * scanlines, freq, freq * 60, Int64(1) << 62 };
+  constexpr Int32 NUM_UNITS = 5;
+  const std::array<string, NUM_UNITS> UNIT_NAMES = {
+    "cycle", "scanline", "frame", "second", "minute"
+  };
+  const std::array<Int64, NUM_UNITS+1> UNIT_CYCLES = {
+    1, 76, 76 * scanlines, freq, freq * 60, Int64(1) << 62
+  };
 
   stringstream result;
   Int32 i;

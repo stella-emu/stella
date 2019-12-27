@@ -789,6 +789,9 @@ bool TIA::poke(uInt16 address, uInt8 value)
       myCollisionMask = 0;
       myShadowRegisters[address] = value;
       break;
+
+    default:
+      break;
   }
 
   return true;
@@ -1669,6 +1672,9 @@ void TIA::delayedWrite(uInt8 address, uInt8 value)
 
     case ENAM1:
       myMissile1.enam(value);
+      break;
+
+    default:
       break;
   }
 }

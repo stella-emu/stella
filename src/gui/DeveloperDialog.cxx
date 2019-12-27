@@ -138,11 +138,10 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
   wid.push_back(myRandomizeCPULabel);
 
   int xpos = myRandomizeCPULabel->getRight() + 10;
-  const char* const cpuregs[] = { "SP", "A", "X", "Y", "PS" };
   for(int i = 0; i < 5; ++i)
   {
     myRandomizeCPUWidget[i] = new CheckboxWidget(myTab, font, xpos, ypos + 1,
-                                           cpuregs[i], kRandCPUID);
+                                           ourCPUregs[i], kRandCPUID);
     wid.push_back(myRandomizeCPUWidget[i]);
     xpos += CheckboxWidget::boxSize() + font.getStringWidth("XX") + 20;
   }
@@ -331,7 +330,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
   VarList::push_back(items, "Purple", "p");
   VarList::push_back(items, "Blue", "b");
 
-  static constexpr int dbg_cmds[DEBUG_COLORS] = {
+  static constexpr std::array<int, DEBUG_COLORS> dbg_cmds = {
     kP0ColourChangedCmd,  kM0ColourChangedCmd,  kP1ColourChangedCmd,
     kM1ColourChangedCmd,  kPFColourChangedCmd,  kBLColourChangedCmd
   };
@@ -367,7 +366,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 {
-  const string INTERVALS[NUM_INTERVALS] = {
+  const std::array<string, NUM_INTERVALS> INTERVALS = {
     " 1 frame",
     " 3 frames",
     "10 frames",
@@ -376,7 +375,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     " 3 seconds",
     "10 seconds"
   };
-  const string INT_SETTINGS[NUM_INTERVALS] = {
+  const std::array<string, NUM_INTERVALS> INT_SETTINGS = {
     "1f",
     "3f",
     "10f",
@@ -385,7 +384,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     "3s",
     "10s"
   };
-  const string HORIZONS[NUM_HORIZONS] = {
+  const std::array<string, NUM_HORIZONS> HORIZONS = {
     " 3 seconds",
     "10 seconds",
     "30 seconds",
@@ -395,7 +394,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
     "30 minutes",
     "60 minutes"
   };
-  const string HOR_SETTINGS[NUM_HORIZONS] = {
+  const std::array<string, NUM_HORIZONS> HOR_SETTINGS = {
     "3s",
     "10s",
     "30s",
@@ -724,10 +723,9 @@ void DeveloperDialog::getWidgetStates(SettingsSet set)
   myRandomBank[set] = myRandomBankWidget->getState();
   myRandomizeRAM[set] = myRandomizeRAMWidget->getState();
   string cpurandom;
-  const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
     if(myRandomizeCPUWidget[i]->getState())
-      cpurandom += cpuregs[i];
+      cpurandom += ourCPUregs[i];
   myRandomizeCPU[set] = cpurandom;
   // Undriven TIA pins
   myUndrivenPins[set] = myUndrivenPinsWidget->getState();
@@ -777,9 +775,8 @@ void DeveloperDialog::setWidgetStates(SettingsSet set)
   myRandomizeRAMWidget->setState(myRandomizeRAM[set]);
 
   const string& cpurandom = myRandomizeCPU[set];
-  const char* const cpuregs[] = { "S", "A", "X", "Y", "P" };
   for(int i = 0; i < 5; ++i)
-    myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, cpuregs[i]));
+    myRandomizeCPUWidget[i]->setState(BSPF::containsIgnoreCase(cpurandom, ourCPUregs[i]));
   // Undriven TIA pins
   myUndrivenPinsWidget->setState(myUndrivenPins[set]);
 #ifdef DEBUGGER_SUPPORT
@@ -1387,7 +1384,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
     return;
   }
 
-  static constexpr ColorId dbg_color[3][DEBUG_COLORS] = {
+  static constexpr BSPF::array2D<ColorId, 3, DEBUG_COLORS> dbg_color = {{
     {
       TIA::FixedColor::NTSC_RED,
       TIA::FixedColor::NTSC_ORANGE,
@@ -1412,7 +1409,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
       TIA::FixedColor::SECAM_PURPLE,
       TIA::FixedColor::SECAM_BLUE
     }
-  };
+  }};
 
   int timing = instance().console().timing() == ConsoleTiming::ntsc ? 0
     : instance().console().timing() == ConsoleTiming::pal ? 1 : 2;
@@ -1421,7 +1418,7 @@ void DeveloperDialog::handleDebugColours(int idx, int color)
   myDbgColour[idx]->setSelectedIndex(color);
 
   // make sure the selected debug colors are all different
-  bool usedCol[DEBUG_COLORS];
+  std::array<bool, DEBUG_COLORS> usedCol;
 
   // identify used colors
   for(int i = 0; i < DEBUG_COLORS; ++i)
@@ -1507,3 +1504,8 @@ void DeveloperDialog::handleFontSize()
     myDebuggerHeightSlider->setValue(minH);
 #endif
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const std::array<string, 5> DeveloperDialog::ourCPUregs = {
+  "SP", "A", "X", "Y", "PS"
+};

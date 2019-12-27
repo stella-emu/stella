@@ -31,9 +31,9 @@ class AtariMouseWidget : public PointingDeviceWidget
     virtual ~AtariMouseWidget() = default;
 
   private:
-    uInt8 myGrayCodeTable[4] = { 0b00, 0b01, 0b11, 0b10 };
+    const std::array<uInt8, 4> myGrayCodeTable = { 0b00, 0b01, 0b11, 0b10 };
 
-    uInt8 getGrayCodeTable(const int index, const int direction) override;
+    uInt8 getGrayCodeTable(const int index, const int direction) const override;
 
     // Following constructors and assignment operators not supported
     AtariMouseWidget() = delete;

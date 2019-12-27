@@ -967,6 +967,7 @@ string TIADebug::colorSwatch(uInt8 c) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // FIXME - how does this work; is this even needed ??
+//         convert to stringstream, get rid of snprintf
 string TIADebug::audFreq(uInt8 div)
 {
   string ret;

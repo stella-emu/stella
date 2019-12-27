@@ -179,7 +179,7 @@ int GlobalPropsDialog::addHoldWidgets(const GUI::Font& font, int x, int y,
   ypos += myHoldSelect->getHeight() + VGAP;
   myHoldReset = new CheckboxWidget(this, font, xpos, ypos, "Reset");
 
-  const int TAB_ORDER[10] = {
+  static constexpr std::array<int, 10> TAB_ORDER = {
     kJ0Up, kJ0Left, kJ0Right, kJ0Down, kJ0Fire,
     kJ1Up, kJ1Left, kJ1Right, kJ1Down, kJ1Fire
   };
@@ -292,6 +292,6 @@ void GlobalPropsDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* const GlobalPropsDialog::ourJoyState[10] = {
+const std::array<string, 10> GlobalPropsDialog::ourJoyState = {
   "U", "D", "L", "R", "F", "U", "D", "L", "R", "F"
 };

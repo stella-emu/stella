@@ -309,7 +309,7 @@ bool CartridgeWD::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeWD::BankOrg CartridgeWD::ourBankOrg[8] = {
+const std::array<CartridgeWD::BankOrg, 8> CartridgeWD::ourBankOrg = {{
                    //            0 1 2 3 4 5 6 7
   { 0, 0, 1, 3 },  // Bank 0, 8  2 1 - 1 - - - -
   { 0, 1, 2, 3 },  // Bank 1, 9  1 1 1 1 - - - -
@@ -320,4 +320,4 @@ CartridgeWD::BankOrg CartridgeWD::ourBankOrg[8] = {
   { 2, 3, 4, 5 },  // Bank 6, 14  - - 1 1 1 1 - -
   { 6, 0, 5, 1 }   // Bank 7, 15  1 1 - - - 1 1 -
                    // count       7 4 3 4 3 3 4 4
-};
+}};

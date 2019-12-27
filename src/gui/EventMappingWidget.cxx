@@ -509,5 +509,8 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
           instance().eventHandler().eventAtIndex(myActionSelected, myEventGroup),
           instance().eventHandler().actionAtIndex(myActionSelected, myEventGroup));
       break;
+
+    default:
+      break;
   }
 }

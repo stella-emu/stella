@@ -23,18 +23,6 @@
 #include "DialogContainer.hxx"
 #include "PopUpWidget.hxx"
 
-// Little down arrow
-static uInt32 down_arrow[8] = {
-  0b100000001,
-  0b110000011,
-  0b111000111,
-  0b011101110,
-  0b001111100,
-  0b000111000,
-  0b000010000,
-  0b000000000
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, int w, int h, const VariantList& list,
@@ -192,6 +180,18 @@ void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::drawWidget(bool hilite)
 {
+  // Little down arrow
+  static constexpr std::array<uInt32, 8> down_arrow = {
+    0b100000001,
+    0b110000011,
+    0b111000111,
+    0b011101110,
+    0b001111100,
+    0b000111000,
+    0b000010000,
+    0b000000000
+  };
+
 //cerr << "PopUpWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
   bool onTop = _boss->dialog().isOnTop();
@@ -212,7 +212,7 @@ void PopUpWidget::drawWidget(bool hilite)
   s.fillRect(x + 1, _y + 1, w - 17, _h - 2, onTop ? _changed ? kDbgChangedColor : kWidColor : kDlgColor);
   s.fillRect(x + w - 15, _y + 2, 13, _h - 4, onTop ? isEnabled() && hilite ? kWidColor : kBGColorHi : kBGColorLo);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
-  s.drawBitmap(down_arrow, x + w - 13, _y + myArrowsY + 1,
+  s.drawBitmap(down_arrow.data(), x + w - 13, _y + myArrowsY + 1,
                !(isEnabled() && onTop) ? kColor : kTextColor, 9U, 8U);
 
   // Draw the selected entry, if any

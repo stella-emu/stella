@@ -110,8 +110,8 @@ CartRamWidget::InternalRamWidget::InternalRamWidget(GuiObject* boss,
         int x, int y, int w, int h,
         CartDebugWidget& dbg)
   : RamWidget(boss, lfont, nfont, x, y, w, h,
-      dbg.internalRamSize(), std::min(dbg.internalRamSize() / 16, 16u),
-      std::min(dbg.internalRamSize() / 16, 16u) * 16),
+      dbg.internalRamSize(), std::min(dbg.internalRamSize() / 16, 16U),
+      std::min(dbg.internalRamSize() / 16, 16U) * 16),
     myCart(dbg)
 {
 }

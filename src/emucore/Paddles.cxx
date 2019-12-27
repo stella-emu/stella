@@ -222,13 +222,13 @@ void Paddles::update()
   int sa_yaxis = myEvent.get(myP1AxisValue);
   int new_val;
 
-  const double bFac[MAX_DEJITTER - MIN_DEJITTER + 1] = {
+  static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> bFac = {
     // higher values mean more dejitter strength
     0, // off
     0.50, 0.59, 0.67, 0.74, 0.80,
     0.85, 0.89, 0.92, 0.94, 0.95
   };
-  const double dFac[MAX_DEJITTER - MIN_DEJITTER + 1] = {
+  static constexpr std::array<double, MAX_DEJITTER - MIN_DEJITTER + 1> dFac = {
     // lower values mean more dejitter strength
     1, // off
     1.0 /  181, 1.0 /  256, 1.0 /  362, 1.0 /  512, 1.0 /  724,
@@ -430,6 +430,4 @@ int Paddles::DEJITTER_BASE = 0;
 int Paddles::DEJITTER_DIFF = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Controller::DigitalPin Paddles::ourButtonPin[2] = {
-  DigitalPin::Four, DigitalPin::Three
-};
+const std::array<Controller::DigitalPin, 2> Paddles::ourButtonPin;

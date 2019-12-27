@@ -907,7 +907,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   for(auto& mode: myFullscreenModeLists)
     mode.clear();
   for(size_t i = myFullscreenModeLists.size(); i < myFullscreenDisplays.size(); ++i)
-    myFullscreenModeLists.push_back(VideoModeList());
+    myFullscreenModeLists.emplace_back(VideoModeList());
 
   // Check if zooming is allowed for this state (currently only allowed
   // for TIA screens)

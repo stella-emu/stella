@@ -20,7 +20,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Bankswitch::typeToName(Bankswitch::Type type)
 {
-  return BSList[int(type)].name;
+  return BSList[static_cast<int>(type)].name;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,7 +36,7 @@ Bankswitch::Type Bankswitch::nameToType(const string& name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Bankswitch::typeToDesc(Bankswitch::Type type)
 {
-  return BSList[int(type)].desc;
+  return BSList[static_cast<int>(type)].desc;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,7 +92,8 @@ bool Bankswitch::isValidRomName(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Bankswitch::Description Bankswitch::BSList[int(Bankswitch::Type::NumSchemes)] = {
+const std::array<Bankswitch::Description, static_cast<int>(Bankswitch::Type::NumSchemes)>
+Bankswitch::BSList = {{
   { "AUTO"    , "Auto-detect"                 },
   { "0840"    , "0840 (8K ECONObank)"         },
   { "2IN1"    , "2IN1 Multicart (4-32K)"      },
@@ -149,7 +150,7 @@ Bankswitch::Description Bankswitch::BSList[int(Bankswitch::Type::NumSchemes)] = 
 #if defined(CUSTOM_ARM)
   { "CUSTOM"  ,   "CUSTOM (ARM)"                  }
 #endif
-};
+}};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Bankswitch::ExtensionMap Bankswitch::ourExtensions = {

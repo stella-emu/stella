@@ -115,12 +115,11 @@ void BoosterWidget::handleCommand(
           myPins[id]->getState() ? Controller::MIN_RESISTANCE :
                                    Controller::MAX_RESISTANCE);
         break;
+      default:
+        break;
     }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::DigitalPin BoosterWidget::ourPinNo[5] = {
-  Controller::DigitalPin::One, Controller::DigitalPin::Two, Controller::DigitalPin::Three, Controller::DigitalPin::Four,
-  Controller::DigitalPin::Six
-};
+constexpr std::array<Controller::DigitalPin, 5> BoosterWidget::ourPinNo;

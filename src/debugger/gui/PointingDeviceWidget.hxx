@@ -46,7 +46,7 @@ class PointingDeviceWidget : public ControllerWidget
     CheckboxWidget* myFire;
 
   private:
-    virtual uInt8 getGrayCodeTable(const int index, const int direction) = 0;
+    virtual uInt8 getGrayCodeTable(const int index, const int direction) const = 0;
 
     void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

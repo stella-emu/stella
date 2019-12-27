@@ -34,10 +34,9 @@
 #include "Base.hxx"
 using Common::Base;
 
-const int BUTTON_W = 14, BUTTON_H = 14;
+static constexpr int BUTTON_W = 14, BUTTON_H = 14;
 
-static uInt32 RECORD[BUTTON_H] =
-{
+static constexpr std::array<uInt32, BUTTON_H> RECORD = {
   0b00000111100000,
   0b00011111111000,
   0b00111111111100,
@@ -53,9 +52,7 @@ static uInt32 RECORD[BUTTON_H] =
   0b00011111111000,
   0b00000111100000
 };
-
-static uInt32 STOP[BUTTON_H] =
-{
+static constexpr std::array<uInt32, BUTTON_H> STOP = {
   0b11111111111111,
   0b11111111111111,
   0b11111111111111,
@@ -71,9 +68,7 @@ static uInt32 STOP[BUTTON_H] =
   0b11111111111111,
   0b11111111111111
 };
-
-static uInt32 PLAY[BUTTON_H] =
-{
+static constexpr std::array<uInt32, BUTTON_H> PLAY = {
   0b11000000000000,
   0b11110000000000,
   0b11111100000000,
@@ -89,8 +84,7 @@ static uInt32 PLAY[BUTTON_H] =
   0b11110000000000,
   0b11000000000000
 };
-static uInt32 REWIND_ALL[BUTTON_H] =
-{
+static constexpr std::array<uInt32, BUTTON_H> REWIND_ALL = {
   0,
   0b11000011000011,
   0b11000111000111,
@@ -106,8 +100,7 @@ static uInt32 REWIND_ALL[BUTTON_H] =
   0b11000011000011,
   0
 };
-static uInt32 REWIND_1[BUTTON_H] =
-{
+static constexpr std::array<uInt32, BUTTON_H> REWIND_1 = {
   0,
   0b00000110001110,
   0b00001110001110,
@@ -123,8 +116,7 @@ static uInt32 REWIND_1[BUTTON_H] =
   0b00000110001110,
   0
 };
-static uInt32 UNWIND_1[BUTTON_H] =
-{
+static constexpr std::array<uInt32, BUTTON_H> UNWIND_1 = {
   0,
   0b01110001100000,
   0b01110001110000,
@@ -140,8 +132,7 @@ static uInt32 UNWIND_1[BUTTON_H] =
   0b01110001100000,
   0
 };
-static uInt32 UNWIND_ALL[BUTTON_H] =
-{
+static constexpr std::array<uInt32, BUTTON_H> UNWIND_ALL = {
   0,
   0b11000011000011,
   0b11100011100011,
@@ -157,8 +148,7 @@ static uInt32 UNWIND_ALL[BUTTON_H] =
   0b11000011000011,
   0
 };
-static uInt32 SAVE_ALL[BUTTON_H] =
-{
+static constexpr std::array<uInt32, BUTTON_H> SAVE_ALL = {
   0b00000111100000,
   0b00000111100000,
   0b00000111100000,
@@ -174,8 +164,7 @@ static uInt32 SAVE_ALL[BUTTON_H] =
   0b11111111111111,
   0b11111111111111,
 };
-static uInt32 LOAD_ALL[BUTTON_H] =
-{
+static constexpr std::array<uInt32, BUTTON_H> LOAD_ALL = {
   0b00000011000000,
   0b00000111100000,
   0b00001111110000,
@@ -241,41 +230,41 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
 
   // Add buttons
-  myToggleWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, STOP,
-                                    BUTTON_W, BUTTON_H, kToggle);
+  myToggleWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                    STOP.data(), BUTTON_W, BUTTON_H, kToggle);
   xpos += buttonWidth + BUTTON_GAP;
 
-  myPlayWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, PLAY,
-                                  BUTTON_W, BUTTON_H, kPlay);
+  myPlayWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                  PLAY.data(), BUTTON_W, BUTTON_H, kPlay);
   xpos += buttonWidth + BUTTON_GAP * 4;
 
-  myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_ALL,
-                                       BUTTON_W, BUTTON_H, kRewindAll);
+  myRewindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                       REWIND_ALL.data(), BUTTON_W, BUTTON_H, kRewindAll);
   xpos += buttonWidth + BUTTON_GAP;
 
-  myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, REWIND_1,
-                                     BUTTON_W, BUTTON_H, kRewind1, true);
+  myRewind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                     REWIND_1.data(), BUTTON_W, BUTTON_H, kRewind1, true);
   xpos += buttonWidth + BUTTON_GAP;
 
-  myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_1,
-                                     BUTTON_W, BUTTON_H, kUnwind1, true);
+  myUnwind1Widget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                     UNWIND_1.data(), BUTTON_W, BUTTON_H, kUnwind1, true);
   xpos += buttonWidth + BUTTON_GAP;
 
-  myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, UNWIND_ALL,
-                                       BUTTON_W, BUTTON_H, kUnwindAll);
+  myUnwindAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                       UNWIND_ALL.data(), BUTTON_W, BUTTON_H, kUnwindAll);
   xpos = myUnwindAllWidget->getRight() + BUTTON_GAP * 4;
 
-  mySaveAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, SAVE_ALL,
-    BUTTON_W, BUTTON_H, kSaveAll);
+  mySaveAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                     SAVE_ALL.data(), BUTTON_W, BUTTON_H, kSaveAll);
   xpos = mySaveAllWidget->getRight() + BUTTON_GAP;
 
-  myLoadAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight, LOAD_ALL,
-    BUTTON_W, BUTTON_H, kLoadAll);
+  myLoadAllWidget = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                                     LOAD_ALL.data(), BUTTON_W, BUTTON_H, kLoadAll);
   xpos = myLoadAllWidget->getRight() + BUTTON_GAP * 4;
 
   // Add message
-  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "                                             ",
-                                         TextAlign::Left, kBGColor);
+  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3,
+      "                                             ", TextAlign::Left, kBGColor);
   myMessageWidget->setTextColor(kColorInfo);
 }
 
@@ -479,6 +468,6 @@ void TimeMachineDialog::handleWinds(Int32 numWinds)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TimeMachineDialog::handleToggle()
 {
-  myToggleWidget->setBitmap(instance().state().mode() == StateManager::Mode::Off ? RECORD : STOP,
-                            BUTTON_W, BUTTON_H);
+  myToggleWidget->setBitmap(instance().state().mode() == StateManager::Mode::Off ?
+    RECORD.data() : STOP.data(), BUTTON_W, BUTTON_H);
 }

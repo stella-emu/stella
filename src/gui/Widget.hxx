@@ -227,14 +227,14 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
                  const string& label, int cmd = 0, bool repeat = false);
     ButtonWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int dw, int dh,
-                 uInt32* bitmap, int bmw, int bmh,
+                 const uInt32* bitmap, int bmw, int bmh,
                  int cmd = 0, bool repeat = false);
     virtual ~ButtonWidget() = default;
 
     void setCmd(int cmd)  { _cmd = cmd; }
     int getCmd() const    { return _cmd; }
     /* Sets/changes the button's bitmap **/
-    void setBitmap(uInt32* bitmap, int bmw, int bmh);
+    void setBitmap(const uInt32* bitmap, int bmw, int bmh);
 
   protected:
     bool handleMouseClicks(int x, int y, MouseButton b) override;
@@ -247,11 +247,11 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void drawWidget(bool hilite) override;
 
   protected:
-    int     _cmd;
-    bool    _repeat; // button repeats
-    bool    _useBitmap;
-    uInt32* _bitmap;
-    int     _bmw, _bmh;
+    int  _cmd;
+    bool _repeat; // button repeats
+    bool _useBitmap;
+    const uInt32* _bitmap;
+    int  _bmw, _bmh;
 
   private:
     // Following constructors and assignment operators not supported
@@ -296,7 +296,7 @@ class CheckboxWidget : public ButtonWidget
     bool _drawBox;
     bool _changed;
 
-    uInt32* _img;
+    const uInt32* _img;
     ColorId _fillColor;
     int _boxY;
     int _textY;

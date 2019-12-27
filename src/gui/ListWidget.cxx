@@ -388,18 +388,16 @@ void ListWidget::lostFocusWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  switch (cmd)
+  if (cmd == GuiObject::kSetPositionCmd)
   {
-    case GuiObject::kSetPositionCmd:
-      if (_currentPos != data)
-      {
-        _currentPos = data;
-        setDirty();
+    if (_currentPos != data)
+    {
+      _currentPos = data;
+      setDirty();
 
-        // Let boss know the list has scrolled
-        sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
-      }
-      break;
+      // Let boss know the list has scrolled
+      sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
+    }
   }
 }
 

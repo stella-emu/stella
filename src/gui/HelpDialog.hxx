@@ -45,10 +45,10 @@ class HelpDialog : public Dialog
     ButtonWidget* myPrevButton;
 
     StaticTextWidget* myTitle;
-    StaticTextWidget* myKey[LINES_PER_PAGE];
-    StaticTextWidget* myDesc[LINES_PER_PAGE];
-    string myKeyStr[LINES_PER_PAGE];
-    string myDescStr[LINES_PER_PAGE];
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myKey;
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myDesc;
+    std::array<string, LINES_PER_PAGE> myKeyStr;
+    std::array<string, LINES_PER_PAGE> myDescStr;
 
     uInt8 myPage;
     uInt8 myNumPages;
