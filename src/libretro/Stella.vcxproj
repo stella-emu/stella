@@ -140,6 +140,7 @@
     <ClCompile Include="..\common\JoyMap.cxx" />
     <ClCompile Include="..\common\KeyMap.cxx" />
     <ClCompile Include="..\common\Logger.cxx" />
+    <ClCompile Include="..\common\PhosphorHandler.cxx" />
     <ClCompile Include="..\emucore\CartFC.cxx" />
     <ClCompile Include="libretro.cxx" />
     <ClCompile Include="EventHandlerLIBRETRO.cxx" />
@@ -274,6 +275,7 @@
     <ClInclude Include="..\common\Logger.hxx" />
     <ClInclude Include="..\common\MediaFactory.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
+    <ClInclude Include="..\common\PhosphorHandler.hxx" />
     <ClInclude Include="..\common\PhysicalJoystick.hxx" />
     <ClInclude Include="..\common\PJoystickHandler.hxx" />
     <ClInclude Include="..\common\PKeyboardHandler.hxx" />
