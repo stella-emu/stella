@@ -162,9 +162,7 @@ class Paddles : public Controller
 
     // Lookup table for associating paddle buttons with controller pins
     // Yes, this is hideously complex
-    static constexpr std::array<Controller::DigitalPin, 2> ourButtonPin = {
-      DigitalPin::Four, DigitalPin::Three
-    };
+    static const std::array<Controller::DigitalPin, 2> ourButtonPin;
 
   private:
     // Following constructors and assignment operators not supported
