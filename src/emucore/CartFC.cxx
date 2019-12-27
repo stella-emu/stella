@@ -57,15 +57,10 @@ uInt8 CartridgeFC::peek(uInt16 address)
   address &= 0x0FFF;
 
   // Switch banks if necessary
-  switch (address)
+  if(address == 0x0FFC)
   {
-    case 0x0FFC:
-      // Trigger the bank switch
-      bank(myTargetBank);
-      break;
-
-    default:
-      break;
+    // Trigger the bank switch
+    bank(myTargetBank);
   }
 
   return myImage[myBankOffset + address];

@@ -63,9 +63,9 @@ class CartridgeBUSWidget : public CartDebugWidget
     DataGridWidget* myMusicWaveforms;
     DataGridWidget* myMusicWaveformSizes;
     DataGridWidget* mySamplePointer;
-    StaticTextWidget* myDatastreamLabels[6];
     CheckboxWidget* myBusOverdrive;
     CheckboxWidget* myDigitalSample;
+    std::array<StaticTextWidget*, 6> myDatastreamLabels;
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };

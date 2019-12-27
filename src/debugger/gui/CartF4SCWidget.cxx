@@ -102,7 +102,7 @@ string CartridgeF4SCWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* const spot[] = {
+  static constexpr std::array<const char*, 8> spot = {
     "$FFF4", "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
   };
   buf << "Bank = " << std::dec << myCart.getBank()

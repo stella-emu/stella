@@ -19,15 +19,15 @@
 #include "PopUpWidget.hxx"
 #include "CartE0Widget.hxx"
 
-static const char* const seg0[] = {
+static constexpr std::array<const char*, 8> seg0 = {
   "0 ($FFE0)", "1 ($FFE1)", "2 ($FFE2)", "3 ($FFE3)",
   "4 ($FFE4)", "5 ($FFE5)", "6 ($FFE6)", "7 ($FFE7)"
 };
-static const char* const seg1[] = {
+static constexpr std::array<const char*, 8> seg1 = {
   "0 ($FFE8)", "1 ($FFE9)", "2 ($FFEA)", "3 ($FFEB)",
   "4 ($FFEC)", "5 ($FFED)", "6 ($FFEE)", "7 ($FFEF)"
 };
-static const char* const seg2[] = {
+static constexpr std::array<const char*, 8> seg2 = {
   "0 ($FFF0)", "1 ($FFF1)", "2 ($FFF2)", "3 ($FFF3)",
   "4 ($FFF4)", "5 ($FFF5)", "6 ($FFF6)", "7 ($FFF7)"
 };

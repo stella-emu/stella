@@ -108,4 +108,4 @@ void DrivingWidget::setValue(int idx)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 DrivingWidget::ourGrayTable[4] = { 0x03, 0x01, 0x00, 0x02 };
+const std::array<uInt8, 4> DrivingWidget::ourGrayTable = { 0x03, 0x01, 0x00, 0x02 };

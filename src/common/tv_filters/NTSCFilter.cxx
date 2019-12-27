@@ -20,8 +20,8 @@
 
 #include "NTSCFilter.hxx"
 
-constexpr float scaleFrom100(float x) { return (x/50.f) - 1.f;     }
-constexpr uInt32 scaleTo100(float x)  { return uInt32(50*(x+1.f)); }
+constexpr float scaleFrom100(float x) { return (x/50.F) - 1.F;     }
+constexpr uInt32 scaleTo100(float x)  { return uInt32(50*(x+1.F)); }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NTSCFilter::NTSCFilter()
@@ -149,16 +149,16 @@ string NTSCFilter::decreaseAdjustable()
 void NTSCFilter::loadConfig(const Settings& settings)
 {
   // Load adjustables for custom mode
-  myCustomSetup.hue = BSPF::clamp(settings.getFloat("tv.hue"), -1.0f, 1.0f);
-  myCustomSetup.saturation = BSPF::clamp(settings.getFloat("tv.saturation"), -1.0f, 1.0f);
-  myCustomSetup.contrast = BSPF::clamp(settings.getFloat("tv.contrast"), -1.0f, 1.0f);
-  myCustomSetup.brightness = BSPF::clamp(settings.getFloat("tv.brightness"), -1.0f, 1.0f);
-  myCustomSetup.sharpness = BSPF::clamp(settings.getFloat("tv.sharpness"), -1.0f, 1.0f);
-  myCustomSetup.gamma = BSPF::clamp(settings.getFloat("tv.gamma"), -1.0f, 1.0f);
-  myCustomSetup.resolution = BSPF::clamp(settings.getFloat("tv.resolution"), -1.0f, 1.0f);
-  myCustomSetup.artifacts = BSPF::clamp(settings.getFloat("tv.artifacts"), -1.0f, 1.0f);
-  myCustomSetup.fringing = BSPF::clamp(settings.getFloat("tv.fringing"), -1.0f, 1.0f);
-  myCustomSetup.bleed = BSPF::clamp(settings.getFloat("tv.bleed"), -1.0f, 1.0f);
+  myCustomSetup.hue = BSPF::clamp(settings.getFloat("tv.hue"), -1.0F, 1.0F);
+  myCustomSetup.saturation = BSPF::clamp(settings.getFloat("tv.saturation"), -1.0F, 1.0F);
+  myCustomSetup.contrast = BSPF::clamp(settings.getFloat("tv.contrast"), -1.0F, 1.0F);
+  myCustomSetup.brightness = BSPF::clamp(settings.getFloat("tv.brightness"), -1.0F, 1.0F);
+  myCustomSetup.sharpness = BSPF::clamp(settings.getFloat("tv.sharpness"), -1.0F, 1.0F);
+  myCustomSetup.gamma = BSPF::clamp(settings.getFloat("tv.gamma"), -1.0F, 1.0F);
+  myCustomSetup.resolution = BSPF::clamp(settings.getFloat("tv.resolution"), -1.0F, 1.0F);
+  myCustomSetup.artifacts = BSPF::clamp(settings.getFloat("tv.artifacts"), -1.0F, 1.0F);
+  myCustomSetup.fringing = BSPF::clamp(settings.getFloat("tv.fringing"), -1.0F, 1.0F);
+  myCustomSetup.bleed = BSPF::clamp(settings.getFloat("tv.bleed"), -1.0F, 1.0F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -65,7 +65,7 @@ class CartridgeCDFWidget : public CartDebugWidget
     DataGridWidget* myMusicWaveforms;
     DataGridWidget* myMusicWaveformSizes;
     DataGridWidget* mySamplePointer;
-    StaticTextWidget* myDatastreamLabels[10];
+    std::array<StaticTextWidget*, 10> myDatastreamLabels;
 
     CheckboxWidget* myFastFetch;
     CheckboxWidget* myDigitalSample;

@@ -111,7 +111,7 @@ string CartridgeEFSCWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* const spot[] = {
+  static constexpr std::array<const char*, 16> spot = {
     "$FFE0", "$FFE1", "$FFE2", "$FFE3", "$FFE4", "$FFE5", "$FFE6", "$FFE7",
     "$FFE8", "$FFE9", "$FFEA", "$FFEB", "$FFEC", "$FFED", "$FFEE", "$FFEF"
   };

@@ -60,7 +60,7 @@ class PhosphorHandler
     float myPhosphorPercent;
 
     // Precalculated averaged phosphor colors
-    using PhosphorLUT = std::array<std::array<uInt8, kColor>, kColor>;
+    using PhosphorLUT = BSPF::array2D<uInt8, kColor, kColor>;
     static PhosphorLUT ourPhosphorLUT;
 
   private:

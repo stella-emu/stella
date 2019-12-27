@@ -31,9 +31,9 @@ class AmigaMouseWidget : public PointingDeviceWidget
     virtual ~AmigaMouseWidget() = default;
 
   private:
-    uInt8 myGrayCodeTable[4] = { 0b00, 0b10, 0b11, 0b01 };
+    const std::array<uInt8, 4> myGrayCodeTable = { 0b00, 0b10, 0b11, 0b01 };
 
-    uInt8 getGrayCodeTable(const int index, const int direction) override;
+    uInt8 getGrayCodeTable(const int index, const int direction) const override;
 
     // Following constructors and assignment operators not supported
     AmigaMouseWidget() = delete;

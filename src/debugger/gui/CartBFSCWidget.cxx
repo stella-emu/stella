@@ -159,7 +159,7 @@ string CartridgeBFSCWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* const spot[] = {
+  static constexpr std::array<const char*, 64> spot = {
     "$FF80", "$FF81", "$FF82", "$FF83", "$FF84", "$FF85", "$FF86", "$FF87",
     "$FF88", "$FF89", "$FF8A", "$FF8B", "$FF8C", "$FF8D", "$FF8E", "$FF8F",
     "$FF90", "$FF91", "$FF92", "$FF93", "$FF94", "$FF95", "$FF96", "$FF97",

@@ -256,6 +256,9 @@ void Cartridge4A50Widget::handleCommand(CommandSender* sender,
         myCart.bankROMHigh(0);
       }
       break;
+
+    default:
+      break;
   }
 
   myCart.lockBank();

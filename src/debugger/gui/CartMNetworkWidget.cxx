@@ -98,6 +98,8 @@ void CartridgeMNetworkWidget::handleCommand(CommandSender* sender,
     case kUpperChanged:
       myCart.bankRAM(myUpper256B->getSelected());
       break;
+    default:
+      break;
   }
 
   myCart.lockBank();

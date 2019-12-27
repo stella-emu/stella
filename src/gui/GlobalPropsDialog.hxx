@@ -54,11 +54,11 @@ class GlobalPropsDialog : public Dialog, public CommandSender
     PopUpWidget* myTVType;
     PopUpWidget* myDebug;
 
-    CheckboxWidget* myJoy[10];
+    std::array<CheckboxWidget*, 10> myJoy;
     CheckboxWidget* myHoldSelect;
     CheckboxWidget* myHoldReset;
 
-    static const char* const ourJoyState[10];
+    static const std::array<string, 10> ourJoyState;
 
   private:
     // Following constructors and assignment operators not supported

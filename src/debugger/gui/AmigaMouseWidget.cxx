@@ -24,7 +24,7 @@ AmigaMouseWidget::AmigaMouseWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 AmigaMouseWidget::getGrayCodeTable(const int index, const int direction)
+uInt8 AmigaMouseWidget::getGrayCodeTable(const int index, const int) const
 {
   return myGrayCodeTable[index];
 }

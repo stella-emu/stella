@@ -30,30 +30,6 @@
 
 #define UP_DOWN_BOX_HEIGHT	18
 
-// Up arrow
-static uInt32 up_arrow[8] = {
-  0b00000000,
-  0b00010000,
-  0b00111000,
-  0b01111100,
-  0b11101110,
-  0b11000110,
-  0b10000010,
-  0b00000000
-};
-
-// Down arrow
-static uInt32 down_arrow[8] = {
-  0b00000000,
-  0b10000010,
-  0b11000110,
-  0b11101110,
-  0b01111100,
-  0b00111000,
-  0b00010000,
-  0b00000000
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
@@ -247,6 +223,30 @@ void ScrollBarWidget::recalc()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::drawWidget(bool hilite)
 {
+  // Up arrow
+  static constexpr std::array<uInt32, 8> up_arrow = {
+    0b00000000,
+    0b00010000,
+    0b00111000,
+    0b01111100,
+    0b11101110,
+    0b11000110,
+    0b10000010,
+    0b00000000
+  };
+
+  // Down arrow
+  static constexpr std::array<uInt32, 8> down_arrow = {
+    0b00000000,
+    0b10000010,
+    0b11000110,
+    0b11101110,
+    0b01111100,
+    0b00111000,
+    0b00010000,
+    0b00000000
+  };
+
 //cerr << "ScrollBarWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
   bool onTop = _boss->dialog().isOnTop();
@@ -261,18 +261,16 @@ void ScrollBarWidget::drawWidget(bool hilite)
   // Up arrow
   if(hilite && _part == kUpArrowPart)
     s.fillRect(_x + 1, _y + 1, _w - 2, UP_DOWN_BOX_HEIGHT - 2, kScrollColor);
-  s.drawBitmap(up_arrow, _x+4, _y+5,
-               onTop
-               ? isSinglePage ? kColor : (hilite && _part == kUpArrowPart) ? kWidColor : kTextColor
-               : kColor, 8);
+  s.drawBitmap(up_arrow.data(), _x+4, _y+5,
+               onTop ? isSinglePage ? kColor : (hilite && _part == kUpArrowPart) ? kWidColor
+               : kTextColor : kColor, 8);
 
   // Down arrow
   if(hilite && _part == kDownArrowPart)
     s.fillRect(_x + 1, bottomY - UP_DOWN_BOX_HEIGHT + 1, _w - 2, UP_DOWN_BOX_HEIGHT - 2, kScrollColor);
-  s.drawBitmap(down_arrow, _x+4, bottomY - UP_DOWN_BOX_HEIGHT + 5,
-               onTop
-               ? isSinglePage ? kColor : (hilite && _part == kDownArrowPart) ? kWidColor : kTextColor
-               : kColor, 8);
+  s.drawBitmap(down_arrow.data(), _x+4, bottomY - UP_DOWN_BOX_HEIGHT + 5,
+               onTop ? isSinglePage ? kColor : (hilite && _part == kDownArrowPart) ?
+               kWidColor : kTextColor : kColor, 8);
 
   // Slider
   if(!isSinglePage)

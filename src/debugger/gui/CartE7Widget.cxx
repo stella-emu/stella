@@ -51,7 +51,7 @@ CartridgeE7Widget::CartridgeE7Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* CartridgeE7Widget::getSpotLower(int idx)
 {
-  static const char* const spot_lower[] = {
+  static constexpr std::array<const char*, 8> spot_lower = {
     "0 - ROM ($FFE0)", "1 - ROM ($FFE1)", "2 - ROM ($FFE2)", "3 - ROM ($FFE3)",
     "4 - ROM ($FFE4)", "5 - ROM ($FFE5)", "6 - ROM ($FFE6)", "7 - RAM ($FFE7)"
   };
@@ -62,7 +62,7 @@ const char* CartridgeE7Widget::getSpotLower(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* CartridgeE7Widget::getSpotUpper(int idx)
 {
-  static const char* const spot_upper[] = {
+  static constexpr std::array<const char*, 4> spot_upper = {
     "0 - RAM ($FFE8)", "1 - RAM ($FFE9)", "2 - RAM ($FFEA)", "3 - RAM ($FFEB)"
   };
 

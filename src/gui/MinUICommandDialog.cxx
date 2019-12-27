@@ -250,6 +250,9 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
     case kExitGameCmd:
       instance().eventHandler().handleEvent(Event::ExitMode);
       break;
+
+    default:
+      return;
   }
 
   // Console commands should be performed right away, after leaving the menu

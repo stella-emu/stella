@@ -50,9 +50,9 @@ class CartridgeCMWidget : public CartDebugWidget
     ToggleBitWidget* mySWCHA;
     DataGridWidget* myColumn;
     CheckboxWidget *myAudIn, *myAudOut, *myIncrease, *myReset;
-    CheckboxWidget* myRow[4];
     CheckboxWidget *myFunc, *myShift;
     EditTextWidget* myRAM;
+    std::array<CheckboxWidget*, 4> myRow;
 
     CartState myOldState;
 

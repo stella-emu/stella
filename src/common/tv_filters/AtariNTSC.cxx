@@ -393,7 +393,7 @@ void AtariNTSC::initFilters(init_t& impl, const Setup& setup)
     float sum;
     /* quadratic mapping to reduce negative (blurring) range */
     float to_angle = setup.resolution + 1;
-    to_angle = BSPF::PI_f / maxh * luma_cutoff * (to_angle * to_angle + 1.f);
+    to_angle = BSPF::PI_f / maxh * luma_cutoff * (to_angle * to_angle + 1.F);
 
     kernels [kernel_size * 3 / 2] = maxh; /* default center value */
     for ( int i = 0; i < kernel_half * 2 + 1; i++ )

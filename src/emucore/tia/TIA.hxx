@@ -539,7 +539,7 @@ class TIA : public Device
      * Palette and indices for fixed debug colors.
      */
     enum FixedObject { P0, M0, P1, M1, PF, BL, BK };
-    FixedColor myFixedColorPalette[3][7];
+    BSPF::array2D<FixedColor, 3, 7> myFixedColorPalette;
     std::array<string, 7> myFixedColorNames;
 
   private:

@@ -48,7 +48,6 @@ class Paddles : public Controller
     virtual ~Paddles() = default;
 
   public:
-
     static constexpr int MAX_DIGITAL_SENSE = 20;
     static constexpr int MAX_MOUSE_SENSE = 20;
     static constexpr int MIN_DEJITTER = 0;
@@ -147,7 +146,7 @@ class Paddles : public Controller
 
     bool myKeyRepeat0, myKeyRepeat1;
     int myPaddleRepeat0, myPaddleRepeat1;
-    int myCharge[2], myLastCharge[2];
+    std::array<int, 2> myCharge, myLastCharge;
     int myLastAxisX, myLastAxisY;
     int myAxisDigitalZero, myAxisDigitalOne;
 
@@ -163,7 +162,9 @@ class Paddles : public Controller
 
     // Lookup table for associating paddle buttons with controller pins
     // Yes, this is hideously complex
-    static const Controller::DigitalPin ourButtonPin[2];
+    static constexpr std::array<Controller::DigitalPin, 2> ourButtonPin = {
+      DigitalPin::Four, DigitalPin::Three
+    };
 
   private:
     // Following constructors and assignment operators not supported

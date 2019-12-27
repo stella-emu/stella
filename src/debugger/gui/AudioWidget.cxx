@@ -141,28 +141,26 @@ void AudioWidget::handleVolume()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  switch(cmd)
+  if(cmd == DataGridWidget::kItemDataChangedCmd)
   {
-    case DataGridWidget::kItemDataChangedCmd:
-      switch(id)
-      {
-        case kAUDFID:
-          changeFrequencyRegs();
-          break;
+    switch(id)
+    {
+      case kAUDFID:
+        changeFrequencyRegs();
+        break;
 
-        case kAUDCID:
-          changeControlRegs();
-          break;
+      case kAUDCID:
+        changeControlRegs();
+        break;
 
-        case kAUDVID:
-          changeVolumeRegs();
-          break;
+      case kAUDVID:
+        changeVolumeRegs();
+        break;
 
-        default:
-          cerr << "AudioWidget DG changed\n";
-          break;
-      }
-      break;
+      default:
+        cerr << "AudioWidget DG changed\n";
+        break;
+    }
   }
 }
 
@@ -181,6 +179,9 @@ void AudioWidget::changeFrequencyRegs()
     case kAud1Addr:
       instance().debugger().tiaDebug().audF1(value);
       break;
+
+    default:
+      break;
   }
 }
 
@@ -198,6 +199,9 @@ void AudioWidget::changeControlRegs()
 
     case kAud1Addr:
       instance().debugger().tiaDebug().audC1(value);
+      break;
+
+    default:
       break;
   }
   handleVolume();
@@ -225,11 +229,12 @@ void AudioWidget::changeVolumeRegs()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 AudioWidget::getEffectiveVolume()
 {
-  const int EFF_VOL[] = {
+  static constexpr std::array<int, 31> EFF_VOL = {
      0,  6, 13, 18, 24, 29, 33, 38,
     42, 46, 50, 54, 57, 60, 64, 67,
     70, 72, 75, 78, 80, 82, 85, 87,
-    89, 91, 93, 95, 97, 98,100};
+    89, 91, 93, 95, 97, 98, 100
+  };
 
   return EFF_VOL[(instance().debugger().tiaDebug().audC0() ? instance().debugger().tiaDebug().audV0() : 0) +
     (instance().debugger().tiaDebug().audC1() ? instance().debugger().tiaDebug().audV1() : 0)];

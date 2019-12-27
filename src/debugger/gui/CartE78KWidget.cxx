@@ -52,7 +52,7 @@ CartridgeE78KWidget::CartridgeE78KWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* CartridgeE78KWidget::getSpotLower(int idx)
 {
-  static const char* const spot_lower[] = {
+  static constexpr std::array<const char*, 4> spot_lower = {
     "0 - ROM ($FFE4)", "1 - ROM ($FFE5)", "2 - ROM ($FFE6)", "3 - RAM ($FFE7)"
   };
 
@@ -62,7 +62,7 @@ const char* CartridgeE78KWidget::getSpotLower(int idx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* CartridgeE78KWidget::getSpotUpper(int idx)
 {
-  static const char* const spot_upper[] = {
+  static constexpr std::array<const char*, 4> spot_upper = {
     "0 - RAM ($FFE8)", "1 - RAM ($FFE9)", "2 - RAM ($FFEA)", "3 - RAM ($FFEB)"
   };
 

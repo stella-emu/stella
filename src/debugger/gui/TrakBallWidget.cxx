@@ -24,7 +24,7 @@ TrakBallWidget::TrakBallWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 TrakBallWidget::getGrayCodeTable(const int index, const int direction)
+uInt8 TrakBallWidget::getGrayCodeTable(const int index, const int direction) const
 {
   return myGrayCodeTable[(index & 0b1) + direction * 2];
 }

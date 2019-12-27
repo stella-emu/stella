@@ -152,10 +152,10 @@ class AtariNTSC
     ;
 
     std::array<uInt8, palette_size*3> myRGBPalette;
-    std::array<std::array<uInt32, entry_size>, palette_size> myColorTable;
+    BSPF::array2D<uInt32, palette_size, entry_size> myColorTable;
 
     // Rendering threads
-    unique_ptr<std::thread[]> myThreads;
+    unique_ptr<std::thread[]> myThreads;  // NOLINT
     // Number of rendering and total threads
     uInt32 myWorkerThreads, myTotalThreads;
 

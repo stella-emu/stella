@@ -107,7 +107,7 @@ bool Controller::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Controller::getName(const Type type)
 {
-  string NAMES[int(Controller::Type::LastType)] =
+  static const std::array<string, int(Controller::Type::LastType)> NAMES =
   {
     "Unknown",
     "AmigaMouse", "AtariMouse", "AtariVox", "BoosterGrip", "CompuMate",
@@ -121,7 +121,7 @@ string Controller::getName(const Type type)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Controller::getPropName(const Type type)
 {
-  string PROP_NAMES[int(Controller::Type::LastType)] =
+  static const std::array<string, int(Controller::Type::LastType)> PROP_NAMES =
   {
     "AUTO",
     "AMIGAMOUSE", "ATARIMOUSE", "ATARIVOX", "BOOSTERGRIP", "COMPUMATE",

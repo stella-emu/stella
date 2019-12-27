@@ -52,7 +52,7 @@ class RewindManager
     static constexpr uInt32 MAX_BUF_SIZE = 1000;
     static constexpr int NUM_INTERVALS = 7;
     // cycle values for the intervals
-    const uInt32 INTERVAL_CYCLES[NUM_INTERVALS] = {
+    const std::array<uInt32, NUM_INTERVALS> INTERVAL_CYCLES = {
       76 * 262,
       76 * 262 * 3,
       76 * 262 * 10,
@@ -62,7 +62,7 @@ class RewindManager
       76 * 262 * 60 * 10
     };
     // settings values for the intervals
-    const string INT_SETTINGS[NUM_INTERVALS] = {
+    const std::array<string, NUM_INTERVALS> INT_SETTINGS = {
       "1f",
       "3f",
       "10f",
@@ -74,7 +74,7 @@ class RewindManager
 
     static constexpr int NUM_HORIZONS = 8;
     // cycle values for the horzions
-    const uInt64 HORIZON_CYCLES[NUM_HORIZONS] = {
+    const std::array<uInt64, NUM_HORIZONS> HORIZON_CYCLES = {
       76 * 262 * 60 * 3,
       76 * 262 * 60 * 10,
       76 * 262 * 60 * 30,
@@ -85,7 +85,7 @@ class RewindManager
       uInt64(76) * 262 * 60 * 60 * 60
     };
     // settings values for the horzions
-    const string HOR_SETTINGS[NUM_HORIZONS] = {
+    const std::array<string, NUM_HORIZONS> HOR_SETTINGS = {
       "3s",
       "10s",
       "30s",

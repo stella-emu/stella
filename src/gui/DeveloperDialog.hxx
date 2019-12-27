@@ -95,8 +95,8 @@ class DeveloperDialog : public Dialog
     CheckboxWidget*     myRandomBankWidget;
     CheckboxWidget*     myRandomizeRAMWidget;
     StaticTextWidget*   myRandomizeCPULabel;
-    CheckboxWidget*     myRandomizeCPUWidget[5];
     CheckboxWidget*     myUndrivenPinsWidget;
+    std::array<CheckboxWidget*, 5> myRandomizeCPUWidget;
 #ifdef DEBUGGER_SUPPORT
     CheckboxWidget*     myRWPortBreakWidget;
     CheckboxWidget*     myWRPortBreakWidget;
@@ -125,8 +125,8 @@ class DeveloperDialog : public Dialog
     StaticTextWidget*   myTVJitterRecLabelWidget;
     CheckboxWidget*     myColorLossWidget;
     CheckboxWidget*     myDebugColorsWidget;
-    PopUpWidget*        myDbgColour[DEBUG_COLORS];
-    ColorWidget*        myDbgColourSwatch[DEBUG_COLORS];
+    std::array<PopUpWidget*, DEBUG_COLORS> myDbgColour;
+    std::array<ColorWidget*, DEBUG_COLORS> myDbgColourSwatch;
 
     // States widgets
     RadioButtonGroup*   mySettingsGroupTM;
@@ -148,37 +148,39 @@ class DeveloperDialog : public Dialog
 
     bool    mySettings;
     // Emulator sets
-    bool    myFrameStats[2];
-    int     myConsole[2];
-    bool    myRandomBank[2];
-    bool    myRandomizeRAM[2];
-    string  myRandomizeCPU[2];
-    bool    myColorLoss[2];
-    bool    myTVJitter[2];
-    int     myTVJitterRec[2];
-    bool    myDebugColors[2];
-    bool    myUndrivenPins[2];
+    std::array<bool, 2>   myFrameStats;
+    std::array<int, 2>    myConsole;
+    std::array<bool, 2>   myRandomBank;
+    std::array<bool, 2>   myRandomizeRAM;
+    std::array<string, 2> myRandomizeCPU;
+    std::array<bool, 2>   myColorLoss;
+    std::array<bool, 2>   myTVJitter;
+    std::array<int, 2>    myTVJitterRec;
+    std::array<bool, 2>   myDebugColors;
+    std::array<bool, 2>   myUndrivenPins;
 #ifdef DEBUGGER_SUPPORT
-    bool    myRWPortBreak[2];
-    bool    myWRPortBreak[2];
+    std::array<bool, 2>   myRWPortBreak;
+    std::array<bool, 2>   myWRPortBreak;
 #endif
-    bool    myThumbException[2];
-    bool    myEEPROMAccess[2];
+    std::array<bool, 2>   myThumbException;
+    std::array<bool, 2>   myEEPROMAccess;
     // TIA sets
-    string  myTIAType[2];
-    bool    myPlInvPhase[2];
-    bool    myMsInvPhase[2];
-    bool    myBlInvPhase[2];
-    bool    myPFBits[2];
-    bool    myPFColor[2];
-    bool    myPlSwap[2];
-    bool    myBlSwap[2];
+    std::array<string, 2> myTIAType;
+    std::array<bool, 2>   myPlInvPhase;
+    std::array<bool, 2>   myMsInvPhase;
+    std::array<bool, 2>   myBlInvPhase;
+    std::array<bool, 2>   myPFBits;
+    std::array<bool, 2>   myPFColor;
+    std::array<bool, 2>   myPlSwap;
+    std::array<bool, 2>   myBlSwap;
     // States sets
-    bool    myTimeMachine[2];
-    int     myStateSize[2];
-    int     myUncompressed[2];
-    string  myStateInterval[2];
-    string  myStateHorizon[2];
+    std::array<bool, 2>   myTimeMachine;
+    std::array<int, 2>    myStateSize;
+    std::array<int, 2>    myUncompressed;
+    std::array<string, 2> myStateInterval;
+    std::array<string, 2> myStateHorizon;
+
+    static const std::array<string, 5> ourCPUregs;
 
   private:
     void addEmulationTab(const GUI::Font& font);

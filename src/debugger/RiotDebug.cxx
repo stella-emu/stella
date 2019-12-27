@@ -150,7 +150,9 @@ uInt8 RiotDebug::swbcnt(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 RiotDebug::inpt(int x)
 {
-  static TIARegister _inpt[6] = { INPT0, INPT1, INPT2, INPT3, INPT4, INPT5 };
+  static constexpr std::array<TIARegister, 6> _inpt = {
+    INPT0, INPT1, INPT2, INPT3, INPT4, INPT5
+  };
   return mySystem.peek(_inpt[x]);
 }
 

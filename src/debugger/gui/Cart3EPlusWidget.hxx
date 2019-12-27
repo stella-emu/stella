@@ -40,10 +40,10 @@ class Cartridge3EPlusWidget : public CartDebugWidget
   private:
     Cartridge3EPlus& myCart;
 
-    PopUpWidget* myBankNumber[4];
-    PopUpWidget* myBankType[4];
-    ButtonWidget* myBankCommit[4];
-    EditTextWidget* myBankState[8];
+    std::array<PopUpWidget*, 4> myBankNumber;
+    std::array<PopUpWidget*, 4> myBankType;
+    std::array<ButtonWidget*, 4> myBankCommit;
+    std::array<EditTextWidget*, 8> myBankState;
 
     struct CartState {
       ByteArray internalram;
@@ -56,7 +56,7 @@ class Cartridge3EPlusWidget : public CartDebugWidget
       kBank2Changed = 'b2CH',
       kBank3Changed = 'b3CH'
     };
-    static const BankID bankEnum[4];
+    static const std::array<BankID, 4> bankEnum;
 
   private:
     void saveOldState() override;

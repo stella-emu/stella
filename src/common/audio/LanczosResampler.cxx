@@ -41,7 +41,7 @@ namespace {
   {
     // We calculate the sinc with double precision in order to compensate for precision loss
     // around zero
-    return x == 0.f ? 1 : static_cast<float>(
+    return x == 0.F ? 1 : static_cast<float>(
         sin(BSPF::PI_d * static_cast<double>(x)) / BSPF::PI_d / static_cast<double>(x)
     );
   }
@@ -108,7 +108,7 @@ void LanczosResampler::precomputeKernels()
 
     for (uInt32 j = 0; j < 2 * myKernelParameter; ++j) {
       kernel[j] = lanczosKernel(
-          center - static_cast<float>(j) + static_cast<float>(myKernelParameter) - 1.f, myKernelParameter
+          center - static_cast<float>(j) + static_cast<float>(myKernelParameter) - 1.F, myKernelParameter
         ) * CLIPPING_FACTOR;
     }
 
@@ -141,7 +141,7 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
   }
 
   if (!myCurrentFragment) {
-    std::fill_n(fragment, length, 0.f);
+    std::fill_n(fragment, length, 0.F);
     return;
   }
 
@@ -160,7 +160,7 @@ void LanczosResampler::fillFragment(float* fragment, uInt32 length)
         fragment[2*i + 1] = sampleR;
       }
       else
-        fragment[i] = (sampleL + sampleR) / 2.f;
+        fragment[i] = (sampleL + sampleR) / 2.F;
     } else {
       float sample = myBuffer->convoluteWith(kernel);
 

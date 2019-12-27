@@ -46,12 +46,12 @@ class R77HelpDialog : public Dialog
     ButtonWidget* myPrevButton;
 
     StaticTextWidget* myTitle;
-    StaticTextWidget* myJoy[LINES_PER_PAGE];
-    StaticTextWidget* myBtn[LINES_PER_PAGE];
-    StaticTextWidget* myDesc[LINES_PER_PAGE];
-    string myJoyStr[LINES_PER_PAGE];
-    string myBtnStr[LINES_PER_PAGE];
-    string myDescStr[LINES_PER_PAGE];
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myJoy;
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myBtn;
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myDesc;
+    std::array<string, LINES_PER_PAGE> myJoyStr;
+    std::array<string, LINES_PER_PAGE> myBtnStr;
+    std::array<string, LINES_PER_PAGE> myDescStr;
 
     uInt8 myPage;
     uInt8 myNumPages;

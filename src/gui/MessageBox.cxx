@@ -79,24 +79,17 @@ void MessageBox::addText(const GUI::Font& font, const StringList& text)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  switch(cmd)
+  if(cmd == GuiObject::kOKCmd)
   {
-    case GuiObject::kOKCmd:
-    {
-      close();
+    close();
 
-      // Send a signal to the calling class that 'OK' has been selected
-      // Since we aren't derived from a widget, we don't have a 'data' or 'id'
-      if(myCmd)
-        sendCommand(myCmd, 0, 0);
-
-      break;
-    }
-
-    default:
-      Dialog::handleCommand(sender, cmd, data, id);
-      break;
+    // Send a signal to the calling class that 'OK' has been selected
+    // Since we aren't derived from a widget, we don't have a 'data' or 'id'
+    if(myCmd)
+      sendCommand(myCmd, 0, 0);
   }
+  else
+    Dialog::handleCommand(sender, cmd, data, id);
 }
 
 }  // namespace GUI

@@ -38,7 +38,7 @@ class FlashWidget : public ControllerWidget
     enum { kEEPROMEraseCurrent = 'eeEC' };
 
     static constexpr uInt32 MAX_PAGES = 5;
-    StaticTextWidget* myPage[MAX_PAGES];
+    std::array<StaticTextWidget*, MAX_PAGES> myPage;
 
   private:
     void loadConfig() override;

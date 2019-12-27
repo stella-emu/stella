@@ -187,10 +187,10 @@ class Thumbulator
   private:
     const uInt16* rom;
     uInt16 romSize;
-    const unique_ptr<Op[]> decodedRom;
+    const unique_ptr<Op[]> decodedRom;  // NOLINT
     uInt16* ram;
 
-    uInt32 reg_norm[16]; // normal execution mode, do not have a thread mode
+    std::array<uInt32, 16> reg_norm; // normal execution mode, do not have a thread mode
     uInt32 cpsr, mamcr;
     bool handler_mode;
     uInt32 systick_ctrl, systick_reload, systick_count, systick_calibrate;

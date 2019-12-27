@@ -101,7 +101,7 @@ string CartridgeWDWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static const char* const segments[] = {
+  static constexpr std::array<const char*, 8> segments = {
     "[0,0,1,3]",  "[0,1,2,3]",  "[4,5,6,7]",  "[7,4,2,3]",
     "[0,0,6,7]",  "[0,1,7,6]",  "[2,3,4,5]",  "[6,0,5,1]"
   };

@@ -589,7 +589,7 @@ inline void CartridgeCTY::updateMusicModeDataFetchers()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 CartridgeCTY::ourFrequencyTable[63] =
+const std::array<uInt32, 63> CartridgeCTY::ourFrequencyTable =
 {
   // this should really be referenced from within the ROM, but its part of
   // the Harmony/Melody CTY Driver, which does not appear to be in the ROM.

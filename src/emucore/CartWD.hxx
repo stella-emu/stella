@@ -231,7 +231,7 @@ class CartridgeWD : public Cartridge
     struct BankOrg {
       uInt8 zero, one, two, three;
     };
-    static BankOrg ourBankOrg[8];
+    static const std::array<BankOrg, 8> ourBankOrg;
 
   private:
     // Following constructors and assignment operators not supported

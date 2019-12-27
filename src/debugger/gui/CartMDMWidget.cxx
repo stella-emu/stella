@@ -39,7 +39,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
       ypos = addBaseInformation(size, "Edwin Blink", info.str(), 15) + myLineHeight;
 
   VariantList items;
-  for(uInt32 i = 0x800; i < (0x800u + myCart.bankCount()); ++i)
+  for(uInt32 i = 0x800; i < (0x800U + myCart.bankCount()); ++i)
   {
     info.str("");
     info << std::dec << (i & 0xFF) << " ($" << Common::Base::HEX4 << i << ")";
