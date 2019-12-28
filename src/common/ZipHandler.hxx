@@ -110,7 +110,7 @@ class ZipHandler
 
       ZipEcd    myEcd;    // end of central directory
 
-      ByteBuffer   myCd;     // central directory raw data
+      ByteBuffer   myCd;  // central directory raw data
       uInt64    myCdPos;  // position in central directory
       ZipHeader myHeader; // current file header
 
@@ -294,7 +294,7 @@ class ZipHandler
 
   private:
     /** Get message for given ZipError enumeration */
-    string errorMessage(ZipError err) const;
+    static string errorMessage(ZipError err);
 
     /** Search cache for given ZIP file */
     ZipFilePtr findCached(const string& filename);
