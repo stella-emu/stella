@@ -799,7 +799,7 @@ int gen_c_source(struct font* pf, char *path)
     "namespace GUI {\n"
     "\n"
     "// Font character bitmap data.\n"
-    "static const uInt16 %s_font_bits[] = {\n"
+    "static const uInt16 %s_font_bits[] = {  // NOLINT : too complicated to convert\n"
   };
 
   ofp = fopen(path, "w");

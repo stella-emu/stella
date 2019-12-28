@@ -23,11 +23,6 @@
 #include "ZipHandler.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ZipHandler::ZipHandler()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ZipHandler::open(const string& filename)
 {
   // Close already open file (if any) and add to cache
@@ -131,7 +126,7 @@ uInt64 ZipHandler::decompress(ByteBuffer& image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string ZipHandler::errorMessage(ZipError err) const
 {
-  static const char* const zip_error_s[] = {
+  static constexpr std::array<const char*, 10> zip_error_s = {
     "ZIP NONE",
     "ZIP OUT_OF_MEMORY",
     "ZIP FILE_ERROR",
@@ -143,7 +138,7 @@ string ZipHandler::errorMessage(ZipError err) const
     "ZIP LZMA_UNSUPPORTED",
     "ZIP BUFFER_TOO_SMALL"
   };
-  return zip_error_s[int(err)];
+  return zip_error_s[static_cast<int>(err)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

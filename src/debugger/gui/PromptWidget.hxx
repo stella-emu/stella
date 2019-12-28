@@ -102,7 +102,7 @@ class PromptWidget : public Widget, public CommandSender
       kHistorySize    = 20
     };
 
-    int  _buffer[kBufferSize];
+    int  _buffer[kBufferSize];  // NOLINT  (will be rewritten soon)
     int  _linesInBuffer;
 
     int  _lineWidth;
@@ -117,7 +117,7 @@ class PromptWidget : public Widget, public CommandSender
 
     ScrollBarWidget* _scrollBar;
 
-    char _history[kHistorySize][kLineBufferSize];
+    char _history[kHistorySize][kLineBufferSize];  // NOLINT  (will be rewritten soon)
     int _historySize;
     int _historyIndex;
     int _historyLine;

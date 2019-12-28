@@ -209,7 +209,7 @@ bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod)
       int lastDelimPos = -1;
       char delimiter = '\0';
 
-      char inputStr[256];
+      char inputStr[256];  // NOLINT  (will be rewritten soon)
       for (int i = 0; i < len; i++)
       {
         inputStr[i] = buffer(_promptStartPos + i) & 0x7f;
@@ -491,16 +491,14 @@ void PromptWidget::insertIntoPrompt(const char* str)
 void PromptWidget::handleCommand(CommandSender* sender, int cmd,
                                  int data, int id)
 {
-  switch (cmd)
+  if(cmd == GuiObject::kSetPositionCmd)
   {
-    case GuiObject::kSetPositionCmd:
-      int newPos = int(data) + _linesPerPage - 1 + _firstLineInBuffer;
-      if (newPos != _scrollLine)
-      {
-        _scrollLine = newPos;
-        setDirty();
-      }
-      break;
+    int newPos = int(data) + _linesPerPage - 1 + _firstLineInBuffer;
+    if (newPos != _scrollLine)
+    {
+      _scrollLine = newPos;
+      setDirty();
+    }
   }
 }
 
@@ -811,7 +809,7 @@ void PromptWidget::updateScrollBuffer()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // TODO: rewrite this (cert-dcl50-cpp)
-int PromptWidget::printf(const char* format, ...)
+int PromptWidget::printf(const char* format, ...)  // NOLINT
 {
   va_list argptr;
 
@@ -824,7 +822,7 @@ int PromptWidget::printf(const char* format, ...)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int PromptWidget::vprintf(const char* format, va_list argptr)
 {
-  char buf[2048];  // Note: generates warnings about 'nonliteral' format
+  char buf[2048];  // NOLINT  (will be rewritten soon)
   int count = std::vsnprintf(buf, sizeof(buf), format, argptr);
 
   print(buf);

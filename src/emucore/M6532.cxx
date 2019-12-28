@@ -43,7 +43,7 @@ M6532::M6532(const ConsoleIO& console, const Settings& settings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::reset()
 {
-  static constexpr uInt8 RAM_7800[128] = {
+  static constexpr std::array<uInt8, 128> RAM_7800 = {
     0xA9, 0x00, 0xAA, 0x85, 0x01, 0x95, 0x03, 0xE8, 0xE0, 0x2A, 0xD0, 0xF9, 0x85, 0x02, 0xA9, 0x04,
     0xEA, 0x30, 0x23, 0xA2, 0x04, 0xCA, 0x10, 0xFD, 0x9A, 0x8D, 0x10, 0x01, 0x20, 0xCB, 0x04, 0x20,
     0xCB, 0x04, 0x85, 0x11, 0x85, 0x1B, 0x85, 0x1C, 0x85, 0x0F, 0xEA, 0x85, 0x02, 0xA9, 0x00, 0xEA,
@@ -57,9 +57,10 @@ void M6532::reset()
   // Initialize the 128 bytes of memory
   bool devSettings = mySettings.getBool("dev.settings");
   if(mySettings.getString(devSettings ? "dev.console" : "plr.console") == "7800")
-    std::copy_n(RAM_7800, 128, myRAM.begin());
+    std::copy_n(RAM_7800.begin(), RAM_7800.size(), myRAM.begin());
   else if(mySettings.getBool(devSettings ? "dev.ramrandom" : "plr.ramrandom"))
-    for(uInt32 t = 0; t < 128; ++t)  myRAM[t] = mySystem->randGenerator().next();
+    for(size_t t = 0; t < myRAM.size(); ++t)
+      myRAM[t] = mySystem->randGenerator().next();
   else
     myRAM.fill(0);
 
@@ -312,7 +313,7 @@ bool M6532::poke(uInt16 addr, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 {
-  static constexpr uInt32 divider[] = { 1, 8, 64, 1024 };
+  static constexpr std::array<uInt32, 4> divider = { 1, 8, 64, 1024 };
 
   myDivider = divider[interval];
   myOutTimer[interval] = value;

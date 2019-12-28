@@ -214,14 +214,12 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod)
 void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
                                  int data, int id)
 {
-  switch (cmd)
+  if (cmd == GuiObject::kSetPositionCmd)
   {
-    case GuiObject::kSetPositionCmd:
-      if (_selectedItem != data)
-      {
-        _selectedItem = data;
-        setDirty();
-      }
-      break;
+    if (_selectedItem != data)
+    {
+      _selectedItem = data;
+      setDirty();
+    }
   }
 }

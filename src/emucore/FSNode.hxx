@@ -81,7 +81,7 @@ class FilesystemNode
      * with this node, path-related operations (i.e. exists(), isDirectory(),
      * getPath()) will always return false or raise an assertion.
      */
-    FilesystemNode();
+    FilesystemNode() = default;
 
     /**
      * Create a new FilesystemNode referring to the specified path. This is

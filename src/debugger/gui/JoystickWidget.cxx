@@ -81,7 +81,4 @@ void JoystickWidget::handleCommand(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::DigitalPin JoystickWidget::ourPinNo[5] = {
-  Controller::DigitalPin::One, Controller::DigitalPin::Two, Controller::DigitalPin::Three, Controller::DigitalPin::Four,
-  Controller::DigitalPin::Six
-};
+constexpr std::array<Controller::DigitalPin, 5> JoystickWidget::ourPinNo;

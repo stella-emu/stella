@@ -102,12 +102,11 @@ void GenesisWidget::handleCommand(
           myPins[id]->getState() ? Controller::MAX_RESISTANCE :
                                    Controller::MIN_RESISTANCE);
         break;
+      default:
+        break;
     }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::DigitalPin GenesisWidget::ourPinNo[5] = {
-  Controller::DigitalPin::One, Controller::DigitalPin::Two, Controller::DigitalPin::Three, Controller::DigitalPin::Four,
-  Controller::DigitalPin::Six
-};
+constexpr std::array<Controller::DigitalPin, 5> GenesisWidget::ourPinNo;

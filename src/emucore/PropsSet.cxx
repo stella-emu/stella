@@ -194,7 +194,7 @@ void PropertiesSet::print() const
   // This is fine, since a duplicate in the built-in list means it should
   // be overrided anyway (and insertion shouldn't be done)
   Properties properties;
-  for(int i = 0; i < DEF_PROPS_SIZE; ++i)
+  for(uInt32 i = 0; i < DEF_PROPS_SIZE; ++i)
   {
     properties.setDefaults();
     for(uInt8 p = 0; p < static_cast<uInt8>(PropType::NumTypes); ++p)

@@ -104,7 +104,7 @@ void TiaOutputWidget::saveSnapshot(int execDepth, const string& execPrefix)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, MouseButton b, int clickCount)
 {
-  if (b == MouseButton::LEFT)
+  if(b == MouseButton::LEFT)
     myZoom->setPos(x, y);
   // Grab right mouse button for command context menu
   else if(b == MouseButton::RIGHT)
@@ -122,48 +122,41 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 {
   uInt32 startLine = instance().console().tia().startLine();
 
-  switch(cmd)
+  if(cmd == ContextMenu::kItemSelectedCmd)
   {
-    case ContextMenu::kItemSelectedCmd:
+    const string& rmb = myMenu->getSelectedTag().toString();
+
+    if(rmb == "scanline")
     {
-      const string& rmb = myMenu->getSelectedTag().toString();
+      ostringstream command;
+      int lines = myClickY + startLine - instance().console().tia().scanlines();
 
-      if(rmb == "scanline")
+      if(lines < 0)
+        lines += instance().console().tia().scanlinesLastFrame();
+      if(lines > 0)
       {
-        ostringstream command;
-        int lines = myClickY + startLine - instance().console().tia().scanlines();
-
-        if(lines < 0)
-          lines += instance().console().tia().scanlinesLastFrame();
-        if(lines > 0)
-        {
-          command << "scanline #" << lines;
-          string message = instance().debugger().parser().run(command.str());
-          instance().frameBuffer().showMessage(message);
-        }
-      }
-      else if(rmb == "bp")
-      {
-        ostringstream command;
-        int scanline = myClickY + startLine;
-        command << "breakif _scan==#" << scanline;
+        command << "scanline #" << lines;
         string message = instance().debugger().parser().run(command.str());
         instance().frameBuffer().showMessage(message);
       }
-      else if(rmb == "zoom")
-      {
-        if(myZoom)
-          myZoom->setPos(myClickX, myClickY);
-      }
-      else if(rmb == "snap")
-      {
-        instance().debugger().parser().run("savesnap");
-      }
-      break;
     }
-
-    default:
-      break;
+    else if(rmb == "bp")
+    {
+      ostringstream command;
+      int scanline = myClickY + startLine;
+      command << "breakif _scan==#" << scanline;
+      string message = instance().debugger().parser().run(command.str());
+      instance().frameBuffer().showMessage(message);
+    }
+    else if(rmb == "zoom")
+    {
+      if(myZoom)
+        myZoom->setPos(myClickX, myClickY);
+    }
+    else if(rmb == "snap")
+    {
+      instance().debugger().parser().run("savesnap");
+    }
   }
 }
 

@@ -96,6 +96,8 @@ void DrivingWidget::handleCommand(
     case kFireCmd:
       setPin(Controller::DigitalPin::Six, !myFire->getState());
       break;
+    default:
+      break;
   }
 }
 

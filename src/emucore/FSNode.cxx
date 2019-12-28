@@ -22,11 +22,6 @@
 #include "FSNode.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::FilesystemNode()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const AbstractFSNodePtr& realNode)
   : _realNode(realNode)
 {

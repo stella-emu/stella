@@ -586,6 +586,9 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
     case kDGShiftRCmd:
       rshiftCell();
       break;
+
+    default:
+      return;
   }
 }
 

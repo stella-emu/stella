@@ -66,7 +66,7 @@ class CartRamWidget : public Widget, public CommandSender
                           const GUI::Font& nfont,
                           int x, int y, int w, int h,
                           CartDebugWidget& cartDebug);
-        virtual ~InternalRamWidget();
+        virtual ~InternalRamWidget() = default;
 
       private:
         uInt8 getValue(int addr) const override;

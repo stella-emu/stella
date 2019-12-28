@@ -251,7 +251,7 @@ TiaMethod getTiaSpecial(char* ch)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int yylex() {
-  static char idbuf[255];
+  static char idbuf[255];  // NOLINT  (will be rewritten soon)
   char o, p;
   yylval.val = 0;
   while(*c != '\0') {

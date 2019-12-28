@@ -22,7 +22,7 @@
 HighPass::HighPass(float cutOffFrequency, float frequency)
   : myLastValueIn(0),
     myLastValueOut(0),
-    myAlpha(1.f / (1.f + 2.f*BSPF::PI_f*cutOffFrequency/frequency))
+    myAlpha(1.F / (1.F + 2.F*BSPF::PI_f*cutOffFrequency/frequency))
 {
 }
 

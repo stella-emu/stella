@@ -66,9 +66,9 @@ print OUTFILE "  located in the src/tools directory.  All properties changes\n";
 print OUTFILE "  should be made in stella.pro, and then this file should be\n";
 print OUTFILE "  regenerated and the application recompiled.\n";
 print OUTFILE "*/\n";
-print OUTFILE "\n#define DEF_PROPS_SIZE " . $setsize;
+print OUTFILE "\nstatic constexpr uInt32 DEF_PROPS_SIZE = " . $setsize . ";";
 print OUTFILE "\n\n";
-print OUTFILE "static const char* const DefProps[DEF_PROPS_SIZE][" . $typesize . "] = {\n";
+print OUTFILE "static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, " . $typesize . "> DefProps = {{\n";
 
 # Walk the hash map and print each item in order of md5sum
 my $idx = 0;
@@ -83,7 +83,7 @@ for my $key ( sort keys %propset )
   $idx++;
 }
 
-print OUTFILE "};\n";
+print OUTFILE "}};\n";
 print OUTFILE "\n";
 print OUTFILE "#endif\n";
 

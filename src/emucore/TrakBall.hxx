@@ -43,14 +43,18 @@ class TrakBall : public PointingDevice
   protected:
     uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8 left, uInt8 down) override
     {
-      static constexpr uInt32 ourTableH[2][2] = {{ 0b00, 0b01 }, { 0b10, 0b11 }};
-      static constexpr uInt32 ourTableV[2][2] = {{ 0b0100, 0b0000 }, { 0b1100, 0b1000 }};
+      static constexpr BSPF::array2D<uInt32, 2, 2> ourTableH = {{
+        { 0b00, 0b01 }, { 0b10, 0b11 }
+      }};
+      static constexpr BSPF::array2D<uInt32, 2, 2> ourTableV = {{
+        { 0b0100, 0b0000 }, { 0b1100, 0b1000 }
+      }};
 
       return ourTableH[countH & 0b1][left] | ourTableV[countV & 0b1][down];
     }
 
     // 50% of Atari and Amiga mouse
-    static constexpr float trackballSensitivity = 0.4f;
+    static constexpr float trackballSensitivity = 0.4F;
 };
 
 #endif // TRAKBALL_HXX

@@ -84,7 +84,7 @@ void Ball::resbl(uInt8 counter)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Ball::ctrlpf(uInt8 value)
 {
-  static constexpr uInt8 ourWidths[] = {1, 2, 4, 8};
+  static constexpr std::array<uInt8, 4> ourWidths = { 1, 2, 4, 8 };
 
   const uInt8 newWidth = ourWidths[(value & 0x30) >> 4];
 

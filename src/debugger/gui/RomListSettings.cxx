@@ -177,5 +177,7 @@ void RomListSettings::handleCommand(CommandSender* sender, int cmd, int data, in
       sendCommand(cmd, myUseRelocation->getState(), -1);
       break;
     }
+    default:
+      break;
   }
 }

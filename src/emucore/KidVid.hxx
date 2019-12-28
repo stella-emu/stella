@@ -76,12 +76,14 @@ class KidVid : public Controller
     void getNextSampleByte();
 
   private:
-    enum {
+    static constexpr uInt32
       KVSMURFS = 0x44,
       KVBBEARS = 0x48,
-      KVBLOCKS = 6,             /* number of bytes / block */
-      KVBLOCKBITS = KVBLOCKS*8  /* number of bits / block */
-    };
+      KVBLOCKS = 6,             // number of bytes / block
+      KVBLOCKBITS = KVBLOCKS*8, // number of bits / block
+      SONG_POS_SIZE   = 44+38+42+62+80+62,
+      SONG_START_SIZE = 104
+    ;
 
     // Whether the KidVid device is enabled (only for games that it
     // supports, and if it's plugged into the right port
@@ -103,11 +105,11 @@ class KidVid : public Controller
     uInt32 myIdx, myBlock, myBlockIdx;
 
     // Number of blocks and data on tape
-    static const uInt8 ourKVBlocks[6];
-    static const uInt8 ourKVData[6*8];
+    static const std::array<uInt8, KVBLOCKS> ourKVBlocks;
+    static const std::array<uInt8, KVBLOCKBITS> ourKVData;
 
-    static const uInt8 ourSongPositions[44+38+42+62+80+62];
-    static const uInt32 ourSongStart[104];
+    static const std::array<uInt8, SONG_POS_SIZE> ourSongPositions;
+    static const std::array<uInt32, SONG_START_SIZE> ourSongStart;
 
   private:
     // Following constructors and assignment operators not supported

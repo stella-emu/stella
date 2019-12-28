@@ -58,7 +58,7 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt16 rom_size
                          Cartridge* cartridge)
   : rom(rom_ptr),
     romSize(rom_size),
-    decodedRom(make_unique<Op[]>(romSize / 2)),
+    decodedRom(make_unique<Op[]>(romSize / 2)),  // NOLINT
     ram(ram_ptr),
     T1TCR(0),
     T1TC(0),
@@ -316,6 +316,9 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
         case 0xE000E01C:
           systick_calibrate = data & 0x00FFFFFF;
           break;
+
+        default:
+          break;
       }
       return;
 
@@ -335,6 +338,9 @@ void Thumbulator::write32(uInt32 addr, uInt32 data)
         case 0x20:
           statusMsg << Base::HEX8 << data << endl;
           return;
+
+        default:
+          break;
       }
 #endif
       return;
@@ -940,7 +946,7 @@ int Thumbulator::execute()
       rb <<= 2;
       DO_DISS(statusMsg << "add r" << dec << rd << ",PC,#0x" << Base::HEX2 << rb << endl);
       ra = read_register(15);
-      rc = (ra & (~3u)) + rb;
+      rc = (ra & (~3U)) + rb;
       write_register(rd, rc);
       return 0;
     }
@@ -1693,7 +1699,7 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",#0x" << Base::HEX2 << rb << "]" << endl);
       rb = read_register(rn) + rb;
 #ifndef UNSAFE_OPTIMIZATIONS
-      rc = read16(rb & (~1u));
+      rc = read16(rb & (~1U));
 #else
       rc = read16(rb);
 #endif
@@ -1716,7 +1722,7 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
 #ifndef UNSAFE_OPTIMIZATIONS
-      rc = read16(rb & (~1u));
+      rc = read16(rb & (~1U));
 #else
       rc = read16(rb);
 #endif
@@ -1761,7 +1767,7 @@ int Thumbulator::execute()
       DO_DISS(statusMsg << "ldrsb r" << dec << rd << ",[r" << dec << rn << ",r" << dec << rm << "]" << endl);
       rb = read_register(rn) + read_register(rm);
 #ifndef UNSAFE_OPTIMIZATIONS
-      rc = read16(rb & (~1u));
+      rc = read16(rb & (~1U));
 #else
       rc = read16(rb);
 #endif
@@ -2286,7 +2292,7 @@ int Thumbulator::execute()
       rb = read_register(rn) + rb;
       rc = read_register(rd);
 #ifndef UNSAFE_OPTIMIZATIONS
-      ra = read16(rb & (~1u));
+      ra = read16(rb & (~1U));
 #else
       ra = read16(rb);
 #endif
@@ -2300,7 +2306,7 @@ int Thumbulator::execute()
         ra &= 0xFF00;
         ra |= rc & 0x00FF;
       }
-      write16(rb & (~1u), ra & 0xFFFF);
+      write16(rb & (~1U), ra & 0xFFFF);
       return 0;
     }
 
@@ -2313,7 +2319,7 @@ int Thumbulator::execute()
       rb = read_register(rn) + read_register(rm);
       rc = read_register(rd);
 #ifndef UNSAFE_OPTIMIZATIONS
-      ra = read16(rb & (~1u));
+      ra = read16(rb & (~1U));
 #else
       ra = read16(rb);
 #endif
@@ -2327,7 +2333,7 @@ int Thumbulator::execute()
         ra &= 0xFF00;
         ra |= rc & 0x00FF;
       }
-      write16(rb & (~1u), ra & 0xFFFF);
+      write16(rb & (~1U), ra & 0xFFFF);
       return 0;
     }
 

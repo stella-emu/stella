@@ -48,7 +48,8 @@ class RamWidget : public Widget, public CommandSender
     virtual string getLabel(int addr) const = 0;
 
     virtual void fillList(uInt32 start, uInt32 size,
-              IntArray& alist, IntArray& vlist, BoolArray& changed) const = 0;
+                          IntArray& alist, IntArray& vlist,
+                          BoolArray& changed) const = 0;
     virtual uInt32 readPort(uInt32 start) const = 0;
     virtual const ByteArray& currentRam(uInt32 start) const = 0;
 
@@ -92,7 +93,7 @@ class RamWidget : public Widget, public CommandSender
     unique_ptr<InputTextDialog> myInputBox;
 
     StaticTextWidget* myRamStart;
-    StaticTextWidget* myRamLabels[16];
+    std::array<StaticTextWidget*, 16> myRamLabels;
 
     DataGridWidget* myRamGrid;
     DataGridWidget* myDecValue;

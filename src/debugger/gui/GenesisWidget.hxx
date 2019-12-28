@@ -31,8 +31,12 @@ class GenesisWidget : public ControllerWidget
   private:
     enum { kJUp = 0, kJDown, kJLeft, kJRight, kJBbtn, kJCbtn };
 
-    CheckboxWidget* myPins[6];
-    static Controller::DigitalPin ourPinNo[5];
+    std::array<CheckboxWidget*, 6> myPins;
+    static constexpr std::array<Controller::DigitalPin, 5> ourPinNo = {{
+      Controller::DigitalPin::One, Controller::DigitalPin::Two,
+      Controller::DigitalPin::Three, Controller::DigitalPin::Four,
+      Controller::DigitalPin::Six
+    }};
 
   private:
     void loadConfig() override;

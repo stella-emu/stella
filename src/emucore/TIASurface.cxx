@@ -201,7 +201,7 @@ uInt32 TIASurface::enableScanlines(int relative, int absolute)
   if(relative == 0)  attr.blendalpha = absolute;
   else               attr.blendalpha += relative;
   attr.blendalpha = std::max(0, Int32(attr.blendalpha));
-  attr.blendalpha = std::min(100u, attr.blendalpha);
+  attr.blendalpha = std::min(100U, attr.blendalpha);
 
   mySLineSurface->applyAttributes();
 

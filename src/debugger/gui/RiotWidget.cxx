@@ -101,7 +101,9 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   CREATE_IO_REGS("SWCHB(R)", mySWCHBReadBits, 0, false)
 
   // Timer registers (R/W)
-  const char* const writeNames[] = { "TIM1T", "TIM8T", "TIM64T", "T1024T" };
+  static constexpr std::array<const char*, 4> writeNames = {
+    "TIM1T", "TIM8T", "TIM64T", "T1024T"
+  };
   xpos = 10;  ypos += 2*lineHeight;
   for(int row = 0; row < 4; ++row)
   {
@@ -115,7 +117,9 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myTimWrite);
 
   // Timer registers (RO)
-  const char* const readNames[] = { "INTIM", "TIMINT", "Total Clks", "INTIM Clks", "Divider" };
+  static constexpr std::array<const char*, 5> readNames = {
+    "INTIM", "TIMINT", "Total Clks", "INTIM Clks", "Divider"
+  };
   xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight / 2;
   for(int row = 0; row < 5; ++row)
   {
@@ -141,7 +145,9 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
       instance().console().rightController());
 
   // TIA INPTx registers (R), left port
-  const char* const contLeftReadNames[] = { "INPT0", "INPT1", "INPT4" };
+  static constexpr std::array<const char*, 3> contLeftReadNames = {
+    "INPT0", "INPT1", "INPT4"
+  };
   xpos = col;  ypos += myLeftControl->getHeight() + 2 * lineHeight;
   for(int row = 0; row < 3; ++row)
   {
@@ -154,7 +160,9 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
   myLeftINPT->setEditable(false);
 
   // TIA INPTx registers (R), right port
-  const char* const contRightReadNames[] = { "INPT2", "INPT3", "INPT5" };
+  static constexpr std::array<const char*, 3> contRightReadNames = {
+    "INPT2", "INPT3", "INPT5"
+  };
   xpos = col + myLeftControl->getWidth() + 15;
   for(int row = 0; row < 3; ++row)
   {
@@ -353,25 +361,25 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch(cmd)
   {
     case DataGridWidget::kItemDataChangedCmd:
-      switch(id)
+      if(id == kTimWriteID)
       {
-        case kTimWriteID:
-          switch(myTimWrite->getSelectedAddr())
-          {
-            case kTim1TID:
-              riot.tim1T(myTimWrite->getSelectedValue());
-              break;
-            case kTim8TID:
-              riot.tim8T(myTimWrite->getSelectedValue());
-              break;
-            case kTim64TID:
-              riot.tim64T(myTimWrite->getSelectedValue());
-              break;
-            case kTim1024TID:
-              riot.tim1024T(myTimWrite->getSelectedValue());
-              break;
-          }
-          break;
+        switch(myTimWrite->getSelectedAddr())
+        {
+          case kTim1TID:
+            riot.tim1T(myTimWrite->getSelectedValue());
+            break;
+          case kTim8TID:
+            riot.tim8T(myTimWrite->getSelectedValue());
+            break;
+          case kTim64TID:
+            riot.tim64T(myTimWrite->getSelectedValue());
+            break;
+          case kTim1024TID:
+            riot.tim1024T(myTimWrite->getSelectedValue());
+            break;
+          default:
+            break;
+        }
       }
       break;
 
@@ -409,6 +417,8 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           rport.setPin(Controller::DigitalPin::Four,  value & 0b00001000);
           break;
         }
+        default:
+          break;
       }
       break;
 
@@ -424,6 +434,8 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kPauseID:
           handleConsole();
           break;
+        default:
+          break;
       }
       break;
 
@@ -437,6 +449,9 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kTVTypeChanged:
       handleConsole();
+      break;
+
+    default:
       break;
   }
 }

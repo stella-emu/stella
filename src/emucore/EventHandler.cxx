@@ -1485,19 +1485,19 @@ Event::Type EventHandler::eventAtIndex(int idx, Event::Group group) const
 {
   int index = getActionListIndex(idx, group);
 
-  switch(group)
+  if(group == Event::Group::Menu)
   {
-    case Event::Group::Menu:
-      if(index < 0 || index >= int(ourMenuActionList.size()))
-        return Event::NoType;
-      else
-        return ourMenuActionList[index].event;
-
-    default:
-      if(index < 0 || index >= int(ourEmulActionList.size()))
-        return Event::NoType;
-      else
-        return ourEmulActionList[index].event;
+    if(index < 0 || index >= int(ourMenuActionList.size()))
+      return Event::NoType;
+    else
+      return ourMenuActionList[index].event;
+  }
+  else
+  {
+    if(index < 0 || index >= int(ourEmulActionList.size()))
+      return Event::NoType;
+    else
+      return ourEmulActionList[index].event;
   }
 }
 
@@ -1506,19 +1506,19 @@ string EventHandler::actionAtIndex(int idx, Event::Group group) const
 {
   int index = getActionListIndex(idx, group);
 
-  switch(group)
+  if(group == Event::Group::Menu)
   {
-    case Event::Group::Menu:
-      if(index < 0 || index >= int(ourMenuActionList.size()))
-        return EmptyString;
-      else
-        return ourMenuActionList[index].action;
-
-    default:
-      if(index < 0 || index >= int(ourEmulActionList.size()))
-        return EmptyString;
-      else
-        return ourEmulActionList[index].action;
+    if(index < 0 || index >= int(ourMenuActionList.size()))
+      return EmptyString;
+    else
+      return ourMenuActionList[index].action;
+  }
+  else
+  {
+    if(index < 0 || index >= int(ourEmulActionList.size()))
+      return EmptyString;
+    else
+      return ourEmulActionList[index].action;
   }
 }
 
@@ -1527,19 +1527,19 @@ string EventHandler::keyAtIndex(int idx, Event::Group group) const
 {
   int index = getActionListIndex(idx, group);
 
-  switch(group)
+  if(group == Event::Group::Menu)
   {
-    case Event::Group::Menu:
-      if(index < 0 || index >= int(ourMenuActionList.size()))
-        return EmptyString;
-      else
-        return ourMenuActionList[index].key;
-
-    default:
-      if(index < 0 || index >= int(ourEmulActionList.size()))
-        return EmptyString;
-      else
-        return ourEmulActionList[index].key;
+    if(index < 0 || index >= int(ourMenuActionList.size()))
+      return EmptyString;
+    else
+      return ourMenuActionList[index].key;
+  }
+  else
+  {
+    if(index < 0 || index >= int(ourEmulActionList.size()))
+      return EmptyString;
+    else
+      return ourEmulActionList[index].key;
   }
 }
 

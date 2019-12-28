@@ -204,7 +204,7 @@ string CartDebug::toString()
     // bytes have been previously output
     if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
-      char port[37];
+      char port[37];  // NOLINT (convert to stringstream)
       std::snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
               state.rport[i], state.rport[i], state.wport[i]);
       port[2] = port[3] = 'x';
@@ -665,6 +665,8 @@ bool CartDebug::getLabel(ostream& buf, uInt16 addr, bool isRead, int places) con
     case 8:
       buf << "$" << Base::HEX8 << addr;
       return true;
+    default:
+      break;
   }
 
   return false;
