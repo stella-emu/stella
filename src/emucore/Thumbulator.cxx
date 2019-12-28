@@ -1172,8 +1172,10 @@ int Thumbulator::execute()
         case 0xF:
           //swi
           break;
-      }
 
+        default:
+          break;
+      }
       break;
     }
 
