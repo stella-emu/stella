@@ -143,7 +143,7 @@ void Missile::toggleEnabled(bool enabled)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Missile::nusiz(uInt8 value)
 {
-  static constexpr uInt8 ourWidths[] = { 1, 2, 4, 8 };
+  static constexpr std::array<uInt8, 4> ourWidths = { 1, 2, 4, 8 };
 
   myDecodesOffset = value & 0x07;
   myWidth = ourWidths[(value & 0x30) >> 4];
