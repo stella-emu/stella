@@ -25,9 +25,9 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3496
+static constexpr uInt32 DEF_PROPS_SIZE = 3496;
 
-static const char* const DefProps[DEF_PROPS_SIZE][21] = {
+static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "0060a89b4c956b9c703a59b181cb3018", "CommaVid, Irwin Gaines - Ariola", "CM-008 - 712 008-720", "Cakewalk (1983) (CommaVid) (PAL)", "AKA Alarm in der Backstube", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "007d18dedc1f0565f09c42aa61a6f585", "CCE", "C-843", "Worm War I (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3524,6 +3524,6 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "ffdc0eb3543404eb4c353fbdddfa33b6", "CCE", "C-827", "Chopper Command (1983) (CCE) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ffe51989ba6da2c6ae5a12d277862e16", "Atari - Sears", "CX2627 - 6-99841", "Human Cannonball (1979) (Atari) (4K)", "AKA Cannon Man", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "ffebb0070689b9d322687edd9c0a2bae", "", "", "Spitfire Attack (1983) (Milton Bradley) [h1]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }
-};
+}};
 
 #endif

@@ -48,7 +48,7 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
       ypos += myBox[i]->getHeight() + 5;
     }
   }
-  myEvent = leftport ? ourLeftEvents : ourRightEvents;
+  myEvent = leftport ? ourLeftEvents.data() : ourRightEvents.data();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,17 +68,5 @@ void KeyboardWidget::handleCommand(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type KeyboardWidget::ourLeftEvents[12] = {
-  Event::KeyboardZero1,    Event::KeyboardZero2,  Event::KeyboardZero3,
-  Event::KeyboardZero4,    Event::KeyboardZero5,  Event::KeyboardZero6,
-  Event::KeyboardZero7,    Event::KeyboardZero8,  Event::KeyboardZero9,
-  Event::KeyboardZeroStar, Event::KeyboardZero0,  Event::KeyboardZeroPound
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type KeyboardWidget::ourRightEvents[12] = {
-  Event::KeyboardOne1,    Event::KeyboardOne2,  Event::KeyboardOne3,
-  Event::KeyboardOne4,    Event::KeyboardOne5,  Event::KeyboardOne6,
-  Event::KeyboardOne7,    Event::KeyboardOne8,  Event::KeyboardOne9,
-  Event::KeyboardOneStar, Event::KeyboardOne0,  Event::KeyboardOnePound
-};
+constexpr std::array<Event::Type, 12> KeyboardWidget::ourLeftEvents;
+constexpr std::array<Event::Type, 12> KeyboardWidget::ourRightEvents;

@@ -23,7 +23,7 @@ ConvolutionBuffer::ConvolutionBuffer(uInt32 size)
     mySize(size)
 {
   myData = make_unique<float[]>(mySize);
-  std::fill_n(myData.get(), mySize, 0.f);
+  std::fill_n(myData.get(), mySize, 0.F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,7 +36,7 @@ void ConvolutionBuffer::shift(float nextValue)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float ConvolutionBuffer::convoluteWith(float* kernel) const
 {
-  float result = 0.;
+  float result = 0.F;
 
   for (uInt32 i = 0; i < mySize; ++i) {
     result += kernel[i] * myData[(myFirstIndex + i) % mySize];

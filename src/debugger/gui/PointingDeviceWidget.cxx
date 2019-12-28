@@ -110,6 +110,8 @@ void PointingDeviceWidget::handleCommand(CommandSender* sender, int cmd, int dat
     case kTBFire:
       setPin(Controller::DigitalPin::Six, !myFire->getState());
       break;
+    default:
+      break;
   }
 }
 

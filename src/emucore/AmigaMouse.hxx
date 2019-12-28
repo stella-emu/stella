@@ -43,13 +43,17 @@ class AmigaMouse : public PointingDevice
   protected:
     uInt8 ioPortA(uInt8 countH, uInt8 countV, uInt8, uInt8) override
     {
-      static constexpr uInt32 ourTableH[4] = { 0b0000, 0b1000, 0b1010, 0b0010 };
-      static constexpr uInt32 ourTableV[4] = { 0b0000, 0b0100, 0b0101, 0b0001 };
+      static constexpr std::array<uInt32, 4> ourTableH = {
+        0b0000, 0b1000, 0b1010, 0b0010
+      };
+      static constexpr std::array<uInt32, 4> ourTableV = {
+        0b0000, 0b0100, 0b0101, 0b0001
+      };
 
       return ourTableH[countH] | ourTableV[countV];
     }
 
-    static constexpr float trackballSensitivity = 0.8f;
+    static constexpr float trackballSensitivity = 0.8F;
 };
 
 #endif // AMIGAMOUSE_HXX

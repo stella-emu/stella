@@ -122,6 +122,8 @@ void CartridgeE0Widget::handleCommand(CommandSender* sender,
     case kSlice2Changed:
       myCart.segmentTwo(mySlice2->getSelected());
       break;
+    default:
+      break;
   }
 
   myCart.lockBank();

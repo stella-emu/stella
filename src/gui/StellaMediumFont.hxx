@@ -40,7 +40,7 @@
 namespace GUI {
 
 // Font character bitmap data.
-static const uInt16 stellaMedium_font_bits[] = {
+static const uInt16 stellaMedium_font_bits[] = {  // NOLINT : too complicated to convert
 
 
   /* MODIFIED

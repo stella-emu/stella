@@ -32,7 +32,7 @@
 class ZipHandler
 {
   public:
-    ZipHandler();
+    ZipHandler() = default;
 
     // Open ZIP file for processing
     // An exception will be thrown on any errors

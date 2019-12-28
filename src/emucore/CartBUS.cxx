@@ -177,6 +177,8 @@ inline void CartridgeBUS::callFunction(uInt8 value)
         }
       }
       break;
+    default:
+      break;
   }
 }
 
@@ -533,6 +535,9 @@ uInt32 CartridgeBUS::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
       // _SetWaveSize - set size of waveform buffer
     case 3:
       myMusicWaveformSize[value1] = value2;
+      break;
+
+    default:
       break;
   }
 

@@ -95,7 +95,7 @@ void AtariNTSC::enableThreading(bool enable)
     myWorkerThreads = systemThreads - 1;
     myTotalThreads  = systemThreads;
 
-    myThreads = make_unique<std::thread[]>(myWorkerThreads);
+    myThreads = make_unique<std::thread[]>(myWorkerThreads);  // NOLINT
   }
 }
 

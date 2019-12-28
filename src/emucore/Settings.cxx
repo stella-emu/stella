@@ -665,7 +665,8 @@ void Settings::migrateOne()
       #if defined BSPF_MACOS || defined DARWIN
         setPermanent("video", "");
       #endif
-
+      break;
+    default:
       break;
   }
 

@@ -48,7 +48,9 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   ButtonWidget* b = nullptr;
 
   // Color registers
-  const char* const regNames[] = { "COLUP0", "COLUP1", "COLUPF", "COLUBK" };
+  static constexpr std::array<const char*, 4> regNames = {
+    "COLUP0", "COLUP1", "COLUPF", "COLUBK"
+  };
   for(int row = 0; row < 4; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 2,
@@ -87,7 +89,9 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myFixedEnabled->setTarget(this);
   addFocusWidget(myFixedEnabled);
 
-  const char* const dbgLabels[] = { "P0", "P1", "PF", "BK", "M0", "M1", "BL", "HM" };
+  static constexpr std::array<const char*, 8> dbgLabels = {
+    "P0", "P1", "PF", "BK", "M0", "M1", "BL", "HM"
+  };
   for(uInt32 row = 0; row <= 3; ++row)
   {
     ypos += lineHeight;
@@ -117,8 +121,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   // Add all 15 collision bits (with labels)
   uInt32 cxclrY = 0;
   xpos -= 2*fontWidth + 5;  ypos += lineHeight;
-  const char* const rowLabel[] = { "P0", "P1", "M0", "M1", "BL" };
-  const char* const colLabel[] = { "PF", "BL", "M1", "M0", "P1" };
+  static constexpr std::array<const char*, 5> rowLabel = { "P0", "P1", "M0", "M1", "BL" };
+  static constexpr std::array<const char*, 5> colLabel = { "PF", "BL", "M1", "M0", "P1" };
   uInt32 lwidth = 2*fontWidth, collX = xpos + lwidth + 5, collY = ypos, idx = 0;
   for(uInt32 row = 0; row < 5; ++row)
   {
@@ -534,7 +538,9 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   const GUI::Font& sf = instance().frameBuffer().smallFont();
   const int sfWidth = sf.getMaxCharWidth(),
             sfHeight = sf.getFontHeight();
-  const char* const bitNames[] = { "0", "1", "2", "3", "4", "5", "6", "7" };
+  static constexpr std::array<const char*, 8> bitNames = {
+    "0", "1", "2", "3", "4", "5", "6", "7"
+  };
 
   // PF0
   xpos = 10;  ypos += lineHeight + sfHeight + 6;
@@ -1199,6 +1205,9 @@ void TiaWidget::changeColorRegs()
     case kCOLUBKAddr:
       instance().debugger().tiaDebug().coluBK(value);
       myCOLUBKColor->setColor(value);
+      break;
+
+    default:
       break;
   }
 }

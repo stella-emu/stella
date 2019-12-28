@@ -75,7 +75,7 @@ void BilinearBlitter::free()
 
   ASSERT_MAIN_THREAD;
 
-  SDL_Texture* textures[] = {myTexture, mySecondaryTexture};
+  std::array<SDL_Texture*, 2> textures = { myTexture, mySecondaryTexture };
   for (SDL_Texture* texture: textures) {
     if (!texture) continue;
 
@@ -135,7 +135,7 @@ void BilinearBlitter::recreateTexturesIfNecessary()
   if (myAttributes.blending) {
     uInt8 blendAlpha = uInt8(myAttributes.blendalpha * 2.55);
 
-    SDL_Texture* textures[] = {myTexture, mySecondaryTexture};
+    std::array<SDL_Texture*, 2> textures = { myTexture, mySecondaryTexture };
     for (SDL_Texture* texture: textures) {
       if (!texture) continue;
 

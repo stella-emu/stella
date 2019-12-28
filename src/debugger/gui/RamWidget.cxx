@@ -199,6 +199,9 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           addr  = myRamGrid->getSelectedAddr();
           value = myBinValue->getSelectedValue();
           break;
+
+        default:
+          break;
       }
 
       uInt8 oldval = getValue(addr);
@@ -276,6 +279,9 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       showSearchResults();
       fillGrid(false);
       break;
+
+    default:
+      break;
   }
 }
 
@@ -316,7 +322,7 @@ void RamWidget::fillGrid(bool updateOld)
 
   // Update RAM labels
   uInt32 rport = readPort(start), page = rport & 0xf0;
-  char buf[5];
+  char buf[5];  // NOLINT : convert to stringstream
   std::snprintf(buf, 5, "%04X", rport);
   buf[2] = buf[3] = 'x';
   myRamStart->setLabel(buf);

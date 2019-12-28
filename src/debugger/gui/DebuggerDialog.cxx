@@ -490,8 +490,7 @@ void DebuggerDialog::addStatusArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addRomArea()
 {
-  static uInt32 LEFT_ARROW[11] =
-  {
+  static constexpr std::array<uInt32, 11> LEFT_ARROW = {
     0b0000010,
     0b0000110,
     0b0001110,
@@ -504,8 +503,7 @@ void DebuggerDialog::addRomArea()
     0b0000110,
     0b0000010
   };
-  static uInt32 RIGHT_ARROW[11] =
-  {
+  static constexpr std::array<uInt32, 11> RIGHT_ARROW = {
     0b0100000,
     0b0110000,
     0b0111000,
@@ -556,7 +554,7 @@ void DebuggerDialog::addRomArea()
 
   myRewindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, LEFT_ARROW, 7, 11, kDDRewindCmd, true);
+                     bwidth, bheight, LEFT_ARROW.data(), 7, 11, kDDRewindCmd, true);
   myRewindButton->clearFlags(Widget::FLAG_ENABLED);
 
   buttonY += bheight + 4;
@@ -564,7 +562,7 @@ void DebuggerDialog::addRomArea()
 
   myUnwindButton =
     new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                     bwidth, bheight, RIGHT_ARROW, 7, 11, kDDUnwindCmd, true);
+                     bwidth, bheight, RIGHT_ARROW.data(), 7, 11, kDDUnwindCmd, true);
   myUnwindButton->clearFlags(Widget::FLAG_ENABLED);
 
   int xpos = buttonX - 8*myLFont->getMaxCharWidth() - 20, ypos = 30;

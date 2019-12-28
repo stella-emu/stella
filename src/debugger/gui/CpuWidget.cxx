@@ -100,7 +100,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Add labels for other CPU registers
   xpos = x;
-  string labels[4] = { "SP ", "A ", "X ", "Y " };
+  const std::array<string, 4> labels = { "SP ", "A ", "X ", "Y " };
   for(int row = 0; row < 4; ++row)
   {
     new StaticTextWidget(boss, lfont, xpos, ypos + row*lineHeight + 1,
@@ -118,8 +118,8 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Set the strings to be used in the PSRegister
   // We only do this once because it's the state that changes, not the strings
-  const char* const offstr[] = { "n", "v", "-", "b", "d", "i", "z", "c" };
-  const char* const onstr[]  = { "N", "V", "-", "B", "D", "I", "Z", "C" };
+  const std::array<string, 8> offstr = { "n", "v", "-", "b", "d", "i", "z", "c" };
+  const std::array<string, 8> onstr  = { "N", "V", "-", "B", "D", "I", "Z", "C" };
   StringList off, on;
   for(int i = 0; i < 8; ++i)
   {
@@ -170,6 +170,9 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           addr  = myCpuGridBinValue->getSelectedAddr();
           value = myCpuGridBinValue->getSelectedValue();
           break;
+
+        default:
+          break;
       }
 
       switch(addr)
@@ -211,6 +214,9 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           myCpuGridDecValue->setValueInternal(3, value);
           myCpuGridBinValue->setValueInternal(3, value);
           break;
+
+        default:
+          break;
       }
       break;
 
@@ -247,8 +253,15 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kPSRegC:
           dbg.setC(state);
           break;
+
+        default:
+          break;
       }
     }
+    break;
+
+    default:
+      break;
   }
 }
 

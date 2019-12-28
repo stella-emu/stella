@@ -971,12 +971,12 @@ string TIADebug::colorSwatch(uInt8 c) const
 string TIADebug::audFreq(uInt8 div)
 {
   string ret;
-  char buf[10];
+  std::array<char, 10> buf;
 
   double hz = 31400.0;
   if(div) hz /= div;
-  std::snprintf(buf, 9, "%5.1f", hz);
-  ret += buf;
+  std::snprintf(buf.data(), 9, "%5.1f", hz);
+  ret += buf.data();
   ret += "Hz";
 
   return ret;

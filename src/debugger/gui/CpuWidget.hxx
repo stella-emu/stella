@@ -73,9 +73,9 @@ class CpuWidget : public Widget, public CommandSender
     DataGridWidget*  myCpuGrid;
     DataGridWidget*  myCpuGridDecValue;
     DataGridWidget*  myCpuGridBinValue;
-    EditTextWidget*  myCpuDataSrc[4];
     ToggleBitWidget* myPSRegister;
     EditTextWidget*  myPCLabel;
+    std::array<EditTextWidget*, 4> myCpuDataSrc;
 
   private:
     // Following constructors and assignment operators not supported

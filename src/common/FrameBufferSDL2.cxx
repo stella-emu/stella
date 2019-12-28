@@ -148,15 +148,14 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     string stellaName;
   };
   // Create name map for all currently known SDL renderers
-  const int NUM_RENDERERS = 6;
-  static const RenderName RENDERER_NAMES[NUM_RENDERERS] = {
+  static const std::array<RenderName, 6> RENDERER_NAMES = {{
     { "direct3d",  "Direct3D"  },
     { "metal",     "Metal"     },
     { "opengl",    "OpenGL"    },
     { "opengles",  "OpenGLES"  },
     { "opengles2", "OpenGLES2" },
     { "software",  "Software"  }
-  };
+  }};
 
   int numDrivers = SDL_GetNumRenderDrivers();
   for(int i = 0; i < numDrivers; ++i)
@@ -166,7 +165,7 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
     {
       // Map SDL names into nicer Stella names (if available)
       bool found = false;
-      for(int j = 0; j < NUM_RENDERERS; ++j)
+      for(size_t j = 0; j < RENDERER_NAMES.size(); ++j)
       {
         if(RENDERER_NAMES[j].sdlName == info.name)
         {

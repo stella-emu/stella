@@ -83,17 +83,19 @@ void PaddleWidget::handleCommand(
   {
     case kP0Changed:
       setPin(Controller::AnalogPin::Nine,
-                           Int32(Paddles::MAX_RESISTANCE - myP0Resistance->getValue()));
+             static_cast<Int32>(Paddles::MAX_RESISTANCE - myP0Resistance->getValue()));
       break;
     case kP1Changed:
       setPin(Controller::AnalogPin::Five,
-                           Int32(Paddles::MAX_RESISTANCE - myP1Resistance->getValue()));
+             static_cast<Int32>(Paddles::MAX_RESISTANCE - myP1Resistance->getValue()));
       break;
     case kP0Fire:
       setPin(Controller::DigitalPin::Four, !myP0Fire->getState());
       break;
     case kP1Fire:
       setPin(Controller::DigitalPin::Three, !myP1Fire->getState());
+      break;
+    default:
       break;
   }
 }

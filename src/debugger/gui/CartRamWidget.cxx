@@ -117,11 +117,6 @@ CartRamWidget::InternalRamWidget::InternalRamWidget(GuiObject* boss,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartRamWidget::InternalRamWidget::~InternalRamWidget()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartRamWidget::InternalRamWidget::getValue(int addr) const
 {
   return myCart.internalRamGetValue(addr);

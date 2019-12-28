@@ -205,7 +205,8 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
         }
       }
       break;
-    // reserved
+    default:  // reserved
+      break;
   }
 }
 
@@ -336,6 +337,8 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
           case 0x06:  // reserved
           case 0x07:  // reserved
             break;
+          default:
+            break;
         }
         break;
       }
@@ -465,6 +468,8 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
           case 0x07:  // WAVEFORM2
             myMusicWaveforms[index - 5] =  value & 0x7f;
             break;
+          default:
+            break;
         }
         break;
 
@@ -537,9 +542,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       }
 
       default:
-      {
         break;
-      }
     }
   }
   else

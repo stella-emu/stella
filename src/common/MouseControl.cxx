@@ -35,7 +35,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
 
   if(BSPF::equalsIgnoreCase(m_mode, "none"))
   {
-    myModeList.push_back(MouseMode("Mouse input is disabled"));
+    myModeList.emplace_back("Mouse input is disabled");
     return;
   }
   else if(!BSPF::equalsIgnoreCase(m_mode, "auto") && m_mode.length() == 2 &&
@@ -103,7 +103,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
     msg << ", Y-axis is ";
     MControlToController(yaxis, ytype, yid);
 
-    myModeList.push_back(MouseMode(xtype, xid, ytype, yid, msg.str()));
+    myModeList.emplace_back(xtype, xid, ytype, yid, msg.str());
   }
 
   // Now consider the possible modes for the mouse based on the left
@@ -129,7 +129,7 @@ MouseControl::MouseControl(Console& console, const string& mode)
 
   // If the mouse isn't used at all, we still need one item in the list
   if(myModeList.size() == 0)
-    myModeList.push_back(MouseMode("Mouse not used for current controllers"));
+    myModeList.emplace_back("Mouse not used for current controllers");
 
 #if 0
   for(const auto& m: myModeList)
@@ -165,7 +165,7 @@ void MouseControl::addLeftControllerModes(bool noswap)
       msg << "Mouse is left " << myLeftController.name() << " controller";
       Controller::Type type = myLeftController.type();
       int id = noswap ? 0 : 1;
-      myModeList.push_back(MouseMode(type, id, type, id, msg.str()));
+      myModeList.emplace_back(type, id, type, id, msg.str());
     }
   }
 }
@@ -186,7 +186,7 @@ void MouseControl::addRightControllerModes(bool noswap)
       msg << "Mouse is right " << myRightController.name() << " controller";
       Controller::Type type = myRightController.type();
       int id = noswap ? 1 : 0;
-      myModeList.push_back(MouseMode(type, id, type, id, msg.str()));
+      myModeList.emplace_back(type, id, type, id, msg.str());
     }
   }
 }

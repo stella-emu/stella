@@ -222,6 +222,9 @@ void AudioWidget::changeVolumeRegs()
     case kAud1Addr:
       instance().debugger().tiaDebug().audV1(value);
       break;
+
+    default:
+      break;
   }
   handleVolume();
 }

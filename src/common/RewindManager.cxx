@@ -404,7 +404,8 @@ string RewindManager::getUnitString(Int64 cycles)
 {
   constexpr Int32 NTSC_FREQ = 1193182; // ~76*262*60
   constexpr Int32 PAL_FREQ  = 1182298; // ~76*312*50
-  const Int32 scanlines = std::max(myOSystem.console().tia().scanlinesLastFrame(), 240u);
+  const Int32 scanlines = std::max<Int32>(
+      myOSystem.console().tia().scanlinesLastFrame(), 240);
   const bool isNTSC = scanlines <= 287;
   const Int32 freq = isNTSC ? NTSC_FREQ : PAL_FREQ; // = cycles/second
 

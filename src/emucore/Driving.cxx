@@ -120,7 +120,7 @@ void Driving::update()
   }
 
   // Gray codes for rotation
-  static constexpr uInt8 graytable[] = { 0x03, 0x01, 0x00, 0x02 };
+  static constexpr std::array<uInt8, 4> graytable = { 0x03, 0x01, 0x00, 0x02 };
 
   // Determine which bits are set
   uInt8 gray = graytable[myGrayIndex];

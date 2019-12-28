@@ -94,7 +94,7 @@ class DebuggerParser
       string extendedDesc;
       bool parmsRequired;
       bool refreshRequired;
-      Parameters parms[10];
+      std::array<Parameters, 10> parms;
       std::function<void (DebuggerParser*)> executor;
     };
     static std::array<Command, 95> commands;

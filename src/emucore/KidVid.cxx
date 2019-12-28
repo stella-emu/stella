@@ -281,13 +281,13 @@ void KidVid::getNextSampleByte()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 KidVid::ourKVBlocks[6] = {
+const std::array<uInt8, KidVid::KVBLOCKS> KidVid::ourKVBlocks = {
   2+40, 2+21, 2+35,     /* Smurfs tapes 3, 1, 2 */
   42+60, 42+78, 42+60   /* BBears tapes 1, 2, 3 (40 extra blocks for intro) */
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 KidVid::ourKVData[6*8] = {
+const std::array<uInt8, KidVid::KVBLOCKBITS> KidVid::ourKVData = {
 /* KVData44 */
   0x7b,  // 0111 1011b  ; (1)0
   0x1e,  // 0001 1110b  ; 1
@@ -354,7 +354,7 @@ const uInt8 KidVid::ourKVData[6*8] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 KidVid::ourSongPositions[44+38+42+62+80+62] = {
+const std::array<uInt8, KidVid::SONG_POS_SIZE> KidVid::ourSongPositions = {
 /* kvs1 44 */
   11, 12+0x80, 13+0x80, 14, 15+0x80, 16, 8+0x80, 17, 18+0x80, 19, 20+0x80,
   21, 8+0x80, 22, 15+0x80, 23, 18+0x80, 14, 20+0x80, 16, 18+0x80,
@@ -390,7 +390,7 @@ const uInt8 KidVid::ourSongPositions[44+38+42+62+80+62] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt32 KidVid::ourSongStart[104] = {
+const std::array<uInt32, KidVid::SONG_START_SIZE> KidVid::ourSongStart = {
 /* kvshared */
   44,          /* Welcome + intro Berenstain Bears */
   980829,      /* boulders in the road */

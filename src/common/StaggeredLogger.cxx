@@ -27,11 +27,11 @@ namespace {
   {
     std::tm now = BSPF::localTime();
 
-    char formattedTime[100];
-    formattedTime[99] = 0;
-    std::strftime(formattedTime, 99, "%H:%M:%S", &now);
+    std::array<char, 100> formattedTime;
+    formattedTime.fill(0);
+    std::strftime(formattedTime.data(), 99, "%H:%M:%S", &now);
 
-    return formattedTime;
+    return formattedTime.data();
   }
 }
 

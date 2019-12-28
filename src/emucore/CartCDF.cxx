@@ -187,6 +187,8 @@ inline void CartridgeCDF::callFunction(uInt8 value)
         }
       }
       break;
+    default:
+      break;
   }
 }
 

@@ -408,7 +408,7 @@ bool DebuggerParser::validateArgs(int cmd)
 {
   // cerr << "entering validateArgs(" << cmd << ")" << endl;
   bool required = commands[cmd].parmsRequired;
-  Parameters* p = commands[cmd].parms;
+  Parameters* p = commands[cmd].parms.data();
 
   if(argCount == 0)
   {
@@ -434,7 +434,7 @@ bool DebuggerParser::validateArgs(int cmd)
   // In this case, the required number of arguments is unbounded
   argRequiredCount = (*p == Parameters::ARG_END_ARGS) ? count : argCount;
 
-  p = commands[cmd].parms;
+  p = commands[cmd].parms.data();
   uInt32 curCount = 0;
 
   do {
