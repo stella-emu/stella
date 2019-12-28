@@ -214,9 +214,9 @@ bool FilesystemNode::rename(const string& newfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FilesystemNode::read(ByteBuffer& image) const
+size_t FilesystemNode::read(ByteBuffer& image) const
 {
-  uInt32 size = 0;
+  size_t size = 0;
 
   // File must actually exist
   if (!(exists() && isReadable()))
@@ -238,7 +238,7 @@ uInt32 FilesystemNode::read(ByteBuffer& image) const
     if (length == 0)
       throw runtime_error("Zero-byte file");
 
-    size = std::min<uInt32>(length, 512 * 1024);
+    size = std::min<size_t>(length, 512 * 1024);
     in.read(reinterpret_cast<char*>(image.get()), size);
   }
   else

@@ -307,20 +307,21 @@ static void Decode(uInt32* output, const uInt8* input, uInt32 len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string hash(const ByteBuffer& buffer, uInt32 length)
+string hash(const ByteBuffer& buffer, size_t length)
 {
   return hash(buffer.get(), length);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string hash(const uInt8* buffer, uInt32 length)
+string hash(const uInt8* buffer, size_t length)
 {
   char hex[] = "0123456789abcdef";
   MD5_CTX context;
   uInt8 md5[16];
+  uInt32 len32 = static_cast<uInt32>(length);  // Always use 32-bit for now
 
   MD5Init(&context);
-  MD5Update(&context, buffer, length);
+  MD5Update(&context, buffer, len32);
   MD5Final(md5, &context);
 
   string result;
@@ -337,7 +338,7 @@ string hash(const uInt8* buffer, uInt32 length)
 string hash(const FilesystemNode& node)
 {
   ByteBuffer image;
-  uInt32 size = 0;
+  size_t size = 0;
   try
   {
     size = node.read(image);

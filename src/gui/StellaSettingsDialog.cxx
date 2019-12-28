@@ -508,7 +508,7 @@ void StellaSettingsDialog::updateControllerStates()
   bool autoDetect = false;
   ByteBuffer image;
   string md5 = myGameProperties.get(PropType::Cart_MD5);
-  uInt32 size = 0;
+  size_t size = 0;
 
   // try to load the image for auto detection
   if(!instance().hasConsole())

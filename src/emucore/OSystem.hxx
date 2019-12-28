@@ -306,7 +306,7 @@ class OSystem
 
       @return  Unique pointer to the array
     */
-    ByteBuffer openROM(const FilesystemNode& rom, string& md5, uInt32& size);
+    ByteBuffer openROM(const FilesystemNode& rom, string& md5, size_t& size);
 
     /**
       Creates a new game console from the specified romfile, and correctly
