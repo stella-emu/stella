@@ -145,7 +145,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   {
     ByteBuffer image;
     string md5 = myProperties.get(PropType::Cart_MD5);
-    uInt32 size = 0;
+    size_t size = 0;
 
     if(node.exists() && !node.isDirectory() &&
       (image = instance().openROM(node, md5, size)) != nullptr)

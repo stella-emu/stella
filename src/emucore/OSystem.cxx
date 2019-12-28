@@ -515,7 +515,7 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
 
   // Open the cartridge image and read it in
   ByteBuffer image;
-  uInt32 size = 0;
+  size_t size = 0;
   if((image = openROM(romfile, md5, size)) != nullptr)
   {
     // Get a valid set of properties, including any entered on the commandline
@@ -598,7 +598,7 @@ void OSystem::closeConsole()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
+ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size)
 {
   // This method has a documented side-effect:
   // It not only loads a ROM and creates an array with its contents,

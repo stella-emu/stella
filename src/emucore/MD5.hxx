@@ -28,12 +28,17 @@ namespace MD5 {
   Get the MD5 Message-Digest of the specified message with the
   given length.  The digest consists of 32 hexadecimal digits.
 
+  Note that currently, the length is truncated internally to
+  32 bits, until the MD5 routines are rewritten for 64-bit.
+  Based on the size of data we currently use, this may never
+  actually happen.
+
   @param buffer The message to compute the digest of
   @param length The length of the message
   @return The message-digest
 */
-string hash(const ByteBuffer& buffer, uInt32 length);
-string hash(const uInt8* buffer, uInt32 length);
+string hash(const ByteBuffer& buffer, size_t length);
+string hash(const uInt8* buffer, size_t length);
 
 /**
   Get the MD5 Message-Digest of the file contained in 'node'.

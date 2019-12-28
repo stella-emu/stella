@@ -238,7 +238,7 @@ class FilesystemNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    uInt32 read(ByteBuffer& buffer) const;
+    size_t read(ByteBuffer& buffer) const;
 
     /**
      * The following methods are almost exactly the same as the various
@@ -398,7 +398,7 @@ class AbstractFSNode
      *          This method can throw exceptions, and should be used inside
      *          a try-catch block.
      */
-    virtual uInt32 read(ByteBuffer& buffer) const { return 0; }
+    virtual size_t read(ByteBuffer& buffer) const { return 0; }
 };
 
 #endif
