@@ -387,7 +387,7 @@ void FrameBuffer::update(bool force)
   // indicates that, and then the code at the top of this method sees
   // the change and redraws everything
   if(myMsg.enabled)
-    force = force || drawMessage();
+    drawMessage();
 
   // Push buffers to screen only when necessary
   if(force)

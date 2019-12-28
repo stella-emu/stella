@@ -469,11 +469,11 @@ void Console::setPalette(const string& type)
 {
   // Look at all the palettes, since we don't know which one is
   // currently active
-  static constexpr PaletteArray* palettes[3][3] = {
+  static constexpr BSPF::array2D<PaletteArray*, 3, 3> palettes = {{
     { &ourNTSCPalette,     &ourPALPalette,     &ourSECAMPalette     },
     { &ourNTSCPaletteZ26,  &ourPALPaletteZ26,  &ourSECAMPaletteZ26  },
     { &ourUserNTSCPalette, &ourUserPALPalette, &ourUserSECAMPalette }
-  };
+  }};
 
   // See which format we should be using
   int paletteNum = 0;
@@ -906,25 +906,25 @@ void Console::loadUserPalette()
   }
 
   // Now that we have valid data, create the user-defined palettes
-  uInt8 pixbuf[3];  // Temporary buffer for one 24-bit pixel
+  std::array<uInt8, 3> pixbuf;  // Temporary buffer for one 24-bit pixel
 
   for(int i = 0; i < 128; i++)  // NTSC palette
   {
-    in.read(reinterpret_cast<char*>(pixbuf), 3);
+    in.read(reinterpret_cast<char*>(pixbuf.data()), 3);
     uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     ourUserNTSCPalette[(i<<1)] = pixel;
   }
   for(int i = 0; i < 128; i++)  // PAL palette
   {
-    in.read(reinterpret_cast<char*>(pixbuf), 3);
+    in.read(reinterpret_cast<char*>(pixbuf.data()), 3);
     uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     ourUserPALPalette[(i<<1)] = pixel;
   }
 
-  uInt32 secam[16];  // All 8 24-bit pixels, plus 8 colorloss pixels
-  for(int i = 0; i < 8; i++)    // SECAM palette
+  std::array<uInt32, 16> secam;  // All 8 24-bit pixels, plus 8 colorloss pixels
+  for(int i = 0; i < 8; i++)     // SECAM palette
   {
-    in.read(reinterpret_cast<char*>(pixbuf), 3);
+    in.read(reinterpret_cast<char*>(pixbuf.data()), 3);
     uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     secam[(i<<1)]   = pixel;
     secam[(i<<1)+1] = 0;
@@ -932,7 +932,7 @@ void Console::loadUserPalette()
   uInt32* ptr = ourUserSECAMPalette.data();
   for(int i = 0; i < 16; ++i)
   {
-    uInt32* s = secam;
+    const uInt32* s = secam.data();
     for(int j = 0; j < 16; ++j)
       *ptr++ = *s++;
   }
@@ -945,16 +945,16 @@ void Console::generateColorLossPalette()
 {
   // Look at all the palettes, since we don't know which one is
   // currently active
-  uInt32* palette[9] = {
-    &ourNTSCPalette[0],    &ourPALPalette[0],    &ourSECAMPalette[0],
-    &ourNTSCPaletteZ26[0], &ourPALPaletteZ26[0], &ourSECAMPaletteZ26[0],
+  std::array<uInt32*, 9> palette = {
+    ourNTSCPalette.data(),    ourPALPalette.data(),    ourSECAMPalette.data(),
+    ourNTSCPaletteZ26.data(), ourPALPaletteZ26.data(), ourSECAMPaletteZ26.data(),
     nullptr, nullptr, nullptr
   };
   if(myUserPaletteDefined)
   {
-    palette[6] = &ourUserNTSCPalette[0];
-    palette[7] = &ourUserPALPalette[0];
-    palette[8] = &ourUserSECAMPalette[0];
+    palette[6] = ourUserNTSCPalette.data();
+    palette[7] = ourUserPALPalette.data();
+    palette[8] = ourUserSECAMPalette.data();
   }
 
   for(int i = 0; i < 9; ++i)
@@ -966,11 +966,11 @@ void Console::generateColorLossPalette()
     // using the standard RGB -> grayscale conversion formula)
     for(int j = 0; j < 128; ++j)
     {
-      uInt32 pixel = palette[i][(j<<1)];
-      uInt8 r = (pixel >> 16) & 0xff;
-      uInt8 g = (pixel >> 8)  & 0xff;
-      uInt8 b = (pixel >> 0)  & 0xff;
-      uInt8 sum = uInt8((r * 0.2989) + (g * 0.5870) + (b * 0.1140));
+      const uInt32 pixel = palette[i][(j<<1)];
+      const uInt8 r = (pixel >> 16) & 0xff;
+      const uInt8 g = (pixel >> 8)  & 0xff;
+      const uInt8 b = (pixel >> 0)  & 0xff;
+      const uInt8 sum = static_cast<uInt8>((r * 0.2989) + (g * 0.5870) + (b * 0.1140));
       palette[i][(j<<1)+1] = (sum << 16) + (sum << 8) + sum;
     }
   }
@@ -980,7 +980,7 @@ void Console::generateColorLossPalette()
 float Console::getFramerate() const
 {
   return
-    (myConsoleTiming == ConsoleTiming::ntsc ? 262.f * 60.f : 312.f * 50.f) /
+    (myConsoleTiming == ConsoleTiming::ntsc ? 262.F * 60.F : 312.F * 50.F) /
      myTIA->frameBufferScanlinesLastFrame();
 }
 
