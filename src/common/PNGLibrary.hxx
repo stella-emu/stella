@@ -137,10 +137,11 @@ class PNGLibrary
     // The following data remains between invocations of allocateStorage,
     // and is only changed when absolutely necessary.
     struct ReadInfoType {
-      ByteBuffer buffer;
-      unique_ptr<png_bytep[]> row_pointers;
+      vector<png_byte> buffer;
+      vector<png_bytep> row_pointers;
       png_uint_32 width, height, pitch;
-      uInt32 buffer_size, row_size;
+
+      ReadInfoType() : width(0), height(0), pitch(0) { }
     };
     static ReadInfoType ReadInfo;
 
@@ -166,7 +167,7 @@ class PNGLibrary
       @param height   The height of the PNG image
       @param comments The text comments to add to the PNG image
     */
-    void saveImageToDisk(ofstream& out, const unique_ptr<png_bytep[]>& rows,
+    void saveImageToDisk(ofstream& out, const vector<png_bytep>& rows,
                          png_uint_32 width, png_uint_32 height,
                          const VariantList& comments);
 
