@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3495
+#define DEF_PROPS_SIZE 3496
 
 static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1113,7 +1113,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "4edb251f5f287c22efc64b3a2d095504", "Atari", "", "Atari VCS Point-of-Purchase ROM (1982) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "4f0071946e80ca68edfdccbac86dcce0", "", "", "Virtual Pet Demo 1 (CRACKERS) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "4f2d47792a06da224ba996c489a87939", "HES - Activision", "223", "Super Action Pak - Pitfall, Barnstorming, Grand Prix, Laser Blast (1988) (HES) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "4f32b24869d8c1310fecf039c6424db6", "U.S. Games Corporation - JWDA, Todd Marshall", "", "3-D Zapper (12-15-82) (U.S. Games) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "4f32b24869d8c1310fecf039c6424db6", "U.S. Games Corporation - JWDA, Todd Marshall", "", "3-D Zapper (12-15-82) (U.S. Games) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "4f618c2429138e0280969193ed6c107e", "Activision, Alan Miller", "AZ-028, AG-028-04", "Robot Tank (1983) (Activision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "4f634893d54e9cabe106e0ec0b7bdcdf", "Retroactive", "", "Qb (2.14) (Retroactive) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "4f64d6d0694d9b7a1ed7b0cb0b83e759", "20th Century Fox Video Games, John Russell", "11016", "Revenge of the Beefsteak Tomatoes (1983) (20th Century Fox)", "AKA Revenge of the Cherry Tomatoes", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2109,6 +2109,7 @@ static const char* const DefProps[DEF_PROPS_SIZE][21] = {
   { "97d0151beb84acbe82aa6db18cd91b98", "Steve Engelhardt", "", "Lunar Attack (2002) (Steve Engelhardt) (Hack)", "Hack of Z-Tack", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "97d079315c09796ff6d95a06e4b70171", "Activision, Garry Kitchen", "AZ-032", "Pressure Cooker (1983) (Activision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "97e47512f89e79818d988d078dc90410", "Thomas Jentzsch", "", "Missile Control - Amiga Mouse Hack v1.15 (NTSC) (TJ)", "Uses Amiga Mouse Controller", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "97f4da9f1031486f4e588f1e53572e53", "SpiceWare - Darrell Spice Jr.", "", "Draconian", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "9813b9e4b8a6fd919c86a40c6bda8c93", "Atari", "CX26177", "Ikari Warriors (1989) (Atari) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9831efc7f4cb8ffb4df0082bab2f07a3", "Activision, Steve Cartwright - Ariola", "EAX-031, EAX-031-04B - 711 031-717", "Frostbite (1983) (Activision) (PAL) (8K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "9848b5ef7a0c02fe808b920a2ac566d2", "Skyworks Technology Inc.", "", "Baseball (2002) (Skyworks)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
