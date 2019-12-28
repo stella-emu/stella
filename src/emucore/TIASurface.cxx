@@ -55,13 +55,13 @@ TIASurface::TIASurface(OSystem& system)
 
   // Generate scanline data, and a pre-defined scanline surface
   constexpr uInt32 scanHeight = TIAConstants::frameBufferHeight * 2;
-  uInt32 scanData[scanHeight];
+  std::array<uInt32, scanHeight> scanData;
   for(uInt32 i = 0; i < scanHeight; i += 2)
   {
     scanData[i]   = 0x00000000;
     scanData[i+1] = 0xff000000;
   }
-  mySLineSurface = myFB.allocateSurface(1, scanHeight, interpolationModeFromSettings(myOSystem.settings()), scanData);
+  mySLineSurface = myFB.allocateSurface(1, scanHeight, interpolationModeFromSettings(myOSystem.settings()), scanData.data());
 
   // Base TIA surface for use in taking snapshots in 1x mode
   myBaseTiaSurface = myFB.allocateSurface(TIAConstants::frameBufferWidth*2,
