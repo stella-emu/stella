@@ -101,7 +101,7 @@ class RomListWidget : public EditableWidget
     Common::Base::Fmt _base{Common::Base::Fmt::_DEFAULT};  // base used during editing
 
     const CartDebug::Disassembly* myDisasm{nullptr};
-    vector<CheckboxWidget*> myCheckList{nullptr};
+    vector<CheckboxWidget*> myCheckList;
 
   private:
     // Following constructors and assignment operators not supported
