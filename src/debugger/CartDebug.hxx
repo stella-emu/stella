@@ -70,19 +70,19 @@ class CartDebug : public DebuggerSystem
       WRITE = TCODE   // 0x40, address written to
     };
     struct DisassemblyTag {
-      DisasmType type;
-      uInt16 address;
+      DisasmType type{NONE};
+      uInt16 address{0};
       string label;
       string disasm;
       string ccount;
       string ctotal;
       string bytes;
-      bool hllabel;
+      bool hllabel{false};
     };
     using DisassemblyList = vector<DisassemblyTag>;
     struct Disassembly {
       DisassemblyList list;
-      int fieldwidth;
+      int fieldwidth{0};
     };
 
     // Determine 'type' of address (ie, what part of the system accessed)
@@ -260,22 +260,20 @@ class CartDebug : public DebuggerSystem
     using AddrTypeArray = std::array<uInt8, 0x1000>;
 
     struct DirectiveTag {
-      DisasmType type;
-      uInt16 start;
-      uInt16 end;
+      DisasmType type{NONE};
+      uInt16 start{0};
+      uInt16 end{0};
     };
     using AddressList = std::list<uInt16>;
     using DirectiveList = std::list<DirectiveTag>;
 
     struct BankInfo {
-      uInt16 start;                // start of address space
-      uInt16 end;                  // end of address space
-      uInt16 offset;               // ORG value
-      size_t size;                 // size of a bank (in bytes)
+      uInt16 start{0};             // start of address space
+      uInt16 end{0};               // end of address space
+      uInt16 offset{0};            // ORG value
+      size_t size{0};              // size of a bank (in bytes)
       AddressList addressList;     // addresses which PC has hit
       DirectiveList directiveList; // overrides for automatic code determination
-
-      BankInfo() : start(0), end(0), offset(0), size(0) { }
     };
 
     // Address type information determined by Distella
@@ -316,7 +314,7 @@ class CartDebug : public DebuggerSystem
     CartState myState;
     CartState myOldState;
 
-    CartDebugWidget* myDebugWidget;
+    CartDebugWidget* myDebugWidget{nullptr};
 
     // A complete record of relevant diassembly information for each bank
     vector<BankInfo> myBankInfo;
@@ -325,7 +323,7 @@ class CartDebug : public DebuggerSystem
     // to corresponding lines of text in that display
     Disassembly myDisassembly;
     std::map<uInt16, int> myAddrToLineList;
-    bool myAddrToLineIsROM;
+    bool myAddrToLineIsROM{true};
 
     // Mappings from label to address (and vice versa) for items
     // defined by the user (either through a DASM symbol file or manually
@@ -346,7 +344,7 @@ class CartDebug : public DebuggerSystem
     LabelToAddr mySystemAddresses;
 
     // The maximum length of all labels currently defined
-    uInt16 myLabelLength;
+    uInt16 myLabelLength{8};  // longest pre-defined label
 
     // Filenames to use for various I/O (currently these are hardcoded)
     string myListFile, mySymbolFile, myCfgFile, myDisasmFile, myRomFile;

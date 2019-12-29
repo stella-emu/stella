@@ -196,9 +196,6 @@ void ZipHandler::addToCache()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ZipHandler::ZipFile::ZipFile(const string& filename)
   : myFilename(filename),
-    myLength(0),
-    myRomfiles(0),
-    myCdPos(0),
     myBuffer(make_unique<uInt8[]>(DECOMPRESS_BUFSIZE))
 {
   std::fill(myBuffer.get(), myBuffer.get() + DECOMPRESS_BUFSIZE, 0);
@@ -510,33 +507,6 @@ void ZipHandler::ZipFile::decompressDataType8(
   // If anything looks funny, report an error
   if(stream.avail_out > 0 || input_remaining > 0)
     throw runtime_error(errorMessage(ZipError::DECOMPRESS_ERROR));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ZipHandler::ZipHeader::ZipHeader()
-  : versionCreated(0),
-    versionNeeded(0),
-    bitFlag(0),
-    compression(0),
-    fileTime(0),
-    fileDate(0),
-    crc(0),
-    compressedLength(0),
-    uncompressedLength(0),
-    startDiskNumber(0),
-    localHeaderOffset(0)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ZipHandler::ZipEcd::ZipEcd()
-  : diskNumber(0),
-    cdStartDiskNumber(0),
-    cdDiskEntries(0),
-    cdTotalEntries(0),
-    cdSize(0),
-    cdStartDiskOffset(0)
-{
 }
 
 #endif  /* ZIP_SUPPORT */

@@ -50,7 +50,7 @@ class SerialPortUNIX : public SerialPort
 
   private:
     // File descriptor for serial connection
-    int myHandle;
+    int myHandle{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -35,20 +35,14 @@ class BreakpointMap
   public:
     // breakpoint flags
     static const uInt32 ONE_SHOT = 1 << 0;      // used for 'trace' command
-
     static const uInt8 ANY_BANK = 255;          // breakpoint valid in any bank
 
     struct Breakpoint
     {
-      uInt16 addr;
-      uInt8 bank;
+      uInt16 addr{0};
+      uInt8 bank{0};
 
-      Breakpoint() : addr(0), bank(0) { }
       explicit Breakpoint(uInt16 c_addr, uInt8 c_bank) : addr(c_addr), bank(c_bank) { }
-      Breakpoint(const Breakpoint&) = default;
-      Breakpoint& operator=(const Breakpoint&) = default;
-      Breakpoint(Breakpoint&&) = default;
-      Breakpoint& operator=(Breakpoint&&) = default;
 
       bool operator==(const Breakpoint& other) const
       {
@@ -68,7 +62,7 @@ class BreakpointMap
     };
     using BreakpointList = std::vector<Breakpoint>;
 
-    BreakpointMap() : myInitialized(false) { }
+    BreakpointMap() = default;
 
     bool isInitialized() const { return myInitialized; }
 
@@ -107,7 +101,7 @@ class BreakpointMap
     };
 
     std::unordered_map<Breakpoint, uInt32, BreakpointHash> myMap;
-    bool myInitialized;
+    bool myInitialized{false};
 
     // Following constructors and assignment operators not supported
     BreakpointMap(const BreakpointMap&) = delete;

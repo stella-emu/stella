@@ -68,22 +68,22 @@ class EmulationTiming {
     FrameLayout myFrameLayout;
     ConsoleTiming myConsoleTiming;
 
-    uInt32 myPlaybackRate;
-    uInt32 myPlaybackPeriod;
-    uInt32 myAudioQueueExtraFragments;
-    uInt32 myAudioQueueHeadroom;
+    uInt32 myPlaybackRate{44100};
+    uInt32 myPlaybackPeriod{512};
+    uInt32 myAudioQueueExtraFragments{1};
+    uInt32 myAudioQueueHeadroom{2};
 
-    uInt32 myMaxCyclesPerTimeslice;
-    uInt32 myMinCyclesPerTimeslice;
-    uInt32 myLinesPerFrame;
-    uInt32 myCyclesPerFrame;
-    uInt32 myCyclesPerSecond;
-    uInt32 myAudioFragmentSize;
-    uInt32 myAudioSampleRate;
-    uInt32 myAudioQueueCapacity;
-    uInt32 myPrebufferFragmentCount;
+    uInt32 myMaxCyclesPerTimeslice{0};
+    uInt32 myMinCyclesPerTimeslice{0};
+    uInt32 myLinesPerFrame{0};
+    uInt32 myCyclesPerFrame{0};
+    uInt32 myCyclesPerSecond{0};
+    uInt32 myAudioFragmentSize{0};
+    uInt32 myAudioSampleRate{0};
+    uInt32 myAudioQueueCapacity{0};
+    uInt32 myPrebufferFragmentCount{0};
 
-    double mySpeedFactor;
+    double mySpeedFactor{1.0};
 
   private:
 

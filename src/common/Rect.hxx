@@ -32,12 +32,12 @@ namespace Common {
 */
 struct Point
 {
-  Int32 x;  //!< The horizontal part of the point
-  Int32 y;  //!< The vertical part of the point
+  Int32 x{0};  //!< The horizontal part of the point
+  Int32 y{0};  //!< The vertical part of the point
 
-  Point() : x(0), y(0) { }
+  Point() = default;
   explicit Point(Int32 x1, Int32 y1) : x(x1), y(y1) { }
-  explicit Point(const string& p) : x(0), y(0) {
+  explicit Point(const string& p) {
     char c = '\0';
     istringstream buf(p);
     buf >> x >> c >> y;
@@ -55,12 +55,12 @@ struct Point
 
 struct Size
 {
-  uInt32 w;  //!< The width part of the size
-  uInt32 h;  //!< The height part of the size
+  uInt32 w{0};  //!< The width part of the size
+  uInt32 h{0};  //!< The height part of the size
 
-  Size() : w(0), h(0) { }
+  Size() = default;
   explicit Size(uInt32 w1, uInt32 h1) : w(w1), h(h1) { }
-  explicit Size(const string& s) : w(0), h(0) {
+  explicit Size(const string& s) {
     char c = '\0';
     istringstream buf(s);
     buf >> w >> c >> h;
@@ -102,11 +102,13 @@ struct Size
 struct Rect
 {
   private:
-    uInt32 top, left;        //!< The point at the top left of the rectangle (part of the rect).
-    uInt32 bottom, right;    //!< The point at the bottom right of the rectangle (not part of the rect).
+    //!< The point at the top left of the rectangle (part of the rect).
+    uInt32 top{0}, left{0};
+    //!< The point at the bottom right of the rectangle (not part of the rect).
+    uInt32 bottom{0}, right{0};
 
   public:
-    Rect() : top(0), left(0), bottom(0), right(0) { assert(valid()); }
+    Rect() = default;
     explicit Rect(const Size& s) : top(0), left(0), bottom(s.h), right(s.w) { assert(valid()); }
     Rect(uInt32 w, uInt32 h) : top(0), left(0), bottom(h), right(w) { assert(valid()); }
     Rect(const Point& p, uInt32 w, uInt32 h) : top(p.y), left(p.x), bottom(h), right(w) { assert(valid()); }

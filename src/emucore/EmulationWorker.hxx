@@ -183,19 +183,19 @@ class EmulationWorker
     std::exception_ptr myPendingException;
 
     // Any pending signal (or Signal::none)
-    Signal myPendingSignal;
+    Signal myPendingSignal{Signal::none};
     // The initial access to myState is not synchronized -> make this atomic
-    std::atomic<State> myState;
+    std::atomic<State> myState{State::initializing};
 
     // Emulation parameters
-    TIA* myTia;
-    uInt64 myCyclesPerSecond;
-    uInt64 myMaxCycles;
-    uInt64 myMinCycles;
-    DispatchResult* myDispatchResult;
+    TIA* myTia{nullptr};
+    uInt64 myCyclesPerSecond{0};
+    uInt64 myMaxCycles{0};
+    uInt64 myMinCycles{0};
+    DispatchResult* myDispatchResult{nullptr};
 
     // Total number of cycles during this emulation run
-    uInt64 myTotalCycles;
+    uInt64 myTotalCycles{0};
     // 6507 time
     std::chrono::time_point<std::chrono::high_resolution_clock> myVirtualTime;
 

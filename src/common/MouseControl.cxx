@@ -26,8 +26,7 @@
 MouseControl::MouseControl(Console& console, const string& mode)
   : myProps(console.properties()),
     myLeftController(console.leftController()),
-    myRightController(console.rightController()),
-    myCurrentModeNum(0)
+    myRightController(console.rightController())
 {
   istringstream m_axis(mode);
   string m_mode;

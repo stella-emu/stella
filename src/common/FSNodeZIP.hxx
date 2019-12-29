@@ -38,7 +38,7 @@ class FilesystemNodeZIP : public AbstractFSNode
     /**
      * Creates a FilesystemNodeZIP with the root node as path.
      */
-    FilesystemNodeZIP();
+//    FilesystemNodeZIP();
 
     /**
      * Creates a FilesystemNodeZIP for a given path.
@@ -101,10 +101,10 @@ class FilesystemNodeZIP : public AbstractFSNode
 
     string _zipFile, _virtualPath;
     string _name, _path, _shortPath;
-    zip_error _error;
-    uInt32 _numFiles;
+    zip_error _error{zip_error::NONE};
+    uInt32 _numFiles{0};
 
-    bool _isDirectory, _isFile;
+    bool _isDirectory{false}, _isFile{false};
 
     // ZipHandler static reference variable responsible for accessing ZIP files
     static unique_ptr<ZipHandler> myZipHandler;

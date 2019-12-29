@@ -23,7 +23,7 @@
 class TrapArray
 {
   public:
-    TrapArray() : myInitialized(false) {}
+    TrapArray() = default;
 
     bool isSet(const uInt16 address) const { return myCount[address]; }
     bool isClear(const uInt16 address) const { return myCount[address] == 0; }
@@ -46,7 +46,7 @@ class TrapArray
     std::array<uInt8, 0x10000> myCount;
 
     // Indicates whether we should treat this array as initialized
-    bool myInitialized;
+    bool myInitialized{false};
 
   private:
     // Following constructors and assignment operators not supported

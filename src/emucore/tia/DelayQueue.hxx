@@ -51,7 +51,7 @@ class DelayQueue : public Serializable
 
   private:
     std::array<DelayQueueMember<capacity>, length> myMembers;
-    uInt8 myIndex;
+    uInt8 myIndex{0};
     std::array<uInt8, 0xFF> myIndices;
 
   private:
@@ -68,7 +68,6 @@ class DelayQueue : public Serializable
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<unsigned length, unsigned capacity>
 DelayQueue<length, capacity>::DelayQueue()
-  : myIndex(0)
 {
   myIndices.fill(0xFF);
 }

@@ -47,17 +47,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::FrameBuffer(OSystem& osystem)
-  : myOSystem(osystem),
-    myNumDisplays(1),
-    myInitializedCount(0),
-    myPausedCount(0),
-    myStatsEnabled(false),
-    myLastScanlines(0),
-    myGrabMouse(false),
-    myHiDPIAllowed(false),
-    myHiDPIEnabled(false),
-    myCurrentModeList(nullptr),
-    myTIAMaxZoom(1.0)
+  : myOSystem(osystem)
 {
 }
 
@@ -1022,15 +1012,6 @@ const FrameBuffer::VideoMode& FrameBuffer::getSavedVidMode(bool fullscreen)
 // VideoMode implementation
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::VideoMode::VideoMode()
-  : stretch(VideoMode::Stretch::None),
-    description(""),
-    zoom(1),
-    fsIndex(-1)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
                                   Stretch smode, float overscan, const string& desc,
                                   float zoomLevel, Int32 fsindex)
@@ -1116,12 +1097,6 @@ FrameBuffer::VideoMode::VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
 //
 // VideoModeList implementation
 //
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FrameBuffer::VideoModeList::VideoModeList()
-  : myIdx(-1)
-{
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::VideoModeList::add(const VideoMode& mode)
 {

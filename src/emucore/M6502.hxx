@@ -336,68 +336,68 @@ class M6502 : public Serializable
       MaskableInterruptBit    = 0x04,
       NonmaskableInterruptBit = 0x08
     ;
-    uInt8 myExecutionStatus;
+    uInt8 myExecutionStatus{0};
 
     /// Pointer to the system the processor is installed in or the null pointer
-    System* mySystem;
+    System* mySystem{nullptr};
 
     /// Reference to the settings
     const Settings& mySettings;
 
-    uInt8 A;    // Accumulator
-    uInt8 X;    // X index register
-    uInt8 Y;    // Y index register
-    uInt8 SP;   // Stack Pointer
-    uInt8 IR;   // Instruction register
-    uInt16 PC;  // Program Counter
+    uInt8 A{0};    // Accumulator
+    uInt8 X{0};    // X index register
+    uInt8 Y{0};    // Y index register
+    uInt8 SP{0};   // Stack Pointer
+    uInt8 IR{0};   // Instruction register
+    uInt16 PC{0};  // Program Counter
 
-    bool N;     // N flag for processor status register
-    bool V;     // V flag for processor status register
-    bool B;     // B flag for processor status register
-    bool D;     // D flag for processor status register
-    bool I;     // I flag for processor status register
-    bool notZ;  // Z flag complement for processor status register
-    bool C;     // C flag for processor status register
+    bool N{false};     // N flag for processor status register
+    bool V{false};     // V flag for processor status register
+    bool B{false};     // B flag for processor status register
+    bool D{false};     // D flag for processor status register
+    bool I{false};     // I flag for processor status register
+    bool notZ{false};  // Z flag complement for processor status register
+    bool C{false};     // C flag for processor status register
 
-    uInt8 icycles; // cycles of last instruction
+    uInt8 icycles{0}; // cycles of last instruction
 
     /// Indicates the numer of distinct memory accesses
-    uInt32 myNumberOfDistinctAccesses;
+    uInt32 myNumberOfDistinctAccesses{0};
 
     /// Indicates the last address which was accessed
-    uInt16 myLastAddress;
+    uInt16 myLastAddress{0};
 
     /// Last cycle that triggered a breakpoint
-    uInt64 myLastBreakCycle;
+    uInt64 myLastBreakCycle{ULLONG_MAX};
 
     /// Indicates the last address which was accessed specifically
     /// by a peek or poke command
-    uInt16 myLastPeekAddress, myLastPokeAddress;
+    uInt16 myLastPeekAddress{0}, myLastPokeAddress{0};
     /// Indicates the last base (= non-mirrored) address which was
     /// accessed specifically by a peek or poke command
-    uInt16 myLastPeekBaseAddress, myLastPokeBaseAddress;
+    uInt16 myLastPeekBaseAddress{0}, myLastPokeBaseAddress{0};
     // Indicates the type of the last access
-    uInt8 myFlags;
+    uInt8 myFlags{0};
 
     /// Indicates the last address used to access data by a peek command
     /// for the CPU registers (S/A/X/Y)
-    Int32 myLastSrcAddressS, myLastSrcAddressA,
-          myLastSrcAddressX, myLastSrcAddressY;
+    Int32 myLastSrcAddressS{-1}, myLastSrcAddressA{-1},
+          myLastSrcAddressX{-1}, myLastSrcAddressY{-1};
 
     /// Indicates the data address used by the last command that performed
     /// a poke (currently, the last address used by STx)
     /// If an address wasn't used (ie, as in immediate mode), the address
     /// is set to zero
-    uInt16 myDataAddressForPoke;
+    uInt16 myDataAddressForPoke{0};
 
     /// Indicates the number of system cycles per processor cycle
     static constexpr uInt32 SYSTEM_CYCLES_PER_CPU = 1;
 
     /// Called when the processor enters halt state
-    onHaltCallback myOnHaltCallback;
+    onHaltCallback myOnHaltCallback{nullptr};
 
     /// Indicates whether RDY was pulled low
-    bool myHaltRequested;
+    bool myHaltRequested{false};
 
 #ifdef DEBUGGER_SUPPORT
     Int32 evalCondBreaks() {
@@ -427,19 +427,17 @@ class M6502 : public Serializable
     }
 
     /// Pointer to the debugger for this processor or the null pointer
-    Debugger* myDebugger;
+    Debugger* myDebugger{nullptr};
 
     // Addresses for which the specified action should occur
     TrapArray myReadTraps, myWriteTraps;
 
     // Did we just now hit a trap?
-    bool myJustHitReadTrapFlag;
-    bool myJustHitWriteTrapFlag;
+    bool myJustHitReadTrapFlag{false};
+    bool myJustHitWriteTrapFlag{false};
     struct HitTrapInfo {
       string message;
-      int address;
-
-      HitTrapInfo() : message(""), address(0) { }
+      int address{0};
     };
     HitTrapInfo myHitTrapInfo;
 
@@ -452,10 +450,10 @@ class M6502 : public Serializable
     StringList myTrapCondNames;
 #endif  // DEBUGGER_SUPPORT
 
-    bool myGhostReadsTrap;          // trap on ghost reads
-    bool myReadFromWritePortBreak;  // trap on reads from write ports
-    bool myWriteToReadPortBreak;    // trap on writes to read ports
-    bool myStepStateByInstruction;
+    bool myGhostReadsTrap{false};          // trap on ghost reads
+    bool myReadFromWritePortBreak{false};  // trap on reads from write ports
+    bool myWriteToReadPortBreak{false};    // trap on writes to read ports
+    bool myStepStateByInstruction{false};
 
   private:
     // Following constructors and assignment operators not supported

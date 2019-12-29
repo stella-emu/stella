@@ -33,11 +33,7 @@ System::System(Random& random, M6502& m6502, M6532& m6532,
     myM6502(m6502),
     myM6532(m6532),
     myTIA(mTIA),
-    myCart(mCart),
-    myCycles(0),
-    myDataBusState(0),
-    myDataBusLocked(false),
-    mySystemInAutodetect(false)
+    myCart(mCart)
 {
   // Initialize page access table
   PageAccess access(&myNullDevice, System::PageAccessType::READ);

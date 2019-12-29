@@ -19,13 +19,6 @@
 #include "TIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Background::Background()
-  : myTIA(nullptr)
-{
-  reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Background::reset()
 {
   myColor = myObjectColor = myDebugColor = 0;

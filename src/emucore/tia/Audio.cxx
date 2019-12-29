@@ -32,11 +32,8 @@ namespace {
   }
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Audio::Audio()
-  : myAudioQueue(nullptr),
-    myCurrentFragment(nullptr)
 {
   for (uInt8 i = 0; i <= 0x1e; ++i) myMixingTableSum[i] = mixingTableEntry(i, 0x1e);
   for (uInt8 i = 0; i <= 0x0f; ++i) myMixingTableIndividual[i] = mixingTableEntry(i, 0x0f);

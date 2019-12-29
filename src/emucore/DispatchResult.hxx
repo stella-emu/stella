@@ -27,9 +27,6 @@ class DispatchResult
 
   public:
 
-    DispatchResult()
-      : myStatus(Status::invalid), myCycles(0), myAddress(0), myWasReadTrap(false) { }
-
     Status getStatus() const { return myStatus; }
 
     uInt64 getCycles() const { return myCycles; }
@@ -44,7 +41,8 @@ class DispatchResult
 
     void setOk(uInt64 cycles);
 
-    void setDebugger(uInt64 cycles, const string& message = "", int address = -1, bool wasReadTrap = true);
+    void setDebugger(uInt64 cycles, const string& message = "", int address = -1,
+                     bool wasReadTrap = true);
 
     void setFatal(uInt64 cycles);
 
@@ -66,15 +64,15 @@ class DispatchResult
 
   private:
 
-    Status myStatus;
+    Status myStatus{Status::invalid};
 
-    uInt64 myCycles;
+    uInt64 myCycles{0};
 
     string myMessage;
 
-    int myAddress;
+    int myAddress{0};
 
-    bool myWasReadTrap;
+    bool myWasReadTrap{false};
 };
 
 #endif // DISPATCH_RESULT_HXX

@@ -33,7 +33,7 @@ class System;
 class Device : public Serializable
 {
   public:
-    Device() : mySystem(nullptr) { }
+    Device() = default;
     virtual ~Device() = default;
 
   public:
@@ -114,7 +114,7 @@ class Device : public Serializable
 
   protected:
     /// Pointer to the system the device is installed in or the null pointer
-    System* mySystem;
+    System* mySystem{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

@@ -85,18 +85,18 @@ class FrameLayoutDetector: public AbstractFrameManager {
     /**
      * The current state.
      */
-    State myState;
+    State myState{State::waitForVsyncStart};
 
     /**
      * The total number of frames detected as the respective frame layout.
      */
-    uInt32 myNtscFrames, myPalFrames;
+    uInt32 myNtscFrames{0}, myPalFrames{0};
 
     /**
      * We count the number of scanlines we spend waiting for vsync to be
      * toggled. If a threshold is exceeded, we force the transition.
      */
-    uInt32 myLinesWaitingForVsyncToStart;
+    uInt32 myLinesWaitingForVsyncToStart{0};
 
   private:
 

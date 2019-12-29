@@ -26,10 +26,8 @@ class DelayQueueMember : public Serializable {
 
   public:
     struct Entry {
-      uInt8 address;
-      uInt8 value;
-
-      Entry() : address(0), value(0) { }
+      uInt8 address{0};
+      uInt8 value{0};
     };
 
   public:
@@ -50,7 +48,7 @@ class DelayQueueMember : public Serializable {
 
   public:
     std::array<Entry, capacity> myEntries;
-    uInt8 mySize;
+    uInt8 mySize{0};
 
   private:
     DelayQueueMember(const DelayQueueMember<capacity>&) = delete;
@@ -67,7 +65,6 @@ class DelayQueueMember : public Serializable {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 template<unsigned capacity>
 DelayQueueMember<capacity>::DelayQueueMember()
-  : mySize(0)
 {
 }
 

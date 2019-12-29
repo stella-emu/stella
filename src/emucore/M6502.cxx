@@ -53,36 +53,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::M6502(const Settings& settings)
-  : myExecutionStatus(0),
-    mySystem(nullptr),
-    mySettings(settings),
-    A(0), X(0), Y(0), SP(0), IR(0), PC(0),
-    N(false), V(false), B(false), D(false), I(false), notZ(false), C(false),
-    icycles(0),
-    myNumberOfDistinctAccesses(0),
-    myLastAddress(0),
-    myLastBreakCycle(ULLONG_MAX),
-    myLastPeekAddress(0),
-    myLastPokeAddress(0),
-    myLastPeekBaseAddress(0),
-    myLastPokeBaseAddress(0),
-    myFlags(DISASM_NONE),
-    myLastSrcAddressS(-1),
-    myLastSrcAddressA(-1),
-    myLastSrcAddressX(-1),
-    myLastSrcAddressY(-1),
-    myDataAddressForPoke(0),
-    myOnHaltCallback(nullptr),
-    myHaltRequested(false),
-    myGhostReadsTrap(false),
-    myReadFromWritePortBreak(false),
-    myWriteToReadPortBreak(false),
-    myStepStateByInstruction(false)
+  : mySettings(settings)
 {
-#ifdef DEBUGGER_SUPPORT
-  myDebugger = nullptr;
-  myJustHitReadTrapFlag = myJustHitWriteTrapFlag = false;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

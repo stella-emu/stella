@@ -25,14 +25,6 @@ using namespace std::chrono;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EmulationWorker::EmulationWorker()
-  : myPendingSignal(Signal::none),
-    myState(State::initializing),
-    myTia(nullptr),
-    myCyclesPerSecond(0),
-    myMaxCycles(0),
-    myMinCycles(0),
-    myDispatchResult(nullptr),
-    myTotalCycles(0)
 {
   std::mutex mutex;
   std::unique_lock<std::mutex> lock(mutex);

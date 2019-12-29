@@ -31,12 +31,7 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EmulationTiming::EmulationTiming(FrameLayout frameLayout, ConsoleTiming consoleTiming) :
   myFrameLayout(frameLayout),
-  myConsoleTiming(consoleTiming),
-  myPlaybackRate(44100),
-  myPlaybackPeriod(512),
-  myAudioQueueExtraFragments(1),
-  myAudioQueueHeadroom(2),
-  mySpeedFactor(1)
+  myConsoleTiming(consoleTiming)
 {
   recalculate();
 }

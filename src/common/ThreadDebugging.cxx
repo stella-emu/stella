@@ -18,12 +18,6 @@
 #include "ThreadDebugging.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ThreadDebuggingHelper::ThreadDebuggingHelper()
-  : myMainThreadIdConfigured(false)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ThreadDebuggingHelper& ThreadDebuggingHelper::instance()
 {
   static ThreadDebuggingHelper instance;

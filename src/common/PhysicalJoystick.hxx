@@ -42,7 +42,7 @@ class PhysicalJoystick
   static constexpr char MODE_DELIM = '>'; // must not be '^', '|' or '#'
 
   public:
-    PhysicalJoystick();
+    PhysicalJoystick() = default;
 
     string getMap() const;
     bool setMap(const string& map);
@@ -65,10 +65,10 @@ class PhysicalJoystick
       JT_2600DAPTOR_RIGHT   = 5
     };
 
-    JoyType type;
-    int ID;
-    string name;
-    int numAxes, numButtons, numHats;
+    JoyType type{JT_NONE};
+    int ID{-1};
+    string name{"None"};
+    int numAxes{0}, numButtons{0}, numHats{0};
     IntArray axisLastValue;
     IntArray buttonLast;
 

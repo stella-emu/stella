@@ -49,23 +49,8 @@ Dialog::Dialog(OSystem& instance, DialogContainer& parent, const GUI::Font& font
                const string& title, int x, int y, int w, int h)
   : GuiObject(instance, parent, *this, x, y, w, h),
     _font(font),
-    _mouseWidget(nullptr),
-    _focusedWidget(nullptr),
-    _dragWidget(nullptr),
-    _defaultWidget(nullptr),
-    _okWidget(nullptr),
-    _cancelWidget(nullptr),
-    _visible(false),
-    _onTop(true),
-    _processCancel(false),
     _title(title),
-    _th(0),
-    _layer(0),
-    _surface(nullptr),
-    _tabID(0),
-    _flags(Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG),
-    _max_w(0),
-    _max_h(0)
+    _flags(Widget::FLAG_ENABLED | Widget::FLAG_BORDER | Widget::FLAG_CLEARBG)
 {
   setTitle(title);
 }

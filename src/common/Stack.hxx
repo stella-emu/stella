@@ -32,12 +32,12 @@ class FixedStack
 {
   private:
     std::array<T, CAPACITY> _stack;
-    uInt32 _size;
+    uInt32 _size{0};
 
   public:
     using StackFunction = std::function<void(T&)>;
 
-    FixedStack<T, CAPACITY>() : _size(0) { }
+    FixedStack<T, CAPACITY>() { }
 
     bool empty() const { return _size <= 0; }
     bool full() const  { return _size >= CAPACITY; }

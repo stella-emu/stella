@@ -57,18 +57,18 @@ class AtariNTSC
     struct Setup
     {
       // Basic parameters
-      float hue;        // -1 = -180 degrees     +1 = +180 degrees
-      float saturation; // -1 = grayscale (0.0)  +1 = oversaturated colors (2.0)
-      float contrast;   // -1 = dark (0.5)       +1 = light (1.5)
-      float brightness; // -1 = dark (0.5)       +1 = light (1.5)
-      float sharpness;  // edge contrast enhancement/blurring
+      float hue{0.F};        // -1 = -180 degrees     +1 = +180 degrees
+      float saturation{0.F}; // -1 = grayscale (0.0)  +1 = oversaturated colors (2.0)
+      float contrast{0.F};   // -1 = dark (0.5)       +1 = light (1.5)
+      float brightness{0.F}; // -1 = dark (0.5)       +1 = light (1.5)
+      float sharpness{0.F};  // edge contrast enhancement/blurring
 
       // Advanced parameters
-      float gamma;      // -1 = dark (1.5)       +1 = light (0.5)
-      float resolution; // image resolution
-      float artifacts;  // artifacts caused by color changes
-      float fringing;   // color artifacts caused by brightness changes
-      float bleed;      // color bleed (color resolution reduction)
+      float gamma{0.F};      // -1 = dark (1.5)       +1 = light (0.5)
+      float resolution{0.F}; // image resolution
+      float artifacts{0.F};  // artifacts caused by color changes
+      float fringing{0.F};   // color artifacts caused by brightness changes
+      float bleed{0.F};      // color bleed (color resolution reduction)
     };
 
     // Video format presets
@@ -157,19 +157,19 @@ class AtariNTSC
     // Rendering threads
     unique_ptr<std::thread[]> myThreads;  // NOLINT
     // Number of rendering and total threads
-    uInt32 myWorkerThreads, myTotalThreads;
+    uInt32 myWorkerThreads{0}, myTotalThreads{0};
 
     struct init_t
     {
       std::array<float, burst_count * 6> to_rgb;
       std::array<float, gamma_size> to_float;
-      float contrast;
-      float brightness;
-      float artifacts;
-      float fringing;
+      float contrast{0.F};
+      float brightness{0.F};
+      float artifacts{0.F};
+      float fringing{0.F};
       std::array<float, rescale_out * kernel_size * 2> kernel;
 
-      init_t() : contrast(0.0), brightness(0.0), artifacts(0.0), fringing(0.0) {
+      init_t() {
         to_rgb.fill(0.0);
         to_float.fill(0.0);
         kernel.fill(0.0);

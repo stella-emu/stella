@@ -26,18 +26,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodePOSIX::FilesystemNodePOSIX()
   : _path(ROOT_DIR),
-    _displayName(_path),
-    _isValid(true),
-    _isFile(false),
-    _isDirectory(true)
+    _displayName(_path)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodePOSIX::FilesystemNodePOSIX(const string& path, bool verify)
-  : _isValid(true),
-    _isFile(false),
-    _isDirectory(true)
 {
   // Default to home directory
   _path = path.length() > 0 ? path : "~";

@@ -26,19 +26,6 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurface::FBSurface()
-  : myPixels(nullptr),
-    myPitch(0)
-{
-  // NOTE: myPixels and myPitch MUST be set in child classes that inherit
-  // from this class
-
-  // Set default attributes
-  myAttributes.blending = false;
-  myAttributes.blendalpha = 100;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const
 {
   uInt8* src = reinterpret_cast<uInt8*>(myPixels + rect.y() * myPitch + rect.x());

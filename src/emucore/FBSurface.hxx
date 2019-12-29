@@ -40,12 +40,15 @@ namespace Common {
   is responsible for extending an FBSurface object suitable to the
   FrameBuffer type.
 
+  NOTE: myPixels and myPitch MUST be set in child classes that inherit
+        from this class
+
   @author  Stephen Anthony
 */
 class FBSurface
 {
   public:
-    FBSurface();
+    FBSurface() = default;
     virtual ~FBSurface() = default;
 
     /**
@@ -327,8 +330,8 @@ class FBSurface
       the specific functionality actually exists.
     */
     struct Attributes {
-      bool blending;     // Blending is enabled
-      uInt32 blendalpha; // Alpha to use in blending mode (0-100%)
+      bool blending{false};    // Blending is enabled
+      uInt32 blendalpha{100};  // Alpha to use in blending mode (0-100%)
 
       bool operator==(const Attributes& other) const {
         return blendalpha == other.blendalpha && blending == other.blending;
@@ -374,8 +377,8 @@ class FBSurface
     bool isWhiteSpace(const char s) const;
 
   protected:
-    uInt32* myPixels;
-    uInt32 myPitch;
+    uInt32* myPixels{nullptr};  // NOTE: MUST be set in child classes
+    uInt32 myPitch{0};          // NOTE: MUST be set in child classes
 
     Attributes myAttributes;
 

@@ -51,7 +51,7 @@ class Audio : public Serializable
   private:
     shared_ptr<AudioQueue> myAudioQueue;
 
-    uInt8 myCounter;
+    uInt8 myCounter{0};
 
     AudioChannel myChannel0;
     AudioChannel myChannel1;
@@ -59,8 +59,8 @@ class Audio : public Serializable
     std::array<Int16, 0x1e + 1> myMixingTableSum;
     std::array<Int16, 0x0f + 1> myMixingTableIndividual;
 
-    Int16* myCurrentFragment;
-    uInt32 mySampleIndex;
+    Int16* myCurrentFragment{nullptr};
+    uInt32 mySampleIndex{0};
 
   private:
     Audio(const Audio&) = delete;

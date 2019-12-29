@@ -18,13 +18,6 @@
 #include "PhosphorHandler.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhosphorHandler::PhosphorHandler()
-  : myUsePhosphor(false),
-    myPhosphorPercent(0.60F)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PhosphorHandler::initialize(bool enable, int blend)
 {
   if(myUsePhosphor == enable && myPhosphorPercent == blend / 100.F)

@@ -70,15 +70,8 @@
 
 using namespace std::chrono;
 
-namespace {
-  constexpr uInt32 FPS_METER_QUEUE_SIZE = 100;
-}
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
-  : myLauncherUsed(false),
-    myQuitLoop(false),
-    myFpsMeter(FPS_METER_QUEUE_SIZE)
 {
   // Get built-in features
   #ifdef SOUND_SUPPORT
