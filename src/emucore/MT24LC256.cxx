@@ -47,27 +47,7 @@ MT24LC256::MT24LC256(const string& filename, const System& system,
                      const Controller::onMessageCallback& callback)
   : mySystem(system),
     myCallback(callback),
-    mySDA(false),
-    mySCL(false),
-    myTimerActive(false),
-    myCyclesWhenTimerSet(0),
-    myCyclesWhenSDASet(0),
-    myCyclesWhenSCLSet(0),
-    myDataFile(filename),
-    myDataFileExists(false),
-    myDataChanged(false),
-    jpee_mdat(0),
-    jpee_sdat(0),
-    jpee_mclk(0),
-    jpee_sizemask(0),
-    jpee_pagemask(0),
-    jpee_smallmode(0),
-    jpee_logmode(0),
-    jpee_pptr(0),
-    jpee_state(0),
-    jpee_nb(0),
-    jpee_address(0),
-    jpee_ad_known(0)
+    myDataFile(filename)
 {
   // Load the data from an external file (if it exists)
   ifstream in(myDataFile, std::ios_base::binary);

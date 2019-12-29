@@ -21,13 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Missile::Missile(uInt32 collisionMask)
-  : myCollisionMaskDisabled(collisionMask),
-    myCollisionMaskEnabled(0xFFFF),
-    myIsSuppressed(false),
-    myDecodesOffset(0),
-    myTIA(nullptr)
+  : myCollisionMaskDisabled(collisionMask)
 {
-  reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

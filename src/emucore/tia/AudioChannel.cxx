@@ -18,12 +18,6 @@
 #include "AudioChannel.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AudioChannel::AudioChannel()
-{
-  reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioChannel::reset()
 {
   myAudc = myAudv = myAudf = 0;

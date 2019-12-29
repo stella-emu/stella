@@ -48,7 +48,7 @@ class CartRamWidget : public Widget, public CommandSender
 
     // These will be needed by most of the child classes;
     // we may as well make them protected variables
-    int myFontWidth, myFontHeight, myLineHeight, myButtonHeight;
+    int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
 
   private:
     // Following constructors and assignment operators not supported
@@ -91,8 +91,8 @@ class CartRamWidget : public Widget, public CommandSender
     };
 
   private:
-    StringListWidget* myDesc;
-    InternalRamWidget* myRam;
+    StringListWidget* myDesc{nullptr};
+    InternalRamWidget* myRam{nullptr};
 };
 
 #endif

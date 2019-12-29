@@ -30,16 +30,7 @@
 RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
                              const GUI::Font& nfont,
                              int x, int y, int w, int h)
-  : EditableWidget(boss, nfont, x, y, 16, 16),
-    _rows(0),
-    _cols(0),
-    _currentPos(0),
-    _selectedItem(-1),
-    _highlightedItem(-1),
-    _editMode(false),
-    _currentKeyDown(KBDK_UNKNOWN),
-    _base(Common::Base::Fmt::_DEFAULT),
-    myDisasm(nullptr)//,
+  : EditableWidget(boss, nfont, x, y, 16, 16)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kWidColor;

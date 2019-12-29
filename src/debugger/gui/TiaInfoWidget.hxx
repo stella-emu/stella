@@ -36,17 +36,17 @@ class TiaInfoWidget : public Widget, public CommandSender
     void loadConfig() override;
 
   private:
-    EditTextWidget* myFrameCount;
-    EditTextWidget* myFrameCycles;
+    EditTextWidget* myFrameCount{nullptr};
+    EditTextWidget* myFrameCycles{nullptr};
 
-    EditTextWidget* myScanlineCount;
-    EditTextWidget* myScanlineCountLast;
-    EditTextWidget* myScanlineCycles;
-    EditTextWidget* myPixelPosition;
-    EditTextWidget* myColorClocks;
+    EditTextWidget* myScanlineCount{nullptr};
+    EditTextWidget* myScanlineCountLast{nullptr};
+    EditTextWidget* myScanlineCycles{nullptr};
+    EditTextWidget* myPixelPosition{nullptr};
+    EditTextWidget* myColorClocks{nullptr};
 
-    CheckboxWidget* myVSync;
-    CheckboxWidget* myVBlank;
+    CheckboxWidget* myVSync{nullptr};
+    CheckboxWidget* myVBlank{nullptr};
 
   private:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;

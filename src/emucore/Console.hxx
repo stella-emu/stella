@@ -400,20 +400,20 @@ class Console : public Serializable, public ConsoleIO
     string myDisplayFormat;
 
     // Display format currently in use
-    uInt32 myCurrentFormat;
+    uInt32 myCurrentFormat{0};
 
     // Is the TV format autodetected?
-    bool myFormatAutodetected;
+    bool myFormatAutodetected{false};
 
     // Indicates whether an external palette was found and
     // successfully loaded
-    bool myUserPaletteDefined;
+    bool myUserPaletteDefined{false};
 
     // Contains detailed info about this console
     ConsoleInfo myConsoleInfo;
 
     // Contains timing information for this console
-    ConsoleTiming myConsoleTiming;
+    ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
 
     // Emulation timing provider. This ties together the timing of the core emulation loop
     // and the parameters that govern audio synthesis

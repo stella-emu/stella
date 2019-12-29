@@ -30,13 +30,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const ConsoleIO& console, const Settings& settings)
   : myConsole(console),
-    mySettings(settings),
-    myTimer(0), mySubTimer(0), myDivider(1),
-    myTimerWrapped(false), myWrappedThisCycle(false),
-    mySetTimerCycle(0), myLastCycle(0),
-    myDDRA(0), myDDRB(0), myOutA(0), myOutB(0),
-    myInterruptFlag(false),
-    myEdgeDetectPositive(false)
+    mySettings(settings)
 {
 }
 

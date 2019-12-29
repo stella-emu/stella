@@ -157,7 +157,7 @@ class CartridgeDF : public Cartridge
     std::array<uInt8, 128_KB> myImage;
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt32 myBankOffset;
+    uInt32 myBankOffset{0};
 
 private:
     // Following constructors and assignment operators not supported

@@ -713,16 +713,16 @@ class TIA : public Device
     /**
       Variable delay values for TIA writes.
     */
-    uInt8 myPFBitsDelay;
-    uInt8 myPFColorDelay;
-    uInt8 myPlSwapDelay;
-    uInt8 myBlSwapDelay;
+    uInt8 myPFBitsDelay{0};
+    uInt8 myPFColorDelay{0};
+    uInt8 myPlSwapDelay{0};
+    uInt8 myBlSwapDelay{0};
 
     /**
      * The frame manager is responsible for detecting frame boundaries and the visible
      * region of each frame.
      */
-    AbstractFrameManager* myFrameManager;
+    AbstractFrameManager* myFrameManager{nullptr};
 
     /**
      * The various TIA objects.
@@ -758,108 +758,108 @@ class TIA : public Device
 
     // We snapshot frame statistics when the back buffer is copied to the front buffer
     // and when the front buffer is copied to the frame buffer
-    uInt32 myFrontBufferScanlines, myFrameBufferScanlines;
+    uInt32 myFrontBufferScanlines{0}, myFrameBufferScanlines{0};
 
     // Frames since the last time a frame was rendered to the render buffer
-    uInt32 myFramesSinceLastRender;
+    uInt32 myFramesSinceLastRender{0};
 
     /**
      * Setting this to true injects random values into undefined reads.
      */
-    bool myTIAPinsDriven;
+    bool myTIAPinsDriven{false};
 
     /**
      * The current "line state" --- either hblank or frame.
      */
-    HState myHstate;
+    HState myHstate{HState::blank};
 
     /**
      * Master line counter
      */
-    uInt8 myHctr;
+    uInt8 myHctr{0};
 
     /**
      * Delta between master line counter and actual color clock. Nonzero after
      * RSYNC (before the scanline terminates)
      */
-    Int32 myHctrDelta;
+    Int32 myHctrDelta{0};
 
     /**
      * Electron beam x at rendering start (used for blanking out any pixels from
      * the last frame that are not overwritten)
      */
-    uInt8 myXAtRenderingStart;
+    uInt8 myXAtRenderingStart{0};
 
     /**
      * Do we need to update the collision mask this clock?
      */
-    bool myCollisionUpdateRequired;
+    bool myCollisionUpdateRequired{false};
 
     /**
      * Force schedule a collision update
      */
-    bool myCollisionUpdateScheduled;
+    bool myCollisionUpdateScheduled{false};
 
     /**
      * The collision latches are represented by 15 bits in a bitfield.
      */
-    uInt32 myCollisionMask;
+    uInt32 myCollisionMask{0};
 
     /**
      * The movement clock counts the extra ticks sent to the objects during
      * movement.
      */
-    uInt32 myMovementClock;
+    uInt32 myMovementClock{0};
 
     /**
      * Movement mode --- are we sending movement clocks?
      */
-    bool myMovementInProgress;
+    bool myMovementInProgress{false};
 
     /**
      * Do we have an extended hblank this line? Get set by strobing HMOVE and
      * cleared when the line wraps.
      */
-    bool myExtendedHblank;
+    bool myExtendedHblank{false};
 
     /**
      * Counts the number of line wraps since the last external TIA state change.
      * If at least two line breaks have passed, the TIA will suspend simulation
      * and just reuse the last line instead.
      */
-    uInt32 myLinesSinceChange;
+    uInt32 myLinesSinceChange{0};
 
     /**
      * The current mode of the priority encoder.
      */
-    Priority myPriority;
+    Priority myPriority{Priority::normal};
 
     /**
      * The index of the last CPU cycle that was included in the simulation.
      */
-    uInt64 myLastCycle;
+    uInt64 myLastCycle{0};
 
     /**
      * Keeps track of a possible fractional number of clocks that still need
      * to be simulated.
      */
-    uInt8 mySubClock;
+    uInt8 mySubClock{0};
 
     /**
      * Bitmasks that track which sprites / collisions are enabled / disabled.
      */
-    uInt8 mySpriteEnabledBits;
-    uInt8 myCollisionsEnabledBits;
+    uInt8 mySpriteEnabledBits{0xFF};
+    uInt8 myCollisionsEnabledBits{0xFF};
 
     /**
      * The color used to highlight HMOVE blanks (if enabled).
      */
-    uInt8 myColorHBlank;
+    uInt8 myColorHBlank{0};
 
     /**
      * The total number of color clocks since emulation started.
      */
-    uInt64 myTimestamp;
+    uInt64 myTimestamp{0};
 
     /**
      * The "shadow registers" track the last written register value for the
@@ -872,21 +872,21 @@ class TIA : public Device
      * occurs on PAL-like systems when the previous frame contains an odd
      * number of scanlines.
      */
-    bool myColorLossEnabled;
-    bool myColorLossActive;
+    bool myColorLossEnabled{false};
+    bool myColorLossActive{false};
 
     std::array<uInt32, 16> myColorCounts;
 
     /**
      * System cycles at the end of the previous frame / beginning of next frame.
      */
-    uInt64 myCyclesAtFrameStart;
+    uInt64 myCyclesAtFrameStart{0};
 
     /**
      * The frame manager can change during our lifetime, so we buffer those two.
      */
-    bool myEnableJitter;
-    uInt8 myJitterFactor;
+    bool myEnableJitter{false};
+    uInt8 myJitterFactor{0};
 
     static constexpr uInt16
       TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1, TIA_READ_MASK = 0x0f, TIA_BIT = 0x080, TIA_DELAY = 2;

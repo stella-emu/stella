@@ -168,17 +168,17 @@ class CartridgeMDM : public Cartridge
     ByteBuffer myImage;
 
     // Size of the ROM image
-    size_t mySize;
+    size_t mySize{0};
 
     // Previous Device's page access
     std::array<System::PageAccess, 8> myHotSpotPageAccess;
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt32 myBankOffset;
+    uInt32 myBankOffset{0};
 
     // Indicates whether banking has been disabled due to a bankswitch
     // above bank 127
-    bool myBankingDisabled;
+    bool myBankingDisabled{false};
 
   private:
     // Following constructors and assignment operators not supported

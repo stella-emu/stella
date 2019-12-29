@@ -34,7 +34,7 @@ class CartridgeE0Widget : public CartDebugWidget
 
   private:
     CartridgeE0& myCart;
-    PopUpWidget *mySlice0, *mySlice1, *mySlice2;
+    PopUpWidget *mySlice0{nullptr}, *mySlice1{nullptr}, *mySlice2{nullptr};
 
     enum {
       kSlice0Changed = 's0CH',

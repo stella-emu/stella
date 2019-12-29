@@ -82,8 +82,8 @@ class Missile : public Serializable
 
   public:
 
-    uInt32 collision;
-    bool isMoving;
+    uInt32 collision{0};
+    bool isMoving{false};
 
   private:
 
@@ -98,35 +98,35 @@ class Missile : public Serializable
 
   private:
 
-    uInt32 myCollisionMaskDisabled;
-    uInt32 myCollisionMaskEnabled;
+    uInt32 myCollisionMaskDisabled{0};
+    uInt32 myCollisionMaskEnabled{0xFFFF};
 
-    bool myIsEnabled;
-    bool myIsSuppressed;
-    bool myEnam;
-    uInt8 myResmp;
+    bool myIsEnabled{false};
+    bool myIsSuppressed{false};
+    bool myEnam{false};
+    uInt8 myResmp{0};
 
-    uInt8 myHmmClocks;
-    uInt8 myCounter;
+    uInt8 myHmmClocks{0};
+    uInt8 myCounter{0};
 
-    uInt8 myWidth;
-    uInt8 myEffectiveWidth;
+    uInt8 myWidth{1};
+    uInt8 myEffectiveWidth{1};
 
-    bool myIsRendering;
-    bool myIsVisible;
-    Int8 myRenderCounter;
+    bool myIsRendering{false};
+    bool myIsVisible{false};
+    Int8 myRenderCounter{0};
 
-    const uInt8* myDecodes;
-    uInt8 myDecodesOffset;  // needed for state saving
+    const uInt8* myDecodes{nullptr};
+    uInt8 myDecodesOffset{0};  // needed for state saving
 
-    uInt8 myColor;
-    uInt8 myObjectColor, myDebugColor;
-    bool myDebugEnabled;
+    uInt8 myColor{0};
+    uInt8 myObjectColor{0}, myDebugColor{0};
+    bool myDebugEnabled{false};
 
-    bool myInvertedPhaseClock;
-    bool myUseInvertedPhaseClock;
+    bool myInvertedPhaseClock{false};
+    bool myUseInvertedPhaseClock{false};
 
-    TIA *myTIA;
+    TIA *myTIA{nullptr};
 
   private:
     Missile(const Missile&) = delete;

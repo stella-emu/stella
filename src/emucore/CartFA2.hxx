@@ -196,7 +196,7 @@ class CartridgeFA2 : public Cartridge
     std::array<uInt8, 28_KB> myImage;
 
     // Actual usable size of the ROM image
-    size_t mySize;
+    size_t mySize{28_KB};
 
     // The 256 bytes of RAM on the cartridge
     std::array<uInt8, 256> myRAM;
@@ -205,14 +205,14 @@ class CartridgeFA2 : public Cartridge
     // will actually be completed
     // Due to flash RAM constraints, a read/write isn't instantaneous,
     // so we need to emulate the delay as well
-    uInt64 myRamAccessTimeout;
+    uInt64 myRamAccessTimeout{0};
 
     // Full pathname of the file to use when emulating load/save
     // of internal RAM to Harmony cart flash
     string myFlashFile;
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
   private:
     // Following constructors and assignment operators not supported

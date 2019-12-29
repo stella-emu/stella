@@ -61,13 +61,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem& osystem)
-  : myOSystem(osystem),
-    myOverlay(nullptr),
-    myState(EventHandlerState::NONE),
-    myAllowAllDirectionsFlag(false),
-    myFryingFlag(false),
-    mySkipMouseMotion(true),
-    myIs7800(false)
+  : myOSystem(osystem)
 {
   // Create keyboard handler (to handle all physical keyboard functionality)
   myPKeyHandler = make_unique<PhysicalKeyboardHandler>(osystem, *this);

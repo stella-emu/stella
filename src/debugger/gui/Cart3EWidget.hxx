@@ -34,9 +34,9 @@ class Cartridge3EWidget : public CartDebugWidget
 
   private:
     Cartridge3E& myCart;
-    const uInt32 myNumRomBanks;
-    const uInt32 myNumRamBanks;
-    PopUpWidget *myROMBank, *myRAMBank;
+    const uInt32 myNumRomBanks{0};
+    const uInt32 myNumRamBanks{0};
+    PopUpWidget *myROMBank{nullptr}, *myRAMBank{nullptr};
 
     struct CartState {
       ByteArray internalram;

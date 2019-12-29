@@ -31,7 +31,7 @@ class JoystickWidget : public ControllerWidget
   private:
     enum { kJUp = 0, kJDown, kJLeft, kJRight, kJFire };
 
-    std::array<CheckboxWidget*, 5> myPins;
+    std::array<CheckboxWidget*, 5> myPins{nullptr};
     static constexpr std::array<Controller::DigitalPin, 5> ourPinNo = {{
       Controller::DigitalPin::One, Controller::DigitalPin::Two,
       Controller::DigitalPin::Three, Controller::DigitalPin::Four,

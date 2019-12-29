@@ -214,13 +214,13 @@ class CartridgeBUS : public Cartridge
     std::array<uInt8, 32_KB> myImage;
 
     // Pointer to the 28K program ROM image of the cartridge
-    uInt8* myProgramImage;
+    uInt8* myProgramImage{nullptr};
 
     // Pointer to the 4K display ROM image of the cartridge
-    uInt8* myDisplayImage;
+    uInt8* myDisplayImage{nullptr};
 
     // Pointer to the 2K BUS driver image in RAM
-    uInt8* myBusDriverImage;
+    uInt8* myBusDriverImage{nullptr};
 
     // The BUS 8k RAM image, used as:
     //   $0000 - 2K BUS driver
@@ -232,44 +232,44 @@ class CartridgeBUS : public Cartridge
     unique_ptr<Thumbulator> myThumbEmulator;
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
     // Address to override the bus for
-    uInt16 myBusOverdriveAddress;
+    uInt16 myBusOverdriveAddress{0};
 
     // set to address of ZP if last byte peeked was $84 (STY ZP)
-    uInt16 mySTYZeroPageAddress;
+    uInt16 mySTYZeroPageAddress{0};
 
     // set to address of the JMP operand if last byte peeked was 4C
     // *and* the next two bytes in ROM are 00 00
-    uInt16 myJMPoperandAddress;
+    uInt16 myJMPoperandAddress{0};
 
     // System cycle count from when the last update to music data fetchers occurred
-    uInt64 myAudioCycles;
+    uInt64 myAudioCycles{0};
 
     // ARM cycle count from when the last callFunction() occurred
-    uInt64 myARMCycles;
+    uInt64 myARMCycles{0};
 
     // The music mode counters
-    std::array<uInt32, 3> myMusicCounters;
+    std::array<uInt32, 3> myMusicCounters{0};
 
     // The music frequency
-    std::array<uInt32, 3> myMusicFrequencies;
+    std::array<uInt32, 3> myMusicFrequencies{0};
 
     // The music waveform sizes
-    std::array<uInt8, 3> myMusicWaveformSize;
+    std::array<uInt8, 3> myMusicWaveformSize{0};
 
     // Fractional DPC music OSC clocks unused during the last update
-    double myFractionalClocks;
+    double myFractionalClocks{0.0};
 
     // Controls mode, lower nybble sets Fast Fetch, upper nybble sets audio
     // -0 = Bus Stuffing ON
     // -F = Bus Stuffing OFF
     // 0- = Packed Digital Sample
     // F- = 3 Voice Music
-    uInt8 myMode;
+    uInt8 myMode{0};
 
-    uInt8 myFastJumpActive;
+    uInt8 myFastJumpActive{false};
 
   private:
     // Following constructors and assignment operators not supported

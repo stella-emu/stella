@@ -39,64 +39,64 @@ class TiaWidget : public Widget, public CommandSender
     virtual ~TiaWidget() = default;
 
   private:
-    DataGridWidget* myColorRegs;
+    DataGridWidget* myColorRegs{nullptr};
 
-    ColorWidget* myCOLUP0Color;
-    ColorWidget* myCOLUP1Color;
-    ColorWidget* myCOLUPFColor;
-    ColorWidget* myCOLUBKColor;
+    ColorWidget* myCOLUP0Color{nullptr};
+    ColorWidget* myCOLUP1Color{nullptr};
+    ColorWidget* myCOLUPFColor{nullptr};
+    ColorWidget* myCOLUBKColor{nullptr};
 
-    CheckboxWidget* myFixedEnabled;
-    std::array<ColorWidget*, 8> myFixedColors;
+    CheckboxWidget* myFixedEnabled{nullptr};
+    std::array<ColorWidget*, 8> myFixedColors{nullptr};
 
-    TogglePixelWidget* myGRP0;
-    TogglePixelWidget* myGRP0Old;
-    TogglePixelWidget* myGRP1;
-    TogglePixelWidget* myGRP1Old;
+    TogglePixelWidget* myGRP0{nullptr};
+    TogglePixelWidget* myGRP0Old{nullptr};
+    TogglePixelWidget* myGRP1{nullptr};
+    TogglePixelWidget* myGRP1Old{nullptr};
 
-    DataGridWidget* myPosP0;
-    DataGridWidget* myPosP1;
-    DataGridWidget* myPosM0;
-    DataGridWidget* myPosM1;
-    DataGridWidget* myPosBL;
+    DataGridWidget* myPosP0{nullptr};
+    DataGridWidget* myPosP1{nullptr};
+    DataGridWidget* myPosM0{nullptr};
+    DataGridWidget* myPosM1{nullptr};
+    DataGridWidget* myPosBL{nullptr};
 
-    DataGridWidget* myHMP0;
-    DataGridWidget* myHMP1;
-    DataGridWidget* myHMM0;
-    DataGridWidget* myHMM1;
-    DataGridWidget* myHMBL;
+    DataGridWidget* myHMP0{nullptr};
+    DataGridWidget* myHMP1{nullptr};
+    DataGridWidget* myHMM0{nullptr};
+    DataGridWidget* myHMM1{nullptr};
+    DataGridWidget* myHMBL{nullptr};
 
-    DataGridWidget* myNusizP0;
-    DataGridWidget* myNusizP1;
-    DataGridWidget* myNusizM0;
-    DataGridWidget* myNusizM1;
-    DataGridWidget* mySizeBL;
-    EditTextWidget* myNusizP0Text;
-    EditTextWidget* myNusizP1Text;
+    DataGridWidget* myNusizP0{nullptr};
+    DataGridWidget* myNusizP1{nullptr};
+    DataGridWidget* myNusizM0{nullptr};
+    DataGridWidget* myNusizM1{nullptr};
+    DataGridWidget* mySizeBL{nullptr};
+    EditTextWidget* myNusizP0Text{nullptr};
+    EditTextWidget* myNusizP1Text{nullptr};
 
-    CheckboxWidget* myRefP0;
-    CheckboxWidget* myRefP1;
-    CheckboxWidget* myDelP0;
-    CheckboxWidget* myDelP1;
-    CheckboxWidget* myDelBL;
+    CheckboxWidget* myRefP0{nullptr};
+    CheckboxWidget* myRefP1{nullptr};
+    CheckboxWidget* myDelP0{nullptr};
+    CheckboxWidget* myDelP1{nullptr};
+    CheckboxWidget* myDelBL{nullptr};
 
-    TogglePixelWidget* myEnaM0;
-    TogglePixelWidget* myEnaM1;
-    TogglePixelWidget* myEnaBL;
-    TogglePixelWidget* myEnaBLOld;
+    TogglePixelWidget* myEnaM0{nullptr};
+    TogglePixelWidget* myEnaM1{nullptr};
+    TogglePixelWidget* myEnaBL{nullptr};
+    TogglePixelWidget* myEnaBLOld{nullptr};
 
-    CheckboxWidget* myResMP0;
-    CheckboxWidget* myResMP1;
+    CheckboxWidget* myResMP0{nullptr};
+    CheckboxWidget* myResMP1{nullptr};
 
     /** Collision register bits */
-    std::array<CheckboxWidget*, 15> myCollision;
+    std::array<CheckboxWidget*, 15> myCollision{nullptr};
 
-    std::array<TogglePixelWidget*, 3> myPF;
-    CheckboxWidget* myRefPF;
-    CheckboxWidget* myScorePF;
-    CheckboxWidget* myPriorityPF;
+    std::array<TogglePixelWidget*, 3> myPF{nullptr};
+    CheckboxWidget* myRefPF{nullptr};
+    CheckboxWidget* myScorePF{nullptr};
+    CheckboxWidget* myPriorityPF{nullptr};
 
-    DelayQueueWidget* myDelayQueueWidget;
+    DelayQueueWidget* myDelayQueueWidget{nullptr};
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets

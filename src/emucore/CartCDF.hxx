@@ -214,13 +214,13 @@ class CartridgeCDF : public Cartridge
     std::array<uInt8, 32_KB> myImage;
 
     // Pointer to the 28K program ROM image of the cartridge
-    uInt8* myProgramImage;
+    uInt8* myProgramImage{nullptr};
 
     // Pointer to the 4K display ROM image of the cartridge
-    uInt8* myDisplayImage;
+    uInt8* myDisplayImage{nullptr};
 
     // Pointer to the 2K CDF driver image in RAM
-    uInt8* myBusDriverImage;
+    uInt8* myBusDriverImage{nullptr};
 
     // The CDF 8k RAM image, used as:
     //   $0000 - 2K CDF driver
@@ -232,13 +232,13 @@ class CartridgeCDF : public Cartridge
     unique_ptr<Thumbulator> myThumbEmulator;
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
     // System cycle count from when the last update to music data fetchers occurred
-    uInt64 myAudioCycles;
+    uInt64 myAudioCycles{0};
 
     // ARM cycle count from when the last callFunction() occurred
-    uInt64 myARMCycles;
+    uInt64 myARMCycles{0};
 
     // The audio routines in the driver run in 32-bit mode and take advantage
     // of the FIQ Shadow Registers which are not accessible to 16-bit thumb
@@ -257,53 +257,53 @@ class CartridgeCDF : public Cartridge
       r14 = timer base  */
 
     // The music counters, ARM FIQ shadow registers r8, r9, r10
-    std::array<uInt32, 3> myMusicCounters;
+    std::array<uInt32, 3> myMusicCounters{0};
 
     // The music frequency, ARM FIQ shadow registers r11, r12, r13
-    std::array<uInt32, 3> myMusicFrequencies;
+    std::array<uInt32, 3> myMusicFrequencies{0};
 
     // The music waveform sizes
-    std::array<uInt8, 3> myMusicWaveformSize;
+    std::array<uInt8, 3> myMusicWaveformSize{0};
 
     // Fractional CDF music, OSC clocks unused during the last update
-    double myFractionalClocks;
+    double myFractionalClocks{0.0};
 
     // Controls mode, lower nybble sets Fast Fetch, upper nybble sets audio
     // -0 = Fast Fetch ON
     // -F = Fast Fetch OFF
     // 0- = Packed Digital Sample
     // F- = 3 Voice Music
-    uInt8 myMode;
+    uInt8 myMode{0xFF};
 
     // set to address of #value if last byte peeked was A9 (LDA #)
-    uInt16 myLDAimmediateOperandAddress;
+    uInt16 myLDAimmediateOperandAddress{0};
 
     // set to address of the JMP operand if last byte peeked was 4C
     // *and* the next two bytes in ROM are 00 00
-    uInt16 myJMPoperandAddress;
+    uInt16 myJMPoperandAddress{0};
 
-    uInt8 myFastJumpActive;
+    uInt8 myFastJumpActive{0};
 
     // Pointer to the array of datastream pointers
-    uInt16 myDatastreamBase;
+    uInt16 myDatastreamBase{0};
 
     // Pointer to the array of datastream increments
-    uInt16 myDatastreamIncrementBase;
+    uInt16 myDatastreamIncrementBase{0};
 
     // Pointer to the beginning of the waveform data block
-    uInt16 myWaveformBase;
+    uInt16 myWaveformBase{0};
 
     // Amplitude stream index
-    uInt8 myAmplitudeStream;
+    uInt8 myAmplitudeStream{0};
 
     // Mask for determining the index of the datastream during fastjump
-    uInt8 myFastjumpStreamIndexMask;
+    uInt8 myFastjumpStreamIndexMask{0};
 
     // The currently selected fastjump stream
-    uInt8 myFastJumpStream;
+    uInt8 myFastJumpStream{0};
 
     // CDF subtype
-    CDFSubtype myCDFSubtype;
+    CDFSubtype myCDFSubtype{CDFSubtype::CDF0};
 
   private:
     // Following constructors and assignment operators not supported

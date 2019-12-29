@@ -159,16 +159,16 @@ class CartridgeFC : public Cartridge
     std::array<uInt8, 32_KB> myImage;
 
     // Size of the ROM image
-    size_t mySize;
+    size_t mySize{0};
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
     // Indicates which bank is currently active for the first segment
-    uInt16 myCurrentBank;
+    uInt16 myCurrentBank{0};
 
     // Target bank defined by writing to $1FF8/9
-    uInt16 myTargetBank;
+    uInt16 myTargetBank{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -47,28 +47,28 @@ class CartridgeCDFWidget : public CartDebugWidget
       IntArray mwaves;
       IntArray mwavesizes;
       IntArray samplepointer;
-      uInt32 random;
+      uInt32 random{0};
       ByteArray internalram;
     };
 
     CartridgeCDF& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
 
-    DataGridWidget* myDatastreamPointers;
-    DataGridWidget* myDatastreamIncrements;
-    DataGridWidget* myCommandStreamPointer;
-    DataGridWidget* myCommandStreamIncrement;
-    DataGridWidget* myJumpStreamPointers;
-    DataGridWidget* myJumpStreamIncrements;
-    DataGridWidget* myMusicCounters;
-    DataGridWidget* myMusicFrequencies;
-    DataGridWidget* myMusicWaveforms;
-    DataGridWidget* myMusicWaveformSizes;
-    DataGridWidget* mySamplePointer;
-    std::array<StaticTextWidget*, 10> myDatastreamLabels;
+    DataGridWidget* myDatastreamPointers{nullptr};
+    DataGridWidget* myDatastreamIncrements{nullptr};
+    DataGridWidget* myCommandStreamPointer{nullptr};
+    DataGridWidget* myCommandStreamIncrement{nullptr};
+    DataGridWidget* myJumpStreamPointers{nullptr};
+    DataGridWidget* myJumpStreamIncrements{nullptr};
+    DataGridWidget* myMusicCounters{nullptr};
+    DataGridWidget* myMusicFrequencies{nullptr};
+    DataGridWidget* myMusicWaveforms{nullptr};
+    DataGridWidget* myMusicWaveformSizes{nullptr};
+    DataGridWidget* mySamplePointer{nullptr};
+    std::array<StaticTextWidget*, 10> myDatastreamLabels{nullptr};
 
-    CheckboxWidget* myFastFetch;
-    CheckboxWidget* myDigitalSample;
+    CheckboxWidget* myFastFetch{nullptr};
+    CheckboxWidget* myDigitalSample{nullptr};
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };

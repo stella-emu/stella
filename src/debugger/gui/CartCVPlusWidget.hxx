@@ -34,10 +34,10 @@ class CartridgeCVPlusWidget : public CartDebugWidget
 
   private:
     CartridgeCVPlus& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
     struct CartState {
       ByteArray internalram;
-      uInt16 bank;
+      uInt16 bank{0};
     };
     CartState myOldState;
 

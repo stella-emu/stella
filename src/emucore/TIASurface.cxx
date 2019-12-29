@@ -37,11 +37,7 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIASurface::TIASurface(OSystem& system)
   : myOSystem(system),
-    myFB(system.frameBuffer()),
-    myTIA(nullptr),
-    myFilter(Filter::Normal),
-    myScanlinesEnabled(false),
-    mySaveSnapFlag(false)
+    myFB(system.frameBuffer())
 {
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem.settings());

@@ -23,13 +23,7 @@
 CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::max<size_t>(size, 8448)),
-    myWriteEnabled(false),
-    myPower(true),
-    myDataHoldRegister(0),
-    myNumberOfDistinctAccesses(0),
-    myWritePending(false),
-    myCurrentBank(0)
+    mySize(std::max<size_t>(size, 8448))
 {
   // Create a load image buffer and copy the given image
   myLoadImages = make_unique<uInt8[]>(mySize);
@@ -38,7 +32,8 @@ CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
 
   // Add header if image doesn't include it
   if(size < 8448)
-    std::copy_n(ourDefaultHeader.data(), ourDefaultHeader.size(), myLoadImages.get()+myImage.size());
+    std::copy_n(ourDefaultHeader.data(), ourDefaultHeader.size(),
+                myLoadImages.get()+myImage.size());
 
   // We use System::PageAccess.codeAccessBase, but don't allow its use
   // through a pointer, since the AR scheme doesn't support bankswitching

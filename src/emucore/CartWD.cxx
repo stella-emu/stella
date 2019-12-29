@@ -24,10 +24,7 @@
 CartridgeWD::CartridgeWD(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::min<size_t>(8_KB + 3, size)),
-    myCyclesAtBankswitchInit(0),
-    myPendingBank(0),
-    myCurrentBank(0)
+    mySize(std::min<size_t>(8_KB + 3, size))
 {
   // Copy the ROM image into my buffer
   if (mySize == 8_KB + 3)

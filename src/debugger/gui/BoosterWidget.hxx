@@ -31,7 +31,7 @@ class BoosterWidget : public ControllerWidget
   private:
     enum { kJUp = 0, kJDown, kJLeft, kJRight, kJFire, kJBooster, kJTrigger };
 
-    std::array<CheckboxWidget*, 7> myPins;
+    std::array<CheckboxWidget*, 7> myPins{nullptr};
     static constexpr std::array<Controller::DigitalPin, 5> ourPinNo = {{
       Controller::DigitalPin::One, Controller::DigitalPin::Two,
       Controller::DigitalPin::Three, Controller::DigitalPin::Four,

@@ -42,13 +42,13 @@ class DataGridOpsWidget : public Widget, public CommandSender
     void setEnabled(bool e);
 
   private:
-    ButtonWidget* _zeroButton;
-    ButtonWidget* _invButton;
-    ButtonWidget* _negButton;
-    ButtonWidget* _incButton;
-    ButtonWidget* _decButton;
-    ButtonWidget* _shiftLeftButton;
-    ButtonWidget* _shiftRightButton;
+    ButtonWidget* _zeroButton{nullptr};
+    ButtonWidget* _invButton{nullptr};
+    ButtonWidget* _negButton{nullptr};
+    ButtonWidget* _incButton{nullptr};
+    ButtonWidget* _decButton{nullptr};
+    ButtonWidget* _shiftLeftButton{nullptr};
+    ButtonWidget* _shiftRightButton{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

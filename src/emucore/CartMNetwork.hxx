@@ -202,7 +202,7 @@ class CartridgeMNetwork : public Cartridge
     //uInt8 myImage[BANK_SIZE * 8];
 
     // Size of the ROM image
-    size_t mySize;
+    size_t mySize{0};
 
     // The 2K of RAM
     std::array<uInt8, RAM_SIZE> myRAM;
@@ -211,10 +211,10 @@ class CartridgeMNetwork : public Cartridge
     std::array<uInt16, NUM_SEGMENTS> myCurrentSlice;
 
     // Indicates which 256 byte bank of RAM is being used
-    uInt16 myCurrentRAM;
+    uInt16 myCurrentRAM{0};
 
     // The number of the RAM slice (== bankCount() - 1)
-    uInt32 myRAMSlice;
+    uInt32 myRAMSlice{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -53,16 +53,16 @@ class PaddleReader : public Serializable
 
   private:
 
-    double myUThresh;
-    double myU;
+    double myUThresh{0.0};
+    double myU{0.0};
 
-    double myValue;
-    uInt64 myTimestamp;
+    double myValue{0.0};
+    uInt64 myTimestamp{0};
 
     ConsoleTiming myConsoleTiming;
-    double myClockFreq;
+    double myClockFreq{0.0};
 
-    bool myIsDumped;
+    bool myIsDumped{false};
 
     static constexpr double
       R0 = 1.5e3,

@@ -124,15 +124,13 @@ class CompuMate
   private:
     // Console and Event objects
     const Console& myConsole;
+    const Event& myEvent;
 
     // Left and right controllers
     unique_ptr<Controller> myLeftController, myRightController;
 
     // Column currently active
-    uInt8 myColumn;
-
-    /// Reference to the event object this controller uses
-    const Event& myEvent;
+    uInt8 myColumn{0};
 
   private:
     // Following constructors and assignment operators not supported

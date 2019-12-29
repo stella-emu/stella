@@ -38,21 +38,22 @@ class CartridgeCMWidget : public CartDebugWidget
 
   private:
     struct CartState {
-      uInt8 swcha;
-      uInt8 column;
+      uInt8 swcha{0};
+      uInt8 column{0};
       ByteArray internalram;
-      uInt16 bank;
+      uInt16 bank{0};
     };
 
     CartridgeCM& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
 
-    ToggleBitWidget* mySWCHA;
-    DataGridWidget* myColumn;
-    CheckboxWidget *myAudIn, *myAudOut, *myIncrease, *myReset;
-    CheckboxWidget *myFunc, *myShift;
-    EditTextWidget* myRAM;
-    std::array<CheckboxWidget*, 4> myRow;
+    ToggleBitWidget* mySWCHA{nullptr};
+    DataGridWidget* myColumn{nullptr};
+    CheckboxWidget *myAudIn{nullptr}, *myAudOut{nullptr},
+                   *myIncrease{nullptr}, *myReset{nullptr};
+    CheckboxWidget *myFunc{nullptr}, *myShift{nullptr};
+    EditTextWidget* myRAM{nullptr};
+    std::array<CheckboxWidget*, 4> myRow{nullptr};
 
     CartState myOldState;
 

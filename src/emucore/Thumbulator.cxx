@@ -60,8 +60,6 @@ Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, uInt16 rom_size
     romSize(rom_size),
     decodedRom(make_unique<Op[]>(romSize / 2)),  // NOLINT
     ram(ram_ptr),
-    T1TCR(0),
-    T1TC(0),
     configuration(configurefor),
     myCartridge(cartridge)
 {

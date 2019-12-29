@@ -27,12 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge::Cartridge(const Settings& settings, const string& md5)
-  : mySettings(settings),
-    myBankChanged(true),
-    myCodeAccessBase(nullptr),
-    myRamWriteAccess(0),
-    myStartBank(0),
-    myBankLocked(false)
+  : mySettings(settings)
 {
   auto to_uInt32 = [](const string& s, uInt32 pos) {
     return uInt32(std::stoul(s.substr(pos, 8), nullptr, 16));

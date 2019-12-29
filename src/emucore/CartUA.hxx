@@ -160,10 +160,10 @@ class CartridgeUA : public Cartridge
     std::array<System::PageAccess, 2> myHotSpotPageAccess;
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
     // Indicates if banks are swapped ("Mickey" cart)
-    bool mySwappedHotspots;
+    bool mySwappedHotspots{false};
 
   private:
     // Following constructors and assignment operators not supported

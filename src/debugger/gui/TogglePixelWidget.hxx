@@ -41,9 +41,9 @@ class TogglePixelWidget : public ToggleWidget
     void setCrossed(bool enable) { _crossBits = enable; }
 
   private:
-    ColorId  _pixelColor, _backgroundColor;
-    bool _swapBits;
-    bool _crossBits;
+    ColorId _pixelColor{kNone}, _backgroundColor{kDlgColor};
+    bool _swapBits{false};
+    bool _crossBits{false};
 
   private:
     void drawWidget(bool hilite) override;

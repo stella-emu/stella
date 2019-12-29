@@ -207,7 +207,7 @@ class CartridgeWD : public Cartridge
     std::array<uInt8, 8_KB> myImage;
 
     // Indicates the actual size of the ROM image (either 8K or 8K + 3)
-    size_t mySize;
+    size_t mySize{0};
 
     // The 64 bytes RAM of the cartridge
     std::array<uInt8, 64> myRAM;
@@ -219,13 +219,13 @@ class CartridgeWD : public Cartridge
     std::array<uInt16, 4> myOffset;
 
     // Indicates the cycle at which a bankswitch was initiated
-    uInt64 myCyclesAtBankswitchInit;
+    uInt64 myCyclesAtBankswitchInit{0};
 
     // Indicates the bank we wish to switch to in the future
-    uInt16 myPendingBank;
+    uInt16 myPendingBank{0};
 
     // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    uInt16 myCurrentBank{0};
 
     // The arrangement of banks to use on each hotspot read
     struct BankOrg {

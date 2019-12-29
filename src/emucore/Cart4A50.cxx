@@ -24,15 +24,7 @@
 Cartridge4A50::Cartridge4A50(const ByteBuffer& image, size_t size,
                              const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(size),
-    mySliceLow(0),
-    mySliceMiddle(0),
-    mySliceHigh(0),
-    myIsRomLow(true),
-    myIsRomMiddle(true),
-    myIsRomHigh(true),
-    myLastAddress(0),
-    myLastData(0)
+    mySize(size)
 {
   // Copy the ROM image into my buffer
   // Supported file sizes are 32/64/128K, which are duplicated if necessary
