@@ -77,11 +77,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
     myEvent(osystem.eventHandler().event()),
     myProperties(props),
     myCart(std::move(cart)),
-    myDisplayFormat(""),  // Unknown TV format @ start
-    myCurrentFormat(0),   // Unknown format @ start,
-    myFormatAutodetected(false),
-    myUserPaletteDefined(false),
-    myConsoleTiming(ConsoleTiming::ntsc),
     myAudioSettings(audioSettings)
 {
   // Load user-defined palette for this ROM

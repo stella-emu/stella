@@ -21,8 +21,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, Controller& controller)
-  : ControllerWidget(boss, font, x, y, controller),
-    myGrayIndex(0)
+  : ControllerWidget(boss, font, x, y, controller)
 {
   const string& label = getHeader();
 

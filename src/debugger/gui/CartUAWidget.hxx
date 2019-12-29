@@ -34,7 +34,7 @@ class CartridgeUAWidget : public CartDebugWidget
 
   private:
     CartridgeUA& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
 
     bool mySwappedHotspots;
 

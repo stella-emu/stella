@@ -20,12 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Ball::Ball(uInt32 collisionMask)
-  : myCollisionMaskDisabled(collisionMask),
-    myCollisionMaskEnabled(0xFFFF),
-    myIsSuppressed(false),
-    myTIA(nullptr)
+  : myCollisionMaskDisabled(collisionMask)
 {
-  reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,7 +43,6 @@ void Ball::reset()
   myIsRendering = false;
   myDebugEnabled = false;
   myRenderCounter = 0;
-  myIsEnabled = false;
   myInvertedPhaseClock = false;
   myUseInvertedPhaseClock = false;
 }

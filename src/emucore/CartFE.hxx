@@ -206,10 +206,10 @@ class CartridgeFE : public Cartridge
     std::array<uInt8, 8_KB> myImage;
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
     // Whether previous address by peek/poke equals $01FE (hotspot)
-    bool myLastAccessWasFE;
+    bool myLastAccessWasFE{false};
 
   private:
     // Following constructors and assignment operators not supported

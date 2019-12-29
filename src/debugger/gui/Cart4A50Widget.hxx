@@ -34,9 +34,9 @@ class Cartridge4A50Widget : public CartDebugWidget
 
   private:
     Cartridge4A50& myCart;
-    PopUpWidget *myROMLower, *myRAMLower;
-    PopUpWidget *myROMMiddle, *myRAMMiddle;
-    PopUpWidget *myROMHigh, *myRAMHigh;
+    PopUpWidget *myROMLower{nullptr}, *myRAMLower{nullptr};
+    PopUpWidget *myROMMiddle{nullptr}, *myRAMMiddle{nullptr};
+    PopUpWidget *myROMHigh{nullptr}, *myRAMHigh{nullptr};
 
     enum {
       kROMLowerChanged  = 'rmLW',

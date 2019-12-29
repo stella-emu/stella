@@ -22,10 +22,7 @@
 CartridgeFC::CartridgeFC(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(size),
-    myBankOffset(0),
-    myCurrentBank(0),
-    myTargetBank(0)
+    mySize(size)
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());

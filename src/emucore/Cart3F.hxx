@@ -162,10 +162,10 @@ class Cartridge3F : public Cartridge
     ByteBuffer myImage;
 
     // Size of the ROM image
-    size_t mySize;
+    size_t mySize{0};
 
     // Indicates which bank is currently active for the first segment
-    uInt16 myCurrentBank;
+    uInt16 myCurrentBank{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -175,43 +175,43 @@ class CartridgeDPC : public Cartridge
     std::array<uInt8, 8_KB + 2_KB + 256> myImage;
 
     // (Actual) Size of the ROM image
-    size_t mySize;
+    size_t mySize{0};
 
     // Pointer to the 8K program ROM image of the cartridge
-    uInt8* myProgramImage;
+    uInt8* myProgramImage{nullptr};
 
     // Pointer to the 2K display ROM image of the cartridge
-    uInt8* myDisplayImage;
+    uInt8* myDisplayImage{nullptr};
 
     // The top registers for the data fetchers
-    std::array<uInt8, 8> myTops;
+    std::array<uInt8, 8> myTops{0};
 
     // The bottom registers for the data fetchers
-    std::array<uInt8, 8> myBottoms;
+    std::array<uInt8, 8> myBottoms{0};
 
     // The counter registers for the data fetchers
-    std::array<uInt16, 8> myCounters;
+    std::array<uInt16, 8> myCounters{0};
 
     // The flag registers for the data fetchers
-    std::array<uInt8, 8> myFlags;
+    std::array<uInt8, 8> myFlags{0};
 
     // The music mode DF5, DF6, & DF7 enabled flags
-    std::array<bool, 3> myMusicMode;
+    std::array<bool, 3> myMusicMode{false};
 
     // The random number generator register
-    uInt8 myRandomNumber;
+    uInt8 myRandomNumber{1};  // DPC's RNG register (must be non-zero)
 
     // System cycle count from when the last update to music data fetchers occurred
-    uInt64 myAudioCycles;
+    uInt64 myAudioCycles{0};
 
     // Fractional DPC music OSC clocks unused during the last update
-    double myFractionalClocks;
+    double myFractionalClocks{0.0};
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
     // DPC pitch
-    double myDpcPitch;
+    double myDpcPitch{0.0};
 
   private:
     // Following constructors and assignment operators not supported

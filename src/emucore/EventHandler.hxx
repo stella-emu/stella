@@ -416,7 +416,7 @@ class EventHandler
   private:
     // Structure used for action menu items
     struct ActionList {
-      Event::Type event;
+      Event::Type event{Event::NoType};
       string action;
       string key;
     };
@@ -425,7 +425,7 @@ class EventHandler
     Event myEvent;
 
     // Indicates current overlay object
-    DialogContainer* myOverlay;
+    DialogContainer* myOverlay{nullptr};
 
     // Handler for all keyboard-related events
     unique_ptr<PhysicalKeyboardHandler> myPKeyHandler;
@@ -438,21 +438,21 @@ class EventHandler
     unique_ptr<MouseControl> myMouseControl;
 
     // Indicates the current state of the system (ie, which mode is current)
-    EventHandlerState myState;
+    EventHandlerState myState{EventHandlerState::NONE};
 
     // Indicates whether the virtual joystick emulates 'impossible' directions
-    bool myAllowAllDirectionsFlag;
+    bool myAllowAllDirectionsFlag{false};
 
     // Indicates whether or not we're in frying mode
-    bool myFryingFlag;
+    bool myFryingFlag{false};
 
     // Sometimes an extraneous mouse motion event occurs after a video
     // state change; we detect when this happens and discard the event
-    bool mySkipMouseMotion;
+    bool mySkipMouseMotion{true};
 
     // Whether the currently enabled console is emulating certain aspects
     // of the 7800 (for now, only the switches are notified)
-    bool myIs7800;
+    bool myIs7800{false};
 
     // These constants are not meant to be used elsewhere; they are only used
     // here to make it easier for the reader to correctly size the list(s)

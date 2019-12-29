@@ -20,10 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MindLink::MindLink(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::Type::MindLink),
-    myMindlinkPos(0x2800),
-    myMindlinkShift(1),
-    myMouseEnabled(false)
+  : Controller(jack, event, system, Controller::Type::MindLink)
 {
   setPin(DigitalPin::One, true);
   setPin(DigitalPin::Two, true);

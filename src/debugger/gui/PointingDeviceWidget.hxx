@@ -39,11 +39,11 @@ class PointingDeviceWidget : public ControllerWidget
       kTBDown = 'TWdn',
       kTBFire = 'TWfr'
     };
-    ButtonWidget *myGrayLeft, *myGrayRight;
-    DataGridWidget* myGrayValueH;
-    ButtonWidget *myGrayUp, *myGrayDown;
-    DataGridWidget* myGrayValueV;
-    CheckboxWidget* myFire;
+    ButtonWidget *myGrayLeft{nullptr}, *myGrayRight{nullptr};
+    DataGridWidget* myGrayValueH{nullptr};
+    ButtonWidget *myGrayUp{nullptr}, *myGrayDown{nullptr};
+    DataGridWidget* myGrayValueV{nullptr};
+    CheckboxWidget* myFire{nullptr};
 
   private:
     virtual uInt8 getGrayCodeTable(const int index, const int direction) const = 0;

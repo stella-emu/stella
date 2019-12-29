@@ -81,7 +81,7 @@ class Genesis : public Controller
                 myFire1Event, myFire2Event;
 
     // Controller to emulate in normal mouse axis mode
-    int myControlID;
+    int myControlID{-1};
 
   private:
     // Following constructors and assignment operators not supported

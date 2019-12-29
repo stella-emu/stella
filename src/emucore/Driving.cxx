@@ -22,13 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Driving::Driving(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::Type::Driving),
-    myCounter(0),
-    myGrayIndex(0),
-    myLastYaxis(0),
-    myControlID(-1),
-    myControlIDX(-1),
-    myControlIDY(-1)
+  : Controller(jack, event, system, Controller::Type::Driving)
 {
   if(myJack == Jack::Left)
   {

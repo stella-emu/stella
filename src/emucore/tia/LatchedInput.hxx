@@ -24,7 +24,7 @@
 class LatchedInput : public Serializable
 {
   public:
-    LatchedInput();
+    LatchedInput() = default;
 
   public:
 
@@ -42,8 +42,8 @@ class LatchedInput : public Serializable
     bool load(Serializer& in) override;
 
   private:
-    bool myModeLatched;
-    uInt8 myLatchedValue;
+    bool myModeLatched{false};
+    uInt8 myLatchedValue{0};
 
   private:
     LatchedInput(const LatchedInput&) = delete;

@@ -47,9 +47,8 @@ CartridgeFCWidget::CartridgeFCWidget(
                        " ($FFF8 = " + Variant(i & 0b11).toString() +
                        "/$FFF9 = " + Variant(i >> 2).toString() +")");
 
-
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos - 2, _font.getStringWidth("7 ($FFF8 = 3/$FFF9 = 1)"),
+  myBank = new PopUpWidget(boss, _font, xpos, ypos - 2,
+                    _font.getStringWidth("7 ($FFF8 = 3/$FFF9 = 1)"),
                     myLineHeight, items, "Set bank     ",
                     0, kBankChanged);
   myBank->setTarget(this);

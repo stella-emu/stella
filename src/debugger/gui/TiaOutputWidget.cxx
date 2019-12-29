@@ -38,10 +38,7 @@
 TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
-    CommandSender(boss),
-    myZoom(nullptr),
-    myClickX(0),
-    myClickY(0)
+    CommandSender(boss)
 {
   // Create context menu for commands
   VariantList l;

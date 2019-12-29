@@ -49,9 +49,9 @@ class TiaOutputWidget : public Widget, public CommandSender
 */
   private:
     unique_ptr<ContextMenu> myMenu;
-    TiaZoomWidget* myZoom;
+    TiaZoomWidget* myZoom{nullptr};
 
-    int myClickX, myClickY;
+    int myClickX{0}, myClickY{0};
 
     // Create this buffer once, instead of allocating it each time the
     // TIA image is redrawn

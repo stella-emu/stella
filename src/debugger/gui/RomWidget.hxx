@@ -55,10 +55,10 @@ class RomWidget : public Widget, public CommandSender
                   Common::Base::Fmt base);
 
   private:
-    RomListWidget*   myRomList;
-    EditTextWidget*  myBank;
+    RomListWidget*  myRomList{nullptr};
+    EditTextWidget* myBank{nullptr};
 
-    bool myListIsDirty;
+    bool myListIsDirty{true};
 
   private:
     // Following constructors and assignment operators not supported

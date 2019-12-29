@@ -23,9 +23,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Switches::Switches(const Event& event, const Properties& properties,
                    const Settings& settings)
-  : myEvent(event),
-    mySwitches(0xFF),
-    myIs7800(false)
+  : myEvent(event)
 {
   if(properties.get(PropType::Console_RightDiff) == "B")
   {

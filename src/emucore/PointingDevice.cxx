@@ -27,14 +27,7 @@ PointingDevice::PointingDevice(Jack jack, const Event& event,
                                const System& system, Controller::Type type,
                                float sensitivity)
   : Controller(jack, event, system, type),
-    mySensitivity(sensitivity),
-    myHCounterRemainder(0.0), myVCounterRemainder(0.0),
-    myTrackBallLinesH(1), myTrackBallLinesV(1),
-    myTrackBallLeft(false), myTrackBallDown(false),
-    myCountH(0), myCountV(0),
-    myScanCountH(0), myScanCountV(0),
-    myFirstScanOffsetH(0), myFirstScanOffsetV(0),
-    myMouseEnabled(false)
+    mySensitivity(sensitivity)
 {
   // The code in ::read() is set up to always return IOPortA values in
   // the lower 4 bits data value

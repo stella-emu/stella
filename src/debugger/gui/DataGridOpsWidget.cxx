@@ -22,14 +22,7 @@
 DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
                                      int x, int y)
   : Widget(boss, font, x, y, 16, 16),
-    CommandSender(boss),
-    _zeroButton(nullptr),
-    _invButton(nullptr),
-    _negButton(nullptr),
-    _incButton(nullptr),
-    _decButton(nullptr),
-    _shiftLeftButton(nullptr),
-    _shiftRightButton(nullptr)
+    CommandSender(boss)
 {
   const int bwidth  = _font.getMaxCharWidth() * 4+2,
             bheight = _font.getFontHeight() + 3,

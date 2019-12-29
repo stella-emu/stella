@@ -38,20 +38,12 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
                    font.getLineHeight()*rows + 1),
     _rows(rows),
     _cols(cols),
-    _currentRow(0),
-    _currentCol(0),
     _rowHeight(font.getLineHeight()),
     _colWidth(colchars * font.getMaxCharWidth() + 8),
     _bits(bits),
-    _crossGrid(false),
-    _base(base),
-    _selectedItem(0),
-    _currentKeyDown(KBDK_UNKNOWN),
-    _opsWidget(nullptr),
-    _scrollBar(nullptr)
+    _base(base)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS | Widget::FLAG_WANTS_RAWDATA;
-  _editMode = false;
 
   // The item is selected, thus _bgcolor is used to draw the caret and
   // _textcolorhi to erase it

@@ -31,7 +31,7 @@ class GenesisWidget : public ControllerWidget
   private:
     enum { kJUp = 0, kJDown, kJLeft, kJRight, kJBbtn, kJCbtn };
 
-    std::array<CheckboxWidget*, 6> myPins;
+    std::array<CheckboxWidget*, 6> myPins{nullptr};
     static constexpr std::array<Controller::DigitalPin, 5> ourPinNo = {{
       Controller::DigitalPin::One, Controller::DigitalPin::Two,
       Controller::DigitalPin::Three, Controller::DigitalPin::Four,

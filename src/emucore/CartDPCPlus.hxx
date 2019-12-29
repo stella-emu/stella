@@ -201,13 +201,13 @@ class CartridgeDPCPlus : public Cartridge
   private:
     // The ROM image and size
     std::array<uInt8, 32_KB> myImage;
-    size_t mySize;
+    size_t mySize{0};
 
     // Pointer to the 24K program ROM image of the cartridge
-    uInt8* myProgramImage;
+    uInt8* myProgramImage{nullptr};
 
     // Pointer to the 4K display ROM image of the cartridge
-    uInt8* myDisplayImage;
+    uInt8* myDisplayImage{nullptr};
 
     // The DPC 8k RAM image, used as:
     //   3K DPC+ driver
@@ -219,7 +219,7 @@ class CartridgeDPCPlus : public Cartridge
     unique_ptr<Thumbulator> myThumbEmulator;
 
     // Pointer to the 1K frequency table
-    uInt8* myFrequencyImage;
+    uInt8* myFrequencyImage{nullptr};
 
     // The top registers for the data fetchers
     std::array<uInt8, 8> myTops;
@@ -237,16 +237,16 @@ class CartridgeDPCPlus : public Cartridge
     std::array<uInt8, 8> myFractionalIncrements;
 
     // The Fast Fetcher Enabled flag
-    bool myFastFetch;
+    bool myFastFetch{false};
 
     // Flags that last byte peeked was A9 (LDA #)
-    bool myLDAimmediate;
+    bool myLDAimmediate{false};
 
     // Parameter for special functions
     std::array<uInt8, 8> myParameter;
 
     // Parameter pointer for special functions
-    uInt8 myParameterPointer;
+    uInt8 myParameterPointer{0};
 
     // The music mode counters
     std::array<uInt32, 3> myMusicCounters;
@@ -258,26 +258,26 @@ class CartridgeDPCPlus : public Cartridge
     std::array<uInt16, 3> myMusicWaveforms;
 
     // The random number generator register
-    uInt32 myRandomNumber;
+    uInt32 myRandomNumber{1};
 
     // System cycle count from when the last update to music data fetchers occurred
-    uInt64 myAudioCycles;
+    uInt64 myAudioCycles{0};
 
     // System cycle count when the last Thumbulator::run() occurred
-    uInt64 myARMCycles;
+    uInt64 myARMCycles{0};
 
     // Fractional DPC music OSC clocks unused during the last update
-    double myFractionalClocks;
+    double myFractionalClocks{0.0};
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
     // Older DPC+ driver code had different behaviour wrt the mask used
     // to retrieve 'DFxFRACLOW' (fractional data pointer low byte)
     // ROMs built with an old DPC+ driver and using the newer mask can
     // result in 'jittering' in the playfield display
     // For current versions, this is 0x0F00FF; older versions need 0x0F0000
-    uInt32 myFractionalLowMask;
+    uInt32 myFractionalLowMask{0x0F00FF};
 
   private:
     // Following constructors and assignment operators not supported

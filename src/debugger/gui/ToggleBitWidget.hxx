@@ -35,8 +35,8 @@ class ToggleBitWidget : public ToggleWidget
     void drawWidget(bool hilite) override;
 
   protected:
-    StringList  _offList;
-    StringList  _onList;
+    StringList _offList;
+    StringList _onList;
 
   private:
     // Following constructors and assignment operators not supported

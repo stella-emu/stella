@@ -29,8 +29,8 @@ class KeyboardWidget : public ControllerWidget
     virtual ~KeyboardWidget() = default;
 
   private:
-    std::array<CheckboxWidget*, 12> myBox;
-    const Event::Type* myEvent;
+    std::array<CheckboxWidget*, 12> myBox{nullptr};
+    const Event::Type* myEvent{nullptr};
 
     static constexpr std::array<Event::Type, 12> ourLeftEvents = {{
       Event::KeyboardZero1,    Event::KeyboardZero2,  Event::KeyboardZero3,

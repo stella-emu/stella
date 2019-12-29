@@ -24,21 +24,7 @@
 KidVid::KidVid(Jack jack, const Event& event, const System& system,
                const string& romMd5)
   : Controller(jack, event, system, Controller::Type::KidVid),
-    myEnabled(myJack == Jack::Right),
-//     mySampleFile(nullptr),
-//     mySharedSampleFile(nullptr),
-    myFileOpened(false),
-    myTapeBusy(false),
-    myFilePointer(0),
-    mySongCounter(0),
-    myBeep(false),
-    mySharedData(false),
-    mySampleByte(0),
-    myGame(0),
-    myTape(0),
-    myIdx(0),
-    myBlock(0),
-    myBlockIdx(0)
+    myEnabled(myJack == Jack::Right)
 {
   // Right now, there are only two games that use the KidVid
   if(romMd5 == "ee6665683ebdb539e89ba620981cb0f6")

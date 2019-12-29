@@ -121,7 +121,7 @@ class CartridgeDASHWidget;
   consecutive RAM (don't forget to copy your reset vectors!)
 
   @author  Andrew Davie
- */
+*/
 
 class CartridgeDASH: public Cartridge
 {
@@ -262,7 +262,7 @@ class CartridgeDASH: public Cartridge
     static constexpr uInt16 RAM_WRITE_OFFSET = 0x800;
 
     ByteBuffer myImage;  // Pointer to a dynamically allocated ROM image of the cartridge
-    size_t mySize;       // Size of the ROM image
+    size_t mySize{0};    // Size of the ROM image
     std::array<uInt8, RAM_TOTAL_SIZE> myRAM;
 
   private:

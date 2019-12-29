@@ -34,11 +34,11 @@ class FlashWidget : public ControllerWidget
     void init(GuiObject* boss, const GUI::Font& font, int x, int y);
 
   private:
-    ButtonWidget* myEEPROMEraseCurrent;
+    ButtonWidget* myEEPROMEraseCurrent{nullptr};
     enum { kEEPROMEraseCurrent = 'eeEC' };
 
     static constexpr uInt32 MAX_PAGES = 5;
-    std::array<StaticTextWidget*, MAX_PAGES> myPage;
+    std::array<StaticTextWidget*, MAX_PAGES> myPage{nullptr};
 
   private:
     void loadConfig() override;

@@ -320,17 +320,17 @@ class Controller : public Serializable
     const System& mySystem;
 
     /// Specifies which type of controller this is (defined by child classes)
-    const Type myType;
+    const Type myType{Type::Unknown};
 
     /// The callback that is dispatched whenver an analog pin has changed
-    onAnalogPinUpdateCallback myOnAnalogPinUpdateCallback;
+    onAnalogPinUpdateCallback myOnAnalogPinUpdateCallback{nullptr};
 
   private:
     /// The boolean value on each digital pin
-    std::array<bool, 5> myDigitalPinState;
+    std::array<bool, 5> myDigitalPinState{true};
 
     /// The analog value on each analog pin
-    std::array<Int32, 2> myAnalogPinValue;
+    std::array<Int32, 2> myAnalogPinValue{MAX_RESISTANCE};
 
   private:
     // Following constructors and assignment operators not supported

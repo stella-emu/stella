@@ -191,7 +191,7 @@ class Cartridge3EPlus: public Cartridge
     static constexpr uInt16 RAM_WRITE_OFFSET = 0x200;
 
     ByteBuffer myImage; // Pointer to a dynamically allocated ROM image of the cartridge
-    size_t mySize;      // Size of the ROM image
+    size_t mySize{0};   // Size of the ROM image
     std::array<uInt8, RAM_TOTAL_SIZE> myRAM;
 
   private:

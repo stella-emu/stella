@@ -37,13 +37,13 @@ class CartridgeMNetworkWidget : public CartDebugWidget
     //CartridgeE7& myCart;
     CartridgeMNetwork& myCart;
 
-    PopUpWidget *myLower2K, *myUpper256B;
+    PopUpWidget *myLower2K{nullptr}, *myUpper256B{nullptr};
 
     struct CartState
     {
       ByteArray internalram;
-      uInt16 lowerBank;
-      uInt16 upperBank;
+      uInt16 lowerBank{0};
+      uInt16 upperBank{0};
     };
     CartState myOldState;
 

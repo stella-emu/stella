@@ -98,31 +98,31 @@ class MT24LC256
     std::array<bool, PAGE_NUM> myPageHit;
 
     // Cached state of the SDA and SCL pins on the last write
-    bool mySDA, mySCL;
+    bool mySDA{false}, mySCL{false};
 
     // Indicates that a timer has been set and hasn't expired yet
-    bool myTimerActive;
+    bool myTimerActive{false};
 
     // Indicates when the timer was set
-    uInt64 myCyclesWhenTimerSet;
+    uInt64 myCyclesWhenTimerSet{0};
 
     // Indicates when the SDA and SCL pins were set/written
-    uInt64 myCyclesWhenSDASet, myCyclesWhenSCLSet;
+    uInt64 myCyclesWhenSDASet{0}, myCyclesWhenSCLSet{0};
 
     // The file containing the EEPROM data
     string myDataFile;
 
     // Indicates if a valid EEPROM data file exists/was successfully loaded
-    bool myDataFileExists;
+    bool myDataFileExists{false};
 
     // Indicates if the EEPROM has changed since class invocation
-    bool myDataChanged;
+    bool myDataChanged{false};
 
     // Required for I2C functionality
-    Int32 jpee_mdat, jpee_sdat, jpee_mclk;
-    Int32 jpee_sizemask, jpee_pagemask, jpee_smallmode, jpee_logmode;
-    Int32 jpee_pptr, jpee_state, jpee_nb;
-    uInt32 jpee_address, jpee_ad_known;
+    Int32 jpee_mdat{0}, jpee_sdat{0}, jpee_mclk{0};
+    Int32 jpee_sizemask{0}, jpee_pagemask{0}, jpee_smallmode{0}, jpee_logmode{0};
+    Int32 jpee_pptr{0}, jpee_state{0}, jpee_nb{0};
+    uInt32 jpee_address{0}, jpee_ad_known{0};
     std::array<uInt8, 70> jpee_packet;
 
   private:

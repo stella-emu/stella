@@ -161,13 +161,13 @@ class AtariNTSC
 
     struct init_t
     {
-      std::array<float, burst_count * 6> to_rgb;
-      std::array<float, gamma_size> to_float;
+      std::array<float, burst_count * 6> to_rgb{0.F};
+      std::array<float, gamma_size> to_float{0.F};
       float contrast{0.F};
       float brightness{0.F};
       float artifacts{0.F};
       float fringing{0.F};
-      std::array<float, rescale_out * kernel_size * 2> kernel;
+      std::array<float, rescale_out * kernel_size * 2> kernel{0.F};
 
       init_t() {
         to_rgb.fill(0.0);
@@ -181,7 +181,7 @@ class AtariNTSC
     {
       int offset{0};
       float negate{0.F};
-      std::array<float, 4> kernel;
+      std::array<float, 4> kernel{0.F};
     };
     static const std::array<pixel_info_t, alignment_count> atari_ntsc_pixels;
 

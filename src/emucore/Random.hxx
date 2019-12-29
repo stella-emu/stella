@@ -103,7 +103,7 @@ class Random : public Serializable
     // calling next() should change internal state (ie, the *logical*
     // state of the object shouldn't change just by asking for another
     // random number)
-    mutable uInt32 myValue;
+    mutable uInt32 myValue{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -28,10 +28,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomListSettings::RomListSettings(GuiObject* boss, const GUI::Font& font)
   : Dialog(boss->instance(), boss->parent()),
-    CommandSender(boss),
-    _xorig(0),
-    _yorig(0),
-    _item(0)
+    CommandSender(boss)
 {
   const int buttonWidth  = font.getStringWidth("RunTo PC @ current line") + 20,
             buttonHeight = font.getLineHeight() + 4;

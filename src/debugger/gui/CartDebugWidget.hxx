@@ -77,12 +77,12 @@ class CartDebugWidget : public Widget, public CommandSender
 
     // These will be needed by most of the child classes;
     // we may as well make them protected variables
-    int myFontWidth, myFontHeight, myLineHeight, myButtonHeight;
+    int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
 
     ostringstream& buffer() { myBuffer.str(""); return myBuffer; }
 
   private:
-    StringListWidget* myDesc;
+    StringListWidget* myDesc{nullptr};
     ostringstream myBuffer;
 
   private:

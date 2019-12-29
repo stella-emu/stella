@@ -42,13 +42,13 @@ class RomListSettings : public Dialog, public CommandSender
     void center() override;
 
   private:
-    uInt32 _xorig, _yorig;
-    int _item; // currently selected line number in the disassembly list
+    uInt32 _xorig{0}, _yorig{0};
+    int _item{0}; // currently selected line number in the disassembly list
 
-    CheckboxWidget* myShowTentative;
-    CheckboxWidget* myShowAddresses;
-    CheckboxWidget* myShowGFXBinary;
-    CheckboxWidget* myUseRelocation;
+    CheckboxWidget* myShowTentative{nullptr};
+    CheckboxWidget* myShowAddresses{nullptr};
+    CheckboxWidget* myShowGFXBinary{nullptr};
+    CheckboxWidget* myUseRelocation{nullptr};
 
   private:
     void loadConfig() override;

@@ -22,7 +22,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaddleReader::PaddleReader()
 {
-  reset(0);
+  setConsoleTiming(ConsoleTiming::ntsc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

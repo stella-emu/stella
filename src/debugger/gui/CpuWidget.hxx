@@ -69,13 +69,13 @@ class CpuWidget : public Widget, public CommandSender
       kPSRegC = 7
     };
 
-    DataGridWidget*  myPCGrid;
-    DataGridWidget*  myCpuGrid;
-    DataGridWidget*  myCpuGridDecValue;
-    DataGridWidget*  myCpuGridBinValue;
-    ToggleBitWidget* myPSRegister;
-    EditTextWidget*  myPCLabel;
-    std::array<EditTextWidget*, 4> myCpuDataSrc;
+    DataGridWidget*  myPCGrid{nullptr};
+    DataGridWidget*  myCpuGrid{nullptr};
+    DataGridWidget*  myCpuGridDecValue{nullptr};
+    DataGridWidget*  myCpuGridBinValue{nullptr};
+    ToggleBitWidget* myPSRegister{nullptr};
+    EditTextWidget*  myPCLabel{nullptr};
+    std::array<EditTextWidget*, 4> myCpuDataSrc{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

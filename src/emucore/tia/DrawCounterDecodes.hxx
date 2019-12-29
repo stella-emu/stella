@@ -36,9 +36,9 @@ class DrawCounterDecodes
 
   private:
 
-    uInt8* myPlayerDecodes[8];
+    uInt8* myPlayerDecodes[8]{nullptr};
 
-    uInt8* myMissileDecodes[8];
+    uInt8* myMissileDecodes[8]{nullptr};
 
     uInt8 myDecodes0[160], myDecodes1[160], myDecodes2[160], myDecodes3[160],
           myDecodes4[160], myDecodes6[160];
