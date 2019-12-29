@@ -32,11 +32,10 @@ class KeyMap
   public:
     struct Mapping
     {
-      EventMode mode;
-      StellaKey key;
-      StellaMod mod;
+      EventMode mode{EventMode(0)};
+      StellaKey key{StellaKey(0)};
+      StellaMod mod{StellaMod(0)};
 
-      Mapping() : mode(EventMode(0)), key(StellaKey(0)), mod(StellaMod(0)) { }
       explicit Mapping(EventMode c_mode, StellaKey c_key, StellaMod c_mod)
         : mode(c_mode), key(c_key), mod(c_mod) { }
       explicit Mapping(EventMode c_mode, int c_key, int c_mod)
@@ -59,7 +58,7 @@ class KeyMap
     };
     using MappingArray = std::vector<Mapping>;
 
-    KeyMap() : myModEnabled(true) { }
+    KeyMap() = default;
 
     /** Add new mapping for given event */
     void add(const Event::Type event, const Mapping& mapping);
@@ -122,7 +121,7 @@ class KeyMap
     // being used or not (e.g. Ctrl by default is the fire button,
     // pressing it with a movement key could inadvertantly activate
     // a Ctrl combo when it isn't wanted)
-    bool myModEnabled;
+    bool myModEnabled{true};
 
     // Following constructors and assignment operators not supported
     KeyMap(const KeyMap&) = delete;

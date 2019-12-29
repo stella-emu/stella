@@ -79,9 +79,9 @@ class FilesystemNodePOSIX : public AbstractFSNode
   protected:
     string _path;
     string _displayName;
-    bool _isValid;
-    bool _isFile;
-    bool _isDirectory;
+    bool _isValid{true};
+    bool _isFile{false};
+    bool _isDirectory{true};
 
   private:
     /**

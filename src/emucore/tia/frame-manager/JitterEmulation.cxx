@@ -26,8 +26,6 @@ enum Metrics: uInt32 {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 JitterEmulation::JitterEmulation()
-  : myJitterFactor(0),
-    myYStart(0)
 {
   reset();
 }

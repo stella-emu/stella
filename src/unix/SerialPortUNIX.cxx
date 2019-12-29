@@ -28,8 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortUNIX::SerialPortUNIX()
-  : SerialPort(),
-    myHandle(0)
+  : SerialPort()
 {
 }
 

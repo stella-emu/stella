@@ -176,25 +176,25 @@ class Dialog : public GuiObject
   protected:
     const GUI::Font& _font;
 
-    Widget* _mouseWidget;
-    Widget* _focusedWidget;
-    Widget* _dragWidget;
-    Widget* _defaultWidget;
-    Widget* _okWidget;
-    Widget* _cancelWidget;
+    Widget* _mouseWidget{nullptr};
+    Widget* _focusedWidget{nullptr};
+    Widget* _dragWidget{nullptr};
+    Widget* _defaultWidget{nullptr};
+    Widget* _okWidget{nullptr};
+    Widget* _cancelWidget{nullptr};
 
-    bool    _visible;
-    bool    _onTop;
-    bool    _processCancel;
+    bool    _visible{false};
+    bool    _onTop{true};
+    bool    _processCancel{false};
     string  _title;
-    int     _th;
-    int     _layer;
+    int     _th{0};
+    int     _layer{0};
 
     Common::FixedStack<shared_ptr<FBSurface>> mySurfaceStack;
 
   private:
     struct Focus {
-      Widget* widget;
+      Widget* widget{nullptr};
       WidgetArray list;
 
       explicit Focus(Widget* w = nullptr) : widget(w) { }
@@ -206,11 +206,11 @@ class Dialog : public GuiObject
     using FocusList = vector<Focus>;
 
     struct TabFocus {
-      TabWidget* widget;
+      TabWidget* widget{nullptr};
       FocusList focus;
-      uInt32 currentTab;
+      uInt32 currentTab{0};
 
-      explicit TabFocus(TabWidget* w = nullptr) : widget(w), currentTab(0) { }
+      explicit TabFocus(TabWidget* w = nullptr) : widget(w) { }
       virtual ~TabFocus() = default;
 
       TabFocus(const TabFocus&) = default;
@@ -228,11 +228,11 @@ class Dialog : public GuiObject
     WidgetArray _buttonGroup;
     shared_ptr<FBSurface> _surface;
 
-    int _tabID;
-    int _flags;
-    bool _dirty;
-    uInt32 _max_w; // maximum wanted width
-    uInt32 _max_h; // maximum wanted height
+    int _tabID{0};
+    int _flags{0};
+    bool _dirty{false};
+    uInt32 _max_w{0}; // maximum wanted width
+    uInt32 _max_h{0}; // maximum wanted height
 
   private:
     // Following constructors and assignment operators not supported

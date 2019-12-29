@@ -260,7 +260,7 @@ class System : public Serializable
         to this page, while other values are the base address of an array
         to directly access for reads to this page.
       */
-      uInt8* directPeekBase;
+      uInt8* directPeekBase{nullptr};
 
       /**
         Pointer to a block of memory or the null pointer.  The null pointer
@@ -268,7 +268,7 @@ class System : public Serializable
         to this page, while other values are the base address of an array
         to directly access for pokes to this page.
       */
-      uInt8* directPokeBase;
+      uInt8* directPokeBase{nullptr};
 
       /**
         Pointer to a lookup table for marking an address as CODE.  A CODE
@@ -277,34 +277,23 @@ class System : public Serializable
         conclusively determine if a section of address space is CODE, even
         if the disassembler failed to mark it as such.
       */
-      uInt8* codeAccessBase;
+      uInt8* codeAccessBase{nullptr};
 
       /**
         Pointer to the device associated with this page or to the system's
         null device if the page hasn't been mapped to a device.
       */
-      Device* device;
+      Device* device{nullptr};
 
       /**
         The manner in which the pages are accessed by the system
         (READ, WRITE, READWRITE)
       */
-      PageAccessType type;
+      PageAccessType type{PageAccessType::READ};
 
       // Constructors
-      PageAccess()
-        : directPeekBase(nullptr),
-          directPokeBase(nullptr),
-          codeAccessBase(nullptr),
-          device(nullptr),
-          type(System::PageAccessType::READ) { }
-
-      PageAccess(Device* dev, PageAccessType access)
-        : directPeekBase(nullptr),
-          directPokeBase(nullptr),
-          codeAccessBase(nullptr),
-          device(dev),
-          type(access) { }
+      PageAccess() = default;
+      PageAccess(Device* dev, PageAccessType access) : device(dev), type(access) { }
     };
 
     /**
@@ -393,7 +382,7 @@ class System : public Serializable
     Cartridge& myCart;
 
     // Number of system cycles executed since last reset
-    uInt64 myCycles;
+    uInt64 myCycles{0};
 
     // Null device to use for page which are not installed
     NullDevice myNullDevice;
@@ -405,17 +394,17 @@ class System : public Serializable
     std::array<bool, NUM_PAGES> myPageIsDirtyTable;
 
     // The current state of the Data Bus
-    uInt8 myDataBusState;
+    uInt8 myDataBusState{0};
 
     // Whether or not peek() updates the data bus state. This
     // is true during normal emulation, and false when the
     // debugger is active.
-    bool myDataBusLocked;
+    bool myDataBusLocked{false};
 
     // Whether autodetection is currently running (ie, the emulation
     // core is attempting to autodetect display settings, cart modes, etc)
     // Some parts of the codebase need to act differently in such a case
-    bool mySystemInAutodetect;
+    bool mySystemInAutodetect{false};
 
   private:
     // Following constructors and assignment operators not supported

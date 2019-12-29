@@ -131,17 +131,15 @@ class PNGLibrary
     OSystem& myOSystem;
 
     // Used for continuous snapshot mode
-    uInt32 mySnapInterval;
-    uInt32 mySnapCounter;
+    uInt32 mySnapInterval{0};
+    uInt32 mySnapCounter{0};
 
     // The following data remains between invocations of allocateStorage,
     // and is only changed when absolutely necessary.
     struct ReadInfoType {
       vector<png_byte> buffer;
       vector<png_bytep> row_pointers;
-      png_uint_32 width, height, pitch;
-
-      ReadInfoType() : width(0), height(0), pitch(0) { }
+      png_uint_32 width{0}, height{0}, pitch{0};
     };
     static ReadInfoType ReadInfo;
 

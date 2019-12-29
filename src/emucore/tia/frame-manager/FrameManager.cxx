@@ -38,18 +38,6 @@ enum Metrics: uInt32 {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameManager::FrameManager()
-  : myState(State::waitForVsyncStart),
-    myLineInState(0),
-    myVsyncLines(0),
-    myY(0), myLastY(0),
-    myVblankLines(0),
-    myKernelLines(0),
-    myOverscanLines(0),
-    myFrameLines(0),
-    myHeight(0),
-    myYStart(0),
-    myVcenter(0),
-    myJitterEnabled(false)
 {
   reset();
   updateYStart();

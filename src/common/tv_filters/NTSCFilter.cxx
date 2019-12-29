@@ -24,14 +24,6 @@ constexpr float scaleFrom100(float x) { return (x/50.F) - 1.F;     }
 constexpr uInt32 scaleTo100(float x)  { return uInt32(50*(x+1.F)); }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-NTSCFilter::NTSCFilter()
-  : mySetup(AtariNTSC::TV_Composite),
-    myPreset(Preset::OFF),
-    myCurrentAdjustable(0)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setPreset(Preset preset)
 {
   myPreset = preset;

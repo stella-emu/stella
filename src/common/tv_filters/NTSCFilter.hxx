@@ -35,7 +35,7 @@ class Settings;
 class NTSCFilter
 {
   public:
-    NTSCFilter();
+    NTSCFilter() = default;
 
   public:
     // Set one of the available preset adjustments (Composite, S-Video, RGB, etc)
@@ -125,20 +125,20 @@ class NTSCFilter
 
     // Contains controls used to adjust the palette in the NTSC filter
     // This is the main setup object used by the underlying ntsc code
-    AtariNTSC::Setup mySetup;
+    AtariNTSC::Setup mySetup{AtariNTSC::TV_Composite};
 
     // This setup is used only in custom mode (after it is modified,
     // it is copied to mySetup)
     static AtariNTSC::Setup myCustomSetup;
 
     // Current preset in use
-    Preset myPreset;
+    Preset myPreset{Preset::OFF};
 
     struct AdjustableTag {
-      const char* const type;
-      float* value;
+      const char* const type{nullptr};
+      float* value{nullptr};
     };
-    uInt32 myCurrentAdjustable;
+    uInt32 myCurrentAdjustable{0};
     static const std::array<AdjustableTag, 10> ourCustomAdjustables;
 
   private:

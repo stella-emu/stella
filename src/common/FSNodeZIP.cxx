@@ -26,20 +26,7 @@
 #include "FSNodeZIP.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNodeZIP::FilesystemNodeZIP()
-  : _error(zip_error::NOT_A_FILE),
-    _numFiles(0),
-    _isDirectory(false),
-    _isFile(false)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
-  : _error(zip_error::NONE),
-    _numFiles(0),
-    _isDirectory(false),
-    _isFile(false)
 {
   // Extract ZIP file and virtual file (if specified)
   size_t pos = BSPF::findIgnoreCase(p, ".zip");
@@ -107,9 +94,7 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 FilesystemNodeZIP::FilesystemNodeZIP(
     const string& zipfile, const string& virtualpath,
     const AbstractFSNodePtr& realnode, bool isdir)
-  : _error(zip_error::NONE),
-    _numFiles(0),
-    _isDirectory(isdir),
+  : _isDirectory(isdir),
     _isFile(!isdir)
 {
   setFlags(zipfile, virtualpath, realnode);

@@ -21,8 +21,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimerManager::TimerManager()
   : nextId(no_timer + 1),
-    queue(),
-    done(false)
+    queue()
 {
 }
 
@@ -232,13 +231,6 @@ bool TimerManager::destroy_impl(ScopedLock& lock, TimerMap::iterator i,
 //
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TimerManager::Timer::Timer(TimerId tid)
-  : id(tid),
-    running(false)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimerManager::Timer::Timer(Timer&& r) noexcept
   : id(r.id),
     next(r.next),
@@ -254,7 +246,6 @@ TimerManager::Timer::Timer(TimerId tid, Timestamp tnext, Duration tperiod,
   : id(tid),
     next(tnext),
     period(tperiod),
-    handler(func),
-    running(false)
+    handler(func)
 {
 }

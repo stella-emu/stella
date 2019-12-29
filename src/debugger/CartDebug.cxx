@@ -45,10 +45,7 @@ using std::right;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   : DebuggerSystem(dbg, console),
-    myOSystem(osystem),
-    myDebugWidget(nullptr),
-    myAddrToLineIsROM(true),
-    myLabelLength(8)   // longest pre-defined label
+    myOSystem(osystem)
 {
   // Add case sensitive compare for user labels
   // TODO - should user labels be case insensitive too?

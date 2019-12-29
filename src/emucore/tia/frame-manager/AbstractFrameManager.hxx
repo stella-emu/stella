@@ -244,50 +244,50 @@ class AbstractFrameManager : public Serializable
     /**
      * Rendering flag.
      */
-    bool myIsRendering;
+    bool myIsRendering{false};
 
     /**
      * Vsync flag.
      */
-    bool myVsync;
+    bool myVsync{false};
 
     /**
      * Vblank flag.
      */
-    bool myVblank;
+    bool myVblank{false};
 
     /**
      * Current scanline count in the current frame.
      */
-    uInt32 myCurrentFrameTotalLines;
+    uInt32 myCurrentFrameTotalLines{0};
 
     /**
      * Total number of scanlines in the last complete frame.
      */
-    uInt32 myCurrentFrameFinalLines;
+    uInt32 myCurrentFrameFinalLines{0};
 
     /**
      * Total number of scanlines in the second last complete frame.
      */
-    uInt32 myPreviousFrameFinalLines;
+    uInt32 myPreviousFrameFinalLines{0};
 
     /**
      * Total frame count.
      */
-    uInt32 myTotalFrames;
+    uInt32 myTotalFrames{0};
 
   private:
 
     /**
      * Current frame layout.
      */
-    FrameLayout myLayout;
+    FrameLayout myLayout{FrameLayout::pal};
 
     /**
      * The various lifecycle callbacks.
      */
-    callback myOnFrameStart;
-    callback myOnFrameComplete;
+    callback myOnFrameStart{nullptr};
+    callback myOnFrameComplete{nullptr};
 
   private:
 

@@ -247,8 +247,8 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
     void drawWidget(bool hilite) override;
 
   protected:
-    int  _cmd;
-    bool _repeat; // button repeats
+    int  _cmd{0};
+    bool _repeat{false}; // button repeats
     bool _useBitmap;
     const uInt32* _bitmap;
     int  _bmw, _bmh;

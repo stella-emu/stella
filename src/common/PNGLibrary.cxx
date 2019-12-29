@@ -32,9 +32,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PNGLibrary::PNGLibrary(OSystem& osystem)
-  : myOSystem(osystem),
-    mySnapInterval(0),
-    mySnapCounter(0)
+  : myOSystem(osystem)
 {
 }
 

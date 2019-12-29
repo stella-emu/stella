@@ -146,7 +146,7 @@ class TimerManager
 
     struct Timer
     {
-      explicit Timer(TimerId id = 0);
+      explicit Timer(TimerId tid = 0) : id(tid) { }
       Timer(Timer&& r) noexcept;
       Timer& operator=(Timer&& r) noexcept;
 
@@ -156,7 +156,7 @@ class TimerManager
       Timer(Timer const& r) = delete;
       Timer& operator=(Timer const& r) = delete;
 
-      TimerId id;
+      TimerId id{0};
       Timestamp next;
       Duration period;
       TFunction handler;
@@ -164,7 +164,7 @@ class TimerManager
       // You must be holding the 'sync' lock to assign waitCond
       std::unique_ptr<ConditionVar> waitCond;
 
-      bool running;
+      bool running{false};
     };
 
     // Comparison functor to sort the timer "queue" by Timer::next
@@ -200,7 +200,7 @@ class TimerManager
     mutable Lock sync;
     ConditionVar wakeUp;
     std::thread worker;
-    bool done;
+    bool done{false};
 
     // Valid IDs are guaranteed not to be this value
     static TimerId constexpr no_timer = TimerId(0);

@@ -69,52 +69,46 @@ class ZipHandler
     // Contains extracted file header information
     struct ZipHeader
     {
-      uInt16 versionCreated;      // version made by
-      uInt16 versionNeeded;       // version needed to extract
-      uInt16 bitFlag;             // general purpose bit flag
-      uInt16 compression;         // compression method
-      uInt16 fileTime;            // last mod file time
-      uInt16 fileDate;            // last mod file date
-      uInt32 crc;                 // crc-32
-      uInt64 compressedLength;    // compressed size
-      uInt64 uncompressedLength;  // uncompressed size
-      uInt32 startDiskNumber;     // disk number start
-      uInt64 localHeaderOffset;   // relative offset of local header
-      string filename;            // filename
-
-      /** Constructor */
-      ZipHeader();
+      uInt16 versionCreated{0};      // version made by
+      uInt16 versionNeeded{0};       // version needed to extract
+      uInt16 bitFlag{0};             // general purpose bit flag
+      uInt16 compression{0};         // compression method
+      uInt16 fileTime{0};            // last mod file time
+      uInt16 fileDate{0};            // last mod file date
+      uInt32 crc{0};                 // crc-32
+      uInt64 compressedLength{0};    // compressed size
+      uInt64 uncompressedLength{0};  // uncompressed size
+      uInt32 startDiskNumber{0};     // disk number start
+      uInt64 localHeaderOffset{0};   // relative offset of local header
+      string filename;               // filename
     };
 
     // Contains extracted end of central directory information
     struct ZipEcd
     {
-      uInt32 diskNumber;        // number of this disk
-      uInt32 cdStartDiskNumber; // number of the disk with the start of the central directory
-      uInt64 cdDiskEntries;     // total number of entries in the central directory on this disk
-      uInt64 cdTotalEntries;    // total number of entries in the central directory
-      uInt64 cdSize;            // size of the central directory
-      uInt64 cdStartDiskOffset; // offset of start of central directory with respect to the starting disk number
-
-      /** Constructor */
-      ZipEcd();
+      uInt32 diskNumber{0};        // number of this disk
+      uInt32 cdStartDiskNumber{0}; // number of the disk with the start of the central directory
+      uInt64 cdDiskEntries{0};     // total number of entries in the central directory on this disk
+      uInt64 cdTotalEntries{0};    // total number of entries in the central directory
+      uInt64 cdSize{0};            // size of the central directory
+      uInt64 cdStartDiskOffset{0}; // offset of start of central directory with respect to the starting disk number
     };
 
     // Describes an open ZIP file
     struct ZipFile
     {
-      string  myFilename; // copy of ZIP filename (for caching)
-      fstream myStream;   // C++ fstream file handle
-      uInt64  myLength;   // length of zip file
-      uInt16  myRomfiles; // number of ROM files in central directory
+      string  myFilename;     // copy of ZIP filename (for caching)
+      fstream myStream;       // C++ fstream file handle
+      uInt64  myLength{0};    // length of zip file
+      uInt16  myRomfiles{0};  // number of ROM files in central directory
 
-      ZipEcd    myEcd;    // end of central directory
+      ZipEcd  myEcd;          // end of central directory
 
-      ByteBuffer   myCd;  // central directory raw data
-      uInt64    myCdPos;  // position in central directory
-      ZipHeader myHeader; // current file header
+      ByteBuffer myCd;        // central directory raw data
+      uInt64    myCdPos{0};   // position in central directory
+      ZipHeader myHeader;     // current file header
 
-      ByteBuffer myBuffer;   // buffer for decompression
+      ByteBuffer myBuffer;    // buffer for decompression
 
       /** Constructor */
       explicit ZipFile(const string& filename);
@@ -190,7 +184,7 @@ class ZipHandler
         }
 
       private:
-        const uInt8* const myBuf;
+        const uInt8* const myBuf{nullptr};
     };
 
     class LocalFileHeaderReader : public ReaderBase
@@ -289,7 +283,7 @@ class ZipHandler
         bool   directoryEncryption() const { return bool(myValue & 0x2000); }
 
       private:
-        uInt16 myValue;
+        uInt16 myValue{0};
     };
 
   private:

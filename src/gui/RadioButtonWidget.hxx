@@ -56,7 +56,7 @@ class RadioButtonWidget : public CheckboxWidget
 class RadioButtonGroup
 {
   public:
-    RadioButtonGroup() : mySelected(0) { }
+    RadioButtonGroup() = default;
 
     // add widget to group
     void addWidget(RadioButtonWidget* widget);
@@ -67,7 +67,7 @@ class RadioButtonGroup
 
   private:
     WidgetArray myWidgets;
-    uInt32 mySelected;
+    uInt32 mySelected{0};
 
 private:
   // Following constructors and assignment operators not supported

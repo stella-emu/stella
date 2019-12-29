@@ -48,11 +48,11 @@ class ThreadDebuggingHelper {
 
     [[noreturn]] void fail(const string& message);
 
-    ThreadDebuggingHelper();
+    ThreadDebuggingHelper() = default;
 
     std::thread::id myMainThreadId;
 
-    bool myMainThreadIdConfigured;
+    bool myMainThreadIdConfigured{false};
 
   private:
 

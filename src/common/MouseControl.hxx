@@ -76,16 +76,11 @@ class MouseControl
     Controller& myRightController;
 
     struct MouseMode {
-      Controller::Type xtype, ytype;
-      int xid, yid;
+      Controller::Type xtype{Controller::Type::Joystick}, ytype{Controller::Type::Joystick};
+      int xid{-1}, yid{-1};
       string message;
 
-      explicit MouseMode(const string& msg = "")
-        : xtype(Controller::Type::Joystick),
-          ytype(Controller::Type::Joystick),
-          xid(-1),
-          yid(-1),
-          message(msg)  { }
+      explicit MouseMode(const string& msg = "") : message(msg) { }
       MouseMode(Controller::Type xt, int xi,
                 Controller::Type yt, int yi,
                 const string& msg)
@@ -104,7 +99,7 @@ class MouseControl
       }
     };
 
-    int myCurrentModeNum;
+    int myCurrentModeNum{0};
     vector<MouseMode> myModeList;
 
   private:

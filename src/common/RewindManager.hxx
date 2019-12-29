@@ -170,22 +170,22 @@ class RewindManager
     OSystem& myOSystem;
     StateManager& myStateManager;
 
-    uInt32 mySize;
-    uInt32 myUncompressed;
-    uInt32 myInterval;
-    uInt64 myHorizon;
-    double myFactor;
-    bool   myLastTimeMachineAdd;
-    uInt32 myStateSize;
+    uInt32 mySize{0};
+    uInt32 myUncompressed{0};
+    uInt32 myInterval{0};
+    uInt64 myHorizon{0};
+    double myFactor{0.0};
+    bool   myLastTimeMachineAdd{false};
+    uInt32 myStateSize{0};
 
     struct RewindState {
       Serializer data;  // actual save state
       string message;   // describes save state origin
-      uInt64 cycles;    // cycles since emulation started
+      uInt64 cycles{0}; // cycles since emulation started
 
       // We do nothing on object instantiation or copy
       // The goal of LinkedObjectPool is to not do any allocations at all
-      RewindState() : cycles(0) { }
+      RewindState() = default;
       RewindState(const RewindState& rs) : cycles(rs.cycles) { }
       RewindState& operator= (const RewindState& rs) { cycles = rs.cycles; return *this; }
 

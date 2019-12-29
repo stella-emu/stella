@@ -26,7 +26,7 @@ class TIA;
 class Background : public Serializable
 {
   public:
-    Background();
+    Background() = default;
 
   public:
     void setTIA(TIA* tia) { myTIA = tia; }
@@ -51,11 +51,11 @@ class Background : public Serializable
     void applyColors();
 
   private:
-    uInt8 myColor;
-    uInt8 myObjectColor, myDebugColor;
-    bool myDebugEnabled;
+    uInt8 myColor{0};
+    uInt8 myObjectColor{0}, myDebugColor{0};
+    bool myDebugEnabled{false};
 
-    TIA* myTIA;
+    TIA* myTIA{nullptr};
 
   private:
     Background(const Background&) = delete;

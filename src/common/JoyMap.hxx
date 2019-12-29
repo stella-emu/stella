@@ -32,17 +32,13 @@ class JoyMap
   public:
     struct JoyMapping
     {
-      EventMode mode;
-      int button;   // button number
-      JoyAxis axis; // horizontal/vertical
-      JoyDir adir;  // axis direction (neg/pos)
-      int hat;      // hat number
-      JoyHatDir hdir;  // hat direction (left/right/up/down)
+      EventMode mode{EventMode(0)};
+      int button{0};                // button number
+      JoyAxis axis{JoyAxis(0)};     // horizontal/vertical
+      JoyDir adir{JoyDir(0)};       // axis direction (neg/pos)
+      int hat{0};                   // hat number
+      JoyHatDir hdir{JoyHatDir(0)}; // hat direction (left/right/up/down)
 
-      JoyMapping()
-        : mode(EventMode(0)), button(0),
-          axis(JoyAxis(0)), adir(JoyDir(0)),
-          hat(0), hdir(JoyHatDir(0)) { }
       explicit JoyMapping(EventMode c_mode, int c_button,
                           JoyAxis c_axis, JoyDir c_adir,
                           int c_hat, JoyHatDir c_hdir)

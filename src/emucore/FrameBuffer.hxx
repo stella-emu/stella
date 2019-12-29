@@ -61,13 +61,13 @@ class FrameBuffer
 
       Common::Rect image;
       Common::Size screen;
-      Stretch stretch;
+      Stretch stretch{VideoMode::Stretch::None};
       string description;
-      float zoom;
-      Int32 fsIndex;
+      float zoom{1.F};
+      Int32 fsIndex{-1};
 
-      VideoMode();
-      VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh, Stretch smode, float overscan = 1.0,
+      VideoMode(uInt32 iw, uInt32 ih, uInt32 sw, uInt32 sh,
+                Stretch smode, float overscan = 1.F,
                 const string& desc = "", float zoomLevel = 1, Int32 fsindex = -1);
 
       friend ostream& operator<<(ostream& os, const VideoMode& vm)
@@ -408,7 +408,7 @@ class FrameBuffer
 
     /**
       This method is called to create a surface with the given attributes.
-z
+
       @param w                The requested width of the new surface.
       @param h                The requested height of the new surface.
       @param interpolation    Interpolation mode
@@ -499,10 +499,6 @@ z
     class VideoModeList
     {
       public:
-        VideoModeList();
-        VideoModeList(const VideoModeList&) = default;
-        VideoModeList& operator=(const VideoModeList&) = default;
-
         void add(const FrameBuffer::VideoMode& mode);
         void clear();
 
@@ -525,7 +521,7 @@ z
 
       private:
         vector<FrameBuffer::VideoMode> myModeList;
-        int myIdx;
+        int myIdx{-1};
     };
 
   protected:
@@ -533,7 +529,7 @@ z
     string myScreenTitle;
 
     // Number of displays
-    int myNumDisplays;
+    int myNumDisplays{1};
 
     // The resolution of the attached displays in fullscreen mode
     // The primary display is typically the first in the array
@@ -545,10 +541,10 @@ z
     void drawFrameStats(float framesPerSecond);
 
     // Indicates the number of times the framebuffer was initialized
-    uInt32 myInitializedCount;
+    uInt32 myInitializedCount{0};
 
     // Used to set intervals between messages while in pause mode
-    Int32 myPausedCount;
+    Int32 myPausedCount{0};
 
     // Dimensions of the actual image, after zooming, and taking into account
     // any image 'centering'
@@ -592,33 +588,29 @@ z
     // (scanline count and framerate)
     struct Message {
       string text;
-      int counter;
-      int x, y, w, h;
-      MessagePosition position;
-      ColorId color;
+      int counter{-1};
+      int x{0}, y{0}, w{0}, h{0};
+      MessagePosition position{MessagePosition::BottomCenter};
+      ColorId color{kNone};
       shared_ptr<FBSurface> surface;
-      bool enabled;
-
-      Message()
-        : counter(-1), x(0), y(0), w(0), h(0), position(MessagePosition::BottomCenter),
-          color(kNone), enabled(false) { }
+      bool enabled{false};
     };
     Message myMsg;
     Message myStatsMsg;
-    bool myStatsEnabled;
-    uInt32 myLastScanlines;
+    bool myStatsEnabled{false};
+    uInt32 myLastScanlines{0};
 
-    bool myGrabMouse;
-    bool myHiDPIAllowed;
-    bool myHiDPIEnabled;
+    bool myGrabMouse{false};
+    bool myHiDPIAllowed{false};
+    bool myHiDPIEnabled{false};
 
     // The list of all available video modes for this framebuffer
-    VideoModeList* myCurrentModeList;
+    VideoModeList* myCurrentModeList{nullptr};
     VideoModeList myWindowedModeList;
     vector<VideoModeList> myFullscreenModeLists;
 
     // Maximum TIA zoom level that can be used for this framebuffer
-    float myTIAMaxZoom;
+    float myTIAMaxZoom{1.F};
 
     // Holds a reference to all the surfaces that have been created
     vector<shared_ptr<FBSurface>> mySurfaceList;

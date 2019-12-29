@@ -24,7 +24,7 @@
 class PhosphorHandler
 {
   public:
-    PhosphorHandler();
+    PhosphorHandler() = default;
 
     bool initialize(bool enable, int blend);
 
@@ -54,10 +54,10 @@ class PhosphorHandler
 
   private:
     // Use phosphor effect
-    bool myUsePhosphor;
+    bool myUsePhosphor{false};
 
     // Amount to blend when using phosphor effect
-    float myPhosphorPercent;
+    float myPhosphorPercent{0.60F};
 
     // Precalculated averaged phosphor colors
     using PhosphorLUT = BSPF::array2D<uInt8, kColor, kColor>;

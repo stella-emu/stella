@@ -59,9 +59,7 @@ class LinkedObjectPool
     /*
       Create a pool of size CAPACITY; the active list starts out empty.
     */
-    LinkedObjectPool<T, CAPACITY>() : myCurrent(myList.end()), myCapacity(0) {
-      resize(CAPACITY);
-    }
+    LinkedObjectPool<T, CAPACITY>() { resize(CAPACITY); }
 
     /**
       Return node data that the 'current' iterator points to.
@@ -272,10 +270,10 @@ class LinkedObjectPool
     std::list<T> myList, myPool;
 
     // Current position in the active list (end() indicates an invalid position)
-    iter myCurrent;
+    iter myCurrent{myList.end()};
 
     // Total capacity of the pool
-    uInt32 myCapacity;
+    uInt32 myCapacity{0};
 
   private:
     // Following constructors and assignment operators not supported

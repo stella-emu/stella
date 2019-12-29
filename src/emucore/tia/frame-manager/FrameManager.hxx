@@ -83,20 +83,20 @@ class FrameManager: public AbstractFrameManager {
 
   private:
 
-    State myState;
-    uInt32 myLineInState;
-    uInt32 myVsyncLines;
-    uInt32 myY, myLastY;
+    State myState{State::waitForVsyncStart};
+    uInt32 myLineInState{0};
+    uInt32 myVsyncLines{0};
+    uInt32 myY{0}, myLastY{0};
 
-    uInt32 myVblankLines;
-    uInt32 myKernelLines;
-    uInt32 myOverscanLines;
-    uInt32 myFrameLines;
-    uInt32 myHeight;
-    uInt32 myYStart;
-    Int32 myVcenter;
+    uInt32 myVblankLines{0};
+    uInt32 myKernelLines{0};
+    uInt32 myOverscanLines{0};
+    uInt32 myFrameLines{0};
+    uInt32 myHeight{0};
+    uInt32 myYStart{0};
+    Int32 myVcenter{0};
 
-    bool myJitterEnabled;
+    bool myJitterEnabled{false};
 
     JitterEmulation myJitterEmulation;
 

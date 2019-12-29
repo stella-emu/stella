@@ -502,10 +502,10 @@ class OSystem
     unique_ptr<TimerManager> myTimerManager;
 
     // Indicates whether ROM launcher was ever opened during this run
-    bool myLauncherUsed;
+    bool myLauncherUsed{false};
 
     // Indicates whether to stop the main loop
-    bool myQuitLoop;
+    bool myQuitLoop{false};
 
   private:
     string myBaseDir;
@@ -527,7 +527,8 @@ class OSystem
     string myFeatures;
     string myBuildInfo;
 
-    FpsMeter myFpsMeter;
+    static constexpr uInt32 FPS_METER_QUEUE_SIZE = 100;
+    FpsMeter myFpsMeter{FPS_METER_QUEUE_SIZE};
 
     // If not empty, a hint for derived classes to use this as the
     // base directory (where all settings are stored)

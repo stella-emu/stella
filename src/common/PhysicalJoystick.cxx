@@ -24,17 +24,6 @@
 #include "PhysicalJoystick.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PhysicalJoystick::PhysicalJoystick()
-  : type(JT_NONE),
-    ID(-1),
-    name("None"),
-    numAxes(0),
-    numButtons(0),
-    numHats(0)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PhysicalJoystick::initialize(int index, const string& desc,
             int axes, int buttons, int hats, int /*balls*/)
 {
