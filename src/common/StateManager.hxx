@@ -163,10 +163,10 @@ class StateManager
     OSystem& myOSystem;
 
     // The current slot for load/save states
-    int myCurrentSlot;
+    int myCurrentSlot{0};
 
     // Whether the manager is in record or playback mode
-    Mode myActiveMode;
+    Mode myActiveMode{Mode::Off};
 
     // MD5 of the currently active ROM (either in movie or rewind mode)
     string myMD5;

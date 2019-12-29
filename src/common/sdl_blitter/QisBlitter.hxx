@@ -43,20 +43,20 @@ class QisBlitter : public Blitter {
 
   private:
 
-    SDL_Texture* mySrcTexture;
-    SDL_Texture* myIntermediateTexture;
-    SDL_Texture* mySecondaryIntermedateTexture;
+    FrameBufferSDL2& myFB;
 
-    SDL_Rect mySrcRect, myIntermediateRect, myDstRect;
+    SDL_Texture* mySrcTexture{nullptr};
+    SDL_Texture* myIntermediateTexture{nullptr};
+    SDL_Texture* mySecondaryIntermedateTexture{nullptr};
+
+    SDL_Rect mySrcRect{0, 0, 0, 0}, myIntermediateRect{0, 0, 0, 0}, myDstRect{0, 0, 0, 0};
     FBSurface::Attributes myAttributes;
 
-    bool myTexturesAreAllocated;
-    bool myRecreateTextures;
+    bool myTexturesAreAllocated{false};
+    bool myRecreateTextures{false};
 
-    SDL_Surface* myStaticData;
+    SDL_Surface* myStaticData{nullptr};
     unique_ptr<uInt32[]> myBlankBuffer;
-
-    FrameBufferSDL2& myFB;
 
   private:
 

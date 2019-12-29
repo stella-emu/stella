@@ -81,9 +81,9 @@ class PhysicalKeyboardHandler
 
     // Structure used for action menu items
     struct EventMapping {
-      Event::Type event;
-      StellaKey key;
-      int mod = KBDM_NONE;
+      Event::Type event{Event::NoType};
+      StellaKey key{StellaKey(0)};
+      int mod{KBDM_NONE};
     };
     using EventMappingArray = std::vector<EventMapping>;
 
@@ -109,8 +109,8 @@ class PhysicalKeyboardHandler
     // Hashmap of key events
     KeyMap myKeyMap;
 
-    EventMode myLeftMode;
-    EventMode myRightMode;
+    EventMode myLeftMode{EventMode::kEmulationMode};
+    EventMode myRightMode{EventMode::kEmulationMode};
 
   #ifdef BSPF_UNIX
     // Sometimes key combos with the Alt key become 'stuck' after the
@@ -124,7 +124,7 @@ class PhysicalKeyboardHandler
     // the count is updated to 2, but only if it was already updated to 1
     // TODO - This may be a bug in SDL, and might be removed in the future
     //        It only seems to be an issue in Linux
-    uInt8 myAltKeyCounter;
+    uInt8 myAltKeyCounter{0};
   #endif
 
     // Controller menu and common emulation mappings

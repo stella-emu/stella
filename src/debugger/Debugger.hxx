@@ -338,7 +338,7 @@ class Debugger : public DialogContainer
     Console& myConsole;
     System&  mySystem;
 
-    DebuggerDialog* myDialog;
+    DebuggerDialog* myDialog{nullptr};
     unique_ptr<DebuggerParser> myParser;
     unique_ptr<CartDebug>      myCartDebug;
     unique_ptr<CpuDebug>       myCpuDebug;
@@ -351,8 +351,8 @@ class Debugger : public DialogContainer
     FunctionDefMap myFunctionDefs;
 
     // Dimensions of the entire debugger window
-    uInt32 myWidth;
-    uInt32 myHeight;
+    uInt32 myWidth{DebuggerDialog::kSmallFontMinW};
+    uInt32 myHeight{DebuggerDialog::kSmallFontMinH};
 
     // Various builtin functions and operations
     struct BuiltinFunction {

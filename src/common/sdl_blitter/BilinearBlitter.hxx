@@ -40,19 +40,18 @@ class BilinearBlitter : public Blitter {
     virtual void blit(SDL_Surface& surface) override;
 
   private:
+    FrameBufferSDL2& myFB;
 
-    SDL_Texture* myTexture;
-    SDL_Texture* mySecondaryTexture;
-    SDL_Rect mySrcRect, myDstRect;
+    SDL_Texture* myTexture{nullptr};
+    SDL_Texture* mySecondaryTexture{nullptr};
+    SDL_Rect mySrcRect{0, 0, 0, 0}, myDstRect{0, 0, 0, 0};
     FBSurface::Attributes myAttributes;
 
-    bool myInterpolate;
-    bool myTexturesAreAllocated;
-    bool myRecreateTextures;
+    bool myInterpolate{false};
+    bool myTexturesAreAllocated{false};
+    bool myRecreateTextures{false};
 
-    SDL_Surface* myStaticData;
-
-    FrameBufferSDL2& myFB;
+    SDL_Surface* myStaticData{nullptr};
 
   private:
 

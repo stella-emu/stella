@@ -286,7 +286,7 @@ class CartDebug : public DebuggerSystem
       std::array<bool, 24>  IOReadWrite;
       std::array<bool, 128> ZPRAM;
       AddrToLabel Label;
-      bool breakFound;
+      bool breakFound{false};
     };
     ReservedEquates myReserved;
 

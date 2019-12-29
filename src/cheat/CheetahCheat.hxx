@@ -32,9 +32,9 @@ class CheetahCheat : public Cheat
 
   private:
     std::array<uInt8, 16> savedRom;
-    uInt16 address;
-    uInt8  value;
-    uInt8  count;
+    uInt16 address{0};
+    uInt8  value{0};
+    uInt8  count{0};
 
   private:
     // Following constructors and assignment operators not supported

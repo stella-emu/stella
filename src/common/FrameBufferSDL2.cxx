@@ -29,15 +29,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
-  : FrameBuffer(osystem),
-    myWindow(nullptr),
-    myRenderer(nullptr),
-    myCenter(false),
-    myRenderTargetSupport(false),
-    myWindowW(0),
-    myWindowH(0),
-    myRenderW(0),
-    myRenderH(0)
+  : FrameBuffer(osystem)
 {
   ASSERT_MAIN_THREAD;
 

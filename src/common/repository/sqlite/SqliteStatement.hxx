@@ -41,9 +41,9 @@ class SqliteStatement {
 
   private:
 
-    sqlite3_stmt* myStmt;
+    sqlite3_stmt* myStmt{nullptr};
 
-    sqlite3* myHandle;
+    sqlite3* myHandle{nullptr};
 
   private:
 

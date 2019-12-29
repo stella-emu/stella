@@ -35,7 +35,7 @@ class SqliteTransaction {
 
     SqliteDatabase& myDb;
 
-    bool myTransactionClosed;
+    bool myTransactionClosed{false};
 
   private:
 

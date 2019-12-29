@@ -20,17 +20,8 @@
 #include "ThreadDebugging.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-QisBlitter::QisBlitter(FrameBufferSDL2& fb) :
-  mySrcTexture(nullptr),
-  myIntermediateTexture(nullptr),
-  mySecondaryIntermedateTexture(nullptr),
-  mySrcRect({0, 0, 0, 0}),
-  myIntermediateRect({0, 0, 0, 0}),
-  myDstRect({0, 0, 0, 0}),
-  myTexturesAreAllocated(false),
-  myRecreateTextures(false),
-  myStaticData(nullptr),
-  myFB(fb)
+QisBlitter::QisBlitter(FrameBufferSDL2& fb)
+  : myFB(fb)
 {
 }
 

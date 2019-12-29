@@ -20,16 +20,9 @@
 #include "ThreadDebugging.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BilinearBlitter::BilinearBlitter(FrameBufferSDL2& fb, bool interpolate) :
-  myTexture(nullptr),
-  mySecondaryTexture(nullptr),
-  mySrcRect({0, 0, 0, 0}),
-  myDstRect({0, 0, 0, 0}),
-  myInterpolate(interpolate),
-  myTexturesAreAllocated(false),
-  myRecreateTextures(false),
-  myStaticData(nullptr),
-  myFB(fb)
+BilinearBlitter::BilinearBlitter(FrameBufferSDL2& fb, bool interpolate)
+  : myFB(fb),
+    myInterpolate(interpolate)
 {
 }
 

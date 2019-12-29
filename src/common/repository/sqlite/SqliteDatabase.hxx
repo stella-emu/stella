@@ -42,7 +42,7 @@ class SqliteDatabase
 
     string myDatabaseFile;
 
-    sqlite3* myHandle;
+    sqlite3* myHandle{nullptr};
 
   private:
 

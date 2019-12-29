@@ -92,8 +92,8 @@ class DebuggerParser
       string cmdString;
       string description;
       string extendedDesc;
-      bool parmsRequired;
-      bool refreshRequired;
+      bool parmsRequired{false};
+      bool refreshRequired{false};
       std::array<Parameters, 10> parms;
       std::function<void (DebuggerParser*)> executor;
     };
@@ -101,10 +101,10 @@ class DebuggerParser
 
     struct Trap
     {
-      bool read;
-      bool write;
-      uInt32 begin;
-      uInt32 end;
+      bool read{false};
+      bool write{false};
+      uInt32 begin{0};
+      uInt32 end{0};
       string condition;
 
       Trap(bool r, bool w, uInt32 b, uInt32 e, const string& c)
@@ -121,13 +121,13 @@ class DebuggerParser
     ostringstream commandResult;
 
     // currently execute command id
-    int myCommand;
+    int myCommand{0};
     // Arguments in 'int' and 'string' format for the currently running command
     IntArray args;
     StringList argStrings;
-    uInt32 argCount;
+    uInt32 argCount{0};
 
-    uInt32 execDepth;
+    uInt32 execDepth{0};
     string execPrefix;
 
     StringList myWatches;

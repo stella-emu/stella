@@ -25,11 +25,7 @@ AudioQueue::AudioQueue(uInt32 fragmentSize, uInt32 capacity, bool isStereo)
   : myFragmentSize(fragmentSize),
     myIsStereo(isStereo),
     myFragmentQueue(capacity),
-    myAllFragments(capacity + 2),
-    mySize(0),
-    myNextFragment(0),
-    myIgnoreOverflows(true),
-    myOverflowLogger("audio buffer overflow", Logger::Level::INFO)
+    myAllFragments(capacity + 2)
 {
   const uInt8 sampleSize = myIsStereo ? 2 : 1;
 

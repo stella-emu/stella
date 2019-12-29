@@ -31,8 +31,8 @@ class RamCheat : public Cheat
     void evaluate() override;
 
   private:
-    uInt16 address;
-    uInt8  value;
+    uInt16 address{0};
+    uInt8  value{0};
 
   private:
     // Following constructors and assignment operators not supported

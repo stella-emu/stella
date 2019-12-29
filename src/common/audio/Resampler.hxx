@@ -39,9 +39,9 @@ class Resampler {
 
       public:
 
-        uInt32 sampleRate;
-        uInt32 fragmentSize;
-        bool stereo;
+        uInt32 sampleRate{31400};
+        uInt32 fragmentSize{512};
+        bool stereo{false};
 
       private:
 

@@ -28,8 +28,7 @@ class Cheat
     Cheat(OSystem& osystem, const string& name, const string& code)
       : myOSystem(osystem),
         myName(name == "" ? code : name),
-        myCode(code),
-        myEnabled(false)
+        myCode(code)
     { }
     virtual ~Cheat() = default;
 
@@ -65,7 +64,7 @@ class Cheat
     string myName;
     string myCode;
 
-    bool myEnabled;
+    bool myEnabled{false};
 
   private:
     // Following constructors and assignment operators not supported

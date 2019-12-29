@@ -131,23 +131,23 @@ class SoundSDL2 : public Sound
 
   private:
     // Indicates if the sound device was successfully initialized
-    bool myIsInitializedFlag;
+    bool myIsInitializedFlag{false};
 
     // Current volume as a percentage (0 - 100)
-    uInt32 myVolume;
-    float myVolumeFactor;
+    uInt32 myVolume{100};
+    float myVolumeFactor{0xffff};
 
     // Audio specification structure
     SDL_AudioSpec myHardwareSpec;
 
-    SDL_AudioDeviceID myDevice;
+    SDL_AudioDeviceID myDevice{0};
 
     shared_ptr<AudioQueue> myAudioQueue;
 
-    EmulationTiming* myEmulationTiming;
+    EmulationTiming* myEmulationTiming{nullptr};
 
-    Int16* myCurrentFragment;
-    bool myUnderrun;
+    Int16* myCurrentFragment{nullptr};
+    bool myUnderrun{false};
 
     unique_ptr<Resampler> myResampler;
 

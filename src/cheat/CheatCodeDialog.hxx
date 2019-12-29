@@ -50,11 +50,11 @@ class CheatCodeDialog : public Dialog
     void addOneShotCheat();
 
   private:
-    CheckListWidget* myCheatList;
+    CheckListWidget* myCheatList{nullptr};
     unique_ptr<InputTextDialog> myCheatInput;
 
-    ButtonWidget* myEditButton;
-    ButtonWidget* myRemoveButton;
+    ButtonWidget* myEditButton{nullptr};
+    ButtonWidget* myRemoveButton{nullptr};
 
     enum {
       kAddCheatCmd       = 'CHTa',

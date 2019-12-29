@@ -42,14 +42,14 @@ class DiStella
     // This will eventually grow to include all options supported by
     // standalone Distella
     struct Settings {
-      Common::Base::Fmt gfxFormat;
-      bool resolveCode;    // Attempt to detect code vs. data sections
-      bool showAddresses;  // Show PC addresses (always off for external output)
-      bool aFlag;  // Turns 'A' off in accumulator instructions (-a in Distella)
-      bool fFlag;  // Forces correct address length (-f in Distella)
-      bool rFlag;  // Relocate calls out of address range (-r in Distella)
-      bool bFlag;  // Process break routine (-b in Distella)
-      int bytesWidth;  // Number of bytes to use per line (with .byte xxx)
+      Common::Base::Fmt gfxFormat{Common::Base::Fmt::_2};
+      bool resolveCode{true};   // Attempt to detect code vs. data sections
+      bool showAddresses{true}; // Show PC addresses (always off for external output)
+      bool aFlag{false};        // Turns 'A' off in accumulator instructions (-a in Distella)
+      bool fFlag{true};         // Forces correct address length (-f in Distella)
+      bool rFlag{false};        // Relocate calls out of address range (-r in Distella)
+      bool bFlag{false};        // Process break routine (-b in Distella)
+      int bytesWidth{8+1};      // Number of bytes to use per line (with .byte xxx)
     };
     static Settings settings;  // Default settings
 
@@ -123,13 +123,13 @@ class DiStella
     CartDebug::ReservedEquates& myReserved;
     stringstream myDisasmBuf;
     std::queue<uInt16> myAddressQueue;
-    uInt16 myOffset, myPC, myPCEnd;
-    uInt16 mySegType;
+    uInt16 myOffset{0}, myPC{0}, myPCEnd{0};
+    uInt16 mySegType{0};
 
     struct resource {
-      uInt16 start;
-      uInt16 end;
-      uInt16 length;
+      uInt16 start{0};
+      uInt16 end{0};
+      uInt16 length{0};
     } myAppData;
 
     /* Stores info on how each address is marked, both in the general
@@ -185,12 +185,12 @@ class DiStella
     };
 
     struct Instruction_tag {
-      const char* const mnemonic;
-      AddressingMode addr_mode;
-      AccessMode     source;
-      RWMode         rw_mode;
-      uInt8          cycles;
-      uInt8          bytes;
+      const char* const mnemonic{nullptr};
+      AddressingMode addr_mode{AddressingMode::IMPLIED};
+      AccessMode     source{AccessMode::NONE};
+      RWMode         rw_mode{RWMode::NONE};
+      uInt8          cycles{0};
+      uInt8          bytes{0};
     };
     static const std::array<Instruction_tag, 256> ourLookup;
 

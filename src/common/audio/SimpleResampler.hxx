@@ -33,11 +33,10 @@ class SimpleResampler : public Resampler
     void fillFragment(float* fragment, uInt32 length) override;
 
   private:
-
-    Int16* myCurrentFragment;
-    uInt32 myTimeIndex;
-    uInt32 myFragmentIndex;
-    bool myIsUnderrun;
+    Int16* myCurrentFragment{nullptr};
+    uInt32 myTimeIndex{0};
+    uInt32 myFragmentIndex{0};
+    bool myIsUnderrun{true};
 
   private:
 

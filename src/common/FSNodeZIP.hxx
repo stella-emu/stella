@@ -36,11 +36,6 @@ class FilesystemNodeZIP : public AbstractFSNode
 {
   public:
     /**
-     * Creates a FilesystemNodeZIP with the root node as path.
-     */
-//    FilesystemNodeZIP();
-
-    /**
      * Creates a FilesystemNodeZIP for a given path.
      *
      * @param path  String with the path the new node should point to.
