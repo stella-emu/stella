@@ -63,10 +63,7 @@ Debugger* Debugger::myStaticDebugger = nullptr;
 Debugger::Debugger(OSystem& osystem, Console& console)
   : DialogContainer(osystem),
     myConsole(console),
-    mySystem(console.system()),
-    myDialog(nullptr),
-    myWidth(DebuggerDialog::kSmallFontMinW),
-    myHeight(DebuggerDialog::kSmallFontMinH)
+    mySystem(console.system())
 {
   // Init parser
   myParser = make_unique<DebuggerParser>(*this, osystem.settings());

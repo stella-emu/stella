@@ -98,13 +98,14 @@ class FBSurfaceSDL2 : public FBSurface
     FrameBufferSDL2& myFB;
 
     unique_ptr<Blitter> myBlitter;
-    FrameBuffer::ScalingInterpolation myInterpolationMode;
+    FrameBuffer::ScalingInterpolation myInterpolationMode
+        {FrameBuffer::ScalingInterpolation::none};
 
-    SDL_Surface* mySurface;
-    SDL_Rect mySrcR, myDstR;
+    SDL_Surface* mySurface{nullptr};
+    SDL_Rect mySrcR{0, 0, 0, 0}, myDstR{0, 0, 0, 0};
 
-    bool myIsVisible;
-    bool myIsStatic;
+    bool myIsVisible{true};
+    bool myIsStatic{false};
 
     Common::Rect mySrcGUIR, myDstGUIR;
 };

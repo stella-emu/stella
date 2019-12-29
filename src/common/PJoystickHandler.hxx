@@ -138,18 +138,19 @@ class PhysicalJoystickHandler
 
     // Structures used for action menu items
     struct EventMapping {
-      Event::Type event;
-      int button;
-      JoyAxis axis = JoyAxis::NONE;
-      JoyDir adir = JoyDir::NONE;
-      int hat = JOY_CTRL_NONE;
-      JoyHatDir hdir = JoyHatDir::CENTER;
+      Event::Type event{Event::NoType};
+      int button{0};
+      JoyAxis axis{JoyAxis::NONE};
+      JoyDir adir{JoyDir::NONE};
+      int hat{JOY_CTRL_NONE};
+      JoyHatDir hdir{JoyHatDir::CENTER};
     };
     using EventMappingArray = std::vector<EventMapping>;
 
     void setDefaultAction(const PhysicalJoystickPtr& j,
                           EventMapping map, Event::Type event = Event::NoType,
-                          EventMode mode = EventMode::kEmulationMode, bool updateDefaults = false);
+                          EventMode mode = EventMode::kEmulationMode,
+                          bool updateDefaults = false);
 
     /** returns the event's controller mode */
     EventMode getEventMode(const Event::Type event, const EventMode mode) const;
@@ -165,8 +166,8 @@ class PhysicalJoystickHandler
     void enableMapping(const Event::Type event, EventMode mode);
 
   private:
-    EventMode myLeftMode;
-    EventMode myRightMode;
+    EventMode myLeftMode{EventMode::kEmulationMode};
+    EventMode myRightMode{EventMode::kEmulationMode};
 
     // Controller menu and common emulation mappings
     static EventMappingArray DefaultMenuMapping;

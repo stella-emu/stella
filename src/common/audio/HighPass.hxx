@@ -28,11 +28,11 @@ class HighPass
 
   private:
 
-    float myLastValueIn;
+    float myLastValueIn{0.F};
 
-    float myLastValueOut;
+    float myLastValueOut{0.F};
 
-    float myAlpha;
+    float myAlpha{0.F};
 
   private:
 

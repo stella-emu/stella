@@ -28,8 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatManager::CheatManager(OSystem& osystem)
-  : myOSystem(osystem),
-    myListIsDirty(false)
+  : myOSystem(osystem)
 {
 }
 

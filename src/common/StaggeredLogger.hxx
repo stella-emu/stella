@@ -60,29 +60,29 @@ class StaggeredLogger
     string myMessage;
     Logger::Level myLevel;
 
-    uInt32 myCurrentEventCount;
-    bool myIsCurrentlyCollecting;
+    uInt32 myCurrentEventCount{0};
+    bool myIsCurrentlyCollecting{false};
 
     std::chrono::high_resolution_clock::time_point myLastIntervalStartTimestamp;
     std::chrono::high_resolution_clock::time_point myLastIntervalEndTimestamp;
 
-    uInt32 myCurrentIntervalSize;
-    uInt32 myMaxIntervalFactor;
-    uInt32 myCurrentIntervalFactor;
-    uInt32 myCooldownTime;
+    uInt32 myCurrentIntervalSize{100};
+    uInt32 myMaxIntervalFactor{9};
+    uInt32 myCurrentIntervalFactor{1};
+    uInt32 myCooldownTime{1000};
 
     std::mutex myMutex;
 
     // We need control over the destruction porcess and over the exact point where
     // the worker thread joins -> allocate on the heap end delete explicitly in
     // our destructor.
-    unique_ptr<TimerManager> myTimer;
-    TimerManager::TimerId myTimerId;
+    unique_ptr<TimerManager> myTimer{make_unique<TimerManager>()};
+    TimerManager::TimerId myTimerId{0};
 
     // It is possible that the timer callback is running even after TimerManager::clear
     // returns. This id is unique per timer and is used to return from the callback
     // early in case the time is stale.
-    uInt32 myTimerCallbackId;
+    uInt32 myTimerCallbackId{0};
 };
 
 #endif // STAGGERED_LOGGER

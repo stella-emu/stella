@@ -20,8 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SqliteTransaction::SqliteTransaction(SqliteDatabase& db)
-  : myDb(db),
-    myTransactionClosed(false)
+  : myDb(db)
 {
   myDb.exec("BEGIN TRANSACTION");
 }

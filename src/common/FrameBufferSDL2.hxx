@@ -225,23 +225,23 @@ class FrameBufferSDL2 : public FrameBuffer
 
   private:
     // The SDL video buffer
-    SDL_Window* myWindow;
-    SDL_Renderer* myRenderer;
+    SDL_Window* myWindow{nullptr};
+    SDL_Renderer* myRenderer{nullptr};
 
     // Used by mapRGB (when palettes are created)
-    SDL_PixelFormat* myPixelFormat;
+    SDL_PixelFormat* myPixelFormat{nullptr};
 
     // Center setting of current window
-    bool myCenter;
+    bool myCenter{false};
 
     // last position of windowed window
     Common::Point myWindowedPos;
 
     // Does the renderer support render targets?
-    bool myRenderTargetSupport;
+    bool myRenderTargetSupport{false};
 
     // Window and renderer dimensions
-    int myWindowW, myWindowH, myRenderW, myRenderH;
+    int myWindowW{0}, myWindowH{0}, myRenderW{0}, myRenderH{0};
 
   private:
     // Following constructors and assignment operators not supported

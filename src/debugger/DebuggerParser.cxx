@@ -57,11 +57,7 @@ using std::right;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerParser::DebuggerParser(Debugger& d, Settings& s)
   : debugger(d),
-    settings(s),
-    myCommand(0),
-    argCount(0),
-    execDepth(0),
-    execPrefix("")
+    settings(s)
 {
 }
 

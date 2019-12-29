@@ -30,7 +30,8 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 KeyValueRepositoryConfigfile::KeyValueRepositoryConfigfile(const string& filename)
   : myFilename(filename)
-{}
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 std::map<string, Variant> KeyValueRepositoryConfigfile::load()

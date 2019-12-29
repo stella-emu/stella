@@ -99,10 +99,10 @@ class AudioQueue
   private:
 
     // The size of an individual fragment (in stereo / mono samples)
-    uInt32 myFragmentSize;
+    uInt32 myFragmentSize{0};
 
     // Are we using stereo samples?
-    bool myIsStereo;
+    bool myIsStereo{false};
 
     // The fragment queue
     vector<Int16*> myFragmentQueue;
@@ -114,23 +114,23 @@ class AudioQueue
     unique_ptr<Int16[]> myFragmentBuffer;
 
     // The nubmer if queued fragments
-    uInt32 mySize;
+    uInt32 mySize{0};
 
     // The next fragment.
-    uInt32 myNextFragment;
+    uInt32 myNextFragment{0};
 
     // We need a mutex for thread safety.
     std::mutex myMutex;
 
     // The first (empty) enqueue call returns this fragment.
-    Int16* myFirstFragmentForEnqueue;
+    Int16* myFirstFragmentForEnqueue{nullptr};
     // The first (empty) dequeue call replaces the returned fragment with this fragment.
-    Int16* myFirstFragmentForDequeue;
+    Int16* myFirstFragmentForDequeue{nullptr};
 
     // Log overflows?
-    bool myIgnoreOverflows;
+    bool myIgnoreOverflows{true};
 
-    StaggeredLogger myOverflowLogger;
+    StaggeredLogger myOverflowLogger{"audio buffer overflow", Logger::Level::INFO};
 
   private:
 

@@ -34,9 +34,9 @@ class ConvolutionBuffer
 
     unique_ptr<float[]> myData;
 
-    uInt32 myFirstIndex;
+    uInt32 myFirstIndex{0};
 
-    uInt32 mySize;
+    uInt32 mySize{0};
 
   private:
 

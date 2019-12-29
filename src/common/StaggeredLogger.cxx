@@ -38,16 +38,7 @@ namespace {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StaggeredLogger::StaggeredLogger(const string& message, Logger::Level level)
   : myMessage(message),
-    myLevel(level),
-    myCurrentEventCount(0),
-    myIsCurrentlyCollecting(false),
-    myCurrentIntervalSize(100),
-    myMaxIntervalFactor(9),
-    myCurrentIntervalFactor(1),
-    myCooldownTime(1000),
-    myTimer(make_unique<TimerManager>()),
-    myTimerId(0),
-    myTimerCallbackId(0)
+    myLevel(level)
 {
 }
 

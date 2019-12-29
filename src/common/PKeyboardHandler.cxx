@@ -42,12 +42,7 @@ static constexpr int MOD3 = KBDM_ALT;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& handler)
   : myOSystem(system),
-    myHandler(handler),
-    myLeftMode(EventMode::kEmulationMode),
-    myRightMode(EventMode::kEmulationMode)
-#ifdef BSPF_UNIX
-    , myAltKeyCounter(0)
-#endif
+    myHandler(handler)
 {
   Int32 version = myOSystem.settings().getInt("event_ver");
 

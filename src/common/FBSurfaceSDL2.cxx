@@ -46,14 +46,7 @@ FBSurfaceSDL2::FBSurfaceSDL2(FrameBufferSDL2& buffer,
                              FrameBuffer::ScalingInterpolation interpolation,
                              const uInt32* staticData)
   : myFB(buffer),
-    myInterpolationMode(interpolation),
-    mySurface(nullptr),
-    mySrcR({0, 0, 0, 0}),
-    myDstR({0, 0, 0, 0}),
-    myIsVisible(true),
-    myIsStatic(false),
-    mySrcGUIR({0, 0, 0, 0}),
-    myDstGUIR({0, 0, 0, 0})
+    myInterpolationMode(interpolation)
 {
   createSurface(width, height, staticData);
 }

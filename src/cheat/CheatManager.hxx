@@ -155,7 +155,7 @@ class CheatManager
     string myCurrentCheat;
 
     // Indicates that the list has been modified, and should be saved to disk
-    bool myListIsDirty;
+    bool myListIsDirty{false};
 
   private:
     // Following constructors and assignment operators not supported

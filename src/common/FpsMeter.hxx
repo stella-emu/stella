@@ -37,7 +37,7 @@ class FpsMeter
   private:
 
     struct entry {
-      uInt32 frames;
+      uInt32 frames{0};
       std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
     };
 
@@ -45,14 +45,14 @@ class FpsMeter
 
     vector<entry> myQueue;
 
-    uInt32 myQueueOffset;
+    uInt32 myQueueOffset{0};
 
-    uInt32 myFrameCount;
+    uInt32 myFrameCount{0};
 
-    uInt32 myGarbageFrameCounter;
-    uInt32 myGarbageFrameLimit;
+    uInt32 myGarbageFrameCounter{0};
+    uInt32 myGarbageFrameLimit{0};
 
-    float myFps;
+    float myFps{0.F};
 
   private:
     FpsMeter(const FpsMeter&) = delete;

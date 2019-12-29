@@ -52,11 +52,11 @@ class Logger {
     const string& logMessages() const { return myLogMessages; }
 
   protected:
-    Logger() { setLogParameters(Level::MAX, true); }
+    Logger() = default;
 
   private:
-    int myLogLevel;
-    bool myLogToConsole;
+    int myLogLevel{static_cast<int>(Level::MAX)};
+    bool myLogToConsole{true};
 
     // The list of log messages
     string myLogMessages;

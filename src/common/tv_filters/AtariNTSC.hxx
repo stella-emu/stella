@@ -179,8 +179,8 @@ class AtariNTSC
 
     struct pixel_info_t
     {
-      int offset;
-      float negate;
+      int offset{0};
+      float negate{0.F};
       std::array<float, 4> kernel;
     };
     static const std::array<pixel_info_t, alignment_count> atari_ntsc_pixels;

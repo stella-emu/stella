@@ -18,7 +18,8 @@
 #include "SqliteError.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SqliteStatement::SqliteStatement(sqlite3* handle, string sql) : myStmt(nullptr), myHandle(handle)
+SqliteStatement::SqliteStatement(sqlite3* handle, string sql)
+  : myHandle(handle)
 {
   if (sqlite3_prepare_v2(handle, sql.c_str(), -1, &myStmt, nullptr) != SQLITE_OK)
     throw SqliteError(handle);

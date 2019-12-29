@@ -192,6 +192,7 @@ class PNGLibrary
 
   private:
     // Following constructors and assignment operators not supported
+    PNGLibrary() = delete;
     PNGLibrary(const PNGLibrary&) = delete;
     PNGLibrary(PNGLibrary&&) = delete;
     PNGLibrary& operator=(const PNGLibrary&) = delete;

@@ -41,13 +41,6 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SoundSDL2::SoundSDL2(OSystem& osystem, AudioSettings& audioSettings)
   : Sound(osystem),
-    myIsInitializedFlag(false),
-    myVolume(100),
-    myVolumeFactor(0xffff),
-    myDevice(0),
-    myEmulationTiming(nullptr),
-    myCurrentFragment(nullptr),
-    myUnderrun(false),
     myAudioSettings(audioSettings)
 {
   ASSERT_MAIN_THREAD;

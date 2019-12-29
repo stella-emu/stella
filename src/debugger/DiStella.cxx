@@ -30,9 +30,6 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     myList(list),
     mySettings(s),
     myReserved(reserved),
-    myOffset(0),
-    myPC(0),
-    myPCEnd(0),
     myLabels(labels),
     myDirectives(directives)
 {
@@ -1120,16 +1117,7 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DiStella::Settings DiStella::settings = {
-  Base::Fmt::_2, // gfxFormat
-  true,      // resolveCode (opposite of -d in Distella)
-  true,      // showAddresses (not used externally; always off)
-  false,     // aFlag (-a in Distella)
-  true,      // fFlag (-f in Distella)
-  false,     // rFlag (-r in Distella)
-  false,     // bFlag (-b in Distella)
-  8+1        // number of bytes to use with .byte directive
-};
+DiStella::Settings DiStella::settings;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const std::array<DiStella::Instruction_tag, 256> DiStella::ourLookup = { {
