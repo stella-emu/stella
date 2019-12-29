@@ -108,7 +108,7 @@ struct Rect
     uInt32 bottom{0}, right{0};
 
   public:
-    Rect() = default;
+    Rect() {}
     explicit Rect(const Size& s) : bottom(s.h), right(s.w) { assert(valid()); }
     Rect(uInt32 w, uInt32 h) : bottom(h), right(w) { assert(valid()); }
     Rect(const Point& p, uInt32 w, uInt32 h) : top(p.y), left(p.x), bottom(h), right(w) { assert(valid()); }
