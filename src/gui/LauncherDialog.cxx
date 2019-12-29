@@ -46,17 +46,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                                int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h),
-    myStartButton(nullptr),
-    myPrevDirButton(nullptr),
-    myOptionsButton(nullptr),
-    myQuitButton(nullptr),
-    myList(nullptr),
-    myPattern(nullptr),
-    myAllFiles(nullptr),
-    myRomInfoWidget(nullptr),
-    mySelectedItem(0),
-    myEventHandled(false)
+  : Dialog(osystem, parent, x, y, w, h)
 {
   myUseMinimalUI = instance().settings().getBool("minimal_ui");
 

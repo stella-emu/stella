@@ -33,10 +33,6 @@ TimeLineWidget::TimeLineWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h,
                                const string& label, uInt32 labelWidth, int cmd)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
-    _value(0),
-    _valueMin(0),
-    _valueMax(0),
-    _isDragging(false),
     _labelWidth(labelWidth)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;

@@ -54,9 +54,8 @@ class OSystemMACOS : public OSystem
               string& savedir, string& loaddir,
               bool useappdir, const string& usedir) override;
 
-protected:
-
-  virtual shared_ptr<KeyValueRepository> createSettingsRepository() override;
+  protected:
+    virtual shared_ptr<KeyValueRepository> createSettingsRepository() override;
 
   private:
     // Following constructors and assignment operators not supported

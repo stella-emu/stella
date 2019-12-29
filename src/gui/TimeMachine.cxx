@@ -23,7 +23,6 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachine::TimeMachine(OSystem& osystem)
   : DialogContainer(osystem),
-    myBaseDialog(nullptr),
     myWidth(FBMinimum::Width)
 {
   myBaseDialog = new TimeMachineDialog(myOSystem, *this, myWidth);

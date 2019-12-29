@@ -26,9 +26,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
                        const GUI::Font& font)
-  : Dialog(osystem, parent, font, "Help"),
-    myPage(1),
-    myNumPages(5)
+  : Dialog(osystem, parent, font, "Help")
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),

@@ -184,8 +184,7 @@ static constexpr std::array<uInt32, BUTTON_H> LOAD_ALL = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
                                      int width)
-  : Dialog(osystem, parent),
-    _enterWinds(0)
+  : Dialog(osystem, parent)
 {
   const GUI::Font& font = instance().frameBuffer().font();
   const int H_BORDER = 6, BUTTON_GAP = 4, V_BORDER = 4;

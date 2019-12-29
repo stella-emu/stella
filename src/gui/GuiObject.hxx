@@ -59,8 +59,7 @@ class GuiObject : public CommandReceiver
       : myOSystem(osystem),
         myParent(parent),
         myDialog(dialog),
-        _x(x), _y(y), _w(w), _h(h),
-        _firstWidget(nullptr) { }
+        _x(x), _y(y), _w(w), _h(h) { }
 
     virtual ~GuiObject() = default;
 
@@ -104,9 +103,9 @@ class GuiObject : public CommandReceiver
     Dialog&          myDialog;
 
   protected:
-    int _x, _y, _w, _h;
+    int _x{0}, _y{0}, _w{0}, _h{0};
 
-    Widget* _firstWidget;
+    Widget* _firstWidget{nullptr};
     WidgetArray _focusList;
 
   private:

@@ -58,49 +58,49 @@ class GameInfoDialog : public Dialog, public CommandSender
     void eraseEEPROM();
 
   private:
-    TabWidget* myTab;
+    TabWidget* myTab{nullptr};
 
     // Emulation properties
-    PopUpWidget*      myBSType;
-    StaticTextWidget* myTypeDetected;
-    StaticTextWidget* myStartBankLabel;
-    PopUpWidget*      myStartBank;
-    PopUpWidget*      myFormat;
-    StaticTextWidget* myFormatDetected;
-    SliderWidget*     myVCenter;
-    CheckboxWidget*   myPhosphor;
-    SliderWidget*     myPPBlend;
-    CheckboxWidget*   mySound;
+    PopUpWidget*      myBSType{nullptr};
+    StaticTextWidget* myTypeDetected{nullptr};
+    StaticTextWidget* myStartBankLabel{nullptr};
+    PopUpWidget*      myStartBank{nullptr};
+    PopUpWidget*      myFormat{nullptr};
+    StaticTextWidget* myFormatDetected{nullptr};
+    SliderWidget*     myVCenter{nullptr};
+    CheckboxWidget*   myPhosphor{nullptr};
+    SliderWidget*     myPPBlend{nullptr};
+    CheckboxWidget*   mySound{nullptr};
 
     // Console properties
-    RadioButtonGroup* myLeftDiffGroup;
-    RadioButtonGroup* myRightDiffGroup;
-    RadioButtonGroup* myTVTypeGroup;
+    RadioButtonGroup* myLeftDiffGroup{nullptr};
+    RadioButtonGroup* myRightDiffGroup{nullptr};
+    RadioButtonGroup* myTVTypeGroup{nullptr};
 
     // Controller properties
-    StaticTextWidget* myLeftPortLabel;
-    StaticTextWidget* myRightPortLabel;
-    PopUpWidget*      myLeftPort;
-    StaticTextWidget* myLeftPortDetected;
-    PopUpWidget*      myRightPort;
-    StaticTextWidget* myRightPortDetected;
-    CheckboxWidget*   mySwapPorts;
-    CheckboxWidget*   mySwapPaddles;
-    StaticTextWidget* myEraseEEPROMLabel;
-    ButtonWidget*     myEraseEEPROMButton;
-    StaticTextWidget* myEraseEEPROMInfo;
-    CheckboxWidget*   myMouseControl;
-    PopUpWidget*      myMouseX;
-    PopUpWidget*      myMouseY;
-    SliderWidget*     myMouseRange;
+    StaticTextWidget* myLeftPortLabel{nullptr};
+    StaticTextWidget* myRightPortLabel{nullptr};
+    PopUpWidget*      myLeftPort{nullptr};
+    StaticTextWidget* myLeftPortDetected{nullptr};
+    PopUpWidget*      myRightPort{nullptr};
+    StaticTextWidget* myRightPortDetected{nullptr};
+    CheckboxWidget*   mySwapPorts{nullptr};
+    CheckboxWidget*   mySwapPaddles{nullptr};
+    StaticTextWidget* myEraseEEPROMLabel{nullptr};
+    ButtonWidget*     myEraseEEPROMButton{nullptr};
+    StaticTextWidget* myEraseEEPROMInfo{nullptr};
+    CheckboxWidget*   myMouseControl{nullptr};
+    PopUpWidget*      myMouseX{nullptr};
+    PopUpWidget*      myMouseY{nullptr};
+    SliderWidget*     myMouseRange{nullptr};
 
     // Cartridge properties
-    EditTextWidget*   myName;
-    EditTextWidget*   myMD5;
-    EditTextWidget*   myManufacturer;
-    EditTextWidget*   myModelNo;
-    EditTextWidget*   myRarity;
-    EditTextWidget*   myNote;
+    EditTextWidget*   myName{nullptr};
+    EditTextWidget*   myMD5{nullptr};
+    EditTextWidget*   myManufacturer{nullptr};
+    EditTextWidget*   myModelNo{nullptr};
+    EditTextWidget*   myRarity{nullptr};
+    EditTextWidget*   myNote{nullptr};
 
     enum {
       kVCenterChanged  = 'Vcch',

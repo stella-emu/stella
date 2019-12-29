@@ -22,8 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandMenu::CommandMenu(OSystem& osystem)
-  : DialogContainer(osystem),
-    myBaseDialog(nullptr)
+  : DialogContainer(osystem)
 {
   if (osystem.settings().getBool("minimal_ui"))
     myBaseDialog = new MinUICommandDialog(myOSystem, *this);

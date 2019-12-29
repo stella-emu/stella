@@ -133,21 +133,21 @@ class Widget : public GuiObject
          { assert(_boss); _boss->handleCommand(sender, cmd, data, id); }
 
   protected:
-    GuiObject* _boss;
+    GuiObject* _boss{nullptr};
     const GUI::Font& _font;
-    Widget*    _next;
-    uInt32     _id;
-    uInt32     _flags;
-    bool       _hasFocus;
-    int        _fontWidth;
-    int        _fontHeight;
-    ColorId    _bgcolor;
-    ColorId    _bgcolorhi;
-    ColorId    _bgcolorlo;
-    ColorId    _textcolor;
-    ColorId    _textcolorhi;
-    ColorId    _textcolorlo;
-    ColorId    _shadowcolor;
+    Widget*    _next{nullptr};
+    uInt32     _id{0};
+    uInt32     _flags{0};
+    bool       _hasFocus{false};
+    int        _fontWidth{0};
+    int        _fontHeight{0};
+    ColorId    _bgcolor{kWidColor};
+    ColorId    _bgcolorhi{kWidColor};
+    ColorId    _bgcolorlo{kBGColorLo};
+    ColorId    _textcolor{kTextColor};
+    ColorId    _textcolorhi{kTextColorHi};
+    ColorId    _textcolorlo{kBGColorLo};
+    ColorId    _shadowcolor{kShadowColor};
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
@@ -200,8 +200,8 @@ class StaticTextWidget : public Widget
 
   protected:
     string    _label;
-    bool      _editable;
-    TextAlign _align;
+    bool      _editable{false};
+    TextAlign _align{TextAlign::Left};
 
   private:
     // Following constructors and assignment operators not supported
@@ -249,9 +249,9 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
   protected:
     int  _cmd{0};
     bool _repeat{false}; // button repeats
-    bool _useBitmap;
-    const uInt32* _bitmap;
-    int  _bmw, _bmh;
+    bool _useBitmap{false};
+    const uInt32* _bitmap{nullptr};
+    int  _bmw{0}, _bmh{0};
 
   private:
     // Following constructors and assignment operators not supported
@@ -291,15 +291,15 @@ class CheckboxWidget : public ButtonWidget
     void drawWidget(bool hilite) override;
 
   protected:
-    bool _state;
-    bool _holdFocus;
-    bool _drawBox;
-    bool _changed;
+    bool _state{false};
+    bool _holdFocus{true};
+    bool _drawBox{true};
+    bool _changed{false};
 
-    const uInt32* _img;
-    ColorId _fillColor;
-    int _boxY;
-    int _textY;
+    const uInt32* _img{nullptr};
+    ColorId _fillColor{kColor};
+    int _boxY{0};
+    int _textY{0};
 
   private:
     // Following constructors and assignment operators not supported
@@ -317,11 +317,13 @@ class SliderWidget : public ButtonWidget
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
                  const string& label = "", int labelWidth = 0, int cmd = 0,
-                 int valueLabelWidth = 0, const string& valueUnit = "", int valueLabelGap = 4);
+                 int valueLabelWidth = 0, const string& valueUnit = "",
+                 int valueLabelGap = 4);
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
                  const string& label = "", int labelWidth = 0, int cmd = 0,
-                 int valueLabelWidth = 0, const string& valueUnit = "", int valueLabelGap = 4);
+                 int valueLabelWidth = 0, const string& valueUnit = "",
+                 int valueLabelGap = 4);
     virtual ~SliderWidget() = default;
 
     void setValue(int value);
@@ -353,15 +355,15 @@ class SliderWidget : public ButtonWidget
     int posToValue(int pos) const;
 
   protected:
-    int    _value, _stepValue;
-    int    _valueMin, _valueMax;
-    bool   _isDragging;
-    int    _labelWidth;
+    int    _value{-1}, _stepValue{1};
+    int    _valueMin{0}, _valueMax{100};
+    bool   _isDragging{false};
+    int    _labelWidth{0};
     string _valueLabel;
     string _valueUnit;
-    int    _valueLabelGap;
-    int    _valueLabelWidth;
-    int    _numIntervals;
+    int    _valueLabelGap{0};
+    int    _valueLabelWidth{0};
+    int    _numIntervals{0};
 
   private:
     // Following constructors and assignment operators not supported

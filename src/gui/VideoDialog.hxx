@@ -54,51 +54,51 @@ class VideoDialog : public Dialog
     TabWidget* myTab;
 
     // General options
-    PopUpWidget*      myRenderer;
-    SliderWidget*     myTIAZoom;
-    PopUpWidget*      myTIAPalette;
-    CheckboxWidget* myTIAInterpolate;
-    SliderWidget*     myNAspectRatio;
-    SliderWidget*     myPAspectRatio;
-    SliderWidget*     mySpeed;
+    PopUpWidget*      myRenderer{nullptr};
+    SliderWidget*     myTIAZoom{nullptr};
+    PopUpWidget*      myTIAPalette{nullptr};
+    CheckboxWidget*   myTIAInterpolate{nullptr};
+    SliderWidget*     myNAspectRatio{nullptr};
+    SliderWidget*     myPAspectRatio{nullptr};
+    SliderWidget*     mySpeed{nullptr};
 
-    CheckboxWidget*   myFullscreen;
+    CheckboxWidget*   myFullscreen{nullptr};
     //PopUpWidget*      myFullScreenMode;
-    CheckboxWidget*   myUseStretch;
-    SliderWidget*     myTVOverscan;
-    CheckboxWidget*   myUseVSync;
-    CheckboxWidget*   myUIMessages;
-    CheckboxWidget*   myCenter;
-    CheckboxWidget*   myFastSCBios;
-    CheckboxWidget*   myUseThreads;
+    CheckboxWidget*   myUseStretch{nullptr};
+    SliderWidget*     myTVOverscan{nullptr};
+    CheckboxWidget*   myUseVSync{nullptr};
+    CheckboxWidget*   myUIMessages{nullptr};
+    CheckboxWidget*   myCenter{nullptr};
+    CheckboxWidget*   myFastSCBios{nullptr};
+    CheckboxWidget*   myUseThreads{nullptr};
 
     // TV effects adjustables (custom mode)
-    PopUpWidget*      myTVMode;
-    SliderWidget*     myTVSharp;
-    SliderWidget*     myTVHue;
-    SliderWidget*     myTVRes;
-    SliderWidget*     myTVArtifacts;
-    SliderWidget*     myTVFringe;
-    SliderWidget*     myTVBleed;
-    SliderWidget*     myTVBright;
-    SliderWidget*     myTVContrast;
-    SliderWidget*     myTVSatur;
-    SliderWidget*     myTVGamma;
+    PopUpWidget*      myTVMode{nullptr};
+    SliderWidget*     myTVSharp{nullptr};
+    SliderWidget*     myTVHue{nullptr};
+    SliderWidget*     myTVRes{nullptr};
+    SliderWidget*     myTVArtifacts{nullptr};
+    SliderWidget*     myTVFringe{nullptr};
+    SliderWidget*     myTVBleed{nullptr};
+    SliderWidget*     myTVBright{nullptr};
+    SliderWidget*     myTVContrast{nullptr};
+    SliderWidget*     myTVSatur{nullptr};
+    SliderWidget*     myTVGamma{nullptr};
 
     // TV phosphor effect
-    CheckboxWidget*   myTVPhosphor;
-    SliderWidget*     myTVPhosLevel;
+    CheckboxWidget*   myTVPhosphor{nullptr};
+    SliderWidget*     myTVPhosLevel{nullptr};
 
     // TV scanline intensity and interpolation
-    StaticTextWidget* myTVScanLabel;
-    SliderWidget*     myTVScanIntense;
+    StaticTextWidget* myTVScanLabel{nullptr};
+    SliderWidget*     myTVScanIntense{nullptr};
 
     // TV effects adjustables presets (custom mode)
-    ButtonWidget*     myCloneComposite;
-    ButtonWidget*     myCloneSvideo;
-    ButtonWidget*     myCloneRGB;
-    ButtonWidget*     myCloneBad;
-    ButtonWidget*     myCloneCustom;
+    ButtonWidget*     myCloneComposite{nullptr};
+    ButtonWidget*     myCloneSvideo{nullptr};
+    ButtonWidget*     myCloneRGB{nullptr};
+    ButtonWidget*     myCloneBad{nullptr};
+    ButtonWidget*     myCloneCustom{nullptr};
 
     enum {
       kSpeedupChanged     = 'VDSp',

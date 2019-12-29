@@ -39,7 +39,6 @@
 InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Input settings"),
-    myConfirmMsg(nullptr),
     myMaxWidth(max_w),
     myMaxHeight(max_h)
 {

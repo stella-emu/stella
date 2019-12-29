@@ -35,9 +35,7 @@
 BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                              int max_w, int max_h, const string& title)
   : Dialog(boss->instance(), boss->parent(), font, title),
-    CommandSender(boss),
-    _cmd(0),
-    _mode(FileSave)
+    CommandSender(boss)
 {
   // Set real dimensions
   _w = max_w;

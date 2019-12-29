@@ -27,8 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem& osystem)
-  : DialogContainer(osystem),
-    myBaseDialog(nullptr)
+  : DialogContainer(osystem)
 {
   const Common::Size& s = myOSystem.settings().getSize("launcherres");
   const Common::Size& d = myOSystem.frameBuffer().desktopSize();

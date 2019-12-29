@@ -69,25 +69,25 @@ class TimeMachineDialog : public Dialog
       kLoadAll      = 'TMld',
     };
 
-    TimeLineWidget* myTimeline;
+    TimeLineWidget* myTimeline{nullptr};
 
-    ButtonWidget* myToggleWidget;
-    ButtonWidget* myPlayWidget;
-    ButtonWidget* myRewindAllWidget;
-    ButtonWidget* myRewind1Widget;
-    ButtonWidget* myUnwind1Widget;
-    ButtonWidget* myUnwindAllWidget;
-    ButtonWidget* mySaveAllWidget;
-    ButtonWidget* myLoadAllWidget;
+    ButtonWidget* myToggleWidget{nullptr};
+    ButtonWidget* myPlayWidget{nullptr};
+    ButtonWidget* myRewindAllWidget{nullptr};
+    ButtonWidget* myRewind1Widget{nullptr};
+    ButtonWidget* myUnwind1Widget{nullptr};
+    ButtonWidget* myUnwindAllWidget{nullptr};
+    ButtonWidget* mySaveAllWidget{nullptr};
+    ButtonWidget* myLoadAllWidget{nullptr};
 
-    StaticTextWidget* myCurrentTimeWidget;
-    StaticTextWidget* myLastTimeWidget;
+    StaticTextWidget* myCurrentTimeWidget{nullptr};
+    StaticTextWidget* myLastTimeWidget{nullptr};
 
-    StaticTextWidget* myCurrentIdxWidget;
-    StaticTextWidget* myLastIdxWidget;
-    StaticTextWidget* myMessageWidget;
+    StaticTextWidget* myCurrentIdxWidget{nullptr};
+    StaticTextWidget* myLastIdxWidget{nullptr};
+    StaticTextWidget* myMessageWidget{nullptr};
 
-    Int32 _enterWinds;
+    Int32 _enterWinds{0};
 
   private:
     // Following constructors and assignment operators not supported

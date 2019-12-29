@@ -61,13 +61,13 @@ class InputTextDialog : public Dialog, public CommandSender
 
   private:
     vector<EditTextWidget*> myInput;
-    StaticTextWidget* myMessage;
+    StaticTextWidget* myMessage{nullptr};
 
-    bool myEnableCenter;
-    bool myErrorFlag;
-    int	 myCmd;
+    bool myEnableCenter{false};
+    bool myErrorFlag{false};
+    int	 myCmd{0};
 
-    uInt32 myXOrig, myYOrig;
+    uInt32 myXOrig{0}, myYOrig{0};
 
   private:
     // Following constructors and assignment operators not supported

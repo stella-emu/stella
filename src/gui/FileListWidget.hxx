@@ -92,16 +92,16 @@ class FileListWidget : public StringListWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    FilesystemNode::ListMode _fsmode;
+    FilesystemNode::ListMode _fsmode{FilesystemNode::ListMode::All};
     FilesystemNode::NameFilter _filter;
     FilesystemNode _node;
     FSList _fileList;
 
     Common::FixedStack<string> _history;
-    uInt32 _selected;
+    uInt32 _selected{0};
 
     string _quickSelectStr;
-    uInt64 _quickSelectTime;
+    uInt64 _quickSelectTime{0};
     static uInt64 _QUICK_SELECT_DELAY;
 
   private:

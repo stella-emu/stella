@@ -50,9 +50,9 @@ class TimeMachine : public DialogContainer
     void setEnterWinds(Int32 numWinds);
 
   private:
-    Dialog* myBaseDialog;
+    Dialog* myBaseDialog{nullptr};
 
-    uInt32 myWidth;
+    uInt32 myWidth{0};
 
   private:
     // Following constructors and assignment operators not supported

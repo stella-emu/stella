@@ -33,9 +33,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent)
-  : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands"),
-    myStellaSettingsDialog(nullptr),
-    myOptionsDialog(nullptr)
+  : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
   const int HBORDER = 10;
   const int VBORDER = 10;

@@ -86,64 +86,64 @@ class DeveloperDialog : public Dialog
 
     static const int DEBUG_COLORS = 6;
 
-    TabWidget* myTab;
+    TabWidget* myTab{nullptr};
     // Emulator widgets
-    RadioButtonGroup*   mySettingsGroupEmulation;
-    CheckboxWidget*     myFrameStatsWidget;
-    PopUpWidget*        myConsoleWidget;
-    StaticTextWidget*   myLoadingROMLabel;
-    CheckboxWidget*     myRandomBankWidget;
-    CheckboxWidget*     myRandomizeRAMWidget;
-    StaticTextWidget*   myRandomizeCPULabel;
-    CheckboxWidget*     myUndrivenPinsWidget;
-    std::array<CheckboxWidget*, 5> myRandomizeCPUWidget;
+    RadioButtonGroup*   mySettingsGroupEmulation{nullptr};
+    CheckboxWidget*     myFrameStatsWidget{nullptr};
+    PopUpWidget*        myConsoleWidget{nullptr};
+    StaticTextWidget*   myLoadingROMLabel{nullptr};
+    CheckboxWidget*     myRandomBankWidget{nullptr};
+    CheckboxWidget*     myRandomizeRAMWidget{nullptr};
+    StaticTextWidget*   myRandomizeCPULabel{nullptr};
+    CheckboxWidget*     myUndrivenPinsWidget{nullptr};
+    std::array<CheckboxWidget*, 5> myRandomizeCPUWidget{nullptr};
 #ifdef DEBUGGER_SUPPORT
-    CheckboxWidget*     myRWPortBreakWidget;
-    CheckboxWidget*     myWRPortBreakWidget;
+    CheckboxWidget*     myRWPortBreakWidget{nullptr};
+    CheckboxWidget*     myWRPortBreakWidget{nullptr};
 #endif
-    CheckboxWidget*     myThumbExceptionWidget;
-    CheckboxWidget*     myEEPROMAccessWidget;
+    CheckboxWidget*     myThumbExceptionWidget{nullptr};
+    CheckboxWidget*     myEEPROMAccessWidget{nullptr};
 
     // TIA widgets
-    RadioButtonGroup*   mySettingsGroupTia;
-    PopUpWidget*        myTIATypeWidget;
-    StaticTextWidget*   myInvPhaseLabel;
-    CheckboxWidget*     myPlInvPhaseWidget;
-    CheckboxWidget*     myMsInvPhaseWidget;
-    CheckboxWidget*     myBlInvPhaseWidget;
-    StaticTextWidget*   myPlayfieldLabel;
-    CheckboxWidget*     myPFBitsWidget;
-    CheckboxWidget*     myPFColorWidget;
-    StaticTextWidget*   mySwapLabel;
-    CheckboxWidget*     myPlSwapWidget;
-    CheckboxWidget*     myBlSwapWidget;
+    RadioButtonGroup*   mySettingsGroupTia{nullptr};
+    PopUpWidget*        myTIATypeWidget{nullptr};
+    StaticTextWidget*   myInvPhaseLabel{nullptr};
+    CheckboxWidget*     myPlInvPhaseWidget{nullptr};
+    CheckboxWidget*     myMsInvPhaseWidget{nullptr};
+    CheckboxWidget*     myBlInvPhaseWidget{nullptr};
+    StaticTextWidget*   myPlayfieldLabel{nullptr};
+    CheckboxWidget*     myPFBitsWidget{nullptr};
+    CheckboxWidget*     myPFColorWidget{nullptr};
+    StaticTextWidget*   mySwapLabel{nullptr};
+    CheckboxWidget*     myPlSwapWidget{nullptr};
+    CheckboxWidget*     myBlSwapWidget{nullptr};
 
     // Video widgets
-    RadioButtonGroup*   mySettingsGroupVideo;
-    CheckboxWidget*     myTVJitterWidget;
-    SliderWidget*       myTVJitterRecWidget;
-    StaticTextWidget*   myTVJitterRecLabelWidget;
-    CheckboxWidget*     myColorLossWidget;
-    CheckboxWidget*     myDebugColorsWidget;
-    std::array<PopUpWidget*, DEBUG_COLORS> myDbgColour;
-    std::array<ColorWidget*, DEBUG_COLORS> myDbgColourSwatch;
+    RadioButtonGroup*   mySettingsGroupVideo{nullptr};
+    CheckboxWidget*     myTVJitterWidget{nullptr};
+    SliderWidget*       myTVJitterRecWidget{nullptr};
+    StaticTextWidget*   myTVJitterRecLabelWidget{nullptr};
+    CheckboxWidget*     myColorLossWidget{nullptr};
+    CheckboxWidget*     myDebugColorsWidget{nullptr};
+    std::array<PopUpWidget*, DEBUG_COLORS> myDbgColour{nullptr};
+    std::array<ColorWidget*, DEBUG_COLORS> myDbgColourSwatch{nullptr};
 
     // States widgets
-    RadioButtonGroup*   mySettingsGroupTM;
-    CheckboxWidget*     myTimeMachineWidget;
-    SliderWidget*       myStateSizeWidget;
-    SliderWidget*       myUncompressedWidget;
-    PopUpWidget*        myStateIntervalWidget;
-    PopUpWidget*        myStateHorizonWidget;
-    RadioButtonGroup*   mySaveOnExitGroup;
+    RadioButtonGroup*   mySettingsGroupTM{nullptr};
+    CheckboxWidget*     myTimeMachineWidget{nullptr};
+    SliderWidget*       myStateSizeWidget{nullptr};
+    SliderWidget*       myUncompressedWidget{nullptr};
+    PopUpWidget*        myStateIntervalWidget{nullptr};
+    PopUpWidget*        myStateHorizonWidget{nullptr};
+    RadioButtonGroup*   mySaveOnExitGroup{nullptr};
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets
-    SliderWidget*       myDebuggerWidthSlider;
-    SliderWidget*       myDebuggerHeightSlider;
-    PopUpWidget*        myDebuggerFontSize;
-    PopUpWidget*        myDebuggerFontStyle;
-    CheckboxWidget*     myGhostReadsTrapWidget;
+    SliderWidget*       myDebuggerWidthSlider{nullptr};
+    SliderWidget*       myDebuggerHeightSlider{nullptr};
+    PopUpWidget*        myDebuggerFontSize{nullptr};
+    PopUpWidget*        myDebuggerFontStyle{nullptr};
+    CheckboxWidget*     myGhostReadsTrapWidget{nullptr};
 #endif
 
     bool    mySettings;
