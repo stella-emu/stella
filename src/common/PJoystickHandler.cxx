@@ -432,7 +432,8 @@ void PhysicalJoystickHandler::enableMapping(const Event::Type event, EventMode m
     JoyMap::JoyMappingArray joyMappings = j->joyMap.getEventMapping(event, mode);
 
     for (const auto& mapping : joyMappings)
-      j->joyMap.add(event, EventMode::kEmulationMode, mapping.button, mapping.axis, mapping.adir);
+      j->joyMap.add(event, EventMode::kEmulationMode, mapping.button,
+                    mapping.axis, mapping.adir, mapping.hat, mapping.hdir);
   }
 }
 
