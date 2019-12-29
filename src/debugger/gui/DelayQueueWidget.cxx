@@ -37,7 +37,7 @@ DelayQueueWidget::DelayQueueWidget(
   _textcolor = kTextColor;
 
   _w = 20 * font.getMaxCharWidth() + 6;
-  _h = myLines.size() * font.getLineHeight() + 6;
+  _h = static_cast<int>(myLines.size() * font.getLineHeight() + 6);
 
   for (auto&& line : myLines) line = "";
 }
