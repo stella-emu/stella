@@ -42,7 +42,7 @@ class RadioButtonWidget : public CheckboxWidget
     void drawWidget(bool hilite) override;
 
   private:
-    RadioButtonGroup* myGroup;
+    RadioButtonGroup* myGroup{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

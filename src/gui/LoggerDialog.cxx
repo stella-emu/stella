@@ -34,8 +34,7 @@
 LoggerDialog::LoggerDialog(OSystem& osystem, DialogContainer& parent,
                            const GUI::Font& font, int max_w, int max_h,
                            bool uselargefont)
-  : Dialog(osystem, parent, font, "System logs"),
-    myLogInfo(nullptr)
+  : Dialog(osystem, parent, font, "System logs")
 {
   const int lineHeight   = font.getLineHeight(),
             buttonWidth  = font.getStringWidth("Save log to disk") + 20,

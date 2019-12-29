@@ -76,10 +76,10 @@ class TabWidget : public Widget, public CommandSender
   private:
     struct Tab {
       string title;
-      Widget* firstWidget;
-      Widget* parentWidget;
-      bool enabled;
-      int tabWidth;
+      Widget* firstWidget{nullptr};
+      Widget* parentWidget{nullptr};
+      bool enabled{true};
+      int tabWidth{0};
 
       Tab(const string& t, int tw = NO_WIDTH,
           Widget* first = nullptr, Widget* parent = nullptr, bool e = true)
@@ -88,10 +88,10 @@ class TabWidget : public Widget, public CommandSender
     using TabList = vector<Tab>;
 
     TabList _tabs;
-    int     _tabWidth;
-    int     _tabHeight;
-    int     _activeTab;
-    bool    _firstTime;
+    int     _tabWidth{40};
+    int     _tabHeight{1};
+    int     _activeTab{-1};
+    bool    _firstTime{true};
 
     enum {
       kTabLeftOffset = 0,

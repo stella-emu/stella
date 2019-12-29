@@ -40,19 +40,19 @@ class CommandDialog : public Dialog
     void processCancel() override;
 
     // column 0
-    ButtonWidget* myColorButton;
-    ButtonWidget* myLeftDiffButton;
-    ButtonWidget* myRightDiffButton;
+    ButtonWidget* myColorButton{nullptr};
+    ButtonWidget* myLeftDiffButton{nullptr};
+    ButtonWidget* myRightDiffButton{nullptr};
     // column 1
-    ButtonWidget* mySaveStateButton;
-    ButtonWidget* myStateSlotButton;
-    ButtonWidget* myLoadStateButton;
-    ButtonWidget* myTimeMachineButton;
+    ButtonWidget* mySaveStateButton{nullptr};
+    ButtonWidget* myStateSlotButton{nullptr};
+    ButtonWidget* myLoadStateButton{nullptr};
+    ButtonWidget* myTimeMachineButton{nullptr};
     // column 2
-    ButtonWidget* myTVFormatButton;
-    ButtonWidget* myPaletteButton;
-    ButtonWidget* myPhosphorButton;
-    ButtonWidget* mySoundButton;
+    ButtonWidget* myTVFormatButton{nullptr};
+    ButtonWidget* myPaletteButton{nullptr};
+    ButtonWidget* myPhosphorButton{nullptr};
+    ButtonWidget* mySoundButton{nullptr};
 
     enum {
       kSelectCmd      = 'Csel',

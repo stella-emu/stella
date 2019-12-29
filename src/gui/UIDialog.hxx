@@ -50,32 +50,32 @@ class UIDialog : public Dialog, public CommandSender
     };
 
     const GUI::Font& myFont;
-    TabWidget* myTab;
+    TabWidget* myTab{nullptr};
 
     // Launcher options
-    EditTextWidget*   myRomPath;
-    SliderWidget*     myLauncherWidthSlider;
-    SliderWidget*     myLauncherHeightSlider;
-    PopUpWidget*      myLauncherFontPopup;
-    PopUpWidget*      myRomViewerPopup;
-    ButtonWidget*     myOpenBrowserButton;
-    EditTextWidget*   mySnapLoadPath;
-    CheckboxWidget*   myLauncherExitWidget;
+    EditTextWidget*   myRomPath{nullptr};
+    SliderWidget*     myLauncherWidthSlider{nullptr};
+    SliderWidget*     myLauncherHeightSlider{nullptr};
+    PopUpWidget*      myLauncherFontPopup{nullptr};
+    PopUpWidget*      myRomViewerPopup{nullptr};
+    ButtonWidget*     myOpenBrowserButton{nullptr};
+    EditTextWidget*   mySnapLoadPath{nullptr};
+    CheckboxWidget*   myLauncherExitWidget{nullptr};
 
     // Misc options
-    PopUpWidget*      myPalettePopup;
-    CheckboxWidget*   myHidpiWidget;
-    PopUpWidget*      myPositionPopup;
-    SliderWidget*     myListDelaySlider;
-    SliderWidget*     myWheelLinesSlider;
-    SliderWidget*     myControllerRateSlider;
-    SliderWidget*     myControllerDelaySlider;
-    SliderWidget*     myDoubleClickSlider;
+    PopUpWidget*      myPalettePopup{nullptr};
+    CheckboxWidget*   myHidpiWidget{nullptr};
+    PopUpWidget*      myPositionPopup{nullptr};
+    SliderWidget*     myListDelaySlider{nullptr};
+    SliderWidget*     myWheelLinesSlider{nullptr};
+    SliderWidget*     myControllerRateSlider{nullptr};
+    SliderWidget*     myControllerDelaySlider{nullptr};
+    SliderWidget*     myDoubleClickSlider{nullptr};
 
     unique_ptr<BrowserDialog> myBrowser;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
-    bool myIsGlobal;
+    bool myIsGlobal{false};
 
   private:
     // Following constructors and assignment operators not supported

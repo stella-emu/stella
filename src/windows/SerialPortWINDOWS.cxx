@@ -21,8 +21,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortWINDOWS::SerialPortWINDOWS()
-  : SerialPort(),
-    myHandle(0)
+  : SerialPort()
 {
 }
 

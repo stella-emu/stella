@@ -36,8 +36,6 @@
 RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
-    mySurfaceIsValid(false),
-    myHaveProperties(false),
     myAvail(w > 400 ?
       Common::Size(TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2) :
       Common::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight))

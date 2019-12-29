@@ -53,10 +53,10 @@ class TimeLineWidget : public ButtonWidget
     uInt32 posToValue(uInt32 pos);
 
   protected:
-    uInt32  _value;
-    uInt32  _valueMin, _valueMax;
-    bool    _isDragging;
-    uInt32  _labelWidth;
+    uInt32  _value{0};
+    uInt32  _valueMin{0}, _valueMax{0};
+    bool    _isDragging{false};
+    uInt32  _labelWidth{0};
 
     uIntArray _stepValue;
 

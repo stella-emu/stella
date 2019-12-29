@@ -45,11 +45,11 @@ class JoystickDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    StringListWidget* myJoyList;
-    EditTextWidget*   myJoyText;
+    StringListWidget* myJoyList{nullptr};
+    EditTextWidget*   myJoyText{nullptr};
 
-    ButtonWidget* myRemoveBtn;
-    ButtonWidget* myCloseBtn;
+    ButtonWidget* myRemoveBtn{nullptr};
+    ButtonWidget* myCloseBtn{nullptr};
 
     IntArray myJoyIDs;
 

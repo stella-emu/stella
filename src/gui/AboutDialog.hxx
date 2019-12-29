@@ -41,16 +41,16 @@ class AboutDialog : public Dialog
     void loadConfig() override { displayInfo(); }
 
   private:
-    ButtonWidget* myNextButton;
-    ButtonWidget* myPrevButton;
+    ButtonWidget* myNextButton{nullptr};
+    ButtonWidget* myPrevButton{nullptr};
 
-    StaticTextWidget* myTitle;
-    vector<StaticTextWidget*> myDesc;
+    StaticTextWidget* myTitle{nullptr};
+    vector<StaticTextWidget*> myDesc{nullptr};
     vector<string> myDescStr;
 
-    int myPage;
-    int myNumPages;
-    int myLinesPerPage;
+    int myPage{1};
+    int myNumPages{4};
+    int myLinesPerPage{13};
 
   private:
     // Following constructors and assignment operators not supported

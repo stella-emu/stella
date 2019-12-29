@@ -28,10 +28,7 @@
 TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
-    CommandSender(boss),
-    _tabWidth(40),
-    _activeTab(-1),
-    _firstTime(true)
+    CommandSender(boss)
 {
   _id = 0;  // For dialogs with multiple tab widgets, they should specifically
             // call ::setID to differentiate among them

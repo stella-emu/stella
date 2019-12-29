@@ -43,7 +43,7 @@ class CommandMenu : public DialogContainer
     Dialog* baseDialog() override;
 
   private:
-    Dialog* myBaseDialog;
+    Dialog* myBaseDialog{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

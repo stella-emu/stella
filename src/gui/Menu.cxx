@@ -25,9 +25,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Menu::Menu(OSystem& osystem)
-  : DialogContainer(osystem),
-    stellaSettingDialog(nullptr),
-    optionsDialog(nullptr)
+  : DialogContainer(osystem)
 {
 }
 

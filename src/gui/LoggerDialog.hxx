@@ -42,9 +42,9 @@ class LoggerDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    StringListWidget* myLogInfo;
-    PopUpWidget*      myLogLevel;
-    CheckboxWidget*   myLogToConsole;
+    StringListWidget* myLogInfo{nullptr};
+    PopUpWidget*      myLogLevel{nullptr};
+    CheckboxWidget*   myLogToConsole{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

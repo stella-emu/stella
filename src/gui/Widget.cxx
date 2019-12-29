@@ -32,17 +32,7 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h)
   : GuiObject(boss->instance(), boss->parent(), boss->dialog(), x, y, w, h),
     _boss(boss),
-    _font(font),
-    _id(0),
-    _flags(0),
-    _hasFocus(false),
-    _bgcolor(kWidColor),
-    _bgcolorhi(kWidColor),
-    _bgcolorlo(kBGColorLo),
-    _textcolor(kTextColor),
-    _textcolorhi(kTextColorHi),
-    _textcolorlo(kBGColorLo),
-    _shadowcolor(kShadowColor)
+    _font(font)
 {
   // Insert into the widget list of the boss
   _next = _boss->_firstWidget;
@@ -311,6 +301,7 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
                                    const string& text, TextAlign align,
                                    ColorId shadowColor)
   : Widget(boss, font, x, y, w, h),
+    _label(text),
     _align(align)
 {
   _flags = Widget::FLAG_ENABLED;
@@ -319,9 +310,6 @@ StaticTextWidget::StaticTextWidget(GuiObject* boss, const GUI::Font& font,
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
   _shadowcolor = shadowColor;
-
-  _label = text;
-  _editable = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -368,11 +356,7 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
   : StaticTextWidget(boss, font, x, y, w, h, label, TextAlign::Center),
     CommandSender(boss),
     _cmd(cmd),
-    _repeat(repeat),
-    _useBitmap(false),
-    _bitmap(nullptr),
-    _bmw(0),
-    _bmh(0)
+    _repeat(repeat)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG;
   _bgcolor = kBtnColor;
@@ -381,15 +365,14 @@ ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
   _textcolor = kBtnTextColor;
   _textcolorhi = kBtnTextColorHi;
   _textcolorlo = kBGColorLo;
-
-  _editable = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget::ButtonWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int dw,
                            const string& label, int cmd, bool repeat)
-  : ButtonWidget(boss, font, x, y, font.getStringWidth(label) + dw, font.getLineHeight() + 4, label, cmd, repeat)
+  : ButtonWidget(boss, font, x, y, font.getStringWidth(label) + dw,
+                 font.getLineHeight() + 4, label, cmd, repeat)
 {
 }
 
@@ -499,14 +482,7 @@ void ButtonWidget::drawWidget(bool hilite)
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, const string& label,
                                int cmd)
-  : ButtonWidget(boss, font, x, y, 16, 16, label, cmd),
-    _state(false),
-    _holdFocus(true),
-    _drawBox(true),
-    _changed(false),
-    _fillColor(kColor),
-    _boxY(0),
-    _textY(0)
+  : ButtonWidget(boss, font, x, y, 16, 16, label, cmd)
 {
   _flags = Widget::FLAG_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
@@ -519,7 +495,6 @@ CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
   else
     _w = font.getStringWidth(label) + 20;
   _h = font.getFontHeight() < 14 ? 14 : font.getFontHeight();
-
 
   // Depending on font size, either the font or box will need to be
   // centered vertically
@@ -648,17 +623,10 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            const string& label, int labelWidth, int cmd,
                            int valueLabelWidth, const string& valueUnit, int valueLabelGap)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
-    _value(-1),
-    _stepValue(1),
-    _valueMin(0),
-    _valueMax(100),
-    _isDragging(false),
     _labelWidth(labelWidth),
-    _valueLabel(""),
     _valueUnit(valueUnit),
     _valueLabelGap(valueLabelGap),
-    _valueLabelWidth(valueLabelWidth),
-    _numIntervals(0)
+    _valueLabelWidth(valueLabelWidth)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
   _bgcolor = kDlgColor;

@@ -94,14 +94,14 @@ class ListWidget : public EditableWidget
     void scrollToCurrent(int item);
 
   protected:
-    int  _rows;
-    int  _cols;
-    int  _currentPos;
-    int  _selectedItem;
-    int  _highlightedItem;
-    bool _editMode;
+    int  _rows{0};
+    int  _cols{0};
+    int  _currentPos{0};
+    int  _selectedItem{-1};
+    int  _highlightedItem{-1};
+    bool _editMode{false};
 
-    ScrollBarWidget* _scrollBar;
+    ScrollBarWidget* _scrollBar{nullptr};
 
     StringList _list;
 
