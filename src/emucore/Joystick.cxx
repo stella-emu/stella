@@ -81,8 +81,8 @@ void Joystick::update()
   {
     // The following code was taken from z26
     #define MJ_Threshold 2
-    int mousex = myEvent.get(Event::MouseAxisXValue),
-        mousey = myEvent.get(Event::MouseAxisYValue);
+    int mousex = myEvent.get(Event::MouseAxisXMove),
+        mousey = myEvent.get(Event::MouseAxisYMove);
     if(mousex || mousey)
     {
       if((!(abs(mousey) > abs(mousex) << 1)) && (abs(mousex) >= MJ_Threshold))

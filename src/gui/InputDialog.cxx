@@ -21,7 +21,6 @@
 #include "EventHandler.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
-#include "Lightgun.hxx"
 #include "PointingDevice.hxx"
 #include "SaveKey.hxx"
 #include "AtariVox.hxx"
@@ -350,8 +349,6 @@ void InputDialog::saveConfig()
   sensitivity = myMPaddleSpeed->getValue();
   instance().settings().setValue("msense", sensitivity);
   Paddles::setMouseSensitivity(sensitivity);
-  Lightgun::setMouseSensitivity(sensitivity);
-
 
   // Trackball speed
   sensitivity = myTrackBallSpeed->getValue();

@@ -162,13 +162,13 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
                                  abs(MOUSE_SENSITIVITY);
   if(!swapaxis)
   {
-    myAxisMouseMotion = Event::MouseAxisXValue;
+    myAxisMouseMotion = Event::MouseAxisXMove;
     myAxisDigitalZero = 0;
     myAxisDigitalOne  = 1;
   }
   else
   {
-    myAxisMouseMotion = Event::MouseAxisYValue;
+    myAxisMouseMotion = Event::MouseAxisYMove;
     myAxisDigitalZero = 1;
     myAxisDigitalOne  = 0;
   }
@@ -277,7 +277,7 @@ void Paddles::update()
     if(myMPaddleIDX > -1)
     {
       myCharge[myMPaddleIDX] = BSPF::clamp(myCharge[myMPaddleIDX] -
-          (myEvent.get(Event::MouseAxisXValue) * MOUSE_SENSITIVITY),
+          (myEvent.get(Event::MouseAxisXMove) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
       if(myEvent.get(Event::MouseButtonLeftValue))
         setPin(ourButtonPin[myMPaddleIDX], false);
@@ -285,7 +285,7 @@ void Paddles::update()
     if(myMPaddleIDY > -1)
     {
       myCharge[myMPaddleIDY] = BSPF::clamp(myCharge[myMPaddleIDY] -
-          (myEvent.get(Event::MouseAxisYValue) * MOUSE_SENSITIVITY),
+          (myEvent.get(Event::MouseAxisYMove) * MOUSE_SENSITIVITY),
           TRIGMIN, TRIGRANGE);
       if(myEvent.get(Event::MouseButtonRightValue))
         setPin(ourButtonPin[myMPaddleIDY], false);
