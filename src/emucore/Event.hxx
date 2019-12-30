@@ -121,6 +121,7 @@ class Event
       CompuMateSlash,
 
       ToggleInter,
+      LightgunZeroFire, LightgunZeroPos, LightgunOneFire, LightgunOnePos,
 
       LastType
     };

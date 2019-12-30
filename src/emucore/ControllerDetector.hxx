@@ -111,6 +111,10 @@ class ControllerDetector
     // Returns true if a SaveKey code pattern is found.
     static bool isProbablySaveKey(const uInt8* image, size_t size, Controller::Jack port);
 
+    // Returns true if a Lightgun code pattern is found
+    static bool isProbablyLightGun(const uInt8* image, size_t size, Controller::Jack port);
+
+
   private:
     // Following constructors and assignment operators not supported
     ControllerDetector() = delete;

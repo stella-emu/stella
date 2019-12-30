@@ -47,6 +47,7 @@
 #include "AmigaMouse.hxx"
 #include "AtariMouse.hxx"
 #include "TrakBall.hxx"
+#include "Lightgun.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
 #include "OSystem.hxx"
@@ -874,6 +875,10 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
 
     case Controller::Type::MindLink:
       controller = make_unique<MindLink>(port, myEvent, *mySystem);
+      break;
+
+    case Controller::Type::Lightgun:
+      controller = make_unique<Lightgun>(port, myEvent, *mySystem);
       break;
 
     default:
