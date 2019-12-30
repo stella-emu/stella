@@ -42,19 +42,19 @@ class R77HelpDialog : public Dialog
 
   private:
     static constexpr uInt32 LINES_PER_PAGE = 11;
-    ButtonWidget* myNextButton;
-    ButtonWidget* myPrevButton;
+    ButtonWidget* myNextButton{nullptr};
+    ButtonWidget* myPrevButton{nullptr};
 
-    StaticTextWidget* myTitle;
-    std::array<StaticTextWidget*, LINES_PER_PAGE> myJoy;
-    std::array<StaticTextWidget*, LINES_PER_PAGE> myBtn;
-    std::array<StaticTextWidget*, LINES_PER_PAGE> myDesc;
+    StaticTextWidget* myTitle{nullptr};
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myJoy{nullptr};
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myBtn{nullptr};
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myDesc{nullptr};
     std::array<string, LINES_PER_PAGE> myJoyStr;
     std::array<string, LINES_PER_PAGE> myBtnStr;
     std::array<string, LINES_PER_PAGE> myDescStr;
 
-    uInt8 myPage;
-    uInt8 myNumPages;
+    uInt8 myPage{1};
+    uInt8 myNumPages{4};
 
   private:
     // Following constructors and assignment operators not supported

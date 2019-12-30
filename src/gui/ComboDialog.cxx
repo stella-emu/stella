@@ -29,8 +29,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
                          const VariantList& combolist)
-  : Dialog(boss->instance(), boss->parent(), font, "Add..."),
-    myComboEvent(Event::NoType)
+  : Dialog(boss->instance(), boss->parent(), font, "Add...")
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth();

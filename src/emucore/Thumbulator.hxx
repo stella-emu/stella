@@ -185,28 +185,28 @@ class Thumbulator
     int reset();
 
   private:
-    const uInt16* rom;
-    uInt16 romSize;
+    const uInt16* rom{nullptr};
+    uInt16 romSize{0};
     const unique_ptr<Op[]> decodedRom;  // NOLINT
-    uInt16* ram;
+    uInt16* ram{nullptr};
 
     std::array<uInt32, 16> reg_norm; // normal execution mode, do not have a thread mode
-    uInt32 cpsr, mamcr;
-    bool handler_mode;
-    uInt32 systick_ctrl, systick_reload, systick_count, systick_calibrate;
+    uInt32 cpsr{0}, mamcr{0};
+    bool handler_mode{false};
+    uInt32 systick_ctrl{0}, systick_reload{0}, systick_count{0}, systick_calibrate{0};
 #ifndef UNSAFE_OPTIMIZATIONS
-    uInt64 instructions;
+    uInt64 instructions{0};
 #endif
 #ifndef NO_THUMB_STATS
-    uInt64 fetches, reads, writes;
+    uInt64 fetches{0}, reads{0}, writes{0};
 #endif
 
     // For emulation of LPC2103's timer 1, used for NTSC/PAL/SECAM detection.
     // Register names from documentation:
     // http://www.nxp.com/documents/user_manual/UM10161.pdf
-    uInt32 T1TCR;  // Timer 1 Timer Control Register
-    uInt32 T1TC;   // Timer 1 Timer Counter
-    double timing_factor;
+    uInt32 T1TCR{0};  // Timer 1 Timer Control Register
+    uInt32 T1TC{0};   // Timer 1 Timer Counter
+    double timing_factor{0.0};
 
 #ifndef UNSAFE_OPTIMIZATIONS
     ostringstream statusMsg;

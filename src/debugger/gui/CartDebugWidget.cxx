@@ -33,8 +33,9 @@ CartDebugWidget::CartDebugWidget(GuiObject* boss, const GUI::Font& lfont,
     myFontWidth(lfont.getMaxCharWidth()),
     myFontHeight(lfont.getFontHeight()),
     myLineHeight(lfont.getLineHeight()),
-    myButtonHeight(myLineHeight + 4),
-    myDesc(nullptr)   { }
+    myButtonHeight(myLineHeight + 4)
+{
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebugWidget::addBaseInformation(size_t bytes, const string& manufacturer,

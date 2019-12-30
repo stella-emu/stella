@@ -182,14 +182,14 @@ class Ball : public Serializable
       abused to store visibility (as the actual collision bit will always be zero
       if collisions are disabled).
      */
-    uInt32 collision;
+    uInt32 collision{0};
 
     /**
       The movement flag. This corresponds to the state of the movement latch for
       this sprite --- true while movement is active and ticks are still propagated
       to the counters, false otherwise.
      */
-    bool isMoving;
+    bool isMoving{false};
 
   private:
 
@@ -220,113 +220,113 @@ class Ball : public Serializable
       Collision mask values for active / inactive states. Disabling collisions
       will change those.
      */
-    uInt32 myCollisionMaskDisabled;
-    uInt32 myCollisionMaskEnabled;
+    uInt32 myCollisionMaskDisabled{0};
+    uInt32 myCollisionMaskEnabled{0xFFFF};
 
     /**
       Color value calculated by applyColors().
      */
-    uInt8 myColor;
+    uInt8 myColor{0};
 
     /**
       Color configured by COLUPF
      */
-    uInt8 myObjectColor;
+    uInt8 myObjectColor{0};
 
     /**
       Color for debug mode.
      */
-    uInt8 myDebugColor;
+    uInt8 myDebugColor{0};
 
     /**
       Debug mode enabled?
      */
-    bool myDebugEnabled;
+    bool myDebugEnabled{false};
 
     /**
       "old" and "new" values of the enabled flag.
      */
-    bool myIsEnabledOld;
-    bool myIsEnabledNew;
+    bool myIsEnabledOld{false};
+    bool myIsEnabledNew{false};
 
     /**
       Actual value of the enabled flag. Determined from the "old" and "new" values
       VDEL, debug settings etc.
      */
-    bool myIsEnabled;
+    bool myIsEnabled{false};
 
     /**
       Is the sprite turned off in the debugger?
      */
-    bool myIsSuppressed;
+    bool myIsSuppressed{false};
 
     /**
       Is VDEL active?
      */
-    bool myIsDelaying;
+    bool myIsDelaying{false};
 
     /**
      Is the ball sprite signal currently active?
     */
-    bool mySignalActive;
+    bool mySignalActive{false};
 
     /**
       HMM clocks before movement stops. Changed by writing to HMBL.
      */
-    uInt8 myHmmClocks;
+    uInt8 myHmmClocks{0};
 
     /**
       The sprite counter
      */
-    uInt8 myCounter;
+    uInt8 myCounter{0};
 
     /**
       Ball width, as configured by CTRLPF.
      */
-    uInt8 myWidth;
+    uInt8 myWidth{1};
 
     /**
       Effective width used for drawing. This is usually the same as myWidth,
       but my differ in starfield mode.
      */
-    uInt8 myEffectiveWidth;
+    uInt8 myEffectiveWidth{1};
 
     /**
       The value of the counter value at which the last movement tick occurred. This is
       used for simulating the starfield pattern.
      */
-    uInt8 myLastMovementTick;
+    uInt8 myLastMovementTick{0};
 
     /**
       Are we currently rendering? This is latched when the counter hits it decode value,
       or when RESBL is strobed. It is turned off once the render counter reaches its
       maximum (i.e. when the sprite has been fully displayed).
      */
-    bool myIsRendering;
+    bool myIsRendering{false};
 
     /**
       Rendering counter. It starts counting (below zero) when the counter hits the decode value,
       and the actual signal becomes active once it reaches 0.
      */
-    Int8 myRenderCounter;
+    Int8 myRenderCounter{0};
 
     /**
       This memorizes a movement tick outside HBLANK in inverted clock mode. It is latched
       durin ::movementTick() and processed during ::tick() where it inhibits the clock
       pulse.
      */
-    bool myInvertedPhaseClock;
+    bool myInvertedPhaseClock{false};
 
     /**
       Use "inverted movement clock phase" mode? This emulates an idiosyncracy of several
       newer TIA revisions (see the setter above for a deeper explanation).
      */
-    bool myUseInvertedPhaseClock;
+    bool myUseInvertedPhaseClock{false};
 
     /**
       TIA instance. Required for flushing the line cache and requesting collision updates.
      */
-    TIA* myTIA;
+    TIA* myTIA{nullptr};
 
   private:
     Ball() = delete;

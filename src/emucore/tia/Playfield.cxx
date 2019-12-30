@@ -20,12 +20,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Playfield::Playfield(uInt32 collisionMask)
-  : myCollisionMaskDisabled(collisionMask),
-    myCollisionMaskEnabled(0xFFFF),
-    myIsSuppressed(false),
-    myTIA(nullptr)
+  : myCollisionMaskDisabled(collisionMask)
 {
-  reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

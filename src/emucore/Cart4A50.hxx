@@ -225,21 +225,21 @@ class Cartridge4A50 : public Cartridge
     std::array<uInt8, 32_KB> myRAM;
 
     // (Actual) Size of the ROM image
-    size_t mySize;
+    size_t mySize{0};
 
     // Indicates the slice mapped into each of the three segments
-    uInt16 mySliceLow;     /* index pointer for $1000-$17ff slice */
-    uInt16 mySliceMiddle;  /* index pointer for $1800-$1dff slice */
-    uInt16 mySliceHigh;    /* index pointer for $1e00-$1eff slice */
+    uInt16 mySliceLow{0};     // index pointer for $1000-$17ff slice
+    uInt16 mySliceMiddle{0};  // index pointer for $1800-$1dff slice
+    uInt16 mySliceHigh{0};    // index pointer for $1e00-$1eff slice
 
     // Indicates whether the given slice is mapped to ROM or RAM
-    bool myIsRomLow;       /* true = ROM -- false = RAM at $1000-$17ff */
-    bool myIsRomMiddle;    /* true = ROM -- false = RAM at $1800-$1dff */
-    bool myIsRomHigh;      /* true = ROM -- false = RAM at $1e00-$1eFF */
+    bool myIsRomLow{true};    // true = ROM -- false = RAM at $1000-$17ff
+    bool myIsRomMiddle{true}; // true = ROM -- false = RAM at $1800-$1dff
+    bool myIsRomHigh{true};   // true = ROM -- false = RAM at $1e00-$1eFF
 
     // The previous address and data values (from peek and poke)
-    uInt16 myLastAddress;
-    uInt8 myLastData;
+    uInt16 myLastAddress{0};
+    uInt8 myLastData{0};
 
   private:
     // Following constructors and assignment operators not supported

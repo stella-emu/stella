@@ -49,7 +49,7 @@ class RomInfoWidget : public Widget
     shared_ptr<FBSurface> mySurface;
 
     // Whether the surface should be redrawn by drawWidget()
-    bool mySurfaceIsValid;
+    bool mySurfaceIsValid{false};
 
     // Some ROM properties info, as well as 'tEXt' chunks from the PNG image
     StringList myRomInfo;
@@ -58,7 +58,7 @@ class RomInfoWidget : public Widget
     Properties myProperties;
 
     // Indicates if the current properties should actually be used
-    bool myHaveProperties;
+    bool myHaveProperties{false};
 
     // Indicates if an error occurred in creating/displaying the surface
     string mySurfaceErrorMsg;

@@ -81,49 +81,49 @@ class EventMappingWidget : public Widget, public CommandSender
     void enableButtons(bool state);
 
   private:
-    ButtonWidget*     myMapButton;
-    ButtonWidget*     myCancelMapButton;
-    ButtonWidget*     myEraseButton;
-    ButtonWidget*     myResetButton;
-    ButtonWidget*     myComboButton;
-    PopUpWidget*      myFilterPopup;
-    StringListWidget* myActionsList;
-    EditTextWidget*   myKeyMapping;
+    ButtonWidget*     myMapButton{nullptr};
+    ButtonWidget*     myCancelMapButton{nullptr};
+    ButtonWidget*     myEraseButton{nullptr};
+    ButtonWidget*     myResetButton{nullptr};
+    ButtonWidget*     myComboButton{nullptr};
+    PopUpWidget*      myFilterPopup{nullptr};
+    StringListWidget* myActionsList{nullptr};
+    EditTextWidget*   myKeyMapping{nullptr};
 
-    ComboDialog* myComboDialog;
+    ComboDialog* myComboDialog{nullptr};
 
     // Since this widget can be used for different collections of events,
     // we need to specify exactly which group of events we are remapping
-    EventMode myEventMode;
+    EventMode myEventMode{EventMode::kEmulationMode};
 
     // Since we can filter events, the event mode is not specific enough
-    Event::Group myEventGroup;
+    Event::Group myEventGroup{Event::Group::Emulation};
 
     // Indicates the event that is currently selected
-    int myActionSelected;
+    int myActionSelected{-1};
 
     // Indicates if we're currently in remap mode
     // In this mode, the next event received is remapped to some action
-    bool myRemapStatus;
+    bool myRemapStatus{false};
 
     // Joystick axes and hats can be more problematic than ordinary buttons
     // or keys, in that there can be 'drift' in the values
     // Therefore, we map these events when they've been 'released', rather
     // than on their first occurrence (aka, when they're 'pressed')
     // As a result, we need to keep track of their old values
-    int myLastStick, myLastHat;
-    JoyAxis myLastAxis;
-    JoyDir myLastDir;
-    JoyHatDir myLastHatDir;
+    int myLastStick{0}, myLastHat{0};
+    JoyAxis myLastAxis{JoyAxis::NONE};
+    JoyDir myLastDir{JoyDir::NONE};
+    JoyHatDir myLastHatDir{JoyHatDir::CENTER};
 
     // Aggregates the modifier flags of the mapping
-    int myMod;
+    int myMod{0};
     // Saves the last *pressed* key
-    int myLastKey;
+    int myLastKey{0};
     // Saves the last *pressed* button
-    int myLastButton;
+    int myLastButton{JOY_CTRL_NONE};
 
-    bool myFirstTime;
+    bool myFirstTime{true};
 
   private:
     // Following constructors and assignment operators not supported

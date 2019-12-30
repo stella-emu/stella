@@ -139,7 +139,7 @@ class Playfield : public Serializable
       abused to store visibility (as the actual collision bit will always be zero
       if collisions are disabled).
      */
-    uInt32 collision;
+    uInt32 collision{0};
 
   private:
 
@@ -166,77 +166,77 @@ class Playfield : public Serializable
       Collision mask values for active / inactive states. Disabling collisions
       will change those.
      */
-    uInt32 myCollisionMaskDisabled;
-    uInt32 myCollisionMaskEnabled;
+    uInt32 myCollisionMaskDisabled{0};
+    uInt32 myCollisionMaskEnabled{0xFFFF};
 
     /**
       Enable / disable PF (debugging).
      */
-    bool myIsSuppressed;
+    bool myIsSuppressed{false};
 
     /**
       Left / right PF colors. Derifed from P0 / P1 color, COLUPF and playfield mode.
      */
-    uInt8 myColorLeft;
-    uInt8 myColorRight;
+    uInt8 myColorLeft{0};
+    uInt8 myColorRight{0};
 
     /**
       P0 / P1 colors
      */
-    uInt8 myColorP0;
-    uInt8 myColorP1;
+    uInt8 myColorP0{0};
+    uInt8 myColorP1{0};
 
     /**
       COLUPF and debug colors
      */
-    uInt8 myObjectColor, myDebugColor;
+    uInt8 myObjectColor{0}, myDebugColor{0};
 
     /**
       Debug colors enabled?
      */
-    bool myDebugEnabled;
+    bool myDebugEnabled{false};
 
     /**
      * Plafield mode.
      */
-    ColorMode myColorMode;
+    ColorMode myColorMode{ColorMode::normal};
 
     /**
       Pattern derifed from PF0, PF1, PF2
      */
-    uInt32 myPattern;
+    uInt32 myPattern{0};
 
     /**
       "Effective pattern". Will be 0 if playfield is disabled (debug), otherwise the same as myPattern.
      */
-    uInt32 myEffectivePattern;
+    uInt32 myEffectivePattern{0};
 
     /**
       Reflected mode on / off.
      */
-    bool myReflected;
+    bool myReflected{false};
 
     /**
      * Are we currently drawing the reflected PF?
      */
-    bool myRefp;
+    bool myRefp{false};
 
     /**
       PF registers.
     */
-    uInt8 myPf0;
-    uInt8 myPf1;
-    uInt8 myPf2;
+    uInt8 myPf0{0};
+    uInt8 myPf1{0};
+    uInt8 myPf2{0};
 
     /**
       The current scanline position (0 .. 159).
      */
-    uInt32 myX;
+    uInt32 myX{0};
 
     /**
       TIA instance. Required for flushing the line cache.
      */
-    TIA* myTIA;
+    TIA* myTIA{nullptr};
 
   private:
     Playfield() = delete;

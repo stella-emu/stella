@@ -67,12 +67,12 @@ class OptionsDialog : public Dialog
     unique_ptr<HelpDialog>       myHelpDialog;
     unique_ptr<AboutDialog>      myAboutDialog;
 
-    ButtonWidget* myRomAuditButton;
-    ButtonWidget* myGameInfoButton;
-    ButtonWidget* myCheatCodeButton;
+    ButtonWidget* myRomAuditButton{nullptr};
+    ButtonWidget* myGameInfoButton{nullptr};
+    ButtonWidget* myCheatCodeButton{nullptr};
 
     // Indicates if this dialog is used for global (vs. in-game) settings
-    Menu::AppMode myMode;
+    Menu::AppMode myMode{Menu::AppMode::emulator};
 
     enum {
       kBasSetCmd   = 'BAST',

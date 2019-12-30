@@ -30,8 +30,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y - 1, w, h + 2),
     CommandSender(boss),
     _label(label),
-    _labelWidth(labelWidth),
-    _changed(false)
+    _labelWidth(labelWidth)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kDlgColor;

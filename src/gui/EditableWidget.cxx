@@ -21,30 +21,23 @@
 #include "Font.hxx"
 #include "EditableWidget.hxx"
 
+// Uncomment the following to give full-line copy/paste
+// Note that this will be removed eventually, when we implement proper copy/paste
+//#define PSEUDO_COPY_PASTE
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& str)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    _editable(true),
-    _editString(str)
+    _editString(str),
+    _filter([](char c) { return isprint(c) && c != '\"'; })
 {
-  _caretVisible = false;
-  _caretTime = 0;
-  _caretPos = 0;
-
-  _caretInverse = false;
-
-  _editScrollOffset = 0;
-
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
   _bgcolorlo = kDlgColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
-
-  // By default, include all printable chars except quotes
-  _filter = [](char c) { return isprint(c) && c != '\"'; };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -455,13 +448,17 @@ bool EditableWidget::moveWord(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::copySelectedText()
 {
-//  _clippedText = _editString;
+#if defined(PSEUDO_COPY_PASTE)
+  _clippedText = _editString;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditableWidget::pasteSelectedText()
 {
-//  _editString = _clippedText;
+#if defined(PSEUDO_COPY_PASTE)
+  _editString = _clippedText;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

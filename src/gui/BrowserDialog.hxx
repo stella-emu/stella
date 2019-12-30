@@ -61,16 +61,16 @@ class BrowserDialog : public Dialog, public CommandSender
       kBaseDirCmd = 'BADR'
     };
 
-    int	_cmd;
+    int	_cmd{0};
 
-    FileListWidget*   _fileList;
-    EditTextWidget*   _currentPath;
-    StaticTextWidget* _type;
-    EditTextWidget*   _selected;
-    ButtonWidget*     _goUpButton;
-    ButtonWidget*     _basedirButton;
+    FileListWidget*   _fileList{nullptr};
+    EditTextWidget*   _currentPath{nullptr};
+    StaticTextWidget* _type{nullptr};
+    EditTextWidget*   _selected{nullptr};
+    ButtonWidget*     _goUpButton{nullptr};
+    ButtonWidget*     _basedirButton{nullptr};
 
-    BrowserDialog::ListMode _mode;
+    BrowserDialog::ListMode _mode{Directories};
 
   private:
     // Following constructors and assignment operators not supported

@@ -26,11 +26,8 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
   : myJack(jack),
     myEvent(event),
     mySystem(system),
-    myType(type),
-    myOnAnalogPinUpdateCallback(nullptr)
+    myType(type)
 {
-  resetDigitalPins();
-  resetAnalogPins();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

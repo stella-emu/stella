@@ -93,8 +93,8 @@ class Player : public Serializable
 
   public:
 
-    uInt32 collision;
-    bool isMoving;
+    uInt32 collision{0};
+    bool isMoving{false};
 
   private:
 
@@ -110,39 +110,39 @@ class Player : public Serializable
 
   private:
 
-    uInt32 myCollisionMaskDisabled;
-    uInt32 myCollisionMaskEnabled;
+    uInt32 myCollisionMaskDisabled{0};
+    uInt32 myCollisionMaskEnabled{0xFFFF};
 
-    uInt8 myColor;
-    uInt8 myObjectColor, myDebugColor;
-    bool myDebugEnabled;
+    uInt8 myColor{0};
+    uInt8 myObjectColor{0}, myDebugColor{0};
+    bool myDebugEnabled{0};
 
-    bool myIsSuppressed;
+    bool myIsSuppressed{false};
 
-    uInt8 myHmmClocks;
-    uInt8 myCounter;
+    uInt8 myHmmClocks{0};
+    uInt8 myCounter{0};
 
-    bool myIsRendering;
-    Int8 myRenderCounter;
-    Int8 myRenderCounterTripPoint;
-    uInt8 myDivider;
-    uInt8 myDividerPending;
-    uInt8 mySampleCounter;
-    Int8 myDividerChangeCounter;
+    bool myIsRendering{false};
+    Int8 myRenderCounter{0};
+    Int8 myRenderCounterTripPoint{0};
+    uInt8 myDivider{0};
+    uInt8 myDividerPending{0};
+    uInt8 mySampleCounter{0};
+    Int8 myDividerChangeCounter{-1};
 
-    const uInt8* myDecodes;
-    uInt8 myDecodesOffset;  // needed for state saving
+    const uInt8* myDecodes{nullptr};
+    uInt8 myDecodesOffset{0};  // needed for state saving
 
-    uInt8 myPatternOld;
-    uInt8 myPatternNew;
-    uInt8 myPattern;
+    uInt8 myPatternOld{0};
+    uInt8 myPatternNew{0};
+    uInt8 myPattern{0};
 
-    bool myIsReflected;
-    bool myIsDelaying;
-    bool myInvertedPhaseClock;
-    bool myUseInvertedPhaseClock;
+    bool myIsReflected{false};
+    bool myIsDelaying{false};
+    bool myInvertedPhaseClock{false};
+    bool myUseInvertedPhaseClock{false};
 
-    TIA* myTIA;
+    TIA* myTIA{nullptr};
 
   private:
     Player(const Player&) = delete;

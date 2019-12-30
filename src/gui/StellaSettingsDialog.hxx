@@ -70,30 +70,30 @@ class StellaSettingsDialog : public Dialog
 
   private:
     // UI theme
-    PopUpWidget*      myThemePopup;
-    PopUpWidget*      myPositionPopup;
+    PopUpWidget*      myThemePopup{nullptr};
+    PopUpWidget*      myPositionPopup{nullptr};
 
     // TV effects
-    PopUpWidget*      myTVMode;
+    PopUpWidget*      myTVMode{nullptr};
 
     // TV scanline intensity
-    SliderWidget*     myTVScanIntense;
+    SliderWidget*     myTVScanIntense{nullptr};
 
     // TV phosphor effect
-    SliderWidget*     myTVPhosLevel;
+    SliderWidget*     myTVPhosLevel{nullptr};
 
     // TV Overscan
-    SliderWidget*     myTVOverscan;
+    SliderWidget*     myTVOverscan{nullptr};
 
     // Controller properties
-    StaticTextWidget* myGameSettings;
+    StaticTextWidget* myGameSettings{nullptr};
 
-    StaticTextWidget* myLeftPortLabel;
-    StaticTextWidget* myRightPortLabel;
-    PopUpWidget*      myLeftPort;
-    StaticTextWidget* myLeftPortDetected;
-    PopUpWidget*      myRightPort;
-    StaticTextWidget* myRightPortDetected;
+    StaticTextWidget* myLeftPortLabel{nullptr};
+    StaticTextWidget* myRightPortLabel{nullptr};
+    PopUpWidget*      myLeftPort{nullptr};
+    StaticTextWidget* myLeftPortDetected{nullptr};
+    PopUpWidget*      myRightPort{nullptr};
+    StaticTextWidget* myRightPortDetected{nullptr};
 
     unique_ptr<GUI::MessageBox> myConfirmMsg;
   #if defined(RETRON77)
@@ -103,7 +103,7 @@ class StellaSettingsDialog : public Dialog
   #endif
 
     // Indicates if this dialog is used for global (vs. in-game) settings
-    Menu::AppMode myMode;
+    Menu::AppMode myMode{Menu::AppMode::emulator};
 
     enum {
       kAdvancedSettings = 'SSad',

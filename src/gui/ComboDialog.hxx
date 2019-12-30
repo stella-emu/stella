@@ -43,8 +43,8 @@ class ComboDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    Event::Type myComboEvent;
-    std::array<PopUpWidget*, 8> myEvents;
+    Event::Type myComboEvent{Event::NoType};
+    std::array<PopUpWidget*, 8> myEvents{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

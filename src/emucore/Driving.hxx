@@ -78,14 +78,14 @@ class Driving : public Controller
 
   private:
     // Counter to iterate through the gray codes
-    uInt32 myCounter;
+    uInt32 myCounter{0};
 
     // Index into the gray code table
-    uInt32 myGrayIndex;
+    uInt32 myGrayIndex{0};
 
     // Y axis value from last yaxis event that was used to generate a new
     // gray code
-    int myLastYaxis;
+    int myLastYaxis{0};
 
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
@@ -93,10 +93,10 @@ class Driving : public Controller
                 myXAxisValue, myYAxisValue;
 
     // Controller to emulate in normal mouse axis mode
-    int myControlID;
+    int myControlID{-1};
 
     // Controllers to emulate in 'specific' mouse axis mode
-    int myControlIDX, myControlIDY;
+    int myControlIDX{-1}, myControlIDY{-1};
 
   private:
     // Following constructors and assignment operators not supported

@@ -33,8 +33,8 @@ class PaddleWidget : public ControllerWidget
     enum { kP0Changed = 'P0ch', kP1Changed = 'P1ch',
            kP0Fire = 'P0fr', kP1Fire = 'P1fr' };
 
-    SliderWidget *myP0Resistance, *myP1Resistance;
-    CheckboxWidget *myP0Fire, *myP1Fire;
+    SliderWidget *myP0Resistance{nullptr}, *myP1Resistance{nullptr};
+    CheckboxWidget *myP0Fire{nullptr}, *myP1Fire{nullptr};
 
   private:
     void loadConfig() override;

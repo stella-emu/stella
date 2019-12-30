@@ -25,10 +25,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
-  : Dialog(osystem, parent, font, "About Stella"),
-    myPage(1),
-    myNumPages(4),
-    myLinesPerPage(13)
+  : Dialog(osystem, parent, font, "About Stella")
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),

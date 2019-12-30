@@ -34,11 +34,11 @@ class CartridgeWDWidget : public CartDebugWidget
 
   private:
     CartridgeWD& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
 
     struct CartState {
       ByteArray internalram;
-      uInt16 bank;      // Current banking layout
+      uInt16 bank{0};  // Current banking layout
     };
     CartState myOldState;
 

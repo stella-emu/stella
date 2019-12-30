@@ -87,22 +87,22 @@ class KidVid : public Controller
 
     // Whether the KidVid device is enabled (only for games that it
     // supports, and if it's plugged into the right port
-    bool myEnabled;
+    bool myEnabled{false};
 
     // The file handles for the WAV files
     // FILE *mySampleFile, *mySharedSampleFile;
 
     // Indicates if sample files have been successfully opened
-    bool myFileOpened;
+    bool myFileOpened{false};
 
     // Is the tape currently 'busy' / in use?
-    bool myTapeBusy;
+    bool myTapeBusy{false};
 
-    uInt32 myFilePointer, mySongCounter;
-    bool myBeep, mySharedData;
-    uInt8 mySampleByte;
-    uInt32 myGame, myTape;
-    uInt32 myIdx, myBlock, myBlockIdx;
+    uInt32 myFilePointer{0}, mySongCounter{0};
+    bool myBeep{false}, mySharedData{false};
+    uInt8 mySampleByte{0};
+    uInt32 myGame{0}, myTape{0};
+    uInt32 myIdx{0}, myBlock{0}, myBlockIdx{0};
 
     // Number of blocks and data on tape
     static const std::array<uInt8, KVBLOCKS> ourKVBlocks;

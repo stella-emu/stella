@@ -20,8 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Genesis::Genesis(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::Type::Genesis),
-    myControlID(-1)
+  : Controller(jack, event, system, Controller::Type::Genesis)
 {
   if(myJack == Jack::Left)
   {

@@ -155,10 +155,10 @@ class CartridgeSB : public Cartridge
   private:
     // The 128-256K ROM image and size of the cartridge
     ByteBuffer myImage;
-    size_t mySize;
+    size_t mySize{0};
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt32 myBankOffset;
+    uInt32 myBankOffset{0};
 
     // Previous Device's page access
     std::array<System::PageAccess, 8> myHotSpotPageAccess;

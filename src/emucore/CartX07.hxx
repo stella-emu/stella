@@ -166,7 +166,7 @@ class CartridgeX07 : public Cartridge
     std::array<uInt8, 64_KB> myImage;
 
     // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    uInt16 myCurrentBank{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -846,16 +846,27 @@ void FrameBuffer::setCursorState()
     myOSystem.console().rightController().type() == Controller::Type::Lightgun : false;
   bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
 
-  grabMouse(emulation && (analog || alwaysUseMouse) && myGrabMouse);
-
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
-  switch(myOSystem.settings().getInt("cursor"))
+  int cursor = myOSystem.settings().getInt("cursor");
+  switch(cursor)
   {
-    case 0: showCursor(false);      break;
-    case 1: showCursor(emulation);  break;
-    case 2: showCursor(!emulation); break;
-    case 3: showCursor(true);       break;
+    case 0:
+      showCursor(false);
+      break;
+    case 1:
+      showCursor(emulation);
+      myGrabMouse = false; // disable grab while cursor is shown in emulation
+      break;
+    case 2:
+      showCursor(!emulation);
+      break;
+    case 3:
+      showCursor(true);
+      myGrabMouse = false; // disable grab while cursor is shown in emulation
+      break;
   }
+
+  grabMouse(emulation && (analog || alwaysUseMouse) && myGrabMouse);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

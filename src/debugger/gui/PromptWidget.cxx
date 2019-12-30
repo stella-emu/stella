@@ -29,6 +29,7 @@
 
 #define PROMPT  "> "
 
+// TODO: Github issue #361
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h)

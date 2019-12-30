@@ -23,8 +23,7 @@
 Cartridge3E::Cartridge3E(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(size),
-    myCurrentBank(0)
+    mySize(size)
 {
   // Allocate array for the ROM image
   myImage = make_unique<uInt8[]>(mySize);

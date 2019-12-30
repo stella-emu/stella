@@ -32,7 +32,8 @@ class InputTextDialog : public Dialog, public CommandSender
     InputTextDialog(GuiObject* boss, const GUI::Font& font,
                     const StringList& labels, const string& title = "");
     InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
-                    const GUI::Font& nfont, const StringList& labels, const string& title = "");
+                    const GUI::Font& nfont, const StringList& labels,
+                    const string& title = "");
     virtual ~InputTextDialog() = default;
 
     /** Place the input dialog onscreen and center it */
@@ -61,13 +62,13 @@ class InputTextDialog : public Dialog, public CommandSender
 
   private:
     vector<EditTextWidget*> myInput;
-    StaticTextWidget* myMessage;
+    StaticTextWidget* myMessage{nullptr};
 
-    bool myEnableCenter;
-    bool myErrorFlag;
-    int	 myCmd;
+    bool myEnableCenter{false};
+    bool myErrorFlag{false};
+    int	 myCmd{0};
 
-    uInt32 myXOrig, myYOrig;
+    uInt32 myXOrig{0}, myYOrig{0};
 
   private:
     // Following constructors and assignment operators not supported

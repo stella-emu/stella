@@ -113,17 +113,17 @@ class ContextMenu : public Dialog, public CommandSender
   private:
     VariantList _entries;
 
-    int _rowHeight;
-    int _firstEntry, _numEntries;
-    int _selectedOffset, _selectedItem;
-    bool _showScroll;
-    bool _isScrolling;
-    ColorId _scrollUpColor, _scrollDnColor;
+    int _rowHeight{0};
+    int _firstEntry{0}, _numEntries{0};
+    int _selectedOffset{0}, _selectedItem{-1};
+    bool _showScroll{false};
+    bool _isScrolling{false};
+    ColorId _scrollUpColor{kColor}, _scrollDnColor{kColor};
 
-    int _cmd;
+    int _cmd{0};
 
-    uInt32 _xorig, _yorig;
-    uInt32 _maxWidth;
+    uInt32 _xorig{0}, _yorig{0};
+    uInt32 _maxWidth{0};
 
   private:
     // Following constructors and assignment operators not supported

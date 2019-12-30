@@ -34,11 +34,11 @@ class CartridgeDFSCWidget : public CartDebugWidget
 
   private:
     CartridgeDFSC& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
 
     struct CartState {
       ByteArray internalram;
-      uInt16 bank;
+      uInt16 bank{0};
     };
     CartState myOldState;
 

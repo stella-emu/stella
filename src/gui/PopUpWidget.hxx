@@ -72,12 +72,12 @@ class PopUpWidget : public Widget, public CommandSender
 
   private:
     unique_ptr<ContextMenu> myMenu;
-    int myArrowsY;
-    int myTextY;
+    int myArrowsY{0};
+    int myTextY{0};
 
     string _label;
-    int    _labelWidth;
-    bool   _changed;
+    int    _labelWidth{0};
+    bool   _changed{false};
 
   private:
     // Following constructors and assignment operators not supported

@@ -31,17 +31,7 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
   : Dialog(boss->instance(), boss->parent(), font),
     CommandSender(boss),
     _rowHeight(font.getLineHeight()),
-    _firstEntry(0),
-    _numEntries(0),
-    _selectedOffset(0),
-    _selectedItem(-1),
-    _showScroll(false),
-    _isScrolling(false),
-    _scrollUpColor(kColor),
-    _scrollDnColor(kColor),
     _cmd(cmd),
-    _xorig(0),
-    _yorig(0),
     _maxWidth(width)
 {
   addItems(items);

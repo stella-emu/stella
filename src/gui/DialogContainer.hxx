@@ -183,7 +183,7 @@ class DialogContainer
 
   private:
     // Indicates the most current time (in milliseconds) as set by updateTime()
-    uInt64 myTime;
+    uInt64 myTime{0};
 
     static uInt64 _DOUBLE_CLICK_DELAY;
     static uInt64 _REPEAT_INITIAL_DELAY;
@@ -193,41 +193,41 @@ class DialogContainer
 
     // For continuous 'mouse down' events
     struct {
-      int x;
-      int y;
-      MouseButton b;
+      int x{0};
+      int y{0};
+      MouseButton b{MouseButton::NONE};
     } myCurrentMouseDown;
-    uInt64 myClickRepeatTime;
+    uInt64 myClickRepeatTime{0};
 
     // For continuous 'joy button down' events
     struct {
-      int stick;
-      int button;
+      int stick{-1};
+      int button{-1};
     } myCurrentButtonDown;
-    uInt64 myButtonRepeatTime;
-    uInt64 myButtonLongPressTime;
+    uInt64 myButtonRepeatTime{0};
+    uInt64 myButtonLongPressTime{0};
 
     // For continuous 'joy axis down' events
     struct {
-      int stick;
-      JoyAxis axis;
-      JoyDir adir;
+      int stick{-1};
+      JoyAxis axis{JoyAxis::NONE};
+      JoyDir adir{JoyDir::NONE};
     } myCurrentAxisDown;
-    uInt64 myAxisRepeatTime;
+    uInt64 myAxisRepeatTime{0};
 
     // For continuous 'joy hat' events
     struct {
-      int stick;
-      int hat;
-      JoyHatDir hdir;
+      int stick{-1};
+      int hat{-1};
+      JoyHatDir hdir{JoyHatDir::CENTER};
     } myCurrentHatDown;
-    uInt64 myHatRepeatTime;
+    uInt64 myHatRepeatTime{0};
 
     // Position and time of last mouse click (used to detect double clicks)
     struct {
-      int x, y;    // Position of mouse when the click occurred
-      int count;   // How often was it already pressed?
-      uInt64 time; // Time
+      int x{0}, y{0}; // Position of mouse when the click occurred
+      int count{0};   // How often was it already pressed?
+      uInt64 time{0}; // Time
     } myLastClick;
 
   private:

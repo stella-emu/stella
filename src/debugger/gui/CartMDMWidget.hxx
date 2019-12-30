@@ -35,8 +35,8 @@ class CartridgeMDMWidget : public CartDebugWidget
 
   private:
     CartridgeMDM& myCart;
-    PopUpWidget* myBank;
-    CheckboxWidget* myBankDisabled;
+    PopUpWidget* myBank{nullptr};
+    CheckboxWidget* myBankDisabled{nullptr};
 
     enum { kBankChanged = 'bkCH', kBankDisabled = 'bkDI' };
 

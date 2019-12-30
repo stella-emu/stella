@@ -27,15 +27,10 @@
 FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h)
   : StringListWidget(boss, font, x, y, w, h),
-    _fsmode(FilesystemNode::ListMode::All),
-    _selected(0),
-    _quickSelectTime(0)
+    _filter([](const FilesystemNode& node) { return true; })
 {
   // This widget is special, in that it catches signals and redirects them
   setTarget(this);
-
-  // By default, all filenames are valid
-  _filter = [](const FilesystemNode& node) { return true; };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

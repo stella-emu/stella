@@ -23,11 +23,7 @@
 CartridgeDPC::CartridgeDPC(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(size),
-    myAudioCycles(0),
-    myFractionalClocks(0.0),
-    myBankOffset(0),
-    myDpcPitch(0.0)
+    mySize(size)
 {
   // Make a copy of the entire image
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
@@ -38,18 +34,6 @@ CartridgeDPC::CartridgeDPC(const ByteBuffer& image, size_t size,
 
   // Pointer to the display ROM (2K @ 8K offset)
   myDisplayImage = myProgramImage + 8_KB;
-
-  // Initialize the DPC data fetcher registers
-  myTops.fill(0);
-  myBottoms.fill(0);
-  myFlags.fill(0);
-  myCounters.fill(0);
-
-  // None of the data fetchers are in music mode
-  myMusicMode.fill(false);
-
-  // Initialize the DPC's random number generator register (must be non-zero)
-  myRandomNumber = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

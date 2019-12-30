@@ -80,7 +80,7 @@ class BoosterGrip : public Controller
                 myXAxisValue, myYAxisValue;
 
     // Controller to emulate in normal mouse axis mode
-    int myControlID;
+    int myControlID{-1};
 
   private:
     // Following constructors and assignment operators not supported

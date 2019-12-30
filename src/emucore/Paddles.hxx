@@ -132,6 +132,12 @@ class Paddles : public Controller
     static constexpr double MAX_RESISTANCE = 1400000.0;
 
   private:
+    // Range of values over which digital and mouse movement is scaled
+    // to paddle resistance
+    static constexpr int TRIGMIN = 1;
+    static constexpr int TRIGMAX = 4096;
+    static int TRIGRANGE;  // This one is variable for the upper range
+
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myP0AxisValue, myP1AxisValue,
@@ -141,20 +147,14 @@ class Paddles : public Controller
                 myAxisMouseMotion;
 
     // The following are used for the various mouse-axis modes
-    int myMPaddleID;                // paddle to emulate in 'automatic' mode
-    int myMPaddleIDX, myMPaddleIDY; // paddles to emulate in 'specific axis' mode
+    int myMPaddleID{-1};                    // paddle to emulate in 'automatic' mode
+    int myMPaddleIDX{-1}, myMPaddleIDY{-1}; // paddles to emulate in 'specific axis' mode
 
-    bool myKeyRepeat0, myKeyRepeat1;
-    int myPaddleRepeat0, myPaddleRepeat1;
-    std::array<int, 2> myCharge, myLastCharge;
-    int myLastAxisX, myLastAxisY;
-    int myAxisDigitalZero, myAxisDigitalOne;
-
-    // Range of values over which digital and mouse movement is scaled
-    // to paddle resistance
-    static constexpr int TRIGMIN = 1;
-    static constexpr int TRIGMAX = 4096;
-    static int TRIGRANGE;  // This one is variable for the upper range
+    bool myKeyRepeat0{false}, myKeyRepeat1{false};
+    int myPaddleRepeat0{0}, myPaddleRepeat1{0};
+    std::array<int, 2> myCharge{TRIGRANGE / 2}, myLastCharge{0};
+    int myLastAxisX{0}, myLastAxisY{0};
+    int myAxisDigitalZero{0}, myAxisDigitalOne{0};
 
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
     static int DEJITTER_BASE, DEJITTER_DIFF;

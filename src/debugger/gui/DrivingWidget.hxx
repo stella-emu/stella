@@ -38,11 +38,11 @@ class DrivingWidget : public ControllerWidget
       kGrayDownCmd = 'DWdn',
       kFireCmd     = 'DWfr'
     };
-    ButtonWidget *myGrayUp, *myGrayDown;
-    DataGridWidget* myGrayValue;
-    CheckboxWidget* myFire;
+    ButtonWidget *myGrayUp{nullptr}, *myGrayDown{nullptr};
+    DataGridWidget* myGrayValue{nullptr};
+    CheckboxWidget* myFire{nullptr};
 
-    int myGrayIndex;
+    int myGrayIndex{0};
 
     static const std::array<uInt8, 4> ourGrayTable;
 

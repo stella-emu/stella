@@ -53,26 +53,19 @@ class ScrollBarWidget : public Widget, public CommandSender
     void handleMouseLeft() override;
 
   public:
-    int _numEntries;
-    int _entriesPerPage;
-    int _currentPos;
-    int _wheel_lines;
+    int _numEntries{0};
+    int _entriesPerPage{0};
+    int _currentPos{0};
+    int _wheel_lines{0};
 
   private:
-    enum Part {
-      kNoPart,
-      kUpArrowPart,
-      kDownArrowPart,
-      kSliderPart,
-      kPageUpPart,
-      kPageDownPart
-    };
+    enum class Part { None, UpArrow, DownArrow, Slider, PageUp, PageDown };
 
-    Part _part;
-    Part _draggingPart;
-    int _sliderHeight;
-    int _sliderPos;
-    int _sliderDeltaMouseDownPos;
+    Part _part{Part::None};
+    Part _draggingPart{Part::None};
+    int _sliderHeight{0};
+    int _sliderPos{0};
+    int _sliderDeltaMouseDownPos{0};
 
     static int _WHEEL_LINES;
 

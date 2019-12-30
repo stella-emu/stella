@@ -45,30 +45,30 @@ class RiotWidget : public Widget, public CommandSender
     void loadConfig() override;
 
   private:
-    ToggleBitWidget* mySWCHAReadBits;
-    ToggleBitWidget* mySWCHAWriteBits;
-    ToggleBitWidget* mySWACNTBits;
-    ToggleBitWidget* mySWCHBReadBits;
-    ToggleBitWidget* mySWCHBWriteBits;
-    ToggleBitWidget* mySWBCNTBits;
+    ToggleBitWidget* mySWCHAReadBits{nullptr};
+    ToggleBitWidget* mySWCHAWriteBits{nullptr};
+    ToggleBitWidget* mySWACNTBits{nullptr};
+    ToggleBitWidget* mySWCHBReadBits{nullptr};
+    ToggleBitWidget* mySWCHBWriteBits{nullptr};
+    ToggleBitWidget* mySWBCNTBits{nullptr};
 
-    DataGridWidget* myLeftINPT;
-    DataGridWidget* myRightINPT;
-    CheckboxWidget* myINPTLatch;
-    CheckboxWidget* myINPTDump;
+    DataGridWidget* myLeftINPT{nullptr};
+    DataGridWidget* myRightINPT{nullptr};
+    CheckboxWidget* myINPTLatch{nullptr};
+    CheckboxWidget* myINPTDump{nullptr};
 
-    DataGridWidget* myTimWrite;
-    DataGridWidget* myTimRead;
-    DataGridWidget* myTimDivider;
+    DataGridWidget* myTimWrite{nullptr};
+    DataGridWidget* myTimRead{nullptr};
+    DataGridWidget* myTimDivider{nullptr};
 
-    ControllerWidget *myLeftControl, *myRightControl;
-    PopUpWidget *myP0Diff, *myP1Diff;
-    PopUpWidget *myTVType;
-    CheckboxWidget* mySelect;
-    CheckboxWidget* myReset;
-    CheckboxWidget* myPause;
+    ControllerWidget *myLeftControl{nullptr}, *myRightControl{nullptr};
+    PopUpWidget *myP0Diff{nullptr}, *myP1Diff{nullptr};
+    PopUpWidget *myTVType{nullptr};
+    CheckboxWidget* mySelect{nullptr};
+    CheckboxWidget* myReset{nullptr};
+    CheckboxWidget* myPause{nullptr};
 
-    EditTextWidget*    myConsole;
+    EditTextWidget* myConsole{nullptr};
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets

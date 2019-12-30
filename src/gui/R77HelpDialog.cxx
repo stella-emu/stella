@@ -24,10 +24,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 R77HelpDialog::R77HelpDialog(OSystem& osystem, DialogContainer& parent,
-  const GUI::Font& font)
-  : Dialog(osystem, parent, font, "RetroN 77 help"),
-  myPage(1),
-  myNumPages(4)
+                             const GUI::Font& font)
+  : Dialog(osystem, parent, font, "RetroN 77 help")
 {
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth(),

@@ -140,7 +140,7 @@ class CartridgeCV : public Cartridge
     std::array<uInt8, 2_KB> myImage;
 
     // Initial size of the cart data
-    size_t mySize;
+    size_t mySize{0};
 
     // The 1024 bytes of RAM
     std::array<uInt8, 1_KB> myRAM;

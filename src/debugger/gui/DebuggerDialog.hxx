@@ -115,28 +115,28 @@ class DebuggerDialog : public Dialog
       kDDOptionsCmd   = 'DDop'
     };
 
-    TabWidget *myTab, *myRomTab;
+    TabWidget *myTab{nullptr}, *myRomTab{nullptr};
 
-    PromptWidget*    myPrompt;
-    TiaInfoWidget*   myTiaInfo;
-    TiaOutputWidget* myTiaOutput;
-    TiaZoomWidget*   myTiaZoom;
-    CpuWidget*       myCpu;
-    RamWidget*       myRam;
-    RomWidget*       myRom;
-    CartDebugWidget* myCartInfo;
-    CartDebugWidget* myCartDebug;
-    CartRamWidget*   myCartRam;
-    EditTextWidget*  myMessageBox;
-    ButtonWidget*    myRewindButton;
-    ButtonWidget*    myUnwindButton;
+    PromptWidget*    myPrompt{nullptr};
+    TiaInfoWidget*   myTiaInfo{nullptr};
+    TiaOutputWidget* myTiaOutput{nullptr};
+    TiaZoomWidget*   myTiaZoom{nullptr};
+    CpuWidget*       myCpu{nullptr};
+    RamWidget*       myRam{nullptr};
+    RomWidget*       myRom{nullptr};
+    CartDebugWidget* myCartInfo{nullptr};
+    CartDebugWidget* myCartDebug{nullptr};
+    CartRamWidget*   myCartRam{nullptr};
+    EditTextWidget*  myMessageBox{nullptr};
+    ButtonWidget*    myRewindButton{nullptr};
+    ButtonWidget*    myUnwindButton{nullptr};
 
     unique_ptr<GUI::MessageBox> myFatalError;
     unique_ptr<OptionsDialog> myOptions;
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text
-    bool myFirstLoad;
+    bool myFirstLoad{true};
 
   private:
     // Following constructors and assignment operators not supported

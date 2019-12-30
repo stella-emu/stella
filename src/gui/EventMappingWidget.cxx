@@ -40,21 +40,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                        EventMode mode)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    myFilterPopup(nullptr),
-    myComboDialog(nullptr),
-    myEventMode(mode),
-    myEventGroup(Event::Group::Emulation),
-    myActionSelected(-1),
-    myRemapStatus(false),
-    myLastStick(0),
-    myLastHat(0),
-    myLastAxis(JoyAxis::NONE),
-    myLastDir(JoyDir::NONE),
-    myLastHatDir(JoyHatDir::CENTER),
-    myMod(0),
-    myLastKey(0),
-    myLastButton(JOY_CTRL_NONE),
-    myFirstTime(true)
+    myEventMode(mode)
 {
   const int fontHeight   = font.getFontHeight(),
             lineHeight   = font.getLineHeight(),
@@ -139,8 +125,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     VariantList combolist = instance().eventHandler().getComboList(mode);
     myComboDialog = new ComboDialog(boss, font, combolist);
   }
-  else
-    myComboButton = nullptr;
 
   // Show message for currently selected event
   xpos = HBORDER;

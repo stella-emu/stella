@@ -76,10 +76,10 @@ class FilesystemNodeWINDOWS : public AbstractFSNode
   protected:
     string _displayName;
     string _path;
-    bool _isDirectory;
-    bool _isFile;
-    bool _isPseudoRoot;
-    bool _isValid;
+    bool _isDirectory{true};
+    bool _isFile{false};
+    bool _isPseudoRoot{true};
+    bool _isValid{false};
 
   private:
     /**

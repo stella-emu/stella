@@ -68,7 +68,7 @@ class RamWidget : public Widget, public CommandSender
 
     // These will be needed by most of the child classes;
     // we may as well make them protected variables
-    int myFontWidth, myFontHeight, myLineHeight, myButtonHeight;
+    int myFontWidth{0}, myFontHeight{0}, myLineHeight{0}, myButtonHeight{0};
 
   private:
     enum {
@@ -84,27 +84,27 @@ class RamWidget : public Widget, public CommandSender
       kRamBinID
     };
 
-    uInt32 myUndoAddress, myUndoValue;
-    uInt32 myCurrentRamBank;
-    uInt32 myRamSize;
-    uInt32 myNumRows;
-    uInt32 myPageSize;
+    uInt32 myUndoAddress{0}, myUndoValue{0};
+    uInt32 myCurrentRamBank{0};
+    uInt32 myRamSize{0};
+    uInt32 myNumRows{0};
+    uInt32 myPageSize{0};
 
     unique_ptr<InputTextDialog> myInputBox;
 
-    StaticTextWidget* myRamStart;
-    std::array<StaticTextWidget*, 16> myRamLabels;
+    StaticTextWidget* myRamStart{nullptr};
+    std::array<StaticTextWidget*, 16> myRamLabels{nullptr};
 
-    DataGridWidget* myRamGrid;
-    DataGridWidget* myDecValue;
-    DataGridWidget* myBinValue;
-    EditTextWidget* myLabel;
+    DataGridWidget* myRamGrid{nullptr};
+    DataGridWidget* myDecValue{nullptr};
+    DataGridWidget* myBinValue{nullptr};
+    EditTextWidget* myLabel{nullptr};
 
-    ButtonWidget* myRevertButton;
-    ButtonWidget* myUndoButton;
-    ButtonWidget* mySearchButton;
-    ButtonWidget* myCompareButton;
-    ButtonWidget* myRestartButton;
+    ButtonWidget* myRevertButton{nullptr};
+    ButtonWidget* myUndoButton{nullptr};
+    ButtonWidget* mySearchButton{nullptr};
+    ButtonWidget* myCompareButton{nullptr};
+    ButtonWidget* myRestartButton{nullptr};
 
     ByteArray myOldValueList;
     IntArray mySearchAddr;

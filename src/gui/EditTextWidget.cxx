@@ -24,8 +24,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& text)
-  : EditableWidget(boss, font, x, y, w, h + 2, text),
-    _changed(false)
+  : EditableWidget(boss, font, x, y, w, h + 2, text)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
 
