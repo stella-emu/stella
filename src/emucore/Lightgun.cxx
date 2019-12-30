@@ -15,7 +15,6 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-
 #include "Event.hxx"
 #include "TIA.hxx"
 #include "FrameBuffer.hxx"
@@ -43,15 +42,17 @@ bool Lightgun::read(DigitalPin pin)
   {
     case DigitalPin::Six: // INPT4/5
     {
+      TIA& tia = mySystem.tia();
       const Common::Rect& rect = myFrameBuffer.imageRect();
       // scale mouse coordinates into TIA coordinates
       Int32 xMouse = (myEvent.get(Event::MouseAxisXValue) - rect.x())
-        * TIAConstants::H_PIXEL / rect.w();
+        * tia.width() / rect.w();
       Int32 yMouse = (myEvent.get(Event::MouseAxisYValue) - rect.y())
-        * 210 / rect.h(); // TODO: replace "magic number"
+        * tia.height() / rect.h(); 
+
       // get adjusted TIA coordinates
-      Int32 xTia = mySystem.tia().clocksThisLine() - TIAConstants::H_BLANK_CLOCKS + X_OFS;
-      Int32 yTia = mySystem.tia().scanlines() - mySystem.tia().startLine() + Y_OFS;
+      Int32 xTia = tia.clocksThisLine() - TIAConstants::H_BLANK_CLOCKS + X_OFS;
+      Int32 yTia = tia.scanlines() - tia.startLine() + Y_OFS;
 
       if (xTia < 0)
         xTia += TIAConstants::H_CLOCKS;
