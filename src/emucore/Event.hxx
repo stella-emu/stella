@@ -68,7 +68,7 @@ class Event
       Combo1, Combo2, Combo3, Combo4, Combo5, Combo6, Combo7, Combo8,
       Combo9, Combo10, Combo11, Combo12, Combo13, Combo14, Combo15, Combo16,
 
-      MouseAxisXValue, MouseAxisYValue,
+      MouseAxisXMove, MouseAxisYMove,
       MouseButtonLeftValue, MouseButtonRightValue,
 
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
@@ -121,6 +121,7 @@ class Event
       CompuMateSlash,
 
       ToggleInter,
+      MouseAxisXValue, MouseAxisYValue,
 
       LastType
     };

@@ -27,6 +27,7 @@
 #include "OSystem.hxx"
 #include "Joystick.hxx"
 #include "Paddles.hxx"
+#include "Lightgun.hxx"
 #include "PointingDevice.hxx"
 #include "PropsSet.hxx"
 #include "Settings.hxx"
@@ -247,8 +248,8 @@ void EventHandler::poll(uInt64 time)
 
   // Turn off all mouse-related items; if they haven't been taken care of
   // in the previous ::update() methods, they're now invalid
-  myEvent.set(Event::MouseAxisXValue, 0);
-  myEvent.set(Event::MouseAxisYValue, 0);
+  myEvent.set(Event::MouseAxisXMove, 0);
+  myEvent.set(Event::MouseAxisYMove, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -269,8 +270,10 @@ void EventHandler::handleMouseMotionEvent(int x, int y, int xrel, int yrel)
   {
     if(!mySkipMouseMotion)
     {
-      myEvent.set(Event::MouseAxisXValue, xrel);
-      myEvent.set(Event::MouseAxisYValue, yrel);
+      myEvent.set(Event::MouseAxisXValue, x); // required for Lightgun controller
+      myEvent.set(Event::MouseAxisYValue, y); // required for Lightgun controller
+      myEvent.set(Event::MouseAxisXMove, xrel);
+      myEvent.set(Event::MouseAxisYMove, yrel);
     }
     mySkipMouseMotion = false;
   }
@@ -1952,7 +1955,7 @@ const Event::EventSet EventHandler::MiscEvents = {
   Event::Quit, Event::ReloadConsole, Event::Fry, Event::StartPauseMode,
   Event::TogglePauseMode, Event::OptionsMenuMode, Event::CmdMenuMode, Event::ExitMode,
   Event::TakeSnapshot, Event::ToggleContSnapshots, Event::ToggleContSnapshotsFrame,
-  // Event::MouseAxisXValue, Event::MouseAxisYValue,
+  // Event::MouseAxisXMove, Event::MouseAxisYMove,
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
   Event::HandleMouseControl, Event::ToggleGrabMouse,
   Event::ToggleSAPortOrder,

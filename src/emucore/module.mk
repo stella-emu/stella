@@ -66,6 +66,7 @@ MODULE_OBJS := \
 	src/emucore/Joystick.o \
 	src/emucore/Keyboard.o \
 	src/emucore/KidVid.o \
+	src/emucore/Lightgun.o \
 	src/emucore/MindLink.o \
 	src/emucore/M6502.o \
 	src/emucore/M6532.o \

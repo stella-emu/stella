@@ -62,7 +62,7 @@ void Driving::update()
   // Mouse motion and button events
   if(myControlID > -1)
   {
-    int m_axis = myEvent.get(Event::MouseAxisXValue);
+    int m_axis = myEvent.get(Event::MouseAxisXMove);
     if(m_axis < -2)     --myCounter;
     else if(m_axis > 2) ++myCounter;
     if(myEvent.get(Event::MouseButtonLeftValue) ||
@@ -75,7 +75,7 @@ void Driving::update()
     // mapped to a separate driving controller
     if(myControlIDX > -1)
     {
-      int m_axis = myEvent.get(Event::MouseAxisXValue);
+      int m_axis = myEvent.get(Event::MouseAxisXMove);
       if(m_axis < -2)     --myCounter;
       else if(m_axis > 2) ++myCounter;
       if(myEvent.get(Event::MouseButtonLeftValue))
@@ -83,7 +83,7 @@ void Driving::update()
     }
     if(myControlIDY > -1)
     {
-      int m_axis = myEvent.get(Event::MouseAxisYValue);
+      int m_axis = myEvent.get(Event::MouseAxisYMove);
       if(m_axis < -2)     --myCounter;
       else if(m_axis > 2) ++myCounter;
       if(myEvent.get(Event::MouseButtonRightValue))

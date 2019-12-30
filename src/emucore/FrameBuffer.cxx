@@ -841,10 +841,17 @@ void FrameBuffer::setCursorState()
   bool analog = myOSystem.hasConsole() ?
       (myOSystem.console().leftController().isAnalog() ||
        myOSystem.console().rightController().isAnalog()) : false;
+  bool usesLightgun = emulation && myOSystem.hasConsole() ?
+    myOSystem.console().leftController().type() == Controller::Type::Lightgun ||
+    myOSystem.console().rightController().type() == Controller::Type::Lightgun : false;
   bool alwaysUseMouse = BSPF::equalsIgnoreCase("always", myOSystem.settings().getString("usemouse"));
 
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
   int cursor = myOSystem.settings().getInt("cursor");
+  // always enable cursor in lightgun games
+  if (usesLightgun)
+    cursor |= 1;
+
   switch(cursor)
   {
     case 0:
