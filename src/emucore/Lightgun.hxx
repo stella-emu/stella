@@ -23,7 +23,7 @@
 #include "Event.hxx"
 
 /**
-  This class handles the lighgun controller
+  This class handles the lightgun controller
 
   @author  Thomas Jentzsch
 */
@@ -42,7 +42,15 @@ public:
   virtual ~Lightgun() = default;
 
 public:
-  static constexpr int MAX_MOUSE_SENSE = 20;
+  using Controller::read;
+
+  /**
+    Read the value of the specified digital pin for this controller.
+
+    @param pin The pin of the controller jack to read
+    @return The state of the pin
+  */
+  bool read(DigitalPin pin) override;
 
   /**
     Update the entire digital and analog pin state according to the
@@ -60,26 +68,11 @@ public:
   */
   bool isAnalog() const override { return true; }
 
-  /**
-    Sets the sensitivity for analog emulation of lightgun movement
-    using a mouse.
-
-    @param sensitivity  Value from 1 to MAX_MOUSE_SENSE, with larger
-                        values causing more movement
-  */
-  static void setMouseSensitivity(int sensitivity);
-
 private:
-  // Pre-compute the events we care about based on given port
-  // This will eliminate test for left or right port in update()
-  Event::Type myPosValue, myFireEvent;
+  Int32 myMouseX{0}, myMouseY{0};
 
-  int myCharge, myLastCharge;
-
-  static constexpr int TRIGMIN = 1;
-  static constexpr int TRIGMAX = 4096;
-
-  static int MOUSE_SENSITIVITY;
+  static constexpr Int32 X_OFS = -21;
+  static constexpr Int32 Y_OFS =  10;
 
   // Lookup table for associating paddle buttons with controller pins
   static const Controller::DigitalPin ourButtonPin;
