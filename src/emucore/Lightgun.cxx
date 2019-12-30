@@ -16,11 +16,15 @@
 //============================================================================
 
 
+#include "Event.hxx"
 #include "TIA.hxx"
-#include "System.hxx"
 #include "FrameBuffer.hxx"
 
 #include "Lightgun.hxx"
+
+// |              | Left port   | Right port  |
+// | Fire button  | SWCHA bit 4 | SWCHA bit 0 | DP:1
+// | Detect light | INPT4 bit 7 | INPT5 bit 7 | DP:6
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Lightgun::Lightgun(Jack jack, const Event& event, const System& system, const FrameBuffer& frameBuffer)
@@ -32,31 +36,30 @@ Lightgun::Lightgun(Jack jack, const Event& event, const System& system, const Fr
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Lightgun::read(DigitalPin pin)
 {
-
   // We need to override the Controller::read() method, since the lightgun
   // checks this multiple times per frame
   // (we can't just read 60 times per second in the ::update() method)
   switch (pin)
   {
-    // Pin 6: INPT4/5
-    case DigitalPin::Six:
+    case DigitalPin::Six: // INPT4/5
     {
       const Common::Rect& rect = myFrameBuffer.imageRect();
       // scale mouse coordinates into TIA coordinates
-      Int32 xpos = (myMouseX - rect.x()) * TIAConstants::H_PIXEL / rect.w();
-      Int32 ypos = (myMouseY - rect.y()) * 210 / rect.h(); // TODO: replace "magic number"
+      Int32 xMouse = (myEvent.get(Event::MouseAxisXValue) - rect.x())
+        * TIAConstants::H_PIXEL / rect.w();
+      Int32 yMouse = (myEvent.get(Event::MouseAxisYValue) - rect.y())
+        * 210 / rect.h(); // TODO: replace "magic number"
       // get adjusted TIA coordinates
-      Int32 x = mySystem.tia().clocksThisLine() - TIAConstants::H_BLANK_CLOCKS + X_OFS;
-      Int32 y = mySystem.tia().scanlines() - mySystem.tia().startLine() + Y_OFS;
+      Int32 xTia = mySystem.tia().clocksThisLine() - TIAConstants::H_BLANK_CLOCKS + X_OFS;
+      Int32 yTia = mySystem.tia().scanlines() - mySystem.tia().startLine() + Y_OFS;
 
-      if (x < 0)
-        x += TIAConstants::H_CLOCKS;
+      if (xTia < 0)
+        xTia += TIAConstants::H_CLOCKS;
 
-      bool enable = !((x - xpos) >= 0 && (x - xpos) < 15 && (y - ypos) >= 0);
+      bool enable = !((xTia - xMouse) >= 0 && (xTia - xMouse) < 15 && (yTia - yMouse) >= 0);
 
       return enable;
     }
-
     default:
       return Controller::read(pin);
   }
@@ -65,16 +68,8 @@ bool Lightgun::read(DigitalPin pin)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Lightgun::update()
 {
-  // |              | Left port   | Right port  |
-  // | Fire button  | SWCHA bit 4 | SWCHA bit 0 | DP:1
-  // | Detect light | INPT4 bit 7 | INPT5 bit 7 | DP:6
-
-  Int32 xVal = myEvent.get(Event::MouseAxisXValue);
-  Int32 yVal = myEvent.get(Event::MouseAxisYValue);
-
-  myMouseX = xVal ? xVal : myMouseX;
-  myMouseY = yVal ? yVal : myMouseY;
-
-  setPin(DigitalPin::One, myEvent.get(Event::MouseButtonLeftValue) || myEvent.get(Event::MouseButtonRightValue));
+  // we allow left and right mouse buttons for fire button
+  setPin(DigitalPin::One, myEvent.get(Event::MouseButtonLeftValue)
+         || myEvent.get(Event::MouseButtonRightValue));
 }
 
