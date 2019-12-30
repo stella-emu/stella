@@ -129,7 +129,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   VarList::push_back(items, "+UI, -Emulation", "2");
   VarList::push_back(items, "+UI, +Emulation", "3");
   myCursorState = new PopUpWidget(myTab, font, HBORDER, ypos, pwidth, lineHeight, items,
-                                  "Mouse cursor visibility ", lwidth);
+                                  "Mouse cursor visibility ", lwidth, kCursorStateChanged);
   wid.push_back(myCursorState);
 #ifndef WINDOWED_SUPPORT
   myCursorState->clearFlags(Widget::FLAG_ENABLED);
@@ -272,6 +272,7 @@ void InputDialog::loadConfig()
 
   // Mouse cursor state
   myCursorState->setSelected(instance().settings().getString("cursor"), "2");
+  handleCursorState();
 
   // Joystick deadzone
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
@@ -280,7 +281,7 @@ void InputDialog::loadConfig()
   // Paddle speed (digital and mouse)
   myDejitterBase->setValue(instance().settings().getInt("dejitter.base"));
   myDejitterDiff->setValue(instance().settings().getInt("dejitter.diff"));
-  UpdateDejitter();
+  updateDejitter();
   myDPaddleSpeed->setValue(instance().settings().getInt("dsense"));
   myDPaddleLabel->setLabel(instance().settings().getString("dsense"));
   myMPaddleSpeed->setValue(instance().settings().getInt("msense"));
@@ -365,8 +366,12 @@ void InputDialog::saveConfig()
   // Grab mouse and hide cursor
   const string& cursor = myCursorState->getSelectedTag().toString();
   instance().settings().setValue("cursor", cursor);
-  instance().settings().setValue("grabmouse", myGrabMouse->getState());
-  instance().frameBuffer().enableGrabMouse(myGrabMouse->getState());
+  // only allow grab mouse if cursor is hidden in emulation
+  int state = myCursorState->getSelected();
+  bool enableGrab = state != 1 && state != 3;
+  bool grab = enableGrab ? myGrabMouse->getState() : false;
+  instance().settings().setValue("grabmouse", grab);
+  instance().frameBuffer().enableGrabMouse(grab);
 
   // Enable/disable modifier key-combos
   instance().settings().setValue("modcombo", myModCombo->getState());
@@ -416,7 +421,7 @@ void InputDialog::setDefaults()
       myDejitterBase->setValue(0);
       myDejitterDiff->setValue(0);
     #endif
-      UpdateDejitter();
+      updateDejitter();
       myTrackBallSpeed->setValue(10);
       myTrackBallLabel->setLabel("10");
 
@@ -431,6 +436,8 @@ void InputDialog::setDefaults()
 
       // Enable/disable modifier key-combos
       myModCombo->setState(true);
+
+      handleCursorState();
 
       break;
     }
@@ -559,6 +566,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
+    case kCursorStateChanged:
+      handleCursorState();
+      break;
+
     case kDeadzoneChanged:
       myDeadzoneLabel->setValue(3200 + 1000*myDeadzone->getValue());
       break;
@@ -572,7 +583,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDejitterChanged:
-      UpdateDejitter();
+      updateDejitter();
       break;
 
     case kTBSpeedChanged:
@@ -618,7 +629,16 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::UpdateDejitter()
+void InputDialog::handleCursorState()
+{
+  int state = myCursorState->getSelected();
+  bool enableGrab = state != 1 && state != 3;
+
+  myGrabMouse->setEnabled(enableGrab);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::updateDejitter()
 {
   int strength = myDejitterBase->getValue();
   stringstream label;
