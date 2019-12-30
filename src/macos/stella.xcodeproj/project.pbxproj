@@ -430,6 +430,8 @@
 		DCA078351F8C1B04008EFEE5 /* SDL_lib.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA078331F8C1B04008EFEE5 /* SDL_lib.hxx */; };
 		DCA233B023B583FE0032ABF3 /* PhosphorHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */; };
 		DCA233B123B583FE0032ABF3 /* PhosphorHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA233AF23B583FE0032ABF3 /* PhosphorHandler.hxx */; };
+		DCA233B423BAB1300032ABF3 /* Lightgun.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA233B223BAB1300032ABF3 /* Lightgun.cxx */; };
+		DCA233B523BAB1300032ABF3 /* Lightgun.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA233B323BAB1300032ABF3 /* Lightgun.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
 		DCA82C711FEB4E780059340F /* TimeMachine.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA82C6D1FEB4E780059340F /* TimeMachine.cxx */; };
@@ -1166,6 +1168,8 @@
 		DCA078331F8C1B04008EFEE5 /* SDL_lib.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SDL_lib.hxx; sourceTree = "<group>"; };
 		DCA233AE23B583FE0032ABF3 /* PhosphorHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PhosphorHandler.cxx; sourceTree = "<group>"; };
 		DCA233AF23B583FE0032ABF3 /* PhosphorHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PhosphorHandler.hxx; sourceTree = "<group>"; };
+		DCA233B223BAB1300032ABF3 /* Lightgun.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Lightgun.cxx; sourceTree = "<group>"; };
+		DCA233B323BAB1300032ABF3 /* Lightgun.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Lightgun.hxx; sourceTree = "<group>"; };
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CartX07.cxx; sourceTree = "<group>"; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = CartX07.hxx; sourceTree = "<group>"; };
 		DCA43BFF10DED5890070CEFD /* Info-Stella.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Stella.plist"; sourceTree = "<group>"; };
@@ -1937,6 +1941,8 @@
 				2DE2DF450627AE07006BEC99 /* Keyboard.hxx */,
 				DC9EA8850F729A36000452B5 /* KidVid.cxx */,
 				DC9EA8860F729A36000452B5 /* KidVid.hxx */,
+				DCA233B223BAB1300032ABF3 /* Lightgun.cxx */,
+				DCA233B323BAB1300032ABF3 /* Lightgun.hxx */,
 				DCC527CA10B9DA19005E1287 /* M6502.cxx */,
 				DCC527CB10B9DA19005E1287 /* M6502.hxx */,
 				2DE2DF7C0627AE33006BEC99 /* M6532.cxx */,
@@ -2428,6 +2434,7 @@
 				2D91741809BA90380026E9FF /* Widget.hxx in Headers */,
 				2D91741909BA90380026E9FF /* CartUA.hxx in Headers */,
 				DCE8B1871E7E03B300189864 /* FrameLayout.hxx in Headers */,
+				DCA233B523BAB1300032ABF3 /* Lightgun.hxx in Headers */,
 				DCBD31E92299ADB400567357 /* Rect.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
@@ -3041,6 +3048,7 @@
 				DC21E5BF21CA903E007D0E1A /* OSystemMACOS.cxx in Sources */,
 				DCAAE5D91715887B0080BB82 /* Cart0840Widget.cxx in Sources */,
 				DCAAE5DB1715887B0080BB82 /* CartCVWidget.cxx in Sources */,
+				DCA233B423BAB1300032ABF3 /* Lightgun.cxx in Sources */,
 				DCAAE5DE1715887B0080BB82 /* CartEFSCWidget.cxx in Sources */,
 				DCAAE5E01715887B0080BB82 /* CartEFWidget.cxx in Sources */,
 				DCAAE5E21715887B0080BB82 /* CartF0Widget.cxx in Sources */,
