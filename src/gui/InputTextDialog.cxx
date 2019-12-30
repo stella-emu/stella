@@ -41,11 +41,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& lfont,
                                  const GUI::Font& nfont,
                                  const StringList& labels, const string& title)
   : Dialog(boss->instance(), boss->parent(), lfont, title),
-    CommandSender(boss),
-    myEnableCenter(false),
-    myErrorFlag(false),
-    myXOrig(0),
-    myYOrig(0)
+    CommandSender(boss)
 {
   initialize(lfont, nfont, labels);
 }
