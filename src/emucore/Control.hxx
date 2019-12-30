@@ -94,6 +94,7 @@ class Controller : public Serializable
       AmigaMouse, AtariMouse, AtariVox, BoosterGrip, CompuMate,
       Driving, Genesis, Joystick, Keyboard, KidVid, MindLink,
       Paddles, PaddlesIAxis, PaddlesIAxDr, SaveKey, TrakBall,
+      Lightgun,
       LastType
     };
 
