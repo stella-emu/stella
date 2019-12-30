@@ -38,7 +38,7 @@ public:
     @param event  The event object to use for events
     @param system The system using this controller
   */
-  Lightgun(Jack jack, const Event& event, const System& system);
+  Lightgun(Jack jack, const Event& event, const System& system, const FrameBuffer& frameBuffer);
   virtual ~Lightgun() = default;
 
 public:
@@ -69,10 +69,11 @@ public:
   bool isAnalog() const override { return true; }
 
 private:
+  const FrameBuffer& myFrameBuffer;
   Int32 myMouseX{0}, myMouseY{0};
 
   static constexpr Int32 X_OFS = -21;
-  static constexpr Int32 Y_OFS =  10;
+  static constexpr Int32 Y_OFS =   5;
 
   // Lookup table for associating paddle buttons with controller pins
   static const Controller::DigitalPin ourButtonPin;

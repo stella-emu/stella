@@ -18,12 +18,14 @@
 
 #include "TIA.hxx"
 #include "System.hxx"
+#include "FrameBuffer.hxx"
 
 #include "Lightgun.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Lightgun::Lightgun(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::Type::Lightgun)
+Lightgun::Lightgun(Jack jack, const Event& event, const System& system, const FrameBuffer& frameBuffer)
+  : Controller(jack, event, system, Controller::Type::Lightgun),
+  myFrameBuffer(frameBuffer)
 {
 }
 
@@ -39,22 +41,16 @@ bool Lightgun::read(DigitalPin pin)
     // Pin 6: INPT4/5
     case DigitalPin::Six:
     {
-      // TODO: scale correctly, current code assumes 2x zoom and no vertical scaling
-      Int32 xpos = myMouseX / 4;
-      Int32 ypos = myMouseY / 2;
-      uInt32 ux;
-      uInt32 uy;
-
-      mySystem.tia().electronBeamPos(ux, uy);
+      const Common::Rect& rect = myFrameBuffer.imageRect();
+      // scale mouse coordinates into TIA coordinates
+      Int32 xpos = (myMouseX - rect.x()) * TIAConstants::H_PIXEL / rect.w();
+      Int32 ypos = (myMouseY - rect.y()) * 210 / rect.h(); // TODO: replace "magic number"
+      // get adjusted TIA coordinates
       Int32 x = mySystem.tia().clocksThisLine() - TIAConstants::H_BLANK_CLOCKS + X_OFS;
+      Int32 y = mySystem.tia().scanlines() - mySystem.tia().startLine() + Y_OFS;
 
       if (x < 0)
         x += TIAConstants::H_CLOCKS;
-      Int32 y = uy + Y_OFS;
-
-      //cerr << "mouse:" << xpos << " " << ypos << endl;
-      //cerr << " beam:" << x << " " << y << endl;
-
 
       bool enable = !((x - xpos) >= 0 && (x - xpos) < 15 && (y - ypos) >= 0);
 
