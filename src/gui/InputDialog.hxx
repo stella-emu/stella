@@ -61,19 +61,21 @@ class InputDialog : public Dialog
 
     void addDevicePortTab(const GUI::Font& font);
 
+    void handleCursorState();
+    void updateDejitter();
     void eraseEEPROM();
-    void UpdateDejitter();
 
   private:
     enum {
-      kDeadzoneChanged   = 'DZch',
-      kDejitterChanged   = 'Pjch',
-      kDPSpeedChanged    = 'PDch',
-      kMPSpeedChanged    = 'PMch',
-      kTBSpeedChanged    = 'TBch',
-      kDBButtonPressed   = 'DBbp',
-      kEEButtonPressed   = 'EEbp',
-      kConfirmEEEraseCmd = 'EEcf'
+      kCursorStateChanged = 'CSch',
+      kDeadzoneChanged    = 'DZch',
+      kDejitterChanged    = 'Pjch',
+      kDPSpeedChanged     = 'PDch',
+      kMPSpeedChanged     = 'PMch',
+      kTBSpeedChanged     = 'TBch',
+      kDBButtonPressed    = 'DBbp',
+      kEEButtonPressed    = 'EEbp',
+      kConfirmEEEraseCmd  = 'EEcf'
     };
 
     TabWidget* myTab{nullptr};

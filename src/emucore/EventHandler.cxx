@@ -566,9 +566,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::ToggleGrabMouse:
       if (pressed && !repeated && !myOSystem.frameBuffer().fullScreen())
       {
+        bool oldState = myOSystem.frameBuffer().grabMouseEnabled();
         myOSystem.frameBuffer().toggleGrabMouse();
-        myOSystem.frameBuffer().showMessage(myOSystem.frameBuffer().grabMouseEnabled()
-                                            ? "Grab mouse enabled" : "Grab mouse disabled");
+        bool newState = myOSystem.frameBuffer().grabMouseEnabled();
+        myOSystem.frameBuffer().showMessage(oldState != newState ? myOSystem.frameBuffer().grabMouseEnabled()
+                                            ? "Grab mouse enabled" : "Grab mouse disabled"
+                                            : "Grab mouse not allowed while cursor shown");
       }
       return;
 
