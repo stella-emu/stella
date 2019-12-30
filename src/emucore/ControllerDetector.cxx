@@ -70,8 +70,9 @@ Controller::Type ControllerDetector::autodetectPort(const uInt8* image, size_t s
     else if(usesKeyboard(image, size, port))
       type = Controller::Type::Keyboard;
     else if(usesGenesisButton(image, size, port))
-
       type = Controller::Type::Genesis;
+    else if(isProbablyLightGun(image, size, port))
+      type = Controller::Type::Lightgun;
   }
   else
   {
@@ -638,6 +639,44 @@ bool ControllerDetector::isProbablySaveKey(const uInt8* image, size_t size,
 
     for(uInt32 i = 0; i < NUM_SIGS; ++i)
       if(searchForBytes(image, size, signature[i], SIG_SIZE))
+        return true;
+  }
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ControllerDetector::isProbablyLightGun(const uInt8* image, size_t size,
+                                            Controller::Jack port)
+{
+  if (port == Controller::Jack::Left)
+  {
+    // check for INPT4 after NOPs access
+    const int NUM_SIGS = 2;
+    const int SIG_SIZE = 6;
+    uInt8 signature[NUM_SIGS][SIG_SIZE] = {
+      { 0xea, 0xea, 0xea, 0x24, 0x0c, 0x10 },
+      { 0xea, 0xea, 0xea, 0x24, 0x3c, 0x10 }
+    }; // all pattern checked, only 'Sentinel' and 'Shooting Arcade' match
+
+    for (uInt32 i = 0; i < NUM_SIGS; ++i)
+      if (searchForBytes(image, size, signature[i], SIG_SIZE))
+        return true;
+
+    return false;
+  }
+  else if(port == Controller::Jack::Right)
+  {
+    // check for INPT5 after NOPs access
+    const int NUM_SIGS = 2;
+    const int SIG_SIZE = 6;
+    uInt8 signature[NUM_SIGS][SIG_SIZE] = {
+      { 0xea, 0xea, 0xea, 0x24, 0x0d, 0x10 },
+      { 0xea, 0xea, 0xea, 0x24, 0x3d, 0x10 }
+    }; // all pattern checked, only 'Bobby is Hungry' matches
+
+    for (uInt32 i = 0; i < NUM_SIGS; ++i)
+      if (searchForBytes(image, size, signature[i], SIG_SIZE))
         return true;
   }
 

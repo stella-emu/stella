@@ -40,7 +40,7 @@ void MindLink::update()
     return;
 
   myMindlinkPos = (myMindlinkPos & 0x3fffffff) +
-                  (myEvent.get(Event::MouseAxisXValue) << 3);
+                  (myEvent.get(Event::MouseAxisXMove) << 3);
   if(myMindlinkPos < 0x2800)
     myMindlinkPos = 0x2800;
   if(myMindlinkPos >= 0x3800)

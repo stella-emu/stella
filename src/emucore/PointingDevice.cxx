@@ -79,11 +79,11 @@ void PointingDevice::update()
     return;
 
   // Update horizontal direction
-  updateDirection( myEvent.get(Event::MouseAxisXValue), myHCounterRemainder,
+  updateDirection( myEvent.get(Event::MouseAxisXMove), myHCounterRemainder,
       myTrackBallLeft, myTrackBallLinesH, myScanCountH, myFirstScanOffsetH);
 
   // Update vertical direction
-  updateDirection(-myEvent.get(Event::MouseAxisYValue), myVCounterRemainder,
+  updateDirection(-myEvent.get(Event::MouseAxisYMove), myVCounterRemainder,
       myTrackBallDown, myTrackBallLinesV, myScanCountV, myFirstScanOffsetV);
 
   // Get mouse button state

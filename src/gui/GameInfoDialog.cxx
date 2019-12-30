@@ -220,8 +220,9 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(ctrls, "SaveKey", "SAVEKEY");
   VarList::push_back(ctrls, "Sega Genesis", "GENESIS");
   VarList::push_back(ctrls, "KidVid", "KIDVID");
+  VarList::push_back(ctrls, "Lightgun", "LIGHTGUN");
   VarList::push_back(ctrls, "MindLink", "MINDLINK");
-
+  
   ypos = VBORDER;
   pwidth = font.getStringWidth("Paddles_IAxis");
   myLeftPortLabel = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Left port        ");
