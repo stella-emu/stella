@@ -172,45 +172,45 @@ class M6532 : public Device
     std::array<uInt8, 128> myRAM;
 
     // Current value of the timer
-    uInt8 myTimer;
+    uInt8 myTimer{0};
 
     // Current number of clocks "queued" for the divider
-    uInt32 mySubTimer;
+    uInt32 mySubTimer{0};
 
     // The divider
-    uInt32 myDivider;
+    uInt32 myDivider{1};
 
     // Has the timer wrapped?
-    bool myTimerWrapped;
-    bool myWrappedThisCycle;
+    bool myTimerWrapped{false};
+    bool myWrappedThisCycle{false};
 
     // Cycle when the timer set. Debugging only.
-    uInt64 mySetTimerCycle;
+    uInt64 mySetTimerCycle{0};
 
     // Last cycle considered in emu updates
-    uInt64 myLastCycle;
+    uInt64 myLastCycle{0};
 
     // Data Direction Register for Port A
-    uInt8 myDDRA;
+    uInt8 myDDRA{0};
 
     // Data Direction Register for Port B
-    uInt8 myDDRB;
+    uInt8 myDDRB{0};
 
     // Last value written to Port A
-    uInt8 myOutA;
+    uInt8 myOutA{0};
 
     // Last value written to Port B
-    uInt8 myOutB;
+    uInt8 myOutB{0};
 
     // Interrupt Flag Register
-    uInt8 myInterruptFlag;
+    uInt8 myInterruptFlag{0};
 
     // Used to determine whether an active transition on PA7 has occurred
     // True is positive edge-detect, false is negative edge-detect
-    bool myEdgeDetectPositive;
+    bool myEdgeDetectPositive{false};
 
     // Last value written to the timer registers
-    std::array<uInt8, 4> myOutTimer;
+    std::array<uInt8, 4> myOutTimer{0};
 
     // Accessible bits in the interrupt flag register
     // All other bits are always zeroed

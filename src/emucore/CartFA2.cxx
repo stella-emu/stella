@@ -24,10 +24,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA2::CartridgeFA2(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
-  : Cartridge(settings, md5),
-    mySize(28_KB),
-    myRamAccessTimeout(0),
-    myBankOffset(0)
+  : Cartridge(settings, md5)
 {
   // 29/32K version of FA2 has valid data @ 1K - 29K
   const uInt8* img_ptr = image.get();

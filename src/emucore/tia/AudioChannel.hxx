@@ -24,7 +24,7 @@
 class AudioChannel : public Serializable
 {
   public:
-    AudioChannel();
+    AudioChannel() = default;
 
     void reset();
 
@@ -45,18 +45,18 @@ class AudioChannel : public Serializable
     bool load(Serializer& in) override;
 
   private:
-    uInt8 myAudc;
-    uInt8 myAudv;
-    uInt8 myAudf;
+    uInt8 myAudc{0};
+    uInt8 myAudv{0};
+    uInt8 myAudf{0};
 
-    bool myClockEnable;
-    bool myNoiseFeedback;
-    bool myNoiseCounterBit4;
-    bool myPulseCounterHold;
+    bool myClockEnable{false};
+    bool myNoiseFeedback{false};
+    bool myNoiseCounterBit4{false};
+    bool myPulseCounterHold{false};
 
-    uInt8 myDivCounter;
-    uInt8 myPulseCounter;
-    uInt8 myNoiseCounter;
+    uInt8 myDivCounter{0};
+    uInt8 myPulseCounter{0};
+    uInt8 myNoiseCounter{0};
 
   private:
     AudioChannel(const AudioChannel&) = delete;

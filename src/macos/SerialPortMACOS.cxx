@@ -29,8 +29,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortMACOS::SerialPortMACOS()
-  : SerialPort(),
-    myHandle(0)
+  : SerialPort()
 {
 }
 

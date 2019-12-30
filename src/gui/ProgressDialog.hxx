@@ -36,10 +36,10 @@ class ProgressDialog : public Dialog
     void setProgress(int progress);
 
   private:
-    StaticTextWidget* myMessage;
-    SliderWidget*     mySlider;
+    StaticTextWidget* myMessage{nullptr};
+    SliderWidget*     mySlider{nullptr};
 
-    int myStart, myFinish, myStep;
+    int myStart{0}, myFinish{0}, myStep{0};
 
   private:
     // Following constructors and assignment operators not supported

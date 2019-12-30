@@ -70,11 +70,11 @@ class Launcher : public DialogContainer
     Dialog* baseDialog() override;
 
   private:
-    Dialog* myBaseDialog;
+    Dialog* myBaseDialog{nullptr};
 
     // The width and height of this dialog
-    uInt32 myWidth;
-    uInt32 myHeight;
+    uInt32 myWidth{0};
+    uInt32 myHeight{0};
 
   private:
     // Following constructors and assignment operators not supported

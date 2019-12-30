@@ -44,19 +44,19 @@ class MinUICommandDialog : public Dialog
     void processCancel() override;
 
     // column 0
-    ButtonWidget* myColorButton;
-    ButtonWidget* myLeftDiffButton;
-    ButtonWidget* myRightDiffButton;
+    ButtonWidget* myColorButton{nullptr};
+    ButtonWidget* myLeftDiffButton{nullptr};
+    ButtonWidget* myRightDiffButton{nullptr};
     // column 1
-    ButtonWidget* mySaveStateButton;
-    ButtonWidget* myStateSlotButton;
-    ButtonWidget* myLoadStateButton;
-    ButtonWidget* myRewindButton;
-    ButtonWidget* myUnwindButton;
+    ButtonWidget* mySaveStateButton{nullptr};
+    ButtonWidget* myStateSlotButton{nullptr};
+    ButtonWidget* myLoadStateButton{nullptr};
+    ButtonWidget* myRewindButton{nullptr};
+    ButtonWidget* myUnwindButton{nullptr};
     // column 2
-    ButtonWidget* myTVFormatButton;
-    ButtonWidget* myStretchButton;
-    ButtonWidget* myPhosphorButton;
+    ButtonWidget* myTVFormatButton{nullptr};
+    ButtonWidget* myStretchButton{nullptr};
+    ButtonWidget* myPhosphorButton{nullptr};
 
     unique_ptr<StellaSettingsDialog>  myStellaSettingsDialog;
     unique_ptr<OptionsDialog>  myOptionsDialog;

@@ -61,49 +61,51 @@ class InputDialog : public Dialog
 
     void addDevicePortTab(const GUI::Font& font);
 
+    void handleCursorState();
+    void updateDejitter();
     void eraseEEPROM();
-    void UpdateDejitter();
 
   private:
     enum {
-      kDeadzoneChanged   = 'DZch',
-      kDejitterChanged   = 'Pjch',
-      kDPSpeedChanged    = 'PDch',
-      kMPSpeedChanged    = 'PMch',
-      kTBSpeedChanged    = 'TBch',
-      kDBButtonPressed   = 'DBbp',
-      kEEButtonPressed   = 'EEbp',
-      kConfirmEEEraseCmd = 'EEcf'
+      kCursorStateChanged = 'CSch',
+      kDeadzoneChanged    = 'DZch',
+      kDejitterChanged    = 'Pjch',
+      kDPSpeedChanged     = 'PDch',
+      kMPSpeedChanged     = 'PMch',
+      kTBSpeedChanged     = 'TBch',
+      kDBButtonPressed    = 'DBbp',
+      kEEButtonPressed    = 'EEbp',
+      kConfirmEEEraseCmd  = 'EEcf'
     };
 
-    TabWidget* myTab;
+    TabWidget* myTab{nullptr};
 
-    EventMappingWidget* myEmulEventMapper;
-    EventMappingWidget* myMenuEventMapper;
+    EventMappingWidget* myEmulEventMapper{nullptr};
+    EventMappingWidget* myMenuEventMapper{nullptr};
 
-    CheckboxWidget* mySAPort;
-    PopUpWidget* myMouseControl;
-    PopUpWidget* myCursorState;
+    CheckboxWidget* mySAPort{nullptr};
+    PopUpWidget* myMouseControl{nullptr};
+    PopUpWidget* myCursorState{nullptr};
 
-    EditTextWidget*   myAVoxPort;
+    EditTextWidget*   myAVoxPort{nullptr};
 
-    SliderWidget*     myDeadzone;
-    StaticTextWidget* myDeadzoneLabel;
-    SliderWidget*     myDejitterBase;
-    SliderWidget*     myDejitterDiff;
-    SliderWidget*     myDPaddleSpeed;
-    SliderWidget*     myMPaddleSpeed;
-    SliderWidget*     myTrackBallSpeed;
-    StaticTextWidget* myDejitterLabel;
-    StaticTextWidget* myDPaddleLabel;
-    StaticTextWidget* myMPaddleLabel;
-    StaticTextWidget* myTrackBallLabel;
-    CheckboxWidget*   myAllowAll4;
-    CheckboxWidget*   myGrabMouse;
-    CheckboxWidget*   myModCombo;
+    SliderWidget*     myDeadzone{nullptr};
+    StaticTextWidget* myDeadzoneLabel{nullptr};
+    SliderWidget*     myDejitterBase{nullptr};
+    SliderWidget*     myDejitterDiff{nullptr};
+    SliderWidget*     myDPaddleSpeed{nullptr};
+    SliderWidget*     myMPaddleSpeed{nullptr};
+    SliderWidget*     myTrackBallSpeed{nullptr};
+    StaticTextWidget* myDejitterLabel{nullptr};
+    StaticTextWidget* myDPaddleLabel{nullptr};
+    StaticTextWidget* myMPaddleLabel{nullptr};
+    StaticTextWidget* myTrackBallLabel{nullptr};
+    CheckboxWidget*   myAllowAll4{nullptr};
+    CheckboxWidget*   myGrabMouse{nullptr};
+    CheckboxWidget*   myModCombo{nullptr};
 
-    ButtonWidget*     myJoyDlgButton;
-    ButtonWidget*     myEraseEEPROMButton;
+    ButtonWidget*     myJoyDlgButton{nullptr};
+    ButtonWidget*     myEraseEEPROMButton{nullptr};
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;
@@ -112,7 +114,7 @@ class InputDialog : public Dialog
     unique_ptr<GUI::MessageBox> myConfirmMsg;
 
     // Maximum width and height for this dialog
-    int myMaxWidth, myMaxHeight;
+    int myMaxWidth{0}, myMaxHeight{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -38,7 +38,7 @@ class StringListWidget : public ListWidget
     Common::Rect getEditRect() const override;
 
   protected:
-    bool _hilite;
+    bool _hilite{false};
 
   private:
     // Following constructors and assignment operators not supported

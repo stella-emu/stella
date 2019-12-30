@@ -22,8 +22,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, Controller& controller)
-  : ControllerWidget(boss, font, x, y, controller),
-    myEEPROMEraseCurrent(nullptr)
+  : ControllerWidget(boss, font, x, y, controller)
 {
   myPage.fill(nullptr);
 }

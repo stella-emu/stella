@@ -45,26 +45,26 @@ class CartridgeDPCPlusWidget : public CartDebugWidget
       IntArray mcounters;
       IntArray mfreqs;
       IntArray mwaves;
-      uInt32 random;
+      uInt32 random{0};
       ByteArray internalram;
-      uInt16 bank;
+      uInt16 bank{0};
     };
 
     CartridgeDPCPlus& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
 
-    DataGridWidget* myTops;
-    DataGridWidget* myBottoms;
-    DataGridWidget* myCounters;
-    DataGridWidget* myFracCounters;
-    DataGridWidget* myFracIncrements;
-    DataGridWidget* myParameter;
-    DataGridWidget* myMusicCounters;
-    DataGridWidget* myMusicFrequencies;
-    DataGridWidget* myMusicWaveforms;
-    CheckboxWidget* myFastFetch;
-    CheckboxWidget* myIMLDA;
-    DataGridWidget* myRandom;
+    DataGridWidget* myTops{nullptr};
+    DataGridWidget* myBottoms{nullptr};
+    DataGridWidget* myCounters{nullptr};
+    DataGridWidget* myFracCounters{nullptr};
+    DataGridWidget* myFracIncrements{nullptr};
+    DataGridWidget* myParameter{nullptr};
+    DataGridWidget* myMusicCounters{nullptr};
+    DataGridWidget* myMusicFrequencies{nullptr};
+    DataGridWidget* myMusicWaveforms{nullptr};
+    CheckboxWidget* myFastFetch{nullptr};
+    CheckboxWidget* myIMLDA{nullptr};
+    DataGridWidget* myRandom{nullptr};
 
     CartState myOldState;
 

@@ -21,7 +21,6 @@
 CompuMate::CompuMate(const Console& console, const Event& event,
                      const System& system)
   : myConsole(console),
-    myColumn(0),
     myEvent(event)
 {
   // These controller pointers will be retrieved by the Console, which will

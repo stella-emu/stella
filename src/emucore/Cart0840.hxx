@@ -156,7 +156,7 @@ class Cartridge0840 : public Cartridge
     std::array<uInt8, 8_KB> myImage;
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
     // Previous Device's page access
     std::array<System::PageAccess, 8> myHotSpotPageAccess;

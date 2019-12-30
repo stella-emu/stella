@@ -55,13 +55,13 @@ class TiaZoomWidget : public Widget, public CommandSender
   private:
     unique_ptr<ContextMenu> myMenu;
 
-    int myZoomLevel;
-    int myNumCols, myNumRows;
-    int myOffX, myOffY;
-    int myOffXLo, myOffYLo;
+    int myZoomLevel{0};
+    int myNumCols{0}, myNumRows{0};
+    int myOffX{0}, myOffY{0};
+    int myOffXLo{0}, myOffYLo{0};
 
-    bool myMouseMoving;
-    int myClickX, myClickY;
+    bool myMouseMoving{false};
+    int myClickX{0}, myClickY{0};
 
   private:
     // Following constructors and assignment operators not supported

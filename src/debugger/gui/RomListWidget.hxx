@@ -87,20 +87,20 @@ class RomListWidget : public EditableWidget
 
   private:
     unique_ptr<RomListSettings> myMenu;
-    ScrollBarWidget* myScrollBar;
+    ScrollBarWidget* myScrollBar{nullptr};
 
-    int  _labelWidth;
-    int  _bytesWidth;
-    int  _rows;
-    int  _cols;
-    int  _currentPos; // position of first line in visible window
-    int  _selectedItem;
-    int  _highlightedItem;
-    bool _editMode;
-    StellaKey  _currentKeyDown;
-    Common::Base::Fmt _base;  // base used during editing
+    int  _labelWidth{0};
+    int  _bytesWidth{0};
+    int  _rows{0};
+    int  _cols{0};
+    int  _currentPos{0}; // position of first line in visible window
+    int  _selectedItem{-1};
+    int  _highlightedItem{-1};
+    bool _editMode{false};
+    StellaKey _currentKeyDown{KBDK_UNKNOWN};
+    Common::Base::Fmt _base{Common::Base::Fmt::_DEFAULT};  // base used during editing
 
-    const CartDebug::Disassembly* myDisasm;
+    const CartDebug::Disassembly* myDisasm{nullptr};
     vector<CheckboxWidget*> myCheckList;
 
   private:

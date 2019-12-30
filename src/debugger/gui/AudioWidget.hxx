@@ -40,10 +40,10 @@ class AudioWidget : public Widget, public CommandSender
       kAUDVID
     };
 
-    DataGridWidget* myAudF;
-    DataGridWidget* myAudC;
-    DataGridWidget* myAudV;
-    StaticTextWidget* myAudEffV;
+    DataGridWidget* myAudF{nullptr};
+    DataGridWidget* myAudC{nullptr};
+    DataGridWidget* myAudV{nullptr};
+    StaticTextWidget* myAudEffV{nullptr};
 
     // Audio channels
     enum

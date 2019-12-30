@@ -57,17 +57,17 @@ class RomAuditDialog : public Dialog
     const GUI::Font& myFont;
 
     // ROM audit path
-    EditTextWidget* myRomPath;
+    EditTextWidget* myRomPath{nullptr};
 
     // Show the results of the ROM audit
-    EditTextWidget* myResults1;
-    EditTextWidget* myResults2;
+    EditTextWidget* myResults1{nullptr};
+    EditTextWidget* myResults2{nullptr};
 
     // Show a message about the dangers of using this function
     unique_ptr<GUI::MessageBox> myConfirmMsg;
 
     // Maximum width and height for this dialog
-    int myMaxWidth, myMaxHeight;
+    int myMaxWidth{0}, myMaxHeight{0};
 
   private:
     // Following constructors and assignment operators not supported

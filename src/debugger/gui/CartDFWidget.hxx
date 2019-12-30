@@ -34,7 +34,7 @@ class CartridgeDFWidget : public CartDebugWidget
 
   private:
     CartridgeDF& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
 
     enum { kBankChanged = 'bkCH' };
 

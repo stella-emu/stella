@@ -35,10 +35,10 @@ class CartridgeF6SCWidget : public CartDebugWidget
   private:
     struct CartState {
       ByteArray internalram;
-      uInt16 bank;
+      uInt16 bank{0};
     };
     CartridgeF6SC& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
     CartState myOldState;
 
     enum { kBankChanged = 'bkCH' };

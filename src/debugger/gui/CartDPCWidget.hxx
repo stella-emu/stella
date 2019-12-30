@@ -40,20 +40,20 @@ class CartridgeDPCWidget : public CartDebugWidget
       IntArray counters;
       ByteArray flags;
       BoolArray music;
-      uInt8 random;
+      uInt8 random{0};
       ByteArray internalram;
-      uInt16 bank;
+      uInt16 bank{0};
     };
 
     CartridgeDPC& myCart;
-    PopUpWidget* myBank;
+    PopUpWidget* myBank{nullptr};
 
-    DataGridWidget* myTops;
-    DataGridWidget* myBottoms;
-    DataGridWidget* myCounters;
-    DataGridWidget* myFlags;
-    DataGridWidget* myMusicMode;
-    DataGridWidget* myRandom;
+    DataGridWidget* myTops{nullptr};
+    DataGridWidget* myBottoms{nullptr};
+    DataGridWidget* myCounters{nullptr};
+    DataGridWidget* myFlags{nullptr};
+    DataGridWidget* myMusicMode{nullptr};
+    DataGridWidget* myRandom{nullptr};
 
     CartState myOldState;
 

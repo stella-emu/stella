@@ -62,7 +62,7 @@ class CommandSender
 	}
 
   protected:
-    CommandReceiver* _target;
+    CommandReceiver* _target{nullptr};
 };
 
 #endif

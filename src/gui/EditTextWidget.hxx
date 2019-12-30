@@ -48,7 +48,7 @@ class EditTextWidget : public EditableWidget
 
   protected:
     string _backupString;
-    bool   _changed;
+    bool   _changed{false};
 
   private:
     // Following constructors and assignment operators not supported

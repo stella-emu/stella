@@ -25,31 +25,31 @@ class PopUpWidget;
 
 class CartridgeFCWidget : public CartDebugWidget
 {
-public:
-  CartridgeFCWidget(GuiObject* boss, const GUI::Font& lfont,
-                    const GUI::Font& nfont,
-                    int x, int y, int w, int h,
-                    CartridgeFC& cart);
-  virtual ~CartridgeFCWidget() = default;
+  public:
+    CartridgeFCWidget(GuiObject* boss, const GUI::Font& lfont,
+                      const GUI::Font& nfont,
+                      int x, int y, int w, int h,
+                      CartridgeFC& cart);
+    virtual ~CartridgeFCWidget() = default;
 
-private:
-  CartridgeFC& myCart;
-  PopUpWidget* myBank;
+  private:
+    CartridgeFC& myCart;
+    PopUpWidget* myBank{nullptr};
 
-  enum { kBankChanged = 'bkCH' };
+    enum { kBankChanged = 'bkCH' };
 
-private:
-  void loadConfig() override;
-  void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+  private:
+    void loadConfig() override;
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-  string bankState() override;
+    string bankState() override;
 
-  // Following constructors and assignment operators not supported
-  CartridgeFCWidget() = delete;
-  CartridgeFCWidget(const CartridgeFCWidget&) = delete;
-  CartridgeFCWidget(CartridgeFCWidget&&) = delete;
-  CartridgeFCWidget& operator=(const CartridgeFCWidget&) = delete;
-  CartridgeFCWidget& operator=(CartridgeFCWidget&&) = delete;
+    // Following constructors and assignment operators not supported
+    CartridgeFCWidget() = delete;
+    CartridgeFCWidget(const CartridgeFCWidget&) = delete;
+    CartridgeFCWidget(CartridgeFCWidget&&) = delete;
+    CartridgeFCWidget& operator=(const CartridgeFCWidget&) = delete;
+    CartridgeFCWidget& operator=(CartridgeFCWidget&&) = delete;
 };
 
 #endif

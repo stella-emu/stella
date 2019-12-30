@@ -43,8 +43,8 @@ class Menu : public DialogContainer
 
   private:
     Dialog* baseDialog() override;
-    StellaSettingsDialog* stellaSettingDialog;
-    OptionsDialog* optionsDialog;
+    StellaSettingsDialog* stellaSettingDialog{nullptr};
+    OptionsDialog* optionsDialog{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

@@ -196,31 +196,31 @@ class CartridgeAR : public Cartridge
     std::array<uInt8, 256> myHeader;
 
     // Size of the ROM image
-    size_t mySize;
+    size_t mySize{0};
 
     // All of the 8448 byte loads associated with the game
     ByteBuffer myLoadImages;
 
     // Indicates how many 8448 loads there are
-    uInt8 myNumberOfLoadImages;
+    uInt8 myNumberOfLoadImages{0};
 
     // Indicates if the RAM is write enabled
-    bool myWriteEnabled;
+    bool myWriteEnabled{false};
 
     // Indicates if the ROM's power is on or off
-    bool myPower;
+    bool myPower{true};
 
     // Data hold register used for writing
-    uInt8 myDataHoldRegister;
+    uInt8 myDataHoldRegister{0};
 
     // Indicates number of distinct accesses when data hold register was set
-    uInt32 myNumberOfDistinctAccesses;
+    uInt32 myNumberOfDistinctAccesses{0};
 
     // Indicates if a write is pending or not
-    bool myWritePending;
+    bool myWritePending{false};
 
     // Indicates which bank is currently active
-    uInt16 myCurrentBank;
+    uInt16 myCurrentBank{0};
 
     // Fake SC-BIOS code to simulate the Supercharger load bars
     static std::array<uInt8, 294> ourDummyROMCode;

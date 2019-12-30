@@ -55,13 +55,13 @@ class SnapshotDialog : public Dialog
     const GUI::Font& myFont;
 
     // Config paths
-    EditTextWidget* mySnapSavePath;
+    EditTextWidget* mySnapSavePath{nullptr};
 
-    CheckboxWidget* mySnapName;
-    SliderWidget* mySnapInterval;
+    CheckboxWidget* mySnapName{nullptr};
+    SliderWidget* mySnapInterval{nullptr};
 
-    CheckboxWidget* mySnapSingle;
-    CheckboxWidget* mySnap1x;
+    CheckboxWidget* mySnapSingle{nullptr};
+    CheckboxWidget* mySnap1x{nullptr};
 
     unique_ptr<BrowserDialog> myBrowser;
 

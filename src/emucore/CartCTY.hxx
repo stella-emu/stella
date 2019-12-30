@@ -269,45 +269,45 @@ class CartridgeCTY : public Cartridge
     std::array<uInt8, 64> myRAM;
 
     // Operation type (written to $1000, used by hotspot $1FF4)
-    uInt8 myOperationType;
+    uInt8 myOperationType{0};
 
     // Pointer to the 28K frequency table (points to the start of one
     // of seven 4K tunes in myTuneData)
-    const uInt8* myFrequencyImage;
+    const uInt8* myFrequencyImage{nullptr};
 
     // The counter register for the data fetcher
-    uInt16 myTunePosition;
+    uInt16 myTunePosition{0};
 
     // The music mode counters
-    std::array<uInt32, 3> myMusicCounters;
+    std::array<uInt32, 3> myMusicCounters{0};
 
     // The music frequency
-    std::array<uInt32, 3> myMusicFrequencies;
+    std::array<uInt32, 3> myMusicFrequencies{0};
 
     // Flags that last byte peeked was A9 (LDA #)
-    bool myLDAimmediate;
+    bool myLDAimmediate{false};
 
     // The random number generator register
-    uInt32 myRandomNumber;
+    uInt32 myRandomNumber{0x2B435044};
 
     // The time after which the first request of a load/save operation
     // will actually be completed
     // Due to Harmony EEPROM constraints, a read/write isn't instantaneous,
     // so we need to emulate the delay as well
-    uInt64 myRamAccessTimeout;
+    uInt64 myRamAccessTimeout{0};
 
     // Full pathname of the file to use when emulating load/save
     // of internal RAM to Harmony cart EEPROM
     string myEEPROMFile;
 
     // System cycle count from when the last update to music data fetchers occurred
-    uInt64 myAudioCycles;
+    uInt64 myAudioCycles{0};
 
     // Fractional DPC music OSC clocks unused during the last update
-    double myFractionalClocks;
+    double myFractionalClocks{0.0};
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
     static const std::array<uInt32, 63> ourFrequencyTable;
 

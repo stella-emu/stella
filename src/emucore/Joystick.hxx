@@ -86,7 +86,7 @@ class Joystick : public Controller
                 myXAxisValue, myYAxisValue, myFireEvent;
 
     // Controller to emulate in normal mouse axis mode
-    int myControlID;
+    int myControlID{-1};
 
     static int _DEAD_ZONE;
 

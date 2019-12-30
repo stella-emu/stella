@@ -41,17 +41,17 @@ class HelpDialog : public Dialog
 
   private:
     static constexpr uInt32 LINES_PER_PAGE = 10;
-    ButtonWidget* myNextButton;
-    ButtonWidget* myPrevButton;
+    ButtonWidget* myNextButton{nullptr};
+    ButtonWidget* myPrevButton{nullptr};
 
     StaticTextWidget* myTitle;
-    std::array<StaticTextWidget*, LINES_PER_PAGE> myKey;
-    std::array<StaticTextWidget*, LINES_PER_PAGE> myDesc;
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myKey{nullptr};
+    std::array<StaticTextWidget*, LINES_PER_PAGE> myDesc{nullptr};
     std::array<string, LINES_PER_PAGE> myKeyStr;
     std::array<string, LINES_PER_PAGE> myDescStr;
 
-    uInt8 myPage;
-    uInt8 myNumPages;
+    uInt8 myPage{1};
+    uInt8 myNumPages{5};
 
   private:
     // Following constructors and assignment operators not supported

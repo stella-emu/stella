@@ -127,10 +127,10 @@ class Switches : public Serializable
     const Event& myEvent;
 
     // State of the console switches
-    uInt8 mySwitches;
+    uInt8 mySwitches{0xFF};
 
     // Are we in 7800 or 2600 mode?
-    bool myIs7800;
+    bool myIs7800{false};
 
   private:
     // Following constructors and assignment operators not supported

@@ -40,10 +40,10 @@ class Cartridge3EPlusWidget : public CartDebugWidget
   private:
     Cartridge3EPlus& myCart;
 
-    std::array<PopUpWidget*, 4> myBankNumber;
-    std::array<PopUpWidget*, 4> myBankType;
-    std::array<ButtonWidget*, 4> myBankCommit;
-    std::array<EditTextWidget*, 8> myBankState;
+    std::array<PopUpWidget*, 4> myBankNumber{nullptr};
+    std::array<PopUpWidget*, 4> myBankType{nullptr};
+    std::array<ButtonWidget*, 4> myBankCommit{nullptr};
+    std::array<EditTextWidget*, 8> myBankState{nullptr};
 
     struct CartState {
       ByteArray internalram;

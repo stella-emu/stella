@@ -48,15 +48,15 @@ class GlobalPropsDialog : public Dialog, public CommandSender
       kJ1Up, kJ1Down, kJ1Left, kJ1Right, kJ1Fire
     };
 
-    PopUpWidget* myBSType;
-    PopUpWidget* myLeftDiff;
-    PopUpWidget* myRightDiff;
-    PopUpWidget* myTVType;
-    PopUpWidget* myDebug;
+    PopUpWidget* myBSType{nullptr};
+    PopUpWidget* myLeftDiff{nullptr};
+    PopUpWidget* myRightDiff{nullptr};
+    PopUpWidget* myTVType{nullptr};
+    PopUpWidget* myDebug{nullptr};
 
-    std::array<CheckboxWidget*, 10> myJoy;
-    CheckboxWidget* myHoldSelect;
-    CheckboxWidget* myHoldReset;
+    std::array<CheckboxWidget*, 10> myJoy{nullptr};
+    CheckboxWidget* myHoldSelect{nullptr};
+    CheckboxWidget* myHoldReset{nullptr};
 
     static const std::array<string, 10> ourJoyState;
 

@@ -25,7 +25,8 @@
 class EmulationTiming {
   public:
 
-    EmulationTiming(FrameLayout frameLayout = FrameLayout::ntsc, ConsoleTiming consoleTiming = ConsoleTiming::ntsc);
+    EmulationTiming(FrameLayout frameLayout = FrameLayout::ntsc,
+                    ConsoleTiming consoleTiming = ConsoleTiming::ntsc);
 
     EmulationTiming& updateFrameLayout(FrameLayout frameLayout);
 
@@ -65,8 +66,8 @@ class EmulationTiming {
 
   private:
 
-    FrameLayout myFrameLayout;
-    ConsoleTiming myConsoleTiming;
+    FrameLayout myFrameLayout{FrameLayout::ntsc};
+    ConsoleTiming myConsoleTiming{ConsoleTiming::ntsc};
 
     uInt32 myPlaybackRate{44100};
     uInt32 myPlaybackPeriod{512};

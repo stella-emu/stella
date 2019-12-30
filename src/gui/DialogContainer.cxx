@@ -27,13 +27,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem& osystem)
-  : myOSystem(osystem),
-    myTime(0),
-    myClickRepeatTime(0),
-    myButtonRepeatTime(0),
-    myButtonLongPressTime(0),
-    myAxisRepeatTime(0),
-    myHatRepeatTime(0)
+  : myOSystem(osystem)
 {
   _DOUBLE_CLICK_DELAY = osystem.settings().getInt("mdouble");
   _REPEAT_INITIAL_DELAY = osystem.settings().getInt("ctrldelay");
@@ -374,15 +368,12 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHatDir hdir, int 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::reset()
 {
-  myCurrentMouseDown.b = MouseButton::NONE;
-  myLastClick.x = myLastClick.y = 0;
-  myLastClick.time = 0;
-  myLastClick.count = 0;
+  myCurrentMouseDown  = { 0, 0, MouseButton::NONE };
+  myCurrentButtonDown = { -1, -1 };
+  myCurrentAxisDown   = { -1, JoyAxis::NONE, JoyDir::NONE };
+  myCurrentHatDown    = { -1, -1, JoyHatDir::CENTER };
 
-  myCurrentButtonDown.stick = myCurrentButtonDown.button = -1;
-  myCurrentAxisDown.stick = -1;
-  myCurrentAxisDown.axis = JoyAxis::NONE;
-  myCurrentHatDown.stick = myCurrentHatDown.hat = -1;
+  myLastClick = { 0, 0, 0, 0 };
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

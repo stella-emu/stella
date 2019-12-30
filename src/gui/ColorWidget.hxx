@@ -48,10 +48,10 @@ class ColorWidget : public Widget, public CommandSender
     void drawWidget(bool hilite) override;
 
   protected:
-    ColorId _color;
-    int	_cmd;
+    ColorId _color{kNone};
+    int	_cmd{0};
 
-    bool _crossGrid;
+    bool _crossGrid{false};
 
   private:
     // Following constructors and assignment operators not supported

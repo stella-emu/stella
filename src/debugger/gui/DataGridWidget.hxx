@@ -108,16 +108,16 @@ class DataGridWidget : public EditableWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   protected:
-    int  _rows;
-    int  _cols;
-    int  _currentRow;
-    int  _currentCol;
-    int  _rowHeight;
-    int  _colWidth;
-    int  _bits;
-    int  _lowerBound;
-    int  _upperBound;
-    bool _crossGrid;
+    int  _rows{0};
+    int  _cols{0};
+    int  _currentRow{0};
+    int  _currentCol{0};
+    int  _rowHeight{0};
+    int  _colWidth{0};
+    int  _bits{0};
+    int  _lowerBound{0};
+    int  _upperBound{0};
+    bool _crossGrid{false};
 
     Common::Base::Fmt _base;
 
@@ -127,13 +127,13 @@ class DataGridWidget : public EditableWidget
     BoolArray   _changedList;
     BoolArray   _hiliteList;
 
-    bool      _editMode;
-    int       _selectedItem;
-    StellaKey _currentKeyDown;
+    bool      _editMode{false};
+    int       _selectedItem{0};
+    StellaKey _currentKeyDown{KBDK_UNKNOWN};
     string    _backupString;
 
-    DataGridOpsWidget* _opsWidget;
-    ScrollBarWidget* _scrollBar;
+    DataGridOpsWidget* _opsWidget{nullptr};
+    ScrollBarWidget* _scrollBar{nullptr};
 
   private:
     /** Common operations on the currently selected cell */

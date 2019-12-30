@@ -318,22 +318,22 @@ class Cartridge : public Device
     const Settings& mySettings;
 
     // Indicates if the bank has changed somehow (a bankswitch has occurred)
-    bool myBankChanged;
+    bool myBankChanged{true};
 
     // The array containing information about every byte of ROM indicating
     // whether it is used as code.
     ByteBuffer myCodeAccessBase;
 
     // Contains address of illegal RAM write access or 0
-    uInt16 myRamWriteAccess;
+    uInt16 myRamWriteAccess{0};
 
   private:
     // The startup bank to use (where to look for the reset vector address)
-    uInt16 myStartBank;
+    uInt16 myStartBank{0};
 
     // If myBankLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.
-    bool myBankLocked;
+    bool myBankLocked{false};
 
     // Semi-random values to use when a read from write port occurs
     std::array<uInt8, 256> myRWPRandomValues;

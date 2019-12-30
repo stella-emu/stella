@@ -46,8 +46,7 @@ static constexpr std::array<uInt32, RADIO_IMG_FILL_SIZE> radio_img_inactive = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
                                      int x, int y, const string& label,
-                                     RadioButtonGroup* group,
-                                     int cmd)
+                                     RadioButtonGroup* group, int cmd)
   : CheckboxWidget(boss, font, x, y, label, cmd),
     myGroup(group)
 {
@@ -61,7 +60,6 @@ RadioButtonWidget::RadioButtonWidget(GuiObject* boss, const GUI::Font& font,
   else
     _w = font.getStringWidth(label) + 20;
   _h = font.getFontHeight() < 14 ? 14 : font.getFontHeight();
-
 
   // Depending on font size, either the font or box will need to be
   // centered vertically

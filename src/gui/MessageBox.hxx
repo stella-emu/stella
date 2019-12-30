@@ -54,7 +54,7 @@ class MessageBox : public Dialog, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    int myCmd;
+    int myCmd{0};
 
   private:
     // Following constructors and assignment operators not supported

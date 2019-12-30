@@ -23,10 +23,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Paddles::Paddles(Jack jack, const Event& event, const System& system,
                  bool swappaddle, bool swapaxis, bool swapdir)
-  : Controller(jack, event, system, Controller::Type::Paddles),
-    myMPaddleID(-1),
-    myMPaddleIDX(-1),
-    myMPaddleIDY(-1)
+  : Controller(jack, event, system, Controller::Type::Paddles)
 {
   // We must start with minimum resistance; see commit
   // 38b452e1a047a0dca38c5bcce7c271d40f76736e for more information
@@ -180,13 +177,6 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   setPin(DigitalPin::One, true);
   setPin(DigitalPin::Two, true);
   setPin(DigitalPin::Six, true);
-
-  // Digital emulation of analog paddle movement
-  myKeyRepeat0 = myKeyRepeat1 = false;
-  myPaddleRepeat0 = myPaddleRepeat1 = myLastAxisX = myLastAxisY = 0;
-
-  myCharge[0] = myCharge[1] = TRIGRANGE / 2;
-  myLastCharge[0] = myLastCharge[1] = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

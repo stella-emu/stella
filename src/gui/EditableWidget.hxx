@@ -95,17 +95,17 @@ class EditableWidget : public Widget, public CommandSender
     bool tryInsertChar(char c, int pos);
 
   private:
-    bool   _editable;
+    bool   _editable{true};
     string _editString;
 
-    bool  _caretVisible;
-    int   _caretTime;
-    int   _caretPos;
+//     bool  _caretVisible{false};
+//     int   _caretTime{0};
+    int   _caretPos{0};
 
   protected:
-    bool  _caretInverse;
+    bool  _caretInverse{false};
 
-    int   _editScrollOffset;
+    int   _editScrollOffset{0};
 
     static string _clippedText;
 

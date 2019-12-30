@@ -111,26 +111,26 @@ class LauncherDialog : public Dialog
     unique_ptr<GlobalPropsDialog> myGlobalProps;
     unique_ptr<BrowserDialog> myRomDir;
 
-    ButtonWidget* myStartButton;
-    ButtonWidget* myPrevDirButton;
-    ButtonWidget* myOptionsButton;
-    ButtonWidget* myQuitButton;
+    ButtonWidget* myStartButton{nullptr};
+    ButtonWidget* myPrevDirButton{nullptr};
+    ButtonWidget* myOptionsButton{nullptr};
+    ButtonWidget* myQuitButton{nullptr};
 
-    FileListWidget*   myList;
-    StaticTextWidget* myDirLabel;
-    EditTextWidget*   myDir;
-    StaticTextWidget* myRomCount;
-    EditTextWidget*   myPattern;
-    CheckboxWidget*   myAllFiles;
+    FileListWidget*   myList{nullptr};
+    StaticTextWidget* myDirLabel{nullptr};
+    EditTextWidget*   myDir{nullptr};
+    StaticTextWidget* myRomCount{nullptr};
+    EditTextWidget*   myPattern{nullptr};
+    CheckboxWidget*   myAllFiles{nullptr};
 
-    RomInfoWidget* myRomInfoWidget;
+    RomInfoWidget* myRomInfoWidget{nullptr};
     std::unordered_map<string,string> myMD5List;
 
-    int mySelectedItem;
+    int mySelectedItem{0};
 
-    bool myShowOnlyROMs;
-    bool myUseMinimalUI;
-    bool myEventHandled;
+    bool myShowOnlyROMs{false};
+    bool myUseMinimalUI{false};
+    bool myEventHandled{false};
 
     enum {
       kAllfilesCmd = 'lalf',  // show all files (or ROMs only)

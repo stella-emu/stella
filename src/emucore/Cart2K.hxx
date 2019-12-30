@@ -130,10 +130,10 @@ class Cartridge2K : public Cartridge
     ByteBuffer myImage;
 
     // Size of the ROM image
-    size_t mySize;
+    size_t mySize{0};
 
     // Mask to use for mirroring
-    uInt16 myMask;
+    uInt16 myMask{0};
 
   private:
     // Following constructors and assignment operators not supported

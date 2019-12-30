@@ -178,12 +178,6 @@ const TCHAR* FilesystemNodeWINDOWS::toUnicode(const char* str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeWINDOWS::FilesystemNodeWINDOWS()
 {
-  // Create a virtual root directory for standard Windows system
-  _isDirectory = true;
-  _isFile = false;
-  _isValid = false;
-  _path = "";
-  _isPseudoRoot = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

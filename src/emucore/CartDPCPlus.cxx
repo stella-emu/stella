@@ -29,15 +29,7 @@
 CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
                                    const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(std::min(size, myImage.size())),
-    myFastFetch(false),
-    myLDAimmediate(false),
-    myParameterPointer(0),
-    myAudioCycles(0),
-    myARMCycles(0),
-    myFractionalClocks(0.0),
-    myBankOffset(0),
-    myFractionalLowMask(0x0F00FF)
+    mySize(std::min(size, myImage.size()))
 {
   // Image is always 32K, but in the case of ROM > 29K, the image is
   // copied to the end of the buffer

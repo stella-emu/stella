@@ -54,16 +54,16 @@ class AudioDialog : public Dialog
       kBufferSizeChanged = 'ADbc'
     };
 
-    CheckboxWidget*   mySoundEnableCheckbox;
-    SliderWidget*     myVolumeSlider;
-    CheckboxWidget*   myStereoSoundCheckbox;
-    PopUpWidget*      myModePopup;
-    PopUpWidget*      myFragsizePopup;
-    PopUpWidget*      myFreqPopup;
-    PopUpWidget*      myResamplingPopup;
-    SliderWidget*     myHeadroomSlider;
-    SliderWidget*     myBufferSizeSlider;
-    SliderWidget*     myDpcPitch;
+    CheckboxWidget*   mySoundEnableCheckbox{nullptr};
+    SliderWidget*     myVolumeSlider{nullptr};
+    CheckboxWidget*   myStereoSoundCheckbox{nullptr};
+    PopUpWidget*      myModePopup{nullptr};
+    PopUpWidget*      myFragsizePopup{nullptr};
+    PopUpWidget*      myFreqPopup{nullptr};
+    PopUpWidget*      myResamplingPopup{nullptr};
+    SliderWidget*     myHeadroomSlider{nullptr};
+    SliderWidget*     myBufferSizeSlider{nullptr};
+    SliderWidget*     myDpcPitch{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

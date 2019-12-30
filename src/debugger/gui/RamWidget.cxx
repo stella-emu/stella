@@ -38,7 +38,6 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myFontHeight(lfont.getFontHeight()),
     myLineHeight(lfont.getLineHeight()),
     myButtonHeight(myLineHeight + 4),
-    myCurrentRamBank(0),
     myRamSize(ramsize),
     myNumRows(numrows),
     myPageSize(pagesize)

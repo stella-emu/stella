@@ -33,8 +33,7 @@
 RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
                      int x, int y, int w, int h)
   : Widget(boss, lfont, x, y, w, h),
-    CommandSender(boss),
-    myListIsDirty(true)
+    CommandSender(boss)
 {
   int xpos, ypos;
   StaticTextWidget* t;

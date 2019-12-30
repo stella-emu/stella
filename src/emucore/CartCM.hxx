@@ -249,10 +249,10 @@ class CartridgeCM : public Cartridge
     std::array<uInt8, 2_KB> myRAM;
 
     // Current copy of SWCHA (controls ROM/RAM accesses)
-    uInt8 mySWCHA;
+    uInt8 mySWCHA{0xFF};  // Port A all 1's
 
     // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset;
+    uInt16 myBankOffset{0};
 
 private:
     // Following constructors and assignment operators not supported

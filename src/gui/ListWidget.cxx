@@ -27,13 +27,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
                        int x, int y, int w, int h)
-  : EditableWidget(boss, font, x, y, 16, 16),
-    _rows(0),
-    _cols(0),
-    _currentPos(0),
-    _selectedItem(-1),
-    _highlightedItem(-1),
-    _editMode(false)
+  : EditableWidget(boss, font, x, y, 16, 16)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
   _bgcolor = kWidColor;

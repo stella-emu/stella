@@ -146,7 +146,7 @@ class TIASurface
   private:
     OSystem& myOSystem;
     FrameBuffer& myFB;
-    TIA* myTIA;
+    TIA* myTIA{nullptr};
 
     shared_ptr<FBSurface> myTiaSurface, mySLineSurface, myBaseTiaSurface;
 
@@ -158,7 +158,7 @@ class TIASurface
       BlarggNormal   = 0x10,
       BlarggPhosphor = 0x11
     };
-    Filter myFilter;
+    Filter myFilter{Filter::Normal};
 
     // NTSC object to use in TIA rendering mode
     NTSCFilter myNTSCFilter;
@@ -175,13 +175,13 @@ class TIASurface
     /////////////////////////////////////////////////////////////
 
     // Use scanlines in TIA rendering mode
-    bool myScanlinesEnabled;
+    bool myScanlinesEnabled{false};
 
     // Palette for normal TIA rendering mode
     PaletteArray myPalette;
 
     // Flag for saving a snapshot
-    bool mySaveSnapFlag;
+    bool mySaveSnapFlag{false};
 
   private:
     // Following constructors and assignment operators not supported

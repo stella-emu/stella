@@ -35,12 +35,12 @@ class CartridgeFA2Widget : public CartDebugWidget
 
   private:
     CartridgeFA2& myCart;
-    PopUpWidget* myBank;
-    ButtonWidget *myFlashErase, *myFlashLoad, *myFlashSave;
+    PopUpWidget* myBank{nullptr};
+    ButtonWidget *myFlashErase{nullptr}, *myFlashLoad{nullptr}, *myFlashSave{nullptr};
 
     struct CartState {
       ByteArray internalram;
-      uInt16 bank;
+      uInt16 bank{0};
     };
     CartState myOldState;
 

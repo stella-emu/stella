@@ -28,9 +28,7 @@ ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
                          int x, int y, int w, int h, int cmd)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    _color(kNone),
-    _cmd(cmd),
-    _crossGrid(false)
+    _cmd(cmd)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
 }

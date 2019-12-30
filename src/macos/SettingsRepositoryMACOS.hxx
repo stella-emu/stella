@@ -22,12 +22,12 @@
 
 class SettingsRepositoryMACOS : public KeyValueRepository
 {
-public:
-  std::map<string, Variant> load() override;
+  public:
+    std::map<string, Variant> load() override;
 
-  void save(const std::map<string, Variant>& values) override;
+    void save(const std::map<string, Variant>& values) override;
 
-  void save(const string& key, const Variant& value) override;
+    void save(const string& key, const Variant& value) override;
 };
 
 #endif // SETTINGS_REPOSITORY_MACOS_HXX

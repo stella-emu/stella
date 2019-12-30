@@ -20,8 +20,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Joystick::Joystick(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::Type::Joystick),
-    myControlID(-1)
+  : Controller(jack, event, system, Controller::Type::Joystick)
 {
   if(myJack == Jack::Left)
   {

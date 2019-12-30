@@ -18,12 +18,6 @@
 #include "LatchedInput.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LatchedInput::LatchedInput()
-{
-  reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LatchedInput::reset()
 {
   myModeLatched = false;

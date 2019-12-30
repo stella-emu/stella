@@ -27,12 +27,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                const string& message)
-  : Dialog(boss->instance(), boss->parent()),
-    myMessage(nullptr),
-    mySlider(nullptr),
-    myStart(0),
-    myFinish(0),
-    myStep(0)
+  : Dialog(boss->instance(), boss->parent())
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
