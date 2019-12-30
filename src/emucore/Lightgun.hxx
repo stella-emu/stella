@@ -18,10 +18,6 @@
 #ifndef LIGHTGUN_HXX
 #define LIGHTGUN_HXX
 
-#include "bspf.hxx"
-#include "Control.hxx"
-#include "Event.hxx"
-
 /**
   This class handles the lightgun controller
 
@@ -63,20 +59,11 @@ public:
   */
   string name() const override { return "Lightgun"; }
 
-  /**
-    Answers whether the controller is intrinsically an analog controller.
-  */
-  bool isAnalog() const override { return true; }
-
 private:
   const FrameBuffer& myFrameBuffer;
-  Int32 myMouseX{0}, myMouseY{0};
 
   static constexpr Int32 X_OFS = -21;
   static constexpr Int32 Y_OFS =   5;
-
-  // Lookup table for associating paddle buttons with controller pins
-  static const Controller::DigitalPin ourButtonPin;
 
 private:
   // Following constructors and assignment operators not supported
