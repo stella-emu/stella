@@ -48,7 +48,7 @@ bool Lightgun::read(DigitalPin pin)
       Int32 xMouse = (myEvent.get(Event::MouseAxisXValue) - rect.x())
         * tia.width() / rect.w();
       Int32 yMouse = (myEvent.get(Event::MouseAxisYValue) - rect.y())
-        * tia.height() / rect.h(); 
+        * tia.height() / rect.h();
 
       // get adjusted TIA coordinates
       Int32 xTia = tia.clocksThisLine() - TIAConstants::H_BLANK_CLOCKS + X_OFS;

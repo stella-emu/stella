@@ -28,7 +28,7 @@ class Lightgun : public Controller
 {
 public:
   /**
-    Create a new pair of paddle controllers plugged into the specified jack
+    Create a new lightgun controller plugged into the specified jack
 
     @param jack   The jack the controller is plugged into
     @param event  The event object to use for events
