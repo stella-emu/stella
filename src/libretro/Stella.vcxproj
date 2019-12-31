@@ -248,6 +248,7 @@
     <ClCompile Include="..\emucore\Joystick.cxx" />
     <ClCompile Include="..\emucore\Keyboard.cxx" />
     <ClCompile Include="..\emucore\KidVid.cxx" />
+    <ClCompile Include="..\emucore\Lighgun.cxx" />
     <ClCompile Include="..\emucore\M6502.cxx" />
     <ClCompile Include="..\emucore\M6532.cxx" />
     <ClCompile Include="..\emucore\MD5.cxx" />
