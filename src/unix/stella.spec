@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
-* ddd Sep d 2019 Stephen Anthony <sa666666@gmail.com> 6.1-1
+* ddd Jan d 2020 Stephen Anthony <sa666666@gmail.com> 6.1-1
 - Version 6.1 release
 
 * Fri Oct 11 2019 Stephen Anthony <sa666666@gmail.com> 6.0.2-1
