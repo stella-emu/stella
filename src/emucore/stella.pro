@@ -17321,7 +17321,8 @@
 ""
 
 "Cart.MD5" "d65900fefa7dc18ac3ad99c213e2fa4e"
-"Cart.Name" "Grid and Purple Dot Demo (PD)"
+"Cart.Name" "Guntest (2000) (Eckhard Stolberg)"
+"Cart.Note" "Light Gun Test (based on Sentinel code)"
 ""
 
 "Cart.MD5" "d69559f9c9dc6ef528d841bf9d91b275"
