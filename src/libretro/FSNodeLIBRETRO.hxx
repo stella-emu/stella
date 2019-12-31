@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2020 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -54,10 +54,9 @@ class FilesystemNodeLIBRETRO : public AbstractFSNode
   protected:
     string _name;
     string _path;
-    bool _isDirectory;
-    bool _isFile;
-    bool _isPseudoRoot;
-    bool _isValid;
+    bool _isDirectory{false};
+    bool _isFile{true};
+    bool _isValid{true};
 };
 
 #endif
