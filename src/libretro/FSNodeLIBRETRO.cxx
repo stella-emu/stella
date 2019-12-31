@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2018 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2020 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -26,22 +26,14 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO()
   : _name("rom"),
-    _path("." + slash),
-    _isDirectory(false),
-    _isFile(true),
-    _isPseudoRoot(false),
-    _isValid(true)
+    _path("." + slash)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeLIBRETRO::FilesystemNodeLIBRETRO(const string& p)
   : _name(p),
-    _path(p),
-    _isDirectory(false),
-    _isFile(true),
-    _isPseudoRoot(false),
-    _isValid(true)
+    _path(p)
 {
   // TODO: use retro_vfs_mkdir_t (file) or RETRO_MEMORY_SAVE_RAM (stream) or libretro save path
   if(p == "." + slash + "nvram")
