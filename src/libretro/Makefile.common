@@ -99,6 +99,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Joystick.cxx \
 	$(CORE_DIR)/emucore/Keyboard.cxx \
 	$(CORE_DIR)/emucore/KidVid.cxx \
+	$(CORE_DIR)/emucore/Lightgun.cxx \
 	$(CORE_DIR)/emucore/M6502.cxx \
 	$(CORE_DIR)/emucore/M6532.cxx \
 	$(CORE_DIR)/emucore/MD5.cxx \
