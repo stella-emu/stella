@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.0.2 to 6.1: (MM dd, 2019)
+6.0.2 to 6.1: (MM dd, 2020)
 
   * Note: because of major event remapping changes, all remappings will be
           reset to defaults; if you had custom mappings, they will need to
@@ -28,6 +28,10 @@
 
   * Controllers can be changed during emulation (no ROM reload required
     anymore).
+
+  * Added support for Light Gun controller
+
+  * Added limitted KidVid support (8, 9 and 0 start the games)
 
   * Removed superfluous controller option 'PADDLES_IDIR'.
 
@@ -50,6 +54,10 @@
   * Added option to configure mouse double click speed.
 
   * Added option to configure controller input repeat speed.
+
+  * Added high quality scaling
+
+  * Made scanlines better aligned to scaling
 
   * Added 'HiDPI' mode, which scales the UI by 2x when enabled.  This is
     meant for 4k and above monitors, but can actually be used at any
