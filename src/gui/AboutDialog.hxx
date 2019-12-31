@@ -45,7 +45,7 @@ class AboutDialog : public Dialog
     ButtonWidget* myPrevButton{nullptr};
 
     StaticTextWidget* myTitle{nullptr};
-    vector<StaticTextWidget*> myDesc{nullptr};
+    vector<StaticTextWidget*> myDesc;
     vector<string> myDescStr;
 
     int myPage{1};
