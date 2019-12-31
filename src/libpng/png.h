@@ -27,7 +27,7 @@
  * PNG Reference Library License version 2
  * ---------------------------------------
  *
- *  * Copyright (c) 1995-2019 The PNG Reference Library Authors.
+ *  * Copyright (c) 1995-2020 The PNG Reference Library Authors.
  *  * Copyright (c) 2018-2019 Cosmin Truta.
  *  * Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson.
  *  * Copyright (c) 1996-1997 Andreas Dilger.
