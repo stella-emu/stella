@@ -42,8 +42,13 @@ bool Lightgun::read(DigitalPin pin)
   {
     case DigitalPin::Six: // INPT4/5
     {
-      TIA& tia = mySystem.tia();
       const Common::Rect& rect = myFrameBuffer.imageRect();
+
+      // abort when no valid framebuffer exists
+      if (rect.w() == 0 || rect.h() == 0)
+        return false;
+
+      TIA& tia = mySystem.tia();
       // scale mouse coordinates into TIA coordinates
       Int32 xMouse = (myEvent.get(Event::MouseAxisXValue) - rect.x())
         * tia.width() / rect.w();
@@ -72,5 +77,7 @@ void Lightgun::update()
   // we allow left and right mouse buttons for fire button
   setPin(DigitalPin::One, myEvent.get(Event::MouseButtonLeftValue)
          || myEvent.get(Event::MouseButtonRightValue));
+
+  cerr << mySystem.tia().startLine() << endl;
 }
 
