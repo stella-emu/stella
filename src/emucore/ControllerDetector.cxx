@@ -460,11 +460,12 @@ bool ControllerDetector::usesPaddle(const uInt8* image, size_t size,
       { 0xa5, 0x08, 0x4c }, // lda INPT0; jmp (only Backgammon)
       { 0xa4, 0x38, 0x30 }, // ldy INPT0; bmi (no joystick games)
     };
-    const int NUM_SIGS_1 = 3;
+    const int NUM_SIGS_1 = 4;
     const int SIG_SIZE_1 = 4;
     uInt8 signature_1[NUM_SIGS_1][SIG_SIZE_1] = {
       { 0xb9, 0x08, 0x00, 0x30 }, // lda INPT0,y; bmi (i.a. Encounter at L-5)
       { 0xb9, 0x38, 0x00, 0x30 }, // lda INPT0|$30,y; bmi (i.a. SW-Jedi Arena, Video Olympics)
+      { 0xb9, 0x08, 0x00, 0x10 }, // lda INPT0,y; bpl (Drone Wars)
       { 0x24, 0x08, 0x30, 0x02 }, // bit INPT0; bmi +2 (Picnic)
     };
     const int NUM_SIGS_2 = 4;
@@ -491,7 +492,7 @@ bool ControllerDetector::usesPaddle(const uInt8* image, size_t size,
   else if(port == Controller::Jack::Right)
   {
     // check for INPT2 and indexed INPT0 access
-    const int NUM_SIGS_0 = 18;
+    const int NUM_SIGS_0 = 20;
     const int SIG_SIZE_0 = 3;
     uInt8 signature_0[NUM_SIGS_0][SIG_SIZE_0] = {
       { 0x24, 0x0a, 0x10 }, // bit INPT2; bpl (no joystick games)
