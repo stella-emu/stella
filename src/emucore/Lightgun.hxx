@@ -62,8 +62,15 @@ public:
 private:
   const FrameBuffer& myFrameBuffer;
 
+  // Shooting Arcade:
   static constexpr Int32 X_OFS = -21;
-  static constexpr Int32 Y_OFS =   5;
+  static constexpr Int32 Y_OFS =   5; // 260 scanlines
+  // Guntest:
+  //static constexpr Int32 X_OFS = -25;
+  //static constexpr Int32 Y_OFS = 1; // 262 scanlines
+  // Sentinel:
+  //static constexpr Int32 X_OFS = -24;
+  //static constexpr Int32 Y_OFS = -5; // 268 scanlines
 
 private:
   // Following constructors and assignment operators not supported
