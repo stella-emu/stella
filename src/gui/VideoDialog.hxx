@@ -58,8 +58,8 @@ class VideoDialog : public Dialog
     SliderWidget*     myTIAZoom{nullptr};
     PopUpWidget*      myTIAPalette{nullptr};
     CheckboxWidget*   myTIAInterpolate{nullptr};
-    SliderWidget*     myNAspectRatio{nullptr};
-    SliderWidget*     myPAspectRatio{nullptr};
+    SliderWidget*     myAdjustScanlinesNTSC{nullptr};
+    SliderWidget*     myAdjustScanlinesPAL{nullptr};
     SliderWidget*     mySpeed{nullptr};
 
     CheckboxWidget*   myFullscreen{nullptr};

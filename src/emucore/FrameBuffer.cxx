@@ -932,14 +932,6 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     uInt32 minZoom = supportedTIAMinZoom();
     myTIAMaxZoom = maxZoomForScreen(baseWidth, baseHeight,
                      myAbsDesktopSize.w, myAbsDesktopSize.h);
-
-  #if 0  // FIXME - does this apply any longer??
-    // Aspect ratio
-    uInt32 aspect = myOSystem.settings().getInt(
-        myOSystem.console().tia().frameLayout() == FrameLayout::ntsc ?
-        "tia.aspectn" : "tia.aspectp");
-  #endif
-
     // Determine all zoom levels
     for(float zoom = minZoom; zoom <= myTIAMaxZoom; zoom += ZOOM_STEPS)
     {

@@ -86,7 +86,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
             fontWidth    = font.getMaxCharWidth(),
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos, tabID;
-  int lwidth = font.getStringWidth("TIA Palette "),
+  int lwidth = font.getStringWidth("NTSC scanlines adjust "),
     pwidth = font.getStringWidth("XXXXxXXXX"),
     swidth = font.getMaxCharWidth() * 10 - 2;
 
@@ -94,7 +94,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  setSize(55 * fontWidth + HBORDER * 2, 14 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
+  setSize(65 * fontWidth + HBORDER * 2, 14 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
 
   // The tab widget
   xpos = 2;  ypos = 4;
@@ -136,23 +136,23 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (NTSC mode)
-  myNAspectRatio =
+  myAdjustScanlinesNTSC =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "NTSC aspect ", lwidth, 0,
-                     fontWidth * 4, "%");
-  myNAspectRatio->setMinValue(80); myNAspectRatio->setMaxValue(120);
-  myNAspectRatio->setTickmarkIntervals(2);
-  wid.push_back(myNAspectRatio);
+                     "NTSC scanlines adjust ", lwidth, 0,
+                     fontWidth * 4, "");
+  myAdjustScanlinesNTSC->setMinValue(-50); myAdjustScanlinesNTSC->setMaxValue(50);
+  myAdjustScanlinesNTSC->setTickmarkIntervals(2);
+  wid.push_back(myAdjustScanlinesNTSC);
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (PAL mode)
-  myPAspectRatio =
+  myAdjustScanlinesPAL =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "PAL aspect ", lwidth, 0,
-                     fontWidth * 4, "%");
-  myPAspectRatio->setMinValue(80); myPAspectRatio->setMaxValue(120);
-  myPAspectRatio->setTickmarkIntervals(2);
-  wid.push_back(myPAspectRatio);
+                     "PAL scanlines adjust ", lwidth, 0,
+                     fontWidth * 4, "");
+  myAdjustScanlinesPAL->setMinValue(-50); myAdjustScanlinesPAL->setMaxValue(50);
+  myAdjustScanlinesPAL->setTickmarkIntervals(2);
+  wid.push_back(myAdjustScanlinesPAL);
   ypos += lineHeight + VGAP;
 
   // Speed
@@ -353,8 +353,8 @@ void VideoDialog::loadConfig()
   myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
 
   // Aspect ratio setting (NTSC and PAL)
-  myNAspectRatio->setValue(instance().settings().getInt("tia.aspectn"));
-  myPAspectRatio->setValue(instance().settings().getInt("tia.aspectp"));
+  myAdjustScanlinesNTSC->setValue(instance().settings().getInt("tia.adjustscanlines.ntsc"));
+  myAdjustScanlinesPAL->setValue(instance().settings().getInt("tia.adjustscanlines.pal"));
 
   // Emulation speed
   int speed = mapSpeed(instance().settings().getFloat("speed"));
@@ -426,8 +426,8 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
 
   // Aspect ratio setting (NTSC and PAL)
-  instance().settings().setValue("tia.aspectn", myNAspectRatio->getValueLabel());
-  instance().settings().setValue("tia.aspectp", myPAspectRatio->getValueLabel());
+  instance().settings().setValue("tia.adjustscanlines.ntsc", myAdjustScanlinesNTSC->getValueLabel());
+  instance().settings().setValue("tia.adjustscanlines.pal", myAdjustScanlinesPAL->getValueLabel());
 
   // Speed
   int speedup = mySpeed->getValue();
@@ -505,8 +505,8 @@ void VideoDialog::setDefaults()
       myTIAZoom->setValue(300);
       myTIAPalette->setSelected("standard", "");
       myTIAInterpolate->setState(false);
-      myNAspectRatio->setValue(91);
-      myPAspectRatio->setValue(109);
+      myAdjustScanlinesNTSC->setValue(0);
+      myAdjustScanlinesPAL->setValue(0);
       mySpeed->setValue(0);
 
       myFullscreen->setState(false);
