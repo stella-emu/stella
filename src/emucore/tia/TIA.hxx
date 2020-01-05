@@ -260,6 +260,9 @@ class TIA : public Device
     void setLayout(FrameLayout layout) { myFrameManager->setLayout(layout); }
     FrameLayout frameLayout() const { return myFrameManager->layout(); }
 
+    void setAdjustScanlines(Int32 adjustScanlines) { myFrameManager->setAdjustScanlines(adjustScanlines); }
+    Int32 adjustScanlines() const { return myFrameManager->adjustScanlines(); }
+
     /**
       Enables/disables color-loss for PAL modes only.
 

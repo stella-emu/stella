@@ -256,9 +256,9 @@ void Settings::validate()
   if (f <= 0) setValue("speed", "1.0");
 
   i = getInt("tia.adjustscanlines.ntsc");
-  if(i < -50 || i > 50)  setValue("tia.adjustscanlines.ntsc", "90");
+  if(i < -25 || i > 25)  setValue("tia.adjustscanlines.ntsc", "90");
   i = getInt("tia.adjustscanlines.pal");
-  if(i < -50 || i > 50)  setValue("tia.adjustscanlines.pal", "100");
+  if(i < -25 || i > 25)  setValue("tia.adjustscanlines.pal", "100");
 
   s = getString("tia.dbgcolors");
   sort(s.begin(), s.end());

@@ -696,11 +696,13 @@ void Console::setTIAProperties()
   {
     // Assume we've got ~262 scanlines (NTSC-like format)
     myTIA->setLayout(FrameLayout::ntsc);
+    myTIA->setAdjustScanlines(myOSystem.settings().getInt("tia.adjustscanlines.ntsc"));
   }
   else
   {
     // Assume we've got ~312 scanlines (PAL-like format)
     myTIA->setLayout(FrameLayout::pal);
+    myTIA->setAdjustScanlines(myOSystem.settings().getInt("tia.adjustscanlines.pal"));
   }
 
   myTIA->setVcenter(vcenter);

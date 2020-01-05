@@ -170,6 +170,10 @@ class AbstractFrameManager : public Serializable
      */
     virtual Int32 vcenter() const { return 0; }
 
+    virtual void setAdjustScanlines(Int32 adjustScanlines) {}
+
+    virtual Int32 adjustScanlines() const { return 0; }
+
     /**
      * The corresponding start line.
      */
