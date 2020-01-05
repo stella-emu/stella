@@ -24,13 +24,12 @@
 enum Metrics: uInt32 {
   vblankNTSC                    = 37,
   vblankPAL                     = 45,
-  kernelNTSC                    = 192,
-  kernelPAL                     = 228,
-  overscanNTSC                  = 30,
-  overscanPAL                   = 36,
   vsync                         = 3,
+  frameSizeNTSC                 = 262,
+  frameSizePAL                  = 312,
+  baseHeightNTSC                = 240,
+  baseHeightPAL                 = 288,
   maxLinesVsync                 = 50,
-  visibleOverscan               = 20,
   initialGarbageFrames          = TIAConstants::initialGarbageFrames,
   ystartNTSC                    = 34,
   ystartPAL                     = 39
@@ -40,8 +39,7 @@ enum Metrics: uInt32 {
 FrameManager::FrameManager()
 {
   reset();
-  updateYStart();
-  onLayoutChange();
+  recalculateMetrics();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,7 +116,14 @@ void FrameManager::setVcenter(Int32 vcenter)
   if (vcenter < TIAConstants::minVcenter || vcenter > TIAConstants::maxVcenter) return;
 
   myVcenter = vcenter;
-  updateYStart();
+  recalculateMetrics();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameManager::setAdjustScanlines(Int32 adjustScanlines)
+{
+  myAdjustScanlines = adjustScanlines;
+  recalculateMetrics();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -163,26 +168,7 @@ void FrameManager::setState(FrameManager::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::onLayoutChange()
 {
-  switch (layout())
-  {
-    case FrameLayout::ntsc:
-      myVblankLines   = Metrics::vblankNTSC;
-      myKernelLines   = Metrics::kernelNTSC;
-      myOverscanLines = Metrics::overscanNTSC;
-      break;
-
-    case FrameLayout::pal:
-      myVblankLines   = Metrics::vblankPAL;
-      myKernelLines   = Metrics::kernelPAL;
-      myOverscanLines = Metrics::overscanPAL;
-      break;
-
-    default:
-      throw runtime_error("frame manager: invalid TV mode");
-  }
-
-  myFrameLines = Metrics::vsync + myVblankLines + myKernelLines + myOverscanLines;
-  myHeight = myKernelLines + Metrics::visibleOverscan;
+  recalculateMetrics();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -202,8 +188,6 @@ bool FrameManager::onSave(Serializer& out) const
   out.putInt(myLastY);
 
   out.putInt(myVblankLines);
-  out.putInt(myKernelLines);
-  out.putInt(myOverscanLines);
   out.putInt(myFrameLines);
   out.putInt(myHeight);
   out.putInt(myYStart);
@@ -225,8 +209,6 @@ bool FrameManager::onLoad(Serializer& in)
   myLastY = in.getInt();
 
   myVblankLines = in.getInt();
-  myKernelLines = in.getInt();
-  myOverscanLines = in.getInt();
   myFrameLines = in.getInt();
   myHeight = in.getInt();
   myYStart = in.getInt();
@@ -237,7 +219,32 @@ bool FrameManager::onLoad(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::updateYStart() {
-  myYStart = (layout() == FrameLayout::ntsc ? Metrics::ystartNTSC : Metrics::ystartPAL) - myVcenter;
+void FrameManager::recalculateMetrics() {
+  uInt32 ystartBase;
+  uInt32 baseHeight;
+
+  switch (layout())
+  {
+    case FrameLayout::ntsc:
+      myVblankLines   = Metrics::vblankNTSC;
+      myFrameLines    = Metrics::frameSizeNTSC;
+      ystartBase      = Metrics::ystartNTSC;
+      baseHeight      = Metrics::baseHeightNTSC;
+      break;
+
+    case FrameLayout::pal:
+      myVblankLines   = Metrics::vblankPAL;
+      myFrameLines    = Metrics::frameSizePAL;
+      ystartBase      = Metrics::ystartPAL;
+      baseHeight      = Metrics::baseHeightPAL;
+      break;
+
+    default:
+      throw runtime_error("frame manager: invalid TV mode");
+  }
+
+  myHeight = baseHeight + myAdjustScanlines * 2;
+  myYStart = ystartBase + baseHeight - myHeight + myVcenter;
+
   myJitterEmulation.setYStart(myYStart);
 }

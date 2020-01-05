@@ -140,7 +140,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
                      "NTSC scanlines adjust ", lwidth, 0,
                      fontWidth * 4, "");
-  myAdjustScanlinesNTSC->setMinValue(-50); myAdjustScanlinesNTSC->setMaxValue(50);
+  myAdjustScanlinesNTSC->setMinValue(-25); myAdjustScanlinesNTSC->setMaxValue(25);
   myAdjustScanlinesNTSC->setTickmarkIntervals(2);
   wid.push_back(myAdjustScanlinesNTSC);
   ypos += lineHeight + VGAP;
@@ -150,7 +150,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
                      "PAL scanlines adjust ", lwidth, 0,
                      fontWidth * 4, "");
-  myAdjustScanlinesPAL->setMinValue(-50); myAdjustScanlinesPAL->setMaxValue(50);
+  myAdjustScanlinesPAL->setMinValue(-25); myAdjustScanlinesPAL->setMaxValue(25);
   myAdjustScanlinesPAL->setTickmarkIntervals(2);
   wid.push_back(myAdjustScanlinesPAL);
   ypos += lineHeight + VGAP;
