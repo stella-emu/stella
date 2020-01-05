@@ -220,8 +220,8 @@ bool FrameManager::onLoad(Serializer& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameManager::recalculateMetrics() {
-  uInt32 ystartBase;
-  uInt32 baseHeight;
+  Int32 ystartBase;
+  Int32 baseHeight;
 
   switch (layout())
   {
@@ -244,7 +244,7 @@ void FrameManager::recalculateMetrics() {
   }
 
   myHeight = baseHeight + myAdjustScanlines * 2;
-  myYStart = ystartBase + baseHeight - myHeight + myVcenter;
+  myYStart = std::max(0, ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 + myVcenter);
 
   myJitterEmulation.setYStart(myYStart);
 }

@@ -487,6 +487,8 @@ void VideoDialog::saveConfig()
   // TV scanline intensity
   instance().settings().setValue("tv.scanlines", myTVScanIntense->getValueLabel());
 
+  instance().console().setTIAProperties();
+
   // Finally, issue a complete framebuffer re-initialization...
   instance().createFrameBuffer();
 

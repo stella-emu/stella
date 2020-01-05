@@ -311,6 +311,12 @@ class Console : public Serializable, public ConsoleIO
      */
     void updateVcenter(Int32 vcenter);
 
+    /**
+      Set up various properties of the TIA (vcenter, Height, etc) based on
+      the current display format.
+    */
+    void setTIAProperties();
+
   private:
     /**
      * Dry-run the emulation and detect the frame layout (PAL / NTSC).
@@ -321,12 +327,6 @@ class Console : public Serializable, public ConsoleIO
      * Rerun frame layout autodetection
      */
     void redetectFrameLayout();
-
-    /**
-      Sets various properties of the TIA (vcenter, Height, etc) based on
-      the current display format.
-    */
-    void setTIAProperties();
 
     /**
       Create the audio queue
