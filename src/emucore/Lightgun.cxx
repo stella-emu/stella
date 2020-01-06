@@ -26,10 +26,51 @@
 // | Detect light | INPT4 bit 7 | INPT5 bit 7 | DP:6
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Lightgun::Lightgun(Jack jack, const Event& event, const System& system, const FrameBuffer& frameBuffer)
+Lightgun::Lightgun(Jack jack, const Event& event, const System& system,
+                   const string& romMd5, const FrameBuffer& frameBuffer)
   : Controller(jack, event, system, Controller::Type::Lightgun),
   myFrameBuffer(frameBuffer)
 {
+  // Right now, there are only three games and a test ROM that use the light gun
+  if (romMd5 == "8da51e0c4b6b46f7619425119c7d018e" ||
+      romMd5 == "7e5ee26bc31ae8e4aa61388c935b9332")
+  {
+    // Sentinel
+    myOfsX = -24;
+    myOfsY = -5;
+  }
+  else if (romMd5 == "10c47acca2ecd212b900ad3cf6942dbb" ||
+           romMd5 == "15c11ab6e4502b2010b18366133fc322" ||
+           romMd5 == "557e893616648c37a27aab5a47acbf10" ||
+           romMd5 == "5d7293f1892b66c014e8d222e06f6165" ||
+           romMd5 == "b2ab209976354ad4a0e1676fc1fe5a82" ||
+           romMd5 == "b5a1a189601a785bdb2f02a424080412" ||
+           romMd5 == "c5bf03028b2e8f4950ec8835c6811d47" ||
+           romMd5 == "f0ef9a1e5d4027a157636d7f19952bb5")
+  {
+    // Shooting Arcade
+    myOfsX = -21;
+    myOfsY = 5;
+  }
+  else if (romMd5 == "2559948f39b91682934ea99d90ede631" ||
+           romMd5 == "e75ab446017448045b152eea78bf7910")
+  {
+    // Booby is Hungry
+    myOfsX = -21;
+    myOfsY = 5;
+  }
+  else if (romMd5 == "d65900fefa7dc18ac3ad99c213e2fa4e")
+  {
+    // Guntest
+    myOfsX = -25;
+    myOfsY = 1;
+  }
+  else
+  {
+    // average values
+    myOfsX = -23;
+    myOfsY = 1;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,8 +97,8 @@ bool Lightgun::read(DigitalPin pin)
         * tia.height() / rect.h();
 
       // get adjusted TIA coordinates
-      Int32 xTia = tia.clocksThisLine() - TIAConstants::H_BLANK_CLOCKS + X_OFS;
-      Int32 yTia = tia.scanlines() - tia.startLine() + Y_OFS;
+      Int32 xTia = tia.clocksThisLine() - TIAConstants::H_BLANK_CLOCKS + myOfsX;
+      Int32 yTia = tia.scanlines() - tia.startLine() + myOfsY;
 
       if (xTia < 0)
         xTia += TIAConstants::H_CLOCKS;
@@ -77,7 +118,4 @@ void Lightgun::update()
   // we allow left and right mouse buttons for fire button
   setPin(DigitalPin::One, myEvent.get(Event::MouseButtonLeftValue)
          || myEvent.get(Event::MouseButtonRightValue));
-
-  cerr << mySystem.tia().startLine() << endl;
 }
-

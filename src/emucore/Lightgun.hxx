@@ -30,11 +30,15 @@ public:
   /**
     Create a new lightgun controller plugged into the specified jack
 
-    @param jack   The jack the controller is plugged into
-    @param event  The event object to use for events
-    @param system The system using this controller
+    @param jack        The jack the controller is plugged into
+    @param event       The event object to use for events
+    @param system      The system using this controller
+    @param romMd5      The md5 of the ROM using this controller
+    @param frameBuffer The frame buffer
+
   */
-  Lightgun(Jack jack, const Event& event, const System& system, const FrameBuffer& frameBuffer);
+  Lightgun(Jack jack, const Event& event, const System& system,
+           const string& romMd5, const FrameBuffer& frameBuffer);
   virtual ~Lightgun() = default;
 
 public:
@@ -62,15 +66,8 @@ public:
 private:
   const FrameBuffer& myFrameBuffer;
 
-  // Shooting Arcade:
-  static constexpr Int32 X_OFS = -21;
-  static constexpr Int32 Y_OFS =   5; // 260 scanlines
-  // Guntest:
-  //static constexpr Int32 X_OFS = -25;
-  //static constexpr Int32 Y_OFS = 1; // 262 scanlines
-  // Sentinel:
-  //static constexpr Int32 X_OFS = -24;
-  //static constexpr Int32 Y_OFS = -5; // 268 scanlines
+  // targetting compensation values
+  Int32 myOfsX{0}, myOfsY{0};
 
 private:
   // Following constructors and assignment operators not supported
