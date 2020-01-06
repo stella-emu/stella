@@ -873,7 +873,7 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
       break;
 
     case Controller::Type::Lightgun:
-      controller = make_unique<Lightgun>(port, myEvent, *mySystem, myOSystem.frameBuffer());
+      controller = make_unique<Lightgun>(port, myEvent, *mySystem, romMd5, myOSystem.frameBuffer());
       break;
 
     default:
