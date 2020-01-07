@@ -219,9 +219,15 @@ void TIASurface::enableNTSC(bool enable)
 {
   myFilter = Filter(enable ? uInt8(myFilter) | 0x10 : uInt8(myFilter) & 0x01);
 
-  // Normal vs NTSC mode uses different source widths
-  myTiaSurface->setSrcSize(enable ? AtariNTSC::outWidth(TIAConstants::frameBufferWidth)
-      : TIAConstants::frameBufferWidth, myTIA->height());
+  uInt32 surfaceWidth = enable ?
+    AtariNTSC::outWidth(TIAConstants::frameBufferWidth) : TIAConstants::frameBufferWidth;
+
+  if (surfaceWidth != myTiaSurface->srcRect().w() || myTIA->height() != myTiaSurface->srcRect().h()) {
+    myTiaSurface->setSrcSize(surfaceWidth, myTIA->height());
+
+    myTiaSurface->invalidate();
+    myTIA->clearFrameBuffer();
+  }
 
   mySLineSurface->setSrcSize(1, 2 * myTIA->height());
 

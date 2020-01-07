@@ -244,6 +244,8 @@ class TIA : public Device
     */
     uInt8* frameBuffer() { return myFramebuffer.data(); }
 
+    void clearFrameBuffer();
+
     /**
       Answers dimensional info about the framebuffer.
     */
