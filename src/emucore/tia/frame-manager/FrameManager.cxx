@@ -243,8 +243,8 @@ void FrameManager::recalculateMetrics() {
       throw runtime_error("frame manager: invalid TV mode");
   }
 
-  myHeight = baseHeight + myAdjustScanlines * 2;
-  myYStart = std::max(0, ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 + myVcenter);
+  myHeight = BSPF::clamp<uInt32>(baseHeight + myAdjustScanlines * 2, 0, myFrameLines);
+  myYStart = BSPF::clamp<uInt32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 + myVcenter, 0, myFrameLines);
 
   myJitterEmulation.setYStart(myYStart);
 }
