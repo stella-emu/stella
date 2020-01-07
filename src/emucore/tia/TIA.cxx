@@ -900,6 +900,13 @@ void TIA::renderToFrameBuffer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::clearFrameBuffer()
+{
+  myFramebuffer.fill(0);
+  myFrontBuffer.fill(0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::update(uInt64 maxCycles)
 {
   DispatchResult dispatchResult;
