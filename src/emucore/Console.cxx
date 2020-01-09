@@ -685,6 +685,27 @@ void Console::updateVcenter(Int32 vcenter)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeScanlineAdjust(int direction)
+{
+  // Get correct setting, depending on whether we're in NTSC or PAL
+  // Int32 adjust = myOSystem.settings().getInt("tia.adjustscanlines.ntsc");
+
+  if(direction == +1)       // increase scanline adjustment
+  {
+    cerr << "adjust scanline +\n";
+  }
+  else if(direction == -1)  // decrease scanline adjustment
+  {
+    cerr << "adjust scanline -\n";
+  }
+  else
+    return;
+
+  // Set new adjustment, updating the correct setting
+  // ...
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setTIAProperties()
 {
   Int32 vcenter = BSPF::clamp(

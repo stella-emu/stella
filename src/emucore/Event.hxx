@@ -84,6 +84,7 @@ class Event
       VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,
       PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
       ScanlinesDecrease, ScanlinesIncrease, VCenterDecrease, VCenterIncrease,
+      ScanlineAdjustDecrease, ScanlineAdjustIncrease,
 
       ToggleP0Collision, ToggleP0Bit, ToggleP1Collision, ToggleP1Bit,
       ToggleM0Collision, ToggleM0Bit, ToggleM1Collision, ToggleM1Bit,

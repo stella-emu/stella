@@ -270,6 +270,15 @@ class Console : public Serializable, public ConsoleIO
     void changeVerticalCenter(int direction);
 
     /**
+      Change the "TIA scanline adjust" variable.
+      Note that there are currently two of these (NTSC and PAL).  The currently
+      active mode will determine which one is used.
+
+      @param direction +1 indicates increase, -1 indicates decrease.
+    */
+    void changeScanlineAdjust(int direction);
+
+    /**
       Returns the current framerate.
     */
     float getFramerate() const;

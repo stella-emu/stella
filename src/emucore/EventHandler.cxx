@@ -424,6 +424,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed) myOSystem.console().changeVerticalCenter(+1);
       return;
 
+    case Event::ScanlineAdjustDecrease:
+      if (pressed) myOSystem.console().changeScanlineAdjust(-1);
+      return;
+
+    case Event::ScanlineAdjustIncrease:
+      if (pressed) myOSystem.console().changeScanlineAdjust(+1);
+      return;
+
     case Event::ToggleFullScreen:
       if (pressed && !repeated) myOSystem.frameBuffer().toggleFullscreen();
       return;
@@ -1843,6 +1851,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
   { Event::VCenterIncrease,         "Move display up",                       "" },
   { Event::VCenterDecrease,         "Move display down",                     "" },
+  { Event::ScanlineAdjustIncrease,  "Increase scanline adjust",              "" },
+  { Event::ScanlineAdjustDecrease,  "Decrease scanline adjust",              "" },
   { Event::FormatDecrease,          "Decrease display format",               "" },
   { Event::FormatIncrease,          "Increase display format",               "" },
   { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "" },
@@ -1972,6 +1982,7 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::PhosphorDecrease, Event::PhosphorIncrease, Event::TogglePhosphor,
   Event::FormatDecrease, Event::FormatIncrease,
   Event::VCenterDecrease, Event::VCenterIncrease,
+  Event::ScanlineAdjustDecrease, Event::ScanlineAdjustIncrease,
   Event::OverscanDecrease, Event::OverscanIncrease,
   Event::TogglePalette, Event::ToggleInter
 };
