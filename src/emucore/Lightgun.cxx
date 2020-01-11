@@ -67,7 +67,7 @@ Lightgun::Lightgun(Jack jack, const Event& event, const System& system,
   }
   else
   {
-    // average values
+    // unknown game, use average values
     myOfsX = -23;
     myOfsY = 1;
   }
