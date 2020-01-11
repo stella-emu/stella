@@ -670,7 +670,7 @@ void Console::changeVerticalCenter(int direction)
   if (vcenter != myTIA->vcenter()) myTIA->setVcenter(vcenter);
 
   ss.str("");
-  ss << "V-Center " << vcenter;
+  ss << "V-Center " << (vcenter > 0 ? "+" : "") << vcenter;
 
   myOSystem.frameBuffer().showMessage(ss.str());
 }
