@@ -31,8 +31,8 @@ enum Metrics: uInt32 {
   baseHeightPAL                 = 288,
   maxLinesVsync                 = 50,
   initialGarbageFrames          = TIAConstants::initialGarbageFrames,
-  ystartNTSC                    = 34,
-  ystartPAL                     = 39
+  ystartNTSC                    = 16,
+  ystartPAL                     = 19
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
