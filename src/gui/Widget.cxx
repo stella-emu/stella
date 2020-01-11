@@ -639,6 +639,8 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
 
   if(_valueLabelWidth == 0)
     _valueLabelGap = 0;
+  if(_valueLabelGap == 0)
+    _valueLabelGap = DEF_LBL_GAP;
 
   _w = w + _labelWidth + _valueLabelGap + _valueLabelWidth;
 }
