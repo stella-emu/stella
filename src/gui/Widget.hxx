@@ -314,16 +314,19 @@ class CheckboxWidget : public ButtonWidget
 class SliderWidget : public ButtonWidget
 {
   public:
+    static const int DEF_LBL_GAP = 4;
+
+
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
                  const string& label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, const string& valueUnit = "",
-                 int valueLabelGap = 4);
+                 int valueLabelGap = DEF_LBL_GAP, bool forceLabelSign = false);
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
                  const string& label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, const string& valueUnit = "",
-                 int valueLabelGap = 4);
+                 int valueLabelGap = DEF_LBL_GAP, bool forceLabelSign = false);
     virtual ~SliderWidget() = default;
 
     void setValue(int value);
@@ -363,6 +366,7 @@ class SliderWidget : public ButtonWidget
     string _valueUnit;
     int    _valueLabelGap{0};
     int    _valueLabelWidth{0};
+    bool   _forceLabelSign{false};
     int    _numIntervals{0};
 
   private:

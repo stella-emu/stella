@@ -621,12 +621,14 @@ void CheckboxWidget::drawWidget(bool hilite)
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h,
                            const string& label, int labelWidth, int cmd,
-                           int valueLabelWidth, const string& valueUnit, int valueLabelGap)
+                           int valueLabelWidth, const string& valueUnit, int valueLabelGap,
+                           bool forceLabelSign)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
     _labelWidth(labelWidth),
     _valueUnit(valueUnit),
     _valueLabelGap(valueLabelGap),
-    _valueLabelWidth(valueLabelWidth)
+    _valueLabelWidth(valueLabelWidth),
+    _forceLabelSign(forceLabelSign)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE;
   _bgcolor = kDlgColor;
@@ -645,9 +647,11 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
 SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y,
                            const string& label, int labelWidth, int cmd,
-                           int valueLabelWidth, const string& valueUnit, int valueLabelGap)
+                           int valueLabelWidth, const string& valueUnit, int valueLabelGap,
+                           bool forceLabelSign)
   : SliderWidget(boss, font, x, y, font.getMaxCharWidth() * 10, font.getLineHeight(),
-                 label, labelWidth, cmd, valueLabelWidth, valueUnit, valueLabelGap)
+                 label, labelWidth, cmd, valueLabelWidth, valueUnit, valueLabelGap,
+                 forceLabelSign)
 {
 }
 
@@ -698,7 +702,7 @@ void SliderWidget::setValueLabel(const string& valueLabel)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::setValueLabel(int value)
 {
-  _valueLabel = std::to_string(value);
+  _valueLabel = (_forceLabelSign && value > 0 ? "+" : "") + std::to_string(value);
   setDirty();
 }
 

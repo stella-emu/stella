@@ -14,7 +14,7 @@
 
 6.0.2 to 6.1: (MM dd, 2020)
 
-  * Note: because of major event remapping changes, all remappings will be
+  * Note: Because of major event remapping changes, all remappings will be
           reset to defaults; if you had custom mappings, they will need to
           be re-entered again.
 
@@ -98,6 +98,9 @@
   * Added option to save and load all TimeMachine states at once.
 
   * Added option to change pitch of Pitfall II music.
+
+  * ROM Info Launcher can now display multiple lines per property and
+    bank switching type.
 
   * In file listings, you can now select directories by holding 'Shift' on
     the first character entered.  Entering characters in lowercase still
