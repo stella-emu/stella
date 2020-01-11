@@ -244,7 +244,9 @@ void FrameManager::recalculateMetrics() {
   }
 
   myHeight = BSPF::clamp<uInt32>(baseHeight + myAdjustScanlines * 2, 0, myFrameLines);
-  myYStart = BSPF::clamp<uInt32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 + myVcenter, 0, myFrameLines);
+  myYStart = BSPF::clamp<uInt32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - myVcenter, 0, myFrameLines);
+  // TODO: why "- 1" here: ???
+  myMaxVcenter = BSPF::clamp<Int32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - 1, 0, TIAConstants::maxVcenter);
 
   myJitterEmulation.setYStart(myYStart);
 }

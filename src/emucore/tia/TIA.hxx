@@ -252,6 +252,8 @@ class TIA : public Device
     uInt32 width() const  { return TIAConstants::H_PIXEL; }
     uInt32 height() const { return myFrameManager->height(); }
     Int32 vcenter() const { return myFrameManager->vcenter(); }
+    Int32 minVcenter() const { return myFrameManager->minVcenter(); }
+    Int32 maxVcenter() const { return myFrameManager->maxVcenter(); }
     uInt32 startLine() const { return myFrameManager->startLine(); }
 
     /**

@@ -24,8 +24,8 @@ namespace TIAConstants {
 
   static constexpr uInt32 frameBufferWidth = 160;
   static constexpr uInt32 frameBufferHeight = 320;
-  static constexpr Int32 maxVcenter = 20; // limit to reasonable values
   static constexpr Int32 minVcenter = -20; // limit to reasonable values
+  static constexpr Int32 maxVcenter = 20; // limit to reasonable values
   static constexpr uInt32 viewableWidth = 320;
   static constexpr uInt32 viewableHeight = 240;
   static constexpr uInt32 initialGarbageFrames = 10;
