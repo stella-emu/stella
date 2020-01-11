@@ -48,6 +48,10 @@ class FrameManager: public AbstractFrameManager {
 
     Int32 vcenter() const override { return myVcenter; }
 
+    Int32 minVcenter() const override { return TIAConstants::minVcenter; }
+
+    Int32 maxVcenter() const override { return myMaxVcenter; }
+
     void setAdjustScanlines(Int32 adjustScanlines) override;
 
     Int32 adjustScanlines() const override { return myAdjustScanlines; }
@@ -97,6 +101,7 @@ class FrameManager: public AbstractFrameManager {
     uInt32 myHeight{0};
     uInt32 myYStart{0};
     Int32 myVcenter{0};
+    Int32 myMaxVcenter{0};
     Int32 myAdjustScanlines{0};
 
     bool myJitterEnabled{false};

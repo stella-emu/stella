@@ -642,22 +642,20 @@ void Console::changeVerticalCenter(int direction)
 
   if(direction == +1)       // increase vcenter
   {
-    if(vcenter >= TIAConstants::maxVcenter)
-    {
-      myOSystem.frameBuffer().showMessage("V-Center at minimum");
-      return;
-    }
-
-    ++vcenter;
-  }
-  else if(direction == -1)  // decrease vcenter
-  {
-    if (vcenter <= TIAConstants::minVcenter)
+    if(vcenter >= myTIA->maxVcenter())
     {
       myOSystem.frameBuffer().showMessage("V-Center at maximum");
       return;
     }
-
+    ++vcenter;
+  }
+  else if(direction == -1)  // decrease vcenter
+  {
+    if (vcenter <= myTIA->minVcenter())
+    {
+      myOSystem.frameBuffer().showMessage("V-Center at minimum");
+      return;
+    }
     --vcenter;
   }
   else
