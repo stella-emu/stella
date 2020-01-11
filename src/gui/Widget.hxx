@@ -314,19 +314,16 @@ class CheckboxWidget : public ButtonWidget
 class SliderWidget : public ButtonWidget
 {
   public:
-    static const int DEF_LBL_GAP = 4;
-
-
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int w, int h,
                  const string& label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, const string& valueUnit = "",
-                 int valueLabelGap = DEF_LBL_GAP, bool forceLabelSign = false);
+                 int valueLabelGap = 0, bool forceLabelSign = false);
     SliderWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y,
                  const string& label = "", int labelWidth = 0, int cmd = 0,
                  int valueLabelWidth = 0, const string& valueUnit = "",
-                 int valueLabelGap = DEF_LBL_GAP, bool forceLabelSign = false);
+                 int valueLabelGap = 0, bool forceLabelSign = false);
     virtual ~SliderWidget() = default;
 
     void setValue(int value);
@@ -344,6 +341,9 @@ class SliderWidget : public ButtonWidget
     void setValueUnit(const string& valueUnit);
 
     void setTickmarkIntervals(int numIntervals);
+
+  protected:
+    const int DEF_LBL_GAP = 4;
 
   protected:
     void handleMouseMoved(int x, int y) override;

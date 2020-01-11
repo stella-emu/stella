@@ -137,8 +137,7 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + VGAP;
   t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "V-Center ");
   myVCenter = new SliderWidget(myTab, font, t->getRight() + 2, ypos, "",
-                               0, kVCenterChanged, 7 * fontWidth, "px",
-                               SliderWidget::DEF_LBL_GAP, true);
+                               0, kVCenterChanged, 7 * fontWidth, "px", 0, true);
 
   myVCenter->setMinValue(TIAConstants::minVcenter);
   myVCenter->setMaxValue(TIAConstants::maxVcenter);
