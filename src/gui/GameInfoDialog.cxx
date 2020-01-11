@@ -136,8 +136,9 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + VGAP;
   t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "V-Center ");
-  myVCenter = new SliderWidget(myTab, font, t->getRight() + 2, ypos,
-                              "", 0, kVCenterChanged, 7 * fontWidth, "px");
+  myVCenter = new SliderWidget(myTab, font, t->getRight() + 2, ypos, "",
+                               0, kVCenterChanged, 7 * fontWidth, "px",
+                               SliderWidget::DEF_LBL_GAP, true);
 
   myVCenter->setMinValue(TIAConstants::minVcenter);
   myVCenter->setMaxValue(TIAConstants::maxVcenter);
@@ -222,7 +223,7 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(ctrls, "KidVid", "KIDVID");
   VarList::push_back(ctrls, "Lightgun", "LIGHTGUN");
   VarList::push_back(ctrls, "MindLink", "MINDLINK");
-  
+
   ypos = VBORDER;
   pwidth = font.getStringWidth("Paddles_IAxis");
   myLeftPortLabel = new StaticTextWidget(myTab, font, HBORDER, ypos+1, "Left port        ");
