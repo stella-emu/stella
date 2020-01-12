@@ -90,8 +90,7 @@ bool StellaLIBRETRO::create(bool logging)
 
   settings.setValue("tia.zoom", 1);
   settings.setValue("tia.inter", false);
-  settings.setValue("tia.adjustscanlines.ntsc", 0);
-  settings.setValue("tia.adjustscanlines.ntsc", 0);
+  settings.setValue("tia.", 0.f);
 
   //fastscbios
   // Fast loading of Supercharger BIOS

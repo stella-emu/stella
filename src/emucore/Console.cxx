@@ -688,19 +688,24 @@ void Console::changeScanlineAdjust(int direction)
   // Get correct setting, depending on whether we're in NTSC or PAL
   // Int32 adjust = myOSystem.settings().getInt("tia.adjustscanlines.ntsc");
 
+  float newAdjustScanliens = myTIA->adjustScanlines();;
+
+  if (direction != -1 && direction != +1) return;
+
   if(direction == +1)       // increase scanline adjustment
   {
-    cerr << "adjust scanline +\n";
+    newAdjustScanliens = std::min(myTIA->adjustScanlines() + 0.5f, 5.f);
   }
   else if(direction == -1)  // decrease scanline adjustment
   {
-    cerr << "adjust scanline -\n";
+    newAdjustScanliens = std::max(myTIA->adjustScanlines() - 0.5f, -5.f);
   }
-  else
-    return;
 
-  // Set new adjustment, updating the correct setting
-  // ...
+  if (newAdjustScanliens != myTIA->adjustScanlines()) {
+      myTIA->setAdjustScanlines(newAdjustScanliens);
+      myOSystem.settings().setValue("tia.adjustscanlines", newAdjustScanliens);
+      initializeVideo();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -715,15 +720,14 @@ void Console::setTIAProperties()
   {
     // Assume we've got ~262 scanlines (NTSC-like format)
     myTIA->setLayout(FrameLayout::ntsc);
-    myTIA->setAdjustScanlines(myOSystem.settings().getInt("tia.adjustscanlines.ntsc"));
   }
   else
   {
     // Assume we've got ~312 scanlines (PAL-like format)
     myTIA->setLayout(FrameLayout::pal);
-    myTIA->setAdjustScanlines(myOSystem.settings().getInt("tia.adjustscanlines.pal"));
   }
 
+  myTIA->setAdjustScanlines(myOSystem.settings().getFloat("tia.adjustscanlines"));
   myTIA->setVcenter(vcenter);
 
   myEmulationTiming.updateFrameLayout(myTIA->frameLayout());

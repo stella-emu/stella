@@ -50,8 +50,7 @@ Settings::Settings()
   // TIA specific options
   setPermanent("tia.zoom", "3");
   setPermanent("tia.inter", "false");
-  setPermanent("tia.adjustscanlines.ntsc", "0");
-  setPermanent("tia.adjustscanlines.pal", "0");
+  setPermanent("tia.adjustscanlines", 0.f);
   setPermanent("fullscreen", "false");
   setPermanent("tia.fs_stretch", "false");
   setPermanent("tia.fs_overscan", "0");
@@ -255,10 +254,8 @@ void Settings::validate()
   f = getFloat("speed");
   if (f <= 0) setValue("speed", "1.0");
 
-  i = getInt("tia.adjustscanlines.ntsc");
-  if(i < -25 || i > 25)  setValue("tia.adjustscanlines.ntsc", "90");
-  i = getInt("tia.adjustscanlines.pal");
-  if(i < -25 || i > 25)  setValue("tia.adjustscanlines.pal", "100");
+  i = getFloat("tia.adjustscanlines");
+  if(i < -5. || i > 5.)  setValue("tia.adjustscanlines", 0.f);
 
   s = getString("tia.dbgcolors");
   sort(s.begin(), s.end());
@@ -410,8 +407,7 @@ void Settings::usage() const
     << "                                 for TIA image\n"
     << "  -tia.inter     <1|0>          Enable interpolated (smooth) scaling for TIA\n"
     << "                                 image\n"
-    << "  -tia.adjustscanlines.ntsc <number> Adjust the visible number if TIA scanlines on NTSC\n"
-    << "  -tia.adjustscanlines.pal  <number> Adjust the visible number if TIA scanlines on PAL\n"
+    << "  -tia.adjustscanlines <float>  Adjust the visible number if TIA scanlines [percent]\n"
     << "  -tia.fs_stretch <1|0>         Stretch TIA image to fill fullscreen mode\n"
     << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fill fullscreen mode\n"
     << "  -tia.dbgcolors <string>       Debug colors to use for each object (see manual\n"
