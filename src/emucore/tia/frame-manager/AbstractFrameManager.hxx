@@ -181,9 +181,9 @@ class AbstractFrameManager : public Serializable
     virtual Int32 maxVcenter() const { return 0; }
 
 
-    virtual void setAdjustScanlines(Int32 adjustScanlines) {}
+    virtual void setAdjustScanlines(float adjustScanlines) {}
 
-    virtual Int32 adjustScanlines() const { return 0; }
+    virtual float adjustScanlines() const { return 0; }
 
     /**
      * The corresponding start line.

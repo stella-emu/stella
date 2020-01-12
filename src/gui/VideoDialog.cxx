@@ -136,21 +136,12 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (NTSC mode)
-  myAdjustScanlinesNTSC =
+  myAdjustScanlines =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "NTSC scanlines adjust ", lwidth, 0, fontWidth * 4, "", 0, true);
-  myAdjustScanlinesNTSC->setMinValue(-25); myAdjustScanlinesNTSC->setMaxValue(25);
-  myAdjustScanlinesNTSC->setTickmarkIntervals(2);
-  wid.push_back(myAdjustScanlinesNTSC);
-  ypos += lineHeight + VGAP;
-
-  // Aspect ratio (PAL mode)
-  myAdjustScanlinesPAL =
-    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "PAL scanlines adjust ", lwidth, 0, fontWidth * 4, "", 0, true);
-  myAdjustScanlinesPAL->setMinValue(-25); myAdjustScanlinesPAL->setMaxValue(25);
-  myAdjustScanlinesPAL->setTickmarkIntervals(2);
-  wid.push_back(myAdjustScanlinesPAL);
+                     "Scanlines adjust ", lwidth, 0, fontWidth * 4, "", 0, true);
+  myAdjustScanlines->setMinValue(-50); myAdjustScanlines->setMaxValue(50);
+  myAdjustScanlines->setTickmarkIntervals(5);
+  wid.push_back(myAdjustScanlines);
   ypos += lineHeight + VGAP;
 
   // Speed
@@ -351,8 +342,9 @@ void VideoDialog::loadConfig()
   myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
 
   // Aspect ratio setting (NTSC and PAL)
-  myAdjustScanlinesNTSC->setValue(instance().settings().getInt("tia.adjustscanlines.ntsc"));
-  myAdjustScanlinesPAL->setValue(instance().settings().getInt("tia.adjustscanlines.pal"));
+  myAdjustScanlines->setValue(
+    round(instance().settings().getFloat("tia.adjustscanlines") * 10)
+  );
 
   // Emulation speed
   int speed = mapSpeed(instance().settings().getFloat("speed"));
@@ -424,8 +416,9 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
 
   // Aspect ratio setting (NTSC and PAL)
-  instance().settings().setValue("tia.adjustscanlines.ntsc", myAdjustScanlinesNTSC->getValueLabel());
-  instance().settings().setValue("tia.adjustscanlines.pal", myAdjustScanlinesPAL->getValueLabel());
+  instance().settings().setValue("tia.adjustscanlines",
+    static_cast<float>(myAdjustScanlines->getValue()) / 10.f
+  );
 
   // Speed
   int speedup = mySpeed->getValue();
@@ -505,8 +498,7 @@ void VideoDialog::setDefaults()
       myTIAZoom->setValue(300);
       myTIAPalette->setSelected("standard", "");
       myTIAInterpolate->setState(false);
-      myAdjustScanlinesNTSC->setValue(0);
-      myAdjustScanlinesPAL->setValue(0);
+      myAdjustScanlines->setValue(0);
       mySpeed->setValue(0);
 
       myFullscreen->setState(false);

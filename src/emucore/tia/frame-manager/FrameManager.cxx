@@ -18,6 +18,7 @@
 // #define TIA_FRAMEMANAGER_DEBUG_LOG
 
 #include <algorithm>
+#include <cmath>
 
 #include "FrameManager.hxx"
 
@@ -27,8 +28,8 @@ enum Metrics: uInt32 {
   vsync                         = 3,
   frameSizeNTSC                 = 262,
   frameSizePAL                  = 312,
-  baseHeightNTSC                = 240,
-  baseHeightPAL                 = 288,
+  baseHeightNTSC                = 228,
+  baseHeightPAL                 = 274,
   maxLinesVsync                 = 50,
   initialGarbageFrames          = TIAConstants::initialGarbageFrames,
   ystartNTSC                    = 16,
@@ -120,7 +121,7 @@ void FrameManager::setVcenter(Int32 vcenter)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setAdjustScanlines(Int32 adjustScanlines)
+void FrameManager::setAdjustScanlines(float adjustScanlines)
 {
   myAdjustScanlines = adjustScanlines;
   recalculateMetrics();
@@ -243,10 +244,12 @@ void FrameManager::recalculateMetrics() {
       throw runtime_error("frame manager: invalid TV mode");
   }
 
-  myHeight = BSPF::clamp<uInt32>(baseHeight + myAdjustScanlines * 2, 0, myFrameLines);
+  myHeight = BSPF::clamp<uInt32>(round(static_cast<float>(baseHeight) * (1.f + myAdjustScanlines / 100.f)), 0, myFrameLines);
   myYStart = BSPF::clamp<uInt32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - myVcenter, 0, myFrameLines);
   // TODO: why "- 1" here: ???
   myMaxVcenter = BSPF::clamp<Int32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - 1, 0, TIAConstants::maxVcenter);
+
+  cout << myAdjustScanlines << " " << myHeight << endl << std::flush;
 
   myJitterEmulation.setYStart(myYStart);
 }

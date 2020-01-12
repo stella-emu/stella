@@ -52,9 +52,9 @@ class FrameManager: public AbstractFrameManager {
 
     Int32 maxVcenter() const override { return myMaxVcenter; }
 
-    void setAdjustScanlines(Int32 adjustScanlines) override;
+    void setAdjustScanlines(float adjustScanlines) override;
 
-    Int32 adjustScanlines() const override { return myAdjustScanlines; }
+    float adjustScanlines() const override { return myAdjustScanlines; }
 
     uInt32 startLine() const override { return myYStart; }
 
@@ -102,7 +102,7 @@ class FrameManager: public AbstractFrameManager {
     uInt32 myYStart{0};
     Int32 myVcenter{0};
     Int32 myMaxVcenter{0};
-    Int32 myAdjustScanlines{0};
+    float myAdjustScanlines{0.f};
 
     bool myJitterEnabled{false};
 
