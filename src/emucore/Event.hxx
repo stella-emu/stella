@@ -38,12 +38,10 @@ class Event
     enum Type
     {
       NoType = 0,
-      ConsoleColor, ConsoleBlackWhite,
-      ConsoleLeftDiffA, ConsoleLeftDiffB,
-      ConsoleRightDiffA, ConsoleRightDiffB,
+      ConsoleColor, ConsoleBlackWhite, ConsoleColorToggle, Console7800Pause,
+      ConsoleLeftDiffA, ConsoleLeftDiffB, ConsoleLeftDiffToggle,
+      ConsoleRightDiffA, ConsoleRightDiffB, ConsoleRightDiffToggle,
       ConsoleSelect, ConsoleReset,
-      ConsoleLeftDiffToggle, ConsoleRightDiffToggle, ConsoleColorToggle,
-      Console7800Pause,
 
       JoystickZeroUp, JoystickZeroDown, JoystickZeroLeft, JoystickZeroRight,
         JoystickZeroFire, JoystickZeroFire5, JoystickZeroFire9,
@@ -65,48 +63,6 @@ class Event
       KeyboardOne7, KeyboardOne8, KeyboardOne9,
       KeyboardOneStar, KeyboardOne0, KeyboardOnePound,
 
-      Combo1, Combo2, Combo3, Combo4, Combo5, Combo6, Combo7, Combo8,
-      Combo9, Combo10, Combo11, Combo12, Combo13, Combo14, Combo15, Combo16,
-
-      MouseAxisXMove, MouseAxisYMove,
-      MouseButtonLeftValue, MouseButtonRightValue,
-
-      ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
-      TogglePauseMode, OptionsMenuMode, CmdMenuMode, TimeMachineMode, DebuggerMode, ExitMode,
-      Fry, VolumeDecrease, VolumeIncrease, SoundToggle, VidmodeDecrease, VidmodeIncrease,
-      RewindPause, UnwindPause,
-
-      UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
-      UISelect, UINavPrev, UINavNext, UIOK, UICancel, UIPrevDir,
-      UITabPrev, UITabNext,
-
-      ToggleFullScreen,
-      VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,
-      PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
-      ScanlinesDecrease, ScanlinesIncrease, VCenterDecrease, VCenterIncrease,
-      ScanlineAdjustDecrease, ScanlineAdjustIncrease,
-
-      ToggleP0Collision, ToggleP0Bit, ToggleP1Collision, ToggleP1Bit,
-      ToggleM0Collision, ToggleM0Bit, ToggleM1Collision, ToggleM1Bit,
-      ToggleBLCollision, ToggleBLBit, TogglePFCollision, TogglePFBit,
-      ToggleCollisions, ToggleBits, ToggleFixedColors,
-
-      PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleJitter,
-      ToggleFrameStats, ToggleTimeMachine,
-      ToggleContSnapshots, ToggleContSnapshotsFrame,
-      ToggleColorLoss, TogglePalette,
-
-      HandleMouseControl, ToggleGrabMouse, ToggleSAPortOrder,
-      FormatDecrease, FormatIncrease, ReloadConsole,
-
-      Rewind1Menu, Rewind10Menu, RewindAllMenu,
-      Unwind1Menu, Unwind10Menu, UnwindAllMenu,
-
-      StartPauseMode, SaveAllStates, LoadAllStates,
-      OverscanDecrease, OverscanIncrease,
-
-      ToggleAutoSlot,
-
       CompuMateFunc, CompuMateShift,
       CompuMate0, CompuMate1, CompuMate2, CompuMate3, CompuMate4,
       CompuMate5, CompuMate6, CompuMate7, CompuMate8, CompuMate9,
@@ -121,8 +77,47 @@ class Event
       CompuMateQuote, CompuMateBackspace, CompuMateEquals, CompuMatePlus,
       CompuMateSlash,
 
-      ToggleInter,
-      MouseAxisXValue, MouseAxisYValue,
+      Combo1, Combo2, Combo3, Combo4, Combo5, Combo6, Combo7, Combo8,
+      Combo9, Combo10, Combo11, Combo12, Combo13, Combo14, Combo15, Combo16,
+
+      UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
+      UISelect, UINavPrev, UINavNext, UIOK, UICancel, UIPrevDir,
+      UITabPrev, UITabNext,
+
+      HandleMouseControl, ToggleGrabMouse,
+      MouseAxisXMove, MouseAxisYMove, MouseAxisXValue, MouseAxisYValue,
+      MouseButtonLeftValue, MouseButtonRightValue,
+
+      Quit, ReloadConsole, Fry,
+      TogglePauseMode, StartPauseMode,
+      OptionsMenuMode, CmdMenuMode, DebuggerMode, ExitMode,
+      TakeSnapshot, ToggleContSnapshots, ToggleContSnapshotsFrame,
+
+      ChangeState, LoadState, SaveState,
+      SaveAllStates, LoadAllStates,
+      ToggleAutoSlot, ToggleTimeMachine, TimeMachineMode,
+      Rewind1Menu, Rewind10Menu, RewindAllMenu,
+      Unwind1Menu, Unwind10Menu, UnwindAllMenu,
+      RewindPause, UnwindPause,
+
+      FormatDecrease, FormatIncrease, TogglePalette, ToggleColorLoss,
+      ToggleFullScreen, VidmodeDecrease, VidmodeIncrease,
+      VCenterDecrease, VCenterIncrease, ScanlineAdjustDecrease, ScanlineAdjustIncrease,
+      OverscanDecrease, OverscanIncrease,
+
+      VidmodeStd, VidmodeRGB, VidmodeSVideo, VidModeComposite, VidModeBad, VidModeCustom,
+      PreviousAttribute, NextAttribute, DecreaseAttribute, IncreaseAttribute,
+      ScanlinesDecrease, ScanlinesIncrease,
+      PhosphorDecrease, PhosphorIncrease, TogglePhosphor, ToggleInter, ToggleJitter,
+
+      VolumeDecrease, VolumeIncrease, SoundToggle,
+
+      ToggleP0Collision, ToggleP0Bit, ToggleP1Collision, ToggleP1Bit,
+      ToggleM0Collision, ToggleM0Bit, ToggleM1Collision, ToggleM1Bit,
+      ToggleBLCollision, ToggleBLBit, TogglePFCollision, TogglePFBit,
+      ToggleCollisions, ToggleBits, ToggleFixedColors,
+
+      ToggleFrameStats, ToggleSAPortOrder,
 
       LastType
     };
@@ -137,7 +132,7 @@ class Event
     };
 
     // Event list version, update if the id of existing event types changed
-    static constexpr Int32 VERSION = 1;
+    static constexpr Int32 VERSION = 2;
 
     using EventSet = std::set<Event::Type>;
 
