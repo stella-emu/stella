@@ -121,9 +121,9 @@ void FrameManager::setVcenter(Int32 vcenter)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameManager::setVsizeAdjust(float vsizeAdjust)
+void FrameManager::setAdjustVSize(Int32 adjustVSize)
 {
-  myVsizeAdjust = vsizeAdjust;
+  myVSizeAdjust = adjustVSize;
   recalculateMetrics();
 }
 
@@ -244,10 +244,12 @@ void FrameManager::recalculateMetrics() {
       throw runtime_error("frame manager: invalid TV mode");
   }
 
-  myHeight = BSPF::clamp<uInt32>(round(static_cast<float>(baseHeight) * (1.f + myVsizeAdjust / 100.f)), 0, myFrameLines);
+  myHeight = BSPF::clamp<uInt32>(round(static_cast<float>(baseHeight) * (1.f - myVSizeAdjust / 100.f)), 0, myFrameLines);
   myYStart = BSPF::clamp<uInt32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - myVcenter, 0, myFrameLines);
   // TODO: why "- 1" here: ???
   myMaxVcenter = BSPF::clamp<Int32>(ystartBase + (baseHeight - static_cast<Int32>(myHeight)) / 2 - 1, 0, TIAConstants::maxVcenter);
+
+  //cout << "myVSizeAdjust " << myVSizeAdjust << " " << myHeight << endl << std::flush;
 
   myJitterEmulation.setYStart(myYStart);
 }

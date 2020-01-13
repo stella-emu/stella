@@ -668,7 +668,11 @@ void Console::changeVerticalCenter(int direction)
   if (vcenter != myTIA->vcenter()) myTIA->setVcenter(vcenter);
 
   ss.str("");
-  ss << "V-Center " << (vcenter > 0 ? "+" : "") << vcenter;
+  ss << "V-Center ";
+  if (!vcenter)
+    ss << "default";
+  else
+    ss << (vcenter > 0 ? "+" : "") << vcenter << "px";
 
   myOSystem.frameBuffer().showMessage(ss.str());
 }
@@ -685,24 +689,44 @@ void Console::updateVcenter(Int32 vcenter)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeScanlineAdjust(int direction)
 {
-  float newVsizeAdjust = myTIA->vsizeAdjust();
+  Int32 newAdjustVSize = myTIA->adjustVSize();;
 
   if (direction != -1 && direction != +1) return;
 
   if(direction == +1)       // increase scanline adjustment
   {
-    newVsizeAdjust = std::min(myTIA->vsizeAdjust() + 0.5f, 5.f);
+    if (newAdjustVSize >= 5)
+    {
+      myOSystem.frameBuffer().showMessage("V-Size at maximum");
+      return;
+    }
+    newAdjustVSize++;
   }
   else if(direction == -1)  // decrease scanline adjustment
   {
-    newVsizeAdjust = std::max(myTIA->vsizeAdjust() - 0.5f, -5.f);
+    if (newAdjustVSize <= -5)
+    {
+      myOSystem.frameBuffer().showMessage("V-Size at minimum");
+      return;
+    }
+    newAdjustVSize--;
   }
 
-  if (newVsizeAdjust != myTIA->vsizeAdjust()) {
-      myTIA->setVsizeAdjust(newVsizeAdjust);
-      myOSystem.settings().setValue("tia.vsizeadjust", newVsizeAdjust);
+  if (newAdjustVSize != myTIA->adjustVSize()) {
+      myTIA->setAdjustVSize(newAdjustVSize);
+      myOSystem.settings().setValue("tia.vsizeadjust", newAdjustVSize);
       initializeVideo();
   }
+
+  ostringstream ss;
+
+  ss << "V-Size ";
+  if (!newAdjustVSize)
+    ss << "default";
+  else
+    ss << (newAdjustVSize > 0 ? "+" : "") << newAdjustVSize << "%";
+
+  myOSystem.frameBuffer().showMessage(ss.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -724,7 +748,7 @@ void Console::setTIAProperties()
     myTIA->setLayout(FrameLayout::pal);
   }
 
-  myTIA->setVsizeAdjust(myOSystem.settings().getFloat("tia.vsizeadjust"));
+  myTIA->setAdjustVSize(myOSystem.settings().getInt("tia.vsizeadjust"));
   myTIA->setVcenter(vcenter);
 
   myEmulationTiming.updateFrameLayout(myTIA->frameLayout());

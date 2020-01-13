@@ -399,6 +399,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ConsoleReset,             KBDK_F2},
   {Event::ConsoleColor,             KBDK_F3},
   {Event::ConsoleBlackWhite,        KBDK_F4},
+  {Event::Console7800Pause,         KBDK_F3, MOD3},
   {Event::ConsoleLeftDiffA,         KBDK_F5},
   {Event::ConsoleLeftDiffB,         KBDK_F6},
   {Event::ConsoleRightDiffA,        KBDK_F7},

@@ -50,7 +50,7 @@ Settings::Settings()
   // TIA specific options
   setPermanent("tia.zoom", "3");
   setPermanent("tia.inter", "false");
-  setPermanent("tia.vsizeadjust", 0.f);
+  setPermanent("tia.vsizeadjust", 0);
   setPermanent("fullscreen", "false");
   setPermanent("tia.fs_stretch", "false");
   setPermanent("tia.fs_overscan", "0");
@@ -254,8 +254,8 @@ void Settings::validate()
   f = getFloat("speed");
   if (f <= 0) setValue("speed", "1.0");
 
-  i = getFloat("tia.vsizeadjust");
-  if(i < -5. || i > 5.)  setValue("tia.vsizeadjust", 0.f);
+  i = getInt("tia.vsizeadjust");
+  if(i < -5 || i > 5)  setValue("tia.vsizeadjust", 0);
 
   s = getString("tia.dbgcolors");
   sort(s.begin(), s.end());
@@ -403,14 +403,14 @@ void Settings::usage() const
     << "  -audio.stereo             <1|0>      Enable stereo mode for all ROMs\n"
     << endl
   #endif
-    << "  -tia.zoom      <zoom>         Use the specified zoom level (windowed mode)\n"
+    << "  -tia.zoom        <zoom>       Use the specified zoom level (windowed mode)\n"
     << "                                 for TIA image\n"
-    << "  -tia.inter     <1|0>          Enable interpolated (smooth) scaling for TIA\n"
+    << "  -tia.vsizeadjust <-5..5>      Adjust the vertical display size [percent]\n"
+    << "  -tia.inter       <1|0>        Enable interpolated (smooth) scaling for TIA\n"
     << "                                 image\n"
-    << "  -tia.vsizeadjust <float>      Adjust the vertical range of the image [percent]\n"
-    << "  -tia.fs_stretch <1|0>         Stretch TIA image to fill fullscreen mode\n"
+    << "  -tia.fs_stretch  <1|0>        Stretch TIA image to fill fullscreen mode\n"
     << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fill fullscreen mode\n"
-    << "  -tia.dbgcolors <string>       Debug colors to use for each object (see manual\n"
+    << "  -tia.dbgcolors   <string>     Debug colors to use for each object (see manual\n"
     << "                                 for description)\n"
     << endl
     << "  -tv.filter    <0-5>           Set TV effects off (0) or to specified mode\n"
