@@ -86,7 +86,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
             fontWidth    = font.getMaxCharWidth(),
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos, tabID;
-  int lwidth = font.getStringWidth("NTSC scanlines adjust "),
+  int lwidth = font.getStringWidth("V-Size adjust "),
     pwidth = font.getStringWidth("XXXXxXXXX"),
     swidth = font.getMaxCharWidth() * 10 - 2;
 
@@ -94,7 +94,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   // Set real dimensions
-  setSize(65 * fontWidth + HBORDER * 2, 14 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
+  setSize(60 * fontWidth + HBORDER * 2, 14 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
 
   // The tab widget
   xpos = 2;  ypos = 4;
@@ -136,12 +136,12 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (NTSC mode)
-  myVsizeAdjust =
+  myVSizeAdjust =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "V-Size adjust ", lwidth, 0, fontWidth * 4, "", 0, true);
-  myVsizeAdjust->setMinValue(-50); myVsizeAdjust->setMaxValue(50);
-  myVsizeAdjust->setTickmarkIntervals(5);
-  wid.push_back(myVsizeAdjust);
+                     "V-Size adjust", lwidth, kVSizeChanged, fontWidth * 7, "%", 0, true);
+  myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
+  myVSizeAdjust->setTickmarkIntervals(2);
+  wid.push_back(myVSizeAdjust);
   ypos += lineHeight + VGAP;
 
   // Speed
@@ -159,7 +159,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myUseVSync);
 
   // Move over to the next column
-  xpos += mySpeed->getWidth() + 28;
+  xpos += mySpeed->getWidth() + 44;
   ypos = VBORDER;
 
   // Fullscreen
@@ -342,9 +342,7 @@ void VideoDialog::loadConfig()
   myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
 
   // Aspect ratio setting (NTSC and PAL)
-  myVsizeAdjust->setValue(
-    round(instance().settings().getFloat("tia.vsizeadjust") * 10)
-  );
+  myVSizeAdjust->setValue(instance().settings().getInt("tia.vsizeadjust"));
 
   // Emulation speed
   int speed = mapSpeed(instance().settings().getFloat("speed"));
@@ -403,22 +401,24 @@ void VideoDialog::saveConfig()
 {
   // Renderer setting
   instance().settings().setValue("video",
-    myRenderer->getSelectedTag().toString());
+                                 myRenderer->getSelectedTag().toString());
 
   // TIA zoom levels
   instance().settings().setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
 
   // TIA Palette
   instance().settings().setValue("palette",
-    myTIAPalette->getSelectedTag().toString());
+                                 myTIAPalette->getSelectedTag().toString());
 
   // TIA interpolation
   instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
 
   // Aspect ratio setting (NTSC and PAL)
-  instance().settings().setValue("tia.vsizeadjust",
-    static_cast<float>(myVsizeAdjust->getValue()) / 10.f
-  );
+  int oldAdjust = instance().settings().getInt("tia.vsizeadjust");
+  int newAdjust = myVSizeAdjust->getValue();
+  bool initializeVideo = oldAdjust != newAdjust;
+
+  instance().settings().setValue("tia.vsizeadjust", newAdjust);
 
   // Speed
   int speedup = mySpeed->getValue();
@@ -427,8 +427,6 @@ void VideoDialog::saveConfig()
 
   // Fullscreen
   instance().settings().setValue("fullscreen", myFullscreen->getState());
-  /*instance().settings().setValue("fullscreenmode",
-                                 myFullScreenMode->getSelectedTag().toString());*/
   // Fullscreen stretch setting
   instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
   // Fullscreen overscan
@@ -448,25 +446,25 @@ void VideoDialog::saveConfig()
 
   // Multi-threaded rendering
   instance().settings().setValue("threads", myUseThreads->getState());
-  if(instance().hasConsole())
+  if (instance().hasConsole())
     instance().frameBuffer().tiaSurface().ntsc().enableThreading(myUseThreads->getState());
 
   // TV Mode
   instance().settings().setValue("tv.filter",
-    myTVMode->getSelectedTag().toString());
+                                 myTVMode->getSelectedTag().toString());
 
   // TV Custom adjustables
   NTSCFilter::Adjustable adj;
-  adj.hue         = myTVHue->getValue();
-  adj.saturation  = myTVSatur->getValue();
-  adj.contrast    = myTVContrast->getValue();
-  adj.brightness  = myTVBright->getValue();
-  adj.sharpness   = myTVSharp->getValue();
-  adj.gamma       = myTVGamma->getValue();
-  adj.resolution  = myTVRes->getValue();
-  adj.artifacts   = myTVArtifacts->getValue();
-  adj.fringing    = myTVFringe->getValue();
-  adj.bleed       = myTVBleed->getValue();
+  adj.hue = myTVHue->getValue();
+  adj.saturation = myTVSatur->getValue();
+  adj.contrast = myTVContrast->getValue();
+  adj.brightness = myTVBright->getValue();
+  adj.sharpness = myTVSharp->getValue();
+  adj.gamma = myTVGamma->getValue();
+  adj.resolution = myTVRes->getValue();
+  adj.artifacts = myTVArtifacts->getValue();
+  adj.fringing = myTVFringe->getValue();
+  adj.bleed = myTVBleed->getValue();
   instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(adj);
 
   // TV phosphor mode
@@ -478,7 +476,13 @@ void VideoDialog::saveConfig()
   // TV scanline intensity
   instance().settings().setValue("tv.scanlines", myTVScanIntense->getValueLabel());
 
-  if (&instance().console()) instance().console().setTIAProperties();
+  if (instance().hasConsole())
+  {
+    instance().console().setTIAProperties();
+    // TODO: display the new screen (currently all blank)
+    if (initializeVideo)
+      instance().console().initializeVideo();
+  }
 
   // Finally, issue a complete framebuffer re-initialization...
   instance().createFrameBuffer();
@@ -498,7 +502,7 @@ void VideoDialog::setDefaults()
       myTIAZoom->setValue(300);
       myTIAPalette->setSelected("standard", "");
       myTIAInterpolate->setState(false);
-      myVsizeAdjust->setValue(0);
+      myVSizeAdjust->setValue(0);
       mySpeed->setValue(0);
 
       myFullscreen->setState(false);
@@ -614,6 +618,20 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
     case GuiObject::kDefaultsCmd:
       setDefaults();
       break;
+
+    case kVSizeChanged:
+    {
+      int adjust = myVSizeAdjust->getValue();
+
+      if (!adjust)
+      {
+        myVSizeAdjust->setValueLabel("Default");
+        myVSizeAdjust->setValueUnit("");
+      }
+      else
+        myVSizeAdjust->setValueUnit("%");
+      break;
+    }
 
     case kSpeedupChanged:
       mySpeed->setValueLabel(formatSpeed(mySpeed->getValue()));

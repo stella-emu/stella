@@ -119,6 +119,8 @@ class Event
 
       ToggleFrameStats, ToggleSAPortOrder,
 
+      // add new events from here to avoid that user remapped events get overwritten
+
       LastType
     };
 
@@ -131,7 +133,7 @@ class Event
       LastGroup
     };
 
-    // Event list version, update if the id of existing event types changed
+    // Event list version, update only if the id of existing(!) event types changed
     static constexpr Int32 VERSION = 2;
 
     using EventSet = std::set<Event::Type>;

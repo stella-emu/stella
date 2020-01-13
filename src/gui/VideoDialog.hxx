@@ -58,7 +58,7 @@ class VideoDialog : public Dialog
     SliderWidget*     myTIAZoom{nullptr};
     PopUpWidget*      myTIAPalette{nullptr};
     CheckboxWidget*   myTIAInterpolate{nullptr};
-    SliderWidget*     myVsizeAdjust{nullptr};
+    SliderWidget*     myVSizeAdjust{nullptr};
     SliderWidget*     mySpeed{nullptr};
 
     CheckboxWidget*   myFullscreen{nullptr};
@@ -101,6 +101,7 @@ class VideoDialog : public Dialog
 
     enum {
       kSpeedupChanged     = 'VDSp',
+      kVSizeChanged       = 'VDVs',
       kFullScreenChanged  = 'VDFs',
       kOverscanChanged    = 'VDOv',
 

@@ -1525,13 +1525,13 @@
     </tr>
 
     <tr>
-      <td>Move display <i>up</i> (uses "Display.YStart")</td>
+      <td>Move display <i>up</i> (uses "Display.VCenter")</td>
       <td>Alt + PageUp</td>
       <td>Cmd + PageUp</td>
     </tr>
 
     <tr>
-      <td>Move display <i>down</i> (uses "Display.YStart")</td>
+      <td>Move display <i>down</i> (uses "Display.VCenter")</td>
       <td>Alt + PageDown</td>
       <td>Cmd + PageDown</td>
     </tr>
@@ -2004,18 +2004,15 @@
     </tr>
 
     <tr>
-      <td><pre>-tia.inter &lt;1|0&gt;</pre></td>
-      <td>Use interpolation for the TIA image (results in blending/smoothing
-        of the image).</td>
+      <td><pre>-tia.vsizeadjust &lt;-5 - 5&gt;</pre></td>
+      <td>Adjust the display height of the TIA image
+      </td>
     </tr>
 
     <tr>
-      <td><pre>-tia.aspectn &lt;number&gt;<br>-tia.aspectp &lt;number&gt;</pre></td>
-      <td>Specify the amount (as a percentage) to scale the
-        TIA image width in NTSC and PAL mode. Since many video modes do not
-        use square pixels, you can reduce width until the pixels appear square.
-        Allowable values are 80 - 120; I find 85 - 90 gives the most authentic
-        look for NTSC, and 105 - 110 for PAL.</td>
+      <td><pre>-tia.inter &lt;1|0&gt;</pre></td>
+      <td>Use interpolation for the TIA image (results in blending/smoothing
+        of the image).</td>
     </tr>
 
     <tr>
@@ -2572,8 +2569,8 @@
     </tr>
 
     <tr>
-      <td><pre>-ystart &lt;number&gt;</pre></td>
-      <td>Set "Display.YStart" property (0 - 64).</td>
+      <td><pre>-vcenter &lt;number&gt;</pre></td>
+      <td>Set "Display.VCenter" property (-5..5).</td>
     </tr>
 
     <tr>
@@ -2717,15 +2714,14 @@
           <tr><td>Renderer</td><td>Use specified rendering mode</td><td>-video</td></tr>
           <tr><td>TIA palette</td><td>Palette for emulation mode</td><td>-palette</td></tr>
           <tr><td>TIA interpolation</td><td>Interpolation for TIA image</td><td>-tia.inter</td></tr>
-      <tr><td>TIA zoom</td><td>Zoom level for emulation mode </td><td>-tia.zoom</td></tr>
-          <tr><td>NTSC aspect</td><td>Width of TIA image in NTSC mode</td><td>-tia.aspectn</td></tr>
-          <tr><td>PAL aspect</td><td>Width of TIA image in PAL mode</td><td>-tia.aspectp</td></tr>
+	      <tr><td>TIA zoom</td><td>Zoom level for emulation mode </td><td>-tia.zoom</td></tr>
+          <tr><td>V-Size adjust</td><td>Adjust height of TIA image</td><td>-tia.vsizeadjust</td></tr>
           <tr><td>Emul. speed</td><td>Emulation speed</td><td>-speed</td></tr>
-      <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
+      	  <tr><td>VSync</td><td>Enable vertical synced updates</td><td>-vsync</td></tr>
           <tr><td>Fullscreen</td><td>Self-explanatory - Note that colors may slightly change.
                   This depends on the OS and renderer used.</td><td>-fullscreen</td></tr>
           <tr><td>Stretch</td><td>In fullscreen mode, completely fill screen with TIA image</td><td>-tia.fs_stretch</td></tr>
-      <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image</td><td>-tia.fs_overscan</td></tr>
+          <tr><td>Overscan</td><td>In fullscreen mode, add overscan to the TIA image</td><td>-tia.fs_overscan</td></tr>
           <tr><td>Fast SuperCharger load</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>Overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>Attempt to center application windows, else position at last position</td><td>-center</td></tr>
@@ -3749,9 +3745,9 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Display.YStart:</i></td>
-      <td>Indicates the scan-line to start displaying at.
-      The value must be <i>n</i> such that 0 &lt;= <i>n</i> &lt;= 64.
+      <td VALIGN="TOP"><i>Display.VCenter:</i></td>
+      <td>Indicates the offset for the vertical center of the display.
+      The value must be <i>n</i> such that -5 &lt;= <i>n</i> &lt;= 5.
       </td>
     </tr>
 
