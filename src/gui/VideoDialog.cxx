@@ -136,12 +136,12 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (NTSC mode)
-  myAdjustScanlines =
+  myVsizeAdjust =
     new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
-                     "Scanlines adjust ", lwidth, 0, fontWidth * 4, "", 0, true);
-  myAdjustScanlines->setMinValue(-50); myAdjustScanlines->setMaxValue(50);
-  myAdjustScanlines->setTickmarkIntervals(5);
-  wid.push_back(myAdjustScanlines);
+                     "V-Size adjust ", lwidth, 0, fontWidth * 4, "", 0, true);
+  myVsizeAdjust->setMinValue(-50); myVsizeAdjust->setMaxValue(50);
+  myVsizeAdjust->setTickmarkIntervals(5);
+  wid.push_back(myVsizeAdjust);
   ypos += lineHeight + VGAP;
 
   // Speed
@@ -342,8 +342,8 @@ void VideoDialog::loadConfig()
   myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
 
   // Aspect ratio setting (NTSC and PAL)
-  myAdjustScanlines->setValue(
-    round(instance().settings().getFloat("tia.adjustscanlines") * 10)
+  myVsizeAdjust->setValue(
+    round(instance().settings().getFloat("tia.vsizeadjust") * 10)
   );
 
   // Emulation speed
@@ -416,8 +416,8 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
 
   // Aspect ratio setting (NTSC and PAL)
-  instance().settings().setValue("tia.adjustscanlines",
-    static_cast<float>(myAdjustScanlines->getValue()) / 10.f
+  instance().settings().setValue("tia.vsizeadjust",
+    static_cast<float>(myVsizeAdjust->getValue()) / 10.f
   );
 
   // Speed
@@ -498,7 +498,7 @@ void VideoDialog::setDefaults()
       myTIAZoom->setValue(300);
       myTIAPalette->setSelected("standard", "");
       myTIAInterpolate->setState(false);
-      myAdjustScanlines->setValue(0);
+      myVsizeAdjust->setValue(0);
       mySpeed->setValue(0);
 
       myFullscreen->setState(false);
