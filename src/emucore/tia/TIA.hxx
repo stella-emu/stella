@@ -264,8 +264,8 @@ class TIA : public Device
     void setLayout(FrameLayout layout) { myFrameManager->setLayout(layout); }
     FrameLayout frameLayout() const { return myFrameManager->layout(); }
 
-    void setAdjustScanlines(float adjustScanlines) { myFrameManager->setAdjustScanlines(adjustScanlines); }
-    float adjustScanlines() const { return myFrameManager->adjustScanlines(); }
+    void setVsizeAdjust(float vsizeAdjust) { myFrameManager->setVsizeAdjust(vsizeAdjust); }
+    float vsizeAdjust() const { return myFrameManager->vsizeAdjust(); }
 
     /**
       Enables/disables color-loss for PAL modes only.
