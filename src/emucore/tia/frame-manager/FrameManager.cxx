@@ -192,6 +192,7 @@ bool FrameManager::onSave(Serializer& out) const
   out.putInt(myFrameLines);
   out.putInt(myHeight);
   out.putInt(myYStart);
+  out.putInt(myVcenter);
 
   out.putBool(myJitterEnabled);
 
@@ -213,6 +214,7 @@ bool FrameManager::onLoad(Serializer& in)
   myFrameLines = in.getInt();
   myHeight = in.getInt();
   myYStart = in.getInt();
+  myVcenter = in.getInt();
 
   myJitterEnabled = in.getBool();
 
