@@ -328,10 +328,10 @@ class Controller : public Serializable
 
   private:
     /// The boolean value on each digital pin
-    std::array<bool, 5> myDigitalPinState{true};
+    std::array<bool, 5> myDigitalPinState{true, true, true, true, true};
 
     /// The analog value on each analog pin
-    std::array<Int32, 2> myAnalogPinValue{MAX_RESISTANCE};
+    std::array<Int32, 2> myAnalogPinValue{MAX_RESISTANCE, MAX_RESISTANCE};
 
   private:
     // Following constructors and assignment operators not supported
