@@ -507,7 +507,7 @@ void VideoDialog::setDefaults()
 
       myFullscreen->setState(false);
       //myFullScreenMode->setSelectedIndex(0);
-      myUseStretch->setState(true);
+      myUseStretch->setState(false);
       myUseVSync->setState(true);
       myUIMessages->setState(true);
       myCenter->setState(false);
