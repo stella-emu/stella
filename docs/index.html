@@ -2617,10 +2617,20 @@
           If disabled, use the last databus value for those pins instead.</td>
     </tr><tr>
       <td><pre>-dev.rwportbreak &lt;1|0&gt;</pre></td>
-      <td>Since the 2600 has no dedicated R/W line, different addresses are used
-      for RAM read or write access. If the code reads from such a write address, this causes
-    an unwanted, semi-random write to that address.
-    When this option is enabled, such reads interrupt emulation and the debugger is entered.</td>
+      <td>Since the 2600 has no dedicated R/W line, different addresses are
+        used for RAM read or write access.</br>
+      	If the code reads from such a write address, this causes an unwanted,
+      	semi-random write to that address.</br>
+    	When this option is enabled, such reads interrupt emulation and the
+    	debugger is entered.</td>
+    </tr><tr>
+      <td><pre>-dev.wrportbreak &lt;1|0&gt;</pre></td>
+      <td>Same as above.</br>
+        If the code writes to such a read address, nothing happens. But a
+        developer should be made aware of it, because this indicates a problem
+        with the code.</br>
+    	When this option is enabled, such writes interrupt emulation and the
+    	debugger is entered.</td>
     </tr><tr>
       <td><pre>-dev.thumb.trapfatal &lt;1|0&gt;</pre></td>
       <td>When enabled, this allows the Thumb ARM emulation to
@@ -3245,6 +3255,11 @@
             <td><span style="white-space:nowrap">-dev.rwportbreak</span></td>
           </tr>
           <tr>
+            <td>Break on write to ...</td>
+            <td>A write to a read port interrupts emulation and the debugger is entered.</td>
+            <td><span style="white-space:nowrap">-dev.wrportbreak</span></td>
+          </tr>
+          <tr>
             <td>Fatal ARM emulation ...</td>
             <td>Thumb ARM emulation throws an exception and enters the debugger on fatal errors</td>
             <td><span style="white-space:nowrap">-dev.thumb.trapfatal</span></td>
@@ -3364,6 +3379,12 @@
               Automatically save no, current or all states when exiting emulation.
             </td>
             <td>-saveonexit</td>
+          </tr><tr>
+            <td>Automatically switch...</td>
+            <td>
+              Automatically switch to the next available save state slot after saving a ROM state file.
+            </td>
+            <td>-autoslot</td>
           </tr>
         </table>
       </td>

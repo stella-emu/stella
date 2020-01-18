@@ -136,6 +136,7 @@ class DeveloperDialog : public Dialog
     PopUpWidget*        myStateIntervalWidget{nullptr};
     PopUpWidget*        myStateHorizonWidget{nullptr};
     RadioButtonGroup*   mySaveOnExitGroup{nullptr};
+    CheckboxWidget*     myAutoSlotWidget{nullptr};
 
 #ifdef DEBUGGER_SUPPORT
     // Debugger UI widgets

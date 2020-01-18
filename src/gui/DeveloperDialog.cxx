@@ -494,6 +494,11 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   wid.push_back(r);
   ypos += lineHeight + VGAP;
 
+
+  myAutoSlotWidget = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Automatically switch save state slots");
+  wid.push_back(myAutoSlotWidget);
+  ypos += lineHeight + VGAP;
+
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
@@ -841,6 +846,8 @@ void DeveloperDialog::loadConfig()
   // Save on exit
   string saveOnExit = instance().settings().getString("saveonexit");
   mySaveOnExitGroup->setSelected(saveOnExit == "all" ? 2 : saveOnExit == "current" ? 1 : 0);
+  // Automatically change save state slots
+  myAutoSlotWidget->setState(instance().settings().getBool("autoslot"));
 
 #ifdef DEBUGGER_SUPPORT
   uInt32 w, h;
@@ -922,6 +929,8 @@ void DeveloperDialog::saveConfig()
   int saveOnExit = mySaveOnExitGroup->getSelected();
   instance().settings().setValue("saveonexit",
     saveOnExit == 0 ? "none" : saveOnExit == 1 ? "current" : "all");
+  // Automatically change save state slots
+  instance().settings().setValue("autoslot", myAutoSlotWidget->getState());
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger font style
@@ -1014,6 +1023,7 @@ void DeveloperDialog::setDefaults()
 
       setWidgetStates(set);
       mySaveOnExitGroup->setSelected(0);
+      myAutoSlotWidget->setState(false);
       break;
 
     case 4: // Debugger options

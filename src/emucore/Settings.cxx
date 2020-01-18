@@ -465,10 +465,11 @@ void Settings::usage() const
     << "                                scaling/effects)\n"
     << "  -ssinterval   <number>       Number of seconds between snapshots in\n"
     << "                                continuous snapshot mode\n"
-    << "  -autoslot     <1|0>          Automatically switch to next save slot when\n"
-    << "                                state saving\n"
+    << endl
     << "  -saveonexit   <none|current  Automatically save state(s) when exiting emulation\n"
     << "                 all>\n"
+    << "  -autoslot     <1|0>          Automatically switch to next save slot when\n"
+    << "                                state saving\n"
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM\n"
@@ -588,6 +589,7 @@ void Settings::usage() const
     << "                                    read/peek\n"
 #ifdef DEBUGGER_SUPPORT
     << "  -dev.rwportbreak      <1|0>      Debugger breaks on reads from write ports\n"
+    << "  -dev.wrportbreak      <1|0>      Debugger breaks on writes to read ports\n"
 #endif
     << "  -dev.thumb.trapfatal  <1|0>      Determines whether errors in ARM emulation\n"
     << "                                    throw an exception\n"
