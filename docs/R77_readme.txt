@@ -1,6 +1,4 @@
 TODOs:
-- convert into HTML
-- maybe display inside a R77 specific help dialog (from Command dialog)
 - check if Command dialog and Settings shoud use the same button (16:9,4:3)
 - explain Command and Settings dialog
 - explain Power-on options dialog (or refer to Stella User's Guide)
@@ -32,7 +30,7 @@ Inside Launcher:
   Right           MODE        Page down
   Button 1        SKILL P1    Start selected game
   Button 2  or    SKILL P2    Open power-on options
-   hold Button 1 
+   hold Button 1
   Button 4        COLOR,B/W   Open settings
 
 Inside a dialog:
@@ -45,9 +43,9 @@ Inside a dialog:
   Button 1           SKILL P1    Select element
   Button 2           SKILL P2    OK
   Button 3  or       4:3,16:9    Previous tab
-   Button 1 + Left   
+   Button 1 + Left
   Button 4  or       FRY         Next tab
-   Button 1 + Right    
+   Button 1 + Right
   Button 6           -           Cancel
 
 Note: If you have a keyboard attached via OTG all keys work as described in
