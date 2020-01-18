@@ -97,6 +97,8 @@
 
   * Added option to save and load all TimeMachine states at once.
 
+  * Added option to automatically save states when exiting emulation.
+
   * Added option to change pitch of Pitfall II music.
 
   * ROM Info Launcher can now display multiple lines per property and
