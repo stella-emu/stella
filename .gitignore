@@ -22,9 +22,9 @@ src/macosx/M6502.ins
 .vscode/c_cpp_properties.json
 src/windows/sdl/*
 src/windows/x64/*
-src/windows/debug/*
-src/windows/release/*
+src/windows/Win32/*
 src/windows/Stella.vcxproj.user
+src/windows/*.bak
 .vs/*
 .tgitconfig
 src/**/*.psess
