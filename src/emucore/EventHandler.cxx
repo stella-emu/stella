@@ -737,6 +737,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           {
             if (myState == EventHandlerState::EMULATION)
             {
+#ifdef GUI_SUPPORT
               if (myOSystem.settings().getBool("confirmexit"))
               {
                 StringList msg;
@@ -749,11 +750,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
                 enterMenuMode(EventHandlerState::MESSAGEMENU);
               }
               else
+#endif
                 exitEmulation(true);
             }
           }
           return;
 
+#ifdef GUI_SUPPORT
         case EventHandlerState::MESSAGEMENU:
           if (pressed && !repeated)
           {
@@ -762,6 +765,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
               exitEmulation(true);
           }
           return;
+#endif
 
         default:
           return;
