@@ -27,13 +27,14 @@ namespace GUI {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       const StringList& text, int max_w, int max_h, int cmd,
+                       const StringList& text, int max_w, int max_h, int okCmd, int cancelCmd,
                        const string& okText, const string& cancelText,
                        const string& title,
                        bool focusOKButton)
   : Dialog(boss->instance(), boss->parent(), font, title, 0, 0, max_w, max_h),
     CommandSender(boss),
-    myCmd(cmd)
+    myOkCmd(okCmd),
+    myCancelCmd(cancelCmd)
 {
   addText(font, text);
 
@@ -44,12 +45,34 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       const string& text, int max_w, int max_h, int cmd,
+                       const StringList& text, int max_w, int max_h, int okCmd,
+                       const string& okText, const string& cancelText,
+                       const string& title,
+                       bool focusOKButton)
+  : MessageBox(boss, font, text, max_w, max_h,
+               okCmd, 0, okText, cancelText, title, focusOKButton)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
+                       const string& text, int max_w, int max_h, int okCmd,
                        const string& okText, const string& cancelText,
                        const string& title,
                        bool focusOKButton)
   : MessageBox(boss, font, StringParser(text).stringList(), max_w, max_h,
-               cmd, okText, cancelText, title, focusOKButton)
+               okCmd, okText, cancelText, title, focusOKButton)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
+                       const string& text, int max_w, int max_h, int okCmd, int cancelCmd,
+                       const string& okText, const string& cancelText,
+                       const string& title,
+                       bool focusOKButton)
+  : MessageBox(boss, font, StringParser(text).stringList(), max_w, max_h,
+               okCmd, cancelCmd, okText, cancelText, title, focusOKButton)
 {
 }
 
@@ -85,8 +108,16 @@ void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     // Send a signal to the calling class that 'OK' has been selected
     // Since we aren't derived from a widget, we don't have a 'data' or 'id'
-    if(myCmd)
-      sendCommand(myCmd, 0, 0);
+    if(myOkCmd)
+      sendCommand(myOkCmd, 0, 0);
+  }
+  else if (cmd == GuiObject::kCloseCmd)
+  {
+    close();
+
+    // Send a signal to the calling class that 'Cancel' has been selected
+    if (myCancelCmd)
+      sendCommand(myCancelCmd, 0, 0);
   }
   else
     Dialog::handleCommand(sender, cmd, data, id);

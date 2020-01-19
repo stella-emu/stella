@@ -143,6 +143,7 @@ Settings::Settings()
   setPermanent("ctrlrate", "20");
   setPermanent("basic_settings", false);
   setPermanent("dialogpos", 0);
+  setPermanent("confirmexit", false);
 
   // Misc options
   setPermanent("loglevel", int(Logger::Level::INFO));
@@ -488,6 +489,7 @@ void Settings::usage() const
     << "                 classic|light>\n"
     << "  -hidpi        <0|1>          Enable HiDPI mode\n"
     << "  -dialogpos    <0..4>         Display all dialogs at given positions\n"
+    << "  -confirmexit  <0|1>          Display a confirm dialog when exiting emulation\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets\n"
     << "                                (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in\n"

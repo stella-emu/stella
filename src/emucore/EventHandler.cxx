@@ -53,6 +53,7 @@
 #ifdef GUI_SUPPORT
   #include "Menu.hxx"
   #include "CommandMenu.hxx"
+  #include "MessageMenu.hxx"
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
@@ -730,17 +731,35 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           return;
 
         // this event is called when exiting a ROM from the debugger, so it acts like pressing ESC in emulation
-        case EventHandlerState::DEBUGGER:
         case EventHandlerState::EMULATION:
+        case EventHandlerState::DEBUGGER:
           if (pressed && !repeated)
           {
-            exitEmulation();
-            // Go back to the launcher, or immediately quit
-            if (myOSystem.settings().getBool("exitlauncher") ||
-              myOSystem.launcherUsed())
-              myOSystem.createLauncher();
-            else
-              handleEvent(Event::Quit);
+            if (myState == EventHandlerState::EMULATION)
+            {
+              if (myOSystem.settings().getBool("confirmexit"))
+              {
+                StringList msg;
+
+                msg.push_back("Do you really want to exit emulation?");
+                msg.push_back("");
+                msg.push_back("You will lose all your progress.");
+
+                myOSystem.messageMenu().setMessage("Exit Emulation", msg, true);
+                enterMenuMode(EventHandlerState::MESSAGEMENU);
+              }
+              else
+                exitEmulation(true);
+            }
+          }
+          return;
+
+        case EventHandlerState::MESSAGEMENU:
+          if (pressed && !repeated)
+          {
+            leaveMenuMode();
+            if (myOSystem.messageMenu().confirmed())
+              exitEmulation(true);
           }
           return;
 
@@ -978,7 +997,7 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       break;
 
     case Event::OptionsMenuMode:
-      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+      if (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterMenuMode(EventHandlerState::OPTIONSMENU);
       else
         handled = false;
@@ -1696,6 +1715,11 @@ void EventHandler::setState(EventHandlerState state)
       enableTextEvents(true);
       break;
 
+    case EventHandlerState::MESSAGEMENU:
+      myOverlay = &myOSystem.messageMenu();
+      enableTextEvents(true);
+      break;
+
     case EventHandlerState::TIMEMACHINE:
       myOSystem.timeMachine().requestResize();
       myOverlay = &myOSystem.timeMachine();
@@ -1737,15 +1761,24 @@ void EventHandler::setState(EventHandlerState state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::exitEmulation()
+void EventHandler::exitEmulation(bool checkLauncher)
 {
-  // TODO: confirm message
   string saveOnExit = myOSystem.settings().getString("saveonexit");
 
   if (saveOnExit == "all")
     handleEvent(Event::SaveAllStates);
   else if (saveOnExit == "current")
     handleEvent(Event::SaveState);
+
+  if (checkLauncher)
+  {
+    // Go back to the launcher, or immediately quit
+    if (myOSystem.settings().getBool("exitlauncher") ||
+        myOSystem.launcherUsed())
+      myOSystem.createLauncher();
+    else
+      handleEvent(Event::Quit);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

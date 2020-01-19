@@ -42,6 +42,7 @@
   #include "Launcher.hxx"
   #include "Menu.hxx"
   #include "CommandMenu.hxx"
+  #include "MessageMenu.hxx"
   #include "TimeMachine.hxx"
 #endif
 
@@ -329,6 +330,18 @@ void FrameBuffer::update(bool force)
         myOSystem.commandMenu().draw(force);
       }
       break;  // EventHandlerState::CMDMENU
+    }
+
+    case EventHandlerState::MESSAGEMENU:
+    {
+      force = force || myOSystem.messageMenu().needsRedraw();
+      if (force)
+      {
+        clear();
+        myTIASurface->render();
+        myOSystem.messageMenu().draw(force);
+      }
+      break;  // EventHandlerState::MESSAGEMENU
     }
 
     case EventHandlerState::TIMEMACHINE:
