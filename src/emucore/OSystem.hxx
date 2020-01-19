@@ -39,6 +39,7 @@ class AudioSettings;
   class CommandMenu;
   class Launcher;
   class Menu;
+  class MessageMenu;
   class TimeMachine;
   class VideoDialog;
 #endif
@@ -207,6 +208,13 @@ class OSystem
       @return The command menu object
     */
     CommandMenu& commandMenu() const { return *myCommandMenu; }
+
+    /**
+      Get the message menu of the system.
+
+      @return The message menu object
+    */
+    MessageMenu& messageMenu() const { return *myMessageMenu; }
 
     /**
       Get the ROM launcher of the system.
@@ -482,6 +490,9 @@ class OSystem
 
     // Pointer to the CommandMenu object
     unique_ptr<CommandMenu> myCommandMenu;
+
+    // Pointer to the CommandMenu object
+    unique_ptr<MessageMenu> myMessageMenu;
 
     // Pointer to the Launcher object
     unique_ptr<Launcher> myLauncher;

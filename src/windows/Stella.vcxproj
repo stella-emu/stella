@@ -518,6 +518,8 @@
     <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\JoystickDialog.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
+    <ClCompile Include="..\gui\MessageDialog.cxx" />
+    <ClCompile Include="..\gui\MessageMenu.cxx" />
     <ClCompile Include="..\gui\MinUICommandDialog.cxx" />
     <ClCompile Include="..\gui\R77HelpDialog.cxx" />
     <ClCompile Include="..\gui\RadioButtonWidget.cxx" />
@@ -1252,6 +1254,8 @@
     <ClInclude Include="..\gui\FileListWidget.hxx" />
     <ClInclude Include="..\gui\JoystickDialog.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
+    <ClInclude Include="..\gui\MessageDialog.hxx" />
+    <ClInclude Include="..\gui\MessageMenu.hxx" />
     <ClInclude Include="..\gui\MinUICommandDialog.hxx" />
     <ClInclude Include="..\gui\R77HelpDialog.hxx" />
     <ClInclude Include="..\gui\RadioButtonWidget.hxx" />

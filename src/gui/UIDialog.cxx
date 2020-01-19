@@ -85,6 +85,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    items, "Theme      ", lwidth);
   wid.push_back(myPalettePopup);
+
+  // Enable HiDPI mode
+  myHidpiWidget = new CheckboxWidget(myTab, font, myPalettePopup->getRight() + 40,
+                                     ypos, "HiDPI mode (*)");
+  wid.push_back(myHidpiWidget);
   ypos += lineHeight + V_GAP;
 
   // Dialog position
@@ -97,12 +102,12 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myPositionPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                     items, "Dialogs position ", lwidth);
   wid.push_back(myPositionPopup);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + V_GAP * 2;
 
-  // Enable HiDPI mode
-  myHidpiWidget = new CheckboxWidget(myTab, font, xpos, ypos, "HiDPI mode (*)");
-  wid.push_back(myHidpiWidget);
-  ypos += lineHeight + V_GAP * 4;
+  // Confirm dialog when exiting emulation
+  myConfirmExitWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Confirm exiting emulation");
+  wid.push_back(myConfirmExitWidget);
+  ypos += lineHeight + V_GAP * 3;
 
   // Delay between quick-selecting characters in ListWidget
   int swidth = myPalettePopup->getWidth() - lwidth;
@@ -329,6 +334,9 @@ void UIDialog::loadConfig()
     myHidpiWidget->setState(settings.getBool("hidpi"));
   }
 
+  // Confirm dialog when exiting emulation
+  myConfirmExitWidget->setState(settings.getBool("confirmexit"));
+
   // Dialog position
   myPositionPopup->setSelected(settings.getString("dialogpos"), "0");
 
@@ -395,6 +403,9 @@ void UIDialog::saveConfig()
   // Dialog position
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
 
+  // Confirm dialog when exiting emulation
+  settings.setValue("confirmexit", myConfirmExitWidget->getState());
+
   // Listwidget quick delay
   settings.setValue("listdelay", myListDelaySlider->getValue());
   FileListWidget::setQuickSelectDelay(myListDelaySlider->getValue());
@@ -429,6 +440,7 @@ void UIDialog::setDefaults()
       myPalettePopup->setSelected("standard");
       myHidpiWidget->setState(false);
       myPositionPopup->setSelected("0");
+      myConfirmExitWidget->setState(false);
       myListDelaySlider->setValue(300);
       myWheelLinesSlider->setValue(4);
       myDoubleClickSlider->setValue(500);

@@ -29,18 +29,28 @@ namespace GUI {
 /**
  * Show a simple message box containing the given text, with buttons
  * prompting the user to accept or reject.  If the user selects 'OK',
- * the value of 'cmd' is returned.
+ * the value of 'okCmd' is returned.
  */
 class MessageBox : public Dialog, public CommandSender
 {
   public:
     MessageBox(GuiObject* boss, const GUI::Font& font, const StringList& text,
-               int max_w, int max_h, int cmd = 0,
+               int max_w, int max_h, int okCmd = 0, int cancelCmd = 0,
+               const string& okText = "OK", const string& cancelText = "Cancel",
+               const string& title = "",
+               bool focusOKButton = true);
+    MessageBox(GuiObject* boss, const GUI::Font& font, const StringList& text,
+               int max_w, int max_h, int okCmd = 0,
                const string& okText = "OK", const string& cancelText = "Cancel",
                const string& title = "",
                bool focusOKButton = true);
     MessageBox(GuiObject* boss, const GUI::Font& font, const string& text,
-               int max_w, int max_h, int cmd = 0,
+               int max_w, int max_h, int okCmd = 0,
+               const string& okText = "OK", const string& cancelText = "Cancel",
+               const string& title = "",
+               bool focusOKButton = true);
+    MessageBox(GuiObject* boss, const GUI::Font& font, const string& text,
+               int max_w, int max_h, int okCmd, int cancelCmd,
                const string& okText = "OK", const string& cancelText = "Cancel",
                const string& title = "",
                bool focusOKButton = true);
@@ -54,7 +64,8 @@ class MessageBox : public Dialog, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    int myCmd{0};
+    int myOkCmd{0};
+    int myCancelCmd{0};
 
   private:
     // Following constructors and assignment operators not supported

@@ -26,6 +26,10 @@ class MouseControl;
 class DialogContainer;
 class PhysicalJoystick;
 
+namespace GUI {
+  class Font;
+}
+
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
 #include "Control.hxx"
@@ -329,7 +333,7 @@ class EventHandler
     void saveKeyMapping();
     void saveJoyMapping();
 
-    void exitEmulation();
+    void exitEmulation(bool checkLauncher = false);
 
   protected:
     // Global OSystem object

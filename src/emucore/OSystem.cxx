@@ -33,6 +33,7 @@
 #ifdef GUI_SUPPORT
   #include "Menu.hxx"
   #include "CommandMenu.hxx"
+  #include "MessageMenu.hxx"
   #include "Launcher.hxx"
   #include "TimeMachine.hxx"
   #include "Widget.hxx"
@@ -171,6 +172,7 @@ bool OSystem::create()
   // Create various subsystems (menu and launcher GUI objects, etc)
   myMenu = make_unique<Menu>(*this);
   myCommandMenu = make_unique<CommandMenu>(*this);
+  myMessageMenu = make_unique<MessageMenu>(*this);
   myTimeMachine = make_unique<TimeMachine>(*this);
   myLauncher = make_unique<Launcher>(*this);
 #endif
