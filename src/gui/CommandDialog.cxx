@@ -74,7 +74,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
 
   mySaveStateButton = ADD_CD_BUTTON("", kSaveStateCmd);
   wid.push_back(mySaveStateButton);
-  myStateSlotButton = ADD_CD_BUTTON("", kStateSlotCmd);
+  myStateSlotButton = ADD_CD_BUTTON("Change Slot", kStateSlotCmd);
   wid.push_back(myStateSlotButton);
   myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd);
   wid.push_back(myLoadStateButton);
@@ -190,7 +190,8 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      instance().eventHandler().handleEvent(Event::ExitMode);
+      instance().eventHandler().leaveMenuMode();
+      instance().eventHandler().handleEvent(Event::ExitGame);
       break;
 
     // Column 3
@@ -212,9 +213,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
     case kSoundCmd:
     {
       instance().eventHandler().leaveMenuMode();
-      bool enabled = instance().audioSettings().enabled();
-      instance().audioSettings().setEnabled(!enabled);
-      instance().console().initializeAudio();
+      instance().sound().toggleMute();
       break;
     }
     case kReloadRomCmd:
@@ -253,7 +252,6 @@ void CommandDialog::updateSlot(int slot)
   buf << " " << slot;
 
   mySaveStateButton->setLabel("Save State" + buf.str());
-  myStateSlotButton->setLabel("State Slot" + buf.str());
   myLoadStateButton->setLabel("Load State" + buf.str());
 }
 

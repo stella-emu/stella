@@ -117,7 +117,7 @@ class Event
       ToggleBLCollision, ToggleBLBit, TogglePFCollision, TogglePFBit,
       ToggleCollisions, ToggleBits, ToggleFixedColors,
 
-      ToggleFrameStats, ToggleSAPortOrder,
+      ToggleFrameStats, ToggleSAPortOrder, ExitGame,
 
       // add new events from here to avoid that user remapped events get overwritten
 

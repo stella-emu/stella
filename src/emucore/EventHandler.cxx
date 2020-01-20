@@ -770,10 +770,13 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
           }
           return;
 #endif
-
         default:
           return;
       }
+
+    case Event::ExitGame:
+      exitEmulation(true);
+      return;
 
     case Event::Quit:
       if(pressed && !repeated)
