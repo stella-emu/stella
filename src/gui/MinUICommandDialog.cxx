@@ -191,7 +191,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kStateSlotCmd:
     {
-      event = Event::ChangeState;
+      event = Event::NextState;
       stateCmd = true;
       int slot = (instance().state().currentSlot() + 1) % 10;
       updateSlot(slot);
