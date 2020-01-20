@@ -144,7 +144,8 @@ void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 
     case Event::SaveState:
     case Event::SaveAllStates:
-    case Event::ChangeState:
+    case Event::PreviousState :
+    case Event::NextState:
     case Event::LoadState:
     case Event::LoadAllStates:
 

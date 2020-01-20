@@ -297,9 +297,13 @@ void StateManager::saveState(int slot)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StateManager::changeState()
+void StateManager::changeState(int direction)
 {
-  myCurrentSlot = (myCurrentSlot + 1) % 10;
+  myCurrentSlot += direction;
+  if (myCurrentSlot < 0)
+    myCurrentSlot = 9;
+  else
+    myCurrentSlot %= 10;
 
   // Print appropriate message
   ostringstream buf;

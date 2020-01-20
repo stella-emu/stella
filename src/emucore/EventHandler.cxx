@@ -656,8 +656,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myOSystem.frameBuffer().showMessage(myOSystem.state().rewindManager().saveAllStates());
       return;
 
-    case Event::ChangeState:
-      if(pressed) myOSystem.state().changeState();
+    case Event::NextState:
+      if(pressed) myOSystem.state().changeState(1);
+      return;
+
+    case Event::PreviousState:
+      if (pressed) myOSystem.state().changeState(-1);
       return;
 
     case Event::ToggleAutoSlot:
@@ -1810,9 +1814,13 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ConsoleRightDiffB,       "P1 Difficulty B",                       "" },
   { Event::ConsoleRightDiffToggle,  "P1 Toggle Difficulty",                  "" },
   { Event::SaveState,               "Save state",                            "" },
-  { Event::ChangeState,             "Change state slot",                     "" },
+  { Event::SaveAllStates,           "Save all TM states of current game",    "" },
+  { Event::PreviousState,           "Change to previous state slot",         "" },
+  { Event::NextState,               "Change to next state slot",             "" },
   { Event::ToggleAutoSlot,          "Toggle automatic state slot change",    "" },
   { Event::LoadState,               "Load state",                            "" },
+  { Event::LoadAllStates,           "Load saved TM states for current game", "" },
+
 #ifdef PNG_SUPPORT
   { Event::TakeSnapshot,            "Snapshot",                              "" },
   { Event::ToggleContSnapshots,     "Save continuous snapsh. (as defined)",  "" },
@@ -1939,8 +1947,6 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ToggleGrabMouse,         "Toggle grab mouse",                     "" },
   { Event::ToggleSAPortOrder,       "Swap Stelladaptor port ordering",       "" },
 
-  { Event::SaveAllStates,           "Save all TM states of current game",    "" },
-  { Event::LoadAllStates,           "Load saved TM states for current game", "" },
   { Event::ToggleTimeMachine,       "Toggle 'Time Machine' mode",            "" },
   { Event::TimeMachineMode,         "Toggle 'Time Machine' UI",              "" },
   { Event::RewindPause,             "Rewind one state & enter Pause mode",   "" },
@@ -2026,8 +2032,8 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::EventSet EventHandler::StateEvents = {
-  Event::ChangeState, Event::LoadState, Event::SaveState, Event::TimeMachineMode,
-  Event::RewindPause, Event::UnwindPause, Event::ToggleTimeMachine,
+  Event::NextState, Event::PreviousState, Event::LoadState, Event::SaveState,
+  Event::TimeMachineMode, Event::RewindPause, Event::UnwindPause, Event::ToggleTimeMachine,
   Event::Rewind1Menu, Event::Rewind10Menu, Event::RewindAllMenu,
   Event::Unwind1Menu, Event::Unwind10Menu, Event::UnwindAllMenu,
   Event::SaveAllStates, Event::LoadAllStates, Event::ToggleAutoSlot,

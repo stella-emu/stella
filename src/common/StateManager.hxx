@@ -114,9 +114,9 @@ class StateManager
     void saveState(int slot = -1);
 
     /**
-      Switches to the next higher state slot (circular queue style).
+      Switches to the next higher or lower state slot (circular queue style).
     */
-    void changeState();
+    void changeState(int direction);
 
     /**
       Toggles auto slot mode.

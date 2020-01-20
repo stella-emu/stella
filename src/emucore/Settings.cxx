@@ -469,7 +469,7 @@ void Settings::usage() const
     << endl
     << "  -saveonexit   <none|current  Automatically save state(s) when exiting emulation\n"
     << "                 all>\n"
-    << "  -autoslot     <1|0>          Automatically switch to next save slot when\n"
+    << "  -autoslot     <1|0>          Automatically change to next save slot when\n"
     << "                                state saving\n"
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"

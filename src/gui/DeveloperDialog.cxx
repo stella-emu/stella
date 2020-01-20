@@ -495,7 +495,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   ypos += lineHeight + VGAP;
 
 
-  myAutoSlotWidget = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Automatically switch save state slots");
+  myAutoSlotWidget = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Automatically change save state slots");
   wid.push_back(myAutoSlotWidget);
   ypos += lineHeight + VGAP;
 

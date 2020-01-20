@@ -93,7 +93,7 @@ class Event
       OptionsMenuMode, CmdMenuMode, DebuggerMode, ExitMode,
       TakeSnapshot, ToggleContSnapshots, ToggleContSnapshotsFrame,
 
-      ChangeState, LoadState, SaveState,
+      NextState, PreviousState, LoadState, SaveState,
       SaveAllStates, LoadAllStates,
       ToggleAutoSlot, ToggleTimeMachine, TimeMachineMode,
       Rewind1Menu, Rewind10Menu, RewindAllMenu,
@@ -134,7 +134,7 @@ class Event
     };
 
     // Event list version, update only if the id of existing(!) event types changed
-    static constexpr Int32 VERSION = 2;
+    static constexpr Int32 VERSION = 3;
 
     using EventSet = std::set<Event::Type>;
 
