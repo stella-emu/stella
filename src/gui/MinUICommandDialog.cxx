@@ -76,7 +76,7 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
 
   mySaveStateButton = ADD_CD_BUTTON("", kSaveStateCmd);
   wid.push_back(mySaveStateButton);
-  myStateSlotButton = ADD_CD_BUTTON("", kStateSlotCmd);
+  myStateSlotButton = ADD_CD_BUTTON("Change Slot", kStateSlotCmd);
   wid.push_back(myStateSlotButton);
   myLoadStateButton = ADD_CD_BUTTON("", kLoadStateCmd);
   wid.push_back(myLoadStateButton);
@@ -246,7 +246,8 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitGameCmd:
-      instance().eventHandler().handleEvent(Event::ExitMode);
+      instance().eventHandler().leaveMenuMode();
+      instance().eventHandler().handleEvent(Event::ExitGame);
       break;
 
     default:
@@ -280,7 +281,6 @@ void MinUICommandDialog::updateSlot(int slot)
   buf << " " << slot;
 
   mySaveStateButton->setLabel("Save State" + buf.str());
-  myStateSlotButton->setLabel("State Slot" + buf.str());
   myLoadStateButton->setLabel("Load State" + buf.str());
 }
 
