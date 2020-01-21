@@ -226,7 +226,6 @@ void TIASurface::enableNTSC(bool enable)
     myTiaSurface->setSrcSize(surfaceWidth, myTIA->height());
 
     myTiaSurface->invalidate();
-    myTIA->clearFrameBuffer();
   }
 
   mySLineSurface->setSrcSize(1, 2 * myTIA->height());

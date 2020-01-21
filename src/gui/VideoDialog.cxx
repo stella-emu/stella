@@ -416,7 +416,7 @@ void VideoDialog::saveConfig()
   // Aspect ratio setting (NTSC and PAL)
   int oldAdjust = instance().settings().getInt("tia.vsizeadjust");
   int newAdjust = myVSizeAdjust->getValue();
-  bool initializeVideo = oldAdjust != newAdjust;
+  bool vsizeChanged = oldAdjust != newAdjust;
 
   instance().settings().setValue("tia.vsizeadjust", newAdjust);
 
@@ -477,11 +477,11 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tv.scanlines", myTVScanIntense->getValueLabel());
 
   if (instance().hasConsole())
-  {
     instance().console().setTIAProperties();
-    // TODO: display the new screen (currently all blank)
-    if (initializeVideo)
-      instance().console().initializeVideo();
+
+  if (vsizeChanged && instance().hasConsole()) {
+    instance().console().tia().clearFrameBuffer();
+    instance().console().initializeVideo();
   }
 
   // Finally, issue a complete framebuffer re-initialization...
