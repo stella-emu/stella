@@ -490,7 +490,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-    "Save all states", mySaveOnExitGroup);
+    "Save all Time Machine states", mySaveOnExitGroup);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
 
