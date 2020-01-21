@@ -730,7 +730,7 @@
     </tr>
 
   <tr>
-      <td>Save all states</td>
+      <td>Save all Time Machine states</td>
       <td>Alt + F9</td>
       <td>Cmd + F9</td>
     </tr>
@@ -760,7 +760,7 @@
     </tr>
 
     <tr>
-      <td>Load all states</td>
+      <td>Load all states into Time Machine</td>
       <td>Alt + F11</td>
       <td>Cmd + F11</td>
     </tr>
@@ -1882,8 +1882,8 @@
     <tr><td>'Rewind One' button</td><td>Navigates back by one state</td></tr>
     <tr><td>'Unwind One' button</td><td>Navigates forward by one state</td></tr>
     <tr><td>'Unwind All' button</td><td>Navigates forward to the end of the timeline</td></tr>
-    <tr><td>'Save All' button</td><td>Saves all states to disk</td></tr>
-    <tr><td>'Load All' button</td><td>Loades all states from disk</td></tr>
+    <tr><td>'Save All' button</td><td>Saves all Time Machine states to disk</td></tr>
+    <tr><td>'Load All' button</td><td>Loades all states from disk into Time Machine</td></tr>
     <tr><td>Navigation info</td><td>Informs about the interval of the user's last
       Time Machine navigation. The interval can vary if the timeline is compressed.</td></tr>
     <tr><td>Total time</td><td>Shows the total time covered by the save states
@@ -3403,7 +3403,9 @@
           </tr><tr>
             <td>When exiting emulation:</td>
             <td>
-              Automatically save no, current or all states when exiting emulation.
+              Automatically save no, current or all Time Machine states when exiting emulation.<br/>
+              When saving is enabled, you can always continue your game session
+              from where you exited it. Even including the Time Machine buffer!
             </td>
             <td>-saveonexit</td>
           </tr><tr>
