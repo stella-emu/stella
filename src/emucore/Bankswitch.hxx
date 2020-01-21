@@ -89,6 +89,11 @@ class Bankswitch
     static bool isValidRomName(const FilesystemNode& name);
     static bool isValidRomName(const string& name);
 
+    // Output operator
+    friend ostream& operator<<(ostream& os, const Bankswitch::Type& t) {
+      return os << typeToName(t);
+    }
+
   private:
     struct TypeComparator {
       bool operator() (const string& a, const string& b) const {
