@@ -64,7 +64,7 @@ class FileListWidget : public StringListWidget
                      will instead be used, and the file will be selected
         @param select  An optional entry to select (if applicable)
     */
-    void setDirectory(const FilesystemNode& node, string select = "");
+    void setDirectory(const FilesystemNode& node, const string& select = EmptyString);
 
     /** Select parent directory (if applicable) */
     void selectParent();
@@ -83,7 +83,7 @@ class FileListWidget : public StringListWidget
 
   private:
     /** Very similar to setDirectory(), but also updates the history */
-    void setLocation(const FilesystemNode& node, const string& select = EmptyString);
+    void setLocation(const FilesystemNode& node, const string& select);
 
     /** Descend into currently selected directory */
     void selectDirectory();
@@ -99,6 +99,7 @@ class FileListWidget : public StringListWidget
 
     Common::FixedStack<string> _history;
     uInt32 _selected{0};
+    string _selectedFile;
 
     string _quickSelectStr;
     uInt64 _quickSelectTime{0};
