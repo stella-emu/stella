@@ -34,16 +34,19 @@ FileListWidget::FileListWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setDirectory(const FilesystemNode& node, string select)
+void FileListWidget::setDirectory(const FilesystemNode& node,
+                                  const string& select)
 {
   _node = node;
 
   // We always want a directory listing
   if(!_node.isDirectory() && _node.hasParent())
   {
-    select = _node.getName();
+    _selectedFile = _node.getName();
     _node = _node.getParent();
   }
+  else
+    _selectedFile = select;
 
   // Initialize history
   FilesystemNode tmp = _node;
@@ -62,11 +65,12 @@ void FileListWidget::setDirectory(const FilesystemNode& node, string select)
   _history.reverse();
 
   // Finally, go to this location
-  setLocation(_node, select);
+  setLocation(_node, _selectedFile);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileListWidget::setLocation(const FilesystemNode& node, const string& select)
+void FileListWidget::setLocation(const FilesystemNode& node,
+                                 const string& select)
 {
   _node = node;
 
@@ -90,7 +94,7 @@ void FileListWidget::setLocation(const FilesystemNode& node, const string& selec
 void FileListWidget::selectDirectory()
 {
   _history.push(selected().getName());
-  setLocation(selected());
+  setLocation(selected(), _selectedFile);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
