@@ -51,8 +51,9 @@ class FixedStack
     // Reverse the contents of the stack
     // This operation isn't needed very often, but it's handy to have
     void reverse() {
-      for(uInt32 i = 0, j = _size - 1; i < j; ++i, --j)
-        std::swap(_stack[i], _stack[j]);
+      if(_size > 1)
+        for(uInt32 i = 0, j = _size - 1; i < j; ++i, --j)
+          std::swap(_stack[i], _stack[j]);
     }
 
     // Apply the given function to every item in the stack
