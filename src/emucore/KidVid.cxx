@@ -59,7 +59,7 @@ void KidVid::update()
     myBlockIdx = KVBLOCKBITS;
     myBlock = 0;
     openSampleFile();
-cerr << "myTape = " << myTape << endl;
+//cerr << "myTape = " << myTape << endl;
   }
   else if(myEvent.get(Event::KeyboardOne2))
   {
@@ -68,7 +68,7 @@ cerr << "myTape = " << myTape << endl;
     myBlockIdx = KVBLOCKBITS;
     myBlock = 0;
     openSampleFile();
-cerr << "myTape = " << myTape << endl;
+//cerr << "myTape = " << myTape << endl;
   }
   else if(myEvent.get(Event::KeyboardOne3))
   {
@@ -76,13 +76,13 @@ cerr << "myTape = " << myTape << endl;
     {
       myTape = 4;
       myIdx = KVBLOCKBITS;
-cerr << "myTape = " << myTape << endl;
+//cerr << "myTape = " << myTape << endl;
     }
     else                    /* no, Smurf Save The Day */
     {
       myTape = 1;
       myIdx = 0;
-cerr << "myTape = " << myTape << endl;
+//cerr << "myTape = " << myTape << endl;
     }
     myBlockIdx = KVBLOCKBITS;
     myBlock = 0;

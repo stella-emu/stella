@@ -438,7 +438,11 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   if(instance().hasConsole() && myFormat->getSelectedTag().toString() == "AUTO")
   {
     const string& format = instance().console().about().DisplayFormat;
-    string label = format.substr(0, format.length() - 1);
+    string label;
+    if (format.at(format.length() - 1) == '*')
+      label = format.substr(0, format.length() - 1);
+    else
+      label = format;
     myFormatDetected->setLabel(label + " detected");
   }
   else

@@ -300,6 +300,7 @@
       including <a href="http://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports using ROM filename extensions to force specific bankswitching schemes</li>
+    <li>Supports using ROM filename to force specific display formats</li>
     <li>Supports Supercharger single-load and multi-load games</li>
     <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual raw A26/BIN/ROM formats</li>
     <li>Supports property file for setting the properties associated with games</li>
@@ -3723,7 +3724,7 @@ Ms Pac-Man (Stella extended codes):
       The value of this property must be either <b>Auto</b> or one of the following
       (for more information about bank-switching see Kevin Horton's <a href="http://kevtris.org/files/sizes.txt">2600 bankswitching
       document</a> or the documentation in each cartridge's source code file) types. Types marked
-      as (&#185;) do not currently have reliable auto-detection, those marked as (&#178;)
+      as (&#185;) do currently have no reliable auto-detection, those marked as (&#178;)
       are not fully supported in the debugger:
       <table cellpadding="2" border="1">
         <tr><th>&nbsp;Type&nbsp;</th><th>Description</th><th>File Extension<br>(to force type)</th></tr>
@@ -3790,8 +3791,18 @@ Ms Pac-Man (Stella extended codes):
     <tr>
       <td VALIGN="TOP"><i>Display.Format:</i></td>
       <td>Indicates the television format the game was designed for. The value
-      must be <b>Auto</b>, <b>NTSC</b>, <b>PAL</b>, <b>SECAM</b>, <b>NTSC50</b>,
-      <b>PAL60</b> or <b>SECAM60</b>.</td>
+      must be <b>Auto</b> or one of the following. Types marked as (&#185;)
+      do currently have no reliable auto-detection. A format can be enforced
+      by using one of the following pattern in the filename.
+      <table cellpadding="2" border="1">
+        <tr><th>&nbsp;Format&nbsp;</th><th>Filename Pattern (to force format)</th></tr>
+        <tr><td>NTSC</td><td>NTSC, NTSC60, NTSC 60, NTSC-60</td></tr>
+        <tr><td>PAL</td><td>PAL, PAL50, PAL 50, PAL-50</td></tr>
+        <tr><td>SECAM &#185;</td><td>SECAM, SECAM50, SECAM 50, SECAM-50</td></tr>
+        <tr><td>NTSC50 &#185;</td><td>NTSC50, NTSC 50, NTSC-50</td></tr>
+        <tr><td>PAL60 &#185;</td><td>PAL60, PAL 60, PAL-60</td></tr>
+        <tr><td>SECAM60 &#185;</td><td>SECAM60, SECAM 60, SECAM-60</td></tr>
+      </table></td>
     </tr>
 
     <tr>

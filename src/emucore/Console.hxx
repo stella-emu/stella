@@ -328,6 +328,11 @@ class Console : public Serializable, public ConsoleIO
 
   private:
     /**
+     * Define console timing based on current display format
+     */
+    void setConsoleTiming();
+
+    /**
      * Dry-run the emulation and detect the frame layout (PAL / NTSC).
      */
     void autodetectFrameLayout(bool reset = true);
@@ -336,6 +341,19 @@ class Console : public Serializable, public ConsoleIO
      * Rerun frame layout autodetection
      */
     void redetectFrameLayout();
+
+    /**
+     * Determine display format by filename
+     * Returns "AUTO" if nothing is found
+     */
+    string formatFromFilename() const;
+
+    /**
+      Check if the given character is a whitespace.
+      @param s      Character to check
+      @return       True if whitespace character
+    */
+    bool isWhiteSpace(const char s) const;
 
     /**
       Create the audio queue

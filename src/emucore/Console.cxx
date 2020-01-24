@@ -119,6 +119,9 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   string autodetected = "";
   myDisplayFormat = myProperties.get(PropType::Display_Format);
 
+  if (myDisplayFormat == "AUTO")
+    myDisplayFormat = formatFromFilename();
+
   // Add the real controllers for this system
   // This must be done before the debugger is initialized
   const string& md5 = myProperties.get(PropType::Cart_MD5);
@@ -149,33 +152,28 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   if(myDisplayFormat == "NTSC")
   {
     myCurrentFormat = 1;
-    myConsoleTiming = ConsoleTiming::ntsc;
   }
   else if(myDisplayFormat == "PAL")
   {
     myCurrentFormat = 2;
-    myConsoleTiming = ConsoleTiming::pal;
   }
   else if(myDisplayFormat == "SECAM")
   {
     myCurrentFormat = 3;
-    myConsoleTiming = ConsoleTiming::secam;
   }
   else if(myDisplayFormat == "NTSC50")
   {
     myCurrentFormat = 4;
-    myConsoleTiming = ConsoleTiming::ntsc;
   }
   else if(myDisplayFormat == "PAL60")
   {
     myCurrentFormat = 5;
-    myConsoleTiming = ConsoleTiming::pal;
   }
   else if(myDisplayFormat == "SECAM60")
   {
     myCurrentFormat = 6;
-    myConsoleTiming = ConsoleTiming::secam;
   }
+  setConsoleTiming();
 
   setTIAProperties();
 
@@ -211,6 +209,24 @@ Console::~Console()
   // Close audio to prevent invalid access to myConsoleTiming from the audio
   // callback
   myOSystem.sound().close();
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::setConsoleTiming()
+{
+  if (myDisplayFormat == "NTSC" || myDisplayFormat == "NTSC50")
+  {
+    myConsoleTiming = ConsoleTiming::ntsc;
+  }
+  else if (myDisplayFormat == "PAL" || myDisplayFormat == "PAL60")
+  {
+    myConsoleTiming = ConsoleTiming::pal;
+  }
+  else if (myDisplayFormat == "SECAM" || myDisplayFormat == "SECAM60")
+  {
+    myConsoleTiming = ConsoleTiming::secam;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -253,6 +269,48 @@ void Console::redetectFrameLayout()
 
   load(s);
   initializeAudio();
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Console::formatFromFilename() const
+{
+  std::map<string, string> Pattern = {
+    {"NTSC50", "NTSC50"}, {"NTSC 50", "NTSC50"}, {"NTSC-50", "NTSC50"},
+    {"PAL60", "PAL60"}, {"PAL 60", "PAL60"}, {"PAL-60", "PAL60"},
+    {"SECAM60", "SECAM60"}, {"SECAM 60", "SECAM60"}, {"SECAM-60", "SECAM60"},
+    {"NTSC60", "NTSC" }, {"NTSC", "NTSC"}, // also finds "NTSC 60" and "NTSC-60"
+    {"PAL50", "PAL" }, {"PAL", "PAL"}, // also finds "PAL 50" and "PAL-50"
+    {"SECAM50", "SECAM"}, {"SECAM", "SECAM"}, // also finds "SECAM 50" and "SECAM-50"
+  };
+  string filename = myOSystem.romFile().getNameWithExt(""); // get filename *without* extension
+
+  for (const auto& item : Pattern)
+  {
+    size_t pos = filename.find(item.first);
+    if (pos != string::npos)
+    {
+      // avoid false positives
+      if (pos == filename.length() - (item.first).length() || // pattern at the very end
+        ((pos == 0 || isWhiteSpace(filename.at(pos - 1))) && // pattern within withspaces
+          isWhiteSpace(filename.at(pos + (item.first).length()))))
+        return item.second;
+    }
+  }
+  // nothing found
+  return "AUTO";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Console::isWhiteSpace(const char s) const
+{
+  const string WHITESPACES = " _-()[]<>";
+
+  for (size_t i = 0; i < WHITESPACES.length(); ++i)
+    if (s == WHITESPACES[i])
+      return true;
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -331,13 +389,20 @@ void Console::setFormat(uInt32 format)
     {
       if (myFormatAutodetected) return;
 
-      string oldDisplayFormat = myDisplayFormat;
-      redetectFrameLayout();
-      myFormatAutodetected = true;
+      myDisplayFormat = formatFromFilename();
+      if (myDisplayFormat == "AUTO")
+      {
+        redetectFrameLayout();
+        myFormatAutodetected = true;
+        autodetected = "*";
+        message = "Auto-detect mode: " + myDisplayFormat;
+      }
+      else
+      {
+        message = myDisplayFormat + " mode";
+      }
       saveformat = "AUTO";
-      autodetected = "*";
-      myConsoleTiming = myDisplayFormat == "PAL" ? ConsoleTiming::pal : ConsoleTiming::ntsc;
-      message = "Auto-detect mode: " + myDisplayFormat;
+      setConsoleTiming();
       break;
     }
     case 1:
