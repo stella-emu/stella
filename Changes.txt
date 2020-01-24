@@ -152,6 +152,8 @@
 
   * Added FC bankswitching for Amiga's Power Play Arcade Video Game Album
 
+  * Added auto-detection of display format based on filename.
+
   * Auto-detection of bankswitch scheme by file extension now includes
     more human-readable formats (not restricted to DOS 3-char length).
     See the documentation for the new names.
