@@ -94,7 +94,7 @@ void QisBlitter::blit(SDL_Surface& surface)
 
   recreateTexturesIfNecessary();
 
-  SDL_Texture* texture = myIntermediateTexture;
+  SDL_Texture* intermediateTexture = myIntermediateTexture;
 
   if(myStaticData == nullptr) {
     SDL_UpdateTexture(mySrcTexture, &mySrcRect, surface.pixels, surface.pitch);
@@ -102,10 +102,14 @@ void QisBlitter::blit(SDL_Surface& surface)
     blitToIntermediate();
 
     myIntermediateTexture = mySecondaryIntermedateTexture;
-    mySecondaryIntermedateTexture = texture;
+    mySecondaryIntermedateTexture = intermediateTexture;
+
+    SDL_Texture* temporary = mySrcTexture;
+    mySrcTexture = mySecondarySrcTexture;
+    mySecondarySrcTexture = temporary;
   }
 
-  SDL_RenderCopy(myFB.renderer(), texture, &myIntermediateRect, &myDstRect);
+  SDL_RenderCopy(myFB.renderer(), intermediateTexture, &myIntermediateRect, &myDstRect);
 }
 
 
@@ -117,9 +121,11 @@ void QisBlitter::blitToIntermediate()
   SDL_Rect r = mySrcRect;
   r.x = r.y = 0;
 
-  SDL_UpdateTexture(myIntermediateTexture, nullptr, myBlankBuffer.get(), 4 * myIntermediateRect.w);
-
   SDL_SetRenderTarget(myFB.renderer(), myIntermediateTexture);
+
+  SDL_SetRenderDrawColor(myFB.renderer(), 0, 0, 0, 255);
+  SDL_RenderClear(myFB.renderer());
+
   SDL_RenderCopy(myFB.renderer(), mySrcTexture, &r, &myIntermediateRect);
 
   SDL_SetRenderTarget(myFB.renderer(), nullptr);
@@ -151,8 +157,12 @@ void QisBlitter::recreateTexturesIfNecessary()
   mySrcTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
     texAccess, mySrcRect.w, mySrcRect.h);
 
-  myBlankBuffer = make_unique<uInt32[]>(4 * myIntermediateRect.w * myIntermediateRect.h);
-  memset(myBlankBuffer.get(), 0, 4 * myIntermediateRect.w * myIntermediateRect.h);
+  if (myStaticData == nullptr) {
+    mySecondarySrcTexture = SDL_CreateTexture(myFB.renderer(), myFB.pixelFormat().format,
+      texAccess, mySrcRect.w, mySrcRect.h);
+  } else {
+    mySecondarySrcTexture = nullptr;
+  }
 
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
