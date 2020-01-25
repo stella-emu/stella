@@ -46,6 +46,7 @@ class QisBlitter : public Blitter {
     FrameBufferSDL2& myFB;
 
     SDL_Texture* mySrcTexture{nullptr};
+    SDL_Texture* mySecondarySrcTexture{nullptr};
     SDL_Texture* myIntermediateTexture{nullptr};
     SDL_Texture* mySecondaryIntermedateTexture{nullptr};
 
@@ -56,7 +57,6 @@ class QisBlitter : public Blitter {
     bool myRecreateTextures{false};
 
     SDL_Surface* myStaticData{nullptr};
-    unique_ptr<uInt32[]> myBlankBuffer;
 
   private:
 
