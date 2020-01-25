@@ -31,6 +31,7 @@
 #include "TIASurface.hxx"
 #include "TIA.hxx"
 #include "TimerManager.hxx"
+#include "FrameManager.hxx"
 
 #include "TiaOutputWidget.hxx"
 
@@ -161,8 +162,11 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 void TiaOutputWidget::drawWidget(bool hilite)
 {
 //cerr << "TiaOutputWidget::drawWidget\n";
-  const uInt32 width  = instance().console().tia().width(),
-               height = instance().console().tia().height();
+  const uInt32 width = instance().console().tia().width();
+  uInt32 height = instance().console().tia().height();
+  // limit to 274 lines (PAL default without scaling)
+  uInt32 yStart = height <= FrameManager::Metrics::baseHeightPAL ? 0 : (height - FrameManager::Metrics::baseHeightPAL) / 2;
+  height = std::min(height, uInt32(FrameManager::Metrics::baseHeightPAL));
   FBSurface& s = dialog().surface();
 
   s.vLine(_x + _w + 1, _y, height, kColor);
@@ -177,7 +181,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
   uInt8* tiaOutputBuffer = instance().console().tia().outputBuffer();
   TIASurface& tiaSurface(instance().frameBuffer().tiaSurface());
 
-  for(uInt32 y = 0, i = 0; y < height; ++y)
+  for(uInt32 y = 0, i = yStart * width; y < height; ++y)
   {
     uInt32* line_ptr = myLineBuffer.data();
     for(uInt32 x = 0; x < width; ++x, ++i)

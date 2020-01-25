@@ -26,6 +26,24 @@
 class FrameManager: public AbstractFrameManager {
   public:
 
+    enum Metrics : uInt32 {
+      vblankNTSC = 37,
+      vblankPAL = 45,
+      vsync = 3,
+      frameSizeNTSC = 262,
+      frameSizePAL = 312,
+      baseHeightNTSC = 228, // 217..239
+      baseHeightPAL = 274, // 260..288
+      maxHeight = uInt32(baseHeightPAL * 1.05 + 0.5), // 288
+      maxLinesVsync = 50,
+      initialGarbageFrames = TIAConstants::initialGarbageFrames,
+      ystartNTSC = 23,
+      ystartPAL = 32
+    };
+
+
+  public:
+
     FrameManager();
 
   public:

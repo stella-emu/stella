@@ -27,6 +27,7 @@
 #include "Widget.hxx"
 #include "GuiObject.hxx"
 #include "ContextMenu.hxx"
+#include "FrameManager.hxx"
 #include "TiaZoomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -41,7 +42,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
 
   // Use all available space, up to the maximum bounds of the TIA image
   _w = std::min(w, 320);
-  _h = std::min(h, 274);
+  _h = std::min(h, int(FrameManager::Metrics::maxHeight));
 
   addFocusWidget(this);
 
