@@ -41,7 +41,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
 
   // Use all available space, up to the maximum bounds of the TIA image
   _w = std::min(w, 320);
-  _h = std::min(h, 260);
+  _h = std::min(h, 274);
 
   addFocusWidget(this);
 
