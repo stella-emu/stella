@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <stdexcept>
+#include <regex>
 
 #include "AtariVox.hxx"
 #include "Booster.hxx"
@@ -275,42 +276,33 @@ void Console::redetectFrameLayout()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Console::formatFromFilename() const
 {
-  std::map<string, string> Pattern = {
-    {"NTSC50", "NTSC50"}, {"NTSC 50", "NTSC50"}, {"NTSC-50", "NTSC50"},
-    {"PAL60", "PAL60"}, {"PAL 60", "PAL60"}, {"PAL-60", "PAL60"},
-    {"SECAM60", "SECAM60"}, {"SECAM 60", "SECAM60"}, {"SECAM-60", "SECAM60"},
-    {"NTSC60", "NTSC" }, {"NTSC", "NTSC"}, // also finds "NTSC 60" and "NTSC-60"
-    {"PAL50", "PAL" }, {"PAL", "PAL"}, // also finds "PAL 50" and "PAL-50"
-    {"SECAM50", "SECAM"}, {"SECAM", "SECAM"}, // also finds "SECAM 50" and "SECAM-50"
-  };
-  string filename = myOSystem.romFile().getNameWithExt(""); // get filename *without* extension
+  static const BSPF::array2D<string, 6, 2> Pattern = {{
+    { R"([ _\-(\[<]+NTSC[ -]?50)",      "NTSC50"  },
+    { R"([ _\-(\[<]+PAL[ -]?60)",       "PAL60"   },
+    { R"([ _\-(\[<]+SECAM[ -]?60)",     "SECAM60" },
+    { R"([ _\-(\[<]+NTSC[ _\-)\]>]?)",  "NTSC"    },
+    { R"([ _\-(\[<]+PAL[ _\-)\]>]?)",   "PAL"     },
+    { R"([ _\-(\[<]+SECAM[ _\-)\]>]?)", "SECAM"   }
+  }};
 
-  for (const auto& item : Pattern)
+  // Get filename *without* extension, and search using regex's above
+  const string& filename = myOSystem.romFile().getNameWithExt("");
+  for(size_t i = 0; i < Pattern.size(); ++i)
   {
-    size_t pos = filename.find(item.first);
-    if (pos != string::npos)
+    try
     {
-      // avoid false positives
-      if (pos == filename.length() - (item.first).length() || // pattern at the very end
-        ((pos == 0 || isWhiteSpace(filename.at(pos - 1))) && // pattern within withspaces
-          isWhiteSpace(filename.at(pos + (item.first).length()))))
-        return item.second;
+      std::regex rgx(Pattern[i][0]);
+      if(std::regex_search(filename, rgx))
+        return Pattern[i][1];
+    }
+    catch(...)
+    {
+      continue;
     }
   }
-  // nothing found
+
+  // Nothing found
   return "AUTO";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Console::isWhiteSpace(const char s) const
-{
-  const string WHITESPACES = " _-()[]<>";
-
-  for (size_t i = 0; i < WHITESPACES.length(); ++i)
-    if (s == WHITESPACES[i])
-      return true;
-
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

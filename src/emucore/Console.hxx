@@ -349,13 +349,6 @@ class Console : public Serializable, public ConsoleIO
     string formatFromFilename() const;
 
     /**
-      Check if the given character is a whitespace.
-      @param s      Character to check
-      @return       True if whitespace character
-    */
-    bool isWhiteSpace(const char s) const;
-
-    /**
       Create the audio queue
      */
     void createAudioQueue();
