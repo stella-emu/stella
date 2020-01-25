@@ -272,7 +272,6 @@ void Console::redetectFrameLayout()
   initializeAudio();
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Console::formatFromFilename() const
 {
