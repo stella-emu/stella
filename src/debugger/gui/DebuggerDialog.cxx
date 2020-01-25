@@ -46,6 +46,7 @@
 #include "StellaMediumFont.hxx"
 #include "OptionsDialog.hxx"
 #include "StateManager.hxx"
+#include "FrameManager.hxx"
 #include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -659,7 +660,7 @@ void DebuggerDialog::addRomArea()
 Common::Rect DebuggerDialog::getTiaBounds() const
 {
   // The area showing the TIA image (NTSC and PAL supported, up to 274 lines without scaling)
-  return Common::Rect(0, 0, 320, std::max(274, int(_h * 0.35)));
+  return Common::Rect(0, 0, 320, std::max(int(FrameManager::Metrics::baseHeightPAL), int(_h * 0.35)));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
