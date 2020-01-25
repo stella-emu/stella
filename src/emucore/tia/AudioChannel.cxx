@@ -140,18 +140,18 @@ bool AudioChannel::save(Serializer& out) const
 {
   try
   {
-    out.putInt(myAudc);
-    out.putInt(myAudv);
-    out.putInt(myAudf);
+    out.putByte(myAudc);
+    out.putByte(myAudv);
+    out.putByte(myAudf);
 
     out.putBool(myClockEnable);
     out.putBool(myNoiseFeedback);
     out.putBool(myNoiseCounterBit4);
     out.putBool(myPulseCounterHold);
 
-    out.putInt(myDivCounter);
-    out.putInt(myPulseCounter);
-    out.putInt(myNoiseCounter);
+    out.putByte(myDivCounter);
+    out.putByte(myPulseCounter);
+    out.putByte(myNoiseCounter);
   }
   catch(...)
   {
@@ -167,18 +167,18 @@ bool AudioChannel::load(Serializer& in)
 {
   try
   {
-    myAudc = in.getInt();
-    myAudv = in.getInt();
-    myAudf = in.getInt();
+    myAudc = in.getByte();
+    myAudv = in.getByte();
+    myAudf = in.getByte();
 
     myClockEnable = in.getBool();
     myNoiseFeedback = in.getBool();
     myNoiseCounterBit4 = in.getBool();
     myPulseCounterHold = in.getBool();
 
-    myDivCounter = in.getInt();
-    myPulseCounter = in.getInt();
-    myNoiseCounter = in.getInt();
+    myDivCounter = in.getByte();
+    myPulseCounter = in.getByte();
+    myNoiseCounter = in.getByte();
   }
   catch(...)
   {

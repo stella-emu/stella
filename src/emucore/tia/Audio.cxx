@@ -118,7 +118,7 @@ bool Audio::save(Serializer& out) const
 {
   try
   {
-    out.putInt(myCounter);
+    out.putByte(myCounter);
 
     // The queue starts out pristine after loading, so we don't need to save
     // any other parts of our state
@@ -140,7 +140,7 @@ bool Audio::load(Serializer& in)
 {
   try
   {
-    myCounter = in.getInt();
+    myCounter = in.getByte();
 
     if (!myChannel0.load(in)) return false;
     if (!myChannel1.load(in)) return false;
