@@ -169,8 +169,13 @@ void FileListWidget::handleCommand(CommandSender* sender, int cmd, int data, int
       _selected = data;
       if(selected().isDirectory())
       {
-        cmd = ItemChanged;
-        selectDirectory();
+        if(selected().getName() == " [..]")
+          selectParent();
+        else
+        {
+          cmd = ItemChanged;
+          selectDirectory();
+        }
       }
       else
         cmd = ItemActivated;
