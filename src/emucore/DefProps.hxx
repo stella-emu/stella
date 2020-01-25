@@ -2974,7 +2974,7 @@ static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "da6465a34d2e44d26aa9a2a0cd1bce4d", "Absolute Entertainment, Alex DeMeo", "AG-041-04", "Title Match Pro Wrestling (1987) (Absolute) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "da66d75e4b47fab99733529743f86f4f", "Digitel", "", "Chopper Command (1983) (Digitel)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "da732c57697ad7d7af414998fa527e75", "Atari - Glenn Axworthy", "CX26129", "Midnight Magic (1986) (Atari) (PAL)", "AKA Pinball Wizard", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
-  { "da79aad11572c80a96e261e4ac6392d0", "Salu - Ubi Soft, Dennis M. Kiss", "460673", "Pick 'n' Pile (1990) (Salu) (PAL)", "", "", "", "", "", "", "", "", "YES", "", "", "", "", "", "", "YES", "" },
+  { "da79aad11572c80a96e261e4ac6392d0", "Salu - Ubi Soft, Dennis M. Kiss", "460673", "Pick 'n' Pile (1990) (Salu) (PAL)", "", "", "", "", "", "", "", "", "YES", "", "", "", "", "PAL", "", "YES", "" },
   { "da7a17dcdaa62d6971393c0a6faf202a", "", "", "Flag Capture (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "dab844deed4c752632b5e786b0f47999", "", "", "Super Challenge Baseball (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "dac38b4dd3da73bb7b2e9d70c61d2b7c", "", "", "Hangman Monkey Biglist3 (Hack)", "Hack of Hangman", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
