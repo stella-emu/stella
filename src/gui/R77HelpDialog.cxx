@@ -112,10 +112,10 @@ void R77HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
       ADD_BIND();
       ADD_BIND("Joystick", "Console", "Command");
       ADD_LINE();
-      ADD_BIND("\\c2Button 3", "4:3,16:9", "Open command dialog");
-      ADD_BIND("\\c2Button 4", "\\c2-", "Open settings");
+      ADD_BIND("\\c2Button 4", "4:3,16:9", "Open command dialog");
       ADD_BIND("\\c2Button 5", "FRY", "Return to launcher");
-      ADD_BIND("\\c2Button 6", "-", "Rewind game");
+      ADD_BIND("\\c2Button 6", "\\c2-", "Open settings");
+      ADD_BIND("\\c2Button 7", "-", "Rewind game");
       ADD_BIND("\\c2Button 8", "MODE", "Select");
       ADD_BIND("\\c2Button 9", "RESET", "Reset");
       break;
