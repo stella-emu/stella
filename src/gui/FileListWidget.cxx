@@ -108,7 +108,10 @@ void FileListWidget::selectParent()
 void FileListWidget::reload()
 {
   if(_node.exists())
-    setLocation(_node, selected().getName());
+  {
+    _selectedFile = selected().getName();
+    setLocation(_node, _selectedFile);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
