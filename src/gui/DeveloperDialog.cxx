@@ -478,11 +478,11 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
 
   ypos += lineHeight + VGAP * 2;
   new StaticTextWidget(myTab, font, HBORDER, ypos + 1,
-    "When exiting emulation:");
+    "When entering/exiting emulation:");
   ypos += lineHeight + VGAP;
   mySaveOnExitGroup = new RadioButtonGroup();
   r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-    "Save nothing", mySaveOnExitGroup);
+    "Do nothing", mySaveOnExitGroup);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
@@ -490,7 +490,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   wid.push_back(r);
   ypos += lineHeight + VGAP;
   r = new RadioButtonWidget(myTab, font, HBORDER + INDENT, ypos + 1,
-    "Save all Time Machine states", mySaveOnExitGroup);
+    "Load/save all Time Machine states", mySaveOnExitGroup);
   wid.push_back(r);
   ypos += lineHeight + VGAP;
 

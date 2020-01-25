@@ -2256,7 +2256,8 @@
 
     <tr>
       <td><pre>-saveonexit &lt;none|current|all&gt;</pre></td>
-      <td>Automatically save no, current or all states when exiting emulation.</td>
+      <td>Automatically save no, current or all states when exiting emulation. The latter
+        also loads all states when entering emulation.</td>
     </tr>
 
     <tr>
@@ -3402,11 +3403,12 @@
             </td>
             <td>-plr.tm.horizon<br>-dev.tm.horizon</td>
           </tr><tr>
-            <td>When exiting emulation:</td>
+            <td>When entering/exiting emulation:</td>
             <td>
               Automatically save no, current or all Time Machine states when exiting emulation.<br/>
-              When saving is enabled, you can always continue your game session
-              from where you exited it. Even including the Time Machine buffer!
+              The latter also loads all states when entering emulation. When this is enabled, you
+              can always continue your game session from where you exited it. Even including the
+              Time Machine buffer!
             </td>
             <td>-saveonexit</td>
           </tr><tr>

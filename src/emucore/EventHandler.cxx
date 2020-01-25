@@ -745,11 +745,17 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
               if (myOSystem.settings().getBool("confirmexit"))
               {
                 StringList msg;
+                string saveOnExit = myOSystem.settings().getString("saveonexit");
+                bool activeTM = myOSystem.settings().getBool(
+                  myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
+
 
                 msg.push_back("Do you really want to exit emulation?");
-                msg.push_back("");
-                msg.push_back("You will lose all your progress.");
-
+                if (saveOnExit != "all" || !activeTM)
+                {
+                  msg.push_back("");
+                  msg.push_back("You will lose all your progress.");
+                }
                 myOSystem.messageMenu().setMessage("Exit Emulation", msg, true);
                 enterMenuMode(EventHandlerState::MESSAGEMENU);
               }
@@ -1775,8 +1781,11 @@ void EventHandler::setState(EventHandlerState state)
 void EventHandler::exitEmulation(bool checkLauncher)
 {
   string saveOnExit = myOSystem.settings().getString("saveonexit");
+  bool activeTM = myOSystem.settings().getBool(
+    myOSystem.settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
 
-  if (saveOnExit == "all")
+
+  if (saveOnExit == "all" && activeTM)
     handleEvent(Event::SaveAllStates);
   else if (saveOnExit == "current")
     handleEvent(Event::SaveState);

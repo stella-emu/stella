@@ -410,6 +410,13 @@ string OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
     }
     myConsole->initializeAudio();
 
+    string saveOnExit = settings().getString("saveonexit");
+    bool activeTM = settings().getBool(
+      settings().getBool("dev.settings") ? "dev.timemachine" : "plr.timemachine");
+
+    if (saveOnExit == "all" && activeTM)
+      myEventHandler->handleEvent(Event::LoadAllStates);
+
     if(showmessage)
     {
       const string& id = myConsole->cartridge().multiCartID();

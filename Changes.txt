@@ -97,7 +97,8 @@
 
   * Added option to save and load all TimeMachine states at once.
 
-  * Added option to automatically save states when exiting emulation.
+  * Added option to automatically load/save states when entering/exiting
+    emulation.
 
   * Added option to change pitch of Pitfall II music.
 
