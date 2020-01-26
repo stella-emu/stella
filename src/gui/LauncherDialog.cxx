@@ -376,9 +376,9 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
     switch(key)
     {
       case KBDK_F8: // front  ("Skill P2")
-        myGlobalProps->open();
+        if (!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+          myGlobalProps->open();
         break;
-
       case KBDK_F4: // back ("COLOR", "B/W")
         openSettings();
         break;
@@ -408,7 +408,8 @@ void LauncherDialog::handleJoyDown(int stick, int button, bool longPress)
   // open power-up options and settings for 2nd and 4th button if not mapped otherwise
   Event::Type e = instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
-  if (button == 1 && (e == Event::UIOK || e == Event::NoType))
+  if (button == 1 && (e == Event::UIOK || e == Event::NoType) &&
+      !currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
     myGlobalProps->open();
   if (button == 3 && (e == Event::Event::UITabPrev || e == Event::NoType))
     openSettings();
@@ -497,7 +498,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case ListWidget::kLongButtonPressCmd:
-      myGlobalProps->open();
+      if (!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+        myGlobalProps->open();
       myEventHandled = true;
       break;
 
