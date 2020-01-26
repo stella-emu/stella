@@ -238,10 +238,12 @@ void PhysicalJoystickHandler::mapStelladaptors(const string& saport)
 // 1. update all events with default (event == Event::NoType, updateDefault == true)
 // 2. reset all events to default    (event == Event::NoType, updateDefault == false)
 // 3. reset one event to default     (event != Event::NoType)
-void PhysicalJoystickHandler::setDefaultAction(const PhysicalJoystickPtr& j,
+void PhysicalJoystickHandler::setDefaultAction(int stick,
                                                EventMapping map, Event::Type event,
                                                EventMode mode, bool updateDefaults)
 {
+  const PhysicalJoystickPtr j = joy(stick);
+
   // If event is 'NoType', erase and reset all mappings
   // Otherwise, only reset the given event
   bool eraseAll = !updateDefaults && (event == Event::NoType);
@@ -253,16 +255,21 @@ void PhysicalJoystickHandler::setDefaultAction(const PhysicalJoystickPtr& j,
     if(j->joyMap.getEventMapping(map.event, mode).size() == 0 ||
        !j->joyMap.check(mode, map.button, map.axis, map.adir, map.hat, map.hdir))
     {
-      j->joyMap.add(map.event, mode, map.button, map.axis, map.adir, map.hat, map.hdir);
+      if (map.hat == JOY_CTRL_NONE)
+        addJoyMapping(map.event, mode, stick, map.button, map.axis, map.adir);
+      else
+        addJoyHatMapping(map.event, mode, stick, map.button, map.hat, map.hdir);
     }
   }
   else if(eraseAll || map.event == event)
   {
     // TODO: allow for multiple defaults
     //j->joyMap.eraseEvent(map.event, mode);
-    j->joyMap.add(map.event, mode, map.button, map.axis, map.adir, map.hat, map.hdir);
+    if (map.hat == JOY_CTRL_NONE)
+      addJoyMapping(map.event, mode, stick, map.button, map.axis, map.adir);
+    else
+      addJoyHatMapping(map.event, mode, stick, map.button, map.hat, map.hdir);
   }
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -280,31 +287,31 @@ void PhysicalJoystickHandler::setStickDefaultMapping(int stick, Event::Type even
         {
           // put all controller events into their own mode's mappings
           for (const auto& item : DefaultLeftJoystickMapping)
-            setDefaultAction(j, item, event, EventMode::kJoystickMode, updateDefaults);
+            setDefaultAction(stick, item, event, EventMode::kJoystickMode, updateDefaults);
           for (const auto& item : DefaultLeftPaddlesMapping)
-            setDefaultAction(j, item, event, EventMode::kPaddlesMode, updateDefaults);
+            setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
           for (const auto& item : DefaultLeftKeypadMapping)
-            setDefaultAction(j, item, event, EventMode::kKeypadMode, updateDefaults);
+            setDefaultAction(stick, item, event, EventMode::kKeypadMode, updateDefaults);
         }
         else // odd sticks
         {
           // put all controller events into their own mode's mappings
           for (const auto& item : DefaultRightJoystickMapping)
-            setDefaultAction(j, item, event, EventMode::kJoystickMode, updateDefaults);
+            setDefaultAction(stick, item, event, EventMode::kJoystickMode, updateDefaults);
           for (const auto& item : DefaultRightPaddlesMapping)
-            setDefaultAction(j, item, event, EventMode::kPaddlesMode, updateDefaults);
+            setDefaultAction(stick, item, event, EventMode::kPaddlesMode, updateDefaults);
           for (const auto& item : DefaultRightKeypadMapping)
-            setDefaultAction(j, item, event, EventMode::kKeypadMode, updateDefaults);
+            setDefaultAction(stick, item, event, EventMode::kKeypadMode, updateDefaults);
         }
         for(const auto& item : DefaultCommonMapping)
-          setDefaultAction(j, item, event, EventMode::kCommonMode, updateDefaults);
+          setDefaultAction(stick, item, event, EventMode::kCommonMode, updateDefaults);
         // update running emulation mapping too
         enableEmulationMappings();
         break;
 
       case EventMode::kMenuMode:
         for (const auto& item : DefaultMenuMapping)
-          setDefaultAction(j, item, event, EventMode::kMenuMode, updateDefaults);
+          setDefaultAction(stick, item, event, EventMode::kMenuMode, updateDefaults);
         break;
 
       default:
@@ -567,20 +574,30 @@ bool PhysicalJoystickHandler::addJoyMapping(Event::Type event, EventMode mode, i
   {
     EventMode evMode = getEventMode(event, mode);
 
+
     // This confusing code is because each axis has two associated values,
     // but analog events only affect one of the axis.
-    if(Event::isAnalog(event))
+    if (Event::isAnalog(event))
+      adir = JoyDir::ANALOG;
+
+    // avoid double mapping in common and controller modes
+    if (evMode == EventMode::kCommonMode)
     {
-      j->joyMap.add(event, evMode, button, axis, JoyDir::ANALOG);
-      // update running emulation mapping too
-      j->joyMap.add(event, EventMode::kEmulationMode, button, axis, JoyDir::ANALOG);
+      // erase identical mappings for all controller modes
+      j->joyMap.erase(EventMode::kJoystickMode, button, axis, adir);
+      j->joyMap.erase(EventMode::kPaddlesMode, button, axis, adir);
+      j->joyMap.erase(EventMode::kKeypadMode, button, axis, adir);
+      j->joyMap.erase(EventMode::kCompuMateMode, button, axis, adir);
     }
-    else
+    else if (evMode != EventMode::kMenuMode)
     {
-      j->joyMap.add(event, evMode, button, axis, adir);
-      // update running emulation mapping too
-      j->joyMap.add(event, EventMode::kEmulationMode, button, axis, adir);
+      // erase identical mapping for kCommonMode
+      j->joyMap.erase(EventMode::kCommonMode, button, axis, adir);
     }
+
+    j->joyMap.add(event, evMode, button, axis, adir);
+    // update running emulation mapping too
+    j->joyMap.add(event, EventMode::kEmulationMode, button, axis, adir);
     return true;
   }
   return false;
@@ -596,7 +613,24 @@ bool PhysicalJoystickHandler::addJoyHatMapping(Event::Type event, EventMode mode
      button >= JOY_CTRL_NONE && button < j->numButtons &&
      hat >= 0 && hat < j->numHats && hdir != JoyHatDir::CENTER)
   {
-    j->joyMap.add(event, getEventMode(event, mode), button, hat, hdir);
+    EventMode evMode = getEventMode(event, mode);
+
+    // avoid double mapping in common and controller modes
+    if (evMode == EventMode::kCommonMode)
+    {
+      // erase identical mappings for all controller modes
+      j->joyMap.erase(EventMode::kJoystickMode, button, hat, hdir);
+      j->joyMap.erase(EventMode::kPaddlesMode, button, hat, hdir);
+      j->joyMap.erase(EventMode::kKeypadMode, button, hat, hdir);
+      j->joyMap.erase(EventMode::kCompuMateMode, button, hat, hdir);
+    }
+    else if (evMode != EventMode::kMenuMode)
+    {
+      // erase identical mapping for kCommonMode
+      j->joyMap.erase(EventMode::kCommonMode, button, hat, hdir);
+    }
+
+    j->joyMap.add(event, evMode, button, hat, hdir);
     // update running emulation mapping too
     j->joyMap.add(event, EventMode::kEmulationMode, button, hat, hdir);
     return true;
