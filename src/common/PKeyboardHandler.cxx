@@ -85,13 +85,13 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
     if (myKeyMap.getEventMapping(map.event, mode).size() == 0 ||
       !myKeyMap.check(mode, map.key, map.mod))
     {
-      myKeyMap.add(map.event, mode, map.key, map.mod);
+      addMapping(map.event, mode, map.key, StellaMod(map.mod));
     }
   }
   else if (eraseAll || map.event == event)
   {
     //myKeyMap.eraseEvent(map.event, mode);
-    myKeyMap.add(map.event, mode, map.key, map.mod);
+    addMapping(map.event, mode, map.key, StellaMod(map.mod));
   }
 }
 
@@ -325,6 +325,21 @@ bool PhysicalKeyboardHandler::addMapping(Event::Type event, EventMode mode,
   else
   {
     EventMode evMode = getEventMode(event, mode);
+
+    // avoid double mapping in common and controller modes
+    if (evMode == EventMode::kCommonMode)
+    {
+      // erase identical mappings for all controller modes
+      myKeyMap.erase(EventMode::kJoystickMode, key, mod);
+      myKeyMap.erase(EventMode::kPaddlesMode, key, mod);
+      myKeyMap.erase(EventMode::kKeypadMode, key, mod);
+      myKeyMap.erase(EventMode::kCompuMateMode, key, mod);
+    }
+    else if(evMode != EventMode::kMenuMode)
+    {
+      // erase identical mapping for kCommonMode
+      myKeyMap.erase(EventMode::kCommonMode, key, mod);
+    }
 
     myKeyMap.add(event, evMode, key, mod);
     if (evMode == myLeftMode || evMode == myRightMode)

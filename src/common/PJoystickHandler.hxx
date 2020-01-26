@@ -147,7 +147,7 @@ class PhysicalJoystickHandler
     };
     using EventMappingArray = std::vector<EventMapping>;
 
-    void setDefaultAction(const PhysicalJoystickPtr& j,
+    void setDefaultAction(int stick,
                           EventMapping map, Event::Type event = Event::NoType,
                           EventMode mode = EventMode::kEmulationMode,
                           bool updateDefaults = false);
