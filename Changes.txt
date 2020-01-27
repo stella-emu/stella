@@ -29,16 +29,16 @@
   * Controllers can be changed during emulation (no ROM reload required
     anymore).
 
-  * Added support for Light Gun controller
+  * Added support for Light Gun controller.
 
-  * Added limitted KidVid support (8, 9 and 0 start the games)
+  * Added limited KidVid support (8, 9 and 0 start the games).
 
   * Removed superfluous controller option 'PADDLES_IDIR'.
 
   * Added configurable paddle dejittering.
 
   * Huge improvements to event remapping.
-    - Allow mapping of modifier-key and button-direction combinations.
+    - Allow mapping of modifier-key and button-direction combinations
     - One controller can use the same mappings as other controllers
     - Much more events can be remapped
     - Events can be filtered by type in UI
@@ -55,9 +55,9 @@
 
   * Added option to configure controller input repeat speed.
 
-  * Added high quality scaling
+  * Added high quality scaling.
 
-  * Made scanlines better aligned to scaling
+  * Made scanlines better aligned to scaling.
 
   * Added 'HiDPI' mode, which scales the UI by 2x when enabled.  This is
     meant for 4k and above monitors, but can actually be used at any
@@ -80,7 +80,7 @@
 
   * Added hotkey for sound on/off.
 
-  * Paths have been simplified: (TODO - finish this)
+  * Paths have been simplified:
     - The following file/directory locations are no longer configurable
       (statedir, nvramdir, cheatfile, palettefile, propsfile); they are
       now all under the base directory
@@ -143,15 +143,17 @@
 
   * Fixed cheatcode handling in 2K and 4K ROMs.
 
+  * Fixed bug where ROMs smaller than 64 bytes were not recognized.
+
   * Fixed bug where frying one ROM was continued with the next ROM.
 
   * Fixed not working 7800 pause key.
 
   * Enhanced UA bankswitching to support certain Brazilian carts.
 
-  * Fixed WD bankswitching
+  * Fixed WD bankswitching.
 
-  * Added FC bankswitching for Amiga's Power Play Arcade Video Game Album
+  * Added FC bankswitching for Amiga's Power Play Arcade Video Game Album.
 
   * Added auto-detection of display format based on filename.
 
