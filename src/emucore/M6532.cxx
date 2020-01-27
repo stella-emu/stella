@@ -422,6 +422,7 @@ bool M6532::load(Serializer& in)
   return true;
 }
 
+#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 M6532::intim()
 {
@@ -456,7 +457,6 @@ uInt32 M6532::timerClocks() const
   return uInt32(mySystem->cycles() - mySetTimerCycle);
 }
 
-#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::createAccessBases()
 {

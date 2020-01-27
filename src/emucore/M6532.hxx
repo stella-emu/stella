@@ -135,6 +135,7 @@ class M6532 : public Device
     void setTimerRegister(uInt8 data, uInt8 interval);
     void setPinState(bool shcha);
 
+#ifdef DEBUGGER_SUPPORT
     // The following are used by the debugger to read INTIM/TIMINT
     // We need separate methods to do this, so the state of the system
     // isn't changed
@@ -143,7 +144,6 @@ class M6532 : public Device
     Int32 intimClocks();
     uInt32 timerClocks() const;
 
-  #ifdef DEBUGGER_SUPPORT
     void createAccessBases();
 
     /**
@@ -159,7 +159,7 @@ class M6532 : public Device
       @param flags    A bitfield of DisasmType directives for the given address
     */
     void setAccessFlags(uInt16 address, uInt8 flags) override;
-  #endif // DEBUGGER_SUPPORT
+#endif // DEBUGGER_SUPPORT
 
   private:
     // Reference to the console
