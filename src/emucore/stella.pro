@@ -433,6 +433,7 @@
 "Cart.ModelNo" "600273"
 "Cart.Name" "King Arthur (1983) (Otto Versand) (PAL)"
 "Cart.Note" "AKA Dragonfire (Double-Game Package)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "05d61b925d3d2474bab83f0a79bb5df1"
@@ -1551,6 +1552,7 @@
 
 "Cart.MD5" "1267e3c6ca951ff1df6f222c8f813d97"
 "Cart.Name" "Dragonfire (Unknown) (PAL)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "126f7f64b7b00e25dcf5e3710b4cf8b8"
@@ -5557,6 +5559,7 @@
 "Cart.Manufacturer" "Funvision - Fund. International Co."
 "Cart.Name" "Dragon Treasure (Funvision)"
 "Cart.Note" "AKA Dragonfire"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "41818738ab1745e879024a17784d71f5"
@@ -9467,6 +9470,7 @@
 "Cart.Manufacturer" "Imagic, Bob Smith"
 "Cart.ModelNo" "720020-2A, IA3611P"
 "Cart.Name" "Dragonfire (1982) (Imagic) (PAL)"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "6fd7c7057eeab273b29c7aafc7429a96"
@@ -19066,6 +19070,7 @@
 "Cart.ModelNo" "720020-1A, IA3611"
 "Cart.Name" "Cheese (Dragonfire Beta) (05-21-1982) (Imagic) (Prototype)"
 "Cart.Rarity" "Prototype"
+"Display.Phosphor" "YES"
 ""
 
 "Cart.MD5" "e5f17b3e62a21d0df1ca9aee1aa8c7c5"
