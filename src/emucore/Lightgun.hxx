@@ -26,56 +26,56 @@
 
 class Lightgun : public Controller
 {
-public:
-  /**
-    Create a new lightgun controller plugged into the specified jack
+  public:
+    /**
+      Create a new lightgun controller plugged into the specified jack
 
-    @param jack        The jack the controller is plugged into
-    @param event       The event object to use for events
-    @param system      The system using this controller
-    @param romMd5      The md5 of the ROM using this controller
-    @param frameBuffer The frame buffer
+      @param jack        The jack the controller is plugged into
+      @param event       The event object to use for events
+      @param system      The system using this controller
+      @param romMd5      The md5 of the ROM using this controller
+      @param frameBuffer The frame buffer
 
-  */
-  Lightgun(Jack jack, const Event& event, const System& system,
-           const string& romMd5, const FrameBuffer& frameBuffer);
-  virtual ~Lightgun() = default;
+    */
+    Lightgun(Jack jack, const Event& event, const System& system,
+             const string& romMd5, const FrameBuffer& frameBuffer);
+    virtual ~Lightgun() = default;
 
-public:
-  using Controller::read;
+  public:
+    using Controller::read;
 
-  /**
-    Read the value of the specified digital pin for this controller.
+    /**
+      Read the value of the specified digital pin for this controller.
 
-    @param pin The pin of the controller jack to read
-    @return The state of the pin
-  */
-  bool read(DigitalPin pin) override;
+      @param pin The pin of the controller jack to read
+      @return The state of the pin
+    */
+    bool read(DigitalPin pin) override;
 
-  /**
-    Update the entire digital and analog pin state according to the
-    events currently set.
-  */
-  void update() override;
+    /**
+      Update the entire digital and analog pin state according to the
+      events currently set.
+    */
+    void update() override;
 
-  /**
-    Returns the name of this controller.
-  */
-  string name() const override { return "Lightgun"; }
+    /**
+      Returns the name of this controller.
+    */
+    string name() const override { return "Lightgun"; }
 
-private:
-  const FrameBuffer& myFrameBuffer;
+  private:
+    const FrameBuffer& myFrameBuffer;
 
-  // targetting compensation values
-  Int32 myOfsX{0}, myOfsY{0};
+    // targetting compensation values
+    Int32 myOfsX{0}, myOfsY{0};
 
-private:
-  // Following constructors and assignment operators not supported
-  Lightgun() = delete;
-  Lightgun(const Lightgun&) = delete;
-  Lightgun(Lightgun&&) = delete;
-  Lightgun& operator=(const Lightgun&) = delete;
-  Lightgun& operator=(Lightgun&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    Lightgun() = delete;
+    Lightgun(const Lightgun&) = delete;
+    Lightgun(Lightgun&&) = delete;
+    Lightgun& operator=(const Lightgun&) = delete;
+    Lightgun& operator=(Lightgun&&) = delete;
 };
 
 #endif
