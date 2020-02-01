@@ -29,7 +29,7 @@
 Lightgun::Lightgun(Jack jack, const Event& event, const System& system,
                    const string& romMd5, const FrameBuffer& frameBuffer)
   : Controller(jack, event, system, Controller::Type::Lightgun),
-  myFrameBuffer(frameBuffer)
+    myFrameBuffer(frameBuffer)
 {
   // Right now, there are only three games and a test ROM that use the light gun
   if (romMd5 == "8da51e0c4b6b46f7619425119c7d018e" ||

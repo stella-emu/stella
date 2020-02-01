@@ -46,7 +46,7 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
   else
   {
     // Manually 'mirror' the ROM image into the buffer
-    for(int i = 0; i < System::PAGE_SIZE; i += mySize)
+    for(size_t i = 0; i < System::PAGE_SIZE; i += mySize)
       std::copy_n(image.get(), mySize, myImage.get() + i);
     mySize = System::PAGE_SIZE;
   }
