@@ -413,12 +413,9 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ConsoleSelect,            KBDK_F1},
   {Event::ConsoleReset,             KBDK_F2},
   {Event::ConsoleColor,             KBDK_F3},
-  {Event::ConsoleBlackWhite,        KBDK_F4},
   {Event::Console7800Pause,         KBDK_F3, MOD3},
   {Event::ConsoleLeftDiffA,         KBDK_F5},
-  {Event::ConsoleLeftDiffB,         KBDK_F6},
   {Event::ConsoleRightDiffA,        KBDK_F7},
-  {Event::ConsoleRightDiffB,        KBDK_F8},
   {Event::SaveState,                KBDK_F9},
   {Event::SaveAllStates,            KBDK_F9, MOD3},
   {Event::PreviousState,            KBDK_F10, KBDM_SHIFT},
@@ -427,7 +424,6 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::LoadState,                KBDK_F11},
   {Event::LoadAllStates,            KBDK_F11, MOD3},
   {Event::TakeSnapshot,             KBDK_F12},
-  {Event::Fry,                      KBDK_BACKSPACE},
   {Event::TogglePauseMode,          KBDK_PAUSE},
   {Event::OptionsMenuMode,          KBDK_TAB},
   {Event::CmdMenuMode,              KBDK_BACKSLASH},
@@ -516,6 +512,11 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ConsoleRightDiffToggle,   KBDK_F8},         // front ("SKILL P2")
   {Event::CmdMenuMode,              KBDK_F13},        // back ("4:3","16:9")
   {Event::ExitMode,                 KBDK_BACKSPACE},  // back ("FRY")
+#else // defining duplicate keys must be avoided!
+  {Event::ConsoleBlackWhite,        KBDK_F4},
+  {Event::ConsoleLeftDiffB,         KBDK_F6},
+  {Event::ConsoleRightDiffB,        KBDK_F8},
+  {Event::Fry,                      KBDK_BACKSPACE},
 #endif
 };
 
@@ -550,7 +551,6 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
   {Event::UITabPrev,                KBDK_TAB, KBDM_SHIFT | KBDM_CTRL},
   {Event::UITabNext,                KBDK_TAB, KBDM_CTRL},
 
-  {Event::UIPrevDir,                KBDK_BACKSPACE},
   {Event::ToggleFullScreen,         KBDK_RETURN, MOD3},
 
 #ifdef BSPF_MACOS
@@ -569,6 +569,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultMenuM
   //{Event::NoType,                   KBDK_F4},         // back ("COLOR","B/W")
   {Event::UITabPrev,                KBDK_F13},        // back ("4:3","16:9")
   {Event::UITabNext,                KBDK_BACKSPACE},  // back (FRY)
+#else // defining duplicate keys must be avoided!
+  {Event::UIPrevDir,                KBDK_BACKSPACE},
 #endif
 };
 
@@ -704,7 +706,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::CompuMateMap
   {Event::CompuMateRightBracket,  KBDK_RIGHTBRACKET},
   {Event::CompuMateMinus,         KBDK_MINUS},
   {Event::CompuMateQuote,         KBDK_APOSTROPHE, KBDM_SHIFT},
-  {Event::CompuMateBackspace,     KBDK_BACKSPACE},
+  {Event::CompuMateBackspace,     KBDK_BACKSPACE, KBDM_SHIFT},
   {Event::CompuMateEquals,        KBDK_EQUALS},
   {Event::CompuMatePlus,          KBDK_EQUALS, KBDM_SHIFT},
   {Event::CompuMateSlash,         KBDK_SLASH}
