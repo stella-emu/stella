@@ -179,7 +179,7 @@
   * Fixed bug in DPC+ scheme; 'fast fetch mode' was enabled at startup,
     when it should be disabled by default.
 
-  * Added proper Retron77 port. (TODO: doc)
+  * Added proper Retron77 port.
 
   * Added proper libretro port, and fixed display for OpenGLES renderers.
 
