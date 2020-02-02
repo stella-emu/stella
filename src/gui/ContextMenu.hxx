@@ -87,7 +87,7 @@ class ContextMenu : public Dialog, public CommandSender
     bool handleMouseClicks(int x, int y, MouseButton b) override;
     void handleMouseWheel(int x, int y, int direction) override;
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
-    void handleJoyDown(int stick, int button, bool longPress) override;
+    void handleJoyUp(int stick, int button) override;
     void handleJoyAxis(int stick, JoyAxis axis, JoyDir adir, int button) override;
     bool handleJoyHat(int stick, int hat, JoyHatDir vahdirlue, int button) override;
     void handleEvent(Event::Type e);

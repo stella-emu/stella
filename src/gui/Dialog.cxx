@@ -572,26 +572,32 @@ bool Dialog::handleMouseClicks(int x, int y, MouseButton b)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleJoyDown(int stick, int button, bool longPress)
 {
-  Event::Type e =
-    instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
-
-  // Unless a widget has claimed all responsibility for data, we assume
-  // that if an event exists for the given data, it should have priority.
-  if(!handleNavEvent(e) && _focusedWidget)
+  // Focused widget receives joystick events
+  if(_focusedWidget)
   {
+    Event::Type e =
+      instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
+
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
       _focusedWidget->handleJoyDown(stick, button, longPress);
-    else
-      _focusedWidget->handleEvent(e);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleJoyUp(int stick, int button)
 {
-  // Focused widget receives joystick events
-  if(_focusedWidget)
-    _focusedWidget->handleJoyUp(stick, button);
+  Event::Type e =
+    instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
+
+  // Unless a widget has claimed all responsibility for data, we assume
+  // that if an event exists for the given data, it should have priority.
+  if (!handleNavEvent(e) && _focusedWidget)
+  {
+    if (_focusedWidget->wantsRaw() || e == Event::NoType)
+      _focusedWidget->handleJoyUp(stick, button);
+    else
+      _focusedWidget->handleEvent(e);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

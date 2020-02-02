@@ -66,6 +66,7 @@ void DialogContainer::updateTime(uInt64 time)
   // Joystick has been pressed long
   if(myCurrentButtonDown.stick != -1 && myButtonLongPressTime < myTime)
   {
+    myButtonLongPress = true;
     activeDialog->handleJoyDown(myCurrentButtonDown.stick, myCurrentButtonDown.button, true);
     myButtonLongPressTime = myButtonRepeatTime = myTime + _REPEAT_NONE;
   }
@@ -302,7 +303,10 @@ void DialogContainer::handleJoyBtnEvent(int stick, int button, bool pressed)
       myCurrentButtonDown.stick = myCurrentButtonDown.button = -1;
       myButtonRepeatTime = myButtonLongPressTime = 0;
     }
-    activeDialog->handleJoyUp(stick, button);
+    if (myButtonLongPress)
+      myButtonLongPress = false;
+    else
+      activeDialog->handleJoyUp(stick, button);
   }
 }
 

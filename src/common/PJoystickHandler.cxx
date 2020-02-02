@@ -721,7 +721,7 @@ void PhysicalJoystickHandler::handleBtnEvent(int stick, int button, bool pressed
     j->buttonLast[stick] = pressed ? button : JOY_CTRL_NONE;
 
     // Handle buttons which switch eventhandler state
-    if(pressed && myHandler.changeStateByEvent(j->joyMap.get(EventMode::kEmulationMode, button)))
+    if(!pressed && myHandler.changeStateByEvent(j->joyMap.get(EventMode::kEmulationMode, button)))
       return;
 
     // Determine which mode we're in, then send the event to the appropriate place
