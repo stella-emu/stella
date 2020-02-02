@@ -276,7 +276,7 @@ void ContextMenu::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleJoyDown(int stick, int button, bool longPress)
+void ContextMenu::handleJoyUp(int stick, int button)
 {
   handleEvent(instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button));
 }

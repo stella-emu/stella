@@ -405,6 +405,14 @@ void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, bool repeated)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleJoyDown(int stick, int button, bool longPress)
 {
+  myEventHandled = false;
+  myList->setFlags(Widget::FLAG_WANTS_RAWDATA); // allow handling long button press
+  Dialog::handleJoyDown(stick, button, longPress);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::handleJoyUp(int stick, int button)
+{
   // open power-up options and settings for 2nd and 4th button if not mapped otherwise
   Event::Type e = instance().eventHandler().eventForJoyButton(EventMode::kMenuMode, stick, button);
 
@@ -413,19 +421,9 @@ void LauncherDialog::handleJoyDown(int stick, int button, bool longPress)
     myGlobalProps->open();
   if (button == 3 && (e == Event::Event::UITabPrev || e == Event::NoType))
     openSettings();
-  else
-  {
-    myEventHandled = false;
-    myList->setFlags(Widget::FLAG_WANTS_RAWDATA); // allow handling long button press
-    Dialog::handleJoyDown(stick, button, longPress);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::handleJoyUp(int stick, int button)
-{
-  if (!myEventHandled)
+  else if (!myEventHandled)
     Dialog::handleJoyUp(stick, button);
+
   myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // stop allowing to handle long button press
 }
 
