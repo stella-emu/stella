@@ -35,7 +35,7 @@ if not exist "flip.exe" (
 	set HAVE_FLIP=0
 )
 
-set RELEASE_32=Release
+set RELEASE_32=Win32\Release
 set RELEASE_64=x64\Release
 
 echo.
