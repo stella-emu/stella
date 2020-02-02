@@ -572,6 +572,10 @@
 		DCDDEAC71F5DBF0400C67366 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */; };
 		DCDE17FC17724E5D00EB1AC6 /* SnapshotDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */; };
 		DCDE17FD17724E5D00EB1AC6 /* SnapshotDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */; };
+		DCDE647E23E6638E00EE3EFF /* MessageMenu.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE647A23E6638D00EE3EFF /* MessageMenu.hxx */; };
+		DCDE647F23E6638E00EE3EFF /* MessageDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */; };
+		DCDE648023E6638E00EE3EFF /* MessageDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */; };
+		DCDE648123E6638E00EE3EFF /* MessageMenu.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDE647D23E6638D00EE3EFF /* MessageMenu.cxx */; };
 		DCDFF08120B781B0001227C0 /* DispatchResult.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */; };
 		DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDFF08020B781B0001227C0 /* DispatchResult.hxx */; };
 		DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */; };
@@ -693,8 +697,6 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.llvm.clang.1_0;
 			fileType = sourcecode.c;
-			inputFiles = (
-			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -704,8 +706,6 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.llvm.clang.1_0;
 			fileType = sourcecode.asm;
-			inputFiles = (
-			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -715,8 +715,6 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.llvm.clang.1_0;
 			fileType = sourcecode.cpp;
-			inputFiles = (
-			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -1312,6 +1310,10 @@
 		DCDDEAC31F5DBF0400C67366 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StateManager.hxx; sourceTree = "<group>"; };
 		DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SnapshotDialog.cxx; sourceTree = "<group>"; };
 		DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SnapshotDialog.hxx; sourceTree = "<group>"; };
+		DCDE647A23E6638D00EE3EFF /* MessageMenu.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MessageMenu.hxx; sourceTree = "<group>"; };
+		DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MessageDialog.cxx; sourceTree = "<group>"; };
+		DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MessageDialog.hxx; sourceTree = "<group>"; };
+		DCDE647D23E6638D00EE3EFF /* MessageMenu.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MessageMenu.cxx; sourceTree = "<group>"; };
 		DCDFF07F20B781B0001227C0 /* DispatchResult.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DispatchResult.cxx; sourceTree = "<group>"; };
 		DCDFF08020B781B0001227C0 /* DispatchResult.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DispatchResult.hxx; sourceTree = "<group>"; };
 		DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FSNodePOSIX.hxx; sourceTree = "<group>"; };
@@ -2057,6 +2059,10 @@
 				2DDBEAC3084578BF00812C11 /* Menu.hxx */,
 				DC98F35411F5B56200AA520F /* MessageBox.cxx */,
 				DC98F35511F5B56200AA520F /* MessageBox.hxx */,
+				DCDE647B23E6638D00EE3EFF /* MessageDialog.cxx */,
+				DCDE647C23E6638D00EE3EFF /* MessageDialog.hxx */,
+				DCDE647D23E6638D00EE3EFF /* MessageMenu.cxx */,
+				DCDE647A23E6638D00EE3EFF /* MessageMenu.hxx */,
 				DC2410E22274BDA8007A4CBF /* MinUICommandDialog.cxx */,
 				DC2410E12274BDA7007A4CBF /* MinUICommandDialog.hxx */,
 				2DDBEAC4084578BF00812C11 /* OptionsDialog.cxx */,
@@ -2342,6 +2348,7 @@
 				E09F4141201E9050004A3391 /* Audio.hxx in Headers */,
 				2D9173CC09BA90380026E9FF /* Booster.hxx in Headers */,
 				2D9173CD09BA90380026E9FF /* Cart.hxx in Headers */,
+				DCDE648023E6638E00EE3EFF /* MessageDialog.hxx in Headers */,
 				2D9173CE09BA90380026E9FF /* Cart2K.hxx in Headers */,
 				2D9173CF09BA90380026E9FF /* Cart3F.hxx in Headers */,
 				DC3EE86D1E2C0E6D00905161 /* zlib.h in Headers */,
@@ -2520,6 +2527,7 @@
 				DCC6A4B320A2622500863C59 /* SimpleResampler.hxx in Headers */,
 				DC6DC91F205DB879004A5FC3 /* PhysicalJoystick.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
+				DCDE647E23E6638E00EE3EFF /* MessageMenu.hxx in Headers */,
 				DCEC585E1E945175002F0246 /* DelayQueueIterator.hxx in Headers */,
 				DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
@@ -2843,6 +2851,7 @@
 				2D91749809BA90380026E9FF /* Switches.cxx in Sources */,
 				2D9174A109BA90380026E9FF /* EventHandler.cxx in Sources */,
 				2D9174A209BA90380026E9FF /* FrameBuffer.cxx in Sources */,
+				DCDE648123E6638E00EE3EFF /* MessageMenu.cxx in Sources */,
 				2D9174A309BA90380026E9FF /* Settings.cxx in Sources */,
 				2D9174A809BA90380026E9FF /* FSNodePOSIX.cxx in Sources */,
 				2D9174AA09BA90380026E9FF /* AboutDialog.cxx in Sources */,
@@ -3023,6 +3032,7 @@
 				DCDDEAC61F5DBF0400C67366 /* StateManager.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
 				E09F4142201E9050004A3391 /* Audio.cxx in Sources */,
+				DCDE647F23E6638E00EE3EFF /* MessageDialog.cxx in Sources */,
 				DCF7F127223D796000701A47 /* ProfilingRunner.cxx in Sources */,
 				DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */,
 				DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */,
