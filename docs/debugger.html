@@ -601,8 +601,9 @@ command that takes arguments.</p>
 
 <p>A breakpoint is a "hotspot" in your program that causes the emulator
 to stop emulating and jump into the debugger. You can set as many
-breakpoints as you like. The command is "break xx" where xx is any
-expression. If you've created a symbol file, you can use labels.</p>
+breakpoints as you like. The command is "break xx yy" where xx is any
+expression and yy a bank number.  Both arguments are optional. If you have
+created a symbol file, you can use labels for the expression.</p>
 
 <p>Example: you've got a label called "kernel". To break there,
 the command is "break kernel". After you've set the breakpoint,
@@ -906,8 +907,9 @@ Type "help 'cmd'" to see extended information about the given command.</p>
 <pre>
                 a - Set Accumulator to &lt;value&gt;
              base - Set default number base to &lt;base&gt; (bin, dec, hex)
-            break - Set/clear breakpoint at &lt;address&gt;
+            break - Set/clear breakpoint at &lt;address&gt; and &lt;bank&gt;
           breakif - Set/clear breakpoint on &lt;condition&gt;
+       breaklabel - Set/clear breakpoint on &lt;address&gt; (no mirrors, all banks)
                 c - Carry Flag: set (0 or 1), or toggle (no arg)
             cheat - Use a cheat code (see manual for cheat types)
       clearbreaks - Clear all breakpoints
@@ -1126,15 +1128,17 @@ as illustrated:</p>
 <p><img src="graphics/debugger_tiainfo.png"></p>
 <p>The indicators are as follows (note that all these are read-only):</p>
 <ul>
-<li><b>Frame Count</b>: The current frame number, since this ROM was loaded or reset.</li>
-<li><b>Frame Cycle</b>: The number of CPU cycles that have been executed this frame, since
+<li><b>Frame Count</b>: The number of frames since this ROM was loaded or reset.</li>
+<li><b>Frame Cycle</b>: The number of CPU cycles that have been executed this frame since
 VSYNC was cleared at scanline 0.</li>
+<li><b>Total</b>: The total number of CPU cycles since this ROM was loaded or reset.</li>
+<li><b>Delta</b>: The number of CPU cycles that have been executed since the last debugger
+interrupt.</li>
 <li><b>Scanline</b>: The scanline that's currently being drawn, and the count from the
-previous frame. Scanline 0 is the one on which VSYNC is cleared (after being set for 3 scanlines, as per the Stella
-Programmer's Guide)</li>
+previous frame. Scanline 0 is the one on which VSYNC is cleared (after being set for
+3 scanlines, as per the Stella Programmer's Guide).</li>
 <li><b>Scan Cycle</b>: The number of CPU cycles that have been executed since the beginning
 of the current scanline.</li>
-<li><b>VSYNC &amp; VBLANK</b>: Self explanatory.</li>
 <li><b>Pixel Pos</b>: The current number of visible color clocks that have been displayed on
 the current scanline, starting from the beginning of the Horizontal Blank period.
 During HBLANK, this value will be negative (representing the number of clocks
