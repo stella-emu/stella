@@ -722,11 +722,11 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kVSyncCmd:
-      tia.vsync(tia.vsyncAsInt() & ~0x02 | (myVSync->getState() ? 0x02 : 0x00));
+      tia.vsync((tia.vsyncAsInt() & ~0x02) | (myVSync->getState() ? 0x02 : 0x00));
       break;
 
     case kVBlankCmd:
-      tia.vblank(tia.vblankAsInt() & ~0x02 | (myVBlank->getState() ? 0x02 : 0x00));
+      tia.vblank((tia.vblankAsInt() & ~0x02) | (myVBlank->getState() ? 0x02 : 0x00));
       break;
 
     case DataGridWidget::kItemDataChangedCmd:
