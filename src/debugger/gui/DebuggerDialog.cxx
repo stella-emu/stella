@@ -471,12 +471,12 @@ void DebuggerDialog::addStatusArea()
   xpos = r.x();  ypos = r.y();
   myTiaInfo = new TiaInfoWidget(this, *myLFont, *myNFont, xpos, ypos, r.w());
 
-  ypos += myTiaInfo->getHeight() + 10;
-  myTiaZoom = new TiaZoomWidget(this, *myNFont, xpos+10, ypos,
-                                r.w()-10, r.h()-lineHeight-ypos-10);
+  ypos += myTiaInfo->getHeight() + 8;
+  myTiaZoom = new TiaZoomWidget(this, *myNFont, xpos + 10, ypos,
+                                r.w() - 10, r.h() - lineHeight - ypos - 3);
   addToFocusList(myTiaZoom->getFocusList());
 
-  xpos += 10;  ypos += myTiaZoom->getHeight() + 10;
+  xpos += 10;  ypos += myTiaZoom->getHeight() + 6;
   myMessageBox = new EditTextWidget(this, *myLFont,
                                     xpos, ypos, myTiaZoom->getWidth(),
                                     myLFont->getLineHeight(), "");

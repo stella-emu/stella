@@ -20,6 +20,7 @@
 #include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "TIADebug.hxx"
+#include "TIA.hxx"
 #include "Widget.hxx"
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
@@ -34,14 +35,17 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
     CommandSender(boss)
 {
   bool longstr = 34 * lfont.getMaxCharWidth() <= max_w;
+  const int VGAP = 5;
 
-  x += 5;
+  x += 11;
   const int lineHeight = lfont.getLineHeight();
   int xpos = x, ypos = y + 10;
   int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle " : "F. Cycle ");
   int fwidth = 5 * lfont.getMaxCharWidth() + 4;
+  int twidth = 8 * lfont.getMaxCharWidth() + 4;
 
   // Add frame info
+  // 1st column
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        longstr ? "Frame Count " : "Frame ",
                        TextAlign::Left);
@@ -49,7 +53,7 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   myFrameCount = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
   myFrameCount->setEditable(false, true);
 
-  xpos = x;  ypos += lineHeight + 5;
+  xpos = x;  ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        longstr ? "Frame Cycle " : "F. Cycle ",
                        TextAlign::Left);
@@ -57,48 +61,51 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   myFrameCycles = new EditTextWidget(boss, nfont, xpos, ypos-1, fwidth, lineHeight, "");
   myFrameCycles->setEditable(false, true);
 
-  xpos = x + 20;  ypos += lineHeight + 8;
-  myVSync = new CheckboxWidget(boss, lfont, xpos, ypos-3, "VSync", 0);
-  myVSync->setEditable(false);
+  xpos = x;  ypos += lineHeight + VGAP;
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
+                       "Total ", TextAlign::Left);
+  xpos += lfont.getStringWidth("Total ");
+  myTotalCycles = new EditTextWidget(boss, nfont, xpos, ypos - 1, twidth, lineHeight, "");
+  myTotalCycles->setEditable(false, true);
 
-  xpos = x + 20;  ypos += lineHeight + 5;
-  myVBlank = new CheckboxWidget(boss, lfont, xpos, ypos-3, "VBlank", 0);
-  myVBlank->setEditable(false);
+  xpos = x;  ypos += lineHeight + VGAP;
+  new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
+                       "Delta ", TextAlign::Left);
+  xpos = x + lfont.getStringWidth("Delta ");
+  myDeltaCycles = new EditTextWidget(boss, nfont, xpos, ypos - 1, twidth, lineHeight, "");
+  myDeltaCycles->setEditable(false, true);
 
-  xpos = x + lwidth + myFrameCycles->getWidth() + 8;  ypos = y + 10;
+  // 2nd column
+  xpos = x + lwidth + myFrameCycles->getWidth() + 9;  ypos = y + 10;
   lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ");
   fwidth = 3 * lfont.getMaxCharWidth() + 4;
 
   new StaticTextWidget(boss, lfont, xpos, ypos,
     lfont.getStringWidth(longstr ? "Scanline" : "Scn Ln"), lineHeight,
     longstr ? "Scanline" : "Scn Ln", TextAlign::Left);
-
   myScanlineCountLast = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myScanlineCountLast->setEditable(false, true);
-
   myScanlineCount = new EditTextWidget(boss, nfont,
         xpos+lwidth - myScanlineCountLast->getWidth() - 2, ypos-1, fwidth,
         lineHeight, "");
   myScanlineCount->setEditable(false, true);
 
-  ypos += lineHeight + 5;
+  ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        longstr ? "Scan Cycle " : "Scn Cycle", TextAlign::Left);
-
   myScanlineCycles = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                         lineHeight, "");
   myScanlineCycles->setEditable(false, true);
 
-  ypos += lineHeight + 5;
+  ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        "Pixel Pos ", TextAlign::Left);
-
   myPixelPosition = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myPixelPosition->setEditable(false, true);
 
-  ypos += lineHeight + 5;
+  ypos += lineHeight + VGAP;
   new StaticTextWidget(boss, lfont, xpos, ypos, lwidth, lineHeight,
                        longstr ? "Color Clock " : "Color Clk ", TextAlign::Left);
 
@@ -134,8 +141,12 @@ void TiaInfoWidget::loadConfig()
   myFrameCycles->setText(Common::Base::toString(tia.frameCycles(), Common::Base::Fmt::_10_5),
                          tia.frameCycles() != oldTia.info[1]);
 
-  myVSync->setState(tia.vsync(), tia.vsyncAsInt() != oldTia.info[2]);
-  myVBlank->setState(tia.vblank(), tia.vblankAsInt() != oldTia.info[3]);
+  uInt64 total = tia.cyclesLo() + (uInt64(tia.cyclesHi()) << 32);
+  uInt64 totalOld = oldTia.info[2] + (uInt64(oldTia.info[3]) << 32);
+  myTotalCycles->setText(Common::Base::toString(total / 1000000, Common::Base::Fmt::_10_6) + "e6",
+                         total != totalOld);
+  uInt32 delta = total - totalOld;
+  myDeltaCycles->setText(Common::Base::toString(delta, Common::Base::Fmt::_10_8)); // no coloring
 
   int clk = tia.clocksThisLine();
   myScanlineCount->setText(Common::Base::toString(tia.scanlines(), Common::Base::Fmt::_10_3),

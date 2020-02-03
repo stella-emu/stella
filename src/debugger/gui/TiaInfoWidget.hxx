@@ -38,15 +38,14 @@ class TiaInfoWidget : public Widget, public CommandSender
   private:
     EditTextWidget* myFrameCount{nullptr};
     EditTextWidget* myFrameCycles{nullptr};
+    EditTextWidget* myTotalCycles{ nullptr };
 
     EditTextWidget* myScanlineCount{nullptr};
     EditTextWidget* myScanlineCountLast{nullptr};
     EditTextWidget* myScanlineCycles{nullptr};
+    EditTextWidget* myDeltaCycles{ nullptr };
     EditTextWidget* myPixelPosition{nullptr};
     EditTextWidget* myColorClocks{nullptr};
-
-    CheckboxWidget* myVSync{nullptr};
-    CheckboxWidget* myVBlank{nullptr};
 
   private:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;

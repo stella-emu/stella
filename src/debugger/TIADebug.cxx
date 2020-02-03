@@ -126,6 +126,11 @@ const DebuggerState& TIADebug::getState()
   myState.size.push_back(nusizM1());
   myState.size.push_back(sizeBL());
 
+  // VSync/VBlank registers
+  myState.vsb.clear();
+  myState.vsb.push_back(vsync());
+  myState.vsb.push_back(vblank());
+
   // Audio registers
   myState.aud.clear();
   myState.aud.push_back(audF0());
@@ -139,8 +144,8 @@ const DebuggerState& TIADebug::getState()
   myState.info.clear();
   myState.info.push_back(frameCount());
   myState.info.push_back(frameCycles());
-  myState.info.push_back(vsyncAsInt());
-  myState.info.push_back(vblankAsInt());
+  myState.info.push_back(cyclesLo());
+  myState.info.push_back(cyclesHi());
   myState.info.push_back(scanlines());
   myState.info.push_back(scanlinesLastFrame());
   myState.info.push_back(clocksThisLine());
@@ -230,6 +235,11 @@ void TIADebug::saveOldState()
   myOldState.size.push_back(nusizM1());
   myOldState.size.push_back(sizeBL());
 
+  // VSync/VBlank registers
+  myOldState.vsb.clear();
+  myOldState.vsb.push_back(vsync());
+  myOldState.vsb.push_back(vblank());
+
   // Audio registers
   myOldState.aud.clear();
   myOldState.aud.push_back(audF0());
@@ -243,8 +253,8 @@ void TIADebug::saveOldState()
   myOldState.info.clear();
   myOldState.info.push_back(frameCount());
   myOldState.info.push_back(frameCycles());
-  myOldState.info.push_back(vsyncAsInt());
-  myOldState.info.push_back(vblankAsInt());
+  myOldState.info.push_back(cyclesLo());
+  myOldState.info.push_back(cyclesHi());
   myOldState.info.push_back(scanlines());
   myOldState.info.push_back(scanlinesLastFrame());
   myOldState.info.push_back(clocksThisLine());
@@ -936,9 +946,27 @@ int TIADebug::cyclesThisLine() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::vsync(int newVal)
+{
+  if (newVal > -1)
+    mySystem.poke(VSYNC, newVal);
+
+  return myTIA.registerValue(VSYNC) & 0x02;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIADebug::vsync() const
 {
   return myTIA.registerValue(VSYNC) & 0x02;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIADebug::vblank(int newVal)
+{
+  if (newVal > -1)
+    mySystem.poke(VBLANK, newVal);
+
+  return myTIA.registerValue(VBLANK) & 0x02;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

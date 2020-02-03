@@ -60,7 +60,7 @@ class DebuggerDialog : public Dialog
     const GUI::Font& lfont() const     { return *myLFont;        }
     const GUI::Font& nfont() const     { return *myNFont;        }
     PromptWidget& prompt() const       { return *myPrompt;       }
-    TiaInfoWidget& tiaInfo() const     { return *myTiaInfo;      }
+    TiaInfoWidget& a() const           { return *myTiaInfo;      }
     TiaOutputWidget& tiaOutput() const { return *myTiaOutput;    }
     TiaZoomWidget& tiaZoom() const     { return *myTiaZoom;      }
     RomWidget& rom() const             { return *myRom;          }

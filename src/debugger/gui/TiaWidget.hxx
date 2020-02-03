@@ -98,6 +98,9 @@ class TiaWidget : public Widget, public CommandSender
 
     DelayQueueWidget* myDelayQueueWidget{nullptr};
 
+    CheckboxWidget* myVSync{nullptr};
+    CheckboxWidget* myVBlank{nullptr};
+
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
     enum {
@@ -139,6 +142,8 @@ class TiaWidget : public Widget, public CommandSender
       kCxChgCmd = 'Sccc',
       kCxclrCmd = 'Scxl',
       kDbgClCmd = 'DBGc',
+      kVSyncCmd = 'Cvsn',
+      kVBlankCmd = 'Cvbl'
     };
 
     // Color registers
