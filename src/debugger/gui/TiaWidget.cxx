@@ -43,9 +43,25 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
             fontHeight = lfont.getFontHeight(),
             lineHeight = lfont.getLineHeight(),
             buttonW = 7 * fontWidth;
-  int xpos = 10, ypos = 10 + lineHeight, buttonX = 0, buttonY = 0;
+  int xpos = 10, ypos = 10, buttonX = 0, buttonY = 0;
   StaticTextWidget* t = nullptr;
   ButtonWidget* b = nullptr;
+
+
+  ////////////////////////////
+  // VSync/VBlank
+  ////////////////////////////
+  buttonX = xpos;  buttonY = ypos;
+  myVSync = new CheckboxWidget(boss, lfont, buttonX, buttonY, "VSync", kVSyncCmd);
+  myVSync->setTarget(this);
+  addFocusWidget(myVSync);
+
+  buttonX += myVSync->getRight() + 15;
+  myVBlank = new CheckboxWidget(boss, lfont, buttonX, buttonY, "VBlank", kVBlankCmd);
+  myVBlank->setTarget(this);
+  addFocusWidget(myVBlank);
+
+  ypos += lineHeight * 2 + 6;
 
   // Color registers
   static constexpr std::array<const char*, 4> regNames = {
@@ -84,7 +100,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   myCOLUBKColor->setTarget(this);
 
   // Fixed debug colors
-  xpos += myCOLUP0Color->getWidth() + 30;  ypos = 10;
+  xpos += myCOLUP0Color->getWidth() + 30;  ypos = 10 + lineHeight + 6;
   myFixedEnabled = new CheckboxWidget(boss, lfont, xpos, ypos, "Debug Colors", kDbgClCmd);
   myFixedEnabled->setTarget(this);
   addFocusWidget(myFixedEnabled);
@@ -102,7 +118,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
     myFixedColors[row]->setTarget(this);
   }
   xpos += t->getWidth() + myFixedColors[0]->getWidth() + 24;
-  ypos = 10;
+  ypos = 10 + lineHeight + 6;
   for(uInt32 row = 4; row <= 7; ++row)
   {
     ypos += lineHeight;
@@ -616,7 +632,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   addFocusWidget(myPriorityPF);
 
   xpos = 10;
-  ypos += 2 * lineHeight;
+  ypos += lineHeight + 10;
   t = new StaticTextWidget(boss, lfont, xpos, ypos, 13*fontWidth, fontHeight,
     "Queued Writes", TextAlign::Left);
 
@@ -639,7 +655,8 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& lfont,
   b->setTarget(this);
   addFocusWidget(b);
 
-  buttonY += lineHeight + 3;
+  buttonX = b->getRight() + 20;
+  buttonY = ypos;
   b = new ButtonWidget(boss, lfont, buttonX, buttonY, buttonW, lineHeight,
                        "HMOVE", kHmoveCmd);
   b->setTarget(this);
@@ -702,6 +719,14 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kDbgClCmd:
       myFixedEnabled->setState(tia.tia().toggleFixedColors());
+      break;
+
+    case kVSyncCmd:
+      tia.vsync(tia.vsyncAsInt() & ~0x02 | (myVSync->getState() ? 0x02 : 0x00));
+      break;
+
+    case kVBlankCmd:
+      tia.vblank(tia.vblankAsInt() & ~0x02 | (myVBlank->getState() ? 0x02 : 0x00));
       break;
 
     case DataGridWidget::kItemDataChangedCmd:
@@ -1177,6 +1202,9 @@ void TiaWidget::loadConfig()
   myPriorityPF->setState(tia.priorityPF(), state.pf[5] != oldstate.pf[5]);
 
   myDelayQueueWidget->loadConfig();
+
+  myVSync->setState(tia.vsync(), tia.vsync() != oldstate.vsb[0]);
+  myVBlank->setState(tia.vblank(), tia.vblank() != oldstate.vsb[1]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -45,6 +45,7 @@ class TiaState : public DebuggerState
     IntArray size;
     IntArray aud;
     IntArray info;
+    BoolArray vsb;
 
     // Indices for various IntArray above
     enum { P0, P1, M0, M1, BL };
@@ -127,6 +128,9 @@ class TIADebug : public DebuggerSystem
     bool refPF(int newVal = -1);
     bool scorePF(int newVal = -1);
     bool priorityPF(int newVal = -1);
+
+    bool vsync(int newVal = -1);
+    bool vblank(int newVal = -1);
 
     /** Get specific bits in the collision register (used by collXX_XX) */
     bool collision(CollisionBit id, bool toggle = false) const;
