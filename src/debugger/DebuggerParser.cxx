@@ -2323,7 +2323,7 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
 
   {
     "break",
-    "Break [at address] [and bank]",
+    "Break at <address> and <bank>",
     "Set/clear breakpoint on address (and all mirrors) and bank\nDefault are current PC and bank, valid address is 0 - ffff\n"
     "Example: break, break f000, break 7654 3\n         break ff00 ff (= all banks)",
     false,
@@ -2344,7 +2344,7 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
 
   {
     "breaklabel",
-    "Set/clear breakpoint on [address] (no mirrors, all banks)",
+    "Set/clear breakpoint on <address> (no mirrors, all banks)",
     "Example: breaklabel, breaklabel MainLoop",
     false,
     true,
