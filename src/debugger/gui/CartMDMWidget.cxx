@@ -47,14 +47,14 @@ CartridgeMDMWidget::CartridgeMDMWidget(
   }
 
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("xxx ($0FFF)"),
+    new PopUpWidget(boss, _font, xpos, ypos, _font.getStringWidth("xxx ($0FFF)"),
                     myLineHeight, items, "Set bank     ",
                     0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 
   xpos += myBank->getWidth() + 30;
-  myBankDisabled = new CheckboxWidget(boss, _font, xpos, ypos,
+  myBankDisabled = new CheckboxWidget(boss, _font, xpos, ypos + 1,
                                       "Bankswitching is locked/disabled",
                                       kBankDisabled);
   myBankDisabled->setTarget(this);
@@ -65,6 +65,7 @@ CartridgeMDMWidget::CartridgeMDMWidget(
 void CartridgeMDMWidget::loadConfig()
 {
   myBank->setSelectedIndex(myCart.getBank());
+  myBank->setEnabled(!myCart.myBankingDisabled);
   myBankDisabled->setState(myCart.myBankingDisabled);
 
   CartDebugWidget::loadConfig();
@@ -84,6 +85,7 @@ void CartridgeMDMWidget::handleCommand(CommandSender* sender,
   else if(cmd == kBankDisabled)
   {
     myCart.myBankingDisabled = myBankDisabled->getState();
+    myBank->setEnabled(!myCart.myBankingDisabled);
   }
 }
 
