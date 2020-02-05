@@ -290,7 +290,7 @@ string Console::formatFromFilename() const
   {
     try
     {
-      std::regex rgx(Pattern[i][0]);
+      std::regex rgx(Pattern[i][0], std::regex_constants::icase);
       if(std::regex_search(filename, rgx))
         return Pattern[i][1];
     }
