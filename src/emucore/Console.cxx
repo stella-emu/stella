@@ -583,7 +583,13 @@ void Console::togglePhosphor()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePhosphor(int direction)
 {
-  int blend = stoi(myProperties.get(PropType::Display_PPBlend));
+  int blend = 0;
+
+  try
+  {
+    blend = stoi(myProperties.get(PropType::Display_PPBlend));
+  }
+  catch (...) {}
 
   if(direction == +1)       // increase blend
   {
