@@ -116,8 +116,9 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // TIA Palette
   items.clear();
   VarList::push_back(items, "Standard", "standard");
-  VarList::push_back(items, "Z26", "z26");
-  VarList::push_back(items, "User", "user");
+  VarList::push_back(items, "z26", "z26");
+  if (instance().checkUserPalette())
+    VarList::push_back(items, "User", "user");
   myTIAPalette = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                  lineHeight, items, "Palette ", lwidth);
   wid.push_back(myTIAPalette);
