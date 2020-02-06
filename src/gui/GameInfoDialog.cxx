@@ -460,7 +460,14 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   myPPBlend->setEnabled(!alwaysPhosphor && usePhosphor);
 
   const string& blend = props.get(PropType::Display_PPBlend);
-  myPPBlend->setValue(stoi(blend));
+  try
+  {
+    myPPBlend->setValue(stoi(blend));
+  }
+  catch (...)
+  {
+    myPPBlend->setValue(0);
+  }
 
   // set vertical center
   Int32 vcenter = stoi(props.get(PropType::Display_VCenter));
