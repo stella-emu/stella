@@ -763,6 +763,8 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 #endif
                 exitEmulation(true);
             }
+            else
+              exitEmulation(true);
           }
           return;
 
