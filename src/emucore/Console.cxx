@@ -996,22 +996,11 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::loadUserPalette()
 {
-  const string& palette = myOSystem.paletteFile();
-  ifstream in(palette, std::ios::binary);
-  if(!in)
+  if (!myOSystem.checkUserPalette(true))
     return;
 
-  // Make sure the contains enough data for the NTSC, PAL and SECAM palettes
-  // This means 128 colours each for NTSC and PAL, at 3 bytes per pixel
-  // and 8 colours for SECAM at 3 bytes per pixel
-  in.seekg(0, std::ios::end);
-  std::streampos length = in.tellg();
-  in.seekg(0, std::ios::beg);
-  if(length < 128 * 3 * 2 + 8 * 3)
-  {
-    cerr << "ERROR: invalid palette file " << palette << endl;
-    return;
-  }
+  const string& palette = myOSystem.paletteFile();
+  ifstream in(palette, std::ios::binary);
 
   // Now that we have valid data, create the user-defined palettes
   std::array<uInt8, 3> pixbuf;  // Temporary buffer for one 24-bit pixel

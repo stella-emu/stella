@@ -288,6 +288,11 @@ class OSystem
     const string& paletteFile() const { return myPaletteFile; }
 
     /**
+      Checks if a valid a user-defined palette file exists.
+    */
+    bool checkUserPalette(bool outputError = false) const;
+
+    /**
       This method should be called to get the full path of the currently
       loaded ROM.
 
