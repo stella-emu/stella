@@ -427,7 +427,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::TogglePauseMode,          KBDK_PAUSE},
   {Event::OptionsMenuMode,          KBDK_TAB},
   {Event::CmdMenuMode,              KBDK_BACKSLASH},
-  {Event::TimeMachineMode,          KBDK_T},
+  {Event::TimeMachineMode,          KBDK_T, KBDM_SHIFT},
   {Event::DebuggerMode,             KBDK_GRAVE},
   {Event::ExitMode,                 KBDK_ESCAPE},
 #ifdef BSPF_MACOS
