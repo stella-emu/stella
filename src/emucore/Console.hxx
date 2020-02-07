@@ -326,6 +326,16 @@ class Console : public Serializable, public ConsoleIO
     */
     void setTIAProperties();
 
+    /*
+      Methods for returning high score related variables
+      Return -1 if undefined
+    */
+    Int32 numVariations();
+    Int32 numPlayers();
+    Int32 variation();
+    Int32 player();
+    Int32 score();
+
   private:
     /**
      * Define console timing based on current display format
@@ -441,6 +451,8 @@ class Console : public Serializable, public ConsoleIO
 
     // The audio settings
     AudioSettings& myAudioSettings;
+
+    bool parseAdresses(Int32& variation, Int32& player, Int32 scores[]);
 
     // Table of RGB values for NTSC, PAL and SECAM
     static PaletteArray ourNTSCPalette;

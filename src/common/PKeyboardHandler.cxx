@@ -505,6 +505,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::Unwind1Menu,              KBDK_RIGHT, MOD3},
   {Event::Unwind10Menu,             KBDK_RIGHT, KBDM_SHIFT | MOD3},
   {Event::UnwindAllMenu,            KBDK_UP, MOD3},
+  {Event::ShowScore,                KBDK_S, KBDM_SHIFT | KBDM_CTRL},
+  {Event::ShowVariation,            KBDK_V, KBDM_SHIFT | KBDM_CTRL},
 
 #if defined(RETRON77)
   {Event::ConsoleColorToggle,       KBDK_F4},         // back ("COLOR","B/W")
