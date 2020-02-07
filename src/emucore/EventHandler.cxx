@@ -717,6 +717,24 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
 
+    case Event::ShowScore:
+      if (pressed)
+      {
+        ostringstream msg;
+        msg << "Score: " << myOSystem.console().score();
+        myOSystem.frameBuffer().showMessage(msg.str());
+      }
+      return;
+
+    case Event::ShowVariation:
+      if (pressed)
+      {
+        ostringstream msg;
+        msg << "Variation: " << myOSystem.console().variation();
+        myOSystem.frameBuffer().showMessage(msg.str());
+      }
+      return;
+      
     case Event::ExitMode:
       // Special handling for Escape key
       // Basically, exit whichever mode we're currently in
@@ -1987,7 +2005,9 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::Combo13,                 "Combo 13",                              "" },
   { Event::Combo14,                 "Combo 14",                              "" },
   { Event::Combo15,                 "Combo 15",                              "" },
-  { Event::Combo16,                 "Combo 16",                              "" }
+  { Event::Combo16,                 "Combo 16",                              "" },
+  { Event::ShowScore,               "Display current score",                 "" },
+  { Event::ShowVariation,           "Display current variation",             "" },
 } };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2026,6 +2046,7 @@ const Event::EventSet EventHandler::MiscEvents = {
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
   Event::HandleMouseControl, Event::ToggleGrabMouse,
   Event::ToggleSAPortOrder,
+  Event::ShowScore, Event::ShowVariation,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

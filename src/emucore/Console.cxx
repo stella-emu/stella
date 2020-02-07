@@ -1145,6 +1145,144 @@ void Console::stateChanged(EventHandlerState state)
   // only the CompuMate used to care about state changes
 }
 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 Console::numVariations()
+{
+  string numVariations = myProperties.get(PropType::Cart_Variations);
+
+  return (numVariations == EmptyString) ? 1 : std::min(stoi(numVariations), 256);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 Console::numPlayers()
+{
+  string numPlayers = myProperties.get(PropType::Cart_Players);
+
+  return (numPlayers == EmptyString) ? 1 : std::min(stoi(numPlayers), 4);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Console::parseAdresses(Int32& variation, Int32& player, Int32 scores[])
+{
+  // format:
+  //   b,             ; variation format (BCD, HEX)
+  //   0,             ; add to variation
+  //   80,            ; variation address in hex
+  //   81,            ; player address in hex
+  //   b,             ; score format (BCD, HEX)
+  //   10,            ; score multiplier
+  //   2,             ; score addresses per player
+  //   n-times 82,    ; score addresses player 1 in hex, high to low
+  //   n-times 83,    ; score addresses player 2 in hex, high to low
+  //   ...
+  /*
+    Frogger
+    "Cart.Players" "2"
+    "Cart.Variations" "6"
+    "Cart.Addresses" "b,0,dd,e6,b,1,2,cc,ce,cd,cf"
+
+    Chopper Command:
+    "Cart.Variations" "4"
+    "Cart.Players" "2"
+    "Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+
+    Asteroids
+    "Cart.Players" "2"
+    "Cart.Variations" "66"
+    "Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+
+  */
+  string addresses = myProperties.get(PropType::Cart_Addresses);
+  char format;
+  Int16 addr;
+  Int32 varAdd, numScoreAddr, scoreMult;
+
+  // Since istringstream swallows whitespace, we have to make the
+  // delimiters be spaces
+  std::replace(addresses.begin(), addresses.end(), ',', ' ');
+  std::replace(addresses.begin(), addresses.end(), '|', ' ');
+  istringstream buf(addresses);
+
+  // 1. retrieve current variation (0..255)
+  if (!(buf >> format && buf >> varAdd && buf >> std::hex >> addr))
+    return false;
+
+  variation = mySystem->peek(addr);
+  if (format == 'b')
+    variation = (variation >> 4) * 10 + variation % 16;
+  variation += varAdd;
+  variation = std::min(variation, numVariations());
+
+  // 2. retrieve current player (0..3)
+  string playerFormat;
+
+  if (!(buf >> std::hex >> addr))
+    return false;
+
+  player = mySystem->peek(addr);
+  player = std::min(player, numPlayers());
+
+  // 3. retrieve current scores for all players
+  if (!(buf >> format && buf >> std::dec >> scoreMult && buf >> std::hex >> numScoreAddr))
+    return false;
+
+  for (int i = 0; i < numPlayers(); ++i)
+  {
+    Int32 totalScore = 0;
+
+    for (int j = 0; j < numScoreAddr; ++j)
+    {
+      Int32 score;
+
+      if (!(buf >> std::hex >> addr))
+        return false;
+
+      totalScore *= (format == 'b') ? 100 : 256;
+
+      score = mySystem->peek(addr);
+      if (format == 'b')
+        score = (score >> 4) * 10 + score % 16;
+      totalScore += score;
+    }
+    scores[i] = totalScore * scoreMult;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 Console::variation()
+{
+  Int32 variation, player, scores[4];
+
+  if (parseAdresses(variation, player, scores))
+    return variation;
+
+  return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 Console::player()
+{
+  Int32 variation, player, scores[4];
+
+  if (parseAdresses(variation, player, scores))
+    return player;
+
+  return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 Console::score()
+{
+  Int32 variation, player, scores[4];
+
+  if (parseAdresses(variation, player, scores))
+    return scores[std::min(player, Int32(3))];
+
+  return -1;
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteArray Console::ourNTSCPalette = {
   0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,

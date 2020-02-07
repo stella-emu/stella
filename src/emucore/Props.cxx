@@ -255,7 +255,10 @@ void Properties::print() const
        << get(PropType::Display_Format)         << "|"
        << get(PropType::Display_VCenter)        << "|"
        << get(PropType::Display_Phosphor)       << "|"
-       << get(PropType::Display_PPBlend)
+       << get(PropType::Display_PPBlend)        << "|"
+       << get(PropType::Cart_Players)           << "|"
+       << get(PropType::Cart_Variations)        << "|"
+       << get(PropType::Cart_Addresses)
        << endl;
 }
 
@@ -300,7 +303,10 @@ void Properties::printHeader()
        << "Display_Format|"
        << "Display_VCenter|"
        << "Display_Phosphor|"
-       << "Display_PPBlend"
+       << "Display_PPBlend|"
+       << "Cart_Players|"
+       << "Cart_Variations|"
+       << "Cart_Addresses"
        << endl;
 }
 
@@ -327,7 +333,10 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "AUTO",   // Display.Format
   "0",      // Display.VCenter
   "NO",     // Display.Phosphor
-  "0"       // Display.PPBlend
+  "0",      // Display.PPBlend
+  "1",      // Cart.Players
+  "1",      // Cart.Variations
+  ""        // Cart.Addresses
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -353,5 +362,8 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Display.Format",
   "Display.VCenter",
   "Display.Phosphor",
-  "Display.PPBlend"
+  "Display.PPBlend",
+  "Cart.Players",
+  "Cart.Variations",
+  "Cart.Addresses"
 };

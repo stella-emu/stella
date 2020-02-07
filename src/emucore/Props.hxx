@@ -42,6 +42,9 @@ enum class PropType : uInt8 {
   Display_VCenter,
   Display_Phosphor,
   Display_PPBlend,
+  Cart_Players,
+  Cart_Variations,
+  Cart_Addresses,
   NumTypes
 };
 
