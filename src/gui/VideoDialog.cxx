@@ -472,7 +472,8 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tv.phosphor",
                                  myTVPhosphor->getState() ? "always" : "byrom");
   // TV phosphor blend
-  instance().settings().setValue("tv.phosblend", myTVPhosLevel->getValueLabel());
+  instance().settings().setValue("tv.phosblend", myTVPhosLevel->getValueLabel() == "Off"
+                                 ? "0" : myTVPhosLevel->getValueLabel());
 
   // TV scanline intensity
   instance().settings().setValue("tv.scanlines", myTVScanIntense->getValueLabel());
