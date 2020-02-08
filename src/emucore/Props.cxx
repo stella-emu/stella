@@ -258,6 +258,7 @@ void Properties::print() const
        << get(PropType::Display_PPBlend)        << "|"
        << get(PropType::Cart_Players)           << "|"
        << get(PropType::Cart_Variations)        << "|"
+       << get(PropType::Cart_Formats)           << "|"
        << get(PropType::Cart_Addresses)
        << endl;
 }
@@ -306,6 +307,7 @@ void Properties::printHeader()
        << "Display_PPBlend|"
        << "Cart_Players|"
        << "Cart_Variations|"
+       << "Cart_Formats|"
        << "Cart_Addresses"
        << endl;
 }
@@ -336,6 +338,7 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "0",      // Display.PPBlend
   "1",      // Cart.Players
   "1",      // Cart.Variations
+  "",       // Cart.Formats,
   ""        // Cart.Addresses
 };
 
@@ -365,5 +368,6 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Display.PPBlend",
   "Cart.Players",
   "Cart.Variations",
+  "Cart.Formats",
   "Cart.Addresses"
 };

@@ -44,6 +44,7 @@ enum class PropType : uInt8 {
   Display_PPBlend,
   Cart_Players,
   Cart_Variations,
+  Cart_Formats,
   Cart_Addresses,
   NumTypes
 };
