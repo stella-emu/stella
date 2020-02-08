@@ -23,7 +23,11 @@ my %prop_type = (
   "Display.Format"          => 17,
   "Display.VCenter"         => 18,
   "Display.Phosphor"        => 19,
-  "Display.PPBlend"         => 20
+  "Display.PPBlend"         => 20,
+  "Cart.Players"            => 21,
+  "Cart.Variations"         => 22,
+  "Cart.Formats"            => 23,
+  "Cart.Addresses"          => 24
 );
 my @prop_type_as_string = (
   "Cart.MD5",
@@ -46,7 +50,11 @@ my @prop_type_as_string = (
   "Display.Format",
   "Display.VCenter",
   "Display.Phosphor",
-  "Display.PPBlend"
+  "Display.PPBlend",
+  "Cart.Players",
+  "Cart.Variations",
+  "Cart.Formats",
+  "Cart.Addresses"
 );
 
 my @prop_defaults = (
@@ -70,7 +78,11 @@ my @prop_defaults = (
   "AUTO",
   "0",
   "NO",
-  "0"
+  "0",
+  "1",
+  "1",
+  "",
+  ""
 );
 
 # Load and parse a properties file into an hash table of property

@@ -56,6 +56,8 @@ void Properties::set(PropType key, const string& value)
       case PropType::Controller_MouseAxis:
       case PropType::Display_Format:
       case PropType::Display_Phosphor:
+      case PropType::Cart_Formats:
+      case PropType::Cart_Addresses:
       {
         BSPF::toUpperCase(myProperties[pos]);
         break;

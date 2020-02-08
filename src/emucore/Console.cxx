@@ -1165,54 +1165,18 @@ Int32 Console::numPlayers()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Console::parseAdresses(Int32& variation, Int32& player, Int32 scores[])
 {
-  // format:
-  //   b,             ; variation format (BCD, HEX)
-  //   0,             ; add to variation
-  //   80,            ; variation address in hex
-  //   81,            ; player address in hex
-  //   b,             ; score format (BCD, HEX)
-  //   10,            ; score multiplier
+  // Formats (all optional):
   //   2,             ; score addresses per player
-  //   n-times 82,    ; score addresses player 1 in hex, high to low
-  //   n-times 83,    ; score addresses player 2 in hex, high to low
-  //   ...
-
-  // Formats:
-  //   2,             ; score addresses per player
-  //   10,            ; score multiplier
-  //   b,             ; score format (BCD, HEX)
-  //   b,             ; variation format (BCD, HEX)
+  //   1,             ; score multiplier
+  //   B,             ; score format (BCD, HEX)
+  //   B,             ; variation format (BCD, HEX)
   //   0,             ; add to variation
-  // Addresses
-  //   n*v-times 82,  ; score addresses player x in hex, high to low
-  //   80,            ; variation address in hex
-  //   81,            ; player address in hex
-  //   ...
-
-  /*
-    Frogger
-    "Cart.Players" "2"
-    "Cart.Variations" "6"
-    //"Cart.Addresses" "b,0,dd,e6,b,1,2,cc,ce,cd,cf"
-    "Cart.Formats" "2,1,b,b,0"
-    "Cart.Addresses" "cc,ce,cd,cf,dd,e6"
-
-
-    Chopper Command:
-    "Cart.Variations" "4"
-    "Cart.Players" "2"
-    //"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
-    "Cart.Formats" "3,1,b,b,1"
-    "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
-
-    Asteroids
-    "Cart.Players" "2"
-    "Cart.Variations" "66"
-    //"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
-    "Cart.Formats" "2,10,b,h,1"
-    "Cart.Addresses" "bd,be,c0,c1,80,c7"
-  */
-  // TODO: 
+  // Addresses (in hex):
+  //   n*p-times xx,  ; score addresses for each player, high to low
+  //   xx,            ; variation address (if more than 1 variation)
+  //   xx,            ; player address (if more than 1 player)
+  // TODO:
+  // - variation bits (Centipede)
   // - player bits (Asteroids)
   // - score swaps (Asteroids)
 
@@ -1239,9 +1203,9 @@ bool Console::parseAdresses(Int32& variation, Int32& player, Int32 scores[])
   if (!(formatBuf >> scoreMult))
     scoreMult = 1;
   if (!(formatBuf >> scoreFormat))
-    scoreFormat = 'b';
+    scoreFormat = 'B';
   if (!(formatBuf >> varFormat))
-    varFormat = 'b';
+    varFormat = 'B';
   if (!(formatBuf >> varAdd))
     varAdd = 0;
 
@@ -1257,26 +1221,34 @@ bool Console::parseAdresses(Int32& variation, Int32& player, Int32 scores[])
       if (!(addrBuf >> std::hex >> addr))
         return false;
 
-      totalScore *= (scoreFormat == 'b') ? 100 : 256;
+      totalScore *= (scoreFormat == 'B') ? 100 : 256;
 
       score = mySystem->peek(addr);
-      if (scoreFormat == 'b')
+      if (scoreFormat == 'B')
         score = (score >> 4) * 10 + score % 16;
       totalScore += score;
     }
     scores[i] = totalScore * scoreMult;
   }
 
+  variation = 1; player = 0;
+
   // 3. retrieve current variation (0..255)
+  if (numVariations() == 1)
+    return true;
+
   if (!(addrBuf >> std::hex >> addr))
     return false;
   variation = mySystem->peek(addr);
-  if (varFormat == 'b')
+  if (varFormat == 'B')
     variation = (variation >> 4) * 10 + variation % 16;
   variation += varAdd;
   variation = std::min(variation, numVariations());
 
   // 4. retrieve current player (0..3)
+  if (numPlayers() == 1)
+    return true;
+
   if (!(addrBuf >> std::hex >> addr))
     return false;
 
