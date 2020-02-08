@@ -460,17 +460,10 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   myPPBlend->setEnabled(!alwaysPhosphor && usePhosphor);
 
   const string& blend = props.get(PropType::Display_PPBlend);
-  try
-  {
-    myPPBlend->setValue(stoi(blend));
-  }
-  catch (...)
-  {
-    myPPBlend->setValue(0);
-  }
+  myPPBlend->setValue(BSPF::stringToInt(blend));
 
   // set vertical center
-  Int32 vcenter = stoi(props.get(PropType::Display_VCenter));
+  Int32 vcenter = BSPF::stringToInt(props.get(PropType::Display_VCenter));
   myVCenter->setValueLabel(vcenter);
   myVCenter->setValue(vcenter);
   myVCenter->setValueUnit(vcenter ? "px" : "");
@@ -519,7 +512,7 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   myMouseY->setEnabled(!autoAxis);
   if(m_axis >> m_range)
   {
-    myMouseRange->setValue(stoi(m_range));
+    myMouseRange->setValue(BSPF::stringToInt(m_range));
   }
   else
   {
