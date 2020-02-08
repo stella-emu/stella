@@ -213,7 +213,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "6"
-"Cart.Addresses" "b,0,dd,e6,b,1,2,cc,ce,cd,cf"
+"Cart.Addresses" "cc,ce,cd,cf,dd,e6"
 ""
 
 "Cart.MD5" "02cee0b140d2f1a1efcfb1d482a5c392"
@@ -645,7 +645,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "6"
-"Cart.Addresses" "b,0,dd,e6,b,1,2,cc,ce,cd,cf"
+"Cart.Addresses" "cc,ce,cd,cf,dd,e6"
 ""
 
 "Cart.MD5" "082fdc8bd47fef01482ce5883c4ffdb8"
@@ -1511,7 +1511,8 @@
 "Cart.Name" "Chopper Command (1982) (Activision) (PAL)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "11bcf5c752088b5aaf86d6c7a6a11e8d"
@@ -2222,7 +2223,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "19b3b807507653516985ba95da92499d"
@@ -2396,7 +2398,8 @@
 "Cart.Note" "2600 Screen Search Console"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "1cafa9f3f9a2fce4af6e4b85a2bbd254"
@@ -3157,7 +3160,8 @@
 "Cart.Name" "Chopper Command (1982) (Activision) (16K)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "25e73efb9a6edf119114718bd2f646ba"
@@ -3575,7 +3579,8 @@
 "Cart.Note" "AKA Chopper Command"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "2a9f9001540c55a302befd8e9d54b47b"
@@ -3902,7 +3907,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "2dcf9ce486393cd36ca0928cd53b96cb"
@@ -4290,7 +4296,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "3276c777cbe97cdd2b4a63ffc16b7151"
@@ -4758,7 +4765,8 @@
 "Display.Format" "PAL"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "384db97670817103dd8c0bbdef132445"
@@ -5131,7 +5139,8 @@
 "Cart.Note" "AKA Chopper Command"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "3c7a7b3a0a7e6319b2fa0f923ef6c9af"
@@ -5307,7 +5316,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "3e5ca1afaa27c5da3c54c9942fec528b"
@@ -6062,7 +6072,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "47cd61f83457a0890de381e478f5cf5f"
@@ -6922,7 +6933,8 @@
 "Cart.Name" "Chopper Command (1982) (Activision) (8K)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "521f4dd1eb84a09b2b19959a41839aad"
@@ -7723,7 +7735,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "5bcc83677d68f7ef74c1b4a0697ba2a8"
@@ -7760,7 +7773,8 @@
 "Cart.Note" "AKA Chopper Command"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "5c19f6da638c4c7c1f98d09e63df43e4"
@@ -9510,7 +9524,8 @@
 "Cart.Note" "AKA Chopper Command"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "6fc27a9233fc69d28d3f190b4ff80f03"
@@ -11421,7 +11436,8 @@
 "Cart.Name" "Chopper Command (1983) (CCE)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "85b1bca93e69f13905107cc802a02470"
@@ -11985,7 +12001,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "8d00a38f4c8f8800f1c237215ac243fc"
@@ -12027,7 +12044,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "8e0ab801b1705a740b476b7f588c6d16"
@@ -14134,7 +14152,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "a97733b0852ee3096300102cb0689175"
@@ -14819,7 +14838,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "b23ebf427713dd0198b7ef47dbd07ef4"
@@ -15396,7 +15416,8 @@
 "Cart.Name" "Chopper Command (SuperVision) (PAL)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "ba257438f8a78862a9e014d831143690"
@@ -15472,7 +15493,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "bb579404924c40ca378b4aff6ccf302d"
@@ -15911,7 +15933,8 @@
 "Cart.Name" "Chopper Command (1982) (Activision)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "c1e6e4e7ef5f146388a090f1c469a2fa"
@@ -16025,7 +16048,8 @@
 "Cart.Rarity" "Hack"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "c2c8eb642765137bb82b83a65232961f"
@@ -16862,7 +16886,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "cccfe9e9a11b1dad04beba46eefb7351"
@@ -17680,7 +17705,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "d573089534ca596e64efef474be7b6bc"
@@ -18071,7 +18097,8 @@
 "Cart.Name" "Chopper Command (1983) (Digitel)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "da732c57697ad7d7af414998fa527e75"
@@ -18370,7 +18397,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "dd8a2124d4eda200df715c698a6ea887"
@@ -18529,7 +18557,8 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Addresses" "h,1,80,c7,b,10,2,bd,be,c0,c1"
+"Cart.Formats" "2,10,b,h,1"
+"Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
 "Cart.MD5" "df5cc5cccdc140eb7107f5b8adfacda1"
@@ -20814,7 +20843,8 @@
 "Cart.Rarity" "Hack"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "f8b2a6a4d73ebff10d805a9b59041986"
@@ -21481,7 +21511,8 @@
 "Cart.Name" "Chopper Command (1983) (CCE) [a]"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Addresses" "b,1,e0,eb,b,1,3,ec,ee,f0,ed,ef,f1"
+"Cart.Formats" "3,1,b,b,1"
+"Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
 "Cart.MD5" "ffe51989ba6da2c6ae5a12d277862e16"
