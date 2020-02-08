@@ -110,7 +110,7 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myCart->setStartBankFromPropsFunc([this]() {
     const string& startbank = myProperties.get(PropType::Cart_StartBank);
     return (startbank == EmptyString || BSPF::equalsIgnoreCase(startbank, "AUTO"))
-        ? -1 : stoi(startbank);
+        ? -1 : BSPF::stringToInt(startbank);
   });
 
   // We can only initialize after all the devices/components have been created
@@ -583,13 +583,7 @@ void Console::togglePhosphor()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changePhosphor(int direction)
 {
-  int blend = 0;
-
-  try
-  {
-    blend = stoi(myProperties.get(PropType::Display_PPBlend));
-  }
-  catch (...) {}
+  int blend = BSPF::stringToInt(myProperties.get(PropType::Display_PPBlend));
 
   if(direction == +1)       // increase blend
   {
@@ -795,7 +789,7 @@ void Console::changeScanlineAdjust(int direction)
 void Console::setTIAProperties()
 {
   Int32 vcenter = BSPF::clamp(
-    static_cast<Int32>(stoi(myProperties.get(PropType::Display_VCenter))), TIAConstants::minVcenter, TIAConstants::maxVcenter
+    static_cast<Int32>(BSPF::stringToInt(myProperties.get(PropType::Display_VCenter))), TIAConstants::minVcenter, TIAConstants::maxVcenter
   );
 
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||

@@ -91,11 +91,7 @@ void TIASurface::initialize(const Console& console,
   }
   else
   {
-    try
-    {
-      p_blend = stoi(console.properties().get(PropType::Display_PPBlend));
-    }
-    catch (...) {}
+    p_blend = BSPF::stringToInt(console.properties().get(PropType::Display_PPBlend));
     enable = console.properties().get(PropType::Display_Phosphor) == "YES";
   }
   enablePhosphor(enable, p_blend);
