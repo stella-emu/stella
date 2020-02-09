@@ -53,9 +53,12 @@ class GameInfoDialog : public Dialog, public CommandSender
     void loadControllerProperties(const Properties& props);
     // load the properties for the 'Cartridge' tab
     void loadCartridgeProperties(const Properties& props);
+    // load the properties for the 'High Scores' tab
+    void loadHighScoresProperties(const Properties& props);
 
     void updateControllerStates();
     void eraseEEPROM();
+    void handleHighScoresWidgets();
 
   private:
     TabWidget* myTab{nullptr};
@@ -102,6 +105,57 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myRarity{nullptr};
     EditTextWidget*   myNote{nullptr};
 
+    // High Scores properties
+    CheckboxWidget*   myHighScores{nullptr};
+    StaticTextWidget* myPlayersLabel{ nullptr };
+    PopUpWidget*      myPlayers{nullptr};
+    StaticTextWidget* myPlayersAddressLabel{ nullptr };
+    EditTextWidget*   myPlayersAddress{ nullptr };
+    EditTextWidget*   myPlayersAddressVal{ nullptr };
+
+    StaticTextWidget* myVariationsLabel{ nullptr };
+    EditTextWidget*   myVariations{nullptr};
+    StaticTextWidget* myVarAddressLabel{ nullptr };
+    EditTextWidget*   myVarAddress{ nullptr };
+    EditTextWidget*   myVarAddressVal{ nullptr };
+    CheckboxWidget*   myVarFormat{ nullptr };
+    CheckboxWidget*   myVarZeroBased{ nullptr };
+
+    StaticTextWidget* myScoresLabel{ nullptr };
+    StaticTextWidget* myScoreDigitsLabel{ nullptr };
+    PopUpWidget*      myScoreDigits{nullptr};
+    StaticTextWidget* myScoreMultLabel{ nullptr };
+    PopUpWidget*      myScoreMult{nullptr};
+    CheckboxWidget*   myScoreFormat{nullptr};
+    StaticTextWidget* myP1AddressLabel{nullptr};
+    EditTextWidget*   myP1Address0{nullptr};
+    EditTextWidget*   myP1Address0Val{ nullptr };
+    EditTextWidget*   myP1Address1{nullptr};
+    EditTextWidget*   myP1Address1Val{ nullptr };
+    EditTextWidget*   myP1Address2{nullptr};
+    EditTextWidget*   myP1Address2Val{ nullptr };
+    StaticTextWidget* myP2AddressLabel{nullptr};
+    EditTextWidget*   myP2Address0{nullptr};
+    EditTextWidget*   myP2Address0Val{ nullptr };
+    EditTextWidget*   myP2Address1{nullptr};
+    EditTextWidget*   myP2Address1Val{ nullptr };
+    EditTextWidget*   myP2Address2{nullptr};
+    EditTextWidget*   myP2Address2Val{ nullptr };
+    StaticTextWidget* myP3AddressLabel{nullptr};
+    EditTextWidget*   myP3Address0{nullptr};
+    EditTextWidget*   myP3Address0Val{ nullptr };
+    EditTextWidget*   myP3Address1{nullptr};
+    EditTextWidget*   myP3Address1Val{ nullptr };
+    EditTextWidget*   myP3Address2{nullptr};
+    EditTextWidget*   myP3Address2Val{ nullptr };
+    StaticTextWidget* myP4AddressLabel{nullptr};
+    EditTextWidget*   myP4Address0{nullptr};
+    EditTextWidget*   myP4Address0Val{ nullptr };
+    EditTextWidget*   myP4Address1{nullptr};
+    EditTextWidget*   myP4Address1Val{ nullptr };
+    EditTextWidget*   myP4Address2{nullptr};
+    EditTextWidget*   myP4Address2Val{ nullptr };
+
     enum {
       kVCenterChanged  = 'Vcch',
       kPhosphorChanged = 'PPch',
@@ -110,6 +164,13 @@ class GameInfoDialog : public Dialog, public CommandSender
       kRightCChanged   = 'RCch',
       kMCtrlChanged    = 'MCch',
       kEEButtonPressed = 'EEgb',
+      kHiScoresChanged = 'HSch',
+      kPlayersChanged  = 'Plch',
+      kVar0BasedChanged = 'VZch',
+      kVarFormatChanged = 'VFch',
+      kScoreDigitsChanged = 'SDch',
+      kScoreMultChanged = 'SMch',
+      kScoreFormatChanged = 'SFch'
     };
 
     // Game properties for currently loaded ROM
