@@ -124,8 +124,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myScoresLabel{ nullptr };
     StaticTextWidget* myScoreDigitsLabel{ nullptr };
     PopUpWidget*      myScoreDigits{nullptr};
-    StaticTextWidget* myScoreMultLabel{ nullptr };
-    PopUpWidget*      myScoreMult{nullptr};
+    StaticTextWidget* myTrailing0sLabel{ nullptr };
+    PopUpWidget*      myTrailing0s{nullptr};
     CheckboxWidget*   myScoreFormat{nullptr};
     StaticTextWidget* myP1AddressLabel{nullptr};
     EditTextWidget*   myP1Address0{nullptr};

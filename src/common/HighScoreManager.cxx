@@ -31,6 +31,17 @@ HighScoreManager::HighScoreManager(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int16 HighScoreManager::peek(uInt16 addr)
+{
+  if (myOSystem.hasConsole())
+  {
+    System& system = myOSystem.console().system();
+    return system.peek(addr);
+  }
+  return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Properties& HighScoreManager::properties(Properties& props) const
 {
   if (myOSystem.hasConsole())
@@ -46,25 +57,125 @@ Properties& HighScoreManager::properties(Properties& props) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoreManager::numVariations()
+string HighScoreManager::getPropIdx(PropType type, uInt32 idx) const
 {
   Properties props;
-  string numVariations = properties(props).get(PropType::Cart_Variations);
+  string property = properties(props).get(type);
+  std::replace(property.begin(), property.end(), ',', ' ');
+  std::replace(property.begin(), property.end(), '|', ' ');
+  istringstream buf(property);
+  string result;
 
-  return (numVariations == EmptyString) ? 1 : std::min(BSPF::stringToInt(numVariations), 256);
+  for (uInt32 i = 0; i <= idx; ++i)
+    if(!(buf >> result))
+      return "";
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoreManager::numPlayers()
+uInt32 HighScoreManager::numPlayers() const
 {
-  Properties props;
-  string numPlayers = properties(props).get(PropType::Cart_Players);
+  string numPlayers = getPropIdx(PropType::Cart_Players);
 
   return (numPlayers == EmptyString) ? 1 : std::min(BSPF::stringToInt(numPlayers), 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoreManager::parseAddresses(Int32& variation, Int32& player, Int32 scores[])
+uInt32 HighScoreManager::numVariations() const
+{
+  string numVariations = getPropIdx(PropType::Cart_Variations);
+
+  return (numVariations == EmptyString) ? 1 : std::min(BSPF::stringToInt(numVariations), 256);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoreManager::getFormats(Formats& formats) const
+{
+  formats.numDigits = numDigits();
+  formats.trailingZeroes = trailingZeroes();
+  formats.scoreBCD = scoreBCD();
+  formats.varBCD = varBCD();
+  formats.varZeroBased = varZeroBased();
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoreManager::getAddresses(Addresses& addresses) const
+{
+  addresses.playerAddr = playerAddress();
+  addresses.varAddr = varAddress();
+
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 HighScoreManager::numDigits() const
+{
+  string digits = getPropIdx(PropType::Cart_Formats, 0);
+
+  return digits == EmptyString ? 4 : stoi(digits);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 HighScoreManager::trailingZeroes() const
+{
+  string trailing = getPropIdx(PropType::Cart_Formats, 1);
+
+  return trailing == EmptyString ? 0 : stoi(trailing);}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoreManager::scoreBCD() const
+{
+  string bcd = getPropIdx(PropType::Cart_Formats, 2);
+
+  return bcd == EmptyString ? true : bcd == "B";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoreManager::varBCD() const
+{
+  string bcd = getPropIdx(PropType::Cart_Formats, 3);
+
+  return bcd == EmptyString ? true : bcd == "B";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoreManager::varZeroBased() const
+{
+  string zeroBased = getPropIdx(PropType::Cart_Formats, 4);
+
+  return zeroBased == EmptyString ? true : zeroBased != "0";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 HighScoreManager::playerAddress() const
+{
+  uInt32 idx = numAddrBytes() * numPlayers() + 1;
+  string addr = getPropIdx(PropType::Cart_Addresses, idx);
+
+  return addr == EmptyString ? 0 : stoi(addr, nullptr, 16);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 HighScoreManager::varAddress() const
+{
+  uInt32 idx = numAddrBytes() * numPlayers();
+  string addr = getPropIdx(PropType::Cart_Addresses, idx);
+
+  return addr == EmptyString ? 0 : stoi(addr, nullptr, 16);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 HighScoreManager::numAddrBytes(Int32 digits, Int32 trailing) const
+{
+  return ((digits < 0 ? numDigits() : digits) - (trailing < 0 ? trailingZeroes() : trailing) + 1) / 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoreManager::parseAddresses(uInt32& variation, uInt32& player, uInt32 scores[])
 {
   variation = 1; player = 0; scores[0] = 0;
 
@@ -117,7 +228,7 @@ bool HighScoreManager::parseAddresses(Int32& variation, Int32& player, Int32 sco
     varAdd = 0;
 
   // 2. retrieve current scores for all players
-  for (int i = 0; i < numPlayers(); ++i)
+  for (uInt32 i = 0; i < numPlayers(); ++i)
   {
     Int32 totalScore = 0;
 
@@ -166,7 +277,7 @@ bool HighScoreManager::parseAddresses(Int32& variation, Int32& player, Int32 sco
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoreManager::variation()
 {
-  Int32 variation, player, scores[4];
+  uInt32 variation, player, scores[4];
 
   if (parseAddresses(variation, player, scores))
     return variation;
@@ -177,7 +288,7 @@ Int32 HighScoreManager::variation()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoreManager::player()
 {
-  Int32 variation, player, scores[4];
+  uInt32 variation, player, scores[4];
 
   if (parseAddresses(variation, player, scores))
     return player;
@@ -188,10 +299,10 @@ Int32 HighScoreManager::player()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoreManager::score()
 {
-  Int32 variation, player, scores[4];
+  uInt32 variation, player, scores[4];
 
   if (parseAddresses(variation, player, scores))
-    return scores[std::min(player, Int32(3))];
+    return scores[std::min(player, uInt32(MAX_PLAYERS))];
 
   return -1;
 }

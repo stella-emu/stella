@@ -40,6 +40,8 @@
 #include "TIA.hxx"
 #include "Switches.hxx"
 #include "AudioSettings.hxx"
+#include "HighScoreManager.hxx"
+#include "bspf.hxx"
 
 #include "GameInfoDialog.hxx"
 
@@ -375,18 +377,19 @@ GameInfoDialog::GameInfoDialog(
   EditableWidget::TextFilter fAddr = [](char c) {
     return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
   };
-  int rwidth = font.getStringWidth("FF") + 4;
+  int rwidth = font.getStringWidth("F") + 4;
 
   myPlayersAddressLabel = new StaticTextWidget(myTab, font, myPlayers->getRight() + 16, ypos + 1, "Address ");
   myPlayersAddress = new EditTextWidget(myTab, font, myPlayersAddressLabel->getRight(), ypos - 1, awidth, lineHeight);
   myPlayersAddress->setTextFilter(fAddr);
   wid.push_back(myPlayersAddress);
-  myPlayersAddressVal = new EditTextWidget(myTab, font, myPlayersAddress->getRight() + 2, ypos - 1, rwidth, lineHeight, "56");
+  myPlayersAddressVal = new EditTextWidget(myTab, font, myPlayersAddress->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myPlayersAddressVal->setEditable(false);
 
   ypos += lineHeight + VGAP;
 
   fwidth = font.getStringWidth("255") + 5;
+  rwidth = font.getStringWidth("FFF") + 4;
   myVariationsLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Variations");
   myVariations = new EditTextWidget(myTab, font, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   wid.push_back(myVariations);
@@ -395,7 +398,7 @@ GameInfoDialog::GameInfoDialog(
   myVarAddress = new EditTextWidget(myTab, font, myVarAddressLabel->getRight(), ypos - 1, awidth, lineHeight);
   myVarAddress->setTextFilter(fAddr);
   wid.push_back(myVarAddress);
-  myVarAddressVal = new EditTextWidget(myTab, font, myVarAddress->getRight() + 2, ypos - 1, rwidth, lineHeight, "56");
+  myVarAddressVal = new EditTextWidget(myTab, font, myVarAddress->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myVarAddressVal->setEditable(false);
 
   myVarFormat = new CheckboxWidget(myTab, font, myVarAddressVal->getRight() + 16, ypos + 1, "BCD", kVarFormatChanged);
@@ -424,15 +427,16 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myScoreDigits);
 
   items.clear();
+  VarList::push_back(items, "0", "0");
   VarList::push_back(items, "1", "1");
-  VarList::push_back(items, "10", "10");
-  VarList::push_back(items, "100", "100");
-  pwidth = font.getStringWidth("100");
+  VarList::push_back(items, "2", "2");
+  VarList::push_back(items, "3", "3");
+  pwidth = font.getStringWidth("0");
 
-  myScoreMultLabel = new StaticTextWidget(myTab, font, myScoreDigits->getRight() + 20, ypos + 1, "Multiplier ");
-  myScoreMult = new PopUpWidget(myTab, font, myScoreMultLabel->getRight(), ypos, pwidth, lineHeight,
+  myTrailing0sLabel = new StaticTextWidget(myTab, font, myScoreDigits->getRight() + 20, ypos + 1, "0-Digits ");
+  myTrailing0s = new PopUpWidget(myTab, font, myTrailing0sLabel->getRight(), ypos, pwidth, lineHeight,
                                 items, "", 0, kScoreMultChanged);
-  wid.push_back(myScoreMult);
+  wid.push_back(myTrailing0s);
 
   myScoreFormat = new CheckboxWidget(myTab, font, myVarFormat->getLeft(), ypos + 1, "BCD", kScoreFormatChanged);
   wid.push_back(myScoreFormat);
@@ -443,19 +447,19 @@ GameInfoDialog::GameInfoDialog(
   myP1Address0 = new EditTextWidget(myTab, font, myP1AddressLabel->getRight(), ypos - 1, awidth, lineHeight);
   myP1Address0->setTextFilter(fAddr);
   wid.push_back(myP1Address0);
-  myP1Address0Val = new EditTextWidget(myTab, font, myP1Address0->getRight() + 2, ypos - 1, rwidth, lineHeight, "12");
+  myP1Address0Val = new EditTextWidget(myTab, font, myP1Address0->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP1Address0Val->setEditable(false);
 
   myP1Address1 = new EditTextWidget(myTab, font, myP1Address0Val->getRight() + 16, ypos - 1, awidth, lineHeight);
   myP1Address1->setTextFilter(fAddr);
   wid.push_back(myP1Address1);
-  myP1Address1Val = new EditTextWidget(myTab, font, myP1Address1->getRight() + 2, ypos - 1, rwidth, lineHeight, "34");
+  myP1Address1Val = new EditTextWidget(myTab, font, myP1Address1->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP1Address1Val->setEditable(false);
 
   myP1Address2 = new EditTextWidget(myTab, font, myP1Address1Val->getRight() + 16, ypos - 1, awidth, lineHeight);
   myP1Address2->setTextFilter(fAddr);
   wid.push_back(myP1Address2);
-  myP1Address2Val = new EditTextWidget(myTab, font, myP1Address2->getRight() + 2, ypos - 1, rwidth, lineHeight, "56");
+  myP1Address2Val = new EditTextWidget(myTab, font, myP1Address2->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP1Address2Val->setEditable(false);
 
   ypos += lineHeight + VGAP;
@@ -464,19 +468,19 @@ GameInfoDialog::GameInfoDialog(
   myP2Address0 = new EditTextWidget(myTab, font, myP2AddressLabel->getRight(), ypos - 1, awidth, lineHeight);
   myP2Address0->setTextFilter(fAddr);
   wid.push_back(myP2Address0);
-  myP2Address0Val = new EditTextWidget(myTab, font, myP2Address0->getRight() + 2, ypos - 1, rwidth, lineHeight, "12");
+  myP2Address0Val = new EditTextWidget(myTab, font, myP2Address0->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP2Address0Val->setEditable(false);
 
   myP2Address1 = new EditTextWidget(myTab, font, myP2Address0Val->getRight() + 16, ypos - 1, awidth, lineHeight);
   myP2Address1->setTextFilter(fAddr);
   wid.push_back(myP2Address1);
-  myP2Address1Val = new EditTextWidget(myTab, font, myP2Address1->getRight() + 2, ypos - 1, rwidth, lineHeight, "34");
+  myP2Address1Val = new EditTextWidget(myTab, font, myP2Address1->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP2Address1Val->setEditable(false);
 
   myP2Address2 = new EditTextWidget(myTab, font, myP2Address1Val->getRight() + 16, ypos - 1, awidth, lineHeight);
   myP2Address2->setTextFilter(fAddr);
   wid.push_back(myP2Address2);
-  myP2Address2Val = new EditTextWidget(myTab, font, myP2Address2->getRight() + 2, ypos - 1, rwidth, lineHeight, "56");
+  myP2Address2Val = new EditTextWidget(myTab, font, myP2Address2->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP2Address2Val->setEditable(false);
 
   ypos += lineHeight + VGAP;
@@ -485,19 +489,19 @@ GameInfoDialog::GameInfoDialog(
   myP3Address0 = new EditTextWidget(myTab, font, myP3AddressLabel->getRight(), ypos - 1, awidth, lineHeight);
   myP3Address0->setTextFilter(fAddr);
   wid.push_back(myP3Address0);
-  myP3Address0Val = new EditTextWidget(myTab, font, myP3Address0->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP3Address0Val = new EditTextWidget(myTab, font, myP3Address0->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP3Address0Val->setEditable(false);
 
   myP3Address1 = new EditTextWidget(myTab, font, myP3Address0Val->getRight() + 16, ypos - 1, awidth, lineHeight);
   myP3Address1->setTextFilter(fAddr);
   wid.push_back(myP3Address1);
-  myP3Address1Val = new EditTextWidget(myTab, font, myP3Address1->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP3Address1Val = new EditTextWidget(myTab, font, myP3Address1->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP3Address1Val->setEditable(false);
 
   myP3Address2 = new EditTextWidget(myTab, font, myP3Address1Val->getRight() + 16, ypos - 1, awidth, lineHeight);
   myP3Address2->setTextFilter(fAddr);
   wid.push_back(myP3Address2);
-  myP3Address2Val = new EditTextWidget(myTab, font, myP3Address2->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP3Address2Val = new EditTextWidget(myTab, font, myP3Address2->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP3Address2Val->setEditable(false);
 
   ypos += lineHeight + VGAP;
@@ -506,37 +510,22 @@ GameInfoDialog::GameInfoDialog(
   myP4Address0 = new EditTextWidget(myTab, font, myP4AddressLabel->getRight(), ypos - 1, awidth, lineHeight);
   myP4Address0->setTextFilter(fAddr);
   wid.push_back(myP4Address0);
-  myP4Address0Val = new EditTextWidget(myTab, font, myP4Address0->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP4Address0Val = new EditTextWidget(myTab, font, myP4Address0->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP4Address0Val->setEditable(false);
 
   myP4Address1 = new EditTextWidget(myTab, font, myP4Address0Val->getRight() + 16, ypos - 1, awidth, lineHeight);
   myP4Address1->setTextFilter(fAddr);
   wid.push_back(myP4Address1);
-  myP4Address1Val = new EditTextWidget(myTab, font, myP4Address1->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP4Address1Val = new EditTextWidget(myTab, font, myP4Address1->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP4Address1Val->setEditable(false);
 
   myP4Address2 = new EditTextWidget(myTab, font, myP4Address1Val->getRight() + 16, ypos - 1, awidth, lineHeight);
   myP4Address2->setTextFilter(fAddr);
   wid.push_back(myP4Address2);
-  myP4Address2Val = new EditTextWidget(myTab, font, myP4Address2->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP4Address2Val = new EditTextWidget(myTab, font, myP4Address2->getRight() + 2, ypos - 1, rwidth, lineHeight);
   myP4Address2Val->setEditable(false);
 
-
-  /*ypos += lineHeight + VGAP;
-  fwidth = _w - lwidth - HBORDER * 2 - 22;
-  new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Formats");
-  myFormats = new EditTextWidget(myTab, font, xpos + lwidth, ypos - 1,
-                                    fwidth, lineHeight);
-  wid.push_back(myVariations);
-
-  ypos += lineHeight + VGAP;
-  new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Addresses");
-  myAddresses = new EditTextWidget(myTab, font, xpos + lwidth, ypos - 1,
-                                    fwidth, lineHeight);
-  wid.push_back(myVariations);*/
-
-
-  // Add items for tab 3
+  // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
 
   //////////////////////////////////////////////////////////////////////////////
@@ -729,14 +718,35 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 {
-  //bool enable = instance().hasConsole() && instance().console().par
+  HighScoreManager::Formats formats;
+  HighScoreManager::Addresses addresses;
+  bool enable = instance().highScores().getFormats(formats);
 
-  myHighScores->setState(true);
-  myPlayers->setSelected(props.get(PropType::Cart_Players));
-  myVariations->setText(props.get(PropType::Cart_Variations));
+  enable &= instance().highScores().getAddresses(addresses); // make compiler happy
 
+  myHighScores->setState(enable);
 
+  if (enable)
+  {
+    ostringstream ss;
 
+    myPlayers->setSelected(instance().highScores().numPlayers());
+    myVariations->setText(std::to_string(instance().highScores().numVariations()));
+
+    myScoreDigits->setSelected(formats.numDigits);
+    myTrailing0s->setSelected(formats.trailingZeroes);
+    myScoreFormat->setState(formats.scoreBCD);
+    myVarFormat->setState(formats.varBCD);
+    myVarZeroBased->setState(formats.varZeroBased);
+
+    ss.str("");
+    ss << std::hex << std::right << std::setw(4) << std::setfill('0') << addresses.playerAddr;
+    myPlayersAddress->setText(ss.str());
+
+    ss.str("");
+    ss << std::hex << std::right << std::setw(4) << std::setfill('0') << addresses.varAddr;
+    myVarAddress->setText(ss.str());
+  }
   handleHighScoresWidgets();
 }
 
@@ -956,7 +966,7 @@ void GameInfoDialog::handleHighScoresWidgets()
   int players = myPlayers->getSelected() + 1;
   bool enablePlayers = enable && players > 1;
   bool enableVars = enable && myVariations->getText() > "1";
-  int numAddr = (myScoreDigits->getSelected() - myScoreMult->getSelected() + 2) / 2;
+  int numAddr = instance().highScores().numAddrBytes(myScoreDigits->getSelected() + 1, myTrailing0s->getSelected());
   bool enable1 = enable && numAddr >= 2;
   bool enable2 = enable && numAddr >= 3;
 
@@ -981,8 +991,8 @@ void GameInfoDialog::handleHighScoresWidgets()
   myScoreDigitsLabel->setEnabled(enable);
   myScoreDigits->setEnabled(enable);
   myScoreFormat->setEnabled(enable);
-  myScoreMultLabel->setEnabled(enable);
-  myScoreMult->setEnabled(enable);
+  myTrailing0sLabel->setEnabled(enable);
+  myTrailing0s->setEnabled(enable);
 
   myP1AddressLabel->setEnabled(enable);
   myP1Address0->setEnabled(enable);
@@ -1034,6 +1044,23 @@ void GameInfoDialog::handleHighScoresWidgets()
   myP4Address2->setEnabled(enable2);
   myP4Address2->setEditable(enable2);
   myP4Address2Val->setEnabled(enable2);
+
+  if (instance().hasConsole())
+  {
+    System& system = instance().console().system();
+    uInt16 addr;
+    uInt8 val;
+    ostringstream ss;
+
+    addr = stoi(myPlayersAddress->getText(), nullptr, 16);
+    myPlayersAddressVal->setText(std::to_string(system.peek(addr)));
+    addr = stoi(myVarAddress->getText(), nullptr, 16);
+
+    val = system.peek(addr) + (myVarZeroBased->getState() ? 1u : 0u);
+    ss.str("");
+    ss << std::dec << val; // std::dec << std::right << std::setw(3) << std::setfill(' ') << val;
+    myVarAddressVal->setText(ss.str());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
