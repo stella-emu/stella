@@ -51,7 +51,7 @@ Int32 HighScoreManager::numVariations()
   Properties props;
   string numVariations = properties(props).get(PropType::Cart_Variations);
 
-  return (numVariations == EmptyString) ? 1 : std::min(stoi(numVariations), 256);
+  return (numVariations == EmptyString) ? 1 : std::min(BSPF::stringToInt(numVariations), 256);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,7 +60,7 @@ Int32 HighScoreManager::numPlayers()
   Properties props;
   string numPlayers = properties(props).get(PropType::Cart_Players);
 
-  return (numPlayers == EmptyString) ? 1 : std::min(stoi(numPlayers), 4);
+  return (numPlayers == EmptyString) ? 1 : std::min(BSPF::stringToInt(numPlayers), 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
