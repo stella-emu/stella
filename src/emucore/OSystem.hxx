@@ -27,6 +27,7 @@ class Random;
 class Sound;
 class StateManager;
 class TimerManager;
+class HighScoreManager;
 class EmulationWorker;
 class AudioSettings;
 #ifdef CHEATCODE_SUPPORT
@@ -147,6 +148,13 @@ class OSystem
       @return The audio settings object
     */
     AudioSettings& audioSettings() { return *myAudioSettings; }
+
+    /**
+      Get the high score manager of the system.
+
+      @return The highscore manager object
+    */
+    HighScoreManager& highScore() const { return *myHighScoreManager; }
 
     /**
       Get the state manager of the system.
@@ -516,6 +524,9 @@ class OSystem
 
     // Pointer to the TimerManager object
     unique_ptr<TimerManager> myTimerManager;
+
+    // Pointer to the HighScoreManager object
+    unique_ptr<HighScoreManager> myHighScoreManager;
 
     // Indicates whether ROM launcher was ever opened during this run
     bool myLauncherUsed{false};

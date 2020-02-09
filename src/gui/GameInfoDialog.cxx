@@ -66,7 +66,7 @@ GameInfoDialog::GameInfoDialog(
   StaticTextWidget* t;
 
   // Set real dimensions
-  setSize(53 * fontWidth + 8,
+  setSize(HBORDER * 2 + 53 * fontWidth,
           8 * (lineHeight + VGAP) + 1 * (infoLineHeight + VGAP) + VBORDER * 2 + _th +
           buttonHeight + fontHeight + ifont.getLineHeight() + 20,
           max_w, max_h);
@@ -78,7 +78,7 @@ GameInfoDialog::GameInfoDialog(
 
   //////////////////////////////////////////////////////////////////////////////
   // 1) Emulation properties
-  tabID = myTab->addTab("Emulation");
+  tabID = myTab->addTab("Emulation", TabWidget::AUTO_WIDTH);
 
   ypos = VBORDER;
 
@@ -159,7 +159,7 @@ GameInfoDialog::GameInfoDialog(
   //////////////////////////////////////////////////////////////////////////////
   // 2) Console properties
   wid.clear();
-  tabID = myTab->addTab("Console");
+  tabID = myTab->addTab(" Console ", TabWidget::AUTO_WIDTH);
 
   xpos = HBORDER; ypos = VBORDER;
   lwidth = font.getStringWidth(GUI::RIGHT_DIFFICULTY + " ");
@@ -202,7 +202,7 @@ GameInfoDialog::GameInfoDialog(
   //////////////////////////////////////////////////////////////////////////////
   // 3) Controller properties
   wid.clear();
-  tabID = myTab->addTab("Controllers");
+  tabID = myTab->addTab("Controllers", TabWidget::AUTO_WIDTH);
 
   ctrls.clear();
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
@@ -304,7 +304,7 @@ GameInfoDialog::GameInfoDialog(
   //////////////////////////////////////////////////////////////////////////////
   // 4) Cartridge properties
   wid.clear();
-  tabID = myTab->addTab("Cartridge");
+  tabID = myTab->addTab("Cartridge", TabWidget::AUTO_WIDTH);
 
   xpos = HBORDER; ypos = VBORDER;
   lwidth = font.getStringWidth("Manufacturer ");
@@ -348,6 +348,198 @@ GameInfoDialog::GameInfoDialog(
   // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
 
+  //////////////////////////////////////////////////////////////////////////////
+  // 4) High Scores properties
+  wid.clear();
+  tabID = myTab->addTab("High Scores", TabWidget::AUTO_WIDTH);
+
+  xpos = HBORDER; ypos = VBORDER;
+  lwidth = font.getStringWidth("Variations ");
+
+  myHighScores = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Enable High Scores", kHiScoresChanged);
+
+  xpos += 20; ypos += lineHeight + VGAP;
+
+  items.clear();
+  VarList::push_back(items, "1", "1");
+  VarList::push_back(items, "2", "2");
+  VarList::push_back(items, "3", "3");
+  VarList::push_back(items, "4", "4");
+  pwidth = font.getStringWidth("4");
+
+  myPlayersLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Players");
+  myPlayers = new PopUpWidget(myTab, font, xpos + lwidth, ypos, pwidth, lineHeight, items, "", 0, kPlayersChanged);
+  wid.push_back(myPlayers);
+
+  int awidth = font.getStringWidth("FFFF") + 4;
+  EditableWidget::TextFilter fAddr = [](char c) {
+    return (c >= 'a' && c <= 'f') || (c >= '0' && c <= '9');
+  };
+  int rwidth = font.getStringWidth("FF") + 4;
+
+  myPlayersAddressLabel = new StaticTextWidget(myTab, font, myPlayers->getRight() + 16, ypos + 1, "Address ");
+  myPlayersAddress = new EditTextWidget(myTab, font, myPlayersAddressLabel->getRight(), ypos - 1, awidth, lineHeight);
+  myPlayersAddress->setTextFilter(fAddr);
+  wid.push_back(myPlayersAddress);
+  myPlayersAddressVal = new EditTextWidget(myTab, font, myPlayersAddress->getRight() + 2, ypos - 1, rwidth, lineHeight, "56");
+  myPlayersAddressVal->setEditable(false);
+
+  ypos += lineHeight + VGAP;
+
+  fwidth = font.getStringWidth("255") + 5;
+  myVariationsLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Variations");
+  myVariations = new EditTextWidget(myTab, font, xpos + lwidth, ypos - 1, fwidth, lineHeight);
+  wid.push_back(myVariations);
+
+  myVarAddressLabel = new StaticTextWidget(myTab, font, myPlayersAddressLabel->getLeft(), ypos + 1, "Address ");
+  myVarAddress = new EditTextWidget(myTab, font, myVarAddressLabel->getRight(), ypos - 1, awidth, lineHeight);
+  myVarAddress->setTextFilter(fAddr);
+  wid.push_back(myVarAddress);
+  myVarAddressVal = new EditTextWidget(myTab, font, myVarAddress->getRight() + 2, ypos - 1, rwidth, lineHeight, "56");
+  myVarAddressVal->setEditable(false);
+
+  myVarFormat = new CheckboxWidget(myTab, font, myVarAddressVal->getRight() + 16, ypos + 1, "BCD", kVarFormatChanged);
+  wid.push_back(myVarFormat);
+
+  myVarZeroBased = new CheckboxWidget(myTab, font, myVarFormat->getRight() + 16, ypos + 1, "0-based", kVar0BasedChanged);
+  wid.push_back(myVarZeroBased);
+
+  ypos += lineHeight + VGAP;
+
+  items.clear();
+  VarList::push_back(items, "1", "1");
+  VarList::push_back(items, "2", "2");
+  VarList::push_back(items, "3", "3");
+  VarList::push_back(items, "4", "4");
+  VarList::push_back(items, "5", "5");
+  VarList::push_back(items, "6", "6");
+
+  myScoresLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Scores");
+
+  xpos += 20; ypos += lineHeight + VGAP;
+
+  myScoreDigitsLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "Digits ");
+  myScoreDigits = new PopUpWidget(myTab, font, myScoreDigitsLabel->getRight(), ypos, pwidth, lineHeight,
+                                  items, "", 0, kScoreDigitsChanged);
+  wid.push_back(myScoreDigits);
+
+  items.clear();
+  VarList::push_back(items, "1", "1");
+  VarList::push_back(items, "10", "10");
+  VarList::push_back(items, "100", "100");
+  pwidth = font.getStringWidth("100");
+
+  myScoreMultLabel = new StaticTextWidget(myTab, font, myScoreDigits->getRight() + 20, ypos + 1, "Multiplier ");
+  myScoreMult = new PopUpWidget(myTab, font, myScoreMultLabel->getRight(), ypos, pwidth, lineHeight,
+                                items, "", 0, kScoreMultChanged);
+  wid.push_back(myScoreMult);
+
+  myScoreFormat = new CheckboxWidget(myTab, font, myVarFormat->getLeft(), ypos + 1, "BCD", kScoreFormatChanged);
+  wid.push_back(myScoreFormat);
+
+  ypos += lineHeight + VGAP;
+
+  myP1AddressLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "P1 Addresses ");
+  myP1Address0 = new EditTextWidget(myTab, font, myP1AddressLabel->getRight(), ypos - 1, awidth, lineHeight);
+  myP1Address0->setTextFilter(fAddr);
+  wid.push_back(myP1Address0);
+  myP1Address0Val = new EditTextWidget(myTab, font, myP1Address0->getRight() + 2, ypos - 1, rwidth, lineHeight, "12");
+  myP1Address0Val->setEditable(false);
+
+  myP1Address1 = new EditTextWidget(myTab, font, myP1Address0Val->getRight() + 16, ypos - 1, awidth, lineHeight);
+  myP1Address1->setTextFilter(fAddr);
+  wid.push_back(myP1Address1);
+  myP1Address1Val = new EditTextWidget(myTab, font, myP1Address1->getRight() + 2, ypos - 1, rwidth, lineHeight, "34");
+  myP1Address1Val->setEditable(false);
+
+  myP1Address2 = new EditTextWidget(myTab, font, myP1Address1Val->getRight() + 16, ypos - 1, awidth, lineHeight);
+  myP1Address2->setTextFilter(fAddr);
+  wid.push_back(myP1Address2);
+  myP1Address2Val = new EditTextWidget(myTab, font, myP1Address2->getRight() + 2, ypos - 1, rwidth, lineHeight, "56");
+  myP1Address2Val->setEditable(false);
+
+  ypos += lineHeight + VGAP;
+
+  myP2AddressLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "P2 Addresses ");
+  myP2Address0 = new EditTextWidget(myTab, font, myP2AddressLabel->getRight(), ypos - 1, awidth, lineHeight);
+  myP2Address0->setTextFilter(fAddr);
+  wid.push_back(myP2Address0);
+  myP2Address0Val = new EditTextWidget(myTab, font, myP2Address0->getRight() + 2, ypos - 1, rwidth, lineHeight, "12");
+  myP2Address0Val->setEditable(false);
+
+  myP2Address1 = new EditTextWidget(myTab, font, myP2Address0Val->getRight() + 16, ypos - 1, awidth, lineHeight);
+  myP2Address1->setTextFilter(fAddr);
+  wid.push_back(myP2Address1);
+  myP2Address1Val = new EditTextWidget(myTab, font, myP2Address1->getRight() + 2, ypos - 1, rwidth, lineHeight, "34");
+  myP2Address1Val->setEditable(false);
+
+  myP2Address2 = new EditTextWidget(myTab, font, myP2Address1Val->getRight() + 16, ypos - 1, awidth, lineHeight);
+  myP2Address2->setTextFilter(fAddr);
+  wid.push_back(myP2Address2);
+  myP2Address2Val = new EditTextWidget(myTab, font, myP2Address2->getRight() + 2, ypos - 1, rwidth, lineHeight, "56");
+  myP2Address2Val->setEditable(false);
+
+  ypos += lineHeight + VGAP;
+
+  myP3AddressLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "P3 Addresses ");
+  myP3Address0 = new EditTextWidget(myTab, font, myP3AddressLabel->getRight(), ypos - 1, awidth, lineHeight);
+  myP3Address0->setTextFilter(fAddr);
+  wid.push_back(myP3Address0);
+  myP3Address0Val = new EditTextWidget(myTab, font, myP3Address0->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP3Address0Val->setEditable(false);
+
+  myP3Address1 = new EditTextWidget(myTab, font, myP3Address0Val->getRight() + 16, ypos - 1, awidth, lineHeight);
+  myP3Address1->setTextFilter(fAddr);
+  wid.push_back(myP3Address1);
+  myP3Address1Val = new EditTextWidget(myTab, font, myP3Address1->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP3Address1Val->setEditable(false);
+
+  myP3Address2 = new EditTextWidget(myTab, font, myP3Address1Val->getRight() + 16, ypos - 1, awidth, lineHeight);
+  myP3Address2->setTextFilter(fAddr);
+  wid.push_back(myP3Address2);
+  myP3Address2Val = new EditTextWidget(myTab, font, myP3Address2->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP3Address2Val->setEditable(false);
+
+  ypos += lineHeight + VGAP;
+
+  myP4AddressLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "P4 Addresses ");
+  myP4Address0 = new EditTextWidget(myTab, font, myP4AddressLabel->getRight(), ypos - 1, awidth, lineHeight);
+  myP4Address0->setTextFilter(fAddr);
+  wid.push_back(myP4Address0);
+  myP4Address0Val = new EditTextWidget(myTab, font, myP4Address0->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP4Address0Val->setEditable(false);
+
+  myP4Address1 = new EditTextWidget(myTab, font, myP4Address0Val->getRight() + 16, ypos - 1, awidth, lineHeight);
+  myP4Address1->setTextFilter(fAddr);
+  wid.push_back(myP4Address1);
+  myP4Address1Val = new EditTextWidget(myTab, font, myP4Address1->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP4Address1Val->setEditable(false);
+
+  myP4Address2 = new EditTextWidget(myTab, font, myP4Address1Val->getRight() + 16, ypos - 1, awidth, lineHeight);
+  myP4Address2->setTextFilter(fAddr);
+  wid.push_back(myP4Address2);
+  myP4Address2Val = new EditTextWidget(myTab, font, myP4Address2->getRight() + 2, ypos - 1, rwidth, lineHeight, "");
+  myP4Address2Val->setEditable(false);
+
+
+  /*ypos += lineHeight + VGAP;
+  fwidth = _w - lwidth - HBORDER * 2 - 22;
+  new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Formats");
+  myFormats = new EditTextWidget(myTab, font, xpos + lwidth, ypos - 1,
+                                    fwidth, lineHeight);
+  wid.push_back(myVariations);
+
+  ypos += lineHeight + VGAP;
+  new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Addresses");
+  myAddresses = new EditTextWidget(myTab, font, xpos + lwidth, ypos - 1,
+                                    fwidth, lineHeight);
+  wid.push_back(myVariations);*/
+
+
+  // Add items for tab 3
+  addToFocusList(wid, myTab, tabID);
+
+  //////////////////////////////////////////////////////////////////////////////
   // Activate the first tab
   myTab->setActiveTab(0);
 
@@ -374,6 +566,7 @@ void GameInfoDialog::loadConfig()
   loadConsoleProperties(myGameProperties);
   loadControllerProperties(myGameProperties);
   loadCartridgeProperties(myGameProperties);
+  loadHighScoresProperties(myGameProperties);
 
   myTab->loadConfig();
 }
@@ -541,6 +734,20 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::loadHighScoresProperties(const Properties& props)
+{
+  //bool enable = instance().hasConsole() && instance().console().par
+
+  myHighScores->setState(true);
+  myPlayers->setSelected(props.get(PropType::Cart_Players));
+  myVariations->setText(props.get(PropType::Cart_Variations));
+
+
+
+  handleHighScoresWidgets();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::saveConfig()
 {
   // Emulation properties
@@ -633,6 +840,10 @@ void GameInfoDialog::setDefaults()
 
     case 3: // Cartridge properties
       loadCartridgeProperties(defaultProperties);
+      break;
+
+    case 4: // High Scores properties
+      loadHighScoresProperties(defaultProperties);
       break;
 
     default: // make the compiler happy
@@ -746,6 +957,93 @@ void GameInfoDialog::eraseEEPROM()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void GameInfoDialog::handleHighScoresWidgets()
+{
+  bool enable = myHighScores->getState();
+  int players = myPlayers->getSelected() + 1;
+  bool enablePlayers = enable && players > 1;
+  bool enableVars = enable && myVariations->getText() > "1";
+  int numAddr = (myScoreDigits->getSelected() - myScoreMult->getSelected() + 2) / 2;
+  bool enable1 = enable && numAddr >= 2;
+  bool enable2 = enable && numAddr >= 3;
+
+  myPlayersLabel->setEnabled(enable);
+  myPlayers->setEnabled(enable);
+  myPlayersAddressLabel->setEnabled(enablePlayers);
+  myPlayersAddress->setEnabled(enablePlayers);
+  myPlayersAddress->setEditable(enablePlayers);
+  myPlayersAddressVal->setEnabled(enablePlayers);
+
+  myVariationsLabel->setEnabled(enable);
+  myVariations->setEnabled(enable);
+  myVariations->setEditable(enable);
+  myVarAddressLabel->setEnabled(enableVars);
+  myVarAddress->setEnabled(enableVars);
+  myVarAddress->setEditable(enableVars);
+  myVarAddressVal->setEnabled(enableVars);
+  myVarFormat->setEnabled(enableVars);
+  myVarZeroBased->setEnabled(enableVars);
+
+  myScoresLabel->setEnabled(enable);
+  myScoreDigitsLabel->setEnabled(enable);
+  myScoreDigits->setEnabled(enable);
+  myScoreFormat->setEnabled(enable);
+  myScoreMultLabel->setEnabled(enable);
+  myScoreMult->setEnabled(enable);
+
+  myP1AddressLabel->setEnabled(enable);
+  myP1Address0->setEnabled(enable);
+  myP1Address0->setEditable(enable);
+  myP1Address0Val->setEnabled(enable);
+  myP1Address1->setEnabled(enable1);
+  myP1Address1->setEditable(enable1);
+  myP1Address1Val->setEnabled(enable1);
+  myP1Address2->setEnabled(enable2);
+  myP1Address2->setEditable(enable2);
+  myP1Address2Val->setEnabled(enable2);
+
+  enable &= players >= 2;
+  enable1 &= enable; enable2 &= enable;
+  myP2AddressLabel->setEnabled(enable);
+  myP2Address0->setEnabled(enable);
+  myP2Address0->setEditable(enable);
+  myP2Address0Val->setEnabled(enable);
+  myP2Address1->setEnabled(enable1);
+  myP2Address1->setEditable(enable1);
+  myP2Address1Val->setEnabled(enable1);
+  myP2Address2->setEnabled(enable2);
+  myP2Address2->setEditable(enable2);
+  myP2Address2Val->setEnabled(enable2);
+
+  enable &= players >= 3;
+  enable1 &= enable; enable2 &= enable;
+  myP3AddressLabel->setEnabled(enable);
+  myP3Address0->setEnabled(enable);
+  myP3Address0->setEditable(enable);
+  myP3Address0Val->setEnabled(enable);
+  myP3Address1->setEnabled(enable1);
+  myP3Address1->setEditable(enable1);
+  myP3Address1Val->setEnabled(enable1);
+  myP3Address2->setEnabled(enable2);
+  myP3Address2->setEditable(enable2);
+  myP3Address2Val->setEnabled(enable2);
+
+  enable &= players >= 4;
+  enable1 &= enable; enable2 &= enable;
+  myP4AddressLabel->setEnabled(enable);
+  myP4Address0->setEnabled(enable);
+  myP4Address0->setEditable(enable);
+  myP4Address0Val->setEnabled(enable);
+  myP4Address1->setEnabled(enable1);
+  myP4Address1->setEditable(enable1);
+  myP4Address1->setEditable(enable1);
+  myP4Address1Val->setEnabled(enable1);
+  myP4Address2->setEnabled(enable2);
+  myP4Address2->setEditable(enable2);
+  myP4Address2Val->setEnabled(enable2);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
@@ -811,6 +1109,13 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       myMouseY->setEnabled(state);
       break;
     }
+
+    case kHiScoresChanged:
+    case kPlayersChanged:
+    case kScoreDigitsChanged:
+    case kScoreMultChanged:
+      handleHighScoresWidgets();
+      break;
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

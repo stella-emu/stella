@@ -35,6 +35,7 @@
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 #include "TimerManager.hxx"
+#include "HighScoreManager.hxx"
 #include "Switches.hxx"
 #include "M6532.hxx"
 #include "MouseControl.hxx"
@@ -721,7 +722,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed)
       {
         ostringstream msg;
-        msg << "Score: " << myOSystem.console().score();
+        msg << "Score: " << myOSystem.highScore().score();
         myOSystem.frameBuffer().showMessage(msg.str());
       }
       return;
@@ -730,7 +731,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed)
       {
         ostringstream msg;
-        msg << "Variation: " << myOSystem.console().variation();
+        msg << "Variation: " << myOSystem.highScore().variation();
         myOSystem.frameBuffer().showMessage(msg.str());
       }
       return;

@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 2994;
+static constexpr uInt32 DEF_PROPS_SIZE = 2979;
 
 static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 25> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -3007,21 +3007,6 @@ static constexpr BSPF::array2D<const char*, DEF_PROPS_SIZE, 25> DefProps = {{
   { "dca90ea1084a2fdbe300d7178ca1a138", "Imagic, Dennis Koble", "IA3000P", "Trick Shot (1982) (Imagic) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "", "", "" },
   { "dca941dab5c6f859b71883b13ade9744", "", "", "Hangman Pac-Man Biglist2 (Hack)", "Hack of Hangman", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "dcba0e33aa4aed67630a4b292386f405", "Retroactive", "", "Qb (V2.08) (Half Speed Version) (NTSC) (2001) (Retroactive)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "", "", "" },
-  { "dcc2956c7a39fdbf1e861fc5c595da0d", "M Network - INTV - APh Technological Consulting, David Rolfe", "MT5664", "Frogs and Flies (1982) (M Network)", "AKA Frogs 'n' Flies", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dcec46a98f45b193f07239611eb878c2", "", "", "Bars and Text Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd08e18cfee87a0e7fc19a684b36e124", "Atari - GCC, Kevin Osborn", "CX2689, CX2689P", "Kangaroo (1983) (Atari) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd0cbe5351551a538414fb9e37fc56e8", "Xonox - K-Tel Software - Product Guild, Anthony R. Henderson", "99006, 6220", "Sir Lancelot (1983) (Xonox) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd0de0f61af2a2a4878e377b880a3933", "SOLID Corp. (D. Scott Williamson)", "CX2655-013", "Star Castle 2600 (SolidCorp) [013]", "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "", "", "", "" },
-  { "dd10b5ee37fdbf909423f2998a1f3179", "", "", "Space Instigators (V1.9) (21-10-2002) (CT)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd13a16d14100819f79b1ce3a5bf499c", "Thomas Jentzsch", "", "Missile Control - Atari Mouse Hack v1.15 (PAL) (TJ)", "Uses Atari Mouse Controller", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd1422ffd538e2e33b339ebeef4f259d", "Atari, Michael Sierchio", "", "Football Demo (1982) (Atari)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd17711a30ad60109c8beace0d4a76e8", "", "", "Karate (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd1842ba0f3f9d94dccb21eaa0f069b7", "Bit Corporation", "R320", "Defender (32 in 1) (BitCorp) (Hack)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd45e370aceff765f1e72c619efd4399", "Bit Corporation", "PG201", "Sea Monster (1982) (BitCorp)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd4f4e0fbd81762533e39e6f5b55bb3a", "Thomas Jentzsch", "", "Turbo WIP (TJ)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd7598b8bcb81590428900f71b720efb", "Xonox - K-Tel Software - Computer Magic", "99005, 6220, 6250", "Robin Hood (1983) (Xonox) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "dd7884b4f93cab423ac471aa1935e3df", "Atari, Brad Stewart - Sears", "CX2649, 49-75163", "Asteroids (1981) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "2", "66", "2,10,b,h,1", "bd,be,c0,c1,80,c7" },
-  { "dd8a2124d4eda200df715c698a6ea887", "Starpath Corporation, Stephen H. Landrum", "AR-4400", "Dragonstomper (3 of 3) (1982) (Starpath)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
 }};
 
 #endif
