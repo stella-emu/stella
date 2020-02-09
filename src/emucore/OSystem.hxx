@@ -154,7 +154,7 @@ class OSystem
 
       @return The highscore manager object
     */
-    HighScoreManager& highScore() const { return *myHighScoreManager; }
+    HighScoreManager& highScores() const { return *myHighScoreManager; }
 
     /**
       Get the state manager of the system.

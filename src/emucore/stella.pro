@@ -1511,7 +1511,7 @@
 "Cart.Name" "Chopper Command (1982) (Activision) (PAL)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -2223,7 +2223,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -2398,7 +2398,7 @@
 "Cart.Note" "2600 Screen Search Console"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -3160,7 +3160,7 @@
 "Cart.Name" "Chopper Command (1982) (Activision) (16K)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -3579,7 +3579,7 @@
 "Cart.Note" "AKA Chopper Command"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -3907,7 +3907,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -4296,7 +4296,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -4765,7 +4765,7 @@
 "Display.Format" "PAL"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -5139,7 +5139,7 @@
 "Cart.Note" "AKA Chopper Command"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -5316,7 +5316,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -6072,7 +6072,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -6933,7 +6933,7 @@
 "Cart.Name" "Chopper Command (1982) (Activision) (8K)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -7735,7 +7735,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -7773,7 +7773,7 @@
 "Cart.Note" "AKA Chopper Command"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -9524,7 +9524,7 @@
 "Cart.Note" "AKA Chopper Command"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -11436,7 +11436,7 @@
 "Cart.Name" "Chopper Command (1983) (CCE)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -12001,7 +12001,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -12044,7 +12044,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -14152,7 +14152,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -14838,7 +14838,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -15416,7 +15416,7 @@
 "Cart.Name" "Chopper Command (SuperVision) (PAL)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -15493,7 +15493,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -15933,7 +15933,7 @@
 "Cart.Name" "Chopper Command (1982) (Activision)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -16048,7 +16048,7 @@
 "Cart.Rarity" "Hack"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -16886,7 +16886,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -17705,7 +17705,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -18097,7 +18097,7 @@
 "Cart.Name" "Chopper Command (1983) (Digitel)"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -18397,7 +18397,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -18557,7 +18557,7 @@
 "Display.Phosphor" "YES"
 "Cart.Players" "2"
 "Cart.Variations" "66"
-"Cart.Formats" "2,10,b,h,1"
+"Cart.Formats" "5,1,b,h,0"
 "Cart.Addresses" "bd,be,c0,c1,80,c7"
 ""
 
@@ -20843,7 +20843,7 @@
 "Cart.Rarity" "Hack"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 
@@ -21511,7 +21511,7 @@
 "Cart.Name" "Chopper Command (1983) (CCE) [a]"
 "Cart.Players" "2"
 "Cart.Variations" "4"
-"Cart.Formats" "3,1,b,b,1"
+"Cart.Formats" "6,0,b,b,0"
 "Cart.Addresses" "ec,ee,f0,ed,ef,f1,e0,eb"
 ""
 

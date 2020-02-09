@@ -718,11 +718,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
 
+    // Debug only, TODO: remove!
     case Event::ShowScore:
       if (pressed)
       {
         ostringstream msg;
-        msg << "Score: " << myOSystem.highScore().score();
+        msg << "Score: " << myOSystem.highScores().score();
         myOSystem.frameBuffer().showMessage(msg.str());
       }
       return;
@@ -731,11 +732,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed)
       {
         ostringstream msg;
-        msg << "Variation: " << myOSystem.highScore().variation();
+        msg << "Variation: " << myOSystem.highScores().variation();
         myOSystem.frameBuffer().showMessage(msg.str());
       }
       return;
-      
+
     case Event::ExitMode:
       // Special handling for Escape key
       // Basically, exit whichever mode we're currently in
