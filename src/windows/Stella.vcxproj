@@ -382,7 +382,7 @@
     <ClCompile Include="..\common\FpsMeter.cxx" />
     <ClCompile Include="..\common\FrameBufferSDL2.cxx" />
     <ClCompile Include="..\common\FSNodeZIP.cxx" />
-    <ClCompile Include="..\common\HighScoreManager.cxx" />
+    <ClCompile Include="..\common\HighScoresManager.cxx" />
     <ClCompile Include="..\common\JoyMap.cxx" />
     <ClCompile Include="..\common\KeyMap.cxx" />
     <ClCompile Include="..\common\Logger.cxx" />
@@ -1089,7 +1089,7 @@
     <ClInclude Include="..\common\FrameBufferSDL2.hxx" />
     <ClInclude Include="..\common\FSNodeFactory.hxx" />
     <ClInclude Include="..\common\FSNodeZIP.hxx" />
-    <ClInclude Include="..\common\HighScoreManager.hxx" />
+    <ClInclude Include="..\common\HighScoresManager.hxx" />
     <ClInclude Include="..\common\JoyMap.hxx" />
     <ClInclude Include="..\common\KeyMap.hxx" />
     <ClInclude Include="..\common\LinkedObjectPool.hxx" />

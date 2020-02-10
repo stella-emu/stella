@@ -58,7 +58,9 @@
 #include "Random.hxx"
 #include "StateManager.hxx"
 #include "TimerManager.hxx"
-#include "HighScoreManager.hxx"
+#ifdef GUI_SUPPORT
+#include "HighScoresManager.hxx"
+#endif
 #include "Version.hxx"
 #include "TIA.hxx"
 #include "DispatchResult.hxx"
@@ -154,7 +156,11 @@ bool OSystem::create()
 
   myStateManager = make_unique<StateManager>(*this);
   myTimerManager = make_unique<TimerManager>();
-  myHighScoreManager = make_unique<HighScoreManager>(*this);
+
+#ifdef GUI_SUPPORT
+  myHighScoresManager = make_unique<HighScoresManager>(*this);
+#endif
+
   myAudioSettings = make_unique<AudioSettings>(*mySettings);
 
   // Create the sound object; the sound subsystem isn't actually
