@@ -102,16 +102,6 @@ bool HighScoreManager::getFormats(Formats& formats) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoreManager::getAddresses(Addresses& addresses) const
-{
-  addresses.playerAddr = playerAddress();
-  addresses.varAddr = varAddress();
-
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 HighScoreManager::numDigits() const
 {
   string digits = getPropIdx(PropType::Cart_Formats, 0);
@@ -148,6 +138,25 @@ bool HighScoreManager::varZeroBased() const
   string zeroBased = getPropIdx(PropType::Cart_Formats, 4);
 
   return zeroBased == EmptyString ? true : zeroBased != "0";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoreManager::getAddresses(Addresses& addresses) const
+{
+  addresses.playerAddr = playerAddress();
+  addresses.varAddr = varAddress();
+  for (int p = 0; p < numPlayers(); ++p)
+  {
+    for (int a = 0; a < numAddrBytes(); ++a)
+    {
+      uInt32 idx = p * numAddrBytes() + a;
+      string addr = getPropIdx(PropType::Cart_Addresses, idx);
+
+      addresses.scoreAddr[p][a] = (addr == EmptyString ? 0 : stoi(addr, nullptr, 16));
+    }
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
