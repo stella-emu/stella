@@ -56,6 +56,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     void loadCartridgeProperties(const Properties& props);
     // load the properties for the 'High Scores' tab
     void loadHighScoresProperties(const Properties& props);
+    // load the properties of the 'High Scores' tab
+    void saveHighScoresProperties();
 
     void updateControllerStates();
     void eraseEEPROM();

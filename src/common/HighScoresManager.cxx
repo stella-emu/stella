@@ -34,15 +34,12 @@
 */
 
 #include "OSystem.hxx"
-//#include "Props.hxx"
 #include "PropsSet.hxx"
 #include "Console.hxx"
 #include "Launcher.hxx"
 #include "System.hxx"
 
 #include "HighScoresManager.hxx"
-
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresManager::HighScoresManager(OSystem& osystem)
@@ -51,7 +48,7 @@ HighScoresManager::HighScoresManager(OSystem& osystem)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int16 HighScoresManager::peek(uInt16 addr)
+Int16 HighScoresManager::peek(uInt16 addr) const
 {
   if (myOSystem.hasConsole())
   {
@@ -78,10 +75,10 @@ Properties& HighScoresManager::properties(Properties& props) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string HighScoresManager::getPropIdx(PropType type, uInt32 idx) const
+string HighScoresManager::getPropIdx(const Properties& props, PropType type, uInt32 idx) const
 {
-  Properties props;
-  string property = properties(props).get(type);
+  string property = props.get(type);
+
   std::replace(property.begin(), property.end(), ',', ' ');
   std::replace(property.begin(), property.end(), '|', ' ');
   istringstream buf(property);
@@ -95,111 +92,132 @@ string HighScoresManager::getPropIdx(PropType type, uInt32 idx) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::numPlayers() const
+uInt32 HighScoresManager::numPlayers(const Properties& props) const
 {
-  string numPlayers = getPropIdx(PropType::Cart_Players);
+  string numPlayers = getPropIdx(props, PropType::Cart_Players);
 
   return numPlayers == EmptyString ? 1 : std::min(uInt32(stoi(numPlayers)), MAX_PLAYERS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::numVariations() const
+uInt32 HighScoresManager::numVariations(const Properties& props) const
 {
-  string numVariations = getPropIdx(PropType::Cart_Variations);
+  string numVariations = getPropIdx(props, PropType::Cart_Variations);
 
   return numVariations == EmptyString ? 1 : std::min(stoi(numVariations), 256);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::getFormats(Formats& formats) const
+bool HighScoresManager::get(const Properties& props, Formats& formats, Addresses& addresses) const
 {
-  formats.numDigits = numDigits();
-  formats.trailingZeroes = trailingZeroes();
-  formats.scoreBCD = scoreBCD();
-  formats.varBCD = varBCD();
-  formats.varZeroBased = varZeroBased();
+  formats.numDigits = numDigits(props);
+  formats.trailingZeroes = trailingZeroes(props);
+  formats.scoreBCD = scoreBCD(props);
+  formats.varBCD = varBCD(props);
+  formats.varZeroBased = varZeroBased(props);
 
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::numDigits() const
-{
-  string digits = getPropIdx(PropType::Cart_Formats, 0);
-
-  return digits == EmptyString ? 4 : stoi(digits);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 HighScoresManager::trailingZeroes() const
-{
-  string trailing = getPropIdx(PropType::Cart_Formats, 1);
-
-  return trailing == EmptyString ? 0 : stoi(trailing);}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::scoreBCD() const
-{
-  string bcd = getPropIdx(PropType::Cart_Formats, 2);
-
-  return bcd == EmptyString ? true : bcd == "B";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::varBCD() const
-{
-  string bcd = getPropIdx(PropType::Cart_Formats, 3);
-
-  return bcd == EmptyString ? true : bcd == "B";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::varZeroBased() const
-{
-  string zeroBased = getPropIdx(PropType::Cart_Formats, 4);
-
-  return zeroBased == EmptyString ? false : zeroBased != "0";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool HighScoresManager::getAddresses(Addresses& addresses) const
-{
-  addresses.playerAddr = playerAddress();
-  addresses.varAddr = varAddress();
+  addresses.playerAddr = playerAddress(props);
+  addresses.varAddr = varAddress(props);
   for (uInt32 p = 0; p < MAX_PLAYERS; ++p)
   {
-    if (p < numPlayers())
+    if (p < numPlayers(props))
     {
-      for (uInt32 a = 0; a < numAddrBytes(); ++a)
+      for (uInt32 a = 0; a < numAddrBytes(props); ++a)
       {
-        uInt32 idx = p * numAddrBytes() + a;
-        string addr = getPropIdx(PropType::Cart_Addresses, idx);
+        uInt32 idx = p * numAddrBytes(props) + a;
+        string addr = getPropIdx(props, PropType::Cart_Addresses, idx);
 
         addresses.scoreAddr[p][a] = (addr == EmptyString ? 0 : stoi(addr, nullptr, 16));
       }
     }
     else
-      for (uInt32 a = 0; a < numAddrBytes(); ++a)
+      for (uInt32 a = 0; a < numAddrBytes(props); ++a)
         addresses.scoreAddr[p][a] = -1;
   }
 
-  return (EmptyString != getPropIdx(PropType::Cart_Addresses, 0));
+  return (EmptyString != getPropIdx(props, PropType::Cart_Addresses, 0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 HighScoresManager::playerAddress() const
+void HighScoresManager::set(Properties& props, uInt32 numPlayers, uInt32 numVariations,
+                            const Formats& formats, const Addresses& addresses) const
 {
-  uInt32 idx = numAddrBytes() * numPlayers() + 1;
-  string addr = getPropIdx(PropType::Cart_Addresses, idx);
+  ostringstream buf;
+
+  props.set(PropType::Cart_Players, std::to_string(numPlayers));
+  props.set(PropType::Cart_Variations, std::to_string(numVariations));
+
+  buf << formats.numDigits << ","
+    << formats.trailingZeroes << ","
+    << (formats.scoreBCD ? "B" : "H") << ","
+    << (formats.varBCD ? "B" : "D") << ","
+    << formats.varZeroBased;
+  props.set(PropType::Cart_Formats, buf.str());
+
+  buf.str("");
+  for (uInt32 p = 0; p < numPlayers; ++p)
+  {
+    for (uInt32 a = 0; a < numAddrBytes(formats.numDigits, formats.trailingZeroes); ++a)
+      buf << std::hex << addresses.scoreAddr[p][a] << ",";
+  }
+  buf << addresses.varAddr << ",";
+  buf << addresses.playerAddr;
+  props.set(PropType::Cart_Addresses, buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 HighScoresManager::numDigits(const Properties& props) const
+{
+  string digits = getPropIdx(props, PropType::Cart_Formats, 0);
+
+  return digits == EmptyString ? 4 : stoi(digits);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 HighScoresManager::trailingZeroes(const Properties& props) const
+{
+  string trailing = getPropIdx(props, PropType::Cart_Formats, 1);
+
+  return trailing == EmptyString ? 0 : stoi(trailing);}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoresManager::scoreBCD(const Properties& props) const
+{
+  string bcd = getPropIdx(props, PropType::Cart_Formats, 2);
+
+  return bcd == EmptyString ? true : bcd == "B";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoresManager::varBCD(const Properties& props) const
+{
+  string bcd = getPropIdx(props, PropType::Cart_Formats, 3);
+
+  return bcd == EmptyString ? true : bcd == "B";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoresManager::varZeroBased(const Properties& props) const
+{
+  string zeroBased = getPropIdx(props, PropType::Cart_Formats, 4);
+
+  return zeroBased == EmptyString ? false : zeroBased != "0";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 HighScoresManager::playerAddress(const Properties& props) const
+{
+  uInt32 idx = numAddrBytes(props) * numPlayers(props) + 1;
+  string addr = getPropIdx(props, PropType::Cart_Addresses, idx);
 
   return addr == EmptyString ? 0 : stoi(addr, nullptr, 16);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 HighScoresManager::varAddress() const
+uInt16 HighScoresManager::varAddress(const Properties& props) const
 {
-  uInt32 idx = numAddrBytes() * numPlayers();
-  string addr = getPropIdx(PropType::Cart_Addresses, idx);
+  uInt32 idx = numAddrBytes(props) * numPlayers(props);
+  string addr = getPropIdx(props, PropType::Cart_Addresses, idx);
 
   return addr == EmptyString ? 0 : stoi(addr, nullptr, 16);
 }
@@ -207,14 +225,22 @@ uInt16 HighScoresManager::varAddress() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 HighScoresManager::numAddrBytes(Int32 digits, Int32 trailing) const
 {
-  return ((digits < 0 ? numDigits() : digits) - (trailing < 0 ? trailingZeroes() : trailing) + 1) / 2;
+  return (digits - trailing + 1) / 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoresManager::score(uInt32 player, uInt32 numAddrBytes, bool isBCD) const
+uInt32 HighScoresManager::numAddrBytes(const Properties& props) const
+{
+  return numAddrBytes(numDigits(props), trailingZeroes(props));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::score(uInt32 player, uInt32 numAddrBytes, uInt32 trailingZeroes, bool isBCD) const
 {
   if (!myOSystem.hasConsole())
     return -1;
+
+  Properties props; // TODO: remove and replace adddress with real data
 
   System& system = myOSystem.console().system();
   Int32 totalScore = 0;
@@ -222,7 +248,7 @@ Int32 HighScoresManager::score(uInt32 player, uInt32 numAddrBytes, bool isBCD) c
   for (uInt32 b = 0; b < numAddrBytes; ++b)
   {
     uInt32 idx = player * numAddrBytes + b;
-    string strAddr = getPropIdx(PropType::Cart_Addresses, idx);
+    string strAddr = getPropIdx(properties(props), PropType::Cart_Addresses, idx);
     uInt16 addr = (strAddr == EmptyString ? 0 : stoi(strAddr, nullptr, 16));
     uInt32 score;
 
@@ -242,17 +268,18 @@ Int32 HighScoresManager::score(uInt32 player, uInt32 numAddrBytes, bool isBCD) c
   }
 
   if (totalScore != -1)
-    for (uInt32 i = 0; i < trailingZeroes(); ++i)
+    for (uInt32 i = 0; i < trailingZeroes; ++i)
       totalScore *= 10;
 
   return totalScore;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoresManager::score(uInt32 player) const
+Int32 HighScoresManager::score(const Properties& props, uInt32 player) const
 {
-  return score(player, numAddrBytes(), scoreBCD());
+  return score(player, numAddrBytes(props), trailingZeroes(props), scoreBCD(props));
 }
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::parseAddresses(uInt32& variation, uInt32& player, uInt32 scores[])
@@ -263,7 +290,6 @@ bool HighScoresManager::parseAddresses(uInt32& variation, uInt32& player, uInt32
     return false;
 
   System& system = myOSystem.console().system();
-
 
   Properties props;
   string formats = properties(props).get(PropType::Cart_Formats);
@@ -295,7 +321,7 @@ bool HighScoresManager::parseAddresses(uInt32& variation, uInt32& player, uInt32
     varAdd = 0;
 
   // 2. retrieve current scores for all players
-  for (uInt32 i = 0; i < numPlayers(); ++i)
+  for (uInt32 i = 0; i < numPlayers(props); ++i)
   {
     Int32 totalScore = 0;
 
@@ -317,7 +343,7 @@ bool HighScoresManager::parseAddresses(uInt32& variation, uInt32& player, uInt32
   }
 
   // 3. retrieve current variation (0..255)
-  if (numVariations() == 1)
+  if (numVariations(props) == 1)
     return true;
 
   if (!(addrBuf >> std::hex >> addr))
@@ -326,17 +352,17 @@ bool HighScoresManager::parseAddresses(uInt32& variation, uInt32& player, uInt32
   if (varFormat == 'B')
     variation = (variation >> 4) * 10 + variation % 16;
   variation += varAdd;
-  variation = std::min(variation, numVariations());
+  variation = std::min(variation, numVariations(props));
 
   // 4. retrieve current player (0..3)
-  if (numPlayers() == 1)
+  if (numPlayers(props) == 1)
     return true;
 
   if (!(addrBuf >> std::hex >> addr))
     return false;
 
   player = system.peek(addr);
-  player = std::min(player, numPlayers() - 1);
+  player = std::min(player, numPlayers(props) - 1);
 
   return true;
 }

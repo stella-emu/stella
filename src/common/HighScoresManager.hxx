@@ -26,9 +26,10 @@ class HighScoresManager
 {
 
 public:
-
   static const uInt32 MAX_PLAYERS = 4;
   static const uInt32 MAX_SCORE_ADDR = 3;
+
+  using ScoreAddresses = BSPF::array2D<Int16, MAX_PLAYERS, MAX_SCORE_ADDR>;
 
   struct Formats {
     uInt32 numDigits;
@@ -40,7 +41,7 @@ public:
 
 
   struct Addresses {
-    Int16 scoreAddr[HighScoresManager::MAX_PLAYERS][HighScoresManager::MAX_SCORE_ADDR];
+    ScoreAddresses scoreAddr;
     uInt16 varAddr;
     uInt16 playerAddr;
   };
@@ -51,35 +52,37 @@ public:
   /*
     Methods for returning high scores related variables
   */
-  uInt32 numVariations() const;
-  uInt32 numPlayers() const;
+  uInt32 numVariations(const Properties& props) const;
+  uInt32 numPlayers(const Properties& props) const;
 
-  bool getFormats(Formats& formats) const;
-  bool getAddresses(Addresses& addresses) const;
+  bool get(const Properties& props, Formats& formats, Addresses& addresses) const;
+  void set(Properties& props, uInt32 numPlayers, uInt32 numVariations,
+           const Formats& formats, const Addresses& addresses) const;
 
-  uInt32 numDigits() const;
-  uInt32 trailingZeroes() const;
-  bool scoreBCD() const;
-  bool varBCD() const;
-  bool varZeroBased() const;
+  uInt32 numDigits(const Properties& props) const;
+  uInt32 trailingZeroes(const Properties& props) const;
+  bool scoreBCD(const Properties& props) const;
+  bool varBCD(const Properties& props) const;
+  bool varZeroBased(const Properties& props) const;
 
-  uInt16 varAddress() const;
-  uInt16 playerAddress() const;
+  uInt16 varAddress(const Properties& props) const;
+  uInt16 playerAddress(const Properties& props) const;
 
-  uInt32 numAddrBytes(Int32 digits = -1, Int32 trailing = -1) const;
+  uInt32 numAddrBytes(Int32 digits, Int32 trailing) const;
+  uInt32 numAddrBytes(const Properties& props) const;
 
   // current values
   Int32 player();
   Int32 variation();
   Int32 score();
 
-  Int32 score(uInt32 player) const;
-  Int32 score(uInt32 player, uInt32 numAddrBytes, bool isBCD) const;
+  Int32 score(uInt32 player, uInt32 numAddrBytes, uInt32 trailingZeroes, bool isBCD) const;
+  Int32 score(const Properties& props, uInt32 player) const;
 
 private:
   Properties& properties(Properties& props) const;
-  string getPropIdx(PropType type, uInt32 idx = 0) const;
-  Int16 peek(uInt16 addr);
+  string getPropIdx(const Properties& props, PropType type, uInt32 idx = 0) const;
+  Int16 peek(uInt16 addr) const;
   bool parseAddresses(uInt32& variation, uInt32& player, uInt32 scores[]);
 
 private:
