@@ -1005,7 +1005,7 @@
     <ClCompile Include="..\gui\MessageDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\HighScoreManager.cxx">
+    <ClCompile Include="..\common\HighScoresManager.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2057,7 +2057,7 @@
     <ClInclude Include="..\gui\MessageDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\HighScoreManager.hxx">
+    <ClInclude Include="..\common\HighScoresManager.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -35,7 +35,9 @@
 #include "StateManager.hxx"
 #include "RewindManager.hxx"
 #include "TimerManager.hxx"
-#include "HighScoreManager.hxx"
+#ifdef GUI_SUPPORT
+#include "HighScoresManager.hxx"
+#endif
 #include "Switches.hxx"
 #include "M6532.hxx"
 #include "MouseControl.hxx"
@@ -718,6 +720,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
 
+    #ifdef GUI_SUPPORT
     // Debug only, TODO: remove!
     case Event::ShowScore:
       if (pressed)
@@ -736,6 +739,7 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
         myOSystem.frameBuffer().showMessage(msg.str());
       }
       return;
+    #endif
 
     case Event::ExitMode:
       // Special handling for Escape key

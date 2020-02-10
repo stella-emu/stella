@@ -6,7 +6,7 @@ MODULE_OBJS := \
 	src/common/FBSurfaceSDL2.o \
 	src/common/FrameBufferSDL2.o \
 	src/common/FSNodeZIP.o \
-	src/common/HighScoreManager.o \
+	src/common/HighScoresManager.o \
 	src/common/JoyMap.o \
 	src/common/KeyMap.o \
 	src/common/Logger.o \

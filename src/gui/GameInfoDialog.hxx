@@ -26,12 +26,11 @@ class StaticTextWidget;
 class RadioButtonGroup;
 class TabWidget;
 class SliderWidget;
-class HighScoreManager;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "Props.hxx"
-#include "HighScoreManager.hxx"
+#include "HighScoresManager.hxx"
 
 class GameInfoDialog : public Dialog, public CommandSender
 {
@@ -61,7 +60,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void updateControllerStates();
     void eraseEEPROM();
     void handleHighScoresWidgets();
-    void setAddressVal(const EditTextWidget* address, EditTextWidget* val, bool isBCD = false, uInt16 incVal = 0);
+    void setAddressVal(const EditTextWidget* address, EditTextWidget* val, bool isBCD = false, uInt8 incVal = 0);
 
   private:
     TabWidget* myTab{nullptr};
@@ -131,9 +130,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget*      myTrailingZeroes{nullptr};
     CheckboxWidget*   myScoreBCD{nullptr};
 
-    StaticTextWidget* myScoreAddressesLabel[HighScoreManager::MAX_PLAYERS]{ nullptr };
-    EditTextWidget*   myScoreAddress[HighScoreManager::MAX_PLAYERS][HighScoreManager::MAX_SCORE_ADDR]{nullptr};
-    EditTextWidget*   myScoreAddressVal[HighScoreManager::MAX_PLAYERS][HighScoreManager::MAX_SCORE_ADDR]{nullptr};
+    StaticTextWidget* myScoreAddressesLabel[HighScoresManager::MAX_PLAYERS]{ nullptr };
+    EditTextWidget*   myScoreAddress[HighScoresManager::MAX_PLAYERS][HighScoresManager::MAX_SCORE_ADDR]{nullptr};
+    EditTextWidget*   myScoreAddressVal[HighScoresManager::MAX_PLAYERS][HighScoresManager::MAX_SCORE_ADDR]{nullptr};
 
     /*StaticTextWidget* myP1AddressLabel{nullptr};
     EditTextWidget*   myP1Address0{nullptr};
