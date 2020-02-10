@@ -60,7 +60,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void updateControllerStates();
     void eraseEEPROM();
     void handleHighScoresWidgets();
-    void setAddressVal(const EditTextWidget* address, EditTextWidget* val, bool isBCD = false, uInt8 incVal = 0);
+    void setAddressVal(const EditTextWidget* address, EditTextWidget* val, bool isBCD = true, uInt8 incVal = 0);
 
   private:
     TabWidget* myTab{nullptr};
@@ -133,51 +133,24 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myScoreAddressesLabel[HighScoresManager::MAX_PLAYERS]{ nullptr };
     EditTextWidget*   myScoreAddress[HighScoresManager::MAX_PLAYERS][HighScoresManager::MAX_SCORE_ADDR]{nullptr};
     EditTextWidget*   myScoreAddressVal[HighScoresManager::MAX_PLAYERS][HighScoresManager::MAX_SCORE_ADDR]{nullptr};
-
-    /*StaticTextWidget* myP1AddressLabel{nullptr};
-    EditTextWidget*   myP1Address0{nullptr};
-    EditTextWidget*   myP1Address0Val{ nullptr };
-    EditTextWidget*   myP1Address1{nullptr};
-    EditTextWidget*   myP1Address1Val{ nullptr };
-    EditTextWidget*   myP1Address2{nullptr};
-    EditTextWidget*   myP1Address2Val{ nullptr };
-    StaticTextWidget* myP2AddressLabel{nullptr};
-    EditTextWidget*   myP2Address0{nullptr};
-    EditTextWidget*   myP2Address0Val{ nullptr };
-    EditTextWidget*   myP2Address1{nullptr};
-    EditTextWidget*   myP2Address1Val{ nullptr };
-    EditTextWidget*   myP2Address2{nullptr};
-    EditTextWidget*   myP2Address2Val{ nullptr };
-    StaticTextWidget* myP3AddressLabel{nullptr};
-    EditTextWidget*   myP3Address0{nullptr};
-    EditTextWidget*   myP3Address0Val{ nullptr };
-    EditTextWidget*   myP3Address1{nullptr};
-    EditTextWidget*   myP3Address1Val{ nullptr };
-    EditTextWidget*   myP3Address2{nullptr};
-    EditTextWidget*   myP3Address2Val{ nullptr };
-    StaticTextWidget* myP4AddressLabel{nullptr};
-    EditTextWidget*   myP4Address0{nullptr};
-    EditTextWidget*   myP4Address0Val{ nullptr };
-    EditTextWidget*   myP4Address1{nullptr};
-    EditTextWidget*   myP4Address1Val{ nullptr };
-    EditTextWidget*   myP4Address2{nullptr};
-    EditTextWidget*   myP4Address2Val{ nullptr };*/
+    StaticTextWidget* myCurrentScoreLabel;
+    StaticTextWidget* myCurrentScore[HighScoresManager::MAX_PLAYERS];
 
     enum {
-      kVCenterChanged  = 'Vcch',
-      kPhosphorChanged = 'PPch',
-      kPPBlendChanged  = 'PBch',
-      kLeftCChanged    = 'LCch',
-      kRightCChanged   = 'RCch',
-      kMCtrlChanged    = 'MCch',
-      kEEButtonPressed = 'EEgb',
-      kHiScoresChanged = 'HSch',
-      kPlayersChanged  = 'Plch',
-      kVar0BasedChanged = 'VZch',
-      kVarFormatChanged = 'VFch',
-      kScoreDigitsChanged = 'SDch',
-      kScoreMultChanged = 'SMch',
-      kScoreFormatChanged = 'SFch'
+      kVCenterChanged      = 'Vcch',
+      kPhosphorChanged     = 'PPch',
+      kPPBlendChanged      = 'PBch',
+      kLeftCChanged        = 'LCch',
+      kRightCChanged       = 'RCch',
+      kMCtrlChanged        = 'MCch',
+      kEEButtonPressed     = 'EEgb',
+      kHiScoresChanged     = 'HSch',
+      kPlayersChanged      = 'Plch',
+      kVarZeroBasedChanged = 'VZch',
+      kVarBcdChanged       = 'VBch',
+      kScoreDigitsChanged  = 'SDch',
+      kScoreZeroesChanged  = 'SZch',
+      kScoreBcdChanged     = 'SBch',
     };
 
     // Game properties for currently loaded ROM
