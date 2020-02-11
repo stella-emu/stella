@@ -33,6 +33,8 @@
  - score swaps (Asteroids)
 */
 
+#include <cmath>
+
 #include "OSystem.hxx"
 #include "PropsSet.hxx"
 #include "Console.hxx"
@@ -177,9 +179,9 @@ void HighScoresManager::set(Properties& props, uInt32 numPlayers, uInt32 numVari
   }
 
   // add optional addresses
-  if (numVariations > 1 || numPlayers > 1)
+  if (numVariations != DEFAULT_VARIATION || numPlayers != DEFAULT_PLAYER)
     buf << info.varsAddr << "," ;
-  if (numPlayers > 1)
+  if (numPlayers != DEFAULT_PLAYER)
     buf << info.playersAddr << "," ;
 
   output = buf.str();
@@ -265,6 +267,66 @@ uInt32 HighScoresManager::numAddrBytes(const Properties& props) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::player(uInt16 addr, uInt32 numPlayers, bool zeroBased) const
+{
+  if (!myOSystem.hasConsole())
+    return -1;
+
+  Int32 player = peek(addr);
+  Int32 bits = ceil(log(numPlayers + (!zeroBased ? 1 : 0))/log(2));
+
+  // limit to game's number of players
+  player %= 1 << bits;
+  player += zeroBased ? 1 : 0;
+
+  return player;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::player() const
+{
+  Properties props;
+  uInt16 addr = playerAddress(properties(props));
+
+  if (addr == DEFAULT_ADDRESS)
+    return DEFAULT_PLAYER;
+
+  return player(addr, numPlayers(props), playerZeroBased(props));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::variation(uInt16 addr, bool varBCD, bool zeroBased,
+                                   uInt32 numVariations) const
+{
+  if (!myOSystem.hasConsole())
+    return -1;
+
+  Int32 var = peek(addr);
+  Int32 bits = ceil(log(numVariations + (!zeroBased ? 1 : 0))/log(2));
+
+  if (varBCD)
+    var = fromBCD(var);
+
+  // limit to game's number of variations
+  var %= 1 << bits;
+  var += zeroBased ? 1 : 0;
+
+  return var;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::variation() const
+{
+  Properties props;
+  uInt16 addr = varAddress(properties(props));
+
+  if (addr == DEFAULT_ADDRESS)
+    return DEFAULT_VARIATION;
+
+  return variation(addr, varBCD(props), varZeroBased(props), numVariations(props));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoresManager::score(uInt32 player, uInt32 numAddrBytes, uInt32 trailingZeroes,
                                bool isBCD, const ScoreAddresses& scoreAddr) const
 {
@@ -282,11 +344,10 @@ Int32 HighScoresManager::score(uInt32 player, uInt32 numAddrBytes, uInt32 traili
     score = peek(addr);
     if (isBCD)
     {
+      score = fromBCD(score);
       // verify if score is legit
-      if (score >= 160)
+      if (score == -1)
         return -1;
-
-      score = (score >> 4) * 10 + score % 16;
     }
     totalScore += score;
   }
@@ -298,36 +359,13 @@ Int32 HighScoresManager::score(uInt32 player, uInt32 numAddrBytes, uInt32 traili
   return totalScore;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoresManager::player() const
-{
-  Properties props;
-  uInt16 addr = playerAddress(properties(props));
-
-  if (addr == DEFAULT_ADDRESS)
-    return DEFAULT_PLAYER;
-
-  return peek(addr) + playerZeroBased(props) ? 1 : 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 HighScoresManager::variation() const
-{
-  Properties props;
-  uInt16 addr = varAddress(properties(props));
-
-  if (addr == DEFAULT_ADDRESS)
-    return DEFAULT_VARIATION;
-
-  return peek(addr) + varZeroBased(props) ? 1 : 0;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoresManager::score() const
 {
   Properties props;
   uInt32 numBytes = numAddrBytes(properties(props));
-  uInt32 currentPlayer = player() - playerZeroBased(props) ? 1 : 0;
+  uInt32 currentPlayer = player() - (playerZeroBased(props) ? 1 : 0);
   uInt32 idx = numBytes * currentPlayer;
   ScoreAddresses scoreAddr;
 
@@ -341,4 +379,14 @@ Int32 HighScoresManager::score() const
   }
 
   return score(currentPlayer, numBytes, trailingZeroes(props), scoreBCD(props), scoreAddr);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::fromBCD(uInt8 bcd) const
+{
+  // verify if score is legit
+  if (bcd >= 160)
+    return -1;
+
+  return (bcd >> 4) * 10 + bcd % 16;
 }
