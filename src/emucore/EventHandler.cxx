@@ -56,6 +56,7 @@
 #ifdef GUI_SUPPORT
   #include "Menu.hxx"
   #include "CommandMenu.hxx"
+  #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
   #include "DialogContainer.hxx"
   #include "Launcher.hxx"
@@ -1057,6 +1058,15 @@ bool EventHandler::changeStateByEvent(Event::Type type)
         handled = false;
       break;
 
+    case Event::HighScoresMenuMode:
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+        enterMenuMode(EventHandlerState::HIGHSCORESMENU);
+      else if(myState == EventHandlerState::HIGHSCORESMENU)
+        leaveMenuMode();
+      else
+        handled = false;
+      break;
+
     case Event::TimeMachineMode:
       if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
         enterTimeMachineMenuMode(0, false);
@@ -1755,6 +1765,11 @@ void EventHandler::setState(EventHandlerState state)
 
     case EventHandlerState::CMDMENU:
       myOverlay = &myOSystem.commandMenu();
+      enableTextEvents(true);
+      break;
+
+    case EventHandlerState::HIGHSCORESMENU:
+      myOverlay = &myOSystem.highscoresMenu();
       enableTextEvents(true);
       break;
 

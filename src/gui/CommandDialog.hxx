@@ -18,7 +18,6 @@
 #ifndef COMMAND_DIALOG_HXX
 #define COMMAND_DIALOG_HXX
 
-class Properties;
 class CommandSender;
 class DialogContainer;
 class OSystem;

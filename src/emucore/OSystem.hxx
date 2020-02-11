@@ -38,6 +38,7 @@ class AudioSettings;
 #endif
 #ifdef GUI_SUPPORT
   class CommandMenu;
+  class HighScoresMenu;
   class Launcher;
   class Menu;
   class MessageMenu;
@@ -218,6 +219,13 @@ class OSystem
       @return The command menu object
     */
     CommandMenu& commandMenu() const { return *myCommandMenu; }
+
+      /**
+      Get the highscores menu of the system.
+
+      @return The highscores menu object
+      */
+    HighScoresMenu& highscoresMenu() const { return *myHighScoresMenu; }
 
     /**
       Get the message menu of the system.
@@ -506,11 +514,14 @@ class OSystem
     // Pointer to the CommandMenu object
     unique_ptr<CommandMenu> myCommandMenu;
 
-    // Pointer to the CommandMenu object
-    unique_ptr<MessageMenu> myMessageMenu;
+    // Pointer to the HighScoresMenu object
+    unique_ptr<HighScoresMenu> myHighScoresMenu;
 
     // Pointer to the Launcher object
     unique_ptr<Launcher> myLauncher;
+
+    // Pointer to the MessageMenu object
+    unique_ptr<MessageMenu> myMessageMenu;
 
     // Pointer to the TimeMachine object
     unique_ptr<TimeMachine> myTimeMachine;

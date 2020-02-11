@@ -1008,6 +1008,12 @@
     <ClCompile Include="..\common\HighScoresManager.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\HighScoresMenu.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gui\HighScoresDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2059,6 +2065,12 @@
     </ClInclude>
     <ClInclude Include="..\common\HighScoresManager.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\HighScoresMenu.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\HighScoresDialog.hxx">
+      <Filter>Source Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

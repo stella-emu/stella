@@ -16,30 +16,28 @@
 //============================================================================
 
 #include "Dialog.hxx"
-#include "CommandDialog.hxx"
-#include "MinUICommandDialog.hxx"
-#include "CommandMenu.hxx"
+#include "FrameBuffer.hxx"
+#include "HighScoresDialog.hxx"
+#include "HighScoresMenu.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CommandMenu::CommandMenu(OSystem& osystem)
+HighScoresMenu::HighScoresMenu(OSystem& osystem)
   : DialogContainer(osystem)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CommandMenu::~CommandMenu()
+HighScoresMenu::~HighScoresMenu()
 {
-  delete myBaseDialog;  myBaseDialog = nullptr;
+  delete myHighScoresDialog; myHighScoresDialog = nullptr;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Dialog* CommandMenu::baseDialog()
+Dialog* HighScoresMenu::baseDialog()
 {
-  if (myBaseDialog == nullptr)
-    if (myOSystem.settings().getBool("minimal_ui"))
-      myBaseDialog = new MinUICommandDialog(myOSystem, *this);
-    else
-      myBaseDialog = new CommandDialog(myOSystem, *this);
+  if (myHighScoresDialog == nullptr)
+    myHighScoresDialog = new HighScoresDialog(myOSystem, *this, myOSystem.frameBuffer().font(),
+                                              FBMinimum::Width, FBMinimum::Height);
 
-  return myBaseDialog;
+  return myHighScoresDialog;
 }
