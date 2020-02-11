@@ -84,6 +84,9 @@ class HighScoresManager
     */
     uInt32 numAddrBytes(Int32 digits, Int32 trailing) const;
 
+    // Retrieve current values from (using given parameters)
+    Int32 player(uInt16 addr, uInt32 numPlayers, bool zeroBased = true) const;
+    Int32 variation(uInt16 addr, bool varBCD, bool zeroBased, uInt32 numVariations) const;
     /**
       Calculate the score from given parameters
 
@@ -131,6 +134,8 @@ class HighScoresManager
     string getPropIdx(const Properties& props, PropType type, uInt32 idx = 0) const;
     // Peek into memory
     Int16 peek(uInt16 addr) const;
+
+    Int32 fromBCD(uInt8 bcd) const;
 
   private:
     // Reference to the osystem object
