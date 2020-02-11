@@ -31,6 +31,7 @@
  - variation bits (Centipede)
  - player bits (Asteroids, Space Invaders)
  - score swaps (Asteroids)
+ - one optional and named value extra per game (round, level...)
 */
 
 #include <cmath>
@@ -280,6 +281,15 @@ Int32 HighScoresManager::player(uInt16 addr, uInt32 numPlayers, bool zeroBased) 
   player += zeroBased ? 1 : 0;
 
   return player;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::numVariations() const
+{
+  Properties props;
+  uInt16 vars = numVariations(properties(props));
+
+  return vars;;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

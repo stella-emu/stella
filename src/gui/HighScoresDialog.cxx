@@ -22,6 +22,7 @@
 //#include "StringParser.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
+#include "HighScoresManager.hxx"
 
 
 #include "HighScoresDialog.hxx"
@@ -32,16 +33,16 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, font, "High Scores")
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth(),
-    fontHeight = font.getFontHeight(),
-    buttonHeight = font.getLineHeight() + 4;
+  const int lineHeight = font.getLineHeight();
+    //fontWidth = font.getMaxCharWidth(),
+    //fontHeight = font.getFontHeight(),
+    //buttonHeight = font.getLineHeight() + 4;
     //infoLineHeight = ifont.getLineHeight();
   const int VBORDER = 8;
   const int HBORDER = 10;
   const int VGAP = 4;
 
-  int xpos, ypos, lwidth, fwidth, pwidth, tabID;
+  int xpos, ypos;
   WidgetArray wid;
   VariantList items;
 
@@ -55,7 +56,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   StaticTextWidget* s = new StaticTextWidget(this, font, xpos, ypos + 1, "Variation ");
   myVariation = new PopUpWidget(this, font, s->getRight(), ypos,
-                                font.getStringWidth("256"), lineHeight, items, "", 0, 0);
+                                font.getStringWidth("256") - 4, lineHeight, items, "", 0, 0);
 
   ypos += lineHeight + VGAP * 2;
 
@@ -116,10 +117,14 @@ void HighScoresDialog::loadConfig()
 
   items.clear();
 
-  for (Int32 i = 1; i <= 10; ++i)
-    VarList::push_back(items, i, i);
+  for (Int32 i = 1; i <= instance().highScores().numVariations(); ++i)
+  {
+    ostringstream buf;
+    buf << std::setw(3) << std::setfill(' ') << i;
+    VarList::push_back(items, buf.str(), i);
+  }
   myVariation->addItems(items);
-
+  myVariation->setSelected(instance().highScores().variation());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
