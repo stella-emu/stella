@@ -96,6 +96,7 @@ class HighScoresManager
                 const ScoreAddresses& scoreAddr) const;
 
     // Retrieve current values (using game's properties)
+    Int32 numVariations() const;
     Int32 player() const;
     Int32 variation() const;
     Int32 score() const;
