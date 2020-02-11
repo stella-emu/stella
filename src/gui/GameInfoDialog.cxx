@@ -42,6 +42,9 @@
 
 #include "GameInfoDialog.hxx"
 
+using namespace std;
+using namespace BSPF;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameInfoDialog::GameInfoDialog(
       OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
@@ -373,7 +376,7 @@ GameInfoDialog::GameInfoDialog(
   pwidth = font.getStringWidth("4");
 
   myPlayersLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Players");
-  myPlayers = new PopUpWidget(myTab, font, xpos + lwidth, ypos, pwidth, lineHeight, items, "", 0, kPlayersChanged);
+  myPlayers = new PopUpWidget(myTab, font, xpos + lwidth, ypos, pwidth, lineHeight, items, "", 0, kHiScoresChanged);
   wid.push_back(myPlayers);
 
   int awidth = font.getStringWidth("FFFF") + 4;
@@ -402,10 +405,10 @@ GameInfoDialog::GameInfoDialog(
   myVarAddressVal = new EditTextWidget(myTab, font, myVarAddress->getRight() + 2, ypos - 1, vwidth, lineHeight);
   myVarAddressVal->setEditable(false);
 
-  myVarsBCD = new CheckboxWidget(myTab, font, myVarAddressVal->getRight() + 16, ypos + 1, "BCD", kVarBcdChanged);
+  myVarsBCD = new CheckboxWidget(myTab, font, myVarAddressVal->getRight() + 16, ypos + 1, "BCD", kHiScoresChanged);
   wid.push_back(myVarsBCD);
 
-  myVarsZeroBased = new CheckboxWidget(myTab, font, myVarsBCD->getRight() + 16, ypos + 1, "0-based", kVarZeroBasedChanged);
+  myVarsZeroBased = new CheckboxWidget(myTab, font, myVarsBCD->getRight() + 16, ypos + 1, "0-based", kHiScoresChanged);
   wid.push_back(myVarsZeroBased);
 
   ypos += lineHeight + VGAP;
@@ -425,7 +428,7 @@ GameInfoDialog::GameInfoDialog(
 
   myScoreDigitsLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "Digits ");
   myScoreDigits = new PopUpWidget(myTab, font, myScoreDigitsLabel->getRight(), ypos, pwidth, lineHeight,
-                                  items, "", 0, kScoreDigitsChanged);
+                                  items, "", 0, kHiScoresChanged);
   wid.push_back(myScoreDigits);
 
   items.clear();
@@ -437,22 +440,22 @@ GameInfoDialog::GameInfoDialog(
 
   myTrailingZeroesLabel = new StaticTextWidget(myTab, font, myScoreDigits->getRight() + 20, ypos + 1, "0-Digits ");
   myTrailingZeroes = new PopUpWidget(myTab, font, myTrailingZeroesLabel->getRight(), ypos, pwidth, lineHeight,
-                                items, "", 0, kScoreZeroesChanged);
+                                items, "", 0, kHiScoresChanged);
   wid.push_back(myTrailingZeroes);
 
-  myScoreBCD = new CheckboxWidget(myTab, font, myVarsBCD->getLeft(), ypos + 1, "BCD", kScoreBcdChanged);
+  myScoreBCD = new CheckboxWidget(myTab, font, myVarsBCD->getLeft(), ypos + 1, "BCD", kHiScoresChanged);
   wid.push_back(myScoreBCD);
 
 
-  for (uInt32 p = 0; p < HighScoresManager::MAX_PLAYERS; ++p)
+  for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
   {
     uInt32 s_xpos = xpos;
     ypos += lineHeight + VGAP;
 
     myScoreAddressesLabel[p] = new StaticTextWidget(myTab, font, s_xpos, ypos + 1,
-                                                    "P" + std::to_string(p + 1) + " Addresses ");
+                                                    "P" + to_string(p + 1) + " Addresses ");
     s_xpos += myScoreAddressesLabel[p]->getWidth();
-    for (uInt32 a = 0; a < HighScoresManager::MAX_SCORE_ADDR; ++a)
+    for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
     {
       myScoreAddress[p][a] = new EditTextWidget(myTab, font, s_xpos, ypos - 1, awidth, lineHeight);
       myScoreAddress[p][a]->setTextFilter(fAddr);
@@ -584,10 +587,10 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   myPPBlend->setEnabled(!alwaysPhosphor && usePhosphor);
 
   const string& blend = props.get(PropType::Display_PPBlend);
-  myPPBlend->setValue(BSPF::stringToInt(blend));
+  myPPBlend->setValue(stringToInt(blend));
 
   // set vertical center
-  Int32 vcenter = BSPF::stringToInt(props.get(PropType::Display_VCenter));
+  Int32 vcenter = stringToInt(props.get(PropType::Display_VCenter));
   myVCenter->setValueLabel(vcenter);
   myVCenter->setValue(vcenter);
   myVCenter->setValueUnit(vcenter ? "px" : "");
@@ -620,7 +623,7 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   istringstream m_axis(props.get(PropType::Controller_MouseAxis));
   string m_control, m_range;
   m_axis >> m_control;
-  bool autoAxis = BSPF::equalsIgnoreCase(m_control, "AUTO");
+  bool autoAxis = equalsIgnoreCase(m_control, "AUTO");
   myMouseControl->setState(!autoAxis);
   if(autoAxis)
   {
@@ -636,7 +639,7 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   myMouseY->setEnabled(!autoAxis);
   if(m_axis >> m_range)
   {
-    myMouseRange->setValue(BSPF::stringToInt(m_range));
+    myMouseRange->setValue(stringToInt(m_range));
   }
   else
   {
@@ -660,51 +663,49 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 {
-  HighScoresManager::Formats formats;
-  HighScoresManager::Addresses addresses;
+  HSM::ScoresInfo info;
   uInt32 numPlayers, numVariations;
-  bool enable = instance().highScores().get(props, numPlayers, numVariations,
-                                            formats, addresses);
+  bool enable = instance().highScores().get(props, numPlayers, numVariations, info);
 
   myHighScores->setState(enable);
 
   myPlayers->setSelected(numPlayers);
-  myVariations->setText(std::to_string(numVariations));
+  myVariations->setText(to_string(numVariations));
 
   ostringstream ss;
 
-  myScoreDigits->setSelected(formats.numDigits);
-  myTrailingZeroes->setSelected(formats.trailingZeroes);
-  myScoreBCD->setState(formats.scoreBCD);
-  myVarsBCD->setState(formats.varsBCD);
-  myVarsZeroBased->setState(formats.varsZeroBased);
+  myScoreDigits->setSelected(info.numDigits);
+  myTrailingZeroes->setSelected(info.trailingZeroes);
+  myScoreBCD->setState(info.scoreBCD);
+  myVarsBCD->setState(info.varsBCD);
+  myVarsZeroBased->setState(info.varsZeroBased);
 
   ss.str("");
-  ss << std::hex << std::right << std::setw(4) << std::setfill('0')
-    << std::uppercase << addresses.playersAddr;
+  ss << hex << right << setw(4) << setfill('0')
+    << uppercase << info.playersAddr;
   myPlayersAddress->setText(ss.str());
 
   ss.str("");
-  ss << std::hex << std::right << std::setw(4) << std::setfill('0')
-    << std::uppercase << addresses.varsAddr;
+  ss << hex << right << setw(4) << setfill('0')
+    << uppercase << info.varsAddr;
   myVarAddress->setText(ss.str());
 
-  for (uInt32 p = 0; p < HighScoresManager::MAX_PLAYERS; ++p)
+  for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
   {
-    for (uInt32 a = 0; a < instance().highScores().numAddrBytes(formats.numDigits, formats.trailingZeroes); ++a)
+    for (uInt32 a = 0; a < instance().highScores().numAddrBytes(info.numDigits, info.trailingZeroes); ++a)
     {
       if (p < numPlayers)
       {
         ss.str("");
-        ss << std::hex << std::right << std::setw(4) << std::setfill('0')
-          << std::uppercase << addresses.scoresAddr[p][a];
+        ss << hex << right << setw(4) << setfill('0')
+          << uppercase << info.scoresAddr[p][a];
         myScoreAddress[p][a]->setText(ss.str());
       }
       else
         myScoreAddress[p][a]->setText("");
     }
   }
-  handleHighScoresWidgets();
+  updateHighScoresWidgets();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -719,7 +720,7 @@ void GameInfoDialog::saveConfig()
                        myPPBlend->getValueLabel());
   Int32 vcenter = myVCenter->getValue();
 
-  myGameProperties.set(PropType::Display_VCenter, std::to_string(vcenter));
+  myGameProperties.set(PropType::Display_VCenter, to_string(vcenter));
   myGameProperties.set(PropType::Cart_Sound, mySound->getState() ? "STEREO" : "MONO");
 
   // Console properties
@@ -780,40 +781,38 @@ void GameInfoDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::saveHighScoresProperties()
 {
-  HighScoresManager::Formats formats;
-  HighScoresManager::Addresses addresses;
+  HSM::ScoresInfo info;
 
   if (myHighScores->getState())
   {
-    // fill formats
-    formats.varsZeroBased = myVarsZeroBased->getState();
-    formats.varsBCD = myVarsBCD->getState();
-    formats.numDigits = myScoreDigits->getSelected() + 1;
-    formats.trailingZeroes = myTrailingZeroes->getSelected();
-    formats.scoreBCD = myScoreBCD->getState();
+    // fill info
+    info.varsZeroBased = myVarsZeroBased->getState();
+    info.varsBCD = myVarsBCD->getState();
+    info.numDigits = myScoreDigits->getSelected() + 1;
+    info.trailingZeroes = myTrailingZeroes->getSelected();
+    info.scoreBCD = myScoreBCD->getState();
 
-    // fill addresses
+    // fill info
     string strAddr;
 
     strAddr = myPlayersAddress->getText();
-    addresses.playersAddr = strAddr == EmptyString ? 1 : stoi(strAddr, nullptr, 16);
+    info.playersAddr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     strAddr = myVarAddress->getText();
-    addresses.varsAddr = strAddr == EmptyString ? 1 : stoi(strAddr, nullptr, 16);
+    info.varsAddr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
 
-    for (uInt32 p = 0; p < HighScoresManager::MAX_PLAYERS; ++p)
+    for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
     {
-      for (uInt32 a = 0; a < HighScoresManager::MAX_SCORE_ADDR; ++a)
+      for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
       {
         strAddr = myScoreAddress[p][a]->getText();
-        addresses.scoresAddr[p][a] = strAddr == EmptyString ? 0 : stoi(strAddr, nullptr, 16);
+        info.scoresAddr[p][a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
       }
     }
 
     string strVars = myVariations->getText();
 
     instance().highScores().set(myGameProperties, myPlayers->getSelected() + 1,
-                                strVars == EmptyString ? 1 : stoi(strVars),
-                                formats, addresses);
+                                stringToInt(strVars, HSM::DEFAULT_VARIATION), info);
   }
   else
   {
@@ -913,10 +912,10 @@ void GameInfoDialog::updateControllerStates()
   // Compumate bankswitching scheme doesn't allow to select controllers
   bool enableSelectControl = myBSType->getSelectedTag() != "CM";
   // Enable Swap Paddles checkbox only for paddle games
-  bool enableSwapPaddles = BSPF::startsWithIgnoreCase(contrLeft, "PADDLES") ||
-    BSPF::startsWithIgnoreCase(contrRight, "PADDLES") ||
-    BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "Paddles") ||
-    BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "Paddles");
+  bool enableSwapPaddles = startsWithIgnoreCase(contrLeft, "PADDLES") ||
+    startsWithIgnoreCase(contrRight, "PADDLES") ||
+    startsWithIgnoreCase(myLeftPortDetected->getLabel(), "Paddles") ||
+    startsWithIgnoreCase(myRightPortDetected->getLabel(), "Paddles");
 
   if(instance().hasConsole())
   {
@@ -966,7 +965,7 @@ void GameInfoDialog::eraseEEPROM()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void GameInfoDialog::handleHighScoresWidgets()
+void GameInfoDialog::updateHighScoresWidgets()
 {
   bool enable = myHighScores->getState();
   uInt32 players = myPlayers->getSelected() + 1;
@@ -990,7 +989,7 @@ void GameInfoDialog::handleHighScoresWidgets()
   myVarAddress->setEnabled(enableVars);
   myVarAddress->setEditable(enableVars);
   myVarAddressVal->setEnabled(enableVars);
-  myVarsBCD->setEnabled(enableVars);
+  myVarsBCD->setEnabled(enableVars && stringToInt(myVariations->getText(), 1) >= 10);
   myVarsZeroBased->setEnabled(enableVars);
 
   myScoresLabel->setEnabled(enable);
@@ -1001,12 +1000,12 @@ void GameInfoDialog::handleHighScoresWidgets()
   myTrailingZeroes->setEnabled(enable);
   myCurrentScoreLabel->setEnabled(enable);
 
-  for (uInt32 p = 0; p < HighScoresManager::MAX_PLAYERS; ++p)
+  for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
   {
     enable &= players > p;
     myScoreAddressesLabel[p]->setEnabled(enable);
 
-    for (uInt32 a = 0; a < HighScoresManager::MAX_SCORE_ADDR; ++a)
+    for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
     {
       myScoreAddress[p][a]->setEnabled(enable && numAddr > a);
       myScoreAddressVal[p][a]->setEnabled(enable && numAddr > a);
@@ -1027,17 +1026,17 @@ void GameInfoDialog::handleHighScoresWidgets()
   setAddressVal(myVarAddress, myVarAddressVal, myVarsBCD->getState(), myVarsZeroBased->getState() ? 1 : 0);
 
   // update score RAM values and resulting scores
-  for (uInt32 p = 0; p < HighScoresManager::MAX_PLAYERS; ++p)
+  for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
   {
     if (p < players)
     {
-      HighScoresManager::ScoreAddresses scoreAddr;
+      HSM::ScoreAddresses scoreAddr;
 
       for (uInt32 a = 0; a < numAddr; ++a)
       {
         setAddressVal(myScoreAddress[p][a], myScoreAddressVal[p][a]);
         string strAddr = myScoreAddress[p][a]->getText();
-        scoreAddr[a] = strAddr == EmptyString ? 0 : stoi(strAddr, nullptr, 16);
+        scoreAddr[a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
       }
 
       Int32 score = instance().highScores().score(p, numAddr, myTrailingZeroes->getSelected(),
@@ -1047,7 +1046,7 @@ void GameInfoDialog::handleHighScoresWidgets()
         ostringstream ss;
 
         ss.str("");
-        ss << std::right << std::setw(myScoreDigits->getSelected() + 1) << std::setfill(' ') << score;
+        ss << right << setw(myScoreDigits->getSelected() + 1) << setfill(' ') << score;
         myCurrentScore[p]->setLabel(ss.str());
       }
       else
@@ -1081,13 +1080,13 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
     ostringstream ss;
 
     // convert to number and read from memory
-    addr = strAddr == EmptyString ? 0 : stoi(strAddr, nullptr, 16);
+    addr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     val = system.peek(addr) + incVal;
     // format output and display in value widget
     if (isBCD)
-      ss << std::hex;
-    ss << std::right << std::setw(2) << std::setfill('0')
-      << std::uppercase << uInt16(val);
+      ss << hex;
+    ss << right << setw(2) << setfill('0')
+      << uppercase << uInt16(val);
     valWidget->setText(ss.str());
   }
   else
@@ -1163,13 +1162,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case EditTextWidget::kChangedCmd:
     case kHiScoresChanged:
-    case kPlayersChanged:
-    case kVarZeroBasedChanged:
-    case kVarBcdChanged:
-    case kScoreDigitsChanged:
-    case kScoreZeroesChanged:
-    case kScoreBcdChanged:
-      handleHighScoresWidgets();
+      updateHighScoresWidgets();
       break;
 
     default:

@@ -59,10 +59,15 @@ class GameInfoDialog : public Dialog, public CommandSender
     // load the properties of the 'High Scores' tab
     void saveHighScoresProperties();
 
+    // update 'Controller' tab widgets
     void updateControllerStates();
+    // erase SaveKey/AtariVox pages for current game
     void eraseEEPROM();
-    void handleHighScoresWidgets();
-    void setAddressVal(EditTextWidget* address, EditTextWidget* val, bool isBCD = true, uInt8 incVal = 0);
+    // update 'High Scores' tab widgets
+    void updateHighScoresWidgets();
+    // set formatted memory value for given address field
+    void setAddressVal(EditTextWidget* address, EditTextWidget* val,
+                       bool isBCD = true, uInt8 incVal = 0);
 
   private:
     TabWidget* myTab{nullptr};
@@ -111,48 +116,42 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     // High Scores properties
     CheckboxWidget*   myHighScores{nullptr};
-    StaticTextWidget* myPlayersLabel{ nullptr };
+    StaticTextWidget* myPlayersLabel{nullptr};
     PopUpWidget*      myPlayers{nullptr};
-    StaticTextWidget* myPlayersAddressLabel{ nullptr };
-    EditTextWidget*   myPlayersAddress{ nullptr };
-    EditTextWidget*   myPlayersAddressVal{ nullptr };
+    StaticTextWidget* myPlayersAddressLabel{nullptr};
+    EditTextWidget*   myPlayersAddress{nullptr};
+    EditTextWidget*   myPlayersAddressVal{nullptr};
 
-    StaticTextWidget* myVariationsLabel{ nullptr };
+    StaticTextWidget* myVariationsLabel{nullptr};
     EditTextWidget*   myVariations{nullptr};
-    StaticTextWidget* myVarAddressLabel{ nullptr };
-    EditTextWidget*   myVarAddress{ nullptr };
-    EditTextWidget*   myVarAddressVal{ nullptr };
-    CheckboxWidget*   myVarsBCD{ nullptr };
-    CheckboxWidget*   myVarsZeroBased{ nullptr };
+    StaticTextWidget* myVarAddressLabel{nullptr};
+    EditTextWidget*   myVarAddress{nullptr};
+    EditTextWidget*   myVarAddressVal{nullptr};
+    CheckboxWidget*   myVarsBCD{nullptr};
+    CheckboxWidget*   myVarsZeroBased{nullptr};
 
-    StaticTextWidget* myScoresLabel{ nullptr };
-    StaticTextWidget* myScoreDigitsLabel{ nullptr };
+    StaticTextWidget* myScoresLabel{nullptr};
+    StaticTextWidget* myScoreDigitsLabel{nullptr};
     PopUpWidget*      myScoreDigits{nullptr};
-    StaticTextWidget* myTrailingZeroesLabel{ nullptr };
+    StaticTextWidget* myTrailingZeroesLabel{nullptr};
     PopUpWidget*      myTrailingZeroes{nullptr};
     CheckboxWidget*   myScoreBCD{nullptr};
 
-    StaticTextWidget* myScoreAddressesLabel[HighScoresManager::MAX_PLAYERS]{ nullptr };
-    EditTextWidget*   myScoreAddress[HighScoresManager::MAX_PLAYERS][HighScoresManager::MAX_SCORE_ADDR]{nullptr};
-    EditTextWidget*   myScoreAddressVal[HighScoresManager::MAX_PLAYERS][HighScoresManager::MAX_SCORE_ADDR]{nullptr};
+    StaticTextWidget* myScoreAddressesLabel[HSM::MAX_PLAYERS]{nullptr};
+    EditTextWidget*   myScoreAddress[HSM::MAX_PLAYERS][HSM::MAX_SCORE_ADDR]{nullptr};
+    EditTextWidget*   myScoreAddressVal[HSM::MAX_PLAYERS][HSM::MAX_SCORE_ADDR]{nullptr};
     StaticTextWidget* myCurrentScoreLabel;
-    StaticTextWidget* myCurrentScore[HighScoresManager::MAX_PLAYERS];
+    StaticTextWidget* myCurrentScore[HSM::MAX_PLAYERS];
 
     enum {
-      kVCenterChanged      = 'Vcch',
-      kPhosphorChanged     = 'PPch',
-      kPPBlendChanged      = 'PBch',
-      kLeftCChanged        = 'LCch',
-      kRightCChanged       = 'RCch',
-      kMCtrlChanged        = 'MCch',
-      kEEButtonPressed     = 'EEgb',
-      kHiScoresChanged     = 'HSch',
-      kPlayersChanged      = 'Plch',
-      kVarZeroBasedChanged = 'VZch',
-      kVarBcdChanged       = 'VBch',
-      kScoreDigitsChanged  = 'SDch',
-      kScoreZeroesChanged  = 'SZch',
-      kScoreBcdChanged     = 'SBch',
+      kVCenterChanged  = 'Vcch',
+      kPhosphorChanged = 'PPch',
+      kPPBlendChanged  = 'PBch',
+      kLeftCChanged    = 'LCch',
+      kRightCChanged   = 'RCch',
+      kMCtrlChanged    = 'MCch',
+      kEEButtonPressed = 'EEgb',
+      kHiScoresChanged = 'HSch',
     };
 
     // Game properties for currently loaded ROM
