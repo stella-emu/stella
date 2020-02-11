@@ -62,7 +62,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void updateControllerStates();
     void eraseEEPROM();
     void handleHighScoresWidgets();
-    void setAddressVal(const EditTextWidget* address, EditTextWidget* val, bool isBCD = true, uInt8 incVal = 0);
+    void setAddressVal(EditTextWidget* address, EditTextWidget* val, bool isBCD = true, uInt8 incVal = 0);
 
   private:
     TabWidget* myTab{nullptr};
@@ -122,8 +122,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myVarAddressLabel{ nullptr };
     EditTextWidget*   myVarAddress{ nullptr };
     EditTextWidget*   myVarAddressVal{ nullptr };
-    CheckboxWidget*   myVarBCD{ nullptr };
-    CheckboxWidget*   myVarZeroBased{ nullptr };
+    CheckboxWidget*   myVarsBCD{ nullptr };
+    CheckboxWidget*   myVarsZeroBased{ nullptr };
 
     StaticTextWidget* myScoresLabel{ nullptr };
     StaticTextWidget* myScoreDigitsLabel{ nullptr };

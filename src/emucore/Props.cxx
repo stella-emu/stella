@@ -266,6 +266,14 @@ void Properties::print() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Properties::reset(PropType key)
+{
+  size_t pos = static_cast<size_t>(key);
+
+  myProperties[pos] = ourDefaultProperties[pos];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::setDefaults()
 {
   for(size_t i = 0; i < myProperties.size(); ++i)
