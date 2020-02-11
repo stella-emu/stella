@@ -125,6 +125,13 @@ class Properties
     void setDefaults();
 
     /**
+      Resets the property of the given key to its default
+
+      @param key      The key of the property to set
+    */
+    void reset(PropType key);
+
+    /**
       Overloaded equality operator(s)
 
       @param properties The properties object to compare to
