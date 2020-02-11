@@ -152,6 +152,13 @@ namespace BSPF
     catch(...) { return defaultValue; }
   }
 
+  // Convert string with base 16 to integer, using default value on any error
+  inline int stringToIntBase16(const string& s, const int defaultValue = 0)
+  {
+    try        { return std::stoi(s, nullptr, 16); }
+    catch(...) { return defaultValue; }
+  }
+
   // Compare two strings, ignoring case
   inline int compareIgnoreCase(const string& s1, const string& s2)
   {
