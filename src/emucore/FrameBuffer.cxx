@@ -42,6 +42,7 @@
   #include "Launcher.hxx"
   #include "Menu.hxx"
   #include "CommandMenu.hxx"
+  #include "HighScoresMenu.hxx"
   #include "MessageMenu.hxx"
   #include "TimeMachine.hxx"
 #endif
@@ -330,6 +331,18 @@ void FrameBuffer::update(bool force)
         myOSystem.commandMenu().draw(force);
       }
       break;  // EventHandlerState::CMDMENU
+    }
+
+    case EventHandlerState::HIGHSCORESMENU:
+    {
+      force = force || myOSystem.highscoresMenu().needsRedraw();
+      if (force)
+      {
+        clear();
+        myTIASurface->render();
+        myOSystem.highscoresMenu().draw(force);
+      }
+      break;  // EventHandlerState::HIGHSCORESMENU
     }
 
     case EventHandlerState::MESSAGEMENU:

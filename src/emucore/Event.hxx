@@ -120,7 +120,7 @@ class Event
       ToggleFrameStats, ToggleSAPortOrder, ExitGame,
 
       // add new events from here to avoid that user remapped events get overwritten
-      ShowScore, ShowVariation,
+      ShowScore, ShowVariation, HighScoresMenuMode,
 
       LastType
     };
@@ -135,7 +135,7 @@ class Event
     };
 
     // Event list version, update only if the id of existing(!) event types changed
-    static constexpr Int32 VERSION = 3;
+    static constexpr Int32 VERSION = 4;
 
     using EventSet = std::set<Event::Type>;
 

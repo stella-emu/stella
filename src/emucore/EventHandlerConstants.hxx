@@ -26,6 +26,7 @@ enum class EventHandlerState {
   LAUNCHER,
   OPTIONSMENU,
   CMDMENU,
+  HIGHSCORESMENU,
   MESSAGEMENU,
   DEBUGGER,
   NONE
