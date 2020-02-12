@@ -50,7 +50,10 @@ class HighScoresDialog : public Dialog
     PopUpWidget*      myVariation;
     StaticTextWidget* myPositions[NUM_POSITIONS];
     StaticTextWidget* myScores[NUM_POSITIONS];
-    EditTextWidget*   myNames[NUM_POSITIONS];
+    StaticTextWidget* mySpecials[NUM_POSITIONS];
+    StaticTextWidget* myNames[NUM_POSITIONS];
+    EditTextWidget*   myEditNames[NUM_POSITIONS];
+    StaticTextWidget* myDates[NUM_POSITIONS];
     StaticTextWidget* myMD5;
 
   private:

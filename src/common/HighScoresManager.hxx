@@ -23,6 +23,7 @@ class OSystem;
 namespace HSM {
   static const uInt32 MAX_PLAYERS = 4;
   static const uInt32 MAX_SCORE_ADDR = 3;
+  static const uInt32 MAX_SPECIAL = 5;
 
   static const uInt32 DEFAULT_PLAYER = 1;
   static const uInt32 DEFAULT_VARIATION = 1;
@@ -38,10 +39,14 @@ namespace HSM {
     bool scoreBCD;
     bool varsBCD;
     bool varsZeroBased;
+    string special;
+    bool specialBCD;
+    bool specialZeroBased;
     // Addresses
     ScoresAddresses scoresAddr;
     uInt16 varsAddr;
     uInt16 playersAddr;
+    uInt16 specialAddr;
   };
 
 } // namespace HSM

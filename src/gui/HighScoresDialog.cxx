@@ -33,8 +33,8 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, font, "High Scores")
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = font.getLineHeight();
-    //fontWidth = font.getMaxCharWidth(),
+  const int lineHeight = font.getLineHeight(),
+    fontWidth = font.getMaxCharWidth();
     //fontHeight = font.getFontHeight(),
     //buttonHeight = font.getLineHeight() + 4;
     //infoLineHeight = ifont.getLineHeight();
@@ -46,7 +46,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
   VariantList items;
 
-  _w = 400; // max_w - 20;
+  _w = 40 * fontWidth + HBORDER * 2; // max_w - 20;
   _h = 400; // max_h - 20;
 
   ypos = VBORDER + _th; xpos = HBORDER;
@@ -58,19 +58,19 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   myVariation = new PopUpWidget(this, font, s->getRight(), ypos,
                                 font.getStringWidth("256") - 4, lineHeight, items, "", 0, 0);
 
-  ypos += lineHeight + VGAP * 2;
+  ypos += lineHeight + VGAP * 4;
 
   int xposRank = HBORDER;
   int xposScore = xposRank + font.getStringWidth("Rank") + 16;
-  int xposName = xposScore + font.getStringWidth("123456") + 24;
-  int xposExtra = xposName + font.getStringWidth("Date") + 16;
-  int xposDate = xposExtra + font.getStringWidth("Round") + 16;
+  int xposSpecial = xposScore + font.getStringWidth("Score") + 24;
+  int xposName = xposSpecial + font.getStringWidth("Round") + 16;
+  int xposDate = xposName + font.getStringWidth("Name") + 16;
   int nWidth = font.getStringWidth("ABC") + 4;
 
   new StaticTextWidget(this, font, xposRank, ypos + 1, "Rank");
   new StaticTextWidget(this, font, xposScore, ypos + 1, "Score");
+  new StaticTextWidget(this, font, xposSpecial, ypos + 1, "Round");
   new StaticTextWidget(this, font, xposName - 2, ypos + 1, "Name");
-  new StaticTextWidget(this, font, xposExtra, ypos + 1, "Round");
   new StaticTextWidget(this, font, xposDate+16, ypos + 1, "Date   Time");
 
   ypos += lineHeight + VGAP;
@@ -79,22 +79,27 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   {
     myPositions[p] = new StaticTextWidget(this, font, xposRank, ypos + 1,
                                           (p < 9 ? " " : "") + std::to_string(p + 1) + ". ");
-
     myScores[p] = new StaticTextWidget(this, font, xposScore, ypos + 1, "123456");
-    myNames[p] = new EditTextWidget(this, font, xposName, ypos + 1, nWidth, lineHeight, "JTZ");
-    myNames[p]->setEditable(false);
-    wid.push_back(myNames[p]);
-
-    new StaticTextWidget(this, font, xposExtra, ypos + 1, " 123");
+    mySpecials[p] = new StaticTextWidget(this, font, xposSpecial + 8, ypos + 1, "123");
+    myEditNames[p] = new EditTextWidget(this, font, xposName, ypos - 1, nWidth, lineHeight, "JTZ");
+    //myEditNames[p]->setEditable(false);
+    myEditNames[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+    wid.push_back(myEditNames[p]);
+    myNames[p] = new StaticTextWidget(this, font, xposName + 2, ypos + 1, "JTZ");
 
     //new StaticTextWidget(this, font, xposDate, ypos + 1, "12.02.20 17:15");
     //new StaticTextWidget(this, font, xposDate, ypos + 1, "02/12/20 12:30am");
-    new StaticTextWidget(this, font, xposDate, ypos + 1, "12-02-20 17:15");
+    myDates[p] = new StaticTextWidget(this, font, xposDate, ypos + 1, "12-02-20 17:15");
 
     ypos += lineHeight + VGAP;
   }
-  ypos += VGAP;
+  ypos += VGAP * 2;
+
   myMD5 = new StaticTextWidget(this, ifont, xpos, ypos + 1, "MD5: 9ad36e699ef6f45d9eb6c4cf90475c9f");
+
+  wid.clear();
+  addOKCancelBGroup(wid, font);
+  addBGroupToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,6 +130,33 @@ void HighScoresDialog::loadConfig()
   }
   myVariation->addItems(items);
   myVariation->setSelected(instance().highScores().variation());
+
+  // mock data
+  const string SCORES[NUM_POSITIONS] = {"999999", "250000", "100000", " 50000", " 20000",
+                                        "  5000", "  2000", "   700", "   200", "     -"};
+  const string SPECIALS[NUM_POSITIONS] = {"200", "150", " 90", " 70", " 45",
+                                          " 30", " 25", " 10", "  7", "  -"};
+  const string NAMES[NUM_POSITIONS] = {"RAM", "CDW", "AD ", "JTZ", "DOA",
+                                       "ROM", "VCS", "N.S", "JWC", "  -"};
+  const string DATES[NUM_POSITIONS] = {"19-12-24 21:00", "19-07-18 00:00", "20-01-01 12:00",
+                                       "20-02-12 21:50", "20-02-11 14:16", "20-02-11 13:11",
+                                       "20-02-10 19:45", "10-02-10 20:04", "05-02-09 22:32",
+                                       "       -     -"};
+
+  for (Int32 p = 0; p < NUM_POSITIONS; ++p)
+  {
+    myScores[p]->setLabel(SCORES[p]);
+    mySpecials[p]->setLabel(SPECIALS[p]);
+    myNames[p]->setLabel(NAMES[p]);
+    myEditNames[p]->setText(NAMES[p]);
+    myDates[p]->setLabel(DATES[p]);
+  }
+
+  //myEditNames[4]->setEditable(true);
+
+  //myNames[3]->setHeight(1);
+  //myNames[3]->setWidth(0);
+  myEditNames[4]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -134,6 +166,7 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
   {
     case kOKCmd:
     case kCloseCmd:
+      instance().eventHandler().leaveMenuMode();
       instance().eventHandler().handleEvent(Event::ExitMode);
       break;
 
