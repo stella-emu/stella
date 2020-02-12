@@ -122,7 +122,6 @@ GameInfoDialog::GameInfoDialog(
 
   myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 8, ypos + 4, "SECAM60 detected");
 
-
   // Phosphor
   ypos += lineHeight + VGAP;
   myPhosphor = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Phosphor (enabled for all ROMs)", kPhosphorChanged);
@@ -393,6 +392,7 @@ GameInfoDialog::GameInfoDialog(
 
   fwidth = font.getStringWidth("255") + 5;
   vwidth = font.getStringWidth("123") + 4;
+  int swidth = font.getStringWidth("abcde") + 4;
   myVariationsLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Variations");
   myVariations = new EditTextWidget(myTab, font, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   myVariations->setTextFilter(fVars);
@@ -413,6 +413,28 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + VGAP;
 
+  mySpecialLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "Special  ");
+  mySpecial = new EditTextWidget(myTab, font, mySpecialLabel->getRight(), ypos - 1, swidth, lineHeight);
+  //mySpecial->setTextFilter(...);
+  wid.push_back(mySpecial);
+
+  mySpecialAddressLabel = new StaticTextWidget(myTab, font, myPlayersAddressLabel->getLeft(), ypos + 1, "Address ");
+  mySpecialAddress = new EditTextWidget(myTab, font, mySpecialAddressLabel->getRight(), ypos - 1, awidth, lineHeight);
+  mySpecialAddress->setTextFilter(fAddr);
+  wid.push_back(mySpecialAddress);
+  mySpecialAddressVal = new EditTextWidget(myTab, font, mySpecialAddress->getRight() + 2, ypos - 1, vwidth, lineHeight);
+  mySpecialAddressVal->setEditable(false);
+
+  mySpecialBCD = new CheckboxWidget(myTab, font, mySpecialAddressVal->getRight() + 16, ypos + 1, "BCD", kHiScoresChanged);
+  wid.push_back(mySpecialBCD);
+
+  mySpecialZeroBased = new CheckboxWidget(myTab, font, mySpecialBCD->getRight() + 16, ypos + 1, "0-based", kHiScoresChanged);
+  wid.push_back(mySpecialZeroBased);
+
+  //xpos += 20;
+  ypos += lineHeight + VGAP * 2;
+
+  vwidth = font.getStringWidth("AB") + 4;
   items.clear();
   VarList::push_back(items, "1", "1");
   VarList::push_back(items, "2", "2");
@@ -421,12 +443,7 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(items, "5", "5");
   VarList::push_back(items, "6", "6");
 
-  myScoresLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Scores");
-
-  xpos += 20; ypos += lineHeight + VGAP;
-  vwidth = font.getStringWidth("AB") + 4;
-
-  myScoreDigitsLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "Digits ");
+  myScoreDigitsLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "Score digits ");
   myScoreDigits = new PopUpWidget(myTab, font, myScoreDigitsLabel->getRight(), ypos, pwidth, lineHeight,
                                   items, "", 0, kHiScoresChanged);
   wid.push_back(myScoreDigits);
@@ -438,14 +455,13 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(items, "3", "3");
   pwidth = font.getStringWidth("0");
 
-  myTrailingZeroesLabel = new StaticTextWidget(myTab, font, myScoreDigits->getRight() + 20, ypos + 1, "0-Digits ");
+  myTrailingZeroesLabel = new StaticTextWidget(myTab, font, myScoreDigits->getRight() + 30, ypos + 1, "0-digits ");
   myTrailingZeroes = new PopUpWidget(myTab, font, myTrailingZeroesLabel->getRight(), ypos, pwidth, lineHeight,
                                 items, "", 0, kHiScoresChanged);
   wid.push_back(myTrailingZeroes);
 
   myScoreBCD = new CheckboxWidget(myTab, font, myVarsBCD->getLeft(), ypos + 1, "BCD", kHiScoresChanged);
   wid.push_back(myScoreBCD);
-
 
   for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
   {
@@ -466,7 +482,7 @@ GameInfoDialog::GameInfoDialog(
       myScoreAddressVal[p][a]->setEditable(false);
       s_xpos += myScoreAddressVal[p][a]->getWidth() + 16;
     }
-    myCurrentScore[p] = new StaticTextWidget(myTab, font, s_xpos + 8, ypos + 1, "123456");
+    myCurrentScore[p] = new StaticTextWidget(myTab, font, s_xpos + 8+6, ypos + 1, "123456");
   }
   myCurrentScoreLabel = new StaticTextWidget(myTab, font, myCurrentScore[0]->getLeft(), myScoreBCD->getTop(), "Current");
 
@@ -992,7 +1008,7 @@ void GameInfoDialog::updateHighScoresWidgets()
   myVarsBCD->setEnabled(enableVars && stringToInt(myVariations->getText(), 1) >= 10);
   myVarsZeroBased->setEnabled(enableVars);
 
-  myScoresLabel->setEnabled(enable);
+  mySpecialLabel->setEnabled(enable);
   myScoreDigitsLabel->setEnabled(enable);
   myScoreDigits->setEnabled(enable);
   myScoreBCD->setEnabled(enable);

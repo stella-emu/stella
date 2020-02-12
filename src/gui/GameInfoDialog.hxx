@@ -130,7 +130,14 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget*   myVarsBCD{nullptr};
     CheckboxWidget*   myVarsZeroBased{nullptr};
 
-    StaticTextWidget* myScoresLabel{nullptr};
+    StaticTextWidget* mySpecialLabel{nullptr};
+    EditTextWidget*   mySpecial{nullptr};
+    StaticTextWidget* mySpecialAddressLabel{nullptr};
+    EditTextWidget*   mySpecialAddress{nullptr};
+    EditTextWidget*   mySpecialAddressVal{nullptr};
+    CheckboxWidget*   mySpecialBCD{nullptr};
+    CheckboxWidget*   mySpecialZeroBased{nullptr};
+
     StaticTextWidget* myScoreDigitsLabel{nullptr};
     PopUpWidget*      myScoreDigits{nullptr};
     StaticTextWidget* myTrailingZeroesLabel{nullptr};

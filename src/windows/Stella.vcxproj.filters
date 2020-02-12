@@ -2070,7 +2070,7 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\HighScoresDialog.hxx">
-      <Filter>Source Files\gui</Filter>
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
