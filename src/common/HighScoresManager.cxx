@@ -22,16 +22,20 @@
    B,             ; score format (BCD, HEX)
    B,             ; variation format (BCD, HEX)
    0,             ; zero-based variation
+   "",            ; special label (5 chars)
+   B,             ; special format (BCD, HEX)
+   0,             ; zero-based special
  Addresses (in hex):
    n*p-times xx,  ; score info for each player, high to low
    xx,            ; variation address (if more than 1 variation)
    xx             ; player address (if more than 1 player)
+   xx             ; special address (if defined)
 
  TODO:
  - variation bits (Centipede)
  - player bits (Asteroids, Space Invaders)
  - score swaps (Asteroids)
- - one optional and named value extra per game (round, level...)
+ - special: one optional and named value extra per game (round, level...)
 */
 
 #include <cmath>
@@ -126,9 +130,12 @@ bool HighScoresManager::get(const Properties& props, uInt32& numPlayersR, uInt32
   info.scoreBCD = scoreBCD(props);
   info.varsBCD = varBCD(props);
   info.varsZeroBased = varZeroBased(props);
+  info.specialBCD = false; // TODO
+  info.specialZeroBased = true; // TODO
 
   info.playersAddr = playerAddress(props);
   info.varsAddr = varAddress(props);
+  info.specialAddr = 0; // TODO
   for (uInt32 p = 0; p < MAX_PLAYERS; ++p)
   {
     if (p < numPlayersR)
@@ -146,7 +153,7 @@ bool HighScoresManager::get(const Properties& props, uInt32& numPlayersR, uInt32
         info.scoresAddr[p][a] = -1;
   }
 
-  return (EmptyString != getPropIdx(props, PropType::Cart_Addresses, 0));
+  return (!getPropIdx(props, PropType::Cart_Addresses, 0).empty());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
