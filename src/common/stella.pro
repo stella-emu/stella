@@ -95,7 +95,7 @@
 "Cart.ModelNo" "AZ-036-04"
 "Cart.Name" "H.E.R.O. (1984) (Activision)"
 "Cart.Variations" "5"
-"Cart.Formats" "6,0,B,B,1"
-"Cart.Addresses" "B7,B8,B9,B4"
+"Cart.Formats" "6,0,B,B,1,LEVEL,B,1"
+"Cart.Addresses" "B7,B8,B9,B4,0,F5"
 ""
 

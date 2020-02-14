@@ -22,8 +22,11 @@ class OSystem;
 
 namespace HSM {
   static const uInt32 MAX_PLAYERS = 4;
+  static const uInt32 MAX_ADDR_CHARS = 4;
+  static const uInt32 MAX_SCORE_DIGITS = 6;
   static const uInt32 MAX_SCORE_ADDR = 3;
-  static const uInt32 MAX_SPECIAL = 5;
+  static const uInt32 MAX_SPECIAL_NAME = 5;
+  static const uInt32 MAX_SPECIAL_DIGITS = 3;
 
   static const uInt32 DEFAULT_PLAYER = 1;
   static const uInt32 DEFAULT_VARIATION = 1;
@@ -100,16 +103,19 @@ class HighScoresManager
     Int32 score(uInt32 player, uInt32 numAddrBytes, uInt32 trailingZeroes, bool isBCD,
                 const ScoreAddresses& scoreAddr) const;
 
+    Int32 special(uInt16 addr, bool varBCD, bool zeroBased) const;
+
     // Retrieve current values (using game's properties)
     Int32 numVariations() const;
     Int32 player() const;
+    string specialLabel() const;
     Int32 variation() const;
     Int32 score() const;
+    Int32 special() const;
 
   private:
     static const uInt32 MAX_VARIATIONS = 256;
 
-    static const uInt32 MAX_DIGITS = 6;
     static const uInt32 MAX_TRAILING = 3;
     static const uInt32 DEFAULT_DIGITS = 4;
     static const uInt32 DEFAULT_TRAILING = 0;
@@ -117,6 +123,8 @@ class HighScoresManager
     static const bool DEFAULT_VARS_BCD = true;
     static const bool DEFAULT_VARS_ZERO_BASED = false;
     static const bool DEFAULT_PLAYERS_ZERO_BASED = true;
+    static const bool DEFAULT_SPECIAL_BCD = true;
+    static const bool DEFAULT_SPECIAL_ZERO_BASED = false;
 
   private:
     // Get individual highscore info from properties
@@ -124,11 +132,15 @@ class HighScoresManager
     uInt32 numPlayers(const Properties& props) const;
     uInt16 varAddress(const Properties& props) const;
     uInt16 playerAddress(const Properties& props) const;
+    uInt16 specialAddress(const Properties& props) const;
     uInt32 numDigits(const Properties& props) const;
     uInt32 trailingZeroes(const Properties& props) const;
     bool scoreBCD(const Properties& props) const;
     bool varBCD(const Properties& props) const;
     bool varZeroBased(const Properties& props) const;
+    string specialLabel(const Properties& props) const;
+    bool specialBCD(const Properties& props) const;
+    bool specialZeroBased(const Properties& props) const;
     bool playerZeroBased(const Properties& props) const;
 
     // Calculate the number of bytes for one player's score from property parameters
