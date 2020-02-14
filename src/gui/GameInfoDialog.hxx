@@ -131,7 +131,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget*   myVarsZeroBased{nullptr};
 
     StaticTextWidget* mySpecialLabel{nullptr};
-    EditTextWidget*   mySpecial{nullptr};
+    EditTextWidget*   mySpecialName{nullptr};
     StaticTextWidget* mySpecialAddressLabel{nullptr};
     EditTextWidget*   mySpecialAddress{nullptr};
     EditTextWidget*   mySpecialAddressVal{nullptr};
@@ -147,8 +147,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myScoreAddressesLabel[HSM::MAX_PLAYERS]{nullptr};
     EditTextWidget*   myScoreAddress[HSM::MAX_PLAYERS][HSM::MAX_SCORE_ADDR]{nullptr};
     EditTextWidget*   myScoreAddressVal[HSM::MAX_PLAYERS][HSM::MAX_SCORE_ADDR]{nullptr};
-    StaticTextWidget* myCurrentScoreLabel;
-    StaticTextWidget* myCurrentScore[HSM::MAX_PLAYERS];
+    StaticTextWidget* myCurrentScoreLabel{nullptr};
+    StaticTextWidget* myCurrentScore[HSM::MAX_PLAYERS]{nullptr};
 
     enum {
       kVCenterChanged  = 'Vcch',

@@ -44,17 +44,31 @@ class HighScoresDialog : public Dialog
 
   protected:
     void loadConfig() override;
+    void saveConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    PopUpWidget*      myVariation;
-    StaticTextWidget* myPositions[NUM_POSITIONS];
-    StaticTextWidget* myScores[NUM_POSITIONS];
-    StaticTextWidget* mySpecials[NUM_POSITIONS];
-    StaticTextWidget* myNames[NUM_POSITIONS];
-    EditTextWidget*   myEditNames[NUM_POSITIONS];
-    StaticTextWidget* myDates[NUM_POSITIONS];
-    StaticTextWidget* myMD5;
+    Int32 myVariation;
+    Int32 myScore;
+    Int32 mySpecial;
+
+    Int32 myScores[NUM_POSITIONS];
+    Int32 mySpecials[NUM_POSITIONS];
+    string myNames[NUM_POSITIONS];
+    string myDates[NUM_POSITIONS];
+    string myMD5;
+
+    PopUpWidget*      myVariationWidget{nullptr};
+    StaticTextWidget* mySpecialLabelWidget{nullptr};
+    StaticTextWidget* myPositionsWidget[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* myScoresWidget[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* mySpecialsWidget[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* myNamesWidget[NUM_POSITIONS]{nullptr};
+    EditTextWidget*   myEditNamesWidget[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* myDatesWidget[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* myMD5Widget{nullptr};
+
+    string now() const;
 
   private:
     // Following constructors and assignment operators not supported

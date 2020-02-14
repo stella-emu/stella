@@ -130,12 +130,14 @@ bool HighScoresManager::get(const Properties& props, uInt32& numPlayersR, uInt32
   info.scoreBCD = scoreBCD(props);
   info.varsBCD = varBCD(props);
   info.varsZeroBased = varZeroBased(props);
-  info.specialBCD = false; // TODO
-  info.specialZeroBased = true; // TODO
+  info.special = specialLabel(props);
+  info.specialBCD = specialBCD(props);
+  info.specialZeroBased = specialZeroBased(props);
 
   info.playersAddr = playerAddress(props);
   info.varsAddr = varAddress(props);
-  info.specialAddr = 0; // TODO
+  info.specialAddr = specialAddress(props);
+
   for (uInt32 p = 0; p < MAX_PLAYERS; ++p)
   {
     if (p < numPlayersR)
@@ -167,12 +169,20 @@ void HighScoresManager::set(Properties& props, uInt32 numPlayers, uInt32 numVari
   props.set(PropType::Cart_Variations, to_string(min(numVariations, MAX_VARIATIONS)));
 
   // fill from the back to skip default values
-  if (info.varsZeroBased != DEFAULT_VARS_ZERO_BASED)
-    output = info.varsZeroBased ? ",1" : ",0";
+  if (output.length() || info.specialZeroBased != DEFAULT_SPECIAL_ZERO_BASED)
+    output = info.specialZeroBased ? ",1" : ",0";
+  if (output.length() || info.specialBCD != DEFAULT_SPECIAL_BCD)
+    output.insert(0, info.specialBCD ? ",B" : ",D");
+  if (output.length() || !info.special.empty())
+    output.insert(0, "," + info.special);
+
+  if (output.length() || info.varsZeroBased != DEFAULT_VARS_ZERO_BASED)
+    output.insert(0, info.varsZeroBased ? ",1" : ",0");
   if (output.length() || info.varsBCD != DEFAULT_VARS_BCD)
     output.insert(0, info.varsBCD ? ",B" : ",D");
   if (output.length() || info.scoreBCD != DEFAULT_SCORE_BCD)
     output.insert(0, info.scoreBCD ? ",B" : ",H");
+
   if (output.length() || info.trailingZeroes != DEFAULT_TRAILING)
     output.insert(0, "," + to_string(info.trailingZeroes));
   if (output.length() || info.numDigits != DEFAULT_DIGITS)
@@ -187,10 +197,12 @@ void HighScoresManager::set(Properties& props, uInt32 numPlayers, uInt32 numVari
   }
 
   // add optional addresses
-  if (numVariations != DEFAULT_VARIATION || numPlayers != DEFAULT_PLAYER)
+  if (numVariations != DEFAULT_VARIATION || numPlayers != DEFAULT_PLAYER || !info.special.empty())
     buf << info.varsAddr << "," ;
-  if (numPlayers != DEFAULT_PLAYER)
+  if (numPlayers != DEFAULT_PLAYER || !info.special.empty())
     buf << info.playersAddr << "," ;
+  if (!info.special.empty())
+    buf << info.specialAddr << "," ;
 
   output = buf.str();
   output.pop_back();
@@ -202,7 +214,7 @@ uInt32 HighScoresManager::numDigits(const Properties& props) const
 {
   string digits = getPropIdx(props, PropType::Cart_Formats, 0);
 
-  return min(uInt32(stringToInt(digits, DEFAULT_DIGITS)), MAX_DIGITS);
+  return min(uInt32(stringToInt(digits, DEFAULT_DIGITS)), MAX_SCORE_DIGITS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -238,6 +250,36 @@ bool HighScoresManager::varZeroBased(const Properties& props) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string HighScoresManager::specialLabel(const Properties& props) const
+{
+  string orgLabel, label;
+
+  // some ugly formatting
+  orgLabel = label = getPropIdx(props, PropType::Cart_Formats, 5);
+  label = BSPF::toLowerCase(label);
+  label[0] = orgLabel[0];
+
+  return label;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoresManager::specialBCD(const Properties& props) const
+{
+  string bcd = getPropIdx(props, PropType::Cart_Formats, 6);
+
+  return bcd == EmptyString ? DEFAULT_SPECIAL_BCD : bcd == "B";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoresManager::specialZeroBased(const Properties& props) const
+{
+  string zeroBased = getPropIdx(props, PropType::Cart_Formats, 7);
+
+  return zeroBased == EmptyString ? DEFAULT_SPECIAL_ZERO_BASED : zeroBased != "0";
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::playerZeroBased(const Properties& props) const
 {
   return DEFAULT_PLAYERS_ZERO_BASED;
@@ -261,6 +303,16 @@ uInt16 HighScoresManager::varAddress(const Properties& props) const
 
   return stringToIntBase16(addr, DEFAULT_ADDRESS);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 HighScoresManager::specialAddress(const Properties& props) const
+{
+  uInt32 idx = numAddrBytes(props) * numPlayers(props) + 2;
+  string addr = getPropIdx(props, PropType::Cart_Addresses, idx);
+
+  return stringToIntBase16(addr, DEFAULT_ADDRESS);
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 HighScoresManager::numAddrBytes(Int32 digits, Int32 trailing) const
@@ -309,6 +361,14 @@ Int32 HighScoresManager::player() const
     return DEFAULT_PLAYER;
 
   return player(addr, numPlayers(props), playerZeroBased(props));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string HighScoresManager::specialLabel() const
+{
+  Properties props;
+
+  return specialLabel(properties(props));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,6 +456,34 @@ Int32 HighScoresManager::score() const
   }
 
   return score(currentPlayer, numBytes, trailingZeroes(props), scoreBCD(props), scoreAddr);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::special() const
+{
+  Properties props;
+  uInt16 addr = specialAddress(properties(props));
+
+  if (addr == DEFAULT_ADDRESS)
+    return -1;
+
+  return special(addr, specialBCD(props), specialZeroBased(props));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::special(uInt16 addr, bool varBCD, bool zeroBased) const
+{
+  if (!myOSystem.hasConsole())
+    return -1;
+
+  Int32 var = peek(addr);
+
+  if (varBCD)
+    var = fromBCD(var);
+
+  var += zeroBased ? 1 : 0;
+
+  return var;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

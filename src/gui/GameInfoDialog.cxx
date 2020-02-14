@@ -372,17 +372,15 @@ GameInfoDialog::GameInfoDialog(
   xpos += 20; ypos += lineHeight + VGAP;
 
   items.clear();
-  VarList::push_back(items, "1", "1");
-  VarList::push_back(items, "2", "2");
-  VarList::push_back(items, "3", "3");
-  VarList::push_back(items, "4", "4");
+  for (int i = 1; i <= HSM::MAX_PLAYERS; ++i)
+    VarList::push_back(items, std::to_string(i), std::to_string(i));
   pwidth = font.getStringWidth("4");
 
   myPlayersLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, lwidth, fontHeight, "Players");
   myPlayers = new PopUpWidget(myTab, font, xpos + lwidth, ypos, pwidth, lineHeight, items, "", 0, kHiScoresChanged);
   wid.push_back(myPlayers);
 
-  int awidth = font.getStringWidth("FFFF") + 4;
+  int awidth = font.getMaxCharWidth() * HSM::MAX_ADDR_CHARS + 4;
   int vwidth = font.getStringWidth("123") + 4;
 
   myPlayersAddressLabel = new StaticTextWidget(myTab, font, myPlayers->getRight() + 16, ypos + 1, "Address ");
@@ -418,9 +416,9 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + VGAP;
 
   mySpecialLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "Special  ");
-  mySpecial = new EditTextWidget(myTab, font, mySpecialLabel->getRight(), ypos - 1, swidth, lineHeight);
-  mySpecial->setTextFilter(fSpecial);
-  wid.push_back(mySpecial);
+  mySpecialName = new EditTextWidget(myTab, font, mySpecialLabel->getRight(), ypos - 1, swidth, lineHeight);
+  mySpecialName->setTextFilter(fSpecial);
+  wid.push_back(mySpecialName);
 
   mySpecialAddressLabel = new StaticTextWidget(myTab, font, myPlayersAddressLabel->getLeft(), ypos + 1, "Address ");
   mySpecialAddress = new EditTextWidget(myTab, font, mySpecialAddressLabel->getRight(), ypos - 1, awidth, lineHeight);
@@ -440,12 +438,8 @@ GameInfoDialog::GameInfoDialog(
 
   vwidth = font.getStringWidth("AB") + 4;
   items.clear();
-  VarList::push_back(items, "1", "1");
-  VarList::push_back(items, "2", "2");
-  VarList::push_back(items, "3", "3");
-  VarList::push_back(items, "4", "4");
-  VarList::push_back(items, "5", "5");
-  VarList::push_back(items, "6", "6");
+  for (int i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
+    VarList::push_back(items, std::to_string(i), std::to_string(i));
 
   myScoreDigitsLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, "Score digits ");
   myScoreDigits = new PopUpWidget(myTab, font, myScoreDigitsLabel->getRight(), ypos, pwidth, lineHeight,
@@ -453,10 +447,8 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myScoreDigits);
 
   items.clear();
-  VarList::push_back(items, "0", "0");
-  VarList::push_back(items, "1", "1");
-  VarList::push_back(items, "2", "2");
-  VarList::push_back(items, "3", "3");
+  for (int i = 0; i <= HSM::MAX_SCORE_DIGITS - 3; ++i)
+    VarList::push_back(items, std::to_string(i), std::to_string(i));
   pwidth = font.getStringWidth("0");
 
   myTrailingZeroesLabel = new StaticTextWidget(myTab, font, myScoreDigits->getRight() + 30, ypos + 1, "0-digits ");
@@ -699,22 +691,22 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   myScoreBCD->setState(info.scoreBCD);
   myVarsBCD->setState(info.varsBCD);
   myVarsZeroBased->setState(info.varsZeroBased);
-  mySpecial->setText(info.special);
+  mySpecialName->setText(info.special);
   mySpecialBCD->setState(info.specialBCD);
   mySpecialZeroBased->setState(info.specialZeroBased);
 
   ss.str("");
-  ss << hex << right << setw(4) << setfill(' ')
+  ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
     << uppercase << info.playersAddr;
   myPlayersAddress->setText(ss.str());
 
   ss.str("");
-  ss << hex << right << setw(4) << setfill(' ')
+  ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
     << uppercase << info.varsAddr;
   myVarAddress->setText(ss.str());
 
   ss.str("");
-  ss << hex << right << setw(4) << setfill(' ')
+  ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
     << uppercase << info.specialAddr;
   mySpecialAddress->setText(ss.str());
 
@@ -726,7 +718,7 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
       if (p < numPlayers)
       {
         ss.str("");
-        ss << hex << right << setw(4) << setfill('0')
+        ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
           << uppercase << info.scoresAddr[p][a];
         myScoreAddress[p][a]->setText(ss.str());
       }
@@ -814,11 +806,22 @@ void GameInfoDialog::saveHighScoresProperties()
 
   if (myHighScores->getState())
   {
+    string strText;
+
+    // limit variants and special size
+    strText = myVariations->getText();
+    strText = strText.substr(0, 3);
+    myVariations->setText(strText);
+
+    strText = mySpecialName->getText();
+    strText = strText.substr(0, HSM::MAX_SPECIAL_NAME);
+    mySpecialName->setText(strText);
+
     // fill format
     info.varsZeroBased = myVarsZeroBased->getState();
     info.varsBCD = myVarsBCD->getState();
 
-    info.special = mySpecial->getText();
+    info.special = mySpecialName->getText();
     info.specialZeroBased = mySpecialZeroBased->getState();
     info.specialBCD = mySpecialBCD->getState();
 
@@ -1007,19 +1010,9 @@ void GameInfoDialog::updateHighScoresWidgets()
   uInt32 players = myPlayers->getSelected() + 1;
   bool enablePlayers = enable && players > 1;
   bool enableVars = enable && myVariations->getText() > "1";
-  bool enableSpecial = enable && !mySpecial->getText().empty();
+  bool enableSpecial = enable && !mySpecialName->getText().empty();
   uInt32 numAddr = instance().highScores().numAddrBytes(myScoreDigits->getSelected() + 1,
                                                         myTrailingZeroes->getSelected());
-  string strText;
-
-  // limit variants and special size
-  strText = myVariations->getText();
-  strText = strText.substr(0, 3);
-  myVariations->setText(strText);
-
-  strText = mySpecial->getText();
-  strText = strText.substr(0, HSM::MAX_SPECIAL);
-  mySpecial->setText(strText);
 
   // enable widgets
   myPlayersLabel->setEnabled(enable);
@@ -1040,8 +1033,8 @@ void GameInfoDialog::updateHighScoresWidgets()
   myVarsZeroBased->setEnabled(enableVars);
 
   mySpecialLabel->setEnabled(enable);
-  mySpecial->setEnabled(enable);
-  mySpecial->setEditable(enable);
+  mySpecialName->setEnabled(enable);
+  mySpecialName->setEditable(enable);
   mySpecialAddressLabel->setEnabled(enableSpecial);
   mySpecialAddress->setEnabled(enableSpecial);
   mySpecialAddress->setEditable(enableSpecial);
@@ -1049,7 +1042,6 @@ void GameInfoDialog::updateHighScoresWidgets()
   mySpecialBCD->setEnabled(enableSpecial);
   mySpecialZeroBased->setEnabled(enableSpecial);
 
-  mySpecialLabel->setEnabled(enable);
   myScoreDigitsLabel->setEnabled(enable);
   myScoreDigits->setEnabled(enable);
   myScoreBCD->setEnabled(enable);
@@ -1123,8 +1115,7 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
 
   // limit address size
   strAddr = addressWidget->getText();
-  strAddr = strAddr.substr(0, 4);
-  addressWidget->setText(strAddr);
+  strAddr = strAddr.substr(0, HSM::MAX_ADDR_CHARS);
 
   if (instance().hasConsole() && valWidget->isEnabled())
   {
@@ -1139,7 +1130,7 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
     // format output and display in value widget
     if (isBCD)
       ss << hex;
-    ss << right << setw(2) << setfill(' ')
+    ss << right //<< setw(2) << setfill(' ')
       << uppercase << uInt16(val);
     valWidget->setText(ss.str());
   }
