@@ -1,3 +1,13 @@
+"Cart.MD5" "081e2c114c9c20b61acf25fc95c71bf4"
+"Cart.Manufacturer" "Parker Brothers, Ed English, David Lamkins"
+"Cart.ModelNo" "PB5300"
+"Cart.Name" "Frogger (1982) (Parker Bros)"
+"Display.Phosphor" "YES"
+"Cart.Players" "2"
+"Cart.Variations" "6"
+"Cart.Addresses" "CC,CE,CD,CF,DD,E6"
+""
+
 "Cart.MD5" "278f14887d601b5e5b620f1870bc09f6"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "SWOOPS! (v0.96) (TJ)"
