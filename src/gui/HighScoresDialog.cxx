@@ -120,6 +120,7 @@ void HighScoresDialog::loadConfig()
 
   VariantList items;
 
+  // fill drown down with all variation numbers of current game
   items.clear();
   for (Int32 i = 1; i <= instance().highScores().numVariations(); ++i)
   {
@@ -133,7 +134,7 @@ void HighScoresDialog::loadConfig()
 
   mySpecialLabelWidget->setLabel(instance().highScores().specialLabel());
 
-  // TDOO: required when leaving with hot key
+  // required when leaving with hot key
   for (Int32 p = 0; p < NUM_POSITIONS; ++p)
   {
     myNamesWidget[p]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
@@ -143,7 +144,6 @@ void HighScoresDialog::loadConfig()
 
   myMD5 = instance().console().properties().get(PropType::Cart_MD5);
   myMD5Widget->setLabel("MD5: " + myMD5);
-
 
   myPlayedVariation = instance().highScores().variation();
 
@@ -183,6 +183,10 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
 
     case kVariationChanged:
       handleVariation();
+      break;
+
+    case Event::UISelect:
+      resetVisibility();
       break;
 
     default:
