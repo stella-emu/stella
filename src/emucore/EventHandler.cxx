@@ -1041,14 +1041,16 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       break;
 
     case Event::OptionsMenuMode:
-      if (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+      if (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
+          || myState == EventHandlerState::TIMEMACHINE)
         enterMenuMode(EventHandlerState::OPTIONSMENU);
       else
         handled = false;
       break;
 
     case Event::CmdMenuMode:
-      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
+      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
+         || myState == EventHandlerState::TIMEMACHINE)
         enterMenuMode(EventHandlerState::CMDMENU);
       else if(myState == EventHandlerState::CMDMENU && !myOSystem.settings().getBool("minimal_ui"))
         // The extra check for "minimal_ui" allows mapping e.g. right joystick fire
@@ -1059,8 +1061,14 @@ bool EventHandler::changeStateByEvent(Event::Type type)
       break;
 
     case Event::HighScoresMenuMode:
-      if(myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE)
-        enterMenuMode(EventHandlerState::HIGHSCORESMENU);
+      if (myState == EventHandlerState::EMULATION || myState == EventHandlerState::PAUSE
+          || myState == EventHandlerState::TIMEMACHINE)
+      {
+        if (myOSystem.highScores().enabled())
+          enterMenuMode(EventHandlerState::HIGHSCORESMENU);
+        else
+          myOSystem.frameBuffer().showMessage("No high scores data defined");
+      }
       else if(myState == EventHandlerState::HIGHSCORESMENU)
         leaveMenuMode();
       else
@@ -2029,6 +2037,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::Combo16,                 "Combo 16",                              "" },
   { Event::ShowScore,               "Display current score",                 "" },
   { Event::ShowVariation,           "Display current variation",             "" },
+  { Event::HighScoresMenuMode,      "Toggle High Scores UI",                 "" },
 } };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

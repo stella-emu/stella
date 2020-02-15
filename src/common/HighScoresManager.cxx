@@ -103,6 +103,14 @@ string HighScoresManager::getPropIdx(const Properties& props, PropType type, uIn
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoresManager::enabled() const
+{
+  Properties props;
+
+  return (!getPropIdx(properties(props), PropType::Cart_Addresses, 0).empty());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 HighScoresManager::numPlayers(const Properties& props) const
 {
   string numPlayers = getPropIdx(props, PropType::Cart_Players);
@@ -490,7 +498,7 @@ Int32 HighScoresManager::special(uInt16 addr, bool varBCD, bool zeroBased) const
 Int32 HighScoresManager::fromBCD(uInt8 bcd) const
 {
   // verify if score is legit
-  if (bcd >= 160)
+  if ((bcd & 0xF0) >= 0xA0 || (bcd & 0xF) >= 0xA)
     return -1;
 
   return (bcd >> 4) * 10 + bcd % 16;
