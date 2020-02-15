@@ -51,11 +51,13 @@ class HighScoresDialog : public Dialog
     void saveConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-    void handlePlayedVariation();
+    void updateWidgets(bool init = false);
     void handleVariation(bool init = false);
-    void resetVisibility();
+    void handlePlayedVariation();
 
-    void saveHighScores() const;
+    void deletePos(int pos);
+
+    void saveHighScores(Int32 variation) const;
     void loadHighScores(Int32 variation);
 
     /**
@@ -64,7 +66,7 @@ class HighScoresDialog : public Dialog
       @param out The serializer device to save to.
       @return The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out) const;
+    bool save(Serializer& out, Int32 variation) const;
 
     /**
       Loads the current high scores for this game and variation from the given Serializer.
@@ -74,15 +76,15 @@ class HighScoresDialog : public Dialog
     */
     bool load(Serializer& in, Int32 variation);
 
-    enum {
-      kVariationChanged = 'Vach'
-    };
+    string now() const;
 
+    enum {
+      kVariationChanged = 'Vach',
+      kDeleteSingle     = 'DeSi'
+    };
 
   private:
     string myInitials;
-    Int32 myDisplayedVariation;
-    Int32 myPlayedVariation;
     Int32 myEditPos;
     Int32 myHighScorePos;
     string myNow;
@@ -101,9 +103,9 @@ class HighScoresDialog : public Dialog
     StaticTextWidget* myNamesWidget[NUM_POSITIONS]{nullptr};
     EditTextWidget*   myEditNamesWidget[NUM_POSITIONS]{nullptr};
     StaticTextWidget* myDatesWidget[NUM_POSITIONS]{nullptr};
-    StaticTextWidget* myMD5Widget{nullptr};
+    ButtonWidget*     myDeleteButtons[NUM_POSITIONS]{nullptr};
 
-    string now() const;
+    StaticTextWidget* myMD5Widget{nullptr};
 
   private:
     // Following constructors and assignment operators not supported
