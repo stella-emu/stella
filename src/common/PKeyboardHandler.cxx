@@ -507,7 +507,7 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::UnwindAllMenu,            KBDK_UP, MOD3},
   {Event::ShowScore,                KBDK_S, KBDM_SHIFT | KBDM_CTRL},
   {Event::ShowVariation,            KBDK_V, KBDM_SHIFT | KBDM_CTRL},
-  {Event::HighScoresMenuMode,       KBDK_HOME},
+  {Event::HighScoresMenuMode,       KBDK_INSERT},
 
 #if defined(RETRON77)
   {Event::ConsoleColorToggle,       KBDK_F4},         // back ("COLOR","B/W")

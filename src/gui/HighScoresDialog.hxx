@@ -15,8 +15,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef MESSAGE_DIALOG_HXX
-#define MESSAGE_DIALOG_HXX
+#ifndef HIGHSCORE_DIALOG_HXX
+#define HIGHSCORE_DIALOG_HXX
+
+#define HIGHSCORE_HEADER "06000000highscores"
 
 //class Properties;
 class CommandSender;
@@ -24,6 +26,8 @@ class DialogContainer;
 class OSystem;
 class EditTextWidget;
 class PopUpWidget;
+
+#include "Serializable.hxx"
 
 #include "Dialog.hxx"
 
@@ -47,12 +51,43 @@ class HighScoresDialog : public Dialog
     void saveConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-  private:
-    Int32 myVariation;
-    Int32 myScore;
-    Int32 mySpecial;
+    void handlePlayedVariation();
+    void handleVariation(bool init = false);
+    void resetVisibility();
 
-    Int32 myScores[NUM_POSITIONS];
+    void saveHighScores() const;
+    void loadHighScores(Int32 variation);
+
+    /**
+      Saves the current high scores for this game and variation to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    bool save(Serializer& out) const;
+
+    /**
+      Loads the current high scores for this game and variation from the given Serializer.
+
+      @param in The Serializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    bool load(Serializer& in, Int32 variation);
+
+    enum {
+      kVariationChanged = 'Vach'
+    };
+
+
+  private:
+    string myInitials;
+    Int32 myDisplayedVariation;
+    Int32 myPlayedVariation;
+    Int32 myEditPos;
+    Int32 myHighScorePos;
+    string myNow;
+
+    Int32 myHighScores[NUM_POSITIONS];
     Int32 mySpecials[NUM_POSITIONS];
     string myNames[NUM_POSITIONS];
     string myDates[NUM_POSITIONS];

@@ -72,6 +72,10 @@ class HighScoresManager
     HighScoresManager(OSystem& osystem);
     virtual ~HighScoresManager() = default;
 
+
+    // check if high score data has been defined
+    bool enabled() const;
+
     /**
       Get the highscore data of game's properties
 
