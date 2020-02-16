@@ -119,11 +119,21 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
   // Now get the maximum windowed desktop resolution
   // Try to take into account taskbars, etc, if available
 #if SDL_VERSION_ATLEAST(2,0,5)
+  // Take window title-bar into account; SDL_GetDisplayUsableBounds doesn't do that
+  int wTop = 0, wLeft = 0, wBottom = 0, wRight = 0;
+  SDL_Window* tmpWindow = SDL_CreateWindow("", 0, 0, 0, 0, SDL_WINDOW_HIDDEN);
+  if(tmpWindow != nullptr)
+  {
+    SDL_GetWindowBordersSize(tmpWindow, &wTop, &wLeft, &wBottom, &wRight);
+    SDL_DestroyWindow(tmpWindow);
+  }
+
   SDL_Rect r;
   for(int i = 0; i < myNumDisplays; ++i)
   {
     // Display bounds minus dock
     SDL_GetDisplayUsableBounds(i, &r);  // Requires SDL-2.0.5 or higher
+    r.h -= (wTop + wBottom);
     windowedRes.emplace_back(r.w, r.h);
   }
 #else
