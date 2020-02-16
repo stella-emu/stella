@@ -120,7 +120,7 @@ class Event
       ToggleFrameStats, ToggleSAPortOrder, ExitGame,
 
       // add new events from here to avoid that user remapped events get overwritten
-      ShowScore, ShowVariation, HighScoresMenuMode,
+      HighScoresMenuMode,
 
       LastType
     };

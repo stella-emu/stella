@@ -24,6 +24,7 @@ class ContextMenu;
 class DialogContainer;
 class BrowserDialog;
 class OptionsDialog;
+class HighScoresDialog;
 class GlobalPropsDialog;
 class StellaSettingsDialog;
 class OSystem;
@@ -103,9 +104,11 @@ class LauncherDialog : public Dialog
     void handleContextMenu();
     void showOnlyROMs(bool state);
     void openSettings();
+    void openHighScores();
 
   private:
     unique_ptr<OptionsDialog> myOptionsDialog;
+    unique_ptr<HighScoresDialog> myHighScoresDialog;
     unique_ptr<StellaSettingsDialog> myStellaSettingsDialog;
     unique_ptr<ContextMenu> myMenu;
     unique_ptr<GlobalPropsDialog> myGlobalProps;

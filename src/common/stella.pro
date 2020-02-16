@@ -27,6 +27,16 @@
 "Cart.Addresses" "E6,E8,DC"
 ""
 
+"Cart.MD5" "77057d9d14b99e465ea9e29783af0ae3"
+"Cart.Manufacturer" "Activision, David Crane"
+"Cart.ModelNo" "AG-001"
+"Cart.Name" "Dragster (1980) (Activision)"
+"Cart.Note" "AKA Drag Strip"
+"Cart.Players" "2"
+"Cart.Formats" "4,0,B,B,1,-,D,0,1"
+"Cart.Addresses" "B3,B5,B4,B6,80,80,0"
+""
+
 "Cart.MD5" "91c2098e88a6b13f977af8c003e0bca5"
 "Cart.Manufacturer" "Atari - GCC"
 "Cart.ModelNo" "CX2676"
