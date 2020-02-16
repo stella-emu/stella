@@ -20,6 +20,8 @@
 
 class OSystem;
 
+#include "Props.hxx"
+
 namespace HSM {
   static const uInt32 MAX_PLAYERS = 4;
   static const uInt32 MAX_ADDR_CHARS = 4;
@@ -61,8 +63,6 @@ using namespace HSM;
 /**
   This class provides an interface to define, load and save scores. It is meant
   for games which do not support saving highscores.
-
-  TODO: load and saves scores
 
   @author  Thomas Jentzsch
 */

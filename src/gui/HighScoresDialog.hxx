@@ -31,6 +31,7 @@ namespace GUI {
 }
 class Serializer;
 
+#include "Menu.hxx"
 #include "Dialog.hxx"
 
 /**
@@ -45,7 +46,7 @@ class HighScoresDialog : public Dialog
     static const uInt32 NUM_POSITIONS = 10;
 
     HighScoresDialog(OSystem& osystem, DialogContainer& parent,
-                     const GUI::Font& font, int max_w, int max_h);
+                     int max_w, int max_h, Menu::AppMode mode);
     virtual ~HighScoresDialog();
 
   protected:
@@ -60,6 +61,7 @@ class HighScoresDialog : public Dialog
     void deletePos(int pos);
     bool handleDirty();
 
+    string cartName() const;
     void saveHighScores(Int32 variation) const;
     void loadHighScores(Int32 variation);
 
@@ -118,6 +120,8 @@ class HighScoresDialog : public Dialog
     ButtonWidget*     myDeleteButtons[NUM_POSITIONS]{nullptr};
 
     StaticTextWidget* myMD5Widget{nullptr};
+
+    Menu::AppMode myMode{Menu::AppMode::emulator};
 
   private:
     // Following constructors and assignment operators not supported

@@ -721,27 +721,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if(pressed && !repeated) myOSystem.frameBuffer().tiaSurface().saveSnapShot();
       return;
 
-    #ifdef GUI_SUPPORT
-    // Debug only, TODO: remove!
-    case Event::ShowScore:
-      if (pressed)
-      {
-        ostringstream msg;
-        msg << "Score: " << myOSystem.highScores().score();
-        myOSystem.frameBuffer().showMessage(msg.str());
-      }
-      return;
-
-    case Event::ShowVariation:
-      if (pressed)
-      {
-        ostringstream msg;
-        msg << "Variation: " << myOSystem.highScores().variation();
-        myOSystem.frameBuffer().showMessage(msg.str());
-      }
-      return;
-    #endif
-
     case Event::ExitMode:
       // Special handling for Escape key
       // Basically, exit whichever mode we're currently in
@@ -1857,6 +1836,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::ExitMode,                "Exit current Stella menu/mode",         "" },
   { Event::OptionsMenuMode,         "Enter Options menu UI",                 "" },
   { Event::CmdMenuMode,             "Toggle Commands menu UI",               "" },
+  { Event::HighScoresMenuMode,      "Toggle High Scores UI",                 "" },
   { Event::TogglePauseMode,         "Toggle Pause mode",                     "" },
   { Event::StartPauseMode,          "Start Pause mode",                      "" },
   { Event::Fry,                     "Fry cartridge",                         "" },
@@ -2035,9 +2015,6 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::Combo14,                 "Combo 14",                              "" },
   { Event::Combo15,                 "Combo 15",                              "" },
   { Event::Combo16,                 "Combo 16",                              "" },
-  { Event::ShowScore,               "Display current score",                 "" },
-  { Event::ShowVariation,           "Display current variation",             "" },
-  { Event::HighScoresMenuMode,      "Toggle High Scores UI",                 "" },
 } };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2076,7 +2053,7 @@ const Event::EventSet EventHandler::MiscEvents = {
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
   Event::HandleMouseControl, Event::ToggleGrabMouse,
   Event::ToggleSAPortOrder,
-  Event::ShowScore, Event::ShowVariation,
+  Event::HighScoresMenuMode
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

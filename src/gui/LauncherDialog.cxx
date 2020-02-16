@@ -26,6 +26,8 @@
 #include "FSNode.hxx"
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
+#include "HighScoresDialog.hxx"
+#include "HighScoresManager.hxx"
 #include "GlobalPropsDialog.hxx"
 #include "StellaSettingsDialog.hxx"
 #include "MessageBox.hxx"
@@ -204,11 +206,8 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   addToFocusList(wid);
 
-  // Create context menu for ROM list options
-  VariantList l;
-  VarList::push_back(l, "Power-on options" + ELLIPSIS, "override");
-  VarList::push_back(l, "Reload listing", "reload");
-  myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), l);
+  // Create (empty) context menu for ROM list options
+  myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), EmptyVarList);
 
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
@@ -353,6 +352,8 @@ void LauncherDialog::handleContextMenu()
     myGlobalProps->open();
   else if(cmd == "reload")
     reload();
+  else if(cmd == "highscores")
+    openHighScores();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -460,6 +461,15 @@ void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount
   // Grab right mouse button for context menu, send left to base class
   if(b == MouseButton::RIGHT)
   {
+    // Dynamically create context menu for ROM list options
+    VariantList items;
+
+    VarList::push_back(items, "Power-on options" + ELLIPSIS, "override");
+    if(instance().highScores().enabled())
+      VarList::push_back(items, "High scores" + ELLIPSIS, "highscores");
+    VarList::push_back(items, "Reload listing", "reload");
+    myMenu->addItems(items);
+
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY(), surface().dstRect());
   }
@@ -564,4 +574,15 @@ void LauncherDialog::openSettings()
         Menu::AppMode::launcher);
     myOptionsDialog->open();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::openHighScores()
+{
+  // Create an options dialog, similar to the in-game one
+  if(myHighScoresDialog == nullptr)
+    myHighScoresDialog = make_unique<HighScoresDialog>(instance(), parent(), _w, _h,
+                                                       Menu::AppMode::launcher);
+
+  myHighScoresDialog->open();
 }

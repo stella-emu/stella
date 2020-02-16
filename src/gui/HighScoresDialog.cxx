@@ -17,6 +17,7 @@
 
 #include "OSystem.hxx"
 #include "Console.hxx"
+#include "Launcher.hxx"
 #include "EventHandler.hxx"
 #include "Font.hxx"
 #include "FBSurface.hxx"
@@ -30,16 +31,18 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
-                                   const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, font, "High Scores"),
-  _max_w(max_w),
-  _max_h(max_h),
-  myInitials(""),
-  myDirty(false)
+                                   int max_w, int max_h,
+                                   Menu::AppMode mode)
+  : Dialog(osystem, parent, osystem.frameBuffer().font(), "High Scores"),
+    myMode(mode),
+    _max_w(max_w),
+    _max_h(max_h),
+    myInitials(""),
+    myDirty(false)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth();
+  const int lineHeight = _font.getLineHeight(),
+    fontWidth = _font.getMaxCharWidth();
   const int VBORDER = 8;
   const int HBORDER = 10;
   const int VGAP = 4;
@@ -56,43 +59,43 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   //items.clear();
 
-  StaticTextWidget* s = new StaticTextWidget(this, font, xpos, ypos + 1, "Variation ");
-  myVariationWidget = new PopUpWidget(this, font, s->getRight(), ypos,
-                                      font.getStringWidth("256") - 4, lineHeight, items, "", 0,
+  StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
+  myVariationWidget = new PopUpWidget(this, _font, s->getRight(), ypos,
+                                      _font.getStringWidth("256") - 4, lineHeight, items, "", 0,
                                       kVariationChanged);
   wid.push_back(myVariationWidget);
 
   ypos += lineHeight + VGAP * 4;
 
   int xposRank = HBORDER;
-  int xposScore = xposRank + font.getStringWidth("Rank") + 16;
-  int xposSpecial = xposScore + font.getStringWidth("Score") + 24;
-  int xposName = xposSpecial + font.getStringWidth("Round") + 16;
-  int xposDate = xposName + font.getStringWidth("Name") + 16;
-  int xposDelete = xposDate + font.getStringWidth("YY-MM-DD HH:MM") + 16;
-  int nWidth = font.getStringWidth("ABC") + 4;
+  int xposScore = xposRank + _font.getStringWidth("Rank") + 16;
+  int xposSpecial = xposScore + _font.getStringWidth("Score") + 24;
+  int xposName = xposSpecial + _font.getStringWidth("Round") + 16;
+  int xposDate = xposName + _font.getStringWidth("Name") + 16;
+  int xposDelete = xposDate + _font.getStringWidth("YY-MM-DD HH:MM") + 16;
+  int nWidth = _font.getStringWidth("ABC") + 4;
 
-  new StaticTextWidget(this, font, xposRank, ypos + 1, "Rank");
-  new StaticTextWidget(this, font, xposScore, ypos + 1, " Score");
-  mySpecialLabelWidget = new StaticTextWidget(this, font, xposSpecial, ypos + 1, "Round");
-  new StaticTextWidget(this, font, xposName - 2, ypos + 1, "Name");
-  new StaticTextWidget(this, font, xposDate+16, ypos + 1, "Date   Time");
+  new StaticTextWidget(this, _font, xposRank, ypos + 1, "Rank");
+  new StaticTextWidget(this, _font, xposScore, ypos + 1, " Score");
+  mySpecialLabelWidget = new StaticTextWidget(this, _font, xposSpecial, ypos + 1, "Round");
+  new StaticTextWidget(this, _font, xposName - 2, ypos + 1, "Name");
+  new StaticTextWidget(this, _font, xposDate+16, ypos + 1, "Date   Time");
 
   ypos += lineHeight + VGAP;
 
   for (uInt32 p = 0; p < NUM_POSITIONS; ++p)
   {
-    myPositionsWidget[p] = new StaticTextWidget(this, font, xposRank + 8, ypos + 1,
+    myPositionsWidget[p] = new StaticTextWidget(this, _font, xposRank + 8, ypos + 1,
                                           (p < 9 ? " " : "") + std::to_string(p + 1));
-    myScoresWidget[p] = new StaticTextWidget(this, font, xposScore, ypos + 1, "123456");
-    mySpecialsWidget[p] = new StaticTextWidget(this, font, xposSpecial + 8, ypos + 1, "123");
-    myNamesWidget[p] = new StaticTextWidget(this, font, xposName + 2, ypos + 1, "   ");
-    myEditNamesWidget[p] = new EditTextWidget(this, font, xposName, ypos - 1, nWidth, lineHeight);
+    myScoresWidget[p] = new StaticTextWidget(this, _font, xposScore, ypos + 1, "123456");
+    mySpecialsWidget[p] = new StaticTextWidget(this, _font, xposSpecial + 8, ypos + 1, "123");
+    myNamesWidget[p] = new StaticTextWidget(this, _font, xposName + 2, ypos + 1, "   ");
+    myEditNamesWidget[p] = new EditTextWidget(this, _font, xposName, ypos - 1, nWidth, lineHeight);
     myEditNamesWidget[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
     myEditNamesWidget[p]->setEnabled(false);
     wid.push_back(myEditNamesWidget[p]);
-    myDatesWidget[p] = new StaticTextWidget(this, font, xposDate, ypos + 1, "12-02-20 17:15");
-    myDeleteButtons[p] = new ButtonWidget(this, font, xposDelete, ypos + 1, 18, 18, "X",
+    myDatesWidget[p] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "12-02-20 17:15");
+    myDeleteButtons[p] = new ButtonWidget(this, _font, xposDelete, ypos + 1, 18, 18, "X",
                                          kDeleteSingle);
     myDeleteButtons[p]->setID(p);
     wid.push_back(myDeleteButtons[p]);
@@ -103,9 +106,8 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1, "MD5: 12345678901234567890123456789012");
 
-  addDefaultsOKCancelBGroup(wid, font, "Save", "Cancel", " Reset ");
-  addToFocusList(wid);
-}
+  addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
+  addToFocusList(wid);                        }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresDialog::~HighScoresDialog()
@@ -142,7 +144,11 @@ void HighScoresDialog::loadConfig()
     label = label.substr(label.length() - 5);
   mySpecialLabelWidget->setLabel(label);
 
-  myMD5 = instance().console().properties().get(PropType::Cart_MD5);
+  if (instance().hasConsole())
+    myMD5 = instance().console().properties().get(PropType::Cart_MD5);
+  else
+    myMD5 = instance().launcher().selectedRomMD5();
+
   myMD5Widget->setLabel("MD5: " + myMD5);
 
   myEditPos = myHighScorePos = -1;
@@ -173,7 +179,10 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
       saveConfig();
       [[fallthrough]];
     case kCloseCmd:
-      instance().eventHandler().leaveMenuMode();
+      if(myMode != Menu::AppMode::emulator)
+        close();
+      else
+        instance().eventHandler().leaveMenuMode();
       break;
 
     case kVariationChanged:
@@ -269,7 +278,6 @@ void HighScoresDialog::updateWidgets(bool init)
       myEditNamesWidget[p]->setEditable(false);
     }
   }
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -363,33 +371,39 @@ bool HighScoresDialog::handleDirty()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HighScoresDialog::saveHighScores(Int32 variation) const
+string HighScoresDialog::cartName() const
 {
   if(instance().hasConsole())
+    return instance().console().properties().get(PropType::Cart_Name);
+  else
+    return instance().launcher().currentNode().getNameWithExt("");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void HighScoresDialog::saveHighScores(Int32 variation) const
+{
+  ostringstream buf;
+
+  buf << instance().stateDir() << cartName() << ".hs" << variation;
+
+  // Make sure the file can be opened for writing
+  Serializer out(buf.str());
+
+  if(!out)
   {
-    ostringstream buf;
-    buf << instance().stateDir()
-      << instance().console().properties().get(PropType::Cart_Name)
-      << ".hs" << variation;
-
-    // Make sure the file can be opened for writing
-    Serializer out(buf.str());
-
-    if(!out)
-    {
-      buf.str("");
-      buf << "Can't open/save to high scores file for variation " << variation;
-      instance().frameBuffer().showMessage(buf.str());
-    }
-
-    // Do a complete high scores save
-    if (!save(out, variation))
-    {
-      buf.str("");
-      buf << "Error saving high scores for variation" << variation;
-      instance().frameBuffer().showMessage(buf.str());
-    }
+    buf.str("");
+    buf << "Can't open/save to high scores file for variation " << variation;
+    instance().frameBuffer().showMessage(buf.str());
   }
+
+  // Do a complete high scores save
+  if(!save(out, variation))
+  {
+    buf.str("");
+    buf << "Error saving high scores for variation" << variation;
+    instance().frameBuffer().showMessage(buf.str());
+  }
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -403,41 +417,37 @@ void HighScoresDialog::loadHighScores(Int32 variation)
     myDates[p] = "";
   }
 
-  if(instance().hasConsole())
+  ostringstream buf;
+
+  buf << instance().stateDir() << cartName() << ".hs" << variation;
+
+  // Make sure the file can be opened in read-only mode
+  Serializer in(buf.str(), Serializer::Mode::ReadOnly);
+
+  if(!in)
+    return;
+
+  // First test if we have a valid header
+  // If so, do a complete high scores load
+  buf.str("");
+  try
   {
-    ostringstream buf;
-    buf << instance().stateDir()
-      << instance().console().properties().get(PropType::Cart_Name)
-      << ".hs" << variation;
-
-    // Make sure the file can be opened in read-only mode
-    Serializer in(buf.str(), Serializer::Mode::ReadOnly);
-
-    if(!in)
-      return;
-
-    // First test if we have a valid header
-    // If so, do a complete high scores load
-    buf.str("");
-    try
+    if (in.getString() != HIGHSCORE_HEADER)
+      buf << "Incompatible high scores for variation " << variation << " file";
+    else
     {
-      if (in.getString() != HIGHSCORE_HEADER)
-        buf << "Incompatible high scores for variation " << variation << " file";
+      if (load(in, variation))
+        return;
       else
-      {
-        if (load(in, variation))
-          return;
-        else
-          buf << "Invalid data in high scores for variation " << variation << " file";
-      }
+        buf << "Invalid data in high scores for variation " << variation << " file";
     }
-    catch(...)
-    {
-      buf << "Invalid data in high scores for variation " << variation << " file";
-    }
-
-    instance().frameBuffer().showMessage(buf.str());
   }
+  catch(...)
+  {
+    buf << "Invalid data in high scores for variation " << variation << " file";
+  }
+
+  instance().frameBuffer().showMessage(buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -347,7 +347,7 @@ uInt32 HighScoresManager::numAddrBytes(const Properties& props) const
 Int32 HighScoresManager::player(uInt16 addr, uInt32 numPlayers, bool zeroBased) const
 {
   if (!myOSystem.hasConsole())
-    return -1;
+    return DEFAULT_PLAYER;
 
   Int32 player = peek(addr);
   Int32 bits = ceil(log(numPlayers + (!zeroBased ? 1 : 0))/log(2));
@@ -393,7 +393,7 @@ Int32 HighScoresManager::variation(uInt16 addr, bool varBCD, bool zeroBased,
                                    uInt32 numVariations) const
 {
   if (!myOSystem.hasConsole())
-    return -1;
+    return DEFAULT_VARIATION;
 
   Int32 var = peek(addr);
   Int32 bits = ceil(log(numVariations + (!zeroBased ? 1 : 0))/log(2));

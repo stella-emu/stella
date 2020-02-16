@@ -36,8 +36,9 @@ HighScoresMenu::~HighScoresMenu()
 Dialog* HighScoresMenu::baseDialog()
 {
   if (myHighScoresDialog == nullptr)
-    myHighScoresDialog = new HighScoresDialog(myOSystem, *this, myOSystem.frameBuffer().font(),
-                                              FBMinimum::Width, FBMinimum::Height);
+    myHighScoresDialog = new HighScoresDialog(myOSystem, *this,
+                                              FBMinimum::Width, FBMinimum::Height,
+                                              Menu::AppMode::emulator);
 
   return myHighScoresDialog;
 }
