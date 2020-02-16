@@ -25,6 +25,7 @@
    "",            ; special label (5 chars)
    B,             ; special format (BCD, HEX)
    0,             ; zero-based special
+   0,             ; invert score order
  Addresses (in hex):
    n*p-times xx,  ; score info for each player, high to low
    xx,            ; variation address (if more than 1 variation)
@@ -141,6 +142,7 @@ bool HighScoresManager::get(const Properties& props, uInt32& numPlayersR, uInt32
   info.special = specialLabel(props);
   info.specialBCD = specialBCD(props);
   info.specialZeroBased = specialZeroBased(props);
+  info.scoreInvert = scoreInvert(props);
 
   info.playersAddr = playerAddress(props);
   info.varsAddr = varAddress(props);
@@ -177,12 +179,14 @@ void HighScoresManager::set(Properties& props, uInt32 numPlayers, uInt32 numVari
   props.set(PropType::Cart_Variations, to_string(min(numVariations, MAX_VARIATIONS)));
 
   // fill from the back to skip default values
+  if (output.length() || info.scoreInvert != DEFAULT_SCORE_REVERSED)
+    output.insert(0, info.scoreInvert ? ",1" : ",0");
   if (output.length() || info.specialZeroBased != DEFAULT_SPECIAL_ZERO_BASED)
-    output = info.specialZeroBased ? ",1" : ",0";
+    output.insert(0, info.specialZeroBased ? ",1" : ",0");
   if (output.length() || info.specialBCD != DEFAULT_SPECIAL_BCD)
     output.insert(0, info.specialBCD ? ",B" : ",D");
   if (output.length() || !info.special.empty())
-    output.insert(0, "," + info.special);
+    output.insert(0, "," + (info.special.empty() ? "-" : info.special));
 
   if (output.length() || info.varsZeroBased != DEFAULT_VARS_ZERO_BASED)
     output.insert(0, info.varsZeroBased ? ",1" : ",0");
@@ -220,7 +224,7 @@ void HighScoresManager::set(Properties& props, uInt32 numPlayers, uInt32 numVari
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 HighScoresManager::numDigits(const Properties& props) const
 {
-  string digits = getPropIdx(props, PropType::Cart_Formats, 0);
+  string digits = getPropIdx(props, PropType::Cart_Formats, IDX_SCORE_DIGITS);
 
   return min(uInt32(stringToInt(digits, DEFAULT_DIGITS)), MAX_SCORE_DIGITS);
 }
@@ -228,7 +232,7 @@ uInt32 HighScoresManager::numDigits(const Properties& props) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 HighScoresManager::trailingZeroes(const Properties& props) const
 {
-  string trailing = getPropIdx(props, PropType::Cart_Formats, 1);
+  string trailing = getPropIdx(props, PropType::Cart_Formats, IDX_TRAILING_ZEROES);
 
   return min(uInt32(stringToInt(trailing, DEFAULT_TRAILING)), MAX_TRAILING);
 }
@@ -236,7 +240,7 @@ uInt32 HighScoresManager::trailingZeroes(const Properties& props) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::scoreBCD(const Properties& props) const
 {
-  string bcd = getPropIdx(props, PropType::Cart_Formats, 2);
+  string bcd = getPropIdx(props, PropType::Cart_Formats, IDX_SCORE_BCD);
 
   return bcd == EmptyString ? DEFAULT_SCORE_BCD : bcd == "B";
 }
@@ -244,7 +248,7 @@ bool HighScoresManager::scoreBCD(const Properties& props) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::varBCD(const Properties& props) const
 {
-  string bcd = getPropIdx(props, PropType::Cart_Formats, 3);
+  string bcd = getPropIdx(props, PropType::Cart_Formats, IDX_VAR_BCD);
 
   return bcd == EmptyString ? DEFAULT_VARS_BCD : bcd == "B";
 }
@@ -252,7 +256,7 @@ bool HighScoresManager::varBCD(const Properties& props) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::varZeroBased(const Properties& props) const
 {
-  string zeroBased = getPropIdx(props, PropType::Cart_Formats, 4);
+  string zeroBased = getPropIdx(props, PropType::Cart_Formats, IDX_VAR_ZERO_BASED);
 
   return zeroBased == EmptyString ? DEFAULT_VARS_ZERO_BASED : zeroBased != "0";
 }
@@ -263,7 +267,7 @@ string HighScoresManager::specialLabel(const Properties& props) const
   string orgLabel, label;
 
   // some ugly formatting
-  orgLabel = label = getPropIdx(props, PropType::Cart_Formats, 5);
+  orgLabel = label = getPropIdx(props, PropType::Cart_Formats, IDX_SPECIAL_LABEL);
   label = BSPF::toLowerCase(label);
   label[0] = orgLabel[0];
 
@@ -273,7 +277,7 @@ string HighScoresManager::specialLabel(const Properties& props) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::specialBCD(const Properties& props) const
 {
-  string bcd = getPropIdx(props, PropType::Cart_Formats, 6);
+  string bcd = getPropIdx(props, PropType::Cart_Formats, IDX_SPECIAL_BCD);
 
   return bcd == EmptyString ? DEFAULT_SPECIAL_BCD : bcd == "B";
 }
@@ -281,11 +285,17 @@ bool HighScoresManager::specialBCD(const Properties& props) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::specialZeroBased(const Properties& props) const
 {
-  string zeroBased = getPropIdx(props, PropType::Cart_Formats, 7);
+  string zeroBased = getPropIdx(props, PropType::Cart_Formats, IDX_SPECIAL_ZERO_BASED);
 
   return zeroBased == EmptyString ? DEFAULT_SPECIAL_ZERO_BASED : zeroBased != "0";
 }
 
+bool HighScoresManager::scoreInvert(const Properties& props) const
+{
+  string reversed = getPropIdx(props, PropType::Cart_Formats, IDX_SCORE_INVERT);
+
+  return reversed == EmptyString ? DEFAULT_SCORE_REVERSED : reversed != "0";
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool HighScoresManager::playerZeroBased(const Properties& props) const
@@ -293,11 +303,10 @@ bool HighScoresManager::playerZeroBased(const Properties& props) const
   return DEFAULT_PLAYERS_ZERO_BASED;
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 HighScoresManager::playerAddress(const Properties& props) const
 {
-  uInt32 idx = numAddrBytes(props) * numPlayers(props) + 1;
+  uInt32 idx = numAddrBytes(props) * numPlayers(props) + IDX_PLAYERS_ADDRESS;
   string addr = getPropIdx(props, PropType::Cart_Addresses, idx);
 
   return stringToIntBase16(addr, DEFAULT_ADDRESS);
@@ -306,7 +315,7 @@ uInt16 HighScoresManager::playerAddress(const Properties& props) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 HighScoresManager::varAddress(const Properties& props) const
 {
-  uInt32 idx = numAddrBytes(props) * numPlayers(props);
+  uInt32 idx = numAddrBytes(props) * numPlayers(props) + IDX_VARS_ADDRESS;
   string addr = getPropIdx(props, PropType::Cart_Addresses, idx);
 
   return stringToIntBase16(addr, DEFAULT_ADDRESS);
@@ -315,7 +324,7 @@ uInt16 HighScoresManager::varAddress(const Properties& props) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 HighScoresManager::specialAddress(const Properties& props) const
 {
-  uInt32 idx = numAddrBytes(props) * numPlayers(props) + 2;
+  uInt32 idx = numAddrBytes(props) * numPlayers(props) + IDX_SPECIAL_ADDRESS;
   string addr = getPropIdx(props, PropType::Cart_Addresses, idx);
 
   return stringToIntBase16(addr, DEFAULT_ADDRESS);
@@ -464,6 +473,12 @@ Int32 HighScoresManager::score() const
   }
 
   return score(currentPlayer, numBytes, trailingZeroes(props), scoreBCD(props), scoreAddr);
+}
+
+bool HighScoresManager::scoreInvert() const
+{
+  Properties props;
+  return scoreInvert(properties(props));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

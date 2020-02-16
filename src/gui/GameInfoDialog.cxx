@@ -361,7 +361,7 @@ GameInfoDialog::GameInfoDialog(
     return (c >= '0' && c <= '9');
   };
   EditableWidget::TextFilter fSpecial = [](char c) {
-    return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '.'|| c == '-,';
+    return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '.'|| c == '-';
   };
 
   xpos = HBORDER; ypos = VBORDER;
@@ -459,6 +459,9 @@ GameInfoDialog::GameInfoDialog(
   myScoreBCD = new CheckboxWidget(myTab, font, myVarsBCD->getLeft(), ypos + 1, "BCD", kHiScoresChanged);
   wid.push_back(myScoreBCD);
 
+  myScoreInvert = new CheckboxWidget(myTab, font, myScoreBCD->getRight() + 16, ypos + 1, "Invert");
+  wid.push_back(myScoreInvert);
+
   for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
   {
     uInt32 s_xpos = xpos;
@@ -478,9 +481,9 @@ GameInfoDialog::GameInfoDialog(
       myScoreAddressVal[p][a]->setEditable(false);
       s_xpos += myScoreAddressVal[p][a]->getWidth() + 16;
     }
-    myCurrentScore[p] = new StaticTextWidget(myTab, font, s_xpos + 8+6, ypos + 1, "123456");
+    myCurrentScore[p] = new StaticTextWidget(myTab, font, s_xpos, ypos + 1, "= 123456");
   }
-  myCurrentScoreLabel = new StaticTextWidget(myTab, font, myCurrentScore[0]->getLeft(), myScoreBCD->getTop(), "Current");
+  //myCurrentScoreLabel = new StaticTextWidget(myTab, font, myCurrentScore[0]->getLeft(), myScoreBCD->getTop(), "Current");
 
   // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
@@ -689,6 +692,7 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   myScoreDigits->setSelected(info.numDigits);
   myTrailingZeroes->setSelected(info.trailingZeroes);
   myScoreBCD->setState(info.scoreBCD);
+  myScoreInvert->setState(info.scoreInvert);
   myVarsBCD->setState(info.varsBCD);
   myVarsZeroBased->setState(info.varsZeroBased);
   mySpecialName->setText(info.special);
@@ -828,6 +832,7 @@ void GameInfoDialog::saveHighScoresProperties()
     info.numDigits = myScoreDigits->getSelected() + 1;
     info.trailingZeroes = myTrailingZeroes->getSelected();
     info.scoreBCD = myScoreBCD->getState();
+    info.scoreInvert = myScoreInvert->getState();
 
     // fill addresses
     string strAddr;
@@ -1047,7 +1052,8 @@ void GameInfoDialog::updateHighScoresWidgets()
   myScoreBCD->setEnabled(enable);
   myTrailingZeroesLabel->setEnabled(enable);
   myTrailingZeroes->setEnabled(enable);
-  myCurrentScoreLabel->setEnabled(enable);
+  myScoreInvert->setEnabled(enable);
+  //myCurrentScoreLabel->setEnabled(enable);
 
   for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
   {
@@ -1092,7 +1098,7 @@ void GameInfoDialog::updateHighScoresWidgets()
         ostringstream ss;
 
         ss.str("");
-        ss << right << setw(myScoreDigits->getSelected() + 1) << setfill(' ') << score;
+        ss << "= " << right << setw(myScoreDigits->getSelected() + 1) << setfill(' ') << score;
         myCurrentScore[p]->setLabel(ss.str());
       }
       else
