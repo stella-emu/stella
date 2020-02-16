@@ -45,6 +45,7 @@ namespace HSM {
     string special;
     bool specialBCD;
     bool specialZeroBased;
+    bool scoreInvert;
     // Addresses
     ScoresAddresses scoresAddr;
     uInt16 varsAddr;
@@ -115,15 +116,34 @@ class HighScoresManager
     string specialLabel() const;
     Int32 variation() const;
     Int32 score() const;
+    bool scoreInvert() const;
     Int32 special() const;
 
   private:
+    enum {
+      IDX_SCORE_DIGITS = 0,
+      IDX_TRAILING_ZEROES,
+      IDX_SCORE_BCD,
+      IDX_VAR_BCD,
+      IDX_VAR_ZERO_BASED,
+      IDX_SPECIAL_LABEL,
+      IDX_SPECIAL_BCD,
+      IDX_SPECIAL_ZERO_BASED,
+      IDX_SCORE_INVERT
+    };
+    enum {
+      IDX_VARS_ADDRESS = 0,
+      IDX_PLAYERS_ADDRESS,
+      IDX_SPECIAL_ADDRESS
+    };
+
     static const uInt32 MAX_VARIATIONS = 256;
 
     static const uInt32 MAX_TRAILING = 3;
     static const uInt32 DEFAULT_DIGITS = 4;
     static const uInt32 DEFAULT_TRAILING = 0;
     static const bool DEFAULT_SCORE_BCD = true;
+    static const bool DEFAULT_SCORE_REVERSED = false;
     static const bool DEFAULT_VARS_BCD = true;
     static const bool DEFAULT_VARS_ZERO_BASED = false;
     static const bool DEFAULT_PLAYERS_ZERO_BASED = true;
@@ -140,6 +160,7 @@ class HighScoresManager
     uInt32 numDigits(const Properties& props) const;
     uInt32 trailingZeroes(const Properties& props) const;
     bool scoreBCD(const Properties& props) const;
+    bool scoreInvert(const Properties& props) const;
     bool varBCD(const Properties& props) const;
     bool varZeroBased(const Properties& props) const;
     string specialLabel(const Properties& props) const;

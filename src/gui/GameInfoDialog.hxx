@@ -143,11 +143,12 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myTrailingZeroesLabel{nullptr};
     PopUpWidget*      myTrailingZeroes{nullptr};
     CheckboxWidget*   myScoreBCD{nullptr};
+    CheckboxWidget*   myScoreInvert{nullptr};
 
     StaticTextWidget* myScoreAddressesLabel[HSM::MAX_PLAYERS]{nullptr};
     EditTextWidget*   myScoreAddress[HSM::MAX_PLAYERS][HSM::MAX_SCORE_ADDR]{nullptr};
     EditTextWidget*   myScoreAddressVal[HSM::MAX_PLAYERS][HSM::MAX_SCORE_ADDR]{nullptr};
-    StaticTextWidget* myCurrentScoreLabel{nullptr};
+    //StaticTextWidget* myCurrentScoreLabel{nullptr};
     StaticTextWidget* myCurrentScore[HSM::MAX_PLAYERS]{nullptr};
 
     enum {

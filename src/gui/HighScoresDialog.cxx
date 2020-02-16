@@ -20,9 +20,9 @@
 #include "EventHandler.hxx"
 #include "Font.hxx"
 #include "FBSurface.hxx"
-//#include "StringParser.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
+#include "MessageBox.hxx"
 #include "HighScoresManager.hxx"
 
 
@@ -32,14 +32,14 @@
 HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                    const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "High Scores"),
-    myInitials("")
+  _max_w(max_w),
+  _max_h(max_h),
+  myInitials(""),
+  myDirty(false)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = font.getLineHeight(),
     fontWidth = font.getMaxCharWidth();
-    //fontHeight = font.getFontHeight(),
-    //buttonHeight = font.getLineHeight() + 4;
-    //infoLineHeight = ifont.getLineHeight();
   const int VBORDER = 8;
   const int HBORDER = 10;
   const int VGAP = 4;
@@ -48,8 +48,8 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
   VariantList items;
 
-  _w = 44 * fontWidth + HBORDER * 2; // max_w - 20;
-  _h = 400; // max_h - 20;
+  _w = std::min(max_w, 44 * fontWidth + HBORDER * 2);
+  _h = std::min(max_h, 400);
 
   ypos = VBORDER + _th; xpos = HBORDER;
 
@@ -135,14 +135,19 @@ void HighScoresDialog::loadConfig()
   }
   myVariationWidget->addItems(items);
   myVariationWidget->setSelected(instance().highScores().variation());
+  myVariationWidget->setEnabled(instance().highScores().numVariations() > 1);
 
-  mySpecialLabelWidget->setLabel(instance().highScores().specialLabel());
+  string label = "   " + instance().highScores().specialLabel();
+  if (label.length() > 5)
+    label = label.substr(label.length() - 5);
+  mySpecialLabelWidget->setLabel(label);
 
   myMD5 = instance().console().properties().get(PropType::Cart_MD5);
   myMD5Widget->setLabel("MD5: " + myMD5);
 
   myEditPos = myHighScorePos = -1;
   myNow = now();
+  myDirty = false;
   handleVariation(true);
 }
 
@@ -156,10 +161,7 @@ void HighScoresDialog::saveConfig()
     myNames[myHighScorePos] = myInitials;
   }
   // save selected variation
-
-  Int32 variation = myVariationWidget->getSelectedTag().toInt();
-  saveHighScores(variation);
-
+  saveHighScores(myVariation);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -169,7 +171,7 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
   {
     case kOKCmd:
       saveConfig();
-      // falls through...
+      [[fallthrough]];
     case kCloseCmd:
       instance().eventHandler().leaveMenuMode();
       break;
@@ -189,6 +191,14 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
       updateWidgets();
       break;
 
+    case kConfirmSave:
+      saveConfig();
+      [[fallthrough]];
+    case kCancelSave:
+      myDirty = false;
+      handleVariation();
+      break;
+
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
@@ -197,17 +207,19 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::handleVariation(bool init)
 {
-  // TODO: if anything changed, asked for saving
-  Int32 variation = myVariationWidget->getSelectedTag().toInt();
+  if (handleDirty())
+  {
+    myVariation = myVariationWidget->getSelectedTag().toInt();
 
-  loadHighScores(variation);
+    loadHighScores(myVariation);
 
-  myEditPos = -1;
+    myEditPos = -1;
 
-  if (variation == instance().highScores().variation())
-    handlePlayedVariation();
+    if (myVariation == instance().highScores().variation())
+      handlePlayedVariation();
 
-  updateWidgets(init);
+    updateWidgets(init);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -268,10 +280,14 @@ void HighScoresDialog::handlePlayedVariation()
   if (newScore > 0)
   {
     Int32 newSpecial = instance().highScores().special();
+    bool scoreInvert = instance().highScores().scoreInvert();
+
     for (myHighScorePos = 0; myHighScorePos < NUM_POSITIONS; ++myHighScorePos)
     {
-      if (newScore > myHighScores[myHighScorePos] ||
-        (newScore == myHighScores[myHighScorePos] && newSpecial > mySpecials[myHighScorePos]))
+      if ((!scoreInvert && newScore > myHighScores[myHighScorePos]) ||
+        ((scoreInvert && newScore < myHighScores[myHighScorePos]) || myHighScores[myHighScorePos] == 0))
+        break;
+      if (newScore == myHighScores[myHighScorePos] && newSpecial > mySpecials[myHighScorePos])
         break;
     }
 
@@ -289,6 +305,7 @@ void HighScoresDialog::handlePlayedVariation()
       //myNames[myHighScorePos] = "";
       mySpecials[myHighScorePos] = newSpecial;
       myDates[myHighScorePos] = myNow;
+      myDirty = true;
     }
     else
       myHighScorePos = -1;
@@ -320,6 +337,29 @@ void HighScoresDialog::deletePos(int pos)
     myEditPos--;
     myEditNamesWidget[myEditPos]->setText(myEditNamesWidget[myEditPos + 1]->getText());
   }
+  myDirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool HighScoresDialog::handleDirty()
+{
+  if (myDirty)
+  {
+    if (!myConfirmMsg)
+    {
+      StringList msg;
+
+      msg.push_back("Do you want to save the changed");
+      msg.push_back("high scores for this variation?");
+      msg.push_back("");
+      myConfirmMsg = make_unique<GUI::MessageBox>
+        (this, _font, msg, _max_w, _max_h, kConfirmSave, kCancelSave,
+         "Yes", "No", "Save High Scores", false);
+    }
+    myConfirmMsg->show();
+    return false;
+  }
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

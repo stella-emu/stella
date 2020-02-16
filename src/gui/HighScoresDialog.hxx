@@ -26,8 +26,10 @@ class DialogContainer;
 class OSystem;
 class EditTextWidget;
 class PopUpWidget;
-
-#include "Serializable.hxx"
+namespace GUI {
+  class MessageBox;
+}
+class Serializer;
 
 #include "Dialog.hxx"
 
@@ -56,6 +58,7 @@ class HighScoresDialog : public Dialog
     void handlePlayedVariation();
 
     void deletePos(int pos);
+    bool handleDirty();
 
     void saveHighScores(Int32 variation) const;
     void loadHighScores(Int32 variation);
@@ -80,10 +83,19 @@ class HighScoresDialog : public Dialog
 
     enum {
       kVariationChanged = 'Vach',
-      kDeleteSingle     = 'DeSi'
+      kDeleteSingle     = 'DeSi',
+      kConfirmSave      = 'CfSv',
+      kCancelSave       = 'CcSv'
     };
 
   private:
+    bool myDirty;
+    unique_ptr<GUI::MessageBox> myConfirmMsg;
+    int _max_w;
+    int _max_h;
+
+    Int32 myVariation;
+
     string myInitials;
     Int32 myEditPos;
     Int32 myHighScorePos;
