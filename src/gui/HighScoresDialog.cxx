@@ -51,13 +51,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   WidgetArray wid;
   VariantList items;
 
-  _w = std::min(max_w, 44 * fontWidth + HBORDER * 2);
-  _h = std::min(max_h, 400);
-
   ypos = VBORDER + _th; xpos = HBORDER;
-
-
-  //items.clear();
 
   StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
   myVariationWidget = new PopUpWidget(this, _font, s->getRight(), ypos,
@@ -65,7 +59,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                       kVariationChanged);
   wid.push_back(myVariationWidget);
 
-  ypos += lineHeight + VGAP * 4;
+  ypos += lineHeight + VGAP * 2;
 
   int xposRank = HBORDER;
   int xposScore = xposRank + _font.getStringWidth("Rank") + 16;
@@ -106,8 +100,12 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1, "MD5: 12345678901234567890123456789012");
 
+  _h = myMD5Widget->getBottom() + VBORDER + (lineHeight + 4) + VBORDER;
+  _w = myDeleteButtons[0]->getRight() + HBORDER;
+
   addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
-  addToFocusList(wid);                        }
+  addToFocusList(wid);
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresDialog::~HighScoresDialog()
