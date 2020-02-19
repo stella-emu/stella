@@ -85,6 +85,8 @@ class HighScoresDialog : public Dialog
 
     enum {
       kVariationChanged = 'Vach',
+      kPrevVariation    = 'PrVr',
+      kNextVariation    = 'NxVr',
       kDeleteSingle     = 'DeSi',
       kConfirmSave      = 'CfSv',
       kCancelSave       = 'CcSv'
@@ -109,7 +111,9 @@ class HighScoresDialog : public Dialog
     string myDates[NUM_POSITIONS];
     string myMD5;
 
-    PopUpWidget*      myVariationWidget{nullptr};
+    PopUpWidget*      myVariationPopup{nullptr};
+    ButtonWidget*     myPrevVarButton{ nullptr };
+    ButtonWidget*     myNextVarButton{ nullptr };
     StaticTextWidget* mySpecialLabelWidget{nullptr};
     StaticTextWidget* myPositionsWidget[NUM_POSITIONS]{nullptr};
     StaticTextWidget* myScoresWidget[NUM_POSITIONS]{nullptr};
