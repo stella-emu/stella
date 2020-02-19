@@ -779,7 +779,7 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                          std::max(font.getStringWidth("Defaults"),
                          std::max(font.getStringWidth(okText),
                          font.getStringWidth(cancelText))) + BTN_BORDER);
-  int buttonHeight = font.getLineHeight() + 4;
+  int buttonHeight = Dialog::buttonHeight(font);
 
   _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
 
@@ -821,13 +821,19 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
   const int VBORDER = 10;
   const int BTN_BORDER = 20;
   int buttonWidth = font.getStringWidth(defaultsText) + BTN_BORDER;
-  int buttonHeight = font.getLineHeight() + 4;
+  int buttonHeight = Dialog::buttonHeight(font);
 
   addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
                    buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));
   wid.push_back(_defaultWidget);
 
   addOKCancelBGroup(wid, font, okText, cancelText, focusOKButton, buttonWidth);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Dialog::buttonHeight(const GUI::Font& font) const
+{
+  return font.getLineHeight() + 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

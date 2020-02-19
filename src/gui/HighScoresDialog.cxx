@@ -43,7 +43,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = _font.getLineHeight(),
     fontWidth = _font.getMaxCharWidth();
-  const int VBORDER = 8;
+  const int VBORDER = 10;
   const int HBORDER = 10;
   const int VGAP = 4;
 
@@ -90,7 +90,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     wid.push_back(myEditNamesWidget[p]);
     myDatesWidget[p] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "12-02-20 17:15");
     myDeleteButtons[p] = new ButtonWidget(this, _font, xposDelete, ypos + 1, 18, 18, "X",
-                                         kDeleteSingle);
+                                          kDeleteSingle);
     myDeleteButtons[p]->setID(p);
     wid.push_back(myDeleteButtons[p]);
 
@@ -100,7 +100,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1, "MD5: 12345678901234567890123456789012");
 
-  _h = myMD5Widget->getBottom() + VBORDER + (lineHeight + 4) + VBORDER;
+  _h = myMD5Widget->getBottom() + VBORDER + buttonHeight(_font) + VBORDER;
   _w = myDeleteButtons[0]->getRight() + HBORDER;
 
   addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
@@ -192,7 +192,7 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
       updateWidgets();
       break;
 
-    case GuiObject::kDefaultsCmd:
+    case GuiObject::kDefaultsCmd: // "Reset" button
       for (int p = NUM_POSITIONS - 1; p >= 0; --p)
         deletePos(p);
       updateWidgets();
