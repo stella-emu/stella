@@ -20,14 +20,73 @@
 #include "Launcher.hxx"
 #include "EventHandler.hxx"
 #include "Font.hxx"
+#include "PropsSet.hxx"
 #include "FBSurface.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
 #include "HighScoresManager.hxx"
 
-
 #include "HighScoresDialog.hxx"
+
+static constexpr int BUTTON_GFX_W = 12, BUTTON_GFX_H = 12;
+
+static constexpr std::array<uInt32, BUTTON_GFX_H> PREV = {
+  //0b000000000011,
+  //0b000000001110,
+  //0b000000111000,
+  //0b000011100000,
+  //0b001110000000,
+  //0b111000000000,
+  //0b111000000000,
+  //0b001110000000,
+  //0b000011100000,
+  //0b000000111000,
+  //0b000000001110,
+  //0b000000000011,
+
+  0b000001100000,
+  0b000001100000,
+  0b000011110000,
+  0b000010010000,
+  0b000110011000,
+  0b000100001000,
+  0b001100001100,
+  0b001000000100,
+  0b011000000110,
+  0b010000000010,
+  0b110000000011,
+  0b100000000001,
+
+};
+
+static constexpr std::array<uInt32, BUTTON_GFX_H> NEXT = {
+  //0b110000000000,
+  //0b011100000000,
+  //0b000111000000,
+  //0b000001110000,
+  //0b000000011100,
+  //0b000000000111,
+  //0b000000000111,
+  //0b000000011100,
+  //0b000001110000,
+  //0b000111000000,
+  //0b011100000000,
+  //0b110000000000,
+
+  0b100000000001,
+  0b110000000011,
+  0b010000000010,
+  0b011000000110,
+  0b001000000100,
+  0b001100001100,
+  0b000100001000,
+  0b000110011000,
+  0b000010010000,
+  0b000011110000,
+  0b000001100000,
+  0b000001100000,
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
@@ -54,10 +113,18 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   ypos = VBORDER + _th; xpos = HBORDER;
 
   StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
-  myVariationWidget = new PopUpWidget(this, _font, s->getRight(), ypos,
+  myVariationPopup = new PopUpWidget(this, _font, s->getRight(), ypos,
                                       _font.getStringWidth("256") - 4, lineHeight, items, "", 0,
                                       kVariationChanged);
-  wid.push_back(myVariationWidget);
+  wid.push_back(myVariationPopup);
+  myPrevVarButton = new ButtonWidget(this, _font, myVariationPopup->getRight() + 154, ypos - 1,
+                                     48, myVariationPopup->getHeight(),
+                                     PREV.data(), BUTTON_GFX_W, BUTTON_GFX_H, kPrevVariation);
+  wid.push_back(myPrevVarButton);
+  myNextVarButton = new ButtonWidget(this, _font, myPrevVarButton->getRight() + 8, ypos - 1,
+                                     48, myVariationPopup->getHeight(),
+                                     NEXT.data(), BUTTON_GFX_W, BUTTON_GFX_H, kNextVariation);
+  wid.push_back(myNextVarButton);
 
   ypos += lineHeight + VGAP * 2;
 
@@ -88,7 +155,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     myEditNamesWidget[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
     myEditNamesWidget[p]->setEnabled(false);
     wid.push_back(myEditNamesWidget[p]);
-    myDatesWidget[p] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "12-02-20 17:15");
+    myDatesWidget[p] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "YY-MM-DD HH:MM");
     myDeleteButtons[p] = new ButtonWidget(this, _font, xposDelete, ypos + 1, 18, 18, "X",
                                           kDeleteSingle);
     myDeleteButtons[p]->setID(p);
@@ -133,9 +200,9 @@ void HighScoresDialog::loadConfig()
     buf << std::setw(3) << std::setfill(' ') << i;
     VarList::push_back(items, buf.str(), i);
   }
-  myVariationWidget->addItems(items);
-  myVariationWidget->setSelected(instance().highScores().variation());
-  myVariationWidget->setEnabled(instance().highScores().numVariations() > 1);
+  myVariationPopup->addItems(items);
+  myVariationPopup->setSelected(instance().highScores().variation());
+  myVariationPopup->setEnabled(instance().highScores().numVariations() > 1);
 
   string label = "   " + instance().highScores().specialLabel();
   if (label.length() > 5)
@@ -186,6 +253,15 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
     case kVariationChanged:
       handleVariation();
       break;
+    case kPrevVariation:
+      myVariationPopup->setSelected(--myVariation);
+      handleVariation();
+      break;
+
+    case kNextVariation:
+      myVariationPopup->setSelected(++myVariation);
+      handleVariation();
+      break;
 
     case kDeleteSingle:
       deletePos(id);
@@ -216,7 +292,7 @@ void HighScoresDialog::handleVariation(bool init)
 {
   if (handleDirty())
   {
-    myVariation = myVariationWidget->getSelectedTag().toInt();
+    myVariation = myVariationPopup->getSelectedTag().toInt();
 
     loadHighScores(myVariation);
 
@@ -232,6 +308,9 @@ void HighScoresDialog::handleVariation(bool init)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::updateWidgets(bool init)
 {
+  myPrevVarButton->setEnabled(myVariation > 1);
+  myNextVarButton->setEnabled(myVariation < instance().highScores().numVariations());
+
   for (Int32 p = 0; p < NUM_POSITIONS; ++p)
   {
     ostringstream buf;
@@ -374,7 +453,12 @@ string HighScoresDialog::cartName() const
   if(instance().hasConsole())
     return instance().console().properties().get(PropType::Cart_Name);
   else
-    return instance().launcher().currentNode().getNameWithExt("");
+  {
+    Properties props;
+
+    instance().propSet().getMD5(myMD5, props);
+    return props.get(PropType::Cart_Name);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
