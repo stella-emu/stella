@@ -157,6 +157,7 @@ class Dialog : public GuiObject
                                    const string& cancelText = "Cancel",
                                    const string& defaultsText = "Defaults",
                                    bool focusOKButton = true);
+    int buttonHeight(const GUI::Font& font) const;
 
     void processCancelWithoutWidget(bool state) { _processCancel = state; }
     virtual void processCancel() { close(); }
