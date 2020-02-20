@@ -204,11 +204,9 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   addToFocusList(wid);
 
-  // Create context menu for ROM list options
-  VariantList l;
-  VarList::push_back(l, "Power-on options" + ELLIPSIS, "override");
-  VarList::push_back(l, "Reload listing", "reload");
-  myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), l);
+  // Create (empty) context menu for ROM list options
+  myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), EmptyVarList);
+
 
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
@@ -462,8 +460,17 @@ void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount
   // Grab right mouse button for context menu, send left to base class
   if(b == MouseButton::RIGHT)
   {
+    // Dynamically create context menu for ROM list options
+    VariantList items;
+
+    if (!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+      VarList::push_back(items, "Power-on options" + ELLIPSIS, "override");
+    VarList::push_back(items, "Reload listing", "reload");
+    myMenu->addItems(items);
+
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY(), surface().dstRect());
+
   }
   else
     Dialog::handleMouseDown(x, y, b, clickCount);
