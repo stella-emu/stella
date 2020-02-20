@@ -73,7 +73,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void updateHighScoresWidgets();
     // set formatted memory value for given address field
     void setAddressVal(EditTextWidget* address, EditTextWidget* val,
-                       bool isBCD = true, uInt8 incVal = 0);
+                       bool isBCD = true, uInt8 incVal = 0, uInt8 maxVal = 255);
 
   private:
     TabWidget* myTab{nullptr};
@@ -122,11 +122,7 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     // High Scores properties
     CheckboxWidget*   myHighScores{nullptr};
-    StaticTextWidget* myPlayersLabel{nullptr};
-    PopUpWidget*      myPlayers{nullptr};
-    StaticTextWidget* myPlayersAddressLabel{nullptr};
-    EditTextWidget*   myPlayersAddress{nullptr};
-    EditTextWidget*   myPlayersAddressVal{nullptr};
+    //CheckboxWidget*   myARMGame{nullptr};
 
     StaticTextWidget* myVariationsLabel{nullptr};
     EditTextWidget*   myVariations{nullptr};
@@ -144,6 +140,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget*   mySpecialBCD{nullptr};
     CheckboxWidget*   mySpecialZeroBased{nullptr};
 
+    StaticTextWidget* myScoreLabel{nullptr}; 
     StaticTextWidget* myScoreDigitsLabel{nullptr};
     PopUpWidget*      myScoreDigits{nullptr};
     StaticTextWidget* myTrailingZeroesLabel{nullptr};
@@ -151,11 +148,11 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget*   myScoreBCD{nullptr};
     CheckboxWidget*   myScoreInvert{nullptr};
 
-    StaticTextWidget* myScoreAddressesLabel[HSM::MAX_PLAYERS]{nullptr};
-    EditTextWidget*   myScoreAddress[HSM::MAX_PLAYERS][HSM::MAX_SCORE_ADDR]{nullptr};
-    EditTextWidget*   myScoreAddressVal[HSM::MAX_PLAYERS][HSM::MAX_SCORE_ADDR]{nullptr};
-    //StaticTextWidget* myCurrentScoreLabel{nullptr};
-    StaticTextWidget* myCurrentScore[HSM::MAX_PLAYERS]{nullptr};
+    StaticTextWidget* myScoreAddressesLabel{nullptr};
+    EditTextWidget*   myScoreAddress[HSM::MAX_SCORE_ADDR]{nullptr};
+    EditTextWidget*   myScoreAddressVal[HSM::MAX_SCORE_ADDR]{nullptr};
+    StaticTextWidget* myCurrentScoreLabel{nullptr};
+    StaticTextWidget* myCurrentScore{nullptr};
 
     enum {
       kVCenterChanged  = 'Vcch',
