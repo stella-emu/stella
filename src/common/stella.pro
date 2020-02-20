@@ -106,8 +106,8 @@
 "Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 "Cart.Variations" "3"
-"Cart.Formats" "6,0,B,B,1"
-"Cart.Addresses" "8E,8D,8C,8A"
+"Cart.Formats" "6,0,B,B,1,PART,D,1"
+"Cart.Addresses" "8E,8D,8C,8A,0,89"
 ""
 
 "Cart.MD5" "fca4a5be1251927027f2c24774a02160"

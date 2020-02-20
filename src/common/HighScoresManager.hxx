@@ -22,6 +22,12 @@ class OSystem;
 
 #include "Props.hxx"
 
+/**
+  This class provides an interface to all things related to high scores.
+
+  @author  Thomas Jentzsch
+*/
+
 namespace HSM {
   static const uInt32 MAX_PLAYERS = 4;
   static const uInt32 MAX_ADDR_CHARS = 4;

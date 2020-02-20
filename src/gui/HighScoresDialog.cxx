@@ -66,7 +66,8 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     _max_w(max_w),
     _max_h(max_h),
     myInitials(""),
-    myDirty(false)
+    myDirty(false),
+    myHighScoreSaved(false)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = _font.getLineHeight(),
@@ -113,22 +114,22 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   ypos += lineHeight + VGAP;
 
-  for (uInt32 p = 0; p < NUM_POSITIONS; ++p)
+  for (uInt32 r = 0; r < NUM_RANKS; ++r)
   {
-    myPositionWidgets[p] = new StaticTextWidget(this, _font, xposRank + 8, ypos + 1,
-                                          (p < 9 ? " " : "") + std::to_string(p + 1));
-    myScoreWidgets[p] = new StaticTextWidget(this, _font, xposScore, ypos + 1, "12345678");
-    mySpecialWidgets[p] = new StaticTextWidget(this, _font, xposSpecial + 8, ypos + 1, "123");
-    myNameWidgets[p] = new StaticTextWidget(this, _font, xposName + 2, ypos + 1, "   ");
-    myEditNameWidgets[p] = new EditTextWidget(this, _font, xposName, ypos - 1, nWidth, lineHeight);
-    myEditNameWidgets[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
-    myEditNameWidgets[p]->setEnabled(false);
-    wid.push_back(myEditNameWidgets[p]);
-    myDateWidgets[p] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "YY-MM-DD HH:MM");
-    myDeleteButtons[p] = new ButtonWidget(this, _font, xposDelete, ypos + 1, 18, 18, "X",
+    myRankWidgets[r] = new StaticTextWidget(this, _font, xposRank + 8, ypos + 1,
+                                          (r < 9 ? " " : "") + std::to_string(r + 1));
+    myScoreWidgets[r] = new StaticTextWidget(this, _font, xposScore, ypos + 1, "12345678");
+    mySpecialWidgets[r] = new StaticTextWidget(this, _font, xposSpecial + 8, ypos + 1, "123");
+    myNameWidgets[r] = new StaticTextWidget(this, _font, xposName + 2, ypos + 1, "   ");
+    myEditNameWidgets[r] = new EditTextWidget(this, _font, xposName, ypos - 1, nWidth, lineHeight);
+    myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+    myEditNameWidgets[r]->setEnabled(false);
+    wid.push_back(myEditNameWidgets[r]);
+    myDateWidgets[r] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "YY-MM-DD HH:MM");
+    myDeleteButtons[r] = new ButtonWidget(this, _font, xposDelete, ypos + 1, 18, 18, "X",
                                           kDeleteSingle);
-    myDeleteButtons[p]->setID(p);
-    wid.push_back(myDeleteButtons[p]);
+    myDeleteButtons[r]->setID(r);
+    wid.push_back(myDeleteButtons[r]);
 
     ypos += lineHeight + VGAP;
   }
@@ -159,14 +160,6 @@ void HighScoresDialog::loadConfig()
     surface().applyAttributes();
   }
 
-  string title = "High Scores - " + cartName();
-  uInt32 maxChars = (_w - 20) / _font.getMaxCharWidth();
-
-  if(title.length() > maxChars)
-    setTitle(title.substr(0, maxChars - 1) + ELLIPSIS);
-  else
-    setTitle(title);
-
   VariantList items;
 
   // fill drown down with all variation numbers of current game
@@ -193,9 +186,19 @@ void HighScoresDialog::loadConfig()
 
   myMD5Widget->setLabel("MD5: " + myMD5);
 
-  myEditPos = myHighScorePos = -1;
+  // requires the current MD5
+  string title = "High Scores - " + cartName();
+  uInt32 maxChars = (_w - 20) / _font.getMaxCharWidth();
+
+  if(title.length() > maxChars)
+    setTitle(title.substr(0, maxChars - 1) + ELLIPSIS);
+  else
+    setTitle(title);
+
+
+  myEditRank = myHighScoreRank = -1;
   myNow = now();
-  myDirty = false;
+  myDirty = myHighScoreSaved = false;
   handleVariation(true);
 }
 
@@ -203,13 +206,15 @@ void HighScoresDialog::loadConfig()
 void HighScoresDialog::saveConfig()
 {
   // save initials and remember for the next time
-  if (myHighScorePos != -1)
+  if (myHighScoreRank != -1)
   {
-    myInitials = myEditNameWidgets[myHighScorePos]->getText();
-    myNames[myHighScorePos] = myInitials;
+    myInitials = myEditNameWidgets[myHighScoreRank]->getText();
+    myNames[myHighScoreRank] = myInitials;
   }
   // save selected variation
   saveHighScores(myVariation);
+  if(myVariation == instance().highScores().variation())
+    myHighScoreSaved = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,13 +246,13 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
       break;
 
     case kDeleteSingle:
-      deletePos(id);
+      deleteRank(id);
       updateWidgets();
       break;
 
     case GuiObject::kDefaultsCmd: // "Reset" button
-      for (int p = NUM_POSITIONS - 1; p >= 0; --p)
-        deletePos(p);
+      for (int r = NUM_RANKS - 1; r >= 0; --r)
+        deleteRank(r);
       updateWidgets();
       break;
 
@@ -273,7 +278,7 @@ void HighScoresDialog::handleVariation(bool init)
 
     loadHighScores(myVariation);
 
-    myEditPos = -1;
+    myEditRank = -1;
 
     if (myVariation == instance().highScores().variation())
       handlePlayedVariation();
@@ -288,48 +293,48 @@ void HighScoresDialog::updateWidgets(bool init)
   myPrevVarButton->setEnabled(myVariation > 1);
   myNextVarButton->setEnabled(myVariation < instance().highScores().numVariations());
 
-  for (Int32 p = 0; p < NUM_POSITIONS; ++p)
+  for (Int32 r = 0; r < NUM_RANKS; ++r)
   {
     ostringstream buf;
 
-    if (myHighScores[p] > 0)
+    if (myHighScores[r] > 0)
     {
-      buf << std::setw(HSM::MAX_SCORE_DIGITS) << std::setfill(' ') << myHighScores[p];
-      myPositionWidgets[p]->clearFlags(Widget::FLAG_INVISIBLE);
-      myDeleteButtons[p]->clearFlags(Widget::FLAG_INVISIBLE);
-      myDeleteButtons[p]->setEnabled(true);
+      buf << std::setw(HSM::MAX_SCORE_DIGITS) << std::setfill(' ') << myHighScores[r];
+      myRankWidgets[r]->clearFlags(Widget::FLAG_INVISIBLE);
+      myDeleteButtons[r]->clearFlags(Widget::FLAG_INVISIBLE);
+      myDeleteButtons[r]->setEnabled(true);
     }
     else
     {
-      myPositionWidgets[p]->setFlags(Widget::FLAG_INVISIBLE);
-      myDeleteButtons[p]->setFlags(Widget::FLAG_INVISIBLE);
-      myDeleteButtons[p]->setEnabled(false);
+      myRankWidgets[r]->setFlags(Widget::FLAG_INVISIBLE);
+      myDeleteButtons[r]->setFlags(Widget::FLAG_INVISIBLE);
+      myDeleteButtons[r]->setEnabled(false);
     }
-    myScoreWidgets[p]->setLabel(buf.str());
+    myScoreWidgets[r]->setLabel(buf.str());
 
     buf.str("");
-    if (mySpecials[p] > 0)
-      buf << std::setw(HSM::MAX_SPECIAL_DIGITS) << std::setfill(' ') << mySpecials[p];
-    mySpecialWidgets[p]->setLabel(buf.str());
+    if (mySpecials[r] > 0)
+      buf << std::setw(HSM::MAX_SPECIAL_DIGITS) << std::setfill(' ') << mySpecials[r];
+    mySpecialWidgets[r]->setLabel(buf.str());
 
-    myNameWidgets[p]->setLabel(myNames[p]);
-    myDateWidgets[p]->setLabel(myDates[p]);
+    myNameWidgets[r]->setLabel(myNames[r]);
+    myDateWidgets[r]->setLabel(myDates[r]);
 
-    if (p == myEditPos)
+    if (r == myEditRank)
     {
-      myNameWidgets[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNameWidgets[p]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNameWidgets[p]->setEnabled(true);
-      myEditNameWidgets[p]->setEditable(true);
+      myNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+      myEditNameWidgets[r]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
+      myEditNameWidgets[r]->setEnabled(true);
+      myEditNameWidgets[r]->setEditable(true);
       if (init)
-        myEditNameWidgets[p]->setText(myInitials);
+        myEditNameWidgets[r]->setText(myInitials);
     }
     else
     {
-      myNameWidgets[p]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNameWidgets[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNameWidgets[p]->setEnabled(false);
-      myEditNameWidgets[p]->setEditable(false);
+      myNameWidgets[r]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
+      myEditNameWidgets[r]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+      myEditNameWidgets[r]->setEnabled(false);
+      myEditNameWidgets[r]->setEditable(false);
     }
   }
   _defaultWidget->setEnabled(myHighScores[0] > 0);
@@ -340,65 +345,65 @@ void HighScoresDialog::handlePlayedVariation()
 {
   Int32 newScore = instance().highScores().score();
 
-  if (newScore > 0)
+  if (!myHighScoreSaved && newScore > 0)
   {
     Int32 newSpecial = instance().highScores().special();
     bool scoreInvert = instance().highScores().scoreInvert();
 
-    for (myHighScorePos = 0; myHighScorePos < NUM_POSITIONS; ++myHighScorePos)
+    for (myHighScoreRank = 0; myHighScoreRank < NUM_RANKS; ++myHighScoreRank)
     {
-      if ((!scoreInvert && newScore > myHighScores[myHighScorePos]) ||
-        ((scoreInvert && newScore < myHighScores[myHighScorePos]) || myHighScores[myHighScorePos] == 0))
+      if ((!scoreInvert && newScore > myHighScores[myHighScoreRank]) ||
+        ((scoreInvert && newScore < myHighScores[myHighScoreRank]) || myHighScores[myHighScoreRank] == 0))
         break;
-      if (newScore == myHighScores[myHighScorePos] && newSpecial > mySpecials[myHighScorePos])
+      if (newScore == myHighScores[myHighScoreRank] && newSpecial > mySpecials[myHighScoreRank])
         break;
     }
 
-    if (myHighScorePos < NUM_POSITIONS)
+    if (myHighScoreRank < NUM_RANKS)
     {
-      myEditPos = myHighScorePos;
-      for (Int32 p = NUM_POSITIONS - 1; p > myHighScorePos; --p)
+      myEditRank = myHighScoreRank;
+      for (Int32 r = NUM_RANKS - 1; r > myHighScoreRank; --r)
       {
-        myHighScores[p] = myHighScores[p - 1];
-        mySpecials[p] = mySpecials[p - 1];
-        myNames[p] = myNames[p - 1];
-        myDates[p] = myDates[p - 1];
+        myHighScores[r] = myHighScores[r - 1];
+        mySpecials[r] = mySpecials[r - 1];
+        myNames[r] = myNames[r - 1];
+        myDates[r] = myDates[r - 1];
       }
-      myHighScores[myHighScorePos] = newScore;
-      //myNames[myHighScorePos] = "";
-      mySpecials[myHighScorePos] = newSpecial;
-      myDates[myHighScorePos] = myNow;
+      myHighScores[myHighScoreRank] = newScore;
+      //myNames[myHighScoreRank] = "";
+      mySpecials[myHighScoreRank] = newSpecial;
+      myDates[myHighScoreRank] = myNow;
       myDirty = true;
     }
     else
-      myHighScorePos = -1;
+      myHighScoreRank = -1;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HighScoresDialog::deletePos(int pos)
+void HighScoresDialog::deleteRank(int rank)
 {
-  for (Int32 p = pos; p < NUM_POSITIONS - 1; ++p)
+  for (Int32 r = rank; r < NUM_RANKS - 1; ++r)
   {
-    myHighScores[p] = myHighScores[p + 1];
-    mySpecials[p] = mySpecials[p + 1];
-    myNames[p] = myNames[p + 1];
-    myDates[p] = myDates[p + 1];
+    myHighScores[r] = myHighScores[r + 1];
+    mySpecials[r] = mySpecials[r + 1];
+    myNames[r] = myNames[r + 1];
+    myDates[r] = myDates[r + 1];
   }
-  myHighScores[NUM_POSITIONS - 1] = 0;
-  mySpecials[NUM_POSITIONS - 1] = 0;
-  myNames[NUM_POSITIONS - 1] = "";
-  myDates[NUM_POSITIONS - 1] = "";
+  myHighScores[NUM_RANKS - 1] = 0;
+  mySpecials[NUM_RANKS - 1] = 0;
+  myNames[NUM_RANKS - 1] = "";
+  myDates[NUM_RANKS - 1] = "";
 
-  if (myEditPos == pos)
+  if (myEditRank == rank)
   {
-    myHighScorePos = myEditPos = -1;
+    myHighScoreRank = myEditRank = -1;
   }
-  if (myEditPos > pos)
+  if (myEditRank > rank)
   {
-    myHighScorePos--;
-    myEditPos--;
-    myEditNameWidgets[myEditPos]->setText(myEditNameWidgets[myEditPos + 1]->getText());
+    myHighScoreRank--;
+    myEditRank--;
+    myEditNameWidgets[myEditRank]->setText(myEditNameWidgets[myEditRank + 1]->getText());
   }
   myDirty = true;
 }
@@ -435,6 +440,7 @@ string HighScoresDialog::cartName() const
     Properties props;
 
     instance().propSet().getMD5(myMD5, props);
+    cerr << myMD5 << endl;
 
 
     if(props.get(PropType::Cart_Name).empty())
@@ -474,12 +480,12 @@ void HighScoresDialog::saveHighScores(Int32 variation) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HighScoresDialog::loadHighScores(Int32 variation)
 {
-  for (Int32 p = 0; p < NUM_POSITIONS; ++p)
+  for (Int32 r = 0; r < NUM_RANKS; ++r)
   {
-    myHighScores[p] = 0;
-    mySpecials[p] = 0;
-    myNames[p] = "";
-    myDates[p] = "";
+    myHighScores[r] = 0;
+    mySpecials[r] = 0;
+    myNames[r] = "";
+    myDates[r] = "";
   }
 
   ostringstream buf;
@@ -526,12 +532,12 @@ bool HighScoresDialog::save(Serializer& out, Int32 variation) const
 
     out.putString(myMD5);
     out.putInt(variation);
-    for (Int32 p = 0; p < NUM_POSITIONS; ++p)
+    for (Int32 r = 0; r < NUM_RANKS; ++r)
     {
-      out.putInt(myHighScores[p]);
-      out.putInt(mySpecials[p]);
-      out.putString(myNames[p]);
-      out.putString(myDates[p]);
+      out.putInt(myHighScores[r]);
+      out.putInt(mySpecials[r]);
+      out.putString(myNames[r]);
+      out.putString(myDates[r]);
     }
   }
   catch(...)
@@ -552,12 +558,12 @@ bool HighScoresDialog::load(Serializer& in, Int32 variation)
     if (Int32(in.getInt()) != variation)
       return false;
 
-    for (Int32 p = 0; p < NUM_POSITIONS; ++p)
+    for (Int32 r = 0; r < NUM_RANKS; ++r)
     {
-      myHighScores[p] = in.getInt();
-      mySpecials[p] = in.getInt();
-      myNames[p] = in.getString();
-      myDates[p] = in.getString();
+      myHighScores[r] = in.getInt();
+      mySpecials[r] = in.getInt();
+      myNames[r] = in.getString();
+      myDates[r] = in.getString();
     }
   }
   catch(...)

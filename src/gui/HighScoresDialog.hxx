@@ -43,7 +43,7 @@ class Serializer;
 class HighScoresDialog : public Dialog
 {
   public:
-    static const uInt32 NUM_POSITIONS = 10;
+    static const uInt32 NUM_RANKS = 10;
 
     HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                      int max_w, int max_h, Menu::AppMode mode);
@@ -58,7 +58,7 @@ class HighScoresDialog : public Dialog
     void handleVariation(bool init = false);
     void handlePlayedVariation();
 
-    void deletePos(int pos);
+    void deleteRank(int rank);
     bool handleDirty();
 
     string cartName() const;
@@ -94,6 +94,7 @@ class HighScoresDialog : public Dialog
 
   private:
     bool myDirty;
+    bool myHighScoreSaved; // remember if current high score was already saved (avoids double HS)
     unique_ptr<GUI::MessageBox> myConfirmMsg;
     int _max_w;
     int _max_h;
@@ -101,14 +102,14 @@ class HighScoresDialog : public Dialog
     Int32 myVariation;
 
     string myInitials;
-    Int32 myEditPos;
-    Int32 myHighScorePos;
+    Int32 myEditRank;
+    Int32 myHighScoreRank;
     string myNow;
 
-    Int32 myHighScores[NUM_POSITIONS];
-    Int32 mySpecials[NUM_POSITIONS];
-    string myNames[NUM_POSITIONS];
-    string myDates[NUM_POSITIONS];
+    Int32 myHighScores[NUM_RANKS];
+    Int32 mySpecials[NUM_RANKS];
+    string myNames[NUM_RANKS];
+    string myDates[NUM_RANKS];
     string myMD5;
 
     PopUpWidget*      myVariationPopup{nullptr};
@@ -117,13 +118,13 @@ class HighScoresDialog : public Dialog
 
     StaticTextWidget* mySpecialLabelWidget{nullptr};
 
-    StaticTextWidget* myPositionWidgets[NUM_POSITIONS]{nullptr};
-    StaticTextWidget* myScoreWidgets[NUM_POSITIONS]{nullptr};
-    StaticTextWidget* mySpecialWidgets[NUM_POSITIONS]{nullptr};
-    StaticTextWidget* myNameWidgets[NUM_POSITIONS]{nullptr};
-    EditTextWidget*   myEditNameWidgets[NUM_POSITIONS]{nullptr};
-    StaticTextWidget* myDateWidgets[NUM_POSITIONS]{nullptr};
-    ButtonWidget*     myDeleteButtons[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* myRankWidgets[NUM_RANKS]{nullptr};
+    StaticTextWidget* myScoreWidgets[NUM_RANKS]{nullptr};
+    StaticTextWidget* mySpecialWidgets[NUM_RANKS]{nullptr};
+    StaticTextWidget* myNameWidgets[NUM_RANKS]{nullptr};
+    EditTextWidget*   myEditNameWidgets[NUM_RANKS]{nullptr};
+    StaticTextWidget* myDateWidgets[NUM_RANKS]{nullptr};
+    ButtonWidget*     myDeleteButtons[NUM_RANKS]{nullptr};
 
     StaticTextWidget* myMD5Widget{nullptr};
 

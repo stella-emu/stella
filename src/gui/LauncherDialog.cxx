@@ -466,7 +466,8 @@ void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount
     // Dynamically create context menu for ROM list options
     VariantList items;
 
-    VarList::push_back(items, "Power-on options" + ELLIPSIS, "override");
+    if(!currentNode().isDirectory() && Bankswitch::isValidRomName(currentNode()))
+      VarList::push_back(items, "Power-on options" + ELLIPSIS, "override");
     if(instance().highScores().enabled())
       VarList::push_back(items, "High scores" + ELLIPSIS, "highscores");
     VarList::push_back(items, "Reload listing", "reload");
