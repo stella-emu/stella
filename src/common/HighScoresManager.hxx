@@ -25,8 +25,8 @@ class OSystem;
 namespace HSM {
   static const uInt32 MAX_PLAYERS = 4;
   static const uInt32 MAX_ADDR_CHARS = 4;
-  static const uInt32 MAX_SCORE_DIGITS = 6;
-  static const uInt32 MAX_SCORE_ADDR = 3;
+  static const uInt32 MAX_SCORE_DIGITS = 8;
+  static const uInt32 MAX_SCORE_ADDR = 4;
   static const uInt32 MAX_SPECIAL_NAME = 5;
   static const uInt32 MAX_SPECIAL_DIGITS = 3;
 
