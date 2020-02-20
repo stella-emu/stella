@@ -283,6 +283,8 @@ void LauncherDialog::loadConfig()
 
   if(myRomInfoWidget)
     myRomInfoWidget->reloadProperties(currentNode());
+
+  myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // always reset this
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
