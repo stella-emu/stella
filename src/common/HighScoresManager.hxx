@@ -29,38 +29,34 @@ class OSystem;
 */
 
 namespace HSM {
-  static const uInt32 MAX_PLAYERS = 4;
-  static const uInt32 MAX_ADDR_CHARS = 4;
   static const uInt32 MAX_SCORE_DIGITS = 8;
+  static const uInt32 MAX_ADDR_CHARS = MAX_SCORE_DIGITS / 2;
   static const uInt32 MAX_SCORE_ADDR = 4;
   static const uInt32 MAX_SPECIAL_NAME = 5;
   static const uInt32 MAX_SPECIAL_DIGITS = 3;
 
-  static const uInt32 DEFAULT_PLAYER = 1;
   static const uInt32 DEFAULT_VARIATION = 1;
   static const uInt32 DEFAULT_ADDRESS = 0;
 
   using ScoreAddresses = array<Int16, MAX_SCORE_ADDR>;
-  using ScoresAddresses = array<ScoreAddresses, MAX_PLAYERS>;
 
   struct ScoresInfo {
     // Formats
     uInt32 numDigits;
     uInt32 trailingZeroes;
     bool scoreBCD;
+    bool scoreInvert;
     bool varsBCD;
     bool varsZeroBased;
     string special;
     bool specialBCD;
     bool specialZeroBased;
-    bool scoreInvert;
+    //bool armRAM;
     // Addresses
-    ScoresAddresses scoresAddr;
+    ScoreAddresses scoreAddr;
     uInt16 varsAddr;
-    uInt16 playersAddr;
     uInt16 specialAddr;
   };
-
 } // namespace HSM
 
 using namespace HSM;
@@ -88,12 +84,12 @@ class HighScoresManager
 
       @return True if highscore data exists, else false
     */
-    bool get(const Properties& props, uInt32& numPlayers, uInt32& numVariations,
+    bool get(const Properties& props, uInt32& numVariations,
              ScoresInfo& info) const;
     /**
       Set the highscore data of game's properties
     */
-    void set(Properties& props, uInt32 numPlayers, uInt32 numVariations,
+    void set(Properties& props, uInt32 numVariations,
              const ScoresInfo& info) const;
 
     /**
@@ -104,21 +100,19 @@ class HighScoresManager
     uInt32 numAddrBytes(Int32 digits, Int32 trailing) const;
 
     // Retrieve current values from (using given parameters)
-    Int32 player(uInt16 addr, uInt32 numPlayers, bool zeroBased = true) const;
     Int32 variation(uInt16 addr, bool varBCD, bool zeroBased, uInt32 numVariations) const;
     /**
       Calculate the score from given parameters
 
       @return The current score or -1 if no valid data exists
     */
-    Int32 score(uInt32 player, uInt32 numAddrBytes, uInt32 trailingZeroes, bool isBCD,
+    Int32 score(uInt32 numAddrBytes, uInt32 trailingZeroes, bool isBCD,
                 const ScoreAddresses& scoreAddr) const;
 
     Int32 special(uInt16 addr, bool varBCD, bool zeroBased) const;
 
     // Retrieve current values (using game's properties)
     Int32 numVariations() const;
-    Int32 player() const;
     string specialLabel() const;
     Int32 variation() const;
     Int32 score() const;
@@ -127,41 +121,39 @@ class HighScoresManager
 
   private:
     enum {
+      //IDX_ARM_RAM = 0,
       IDX_SCORE_DIGITS = 0,
       IDX_TRAILING_ZEROES,
       IDX_SCORE_BCD,
+      IDX_SCORE_INVERT,
       IDX_VAR_BCD,
       IDX_VAR_ZERO_BASED,
       IDX_SPECIAL_LABEL,
       IDX_SPECIAL_BCD,
       IDX_SPECIAL_ZERO_BASED,
-      IDX_SCORE_INVERT
     };
     enum {
       IDX_VARS_ADDRESS = 0,
-      IDX_PLAYERS_ADDRESS,
       IDX_SPECIAL_ADDRESS
     };
 
     static const uInt32 MAX_VARIATIONS = 256;
 
     static const uInt32 MAX_TRAILING = 3;
+    static const bool DEFAULT_ARM_RAM = false;
     static const uInt32 DEFAULT_DIGITS = 4;
     static const uInt32 DEFAULT_TRAILING = 0;
     static const bool DEFAULT_SCORE_BCD = true;
     static const bool DEFAULT_SCORE_REVERSED = false;
     static const bool DEFAULT_VARS_BCD = true;
     static const bool DEFAULT_VARS_ZERO_BASED = false;
-    static const bool DEFAULT_PLAYERS_ZERO_BASED = true;
     static const bool DEFAULT_SPECIAL_BCD = true;
     static const bool DEFAULT_SPECIAL_ZERO_BASED = false;
 
   private:
     // Get individual highscore info from properties
     uInt32 numVariations(const Properties& props) const;
-    uInt32 numPlayers(const Properties& props) const;
     uInt16 varAddress(const Properties& props) const;
-    uInt16 playerAddress(const Properties& props) const;
     uInt16 specialAddress(const Properties& props) const;
     uInt32 numDigits(const Properties& props) const;
     uInt32 trailingZeroes(const Properties& props) const;
@@ -172,7 +164,7 @@ class HighScoresManager
     string specialLabel(const Properties& props) const;
     bool specialBCD(const Properties& props) const;
     bool specialZeroBased(const Properties& props) const;
-    bool playerZeroBased(const Properties& props) const;
+    //bool armRAM(const Properties& props) const;
 
     // Calculate the number of bytes for one player's score from property parameters
     uInt32 numAddrBytes(const Properties& props) const;

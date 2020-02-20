@@ -451,83 +451,62 @@ void GameInfoDialog::addHighScoresTab()
   xpos = HBORDER; ypos = VBORDER;
   lwidth = _font.getStringWidth("Variations ");
 
-  myHighScores = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Enable High Scores", kHiScoresChanged);
+  myHighScores = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Enable High Scores",
+                                    kHiScoresChanged);
 
   xpos += 20; ypos += lineHeight + VGAP;
 
-  items.clear();
-  for (int i = 1; i <= HSM::MAX_PLAYERS; ++i)
-    VarList::push_back(items, std::to_string(i), std::to_string(i));
-  pwidth = _font.getStringWidth("4");
+  /*myARMGame = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "read ARM cartridge RAM",
+                                 kHiScoresChanged);
 
-  myPlayersLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight, "Players");
-  myPlayers = new PopUpWidget(myTab, _font, xpos + lwidth, ypos, pwidth, lineHeight, items, "", 0, kHiScoresChanged);
-  wid.push_back(myPlayers);
+  ypos += lineHeight + VGAP;*/
+
+  pwidth = _font.getStringWidth("4");
 
   int awidth = _font.getMaxCharWidth() * HSM::MAX_ADDR_CHARS + 4;
   int vwidth = _font.getStringWidth("123") + 4;
 
-  myPlayersAddressLabel = new StaticTextWidget(myTab, _font, myPlayers->getRight() + 16, ypos + 1, "Address ");
-  myPlayersAddress = new EditTextWidget(myTab, _font, myPlayersAddressLabel->getRight(), ypos - 1, awidth, lineHeight);
-  myPlayersAddress->setTextFilter(fAddr);
-  wid.push_back(myPlayersAddress);
-  myPlayersAddressVal = new EditTextWidget(myTab, _font, myPlayersAddress->getRight() + 2, ypos - 1, vwidth, lineHeight);
-  myPlayersAddressVal->setEditable(false);
-
-  ypos += lineHeight + VGAP;
-
   fwidth = _font.getStringWidth("255") + 5;
   vwidth = _font.getStringWidth("123") + 4;
   int swidth = _font.getStringWidth("abcde") + 4;
-  myVariationsLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight, "Variations");
+  myVariationsLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, lwidth, fontHeight,
+                                           "Variations");
   myVariations = new EditTextWidget(myTab, _font, xpos + lwidth, ypos - 1, fwidth, lineHeight);
   myVariations->setTextFilter(fVars);
   wid.push_back(myVariations);
 
-  myVarAddressLabel = new StaticTextWidget(myTab, _font, myPlayersAddressLabel->getLeft(), ypos + 1, "Address ");
-  myVarAddress = new EditTextWidget(myTab, _font, myVarAddressLabel->getRight(), ypos - 1, awidth, lineHeight);
+  myVarAddressLabel = new StaticTextWidget(myTab, _font, myVariations->getRight() + 16, ypos + 1,
+                                           "Address ");
+  myVarAddress = new EditTextWidget(myTab, _font, myVarAddressLabel->getRight(), ypos - 1, awidth,
+                                    lineHeight);
   myVarAddress->setTextFilter(fAddr);
   wid.push_back(myVarAddress);
-  myVarAddressVal = new EditTextWidget(myTab, _font, myVarAddress->getRight() + 2, ypos - 1, vwidth, lineHeight);
+  myVarAddressVal = new EditTextWidget(myTab, _font, myVarAddress->getRight() + 2, ypos - 1,
+                                       vwidth, lineHeight);
   myVarAddressVal->setEditable(false);
 
-  myVarsBCD = new CheckboxWidget(myTab, _font, myVarAddressVal->getRight() + 16, ypos + 1, "BCD", kHiScoresChanged);
+  myVarsBCD = new CheckboxWidget(myTab, _font, myVarAddressVal->getRight() + 16, ypos + 1, "BCD",
+                                 kHiScoresChanged);
   wid.push_back(myVarsBCD);
 
-  myVarsZeroBased = new CheckboxWidget(myTab, _font, myVarsBCD->getRight() + 16, ypos + 1, "0-based", kHiScoresChanged);
+  myVarsZeroBased = new CheckboxWidget(myTab, _font, myVarsBCD->getRight() + 16, ypos + 1,
+                                       "0-based", kHiScoresChanged);
   wid.push_back(myVarsZeroBased);
 
-  ypos += lineHeight + VGAP;
+  ypos += lineHeight + VGAP * 4;
 
-  mySpecialLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Special  ");
-  mySpecialName = new EditTextWidget(myTab, _font, mySpecialLabel->getRight(), ypos - 1, swidth, lineHeight);
-  mySpecialName->setTextFilter(fSpecial);
-  wid.push_back(mySpecialName);
+  myScoreLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Score");
 
-  mySpecialAddressLabel = new StaticTextWidget(myTab, _font, myPlayersAddressLabel->getLeft(), ypos + 1, "Address ");
-  mySpecialAddress = new EditTextWidget(myTab, _font, mySpecialAddressLabel->getRight(), ypos - 1, awidth, lineHeight);
-  mySpecialAddress->setTextFilter(fAddr);
-  wid.push_back(mySpecialAddress);
-  mySpecialAddressVal = new EditTextWidget(myTab, _font, mySpecialAddress->getRight() + 2, ypos - 1, vwidth, lineHeight);
-  mySpecialAddressVal->setEditable(false);
-
-  mySpecialBCD = new CheckboxWidget(myTab, _font, mySpecialAddressVal->getRight() + 16, ypos + 1, "BCD", kHiScoresChanged);
-  wid.push_back(mySpecialBCD);
-
-  mySpecialZeroBased = new CheckboxWidget(myTab, _font, mySpecialBCD->getRight() + 16, ypos + 1, "0-based", kHiScoresChanged);
-  wid.push_back(mySpecialZeroBased);
-
-  //xpos += 20;
-  ypos += lineHeight + VGAP * 2;
+  xpos += 20; ypos += lineHeight + VGAP;
 
   vwidth = _font.getStringWidth("AB") + 4;
   items.clear();
   for (int i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
 
-  myScoreDigitsLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Score digits ");
-  myScoreDigits = new PopUpWidget(myTab, _font, myScoreDigitsLabel->getRight(), ypos, pwidth, lineHeight,
-                                  items, "", 0, kHiScoresChanged);
+  myScoreDigitsLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Digits    ");
+  myScoreDigits = new PopUpWidget(myTab, _font, myScoreDigitsLabel->getRight(), ypos, pwidth,
+                                  lineHeight, items, "", 0, kHiScoresChanged);
   wid.push_back(myScoreDigits);
 
   items.clear();
@@ -535,39 +514,71 @@ void GameInfoDialog::addHighScoresTab()
     VarList::push_back(items, std::to_string(i), std::to_string(i));
   pwidth = _font.getStringWidth("0");
 
-  myTrailingZeroesLabel = new StaticTextWidget(myTab, _font, myScoreDigits->getRight() + 30, ypos + 1, "0-digits ");
-  myTrailingZeroes = new PopUpWidget(myTab, _font, myTrailingZeroesLabel->getRight(), ypos, pwidth, lineHeight,
+  myTrailingZeroesLabel = new StaticTextWidget(myTab, _font, myScoreDigits->getRight() + 30,
+                                               ypos + 1, "0-digits ");
+  myTrailingZeroes = new PopUpWidget(myTab, _font, myTrailingZeroesLabel->getRight(), ypos,
+                                     pwidth, lineHeight,
                                      items, "", 0, kHiScoresChanged);
   wid.push_back(myTrailingZeroes);
 
-  myScoreBCD = new CheckboxWidget(myTab, _font, myVarsBCD->getLeft(), ypos + 1, "BCD", kHiScoresChanged);
+  myScoreBCD = new CheckboxWidget(myTab, _font, myVarsBCD->getLeft(), ypos + 1, "BCD",
+                                  kHiScoresChanged);
   wid.push_back(myScoreBCD);
 
-  myScoreInvert = new CheckboxWidget(myTab, _font, myScoreBCD->getRight() + 16, ypos + 1, "Invert");
+  myScoreInvert = new CheckboxWidget(myTab, _font, myScoreBCD->getRight() + 16, ypos + 1,
+                                     "Invert");
   wid.push_back(myScoreInvert);
 
-  for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
+  uInt32 s_xpos = xpos;
+  ypos += lineHeight + VGAP;
+
+  myScoreAddressesLabel = new StaticTextWidget(myTab, _font, s_xpos, ypos + 1, "Addresses ");
+  s_xpos += myScoreAddressesLabel->getWidth();
+  for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
-    uInt32 s_xpos = xpos;
-    ypos += lineHeight + VGAP;
+    myScoreAddress[a] = new EditTextWidget(myTab, _font, s_xpos, ypos - 1, awidth, lineHeight);
+    myScoreAddress[a]->setTextFilter(fAddr);
+    wid.push_back(myScoreAddress[a]);
+    s_xpos += myScoreAddress[a]->getWidth() + 2;
 
-    myScoreAddressesLabel[p] = new StaticTextWidget(myTab, _font, s_xpos, ypos + 1,
-                                                    "P" + to_string(p + 1) + " Addresses ");
-    s_xpos += myScoreAddressesLabel[p]->getWidth();
-    for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
-    {
-      myScoreAddress[p][a] = new EditTextWidget(myTab, _font, s_xpos, ypos - 1, awidth, lineHeight);
-      myScoreAddress[p][a]->setTextFilter(fAddr);
-      wid.push_back(myScoreAddress[p][a]);
-      s_xpos += myScoreAddress[p][a]->getWidth() + 2;
-
-      myScoreAddressVal[p][a] = new EditTextWidget(myTab, _font, myScoreAddress[p][a]->getRight() + 2, ypos - 1, vwidth, lineHeight);
-      myScoreAddressVal[p][a]->setEditable(false);
-      s_xpos += myScoreAddressVal[p][a]->getWidth() + 16;
-    }
-    myCurrentScore[p] = new StaticTextWidget(myTab, _font, s_xpos, ypos + 1, "= 123456");
+    myScoreAddressVal[a] = new EditTextWidget(myTab, _font, myScoreAddress[a]->getRight() + 2,
+                                              ypos - 1, vwidth, lineHeight);
+    myScoreAddressVal[a]->setEditable(false);
+    s_xpos += myScoreAddressVal[a]->getWidth() + 16;
   }
-  //myCurrentScoreLabel = new StaticTextWidget(myTab, _font, myCurrentScore[0]->getLeft(), myScoreBCD->getTop(), "Current");
+
+  ypos += lineHeight + VGAP * 1;
+
+  myCurrentScoreLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Current   ");
+  myCurrentScore = new StaticTextWidget(myTab, _font, myCurrentScoreLabel->getRight(), ypos + 1,
+                                        "12345678");
+
+  xpos -= 20; ypos += lineHeight + VGAP * 4;
+
+  vwidth = _font.getStringWidth("123") + 4;
+  mySpecialLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Special");
+  mySpecialName = new EditTextWidget(myTab, _font, mySpecialLabel->getRight() + 19, ypos - 1,
+                                     swidth, lineHeight);
+  mySpecialName->setTextFilter(fSpecial);
+  wid.push_back(mySpecialName);
+
+  mySpecialAddressLabel = new StaticTextWidget(myTab, _font, myVarAddressLabel->getLeft(),
+                                               ypos + 1, "Address ");
+  mySpecialAddress = new EditTextWidget(myTab, _font, mySpecialAddressLabel->getRight(),
+                                        ypos - 1, awidth, lineHeight);
+  mySpecialAddress->setTextFilter(fAddr);
+  wid.push_back(mySpecialAddress);
+  mySpecialAddressVal = new EditTextWidget(myTab, _font, mySpecialAddress->getRight() + 2,
+                                           ypos - 1, vwidth, lineHeight);
+  mySpecialAddressVal->setEditable(false);
+
+  mySpecialBCD = new CheckboxWidget(myTab, _font, myVarsBCD->getLeft(), ypos + 1, "BCD",
+                                    kHiScoresChanged);
+  wid.push_back(mySpecialBCD);
+
+  mySpecialZeroBased = new CheckboxWidget(myTab, _font, mySpecialBCD->getRight() + 16, ypos + 1,
+                                          "0-based", kHiScoresChanged);
+  wid.push_back(mySpecialZeroBased);
 
   // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
@@ -755,12 +766,11 @@ void GameInfoDialog::loadCartridgeProperties(const Properties& props)
 void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 {
   HSM::ScoresInfo info;
-  uInt32 numPlayers, numVariations;
-  bool enable = instance().highScores().get(props, numPlayers, numVariations, info);
+  uInt32 numVariations;
+  bool enable = instance().highScores().get(props, numVariations, info);
 
   myHighScores->setState(enable);
 
-  myPlayers->setSelected(numPlayers);
   myVariations->setText(to_string(numVariations));
 
   ostringstream ss;
@@ -777,11 +787,6 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
 
   ss.str("");
   ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
-    << uppercase << info.playersAddr;
-  myPlayersAddress->setText(ss.str());
-
-  ss.str("");
-  ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
     << uppercase << info.varsAddr;
   myVarAddress->setText(ss.str());
 
@@ -791,20 +796,12 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   mySpecialAddress->setText(ss.str());
 
 
-  for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
+  for (uInt32 a = 0; a < instance().highScores().numAddrBytes(info.numDigits, info.trailingZeroes); ++a)
   {
-    for (uInt32 a = 0; a < instance().highScores().numAddrBytes(info.numDigits, info.trailingZeroes); ++a)
-    {
-      if (p < numPlayers)
-      {
-        ss.str("");
-        ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
-          << uppercase << info.scoresAddr[p][a];
-        myScoreAddress[p][a]->setText(ss.str());
-      }
-      else
-        myScoreAddress[p][a]->setText("");
-    }
+    ss.str("");
+    ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
+      << uppercase << info.scoreAddr[a];
+    myScoreAddress[a]->setText(ss.str());
   }
   updateHighScoresWidgets();
 }
@@ -913,30 +910,24 @@ void GameInfoDialog::saveHighScoresProperties()
     // fill addresses
     string strAddr;
 
-    strAddr = myPlayersAddress->getText();
-    info.playersAddr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     strAddr = myVarAddress->getText();
     info.varsAddr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     strAddr = mySpecialAddress->getText();
     info.specialAddr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
 
-    for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
+    for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
     {
-      for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
-      {
-        strAddr = myScoreAddress[p][a]->getText();
-        info.scoresAddr[p][a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
-      }
+      strAddr = myScoreAddress[a]->getText();
+      info.scoreAddr[a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     }
 
     string strVars = myVariations->getText();
 
-    instance().highScores().set(myGameProperties, myPlayers->getSelected() + 1,
-                                stringToInt(strVars, HSM::DEFAULT_VARIATION), info);
+    instance().highScores().set(myGameProperties, stringToInt(strVars, HSM::DEFAULT_VARIATION),
+                                info);
   }
   else
   {
-    myGameProperties.reset(PropType::Cart_Players);
     myGameProperties.reset(PropType::Cart_Variations);
     myGameProperties.reset(PropType::Cart_Formats);
     myGameProperties.reset(PropType::Cart_Addresses);
@@ -1088,28 +1079,21 @@ void GameInfoDialog::eraseEEPROM()
 void GameInfoDialog::updateHighScoresWidgets()
 {
   bool enable = myHighScores->getState();
-  uInt32 players = myPlayers->getSelected() + 1;
-  bool enablePlayers = enable && players > 1;
   bool enableVars = enable && myVariations->getText() > "1";
   bool enableSpecial = enable && !mySpecialName->getText().empty();
+  bool enableConsole = instance().hasConsole();
   uInt32 numAddr = instance().highScores().numAddrBytes(myScoreDigits->getSelected() + 1,
                                                         myTrailingZeroes->getSelected());
 
   // enable widgets
-  myPlayersLabel->setEnabled(enable);
-  myPlayers->setEnabled(enable);
-  myPlayersAddressLabel->setEnabled(enablePlayers);
-  myPlayersAddress->setEnabled(enablePlayers);
-  myPlayersAddress->setEditable(enablePlayers);
-  myPlayersAddressVal->setEnabled(enablePlayers);
-
+  //myARMGame->setEnabled(enable);
   myVariationsLabel->setEnabled(enable);
   myVariations->setEnabled(enable);
   myVariations->setEditable(enable);
   myVarAddressLabel->setEnabled(enableVars);
   myVarAddress->setEnabled(enableVars);
   myVarAddress->setEditable(enableVars);
-  myVarAddressVal->setEnabled(enableVars);
+  myVarAddressVal->setEnabled(enableVars && enableConsole);
   myVarsBCD->setEnabled(enableVars && stringToInt(myVariations->getText(), 1) >= 10);
   myVarsZeroBased->setEnabled(enableVars);
 
@@ -1119,79 +1103,70 @@ void GameInfoDialog::updateHighScoresWidgets()
   mySpecialAddressLabel->setEnabled(enableSpecial);
   mySpecialAddress->setEnabled(enableSpecial);
   mySpecialAddress->setEditable(enableSpecial);
-  mySpecialAddressVal->setEnabled(enableSpecial);
+  mySpecialAddressVal->setEnabled(enableSpecial && enableConsole);
   mySpecialBCD->setEnabled(enableSpecial);
   mySpecialZeroBased->setEnabled(enableSpecial);
 
+  myScoreLabel->setEnabled(enable);
   myScoreDigitsLabel->setEnabled(enable);
   myScoreDigits->setEnabled(enable);
   myScoreBCD->setEnabled(enable);
   myTrailingZeroesLabel->setEnabled(enable);
   myTrailingZeroes->setEnabled(enable);
   myScoreInvert->setEnabled(enable);
-  //myCurrentScoreLabel->setEnabled(enable);
 
-  for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
+  myScoreAddressesLabel->setEnabled(enable);
+
+  for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
-    enable &= players > p;
-    myScoreAddressesLabel[p]->setEnabled(enable);
-
-    for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
-    {
-      myScoreAddress[p][a]->setEnabled(enable && numAddr > a);
-      myScoreAddressVal[p][a]->setEnabled(enable && numAddr > a);
-    }
-    myCurrentScore[p]->setEnabled(enable);
+    myScoreAddress[a]->setEnabled(enable && numAddr > a);
+    myScoreAddressVal[a]->setEnabled(enable && numAddr > a&& enableConsole);
   }
+
+  myCurrentScoreLabel->setEnabled(enable && enableConsole);
+  myCurrentScore->setEnabled(enable && enableConsole);
 
   // verify and update widget data
 
-  // update players and variations RAM values
-  setAddressVal(myPlayersAddress, myPlayersAddressVal);
+  // update variations RAM value
   setAddressVal(myVarAddress, myVarAddressVal, myVarsBCD->getState(),
-                myVarsZeroBased->getState() ? 1 : 0);
+                myVarsZeroBased->getState() ? 1 : 0, stringToInt(myVariations->getText(), 1));
+
   setAddressVal(mySpecialAddress, mySpecialAddressVal, mySpecialBCD->getState(),
                 mySpecialZeroBased->getState() ? 1 : 0);
 
   // update score RAM values and resulting scores
-  for (uInt32 p = 0; p < HSM::MAX_PLAYERS; ++p)
+  HSM::ScoreAddresses scoreAddr;
+
+  for(uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
-    if (p < players)
+    if(a < numAddr)
     {
-      HSM::ScoreAddresses scoreAddr;
-
-      for (uInt32 a = 0; a < numAddr; ++a)
-      {
-        setAddressVal(myScoreAddress[p][a], myScoreAddressVal[p][a]);
-        string strAddr = myScoreAddress[p][a]->getText();
-        scoreAddr[a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
-      }
-
-      Int32 score = instance().highScores().score(p, numAddr, myTrailingZeroes->getSelected(),
-                                                  myScoreBCD->getState(), scoreAddr);
-      if (score >= 0)
-      {
-        ostringstream ss;
-
-        ss.str("");
-        ss << "= " << right << setw(myScoreDigits->getSelected() + 1) << setfill(' ') << score;
-        myCurrentScore[p]->setLabel(ss.str());
-      }
-      else
-        myCurrentScore[p]->setLabel("");
+      setAddressVal(myScoreAddress[a], myScoreAddressVal[a]);
+      string strAddr = myScoreAddress[a]->getText();
+      scoreAddr[a] = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     }
     else
-    {
-      for (uInt32 a = 0; a < numAddr; ++a)
-        myScoreAddressVal[p][a]->setText("");
-      myCurrentScore[p]->setLabel("");
-    }
+      myScoreAddressVal[a]->setText("");
   }
+
+  Int32 score = instance().highScores().score(numAddr, myTrailingZeroes->getSelected(),
+                                              myScoreBCD->getState(), scoreAddr);
+  if(score >= 0)
+  {
+    ostringstream ss;
+
+    ss.str("");
+    ss << right << setw(myScoreDigits->getSelected() + 1) << setfill(' ') << score;
+    myCurrentScore->setLabel(ss.str());
+  }
+  else
+    myCurrentScore->setLabel("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget* valWidget,
-                                   bool isBCD, uInt8 incVal)
+                                   bool isBCD, uInt8 incVal, uInt8 maxVal)
 {
   string strAddr;
 
@@ -1205,10 +1180,13 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
     uInt16 addr;
     uInt8 val;
     ostringstream ss;
+    Int32 bits = ceil(log(maxVal + incVal)/log(2));
 
     // convert to number and read from memory
     addr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
-    val = system.peek(addr) + incVal;
+    val = system.peek(addr);
+    val %= 1 << bits;
+    val += incVal;
     // format output and display in value widget
     if (isBCD)
       ss << hex;
