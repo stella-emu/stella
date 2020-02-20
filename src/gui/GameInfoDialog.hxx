@@ -46,6 +46,12 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     void setDefaults() override;
 
+    void addEmulationTab();
+    void addConsoleTab();
+    void addControllersTab();
+    void addCartridgeTab();
+    void addHighScoresTab();
+
     // load the properties for the 'Emulation' tab
     void loadEmulationProperties(const Properties& props);
     // load the properties for the 'Console' tab
