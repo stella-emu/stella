@@ -112,15 +112,17 @@ class HighScoresDialog : public Dialog
     string myMD5;
 
     PopUpWidget*      myVariationPopup{nullptr};
-    ButtonWidget*     myPrevVarButton{ nullptr };
-    ButtonWidget*     myNextVarButton{ nullptr };
+    ButtonWidget*     myPrevVarButton{nullptr};
+    ButtonWidget*     myNextVarButton{nullptr};
+
     StaticTextWidget* mySpecialLabelWidget{nullptr};
-    StaticTextWidget* myPositionsWidget[NUM_POSITIONS]{nullptr};
-    StaticTextWidget* myScoresWidget[NUM_POSITIONS]{nullptr};
-    StaticTextWidget* mySpecialsWidget[NUM_POSITIONS]{nullptr};
-    StaticTextWidget* myNamesWidget[NUM_POSITIONS]{nullptr};
-    EditTextWidget*   myEditNamesWidget[NUM_POSITIONS]{nullptr};
-    StaticTextWidget* myDatesWidget[NUM_POSITIONS]{nullptr};
+
+    StaticTextWidget* myPositionWidgets[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* myScoreWidgets[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* mySpecialWidgets[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* myNameWidgets[NUM_POSITIONS]{nullptr};
+    EditTextWidget*   myEditNameWidgets[NUM_POSITIONS]{nullptr};
+    StaticTextWidget* myDateWidgets[NUM_POSITIONS]{nullptr};
     ButtonWidget*     myDeleteButtons[NUM_POSITIONS]{nullptr};
 
     StaticTextWidget* myMD5Widget{nullptr};

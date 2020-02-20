@@ -29,63 +29,32 @@
 
 #include "HighScoresDialog.hxx"
 
-static constexpr int BUTTON_GFX_W = 12, BUTTON_GFX_H = 12;
+static constexpr int BUTTON_GFX_W = 10, BUTTON_GFX_H = 10;
 
-static constexpr std::array<uInt32, BUTTON_GFX_H> PREV = {
-  //0b000000000011,
-  //0b000000001110,
-  //0b000000111000,
-  //0b000011100000,
-  //0b001110000000,
-  //0b111000000000,
-  //0b111000000000,
-  //0b001110000000,
-  //0b000011100000,
-  //0b000000111000,
-  //0b000000001110,
-  //0b000000000011,
-
-  0b000001100000,
-  0b000001100000,
-  0b000011110000,
-  0b000010010000,
-  0b000110011000,
-  0b000100001000,
-  0b001100001100,
-  0b001000000100,
-  0b011000000110,
-  0b010000000010,
-  0b110000000011,
-  0b100000000001,
-
+static constexpr std::array<uInt32, BUTTON_GFX_H> PREV_GFX = {
+  0b0000110000,
+  0b0000110000,
+  0b0001111000,
+  0b0001111000,
+  0b0011001100,
+  0b0011001100,
+  0b0110000110,
+  0b0110000110,
+  0b1100000011,
+  0b1100000011,
 };
 
-static constexpr std::array<uInt32, BUTTON_GFX_H> NEXT = {
-  //0b110000000000,
-  //0b011100000000,
-  //0b000111000000,
-  //0b000001110000,
-  //0b000000011100,
-  //0b000000000111,
-  //0b000000000111,
-  //0b000000011100,
-  //0b000001110000,
-  //0b000111000000,
-  //0b011100000000,
-  //0b110000000000,
-
-  0b100000000001,
-  0b110000000011,
-  0b010000000010,
-  0b011000000110,
-  0b001000000100,
-  0b001100001100,
-  0b000100001000,
-  0b000110011000,
-  0b000010010000,
-  0b000011110000,
-  0b000001100000,
-  0b000001100000,
+static constexpr std::array<uInt32, BUTTON_GFX_H> NEXT_GFX = {
+  0b1100000011,
+  0b1100000011,
+  0b0110000110,
+  0b0110000110,
+  0b0011001100,
+  0b0011001100,
+  0b0001111000,
+  0b0001111000,
+  0b0000110000,
+  0b0000110000,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -117,19 +86,19 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
                                       _font.getStringWidth("256") - 4, lineHeight, items, "", 0,
                                       kVariationChanged);
   wid.push_back(myVariationPopup);
-  myPrevVarButton = new ButtonWidget(this, _font, myVariationPopup->getRight() + 154, ypos - 1,
+  myPrevVarButton = new ButtonWidget(this, _font, myVariationPopup->getRight() + 162, ypos - 1,
                                      48, myVariationPopup->getHeight(),
-                                     PREV.data(), BUTTON_GFX_W, BUTTON_GFX_H, kPrevVariation);
+                                     PREV_GFX.data(), BUTTON_GFX_W, BUTTON_GFX_H, kPrevVariation);
   wid.push_back(myPrevVarButton);
   myNextVarButton = new ButtonWidget(this, _font, myPrevVarButton->getRight() + 8, ypos - 1,
                                      48, myVariationPopup->getHeight(),
-                                     NEXT.data(), BUTTON_GFX_W, BUTTON_GFX_H, kNextVariation);
+                                     NEXT_GFX.data(), BUTTON_GFX_W, BUTTON_GFX_H, kNextVariation);
   wid.push_back(myNextVarButton);
 
-  ypos += lineHeight + VGAP * 2;
+  ypos += lineHeight + VGAP * 4;
 
   int xposRank = HBORDER;
-  int xposScore = xposRank + _font.getStringWidth("Rank") + 16;
+  int xposScore = xposRank + _font.getStringWidth("Rank") + 24;
   int xposSpecial = xposScore + _font.getStringWidth("Score") + 24;
   int xposName = xposSpecial + _font.getStringWidth("Round") + 16;
   int xposDate = xposName + _font.getStringWidth("Name") + 16;
@@ -146,16 +115,16 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   for (uInt32 p = 0; p < NUM_POSITIONS; ++p)
   {
-    myPositionsWidget[p] = new StaticTextWidget(this, _font, xposRank + 8, ypos + 1,
+    myPositionWidgets[p] = new StaticTextWidget(this, _font, xposRank + 8, ypos + 1,
                                           (p < 9 ? " " : "") + std::to_string(p + 1));
-    myScoresWidget[p] = new StaticTextWidget(this, _font, xposScore, ypos + 1, "123456");
-    mySpecialsWidget[p] = new StaticTextWidget(this, _font, xposSpecial + 8, ypos + 1, "123");
-    myNamesWidget[p] = new StaticTextWidget(this, _font, xposName + 2, ypos + 1, "   ");
-    myEditNamesWidget[p] = new EditTextWidget(this, _font, xposName, ypos - 1, nWidth, lineHeight);
-    myEditNamesWidget[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
-    myEditNamesWidget[p]->setEnabled(false);
-    wid.push_back(myEditNamesWidget[p]);
-    myDatesWidget[p] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "YY-MM-DD HH:MM");
+    myScoreWidgets[p] = new StaticTextWidget(this, _font, xposScore, ypos + 1, "12345678");
+    mySpecialWidgets[p] = new StaticTextWidget(this, _font, xposSpecial + 8, ypos + 1, "123");
+    myNameWidgets[p] = new StaticTextWidget(this, _font, xposName + 2, ypos + 1, "   ");
+    myEditNameWidgets[p] = new EditTextWidget(this, _font, xposName, ypos - 1, nWidth, lineHeight);
+    myEditNameWidgets[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+    myEditNameWidgets[p]->setEnabled(false);
+    wid.push_back(myEditNameWidgets[p]);
+    myDateWidgets[p] = new StaticTextWidget(this, _font, xposDate, ypos + 1, "YY-MM-DD HH:MM");
     myDeleteButtons[p] = new ButtonWidget(this, _font, xposDelete, ypos + 1, 18, 18, "X",
                                           kDeleteSingle);
     myDeleteButtons[p]->setID(p);
@@ -189,6 +158,14 @@ void HighScoresDialog::loadConfig()
     surface().attributes().blendalpha = 90;
     surface().applyAttributes();
   }
+
+  string title = "High Scores - " + cartName();
+  uInt32 maxChars = (_w - 20) / _font.getMaxCharWidth();
+
+  if(title.length() > maxChars)
+    setTitle(title.substr(0, maxChars - 1) + ELLIPSIS);
+  else
+    setTitle(title);
 
   VariantList items;
 
@@ -228,7 +205,7 @@ void HighScoresDialog::saveConfig()
   // save initials and remember for the next time
   if (myHighScorePos != -1)
   {
-    myInitials = myEditNamesWidget[myHighScorePos]->getText();
+    myInitials = myEditNameWidgets[myHighScorePos]->getText();
     myNames[myHighScorePos] = myInitials;
   }
   // save selected variation
@@ -254,12 +231,12 @@ void HighScoresDialog::handleCommand(CommandSender* sender, int cmd, int data, i
       handleVariation();
       break;
     case kPrevVariation:
-      myVariationPopup->setSelected(--myVariation);
+      myVariationPopup->setSelected(myVariation - 1);
       handleVariation();
       break;
 
     case kNextVariation:
-      myVariationPopup->setSelected(++myVariation);
+      myVariationPopup->setSelected(myVariation + 1);
       handleVariation();
       break;
 
@@ -318,43 +295,44 @@ void HighScoresDialog::updateWidgets(bool init)
     if (myHighScores[p] > 0)
     {
       buf << std::setw(HSM::MAX_SCORE_DIGITS) << std::setfill(' ') << myHighScores[p];
-      myPositionsWidget[p]->clearFlags(Widget::FLAG_INVISIBLE);
+      myPositionWidgets[p]->clearFlags(Widget::FLAG_INVISIBLE);
       myDeleteButtons[p]->clearFlags(Widget::FLAG_INVISIBLE);
       myDeleteButtons[p]->setEnabled(true);
     }
     else
     {
-      myPositionsWidget[p]->setFlags(Widget::FLAG_INVISIBLE);
+      myPositionWidgets[p]->setFlags(Widget::FLAG_INVISIBLE);
       myDeleteButtons[p]->setFlags(Widget::FLAG_INVISIBLE);
       myDeleteButtons[p]->setEnabled(false);
     }
-    myScoresWidget[p]->setLabel(buf.str());
+    myScoreWidgets[p]->setLabel(buf.str());
 
     buf.str("");
     if (mySpecials[p] > 0)
       buf << std::setw(HSM::MAX_SPECIAL_DIGITS) << std::setfill(' ') << mySpecials[p];
-    mySpecialsWidget[p]->setLabel(buf.str());
+    mySpecialWidgets[p]->setLabel(buf.str());
 
-    myNamesWidget[p]->setLabel(myNames[p]);
-    myDatesWidget[p]->setLabel(myDates[p]);
+    myNameWidgets[p]->setLabel(myNames[p]);
+    myDateWidgets[p]->setLabel(myDates[p]);
 
     if (p == myEditPos)
     {
-      myNamesWidget[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNamesWidget[p]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNamesWidget[p]->setEnabled(true);
-      myEditNamesWidget[p]->setEditable(true);
+      myNameWidgets[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+      myEditNameWidgets[p]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
+      myEditNameWidgets[p]->setEnabled(true);
+      myEditNameWidgets[p]->setEditable(true);
       if (init)
-        myEditNamesWidget[p]->setText(myInitials);
+        myEditNameWidgets[p]->setText(myInitials);
     }
     else
     {
-      myNamesWidget[p]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNamesWidget[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
-      myEditNamesWidget[p]->setEnabled(false);
-      myEditNamesWidget[p]->setEditable(false);
+      myNameWidgets[p]->clearFlags(EditTextWidget::FLAG_INVISIBLE);
+      myEditNameWidgets[p]->setFlags(EditTextWidget::FLAG_INVISIBLE);
+      myEditNameWidgets[p]->setEnabled(false);
+      myEditNameWidgets[p]->setEditable(false);
     }
   }
+  _defaultWidget->setEnabled(myHighScores[0] > 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -420,7 +398,7 @@ void HighScoresDialog::deletePos(int pos)
   {
     myHighScorePos--;
     myEditPos--;
-    myEditNamesWidget[myEditPos]->setText(myEditNamesWidget[myEditPos + 1]->getText());
+    myEditNameWidgets[myEditPos]->setText(myEditNameWidgets[myEditPos + 1]->getText());
   }
   myDirty = true;
 }
@@ -434,8 +412,8 @@ bool HighScoresDialog::handleDirty()
     {
       StringList msg;
 
-      msg.push_back("Do you want to save the changed");
-      msg.push_back("high scores for this variation?");
+      msg.push_back("Do you want to save the changes");
+      msg.push_back("for this variation?");
       msg.push_back("");
       myConfirmMsg = make_unique<GUI::MessageBox>
         (this, _font, msg, _max_w, _max_h, kConfirmSave, kCancelSave,
@@ -457,7 +435,12 @@ string HighScoresDialog::cartName() const
     Properties props;
 
     instance().propSet().getMD5(myMD5, props);
-    return props.get(PropType::Cart_Name);
+
+
+    if(props.get(PropType::Cart_Name).empty())
+      return instance().launcher().currentNode().getNameWithExt("");
+    else
+      return props.get(PropType::Cart_Name);
   }
 }
 
