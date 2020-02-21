@@ -208,10 +208,6 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Create (empty) context menu for ROM list options
   myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), EmptyVarList);
-<<<<<<< HEAD
-=======
-
->>>>>>> remotes/origin/master
 
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
