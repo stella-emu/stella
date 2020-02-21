@@ -542,6 +542,15 @@ uInt32 CartridgeBUS::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeBUS::internalRamGetValue(uInt16 addr) const
+{
+  if(addr < internalRamSize())
+    return myBUSRAM[addr];
+  else
+    return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeBUS::save(Serializer& out) const
 {
   try

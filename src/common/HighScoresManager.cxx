@@ -44,9 +44,11 @@
 
 #include "OSystem.hxx"
 #include "PropsSet.hxx"
+#include "System.hxx"
+#include "Cart.hxx"
 #include "Console.hxx"
 #include "Launcher.hxx"
-#include "System.hxx"
+
 
 #include "HighScoresManager.hxx"
 
@@ -65,8 +67,10 @@ Int16 HighScoresManager::peek(uInt16 addr) const
 {
   if (myOSystem.hasConsole())
   {
-    System& system = myOSystem.console().system();
-    return system.peek(addr);
+    if(addr < 0x100u || myOSystem.console().cartridge().internalRamSize() == 0)
+      return myOSystem.console().system().peek(addr);
+    else
+      return myOSystem.console().cartridge().internalRamGetValue(addr);
   }
   return -1;
 }
@@ -453,6 +457,9 @@ Int32 HighScoresManager::convert(uInt32 val, uInt32 maxVal, bool isBCD, bool zer
 
   if (isBCD)
     val = fromBCD(val);
+
+  if(val == -1)
+    return 0;
 
   // limit to maxVal's bits
   val %= 1 << bits;

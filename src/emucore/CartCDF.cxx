@@ -488,6 +488,15 @@ uInt32 CartridgeCDF::thumbCallback(uInt8 function, uInt32 value1, uInt32 value2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeCDF::internalRamGetValue(uInt16 addr) const
+{
+  if(addr < internalRamSize())
+    return myCDFRAM[addr];
+  else
+    return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCDF::save(Serializer& out) const
 {
   try
