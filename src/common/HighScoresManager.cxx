@@ -340,16 +340,8 @@ Int32 HighScoresManager::variation(uInt16 addr, bool varBCD, bool zeroBased,
     return DEFAULT_VARIATION;
 
   Int32 var = peek(addr);
-  Int32 bits = ceil(log(numVariations + (!zeroBased ? 1 : 0))/log(2));
 
-  if (varBCD)
-    var = fromBCD(var);
-
-  // limit to game's number of variations
-  var %= 1 << bits;
-  var += zeroBased ? 1 : 0;
-
-  return var;
+  return convert(var, numVariations, varBCD, zeroBased);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -449,6 +441,24 @@ Int32 HighScoresManager::special(uInt16 addr, bool varBCD, bool zeroBased) const
   var += zeroBased ? 1 : 0;
 
   return var;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 HighScoresManager::convert(uInt32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const
+{
+  maxVal += zeroBased ? 0 : 1;
+  Int32 bits = isBCD
+    ? ceil(log(maxVal) / log(10) * 4)
+    : ceil(log(maxVal) / log(2));
+
+  if (isBCD)
+    val = fromBCD(val);
+
+  // limit to maxVal's bits
+  val %= 1 << bits;
+  val += zeroBased ? 1 : 0;
+
+  return val;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

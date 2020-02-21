@@ -119,6 +119,10 @@ class HighScoresManager
     bool scoreInvert() const;
     Int32 special() const;
 
+    // converts the given value, using only the maximum bits required by maxVal
+    //  and adjusted for BCD and zero based data
+    Int32 convert(uInt32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const;
+
   private:
     enum {
       //IDX_ARM_RAM = 0,
