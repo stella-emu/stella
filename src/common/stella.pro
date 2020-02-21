@@ -1,3 +1,11 @@
+"Cart.MD5" "05215b73ec33b502449ee726ac6b201f"
+"Cart.Name" "draconian_20171013_RC6"
+"Display.Phosphor" "YES"
+"Cart.Variations" "4"
+"Cart.Formats" "8,0,B,0,B,1,SECT.,D,1"
+"Cart.Addresses" "177B,177A,1779,1778,811,1780"
+""
+
 "Cart.MD5" "081e2c114c9c20b61acf25fc95c71bf4"
 "Cart.Manufacturer" "Parker Brothers, Ed English, David Lamkins"
 "Cart.ModelNo" "PB5300"
@@ -25,6 +33,12 @@
 "Cart.Variations" "4"
 "Cart.Formats" "6,0,B,0,B,1"
 "Cart.Addresses" "FD,FE,FF,FC"
+""
+
+"Cart.MD5" "541cac55ebcf7891d9d51c415922303f"
+"Cart.Name" "SF2_20131217_RC8_NTSC"
+"Cart.Formats" "8"
+"Cart.Addresses" "1CF7,1CF6,1CF5,1CF4"
 ""
 
 "Cart.MD5" "6dda84fb8e442ecf34241ac0d1d91d69"

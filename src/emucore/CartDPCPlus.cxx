@@ -634,6 +634,15 @@ const uInt8* CartridgeDPCPlus::getImage(size_t& size) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeDPCPlus::internalRamGetValue(uInt16 addr) const
+{
+  if(addr < internalRamSize())
+    return myDPCRAM[addr];
+  else
+    return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPCPlus::save(Serializer& out) const
 {
   try

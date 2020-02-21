@@ -1176,14 +1176,13 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
 
   if (instance().hasConsole() && valWidget->isEnabled())
   {
-    System& system = instance().console().system();
     uInt16 addr;
     uInt8 val;
     ostringstream ss;
 
     // convert to number and read from memory
     addr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
-    val = system.peek(addr);
+    val = instance().highScores().peek(addr);
     val = instance().highScores().convert(val, maxVal, isBCD, zeroBased);
 
     // format output and display in value widget

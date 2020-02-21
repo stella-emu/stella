@@ -151,6 +151,20 @@ class CartridgeCDF : public Cartridge
     */
     uInt32 thumbCallback(uInt8 function, uInt32 value1, uInt32 value2) override;
 
+    /**
+      Query the internal RAM size of the cart.
+
+      @return The internal RAM size
+    */
+    uInt32 internalRamSize() const override { return 8_KB; }
+
+    /**
+      Read a byte from cart internal RAM.
+
+      @return The value of the interal RAM byte
+    */
+    uInt8 internalRamGetValue(uInt16 addr) const override;
+
 #ifdef DEBUGGER_SUPPORT
     /**
       Get debugger widget responsible for accessing the inner workings

@@ -106,6 +106,20 @@ class Cartridge : public Device
     */
     virtual bool bankChanged();
 
+    /**
+      Query the internal RAM size of the cart.
+
+      @return The internal RAM size
+    */
+    virtual uInt32 internalRamSize() const { return 0; }
+
+    /**
+      Read a byte from cart internal RAM.
+
+      @return The value of the interal RAM byte
+    */
+    virtual uInt8 internalRamGetValue(uInt16 addr) const { return 0; }
+
   #ifdef DEBUGGER_SUPPORT
     /**
       To be called at the start of each instruction.

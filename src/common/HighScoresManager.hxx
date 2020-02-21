@@ -123,6 +123,9 @@ class HighScoresManager
     //  and adjusted for BCD and zero based data
     Int32 convert(uInt32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const;
 
+    // Peek into memory
+    Int16 peek(uInt16 addr) const;
+
   private:
     enum {
       //IDX_ARM_RAM = 0,
@@ -177,8 +180,6 @@ class HighScoresManager
     Properties& properties(Properties& props) const;
     // Get value from highscore propterties at given index
     string getPropIdx(const Properties& props, PropType type, uInt32 idx = 0) const;
-    // Peek into memory
-    Int16 peek(uInt16 addr) const;
 
     Int32 fromBCD(uInt8 bcd) const;
 
