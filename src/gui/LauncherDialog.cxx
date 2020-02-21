@@ -208,6 +208,10 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Create (empty) context menu for ROM list options
   myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), EmptyVarList);
+<<<<<<< HEAD
+=======
+
+>>>>>>> remotes/origin/master
 
   // Create global props dialog, which is used to temporarily overrride
   // ROM properties
@@ -475,6 +479,7 @@ void LauncherDialog::handleMouseDown(int x, int y, MouseButton b, int clickCount
 
     // Add menu at current x,y mouse location
     myMenu->show(x + getAbsX(), y + getAbsY(), surface().dstRect());
+
   }
   else
     Dialog::handleMouseDown(x, y, b, clickCount);

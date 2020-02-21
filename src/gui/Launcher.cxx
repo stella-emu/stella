@@ -38,10 +38,13 @@ Launcher::Launcher(OSystem& osystem)
   // We check those bounds now
   myWidth  = std::max(myWidth,  FBMinimum::Width);
   myHeight = std::max(myHeight, FBMinimum::Height);
+  myWidth  = std::min(myWidth,  d.w);
+  myHeight = std::min(myHeight, d.h);
+  // do not include overscan when launcher saving size
+  myOSystem.settings().setValue("launcherres", Common::Size(myWidth, myHeight));
+  // now make overscan effective
   myWidth  = std::min(myWidth,  uInt32(d.w * overscan));
   myHeight = std::min(myHeight, uInt32(d.h * overscan));
-
-  myOSystem.settings().setValue("launcherres", Common::Size(myWidth, myHeight));
 
   myBaseDialog = new LauncherDialog(myOSystem, *this, 0, 0, myWidth, myHeight);
 }
