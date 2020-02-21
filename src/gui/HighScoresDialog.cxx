@@ -81,13 +81,14 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   VariantList items;
 
   ypos = VBORDER + _th; xpos = HBORDER;
+  ypos += lineHeight + VGAP * 2; // space for game name
 
   StaticTextWidget* s = new StaticTextWidget(this, _font, xpos, ypos + 1, "Variation ");
   myVariationPopup = new PopUpWidget(this, _font, s->getRight(), ypos,
                                       _font.getStringWidth("256") - 4, lineHeight, items, "", 0,
                                       kVariationChanged);
   wid.push_back(myVariationPopup);
-  myPrevVarButton = new ButtonWidget(this, _font, myVariationPopup->getRight() + 162, ypos - 1,
+  myPrevVarButton = new ButtonWidget(this, _font, myVariationPopup->getRight() + 157, ypos - 1,
                                      48, myVariationPopup->getHeight(),
                                      PREV_GFX.data(), BUTTON_GFX_W, BUTTON_GFX_H, kPrevVariation);
   wid.push_back(myPrevVarButton);
@@ -99,15 +100,15 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP * 4;
 
   int xposRank = HBORDER;
-  int xposScore = xposRank + _font.getStringWidth("Rank") + 24;
-  int xposSpecial = xposScore + _font.getStringWidth("Score") + 24;
+  int xposScore = xposRank + _font.getStringWidth("Rank");
+  int xposSpecial = xposScore + _font.getStringWidth("   Score") + 16;
   int xposName = xposSpecial + _font.getStringWidth("Round") + 16;
   int xposDate = xposName + _font.getStringWidth("Name") + 16;
   int xposDelete = xposDate + _font.getStringWidth("YY-MM-DD HH:MM") + 16;
   int nWidth = _font.getStringWidth("ABC") + 4;
 
   new StaticTextWidget(this, _font, xposRank, ypos + 1, "Rank");
-  new StaticTextWidget(this, _font, xposScore, ypos + 1, " Score");
+  new StaticTextWidget(this, _font, xposScore, ypos + 1, "   Score");
   mySpecialLabelWidget = new StaticTextWidget(this, _font, xposSpecial, ypos + 1, "Round");
   new StaticTextWidget(this, _font, xposName - 2, ypos + 1, "Name");
   new StaticTextWidget(this, _font, xposDate+16, ypos + 1, "Date   Time");
@@ -140,6 +141,9 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
   _h = myMD5Widget->getBottom() + VBORDER + buttonHeight(_font) + VBORDER;
   _w = myDeleteButtons[0]->getRight() + HBORDER;
 
+  myGameNameWidget = new StaticTextWidget(this, _font, HBORDER, VBORDER + _th + 1,
+                                          _w - HBORDER * 2, lineHeight);
+
   addDefaultsOKCancelBGroup(wid, _font, "Save", "Cancel", " Reset ");
   addToFocusList(wid);
 }
@@ -153,7 +157,7 @@ HighScoresDialog::~HighScoresDialog()
 void HighScoresDialog::loadConfig()
 {
   // Enable blending (only once is necessary)
-  if (!surface().attributes().blending)
+  if (myMode == Menu::AppMode::emulator && !surface().attributes().blending)
   {
     surface().attributes().blending = true;
     surface().attributes().blendalpha = 90;
@@ -187,14 +191,7 @@ void HighScoresDialog::loadConfig()
   myMD5Widget->setLabel("MD5: " + myMD5);
 
   // requires the current MD5
-  string title = "High Scores - " + cartName();
-  uInt32 maxChars = (_w - 20) / _font.getMaxCharWidth();
-
-  if(title.length() > maxChars)
-    setTitle(title.substr(0, maxChars - 1) + ELLIPSIS);
-  else
-    setTitle(title);
-
+  myGameNameWidget->setLabel(cartName());
 
   myEditRank = myHighScoreRank = -1;
   myNow = now();
@@ -440,9 +437,6 @@ string HighScoresDialog::cartName() const
     Properties props;
 
     instance().propSet().getMD5(myMD5, props);
-    cerr << myMD5 << endl;
-
-
     if(props.get(PropType::Cart_Name).empty())
       return instance().launcher().currentNode().getNameWithExt("");
     else

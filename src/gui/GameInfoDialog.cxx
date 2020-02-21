@@ -1130,10 +1130,10 @@ void GameInfoDialog::updateHighScoresWidgets()
 
   // update variations RAM value
   setAddressVal(myVarAddress, myVarAddressVal, myVarsBCD->getState(),
-                myVarsZeroBased->getState() ? 1 : 0, stringToInt(myVariations->getText(), 1));
+                myVarsZeroBased->getState(), stringToInt(myVariations->getText(), 1));
 
   setAddressVal(mySpecialAddress, mySpecialAddressVal, mySpecialBCD->getState(),
-                mySpecialZeroBased->getState() ? 1 : 0);
+                mySpecialZeroBased->getState());
 
   // update score RAM values and resulting scores
   HSM::ScoreAddresses scoreAddr;
@@ -1166,7 +1166,7 @@ void GameInfoDialog::updateHighScoresWidgets()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget* valWidget,
-                                   bool isBCD, uInt8 incVal, uInt8 maxVal)
+                                   bool isBCD, bool zeroBased, uInt8 maxVal)
 {
   string strAddr;
 
@@ -1180,16 +1180,15 @@ void GameInfoDialog::setAddressVal(EditTextWidget* addressWidget, EditTextWidget
     uInt16 addr;
     uInt8 val;
     ostringstream ss;
-    Int32 bits = ceil(log(maxVal + incVal)/log(2));
 
     // convert to number and read from memory
     addr = stringToIntBase16(strAddr, HSM::DEFAULT_ADDRESS);
     val = system.peek(addr);
-    val %= 1 << bits;
-    val += incVal;
+    val = instance().highScores().convert(val, maxVal, isBCD, zeroBased);
+
     // format output and display in value widget
-    if (isBCD)
-      ss << hex;
+    //if (isBCD)
+    //  ss << hex;
     ss << right //<< setw(2) << setfill(' ')
       << uppercase << uInt16(val);
     valWidget->setText(ss.str());

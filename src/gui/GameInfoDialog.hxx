@@ -73,7 +73,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     void updateHighScoresWidgets();
     // set formatted memory value for given address field
     void setAddressVal(EditTextWidget* address, EditTextWidget* val,
-                       bool isBCD = true, uInt8 incVal = 0, uInt8 maxVal = 255);
+                       bool isBCD = true, bool zeroBased = false, uInt8 maxVal = 255);
 
   private:
     TabWidget* myTab{nullptr};
@@ -140,7 +140,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget*   mySpecialBCD{nullptr};
     CheckboxWidget*   mySpecialZeroBased{nullptr};
 
-    StaticTextWidget* myScoreLabel{nullptr}; 
+    StaticTextWidget* myScoreLabel{nullptr};
     StaticTextWidget* myScoreDigitsLabel{nullptr};
     PopUpWidget*      myScoreDigits{nullptr};
     StaticTextWidget* myTrailingZeroesLabel{nullptr};

@@ -112,6 +112,8 @@ class HighScoresDialog : public Dialog
     string myDates[NUM_RANKS];
     string myMD5;
 
+    StaticTextWidget* myGameNameWidget{nullptr};
+
     PopUpWidget*      myVariationPopup{nullptr};
     ButtonWidget*     myPrevVarButton{nullptr};
     ButtonWidget*     myNextVarButton{nullptr};
