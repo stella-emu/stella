@@ -355,10 +355,10 @@ Int32 HighScoresManager::variation() const
   uInt16 addr = varAddress(properties(props));
 
   if(addr == DEFAULT_ADDRESS)
-    /*if(numVariations() > 1)
+    if(numVariations() == 1)
       return DEFAULT_VARIATION;
-    else*/
-    return NO_VALUE;
+    else
+      return NO_VALUE;
 
   return variation(addr, varBCD(props), varZeroBased(props), numVariations(props));
 }
@@ -458,14 +458,15 @@ Int32 HighScoresManager::convert(uInt32 val, uInt32 maxVal, bool isBCD, bool zer
     ? ceil(log(maxVal) / log(10) * 4)
     : ceil(log(maxVal) / log(2));
 
+  // limit to maxVal's bits
+  val %= 1 << bits;
+
   if (isBCD)
     val = fromBCD(val);
 
   if(val == NO_VALUE)
     return 0;
 
-  // limit to maxVal's bits
-  val %= 1 << bits;
   val += zeroBased ? 1 : 0;
 
   return val;

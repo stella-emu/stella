@@ -177,7 +177,11 @@ void HighScoresDialog::loadConfig()
   }
   myVariationPopup->addItems(items);
 
-  Int32 variation = instance().highScores().variation();
+  Int32 variation;
+  if(instance().highScores().numVariations() == 1)
+    variation = HSM::DEFAULT_VARIATION;
+  else
+    variation = instance().highScores().variation();
   if(variation != HSM::NO_VALUE)
   {
     myVariationPopup->setSelected(variation);
