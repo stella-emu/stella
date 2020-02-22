@@ -37,8 +37,9 @@
 
 "Cart.MD5" "541cac55ebcf7891d9d51c415922303f"
 "Cart.Name" "SF2_20131217_RC8_NTSC"
-"Cart.Formats" "8"
-"Cart.Addresses" "1CF7,1CF6,1CF5,1CF4"
+"Display.Phosphor" "YES"
+"Cart.Formats" "8,0,B,0,B,0,LEVEL,D,1"
+"Cart.Addresses" "1CF7,1CF6,1CF5,1CF4,0,18AC"
 ""
 
 "Cart.MD5" "6dda84fb8e442ecf34241ac0d1d91d69"
@@ -139,6 +140,13 @@
 "Cart.Variations" "66"
 "Cart.Formats" "5,1,0,B,D,0"
 "Cart.Addresses" "BD,BE,80,C7"
+""
+
+"Cart.MD5" "dde55d9868911407fe8b3fefef396f00"
+"Cart.Name" "Seawolf (2004) (Xype, Manuel Rotschkar)"
+"Cart.Variations" "4"
+"Cart.Formats" "6"
+"Cart.Addresses" "90,91,92,0"
 ""
 
 "Cart.MD5" "f0e0addc07971561ab80d9abe1b8d333"

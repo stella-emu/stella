@@ -72,7 +72,7 @@ Int16 HighScoresManager::peek(uInt16 addr) const
     else
       return myOSystem.console().cartridge().internalRamGetValue(addr);
   }
-  return -1;
+  return NO_VALUE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -354,8 +354,11 @@ Int32 HighScoresManager::variation() const
   Properties props;
   uInt16 addr = varAddress(properties(props));
 
-  if (addr == DEFAULT_ADDRESS)
-    return DEFAULT_VARIATION;
+  if(addr == DEFAULT_ADDRESS)
+    /*if(numVariations() > 1)
+      return DEFAULT_VARIATION;
+    else*/
+    return NO_VALUE;
 
   return variation(addr, varBCD(props), varZeroBased(props), numVariations(props));
 }
@@ -365,7 +368,7 @@ Int32 HighScoresManager::score(uInt32 numAddrBytes, uInt32 trailingZeroes,
                                bool isBCD, const ScoreAddresses& scoreAddr) const
 {
   if (!myOSystem.hasConsole())
-    return -1;
+    return NO_VALUE;
 
   Int32 totalScore = 0;
 
@@ -380,13 +383,13 @@ Int32 HighScoresManager::score(uInt32 numAddrBytes, uInt32 trailingZeroes,
     {
       score = fromBCD(score);
       // verify if score is legit
-      if (score == -1)
-        return -1;
+      if (score == NO_VALUE)
+        return NO_VALUE;
     }
     totalScore += score;
   }
 
-  if (totalScore != -1)
+  if (totalScore != NO_VALUE)
     for (uInt32 i = 0; i < trailingZeroes; ++i)
       totalScore *= 10;
 
@@ -406,7 +409,7 @@ Int32 HighScoresManager::score() const
     string addr = getPropIdx(props, PropType::Cart_Addresses, b);
 
     if (addr.empty())
-      return -1;
+      return NO_VALUE;
     scoreAddr[b] = stringToIntBase16(addr);
   }
 
@@ -426,7 +429,7 @@ Int32 HighScoresManager::special() const
   uInt16 addr = specialAddress(properties(props));
 
   if (addr == DEFAULT_ADDRESS)
-    return -1;
+    return NO_VALUE;
 
   return special(addr, specialBCD(props), specialZeroBased(props));
 }
@@ -435,7 +438,7 @@ Int32 HighScoresManager::special() const
 Int32 HighScoresManager::special(uInt16 addr, bool varBCD, bool zeroBased) const
 {
   if (!myOSystem.hasConsole())
-    return -1;
+    return NO_VALUE;
 
   Int32 var = peek(addr);
 
@@ -458,7 +461,7 @@ Int32 HighScoresManager::convert(uInt32 val, uInt32 maxVal, bool isBCD, bool zer
   if (isBCD)
     val = fromBCD(val);
 
-  if(val == -1)
+  if(val == NO_VALUE)
     return 0;
 
   // limit to maxVal's bits
@@ -473,7 +476,7 @@ Int32 HighScoresManager::fromBCD(uInt8 bcd) const
 {
   // verify if score is legit
   if ((bcd & 0xF0) >= 0xA0 || (bcd & 0xF) >= 0xA)
-    return -1;
+    return NO_VALUE;
 
   return (bcd >> 4) * 10 + bcd % 16;
 }
