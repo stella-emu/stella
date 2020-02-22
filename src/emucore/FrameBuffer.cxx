@@ -862,23 +862,23 @@ void FrameBuffer::setCursorState()
   // Show/hide cursor in UI/emulation mode based on 'cursor' setting
   int cursor = myOSystem.settings().getInt("cursor");
   // always enable cursor in lightgun games
-  if (usesLightgun)
-    cursor |= 1;
+  if (usesLightgun && !myGrabMouse)
+    cursor |= 1;  // +Emulation
 
   switch(cursor)
   {
-    case 0:
+    case 0:                   // -UI, -Emulation
       showCursor(false);
       break;
     case 1:
-      showCursor(emulation);
+      showCursor(emulation);  //-UI, +Emulation
       myGrabMouse = false; // disable grab while cursor is shown in emulation
       break;
-    case 2:
+    case 2:                   // +UI, -Emulation
       showCursor(!emulation);
       break;
     case 3:
-      showCursor(true);
+      showCursor(true);       // +UI, +Emulation
       myGrabMouse = false; // disable grab while cursor is shown in emulation
       break;
   }
