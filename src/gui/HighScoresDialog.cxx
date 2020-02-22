@@ -65,6 +65,7 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
     myMode(mode),
     _max_w(max_w),
     _max_h(max_h),
+    myVariation(HSM::DEFAULT_VARIATION),
     myInitials(""),
     myDirty(false),
     myHighScoreSaved(false)
@@ -175,7 +176,20 @@ void HighScoresDialog::loadConfig()
     VarList::push_back(items, buf.str(), i);
   }
   myVariationPopup->addItems(items);
-  myVariationPopup->setSelected(instance().highScores().variation());
+
+  Int32 variation = instance().highScores().variation();
+  if(variation != HSM::NO_VALUE)
+  {
+    myVariationPopup->setSelected(variation);
+    myUserDefVar = false;
+  }
+  else
+  {
+    // use last selected variation
+    myVariationPopup->setSelected(myVariation);
+    myUserDefVar = true;
+  }
+
   myVariationPopup->setEnabled(instance().highScores().numVariations() > 1);
 
   string label = "   " + instance().highScores().specialLabel();
@@ -210,7 +224,7 @@ void HighScoresDialog::saveConfig()
   }
   // save selected variation
   saveHighScores(myVariation);
-  if(myVariation == instance().highScores().variation())
+  if(myVariation == instance().highScores().variation() || myUserDefVar)
     myHighScoreSaved = true;
 }
 
@@ -277,7 +291,7 @@ void HighScoresDialog::handleVariation(bool init)
 
     myEditRank = -1;
 
-    if (myVariation == instance().highScores().variation())
+    if (myVariation == instance().highScores().variation() || myUserDefVar)
       handlePlayedVariation();
 
     updateWidgets(init);
@@ -367,10 +381,9 @@ void HighScoresDialog::handlePlayedVariation()
         myDates[r] = myDates[r - 1];
       }
       myHighScores[myHighScoreRank] = newScore;
-      //myNames[myHighScoreRank] = "";
       mySpecials[myHighScoreRank] = newSpecial;
       myDates[myHighScoreRank] = myNow;
-      myDirty = true;
+      myDirty |= !myUserDefVar; // only ask when the variation was read by defintion
     }
     else
       myHighScoreRank = -1;

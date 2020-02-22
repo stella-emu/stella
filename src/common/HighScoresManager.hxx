@@ -38,6 +38,8 @@ namespace HSM {
   static const uInt32 DEFAULT_VARIATION = 1;
   static const uInt32 DEFAULT_ADDRESS = 0;
 
+  static const Int32 NO_VALUE = -1;
+
   using ScoreAddresses = array<Int16, MAX_SCORE_ADDR>;
 
   struct ScoresInfo {

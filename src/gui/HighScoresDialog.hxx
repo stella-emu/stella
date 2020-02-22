@@ -93,8 +93,9 @@ class HighScoresDialog : public Dialog
     };
 
   private:
+    bool myUserDefVar;      // allow the user to define the variation
     bool myDirty;
-    bool myHighScoreSaved; // remember if current high score was already saved (avoids double HS)
+    bool myHighScoreSaved;  // remember if current high score was already saved (avoids double HS)
     unique_ptr<GUI::MessageBox> myConfirmMsg;
     int _max_w;
     int _max_h;
