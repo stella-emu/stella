@@ -396,7 +396,6 @@ Int32 HighScoresManager::score(uInt32 numAddrBytes, uInt32 trailingZeroes,
   return totalScore;
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoresManager::score() const
 {
@@ -414,6 +413,31 @@ Int32 HighScoresManager::score() const
   }
 
   return score(numBytes, trailingZeroes(props), scoreBCD(props), scoreAddr);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string HighScoresManager::formattedScore(Int32 score, Int32 width) const
+{
+  if(score <= 0)
+    return "";
+
+  ostringstream buf;
+  Properties props;
+  Int32 digits = numDigits(properties(props));
+
+  if(scoreBCD(props))
+  {
+    if(width > digits)
+      digits = width;
+    buf << std::setw(digits) << std::setfill(' ') << score;
+  }
+  else {
+    if(width > digits)
+      buf << std::setw(width - digits) << std::setfill(' ') << "";
+    buf << std::hex << std::setw(digits) << std::setfill('0') << score;
+  }
+
+  return buf.str();
 }
 
 bool HighScoresManager::scoreInvert() const

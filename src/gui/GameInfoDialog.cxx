@@ -1152,16 +1152,8 @@ void GameInfoDialog::updateHighScoresWidgets()
 
   Int32 score = instance().highScores().score(numAddr, myTrailingZeroes->getSelected(),
                                               myScoreBCD->getState(), scoreAddr);
-  if(score >= 0)
-  {
-    ostringstream ss;
 
-    ss.str("");
-    ss << right << setw(myScoreDigits->getSelected() + 1) << setfill(' ') << score;
-    myCurrentScore->setLabel(ss.str());
-  }
-  else
-    myCurrentScore->setLabel("");
+  myCurrentScore->setLabel(instance().highScores().formattedScore(score));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

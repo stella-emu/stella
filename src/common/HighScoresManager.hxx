@@ -118,6 +118,7 @@ class HighScoresManager
     string specialLabel() const;
     Int32 variation() const;
     Int32 score() const;
+    string formattedScore(Int32 score, Int32 width = -1) const;
     bool scoreInvert() const;
     Int32 special() const;
 

@@ -314,7 +314,6 @@ void HighScoresDialog::updateWidgets(bool init)
 
     if (myHighScores[r] > 0)
     {
-      buf << std::setw(HSM::MAX_SCORE_DIGITS) << std::setfill(' ') << myHighScores[r];
       myRankWidgets[r]->clearFlags(Widget::FLAG_INVISIBLE);
       myDeleteButtons[r]->clearFlags(Widget::FLAG_INVISIBLE);
       myDeleteButtons[r]->setEnabled(true);
@@ -325,9 +324,9 @@ void HighScoresDialog::updateWidgets(bool init)
       myDeleteButtons[r]->setFlags(Widget::FLAG_INVISIBLE);
       myDeleteButtons[r]->setEnabled(false);
     }
-    myScoreWidgets[r]->setLabel(buf.str());
+    myScoreWidgets[r]->setLabel(instance().highScores().formattedScore(myHighScores[r],
+                                HSM::MAX_SCORE_DIGITS));
 
-    buf.str("");
     if (mySpecials[r] > 0)
       buf << std::setw(HSM::MAX_SPECIAL_DIGITS) << std::setfill(' ') << mySpecials[r];
     mySpecialWidgets[r]->setLabel(buf.str());
