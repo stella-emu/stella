@@ -25,6 +25,14 @@
 "Cart.Addresses" "DD,DE,DF,80"
 ""
 
+"Cart.MD5" "137373599e9b7bf2cf162a102eb5927f"
+"Cart.Manufacturer" "AtariAge, Joe Grand"
+"Cart.Name" "Ultra SCSIcide (SCSIcide 2.0)"
+"Controller.Left" "PADDLES"
+"Cart.Formats" "6,0,H"
+"Cart.Addresses" "DC,DD,DE"
+""
+
 "Cart.MD5" "211774f4c5739042618be8ff67351177"
 "Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Tom Calderwood, Glenn Parker"
 "Cart.ModelNo" "CX2684"
@@ -58,8 +66,8 @@
 "Cart.ModelNo" "AG-019"
 "Cart.Name" "Sky Jinks (1982) (Activision)"
 "Cart.Variations" "4"
-"Cart.Formats" "4,0,B,1,B,1"
-"Cart.Addresses" "A6,A2,99"
+"Cart.Formats" "6,0,B,1,B,1"
+"Cart.Addresses" "9E,A6,A2,99"
 ""
 
 "Cart.MD5" "2bb9f4686f7e08c5fcc69ec1a1c66fe7"
@@ -105,6 +113,15 @@
 "Cart.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cart.Formats" "6"
 "Cart.Addresses" "D5,D6,D7"
+""
+
+"Cart.MD5" "515046e3061b7b18aa3a551c3ae12673"
+"Cart.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cart.ModelNo" "CX2692"
+"Cart.Name" "Moon Patrol (1983) (Atari)"
+"Cart.Variations" "6"
+"Cart.Formats" "6,0,B,0,B,1"
+"Cart.Addresses" "EA,EB,EC,F9"
 ""
 
 "Cart.MD5" "541cac55ebcf7891d9d51c415922303f"
@@ -218,6 +235,14 @@
 "Cart.Variations" "8"
 "Cart.Formats" "6,0,B,0,B,1"
 "Cart.Addresses" "E0,E1,E2,80"
+""
+
+"Cart.MD5" "c6556e082aac04260596b4045bc122de"
+"Cart.Manufacturer" "Atari - GCC, Dave Payne"
+"Cart.ModelNo" "CX2669"
+"Cart.Name" "Vanguard (1983) (Atari)"
+"Cart.Formats" "6"
+"Cart.Addresses" "99,98,97"
 ""
 
 "Cart.MD5" "ccbd36746ed4525821a8083b0d6d2c2c"
