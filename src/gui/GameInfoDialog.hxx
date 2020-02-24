@@ -132,14 +132,6 @@ class GameInfoDialog : public Dialog, public CommandSender
     CheckboxWidget*   myVarsBCD{nullptr};
     CheckboxWidget*   myVarsZeroBased{nullptr};
 
-    StaticTextWidget* mySpecialLabel{nullptr};
-    EditTextWidget*   mySpecialName{nullptr};
-    StaticTextWidget* mySpecialAddressLabel{nullptr};
-    EditTextWidget*   mySpecialAddress{nullptr};
-    EditTextWidget*   mySpecialAddressVal{nullptr};
-    CheckboxWidget*   mySpecialBCD{nullptr};
-    CheckboxWidget*   mySpecialZeroBased{nullptr};
-
     StaticTextWidget* myScoreLabel{nullptr};
     StaticTextWidget* myScoreDigitsLabel{nullptr};
     PopUpWidget*      myScoreDigits{nullptr};
@@ -153,6 +145,17 @@ class GameInfoDialog : public Dialog, public CommandSender
     EditTextWidget*   myScoreAddressVal[HSM::MAX_SCORE_ADDR]{nullptr};
     StaticTextWidget* myCurrentScoreLabel{nullptr};
     StaticTextWidget* myCurrentScore{nullptr};
+
+    StaticTextWidget* mySpecialLabel{nullptr};
+    EditTextWidget*   mySpecialName{nullptr};
+    StaticTextWidget* mySpecialAddressLabel{nullptr};
+    EditTextWidget*   mySpecialAddress{nullptr};
+    EditTextWidget*   mySpecialAddressVal{nullptr};
+    CheckboxWidget*   mySpecialBCD{nullptr};
+    CheckboxWidget*   mySpecialZeroBased{nullptr};
+
+    StaticTextWidget* myHighScoreNotesLabel{nullptr};
+    EditTextWidget*   myHighScoreNotes{nullptr};
 
     enum {
       kVCenterChanged  = 'Vcch',

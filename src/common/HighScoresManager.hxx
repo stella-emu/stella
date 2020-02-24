@@ -53,6 +53,7 @@ namespace HSM {
     string special;
     bool specialBCD;
     bool specialZeroBased;
+    string notes;
     //bool armRAM;
     // Addresses
     ScoreAddresses scoreAddr;
@@ -121,6 +122,7 @@ class HighScoresManager
     string formattedScore(Int32 score, Int32 width = -1) const;
     bool scoreInvert() const;
     Int32 special() const;
+    string notes() const;
 
     // converts the given value, using only the maximum bits required by maxVal
     //  and adjusted for BCD and zero based data
@@ -141,6 +143,7 @@ class HighScoresManager
       IDX_SPECIAL_LABEL,
       IDX_SPECIAL_BCD,
       IDX_SPECIAL_ZERO_BASED,
+      IDX_NOTES,
     };
     enum {
       IDX_VARS_ADDRESS = 0,
@@ -174,6 +177,7 @@ class HighScoresManager
     string specialLabel(const Properties& props) const;
     bool specialBCD(const Properties& props) const;
     bool specialZeroBased(const Properties& props) const;
+    string notes(const Properties& props) const;
     //bool armRAM(const Properties& props) const;
 
     // Calculate the number of bytes for one player's score from property parameters
@@ -185,6 +189,8 @@ class HighScoresManager
     string getPropIdx(const Properties& props, PropType type, uInt32 idx = 0) const;
 
     Int32 fromBCD(uInt8 bcd) const;
+    string toPropString(const string& test) const;
+    string fromPropString(const string& test) const;
 
   private:
     // Reference to the osystem object

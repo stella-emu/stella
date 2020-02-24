@@ -72,7 +72,8 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = _font.getLineHeight(),
-    fontWidth = _font.getMaxCharWidth();
+    fontWidth = _font.getMaxCharWidth(),
+    infoLineHeight = ifont.getLineHeight();
   const int VBORDER = 10;
   const int HBORDER = 10;
   const int VGAP = 4;
@@ -135,12 +136,17 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
     ypos += lineHeight + VGAP;
   }
-  ypos += VGAP * 2;
+  ypos += VGAP;
 
-  myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1, "MD5: 12345678901234567890123456789012");
+  _w = myDeleteButtons[0]->getRight() + HBORDER;
+  myNotesWidget = new StaticTextWidget(this, ifont, xpos, ypos + 1, _w - HBORDER * 2,
+                                       infoLineHeight, "Note: ");
+
+  ypos += infoLineHeight + VGAP;
+
+  myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1, "MD5:  12345678901234567890123456789012");
 
   _h = myMD5Widget->getBottom() + VBORDER + buttonHeight(_font) + VBORDER;
-  _w = myDeleteButtons[0]->getRight() + HBORDER;
 
   myGameNameWidget = new StaticTextWidget(this, _font, HBORDER, VBORDER + _th + 1,
                                           _w - HBORDER * 2, lineHeight);
@@ -201,12 +207,14 @@ void HighScoresDialog::loadConfig()
     label = label.substr(label.length() - 5);
   mySpecialLabelWidget->setLabel(label);
 
+  myNotesWidget->setLabel("Note: " + instance().highScores().notes());
+
   if (instance().hasConsole())
     myMD5 = instance().console().properties().get(PropType::Cart_MD5);
   else
     myMD5 = instance().launcher().selectedRomMD5();
 
-  myMD5Widget->setLabel("MD5: " + myMD5);
+  myMD5Widget->setLabel("MD5:  " + myMD5);
 
   // requires the current MD5
   myGameNameWidget->setLabel(cartName());
