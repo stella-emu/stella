@@ -444,8 +444,9 @@ void GameInfoDialog::addHighScoresTab()
   EditableWidget::TextFilter fVars = [](char c) {
     return (c >= '0' && c <= '9');
   };
-  EditableWidget::TextFilter fSpecial = [](char c) {
-    return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '.'|| c == '-';
+
+  EditableWidget::TextFilter fText = [](char c) {
+    return (c >= 'a' && c <= 'z') || (c >= ' ' && c < ',') || (c > ',' && c < '@');
   };
 
   xpos = HBORDER; ypos = VBORDER;
@@ -499,7 +500,7 @@ void GameInfoDialog::addHighScoresTab()
 
   xpos += 20; ypos += lineHeight + VGAP;
 
-  vwidth = _font.getStringWidth("AB") + 4;
+  vwidth = _font.getStringWidth("AB") + 3;
   items.clear();
   for (int i = 1; i <= HSM::MAX_SCORE_DIGITS; ++i)
     VarList::push_back(items, std::to_string(i), std::to_string(i));
@@ -553,13 +554,13 @@ void GameInfoDialog::addHighScoresTab()
   myCurrentScore = new StaticTextWidget(myTab, _font, myCurrentScoreLabel->getRight(), ypos + 1,
                                         "12345678");
 
-  xpos -= 20; ypos += lineHeight + VGAP * 4;
+  xpos -= 20; ypos += lineHeight + VGAP * 3;
 
   vwidth = _font.getStringWidth("123") + 4;
   mySpecialLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Special");
   mySpecialName = new EditTextWidget(myTab, _font, mySpecialLabel->getRight() + 19, ypos - 1,
                                      swidth, lineHeight);
-  mySpecialName->setTextFilter(fSpecial);
+  mySpecialName->setTextFilter(fText);
   wid.push_back(mySpecialName);
 
   mySpecialAddressLabel = new StaticTextWidget(myTab, _font, myVarAddressLabel->getLeft(),
@@ -579,6 +580,14 @@ void GameInfoDialog::addHighScoresTab()
   mySpecialZeroBased = new CheckboxWidget(myTab, _font, mySpecialBCD->getRight() + 16, ypos + 1,
                                           "0-based", kHiScoresChanged);
   wid.push_back(mySpecialZeroBased);
+
+  ypos += lineHeight + VGAP * 3;
+
+  myHighScoreNotesLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Notes");
+  myHighScoreNotes = new EditTextWidget(myTab, _font, mySpecialName->getLeft(), ypos - 1,
+                                        _w - HBORDER - mySpecialName->getLeft() - 2 , lineHeight);
+  myHighScoreNotes->setTextFilter(fText);
+  wid.push_back(myHighScoreNotes);
 
   // Add items for tab 4
   addToFocusList(wid, myTab, tabID);
@@ -785,6 +794,8 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   mySpecialBCD->setState(info.specialBCD);
   mySpecialZeroBased->setState(info.specialZeroBased);
 
+  myHighScoreNotes->setText(info.notes);
+
   ss.str("");
   ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
     << uppercase << info.varsAddr;
@@ -898,14 +909,16 @@ void GameInfoDialog::saveHighScoresProperties()
     info.varsZeroBased = myVarsZeroBased->getState();
     info.varsBCD = myVarsBCD->getState();
 
-    info.special = mySpecialName->getText();
-    info.specialZeroBased = mySpecialZeroBased->getState();
-    info.specialBCD = mySpecialBCD->getState();
-
     info.numDigits = myScoreDigits->getSelected() + 1;
     info.trailingZeroes = myTrailingZeroes->getSelected();
     info.scoreBCD = myScoreBCD->getState();
     info.scoreInvert = myScoreInvert->getState();
+
+    info.special = mySpecialName->getText();
+    info.specialZeroBased = mySpecialZeroBased->getState();
+    info.specialBCD = mySpecialBCD->getState();
+
+    info.notes = myHighScoreNotes->getText();
 
     // fill addresses
     string strAddr;
@@ -1097,16 +1110,6 @@ void GameInfoDialog::updateHighScoresWidgets()
   myVarsBCD->setEnabled(enableVars && stringToInt(myVariations->getText(), 1) >= 10);
   myVarsZeroBased->setEnabled(enableVars);
 
-  mySpecialLabel->setEnabled(enable);
-  mySpecialName->setEnabled(enable);
-  mySpecialName->setEditable(enable);
-  mySpecialAddressLabel->setEnabled(enableSpecial);
-  mySpecialAddress->setEnabled(enableSpecial);
-  mySpecialAddress->setEditable(enableSpecial);
-  mySpecialAddressVal->setEnabled(enableSpecial && enableConsole);
-  mySpecialBCD->setEnabled(enableSpecial);
-  mySpecialZeroBased->setEnabled(enableSpecial);
-
   myScoreLabel->setEnabled(enable);
   myScoreDigitsLabel->setEnabled(enable);
   myScoreDigits->setEnabled(enable);
@@ -1125,6 +1128,19 @@ void GameInfoDialog::updateHighScoresWidgets()
 
   myCurrentScoreLabel->setEnabled(enable && enableConsole);
   myCurrentScore->setEnabled(enable && enableConsole);
+
+  mySpecialLabel->setEnabled(enable);
+  mySpecialName->setEnabled(enable);
+  mySpecialName->setEditable(enable);
+  mySpecialAddressLabel->setEnabled(enableSpecial);
+  mySpecialAddress->setEnabled(enableSpecial);
+  mySpecialAddress->setEditable(enableSpecial);
+  mySpecialAddressVal->setEnabled(enableSpecial && enableConsole);
+  mySpecialBCD->setEnabled(enableSpecial);
+  mySpecialZeroBased->setEnabled(enableSpecial);
+
+  myHighScoreNotesLabel->setEnabled(enable);
+  myHighScoreNotes->setEnabled(enable);
 
   // verify and update widget data
 

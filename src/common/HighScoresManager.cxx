@@ -140,6 +140,7 @@ bool HighScoresManager::get(const Properties& props, uInt32& numVariationsR,
   info.special = specialLabel(props);
   info.specialBCD = specialBCD(props);
   info.specialZeroBased = specialZeroBased(props);
+  info.notes = notes(props);
 
   info.varsAddr = varAddress(props);
   info.specialAddr = specialAddress(props);
@@ -164,12 +165,15 @@ void HighScoresManager::set(Properties& props, uInt32 numVariations,
   props.set(PropType::Cart_Variations, to_string(min(numVariations, MAX_VARIATIONS)));
 
   // fill from the back to skip default values
+  if (output.length() || !info.notes.empty())
+    output.insert(0, "," + toPropString(info.notes));
+
   if (output.length() || info.specialZeroBased != DEFAULT_SPECIAL_ZERO_BASED)
     output.insert(0, info.specialZeroBased ? ",1" : ",0");
   if (output.length() || info.specialBCD != DEFAULT_SPECIAL_BCD)
     output.insert(0, info.specialBCD ? ",B" : ",D");
   if (output.length() || !info.special.empty())
-    output.insert(0, "," + (info.special.empty() ? "-" : info.special));
+    output.insert(0, "," + toPropString(info.special.empty() ? "_" : info.special));
 
   if (output.length() || info.varsZeroBased != DEFAULT_VARS_ZERO_BASED)
     output.insert(0, info.varsZeroBased ? ",1" : ",0");
@@ -253,14 +257,7 @@ bool HighScoresManager::varZeroBased(const Properties& props) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string HighScoresManager::specialLabel(const Properties& props) const
 {
-  string orgLabel, label;
-
-  // some ugly formatting
-  orgLabel = label = getPropIdx(props, PropType::Cart_Formats, IDX_SPECIAL_LABEL);
-  label = BSPF::toLowerCase(label);
-  label[0] = orgLabel[0];
-
-  return label;
+  return fromPropString(getPropIdx(props, PropType::Cart_Formats, IDX_SPECIAL_LABEL));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,6 +274,12 @@ bool HighScoresManager::specialZeroBased(const Properties& props) const
   string zeroBased = getPropIdx(props, PropType::Cart_Formats, IDX_SPECIAL_ZERO_BASED);
 
   return zeroBased.empty() ? DEFAULT_SPECIAL_ZERO_BASED : zeroBased != "0";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string HighScoresManager::notes(const Properties& props) const
+{
+  return fromPropString(getPropIdx(props, PropType::Cart_Formats, IDX_NOTES));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -475,6 +478,14 @@ Int32 HighScoresManager::special(uInt16 addr, bool varBCD, bool zeroBased) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string HighScoresManager::notes() const
+{
+  Properties props;
+
+  return notes(properties(props));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 HighScoresManager::convert(uInt32 val, uInt32 maxVal, bool isBCD, bool zeroBased) const
 {
   maxVal += zeroBased ? 0 : 1;
@@ -505,3 +516,35 @@ Int32 HighScoresManager::fromBCD(uInt8 bcd) const
 
   return (bcd >> 4) * 10 + bcd % 16;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string HighScoresManager::toPropString(const string& text) const
+{
+  string result = text;
+  size_t pos;
+
+  while ((pos = result.find(" ")) != std::string::npos) {
+    result.replace(pos, 1, "_");
+  }
+
+  return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string HighScoresManager::fromPropString(const string& text) const
+{
+  string result = text;
+  size_t pos;
+
+  while ((pos = result.find("_")) != std::string::npos) {
+    result.replace(pos, 1, " ");
+  }
+
+  // some ugly formatting
+  char first = result[0];
+  result = BSPF::toLowerCase(result);
+  result[0] = first;
+
+  return result;
+}
+

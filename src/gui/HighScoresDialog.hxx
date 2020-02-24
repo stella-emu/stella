@@ -129,6 +129,7 @@ class HighScoresDialog : public Dialog
     StaticTextWidget* myDateWidgets[NUM_RANKS]{nullptr};
     ButtonWidget*     myDeleteButtons[NUM_RANKS]{nullptr};
 
+    StaticTextWidget* myNotesWidget{nullptr};
     StaticTextWidget* myMD5Widget{nullptr};
 
     Menu::AppMode myMode{Menu::AppMode::emulator};
