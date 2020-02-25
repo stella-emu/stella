@@ -583,7 +583,7 @@ void GameInfoDialog::addHighScoresTab()
 
   ypos += lineHeight + VGAP * 3;
 
-  myHighScoreNotesLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Notes");
+  myHighScoreNotesLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Note");
   myHighScoreNotes = new EditTextWidget(myTab, _font, mySpecialName->getLeft(), ypos - 1,
                                         _w - HBORDER - mySpecialName->getLeft() - 2 , lineHeight);
   myHighScoreNotes->setTextFilter(fText);
