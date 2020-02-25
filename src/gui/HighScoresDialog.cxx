@@ -144,7 +144,8 @@ HighScoresDialog::HighScoresDialog(OSystem& osystem, DialogContainer& parent,
 
   ypos += infoLineHeight + VGAP;
 
-  myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1, "MD5:  12345678901234567890123456789012");
+  myMD5Widget = new StaticTextWidget(this, ifont, xpos, ypos + 1,
+                                     "MD5:  12345678901234567890123456789012");
 
   _h = myMD5Widget->getBottom() + VBORDER + buttonHeight(_font) + VBORDER;
 
