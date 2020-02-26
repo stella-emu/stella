@@ -541,10 +541,14 @@ string HighScoresManager::fromPropString(const string& text) const
   }
 
   // some ugly formatting
-  char first = result[0];
-  result = BSPF::toLowerCase(result);
-  result[0] = first;
+  if(result.length())
+  {
+    char first = result[0];
+    result = BSPF::toLowerCase(result);
+    result[0] = first;
+  }
 
-  return result;
+  // remove leading spaces (especially for empty values)
+  size_t start = result.find_first_not_of(" ");
+  return (start == std::string::npos) ? "" : result.substr(start);
 }
-
