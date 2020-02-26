@@ -203,6 +203,10 @@ void HighScoresDialog::loadConfig()
 
   myVariationPopup->setEnabled(instance().highScores().numVariations() > 1);
 
+  if(myInitials.empty())
+    // load initials from last session
+    myInitials = instance().settings().getString("initials");
+
   string label = "   " + instance().highScores().specialLabel();
   if (label.length() > 5)
     label = label.substr(label.length() - 5);
@@ -234,6 +238,8 @@ void HighScoresDialog::saveConfig()
   {
     myInitials = myEditNameWidgets[myHighScoreRank]->getText();
     myNames[myHighScoreRank] = myInitials;
+    // remember initials for next session
+    instance().settings().setValue("initials", myInitials);
   }
   // save selected variation
   saveHighScores(myVariation);

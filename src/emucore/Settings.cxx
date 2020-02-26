@@ -153,6 +153,7 @@ Settings::Settings()
   setPermanent("threads", "false");
   setTemporary("romloadcount", "0");
   setTemporary("maxres", "");
+  setPermanent("initials", "");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
