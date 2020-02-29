@@ -47,7 +47,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   VariantList items;
 
   // Set real dimensions
-  setSize(35 * fontWidth + HBORDER * 2 + 3, 14 * (lineHeight + VGAP) + VGAP * 9 + 10 + _th, max_w, max_h);
+  setSize(35 * fontWidth + HBORDER * 2 + 3, 15 * (lineHeight + VGAP) + VGAP * 9 + 10 + _th, max_w, max_h);
 
   xpos = HBORDER;
   ypos = VBORDER + _th;
@@ -117,15 +117,15 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
                                            const GUI::Font& font)
 {
   const int VGAP = 4;
+  const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth();
+    fontWidth = font.getMaxCharWidth();    
   VariantList items;
 
   // TV effects options
   int swidth = font.getMaxCharWidth() * 11;
 
   // TV Mode
-  items.clear();
   VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
   VarList::push_back(items, "RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
   VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
@@ -157,11 +157,14 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
 
   // FS overscan
   myTVOverscan = new SliderWidget(this, font, xpos, ypos - 1, swidth, lineHeight,
-    "Overscan        ", lwidth, kOverscanChanged, fontWidth * 3);
+    "Overscan (*)    ", lwidth, kOverscanChanged, fontWidth * 3);
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
   ypos += lineHeight + VGAP;
+
+  new StaticTextWidget(this, ifont, xpos, ypos + 1, "(*) Change requires launcher reboot");
+  ypos += ifont.getLineHeight() + VGAP;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -172,7 +175,6 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   VariantList ctrls;
 
-  ctrls.clear();
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
   VarList::push_back(ctrls, "Joystick", "JOYSTICK");
   VarList::push_back(ctrls, "Paddles", "PADDLES");
