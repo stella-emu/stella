@@ -3872,7 +3872,7 @@
 "Cart.MD5" "2dbdca3058035d2b40c734dcf06a86d9"
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Asteroids DC+ (Thomas Jentzsch) (Hack)"
-"Cart.Note" "Uses the Joystick (left) or Steering (right) Controller"
+"Cart.Note" "Uses the Joystick (left) or Driving (right) Controller"
 "Cart.Rarity" "Hack"
 "Controller.Right" "DRIVING"
 "Controller.MouseAxis" "58"
@@ -6011,7 +6011,7 @@
 
 "Cart.MD5" "47aef18509051bab493589cb2619170b"
 "Cart.Name" "Stell-A-Sketch (Bob Colbert) (PD)"
-"Cart.Note" "Uses Driving, Joystick, or Amiga/Atari ST mouse Controllers"
+"Cart.Note" "Uses Driving, Joystick, or Amiga/Atari ST Mouse Controllers"
 "Cart.Rarity" "New Release"
 "Display.Phosphor" "YES"
 ""
@@ -7562,7 +7562,8 @@
 "Cart.MD5" "5a9685c4d51a6c1d6a9544946d9e8dc3"
 "Cart.Manufacturer" "AtariAge"
 "Cart.Name" "Grandma's Revenge (AtariAge)"
-"Cart.Note" "Can use driving controller in right port"
+"Cart.Note" "Can use Driving Controller in right port"
+"Controller.Right" "DRIVING"
 ""
 
 "Cart.MD5" "5a9d188245aff829efde816fcade0b16"
@@ -11402,6 +11403,15 @@
 "Cart.Manufacturer" "Apollo - Games by Apollo, Steve Stringfellow"
 "Cart.ModelNo" "AP-2005"
 "Cart.Name" "Lochjaw (1982) (Apollo)"
+""
+
+"Cart.MD5" "8619da7f6796cedff59e5aa20712fb4e"
+"Cart.Manufacturer" "Thomas Jentzsch"
+"Cart.Name" "Sadistroids (v1.2) (2003) (Thomas Jentzsch)"
+"Cart.Note" "Supports Driving Controller in right port"
+"Controller.Right" "DRIVING"
+"Display.Phosphor" "YES"
+"Display.PPBlend" "30"
 ""
 
 "Cart.MD5" "862cf669cbced78f9ed31a5d375b2ebe"
