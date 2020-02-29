@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3507;
+static constexpr uInt32 DEF_PROPS_SIZE = 3508;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -657,7 +657,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "2d9e5d8d083b6367eda880e80dfdfaeb", "QDI, Mike Montana, Rich Montana - Selchow & Righter", "87", "Glib (1983) (QDI)", "AKA Video Word Game", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2d9e65959808a6098c16c82a59c9d9dc", "Starpath Corporation, Stephen H. Landrum", "AR-4400", "Dragonstomper (1 of 3) (1982) (Starpath) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2dbc92688f9ba92a7e086d62be9df79d", "", "", "How to Draw a Playfield (1997) (Jim Crawford) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "2dbdca3058035d2b40c734dcf06a86d9", "Thomas Jentzsch", "", "Asteroids DC+ (Thomas Jentzsch) (Hack)", "Uses the Joystick (left) or Steering (right) Controller", "Hack", "", "", "", "", "", "", "", "", "DRIVING", "", "58", "", "", "YES", "" },
+  { "2dbdca3058035d2b40c734dcf06a86d9", "Thomas Jentzsch", "", "Asteroids DC+ (Thomas Jentzsch) (Hack)", "Uses the Joystick (left) or Driving (right) Controller", "Hack", "", "", "", "", "", "", "", "", "DRIVING", "", "58", "", "", "YES", "" },
   { "2dcf9ce486393cd36ca0928cd53b96cb", "Atari - GCC, Mike Feinstein, John Allred", "CX2688, CX2688P", "Jungle Hunt (1983) (Atari) (PAL) [a2]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "2de41a11c6767e54a5ee9ebaffec72af", "Gray Games & AtariAge", "", "E.T. Book Cart (PAL60)", "Charles F. Gray & Michael Rideout", "", "", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "YES", "55" },
   { "2dfec1615c49501fefc02165c81955e6", "", "", "Song (05-11-2002) (Paul Slocum)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
@@ -1011,7 +1011,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "4799a40b6e889370b7ee55c17ba65141", "Konami", "RC 100-X 02", "Pooyan (1983) (Konami)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "47aad247cce2534fd70c412cb483c7e0", "Rainbow Vision - Suntek", "SS-010", "Mafia (1983) (Rainbow Vision) (PAL)", "AKA Gangster Alley", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "47abfb993ff14f502f88cf988092e055", "Zellers", "", "Inca Gold (Zellers)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "47aef18509051bab493589cb2619170b", "", "", "Stell-A-Sketch (Bob Colbert) (PD)", "Uses Driving, Joystick, or Amiga/Atari ST mouse Controllers", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
+  { "47aef18509051bab493589cb2619170b", "", "", "Stell-A-Sketch (Bob Colbert) (PD)", "Uses Driving, Joystick, or Amiga/Atari ST Mouse Controllers", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "47b82d47e491ac7fdb5053a88fccc832", "Atari Freak 1, Franklin Cruz", "", "Asteroid 2 (Atari Freak 1) (Hack)", "Hack of Asteroids", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "47cd61f83457a0890de381e478f5cf5f", "Imagic, Wilfredo Aguilar, Michael Becker, Rob Fulop", "720111-2A, 13205", "Fathom (1983) (Imagic) (PAL)", "AKA Scuba", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "481d20ec22e7a63e818d5ef9679d548b", "Atari", "CX26163P", "Freeway Rabbit (32 in 1) (1988) (Atari) (PAL)", "AKA Freeway", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1262,7 +1262,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "5a81ad4e184050851e63c8e16e3dac77", "Jone Yuan Telephonic Enterprise Co", "Hack", "Sky Diver (Jone Yuan) (Hack)", "2600 Screen Search Console", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5a8afe5422abbfb0a342fb15afd7415f", "Atari - Bobco, Robert C. Polaro", "CX26155", "Sprint Master (1988) (Atari)", "AKA Sprint 88, Sprint 2000", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5a93265095146458df2baf2162014889", "Activision, Steve Cartwright - Ariola", "EAX-031, EAX-031-04B - 711 031-717", "Frostbite (1983) (Activision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "5a9685c4d51a6c1d6a9544946d9e8dc3", "AtariAge", "", "Grandma's Revenge (AtariAge)", "Can use driving controller in right port", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "5a9685c4d51a6c1d6a9544946d9e8dc3", "AtariAge", "", "Grandma's Revenge (AtariAge)", "Can use Driving Controller in right port", "", "", "", "", "", "", "", "", "", "DRIVING", "", "", "", "", "", "" },
   { "5a9d188245aff829efde816fcade0b16", "CCE", "C-808", "Phantom Tank (1983) (CCE) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5acf9865a72c0ce944979f76ff9610f0", "", "", "Dodge Demo 2 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5ae73916fa1da8d38ceff674fa25a78a", "CCE", "", "Barnstorming (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1891,6 +1891,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "85e48d68c8d802e3ba9d494a47d6e016", "", "", "Ship Demo (V 15) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "85e564dae5687e431955056fbda10978", "Milton Bradley Company - Renaissance Technology, Ty Roberts", "4362", "Survival Run (1983) (Milton Bradley)", "AKA Cosmic Commander", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "86128001e69ab049937f265911ce7e8a", "Apollo - Games by Apollo, Steve Stringfellow", "AP-2005", "Lochjaw (1982) (Apollo)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "8619da7f6796cedff59e5aa20712fb4e", "Thomas Jentzsch", "", "Sadistroids (v1.2) (2003) (Thomas Jentzsch)", "Supports Driving Controller in right port", "", "", "", "", "", "", "", "", "", "DRIVING", "", "", "", "", "YES", "30" },
   { "862cf669cbced78f9ed31a5d375b2ebe", "", "", "Gunfight 2600 - Flicker acceptance (2001) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "8644352b806985efde499ae6fc7b0fec", "CCE", "C-801", "Mr. Postman (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "8654d7f0fb351960016e06646f639b02", "Home Vision, R.J.P.G. - Gem International Corp. - VDI", "VCS83106", "Ski Hunt (1983) (Home Vision) (PAL)", "AKA Skiiing Hunt", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
