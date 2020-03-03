@@ -807,11 +807,14 @@ void GameInfoDialog::loadHighScoresProperties(const Properties& props)
   mySpecialAddress->setText(ss.str());
 
 
-  for (uInt32 a = 0; a < instance().highScores().numAddrBytes(info.numDigits, info.trailingZeroes); ++a)
+  for (uInt32 a = 0; a < HSM::MAX_SCORE_ADDR; ++a)
   {
     ss.str("");
-    ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
-      << uppercase << info.scoreAddr[a];
+    if(a < instance().highScores().numAddrBytes(info.numDigits, info.trailingZeroes))
+    {
+      ss << hex << right //<< setw(HSM::MAX_ADDR_CHARS) << setfill(' ')
+        << uppercase << info.scoreAddr[a];
+    }
     myScoreAddress[a]->setText(ss.str());
   }
   updateHighScoresWidgets();

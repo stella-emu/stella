@@ -212,7 +212,10 @@ void HighScoresDialog::loadConfig()
     label = label.substr(label.length() - 5);
   mySpecialLabelWidget->setLabel(label);
 
-  myNotesWidget->setLabel("Note: " + instance().highScores().notes());
+  if(!instance().highScores().notes().empty())
+    myNotesWidget->setLabel("Note: " + instance().highScores().notes());
+  else
+    myNotesWidget->setLabel("");
 
   if (instance().hasConsole())
     myMD5 = instance().console().properties().get(PropType::Cart_MD5);
