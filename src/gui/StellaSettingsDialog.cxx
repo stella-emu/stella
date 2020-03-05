@@ -23,6 +23,7 @@
 #include "NTSCFilter.hxx"
 #include "PopUpWidget.hxx"
 #include "MessageBox.hxx"
+#include "TIASurface.hxx"
 
 #include "StellaSettingsDialog.hxx"
 
@@ -119,7 +120,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   const int VGAP = 4;
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth();    
+    fontWidth = font.getMaxCharWidth();
   VariantList items;
 
   // TV effects options
@@ -293,8 +294,11 @@ void StellaSettingsDialog::saveConfig()
     instance().console().setProperties(myGameProperties);
   }
 
-  // Finally, issue a complete framebuffer re-initialization
+  // Finally, issue a complete framebuffer re-initialization...
   instance().createFrameBuffer();
+
+  // ... and apply potential setting changes to the TIA surface
+  instance().frameBuffer().tiaSurface().updateSurfaceSettings();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
