@@ -458,11 +458,17 @@ elif test "$have_gcc" = yes; then
 	fi
 
 	case $cxx_version in
-		4.[7-9]|4.[7-9].[0-9]|4.[7-9].[0-9][-.]*|[5-9]|[5-9].[0-9]|[5-9].[0-9].[0-9]|[5-9].[0-9].[0-9][-.]*)
+		[1-9]*)
 			_cxx_major=`echo $cxx_version | cut -d '.' -f 1`
 			_cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
-			cxx_version="$cxx_version, ok"
-			cxx_verc_fail=no
+			# Need at least version 4.7
+			if [ $_cxx_major -ge 5 ] || [ $_cxx_major -eq 4 -a $_cxx_minor -ge 7 ]; then
+				cxx_version="$cxx_version, ok"
+				cxx_verc_fail=no
+			else
+				cxx_version="$cxx_version, bad"
+				cxx_verc_fail=yes
+			fi
 			;;
 		'not found')
 			cxx_verc_fail=yes
