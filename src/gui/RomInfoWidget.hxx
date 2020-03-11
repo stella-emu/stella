@@ -31,7 +31,8 @@ class RomInfoWidget : public Widget
 {
   public:
     RomInfoWidget(GuiObject *boss, const GUI::Font& font,
-                  int x, int y, int w, int h);
+                  int x, int y, int w, int h,
+                  const Common::Size& imgSize);
     virtual ~RomInfoWidget() = default;
 
     void setProperties(const Properties& props, const FilesystemNode& node);

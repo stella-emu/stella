@@ -37,6 +37,7 @@
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "RomInfoWidget.hxx"
+#include "TIAConstants.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
@@ -123,15 +124,11 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add list with game titles
   // Before we add the list, we need to know the size of the RomInfoWidget
-  xpos = HBORDER;  ypos += lineHeight + 4;
-  int romWidth = 0;
-  int romSize = instance().settings().getInt("romviewer");
-  if(romSize > 1 && w >= 1000 && h >= 720)
-    romWidth = 660;
-  else if(romSize > 0 && w >= 640 && h >= 480)
-    romWidth = 365;
-
+  float imgZoom = getRomInfoZoom();
+  int romWidth = imgZoom * TIAConstants::viewableWidth;
+  if(romWidth > 0) romWidth += 10;
   int listWidth = _w - (romWidth > 0 ? romWidth+8 : 0) - 20;
+  xpos = HBORDER;  ypos += lineHeight + 4;
   myList = new FileListWidget(this, font, xpos, ypos,
                               listWidth, _h - 43 - bheight - fontHeight - lineHeight);
   myList->setEditable(false);
@@ -142,10 +139,17 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   if(romWidth > 0)
   {
     xpos += myList->getWidth() + 8;
-    myRomInfoWidget = new RomInfoWidget(this,
-        romWidth < 660 ? instance().frameBuffer().smallFont() :
-                         instance().frameBuffer().infoFont(),
-        xpos, ypos, romWidth, myList->getHeight());
+
+    // Initial surface size is the same as the viewable area
+    Common::Size imgSize(TIAConstants::viewableWidth*imgZoom,
+                         TIAConstants::viewableHeight*imgZoom);
+
+    // Calculate font area, and in the process the font that can be used
+    Common::Size fontArea(romWidth, myList->getHeight() - imgSize.h);
+    const GUI::Font& rominfoFont = getRomInfoFont(fontArea);
+
+    myRomInfoWidget = new RomInfoWidget(this, rominfoFont,
+        xpos, ypos, romWidth, myList->getHeight(), imgSize);
   }
 
   // Add textfield to show current directory
@@ -197,7 +201,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     wid.push_back(myStartButton);
   #endif
   }
-  if (myUseMinimalUI) // Highlight 'Rom Listing'
+  if(myUseMinimalUI) // Highlight 'Rom Listing'
     mySelectedItem = 0;
   else
     mySelectedItem = 2;
@@ -207,8 +211,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Create (empty) context menu for ROM list options
   myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), EmptyVarList);
 
-
-  // Create global props dialog, which is used to temporarily overrride
+  // Create global props dialog, which is used to temporarily override
   // ROM properties
   myGlobalProps = make_unique<GlobalPropsDialog>(this,
     myUseMinimalUI ? osystem.frameBuffer().launcherFont() : osystem.frameBuffer().font());
@@ -323,6 +326,36 @@ void LauncherDialog::applyFiltering()
       return true;
     }
   );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float LauncherDialog::getRomInfoZoom()
+{
+  // The ROM info area is some multiple of the minimum TIA image size
+  // However, it can't exceed 70% of the total dialog width, nor less than
+  // the base size of the TIA image
+  float zoom = instance().settings().getFloat("romviewer");
+  if(zoom < 1.F)
+    return 0.F;
+  else if(zoom * TIAConstants::viewableWidth > _w * 0.7F)
+    return (_w * 0.7F) / TIAConstants::viewableWidth;
+  else
+    return zoom;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const GUI::Font& LauncherDialog::getRomInfoFont(const Common::Size& area)
+{
+  // TODO: Perhaps offer a setting to override the font used?
+
+  // Try to pick a font that works best, based on the available area
+  if(area.h / instance().frameBuffer().launcherFont().getLineHeight() >= 8)
+    return instance().frameBuffer().launcherFont();
+  else if(area.h / instance().frameBuffer().infoFont().getLineHeight() >= 8 &&
+          area.w / instance().frameBuffer().infoFont().getMaxCharWidth() >= 80)
+    return instance().frameBuffer().infoFont();
+  else
+    return instance().frameBuffer().smallFont();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -350,8 +350,7 @@ void Settings::validate()
     setValue("dbg.fontsize", "medium");
 
   i = getInt("romviewer");
-  if(i < 0)       setValue("romviewer", "0");
-  else if(i > 2)  setValue("romviewer", "2");
+  if(i < 0) setValue("romviewer", "0");
 
   i = getInt("loglevel");
   if(i < int(Logger::Level::MIN) || i > int(Logger::Level::MAX))

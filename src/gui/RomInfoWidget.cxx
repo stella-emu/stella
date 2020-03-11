@@ -29,16 +29,14 @@
 #include "PNGLibrary.hxx"
 #include "Rect.hxx"
 #include "Widget.hxx"
-#include "TIAConstants.hxx"
 #include "RomInfoWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, int w, int h)
+                             int x, int y, int w, int h,
+                             const Common::Size& imgSize)
   : Widget(boss, font, x, y, w, h),
-    myAvail(w > 400 ?
-      Common::Size(TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2) :
-      Common::Size(TIAConstants::viewableWidth, TIAConstants::viewableHeight))
+    myAvail(imgSize)
 {
   _flags = Widget::FLAG_ENABLED;
   _bgcolor = kDlgColor;
@@ -87,7 +85,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   if(mySurface == nullptr)
   {
     mySurface = instance().frameBuffer().allocateSurface(
-        TIAConstants::viewableWidth*2, TIAConstants::viewableHeight*2, FrameBuffer::ScalingInterpolation::blur);
+        myAvail.w, myAvail.h, FrameBuffer::ScalingInterpolation::blur);
     mySurface->applyAttributes();
 
     dialog().addSurface(mySurface);
@@ -205,11 +203,12 @@ void RomInfoWidget::drawWidget(bool hilite)
     s.drawString(font, mySurfaceErrorMsg, x, y, _w - 10, onTop ? _textcolor : _shadowcolor);
   }
 
-  int xpos = _x + 8, ypos = _y + yoff + 10;
+  int xpos = _x + 8, ypos = _y + yoff + 5;
   for(const auto& info: myRomInfo)
   {
     int lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
                              onTop ? _textcolor : _shadowcolor);
+    if(ypos >= _h)  break;
     ypos += _font.getLineHeight() + (lines - 1) * _font.getFontHeight();
   }
 }
