@@ -98,6 +98,9 @@ class LauncherDialog : public Dialog
     void updateUI();
     void applyFiltering();
 
+    float getRomInfoZoom();
+    const GUI::Font& getRomInfoFont(const Common::Size& area);
+
     void loadRom();
     void loadRomInfo();
     void handleContextMenu();
