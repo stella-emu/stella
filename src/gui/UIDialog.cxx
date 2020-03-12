@@ -194,7 +194,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher width ",
-                                           lwidth, kLauncherSize, 6 * fontWidth, "px");
+                                           lwidth, 0, 6 * fontWidth, "px");
   myLauncherWidthSlider->setMinValue(FBMinimum::Width);
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
@@ -204,7 +204,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + V_GAP;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher height ",
-                                            lwidth, kLauncherSize, 6 * fontWidth, "px");
+                                            lwidth, 0, 6 * fontWidth, "px");
   myLauncherHeightSlider->setMinValue(FBMinimum::Height);
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
@@ -226,14 +226,15 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + V_GAP * 4;
 
   // ROM launcher info/snapshot viewer
-  items.clear();
-  VarList::push_back(items, "Off", "0");
-  VarList::push_back(items, "1x (640x480) ", "1");
-  VarList::push_back(items, "2x (1000x760)", "2");
-  myRomViewerPopup =
-    new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
-                    "ROM info viewer ", lwidth, kRomViewer);
-  wid.push_back(myRomViewerPopup);
+  myRomViewerSize = new SliderWidget(myTab, font, xpos, ypos, "ROM info width  ",
+                                     lwidth, kRomViewer, 6 * fontWidth, "%  ");
+  myRomViewerSize->setMinValue(0);
+  myRomViewerSize->setMaxValue(100);
+  myRomViewerSize->setStepValue(2);
+  // set tickmarks every ~20%
+  myRomViewerSize->setTickmarkIntervals((myRomViewerSize->getMaxValue() - myRomViewerSize->getMinValue()) / 20);
+
+  wid.push_back(myRomViewerSize);
   ypos += lineHeight + V_GAP;
 
   // Snapshot path (load files)
@@ -309,8 +310,9 @@ void UIDialog::loadConfig()
   myLauncherFontPopup->setSelected(font, "medium");
 
   // ROM launcher info viewer
-  const string& viewer = settings.getString("romviewer");
-  myRomViewerPopup->setSelected(viewer, "0");
+  float zoom = instance().settings().getFloat("romviewer");
+  int percentage = zoom * TIAConstants::viewableWidth * 100 / w;
+  myRomViewerSize->setValue(percentage);
 
   // ROM launcher info viewer image path
   mySnapLoadPath->setText(settings.getString("snaploaddir"));
@@ -383,8 +385,9 @@ void UIDialog::saveConfig()
     myLauncherFontPopup->getSelectedTag().toString());
 
   // ROM launcher info viewer
-  settings.setValue("romviewer",
-    myRomViewerPopup->getSelectedTag().toString());
+  int w = myLauncherWidthSlider->getValue();
+  float zoom = myRomViewerSize->getValue() * w / 100.F / TIAConstants::viewableWidth;
+  settings.setValue("romviewer", zoom);
 
   // ROM launcher info viewer image path
   settings.setValue("snaploaddir", mySnapLoadPath->getText());
@@ -456,7 +459,7 @@ void UIDialog::setDefaults()
       myLauncherWidthSlider->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
-      myRomViewerPopup->setSelected("1", "");
+      myRomViewerSize->setValue(50);
       mySnapLoadPath->setText(instance().defaultLoadDir());
       myLauncherExitWidget->setState(false);
       break;
@@ -530,7 +533,6 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myRomPath->setText(myBrowser->getResult().getShortPath());
       break;
 
-    case kLauncherSize:
     case kRomViewer:
       handleRomViewer();
       break;
@@ -554,29 +556,64 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*void UIDialog::handleLauncherSize()
+// an attempt to limit the minimal and maximal ROM info percentages
+// whiche became too complex
+{
+  string launcherFont = myLauncherFontPopup->getSelectedTag().toString();
+  int fwidth, fheight;
+  if(launcherFont == "small")
+  {
+    fwidth = GUI::consoleDesc.maxwidth;
+    fheight = GUI::consoleDesc.height;
+  }
+  else if(launcherFont == "medium")
+  {
+    fwidth = GUI::stellaMediumDesc.maxwidth;
+    fheight = GUI::stellaMediumDesc.height;
+  }
+  else
+  {
+    fwidth = GUI::stellaLargeDesc.maxwidth;
+    fheight = GUI::stellaLargeDesc.height;
+  }
+  int minInfoWidth = instance().frameBuffer().smallFont().getMaxCharWidth() * 20 + 16;
+  int minInfoHeight = instance().frameBuffer().smallFont().getLineHeight() * 8 + 16;
+  int minLauncherWidth = fwidth * 20 + 64;
+  int w = myLauncherWidthSlider->getValue();
+  int h = myLauncherHeightSlider->getValue();
+  int size = std::max(minInfoWidth * 100.F / w, minInfoHeight * 100.F / h);
+
+  myRomViewerSize->setMinValue(size);
+  myRomViewerSize->setMaxValue(100 - minLauncherWidth * 100.F / w);
+  // set tickmarks every ~10%
+  myRomViewerSize->setTickmarkIntervals((myRomViewerSize->getMaxValue() - myRomViewerSize->getMinValue()) / 10);
+
+  size = myRomViewerSize->getValue();
+  size = std::max(size, myRomViewerSize->getMinValue());
+  size = std::min(size, myRomViewerSize->getMaxValue());
+
+  myRomViewerSize->setValue(size);
+}*/
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::handleRomViewer()
 {
-  int size = myRomViewerPopup->getSelected();
-  bool enable = myRomViewerPopup->getSelectedName() != "Off";
-  VariantList items;
+  int size = myRomViewerSize->getValue();
+  bool enable = size > myRomViewerSize->getMinValue();
 
+  if(enable)
+  {
+    myRomViewerSize->setValueLabel(size);
+    myRomViewerSize->setValueUnit("%");
+  }
+  else
+  {
+    myRomViewerSize->setValueLabel("Off");
+    myRomViewerSize->setValueUnit("");
+  }
   myOpenBrowserButton->setEnabled(enable);
   mySnapLoadPath->setEnabled(enable);
-
-  items.clear();
-  VarList::push_back(items, "Off", "0");
-  VarList::push_back(items, "1x (640x480) ", "1");
-  if(myLauncherWidthSlider->getValue() >= 1000 &&
-     myLauncherHeightSlider->getValue() >= 760)
-  {
-    VarList::push_back(items, "2x (1000x760)", "2");
-  }
-  else if (size == 2)
-  {
-    myRomViewerPopup->setSelected(1);
-  }
-
-  myRomViewerPopup->addItems(items);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

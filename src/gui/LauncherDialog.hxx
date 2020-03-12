@@ -86,6 +86,10 @@ class LauncherDialog : public Dialog
     void reload();
 
   private:
+    static constexpr int MIN_LAUNCHER_CHARS = 24;
+    static constexpr int MIN_ROMINFO_CHARS = 24;
+    static constexpr int MIN_ROMINFO_LINES = 8;
+
     void center() override { positionAt(0); }
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
@@ -98,8 +102,8 @@ class LauncherDialog : public Dialog
     void updateUI();
     void applyFiltering();
 
-    float getRomInfoZoom();
-    const GUI::Font& getRomInfoFont(const Common::Size& area);
+    float getRomInfoZoom(int listHeight) const;
+    const GUI::Font& getRomInfoFont(const Common::Size& area) const;
 
     void loadRom();
     void loadRomInfo();

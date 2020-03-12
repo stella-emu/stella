@@ -197,10 +197,9 @@ void RomInfoWidget::drawWidget(bool hilite)
   }
   else if(mySurfaceErrorMsg != "")
   {
-    const GUI::Font& font = instance().frameBuffer().font();
-    uInt32 x = _x + ((_w - font.getStringWidth(mySurfaceErrorMsg)) >> 1);
-    uInt32 y = _y + ((yoff - font.getLineHeight()) >> 1);
-    s.drawString(font, mySurfaceErrorMsg, x, y, _w - 10, onTop ? _textcolor : _shadowcolor);
+    uInt32 x = _x + ((_w - _font.getStringWidth(mySurfaceErrorMsg)) >> 1);
+    uInt32 y = _y + ((yoff - _font.getLineHeight()) >> 1);
+    s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, onTop ? _textcolor : _shadowcolor);
   }
 
   int xpos = _x + 8, ypos = _y + yoff + 5;
