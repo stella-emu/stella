@@ -459,7 +459,7 @@ void UIDialog::setDefaults()
       myLauncherWidthSlider->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
-      myRomViewerSize->setValue(50);
+      myRomViewerSize->setValue(35);
       mySnapLoadPath->setText(instance().defaultLoadDir());
       myLauncherExitWidget->setState(false);
       break;
