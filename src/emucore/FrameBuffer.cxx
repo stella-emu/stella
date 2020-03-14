@@ -36,9 +36,11 @@
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
   #include "StellaFont.hxx"
+  #include "ConsoleMediumBFont.hxx"
   #include "StellaMediumFont.hxx"
   #include "StellaLargeFont.hxx"
   #include "ConsoleFont.hxx"
+  #include "ConsoleBFont.hxx"
   #include "Launcher.hxx"
   #include "Menu.hxx"
   #include "CommandMenu.hxx"
@@ -106,7 +108,7 @@ bool FrameBuffer::initialize()
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
   // use it
-  mySmallFont = make_unique<GUI::Font>(GUI::stellaDesc);
+  mySmallFont = make_unique<GUI::Font>(GUI::stellaDesc); // 6x10
 
   // The general font used in all UI elements
   // This is determined by the size of the framebuffer
@@ -117,16 +119,18 @@ bool FrameBuffer::initialize()
 
   // The info font used in all UI elements
   // This is determined by the size of the framebuffer
-  myInfoFont = make_unique<GUI::Font>(GUI::consoleDesc);
+  myInfoFont = make_unique<GUI::Font>(GUI::consoleDesc); // 8x13
 
   // The font used by the ROM launcher
   const string& lf = myOSystem.settings().getString("launcherfont");
   if(lf == "small")
-    myLauncherFont = make_unique<GUI::Font>(GUI::consoleDesc);
+    myLauncherFont = make_unique<GUI::Font>(GUI::consoleBDesc); // 8x13
+  else if(lf == "small medium")
+    myLauncherFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc); // 9x15
   else if(lf == "medium")
-    myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);
+    myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc); // 9x18
   else
-    myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);
+    myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc); // 10x20
 #endif
 
   // Determine possible TIA windowed zoom levels
