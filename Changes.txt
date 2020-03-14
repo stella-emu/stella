@@ -119,9 +119,10 @@
 
   * Added option to change pitch of Pitfall II music.
 
-  * ROM Info Launcher can now display multiple lines per property and
-    bank switching type.  Related to this, added fractional (25% increments)
-    snapshot zooms.
+  * ROM Info Viewer size is not limited to fixed zoom steps anymore.
+
+  * ROM Info Viewer can now display multiple lines per property and the
+    bank switching type.
 
   * In file listings, you can now select directories by holding 'Shift' on
     the first character entered.  Entering characters in lowercase still
