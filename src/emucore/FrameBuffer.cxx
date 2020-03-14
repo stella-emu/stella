@@ -39,6 +39,10 @@
   #include "ConsoleMediumBFont.hxx"
   #include "StellaMediumFont.hxx"
   #include "StellaLargeFont.hxx"
+  #include "Stella12x24Font.hxx"
+  #include "Stella12x24nFont.hxx"
+  #include "Stella12x24nbFont.hxx"
+  #include "Stella16x32Font.hxx"
   #include "ConsoleFont.hxx"
   #include "ConsoleBFont.hxx"
   #include "Launcher.hxx"
@@ -130,7 +134,11 @@ bool FrameBuffer::initialize()
   else if(lf == "medium")
     myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc); // 9x18
   else
-    myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc); // 10x20
+    //myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc); // 10x20
+    //myLauncherFont = make_unique<GUI::Font>(GUI::stella12x24Desc); // 12x24
+    myLauncherFont = make_unique<GUI::Font>(GUI::stella12x24nDesc); // 12x24
+    //myLauncherFont = make_unique<GUI::Font>(GUI::stella12x24nbDesc); // 12x24
+    //myLauncherFont = make_unique<GUI::Font>(GUI::stella16x32Desc); // 16x32
 #endif
 
   // Determine possible TIA windowed zoom levels
