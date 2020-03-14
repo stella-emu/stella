@@ -145,7 +145,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
                          TIAConstants::viewableHeight*imgZoom);
 
     // Calculate font area, and in the process the font that can be used
-    Common::Size fontArea(romWidth - 16, myList->getHeight() - imgSize.h - 16);
+    Common::Size fontArea(romWidth - 16, myList->getHeight() - imgSize.h - 12);
     const GUI::Font& rominfoFont = getRomInfoFont(fontArea);
 
     myRomInfoWidget = new RomInfoWidget(this, rominfoFont,
@@ -343,10 +343,13 @@ float LauncherDialog::getRomInfoZoom(int listHeight) const
       zoom = float(_w - 58 - MIN_LAUNCHER_CHARS * instance().frameBuffer().launcherFont().getMaxCharWidth())
         / TIAConstants::viewableWidth;
     }
-    if((listHeight - 20 - zoom * TIAConstants::viewableHeight)
-       / instance().frameBuffer().smallFont().getLineHeight() < MIN_ROMINFO_LINES)
+    if((listHeight - 12 - zoom * TIAConstants::viewableHeight) <
+       MIN_ROMINFO_ROWS * instance().frameBuffer().smallFont().getLineHeight() +
+       MIN_ROMINFO_LINES * instance().frameBuffer().smallFont().getFontHeight())
     {
-      zoom = float(listHeight - 20 - MIN_ROMINFO_LINES * instance().frameBuffer().smallFont().getLineHeight())
+      zoom = float(listHeight - 12 -
+                   MIN_ROMINFO_ROWS * instance().frameBuffer().smallFont().getLineHeight() -
+                   MIN_ROMINFO_LINES * instance().frameBuffer().smallFont().getFontHeight())
         / TIAConstants::viewableHeight;
     }
 
@@ -367,11 +370,13 @@ const GUI::Font& LauncherDialog::getRomInfoFont(const Common::Size& area) const
   // TODO: Perhaps offer a setting to override the font used?
 
   // Try to pick a font that works best, based on the available area
-  if(area.h / instance().frameBuffer().launcherFont().getLineHeight() >= MIN_ROMINFO_LINES &&
-     area.w/ instance().frameBuffer().launcherFont().getMaxCharWidth() >= MIN_ROMINFO_CHARS)
+  if(area.h >= uInt32(MIN_ROMINFO_ROWS * instance().frameBuffer().launcherFont().getLineHeight()
+     + MIN_ROMINFO_LINES * instance().frameBuffer().launcherFont().getFontHeight())
+     && area.w >= uInt32(MIN_ROMINFO_CHARS * instance().frameBuffer().launcherFont().getMaxCharWidth()))
     return instance().frameBuffer().launcherFont();
-  else if(area.h / instance().frameBuffer().infoFont().getLineHeight() >= MIN_ROMINFO_LINES &&
-          area.w / instance().frameBuffer().infoFont().getMaxCharWidth() >= MIN_ROMINFO_CHARS)
+  else if(area.h >= uInt32(MIN_ROMINFO_ROWS * instance().frameBuffer().infoFont().getLineHeight()
+          + MIN_ROMINFO_LINES * instance().frameBuffer().infoFont().getFontHeight())
+          && area.w >= uInt32(MIN_ROMINFO_CHARS * instance().frameBuffer().infoFont().getMaxCharWidth()))
     return instance().frameBuffer().infoFont();
   else
     return instance().frameBuffer().smallFont();
