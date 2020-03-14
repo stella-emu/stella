@@ -217,7 +217,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   pwidth = font.getStringWidth("2x (1000x760)");
   items.clear();
   VarList::push_back(items, "Small", "small");
-  VarList::push_back(items, "Small Medium", "small medium");
+  VarList::push_back(items, "Small Medium", "small_medium");
   VarList::push_back(items, "Medium", "medium");
   VarList::push_back(items, "Large", "large");
   myLauncherFontPopup =

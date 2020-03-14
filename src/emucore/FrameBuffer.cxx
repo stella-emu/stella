@@ -125,7 +125,7 @@ bool FrameBuffer::initialize()
   const string& lf = myOSystem.settings().getString("launcherfont");
   if(lf == "small")
     myLauncherFont = make_unique<GUI::Font>(GUI::consoleBDesc); // 8x13
-  else if(lf == "small medium")
+  else if(lf == "small_medium")
     myLauncherFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc); // 9x15
   else if(lf == "medium")
     myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc); // 9x18

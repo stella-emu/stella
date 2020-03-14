@@ -342,7 +342,7 @@ void Settings::validate()
     setValue("palette", "standard");
 
   s = getString("launcherfont");
-  if(s != "small" && s != "small medium" && s != "medium" && s != "large")
+  if(s != "small" && s != "small_medium" && s != "medium" && s != "large")
     setValue("launcherfont", "medium");
 
   s = getString("dbg.fontsize");
@@ -478,7 +478,7 @@ void Settings::usage() const
     << "  -exitlauncher <1|0>          On exiting a ROM, go back to the ROM launcher\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
-    << "                 small medium|large>\n"
+    << "                 small_medium|large>\n"
     << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
     << "  -romviewer    <float>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (use 0 for off)\n"
