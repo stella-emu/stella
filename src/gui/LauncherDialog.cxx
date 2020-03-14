@@ -374,6 +374,10 @@ const GUI::Font& LauncherDialog::getRomInfoFont(const Common::Size& area) const
      + MIN_ROMINFO_LINES * instance().frameBuffer().launcherFont().getFontHeight())
      && area.w >= uInt32(MIN_ROMINFO_CHARS * instance().frameBuffer().launcherFont().getMaxCharWidth()))
     return instance().frameBuffer().launcherFont();
+  else if(area.h >= uInt32(MIN_ROMINFO_ROWS * instance().frameBuffer().font().getLineHeight()
+     + MIN_ROMINFO_LINES * instance().frameBuffer().font().getFontHeight())
+     && area.w >= uInt32(MIN_ROMINFO_CHARS * instance().frameBuffer().font().getMaxCharWidth()))
+    return instance().frameBuffer().font();
   else if(area.h >= uInt32(MIN_ROMINFO_ROWS * instance().frameBuffer().infoFont().getLineHeight()
           + MIN_ROMINFO_LINES * instance().frameBuffer().infoFont().getFontHeight())
           && area.w >= uInt32(MIN_ROMINFO_CHARS * instance().frameBuffer().infoFont().getMaxCharWidth()))
