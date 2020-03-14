@@ -88,7 +88,8 @@ class LauncherDialog : public Dialog
   private:
     static constexpr int MIN_LAUNCHER_CHARS = 24;
     static constexpr int MIN_ROMINFO_CHARS = 24;
-    static constexpr int MIN_ROMINFO_LINES = 8;
+    static constexpr int MIN_ROMINFO_ROWS = 7; // full lines
+    static constexpr int MIN_ROMINFO_LINES = 2; // extra lines
 
     void center() override { positionAt(0); }
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
