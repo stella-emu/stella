@@ -216,10 +216,13 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Launcher font
   pwidth = font.getStringWidth("2x (1000x760)");
   items.clear();
-  VarList::push_back(items, "Small", "small");
-  VarList::push_back(items, "Small Medium", "small_medium");
-  VarList::push_back(items, "Medium", "medium");
-  VarList::push_back(items, "Large", "large");
+  VarList::push_back(items, "Small", "small");            //  8x13
+  VarList::push_back(items, "Low Medium", "low_medium");  //  9x15
+  VarList::push_back(items, "Medium", "medium");          //  9x18
+  VarList::push_back(items, "Large (10pt)", "large");     // 10x20
+  VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
+  VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
+  VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
   myLauncherFontPopup =
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
                     "Launcher font ", lwidth);

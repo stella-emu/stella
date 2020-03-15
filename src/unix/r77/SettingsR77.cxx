@@ -50,7 +50,7 @@ SettingsR77::SettingsR77()
   setPermanent("snaploaddir", "/mnt/stella/snapshots");
 
   setPermanent("launcherres", "1280x720");
-  setPermanent("launcherfont", "large");
+  setPermanent("launcherfont", "large12");
   setPermanent("romviewer", "1.6");
   setPermanent("exitlauncher", "true");
 

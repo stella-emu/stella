@@ -41,6 +41,14 @@
 #include "Settings.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "StellaFont.hxx"
+#include "ConsoleBFont.hxx"
+#include "ConsoleMediumBFont.hxx"
+#include "StellaMediumFont.hxx"
+#include "StellaLargeFont.hxx"
+#include "Stella12x24tFont.hxx"
+#include "Stella14x28tFont.hxx"
+#include "Stella16x32tFont.hxx"
 #include "Version.hxx"
 #include "LauncherDialog.hxx"
 
@@ -146,9 +154,9 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
     // Calculate font area, and in the process the font that can be used
     Common::Size fontArea(romWidth - 16, myList->getHeight() - imgSize.h - 12);
-    const GUI::Font& rominfoFont = getRomInfoFont(fontArea);
 
-    myRomInfoWidget = new RomInfoWidget(this, rominfoFont,
+    setRomInfoFont(fontArea);
+    myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
         xpos, ypos, romWidth, myList->getHeight(), imgSize);
   }
 
@@ -365,25 +373,32 @@ float LauncherDialog::getRomInfoZoom(int listHeight) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const GUI::Font& LauncherDialog::getRomInfoFont(const Common::Size& area) const
+void LauncherDialog::setRomInfoFont(const Common::Size& area)
 {
   // TODO: Perhaps offer a setting to override the font used?
 
+  FontDesc FONTS[7] = {
+    GUI::stella16x32tDesc, GUI::stella14x28tDesc, GUI::stella12x24tDesc,
+    GUI::stellaLargeDesc, GUI::stellaMediumDesc,
+    GUI::consoleMediumBDesc, GUI::consoleBDesc
+  };
+
   // Try to pick a font that works best, based on the available area
-  if(area.h >= uInt32(MIN_ROMINFO_ROWS * instance().frameBuffer().launcherFont().getLineHeight()
-     + MIN_ROMINFO_LINES * instance().frameBuffer().launcherFont().getFontHeight())
-     && area.w >= uInt32(MIN_ROMINFO_CHARS * instance().frameBuffer().launcherFont().getMaxCharWidth()))
-    return instance().frameBuffer().launcherFont();
-  else if(area.h >= uInt32(MIN_ROMINFO_ROWS * instance().frameBuffer().font().getLineHeight()
-     + MIN_ROMINFO_LINES * instance().frameBuffer().font().getFontHeight())
-     && area.w >= uInt32(MIN_ROMINFO_CHARS * instance().frameBuffer().font().getMaxCharWidth()))
-    return instance().frameBuffer().font();
-  else if(area.h >= uInt32(MIN_ROMINFO_ROWS * instance().frameBuffer().infoFont().getLineHeight()
-          + MIN_ROMINFO_LINES * instance().frameBuffer().infoFont().getFontHeight())
-          && area.w >= uInt32(MIN_ROMINFO_CHARS * instance().frameBuffer().infoFont().getMaxCharWidth()))
-    return instance().frameBuffer().infoFont();
-  else
-    return instance().frameBuffer().smallFont();
+  for(int i = 0; i < sizeof(FONTS) / sizeof(FontDesc); ++i)
+  {
+    // only use fonts <= launcher fonts
+    if(instance().frameBuffer().launcherFont().getFontHeight() >= FONTS[i].height)
+    {
+      if(area.h >= uInt32(MIN_ROMINFO_ROWS * FONTS[i].height + 2
+         + MIN_ROMINFO_LINES * FONTS[i].height)
+         && area.w >= uInt32(MIN_ROMINFO_CHARS * FONTS[i].maxwidth))
+      {
+        myROMInfoFont = make_unique<GUI::Font>(FONTS[i]);
+        return;
+      }
+    }
+  }
+  myROMInfoFont = make_unique<GUI::Font>(GUI::stellaDesc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

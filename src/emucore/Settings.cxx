@@ -342,7 +342,8 @@ void Settings::validate()
     setValue("palette", "standard");
 
   s = getString("launcherfont");
-  if(s != "small" && s != "small_medium" && s != "medium" && s != "large")
+  if(s != "small" && s != "low_medium" && s != "medium" && s != "large"
+     && s != "large12" && s != "large14" && s != "large16")
     setValue("launcherfont", "medium");
 
   s = getString("dbg.fontsize");

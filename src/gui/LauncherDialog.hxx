@@ -104,7 +104,7 @@ class LauncherDialog : public Dialog
     void applyFiltering();
 
     float getRomInfoZoom(int listHeight) const;
-    const GUI::Font& getRomInfoFont(const Common::Size& area) const;
+    void setRomInfoFont(const Common::Size& area);
 
     void loadRom();
     void loadRomInfo();
@@ -118,6 +118,9 @@ class LauncherDialog : public Dialog
     unique_ptr<ContextMenu> myMenu;
     unique_ptr<GlobalPropsDialog> myGlobalProps;
     unique_ptr<BrowserDialog> myRomDir;
+
+    // automatically sized font for ROM info viewer
+    unique_ptr<GUI::Font> myROMInfoFont;
 
     ButtonWidget* myStartButton{nullptr};
     ButtonWidget* myPrevDirButton{nullptr};
