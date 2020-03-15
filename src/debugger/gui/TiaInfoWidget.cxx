@@ -143,10 +143,10 @@ void TiaInfoWidget::loadConfig()
 
   uInt64 total = tia.cyclesLo() + (uInt64(tia.cyclesHi()) << 32);
   uInt64 totalOld = oldTia.info[2] + (uInt64(oldTia.info[3]) << 32);
-  myTotalCycles->setText(Common::Base::toString(total / 1000000, Common::Base::Fmt::_10_6) + "e6",
+  myTotalCycles->setText(Common::Base::toString(uInt32(total) / 1000000, Common::Base::Fmt::_10_6) + "e6",
                          total != totalOld);
-  uInt32 delta = total - totalOld;
-  myDeltaCycles->setText(Common::Base::toString(delta, Common::Base::Fmt::_10_8)); // no coloring
+  uInt64 delta = total - totalOld;
+  myDeltaCycles->setText(Common::Base::toString(uInt32(delta), Common::Base::Fmt::_10_8)); // no coloring
 
   int clk = tia.clocksThisLine();
   myScanlineCount->setText(Common::Base::toString(tia.scanlines(), Common::Base::Fmt::_10_3),
