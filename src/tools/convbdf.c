@@ -936,17 +936,17 @@ int gen_c_source(struct font* pf, char *path)
   if (pf->offset)
     sprintf(obuf, "%s_sysfont_offset,", fontname);
   else
-    sprintf(obuf, "0,  /* no encode table*/");
+    sprintf(obuf, "nullptr,  /* no encode table*/");
 
   if (pf->width)
     sprintf(buf, "%s_sysfont_width,", fontname);
   else
-    sprintf(buf, "0,  /* fixed width*/");
+    sprintf(buf, "nullptr,  /* fixed width*/");
 
   if (pf->bbx)
     sprintf(bbuf, "%s_sysfont_bbx,", fontname);
   else
-    sprintf(bbuf, "0,  /* fixed bbox*/");
+    sprintf(bbuf, "nullptr,  /* fixed bbox*/");
 
   fprintf(ofp,
       "/* Exported structure definition. */\n"

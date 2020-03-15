@@ -384,7 +384,7 @@ void LauncherDialog::setRomInfoFont(const Common::Size& area)
   };
 
   // Try to pick a font that works best, based on the available area
-  for(int i = 0; i < sizeof(FONTS) / sizeof(FontDesc); ++i)
+  for(size_t i = 0; i < sizeof(FONTS) / sizeof(FontDesc); ++i)
   {
     // only use fonts <= launcher fonts
     if(instance().frameBuffer().launcherFont().getFontHeight() >= FONTS[i].height)
