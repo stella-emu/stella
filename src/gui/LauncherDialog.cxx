@@ -262,6 +262,12 @@ const FilesystemNode& LauncherDialog::currentNode() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FilesystemNode& LauncherDialog::currentDir() const
+{
+  return myList->currentDir();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::reload()
 {
   myMD5List.clear();

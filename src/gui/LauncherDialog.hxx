@@ -74,11 +74,18 @@ class LauncherDialog : public Dialog
     const string& selectedRomMD5();
 
     /**
-      Get node for the currently selected directory.
+      Get node for the currently selected entry.
 
-      @return FilesystemNode currently active
+      @return FilesystemNode currently selected
     */
     const FilesystemNode& currentNode() const;
+
+    /**
+      Get node for the current directory.
+
+      @return FilesystemNode (directory) currently active
+    */
+    const FilesystemNode& currentDir() const;
 
     /**
       Reload the current listing

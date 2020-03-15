@@ -99,7 +99,7 @@ RomAuditDialog::~RomAuditDialog()
 void RomAuditDialog::loadConfig()
 {
   const string& currentdir =
-    instance().launcher().currentNode().getShortPath();
+    instance().launcher().currentDir().getShortPath();
   const string& path = currentdir == "" ?
     instance().settings().getString("romdir") : currentdir;
 
