@@ -198,6 +198,9 @@
 
   * Updated included PNG library to latest stable version.
 
+  * Updated UNIX configure script to work with the gcc version 10 and
+    above.
+
 -Have fun!
 
 
