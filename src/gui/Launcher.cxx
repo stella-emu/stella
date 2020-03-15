@@ -75,9 +75,9 @@ const string& Launcher::selectedRomMD5()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FilesystemNode& Launcher::currentNode() const
+const FilesystemNode& Launcher::currentDir() const
 {
-  return (static_cast<LauncherDialog*>(myBaseDialog))->currentNode();
+  return (static_cast<LauncherDialog*>(myBaseDialog))->currentDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
