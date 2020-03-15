@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3508;
+static constexpr uInt32 DEF_PROPS_SIZE = 3510;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1188,6 +1188,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "53f147b9746fdc997c62f3dd67888ee5", "Activision, Bob Whitehead", "AG-011", "Stampede (1981) (Activision) (8K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "540075f657d4b244a1f74da1b9e4bf92", "Bit Corporation", "PGP230", "Festival (4 Game in One Dark Green) (1983) (BitCorp) (PAL)", "AKA Carnival", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5409d20c1aea0b89c56993aec5dc5740", "", "", "Carnival Shooter (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "541cac55ebcf7891d9d51c415922303f", "SpiceWare - Darrell Spice Jr.", "SW-05", "Stay Frosty 2", "AtariAge Holiday Greetings 2014", "Homebrew", "", "", "", "", "", "", "", "JOYSTICK", "", "", "", "", "", "YES", "" },
   { "5428cdfada281c569c74c7308c7f2c26", "Activision, Larry Kaplan, David Crane", "AG-010, AG-010-04", "Kaboom! (1981) (Activision)", "Uses the Paddle Controllers (left only)", "", "", "", "", "", "", "", "", "", "", "", "01 50", "", "", "", "" },
   { "542c6dd5f7280179b51917a4cba4faff", "ZiMAG - Emag - Vidco", "GN-080", "Spinning Fireball (1983) (ZiMAG) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "5438e84b90e50a5362f01cc843b358d4", "Arcadia Corporation, Scott Nelson", "3 AR-4300", "Fireball (1982) (Arcadia) (Prototype)", "Uses the Paddle Controllers", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1701,6 +1702,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "78c2de58e42cd1faac2ea7df783eaeb3", "", "", "Fu Kung! (V0.07) (25-01-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "79004f84bdeee78d142e445057883169", "CCE", "C-830", "Planet Patrol (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "791bc8aceb6b0f4d9990d6062b30adfa", "Activision, David Crane - Ariola", "EAX-018, EAX-018-04B, EAX-018-04I - 711 018-725", "Pitfall! (1982) (Activision) (PAL)", "Abenteuer im Urwald (Jungle Runner)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "791c88eca9836af8c34bf32b07cb58a7", "SpiceWare - Darrell Spice Jr.", "SW-05", "Stay Frosty 2 (PAL60)", "AtariAge Holiday Greetings 2014", "Homebrew", "", "", "", "", "", "", "", "JOYSTICK", "", "", "", "", "", "YES", "" },
   { "7926083ad423ed685de3b3a04a914315", "Barry Laws Jr.", "", "Face Invaders 2 (Barry Laws Jr.) (Hack)", "Hack of Astroblast", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "792b1d93eb1d8045260c840b0688ec8f", "Kroko", "", "3E Bankswitch Test (TIA @ $00)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "7972e5101fa548b952d852db24ad6060", "Atari - Sears", "CX2627 - 6-99841", "Human Cannonball (1979) (Atari)", "AKA Cannon Man", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
