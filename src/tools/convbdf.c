@@ -980,7 +980,7 @@ int gen_c_source(struct font* pf, char *path)
       fontname);
 
   fprintf(ofp, "\n} // End of namespace GUI\n\n#endif\n");
-  fcloise(ofp);
+  fclose(ofp);
 
   return 0;
 }
