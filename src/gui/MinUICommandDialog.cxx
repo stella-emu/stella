@@ -307,7 +307,7 @@ void MinUICommandDialog::openSettings()
   {
     if (myStellaSettingsDialog == nullptr)
       myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-        instance().frameBuffer().launcherFont(), FBMinimum::Width, FBMinimum::Height, Menu::AppMode::launcher);
+        1280, 720, Menu::AppMode::launcher);
     myStellaSettingsDialog->open();
   }
   else

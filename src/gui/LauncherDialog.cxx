@@ -645,7 +645,7 @@ void LauncherDialog::openSettings()
   {
     if (myStellaSettingsDialog == nullptr)
       myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-        instance().frameBuffer().launcherFont(), _w, _h, Menu::AppMode::launcher);
+        _w, _h, Menu::AppMode::launcher);
     myStellaSettingsDialog->open();
   }
   else

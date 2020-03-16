@@ -29,16 +29,16 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-  const GUI::Font& font, int max_w, int max_h, Menu::AppMode mode)
-  : Dialog(osystem, parent, font, "Basic settings"),
+  int max_w, int max_h, Menu::AppMode mode)
+  : Dialog(osystem, parent, osystem.frameBuffer().font(), "Basic settings"),
     myMode(mode)
 {
   const int VBORDER = 8;
   const int HBORDER = 10;
   const int INDENT = 20;
-  const int buttonHeight = font.getLineHeight() + 6,
-    lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth(),
+  const int buttonHeight = _font.getLineHeight() + 6,
+    lineHeight = _font.getLineHeight(),
+    fontWidth = _font.getMaxCharWidth(),
     buttonWidth = _font.getStringWidth("Help" + ELLIPSIS) + 32;
   const int VGAP = 5;
   int xpos, ypos;
@@ -53,50 +53,50 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   xpos = HBORDER;
   ypos = VBORDER + _th;
 
-  bw = new ButtonWidget(this, font, xpos, ypos, _w - HBORDER * 2 - buttonWidth - 8, buttonHeight,
+  bw = new ButtonWidget(this, _font, xpos, ypos, _w - HBORDER * 2 - buttonWidth - 8, buttonHeight,
     "Use Advanced Settings" + ELLIPSIS, kAdvancedSettings);
   wid.push_back(bw);
-  bw = new ButtonWidget(this, font, bw->getRight() + 8, ypos, buttonWidth, buttonHeight,
+  bw = new ButtonWidget(this, _font, bw->getRight() + 8, ypos, buttonWidth, buttonHeight,
     "Help" + ELLIPSIS, kHelp);
   wid.push_back(bw);
 
   ypos += lineHeight + VGAP*4;
 
-  new StaticTextWidget(this, font, xpos, ypos + 1, "Global settings:");
+  new StaticTextWidget(this, _font, xpos, ypos + 1, "Global settings:");
   xpos += INDENT;
   ypos += lineHeight + VGAP;
 
-  addUIOptions(wid, xpos, ypos, font);
+  addUIOptions(wid, xpos, ypos);
   ypos += VGAP * 4;
-  addVideoOptions(wid, xpos, ypos, font);
+  addVideoOptions(wid, xpos, ypos);
   ypos += VGAP * 4;
 
   xpos -= INDENT;
-  myGameSettings = new StaticTextWidget(this, font, xpos, ypos + 1, "Game settings:");
+  myGameSettings = new StaticTextWidget(this, _font, xpos, ypos + 1, "Game settings:");
   xpos += INDENT;
   ypos += lineHeight + VGAP;
 
-  addGameOptions(wid, xpos, ypos, font);
+  addGameOptions(wid, xpos, ypos);
 
   // Add Defaults, OK and Cancel buttons
-  addDefaultsOKCancelBGroup(wid, font);
+  addDefaultsOKCancelBGroup(wid, _font);
 
   addToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font)
+void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos)
 {
   const int VGAP = 4;
-  const int lineHeight = font.getLineHeight();
+  const int lineHeight = _font.getLineHeight();
   VariantList items;
-  int pwidth = font.getStringWidth("Right bottom"); // align width with other popup
+  int pwidth = _font.getStringWidth("Right bottom"); // align width with other popup
 
   ypos += 1;
   VarList::push_back(items, "Standard", "standard");
   VarList::push_back(items, "Classic", "classic");
   VarList::push_back(items, "Light", "light");
-  myThemePopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items, "UI theme           ");
+  myThemePopup = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight, items, "UI theme           ");
   wid.push_back(myThemePopup);
   ypos += lineHeight + VGAP;
 
@@ -107,24 +107,23 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos, 
   VarList::push_back(items, "Right top", 2);
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
-  myPositionPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+  myPositionPopup = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight,
     items, "Dialogs position   ");
   wid.push_back(myPositionPopup);
   ypos += lineHeight + VGAP;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypos,
-                                           const GUI::Font& font)
+void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypos)
 {
   const int VGAP = 4;
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight = font.getLineHeight(),
-    fontWidth = font.getMaxCharWidth();
+  const int lineHeight = _font.getLineHeight(),
+    fontWidth = _font.getMaxCharWidth();
   VariantList items;
 
   // TV effects options
-  int swidth = font.getMaxCharWidth() * 11;
+  int swidth = _font.getMaxCharWidth() * 11;
 
   // TV Mode
   VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
@@ -132,16 +131,16 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   VarList::push_back(items, "S-Video", static_cast<uInt32>(NTSCFilter::Preset::SVIDEO));
   VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
-  int pwidth = font.getStringWidth("Right bottom");
-  int lwidth = font.getStringWidth("Scanline intensity ");
+  int pwidth = _font.getStringWidth("Right bottom");
+  int lwidth = _font.getStringWidth("Scanline intensity ");
 
-  myTVMode = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+  myTVMode = new PopUpWidget(this, _font, xpos, ypos, pwidth, lineHeight,
     items, "TV mode            ");
   wid.push_back(myTVMode);
   ypos += lineHeight + VGAP;
 
   // Scanline intensity
-  myTVScanIntense = new SliderWidget(this, font, xpos, ypos-1, swidth, lineHeight,
+  myTVScanIntense = new SliderWidget(this, _font, xpos, ypos-1, swidth, lineHeight,
     "Scanline intensity", lwidth, kScanlinesChanged, fontWidth * 3);
   myTVScanIntense->setMinValue(0); myTVScanIntense->setMaxValue(10);
   myTVScanIntense->setTickmarkIntervals(2);
@@ -149,7 +148,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   ypos += lineHeight + VGAP;
 
   // TV Phosphor blend level
-  myTVPhosLevel = new SliderWidget(this, font, xpos, ypos-1, swidth, lineHeight,
+  myTVPhosLevel = new SliderWidget(this, _font, xpos, ypos-1, swidth, lineHeight,
     "Phosphor blend  ", lwidth, kPhosphorChanged, fontWidth * 3);
   myTVPhosLevel->setMinValue(0); myTVPhosLevel->setMaxValue(10);
   myTVPhosLevel->setTickmarkIntervals(2);
@@ -157,7 +156,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
   ypos += lineHeight + VGAP;
 
   // FS overscan
-  myTVOverscan = new SliderWidget(this, font, xpos, ypos - 1, swidth, lineHeight,
+  myTVOverscan = new SliderWidget(this, _font, xpos, ypos - 1, swidth, lineHeight,
     "Overscan (*)    ", lwidth, kOverscanChanged, fontWidth * 3);
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
@@ -169,10 +168,10 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font)
+void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos)
 {
   const int VGAP = 4;
-  const int lineHeight = font.getLineHeight();
+  const int lineHeight = _font.getLineHeight();
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   VariantList ctrls;
 
@@ -187,9 +186,9 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos
   VarList::push_back(ctrls, "Trakball", "TRAKBALL");
   VarList::push_back(ctrls, "Sega Genesis", "GENESIS");
 
-  int pwidth = font.getStringWidth("Sega Genesis");
-  myLeftPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Left port  ");
-  myLeftPort = new PopUpWidget(this, font, myLeftPortLabel->getRight(),
+  int pwidth = _font.getStringWidth("Sega Genesis");
+  myLeftPortLabel = new StaticTextWidget(this, _font, xpos, ypos + 1, "Left port  ");
+  myLeftPort = new PopUpWidget(this, _font, myLeftPortLabel->getRight(),
     myLeftPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "", 0, kLeftCChanged);
   wid.push_back(myLeftPort);
   ypos += lineHeight + VGAP;
@@ -198,8 +197,8 @@ void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos
     "Sega Genesis detected");
   ypos += ifont.getLineHeight() + VGAP;
 
-  myRightPortLabel = new StaticTextWidget(this, font, xpos, ypos + 1, "Right port ");
-  myRightPort = new PopUpWidget(this, font, myRightPortLabel->getRight(),
+  myRightPortLabel = new StaticTextWidget(this, _font, xpos, ypos + 1, "Right port ");
+  myRightPort = new PopUpWidget(this, _font, myRightPortLabel->getRight(),
     myRightPortLabel->getTop() - 1, pwidth, lineHeight, ctrls, "", 0, kRightCChanged);
   wid.push_back(myRightPort);
   ypos += lineHeight + VGAP;
@@ -415,7 +414,7 @@ void StellaSettingsDialog::switchSettingsMode()
   msg.push_back("proceed with the switch, click");
   msg.push_back("'OK', otherwise click 'Cancel'.");
 
-  myConfirmMsg = make_unique<GUI::MessageBox>(this, instance().frameBuffer().font(), msg,
+  myConfirmMsg = make_unique<GUI::MessageBox>(this, _font, msg,
       _w-16, _h, kConfirmSwitchCmd, "OK", "Cancel", "Switch settings mode", false);
   myConfirmMsg->show();
 }
