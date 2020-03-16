@@ -116,13 +116,20 @@ bool FrameBuffer::initialize()
   // The general font used in all UI elements
   // This is determined by the size of the framebuffer
   if(myOSystem.settings().getBool("minimal_ui"))
+  {
     myFont = make_unique<GUI::Font>(GUI::stella12x24tDesc);           // 12x24
+    // The info font used in all UI elements
+    // This is determined by the size of the framebuffer
+    myInfoFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);        // 10x20
+  }
   else
+  {
     myFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);           //  9x18
+    // The info font used in all UI elements
+    // This is determined by the size of the framebuffer
+    myInfoFont = make_unique<GUI::Font>(GUI::consoleDesc);            //  8x13
+  }
 
-  // The info font used in all UI elements
-  // This is determined by the size of the framebuffer
-  myInfoFont = make_unique<GUI::Font>(GUI::consoleDesc);              //  8x13
 
   // The font used by the ROM launcher
   const string& lf = myOSystem.settings().getString("launcherfont");

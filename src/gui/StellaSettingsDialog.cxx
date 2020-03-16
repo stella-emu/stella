@@ -39,7 +39,8 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   const int buttonHeight = _font.getLineHeight() + 6,
     lineHeight = _font.getLineHeight(),
     fontWidth = _font.getMaxCharWidth(),
-    buttonWidth = _font.getStringWidth("Help" + ELLIPSIS) + 32;
+    buttonWidth = _font.getStringWidth("Help" + ELLIPSIS) + 32,
+    iLineHeight = instance().frameBuffer().infoFont().getLineHeight();
   const int VGAP = 5;
   int xpos, ypos;
   ButtonWidget* bw = nullptr;
@@ -48,7 +49,8 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   VariantList items;
 
   // Set real dimensions
-  setSize(35 * fontWidth + HBORDER * 2 + 3, 15 * (lineHeight + VGAP) + VGAP * 9 + 10 + _th, max_w, max_h);
+  setSize(35 * fontWidth + HBORDER * 2 + 3, 10 * (lineHeight + VGAP) + 3 * (iLineHeight + VGAP)
+          + VGAP * (12 + 2) + buttonHeight * 2 + _th, max_w, max_h);
 
   xpos = HBORDER;
   ypos = VBORDER + _th;
