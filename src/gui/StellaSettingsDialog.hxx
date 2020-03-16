@@ -39,7 +39,7 @@ class StellaSettingsDialog : public Dialog
 {
   public:
     StellaSettingsDialog(OSystem& osystem, DialogContainer& parent,
-      const GUI::Font& font, int max_w, int max_h, Menu::AppMode mode);
+      int max_w, int max_h, Menu::AppMode mode);
     virtual ~StellaSettingsDialog() = default;
 
   private:
@@ -47,9 +47,9 @@ class StellaSettingsDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
-    void addVideoOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
-    void addUIOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
-    void addGameOptions(WidgetArray& wid, int& xpos, int& ypos, const GUI::Font& font);
+    void addVideoOptions(WidgetArray& wid, int& xpos, int& ypos);
+    void addUIOptions(WidgetArray& wid, int& xpos, int& ypos);
+    void addGameOptions(WidgetArray& wid, int& xpos, int& ypos);
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void handleOverscanChange();
