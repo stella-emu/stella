@@ -33,15 +33,16 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Basic settings"),
     myMode(mode)
 {
-  const int VBORDER = 8;
-  const int HBORDER = 10;
-  const int INDENT = 20;
-  const int buttonHeight = _font.getLineHeight() + 6,
+  const int buttonHeight = _font.getLineHeight() + _font.getLineHeight() / 5,
     lineHeight = _font.getLineHeight(),
     fontWidth = _font.getMaxCharWidth(),
-    buttonWidth = _font.getStringWidth("Help" + ELLIPSIS) + 32,
+    buttonWidth = _font.getStringWidth("  Help  " + ELLIPSIS),
     iLineHeight = instance().frameBuffer().infoFont().getLineHeight();
-  const int VGAP = 5;
+
+  const int VBORDER = _font.getFontHeight() / 2;
+  const int HBORDER = fontWidth;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = _font.getFontHeight() / 4;
   int xpos, ypos;
   ButtonWidget* bw = nullptr;
 
@@ -49,8 +50,9 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   VariantList items;
 
   // Set real dimensions
-  setSize(35 * fontWidth + HBORDER * 2 + 3, 10 * (lineHeight + VGAP) + 3 * (iLineHeight + VGAP)
-          + VGAP * (12 + 2) + buttonHeight * 2 + _th, max_w, max_h);
+  setSize(35 * fontWidth + HBORDER * 2 + 5,
+          VBORDER * 2 +_th + 10 * (lineHeight + VGAP) + 3 * (iLineHeight + VGAP)
+          + VGAP * 12 + buttonHeight * 2, max_w, max_h);
 
   xpos = HBORDER;
   ypos = VBORDER + _th;
@@ -62,7 +64,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
     "Help" + ELLIPSIS, kHelp);
   wid.push_back(bw);
 
-  ypos += lineHeight + VGAP*4;
+  ypos += buttonHeight + VGAP * 2;
 
   new StaticTextWidget(this, _font, xpos, ypos + 1, "Global settings:");
   xpos += INDENT;
@@ -89,7 +91,7 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos)
 {
-  const int VGAP = 4;
+  const int VGAP = _font.getFontHeight() / 4;
   const int lineHeight = _font.getLineHeight();
   VariantList items;
   int pwidth = _font.getStringWidth("Right bottom"); // align width with other popup
@@ -118,7 +120,7 @@ void StellaSettingsDialog::addUIOptions(WidgetArray& wid, int& xpos, int& ypos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypos)
 {
-  const int VGAP = 4;
+  const int VGAP = _font.getFontHeight() / 4;
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = _font.getLineHeight(),
     fontWidth = _font.getMaxCharWidth();
@@ -172,7 +174,7 @@ void StellaSettingsDialog::addVideoOptions(WidgetArray& wid, int& xpos, int& ypo
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StellaSettingsDialog::addGameOptions(WidgetArray& wid, int& xpos, int& ypos)
 {
-  const int VGAP = 4;
+  const int VGAP = _font.getFontHeight() / 4;
   const int lineHeight = _font.getLineHeight();
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
   VariantList ctrls;
