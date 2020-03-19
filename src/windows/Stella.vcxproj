@@ -1260,6 +1260,9 @@
     <ClInclude Include="..\gui\R77HelpDialog.hxx" />
     <ClInclude Include="..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\gui\SnapshotDialog.hxx" />
+    <ClInclude Include="..\gui\Stella12x24tFont.hxx" />
+    <ClInclude Include="..\gui\Stella14x28tFont.hxx" />
+    <ClInclude Include="..\gui\Stella16x32tFont.hxx" />
     <ClInclude Include="..\gui\StellaSettingsDialog.hxx" />
     <ClInclude Include="..\gui\TimeLineWidget.hxx" />
     <ClInclude Include="..\gui\TimeMachine.hxx" />
