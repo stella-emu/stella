@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.0.2 to 6.1: (MM dd, 2020)
+6.0.2 to 6.1: (March 22, 2020)
 
   * IMPORTANT NOTES:
     - Because of major event remapping changes, all remappings will be reset
