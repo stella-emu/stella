@@ -96,7 +96,7 @@ class StellaLIBRETRO
     Int16* getAudioBuffer() { return audio_buffer.get(); }
 
   public:
-    void   setROM(const void* data, size_t size);
+    void   setROM(const char* path, const void* data, size_t size);
 
     void   setConsoleFormat(uInt32 mode);
 
@@ -139,6 +139,7 @@ class StellaLIBRETRO
 
     unique_ptr<uInt8[]> rom_image;
     uInt32 rom_size;
+    string rom_path;
 
     ConsoleTiming console_timing;
     string console_format;
