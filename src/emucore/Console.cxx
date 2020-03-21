@@ -745,7 +745,7 @@ void Console::updateVcenter(Int32 vcenter)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeScanlineAdjust(int direction)
 {
-  Int32 newAdjustVSize = myTIA->adjustVSize();;
+  Int32 newAdjustVSize = myTIA->adjustVSize();
 
   if (direction != -1 && direction != +1) return;
 
