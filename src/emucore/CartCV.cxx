@@ -104,8 +104,21 @@ uInt8 CartridgeCV::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::poke(uInt16 address, uInt8 value)
 {
-  pokeRAM(myRAM[address & 0x03FF], address, value);
-  return true;
+
+  if(address & 0x0400)
+  {
+    pokeRAM(myRAM[address & 0x03FF], address, value);
+    return true;
+  }
+  else
+  {
+    // Writing to the read port should be ignored, but trigger a break if option enabled
+    uInt8 dummy;
+
+    pokeRAM(dummy, address, value);
+    myRamWriteAccess = address;
+    return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
