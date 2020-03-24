@@ -139,7 +139,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add joystick deadzone setting
   ypos += lineHeight + VGAP*3;
-  myDeadzone = new SliderWidget(myTab, font, HBORDER, ypos, 13 * fontWidth, lineHeight,
+  myDeadzone = new SliderWidget(myTab, font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                 "Joystick deadzone size ", lwidth, kDeadzoneChanged);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   myDeadzone->setTickmarkIntervals(4);
@@ -149,14 +149,14 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add dejitter (Stelladaptor emulation for now only)
   ypos += lineHeight + VGAP;
-  myDejitterBase = new SliderWidget(myTab, font, HBORDER, ypos, 6 * fontWidth, lineHeight,
+  myDejitterBase = new SliderWidget(myTab, font, HBORDER, ypos - 1, 6 * fontWidth, lineHeight,
                                     "Paddle dejitter strength", lwidth, kDejitterChanged);
   myDejitterBase->setMinValue(Paddles::MIN_DEJITTER); myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterBase->setTickmarkIntervals(2);
-  xpos = HBORDER + myDejitterBase->getWidth() + fontWidth;
+  xpos = HBORDER + myDejitterBase->getWidth() + fontWidth - 4;
   wid.push_back(myDejitterBase);
 
-  myDejitterDiff = new SliderWidget(myTab, font, xpos, ypos, 6 * fontWidth, lineHeight,
+  myDejitterDiff = new SliderWidget(myTab, font, xpos, ypos - 1, 6 * fontWidth, lineHeight,
                                     "", 0, kDejitterChanged);
   myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER); myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterDiff->setTickmarkIntervals(2);
@@ -167,7 +167,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add paddle speed (digital emulation)
   ypos += lineHeight + VGAP;
-  myDPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos, 13 * fontWidth, lineHeight,
+  myDPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                     "Digital paddle sensitivity ",
                                     lwidth, kDPSpeedChanged);
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
@@ -178,7 +178,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add paddle speed (mouse emulation)
   ypos += lineHeight + VGAP;
-  myMPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos, 13 * fontWidth, lineHeight,
+  myMPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                     "Mouse paddle sensitivity ",
                                     lwidth, kMPSpeedChanged);
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
@@ -189,7 +189,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add trackball speed
   ypos += lineHeight + VGAP;
-  myTrackBallSpeed = new SliderWidget(myTab, font, HBORDER, ypos, 13 * fontWidth, lineHeight,
+  myTrackBallSpeed = new SliderWidget(myTab, font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                       "Trackball sensitivity ",
                                       lwidth, kTBSpeedChanged);
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
