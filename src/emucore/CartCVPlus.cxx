@@ -104,9 +104,22 @@ bool CartridgeCVPlus::poke(uInt16 address, uInt8 value)
     return mySystem->tia().poke(address, value);
   }
   else
-    pokeRAM(myRAM[address & 0x03FF], pokeAddress, value);
+  {
+    if(address & 0x0400)
+    {
+      pokeRAM(myRAM[address & 0x03FF], pokeAddress, value);
+      return true;
+    }
+    else
+    {
+    // Writing to the read port should be ignored, but trigger a break if option enabled
+      uInt8 dummy;
 
-  return true;
+      pokeRAM(dummy, pokeAddress, value);
+      myRamWriteAccess = pokeAddress;
+      return false;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

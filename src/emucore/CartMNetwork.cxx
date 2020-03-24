@@ -137,13 +137,42 @@ bool CartridgeMNetwork::poke(uInt16 address, uInt8 value)
   // All RAM writes are mapped here
   if((myCurrentSlice[0] == myRAMSlice) && (address < BANK_SIZE / 2))
   {
-    pokeRAM(myRAM[address & (BANK_SIZE / 2 - 1)], pokeAddress, value);
-    return true;
+    // RAM slices
+    if(!(address & 0x0400))
+    {
+      pokeRAM(myRAM[address & (BANK_SIZE / 2 - 1)], pokeAddress, value);
+      return true;
+    }
+    else
+    {
+      // Writing to the read port should be ignored, but trigger a break if option enabled
+      uInt8 dummy;
+
+      pokeRAM(dummy, pokeAddress, value);
+      myRamWriteAccess = pokeAddress;
+      return false;
+    }
   }
-  else if((address >= 0x0800) && (address <= 0x08FF))
+  else
   {
-    pokeRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], pokeAddress, value);
-    return true;
+    // fixed 256 bytes of RAM
+    if((address >= 0x0800) && (address <= 0x09FF))
+    {
+      if(!(address & 0x100))
+      {
+        pokeRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], pokeAddress, value);
+        return true;
+      }
+      else
+      {
+        // Writing to the read port should be ignored, but trigger a break if option enabled
+        uInt8 dummy;
+
+        pokeRAM(dummy, pokeAddress, value);
+        myRamWriteAccess = pokeAddress;
+        return false;
+      }
+    }
   }
 
   return false;

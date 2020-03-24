@@ -135,10 +135,22 @@ bool CartridgeDASH::poke(uInt16 address, uInt8 value)
 
     if(whichBankIsThere & BITMASK_ROMRAM)
     {
-      uInt32 byteOffset = address & BITMASK_RAM_BANK;
-      uInt32 baseAddress = ((whichBankIsThere & BIT_BANK_MASK) << RAM_BANK_TO_POWER) + byteOffset;
-      pokeRAM(myRAM[baseAddress], address, value);
-      changed = true;
+      if(address & RAM_BANK_SIZE)
+      {
+        uInt32 byteOffset = address & BITMASK_RAM_BANK;
+        uInt32 baseAddress = ((whichBankIsThere & BIT_BANK_MASK) << RAM_BANK_TO_POWER) + byteOffset;
+        pokeRAM(myRAM[baseAddress], address, value);
+        changed = true;
+      }
+      else
+      {
+        // Writing to the read port should be ignored, but trigger a break if option enabled
+        uInt8 dummy;
+
+        pokeRAM(dummy, address, value);
+        myRamWriteAccess = address;
+        changed = false;
+      }
     }
   }
 
