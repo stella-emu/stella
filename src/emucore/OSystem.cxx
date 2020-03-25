@@ -600,6 +600,8 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     CMDLINE_PROPS_UPDATE("vcenter", PropType::Display_VCenter);
     CMDLINE_PROPS_UPDATE("pp", PropType::Display_Phosphor);
     CMDLINE_PROPS_UPDATE("ppblend", PropType::Display_PPBlend);
+    CMDLINE_PROPS_UPDATE("pxcenter", PropType::Controller_PaddlesXCenter);
+    CMDLINE_PROPS_UPDATE("pycenter", PropType::Controller_PaddlesYCenter);
 
     // Finally, create the cart with the correct properties
     if(cart)

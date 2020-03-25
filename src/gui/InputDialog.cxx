@@ -123,20 +123,9 @@ void InputDialog::addDevicePortTab()
 
   xpos = HBORDER; ypos += lineHeight + VGAP * 2;
   new StaticTextWidget(myTab, _font, xpos, ypos+1, "Analog paddle:");
-
-  // Add paddle center
   xpos += fontWidth * 2;
-  ypos += lineHeight + VGAP;
 
-  myPaddleCenter = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
-                                    "Center",
-                                    lwidth - fontWidth * 2, kPCenterChanged, 6 * fontWidth, "px", 0, true);
-  myPaddleCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
-  myPaddleCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
-  myPaddleCenter->setTickmarkIntervals(4);
-  wid.push_back(myPaddleCenter);
-
-  // Add paddle sensitivity
+  // Add analog paddle sensitivity
   ypos += lineHeight + VGAP;
   myPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
                                    "Sensitivity",
@@ -146,25 +135,25 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myPaddleSpeed);
 
 
-  // Add dejitter (Stelladaptor emulation for now only)
+  // Add dejitter (analog paddles)
   ypos += lineHeight + VGAP;
-  myDejitterBase = new SliderWidget(myTab, _font, xpos, ypos - 1, 6 * fontWidth, lineHeight,
-                                    "Dejitter strength", lwidth - fontWidth * 2, kDejitterChanged);
+  myDejitterBase = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                    "Dejitter averaging", lwidth - fontWidth * 2,
+                                    kDejitterAvChanged, 3 * fontWidth);
   myDejitterBase->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
-  myDejitterBase->setTickmarkIntervals(2);
-  xpos += myDejitterBase->getWidth() + fontWidth - 4;
+  myDejitterBase->setTickmarkIntervals(5);
+  //xpos += myDejitterBase->getWidth() + fontWidth - 4;
   wid.push_back(myDejitterBase);
 
-  myDejitterDiff = new SliderWidget(myTab, _font, xpos, ypos - 1, 6 * fontWidth, lineHeight,
-                                    "", 0, kDejitterChanged);
+  ypos += lineHeight + VGAP;
+  myDejitterDiff = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                    "Dejitter reaction", lwidth - fontWidth * 2,
+                                    kDejitterReChanged, 3 * fontWidth);
   myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER);
   myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
-  myDejitterDiff->setTickmarkIntervals(2);
-  xpos += myDejitterDiff->getWidth();
+  myDejitterDiff->setTickmarkIntervals(5);
   wid.push_back(myDejitterDiff);
-
-  myDejitterLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, 7 * fontWidth, lineHeight, "");
 
   // Add paddle speed (digital emulation)
   ypos += lineHeight + VGAP * 4;
@@ -319,14 +308,13 @@ void InputDialog::loadConfig()
   // Joystick deadzone
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
 
-  // Paddle center & speed (analog)
-  myPaddleCenter->setValue(instance().settings().getInt("pcenter"));
+  // Paddle speed (analog)
   myPaddleSpeed->setValue(instance().settings().getInt("psense"));
-
-  // Paddle speed (digital and mouse)
+  // Paddle dejitter (analog)
   myDejitterBase->setValue(instance().settings().getInt("dejitter.base"));
   myDejitterDiff->setValue(instance().settings().getInt("dejitter.diff"));
-  updateDejitter();
+
+  // Paddle speed (digital and mouse)
   myDPaddleSpeed->setValue(instance().settings().getInt("dsense"));
   myMPaddleSpeed->setValue(instance().settings().getInt("msense"));
 
@@ -375,11 +363,6 @@ void InputDialog::saveConfig()
   int deadzone = myDeadzone->getValue();
   instance().settings().setValue("joydeadzone", deadzone);
   Joystick::setDeadZone(deadzone);
-
-  // Paddle center (analog)
-  int center = myPaddleCenter->getValue();
-  instance().settings().setValue("pcenter", center);
-  Paddles::setAnalogCenter(center);
 
   // Paddle speed (analog)
   int sensitivity = myPaddleSpeed->getValue();
@@ -453,8 +436,7 @@ void InputDialog::setDefaults()
       // Joystick deadzone
       myDeadzone->setValue(0);
 
-      // Paddle center & speed (analog)
-      myPaddleCenter->setValue(0);
+      // Paddle speed (analog)
       myPaddleSpeed->setValue(20);
 
       // Paddle speed (digital)
@@ -466,7 +448,6 @@ void InputDialog::setDefaults()
       myDejitterBase->setValue(0);
       myDejitterDiff->setValue(0);
     #endif
-      updateDejitter();
       myTrackBallSpeed->setValue(10);
 
       // AtariVox serial port
@@ -625,16 +606,16 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       myDeadzone->setValueLabel(3200 + 1000 * myDeadzone->getValue());
       break;
 
-    case kPCenterChanged:
-      myPaddleCenter->setValueLabel(myPaddleCenter->getValue() * 5);
-      break;
-
     case kPSpeedChanged:
       myPaddleSpeed->setValueLabel(Paddles::setAnalogSensitivity(myPaddleSpeed->getValue()) * 100.0 + 0.5);
       break;
 
-    case kDejitterChanged:
-      updateDejitter();
+    case kDejitterAvChanged:
+      updateDejitterAveraging();
+      break;
+
+    case kDejitterReChanged:
+      updateDejitterReaction();
       break;
 
     case kDPSpeedChanged:
@@ -696,25 +677,19 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::updateDejitter()
+void InputDialog::updateDejitterAveraging()
 {
   int strength = myDejitterBase->getValue();
-  stringstream label;
 
-  if (strength)
-    label << myDejitterBase->getValue();
-  else
-    label << "Off";
+  myDejitterBase->setValueLabel(strength ? std::to_string(strength) : "Off");
+}
 
-  label << " ";
-  strength = myDejitterDiff->getValue();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::updateDejitterReaction()
+{
+  int strength = myDejitterDiff->getValue();
 
-  if (strength)
-    label << myDejitterDiff->getValue();
-  else
-    label << "Off";
-
-  myDejitterLabel->setLabel(label.str());
+  myDejitterDiff->setValueLabel(strength ? std::to_string(strength) : "Off");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

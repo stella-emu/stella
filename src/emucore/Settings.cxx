@@ -103,7 +103,6 @@ Settings::Settings()
   setPermanent("dejitter.base", "0");
   setPermanent("dejitter.diff", "0");
   setPermanent("dsense", "10");
-  setPermanent("pcenter", "0");
   setPermanent("psense", "20");
   setPermanent("msense", "10");
   setPermanent("tsense", "10");
@@ -324,10 +323,6 @@ void Settings::validate()
   if(i < 0 || i > 3)
     setValue("cursor", "2");
 
-  i = getInt("pcenter");
-  if(i < Paddles::MIN_ANALOG_CENTER || i > Paddles::MAX_ANALOG_CENTER)
-    setValue("pcenter", "0");
-
   i = getInt("psense");
   if(i < 0|| i > Paddles::MAX_ANALOG_SENSE)
     setValue("psense", "20");
@@ -458,7 +453,6 @@ void Settings::usage() const
     << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
     << "  -dejitter.base <0-10>        Strength of analog paddle value averaging\n"
     << "  -dejitter.diff <0-10>        Strength of analog paddle reaction to fast movements\n"
-    << "  -pcenter      <-20-20>       Center of analog paddle\n"
     << "  -psense       <0-30>         Sensitivity of analog paddle movement\n"
     << "  -dsense       <1-20>         Sensitivity of digital emulated paddle movement\n"
     << "  -msense       <1-20>         Sensitivity of mouse emulated paddle movement\n"
@@ -568,6 +562,8 @@ void Settings::usage() const
     << "   -rc          <arg>          Sets the 'Controller.Right' property\n"
     << "   -bc          <arg>          Same as using both -lc and -rc\n"
     << "   -cp          <arg>          Sets the 'Controller.SwapPaddles' property\n"
+    << "   -pxcenter    <arg>          Sets the 'Controller.PaddlesXCenter' property\n"
+    << "   -pycenter    <arg>          Sets the 'Controller.PaddlesYCenter' property\n"
     << "   -format      <arg>          Sets the 'Display.Format' property\n"
     << "   -vcenter     <arg>          Sets the 'Display.vcenter' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"

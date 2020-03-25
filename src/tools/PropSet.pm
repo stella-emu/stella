@@ -19,11 +19,13 @@ my %prop_type = (
   "Controller.Left"         => 13,
   "Controller.Right"        => 14,
   "Controller.SwapPaddles"  => 15,
-  "Controller.MouseAxis"    => 16,
-  "Display.Format"          => 17,
-  "Display.VCenter"         => 18,
-  "Display.Phosphor"        => 19,
-  "Display.PPBlend"         => 20
+  "Controller.PaddlesXCenter" => 16,
+  "Controller.PaddlesYCenter" => 17,  
+  "Controller.MouseAxis"    => 18,
+  "Display.Format"          => 19,
+  "Display.VCenter"         => 20,
+  "Display.Phosphor"        => 21,
+  "Display.PPBlend"         => 22
 );
 my @prop_type_as_string = (
   "Cart.MD5",
@@ -42,6 +44,8 @@ my @prop_type_as_string = (
   "Controller.Left",
   "Controller.Right",
   "Controller.SwapPaddles",
+  "Controller.PaddlesXCenter",
+  "Controller.PaddlesYCenter",
   "Controller.MouseAxis",
   "Display.Format",
   "Display.VCenter",

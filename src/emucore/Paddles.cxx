@@ -238,7 +238,7 @@ void Paddles::update()
       sa_xaxis = new_val;
 
     setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE *
-      (BSPF::clamp(32768 - Int32(Int32(sa_xaxis) * SENSITIVITY + CENTER), 0, 65536) / 65536.0)));
+      (BSPF::clamp(32768 - Int32(Int32(sa_xaxis) * SENSITIVITY + XCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }
 
@@ -253,7 +253,7 @@ void Paddles::update()
       sa_yaxis = new_val;
 
     setPin(AnalogPin::Five, Int32(MAX_RESISTANCE *
-      (BSPF::clamp(32768 - Int32(Int32(sa_yaxis) * SENSITIVITY + CENTER), 0, 65536) / 65536.0)));
+      (BSPF::clamp(32768 - Int32(Int32(sa_yaxis) * SENSITIVITY + YCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }
   myLastAxisX = sa_xaxis;
@@ -383,10 +383,17 @@ bool Paddles::setMouseControl(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::setAnalogCenter(int center)
+void Paddles::setAnalogXCenter(int xcenter)
 {
-  // TODO: convert into ~5 pixel (also in Input Dialog!)
-  CENTER = BSPF::clamp(center, MIN_ANALOG_CENTER, MAX_ANALOG_CENTER) * 860;
+  // convert into ~5 pixel steps
+  XCENTER = BSPF::clamp(xcenter, MIN_ANALOG_CENTER, MAX_ANALOG_CENTER) * 860;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::setAnalogYCenter(int ycenter)
+{
+  // convert into ~5 pixel steps
+  YCENTER = BSPF::clamp(ycenter, MIN_ANALOG_CENTER, MAX_ANALOG_CENTER) * 860;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -431,7 +438,8 @@ void Paddles::setDigitalPaddleRange(int range)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Paddles::CENTER = 0;
+int Paddles::XCENTER = 0;
+int Paddles::YCENTER = 0;
 float Paddles::SENSITIVITY = 1.0;
 
 int Paddles::TRIGRANGE = Paddles::TRIGMAX;

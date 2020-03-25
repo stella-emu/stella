@@ -65,15 +65,16 @@ class InputDialog : public Dialog
 
     void handleMouseControlState();
     void handleCursorState();
-    void updateDejitter();
+    void updateDejitterAveraging();
+    void updateDejitterReaction();
     void eraseEEPROM();
 
   private:
     enum {
       kDeadzoneChanged    = 'DZch',
-      kPCenterChanged     = 'Pcch',
       kPSpeedChanged      = 'Ppch',
-      kDejitterChanged    = 'Pjch',
+      kDejitterAvChanged  = 'JAch',
+      kDejitterReChanged  = 'JRch',
       kDPSpeedChanged     = 'PDch',
       kTBSpeedChanged     = 'TBch',
       kDBButtonPressed    = 'DBbp',
@@ -96,14 +97,12 @@ class InputDialog : public Dialog
     EditTextWidget*   myAVoxPort{nullptr};
 
     SliderWidget*     myDeadzone{nullptr};
-    SliderWidget*     myPaddleCenter{nullptr};
     SliderWidget*     myPaddleSpeed{nullptr};
     SliderWidget*     myDejitterBase{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};
     SliderWidget*     myDPaddleSpeed{nullptr};
     SliderWidget*     myMPaddleSpeed{nullptr};
     SliderWidget*     myTrackBallSpeed{nullptr};
-    StaticTextWidget* myDejitterLabel{nullptr};
     CheckboxWidget*   myAllowAll4{nullptr};
     CheckboxWidget*   myGrabMouse{nullptr};
     CheckboxWidget*   myModCombo{nullptr};
