@@ -21,6 +21,7 @@
 #include "Version.hxx"
 #include "Logger.hxx"
 #include "AudioSettings.hxx"
+#include "Paddles.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
@@ -102,6 +103,8 @@ Settings::Settings()
   setPermanent("dejitter.base", "0");
   setPermanent("dejitter.diff", "0");
   setPermanent("dsense", "10");
+  setPermanent("pcenter", "0");
+  setPermanent("psense", "20");
   setPermanent("msense", "10");
   setPermanent("tsense", "10");
   setPermanent("saport", "lr");
@@ -321,6 +324,14 @@ void Settings::validate()
   if(i < 0 || i > 3)
     setValue("cursor", "2");
 
+  i = getInt("pcenter");
+  if(i < Paddles::MIN_ANALOG_CENTER || i > Paddles::MAX_ANALOG_CENTER)
+    setValue("pcenter", "0");
+
+  i = getInt("psense");
+  if(i < 0|| i > Paddles::MAX_ANALOG_SENSE)
+    setValue("psense", "20");
+
   i = getInt("dsense");
   if(i < 1 || i > 20)
     setValue("dsense", "10");
@@ -445,8 +456,10 @@ void Settings::usage() const
     << "                                properties in given mode(see manual)\n"
     << "  -grabmouse    <1|0>          Locks the mouse cursor in the TIA window\n"
     << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
-    << "  -dejitter.base <0-10>        Strength of paddle value averaging\n"
-    << "  -dejitter.diff <0-10>        Strength of paddle reaction to fast movements\n"
+    << "  -dejitter.base <0-10>        Strength of analog paddle value averaging\n"
+    << "  -dejitter.diff <0-10>        Strength of analog paddle reaction to fast movements\n"
+    << "  -pcenter      <-20-20>       Center of analog paddle\n"
+    << "  -psense       <0-30>         Sensitivity of analog paddle movement\n"
     << "  -dsense       <1-20>         Sensitivity of digital emulated paddle movement\n"
     << "  -msense       <1-20>         Sensitivity of mouse emulated paddle movement\n"
     << "  -tsense       <1-20>         Sensitivity of mouse emulated trackball movement\n"
@@ -486,7 +499,7 @@ void Settings::usage() const
     << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
     << "  -romviewer    <float>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (use 0 for off)\n"
-    << "  -lastrom       <name>        Last played ROM, automatically selected in\n"
+    << "  -lastrom      <name>         Last played ROM, automatically selected in\n"
     << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"
     << "  -uipalette    <standard|     Selects GUI theme\n"
