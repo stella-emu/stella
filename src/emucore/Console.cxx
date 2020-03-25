@@ -923,6 +923,10 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
         swapAxis = true;
       else if(type == Controller::Type::PaddlesIAxDr)
         swapAxis = swapDir = true;
+
+      Paddles::setAnalogCenter(myOSystem.settings().getInt("pcenter"));
+      Paddles::setAnalogSensitivity(myOSystem.settings().getInt("psense"));
+
       controller = make_unique<Paddles>(port, myEvent, *mySystem,
                                         swapPaddles, swapAxis, swapDir);
       break;

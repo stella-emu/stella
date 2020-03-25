@@ -42,9 +42,9 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
     myMaxWidth(max_w),
     myMaxHeight(max_h)
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() + 4;
+  const int lineHeight   = _font.getLineHeight(),
+            fontWidth    = _font.getMaxCharWidth(),
+            buttonHeight = _font.getLineHeight() + 4;
   const int vBorder = 4;
   int xpos, ypos, tabID;
 
@@ -53,12 +53,12 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // The tab widget
   xpos = 2; ypos = vBorder + _th;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h -_th - buttonHeight - 20);
+  myTab = new TabWidget(this, _font, xpos, ypos, _w - 2*xpos, _h -_th - buttonHeight - 20);
   addTabWidget(myTab);
 
   // 1) Event mapper for emulation actions
-  tabID = myTab->addTab(" Emulation Events ", TabWidget::AUTO_WIDTH);
-  myEmulEventMapper = new EventMappingWidget(myTab, font, 2, 2,
+  tabID = myTab->addTab(" Emul. Events ", TabWidget::AUTO_WIDTH);
+  myEmulEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - 4,
                                              EventMode::kEmulationMode);
@@ -66,8 +66,8 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(myEmulEventMapper->getFocusList(), myTab, tabID);
 
   // 2) Event mapper for UI actions
-  tabID = myTab->addTab("  UI Events  ", TabWidget::AUTO_WIDTH);
-  myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
+  tabID = myTab->addTab(" UI Events ", TabWidget::AUTO_WIDTH);
+  myMenuEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - 4,
                                              EventMode::kMenuMode);
@@ -75,7 +75,10 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(myMenuEventMapper->getFocusList(), myTab, tabID);
 
   // 3) Devices & ports
-  addDevicePortTab(font);
+  addDevicePortTab();
+
+  // 4) Mouse
+  addMouseTab();
 
   // Finalize the tabs, and activate the first tab
   myTab->activateTabs();
@@ -83,7 +86,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add Defaults, OK and Cancel buttons
   WidgetArray wid;
-  addDefaultsOKCancelBGroup(wid, font);
+  addDefaultsOKCancelBGroup(wid, _font);
   addBGroupToFocusList(wid);
 }
 
@@ -93,135 +96,109 @@ InputDialog::~InputDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::addDevicePortTab(const GUI::Font& font)
+void InputDialog::addDevicePortTab()
 {
-  const int lineHeight = font.getLineHeight(),
-            fontWidth  = font.getMaxCharWidth(),
-            fontHeight = font.getFontHeight();
-  int xpos, ypos, lwidth, pwidth, tabID;
+  const int lineHeight = _font.getLineHeight(),
+            fontWidth  = _font.getMaxCharWidth(),
+            fontHeight = _font.getFontHeight();
+  int xpos, ypos, lwidth, tabID;
   WidgetArray wid;
-  VariantList items;
   const int VGAP = 4;
-  const int VBORDER = 9;
+  const int VBORDER = 8;
   const int HBORDER = 8;
 
   // Devices/ports
-  tabID = myTab->addTab(" Devices & Ports ", TabWidget::AUTO_WIDTH);
+  tabID = myTab->addTab("Devices & Ports", TabWidget::AUTO_WIDTH);
 
   ypos = VBORDER;
-  lwidth = font.getStringWidth("Digital paddle sensitivity "); // was: "Use mouse as a controller "
-  pwidth = font.getStringWidth("-UI, -Emulation");
-
-  // Use mouse as controller
-  items.clear();
-  VarList::push_back(items, "Always", "always");
-  VarList::push_back(items, "Analog devices", "analog");
-  VarList::push_back(items, "Never", "never");
-  myMouseControl = new PopUpWidget(myTab, font, HBORDER, ypos, pwidth, lineHeight, items,
-                                   "Use mouse as a controller ", lwidth);
-  wid.push_back(myMouseControl);
-
-  // Mouse cursor state
-  ypos += lineHeight + VGAP;
-  items.clear();
-  VarList::push_back(items, "-UI, -Emulation", "0");
-  VarList::push_back(items, "-UI, +Emulation", "1");
-  VarList::push_back(items, "+UI, -Emulation", "2");
-  VarList::push_back(items, "+UI, +Emulation", "3");
-  myCursorState = new PopUpWidget(myTab, font, HBORDER, ypos, pwidth, lineHeight, items,
-                                  "Mouse cursor visibility ", lwidth, kCursorStateChanged);
-  wid.push_back(myCursorState);
-#ifndef WINDOWED_SUPPORT
-  myCursorState->clearFlags(Widget::FLAG_ENABLED);
-#endif
-
-  lwidth = font.getStringWidth("Digital paddle sensitivity ");
+  lwidth = _font.getStringWidth("Digital paddle sensitivity ");
 
   // Add joystick deadzone setting
-  ypos += lineHeight + VGAP*3;
-  myDeadzone = new SliderWidget(myTab, font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
-                                "Joystick deadzone size ", lwidth, kDeadzoneChanged);
+  myDeadzone = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
+                                "Joystick deadzone size", lwidth, kDeadzoneChanged, 5 * fontWidth);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   myDeadzone->setTickmarkIntervals(4);
   xpos = HBORDER + myDeadzone->getWidth() + 5;
-  myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth, lineHeight, "");
   wid.push_back(myDeadzone);
+
+  xpos = HBORDER; ypos += lineHeight + VGAP * 2;
+  new StaticTextWidget(myTab, _font, xpos, ypos+1, "Analog paddle:");
+
+  // Add paddle center
+  xpos += fontWidth * 2;
+  ypos += lineHeight + VGAP;
+
+  myPaddleCenter = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                    "Center",
+                                    lwidth - fontWidth * 2, kPCenterChanged, 6 * fontWidth, "px", 0, true);
+  myPaddleCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
+  myPaddleCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
+  myPaddleCenter->setTickmarkIntervals(4);
+  wid.push_back(myPaddleCenter);
+
+  // Add paddle sensitivity
+  ypos += lineHeight + VGAP;
+  myPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                   "Sensitivity",
+                                   lwidth - fontWidth * 2, kPSpeedChanged, 4 * fontWidth, "%");
+  myPaddleSpeed->setMinValue(0); myPaddleSpeed->setMaxValue(Paddles::MAX_ANALOG_SENSE);
+  myPaddleSpeed->setTickmarkIntervals(3);
+  wid.push_back(myPaddleSpeed);
+
 
   // Add dejitter (Stelladaptor emulation for now only)
   ypos += lineHeight + VGAP;
-  myDejitterBase = new SliderWidget(myTab, font, HBORDER, ypos - 1, 6 * fontWidth, lineHeight,
-                                    "Paddle dejitter strength", lwidth, kDejitterChanged);
-  myDejitterBase->setMinValue(Paddles::MIN_DEJITTER); myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
+  myDejitterBase = new SliderWidget(myTab, _font, xpos, ypos - 1, 6 * fontWidth, lineHeight,
+                                    "Dejitter strength", lwidth - fontWidth * 2, kDejitterChanged);
+  myDejitterBase->setMinValue(Paddles::MIN_DEJITTER);
+  myDejitterBase->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterBase->setTickmarkIntervals(2);
-  xpos = HBORDER + myDejitterBase->getWidth() + fontWidth - 4;
+  xpos += myDejitterBase->getWidth() + fontWidth - 4;
   wid.push_back(myDejitterBase);
 
-  myDejitterDiff = new SliderWidget(myTab, font, xpos, ypos - 1, 6 * fontWidth, lineHeight,
+  myDejitterDiff = new SliderWidget(myTab, _font, xpos, ypos - 1, 6 * fontWidth, lineHeight,
                                     "", 0, kDejitterChanged);
-  myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER); myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
+  myDejitterDiff->setMinValue(Paddles::MIN_DEJITTER);
+  myDejitterDiff->setMaxValue(Paddles::MAX_DEJITTER);
   myDejitterDiff->setTickmarkIntervals(2);
-  xpos += myDejitterDiff->getWidth() + 5;
+  xpos += myDejitterDiff->getWidth();
   wid.push_back(myDejitterDiff);
 
-  myDejitterLabel = new StaticTextWidget(myTab, font, xpos, ypos + 1, 7 * fontWidth, lineHeight, "");
+  myDejitterLabel = new StaticTextWidget(myTab, _font, xpos, ypos + 1, 7 * fontWidth, lineHeight, "");
 
   // Add paddle speed (digital emulation)
-  ypos += lineHeight + VGAP;
-  myDPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
-                                    "Digital paddle sensitivity ",
-                                    lwidth, kDPSpeedChanged);
+  ypos += lineHeight + VGAP * 4;
+  myDPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
+                                    "Digital paddle sensitivity",
+                                    lwidth, kDPSpeedChanged, 4 * fontWidth, "%");
   myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(20);
   myDPaddleSpeed->setTickmarkIntervals(4);
-  xpos = HBORDER + myDPaddleSpeed->getWidth() + 5;
-  myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight, "");
   wid.push_back(myDPaddleSpeed);
 
-  // Add paddle speed (mouse emulation)
-  ypos += lineHeight + VGAP;
-  myMPaddleSpeed = new SliderWidget(myTab, font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
-                                    "Mouse paddle sensitivity ",
-                                    lwidth, kMPSpeedChanged);
-  myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
-  myMPaddleSpeed->setTickmarkIntervals(4);
-  xpos = HBORDER + myMPaddleSpeed->getWidth() + 5;
-  myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight, "");
-  wid.push_back(myMPaddleSpeed);
-
   // Add trackball speed
-  ypos += lineHeight + VGAP;
-  myTrackBallSpeed = new SliderWidget(myTab, font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
-                                      "Trackball sensitivity ",
-                                      lwidth, kTBSpeedChanged);
+  ypos += lineHeight + VGAP * 2;
+  myTrackBallSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
+                                      "Trackball sensitivity",
+                                      lwidth, kTBSpeedChanged, 4 * fontWidth, "%");
   myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
   myTrackBallSpeed->setTickmarkIntervals(4);
-  xpos = HBORDER + myTrackBallSpeed->getWidth() + 5;
-  myTrackBallLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight, "");
   wid.push_back(myTrackBallSpeed);
 
   // Add 'allow all 4 directions' for joystick
-  ypos += lineHeight + VGAP*3;
-  myAllowAll4 = new CheckboxWidget(myTab, font, HBORDER, ypos,
+  ypos += lineHeight + VGAP * 4;
+  myAllowAll4 = new CheckboxWidget(myTab, _font, HBORDER, ypos,
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
 
-  // Grab mouse (in windowed mode)
-  ypos += lineHeight + VGAP;
-  myGrabMouse = new CheckboxWidget(myTab, font, HBORDER, ypos,
-	                "Grab mouse in emulation mode");
-  wid.push_back(myGrabMouse);
-#ifndef WINDOWED_SUPPORT
-  myGrabMouse->clearFlags(Widget::FLAG_ENABLED);
-#endif
-
   // Enable/disable modifier key-combos
   ypos += lineHeight + VGAP;
-  myModCombo = new CheckboxWidget(myTab, font, HBORDER, ypos,
-	                "Use modifier key combos");
+  myModCombo = new CheckboxWidget(myTab, _font, HBORDER, ypos,
+                  "Use modifier key combos");
   wid.push_back(myModCombo);
   ypos += lineHeight + VGAP;
 
   // Stelladaptor mappings
-  mySAPort = new CheckboxWidget(myTab, font, HBORDER, ypos,
+  mySAPort = new CheckboxWidget(myTab, _font, HBORDER, ypos,
                                 "Swap Stelladaptor ports");
   wid.push_back(mySAPort);
 
@@ -229,34 +206,98 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Add EEPROM erase (part 1/2)
   ypos += VGAP*4;
-  fwidth = font.getStringWidth("AtariVox/SaveKey");
-  lwidth = font.getStringWidth("AtariVox/SaveKey");
-  new StaticTextWidget(myTab, font, _w - HBORDER - 4 - (fwidth + lwidth) / 2, ypos,
+  fwidth = _font.getStringWidth("AtariVox/SaveKey");
+  lwidth = _font.getStringWidth("AtariVox/SaveKey");
+  new StaticTextWidget(myTab, _font, _w - HBORDER - 4 - (fwidth + lwidth) / 2, ypos,
                        "AtariVox/SaveKey");
 
   // Show joystick database
   ypos += lineHeight;
-  myJoyDlgButton = new ButtonWidget(myTab, font, HBORDER, ypos, 20,
+  myJoyDlgButton = new ButtonWidget(myTab, _font, HBORDER, ypos, 20,
     "Joystick Database" + ELLIPSIS, kDBButtonPressed);
   wid.push_back(myJoyDlgButton);
 
   // Add EEPROM erase (part 1/2)
-  myEraseEEPROMButton = new ButtonWidget(myTab, font, _w - HBORDER - 4 - fwidth, ypos,
+  myEraseEEPROMButton = new ButtonWidget(myTab, _font, _w - HBORDER - 4 - fwidth, ypos,
                                          fwidth, lineHeight+4,
                                         "Erase EEPROM", kEEButtonPressed);
   wid.push_back(myEraseEEPROMButton);
 
   // Add AtariVox serial port
-  ypos += lineHeight + VGAP*2;
-  lwidth = font.getStringWidth("AVox serial port ");
+  ypos += lineHeight + VGAP * 2;
+  lwidth = _font.getStringWidth("AVox serial port ");
   fwidth = _w - HBORDER * 2 - 4 - lwidth;
-  new StaticTextWidget(myTab, font, HBORDER, ypos + 2, "AVox serial port ");
-  myAVoxPort = new EditTextWidget(myTab, font, HBORDER + lwidth, ypos,
+  new StaticTextWidget(myTab, _font, HBORDER, ypos + 2, "AVox serial port ");
+  myAVoxPort = new EditTextWidget(myTab, _font, HBORDER + lwidth, ypos,
                                   fwidth, fontHeight);
-
   wid.push_back(myAVoxPort);
 
   // Add items for virtual device ports
+  addToFocusList(wid, myTab, tabID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::addMouseTab()
+{
+  const int lineHeight = _font.getLineHeight(),
+    fontWidth  = _font.getMaxCharWidth(),
+    fontHeight = _font.getFontHeight();
+  int ypos, lwidth, pwidth, tabID;
+  WidgetArray wid;
+  VariantList items;
+  const int VGAP = 4;
+  const int VBORDER = 8;
+  const int HBORDER = 8;
+
+  // Mouse
+  tabID = myTab->addTab(" Mouse ", TabWidget::AUTO_WIDTH);
+
+  ypos = VBORDER;
+  lwidth = _font.getStringWidth("Use mouse as a controller ");
+  pwidth = _font.getStringWidth("-UI, -Emulation");
+
+  // Use mouse as controller
+  VarList::push_back(items, "Always", "always");
+  VarList::push_back(items, "Analog devices", "analog");
+  VarList::push_back(items, "Never", "never");
+  myMouseControl = new PopUpWidget(myTab, _font, HBORDER, ypos, pwidth, lineHeight, items,
+                                   "Use mouse as a controller ", lwidth, kMouseCtrlChanged);
+  wid.push_back(myMouseControl);
+
+  // Add paddle speed (mouse emulation)
+  ypos += lineHeight + VGAP;
+  myMPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
+                                    "Mouse paddle sensitivity ",
+                                    lwidth, kMPSpeedChanged, 4 * fontWidth, "%");
+  myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
+  myMPaddleSpeed->setTickmarkIntervals(4);
+  wid.push_back(myMPaddleSpeed);
+
+
+  // Mouse cursor state
+  ypos += lineHeight + VGAP * 4;
+  items.clear();
+  VarList::push_back(items, "-UI, -Emulation", "0");
+  VarList::push_back(items, "-UI, +Emulation", "1");
+  VarList::push_back(items, "+UI, -Emulation", "2");
+  VarList::push_back(items, "+UI, +Emulation", "3");
+  myCursorState = new PopUpWidget(myTab, _font, HBORDER, ypos, pwidth, lineHeight, items,
+                                  "Mouse cursor visibility ", lwidth, kCursorStateChanged);
+  wid.push_back(myCursorState);
+#ifndef WINDOWED_SUPPORT
+  myCursorState->clearFlags(Widget::FLAG_ENABLED);
+#endif
+
+  // Grab mouse (in windowed mode)
+  ypos += lineHeight + VGAP;
+  myGrabMouse = new CheckboxWidget(myTab, _font, HBORDER, ypos,
+                                   "Grab mouse in emulation mode");
+  wid.push_back(myGrabMouse);
+#ifndef WINDOWED_SUPPORT
+  myGrabMouse->clearFlags(Widget::FLAG_ENABLED);
+#endif
+
+  // Add items for mouse
   addToFocusList(wid, myTab, tabID);
 }
 
@@ -269,6 +310,7 @@ void InputDialog::loadConfig()
   // Use mouse as a controller
   myMouseControl->setSelected(
     instance().settings().getString("usemouse"), "analog");
+  handleMouseControlState();
 
   // Mouse cursor state
   myCursorState->setSelected(instance().settings().getString("cursor"), "2");
@@ -276,20 +318,20 @@ void InputDialog::loadConfig()
 
   // Joystick deadzone
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
-  myDeadzoneLabel->setValue(Joystick::deadzone());
+
+  // Paddle center & speed (analog)
+  myPaddleCenter->setValue(instance().settings().getInt("pcenter"));
+  myPaddleSpeed->setValue(instance().settings().getInt("psense"));
 
   // Paddle speed (digital and mouse)
   myDejitterBase->setValue(instance().settings().getInt("dejitter.base"));
   myDejitterDiff->setValue(instance().settings().getInt("dejitter.diff"));
   updateDejitter();
   myDPaddleSpeed->setValue(instance().settings().getInt("dsense"));
-  myDPaddleLabel->setLabel(instance().settings().getString("dsense"));
   myMPaddleSpeed->setValue(instance().settings().getInt("msense"));
-  myMPaddleLabel->setLabel(instance().settings().getString("msense"));
 
   // Trackball speed
   myTrackBallSpeed->setValue(instance().settings().getInt("tsense"));
-  myTrackBallLabel->setLabel(instance().settings().getString("tsense"));
 
   // AtariVox serial port
   myAVoxPort->setText(instance().settings().getString("avoxport"));
@@ -334,6 +376,16 @@ void InputDialog::saveConfig()
   instance().settings().setValue("joydeadzone", deadzone);
   Joystick::setDeadZone(deadzone);
 
+  // Paddle center (analog)
+  int center = myPaddleCenter->getValue();
+  instance().settings().setValue("pcenter", center);
+  Paddles::setAnalogCenter(center);
+
+  // Paddle speed (analog)
+  int sensitivity = myPaddleSpeed->getValue();
+  instance().settings().setValue("psense", sensitivity);
+  Paddles::setAnalogSensitivity(sensitivity);
+
   // Paddle speed (digital and mouse)
   int dejitter = myDejitterBase->getValue();
   instance().settings().setValue("dejitter.base", dejitter);
@@ -342,7 +394,7 @@ void InputDialog::saveConfig()
   instance().settings().setValue("dejitter.diff", dejitter);
   Paddles::setDejitterDiff(dejitter);
 
-  int sensitivity = myDPaddleSpeed->getValue();
+  sensitivity = myDPaddleSpeed->getValue();
   instance().settings().setValue("dsense", sensitivity);
   Paddles::setDigitalSensitivity(sensitivity);
 
@@ -394,26 +446,19 @@ void InputDialog::setDefaults()
       myMenuEventMapper->setDefaults();
       break;
 
-    case 2:  // Virtual devices
-    {
+    case 2:  // Devices & Ports
       // Left & right ports
       mySAPort->setState(false);
 
-      // Use mouse as a controller
-      myMouseControl->setSelected("analog");
-
-      // Mouse cursor state
-      myCursorState->setSelected("2");
-
       // Joystick deadzone
       myDeadzone->setValue(0);
-      myDeadzoneLabel->setValue(3200);
 
-      // Paddle speed (digital and mouse)
+      // Paddle center & speed (analog)
+      myPaddleCenter->setValue(0);
+      myPaddleSpeed->setValue(20);
+
+      // Paddle speed (digital)
       myDPaddleSpeed->setValue(10);
-      myDPaddleLabel->setLabel("10");
-      myMPaddleSpeed->setValue(10);
-      myMPaddleLabel->setLabel("10");
     #if defined(RETRON77)
       myDejitterBase->setValue(2);
       myDejitterDiff->setValue(6);
@@ -423,7 +468,6 @@ void InputDialog::setDefaults()
     #endif
       updateDejitter();
       myTrackBallSpeed->setValue(10);
-      myTrackBallLabel->setLabel("10");
 
       // AtariVox serial port
       myAVoxPort->setText("");
@@ -431,16 +475,27 @@ void InputDialog::setDefaults()
       // Allow all 4 joystick directions
       myAllowAll4->setState(false);
 
-      // Grab mouse
-      myGrabMouse->setState(true);
-
       // Enable/disable modifier key-combos
       myModCombo->setState(true);
 
-      handleCursorState();
-
       break;
-    }
+
+    case 3:  // Mouse
+      // Use mouse as a controller
+      myMouseControl->setSelected("analog");
+
+      // Mouse cursor state
+      myCursorState->setSelected("2");
+
+      // Grab mouse
+      myGrabMouse->setState(true);
+
+      // Paddle speed (mouse)
+      myMPaddleSpeed->setValue(10);
+
+      handleMouseControlState();
+      handleCursorState();
+      break;
 
     default:
       break;
@@ -566,28 +621,28 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
-    case kCursorStateChanged:
-      handleCursorState();
-      break;
-
     case kDeadzoneChanged:
-      myDeadzoneLabel->setValue(3200 + 1000*myDeadzone->getValue());
+      myDeadzone->setValueLabel(3200 + 1000 * myDeadzone->getValue());
       break;
 
-    case kDPSpeedChanged:
-      myDPaddleLabel->setValue(myDPaddleSpeed->getValue());
+    case kPCenterChanged:
+      myPaddleCenter->setValueLabel(myPaddleCenter->getValue() * 5);
       break;
 
-    case kMPSpeedChanged:
-      myMPaddleLabel->setValue(myMPaddleSpeed->getValue());
+    case kPSpeedChanged:
+      myPaddleSpeed->setValueLabel(Paddles::setAnalogSensitivity(myPaddleSpeed->getValue()) * 100.0 + 0.5);
       break;
 
     case kDejitterChanged:
       updateDejitter();
       break;
 
+    case kDPSpeedChanged:
+      myDPaddleSpeed->setValueLabel(myDPaddleSpeed->getValue() * 10);
+      break;
+
     case kTBSpeedChanged:
-      myTrackBallLabel->setValue(myTrackBallSpeed->getValue());
+      myTrackBallSpeed->setValueLabel(myTrackBallSpeed->getValue() * 10);
       break;
 
     case kDBButtonPressed:
@@ -623,18 +678,21 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       eraseEEPROM();
       break;
 
+    case kMouseCtrlChanged:
+      handleMouseControlState();
+      break;
+
+    case kCursorStateChanged:
+      handleCursorState();
+      break;
+
+    case kMPSpeedChanged:
+      myMPaddleSpeed->setValueLabel(myMPaddleSpeed->getValue() * 10);
+      break;
+
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::handleCursorState()
-{
-  int state = myCursorState->getSelected();
-  bool enableGrab = state != 1 && state != 3;
-
-  myGrabMouse->setEnabled(enableGrab);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -659,3 +717,17 @@ void InputDialog::updateDejitter()
   myDejitterLabel->setLabel(label.str());
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::handleMouseControlState()
+{
+  myMPaddleSpeed->setEnabled(myMouseControl->getSelected() != 2);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::handleCursorState()
+{
+  int state = myCursorState->getSelected();
+  bool enableGrab = state != 1 && state != 3;
+
+  myGrabMouse->setEnabled(enableGrab);
+}
