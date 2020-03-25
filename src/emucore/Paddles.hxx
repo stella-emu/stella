@@ -50,8 +50,8 @@ class Paddles : public Controller
   public:
     static constexpr float BASE_ANALOG_SENSE = 0.148643628f;
     static constexpr int MAX_ANALOG_SENSE = 30;
-    static constexpr int MIN_ANALOG_CENTER = -20;
-    static constexpr int MAX_ANALOG_CENTER = 20;
+    static constexpr int MIN_ANALOG_CENTER = -10;
+    static constexpr int MAX_ANALOG_CENTER = 30;
     static constexpr int MAX_DIGITAL_SENSE = 20;
     static constexpr int MAX_MOUSE_SENSE = 20;
     static constexpr int MIN_DEJITTER = 0;
@@ -93,11 +93,18 @@ class Paddles : public Controller
                          Controller::Type ytype, int yid) override;
 
     /**
-      Sets the center for analog paddles.
+      Sets the x-center for analog paddles.
 
-      @param center  Value from -20 to 20, representing the center offset/860
+      @param center  Value from -10 to 30, representing the center offset/860
     */
-    static void setAnalogCenter(int center);
+    static void setAnalogXCenter(int xcenter);
+
+    /**
+      Sets the y-center for analog paddles.
+
+      @param center  Value from -10 to 30, representing the center offset/860
+    */
+    static void setAnalogYCenter(int ycenter);
 
     /**
       Sets the sensitivity for analog paddles.
@@ -175,7 +182,8 @@ class Paddles : public Controller
     int myLastAxisX{0}, myLastAxisY{0};
     int myAxisDigitalZero{0}, myAxisDigitalOne{0};
 
-    static int CENTER;
+    static int XCENTER;
+    static int YCENTER;
     static float SENSITIVITY;
 
     static int DIGITAL_SENSITIVITY, DIGITAL_DISTANCE;
