@@ -22,6 +22,7 @@ class System;
 
 #include "Console.hxx"
 #include "Serializable.hxx"
+#include "CartDebug.hxx"
 #include "bspf.hxx"
 
 /**
@@ -102,7 +103,7 @@ class Device : public Serializable
 
       @param address The address to modify
     */
-    virtual uInt16 getAccessFlags(uInt16 address) const { return 0; }
+    virtual CartDebug::DisasmFlags getAccessFlags(uInt16 address) const { return CartDebug::NONE; }
 
     /**
       Change the given address type to use the given disassembly flags
@@ -110,7 +111,7 @@ class Device : public Serializable
       @param address The address to modify
       @param flags   A bitfield of DisasmType directives for the given address
     */
-    virtual void setAccessFlags(uInt16 address, uInt16 flags) { }
+    virtual void setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags) { }
 
   protected:
     /// Pointer to the system the device is installed in or the null pointer

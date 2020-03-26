@@ -467,7 +467,7 @@ void M6532::createAccessBases()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 M6532::getAccessFlags(uInt16 address) const
+CartDebug::DisasmFlags M6532::getAccessFlags(uInt16 address) const
 {
   if (address & IO_BIT)
     return myIOAccessBase[address & IO_MASK];
@@ -478,7 +478,7 @@ uInt16 M6532::getAccessFlags(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::setAccessFlags(uInt16 address, uInt16 flags)
+void M6532::setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags)
 {
   // ignore none flag
   if (flags != CartDebug::NONE) {

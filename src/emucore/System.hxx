@@ -29,6 +29,7 @@ class NullDevice;
 #include "NullDev.hxx"
 #include "Random.hxx"
 #include "Serializable.hxx"
+#include "CartDebug.hxx"
 
 /**
   This class represents a system consisting of a 6502 microprocessor
@@ -202,7 +203,7 @@ class System : public Serializable
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address, uInt16 flags = 0);
+    uInt8 peek(uInt16 address, CartDebug::DisasmFlags flags = CartDebug::NONE);
 
     /**
       Change the byte at the specified address to the given value.
@@ -217,7 +218,7 @@ class System : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value, uInt16 flags = 0);
+    void poke(uInt16 address, uInt8 value, CartDebug::DisasmFlags flags = CartDebug::NONE);
 
     /**
       Lock/unlock the data bus. When the bus is locked, peek() and
@@ -236,8 +237,8 @@ class System : public Serializable
       address.  Note that while any flag can be used, the disassembly
       only really acts on CODE/GFX/PGFX/DATA/ROW.
     */
-    uInt16 getAccessFlags(uInt16 address) const;
-    void setAccessFlags(uInt16 address, uInt16 flags);
+    CartDebug::DisasmFlags getAccessFlags(uInt16 address) const;
+    void setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags);
 
   public:
     /**
@@ -277,7 +278,7 @@ class System : public Serializable
         conclusively determine if a section of address space is CODE, even
         if the disassembler failed to mark it as such.
       */
-      uInt16* codeAccessBase{nullptr};
+      CartDebug::DisasmFlags* codeAccessBase{nullptr};
 
       /**
         Pointer to the device associated with this page or to the system's

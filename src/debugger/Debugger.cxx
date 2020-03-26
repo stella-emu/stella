@@ -440,19 +440,19 @@ bool Debugger::writeTrap(uInt16 t)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Debugger::peek(uInt16 addr, uInt16 flags)
+uInt8 Debugger::peek(uInt16 addr, CartDebug::DisasmFlags flags)
 {
   return mySystem.peek(addr, flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Debugger::dpeek(uInt16 addr, uInt16 flags)
+uInt16 Debugger::dpeek(uInt16 addr, CartDebug::DisasmFlags flags)
 {
   return uInt16(mySystem.peek(addr, flags) | (mySystem.peek(addr+1, flags) << 8));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::poke(uInt16 addr, uInt8 value, uInt16 flags)
+void Debugger::poke(uInt16 addr, uInt8 value, CartDebug::DisasmFlags flags)
 {
   mySystem.poke(addr, value, flags);
 }
@@ -464,26 +464,26 @@ M6502& Debugger::m6502() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::peekAsInt(int addr, uInt16 flags)
+int Debugger::peekAsInt(int addr, CartDebug::DisasmFlags flags)
 {
   return mySystem.peek(uInt16(addr), flags);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::dpeekAsInt(int addr, uInt16 flags)
+int Debugger::dpeekAsInt(int addr, CartDebug::DisasmFlags flags)
 {
   return mySystem.peek(uInt16(addr), flags) |
       (mySystem.peek(uInt16(addr+1), flags) << 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getAccessFlags(uInt16 addr) const
+CartDebug::DisasmFlags Debugger::getAccessFlags(uInt16 addr) const
 {
   return mySystem.getAccessFlags(addr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setAccessFlags(uInt16 addr, uInt16 flags)
+void Debugger::setAccessFlags(uInt16 addr, CartDebug::DisasmFlags flags)
 {
   mySystem.setAccessFlags(addr, flags);
 }
