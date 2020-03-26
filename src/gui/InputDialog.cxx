@@ -229,8 +229,7 @@ void InputDialog::addDevicePortTab()
 void InputDialog::addMouseTab()
 {
   const int lineHeight = _font.getLineHeight(),
-    fontWidth  = _font.getMaxCharWidth(),
-    fontHeight = _font.getFontHeight();
+    fontWidth  = _font.getMaxCharWidth();
   int ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
@@ -607,7 +606,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPSpeedChanged:
-      myPaddleSpeed->setValueLabel(Paddles::setAnalogSensitivity(myPaddleSpeed->getValue()) * 100.0 + 0.5);
+      myPaddleSpeed->setValueLabel(Paddles::setAnalogSensitivity(myPaddleSpeed->getValue()) * 100.F + 0.5F);
       break;
 
     case kDejitterAvChanged:

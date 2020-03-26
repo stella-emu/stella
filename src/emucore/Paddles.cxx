@@ -400,7 +400,8 @@ void Paddles::setAnalogYCenter(int ycenter)
 float Paddles::setAnalogSensitivity(int sensitivity)
 {
   // BASE_ANALOG_SENSE * (1.1 ^ 20) = 1.0
-  SENSITIVITY = BASE_ANALOG_SENSE * std::pow(1.1, BSPF::clamp(sensitivity, 0, MAX_ANALOG_SENSE));
+  SENSITIVITY = BASE_ANALOG_SENSE * std::pow(1.1F,
+    static_cast<float>(BSPF::clamp(sensitivity, 0, MAX_ANALOG_SENSE)));
 
   return SENSITIVITY;
 }
