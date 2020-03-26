@@ -156,10 +156,24 @@ class M6502 : public Serializable
 
       @return The address of the last read
     */
-    uInt16 lastReadBaseAddress() const { return myLastPeekBaseAddress; }
+    uInt16 lastReadAddress() const { return myLastPeekAddress; }
 
     /**
       Return the last address that was part of a write/poke.
+
+      @return The address of the last write
+    */
+    uInt16 lastWriteAddress() const { return myLastPokeAddress; }
+
+    /**
+      Return the last (non-mirrored) address that was part of a read/peek.
+
+      @return The address of the last read
+    */
+    uInt16 lastReadBaseAddress() const { return myLastPeekBaseAddress; }
+
+    /**
+      Return the last (non-mirrored) address that was part of a write/poke.
 
       @return The address of the last write
     */

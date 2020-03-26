@@ -2054,18 +2054,18 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
   if(read)
   {
     if(beginRead != endRead)
-      conditionBuf << "__lastread>=" << Base::toString(beginRead) << "&&__lastread<=" << Base::toString(endRead);
+      conditionBuf << "__lastbaseread>=" << Base::toString(beginRead) << "&&__lastbaseread<=" << Base::toString(endRead);
     else
-      conditionBuf << "__lastread==" << Base::toString(beginRead);
+      conditionBuf << "__lastbaseread==" << Base::toString(beginRead);
   }
   if(read && write)
     conditionBuf << "||";
   if(write)
   {
     if(beginWrite != endWrite)
-      conditionBuf << "__lastwrite>=" << Base::toString(beginWrite) << "&&__lastwrite<=" << Base::toString(endWrite);
+      conditionBuf << "__lastbasewrite>=" << Base::toString(beginWrite) << "&&__lastbasewrite<=" << Base::toString(endWrite);
     else
-      conditionBuf << "__lastwrite==" << Base::toString(beginWrite);
+      conditionBuf << "__lastbasewrite==" << Base::toString(beginWrite);
   }
   // parenthesize provided condition (end)
   if(hasCond)

@@ -181,10 +181,15 @@ CartMethod getCartSpecial(char* ch)
 {
   if(BSPF::equalsIgnoreCase(ch, "_bank"))
     return &CartDebug::getPCBank;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastread"))
+
+  else if(BSPF::equalsIgnoreCase(ch, "__lastbaseread"))
     return &CartDebug::lastReadBaseAddress;
-  else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))
+  else if(BSPF::equalsIgnoreCase(ch, "__lastbasewrite"))
     return &CartDebug::lastWriteBaseAddress;
+  else if(BSPF::equalsIgnoreCase(ch, "__lastread"))
+    return &CartDebug::lastReadAddress;
+  else if(BSPF::equalsIgnoreCase(ch, "__lastwrite"))
+    return &CartDebug::lastWriteAddress;
   else
     return nullptr;
 }

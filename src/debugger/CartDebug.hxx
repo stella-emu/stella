@@ -104,6 +104,12 @@ class CartDebug : public DebuggerSystem
     CartDebugWidget* getDebugWidget() const { return myDebugWidget; }
     void setDebugWidget(CartDebugWidget* w) { myDebugWidget = w; }
 
+
+    // Return the address of the last CPU read
+    int lastReadAddress();
+    // Return the address of the last CPU write
+    int lastWriteAddress();
+
     // Return the base (= non-mirrored) address of the last CPU read
     int lastReadBaseAddress();
     // Return the base (= non-mirrored) address of the last CPU write
