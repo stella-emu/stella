@@ -48,7 +48,7 @@ class Paddles : public Controller
     virtual ~Paddles() = default;
 
   public:
-    static constexpr float BASE_ANALOG_SENSE = 0.148643628f;
+    static constexpr float BASE_ANALOG_SENSE = 0.148643628F;
     static constexpr int MAX_ANALOG_SENSE = 30;
     static constexpr int MIN_ANALOG_CENTER = -10;
     static constexpr int MAX_ANALOG_CENTER = 30;
@@ -95,14 +95,14 @@ class Paddles : public Controller
     /**
       Sets the x-center for analog paddles.
 
-      @param center  Value from -10 to 30, representing the center offset/860
+      @param xcenter  Value from -10 to 30, representing the center offset/860
     */
     static void setAnalogXCenter(int xcenter);
 
     /**
       Sets the y-center for analog paddles.
 
-      @param center  Value from -10 to 30, representing the center offset/860
+      @param ycenter  Value from -10 to 30, representing the center offset/860
     */
     static void setAnalogYCenter(int ycenter);
 
