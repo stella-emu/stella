@@ -322,7 +322,7 @@ class Cartridge : public Device
 
     // The array containing information about every byte of ROM indicating
     // whether it is used as code.
-    ByteBuffer myCodeAccessBase;
+    WordBuffer myCodeAccessBase;
 
     // Contains address of illegal RAM write access or 0
     uInt16 myRamWriteAccess{0};

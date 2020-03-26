@@ -151,14 +151,14 @@ class M6532 : public Device
 
       @param address  The address to query
     */
-    uInt8 getAccessFlags(uInt16 address) const override;
+    uInt16 getAccessFlags(uInt16 address) const override;
     /**
       Change the given address to use the given disassembly flags.
 
       @param address  The address to modify
       @param flags    A bitfield of DisasmType directives for the given address
     */
-    void setAccessFlags(uInt16 address, uInt8 flags) override;
+    void setAccessFlags(uInt16 address, uInt16 flags) override;
 #endif // DEBUGGER_SUPPORT
 
   private:
@@ -225,9 +225,9 @@ class M6532 : public Device
 
     // The arrays containing information about every byte of RIOT
     // indicating whether and how (RW) it is used.
-    std::array<uInt8, RAM_SIZE>   myRAMAccessBase;
-    std::array<uInt8, STACK_SIZE> myStackAccessBase;
-    std::array<uInt8, IO_SIZE>    myIOAccessBase;
+    std::array<uInt16, RAM_SIZE>   myRAMAccessBase;
+    std::array<uInt16, STACK_SIZE> myStackAccessBase;
+    std::array<uInt16, IO_SIZE>    myIOAccessBase;
     // The array used to skip the first ZP access tracking
     std::array<uInt8, RAM_SIZE>   myZPAccessDelay;
 #endif // DEBUGGER_SUPPORT

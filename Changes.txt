@@ -13,11 +13,16 @@
 ===========================================================================
 
 6.1 to 6.2: (??? ??, 2020)
-  * Paddle centering and sensitivity can be adjusted now
 
-  * High scores: Score addresses, game variation etc. can be defined for a
-    game. This allows the user to save high scores for these games. For each
-    game and variation, the top 10 scores can be saved.
+  * Added that paddle centering and sensitivity can be adjusted now (TOOD: Doc)
+
+  * Added high scores: Score addresses, game variation etc. can be defined for
+    a game. This allows the user to save high scores for these games. For each
+    game and variation, the top 10 scores can be saved. (TOOD: Doc)
+
+  * Added displaying last write address in debugger. (TOOD: Doc)
+
+  * Added detection of color data in DiStella. (TOOD: Doc)
 
 
 6.0.2 to 6.1: (March 22, 2020)

@@ -125,14 +125,25 @@ void DiStella::disasm(uInt32 distart, int pass)
       goto FIX_LAST;
 
     if (checkBits(myPC, CartDebug::GFX | CartDebug::PGFX,
-        CartDebug::CODE)) {
+        CartDebug::CODE))
+    {
       if (pass == 2)
         mark(myPC + myOffset, CartDebug::VALID_ENTRY);
       if (pass == 3)
         outputGraphics();
       ++myPC;
+    } else if (checkBits(myPC, CartDebug::COL | CartDebug::PCOL | CartDebug::BCOL,
+               CartDebug::CODE | CartDebug::GFX | CartDebug::PGFX))
+    {
+      if (pass == 2)
+        mark(myPC + myOffset, CartDebug::VALID_ENTRY);
+      if (pass == 3)
+        outputColors();
+      ++myPC;
     } else if (checkBits(myPC, CartDebug::DATA,
-               CartDebug::CODE | CartDebug::GFX | CartDebug::PGFX)) {
+               CartDebug::CODE | CartDebug::GFX | CartDebug::PGFX |
+               CartDebug::COL | CartDebug::PCOL | CartDebug::BCOL))
+    {
       if (pass == 2)
         mark(myPC + myOffset, CartDebug::VALID_ENTRY);
       if (pass == 3)
@@ -140,7 +151,9 @@ void DiStella::disasm(uInt32 distart, int pass)
       else
         ++myPC;
     } else if (checkBits(myPC, CartDebug::ROW,
-               CartDebug::CODE | CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
+               CartDebug::CODE |
+               CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX |
+               CartDebug::COL | CartDebug::PCOL | CartDebug::BCOL)) {
 FIX_LAST:
       if (pass == 2)
         mark(myPC + myOffset, CartDebug::VALID_ENTRY);
@@ -606,12 +619,13 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
       // in the emulation core indicate that the CODE range has finished
       // Therefore, we stop at the first such address encountered
       for (uInt32 k = pcBeg; k <= myPCEnd; ++k) {
-        if (checkBits(k, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX,
-                      CartDebug::CODE)) {
+        if (checkBits(k, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX |
+            CartDebug::COL | CartDebug::PCOL | CartDebug::BCOL,
+            CartDebug::CODE)) {
           //if (Debugger::debugger().getAccessFlags(k) &
           //    (CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX)) {
           // TODO: this should never happen, remove when we are sure
-          // TODO: NOT USED: uInt8 flags = Debugger::debugger().getAccessFlags(k);
+          // TODO: NOT USED: uInt16 flags = Debugger::debugger().getAccessFlags(k);
           myPCEnd = k - 1;
           break;
         }
@@ -667,8 +681,9 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
     }
 
     // Must be ROW / unused bytes
-    if (!checkBit(k, CartDebug::CODE | CartDebug::GFX |
-        CartDebug::PGFX | CartDebug::DATA))
+    if (!checkBit(k, CartDebug::CODE | CartDebug::GFX | CartDebug::PGFX |
+        CartDebug::COL | CartDebug::PCOL | CartDebug::BCOL |
+        CartDebug::DATA))
       mark(k + myOffset, CartDebug::ROW);
   }
 }
@@ -685,7 +700,9 @@ void DiStella::disasmFromAddress(uInt32 distart)
   while (myPC <= myAppData.end) {
 
     // abort when we reach non-code areas
-    if (checkBits(myPC, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX, CartDebug::CODE)) {
+    if (checkBits(myPC, CartDebug::CartDebug::DATA | CartDebug::GFX | CartDebug::PGFX |
+        CartDebug::COL | CartDebug::PCOL | CartDebug::BCOL,
+        CartDebug::CODE)) {
       myPCEnd = (myPC - 1) + myOffset;
       return;
     }
@@ -823,7 +840,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
+int DiStella::mark(uInt32 address, uInt16 mask, bool directive)
 {
   /*-----------------------------------------------------------------------
     For any given offset and code range...
@@ -896,16 +913,16 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DiStella::checkBit(uInt16 address, uInt8 mask, bool useDebugger) const
+bool DiStella::checkBit(uInt16 address, uInt16 mask, bool useDebugger) const
 {
   // The REFERENCED and VALID_ENTRY flags are needed for any inspection of
   // an address
   // Since they're set only in the labels array (as the lower two bits),
   // they must be included in the other bitfields
-  uInt8 label = myLabels[address & myAppData.end],
+  uInt16 label = myLabels[address & myAppData.end],
     lastbits = label & 0x03,
-    directive = myDirectives[address & myAppData.end] & 0xFC,
-    debugger = Debugger::debugger().getAccessFlags(address | myOffset) & 0xFC;
+    directive = myDirectives[address & myAppData.end] & ~0x03,
+    debugger = Debugger::debugger().getAccessFlags(address | myOffset) & ~0x03;
 
   // Any address marked by a manual directive always takes priority
   if (directive)
@@ -918,10 +935,17 @@ bool DiStella::checkBit(uInt16 address, uInt8 mask, bool useDebugger) const
     return label & mask;
 }
 
-bool DiStella::checkBits(uInt16 address, uInt8 mask, uInt8 notMask, bool useDebugger) const
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool DiStella::checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger) const
 {
   return checkBit(address, mask, useDebugger) && !checkBit(address, notMask, useDebugger);
 }
+
+/*bool DiStella::isType(uInt16 address) const
+{
+  return checkBits(address, CartDebug::GFX | CartDebug::PGFX |
+                   CartDebug::COL | CartDebug::PCOL | CartDebug::BCOL);
+}*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DiStella::check_range(uInt16 beg, uInt16 end) const
@@ -999,18 +1023,29 @@ void DiStella::addEntry(CartDebug::DisasmType type)
         Debugger::debugger().setAccessFlags(tag.address, CartDebug::TCODE);
       }
       break;
+
     case CartDebug::GFX:
     case CartDebug::PGFX:
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.bytes);
       break;
+
+    case CartDebug::COL:
+    case CartDebug::PCOL:
+    case CartDebug::BCOL:
+      getline(myDisasmBuf, tag.disasm, '\'');
+      getline(myDisasmBuf, tag.bytes);
+      break;
+
     case CartDebug::DATA:
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.bytes);
       break;
+
     case CartDebug::ROW:
       getline(myDisasmBuf, tag.disasm);
       break;
+
     case CartDebug::NONE:
     default:  // should never happen
       tag.disasm = " ";
@@ -1044,13 +1079,81 @@ void DiStella::outputGraphics()
   myDisasmBuf << ".byte $" << Base::HEX2 << int(byte) << "  |";
   for (uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
     myDisasmBuf << ((c > 127) ? bitString : " ");
-  myDisasmBuf << "|  $" << Base::HEX4 << myPC + myOffset << "'";
+  myDisasmBuf << "|   $" << Base::HEX4 << myPC + myOffset << "'";
   if (mySettings.gfxFormat == Base::Fmt::_2)
     myDisasmBuf << Base::toString(byte, Base::Fmt::_2_8);
   else
     myDisasmBuf << Base::HEX2 << int(byte);
 
   addEntry(isPGfx ? CartDebug::PGFX : CartDebug::GFX);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DiStella::outputColors()
+{
+  string NTSC_COLOR[16] = {
+    "BLACK", "YELLOW", "BROWN", "ORANGE",
+    "RED", "MAUVE", "VIOLET", "PURPLE",
+    "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
+    "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
+  };
+  string PAL_COLOR[16] = {
+    "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
+    "ORANGE", "GREEN", "RED", "CYAN_GREEN",
+    "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
+    "PURPLE", "BLUE", "BLACKE", "BLACKF"
+  };
+  string SECAM_COLOR[8] = {
+    "BLACK", "BLUE", "RED", "PURPLE",
+    "GREEN", "CYAN", "YELLOW", "WHITE"
+  };
+
+  uInt8 byte = Debugger::debugger().peek(myPC + myOffset);
+
+  // add extra spacing line when switching from non-colors to colors
+  if(mySegType != CartDebug::COL && mySegType != CartDebug::NONE)
+  {
+    myDisasmBuf << "    '     ' ";
+    addEntry(CartDebug::NONE);
+  }
+  mySegType = CartDebug::COL;
+
+  // output label/address
+  if(checkBit(myPC, CartDebug::REFERENCED))
+    myDisasmBuf << Base::HEX4 << myPC + myOffset << "'L" << Base::HEX4 << myPC + myOffset << "'";
+  else
+    myDisasmBuf << Base::HEX4 << myPC + myOffset << "'     '";
+
+  // output color
+  string color;
+
+  myDisasmBuf << ".byte ";
+  if(myDbg.myConsole.timing() == ConsoleTiming::ntsc)
+  {
+    color = NTSC_COLOR[byte >> 4];
+    myDisasmBuf << color << "|$" << Base::HEX1 << (byte & 0xf);
+  }
+  else if(myDbg.myConsole.timing() == ConsoleTiming::pal)
+  {
+    color = PAL_COLOR[byte >> 4];
+    myDisasmBuf << color << "|$" << Base::HEX1 << (byte & 0xf);
+  }
+  else
+  {
+    color = SECAM_COLOR[(byte >> 1) & 0x7];
+    myDisasmBuf << "$" << Base::HEX1 << (byte >> 4) << "|" << color;
+  }
+  myDisasmBuf << std::setw(16 - color.length()) << std::setfill(' ');
+
+  // output address
+  myDisasmBuf << "; $" << Base::HEX4 << myPC + myOffset << " "
+    << (checkBit(myPC, CartDebug::COL) ? "(Px)" : checkBit(myPC, CartDebug::PCOL) ? "(PF)" : "(BK)");
+
+  // output color value
+  myDisasmBuf << "'" << Base::HEX2 << int(byte);
+
+  addEntry(checkBit(myPC, CartDebug::COL) ? CartDebug::COL :
+           checkBit(myPC, CartDebug::PCOL) ? CartDebug::PCOL : CartDebug::BCOL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1097,7 +1200,9 @@ void DiStella::outputBytes(CartDebug::DisasmType type)
       ++myPC;
     }
     isType = checkBits(myPC, type,
-                        CartDebug::CODE | (type != CartDebug::DATA ? CartDebug::DATA : 0) | CartDebug::GFX | CartDebug::PGFX);
+                        CartDebug::CODE | (type != CartDebug::DATA ? CartDebug::DATA : 0) |
+                       CartDebug::GFX | CartDebug::PGFX |
+                       CartDebug::COL | CartDebug::PCOL | CartDebug::BCOL);
     referenced = checkBit(myPC, CartDebug::REFERENCED);
   }
   if (!lineEmpty)

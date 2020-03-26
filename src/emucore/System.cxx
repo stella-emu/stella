@@ -99,7 +99,7 @@ void System::clearDirtyPages()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 System::peek(uInt16 addr, uInt8 flags)
+uInt8 System::peek(uInt16 addr, uInt16 flags)
 {
   const PageAccess& access = getPageAccess(addr);
 
@@ -127,7 +127,7 @@ uInt8 System::peek(uInt16 addr, uInt8 flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::poke(uInt16 addr, uInt8 value, uInt8 flags)
+void System::poke(uInt16 addr, uInt8 value, uInt16 flags)
 {
   uInt16 page = (addr & ADDRESS_MASK) >> PAGE_SHIFT;
   const PageAccess& access = myPageAccessTable[page];
@@ -160,7 +160,7 @@ void System::poke(uInt16 addr, uInt8 value, uInt8 flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 System::getAccessFlags(uInt16 addr) const
+uInt16 System::getAccessFlags(uInt16 addr) const
 {
 #ifdef DEBUGGER_SUPPORT
   const PageAccess& access = getPageAccess(addr);
@@ -175,7 +175,7 @@ uInt8 System::getAccessFlags(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::setAccessFlags(uInt16 addr, uInt8 flags)
+void System::setAccessFlags(uInt16 addr, uInt16 flags)
 {
 #ifdef DEBUGGER_SUPPORT
   const PageAccess& access = getPageAccess(addr);

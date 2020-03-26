@@ -900,6 +900,21 @@ string CartDebug::loadConfigFile()
         buf >> hex >> start >> hex >> end;
         addDirective(CartDebug::PGFX, start, end, currentbank);
       }
+      else if(BSPF::startsWithIgnoreCase(directive, "COL"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(CartDebug::COL, start, end, currentbank);
+      }
+      else if(BSPF::startsWithIgnoreCase(directive, "PCOL"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(CartDebug::PCOL, start, end, currentbank);
+      }
+      else if(BSPF::startsWithIgnoreCase(directive, "BCOL"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(CartDebug::BCOL, start, end, currentbank);
+      }
       else if(BSPF::startsWithIgnoreCase(directive, "DATA"))
       {
         buf >> hex >> start >> hex >> end;
@@ -966,6 +981,25 @@ string CartDebug::saveConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveDisassembly()
 {
+  string NTSC_COLOR[16] = {
+    "BLACK", "YELLOW", "BROWN", "ORANGE",
+    "RED", "MAUVE", "VIOLET", "PURPLE",
+    "BLUE", "BLUE_CYAN", "CYAN", "CYAN_GREEN",
+    "GREEN", "GREEN_YELLOW", "GREEN_BEIGE", "BEIGE"
+  };
+  string PAL_COLOR[16] = {
+    "BLACK0", "BLACK1", "YELLOW", "GREEN_YELLOW",
+    "ORANGE", "GREEN", "RED", "CYAN_GREEN",
+    "MAUVE", "CYAN", "VIOLET", "BLUE_CYAN",
+    "PURPLE", "BLUE", "BLACKE", "BLACKF"
+  };
+  string SECAM_COLOR[8] = {
+    "BLACK", "BLUE", "RED", "PURPLE",
+    "GREEN", "CYAN", "YELLOW", "WHITE"
+  };
+  bool isNTSC = myConsole.timing() == ConsoleTiming::ntsc;
+  bool isPAL = myConsole.timing() == ConsoleTiming::pal;
+
   if(myDisasmFile == "")
   {
     const string& propsname =
@@ -1064,6 +1098,18 @@ string CartDebug::saveDisassembly()
           buf << ALIGN(13) << "|" << "$" << Base::HEX4 << tag.address << " (P)";
           break;
         }
+        case CartDebug::COL:
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (Px)";
+          break;
+
+        case CartDebug::PCOL:
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (PF)";
+          break;
+
+        case CartDebug::BCOL:
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (BK)";
+          break;
+
         case CartDebug::DATA:
         {
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (D)";
@@ -1097,6 +1143,27 @@ string CartDebug::saveDisassembly()
       << ";         ! = page crossed, 1 cycle penalty\n"
       << "\n    processor 6502\n\n";
 
+  out << "\n;-----------------------------------------------------------\n"
+      << ";      Color constants\n"
+      << ";-----------------------------------------------------------\n\n";
+
+  if(isNTSC)
+  {
+    for(int i = 0; i < 16; ++i)
+      out << ALIGN(16) << NTSC_COLOR[i] << " = $" << Base::HEX2 << (i << 4) << "\n";
+  }
+  else if(isPAL)
+  {
+    for(int i = 0; i < 16; ++i)
+      out << ALIGN(16) << PAL_COLOR[i] << " = $" << Base::HEX2 << (i << 4) << "\n";
+  }
+  else
+  {
+    for(int i = 0; i < 8; ++i)
+      out << ALIGN(16) << SECAM_COLOR[i] << " = $" << Base::HEX1 << (i << 1) << "\n";
+  }
+  out << "\n";
+
   bool addrUsed = false;
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
     addrUsed = addrUsed || myReserved.TIARead[addr] || (mySystem.getAccessFlags(addr) & WRITE);
@@ -1104,6 +1171,7 @@ string CartDebug::saveDisassembly()
     addrUsed = addrUsed || myReserved.TIAWrite[addr] || (mySystem.getAccessFlags(addr) & DATA);
   for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
     addrUsed = addrUsed || myReserved.IOReadWrite[addr];
+
   if(addrUsed)
   {
     out << "\n;-----------------------------------------------------------\n"
@@ -1393,7 +1461,7 @@ void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::DisasmType CartDebug::disasmTypeAbsolute(uInt8 flags) const
+CartDebug::DisasmType CartDebug::disasmTypeAbsolute(uInt16 flags) const
 {
   if(flags & CartDebug::CODE)
     return CartDebug::CODE;
@@ -1403,6 +1471,12 @@ CartDebug::DisasmType CartDebug::disasmTypeAbsolute(uInt8 flags) const
     return CartDebug::GFX;
   else if(flags & CartDebug::PGFX)
     return CartDebug::PGFX;
+  else if(flags & CartDebug::COL)
+    return CartDebug::COL;
+  else if(flags & CartDebug::PCOL)
+    return CartDebug::PCOL;
+  else if(flags & CartDebug::BCOL)
+    return CartDebug::BCOL;
   else if(flags & CartDebug::DATA)
     return CartDebug::DATA;
   else if(flags & CartDebug::ROW)
@@ -1420,6 +1494,9 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
     case CartDebug::TCODE:  buf << "TCODE";  break;
     case CartDebug::GFX:    buf << "GFX";    break;
     case CartDebug::PGFX:   buf << "PGFX";   break;
+    case CartDebug::COL:    buf << "COL";    break;
+    case CartDebug::PCOL:   buf << "PCOL";   break;
+    case CartDebug::BCOL:   buf << "BCOL";   break;
     case CartDebug::DATA:   buf << "DATA";   break;
     case CartDebug::ROW:    buf << "ROW";    break;
     case CartDebug::REFERENCED:
@@ -1429,7 +1506,7 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
+void CartDebug::disasmTypeAsString(ostream& buf, uInt16 flags) const
 {
   if(flags)
   {
@@ -1441,6 +1518,12 @@ void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
       buf << "GFX ";
     if(flags & CartDebug::PGFX)
       buf << "PGFX ";
+    if(flags & CartDebug::COL)
+      buf << "COL ";
+    if(flags & CartDebug::PCOL)
+      buf << "PCOL ";
+    if(flags & CartDebug::BCOL)
+      buf << "BCOL ";
     if(flags & CartDebug::DATA)
       buf << "DATA ";
     if(flags & CartDebug::ROW)

@@ -87,11 +87,12 @@ class DiStella
     void disasmFromAddress(uInt32 distart);
 
     bool check_range(uInt16 start, uInt16 end) const;
-    int mark(uInt32 address, uInt8 mask, bool directive = false);
-    bool checkBit(uInt16 address, uInt8 mask, bool useDebugger = true) const;
-
-    bool checkBits(uInt16 address, uInt8 mask, uInt8 notMask, bool useDebugger = true) const;
+    int mark(uInt32 address, uInt16 mask, bool directive = false);
+    bool checkBit(uInt16 address, uInt16 mask, bool useDebugger = true) const;
+    bool checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger = true) const;
+    //bool isType(uInt16 address) const;
     void outputGraphics();
+    void outputColors();
     void outputBytes(CartDebug::DisasmType type);
 
     // Convenience methods to generate appropriate labels

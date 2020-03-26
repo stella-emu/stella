@@ -104,7 +104,7 @@ void M6502::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
+inline uInt8 M6502::peek(uInt16 address, uInt16 flags)
 {
   handleHalt();
 
@@ -144,7 +144,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void M6502::poke(uInt16 address, uInt8 value, uInt8 flags)
+inline void M6502::poke(uInt16 address, uInt8 value, uInt16 flags)
 {
   ////////////////////////////////////////////////
   // TODO - move this logic directly into CartAR

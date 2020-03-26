@@ -243,18 +243,18 @@ class Debugger : public DialogContainer
     static Debugger& debugger() { return *myStaticDebugger; }
 
     /** Convenience methods to access peek/poke from System */
-    uInt8 peek(uInt16 addr, uInt8 flags = 0);
-    uInt16 dpeek(uInt16 addr, uInt8 flags = 0);
-    void poke(uInt16 addr, uInt8 value, uInt8 flags = 0);
+    uInt8 peek(uInt16 addr, uInt16 flags = 0);
+    uInt16 dpeek(uInt16 addr, uInt16 flags = 0);
+    void poke(uInt16 addr, uInt8 value, uInt16 flags = 0);
 
     /** Convenience method to access the 6502 from System */
     M6502& m6502() const;
 
     /** These are now exposed so Expressions can use them. */
-    int peekAsInt(int addr, uInt8 flags = 0);
-    int dpeekAsInt(int addr, uInt8 flags = 0);
+    int peekAsInt(int addr, uInt16 flags = 0);
+    int dpeekAsInt(int addr, uInt16 flags = 0);
     int getAccessFlags(uInt16 addr) const;
-    void setAccessFlags(uInt16 addr, uInt8 flags);
+    void setAccessFlags(uInt16 addr, uInt16 flags);
 
     uInt32 getBaseAddress(uInt32 addr, bool read);
 

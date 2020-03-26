@@ -60,14 +60,17 @@ class CartDebug : public DebuggerSystem
       // debugger, or specified in a Distella cfg file, and are listed in order
       // of decreasing hierarchy
       //
-      CODE  = 1 << 7, // 0x80, disassemble-able code segments
-      TCODE = 1 << 6, // 0x40, (tentative) disassemble-able code segments
-      GFX   = 1 << 5, // 0x20, addresses loaded into GRPx registers
-      PGFX  = 1 << 4, // 0x10, addresses loaded into PFx registers
-      DATA  = 1 << 3, // 0x08, addresses loaded into registers other than GRPx / PFx
-      ROW   = 1 << 2, // 0x04, all other addresses
+      CODE  = 1 << 10, // 0x400, disassemble-able code segments
+      TCODE = 1 << 9,  // 0x200, (tentative) disassemble-able code segments
+      GFX   = 1 << 8,  // 0x100, addresses loaded into GRPx registers
+      PGFX  = 1 << 7,  // 0x080, addresses loaded into PFx registers
+      COL   = 1 << 6,  // 0x040, addresses loaded into COLUPx registers
+      PCOL  = 1 << 5,  // 0x010, addresses loaded into COLUPF register
+      BCOL  = 1 << 4,  // 0x010, addresses loaded into COLUBK register
+      DATA  = 1 << 3,  // 0x008, addresses loaded into registers other than GRPx / PFx
+      ROW   = 1 << 2,  // 0x004, all other addresses
       // special type for poke()
-      WRITE = TCODE   // 0x40, address written to
+      WRITE = TCODE    // 0x200, address written to
     };
     struct DisassemblyTag {
       DisasmType type{NONE};
@@ -263,7 +266,7 @@ class CartDebug : public DebuggerSystem
     using LabelToAddr = std::map<string, uInt16,
         std::function<bool(const string&, const string&)>>;
 
-    using AddrTypeArray = std::array<uInt8, 0x1000>;
+    using AddrTypeArray = std::array<uInt16, 0x1000>;
 
     struct DirectiveTag {
       DisasmType type{NONE};
@@ -305,14 +308,14 @@ class CartDebug : public DebuggerSystem
     void getBankDirectives(ostream& buf, BankInfo& info) const;
 
     // Get disassembly enum type from 'flags', taking precendence into account
-    DisasmType disasmTypeAbsolute(uInt8 flags) const;
+    DisasmType disasmTypeAbsolute(uInt16 flags) const;
 
     // Convert disassembly enum type to corresponding string and append to buf
     void disasmTypeAsString(ostream& buf, DisasmType type) const;
 
     // Convert all disassembly types in 'flags' to corresponding string and
     // append to buf
-    void disasmTypeAsString(ostream& buf, uInt8 flags) const;
+    void disasmTypeAsString(ostream& buf, uInt16 flags) const;
 
   private:
     const OSystem& myOSystem;
