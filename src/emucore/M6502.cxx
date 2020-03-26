@@ -300,8 +300,8 @@ inline void M6502::_execute(uInt64 cycles, DispatchResult& result)
       mySystem->cart().clearAllRAMAccesses();
   #endif  // DEBUGGER_SUPPORT
 
-      // Reset the peek/poke address pointers
-      myLastPeekAddress = myLastPokeAddress = myDataAddressForPoke = 0;
+      // Reset the data poke address pointer
+      myDataAddressForPoke = 0;
 
       try {
         uInt16 operandAddress = 0, intermediateAddress = 0;

@@ -887,6 +887,8 @@ std::array<Debugger::PseudoRegister, 11> Debugger::ourPseudoRegisters = { {
   { "_vblank",    "Whether vertical blank is enabled (1 or 0)" },
   { "_vsync",     "Whether vertical sync is enabled (1 or 0)" }
   // CPU address access functions:
-  /*{ "__lastread", "last CPU read address" },
-  { "__lastwrite", "last CPU write address" },*/
+  /*{ "_lastread", "last CPU read address" },
+  { "_lastwrite", "last CPU write address" },
+  { "__lastbaseread", "last CPU read base address" },
+  { "__lastbasewrite", "last CPU write base address" }*/
 } };

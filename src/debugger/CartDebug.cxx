@@ -157,6 +157,18 @@ void CartDebug::saveOldState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::lastReadAddress()
+{
+  return mySystem.m6502().lastReadAddress();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::lastWriteAddress()
+{
+  return mySystem.m6502().lastWriteAddress();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::lastReadBaseAddress()
 {
   return mySystem.m6502().lastReadBaseAddress();
