@@ -102,7 +102,7 @@ class Device : public Serializable
 
       @param address The address to modify
     */
-    virtual uInt8 getAccessFlags(uInt16 address) const { return 0; }
+    virtual uInt16 getAccessFlags(uInt16 address) const { return 0; }
 
     /**
       Change the given address type to use the given disassembly flags
@@ -110,7 +110,7 @@ class Device : public Serializable
       @param address The address to modify
       @param flags   A bitfield of DisasmType directives for the given address
     */
-    virtual void setAccessFlags(uInt16 address, uInt8 flags) { }
+    virtual void setAccessFlags(uInt16 address, uInt16 flags) { }
 
   protected:
     /// Pointer to the system the device is installed in or the null pointer

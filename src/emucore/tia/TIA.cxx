@@ -568,26 +568,47 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case COLUBK:
+    {
       value &= 0xFE;
       myBackground.setColor(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, CartDebug::BCOL);
+    #endif
       break;
+    }
 
     case COLUP0:
+    {
       value &= 0xFE;
       myPlayfield.setColorP0(value);
       myMissile0.setColor(value);
       myPlayer0.setColor(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, CartDebug::COL);
+    #endif
       break;
+    }
 
     case COLUP1:
+    {
       value &= 0xFE;
       myPlayfield.setColorP1(value);
       myMissile1.setColor(value);
       myPlayer1.setColor(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, CartDebug::COL);
+    #endif
       break;
+    }
 
     case CTRLPF:
       flushLineCache();
@@ -599,9 +620,10 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case COLUPF:
+    {
       flushLineCache();
       value &= 0xFE;
-      if (myPFColorDelay)
+      if(myPFColorDelay)
         myDelayQueue.push(COLUPF, value, 1);
       else
       {
@@ -609,7 +631,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
         myBall.setColor(value);
         myShadowRegisters[address] = value;
       }
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, CartDebug::PCOL);
+    #endif
       break;
+    }
 
     case PF0:
     {
@@ -1891,13 +1919,13 @@ void TIA::createAccessBase()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 TIA::getAccessFlags(uInt16 address) const
+uInt16 TIA::getAccessFlags(uInt16 address) const
 {
   return myAccessBase[address & TIA_MASK];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setAccessFlags(uInt16 address, uInt8 flags)
+void TIA::setAccessFlags(uInt16 address, uInt16 flags)
 {
   // ignore none flag
   if (flags != CartDebug::NONE) {

@@ -182,7 +182,7 @@ bool Cartridge4A50::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge4A50::getAccessFlags(uInt16 address) const
+uInt16 Cartridge4A50::getAccessFlags(uInt16 address) const
 {
   if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
   {
@@ -214,7 +214,7 @@ uInt8 Cartridge4A50::getAccessFlags(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50::setAccessFlags(uInt16 address, uInt8 flags)
+void Cartridge4A50::setAccessFlags(uInt16 address, uInt16 flags)
 {
   if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
   {

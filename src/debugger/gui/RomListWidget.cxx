@@ -511,7 +511,8 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space
-    if(dlist[pos].type & (CartDebug::CODE|CartDebug::GFX|CartDebug::PGFX|CartDebug::DATA))
+    if(dlist[pos].type & (CartDebug::CODE|CartDebug::GFX|CartDebug::PGFX|
+       CartDebug::COL|CartDebug::PCOL|CartDebug::BCOL|CartDebug::DATA)) 
     {
       if(dlist[pos].type == CartDebug::CODE)
       {

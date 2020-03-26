@@ -117,7 +117,7 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 void Cartridge::createCodeAccessBase(size_t size)
 {
 #ifdef DEBUGGER_SUPPORT
-  myCodeAccessBase = make_unique<uInt8[]>(size);
+  myCodeAccessBase = make_unique<uInt16[]>(size);
   std::fill_n(myCodeAccessBase.get(), size, CartDebug::ROW);
 #else
   myCodeAccessBase = nullptr;

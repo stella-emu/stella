@@ -269,7 +269,7 @@ class M6502 : public Serializable
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address, uInt8 flags);
+    uInt8 peek(uInt16 address, uInt16 flags);
 
     /**
       Change the byte at the specified address to the given value and
@@ -278,7 +278,7 @@ class M6502 : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value, uInt8 flags = 0);
+    void poke(uInt16 address, uInt8 value, uInt16 flags = 0);
 
     /**
       Get the 8-bit value of the Processor Status register.
@@ -391,7 +391,7 @@ class M6502 : public Serializable
     /// accessed specifically by a peek or poke command
     uInt16 myLastPeekBaseAddress{0}, myLastPokeBaseAddress{0};
     // Indicates the type of the last access
-    uInt8 myFlags{0};
+    uInt16 myFlags{0};
 
     /// Indicates the last address used to access data by a peek command
     /// for the CPU registers (S/A/X/Y)
