@@ -1919,13 +1919,13 @@ void TIA::createAccessBase()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 TIA::getAccessFlags(uInt16 address) const
+CartDebug::DisasmFlags TIA::getAccessFlags(uInt16 address) const
 {
   return myAccessBase[address & TIA_MASK];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setAccessFlags(uInt16 address, uInt16 flags)
+void TIA::setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags)
 {
   // ignore none flag
   if (flags != CartDebug::NONE) {

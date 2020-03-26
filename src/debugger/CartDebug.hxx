@@ -72,6 +72,8 @@ class CartDebug : public DebuggerSystem
       // special type for poke()
       WRITE = TCODE    // 0x200, address written to
     };
+    using DisasmFlags = uInt16;
+
     struct DisassemblyTag {
       DisasmType type{NONE};
       uInt16 address{0};
@@ -308,14 +310,14 @@ class CartDebug : public DebuggerSystem
     void getBankDirectives(ostream& buf, BankInfo& info) const;
 
     // Get disassembly enum type from 'flags', taking precendence into account
-    DisasmType disasmTypeAbsolute(uInt16 flags) const;
+    DisasmType disasmTypeAbsolute(CartDebug::DisasmFlags flags) const;
 
     // Convert disassembly enum type to corresponding string and append to buf
     void disasmTypeAsString(ostream& buf, DisasmType type) const;
 
     // Convert all disassembly types in 'flags' to corresponding string and
     // append to buf
-    void disasmTypeAsString(ostream& buf, uInt16 flags) const;
+    void disasmTypeAsString(ostream& buf, CartDebug::DisasmFlags flags) const;
 
   private:
     const OSystem& myOSystem;

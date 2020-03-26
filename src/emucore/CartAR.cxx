@@ -191,14 +191,14 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeAR::getAccessFlags(uInt16 address) const
+CartDebug::DisasmFlags CartridgeAR::getAccessFlags(uInt16 address) const
 {
   return myCodeAccessBase[(address & 0x07FF) +
            myImageOffset[(address & 0x0800) ? 1 : 0]];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::setAccessFlags(uInt16 address, uInt16 flags)
+void CartridgeAR::setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags)
 {
   myCodeAccessBase[(address & 0x07FF) +
     myImageOffset[(address & 0x0800) ? 1 : 0]] |= flags;

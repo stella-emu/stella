@@ -35,6 +35,7 @@ class DispatchResult;
 
 #include "bspf.hxx"
 #include "Serializable.hxx"
+#include "CartDebug.hxx"
 
 /**
   The 6502 is an 8-bit microprocessor that has a 64K addressing space.
@@ -269,7 +270,7 @@ class M6502 : public Serializable
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address, uInt16 flags);
+    uInt8 peek(uInt16 address, CartDebug::DisasmFlags flags);
 
     /**
       Change the byte at the specified address to the given value and
@@ -278,7 +279,7 @@ class M6502 : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value, uInt16 flags = 0);
+    void poke(uInt16 address, uInt8 value, CartDebug::DisasmFlags flags = CartDebug::NONE);
 
     /**
       Get the 8-bit value of the Processor Status register.

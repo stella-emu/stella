@@ -151,14 +151,14 @@ class M6532 : public Device
 
       @param address  The address to query
     */
-    uInt16 getAccessFlags(uInt16 address) const override;
+    CartDebug::DisasmFlags getAccessFlags(uInt16 address) const override;
     /**
       Change the given address to use the given disassembly flags.
 
       @param address  The address to modify
       @param flags    A bitfield of DisasmType directives for the given address
     */
-    void setAccessFlags(uInt16 address, uInt16 flags) override;
+    void setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags) override;
 #endif // DEBUGGER_SUPPORT
 
   private:

@@ -1461,7 +1461,7 @@ void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::DisasmType CartDebug::disasmTypeAbsolute(uInt16 flags) const
+CartDebug::DisasmType CartDebug::disasmTypeAbsolute(CartDebug::DisasmFlags flags) const
 {
   if(flags & CartDebug::CODE)
     return CartDebug::CODE;
@@ -1506,7 +1506,7 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::disasmTypeAsString(ostream& buf, uInt16 flags) const
+void CartDebug::disasmTypeAsString(ostream& buf, CartDebug::DisasmFlags flags) const
 {
   if(flags)
   {
