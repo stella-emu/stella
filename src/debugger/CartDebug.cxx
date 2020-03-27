@@ -32,6 +32,7 @@
 #include "CartRamWidget.hxx"
 #include "RomWidget.hxx"
 #include "Base.hxx"
+#include "Device.hxx"
 #include "exception/EmulationWarning.hxx"
 
 using Common::Base;
@@ -85,7 +86,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // We know the address for the startup bank right now
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(
     myDebugger.dpeek(0xfffc));
-  addLabel("Start", myDebugger.dpeek(0xfffc, DATA));
+  addLabel("Start", myDebugger.dpeek(0xfffc, Device::DATA));
 
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
@@ -316,8 +317,8 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, uInt16 search)
     const DisassemblyTag& tag = myDisassembly.list[i];
     const uInt16 address = tag.address & 0xFFF;
 
-    // Exclude 'ROW'; they don't have a valid address
-    if(tag.type != CartDebug::ROW)
+    // Exclude 'Device::ROW'; they don't have a valid address
+    if(tag.type != Device::ROW)
     {
       // Create a mapping from addresses to line numbers
       myAddrToLineList.emplace(address, i);
@@ -358,7 +359,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     if((tag.address & 0xfff) >= start)
     {
       if(begin == list_size) begin = end;
-      if(tag.type != CartDebug::ROW)
+      if(tag.type != Device::ROW)
         length = std::max(length, uInt32(tag.disasm.length()));
 
       --lines;
@@ -369,7 +370,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   for(uInt32 i = begin; i < end; ++i)
   {
     const CartDebug::DisassemblyTag& tag = myDisassembly.list[i];
-    if(tag.type == CartDebug::NONE)
+    if(tag.type == Device::NONE)
       continue;
     else if(tag.address)
       buffer << std::uppercase << std::hex << std::setw(4)
@@ -386,7 +387,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::addDirective(CartDebug::DisasmType type,
+bool CartDebug::addDirective(Device::AccessType type,
                              uInt16 start, uInt16 end, int bank)
 {
   if(end < start || start == 0 || end == 0)
@@ -885,46 +886,46 @@ string CartDebug::loadConfigFile()
         // TODO - figure out what to do with this
         buf >> hex >> start;
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "CODE"))
+      else if(BSPF::startsWithIgnoreCase(directive, "Device::CODE"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::CODE, start, end, currentbank);
+        addDirective(Device::CODE, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "GFX"))
+      else if(BSPF::startsWithIgnoreCase(directive, "Device::GFX"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::GFX, start, end, currentbank);
+        addDirective(Device::GFX, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "PGFX"))
+      else if(BSPF::startsWithIgnoreCase(directive, "Device::PGFX"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::PGFX, start, end, currentbank);
+        addDirective(Device::PGFX, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "COL"))
+      else if(BSPF::startsWithIgnoreCase(directive, "Device::COL"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::COL, start, end, currentbank);
+        addDirective(Device::COL, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "PCOL"))
+      else if(BSPF::startsWithIgnoreCase(directive, "Device::PCOL"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::PCOL, start, end, currentbank);
+        addDirective(Device::PCOL, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "BCOL"))
+      else if(BSPF::startsWithIgnoreCase(directive, "Device::BCOL"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::BCOL, start, end, currentbank);
+        addDirective(Device::BCOL, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "DATA"))
+      else if(BSPF::startsWithIgnoreCase(directive, "Device::DATA"))
       {
         buf >> hex >> start >> hex >> end;
-        addDirective(CartDebug::DATA, start, end, currentbank);
+        addDirective(Device::DATA, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "ROW"))
+      else if(BSPF::startsWithIgnoreCase(directive, "Device::ROW"))
       {
         buf >> hex >> start;
         buf >> hex >> end;
-        addDirective(CartDebug::ROW, start, end, currentbank);
+        addDirective(Device::ROW, start, end, currentbank);
       }
     }
   }
@@ -1053,7 +1054,7 @@ string CartDebug::saveDisassembly()
     if (myReserved.breakFound)
       addLabel("Break", myDebugger.dpeek(0xfffe));
 
-    buf << "    SEG     CODE\n"
+    buf << "    SEG     Device::CODE\n"
         << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
 
     // Format in 'distella' style
@@ -1068,19 +1069,19 @@ string CartDebug::saveDisassembly()
 
       switch(tag.type)
       {
-        case CartDebug::CODE:
+        case Device::CODE:
         {
           buf << ALIGN(32) << tag.disasm << tag.ccount.substr(0, 5) << tag.ctotal << tag.ccount.substr(5, 2);
           if (tag.disasm.find("WSYNC") != std::string::npos)
             buf << "\n;---------------------------------------";
           break;
         }
-        case CartDebug::ROW:
+        case Device::ROW:
         {
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8*4-1) << "; $" << Base::HEX4 << tag.address << " (*)";
           break;
         }
-        case CartDebug::GFX:
+        case Device::GFX:
         {
           buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
               << tag.bytes << " ; |";
@@ -1089,7 +1090,7 @@ string CartDebug::saveDisassembly()
           buf << ALIGN(13) << "|" << "$" << Base::HEX4 << tag.address << " (G)";
           break;
         }
-        case CartDebug::PGFX:
+        case Device::PGFX:
         {
           buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
               << tag.bytes << " ; |";
@@ -1098,24 +1099,24 @@ string CartDebug::saveDisassembly()
           buf << ALIGN(13) << "|" << "$" << Base::HEX4 << tag.address << " (P)";
           break;
         }
-        case CartDebug::COL:
+        case Device::COL:
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (Px)";
           break;
 
-        case CartDebug::PCOL:
+        case Device::PCOL:
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (PF)";
           break;
 
-        case CartDebug::BCOL:
+        case Device::BCOL:
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (BK)";
           break;
 
-        case CartDebug::DATA:
+        case Device::DATA:
         {
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (D)";
           break;
         }
-        case CartDebug::NONE:
+        case Device::NONE:
         default:
         {
           break;
@@ -1133,10 +1134,10 @@ string CartDebug::saveDisassembly()
       << "; ROM properties name : " << myConsole.properties().get(PropType::Cart_Name) << "\n"
       << "; ROM properties MD5  : " << myConsole.properties().get(PropType::Cart_MD5) << "\n"
       << "; Bankswitch type     : " << myConsole.cartridge().about() << "\n;\n"
-      << "; Legend: * = CODE not yet run (tentative code)\n"
-      << ";         D = DATA directive (referenced in some way)\n"
-      << ";         G = GFX directive, shown as '#' (stored in player, missile, ball)\n"
-      << ";         P = PGFX directive, shown as '*' (stored in playfield)\n"
+      << "; Legend: * = Device::CODE not yet run (tentative code)\n"
+      << ";         D = Device::DATA directive (referenced in some way)\n"
+      << ";         G = Device::GFX directive, shown as '#' (stored in player, missile, ball)\n"
+      << ";         P = Device::PGFX directive, shown as '*' (stored in playfield)\n"
       << ";         i = indexed accessed only\n"
       << ";         c = used by code executed in RAM\n"
       << ";         s = used by stack\n"
@@ -1166,9 +1167,9 @@ string CartDebug::saveDisassembly()
 
   bool addrUsed = false;
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    addrUsed = addrUsed || myReserved.TIARead[addr] || (mySystem.getAccessFlags(addr) & WRITE);
+    addrUsed = addrUsed || myReserved.TIARead[addr] || (mySystem.getAccessFlags(addr) & Device::WRITE);
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    addrUsed = addrUsed || myReserved.TIAWrite[addr] || (mySystem.getAccessFlags(addr) & DATA);
+    addrUsed = addrUsed || myReserved.TIAWrite[addr] || (mySystem.getAccessFlags(addr) & Device::DATA);
   for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
     addrUsed = addrUsed || myReserved.IOReadWrite[addr];
 
@@ -1183,7 +1184,7 @@ string CartDebug::saveDisassembly()
       if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr])
         out << ALIGN(16) << ourTIAMnemonicR[addr] << "= $"
             << Base::HEX2 << right << addr << "  ; (R)\n";
-      else if (mySystem.getAccessFlags(addr) & DATA)
+      else if (mySystem.getAccessFlags(addr) & Device::DATA)
         out << ";" << ALIGN(16-1) << ourTIAMnemonicR[addr] << "= $"
         << Base::HEX2 << right << addr << "  ; (Ri)\n";
     out << "\n";
@@ -1193,7 +1194,7 @@ string CartDebug::saveDisassembly()
       if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr])
         out << ALIGN(16) << ourTIAMnemonicW[addr] << "= $"
             << Base::HEX2 << right << addr << "  ; (W)\n";
-      else if (mySystem.getAccessFlags(addr) & WRITE)
+      else if (mySystem.getAccessFlags(addr) & Device::WRITE)
         out << ";" << ALIGN(16-1) << ourTIAMnemonicW[addr] << "= $"
         << Base::HEX2 << right << addr << "  ; (Wi)\n";
     out << "\n";
@@ -1208,8 +1209,8 @@ string CartDebug::saveDisassembly()
   addrUsed = false;
   for(uInt16 addr = 0x80; addr <= 0xFF; ++addr)
     addrUsed = addrUsed || myReserved.ZPRAM[addr-0x80]
-      || (mySystem.getAccessFlags(addr) & (DATA | WRITE))
-      || (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
+      || (mySystem.getAccessFlags(addr) & (Device::DATA | Device::WRITE))
+      || (mySystem.getAccessFlags(addr|0x100) & (Device::DATA | Device::WRITE));
   if(addrUsed)
   {
     bool addLine = false;
@@ -1218,9 +1219,9 @@ string CartDebug::saveDisassembly()
         << ";-----------------------------------------------------------\n\n";
 
     for (uInt16 addr = 0x80; addr <= 0xFF; ++addr) {
-      bool ramUsed = (mySystem.getAccessFlags(addr) & (DATA | WRITE));
-      bool codeUsed = (mySystem.getAccessFlags(addr) & CODE);
-      bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (DATA | WRITE));
+      bool ramUsed = (mySystem.getAccessFlags(addr) & (Device::DATA | Device::WRITE));
+      bool codeUsed = (mySystem.getAccessFlags(addr) & Device::CODE);
+      bool stackUsed = (mySystem.getAccessFlags(addr|0x100) & (Device::DATA | Device::WRITE));
 
       if (myReserved.ZPRAM[addr - 0x80] &&
           myUserLabels.find(addr) == myUserLabels.end()) {
@@ -1315,10 +1316,10 @@ string CartDebug::listConfig(int bank)
     buf << "[" << b << "]" << endl;
     for(const auto& i: info.directiveList)
     {
-      if(i.type != CartDebug::NONE)
+      if(i.type != Device::NONE)
       {
         buf << "(*) ";
-        disasmTypeAsString(buf, i.type);
+        AccessTypeAsString(buf, i.type);
         buf << " " << Base::HEX4 << i.start << " " << Base::HEX4 << i.end << endl;
       }
     }
@@ -1414,15 +1415,15 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
 
   // Now consider each byte
   uInt32 prev = info.offset, addr = prev + 1;
-  DisasmType prevType = disasmTypeAbsolute(mySystem.getAccessFlags(prev));
+  Device::AccessType prevType = accessTypeAbsolute(mySystem.getAccessFlags(prev));
   for( ; addr < info.offset + info.size; ++addr)
   {
-    DisasmType currType = disasmTypeAbsolute(mySystem.getAccessFlags(addr));
+    Device::AccessType currType = accessTypeAbsolute(mySystem.getAccessFlags(addr));
 
     // Have we changed to a new type?
     if(currType != prevType)
     {
-      disasmTypeAsString(buf, prevType);
+      AccessTypeAsString(buf, prevType);
       buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << endl;
 
       prev = addr;
@@ -1433,13 +1434,13 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
   // Grab the last directive, making sure it accounts for all remaining space
   if(prev != addr)
   {
-    disasmTypeAsString(buf, prevType);
+    AccessTypeAsString(buf, prevType);
     buf << " " << Base::HEX4 << prev << " " << Base::HEX4 << (addr-1) << endl;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
+void CartDebug::accessTypeAsString(ostream& buf, uInt16 addr) const
 {
   if(!(addr & 0x1000))
   {
@@ -1452,86 +1453,86 @@ void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
         label     = myDisLabels[addr & 0xFFF];
 
   buf << endl << "directive: " << Base::toString(directive, Base::Fmt::_2_8) << " ";
-  disasmTypeAsString(buf, directive);
+  AccessTypeAsString(buf, directive);
   buf << endl << "emulation: " << Base::toString(debugger, Base::Fmt::_2_8) << " ";
-  disasmTypeAsString(buf, debugger);
+  AccessTypeAsString(buf, debugger);
   buf << endl << "tentative: " << Base::toString(label, Base::Fmt::_2_8) << " ";
-  disasmTypeAsString(buf, label);
+  AccessTypeAsString(buf, label);
   buf << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::DisasmType CartDebug::disasmTypeAbsolute(CartDebug::DisasmFlags flags) const
+Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags) const
 {
-  if(flags & CartDebug::CODE)
-    return CartDebug::CODE;
-  else if(flags & CartDebug::TCODE)
-    return CartDebug::CODE;          // TODO - should this be separate??
-  else if(flags & CartDebug::GFX)
-    return CartDebug::GFX;
-  else if(flags & CartDebug::PGFX)
-    return CartDebug::PGFX;
-  else if(flags & CartDebug::COL)
-    return CartDebug::COL;
-  else if(flags & CartDebug::PCOL)
-    return CartDebug::PCOL;
-  else if(flags & CartDebug::BCOL)
-    return CartDebug::BCOL;
-  else if(flags & CartDebug::DATA)
-    return CartDebug::DATA;
-  else if(flags & CartDebug::ROW)
-    return CartDebug::ROW;
+  if(flags & Device::CODE)
+    return Device::CODE;
+  else if(flags & Device::TCODE)
+    return Device::CODE;          // TODO - should this be separate??
+  else if(flags & Device::GFX)
+    return Device::GFX;
+  else if(flags & Device::PGFX)
+    return Device::PGFX;
+  else if(flags & Device::COL)
+    return Device::COL;
+  else if(flags & Device::PCOL)
+    return Device::PCOL;
+  else if(flags & Device::BCOL)
+    return Device::BCOL;
+  else if(flags & Device::DATA)
+    return Device::DATA;
+  else if(flags & Device::ROW)
+    return Device::ROW;
   else
-    return CartDebug::NONE;
+    return Device::NONE;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
+void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type) const
 {
   switch(type)
   {
-    case CartDebug::CODE:   buf << "CODE";   break;
-    case CartDebug::TCODE:  buf << "TCODE";  break;
-    case CartDebug::GFX:    buf << "GFX";    break;
-    case CartDebug::PGFX:   buf << "PGFX";   break;
-    case CartDebug::COL:    buf << "COL";    break;
-    case CartDebug::PCOL:   buf << "PCOL";   break;
-    case CartDebug::BCOL:   buf << "BCOL";   break;
-    case CartDebug::DATA:   buf << "DATA";   break;
-    case CartDebug::ROW:    buf << "ROW";    break;
-    case CartDebug::REFERENCED:
-    case CartDebug::VALID_ENTRY:
-    case CartDebug::NONE:                    break;
+    case Device::CODE:   buf << "Device::CODE";   break;
+    case Device::TCODE:  buf << "Device::TCODE";  break;
+    case Device::GFX:    buf << "Device::GFX";    break;
+    case Device::PGFX:   buf << "Device::PGFX";   break;
+    case Device::COL:    buf << "Device::COL";    break;
+    case Device::PCOL:   buf << "Device::PCOL";   break;
+    case Device::BCOL:   buf << "Device::BCOL";   break;
+    case Device::DATA:   buf << "Device::DATA";   break;
+    case Device::ROW:    buf << "Device::ROW";    break;
+    case Device::REFERENCED:
+    case Device::VALID_ENTRY:
+    case Device::NONE:                    break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::disasmTypeAsString(ostream& buf, CartDebug::DisasmFlags flags) const
+void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessFlags flags) const
 {
   if(flags)
   {
-    if(flags & CartDebug::CODE)
-      buf << "CODE ";
-    if(flags & CartDebug::TCODE)
-      buf << "TCODE ";
-    if(flags & CartDebug::GFX)
-      buf << "GFX ";
-    if(flags & CartDebug::PGFX)
-      buf << "PGFX ";
-    if(flags & CartDebug::COL)
-      buf << "COL ";
-    if(flags & CartDebug::PCOL)
-      buf << "PCOL ";
-    if(flags & CartDebug::BCOL)
-      buf << "BCOL ";
-    if(flags & CartDebug::DATA)
-      buf << "DATA ";
-    if(flags & CartDebug::ROW)
-      buf << "ROW ";
-    if(flags & CartDebug::REFERENCED)
-      buf << "*REFERENCED ";
-    if(flags & CartDebug::VALID_ENTRY)
-      buf << "*VALID_ENTRY ";
+    if(flags & Device::CODE)
+      buf << "Device::CODE ";
+    if(flags & Device::TCODE)
+      buf << "Device::TCODE ";
+    if(flags & Device::GFX)
+      buf << "Device::GFX ";
+    if(flags & Device::PGFX)
+      buf << "Device::PGFX ";
+    if(flags & Device::COL)
+      buf << "Device::COL ";
+    if(flags & Device::PCOL)
+      buf << "Device::PCOL ";
+    if(flags & Device::BCOL)
+      buf << "Device::BCOL ";
+    if(flags & Device::DATA)
+      buf << "Device::DATA ";
+    if(flags & Device::ROW)
+      buf << "Device::ROW ";
+    if(flags & Device::REFERENCED)
+      buf << "*Device::REFERENCED ";
+    if(flags & Device::VALID_ENTRY)
+      buf << "*Device::VALID_ENTRY ";
   }
   else
     buf << "no flags set";

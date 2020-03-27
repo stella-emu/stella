@@ -22,6 +22,7 @@
 
 #include "Base.hxx"
 #include "CartDebug.hxx"
+#include "Device.hxx"
 #include "bspf.hxx"
 
 /**
@@ -75,7 +76,7 @@ class DiStella
     // Indicate that a new line of disassembly has been completed
     // In the original Distella code, this indicated a new line to be printed
     // Here, we add a new entry to the DisassemblyList
-    void addEntry(CartDebug::DisasmType type);
+    void addEntry(Device::AccessType type);
 
     // Process directives given in the list
     // Directives are basically the contents of a distella configuration file
@@ -93,7 +94,7 @@ class DiStella
     //bool isType(uInt16 address) const;
     void outputGraphics();
     void outputColors();
-    void outputBytes(CartDebug::DisasmType type);
+    void outputBytes(Device::AccessType type);
 
     // Convenience methods to generate appropriate labels
     inline void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, int labfound)

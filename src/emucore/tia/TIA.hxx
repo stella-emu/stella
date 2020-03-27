@@ -681,18 +681,18 @@ class TIA : public Device
     void createAccessBase();
 
     /**
-     * Query the given address type for the associated disassembly flags.
+     * Query the given address type for the associated access flags.
      *
      * @param address  The address to query
      */
-    CartDebug::DisasmFlags getAccessFlags(uInt16 address) const override;
+    Device::AccessFlags getAccessFlags(uInt16 address) const override;
     /**
-     * Change the given address to use the given disassembly flags.
+     * Change the given address to use the given access flags.
      *
      * @param address  The address to modify
-     * @param flags    A bitfield of DisasmType directives for the given address
+     * @param flags    A bitfield of AccessType directives for the given address
      */
-    void setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags) override;
+    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
   #endif // DEBUGGER_SUPPORT
 
   private:
@@ -901,7 +901,7 @@ class TIA : public Device
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
-    std::array<uInt16, TIA_SIZE> myAccessBase;
+    std::array<Device::AccessFlags, TIA_SIZE> myAccessBase;
 
     // The array used to skip the first two TIA access trackings
     std::array<uInt8, TIA_SIZE> myAccessDelay;

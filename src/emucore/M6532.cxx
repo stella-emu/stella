@@ -21,9 +21,6 @@
 #include "Settings.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
-#ifdef DEBUGGER_SUPPORT
-  #include "CartDebug.hxx"
-#endif
 
 #include "M6532.hxx"
 
@@ -460,14 +457,14 @@ uInt32 M6532::timerClocks() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::createAccessBases()
 {
-  myRAMAccessBase.fill(CartDebug::NONE);
-  myStackAccessBase.fill(CartDebug::NONE);
-  myIOAccessBase.fill(CartDebug::NONE);
+  myRAMAccessBase.fill(Device::NONE);
+  myStackAccessBase.fill(Device::NONE);
+  myIOAccessBase.fill(Device::NONE);
   myZPAccessDelay.fill(ZP_DELAY);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::DisasmFlags M6532::getAccessFlags(uInt16 address) const
+Device::AccessFlags M6532::getAccessFlags(uInt16 address) const
 {
   if (address & IO_BIT)
     return myIOAccessBase[address & IO_MASK];
@@ -478,10 +475,10 @@ CartDebug::DisasmFlags M6532::getAccessFlags(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags)
+void M6532::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 {
   // ignore none flag
-  if (flags != CartDebug::NONE) {
+  if (flags != Device::NONE) {
     if (address & IO_BIT)
       myIOAccessBase[address & IO_MASK] |= flags;
     else {

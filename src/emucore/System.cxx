@@ -99,7 +99,7 @@ void System::clearDirtyPages()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 System::peek(uInt16 addr, CartDebug::DisasmFlags flags)
+uInt8 System::peek(uInt16 addr, Device::AccessFlags flags)
 {
   const PageAccess& access = getPageAccess(addr);
 
@@ -127,7 +127,7 @@ uInt8 System::peek(uInt16 addr, CartDebug::DisasmFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::poke(uInt16 addr, uInt8 value, CartDebug::DisasmFlags flags)
+void System::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 {
   uInt16 page = (addr & ADDRESS_MASK) >> PAGE_SHIFT;
   const PageAccess& access = myPageAccessTable[page];
@@ -160,7 +160,7 @@ void System::poke(uInt16 addr, uInt8 value, CartDebug::DisasmFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::DisasmFlags System::getAccessFlags(uInt16 addr) const
+Device::AccessFlags System::getAccessFlags(uInt16 addr) const
 {
 #ifdef DEBUGGER_SUPPORT
   const PageAccess& access = getPageAccess(addr);
@@ -175,7 +175,7 @@ CartDebug::DisasmFlags System::getAccessFlags(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::setAccessFlags(uInt16 addr, CartDebug::DisasmFlags flags)
+void System::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
 {
 #ifdef DEBUGGER_SUPPORT
   const PageAccess& access = getPageAccess(addr);

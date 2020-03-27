@@ -31,6 +31,7 @@ using CartMethod = int (CartDebug::*)();
 
 #include "bspf.hxx"
 #include "DebuggerSystem.hxx"
+#include "Device.hxx"
 
 class CartState : public DebuggerState
 {
@@ -47,35 +48,8 @@ class CartDebug : public DebuggerSystem
   friend class DiStella;
 
   public:
-    enum DisasmType {
-      NONE        = 0,
-      REFERENCED  = 1 << 0, /* 0x01, code somewhere in the program references it,
-                               i.e. LDA $F372 referenced $F372 */
-      VALID_ENTRY = 1 << 1, /* 0x02, addresses that can have a label placed in front of it.
-                               A good counterexample would be "FF00: LDA $FE00"; $FF01
-                               would be in the middle of a multi-byte instruction, and
-                               therefore cannot be labelled. */
-
-      // The following correspond to specific types that can be set within the
-      // debugger, or specified in a Distella cfg file, and are listed in order
-      // of decreasing hierarchy
-      //
-      CODE  = 1 << 10, // 0x400, disassemble-able code segments
-      TCODE = 1 << 9,  // 0x200, (tentative) disassemble-able code segments
-      GFX   = 1 << 8,  // 0x100, addresses loaded into GRPx registers
-      PGFX  = 1 << 7,  // 0x080, addresses loaded into PFx registers
-      COL   = 1 << 6,  // 0x040, addresses loaded into COLUPx registers
-      PCOL  = 1 << 5,  // 0x010, addresses loaded into COLUPF register
-      BCOL  = 1 << 4,  // 0x010, addresses loaded into COLUBK register
-      DATA  = 1 << 3,  // 0x008, addresses loaded into registers other than GRPx / PFx
-      ROW   = 1 << 2,  // 0x004, all other addresses
-      // special type for poke()
-      WRITE = TCODE    // 0x200, address written to
-    };
-    using DisasmFlags = uInt16;
-
     struct DisassemblyTag {
-      DisasmType type{NONE};
+      Device::AccessType type{Device::NONE};
       uInt16 address{0};
       string label;
       string disasm;
@@ -175,7 +149,7 @@ class CartDebug : public DebuggerSystem
 
       @return  True if directive was added, else false if it was removed
     */
-    bool addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end,
+    bool addDirective(Device::AccessType type, uInt16 start, uInt16 end,
                       int bank = -1);
 
     // The following are convenience methods that query the cartridge object
@@ -260,8 +234,8 @@ class CartDebug : public DebuggerSystem
     */
     void getCompletions(const char* in, StringList& list) const;
 
-    // Convert given address to corresponding disassembly type and append to buf
-    void addressTypeAsString(ostream& buf, uInt16 addr) const;
+    // Convert given address to corresponding access type and append to buf
+    void accessTypeAsString(ostream& buf, uInt16 addr) const;
 
   private:
     using AddrToLabel = std::map<uInt16, string>;
@@ -271,7 +245,7 @@ class CartDebug : public DebuggerSystem
     using AddrTypeArray = std::array<uInt16, 0x1000>;
 
     struct DirectiveTag {
-      DisasmType type{NONE};
+      Device::AccessType type{Device::NONE};
       uInt16 start{0};
       uInt16 end{0};
     };
@@ -309,15 +283,15 @@ class CartDebug : public DebuggerSystem
     // based on its disassembly
     void getBankDirectives(ostream& buf, BankInfo& info) const;
 
-    // Get disassembly enum type from 'flags', taking precendence into account
-    DisasmType disasmTypeAbsolute(CartDebug::DisasmFlags flags) const;
+    // Get access enum type from 'flags', taking precendence into account
+    Device::AccessType accessTypeAbsolute(Device::AccessFlags flags) const;
 
-    // Convert disassembly enum type to corresponding string and append to buf
-    void disasmTypeAsString(ostream& buf, DisasmType type) const;
+    // Convert access enum type to corresponding string and append to buf
+    void AccessTypeAsString(ostream& buf, Device::AccessType type) const;
 
-    // Convert all disassembly types in 'flags' to corresponding string and
+    // Convert all access types in 'flags' to corresponding string and
     // append to buf
-    void disasmTypeAsString(ostream& buf, CartDebug::DisasmFlags flags) const;
+    void AccessTypeAsString(ostream& buf, Device::AccessFlags flags) const;
 
   private:
     const OSystem& myOSystem;

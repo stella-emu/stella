@@ -30,7 +30,7 @@ class GuiObject;
 #ifdef DEBUGGER_SUPPORT
   #include "Font.hxx"
 #endif
-#include "CartDebug.hxx"
+
 
 /**
   A cartridge is a device which contains the machine code for a
@@ -323,7 +323,7 @@ class Cartridge : public Device
 
     // The array containing information about every byte of ROM indicating
     // whether it is used as code.
-    std::unique_ptr<CartDebug::DisasmFlags[]> myCodeAccessBase;
+    std::unique_ptr<Device::AccessFlags[]> myCodeAccessBase;
 
     // Contains address of illegal RAM write access or 0
     uInt16 myRamWriteAccess{0};

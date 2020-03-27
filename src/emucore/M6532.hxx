@@ -147,18 +147,18 @@ class M6532 : public Device
     void createAccessBases();
 
     /**
-      Query the given address type for the associated disassembly flags.
+      Query the given address type for the associated access flags.
 
       @param address  The address to query
     */
-    CartDebug::DisasmFlags getAccessFlags(uInt16 address) const override;
+    Device::AccessFlags getAccessFlags(uInt16 address) const override;
     /**
-      Change the given address to use the given disassembly flags.
+      Change the given address to use the given access flags.
 
       @param address  The address to modify
-      @param flags    A bitfield of DisasmType directives for the given address
+      @param flags    A bitfield of AccessType directives for the given address
     */
-    void setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags) override;
+    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
 #endif // DEBUGGER_SUPPORT
 
   private:
@@ -225,9 +225,9 @@ class M6532 : public Device
 
     // The arrays containing information about every byte of RIOT
     // indicating whether and how (RW) it is used.
-    std::array<uInt16, RAM_SIZE>   myRAMAccessBase;
-    std::array<uInt16, STACK_SIZE> myStackAccessBase;
-    std::array<uInt16, IO_SIZE>    myIOAccessBase;
+    std::array<Device::AccessFlags, RAM_SIZE>   myRAMAccessBase;
+    std::array<Device::AccessFlags, STACK_SIZE> myStackAccessBase;
+    std::array<Device::AccessFlags, IO_SIZE>    myIOAccessBase;
     // The array used to skip the first ZP access tracking
     std::array<uInt8, RAM_SIZE>   myZPAccessDelay;
 #endif // DEBUGGER_SUPPORT

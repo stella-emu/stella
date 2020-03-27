@@ -924,7 +924,7 @@ void DebuggerParser::executeCode()
   }
 
   bool result = debugger.cartDebug().addDirective(
-                  CartDebug::CODE, args[0], args[1]);
+                  Device::CODE, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " CODE directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
   debugger.rom().invalidate();
@@ -965,7 +965,7 @@ void DebuggerParser::executeData()
   }
 
   bool result = debugger.cartDebug().addDirective(
-                  CartDebug::DATA, args[0], args[1]);
+                  Device::DATA, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " DATA directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
   debugger.rom().invalidate();
@@ -1282,7 +1282,7 @@ void DebuggerParser::executeGfx()
   }
 
   bool result = debugger.cartDebug().addDirective(
-                  CartDebug::GFX, args[0], args[1]);
+                  Device::GFX, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " GFX directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
   debugger.rom().invalidate();
@@ -1642,7 +1642,7 @@ void DebuggerParser::executePGfx()
   }
 
   bool result = debugger.cartDebug().addDirective(
-                  CartDebug::PGFX, args[0], args[1]);
+                  Device::PGFX, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " PGFX directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
   debugger.rom().invalidate();
@@ -1734,7 +1734,7 @@ void DebuggerParser::executeRow()
   }
 
   bool result = debugger.cartDebug().addDirective(
-                  CartDebug::ROW, args[0], args[1]);
+                  Device::ROW, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " ROW directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
   debugger.rom().invalidate();
@@ -2194,7 +2194,7 @@ void DebuggerParser::executeType()
   for(uInt32 i = beg; i <= end; ++i)
   {
     commandResult << Base::HEX4 << i << ": ";
-    debugger.cartDebug().addressTypeAsString(commandResult, i);
+    debugger.cartDebug().accessTypeAsString(commandResult, i);
     commandResult << endl;
   }
 }
@@ -3182,7 +3182,7 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
 
   {
     "type",
-    "Show disassembly type for address xx [yy]",
+    "Show access type for address xx [yy]",
     "Example: type f000, type f000 f010",
     true,
     false,
