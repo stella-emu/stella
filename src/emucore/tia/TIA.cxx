@@ -25,10 +25,6 @@
 #include "AudioQueue.hxx"
 #include "DispatchResult.hxx"
 
-#ifdef DEBUGGER_SUPPORT
-  #include "CartDebug.hxx"
-#endif
-
 enum CollisionMask: uInt32 {
   player0   = 0b0111110000000000,
   player1   = 0b0100001111000000,
@@ -575,7 +571,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::BCOL);
+        mySystem->setAccessFlags(dataAddr, Device::BCOL);
     #endif
       break;
     }
@@ -590,7 +586,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::COL);
+        mySystem->setAccessFlags(dataAddr, Device::COL);
     #endif
       break;
     }
@@ -605,7 +601,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::COL);
+        mySystem->setAccessFlags(dataAddr, Device::COL);
     #endif
       break;
     }
@@ -634,7 +630,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::PCOL);
+        mySystem->setAccessFlags(dataAddr, Device::PCOL);
     #endif
       break;
     }
@@ -645,7 +641,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
+        mySystem->setAccessFlags(dataAddr, Device::PGFX);
     #endif
       break;
     }
@@ -656,7 +652,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
+        mySystem->setAccessFlags(dataAddr, Device::PGFX);
     #endif
       break;
     }
@@ -667,7 +663,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
+        mySystem->setAccessFlags(dataAddr, Device::PGFX);
     #endif
       break;
     }
@@ -735,7 +731,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::GFX);
+        mySystem->setAccessFlags(dataAddr, Device::GFX);
     #endif
       break;
     }
@@ -748,7 +744,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::GFX);
+        mySystem->setAccessFlags(dataAddr, Device::GFX);
     #endif
       break;
     }
@@ -1914,22 +1910,22 @@ void TIA::toggleCollBLPF()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::createAccessBase()
 {
-  myAccessBase.fill(CartDebug::NONE);
+  myAccessBase.fill(Device::NONE);
   myAccessDelay.fill(TIA_DELAY);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::DisasmFlags TIA::getAccessFlags(uInt16 address) const
+Device::AccessFlags TIA::getAccessFlags(uInt16 address) const
 {
   return myAccessBase[address & TIA_MASK];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags)
+void TIA::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 {
   // ignore none flag
-  if (flags != CartDebug::NONE) {
-    if (flags == CartDebug::WRITE) {
+  if (flags != Device::NONE) {
+    if (flags == Device::WRITE) {
       // the first two write accesses are assumed as initialization
       if (myAccessDelay[address & TIA_MASK])
         myAccessDelay[address & TIA_MASK]--;

@@ -20,7 +20,6 @@
 #include "M6502.hxx"
 #include "System.hxx"
 #include "Debugger.hxx"
-#include "CartDebug.hxx"
 #include "TIADebug.hxx"
 
 #include "CpuDebug.hxx"

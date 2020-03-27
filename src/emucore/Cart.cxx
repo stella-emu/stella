@@ -20,7 +20,6 @@
 #include "MD5.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
-  #include "CartDebug.hxx"
 #endif
 
 #include "Cart.hxx"
@@ -117,8 +116,8 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 void Cartridge::createCodeAccessBase(size_t size)
 {
 #ifdef DEBUGGER_SUPPORT
-  myCodeAccessBase = make_unique<uInt16[]>(size);
-  std::fill_n(myCodeAccessBase.get(), size, CartDebug::ROW);
+  myCodeAccessBase = make_unique<Device::AccessFlags[]>(size);
+  std::fill_n(myCodeAccessBase.get(), size, Device::ROW);
 #else
   myCodeAccessBase = nullptr;
 #endif

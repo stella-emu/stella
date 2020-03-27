@@ -182,7 +182,7 @@ bool Cartridge4A50::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::DisasmFlags Cartridge4A50::getAccessFlags(uInt16 address) const
+Device::AccessFlags Cartridge4A50::getAccessFlags(uInt16 address) const
 {
   if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
   {
@@ -214,7 +214,7 @@ CartDebug::DisasmFlags Cartridge4A50::getAccessFlags(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50::setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags)
+void Cartridge4A50::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 {
   if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
   {

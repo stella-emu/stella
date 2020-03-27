@@ -154,18 +154,18 @@ class Cartridge4A50 : public Cartridge
 
   private:
     /**
-      Query the given address type for the associated disassembly flags.
+      Query the given address type for the associated access flags.
 
       @param address  The address to query
     */
-    CartDebug::DisasmFlags getAccessFlags(uInt16 address) const override;
+    Device::AccessFlags getAccessFlags(uInt16 address) const override;
     /**
-      Change the given address to use the given disassembly flags.
+      Change the given address to use the given access flags.
 
       @param address  The address to modify
-      @param flags    A bitfield of DisasmType directives for the given address
+      @param flags    A bitfield of AccessType directives for the given address
     */
-    void setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags) override;
+    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
 
     /**
       Check all possible hotspots

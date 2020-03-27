@@ -18,19 +18,19 @@
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "Expression.hxx"
-  #include "CartDebug.hxx"
+  #include "Device.hxx"
   #include "Base.hxx"
 
-  // Flags for disassembly types
-  #define DISASM_CODE  CartDebug::CODE
-//   #define DISASM_GFX   CartDebug::GFX
-//   #define DISASM_PGFX  CartDebug::PGFX
-  #define DISASM_DATA  CartDebug::DATA
-//   #define DISASM_ROW   CartDebug::ROW
-  #define DISASM_WRITE CartDebug::WRITE
+  // Flags for access types
+  #define DISASM_CODE  Device::CODE
+//   #define DISASM_GFX   Device::GFX
+//   #define DISASM_PGFX  Device::PGFX
+  #define DISASM_DATA  Device::DATA
+//   #define DISASM_ROW   Device::ROW
+  #define DISASM_WRITE Device::WRITE
   #define DISASM_NONE  0
 #else
-  // Flags for disassembly types
+  // Flags for access types
   #define DISASM_CODE  0
 //   #define DISASM_GFX   0
 //   #define DISASM_PGFX  0
@@ -104,7 +104,7 @@ void M6502::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt8 M6502::peek(uInt16 address, CartDebug::DisasmFlags flags)
+inline uInt8 M6502::peek(uInt16 address, Device::AccessFlags flags)
 {
   handleHalt();
 
@@ -144,7 +144,7 @@ inline uInt8 M6502::peek(uInt16 address, CartDebug::DisasmFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void M6502::poke(uInt16 address, uInt8 value, CartDebug::DisasmFlags flags)
+inline void M6502::poke(uInt16 address, uInt8 value, Device::AccessFlags flags)
 {
   ////////////////////////////////////////////////
   // TODO - move this logic directly into CartAR

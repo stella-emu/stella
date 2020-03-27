@@ -22,7 +22,6 @@ class System;
 
 #include "Console.hxx"
 #include "Serializable.hxx"
-#include "CartDebug.hxx"
 #include "bspf.hxx"
 
 /**
@@ -33,6 +32,34 @@ class System;
 */
 class Device : public Serializable
 {
+  public:
+    enum AccessType {
+      NONE        = 0,
+      REFERENCED  = 1 << 0, /* 0x01, code somewhere in the program references it,
+                               i.e. LDA $F372 referenced $F372 */
+      VALID_ENTRY = 1 << 1, /* 0x02, addresses that can have a label placed in front of it.
+                               A good counterexample would be "FF00: LDA $FE00"; $FF01
+                               would be in the middle of a multi-byte instruction, and
+                               therefore cannot be labelled. */
+
+      // The following correspond to specific types that can be set within the
+      // debugger, or specified in a Distella cfg file, and are listed in order
+      // of decreasing hierarchy
+      //
+      CODE  = 1 << 10, // 0x400, disassemble-able code segments
+      TCODE = 1 << 9,  // 0x200, (tentative) disassemble-able code segments
+      GFX   = 1 << 8,  // 0x100, addresses loaded into GRPx registers
+      PGFX  = 1 << 7,  // 0x080, addresses loaded into PFx registers
+      COL   = 1 << 6,  // 0x040, addresses loaded into COLUPx registers
+      PCOL  = 1 << 5,  // 0x010, addresses loaded into COLUPF register
+      BCOL  = 1 << 4,  // 0x010, addresses loaded into COLUBK register
+      DATA  = 1 << 3,  // 0x008, addresses loaded into registers other than GRPx / PFx
+      ROW   = 1 << 2,  // 0x004, all other addresses
+      // special type for poke()
+      WRITE = TCODE    // 0x200, address written to
+    };
+    using AccessFlags = uInt16;
+
   public:
     Device() = default;
     virtual ~Device() = default;
@@ -99,19 +126,19 @@ class Device : public Serializable
     virtual bool poke(uInt16 address, uInt8 value) { return false; }
 
     /**
-      Query the given address for its disassembly flags
+      Query the given address for its access flags
 
       @param address The address to modify
     */
-    virtual CartDebug::DisasmFlags getAccessFlags(uInt16 address) const { return CartDebug::NONE; }
+    virtual AccessFlags getAccessFlags(uInt16 address) const { return AccessType::NONE; }
 
     /**
-      Change the given address type to use the given disassembly flags
+      Change the given address type to use the given access flags
 
       @param address The address to modify
-      @param flags   A bitfield of DisasmType directives for the given address
+      @param flags   A bitfield of AccessType directives for the given address
     */
-    virtual void setAccessFlags(uInt16 address, CartDebug::DisasmFlags flags) { }
+    virtual void setAccessFlags(uInt16 address, AccessFlags flags) { }
 
   protected:
     /// Pointer to the system the device is installed in or the null pointer
