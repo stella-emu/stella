@@ -108,7 +108,7 @@ void DiStella::disasm(uInt32 distart, int pass)
   uInt16 ad;
   Int32 cycles = 0;
   AddressingMode addrMode;
-  int labelFound = 0;
+  AddressType labelFound = AddressType::INVALID;
   stringstream nextLine, nextLineBytes;
 
   mySegType = Device::NONE; // create extra lines between code and data
@@ -192,14 +192,14 @@ FIX_LAST:
       ++myPC;
 
       // detect labels inside instructions (e.g. BIT masks)
-      labelFound = false;
+      labelFound = AddressType::INVALID;
       for (Uint8 i = 0; i < ourLookup[opcode].bytes - 1; i++) {
         if (checkBit(myPC + i, Device::REFERENCED)) {
-          labelFound = true;
+          labelFound = AddressType::ROM;
           break;
         }
       }
-      if (labelFound) {
+      if (labelFound != AddressType::INVALID) {
         if (myOffset >= 0x1000) {
           // the opcode's operand address matches a label address
           if (pass == 3) {
@@ -320,10 +320,10 @@ FIX_LAST:
             else
               nextLine << "     ";
 
-            if (labelFound == 1) {
+            if (labelFound == AddressType::ROM) {
               LABEL_A12_HIGH(ad);
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
-            } else if (labelFound == 4) {
+            } else if (labelFound == AddressType::ROM_MIRROR) {
               if (mySettings.rFlag) {
                 int tmp = (ad & myAppData.end) + myOffset;
                 LABEL_A12_HIGH(tmp);
@@ -378,11 +378,11 @@ FIX_LAST:
             else
               nextLine << "     ";
 
-            if (labelFound == 1) {
+            if (labelFound == AddressType::ROM) {
               LABEL_A12_HIGH(ad);
               nextLine << ",x";
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
-            } else if (labelFound == 4) {
+            } else if (labelFound == AddressType::ROM_MIRROR) {
               if (mySettings.rFlag) {
                 int tmp = (ad & myAppData.end) + myOffset;
                 LABEL_A12_HIGH(tmp);
@@ -417,11 +417,11 @@ FIX_LAST:
             else
               nextLine << "     ";
 
-            if (labelFound == 1) {
+            if (labelFound == AddressType::ROM) {
               LABEL_A12_HIGH(ad);
               nextLine << ",y";
               nextLineBytes << Base::HEX2 << int(ad & 0xff) << " " << Base::HEX2 << int(ad >> 8);
-            } else if (labelFound == 4) {
+            } else if (labelFound == AddressType::ROM_MIRROR) {
               if (mySettings.rFlag) {
                 int tmp = (ad & myAppData.end) + myOffset;
                 LABEL_A12_HIGH(tmp);
@@ -502,7 +502,7 @@ FIX_LAST:
 
           labelFound = mark(ad, Device::REFERENCED);
           if (pass == 3) {
-            if (labelFound == 1) {
+            if (labelFound == AddressType::ROM) {
               nextLine << "     ";
               LABEL_A12_HIGH(ad);
             } else
@@ -529,12 +529,21 @@ FIX_LAST:
             else
               nextLine << "     ";
           }
-          if (labelFound == 1) {
+          if (labelFound == AddressType::ROM) {
             nextLine << "(";
             LABEL_A12_HIGH(ad);
             nextLine << ")";
           }
-          // TODO - should we consider case 4??
+          else if (labelFound == AddressType::ROM_MIRROR) {
+            nextLine << "(";
+            if (mySettings.rFlag) {
+              int tmp = (ad & myAppData.end) + myOffset;
+              LABEL_A12_HIGH(tmp);
+            } else {
+              LABEL_A12_LOW(ad);
+            }
+            nextLine << ")";
+          }
           else {
             nextLine << "(";
             LABEL_A12_LOW(ad);
@@ -841,7 +850,7 @@ void DiStella::disasmFromAddress(uInt32 distart)
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DiStella::mark(uInt32 address, uInt16 mask, bool directive)
+DiStella::AddressType DiStella::mark(uInt32 address, uInt16 mask, bool directive)
 {
   /*-----------------------------------------------------------------------
     For any given offset and code range...
@@ -849,68 +858,75 @@ int DiStella::mark(uInt32 address, uInt16 mask, bool directive)
     If we're between the offset and the end of the code range, we mark
     the bit in the labels array for that data.  The labels array is an
     array of label info for each code address.  If this is the case,
-    return "1", else...
+    return "ROM", else...
 
     We sweep for hardware/system equates, which are valid addresses,
     outside the scope of the code/data range.  For these, we mark its
-    corresponding hardware/system array element, and return "2" or "3"
+    corresponding hardware/system array element, and return "TIA" or "RIOT"
     (depending on which system/hardware element was accessed).
     If this was not the case...
 
     Next we check if it is a code "mirror".  For the 2600, address ranges
     are limited with 13 bits, so other addresses can exist outside of the
     standard code/data range.  For these, we mark the element in the "labels"
-    array that corresponds to the mirrored address, and return "4"
+    array that corresponds to the mirrored address, and return "ROM_MIRROR"
 
-    If all else fails, it's not a valid address, so return 0.
+    If all else fails, it's not a valid address, so return INVALID.
 
     A quick example breakdown for a 2600 4K cart:
     ===========================================================
-      $00-$3d     = system equates (WSYNC, etc...); return 2.
-      $80-$ff     = zero-page RAM (ram_80, etc...); return 5.
+      $00-$3d     = system equates (WSYNC, etc...); return TIA.
+      $80-$ff     = zero-page RAM (ram_80, etc...); return ZP_RAM.
       $0280-$0297 = system equates (INPT0, etc...); mark the array's element
-                    with the appropriate bit; return 3.
+                    with the appropriate bit; return RIOT.
       $1000-$1FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $3000-$3FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $5000-$5FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $7000-$7FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $9000-$9FFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $B000-$BFFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $D000-$DFFF = mark the code/data array for the mirrored address
-                    with the appropriate bit; return 4.
+                    with the appropriate bit; return ROM_MIRROR.
       $F000-$FFFF = mark the code/data array for the address
-                    with the appropriate bit; return 1.
-      Anything else = invalid, return 0.
+                    with the appropriate bit; return ROM.
+      Anything else = invalid, return INVALID.
     ===========================================================
   -----------------------------------------------------------------------*/
 
   // Check for equates before ROM/ZP-RAM accesses, because the original logic
   // of Distella assumed either equates or ROM; it didn't take ZP-RAM into account
   CartDebug::AddrType type = myDbg.addressType(address);
-  if (type == CartDebug::AddrType::TIA) {
-    return 2;
-  } else if (type == CartDebug::AddrType::IO) {
-    return 3;
-  } else if (type == CartDebug::AddrType::ZPRAM && myOffset != 0) {
-    return 5;
-  } else if (address >= uInt32(myOffset) && address <= uInt32(myAppData.end + myOffset)) {
+  if(type == CartDebug::AddrType::TIA) {
+    return AddressType::TIA;
+  }
+  else if(type == CartDebug::AddrType::IO) {
+    return AddressType::RIOT;
+  }
+  else if(type == CartDebug::AddrType::ZPRAM && myOffset != 0) {
+    return AddressType::ZP_RAM;
+  }
+  else if(address >= uInt32(myOffset) && address <= uInt32(myAppData.end + myOffset)) {
     myLabels[address - myOffset] = myLabels[address - myOffset] | mask;
-    if (directive)  myDirectives[address - myOffset] = mask;
-    return 1;
-  } else if (address > 0x1000 && myOffset != 0)  // Exclude zero-page accesses
+    if(directive)
+      myDirectives[address - myOffset] = mask;
+    return AddressType::ROM;
+  }
+  else if(address > 0x1000 && myOffset != 0)  // Exclude zero-page accesses
   {
     /* 2K & 4K case */
     myLabels[address & myAppData.end] = myLabels[address & myAppData.end] | mask;
-    if (directive)  myDirectives[address & myAppData.end] = mask;
-    return 4;
-  } else
-    return 0;
+    if(directive)
+      myDirectives[address & myAppData.end] = mask;
+    return AddressType::ROM_MIRROR;
+  }
+  else
+    return AddressType::INVALID;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -941,12 +957,6 @@ bool DiStella::checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDe
 {
   return checkBit(address, mask, useDebugger) && !checkBit(address, notMask, useDebugger);
 }
-
-/*bool DiStella::isType(uInt16 address) const
-{
-  return checkBits(address, Device::GFX | Device::PGFX |
-                   Device::COL | Device::PCOL | Device::BCOL);
-}*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DiStella::check_range(uInt16 beg, uInt16 end) const
@@ -1201,7 +1211,7 @@ void DiStella::outputBytes(Device::AccessType type)
       ++myPC;
     }
     isType = checkBits(myPC, type,
-                        Device::CODE | (type != Device::DATA ? Device::DATA : 0) |
+                       Device::CODE | (type != Device::DATA ? Device::DATA : 0) |
                        Device::GFX | Device::PGFX |
                        Device::COL | Device::PCOL | Device::BCOL);
     referenced = checkBit(myPC, Device::REFERENCED);
