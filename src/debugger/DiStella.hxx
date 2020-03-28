@@ -73,6 +73,21 @@ class DiStella
              CartDebug::ReservedEquates& reserved);
 
   private:
+    /**
+    Enumeration of the addressing type (RAM, ROM, RIOT, TIA...)
+    */
+    enum class AddressType : int
+    {
+      INVALID,
+      ROM,
+      TIA,
+      RIOT,
+      ROM_MIRROR,
+      ZP_RAM
+    };
+
+
+  private:
     // Indicate that a new line of disassembly has been completed
     // In the original Distella code, this indicated a new line to be printed
     // Here, we add a new entry to the DisassemblyList
@@ -88,33 +103,32 @@ class DiStella
     void disasmFromAddress(uInt32 distart);
 
     bool check_range(uInt16 start, uInt16 end) const;
-    int mark(uInt32 address, uInt16 mask, bool directive = false);
+    AddressType mark(uInt32 address, uInt16 mask, bool directive = false);
     bool checkBit(uInt16 address, uInt16 mask, bool useDebugger = true) const;
     bool checkBits(uInt16 address, uInt16 mask, uInt16 notMask, bool useDebugger = true) const;
-    //bool isType(uInt16 address) const;
     void outputGraphics();
     void outputColors();
     void outputBytes(Device::AccessType type);
 
     // Convenience methods to generate appropriate labels
-    inline void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, int labfound)
+    inline void labelA12High(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
     {
       if(!myDbg.getLabel(buf, addr, true))
         buf << "L" << Common::Base::HEX4 << addr;
     }
-    inline void labelA12Low(stringstream& buf, uInt8 op, uInt16 addr, int labfound)
+    inline void labelA12Low(stringstream& buf, uInt8 op, uInt16 addr, AddressType labfound)
     {
       myDbg.getLabel(buf, addr, ourLookup[op].rw_mode == RWMode::READ, 2);
-      if (labfound == 2)
+      if (labfound == AddressType::TIA)
       {
         if(ourLookup[op].rw_mode == RWMode::READ)
           myReserved.TIARead[addr & 0x0F] = true;
         else
           myReserved.TIAWrite[addr & 0x3F] = true;
       }
-      else if (labfound == 3)
+      else if (labfound == AddressType::RIOT)
         myReserved.IOReadWrite[(addr & 0xFF) - 0x80] = true;
-      else if (labfound == 5)
+      else if (labfound == AddressType::ZP_RAM)
         myReserved.ZPRAM[(addr & 0xFF) - 0x80] = true;
     }
 

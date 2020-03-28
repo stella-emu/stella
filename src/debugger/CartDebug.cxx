@@ -1054,7 +1054,7 @@ string CartDebug::saveDisassembly()
     if (myReserved.breakFound)
       addLabel("Break", myDebugger.dpeek(0xfffe));
 
-    buf << "    SEG     Device::CODE\n"
+    buf << "    SEG     CODE\n"
         << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
 
     // Format in 'distella' style
