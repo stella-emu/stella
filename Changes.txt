@@ -20,9 +20,9 @@
     a game. This allows the user to save high scores for these games. For each
     game and variation, the top 10 scores can be saved. (TOOD: Doc)
 
-  * Added displaying last write address in debugger. (TOOD: Doc)
+  * Added displaying last write address in debugger.
 
-  * Added detection of color and audio data in DiStella. (TOOD: Doc)
+  * Added detection of color and audio data in DiStella.
 
 
 6.0.2 to 6.1: (March 22, 2020)
