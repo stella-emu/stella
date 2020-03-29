@@ -237,6 +237,9 @@ class CartDebug : public DebuggerSystem
     // Convert given address to corresponding access type and append to buf
     void accessTypeAsString(ostream& buf, uInt16 addr) const;
 
+    // Convert access enum type to corresponding string and append to buf
+    void AccessTypeAsString(ostream& buf, Device::AccessType type) const;
+
   private:
     using AddrToLabel = std::map<uInt16, string>;
     using LabelToAddr = std::map<string, uInt16,
@@ -285,9 +288,6 @@ class CartDebug : public DebuggerSystem
 
     // Get access enum type from 'flags', taking precendence into account
     Device::AccessType accessTypeAbsolute(Device::AccessFlags flags) const;
-
-    // Convert access enum type to corresponding string and append to buf
-    void AccessTypeAsString(ostream& buf, Device::AccessType type) const;
 
     // Convert all access types in 'flags' to corresponding string and
     // append to buf
