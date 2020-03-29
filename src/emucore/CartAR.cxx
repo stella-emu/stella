@@ -190,6 +190,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   return modified;
 }
 
+#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessFlags CartridgeAR::getAccessFlags(uInt16 address) const
 {
@@ -203,6 +204,7 @@ void CartridgeAR::setAccessFlags(uInt16 address, Device::AccessFlags flags)
   myCodeAccessBase[(address & 0x07FF) +
     myImageOffset[(address & 0x0800) ? 1 : 0]] |= flags;
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::bankConfiguration(uInt8 configuration)
