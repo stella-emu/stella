@@ -54,7 +54,7 @@ class Device : public Serializable
       PCOL  = 1 << 6,  // 0x040, addresses loaded into COLUPF register
       BCOL  = 1 << 5,  // 0x020, addresses loaded into COLUBK register
       AUD   = 1 << 4,  // 0x010, addresses loaded into audio registers
-      DATA  = 1 << 3,  // 0x008, addresses loaded into registers other than GRPx / PFx
+      DATA  = 1 << 3,  // 0x008, addresses loaded into registers other than GRPx / PFx / COLUxx, AUDxx
       ROW   = 1 << 2,  // 0x004, all other addresses
       // special type for poke()
       WRITE = TCODE    // 0x200, address written to
