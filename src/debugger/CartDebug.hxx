@@ -142,7 +142,7 @@ class CartDebug : public DebuggerSystem
       things can't be automatically determined.  For now, these directives
       have exactly the same syntax as in a distella configuration file.
 
-      @param type   Currently, CODE/DATA/GFX are supported
+      @param type   Currently, CODE/DATA/GFX/PGFX/COL/PCOL/BCOL/AUD/ROW are supported
       @param start  The start address (inclusive) to mark with the given type
       @param end    The end address (inclusive) to mark with the given type
       @param bank   Bank to which these directive apply (0 indicated current bank)

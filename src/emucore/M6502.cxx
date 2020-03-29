@@ -23,21 +23,15 @@
 
   // Flags for access types
   #define DISASM_CODE  Device::CODE
-//   #define DISASM_GFX   Device::GFX
-//   #define DISASM_PGFX  Device::PGFX
   #define DISASM_DATA  Device::DATA
-//   #define DISASM_ROW   Device::ROW
   #define DISASM_WRITE Device::WRITE
-  #define DISASM_NONE  0
+  #define DISASM_NONE  Device::NONE
 #else
   // Flags for access types
   #define DISASM_CODE  0
-//   #define DISASM_GFX   0
-//   #define DISASM_PGFX  0
   #define DISASM_DATA  0
-//   #define DISASM_ROW   0
-  #define DISASM_NONE  0
   #define DISASM_WRITE 0
+  #define DISASM_NONE  0
 #endif
 #include "Settings.hxx"
 #include "Vec.hxx"

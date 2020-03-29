@@ -46,13 +46,14 @@ class Device : public Serializable
       // debugger, or specified in a Distella cfg file, and are listed in order
       // of decreasing hierarchy
       //
-      CODE  = 1 << 10, // 0x400, disassemble-able code segments
-      TCODE = 1 << 9,  // 0x200, (tentative) disassemble-able code segments
-      GFX   = 1 << 8,  // 0x100, addresses loaded into GRPx registers
-      PGFX  = 1 << 7,  // 0x080, addresses loaded into PFx registers
-      COL   = 1 << 6,  // 0x040, addresses loaded into COLUPx registers
-      PCOL  = 1 << 5,  // 0x010, addresses loaded into COLUPF register
-      BCOL  = 1 << 4,  // 0x010, addresses loaded into COLUBK register
+      CODE  = 1 << 11, // 0x800, disassemble-able code segments
+      TCODE = 1 << 10, // 0x400, (tentative) disassemble-able code segments
+      GFX   = 1 << 9,  // 0x200, addresses loaded into GRPx registers
+      PGFX  = 1 << 8,  // 0x100, addresses loaded into PFx registers
+      COL   = 1 << 7,  // 0x080, addresses loaded into COLUPx registers
+      PCOL  = 1 << 6,  // 0x040, addresses loaded into COLUPF register
+      BCOL  = 1 << 5,  // 0x020, addresses loaded into COLUBK register
+      AUD   = 1 << 4,  // 0x010, addresses loaded into audio registers
       DATA  = 1 << 3,  // 0x008, addresses loaded into registers other than GRPx / PFx
       ROW   = 1 << 2,  // 0x004, all other addresses
       // special type for poke()

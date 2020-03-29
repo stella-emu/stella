@@ -530,34 +530,76 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case AUDV0:
+    {
       myAudio.channel0().audv(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDV1:
+    {
       myAudio.channel1().audv(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDF0:
+    {
       myAudio.channel0().audf(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDF1:
+    {
       myAudio.channel1().audf(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDC0:
+    {
       myAudio.channel0().audc(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDC1:
+    {
       myAudio.channel1().audc(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case HMOVE:
       myDelayQueue.push(HMOVE, value, Delay::hmove);
