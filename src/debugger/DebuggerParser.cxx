@@ -694,24 +694,10 @@ void DebuggerParser::executeDirective(Device::AccessType type)
   }
 
   bool result = debugger.cartDebug().addDirective(type, args[0], args[1]);
-  string typeStr;
 
-  switch(type)
-  {
-    case Device::CODE:   typeStr = "CODE";   break;
-    case Device::GFX:    typeStr = "GFX";    break;
-    case Device::PGFX:   typeStr = "PGFX";   break;
-    case Device::COL:    typeStr = "COL";    break;
-    case Device::PCOL:   typeStr = "PCOL";   break;
-    case Device::BCOL:   typeStr = "BCOL";   break;
-    case Device::AUD:    typeStr = "AUD";    break;
-    case Device::DATA:   typeStr = "DATA";   break;
-    case Device::ROW:    typeStr = "ROW";    break;
-    default:             typeStr = "NONE";
-  }
-
-  commandResult << (result ? "added " : "removed ")
-    << typeStr << " directive on range $"
+  commandResult << (result ? "added " : "removed ");
+  debugger.cartDebug().AccessTypeAsString(commandResult, type);
+  commandResult << " directive on range $"
     << hex << args[0] << " $" << hex << args[1];
   debugger.rom().invalidate();
 }

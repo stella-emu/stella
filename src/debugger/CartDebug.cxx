@@ -886,47 +886,47 @@ string CartDebug::loadConfigFile()
         // TODO - figure out what to do with this
         buf >> hex >> start;
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "Device::CODE"))
+      else if(BSPF::startsWithIgnoreCase(directive, "CODE"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(Device::CODE, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "Device::GFX"))
+      else if(BSPF::startsWithIgnoreCase(directive, "GFX"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(Device::GFX, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "Device::PGFX"))
+      else if(BSPF::startsWithIgnoreCase(directive, "PGFX"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(Device::PGFX, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "Device::COL"))
+      else if(BSPF::startsWithIgnoreCase(directive, "COL"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(Device::COL, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "Device::PCOL"))
+      else if(BSPF::startsWithIgnoreCase(directive, "PCOL"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(Device::PCOL, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "Device::BCOL"))
+      else if(BSPF::startsWithIgnoreCase(directive, "BCOL"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(Device::BCOL, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "Device::AUD"))
+      else if(BSPF::startsWithIgnoreCase(directive, "AUD"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(Device::AUD, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "Device::DATA"))
+      else if(BSPF::startsWithIgnoreCase(directive, "DATA"))
       {
         buf >> hex >> start >> hex >> end;
         addDirective(Device::DATA, start, end, currentbank);
       }
-      else if(BSPF::startsWithIgnoreCase(directive, "Device::ROW"))
+      else if(BSPF::startsWithIgnoreCase(directive, "ROW"))
       {
         buf >> hex >> start;
         buf >> hex >> end;
@@ -1304,9 +1304,6 @@ string CartDebug::saveRom()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::listConfig(int bank)
 {
-  if(myConsole.cartridge().bankCount() > 1)
-    return DebuggerParser::red("config file for multi-bank ROM not yet supported");
-
   uInt32 startbank = 0, endbank = bankCount();
   if(bank >= 0 && bank < bankCount())
   {
@@ -1319,7 +1316,7 @@ string CartDebug::listConfig(int bank)
   for(uInt32 b = startbank; b < endbank; ++b)
   {
     BankInfo& info = myBankInfo[b];
-    buf << "[" << b << "]" << endl;
+    buf << "Bank [" << b << "]" << endl;
     for(const auto& i: info.directiveList)
     {
       if(i.type != Device::NONE)
@@ -1331,6 +1328,9 @@ string CartDebug::listConfig(int bank)
     }
     getBankDirectives(buf, info);
   }
+
+  if(myConsole.cartridge().bankCount() > 1)
+    buf << DebuggerParser::red("config file for multi-bank ROM not fully supported") << endl;
 
   return buf.str();
 }
@@ -1499,16 +1499,16 @@ void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type) const
 {
   switch(type)
   {
-    case Device::CODE:   buf << "Device::CODE";   break;
-    case Device::TCODE:  buf << "Device::TCODE";  break;
-    case Device::GFX:    buf << "Device::GFX";    break;
-    case Device::PGFX:   buf << "Device::PGFX";   break;
-    case Device::COL:    buf << "Device::COL";    break;
-    case Device::PCOL:   buf << "Device::PCOL";   break;
-    case Device::BCOL:   buf << "Device::BCOL";   break;
-    case Device::AUD:    buf << "Device::AUD";    break;
-    case Device::DATA:   buf << "Device::DATA";   break;
-    case Device::ROW:    buf << "Device::ROW";    break;
+    case Device::CODE:   buf << "CODE";   break;
+    case Device::TCODE:  buf << "TCODE";  break;
+    case Device::GFX:    buf << "GFX";    break;
+    case Device::PGFX:   buf << "PGFX";   break;
+    case Device::COL:    buf << "COL";    break;
+    case Device::PCOL:   buf << "PCOL";   break;
+    case Device::BCOL:   buf << "BCOL";   break;
+    case Device::AUD:    buf << "AUD";    break;
+    case Device::DATA:   buf << "DATA";   break;
+    case Device::ROW:    buf << "ROW";    break;
     case Device::REFERENCED:
     case Device::VALID_ENTRY:
     case Device::NONE:                    break;
@@ -1521,29 +1521,29 @@ void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessFlags flags) cons
   if(flags)
   {
     if(flags & Device::CODE)
-      buf << "Device::CODE ";
+      buf << "CODE ";
     if(flags & Device::TCODE)
-      buf << "Device::TCODE ";
+      buf << "TCODE ";
     if(flags & Device::GFX)
-      buf << "Device::GFX ";
+      buf << "GFX ";
     if(flags & Device::PGFX)
-      buf << "Device::PGFX ";
+      buf << "PGFX ";
     if(flags & Device::COL)
-      buf << "Device::COL ";
+      buf << "COL ";
     if(flags & Device::PCOL)
-      buf << "Device::PCOL ";
+      buf << "PCOL ";
     if(flags & Device::BCOL)
-      buf << "Device::BCOL ";
+      buf << "BCOL ";
     if(flags & Device::AUD)
-      buf << "Device::AUD ";
+      buf << "AUD ";
     if(flags & Device::DATA)
-      buf << "Device::DATA ";
+      buf << "DATA ";
     if(flags & Device::ROW)
-      buf << "Device::ROW ";
+      buf << "ROW ";
     if(flags & Device::REFERENCED)
-      buf << "*Device::REFERENCED ";
+      buf << "*REFERENCED ";
     if(flags & Device::VALID_ENTRY)
-      buf << "*Device::VALID_ENTRY ";
+      buf << "*VALID_ENTRY ";
   }
   else
     buf << "no flags set";
