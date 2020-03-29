@@ -534,8 +534,8 @@ void Settings::usage() const
     << " Arguments are more fully explained in the manual\n"
     << endl
     << "   -dis.resolve   <1|0>        Attempt to resolve code sections in disassembler\n"
-    << "   -dis.gfxformat <2|16>       Set base to use for displaying GFX sections in\n"
-    << "                                disassembler\n"
+    << "   -dis.gfxformat <2|16>       Set base to use for displaying (P)GFX sections\n"
+    << "                                in disassembler\n"
     << "   -dis.showaddr  <1|0>        Show opcode addresses in disassembler\n"
     << "   -dis.relocate  <1|0>        Relocate calls out of address range in\n"
     << "                                disassembler\n"

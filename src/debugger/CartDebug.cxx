@@ -916,6 +916,11 @@ string CartDebug::loadConfigFile()
         buf >> hex >> start >> hex >> end;
         addDirective(Device::BCOL, start, end, currentbank);
       }
+      else if(BSPF::startsWithIgnoreCase(directive, "Device::AUD"))
+      {
+        buf >> hex >> start >> hex >> end;
+        addDirective(Device::AUD, start, end, currentbank);
+      }
       else if(BSPF::startsWithIgnoreCase(directive, "Device::DATA"))
       {
         buf >> hex >> start >> hex >> end;
@@ -1070,57 +1075,54 @@ string CartDebug::saveDisassembly()
       switch(tag.type)
       {
         case Device::CODE:
-        {
           buf << ALIGN(32) << tag.disasm << tag.ccount.substr(0, 5) << tag.ctotal << tag.ccount.substr(5, 2);
           if (tag.disasm.find("WSYNC") != std::string::npos)
             buf << "\n;---------------------------------------";
           break;
-        }
+
         case Device::ROW:
-        {
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8*4-1) << "; $" << Base::HEX4 << tag.address << " (*)";
           break;
-        }
+
         case Device::GFX:
-        {
           buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1e') ? "#" : " ");
           buf << ALIGN(13) << "|" << "$" << Base::HEX4 << tag.address << " (G)";
           break;
-        }
+
         case Device::PGFX:
-        {
           buf << ".byte   " << (settings.gfxFormat == Base::Fmt::_2 ? "%" : "$")
               << tag.bytes << " ; |";
           for(int c = 12; c < 20; ++c)
             buf << ((tag.disasm[c] == '\x1f') ? "*" : " ");
           buf << ALIGN(13) << "|" << "$" << Base::HEX4 << tag.address << " (P)";
           break;
-        }
+
         case Device::COL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (Px)";
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (C)";
           break;
 
         case Device::PCOL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (PF)";
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (CP)";
           break;
 
         case Device::BCOL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (BK)";
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (CB)";
+          break;
+
+        case Device::AUD:
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (A)";
           break;
 
         case Device::DATA:
-        {
           buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 8 * 4 - 1) << "; $" << Base::HEX4 << tag.address << " (D)";
           break;
-        }
+
         case Device::NONE:
         default:
-        {
           break;
-        }
       } // switch
       buf << "\n";
     }
@@ -1134,14 +1136,18 @@ string CartDebug::saveDisassembly()
       << "; ROM properties name : " << myConsole.properties().get(PropType::Cart_Name) << "\n"
       << "; ROM properties MD5  : " << myConsole.properties().get(PropType::Cart_MD5) << "\n"
       << "; Bankswitch type     : " << myConsole.cartridge().about() << "\n;\n"
-      << "; Legend: * = Device::CODE not yet run (tentative code)\n"
-      << ";         D = Device::DATA directive (referenced in some way)\n"
-      << ";         G = Device::GFX directive, shown as '#' (stored in player, missile, ball)\n"
-      << ";         P = Device::PGFX directive, shown as '*' (stored in playfield)\n"
-      << ";         i = indexed accessed only\n"
-      << ";         c = used by code executed in RAM\n"
-      << ";         s = used by stack\n"
-      << ";         ! = page crossed, 1 cycle penalty\n"
+      << "; Legend: *  = Device::CODE not yet run (tentative code)\n"
+      << ";         D  = Device::DATA directive (referenced in some way)\n"
+      << ";         G  = Device::GFX directive, shown as '#' (stored in player, missile, ball)\n"
+      << ";         P  = Device::PGFX directive, shown as '*' (stored in playfield)\n"
+      << ";         C  = Device::COL directive, shown as '*' (stored in player color)\n"
+      << ";         CP = Device::PCOL directive, shown as '*' (stored in playfield color)\n"
+      << ";         CB = Device::BCOL directive, shown as '*' (stored in background color)\n"
+      << ";         A  = Device::AUD directive, shown as '*' (stored in audio registers)\n"
+      << ";         i  = indexed accessed only\n"
+      << ";         c  = used by code executed in RAM\n"
+      << ";         s  = used by stack\n"
+      << ";         !  = page crossed, 1 cycle penalty\n"
       << "\n    processor 6502\n\n";
 
   out << "\n;-----------------------------------------------------------\n"
@@ -1478,6 +1484,8 @@ Device::AccessType CartDebug::accessTypeAbsolute(Device::AccessFlags flags) cons
     return Device::PCOL;
   else if(flags & Device::BCOL)
     return Device::BCOL;
+  else if(flags & Device::AUD)
+    return Device::AUD;
   else if(flags & Device::DATA)
     return Device::DATA;
   else if(flags & Device::ROW)
@@ -1498,6 +1506,7 @@ void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type) const
     case Device::COL:    buf << "Device::COL";    break;
     case Device::PCOL:   buf << "Device::PCOL";   break;
     case Device::BCOL:   buf << "Device::BCOL";   break;
+    case Device::AUD:    buf << "Device::AUD";    break;
     case Device::DATA:   buf << "Device::DATA";   break;
     case Device::ROW:    buf << "Device::ROW";    break;
     case Device::REFERENCED:
@@ -1525,6 +1534,8 @@ void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessFlags flags) cons
       buf << "Device::PCOL ";
     if(flags & Device::BCOL)
       buf << "Device::BCOL ";
+    if(flags & Device::AUD)
+      buf << "Device::AUD ";
     if(flags & Device::DATA)
       buf << "Device::DATA ";
     if(flags & Device::ROW)

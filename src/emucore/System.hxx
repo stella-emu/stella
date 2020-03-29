@@ -234,7 +234,7 @@ class System : public Serializable
     /**
       Access and modify the access type flags for the given
       address.  Note that while any flag can be used, the disassembly
-      only really acts on CODE/GFX/PGFX/COL/PCOL/BCOL/DATA/ROW.
+      only really acts on CODE/GFX/PGFX/COL/PCOL/BCOL/AUD/DATA/ROW.
     */
     Device::AccessFlags getAccessFlags(uInt16 address) const;
     void setAccessFlags(uInt16 address, Device::AccessFlags flags);

@@ -22,7 +22,7 @@
 
   * Added displaying last write address in debugger. (TOOD: Doc)
 
-  * Added detection of color data in DiStella. (TOOD: Doc)
+  * Added detection of color and audio data in DiStella. (TOOD: Doc)
 
 
 6.0.2 to 6.1: (March 22, 2020)
