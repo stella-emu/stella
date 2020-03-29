@@ -153,6 +153,7 @@ class Cartridge4A50 : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
+  #ifdef DEBUGGER_SUPPORT
     /**
       Query the given address type for the associated access flags.
 
@@ -166,7 +167,7 @@ class Cartridge4A50 : public Cartridge
       @param flags    A bitfield of AccessType directives for the given address
     */
     void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
-
+  #endif
     /**
       Check all possible hotspots
     */

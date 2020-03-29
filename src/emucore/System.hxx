@@ -231,6 +231,7 @@ class System : public Serializable
     void lockDataBus()   { myDataBusLocked = true;  }
     void unlockDataBus() { myDataBusLocked = false; }
 
+  #ifdef DEBUGGER_SUPPORT
     /**
       Access and modify the access type flags for the given
       address.  Note that while any flag can be used, the disassembly
@@ -238,6 +239,7 @@ class System : public Serializable
     */
     Device::AccessFlags getAccessFlags(uInt16 address) const;
     void setAccessFlags(uInt16 address, Device::AccessFlags flags);
+  #endif
 
   public:
     /**

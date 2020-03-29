@@ -159,6 +159,7 @@ class CartridgeAR : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
+  #ifdef DEBUGGER_SUPPORT
     /**
       Query the given address type for the associated access flags.
 
@@ -172,6 +173,7 @@ class CartridgeAR : public Cartridge
       @param flags    A bitfield of AccessType directives for the given address
     */
     void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+  #endif
 
     // Handle a change to the bank configuration
     bool bankConfiguration(uInt8 configuration);

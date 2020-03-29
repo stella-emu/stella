@@ -181,6 +181,7 @@ bool Cartridge4A50::poke(uInt16 address, uInt8 value)
   return myBankChanged;
 }
 
+#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessFlags Cartridge4A50::getAccessFlags(uInt16 address) const
 {
@@ -243,6 +244,7 @@ void Cartridge4A50::setAccessFlags(uInt16 address, Device::AccessFlags flags)
     myCodeAccessBase[(address & 0xff) + 0x1ff00] |= flags;
   }
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
