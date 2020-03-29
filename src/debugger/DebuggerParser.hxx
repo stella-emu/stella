@@ -27,6 +27,7 @@ class FilesystemNode;
 struct Command;
 
 #include "bspf.hxx"
+#include "Device.hxx"
 
 class DebuggerParser
 {
@@ -97,7 +98,7 @@ class DebuggerParser
       std::array<Parameters, 10> parms;
       std::function<void (DebuggerParser*)> executor;
     };
-    static std::array<Command, 95> commands;
+    static std::array<Command, 99> commands;
 
     struct Trap
     {
@@ -140,9 +141,13 @@ class DebuggerParser
     // output the error with the example provided for the command
     void outputCommandError(const string& errorMsg, int command);
 
+    void executeDirective(Device::AccessType type);
+
     // List of available command methods
     void executeA();
+    void executeAud();
     void executeBase();
+    void executeBCol();
     void executeBreak();
     void executeBreakif();
     void executeBreaklabel();
@@ -155,6 +160,7 @@ class DebuggerParser
     void executeClearwatches();
     void executeCls();
     void executeCode();
+    void executeCol();
     void executeColortest();
     void executeD();
     void executeData();
@@ -195,6 +201,7 @@ class DebuggerParser
     void executeN();
     void executePalette();
     void executePc();
+    void executePCol();
     void executePGfx();
     void executePrint();
     void executeRam();
