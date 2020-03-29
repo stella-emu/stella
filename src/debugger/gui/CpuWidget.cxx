@@ -327,7 +327,7 @@ void CpuWidget::loadConfig()
                            state.srcY != oldstate.srcY);
 
   const string& dest = state.dest < 0 ? "" : cart.getLabel(state.dest, false);
-  myCpuDataDest->setText((srcY != EmptyString ? dest : Common::Base::toString(state.dest)),
+  myCpuDataDest->setText((dest != EmptyString ? dest : Common::Base::toString(state.dest)),
                          state.dest != oldstate.dest);
 
   // Update the PS register booleans
