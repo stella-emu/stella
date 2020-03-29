@@ -159,33 +159,29 @@ void System::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
     myDataBusState = value;
 }
 
+#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::AccessFlags System::getAccessFlags(uInt16 addr) const
 {
-#ifdef DEBUGGER_SUPPORT
   const PageAccess& access = getPageAccess(addr);
 
   if(access.codeAccessBase)
     return *(access.codeAccessBase + (addr & PAGE_MASK));
   else
     return access.device->getAccessFlags(addr);
-#else
-  return 0;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
 {
-#ifdef DEBUGGER_SUPPORT
   const PageAccess& access = getPageAccess(addr);
 
   if(access.codeAccessBase)
     *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
   else
     access.device->setAccessFlags(addr, flags);
-#endif
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::save(Serializer& out) const
