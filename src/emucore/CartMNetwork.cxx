@@ -34,7 +34,7 @@ void CartridgeMNetwork::initialize(const ByteBuffer& image, size_t size)
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min<size_t>(romSize(), size), myImage.get());
-  createCodeAccessBase(romSize() + myRAM.size());
+  createRomAccessBase(romSize() + myRAM.size());
 
   myRAMSlice = bankCount() - 1;
 }
@@ -70,7 +70,7 @@ void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
       access.directPeekBase = &directData[directOffset + (addr & addrMask)];
     else if(type == System::PageAccessType::WRITE)  // all RAM writes mapped to ::poke()
       access.directPokeBase = nullptr;
-    access.codeAccessBase = &myCodeAccessBase[codeOffset + (addr & addrMask)];
+    access.romAccessBase = &myRomAccessBase[codeOffset + (addr & addrMask)];
     mySystem->setPageAccess(addr, access);
   }
 }
@@ -86,7 +86,7 @@ void CartridgeMNetwork::install(System& system)
   for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;
       addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[0x1fc0];
+    access.romAccessBase = &myRomAccessBase[0x1fc0];
     mySystem->setPageAccess(addr, access);
   }
   /*setAccess(0x1FE0 & ~System::PAGE_MASK, System::PAGE_SIZE,

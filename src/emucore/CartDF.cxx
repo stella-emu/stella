@@ -25,7 +25,7 @@ CartridgeDF::CartridgeDF(const ByteBuffer& image, size_t size,
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createCodeAccessBase(myImage.size());
+  createRomAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,7 +84,7 @@ bool CartridgeDF::bank(uInt16 bank)
   for(uInt16 addr = (0x1FC0 & ~System::PAGE_MASK); addr < 0x2000;
       addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -93,7 +93,7 @@ bool CartridgeDF::bank(uInt16 bank)
       addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

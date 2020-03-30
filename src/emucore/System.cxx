@@ -105,8 +105,8 @@ uInt8 System::peek(uInt16 addr, Device::AccessFlags flags)
 
 #ifdef DEBUGGER_SUPPORT
   // Set access type
-  if(access.codeAccessBase)
-    *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
+  if(access.romAccessBase)
+    *(access.romAccessBase + (addr & PAGE_MASK)) |= flags;
   else
     access.device->setAccessFlags(addr, flags);
 #endif
@@ -134,8 +134,8 @@ void System::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
 
 #ifdef DEBUGGER_SUPPORT
   // Set access type
-  if (access.codeAccessBase)
-    *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
+  if (access.romAccessBase)
+    *(access.romAccessBase + (addr & PAGE_MASK)) |= flags;
   else
     access.device->setAccessFlags(addr, flags);
 #endif
@@ -165,8 +165,8 @@ Device::AccessFlags System::getAccessFlags(uInt16 addr) const
 {
   const PageAccess& access = getPageAccess(addr);
 
-  if(access.codeAccessBase)
-    return *(access.codeAccessBase + (addr & PAGE_MASK));
+  if(access.romAccessBase)
+    return *(access.romAccessBase + (addr & PAGE_MASK));
   else
     return access.device->getAccessFlags(addr);
 }
@@ -176,8 +176,8 @@ void System::setAccessFlags(uInt16 addr, Device::AccessFlags flags)
 {
   const PageAccess& access = getPageAccess(addr);
 
-  if(access.codeAccessBase)
-    *(access.codeAccessBase + (addr & PAGE_MASK)) |= flags;
+  if(access.romAccessBase)
+    *(access.romAccessBase + (addr & PAGE_MASK)) |= flags;
   else
     access.device->setAccessFlags(addr, flags);
 }

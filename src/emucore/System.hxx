@@ -273,13 +273,17 @@ class System : public Serializable
       uInt8* directPokeBase{nullptr};
 
       /**
-        Pointer to a lookup table for marking an address as CODE.  A CODE
-        section is defined as any address that appears in the program
+        Pointer to a lookup table for marking an address as CODE, DATA, GFX,
+        COL etc.
+        A CODE section is defined as any address that appears in the program
         counter.  Currently, this is used by the debugger/disassembler to
         conclusively determine if a section of address space is CODE, even
         if the disassembler failed to mark it as such.
+        A DATA, GFX, COL etc. section is defined as any ROM address from which
+        data is read. This is used by the debugger/disassembler to format
+        address sections accordingly.
       */
-      Device::AccessFlags* codeAccessBase{nullptr};
+      Device::AccessFlags* romAccessBase{nullptr};
 
       /**
         Pointer to the device associated with this page or to the system's

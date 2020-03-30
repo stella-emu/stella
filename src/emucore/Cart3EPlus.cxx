@@ -30,7 +30,7 @@ Cartridge3EPlus::Cartridge3EPlus(const ByteBuffer& image, size_t size,
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
-  createCodeAccessBase(mySize + myRAM.size());
+  createRomAccessBase(mySize + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -214,7 +214,7 @@ void Cartridge3EPlus::bankRAMSlot(uInt16 bank)
     if(!upper)
       access.directPeekBase = &myRAM[startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
 
-    access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
+    access.romAccessBase = &myRomAccessBase[mySize + startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
     mySystem->setPageAccess(addr, access);
   }
 }
@@ -254,7 +254,7 @@ void Cartridge3EPlus::bankROMSlot(uInt16 bank)
   for(uInt16 addr = start; addr <= end; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[startCurrentBank + (addr & (ROM_BANK_SIZE - 1))];
-    access.codeAccessBase = &myCodeAccessBase[startCurrentBank + (addr & (ROM_BANK_SIZE - 1))];
+    access.romAccessBase = &myRomAccessBase[startCurrentBank + (addr & (ROM_BANK_SIZE - 1))];
     mySystem->setPageAccess(addr, access);
   }
 }

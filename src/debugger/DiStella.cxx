@@ -657,7 +657,7 @@ void DiStella::disasmPass1(CartDebug::AddressList& debuggerAddresses)
       // Note that this is a 'best-effort' approach, since
       // Distella will normally keep going until the end of the
       // range or branch is encountered
-      // However, addresses *specifically* marked as DATA/GFX/PGFX
+      // However, addresses *specifically* marked as DATA/GFX/PGFX/COL/PCOL/BCOL/AUD
       // in the emulation core indicate that the CODE range has finished
       // Therefore, we stop at the first such address encountered
       for (uInt32 k = pcBeg; k <= myPCEnd; ++k) {

@@ -30,7 +30,7 @@ Cartridge3F::Cartridge3F(const ByteBuffer& image, size_t size,
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
-  createCodeAccessBase(mySize);
+  createRomAccessBase(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -57,7 +57,7 @@ void Cartridge3F::install(System& system)
   for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[(mySize - 2048) + (addr & 0x07FF)];
-    access.codeAccessBase = &myCodeAccessBase[(mySize - 2048) + (addr & 0x07FF)];
+    access.romAccessBase = &myRomAccessBase[(mySize - 2048) + (addr & 0x07FF)];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -117,7 +117,7 @@ bool Cartridge3F::bank(uInt16 bank)
   for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[offset + (addr & 0x07FF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x07FF)];
+    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x07FF)];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

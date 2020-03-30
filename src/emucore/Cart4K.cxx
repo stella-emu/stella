@@ -25,7 +25,7 @@ Cartridge4K::Cartridge4K(const ByteBuffer& image, size_t size,
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createCodeAccessBase(myImage.size());
+  createRomAccessBase(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,7 +46,7 @@ void Cartridge4K::install(System& system)
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[addr & 0x0FFF];
-    access.codeAccessBase = &myCodeAccessBase[addr & 0x0FFF];
+    access.romAccessBase = &myRomAccessBase[addr & 0x0FFF];
     mySystem->setPageAccess(addr, access);
   }
 }
