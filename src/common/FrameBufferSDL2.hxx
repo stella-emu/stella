@@ -137,12 +137,12 @@ class FrameBufferSDL2 : public FrameBuffer
     /**
       Transform from window to renderer coordinates, x direction
      */
-    int scaleX(int x) const { return (x * myRenderW) / myWindowW; }
+    int scaleX(int x) const override { return (x * myRenderW) / myWindowW; }
 
     /**
       Transform from window to renderer coordinates, y direction
      */
-    int scaleY(int y) const { return (y * myRenderH) / myWindowH; }
+    int scaleY(int y) const override { return (y * myRenderH) / myWindowH; }
 
   protected:
     //////////////////////////////////////////////////////////////////////
