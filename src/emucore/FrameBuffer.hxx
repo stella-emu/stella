@@ -381,6 +381,16 @@ class FrameBuffer
     */
     virtual void clear() = 0;
 
+    /**
+      Transform from window to renderer coordinates, x direction
+     */
+    virtual int scaleX(int x) const { return x; }
+
+    /**
+      Transform from window to renderer coordinates, y direction
+     */
+    virtual int scaleY(int y) const { return y; }
+
   protected:
     /**
       This method is called to query and initialize the video hardware
