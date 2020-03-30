@@ -1043,22 +1043,19 @@ string CartDebug::saveDisassembly()
   uInt16 oldBank = myConsole.cartridge().getBank();
 
   // prepare for switching banks
-  myConsole.cartridge().unlockBank(); // TODO: make sure every CartWidget does it like that,
-                                      //  maybe define a commonly used method.
+  myConsole.cartridge().unlockBank();
 
   for(int bank = 0; bank < bankCount; ++bank)
   {
+    // TODO: not every CartDebugWidget does it like that, we need a method
+    myConsole.cartridge().unlockBank();
     myConsole.cartridge().bank(bank);
+    myConsole.cartridge().lockBank();
 
     BankInfo& info = myBankInfo[bank];
 
-    // TODO: we have to get the bank disassembled if it had not been debugged before.
-    //  If the debugger is stopped at least once in each bank, the disassembly is mostly* correct.
-    //  So we have to replicate that.
-    //  (* Beamrider is 100% identical, Asteroids has some bytes after the hotspot wrong)
-    //  One problem seems to be, that we do not know where to start. There is no valid addressList
-    //  list for a non-debugged bank.
-    //disassemble(); // DOES NOT WORK YET!!! (makes it even worse!)
+    // TODO: make PageAccess ready for multi-bank ROMs
+    disassemble();
 
     // An empty address list means that DiStella can't do a disassembly
     if(info.addressList.size() == 0)
@@ -1152,6 +1149,7 @@ string CartDebug::saveDisassembly()
       buf << "\n";
     }
   }
+  myConsole.cartridge().unlockBank();
   myConsole.cartridge().bank(oldBank);
   myConsole.cartridge().lockBank();
 
@@ -1310,7 +1308,7 @@ string CartDebug::saveDisassembly()
 
   stringstream retVal;
   if(myConsole.cartridge().bankCount() > 1)
-    retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported, only currently enabled banks disassembled\n");
+    retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
   retVal << "saved " << node.getShortPath() << " OK";
   return retVal.str();
 }
