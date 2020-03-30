@@ -27,7 +27,7 @@ CartridgeDPC::CartridgeDPC(const ByteBuffer& image, size_t size,
 {
   // Make a copy of the entire image
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createCodeAccessBase(8_KB);
+  createRomAccessBase(8_KB);
 
   // Pointer to the program ROM (8K @ 0 byte offset)
   myProgramImage = myImage.data();
@@ -373,7 +373,7 @@ bool CartridgeDPC::bank(uInt16 bank)
   for(uInt16 addr = (0x1FF8 & ~System::PAGE_MASK); addr < 0x2000;
       addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -382,7 +382,7 @@ bool CartridgeDPC::bank(uInt16 bank)
       addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myProgramImage[myBankOffset + (addr & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

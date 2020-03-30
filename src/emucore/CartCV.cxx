@@ -40,7 +40,7 @@ CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
     // Copy the RAM image into a buffer for use in reset()
     std::copy_n(image.get(), myInitialRAM.size(), myInitialRAM.begin());
   }
-  createCodeAccessBase(myImage.size() + myRAM.size());
+  createRomAccessBase(myImage.size() + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,7 +68,7 @@ void CartridgeCV::install(System& system)
   for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[addr & 0x07FF];
-    access.codeAccessBase = &myCodeAccessBase[addr & 0x07FF];
+    access.romAccessBase = &myRomAccessBase[addr & 0x07FF];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -76,7 +76,7 @@ void CartridgeCV::install(System& system)
   // Map access to this class, since we need to inspect all accesses to
   // check if RWP happens
   access.directPeekBase = nullptr;
-  access.codeAccessBase = nullptr;
+  access.romAccessBase = nullptr;
   access.type = System::PageAccessType::WRITE;
   for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
@@ -87,7 +87,7 @@ void CartridgeCV::install(System& system)
   for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myRAM[addr & 0x03FF];
-    access.codeAccessBase = &myCodeAccessBase[2048 + (addr & 0x03FF)];
+    access.romAccessBase = &myRomAccessBase[2048 + (addr & 0x03FF)];
     mySystem->setPageAccess(addr, access);
   }
 }

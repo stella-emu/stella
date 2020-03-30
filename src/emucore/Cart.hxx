@@ -113,7 +113,7 @@ class Cartridge : public Device
       Clears information about all accesses to cart RAM.
     */
     void clearAllRAMAccesses() {
-      myRAMAccesses.clear();
+      myRamReadAccesses.clear();
       myRamWriteAccess = 0;
     }
 
@@ -125,7 +125,7 @@ class Cartridge : public Device
       @return  Address of illegal access if one occurred, else 0
     */
     uInt16 getIllegalRAMReadAccess() const {
-      return myRAMAccesses.size() > 0 ? myRAMAccesses[0] : 0;
+      return myRamReadAccesses.size() > 0 ? myRamReadAccesses[0] : 0;
     }
 
     /**
@@ -274,7 +274,7 @@ class Cartridge : public Device
 
       @param size  The size of the code-access array to create
     */
-    void createCodeAccessBase(size_t size);
+    void createRomAccessBase(size_t size);
 
     /**
       Fill the given RAM array with (possibly random) data.
@@ -322,8 +322,8 @@ class Cartridge : public Device
     bool myBankChanged{true};
 
     // The array containing information about every byte of ROM indicating
-    // whether it is used as code.
-    std::unique_ptr<Device::AccessFlags[]> myCodeAccessBase;
+    // whether it is used as code, data, graphics etc.
+    std::unique_ptr<Device::AccessFlags[]> myRomAccessBase;
 
     // Contains address of illegal RAM write access or 0
     uInt16 myRamWriteAccess{0};
@@ -348,8 +348,10 @@ class Cartridge : public Device
     // Used when we want the 'Cartridge.StartBank' ROM property
     StartBankFromPropsFunc myStartBankFromPropsFunc;
 
-    // Contains
-    ShortArray myRAMAccesses;
+    // Used to answer whether an access in the last instruction cycle
+    // generated an illegal read RAM access. Contains address of illegal
+    // access.
+    ShortArray myRamReadAccesses;
 
     // Following constructors and assignment operators not supported
     Cartridge() = delete;

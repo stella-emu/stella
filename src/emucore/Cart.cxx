@@ -38,7 +38,7 @@ Cartridge::Cartridge(const Settings& settings, const string& md5)
   for(uInt32 i = 0; i < 256; ++i)
     myRWPRandomValues[i] = rand.next();
 
-  myRAMAccesses.reserve(5);
+  myRamReadAccesses.reserve(5);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,7 +86,7 @@ uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
   if(!bankLocked() && !mySystem->autodetectMode())
   {
     // Record access here; final determination will happen in ::pokeRAM()
-    myRAMAccesses.push_back(address);
+    myRamReadAccesses.push_back(address);
     dest = value;
   }
 #else
@@ -100,11 +100,11 @@ uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
 void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 {
 #ifdef DEBUGGER_SUPPORT
-  for(auto i = myRAMAccesses.begin(); i != myRAMAccesses.end(); ++i)
+  for(auto i = myRamReadAccesses.begin(); i != myRamReadAccesses.end(); ++i)
   {
     if(*i == address)
     {
-      myRAMAccesses.erase(i);
+      myRamReadAccesses.erase(i);
       break;
     }
   }
@@ -113,13 +113,13 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::createCodeAccessBase(size_t size)
+void Cartridge::createRomAccessBase(size_t size)
 {
 #ifdef DEBUGGER_SUPPORT
-  myCodeAccessBase = make_unique<Device::AccessFlags[]>(size);
-  std::fill_n(myCodeAccessBase.get(), size, Device::ROW);
+  myRomAccessBase = make_unique<Device::AccessFlags[]>(size);
+  std::fill_n(myRomAccessBase.get(), size, Device::ROW);
 #else
-  myCodeAccessBase = nullptr;
+  myRomAccessBase = nullptr;
 #endif
 }
 

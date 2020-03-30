@@ -30,7 +30,7 @@ Cartridge3E::Cartridge3E(const ByteBuffer& image, size_t size,
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
-  createCodeAccessBase(mySize + myRAM.size());
+  createRomAccessBase(mySize + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,7 +59,7 @@ void Cartridge3E::install(System& system)
   for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[(mySize - 2048) + (addr & 0x07FF)];
-    access.codeAccessBase = &myCodeAccessBase[(mySize - 2048) + (addr & 0x07FF)];
+    access.romAccessBase = &myRomAccessBase[(mySize - 2048) + (addr & 0x07FF)];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -158,7 +158,7 @@ bool Cartridge3E::bank(uInt16 bank)
     for(uInt16 addr = 0x1000; addr < 0x1800; addr += System::PAGE_SIZE)
     {
       access.directPeekBase = &myImage[offset + (addr & 0x07FF)];
-      access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x07FF)];
+      access.romAccessBase = &myRomAccessBase[offset + (addr & 0x07FF)];
       mySystem->setPageAccess(addr, access);
     }
   }
@@ -177,7 +177,7 @@ bool Cartridge3E::bank(uInt16 bank)
     for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
     {
       access.directPeekBase = &myRAM[offset + (addr & 0x03FF)];
-      access.codeAccessBase = &myCodeAccessBase[mySize + offset + (addr & 0x03FF)];
+      access.romAccessBase = &myRomAccessBase[mySize + offset + (addr & 0x03FF)];
       mySystem->setPageAccess(addr, access);
     }
 
@@ -189,7 +189,7 @@ bool Cartridge3E::bank(uInt16 bank)
     // check if RWP happens
     for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
     {
-      access.codeAccessBase = &myCodeAccessBase[mySize + offset + (addr & 0x03FF)];
+      access.romAccessBase = &myRomAccessBase[mySize + offset + (addr & 0x03FF)];
       mySystem->setPageAccess(addr, access);
     }
   }
