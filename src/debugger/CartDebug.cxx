@@ -1024,11 +1024,6 @@ string CartDebug::saveDisassembly()
   // We can't print the header to the disassembly until it's actually
   // been processed; therefore buffer output to a string first
   ostringstream buf;
-  buf << "\n\n;***********************************************************\n"
-      << ";      Bank " << myConsole.cartridge().getBank();
-  if (myConsole.cartridge().bankCount() > 1)
-    buf << " / 0.." << myConsole.cartridge().bankCount() - 1;
-  buf << "\n;***********************************************************\n\n";
 
   // Use specific settings for disassembly output
   // This will most likely differ from what you see in the debugger
@@ -1044,12 +1039,22 @@ string CartDebug::saveDisassembly()
 
   Disassembly disasm;
   disasm.list.reserve(2048);
-  for(int bank = 0; bank < myConsole.cartridge().bankCount(); ++bank)
+  uInt16 bankCount = myConsole.cartridge().bankCount();
+
+  for(int bank = 0; bank < bankCount; ++bank)
   {
     BankInfo& info = myBankInfo[bank];
+
     // An empty address list means that DiStella can't do a disassembly
     if(info.addressList.size() == 0)
       continue;
+
+    buf << "\n\n;***********************************************************\n"
+      << ";      Bank " << bank;
+    if (bankCount > 1)
+      buf << " / 0.." << bankCount - 1;
+    buf << "\n;***********************************************************\n\n";
+
 
     // Disassemble bank
     disasm.list.clear();
@@ -1059,8 +1064,13 @@ string CartDebug::saveDisassembly()
     if (myReserved.breakFound)
       addLabel("Break", myDebugger.dpeek(0xfffe));
 
-    buf << "    SEG     CODE\n"
-        << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
+    buf << "    SEG     CODE\n";
+
+    if(bankCount == 1)
+      buf << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
+    else
+      buf << "    ORG     $" << Base::HEX4 << ((0x0000 + bank * 0x1000) & 0xffff) << "\n"
+          << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
 
     // Format in 'distella' style
     for(uInt32 i = 0; i < disasm.list.size(); ++i)
@@ -1101,15 +1111,15 @@ string CartDebug::saveDisassembly()
           break;
 
         case Device::COL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (C)";
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (C)";
           break;
 
         case Device::PCOL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (CP)";
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (CP)";
           break;
 
         case Device::BCOL:
-          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 12) << "; $" << Base::HEX4 << tag.address << " (CB)";
+          buf << ".byte   " << ALIGN(32) << tag.disasm.substr(6, 15) << "; $" << Base::HEX4 << tag.address << " (CB)";
           break;
 
         case Device::AUD:
