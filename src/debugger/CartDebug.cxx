@@ -86,7 +86,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // We know the address for the startup bank right now
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_front(
     myDebugger.dpeek(0xfffc));
-  addLabel("Start", myDebugger.dpeek(0xfffc, Device::DATA));
+  addLabel("Start", myDebugger.dpeek(0xfffc, Device::DATA)); // TOOD: ::CODE???
 
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
@@ -1040,10 +1040,25 @@ string CartDebug::saveDisassembly()
   Disassembly disasm;
   disasm.list.reserve(2048);
   uInt16 bankCount = myConsole.cartridge().bankCount();
+  uInt16 oldBank = myConsole.cartridge().getBank();
+
+  // prepare for switching banks
+  myConsole.cartridge().unlockBank(); // TODO: make sure every CartWidget does it like that,
+                                      //  maybe define a commonly used method.
 
   for(int bank = 0; bank < bankCount; ++bank)
   {
+    myConsole.cartridge().bank(bank);
+
     BankInfo& info = myBankInfo[bank];
+
+    // TODO: we have to get the bank disassembled if it had not been debugged before.
+    //  If the debugger is stopped at least once in each bank, the disassembly is mostly* correct.
+    //  So we have to replicate that.
+    //  (* Beamrider is 100% identical, Asteroids has some bytes after the hotspot wrong)
+    //  One problem seems to be, that we do not know where to start. There is no valid addressList
+    //  list for a non-debugged bank.
+    //disassemble(); // DOES NOT WORK YET!!! (makes it even worse!)
 
     // An empty address list means that DiStella can't do a disassembly
     if(info.addressList.size() == 0)
@@ -1137,6 +1152,8 @@ string CartDebug::saveDisassembly()
       buf << "\n";
     }
   }
+  myConsole.cartridge().bank(oldBank);
+  myConsole.cartridge().lockBank();
 
   // Some boilerplate, similar to what DiStella adds
   auto timeinfo = BSPF::localTime();
