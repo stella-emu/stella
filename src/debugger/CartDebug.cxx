@@ -385,7 +385,7 @@ int CartDebug::addressToLine(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::disassemble(uInt16 start, uInt16 lines) const
+string CartDebug::disassembleLines(uInt16 start, uInt16 lines) const
 {
   // Fill the string with disassembled data
   start &= 0xFFF;
@@ -1096,8 +1096,6 @@ string CartDebug::saveDisassembly()
 
     BankInfo& info = myBankInfo[bank];
 
-    // TODO: make PageAccess ready for multi-bank ROMs
-    // TODO: define offset if still undefined
     disassembleBank(bank);
 
     // An empty address list means that DiStella can't do a disassembly
@@ -1126,7 +1124,7 @@ string CartDebug::saveDisassembly()
     else
       buf << "    ORG     $" << Base::HEX4 << origin << "\n"
           << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
-    origin += info.size;
+    origin += uInt32(info.size);
 
     // Format in 'distella' style
     for(uInt32 i = 0; i < disasm.list.size(); ++i)

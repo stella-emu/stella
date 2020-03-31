@@ -127,7 +127,7 @@ class CartDebug : public DebuggerSystem
 
       @return  The disassembly represented as a string
     */
-    string disassemble(uInt16 start, uInt16 lines) const;
+    string disassembleLines(uInt16 start, uInt16 lines) const;
 
     /**
       Add a directive to the disassembler.  Directives are basically overrides
