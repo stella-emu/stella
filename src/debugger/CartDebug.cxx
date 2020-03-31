@@ -239,10 +239,50 @@ string CartDebug::toString()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::disassemble(bool force)
 {
+  uInt16 PC = myDebugger.cpuDebug().pc();
+  int bank = (PC & 0x1000) ? getBank(PC) : int(myBankInfo.size()) - 1;
+
+  return disassemble(bank, PC, force);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDebug::disassembleBank(int bank)
+{
+  // isolate the high 3 address bits, count them and
+  // select the most frequent to define the bank offset
+  BankInfo& info = myBankInfo[bank];
+  uInt16 count[8];
+
+  for(int i = 0; i < 8; ++i)
+    count[i] = 0;
+
+  for(uInt32 addr = 0x1000; addr < 0x1000 + info.size; ++addr)
+  {
+    Device::AccessFlags flags = mySystem.getAccessFlags(addr);
+    // only count really accessed addresses
+    if (flags & ~Device::ROW)
+      count[(flags & Device::HADDR) >> 13]++;
+  }
+  uInt16 max = 0, maxIdx = 0;
+  for(int idx = 0; idx < 8; ++idx)
+  {
+    if(count[idx] > max)
+    {
+      max = count[idx];
+      maxIdx = idx;
+    }
+  }
+  info.offset = maxIdx << 13 | 0x1000;
+
+  return disassemble(bank, info.offset, true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDebug::disassemble(int bank, uInt16 PC, bool force)
+{
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // Also check if the current PC is in the current list
   bool bankChanged = myConsole.cartridge().bankChanged();
-  uInt16 PC = myDebugger.cpuDebug().pc();
   int pcline = addressToLine(PC);
   bool pcfound = (pcline != -1) && (uInt32(pcline) < myDisassembly.list.size()) &&
                   (myDisassembly.list[pcline].disasm[0] != '.');
@@ -254,8 +294,9 @@ bool CartDebug::disassemble(bool force)
   if(changed)
   {
     // Are we disassembling from ROM or ZP RAM?
-    BankInfo& info = (PC & 0x1000) ? myBankInfo[getBank(PC)] :
-        myBankInfo[myBankInfo.size()-1];
+    BankInfo& info = myBankInfo[bank];
+      //(PC & 0x1000) ? myBankInfo[getBank(PC)] :
+        //myBankInfo[myBankInfo.size()-1];
 
     // If the offset has changed, all old addresses must be 'converted'
     // For example, if the list contains any $fxxx and the address space is now
@@ -1044,6 +1085,7 @@ string CartDebug::saveDisassembly()
 
   // prepare for switching banks
   myConsole.cartridge().unlockBank();
+  uInt32 origin = 0;
 
   for(int bank = 0; bank < bankCount; ++bank)
   {
@@ -1055,7 +1097,8 @@ string CartDebug::saveDisassembly()
     BankInfo& info = myBankInfo[bank];
 
     // TODO: make PageAccess ready for multi-bank ROMs
-    disassemble();
+    // TODO: define offset if still undefined
+    disassembleBank(bank);
 
     // An empty address list means that DiStella can't do a disassembly
     if(info.addressList.size() == 0)
@@ -1081,8 +1124,9 @@ string CartDebug::saveDisassembly()
     if(bankCount == 1)
       buf << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
     else
-      buf << "    ORG     $" << Base::HEX4 << ((0x0000 + bank * 0x1000) & 0xffff) << "\n"
+      buf << "    ORG     $" << Base::HEX4 << origin << "\n"
           << "    RORG    $" << Base::HEX4 << info.offset << "\n\n";
+    origin += info.size;
 
     // Format in 'distella' style
     for(uInt32 i = 0; i < disasm.list.size(); ++i)
