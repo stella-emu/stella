@@ -12,6 +12,18 @@
                               Release History
 ===========================================================================
 
+6.1 to 6.1.1: (April 4, 2020)
+
+  * Fix snapshots on Retina HiDPI displays capturing only the top-left
+    corner.
+
+  * Fixed wrong color for BK (background) swatch in the debugger.
+
+  * Fixed compilation of libretro port on Debian Buster.
+
+-Have fun!
+
+
 6.0.2 to 6.1: (March 22, 2020)
 
   * IMPORTANT NOTES:
@@ -200,8 +212,6 @@
 
   * Updated UNIX configure script to work with the gcc version 10 and
     above.
-
--Have fun!
 
 
 6.0.1 to 6.0.2: (October 11, 2019)
