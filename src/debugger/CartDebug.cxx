@@ -1576,9 +1576,7 @@ void CartDebug::AccessTypeAsString(ostream& buf, Device::AccessType type) const
     case Device::AUD:    buf << "AUD";    break;
     case Device::DATA:   buf << "DATA";   break;
     case Device::ROW:    buf << "ROW";    break;
-    case Device::REFERENCED:
-    case Device::VALID_ENTRY:
-    case Device::NONE:                    break;
+    default:                              break;
   }
 }
 
