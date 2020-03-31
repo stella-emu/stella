@@ -1082,7 +1082,7 @@ void DebuggerParser::executeDisasm()
     return;
   }
 
-  commandResult << debugger.cartDebug().disassemble(start, lines);
+  commandResult << debugger.cartDebug().disassembleLines(start, lines);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
