@@ -969,9 +969,9 @@ bool DiStella::checkBit(uInt16 address, uInt16 mask, bool useDebugger) const
   // Since they're set only in the labels array (as the lower two bits),
   // they must be included in the other bitfields
   uInt16 label = myLabels[address & myAppData.end],
-    lastbits = label & 0x03,
-    directive = myDirectives[address & myAppData.end] & ~0x03,
-    debugger = Debugger::debugger().getAccessFlags(address | myOffset) & ~0x03;
+    lastbits = label & (Device::REFERENCED | Device::VALID_ENTRY),
+    directive = myDirectives[address & myAppData.end] & ~(Device::REFERENCED | Device::VALID_ENTRY),
+    debugger = Debugger::debugger().getAccessFlags(address | myOffset) & ~(Device::REFERENCED | Device::VALID_ENTRY);
 
   // Any address marked by a manual directive always takes priority
   if (directive)

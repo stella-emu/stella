@@ -94,23 +94,16 @@ class CartDebug : public DebuggerSystem
     // Return the base (= non-mirrored) address of the last CPU write
     int lastWriteBaseAddress();
 
-    // The following two methods are meant to be used together
-    // First, a call is made to disassemble(), which updates the disassembly
-    // list; it will figure out when an actual complete disassembly is
-    // required, and when the previous results can be used
-    //
-    // Later, successive calls to disassemblyList() simply return the
-    // previous results; no disassembly is done in this case
-    /**
-      Disassemble from the given address using the Distella disassembler
-      Address-to-label mappings (and vice-versa) are also determined here
-
-      @param force  Force a re-disassembly, even if the state hasn't changed
-
-      @return  True if disassembly changed from previous call, else false
-    */
+    // TODO
     bool disassemble(bool force = false);
+    bool disassembleBank(int bank);
 
+    // First, a call is made to disassemble(), which updates the disassembly
+    // list, is required; it will figure out when an actual complete
+    // disassembly is required, and when the previous results can be used
+    //
+    // Later, successive calls to disassembly() simply return the
+    // previous results; no disassembly is done in this case
     /**
       Get the results from the most recent call to disassemble()
     */
@@ -277,6 +270,19 @@ class CartDebug : public DebuggerSystem
       bool breakFound{false};
     };
     ReservedEquates myReserved;
+
+    /**
+      Disassemble from the given address using the Distella disassembler
+      Address-to-label mappings (and vice-versa) are also determined here
+
+      @param bank   The current bank to disassemble
+      @param PC     A program counter to start with
+      @param force  Force a re-disassembly, even if the state hasn't changed
+
+      @return  True if disassembly changed from previous call, else false
+    */
+    bool disassemble(int bank, uInt16 PC, bool force = false);
+
 
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list

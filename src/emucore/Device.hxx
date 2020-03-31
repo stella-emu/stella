@@ -44,18 +44,20 @@ class Device : public Serializable
 
       // The following correspond to specific types that can be set within the
       // debugger, or specified in a Distella cfg file, and are listed in order
-      // of decreasing hierarchy
+      // of increasing hierarchy
       //
-      CODE  = 1 << 11, // 0x800, disassemble-able code segments
-      TCODE = 1 << 10, // 0x400, (tentative) disassemble-able code segments
-      GFX   = 1 << 9,  // 0x200, addresses loaded into GRPx registers
-      PGFX  = 1 << 8,  // 0x100, addresses loaded into PFx registers
-      COL   = 1 << 7,  // 0x080, addresses loaded into COLUPx registers
-      PCOL  = 1 << 6,  // 0x040, addresses loaded into COLUPF register
-      BCOL  = 1 << 5,  // 0x020, addresses loaded into COLUBK register
-      AUD   = 1 << 4,  // 0x010, addresses loaded into audio registers
-      DATA  = 1 << 3,  // 0x008, addresses loaded into registers other than GRPx / PFx / COLUxx, AUDxx
       ROW   = 1 << 2,  // 0x004, all other addresses
+      DATA  = 1 << 3,  // 0x008, addresses loaded into registers other than GRPx / PFx / COLUxx, AUDxx
+      AUD   = 1 << 4,  // 0x010, addresses loaded into audio registers
+      BCOL  = 1 << 5,  // 0x020, addresses loaded into COLUBK register
+      PCOL  = 1 << 6,  // 0x040, addresses loaded into COLUPF register
+      COL   = 1 << 7,  // 0x080, addresses loaded into COLUPx registers
+      PGFX  = 1 << 8,  // 0x100, addresses loaded into PFx registers
+      GFX   = 1 << 9,  // 0x200, addresses loaded into GRPx registers
+      TCODE = 1 << 10, // 0x400, (tentative) disassemble-able code segments
+      CODE  = 1 << 11, // 0x800, disassemble-able code segments
+      // special bits for address
+      HADDR = 1 << 13 | 1 << 14 | 1 << 15, // 0xe000, // highest 3 address bits
       // special type for poke()
       WRITE = TCODE    // 0x200, address written to
     };
