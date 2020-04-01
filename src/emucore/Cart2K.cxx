@@ -51,7 +51,7 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
     mySize = System::PAGE_SIZE;
   }
 
-  createRomAccessBase(mySize);
+  createRomAccessArrays(mySize);
 
   // Set mask for accessing the image buffer
   // This is guaranteed to work, as mySize is a power of two

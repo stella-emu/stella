@@ -530,6 +530,15 @@ class TIA : public Device
      */
     void updateEmulation();
 
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Query the access counters
+
+      @return  The access counters as comma separated string
+    */
+    string getAccessCounters() const;
+  #endif
+
   private:
     /**
      * During each line, the TIA cycles through these two states.
@@ -678,7 +687,7 @@ class TIA : public Device
     void applyDeveloperSettings();
 
   #ifdef DEBUGGER_SUPPORT
-    void createAccessBase();
+    void createAccessArrays();
 
     /**
      * Query the given address type for the associated access flags.
@@ -693,6 +702,20 @@ class TIA : public Device
      * @param flags    A bitfield of AccessType directives for the given address
      */
     void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+
+    /**
+      Query the given address for its access counter
+
+      @param address The address to query for
+    */
+    Device::AccessCounter getAccessCounter(uInt16 address) const override;
+
+    /**
+      Increase the given address's access counter
+
+      @param address The address to modify
+    */
+    void increaseAccessCounter(uInt16 address, bool isWrite) override;
   #endif // DEBUGGER_SUPPORT
 
   private:
@@ -896,12 +919,17 @@ class TIA : public Device
     uInt8 myJitterFactor{0};
 
     static constexpr uInt16
-      TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1, TIA_READ_MASK = 0x0f, TIA_BIT = 0x080, TIA_DELAY = 2;
+      TIA_SIZE = 0x40, TIA_MASK = TIA_SIZE - 1,
+      TIA_READ_SIZE = 0x10, TIA_READ_MASK = TIA_READ_SIZE - 1,
+      TIA_BIT = 0x080, TIA_DELAY = 2 * 2;
 
   #ifdef DEBUGGER_SUPPORT
     // The arrays containing information about every byte of TIA
     // indicating whether and how (RW) it is used.
     std::array<Device::AccessFlags, TIA_SIZE> myAccessBase;
+    // The arrays containing information about every byte of TIA
+    // indicating how often it is accessed (read and write).
+    std::array<Device::AccessCounter, TIA_SIZE + TIA_READ_SIZE> myAccessCounter;
 
     // The array used to skip the first two TIA access trackings
     std::array<uInt8, TIA_SIZE> myAccessDelay;

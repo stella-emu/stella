@@ -25,7 +25,7 @@ CartridgeF8::CartridgeF8(const ByteBuffer& image, size_t size,
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createRomAccessBase(myImage.size());
+  createRomAccessArrays(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

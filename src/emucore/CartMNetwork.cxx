@@ -34,7 +34,7 @@ void CartridgeMNetwork::initialize(const ByteBuffer& image, size_t size)
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min<size_t>(romSize(), size), myImage.get());
-  createRomAccessBase(romSize() + myRAM.size());
+  createRomAccessArrays(romSize() + myRAM.size());
 
   myRAMSlice = bankCount() - 1;
 }

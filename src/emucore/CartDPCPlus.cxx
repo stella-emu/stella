@@ -36,7 +36,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const ByteBuffer& image, size_t size,
   if(mySize < myImage.size())
     myImage.fill(0);
   std::copy_n(image.get(), size, myImage.begin() + (myImage.size() - mySize));
-  createRomAccessBase(24_KB);
+  createRomAccessArrays(24_KB);
 
   // Pointer to the program ROM (24K @ 3K offset; ignore first 3K)
   myProgramImage = myImage.data() + 3_KB;

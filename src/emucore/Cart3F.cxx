@@ -30,7 +30,7 @@ Cartridge3F::Cartridge3F(const ByteBuffer& image, size_t size,
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
-  createRomAccessBase(mySize);
+  createRomAccessArrays(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

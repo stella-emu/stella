@@ -35,7 +35,7 @@ CartridgeFA2::CartridgeFA2(const ByteBuffer& image, size_t size,
 
   // Copy the ROM image into my buffer
   std::copy_n(img_ptr, mySize, myImage.begin());
-  createRomAccessBase(mySize);
+  createRomAccessArrays(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

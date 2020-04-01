@@ -41,7 +41,7 @@ CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
   //
   // Instead, access will be through the getAccessFlags and setAccessFlags
   // methods below
-  createRomAccessBase(mySize);
+  createRomAccessArrays(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

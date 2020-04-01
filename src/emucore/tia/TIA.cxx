@@ -24,6 +24,7 @@
 #include "frame-manager/FrameManager.hxx"
 #include "AudioQueue.hxx"
 #include "DispatchResult.hxx"
+#include "Base.hxx"
 
 enum CollisionMask: uInt32 {
   player0   = 0b0111110000000000,
@@ -183,7 +184,7 @@ void TIA::initialize()
   enableFixedColors(mySettings.getBool(devSettings ? "dev.debugcolors" : "plr.debugcolors"));
 
 #ifdef DEBUGGER_SUPPORT
-  createAccessBase();
+  createAccessArrays();
 #endif // DEBUGGER_SUPPORT
 }
 
@@ -1950,9 +1951,10 @@ void TIA::toggleCollBLPF()
 
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::createAccessBase()
+void TIA::createAccessArrays()
 {
   myAccessBase.fill(Device::NONE);
+  myAccessCounter.fill(0);
   myAccessDelay.fill(TIA_DELAY);
 }
 
@@ -1976,5 +1978,45 @@ void TIA::setAccessFlags(uInt16 address, Device::AccessFlags flags)
     } else
       myAccessBase[address & TIA_READ_MASK] |= flags;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Device::AccessCounter TIA::getAccessCounter(uInt16 address) const
+{
+  return myAccessCounter[address & TIA_MASK];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::increaseAccessCounter(uInt16 address, bool isWrite)
+{
+  if(isWrite)
+  {
+    // the first two write accesses are assumed as initialization
+    if(myAccessDelay[address & TIA_MASK])
+      myAccessDelay[address & TIA_MASK]--;
+    else
+      myAccessCounter[address & TIA_MASK]++;
+  }
+  else
+    myAccessCounter[TIA_SIZE + (address & TIA_READ_MASK)]++;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIA::getAccessCounters() const
+{
+  ostringstream out;
+
+  out << "TIA reads:\n";
+  for(uInt16 addr = 0x00; addr < TIA_READ_SIZE; ++addr)
+    out << Common::Base::HEX4 << addr << ","
+    << Common::Base::toString(myAccessCounter[TIA_SIZE + addr], Common::Base::Fmt::_10_8) << ", ";
+  out << "\n";
+  out << "TIA writes:\n";
+  for(uInt16 addr = 0x00; addr < TIA_SIZE; ++addr)
+    out << Common::Base::HEX4 << addr << ","
+    << Common::Base::toString(myAccessCounter[addr], Common::Base::Fmt::_10_8) << ", ";
+  out << "\n";
+
+  return out.str();
 }
 #endif // DEBUGGER_SUPPORT

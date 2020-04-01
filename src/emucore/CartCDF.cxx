@@ -65,7 +65,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
 
   // even though the ROM is 32K, only 28K is accessible to the 6507
-  createRomAccessBase(28_KB);
+  createRomAccessArrays(28_KB);
 
   // Pointer to the program ROM (28K @ 0 byte offset)
   // which starts after the 2K CDF Driver and 2K C Code

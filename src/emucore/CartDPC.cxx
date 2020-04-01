@@ -27,7 +27,7 @@ CartridgeDPC::CartridgeDPC(const ByteBuffer& image, size_t size,
 {
   // Make a copy of the entire image
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createRomAccessBase(8_KB);
+  createRomAccessArrays(8_KB);
 
   // Pointer to the program ROM (8K @ 0 byte offset)
   myProgramImage = myImage.data();
