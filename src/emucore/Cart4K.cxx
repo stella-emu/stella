@@ -47,7 +47,8 @@ void Cartridge4K::install(System& system)
   {
     access.directPeekBase = &myImage[addr & 0x0FFF];
     access.romAccessBase = &myRomAccessBase[addr & 0x0FFF];
-    access.romAccessCounter = &myRomAccessCounter[addr & 0x0FFF];
+    access.romPeekCounter = &myRomAccessCounter[addr & 0x0FFF];
+    access.romPokeCounter = &myRomAccessCounter[(addr & 0x0FFF) + myImage.size()];
     mySystem->setPageAccess(addr, access);
   }
 }

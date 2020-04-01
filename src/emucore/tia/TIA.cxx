@@ -1981,12 +1981,6 @@ void TIA::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Device::AccessCounter TIA::getAccessCounter(uInt16 address) const
-{
-  return myAccessCounter[address & TIA_MASK];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::increaseAccessCounter(uInt16 address, bool isWrite)
 {
   if(isWrite)

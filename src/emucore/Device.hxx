@@ -147,13 +147,6 @@ class Device : public Serializable
     virtual void setAccessFlags(uInt16 address, AccessFlags flags) { }
 
     /**
-      Query the given address for its access counter
-
-      @param address The address to query for
-    */
-    virtual AccessCounter getAccessCounter(uInt16 address) const { return 0; }
-
-    /**
       Increase the given address's access counter
 
       @param address The address to modify

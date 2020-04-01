@@ -142,19 +142,32 @@ void Cartridge::createRomAccessArrays(size_t size)
 string Cartridge::getAccessCounters() const
 {
   ostringstream out;
+  size_t romSize;
+  uInt32 offset = 0;
+
+  getImage(romSize);
 
   for(uInt16 bank = 0; bank < bankCount(); ++bank)
   {
-    uInt32 offset = bank * bankSize();
     uInt16 origin = bankOrigin(bank);
+    uInt16 bankSize = this->bankSize(bank);
 
-    out << "Bank " << bank << " / 0.." << bankCount() - 1 << ":\n";
-    for(uInt16 addr = 0; addr < bankSize(); ++addr)
+    out << "Bank " << bank << " / 0.." << bankCount() - 1 << " reads:\n";
+    for(uInt16 addr = 0; addr < bankSize; ++addr)
     {
       out << Common::Base::HEX4 << (addr | origin) << ","
-        << Common::Base::toString(myRomAccessBase[offset + addr], Common::Base::Fmt::_10_8) << ", ";
+        << Common::Base::toString(myRomAccessCounter[offset + addr], Common::Base::Fmt::_10_8) << ", ";
     }
     out << "\n";
+    out << "Bank " << bank << " / 0.." << bankCount() - 1 << " writes:\n";
+    for(uInt16 addr = 0; addr < bankSize; ++addr)
+    {
+      out << Common::Base::HEX4 << (addr | origin) << ","
+        << Common::Base::toString(myRomAccessCounter[offset + addr + romSize], Common::Base::Fmt::_10_8) << ", ";
+    }
+    out << "\n";
+
+    offset += bankSize;
   }
 
   return out.str();
@@ -165,20 +178,30 @@ uInt16 Cartridge::bankOrigin(uInt16 bank) const
 {
   // isolate the high 3 address bits, count them and
   // select the most frequent to define the bank origin
-  std::array<uInt16, 8> count;
+  const int intervals = 0x8000 / 0x100;
   uInt32 offset = bank * bankSize();
+  //uInt16 addrMask = (4_KB - 1) & ~(bankSize(bank) - 1);
+  //int addrShift = 0;
+  std::array<uInt16, intervals> count; // up to 128 256 byte interval origins
+
+
+  //if(addrMask)
+  //  addrShift = log(addrMask) / log(2);
+  //addrMask;
 
   count.fill(0);
-
   for(uInt16 addr = 0x0000; addr < bankSize(bank); ++addr)
   {
     Device::AccessFlags flags = myRomAccessBase[offset + addr];
     // only count really accessed addresses
-    if (flags & ~Device::ROW)
+    if(flags & ~Device::ROW)
+    {
+      //uInt16 addrBit = addr >> addrShift;
       count[(flags & Device::HADDR) >> 13]++;
+    }
   }
   uInt16 max = 0, maxIdx = 0;
-  for(int idx = 0; idx < 8; ++idx)
+  for(int idx = 0; idx < intervals; ++idx)
   {
     if(count[idx] > max)
     {
@@ -186,7 +209,7 @@ uInt16 Cartridge::bankOrigin(uInt16 bank) const
       maxIdx = idx;
     }
   }
-  return maxIdx << 13 | 0x1000;
+  return maxIdx << 13 | 0x1000 | (offset & 0xfff);
 }
 #endif
 

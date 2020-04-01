@@ -241,13 +241,6 @@ class System : public Serializable
     void setAccessFlags(uInt16 address, Device::AccessFlags flags);
 
     /**
-      Query the given address for its access counter
-
-      @param address The address to query for
-    */
-    Device::AccessCounter getAccessCounter(uInt16 address) const;
-
-    /**
       Increase the given address's access counter
 
       @param address The address to modify
@@ -302,7 +295,12 @@ class System : public Serializable
       /**
         TODO
       */
-      Device::AccessCounter* romAccessCounter{nullptr};
+      Device::AccessCounter* romPeekCounter{nullptr};
+
+      /**
+        TODO
+      */
+      Device::AccessCounter* romPokeCounter{nullptr};
 
       /**
         Pointer to the device associated with this page or to the system's

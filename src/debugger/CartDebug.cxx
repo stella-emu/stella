@@ -1347,7 +1347,7 @@ string CartDebug::saveRom()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveAccessFile()
 {
-  const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".cvs";
+  const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".csv";
   FilesystemNode node(myOSystem.defaultSaveDir() + rom);
   ofstream out(node.getPath());
 
