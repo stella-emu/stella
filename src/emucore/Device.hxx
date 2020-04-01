@@ -158,7 +158,7 @@ class Device : public Serializable
 
       @return  The access counters as comma separated string
     */
-    virtual string getAccessCounters() const { return ""; };
+    virtual string getAccessCounters() const { return ""; }
   #endif
 
   protected:
