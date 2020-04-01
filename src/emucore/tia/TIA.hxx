@@ -704,13 +704,6 @@ class TIA : public Device
     void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
 
     /**
-      Query the given address for its access counter
-
-      @param address The address to query for
-    */
-    Device::AccessCounter getAccessCounter(uInt16 address) const override;
-
-    /**
       Increase the given address's access counter
 
       @param address The address to modify
