@@ -239,6 +239,20 @@ class System : public Serializable
     */
     Device::AccessFlags getAccessFlags(uInt16 address) const;
     void setAccessFlags(uInt16 address, Device::AccessFlags flags);
+
+    /**
+      Query the given address for its access counter
+
+      @param address The address to query for
+    */
+    Device::AccessCounter getAccessCounter(uInt16 address) const;
+
+    /**
+      Increase the given address's access counter
+
+      @param address The address to modify
+    */
+    void increaseAccessCounter(uInt16 address, bool isWrite);
   #endif
 
   public:
@@ -284,6 +298,11 @@ class System : public Serializable
         address sections accordingly.
       */
       Device::AccessFlags* romAccessBase{nullptr};
+
+      /**
+        TODO
+      */
+      Device::AccessCounter* romAccessCounter{nullptr};
 
       /**
         Pointer to the device associated with this page or to the system's

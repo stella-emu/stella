@@ -37,7 +37,7 @@ CartridgeWD::CartridgeWD(const ByteBuffer& image, size_t size,
   }
   else
     std::copy_n(image.get(), mySize, myImage.begin());
-  createRomAccessBase(8_KB);
+  createRomAccessArrays(8_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

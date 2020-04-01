@@ -20,6 +20,7 @@
 #include "MD5.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
+  #include "Base.hxx"
 #endif
 
 #include "Cart.hxx"
@@ -76,6 +77,16 @@ bool Cartridge::bankChanged()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 Cartridge::bankSize(uInt16 bank) const
+{
+  size_t size;
+
+  getImage(size);
+
+  return std::min(uInt32(size) / bankCount(), 4_KB); // assuming that each bank has the same size
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge::peekRAM(uInt8& dest, uInt16 address)
 {
   uInt8 value = myRWPRandomValues[address & 0xFF];
@@ -113,15 +124,71 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::createRomAccessBase(size_t size)
+void Cartridge::createRomAccessArrays(size_t size)
 {
 #ifdef DEBUGGER_SUPPORT
   myRomAccessBase = make_unique<Device::AccessFlags[]>(size);
   std::fill_n(myRomAccessBase.get(), size, Device::ROW);
+  myRomAccessCounter = make_unique<Device::AccessCounter[]>(size * 2);
+  std::fill_n(myRomAccessCounter.get(), size * 2, 0);
 #else
   myRomAccessBase = nullptr;
+  myRomAccessCounter = nullptr;
 #endif
 }
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge::getAccessCounters() const
+{
+  ostringstream out;
+
+  for(uInt16 bank = 0; bank < bankCount(); ++bank)
+  {
+    uInt32 offset = bank * bankSize();
+    uInt16 origin = bankOrigin(bank);
+
+    out << "Bank " << bank << " / 0.." << bankCount() - 1 << ":\n";
+    for(uInt16 addr = 0; addr < bankSize(); ++addr)
+    {
+      out << Common::Base::HEX4 << (addr | origin) << ","
+        << Common::Base::toString(myRomAccessBase[offset + addr], Common::Base::Fmt::_10_8) << ", ";
+    }
+    out << "\n";
+  }
+
+  return out.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 Cartridge::bankOrigin(uInt16 bank) const
+{
+  // isolate the high 3 address bits, count them and
+  // select the most frequent to define the bank origin
+  std::array<uInt16, 8> count;
+  uInt32 offset = bank * bankSize();
+
+  count.fill(0);
+
+  for(uInt16 addr = 0x0000; addr < bankSize(bank); ++addr)
+  {
+    Device::AccessFlags flags = myRomAccessBase[offset + addr];
+    // only count really accessed addresses
+    if (flags & ~Device::ROW)
+      count[(flags & Device::HADDR) >> 13]++;
+  }
+  uInt16 max = 0, maxIdx = 0;
+  for(int idx = 0; idx < 8; ++idx)
+  {
+    if(count[idx] > max)
+    {
+      max = count[idx];
+      maxIdx = idx;
+    }
+  }
+  return maxIdx << 13 | 0x1000;
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge::initializeRAM(uInt8* arr, size_t size, uInt8 val) const

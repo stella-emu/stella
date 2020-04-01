@@ -34,6 +34,8 @@
 #include "Base.hxx"
 #include "Device.hxx"
 #include "exception/EmulationWarning.hxx"
+#include "TIA.hxx"
+#include "M6532.hxx"
 
 using Common::Base;
 using std::hex;
@@ -69,16 +71,12 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   }
 
   // Create bank information for each potential bank, and an extra one for ZP RAM
-  // Banksizes greater than 4096 indicate multi-bank ROMs, but we handle only
-  // 4K pieces at a time
-  // Banksizes less than 4K use the actual value
-  size_t banksize = 0;
-  myConsole.cartridge().getImage(banksize);
-
   BankInfo info;
-  info.size = std::min<size_t>(banksize, 4_KB);
   for(uInt32 i = 0; i < myConsole.cartridge().bankCount(); ++i)
+  {
+    info.size = myConsole.cartridge().bankSize(i);
     myBankInfo.push_back(info);
+  }
 
   info.size = 128;  // ZP RAM
   myBankInfo.push_back(info);
@@ -248,31 +246,9 @@ bool CartDebug::disassemble(bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::disassembleBank(int bank)
 {
-  // isolate the high 3 address bits, count them and
-  // select the most frequent to define the bank offset
   BankInfo& info = myBankInfo[bank];
-  uInt16 count[8];
 
-  for(int i = 0; i < 8; ++i)
-    count[i] = 0;
-
-  for(uInt32 addr = 0x1000; addr < 0x1000 + info.size; ++addr)
-  {
-    Device::AccessFlags flags = mySystem.getAccessFlags(addr);
-    // only count really accessed addresses
-    if (flags & ~Device::ROW)
-      count[(flags & Device::HADDR) >> 13]++;
-  }
-  uInt16 max = 0, maxIdx = 0;
-  for(int idx = 0; idx < 8; ++idx)
-  {
-    if(count[idx] > max)
-    {
-      max = count[idx];
-      maxIdx = idx;
-    }
-  }
-  info.offset = maxIdx << 13 | 0x1000;
+  info.offset = myConsole.cartridge().bankOrigin(bank);
 
   return disassemble(bank, info.offset, true);
 }
@@ -1366,6 +1342,24 @@ string CartDebug::saveRom()
     return "saved ROM as " + node.getShortPath();
   else
     return DebuggerParser::red("failed to save ROM");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::saveAccessFile()
+{
+  const string& rom = myConsole.properties().get(PropType::Cart_Name) + ".cvs";
+  FilesystemNode node(myOSystem.defaultSaveDir() + rom);
+  ofstream out(node.getPath());
+
+  if(out)
+  {
+    out << myConsole.tia().getAccessCounters();
+    out << myConsole.riot().getAccessCounters();
+    out << myConsole.cartridge().getAccessCounters();
+    return "saved access counters as " + node.getShortPath();
+  }
+  else
+    return DebuggerParser::red("failed to save access counters file");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

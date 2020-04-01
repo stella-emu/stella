@@ -40,7 +40,7 @@ CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
     // Copy the RAM image into a buffer for use in reset()
     std::copy_n(image.get(), myInitialRAM.size(), myInitialRAM.begin());
   }
-  createRomAccessBase(myImage.size() + myRAM.size());
+  createRomAccessArrays(myImage.size() + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

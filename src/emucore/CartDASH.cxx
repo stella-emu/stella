@@ -30,7 +30,7 @@ CartridgeDASH::CartridgeDASH(const ByteBuffer& image, size_t size,
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
-  createRomAccessBase(mySize + myRAM.size());
+  createRomAccessArrays(mySize + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -63,6 +63,8 @@ class Device : public Serializable
     };
     using AccessFlags = uInt16;
 
+    using AccessCounter = uInt32;
+
   public:
     Device() = default;
     virtual ~Device() = default;
@@ -128,6 +130,7 @@ class Device : public Serializable
     */
     virtual bool poke(uInt16 address, uInt8 value) { return false; }
 
+  #ifdef DEBUGGER_SUPPORT
     /**
       Query the given address for its access flags
 
@@ -142,6 +145,28 @@ class Device : public Serializable
       @param flags   A bitfield of AccessType directives for the given address
     */
     virtual void setAccessFlags(uInt16 address, AccessFlags flags) { }
+
+    /**
+      Query the given address for its access counter
+
+      @param address The address to query for
+    */
+    virtual AccessCounter getAccessCounter(uInt16 address) const { return 0; }
+
+    /**
+      Increase the given address's access counter
+
+      @param address The address to modify
+    */
+    virtual void increaseAccessCounter(uInt16 address, bool isWrite = false) { }
+
+    /**
+      Query the access counters
+
+      @return  The access counters as comma separated string
+    */
+    virtual string getAccessCounters() const { return ""; };
+  #endif
 
   protected:
     /// Pointer to the system the device is installed in or the null pointer

@@ -210,6 +210,11 @@ class CartDebug : public DebuggerSystem
     string saveRom();
 
     /**
+      Save access counters file
+    */
+    string saveAccessFile();
+
+    /**
       Show Distella directives (both set by the user and determined by Distella)
       for the given bank (or all banks, if no bank is specified).
     */

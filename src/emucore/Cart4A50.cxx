@@ -41,7 +41,7 @@ Cartridge4A50::Cartridge4A50(const ByteBuffer& image, size_t size,
   //
   // Instead, access will be through the getAccessFlags and setAccessFlags
   // methods below
-  createRomAccessBase(myImage.size() + myRAM.size());
+  createRomAccessArrays(myImage.size() + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -678,7 +678,6 @@ string DebuggerParser::saveScriptFile(string file)
   return "saved " + node.getShortPath() + " OK";
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerParser::executeDirective(Device::AccessType type)
 {
@@ -1811,6 +1810,13 @@ void DebuggerParser::executeSave()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "saveaccess"
+void DebuggerParser::executeSaveAccess()
+{
+  commandResult << debugger.cartDebug().saveAccessFile();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "saveconfig"
 void DebuggerParser::executeSaveconfig()
 {
@@ -2277,7 +2283,7 @@ void DebuggerParser::executeZ()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // List of all commands available to the parser
-std::array<DebuggerParser::Command, 99> DebuggerParser::commands = { {
+std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
   {
     "a",
     "Set Accumulator to <value>",
@@ -2996,6 +3002,16 @@ std::array<DebuggerParser::Command, 99> DebuggerParser::commands = { {
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSave)
+  },
+
+  {
+    "saveaccess",
+    "Save the access counters to CSV file",
+    "Example: saveaccess (no parameters)",
+      false,
+      false,
+    { Parameters::ARG_END_ARGS },
+      std::mem_fn(&DebuggerParser::executeSaveAccess)
   },
 
   {
