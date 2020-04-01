@@ -110,11 +110,13 @@ uInt8 System::peek(uInt16 addr, Device::AccessFlags flags)
   else
     access.device->setAccessFlags(addr, flags);
   // Increase access counter
-  if (flags != Device::NONE)
+  if(flags != Device::NONE)
+  {
     if(access.romPeekCounter)
       *(access.romPeekCounter + (addr & PAGE_MASK)) += 1;
     else
       access.device->increaseAccessCounter(addr);
+  }
 #endif
 
   // See if this page uses direct accessing or not
@@ -145,11 +147,13 @@ void System::poke(uInt16 addr, uInt8 value, Device::AccessFlags flags)
   else
     access.device->setAccessFlags(addr, flags);
   // Increase access counter
-  if (flags != Device::NONE)
+  if(flags != Device::NONE)
+  {
     if(access.romPokeCounter)
       *(access.romPokeCounter + (addr & PAGE_MASK)) += 1;
     else
       access.device->increaseAccessCounter(addr, true);
+  }
 #endif
 
   // See if this page uses direct accessing or not
