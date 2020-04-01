@@ -536,7 +536,7 @@ class TIA : public Device
 
       @return  The access counters as comma separated string
     */
-    string getAccessCounters() const;
+    string getAccessCounters() const override;
   #endif
 
   private:

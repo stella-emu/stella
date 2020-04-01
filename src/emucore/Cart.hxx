@@ -148,7 +148,7 @@ class Cartridge : public Device
     /**
       Determine the bank's origin
 
-      @param   The bank to query
+      @param bank  The bank to query
       @return  The origin of the bank
     */
     uInt16 bankOrigin(uInt16 bank) const;
