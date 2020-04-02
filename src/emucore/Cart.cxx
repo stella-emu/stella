@@ -180,6 +180,7 @@ uInt16 Cartridge::bankOrigin(uInt16 bank) const
 {
   // isolate the high 3 address bits, count them and
   // select the most frequent to define the bank origin
+  // TODO: origin for banks smaller than 4K
   const int intervals = 0x8000 / 0x100;
   uInt32 offset = bank * bankSize();
   //uInt16 addrMask = (4_KB - 1) & ~(bankSize(bank) - 1);
@@ -211,7 +212,7 @@ uInt16 Cartridge::bankOrigin(uInt16 bank) const
       maxIdx = idx;
     }
   }
-  return maxIdx << 13 | 0x1000 | (offset & 0xfff);
+  return maxIdx << 13 | 0x1000; //| (offset & 0xfff);
 }
 #endif
 
