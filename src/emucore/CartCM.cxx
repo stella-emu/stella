@@ -120,6 +120,8 @@ bool CartridgeCM::bank(uInt16 bank)
   {
     access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myImage.size()];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -132,11 +134,15 @@ bool CartridgeCM::bank(uInt16 bank)
     {
       access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
       access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
+      access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
+      access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myImage.size()];
     }
     else
     {
       access.directPeekBase = &myRAM[addr & 0x7FF];
       access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x07FF)];
+      access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x07FF)];
+      access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x07FF) + myImage.size()];
     }
 
     if((mySWCHA & 0x30) == 0x20)
