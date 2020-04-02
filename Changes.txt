@@ -14,10 +14,15 @@
 
 6.1 to 6.1.1: (April 4, 2020)
 
+  * Fixed crash in 3E bankswitching scheme when writing to ROM addresses.
+
   * Fix snapshots on Retina HiDPI displays capturing only the top-left
     corner.
 
   * Fixed wrong color for BK (background) swatch in the debugger.
+
+  * Fixed 'Right Diff' button in Command menu changing left difficulty
+    instead.
 
   * Fixed compilation of libretro port on Debian Buster.
 
