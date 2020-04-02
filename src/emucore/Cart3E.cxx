@@ -115,6 +115,9 @@ bool Cartridge3E::poke(uInt16 address, uInt8 value)
   }
   else
   {
+    if (myCurrentBank < 256)
+      return false;
+
     if(address & 0x0400)
     {
       pokeRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)], pokeAddress, value);
