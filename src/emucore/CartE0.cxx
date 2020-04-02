@@ -63,7 +63,7 @@ void CartridgeE0::install(System& system)
     access.directPeekBase = &myImage[0x1C00 + (addr & 0x03FF)];
     access.romAccessBase = &myRomAccessBase[0x1C00 + (addr & 0x03FF)];
     access.romPeekCounter = &myRomAccessCounter[0x1C00 + (addr & 0x03FF)];
-    access.romPokeCounter = &myRomAccessCounter[0x1C00 + (addr & 0x03FF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[0x1C00 + (addr & 0x03FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -71,7 +71,7 @@ void CartridgeE0::install(System& system)
   access.directPeekBase = nullptr;
   access.romAccessBase = &myRomAccessBase[0x1FC0]; // TJ: is this the correct address (or 0x1FE0)?
   access.romPeekCounter = &myRomAccessCounter[0x1FC0];
-  access.romPokeCounter = &myRomAccessCounter[0x1FC0 + myImage.size()];
+  access.romPokeCounter = &myRomAccessCounter[0x1FC0 + myAccessSize];
   access.type = System::PageAccessType::READ;
   for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;
       addr += System::PAGE_SIZE)
@@ -150,7 +150,7 @@ void CartridgeE0::segmentZero(uInt16 slice)
     access.directPeekBase = &myImage[offset + (addr & 0x03FF)];
     access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
     access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
-    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   myBankChanged = true;
@@ -173,7 +173,7 @@ void CartridgeE0::segmentOne(uInt16 slice)
     access.directPeekBase = &myImage[offset + (addr & 0x03FF)];
     access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
     access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
-    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   myBankChanged = true;
@@ -196,7 +196,7 @@ void CartridgeE0::segmentTwo(uInt16 slice)
     access.directPeekBase = &myImage[offset + (addr & 0x03FF)];
     access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
     access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
-    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   myBankChanged = true;

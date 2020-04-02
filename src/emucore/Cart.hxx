@@ -357,6 +357,9 @@ class Cartridge : public Device
     // Contains address of illegal RAM write access or 0
     uInt16 myRamWriteAccess{0};
 
+    // Total size of ROM access area (might include RAM too)
+    uInt32 myAccessSize;
+
   private:
     // The startup bank to use (where to look for the reset vector address)
     uInt16 myStartBank{0};

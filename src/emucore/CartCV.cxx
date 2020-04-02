@@ -69,6 +69,8 @@ void CartridgeCV::install(System& system)
   {
     access.directPeekBase = &myImage[addr & 0x07FF];
     access.romAccessBase = &myRomAccessBase[addr & 0x07FF];
+    access.romPeekCounter = &myRomAccessCounter[addr & 0x07FF];
+    access.romPokeCounter = &myRomAccessCounter[(addr & 0x07FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -88,6 +90,8 @@ void CartridgeCV::install(System& system)
   {
     access.directPeekBase = &myRAM[addr & 0x03FF];
     access.romAccessBase = &myRomAccessBase[2048 + (addr & 0x03FF)];
+    access.romPeekCounter = &myRomAccessCounter[2048 + (addr & 0x03FF)];
+    access.romPokeCounter = &myRomAccessCounter[2048 + (addr & 0x03FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 }

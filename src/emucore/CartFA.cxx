@@ -53,7 +53,7 @@ void CartridgeFA::install(System& system)
   {
     access.romAccessBase = &myRomAccessBase[addr & 0x00FF];
     access.romPeekCounter = &myRomAccessCounter[addr & 0x00FF];
-    access.romPokeCounter = &myRomAccessCounter[(addr & 0x00FF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[(addr & 0x00FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -64,7 +64,7 @@ void CartridgeFA::install(System& system)
     access.directPeekBase = &myRAM[addr & 0x00FF];
     access.romAccessBase = &myRomAccessBase[0x100 + (addr & 0x00FF)];
     access.romPeekCounter = &myRomAccessCounter[0x100 + (addr & 0x00FF)];
-    access.romPokeCounter = &myRomAccessCounter[0x100 + (addr & 0x00FF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[0x100 + (addr & 0x00FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -163,7 +163,7 @@ bool CartridgeFA::bank(uInt16 bank)
   {
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -174,7 +174,7 @@ bool CartridgeFA::bank(uInt16 bank)
     access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

@@ -375,7 +375,7 @@ bool CartridgeDPC::bank(uInt16 bank)
   {
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -386,7 +386,7 @@ bool CartridgeDPC::bank(uInt16 bank)
     access.directPeekBase = &myProgramImage[myBankOffset + (addr & 0x0FFF)];
     access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
     access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

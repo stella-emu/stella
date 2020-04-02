@@ -126,6 +126,7 @@ void Cartridge::pokeRAM(uInt8& dest, uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge::createRomAccessArrays(size_t size)
 {
+  myAccessSize = uInt32(size);
 #ifdef DEBUGGER_SUPPORT
   myRomAccessBase = make_unique<Device::AccessFlags[]>(size);
   std::fill_n(myRomAccessBase.get(), size, Device::ROW);
@@ -142,10 +143,7 @@ void Cartridge::createRomAccessArrays(size_t size)
 string Cartridge::getAccessCounters() const
 {
   ostringstream out;
-  size_t romSize;
   uInt32 offset = 0;
-
-  getImage(romSize);
 
   for(uInt16 bank = 0; bank < bankCount(); ++bank)
   {
@@ -165,7 +163,7 @@ string Cartridge::getAccessCounters() const
     for(uInt16 addr = 0; addr < bankSize; ++addr)
     {
       out << Common::Base::HEX4 << (addr | origin) << ","
-        << Common::Base::toString(myRomAccessCounter[offset + addr + romSize], Common::Base::Fmt::_10_8) << ", ";
+        << Common::Base::toString(myRomAccessCounter[offset + addr + myAccessSize], Common::Base::Fmt::_10_8) << ", ";
     }
     out << "\n";
 
