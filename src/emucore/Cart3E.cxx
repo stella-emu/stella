@@ -115,17 +115,14 @@ bool Cartridge3E::poke(uInt16 address, uInt8 value)
   }
   else
   {
-    if (myCurrentBank < 256)
-      return false;
-
-    if(address & 0x0400)
+    if(address & 0x0400 && myCurrentBank >= 256)
     {
       pokeRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)], pokeAddress, value);
       return true;
     }
     else
     {
-      // Writing to the read port should be ignored, but trigger a break if option enabled
+      // Writing to the read port or to ROM should be ignored, but trigger a break if option enabled
       uInt8 dummy;
 
       pokeRAM(dummy, pokeAddress, value);
