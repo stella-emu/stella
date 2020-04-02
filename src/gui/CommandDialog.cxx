@@ -65,7 +65,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   wid.push_back(myColorButton);
   myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
   wid.push_back(myLeftDiffButton);
-  myRightDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
+  myRightDiffButton = ADD_CD_BUTTON("", kRightDiffCmd);
   wid.push_back(myRightDiffButton);
 
   // Column 2
