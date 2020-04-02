@@ -59,7 +59,7 @@ void Cartridge3F::install(System& system)
     access.directPeekBase = &myImage[(mySize - 2048) + (addr & 0x07FF)];
     access.romAccessBase = &myRomAccessBase[(mySize - 2048) + (addr & 0x07FF)];
     access.romPeekCounter = &myRomAccessCounter[(mySize - 2048) + (addr & 0x07FF)];
-    access.romPokeCounter = &myRomAccessCounter[(mySize - 2048) + (addr & 0x07FF) + mySize];
+    access.romPokeCounter = &myRomAccessCounter[(mySize - 2048) + (addr & 0x07FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -121,7 +121,7 @@ bool Cartridge3F::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (addr & 0x07FF)];
     access.romAccessBase = &myRomAccessBase[offset + (addr & 0x07FF)];
     access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x07FF)];
-    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x07FF) + mySize];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x07FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

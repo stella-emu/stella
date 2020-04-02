@@ -117,7 +117,7 @@ bool CartridgeX07::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (addr & 0x0FFF)];
     access.romAccessBase = &myRomAccessBase[offset + (addr & 0x0FFF)];
     access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x0FFF) + myImage.size()];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

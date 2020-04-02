@@ -71,6 +71,8 @@ void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
     else if(type == System::PageAccessType::WRITE)  // all RAM writes mapped to ::poke()
       access.directPokeBase = nullptr;
     access.romAccessBase = &myRomAccessBase[codeOffset + (addr & addrMask)];
+    access.romPeekCounter = &myRomAccessCounter[codeOffset + (addr & addrMask)];
+    access.romPokeCounter = &myRomAccessCounter[codeOffset + (addr & addrMask) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 }
@@ -87,6 +89,8 @@ void CartridgeMNetwork::install(System& system)
       addr += System::PAGE_SIZE)
   {
     access.romAccessBase = &myRomAccessBase[0x1fc0];
+    access.romPeekCounter = &myRomAccessCounter[0x1fc0];
+    access.romPokeCounter = &myRomAccessCounter[0x1fc0 + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   /*setAccess(0x1FE0 & ~System::PAGE_MASK, System::PAGE_SIZE,

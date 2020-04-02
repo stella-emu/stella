@@ -78,7 +78,7 @@ void Cartridge2K::install(System& system)
     access.directPeekBase = &myImage[addr & myMask];
     access.romAccessBase = &myRomAccessBase[addr & myMask];
     access.romPeekCounter = &myRomAccessCounter[addr & myMask];
-    access.romPokeCounter = &myRomAccessCounter[(addr & myMask) + mySize];
+    access.romPokeCounter = &myRomAccessCounter[(addr & myMask) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 }
