@@ -885,15 +885,15 @@ define(M6502_RRA, `{
 
 define(M6502_RTI, `{
   peek(0x0100 + SP++, DISASM_NONE);
-  PS(peek(0x0100 + SP++, DISASM_NONE));
-  PC = peek(0x0100 + SP++, DISASM_NONE);
-  PC |= (uInt16(peek(0x0100 + SP, DISASM_NONE)) << 8);
+  PS(peek(0x0100 + SP++, DISASM_DATA));
+  PC = peek(0x0100 + SP++, DISASM_DATA);
+  PC |= (uInt16(peek(0x0100 + SP, DISASM_DATA)) << 8);
 }')
 
 define(M6502_RTS, `{
   peek(0x0100 + SP++, DISASM_NONE);
-  PC = peek(0x0100 + SP++, DISASM_NONE);
-  PC |= (uInt16(peek(0x0100 + SP, DISASM_NONE)) << 8);
+  PC = peek(0x0100 + SP++, DISASM_DATA);
+  PC |= (uInt16(peek(0x0100 + SP, DISASM_DATA)) << 8);
   peek(PC++, DISASM_NONE);
 }')
 

@@ -501,15 +501,15 @@ void M6532::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 void M6532::increaseAccessCounter(uInt16 address, bool isWrite)
 {
   if (address & IO_BIT)
-    myIOAccessCounter[isWrite ? 0 : IO_SIZE + (address & IO_MASK)]++;
+    myIOAccessCounter[(isWrite ? IO_SIZE : 0) + (address & IO_MASK)]++;
   else {
     // the first access, either by direct RAM or stack access is assumed as initialization
     if (myZPAccessDelay[address & RAM_MASK])
       myZPAccessDelay[address & RAM_MASK]--;
     else if (address & STACK_BIT)
-      myStackAccessCounter[isWrite ? 0 : STACK_SIZE + (address & STACK_MASK)]++;
+      myStackAccessCounter[(isWrite ? STACK_SIZE : 0) + (address & STACK_MASK)]++;
     else
-      myRAMAccessCounter[isWrite ? 0 : RAM_SIZE + (address & RAM_MASK)]++;
+      myRAMAccessCounter[(isWrite ? RAM_SIZE : 0) + (address & RAM_MASK)]++;
   }
 }
 
