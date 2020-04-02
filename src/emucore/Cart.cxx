@@ -152,14 +152,16 @@ string Cartridge::getAccessCounters() const
     uInt16 origin = bankOrigin(bank);
     uInt16 bankSize = this->bankSize(bank);
 
-    out << "Bank " << bank << " / 0.." << bankCount() - 1 << " reads:\n";
+    out << "Bank " << Common::Base::toString(bank, Common::Base::Fmt::_10_8) << " / 0.."
+      << Common::Base::toString(bankCount() - 1, Common::Base::Fmt::_10_8) << " reads:\n";
     for(uInt16 addr = 0; addr < bankSize; ++addr)
     {
       out << Common::Base::HEX4 << (addr | origin) << ","
         << Common::Base::toString(myRomAccessCounter[offset + addr], Common::Base::Fmt::_10_8) << ", ";
     }
     out << "\n";
-    out << "Bank " << bank << " / 0.." << bankCount() - 1 << " writes:\n";
+    out << "Bank " << Common::Base::toString(bank, Common::Base::Fmt::_10_8) << " / 0.."
+      << Common::Base::toString(bankCount() - 1, Common::Base::Fmt::_10_8) << " writes:\n";
     for(uInt16 addr = 0; addr < bankSize; ++addr)
     {
       out << Common::Base::HEX4 << (addr | origin) << ","
