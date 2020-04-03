@@ -1,0 +1,121 @@
+--- Symbol List (sorted by symbol)
+0.FREE_BYTES             0000                  
+1.CLEAR_STACK            f109              (R )
+__DASM__TOTAL_FREE_MEMORY 0000                  
+AUDC0                    0015                  
+AUDC1                    0016                  
+AUDF0                    0017                  
+AUDF1                    0018                  
+AUDV0                    0019                  
+AUDV1                    001a                  
+Bank1_Sub                f103              (R )
+Call_1                   ffe0              (R )
+COLUBK                   0009                  
+COLUP0                   0006                  
+COLUP1                   0007                  
+COLUPF                   0008              (R )
+Con_Color                0008                  
+Con_Select               0002                  
+Con_Start                0001                  
+CTRLPF                   000a                  
+CXBLPF                   0036                  
+CXCLR                    002c                  
+CXM0FB                   0034                  
+CXM0P                    0030                  
+CXM1FB                   0035                  
+CXM1P                    0031                  
+CXP0FB                   0032                  
+CXP1FB                   0033                  
+CXPPMM                   0037                  
+ENABL                    001f                  
+ENAM0                    001d                  
+ENAM1                    001e                  
+GRP0                     001b                  
+GRP1                     001c                  
+HMBL                     0024                  
+HMCLR                    002b                  
+HMM0                     0022                  
+HMM1                     0023                  
+HMOVE                    002a                  
+HMP0                     0020                  
+HMP1                     0021                  
+Init_1                   f100              (R )
+INPT0                    0038                  
+INPT1                    0039                  
+INPT2                    003a                  
+INPT3                    003b                  
+INPT4                    003c                  
+INPT5                    003d                  
+INTIM                    0284                  
+J0_Down                  0020                  
+J0_Left                  0040                  
+J0_Right                 0080                  
+J0_Up                    0010                  
+J1_Down                  0002                  
+J1_Left                  0004                  
+J1_Right                 0008                  
+J1_up                    0001                  
+M_Double                 0010                  
+M_Enable                 0002                  
+M_Oct                    0040                  
+M_Quad                   0020                  
+M_Single                 0000                  
+NUSIZ0                   0004                  
+NUSIZ1                   0005                  
+Over                     f13a              (R )
+P0_Diff                  0080                  
+P1_Diff                  0040                  
+P_Double                 0005                  
+P_Quad                   0007                  
+P_Reflect                0008                  
+P_Single                 0000                  
+P_ThreeClose             0003                  
+P_ThreeMedium            0006                  
+P_TwoClose               0001                  
+P_TwoFar                 0004                  
+P_TwoMedium              0002                  
+PF0                      000d                  
+PF1                      000e              (R )
+PF2                      000f                  
+PF_Color_Read            1080              (R )
+PF_Color_Write           1000              (R )
+PF_Priority              0004                  
+PF_Reflect               0001                  
+PF_Score                 0002                  
+Pic                      f12f              (R )
+REFP0                    000b                  
+REFP1                    000c                  
+RESBL                    0014                  
+RESM0                    0012                  
+RESM1                    0013                  
+RESMP0                   0028                  
+RESMP1                   0029                  
+RESP0                    0010                  
+RESP1                    0011                  
+RSYNC                    0003                  
+Start_0                  f100              (R )
+StartFrame               f112              (R )
+SWACNT                   0281                  
+SWBCNT                   0283                  
+SWCHA                    0280                  
+SWCHB                    0282                  
+TIM1024T                 0297                  
+TIM1T                    0294                  
+TIM64T                   0296                  
+TIM8T                    0295                  
+VB_Disable               0000                  
+VB_DumpPots              0080                  
+VB_Enable                0002                  
+VB_LatchDisable          0000                  
+VB_LatchEnable           0040                  
+VBLANK                   0001              (R )
+VDEL01                   0026                  
+VDELBL                   0027                  
+VDELP0                   0025                  
+VDELP1                   0026                  
+VERSION_MACRO            006a                  
+Vert                     f124              (R )
+VS_Enable                0002                  
+VSYNC                    0000              (R )
+WSYNC                    0002              (R )
+--- End of Symbol List.

@@ -156,32 +156,18 @@ class CartridgeE0 : public Cartridge
 
   private:
     /**
-      Install the specified slice for segment zero
+      Install the specified slice for segment (bank) 0..2
 
       @param slice The slice to map into the segment
     */
-    void segmentZero(uInt16 slice);
-
-    /**
-      Install the specified slice for segment one
-
-      @param slice The slice to map into the segment
-    */
-    void segmentOne(uInt16 slice);
-
-    /**
-      Install the specified slice for segment two
-
-      @param slice The slice to map into the segment
-    */
-    void segmentTwo(uInt16 slice);
+    void bank(uInt16 bank, uInt16 slice);
 
   private:
     // The 8K ROM image of the cartridge
     std::array<uInt8, 8_KB> myImage;
 
     // Indicates the slice mapped into each of the four segments
-    std::array<uInt16, 4> myCurrentSlice;
+    std::array<uInt16, 4> myCurrentBank;
 
   private:
     // Following constructors and assignment operators not supported
