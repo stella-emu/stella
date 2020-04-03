@@ -1,0 +1,259 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2020 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//============================================================================
+
+#include "System.hxx"
+#include "CartEnhanced.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
+                         const string& md5, const Settings& settings)
+  : Cartridge(settings, md5),
+    mySize(size)
+{
+  // Allocate array for the ROM image
+  myImage = make_unique<uInt8[]>(mySize);
+
+  // Copy the ROM image into my buffer
+  std::copy_n(image.get(), mySize, myImage.get());
+
+  // Copy the ROM image into my buffer
+  createRomAccessArrays(mySize);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEnhanced::install(System& system)
+{
+  // Allocate array for the current bank segments slices
+  myCurrentBankOffset = make_unique<uInt16[]>(BANK_SEGS);
+  std::fill_n(myCurrentBankOffset.get(), BANK_SEGS, 0);
+
+  // Allocate array for the RAM area
+  myRAM = make_unique<uInt8[]>(myRamSize);
+
+  // Setup page access
+  mySystem = &system;
+
+  System::PageAccess access(this, System::PageAccessType::READ);
+
+  // Set the page accessing method for the RAM writing pages
+  // Map access to this class, since we need to inspect all accesses to
+  // check if RWP happens
+  access.type = System::PageAccessType::WRITE;
+  for(uInt16 addr = 0x1000; addr < 0x1000 + myRamSize; addr += System::PAGE_SIZE)
+  {
+    uInt16 offset = addr & myRamMask;
+    access.romAccessBase = &myRomAccessBase[offset];
+    access.romPeekCounter = &myRomAccessCounter[offset];
+    access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
+    mySystem->setPageAccess(addr, access);
+  }
+
+  // Set the page accessing method for the RAM reading pages
+  access.type = System::PageAccessType::READ;
+  for(uInt16 addr = 0x1000 + myRamSize; addr < 0x1000 + myRamSize * 2; addr += System::PAGE_SIZE)
+  {
+    uInt16 offset = addr & myRamMask;
+    access.directPeekBase = &myRAM[offset];
+    access.romAccessBase = &myRomAccessBase[myRamSize + offset];
+    access.romPeekCounter = &myRomAccessCounter[myRamSize + offset];
+    access.romPokeCounter = &myRomAccessCounter[myRamSize + offset + myAccessSize];
+    mySystem->setPageAccess(addr, access);
+  }
+
+  // Install pages for the startup bank
+  bank(startBank());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEnhanced::reset()
+{
+  initializeRAM(myRAM.get(), myRamSize);
+
+  initializeStartBank(getStartBank());
+
+  // Upon reset we switch to the reset bank
+  bank(startBank());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeEnhanced::peek(uInt16 address)
+{
+  uInt16 peekAddress = address;
+  address &= myBankMask;
+
+  checkSwitchBank(address);
+
+  if(address < myRamSize)  // Write port is at 0xF000 - 0xF07F (128 bytes)
+    return peekRAM(myRAM[address], peekAddress);
+  else
+    return myImage[myBankOffset + address];
+    return myImage[myCurrentBankOffset[address >> BANK_SHIFT] + (address & BANK_MASK)];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
+{
+  address &= myBankMask;
+
+  // Switch banks if necessary
+  if (checkSwitchBank(address & myBankMask))
+    return false;
+
+  if(myRamSize)
+  {
+    if(!(address & myRamSize))
+    {
+      pokeRAM(myRAM[address & myRamMask], address, value);
+      return true;
+    }
+    else
+    {
+      // Writing to the read port should be ignored, but trigger a break if option enabled
+      uInt8 dummy;
+
+      pokeRAM(dummy, address, value);
+      myRamWriteAccess = address;
+    }
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeEnhanced::bank(uInt16 bank, uInt16 slice)
+{
+  if(bankLocked()) return false;
+
+  // Remember what bank we're in
+  myBankOffset = bank << myBankShift;
+
+  uInt16 romHotspot = this->romHotspot();
+  uInt16 fromAddr = 0x1000 + myRamSize * 2;
+  uInt16 toAddr;
+
+  if(romHotspot)
+  {
+    System::PageAccess access(this, System::PageAccessType::READ);
+
+    // Set the page accessing methods for the hot spots
+    for(uInt16 addr = (romHotspot & ~System::PAGE_MASK); addr < 0x1000 + myBankSize;
+        addr += System::PAGE_SIZE)
+    {
+      uInt16 offset = myBankOffset + (addr & myBankMask);
+      access.romAccessBase = &myRomAccessBase[offset];
+      access.romPeekCounter = &myRomAccessCounter[offset];
+      access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
+      mySystem->setPageAccess(addr, access);
+    }
+    toAddr = romHotspot;
+  }
+  else
+    toAddr = 0x1000 + myBankSize;
+
+  System::PageAccess access(this, System::PageAccessType::READ);
+
+  // Setup the page access methods for the current bank
+  for(uInt16 addr = (fromAddr & ~System::PAGE_MASK); addr < (toAddr & ~System::PAGE_MASK);
+      addr += System::PAGE_SIZE)
+  {
+    uInt16 offset = myBankOffset + (addr & myBankMask);
+    if(myDirectPeek)
+      access.directPeekBase = &myImage[offset];
+    access.romAccessBase = &myRomAccessBase[offset];
+    access.romPeekCounter = &myRomAccessCounter[offset];
+    access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
+    mySystem->setPageAccess(addr, access);
+  }
+
+  return myBankChanged = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeEnhanced::getBank(uInt16) const
+{
+  return myBankOffset >> myBankShift;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeEnhanced::bankCount() const
+{
+  return uInt16(mySize >> myBankShift);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
+{
+  address &= myBankMask;
+
+  if(address < myRamSize * 2)
+  {
+    // Normally, a write to the read port won't do anything
+    // However, the patch command is special in that ignores such
+    // cart restrictions
+    myRAM[address & myRamMask] = value;
+  }
+  else
+    myImage[myBankOffset + address] = value;
+
+  return myBankChanged = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const uInt8* CartridgeEnhanced::getImage(size_t& size) const
+{
+  size = mySize;
+  return myImage.get();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeEnhanced::save(Serializer& out) const
+{
+  try
+  {
+    out.putShort(myBankOffset);
+    if(myRamSize)
+      out.putByteArray(myRAM.get(), myRamSize);
+
+  }
+  catch(...)
+  {
+    cerr << "ERROR: << " << name() << "::save" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeEnhanced::load(Serializer& in)
+{
+  try
+  {
+    myBankOffset = in.getShort();
+    if(myRamSize)
+      in.getByteArray(myRAM.get(), myRamSize);
+  }
+  catch(...)
+  {
+    cerr << "ERROR: " << name() << "::load" << endl;
+    return false;
+  }
+
+  // Remember what bank we were in
+  bank(myBankOffset >> myBankShift);
+
+  return true;
+}

@@ -106,7 +106,7 @@ class CartridgeMNetwork : public Cartridge
     uInt16 getBank(uInt16 address = 0) const override;
 
     /**
-    Query the number of banks supported by the cartridge.
+      Query the number of banks supported by the cartridge.
     */
     uInt16 bankCount() const override;
 

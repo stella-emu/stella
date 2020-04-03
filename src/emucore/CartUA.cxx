@@ -22,20 +22,9 @@
 CartridgeUA::CartridgeUA(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings,
                          bool swapHotspots)
-  : Cartridge(settings, md5),
+  : CartridgeEnhanced(image, size, md5, settings),
     mySwappedHotspots(swapHotspots)
 {
-  // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createRomAccessArrays(myImage.size());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeUA::reset()
-{
-  // Upon reset we switch to the startup bank
-  initializeStartBank(0);
-  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,26 +49,33 @@ void CartridgeUA::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeUA::peek(uInt16 address)
+bool CartridgeUA::checkSwitchBank(uInt16 address, uInt8)
 {
-  address &= 0x1FFF;
-
   // Switch banks if necessary
   switch(address & 0x1260)
   {
     case 0x0220:
       // Set the current bank to the lower 4k bank
       bank(mySwappedHotspots ? 1 : 0);
-      break;
+      return true;
 
     case 0x0240:
       // Set the current bank to the upper 4k bank
       bank(mySwappedHotspots ? 0 : 1);
-      break;
+      return true;
 
     default:
       break;
   }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeUA::peek(uInt16 address)
+{
+  address &= myBankMask;
+
+  checkSwitchBank(address);
 
   // Because of the way accessing is set up, we will only get here
   // when doing a TIA read
@@ -90,24 +86,9 @@ uInt8 CartridgeUA::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeUA::poke(uInt16 address, uInt8 value)
 {
-  address &= 0x1FFF;
+  address &= myBankMask;
 
-  // Switch banks if necessary
-  switch(address & 0x1260)
-  {
-    case 0x0220:
-      // Set the current bank to the lower 4k bank
-      bank(mySwappedHotspots ? 1 : 0);
-      break;
-
-    case 0x0240:
-      // Set the current bank to the upper 4k bank
-      bank(mySwappedHotspots ? 0 : 1);
-      break;
-
-    default:
-      break;
-  }
+  checkSwitchBank(address);
 
   // Because of the way accessing is set up, we will may get here by
   // doing a write to TIA or cart; we ignore the cart write
@@ -118,88 +99,4 @@ bool CartridgeUA::poke(uInt16 address, uInt8 value)
   }
 
   return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeUA::bank(uInt16 bank)
-{
-  if(bankLocked()) return false;
-
-  // Remember what bank we're in
-  myBankOffset = bank << 12;
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PageAccessType::READ);
-
-  // Map ROM image into the system
-  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
-    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
-    mySystem->setPageAccess(addr, access);
-  }
-  return myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeUA::getBank(uInt16) const
-{
-  return myBankOffset >> 12;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeUA::bankCount() const
-{
-  return 2;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeUA::patch(uInt16 address, uInt8 value)
-{
-  myImage[myBankOffset + (address & 0x0FFF)] = value;
-  return myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeUA::getImage(size_t& size) const
-{
-  size = myImage.size();
-  return myImage.data();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeUA::save(Serializer& out) const
-{
-  try
-  {
-    out.putShort(myBankOffset);
-  }
-  catch(...)
-  {
-    cerr << "ERROR: " << name() << "::save" << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeUA::load(Serializer& in)
-{
-  try
-  {
-    myBankOffset = in.getShort();
-  }
-  catch(...)
-  {
-    cerr << "ERROR: " << name() << "::load" << endl;
-    return false;
-  }
-
-  // Remember what bank we were in
-  bank(myBankOffset >> 12);
-
-  return true;
 }

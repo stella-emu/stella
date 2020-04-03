@@ -34,17 +34,17 @@ void CartridgeE0::reset()
   // Setup segments to some default slices
   if(randomStartBank())
   {
-    segmentZero(mySystem->randGenerator().next() % 8);
-    segmentOne(mySystem->randGenerator().next() % 8);
-    segmentTwo(mySystem->randGenerator().next() % 8);
+    bank(mySystem->randGenerator().next() % 8, 0);
+    bank(mySystem->randGenerator().next() % 8, 1);
+    bank(mySystem->randGenerator().next() % 8, 2);
   }
   else
   {
-    segmentZero(4);
-    segmentOne(5);
-    segmentTwo(6);
+    bank(4, 0);
+    bank(5, 1);
+    bank(6, 2);
   }
-  myCurrentSlice[3] = 7; // fixed
+  myCurrentBank[3] = bankCount() - 1; // fixed
 
   myBankChanged = true;
 }
@@ -69,7 +69,7 @@ void CartridgeE0::install(System& system)
 
   // Set the page accessing methods for the hot spots in the last segment
   access.directPeekBase = nullptr;
-  access.romAccessBase = &myRomAccessBase[0x1FC0]; // TJ: is this the correct address (or 0x1FE0)?
+  access.romAccessBase = &myRomAccessBase[0x1FC0];
   access.romPeekCounter = &myRomAccessCounter[0x1FC0];
   access.romPokeCounter = &myRomAccessCounter[0x1FC0 + myAccessSize];
   access.type = System::PageAccessType::READ;
@@ -81,7 +81,7 @@ void CartridgeE0::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeE0::getBank(uInt16 address) const
 {
-  return myCurrentSlice[(address & 0xFFF) >> 10]; // 1K slices
+  return myCurrentBank[(address & 0xFFF) >> 10]; // 1K slices
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,18 +98,18 @@ uInt8 CartridgeE0::peek(uInt16 address)
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FE7))
   {
-    segmentZero(address & 0x0007);
+    bank(address & 0x0007, 0);
   }
   else if((address >= 0x0FE8) && (address <= 0x0FEF))
   {
-    segmentOne(address & 0x0007);
+    bank(address & 0x0007, 1);
   }
   else if((address >= 0x0FF0) && (address <= 0x0FF7))
   {
-    segmentTwo(address & 0x0007);
+    bank(address & 0x0007, 2);
   }
 
-  return myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)];
+  return myImage[(myCurrentBank[address >> 10] << 10) + (address & 0x03FF)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,83 +120,38 @@ bool CartridgeE0::poke(uInt16 address, uInt8)
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FE7))
   {
-    segmentZero(address & 0x0007);
+    bank(address & 0x0007, 0);
   }
   else if((address >= 0x0FE8) && (address <= 0x0FEF))
   {
-    segmentOne(address & 0x0007);
+    bank(address & 0x0007, 1);
   }
   else if((address >= 0x0FF0) && (address <= 0x0FF7))
   {
-    segmentTwo(address & 0x0007);
+    bank(address & 0x0007, 2);
   }
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE0::segmentZero(uInt16 slice)
+void CartridgeE0::bank(uInt16 bank, uInt16 slice)
 {
   if(bankLocked()) return;
 
   // Remember the new slice
-  myCurrentSlice[0] = slice;
-  uInt16 offset = slice << 10;
+  myCurrentBank[slice] = bank;
+  uInt16 sliceOffset = slice * (1 << 10);
+  uInt16 bankOffset = bank << 10;
 
   // Setup the page access methods for the current bank
   System::PageAccess access(this, System::PageAccessType::READ);
 
-  for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
+  for(uInt16 addr = 0x1000 + sliceOffset; addr < 0x1000 + sliceOffset + 0x400; addr += System::PAGE_SIZE)
   {
-    access.directPeekBase = &myImage[offset + (addr & 0x03FF)];
-    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
-    access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
-    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + myAccessSize];
-    mySystem->setPageAccess(addr, access);
-  }
-  myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE0::segmentOne(uInt16 slice)
-{
-  if(bankLocked()) return;
-
-  // Remember the new slice
-  myCurrentSlice[1] = slice;
-  uInt16 offset = slice << 10;
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PageAccessType::READ);
-
-  for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myImage[offset + (addr & 0x03FF)];
-    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
-    access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
-    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + myAccessSize];
-    mySystem->setPageAccess(addr, access);
-  }
-  myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE0::segmentTwo(uInt16 slice)
-{
-  if(bankLocked()) return;
-
-  // Remember the new slice
-  myCurrentSlice[2] = slice;
-  uInt16 offset = slice << 10;
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PageAccessType::READ);
-
-  for(uInt16 addr = 0x1800; addr < 0x1C00; addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myImage[offset + (addr & 0x03FF)];
-    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
-    access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
-    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + myAccessSize];
+    access.directPeekBase = &myImage[bankOffset + (addr & 0x03FF)];
+    access.romAccessBase = &myRomAccessBase[bankOffset + (addr & 0x03FF)];
+    access.romPeekCounter = &myRomAccessCounter[bankOffset + (addr & 0x03FF)];
+    access.romPokeCounter = &myRomAccessCounter[bankOffset + (addr & 0x03FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   myBankChanged = true;
@@ -206,7 +161,7 @@ void CartridgeE0::segmentTwo(uInt16 slice)
 bool CartridgeE0::patch(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;
-  myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)] = value;
+  myImage[(myCurrentBank[address >> 10] << 10) + (address & 0x03FF)] = value;
   return true;
 }
 
@@ -222,7 +177,7 @@ bool CartridgeE0::save(Serializer& out) const
 {
   try
   {
-    out.putShortArray(myCurrentSlice.data(), myCurrentSlice.size());
+    out.putShortArray(myCurrentBank.data(), myCurrentBank.size());
   }
   catch(...)
   {
@@ -238,7 +193,7 @@ bool CartridgeE0::load(Serializer& in)
 {
   try
   {
-    in.getShortArray(myCurrentSlice.data(), myCurrentSlice.size());
+    in.getShortArray(myCurrentBank.data(), myCurrentBank.size());
   }
   catch(...)
   {

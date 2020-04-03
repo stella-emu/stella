@@ -15,36 +15,21 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef CARTRIDGEE0_HXX
-#define CARTRIDGEE0_HXX
+#ifndef CARTRIDGEENHANCED_HXX
+#define CARTRIDGEENHANCED_HXX
 
 class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
-#ifdef DEBUGGER_SUPPORT
-  #include "CartE0Widget.hxx"
-#endif
 
 /**
-  This is the cartridge class for Parker Brothers' 8K games.  In
-  this bankswitching scheme the 2600's 4K cartridge address space
-  is broken into four 1K segments.  The desired 1K slice of the
-  ROM is selected by accessing $1FE0 to $1FE7 for the first 1K.
-  $1FE8 to $1FEF selects the slice for the second 1K, and $1FF0 to
-  $1FF7 selects the slice for the third 1K.  The last 1K segment
-  always points to the last 1K of the ROM image.
+  Enhanced cartridge base class used for multiple cart types.
 
-  Because of the complexity of this scheme, the cart reports having
-  only one actual bank, in which pieces of it can be swapped out in
-  many different ways.
-
-  @author  Bradford W. Mott
+  @author  Thomas Jentzsch
 */
-class CartridgeE0 : public Cartridge
+class CartridgeEnhanced : public Cartridge
 {
-  friend class CartridgeE0Widget;
-
   public:
     /**
       Create a new cartridge using the specified image
@@ -54,16 +39,11 @@ class CartridgeE0 : public Cartridge
       @param md5       The md5sum of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeE0(const ByteBuffer& image, size_t size, const string& md5,
+    CartridgeEnhanced(const ByteBuffer& image, size_t size, const string& md5,
                 const Settings& settings);
-    virtual ~CartridgeE0() = default;
+    virtual ~CartridgeEnhanced() = default;
 
   public:
-    /**
-      Reset device to its power-on state
-    */
-    void reset() override;
-
     /**
       Install cartridge in the specified system.  Invoked by the system
       when the cartridge is attached to it.
@@ -72,6 +52,25 @@ class CartridgeE0 : public Cartridge
     */
     void install(System& system) override;
 
+    /**
+      Reset device to its power-on state
+    */
+    void reset() override;
+
+
+    /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    bool bank(uInt16 bank, uInt16 slice);
+
+    /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    bool bank(uInt16 bank) override { return this->bank(bank, 0); }
 
     /**
       Get the current bank.
@@ -118,25 +117,6 @@ class CartridgeE0 : public Cartridge
     */
     bool load(Serializer& in) override;
 
-    /**
-      Get a descriptor for the device name (used in error checking).
-
-      @return The name of the object
-    */
-    string name() const override { return "CartridgeE0"; }
-
-  #ifdef DEBUGGER_SUPPORT
-    /**
-      Get debugger widget responsible for accessing the inner workings
-      of the cart.
-    */
-    CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-        const GUI::Font& nfont, int x, int y, int w, int h) override
-    {
-      return new CartridgeE0Widget(boss, lfont, nfont, x, y, w, h, *this);
-    }
-  #endif
-
   public:
     /**
       Get the byte at the specified address.
@@ -154,28 +134,71 @@ class CartridgeE0 : public Cartridge
     */
     bool poke(uInt16 address, uInt8 value) override;
 
+  protected:
+    // Pointer to a dynamically allocated ROM image of the cartridge
+    ByteBuffer myImage{nullptr};
+
+    // Pointer to a dynamically allocated RAM area of the cartridge
+    ByteBuffer myRAM{nullptr};
+
+    uInt16 myBankShift{BANK_SHIFT};
+
+    uInt16 myBankSize{BANK_SIZE};
+
+    uInt16 myBankMask{BANK_MASK};
+
+    uInt16 myRamSize{RAM_SIZE};
+
+    uInt16 myRamMask{RAM_MASK};
+
+    bool myDirectPeek{true};
+
+    // Indicates the offset into the ROM image (aligns to current bank)
+    uInt16 myBankOffset{0};
+
+    // Indicates the slice mapped into each of the bank segments
+    WordBuffer myCurrentBankOffset{nullptr};
+
   private:
+    // log(ROM bank size) / log(2)
+    static constexpr uInt16 BANK_SHIFT = 12;
+
+    // bank size
+    static constexpr uInt16 BANK_SIZE = 1 << BANK_SHIFT; // 2 ^ 12 = 4K
+
+    // bank mask
+    static constexpr uInt16 BANK_MASK = BANK_SIZE - 1;
+
+    // bank segments
+    static constexpr uInt16 BANK_SEGS = 1;
+
+    // RAM size
+    static constexpr uInt16 RAM_SIZE = 0;
+
+    // RAM mask
+    static constexpr uInt16 RAM_MASK = 0;
+
+    // Size of the ROM image
+    size_t mySize{0};
+
+  protected:
     /**
-      Install the specified slice for segment (bank) 0..2
-
-      @param slice The slice to map into the segment
+      Check hotspots and switch bank if triggered.
     */
-    void bank(uInt16 bank, uInt16 slice);
+    virtual bool checkSwitchBank(uInt16 address, uInt8 value = 0) = 0;
 
   private:
-    // The 8K ROM image of the cartridge
-    std::array<uInt8, 8_KB> myImage;
+    virtual uInt16 getStartBank() const { return 0; }
 
-    // Indicates the slice mapped into each of the four segments
-    std::array<uInt16, 4> myCurrentBank;
+    virtual uInt16 romHotspot() const { return 0; }
 
   private:
     // Following constructors and assignment operators not supported
-    CartridgeE0() = delete;
-    CartridgeE0(const CartridgeE0&) = delete;
-    CartridgeE0(CartridgeE0&&) = delete;
-    CartridgeE0& operator=(const CartridgeE0&) = delete;
-    CartridgeE0& operator=(CartridgeE0&&) = delete;
+    CartridgeEnhanced() = delete;
+    CartridgeEnhanced(const CartridgeEnhanced&) = delete;
+    CartridgeEnhanced(CartridgeEnhanced&&) = delete;
+    CartridgeEnhanced& operator=(const CartridgeEnhanced&) = delete;
+    CartridgeEnhanced& operator=(CartridgeEnhanced&&) = delete;
 };
 
 #endif

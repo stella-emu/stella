@@ -98,9 +98,9 @@ CartridgeE0Widget::CartridgeE0Widget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0Widget::loadConfig()
 {
-  mySlice0->setSelectedIndex(myCart.myCurrentSlice[0]);
-  mySlice1->setSelectedIndex(myCart.myCurrentSlice[1]);
-  mySlice2->setSelectedIndex(myCart.myCurrentSlice[2]);
+  mySlice0->setSelectedIndex(myCart.myCurrentBank[0]);
+  mySlice1->setSelectedIndex(myCart.myCurrentBank[1]);
+  mySlice2->setSelectedIndex(myCart.myCurrentBank[2]);
 
   CartDebugWidget::loadConfig();
 }
@@ -114,13 +114,13 @@ void CartridgeE0Widget::handleCommand(CommandSender* sender,
   switch(cmd)
   {
     case kSlice0Changed:
-      myCart.segmentZero(mySlice0->getSelected());
+      myCart.bank(mySlice0->getSelected(), 0);
       break;
     case kSlice1Changed:
-      myCart.segmentOne(mySlice1->getSelected());
+      myCart.bank(mySlice1->getSelected(), 1);
       break;
     case kSlice2Changed:
-      myCart.segmentTwo(mySlice2->getSelected());
+      myCart.bank(mySlice2->getSelected(), 2);
       break;
     default:
       break;
@@ -136,9 +136,9 @@ string CartridgeE0Widget::bankState()
   ostringstream& buf = buffer();
 
   buf << "Slices: " << std::dec
-      << seg0[myCart.myCurrentSlice[0]] << " / "
-      << seg1[myCart.myCurrentSlice[1]] << " / "
-      << seg2[myCart.myCurrentSlice[2]];
+      << seg0[myCart.myCurrentBank[0]] << " / "
+      << seg1[myCart.myCurrentBank[1]] << " / "
+      << seg2[myCart.myCurrentBank[2]];
 
   return buf.str();
 }

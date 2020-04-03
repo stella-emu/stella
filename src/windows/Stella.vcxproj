@@ -717,6 +717,7 @@
     <ClCompile Include="..\emucore\Bankswitch.cxx" />
     <ClCompile Include="..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
+    <ClCompile Include="..\emucore\CartEnhanced.cxx" />
     <ClCompile Include="..\emucore\CartBF.cxx" />
     <ClCompile Include="..\emucore\CartBFSC.cxx" />
     <ClCompile Include="..\emucore\CartBUS.cxx" />
@@ -1739,6 +1740,7 @@
     <ClInclude Include="..\emucore\BSType.hxx" />
     <ClInclude Include="..\emucore\Cart3EPlus.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
+    <ClInclude Include="..\emucore\CartEnhanced.hxx" />
     <ClInclude Include="..\emucore\CartBF.hxx" />
     <ClInclude Include="..\emucore\CartBFSC.hxx" />
     <ClInclude Include="..\emucore\CartBUS.hxx" />
