@@ -117,6 +117,7 @@ class LauncherDialog : public Dialog
     void loadRomInfo();
     void handleContextMenu();
     void showOnlyROMs(bool state);
+    void setDefaultDir();
     void openSettings();
 
   private:
@@ -131,6 +132,7 @@ class LauncherDialog : public Dialog
 
     ButtonWidget* myStartButton{nullptr};
     ButtonWidget* myPrevDirButton{nullptr};
+    ButtonWidget* mySetDefaultDirButton{nullptr};
     ButtonWidget* myOptionsButton{nullptr};
     ButtonWidget* myQuitButton{nullptr};
 
@@ -151,10 +153,11 @@ class LauncherDialog : public Dialog
     bool myEventHandled{false};
 
     enum {
-      kAllfilesCmd = 'lalf',  // show all files (or ROMs only)
-      kPrevDirCmd  = 'PRVD',
-      kOptionsCmd  = 'OPTI',
-      kQuitCmd     = 'QUIT'
+      kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)
+      kPrevDirCmd    = 'PRVD',
+      kDefaultDirCmd = 'DEFD',
+      kOptionsCmd    = 'OPTI',
+      kQuitCmd       = 'QUIT'
     };
 
   private:
