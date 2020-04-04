@@ -87,12 +87,11 @@ class CartridgeFC : public CartridgeEnhanced
     */
     bool poke(uInt16 address, uInt8 value) override;
 
-  protected:
+  private:
     bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
 
     uInt16 romHotspot() const override { return 0x1FF8; }
 
-  private:
     // Target bank defined by writing to $1FF8/9
     uInt16 myTargetBank{0};
 

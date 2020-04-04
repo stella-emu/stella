@@ -23,5 +23,4 @@ CartridgeF8SC::CartridgeF8SC(const ByteBuffer& image, size_t size,
   : CartridgeF8(image, size, md5, settings)
 {
   myRamSize = RAM_SIZE;
-  myRamMask = RAM_MASK;  
 }

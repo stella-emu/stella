@@ -97,7 +97,7 @@ class CartridgeUA : public CartridgeEnhanced
     bool poke(uInt16 address, uInt8 value) override;
 
 
-  protected:
+  private:
     bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
 
   private:

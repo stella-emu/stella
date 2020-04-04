@@ -23,5 +23,5 @@ CartridgeF4SC::CartridgeF4SC(const ByteBuffer& image, size_t size,
   : CartridgeF4(image, size, md5, settings)
 {
   myRamSize = RAM_SIZE;
-  myRamMask = RAM_MASK;
+  myRamMask = RAM_SIZE - 1;  
 }

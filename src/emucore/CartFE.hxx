@@ -72,8 +72,8 @@ class System;
         particular *why* the address $01FE will be placed on the address
         bus after both the JSR and RTS opcodes.
 
-  @author  Stephen Anthony; with ideas/research from Christian Speckner and
-           alex_79 and TomSon (of AtariAge)
+  @author  Stephen Anthony, Thomas Jentzsch; with ideas/research from Christian
+           Speckner and alex_79 and TomSon (of AtariAge)
 */
 class CartridgeFE : public CartridgeEnhanced
 {

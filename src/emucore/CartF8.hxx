@@ -66,12 +66,11 @@ class CartridgeF8 : public CartridgeEnhanced
     }
   #endif
 
-  protected:
+  private:
     bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
 
     uInt16 romHotspot() const override { return 0x1FF8; }
 
-  private:
     uInt16 getStartBank() const override { return 1; }
 
   private:
