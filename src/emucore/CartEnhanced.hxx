@@ -203,9 +203,9 @@ class CartridgeEnhanced : public Cartridge
     /**
       Get the hotspot in ROM address space.
 
-      @return  The first hotspot address in ROM space or 0
+      @return  The first hotspot address (ususally in ROM) space or 0
     */
-    virtual uInt16 romHotspot() const { return 0; }
+    virtual uInt16 hotspot() const { return 0; }
     // TODO: handle cases where there the hotspots cover multiple pages
 
   private:

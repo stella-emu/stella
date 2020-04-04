@@ -102,7 +102,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
 
-  if (romHotspot())
+  if (hotspot())
     checkSwitchBank(address & 0x0FFF);
   address &= myBankMask;
 
@@ -146,13 +146,13 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
   // Remember what bank is in which segment
   uInt32 bankOffset = myCurrentSegOffset[segment] = bank << myBankShift;
   uInt16 segmentOffset = segment << myBankShift;
-  uInt16 romHotspot = this->romHotspot();
+  uInt16 hotspot = this->hotspot();
   uInt16 hotSpotAddr;
   uInt16 fromAddr = (segmentOffset + 0x1000 + myRamSize * 2) & ~System::PAGE_MASK;
   uInt16 toAddr = (segmentOffset + 0x1000 + myBankSize) & ~System::PAGE_MASK;
 
-  if(romHotspot)
-    hotSpotAddr = (romHotspot & ~System::PAGE_MASK);
+  if(hotspot)
+    hotSpotAddr = (hotspot & ~System::PAGE_MASK);
   else
     hotSpotAddr = 0xFFFF; // none
 
