@@ -66,7 +66,7 @@ class CartridgeF6 : public CartridgeEnhanced
     }
   #endif
 
-  protected:
+  private:
     bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
 
     uInt16 romHotspot() const override { return 0x1FF6; }

@@ -37,7 +37,7 @@ void CartridgeFE::reset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFE::install(System& system)
 {
-  mySystem = &system;
+  CartridgeEnhanced::install(system);
 
   // The hotspot $01FE is in a mirror of zero-page RAM
   // We need to claim access to it here, and deal with it in peek/poke below
@@ -63,7 +63,7 @@ bool CartridgeFE::checkSwitchBank(uInt16 address, uInt8 value)
 uInt8 CartridgeFE::peek(uInt16 address)
 {
   uInt8 value = (address < 0x200) ? mySystem->m6532().peek(address) :
-      myImage[myBankOffset + (address & myBankMask)];
+    myImage[myCurrentSegOffset[(address & 0xFFF) >> myBankShift] + (address & myBankMask)];
 
   // Check if we hit hotspot
   checkSwitchBank(address, value);

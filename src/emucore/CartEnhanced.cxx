@@ -37,9 +37,14 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhanced::install(System& system)
 {
+  // calculate bank switching and RAM sizes and masks
+  myBankSize = 1 << myBankShift;          // e.g. = 2 ^ 12 = 4K = 0x1000
+  myBankMask = myBankSize - 1;            // e.g. = 0x0FFF
+  myBankSegs = 1 << (12 - myBankShift);   // e.g. = 1
+  myRamMask = myRamSize - 1;              // e.g. = 0xFFFF (doesn't matter for RAM size 0)
+
   // Allocate array for the current bank segments slices
-  myCurrentBankOffset = make_unique<uInt16[]>(BANK_SEGS);
-  std::fill_n(myCurrentBankOffset.get(), BANK_SEGS, 0);
+  myCurrentSegOffset = make_unique<uInt32[]>(myBankSegs);
 
   // Allocate array for the RAM area
   myRAM = make_unique<uInt8[]>(myRamSize);
@@ -93,24 +98,22 @@ void CartridgeEnhanced::reset()
 uInt8 CartridgeEnhanced::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
-  address &= myBankMask;
 
-  checkSwitchBank(address);
+  checkSwitchBank(address & 0x0FFF);
+  address &= myBankMask;
 
   if(address < myRamSize)  // Write port is at 0xF000 - 0xF07F (128 bytes)
     return peekRAM(myRAM[address], peekAddress);
   else
-    return myImage[myBankOffset + address];
-    return myImage[myCurrentBankOffset[address >> BANK_SHIFT] + (address & BANK_MASK)];
+    //return myImage[myBankOffset + address];
+    return myImage[myCurrentSegOffset[(peekAddress & 0xFFF) >> myBankShift] + address];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 {
-  address &= myBankMask;
-
   // Switch banks if necessary
-  if (checkSwitchBank(address & myBankMask))
+  if (checkSwitchBank(address & 0x0FFF))
     return false;
 
   if(myRamSize)
@@ -133,45 +136,34 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeEnhanced::bank(uInt16 bank, uInt16 slice)
+bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 {
   if(bankLocked()) return false;
 
-  // Remember what bank we're in
-  myBankOffset = bank << myBankShift;
-
+  // Remember what bank is in which segment
+  uInt32 bankOffset = myCurrentSegOffset[segment] = bank << myBankShift;
+  uInt16 segmentOffset = segment << myBankShift;
   uInt16 romHotspot = this->romHotspot();
-  uInt16 fromAddr = 0x1000 + myRamSize * 2;
-  uInt16 toAddr;
+  uInt16 hotSpotAddr;
+  uInt16 fromAddr = (segmentOffset + 0x1000 + myRamSize * 2) & ~System::PAGE_MASK;
+  uInt16 toAddr = (segmentOffset + 0x1000 + myBankSize) & ~System::PAGE_MASK;
 
   if(romHotspot)
-  {
-    System::PageAccess access(this, System::PageAccessType::READ);
-
-    // Set the page accessing methods for the hot spots
-    for(uInt16 addr = (romHotspot & ~System::PAGE_MASK); addr < 0x1000 + myBankSize;
-        addr += System::PAGE_SIZE)
-    {
-      uInt16 offset = myBankOffset + (addr & myBankMask);
-      access.romAccessBase = &myRomAccessBase[offset];
-      access.romPeekCounter = &myRomAccessCounter[offset];
-      access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
-      mySystem->setPageAccess(addr, access);
-    }
-    toAddr = romHotspot;
-  }
+    hotSpotAddr = segmentOffset + (romHotspot & ~System::PAGE_MASK);
   else
-    toAddr = 0x1000 + myBankSize;
+    hotSpotAddr = 0xFFFF; // none
 
   System::PageAccess access(this, System::PageAccessType::READ);
 
   // Setup the page access methods for the current bank
-  for(uInt16 addr = (fromAddr & ~System::PAGE_MASK); addr < (toAddr & ~System::PAGE_MASK);
-      addr += System::PAGE_SIZE)
+  for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
   {
-    uInt16 offset = myBankOffset + (addr & myBankMask);
-    if(myDirectPeek)
+    uInt32 offset = bankOffset + (addr & myBankMask);
+
+    if(myDirectPeek && addr != hotSpotAddr)
       access.directPeekBase = &myImage[offset];
+    else
+      access.directPeekBase = nullptr;
     access.romAccessBase = &myRomAccessBase[offset];
     access.romPeekCounter = &myRomAccessCounter[offset];
     access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
@@ -182,9 +174,9 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 slice)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeEnhanced::getBank(uInt16) const
+uInt16 CartridgeEnhanced::getBank(uInt16 address) const
 {
-  return myBankOffset >> myBankShift;
+  return myCurrentSegOffset[(address & 0xFFF) >> myBankShift] >> myBankShift;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,9 +188,7 @@ uInt16 CartridgeEnhanced::bankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
 {
-  address &= myBankMask;
-
-  if(address < myRamSize * 2)
+  if((address & myBankMask) < myRamSize * 2)
   {
     // Normally, a write to the read port won't do anything
     // However, the patch command is special in that ignores such
@@ -206,7 +196,7 @@ bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
     myRAM[address & myRamMask] = value;
   }
   else
-    myImage[myBankOffset + address] = value;
+    myImage[myCurrentSegOffset[(address & 0xFFF) >> myBankShift] + (address & myBankMask)] = value;
 
   return myBankChanged = true;
 }
@@ -223,7 +213,7 @@ bool CartridgeEnhanced::save(Serializer& out) const
 {
   try
   {
-    out.putShort(myBankOffset);
+    out.putIntArray(myCurrentSegOffset.get(), myBankSegs);
     if(myRamSize)
       out.putByteArray(myRAM.get(), myRamSize);
 
@@ -242,7 +232,7 @@ bool CartridgeEnhanced::load(Serializer& in)
 {
   try
   {
-    myBankOffset = in.getShort();
+    in.getIntArray(myCurrentSegOffset.get(), myBankSegs);
     if(myRamSize)
       in.getByteArray(myRAM.get(), myRamSize);
   }
@@ -251,9 +241,5 @@ bool CartridgeEnhanced::load(Serializer& in)
     cerr << "ERROR: " << name() << "::load" << endl;
     return false;
   }
-
-  // Remember what bank we were in
-  bank(myBankOffset >> myBankShift);
-
   return true;
 }

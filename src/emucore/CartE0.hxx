@@ -21,7 +21,7 @@
 class System;
 
 #include "bspf.hxx"
-#include "Cart.hxx"
+#include "CartEnhanced.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "CartE0Widget.hxx"
 #endif
@@ -39,9 +39,9 @@ class System;
   only one actual bank, in which pieces of it can be swapped out in
   many different ways.
 
-  @author  Bradford W. Mott
+  @author  Bradford W. Mott, Thomas Jentzsch
 */
-class CartridgeE0 : public Cartridge
+class CartridgeE0 : public CartridgeEnhanced
 {
   friend class CartridgeE0Widget;
 
@@ -72,52 +72,6 @@ class CartridgeE0 : public Cartridge
     */
     void install(System& system) override;
 
-
-    /**
-      Get the current bank.
-
-      @param address The address to use when querying the bank
-    */
-    uInt16 getBank(uInt16 address = 0) const override;
-
-    /**
-      Query the number of banks supported by the cartridge.
-    */
-    uInt16 bankCount() const override;
-
-    /**
-      Patch the cartridge ROM.
-
-      @param address  The ROM address to patch
-      @param value    The value to place into the address
-      @return    Success or failure of the patch operation
-    */
-    bool patch(uInt16 address, uInt8 value) override;
-
-    /**
-      Access the internal ROM image for this cartridge.
-
-      @param size  Set to the size of the internal ROM image data
-      @return  A pointer to the internal ROM image data
-    */
-    const uInt8* getImage(size_t& size) const override;
-
-    /**
-      Save the current state of this cart to the given Serializer.
-
-      @param out  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    bool save(Serializer& out) const override;
-
-    /**
-      Load the current state of this cart from the given Serializer.
-
-      @param in  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    bool load(Serializer& in) override;
-
     /**
       Get a descriptor for the device name (used in error checking).
 
@@ -137,37 +91,14 @@ class CartridgeE0 : public Cartridge
     }
   #endif
 
-  public:
-    /**
-      Get the byte at the specified address.
+  private:
+    bool checkSwitchBank(uInt16 address, uInt8 = 0) override;
 
-      @return The byte at the specified address
-    */
-    uInt8 peek(uInt16 address) override;
-
-    /**
-      Change the byte at the specified address to the given value
-
-      @param address The address where the value should be stored
-      @param value The value to be stored at the address
-      @return  True if the poke changed the device address space, else false
-    */
-    bool poke(uInt16 address, uInt8 value) override;
+    uInt16 romHotspot() const override { return 0x1FE0; }
 
   private:
-    /**
-      Install the specified slice for segment (bank) 0..2
-
-      @param slice The slice to map into the segment
-    */
-    void bank(uInt16 bank, uInt16 slice);
-
-  private:
-    // The 8K ROM image of the cartridge
-    std::array<uInt8, 8_KB> myImage;
-
-    // Indicates the slice mapped into each of the four segments
-    std::array<uInt16, 4> myCurrentBank;
+    // log(ROM bank segment size) / log(2)
+    static constexpr uInt16 BANK_SHIFT = 10; // = 1K = 0x0400
 
   private:
     // Following constructors and assignment operators not supported

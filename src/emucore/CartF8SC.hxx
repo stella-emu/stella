@@ -71,9 +71,6 @@ class CartridgeF8SC : public CartridgeF8
     // RAM size
     static constexpr uInt16 RAM_SIZE = 0x80;
 
-    // RAM mask
-    static constexpr uInt16 RAM_MASK = RAM_SIZE - 1;
-
   private:
     // Following constructors and assignment operators not supported
     CartridgeF8SC() = delete;

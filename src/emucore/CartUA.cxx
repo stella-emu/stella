@@ -30,7 +30,7 @@ CartridgeUA::CartridgeUA(const ByteBuffer& image, size_t size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeUA::install(System& system)
 {
-  mySystem = &system;
+  CartridgeEnhanced::install(system);
 
   // Get the page accessing methods for the hot spots since they overlap
   // areas within the TIA we'll need to forward requests to the TIA
