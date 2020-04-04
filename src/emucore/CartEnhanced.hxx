@@ -80,6 +80,13 @@ class CartridgeEnhanced : public Cartridge
     uInt16 getBank(uInt16 address = 0) const override;
 
     /**
+      Get the current bank for a bank segment.
+
+      @param segment The segment to get the bank for
+    */
+    uInt16 getSegmentBank(uInt16 segment = 0) const;
+
+    /**
       Query the number of banks supported by the cartridge.
     */
     uInt16 bankCount() const override;
@@ -165,15 +172,15 @@ class CartridgeEnhanced : public Cartridge
     // Pointer to a dynamically allocated RAM area of the cartridge
     ByteBuffer myRAM{nullptr};
 
-    // The size of the ROM image
-    size_t mySize{0};
-
   private:
     // Calculated as: log(ROM bank segment size) / log(2)
     static constexpr uInt16 BANK_SHIFT = 12;  // default = 4K
 
     // The size of extra RAM in ROM address space
     static constexpr uInt16 RAM_SIZE = 0;     // default = none
+
+    // The size of the ROM image
+    size_t mySize{0};
 
   protected:
     /**

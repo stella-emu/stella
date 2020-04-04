@@ -183,6 +183,12 @@ uInt16 CartridgeEnhanced::getBank(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeEnhanced::getSegmentBank(uInt16 segment) const
+{
+  return myCurrentSegOffset[segment % myBankSegs] >> myBankShift;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeEnhanced::bankCount() const
 {
   return uInt16(mySize >> myBankShift);
