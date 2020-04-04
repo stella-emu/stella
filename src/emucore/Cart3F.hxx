@@ -36,7 +36,7 @@ class System;
   $00 to $3F will change banks.  Although, the Tigervision games
   only used 8K this bankswitching scheme supports up to 512K.
 
-  @author  Bradford W. Mott
+  @author  Bradford W. Mott, Thomas Jentzsch
 */
 class Cartridge3F : public CartridgeEnhanced
 {
