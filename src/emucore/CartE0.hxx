@@ -65,14 +65,6 @@ class CartridgeE0 : public CartridgeEnhanced
     void reset() override;
 
     /**
-      Install cartridge in the specified system.  Invoked by the system
-      when the cartridge is attached to it.
-
-      @param system The system the device should install itself in
-    */
-    void install(System& system) override;
-
-    /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object

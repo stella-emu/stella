@@ -165,15 +165,15 @@ class CartridgeEnhanced : public Cartridge
     // Pointer to a dynamically allocated RAM area of the cartridge
     ByteBuffer myRAM{nullptr};
 
+    // The size of the ROM image
+    size_t mySize{0};
+
   private:
     // Calculated as: log(ROM bank segment size) / log(2)
     static constexpr uInt16 BANK_SHIFT = 12;  // default = 4K
 
     // The size of extra RAM in ROM address space
     static constexpr uInt16 RAM_SIZE = 0;     // default = none
-
-    // The size of the ROM image
-    size_t mySize{0};
 
   protected:
     /**

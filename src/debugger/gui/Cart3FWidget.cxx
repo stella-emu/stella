@@ -88,7 +88,7 @@ string Cartridge3FWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = #" << std::dec << myCart.myCurrentBank << ", hotspot = $3F";
+  buf << "Bank = #" << std::dec << (myCart.myCurrentSegOffset[0] >> myCart.myBankShift) << ", hotspot = $3F";
 
   return buf.str();
 }

@@ -42,44 +42,7 @@ void CartridgeE0::reset()
     bank(5, 1);
     bank(6, 2);
   }
-  myCurrentSegOffset[3] = (bankCount() - 1) << myBankShift; // fixed
-
   myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE0::install(System& system)
-{
-  //// Allocate array for the current bank segments slices
-  //myCurrentSegOffset = make_unique<uInt16[]>(myBankSegs);
-
-  //// Setup page access
-  //mySystem = &system;
-
-  CartridgeEnhanced::install(system);
-
-  System::PageAccess access(this, System::PageAccessType::READ);
-
-  // Set the page acessing methods for the first part of the last segment
-  for(uInt16 addr = 0x1C00; addr < static_cast<uInt16>(0x1FE0U & ~System::PAGE_MASK);
-      addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myImage[0x1C00 + (addr & 0x03FF)];
-    access.romAccessBase = &myRomAccessBase[0x1C00 + (addr & 0x03FF)];
-    access.romPeekCounter = &myRomAccessCounter[0x1C00 + (addr & 0x03FF)];
-    access.romPokeCounter = &myRomAccessCounter[0x1C00 + (addr & 0x03FF) + myAccessSize];
-    mySystem->setPageAccess(addr, access);
-  }
-
-  // Set the page accessing methods for the hot spots in the last segment
-  access.directPeekBase = nullptr;
-  access.romAccessBase = &myRomAccessBase[0x1FC0];
-  access.romPeekCounter = &myRomAccessCounter[0x1FC0];
-  access.romPokeCounter = &myRomAccessCounter[0x1FC0 + myAccessSize];
-  access.type = System::PageAccessType::READ;
-  for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;
-      addr += System::PAGE_SIZE)
-    mySystem->setPageAccess(addr, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
