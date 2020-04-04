@@ -86,7 +86,7 @@ class CartridgeE0 : public CartridgeEnhanced
   private:
     bool checkSwitchBank(uInt16 address, uInt8 = 0) override;
 
-    uInt16 romHotspot() const override { return 0x1FE0; }
+    uInt16 hotspot() const override { return 0x1FE0; }
 
   private:
     // log(ROM bank segment size) / log(2)
