@@ -79,8 +79,11 @@ void CartridgeEnhanced::install(System& system)
     mySystem->setPageAccess(addr, access);
   }
 
-  // Install pages for the startup bank
-  bank(startBank());
+  // Install pages for the startup bank (TODO: currently only in first bank segment)
+  bank(startBank(), 0);
+  if(myBankSegs > 1)
+    // Setup the last bank segment to always point to the last ROM segment
+    bank(bankCount() - 1, myBankSegs - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -99,13 +102,13 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
 
-  checkSwitchBank(address & 0x0FFF);
+  if (romHotspot())
+    checkSwitchBank(address & 0x0FFF);
   address &= myBankMask;
 
   if(address < myRamSize)  // Write port is at 0xF000 - 0xF07F (128 bytes)
     return peekRAM(myRAM[address], peekAddress);
   else
-    //return myImage[myBankOffset + address];
     return myImage[myCurrentSegOffset[(peekAddress & 0xFFF) >> myBankShift] + address];
 }
 
@@ -113,7 +116,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 {
   // Switch banks if necessary
-  if (checkSwitchBank(address & 0x0FFF))
+  if (checkSwitchBank(address & 0x0FFF, value))
     return false;
 
   if(myRamSize)
@@ -149,7 +152,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
   uInt16 toAddr = (segmentOffset + 0x1000 + myBankSize) & ~System::PAGE_MASK;
 
   if(romHotspot)
-    hotSpotAddr = segmentOffset + (romHotspot & ~System::PAGE_MASK);
+    hotSpotAddr = (romHotspot & ~System::PAGE_MASK);
   else
     hotSpotAddr = 0xFFFF; // none
 
