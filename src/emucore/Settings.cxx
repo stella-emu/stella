@@ -106,6 +106,7 @@ Settings::Settings()
   setPermanent("psense", "20");
   setPermanent("msense", "10");
   setPermanent("tsense", "10");
+  setPermanent("dcsense", "10");
   setPermanent("saport", "lr");
   setPermanent("modcombo", "true");
 
@@ -339,6 +340,10 @@ void Settings::validate()
   if(i < 1 || i > 20)
     setValue("tsense", "10");
 
+  i = getInt("dcsense");
+  if(i < 1 || i > 20)
+    setValue("dcsense", "10");
+
   i = getInt("ssinterval");
   if(i < 1)        setValue("ssinterval", "2");
   else if(i > 10)  setValue("ssinterval", "10");
@@ -457,6 +462,8 @@ void Settings::usage() const
     << "  -dsense       <1-20>         Sensitivity of digital emulated paddle movement\n"
     << "  -msense       <1-20>         Sensitivity of mouse emulated paddle movement\n"
     << "  -tsense       <1-20>         Sensitivity of mouse emulated trackball movement\n"
+    << "  -dcsense      <1-20>         Sensitivity of digital emulated driving controller\n"
+    << "                                movement\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
     << "                                Stelladaptor/2600-daptors\n"
     << "  -modcombo     <1|0>          Enable modifer key combos\n"

@@ -14,7 +14,9 @@
 
 6.1 to 6.2: (??? ??, 2020)
 
-  * Added that paddle centering and sensitivity can be adjusted now (TOOD: Doc)
+  * Added that paddle centering and sensitivity can be adjusted (TOOD: Doc)
+
+  * Added that Driving controller sensitivity can be adjusted (TOOD: Doc)
 
   * Added high scores: Score addresses, game variation etc. can be defined for
     a game. This allows the user to save high scores for these games. For each
