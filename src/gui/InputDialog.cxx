@@ -22,6 +22,7 @@
 #include "Joystick.hxx"
 #include "Paddles.hxx"
 #include "PointingDevice.hxx"
+#include "Driving.hxx"
 #include "SaveKey.hxx"
 #include "AtariVox.hxx"
 #include "Settings.hxx"
@@ -156,7 +157,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDejitterDiff);
 
   // Add paddle speed (digital emulation)
-  ypos += lineHeight + VGAP * 4;
+  ypos += lineHeight + VGAP * 3;
   myDPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                     "Digital paddle sensitivity",
                                     lwidth, kDPSpeedChanged, 4 * fontWidth, "%");
@@ -165,7 +166,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDPaddleSpeed);
 
   // Add trackball speed
-  ypos += lineHeight + VGAP * 2;
+  ypos += lineHeight + VGAP;
   myTrackBallSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                       "Trackball sensitivity",
                                       lwidth, kTBSpeedChanged, 4 * fontWidth, "%");
@@ -173,8 +174,17 @@ void InputDialog::addDevicePortTab()
   myTrackBallSpeed->setTickmarkIntervals(4);
   wid.push_back(myTrackBallSpeed);
 
+  // Add driving controller speed
+  ypos += lineHeight + VGAP;
+  myDrivingSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
+                                      "Driving contr. sensitivity",
+                                      lwidth, kDCSpeedChanged, 4 * fontWidth, "%");
+  myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
+  myDrivingSpeed->setTickmarkIntervals(4);
+  wid.push_back(myDrivingSpeed);
+
   // Add 'allow all 4 directions' for joystick
-  ypos += lineHeight + VGAP * 4;
+  ypos += lineHeight + VGAP * 3;
   myAllowAll4 = new CheckboxWidget(myTab, _font, HBORDER, ypos,
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
@@ -194,7 +204,7 @@ void InputDialog::addDevicePortTab()
   int fwidth;
 
   // Add EEPROM erase (part 1/2)
-  ypos += VGAP*4;
+  ypos += VGAP * 3;
   fwidth = _font.getStringWidth("AtariVox/SaveKey");
   lwidth = _font.getStringWidth("AtariVox/SaveKey");
   new StaticTextWidget(myTab, _font, _w - HBORDER - 4 - (fwidth + lwidth) / 2, ypos,
@@ -203,7 +213,7 @@ void InputDialog::addDevicePortTab()
   // Show joystick database
   ypos += lineHeight;
   myJoyDlgButton = new ButtonWidget(myTab, _font, HBORDER, ypos, 20,
-    "Joystick Database" + ELLIPSIS, kDBButtonPressed);
+                                    "Joystick Database" + ELLIPSIS, kDBButtonPressed);
   wid.push_back(myJoyDlgButton);
 
   // Add EEPROM erase (part 1/2)
@@ -319,6 +329,8 @@ void InputDialog::loadConfig()
 
   // Trackball speed
   myTrackBallSpeed->setValue(instance().settings().getInt("tsense"));
+  // Driving controller speed
+  myDrivingSpeed->setValue(instance().settings().getInt("dcsense"));
 
   // AtariVox serial port
   myAVoxPort->setText(instance().settings().getString("avoxport"));
@@ -389,6 +401,11 @@ void InputDialog::saveConfig()
   instance().settings().setValue("tsense", sensitivity);
   PointingDevice::setSensitivity(sensitivity);
 
+  // Driving controller speed
+  sensitivity = myDrivingSpeed->getValue();
+  instance().settings().setValue("dcsense", sensitivity);
+  Driving::setSensitivity(sensitivity);
+
   // AtariVox serial port
   instance().settings().setValue("avoxport", myAVoxPort->getText());
 
@@ -447,6 +464,7 @@ void InputDialog::setDefaults()
       myDejitterBase->setValue(0);
       myDejitterDiff->setValue(0);
     #endif
+      myDrivingSpeed->setValue(10);
       myTrackBallSpeed->setValue(10);
 
       // AtariVox serial port
@@ -619,6 +637,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDPSpeedChanged:
       myDPaddleSpeed->setValueLabel(myDPaddleSpeed->getValue() * 10);
+      break;
+
+    case kDCSpeedChanged:
+      myDrivingSpeed->setValueLabel(myDrivingSpeed->getValue() * 10);
       break;
 
     case kTBSpeedChanged:
