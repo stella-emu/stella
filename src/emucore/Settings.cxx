@@ -106,6 +106,7 @@ Settings::Settings()
   setPermanent("psense", "20");
   setPermanent("msense", "10");
   setPermanent("tsense", "10");
+  setPermanent("dcsense", "10");
   setPermanent("saport", "lr");
   setPermanent("modcombo", "true");
 
@@ -124,6 +125,7 @@ Settings::Settings()
 
   // ROM browser options
   setPermanent("exitlauncher", "false");
+  setPermanent("followlauncher", "false");
   setPermanent("launcherres", Common::Size(900, 600));
   setPermanent("launcherfont", "medium");
   setPermanent("launcherroms", "true");
@@ -339,6 +341,10 @@ void Settings::validate()
   if(i < 1 || i > 20)
     setValue("tsense", "10");
 
+  i = getInt("dcsense");
+  if(i < 1 || i > 20)
+    setValue("dcsense", "10");
+
   i = getInt("ssinterval");
   if(i < 1)        setValue("ssinterval", "2");
   else if(i > 10)  setValue("ssinterval", "10");
@@ -457,6 +463,8 @@ void Settings::usage() const
     << "  -dsense       <1-20>         Sensitivity of digital emulated paddle movement\n"
     << "  -msense       <1-20>         Sensitivity of mouse emulated paddle movement\n"
     << "  -tsense       <1-20>         Sensitivity of mouse emulated trackball movement\n"
+    << "  -dcsense      <1-20>         Sensitivity of digital emulated driving controller\n"
+    << "                                movement\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
     << "                                Stelladaptor/2600-daptors\n"
     << "  -modcombo     <1|0>          Enable modifer key combos\n"
@@ -493,6 +501,7 @@ void Settings::usage() const
     << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
     << "  -romviewer    <float>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (use 0 for off)\n"
+    << "  -followlauncher <0|1>        Default ROM path follows launcher navigation\n"
     << "  -lastrom      <name>         Last played ROM, automatically selected in\n"
     << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"

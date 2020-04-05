@@ -77,6 +77,7 @@ class InputDialog : public Dialog
       kDejitterReChanged  = 'JRch',
       kDPSpeedChanged     = 'PDch',
       kTBSpeedChanged     = 'TBch',
+      kDCSpeedChanged     = 'DCch',
       kDBButtonPressed    = 'DBbp',
       kEEButtonPressed    = 'EEbp',
       kConfirmEEEraseCmd  = 'EEcf',
@@ -103,6 +104,7 @@ class InputDialog : public Dialog
     SliderWidget*     myDPaddleSpeed{nullptr};
     SliderWidget*     myMPaddleSpeed{nullptr};
     SliderWidget*     myTrackBallSpeed{nullptr};
+    SliderWidget*     myDrivingSpeed{nullptr};
     CheckboxWidget*   myAllowAll4{nullptr};
     CheckboxWidget*   myGrabMouse{nullptr};
     CheckboxWidget*   myModCombo{nullptr};

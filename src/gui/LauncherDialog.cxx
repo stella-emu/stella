@@ -179,31 +179,37 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
-      xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
     myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
-      xpos += (bwidth + 1) / 4 + BUTTON_GAP;
-      myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
-                                         "Options" + ELLIPSIS, kOptionsCmd);
+
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
+                                       "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
-      xpos += (bwidth + 2) / 4 + BUTTON_GAP;
-    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
-                                  "Quit", kQuitCmd);
+
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 4) / 4, bheight,
+                                    "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
   #else
     myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                     "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
-      xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
     myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
-      xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
     myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
-      xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
     myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
@@ -300,6 +306,13 @@ void LauncherDialog::loadConfig()
     myRomInfoWidget->reloadProperties(currentNode());
 
   myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // always reset this
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::saveConfig()
+{
+  if(instance().settings().getBool("followlauncher"))
+    instance().settings().setValue("romdir", myList->currentDir().getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -571,6 +584,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kLoadROMCmd:
     case FileListWidget::ItemActivated:
+      saveConfig();
       loadRom();
       break;
 
@@ -598,6 +612,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kQuitCmd:
+      saveConfig();
       close();
       instance().eventHandler().quit();
       break;
@@ -635,6 +650,12 @@ void LauncherDialog::loadRom()
   }
   else
     instance().frameBuffer().showMessage(result, MessagePosition::MiddleCenter, true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::setDefaultDir()
+{
+  instance().settings().setValue("romdir", myList->currentDir().getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
