@@ -54,6 +54,7 @@ class UIDialog : public Dialog, public CommandSender
 
     // Launcher options
     EditTextWidget*   myRomPath{nullptr};
+    CheckboxWidget*   myFollowLauncherWidget{nullptr};
     SliderWidget*     myLauncherWidthSlider{nullptr};
     SliderWidget*     myLauncherHeightSlider{nullptr};
     PopUpWidget*      myLauncherFontPopup{nullptr};

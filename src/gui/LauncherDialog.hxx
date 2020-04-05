@@ -107,6 +107,7 @@ class LauncherDialog : public Dialog
     Event::Type getJoyAxisEvent(int stick, JoyAxis axis, JoyDir adir, int button) override;
 
     void loadConfig() override;
+    void saveConfig() override;
     void updateUI();
     void applyFiltering();
 
@@ -131,8 +132,7 @@ class LauncherDialog : public Dialog
     unique_ptr<GUI::Font> myROMInfoFont;
 
     ButtonWidget* myStartButton{nullptr};
-    ButtonWidget* myPrevDirButton{nullptr};
-    ButtonWidget* mySetDefaultDirButton{nullptr};
+    ButtonWidget* myPrevDirButton{nullptr};    
     ButtonWidget* myOptionsButton{nullptr};
     ButtonWidget* myQuitButton{nullptr};
 
@@ -155,7 +155,6 @@ class LauncherDialog : public Dialog
     enum {
       kAllfilesCmd   = 'lalf',  // show all files (or ROMs only)
       kPrevDirCmd    = 'PRVD',
-      kDefaultDirCmd = 'DEFD',
       kOptionsCmd    = 'OPTI',
       kQuitCmd       = 'QUIT'
     };

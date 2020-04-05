@@ -189,8 +189,14 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myRomPath = new EditTextWidget(myTab, font, xpos, ypos + 1,
                                  _w - xpos - HBORDER - 2, lineHeight, "");
   wid.push_back(myRomPath);
+
+  xpos = _w - HBORDER - font.getStringWidth("Follow Launcher path") - 24;
+  ypos += lineHeight + V_GAP * 2;
+  myFollowLauncherWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Follow Launcher path");
+  wid.push_back(myFollowLauncherWidget);
+
   xpos = HBORDER;
-  ypos += lineHeight + V_GAP * 4;
+  ypos += V_GAP * 2;
 
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher width ",
@@ -309,6 +315,9 @@ void UIDialog::loadConfig()
   myLauncherWidthSlider->setValue(w);
   myLauncherHeightSlider->setValue(h);
 
+  // Follow Launcher path
+  myFollowLauncherWidget->setState(settings.getBool("followlauncher"));
+
   // Launcher font
   const string& font = settings.getString("launcherfont");
   myLauncherFontPopup->setSelected(font, "medium");
@@ -378,6 +387,9 @@ void UIDialog::saveConfig()
 
   // ROM path
   settings.setValue("romdir", myRomPath->getText());
+
+  // Follow Launcher path
+  settings.setValue("followlauncher", myFollowLauncherWidget->getState());
 
   // Launcher size
   settings.setValue("launcherres",
