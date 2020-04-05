@@ -125,6 +125,7 @@ Settings::Settings()
 
   // ROM browser options
   setPermanent("exitlauncher", "false");
+  setPermanent("followlauncher", "false");
   setPermanent("launcherres", Common::Size(900, 600));
   setPermanent("launcherfont", "medium");
   setPermanent("launcherroms", "true");
@@ -500,6 +501,7 @@ void Settings::usage() const
     << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
     << "  -romviewer    <float>        Show ROM info viewer at given zoom level in ROM\n"
     << "                                launcher (use 0 for off)\n"
+    << "  -followlauncher <0|1>        Default ROM path follows launcher navigation\n"
     << "  -lastrom      <name>         Last played ROM, automatically selected in\n"
     << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"

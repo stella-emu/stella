@@ -66,7 +66,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   const int fontWidth = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
-            bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (5 - 1)),
+            bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1)),
             bheight = myUseMinimalUI ? lineHeight - 4 : lineHeight + 4,
             LBL_GAP = fontWidth;
   int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0;
@@ -176,50 +176,41 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     // Add four buttons at the bottom
     xpos = HBORDER;  ypos += myDir->getHeight() + 8;
   #ifndef BSPF_MACOS
-    myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 5, bheight,
+    myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
 
-    xpos += (bwidth + 0) / 5 + BUTTON_GAP;
-    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 5, bheight,
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
 
-    xpos += (bwidth + 1) / 5 + BUTTON_GAP;
-    mySetDefaultDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 5, bheight,
-                                       "Set Path", kDefaultDirCmd);
-    wid.push_back(mySetDefaultDirButton);
-
-    xpos += (bwidth + 2) / 5 + BUTTON_GAP;
-    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 5, bheight,
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
 
-    xpos += (bwidth + 3) / 5 + BUTTON_GAP;
-    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 4) / 5, bheight,
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 4) / 4, bheight,
                                     "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
   #else
-    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 5, bheight,
+    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                     "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
 
-    xpos += (bwidth + 0) / 5 + BUTTON_GAP;
-    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 5, bheight,
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
 
-    xpos += (bwidth + 1) / 5 + BUTTON_GAP;
-    mySetDefaultDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 5, bheight,
-                                             "Set Path", kDefaultDirCmd);
-
-    xpos += (bwidth + 2) / 5 + BUTTON_GAP;
-    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 5, bheight,
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
 
-    xpos += (bwidth + 3) / 5 + BUTTON_GAP;
-    myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 4) / 5, bheight,
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+    myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
   #endif
@@ -315,6 +306,13 @@ void LauncherDialog::loadConfig()
     myRomInfoWidget->reloadProperties(currentNode());
 
   myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // always reset this
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::saveConfig()
+{
+  if(instance().settings().getBool("followlauncher"))
+    instance().settings().setValue("romdir", myList->currentDir().getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -586,6 +584,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kLoadROMCmd:
     case FileListWidget::ItemActivated:
+      saveConfig();
       loadRom();
       break;
 
@@ -595,10 +594,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPrevDirCmd:
       myList->selectParent();
-      break;
-
-    case kDefaultDirCmd:
-      setDefaultDir();
       break;
 
     case FileListWidget::ItemChanged:
@@ -617,6 +612,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kQuitCmd:
+      saveConfig();
       close();
       instance().eventHandler().quit();
       break;
