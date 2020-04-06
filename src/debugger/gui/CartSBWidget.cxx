@@ -26,10 +26,11 @@ CartridgeSBWidget::CartridgeSBWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  size_t size = myCart.mySize;
-
   VariantList items;
   ostringstream info, bank;
+  size_t size;
+
+  myCart.getImage(size);
   info << "SB SUPERbanking, 32 or 64 4K banks\n"
        << "Hotspots are from $800 to $"
        << Common::Base::HEX2 << (0x800 + myCart.bankCount() - 1) << ", including\n"
