@@ -27,9 +27,10 @@ CartridgeMDMWidget::CartridgeMDMWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
-  size_t size = myCart.mySize;
-
   ostringstream info;
+  size_t size;
+
+  myCart.getImage(size);
   info << "Menu Driven Megacart, containing up to 128 4K banks\n"
        << "Startup bank = " << cart.startBank() << "\n"
        << "\nBanks are selected by reading from $800 - $BFF, where the lower "

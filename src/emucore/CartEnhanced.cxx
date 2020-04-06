@@ -250,5 +250,9 @@ bool CartridgeEnhanced::load(Serializer& in)
     cerr << "ERROR: " << name() << "::load" << endl;
     return false;
   }
+  // Restore bank sewgments
+  for(uInt16 i = 0; i < myBankSegs; ++i)
+    bank(getSegmentBank(i), i);
+
   return true;
 }
