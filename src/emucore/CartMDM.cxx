@@ -21,30 +21,14 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMDM::CartridgeMDM(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
-  : Cartridge(settings, md5),
-    mySize(size)
+  : CartridgeEnhanced(image, size, md5, settings)
 {
-  // Allocate array for the ROM image
-  myImage = make_unique<uInt8[]>(mySize);
-
-  // Copy the ROM image into my buffer
-  std::copy_n(image.get(), mySize, myImage.get());
-  createRomAccessArrays(mySize);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMDM::reset()
-{
-  initializeStartBank(0);
-
-  // Upon reset we switch to the startup bank
-  bank(startBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMDM::install(System& system)
 {
-  mySystem = &system;
+  CartridgeEnhanced::install(system);
 
   // Get the page accessing methods for the hot spots since they overlap
   // areas within the TIA we'll need to forward requests to the TIA
@@ -61,9 +45,18 @@ void CartridgeMDM::install(System& system)
   System::PageAccess access(this, System::PageAccessType::READWRITE);
   for(uInt16 addr = 0x0800; addr < 0x0BFF; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
+}
 
-  // Install pages for bank 0
-  bank(startBank());
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMDM::checkSwitchBank(uInt16 address, uInt8)
+{
+  // Switch banks if necessary
+  if((address & 0x1C00) == 0x0800)
+  {
+    bank(address & 0x0FF);
+    return true;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,8 +64,8 @@ uInt8 CartridgeMDM::peek(uInt16 address)
 {
   // Because of the way we've set up accessing above, we can only
   // get here when the addresses are from 0x800 - 0xBFF
-  if((address & 0x1C00) == 0x0800)
-    bank(address & 0x0FF);
+
+  checkSwitchBank(address);
 
   int hotspot = ((address & 0x0F00) >> 8) - 8;
   return myHotSpotPageAccess[hotspot].device->peek(address);
@@ -85,8 +78,7 @@ bool CartridgeMDM::poke(uInt16 address, uInt8 value)
   // about those below $1000
   if(!(address & 0x1000))
   {
-    if((address & 0x1C00) == 0x0800)
-      bank(address & 0x0FF);
+    checkSwitchBank(address);
 
     int hotspot = ((address & 0x0F00) >> 8) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
@@ -100,22 +92,7 @@ bool CartridgeMDM::bank(uInt16 bank)
 {
   if(bankLocked() || myBankingDisabled) return false;
 
-  // Remember what bank we're in
-  // Wrap around to a valid bank number if necessary
-  myBankOffset = (bank % bankCount()) << 12;
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access(this, System::PageAccessType::READ);
-
-  // Map ROM image into the system
-  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
-    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
-    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
-    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
-    mySystem->setPageAccess(addr, access);
-  }
+  CartridgeEnhanced::bank(bank);
 
   // Accesses above bank 127 disable further bankswitching; we're only
   // concerned with the lower byte
@@ -124,37 +101,11 @@ bool CartridgeMDM::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMDM::getBank(uInt16) const
-{
-  return myBankOffset >> 12;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMDM::bankCount() const
-{
-  return uInt16(mySize >> 12);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMDM::patch(uInt16 address, uInt8 value)
-{
-  myImage[myBankOffset + (address & 0x0FFF)] = value;
-  return myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeMDM::getImage(size_t& size) const
-{
-  size = mySize;
-  return myImage.get();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMDM::save(Serializer& out) const
 {
+  CartridgeEnhanced::save(out);
   try
   {
-    out.putInt(myBankOffset);
     out.putBool(myBankingDisabled);
   }
   catch(...)
@@ -169,9 +120,9 @@ bool CartridgeMDM::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMDM::load(Serializer& in)
 {
+  CartridgeEnhanced::load(in);
   try
   {
-    myBankOffset = in.getInt();
     myBankingDisabled = in.getBool();
   }
   catch(...)
@@ -179,9 +130,6 @@ bool CartridgeMDM::load(Serializer& in)
     cerr << "ERROR: CartridgeMDM::load" << endl;
     return false;
   }
-
-  // Remember what bank we were in
-  bank(myBankOffset >> 12);
 
   return true;
 }
