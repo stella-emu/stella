@@ -24,19 +24,19 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
   : Cartridge(settings, md5),
     mySize(size)
 {
-  // Allocate array for the ROM image
-  myImage = make_unique<uInt8[]>(mySize);
+  // Allocate array for the ROM image (at least 64 bytzes)
+  myImage = make_unique<uInt8[]>(std::max(uInt16(mySize), System::PAGE_SIZE));
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
-
-  // Copy the ROM image into my buffer
-  createRomAccessArrays(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhanced::install(System& system)
 {
+  // Copy the ROM image into my buffer
+  createRomAccessArrays(mySize);
+
   // calculate bank switching and RAM sizes and masks
   myBankSize = 1 << myBankShift;          // e.g. = 2 ^ 12 = 4K = 0x1000
   myBankMask = myBankSize - 1;            // e.g. = 0x0FFF
@@ -81,7 +81,7 @@ void CartridgeEnhanced::install(System& system)
 
   // Install pages for the startup bank (TODO: currently only in first bank segment)
   bank(startBank(), 0);
-  if(myBankSegs > 1)
+  if(mySize >= 4_KB && myBankSegs > 1)
     // Setup the last bank segment to always point to the last ROM segment
     bank(bankCount() - 1, myBankSegs - 1);
 }
@@ -149,7 +149,8 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
   uInt16 hotspot = this->hotspot();
   uInt16 hotSpotAddr;
   uInt16 fromAddr = (segmentOffset + 0x1000 + myRamSize * 2) & ~System::PAGE_MASK;
-  uInt16 toAddr = (segmentOffset + 0x1000 + myBankSize) & ~System::PAGE_MASK;
+  // for ROMs < 4_KB, the whole address space will be mapped.
+  uInt16 toAddr = (segmentOffset + 0x1000 + (mySize < 4_KB ? 0x1000 : myBankSize)) & ~System::PAGE_MASK;
 
   if(hotspot)
     hotSpotAddr = (hotspot & ~System::PAGE_MASK);
