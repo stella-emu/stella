@@ -25,7 +25,7 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
     mySize(size)
 {
   // Allocate array for the ROM image (at least 64 bytzes)
-  myImage = make_unique<uInt8[]>(std::max(uInt16(mySize), System::PAGE_SIZE));
+  myImage = make_unique<uInt8[]>(std::max(uInt32(mySize), uInt32(System::PAGE_SIZE)));
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
@@ -251,7 +251,7 @@ bool CartridgeEnhanced::load(Serializer& in)
     cerr << "ERROR: " << name() << "::load" << endl;
     return false;
   }
-  // Restore bank sewgments
+  // Restore bank segments
   for(uInt16 i = 0; i < myBankSegs; ++i)
     bank(getSegmentBank(i), i);
 
