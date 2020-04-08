@@ -843,12 +843,13 @@ string CartDebug::loadSymbolFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::loadConfigFile()
 {
-  // The default naming/location for config files is the ROM dir based on the
-  // actual ROM filename
+  // The default naming/location for config files is the CFG dir and based
+  // on the actual ROM filename
 
   if(myCfgFile == "")
   {
-    FilesystemNode cfg(myOSystem.romFile().getPathWithExt("") + ".cfg");
+    FilesystemNode romNode(myOSystem.romFile().getPathWithExt("") + ".cfg");
+    FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
     if(cfg.isFile() && cfg.isReadable())
       myCfgFile = cfg.getPath();
     else
@@ -964,14 +965,14 @@ string CartDebug::loadConfigFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveConfigFile()
 {
-  // The default naming/location for config files is the ROM dir based on the
-  // actual ROM filename
+  // The default naming/location for config files is the CFG dir and based
+  // on the actual ROM filename
 
-  FilesystemNode cfg;
   if(myCfgFile == "")
   {
-    cfg = FilesystemNode(myOSystem.romFile().getPathWithExt("") + ".cfg");
-    if(cfg.isFile() && cfg.isWritable())
+    FilesystemNode romNode(myOSystem.romFile().getPathWithExt("") + ".cfg");
+    FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
+    if(cfg.getParent().isWritable())
       myCfgFile = cfg.getPath();
     else
       return DebuggerParser::red("config file \'" + cfg.getShortPath() + "\' not writable");
@@ -980,13 +981,14 @@ string CartDebug::saveConfigFile()
   const string& name = myConsole.properties().get(PropType::Cart_Name);
   const string& md5 = myConsole.properties().get(PropType::Cart_MD5);
 
+  FilesystemNode cfg(myCfgFile);
   ofstream out(cfg.getPath());
   if(!out.is_open())
     return "Unable to save directives to " + cfg.getShortPath();
 
   // Store all bank information
-  out << "//Stella.pro: \"" << name << "\"" << endl
-      << "//MD5: " << md5 << endl
+  out << "// Stella.pro: \"" << name << "\"" << endl
+      << "// MD5: " << md5 << endl
       << endl;
   for(uInt32 b = 0; b < myConsole.cartridge().bankCount(); ++b)
   {
