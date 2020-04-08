@@ -28,6 +28,8 @@
 
   * Added detection of color and audio data in DiStella.
 
+  * Restored 'cfg' directory for Distella config files.
+
 -Have fun!
 
 

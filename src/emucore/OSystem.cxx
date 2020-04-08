@@ -268,6 +268,9 @@ void OSystem::setConfigPaths()
 
   buildDirIfRequired(myStateDir, myBaseDir + "state");
   buildDirIfRequired(myNVRamDir, myBaseDir + "nvram");
+#ifdef DEBUGGER_SUPPORT
+  buildDirIfRequired(myCfgDir, myBaseDir + "cfg");
+#endif
 
 #ifdef PNG_SUPPORT
   mySnapshotSaveDir = mySettings->getString("snapsavedir");
@@ -292,6 +295,7 @@ void OSystem::setConfigPaths()
   dbgPath("base dir  ", myBaseDir);
   dbgPath("state dir ", myStateDir);
   dbgPath("nvram dir ", myNVRamDir);
+  dbgPath("cfg dir   ", myCfgDir);
   dbgPath("ssave dir ", mySnapshotSaveDir);
   dbgPath("sload dir ", mySnapshotLoadDir);
   dbgPath("cheat file", myCheatFile);
