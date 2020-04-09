@@ -103,7 +103,7 @@ string CartridgeX07Widget::bankState()
 {
   ostringstream& buf = buffer();
 
-  buf << "Bank = " << std::dec << myCart.myCurrentBank;
+  buf << "Bank = " << std::dec << myCart.getBank();
 
   return buf.str();
 }
