@@ -110,7 +110,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 
   // Write port is e.g. at 0xF000 - 0xF07F (128 bytes)
   if(address < myReadOffset + myRamSize && address >= myReadOffset)
-    // This is a read accees to a write port!
+    // This is a read access to a write port!
     return peekRAM(myRAM[address], peekAddress);
   else
     return myImage[myCurrentSegOffset[(peekAddress & 0xFFF) >> myBankShift] + address];
@@ -233,7 +233,6 @@ bool CartridgeEnhanced::save(Serializer& out) const
     out.putIntArray(myCurrentSegOffset.get(), myBankSegs);
     if(myRamSize)
       out.putByteArray(myRAM.get(), myRamSize);
-
   }
   catch(...)
   {

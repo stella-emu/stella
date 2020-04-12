@@ -951,13 +951,12 @@ bool CartDetector::isProbablyFC(const ByteBuffer& image, size_t size)
     { 0x8d, 0xf8, 0xff, 0x8d, 0xfc, 0xff }, // STA $FFF8, STA $FFFC        Surf's Up (4K)
     { 0x8c, 0xf9, 0xff, 0xad, 0xfc, 0xff }  // STY $FFF9, LDA $FFFC        3-D Havoc
   };
-  for (uInt32 i = 0; i < 3; ++i)
-    if (searchForBytes(image.get(), size, signature[i], 6, 1))
+  for(uInt32 i = 0; i < 3; ++i)
+    if(searchForBytes(image.get(), size, signature[i], 6, 1))
       return true;
 
   return false;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyFE(const ByteBuffer& image, size_t size)
@@ -1031,7 +1030,6 @@ bool CartDetector::isProbablyWD(const ByteBuffer& image, size_t size)
   };
   return searchForBytes(image.get(), size, signature[0], 3, 1);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbablyX07(const ByteBuffer& image, size_t size)
