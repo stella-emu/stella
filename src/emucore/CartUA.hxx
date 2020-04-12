@@ -59,13 +59,14 @@ class CartridgeUA : public CartridgeEnhanced
     */
     void install(System& system) override;
 
-
     /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
     */
-    string name() const override { return mySwappedHotspots ? "CartridgeUASW" : "CartridgeUA"; }
+    string name() const override {
+      return mySwappedHotspots ? "CartridgeUASW" : "CartridgeUA";
+    }
 
   #ifdef DEBUGGER_SUPPORT
     /**
@@ -95,7 +96,6 @@ class CartridgeUA : public CartridgeEnhanced
       @return  True if the poke changed the device address space, else false
     */
     bool poke(uInt16 address, uInt8 value) override;
-
 
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;

@@ -27,7 +27,6 @@ CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
   myRamSize = RAM_SIZE;
   myRamWpHigh = RAM_HIGH_WP;
 
-
   if(mySize == 4_KB)
   {
     // The game has something saved in the RAM
@@ -39,7 +38,6 @@ CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
 
     // Copy the ROM image into my buffer
     std::copy_n(image.get() + mySize, mySize, myImage.get());
-
 
     myInitialRAM = make_unique<uInt8[]>(1_KB);
     // Copy the RAM image into a buffer for use in reset()

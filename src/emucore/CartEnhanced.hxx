@@ -57,7 +57,6 @@ class CartridgeEnhanced : public Cartridge
     */
     void reset() override;
 
-
     /**
       Install pages for the specified bank in the system.
 

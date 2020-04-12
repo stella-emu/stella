@@ -49,11 +49,10 @@ bool CartridgeFA2::checkSwitchBank(uInt16 address, uInt8)
   }
   return false;
 }
- 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeFA2::peek(uInt16 address)
 {
-
   if((address & 0x0FFF) == 0x0FF4)
   {
     // Load/save RAM to/from Harmony cart flash

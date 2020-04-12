@@ -70,7 +70,7 @@ class Cartridge4K : public CartridgeEnhanced
   #endif
 
   private:
-    bool checkSwitchBank(uInt16 address, uInt8 value = 0) override { return false; };
+    bool checkSwitchBank(uInt16 address, uInt8 value = 0) override { return false; }
 
   private:
     // Following constructors and assignment operators not supported
