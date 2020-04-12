@@ -40,7 +40,7 @@ class CartridgeEnhanced : public Cartridge
       @param settings  A reference to the various settings (read-only)
     */
     CartridgeEnhanced(const ByteBuffer& image, size_t size, const string& md5,
-                const Settings& settings);
+                      const Settings& settings);
     virtual ~CartridgeEnhanced() = default;
 
   public:
@@ -160,6 +160,21 @@ class CartridgeEnhanced : public Cartridge
     // The mask for the extra RAM
     uInt16 myRamMask{0};                        // RAM_SIZE - 1, but doesn't matter when RAM_SIZE is 0
 
+    // The offset into ROM space for writing to RAM
+    // - xxSC  = 0x0000
+    // - FA(2) = 0x0000
+    // - CV    = 0x0400
+    uInt16 myWriteOffset{0};
+
+    // The offset into ROM space for reading from RAM
+    // - xxSC  = 0x0080
+    // - FA(2) = 0x0100
+    // - CV    = 0x0000
+    uInt16 myReadOffset{0};
+
+    // Flag, true if write port is at high and read port is at low address
+    bool myRamWpHigh{RAM_HIGH_WP};
+
     // Pointer to a dynamically allocated ROM image of the cartridge
     ByteBuffer myImage{nullptr};
 
@@ -181,6 +196,9 @@ class CartridgeEnhanced : public Cartridge
 
     // The size of extra RAM in ROM address space
     static constexpr uInt16 RAM_SIZE = 0;     // default = none
+
+    // Write port for extra RAM is at low address by default
+    static constexpr bool RAM_HIGH_WP = false;
 
   protected:
     /**
