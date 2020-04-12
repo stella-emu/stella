@@ -55,10 +55,4 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
     mySize = System::PAGE_SIZE;
     myBankShift = 6;
   }
-
-  // update access arrays, bank size and mask based on new size
-  createRomAccessArrays(mySize);
-
-  myBankSize = 1 << myBankShift;          // e.g. = 2 ^ 11 = 2048 = 0x0800
-  myBankMask = myBankSize - 1;            // e.g. = 0x07FF
 }
