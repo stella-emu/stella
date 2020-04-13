@@ -146,40 +146,89 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
+bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment, bool isRAM)
 {
   if(bankLocked()) return false;
 
-  // Remember what bank is in which segment
-  uInt32 bankOffset = myCurrentSegOffset[segment] = bank << myBankShift;
   uInt16 segmentOffset = segment << myBankShift;
-  uInt16 hotspot = this->hotspot();
-  uInt16 hotSpotAddr;
-  uInt16 fromAddr = (segmentOffset + 0x1000 + myRamSize * 2) & ~System::PAGE_MASK;
-  // for ROMs < 4_KB, the whole address space will be mapped.
-  uInt16 toAddr = (segmentOffset + 0x1000 + (mySize < 4_KB ? 0x1000 : myBankSize)) & ~System::PAGE_MASK;
 
-  if(hotspot)
-    hotSpotAddr = (hotspot & ~System::PAGE_MASK);
-  else
-    hotSpotAddr = 0xFFFF; // none
-
-  System::PageAccess access(this, System::PageAccessType::READ);
-
-  // Setup the page access methods for the current bank
-  for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
+  if(!isRAM)
   {
-    uInt32 offset = bankOffset + (addr & myBankMask);
+    // Setup ROM bank
+    // Remember what bank is in which segment
+    uInt32 bankOffset = myCurrentSegOffset[segment] = bank << myBankShift;
 
-    if(myDirectPeek && addr != hotSpotAddr)
-      access.directPeekBase = &myImage[offset];
+    uInt16 hotspot = this->hotspot();
+    uInt16 hotSpotAddr;
+    uInt16 fromAddr = (segmentOffset + 0x1000 + myRamSize * 2) & ~System::PAGE_MASK;
+    // for ROMs < 4_KB, the whole address space will be mapped.
+    uInt16 toAddr = (segmentOffset + 0x1000 + (mySize < 4_KB ? 0x1000 : myBankSize)) & ~System::PAGE_MASK;
+
+    if(hotspot)
+      hotSpotAddr = (hotspot & ~System::PAGE_MASK);
     else
-      access.directPeekBase = nullptr;
-    access.romAccessBase = &myRomAccessBase[offset];
-    access.romPeekCounter = &myRomAccessCounter[offset];
-    access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
-    mySystem->setPageAccess(addr, access);
+      hotSpotAddr = 0xFFFF; // none
+
+    System::PageAccess access(this, System::PageAccessType::READ);
+    // Setup the page access methods for the current bank
+    for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
+    {
+      uInt32 offset = bankOffset + (addr & myBankMask);
+
+      if(myDirectPeek && addr != hotSpotAddr)
+        access.directPeekBase = &myImage[offset];
+      else
+        access.directPeekBase = nullptr;
+      access.romAccessBase = &myRomAccessBase[offset];
+      access.romPeekCounter = &myRomAccessCounter[offset];
+      access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
+      mySystem->setPageAccess(addr, access);
+    }
   }
+  /*else
+  {
+    // Setup RAM bank
+    // TODO: define offsets on init
+    uInt16 myWriteBankOffset = myBankSize >> 1;
+    uInt16 myReadBankOffset = 0;
+
+    // Remember what bank is in which segment
+    uInt32 bankOffset = myCurrentSegOffset[segment] = bank << myBankShift;
+
+    // Set the page accessing method for the RAM writing pages
+    uInt16 fromAddr = (segmentOffset + myWriteBankOffset + 0x1000) & ~System::PAGE_MASK;
+    uInt16 toAddr = (segmentOffset + myWriteBankOffset + 0x1000 + myBankSize >> 1) & ~System::PAGE_MASK;
+    System::PageAccess access(this, System::PageAccessType::WRITE);
+
+    for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
+    {
+      uInt32 offset = bankOffset + (addr & myBankMask);
+
+      access.romAccessBase = &myRomAccessBase[offset];
+      access.romPeekCounter = &myRomAccessCounter[offset];
+      access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
+      mySystem->setPageAccess(addr, access);
+    }
+
+    // Set the page accessing method for the RAM reading pages
+    fromAddr = (segmentOffset + myReadBankOffset + 0x1000) & ~System::PAGE_MASK;
+    toAddr = (segmentOffset + myReadBankOffset + 0x1000 + myBankSize >> 1) & ~System::PAGE_MASK;
+
+    access.type = System::PageAccessType::READ;
+    for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
+    {
+      uInt32 offset = bankOffset + (addr & myBankMask);
+
+
+
+      uInt16 offset = addr & myRamMask;
+      access.directPeekBase = &myBankRAM[offset];
+      access.romAccessBase = &myRomAccessBase[offset];
+      access.romPeekCounter = &myRomAccessCounter[offset];
+      access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
+      mySystem->setPageAccess(addr, access);
+    }
+  }*/
 
   return myBankChanged = true;
 }
