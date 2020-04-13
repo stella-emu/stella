@@ -21,8 +21,7 @@ MODULE_OBJS := \
 	src/debugger/gui/CartCDFWidget.o \
 	src/debugger/gui/CartCDFInfoWidget.o \
 	src/debugger/gui/CartCMWidget.o \
-	src/debugger/gui/CartCTYWidget.o \
-	src/debugger/gui/CartCVPlusWidget.o \
+	src/debugger/gui/CartCTYWidget.o \	
 	src/debugger/gui/CartCVWidget.o \
 	src/debugger/gui/CartDASHWidget.o \
 	src/debugger/gui/CartDFSCWidget.o \

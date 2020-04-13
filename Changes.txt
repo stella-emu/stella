@@ -22,13 +22,15 @@
     a game. This allows the user to save high scores for these games. For each
     game and variation, the top 10 scores can be saved. (TODO: Doc)
 
-  * Add option which lets default ROM path follow launcher navigation (TODO: Doc)
+  * Added option which lets default ROM path follow launcher navigation (TODO: Doc)
 
   * Added displaying last write address in the debugger.
 
   * Added detection of color and audio data in DiStella.
 
   * Restored 'cfg' directory for Distella config files.
+
+  * Removed unused CV+ bank switching type.
 
 -Have fun!
 

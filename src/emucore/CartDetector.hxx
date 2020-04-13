@@ -176,11 +176,6 @@ class CartDetector
     static bool isProbablyCV(const ByteBuffer& image, size_t size);
 
     /**
-      Returns true if the image is probably a CV+ bankswitching cartridge
-    */
-    static bool isProbablyCVPlus(const ByteBuffer& image, size_t size);
-
-    /**
       Returns true if the image is probably a DASH bankswitching cartridge
     */
     static bool isProbablyDASH(const ByteBuffer& image, size_t size);
