@@ -190,6 +190,12 @@ class Cartridge3E : public Cartridge
     // Size of the ROM image
     size_t mySize{0};
 
+    // Size of the ROM image
+    uInt16 myRomBanks{0};
+
+    // Size of the ROM image
+    uInt16 myRamBanks{32};
+
     // Indicates which bank is currently active for the first segment
     uInt16 myCurrentBank{0};
 

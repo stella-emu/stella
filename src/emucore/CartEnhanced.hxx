@@ -60,28 +60,34 @@ class CartridgeEnhanced : public Cartridge
     /**
       Install pages for the specified bank in the system.
 
-      @param bank The bank that should be installed in the system
+      @param bank     The bank that should be installed in the system
+      @param segment  The segment the bank should be using
+      @param isRAM    True if the bank is a RAM bank
+
+      @return  true, if bank has changed
     */
-    bool bank(uInt16 bank, uInt16 segment);
+    bool bank(uInt16 bank, uInt16 segment, bool isRAM = false);
 
     /**
       Install pages for the specified bank in the system.
 
-      @param bank The bank that should be installed in the system
+      @param bank  The bank that should be installed in the system
+
+      @return  true, if bank has changed
     */
     bool bank(uInt16 bank) override { return this->bank(bank, 0); }
 
     /**
       Get the current bank.
 
-      @param address The address to use when querying the bank
+      @param address  The address to use when querying the bank
     */
     uInt16 getBank(uInt16 address = 0) const override;
 
     /**
       Get the current bank for a bank segment.
 
-      @param segment The segment to get the bank for
+      @param segment  The segment to get the bank for
     */
     uInt16 getSegmentBank(uInt16 segment = 0) const;
 

@@ -23,7 +23,8 @@
 Cartridge3E::Cartridge3E(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : Cartridge(settings, md5),
-    mySize(size)
+    mySize(size),
+  myRomBanks(256/*uInt16(size) >> 11*/)
 {
   // Allocate array for the ROM image
   myImage = make_unique<uInt8[]>(mySize);
@@ -80,10 +81,10 @@ uInt8 Cartridge3E::peek(uInt16 address)
 
   if(address < 0x0040)  // TIA access
     return mySystem->tia().peek(address);
-  else if(myCurrentBank >= 256)
+  else if(myCurrentBank >= myRomBanks)
   {
     // Reading from the write port triggers an unwanted write
-    return peekRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)], peekAddress);
+    return peekRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - myRomBanks) << 10)], peekAddress);
   }
 
   // Make compiler happy; should never get here
@@ -103,15 +104,15 @@ bool Cartridge3E::poke(uInt16 address, uInt8 value)
     if(address == 0x003F)
       bank(value);
     else if(address == 0x003E)
-      bank(value + 256);
+      bank(value + myRomBanks);
 
     return mySystem->tia().poke(address, value);
   }
-  else if(myCurrentBank >= 256)
+  else if(myCurrentBank >= myRomBanks)
   {
     if(address & 0x0400)
     {
-      pokeRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)],
+      pokeRAM(myRAM[(address & 0x03FF) + ((myCurrentBank - myRomBanks) << 10)],
               pokeAddress, value);
       return true;
     }
@@ -133,7 +134,7 @@ bool Cartridge3E::bank(uInt16 bank)
 {
   if(bankLocked()) return false;
 
-  if(bank < 256)
+  if(bank < myRomBanks)
   {
     // Make sure the bank they're asking for is reasonable
     if((uInt32(bank) << 11) < mySize)
@@ -164,9 +165,9 @@ bool Cartridge3E::bank(uInt16 bank)
   }
   else
   {
-    bank -= 256;
-    bank %= 32;
-    myCurrentBank = bank + 256;
+    bank -= myRomBanks;
+    bank %= myRamBanks;
+    myCurrentBank = bank + myRomBanks;
 
     uInt32 offset = bank << 10;
 
@@ -204,7 +205,7 @@ bool Cartridge3E::bank(uInt16 bank)
 uInt16 Cartridge3E::getBank(uInt16 address) const
 {
   if (address & 0x800)
-    return 255; // 256 - 1 // 2K slices, fixed bank
+    return myRomBanks - 1; // 2K slices, fixed bank
   else
     return myCurrentBank;
 }
@@ -217,7 +218,7 @@ uInt16 Cartridge3E::bankCount() const
   // If the RAM banks were simply appended to the number of actual
   // ROM banks, bank numbers would be ambiguous (ie, would bank 128 be
   // the last bank of ROM, or one of the banks of RAM?)
-  return 256 + 32;
+  return myRomBanks + myRamBanks;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -227,10 +228,10 @@ bool Cartridge3E::patch(uInt16 address, uInt8 value)
 
   if(address < 0x0800)
   {
-    if(myCurrentBank < 256)
+    if(myCurrentBank < myRomBanks)
       myImage[(address & 0x07FF) + (myCurrentBank << 11)] = value;
     else
-      myRAM[(address & 0x03FF) + ((myCurrentBank - 256) << 10)] = value;
+      myRAM[(address & 0x03FF) + ((myCurrentBank - myRomBanks) << 10)] = value;
   }
   else
     myImage[(address & 0x07FF) + mySize - 2048] = value;
