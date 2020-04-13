@@ -33,7 +33,6 @@
 #include "CartCM.hxx"
 #include "CartCTY.hxx"
 #include "CartCV.hxx"
-#include "CartCVPlus.hxx"
 #include "CartDASH.hxx"
 #include "CartDF.hxx"
 #include "CartDFSC.hxx"
@@ -278,8 +277,6 @@ CartDetector::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::
       return make_unique<CartridgeCTY>(image, size, md5, settings);
     case Bankswitch::Type::_CV:
       return make_unique<CartridgeCV>(image, size, md5, settings);
-    case Bankswitch::Type::_CVP:
-      return make_unique<CartridgeCVPlus>(image, size, md5, settings);
     case Bankswitch::Type::_DASH:
       return make_unique<CartridgeDASH>(image, size, md5, settings);
     case Bankswitch::Type::_DF:
@@ -346,11 +343,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   // Guess type based on size
   Bankswitch::Type type = Bankswitch::Type::_AUTO;
 
-  if(isProbablyCVPlus(image, size))
-  {
-    type = Bankswitch::Type::_CVP;
-  }
-  else if((size % 8448) == 0 || size == 6144)
+  if((size % 8448) == 0 || size == 6144)
   {
     type = Bankswitch::Type::_AR;
   }
@@ -755,16 +748,6 @@ bool CartDetector::isProbablyCV(const ByteBuffer& image, size_t size)
     return true;
   else
     return searchForBytes(image.get(), size, signature[1], 3, 1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyCVPlus(const ByteBuffer& image, size_t)
-{
-  // CV+ cart is identified key 'commavidplus' @ $04 in the ROM
-  // We inspect only this area to speed up the search
-  uInt8 cvp[12] = { 'c', 'o', 'm', 'm', 'a', 'v', 'i', 'd',
-                    'p', 'l', 'u', 's' };
-  return searchForBytes(image.get()+4, 24, cvp, 12, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
