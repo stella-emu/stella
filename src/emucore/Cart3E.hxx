@@ -112,6 +112,14 @@ class Cartridge3E : public Cartridge
     uInt16 bankCount() const override;
 
     /**
+      Get the size of a bank.
+
+      @param bank  The bank to get the size for
+      @return  The bank's size
+    */
+    virtual uInt16 bankSize(uInt16 bank = 0) const;
+
+    /**
       Patch the cartridge ROM.
 
       @param address  The ROM address to patch
