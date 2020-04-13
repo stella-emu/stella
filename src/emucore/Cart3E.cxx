@@ -222,6 +222,12 @@ uInt16 Cartridge3E::bankCount() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 Cartridge3E::bankSize(uInt16 bank) const
+{
+  return 2_KB; // we cannot use bankCount() here, because it delivers wrong numbers
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3E::patch(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;
