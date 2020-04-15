@@ -30,7 +30,7 @@
 
   * Restored 'cfg' directory for Distella config files.
 
-  * Removed unused CV+ bank switching type.
+  * Removed unused CV+ and DASH bank switching types.
 
 -Have fun!
 
