@@ -33,7 +33,6 @@
 #include "CartCM.hxx"
 #include "CartCTY.hxx"
 #include "CartCV.hxx"
-#include "CartDASH.hxx"
 #include "CartDF.hxx"
 #include "CartDFSC.hxx"
 #include "CartDPC.hxx"
@@ -277,8 +276,6 @@ CartDetector::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::
       return make_unique<CartridgeCTY>(image, size, md5, settings);
     case Bankswitch::Type::_CV:
       return make_unique<CartridgeCV>(image, size, md5, settings);
-    case Bankswitch::Type::_DASH:
-      return make_unique<CartridgeDASH>(image, size, md5, settings);
     case Bankswitch::Type::_DF:
       return make_unique<CartridgeDF>(image, size, md5, settings);
     case Bankswitch::Type::_DFSC:
@@ -522,9 +519,7 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
 
   // Variable sized ROM formats are independent of image size and come last
-  if(isProbablyDASH(image, size))
-    type = Bankswitch::Type::_DASH;
-  else if(isProbably3EPlus(image, size))
+  if(isProbably3EPlus(image, size))
     type = Bankswitch::Type::_3EP;
   else if(isProbablyMDM(image, size))
     type = Bankswitch::Type::_MDM;
@@ -748,14 +743,6 @@ bool CartDetector::isProbablyCV(const ByteBuffer& image, size_t size)
     return true;
   else
     return searchForBytes(image.get(), size, signature[1], 3, 1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDetector::isProbablyDASH(const ByteBuffer& image, size_t size)
-{
-  // DASH cart is identified key 'TJAD' in the ROM
-  uInt8 tjad[] = { 'T', 'J', 'A', 'D' };
-  return searchForBytes(image.get(), size, tjad, 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

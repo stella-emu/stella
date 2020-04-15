@@ -723,9 +723,6 @@
     <ClCompile Include="..\emucore\TIASurface.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\CartDASH.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartRamWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
@@ -733,9 +730,6 @@
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
     <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx">
-      <Filter>Source Files\debugger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartDASHWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
     <ClCompile Include="..\emucore\CartMDM.cxx">
@@ -1703,9 +1697,6 @@
     <ClInclude Include="..\emucore\TIASurface.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
-    <ClInclude Include="..\emucore\CartDASH.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
     <ClInclude Include="..\debugger\gui\CartRamWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
@@ -1713,9 +1704,6 @@
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx">
-      <Filter>Header Files\debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartDASHWidget.hxx">
       <Filter>Header Files\debugger</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\CartMDM.hxx">
