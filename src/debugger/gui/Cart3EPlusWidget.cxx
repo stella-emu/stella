@@ -30,8 +30,8 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
   size_t size = cart.mySize;
 
   ostringstream info;
-  info << "3EPlus cartridge - (64K ROM + RAM)\n"
-       << "  4-64K ROM (1K banks), 32K RAM (512b banks)\n"
+  info << "3EPlus cartridge - (4..64K ROM + RAM)\n"
+       << "  4..64K ROM (1K banks), ..32K RAM (512b banks)\n"
        << "Each 1K ROM selected by writing to $3F\n"
           "Each 512b RAM selected by writing to $3E\n"
           "  Lower 512b of bank x (R)\n"
@@ -39,83 +39,78 @@ Cartridge3EPlusWidget::Cartridge3EPlusWidget(
        << "Startup bank = 0/-1/-1/0 (ROM)\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  //uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
   // Currently the cart starts at bank 0. If we change that, we have to change this too.
   uInt16 start = (cart.myImage[0x400-3] << 8) | cart.myImage[0x400 - 4];
-  start -= start % 0x1000;
-  info << "Bank RORG" << " = $" << Common::Base::HEX4 << start << "\n";
+  start &= 0xF000;
+  info << "Bank RORG = $" << Common::Base::HEX4 << start << "\n";
 
   int xpos = 2,
-      ypos = addBaseInformation(size, "T. Jentzsch", info.str()) +
-                                myLineHeight;
+    ypos = addBaseInformation(size, "Thomas Jentzsch", info.str()) + 8;
 
   VariantList bankno;
-  for(uInt32 i = 0; i < myCart.ROM_BANK_COUNT; ++i)
+  for(uInt32 i = 0; i < myCart.romBankCount(); ++i)
     VarList::push_back(bankno, i, i);
 
   VariantList banktype;
   VarList::push_back(banktype, "ROM", "ROM");
   VarList::push_back(banktype, "RAM", "RAM");
 
-  for(uInt32 i = 0; i < 4; ++i)
+  for(uInt32 seg = 0; seg < myCart.myBankSegs; ++seg)
   {
-    int xpos_s, ypos_s = ypos;
+    int xpos_s, ypos_s = ypos + 1;
 
     ostringstream label;
-    label << "Set segment " << i << " as ";
+    label << "Set segment " << seg << " as ";
 
-    new StaticTextWidget(boss, _font, xpos, ypos, _font.getStringWidth(label.str()),
-      myFontHeight, label.str(), TextAlign::Left);
+    new StaticTextWidget(boss, _font, xpos, ypos, label.str());
     ypos += myLineHeight + 8;
 
-    xpos += 20;
-    myBankNumber[i] =
-      new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("Slot "),
-                      myLineHeight, bankno, "Slot ",
-                      6*_font.getMaxCharWidth());
-    addFocusWidget(myBankNumber[i]);
+    xpos += _font.getMaxCharWidth() * 2;
+    myBankNumber[seg] =
+      new PopUpWidget(boss, _font, xpos, ypos-2, 2 *_font.getMaxCharWidth(),
+                      myLineHeight, bankno, "Bank ");
+    addFocusWidget(myBankNumber[seg]);
 
-    xpos += myBankNumber[i]->getWidth();
-    myBankType[i] =
-      new PopUpWidget(boss, _font, xpos, ypos-2, 5*_font.getMaxCharWidth(),
-                      myLineHeight, banktype, " of ", _font.getStringWidth(" of "));
-    addFocusWidget(myBankType[i]);
+    xpos += myBankNumber[seg]->getWidth();
+    myBankType[seg] =
+      new PopUpWidget(boss, _font, xpos, ypos-2, 3 *_font.getMaxCharWidth(),
+                      myLineHeight, banktype, " of ");
+    addFocusWidget(myBankType[seg]);
 
-    xpos += myBankType[i]->getWidth() + 10;
+    xpos = myBankType[seg]->getRight() + _font.getMaxCharWidth();
 
-    myBankCommit[i] = new ButtonWidget(boss, _font, xpos, ypos-4,
+    // add "Commit" button (why required?)
+    myBankCommit[seg] = new ButtonWidget(boss, _font, xpos, ypos-4,
         _font.getStringWidth(" Commit "), myButtonHeight,
-        "Commit", bankEnum[i]);
-    myBankCommit[i]->setTarget(this);
-    addFocusWidget(myBankCommit[i]);
+        "Commit", bankEnum[seg]);
+    myBankCommit[seg]->setTarget(this);
+    addFocusWidget(myBankCommit[seg]);
 
-    xpos_s = xpos + myBankCommit[i]->getWidth() + 20;
+    xpos_s = myBankCommit[seg]->getRight() + _font.getMaxCharWidth() * 2;
 
     StaticTextWidget* t;
-    int addr1 = start + (i*0x400), addr2 = addr1 + 0x1FF;
+    int addr1 = start + (seg * 0x400), addr2 = addr1 + 0x200;
 
     label.str("");
-    label << Common::Base::HEX4 << addr1 << "-" << Common::Base::HEX4 << addr2;
-    t = new StaticTextWidget(boss, _font, xpos_s, ypos_s+2,
-          _font.getStringWidth(label.str()), myFontHeight, label.str(), TextAlign::Left);
+    label << "$" << Common::Base::HEX4 << addr1 << "-$" << Common::Base::HEX4 << (addr1 + 0x1FF);
+    t = new StaticTextWidget(boss, _font, xpos_s, ypos_s+2, label.str());
 
-    int xoffset = xpos_s+t->getWidth() + 10;
-    myBankState[2*i] = new EditTextWidget(boss, _font, xoffset, ypos_s,
+    int xoffset = t->getRight() + _font.getMaxCharWidth();
+    myBankState[2*seg] = new EditTextWidget(boss, _font, xoffset, ypos_s,
               w - xoffset - 10, myLineHeight, "");
-    myBankState[2*i]->setEditable(false, true);
+    myBankState[2*seg]->setEditable(false, true);
     ypos_s += myLineHeight + 4;
 
     label.str("");
-    label << Common::Base::HEX4 << (addr2 + 1) << "-" << Common::Base::HEX4 << (addr2 + 1 + 0x1FF);
-    new StaticTextWidget(boss, _font, xpos_s, ypos_s+2,
-        _font.getStringWidth(label.str()), myFontHeight, label.str(), TextAlign::Left);
+    label << "$" << Common::Base::HEX4 << addr2 << "-$" << Common::Base::HEX4 << (addr2 + 0x1FF);
+    new StaticTextWidget(boss, _font, xpos_s, ypos_s+2, label.str());
 
-    myBankState[2*i+1] = new EditTextWidget(boss, _font, xoffset, ypos_s,
+    myBankState[2*seg+1] = new EditTextWidget(boss, _font, xoffset, ypos_s,
               w - xoffset - 10, myLineHeight, "");
-    myBankState[2*i+1]->setEditable(false, true);
+    myBankState[2*seg+1]->setEditable(false, true);
 
-    xpos = 10;
-    ypos+= 2 * myLineHeight;
+    xpos = 2;
+    ypos += 2 * myLineHeight;
   }
 }
 
@@ -163,15 +158,14 @@ void Cartridge3EPlusWidget::handleCommand(CommandSender* sender,
      myBankType[segment]->getSelected() < 0)
     return;
 
-  uInt8 bank = (segment << myCart.BANK_BITS) |
-               (myBankNumber[segment]->getSelected() & myCart.BIT_BANK_MASK);
+  uInt8 bank = myBankNumber[segment]->getSelected();
 
   myCart.unlockBank();
 
   if(myBankType[segment]->getSelectedTag() == "ROM")
-    myCart.bankROM(bank);
+    myCart.bank(bank, segment);
   else
-    myCart.bankRAM(bank);
+    myCart.bank(bank + myCart.romBankCount(), segment);
 
   myCart.lockBank();
   invalidate();
@@ -183,26 +177,15 @@ string Cartridge3EPlusWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  // In this scheme, consecutive 512b segments are either both ROM or both RAM;
-  // we only need to look at the lower segment to determine what the 1K bank is
-  for(int i = 0; i < 4; ++i)
+  for(int seg = 0; seg < myCart.myBankSegs; ++seg)
   {
-    uInt16 bank = myCart.bankInUse[i*2];
+    int bank = myCart.getSegmentBank(seg);
 
-    if(bank == myCart.BANK_UNDEFINED)  // never accessed
-    {
-      buf << " U!";
-    }
+    if(bank >= myCart.romBankCount()) // was RAM mapped here?
+      buf << " RAM " << bank - myCart.romBankCount();
     else
-    {
-      int bankno = bank & myCart.BIT_BANK_MASK;
-
-      if(bank & myCart.BITMASK_ROMRAM) // was RAM mapped here?
-        buf << " RAM " << bankno;
-      else
-        buf << " ROM " << bankno;
-    }
-    if(i < 3)
+      buf << " ROM " << bank;
+    if(seg < myCart.myBankSegs - 1)
       buf << " /";
   }
 
@@ -212,68 +195,42 @@ string Cartridge3EPlusWidget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlusWidget::updateUIState()
 {
-  // Set description for each 512b bank state (@ each index)
+  // Set description for each 1K bank state (@ each index)
   // Set contents for actual banks number and type (@ each even index)
-  for(int i = 0; i < 8; ++i)
+  for(int seg = 0; seg < myCart.myBankSegs; ++seg)
   {
-    uInt16 bank = myCart.bankInUse[i];
+    uInt16 bank = myCart.getSegmentBank(seg);
+    ostringstream buf;
 
-    if(bank == myCart.BANK_UNDEFINED)  // never accessed
+    if(bank >= myCart.romBankCount())  // was RAM mapped here?
     {
-      myBankState[i]->setText("Undefined");
-      if(i % 2 == 0)
-      {
-        myBankNumber[i/2]->clearSelection();
-        myBankType[i/2]->clearSelection();
-      }
+      uInt16 ramBank = bank - myCart.romBankCount();
+
+      buf << "RAM " << std::dec << ramBank << " @ $" << Common::Base::HEX4
+        << (ramBank << myCart.myBankShift) << "(R)";
+      myBankState[seg * 2]->setText(buf.str());
+
+      buf.str("");
+      buf << "RAM " << std::dec << ramBank << " @ $" << Common::Base::HEX4
+        << ((ramBank << myCart.myBankShift) + myCart.myBankSize) << "(W)";
+      myBankState[seg * 2 + 1]->setText(buf.str());
+
+      myBankNumber[seg]->setSelected(ramBank);
+      myBankType[seg]->setSelected("RAM");
     }
     else
     {
-      ostringstream buf;
-      int bankno = bank & myCart.BIT_BANK_MASK;
+      buf << "ROM " << std::dec << bank << " @ $" << Common::Base::HEX4
+        << ((bank << myCart.myBankShift));
+      myBankState[seg * 2]->setText(buf.str());
 
-      if(bank & myCart.BITMASK_ROMRAM)  // was RAM mapped here?
-      {
-        if(bank & myCart.BITMASK_LOWERUPPER)  // upper is write port
-        {
-          buf << "RAM " << bankno << " @ $" << Common::Base::HEX4
-              << (bankno << myCart.RAM_BANK_TO_POWER) << " (W)";
-          myBankState[i]->setText(buf.str());
-        }
-        else
-        {
-          buf << "RAM " << bankno << " @ $" << Common::Base::HEX4
-              << (bankno << myCart.RAM_BANK_TO_POWER) << " (R)";
-          myBankState[i]->setText(buf.str());
-        }
+      buf.str("");
+      buf << "ROM " << std::dec << bank << " @ $" << Common::Base::HEX4
+        << ((bank << myCart.myBankShift) + myCart.myBankSize);
+      myBankState[seg * 2 + 1]->setText(buf.str());
 
-        if(i % 2 == 0)
-        {
-          myBankNumber[i/2]->setSelected(bankno);
-          myBankType[i/2]->setSelected("RAM");
-        }
-      }
-      else
-      {
-        if(bank & myCart.BITMASK_LOWERUPPER)  // upper is high 512b
-        {
-          buf << "ROM " << bankno << " @ $" << Common::Base::HEX4
-              << ((bankno << myCart.RAM_BANK_TO_POWER) + myCart.RAM_BANK_SIZE);
-          myBankState[i]->setText(buf.str());
-        }
-        else
-        {
-          buf << "ROM " << bankno << " @ $" << Common::Base::HEX4
-              << (bankno << myCart.RAM_BANK_TO_POWER);
-          myBankState[i]->setText(buf.str());
-        }
-
-        if(i % 2 == 0)
-        {
-          myBankNumber[i/2]->setSelected(bankno);
-          myBankType[i/2]->setSelected("ROM");
-        }
-      }
+      myBankNumber[seg]->setSelected(bank);
+      myBankType[seg]->setSelected("ROM");
     }
   }
 }
@@ -294,9 +251,10 @@ uInt32 Cartridge3EPlusWidget::internalRamRPort(int start)
 string Cartridge3EPlusWidget::internalRamDescription()
 {
   ostringstream desc;
+
   desc << "Accessible 512b at a time via:\n"
        << "  $f000/$f400/$f800/$fc00 for Read Access\n"
-       << "  $f200/$f600/$fa00/$fe00 for Write Access (+$200)";
+       << "  $f200/$f600/$fa00/$fe00 for Write Access";
 
   return desc.str();
 }

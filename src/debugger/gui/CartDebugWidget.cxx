@@ -42,7 +42,7 @@ int CartDebugWidget::addBaseInformation(size_t bytes, const string& manufacturer
         const string& desc, const uInt16 maxlines)
 {
   const int lwidth = _font.getStringWidth("Manufacturer "),
-            fwidth = _w - lwidth - 20;
+            fwidth = _w - lwidth - 12;
   EditTextWidget* w = nullptr;
   ostringstream buf;
 
