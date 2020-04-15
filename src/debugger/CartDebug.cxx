@@ -72,9 +72,15 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 
   // Create bank information for each potential bank, and an extra one for ZP RAM
   BankInfo info;
-  for(uInt32 i = 0; i < myConsole.cartridge().bankCount(); ++i)
+  for(uInt32 i = 0; i < myConsole.cartridge().romBankCount(); ++i)
   {
     info.size = myConsole.cartridge().bankSize(i);
+    myBankInfo.push_back(info);
+  }
+
+  for(uInt32 i = 0; i < myConsole.cartridge().ramBankCount(); ++i)
+  {
+    info.size = myConsole.cartridge().bankSize(i) >> 1;
     myBankInfo.push_back(info);
   }
 
@@ -235,9 +241,10 @@ string CartDebug::toString()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::disassemble(bool force)
+bool CartDebug::disassemblePC(bool force)
 {
   uInt16 PC = myDebugger.cpuDebug().pc();
+  // ROM/RAM bank or ZP-RAM?
   int bank = (PC & 0x1000) ? getBank(PC) : int(myBankInfo.size()) - 1;
 
   return disassemble(bank, PC, force);
@@ -414,7 +421,7 @@ bool CartDebug::addDirective(Device::AccessType type,
     bank = (myDebugger.cpuDebug().pc() & 0x1000) ?
       getBank(myDebugger.cpuDebug().pc()) : int(myBankInfo.size())-1;
 
-  bank = std::min(bank, bankCount());
+  bank = std::min(bank, romBankCount());
   BankInfo& info = myBankInfo[bank];
   DirectiveList& list = info.directiveList;
 
@@ -546,9 +553,9 @@ int CartDebug::getPCBank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::bankCount() const
+int CartDebug::romBankCount() const
 {
-  return myConsole.cartridge().bankCount();
+  return myConsole.cartridge().romBankCount();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -955,7 +962,7 @@ string CartDebug::loadConfigFile()
   myDebugger.rom().invalidate();
 
   stringstream retVal;
-  if(myConsole.cartridge().bankCount() > 1)
+  if(myConsole.cartridge().romBankCount() > 1)
     retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
   retVal << "config file '" << node.getShortPath() << "' loaded OK";
   return retVal.str();
@@ -990,14 +997,14 @@ string CartDebug::saveConfigFile()
   out << "// Stella.pro: \"" << name << "\"" << endl
       << "// MD5: " << md5 << endl
       << endl;
-  for(uInt32 b = 0; b < myConsole.cartridge().bankCount(); ++b)
+  for(uInt32 b = 0; b < myConsole.cartridge().romBankCount(); ++b)
   {
     out << "[" << b << "]" << endl;
     getBankDirectives(out, myBankInfo[b]);
   }
 
   stringstream retVal;
-  if(myConsole.cartridge().bankCount() > 1)
+  if(myConsole.cartridge().romBankCount() > 1)
     retVal << DebuggerParser::red("config file for multi-bank ROM not fully supported\n");
   retVal << "config file '" << cfg.getShortPath() << "' saved OK";
   return retVal.str();
@@ -1058,14 +1065,14 @@ string CartDebug::saveDisassembly()
 
   Disassembly disasm;
   disasm.list.reserve(2048);
-  uInt16 bankCount = myConsole.cartridge().bankCount();
+  uInt16 romBankCount = myConsole.cartridge().romBankCount();
   uInt16 oldBank = myConsole.cartridge().getBank();
 
   // prepare for switching banks
   myConsole.cartridge().unlockBank();
   uInt32 origin = 0;
 
-  for(int bank = 0; bank < bankCount; ++bank)
+  for(int bank = 0; bank < romBankCount; ++bank)
   {
     // TODO: not every CartDebugWidget does it like that, we need a method
     myConsole.cartridge().unlockBank();
@@ -1082,8 +1089,8 @@ string CartDebug::saveDisassembly()
 
     buf << "\n\n;***********************************************************\n"
       << ";      Bank " << bank;
-    if (bankCount > 1)
-      buf << " / 0.." << bankCount - 1;
+    if (romBankCount > 1)
+      buf << " / 0.." << romBankCount - 1;
     buf << "\n;***********************************************************\n\n";
 
 
@@ -1097,7 +1104,7 @@ string CartDebug::saveDisassembly()
 
     buf << "    SEG     CODE\n";
 
-    if(bankCount == 1)
+    if(romBankCount == 1)
       buf << "    ORG     $" << Base::HEX4 << info.offset << "\n\n";
     else
       buf << "    ORG     $" << Base::HEX4 << origin << "\n"
@@ -1327,7 +1334,7 @@ string CartDebug::saveDisassembly()
   out << buf.str();
 
   stringstream retVal;
-  if(myConsole.cartridge().bankCount() > 1)
+  if(myConsole.cartridge().romBankCount() > 1)
     retVal << DebuggerParser::red("disassembly for multi-bank ROM not fully supported\n");
   retVal << "saved " << node.getShortPath() << " OK";
   return retVal.str();
@@ -1367,8 +1374,8 @@ string CartDebug::saveAccessFile()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::listConfig(int bank)
 {
-  uInt32 startbank = 0, endbank = bankCount();
-  if(bank >= 0 && bank < bankCount())
+  uInt32 startbank = 0, endbank = romBankCount();
+  if(bank >= 0 && bank < romBankCount())
   {
     startbank = bank;
     endbank = startbank + 1;
@@ -1392,7 +1399,7 @@ string CartDebug::listConfig(int bank)
     getBankDirectives(buf, info);
   }
 
-  if(myConsole.cartridge().bankCount() > 1)
+  if(myConsole.cartridge().romBankCount() > 1)
     buf << DebuggerParser::red("config file for multi-bank ROM not fully supported") << endl;
 
   return buf.str();
@@ -1401,8 +1408,8 @@ string CartDebug::listConfig(int bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::clearConfig(int bank)
 {
-  uInt32 startbank = 0, endbank = bankCount();
-  if(bank >= 0 && bank < bankCount())
+  uInt32 startbank = 0, endbank = romBankCount();
+  if(bank >= 0 && bank < romBankCount())
   {
     startbank = bank;
     endbank = startbank + 1;

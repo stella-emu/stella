@@ -68,7 +68,7 @@ void RomWidget::loadConfig()
   const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
 
   // Fill romlist the current bank of source or disassembly
-  myListIsDirty |= cart.disassemble(myListIsDirty);
+  myListIsDirty |= cart.disassemblePC(myListIsDirty);
   if(myListIsDirty)
   {
     myRomList->setList(cart.disassembly());

@@ -457,7 +457,7 @@ uInt16 CartridgeBUS::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeBUS::bankCount() const
+uInt16 CartridgeBUS::romBankCount() const
 {
   return 7;
 }

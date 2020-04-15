@@ -62,11 +62,10 @@ class CartridgeEnhanced : public Cartridge
 
       @param bank     The bank that should be installed in the system
       @param segment  The segment the bank should be using
-      @param isRAM    True if the bank is a RAM bank
 
       @return  true, if bank has changed
     */
-    bool bank(uInt16 bank, uInt16 segment, bool isRAM = false);
+    bool bank(uInt16 bank, uInt16 segment);
 
     /**
       Install pages for the specified bank in the system.
@@ -94,7 +93,21 @@ class CartridgeEnhanced : public Cartridge
     /**
       Query the number of banks supported by the cartridge.
     */
-    uInt16 bankCount() const override;
+    uInt16 romBankCount() const override;
+
+    /**
+      Query the number of RAM 'banks' supported by the cartridge.
+    */
+    uInt16 ramBankCount() const override;
+
+    /**
+      Check if the segment at that address contains a RAM bank
+
+      @param  address  The address which defines the segment
+
+      @return  true, if the segment is currently mapped to a RAM bank
+     */
+    bool isRamBank(uInt16 address) const;
 
     /**
       Patch the cartridge ROM.
@@ -162,8 +175,18 @@ class CartridgeEnhanced : public Cartridge
     // The extra RAM size
     uInt16 myRamSize{RAM_SIZE};                 // default 0
 
+    // The number of RAM banks
+    uInt16 myRamBankCount{RAM_BANKS};           // default 0
+
     // The mask for the extra RAM
     uInt16 myRamMask{0};                        // RAM_SIZE - 1, but doesn't matter when RAM_SIZE is 0
+
+    // The offset into ROM space for reading from ROM
+    // This is zero for types without RAM and with banked RAM
+    // - xxSC  = 0x0100
+    // - FA(2) = 0x0200
+    // - CV    = 0x0800
+    uInt16 myRomOffset{0};
 
     // The offset into ROM space for writing to RAM
     // - xxSC  = 0x0000
@@ -201,6 +224,9 @@ class CartridgeEnhanced : public Cartridge
 
     // The size of extra RAM in ROM address space
     static constexpr uInt16 RAM_SIZE = 0;     // default = none
+
+    // The size of extra RAM in ROM address space
+    static constexpr uInt16 RAM_BANKS = 0;
 
     // Write port for extra RAM is at low address by default
     static constexpr bool RAM_HIGH_WP = false;

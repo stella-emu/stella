@@ -83,7 +83,7 @@ uInt16 Cartridge::bankSize(uInt16 bank) const
 
   getImage(size);
 
-  return std::min(uInt32(size) / bankCount(), 4_KB); // assuming that each bank has the same size
+  return std::min(uInt32(size) / romBankCount(), 4_KB); // assuming that each bank has the same size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -145,13 +145,13 @@ string Cartridge::getAccessCounters() const
   ostringstream out;
   uInt32 offset = 0;
 
-  for(uInt16 bank = 0; bank < bankCount(); ++bank)
+  for(uInt16 bank = 0; bank < romBankCount(); ++bank)
   {
     uInt16 origin = bankOrigin(bank);
     uInt16 bankSize = this->bankSize(bank);
 
     out << "Bank " << Common::Base::toString(bank, Common::Base::Fmt::_10_8) << " / 0.."
-      << Common::Base::toString(bankCount() - 1, Common::Base::Fmt::_10_8) << " reads:\n";
+      << Common::Base::toString(romBankCount() - 1, Common::Base::Fmt::_10_8) << " reads:\n";
     for(uInt16 addr = 0; addr < bankSize; ++addr)
     {
       out << Common::Base::HEX4 << (addr | origin) << ","
@@ -159,7 +159,7 @@ string Cartridge::getAccessCounters() const
     }
     out << "\n";
     out << "Bank " << Common::Base::toString(bank, Common::Base::Fmt::_10_8) << " / 0.."
-      << Common::Base::toString(bankCount() - 1, Common::Base::Fmt::_10_8) << " writes:\n";
+      << Common::Base::toString(romBankCount() - 1, Common::Base::Fmt::_10_8) << " writes:\n";
     for(uInt16 addr = 0; addr < bankSize; ++addr)
     {
       out << Common::Base::HEX4 << (addr | origin) << ","
@@ -230,11 +230,11 @@ uInt16 Cartridge::initializeStartBank(uInt16 defaultBank)
   int propsBank = myStartBankFromPropsFunc();
 
   if(randomStartBank())
-    return myStartBank = mySystem->randGenerator().next() % bankCount();
+    return myStartBank = mySystem->randGenerator().next() % romBankCount();
   else if(propsBank >= 0)
-    return myStartBank = BSPF::clamp(propsBank, 0, bankCount() - 1);
+    return myStartBank = BSPF::clamp(propsBank, 0, romBankCount() - 1);
   else
-    return myStartBank = BSPF::clamp(int(defaultBank), 0, bankCount() - 1);
+    return myStartBank = BSPF::clamp(int(defaultBank), 0, romBankCount() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

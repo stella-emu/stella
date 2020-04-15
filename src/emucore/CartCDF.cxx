@@ -430,7 +430,7 @@ uInt16 CartridgeCDF::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCDF::bankCount() const
+uInt16 CartridgeCDF::romBankCount() const
 {
   return 7;
 }

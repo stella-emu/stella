@@ -250,7 +250,7 @@ uInt16 CartridgeWD::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeWD::bankCount() const
+uInt16 CartridgeWD::romBankCount() const
 {
   return 16;
 }

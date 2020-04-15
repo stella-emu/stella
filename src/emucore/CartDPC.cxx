@@ -399,7 +399,7 @@ uInt16 CartridgeDPC::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDPC::bankCount() const
+uInt16 CartridgeDPC::romBankCount() const
 {
   return 2;
 }

@@ -85,7 +85,7 @@ uInt16 Cartridge3EPlus::getBank(uInt16 address) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge3EPlus::bankCount() const
+uInt16 Cartridge3EPlus::romBankCount() const
 {
   return uInt16(mySize >> 10); // 1K slices
 }
