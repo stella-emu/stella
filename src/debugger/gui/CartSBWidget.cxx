@@ -33,12 +33,12 @@ CartridgeSBWidget::CartridgeSBWidget(
   myCart.getImage(size);
   info << "SB SUPERbanking, 32 or 64 4K banks\n"
        << "Hotspots are from $800 to $"
-       << Common::Base::HEX2 << (0x800 + myCart.bankCount() - 1) << ", including\n"
+       << Common::Base::HEX2 << (0x800 + myCart.romBankCount() - 1) << ", including\n"
        << "mirrors ($900, $A00, $B00, ...)\n"
        << "Startup bank = " << std::dec << cart.startBank() << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0x800; i < myCart.bankCount();
+  for(uInt32 i = 0, offset = 0xFFC, spot = 0x800; i < myCart.romBankCount();
       ++i, offset += 0x1000, ++spot)
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];

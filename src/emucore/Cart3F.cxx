@@ -46,7 +46,7 @@ bool Cartridge3F::checkSwitchBank(uInt16 address, uInt8 value)
   if(address <= 0x003F)
   {
     // Make sure the bank they're asking for is reasonable
-    bank(value % bankCount(), 0);
+    bank(value % romBankCount(), 0);
     return true;
   }
   return false;

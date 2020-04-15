@@ -36,7 +36,7 @@ void CartridgeMNetwork::initialize(const ByteBuffer& image, size_t size)
   std::copy_n(image.get(), std::min<size_t>(romSize(), size), myImage.get());
   createRomAccessArrays(romSize() + myRAM.size());
 
-  myRAMSlice = bankCount() - 1;
+  myRAMSlice = romBankCount() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -265,7 +265,7 @@ bool CartridgeMNetwork::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeMNetwork::getImage(size_t& size) const
 {
-  size = bankCount() * BANK_SIZE;
+  size = romBankCount() * BANK_SIZE;
   return myImage.get();
 }
 
@@ -310,7 +310,7 @@ bool CartridgeMNetwork::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeMNetwork::bankCount() const
+uInt16 CartridgeMNetwork::romBankCount() const
 {
   return uInt16(mySize >> 11);
 }
@@ -318,5 +318,5 @@ uInt16 CartridgeMNetwork::bankCount() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeMNetwork::romSize() const
 {
-  return bankCount() * BANK_SIZE;
+  return romBankCount() * BANK_SIZE;
 }

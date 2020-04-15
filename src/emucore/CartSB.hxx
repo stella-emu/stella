@@ -100,7 +100,7 @@ class CartridgeSB : public CartridgeEnhanced
 
     uInt16 hotspot() const override { return 0x0840; }
 
-    uInt16 getStartBank() const override { return bankCount() - 1; }
+    uInt16 getStartBank() const override { return romBankCount() - 1; }
 
   private:
     // Previous Device's page access

@@ -35,14 +35,14 @@ CartridgeMNetworkWidget::CartridgeMNetworkWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMNetworkWidget::initialize(GuiObject* boss, CartridgeMNetwork& cart, ostringstream& info)
 {
-  uInt32 size = cart.bankCount() * cart.BANK_SIZE;
+  uInt32 size = cart.romBankCount() * cart.BANK_SIZE;
 
   int xpos = 2,
     ypos = addBaseInformation(size, "M-Network", info.str(), 15) +
     myLineHeight;
 
   VariantList items0, items1;
-  for(int i = 0; i < cart.bankCount(); ++i)
+  for(int i = 0; i < cart.romBankCount(); ++i)
     VarList::push_back(items0, getSpotLower(i));
   for(int i = 0; i < 4; ++i)
     VarList::push_back(items1, getSpotUpper(i));

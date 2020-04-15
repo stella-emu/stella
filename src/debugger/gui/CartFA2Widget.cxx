@@ -38,7 +38,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
        << "Startup bank = " << cart.startBank() << " or undetermined\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < cart.bankCount();
+  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < cart.romBankCount();
       ++i, offset += 0x1000)
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
@@ -58,7 +58,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
   VarList::push_back(items, "3 ($FFF8)");
   VarList::push_back(items, "4 ($FFF9)");
   VarList::push_back(items, "5 ($FFFA)");
-  if(cart.bankCount() == 7)
+  if(cart.romBankCount() == 7)
     VarList::push_back(items, "6 ($FFFB)");
 
   myBank =

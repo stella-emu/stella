@@ -445,7 +445,7 @@ void GameInfoDialog::loadEmulationProperties(const Properties& props)
   VarList::push_back(items, "Auto", "AUTO");
   if(instance().hasConsole())
   {
-    uInt16 numBanks = instance().console().cartridge().bankCount();
+    uInt16 numBanks = instance().console().cartridge().romBankCount();
 
     for(uInt16 i = 0; i < numBanks; ++i)
       VarList::push_back(items, i, i);

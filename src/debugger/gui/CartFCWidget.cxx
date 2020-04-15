@@ -26,7 +26,7 @@ CartridgeFCWidget::CartridgeFCWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
   myCart(cart)
 {
-  uInt16 size = cart.bankCount() * 4096;
+  uInt16 size = cart.romBankCount() * 4096;
 
   ostringstream info;
   info << "FC cartridge, up to eight 4K banks\n"
@@ -42,7 +42,7 @@ CartridgeFCWidget::CartridgeFCWidget(
     ypos = addBaseInformation(size, "Amiga Corp.", info.str()) + myLineHeight;
 
   VariantList items;
-  for (uInt16 i = 0; i < cart.bankCount(); ++i)
+  for (uInt16 i = 0; i < cart.romBankCount(); ++i)
     VarList::push_back(items, Variant(i).toString() +
                        " ($FFF8 = " + Variant(i & 0b11).toString() +
                        "/$FFF9 = " + Variant(i >> 2).toString() +")");

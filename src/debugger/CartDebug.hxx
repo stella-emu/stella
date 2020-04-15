@@ -95,7 +95,7 @@ class CartDebug : public DebuggerSystem
     int lastWriteBaseAddress();
 
     // TODO
-    bool disassemble(bool force = false);
+    bool disassemblePC(bool force = false);
     bool disassembleBank(int bank);
 
     // First, a call is made to disassemble(), which updates the disassembly
@@ -159,7 +159,7 @@ class CartDebug : public DebuggerSystem
     /**
       Get the total number of banks supported by the cartridge.
     */
-    int bankCount() const;
+    int romBankCount() const;
 
     /**
       Add a label and associated address.

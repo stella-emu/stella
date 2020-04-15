@@ -34,16 +34,19 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhanced::install(System& system)
 {
-  // Copy the ROM image into my buffer
-  createRomAccessArrays(mySize);
+  // limit banked RAM size to the size of one RAM bank
+  uInt16 ramSize = myRamBankCount ? 1 << (myBankShift - 1) : myRamSize;
 
   // calculate bank switching and RAM sizes and masks
   myBankSize = 1 << myBankShift;          // e.g. = 2 ^ 12 = 4K = 0x1000
   myBankMask = myBankSize - 1;            // e.g. = 0x0FFF
   myBankSegs = 1 << (12 - myBankShift);   // e.g. = 1
-  myRamMask = myRamSize - 1;              // e.g. = 0xFFFF (doesn't matter for RAM size 0)
-  myWriteOffset = myRamWpHigh ? myRamSize : 0;
-  myReadOffset  = myRamWpHigh ? 0 : myRamSize;
+  myRomOffset = myRamBankCount ? 0 : myRamSize * 2;
+  myRamMask = ramSize - 1;                // e.g. = 0xFFFF (doesn't matter for RAM size 0)
+  myWriteOffset = myRamWpHigh ? ramSize : 0;
+  myReadOffset  = myRamWpHigh ? 0 : ramSize;
+
+  createRomAccessArrays(mySize + (myRomOffset ? 0 : myRamSize));
 
   // Allocate array for the current bank segments slices
   myCurrentSegOffset = make_unique<uInt32[]>(myBankSegs);
@@ -51,41 +54,44 @@ void CartridgeEnhanced::install(System& system)
   // Allocate array for the RAM area
   myRAM = make_unique<uInt8[]>(myRamSize);
 
-  // Setup page access
   mySystem = &system;
 
-  System::PageAccess access(this, System::PageAccessType::READ);
-
-  // Set the page accessing method for the RAM writing pages
-  // Map access to this class, since we need to inspect all accesses to
-  // check if RWP happens
-  access.type = System::PageAccessType::WRITE;
-  for(uInt16 addr = 0x1000 + myWriteOffset; addr < 0x1000 + myWriteOffset + myRamSize; addr += System::PAGE_SIZE)
+  if(myRomOffset)
   {
-    uInt16 offset = addr & myRamMask;
-    access.romAccessBase = &myRomAccessBase[myWriteOffset + offset];
-    access.romPeekCounter = &myRomAccessCounter[myWriteOffset + offset];
-    access.romPokeCounter = &myRomAccessCounter[myWriteOffset + offset + myAccessSize];
-    mySystem->setPageAccess(addr, access);
-  }
+    // Setup page access for extended RAM; banked RAM will be setup in bank()
+    System::PageAccess access(this, System::PageAccessType::READ);
 
-  // Set the page accessing method for the RAM reading pages
-  access.type = System::PageAccessType::READ;
-  for(uInt16 addr = 0x1000 + myReadOffset; addr < 0x1000 + myReadOffset + myRamSize; addr += System::PAGE_SIZE)
-  {
-    uInt16 offset = addr & myRamMask;
-    access.directPeekBase = &myRAM[offset];
-    access.romAccessBase = &myRomAccessBase[myReadOffset + offset];
-    access.romPeekCounter = &myRomAccessCounter[myReadOffset + offset];
-    access.romPokeCounter = &myRomAccessCounter[myReadOffset + offset + myAccessSize];
-    mySystem->setPageAccess(addr, access);
+    // Set the page accessing method for the RAM writing pages
+    // Map access to this class, since we need to inspect all accesses to
+    // check if RWP happens
+    access.type = System::PageAccessType::WRITE;
+    for(uInt16 addr = 0x1000 + myWriteOffset; addr < 0x1000 + myWriteOffset + myRamSize; addr += System::PAGE_SIZE)
+    {
+      uInt16 offset = addr & myRamMask;
+      access.romAccessBase = &myRomAccessBase[myWriteOffset + offset];
+      access.romPeekCounter = &myRomAccessCounter[myWriteOffset + offset];
+      access.romPokeCounter = &myRomAccessCounter[myWriteOffset + offset + myAccessSize];
+      mySystem->setPageAccess(addr, access);
+    }
+
+    // Set the page accessing method for the RAM reading pages
+    access.type = System::PageAccessType::READ;
+    for(uInt16 addr = 0x1000 + myReadOffset; addr < 0x1000 + myReadOffset + myRamSize; addr += System::PAGE_SIZE)
+    {
+      uInt16 offset = addr & myRamMask;
+      access.directPeekBase = &myRAM[offset];
+      access.romAccessBase = &myRomAccessBase[myReadOffset + offset];
+      access.romPeekCounter = &myRomAccessCounter[myReadOffset + offset];
+      access.romPokeCounter = &myRomAccessCounter[myReadOffset + offset + myAccessSize];
+      mySystem->setPageAccess(addr, access);
+    }
   }
 
   // Install pages for the startup bank (TODO: currently only in first bank segment)
   bank(startBank(), 0);
   if(mySize >= 4_KB && myBankSegs > 1)
     // Setup the last bank segment to always point to the last ROM segment
-    bank(bankCount() - 1, myBankSegs - 1);
+    bank(romBankCount() - 1, myBankSegs - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,63 +112,103 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 
   if (hotspot())
     checkSwitchBank(address & 0x0FFF);
-  address &= myBankMask;
 
-  // Write port is e.g. at 0xF000 - 0xF07F (128 bytes)
-  if(address < myReadOffset + myRamSize && address >= myReadOffset)
+  if(isRamBank(address))
+  {
+    address &= myRamMask;
+
     // This is a read access to a write port!
-    return peekRAM(myRAM[address], peekAddress);
+    // Reading from the write port triggers an unwanted write
+    // The RAM banks follow the ROM banks and are half the size of a ROM bank
+    return peekRAM(myRAM[((myCurrentSegOffset[(peekAddress & 0xFFF) >> myBankShift] - mySize) >> 1) + address],
+                   peekAddress);
+  }
   else
-    return myImage[myCurrentSegOffset[(peekAddress & 0xFFF) >> myBankShift] + address];
+  {
+    address &= myBankMask;
+
+    // Write port is e.g. at 0xF000 - 0xF07F (128 bytes)
+    if(address < myReadOffset + myRamSize && address >= myReadOffset)
+      // This is a read access to a write port!
+      // Reading from the write port triggers an unwanted write
+      return peekRAM(myRAM[address], peekAddress);
+    else
+      return myImage[myCurrentSegOffset[(peekAddress & 0xFFF) >> myBankShift] + address];
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 {
-  uInt16 pokeAddress = address;
-
   // Switch banks if necessary
+  // Note: (TODO?)
+  //   The checkSwitchBank() call makes no difference between ROM and e.g TIA space
+  //   Writing to e.g. 0xf0xx might triger a bankswitch, is (and was!) this a bug???
   if (checkSwitchBank(address & 0x0FFF, value))
     return false;
-  address &= myBankMask;
 
   if(myRamSize)
   {
-    if(bool(address & myRamSize) == myRamWpHigh)
+    uInt16 pokeAddress = address;
+
+    if(isRamBank(address))
     {
-      pokeRAM(myRAM[address & myRamMask], pokeAddress, value);
-      return true;
+      if(bool(address & (myBankSize >> 1)) == myRamWpHigh)
+      {
+        address &= myRamMask;
+        // The RAM banks follow the ROM banks and are half the size of a ROM bank
+        pokeRAM(myRAM[((myCurrentSegOffset[(pokeAddress & 0xFFF) >> myBankShift] - mySize) >> 1) + address],
+                pokeAddress, value);
+        return true;
+      }
+      else
+      {
+        // Writing to the read port should be ignored, but trigger a break if option enabled
+        uInt8 dummy;
+
+        pokeRAM(dummy, pokeAddress, value);
+        myRamWriteAccess = pokeAddress;
+      }
     }
     else
     {
-      // Writing to the read port should be ignored, but trigger a break if option enabled
-      uInt8 dummy;
+      //address &= myBankMask;
+      if(bool(address & myRamSize) == myRamWpHigh)
+      {
+        pokeRAM(myRAM[address & myRamMask], pokeAddress, value);
+        return true;
+      }
+      else
+      {
+        // Writing to the read port should be ignored, but trigger a break if option enabled
+        uInt8 dummy;
 
-      pokeRAM(dummy, pokeAddress, value);
-      myRamWriteAccess = pokeAddress;
+        pokeRAM(dummy, pokeAddress, value);
+        myRamWriteAccess = pokeAddress;
+      }
     }
   }
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment, bool isRAM)
+bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
 {
   if(bankLocked()) return false;
 
   uInt16 segmentOffset = segment << myBankShift;
 
-  if(!isRAM)
+  if(!myRamBankCount || bank < romBankCount())
   {
     // Setup ROM bank
-    // Remember what bank is in which segment
-    uInt32 bankOffset = myCurrentSegOffset[segment] = bank << myBankShift;
-
+    uInt16 romBank = bank % romBankCount();
+    // Remember what bank is in this segment
+    uInt32 bankOffset = myCurrentSegOffset[segment] = romBank << myBankShift;
     uInt16 hotspot = this->hotspot();
     uInt16 hotSpotAddr;
-    uInt16 fromAddr = (segmentOffset + 0x1000 + myRamSize * 2) & ~System::PAGE_MASK;
+    uInt16 fromAddr = (0x1000 + segmentOffset + myRomOffset) & ~System::PAGE_MASK;
     // for ROMs < 4_KB, the whole address space will be mapped.
-    uInt16 toAddr = (segmentOffset + 0x1000 + (mySize < 4_KB ? 0x1000 : myBankSize)) & ~System::PAGE_MASK;
+    uInt16 toAddr   = (0x1000 + segmentOffset + (mySize < 4_KB ? 0x1000 : myBankSize)) & ~System::PAGE_MASK;
 
     if(hotspot)
       hotSpotAddr = (hotspot & ~System::PAGE_MASK);
@@ -185,24 +231,24 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment, bool isRAM)
       mySystem->setPageAccess(addr, access);
     }
   }
-  /*else
+  else
   {
     // Setup RAM bank
-    // TODO: define offsets on init
-    uInt16 myWriteBankOffset = myBankSize >> 1;
-    uInt16 myReadBankOffset = 0;
+    uInt16 ramBank = (bank - romBankCount()) % myRamBankCount;
+    // The RAM banks follow the ROM banks and are half the size of a ROM bank
+    uInt32 bankOffset = uInt32(mySize) + (ramBank << (myBankShift - 1));
 
-    // Remember what bank is in which segment
-    uInt32 bankOffset = myCurrentSegOffset[segment] = bank << myBankShift;
+    // Remember what bank is in this segment
+    myCurrentSegOffset[segment] = bank << myBankShift;
 
     // Set the page accessing method for the RAM writing pages
-    uInt16 fromAddr = (segmentOffset + myWriteBankOffset + 0x1000) & ~System::PAGE_MASK;
-    uInt16 toAddr = (segmentOffset + myWriteBankOffset + 0x1000 + myBankSize >> 1) & ~System::PAGE_MASK;
+    uInt16 fromAddr = (0x1000 + segmentOffset + myWriteOffset) & ~System::PAGE_MASK;
+    uInt16 toAddr   = (0x1000 + segmentOffset + myWriteOffset + (myBankSize >> 1)) & ~System::PAGE_MASK;
     System::PageAccess access(this, System::PageAccessType::WRITE);
 
     for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
     {
-      uInt32 offset = bankOffset + (addr & myBankMask);
+      uInt32 offset = bankOffset + (addr & myRamMask);
 
       access.romAccessBase = &myRomAccessBase[offset];
       access.romPeekCounter = &myRomAccessCounter[offset];
@@ -211,25 +257,23 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment, bool isRAM)
     }
 
     // Set the page accessing method for the RAM reading pages
-    fromAddr = (segmentOffset + myReadBankOffset + 0x1000) & ~System::PAGE_MASK;
-    toAddr = (segmentOffset + myReadBankOffset + 0x1000 + myBankSize >> 1) & ~System::PAGE_MASK;
-
+    fromAddr = (0x1000 + segmentOffset + myReadOffset) & ~System::PAGE_MASK;
+    toAddr   = (0x1000 + segmentOffset + myReadOffset + (myBankSize >> 1)) & ~System::PAGE_MASK;
     access.type = System::PageAccessType::READ;
+
     for(uInt16 addr = fromAddr; addr < toAddr; addr += System::PAGE_SIZE)
     {
-      uInt32 offset = bankOffset + (addr & myBankMask);
+      uInt32 offset = bankOffset + (addr & myRamMask);
 
-
-
-      uInt16 offset = addr & myRamMask;
-      access.directPeekBase = &myBankRAM[offset];
+      access.directPeekBase = &myRAM[offset - mySize];
       access.romAccessBase = &myRomAccessBase[offset];
       access.romPeekCounter = &myRomAccessCounter[offset];
       access.romPokeCounter = &myRomAccessCounter[offset + myAccessSize];
       mySystem->setPageAccess(addr, access);
     }
-  }*/
 
+
+  }
   return myBankChanged = true;
 }
 
@@ -246,23 +290,42 @@ uInt16 CartridgeEnhanced::getSegmentBank(uInt16 segment) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeEnhanced::bankCount() const
+uInt16 CartridgeEnhanced::romBankCount() const
 {
   return uInt16(mySize >> myBankShift);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeEnhanced::ramBankCount() const
+{
+  return myRamBankCount;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeEnhanced::isRamBank(uInt16 address) const
+{
+  return myRamBankCount ? getBank(address) >= romBankCount() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEnhanced::patch(uInt16 address, uInt8 value)
 {
-  if((address & myBankMask) < myRamSize * 2)
+  if(isRamBank(address))
   {
-    // Normally, a write to the read port won't do anything
-    // However, the patch command is special in that ignores such
-    // cart restrictions
-    myRAM[address & myRamMask] = value;
+    myRAM[((myCurrentSegOffset[(address & 0xFFF) >> myBankShift] - mySize) >> 1) + (address & myRamMask)] = value;
   }
   else
-    myImage[myCurrentSegOffset[(address & 0xFFF) >> myBankShift] + (address & myBankMask)] = value;
+  {
+    if((address & myBankMask) < myRamSize * 2)
+    {
+      // Normally, a write to the read port won't do anything
+      // However, the patch command is special in that ignores such
+      // cart restrictions
+      myRAM[address & myRamMask] = value;
+    }
+    else
+      myImage[myCurrentSegOffset[(address & 0xFFF) >> myBankShift] + (address & myBankMask)] = value;
+  }
 
   return myBankChanged = true;
 }

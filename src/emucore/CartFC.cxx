@@ -61,14 +61,14 @@ bool CartridgeFC::poke(uInt16 address, uInt8 value)
 
     case 0x0FF9:
       // Set the high bits of target 4k bank
-      if (value << 2 < bankCount())
+      if (value << 2 < romBankCount())
       {
         myTargetBank += value << 2;
-        myTargetBank %= bankCount();
+        myTargetBank %= romBankCount();
       }
       else
         // special handling when both values are identical (e.g. 4/4 or 5/5)
-        myTargetBank = value % bankCount();
+        myTargetBank = value % romBankCount();
       break;
 
     default:

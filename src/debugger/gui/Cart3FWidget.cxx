@@ -44,7 +44,7 @@ Cartridge3FWidget::Cartridge3FWidget(
       ypos = addBaseInformation(size, "TigerVision", info.str()) + myLineHeight;
 
   VariantList items;
-  for(uInt16 i = 0; i < cart.bankCount(); ++i)
+  for(uInt16 i = 0; i < cart.romBankCount(); ++i)
       VarList::push_back(items, Variant(i).toString() + " ($3F)");
 
   ostringstream label;

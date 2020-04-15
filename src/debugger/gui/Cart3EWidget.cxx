@@ -25,8 +25,8 @@ Cartridge3EWidget::Cartridge3EWidget(
       int x, int y, int w, int h, Cartridge3E& cart)
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart),
-    myNumRomBanks(uInt32(cart.mySize >> 11)),
-    myNumRamBanks(32)
+    myNumRomBanks(myCart.romBankCount()),
+    myNumRamBanks(myCart.ramBankCount())
 {
   size_t size = cart.mySize;
 
@@ -93,21 +93,21 @@ void Cartridge3EWidget::saveOldState()
   for(uInt32 i = 0; i < internalRamSize(); ++i)
     myOldState.internalram.push_back(myCart.myRAM[i]);
 
-  myOldState.bank = myCart.myCurrentBank;
+  myOldState.bank = myCart.getBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EWidget::loadConfig()
 {
-  if(myCart.myCurrentBank < 256)
+  if(myCart.getBank() < myCart.romBankCount())
   {
-    myROMBank->setSelectedIndex(myCart.myCurrentBank % myNumRomBanks, myOldState.bank != myCart.myCurrentBank);
-    myRAMBank->setSelectedMax(myOldState.bank >= 256);
+    myROMBank->setSelectedIndex(myCart.getBank() % myNumRomBanks, myOldState.bank != myCart.getBank());
+    myRAMBank->setSelectedMax(myOldState.bank >= myCart.romBankCount());
   }
   else
   {
-    myROMBank->setSelectedMax(myOldState.bank < 256);
-    myRAMBank->setSelectedIndex(myCart.myCurrentBank - 256, myOldState.bank != myCart.myCurrentBank);
+    myROMBank->setSelectedMax(myOldState.bank < myCart.romBankCount());
+    myRAMBank->setSelectedIndex(myCart.getBank() - myCart.romBankCount(), myOldState.bank != myCart.getBank());
   }
 
   CartDebugWidget::loadConfig();
@@ -128,7 +128,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender,
     }
     else
     {
-      bank = 256;  // default to first RAM bank
+      bank = myCart.romBankCount();  // default to first RAM bank
       myRAMBank->setSelectedIndex(0);
     }
   }
@@ -137,7 +137,7 @@ void Cartridge3EWidget::handleCommand(CommandSender* sender,
     if(myRAMBank->getSelected() < int(myNumRamBanks))
     {
       myROMBank->setSelectedMax();
-      bank = myRAMBank->getSelected() + 256;
+      bank = myRAMBank->getSelected() + myCart.romBankCount();
     }
     else
     {
@@ -157,8 +157,8 @@ string Cartridge3EWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  uInt16& bank = myCart.myCurrentBank;
-  if(bank < 256)
+  uInt16 bank = myCart.getBank();
+  if(bank < myCart.romBankCount())
     buf << "ROM bank #" << std::dec << bank % myNumRomBanks << ", RAM inactive";
   else
     buf << "ROM inactive, RAM bank #" << std::dec << bank % myNumRomBanks;
