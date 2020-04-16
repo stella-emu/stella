@@ -37,7 +37,7 @@ CartridgeWD::CartridgeWD(const ByteBuffer& image, size_t size,
   }
   else
     std::copy_n(image.get(), mySize, myImage.begin());
-  createCodeAccessBase(8_KB);
+  createRomAccessArrays(8_KB);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,7 +63,9 @@ void CartridgeWD::install(System& system)
   for(uInt16 addr = 0x1000; addr < 0x1040; addr += System::PAGE_SIZE)
   {
     read.directPeekBase = &myRAM[addr & 0x003F];
-    read.codeAccessBase = &myCodeAccessBase[addr & 0x003F];
+    read.romAccessBase = &myRomAccessBase[addr & 0x003F];
+    read.romPeekCounter = &myRomAccessCounter[addr & 0x003F];
+    read.romPokeCounter = &myRomAccessCounter[(addr & 0x003F) + 8_KB];
     mySystem->setPageAccess(addr, read);
   }
 
@@ -73,7 +75,9 @@ void CartridgeWD::install(System& system)
   System::PageAccess write(this, System::PageAccessType::WRITE);
   for(uInt16 addr = 0x1040; addr < 0x1080; addr += System::PAGE_SIZE)
   {
-    write.codeAccessBase = &myCodeAccessBase[addr & 0x003F];
+    write.romAccessBase = &myRomAccessBase[addr & 0x003F];
+    write.romPeekCounter = &myRomAccessCounter[addr & 0x003F];
+    write.romPokeCounter = &myRomAccessCounter[(addr & 0x003F) + 8_KB];
     mySystem->setPageAccess(addr, write);
   }
 
@@ -177,7 +181,9 @@ void CartridgeWD::segmentZero(uInt8 slice)
   // Skip first 128 bytes; it is always RAM
   for(uInt16 addr = 0x1080; addr < 0x1400; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x03FF)];
+    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
+    access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + 8_KB];
     mySystem->setPageAccess(addr, access);
   }
   myOffset[0] = offset;
@@ -191,7 +197,9 @@ void CartridgeWD::segmentOne(uInt8 slice)
 
   for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x03FF)];
+    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
+    access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + 8_KB];
     mySystem->setPageAccess(addr, access);
   }
   myOffset[1] = offset;
@@ -205,7 +213,9 @@ void CartridgeWD::segmentTwo(uInt8 slice)
 
   for(uInt16 addr = 0x1800; addr < 0x1C00; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x03FF)];
+    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
+    access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + 8_KB];
     mySystem->setPageAccess(addr, access);
   }
   myOffset[2] = offset;
@@ -225,7 +235,9 @@ void CartridgeWD::segmentThree(uInt8 slice)
 
   for(uInt16 addr = 0x1C00; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x03FF)];
+    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x03FF)];
+    access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x03FF)];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x03FF) + 8_KB];
     mySystem->setPageAccess(addr, access);
   }
   myOffset[3] = offset;

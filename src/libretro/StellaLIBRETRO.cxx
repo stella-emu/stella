@@ -61,8 +61,6 @@ bool StellaLIBRETRO::create(bool logging)
 {
   system_ready = false;
 
-  FilesystemNode rom("rom");
-
   // build play system
   destroy();
 
@@ -114,6 +112,8 @@ bool StellaLIBRETRO::create(bool logging)
   settings.setValue(AudioSettings::SETTING_RESAMPLING_QUALITY, static_cast<int>(AudioSettings::ResamplingQuality::nearestNeightbour));
   settings.setValue(AudioSettings::SETTING_VOLUME, 100);
   settings.setValue(AudioSettings::SETTING_STEREO, audio_mode);
+
+  FilesystemNode rom(rom_path);
 
   if(myOSystem->createConsole(rom) != EmptyString)
     return false;
@@ -334,8 +334,10 @@ bool StellaLIBRETRO::getVideoResize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void StellaLIBRETRO::setROM(const void* data, size_t size)
+void StellaLIBRETRO::setROM(const char* path, const void* data, size_t size)
 {
+  rom_path = path;
+
   memcpy(rom_image.get(), data, size);
 
   rom_size = static_cast<uInt32>(size);

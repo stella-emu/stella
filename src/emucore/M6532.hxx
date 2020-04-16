@@ -130,12 +130,21 @@ class M6532 : public Device
     */
     const uInt8* getRAM() const { return myRAM.data(); }
 
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Query the access counters
+
+      @return  The access counters as comma separated string
+    */
+    string getAccessCounters() const override;
+  #endif
+
   private:
 
     void setTimerRegister(uInt8 data, uInt8 interval);
     void setPinState(bool shcha);
 
-#ifdef DEBUGGER_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
     // The following are used by the debugger to read INTIM/TIMINT
     // We need separate methods to do this, so the state of the system
     // isn't changed
@@ -147,19 +156,26 @@ class M6532 : public Device
     void createAccessBases();
 
     /**
-      Query the given address type for the associated disassembly flags.
+      Query the given address type for the associated access flags.
 
       @param address  The address to query
     */
-    uInt8 getAccessFlags(uInt16 address) const override;
+    Device::AccessFlags getAccessFlags(uInt16 address) const override;
     /**
-      Change the given address to use the given disassembly flags.
+      Change the given address to use the given access flags.
 
       @param address  The address to modify
-      @param flags    A bitfield of DisasmType directives for the given address
+      @param flags    A bitfield of AccessType directives for the given address
     */
-    void setAccessFlags(uInt16 address, uInt8 flags) override;
-#endif // DEBUGGER_SUPPORT
+    void setAccessFlags(uInt16 address, Device::AccessFlags flags) override;
+
+    /**
+      Increase the given address's access counter
+
+      @param address The address to modify
+    */
+    void increaseAccessCounter(uInt16 address, bool isWrite) override;
+  #endif // DEBUGGER_SUPPORT
 
   private:
     // Reference to the console
@@ -221,13 +237,18 @@ class M6532 : public Device
       RAM_SIZE = 0x80, RAM_MASK = RAM_SIZE - 1,
       STACK_SIZE = RAM_SIZE, STACK_MASK = RAM_MASK, STACK_BIT = 0x100,
       IO_SIZE = 0x20, IO_MASK = IO_SIZE - 1, IO_BIT = 0x200,
-      ZP_DELAY = 1;
+      ZP_DELAY = 1 * 2;
 
     // The arrays containing information about every byte of RIOT
     // indicating whether and how (RW) it is used.
-    std::array<uInt8, RAM_SIZE>   myRAMAccessBase;
-    std::array<uInt8, STACK_SIZE> myStackAccessBase;
-    std::array<uInt8, IO_SIZE>    myIOAccessBase;
+    std::array<Device::AccessFlags, RAM_SIZE>   myRAMAccessBase;
+    std::array<Device::AccessFlags, STACK_SIZE> myStackAccessBase;
+    std::array<Device::AccessFlags, IO_SIZE>    myIOAccessBase;
+    // The arrays containing information about every byte of RIOT
+    // indicating how often it is accessed.
+    std::array<Device::AccessCounter, RAM_SIZE * 2>   myRAMAccessCounter;
+    std::array<Device::AccessCounter, STACK_SIZE * 2> myStackAccessCounter;
+    std::array<Device::AccessCounter, IO_SIZE * 2>    myIOAccessCounter;
     // The array used to skip the first ZP access tracking
     std::array<uInt8, RAM_SIZE>   myZPAccessDelay;
 #endif // DEBUGGER_SUPPORT

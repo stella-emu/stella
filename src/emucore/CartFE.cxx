@@ -26,7 +26,7 @@ CartridgeFE::CartridgeFE(const ByteBuffer& image, size_t size,
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createCodeAccessBase(myImage.size());
+  createRomAccessArrays(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -48,11 +48,6 @@ void CartridgeFE::install(System& system)
   // We need to claim access to it here, and deal with it in peek/poke below
   System::PageAccess access(this, System::PageAccessType::READWRITE);
   for(uInt16 addr = 0x180; addr < 0x200; addr += System::PAGE_SIZE)
-    mySystem->setPageAccess(addr, access);
-
-  // Map all of the cart accesses to call peek and poke
-  access.type = System::PageAccessType::READ;
-  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
     mySystem->setPageAccess(addr, access);
 }
 
@@ -104,6 +99,19 @@ bool CartridgeFE::bank(uInt16 bank)
     return false;
 
   myBankOffset = bank << 12;
+
+  System::PageAccess access(this, System::PageAccessType::READ);
+
+  // Setup the page access methods for the current bank
+  // Map all of the cart accesses to call peek and poke
+  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
+  {
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
+    mySystem->setPageAccess(addr, access);
+  }
+
   return myBankChanged = true;
 }
 
@@ -160,7 +168,7 @@ bool CartridgeFE::load(Serializer& in)
   }
   catch(...)
   {
-    cerr << "ERROR: CartridgeF8SC::load" << endl;
+    cerr << "ERROR: CartridgeFE::load" << endl;
     return false;
   }
 

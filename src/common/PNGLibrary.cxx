@@ -29,6 +29,7 @@
 #include "TIASurface.hxx"
 #include "Version.hxx"
 #include "PNGLibrary.hxx"
+#include "Rect.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PNGLibrary::PNGLibrary(OSystem& osystem)
@@ -129,7 +130,13 @@ void PNGLibrary::saveImage(const string& filename, const VariantList& comments)
     throw runtime_error("ERROR: Couldn't create snapshot file");
 
   const FrameBuffer& fb = myOSystem.frameBuffer();
-  const Common::Rect& rect = fb.imageRect();
+
+  const Common::Rect& rectUnscaled = fb.imageRect();
+  const Common::Rect rect(
+    Common::Point(fb.scaleX(rectUnscaled.x()), fb.scaleY(rectUnscaled.y())),
+    fb.scaleX(rectUnscaled.w()), fb.scaleY(rectUnscaled.h())
+  );
+
   png_uint_32 width = rect.w(), height = rect.h();
 
   // Get framebuffer pixel data (we get ABGR format)

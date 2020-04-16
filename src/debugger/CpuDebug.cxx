@@ -20,7 +20,6 @@
 #include "M6502.hxx"
 #include "System.hxx"
 #include "Debugger.hxx"
-#include "CartDebug.hxx"
 #include "TIADebug.hxx"
 
 #include "CpuDebug.hxx"
@@ -46,6 +45,7 @@ const DebuggerState& CpuDebug::getState()
   myState.srcA = my6502.lastSrcAddressA();
   myState.srcX = my6502.lastSrcAddressX();
   myState.srcY = my6502.lastSrcAddressY();
+  myState.dest = my6502.lastWriteAddress();
 
   Debugger::set_bits(myState.PS, myState.PSbits);
 
@@ -66,6 +66,7 @@ void CpuDebug::saveOldState()
   myOldState.srcA = my6502.lastSrcAddressA();
   myOldState.srcX = my6502.lastSrcAddressX();
   myOldState.srcY = my6502.lastSrcAddressY();
+  myOldState.dest = my6502.lastWriteAddress();
 
   Debugger::set_bits(myOldState.PS, myOldState.PSbits);
 }

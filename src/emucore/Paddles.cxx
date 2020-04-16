@@ -234,12 +234,14 @@ void Paddles::update()
     new_val = sa_xaxis * (1 - dejitter) + myLastAxisX * dejitter;
 
     // only use new dejittered value for larger differences
-    if (abs(new_val - sa_xaxis) > 10)
+    if(abs(new_val - sa_xaxis) > 10)
       sa_xaxis = new_val;
 
-    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_xaxis)) / 65536.0)));
+    setPin(AnalogPin::Nine, Int32(MAX_RESISTANCE *
+      (BSPF::clamp(32768 - Int32(Int32(sa_xaxis) * SENSITIVITY + XCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }
+
   if(abs(myLastAxisY - sa_yaxis) > 10)
   {
     // dejitter, suppress small changes only
@@ -250,7 +252,8 @@ void Paddles::update()
     if (abs(new_val - sa_yaxis) > 10)
       sa_yaxis = new_val;
 
-    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE * ((32767 - Int16(sa_yaxis)) / 65536.0)));
+    setPin(AnalogPin::Five, Int32(MAX_RESISTANCE *
+      (BSPF::clamp(32768 - Int32(Int32(sa_yaxis) * SENSITIVITY + YCENTER), 0, 65536) / 65536.0)));
     sa_changed = true;
   }
   myLastAxisX = sa_xaxis;
@@ -380,6 +383,30 @@ bool Paddles::setMouseControl(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::setAnalogXCenter(int xcenter)
+{
+  // convert into ~5 pixel steps
+  XCENTER = BSPF::clamp(xcenter, MIN_ANALOG_CENTER, MAX_ANALOG_CENTER) * 860;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::setAnalogYCenter(int ycenter)
+{
+  // convert into ~5 pixel steps
+  YCENTER = BSPF::clamp(ycenter, MIN_ANALOG_CENTER, MAX_ANALOG_CENTER) * 860;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float Paddles::setAnalogSensitivity(int sensitivity)
+{
+  // BASE_ANALOG_SENSE * (1.1 ^ 20) = 1.0
+  SENSITIVITY = BASE_ANALOG_SENSE * std::pow(1.1F,
+    static_cast<float>(BSPF::clamp(sensitivity, 0, MAX_ANALOG_SENSE)));
+
+  return SENSITIVITY;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setDejitterBase(int strength)
 {
   DEJITTER_BASE = BSPF::clamp(strength, MIN_DEJITTER, MAX_DEJITTER);
@@ -405,13 +432,17 @@ void Paddles::setMouseSensitivity(int sensitivity)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::setPaddleRange(int range)
+void Paddles::setDigitalPaddleRange(int range)
 {
   range = BSPF::clamp(range, 1, 100);
   TRIGRANGE = int(TRIGMAX * (range / 100.0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Paddles::XCENTER = 0;
+int Paddles::YCENTER = 0;
+float Paddles::SENSITIVITY = 1.0;
+
 int Paddles::TRIGRANGE = Paddles::TRIGMAX;
 int Paddles::DIGITAL_SENSITIVITY = -1;
 int Paddles::DIGITAL_DISTANCE = -1;

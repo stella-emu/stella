@@ -24,10 +24,7 @@
 #include "frame-manager/FrameManager.hxx"
 #include "AudioQueue.hxx"
 #include "DispatchResult.hxx"
-
-#ifdef DEBUGGER_SUPPORT
-  #include "CartDebug.hxx"
-#endif
+#include "Base.hxx"
 
 enum CollisionMask: uInt32 {
   player0   = 0b0111110000000000,
@@ -187,7 +184,7 @@ void TIA::initialize()
   enableFixedColors(mySettings.getBool(devSettings ? "dev.debugcolors" : "plr.debugcolors"));
 
 #ifdef DEBUGGER_SUPPORT
-  createAccessBase();
+  createAccessArrays();
 #endif // DEBUGGER_SUPPORT
 }
 
@@ -534,59 +531,123 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case AUDV0:
+    {
       myAudio.channel0().audv(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDV1:
+    {
       myAudio.channel1().audv(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDF0:
+    {
       myAudio.channel0().audf(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDF1:
+    {
       myAudio.channel1().audf(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDC0:
+    {
       myAudio.channel0().audc(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case AUDC1:
+    {
       myAudio.channel1().audc(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::AUD);
+    #endif
       break;
+    }
 
     case HMOVE:
       myDelayQueue.push(HMOVE, value, Delay::hmove);
       break;
 
     case COLUBK:
-      myBackground.setColor(value & 0xFE);
+    {
+      value &= 0xFE;
+      myBackground.setColor(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::BCOL);
+    #endif
       break;
+    }
 
     case COLUP0:
+    {
       value &= 0xFE;
       myPlayfield.setColorP0(value);
       myMissile0.setColor(value);
       myPlayer0.setColor(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::COL);
+    #endif
       break;
+    }
 
     case COLUP1:
+    {
       value &= 0xFE;
       myPlayfield.setColorP1(value);
       myMissile1.setColor(value);
       myPlayer1.setColor(value);
       myShadowRegisters[address] = value;
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::COL);
+    #endif
       break;
+    }
 
     case CTRLPF:
       flushLineCache();
@@ -598,9 +659,10 @@ bool TIA::poke(uInt16 address, uInt8 value)
       break;
 
     case COLUPF:
+    {
       flushLineCache();
       value &= 0xFE;
-      if (myPFColorDelay)
+      if(myPFColorDelay)
         myDelayQueue.push(COLUPF, value, 1);
       else
       {
@@ -608,7 +670,13 @@ bool TIA::poke(uInt16 address, uInt8 value)
         myBall.setColor(value);
         myShadowRegisters[address] = value;
       }
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAccessFlags(dataAddr, Device::PCOL);
+    #endif
       break;
+    }
 
     case PF0:
     {
@@ -616,7 +684,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
+        mySystem->setAccessFlags(dataAddr, Device::PGFX);
     #endif
       break;
     }
@@ -627,7 +695,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
+        mySystem->setAccessFlags(dataAddr, Device::PGFX);
     #endif
       break;
     }
@@ -638,7 +706,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
+        mySystem->setAccessFlags(dataAddr, Device::PGFX);
     #endif
       break;
     }
@@ -706,7 +774,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::GFX);
+        mySystem->setAccessFlags(dataAddr, Device::GFX);
     #endif
       break;
     }
@@ -719,7 +787,7 @@ bool TIA::poke(uInt16 address, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAccessFlags(dataAddr, CartDebug::GFX);
+        mySystem->setAccessFlags(dataAddr, Device::GFX);
     #endif
       break;
     }
@@ -1883,24 +1951,25 @@ void TIA::toggleCollBLPF()
 
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::createAccessBase()
+void TIA::createAccessArrays()
 {
-  myAccessBase.fill(CartDebug::NONE);
+  myAccessBase.fill(Device::NONE);
+  myAccessCounter.fill(0);
   myAccessDelay.fill(TIA_DELAY);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 TIA::getAccessFlags(uInt16 address) const
+Device::AccessFlags TIA::getAccessFlags(uInt16 address) const
 {
   return myAccessBase[address & TIA_MASK];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setAccessFlags(uInt16 address, uInt8 flags)
+void TIA::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 {
   // ignore none flag
-  if (flags != CartDebug::NONE) {
-    if (flags == CartDebug::WRITE) {
+  if (flags != Device::NONE) {
+    if (flags == Device::WRITE) {
       // the first two write accesses are assumed as initialization
       if (myAccessDelay[address & TIA_MASK])
         myAccessDelay[address & TIA_MASK]--;
@@ -1909,5 +1978,39 @@ void TIA::setAccessFlags(uInt16 address, uInt8 flags)
     } else
       myAccessBase[address & TIA_READ_MASK] |= flags;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::increaseAccessCounter(uInt16 address, bool isWrite)
+{
+  if(isWrite)
+  {
+    // the first two write accesses are assumed as initialization
+    if(myAccessDelay[address & TIA_MASK])
+      myAccessDelay[address & TIA_MASK]--;
+    else
+      myAccessCounter[address & TIA_MASK]++;
+  }
+  else
+    myAccessCounter[TIA_SIZE + (address & TIA_READ_MASK)]++;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string TIA::getAccessCounters() const
+{
+  ostringstream out;
+
+  out << "TIA reads:\n";
+  for(uInt16 addr = 0x00; addr < TIA_READ_SIZE; ++addr)
+    out << Common::Base::HEX4 << addr << ","
+    << Common::Base::toString(myAccessCounter[TIA_SIZE + addr], Common::Base::Fmt::_10_8) << ", ";
+  out << "\n";
+  out << "TIA writes:\n";
+  for(uInt16 addr = 0x00; addr < TIA_SIZE; ++addr)
+    out << Common::Base::HEX4 << addr << ","
+    << Common::Base::toString(myAccessCounter[addr], Common::Base::Fmt::_10_8) << ", ";
+  out << "\n";
+
+  return out.str();
 }
 #endif // DEBUGGER_SUPPORT

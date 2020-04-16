@@ -29,6 +29,7 @@
 #include "Paddles.hxx"
 #include "Lightgun.hxx"
 #include "PointingDevice.hxx"
+#include "Driving.hxx"
 #include "PropsSet.hxx"
 #include "Settings.hxx"
 #include "Sound.hxx"
@@ -97,6 +98,7 @@ void EventHandler::initialize()
   Paddles::setDigitalSensitivity(myOSystem.settings().getInt("dsense"));
   Paddles::setMouseSensitivity(myOSystem.settings().getInt("msense"));
   PointingDevice::setSensitivity(myOSystem.settings().getInt("tsense"));
+  Driving::setSensitivity(myOSystem.settings().getInt("dcsense"));
 
 #ifdef GUI_SUPPORT
   // Set quick select delay when typing characters in listwidgets

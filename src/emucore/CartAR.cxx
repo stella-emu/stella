@@ -35,13 +35,13 @@ CartridgeAR::CartridgeAR(const ByteBuffer& image, size_t size,
     std::copy_n(ourDefaultHeader.data(), ourDefaultHeader.size(),
                 myLoadImages.get()+myImage.size());
 
-  // We use System::PageAccess.codeAccessBase, but don't allow its use
+  // We use System::PageAccess.romAccessBase, but don't allow its use
   // through a pointer, since the AR scheme doesn't support bankswitching
   // in the normal sense
   //
   // Instead, access will be through the getAccessFlags and setAccessFlags
   // methods below
-  createCodeAccessBase(mySize);
+  createRomAccessArrays(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -190,19 +190,21 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   return modified;
 }
 
+#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeAR::getAccessFlags(uInt16 address) const
+Device::AccessFlags CartridgeAR::getAccessFlags(uInt16 address) const
 {
-  return myCodeAccessBase[(address & 0x07FF) +
+  return myRomAccessBase[(address & 0x07FF) +
            myImageOffset[(address & 0x0800) ? 1 : 0]];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::setAccessFlags(uInt16 address, uInt8 flags)
+void CartridgeAR::setAccessFlags(uInt16 address, Device::AccessFlags flags)
 {
-  myCodeAccessBase[(address & 0x07FF) +
+  myRomAccessBase[(address & 0x07FF) +
     myImageOffset[(address & 0x0800) ? 1 : 0]] |= flags;
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::bankConfiguration(uInt8 configuration)

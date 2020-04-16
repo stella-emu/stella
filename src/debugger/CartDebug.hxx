@@ -31,6 +31,7 @@ using CartMethod = int (CartDebug::*)();
 
 #include "bspf.hxx"
 #include "DebuggerSystem.hxx"
+#include "Device.hxx"
 
 class CartState : public DebuggerState
 {
@@ -47,30 +48,8 @@ class CartDebug : public DebuggerSystem
   friend class DiStella;
 
   public:
-    enum DisasmType {
-      NONE        = 0,
-      REFERENCED  = 1 << 0, /* 0x01, code somewhere in the program references it,
-                               i.e. LDA $F372 referenced $F372 */
-      VALID_ENTRY = 1 << 1, /* 0x02, addresses that can have a label placed in front of it.
-                               A good counterexample would be "FF00: LDA $FE00"; $FF01
-                               would be in the middle of a multi-byte instruction, and
-                               therefore cannot be labelled. */
-
-      // The following correspond to specific types that can be set within the
-      // debugger, or specified in a Distella cfg file, and are listed in order
-      // of decreasing hierarchy
-      //
-      CODE  = 1 << 7, // 0x80, disassemble-able code segments
-      TCODE = 1 << 6, // 0x40, (tentative) disassemble-able code segments
-      GFX   = 1 << 5, // 0x20, addresses loaded into GRPx registers
-      PGFX  = 1 << 4, // 0x10, addresses loaded into PFx registers
-      DATA  = 1 << 3, // 0x08, addresses loaded into registers other than GRPx / PFx
-      ROW   = 1 << 2, // 0x04, all other addresses
-      // special type for poke()
-      WRITE = TCODE   // 0x40, address written to
-    };
     struct DisassemblyTag {
-      DisasmType type{NONE};
+      Device::AccessType type{Device::NONE};
       uInt16 address{0};
       string label;
       string disasm;
@@ -104,28 +83,27 @@ class CartDebug : public DebuggerSystem
     CartDebugWidget* getDebugWidget() const { return myDebugWidget; }
     void setDebugWidget(CartDebugWidget* w) { myDebugWidget = w; }
 
+
+    // Return the address of the last CPU read
+    int lastReadAddress();
+    // Return the address of the last CPU write
+    int lastWriteAddress();
+
     // Return the base (= non-mirrored) address of the last CPU read
     int lastReadBaseAddress();
     // Return the base (= non-mirrored) address of the last CPU write
     int lastWriteBaseAddress();
 
-    // The following two methods are meant to be used together
-    // First, a call is made to disassemble(), which updates the disassembly
-    // list; it will figure out when an actual complete disassembly is
-    // required, and when the previous results can be used
-    //
-    // Later, successive calls to disassemblyList() simply return the
-    // previous results; no disassembly is done in this case
-    /**
-      Disassemble from the given address using the Distella disassembler
-      Address-to-label mappings (and vice-versa) are also determined here
-
-      @param force  Force a re-disassembly, even if the state hasn't changed
-
-      @return  True if disassembly changed from previous call, else false
-    */
+    // TODO
     bool disassemble(bool force = false);
+    bool disassembleBank(int bank);
 
+    // First, a call is made to disassemble(), which updates the disassembly
+    // list, is required; it will figure out when an actual complete
+    // disassembly is required, and when the previous results can be used
+    //
+    // Later, successive calls to disassembly() simply return the
+    // previous results; no disassembly is done in this case
     /**
       Get the results from the most recent call to disassemble()
     */
@@ -149,7 +127,7 @@ class CartDebug : public DebuggerSystem
 
       @return  The disassembly represented as a string
     */
-    string disassemble(uInt16 start, uInt16 lines) const;
+    string disassembleLines(uInt16 start, uInt16 lines) const;
 
     /**
       Add a directive to the disassembler.  Directives are basically overrides
@@ -157,14 +135,14 @@ class CartDebug : public DebuggerSystem
       things can't be automatically determined.  For now, these directives
       have exactly the same syntax as in a distella configuration file.
 
-      @param type   Currently, CODE/DATA/GFX are supported
+      @param type   Currently, CODE/DATA/GFX/PGFX/COL/PCOL/BCOL/AUD/ROW are supported
       @param start  The start address (inclusive) to mark with the given type
       @param end    The end address (inclusive) to mark with the given type
       @param bank   Bank to which these directive apply (0 indicated current bank)
 
       @return  True if directive was added, else false if it was removed
     */
-    bool addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end,
+    bool addDirective(Device::AccessType type, uInt16 start, uInt16 end,
                       int bank = -1);
 
     // The following are convenience methods that query the cartridge object
@@ -232,6 +210,11 @@ class CartDebug : public DebuggerSystem
     string saveRom();
 
     /**
+      Save access counters file
+    */
+    string saveAccessFile();
+
+    /**
       Show Distella directives (both set by the user and determined by Distella)
       for the given bank (or all banks, if no bank is specified).
     */
@@ -249,18 +232,21 @@ class CartDebug : public DebuggerSystem
     */
     void getCompletions(const char* in, StringList& list) const;
 
-    // Convert given address to corresponding disassembly type and append to buf
-    void addressTypeAsString(ostream& buf, uInt16 addr) const;
+    // Convert given address to corresponding access type and append to buf
+    void accessTypeAsString(ostream& buf, uInt16 addr) const;
+
+    // Convert access enum type to corresponding string and append to buf
+    void AccessTypeAsString(ostream& buf, Device::AccessType type) const;
 
   private:
     using AddrToLabel = std::map<uInt16, string>;
     using LabelToAddr = std::map<string, uInt16,
         std::function<bool(const string&, const string&)>>;
 
-    using AddrTypeArray = std::array<uInt8, 0x1000>;
+    using AddrTypeArray = std::array<uInt16, 0x1000>;
 
     struct DirectiveTag {
-      DisasmType type{NONE};
+      Device::AccessType type{Device::NONE};
       uInt16 start{0};
       uInt16 end{0};
     };
@@ -290,6 +276,19 @@ class CartDebug : public DebuggerSystem
     };
     ReservedEquates myReserved;
 
+    /**
+      Disassemble from the given address using the Distella disassembler
+      Address-to-label mappings (and vice-versa) are also determined here
+
+      @param bank   The current bank to disassemble
+      @param PC     A program counter to start with
+      @param force  Force a re-disassembly, even if the state hasn't changed
+
+      @return  True if disassembly changed from previous call, else false
+    */
+    bool disassemble(int bank, uInt16 PC, bool force = false);
+
+
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list
     bool fillDisassemblyList(BankInfo& bankinfo, uInt16 search);
@@ -298,15 +297,12 @@ class CartDebug : public DebuggerSystem
     // based on its disassembly
     void getBankDirectives(ostream& buf, BankInfo& info) const;
 
-    // Get disassembly enum type from 'flags', taking precendence into account
-    DisasmType disasmTypeAbsolute(uInt8 flags) const;
+    // Get access enum type from 'flags', taking precendence into account
+    Device::AccessType accessTypeAbsolute(Device::AccessFlags flags) const;
 
-    // Convert disassembly enum type to corresponding string and append to buf
-    void disasmTypeAsString(ostream& buf, DisasmType type) const;
-
-    // Convert all disassembly types in 'flags' to corresponding string and
+    // Convert all access types in 'flags' to corresponding string and
     // append to buf
-    void disasmTypeAsString(ostream& buf, uInt8 flags) const;
+    void AccessTypeAsString(ostream& buf, Device::AccessFlags flags) const;
 
   private:
     const OSystem& myOSystem;
@@ -347,7 +343,7 @@ class CartDebug : public DebuggerSystem
     uInt16 myLabelLength{8};  // longest pre-defined label
 
     // Filenames to use for various I/O (currently these are hardcoded)
-    string myListFile, mySymbolFile, myCfgFile, myDisasmFile, myRomFile;
+    string myListFile, mySymbolFile, myCfgFile, myDisasmFile;
 
     /// Table of instruction mnemonics
     static std::array<const char*, 16>  ourTIAMnemonicR; // read mode

@@ -27,6 +27,7 @@
 #include "OSystem.hxx"
 #include "CartDetector.hxx"
 #include "ControllerDetector.hxx"
+#include "Paddles.hxx"
 #include "PopUpWidget.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
@@ -66,7 +67,7 @@ GameInfoDialog::GameInfoDialog(
   StaticTextWidget* t;
 
   // Set real dimensions
-  setSize(53 * fontWidth + 8,
+  setSize(55 * fontWidth + 8,
           8 * (lineHeight + VGAP) + 1 * (infoLineHeight + VGAP) + VBORDER * 2 + _th +
           buttonHeight + fontHeight + ifont.getLineHeight() + 20,
           max_w, max_h);
@@ -118,12 +119,13 @@ GameInfoDialog::GameInfoDialog(
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myFormat);
 
-  myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 8, ypos + 4, "SECAM60 detected");
-
+  myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 8, ypos + 4,
+                                          "SECAM60 detected");
 
   // Phosphor
   ypos += lineHeight + VGAP;
-  myPhosphor = new CheckboxWidget(myTab, font, HBORDER, ypos + 1, "Phosphor (enabled for all ROMs)", kPhosphorChanged);
+  myPhosphor = new CheckboxWidget(myTab, font, HBORDER, ypos + 1,
+                                  "Phosphor (enabled for all ROMs)", kPhosphorChanged);
   wid.push_back(myPhosphor);
 
   ypos += lineHeight + VGAP * 0;
@@ -261,10 +263,35 @@ GameInfoDialog::GameInfoDialog(
                                          pwidth, buttonHeight, "Erase EEPROM", kEEButtonPressed);
   wid.push_back(myEraseEEPROMButton);
   myEraseEEPROMInfo = new StaticTextWidget(myTab, ifont, myEraseEEPROMButton->getRight() + 4,
-                                           myEraseEEPROMLabel->getTop() + 3, "(for this game only)");
-
+                                           myEraseEEPROMLabel->getTop() + 3,
+                                           "(for this game only)");
   ypos += lineHeight + VGAP * 4;
-  myMouseControl = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Specific mouse axes", kMCtrlChanged);
+
+  // Paddles
+  myPaddlesCenter = new StaticTextWidget(myTab, font, xpos, ypos, "Paddles center:");
+  ypos += lineHeight + VGAP;
+
+  xpos += 20;
+  myPaddleXCenter = new SliderWidget(myTab, font, xpos, ypos - 1, "X ", 0, kPXCenterChanged,
+                                     fontWidth * 6, "px", 0 ,true);
+  myPaddleXCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
+  myPaddleXCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
+  myPaddleXCenter->setTickmarkIntervals(4);
+  wid.push_back(myPaddleXCenter);
+  ypos += lineHeight + VGAP;
+
+  myPaddleYCenter = new SliderWidget(myTab, font, xpos, ypos - 1, "Y ", 0, kPYCenterChanged,
+                                     fontWidth * 6, "px", 0 ,true);
+  myPaddleYCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
+  myPaddleYCenter->setMaxValue(Paddles::MAX_ANALOG_CENTER);
+  myPaddleYCenter->setTickmarkIntervals(4);
+  wid.push_back(myPaddleYCenter);
+
+  // Mouse
+  xpos = HBORDER + fontWidth * 24 - 20;
+  ypos = myPaddlesCenter->getTop();
+  myMouseControl = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Specific mouse axes",
+                                      kMCtrlChanged);
   wid.push_back(myMouseControl);
 
   // Mouse controller specific axis
@@ -291,8 +318,8 @@ GameInfoDialog::GameInfoDialog(
                "Y-Axis is ");
   wid.push_back(myMouseY);
 
-  xpos = HBORDER; ypos += lineHeight + VGAP;
-  myMouseRange = new SliderWidget(myTab, font, HBORDER, ypos,
+  xpos -= 20; ypos += lineHeight + VGAP;
+  myMouseRange = new SliderWidget(myTab, font, xpos, ypos,
                                   "Mouse axes range ", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
   myMouseRange->setTickmarkIntervals(4);
@@ -492,6 +519,10 @@ void GameInfoDialog::loadControllerProperties(const Properties& props)
   mySwapPorts->setState(props.get(PropType::Console_SwapPorts) == "YES");
   mySwapPaddles->setState(props.get(PropType::Controller_SwapPaddles) == "YES");
 
+  // Paddle centers
+  myPaddleXCenter->setValue(BSPF::stringToInt(props.get(PropType::Controller_PaddlesXCenter)));
+  myPaddleYCenter->setValue(BSPF::stringToInt(props.get(PropType::Controller_PaddlesYCenter)));
+
   // MouseAxis property (potentially contains 'range' information)
   istringstream m_axis(props.get(PropType::Controller_MouseAxis));
   string m_control, m_range;
@@ -557,7 +588,11 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(PropType::Controller_Left, myLeftPort->getSelectedTag().toString());
   myGameProperties.set(PropType::Controller_Right, myRightPort->getSelectedTag().toString());
   myGameProperties.set(PropType::Console_SwapPorts, (mySwapPorts->isEnabled() && mySwapPorts->getState()) ? "YES" : "NO");
-  myGameProperties.set(PropType::Controller_SwapPaddles, (/*mySwapPaddles->isEnabled() &&*/ mySwapPaddles->getState()) ? "YES" : "NO");
+  myGameProperties.set(PropType::Controller_SwapPaddles, mySwapPaddles->getState() ? "YES" : "NO");
+
+  // Paddle center
+  myGameProperties.set(PropType::Controller_PaddlesXCenter, std::to_string(myPaddleXCenter->getValue()));
+  myGameProperties.set(PropType::Controller_PaddlesYCenter, std::to_string(myPaddleYCenter->getValue()));
 
   // MouseAxis property (potentially contains 'range' information)
   string mcontrol = "AUTO";
@@ -598,6 +633,9 @@ void GameInfoDialog::saveConfig()
 
     // update 'Controllers' tab settings immediately
     instance().console().setControllers(myGameProperties.get(PropType::Cart_MD5));
+
+    Paddles::setAnalogXCenter(myPaddleXCenter->getValue());
+    Paddles::setAnalogYCenter(myPaddleYCenter->getValue());
   }
 }
 
@@ -686,7 +724,7 @@ void GameInfoDialog::updateControllerStates()
   // Compumate bankswitching scheme doesn't allow to select controllers
   bool enableSelectControl = myBSType->getSelectedTag() != "CM";
   // Enable Swap Paddles checkbox only for paddle games
-  bool enableSwapPaddles = BSPF::startsWithIgnoreCase(contrLeft, "PADDLES") ||
+  bool enablePaddles = BSPF::startsWithIgnoreCase(contrLeft, "PADDLES") ||
     BSPF::startsWithIgnoreCase(contrRight, "PADDLES") ||
     BSPF::startsWithIgnoreCase(myLeftPortDetected->getLabel(), "Paddles") ||
     BSPF::startsWithIgnoreCase(myRightPortDetected->getLabel(), "Paddles");
@@ -712,11 +750,27 @@ void GameInfoDialog::updateControllerStates()
   myRightPort->setEnabled(enableSelectControl);
 
   mySwapPorts->setEnabled(enableSelectControl);
-  mySwapPaddles->setEnabled(enableSwapPaddles);
+  mySwapPaddles->setEnabled(enablePaddles);
 
   myEraseEEPROMLabel->setEnabled(enableEEEraseButton);
   myEraseEEPROMButton->setEnabled(enableEEEraseButton);
   myEraseEEPROMInfo->setEnabled(enableEEEraseButton);
+
+  myPaddlesCenter->setEnabled(enablePaddles);
+  myPaddleXCenter->setEnabled(enablePaddles);
+  myPaddleYCenter->setEnabled(enablePaddles);
+
+
+  bool enableMouse = enablePaddles ||
+    BSPF::startsWithIgnoreCase(contrLeft, "Driving") ||
+    BSPF::startsWithIgnoreCase(contrRight, "Driving") ||
+    BSPF::startsWithIgnoreCase(contrLeft, "MindLink") ||
+    BSPF::startsWithIgnoreCase(contrRight, "MindLink");
+
+  myMouseControl->setEnabled(enableMouse);
+  myMouseX->setEnabled(enableMouse);
+  myMouseY->setEnabled(enableMouse);
+  myMouseRange->setEnabled(enableMouse);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -795,6 +849,14 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       }
       else
         myVCenter->setValueUnit("px");
+      break;
+
+    case kPXCenterChanged:
+      myPaddleXCenter->setValueLabel(myPaddleXCenter->getValue() * 5);
+      break;
+
+    case kPYCenterChanged:
+      myPaddleYCenter->setValueLabel(myPaddleYCenter->getValue() * 5);
       break;
 
     case kMCtrlChanged:

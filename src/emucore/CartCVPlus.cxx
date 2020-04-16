@@ -30,7 +30,7 @@ CartridgeCVPlus::CartridgeCVPlus(const ByteBuffer& image, size_t size,
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
-  createCodeAccessBase(mySize + myRAM.size());
+  createRomAccessArrays(mySize + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,11 +58,13 @@ void CartridgeCVPlus::install(System& system)
   // Map access to this class, since we need to inspect all accesses to
   // check if RWP happens
   access.directPeekBase = access.directPokeBase = nullptr;
-  access.codeAccessBase = nullptr;
+  access.romAccessBase = nullptr;
   access.type = System::PageAccessType::WRITE;
   for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[mySize + (addr & 0x03FF)];
+    access.romAccessBase = &myRomAccessBase[mySize + (addr & 0x03FF)];
+    access.romPeekCounter = &myRomAccessCounter[mySize + (addr & 0x03FF)];
+    access.romPokeCounter = &myRomAccessCounter[mySize + (addr & 0x03FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -71,7 +73,9 @@ void CartridgeCVPlus::install(System& system)
   for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myRAM[addr & 0x03FF];
-    access.codeAccessBase = &myCodeAccessBase[mySize + (addr & 0x03FF)];
+    access.romAccessBase = &myRomAccessBase[mySize + (addr & 0x03FF)];
+    access.romPeekCounter = &myRomAccessCounter[mySize + (addr & 0x03FF)];
+    access.romPokeCounter = &myRomAccessCounter[mySize + (addr & 0x03FF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -104,9 +108,22 @@ bool CartridgeCVPlus::poke(uInt16 address, uInt8 value)
     return mySystem->tia().poke(address, value);
   }
   else
-    pokeRAM(myRAM[address & 0x03FF], pokeAddress, value);
+  {
+    if(address & 0x0400)
+    {
+      pokeRAM(myRAM[address & 0x03FF], pokeAddress, value);
+      return true;
+    }
+    else
+    {
+    // Writing to the read port should be ignored, but trigger a break if option enabled
+      uInt8 dummy;
 
-  return true;
+      pokeRAM(dummy, pokeAddress, value);
+      myRamWriteAccess = pokeAddress;
+      return false;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,7 +152,7 @@ bool CartridgeCVPlus::bank(uInt16 bank)
   for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[offset + (addr & 0x07FF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x07FF)];
+    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x07FF)];
     mySystem->setPageAccess(addr, access);
   }
 

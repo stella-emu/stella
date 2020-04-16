@@ -37,9 +37,18 @@
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "RomInfoWidget.hxx"
+#include "TIAConstants.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "StellaFont.hxx"
+#include "ConsoleBFont.hxx"
+#include "ConsoleMediumBFont.hxx"
+#include "StellaMediumFont.hxx"
+#include "StellaLargeFont.hxx"
+#include "Stella12x24tFont.hxx"
+#include "Stella14x28tFont.hxx"
+#include "Stella16x32tFont.hxx"
 #include "Version.hxx"
 #include "LauncherDialog.hxx"
 
@@ -123,17 +132,13 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add list with game titles
   // Before we add the list, we need to know the size of the RomInfoWidget
-  xpos = HBORDER;  ypos += lineHeight + 4;
-  int romWidth = 0;
-  int romSize = instance().settings().getInt("romviewer");
-  if(romSize > 1 && w >= 1000 && h >= 720)
-    romWidth = 660;
-  else if(romSize > 0 && w >= 640 && h >= 480)
-    romWidth = 365;
-
+  int listHeight = _h - 43 - bheight - fontHeight - lineHeight;
+  float imgZoom = getRomInfoZoom(listHeight);
+  int romWidth = imgZoom * TIAConstants::viewableWidth;
+  if(romWidth > 0) romWidth += 10;
   int listWidth = _w - (romWidth > 0 ? romWidth+8 : 0) - 20;
-  myList = new FileListWidget(this, font, xpos, ypos,
-                              listWidth, _h - 43 - bheight - fontHeight - lineHeight);
+  xpos = HBORDER;  ypos += lineHeight + 4;
+  myList = new FileListWidget(this, font, xpos, ypos, listWidth, listHeight);
   myList->setEditable(false);
   myList->setListMode(FilesystemNode::ListMode::All);
   wid.push_back(myList);
@@ -142,10 +147,17 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   if(romWidth > 0)
   {
     xpos += myList->getWidth() + 8;
-    myRomInfoWidget = new RomInfoWidget(this,
-        romWidth < 660 ? instance().frameBuffer().smallFont() :
-                         instance().frameBuffer().infoFont(),
-        xpos, ypos, romWidth, myList->getHeight());
+
+    // Initial surface size is the same as the viewable area
+    Common::Size imgSize(TIAConstants::viewableWidth*imgZoom,
+                         TIAConstants::viewableHeight*imgZoom);
+
+    // Calculate font area, and in the process the font that can be used
+    Common::Size fontArea(romWidth - 16, myList->getHeight() - imgSize.h - 12);
+
+    setRomInfoFont(fontArea);
+    myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
+        xpos, ypos, romWidth, myList->getHeight(), imgSize);
   }
 
   // Add textfield to show current directory
@@ -167,37 +179,43 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
     myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
-      xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
     myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
-      xpos += (bwidth + 1) / 4 + BUTTON_GAP;
-      myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
-                                         "Options" + ELLIPSIS, kOptionsCmd);
+
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
+                                       "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
-      xpos += (bwidth + 2) / 4 + BUTTON_GAP;
-    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
-                                  "Quit", kQuitCmd);
+
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 4) / 4, bheight,
+                                    "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
   #else
     myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
                                     "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
-      xpos += (bwidth + 0) / 4 + BUTTON_GAP;
+
+    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
     myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
-      xpos += (bwidth + 1) / 4 + BUTTON_GAP;
+
+    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
     myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
-      xpos += (bwidth + 2) / 4 + BUTTON_GAP;
+
+    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
     myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
   #endif
   }
-  if (myUseMinimalUI) // Highlight 'Rom Listing'
+  if(myUseMinimalUI) // Highlight 'Rom Listing'
     mySelectedItem = 0;
   else
     mySelectedItem = 2;
@@ -207,8 +225,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Create (empty) context menu for ROM list options
   myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), EmptyVarList);
 
-
-  // Create global props dialog, which is used to temporarily overrride
+  // Create global props dialog, which is used to temporarily override
   // ROM properties
   myGlobalProps = make_unique<GlobalPropsDialog>(this,
     myUseMinimalUI ? osystem.frameBuffer().launcherFont() : osystem.frameBuffer().font());
@@ -251,6 +268,12 @@ const FilesystemNode& LauncherDialog::currentNode() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FilesystemNode& LauncherDialog::currentDir() const
+{
+  return myList->currentDir();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::reload()
 {
   myMD5List.clear();
@@ -283,6 +306,13 @@ void LauncherDialog::loadConfig()
     myRomInfoWidget->reloadProperties(currentNode());
 
   myList->clearFlags(Widget::FLAG_WANTS_RAWDATA); // always reset this
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::saveConfig()
+{
+  if(instance().settings().getBool("followlauncher"))
+    instance().settings().setValue("romdir", myList->currentDir().getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -323,6 +353,71 @@ void LauncherDialog::applyFiltering()
       return true;
     }
   );
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+float LauncherDialog::getRomInfoZoom(int listHeight) const
+{
+  // The ROM info area is some multiple of the minimum TIA image size
+  float zoom = instance().settings().getFloat("romviewer");
+
+  if(zoom > 0.F)
+  {
+    // upper zoom limit - at least 24 launchers chars/line and 8 ROM info lines
+    if((_w - 58 - zoom * TIAConstants::viewableWidth)
+       / instance().frameBuffer().launcherFont().getMaxCharWidth() < MIN_LAUNCHER_CHARS)
+    {
+      zoom = float(_w - 58 - MIN_LAUNCHER_CHARS * instance().frameBuffer().launcherFont().getMaxCharWidth())
+        / TIAConstants::viewableWidth;
+    }
+    if((listHeight - 12 - zoom * TIAConstants::viewableHeight) <
+       MIN_ROMINFO_ROWS * instance().frameBuffer().smallFont().getLineHeight() +
+       MIN_ROMINFO_LINES * instance().frameBuffer().smallFont().getFontHeight())
+    {
+      zoom = float(listHeight - 12 -
+                   MIN_ROMINFO_ROWS * instance().frameBuffer().smallFont().getLineHeight() -
+                   MIN_ROMINFO_LINES * instance().frameBuffer().smallFont().getFontHeight())
+        / TIAConstants::viewableHeight;
+    }
+
+    // lower zoom limit - at least 24 ROM info chars/line
+    if((zoom * TIAConstants::viewableWidth)
+       / instance().frameBuffer().smallFont().getMaxCharWidth() < MIN_ROMINFO_CHARS + 6)
+    {
+      zoom = float(MIN_ROMINFO_CHARS * instance().frameBuffer().smallFont().getMaxCharWidth() + 6)
+        / TIAConstants::viewableWidth;
+    }
+  }
+  return zoom;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::setRomInfoFont(const Common::Size& area)
+{
+  // TODO: Perhaps offer a setting to override the font used?
+
+  FontDesc FONTS[7] = {
+    GUI::stella16x32tDesc, GUI::stella14x28tDesc, GUI::stella12x24tDesc,
+    GUI::stellaLargeDesc, GUI::stellaMediumDesc,
+    GUI::consoleMediumBDesc, GUI::consoleBDesc
+  };
+
+  // Try to pick a font that works best, based on the available area
+  for(size_t i = 0; i < sizeof(FONTS) / sizeof(FontDesc); ++i)
+  {
+    // only use fonts <= launcher fonts
+    if(instance().frameBuffer().launcherFont().getFontHeight() >= FONTS[i].height)
+    {
+      if(area.h >= uInt32(MIN_ROMINFO_ROWS * FONTS[i].height + 2
+         + MIN_ROMINFO_LINES * FONTS[i].height)
+         && area.w >= uInt32(MIN_ROMINFO_CHARS * FONTS[i].maxwidth))
+      {
+        myROMInfoFont = make_unique<GUI::Font>(FONTS[i]);
+        return;
+      }
+    }
+  }
+  myROMInfoFont = make_unique<GUI::Font>(GUI::stellaDesc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -489,6 +584,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kLoadROMCmd:
     case FileListWidget::ItemActivated:
+      saveConfig();
       loadRom();
       break;
 
@@ -516,6 +612,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kQuitCmd:
+      saveConfig();
       close();
       instance().eventHandler().quit();
       break;
@@ -556,6 +653,12 @@ void LauncherDialog::loadRom()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::setDefaultDir()
+{
+  instance().settings().setValue("romdir", myList->currentDir().getShortPath());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::openSettings()
 {
   // Create an options dialog, similar to the in-game one
@@ -563,7 +666,7 @@ void LauncherDialog::openSettings()
   {
     if (myStellaSettingsDialog == nullptr)
       myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-        instance().frameBuffer().launcherFont(), _w, _h, Menu::AppMode::launcher);
+        _w, _h, Menu::AppMode::launcher);
     myStellaSettingsDialog->open();
   }
   else

@@ -93,10 +93,11 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
     myCpuDataSrc[i]->setEditable(false, true);
     src_y += fontHeight+2;
   }
-  int swidth = lfont.getStringWidth("Source Address");
-  new StaticTextWidget(boss, lfont, xpos, src_y + 4, src_w,
-                       fontHeight, swidth <= src_w ? "Source Address" : "Source Addr",
-                       TextAlign::Center);
+
+  // Last write destination address
+  new StaticTextWidget(boss, lfont, xpos - fontWidth * 4.5, src_y + 4, "Dest");
+  myCpuDataDest = new EditTextWidget(boss, nfont, xpos, src_y + 2, src_w, fontHeight+1);
+  myCpuDataDest->setEditable(false, true);
 
   // Add labels for other CPU registers
   xpos = x;
@@ -324,6 +325,10 @@ void CpuWidget::loadConfig()
   const string& srcY = state.srcY < 0 ? "IMM" : cart.getLabel(state.srcY, true);
   myCpuDataSrc[3]->setText((srcY != EmptyString ? srcY : Common::Base::toString(state.srcY)),
                            state.srcY != oldstate.srcY);
+
+  const string& dest = state.dest < 0 ? "" : cart.getLabel(state.dest, false);
+  myCpuDataDest->setText((dest != EmptyString ? dest : Common::Base::toString(state.dest)),
+                         state.dest != oldstate.dest);
 
   // Update the PS register booleans
   changed.clear();

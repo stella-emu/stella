@@ -2054,6 +2054,15 @@
     <ClInclude Include="..\gui\MessageDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
+    <ClInclude Include="..\gui\Stella12x24tFont.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\Stella14x28tFont.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\Stella16x32tFont.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
