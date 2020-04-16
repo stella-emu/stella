@@ -239,7 +239,7 @@ class CartridgeEnhanced : public Cartridge
     static constexpr bool RAM_HIGH_WP = false;
 
     // The maximum shift (for a 4K bank size)
-    static constexpr uInt16 MAX_BANK_SHIFT = 12; ; // -> 4K
+    static constexpr uInt16 MAX_BANK_SHIFT = 12;  // -> 4K
 
   protected:
     /**
