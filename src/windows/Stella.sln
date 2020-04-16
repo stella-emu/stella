@@ -1,16 +1,15 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stella", "Stella.vcxproj", "{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
+		Debug-NoDebugger|Win32 = Debug-NoDebugger|Win32
+		Debug-NoDebugger|x64 = Debug-NoDebugger|x64
 		Profile|Win32 = Profile|Win32
 		Profile|x64 = Profile|x64
 		Release|Win32 = Release|Win32
@@ -21,6 +20,10 @@ Global
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug|Win32.Build.0 = Debug|Win32
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug|x64.ActiveCfg = Debug|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug|x64.Build.0 = Debug|x64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug-NoDebugger|Win32.ActiveCfg = Debug-NoDebugger|Win32
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug-NoDebugger|Win32.Build.0 = Debug-NoDebugger|Win32
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug-NoDebugger|x64.ActiveCfg = Debug-NoDebugger|x64
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug-NoDebugger|x64.Build.0 = Debug-NoDebugger|x64
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|Win32.ActiveCfg = Profile|Win32
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|Win32.Build.0 = Profile|Win32
 		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Profile|x64.ActiveCfg = Profile|x64
@@ -35,6 +38,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37AF7F05-558D-4805-9259-3F11FD60BB83}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

@@ -679,6 +679,29 @@ string DebuggerParser::saveScriptFile(string file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::executeDirective(Device::AccessType type)
+{
+  if(argCount != 2)
+  {
+    outputCommandError("specify start and end of range only", myCommand);
+    return;
+  }
+  else if(args[1] < args[0])
+  {
+    commandResult << red("start address must be <= end address");
+    return;
+  }
+
+  bool result = debugger.cartDebug().addDirective(type, args[0], args[1]);
+
+  commandResult << (result ? "added " : "removed ");
+  debugger.cartDebug().AccessTypeAsString(commandResult, type);
+  commandResult << " directive on range $"
+    << hex << args[0] << " $" << hex << args[1];
+  debugger.rom().invalidate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // executor methods for commands[] array. All are void, no args.
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -687,6 +710,13 @@ string DebuggerParser::saveScriptFile(string file)
 void DebuggerParser::executeA()
 {
   debugger.cpuDebug().setA(uInt8(args[0]));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "aud"
+void DebuggerParser::executeAud()
+{
+  executeDirective(Device::AUD);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -718,6 +748,13 @@ void DebuggerParser::executeBase()
       commandResult << red("UNKNOWN");
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "bcol"
+void DebuggerParser::executeBCol()
+{
+  executeDirective(Device::BCOL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -912,22 +949,14 @@ void DebuggerParser::executeCls()
 // "code"
 void DebuggerParser::executeCode()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
+  executeDirective(Device::CODE);
+}
 
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::CODE, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " CODE directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "col"
+void DebuggerParser::executeCol()
+{
+  executeDirective(Device::COL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -953,22 +982,7 @@ void DebuggerParser::executeD()
 // "data"
 void DebuggerParser::executeData()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
-
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::DATA, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " DATA directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+  executeDirective(Device::DATA);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1067,7 +1081,7 @@ void DebuggerParser::executeDisasm()
     return;
   }
 
-  commandResult << debugger.cartDebug().disassemble(start, lines);
+  commandResult << debugger.cartDebug().disassembleLines(start, lines);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1270,22 +1284,7 @@ void DebuggerParser::executeFunction()
 // "gfx"
 void DebuggerParser::executeGfx()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
-
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::GFX, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " GFX directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+  executeDirective(Device::GFX);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1627,25 +1626,17 @@ void DebuggerParser::executePc()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "pcol"
+void DebuggerParser::executePCol()
+{
+  executeDirective(Device::PCOL);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "pgfx"
 void DebuggerParser::executePGfx()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
-
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::PGFX, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " PGFX directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+  executeDirective(Device::PGFX);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1722,22 +1713,7 @@ void DebuggerParser::executeRom()
 // "row"
 void DebuggerParser::executeRow()
 {
-  if(argCount != 2)
-  {
-    outputCommandError("specify start and end of range only", myCommand);
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("start address must be <= end address");
-    return;
-  }
-
-  bool result = debugger.cartDebug().addDirective(
-                  CartDebug::ROW, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " ROW directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger.rom().invalidate();
+  executeDirective(Device::ROW);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1831,6 +1807,13 @@ void DebuggerParser::executeS()
 void DebuggerParser::executeSave()
 {
   commandResult << saveScriptFile(argStrings[0]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "saveaccess"
+void DebuggerParser::executeSaveAccess()
+{
+  commandResult << debugger.cartDebug().saveAccessFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2054,18 +2037,18 @@ void DebuggerParser::executeTraps(bool read, bool write, const string& command,
   if(read)
   {
     if(beginRead != endRead)
-      conditionBuf << "__lastread>=" << Base::toString(beginRead) << "&&__lastread<=" << Base::toString(endRead);
+      conditionBuf << "__lastbaseread>=" << Base::toString(beginRead) << "&&__lastbaseread<=" << Base::toString(endRead);
     else
-      conditionBuf << "__lastread==" << Base::toString(beginRead);
+      conditionBuf << "__lastbaseread==" << Base::toString(beginRead);
   }
   if(read && write)
     conditionBuf << "||";
   if(write)
   {
     if(beginWrite != endWrite)
-      conditionBuf << "__lastwrite>=" << Base::toString(beginWrite) << "&&__lastwrite<=" << Base::toString(endWrite);
+      conditionBuf << "__lastbasewrite>=" << Base::toString(beginWrite) << "&&__lastbasewrite<=" << Base::toString(endWrite);
     else
-      conditionBuf << "__lastwrite==" << Base::toString(beginWrite);
+      conditionBuf << "__lastbasewrite==" << Base::toString(beginWrite);
   }
   // parenthesize provided condition (end)
   if(hasCond)
@@ -2194,7 +2177,7 @@ void DebuggerParser::executeType()
   for(uInt32 i = beg; i <= end; ++i)
   {
     commandResult << Base::HEX4 << i << ": ";
-    debugger.cartDebug().addressTypeAsString(commandResult, i);
+    debugger.cartDebug().accessTypeAsString(commandResult, i);
     commandResult << endl;
   }
 }
@@ -2300,7 +2283,7 @@ void DebuggerParser::executeZ()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // List of all commands available to the parser
-std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
+std::array<DebuggerParser::Command, 100> DebuggerParser::commands = { {
   {
     "a",
     "Set Accumulator to <value>",
@@ -2312,6 +2295,16 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
   },
 
   {
+    "aud",
+    "Mark 'AUD' range in disassembly",
+    "Start and end of range required\nExample: aud f000 f010",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    std::mem_fn(&DebuggerParser::executeAud)
+  },
+
+  {
     "base",
     "Set default number base to <base>",
     "Base is #2, #10, #16, bin, dec or hex\nExample: base hex",
@@ -2320,6 +2313,17 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
     { Parameters::ARG_BASE_SPCL, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeBase)
   },
+
+  {
+    "bcol",
+    "Mark 'BCOL' range in disassembly",
+    "Start and end of range required\nExample: bcol f000 f010",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    std::mem_fn(&DebuggerParser::executeBCol)
+  },
+
 
   {
     "break",
@@ -2440,6 +2444,16 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
     false,
     { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
     std::mem_fn(&DebuggerParser::executeCode)
+  },
+
+  {
+    "col",
+    "Mark 'COL' range in disassembly",
+    "Start and end of range required\nExample: col f000 f010",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    std::mem_fn(&DebuggerParser::executeCol)
   },
 
   {
@@ -2848,6 +2862,16 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
   },
 
   {
+    "pcol",
+    "Mark 'PCOL' range in disassembly",
+    "Start and end of range required\nExample: col f000 f010",
+    true,
+    false,
+    { Parameters::ARG_WORD, Parameters::ARG_MULTI_BYTE },
+    std::mem_fn(&DebuggerParser::executePCol)
+  },
+
+  {
     "pgfx",
     "Mark 'PGFX' range in disassembly",
     "Start and end of range required\nExample: pgfx f000 f010",
@@ -2978,6 +3002,16 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
     false,
     { Parameters::ARG_FILE, Parameters::ARG_END_ARGS },
     std::mem_fn(&DebuggerParser::executeSave)
+  },
+
+  {
+    "saveaccess",
+    "Save the access counters to CSV file",
+    "Example: saveaccess (no parameters)",
+      false,
+      false,
+    { Parameters::ARG_END_ARGS },
+      std::mem_fn(&DebuggerParser::executeSaveAccess)
   },
 
   {
@@ -3182,7 +3216,7 @@ std::array<DebuggerParser::Command, 95> DebuggerParser::commands = { {
 
   {
     "type",
-    "Show disassembly type for address xx [yy]",
+    "Show access type for address xx [yy]",
     "Example: type f000, type f000 f010",
     true,
     false,

@@ -51,7 +51,7 @@ Cartridge2K::Cartridge2K(const ByteBuffer& image, size_t size,
     mySize = System::PAGE_SIZE;
   }
 
-  createCodeAccessBase(mySize);
+  createRomAccessArrays(mySize);
 
   // Set mask for accessing the image buffer
   // This is guaranteed to work, as mySize is a power of two
@@ -76,7 +76,9 @@ void Cartridge2K::install(System& system)
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[addr & myMask];
-    access.codeAccessBase = &myCodeAccessBase[addr & myMask];
+    access.romAccessBase = &myRomAccessBase[addr & myMask];
+    access.romPeekCounter = &myRomAccessCounter[addr & myMask];
+    access.romPokeCounter = &myRomAccessCounter[(addr & myMask) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 }

@@ -89,6 +89,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myEraseEEPROMLabel{nullptr};
     ButtonWidget*     myEraseEEPROMButton{nullptr};
     StaticTextWidget* myEraseEEPROMInfo{nullptr};
+    StaticTextWidget* myPaddlesCenter{nullptr};
+    SliderWidget*     myPaddleXCenter{nullptr};
+    SliderWidget*     myPaddleYCenter{nullptr};
     CheckboxWidget*   myMouseControl{nullptr};
     PopUpWidget*      myMouseX{nullptr};
     PopUpWidget*      myMouseY{nullptr};
@@ -110,6 +113,8 @@ class GameInfoDialog : public Dialog, public CommandSender
       kRightCChanged   = 'RCch',
       kMCtrlChanged    = 'MCch',
       kEEButtonPressed = 'EEgb',
+      kPXCenterChanged = 'Pxch',
+      kPYCenterChanged = 'Pych',
     };
 
     // Game properties for currently loaded ROM

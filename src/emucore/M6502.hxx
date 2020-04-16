@@ -34,6 +34,7 @@ class DispatchResult;
 #endif
 
 #include "bspf.hxx"
+#include "Device.hxx"
 #include "Serializable.hxx"
 
 /**
@@ -156,10 +157,24 @@ class M6502 : public Serializable
 
       @return The address of the last read
     */
-    uInt16 lastReadBaseAddress() const { return myLastPeekBaseAddress; }
+    uInt16 lastReadAddress() const { return myLastPeekAddress; }
 
     /**
       Return the last address that was part of a write/poke.
+
+      @return The address of the last write
+    */
+    uInt16 lastWriteAddress() const { return myLastPokeAddress; }
+
+    /**
+      Return the last (non-mirrored) address that was part of a read/peek.
+
+      @return The address of the last read
+    */
+    uInt16 lastReadBaseAddress() const { return myLastPeekBaseAddress; }
+
+    /**
+      Return the last (non-mirrored) address that was part of a write/poke.
 
       @return The address of the last write
     */
@@ -255,7 +270,7 @@ class M6502 : public Serializable
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address, uInt8 flags);
+    uInt8 peek(uInt16 address, Device::AccessFlags flags);
 
     /**
       Change the byte at the specified address to the given value and
@@ -264,7 +279,7 @@ class M6502 : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value, uInt8 flags = 0);
+    void poke(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE);
 
     /**
       Get the 8-bit value of the Processor Status register.
@@ -377,7 +392,7 @@ class M6502 : public Serializable
     /// accessed specifically by a peek or poke command
     uInt16 myLastPeekBaseAddress{0}, myLastPokeBaseAddress{0};
     // Indicates the type of the last access
-    uInt8 myFlags{0};
+    uInt16 myFlags{0};
 
     /// Indicates the last address used to access data by a peek command
     /// for the CPU registers (S/A/X/Y)

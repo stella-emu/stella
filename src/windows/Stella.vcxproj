@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug-NoDebugger|Win32">
+      <Configuration>Debug-NoDebugger</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-NoDebugger|x64">
+      <Configuration>Debug-NoDebugger</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -48,6 +56,11 @@
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v141_xp</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
@@ -59,6 +72,11 @@
     <PlatformToolset>v141_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v141_xp</PlatformToolset>
@@ -81,6 +99,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
@@ -93,15 +115,25 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">$(Platform)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">$(Platform)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
@@ -111,11 +143,17 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(Platform)\$(Configuration)\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'" />
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'" />
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
@@ -133,6 +171,10 @@
     <LibraryPath>$(ProjectDir)\SDL\lib\x86;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">
+    <LibraryPath>$(ProjectDir)\SDL\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x86;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
@@ -142,6 +184,10 @@
     <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">
     <LibraryPath>$(ProjectDir)\SDL\lib\x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)\SDL\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -187,6 +233,40 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\emucore\tia\frame-manager;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;PNG_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4100;4127;4146;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Stella.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -195,6 +275,42 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\emucore\tia\frame-manager;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;PNG_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)obj\\windows\%(RelativeDir)</ObjectFileName>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4100;4127;4146;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>$(IntDir)asm\windows\%(RelativeDir)</AssemblerListingLocation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Stella.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\emucore\tia;..\emucore\tia\frame-manager;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\windows;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BSPF_WINDOWS;WIN32;NOMINMAX;DEBUG_BUILD;SDL_SUPPORT;GUI_SUPPORT;PNG_SUPPORT;ZIP_SUPPORT;JOYSTICK_SUPPORT;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -403,70 +519,201 @@
     <ClCompile Include="..\common\tv_filters\AtariNTSC.cxx" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\common\ZipHandler.cxx" />
-    <ClCompile Include="..\debugger\BreakpointMap.cxx" />
-    <ClCompile Include="..\debugger\gui\AmigaMouseWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\AtariMouseWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\AtariVoxWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\BoosterWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\Cart0840Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\Cart2KWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\Cart3EPlusWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\Cart3EWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\Cart3FWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\Cart4A50Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\Cart4KSCWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\Cart4KWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartARWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartBFSCWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartBFWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartBUSWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartCDFInfoWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartCDFWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartCMWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartCTYWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartCVPlusWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartCVWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartDASHWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartDebugWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartDFSCWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartDFWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartDPCPlusWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartDPCWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartE0Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartE78KWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartE7Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartEFSCWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartEFWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartF0Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartF4SCWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartF4Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartF6SCWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartF6Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartF8SCWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartF8Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartFA2Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartFAWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartFCWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartFEWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartMDMWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartMNetworkWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartRamWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartSBWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartUAWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartWDWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\CartX07Widget.cxx" />
-    <ClCompile Include="..\debugger\gui\DelayQueueWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\DrivingWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\FlashWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\GenesisWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\JoystickWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\KeyboardWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\PaddleWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\PointingDeviceWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\RomListSettings.cxx" />
-    <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\TrakBallWidget.cxx" />
+    <ClCompile Include="..\debugger\BreakpointMap.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\Debugger.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\AmigaMouseWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\AtariMouseWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\AtariVoxWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\BoosterWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart0840Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart2KWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart3EPlusWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart3EWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart3FWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart4A50Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart4KSCWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\Cart4KWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartARWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartBFSCWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartBFWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartBUSWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartCDFInfoWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartCDFWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartCMWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartCTYWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartCVPlusWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartCVWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartDASHWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartDebugWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartDFSCWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartDFWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartDPCPlusWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartDPCWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartE0Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartE78KWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartE7Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartEFSCWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartEFWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartF0Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartF4SCWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartF4Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartF6SCWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartF6Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartF8SCWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartF8Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartFA2Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartFAWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartFCWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartFEWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartMDMWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartMNetworkWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartRamWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartSBWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartUAWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartWDWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartX07Widget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\DelayQueueWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\DrivingWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\FlashWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\GenesisWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\JoystickWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\KeyboardWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\PaddleWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\PointingDeviceWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\RiotRamWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\RomListSettings.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\SaveKeyWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\TrakBallWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\emucore\Bankswitch.cxx" />
     <ClCompile Include="..\emucore\Cart3EPlus.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
@@ -591,31 +838,78 @@
     <ClCompile Include="..\cheat\CheatManager.cxx" />
     <ClCompile Include="..\cheat\CheetahCheat.cxx" />
     <ClCompile Include="..\cheat\RamCheat.cxx" />
-    <ClCompile Include="..\debugger\gui\AudioWidget.cxx" />
-    <ClCompile Include="..\debugger\CartDebug.cxx" />
-    <ClCompile Include="..\debugger\CpuDebug.cxx" />
-    <ClCompile Include="..\debugger\gui\CpuWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\DataGridOpsWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\DataGridWidget.cxx" />
-    <ClCompile Include="..\debugger\Debugger.cxx" />
-    <ClCompile Include="..\debugger\gui\DebuggerDialog.cxx" />
-    <ClCompile Include="..\debugger\DebuggerParser.cxx" />
-    <ClCompile Include="..\debugger\DiStella.cxx" />
-    <ClCompile Include="..\debugger\gui\PromptWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\RamWidget.cxx" />
-    <ClCompile Include="..\debugger\RiotDebug.cxx" />
-    <ClCompile Include="..\debugger\gui\RiotWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\RomListWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\RomWidget.cxx" />
-    <ClCompile Include="..\debugger\TIADebug.cxx" />
-    <ClCompile Include="..\debugger\gui\TiaInfoWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\TiaOutputWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\TiaWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\TiaZoomWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\ToggleBitWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\TogglePixelWidget.cxx" />
-    <ClCompile Include="..\debugger\gui\ToggleWidget.cxx" />
-    <ClCompile Include="..\yacc\YaccParser.cxx" />
+    <ClCompile Include="..\debugger\gui\AudioWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\CartDebug.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\CpuDebug.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\CpuWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\DataGridOpsWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\DataGridWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\DebuggerDialog.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\DebuggerParser.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\DiStella.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\PromptWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\RamWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\RiotDebug.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\RiotWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\RomListWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\RomWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\TIADebug.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\TiaInfoWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\TiaOutputWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\TiaWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\TiaZoomWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\ToggleBitWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\TogglePixelWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\debugger\gui\ToggleWidget.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\yacc\YaccParser.cxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\gui\AboutDialog.cxx" />
     <ClCompile Include="..\gui\AudioDialog.cxx" />
     <ClCompile Include="..\gui\BrowserDialog.cxx" />
@@ -653,421 +947,541 @@
     <ClCompile Include="..\gui\Widget.cxx" />
     <ClCompile Include="..\zlib\adler32.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\compress.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\crc32.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\deflate.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\gzclose.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\gzlib.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\gzread.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\gzwrite.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\infback.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\inffast.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\inflate.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\inftrees.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\trees.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\uncompr.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\zlib\zutil.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
     </ClCompile>
     <ClCompile Include="..\libpng\png.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngerror.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngget.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngmem.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngpread.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngread.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngrio.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngrtran.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngrutil.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngset.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngtrans.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngwio.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngwrite.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngwtran.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
     <ClCompile Include="..\libpng\pngwutil.c">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">Level2</WarningLevel>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">CompileAsC</CompileAs>
     </ClCompile>
@@ -1118,73 +1532,207 @@
     <ClInclude Include="..\common\Variant.hxx" />
     <ClInclude Include="..\common\Vec.hxx" />
     <ClInclude Include="..\common\ZipHandler.hxx" />
-    <ClInclude Include="..\debugger\BreakpointMap.hxx" />
-    <ClInclude Include="..\debugger\gui\AmigaMouseWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\AtariMouseWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\AtariVoxWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\Cart0840Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\Cart2KWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\Cart3EPlusWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\Cart3EWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\Cart3FWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\Cart4A50Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\Cart4KSCWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\Cart4KWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartARWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartBFSCWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartBFWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartBUSWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartCDFInfoWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartCDFWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartCMWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartCTYWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartCVPlusWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartCVWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartDASHWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartDebugWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartDFSCWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartDFWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartDPCPlusWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartDPCWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartE0Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartE78KWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartE7Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartEFSCWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartEFWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartF0Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartF4SCWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartF4Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartF6SCWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartF6Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartF8SCWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartF8Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartFA2Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartFAWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartFCWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartFEWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartMDMWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartMNetworkWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartRamWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartSBWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartUAWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartWDWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\CartX07Widget.hxx" />
-    <ClInclude Include="..\debugger\gui\ControllerWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\DelayQueueWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\DrivingWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\FlashWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\GenesisWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\JoystickWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\KeyboardWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\NullControlWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\PaddleWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\PointingDeviceWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\RomListSettings.hxx" />
-    <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\TrakBallWidget.hxx" />
-    <ClInclude Include="..\debugger\TrapArray.hxx" />
+    <ClInclude Include="..\debugger\BreakpointMap.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\AmigaMouseWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\AtariMouseWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\AtariVoxWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\BoosterWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart0840Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart2KWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart3EPlusWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart3EWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart3FWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart4A50Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart4KSCWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\Cart4KWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartARWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartBFSCWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartBFWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartBUSWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartCDFInfoWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartCDFWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartCMWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartCTYWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartCVPlusWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartCVWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartDASHWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartDebugWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartDFSCWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartDFWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartDPCPlusWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartDPCWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartE0Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartE78KWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartE7Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartEFSCWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartEFWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartF0Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartF4SCWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartF4Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartF6SCWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartF6Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartF8SCWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartF8Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartFA2Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartFAWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartFCWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartFEWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartMDMWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartMNetworkWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartRamWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartSBWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartUAWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartWDWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartX07Widget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\ControllerWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\DelayQueueWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\DrivingWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\FlashWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\GenesisWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\JoystickWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\KeyboardWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\NullControlWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\PaddleWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\PointingDeviceWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\RiotRamWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\RomListSettings.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\SaveKeyWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\TrakBallWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\TrapArray.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\emucore\AmigaMouse.hxx" />
     <ClInclude Include="..\emucore\AtariMouse.hxx" />
     <ClInclude Include="..\emucore\Bankswitch.hxx" />
@@ -1260,6 +1808,9 @@
     <ClInclude Include="..\gui\R77HelpDialog.hxx" />
     <ClInclude Include="..\gui\RadioButtonWidget.hxx" />
     <ClInclude Include="..\gui\SnapshotDialog.hxx" />
+    <ClInclude Include="..\gui\Stella12x24tFont.hxx" />
+    <ClInclude Include="..\gui\Stella14x28tFont.hxx" />
+    <ClInclude Include="..\gui\Stella16x32tFont.hxx" />
     <ClInclude Include="..\gui\StellaSettingsDialog.hxx" />
     <ClInclude Include="..\gui\TimeLineWidget.hxx" />
     <ClInclude Include="..\gui\TimeMachine.hxx" />
@@ -1336,33 +1887,87 @@
     <ClInclude Include="..\emucore\Switches.hxx" />
     <ClInclude Include="..\emucore\System.hxx" />
     <ClInclude Include="..\emucore\Thumbulator.hxx" />
-    <ClInclude Include="..\debugger\gui\AudioWidget.hxx" />
-    <ClInclude Include="..\debugger\CartDebug.hxx" />
-    <ClInclude Include="..\debugger\CpuDebug.hxx" />
-    <ClInclude Include="..\debugger\gui\CpuWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\DataGridOpsWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\DataGridWidget.hxx" />
-    <ClInclude Include="..\debugger\Debugger.hxx" />
-    <ClInclude Include="..\debugger\gui\DebuggerDialog.hxx" />
-    <ClInclude Include="..\debugger\DebuggerExpressions.hxx" />
-    <ClInclude Include="..\debugger\DebuggerParser.hxx" />
-    <ClInclude Include="..\debugger\DebuggerSystem.hxx" />
-    <ClInclude Include="..\debugger\DiStella.hxx" />
-    <ClInclude Include="..\debugger\Expression.hxx" />
-    <ClInclude Include="..\debugger\gui\PromptWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\RamWidget.hxx" />
-    <ClInclude Include="..\debugger\RiotDebug.hxx" />
-    <ClInclude Include="..\debugger\gui\RiotWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\RomListWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\RomWidget.hxx" />
-    <ClInclude Include="..\debugger\TIADebug.hxx" />
-    <ClInclude Include="..\debugger\gui\TiaInfoWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\TiaOutputWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\TiaZoomWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\ToggleBitWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\TogglePixelWidget.hxx" />
-    <ClInclude Include="..\debugger\gui\ToggleWidget.hxx" />
-    <ClInclude Include="..\yacc\YaccParser.hxx" />
+    <ClInclude Include="..\debugger\gui\AudioWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\CartDebug.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\CpuDebug.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\CpuWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\DataGridOpsWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\DataGridWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\Debugger.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\DebuggerDialog.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\DebuggerExpressions.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\DebuggerParser.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\DebuggerSystem.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\DiStella.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\Expression.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\PromptWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\RamWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\RiotDebug.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\RiotWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\RomListWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\RomWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\TIADebug.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\TiaInfoWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\TiaOutputWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\TiaZoomWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\ToggleBitWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\TogglePixelWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\debugger\gui\ToggleWidget.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\yacc\YaccParser.hxx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\cheat\BankRomCheat.hxx" />
     <ClInclude Include="..\cheat\Cheat.hxx" />
     <ClInclude Include="..\cheat\CheatCodeDialog.hxx" />

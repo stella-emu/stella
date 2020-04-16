@@ -34,7 +34,7 @@ void CartridgeMNetwork::initialize(const ByteBuffer& image, size_t size)
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min<size_t>(romSize(), size), myImage.get());
-  createCodeAccessBase(romSize() + myRAM.size());
+  createRomAccessArrays(romSize() + myRAM.size());
 
   myRAMSlice = bankCount() - 1;
 }
@@ -70,7 +70,9 @@ void CartridgeMNetwork::setAccess(uInt16 addrFrom, uInt16 size,
       access.directPeekBase = &directData[directOffset + (addr & addrMask)];
     else if(type == System::PageAccessType::WRITE)  // all RAM writes mapped to ::poke()
       access.directPokeBase = nullptr;
-    access.codeAccessBase = &myCodeAccessBase[codeOffset + (addr & addrMask)];
+    access.romAccessBase = &myRomAccessBase[codeOffset + (addr & addrMask)];
+    access.romPeekCounter = &myRomAccessCounter[codeOffset + (addr & addrMask)];
+    access.romPokeCounter = &myRomAccessCounter[codeOffset + (addr & addrMask) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 }
@@ -86,7 +88,9 @@ void CartridgeMNetwork::install(System& system)
   for(uInt16 addr = (0x1FE0 & ~System::PAGE_MASK); addr < 0x2000;
       addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[0x1fc0];
+    access.romAccessBase = &myRomAccessBase[0x1fc0];
+    access.romPeekCounter = &myRomAccessCounter[0x1fc0];
+    access.romPokeCounter = &myRomAccessCounter[0x1fc0 + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   /*setAccess(0x1FE0 & ~System::PAGE_MASK, System::PAGE_SIZE,
@@ -137,13 +141,42 @@ bool CartridgeMNetwork::poke(uInt16 address, uInt8 value)
   // All RAM writes are mapped here
   if((myCurrentSlice[0] == myRAMSlice) && (address < BANK_SIZE / 2))
   {
-    pokeRAM(myRAM[address & (BANK_SIZE / 2 - 1)], pokeAddress, value);
-    return true;
+    // RAM slices
+    if(!(address & 0x0400))
+    {
+      pokeRAM(myRAM[address & (BANK_SIZE / 2 - 1)], pokeAddress, value);
+      return true;
+    }
+    else
+    {
+      // Writing to the read port should be ignored, but trigger a break if option enabled
+      uInt8 dummy;
+
+      pokeRAM(dummy, pokeAddress, value);
+      myRamWriteAccess = pokeAddress;
+      return false;
+    }
   }
-  else if((address >= 0x0800) && (address <= 0x08FF))
+  else
   {
-    pokeRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], pokeAddress, value);
-    return true;
+    // fixed 256 bytes of RAM
+    if((address >= 0x0800) && (address <= 0x09FF))
+    {
+      if(!(address & 0x100))
+      {
+        pokeRAM(myRAM[0x0400 + (myCurrentRAM << 8) + (address & 0x00FF)], pokeAddress, value);
+        return true;
+      }
+      else
+      {
+        // Writing to the read port should be ignored, but trigger a break if option enabled
+        uInt8 dummy;
+
+        pokeRAM(dummy, pokeAddress, value);
+        myRamWriteAccess = pokeAddress;
+        return false;
+      }
+    }
   }
 
   return false;

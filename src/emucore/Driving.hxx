@@ -76,9 +76,18 @@ class Driving : public Controller
     bool setMouseControl(
       Controller::Type xtype, int xid, Controller::Type ytype, int yid) override;
 
+    /**
+      Sets the sensitivity for digital emulation of driving controlle movement
+      using a keyboard.
+
+      @param sensitivity  Value from 1 to 20, with larger values causing
+                          more movement (10 represents the baseline)
+    */
+    static void setSensitivity(int sensitivity);
+
   private:
     // Counter to iterate through the gray codes
-    uInt32 myCounter{0};
+    Int32 myCounter{0};
 
     // Index into the gray code table
     uInt32 myGrayIndex{0};
@@ -97,6 +106,10 @@ class Driving : public Controller
 
     // Controllers to emulate in 'specific' mouse axis mode
     int myControlIDX{-1}, myControlIDY{-1};
+
+    // User-defined sensitivity; adjustable since end-users may prefer different
+    // speeds
+    static float SENSITIVITY;
 
   private:
     // Following constructors and assignment operators not supported

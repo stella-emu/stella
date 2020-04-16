@@ -30,7 +30,7 @@ CartridgeDASH::CartridgeDASH(const ByteBuffer& image, size_t size,
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
-  createCodeAccessBase(mySize + myRAM.size());
+  createRomAccessArrays(mySize + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -135,10 +135,22 @@ bool CartridgeDASH::poke(uInt16 address, uInt8 value)
 
     if(whichBankIsThere & BITMASK_ROMRAM)
     {
-      uInt32 byteOffset = address & BITMASK_RAM_BANK;
-      uInt32 baseAddress = ((whichBankIsThere & BIT_BANK_MASK) << RAM_BANK_TO_POWER) + byteOffset;
-      pokeRAM(myRAM[baseAddress], address, value);
-      changed = true;
+      if(address & RAM_BANK_SIZE)
+      {
+        uInt32 byteOffset = address & BITMASK_RAM_BANK;
+        uInt32 baseAddress = ((whichBankIsThere & BIT_BANK_MASK) << RAM_BANK_TO_POWER) + byteOffset;
+        pokeRAM(myRAM[baseAddress], address, value);
+        changed = true;
+      }
+      else
+      {
+        // Writing to the read port should be ignored, but trigger a break if option enabled
+        uInt8 dummy;
+
+        pokeRAM(dummy, address, value);
+        myRamWriteAccess = address;
+        changed = false;
+      }
     }
   }
 
@@ -192,7 +204,7 @@ void CartridgeDASH::bankRAMSlot(uInt16 bank)
     if(!upper)
       access.directPeekBase = &myRAM[startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
 
-    access.codeAccessBase = &myCodeAccessBase[mySize + startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
+    access.romAccessBase = &myRomAccessBase[mySize + startCurrentBank + (addr & (RAM_BANK_SIZE - 1))];
     mySystem->setPageAccess(addr, access);
   }
 }
@@ -235,7 +247,7 @@ void CartridgeDASH::bankROMSlot(uInt16 bank)
   for (uInt16 addr = start; addr <= end; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[startCurrentBank + (addr & (ROM_BANK_SIZE - 1))];
-    access.codeAccessBase = &myCodeAccessBase[startCurrentBank + (addr & (ROM_BANK_SIZE - 1))];
+    access.romAccessBase = &myRomAccessBase[startCurrentBank + (addr & (ROM_BANK_SIZE - 1))];
     mySystem->setPageAccess(addr, access);
   }
 }

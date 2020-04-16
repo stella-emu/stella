@@ -27,7 +27,7 @@
  */
 namespace Common {
 
-template <class T, uInt32 CAPACITY = 50>
+template <typename T, uInt32 CAPACITY = 50>
 class FixedStack
 {
   private:

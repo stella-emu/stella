@@ -375,6 +375,9 @@
 		DC6F394A21B897C700897AD8 /* FatalEmulationError.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */; };
 		DC6F394D21B897F300897AD8 /* ThreadDebugging.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */; };
 		DC6F394E21B897F300897AD8 /* ThreadDebugging.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */; };
+		DC70065C241EC97900A459AB /* Stella12x24tFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC700659241EC97900A459AB /* Stella12x24tFont.hxx */; };
+		DC70065D241EC97900A459AB /* Stella16x32tFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC70065A241EC97900A459AB /* Stella16x32tFont.hxx */; };
+		DC70065E241EC97900A459AB /* Stella14x28tFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC70065B241EC97900A459AB /* Stella14x28tFont.hxx */; };
 		DC71C399221623D9005DE92F /* ControllerDetector.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC71C397221623D8005DE92F /* ControllerDetector.hxx */; };
 		DC71C39A221623D9005DE92F /* ControllerDetector.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71C398221623D9005DE92F /* ControllerDetector.cxx */; };
 		DC71EA9D1FDA06D2008827CB /* CartE78K.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC71EA991FDA06D2008827CB /* CartE78K.cxx */; };
@@ -1111,6 +1114,9 @@
 		DC6F394821B897C700897AD8 /* FatalEmulationError.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FatalEmulationError.hxx; path = exception/FatalEmulationError.hxx; sourceTree = "<group>"; };
 		DC6F394B21B897F300897AD8 /* ThreadDebugging.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadDebugging.cxx; sourceTree = "<group>"; };
 		DC6F394C21B897F300897AD8 /* ThreadDebugging.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ThreadDebugging.hxx; sourceTree = "<group>"; };
+		DC700659241EC97900A459AB /* Stella12x24tFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stella12x24tFont.hxx; sourceTree = "<group>"; };
+		DC70065A241EC97900A459AB /* Stella16x32tFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stella16x32tFont.hxx; sourceTree = "<group>"; };
+		DC70065B241EC97900A459AB /* Stella14x28tFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stella14x28tFont.hxx; sourceTree = "<group>"; };
 		DC71C397221623D8005DE92F /* ControllerDetector.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControllerDetector.hxx; sourceTree = "<group>"; };
 		DC71C398221623D9005DE92F /* ControllerDetector.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ControllerDetector.cxx; sourceTree = "<group>"; };
 		DC71EA991FDA06D2008827CB /* CartE78K.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CartE78K.cxx; sourceTree = "<group>"; };
@@ -2081,6 +2087,9 @@
 				2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */,
 				DCDE17F817724E5D00EB1AC6 /* SnapshotDialog.cxx */,
 				DCDE17F917724E5D00EB1AC6 /* SnapshotDialog.hxx */,
+				DC700659241EC97900A459AB /* Stella12x24tFont.hxx */,
+				DC70065B241EC97900A459AB /* Stella14x28tFont.hxx */,
+				DC70065A241EC97900A459AB /* Stella16x32tFont.hxx */,
 				DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */,
 				DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */,
 				DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */,
@@ -2506,6 +2515,7 @@
 				2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */,
 				DC1BC6672066B4390076F74A /* PKeyboardHandler.hxx in Headers */,
 				2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */,
+				DC70065E241EC97900A459AB /* Stella14x28tFont.hxx in Headers */,
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
 				2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */,
 				DC47455609C34BFA00EDDA3A /* BankRomCheat.hxx in Headers */,
@@ -2534,6 +2544,7 @@
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
 				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,
 				DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */,
+				DC70065C241EC97900A459AB /* Stella12x24tFont.hxx in Headers */,
 				DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */,
 				DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */,
 				DCA233B123B583FE0032ABF3 /* PhosphorHandler.hxx in Headers */,
@@ -2637,6 +2648,7 @@
 				DC6DC921205DB879004A5FC3 /* PJoystickHandler.hxx in Headers */,
 				DCAAE5DF1715887B0080BB82 /* CartEFSCWidget.hxx in Headers */,
 				DCAAE5E11715887B0080BB82 /* CartEFWidget.hxx in Headers */,
+				DC70065D241EC97900A459AB /* Stella16x32tFont.hxx in Headers */,
 				DCDFF08220B781B0001227C0 /* DispatchResult.hxx in Headers */,
 				DCF8621A21C9D43300F95F52 /* StaggeredLogger.hxx in Headers */,
 				DCAAE5E31715887B0080BB82 /* CartF0Widget.hxx in Headers */,

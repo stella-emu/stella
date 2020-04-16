@@ -251,6 +251,8 @@ void Properties::print() const
        << get(PropType::Controller_Left)        << "|"
        << get(PropType::Controller_Right)       << "|"
        << get(PropType::Controller_SwapPaddles) << "|"
+       << get(PropType::Controller_PaddlesXCenter) << "|"
+       << get(PropType::Controller_PaddlesYCenter) << "|"
        << get(PropType::Controller_MouseAxis)   << "|"
        << get(PropType::Display_Format)         << "|"
        << get(PropType::Display_VCenter)        << "|"
@@ -296,6 +298,8 @@ void Properties::printHeader()
        << "Controller_Left|"
        << "Controller_Right|"
        << "Controller_SwapPaddles|"
+       << "Controller_PaddlesXCenter|"
+       << "Controller_PaddlesYCenter|"
        << "Controller_MouseAxis|"
        << "Display_Format|"
        << "Display_VCenter|"
@@ -323,6 +327,8 @@ std::array<string, Properties::NUM_PROPS> Properties::ourDefaultProperties =
   "AUTO",   // Controller.Left
   "AUTO",   // Controller.Right
   "NO",     // Controller.SwapPaddles
+  "0",      // Controller.PaddlesXCenter
+  "0",      // Controller.PaddlesYCenter
   "AUTO",   // Controller.MouseAxis
   "AUTO",   // Display.Format
   "0",      // Display.VCenter
@@ -349,6 +355,8 @@ std::array<string, Properties::NUM_PROPS> Properties::ourPropertyNames =
   "Controller.Left",
   "Controller.Right",
   "Controller.SwapPaddles",
+  "Controller.PaddlesXCenter",
+  "Controller.PaddlesYCenter",
   "Controller.MouseAxis",
   "Display.Format",
   "Display.VCenter",

@@ -31,3 +31,5 @@ src/**/*.psess
 src/**/*.vspx
 src/**/**.pdb
 Stella.xcscheme
+src/tools/fonts/*
+

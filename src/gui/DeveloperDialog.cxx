@@ -39,7 +39,6 @@
 #include "M6502.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
-  #include "CartDebug.hxx"
   #include "DebuggerDialog.hxx"
 #endif
 #include "DeveloperDialog.hxx"

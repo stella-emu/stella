@@ -202,7 +202,7 @@ class System : public Serializable
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address, uInt8 flags = 0);
+    uInt8 peek(uInt16 address, Device::AccessFlags flags = Device::NONE);
 
     /**
       Change the byte at the specified address to the given value.
@@ -217,7 +217,7 @@ class System : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    void poke(uInt16 address, uInt8 value, uInt8 flags = 0);
+    void poke(uInt16 address, uInt8 value, Device::AccessFlags flags = Device::NONE);
 
     /**
       Lock/unlock the data bus. When the bus is locked, peek() and
@@ -231,13 +231,22 @@ class System : public Serializable
     void lockDataBus()   { myDataBusLocked = true;  }
     void unlockDataBus() { myDataBusLocked = false; }
 
+  #ifdef DEBUGGER_SUPPORT
     /**
-      Access and modify the disassembly type flags for the given
+      Access and modify the access type flags for the given
       address.  Note that while any flag can be used, the disassembly
-      only really acts on CODE/GFX/PGFX/DATA/ROW.
+      only really acts on CODE/GFX/PGFX/COL/PCOL/BCOL/AUD/DATA/ROW.
     */
-    uInt8 getAccessFlags(uInt16 address) const;
-    void setAccessFlags(uInt16 address, uInt8 flags);
+    Device::AccessFlags getAccessFlags(uInt16 address) const;
+    void setAccessFlags(uInt16 address, Device::AccessFlags flags);
+
+    /**
+      Increase the given address's access counter
+
+      @param address The address to modify
+    */
+    void increaseAccessCounter(uInt16 address, bool isWrite);
+  #endif
 
   public:
     /**
@@ -271,13 +280,27 @@ class System : public Serializable
       uInt8* directPokeBase{nullptr};
 
       /**
-        Pointer to a lookup table for marking an address as CODE.  A CODE
-        section is defined as any address that appears in the program
+        Pointer to a lookup table for marking an address as CODE, DATA, GFX,
+        COL etc.
+        A CODE section is defined as any address that appears in the program
         counter.  Currently, this is used by the debugger/disassembler to
         conclusively determine if a section of address space is CODE, even
         if the disassembler failed to mark it as such.
+        A DATA, GFX, COL etc. section is defined as any ROM address from which
+        data is read. This is used by the debugger/disassembler to format
+        address sections accordingly.
       */
-      uInt8* codeAccessBase{nullptr};
+      Device::AccessFlags* romAccessBase{nullptr};
+
+      /**
+        TODO
+      */
+      Device::AccessCounter* romPeekCounter{nullptr};
+
+      /**
+        TODO
+      */
+      Device::AccessCounter* romPokeCounter{nullptr};
 
       /**
         Pointer to the device associated with this page or to the system's

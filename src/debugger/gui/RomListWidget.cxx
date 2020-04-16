@@ -511,9 +511,10 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space
-    if(dlist[pos].type & (CartDebug::CODE|CartDebug::GFX|CartDebug::PGFX|CartDebug::DATA))
+    if(dlist[pos].type & (Device::CODE|Device::GFX|Device::PGFX|
+       Device::COL|Device::PCOL|Device::BCOL|Device::DATA))
     {
-      if(dlist[pos].type == CartDebug::CODE)
+      if(dlist[pos].type == Device::CODE)
       {
         // Draw mnemonic
         s.drawString(_font, dlist[pos].disasm.substr(0, 7), xpos + _labelWidth, ypos,
@@ -592,8 +593,8 @@ void RomListWidget::startEditMode()
     _editMode = true;
     switch(myDisasm->list[_selectedItem].type)
     {
-      case CartDebug::GFX:
-      case CartDebug::PGFX:
+      case Device::GFX:
+      case Device::PGFX:
         _base = DiStella::settings.gfxFormat;
         break;
       default:

@@ -25,7 +25,7 @@ Cartridge4KSC::Cartridge4KSC(const ByteBuffer& image, size_t size,
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createCodeAccessBase(myImage.size());
+  createRomAccessArrays(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -49,7 +49,7 @@ void Cartridge4KSC::install(System& system)
   access.type = System::PageAccessType::WRITE;
   for(uInt16 addr = 0x1000; addr < 0x1080; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[addr & 0x007F];
+    access.romAccessBase = &myRomAccessBase[addr & 0x007F];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -58,7 +58,7 @@ void Cartridge4KSC::install(System& system)
   for(uInt16 addr = 0x1080; addr < 0x1100; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myRAM[addr & 0x007F];
-    access.codeAccessBase = &myCodeAccessBase[0x80 + (addr & 0x007F)];
+    access.romAccessBase = &myRomAccessBase[0x80 + (addr & 0x007F)];
     mySystem->setPageAccess(addr, access);
   }
 
@@ -66,7 +66,7 @@ void Cartridge4KSC::install(System& system)
   for(uInt16 addr = 0x1100; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[addr & 0x0FFF];
-    access.codeAccessBase = &myCodeAccessBase[addr & 0x0FFF];
+    access.romAccessBase = &myRomAccessBase[addr & 0x0FFF];
     mySystem->setPageAccess(addr, access);
   }
 }

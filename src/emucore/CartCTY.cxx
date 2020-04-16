@@ -28,7 +28,7 @@ CartridgeCTY::CartridgeCTY(const ByteBuffer& image, size_t size,
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createCodeAccessBase(myImage.size());
+  createRomAccessArrays(myImage.size());
 
   // Default to no tune data in case user is utilizing an old ROM
   myTuneData.fill(0);
@@ -240,7 +240,9 @@ bool CartridgeCTY::bank(uInt16 bank)
   System::PageAccess access(this, System::PageAccessType::READ);
   for(uInt16 addr = 0x1080; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

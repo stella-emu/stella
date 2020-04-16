@@ -574,7 +574,7 @@ bool retro_load_game(const struct retro_game_info *info)
   }
 
 
-  stella.setROM(info->data, info->size);
+  stella.setROM(info->path, info->data, info->size);
 
   return reset_system();
 }

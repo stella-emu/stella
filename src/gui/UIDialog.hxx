@@ -33,6 +33,7 @@ class UIDialog : public Dialog, public CommandSender
     void setDefaults() override;
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    //void handleLauncherSize();
     void handleRomViewer();
     void createBrowser(const string& title);
 
@@ -43,7 +44,6 @@ class UIDialog : public Dialog, public CommandSender
       kMouseWheel = 'UIMw',
       kControllerDelay = 'UIcd',
       kChooseRomDirCmd = 'LOrm', // rom select
-      kLauncherSize = 'UIls',
       kRomViewer = 'UIRv',
       kChooseSnapLoadDirCmd = 'UIsl', // snapshot dir (load files)
       kSnapLoadDirChosenCmd = 'UIsc' // snap chosen (load files)
@@ -54,10 +54,11 @@ class UIDialog : public Dialog, public CommandSender
 
     // Launcher options
     EditTextWidget*   myRomPath{nullptr};
+    CheckboxWidget*   myFollowLauncherWidget{nullptr};
     SliderWidget*     myLauncherWidthSlider{nullptr};
     SliderWidget*     myLauncherHeightSlider{nullptr};
     PopUpWidget*      myLauncherFontPopup{nullptr};
-    PopUpWidget*      myRomViewerPopup{nullptr};
+    SliderWidget*     myRomViewerSize{nullptr};
     ButtonWidget*     myOpenBrowserButton{nullptr};
     EditTextWidget*   mySnapLoadPath{nullptr};
     CheckboxWidget*   myLauncherExitWidget{nullptr};

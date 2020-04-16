@@ -12,7 +12,43 @@
                               Release History
 ===========================================================================
 
-6.0.2 to 6.1: (MM dd, 2020)
+6.1 to 6.2: (??? ??, 2020)
+
+  * Added that paddle centering and sensitivity can be adjusted (TODO: Doc)
+
+  * Added that Driving controller sensitivity can be adjusted (TODO: Doc)
+
+  * Added high scores: Score addresses, game variation etc. can be defined for
+    a game. This allows the user to save high scores for these games. For each
+    game and variation, the top 10 scores can be saved. (TODO: Doc)
+
+  * Add option which lets default ROM path follow launcher navigation (TODO: Doc)
+
+  * Added displaying last write address in the debugger.
+
+  * Added detection of color and audio data in DiStella.
+
+  * Restored 'cfg' directory for Distella config files.
+
+-Have fun!
+
+
+6.1 to 6.1.1: (April 4, 2020)
+
+  * Fixed crash in 3E bankswitching scheme when writing to ROM addresses.
+
+  * Fix snapshots on Retina HiDPI displays capturing only the top-left
+    corner.
+
+  * Fixed wrong color for BK (background) swatch in the debugger.
+
+  * Fixed 'Right Diff' button in Command menu changing left difficulty
+    instead.
+
+  * Fixed compilation of libretro port on Debian Buster.
+
+
+6.0.2 to 6.1: (March 22, 2020)
 
   * IMPORTANT NOTES:
     - Because of major event remapping changes, all remappings will be reset
@@ -119,7 +155,9 @@
 
   * Added option to change pitch of Pitfall II music.
 
-  * ROM Info Launcher can now display multiple lines per property and
+  * ROM Info Viewer size is not limited to fixed zoom steps anymore.
+
+  * ROM Info Viewer can now display multiple lines per property and the
     bank switching type.
 
   * In file listings, you can now select directories by holding 'Shift' on
@@ -179,6 +217,10 @@
   * Fixed bug in DPC+ scheme; 'fast fetch mode' was enabled at startup,
     when it should be disabled by default.
 
+  * Some more work on DPC+ playfield 'jitter' effect for certain older DPC+
+    driver versions; more ROMs are now detected properly.  Special thanks
+    to SpiceWare for his research in this area.
+
   * Added proper Retron77 port.
 
   * Added proper libretro port, and fixed display for OpenGLES renderers.
@@ -192,7 +234,8 @@
 
   * Updated included PNG library to latest stable version.
 
--Have fun!
+  * Updated UNIX configure script to work with the gcc version 10 and
+    above.
 
 
 6.0.1 to 6.0.2: (October 11, 2019)

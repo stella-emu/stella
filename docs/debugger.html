@@ -121,13 +121,14 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 
   <li>Supports Distella 'configuration directives', which may be used to
     override automatic code/data determination in the disassembly. For now,
-    the following directives are supported: CODE, GFX, PGFX, DATA, ROW.
-    These directives can be entered at the debugger prompt, or (automatically)
+    the following directives are supported: CODE, GFX, PGFX, COL, PCOL, BCOL, AUD, DATA, ROW.
+    These directives can be entered at the debugger prompt, or be (automatically)
     loaded and saved in configuration files.</li>
 
   <li>Extensive disassembly support, both from the emulation core and with help
     from Distella. Where possible, the disassembly differentiates between code,
-    player graphics and playfield graphics (ie, addresses stored in GRPx and PFx)
+    player and playfield graphics, colors and audio (ie, addresses stored in
+    GRPx, PFx, COLUxx, AUDxx)
     and data (addresses used as an operand of a command). Code sections are also
     differentiated between actual code, and 'tentative' code (ie, areas that may
     represent code sections, but haven't actually been executed yet). Such
@@ -906,7 +907,9 @@ Type "help 'cmd'" to see extended information about the given command.</p>
 
 <pre>
                 a - Set Accumulator to &lt;value&gt;
+              aud - Mark 'AUD' range in disassembly
              base - Set default number base to &lt;base&gt; (bin, dec, hex)
+             bcol - Mark 'BCOL' range in disassembly
             break - Set/clear breakpoint at &lt;address&gt; and &lt;bank&gt;
           breakif - Set/clear breakpoint on &lt;condition&gt;
        breaklabel - Set/clear breakpoint on &lt;address&gt; (no mirrors, all banks)
@@ -919,6 +922,7 @@ clearsavestateifs - Clear all savestate points
      clearwatches - Clear all watches
               cls - Clear prompt area of text
              code - Mark 'CODE' range in disassembly
+              col - Mark 'COL' range in disassembly
         colortest - Show value xx as TIA color
                 d - Decimal Mode Flag: set (0 or 1), or toggle (no arg)
              data - Mark 'DATA' range in disassembly
@@ -959,6 +963,7 @@ clearsavestateifs - Clear all savestate points
                 n - Negative Flag: set (0 or 1), or toggle (no arg)
           palette - Show current TIA palette
                pc - Set Program Counter to address xx
+             pcol - Mark 'PCOL' range in disassembly
              pgfx - Mark 'PGFX' range in disassembly
             print - Evaluate/print expression xx in hex/dec/binary
               ram - Show ZP RAM, or set address xx to yy1 [yy2 ...]
@@ -1193,6 +1198,8 @@ the reason will be shown as follows:
   <li>"WTrap:" for write traps</li>
   <li>"RTrapIf:" for conditional read traps</li>
   <li>"WTrapIf:" for conditional write traps</li>
+  <li>"RWP:" for reads from write ports</li>
+  <li>"WRP:" for writes to read ports</li>
 </ul>
 </p>
 See the <a href="#BreakpointsEtc"><b>Breakpoints, watches and traps...</b></a>
@@ -1215,6 +1222,8 @@ registers. For example, consider the command 'LDA ($80),Y'. The operand of
 the command resolves to some address, which isn't always easy to determine at
 first glance. The 'Src Addr' area shows the actual resulting operand/address
 being used with the given opcode.</p>
+<p>The destination address of the last write is shown besides 'Dest'.</p>
+
 <p>There's not much else to say about the CPU Registers widget: if you know 6502
 assembly, it's pretty self-explanatory. If you don't, well, you should
 learn :)</p>
@@ -1369,20 +1378,77 @@ can use. These are known as 'directives', and partly correspond to configuration
 options from the standalone Distella program. They are listed in order of
 decreasing hierarchy:</p>
 <table border="1" cellpadding=4>
-<tr><td><b>CODE</b></td><td>Addresses which have appeared in the program counter, or
-which tentatively can appear in the program counter. These can be edited in hex.</td></tr>
-<tr><td><b>GFX</b></td><td>Addresses which contain data stored in the player graphics registers
-(GRP0/GRP1). These addresses are shown with a bitmap of the graphics, which
-can be edited in either hex or binary. The bitmap is shown as large blocks.</td></tr>
-<tr><td><b>PGFX</b></td><td>Addresses which contain data stored in the playfield graphics registers
-(PF0/PF1/PF2). These addresses are shown with a bitmap of the graphics, which
-can be edited in either hex or binary. The bitmap is shown as small dashes.</td></tr>
-<tr><td><b>DATA</b></td><td>Addresses used as an operand for some opcode. These can be edited
-in hex.</td></tr>
-<tr><td><b>ROW</b></td><td>Addresses not used as any of the above. These are shown up
-to 8 per line, and cannot be edited.</td></tr>
+  <tr>
+    <td>
+      <b>CODE</b>
+    </td><td>
+      Addresses which have appeared in the program counter, or
+      which tentatively can appear in the program counter. These can be edited in hex.
+    </td>
+    </tr><tr>
+    <td>
+      <b>GFX</b>
+    </td><td>
+      Addresses which contain data stored in the player graphics registers
+      (GRP0/GRP1). These addresses are shown with a bitmap of the graphics, which
+      can be edited in either hex or binary. The bitmap is shown as large blocks.
+    </td>
+  </tr><tr>
+    <td>
+      <b>PGFX</b>
+    </td><td>
+      Addresses which contain data stored in the playfield graphics registers
+      (PF0/PF1/PF2). These addresses are shown with a bitmap of the graphics, which
+      can be edited in either hex or binary. The bitmap is shown as small dashes.
+    </td>
+  </tr><tr>
+    <td>
+      <b>COL</b>
+    </td><td>
+      Addresses which contain data stored in the player color registers
+      (COLUP0/COLUP1). These addresses are shown as color constants, which
+      can be edited in hex. The color constant names are depending on the ROM's TV type.
+    </td>
+  </tr><tr>
+    <td>
+      <b>PCOL</b>
+    </td><td>
+      Addresses which contain data stored in the playfield color register
+      (COLUPF). These addresses are shown as color constants, which
+      can be edited in hex. The color constant names are depending on the ROM's TV type.
+    </td>
+  </tr><tr>
+    <td>
+      <b>BCOL</b>
+    </td><td>
+      Addresses which contain data stored in the background color register
+      (COLUBK). These addresses are shown as color constants, which
+      can be edited in hex. The color constant names are depending on the ROM's TV type.
+    </td>
+  </tr><tr>
+    <td>
+      <b>AUD</b>
+    </td><td>
+      Addresses which contain data stored in the audio registers
+      (AUDC0/AUDC1/AUDF0/AUDF1/AUDV0/AUDV1). These can be edited
+      in hex.
+    </td>
+  </tr><tr>
+    <td>
+      <b>DATA</b>
+    </td><td>
+      Addresses used as an operand for some opcode. These can be edited
+      in hex.
+    </td>
+  </tr><tr>
+    <td>
+      <b>ROW</b>
+    </td><td>
+      Addresses not used as any of the above. These are shown up
+      to 8 per line and cannot be edited.
+    </td>
+  </tr>
 </table>
-
 
 <p>For code sections, the 6502 mnemonic will be UPPERCASE for all standard instructions,
 or lowercase for "illegal" 6502 instructions (like "dcp"). If automatic resolving
@@ -1445,7 +1511,8 @@ isn't already a defined label).</li>
 in either binary or hexidecimal.</li>
 
 <li><b>Use address relocation</b>: Corresponds to the Distella '-r' option
-(Relocate calls out of address range).</li>
+(Relocate calls out of address range).</br>
+Note: The code will continue to run fine, but the ROM image will be altered.</li>
 
 </ul>
 
@@ -1520,12 +1587,12 @@ the RAM in the DPC scheme is not viewable by the 6507, so its addresses start fr
 <br>
 <h1><a name="DistellaConfiguration">Distella Configuration Files</a></h1>
 <p>As mentioned in <a href="#Disassembly"><b>ROM Disassembly</b></a>, Stella supports the following directives:
-CODE/GFX/PGFX/DATA/ROW. While the debugger will try to automatically mark address
+CODE, GFX, PGFX, COL, PCOL, BCOL, AUD, DATA, ROW. While the debugger will try to automatically mark address
 space with the appropriate directive, there are times when it will fail. There are
 several options in this case:</p>
 <ol>
 <li><b>Manually set the directives</b>: Directives can be set in the debugger
-prompt with the code/gfx/pgfx/data/row commands. These accept an address range
+prompt with the aud/code/col/bcol/gfx/pcol/pgfx/data/row commands. These accept an address range
 for the given directive type. Setting a range with the same type a second time
 will remove that directive from the range.</li>
 <li><b>Use configuration files</b>: Configuration files can be used to automatically

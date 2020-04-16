@@ -59,23 +59,31 @@ class InputDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
-    void addDevicePortTab(const GUI::Font& font);
+    void addDevicePortTab();
+    void addMouseTab();
 
+
+    void handleMouseControlState();
     void handleCursorState();
-    void updateDejitter();
+    void updateDejitterAveraging();
+    void updateDejitterReaction();
     void eraseEEPROM();
 
   private:
     enum {
-      kCursorStateChanged = 'CSch',
       kDeadzoneChanged    = 'DZch',
-      kDejitterChanged    = 'Pjch',
+      kPSpeedChanged      = 'Ppch',
+      kDejitterAvChanged  = 'JAch',
+      kDejitterReChanged  = 'JRch',
       kDPSpeedChanged     = 'PDch',
-      kMPSpeedChanged     = 'PMch',
       kTBSpeedChanged     = 'TBch',
+      kDCSpeedChanged     = 'DCch',
       kDBButtonPressed    = 'DBbp',
       kEEButtonPressed    = 'EEbp',
-      kConfirmEEEraseCmd  = 'EEcf'
+      kConfirmEEEraseCmd  = 'EEcf',
+      kMouseCtrlChanged   = 'MCch',
+      kCursorStateChanged = 'CSch',
+      kMPSpeedChanged     = 'PMch',
     };
 
     TabWidget* myTab{nullptr};
@@ -90,16 +98,13 @@ class InputDialog : public Dialog
     EditTextWidget*   myAVoxPort{nullptr};
 
     SliderWidget*     myDeadzone{nullptr};
-    StaticTextWidget* myDeadzoneLabel{nullptr};
+    SliderWidget*     myPaddleSpeed{nullptr};
     SliderWidget*     myDejitterBase{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};
     SliderWidget*     myDPaddleSpeed{nullptr};
     SliderWidget*     myMPaddleSpeed{nullptr};
     SliderWidget*     myTrackBallSpeed{nullptr};
-    StaticTextWidget* myDejitterLabel{nullptr};
-    StaticTextWidget* myDPaddleLabel{nullptr};
-    StaticTextWidget* myMPaddleLabel{nullptr};
-    StaticTextWidget* myTrackBallLabel{nullptr};
+    SliderWidget*     myDrivingSpeed{nullptr};
     CheckboxWidget*   myAllowAll4{nullptr};
     CheckboxWidget*   myGrabMouse{nullptr};
     CheckboxWidget*   myModCombo{nullptr};

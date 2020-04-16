@@ -252,7 +252,7 @@
 "Cart.Name" "Princess Rescue (2013) (Sprybug) (PAL60)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
+"Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
 
@@ -495,7 +495,6 @@
 "Cart.MD5" "069c17beb1e8e0557adb8539fdcf6cba"
 "Cart.Name" "Phantom II & Pirate (PAL60)"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "06b0194ce992584c365278e0d7323279"
@@ -679,7 +678,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "0894aa7be77521f9df562be8d9555fe6"
@@ -733,7 +731,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.2 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "08f4dc6f118f7c98e2406c180c08e78e"
@@ -1027,7 +1024,6 @@
 "Cart.ModelNo" "v1.3"
 "Cart.Name" "Amoeba Jump (2018) (Dionoid) (PAL60)"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "0c7926d660f903a2d6910c254660c32c"
@@ -1081,7 +1077,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Mouse Hack v1.1 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "0cfdd2f3b243cac21f38a0f09f54bead"
@@ -1194,7 +1189,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "0e4b2b6e014a93ef8be896823da0d4ec"
@@ -1342,7 +1336,6 @@
 "Cart.ModelNo" "805.784 6"
 "Cart.Name" "Labyrinth (1983) (Quelle) (PAL)"
 "Cart.Note" "AKA Maze Craze"
-"Display.Format" "PAL"
 ""
 
 "Cart.MD5" "0fc161704c46e16f7483f92b06c1558d"
@@ -1399,6 +1392,7 @@
 "Cart.Name" "Princess Rescue (2013) (Sprybug)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
+"Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
 
@@ -1975,7 +1969,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Amiga Mouse Hack v1.1 (PAL60) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "1733772165d7b886a94e2b4ed0f74ccd"
@@ -2112,7 +2105,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Amiga Mouse Hack v1.15 (PAL60) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "18bebbbd41c234f82b1717b1905e6027"
@@ -2354,7 +2346,6 @@
 "Cart.Manufacturer" "Nukey Shay, Omegamatrix"
 "Cart.Name" "Double Dragon (Genesis) (PAL60) V2"
 "Cart.Note" "Genesis controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "1c6eb740d3c485766cade566abab8208"
@@ -2638,7 +2629,6 @@
 "Cart.Name" "Stay Frosty (SpiceWare) (PAL60)"
 "Cart.Note" "Part of Stella's Stocking 2007 Xmas compilation"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -2701,7 +2691,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "2091af29b4e7b86914d79d9aaa4cbd20"
@@ -2898,8 +2887,7 @@
 "Cart.Name" "Scramble (PAL60)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
-"Controller.Left" "GENESIS"
-"Display.Format" "PAL60"
+"Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
 
@@ -3157,7 +3145,6 @@
 "Cart.Manufacturer" "Activision, Garry Kitchen"
 "Cart.ModelNo" "EAX-025"
 "Cart.Name" "Keystone Kapers (1983) (Activision) (SECAM)"
-"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "25f9cf703575c5d63048c222f5463758"
@@ -3218,7 +3205,6 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "SpaceMaster X-7 (Amiga Mouse) (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "271bfd5dc2673d382019f1fb6cab9332"
@@ -3294,7 +3280,6 @@
 "Cart.Note" "Hack of Video Olympics"
 "Controller.SwapPaddles" "YES"
 "Controller.MouseAxis" "AUTO 60"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "27baecd618e7e53dc11f2a9c559f529d"
@@ -3721,7 +3706,6 @@
 "Cart.Name" "Kool Aid Man (PAL Conversion) (16-11-2002) (Fabrizio Zavagli) (PAL60)"
 "Cart.Note" "PAL60 Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "2c9fadd510509cc7f28f1ccba931855f"
@@ -3889,7 +3873,6 @@
 "Cart.Manufacturer" "Gray Games & AtariAge"
 "Cart.Name" "E.T. Book Cart (PAL60)"
 "Cart.Note" "Charles F. Gray & Michael Rideout"
-"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 "Display.PPBlend" "55"
 ""
@@ -4726,7 +4709,6 @@
 "Cart.ModelNo" "SS-004"
 "Cart.Name" "Pyramid War (1983) (Rainbow Vision) (PAL) [a2]"
 "Cart.Note" "AKA Chopper Command"
-"Display.Format" "PAL"
 ""
 
 "Cart.MD5" "384db97670817103dd8c0bbdef132445"
@@ -5967,7 +5949,6 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Trak-Ball) v4 (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "4767356fa0ed3ebe21437b4473d4ee28"
@@ -6173,7 +6154,6 @@
 "Cart.Manufacturer" "Andreas Dietrich"
 "Cart.Name" "Donkey Kong VCS (2017) (1.0) (PAL60)"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -6332,7 +6312,6 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "SpaceMaster X-7 (Atari Mouse) (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "4b71197153d651480830638cb6a03249"
@@ -6738,7 +6717,6 @@
 "Cart.MD5" "50200f697aeef38a3ce31c4f49739551"
 "Cart.Manufacturer" "Mystique - American Multiple Industries, Joel H. Martin"
 "Cart.Name" "Custer's Revenge (1982) (Mystique) (PAL60)"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "502044b1ac111b394e6fbb0d821fca41"
@@ -7280,7 +7258,6 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Amiga Mouse) v4 (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "571c6d9bc71cb97617422851f787f8fe"
@@ -7376,7 +7353,6 @@
 "Cart.Manufacturer" "Xonox - K-Tel Software - Action Graphics, Michael Schwartz, David Thiel"
 "Cart.ModelNo" "6230, 7210, 06004, 99004"
 "Cart.Name" "Artillery Duel (1983) (Xonox) (PAL60)"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "58a82e1da64a692fd727c25faef2ecc9"
@@ -7486,8 +7462,7 @@
 "Cart.Name" "Super Cobra Arcade (PAL60)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
-"Controller.Left" "GENESIS"
-"Display.Format" "PAL60"
+"Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
 
@@ -7784,7 +7759,6 @@
 "Cart.Name" "Space Shuttle (1983) (Activision) (SECAM)"
 "Cart.Note" "A Journey Into Space"
 "Cart.Type" "FE"
-"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "5d2cc33ca798783dee435eb29debf6d6"
@@ -8772,7 +8746,6 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "SpaceMaster X-7 (Atari Trak-Ball) (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "6803fa7c2c094b428b859a58dc1dd06a"
@@ -8796,7 +8769,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "683bb0d0f0c5df58557fba9dffc32c40"
@@ -9709,7 +9681,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Atari Trak-Ball Hack v1.15 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "72bda70c75dfa2365b3f8894bace9e6a"
@@ -9967,7 +9938,6 @@
 "Cart.Name" "Conquest Of Mars (2010) (PAL60)"
 "Cart.Note" "Rev 2 release"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "75a303fd46ad12457ed8e853016815a0"
@@ -10443,7 +10413,6 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Trak-Ball) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "7b5207e68ee85b16998bea861987c690"
@@ -10578,7 +10547,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Mouse Hack v1.4 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "7d0b49ea4fe3a5f1e119a6d14843db17"
@@ -11001,7 +10969,6 @@
 "Cart.Note" "Hack of Kaboom!"
 "Cart.Rarity" "Hack"
 "Controller.MouseAxis" "01 50"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "8108162bc88b5a14adc3e031cf4175ad"
@@ -11225,7 +11192,7 @@
 "Cart.Name" "Super Cobra Arcade (NTSC)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
-"Controller.Left" "GENESIS"
+"Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
 
@@ -11384,7 +11351,6 @@
 "Cart.ModelNo" "CG-02-P"
 "Cart.Name" "Conquest Of Mars (PAL60)"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "85e48d68c8d802e3ba9d494a47d6e016"
@@ -11855,7 +11821,6 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Amiga Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "8c1cc284edba691139d6626d062c606f"
@@ -11863,7 +11828,6 @@
 "Cart.Name" "Super Breakout Menu (2020) (PAL60) (Hack)"
 "Cart.Note" "Hack of Super Breakout"
 "Controller.MouseAxis" "AUTO 45"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "8c2fa33048f055f38358d51eefe417db"
@@ -12042,7 +12006,6 @@
 "Cart.Name" "Cosmic Commuter (Thomas Jentzsch) (PAL60)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Hack"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "8e887d1ba5f3a71ae8a0ea16a4af9fc9"
@@ -12069,7 +12032,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Amiga Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "8f33bce5ba1053dcf4cea9c1c69981e4"
@@ -12177,7 +12139,6 @@
 "Cart.Name" "Crash Dive (Fabrizio Zavagli) (PAL60)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Hack"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "90a3c3255f2a54225cdcb50831f8793a"
@@ -12439,7 +12400,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Challenge of... Nexar, The - Atari Trak-Ball Hack v1.1 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "93dc15d15e77a7b23162467f95a5f22d"
@@ -12488,7 +12448,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Marble Craze - Amiga Mouse Hack v1.0 (PAL60) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controllers"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "94507dee401b0a072a481c00d7699ffe"
@@ -13050,7 +13009,6 @@
 "Cart.Manufacturer" "Andrew Wallace"
 "Cart.Name" "Laseresal 2002 (PAL60) (PD)"
 "Cart.Rarity" "New Release"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "9c729017dd2f9ccbadcb511187f80e6b"
@@ -13265,7 +13223,6 @@
 "Cart.Name" "Montezuma's Revenge (Thomas Jentzsch) (PAL60)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "9f8fad4badcd7be61bbd2bcaeef3c58f"
@@ -13539,7 +13496,6 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Mouse) (Y Inverted) (PAL60) v4 (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "a2de0fc85548871279ed2a3c1325c13e"
@@ -13562,7 +13518,6 @@
 "Cart.Manufacturer" "Nukey Shay"
 "Cart.Name" "Montezuma's Revenge (Genesis) (PAL60) (F6_Conversion)"
 "Cart.Note" "Genesis controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "a302b922a8dbec47743f28b7f91d4cd8"
@@ -13644,7 +13599,6 @@
 "Cart.Manufacturer" "Aaron Curtis"
 "Cart.Name" "AStar (PAL60)"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "a406d2f6d84e61d842f4cb13b2b1cfa7"
@@ -13697,7 +13651,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Marble Craze - Atari Mouse Hack v1.0 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controllers"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "a499d720e7ee35c62424de882a3351b6"
@@ -14116,7 +14069,6 @@
 "Cart.ModelNo" "CX26201"
 "Cart.Name" "Zippy the Porcupine (2014) (Sprybug) (PAL60)"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "a9e3c23599c0d77151602f8e31daf879"
@@ -14388,7 +14340,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "ad7e97c19bd25d5aa3999430845c755b"
@@ -14720,7 +14671,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "b1a6c96e9093352106bc335e96caa154"
@@ -14879,7 +14829,6 @@
 "Cart.Manufacturer" "Omegamatrix"
 "Cart.Name" "Star Wars Arcade (Atari Mouse) v4 (PAL60) (Omegamatrix)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "b31f178aa0d569cccac7959f84e0a724"
@@ -15145,7 +15094,6 @@
 "Cart.Name" "Cat Trax (Thomas Jentzsch) (PAL60)"
 "Cart.Note" "NTSC Conversion"
 "Cart.Rarity" "Hack"
-"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -15181,7 +15129,6 @@
 "Cart.ModelNo" "RC2"
 "Cart.Name" "Flappy (2014) (AtariAge) (PAL60)"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "b7e459d5416eeb196aaa8e092db14463"
@@ -15286,7 +15233,6 @@
 "Cart.Manufacturer" "Atari, Omegamatrix"
 "Cart.Name" "Space Invaders Menu (2020) (PAL60) (Hack)"
 "Cart.Note" "Hack of Space Invaders"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "b958d5fd9574c5cf9ece4b9421c28ecd"
@@ -15401,7 +15347,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Missile Control - Atari Mouse Hack v1.15 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "bb5049e4558daade0f87fed69a244c59"
@@ -15492,7 +15437,6 @@
 "Cart.Manufacturer" "Bob Montgomery (aka vdub_bobby)"
 "Cart.Name" "Squish 'Em (2007) (PAL60)"
 "Cart.Rarity" "Homebrew"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "bccb4e2cfad5efc93f6d55dc992118ce"
@@ -15709,7 +15653,6 @@
 "Cart.Manufacturer" "Atari"
 "Cart.Name" "A-Team (Atari) (Prototype) (PAL60)"
 "Cart.Rarity" "Prototype"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "c032c2bd7017fdfbba9a105ec50f800e"
@@ -16487,7 +16430,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Marble Craze - Atari Trak-Ball Hack v1.0 (PAL60) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controllers"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "c9196e28367e46f8a55e04c27743148f"
@@ -16506,7 +16448,6 @@
 "Cart.Manufacturer" "AtariAge, Omegamatrix"
 "Cart.Name" "Venture Reloaded (2019) (AtariAge) (PAL60) (Hack)"
 "Cart.Note" "Transformative hack of Venture"
-"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -16873,7 +16814,6 @@
 "Cart.Manufacturer" "SEGA - Teldec"
 "Cart.ModelNo" "005-10"
 "Cart.Name" "Buck Rogers - Planet of Zoom (1983) (SEGA) (PAL)"
-"Display.Format" "PAL"
 "Display.Phosphor" "YES"
 ""
 
@@ -16903,7 +16843,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Amiga Mouse Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Amiga Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "cdb81bf33d830ee4ee0606ee99e84dba"
@@ -17009,7 +16948,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Trak-Ball Hack v1.3 (PAL60) (Half-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "cedbd67d1ff321c996051eec843f8716"
@@ -17162,7 +17100,6 @@
 "Cart.Name" "Tomarc the Barbarian (1983) (Xonox) (PAL60)"
 "Cart.Note" "Genesis controller (B is jump and throw, C switches between players)"
 "Cart.Rarity" "Hack of Tomarc the Barbarian"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "d00f6f8ba89559e4b20972a478fc0370"
@@ -17552,7 +17489,6 @@
 "Cart.ModelNo" "CX26140, CX26140P"
 "Cart.Name" "Desert Falcon (1987) (Atari) (PAL)"
 "Cart.Note" "AKA Nile Flyer, Sphinx"
-"Display.Format" "PAL"
 ""
 
 "Cart.MD5" "d483f65468d9a265661917bae1a54f3e"
@@ -17649,7 +17585,6 @@
 "Cart.Manufacturer" "Activision, Carol Shaw"
 "Cart.ModelNo" "EAX-020"
 "Cart.Name" "River Raid (1982) (Activision) (SECAM)"
-"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "d5e27051512c1e7445a9bf91501bda09"
@@ -18008,7 +17943,6 @@
 "Cart.ModelNo" "460673"
 "Cart.Name" "Pick 'n' Pile (1990) (Salu) (PAL)"
 "Console.SwapPorts" "YES"
-"Display.Format" "PAL"
 "Display.Phosphor" "YES"
 ""
 
@@ -18933,7 +18867,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Centipede - Atari Trak-Ball Hack v1.4 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Trak-Ball Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "e49ac0ec879a0d7820bc2598fc2cfcd4"
@@ -19430,7 +19363,7 @@
 "Cart.Name" "Scramble (NTSC)"
 "Cart.Note" "Compatible with Genesis controller"
 "Cart.Rarity" "Homebrew"
-"Controller.Left" "GENESIS"
+"Controller.Left" "JOYSTICK"
 "Display.Phosphor" "YES"
 ""
 
@@ -19549,7 +19482,6 @@
 "Cart.Manufacturer" "Activision, John Van Ryzin"
 "Cart.ModelNo" "EAZ-036-04"
 "Cart.Name" "H.E.R.O. (1984) (Activision) (SECAM)"
-"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "eb92193f06b645df0b2a15d077ce435f"
@@ -19638,7 +19570,6 @@
 "Cart.MD5" "ece908d77ab944f7bac84322b9973549"
 "Cart.Name" "Tom Boy (Unknown) (PAL60)"
 "Cart.Note" "AKA Pitfall!"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "ecf51385384b468834611d44a8429c03"
@@ -19695,7 +19626,6 @@
 "Cart.ModelNo" "CX2635, CX2635P"
 "Cart.Name" "Maze Craze (1980) (Atari) (PAL)"
 "Cart.Note" "AKA A Game of Cops 'n Robbers"
-"Display.Format" "PAL"
 ""
 
 "Cart.MD5" "ed5ccfc93ad4561075436ee42a15438a"
@@ -19721,7 +19651,6 @@
 "Cart.Manufacturer" "Activision, David Crane"
 "Cart.ModelNo" "EAZ-030"
 "Cart.Name" "Decathlon (1983) (Activision) (SECAM)"
-"Display.Format" "SECAM"
 ""
 
 "Cart.MD5" "ede7e8bf865b0afb4744f86d13624f9a"
@@ -19990,7 +19919,6 @@
 "Cart.Manufacturer" "Thomas Jentzsch"
 "Cart.Name" "Reactor - Atari Mouse Hack v1.3 (PAL60) (Full-Speed) (TJ)"
 "Cart.Note" "Uses Atari Mouse Controller"
-"Display.Format" "PAL60"
 ""
 
 "Cart.MD5" "f0e0addc07971561ab80d9abe1b8d333"
@@ -20043,7 +19971,6 @@
 "Cart.Name" "Lady Bug (PAL60)"
 "Cart.Rarity" "Homebrew"
 "Console.RightDiff" "A"
-"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -20942,7 +20869,6 @@
 "Cart.Note" "AtariVox supported"
 "Cart.Rarity" "Homebrew"
 "Controller.Right" "ATARIVOX"
-"Display.Format" "PAL60"
 "Display.Phosphor" "YES"
 ""
 
@@ -21404,3 +21330,22 @@
 "Cart.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 ""
 
+"Cart.MD5" "541cac55ebcf7891d9d51c415922303f"
+"Cart.Manufacturer" "SpiceWare - Darrell Spice Jr."
+"Cart.ModelNo" "SW-05"
+"Cart.Name" "Stay Frosty 2"
+"Cart.Note" "AtariAge Holiday Greetings 2014"
+"Cart.Rarity" "Homebrew"
+"Controller.Left" "JOYSTICK"
+"Display.Phosphor" "YES"
+""
+
+"Cart.MD5" "791c88eca9836af8c34bf32b07cb58a7"
+"Cart.Manufacturer" "SpiceWare - Darrell Spice Jr."
+"Cart.ModelNo" "SW-05"
+"Cart.Name" "Stay Frosty 2 (PAL60)"
+"Cart.Note" "AtariAge Holiday Greetings 2014"
+"Cart.Rarity" "Homebrew"
+"Controller.Left" "JOYSTICK"
+"Display.Phosphor" "YES"
+""

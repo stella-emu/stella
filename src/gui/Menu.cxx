@@ -42,8 +42,8 @@ Dialog* Menu::baseDialog()
   if (myOSystem.settings().getBool("basic_settings"))
   {
     if (stellaSettingDialog == nullptr)
-      stellaSettingDialog = new StellaSettingsDialog(myOSystem, *this, myOSystem.frameBuffer().font(),
-        FBMinimum::Width, FBMinimum::Height, AppMode::emulator);
+      stellaSettingDialog = new StellaSettingsDialog(myOSystem, *this,
+                                                     1280, 720, AppMode::emulator);
     return stellaSettingDialog;
   }
   else

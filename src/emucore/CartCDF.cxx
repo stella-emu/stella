@@ -65,7 +65,7 @@ CartridgeCDF::CartridgeCDF(const ByteBuffer& image, size_t size,
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
 
   // even though the ROM is 32K, only 28K is accessible to the 6507
-  createCodeAccessBase(28_KB);
+  createRomAccessArrays(28_KB);
 
   // Pointer to the program ROM (28K @ 0 byte offset)
   // which starts after the 2K CDF Driver and 2K C Code
@@ -415,7 +415,9 @@ bool CartridgeCDF::bank(uInt16 bank)
   // Map Program ROM image into the system
   for(uInt16 addr = 0x1040; addr < 0x2000; addr += System::PAGE_SIZE)
   {
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + 28_KB];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

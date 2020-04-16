@@ -21,6 +21,7 @@
 #include "Version.hxx"
 #include "Logger.hxx"
 #include "AudioSettings.hxx"
+#include "Paddles.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
@@ -102,8 +103,10 @@ Settings::Settings()
   setPermanent("dejitter.base", "0");
   setPermanent("dejitter.diff", "0");
   setPermanent("dsense", "10");
+  setPermanent("psense", "20");
   setPermanent("msense", "10");
   setPermanent("tsense", "10");
+  setPermanent("dcsense", "10");
   setPermanent("saport", "lr");
   setPermanent("modcombo", "true");
 
@@ -122,6 +125,7 @@ Settings::Settings()
 
   // ROM browser options
   setPermanent("exitlauncher", "false");
+  setPermanent("followlauncher", "false");
   setPermanent("launcherres", Common::Size(900, 600));
   setPermanent("launcherfont", "medium");
   setPermanent("launcherroms", "true");
@@ -321,6 +325,10 @@ void Settings::validate()
   if(i < 0 || i > 3)
     setValue("cursor", "2");
 
+  i = getInt("psense");
+  if(i < 0|| i > Paddles::MAX_ANALOG_SENSE)
+    setValue("psense", "20");
+
   i = getInt("dsense");
   if(i < 1 || i > 20)
     setValue("dsense", "10");
@@ -333,6 +341,10 @@ void Settings::validate()
   if(i < 1 || i > 20)
     setValue("tsense", "10");
 
+  i = getInt("dcsense");
+  if(i < 1 || i > 20)
+    setValue("dcsense", "10");
+
   i = getInt("ssinterval");
   if(i < 1)        setValue("ssinterval", "2");
   else if(i > 10)  setValue("ssinterval", "10");
@@ -342,7 +354,8 @@ void Settings::validate()
     setValue("palette", "standard");
 
   s = getString("launcherfont");
-  if(s != "small" && s != "medium" && s != "large")
+  if(s != "small" && s != "low_medium" && s != "medium" && s != "large"
+     && s != "large12" && s != "large14" && s != "large16")
     setValue("launcherfont", "medium");
 
   s = getString("dbg.fontsize");
@@ -350,8 +363,7 @@ void Settings::validate()
     setValue("dbg.fontsize", "medium");
 
   i = getInt("romviewer");
-  if(i < 0)       setValue("romviewer", "0");
-  else if(i > 2)  setValue("romviewer", "2");
+  if(i < 0) setValue("romviewer", "0");
 
   i = getInt("loglevel");
   if(i < int(Logger::Level::MIN) || i > int(Logger::Level::MAX))
@@ -410,7 +422,7 @@ void Settings::usage() const
     << "  -tia.inter       <1|0>        Enable interpolated (smooth) scaling for TIA\n"
     << "                                 image\n"
     << "  -tia.fs_stretch  <1|0>        Stretch TIA image to fill fullscreen mode\n"
-    << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fill fullscreen mode\n"
+    << "  -tia.fs_overscan <0-10>       Add overscan to TIA image in fullscreen mode\n"
     << "  -tia.dbgcolors   <string>     Debug colors to use for each object (see manual\n"
     << "                                 for description)\n"
     << endl
@@ -445,11 +457,14 @@ void Settings::usage() const
     << "                                properties in given mode(see manual)\n"
     << "  -grabmouse    <1|0>          Locks the mouse cursor in the TIA window\n"
     << "  -cursor       <0,1,2,3>      Set cursor state in UI/emulation modes\n"
-    << "  -dejitter.base <0-10>        Strength of paddle value averaging\n"
-    << "  -dejitter.diff <0-10>        Strength of paddle reaction to fast movements\n"
+    << "  -dejitter.base <0-10>        Strength of analog paddle value averaging\n"
+    << "  -dejitter.diff <0-10>        Strength of analog paddle reaction to fast movements\n"
+    << "  -psense       <0-30>         Sensitivity of analog paddle movement\n"
     << "  -dsense       <1-20>         Sensitivity of digital emulated paddle movement\n"
     << "  -msense       <1-20>         Sensitivity of mouse emulated paddle movement\n"
     << "  -tsense       <1-20>         Sensitivity of mouse emulated trackball movement\n"
+    << "  -dcsense      <1-20>         Sensitivity of digital emulated driving controller\n"
+    << "                                movement\n"
     << "  -saport       <lr|rl>        How to assign virtual ports to multiple\n"
     << "                                Stelladaptor/2600-daptors\n"
     << "  -modcombo     <1|0>          Enable modifer key combos\n"
@@ -467,23 +482,28 @@ void Settings::usage() const
     << "  -ssinterval   <number>       Number of seconds between snapshots in\n"
     << "                                continuous snapshot mode\n"
     << endl
-    << "  -saveonexit   <none|current  Automatically save state(s) when exiting emulation\n"
-    << "                 all>\n"
+    << "  -saveonexit   <none|current| Automatically save state(s) when exiting\n"
+    << "                 all>           emulation\n"
     << "  -autoslot     <1|0>          Automatically change to next save slot when\n"
     << "                                state saving\n"
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM\n"
     << "                                entry\n"
-    << "                               \n"
+      << endl
     << "  -exitlauncher <1|0>          On exiting a ROM, go back to the ROM launcher\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
-    << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
-    << "                 large>\n"
+    << "  -launcherfont <small|        Use the specified font in the ROM launcher\n"
+    << "                 low_medium|\n"
+    << "                 medium|large|\n"
+    << "                 large12|large14|\n"
+    << "                 large16>\n"
     << "  -launcherroms <1|0>          Show only ROMs in the launcher (vs. all files)\n"
-    << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM\n"
-    << "                                launcher (0 for off)\n"
-    << "  -lastrom       <name>        Last played ROM, automatically selected in launcher\n"
+    << "  -romviewer    <float>        Show ROM info viewer at given zoom level in ROM\n"
+    << "                                launcher (use 0 for off)\n"
+    << "  -followlauncher <0|1>        Default ROM path follows launcher navigation\n"
+    << "  -lastrom      <name>         Last played ROM, automatically selected in\n"
+    << "                                launcher\n"
     << "  -romloadcount <number>       Number of ROM to load next from multicard\n"
     << "  -uipalette    <standard|     Selects GUI theme\n"
     << "                 classic|light>\n"
@@ -496,9 +516,11 @@ void Settings::usage() const
     << "                                UI\n"
     << "  -mdouble      <speed>        Mouse double click speed in UI\n"
     << "  -ctrldelay    <delay>        Delay before controller input is repeated in UI\n"
-    << "  -ctrlrate     <rate>         Rate per second of repeated controller input in UI\n"
+    << "  -ctrlrate     <rate>         Rate per second of repeated controller input in\n"
+    << "                                UI\n"
     << "  -basic_settings <0|1>        Display only a basic settings dialog\n"
-    << "  -romdir       <dir>          Set the directory where the ROM launcher will start\n"
+    << "  -romdir       <dir>          Set the directory where the ROM launcher will\n"
+    << "                                start\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is\n"
     << "                                connected\n"
     << "  -holdreset                   Start the emulator with the Game Reset switch\n"
@@ -521,8 +543,8 @@ void Settings::usage() const
     << " Arguments are more fully explained in the manual\n"
     << endl
     << "   -dis.resolve   <1|0>        Attempt to resolve code sections in disassembler\n"
-    << "   -dis.gfxformat <2|16>       Set base to use for displaying GFX sections in\n"
-    << "                                disassembler\n"
+    << "   -dis.gfxformat <2|16>       Set base to use for displaying (P)GFX sections\n"
+    << "                                in disassembler\n"
     << "   -dis.showaddr  <1|0>        Show opcode addresses in disassembler\n"
     << "   -dis.relocate  <1|0>        Relocate calls out of address range in\n"
     << "                                disassembler\n"
@@ -549,6 +571,8 @@ void Settings::usage() const
     << "   -rc          <arg>          Sets the 'Controller.Right' property\n"
     << "   -bc          <arg>          Same as using both -lc and -rc\n"
     << "   -cp          <arg>          Sets the 'Controller.SwapPaddles' property\n"
+    << "   -pxcenter    <arg>          Sets the 'Controller.PaddlesXCenter' property\n"
+    << "   -pycenter    <arg>          Sets the 'Controller.PaddlesYCenter' property\n"
     << "   -format      <arg>          Sets the 'Display.Format' property\n"
     << "   -vcenter     <arg>          Sets the 'Display.vcenter' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"

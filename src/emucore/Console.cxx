@@ -745,7 +745,7 @@ void Console::updateVcenter(Int32 vcenter)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeScanlineAdjust(int direction)
 {
-  Int32 newAdjustVSize = myTIA->adjustVSize();;
+  Int32 newAdjustVSize = myTIA->adjustVSize();
 
   if (direction != -1 && direction != +1) return;
 
@@ -923,6 +923,11 @@ unique_ptr<Controller> Console::getControllerPort(const Controller::Type type,
         swapAxis = true;
       else if(type == Controller::Type::PaddlesIAxDr)
         swapAxis = swapDir = true;
+
+      Paddles::setAnalogXCenter(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesXCenter)));
+      Paddles::setAnalogYCenter(BSPF::stringToInt(myProperties.get(PropType::Controller_PaddlesYCenter)));
+      Paddles::setAnalogSensitivity(myOSystem.settings().getInt("psense"));
+
       controller = make_unique<Paddles>(port, myEvent, *mySystem,
                                         swapPaddles, swapAxis, swapDir);
       break;

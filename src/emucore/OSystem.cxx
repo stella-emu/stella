@@ -268,6 +268,9 @@ void OSystem::setConfigPaths()
 
   buildDirIfRequired(myStateDir, myBaseDir + "state");
   buildDirIfRequired(myNVRamDir, myBaseDir + "nvram");
+#ifdef DEBUGGER_SUPPORT
+  buildDirIfRequired(myCfgDir, myBaseDir + "cfg");
+#endif
 
 #ifdef PNG_SUPPORT
   mySnapshotSaveDir = mySettings->getString("snapsavedir");
@@ -292,6 +295,7 @@ void OSystem::setConfigPaths()
   dbgPath("base dir  ", myBaseDir);
   dbgPath("state dir ", myStateDir);
   dbgPath("nvram dir ", myNVRamDir);
+  dbgPath("cfg dir   ", myCfgDir);
   dbgPath("ssave dir ", mySnapshotSaveDir);
   dbgPath("sload dir ", mySnapshotLoadDir);
   dbgPath("cheat file", myCheatFile);
@@ -600,6 +604,8 @@ unique_ptr<Console> OSystem::openConsole(const FilesystemNode& romfile, string& 
     CMDLINE_PROPS_UPDATE("vcenter", PropType::Display_VCenter);
     CMDLINE_PROPS_UPDATE("pp", PropType::Display_Phosphor);
     CMDLINE_PROPS_UPDATE("ppblend", PropType::Display_PPBlend);
+    CMDLINE_PROPS_UPDATE("pxcenter", PropType::Controller_PaddlesXCenter);
+    CMDLINE_PROPS_UPDATE("pycenter", PropType::Controller_PaddlesYCenter);
 
     // Finally, create the cart with the correct properties
     if(cart)

@@ -31,6 +31,7 @@ class GuiObject;
   #include "Font.hxx"
 #endif
 
+
 /**
   A cartridge is a device which contains the machine code for a
   game and handles any bankswitching performed by the cartridge.
@@ -112,7 +113,7 @@ class Cartridge : public Device
       Clears information about all accesses to cart RAM.
     */
     void clearAllRAMAccesses() {
-      myRAMAccesses.clear();
+      myRamReadAccesses.clear();
       myRamWriteAccess = 0;
     }
 
@@ -124,7 +125,7 @@ class Cartridge : public Device
       @return  Address of illegal access if one occurred, else 0
     */
     uInt16 getIllegalRAMReadAccess() const {
-      return myRAMAccesses.size() > 0 ? myRAMAccesses[0] : 0;
+      return myRamReadAccesses.size() > 0 ? myRamReadAccesses[0] : 0;
     }
 
     /**
@@ -135,6 +136,22 @@ class Cartridge : public Device
       @return  Address of illegal access if one occurred, else 0
     */
     uInt16 getIllegalRAMWriteAccess() const { return myRamWriteAccess; }
+
+
+    /**
+      Query the access counters
+
+      @return  The access counters as comma separated string
+    */
+    string getAccessCounters() const override;
+
+    /**
+      Determine the bank's origin
+
+      @param bank  The bank to query
+      @return  The origin of the bank
+    */
+    uInt16 bankOrigin(uInt16 bank) const;
   #endif
 
   public:
@@ -176,6 +193,14 @@ class Cartridge : public Device
       cart will report having only one 'virtual' bank.
     */
     virtual uInt16 bankCount() const { return 1; }
+
+    /**
+      Get the size of a bank.
+
+      @param bank  The bank to get the size for
+      @return  The bank's size
+    */
+    virtual uInt16 bankSize(uInt16 bank = 0) const;
 
     /**
       Patch the cartridge ROM.
@@ -273,7 +298,7 @@ class Cartridge : public Device
 
       @param size  The size of the code-access array to create
     */
-    void createCodeAccessBase(size_t size);
+    void createRomAccessArrays(size_t size);
 
     /**
       Fill the given RAM array with (possibly random) data.
@@ -321,11 +346,19 @@ class Cartridge : public Device
     bool myBankChanged{true};
 
     // The array containing information about every byte of ROM indicating
-    // whether it is used as code.
-    ByteBuffer myCodeAccessBase;
+    // whether it is used as code, data, graphics etc.
+    std::unique_ptr<Device::AccessFlags[]> myRomAccessBase;
+
+    // The array containing information about every byte of ROM indicating
+    // how often it is accessed.
+    std::unique_ptr<Device::AccessCounter[]> myRomAccessCounter;
+
 
     // Contains address of illegal RAM write access or 0
     uInt16 myRamWriteAccess{0};
+
+    // Total size of ROM access area (might include RAM too)
+    uInt32 myAccessSize;
 
   private:
     // The startup bank to use (where to look for the reset vector address)
@@ -347,8 +380,10 @@ class Cartridge : public Device
     // Used when we want the 'Cartridge.StartBank' ROM property
     StartBankFromPropsFunc myStartBankFromPropsFunc;
 
-    // Contains
-    ShortArray myRAMAccesses;
+    // Used to answer whether an access in the last instruction cycle
+    // generated an illegal read RAM access. Contains address of illegal
+    // access.
+    ShortArray myRamReadAccesses;
 
     // Following constructors and assignment operators not supported
     Cartridge() = delete;

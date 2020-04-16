@@ -55,9 +55,9 @@ class Launcher : public DialogContainer
     const string& selectedRomMD5();
 
     /**
-      Wrapper for LauncherDialog::currentNode() method.
+      Wrapper for LauncherDialog::currentDir() method.
     */
-    const FilesystemNode& currentNode() const;
+    const FilesystemNode& currentDir() const;
 
     /**
       Wrapper for LauncherDialog::reload() method.

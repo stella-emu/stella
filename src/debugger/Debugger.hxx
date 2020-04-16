@@ -47,6 +47,7 @@ class RewindManager;
 #include "DialogContainer.hxx"
 #include "DebuggerDialog.hxx"
 #include "FrameBufferConstants.hxx"
+#include "Cart.hxx"
 #include "bspf.hxx"
 
 /**
@@ -243,18 +244,18 @@ class Debugger : public DialogContainer
     static Debugger& debugger() { return *myStaticDebugger; }
 
     /** Convenience methods to access peek/poke from System */
-    uInt8 peek(uInt16 addr, uInt8 flags = 0);
-    uInt16 dpeek(uInt16 addr, uInt8 flags = 0);
-    void poke(uInt16 addr, uInt8 value, uInt8 flags = 0);
+    uInt8 peek(uInt16 addr, Device::AccessFlags flags = Device::NONE);
+    uInt16 dpeek(uInt16 addr, Device::AccessFlags flags = Device::NONE);
+    void poke(uInt16 addr, uInt8 value, Device::AccessFlags flags = Device::NONE);
 
     /** Convenience method to access the 6502 from System */
     M6502& m6502() const;
 
     /** These are now exposed so Expressions can use them. */
-    int peekAsInt(int addr, uInt8 flags = 0);
-    int dpeekAsInt(int addr, uInt8 flags = 0);
-    int getAccessFlags(uInt16 addr) const;
-    void setAccessFlags(uInt16 addr, uInt8 flags);
+    int peekAsInt(int addr, Device::AccessFlags flags = Device::NONE);
+    int dpeekAsInt(int addr, Device::AccessFlags flags = Device::NONE);
+    Device::AccessFlags getAccessFlags(uInt16 addr) const;
+    void setAccessFlags(uInt16 addr, Device::AccessFlags flags);
 
     uInt32 getBaseAddress(uInt32 addr, bool read);
 

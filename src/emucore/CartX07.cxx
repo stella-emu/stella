@@ -27,7 +27,7 @@ CartridgeX07::CartridgeX07(const ByteBuffer& image, size_t size,
 {
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createCodeAccessBase(myImage.size());
+  createRomAccessArrays(myImage.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,7 +115,9 @@ bool CartridgeX07::bank(uInt16 bank)
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[offset + (addr & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[offset + (addr & 0x0FFF)];
+    access.romPeekCounter = &myRomAccessCounter[offset + (addr & 0x0FFF)];
+    access.romPokeCounter = &myRomAccessCounter[offset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
   return myBankChanged = true;

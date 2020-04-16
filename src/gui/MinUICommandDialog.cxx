@@ -67,7 +67,7 @@ MinUICommandDialog::MinUICommandDialog(OSystem& osystem, DialogContainer& parent
   wid.push_back(myColorButton);
   myLeftDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
   wid.push_back(myLeftDiffButton);
-  myRightDiffButton = ADD_CD_BUTTON("", kLeftDiffCmd);
+  myRightDiffButton = ADD_CD_BUTTON("", kRightDiffCmd);
   wid.push_back(myRightDiffButton);
 
   // Column 2
@@ -307,7 +307,7 @@ void MinUICommandDialog::openSettings()
   {
     if (myStellaSettingsDialog == nullptr)
       myStellaSettingsDialog = make_unique<StellaSettingsDialog>(instance(), parent(),
-        instance().frameBuffer().launcherFont(), FBMinimum::Width, FBMinimum::Height, Menu::AppMode::launcher);
+        1280, 720, Menu::AppMode::launcher);
     myStellaSettingsDialog->open();
   }
   else

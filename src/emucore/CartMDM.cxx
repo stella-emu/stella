@@ -29,7 +29,7 @@ CartridgeMDM::CartridgeMDM(const ByteBuffer& image, size_t size,
 
   // Copy the ROM image into my buffer
   std::copy_n(image.get(), mySize, myImage.get());
-  createCodeAccessBase(mySize);
+  createRomAccessArrays(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -111,7 +111,9 @@ bool CartridgeMDM::bank(uInt16 bank)
   for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
   {
     access.directPeekBase = &myImage[myBankOffset + (addr & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romAccessBase = &myRomAccessBase[myBankOffset + (addr & 0x0FFF)];
+    access.romPeekCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF)];
+    access.romPokeCounter = &myRomAccessCounter[myBankOffset + (addr & 0x0FFF) + myAccessSize];
     mySystem->setPageAccess(addr, access);
   }
 
