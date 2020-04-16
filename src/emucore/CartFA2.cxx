@@ -35,7 +35,7 @@ CartridgeFA2::CartridgeFA2(const ByteBuffer& image, size_t size,
   myImage = make_unique<uInt8[]>(mySize);
 
   // Copy the ROM image into my buffer
-  std::copy_n(image.get(), mySize, myImage.get());
+  std::copy_n(img_ptr, mySize, myImage.get());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,7 +53,7 @@ bool CartridgeFA2::checkSwitchBank(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeFA2::peek(uInt16 address)
 {
-  if((address & 0x0FFF) == 0x0FF4)
+  if((address & ROM_MASK) == 0x0FF4)
   {
     // Load/save RAM to/from Harmony cart flash
     if(mySize == 28_KB && !bankLocked())
@@ -66,7 +66,7 @@ uInt8 CartridgeFA2::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFA2::poke(uInt16 address, uInt8 value)
 {
-  if((address & 0x0FFF) == 0x0FF4)
+  if((address & ROM_MASK) == 0x0FF4)
   {
     // Load/save RAM to/from Harmony cart flash
     if(mySize == 28_KB && !bankLocked())

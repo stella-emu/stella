@@ -54,12 +54,11 @@ bool CartridgeSB::checkSwitchBank(uInt16 address, uInt8)
   // Switch banks if necessary
   if((address & 0x1800) == 0x0800)
   {
-    bank(address & startBank());
+    bank(address & (romBankCount() - 1));
     return true;
   }
   return false;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeSB::peek(uInt16 address)

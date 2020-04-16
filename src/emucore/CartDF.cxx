@@ -28,7 +28,7 @@ CartridgeDF::CartridgeDF(const ByteBuffer& image, size_t size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDF::checkSwitchBank(uInt16 address, uInt8)
 {
-  address &= 0x0FFF;
+  address &= ROM_MASK;
 
   // Switch banks if necessary
   if((address >= 0x0FC0) && (address <= 0x0FDF))

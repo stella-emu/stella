@@ -30,7 +30,7 @@ bool CartridgeBF::checkSwitchBank(uInt16 address, uInt8)
 {
   // Due to the way addressing is set up, we will only get here if the
   // address is in the hotspot range ($1F80 - $1FFF)
-  address &= 0x0FFF;
+  address &= ROM_MASK;
 
   // Switch banks if necessary
   if((address >= 0x0F80) && (address <= 0x0FBF))
