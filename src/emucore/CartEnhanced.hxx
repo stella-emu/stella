@@ -218,6 +218,13 @@ class CartridgeEnhanced : public Cartridge
     // The size of the ROM image
     size_t mySize{0};
 
+  protected:
+    // The offset into address space for accessing ROM
+    static constexpr uInt16 ROM_OFFSET = 0x1000;
+
+    // The mask for ROM address space
+    static constexpr uInt16 ROM_MASK = 0x0FFF;
+
   private:
     // Calculated as: log(ROM bank segment size) / log(2)
     static constexpr uInt16 BANK_SHIFT = 12;  // default = 4K
@@ -230,6 +237,9 @@ class CartridgeEnhanced : public Cartridge
 
     // Write port for extra RAM is at low address by default
     static constexpr bool RAM_HIGH_WP = false;
+
+    // The maximum shift (for a 4K bank size)
+    static constexpr uInt16 MAX_BANK_SHIFT = 12; ; // -> 4K
 
   protected:
     /**

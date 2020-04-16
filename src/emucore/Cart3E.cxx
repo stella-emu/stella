@@ -64,7 +64,7 @@ bool Cartridge3E::checkSwitchBank(uInt16 address, uInt8 value)
 uInt8 Cartridge3E::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
-  address &= 0x0FFF;
+  address &= ROM_MASK;
 
   if(address < 0x0040)  // TIA access
     return mySystem->tia().peek(address);

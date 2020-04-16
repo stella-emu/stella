@@ -63,7 +63,7 @@ bool CartridgeFE::checkSwitchBank(uInt16 address, uInt8 value)
 uInt8 CartridgeFE::peek(uInt16 address)
 {
   uInt8 value = (address < 0x200) ? mySystem->m6532().peek(address) :
-    myImage[myCurrentSegOffset[(address & 0xFFF) >> myBankShift] + (address & myBankMask)];
+    myImage[myCurrentSegOffset[(address & myBankMask) >> myBankShift] + (address & myBankMask)];
 
   // Check if we hit hotspot
   checkSwitchBank(address, value);
