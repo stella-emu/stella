@@ -151,7 +151,7 @@ class CartridgeWD : public CartridgeEnhanced
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    bool checkSwitchBank(uInt16, uInt8 = 0) override { return false; };
+    bool checkSwitchBank(uInt16, uInt8 = 0) override { return false; }
 
   private:
     // Indicates the cycle at which a bankswitch was initiated
