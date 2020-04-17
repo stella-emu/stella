@@ -29,44 +29,17 @@ Cartridge3EPlus::Cartridge3EPlus(const ByteBuffer& image, size_t size,
   myRamSize = RAM_SIZE;
   myRamBankCount = RAM_BANKS;
   myRamWpHigh = RAM_HIGH_WP;
-
-  //// Allocate array for the ROM image
-  //myImage = make_unique<uInt8[]>(mySize);
-
-  //// Copy the ROM image into my buffer
-  //std::copy_n(image.get(), mySize, myImage.get());
-  //createRomAccessArrays(mySize + myRAM.size());
 }
-
-//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//void Cartridge3EPlus::reset()
-//{
-//  initializeRAM(myRAM.data(), myRAM.size());
-//
-//  // Remember startup bank (0 per spec, rather than last per 3E scheme).
-//  // Set this to go to 3rd 1K Bank.
-//  initializeStartBank(0);
-//
-//  // Initialise bank values for all ROM/RAM access
-//  // This is used to reverse-lookup from address to bank location
-//  for(auto& b: bankInUse)
-//    b = BANK_UNDEFINED;     // bank is undefined and inaccessible!
-//
-//  initializeBankState();
-//
-//  // We'll map the startup banks 0 and 3 from the image into the third 1K bank upon reset
-//  bankROM((0 << BANK_BITS) | 0);
-//  bankROM((3 << BANK_BITS) | 0);
-//}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3EPlus::reset()
 {
   CartridgeEnhanced::reset();
 
+  // 1st segment in mapped to start bank in CartridgeEnhanced
   bank(mySystem->randGenerator().next() % romBankCount(), 1);
   bank(mySystem->randGenerator().next() % romBankCount(), 2);
-  bank(startBank(), 3); // Stella reads the PC vector always from here (TODO?)
+  bank(startBank(), 3);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -68,6 +68,8 @@ void CartridgeEnhanced::install(System& system)
     for(uInt16 addr = ROM_OFFSET + myWriteOffset; addr < ROM_OFFSET + myWriteOffset + myRamSize; addr += System::PAGE_SIZE)
     {
       uInt16 offset = addr & myRamMask;
+
+      access.directPokeBase = &myRAM[offset];
       access.romAccessBase = &myRomAccessBase[myWriteOffset + offset];
       access.romPeekCounter = &myRomAccessCounter[myWriteOffset + offset];
       access.romPokeCounter = &myRomAccessCounter[myWriteOffset + offset + myAccessSize];
@@ -76,6 +78,7 @@ void CartridgeEnhanced::install(System& system)
 
     // Set the page accessing method for the RAM reading pages
     access.type = System::PageAccessType::READ;
+    access.directPokeBase = nullptr;
     for(uInt16 addr = ROM_OFFSET + myReadOffset; addr < ROM_OFFSET + myReadOffset + myRamSize; addr += System::PAGE_SIZE)
     {
       uInt16 offset = addr & myRamMask;
@@ -125,7 +128,7 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
   }
   else
   {
-    address &= myBankMask;
+    address &= ROM_MASK;
 
     // Write port is e.g. at 0xF000 - 0xF07F (128 bytes)
     if(address < myReadOffset + myRamSize && address >= myReadOffset)
@@ -133,7 +136,8 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
       // Reading from the write port triggers an unwanted write
       return peekRAM(myRAM[address], peekAddress);
     else
-      return myImage[myCurrentSegOffset[(peekAddress & ROM_MASK) >> myBankShift] + address];
+      return myImage[myCurrentSegOffset[(peekAddress & ROM_MASK) >> myBankShift]
+                     + (peekAddress & myBankMask)];
   }
 }
 
@@ -206,7 +210,8 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     uInt32 bankOffset = myCurrentSegOffset[segment] = romBank << myBankShift;
     uInt16 hotspot = this->hotspot();
     uInt16 hotSpotAddr;
-    uInt16 fromAddr = (ROM_OFFSET + segmentOffset + myRomOffset) & ~System::PAGE_MASK;
+    // Skip extra RAM; if existing it is only mapped into first segment
+    uInt16 fromAddr = (ROM_OFFSET + segmentOffset + (segment == 0 ? myRomOffset : 0)) & ~System::PAGE_MASK;
     // for ROMs < 4_KB, the whole address space will be mapped.
     uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (mySize < 4_KB ? 4_KB : myBankSize)) & ~System::PAGE_MASK;
 
