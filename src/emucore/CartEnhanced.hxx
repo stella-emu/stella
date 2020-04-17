@@ -65,7 +65,7 @@ class CartridgeEnhanced : public Cartridge
 
       @return  true, if bank has changed
     */
-    bool bank(uInt16 bank, uInt16 segment);
+    virtual bool bank(uInt16 bank, uInt16 segment);
 
     /**
       Install pages for the specified bank in the system.
