@@ -51,6 +51,14 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setID(uInt32 id)
+{
+  myMenu->setID(id);
+
+  Widget::setID(id);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::addItems(const VariantList& items)
 {
   myMenu->addItems(items);
@@ -219,5 +227,5 @@ void PopUpWidget::drawWidget(bool hilite)
   TextAlign align = (_font.getStringWidth(name) > w-6) ?
                      TextAlign::Right : TextAlign::Left;
   s.drawString(_font, name, x+2, _y+myTextY, w-6,
-               !(isEnabled() && onTop) ? kColor : kTextColor, align);
+               !(isEnabled() && onTop) ? kColor : _changed ? kDbgChangedTextColor : kTextColor, align);
 }
