@@ -181,7 +181,7 @@ bool ContextMenu::sendSelectionUp()
     return false;
 
   _selectedItem--;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
   return true;
 }
 
@@ -192,7 +192,7 @@ bool ContextMenu::sendSelectionDown()
     return false;
 
   _selectedItem++;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
   return true;
 }
 
@@ -203,7 +203,7 @@ bool ContextMenu::sendSelectionFirst()
     return false;
 
   _selectedItem = 0;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
   return true;
 }
 
@@ -214,7 +214,7 @@ bool ContextMenu::sendSelectionLast()
     return false;
 
   _selectedItem = int(_entries.size()) - 1;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
   return true;
 }
 
@@ -375,7 +375,7 @@ void ContextMenu::sendSelection()
 
   // Send any command associated with the selection
   _selectedItem = item;
-  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, -1);
+  sendCommand(_cmd ? _cmd : ContextMenu::kItemSelectedCmd, _selectedItem, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

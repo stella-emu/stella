@@ -45,6 +45,9 @@ class ContextMenu : public Dialog, public CommandSender
                 const VariantList& items, int cmd = 0, int width = 0);
     virtual ~ContextMenu() = default;
 
+    /** Set the parent widget's ID */
+    void setID(uInt32 id) { _id = id; }
+
     /** Add the given items to the widget. */
     void addItems(const VariantList& items);
 
@@ -121,6 +124,7 @@ class ContextMenu : public Dialog, public CommandSender
     ColorId _scrollUpColor{kColor}, _scrollDnColor{kColor};
 
     int _cmd{0};
+    int _id{-1};
 
     uInt32 _xorig{0}, _yorig{0};
     uInt32 _maxWidth{0};

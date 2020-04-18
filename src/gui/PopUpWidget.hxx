@@ -41,6 +41,8 @@ class PopUpWidget : public Widget, public CommandSender
                 const string& label, int labelWidth = 0, int cmd = 0);
     virtual ~PopUpWidget() = default;
 
+    void setID(uInt32 id);
+
     int getTop() const override { return _y + 1; }
     int getBottom() const override { return _y + 1 + getHeight(); }
 
