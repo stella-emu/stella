@@ -65,13 +65,14 @@ CartRamWidget::CartRamWidget(
   StringParser bs(desc, (fwidth - kScrollBarWidth) / myFontWidth);
   const StringList& sl = bs.stringList();
   uInt32 lines = uInt32(sl.size());
-  if(lines < 3) lines = 3;
+  if(lines < 2) lines = 2;
   if(lines > maxlines) lines = maxlines;
 
   new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Description ");
   myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos - 1,
                                 fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);
+  myDesc->setEnabled(false);
   myDesc->setList(sl);
   addFocusWidget(myDesc);
 
