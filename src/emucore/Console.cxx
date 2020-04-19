@@ -564,6 +564,24 @@ void Console::toggleInter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleTurbo()
+{
+  bool enabled = myOSystem.settings().getBool("turbo");
+
+  myOSystem.settings().setValue("turbo", !enabled);
+
+  // update speed
+  initializeAudio();
+
+  // update VSync
+  myOSystem.createFrameBuffer();
+
+  ostringstream ss;
+  ss << "Turbo mode " << (!enabled ? "enabled" : "disabled");
+  myOSystem.frameBuffer().showMessage(ss.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePhosphor()
 {
   if(myOSystem.frameBuffer().tiaSurface().phosphorEnabled())
@@ -657,7 +675,9 @@ void Console::initializeAudio()
     .updatePlaybackPeriod(myAudioSettings.fragmentSize())
     .updateAudioQueueExtraFragments(myAudioSettings.bufferSize())
     .updateAudioQueueHeadroom(myAudioSettings.headroom())
-    .updateSpeedFactor(myOSystem.settings().getFloat("speed"));
+    .updateSpeedFactor(myOSystem.settings().getBool("turbo")
+      ? 20.0F
+      : myOSystem.settings().getFloat("speed"));
 
   createAudioQueue();
   myTIA->setAudioQueue(myAudioQueue);

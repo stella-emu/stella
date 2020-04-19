@@ -539,6 +539,10 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed && !repeated) myOSystem.console().toggleInter();
       return;
 
+    case Event::ToggleTurbo:
+      if (pressed && !repeated) myOSystem.console().toggleTurbo();
+      return;
+
     case Event::ToggleJitter:
       if (pressed && !repeated) myOSystem.console().toggleJitter();
       return;
@@ -1815,6 +1819,7 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::TogglePauseMode,         "Toggle Pause mode",                     "" },
   { Event::StartPauseMode,          "Start Pause mode",                      "" },
   { Event::Fry,                     "Fry cartridge",                         "" },
+  { Event::ToggleTurbo,             "Toggle Turbo mode",                     "" },
   { Event::DebuggerMode,            "Toggle Debugger mode",                  "" },
 
   { Event::ConsoleSelect,           "Select",                                "" },
@@ -2023,6 +2028,7 @@ EventHandler::MenuActionList EventHandler::ourMenuActionList = { {
 const Event::EventSet EventHandler::MiscEvents = {
   Event::Quit, Event::ReloadConsole, Event::Fry, Event::StartPauseMode,
   Event::TogglePauseMode, Event::OptionsMenuMode, Event::CmdMenuMode, Event::ExitMode,
+  Event::ToggleTurbo,
   Event::TakeSnapshot, Event::ToggleContSnapshots, Event::ToggleContSnapshotsFrame,
   // Event::MouseAxisXMove, Event::MouseAxisYMove,
   // Event::MouseButtonLeftValue, Event::MouseButtonRightValue,
