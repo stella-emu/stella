@@ -161,7 +161,7 @@ string Cartridge3EWidget::bankState()
   if(bank < 256)
     buf << "ROM bank #" << std::dec << bank % myNumRomBanks << ", RAM inactive";
   else
-    buf << "ROM inactive, RAM bank #" << std::dec << bank % myNumRomBanks;
+    buf << "ROM inactive, RAM bank #" << std::dec << bank % myNumRamBanks;
 
   return buf.str();
 }
