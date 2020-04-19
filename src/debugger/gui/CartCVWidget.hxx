@@ -32,33 +32,9 @@ class CartridgeCVWidget : public CartEnhancedWidget
     virtual ~CartridgeCVWidget() = default;
 
   private:
-    //CartridgeCV& myCart;
-    //struct CartState {
-    //  ByteArray internalram;
-    //};
-    //CartState myOldState;
-
-  private:
     string manufacturer() override { return "CommaVid"; }
 
     string description() override;
-
-    //// No implementation for non-bankswitched ROMs
-    //void loadConfig() override { }
-    //void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
-
-    //void saveOldState() override;
-
-    //// start of functions for Cartridge RAM tab
-    //uInt32 internalRamSize() override;
-    //uInt32 internalRamRPort(int start) override;
-    //string internalRamDescription() override;
-    //const ByteArray& internalRamOld(int start, int count) override;
-    //const ByteArray& internalRamCurrent(int start, int count) override;
-    //void internalRamSetValue(int addr, uInt8 value) override;
-    //uInt8 internalRamGetValue(int addr) override;
-    //string internalRamLabel(int addr) override;
-    //// end of functions for Cartridge RAM tab
 
   private:
     // Following constructors and assignment operators not supported
