@@ -23,5 +23,4 @@ Cartridge4K::Cartridge4K(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
   : CartridgeEnhanced(image, size, md5, settings)
 {
-  cerr << "Cartridge4K" << endl;
 }

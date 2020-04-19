@@ -19,11 +19,10 @@
 #define CARTRIDGEUA_WIDGET_HXX
 
 class CartridgeUA;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class CartridgeUAWidget : public CartDebugWidget
+class CartridgeUAWidget : public CartEnhancedWidget
 {
   public:
     CartridgeUAWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -33,19 +32,16 @@ class CartridgeUAWidget : public CartDebugWidget
     virtual ~CartridgeUAWidget() = default;
 
   private:
-    CartridgeUA& myCart;
-    PopUpWidget* myBank{nullptr};
+    string manufacturer() override { return "UA Limited"; }
 
-    bool mySwappedHotspots;
+    string description() override;
 
-    enum { kBankChanged = 'bkCH' };
+    string hotspotStr(int bank, int) override;
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    const bool mySwappedHotspots;
 
-    string bankState() override;
-
+  private:
     // Following constructors and assignment operators not supported
     CartridgeUAWidget() = delete;
     CartridgeUAWidget(const CartridgeUAWidget&) = delete;

@@ -22,6 +22,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartEnhancedWidget.hxx"
+#endif
 
 /**
   Enhanced cartridge base class used for multiple cart types.
@@ -30,6 +33,8 @@ class System;
 */
 class CartridgeEnhanced : public Cartridge
 {
+  friend class CartEnhancedWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -142,7 +147,6 @@ class CartridgeEnhanced : public Cartridge
     */
     bool load(Serializer& in) override;
 
-  public:
     /**
       Get the byte at the specified address.
 
@@ -159,19 +163,25 @@ class CartridgeEnhanced : public Cartridge
     */
     bool poke(uInt16 address, uInt8 value) override;
 
+    /**
+      Get the hotspot in ROM address space.
+
+      @return  The first hotspot address (ususally in ROM) space or 0
+    */
+    virtual uInt16 hotspot() const { return 0; }
+    // TODO: handle cases where there the hotspots cover multiple pages
+
   protected:
     // The '2 ^ N = bank segment size' exponent
     uInt16 myBankShift{BANK_SHIFT};             // default 12 (-> one 4K segment)
 
     // The size of a bank's segment
-    uInt16 myBankSize{0};
+    uInt16 myBankSize{uInt16(4_KB)};
 
     // The mask for a bank segment
-    uInt16 myBankMask{0};
+    uInt16 myBankMask{ROM_MASK};
 
-    // The number of segments a bank is split into
-    uInt16 myBankSegs{0};
-
+  protected:
     // The extra RAM size
     uInt16 myRamSize{RAM_SIZE};                 // default 0
 
@@ -180,6 +190,9 @@ class CartridgeEnhanced : public Cartridge
 
     // The mask for the extra RAM
     uInt16 myRamMask{0};                        // RAM_SIZE - 1, but doesn't matter when RAM_SIZE is 0
+
+    // The number of segments a bank is split into (default 1)
+    uInt16 myBankSegs{1};
 
     // The offset into ROM space for reading from ROM
     // This is zero for types without RAM and with banked RAM
@@ -258,14 +271,6 @@ class CartridgeEnhanced : public Cartridge
       @return  The bank the ROM will start in
     */
     virtual uInt16 getStartBank() const { return 0; }
-
-    /**
-      Get the hotspot in ROM address space.
-
-      @return  The first hotspot address (ususally in ROM) space or 0
-    */
-    virtual uInt16 hotspot() const { return 0; }
-    // TODO: handle cases where there the hotspots cover multiple pages
 
   private:
     // Following constructors and assignment operators not supported
