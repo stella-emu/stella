@@ -110,7 +110,7 @@ class DebuggerDialog : public Dialog
       kDDSAdvCmd      = 'DDsv',
       kDDRewindCmd    = 'DDrw',
       kDDUnwindCmd    = 'DDuw',
-      kDDExitCmd      = 'DDex',
+      kDDRunCmd      = 'DDex',
       kDDExitFatalCmd = 'DDer',
       kDDOptionsCmd   = 'DDop'
     };
