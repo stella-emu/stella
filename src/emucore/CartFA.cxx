@@ -30,9 +30,9 @@ CartridgeFA::CartridgeFA(const ByteBuffer& image, size_t size,
 bool CartridgeFA::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
-  if((address >= 0x0FF8) && (address <= 0x0FFA))
+  if((address >= 0x1FF8) && (address <= 0x1FFA))
   {
-    bank(address - 0x0FF8);
+    bank(address - 0x1FF8);
     return true;
   }
   return false;

@@ -37,7 +37,7 @@ void CartridgeFC::reset()
 bool CartridgeFC::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
-  if(address == 0x0FFC)
+  if(address == 0x1FFC)
   {
     // Trigger the bank switch
     bank(myTargetBank);

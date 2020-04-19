@@ -87,6 +87,8 @@ class Cartridge3F : public CartridgeEnhanced
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
 
+    uInt16 hotspot() const override { return 0x003F; }
+
   private:
     // log(ROM bank segment size) / log(2)
     static constexpr uInt16 BANK_SHIFT = 11; // = 2K = 0x0800

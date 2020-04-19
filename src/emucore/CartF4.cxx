@@ -29,9 +29,9 @@ bool CartridgeF4::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
   // Note: addresses could be calculated from hotspot and bank count
-  if((address >= 0x0FF4) && (address <= 0x0FFB))
+  if((address >= 0x1FF4) && (address <= 0x1FFB))
   {
-    bank(address - 0x0FF4);
+    bank(address - 0x1FF4);
     return true;
   }
   return false;
