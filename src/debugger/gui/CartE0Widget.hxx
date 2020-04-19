@@ -41,6 +41,7 @@ class CartridgeE0Widget : public CartEnhancedWidget
     string hotspotStr(int bank, int segment) override;
 
     int bankSegs() override { return 3; }
+
   private:
     // Following constructors and assignment operators not supported
     CartridgeE0Widget() = delete;

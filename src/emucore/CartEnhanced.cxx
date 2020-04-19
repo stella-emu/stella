@@ -146,9 +146,6 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
 {
   // Switch banks if necessary
-  // Note: (TODO?)
-  //   The checkSwitchBank() call makes no difference between ROM and e.g TIA space
-  //   Writing to e.g. 0xf0xx might triger a bankswitch, is (and was!) this a bug???
   if (checkSwitchBank(address & ADDR_MASK, value))
     return false;
 

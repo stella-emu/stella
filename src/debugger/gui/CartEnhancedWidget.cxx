@@ -92,25 +92,30 @@ string CartEnhancedWidget::romDescription()
 
   if(myCart.romBankCount() > 1)
   {
-    info << "Startup bank = #" << myCart.startBank() << " or undetermined\n";
     for(int bank = 0, offset = 0xFFC; bank < myCart.romBankCount(); ++bank, offset += 0x1000)
     {
       uInt16 start = (image[offset + 1] << 8) | image[offset];
       start -= start % 0x1000;
 
-      info << "Bank #" << bank << " @ $"
+      info << "Bank #" << std::dec << bank << " @ $"
         << Common::Base::HEX4 << (start + myCart.myRomOffset) << " - $" << (start + 0xFFF)
         << " (hotspot " << hotspotStr(bank) << ")\n";
     }
+    info << "Startup bank = #" << std::dec << myCart.startBank() << " or undetermined\n";
   }
   else
   {
     uInt16 start = (image[myCart.mySize - 3] << 8) | image[myCart.mySize - 4];
-    start -= start % std::min(int(size), 0x1000);
 
+    start -= start % std::min(int(size), 0x1000);
+    // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
+    if((start & 0xFFF) < size)
+    {
+      start += myCart.myRomOffset;
+    }
     info << "ROM accessible @ $"
-      << Common::Base::HEX4 << (start + myCart.myRomOffset) << " - "
-      << "$" << Common::Base::HEX4 << (start + myCart.mySize - 1);
+      << Common::Base::HEX4 << start << " - $"
+      << Common::Base::HEX4 << (start + myCart.mySize - 1);
   }
 
   return info.str();
@@ -201,7 +206,7 @@ string CartEnhancedWidget::bankState()
     {
       buf << "Bank #" << std::dec << myCart.getBank();
 
-      if(hotspot >= 0x100)
+      //if(hotspot >= 0x100)
         buf << " (hotspot " << hotspotStr(myCart.getSegmentBank()) << ")";
     }
     return buf.str();

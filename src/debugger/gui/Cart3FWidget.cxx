@@ -16,80 +16,33 @@
 //============================================================================
 
 #include "Cart3F.hxx"
-#include "PopUpWidget.hxx"
 #include "Cart3FWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3FWidget::Cartridge3FWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge3F& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+{
+  myHotspotDelta = 0;
+  initialize();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge3FWidget::description()
 {
   ostringstream info;
   size_t size;
+  const uInt8* image = myCart.getImage(size);
 
-  cart.getImage(size);
-  info << "Tigervision 3F cartridge, 2-256 2K banks\n"
-       << "Startup bank = " << cart.startBank() << " or undetermined\n"
-       << "First 2K bank selected by writing to $3F\n"
-       << "Last 2K always points to last 2K of ROM\n";
-
+  info << "Tigervision 3F cartridge, 2 - 256 2K banks\n"
+       << "First 2K bank selected by writing to " << hotspotStr() << "\n"
+       << "Last 2K always points to last 2K of ROM\n"
+       << "Startup bank = " << myCart.startBank() << " or undetermined\n";
   // Eventually, we should query this from the debugger/disassembler
-  uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
+  uInt16 start = (image[size-3] << 8) | image[size-4];
   start -= start % 0x1000;
-  info << "Bank RORG" << " = $" << Common::Base::HEX4 << start << "\n";
+  info << "Bank RORG $" << Common::Base::HEX4 << start << "\n";
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "TigerVision", info.str()) + myLineHeight;
-
-  VariantList items;
-  for(uInt16 i = 0; i < cart.romBankCount(); ++i)
-      VarList::push_back(items, Variant(i).toString() + " ($3F)");
-
-  ostringstream label;
-  label << "Set bank ($" << Common::Base::HEX4 << start << " - $" <<
-           (start+0x7FF) << ") ";
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($3F) "),
-                    myLineHeight, items, label.str(),
-                    _font.getStringWidth(label.str()), kBankChanged);
-  myBank->setTarget(this);
-  addFocusWidget(myBank);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3FWidget::loadConfig()
-{
-  Debugger& dbg = instance().debugger();
-  CartDebug& cart = dbg.cartDebug();
-  const CartState& state = static_cast<const CartState&>(cart.getState());
-  const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
-
-  myBank->setSelectedIndex(myCart.getBank(0), state.bank != oldstate.bank);
-
-  CartDebugWidget::loadConfig();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3FWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
-{
-  if(cmd == kBankChanged)
-  {
-    myCart.unlockBank();
-    myCart.bank(myBank->getSelected());
-    myCart.lockBank();
-    invalidate();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Cartridge3FWidget::bankState()
-{
-  ostringstream& buf = buffer();
-
-  buf << "Bank = #" << std::dec << myCart.getSegmentBank() << ", hotspot = $3F";
-
-  return buf.str();
+  return info.str();
 }

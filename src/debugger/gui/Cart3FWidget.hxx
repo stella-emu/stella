@@ -19,11 +19,10 @@
 #define CARTRIDGE3F_WIDGET_HXX
 
 class Cartridge3F;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class Cartridge3FWidget : public CartDebugWidget
+class Cartridge3FWidget : public CartEnhancedWidget
 {
   public:
     Cartridge3FWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -33,17 +32,13 @@ class Cartridge3FWidget : public CartDebugWidget
     virtual ~Cartridge3FWidget() = default;
 
   private:
-    Cartridge3F& myCart;
-    PopUpWidget* myBank{nullptr};
+    string manufacturer() override { return "TigerVision"; }
 
-    enum { kBankChanged = 'bkCH' };
+    string description() override;
+
+    int bankSegs() override { return 1; }
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
     // Following constructors and assignment operators not supported
     Cartridge3FWidget() = delete;
     Cartridge3FWidget(const Cartridge3FWidget&) = delete;
