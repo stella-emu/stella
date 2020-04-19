@@ -24,88 +24,101 @@
 CartridgeCVWidget::CartridgeCVWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeCV& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
-  // Eventually, we should query this from the debugger/disassembler
-  uInt16 size = 2048;
-  uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
-  start -= start % size;
+  initialize();
 
+  //// Eventually, we should query this from the debugger/disassembler
+  //uInt16 size = 2048;
+  //uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
+  //start -= start % size;
+
+  //ostringstream info;
+  //info << "CV 2K ROM + 1K RAM , non-bankswitched\n"
+  //     << "1024 bytes RAM @ $F000 - $F7FF\n"
+  //     << "  $F000 - $F3FF (R), $F400 - $F7FF (W)\n"
+  //     << "ROM accessible @ $" << Common::Base::HEX4 << start << " - "
+  //     << "$" << (start + size - 1);
+
+  //addBaseInformation(cart.mySize, "CommaVid", info.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeCVWidget::description()
+{
   ostringstream info;
-  info << "CV 2K ROM + 1K RAM , non-bankswitched\n"
-       << "1024 bytes RAM @ $F000 - $F7FF\n"
-       << "  $F000 - $F3FF (R), $F400 - $F7FF (W)\n"
-       << "ROM accessible @ $" << Common::Base::HEX4 << start << " - "
-       << "$" << (start + size - 1);
 
-  addBaseInformation(cart.mySize, "CommaVid", info.str());
+  info << "CV 2K ROM + 1K RAM , non-bankswitched\n";
+  info << CartEnhancedWidget::description();
+
+  return info.str();
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCVWidget::saveOldState()
-{
-  myOldState.internalram.clear();
 
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myRAM[i]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeCVWidget::internalRamSize()
-{
-  return 1024;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeCVWidget::internalRamRPort(int start)
-{
-  return 0xF000 + start;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeCVWidget::internalRamDescription()
-{
-  ostringstream desc;
-  desc << "$F000 - $F3FF used for Read Access\n"
-       << "$F400 - $F7FF used for Write Access";
-
-  return desc.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeCVWidget::internalRamOld(int start, int count)
-{
-  myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalram[start + i]);
-  return myRamOld;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeCVWidget::internalRamCurrent(int start, int count)
-{
-  myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myRAM[start + i]);
-  return myRamCurrent;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCVWidget::internalRamSetValue(int addr, uInt8 value)
-{
-  myCart.myRAM[addr] = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeCVWidget::internalRamGetValue(int addr)
-{
-  return myCart.myRAM[addr];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeCVWidget::internalRamLabel(int addr)
-{
-  CartDebug& dbg = instance().debugger().cartDebug();
-  return dbg.getLabel(addr + 0xF000, false);
-}
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//void CartridgeCVWidget::saveOldState()
+//{
+//  myOldState.internalram.clear();
+//
+//  for(uInt32 i = 0; i < internalRamSize(); ++i)
+//    myOldState.internalram.push_back(myCart.myRAM[i]);
+//}
+//
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//uInt32 CartridgeCVWidget::internalRamSize()
+//{
+//  return 1024;
+//}
+//
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//uInt32 CartridgeCVWidget::internalRamRPort(int start)
+//{
+//  return 0xF000 + start;
+//}
+//
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//string CartridgeCVWidget::internalRamDescription()
+//{
+//  ostringstream desc;
+//  desc << "$F000 - $F3FF used for Read Access\n"
+//       << "$F400 - $F7FF used for Write Access";
+//
+//  return desc.str();
+//}
+//
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//const ByteArray& CartridgeCVWidget::internalRamOld(int start, int count)
+//{
+//  myRamOld.clear();
+//  for(int i = 0; i < count; i++)
+//    myRamOld.push_back(myOldState.internalram[start + i]);
+//  return myRamOld;
+//}
+//
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//const ByteArray& CartridgeCVWidget::internalRamCurrent(int start, int count)
+//{
+//  myRamCurrent.clear();
+//  for(int i = 0; i < count; i++)
+//    myRamCurrent.push_back(myCart.myRAM[start + i]);
+//  return myRamCurrent;
+//}
+//
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//void CartridgeCVWidget::internalRamSetValue(int addr, uInt8 value)
+//{
+//  myCart.myRAM[addr] = value;
+//}
+//
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//uInt8 CartridgeCVWidget::internalRamGetValue(int addr)
+//{
+//  return myCart.myRAM[addr];
+//}
+//
+//// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//string CartridgeCVWidget::internalRamLabel(int addr)
+//{
+//  CartDebug& dbg = instance().debugger().cartDebug();
+//  return dbg.getLabel(addr + 0xF000, false);
+//}

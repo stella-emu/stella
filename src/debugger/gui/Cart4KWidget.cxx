@@ -22,15 +22,29 @@
 Cartridge4KWidget::Cartridge4KWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge4K& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h)
+  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
-  // Eventually, we should query this from the debugger/disassembler
-  uInt16 start = (cart.myImage[0xFFD] << 8) | cart.myImage[0xFFC];
-  start -= start % 0x1000;
+  initialize();
 
-  ostringstream info;
-  info << "Standard 4K cartridge, non-bankswitched\n"
-       << "Accessible @ $" << Common::Base::HEX4 << start << " - "
-       << "$" << (start + 0xFFF);
-  addBaseInformation(4096, "Atari", info.str());
+  //// Eventually, we should query this from the debugger/disassembler
+  //uInt16 start = (cart.myImage[0xFFD] << 8) | cart.myImage[0xFFC];
+  //start -= start % 0x1000;
+
+  //ostringstream info;
+  //info << "Standard 4K cartridge, non-bankswitched\n"
+  //     << "Accessible @ $" << Common::Base::HEX4 << start << " - "
+  //     << "$" << (start + 0xFFF);
+  //addBaseInformation(4096, "Atari", info.str());
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge4KWidget::description()
+{
+  ostringstream info;
+
+  info << "Standard 4K cartridge, non-bankswitched\n";
+  info << CartEnhancedWidget::description();
+
+  return info.str();
+}
+

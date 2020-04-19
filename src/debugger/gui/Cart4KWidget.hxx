@@ -20,9 +20,9 @@
 
 class Cartridge4K;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhanced.hxx"
 
-class Cartridge4KWidget : public CartDebugWidget
+class Cartridge4KWidget : public CartEnhancedWidget
 {
   public:
     Cartridge4KWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -32,10 +32,11 @@ class Cartridge4KWidget : public CartDebugWidget
     virtual ~Cartridge4KWidget() = default;
 
   private:
-    // No implementation for non-bankswitched ROMs
-    void loadConfig() override { }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+    string manufacturer() override { return "Atari"; }
 
+    string description() override;
+
+  private:
     // Following constructors and assignment operators not supported
     Cartridge4KWidget() = delete;
     Cartridge4KWidget(const Cartridge4KWidget&) = delete;

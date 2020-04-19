@@ -100,6 +100,8 @@ class CartridgeUA : public CartridgeEnhanced
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
 
+    uInt16 hotspot() const override { return 0x0220; }
+
   private:
     // Previous Device's page access
     std::array<System::PageAccess, 2> myHotSpotPageAccess;

@@ -205,7 +205,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     // for ROMs < 4_KB, the whole address space will be mapped.
     uInt16 toAddr   = (ROM_OFFSET + segmentOffset + (mySize < 4_KB ? 4_KB : myBankSize)) & ~System::PAGE_MASK;
 
-    if(hotspot != 0)
+    if(hotspot & 0x1000)
       hotSpotAddr = (hotspot & ~System::PAGE_MASK);
     else
       hotSpotAddr = 0xFFFF; // none

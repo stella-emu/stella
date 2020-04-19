@@ -19,11 +19,10 @@
 #define CARTRIDGEE0_WIDGET_HXX
 
 class CartridgeE0;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class CartridgeE0Widget : public CartDebugWidget
+class CartridgeE0Widget : public CartEnhancedWidget
 {
   public:
     CartridgeE0Widget(GuiObject* boss, const GUI::Font& lfont,
@@ -33,21 +32,16 @@ class CartridgeE0Widget : public CartDebugWidget
     virtual ~CartridgeE0Widget() = default;
 
   private:
-    CartridgeE0& myCart;
-    PopUpWidget *mySlice0{nullptr}, *mySlice1{nullptr}, *mySlice2{nullptr};
+    string manufacturer() override { return "Parker Brothers"; }
 
-    enum {
-      kSlice0Changed = 's0CH',
-      kSlice1Changed = 's1CH',
-      kSlice2Changed = 's2CH'
-    };
+    string description() override;
 
+    string romDescription() override;
+
+    string hotspotStr(int bank, int segment) override;
+
+    int bankSegs() override { return 3; }
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
     // Following constructors and assignment operators not supported
     CartridgeE0Widget() = delete;
     CartridgeE0Widget(const CartridgeE0Widget&) = delete;
