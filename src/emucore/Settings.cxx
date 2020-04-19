@@ -157,6 +157,7 @@ Settings::Settings()
   setPermanent("threads", "false");
   setTemporary("romloadcount", "0");
   setTemporary("maxres", "");
+  setTemporary("turbo", "0");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
@@ -400,6 +401,7 @@ void Settings::usage() const
     << "                 z26|\n"
     << "                 user>\n"
     << "  -speed        <number>       Run emulation at the given speed\n"
+    << "  -turbo        <1|0>          Enable 'Turbo' mode for maximum emulation speed\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << endl
   #ifdef SOUND_SUPPORT
