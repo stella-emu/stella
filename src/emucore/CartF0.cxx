@@ -28,7 +28,7 @@ CartridgeF0::CartridgeF0(const ByteBuffer& image, size_t size,
 bool CartridgeF0::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
-  if(address == 0x0FF0)
+  if(address == 0x1FF0)
   {
     // Switch to next bank
     uInt8 nextBank = ((getBank()) + 1) & 0x0F;

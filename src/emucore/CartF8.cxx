@@ -30,12 +30,12 @@ bool CartridgeF8::checkSwitchBank(uInt16 address, uInt8)
   // Switch banks if necessary
   switch(address)
   {
-    case 0x0FF8:
+    case 0x1FF8:
       // Set the current bank to the lower 4k bank
       bank(0);
       return true;
 
-    case 0x0FF9:
+    case 0x1FF9:
       // Set the current bank to the upper 4k bank
       bank(1);
       return true;

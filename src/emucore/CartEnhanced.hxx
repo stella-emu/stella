@@ -232,6 +232,9 @@ class CartridgeEnhanced : public Cartridge
     size_t mySize{0};
 
   protected:
+    // The mask for 6507 address space
+    static constexpr uInt16 ADDR_MASK = 0x1FFF;
+
     // The offset into address space for accessing ROM
     static constexpr uInt16 ROM_OFFSET = 0x1000;
 

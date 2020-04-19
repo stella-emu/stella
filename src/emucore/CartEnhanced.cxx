@@ -114,8 +114,9 @@ uInt8 CartridgeEnhanced::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
 
-  if (hotspot() != 0)
-    checkSwitchBank(address & ROM_MASK);
+  // hotspots in TIA range are reacting to pokes only
+  if (hotspot() >= 0x80)
+    checkSwitchBank(address & ADDR_MASK);
 
   if(isRamBank(address))
   {
@@ -148,7 +149,7 @@ bool CartridgeEnhanced::poke(uInt16 address, uInt8 value)
   // Note: (TODO?)
   //   The checkSwitchBank() call makes no difference between ROM and e.g TIA space
   //   Writing to e.g. 0xf0xx might triger a bankswitch, is (and was!) this a bug???
-  if (checkSwitchBank(address & ROM_MASK, value))
+  if (checkSwitchBank(address & ADDR_MASK, value))
     return false;
 
   if(myRamSize > 0)

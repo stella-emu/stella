@@ -42,9 +42,9 @@ CartridgeFA2::CartridgeFA2(const ByteBuffer& image, size_t size,
 bool CartridgeFA2::checkSwitchBank(uInt16 address, uInt8)
 {
   // Switch banks if necessary
-  if((address >= 0x0FF5) && (address <= 0x0FFB))
+  if((address >= 0x1FF5) && (address <= 0x1FFB))
   {
-    bank(address - 0x0FF5);
+    bank(address - 0x1FF5);
     return true;
   }
   return false;
