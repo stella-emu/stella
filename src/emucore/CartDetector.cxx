@@ -620,11 +620,16 @@ bool CartDetector::isProbably0840(const ByteBuffer& image, size_t size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDetector::isProbably3E(const ByteBuffer& image, size_t size)
 {
-  // 3E cart bankswitching is triggered by storing the bank number
-  // in address 3E using 'STA $3E', commonly followed by an
-  // immediate mode LDA
-  uInt8 signature[] = { 0x85, 0x3E, 0xA9, 0x00 };  // STA $3E; LDA #$00
-  return searchForBytes(image.get(), size, signature, 4, 1);
+  // 3E cart RAM bankswitching is triggered by storing the bank number
+  // in address 3E using 'STA $3E', ROM bankswitching is triggered by
+  // storing the bank number in address 3F using 'STA $3F'.
+  // We expect the latter will be present at least 2 times, since there
+  // are at least two banks
+
+  uInt8 signature1[] = { 0x85, 0x3E };  // STA $3E
+  uInt8 signature2[] = { 0x85, 0x3F };  // STA $3F
+  return searchForBytes(image.get(), size, signature1, 2, 1)
+    && searchForBytes(image.get(), size, signature2, 2, 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
