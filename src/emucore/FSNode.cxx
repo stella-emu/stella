@@ -58,6 +58,20 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode,
   if (!_realNode->getChildren(tmp, mode))
     return false;
 
+  #if defined(ZIP_SUPPORT)
+    // before sorting, replace single file ZIP archive names with contained file names
+    //  because they are displayed using their contained file names
+    for (auto& i : tmp)
+    {
+      if (BSPF::endsWithIgnoreCase(i->getPath(), ".zip"))
+      {
+        FilesystemNodeZIP node(i->getPath());
+
+        i->setName(node.getName());
+      }
+    }
+  #endif
+
   std::sort(tmp.begin(), tmp.end(),
     [](const AbstractFSNodePtr& node1, const AbstractFSNodePtr& node2)
     {
