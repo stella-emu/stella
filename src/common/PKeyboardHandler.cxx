@@ -67,6 +67,16 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalKeyboardHandler::isMappingUsed(EventMapping map)
+{
+  for(int i = 0; i < int(EventMode::kNumModes); ++i)
+    if(myKeyMap.check(EventMode(i), map.key, map.mod))
+      return true;
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Depending on parameters, this method does the following:
 // 1. update all events with default (event == Event::NoType, updateDefault == true)
 // 2. reset all events to default    (event == Event::NoType, updateDefault == false)
@@ -83,7 +93,7 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
     // if there is no existing mapping for the event and
     //  the default mapping for the event is unused, set default key for event
     if (myKeyMap.getEventMapping(map.event, mode).size() == 0 &&
-      !myKeyMap.check(mode, map.key, map.mod))
+        !isMappingUsed(map))
     {
       addMapping(map.event, mode, map.key, StellaMod(map.mod));
     }
