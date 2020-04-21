@@ -33,9 +33,7 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
     virtual ~CartridgeFA2Widget() = default;
 
   private:
-    string manufacturer() override { return "Chris D. Walton (Star Castle 2600 Arcade)"; }
-
-    string description() override;
+    CartridgeFA2& myCartFA2;
 
     ButtonWidget *myFlashErase{nullptr}, *myFlashLoad{nullptr}, *myFlashSave{nullptr};
 
@@ -44,6 +42,11 @@ class CartridgeFA2Widget : public CartridgeEnhancedWidget
       kFlashLoad   = 'flLD',
       kFlashSave   = 'flSV'
     };
+
+  private:
+    string manufacturer() override { return "Chris D. Walton (Star Castle 2600 Arcade)"; }
+
+    string description() override;
 
   private:
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;

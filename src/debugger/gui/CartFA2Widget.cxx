@@ -22,7 +22,8 @@
 CartridgeFA2Widget::CartridgeFA2Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeFA2& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+    myCartFA2(cart)
 {
   int xpos = 2,
     ypos = initialize();
@@ -74,20 +75,18 @@ string CartridgeFA2Widget::description()
 void CartridgeFA2Widget::handleCommand(CommandSender* sender,
                                        int cmd, int data, int id)
 {
-  CartridgeFA2& cart = dynamic_cast<CartridgeFA2&>(myCart);
-
   switch(cmd)
   {
     case kFlashErase:
-      cart.flash(0);
+      myCartFA2.flash(0);
       break;
 
     case kFlashLoad:
-      cart.flash(1);
+      myCartFA2.flash(1);
       break;
 
     case kFlashSave:
-      cart.flash(2);
+      myCartFA2.flash(2);
       break;
 
     default:
