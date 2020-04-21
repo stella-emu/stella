@@ -165,6 +165,8 @@ class CartridgeFE : public CartridgeEnhanced
     */
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
 
+    uInt16 hotspot() const override { return 0x01FE; }
+
   private:
     // Whether previous address by peek/poke equals $01FE (hotspot)
     bool myLastAccessWasFE{false};

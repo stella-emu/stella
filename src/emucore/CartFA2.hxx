@@ -110,7 +110,7 @@ class CartridgeFA2 : public CartridgeFA
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
 
-    uInt16 hotspot() const override { return 0x1FF4; }
+    uInt16 hotspot() const override { return 0x1FF5; }
 
     uInt16 getStartBank() const override { return 0; }
 

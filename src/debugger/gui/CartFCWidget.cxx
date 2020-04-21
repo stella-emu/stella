@@ -16,80 +16,44 @@
 //============================================================================
 
 #include "CartFC.hxx"
-#include "PopUpWidget.hxx"
 #include "CartFCWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFCWidget::CartridgeFCWidget(
   GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
   int x, int y, int w, int h, CartridgeFC& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-  myCart(cart)
+  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
-  uInt16 size = cart.romBankCount() * 4096;
+  initialize();
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeFCWidget::description()
+{
   ostringstream info;
-  info << "FC cartridge, up to eight 4K banks\n"
-    << "Startup bank = " << cart.startBank() << " or undetermined\n";
+  uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
 
-  // Eventually, we should query this from the debugger/disassembler
+  info << "FC cartridge, up to eight 4K banks\n";
   info << "Bank selected by hotspots\n"
-    << " $FFF8 (defines low 2 bits)\n"
-    << " $FFF9 (defines high bits)\n"
-    << " $FFFC (triggers bank switch)";
+    << "  $" << Common::Base::HEX4 << hotspot << " (defines low 2 bits)\n"
+    << "  $" << Common::Base::HEX4 << (hotspot + 1) << " (defines high bits)\n"
+    << "  $" << Common::Base::HEX4 << (hotspot + 4) << " (triggers bank switch)\n";
 
-  int xpos = 2,
-    ypos = addBaseInformation(size, "Amiga Corp.", info.str()) + myLineHeight;
+  info << CartEnhancedWidget::description();
 
-  VariantList items;
-  for (uInt16 i = 0; i < cart.romBankCount(); ++i)
-    VarList::push_back(items, Variant(i).toString() +
-                       " ($FFF8 = " + Variant(i & 0b11).toString() +
-                       "/$FFF9 = " + Variant(i >> 2).toString() +")");
-
-  myBank = new PopUpWidget(boss, _font, xpos, ypos - 2,
-                    _font.getStringWidth("7 ($FFF8 = 3/$FFF9 = 1)"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
-  myBank->setTarget(this);
-  addFocusWidget(myBank);
+  return info.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFCWidget::loadConfig()
+string CartridgeFCWidget::hotspotStr(int bank, int, bool prefix)
 {
-  Debugger& dbg = instance().debugger();
-  CartDebug& cart = dbg.cartDebug();
-  const CartState& state = static_cast<const CartState&>(cart.getState());
-  const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
+  ostringstream info;
+  uInt16 hotspot = myCart.hotspot() | ADDR_BASE;
 
-  myBank->setSelectedIndex(myCart.getBank(), state.bank != oldstate.bank);
+  info << "(" << (prefix ? "hotspots " : "");
+  info << "$" << Common::Base::HEX4 << hotspot << " = " << (bank & 0b11);
+  info << ", $" << Common::Base::HEX4 << (hotspot + 1) << " = " << (bank >> 2);
+  info << ")";
 
-  CartDebugWidget::loadConfig();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFCWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
-{
-  if (cmd == kBankChanged)
-  {
-    myCart.unlockBank();
-    myCart.bank(myBank->getSelected());
-    myCart.lockBank();
-    invalidate();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFCWidget::bankState()
-{
-  ostringstream& buf = buffer();
-  uInt16 bank = myCart.getBank();
-
-  buf << "Bank = #" << std::dec << bank
-    << ", hotspots $FFF8 = " << (bank & 0b11)
-    << "/$FF99 = " << (bank >> 2);
-
-  return buf.str();
+  return info.str();
 }

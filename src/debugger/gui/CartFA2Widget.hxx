@@ -20,11 +20,10 @@
 
 class CartridgeFA2;
 class ButtonWidget;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class CartridgeFA2Widget : public CartDebugWidget
+class CartridgeFA2Widget : public CartEnhancedWidget
 {
   public:
     CartridgeFA2Widget(GuiObject* boss, const GUI::Font& lfont,
@@ -34,41 +33,22 @@ class CartridgeFA2Widget : public CartDebugWidget
     virtual ~CartridgeFA2Widget() = default;
 
   private:
-    CartridgeFA2& myCart;
-    PopUpWidget* myBank{nullptr};
+    string manufacturer() override { return "Chris D. Walton (Star Castle 2600 Arcade)"; }
+
+    string description() override;
+
     ButtonWidget *myFlashErase{nullptr}, *myFlashLoad{nullptr}, *myFlashSave{nullptr};
 
-    struct CartState {
-      ByteArray internalram;
-      uInt16 bank{0};
-    };
-    CartState myOldState;
-
     enum {
-      kBankChanged = 'bkCH',
       kFlashErase  = 'flER',
       kFlashLoad   = 'flLD',
       kFlashSave   = 'flSV'
     };
 
   private:
-    void saveOldState() override;
-    void loadConfig() override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
-    string bankState() override;
-
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    string internalRamLabel(int addr) override;
-    // end of functions for Cartridge RAM tab
-
+  private:
     // Following constructors and assignment operators not supported
     CartridgeFA2Widget() = delete;
     CartridgeFA2Widget(const CartridgeFA2Widget&) = delete;

@@ -37,7 +37,7 @@ class CartEnhancedWidget : public CartDebugWidget
     virtual ~CartEnhancedWidget() = default;
 
   protected:
-    void initialize();
+    int initialize();
 
     virtual size_t size();
 
