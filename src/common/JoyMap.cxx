@@ -185,9 +185,35 @@ JoyMap::JoyMappingArray JoyMap::getEventMapping(const Event::Type event, const E
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string JoyMap::saveMapping(const EventMode mode) const
 {
+  using MapType = std::pair<JoyMapping, Event::Type>;
+  std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
+
+  std::sort(sortedMap.begin(), sortedMap.end(),
+    [](const MapType& a, const MapType& b)
+    {
+      // Event::Type first
+      if(a.second != b.second)
+        return a.second < b.second;
+
+      if(a.first.button != b.first.button)
+        return a.first.button < b.first.button;
+
+      if(a.first.axis != b.first.axis)
+        return a.first.axis < b.first.axis;
+
+      if(a.first.adir != b.first.adir)
+        return a.first.adir < b.first.adir;
+
+      if(a.first.hat != b.first.hat)
+        return a.first.hat < b.first.hat;
+
+      return a.first.hdir < b.first.hdir;
+    }
+  );
+
   ostringstream buf;
 
-  for (auto item : myMap)
+  for (auto item : sortedMap)
   {
     if (item.first.mode == mode)
     {
