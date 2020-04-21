@@ -21,7 +21,7 @@
 #include "CartEnhancedWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartEnhancedWidget::CartEnhancedWidget(GuiObject* boss, const GUI::Font& lfont,
+CartridgeEnhancedWidget::CartridgeEnhancedWidget(GuiObject* boss, const GUI::Font& lfont,
                                        const GUI::Font& nfont,
                                        int x, int y, int w, int h,
                                        CartridgeEnhanced& cart)
@@ -31,7 +31,7 @@ CartEnhancedWidget::CartEnhancedWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartEnhancedWidget::initialize()
+int CartridgeEnhancedWidget::initialize()
 {
   int ypos = addBaseInformation(size(), manufacturer(), description(), descriptionLines())
     + myLineHeight;
@@ -42,7 +42,7 @@ int CartEnhancedWidget::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-size_t CartEnhancedWidget::size()
+size_t CartridgeEnhancedWidget::size()
 {
   size_t size;
 
@@ -52,7 +52,7 @@ size_t CartEnhancedWidget::size()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartEnhancedWidget::description()
+string CartridgeEnhancedWidget::description()
 {
   ostringstream info;
 
@@ -64,13 +64,13 @@ string CartEnhancedWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartEnhancedWidget::descriptionLines()
+int CartridgeEnhancedWidget::descriptionLines()
 {
   return 18; // should be enough for almost all types
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartEnhancedWidget::ramDescription()
+string CartridgeEnhancedWidget::ramDescription()
 {
   ostringstream info;
 
@@ -86,7 +86,7 @@ string CartEnhancedWidget::ramDescription()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartEnhancedWidget::romDescription()
+string CartridgeEnhancedWidget::romDescription()
 {
   ostringstream info;
   size_t size;
@@ -134,7 +134,7 @@ string CartEnhancedWidget::romDescription()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartEnhancedWidget::bankSelect(int& ypos)
+void CartridgeEnhancedWidget::bankSelect(int& ypos)
 {
   if(myCart.romBankCount() > 1)
   {
@@ -182,7 +182,7 @@ void CartEnhancedWidget::bankSelect(int& ypos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartEnhancedWidget::bankState()
+string CartridgeEnhancedWidget::bankState()
 {
   if(myCart.romBankCount() > 1)
   {
@@ -228,7 +228,7 @@ string CartEnhancedWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
+string CartridgeEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 {
   ostringstream info;
   uInt16 hotspot = myCart.hotspot();
@@ -244,13 +244,13 @@ string CartEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartEnhancedWidget::bankSegs()
+int CartridgeEnhancedWidget::bankSegs()
 {
   return myCart.myBankSegs;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartEnhancedWidget::saveOldState()
+void CartridgeEnhancedWidget::saveOldState()
 {
   myOldState.internalRam.clear();
   for(uInt32 i = 0; i < myCart.myRamSize; ++i)
@@ -265,7 +265,7 @@ void CartEnhancedWidget::saveOldState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartEnhancedWidget::loadConfig()
+void CartridgeEnhancedWidget::loadConfig()
 {
   if(myBankWidgets != nullptr)
   {
@@ -281,7 +281,7 @@ void CartEnhancedWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartEnhancedWidget::handleCommand(CommandSender* sender,
+void CartridgeEnhancedWidget::handleCommand(CommandSender* sender,
                                        int cmd, int data, int id)
 {
   if(cmd == kBankChanged)
@@ -294,19 +294,19 @@ void CartEnhancedWidget::handleCommand(CommandSender* sender,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartEnhancedWidget::internalRamSize()
+uInt32 CartridgeEnhancedWidget::internalRamSize()
 {
   return myCart.myRamSize;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartEnhancedWidget::internalRamRPort(int start)
+uInt32 CartridgeEnhancedWidget::internalRamRPort(int start)
 {
   return ADDR_BASE + myCart.myReadOffset + start;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartEnhancedWidget::internalRamDescription()
+string CartridgeEnhancedWidget::internalRamDescription()
 {
   ostringstream desc;
 
@@ -334,7 +334,7 @@ string CartEnhancedWidget::internalRamDescription()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartEnhancedWidget::internalRamOld(int start, int count)
+const ByteArray& CartridgeEnhancedWidget::internalRamOld(int start, int count)
 {
   myRamOld.clear();
   for(int i = 0; i < count; i++)
@@ -343,7 +343,7 @@ const ByteArray& CartEnhancedWidget::internalRamOld(int start, int count)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartEnhancedWidget::internalRamCurrent(int start, int count)
+const ByteArray& CartridgeEnhancedWidget::internalRamCurrent(int start, int count)
 {
   myRamCurrent.clear();
   for(int i = 0; i < count; i++)
@@ -352,19 +352,19 @@ const ByteArray& CartEnhancedWidget::internalRamCurrent(int start, int count)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartEnhancedWidget::internalRamSetValue(int addr, uInt8 value)
+void CartridgeEnhancedWidget::internalRamSetValue(int addr, uInt8 value)
 {
   myCart.myRAM[addr] = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartEnhancedWidget::internalRamGetValue(int addr)
+uInt8 CartridgeEnhancedWidget::internalRamGetValue(int addr)
 {
   return myCart.myRAM[addr];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartEnhancedWidget::internalRamLabel(int addr)
+string CartridgeEnhancedWidget::internalRamLabel(int addr)
 {
   CartDebug& dbg = instance().debugger().cartDebug();
   return dbg.getLabel(addr + ADDR_BASE + myCart.myReadOffset, false);

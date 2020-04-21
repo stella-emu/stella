@@ -22,7 +22,7 @@ class CartridgeF6SC;
 
 #include "CartEnhancedWidget.hxx"
 
-class CartridgeF6SCWidget : public CartEnhancedWidget
+class CartridgeF6SCWidget : public CartridgeEnhancedWidget
 {
   public:
     CartridgeF6SCWidget(GuiObject* boss, const GUI::Font& lfont,

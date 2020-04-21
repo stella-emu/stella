@@ -22,7 +22,7 @@
 Cartridge4KSCWidget::Cartridge4KSCWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge4KSC& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
@@ -33,7 +33,7 @@ string Cartridge4KSCWidget::description()
   ostringstream info;
 
   info << "4KSC cartridge, non-bankswitched\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

@@ -22,7 +22,7 @@
 CartridgeDFWidget::CartridgeDFWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeDF& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
@@ -33,7 +33,7 @@ string CartridgeDFWidget::description()
   ostringstream info;
 
   info << "128K DF, 32 4K banks\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

@@ -22,7 +22,7 @@
 CartridgeE0Widget::CartridgeE0Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeE0& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
@@ -33,7 +33,7 @@ string CartridgeE0Widget::description()
   ostringstream info;
 
   info << "E0 cartridge,\n  eight 1K banks mapped into four segments\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

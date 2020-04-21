@@ -22,7 +22,7 @@
 CartridgeF4Widget::CartridgeF4Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeF4& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
@@ -33,7 +33,7 @@ string CartridgeF4Widget::description()
   ostringstream info;
 
   info << "Standard F4 cartridge, eight 4K banks\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

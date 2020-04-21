@@ -27,14 +27,14 @@ namespace GUI {
 
 #include "CartDebugWidget.hxx"
 
-class CartEnhancedWidget : public CartDebugWidget
+class CartridgeEnhancedWidget : public CartDebugWidget
 {
   public:
-    CartEnhancedWidget(GuiObject* boss, const GUI::Font& lfont,
-                       const GUI::Font& nfont,
-                       int x, int y, int w, int h,
-                       CartridgeEnhanced& cart);
-    virtual ~CartEnhancedWidget() = default;
+    CartridgeEnhancedWidget(GuiObject* boss, const GUI::Font& lfont,
+                            const GUI::Font& nfont,
+                            int x, int y, int w, int h,
+                            CartridgeEnhanced& cart);
+    virtual ~CartridgeEnhancedWidget() = default;
 
   protected:
     int initialize();
@@ -97,11 +97,11 @@ class CartEnhancedWidget : public CartDebugWidget
 
   private:
     // Following constructors and assignment operators not supported
-    CartEnhancedWidget() = delete;
-    CartEnhancedWidget(const CartEnhancedWidget&) = delete;
-    CartEnhancedWidget(CartEnhancedWidget&&) = delete;
-    CartEnhancedWidget& operator=(const CartEnhancedWidget&) = delete;
-    CartEnhancedWidget& operator=(CartEnhancedWidget&&) = delete;
+    CartridgeEnhancedWidget() = delete;
+    CartridgeEnhancedWidget(const CartridgeEnhancedWidget&) = delete;
+    CartridgeEnhancedWidget(CartridgeEnhancedWidget&&) = delete;
+    CartridgeEnhancedWidget& operator=(const CartridgeEnhancedWidget&) = delete;
+    CartridgeEnhancedWidget& operator=(CartridgeEnhancedWidget&&) = delete;
 };
 
 #endif

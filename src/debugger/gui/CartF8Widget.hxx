@@ -23,7 +23,7 @@ class PopUpWidget;
 
 #include "CartEnhancedWidget.hxx"
 
-class CartridgeF8Widget : public CartEnhancedWidget
+class CartridgeF8Widget : public CartridgeEnhancedWidget
 {
   public:
     CartridgeF8Widget(GuiObject* boss, const GUI::Font& lfont,
