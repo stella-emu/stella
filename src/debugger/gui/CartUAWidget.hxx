@@ -36,7 +36,7 @@ class CartridgeUAWidget : public CartEnhancedWidget
 
     string description() override;
 
-    string hotspotStr(int bank, int) override;
+    string hotspotStr(int bank, int seg, bool prefix = false) override;
 
   private:
     const bool mySwappedHotspots;

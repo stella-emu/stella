@@ -38,7 +38,7 @@ class CartridgeE0Widget : public CartEnhancedWidget
 
     string romDescription() override;
 
-    string hotspotStr(int bank, int segment) override;
+    string hotspotStr(int bank, int segment, bool noBrackets = false) override;
 
     int bankSegs() override { return 3; }
 

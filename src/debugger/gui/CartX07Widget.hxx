@@ -19,11 +19,10 @@
 #define CARTRIDGEX07_WIDGET_HXX
 
 class CartridgeX07;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class CartridgeX07Widget : public CartDebugWidget
+class CartridgeX07Widget : public CartEnhancedWidget
 {
   public:
     CartridgeX07Widget(GuiObject* boss, const GUI::Font& lfont,
@@ -33,17 +32,11 @@ class CartridgeX07Widget : public CartDebugWidget
     virtual ~CartridgeX07Widget() = default;
 
   private:
-    CartridgeX07& myCart;
-    PopUpWidget* myBank{nullptr};
+    string manufacturer() override { return "AtariAge / John Payson / Fred Quimby"; }
 
-    enum { kBankChanged = 'bkCH' };
+    string description() override;
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
     // Following constructors and assignment operators not supported
     CartridgeX07Widget() = delete;
     CartridgeX07Widget(const CartridgeX07Widget&) = delete;

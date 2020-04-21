@@ -96,18 +96,23 @@ string CartEnhancedWidget::romDescription()
     {
       uInt16 start = (image[offset + 1] << 8) | image[offset];
       start -= start % 0x1000;
+      string hash = myCart.romBankCount() > 10 && bank < 10 ? " #" : "#";
 
-      info << "Bank #" << std::dec << bank << " @ $"
-        << Common::Base::HEX4 << (start + myCart.myRomOffset) << " - $" << (start + 0xFFF)
-        << " (hotspot " << hotspotStr(bank) << ")\n";
+      info << "Bank " << hash << std::dec << bank << " @ $"
+        << Common::Base::HEX4 << (start + myCart.myRomOffset) << " - $" << (start + 0xFFF);
+      if(myCart.hotspot() != 0)
+        info << " " << hotspotStr(bank, 0, true);
+      info << "\n";
     }
     info << "Startup bank = #" << std::dec << myCart.startBank() << " or undetermined\n";
   }
   else
   {
     uInt16 start = (image[myCart.mySize - 3] << 8) | image[myCart.mySize - 4];
+    uInt16 end;
 
     start -= start % std::min(int(size), 0x1000);
+    end = start + uInt16(myCart.mySize) - 1;
     // special check for ROMs where the extra RAM is not included in the image (e.g. CV).
     if((start & 0xFFF) < size)
     {
@@ -115,7 +120,7 @@ string CartEnhancedWidget::romDescription()
     }
     info << "ROM accessible @ $"
       << Common::Base::HEX4 << start << " - $"
-      << Common::Base::HEX4 << (start + myCart.mySize - 1);
+      << Common::Base::HEX4 << end;
   }
 
   return info.str();
@@ -133,7 +138,6 @@ void CartEnhancedWidget::bankSelect(int& ypos)
     for(int seg = 0; seg < bankSegs(); ++seg)
     {
       // fill bank and hotspot list
-      uInt16 hotspot = myCart.hotspot();
       VariantList items;
       int pw = 0;
 
@@ -142,8 +146,9 @@ void CartEnhancedWidget::bankSelect(int& ypos)
         ostringstream buf;
 
         buf << std::setw(bank < 10 ? 2 : 1) << "#" << std::dec << bank;
-        if(hotspot >= 0x100 && myHotspotDelta > 0)
-          buf << " (" << hotspotStr(bank, seg) << ")";
+        //if(myCart.hotspot() >= 0x100 && myHotspotDelta > 0)
+        if(myCart.hotspot() != 0 && myHotspotDelta > 0)
+          buf << " " << hotspotStr(bank, seg);
         VarList::push_back(items, buf.str());
         pw = std::max(pw, _font.getStringWidth(buf.str()));
       }
@@ -198,16 +203,17 @@ string CartEnhancedWidget::bankState()
         else if (hasRamBanks)
           buf << " ROM";
 
-        if(hotspot >= 0x100)
-          buf << " (" << (bankSegs() < 3 ? "hotspot " : "") << hotspotStr(bank) << ")";
+        //if(hotspot >= 0x100)
+        if(hotspot != 0 && myHotspotDelta > 0)
+          buf << " " << hotspotStr(bank, 0, bankSegs() < 3);
       }
     }
     else
     {
       buf << "Bank #" << std::dec << myCart.getBank();
 
-      //if(hotspot >= 0x100)
-        buf << " (hotspot " << hotspotStr(myCart.getSegmentBank()) << ")";
+      if(hotspot != 0 && myHotspotDelta > 0)
+        buf << " " << hotspotStr(myCart.getBank(), 0, true);
     }
     return buf.str();
   }
@@ -215,7 +221,7 @@ string CartEnhancedWidget::bankState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartEnhancedWidget::hotspotStr(int bank, int segment)
+string CartEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 {
   ostringstream info;
   uInt16 hotspot = myCart.hotspot();
@@ -223,7 +229,9 @@ string CartEnhancedWidget::hotspotStr(int bank, int segment)
   if(hotspot & 0x1000)
     hotspot |= ADDR_BASE;
 
+  info << "(" << (prefix ? "hotspot " : "");
   info << "$" << Common::Base::HEX1 << (hotspot + bank * myHotspotDelta);
+  info << ")";
 
   return info.str();
 }
@@ -242,8 +250,11 @@ void CartEnhancedWidget::saveOldState()
     myOldState.internalRam.push_back(myCart.myRAM[i]);
 
   myOldState.banks.clear();
-  for(int seg = 0; seg < bankSegs(); ++seg)
-    myOldState.banks.push_back(myCart.getSegmentBank(seg));
+  if (bankSegs() > 1)
+    for(int seg = 0; seg < bankSegs(); ++seg)
+      myOldState.banks.push_back(myCart.getSegmentBank(seg));
+  else
+    myOldState.banks.push_back(myCart.getBank());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -251,9 +262,13 @@ void CartEnhancedWidget::loadConfig()
 {
   if(myBankWidgets != nullptr)
   {
-    for(int seg = 0; seg < bankSegs(); ++seg)
-      myBankWidgets[seg]->setSelectedIndex(myCart.getSegmentBank(seg),
-                                           myCart.getSegmentBank(seg) != myOldState.banks[seg]);
+    if (bankSegs() > 1)
+      for(int seg = 0; seg < bankSegs(); ++seg)
+        myBankWidgets[seg]->setSelectedIndex(myCart.getSegmentBank(seg),
+                                             myCart.getSegmentBank(seg) != myOldState.banks[seg]);
+    else
+      myBankWidgets[0]->setSelectedIndex(myCart.getBank(),
+                                         myCart.getBank() != myOldState.banks[0]);
   }
   CartDebugWidget::loadConfig();
 }
