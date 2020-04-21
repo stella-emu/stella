@@ -80,11 +80,16 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
 
   if (updateDefaults)
   {
-    // if there is no existing mapping for the event or
+    if (map.event == Event::ToggleSAPortOrder)
+      int i = 0;
+
+    // if there is no existing mapping for the event and
     //  the default mapping for the event is unused, set default key for event
-    if (myKeyMap.getEventMapping(map.event, mode).size() == 0 ||
+    if (myKeyMap.getEventMapping(map.event, mode).size() == 0 &&
       !myKeyMap.check(mode, map.key, map.mod))
     {
+      if (map.event == Event::ConsoleReset)
+        int i = 0;
       addMapping(map.event, mode, map.key, StellaMod(map.mod));
     }
   }
