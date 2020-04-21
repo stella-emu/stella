@@ -51,7 +51,7 @@ string CartridgeE0Widget::romDescription()
       << Common::Base::HEX4 << (ADDR_BASE | segmentOffset)
       << " - $" << (ADDR_BASE | segmentOffset + /*myCart.myBankSize - 1*/ 0x3FF) << ",\n";
     if (seg < 3)
-      info << "  Hotspots " << hotspotStr(0, seg) << " - " << hotspotStr(7, seg) << "\n";
+      info << "  Hotspots " << hotspotStr(0, seg, true) << " - " << hotspotStr(7, seg, true) << "\n";
     else
       info << "  Always points to last 1K bank of ROM\n";
   }
@@ -61,15 +61,14 @@ string CartridgeE0Widget::romDescription()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeE0Widget::hotspotStr(int bank, int segment)
+string CartridgeE0Widget::hotspotStr(int bank, int segment, bool noBrackets)
 {
   ostringstream info;
   uInt16 hotspot = myCart.hotspot();
 
-  if(hotspot & 0x1000)
-    hotspot |= ADDR_BASE;
-
+  info << (noBrackets ? "" : "(");
   info << "$" << Common::Base::HEX1 << (hotspot + bank + segment * 8);
+  info << (noBrackets ? "" : ")");
 
   return info.str();
 }

@@ -53,7 +53,7 @@ class CartEnhancedWidget : public CartDebugWidget
 
     virtual void bankSelect(int& ypos);
 
-    virtual string hotspotStr(int bank = 0, int segment = 0);
+    virtual string hotspotStr(int bank = 0, int segment = 0, bool prefix = false);
 
     virtual int bankSegs(); // { return myCart.myBankSegs; }
 

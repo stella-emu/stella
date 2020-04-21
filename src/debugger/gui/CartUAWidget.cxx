@@ -41,12 +41,14 @@ string CartridgeUAWidget::description()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeUAWidget::hotspotStr(int bank, int)
+string CartridgeUAWidget::hotspotStr(int bank, int, bool prefix)
 {
   ostringstream info;
   uInt16 hotspot = myCart.hotspot() + (bank ^ (mySwappedHotspots ? 1 : 0)) * myHotspotDelta;
 
+  info << "(" << (prefix ? "hotspot " : "");
   info << "$" << Common::Base::HEX1 << hotspot << ", $" << (hotspot | 0x80);
+  info << ")";
 
   return info.str();
 }

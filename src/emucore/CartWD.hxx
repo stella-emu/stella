@@ -153,6 +153,8 @@ class CartridgeWD : public CartridgeEnhanced
   private:
     bool checkSwitchBank(uInt16, uInt8 = 0) override { return false; }
 
+    uInt16 hotspot() const override { return 0x0030; }
+
   private:
     // Indicates the cycle at which a bankswitch was initiated
     uInt64 myCyclesAtBankswitchInit{0};
