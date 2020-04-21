@@ -22,7 +22,8 @@
 CartridgeWDWidget::CartridgeWDWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeWD& cart)
-  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+    myCartWD(cart)
 {
   initialize();
 }
@@ -45,8 +46,7 @@ string CartridgeWDWidget::description()
 string CartridgeWDWidget::hotspotStr(int bank, int segment, bool prefix)
 {
   ostringstream info;
-  CartridgeWD& cart = dynamic_cast<CartridgeWD&>(myCart);
-  CartridgeWD::BankOrg banks = cart.ourBankOrg[bank];
+  CartridgeWD::BankOrg banks = myCartWD.ourBankOrg[bank];
 
   info << "(" << (prefix ? "hotspot " : "")
     << "$" << Common::Base::HEX1 << (myCart.hotspot() + bank) << ") ["

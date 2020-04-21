@@ -31,6 +31,9 @@ class CartridgeWDWidget : public CartridgeEnhancedWidget
                       CartridgeWD& cart);
     virtual ~CartridgeWDWidget() = default;
 
+private:
+    CartridgeWD& myCartWD;
+
   private:
     string manufacturer() override { return "Wickstead Design"; }
 
