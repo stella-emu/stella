@@ -31,12 +31,14 @@ CartEnhancedWidget::CartEnhancedWidget(GuiObject* boss, const GUI::Font& lfont,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartEnhancedWidget::initialize()
+int CartEnhancedWidget::initialize()
 {
   int ypos = addBaseInformation(size(), manufacturer(), description(), descriptionLines())
     + myLineHeight;
 
   bankSelect(ypos);
+
+  return ypos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -64,7 +66,7 @@ string CartEnhancedWidget::description()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartEnhancedWidget::descriptionLines()
 {
-  return 20; // should be enough for almost all types
+  return 18; // should be enough for almost all types
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,7 +103,12 @@ string CartEnhancedWidget::romDescription()
       info << "Bank " << hash << std::dec << bank << " @ $"
         << Common::Base::HEX4 << (start + myCart.myRomOffset) << " - $" << (start + 0xFFF);
       if(myCart.hotspot() != 0)
-        info << " " << hotspotStr(bank, 0, true);
+      {
+        string hs = hotspotStr(bank, 0, true);
+        if(hs.length() > 22)
+          info << "\n ";
+        info << " " << hs;
+      }
       info << "\n";
     }
     info << "Startup bank = #" << std::dec << myCart.startBank() << " or undetermined\n";

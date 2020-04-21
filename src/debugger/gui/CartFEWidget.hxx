@@ -19,11 +19,10 @@
 #define CARTRIDGEFE_WIDGET_HXX
 
 class CartridgeFE;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class CartridgeFEWidget : public CartDebugWidget
+class CartridgeFEWidget : public CartEnhancedWidget
 {
   public:
     CartridgeFEWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -33,18 +32,13 @@ class CartridgeFEWidget : public CartDebugWidget
     virtual ~CartridgeFEWidget() = default;
 
   private:
-    CartridgeFE& myCart;
-    PopUpWidget* myBank{nullptr};
+    string manufacturer() override { return "Activision"; }
 
-    enum { kBankChanged = 'bkCH' };
+    string description() override;
+
+    string hotspotStr(int bank, int, bool) override;
 
   private:
-    // No implementation for non-bankswitched ROMs
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
     // Following constructors and assignment operators not supported
     CartridgeFEWidget() = delete;
     CartridgeFEWidget(const CartridgeFEWidget&) = delete;

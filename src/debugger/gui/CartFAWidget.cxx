@@ -15,150 +15,25 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Debugger.hxx"
-#include "CartDebug.hxx"
 #include "CartFA.hxx"
-#include "PopUpWidget.hxx"
 #include "CartFAWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFAWidget::CartridgeFAWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeFA& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
-  uInt16 size = 3 * 4096;
+  initialize();
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeFAWidget::description()
+{
   ostringstream info;
-  info << "CBS RAM+ FA cartridge, three 4K banks\n"
-       << "256 bytes RAM @ $F000 - $F1FF\n"
-       << "  $F100 - $F1FF (R), $F000 - $F0FF (W)\n"
-       << "Startup bank = " << cart.startBank() << " or undetermined\n";
 
-  // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF8; i < 3; ++i, offset += 0x1000)
-  {
-    uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
-    start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << Common::Base::HEX4 << (start + 0x200) << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
-  }
+  info << "CBS RAM+ FA cartridge, three 4K banks\n";
+  info << CartEnhancedWidget::description();
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "CBS", info.str()) + myLineHeight;
-
-  VariantList items;
-  VarList::push_back(items, "0 ($FFF8)");
-  VarList::push_back(items, "1 ($FFF9)");
-  VarList::push_back(items, "2 ($FFFA)");
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
-  myBank->setTarget(this);
-  addFocusWidget(myBank);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFAWidget::saveOldState()
-{
-  myOldState.internalram.clear();
-
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myRAM[i]);
-
-  myOldState.bank = myCart.getBank();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFAWidget::loadConfig()
-{
-  myBank->setSelectedIndex(myCart.getBank(), myCart.getBank() != myOldState.bank);
-
-  CartDebugWidget::loadConfig();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFAWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
-{
-  if(cmd == kBankChanged)
-  {
-    myCart.unlockBank();
-    myCart.bank(myBank->getSelected());
-    myCart.lockBank();
-    invalidate();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFAWidget::bankState()
-{
-  ostringstream& buf = buffer();
-
-  static constexpr std::array<const char*, 3> spot = { "$FFF8", "$FFF9", "$FFFA" };
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << spot[myCart.getBank()];
-
-  return buf.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeFAWidget::internalRamSize()
-{
-  return 256;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeFAWidget::internalRamRPort(int start)
-{
-  return 0xF100 + start;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFAWidget::internalRamDescription()
-{
-  ostringstream desc;
-  desc << "$F000 - $F0FF used for Write Access\n"
-       << "$F100 - $F1FF used for Read Access";
-
-  return desc.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeFAWidget::internalRamOld(int start, int count)
-{
-  myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalram[start + i]);
-  return myRamOld;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeFAWidget::internalRamCurrent(int start, int count)
-{
-  myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myRAM[start + i]);
-  return myRamCurrent;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFAWidget::internalRamSetValue(int addr, uInt8 value)
-{
-  myCart.myRAM[addr] = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeFAWidget::internalRamGetValue(int addr)
-{
-  return myCart.myRAM[addr];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFAWidget::internalRamLabel(int addr)
-{
-  CartDebug& dbg = instance().debugger().cartDebug();
-  return dbg.getLabel(addr + 0xF100, false);
+  return info.str();
 }
