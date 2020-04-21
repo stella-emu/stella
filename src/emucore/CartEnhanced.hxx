@@ -33,7 +33,7 @@ class System;
 */
 class CartridgeEnhanced : public Cartridge
 {
-  friend class CartEnhancedWidget;
+  friend class CartridgeEnhancedWidget;
 
   public:
     /**

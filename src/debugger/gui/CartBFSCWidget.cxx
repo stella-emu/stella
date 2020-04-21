@@ -22,7 +22,7 @@
 CartridgeBFSCWidget::CartridgeBFSCWidget(
   GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
   int x, int y, int w, int h, CartridgeBFSC& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
@@ -33,7 +33,7 @@ string CartridgeBFSCWidget::description()
   ostringstream info;
 
   info << "256K BFSC + RAM, 64 4K banks\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

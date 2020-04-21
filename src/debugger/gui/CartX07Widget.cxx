@@ -22,7 +22,7 @@
 CartridgeX07Widget::CartridgeX07Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeX07& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
@@ -35,7 +35,7 @@ string CartridgeX07Widget::description()
   info << "64K X07 cartridge, 16 4K banks\n"
        << "Multiple hotspots, all below $1000\n"
        << "See documentation for further details\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

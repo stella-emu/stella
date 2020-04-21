@@ -22,7 +22,7 @@
 Cartridge3FWidget::Cartridge3FWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge3F& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   myHotspotDelta = 0;
   initialize();

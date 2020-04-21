@@ -24,7 +24,7 @@
 CartridgeCVWidget::CartridgeCVWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeCV& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
@@ -35,7 +35,7 @@ string CartridgeCVWidget::description()
   ostringstream info;
 
   info << "CV 2K ROM + 1K RAM, non-bankswitched\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

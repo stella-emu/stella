@@ -22,7 +22,7 @@ class CartridgeUA;
 
 #include "CartEnhancedWidget.hxx"
 
-class CartridgeUAWidget : public CartEnhancedWidget
+class CartridgeUAWidget : public CartridgeEnhancedWidget
 {
   public:
     CartridgeUAWidget(GuiObject* boss, const GUI::Font& lfont,

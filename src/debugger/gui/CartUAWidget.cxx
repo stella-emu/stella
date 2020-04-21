@@ -22,7 +22,7 @@
 CartridgeUAWidget::CartridgeUAWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeUA& cart, bool swapHotspots)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
     mySwappedHotspots(swapHotspots)
 {
   myHotspotDelta = 0x20;
@@ -35,7 +35,7 @@ string CartridgeUAWidget::description()
   ostringstream info;
 
   info << "8K UA cartridge" << (mySwappedHotspots ? " (swapped banks)" : "") << ", two 4K banks\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

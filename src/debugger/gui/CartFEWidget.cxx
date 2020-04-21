@@ -22,7 +22,7 @@
 CartridgeFEWidget::CartridgeFEWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeFE& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
@@ -35,7 +35,7 @@ string CartridgeFEWidget::description()
   info << "FE cartridge, two 4K banks\n"
     << "Monitors access to hotspot $01FE, and uses "
     << "upper 3 bits of databus for bank number:\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

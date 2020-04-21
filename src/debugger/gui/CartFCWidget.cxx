@@ -22,7 +22,7 @@
 CartridgeFCWidget::CartridgeFCWidget(
   GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
   int x, int y, int w, int h, CartridgeFC& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   initialize();
 }
@@ -39,7 +39,7 @@ string CartridgeFCWidget::description()
     << "  $" << Common::Base::HEX4 << (hotspot + 1) << " (defines high bits)\n"
     << "  $" << Common::Base::HEX4 << (hotspot + 4) << " (triggers bank switch)\n";
 
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }

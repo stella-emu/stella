@@ -22,7 +22,7 @@
 CartridgeFA2Widget::CartridgeFA2Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeFA2& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   int xpos = 2,
     ypos = initialize();
@@ -65,7 +65,7 @@ string CartridgeFA2Widget::description()
   info << "Modified FA RAM+, six or seven 4K banks\n";
   info << "RAM+ can be loaded/saved to Harmony flash memory by accessing $"
     << Common::Base::HEX4 << 0xFFF4 << "\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }
@@ -91,6 +91,6 @@ void CartridgeFA2Widget::handleCommand(CommandSender* sender,
       break;
 
     default:
-      CartEnhancedWidget::handleCommand(sender, cmd, data, id);
+      CartridgeEnhancedWidget::handleCommand(sender, cmd, data, id);
   }
 }

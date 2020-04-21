@@ -22,7 +22,7 @@
 Cartridge0840Widget::Cartridge0840Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge0840& cart)
-  : CartEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   myHotspotDelta = 0x40;
   initialize();
@@ -34,7 +34,7 @@ string Cartridge0840Widget::description()
   ostringstream info;
 
   info << "0840 ECONObanking, two 4K banks\n";
-  info << CartEnhancedWidget::description();
+  info << CartridgeEnhancedWidget::description();
 
   return info.str();
 }
