@@ -16,11 +16,12 @@
 //============================================================================
 
 #include "KeyMap.hxx"
+#include <map>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::add(const Event::Type event, const Mapping& mapping)
 {
-	myMap[convertMod(mapping)] = event;
+  myMap[convertMod(mapping)] = event;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,7 +33,7 @@ void KeyMap::add(const Event::Type event, const EventMode mode, const int key, c
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void KeyMap::erase(const Mapping& mapping)
 {
-	myMap.erase(convertMod(mapping));
+  myMap.erase(convertMod(mapping));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -170,9 +171,26 @@ KeyMap::MappingArray KeyMap::getEventMapping(const Event::Type event, const Even
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string KeyMap::saveMapping(const EventMode mode) const
 {
+  using MapType = std::pair<Mapping, Event::Type>;
+  std::vector<MapType> sortedMap(myMap.begin(), myMap.end());
+
+  std::sort(sortedMap.begin(), sortedMap.end(),
+    [](const MapType& a, const MapType& b)
+    {
+      // Event::Type first
+      if(a.second != b.second)
+        return a.second < b.second;
+
+      if(a.first.key != b.first.key)
+        return a.first.key < b.first.key;
+
+      return a.first.mod < b.first.mod;
+    }
+  );
+
   ostringstream buf;
 
-  for (auto item : myMap)
+  for (auto item : sortedMap)
   {
     if (item.first.mode == mode)
     {
