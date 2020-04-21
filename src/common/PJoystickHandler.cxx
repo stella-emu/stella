@@ -250,9 +250,9 @@ void PhysicalJoystickHandler::setDefaultAction(int stick,
 
   if(updateDefaults)
   {
-    // if there is no existing mapping for the event or
+    // if there is no existing mapping for the event and
     //  the default mapping for the event is unused, set default key for event
-    if(j->joyMap.getEventMapping(map.event, mode).size() == 0 ||
+    if(j->joyMap.getEventMapping(map.event, mode).size() == 0 &&
        !j->joyMap.check(mode, map.button, map.axis, map.adir, map.hat, map.hdir))
     {
       if (map.hat == JOY_CTRL_NONE)
