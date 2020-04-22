@@ -67,13 +67,28 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PhysicalKeyboardHandler::isMappingUsed(EventMapping map)
+bool PhysicalKeyboardHandler::isMappingUsed(EventMode mode, const EventMapping& map) const
 {
-  for(int i = 0; i < int(EventMode::kNumModes); ++i)
-    if(myKeyMap.check(EventMode(i), map.key, map.mod))
-      return true;
+  // Menu events can only interfere with
+  //   - other menu events
+  if(mode == EventMode::kMenuMode)
+    return myKeyMap.check(EventMode::kMenuMode, map.key, map.mod);
 
-  return false;
+  // Controller events can interfere with
+  //   - other events of the same controller
+  //   - and common emulation events
+  if(mode != EventMode::kCommonMode)
+    return myKeyMap.check(mode, map.key, map.mod)
+      || myKeyMap.check(EventMode::kCommonMode, map.key, map.mod);
+
+  // Common emulation events can interfere with
+  //   - other common emulation events
+  //   - and all controller events
+  return myKeyMap.check(EventMode::kCommonMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kJoystickMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kPaddlesMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kKeypadMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,7 +108,7 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
     // if there is no existing mapping for the event and
     //  the default mapping for the event is unused, set default key for event
     if (myKeyMap.getEventMapping(map.event, mode).size() == 0 &&
-        !isMappingUsed(map))
+        !isMappingUsed(mode, map))
     {
       addMapping(map.event, mode, map.key, StellaMod(map.mod));
     }
