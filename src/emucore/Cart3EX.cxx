@@ -22,7 +22,7 @@ Cartridge3EX::Cartridge3EX(const ByteBuffer& image, size_t size,
                            const string& md5, const Settings& settings)
   : Cartridge3E(image, size, md5, settings)
 {
-  myRamSize = RAM_SIZE;
   // 0xFFFA contains RAM bank count - 1;
   myRamBankCount = image[size - 6] + 1;
+  myRamSize = (myBankSize >> 1) * myRamBankCount;
 }

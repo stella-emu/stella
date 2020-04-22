@@ -74,13 +74,15 @@ string CartridgeEnhancedWidget::ramDescription()
 {
   ostringstream info;
 
-  info << myCart.myRamSize << " bytes RAM @ "
-    << "$" << Common::Base::HEX4 << ADDR_BASE << " - "
-    << "$" << (ADDR_BASE | (myCart.myRamSize * 2 - 1)) << "\n"
-    << "  $" << (ADDR_BASE | myCart.myReadOffset)
-    << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamSize - 1)) << " (R)"
+  if(myCart.ramBankCount() == 0)
+    info << myCart.myRamSize << " bytes RAM @ "
+      << "$" << Common::Base::HEX4 << ADDR_BASE << " - "
+      << "$" << (ADDR_BASE | (myCart.myRamSize * 2 - 1)) << "\n";
+
+  info << "  $" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
+    << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask)) << " (R)"
     << ", $" << (ADDR_BASE | myCart.myWriteOffset)
-    << " - $" << (ADDR_BASE | (myCart.myWriteOffset + myCart.myRamSize - 1)) << " (W)\n";
+    << " - $" << (ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask)) << " (W)\n";
 
   return info.str();
 }
@@ -134,6 +136,23 @@ string CartridgeEnhancedWidget::romDescription()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeEnhancedWidget::bankList(uInt16 bankCount, int seg, VariantList& items, int& width)
+{
+  width = 0;
+
+  for(int bank = 0; bank < bankCount; ++bank)
+  {
+    ostringstream buf;
+
+    buf << std::setw(bank < 10 ? 2 : 1) << "#" << std::dec << bank;
+    if(myCart.hotspot() != 0 && myHotspotDelta > 0)
+      buf << " " << hotspotStr(bank, seg);
+    VarList::push_back(items, buf.str());
+    width = std::max(width, _font.getStringWidth(buf.str()));
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhancedWidget::bankSelect(int& ypos)
 {
   if(myCart.romBankCount() > 1)
@@ -148,17 +167,7 @@ void CartridgeEnhancedWidget::bankSelect(int& ypos)
       VariantList items;
       int pw = 0;
 
-      for(int bank = 0; bank < myCart.romBankCount(); ++bank)
-      {
-        ostringstream buf;
-
-        buf << std::setw(bank < 10 ? 2 : 1) << "#" << std::dec << bank;
-        //if(myCart.hotspot() >= 0x100 && myHotspotDelta > 0)
-        if(myCart.hotspot() != 0 && myHotspotDelta > 0)
-          buf << " " << hotspotStr(bank, seg);
-        VarList::push_back(items, buf.str());
-        pw = std::max(pw, _font.getStringWidth(buf.str()));
-      }
+      bankList(myCart.romBankCount(), seg, items, pw);
 
       // create widgets
       ostringstream buf;
@@ -282,7 +291,7 @@ void CartridgeEnhancedWidget::loadConfig()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhancedWidget::handleCommand(CommandSender* sender,
-                                       int cmd, int data, int id)
+                                            int cmd, int data, int id)
 {
   if(cmd == kBankChanged)
   {
@@ -302,31 +311,45 @@ uInt32 CartridgeEnhancedWidget::internalRamSize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeEnhancedWidget::internalRamRPort(int start)
 {
-  return ADDR_BASE + myCart.myReadOffset + start;
+  if(myCart.ramBankCount() == 0)
+    return ADDR_BASE + myCart.myReadOffset + start;
+  else
+    return start;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartridgeEnhancedWidget::internalRamDescription()
 {
   ostringstream desc;
+  string indent = "";
+
+  if(myCart.ramBankCount())
+  {
+    desc << "Accessible ";
+    if (myCart.bankSize() >> 1 >= 1024)
+      desc << ((myCart.bankSize() >> 1) / 1024) << "K";
+    else
+      desc << (myCart.bankSize() >> 1) << " bytes";
+    desc << " at a time via:\n";
+    indent = "  ";
+  }
 
   // order RW by addresses
   if(myCart.myReadOffset <= myCart.myWriteOffset)
   {
-    desc << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
-      << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamSize - 1))
+    desc << indent << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
+      << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask))
       << " used for Read Access\n";
   }
 
-  desc
-    << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myWriteOffset)
-    << " - $" << (ADDR_BASE | (myCart.myWriteOffset + myCart.myRamSize - 1))
+  desc << indent << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myWriteOffset)
+    << " - $" << (ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask))
     << " used for Write Access";
 
   if(myCart.myReadOffset > myCart.myWriteOffset)
   {
-    desc << "\n$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
-      << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamSize - 1))
+    desc << indent << "\n$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
+      << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask))
       << " used for Read Access";
   }
 
