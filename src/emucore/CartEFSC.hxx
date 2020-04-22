@@ -76,7 +76,7 @@ class CartridgeEFSC : public CartridgeEF
 
   private:
     // RAM size
-    static constexpr uInt16 RAM_SIZE = 0x80;
+    static constexpr size_t RAM_SIZE = 0x80;
 
   private:
     // Following constructors and assignment operators not supported

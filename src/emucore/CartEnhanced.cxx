@@ -35,13 +35,13 @@ CartridgeEnhanced::CartridgeEnhanced(const ByteBuffer& image, size_t size,
 void CartridgeEnhanced::install(System& system)
 {
   // limit banked RAM size to the size of one RAM bank
-  uInt16 ramSize = myRamBankCount > 0 ? 1 << (myBankShift - 1) : myRamSize;
+  uInt32 ramSize = myRamBankCount > 0 ? 1 << (myBankShift - 1) : uInt32(myRamSize);
 
   // calculate bank switching and RAM sizes and masks
   myBankSize = 1 << myBankShift;                    // e.g. = 2 ^ 12 = 4K = 0x1000
   myBankMask = myBankSize - 1;                      // e.g. = 0x0FFF
   myBankSegs = 1 << (MAX_BANK_SHIFT - myBankShift); // e.g. = 1
-  myRomOffset = myRamBankCount > 0 ? 0 : myRamSize * 2;
+  myRomOffset = myRamBankCount > 0 ? 0 : uInt32(myRamSize) * 2;
   myRamMask = ramSize - 1;                          // e.g. = 0xFFFF (doesn't matter for RAM size 0)
   myWriteOffset = myRamWpHigh ? ramSize : 0;        // e.g. = 0x0000
   myReadOffset  = myRamWpHigh ? 0 : ramSize;        // e.g. = 0x0080

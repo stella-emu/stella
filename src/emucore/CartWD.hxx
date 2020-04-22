@@ -176,7 +176,7 @@ class CartridgeWD : public CartridgeEnhanced
     static constexpr uInt16 BANK_SHIFT = 10; // = 1K = 0x0400
 
     // RAM size
-    static constexpr uInt16 RAM_SIZE = 0x40;
+    static constexpr size_t RAM_SIZE = 0x40;
 
     // Write port for extra RAM is at low address by default
     static constexpr bool RAM_HIGH_WP = true;

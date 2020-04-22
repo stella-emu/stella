@@ -131,6 +131,11 @@ class CartDetector
     static bool isProbably3E(const ByteBuffer& image, size_t size);
 
     /**
+    Returns true if the image is probably a 3EX bankswitching cartridge
+    */
+    static bool isProbably3EX(const ByteBuffer& image, size_t size);
+
+    /**
       Returns true if the image is probably a 3E+ bankswitching cartridge
     */
     static bool isProbably3EPlus(const ByteBuffer& image, size_t size);

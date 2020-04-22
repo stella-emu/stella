@@ -69,7 +69,7 @@ class CartridgeF6SC : public CartridgeF6
 
   private:
     // RAM size
-    static constexpr uInt16 RAM_SIZE = 0x80;
+    static constexpr size_t RAM_SIZE = 0x80;
 
     // RAM mask
     static constexpr uInt16 RAM_MASK = RAM_SIZE - 1;

@@ -79,7 +79,7 @@ class CartridgeFA : public CartridgeEnhanced
 
   private:
     // RAM size
-    static constexpr uInt16 RAM_SIZE = 0x100;
+    static constexpr size_t RAM_SIZE = 0x100;
 
   private:
     // Following constructors and assignment operators not supported
