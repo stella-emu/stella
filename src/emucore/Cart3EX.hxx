@@ -69,9 +69,6 @@ public:
 #endif
 
 private:
-  // The number of RAM banks
-  static constexpr uInt16 RAM_BANKS = 256;
-
   // RAM size
   static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 256K = 0x40000;
 
