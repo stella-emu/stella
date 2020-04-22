@@ -165,7 +165,7 @@ class Cartridge3EPlus: public CartridgeEnhanced
     static constexpr uInt16 RAM_BANKS = 64;
 
     // RAM size
-    static constexpr uInt16 RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 32K = 0x4000;
+    static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 32K = 0x4000;
 
     // Write port for extra RAM is at high address
     static constexpr bool RAM_HIGH_WP = true;

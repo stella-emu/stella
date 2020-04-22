@@ -296,7 +296,7 @@ void CartridgeEnhancedWidget::handleCommand(CommandSender* sender,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 CartridgeEnhancedWidget::internalRamSize()
 {
-  return myCart.myRamSize;
+  return uInt32(myCart.myRamSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

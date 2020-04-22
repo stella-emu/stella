@@ -169,7 +169,7 @@ string Cartridge3EWidget::bankState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Cartridge3EWidget::internalRamSize()
 {
-  return 32*1024;
+  return uInt32(myCart.myRamSize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

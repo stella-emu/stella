@@ -183,7 +183,7 @@ class CartridgeEnhanced : public Cartridge
 
   protected:
     // The extra RAM size
-    uInt16 myRamSize{RAM_SIZE};                 // default 0
+    size_t myRamSize{RAM_SIZE};                 // default 0
 
     // The number of RAM banks
     uInt16 myRamBankCount{RAM_BANKS};           // default 0
@@ -246,9 +246,9 @@ class CartridgeEnhanced : public Cartridge
     static constexpr uInt16 BANK_SHIFT = 12;  // default = 4K
 
     // The size of extra RAM in ROM address space
-    static constexpr uInt16 RAM_SIZE = 0;     // default = none
+    static constexpr size_t RAM_SIZE = 0;     // default = none
 
-    // The size of extra RAM in ROM address space
+    // The number of RAM banks
     static constexpr uInt16 RAM_BANKS = 0;
 
     // Write port for extra RAM is at low address by default

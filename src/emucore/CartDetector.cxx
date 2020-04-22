@@ -20,6 +20,7 @@
 #include "Cart0840.hxx"
 #include "Cart2K.hxx"
 #include "Cart3E.hxx"
+#include "Cart3EX.hxx"
 #include "Cart3EPlus.hxx"
 #include "Cart3F.hxx"
 #include "Cart4A50.hxx"
@@ -250,6 +251,8 @@ CartDetector::createFromImage(const ByteBuffer& image, size_t size, Bankswitch::
       return make_unique<Cartridge2K>(image, size, md5, settings);
     case Bankswitch::Type::_3E:
       return make_unique<Cartridge3E>(image, size, md5, settings);
+    case Bankswitch::Type::_3EX:
+      return make_unique<Cartridge3EX>(image, size, md5, settings);
     case Bankswitch::Type::_3EP:
       return make_unique<Cartridge3EPlus>(image, size, md5, settings);
     case Bankswitch::Type::_3F:
@@ -380,6 +383,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_4K;
     else if(isProbablyE0(image, size))
       type = Bankswitch::Type::_E0;
+    else if(isProbably3EX(image, size))
+      type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
@@ -419,6 +424,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_E7;
     else if (isProbablyFC(image, size))
       type = Bankswitch::Type::_FC;
+    else if(isProbably3EX(image, size))
+      type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
   /* no known 16K 3F ROMS
@@ -445,6 +452,8 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_CTY;
     else if(isProbablySC(image, size))
       type = Bankswitch::Type::_F4SC;
+    else if(isProbably3EX(image, size))
+      type = Bankswitch::Type::_3EX;
     else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
@@ -471,7 +480,9 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
   else if(size == 64_KB)
   {
-    if(isProbably3E(image, size))
+    if(isProbably3EX(image, size))
+      type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
@@ -486,7 +497,9 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
   else if(size == 128_KB)
   {
-    if(isProbably3E(image, size))
+    if(isProbably3EX(image, size))
+      type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
     else if(isProbablyDF(image, size, type))
       ; // type has been set directly in the function
@@ -499,7 +512,9 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
   else if(size == 256_KB)
   {
-    if(isProbably3E(image, size))
+    if(isProbably3EX(image, size))
+      type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
     else if(isProbablyBF(image, size, type))
       ; // type has been set directly in the function
@@ -510,7 +525,9 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   }
   else  // what else can we do?
   {
-    if(isProbably3E(image, size))
+    if(isProbably3EX(image, size))
+      type = Bankswitch::Type::_3EX;
+    else if(isProbably3E(image, size))
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
@@ -630,6 +647,14 @@ bool CartDetector::isProbably3E(const ByteBuffer& image, size_t size)
   uInt8 signature2[] = { 0x85, 0x3F };  // STA $3F
   return searchForBytes(image.get(), size, signature1, 2, 1)
     && searchForBytes(image.get(), size, signature2, 2, 2);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDetector::isProbably3EX(const ByteBuffer& image, size_t size)
+{
+  // 3EX cart have at least 2 occurrences of the string "3EX"
+  uInt8 _3EX[] = { '3', 'E', 'X'};
+  return searchForBytes(image.get(), size, _3EX, 3, 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -89,7 +89,7 @@ class CartridgeCV : public CartridgeEnhanced
     static constexpr uInt16 BANK_SHIFT = 11;  // 2K
 
     // RAM size
-    static constexpr uInt16 RAM_SIZE = 0x400; // 1K
+    static constexpr uInt32 RAM_SIZE = 0x400; // 1K
 
     // Write port for extra RAM is at high address
     static constexpr bool RAM_HIGH_WP = true;

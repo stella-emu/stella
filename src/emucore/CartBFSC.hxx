@@ -74,7 +74,7 @@ class CartridgeBFSC : public CartridgeBF
 
   private:
     // RAM size
-    static constexpr uInt16 RAM_SIZE = 0x80;
+    static constexpr uInt32 RAM_SIZE = 0x80;
 
   private:
     // Following constructors and assignment operators not supported

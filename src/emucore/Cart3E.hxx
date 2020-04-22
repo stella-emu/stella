@@ -116,15 +116,15 @@ class Cartridge3E : public CartridgeEnhanced
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
 
-  private:
+  protected:
     // log(ROM bank segment size) / log(2)
     static constexpr uInt16 BANK_SHIFT = 11; // = 2K = 0x0800
 
-    // The size of extra RAM in ROM address space
+    // The number of RAM banks
     static constexpr uInt16 RAM_BANKS = 32;
 
     // RAM size
-    static constexpr uInt16 RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 32K = 0x4000;
+    static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 32K = 0x8000;
 
     // Write port for extra RAM is at high address
     static constexpr bool RAM_HIGH_WP = true;

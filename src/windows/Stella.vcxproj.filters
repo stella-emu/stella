@@ -999,6 +999,9 @@
     <ClCompile Include="..\debugger\gui\CartEnhancedWidget.cxx">
       <Filter>Source Files\debugger</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\Cart3EX.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -2050,6 +2053,9 @@
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartEnhancedWidget.hxx">
       <Filter>Header Files\debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\Cart3EX.hxx">
+      <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
