@@ -12,6 +12,13 @@
                               Release History
 ===========================================================================
 
+6.1.1 to 6.1.2: (April 25, 2020)
+
+  * Fixed bug with remapped events not being reloaded in certain cases.
+
+-Have fun!
+
+
 6.1 to 6.1.1: (April 4, 2020)
 
   * Fixed crash in 3E bankswitching scheme when writing to ROM addresses.
@@ -25,8 +32,6 @@
     instead.
 
   * Fixed compilation of libretro port on Debian Buster.
-
--Have fun!
 
 
 6.0.2 to 6.1: (March 22, 2020)
