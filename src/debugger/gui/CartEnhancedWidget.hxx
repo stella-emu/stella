@@ -51,6 +51,8 @@ class CartridgeEnhancedWidget : public CartDebugWidget
 
     virtual string romDescription();
 
+    virtual void bankList(uInt16 bankCount, int seg, VariantList& items, int& width);
+
     virtual void bankSelect(int& ypos);
 
     virtual string hotspotStr(int bank = 0, int segment = 0, bool prefix = false);

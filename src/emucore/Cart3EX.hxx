@@ -21,9 +21,6 @@
 class System;
 
 #include "Cart3E.hxx"
-#ifdef DEBUGGER_SUPPORT
-//#include "Cart3EXWidget.hxx"
-#endif
 
 /**
   This is an enhanced version of 3E which supports up to 256KB RAM.
@@ -33,7 +30,6 @@ class System;
 
 class Cartridge3EX : public Cartridge3E
 {
-  //friend class Cartridge3EXWidget;
 
 public:
   /**
@@ -55,18 +51,6 @@ public:
     @return The name of the object
   */
   string name() const override { return "Cartridge3EX"; }
-
-#ifdef DEBUGGER_SUPPORT
-  ///**
-  //  Get debugger widget responsible for accessing the inner workings
-  //  of the cart.
-  //*/
-  //CartDebugWidget* debugWidget(GuiObject* boss, const GUI::Font& lfont,
-  //                             const GUI::Font& nfont, int x, int y, int w, int h) override
-  //{
-  //  return new Cartridge3EXWidget(boss, lfont, nfont, x, y, w, h, *this);
-  //}
-#endif
 
 private:
   // RAM size

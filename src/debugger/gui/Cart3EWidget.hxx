@@ -19,11 +19,12 @@
 #define CARTRIDGE3E_WIDGET_HXX
 
 class Cartridge3E;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class Cartridge3EWidget : public CartDebugWidget
+// Note: This class supports 3EX too
+
+class Cartridge3EWidget : public CartridgeEnhancedWidget
 {
   public:
     Cartridge3EWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -33,39 +34,28 @@ class Cartridge3EWidget : public CartDebugWidget
     virtual ~Cartridge3EWidget() = default;
 
   private:
-    Cartridge3E& myCart;
-    const uInt32 myNumRomBanks{0};
-    const uInt32 myNumRamBanks{0};
-    PopUpWidget *myROMBank{nullptr}, *myRAMBank{nullptr};
-
-    struct CartState {
-      ByteArray internalram;
-      uInt16 bank;
-    };
-    CartState myOldState;
-
     enum {
-      kROMBankChanged = 'rmCH',
       kRAMBankChanged = 'raCH'
     };
 
   private:
-    void saveOldState() override;
+    string manufacturer() override { return "Andrew Davie & Thomas Jentzsch"; }
+
+    string description() override;
+
+    void bankList(uInt16 bankCount, int seg, VariantList& items, int& width) override;
+
+    void bankSelect(int& ypos) override;
+
+    int bankSegs() override { return 1; }
+
     void loadConfig() override;
+
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
     string bankState() override;
 
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    // end of functions for Cartridge RAM tab
-
+  private:
     // Following constructors and assignment operators not supported
     Cartridge3EWidget() = delete;
     Cartridge3EWidget(const Cartridge3EWidget&) = delete;
