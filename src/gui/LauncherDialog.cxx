@@ -428,13 +428,7 @@ void LauncherDialog::loadRomInfo()
 
   const string& md5 = selectedRomMD5();
   if(md5 != EmptyString)
-  {
-    // Get the properties for this entry
-    Properties props;
-    instance().propSet().getMD5WithInsert(currentNode(), md5, props);
-
-    myRomInfoWidget->setProperties(props, currentNode());
-  }
+    myRomInfoWidget->setProperties(currentNode(), md5);
   else
     myRomInfoWidget->clearProperties();
 }
