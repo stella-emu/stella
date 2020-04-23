@@ -16,6 +16,8 @@
 
   * Fixed bug with remapped events not being reloaded in certain cases.
 
+  * Fixed bug in debugger for 3E scheme when displaying active RAM bank.
+
 -Have fun!
 
 
