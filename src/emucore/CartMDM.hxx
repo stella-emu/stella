@@ -100,6 +100,8 @@ class CartridgeMDM : public CartridgeEnhanced
     */
     string name() const override { return "CartridgeMDM"; }
 
+    uInt16 hotspot() const override { return 0x0800; }
+
   #ifdef DEBUGGER_SUPPORT
     /**
       Get debugger widget responsible for accessing the inner workings

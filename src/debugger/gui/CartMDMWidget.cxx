@@ -17,45 +17,39 @@
 
 #include "CartMDM.hxx"
 #include "PopUpWidget.hxx"
-#include "Widget.hxx"
 #include "CartMDMWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMDMWidget::CartridgeMDMWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeMDM& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+    myCartMDM(cart)
+{
+  initialize();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeMDMWidget::description()
 {
   ostringstream info;
-  size_t size;
 
-  myCart.getImage(size);
-  info << "Menu Driven Megacart, containing up to 128 4K banks\n"
-       << "Startup bank = " << cart.startBank() << "\n"
-       << "\nBanks are selected by reading from $800 - $BFF, where the lower "
-          "byte determines the 4K bank to use.";
+  info << "Menu Driven Megacart, " << myCart.romBankCount() << " 4K banks\n"
+       << "Banks are selected by reading from $800 - $" << Common::Base::HEX1 << 0xBFF
+       << ", where the lower byte determines the 4K bank to use.\n";
+  info << CartridgeEnhancedWidget::description();
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "Edwin Blink", info.str(), 15) + myLineHeight;
+  return info.str();
+}
 
-  VariantList items;
-  for(uInt32 i = 0x800; i < (0x800U + myCart.romBankCount()); ++i)
-  {
-    info.str("");
-    info << std::dec << (i & 0xFF) << " ($" << Common::Base::HEX4 << i << ")";
-    VarList::push_back(items, info.str());
-  }
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeMDMWidget::bankSelect(int& ypos)
+{
+  CartridgeEnhancedWidget::bankSelect(ypos);
+  int xpos = myBankWidgets[0]->getRight() + 20;
+  ypos = myBankWidgets[0]->getTop();
 
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos, _font.getStringWidth("xxx ($0FFF)"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
-  myBank->setTarget(this);
-  addFocusWidget(myBank);
-
-  xpos += myBank->getWidth() + 30;
-  myBankDisabled = new CheckboxWidget(boss, _font, xpos, ypos + 1,
+  myBankDisabled = new CheckboxWidget(_boss, _font, xpos, ypos + 1,
                                       "Bankswitching is locked/disabled",
                                       kBankDisabled);
   myBankDisabled->setTarget(this);
@@ -65,39 +59,21 @@ CartridgeMDMWidget::CartridgeMDMWidget(
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMDMWidget::loadConfig()
 {
-  myBank->setSelectedIndex(myCart.getBank());
-  myBank->setEnabled(!myCart.myBankingDisabled);
-  myBankDisabled->setState(myCart.myBankingDisabled);
+  myBankWidgets[0]->setEnabled(!myCartMDM.myBankingDisabled);
+  myBankDisabled->setState(myCartMDM.myBankingDisabled);
 
-  CartDebugWidget::loadConfig();
+  CartridgeEnhancedWidget::loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMDMWidget::handleCommand(CommandSender* sender,
                                        int cmd, int data, int id)
 {
-  if(cmd == kBankChanged)
+  if(cmd == kBankDisabled)
   {
-    myCart.unlockBank();
-    myCart.bank(myBank->getSelected());
-    myCart.lockBank();
-    invalidate();
+    myCartMDM.myBankingDisabled = myBankDisabled->getState();
+    myBankWidgets[0]->setEnabled(!myCartMDM.myBankingDisabled);
   }
-  else if(cmd == kBankDisabled)
-  {
-    myCart.myBankingDisabled = myBankDisabled->getState();
-    myBank->setEnabled(!myCart.myBankingDisabled);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeMDMWidget::bankState()
-{
-  ostringstream& buf = buffer();
-
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << "$" << Common::Base::HEX4
-      << (myCart.getBank()+0x800);
-
-  return buf.str();
+  else
+    CartridgeEnhancedWidget::handleCommand(sender, cmd, data, id);
 }
