@@ -36,7 +36,7 @@ class Cartridge3FWidget : public CartridgeEnhancedWidget
 
     string description() override;
 
-    int bankSegs() override { return 1; }
+    uInt16 bankSegs() override { return 1; }
 
   private:
     // Following constructors and assignment operators not supported

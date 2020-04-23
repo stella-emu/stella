@@ -41,7 +41,7 @@ private:
 
     string hotspotStr(int bank, int seg = 0, bool prefix = false) override;
 
-    int bankSegs() override { return 1; }
+    uInt16 bankSegs() override { return 1; }
 
   private:
     // Following constructors and assignment operators not supported

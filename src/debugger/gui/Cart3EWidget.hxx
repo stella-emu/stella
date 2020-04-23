@@ -47,7 +47,7 @@ class Cartridge3EWidget : public CartridgeEnhancedWidget
 
     void bankSelect(int& ypos) override;
 
-    int bankSegs() override { return 1; }
+    uInt16 bankSegs() override { return 1; }
 
     void loadConfig() override;
 

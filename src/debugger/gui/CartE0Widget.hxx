@@ -40,7 +40,7 @@ class CartridgeE0Widget : public CartridgeEnhancedWidget
 
     string hotspotStr(int bank, int segment, bool noBrackets = false) override;
 
-    int bankSegs() override { return 3; }
+    uInt16 bankSegs() override { return 3; }
 
   private:
     // Following constructors and assignment operators not supported

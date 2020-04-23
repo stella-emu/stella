@@ -253,7 +253,7 @@ string CartridgeEnhancedWidget::hotspotStr(int bank, int segment, bool prefix)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeEnhancedWidget::bankSegs()
+uInt16 CartridgeEnhancedWidget::bankSegs()
 {
   return myCart.myBankSegs;
 }
@@ -339,18 +339,18 @@ string CartridgeEnhancedWidget::internalRamDescription()
   {
     desc << indent << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
       << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask))
-      << " used for Read Access\n";
+      << " used for read Access\n";
   }
 
   desc << indent << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myWriteOffset)
     << " - $" << (ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask))
-    << " used for Write Access";
+    << " used for write Access";
 
   if(myCart.myReadOffset > myCart.myWriteOffset)
   {
     desc << indent << "\n$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
       << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask))
-      << " used for Read Access";
+      << " used for read Access";
   }
 
   return desc.str();
