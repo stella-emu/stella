@@ -21,7 +21,7 @@
 class System;
 
 #include "bspf.hxx"
-#include "CartEnhanced.hxx"
+#include "Cart3E.hxx"
 
 #ifdef DEBUGGER_SUPPORT
 class Cartridge3EPlusWidget;
@@ -89,7 +89,7 @@ class Cartridge3EPlusWidget;
   @author  Thomas Jentzsch and Stephen Anthony
 */
 
-class Cartridge3EPlus: public CartridgeEnhanced
+class Cartridge3EPlus: public Cartridge3E
 {
   friend class Cartridge3EPlusWidget;
 
@@ -109,14 +109,6 @@ class Cartridge3EPlus: public CartridgeEnhanced
   public:
     /** Reset device to its power-on state */
     void reset() override;
-
-    /**
-      Install cartridge in the specified system.  Invoked by the system
-      when the cartridge is attached to it.
-
-      @param system The system the device should install itself in
-    */
-    void install(System& system) override;
 
     /**
       Get a descriptor for the device name (used in error checking).
@@ -166,9 +158,6 @@ class Cartridge3EPlus: public CartridgeEnhanced
 
     // RAM size
     static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 32K = 0x4000;
-
-    // Write port for extra RAM is at high address
-    static constexpr bool RAM_HIGH_WP = true;
 
   private:
     // Following constructors and assignment operators not supported

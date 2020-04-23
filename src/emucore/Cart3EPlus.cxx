@@ -22,13 +22,11 @@
 //  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3EPlus::Cartridge3EPlus(const ByteBuffer& image, size_t size,
                                  const string& md5, const Settings& settings)
-  : CartridgeEnhanced(image, size, md5, settings)
-
+  : Cartridge3E(image, size, md5, settings)
 {
   myBankShift = BANK_SHIFT;
   myRamSize = RAM_SIZE;
   myRamBankCount = RAM_BANKS;
-  myRamWpHigh = RAM_HIGH_WP;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,18 +38,6 @@ void Cartridge3EPlus::reset()
   bank(mySystem->randGenerator().next() % romBankCount(), 1);
   bank(mySystem->randGenerator().next() % romBankCount(), 2);
   bank(startBank(), 3);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3EPlus::install(System& system)
-{
-  CartridgeEnhanced::install(system);
-
-  System::PageAccess access(this, System::PageAccessType::WRITE);
-
-  // The hotspots are in TIA address space, so we claim it here
-  for(uInt16 addr = 0x00; addr < 0x40; addr += System::PAGE_SIZE)
-    mySystem->setPageAccess(addr, access);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

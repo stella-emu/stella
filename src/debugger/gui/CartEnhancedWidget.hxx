@@ -57,7 +57,7 @@ class CartridgeEnhancedWidget : public CartDebugWidget
 
     virtual string hotspotStr(int bank = 0, int segment = 0, bool prefix = false);
 
-    virtual int bankSegs(); // { return myCart.myBankSegs; }
+    virtual uInt16 bankSegs(); // { return myCart.myBankSegs; }
 
     void saveOldState() override;
     void loadConfig() override;
