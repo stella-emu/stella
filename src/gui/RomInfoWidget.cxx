@@ -27,6 +27,7 @@
 #include "Logger.hxx"
 #include "Props.hxx"
 #include "PNGLibrary.hxx"
+#include "PropsSet.hxx"
 #include "Rect.hxx"
 #include "Widget.hxx"
 #include "RomInfoWidget.hxx"
@@ -44,20 +45,10 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::reloadProperties(const FilesystemNode& node)
-{
-  // The ROM may have changed since we were last in the browser, either
-  // by saving a different image or through a change in video renderer,
-  // so we reload the properties
-  if(myHaveProperties)
-    parseProperties(node);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::setProperties(const Properties& props, const FilesystemNode& node)
+void RomInfoWidget::setProperties(const FilesystemNode& node, const string& md5)
 {
   myHaveProperties = true;
-  myProperties = props;
+  instance().propSet().getMD5(md5, myProperties);
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
@@ -74,6 +65,16 @@ void RomInfoWidget::clearProperties()
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::reloadProperties(const FilesystemNode& node)
+{
+  // The ROM may have changed since we were last in the browser, either
+  // by saving a different image or through a change in video renderer,
+  // so we reload the properties
+  if(myHaveProperties)
+    parseProperties(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,8 +141,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   try
   {
     ByteBuffer image;
-    string md5 = myProperties.get(PropType::Cart_MD5);
-    size_t size = 0;
+    string md5 = "";  size_t size = 0;
 
     if(node.exists() && !node.isDirectory() &&
       (image = instance().openROM(node, md5, size)) != nullptr)
