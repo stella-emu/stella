@@ -29,7 +29,7 @@ CartridgeE0::CartridgeE0(const ByteBuffer& image, size_t size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::reset()
 {
-  // Setup segments to some default slices
+  // Setup segments to some default banks
   if(randomStartBank())
   {
     bank(mySystem->randGenerator().next() % 8, 0);

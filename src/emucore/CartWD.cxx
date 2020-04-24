@@ -28,7 +28,7 @@ CartridgeWD::CartridgeWD(const ByteBuffer& image, size_t size,
   // Copy the ROM image into my buffer
   if (mySize == 8_KB + 3)
   {
-    // swap slices 2 & 3 of bad dump and correct size
+    // swap banks 2 & 3 of bad dump and correct size
     std::copy_n(image.get() + 1_KB * 3, 1_KB * 1, myImage.get() + 1_KB * 2);
     std::copy_n(image.get() + 1_KB * 2, 1_KB * 1, myImage.get() + 1_KB * 3);
     mySize = 8_KB;
