@@ -18,6 +18,9 @@
 
   * Fixed bug in debugger for 3E scheme when displaying active RAM bank.
 
+  * Fixed bug in "Dragon Defender" ROM being misconfigured for Mindlink
+    controller.
+
 -Have fun!
 
 

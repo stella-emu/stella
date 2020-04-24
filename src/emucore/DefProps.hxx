@@ -2090,7 +2090,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 21> DefProps = {{
   { "95a69cf8c08ef1522b050529464f0bca", "", "", "Grid Pattern Demo 1 (20-12-2002) (CT)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "95a89d1bf767d7cc9d0d5093d579ba61", "PlayAround - J.H.M.", "204", "Lady in Wading (1982) (PlayAround)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "95e1d834c57cdd525dd0bd6048a57f7b", "Atari, Bill Aspromonte, John Russell, Michael Sierchio, Robert Zdybel", "CX26114", "Pigs in Space (1983) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
-  { "95e542a7467c94b1e4ab24a3ebe907f1", "Suntek", "SS-021", "Dragon Defender (1983) (Suntek) (PAL)", "", "", "", "", "", "", "", "", "", "MINDLINK", "", "", "", "", "", "YES", "" },
+  { "95e542a7467c94b1e4ab24a3ebe907f1", "Suntek", "SS-021", "Dragon Defender (1983) (Suntek) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "95fd6097dc27c20666f039cfe34f7c69", "", "", "Oh No! (Version 1) (17-01-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "961112b74a920a5242e233480326c356", "Activision, Alan Miller", "AG-007, CAG-007", "Tennis (1981) (Activision) (16K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "962ffd3eaf865230a7a312b80e6c5cfd", "Imagic, Wilfredo 'Willy' Aguilar, Michael Becker, Rob Fulop", "13205", "Fathom (1983) (Imagic) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
