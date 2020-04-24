@@ -189,7 +189,7 @@ class Cartridge : public Device
       cases where ROMs have 2K blocks in some preset area, the bankCount
       is the number of such blocks.  Finally, in some esoteric schemes,
       the number of ways that the addressing can change (multiple ROM and
-      RAM slices at multiple access points) is so complicated that the
+      RAM segments at multiple access points) is so complicated that the
       cart will report having only one 'virtual' bank.
     */
     virtual uInt16 romBankCount() const { return 1; }

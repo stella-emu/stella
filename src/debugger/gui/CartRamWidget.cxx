@@ -47,7 +47,7 @@ CartRamWidget::CartRamWidget(
   int xpos = 2, ypos = 8;
 
   // Add RAM size
-  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "RAM Size ");
+  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "RAM size ");
 
   uInt32 ramsize = cartDebug.internalRamSize();
   buf << ramsize << " bytes";

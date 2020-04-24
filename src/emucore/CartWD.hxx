@@ -30,8 +30,8 @@ class System;
   This is the cartridge class for a "Wickstead Design" prototype cart.
   The ROM has 64 bytes of RAM.
   In this bankswitching scheme the 2600's 4K cartridge address space
-  is broken into four 1K segments.  The desired arrangement of 1K slices
-  is selected by accessing $30 - $3F of TIA address space.  The slices
+  is broken into four 1K segments.  The desired arrangement of 1K banks
+  is selected by accessing $30 - $3F of TIA address space.  The banks
   are mapped into all 4 segments at once as follows:
 
     $0030, $0038: 0,0,1,3

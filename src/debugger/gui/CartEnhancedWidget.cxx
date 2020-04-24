@@ -233,7 +233,7 @@ string CartridgeEnhancedWidget::bankState()
     }
     return buf.str();
   }
-  return "0 (non-bankswitched)";
+  return "non-bankswitched";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -339,18 +339,18 @@ string CartridgeEnhancedWidget::internalRamDescription()
   {
     desc << indent << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
       << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask))
-      << " used for read Access\n";
+      << " used for read access\n";
   }
 
   desc << indent << "$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myWriteOffset)
     << " - $" << (ADDR_BASE | (myCart.myWriteOffset + myCart.myRamMask))
-    << " used for write Access";
+    << " used for write access";
 
   if(myCart.myReadOffset > myCart.myWriteOffset)
   {
     desc << indent << "\n$" << Common::Base::HEX4 << (ADDR_BASE | myCart.myReadOffset)
       << " - $" << (ADDR_BASE | (myCart.myReadOffset + myCart.myRamMask))
-      << " used for read Access";
+      << " used for read access";
   }
 
   return desc.str();

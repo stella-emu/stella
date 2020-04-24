@@ -75,6 +75,7 @@ class CartridgeDPCWidget : public CartDebugWidget
     const ByteArray& internalRamCurrent(int start, int count) override;
     void internalRamSetValue(int addr, uInt8 value) override;
     uInt8 internalRamGetValue(int addr) override;
+    string tabLabel() override { return " DPC Display Data "; }
     // end of functions for Cartridge RAM tab
 
     // Following constructors and assignment operators not supported

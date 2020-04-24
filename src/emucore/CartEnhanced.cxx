@@ -48,7 +48,7 @@ void CartridgeEnhanced::install(System& system)
 
   createRomAccessArrays(mySize + (myRomOffset > 0 ? 0 : myRamSize));
 
-  // Allocate array for the current bank segments slices
+  // Allocate array for the segment's current bank offset
   myCurrentSegOffset = make_unique<uInt32[]>(myBankSegs);
 
   // Allocate array for the RAM area

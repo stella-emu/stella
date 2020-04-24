@@ -27,17 +27,18 @@ CartridgeE78KWidget::CartridgeE78KWidget(
   : CartridgeMNetworkWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   ostringstream info;
-  info << "E78K cartridge, 4 2K slices ROM + 2 1K RAM\n"
-       << "Lower 2K accessible @ $F000 - $F7FF\n"
-       << "  Slice 0 - 2 of ROM (hotspots $FE4 to $FE6)\n"
-       << "  Slice 7 (1K) of RAM (hotspot $FE7)\n"
-       << "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
-       << "256B RAM accessible @ $F800 - $F9FF\n"
-       << "  Hotspots $FE8 - $FEB (256B of RAM slice 1)\n"
-       << "    $F900 - $F9FF (R), $F800 - $F8FF (W)\n"
-       << "Upper 1.5K ROM accessible @ $FA00 - $FFFF\n"
-       << "  Always points to last 1.5K of ROM\n"
-       << "Startup slices = 0 / 0 or undetermined\n";
+  info << "E78K cartridge, four 2K banks ROM + 2K RAM,\n"
+    << "  mapped into three segments\n"
+    << "Lower 2K accessible @ $F000 - $F7FF\n"
+    << "  ROM banks 0 - 2 (hotspots $FFE4 to $FFE6)\n"
+    << "  1K RAM bank 3 (hotspot $FFE7)\n"
+    << "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
+    << "256B RAM accessible @ $F800 - $F9FF\n"
+    << "  RAM banks 0 - 3 (hotspots $FFE8 - $FFEB)\n"
+    << "    $F900 - $F9FF (R), $F800 - $F8FF (W)\n"
+    << "Upper 1.5K ROM accessible @ $FA00 - $FFFF\n"
+    << "  Always points to last 1.5K of ROM\n"
+    << "Startup segments = 0 / 0 or undetermined\n";
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler
@@ -53,7 +54,7 @@ CartridgeE78KWidget::CartridgeE78KWidget(
 const char* CartridgeE78KWidget::getSpotLower(int idx)
 {
   static constexpr std::array<const char*, 4> spot_lower = {
-    "0 - ROM ($FFE4)", "1 - ROM ($FFE5)", "2 - ROM ($FFE6)", "3 - RAM ($FFE7)"
+    "#0 - ROM ($FFE4)", "#1 - ROM ($FFE5)", "#2 - ROM ($FFE6)", "#3 - RAM ($FFE7)"
   };
 
   return spot_lower[idx];
@@ -63,7 +64,7 @@ const char* CartridgeE78KWidget::getSpotLower(int idx)
 const char* CartridgeE78KWidget::getSpotUpper(int idx)
 {
   static constexpr std::array<const char*, 4> spot_upper = {
-    "0 - RAM ($FFE8)", "1 - RAM ($FFE9)", "2 - RAM ($FFEA)", "3 - RAM ($FFEB)"
+    "#0 - RAM ($FFE8)", "#1 - RAM ($FFE9)", "#2 - RAM ($FFEA)", "#3 - RAM ($FFEB)"
   };
 
   return spot_upper[idx];
