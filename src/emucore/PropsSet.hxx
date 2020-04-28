@@ -49,8 +49,10 @@ class PropertiesSet
       searchable list.
 
       @param filename  Full pathname of input file to use
+      @param save      Indicates whether the properties should be saved
+                       when the program exits
     */
-    void load(const string& filename);
+    void load(const string& filename, bool save = true);
 
     /**
       Save properties to the specified file.
@@ -77,19 +79,6 @@ class PropertiesSet
     */
     bool getMD5(const string& md5, Properties& properties,
                 bool useDefaults = false) const;
-
-    /**
-      Get the property from the set with the given MD5, at the same time
-      checking if it exists.  If it doesn't, insert a temporary copy into
-      the set.
-
-      @param rom         The ROM file used to calculate the MD5
-      @param md5         The md5 of the property to get
-      @param properties  The properties with the given MD5, or the default
-                         properties if not found
-    */
-    void getMD5WithInsert(const FilesystemNode& rom, const string& md5,
-                          Properties& properties);
 
     /**
       Insert the properties into the set.  If a duplicate is inserted
