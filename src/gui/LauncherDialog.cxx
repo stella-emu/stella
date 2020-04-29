@@ -60,25 +60,26 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   myUseMinimalUI = instance().settings().getBool("minimal_ui");
 
   const GUI::Font& font = instance().frameBuffer().launcherFont();
-
   const int fontWidth = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
-            bheight = myUseMinimalUI ? lineHeight - 4 : lineHeight + 4,
-            LBL_GAP = fontWidth,
-            HBORDER = 10,//fontWidth * 1.25,
+            HBORDER = fontWidth * 1.25,
+            VBORDER = fontHeight / 2,
             BUTTON_GAP = fontWidth,
-            bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
-  int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0;
-  WidgetArray wid;
+            LBL_GAP = fontWidth,
+            VGAP = fontHeight / 4,
+            buttonHeight = myUseMinimalUI ? lineHeight - VGAP * 2: lineHeight * 1.25,
+            buttonWidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
 
+  int xpos = HBORDER, ypos = VBORDER, lwidth = 0, lwidth2 = 0;
+  WidgetArray wid;
   string lblRom = "Select a ROM from the list" + ELLIPSIS;
   const string& lblFilter = "Filter";
   const string& lblAllFiles = "Show all files";
   const string& lblFound = "XXXX items found";
 
   lwidth = font.getStringWidth(lblRom);
-  lwidth2 = font.getStringWidth(lblAllFiles) + 20;
+  lwidth2 = font.getStringWidth(lblAllFiles) + CheckboxWidget::boxSize(font);
   int lwidth3 = font.getStringWidth(lblFilter);
   int lwidth4 = font.getStringWidth(lblFound);
 
@@ -97,14 +98,12 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   #if defined(RETRON77)
     ver << " for RetroN 77";
   #endif
-    ypos += 8;
-    new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
+    new StaticTextWidget(this, font, 0, ypos, _w, fontHeight,
                          ver.str(), TextAlign::Center);
-    ypos += fontHeight - 4;
+    ypos += lineHeight;
   }
 
   // Show the header
-  xpos += HBORDER;  ypos += 8;
   new StaticTextWidget(this, font, xpos, ypos, lblRom);
   // Shop the files counter
   xpos = _w - HBORDER - lwidth4;
@@ -132,12 +131,12 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add list with game titles
   // Before we add the list, we need to know the size of the RomInfoWidget
-  int listHeight = _h - 43 - bheight - fontHeight - lineHeight;
+  int listHeight = _h - VBORDER * 2 - buttonHeight - lineHeight * 2 - VGAP * 6;
   float imgZoom = getRomInfoZoom(listHeight);
   int romWidth = imgZoom * TIAConstants::viewableWidth;
-  if(romWidth > 0) romWidth += 10;
-  int listWidth = _w - (romWidth > 0 ? romWidth+8 : 0) - 20;
-  xpos = HBORDER;  ypos += lineHeight + 4;
+  if(romWidth > 0) romWidth += HBORDER;
+  int listWidth = _w - (romWidth > 0 ? romWidth + fontWidth : 0) - HBORDER * 2;
+  xpos = HBORDER;  ypos += lineHeight + VGAP;
   myList = new FileListWidget(this, font, xpos, ypos, listWidth, listHeight);
   myList->setEditable(false);
   myList->setListMode(FilesystemNode::ListMode::All);
@@ -146,14 +145,14 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   // Add ROM info area (if enabled)
   if(romWidth > 0)
   {
-    xpos += myList->getWidth() + 8;
+    xpos += myList->getWidth() + fontWidth;
 
     // Initial surface size is the same as the viewable area
     Common::Size imgSize(TIAConstants::viewableWidth*imgZoom,
                          TIAConstants::viewableHeight*imgZoom);
 
     // Calculate font area, and in the process the font that can be used
-    Common::Size fontArea(romWidth - 16, myList->getHeight() - imgSize.h - 12);
+    Common::Size fontArea(romWidth - fontWidth * 2, myList->getHeight() - imgSize.h - VGAP * 3);
 
     setRomInfoFont(fontArea);
     myRomInfoWidget = new RomInfoWidget(this, *myROMInfoFont,
@@ -162,7 +161,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add textfield to show current directory
   xpos = HBORDER;
-  ypos += myList->getHeight() + 8;
+  ypos += myList->getHeight() + VGAP * 2;
   lwidth = font.getStringWidth("Path") + LBL_GAP;
   myDirLabel = new StaticTextWidget(this, font, xpos, ypos+2, lwidth, fontHeight,
                                     "Path", TextAlign::Left);
@@ -174,43 +173,43 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   if(!myUseMinimalUI)
   {
     // Add four buttons at the bottom
-    xpos = HBORDER;  ypos += myDir->getHeight() + 8;
+    xpos = HBORDER;  ypos = _h - VBORDER - buttonHeight;
   #ifndef BSPF_MACOS
-    myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
+    myStartButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
 
-    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
-    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
+    xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
+    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
 
-    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
-    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
+    xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
 
-    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
-    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 4) / 4, bheight,
+    xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
+    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 4) / 4, buttonHeight,
                                     "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
   #else
-    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 0) / 4, bheight,
+    myQuitButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 0) / 4, buttonHeight,
                                     "Quit", kQuitCmd);
     wid.push_back(myQuitButton);
 
-    xpos += (bwidth + 0) / 4 + BUTTON_GAP;
-    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 1) / 4, bheight,
+    xpos += (buttonWidth + 0) / 4 + BUTTON_GAP;
+    myOptionsButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 1) / 4, buttonHeight,
                                        "Options" + ELLIPSIS, kOptionsCmd);
     wid.push_back(myOptionsButton);
 
-    xpos += (bwidth + 1) / 4 + BUTTON_GAP;
-    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 2) / 4, bheight,
+    xpos += (buttonWidth + 1) / 4 + BUTTON_GAP;
+    myPrevDirButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 2) / 4, buttonHeight,
                                        "Go Up", kPrevDirCmd);
     wid.push_back(myPrevDirButton);
 
-    xpos += (bwidth + 2) / 4 + BUTTON_GAP;
-    myStartButton = new ButtonWidget(this, font, xpos, ypos, (bwidth + 3) / 4, bheight,
+    xpos += (buttonWidth + 2) / 4 + BUTTON_GAP;
+    myStartButton = new ButtonWidget(this, font, xpos, ypos, (buttonWidth + 3) / 4, buttonHeight,
                                      "Select", kLoadROMCmd);
     wid.push_back(myStartButton);
   #endif
@@ -223,7 +222,7 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
   addToFocusList(wid);
 
   // Create (empty) context menu for ROM list options
-  myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().font(), EmptyVarList);
+  myMenu = make_unique<ContextMenu>(this, osystem.frameBuffer().launcherFont(), EmptyVarList);
 
   // Create global props dialog, which is used to temporarily override
   // ROM properties
@@ -363,28 +362,33 @@ float LauncherDialog::getRomInfoZoom(int listHeight) const
 
   if(zoom > 0.F)
   {
-    // upper zoom limit - at least 24 launchers chars/line and 8 ROM info lines
-    if((_w - 58 - zoom * TIAConstants::viewableWidth)
-       / instance().frameBuffer().launcherFont().getMaxCharWidth() < MIN_LAUNCHER_CHARS)
+    const GUI::Font& font = instance().frameBuffer().launcherFont();
+    const GUI::Font& smallFont = instance().frameBuffer().smallFont();
+    const int fontWidth = font.getMaxCharWidth(),
+              HBORDER = fontWidth * 1.25;
+
+    // upper zoom limit - at least 24 launchers chars/line and 7 + 4 ROM info lines
+    if((_w - (HBORDER * 2 + fontWidth + 30) - zoom * TIAConstants::viewableWidth)
+       / font.getMaxCharWidth() < MIN_LAUNCHER_CHARS)
     {
-      zoom = float(_w - 58 - MIN_LAUNCHER_CHARS * instance().frameBuffer().launcherFont().getMaxCharWidth())
+      zoom = float(_w - (HBORDER * 2 + fontWidth + 30) - MIN_LAUNCHER_CHARS * font.getMaxCharWidth())
         / TIAConstants::viewableWidth;
     }
     if((listHeight - 12 - zoom * TIAConstants::viewableHeight) <
-       MIN_ROMINFO_ROWS * instance().frameBuffer().smallFont().getLineHeight() +
-       MIN_ROMINFO_LINES * instance().frameBuffer().smallFont().getFontHeight())
+       MIN_ROMINFO_ROWS * smallFont.getLineHeight() +
+       MIN_ROMINFO_LINES * smallFont.getFontHeight())
     {
       zoom = float(listHeight - 12 -
-                   MIN_ROMINFO_ROWS * instance().frameBuffer().smallFont().getLineHeight() -
-                   MIN_ROMINFO_LINES * instance().frameBuffer().smallFont().getFontHeight())
+                   MIN_ROMINFO_ROWS * smallFont.getLineHeight() -
+                   MIN_ROMINFO_LINES * smallFont.getFontHeight())
         / TIAConstants::viewableHeight;
     }
 
-    // lower zoom limit - at least 24 ROM info chars/line
+    // lower zoom limit - at least 30 ROM info chars/line
     if((zoom * TIAConstants::viewableWidth)
-       / instance().frameBuffer().smallFont().getMaxCharWidth() < MIN_ROMINFO_CHARS + 6)
+       / smallFont.getMaxCharWidth() < MIN_ROMINFO_CHARS + 6)
     {
-      zoom = float(MIN_ROMINFO_CHARS * instance().frameBuffer().smallFont().getMaxCharWidth() + 6)
+      zoom = float(MIN_ROMINFO_CHARS * smallFont.getMaxCharWidth() + 6)
         / TIAConstants::viewableWidth;
     }
   }

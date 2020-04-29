@@ -95,6 +95,7 @@ class ContextMenu : public Dialog, public CommandSender
     bool handleJoyHat(int stick, int hat, JoyHatDir vahdirlue, int button) override;
     void handleEvent(Event::Type e);
 
+    void setArrows();
     void drawDialog() override;
 
     void recalc(const Common::Rect& image);
@@ -128,6 +129,11 @@ class ContextMenu : public Dialog, public CommandSender
 
     uInt32 _xorig{0}, _yorig{0};
     uInt32 _maxWidth{0};
+
+    int _textOfs{0};
+    int _arrowSize{0};
+    const uInt32* _upImg{nullptr};
+    const uInt32* _downImg{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

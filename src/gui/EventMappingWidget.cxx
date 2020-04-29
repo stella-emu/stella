@@ -45,14 +45,14 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   const int fontHeight   = font.getFontHeight(),
             lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Defaults") + 10,
+            buttonWidth  = font.getStringWidth("Defaults") + fontWidth * 1.25,
             buttonHeight = font.getLineHeight() * 1.25;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
   const int VGAP = fontHeight / 4;
   const int ACTION_LINES = 2;
   int xpos = HBORDER, ypos = VBORDER;
-  const int listWidth = _w - buttonWidth - HBORDER * 2 - 8;
+  const int listWidth = _w - buttonWidth - HBORDER * 2 - fontWidth;
   int listHeight = _h - (2 + ACTION_LINES) * lineHeight - VBORDER + 2;
 
   if(mode == EventMode::kEmulationMode)
@@ -72,8 +72,8 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     VarList::push_back(items, "Debug", Event::Group::Debug);
 
     myFilterPopup = new PopUpWidget(boss, font, xpos, ypos,
-                                    listWidth - font.getStringWidth("Events ") - 23, lineHeight,
-                                    items, "Events ", 0, kFilterCmd);
+                                    listWidth - font.getStringWidth("Events ") - PopUpWidget::dropDownWidth(font),
+                                    lineHeight, items, "Events ", 0, kFilterCmd);
     myFilterPopup->setTarget(this);
     addFocusWidget(myFilterPopup);
     ypos += lineHeight * 1.5;
@@ -136,7 +136,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                            fontHeight, "Action", TextAlign::Left);
 
   myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + fontWidth, ypos,
-                                    _w - xpos - t->getWidth() - fontWidth - HBORDER,
+                                    _w - xpos - t->getWidth() - fontWidth - HBORDER + 2,
                                     lineHeight + font.getFontHeight() * (ACTION_LINES - 1), "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);
