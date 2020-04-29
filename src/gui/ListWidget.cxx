@@ -39,11 +39,12 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
   _rows = h / _fontHeight;
 
   // Set real dimensions
-  _w = w - kScrollBarWidth;
+  _w = w - ScrollBarWidget::scrollBarWidth(_font);
   _h = h + 2;
 
   // Create scrollbar and attach to the list
-  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
+  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
+                                   ScrollBarWidget::scrollBarWidth(_font), _h);
   _scrollBar->setTarget(this);
 }
 
@@ -144,7 +145,7 @@ void ListWidget::scrollTo(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ListWidget::getWidth() const
 {
-  return _w + kScrollBarWidth;
+  return _w + ScrollBarWidget::scrollBarWidth(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

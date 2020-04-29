@@ -49,15 +49,19 @@
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
                              GuiObject* boss, int max_w, int max_h, Menu::AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
+    myBoss(boss),
     myMode(mode)
 {
   // do not show basic settings options in debugger
   bool minSettings = osystem.settings().getBool("minimal_ui") && mode != Menu::AppMode::debugger;
-  const int buttonHeight = _font.getLineHeight() + 6,
-    GAP = buttonHeight > 26 ? 5 : 4,
+  const int lineHeight = _font.getLineHeight(),
+    fontWidth    = _font.getMaxCharWidth(),
+    fontHeight   = _font.getFontHeight(),
+    buttonHeight = _font.getLineHeight() * 1.25,
+    GAP = fontWidth / 2,
     rowHeight = buttonHeight + GAP;
-  const int VBORDER = GAP * 2 + 2;
-  const int HBORDER = GAP * 2 + 2;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
   int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + GAP * 5;
 
   _w = 2 * buttonWidth + HBORDER * 3;
@@ -243,8 +247,20 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kUsrIfaceCmd:
+    {
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      uInt32 w = 0, h = 0;
+
+      if(myUIDialog == nullptr || myUIDialog->shouldResize(w, h))
+      {
+        myUIDialog = make_unique<UIDialog>(instance(), parent(),
+                                           instance().frameBuffer().font(), myBoss, w, h);
+      }
+
       myUIDialog->open();
       break;
+    }
 
     case kSnapCmd:
     {

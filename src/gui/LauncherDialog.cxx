@@ -61,14 +61,14 @@ LauncherDialog::LauncherDialog(OSystem& osystem, DialogContainer& parent,
 
   const GUI::Font& font = instance().frameBuffer().launcherFont();
 
-  const int HBORDER = 10;
-  const int BUTTON_GAP = 8;
   const int fontWidth = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
-            bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1)),
             bheight = myUseMinimalUI ? lineHeight - 4 : lineHeight + 4,
-            LBL_GAP = fontWidth;
+            LBL_GAP = fontWidth,
+            HBORDER = 10,//fontWidth * 1.25,
+            BUTTON_GAP = fontWidth,
+            bwidth  = (_w - 2 * HBORDER - BUTTON_GAP * (4 - 1));
   int xpos = 0, ypos = 0, lwidth = 0, lwidth2 = 0;
   WidgetArray wid;
 

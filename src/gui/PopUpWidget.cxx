@@ -187,7 +187,7 @@ void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::drawWidget(bool hilite)
 {
-  // Little down arrow
+  // Small down arrow
   static constexpr std::array<uInt32, 8> down_arrow = {
     0b100000001,
     0b110000011,
@@ -198,6 +198,21 @@ void PopUpWidget::drawWidget(bool hilite)
     0b000010000,
     0b000000000
   };
+  // Large down arrow
+  static constexpr std::array<uInt32, 11> down_arrow_large = {
+    0b00000000000,
+    0b10000000001,
+    0b11000000011,
+    0b11100000111,
+    0b11110001111,
+    0b01111011110,
+    0b00111111100,
+    0b00011111000,
+    0b00001110000,
+    0b00000100000,
+    0b00000000000
+  };
+
 
 //cerr << "PopUpWidget::drawWidget\n";
   FBSurface& s = dialog().surface();

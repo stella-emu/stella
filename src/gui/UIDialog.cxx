@@ -48,12 +48,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() + 4;
-
-  const int VBORDER = 8;
-  const int HBORDER = 10;
-  const int INDENT = 16;
-  const int V_GAP = 4;
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
   int xpos, ypos, tabID;
   int lwidth, pwidth, bwidth;
   WidgetArray wid;
@@ -61,11 +60,14 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   const Common::Size& ds = instance().frameBuffer().desktopSize();
 
   // Set real dimensions
-  setSize(64 * fontWidth + HBORDER * 2, 11 * (lineHeight + V_GAP) + V_GAP * 9 + VBORDER + _th,
+  setSize(64 * fontWidth + HBORDER * 2,
+          _th + VGAP * 3 + lineHeight + 10 * (lineHeight + VGAP) + VGAP * 2 + buttonHeight + VBORDER * 3,
           max_w, max_h);
 
   // The tab widget
-  myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2*2, _h - _th - buttonHeight - 20);
+  myTab = new TabWidget(this, font, 2, VGAP + _th,
+                        _w - 2*2,
+                        _h - _th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
   //////////////////////////////////////////////////////////
@@ -85,12 +87,27 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    items, "Theme      ", lwidth);
   wid.push_back(myPalettePopup);
+  ypos += lineHeight + VGAP;
+
+
+  // Dialog font
+  items.clear();
+  VarList::push_back(items, "Small", "small");            //  8x13
+  VarList::push_back(items, "Low Medium", "low_medium");  //  9x15
+  VarList::push_back(items, "Medium", "medium");          //  9x18
+  VarList::push_back(items, "Large (10pt)", "large");     // 10x20
+  VarList::push_back(items, "Large (12pt)", "large12");   // 12x24
+  VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
+  VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
+  myDialogFontPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                      items, "Dialogs font (*)", lwidth);
+  wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
-  myHidpiWidget = new CheckboxWidget(myTab, font, myPalettePopup->getRight() + 40,
-                                     ypos, "HiDPI mode (*)");
+  myHidpiWidget = new CheckboxWidget(myTab, font, myDialogFontPopup->getRight() + fontWidth * 5,
+                                     ypos + 1, "HiDPI mode (*)");
   wid.push_back(myHidpiWidget);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Dialog position
   items.clear();
@@ -100,14 +117,14 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Right bottom", 3);
   VarList::push_back(items, "Left bottom", 4);
   myPositionPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                    items, "Dialogs position ", lwidth);
+                                    items, "Dialogs position", lwidth);
   wid.push_back(myPositionPopup);
-  ypos += lineHeight + V_GAP * 2;
+  ypos += lineHeight + VGAP * 2;
 
   // Confirm dialog when exiting emulation
   myConfirmExitWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Confirm exiting emulation");
   wid.push_back(myConfirmExitWidget);
-  ypos += lineHeight + V_GAP * 3;
+  ypos += lineHeight + VGAP * 3;
 
   // Delay between quick-selecting characters in ListWidget
   int swidth = myPalettePopup->getWidth() - lwidth;
@@ -119,7 +136,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myListDelaySlider->setStepValue(50);
   myListDelaySlider->setTickmarkIntervals(5);
   wid.push_back(myListDelaySlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Number of lines a mouse wheel will scroll
   myWheelLinesSlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
@@ -129,7 +146,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myWheelLinesSlider->setMaxValue(10);
   myWheelLinesSlider->setTickmarkIntervals(3);
   wid.push_back(myWheelLinesSlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Mouse double click speed
   myDoubleClickSlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
@@ -140,7 +157,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myDoubleClickSlider->setStepValue(50);
   myDoubleClickSlider->setTickmarkIntervals(8);
   wid.push_back(myDoubleClickSlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Initial delay before controller input will start repeating
   myControllerDelaySlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
@@ -151,7 +168,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myControllerDelaySlider->setStepValue(100);
   myControllerDelaySlider->setTickmarkIntervals(4);
   wid.push_back(myControllerDelaySlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Controller repeat rate
   myControllerRateSlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
@@ -164,10 +181,11 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myControllerRateSlider);
 
   // Add message concerning usage
-  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
-  lwidth = ifont.getStringWidth("(*) Change requires application restart");
-  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w - 20), fontHeight,
-    "(*) Change requires application restart");
+  ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
+  lwidth = ifont.getStringWidth("(*) Changes require application restart");
+  new StaticTextWidget(myTab, ifont, xpos, ypos,
+                       std::min(lwidth, _w - HBORDER * 2), ifont.getFontHeight(),
+                       "(*) Changes require application restart");
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
@@ -185,18 +203,18 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                      "ROM path" + ELLIPSIS, kChooseRomDirCmd);
   wid.push_back(romButton);
-  xpos = romButton->getRight() + 8;
-  myRomPath = new EditTextWidget(myTab, font, xpos, ypos + 1,
+  xpos = romButton->getRight() + fontWidth;
+  myRomPath = new EditTextWidget(myTab, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
                                  _w - xpos - HBORDER - 2, lineHeight, "");
   wid.push_back(myRomPath);
 
-  xpos = _w - HBORDER - font.getStringWidth("Follow Launcher path") - 24;
-  ypos += lineHeight + V_GAP * 2;
+  xpos = _w - HBORDER - font.getStringWidth("Follow Launcher path") - CheckboxWidget::prefixSize(font);
+  ypos += lineHeight + VGAP * 2;
   myFollowLauncherWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Follow Launcher path");
   wid.push_back(myFollowLauncherWidget);
 
   xpos = HBORDER;
-  ypos += V_GAP * 2;
+  ypos += VGAP * 2;
 
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher width ",
@@ -207,7 +225,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // one tickmark every ~100 pixel
   myLauncherWidthSlider->setTickmarkIntervals((ds.w - FBMinimum::Width + 50) / 100);
   wid.push_back(myLauncherWidthSlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher height ",
                                             lwidth, 0, 6 * fontWidth, "px");
@@ -217,7 +235,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // one tickmark every ~100 pixel
   myLauncherHeightSlider->setTickmarkIntervals((ds.h - FBMinimum::Height + 50) / 100);
   wid.push_back(myLauncherHeightSlider);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Launcher font
   pwidth = font.getStringWidth("2x (1000x760)");
@@ -233,7 +251,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
     new PopUpWidget(myTab, font, xpos, ypos + 1, pwidth, lineHeight, items,
                     "Launcher font ", lwidth);
   wid.push_back(myLauncherFontPopup);
-  ypos += lineHeight + V_GAP * 4;
+  ypos += lineHeight + VGAP * 4;
 
   // ROM launcher info/snapshot viewer
   myRomViewerSize = new SliderWidget(myTab, font, xpos, ypos, "ROM info width  ",
@@ -245,19 +263,20 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myRomViewerSize->setTickmarkIntervals((myRomViewerSize->getMaxValue() - myRomViewerSize->getMinValue()) / 20);
 
   wid.push_back(myRomViewerSize);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   // Snapshot path (load files)
   xpos = HBORDER + INDENT;
-  bwidth = font.getStringWidth("Image path" + ELLIPSIS) + 20 + 1;
+  bwidth = font.getStringWidth("Image path" + ELLIPSIS) + fontWidth * 2 + 1;
   myOpenBrowserButton = new ButtonWidget(myTab, font, xpos, ypos, bwidth, buttonHeight,
                                          "Image path" + ELLIPSIS, kChooseSnapLoadDirCmd);
   wid.push_back(myOpenBrowserButton);
 
-  mySnapLoadPath = new EditTextWidget(myTab, font, HBORDER + lwidth, ypos + 1,
+  mySnapLoadPath = new EditTextWidget(myTab, font, HBORDER + lwidth,
+                                      ypos + (buttonHeight - lineHeight) / 2 - 1,
                                       _w - lwidth - HBORDER * 2 - 2, lineHeight, "");
   wid.push_back(mySnapLoadPath);
-  ypos += lineHeight + V_GAP * 4;
+  ypos += lineHeight + VGAP * 4;
 
   // Exit to Launcher
   xpos = HBORDER;
@@ -266,9 +285,10 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
 
   // Add message concerning usage
   xpos = HBORDER;
-  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
+  ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
   lwidth = ifont.getStringWidth("(*) Changes require application restart");
-  new StaticTextWidget(myTab, ifont, xpos, ypos, std::min(lwidth, _w - 20), fontHeight,
+  new StaticTextWidget(myTab, ifont, xpos, ypos,
+                       std::min(lwidth, _w - HBORDER * 2), ifont.getFontHeight(),
                        "(*) Changes require application restart");
 
   // Add items for tab 1
@@ -319,8 +339,8 @@ void UIDialog::loadConfig()
   myFollowLauncherWidget->setState(settings.getBool("followlauncher"));
 
   // Launcher font
-  const string& font = settings.getString("launcherfont");
-  myLauncherFontPopup->setSelected(font, "medium");
+  const string& launcherFont = settings.getString("launcherfont");
+  myLauncherFontPopup->setSelected(launcherFont, "medium");
 
   // ROM launcher info viewer
   float zoom = instance().settings().getFloat("romviewer");
@@ -351,6 +371,10 @@ void UIDialog::loadConfig()
 
   // Confirm dialog when exiting emulation
   myConfirmExitWidget->setState(settings.getBool("confirmexit"));
+
+  // Dialog font
+  const string& dialogFont = settings.getString("dialogfont");
+  myDialogFontPopup->setSelected(dialogFont, "medium");
 
   // Dialog position
   myPositionPopup->setSelected(settings.getString("dialogpos"), "0");
@@ -398,7 +422,7 @@ void UIDialog::saveConfig()
 
   // Launcher font
   settings.setValue("launcherfont",
-    myLauncherFontPopup->getSelectedTag().toString());
+                    myLauncherFontPopup->getSelectedTag().toString());
 
   // ROM launcher info viewer
   int w = myLauncherWidthSlider->getValue();
@@ -418,6 +442,10 @@ void UIDialog::saveConfig()
 
   // Enable HiDPI mode
   settings.setValue("hidpi", myHidpiWidget->getState());
+
+  // Dialog font
+  settings.setValue("dialogfont",
+                    myDialogFontPopup->getSelectedTag().toString());
 
   // Dialog position
   settings.setValue("dialogpos", myPositionPopup->getSelectedTag().toString());
@@ -458,6 +486,7 @@ void UIDialog::setDefaults()
     case 0:  // Misc. options
       myPalettePopup->setSelected("standard");
       myHidpiWidget->setState(false);
+      myDialogFontPopup->setSelected("medium", "");
       myPositionPopup->setSelected("0");
       myConfirmExitWidget->setState(false);
       myListDelaySlider->setValue(300);

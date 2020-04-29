@@ -66,6 +66,7 @@ class UIDialog : public Dialog, public CommandSender
     // Misc options
     PopUpWidget*      myPalettePopup{nullptr};
     CheckboxWidget*   myHidpiWidget{nullptr};
+    PopUpWidget*      myDialogFontPopup{nullptr};
     PopUpWidget*      myPositionPopup{nullptr};
     CheckboxWidget*   myConfirmExitWidget{nullptr};
     SliderWidget*     myListDelaySlider{nullptr};

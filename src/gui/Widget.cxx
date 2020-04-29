@@ -482,26 +482,28 @@ void ButtonWidget::drawWidget(bool hilite)
 CheckboxWidget::CheckboxWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, const string& label,
                                int cmd)
-  : ButtonWidget(boss, font, x, y, 16, 16, label, cmd)
+  : ButtonWidget(boss, font, x, y, font.getFontHeight() < 24 ? 16 : 24,
+                 font.getFontHeight() < 24 ? 16 : 24, label, cmd)
 {
   _flags = Widget::FLAG_ENABLED;
   _bgcolor = _bgcolorhi = kWidColor;
   _bgcolorlo = kDlgColor;
 
   _editable = true;
+  _boxSize = boxSize(font);
 
   if(label == "")
-    _w = 14;
+    _w = _boxSize;
   else
-    _w = font.getStringWidth(label) + 20;
-  _h = font.getFontHeight() < 14 ? 14 : font.getFontHeight();
+    _w = font.getStringWidth(label) + _boxSize + font.getMaxCharWidth() * 0.75;
+  _h = font.getFontHeight() < _boxSize ? _boxSize : font.getFontHeight();
 
   // Depending on font size, either the font or box will need to be
   // centered vertically
-  if(_h > 14)  // center box
-    _boxY = (_h - 14) / 2;
+  if(_h > _boxSize)  // center box
+    _boxY = (_h - _boxSize) / 2;
   else         // center text
-    _textY = (14 - _font.getFontHeight()) / 2;
+    _textY = (_boxSize - _font.getFontHeight()) / 2;
 
   setFill(CheckboxWidget::FillType::Normal);
 }
@@ -549,7 +551,8 @@ void CheckboxWidget::setEditable(bool editable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheckboxWidget::setFill(FillType type)
 {
-  /* 8x8 checkbox bitmap */
+  /* 10x10 checkbox bitmap */
+  // small versions
   static constexpr std::array<uInt32, 10> checked_img_active = {
     0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,
     0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111,  0b1111111111
@@ -565,17 +568,36 @@ void CheckboxWidget::setFill(FillType type)
     0b1111111111,  0b1111111111,  0b0111111110,  0b0111111110,  0b0001111000
   };
 
+  /* 18x18 checkbox bitmap */
+  // large versions
+  static constexpr std::array<uInt32, 18> checked_img_active_large = {
+    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
+    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
+    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
+    0b111111111111111111,  0b111111111111111111,  0b111111111111111111,  0b111111111111111111,
+    0b111111111111111111,  0b111111111111111111
+  };
+
+  static constexpr std::array<uInt32, 18> checked_img_inactive_large = {
+    0b111111111111111111, 0b111111111111111111, 0b111111111111111111,
+    0b111111110011111111, 0b111111100001111111, 0b111111000000111111, 0b111110000000011111,
+    0b111100000000001111, 0b111000000000000111, 0b111000000000000111, 0b111100000000001111,
+    0b111110000000011111, 0b111111000000111111, 0b111111100001111111, 0b111111110011111111,
+    0b111111111111111111, 0b111111111111111111, 0b111111111111111111
+  };
+
   switch(type)
   {
     case CheckboxWidget::FillType::Normal:
-      _img = checked_img_active.data();
+      _img = _boxSize == 14 ? checked_img_active.data() : checked_img_active_large.data();
       _drawBox = true;
       break;
     case CheckboxWidget::FillType::Inactive:
-      _img = checked_img_inactive.data();
+      _img = _boxSize == 14 ? checked_img_inactive.data() : checked_img_inactive_large.data();
       _drawBox = true;
       break;
     case CheckboxWidget::FillType::Circle:
+      // only used in debugger which only has smaller fonts
       _img = checked_img_circle.data();
       _drawBox = false;
       break;
@@ -601,17 +623,17 @@ void CheckboxWidget::drawWidget(bool hilite)
   bool onTop = _boss->dialog().isOnTop();
 
   if(_drawBox)
-    s.frameRect(_x, _y + _boxY, 14, 14, onTop && hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
+    s.frameRect(_x, _y + _boxY, _boxSize, _boxSize, onTop && hilite && isEnabled() && isEditable() ? kWidColorHi : kColor);
   // Do we draw a square or cross?
-  s.fillRect(_x + 1, _y + _boxY + 1, 12, 12,
+  s.fillRect(_x + 1, _y + _boxY + 1, _boxSize - 2, _boxSize - 2,
       _changed ? onTop ? kDbgChangedColor : kDlgColor :
       isEnabled() && onTop ? _bgcolor : kDlgColor);
   if(_state)
     s.drawBitmap(_img, _x + 2, _y + _boxY + 2, onTop && isEnabled() ? hilite && isEditable() ? kWidColorHi : kCheckColor
-                 : kColor, 10);
+                 : kColor, _boxSize - 4);
 
   // Finally draw the label
-  s.drawString(_font, _label, _x + 20, _y + _textY, _w,
+  s.drawString(_font, _label, _x + prefixSize(_font), _y + _textY, _w,
                onTop && isEnabled() ? kTextColor : kColor);
 
   setDirty();
@@ -640,7 +662,7 @@ SliderWidget::SliderWidget(GuiObject* boss, const GUI::Font& font,
   if(_valueLabelWidth == 0)
     _valueLabelGap = 0;
   if(_valueLabelGap == 0)
-    _valueLabelGap = DEF_LBL_GAP;
+    _valueLabelGap = font.getMaxCharWidth() / 2;
 
   _w = w + _labelWidth + _valueLabelGap + _valueLabelWidth;
 }
@@ -807,7 +829,7 @@ void SliderWidget::drawWidget(bool hilite)
     s.drawString(_font, _label, _x, _y + 2, _labelWidth, isEnabled() ? kTextColor : kColor);
 
   int p = valueToPos(_value),
-    h = _h - 10,
+    h = _h - _font.getFontHeight() / 2 - 1,
     x = _x + _labelWidth,
     y = _y + (_h - h) / 2 + 1;
 

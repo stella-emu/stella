@@ -52,14 +52,16 @@ GameInfoDialog::GameInfoDialog(
     CommandSender(boss)
 {
   const GUI::Font& ifont = instance().frameBuffer().infoFont();
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonHeight = font.getLineHeight() + 4,
+
+  const int lineHeight = font.getLineHeight(),
+            fontHeight = font.getFontHeight(),
+            fontWidth = font.getMaxCharWidth(),
+            buttonHeight = font.getLineHeight() * 1.25,
             infoLineHeight = ifont.getLineHeight();
-  const int VBORDER = 8;
-  const int HBORDER = 10;
-  const int VGAP = 4;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
 
   int xpos, ypos, lwidth, fwidth, pwidth, tabID;
   WidgetArray wid;
@@ -67,19 +69,20 @@ GameInfoDialog::GameInfoDialog(
   StaticTextWidget* t;
 
   // Set real dimensions
-  setSize(55 * fontWidth + 8,
-          8 * (lineHeight + VGAP) + 1 * (infoLineHeight + VGAP) + VBORDER * 2 + _th +
-          buttonHeight + fontHeight + ifont.getLineHeight() + 20,
+  setSize(54 * fontWidth + HBORDER * 2,
+          _th + VGAP * 3 + lineHeight + 8 * (lineHeight + VGAP) + 1 * (infoLineHeight + VGAP) +
+            ifont.getLineHeight() + VGAP + buttonHeight + VBORDER * 2,
           max_w, max_h);
 
   // The tab widget
-  myTab = new TabWidget(this, font, 2, 4 + _th, _w - 2 * 2,
-                        _h - (_th + buttonHeight + 20));
+  myTab = new TabWidget(this, font, 2, 4 + _th,
+                        _w - 2 * 2,
+                        _h - _th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
   //////////////////////////////////////////////////////////////////////////////
   // 1) Emulation properties
-  tabID = myTab->addTab("Emulation");
+  tabID = myTab->addTab(" Emulation ", TabWidget::AUTO_WIDTH);
 
   ypos = VBORDER;
 
@@ -88,12 +91,12 @@ GameInfoDialog::GameInfoDialog(
   items.clear();
   for(uInt32 i = 0; i < uInt32(Bankswitch::Type::NumSchemes); ++i)
     VarList::push_back(items, Bankswitch::BSList[i].desc, Bankswitch::BSList[i].name);
-  myBSType = new PopUpWidget(myTab, font, t->getRight() + 8, ypos,
+  myBSType = new PopUpWidget(myTab, font, t->getRight() + fontWidth, ypos,
                            pwidth, lineHeight, items, "");
   wid.push_back(myBSType);
   ypos += lineHeight + VGAP;
 
-  myTypeDetected = new StaticTextWidget(myTab, ifont, t->getRight() + 8, ypos,
+  myTypeDetected = new StaticTextWidget(myTab, ifont, t->getRight() + fontWidth, ypos,
                                         "CM (SpectraVideo CompuMate) detected");
   ypos += ifont.getLineHeight() + VGAP;
 
@@ -119,7 +122,7 @@ GameInfoDialog::GameInfoDialog(
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myFormat);
 
-  myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + 8, ypos + 4,
+  myFormatDetected = new StaticTextWidget(myTab, ifont, myFormat->getRight() + fontWidth, ypos + 4,
                                           "SECAM60 detected");
 
   // Phosphor
@@ -130,7 +133,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + VGAP * 0;
   myPPBlend = new SliderWidget(myTab, font,
-                               HBORDER + 20, ypos,
+                               HBORDER + fontWidth * 2, ypos,
                                "Blend  ", 0, kPPBlendChanged, 4 * fontWidth, "%");
   myPPBlend->setMinValue(0); myPPBlend->setMaxValue(100);
   myPPBlend->setTickmarkIntervals(2);
@@ -138,7 +141,7 @@ GameInfoDialog::GameInfoDialog(
 
   ypos += lineHeight + VGAP;
   t = new StaticTextWidget(myTab, font, HBORDER, ypos + 1, "V-Center ");
-  myVCenter = new SliderWidget(myTab, font, t->getRight() + 2, ypos, "",
+  myVCenter = new SliderWidget(myTab, font, t->getRight(), ypos, "",
                                0, kVCenterChanged, 7 * fontWidth, "px", 0, true);
 
   myVCenter->setMinValue(TIAConstants::minVcenter);
@@ -151,7 +154,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(mySound);
 
   // Add message concerning usage
-  ypos = myTab->getHeight() - 5 - fontHeight - ifont.getFontHeight() - 10;
+  ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
   new StaticTextWidget(myTab, ifont, HBORDER, ypos,
                        "(*) Changes require a ROM reload");
 
@@ -161,7 +164,7 @@ GameInfoDialog::GameInfoDialog(
   //////////////////////////////////////////////////////////////////////////////
   // 2) Console properties
   wid.clear();
-  tabID = myTab->addTab("Console");
+  tabID = myTab->addTab("  Console  ", TabWidget::AUTO_WIDTH);
 
   xpos = HBORDER; ypos = VBORDER;
   lwidth = font.getStringWidth(GUI::RIGHT_DIFFICULTY + " ");
@@ -204,7 +207,7 @@ GameInfoDialog::GameInfoDialog(
   //////////////////////////////////////////////////////////////////////////////
   // 3) Controller properties
   wid.clear();
-  tabID = myTab->addTab("Controllers");
+  tabID = myTab->addTab(" Controllers ", TabWidget::AUTO_WIDTH);
 
   ctrls.clear();
   VarList::push_back(ctrls, "Auto-detect", "AUTO");
@@ -271,7 +274,7 @@ GameInfoDialog::GameInfoDialog(
   myPaddlesCenter = new StaticTextWidget(myTab, font, xpos, ypos, "Paddles center:");
   ypos += lineHeight + VGAP;
 
-  xpos += 20;
+  xpos += INDENT;
   myPaddleXCenter = new SliderWidget(myTab, font, xpos, ypos - 1, "X ", 0, kPXCenterChanged,
                                      fontWidth * 6, "px", 0 ,true);
   myPaddleXCenter->setMinValue(Paddles::MIN_ANALOG_CENTER);
@@ -288,7 +291,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myPaddleYCenter);
 
   // Mouse
-  xpos = HBORDER + fontWidth * 24 - 20;
+  xpos = HBORDER + fontWidth * 24 - INDENT;
   ypos = myPaddlesCenter->getTop();
   myMouseControl = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Specific mouse axes",
                                       kMCtrlChanged);
@@ -307,7 +310,7 @@ GameInfoDialog::GameInfoDialog(
   VarList::push_back(items, "MindLink 0", static_cast<uInt32>(MouseControl::Type::MindLink0));
   VarList::push_back(items, "MindLink 1", static_cast<uInt32>(MouseControl::Type::MindLink1));
 
-  xpos += 20;
+  xpos += CheckboxWidget::prefixSize(font);
   ypos += lineHeight + VGAP;
   myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                "X-Axis is ");
@@ -318,7 +321,7 @@ GameInfoDialog::GameInfoDialog(
                "Y-Axis is ");
   wid.push_back(myMouseY);
 
-  xpos -= 20; ypos += lineHeight + VGAP;
+  xpos -= CheckboxWidget::prefixSize(font); ypos += lineHeight + VGAP;
   myMouseRange = new SliderWidget(myTab, font, xpos, ypos,
                                   "Mouse axes range ", 0, 0, fontWidth * 4, "%");
   myMouseRange->setMinValue(1); myMouseRange->setMaxValue(100);
@@ -331,7 +334,7 @@ GameInfoDialog::GameInfoDialog(
   //////////////////////////////////////////////////////////////////////////////
   // 4) Cartridge properties
   wid.clear();
-  tabID = myTab->addTab("Cartridge");
+  tabID = myTab->addTab(" Cartridge ", TabWidget::AUTO_WIDTH);
 
   xpos = HBORDER; ypos = VBORDER;
   lwidth = font.getStringWidth("Manufacturer ");
