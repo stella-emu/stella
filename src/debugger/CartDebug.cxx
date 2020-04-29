@@ -728,7 +728,7 @@ string CartDebug::loadListFile()
 
   if(myListFile == "")
   {
-    FilesystemNode lst(myOSystem.romFile().getPathWithExt("") + ".lst");
+    FilesystemNode lst(myOSystem.romFile().getPathWithExt(".lst"));
     if(lst.isFile() && lst.isReadable())
       myListFile = lst.getPath();
     else
@@ -788,7 +788,7 @@ string CartDebug::loadSymbolFile()
 
   if(mySymbolFile == "")
   {
-    FilesystemNode sym(myOSystem.romFile().getPathWithExt("") + ".sym");
+    FilesystemNode sym(myOSystem.romFile().getPathWithExt(".sym"));
     if(sym.isFile() && sym.isReadable())
       mySymbolFile = sym.getPath();
     else
@@ -848,7 +848,7 @@ string CartDebug::loadConfigFile()
 
   if(myCfgFile == "")
   {
-    FilesystemNode romNode(myOSystem.romFile().getPathWithExt("") + ".cfg");
+    FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
     FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
     if(cfg.isFile() && cfg.isReadable())
       myCfgFile = cfg.getPath();
@@ -970,7 +970,7 @@ string CartDebug::saveConfigFile()
 
   if(myCfgFile == "")
   {
-    FilesystemNode romNode(myOSystem.romFile().getPathWithExt("") + ".cfg");
+    FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
     FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
     if(cfg.getParent().isWritable())
       myCfgFile = cfg.getPath();
