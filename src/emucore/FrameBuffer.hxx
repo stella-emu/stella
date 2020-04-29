@@ -26,16 +26,15 @@ class Settings;
 class FBSurface;
 class TIASurface;
 
-namespace GUI {
-  class Font;
-}
+#ifdef GUI_SUPPORT
+  #include "Font.hxx"
+#endif
 
 #include "Rect.hxx"
 #include "Variant.hxx"
 #include "TIAConstants.hxx"
 #include "FrameBufferConstants.hxx"
 #include "EventHandlerConstants.hxx"
-#include "Font.hxx"
 #include "bspf.hxx"
 
 /**
