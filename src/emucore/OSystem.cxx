@@ -646,11 +646,35 @@ ByteBuffer OSystem::openROM(const FilesystemNode& rom, string& md5, size_t& size
   if(md5 == "")
     md5 = MD5::hash(image, size);
 
-  // Some games may not have a name, since there may not
-  // be an entry in stella.pro.  In that case, we use the rom name
-  // and reinsert the properties object
+  // Handle ROM properties, do some error checking
+  // Only add to the database when necessary
+  bool toInsert = false;
+
+  // First, does this ROM have a per-ROM properties entry?
+  // If so, load it into the database
+  FilesystemNode propsNode(rom.getPathWithExt(".pro"));
+  if(propsNode.exists() && propsNode.isFile())
+  {
+    Logger::info("Loading per-ROM properties: " + propsNode.getShortPath());
+    myPropSet->load(propsNode.getPath(), false);
+  }
+
+  // Next, make sure we have a valid md5 and name
   Properties props;
-  myPropSet->getMD5WithInsert(rom, md5, props);
+  if(!myPropSet->getMD5(md5, props))
+  {
+    props.set(PropType::Cart_MD5, md5);
+    toInsert = true;
+  }
+  if(toInsert || props.get(PropType::Cart_Name) == EmptyString)
+  {
+    props.set(PropType::Cart_Name, rom.getNameWithExt(""));
+    toInsert = true;
+  }
+
+  // Finally, insert properties if any info was missing
+  if(toInsert)
+    myPropSet->insert(props, false);
 
   return image;
 }

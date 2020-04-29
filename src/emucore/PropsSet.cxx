@@ -24,13 +24,13 @@
 #include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::load(const string& filename)
+void PropertiesSet::load(const string& filename, bool save)
 {
   ifstream in(filename);
 
   Properties prop;
   while(in >> prop)
-    insert(prop);
+    insert(prop, save);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,26 +115,6 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
   }
 
   return found;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::getMD5WithInsert(const FilesystemNode& rom,
-                                     const string& md5, Properties& properties)
-{
-  bool toInsert = false;
-
-  if(!getMD5(md5, properties))
-  {
-    properties.set(PropType::Cart_MD5, md5);
-    toInsert = true;
-  }
-  if(toInsert || properties.get(PropType::Cart_Name) == EmptyString)
-  {
-    properties.set(PropType::Cart_Name, rom.getNameWithExt(""));
-    toInsert = true;
-  }
-  if(toInsert)
-    insert(properties, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
