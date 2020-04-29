@@ -205,14 +205,21 @@ void RomInfoWidget::drawWidget(bool hilite)
   int xpos = _x + 8, ypos = _y + yoff + 5;
   for(const auto& info : myRomInfo)
   {
+    if(info.length() * _font.getMaxCharWidth() <= _w - 16)
 
-
-
+    {
+      // 1 line for next entry
+      if(ypos + _font.getFontHeight() > _h + _y)
+        break;
+    }
+    else
+    {
+      // assume 2 lines for next entry
+      if(ypos + _font.getLineHeight() + _font.getFontHeight() > _h + _y )
+        break;
+    }
     int lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
                              onTop ? _textcolor : _shadowcolor);
     ypos += _font.getLineHeight() + (lines - 1) * _font.getFontHeight();
-    // assume 2 lines for next entry
-    if(ypos >= _h + _y - _font.getLineHeight() - _font.getFontHeight())
-      break;
   }
 }

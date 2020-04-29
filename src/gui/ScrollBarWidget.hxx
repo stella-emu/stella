@@ -24,10 +24,6 @@ class GuiObject;
 #include "Command.hxx"
 #include "bspf.hxx"
 
-enum {
-  kScrollBarWidth = 15
-};
-
 class ScrollBarWidget : public Widget, public CommandSender
 {
   public:
@@ -40,6 +36,10 @@ class ScrollBarWidget : public Widget, public CommandSender
 
     static void setWheelLines(int lines) { _WHEEL_LINES = lines; }
     static int  getWheelLines()          { return _WHEEL_LINES;  }
+    static int scrollBarWidth(const GUI::Font& font)
+    {
+      return ((int(font.getMaxCharWidth() * 1.67) >> 1) << 1) + 1;
+    }
 
   private:
     void drawWidget(bool hilite) override;
@@ -51,6 +51,7 @@ class ScrollBarWidget : public Widget, public CommandSender
     bool handleMouseClicks(int x, int y, MouseButton b) override;
     void handleMouseEntered() override;
     void handleMouseLeft() override;
+    void setArrows();
 
   public:
     int _numEntries{0};
@@ -66,6 +67,12 @@ class ScrollBarWidget : public Widget, public CommandSender
     int _sliderHeight{0};
     int _sliderPos{0};
     int _sliderDeltaMouseDownPos{0};
+    int _upDownWidth{0};
+    int _upDownHeight{0};
+    int _upDownBoxHeight{0};
+    int _scrollBarWidth{0};
+    const uInt32* _upImg{nullptr};
+    const uInt32* _downImg{nullptr};
 
     static int _WHEEL_LINES;
 

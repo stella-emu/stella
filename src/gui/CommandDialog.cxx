@@ -33,16 +33,20 @@
 CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Commands")
 {
-  const int HBORDER = 10;
-  const int VBORDER = 10;
-  const int HGAP = 8;
-  const int VGAP = 4;
-  const int buttonWidth = _font.getStringWidth("Time Machine On") + 16,
-            buttonHeight = _font.getLineHeight() + 6,
-            rowHeight = buttonHeight + VGAP;
+  const int lineHeight   = _font.getLineHeight(),
+            fontHeight   = _font.getFontHeight(),
+            fontWidth    = _font.getMaxCharWidth(),
+            buttonHeight = _font.getLineHeight() * 1.5,
+            buttonWidth  = _font.getStringWidth("Time Machine On") + fontWidth * 2;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+  const int HGAP = VGAP * 2;
+  const int rowHeight = buttonHeight + VGAP;
 
   // Set real dimensions
-  _w = 3 * (buttonWidth + 5) + HBORDER * 2;
+  _w = 3 * (buttonWidth + HGAP) - HGAP + HBORDER * 2;
   _h = 6 * rowHeight - VGAP + VBORDER * 2 + _th;
   ButtonWidget* bw = nullptr;
   WidgetArray wid;

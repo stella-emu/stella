@@ -146,6 +146,7 @@ Settings::Settings()
   setPermanent("ctrldelay", "400");
   setPermanent("ctrlrate", "20");
   setPermanent("basic_settings", false);
+  setPermanent("dialogfont", "medium");
   setPermanent("dialogpos", 0);
   setPermanent("confirmexit", false);
 
@@ -510,6 +511,11 @@ void Settings::usage() const
     << "  -uipalette    <standard|     Selects GUI theme\n"
     << "                 classic|light>\n"
     << "  -hidpi        <0|1>          Enable HiDPI mode\n"
+    << "  -dialogfont   <small|        Use the specified font in the dialogs\n"
+    << "                 low_medium|\n"
+    << "                 medium|large|\n"
+    << "                 large12|large14|\n"
+    << "                 large16>\n"
     << "  -dialogpos    <0..4>         Display all dialogs at given positions\n"
     << "  -confirmexit  <0|1>          Display a confirm dialog when exiting emulation\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets\n"

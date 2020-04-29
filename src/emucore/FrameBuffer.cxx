@@ -36,6 +36,7 @@
 #ifdef GUI_SUPPORT
   #include "Font.hxx"
   #include "StellaFont.hxx"
+  #include "ConsoleMediumFont.hxx"
   #include "ConsoleMediumBFont.hxx"
   #include "StellaMediumFont.hxx"
   #include "StellaLargeFont.hxx"
@@ -97,56 +98,7 @@ bool FrameBuffer::initialize()
   }
 
 #ifdef GUI_SUPPORT
-  ////////////////////////////////////////////////////////////////////
-  // Create fonts to draw text
-  // NOTE: the logic determining appropriate font sizes is done here,
-  //       so that the UI classes can just use the font they expect,
-  //       and not worry about it
-  //       This logic should also take into account the size of the
-  //       framebuffer, and try to be intelligent about font sizes
-  //       We can probably add ifdefs to take care of corner cases,
-  //       but that means we've failed to abstract it enough ...
-  ////////////////////////////////////////////////////////////////////
-
-  // This font is used in a variety of situations when a really small
-  // font is needed; we let the specific widget/dialog decide when to
-  // use it
-  mySmallFont = make_unique<GUI::Font>(GUI::stellaDesc); // 6x10
-
-  // The general font used in all UI elements
-  // This is determined by the size of the framebuffer
-  if(myOSystem.settings().getBool("minimal_ui"))
-  {
-    myFont = make_unique<GUI::Font>(GUI::stella12x24tDesc);           // 12x24
-    // The info font used in all UI elements
-    // This is determined by the size of the framebuffer
-    myInfoFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);        // 10x20
-  }
-  else
-  {
-    myFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);           //  9x18
-    // The info font used in all UI elements
-    // This is determined by the size of the framebuffer
-    myInfoFont = make_unique<GUI::Font>(GUI::consoleDesc);            //  8x13
-  }
-
-
-  // The font used by the ROM launcher
-  const string& lf = myOSystem.settings().getString("launcherfont");
-  if(lf == "small")
-    myLauncherFont = make_unique<GUI::Font>(GUI::consoleBDesc);       //  8x13
-  else if(lf == "low_medium")
-    myLauncherFont = make_unique<GUI::Font>(GUI::consoleMediumBDesc); //  9x15
-  else if(lf == "medium")
-    myLauncherFont = make_unique<GUI::Font>(GUI::stellaMediumDesc);   //  9x18
-  else if(lf == "large" || lf == "large10")
-    myLauncherFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);    // 10x20
-  else if(lf == "large12")
-    myLauncherFont = make_unique<GUI::Font>(GUI::stella12x24tDesc);   // 12x24
-  else if(lf == "large14")
-    myLauncherFont = make_unique<GUI::Font>(GUI::stella14x28tDesc);   // 14x28
-  else // "large16"
-    myLauncherFont = make_unique<GUI::Font>(GUI::stella16x32tDesc);   // 16x32
+  setupFonts();
 #endif
 
   // Determine possible TIA windowed zoom levels
@@ -163,6 +115,93 @@ bool FrameBuffer::initialize()
 
   return true;
 }
+
+#ifdef GUI_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setupFonts()
+{
+  ////////////////////////////////////////////////////////////////////
+  // Create fonts to draw text
+  // NOTE: the logic determining appropriate font sizes is done here,
+  //       so that the UI classes can just use the font they expect,
+  //       and not worry about it
+  //       This logic should also take into account the size of the
+  //       framebuffer, and try to be intelligent about font sizes
+  //       We can probably add ifdefs to take care of corner cases,
+  //       but that means we've failed to abstract it enough ...
+  ////////////////////////////////////////////////////////////////////
+
+  // This font is used in a variety of situations when a really small
+  // font is needed; we let the specific widget/dialog decide when to
+  // use it
+  mySmallFont = make_unique<GUI::Font>(GUI::stellaDesc); // 6x10
+
+  if(myOSystem.settings().getBool("minimal_ui"))
+  {
+    // The general font used in all UI elements
+    myFont = make_unique<GUI::Font>(GUI::stella12x24tDesc);           // 12x24
+    // The info font used in all UI elements
+    myInfoFont = make_unique<GUI::Font>(GUI::stellaLargeDesc);        // 10x20
+  }
+  else
+  {
+    const int NUM_FONTS = 7;
+    FontDesc FONT_DESC[NUM_FONTS] = {GUI::consoleDesc, GUI::consoleMediumDesc, GUI::stellaMediumDesc,
+      GUI::stellaLargeDesc, GUI::stella12x24tDesc, GUI::stella14x28tDesc, GUI::stella16x32tDesc};
+    const string& dialogFont = myOSystem.settings().getString("dialogfont");
+    FontDesc fd = getFontDesc(dialogFont);
+
+    // The general font used in all UI elements
+    myFont = make_unique<GUI::Font>(fd);                                //  default: 9x18
+    // The info font used in all UI elements,
+    //  automatically determined aiming for 1 / 1.4 (~= 18 / 13) size
+    int fontIdx = 0;
+    for(int i = 0; i < NUM_FONTS; ++i)
+    {
+      if(fd.height <= FONT_DESC[i].height * 1.4)
+      {
+        fontIdx = i;
+        break;
+      }
+    }
+    myInfoFont = make_unique<GUI::Font>(FONT_DESC[fontIdx]);            //  default 8x13
+
+    // Determine minimal zoom level based on the default font
+    //  So what fits with default font should fit for any font.
+    //  However, we have to make sure all Dialogs are sized using the fontsize.
+    int zoom_h = (fd.height * 4 * 2) / GUI::stellaMediumDesc.height;
+    int zoom_w = (fd.maxwidth * 4 * 2) / GUI::stellaMediumDesc.maxwidth;
+    int zoom = std::max(zoom_w, zoom_h);
+    myTIAMinZoom = std::max(2 * 4, zoom) / 4.F; // round to 25% steps
+  }
+
+
+  // The font used by the ROM launcher
+  const string& lf = myOSystem.settings().getString("launcherfont");
+
+
+  myLauncherFont = make_unique<GUI::Font>(getFontDesc(lf));       //  8x13
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FontDesc FrameBuffer::getFontDesc(const string& name) const
+{
+  if(name == "small")
+    return GUI::consoleBDesc;       //  8x13
+  else if(name == "low_medium")
+    return GUI::consoleMediumBDesc; //  9x15
+  else if(name == "medium")
+    return GUI::stellaMediumDesc;   //  9x18
+  else if(name == "large" || name == "large10")
+    return GUI::stellaLargeDesc;    // 10x20
+  else if(name == "large12")
+    return GUI::stella12x24tDesc;   // 12x24
+  else if(name == "large14")
+    return GUI::stella14x28tDesc;   // 14x28
+  else // "large16"
+    return GUI::stella16x32tDesc;   // 16x32
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBInitStatus FrameBuffer::createDisplay(const string& title,
@@ -965,7 +1004,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   if(tiaMode)
   {
     // TIA windowed modes
-    uInt32 minZoom = supportedTIAMinZoom();
+    float minZoom = supportedTIAMinZoom();
     myTIAMaxZoom = maxZoomForScreen(baseWidth, baseHeight,
                      myAbsDesktopSize.w, myAbsDesktopSize.h);
     // Determine all zoom levels

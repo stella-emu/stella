@@ -139,7 +139,7 @@ void Dialog::setTitle(const string& title)
   if(title.empty())
     _th = 0;
   else
-    _th = _font.getLineHeight() + 4;
+    _th = _font.getLineHeight() * 1.25;
   _h += _th;
 }
 
@@ -383,7 +383,8 @@ void Dialog::drawDialog()
     if(_th)
     {
       s.fillRect(_x, _y, _w, _th, _onTop ? kColorTitleBar : kColorTitleBarLo);
-      s.drawString(_font, _title, _x + 10, _y + 2 + 1, _font.getStringWidth(_title),
+      s.drawString(_font, _title, _x + _font.getMaxCharWidth() * 1.25, _y + _font.getFontHeight() / 6,
+                   _font.getStringWidth(_title),
                    _onTop ? kColorTitleText : kColorTitleTextLo);
     }
   }
@@ -771,15 +772,18 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                const string& okText, const string& cancelText,
                                bool focusOKButton, int buttonWidth)
 {
-  const int HBORDER = 10;
-  const int VBORDER = 10;
-  const int BTN_BORDER = 20;
-  const int BUTTON_GAP = 8;
+  const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int BTN_BORDER = fontWidth * 2.5;
+  const int BUTTON_GAP = fontWidth;
   buttonWidth = std::max(buttonWidth,
                          std::max(font.getStringWidth("Defaults"),
                          std::max(font.getStringWidth(okText),
                          font.getStringWidth(cancelText))) + BTN_BORDER);
-  int buttonHeight = font.getLineHeight() + 4;
 
   _w = std::max(HBORDER * 2 + buttonWidth * 2 + BUTTON_GAP, _w);
 
@@ -817,11 +821,14 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                        const string& defaultsText,
                                        bool focusOKButton)
 {
-  const int HBORDER = 10;
-  const int VBORDER = 10;
-  const int BTN_BORDER = 20;
-  int buttonWidth = font.getStringWidth(defaultsText) + BTN_BORDER;
-  int buttonHeight = font.getLineHeight() + 4;
+  const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int BTN_BORDER = fontWidth * 2.5;
+  const int buttonWidth = font.getStringWidth(defaultsText) + BTN_BORDER;
 
   addDefaultWidget(new ButtonWidget(this, font, HBORDER, _h - buttonHeight - VBORDER,
                    buttonWidth, buttonHeight, defaultsText, GuiObject::kDefaultsCmd));

@@ -28,44 +28,49 @@ AboutDialog::AboutDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, font, "About Stella")
 {
   const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Defaults") + 20,
-            buttonHeight = font.getLineHeight() + 4;
+        fontWidth    = font.getMaxCharWidth(),
+        fontHeight   = font.getFontHeight(),
+        buttonWidth  = font.getStringWidth("Previous") + fontWidth * 2.5,
+        buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+
   int xpos, ypos;
   WidgetArray wid;
 
   // Set real dimensions
-  _w = 55 * fontWidth + 8;
-  _h = 15 * lineHeight + 20 + _th;
+  _w = 55 * fontWidth + HBORDER * 2;
+  _h = _th + 14 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
 
   // Add Previous, Next and Close buttons
-  xpos = 10;  ypos = _h - buttonHeight - 10;
+  xpos = HBORDER; ypos = _h - buttonHeight - VBORDER;
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Previous", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
-  xpos += buttonWidth + 8;
+  xpos += buttonWidth + fontWidth;
   myNextButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Next", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
-  xpos = _w - buttonWidth - 10;
+  xpos = _w - buttonWidth - HBORDER;
   ButtonWidget* b =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 
-  xpos = 5;  ypos = 5 + _th;
+  xpos = HBORDER;  ypos = _th + VBORDER;
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2, fontHeight,
                                  "", TextAlign::Center);
   myTitle->setTextColor(kTextColorEm);
 
-  xpos = 16;  ypos += lineHeight + 4;
+  xpos = HBORDER * 2;  ypos += lineHeight + VGAP * 2;
   for(int i = 0; i < myLinesPerPage; i++)
   {
     myDesc.push_back(new StaticTextWidget(this, font, xpos, ypos, _w - xpos * 2,
