@@ -42,13 +42,19 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   _h = max_h;
 
   const int lineHeight   = font.getLineHeight(),
-            buttonWidth  = font.getStringWidth("Defaults") + 20,
-            buttonHeight = font.getLineHeight() + 4,
-            selectHeight = lineHeight + 12;
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonHeight = font.getLineHeight() * 1.25,
+            buttonWidth  = font.getStringWidth("Base Dir") + fontWidth * 2.5;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
+  const int BUTTON_GAP = fontWidth;
+  const int selectHeight = lineHeight + VGAP * 3;
   int xpos, ypos;
   ButtonWidget* b;
 
-  xpos = 10;  ypos = 4 + _th;
+  xpos = HBORDER;  ypos = VBORDER + _th;
 
   // Current path - TODO: handle long paths ?
   StaticTextWidget* t = new StaticTextWidget(this, font, xpos, ypos + 2, "Path ");
@@ -56,14 +62,14 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                                     _w - t->getWidth() - 2 * xpos, lineHeight);
   _currentPath->setEditable(false);
   // Add file list
-  ypos += lineHeight + 8;
+  ypos += lineHeight + VGAP * 2;
   _fileList = new FileListWidget(this, font, xpos, ypos, _w - 2 * xpos,
-                                 _h - selectHeight - buttonHeight - ypos - 20);
+                                 _h - selectHeight - buttonHeight - ypos - VBORDER * 2);
   _fileList->setEditable(false);
   addFocusWidget(_fileList);
 
   // Add currently selected item
-  ypos += _fileList->getHeight() + 8;
+  ypos += _fileList->getHeight() + VGAP * 2;
 
   _type = new StaticTextWidget(this, font, xpos, ypos + 2, "Name ");
   _selected = new EditTextWidget(this, font, xpos + _type->getWidth(), ypos,
@@ -71,30 +77,30 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   _selected->setEditable(false);
 
   // Buttons
-  _goUpButton = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
+  _goUpButton = new ButtonWidget(this, font, xpos, _h - buttonHeight - VBORDER,
                                  buttonWidth, buttonHeight, "Go up", kGoUpCmd);
   addFocusWidget(_goUpButton);
 
   _basedirButton =
-    new ButtonWidget(this, font, 15 + buttonWidth, _h - buttonHeight - 10,
+    new ButtonWidget(this, font, _goUpButton->getRight() + BUTTON_GAP, _h - buttonHeight - VBORDER,
                      buttonWidth, buttonHeight, "Base Dir", kBaseDirCmd);
   addFocusWidget(_basedirButton);
 
 #ifndef BSPF_MACOS
-  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
+  b = new ButtonWidget(this, font, _w - (2 * buttonWidth + BUTTON_GAP + HBORDER), _h - buttonHeight - VBORDER,
                        buttonWidth, buttonHeight, "Choose", kChooseCmd);
   addFocusWidget(b);
   addOKWidget(b);
-  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
+  b = new ButtonWidget(this, font, _w - (buttonWidth + HBORDER), _h - buttonHeight - VBORDER,
                        buttonWidth, buttonHeight, "Cancel", GuiObject::kCloseCmd);
   addFocusWidget(b);
   addCancelWidget(b);
 #else
-  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
+  b = new ButtonWidget(this, font, _w - (2 * buttonWidth + BUTTON_GAP + HBORDER), _h - buttonHeight - VBORDER,
                        buttonWidth, buttonHeight, "Cancel", GuiObject::kCloseCmd);
   addFocusWidget(b);
   addCancelWidget(b);
-  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
+  b = new ButtonWidget(this, font, _w - (buttonWidth + HBORDER), _h - buttonHeight - VBORDER,
                        buttonWidth, buttonHeight, "Choose", kChooseCmd);
   addFocusWidget(b);
   addOKWidget(b);

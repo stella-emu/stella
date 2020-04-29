@@ -62,6 +62,10 @@ class PopUpWidget : public Widget, public CommandSender
     const Variant& getSelectedTag() const;
 
     bool wantsFocus() const override { return true; }
+    static int dropDownWidth(const GUI::Font& font)
+    {
+      return font.getFontHeight() < 24 ? (9 * 2 + 3) : (13 * 2 + 7);
+    }
 
   protected:
     void handleMouseDown(int x, int y, MouseButton b, int clickCount) override;
@@ -70,6 +74,8 @@ class PopUpWidget : public Widget, public CommandSender
     void handleMouseLeft() override;
     bool handleEvent(Event::Type e) override;
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+
+    void setArrow();
     void drawWidget(bool hilite) override;
 
   private:
@@ -80,6 +86,11 @@ class PopUpWidget : public Widget, public CommandSender
     string _label;
     int    _labelWidth{0};
     bool   _changed{false};
+
+    int _textOfs{0};
+    int _arrowWidth{0};
+    int _arrowHeight{0};
+    const uInt32* _arrowImg{nullptr};
 
   private:
     // Following constructors and assignment operators not supported

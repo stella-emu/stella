@@ -31,20 +31,23 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
+            lineHeight = font.getLineHeight(),
+            VBORDER = fontHeight / 2,
+            HBORDER = fontWidth * 1.25,
+            VGAP = fontHeight / 4;
   int xpos, ypos, lwidth;
 
   // Calculate real dimensions
   lwidth = font.getStringWidth(message);
-  _w = lwidth + 2 * fontWidth;
-  _h = lineHeight * 5;
+  _w = HBORDER * 2 + lwidth;
+  _h = VBORDER * 2 + lineHeight * 2 + VGAP * 2;
 
-  xpos = fontWidth; ypos = lineHeight;
+  xpos = HBORDER; ypos = VBORDER;
   myMessage = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                                    message, TextAlign::Center);
   myMessage->setTextColor(kTextColorEm);
 
-  xpos = fontWidth; ypos += 2 * lineHeight;
+  xpos = HBORDER; ypos += lineHeight + VGAP * 2;
   mySlider = new SliderWidget(this, font, xpos, ypos, lwidth, lineHeight, "", 0, 0);
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);

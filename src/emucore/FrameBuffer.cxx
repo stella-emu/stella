@@ -307,7 +307,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title,
   }
 
   if(!myMsg.surface)
-    myMsg.surface = allocateSurface(FBMinimum::Width, font().getFontHeight()+10);
+    myMsg.surface = allocateSurface(FBMinimum::Width, font().getFontHeight() * 1.5);
 #endif
 
   // Print initial usage message, but only print it later if the status has changed
@@ -493,14 +493,20 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   if(myMsg.surface == nullptr || !(force || myOSystem.settings().getBool("uimessages")))
     return;
 
+  const int fontWidth  = font().getMaxCharWidth(),
+            fontHeight = font().getFontHeight();
+  const int VBORDER = fontHeight / 4;
+  const int HBORDER = fontWidth * 1.25 / 2.0;
+
   // Precompute the message coordinates
   myMsg.text    = message;
   myMsg.counter = uInt32(myOSystem.frameRate()) << 1; // Show message for 2 seconds
   if(myMsg.counter == 0)  myMsg.counter = 60;
   myMsg.color   = kBtnTextColor;
 
-  myMsg.w = font().getStringWidth(myMsg.text) + 10;
-  myMsg.h = font().getFontHeight() + 8;
+  myMsg.w = font().getStringWidth(myMsg.text) + HBORDER * 2;
+  myMsg.h = fontHeight + VBORDER * 2;
+
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
   myMsg.position = position;
@@ -619,6 +625,10 @@ inline bool FrameBuffer::drawMessage()
 
   // Draw the bounded box and text
   const Common::Rect& dst = myMsg.surface->dstRect();
+  const int fontWidth  = font().getMaxCharWidth(),
+            fontHeight = font().getFontHeight();
+  const int VBORDER = fontHeight / 4;
+  const int HBORDER = fontWidth * 1.25 / 2.0;
 
   switch(myMsg.position)
   {
@@ -669,10 +679,10 @@ inline bool FrameBuffer::drawMessage()
   }
 
   myMsg.surface->setDstPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
-  myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
+  myMsg.surface->fillRect(1, 1, myMsg.w - 2, myMsg.h - 2, kBtnColor);
   myMsg.surface->frameRect(0, 0, myMsg.w, myMsg.h, kColor);
-  myMsg.surface->drawString(font(), myMsg.text, 5, 4,
-                            myMsg.w, myMsg.color, TextAlign::Left);
+  myMsg.surface->drawString(font(), myMsg.text, HBORDER, VBORDER,
+                            myMsg.w, myMsg.color);
   myMsg.surface->render();
   myMsg.counter--;
 #endif

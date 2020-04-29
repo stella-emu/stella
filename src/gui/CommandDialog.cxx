@@ -40,9 +40,8 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
             buttonWidth  = _font.getStringWidth("Time Machine On") + fontWidth * 2;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
   const int VGAP = fontHeight / 4;
-  const int HGAP = VGAP * 2;
+  const int HGAP = fontWidth;
   const int rowHeight = buttonHeight + VGAP;
 
   // Set real dimensions

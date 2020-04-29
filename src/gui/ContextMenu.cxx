@@ -23,6 +23,7 @@
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "ScrollBarWidget.hxx"
+#include "PopUpWidget.hxx"
 #include "ContextMenu.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -35,6 +36,7 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _maxWidth(width)
 {
   addItems(items);
+  setArrows();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -49,7 +51,7 @@ void ContextMenu::addItems(const VariantList& items)
     maxwidth = std::max(maxwidth, _font.getStringWidth(e.first));
 
   _x = _y = 0;
-  _w = maxwidth + 23;
+  _w = maxwidth + PopUpWidget::dropDownWidth(_font); // 23;
   _h = 1;  // recalculate this in ::recalc()
 
   _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
@@ -509,7 +511,7 @@ void ContextMenu::scrollDown(int distance)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::drawDialog()
+void ContextMenu::setArrows()
 {
   static constexpr std::array<uInt32, 8> up_arrow = {
     0b00011000,
@@ -532,6 +534,55 @@ void ContextMenu::drawDialog()
     0b00011000
   };
 
+  static constexpr std::array<uInt32, 12> up_arrow_large = {
+    0b000001100000,
+    0b000001100000,
+    0b000011110000,
+    0b000011110000,
+    0b000111111000,
+    0b000111111000,
+    0b001111111100,
+    0b001111111100,
+    0b011111111110,
+    0b011111111110,
+    0b111111111111,
+    0b111111111111
+  };
+  static constexpr std::array<uInt32, 12> down_arrow_large = {
+    0b111111111111,
+    0b111111111111,
+    0b011111111110,
+    0b011111111110,
+    0b001111111100,
+    0b001111111100,
+    0b000111111000,
+    0b000111111000,
+    0b000011110000,
+    0b000011110000,
+    0b000001100000,
+    0b000001100000
+  };
+
+  if(_font.getFontHeight() < 24)
+  {
+    _textOfs = 2;
+    _arrowSize = 8;
+    _upImg = up_arrow.data();
+    _downImg = down_arrow.data();
+  }
+  else
+  {
+    _textOfs = 4;
+    _arrowSize = 12;
+    _upImg = up_arrow_large.data();
+    _downImg = down_arrow_large.data();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::drawDialog()
+{
+
   // Normally we add widgets and let Dialog::draw() take care of this
   // logic.  But for some reason, this Dialog was written differently
   // by the ScummVM guys, so I'm not going to mess with it.
@@ -549,7 +600,7 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y+_rowHeight-1, w+2, kColor);
-    s.drawBitmap(up_arrow.data(), ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, 8);
+    s.drawBitmap(_upImg, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, _arrowSize);
     y += _rowHeight;
     offset--;
   }
@@ -558,7 +609,7 @@ void ContextMenu::drawDialog()
   {
     bool hilite = offset == current;
     if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
-    s.drawString(_font, _entries[i].first, x + 1, y + 2, w,
+    s.drawString(_font, _entries[i].first, x + _textOfs, y + 2, w,
                  !hilite ? kTextColor : kTextColorInv);
     y += _rowHeight;
   }
@@ -567,7 +618,7 @@ void ContextMenu::drawDialog()
   if(_showScroll)
   {
     s.hLine(x, y, w+2, kColor);
-    s.drawBitmap(down_arrow.data(), ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, 8);
+    s.drawBitmap(_downImg, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, _arrowSize);
   }
 
   setDirty();
