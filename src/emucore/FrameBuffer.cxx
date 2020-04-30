@@ -171,8 +171,7 @@ void FrameBuffer::setupFonts()
     //  However, we have to make sure all Dialogs are sized using the fontsize.
     int zoom_h = (fd.height * 4 * 2) / GUI::stellaMediumDesc.height;
     int zoom_w = (fd.maxwidth * 4 * 2) / GUI::stellaMediumDesc.maxwidth;
-    int zoom = std::max(zoom_w, zoom_h);
-    myTIAMinZoom = std::max(2 * 4, zoom) / 4.F; // round to 25% steps
+    myTIAMinZoom = std::max(zoom_w, zoom_h) / 4.F; // round to 25% steps
   }
 
 
