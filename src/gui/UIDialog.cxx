@@ -30,6 +30,7 @@
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
+#include "StellaMediumFont.hxx"
 #include "LauncherDialog.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "DebuggerDialog.hxx"
@@ -100,7 +101,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Large (14pt)", "large14");   // 14x28
   VarList::push_back(items, "Large (16pt)", "large16");   // 16x32
   myDialogFontPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      items, "Dialogs font (*)", lwidth);
+                                      items, "Dialogs font (*)", lwidth, kDialogFont);
   wid.push_back(myDialogFontPopup);
 
   // Enable HiDPI mode
@@ -208,7 +209,7 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
                                  _w - xpos - HBORDER - 2, lineHeight, "");
   wid.push_back(myRomPath);
 
-  xpos = _w - HBORDER - font.getStringWidth("Follow Launcher path") - CheckboxWidget::prefixSize(font);
+  xpos = _w - HBORDER - font.getStringWidth("Follow Launcher path") - CheckboxWidget::prefixSize(font) - 1;
   ypos += lineHeight + VGAP * 2;
   myFollowLauncherWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Follow Launcher path");
   wid.push_back(myFollowLauncherWidget);
@@ -219,21 +220,15 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher width ",
                                            lwidth, 0, 6 * fontWidth, "px");
-  myLauncherWidthSlider->setMinValue(FBMinimum::Width);
   myLauncherWidthSlider->setMaxValue(ds.w);
   myLauncherWidthSlider->setStepValue(10);
-  // one tickmark every ~100 pixel
-  myLauncherWidthSlider->setTickmarkIntervals((ds.w - FBMinimum::Width + 50) / 100);
   wid.push_back(myLauncherWidthSlider);
   ypos += lineHeight + VGAP;
 
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, "Launcher height ",
                                             lwidth, 0, 6 * fontWidth, "px");
-  myLauncherHeightSlider->setMinValue(FBMinimum::Height);
   myLauncherHeightSlider->setMaxValue(ds.h);
   myLauncherHeightSlider->setStepValue(10);
-  // one tickmark every ~100 pixel
-  myLauncherHeightSlider->setTickmarkIntervals((ds.h - FBMinimum::Height + 50) / 100);
   wid.push_back(myLauncherHeightSlider);
   ypos += lineHeight + VGAP;
 
@@ -399,6 +394,7 @@ void UIDialog::loadConfig()
   int cr = settings.getInt("ctrlrate");
   myControllerRateSlider->setValue(cr);
 
+  handleLauncherSize();
   handleRomViewer();
 
   myTab->loadConfig();
@@ -530,6 +526,10 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       setDefaults();
       break;
 
+    case kDialogFont:
+      handleLauncherSize();
+      break;
+
     case kListDelay:
       if(myListDelaySlider->getValue() == 0)
       {
@@ -598,6 +598,29 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void UIDialog::handleLauncherSize()
+{
+  // Determine minimal launcher sizebased on the default font
+  //  So what fits with default font should fit for any font.
+  FontDesc fd = instance().frameBuffer().getFontDesc(myDialogFontPopup->getSelectedTag().toString());
+  int w = std::max(FBMinimum::Width, FBMinimum::Width * fd.maxwidth / GUI::stellaMediumDesc.maxwidth);
+  int h = std::max(FBMinimum::Height, FBMinimum::Height * fd.height / GUI::stellaMediumDesc.height);
+  const Common::Size& ds = instance().frameBuffer().desktopSize();
+
+  myLauncherWidthSlider->setMinValue(w);
+  if(myLauncherWidthSlider->getValue() < myLauncherWidthSlider->getMinValue())
+    myLauncherWidthSlider->setValue(w);
+  // one tickmark every ~100 pixel
+  myLauncherWidthSlider->setTickmarkIntervals((ds.w - w + 67) / 100);
+
+  myLauncherHeightSlider->setMinValue(h);
+  if(myLauncherHeightSlider->getValue() < myLauncherHeightSlider->getMinValue())
+    myLauncherHeightSlider->setValue(h);
+  // one tickmark every ~100 pixel
+  myLauncherHeightSlider->setTickmarkIntervals((ds.h - h + 67) / 100);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

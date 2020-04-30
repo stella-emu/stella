@@ -307,6 +307,15 @@ class FrameBuffer
     const GUI::Font& infoFont() const { return *myInfoFont; }
     const GUI::Font& smallFont() const { return *mySmallFont; }
     const GUI::Font& launcherFont() const { return *myLauncherFont; }
+
+    /**
+      Get the font description from the font name
+
+      @param name  The settings name of the font
+
+      @return  The description of the font
+    */
+    FontDesc getFontDesc(const string& name) const;
   #endif
 
   //////////////////////////////////////////////////////////////////////
@@ -485,9 +494,6 @@ class FrameBuffer
       Setup the UI fonts
     */
     void setupFonts();
-
-
-    FontDesc getFontDesc(const string& name) const;
   #endif
 
     /**

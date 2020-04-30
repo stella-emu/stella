@@ -33,13 +33,14 @@ class UIDialog : public Dialog, public CommandSender
     void setDefaults() override;
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-    //void handleLauncherSize();
+    void handleLauncherSize();
     void handleRomViewer();
     void createBrowser(const string& title);
 
   private:
     enum
     {
+      kDialogFont = 'UIDf',
       kListDelay  = 'UILd',
       kMouseWheel = 'UIMw',
       kControllerDelay = 'UIcd',
