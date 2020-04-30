@@ -831,7 +831,7 @@ void SliderWidget::drawWidget(bool hilite)
   int p = valueToPos(_value),
     h = _h - _font.getFontHeight() / 2 - 1,
     x = _x + _labelWidth,
-    y = _y + (_h - h) / 2 + 1;
+    y = _y + 2 + _font.desc().ascent - (_font.getFontHeight() + 1) / 2 - 1; // align to bottom of font
 
   // Fill the box
   s.fillRect(x, y, _w - _labelWidth - _valueLabelGap - _valueLabelWidth, h,

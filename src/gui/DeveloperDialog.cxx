@@ -616,7 +616,7 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
   // Add message concerning usage
   const GUI::Font& infofont = instance().frameBuffer().infoFont();
   ypos = myTab->getHeight() - fontHeight - infofont.getFontHeight() - VGAP - VBORDER;
-  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Changes require a ROM reload");
+  new StaticTextWidget(myTab, infofont, HBORDER, ypos, "(*) Change requires a ROM reload");
 
 #if defined(DEBUGGER_SUPPORT) && defined(WINDOWED_SUPPORT)
   // Debugger is only realistically available in windowed modes 800x600 or greater

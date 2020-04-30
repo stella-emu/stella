@@ -156,7 +156,7 @@ GameInfoDialog::GameInfoDialog(
   // Add message concerning usage
   ypos = myTab->getHeight() - fontHeight - ifont.getFontHeight() - VGAP - VBORDER;
   new StaticTextWidget(myTab, ifont, HBORDER, ypos,
-                       "(*) Changes require a ROM reload");
+                       "(*) Change requires a ROM reload");
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
