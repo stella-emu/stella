@@ -30,7 +30,6 @@ FlashWidget::FlashWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
 {
-  const GUI::Font& ifont = instance().frameBuffer().infoFont();
   const int lineHeight = font.getLineHeight();
   int xpos = x, ypos = y;
 
@@ -38,14 +37,14 @@ void FlashWidget::init(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   ypos += lineHeight + 6;
 
-  new StaticTextWidget(boss, ifont, xpos, ypos, "Pages/Ranges used:");
+  new StaticTextWidget(boss, font, xpos, ypos, "Pages/Ranges used:");
 
   ypos += lineHeight + 2;
   xpos += 8;
 
   for(uInt32 page = 0; page < MAX_PAGES; ++page)
   {
-    myPage[page] = new StaticTextWidget(boss, ifont, xpos, ypos,
+    myPage[page] = new StaticTextWidget(boss, font, xpos, ypos,
         page ? "                  " : "none              ");
     ypos += lineHeight;
   }

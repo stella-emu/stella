@@ -29,6 +29,16 @@ StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
     _hilite(hilite)
 {
   _bgcolorlo = kDlgColor;
+
+
+  if(_font.getFontHeight() < 24)
+  {
+    _textOfs = 3;
+  }
+  else
+  {
+    _textOfs = 5;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,5 +116,5 @@ void StringListWidget::drawWidget(bool hilite)
 Common::Rect StringListWidget::getEditRect() const
 {
   const int offset = std::max(0, (_selectedItem - _currentPos) * _fontHeight);
-  return Common::Rect(2, 1 + offset, _w - 2, _fontHeight + offset);
+  return Common::Rect(_textOfs, 1 + offset, _w - _textOfs, _fontHeight + offset);
 }
