@@ -36,7 +36,7 @@ CommandDialog::CommandDialog(OSystem& osystem, DialogContainer& parent)
   const int lineHeight   = _font.getLineHeight(),
             fontHeight   = _font.getFontHeight(),
             fontWidth    = _font.getMaxCharWidth(),
-            buttonHeight = _font.getLineHeight() * 1.5,
+            buttonHeight = _font.getLineHeight() * 1.25,
             buttonWidth  = _font.getStringWidth("Time Machine On") + fontWidth * 2;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
