@@ -24,9 +24,9 @@
 
   * Added 'Turbo' mode, runs the game as fast as the computer allows.
 
-  * Added selectable dialog fonts (TODO: Doc)
+  * Added selectable dialog fonts
 
-  * Added option which lets default ROM path follow launcher navigation (TODO: Doc)
+  * Added option which lets default ROM path follow launcher navigation
 
   * Added displaying last write address in the debugger.
 
