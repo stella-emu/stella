@@ -71,12 +71,16 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   }
 
   // Create bank information for each potential bank, and an extra one for ZP RAM
+  // ROM sizes greater than 4096 indicate multi-bank ROMs, but we handle only
+  // 4K pieces at a time
+  // ROM sizes less than 4K use the actual value
+  size_t romSize = 0;
+  myConsole.cartridge().getImage(romSize);
+
   BankInfo info;
+  info.size = std::min<size_t>(romSize, 4_KB);
   for(uInt32 i = 0; i < myConsole.cartridge().bankCount(); ++i)
-  {
-    info.size = myConsole.cartridge().bankSize(i);
     myBankInfo.push_back(info);
-  }
 
   info.size = 128;  // ZP RAM
   myBankInfo.push_back(info);
