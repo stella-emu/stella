@@ -263,7 +263,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   xpos = myLoadAllWidget->getRight() + BUTTON_GAP * 4;
 
   // Add message
-  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3,
+  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos_s,
       "                                             ", TextAlign::Left, kBGColor);
   myMessageWidget->setTextColor(kColorInfo);
 }
