@@ -688,6 +688,7 @@ void Debugger::setStartState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
+  myDialog->saveConfig();
   saveOldState();
 
   // Bus must be unlocked for normal operation when leaving debugger mode

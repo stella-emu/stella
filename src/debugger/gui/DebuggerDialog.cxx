@@ -71,12 +71,11 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
-  // set initial focus to myPrompt
-  if (myFirstLoad)
-  {
-    setFocus(myPrompt);
-    myFirstLoad = false;
-  }
+  if(myFocusedWidget == nullptr)
+    // Set initial focus to prompt tab
+    myFocusedWidget = myPrompt;
+  // Restore focus
+  setFocus(myFocusedWidget);
 
   myTab->loadConfig();
   myTiaInfo->loadConfig();
@@ -87,6 +86,11 @@ void DebuggerDialog::loadConfig()
   myRomTab->loadConfig();
 
   myMessageBox->setText("");
+}
+
+void DebuggerDialog::saveConfig()
+{
+  myFocusedWidget = _focusedWidget;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
