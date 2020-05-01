@@ -320,7 +320,8 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   }
 
   uInt32 renderFlags = SDL_RENDERER_ACCELERATED;
-  if(myOSystem.settings().getBool("vsync"))  // V'synced blits option
+  if(myOSystem.settings().getBool("vsync")
+     && !myOSystem.settings().getBool("turbo"))  // V'synced blits option
     renderFlags |= SDL_RENDERER_PRESENTVSYNC;
   const string& video = myOSystem.settings().getString("video");  // Render hint
   if(video != "")

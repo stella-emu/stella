@@ -231,7 +231,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       doUnwind();
       break;
 
-    case kDDExitCmd:
+    case kDDRunCmd:
       doExitDebugger();
       break;
 
@@ -541,7 +541,7 @@ void DebuggerDialog::addRomArea()
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Exit", kDDExitCmd);
+                       bwidth, bheight, "Run", kDDRunCmd);
   wid2.push_back(b);
   addCancelWidget(b);
 

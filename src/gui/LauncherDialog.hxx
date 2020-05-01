@@ -94,9 +94,9 @@ class LauncherDialog : public Dialog
 
   private:
     static constexpr int MIN_LAUNCHER_CHARS = 24;
-    static constexpr int MIN_ROMINFO_CHARS = 24;
+    static constexpr int MIN_ROMINFO_CHARS = 30;
     static constexpr int MIN_ROMINFO_ROWS = 7; // full lines
-    static constexpr int MIN_ROMINFO_LINES = 2; // extra lines
+    static constexpr int MIN_ROMINFO_LINES = 4; // extra lines
 
     void center() override { positionAt(0); }
     void handleKeyDown(StellaKey key, StellaMod mod, bool repeated) override;
@@ -132,7 +132,7 @@ class LauncherDialog : public Dialog
     unique_ptr<GUI::Font> myROMInfoFont;
 
     ButtonWidget* myStartButton{nullptr};
-    ButtonWidget* myPrevDirButton{nullptr};    
+    ButtonWidget* myPrevDirButton{nullptr};
     ButtonWidget* myOptionsButton{nullptr};
     ButtonWidget* myQuitButton{nullptr};
 

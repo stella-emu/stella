@@ -12560,7 +12560,6 @@
 "Cart.Manufacturer" "Suntek"
 "Cart.ModelNo" "SS-021"
 "Cart.Name" "Dragon Defender (1983) (Suntek) (PAL)"
-"Controller.Left" "MINDLINK"
 "Display.Phosphor" "YES"
 ""
 

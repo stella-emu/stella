@@ -28,8 +28,6 @@
  *   and we thus should not highlight the arrows/slider.
  */
 
-#define UP_DOWN_BOX_HEIGHT	18
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
@@ -38,6 +36,76 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_TRACK_MOUSE | Widget::FLAG_CLEARBG;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
+
+  _scrollBarWidth = scrollBarWidth(font);
+
+  setArrows();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ScrollBarWidget::setArrows()
+{
+  // Small up arrow
+  static constexpr std::array<uInt32, 6> up_arrow = {
+    0b0001000,
+    0b0011100,
+    0b0111110,
+    0b1110111,
+    0b1100011,
+    0b1000001,
+  };
+  // Small down arrow
+  static constexpr std::array<uInt32, 6> down_arrow = {
+    0b1000001,
+    0b1100011,
+    0b1110111,
+    0b0111110,
+    0b0011100,
+    0b0001000
+  };
+
+  // Large up arrow
+  static constexpr std::array<uInt32, 9> up_arrow_large = {
+    0b00000100000,
+    0b00001110000,
+    0b00011111000,
+    0b00111111100,
+    0b01111011110,
+    0b11110001111,
+    0b11100000111,
+    0b11000000011,
+    0b10000000001,
+  };
+  // Large down arrow
+  static constexpr std::array<uInt32, 9> down_arrow_large = {
+    0b10000000001,
+    0b11000000011,
+    0b11100000111,
+    0b11110001111,
+    0b01111011110,
+    0b00111111100,
+    0b00011111000,
+    0b00001110000,
+    0b00000100000
+  };
+
+
+  if(_font.getFontHeight() < 24)
+  {
+    _upDownWidth = 7;
+    _upDownHeight = 6;
+    _upDownBoxHeight = 18;
+    _upImg = up_arrow.data();
+    _downImg = down_arrow.data();
+  }
+  else
+  {
+    _upDownWidth = 11;
+    _upDownHeight = 9;
+    _upDownBoxHeight = 27;
+    _upImg = up_arrow_large.data();
+    _downImg = down_arrow_large.data();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,13 +122,13 @@ void ScrollBarWidget::handleMouseDown(int x, int y, MouseButton b,
   if(_numEntries <= _entriesPerPage)
     return;
 
-  if (y <= UP_DOWN_BOX_HEIGHT)
+  if (y <= _upDownBoxHeight)
   {
     // Up arrow
     _currentPos--;
     _draggingPart = Part::UpArrow;
   }
-  else if(y >= _h - UP_DOWN_BOX_HEIGHT)
+  else if(y >= _h - _upDownBoxHeight)
   {
     // Down arrow
     _currentPos++;
@@ -120,23 +188,23 @@ void ScrollBarWidget::handleMouseMoved(int x, int y)
     int old_pos = _currentPos;
     _sliderPos = y - _sliderDeltaMouseDownPos;
 
-    if(_sliderPos < UP_DOWN_BOX_HEIGHT)
-      _sliderPos = UP_DOWN_BOX_HEIGHT;
+    if(_sliderPos < _upDownBoxHeight)
+      _sliderPos = _upDownBoxHeight;
 
-    if(_sliderPos > _h - UP_DOWN_BOX_HEIGHT - _sliderHeight)
-      _sliderPos = _h - UP_DOWN_BOX_HEIGHT - _sliderHeight;
+    if(_sliderPos > _h - _upDownBoxHeight - _sliderHeight)
+      _sliderPos = _h - _upDownBoxHeight - _sliderHeight;
 
-    _currentPos = (_sliderPos - UP_DOWN_BOX_HEIGHT) * (_numEntries - _entriesPerPage) /
-                  (_h - 2 * UP_DOWN_BOX_HEIGHT - _sliderHeight);
+    _currentPos = (_sliderPos - _upDownBoxHeight) * (_numEntries - _entriesPerPage) /
+                  (_h - 2 * _upDownBoxHeight - _sliderHeight);
     checkBounds(old_pos);
   }
   else
   {
     Part old_part = _part;
 
-    if(y <= UP_DOWN_BOX_HEIGHT)   // Up arrow
+    if(y <= _upDownBoxHeight)   // Up arrow
       _part = Part::UpArrow;
-    else if(y >= _h - UP_DOWN_BOX_HEIGHT)	// Down arrow
+    else if(y >= _h - _upDownBoxHeight)	// Down arrow
       _part = Part::DownArrow;
     else if(y < _sliderPos)
       _part = Part::PageUp;
@@ -193,19 +261,19 @@ void ScrollBarWidget::recalc()
 //cerr << "ScrollBarWidget::recalc()\n";
   if(_numEntries > _entriesPerPage)
   {
-    _sliderHeight = (_h - 2 * UP_DOWN_BOX_HEIGHT) * _entriesPerPage / _numEntries;
-    if(_sliderHeight < UP_DOWN_BOX_HEIGHT)
-      _sliderHeight = UP_DOWN_BOX_HEIGHT;
+    _sliderHeight = (_h - 2 * _upDownBoxHeight) * _entriesPerPage / _numEntries;
+    if(_sliderHeight < _upDownBoxHeight)
+      _sliderHeight = _upDownBoxHeight;
 
-    _sliderPos = UP_DOWN_BOX_HEIGHT + (_h - 2 * UP_DOWN_BOX_HEIGHT - _sliderHeight) *
+    _sliderPos = _upDownBoxHeight + (_h - 2 * _upDownBoxHeight - _sliderHeight) *
                  _currentPos / (_numEntries - _entriesPerPage);
     if(_sliderPos < 0)
       _sliderPos = 0;
   }
   else
   {
-    _sliderHeight = _h - 2 * UP_DOWN_BOX_HEIGHT;
-    _sliderPos = UP_DOWN_BOX_HEIGHT;
+    _sliderHeight = _h - 2 * _upDownBoxHeight;
+    _sliderPos = _upDownBoxHeight;
   }
 
   setDirty();
@@ -214,30 +282,6 @@ void ScrollBarWidget::recalc()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::drawWidget(bool hilite)
 {
-  // Up arrow
-  static constexpr std::array<uInt32, 8> up_arrow = {
-    0b00000000,
-    0b00010000,
-    0b00111000,
-    0b01111100,
-    0b11101110,
-    0b11000110,
-    0b10000010,
-    0b00000000
-  };
-
-  // Down arrow
-  static constexpr std::array<uInt32, 8> down_arrow = {
-    0b00000000,
-    0b10000010,
-    0b11000110,
-    0b11101110,
-    0b01111100,
-    0b00111000,
-    0b00010000,
-    0b00000000
-  };
-
 //cerr << "ScrollBarWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
   bool onTop = _boss->dialog().isOnTop();
@@ -251,17 +295,19 @@ void ScrollBarWidget::drawWidget(bool hilite)
 
   // Up arrow
   if(hilite && _part == Part::UpArrow)
-    s.fillRect(_x + 1, _y + 1, _w - 2, UP_DOWN_BOX_HEIGHT - 2, kScrollColor);
-  s.drawBitmap(up_arrow.data(), _x+4, _y+5,
+    s.fillRect(_x + 1, _y + 1, _w - 2, _upDownBoxHeight - 2, kScrollColor);
+  s.drawBitmap(_upImg, _x + (_scrollBarWidth - _upDownWidth) / 2,
+               _y + (_upDownBoxHeight - _upDownHeight) / 2,
                onTop ? isSinglePage ? kColor : (hilite && _part == Part::UpArrow) ? kWidColor
-               : kTextColor : kColor, 8);
+               : kTextColor : kColor, _upDownWidth, _upDownHeight);
 
   // Down arrow
   if(hilite && _part == Part::DownArrow)
-    s.fillRect(_x + 1, bottomY - UP_DOWN_BOX_HEIGHT + 1, _w - 2, UP_DOWN_BOX_HEIGHT - 2, kScrollColor);
-  s.drawBitmap(down_arrow.data(), _x+4, bottomY - UP_DOWN_BOX_HEIGHT + 5,
+    s.fillRect(_x + 1, bottomY - _upDownBoxHeight + 1, _w - 2, _upDownBoxHeight - 2, kScrollColor);
+  s.drawBitmap(_downImg, _x + (_scrollBarWidth - _upDownWidth) / 2,
+               bottomY - _upDownBoxHeight + (_upDownBoxHeight - _upDownHeight) / 2,
                onTop ? isSinglePage ? kColor : (hilite && _part == Part::DownArrow) ?
-               kWidColor : kTextColor : kColor, 8);
+               kWidColor : kTextColor : kColor, _upDownWidth, _upDownHeight);
 
   // Slider
   if(!isSinglePage)
@@ -273,3 +319,4 @@ void ScrollBarWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ScrollBarWidget::_WHEEL_LINES = 4;
+

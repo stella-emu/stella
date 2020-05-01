@@ -221,6 +221,11 @@ class Console : public Serializable, public ConsoleIO
     */
     void toggleInter();
 
+    /**
+      Toggle turbo mode on/off
+    */
+    void toggleTurbo();
+
 
     /**
       Toggles phosphor effect.

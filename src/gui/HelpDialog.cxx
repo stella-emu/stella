@@ -31,49 +31,55 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
-            buttonWidth  = font.getStringWidth("Defaults") + 20,
-            buttonHeight = font.getLineHeight() + 4;
+            buttonWidth  = font.getStringWidth("Previous") + fontWidth * 2.5,
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+
   int xpos, ypos;
   WidgetArray wid;
 
   // Set real dimensions
-  _w = 46 * fontWidth + 10;
-  _h = 12 * lineHeight + 20 + _th;
+  _w = 46 * fontWidth + HBORDER * 2;
+  _h = _th + 11 * lineHeight + VGAP * 3 + buttonHeight + VBORDER * 2;
 
   // Add Previous, Next and Close buttons
-  xpos = 10;  ypos = _h - buttonHeight - 10;
+  xpos = HBORDER;  ypos = _h - buttonHeight - VBORDER;
   myPrevButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Previous", GuiObject::kPrevCmd);
   myPrevButton->clearFlags(Widget::FLAG_ENABLED);
   wid.push_back(myPrevButton);
 
-  xpos += buttonWidth + 8;
+  xpos += buttonWidth + fontWidth;
   myNextButton =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Next", GuiObject::kNextCmd);
   wid.push_back(myNextButton);
 
-  xpos = _w - buttonWidth - 10;
+  xpos = _w - buttonWidth - HBORDER;
   ButtonWidget* b =
     new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                      "Close", GuiObject::kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 
-  xpos = 5;  ypos = 5 + _th;
-  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 10, fontHeight,
+  xpos = HBORDER; ypos = VBORDER + _th;
+  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - HBORDER * 2, fontHeight,
                                  "", TextAlign::Center);
+  myTitle->setTextColor(kTextColorEm);
 
-  int lwidth = 13 * fontWidth;
-  xpos += 5;  ypos += lineHeight + 4;
-  for(uInt8 i = 0; i < LINES_PER_PAGE; ++i)
+  int lwidth = 15 * fontWidth;
+  ypos += lineHeight + VGAP * 2;
+  for(int i = 0; i < LINES_PER_PAGE; ++i)
   {
     myKey[i] =
       new StaticTextWidget(this, font, xpos, ypos, lwidth,
                            fontHeight, "", TextAlign::Left);
     myDesc[i] =
-      new StaticTextWidget(this, font, xpos+lwidth, ypos, _w - xpos - lwidth - 5,
+      new StaticTextWidget(this, font, xpos+lwidth, ypos, _w - xpos - lwidth - HBORDER,
                            fontHeight, "", TextAlign::Left);
     ypos += fontHeight;
   }
@@ -158,7 +164,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
     case 5:
       title = "All other commands";
       ADD_LINE();
-      ADD_BIND("Remapped Even", "ts");
+      ADD_BIND("Remapped Events", "");
       ADD_TEXT("Most other commands can be");
       ADD_TEXT("remapped. Please consult the");
       ADD_TEXT("'Options/Input" + ELLIPSIS + "' dialog for");
