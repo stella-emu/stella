@@ -32,6 +32,18 @@ class EditTextWidget : public EditableWidget
 
     void setText(const string& str, bool changed = false) override;
 
+    // Get total width of widget
+    static int calcWidth(const GUI::Font& font, int length = 0)
+    {
+      return length * font.getMaxCharWidth()
+        + (font.getFontHeight() < 24 ? 3 * 2 : 5 * 2);
+    }
+    // Get total width of widget
+    static int calcWidth(const GUI::Font& font, const string& str)
+    {
+      return calcWidth(font, int(str.length()));
+    }
+
   protected:
     void drawWidget(bool hilite) override;
     void lostFocusWidget() override;
