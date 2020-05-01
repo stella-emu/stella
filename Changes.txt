@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.1 to 6.2: (??? ??, 2020)
+6.1.2 to 6.2: (??? ??, 2020)
 
   * Added that paddle centering and sensitivity can be adjusted (TODO: Doc)
 
@@ -22,7 +22,11 @@
     a game. This allows the user to save high scores for these games. For each
     game and variation, the top 10 scores can be saved. (TODO: Doc)
 
-  * Add option which lets default ROM path follow launcher navigation (TODO: Doc)
+  * Added 'Turbo' mode, runs the game as fast as the computer allows.
+
+  * Added selectable dialog fonts
+
+  * Added option which lets default ROM path follow launcher navigation
 
   * Added displaying last write address in the debugger.
 
@@ -31,6 +35,16 @@
   * Restored 'cfg' directory for Distella config files.
 
 -Have fun!
+
+
+6.1.1 to 6.1.2: (April 25, 2020)
+
+  * Fixed bug with remapped events not being reloaded in certain cases.
+
+  * Fixed bug in debugger for 3E scheme when displaying active RAM bank.
+
+  * Fixed bug in "Dragon Defender" ROM being misconfigured for Mindlink
+    controller.
 
 
 6.1 to 6.1.1: (April 4, 2020)

@@ -29,6 +29,15 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
 
   EditableWidget::startEditMode();  // We're always in edit mode
+
+  if(_font.getFontHeight() < 24)
+  {
+    _textOfs = 3;
+  }
+  else
+  {
+    _textOfs = 5;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -92,7 +101,7 @@ void EditTextWidget::drawWidget(bool hilite)
 
   // Draw the text
   adjustOffset();
-  s.drawString(_font, editString(), _x + 2, _y + 2, getEditRect().w(), getEditRect().h(),
+  s.drawString(_font, editString(), _x + _textOfs, _y + 2, getEditRect().w(), getEditRect().h(),
                _changed && onTop && isEnabled()
                ? kDbgChangedTextColor
                : onTop && isEnabled() ? _textcolor : kColor,
@@ -105,7 +114,7 @@ void EditTextWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Common::Rect EditTextWidget::getEditRect() const
 {
-  return Common::Rect(2, 1, _w - 2, _h);
+  return Common::Rect(_textOfs, 1, _w - _textOfs, _h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

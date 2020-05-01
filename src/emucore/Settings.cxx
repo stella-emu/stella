@@ -146,6 +146,7 @@ Settings::Settings()
   setPermanent("ctrldelay", "400");
   setPermanent("ctrlrate", "20");
   setPermanent("basic_settings", false);
+  setPermanent("dialogfont", "medium");
   setPermanent("dialogpos", 0);
   setPermanent("confirmexit", false);
 
@@ -157,6 +158,7 @@ Settings::Settings()
   setPermanent("threads", "false");
   setTemporary("romloadcount", "0");
   setTemporary("maxres", "");
+  setTemporary("turbo", "0");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger/disassembly options
@@ -400,6 +402,7 @@ void Settings::usage() const
     << "                 z26|\n"
     << "                 user>\n"
     << "  -speed        <number>       Run emulation at the given speed\n"
+    << "  -turbo        <1|0>          Enable 'Turbo' mode for maximum emulation speed\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << endl
   #ifdef SOUND_SUPPORT
@@ -508,6 +511,11 @@ void Settings::usage() const
     << "  -uipalette    <standard|     Selects GUI theme\n"
     << "                 classic|light>\n"
     << "  -hidpi        <0|1>          Enable HiDPI mode\n"
+    << "  -dialogfont   <small|        Use the specified font in the dialogs\n"
+    << "                 low_medium|\n"
+    << "                 medium|large|\n"
+    << "                 large12|large14|\n"
+    << "                 large16>\n"
     << "  -dialogpos    <0..4>         Display all dialogs at given positions\n"
     << "  -confirmexit  <0|1>          Display a confirm dialog when exiting emulation\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets\n"

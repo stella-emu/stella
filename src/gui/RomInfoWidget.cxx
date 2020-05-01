@@ -27,6 +27,7 @@
 #include "Logger.hxx"
 #include "Props.hxx"
 #include "PNGLibrary.hxx"
+#include "PropsSet.hxx"
 #include "Rect.hxx"
 #include "Widget.hxx"
 #include "RomInfoWidget.hxx"
@@ -44,20 +45,10 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::reloadProperties(const FilesystemNode& node)
-{
-  // The ROM may have changed since we were last in the browser, either
-  // by saving a different image or through a change in video renderer,
-  // so we reload the properties
-  if(myHaveProperties)
-    parseProperties(node);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::setProperties(const Properties& props, const FilesystemNode& node)
+void RomInfoWidget::setProperties(const FilesystemNode& node, const string& md5)
 {
   myHaveProperties = true;
-  myProperties = props;
+  instance().propSet().getMD5(md5, myProperties);
 
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
@@ -74,6 +65,16 @@ void RomInfoWidget::clearProperties()
   // Decide whether the information should be shown immediately
   if(instance().eventHandler().state() == EventHandlerState::LAUNCHER)
     setDirty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::reloadProperties(const FilesystemNode& node)
+{
+  // The ROM may have changed since we were last in the browser, either
+  // by saving a different image or through a change in video renderer,
+  // so we reload the properties
+  if(myHaveProperties)
+    parseProperties(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,8 +141,7 @@ void RomInfoWidget::parseProperties(const FilesystemNode& node)
   try
   {
     ByteBuffer image;
-    string md5 = myProperties.get(PropType::Cart_MD5);
-    size_t size = 0;
+    string md5 = "";  size_t size = 0;
 
     if(node.exists() && !node.isDirectory() &&
       (image = instance().openROM(node, md5, size)) != nullptr)
@@ -203,11 +203,23 @@ void RomInfoWidget::drawWidget(bool hilite)
   }
 
   int xpos = _x + 8, ypos = _y + yoff + 5;
-  for(const auto& info: myRomInfo)
+  for(const auto& info : myRomInfo)
   {
+    if(info.length() * _font.getMaxCharWidth() <= _w - 16)
+
+    {
+      // 1 line for next entry
+      if(ypos + _font.getFontHeight() > _h + _y)
+        break;
+    }
+    else
+    {
+      // assume 2 lines for next entry
+      if(ypos + _font.getLineHeight() + _font.getFontHeight() > _h + _y )
+        break;
+    }
     int lines = s.drawString(_font, info, xpos, ypos, _w - 16, _font.getFontHeight() * 3,
                              onTop ? _textcolor : _shadowcolor);
-    if(ypos >= _h)  break;
     ypos += _font.getLineHeight() + (lines - 1) * _font.getFontHeight();
   }
 }

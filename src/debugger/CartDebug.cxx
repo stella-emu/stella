@@ -71,12 +71,16 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   }
 
   // Create bank information for each potential bank, and an extra one for ZP RAM
+  // ROM sizes greater than 4096 indicate multi-bank ROMs, but we handle only
+  // 4K pieces at a time
+  // ROM sizes less than 4K use the actual value
+  size_t romSize = 0;
+  myConsole.cartridge().getImage(romSize);
+
   BankInfo info;
+  info.size = std::min<size_t>(romSize, 4_KB);
   for(uInt32 i = 0; i < myConsole.cartridge().bankCount(); ++i)
-  {
-    info.size = myConsole.cartridge().bankSize(i);
     myBankInfo.push_back(info);
-  }
 
   info.size = 128;  // ZP RAM
   myBankInfo.push_back(info);
@@ -728,7 +732,7 @@ string CartDebug::loadListFile()
 
   if(myListFile == "")
   {
-    FilesystemNode lst(myOSystem.romFile().getPathWithExt("") + ".lst");
+    FilesystemNode lst(myOSystem.romFile().getPathWithExt(".lst"));
     if(lst.isFile() && lst.isReadable())
       myListFile = lst.getPath();
     else
@@ -788,7 +792,7 @@ string CartDebug::loadSymbolFile()
 
   if(mySymbolFile == "")
   {
-    FilesystemNode sym(myOSystem.romFile().getPathWithExt("") + ".sym");
+    FilesystemNode sym(myOSystem.romFile().getPathWithExt(".sym"));
     if(sym.isFile() && sym.isReadable())
       mySymbolFile = sym.getPath();
     else
@@ -848,7 +852,7 @@ string CartDebug::loadConfigFile()
 
   if(myCfgFile == "")
   {
-    FilesystemNode romNode(myOSystem.romFile().getPathWithExt("") + ".cfg");
+    FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
     FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
     if(cfg.isFile() && cfg.isReadable())
       myCfgFile = cfg.getPath();
@@ -970,7 +974,7 @@ string CartDebug::saveConfigFile()
 
   if(myCfgFile == "")
   {
-    FilesystemNode romNode(myOSystem.romFile().getPathWithExt("") + ".cfg");
+    FilesystemNode romNode(myOSystem.romFile().getPathWithExt(".cfg"));
     FilesystemNode cfg(myOSystem.cfgDir() + romNode.getName());
     if(cfg.getParent().isWritable())
       myCfgFile = cfg.getPath();

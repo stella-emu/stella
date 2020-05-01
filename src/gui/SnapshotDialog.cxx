@@ -30,20 +30,22 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   : Dialog(osystem, parent, font, "Snapshot settings"),
     myFont(font)
 {
-  const int VBORDER = 10;
-  const int HBORDER = 10;
-  const int INDENT = 16;
-  const int V_GAP = 4;
   const int lineHeight   = font.getLineHeight(),
+            fontHeight   = _font.getFontHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Save path" + ELLIPSIS) + 20,
-            buttonHeight = font.getLineHeight() + 4;
+            buttonWidth  = font.getStringWidth("Save path" + ELLIPSIS) + fontWidth * 2.5,
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int HBORDER = fontWidth * 1.25;
+  const int VBORDER = fontHeight / 4;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+
   int xpos, ypos, fwidth;
   WidgetArray wid;
   ButtonWidget* b;
 
   // Set real dimensions
-  setSize(64 * fontWidth + HBORDER * 2, 9 * (lineHeight + 4) + VBORDER + _th, max_w, max_h);
+  setSize(64 * fontWidth + HBORDER * 2, 9 * (lineHeight + VGAP) + VBORDER + _th, max_w, max_h);
 
   xpos = HBORDER;  ypos = VBORDER + _th;
 
@@ -51,13 +53,13 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "Save path" + ELLIPSIS, kChooseSnapSaveDirCmd);
   wid.push_back(b);
-  xpos += buttonWidth + 8;
-  mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + 1,
+  xpos += buttonWidth + fontWidth;
+  mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + (buttonHeight - lineHeight) / 2 - 1,
                                   _w - xpos - HBORDER, lineHeight, "");
   wid.push_back(mySnapSavePath);
 
   // Snapshot naming
-  xpos = HBORDER;  ypos += buttonHeight + V_GAP * 4;
+  xpos = HBORDER;  ypos += buttonHeight + VGAP * 4;
 
   // Snapshot interval (continuous mode)
   mySnapInterval = new SliderWidget(this, font, xpos, ypos,
@@ -70,21 +72,21 @@ SnapshotDialog::SnapshotDialog(OSystem& osystem, DialogContainer& parent,
 
   // Booleans for saving snapshots
   fwidth = font.getStringWidth("When saving snapshots:");
-  xpos = HBORDER;  ypos += lineHeight + V_GAP * 3;
+  xpos = HBORDER;  ypos += lineHeight + VGAP * 3;
   new StaticTextWidget(this, font, xpos, ypos, fwidth, lineHeight,
                        "When saving snapshots:", TextAlign::Left);
 
   // Snapshot single or multiple saves
-  xpos += INDENT;  ypos += lineHeight + V_GAP;
+  xpos += INDENT;  ypos += lineHeight + VGAP;
   mySnapName = new CheckboxWidget(this, font, xpos, ypos, "Use actual ROM name");
   wid.push_back(mySnapName);
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
 
   mySnapSingle = new CheckboxWidget(this, font, xpos, ypos, "Overwrite existing files");
   wid.push_back(mySnapSingle);
 
   // Snapshot in 1x mode (ignore scaling)
-  ypos += lineHeight + V_GAP;
+  ypos += lineHeight + VGAP;
   mySnap1x = new CheckboxWidget(this, font, xpos, ypos,
                                 "Ignore scaling (1x mode)");
   wid.push_back(mySnap1x);

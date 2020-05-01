@@ -40,12 +40,14 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font)
   : Dialog(osystem, parent, font, "Audio settings")
 {
-  const int VBORDER = 10;
-  const int HBORDER = 10;
-  const int INDENT = 20;
-  const int VGAP = 4;
   const int lineHeight   = font.getLineHeight(),
+            fontHeight   = font.getFontHeight(),
             fontWidth    = font.getMaxCharWidth();
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+
   int xpos, ypos;
   int lwidth = font.getStringWidth("Volume "),
     pwidth;
@@ -64,7 +66,7 @@ AudioDialog::AudioDialog(OSystem& osystem, DialogContainer& parent,
                                              "Enable sound", kSoundEnableChanged);
   wid.push_back(mySoundEnableCheckbox);
   ypos += lineHeight + VGAP;
-  xpos += INDENT;
+  xpos += CheckboxWidget::prefixSize(font);
 
   // Volume
   myVolumeSlider = new SliderWidget(this, font, xpos, ypos,

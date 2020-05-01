@@ -35,7 +35,7 @@ class RomInfoWidget : public Widget
                   const Common::Size& imgSize);
     virtual ~RomInfoWidget() = default;
 
-    void setProperties(const Properties& props, const FilesystemNode& node);
+    void setProperties(const FilesystemNode& node, const string& md5);
     void clearProperties();
     void reloadProperties(const FilesystemNode& node);
 

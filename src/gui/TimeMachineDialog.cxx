@@ -196,7 +196,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   _w = width;  // Parent determines our width (based on window size)
-  _h = V_BORDER * 2 + rowHeight + buttonHeight + 2;
+  _h = V_BORDER * 2 + rowHeight + std::max(buttonHeight + 2, rowHeight);
 
   this->clearFlags(Widget::FLAG_CLEARBG); // does only work combined with blending (0..100)!
   this->clearFlags(Widget::FLAG_BORDER);
@@ -221,9 +221,10 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   ypos += rowHeight;
 
   // Add time info
-  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos + 3, "00:00.00", TextAlign::Left, kBGColor);
+  int ypos_s = ypos + (buttonHeight - font.getFontHeight() + 1) / 2; // align to button vertical center
+  myCurrentTimeWidget = new StaticTextWidget(this, font, xpos, ypos_s, "00:00.00", TextAlign::Left, kBGColor);
   myCurrentTimeWidget->setTextColor(kColorInfo);
-  myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("00:00.00"), ypos + 3,
+  myLastTimeWidget = new StaticTextWidget(this, font, _w - H_BORDER - font.getStringWidth("00:00.00"), ypos_s,
                                           "00:00.00", TextAlign::Right, kBGColor);
   myLastTimeWidget->setTextColor(kColorInfo);
   xpos = myCurrentTimeWidget->getRight() + BUTTON_GAP * 4;
@@ -262,7 +263,7 @@ TimeMachineDialog::TimeMachineDialog(OSystem& osystem, DialogContainer& parent,
   xpos = myLoadAllWidget->getRight() + BUTTON_GAP * 4;
 
   // Add message
-  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos + 3,
+  myMessageWidget = new StaticTextWidget(this, font, xpos, ypos_s,
       "                                             ", TextAlign::Left, kBGColor);
   myMessageWidget->setTextColor(kColorInfo);
 }
