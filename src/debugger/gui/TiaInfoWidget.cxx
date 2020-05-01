@@ -34,15 +34,16 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   : Widget(boss, lfont, x, y, 16, 16),
     CommandSender(boss)
 {
-  bool longstr = 34 * lfont.getMaxCharWidth() <= max_w;
+  bool longstr = 11 + 32 * lfont.getMaxCharWidth() + 9
+    + EditTextWidget::calcWidth(lfont) * 3 <= max_w;
   const int VGAP = 5;
 
   x += 11;
   const int lineHeight = lfont.getLineHeight();
   int xpos = x, ypos = y + 10;
   int lwidth = lfont.getStringWidth(longstr ? "Frame Cycle " : "F. Cycle ");
-  int fwidth = 5 * lfont.getMaxCharWidth() + 4;
-  int twidth = 8 * lfont.getMaxCharWidth() + 4;
+  int fwidth = EditTextWidget::calcWidth(lfont, 5);
+  int twidth = EditTextWidget::calcWidth(lfont, 8);
 
   // Add frame info
   // 1st column
@@ -78,11 +79,9 @@ TiaInfoWidget::TiaInfoWidget(GuiObject* boss, const GUI::Font& lfont,
   // 2nd column
   xpos = x + lwidth + myFrameCycles->getWidth() + 9;  ypos = y + 10;
   lwidth = lfont.getStringWidth(longstr ? "Color Clock " : "Pixel Pos ");
-  fwidth = 3 * lfont.getMaxCharWidth() + 4;
+  fwidth = EditTextWidget::calcWidth(lfont, 3);
 
-  new StaticTextWidget(boss, lfont, xpos, ypos,
-    lfont.getStringWidth(longstr ? "Scanline" : "Scn Ln"), lineHeight,
-    longstr ? "Scanline" : "Scn Ln", TextAlign::Left);
+  new StaticTextWidget(boss, lfont, xpos, ypos, longstr ? "Scanline" : "Scn Ln");
   myScanlineCountLast = new EditTextWidget(boss, nfont, xpos+lwidth, ypos-1, fwidth,
                                        lineHeight, "");
   myScanlineCountLast->setEditable(false, true);
