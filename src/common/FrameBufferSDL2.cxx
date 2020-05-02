@@ -48,8 +48,6 @@ FrameBufferSDL2::FrameBufferSDL2(OSystem& osystem)
   // since the structure may be needed before any FBSurface's have
   // been created
   myPixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
-
-  myWindowedPos = myOSystem.settings().getPoint("windowedpos");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,25 +181,32 @@ void FrameBufferSDL2::queryHardware(vector<Common::Size>& fullscreenRes,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 FrameBufferSDL2::getCurrentDisplayIndex()
+bool FrameBufferSDL2::isCurrentWindowPositioned() const
+{
+  ASSERT_MAIN_THREAD;
+
+  return !myCenter
+    && myWindow && !(SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Common::Point FrameBufferSDL2::getCurrentWindowPos() const
+{
+  ASSERT_MAIN_THREAD;
+
+  Common::Point pos;
+
+  SDL_GetWindowPosition(myWindow, &pos.x, &pos.y);
+
+  return pos;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Int32 FrameBufferSDL2::getCurrentDisplayIndex() const
 {
   ASSERT_MAIN_THREAD;
 
   return SDL_GetWindowDisplayIndex(myWindow);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSDL2::updateWindowedPos()
-{
-  ASSERT_MAIN_THREAD;
-
-  // only save if the window is not centered and not in full screen mode
-  if (!myCenter && myWindow && !(SDL_GetWindowFlags(myWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP))
-  {
-    // save current windowed position
-    SDL_GetWindowPosition(myWindow, &myWindowedPos.x, &myWindowedPos.y);
-    myOSystem.settings().setValue("windowedpos", myWindowedPos);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -213,24 +218,13 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     return false;
 
-  Int32 displayIndex = mode.fsIndex;
-  if (displayIndex == -1)
-  {
-    // windowed mode
-    if (myWindow)
-    {
-      // Show it on same screen as the previous window
-      displayIndex = SDL_GetWindowDisplayIndex(myWindow);
-    }
-    if (displayIndex < 0)
-    {
-      // fallback to the last used screen if still existing
-      displayIndex = std::min(myNumDisplays, myOSystem.settings().getInt("display"));
-    }
-  }
+  // TODO: On multiple displays, switching from centered mode, does not respect
+  //  current window's display (which many not be centered anymore)
 
-  // save and get last windowed window's position
-  updateWindowedPos();
+  // Get windowed window's last display
+  Int32 displayIndex = std::min(myNumDisplays, myOSystem.settings().getInt(getDisplayKey()));
+  // Get windowed window's last position
+  myWindowedPos = myOSystem.settings().getPoint(getPositionKey());
 
   // Always recreate renderer (some systems need this)
   if(myRenderer)
@@ -249,7 +243,7 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
     posX = myWindowedPos.x;
     posY = myWindowedPos.y;
 
-    // make sure the window is at least partially visibile
+    // Make sure the window is at least partially visibile
     int x0 = 0, y0 = 0, x1 = 0, y1 = 0;
 
     for (int display = SDL_GetNumVideoDisplays() - 1; display >= 0; display--)
@@ -276,13 +270,15 @@ bool FrameBufferSDL2::setVideoMode(const string& title, const VideoMode& mode)
   // toggling fullscreen windowed mode
   // So we have a special case for macOS
 #ifndef BSPF_MACOS
-  // Don't re-create the window if its size hasn't changed, as it's not
-  // necessary, and causes flashing in fullscreen mode
+  // Don't re-create the window if its display and size hasn't changed,
+  // as it's not necessary, and causes flashing in fullscreen mode
   if(myWindow)
   {
+    int d = SDL_GetWindowDisplayIndex(myWindow);
     int w, h;
+
     SDL_GetWindowSize(myWindow, &w, &h);
-    if(uInt32(w) != mode.screen.w || uInt32(h) != mode.screen.h)
+    if(d != displayIndex || uInt32(w) != mode.screen.w || uInt32(h) != mode.screen.h)
     {
       SDL_DestroyWindow(myWindow);
       myWindow = nullptr;
