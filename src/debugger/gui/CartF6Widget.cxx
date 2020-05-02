@@ -16,81 +16,24 @@
 //============================================================================
 
 #include "CartF6.hxx"
-#include "PopUpWidget.hxx"
 #include "CartF6Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF6Widget::CartridgeF6Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeF6& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
-  uInt16 size = 4 * 4096;
+  initialize();
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeF6Widget::description()
+{
   ostringstream info;
-  info << "Standard F6 cartridge, four 4K banks\n"
-       << "Startup bank = " << cart.startBank() << " or undetermined\n";
 
-  // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF6; i < 4; ++i, offset += 0x1000)
-  {
-    uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
-    start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << Common::Base::HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
-  }
+  info << "Standard F6 cartridge, four 4K banks\n";
+  info << CartridgeEnhancedWidget::description();
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "Atari", info.str()) + myLineHeight;
-
-  VariantList items;
-  VarList::push_back(items, "0 ($FFF6)");
-  VarList::push_back(items, "1 ($FFF7)");
-  VarList::push_back(items, "2 ($FFF8)");
-  VarList::push_back(items, "3 ($FFF9)");
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx) "),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
-  myBank->setTarget(this);
-  addFocusWidget(myBank);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::loadConfig()
-{
-  Debugger& dbg = instance().debugger();
-  CartDebug& cart = dbg.cartDebug();
-  const CartState& state = static_cast<const CartState&>(cart.getState());
-  const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
-
-  myBank->setSelectedIndex(myCart.getBank(), state.bank != oldstate.bank);
-
-  CartDebugWidget::loadConfig();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
-{
-  if(cmd == kBankChanged)
-  {
-    myCart.unlockBank();
-    myCart.bank(myBank->getSelected());
-    myCart.lockBank();
-    invalidate();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeF6Widget::bankState()
-{
-  ostringstream& buf = buffer();
-
-  static constexpr std::array<const char*, 4> spot = { "$FFF6", "$FFF7", "$FFF8", "$FFF9" };
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << spot[myCart.getBank()];
-
-  return buf.str();
+  return info.str();
 }

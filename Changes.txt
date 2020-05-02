@@ -36,6 +36,10 @@
 
   * Restored 'cfg' directory for Distella config files.
 
+  * Added 3EX bank switching type.
+
+  * Removed unused CV+ and DASH bank switching types.
+
 -Have fun!
 
 

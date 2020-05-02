@@ -406,7 +406,7 @@ uInt16 CartridgeAR::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeAR::bankCount() const
+uInt16 CartridgeAR::romBankCount() const
 {
   return 32;
 }

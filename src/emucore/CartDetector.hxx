@@ -131,6 +131,11 @@ class CartDetector
     static bool isProbably3E(const ByteBuffer& image, size_t size);
 
     /**
+    Returns true if the image is probably a 3EX bankswitching cartridge
+    */
+    static bool isProbably3EX(const ByteBuffer& image, size_t size);
+
+    /**
       Returns true if the image is probably a 3E+ bankswitching cartridge
     */
     static bool isProbably3EPlus(const ByteBuffer& image, size_t size);
@@ -174,16 +179,6 @@ class CartDetector
       Returns true if the image is probably a CV bankswitching cartridge
     */
     static bool isProbablyCV(const ByteBuffer& image, size_t size);
-
-    /**
-      Returns true if the image is probably a CV+ bankswitching cartridge
-    */
-    static bool isProbablyCVPlus(const ByteBuffer& image, size_t size);
-
-    /**
-      Returns true if the image is probably a DASH bankswitching cartridge
-    */
-    static bool isProbablyDASH(const ByteBuffer& image, size_t size);
 
     /**
       Returns true if the image is probably a DF/DFSC bankswitching cartridge

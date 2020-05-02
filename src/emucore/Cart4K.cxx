@@ -21,48 +21,6 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4K::Cartridge4K(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
-  : Cartridge(settings, md5)
+  : CartridgeEnhanced(image, size, md5, settings)
 {
-  // Copy the ROM image into my buffer
-  std::copy_n(image.get(), std::min(myImage.size(), size), myImage.begin());
-  createRomAccessArrays(myImage.size());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4K::reset()
-{
-  myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4K::install(System& system)
-{
-  mySystem = &system;
-
-  // Map ROM image into the system
-  // Note that we don't need our own peek/poke methods, since the mapping
-  // takes care of the entire address space
-  System::PageAccess access(this, System::PageAccessType::READ);
-  for(uInt16 addr = 0x1000; addr < 0x2000; addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myImage[addr & 0x0FFF];
-    access.romAccessBase = &myRomAccessBase[addr & 0x0FFF];
-    access.romPeekCounter = &myRomAccessCounter[addr & 0x0FFF];
-    access.romPokeCounter = &myRomAccessCounter[(addr & 0x0FFF) + myAccessSize];
-    mySystem->setPageAccess(addr, access);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::patch(uInt16 address, uInt8 value)
-{
-  myImage[address & 0x0FFF] = value;
-  return myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* Cartridge4K::getImage(size_t& size) const
-{
-  size = myImage.size();
-  return myImage.data();
 }

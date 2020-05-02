@@ -42,14 +42,14 @@ int CartDebugWidget::addBaseInformation(size_t bytes, const string& manufacturer
         const string& desc, const uInt16 maxlines)
 {
   const int lwidth = _font.getStringWidth("Manufacturer "),
-            fwidth = _w - lwidth - 20;
+            fwidth = _w - lwidth - 12;
   EditTextWidget* w = nullptr;
   ostringstream buf;
 
   int x = 2, y = 8;
 
   // Add ROM size, manufacturer and bankswitch info
-  new StaticTextWidget(_boss, _font, x, y + 1, "ROM Size ");
+  new StaticTextWidget(_boss, _font, x, y + 1, "ROM size ");
   buf << bytes << " bytes";
   if(bytes >= 1024)
     buf << " / " << (bytes/1024) << "KB";

@@ -21,7 +21,7 @@
 class System;
 
 #include "bspf.hxx"
-#include "Cart.hxx"
+#include "CartEnhanced.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "CartFCWidget.hxx"
@@ -30,12 +30,12 @@ class System;
 /**
   Cartridge class used for Amiga's 32K Power Play Arcade Video Game Album.
   There are eight 4K banks, writing to $1FF8 definies the two lowest bits
-  of the wanted bank, writeing to $1FF9 defines the high bits. Reading from
+  of the wanted bank, writeing to $1FF9 defines the high bits. Accessing
   $1FFC triggers the bank switching
 
   @author  Thomas Jentzsch
 */
-class CartridgeFC : public Cartridge
+class CartridgeFC : public CartridgeEnhanced
 {
   friend class CartridgeFCWidget;
 
@@ -59,66 +59,6 @@ class CartridgeFC : public Cartridge
     void reset() override;
 
     /**
-      Install cartridge in the specified system.  Invoked by the system
-      when the cartridge is attached to it.
-
-      @param system The system the device should install itself in
-    */
-    void install(System& system) override;
-
-    /**
-      Install pages for the specified bank in the system.
-
-      @param bank The bank that should be installed in the system
-    */
-    bool bank(uInt16 bank) override;
-
-    /**
-      Get the current bank.
-
-      @param address The address to use when querying the bank
-    */
-    uInt16 getBank(uInt16 address = 0) const override;
-
-    /**
-      Query the number of banks supported by the cartridge.
-    */
-    uInt16 bankCount() const override;
-
-    /**
-      Patch the cartridge ROM.
-
-      @param address  The ROM address to patch
-      @param value    The value to place into the address
-      @return    Success or failure of the patch operation
-    */
-    bool patch(uInt16 address, uInt8 value) override;
-
-    /**
-      Access the internal ROM image for this cartridge.
-
-      @param size  Set to the size of the internal ROM image data
-      @return  A pointer to the internal ROM image data
-    */
-    const uInt8* getImage(size_t& size) const override;
-
-    /**
-      Save the current state of this cart to the given Serializer.
-
-      @param out  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    bool save(Serializer& out) const override;
-
-    /**
-      Load the current state of this cart from the given Serializer.
-
-      @param in  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    bool load(Serializer& in) override;
-
-    /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
@@ -139,13 +79,6 @@ class CartridgeFC : public Cartridge
 
   public:
     /**
-      Get the byte at the specified address.
-
-      @return The byte at the specified address
-    */
-    uInt8 peek(uInt16 address) override;
-
-    /**
       Change the byte at the specified address to the given value
 
       @param address The address where the value should be stored
@@ -155,17 +88,9 @@ class CartridgeFC : public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    // The 32K ROM image of the cartridge
-    std::array<uInt8, 32_KB> myImage;
+    bool checkSwitchBank(uInt16 address, uInt8 value = 0) override;
 
-    // Size of the ROM image
-    size_t mySize{0};
-
-    // Indicates the offset into the ROM image (aligns to current bank)
-    uInt16 myBankOffset{0};
-
-    // Indicates which bank is currently active for the first segment
-    uInt16 myCurrentBank{0};
+    uInt16 hotspot() const override { return 0x1FF8; }
 
     // Target bank defined by writing to $1FF8/9
     uInt16 myTargetBank{0};

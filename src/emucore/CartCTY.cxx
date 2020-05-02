@@ -255,7 +255,7 @@ uInt16 CartridgeCTY::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCTY::bankCount() const
+uInt16 CartridgeCTY::romBankCount() const
 {
   return 8;
 }

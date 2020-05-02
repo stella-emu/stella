@@ -15,65 +15,26 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Debugger.hxx"
-#include "CartDebug.hxx"
 #include "CartFA2.hxx"
-#include "PopUpWidget.hxx"
 #include "CartFA2Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFA2Widget::CartridgeFA2Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeFA2& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart),
+    myCartFA2(cart)
 {
-  size_t size = cart.mySize;
-
-  ostringstream info;
-  info << "Modified FA RAM+, six or seven 4K banks\n"
-       << "256 bytes RAM @ $F000 - $F1FF\n"
-       << "  $F100 - $F1FF (R), $F000 - $F0FF (W)\n"
-       << "RAM can be loaded/saved to Harmony flash by accessing $FFF4\n"
-       << "Startup bank = " << cart.startBank() << " or undetermined\n";
-
-  // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF5; i < cart.bankCount();
-      ++i, offset += 0x1000)
-  {
-    uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
-    start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << Common::Base::HEX4 << (start + 0x200) << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
-  }
-
   int xpos = 2,
-      ypos = addBaseInformation(size, "Chris D. Walton (Star Castle 2600)",
-                info.str(), 15) + myLineHeight;
+    ypos = initialize();
 
-  VariantList items;
-  VarList::push_back(items, "0 ($FFF5)");
-  VarList::push_back(items, "1 ($FFF6)");
-  VarList::push_back(items, "2 ($FFF7)");
-  VarList::push_back(items, "3 ($FFF8)");
-  VarList::push_back(items, "4 ($FFF9)");
-  VarList::push_back(items, "5 ($FFFA)");
-  if(cart.bankCount() == 7)
-    VarList::push_back(items, "6 ($FFFB)");
-
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
-  myBank->setTarget(this);
-  addFocusWidget(myBank);
-  ypos += myLineHeight + 20;
+  ypos += 12;
 
   const int bwidth = _font.getStringWidth("Erase") + 20;
 
   StaticTextWidget* t = new StaticTextWidget(boss, _font, xpos, ypos,
-      _font.getStringWidth("Harmony Flash "),
-      myFontHeight, "Harmony Flash ", TextAlign::Left);
+      _font.getStringWidth("Harmony flash memory "),
+      myFontHeight, "Harmony flash memory ", TextAlign::Left);
 
   xpos += t->getWidth() + 4;
   myFlashErase =
@@ -98,22 +59,16 @@ CartridgeFA2Widget::CartridgeFA2Widget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA2Widget::saveOldState()
+string CartridgeFA2Widget::description()
 {
-  myOldState.internalram.clear();
+  ostringstream info;
 
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myRAM[i]);
+  info << "Modified FA RAM+, six or seven 4K banks\n";
+  info << "RAM+ can be loaded/saved to Harmony flash memory by accessing $"
+    << Common::Base::HEX4 << 0xFFF4 << "\n";
+  info << CartridgeEnhancedWidget::description();
 
-  myOldState.bank = myCart.getBank();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA2Widget::loadConfig()
-{
-  myBank->setSelectedIndex(myCart.getBank(), myCart.getBank() != myOldState.bank);
-
-  CartDebugWidget::loadConfig();
+  return info.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,99 +77,19 @@ void CartridgeFA2Widget::handleCommand(CommandSender* sender,
 {
   switch(cmd)
   {
-    case kBankChanged:
-      myCart.unlockBank();
-      myCart.bank(myBank->getSelected());
-      myCart.lockBank();
-      invalidate();
-      break;
-
     case kFlashErase:
-      myCart.flash(0);
+      myCartFA2.flash(0);
       break;
 
     case kFlashLoad:
-      myCart.flash(1);
+      myCartFA2.flash(1);
       break;
 
     case kFlashSave:
-      myCart.flash(2);
+      myCartFA2.flash(2);
       break;
 
     default:
-      break;
+      CartridgeEnhancedWidget::handleCommand(sender, cmd, data, id);
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFA2Widget::bankState()
-{
-  ostringstream& buf = buffer();
-
-  static constexpr std::array<const char*, 7> spot = {
-    "$FFF5", "$FFF6", "$FFF7", "$FFF8", "$FFF9", "$FFFA", "$FFFB"
-  };
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << spot[myCart.getBank()];
-
-  return buf.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeFA2Widget::internalRamSize()
-{
-  return 256;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeFA2Widget::internalRamRPort(int start)
-{
-  return 0xF100 + start;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFA2Widget::internalRamDescription()
-{
-  ostringstream desc;
-  desc << "$F000 - $F0FF used for Write Access\n"
-       << "$F100 - $F1FF used for Read Access";
-
-  return desc.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeFA2Widget::internalRamOld(int start, int count)
-{
-  myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalram[start + i]);
-  return myRamOld;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeFA2Widget::internalRamCurrent(int start, int count)
-{
-  myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myRAM[start + i]);
-  return myRamCurrent;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA2Widget::internalRamSetValue(int addr, uInt8 value)
-{
-  myCart.myRAM[addr] = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeFA2Widget::internalRamGetValue(int addr)
-{
-  return myCart.myRAM[addr];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFA2Widget::internalRamLabel(int addr)
-{
-  CartDebug& dbg = instance().debugger().cartDebug();
-  return dbg.getLabel(addr + 0xF100, false);
 }

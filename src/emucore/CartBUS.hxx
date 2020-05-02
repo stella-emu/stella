@@ -98,7 +98,7 @@ class CartridgeBUS : public Cartridge
     /**
       Query the number of banks supported by the cartridge.
     */
-    uInt16 bankCount() const override;
+    uInt16 romBankCount() const override;
 
     /**
       Patch the cartridge ROM.
@@ -220,13 +220,13 @@ class CartridgeBUS : public Cartridge
     uInt8* myDisplayImage{nullptr};
 
     // Pointer to the 2K BUS driver image in RAM
-    uInt8* myBusDriverImage{nullptr};
+    uInt8* myDriverImage{nullptr};
 
     // The BUS 8k RAM image, used as:
     //   $0000 - 2K BUS driver
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
-    std::array<uInt8, 8_KB> myBUSRAM;
+    std::array<uInt8, 8_KB> myRAM;
 
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;
