@@ -239,8 +239,7 @@ void OSystem::saveConfig()
   if(myFrameBuffer)
   {
     // Save the last windowed position and display on system shutdown
-    myFrameBuffer->updateWindowedPos();
-    settings().setValue("display", myFrameBuffer->getCurrentDisplayIndex());
+    myFrameBuffer->saveCurrentWindowPosition();
 
     Logger::debug("Saving TV effects options ...");
     myFrameBuffer->tiaSurface().ntsc().saveConfig(settings());

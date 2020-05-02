@@ -126,6 +126,8 @@ Settings::Settings()
   // ROM browser options
   setPermanent("exitlauncher", "false");
   setPermanent("followlauncher", "false");
+  setPermanent("launcherpos", Common::Point(50, 50));
+  setPermanent("launcherdisplay", 0);
   setPermanent("launcherres", Common::Size(900, 600));
   setPermanent("launcherfont", "medium");
   setPermanent("launcherroms", "true");
@@ -137,6 +139,8 @@ Settings::Settings()
   setPermanent("dbg.res",
     Common::Size(DebuggerDialog::kMediumFontMinW,
                  DebuggerDialog::kMediumFontMinH));
+  setPermanent("dbg.pos", Common::Point(50, 50));
+  setPermanent("dbg.display", 0);
 #endif
   setPermanent("uipalette", "standard");
   setPermanent("hidpi", "false");
@@ -396,8 +400,8 @@ void Settings::usage() const
     << "  -vsync        <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
     << "  -fullscreen   <1|0>          Enable fullscreen mode\n"
     << "  -center       <1|0>          Centers game window in windowed modes\n"
-    << "  -windowedpos  <XxY>          Sets the window position in windowed modes\n"
-    << "  -display      <number>       Sets the display for Stella\n"
+    << "  -windowedpos  <XxY>          Sets the window position in windowed emulator mode\n"
+    << "  -display      <number>       Sets the display for Stella's emulator\n"
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
     << "                 user>\n"
@@ -493,8 +497,10 @@ void Settings::usage() const
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM\n"
     << "                                entry\n"
-      << endl
+    << endl
     << "  -exitlauncher <1|0>          On exiting a ROM, go back to the ROM launcher\n"
+    << "  -launcherpos  <XxY>          Sets the window position in windowed EOM launcher mode\n"
+    << "  -launcherdisplay <number>    Sets the display for the ROM launcher\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -launcherfont <small|        Use the specified font in the ROM launcher\n"
     << "                 low_medium|\n"
@@ -557,6 +563,8 @@ void Settings::usage() const
     << "   -dis.relocate  <1|0>        Relocate calls out of address range in\n"
     << "                                disassembler\n"
     << endl
+    << "   -dbg.pos       <XxY>          Sets the window position in windowed debugger mode\n"
+    << "   -dbg.display   <number>       Sets the display for the debugger\n"
     << "   -dbg.res       <WxH>          The resolution to use in debugger mode\n"
     << "   -dbg.fontsize  <small|medium| Font size to use in debugger window\n"
     << "                  large>\n"
