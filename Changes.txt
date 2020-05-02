@@ -26,6 +26,8 @@
 
   * Added selectable dialog fonts
 
+  * Added separate positioning of launcher, emulator and debugger
+
   * Added option which lets default ROM path follow launcher navigation
 
   * Added displaying last write address in the debugger.
