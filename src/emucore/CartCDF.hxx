@@ -104,7 +104,7 @@ class CartridgeCDF : public Cartridge
     /**
       Query the number of banks supported by the cartridge.
     */
-    uInt16 bankCount() const override;
+    uInt16 romBankCount() const override;
 
     /**
       Patch the cartridge ROM.
@@ -220,13 +220,13 @@ class CartridgeCDF : public Cartridge
     uInt8* myDisplayImage{nullptr};
 
     // Pointer to the 2K CDF driver image in RAM
-    uInt8* myBusDriverImage{nullptr};
+    uInt8* myDriverImage{nullptr};
 
     // The CDF 8k RAM image, used as:
     //   $0000 - 2K CDF driver
     //   $0800 - 4K Display Data
     //   $1800 - 2K C Variable & Stack
-    std::array<uInt8, 8_KB> myCDFRAM;
+    std::array<uInt8, 8_KB> myRAM;
 
     // Pointer to the Thumb ARM emulator object
     unique_ptr<Thumbulator> myThumbEmulator;

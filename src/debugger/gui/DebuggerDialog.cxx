@@ -621,7 +621,7 @@ void DebuggerDialog::addRomArea()
 
   // The 'cart-specific' information tab (optional)
 
-  tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
+    tabID = myRomTab->addTab(" " + instance().console().cartridge().name() + " ", TabWidget::AUTO_WIDTH);
   myCartInfo = instance().console().cartridge().infoWidget(
     myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
     tabHeight - myRomTab->getTabHeight() - 2);
@@ -644,7 +644,7 @@ void DebuggerDialog::addRomArea()
     // The cartridge RAM tab
     if (myCartDebug->internalRamSize() > 0)
     {
-      tabID = myRomTab->addTab(" Cartridge RAM ", TabWidget::AUTO_WIDTH);
+      tabID = myRomTab->addTab(myCartDebug->tabLabel(), TabWidget::AUTO_WIDTH);
       myCartRam =
         new CartRamWidget(myRomTab, *myLFont, *myNFont, 2, 2, tabWidth - 1,
                 tabHeight - myRomTab->getTabHeight() - 2, *myCartDebug);

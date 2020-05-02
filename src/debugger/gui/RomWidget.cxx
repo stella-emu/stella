@@ -41,12 +41,9 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& lfont, const GUI::Font& n
 
   // Show current bank state
   xpos = x;  ypos = y + 7;
-  t = new StaticTextWidget(boss, lfont, xpos, ypos,
-                           lfont.getStringWidth("Bank"),
-                           lfont.getFontHeight(),
-                           "Bank", TextAlign::Left);
+  t = new StaticTextWidget(boss, lfont, xpos, ypos, "Info ");
 
-  xpos += t->getWidth() + 5;
+  xpos += t->getRight();
   myBank = new EditTextWidget(boss, nfont, xpos, ypos-2,
                               _w - 2 - xpos, nfont.getLineHeight());
   myBank->setEditable(false);
@@ -68,7 +65,7 @@ void RomWidget::loadConfig()
   const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
 
   // Fill romlist the current bank of source or disassembly
-  myListIsDirty |= cart.disassemble(myListIsDirty);
+  myListIsDirty |= cart.disassemblePC(myListIsDirty);
   if(myListIsDirty)
   {
     myRomList->setList(cart.disassembly());

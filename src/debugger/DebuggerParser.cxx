@@ -763,7 +763,7 @@ void DebuggerParser::executeBreak()
 {
   uInt16 addr;
   uInt8 bank;
-  uInt32 bankCount = debugger.cartDebug().bankCount();
+  uInt32 romBankCount = debugger.cartDebug().romBankCount();
 
   if(argCount == 0)
     addr = debugger.cpuDebug().pc();
@@ -775,7 +775,7 @@ void DebuggerParser::executeBreak()
   else
   {
     bank = args[1];
-    if(bank >= bankCount && bank != 0xff)
+    if(bank >= romBankCount && bank != 0xff)
     {
       commandResult << red("invalid bank");
       return;
@@ -791,12 +791,12 @@ void DebuggerParser::executeBreak()
       commandResult << "cleared";
 
     commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
-    if(bankCount > 1)
+    if(romBankCount > 1)
       commandResult << " in bank #" << std::dec << int(bank);
   }
   else
   {
-    for(int i = 0; i < debugger.cartDebug().bankCount(); ++i)
+    for(int i = 0; i < debugger.cartDebug().romBankCount(); ++i)
     {
       bool set = debugger.toggleBreakPoint(addr, i);
 
@@ -809,7 +809,7 @@ void DebuggerParser::executeBreak()
         commandResult << "cleared";
 
       commandResult << " breakpoint at $" << Base::HEX4 << addr << " + mirrors";
-      if(bankCount > 1)
+      if(romBankCount > 1)
         commandResult << " in bank #" << std::dec << int(bank);
     }
   }
@@ -1459,11 +1459,11 @@ void DebuggerParser::executeListbreaks()
 {
   stringstream buf;
   int count = 0;
-  uInt32 bankCount = debugger.cartDebug().bankCount();
+  uInt32 romBankCount = debugger.cartDebug().romBankCount();
 
   for(const auto& bp : debugger.breakPoints().getBreakpoints())
   {
-    if(bankCount == 1)
+    if(romBankCount == 1)
     {
       buf << debugger.cartDebug().getLabel(bp.addr, true, 4) << " ";
       if(!(++count % 8)) buf << endl;

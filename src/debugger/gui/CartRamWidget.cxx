@@ -47,7 +47,7 @@ CartRamWidget::CartRamWidget(
   int xpos = 2, ypos = 8;
 
   // Add RAM size
-  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "RAM Size ");
+  new StaticTextWidget(_boss, _font, xpos, ypos + 1, "RAM size ");
 
   uInt32 ramsize = cartDebug.internalRamSize();
   buf << ramsize << " bytes";
@@ -65,13 +65,14 @@ CartRamWidget::CartRamWidget(
   StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth);
   const StringList& sl = bs.stringList();
   uInt32 lines = uInt32(sl.size());
-  if(lines < 3) lines = 3;
+  if(lines < 2) lines = 2;
   if(lines > maxlines) lines = maxlines;
 
   new StaticTextWidget(_boss, _font, xpos, ypos + 1, "Description ");
   myDesc = new StringListWidget(boss, nfont, xpos+lwidth, ypos - 1,
                                 fwidth, lines * myLineHeight, false);
   myDesc->setEditable(false);
+  myDesc->setEnabled(false);
   myDesc->setList(sl);
   addFocusWidget(myDesc);
 
