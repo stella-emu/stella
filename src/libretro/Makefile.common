@@ -37,10 +37,14 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/AtariVox.cxx \
 	$(CORE_DIR)/emucore/Bankswitch.cxx \
 	$(CORE_DIR)/emucore/Booster.cxx \
+	$(CORE_DIR)/emucore/Cart.cxx \
+	$(CORE_DIR)/emucore/CartDetector.cxx \
+	$(CORE_DIR)/emucore/CartEnhanced.o \
 	$(CORE_DIR)/emucore/Cart0840.cxx \
 	$(CORE_DIR)/emucore/Cart2K.cxx \
 	$(CORE_DIR)/emucore/Cart3E.cxx \
 	$(CORE_DIR)/emucore/Cart3EPlus.cxx \
+	$(CORE_DIR)/emucore/Cart3EX.cxx \
 	$(CORE_DIR)/emucore/Cart3F.cxx \
 	$(CORE_DIR)/emucore/Cart4A50.cxx \
 	$(CORE_DIR)/emucore/Cart4K.cxx \
@@ -53,10 +57,6 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/CartCM.cxx \
 	$(CORE_DIR)/emucore/CartCTY.cxx \
 	$(CORE_DIR)/emucore/CartCV.cxx \
-	$(CORE_DIR)/emucore/CartCVPlus.cxx \
-	$(CORE_DIR)/emucore/Cart.cxx \
-	$(CORE_DIR)/emucore/CartDASH.cxx \
-	$(CORE_DIR)/emucore/CartDetector.cxx \
 	$(CORE_DIR)/emucore/CartDF.cxx \
 	$(CORE_DIR)/emucore/CartDFSC.cxx \
 	$(CORE_DIR)/emucore/CartDPC.cxx \
