@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3510;
+static constexpr uInt32 DEF_PROPS_SIZE = 3513;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1032,6 +1032,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "4904a2550759b9b4570e886374f9d092", "Parker Brothers, Charlie Heath", "931506", "Reactor (1983) (Parker Bros) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "490e3cc59d82f85fae817cdf767ea7a0", "", "", "Berzerk (Unknown) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "490eed07d4691b27f473953fbea6541a", "Activision, Steve Cartwright, David Crane", "AB-035-04", "Pitfall II (1983) (Activision) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "49366f41aa7a54baf263426e99ce4312", "", "", "POP-MDM-Test (PAL) (63 games)", "", "", "", "", "MDM", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "493daaf9fb1ba450eba6b8ed53ffb37d", "", "", "3-D Corridor Demo (27-03-2003) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "493de059b32f84ab29cde6213964aeee", "Atari, Bill Aspromonte, Andrew Fuchs", "CX26120", "Stargate (1984) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "493e90602a4434b117c91c95e73828d1", "Telegames", "", "Lock 'n' Chase (1988) (Telegames) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1366,6 +1367,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "61719a8bdafbd8dab3ca9ce7b171b9e2", "", "", "Enduro (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "61728c6cfb052e62a9ed088c5bf407ba", "", "", "Sprite Demo 4 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "619de46281eb2e0adbb98255732483b4", "", "", "Time Warp (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "61baadddc2c8f6e5faa57d4d0f285462", "", "", "208-in-1 MDM-Test (PAL) (127 games)", "", "", "", "", "MDM", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "61dbe94f110f30ca4ec524ae5ce2d026", "CCE", "C-820", "Space Invaders (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "61e0f5e1cc207e98704d0758c68df317", "Star Game", "007", "Tennis (Star Game)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "61ef8c2fc43be9a04fe13fdb79ff2bd9", "", "", "Gas Gauge Demo - Revisited (2001) (Joe Grand) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -2326,6 +2328,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "a89a3e0547d6887279c34aba4b17a560", "M Network, Steve Crandall, Patricia Lewis Du Long", "MT4646", "Rocky & Bullwinkle (1983) (Mattel) (Prototype)", "", "Prototype", "", "", "4K", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "a8a703e073183a89c94d4d99b9661b7f", "Franklin Cruz", "", "Spice Invaders (Franklin Cruz) (Hack)", "Hack of Space Invaders", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "a8b3ea6836b99bea77c8f603cf1ea187", "CCE", "C-861", "Boxing (1983) (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "a8c447efbec3a2b5d08b05a09999bd92", "", "", "MegaCart Menu", "", "", "", "", "", "", "", "", "", "JOYSTICK", "JOYSTICK", "", "", "", "", "", "", "", "" },
   { "a8c48b4e0bf35fe97cc84fdd2c507f78", "Puzzy - Bit Corporation", "PG201", "Seamonster (1982) (Puzzy)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "a8d0a4a77cd71ac601bd71df5a060e4c", "", "", "Space Shuttle (1983) (Activision) [t2] (Fuel)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "a8d4a9500b18b0a067a1f272f869e094", "", "", "Red And White Checkerboard Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
