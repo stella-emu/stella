@@ -205,7 +205,7 @@ void RomInfoWidget::drawWidget(bool hilite)
   int xpos = _x + 8, ypos = _y + yoff + 5;
   for(const auto& info : myRomInfo)
   {
-    if(info.length() * _font.getMaxCharWidth() <= _w - 16)
+    if(info.length() * _font.getMaxCharWidth() <= uInt64(_w - 16))
 
     {
       // 1 line for next entry

@@ -48,8 +48,6 @@ RomAuditDialog::RomAuditDialog(OSystem& osystem, DialogContainer& parent,
             lwidth = font.getStringWidth("ROMs without properties (skipped) ");
   const int VBORDER = _th + fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
 
   int xpos, ypos = VBORDER;
   WidgetArray wid;

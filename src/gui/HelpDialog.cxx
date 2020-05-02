@@ -35,7 +35,6 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
             buttonHeight = font.getLineHeight() * 1.25;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
   const int VGAP = fontHeight / 4;
 
   int xpos, ypos;
@@ -73,7 +72,7 @@ HelpDialog::HelpDialog(OSystem& osystem, DialogContainer& parent,
 
   int lwidth = 15 * fontWidth;
   ypos += lineHeight + VGAP * 2;
-  for(int i = 0; i < LINES_PER_PAGE; ++i)
+  for(uInt32 i = 0; i < LINES_PER_PAGE; ++i)
   {
     myKey[i] =
       new StaticTextWidget(this, font, xpos, ypos, lwidth,

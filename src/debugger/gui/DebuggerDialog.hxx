@@ -71,7 +71,7 @@ class DebuggerDialog : public Dialog
     ButtonWidget& unwindButton() const { return *myUnwindButton; }
 
     void showFatalMessage(const string& msg);
-    void saveConfig();
+    void saveConfig() override;
 
   private:
     void center() override { positionAt(0); }
