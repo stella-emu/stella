@@ -32,7 +32,14 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
   : Dialog(boss->instance(), boss->parent(), font, "Add...")
 {
   const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth();
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+
   int xpos, ypos;
   WidgetArray wid;
 
@@ -42,10 +49,10 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
     pwidth = std::max(font.getStringWidth(s.first), pwidth);
 
   // Set real dimensions
-  _w = 11 * fontWidth + pwidth-4 + 10 * 2;
-  _h = 10 * (lineHeight + 4) + 10 + _th;
-  xpos = 10;
-  ypos = 10 + _th;
+  _w = 8 * fontWidth + pwidth + PopUpWidget::dropDownWidth(font) + HBORDER * 2;
+  _h = 8 * (lineHeight + VGAP) + VGAP + buttonHeight + VBORDER * 2 + _th;
+  xpos = HBORDER;
+  ypos = VBORDER + _th;
 
   // Add event popup for 8 events
   myEvents.fill(nullptr);
@@ -54,7 +61,7 @@ ComboDialog::ComboDialog(GuiObject* boss, const GUI::Font& font,
     myEvents[idx] = new PopUpWidget(this, font, xpos, ypos,
                         pwidth, lineHeight, combolist, label);
     wid.push_back(myEvents[idx]);
-    ypos += lineHeight + 4;
+    ypos += lineHeight + VGAP;
   };
   ADD_EVENT_POPUP(0, "Event 1 ");
   ADD_EVENT_POPUP(1, "Event 2 ");

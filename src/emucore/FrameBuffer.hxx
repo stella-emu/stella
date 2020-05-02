@@ -26,9 +26,9 @@ class Settings;
 class FBSurface;
 class TIASurface;
 
-namespace GUI {
-  class Font;
-}
+#ifdef GUI_SUPPORT
+  #include "Font.hxx"
+#endif
 
 #include "Rect.hxx"
 #include "Variant.hxx"
@@ -223,7 +223,7 @@ class FrameBuffer
       Get the minimum/maximum supported TIA zoom level (windowed mode)
       for the framebuffer.
     */
-    float supportedTIAMinZoom() const { return 2 * hidpiScaleFactor(); }
+    float supportedTIAMinZoom() const { return myTIAMinZoom * hidpiScaleFactor(); }
     float supportedTIAMaxZoom() const { return myTIAMaxZoom; }
 
     /**
@@ -307,6 +307,15 @@ class FrameBuffer
     const GUI::Font& infoFont() const { return *myInfoFont; }
     const GUI::Font& smallFont() const { return *mySmallFont; }
     const GUI::Font& launcherFont() const { return *myLauncherFont; }
+
+    /**
+      Get the font description from the font name
+
+      @param name  The settings name of the font
+
+      @return  The description of the font
+    */
+    FontDesc getFontDesc(const string& name) const;
   #endif
 
   //////////////////////////////////////////////////////////////////////
@@ -480,6 +489,13 @@ class FrameBuffer
     */
     void resetSurfaces();
 
+  #ifdef GUI_SUPPORT
+    /**
+      Setup the UI fonts
+    */
+    void setupFonts();
+  #endif
+
     /**
       Calculate the maximum level by which the base window can be zoomed and
       still fit in the given screen dimensions.
@@ -619,6 +635,8 @@ class FrameBuffer
     VideoModeList myWindowedModeList;
     vector<VideoModeList> myFullscreenModeLists;
 
+    // Minimum TIA zoom level that can be used for this framebuffer
+    float myTIAMinZoom{2.F};
     // Maximum TIA zoom level that can be used for this framebuffer
     float myTIAMaxZoom{1.F};
 

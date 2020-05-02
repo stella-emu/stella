@@ -44,13 +44,15 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
 {
   const int fontHeight   = font.getFontHeight(),
             lineHeight   = font.getLineHeight(),
-            buttonWidth  = font.getStringWidth("Defaults") + 10,
-            buttonHeight = font.getLineHeight() + 4;
-  const int HBORDER = 8;
-  const int VBORDER = 8;
+            fontWidth    = font.getMaxCharWidth(),
+            buttonWidth  = font.getStringWidth("Defaults") + fontWidth * 1.25,
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int VGAP = fontHeight / 4;
   const int ACTION_LINES = 2;
   int xpos = HBORDER, ypos = VBORDER;
-  const int listWidth = _w - buttonWidth - HBORDER * 2 - 8;
+  const int listWidth = _w - buttonWidth - HBORDER * 2 - fontWidth;
   int listHeight = _h - (2 + ACTION_LINES) * lineHeight - VBORDER + 2;
 
   if(mode == EventMode::kEmulationMode)
@@ -70,12 +72,12 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     VarList::push_back(items, "Debug", Event::Group::Debug);
 
     myFilterPopup = new PopUpWidget(boss, font, xpos, ypos,
-                                    listWidth - font.getStringWidth("Events ") - 23, lineHeight,
-                                    items, "Events ", 0, kFilterCmd);
+                                    listWidth - font.getStringWidth("Events ") - PopUpWidget::dropDownWidth(font),
+                                    lineHeight, items, "Events ", 0, kFilterCmd);
     myFilterPopup->setTarget(this);
     addFocusWidget(myFilterPopup);
-    ypos += lineHeight + 8;
-    listHeight -= lineHeight + 8;
+    ypos += lineHeight * 1.5;
+    listHeight -= lineHeight * 1.5;
   }
 
   myActionsList = new StringListWidget(boss, font, xpos, ypos, listWidth, listHeight);
@@ -91,7 +93,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myMapButton->setTarget(this);
   addFocusWidget(myMapButton);
 
-  ypos += lineHeight + 10;
+  ypos += buttonHeight + VGAP;
   myCancelMapButton = new ButtonWidget(boss, font, xpos, ypos,
                                        buttonWidth, buttonHeight,
                                        "Cancel", kStopMapCmd);
@@ -99,14 +101,14 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myCancelMapButton->clearFlags(Widget::FLAG_ENABLED);
   addFocusWidget(myCancelMapButton);
 
-  ypos += lineHeight + 20;
+  ypos += buttonHeight + VGAP * 2;
   myEraseButton = new ButtonWidget(boss, font, xpos, ypos,
                                    buttonWidth, buttonHeight,
                                    "Erase", kEraseCmd);
   myEraseButton->setTarget(this);
   addFocusWidget(myEraseButton);
 
-  ypos += lineHeight + 10;
+  ypos += buttonHeight + VGAP;
   myResetButton = new ButtonWidget(boss, font, xpos, ypos,
                                    buttonWidth, buttonHeight,
                                    "Reset", kResetCmd);
@@ -115,7 +117,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
 
   if(mode == EventMode::kEmulationMode)
   {
-    ypos += lineHeight + 20;
+    ypos += buttonHeight + VGAP * 2;
     myComboButton = new ButtonWidget(boss, font, xpos, ypos,
                                      buttonWidth, buttonHeight,
                                      "Combo" + ELLIPSIS, kComboCmd);
@@ -128,13 +130,13 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
 
   // Show message for currently selected event
   xpos = HBORDER;
-  ypos = myActionsList->getBottom() + 8;
+  ypos = myActionsList->getBottom() + VGAP * 2;
   StaticTextWidget* t;
   t = new StaticTextWidget(boss, font, xpos, ypos+2, font.getStringWidth("Action"),
                            fontHeight, "Action", TextAlign::Left);
 
-  myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 8, ypos,
-                                    _w - xpos - t->getWidth() - 8 - HBORDER,
+  myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + fontWidth, ypos,
+                                    _w - xpos - t->getWidth() - fontWidth - HBORDER + 2,
                                     lineHeight + font.getFontHeight() * (ACTION_LINES - 1), "");
   myKeyMapping->setEditable(false, true);
   myKeyMapping->clearFlags(Widget::FLAG_RETAIN_FOCUS);

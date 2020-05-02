@@ -67,6 +67,31 @@ PhysicalKeyboardHandler::PhysicalKeyboardHandler(OSystem& system, EventHandler& 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PhysicalKeyboardHandler::isMappingUsed(EventMode mode, const EventMapping& map) const
+{
+  // Menu events can only interfere with
+  //   - other menu events
+  if(mode == EventMode::kMenuMode)
+    return myKeyMap.check(EventMode::kMenuMode, map.key, map.mod);
+
+  // Controller events can interfere with
+  //   - other events of the same controller
+  //   - and common emulation events
+  if(mode != EventMode::kCommonMode)
+    return myKeyMap.check(mode, map.key, map.mod)
+      || myKeyMap.check(EventMode::kCommonMode, map.key, map.mod);
+
+  // Common emulation events can interfere with
+  //   - other common emulation events
+  //   - and all controller events
+  return myKeyMap.check(EventMode::kCommonMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kJoystickMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kPaddlesMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kKeypadMode, map.key, map.mod)
+    || myKeyMap.check(EventMode::kCompuMateMode, map.key, map.mod);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Depending on parameters, this method does the following:
 // 1. update all events with default (event == Event::NoType, updateDefault == true)
 // 2. reset all events to default    (event == Event::NoType, updateDefault == false)
@@ -83,7 +108,7 @@ void PhysicalKeyboardHandler::setDefaultKey(EventMapping map, Event::Type event,
     // if there is no existing mapping for the event and
     //  the default mapping for the event is unused, set default key for event
     if (myKeyMap.getEventMapping(map.event, mode).size() == 0 &&
-      !myKeyMap.check(mode, map.key, map.mod))
+        !isMappingUsed(mode, map))
     {
       addMapping(map.event, mode, map.key, StellaMod(map.mod));
     }

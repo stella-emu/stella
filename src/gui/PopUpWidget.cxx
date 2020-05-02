@@ -41,11 +41,13 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   if(!_label.empty() && _labelWidth == 0)
     _labelWidth = _font.getStringWidth(_label);
 
-  _w = w + _labelWidth + 23;
+  setArrow();
+
+  _w = w + _labelWidth + dropDownWidth(font); // 23
 
   // vertically center the arrows and text
   myTextY   = (_h - _font.getFontHeight()) / 2;
-  myArrowsY = (_h - 8) / 2;
+  myArrowsY = (_h - _arrowHeight) / 2;
 
   myMenu = make_unique<ContextMenu>(this, font, list, cmd, w);
 }
@@ -185,10 +187,10 @@ void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PopUpWidget::drawWidget(bool hilite)
+void PopUpWidget::setArrow()
 {
-  // Little down arrow
-  static constexpr std::array<uInt32, 8> down_arrow = {
+  // Small down arrow
+  static constexpr std::array<uInt32, 7> down_arrow = {
     0b100000001,
     0b110000011,
     0b111000111,
@@ -196,9 +198,40 @@ void PopUpWidget::drawWidget(bool hilite)
     0b001111100,
     0b000111000,
     0b000010000,
-    0b000000000
+  };
+  // Large down arrow
+  static constexpr std::array<uInt32, 10> down_arrow_large = {
+    0b1000000000001,
+    0b1100000000011,
+    0b1110000000111,
+    0b1111000001111,
+    0b0111100011110,
+    0b0011110111100,
+    0b0001111111000,
+    0b0000111110000,
+    0b0000011100000,
+    0b0000001000000
   };
 
+  if(_font.getFontHeight() < 24)
+  {
+    _textOfs = 3;
+    _arrowWidth = 9;
+    _arrowHeight = 7;
+    _arrowImg = down_arrow.data();
+  }
+  else
+  {
+    _textOfs = 5;
+    _arrowWidth = 13;
+    _arrowHeight = 10;
+    _arrowImg = down_arrow_large.data();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::drawWidget(bool hilite)
+{
 //cerr << "PopUpWidget::drawWidget\n";
   FBSurface& s = dialog().surface();
   bool onTop = _boss->dialog().isOnTop();
@@ -213,19 +246,22 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw a thin frame around us.
   s.frameRect(x, _y, w, _h, isEnabled() && hilite ? kWidColorHi : kColor);
-  s.frameRect(x + w - 16, _y + 1, 15, _h - 2, isEnabled() && hilite ? kWidColorHi : kBGColorLo);
+  s.frameRect(x + w - (_arrowWidth * 2 - 2), _y + 1, (_arrowWidth * 2 - 3), _h - 2,
+              isEnabled() && hilite ? kWidColorHi : kBGColorLo);
 
   // Fill the background
-  s.fillRect(x + 1, _y + 1, w - 17, _h - 2, onTop ? _changed ? kDbgChangedColor : kWidColor : kDlgColor);
-  s.fillRect(x + w - 15, _y + 2, 13, _h - 4, onTop ? isEnabled() && hilite ? kWidColor : kBGColorHi : kBGColorLo);
+  s.fillRect(x + 1, _y + 1, w - (_arrowWidth * 2 - 1), _h - 2,
+             onTop ? _changed ? kDbgChangedColor : kWidColor : kDlgColor);
+  s.fillRect(x + w - (_arrowWidth * 2 - 3), _y + 2, (_arrowWidth * 2 - 5), _h - 4,
+             onTop ? isEnabled() && hilite ? kWidColor : kBGColorHi : kBGColorLo);
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
-  s.drawBitmap(down_arrow.data(), x + w - 13, _y + myArrowsY + 1,
-               !(isEnabled() && onTop) ? kColor : kTextColor, 9U, 8U);
+  s.drawBitmap(_arrowImg, x + w - (_arrowWidth * 1.5 - 1), _y + myArrowsY + 1,
+               !(isEnabled() && onTop) ? kColor : kTextColor, _arrowWidth, _arrowHeight);
 
   // Draw the selected entry, if any
   const string& name = myMenu->getSelectedName();
-  TextAlign align = (_font.getStringWidth(name) > w-6) ?
+  TextAlign align = (_font.getStringWidth(name) > w - 6) ?
                      TextAlign::Right : TextAlign::Left;
-  s.drawString(_font, name, x+2, _y+myTextY, w-6,
+  s.drawString(_font, name, x + _textOfs, _y + myTextY, w - 6,
                !(isEnabled() && onTop) ? kColor : _changed ? kDbgChangedTextColor : kTextColor, align);
 }
