@@ -531,8 +531,6 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
       type = Bankswitch::Type::_3E;
     else if(isProbably3F(image, size))
       type = Bankswitch::Type::_3F;
-    else
-      type = Bankswitch::Type::_4K;  // Most common bankswitching type
   }
 
   // Variable sized ROM formats are independent of image size and come last
@@ -541,8 +539,11 @@ Bankswitch::Type CartDetector::autodetectType(const ByteBuffer& image, size_t si
   else if(isProbablyMDM(image, size))
     type = Bankswitch::Type::_MDM;
 
-  ostringstream ss;
+  // If we get here and autodetection failed, then we force '4K'
+  if(type == Bankswitch::Type::_AUTO)
+    type = Bankswitch::Type::_4K;  // Most common bankswitching type
 
+  ostringstream ss;
   ss << "Bankswitching type '" << Bankswitch::typeToDesc(type) << "' detected";
   Logger::debug(ss.str());
 
