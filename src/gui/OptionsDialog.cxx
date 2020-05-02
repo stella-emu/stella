@@ -49,19 +49,24 @@
 OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
                              GuiObject* boss, int max_w, int max_h, Menu::AppMode mode)
   : Dialog(osystem, parent, osystem.frameBuffer().font(), "Options"),
+    myBoss(boss),
     myMode(mode)
 {
   // do not show basic settings options in debugger
   bool minSettings = osystem.settings().getBool("minimal_ui") && mode != Menu::AppMode::debugger;
-  const int buttonHeight = _font.getLineHeight() + 6,
-    GAP = buttonHeight > 26 ? 5 : 4,
-    rowHeight = buttonHeight + GAP;
-  const int VBORDER = GAP * 2 + 2;
-  const int HBORDER = GAP * 2 + 2;
-  int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + GAP * 5;
+  const int lineHeight = _font.getLineHeight(),
+    fontWidth    = _font.getMaxCharWidth(),
+    fontHeight   = _font.getFontHeight(),
+    buttonHeight = _font.getLineHeight() * 1.25,
+    VGAP = fontHeight / 4,
+    HGAP = fontWidth,
+    rowHeight = buttonHeight + VGAP;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  int buttonWidth = _font.getStringWidth("Game Properties" + ELLIPSIS) + fontWidth * 2.5;
 
-  _w = 2 * buttonWidth + HBORDER * 3;
-  _h = 7 * rowHeight + VBORDER * 2 - GAP + _th;
+  _w = 2 * buttonWidth + HBORDER * 2 + HGAP;
+  _h = 7 * rowHeight + VBORDER * 2 - VGAP + _th;
 
   int xoffset = HBORDER, yoffset = VBORDER + _th;
   WidgetArray wid;
@@ -72,8 +77,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
     ButtonWidget* bw = new ButtonWidget(this, _font, xoffset, yoffset,
       _w - HBORDER * 2, buttonHeight, "Use Basic Settings", kBasSetCmd);
     wid.push_back(bw);
-    yoffset += rowHeight + GAP * 2;
-    _h += rowHeight + GAP * 2;
+    yoffset += rowHeight + VGAP * 2;
+    _h += rowHeight + VGAP * 2;
   }
 
   auto ADD_OD_BUTTON = [&](const string& label, int cmd)
@@ -107,8 +112,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(b);
 
   // Move to second column
-  xoffset += buttonWidth + HBORDER;
-  yoffset = minSettings ? VBORDER + _th + rowHeight + GAP * 2 : VBORDER + _th;
+  xoffset += buttonWidth + HGAP;
+  yoffset = minSettings ? VBORDER + _th + rowHeight + VGAP * 2 : VBORDER + _th;
 
   myGameInfoButton = ADD_OD_BUTTON("Game Properties" + ELLIPSIS, kInfoCmd);
   wid.push_back(myGameInfoButton);
@@ -131,8 +136,8 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
   b = ADD_OD_BUTTON("About" + ELLIPSIS, kAboutCmd);
   wid.push_back(b);
 
-  buttonWidth = _font.getStringWidth("   Close   ") + GAP * 5;
-  xoffset -= (buttonWidth + HBORDER) / 2;
+  buttonWidth = _font.getStringWidth("   Close   ") + fontWidth * 2.5;
+  xoffset -= (buttonWidth + HGAP) / 2;
   b = ADD_OD_BUTTON("Close", kExitCmd);
   wid.push_back(b);
   addCancelWidget(b);
@@ -243,8 +248,20 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kUsrIfaceCmd:
+    {
+      // This dialog is resizable under certain conditions, so we need
+      // to re-create it as necessary
+      uInt32 w = 0, h = 0;
+
+      if(myUIDialog == nullptr || myUIDialog->shouldResize(w, h))
+      {
+        myUIDialog = make_unique<UIDialog>(instance(), parent(),
+                                           instance().frameBuffer().font(), myBoss, w, h);
+      }
+
       myUIDialog->open();
       break;
+    }
 
     case kSnapCmd:
     {

@@ -331,7 +331,7 @@ previous rewind operation. The rewind buffer is 100 levels deep by default, the
 size can be configured e.g. in the
 <b><a href="index.html#Debugger">Developer Settings</a> - Time Machine</b> dialog.<p>
 
-<p>The other operations are Step, Trace, Scan+1, Frame+1 and Exit (debugger).</p>
+<p>The other operations are Step, Trace, Scan+1, Frame+1 and Run.</p>
 
 <p>You can also use the buttons from anywhere in the GUI via hotkeys.</p>
 <p>
@@ -382,12 +382,12 @@ size can be configured e.g. in the
   </tr>
   <tr>
     <td>Backquote (`)</td>
-    <td>Exit</td>
+    <td>Run</td>
   </tr>
 </table>
 </p>
 For MacOS use 'Cmd' instead of &nbsp;'Alt' key.
-<p>To the left of the global buttons, you find the "Options..." button.</p>
+<p>To the left of the global buttons, you find the 'Options...' button.</p>
 <ul>
   <p><img src="graphics/debugger_options.png"></p>
 </ul>
@@ -608,7 +608,7 @@ created a symbol file, you can use labels for the expression.</p>
 
 <p>Example: You have got a label called "kernel". To break there,
 the command is "break kernel". After you've set the breakpoint,
-exit the debugger ("quit" or click the Exit button). The emulator
+exit the debugger (enter "run" or click the 'Run' button). The emulator
 will run until it gets to the breakpoint, then it will enter the
 debugger with the Program Counter pointing to the instruction
 at the breakpoint.</p>
@@ -1027,8 +1027,8 @@ graphics and positions, and the playfield.</p>
 of the displays are editable. You can even toggle individual bits in
 the GRP0/1 and playfield registers (remember to double-click).</p>
 
-<p>The group of buttons labelled "Strobes" allows you to write to any
-of the strobe registers at any time.</p>
+<p>The buttons allow you to write to any of the strobe registers at
+any time.</p>
 
 <p>The collision registers are displayed in decoded format, in a table.
 You can see exactly which objects have hit what. These are read-only
@@ -1103,7 +1103,7 @@ or TV effects are enabled, you won't see the effects here; this shows the
 <b>raw</b> TIA image only.</p>
 
 <p>To e.g. watch the TIA draw the frame one scanline at a time, you can
-use the "Scan+1" button, the prompt "scan" command or the Control-L key.</p>
+use the 'Scan+1' button, the prompt "scan" command or the Control-L key.</p>
 
 <p>You can also right-click anywhere in this window to show a context menu,
 as illustrated:</p>
@@ -1213,7 +1213,7 @@ section for details.</p>
 <p><img src="graphics/debugger_cpuregs.png"></p>
 <p>All the registers and flags are displayed, and can be changed by
 double-clicking on them (to the left). Flags are toggled on double-click.
-Selected registers here can also be changed by using the "Data Operations" buttons,
+Selected registers here can also be changed by using the 'Data Operations' buttons,
 further described in (J). All items are shown in hex. Any label defined for the
 current PC value is shown to the right. Decimal and binary equivalents
 are shown for SP/A/X/Y to the right (first decimal, then binary).</p>
@@ -1631,7 +1631,7 @@ but it helps to know at least a little about 6502 programming.</p>
   <li>Enter the debugger by pressing the ` (backquote) key. Don't get
     killed before you do this, though. You should still have all 5 lives.</li>
 
-  <li>In the RAM display, click the "Search" button and enter "5" for input.
+  <li>In the RAM display, click the 'Search' button and enter "5" for input.
     This searches RAM for your value and highlights all addresses that match
     the input. You should see two addresses highlighted: "00a5" and "00ba".
     These are the only two addresses that currently have the value 5, so they're
@@ -1647,7 +1647,7 @@ but it helps to know at least a little about 6502 programming.</p>
   <li>Get killed! Ram an enemy tank, or let him shoot you. Wait for
     the explosion to finish. You will now have 4 lives.</li>
 
-  <li>Enter the debugger again. Click the "Compare" button in RAM widget and enter
+  <li>Enter the debugger again. Click the 'Compare...' button in RAM widget and enter
     a value of 4. Now the RAM widget should only show one highlighted address:
     "00ba". What we did was search within our previous results (the ones that
     were 5 before) for the new value 4. Address $00ba used to have the value 5,

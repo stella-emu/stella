@@ -49,7 +49,7 @@
 */
 namespace Common {
 
-template <class T, uInt32 CAPACITY = 100>
+template <typename T, uInt32 CAPACITY = 100>
 class LinkedObjectPool
 {
   public:

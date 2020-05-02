@@ -71,12 +71,11 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
-  // set initial focus to myPrompt
-  if (myFirstLoad)
-  {
-    setFocus(myPrompt);
-    myFirstLoad = false;
-  }
+  if(myFocusedWidget == nullptr)
+    // Set initial focus to prompt tab
+    myFocusedWidget = myPrompt;
+  // Restore focus
+  setFocus(myFocusedWidget);
 
   myTab->loadConfig();
   myTiaInfo->loadConfig();
@@ -87,6 +86,11 @@ void DebuggerDialog::loadConfig()
   myRomTab->loadConfig();
 
   myMessageBox->setText("");
+}
+
+void DebuggerDialog::saveConfig()
+{
+  myFocusedWidget = _focusedWidget;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,7 +235,7 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       doUnwind();
       break;
 
-    case kDDExitCmd:
+    case kDDRunCmd:
       doExitDebugger();
       break;
 
@@ -541,7 +545,7 @@ void DebuggerDialog::addRomArea()
   wid2.push_back(b);
   buttonY += bheight + 4;
   b = new ButtonWidget(this, *myLFont, buttonX, buttonY,
-                       bwidth, bheight, "Exit", kDDExitCmd);
+                       bwidth, bheight, "Run", kDDRunCmd);
   wid2.push_back(b);
   addCancelWidget(b);
 

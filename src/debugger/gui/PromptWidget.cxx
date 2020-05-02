@@ -33,7 +33,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
                            int x, int y, int w, int h)
-  : Widget(boss, font, x, y, w - kScrollBarWidth, h),
+  : Widget(boss, font, x, y, w - ScrollBarWidget::scrollBarWidth(font), h),
     CommandSender(boss),
     _historySize(0),
     _historyIndex(0),
@@ -53,12 +53,13 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _kConsoleLineHeight = _kConsoleCharHeight + 2;
 
   // Calculate depending values
-  _lineWidth = (_w - kScrollBarWidth - 2) / _kConsoleCharWidth;
+  _lineWidth = (_w - ScrollBarWidget::scrollBarWidth(_font) - 2) / _kConsoleCharWidth;
   _linesPerPage = (_h - 2) / _kConsoleLineHeight;
   _linesInBuffer = kBufferSize / _lineWidth;
 
   // Add scrollbar
-  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
+  _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y,
+                                   ScrollBarWidget::scrollBarWidth(_font), _h);
   _scrollBar->setTarget(this);
 
   // Init colors
@@ -546,7 +547,7 @@ void PromptWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int PromptWidget::getWidth() const
 {
-  return _w + kScrollBarWidth;
+  return _w + ScrollBarWidget::scrollBarWidth(_font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

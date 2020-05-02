@@ -71,6 +71,7 @@ class OptionsDialog : public Dialog
     ButtonWidget* myGameInfoButton{nullptr};
     ButtonWidget* myCheatCodeButton{nullptr};
 
+    GuiObject* myBoss;
     // Indicates if this dialog is used for global (vs. in-game) settings
     Menu::AppMode myMode{Menu::AppMode::emulator};
 

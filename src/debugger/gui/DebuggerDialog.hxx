@@ -71,6 +71,7 @@ class DebuggerDialog : public Dialog
     ButtonWidget& unwindButton() const { return *myUnwindButton; }
 
     void showFatalMessage(const string& msg);
+    void saveConfig();
 
   private:
     void center() override { positionAt(0); }
@@ -110,7 +111,7 @@ class DebuggerDialog : public Dialog
       kDDSAdvCmd      = 'DDsv',
       kDDRewindCmd    = 'DDrw',
       kDDUnwindCmd    = 'DDuw',
-      kDDExitCmd      = 'DDex',
+      kDDRunCmd      = 'DDex',
       kDDExitFatalCmd = 'DDer',
       kDDOptionsCmd   = 'DDop'
     };
@@ -136,7 +137,8 @@ class DebuggerDialog : public Dialog
 
     unique_ptr<GUI::Font> myLFont;  // used for labels
     unique_ptr<GUI::Font> myNFont;  // used for normal text
-    bool myFirstLoad{true};
+    Widget* myFocusedWidget{nullptr};
+
 
   private:
     // Following constructors and assignment operators not supported

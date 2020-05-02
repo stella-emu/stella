@@ -12,7 +12,7 @@
                               Release History
 ===========================================================================
 
-6.1 to 6.2: (??? ??, 2020)
+6.1.2 to 6.2: (??? ??, 2020)
 
   * Added that paddle centering and sensitivity can be adjusted (TODO: Doc)
 
@@ -24,7 +24,9 @@
 
   * Added 'Turbo' mode, runs the game as fast as the computer allows.
 
-  * Added option which lets default ROM path follow launcher navigation (TODO: Doc)
+  * Added selectable dialog fonts
+
+  * Added option which lets default ROM path follow launcher navigation
 
   * Added displaying last write address in the debugger.
 
@@ -37,6 +39,16 @@
   * Removed unused CV+ and DASH bank switching types.
 
 -Have fun!
+
+
+6.1.1 to 6.1.2: (April 25, 2020)
+
+  * Fixed bug with remapped events not being reloaded in certain cases.
+
+  * Fixed bug in debugger for 3E scheme when displaying active RAM bank.
+
+  * Fixed bug in "Dragon Defender" ROM being misconfigured for Mindlink
+    controller.
 
 
 6.1 to 6.1.1: (April 4, 2020)

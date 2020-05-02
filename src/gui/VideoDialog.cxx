@@ -78,27 +78,33 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Video settings")
 {
-  const int VGAP = 4;
-  const int VBORDER = 8;
-  const int HBORDER = 10;
-  const int INDENT = 20;
   const int lineHeight   = font.getLineHeight(),
+            fontHeight   = font.getFontHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() + 4;
+            buttonHeight = font.getLineHeight() * 1.25;
+  const int VGAP = fontHeight / 4;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+
   int xpos, ypos, tabID;
   int lwidth = font.getStringWidth("V-Size adjust "),
-    pwidth = font.getStringWidth("XXXXxXXXX"),
-    swidth = font.getMaxCharWidth() * 10 - 2;
+      pwidth = font.getStringWidth("XXXXxXXXX"),
+      swidth = font.getMaxCharWidth() * 10 - 2;
 
   WidgetArray wid;
   VariantList items;
 
   // Set real dimensions
-  setSize(60 * fontWidth + HBORDER * 2, 14 * (lineHeight + VGAP) + 14 + _th, max_w, max_h);
+  setSize(60 * fontWidth + HBORDER * 2,
+          _th + VGAP * 3 + lineHeight + 11 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
+          max_w, max_h);
 
   // The tab widget
-  xpos = 2;  ypos = 4;
-  myTab = new TabWidget(this, font, xpos, ypos + _th, _w - 2*xpos, _h - _th - buttonHeight - 20);
+  xpos = 2;  ypos = VGAP;
+  myTab = new TabWidget(this, font, xpos, ypos + _th,
+                        _w - 2*xpos,
+                        _h - _th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
   xpos = HBORDER;  ypos = VBORDER;
@@ -160,7 +166,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   wid.push_back(myUseVSync);
 
   // Move over to the next column
-  xpos += mySpeed->getWidth() + 44;
+  xpos = myVSizeAdjust->getRight() + fontWidth * 3;
   ypos = VBORDER;
 
   // Fullscreen
@@ -216,7 +222,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   tabID = myTab->addTab(" TV Effects ");
   xpos = HBORDER;
   ypos = VBORDER;
-  swidth = font.getMaxCharWidth() * 8 - 4;
+  swidth = fontWidth * 8 - fontWidth / 2;
 
   // TV Mode
   items.clear();
@@ -258,7 +264,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ", 0)
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ", 0)
 
-  xpos += myTVContrast->getWidth() + 30;
+  xpos += myTVContrast->getWidth() + fontWidth * 4;
   ypos = VBORDER;
 
   lwidth = font.getStringWidth("Intensity ");
@@ -272,7 +278,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   xpos += INDENT;
   swidth = font.getMaxCharWidth() * 10;
   CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend     ", kPhosBlendChanged)
-  ypos += 8;
+  ypos += VGAP * 2;
 
   // Scanline intensity and interpolation
   xpos -= INDENT;
@@ -291,7 +297,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
     new ButtonWidget(myTab, font, xpos, ypos, cloneWidth, buttonHeight,\
                      desc, kClone ## obj ##Cmd);                       \
   wid.push_back(myClone ## obj);                                       \
-  ypos += lineHeight + 4 + VGAP;
+  ypos += buttonHeight + VGAP;
 
   ypos += VGAP;
   CREATE_CLONE_BUTTON(RGB, "Clone RGB")

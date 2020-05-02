@@ -45,16 +45,23 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 {
   const int lineHeight   = _font.getLineHeight(),
             fontWidth    = _font.getMaxCharWidth(),
-            buttonHeight = _font.getLineHeight() + 4;
-  const int vBorder = 4;
+            fontHeight   = _font.getFontHeight(),
+            buttonHeight = _font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int VGAP = fontHeight / 4;
+  const int HBORDER = fontWidth * 1.25;
   int xpos, ypos, tabID;
 
   // Set real dimensions
-  setSize(51 * fontWidth + 10, 17 * (lineHeight + 4) + 16 + _th, max_w, max_h);
+  setSize(50 * fontWidth + HBORDER * 2,
+          _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + VGAP * 7 + buttonHeight + VBORDER * 3,
+          max_w, max_h);
 
   // The tab widget
-  xpos = 2; ypos = vBorder + _th;
-  myTab = new TabWidget(this, _font, xpos, ypos, _w - 2*xpos, _h -_th - buttonHeight - 20);
+  xpos = 2; ypos = VGAP + _th;
+  myTab = new TabWidget(this, _font, xpos, ypos,
+                        _w - 2*xpos,
+                        _h -_th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
   // 1) Event mapper for emulation actions
@@ -102,11 +109,11 @@ void InputDialog::addDevicePortTab()
   const int lineHeight = _font.getLineHeight(),
             fontWidth  = _font.getMaxCharWidth(),
             fontHeight = _font.getFontHeight();
+  const int VGAP = fontHeight / 4;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
   int xpos, ypos, lwidth, tabID;
   WidgetArray wid;
-  const int VGAP = 4;
-  const int VBORDER = 8;
-  const int HBORDER = 8;
 
   // Devices/ports
   tabID = myTab->addTab("Devices & Ports", TabWidget::AUTO_WIDTH);
@@ -239,13 +246,14 @@ void InputDialog::addDevicePortTab()
 void InputDialog::addMouseTab()
 {
   const int lineHeight = _font.getLineHeight(),
-    fontWidth  = _font.getMaxCharWidth();
+            fontWidth  = _font.getMaxCharWidth(),
+            fontHeight = _font.getFontHeight();
+  const int VGAP = fontHeight / 4;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
   int ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
-  const int VGAP = 4;
-  const int VBORDER = 8;
-  const int HBORDER = 8;
 
   // Mouse
   tabID = myTab->addTab(" Mouse ", TabWidget::AUTO_WIDTH);

@@ -214,7 +214,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // 2600/7800 mode
   lwidth = lfont.getStringWidth("Console") + 29;
-  pwidth = lfont.getStringWidth("Atari 2600") + 4;
+  pwidth = lfont.getStringWidth("Atari 2600") + 6;
   new StaticTextWidget(boss, lfont, 10, ypos+1, "Console");
   myConsole = new EditTextWidget(boss, lfont, 10 + lwidth, ypos - 1, pwidth, lineHeight);
   myConsole->setEditable(false, true);

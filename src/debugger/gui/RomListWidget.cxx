@@ -42,11 +42,12 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
   _rows = h / _fontHeight;
 
   // Set real dimensions
-  _w = w - kScrollBarWidth;
+  _w = w - ScrollBarWidget::scrollBarWidth(_font);
   _h = h + 2;
 
   // Create scrollbar and attach to the list
-  myScrollBar = new ScrollBarWidget(boss, lfont, _x + _w, _y, kScrollBarWidth, _h);
+  myScrollBar = new ScrollBarWidget(boss, lfont, _x + _w, _y,
+                                    ScrollBarWidget::scrollBarWidth(_font), _h);
   myScrollBar->setTarget(this);
 
   // Add settings menu
@@ -65,7 +66,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& lfont,
 
   // rowheight is determined by largest item on a line,
   // possibly meaning that number of rows will change
-  _fontHeight = std::max(_fontHeight, CheckboxWidget::boxSize());
+  _fontHeight = std::max(_fontHeight, CheckboxWidget::boxSize(_font));
   _rows = h / _fontHeight;
 
   // Create a CheckboxWidget for each row in the list
@@ -465,7 +466,7 @@ void RomListWidget::drawWidget(bool hilite)
 
   // Draw a thin frame around the list and to separate columns
   s.frameRect(_x, _y, _w + 1, _h, hilite ? kWidColorHi : kColor);
-  s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
+  s.vLine(_x + CheckboxWidget::boxSize(_font) + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
   int cycleCountW = _fontWidth * 8,
@@ -476,7 +477,7 @@ void RomListWidget::drawWidget(bool hilite)
   if(actualWidth < codeDisasmW)
     codeDisasmW = actualWidth;
 
-  xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
+  xpos = _x + CheckboxWidget::boxSize(_font) + 10;  ypos = _y + 2;
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
   {
     ColorId bytesColor = textColor;
@@ -566,7 +567,7 @@ void RomListWidget::drawWidget(bool hilite)
 Common::Rect RomListWidget::getLineRect() const
 {
   const int yoffset = std::max(0, (_selectedItem - _currentPos) * _fontHeight),
-            xoffset = CheckboxWidget::boxSize() + 10;
+            xoffset = CheckboxWidget::boxSize(_font) + 10;
 
   return Common::Rect(2 + xoffset, 1 + yoffset,
                       _w - (xoffset - 15), _fontHeight + yoffset);

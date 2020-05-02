@@ -62,7 +62,7 @@ CartRamWidget::CartRamWidget(
   // Add Description
   const string& desc = cartDebug.internalRamDescription();
   const uInt16 maxlines = 6;
-  StringParser bs(desc, (fwidth - kScrollBarWidth) / myFontWidth);
+  StringParser bs(desc, (fwidth - ScrollBarWidget::scrollBarWidth(_font)) / myFontWidth);
   const StringList& sl = bs.stringList();
   uInt32 lines = uInt32(sl.size());
   if(lines < 2) lines = 2;

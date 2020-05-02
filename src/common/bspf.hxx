@@ -120,16 +120,16 @@ namespace BSPF
   #endif
 
   // Make 2D-arrays using std::array less verbose
-  template<class T, size_t ROW, size_t COL>
+  template<typename T, size_t ROW, size_t COL>
   using array2D = std::array<std::array<T, COL>, ROW>;
 
   // Combines 'max' and 'min', and clamps value to the upper/lower value
   // if it is outside the specified range
-  template<class T> inline T clamp(T val, T lower, T upper)
+  template<typename T> inline T clamp(T val, T lower, T upper)
   {
     return (val < lower) ? lower : (val > upper) ? upper : val;
   }
-  template<class T> inline void clamp(T& val, T lower, T upper, T setVal)
+  template<typename T> inline void clamp(T& val, T lower, T upper, T setVal)
   {
     if(val < lower || val > upper)  val = setVal;
   }
