@@ -71,3 +71,18 @@ uInt8 Cartridge3E::peek(uInt16 address)
 
   return CartridgeEnhanced::peek(peekAddress);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge3E::poke(uInt16 address, uInt8 value)
+{
+  uInt16 pokeAddress = address;
+  address &= ROM_MASK;
+
+  if(address < 0x0040)  // TIA access
+  {
+    checkSwitchBank(address, value);
+    return mySystem->tia().poke(address, value);
+  }
+
+  return CartridgeEnhanced::poke(pokeAddress, value);
+}

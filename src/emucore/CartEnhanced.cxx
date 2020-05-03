@@ -232,7 +232,7 @@ bool CartridgeEnhanced::bank(uInt16 bank, uInt16 segment)
     uInt32 bankOffset = uInt32(mySize) + (ramBank << (myBankShift - 1));
 
     // Remember what bank is in this segment
-    myCurrentSegOffset[segment] = bank << myBankShift;
+    myCurrentSegOffset[segment] = uInt32(mySize) + (ramBank << myBankShift);
 
     // Set the page accessing method for the RAM writing pages
     uInt16 fromAddr = (ROM_OFFSET + segmentOffset + myWriteOffset) & ~System::PAGE_MASK;

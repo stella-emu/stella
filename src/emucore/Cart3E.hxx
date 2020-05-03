@@ -113,6 +113,15 @@ class Cartridge3E : public CartridgeEnhanced
     */
     uInt8 peek(uInt16 address) override;
 
+    /**
+      Change the byte at the specified address to the given value
+
+      @param address The address where the value should be stored
+      @param value The value to be stored at the address
+      @return  True if the poke changed the device address space, else false
+    */
+    bool poke(uInt16 address, uInt8 value) override;
+
   private:
     bool checkSwitchBank(uInt16 address, uInt8 value) override;
 
