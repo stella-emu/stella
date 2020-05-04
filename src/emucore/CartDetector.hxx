@@ -107,7 +107,14 @@ class CartDetector
     */
     static bool searchForBytes(const uInt8* image, size_t imagesize,
                                const uInt8* signature, uInt32 sigsize,
-                               uInt32 minhits);
+                               uInt32 minhits = 1);
+
+    static bool searchForBytes(const ByteBuffer& image, size_t imagesize,
+                               const uInt8* signature, uInt32 sigsize,
+                               uInt32 minhits = 1)
+    {
+      return searchForBytes(image.get(), imagesize, signature, sigsize, minhits);
+    }
 
     /**
       Returns true if the image is probably a SuperChip (128 bytes RAM)
