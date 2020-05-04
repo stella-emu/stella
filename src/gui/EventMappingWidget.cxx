@@ -86,7 +86,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myActionsList);
 
   // Add remap, erase, cancel and default buttons
-  xpos = _w - HBORDER - buttonWidth;
+  xpos = _w - HBORDER - buttonWidth + 2;
   myMapButton = new ButtonWidget(boss, font, xpos, ypos,
                                  buttonWidth, buttonHeight,
                                  "Map" + ELLIPSIS, kStartMapCmd);
