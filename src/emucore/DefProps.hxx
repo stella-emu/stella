@@ -25,7 +25,7 @@
   regenerated and the application recompiled.
 */
 
-static constexpr uInt32 DEF_PROPS_SIZE = 3513;
+static constexpr uInt32 DEF_PROPS_SIZE = 3514;
 
 static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -341,6 +341,7 @@ static const BSPF::array2D<const char*, DEF_PROPS_SIZE, 23> DefProps = {{
   { "15fe28d0c8893be9223e8cb2d032e557", "", "", "Towering Inferno (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "1619bc27632f9148d8480cd813aa74c3", "Thomas Jentzsch", "", "Steeple Chase (Thomas Jentzsch)", "NTSC Conversion", "Homebrew", "", "", "", "", "A", "", "", "", "", "", "", "", "", "", "", "YES", "" },
   { "161ded4a85d3c78e44fffd40426f537f", "Thomas Jentzsch", "", "JtzBall (Alpha) (TJ)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+  { "16229d61d7b0c89b01853660a8da22bb", "", "", "spin4a50", "", "", "", "", "4A50", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "163e7e757e2dc44469123ff0e5daec5e", "", "", "Many Blue Bars and Text Demo 2 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "169d4c7bd3a4d09e184a3b993823d048", "", "", "Superman (Unknown) (PAL) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
   { "16cb43492987d2f32b423817cdaaf7c4", "Atari, Larry Kaplan - Sears", "CX2602 - 99802, 6-99802, 49-75102", "Air-Sea Battle (1977) (Atari)", "AKA Target Fun (Anti-Aircraft)", "Uncommon", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
