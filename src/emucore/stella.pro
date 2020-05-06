@@ -1900,6 +1900,11 @@
 "Cart.Name" "JtzBall (Alpha) (TJ)"
 ""
 
+"Cart.MD5" "16229d61d7b0c89b01853660a8da22bb"
+"Cart.Name" "spin4a50"
+"Cart.Type" "4A50"
+""
+
 "Cart.MD5" "163e7e757e2dc44469123ff0e5daec5e"
 "Cart.Name" "Many Blue Bars and Text Demo 2 (PD)"
 ""
@@ -6131,6 +6136,13 @@
 "Cart.Name" "Pitfall II (1983) (Activision) [a]"
 ""
 
+"Cart.MD5" "49366f41aa7a54baf263426e99ce4312"
+"Cart.Name" "POP-MDM-Test (PAL) (63 games)"
+"Cart.Type" "MDM"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
+""
+
 "Cart.MD5" "493daaf9fb1ba450eba6b8ed53ffb37d"
 "Cart.Name" "3-D Corridor Demo (27-03-2003) (MP)"
 ""
@@ -8156,6 +8168,13 @@
 
 "Cart.MD5" "619de46281eb2e0adbb98255732483b4"
 "Cart.Name" "Time Warp (Unknown)"
+""
+
+"Cart.MD5" "61baadddc2c8f6e5faa57d4d0f285462"
+"Cart.Name" "208-in-1 MDM-Test (PAL) (127 games)"
+"Cart.Type" "MDM"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "61dbe94f110f30ca4ec524ae5ce2d026"
@@ -13971,6 +13990,12 @@
 "Cart.Manufacturer" "CCE"
 "Cart.ModelNo" "C-861"
 "Cart.Name" "Boxing (1983) (CCE)"
+""
+
+"Cart.MD5" "a8c447efbec3a2b5d08b05a09999bd92"
+"Cart.Name" "MegaCart Menu"
+"Controller.Left" "JOYSTICK"
+"Controller.Right" "JOYSTICK"
 ""
 
 "Cart.MD5" "a8c48b4e0bf35fe97cc84fdd2c507f78"

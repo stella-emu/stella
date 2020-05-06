@@ -39,8 +39,6 @@ JoystickDialog::JoystickDialog(GuiObject* boss, const GUI::Font& font,
             buttonHeight = font.getLineHeight() * 1.25;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-  const int VGAP = fontHeight / 4;
 
   // Joystick list
   xpos = HBORDER;  ypos = VBORDER + _th;

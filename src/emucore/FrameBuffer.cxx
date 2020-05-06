@@ -203,10 +203,14 @@ FontDesc FrameBuffer::getFontDesc(const string& name) const
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBInitStatus FrameBuffer::createDisplay(const string& title,
+FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
                                         uInt32 width, uInt32 height,
                                         bool honourHiDPI)
 {
+  // always save, maybe only the mode of the window has changed
+  saveCurrentWindowPosition();
+  myBufferType = type;
+
   ++myInitializedCount;
   myScreenTitle = title;
 
@@ -787,6 +791,58 @@ void FrameBuffer::stateChanged(EventHandlerState state)
   myMsg.counter = 0;
 
   update(true); // force full update
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrameBuffer::getDisplayKey()
+{
+  // save current window's display and position
+  switch(myBufferType)
+  {
+    case BufferType::Launcher:
+      return "launcherdisplay";
+
+    case BufferType::Emulator:
+      return "display";
+
+  #ifdef DEBUGGER_SUPPORT
+    case BufferType::Debugger:
+      return "dbg.display";
+  #endif
+
+    default:
+      return "";
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrameBuffer::getPositionKey()
+{
+  // save current window's display and position
+  switch(myBufferType)
+  {
+    case BufferType::Launcher:
+      return "launcherpos";
+
+    case BufferType::Emulator:
+      return  "windowedpos";
+
+  #ifdef DEBUGGER_SUPPORT
+    case BufferType::Debugger:
+      return "dbg.pos";
+  #endif
+
+    default:
+      return "";
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::saveCurrentWindowPosition()
+{
+  myOSystem.settings().setValue(getDisplayKey(), getCurrentDisplayIndex());
+  if(isCurrentWindowPositioned())
+    myOSystem.settings().setValue(getPositionKey(), getCurrentWindowPos());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

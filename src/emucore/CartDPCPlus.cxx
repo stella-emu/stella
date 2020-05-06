@@ -619,7 +619,7 @@ uInt16 CartridgeDPCPlus::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeDPCPlus::bankCount() const
+uInt16 CartridgeDPCPlus::romBankCount() const
 {
   return 6;
 }

@@ -16,72 +16,36 @@
 //============================================================================
 
 #include "CartFE.hxx"
-#include "PopUpWidget.hxx"
 #include "CartFEWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFEWidget::CartridgeFEWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeFE& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
-  string info =
-    "FE cartridge, two 4K banks\n"
-    "Monitors access to hotspot $01FE, and uses "
-    "upper 3 bits of databus for bank number:\n"
-    "Bank 0 @ $F000 - $FFFF (DATA = 111, D5 = 1)\n"
-    "Bank 1 @ $D000 - $DFFF (DATA = 110, D5 = 0)\n";
-
-  int xpos = 2,
-      ypos = addBaseInformation(2 * 4096, "Activision", info) + myLineHeight;
-
-  VariantList items;
-  VarList::push_back(items, "0 ($01FE, D5=1)");
-  VarList::push_back(items, "1 ($01FE, D5=0)");
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2,
-                    _font.getStringWidth("0 ($01FE, D5=1)"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
-  myBank->setTarget(this);
-  addFocusWidget(myBank);
+  initialize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFEWidget::loadConfig()
+string CartridgeFEWidget::description()
 {
-  Debugger& dbg = instance().debugger();
-  CartDebug& cart = dbg.cartDebug();
-  const CartState& state = static_cast<const CartState&>(cart.getState());
-  const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
+  ostringstream info;
 
-  myBank->setSelectedIndex(myCart.getBank(), state.bank != oldstate.bank);
+  info << "FE cartridge, two 4K banks\n"
+    << "Monitors access to hotspot $01FE, and uses "
+    << "upper 3 bits of databus for bank number:\n";
+  info << CartridgeEnhancedWidget::description();
 
-  CartDebugWidget::loadConfig();
+  return info.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFEWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
+string CartridgeFEWidget::hotspotStr(int bank, int, bool)
 {
-  if(cmd == kBankChanged)
-  {
-    myCart.unlockBank();
-    myCart.bank(myBank->getSelected());
-    myCart.lockBank();
-    invalidate();
-  }
-}
+  ostringstream info;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeFEWidget::bankState()
-{
-  ostringstream& buf = buffer();
+  info << "(DATA = 11" << !bank << ", D5 = " << !bank << ")";
 
-  static constexpr std::array<const char*, 2> range = { "$F000", "$D000" };
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", address range = " << range[myCart.getBank()];
-
-  return buf.str();
+  return info.str();
 }

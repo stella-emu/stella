@@ -26,6 +26,8 @@
 
   * Added selectable dialog fonts
 
+  * Added separate positioning of launcher, emulator and debugger
+
   * Added option which lets default ROM path follow launcher navigation
 
   * Added displaying last write address in the debugger.
@@ -33,6 +35,13 @@
   * Added detection of color and audio data in DiStella.
 
   * Restored 'cfg' directory for Distella config files.
+
+  * Added 3EX bank switching type.
+
+  * Removed unused CV+ and DASH bank switching types.
+
+  * Added debugger pseudo-register '_scanend', which gives the number of
+    scanlines at the end of the last frame.
 
 -Have fun!
 

@@ -6,10 +6,12 @@ MODULE_OBJS := \
 	src/emucore/Booster.o \
 	src/emucore/Cart.o \
 	src/emucore/CartDetector.o \
+	src/emucore/CartEnhanced.o \
 	src/emucore/Cart0840.o \
 	src/emucore/Cart2K.o \
 	src/emucore/Cart3E.o \
 	src/emucore/Cart3EPlus.o \
+	src/emucore/Cart3EX.o \
 	src/emucore/Cart3F.o \
 	src/emucore/Cart4A50.o \
 	src/emucore/Cart4K.o \
@@ -20,8 +22,6 @@ MODULE_OBJS := \
 	src/emucore/CartCM.o \
 	src/emucore/CartCTY.o \
 	src/emucore/CartCV.o \
-	src/emucore/CartCVPlus.o \
-	src/emucore/CartDASH.o \
 	src/emucore/CartDPC.o \
 	src/emucore/CartDPCPlus.o \
 	src/emucore/CartE0.o \

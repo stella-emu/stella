@@ -27,12 +27,13 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
     myCart(cart)
 {
+  const int V_GAP = 4;
   size_t size = cart.mySize;
-
   ostringstream info;
+
   info << "DPC cartridge, two 4K banks + 2K display bank\n"
-       << "DPC registers accessible @ $F000 - $F07F\n"
-       << "  $F000 - $F03F (R), $F040 - $F07F (W)\n"
+       << "DPC registers accessible @ $" << Common::Base::HEX4 << 0xF000 << " - $" << 0xF07F << "\n"
+       << "  $" << 0xF000 << " - " << 0xF03F << " (R), $" << 0xF040 << " - $" << 0xF07F << " (W)\n"
 
        << "Startup bank = " << cart.startBank() << " or undetermined\n";
 
@@ -42,7 +43,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << i << " @ $" << Common::Base::HEX4 << (start + 0x80) << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
+         << "$" << (start + 0xFFF) << " (hotspot = $" << (0xF000 + spot + i) << ")\n";
   }
 
   int xpos = 2,
@@ -50,26 +51,30 @@ CartridgeDPCWidget::CartridgeDPCWidget(
               myLineHeight;
 
   VariantList items;
-  VarList::push_back(items, "0 ($FFF8)");
-  VarList::push_back(items, "1 ($FFF9)");
+  for(int bank = 0; bank < 2; ++bank)
+  {
+    ostringstream buf;
+
+    buf << "#" << std::dec << bank << " ($" << Common::Base::HEX4 << (0xFFF8 + bank) << ")";
+    VarList::push_back(items, buf.str());
+  }
+
   myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($FFFx)"),
+    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("#0 ($FFFx)"),
                     myLineHeight, items, "Set bank     ",
                     0, kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
-  ypos += myLineHeight + 8;
+  ypos += myLineHeight + V_GAP * 3;
 
   // Data fetchers
-  int lwidth = _font.getStringWidth("Data Fetchers ");
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Data Fetchers ", TextAlign::Left);
+  int lwidth = _font.getStringWidth("Data fetchers ");
+  new StaticTextWidget(boss, _font, xpos, ypos, "Data fetchers ");
 
   // Top registers
-  lwidth = _font.getStringWidth("Counter Registers ");
-  xpos = 18;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Top Registers ", TextAlign::Left);
+  lwidth = _font.getStringWidth("Counter registers ");
+  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
+  new StaticTextWidget(boss, _font, xpos, ypos, "Top registers ");
   xpos += lwidth;
 
   myTops = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
@@ -77,9 +82,8 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myTops->setEditable(false);
 
   // Bottom registers
-  xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Bottom Registers ", TextAlign::Left);
+  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
+  new StaticTextWidget(boss, _font, xpos, ypos, "Bottom registers ");
   xpos += lwidth;
 
   myBottoms = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
@@ -87,9 +91,8 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myBottoms->setEditable(false);
 
   // Counter registers
-  xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Counter Registers ", TextAlign::Left);
+  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
+  new StaticTextWidget(boss, _font, xpos, ypos, "Counter registers ");
   xpos += lwidth;
 
   myCounters = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 4, 16, Common::Base::Fmt::_16_4);
@@ -97,9 +100,8 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myCounters->setEditable(false);
 
   // Flag registers
-  xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Flag Registers ", TextAlign::Left);
+  xpos = 2 + _font.getMaxCharWidth() * 2; ypos += myLineHeight + 4;
+  new StaticTextWidget(boss, _font, xpos, ypos, "Flag registers ");
   xpos += lwidth;
 
   myFlags = new DataGridWidget(boss, _nfont, xpos, ypos-2, 8, 1, 2, 8, Common::Base::Fmt::_16);
@@ -107,10 +109,9 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myFlags->setEditable(false);
 
   // Music mode
-  xpos = 2;  ypos += myLineHeight + 12;
+  xpos = 2; ypos += myLineHeight + V_GAP * 3;
   lwidth = _font.getStringWidth("Music mode (DF5/DF6/DF7) ");
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Music mode (DF5/DF6/DF7) ", TextAlign::Left);
+  new StaticTextWidget(boss, _font, xpos, ypos, "Music mode (DF5/DF6/DF7) ");
   xpos += lwidth;
 
   myMusicMode = new DataGridWidget(boss, _nfont, xpos, ypos-2, 3, 1, 2, 8, Common::Base::Fmt::_16);
@@ -118,9 +119,8 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myMusicMode->setEditable(false);
 
   // Current random number
-  xpos = 10;  ypos += myLineHeight + 4;
-  new StaticTextWidget(boss, _font, xpos, ypos, lwidth,
-        myFontHeight, "Current random number ", TextAlign::Left);
+  xpos = 2; ypos += myLineHeight + V_GAP * 3;
+  new StaticTextWidget(boss, _font, xpos, ypos, "Current random number ");
   xpos += lwidth;
 
   myRandom = new DataGridWidget(boss, _nfont, xpos, ypos-2, 1, 1, 2, 8, Common::Base::Fmt::_16);
@@ -229,9 +229,8 @@ string CartridgeDPCWidget::bankState()
 {
   ostringstream& buf = buffer();
 
-  static constexpr std::array<const char*, 2> spot = { "$FFF8", "$FFF9" };
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << spot[myCart.getBank()];
+  buf << "Bank #" << std::dec << myCart.getBank()
+      << " (hotspot $" << Common::Base::HEX4 << (0xFFF8 + myCart.getBank()) << ")";
 
   return buf.str();
 }
@@ -252,10 +251,9 @@ uInt32 CartridgeDPCWidget::internalRamRPort(int start)
 string CartridgeDPCWidget::internalRamDescription()
 {
   ostringstream desc;
-  desc << "$0000 - $07FF - 2K display data\n"
-       << "                indirectly accessible to 6507\n"
-       << "                via DPC+'s Data Fetcher\n"
-       << "                registers\n";
+  desc << "2K display data @ $0000 - $" << Common::Base::HEX4 << 0x07FF << "\n"
+    << "  indirectly accessible to 6507 via DPC's\n"
+    << "  data fetcher registers\n";
 
   return desc.str();
 }

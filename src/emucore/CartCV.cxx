@@ -21,164 +21,40 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const ByteBuffer& image, size_t size,
                          const string& md5, const Settings& settings)
-  : Cartridge(settings, md5),
-    mySize(size)
+  : CartridgeEnhanced(image, size, md5, settings)
 {
-  if(mySize == myImage.size())
-  {
-    // Copy the ROM data into my buffer
-    std::copy_n(image.get(), myImage.size(), myImage.begin());
-  }
-  else if(mySize == 4_KB)
+  myBankShift = BANK_SHIFT;
+  myRamSize = RAM_SIZE;
+  myRamWpHigh = RAM_HIGH_WP;
+
+  if(mySize == 4_KB)
   {
     // The game has something saved in the RAM
     // Useful for MagiCard program listings
 
-    // Copy the ROM data into my buffer
-    std::copy_n(image.get() + myImage.size(), myImage.size(), myImage.begin());
+    // Allocate array for the ROM image
+    mySize = 2_KB;
+    myImage = make_unique<uInt8[]>(mySize);
 
+    // Copy the ROM image into my buffer
+    std::copy_n(image.get() + mySize, mySize, myImage.get());
+
+    myInitialRAM = make_unique<uInt8[]>(1_KB);
     // Copy the RAM image into a buffer for use in reset()
-    std::copy_n(image.get(), myInitialRAM.size(), myInitialRAM.begin());
+    std::copy_n(image.get(), 1_KB, myInitialRAM.get());
   }
-  createRomAccessArrays(myImage.size() + myRAM.size());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCV::reset()
 {
-  if(mySize == 4_KB)
+  if(myInitialRAM != nullptr)
   {
     // Copy the RAM image into my buffer
-    myRAM = myInitialRAM;
+    std::copy_n(myInitialRAM.get(), 1_KB, myRAM.get());
   }
   else
-    initializeRAM(myRAM.data(), myRAM.size());
+    initializeRAM(myRAM.get(), myRamSize);
 
   myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCV::install(System& system)
-{
-  mySystem = &system;
-
-  System::PageAccess access(this, System::PageAccessType::READ);
-
-  // Map ROM image into the system
-  for(uInt16 addr = 0x1800; addr < 0x2000; addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myImage[addr & 0x07FF];
-    access.romAccessBase = &myRomAccessBase[addr & 0x07FF];
-    access.romPeekCounter = &myRomAccessCounter[addr & 0x07FF];
-    access.romPokeCounter = &myRomAccessCounter[(addr & 0x07FF) + myAccessSize];
-    mySystem->setPageAccess(addr, access);
-  }
-
-  // Set the page accessing method for the RAM writing pages
-  // Map access to this class, since we need to inspect all accesses to
-  // check if RWP happens
-  access.directPeekBase = nullptr;
-  access.romAccessBase = nullptr;
-  access.type = System::PageAccessType::WRITE;
-  for(uInt16 addr = 0x1400; addr < 0x1800; addr += System::PAGE_SIZE)
-    mySystem->setPageAccess(addr, access);
-
-  // Set the page accessing method for the RAM reading pages
-  access.directPokeBase = nullptr;
-  access.type = System::PageAccessType::READ;
-  for(uInt16 addr = 0x1000; addr < 0x1400; addr += System::PAGE_SIZE)
-  {
-    access.directPeekBase = &myRAM[addr & 0x03FF];
-    access.romAccessBase = &myRomAccessBase[2048 + (addr & 0x03FF)];
-    access.romPeekCounter = &myRomAccessCounter[2048 + (addr & 0x03FF)];
-    access.romPokeCounter = &myRomAccessCounter[2048 + (addr & 0x03FF) + myAccessSize];
-    mySystem->setPageAccess(addr, access);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeCV::peek(uInt16 address)
-{
-  // The only way we can get to this method is if we attempt to read from
-  // the write port (0xF400 - 0xF7FF, 1024 bytes), in which case an
-  // unwanted write is potentially triggered
-  return peekRAM(myRAM[address & 0x03FF], address);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::poke(uInt16 address, uInt8 value)
-{
-
-  if(address & 0x0400)
-  {
-    pokeRAM(myRAM[address & 0x03FF], address, value);
-    return true;
-  }
-  else
-  {
-    // Writing to the read port should be ignored, but trigger a break if option enabled
-    uInt8 dummy;
-
-    pokeRAM(dummy, address, value);
-    myRamWriteAccess = address;
-    return false;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::patch(uInt16 address, uInt8 value)
-{
-  address &= 0x0FFF;
-
-  if(address < 0x0800)
-  {
-    // Normally, a write to the read port won't do anything
-    // However, the patch command is special in that ignores such
-    // cart restrictions
-    // The following will work for both reads and writes
-    myRAM[address & 0x03FF] = value;
-  }
-  else
-    myImage[address & 0x07FF] = value;
-
-  return myBankChanged = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* CartridgeCV::getImage(size_t& size) const
-{
-  size = myImage.size();
-  return myImage.data();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::save(Serializer& out) const
-{
-  try
-  {
-    out.putByteArray(myRAM.data(), myRAM.size());
-  }
-  catch(...)
-  {
-    cerr << "ERROR: CartridgeCV::save" << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::load(Serializer& in)
-{
-  try
-  {
-    in.getByteArray(myRAM.data(), myRAM.size());
-  }
-  catch(...)
-  {
-    cerr << "ERROR: CartridgeCV::load" << endl;
-    return false;
-  }
-
-  return true;
 }

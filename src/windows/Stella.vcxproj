@@ -585,13 +585,7 @@
     <ClCompile Include="..\debugger\gui\CartCTYWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartCVPlusWidget.cxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\debugger\gui\CartCVWidget.cxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\debugger\gui\CartDASHWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\debugger\gui\CartDebugWidget.cxx">
@@ -624,6 +618,7 @@
     <ClCompile Include="..\debugger\gui\CartEFWidget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\debugger\gui\CartEnhancedWidget.cxx" />
     <ClCompile Include="..\debugger\gui\CartF0Widget.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -716,15 +711,15 @@
     </ClCompile>
     <ClCompile Include="..\emucore\Bankswitch.cxx" />
     <ClCompile Include="..\emucore\Cart3EPlus.cxx" />
+    <ClCompile Include="..\emucore\Cart3EX.cxx" />
     <ClCompile Include="..\emucore\Cart4KSC.cxx" />
+    <ClCompile Include="..\emucore\CartEnhanced.cxx" />
     <ClCompile Include="..\emucore\CartBF.cxx" />
     <ClCompile Include="..\emucore\CartBFSC.cxx" />
     <ClCompile Include="..\emucore\CartBUS.cxx" />
     <ClCompile Include="..\emucore\CartCDF.cxx" />
     <ClCompile Include="..\emucore\CartCM.cxx" />
     <ClCompile Include="..\emucore\CartCTY.cxx" />
-    <ClCompile Include="..\emucore\CartCVPlus.cxx" />
-    <ClCompile Include="..\emucore\CartDASH.cxx" />
     <ClCompile Include="..\emucore\CartDetector.cxx" />
     <ClCompile Include="..\emucore\CartDF.cxx" />
     <ClCompile Include="..\emucore\CartDFSC.cxx" />
@@ -1595,13 +1590,7 @@
     <ClInclude Include="..\debugger\gui\CartCTYWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartCVPlusWidget.hxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\debugger\gui\CartCVWidget.hxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\debugger\gui\CartDASHWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\CartDebugWidget.hxx">
@@ -1634,6 +1623,7 @@
     <ClInclude Include="..\debugger\gui\CartEFWidget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\debugger\gui\CartEnhancedWidget.hxx" />
     <ClInclude Include="..\debugger\gui\CartF0Widget.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-NoDebugger|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -1738,15 +1728,15 @@
     <ClInclude Include="..\emucore\Bankswitch.hxx" />
     <ClInclude Include="..\emucore\BSType.hxx" />
     <ClInclude Include="..\emucore\Cart3EPlus.hxx" />
+    <ClInclude Include="..\emucore\Cart3EX.hxx" />
     <ClInclude Include="..\emucore\Cart4KSC.hxx" />
+    <ClInclude Include="..\emucore\CartEnhanced.hxx" />
     <ClInclude Include="..\emucore\CartBF.hxx" />
     <ClInclude Include="..\emucore\CartBFSC.hxx" />
     <ClInclude Include="..\emucore\CartBUS.hxx" />
     <ClInclude Include="..\emucore\CartCDF.hxx" />
     <ClInclude Include="..\emucore\CartCM.hxx" />
     <ClInclude Include="..\emucore\CartCTY.hxx" />
-    <ClInclude Include="..\emucore\CartCVPlus.hxx" />
-    <ClInclude Include="..\emucore\CartDASH.hxx" />
     <ClInclude Include="..\emucore\CartDetector.hxx" />
     <ClInclude Include="..\emucore\CartDF.hxx" />
     <ClInclude Include="..\emucore\CartDFSC.hxx" />

@@ -20,9 +20,9 @@
 
 class Cartridge2K;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class Cartridge2KWidget : public CartDebugWidget
+class Cartridge2KWidget : public CartridgeEnhancedWidget
 {
   public:
     Cartridge2KWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -32,10 +32,11 @@ class Cartridge2KWidget : public CartDebugWidget
     virtual ~Cartridge2KWidget() = default;
 
   private:
-    // No implementation for non-bankswitched ROMs
-    void loadConfig() override { }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override { }
+    string manufacturer() override { return "Atari"; }
 
+    string description() override;
+
+  private:
     // Following constructors and assignment operators not supported
     Cartridge2KWidget() = delete;
     Cartridge2KWidget(const Cartridge2KWidget&) = delete;

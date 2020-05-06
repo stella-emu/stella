@@ -19,11 +19,10 @@
 #define CARTRIDGEWD_WIDGET_HXX
 
 class CartridgeWD;
-class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class CartridgeWDWidget : public CartDebugWidget
+class CartridgeWDWidget : public CartridgeEnhancedWidget
 {
   public:
     CartridgeWDWidget(GuiObject* boss, const GUI::Font& lfont,
@@ -32,36 +31,19 @@ class CartridgeWDWidget : public CartDebugWidget
                       CartridgeWD& cart);
     virtual ~CartridgeWDWidget() = default;
 
-  private:
-    CartridgeWD& myCart;
-    PopUpWidget* myBank{nullptr};
-
-    struct CartState {
-      ByteArray internalram;
-      uInt16 bank{0};  // Current banking layout
-    };
-    CartState myOldState;
-
-    enum { kBankChanged = 'bkCH' };
+private:
+    CartridgeWD& myCartWD;
 
   private:
-    void saveOldState() override;
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    string manufacturer() override { return "Wickstead Design"; }
 
-    string bankState() override;
+    string description() override;
 
-    // start of functions for Cartridge RAM tab
-    uInt32 internalRamSize() override;
-    uInt32 internalRamRPort(int start) override;
-    string internalRamDescription() override;
-    const ByteArray& internalRamOld(int start, int count) override;
-    const ByteArray& internalRamCurrent(int start, int count) override;
-    void internalRamSetValue(int addr, uInt8 value) override;
-    uInt8 internalRamGetValue(int addr) override;
-    string internalRamLabel(int addr) override;
-    // end of functions for Cartridge RAM tab
+    string hotspotStr(int bank, int seg = 0, bool prefix = false) override;
 
+    uInt16 bankSegs() override { return 1; }
+
+  private:
     // Following constructors and assignment operators not supported
     CartridgeWDWidget() = delete;
     CartridgeWDWidget(const CartridgeWDWidget&) = delete;

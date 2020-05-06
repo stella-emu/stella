@@ -772,8 +772,7 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                const string& okText, const string& cancelText,
                                bool focusOKButton, int buttonWidth)
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
+  const int fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
             buttonHeight = font.getLineHeight() * 1.25;
   const int VBORDER = fontHeight / 2;
@@ -821,8 +820,7 @@ void Dialog::addDefaultsOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
                                        const string& defaultsText,
                                        bool focusOKButton)
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
+  const int fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
             buttonHeight = font.getLineHeight() * 1.25;
   const int VBORDER = fontHeight / 2;

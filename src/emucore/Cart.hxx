@@ -180,7 +180,7 @@ class Cartridge : public Device
     virtual uInt16 getBank(uInt16 address = 0) const { return 0; }
 
     /**
-      Query the number of 'banks' supported by the cartridge.  Note that
+      Query the number of ROM 'banks' supported by the cartridge.  Note that
       this information is cart-specific, where each cart basically defines
       what a 'bank' is.
 
@@ -189,10 +189,18 @@ class Cartridge : public Device
       cases where ROMs have 2K blocks in some preset area, the bankCount
       is the number of such blocks.  Finally, in some esoteric schemes,
       the number of ways that the addressing can change (multiple ROM and
-      RAM slices at multiple access points) is so complicated that the
+      RAM segments at multiple access points) is so complicated that the
       cart will report having only one 'virtual' bank.
     */
-    virtual uInt16 bankCount() const { return 1; }
+    virtual uInt16 romBankCount() const { return 1; }
+
+
+    /**
+      Query the number of RAM 'banks' supported by the cartridge.  Note that
+      this information is cart-specific, where each cart basically defines
+      what a 'bank' is.
+    */
+    virtual uInt16 ramBankCount() const { return 0; }
 
     /**
       Get the size of a bank.

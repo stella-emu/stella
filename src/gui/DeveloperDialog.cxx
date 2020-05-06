@@ -54,7 +54,6 @@ DeveloperDialog::DeveloperDialog(OSystem& osystem, DialogContainer& parent,
             buttonHeight = font.getLineHeight() * 1.25;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
   const int VGAP = fontHeight / 4;
 
   int xpos, ypos;
@@ -90,8 +89,7 @@ void DeveloperDialog::addEmulationTab(const GUI::Font& font)
 {
   const int lineHeight = font.getLineHeight(),
             fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25;
+            fontWidth = font.getMaxCharWidth();
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
   const int INDENT = fontWidth * 2;
@@ -197,8 +195,7 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
 {
   const int lineHeight = font.getLineHeight(),
             fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25;
+            fontWidth = font.getMaxCharWidth();
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
   const int INDENT = fontWidth * 2;
@@ -287,8 +284,7 @@ void DeveloperDialog::addVideoTab(const GUI::Font& font)
 {
   const int lineHeight = font.getLineHeight(),
             fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25;
+            fontWidth = font.getMaxCharWidth();
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
   const int INDENT = fontWidth * 2;
@@ -428,8 +424,7 @@ void DeveloperDialog::addTimeMachineTab(const GUI::Font& font)
   };
   const int lineHeight = font.getLineHeight(),
             fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25;
+            fontWidth = font.getMaxCharWidth();
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
   const int INDENT = fontWidth * 2;
@@ -548,11 +543,9 @@ void DeveloperDialog::addDebuggerTab(const GUI::Font& font)
 #ifdef DEBUGGER_SUPPORT
   const int lineHeight = font.getLineHeight(),
             fontHeight = font.getFontHeight(),
-            fontWidth = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25;
+            fontWidth = font.getMaxCharWidth();
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
   const int VGAP = fontHeight / 4;
 
   VariantList items;

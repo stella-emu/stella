@@ -81,6 +81,13 @@ class FrameBuffer
       }
     };
 
+    enum class BufferType {
+      None,
+      Launcher,
+      Emulator,
+      Debugger
+    };
+
     enum class ScalingInterpolation {
       none,
       sharp,
@@ -115,7 +122,8 @@ class FrameBuffer
 
       @return  Status of initialization (see FBInitStatus 'enum')
     */
-    FBInitStatus createDisplay(const string& title, uInt32 width, uInt32 height,
+    FBInitStatus createDisplay(const string& title, BufferType type,
+                               uInt32 width, uInt32 height,
                                bool honourHiDPI = true);
 
     /**
@@ -299,6 +307,13 @@ class FrameBuffer
     bool hidpiEnabled() const { return myHiDPIEnabled; }
     uInt32 hidpiScaleFactor() const { return myHiDPIEnabled ? 2 : 1; }
 
+    /**
+      These methods are used to load/save position and display of the current window.
+    */
+    string getPositionKey();
+    string getDisplayKey();
+    void saveCurrentWindowPosition();
+
   #ifdef GUI_SUPPORT
     /**
       Get the font object(s) of the framebuffer
@@ -372,18 +387,28 @@ class FrameBuffer
     virtual void readPixels(uInt8* buffer, uInt32 pitch, const Common::Rect& rect) const = 0;
 
     /**
+      This method is called to query if the current window is not centered or fullscreen.
+
+      @return  True, if the current window is positioned
+    */
+    virtual bool isCurrentWindowPositioned() const = 0;
+
+    /**
+      This method is called to query the video hardware for position of
+      the current window
+
+      @return  The position of the currently displayed window
+    */
+    virtual Common::Point getCurrentWindowPos() const = 0;
+
+    /**
       This method is called to query the video hardware for the index
       of the display the current window is displayed on
 
       @return  the current display index or a negative value if no
                window is displayed
     */
-    virtual Int32 getCurrentDisplayIndex() = 0;
-
-    /**
-      This method is called to preserve the last current windowed position.
-    */
-    virtual void updateWindowedPos() = 0;
+    virtual Int32 getCurrentDisplayIndex() const = 0;
 
     /**
       Clear the framebuffer.
@@ -553,6 +578,9 @@ class FrameBuffer
   protected:
     // Title of the main window/screen
     string myScreenTitle;
+
+    // Type of the frame buffer
+    BufferType myBufferType{BufferType::None};
 
     // Number of displays
     int myNumDisplays{1};

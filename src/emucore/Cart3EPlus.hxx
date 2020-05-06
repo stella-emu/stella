@@ -21,7 +21,7 @@
 class System;
 
 #include "bspf.hxx"
-#include "Cart.hxx"
+#include "Cart3E.hxx"
 
 #ifdef DEBUGGER_SUPPORT
 class Cartridge3EPlusWidget;
@@ -29,19 +29,67 @@ class Cartridge3EPlusWidget;
 #endif
 
 /**
-  Cartridge class from Thomas Jentzsch, mostly based on the 'DASH' scheme
-  with the following changes:
+  Cartridge class for new tiling engine "Boulder Dash" format games with RAM.
+  Kind of a combination of 3F and 3E, with better switchability.
+  B.Watson's Cart3E was used as a template for building this implementation.
 
-  RAM areas:
-    - read $x000, write $x200
-    - read $x400, write $x600
-    - read $x800, write $xa00
-    - read $xc00, write $xe00
+  The destination bank (0-3) is held in the top bits of the value written to
+  $3E (for RAM switching) or $3F (for ROM switching). The low 6 bits give
+  the actual bank number (0-63) corresponding to 512 byte blocks for RAM and
+  1024 byte blocks for ROM. The maximum size is therefore 32K RAM and 64K ROM.
 
- @author  Thomas Jentzsch and Stephen Anthony
+  D7D6         indicate the bank number (0-3)
+  D5D4D3D2D1D0 indicate the actual # (0-63) from the image/ram
+
+  ROM:
+
+  Note: in descriptions $F000 is equivalent to $1000 -- that is, we only deal
+  with the low 13 bits of addressing. Stella code uses $1000, I'm used to $F000
+  So, mask with top bits clear :) when reading this document.
+
+  In this scheme, the 4K address space is broken into four 1K ROM/512b RAM segments
+  living at 0x1000, 0x1400, 0x1800, 0x1C00 (or, same thing, 0xF000... etc.),
+
+  The last 1K ROM ($FC00-$FFFF) segment in the 6502 address space (ie: $1C00-$1FFF)
+  is initialised to point to the FIRST 1K of the ROM image, so the reset vectors
+  must be placed at the end of the first 1K in the ROM image. Note, this is
+  DIFFERENT to 3E which switches in the UPPER bank and this bank is fixed.  This
+  allows variable sized ROM without having to detect size. First bank (0) in ROM is
+  the default fixed bank mapped to $FC00.
+
+  The system requires the reset vectors to be valid on a reset, so either the
+  hardware first switches in the first bank, or the programmer must ensure
+  that the reset vector is present in ALL ROM banks which might be switched
+  into the last bank area.  Currently the latter (programmer onus) is required,
+  but it would be nice for the cartridge hardware to auto-switch on reset.
+
+  ROM switching (write of block+bank number to $3F) D7D6 upper 2 bits of bank #
+  indicates the destination segment (0-3, corresponding to $F000, $F400, $F800,
+  $FC00), and lower 6 bits indicate the 1K bank to switch in.  Can handle 64
+  x 1K ROM banks (64K total).
+
+  D7 D6 D5D4D3D2D1D0
+  0  0   x x x x x x   switch a 1K ROM bank xxxxxx to $F000
+  0  1                 switch a 1K ROM bank xxxxxx to $F400
+  1  0                 switch a 1K ROM bank xxxxxx to $F800
+  1  1                 switch a 1K ROM bank xxxxxx to $FC00
+
+  RAM switching (write of segment+bank number to $3E) with D7D6 upper 2 bits of
+  bank # indicates the destination RAM segment (0-3, corresponding to $F000,
+  $F400, $F800, $FC00).
+
+  Can handle 64 x 512 byte RAM banks (32K total)
+
+  D7 D6 D5D4D3D2D1D0
+  0  0   x x x x x x   switch a 512 byte RAM bank xxxxxx to $F000 with write @ $F200
+  0  1                 switch a 512 byte RAM bank xxxxxx to $F400 with write @ $F600
+  1  0                 switch a 512 byte RAM bank xxxxxx to $F800 with write @ $FA00
+  1  1                 switch a 512 byte RAM bank xxxxxx to $FC00 with write @ $FE00
+
+  @author  Thomas Jentzsch and Stephen Anthony
 */
 
-class Cartridge3EPlus: public Cartridge
+class Cartridge3EPlus: public Cartridge3E
 {
   friend class Cartridge3EPlusWidget;
 
@@ -61,59 +109,6 @@ class Cartridge3EPlus: public Cartridge
   public:
     /** Reset device to its power-on state */
     void reset() override;
-
-    /**
-      Install cartridge in the specified system.  Invoked by the system
-      when the cartridge is attached to it.
-
-      @param system The system the device should install itself in
-    */
-    void install(System& system) override;
-
-    /**
-      Get the current bank.
-
-      @param address The address to use when querying the bank
-    */
-    uInt16 getBank(uInt16 address = 0) const override;
-
-    /**
-      Query the number of banks supported by the cartridge.
-    */
-    uInt16 bankCount() const override;
-
-    /**
-      Patch the cartridge ROM.
-
-      @param address  The ROM address to patch
-      @param value    The value to place into the address
-      @return    Success or failure of the patch operation
-    */
-    bool patch(uInt16 address, uInt8 value) override;
-
-    /**
-      Access the internal ROM image for this cartridge.
-
-      @param size  Set to the size of the internal ROM image data
-      @return  A pointer to the internal ROM image data
-    */
-    const uInt8* getImage(size_t& size) const override;
-
-    /**
-      Save the current state of this cart to the given Serializer.
-
-      @param out  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    bool save(Serializer& out) const override;
-
-    /**
-      Load the current state of this cart from the given Serializer.
-
-      @param in  The Serializer object to use
-      @return  False on any errors, else true
-    */
-    bool load(Serializer& in) override;
 
     /**
       Get a descriptor for the device name (used in error checking).
@@ -152,47 +147,17 @@ class Cartridge3EPlus: public Cartridge
     bool poke(uInt16 address, uInt8 value) override;
 
   private:
-    bool bankRAM(uInt8 bank);      // switch a RAM bank
-    bool bankROM(uInt8 bank);      // switch a ROM bank
+    bool checkSwitchBank(uInt16 address, uInt8 value) override;
 
-    void bankRAMSlot(uInt16 bank); // switch in a 512b RAM slot (lower or upper 1/2 bank)
-    void bankROMSlot(uInt16 bank); // switch in a 512b RAM slot (read or write port)
+  private:
+    // log(ROM bank segment size) / log(2)
+    static constexpr uInt16 BANK_SHIFT = 10; // = 1K = 0x0400
 
-    void initializeBankState();    // set all banks according to current bankInUse state
+    // The size of extra RAM in ROM address space
+    static constexpr uInt16 RAM_BANKS = 64;
 
-    // We have an array that indicates for each of the 8 512 byte areas of the address space, which ROM/RAM
-    // bank is used in that area. ROM switches 1K so occupies 2 successive entries for each switch. RAM occupies
-    // two as well, one 512 byte for read and one for write. The RAM locations are +0x800 apart, and the ROM
-    // are consecutive. This allows us to determine on a read/write exactly where the data is.
-
-    static constexpr uInt16 BANK_UNDEFINED = 0x8000;   // bank is undefined and inaccessible
-    std::array<uInt16, 8> bankInUse;  // bank being used for ROM/RAM (eight 512 byte areas)
-
-    static constexpr uInt16 BANK_SWITCH_HOTSPOT_RAM = 0x3E;   // writes to this address cause bankswitching
-    static constexpr uInt16 BANK_SWITCH_HOTSPOT_ROM = 0x3F;   // writes to this address cause bankswitching
-
-    static constexpr uInt8 BANK_BITS = 6;                         // # bits for bank
-    static constexpr uInt8 BIT_BANK_MASK = (1 << BANK_BITS) - 1;  // mask for those bits
-    static constexpr uInt16 BITMASK_LOWERUPPER = 0x100;   // flags lower or upper section of bank (1==upper)
-    static constexpr uInt16 BITMASK_ROMRAM     = 0x200;   // flags ROM or RAM bank switching (1==RAM)
-
-    static constexpr uInt16 MAXIMUM_BANK_COUNT = (1 << BANK_BITS);
-    static constexpr uInt16 RAM_BANK_TO_POWER = 9;    // 2^n = 512
-    static constexpr uInt16 RAM_BANK_SIZE = (1 << RAM_BANK_TO_POWER);
-    static constexpr uInt16 BITMASK_RAM_BANK = (RAM_BANK_SIZE - 1);
-    static constexpr uInt32 RAM_TOTAL_SIZE = MAXIMUM_BANK_COUNT * RAM_BANK_SIZE;
-
-    static constexpr uInt16 ROM_BANK_TO_POWER = 10;   // 2^n = 1024
-    static constexpr uInt16 ROM_BANK_SIZE = (1 << ROM_BANK_TO_POWER);
-    static constexpr uInt16 BITMASK_ROM_BANK = (ROM_BANK_SIZE - 1);
-
-    static constexpr uInt16 ROM_BANK_COUNT = 64;
-
-    static constexpr uInt16 RAM_WRITE_OFFSET = 0x200;
-
-    ByteBuffer myImage; // Pointer to a dynamically allocated ROM image of the cartridge
-    size_t mySize{0};   // Size of the ROM image
-    std::array<uInt8, RAM_TOTAL_SIZE> myRAM;
+    // RAM size
+    static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 32K = 0x4000;
 
   private:
     // Following constructors and assignment operators not supported
