@@ -89,14 +89,13 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   int xpos, ypos, tabID;
   int lwidth = font.getStringWidth("V-Size adjust "),
-      pwidth = font.getStringWidth("XXXXxXXXX"),
-      swidth = font.getMaxCharWidth() * 10 - 2;
+      pwidth = font.getStringWidth("XXXXxXXXX");
 
   WidgetArray wid;
   VariantList items;
 
   // Set real dimensions
-  setSize(60 * fontWidth + HBORDER * 2,
+  setSize(57 * fontWidth + HBORDER * 2 + PopUpWidget::dropDownWidth(font) * 2,
           _th + VGAP * 3 + lineHeight + 11 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
           max_w, max_h);
 
@@ -125,10 +124,31 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "z26", "z26");
   if (instance().checkUserPalette())
     VarList::push_back(items, "User", "user");
+  VarList::push_back(items, "Custom", "custom");
   myTIAPalette = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                                 lineHeight, items, "Palette ", lwidth);
+                                 lineHeight, items, "Palette ", lwidth, kPaletteChanged);
   wid.push_back(myTIAPalette);
   ypos += lineHeight + VGAP;
+
+  int swidth = myTIAPalette->getWidth() - lwidth;
+  int plWidth = font.getStringWidth("NTSC phase  ");
+  int pswidth = swidth - INDENT + lwidth - plWidth;
+
+  myPhaseShiftNtsc =
+    new SliderWidget(myTab, font, xpos + INDENT, ypos-1, pswidth, lineHeight,
+                     "NTSC phase", plWidth, kNtscShiftChanged, fontWidth * 5);
+  myPhaseShiftNtsc->setMinValue(262 - 45); myPhaseShiftNtsc->setMaxValue(262 + 45);
+  myPhaseShiftNtsc->setTickmarkIntervals(4);
+  wid.push_back(myPhaseShiftNtsc);
+  ypos += lineHeight + VGAP;
+
+  myPhaseShiftPal =
+    new SliderWidget(myTab, font, xpos + INDENT, ypos-1, pswidth, lineHeight,
+                     "PAL phase", plWidth, kPalShiftChanged, fontWidth * 5);
+  myPhaseShiftPal->setMinValue(313 - 45); myPhaseShiftPal->setMaxValue(313 + 45);
+  myPhaseShiftPal->setTickmarkIntervals(4);
+  wid.push_back(myPhaseShiftPal);
+  ypos += lineHeight + VGAP * 4;
 
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Interpolation ");
@@ -264,7 +284,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ", 0)
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ", 0)
 
-  xpos += myTVContrast->getWidth() + fontWidth * 4;
+  xpos += myTVContrast->getWidth() + fontWidth * 6;
   ypos = VBORDER;
 
   lwidth = font.getStringWidth("Intensity ");
@@ -287,7 +307,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   xpos += INDENT;
   CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ", kScanlinesChanged)
-  ypos += lineHeight + 2;
+  ypos += VGAP * 3;
 
   // Adjustable presets
   xpos -= INDENT;
@@ -344,6 +364,11 @@ void VideoDialog::loadConfig()
   // TIA Palette
   myTIAPalette->setSelected(
     instance().settings().getString("palette"), "standard");
+
+  // Custom Palette
+  myPhaseShiftNtsc->setValue(instance().settings().getFloat("phase_ntsc") * 10);
+  myPhaseShiftPal->setValue(instance().settings().getFloat("phase_pal") * 10);
+  handlePaletteChange();
 
   // TIA interpolation
   myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
@@ -417,6 +442,10 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("palette",
                                  myTIAPalette->getSelectedTag().toString());
 
+  // Custom Palette
+  instance().settings().setValue("phase_ntsc", myPhaseShiftNtsc->getValue() / 10.0);
+  instance().settings().setValue("phase_pal", myPhaseShiftPal->getValue() / 10.0);
+
   // TIA interpolation
   instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
 
@@ -484,12 +513,21 @@ void VideoDialog::saveConfig()
   // TV scanline intensity
   instance().settings().setValue("tv.scanlines", myTVScanIntense->getValueLabel());
 
-  if (instance().hasConsole())
+  if(instance().hasConsole())
+  {
     instance().console().setTIAProperties();
 
-  if (vsizeChanged && instance().hasConsole()) {
-    instance().console().tia().clearFrameBuffer();
-    instance().console().initializeVideo();
+    if(instance().settings().getString("palette") == "custom")
+    {
+      instance().console().generateCustomPalette(0);
+      instance().console().generateCustomPalette(1);
+    }
+
+    if(vsizeChanged)
+    {
+      instance().console().tia().clearFrameBuffer();
+      instance().console().initializeVideo();
+    }
   }
 
   // Finally, issue a complete framebuffer re-initialization...
@@ -509,6 +547,8 @@ void VideoDialog::setDefaults()
       myRenderer->setSelectedIndex(0);
       myTIAZoom->setValue(300);
       myTIAPalette->setSelected("standard", "");
+      myPhaseShiftNtsc->setValue(262);
+      myPhaseShiftPal->setValue(313);
       myTIAInterpolate->setState(false);
       myVSizeAdjust->setValue(0);
       mySpeed->setValue(0);
@@ -521,6 +561,8 @@ void VideoDialog::setDefaults()
       myCenter->setState(false);
       myFastSCBios->setState(true);
       myUseThreads->setState(false);
+
+      handlePaletteChange();
       break;
     }
 
@@ -587,6 +629,15 @@ void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handlePaletteChange()
+{
+  bool enable = myTIAPalette->getSelectedTag().toString() == "custom";
+
+  myPhaseShiftNtsc->setEnabled(enable);
+  myPhaseShiftPal->setEnabled(enable);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::handleFullScreenChange()
 {
   bool enable = myFullscreen->getState();
@@ -627,6 +678,28 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
+    case kPaletteChanged:
+      handlePaletteChange();
+      break;
+
+    case kNtscShiftChanged:
+    {
+      std::ostringstream ss;
+
+      ss << std::setw(4) << std::fixed << std::setprecision(1)
+        << (0.1 * abs(myPhaseShiftNtsc->getValue())) << DEGREE;
+      myPhaseShiftNtsc->setValueLabel(ss.str());
+      break;
+    }
+    case kPalShiftChanged:
+    {
+      std::ostringstream ss;
+
+      ss << std::setw(4) << std::fixed << std::setprecision(1)
+        << (0.1 * abs(myPhaseShiftPal->getValue())) << DEGREE;
+      myPhaseShiftPal->setValueLabel(ss.str());
+      break;
+    }
     case kVSizeChanged:
     {
       int adjust = myVSizeAdjust->getValue();

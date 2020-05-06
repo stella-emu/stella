@@ -45,6 +45,7 @@ class VideoDialog : public Dialog
 
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
+    void handlePaletteChange();
     void handleFullScreenChange();
     void handleOverscanChange();
     void handlePhosphorChange();
@@ -57,6 +58,8 @@ class VideoDialog : public Dialog
     PopUpWidget*      myRenderer{nullptr};
     SliderWidget*     myTIAZoom{nullptr};
     PopUpWidget*      myTIAPalette{nullptr};
+    SliderWidget*     myPhaseShiftNtsc{nullptr};
+    SliderWidget*     myPhaseShiftPal{nullptr};
     CheckboxWidget*   myTIAInterpolate{nullptr};
     SliderWidget*     myVSizeAdjust{nullptr};
     SliderWidget*     mySpeed{nullptr};
@@ -100,6 +103,9 @@ class VideoDialog : public Dialog
     ButtonWidget*     myCloneCustom{nullptr};
 
     enum {
+      kPaletteChanged     = 'VDpl',
+      kNtscShiftChanged   = 'VDns',
+      kPalShiftChanged    = 'VDps',
       kSpeedupChanged     = 'VDSp',
       kVSizeChanged       = 'VDVs',
       kFullScreenChanged  = 'VDFs',

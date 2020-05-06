@@ -273,7 +273,9 @@ void CommandDialog::updatePalette()
     label = "Stella Palette";
   else if(BSPF::equalsIgnoreCase(palette, "z26"))
     label = "Z26 Palette";
-  else
+  else if(BSPF::equalsIgnoreCase(palette, "user"))
     label = "User Palette";
+  else
+    label = "Custom Palette";
   myPaletteButton->setLabel(label);
 }

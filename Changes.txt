@@ -22,6 +22,8 @@
     a game. This allows the user to save high scores for these games. For each
     game and variation, the top 10 scores can be saved. (TODO: Doc)
 
+  * Added 'Custom' palette, generated from user controlled phase shifts.
+
   * Added 'Turbo' mode, runs the game as fast as the computer allows.
 
   * Added selectable dialog fonts

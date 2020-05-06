@@ -62,6 +62,7 @@
 #include "AudioSettings.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "frame-manager/FrameLayoutDetector.hxx"
+#include "GuiObject.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
@@ -83,6 +84,10 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
 {
   // Load user-defined palette for this ROM
   loadUserPalette();
+
+  // Generate custom palette
+  generateCustomPalette(0);
+  generateCustomPalette(1);
 
   // Create subsystems for the console
   my6502 = make_unique<M6502>(myOSystem.settings());
@@ -474,6 +479,21 @@ void Console::enableColorLoss(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Console::getPaletteNum(const string& name) const
+{
+  if(name == "z26")
+    return PaletteType::Z26;
+
+  if(name == "user" && myUserPaletteDefined)
+    return PaletteType::User;
+
+  if(name == "custom")
+    return PaletteType::Custom;
+
+  return PaletteType::Standard;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::togglePalette()
 {
   string palette, message;
@@ -499,7 +519,12 @@ void Console::togglePalette()
       message = "Standard Stella palette";
     }
   }
-  else if(palette == "user")  // switch to standard
+  else if(palette == "user")  // switch to custom
+  {
+    palette = "custom";
+    message = "Custom palette";
+  }
+  else if(palette == "custom")  // switch to standard
   {
     palette = "standard";
     message = "Standard Stella palette";
@@ -521,20 +546,20 @@ void Console::setPalette(const string& type)
 {
   // Look at all the palettes, since we don't know which one is
   // currently active
-  static constexpr BSPF::array2D<PaletteArray*, 3, 3> palettes = {{
-    { &ourNTSCPalette,     &ourPALPalette,     &ourSECAMPalette     },
-    { &ourNTSCPaletteZ26,  &ourPALPaletteZ26,  &ourSECAMPaletteZ26  },
-    { &ourUserNTSCPalette, &ourUserPALPalette, &ourUserSECAMPalette }
+  static constexpr BSPF::array2D<PaletteArray*, PaletteType::NumTypes, 3> palettes = {{
+    { &ourNTSCPalette,       &ourPALPalette,       &ourSECAMPalette     },
+    { &ourNTSCPaletteZ26,    &ourPALPaletteZ26,    &ourSECAMPaletteZ26  },
+    { &ourUserNTSCPalette,   &ourUserPALPalette,   &ourUserSECAMPalette },
+    { &ourCustomNTSCPalette, &ourCustomPALPalette, &ourSECAMPalette     }
   }};
 
   // See which format we should be using
-  int paletteNum = 0;
-  if(type == "standard")
-    paletteNum = 0;
-  else if(type == "z26")
-    paletteNum = 1;
-  else if(type == "user" && myUserPaletteDefined)
-    paletteNum = 2;
+  int paletteNum = getPaletteNum(type);
+
+  if(paletteNum == PaletteType::Custom)
+  {
+
+  }
 
   // Now consider the current display format
   const PaletteArray* palette =
@@ -658,6 +683,8 @@ FBInitStatus Console::initializeVideo(bool full)
 
     myOSystem.frameBuffer().showFrameStats(
       myOSystem.settings().getBool(devSettings ? "dev.stats" : "plr.stats"));
+    generateCustomPalette(0);
+    generateCustomPalette(1);
     generateColorLossPalette();
   }
   setPalette(myOSystem.settings().getString("palette"));
@@ -803,6 +830,46 @@ void Console::changeScanlineAdjust(int direction)
     ss << (newAdjustVSize > 0 ? "+" : "") << newAdjustVSize << "%";
 
   myOSystem.frameBuffer().showMessage(ss.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeColorPhaseShift(int direction)
+{
+  const char DEGREE = 0x1c;
+  const float NTSC_SHIFT = 26.2F;
+  const float PAL_SHIFT = 31.3F; // 360 / 11.5
+  const bool isNTSC = myDisplayFormat == "NTSC" || myDisplayFormat == "NTSC50";
+  const bool isPAL  = myDisplayFormat == "PAL"  || myDisplayFormat == "PAL60";
+
+  // SECAM is not supported
+  if(isNTSC || isPAL)
+  {
+    const string key = isNTSC ? "phase_ntsc" : "phase_pal";
+    const float shift = isNTSC ? NTSC_SHIFT : PAL_SHIFT;
+    float phase = myOSystem.settings().getFloat(key);
+
+    if(direction == +1)       // increase color phase shift
+    {
+      phase += 0.3F;
+      phase = std::min(phase, shift + 4.5F);
+    }
+    else if(direction == -1)  // decrease color phase shift
+    {
+      phase -= 0.3F;
+      phase = std::max(phase, shift - 4.5F);
+    }
+    myOSystem.settings().setValue(key, phase);
+    generateCustomPalette(isNTSC ? 0 : 1);
+
+    myOSystem.settings().setValue("palette", "custom");
+    setPalette("custom");
+
+    ostringstream ss;
+    ss << "Color phase shift at "
+      << std::fixed << std::setprecision(1) << phase << DEGREE;
+
+    myOSystem.frameBuffer().showMessage(ss.str());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1057,14 +1124,128 @@ void Console::loadUserPalette()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::generateCustomPalette(int type)
+{
+  const int NUM_CHROMA = 16;
+  const int NUM_LUMA = 8;
+  const double SATURATION = 0.25;
+
+  double color[NUM_CHROMA][2] = {{0.0}};
+
+  if(type == 0)
+  {
+    // YIQ is YUV shifted by 33°
+    const double offset = 33 * (2 * M_PI / 360);
+    const double shift = myOSystem.settings().getFloat("phase_ntsc") * (2 * M_PI / 360);
+
+    // color 0 is grayscale
+    for(int chroma = 1; chroma < NUM_CHROMA; chroma++)
+    {
+      color[chroma][0] = SATURATION * sin(offset + shift * (chroma - 1));
+      color[chroma][1] = SATURATION * sin(offset + shift * (chroma - 1 - M_PI));
+    }
+
+    for(int chroma = 0; chroma < NUM_CHROMA; chroma++)
+    {
+      const double I = color[chroma][0];
+      const double Q = color[chroma][1];
+
+      for(int luma = 0; luma < NUM_LUMA; luma++)
+      {
+        const double Y = 0.05 + luma / 8.24; // 0.05..~0.90
+
+        double R = Y + 0.956 * I + 0.621 * Q;
+        double G = Y - 0.272 * I - 0.647 * Q;
+        double B = Y - 1.106 * I + 1.703 * Q;
+
+        if(R < 0) R = 0;
+        if(G < 0) G = 0;
+        if(B < 0) B = 0;
+
+        R = pow(R, 0.9);
+        G = pow(G, 0.9);
+        B = pow(B, 0.9);
+
+        if(R > 1) R = 1;
+        if(G > 1) G = 1;
+        if(B > 1) B = 1;
+
+        int r = R * 255.F;
+        int g = G * 255.F;
+        int b = B * 255.F;
+
+        ourCustomNTSCPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
+      }
+    }
+  }
+  else
+  {
+    const double offset = 180 * (2 * M_PI / 360);
+    const double shift = myOSystem.settings().getFloat("phase_pal") * (2 * M_PI / 360);
+    const double fixedShift = 22.5 * (2 * M_PI / 360);
+
+    // colors 0, 1, 14 and 15 are grayscale
+    for(int chroma = 2; chroma < NUM_CHROMA - 2; chroma++)
+    {
+      int idx = NUM_CHROMA - 1 - chroma;
+      color[idx][0] = SATURATION * sin(offset - fixedShift * chroma);
+      if ((idx & 1) == 0)
+        color[idx][1] = SATURATION * sin(offset - shift * (chroma - 3.5) / 2.F);
+      else
+        color[idx][1] = SATURATION * -sin(offset - shift * chroma / 2.F);
+    }
+
+    for(int chroma = 0; chroma < NUM_CHROMA; chroma++)
+    {
+      const double U = color[chroma][0];
+      const double V = color[chroma][1];
+
+      for(int luma = 0; luma < NUM_LUMA; luma++)
+      {
+        const double Y = 0.05 + luma / 8.24; // 0.05..~0.90
+
+        // Most sources
+        double R = Y + 1.403 * V;
+        double G = Y - 0.344 * U - 0.714 * V;
+        double B = Y + 1.770 * U;
+
+        // German Wikipedia, huh???
+        //double B = Y + 1 / 0.493 * U;
+        //double R = Y + 1 / 0.877 * V;
+        //double G = 1.704 * Y - 0.590 * R - 0.194   * B;
+
+        if(R < 0) R = 0.0;
+        if(G < 0) G = 0.0;
+        if(B < 0) B = 0.0;
+
+        R = pow(R, 1.2);
+        G = pow(G, 1.2);
+        B = pow(B, 1.2);
+
+        if(R > 1) R = 1;
+        if(G > 1) G = 1;
+        if(B > 1) B = 1;
+
+        int r = R * 255.F;
+        int g = G * 255.F;
+        int b = B * 255.F;
+
+        ourCustomPALPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
+      }
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::generateColorLossPalette()
 {
   // Look at all the palettes, since we don't know which one is
   // currently active
-  std::array<uInt32*, 9> palette = {
-    ourNTSCPalette.data(),    ourPALPalette.data(),    ourSECAMPalette.data(),
-    ourNTSCPaletteZ26.data(), ourPALPaletteZ26.data(), ourSECAMPaletteZ26.data(),
-    nullptr, nullptr, nullptr
+  std::array<uInt32*, 3 * PaletteType::NumTypes> palette = {
+    ourNTSCPalette.data(),       ourPALPalette.data(),       ourSECAMPalette.data(),
+    ourNTSCPaletteZ26.data(),    ourPALPaletteZ26.data(),    ourSECAMPaletteZ26.data(),
+    nullptr, nullptr, nullptr,
+    ourCustomNTSCPalette.data(), ourCustomPALPalette.data(), ourSECAMPalette.data(),
   };
   if(myUserPaletteDefined)
   {
@@ -1073,7 +1254,7 @@ void Console::generateColorLossPalette()
     palette[8] = ourUserSECAMPalette.data();
   }
 
-  for(int i = 0; i < 9; ++i)
+  for(int i = 0; i < 3 * PaletteType::NumTypes; ++i)
   {
     if(palette[i] == nullptr)
       continue;
@@ -1388,3 +1569,9 @@ PaletteArray Console::ourUserPALPalette   = { 0 }; // filled from external file
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteArray Console::ourUserSECAMPalette = { 0 }; // filled from external file
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PaletteArray Console::ourCustomNTSCPalette = { 0 }; // filled by function
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PaletteArray Console::ourCustomPALPalette  = { 0 }; // filled by function
