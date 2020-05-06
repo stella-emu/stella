@@ -2000,6 +2000,16 @@
     </tr>
 
     <tr>
+      <td><pre>-windowedpos &lt;WxH&gt;</pre></td>
+      <td>Sets the window position in windowed emulator mode.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-display &lt;number&gt;</pre></td>
+      <td>Sets the display for Stella's emulator.</td>
+    </tr>
+
+    <tr>
       <td><pre>-palette &lt;standard|z26|user&gt;</pre></td>
       <td>Set the palette to either normal Stella, the one used in the z26
         emulator, or a user-defined palette.</td>
@@ -2377,6 +2387,16 @@
     </tr>
 
     <tr>
+      <td><pre>-launcherpos &lt;WxH&gt;</pre></td>
+      <td>Sets the window position in windowed ROM launcher mode.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-launcherdisplay &lt;number&gt;</pre></td>
+      <td>Sets the display for the ROM launcher.</td>
+    </tr>
+
+    <tr>
       <td><pre>-launcherres &lt;WxH&gt;</pre></td>
       <td>Set the size of the ROM launcher.</td>
     </tr>
@@ -2520,6 +2540,16 @@
     <tr>
       <td><pre>-dis.relocate &lt;1|0&gt;</pre></td>
       <td>Relocate calls out of address range in the disassembler.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-dbg.pos &lt;WxH&gt;</pre></td>
+      <td>Sets the window position in windowed debugger mode.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-dbg.display &lt;number&gt;</pre></td>
+      <td>Sets the display for the debugger.</td>
     </tr>
 
     <tr>
@@ -3778,7 +3808,9 @@ Ms Pac-Man (Stella extended codes):
   <p>Each block in a property file consists of a set of properties for a single
   game. Stella supports the properties described below:</p>
 
-  <a><img src="graphics/options_gameinfo_emulation.png"></a>
+  <p>
+    <a><img src="graphics/options_gameinfo_emulation.png"></a>
+  </p>
   <table CELLSPACING="10">
 
   <tr>
@@ -3799,9 +3831,10 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>32IN1 &#185;</td><td>64-128K Multicart (32 games) </td><td>.32N, .32N1 </td></tr>
         <tr><td>64IN1 &#185;</td><td>64/128K Multicart </td><td>.64N, .64N1 </td></tr>
         <tr><td>128IN1 &#185;</td><td>256/512K Multicart </td><td>.128, .128N1 </td></tr>
-        <tr><td>2K </td><td>32-2048 byte Atari </td><td>.2K </td></tr>
-        <tr><td>3E </td><td>32K Tigervision </td><td>.3E </td></tr>
-        <tr><td>3E+ </td><td>3E+ (TJ modified DASH) </td><td>.3EP, .3E+ </td></tr>
+        <tr><td>2K </td><td>32-2048 bytes Atari </td><td>.2K </td></tr>
+        <tr><td>3E </td><td>512K Tigervision + 32K RAM</td><td>.3E </td></tr>
+        <tr><td>3EX </td><td>512K Tigervision + 256K RAM</td><td>.3EX </td></tr>
+        <tr><td>3E+ </td><td>3E+ (TJ modified 3E) </td><td>.3EP, .3E+ </td></tr>
         <tr><td>3F </td><td>512K Tigervision </td><td>.3F </td></tr>
         <tr><td>4A50 &#178;</td><td>64K 4A50 + RAM </td><td>.4A5, .4A50 </td></tr>
         <tr><td>4K </td><td>4K Atari </td><td>.4K </td></tr>
@@ -3813,9 +3846,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>CDF </td><td>Chris, Darrell, Fred (includes CDFJ)</td><td>.CDF </td></tr>
         <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td><td>.CM </td></tr>
         <tr><td>CTY &#178;</td><td>CDW - Chetiry </td><td>.CTY </td></tr>
-        <tr><td>CV </td><td>Commavid extra RAM </td><td>.CV </td></tr>
-        <tr><td>CV+ </td><td>Extended Commavid extra RAM</td><td>.CVP </td></tr>
-        <tr><td>DASH </td><td>Boulder Dash 2 </td><td>.DAS, .DASH </td></tr>
+        <tr><td>CV </td><td>CommaVid extra RAM </td><td>.CV </td></tr>
         <tr><td>DF </td><td>CPUWIZ 128K </td><td>.DF </td></tr>
         <tr><td>DFSC </td><td>CPUWIZ 128K + RAM</td><td>.DFS, .DFSC </td></tr>
         <tr><td>DPC </td><td>Pitfall II </td><td>.DPC </td></tr>
@@ -3837,7 +3868,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>FC </td><td>Amiga Power Play Aracde 16/32K </td><td>.FC </td></tr>
         <tr><td>FE </td><td>8K Decathlon </td><td>.FE </td></tr>
         <tr><td>MDM </td><td>Menu Driven Megacart </td><td>.MDM </td></tr>
-        <tr><td>SB </td><td>128-256k SUPERbanking </td><td>.SB </td></tr>
+        <tr><td>SB </td><td>128-256K SUPERbanking </td><td>.SB </td></tr>
         <tr><td>UA </td><td>8K UA Ltd. </td><td>.UA </td></tr>
         <tr><td>UASW </td><td>8K UA Ltd. (swapped banks)</td><td>.UASW </td></tr>
         <tr><td>WD </td><td>Wickstead Design (Pink Panther) </td><td>.WD </td></tr>
@@ -3897,11 +3928,15 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
   </table>
+  </br>
 <!--
   <p><b>Note:</b> Items marked as '*' are deprecated, and will probably be
   removed in a future release.</p>
 -->
-  <a><img src="graphics/options_gameinfo_console.png"></a>
+  <p>
+    <a><img src="graphics/options_gameinfo_console.png"></a>
+  </p>
+
   <table CELLSPACING="10">
     <tr>
       <td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
@@ -3921,8 +3956,11 @@ Ms Pac-Man (Stella extended codes):
       right player. The value must be <b>A</b> or <b>B</b>.</td>
     </tr>
   </table>
+  </br>
 
-  <a name="Controller"><img src="graphics/options_gameinfo_controller.png"></a>
+  <p>
+    <a name="Controller"><img src="graphics/options_gameinfo_controller.png"></a>
+  </p>
   <table CELLSPACING="10">
     <tr>
       <td VALIGN="TOP"><i>Controller.Left:</i><br><i>Controller.Right:</i></td>
@@ -3997,8 +4035,11 @@ Ms Pac-Man (Stella extended codes):
         how to use the X/Y axis (ie, 02 is paddle0/paddle2).
 -->
   </table>
+  </br>
 
-  <a><img src="graphics/options_gameinfo_cartridge.png"></a>
+  <p>
+    <a><img src="graphics/options_gameinfo_cartridge.png"></a>
+  </p>
   <table CELLSPACING="10">
     <tr>
       <td VALIGN="TOP"><i>Cartridge.Name:</i></td>

@@ -54,7 +54,7 @@ OptionsDialog::OptionsDialog(OSystem& osystem, DialogContainer& parent,
 {
   // do not show basic settings options in debugger
   bool minSettings = osystem.settings().getBool("minimal_ui") && mode != Menu::AppMode::debugger;
-  const int lineHeight = _font.getLineHeight(),
+  const int
     fontWidth    = _font.getMaxCharWidth(),
     fontHeight   = _font.getFontHeight(),
     buttonHeight = _font.getLineHeight() * 1.25,

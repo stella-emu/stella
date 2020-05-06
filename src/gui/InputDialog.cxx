@@ -54,7 +54,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
 
   // Set real dimensions
   setSize(50 * fontWidth + HBORDER * 2,
-          _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + VGAP * 7 + buttonHeight + VBORDER * 3,
+          _th + VGAP * 3 + lineHeight + 13 * (lineHeight + VGAP) + VGAP * 8 + buttonHeight + VBORDER * 3,
           max_w, max_h);
 
   // The tab widget
@@ -68,7 +68,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   tabID = myTab->addTab(" Emul. Events ", TabWidget::AUTO_WIDTH);
   myEmulEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
                                              myTab->getWidth(),
-                                             myTab->getHeight() - 4,
+                                             myTab->getHeight() - VGAP,
                                              EventMode::kEmulationMode);
   myTab->setParentWidget(tabID, myEmulEventMapper);
   addToFocusList(myEmulEventMapper->getFocusList(), myTab, tabID);
@@ -77,7 +77,7 @@ InputDialog::InputDialog(OSystem& osystem, DialogContainer& parent,
   tabID = myTab->addTab(" UI Events ", TabWidget::AUTO_WIDTH);
   myMenuEventMapper = new EventMappingWidget(myTab, _font, 2, 2,
                                              myTab->getWidth(),
-                                             myTab->getHeight() - 4,
+                                             myTab->getHeight() - VGAP,
                                              EventMode::kMenuMode);
   myTab->setParentWidget(tabID, myMenuEventMapper);
   addToFocusList(myMenuEventMapper->getFocusList(), myTab, tabID);
@@ -108,7 +108,8 @@ void InputDialog::addDevicePortTab()
 {
   const int lineHeight = _font.getLineHeight(),
             fontWidth  = _font.getMaxCharWidth(),
-            fontHeight = _font.getFontHeight();
+            fontHeight = _font.getFontHeight(),
+            buttonHeight = _font.getLineHeight() * 1.25;
   const int VGAP = fontHeight / 4;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
@@ -213,26 +214,26 @@ void InputDialog::addDevicePortTab()
   // Add EEPROM erase (part 1/2)
   ypos += VGAP * 3;
   fwidth = _font.getStringWidth("AtariVox/SaveKey");
-  lwidth = _font.getStringWidth("AtariVox/SaveKey");
-  new StaticTextWidget(myTab, _font, _w - HBORDER - 4 - (fwidth + lwidth) / 2, ypos,
+  new StaticTextWidget(myTab, _font, _w - HBORDER - 2 - fwidth, ypos,
                        "AtariVox/SaveKey");
 
   // Show joystick database
   ypos += lineHeight;
-  myJoyDlgButton = new ButtonWidget(myTab, _font, HBORDER, ypos, 20,
+  lwidth = _font.getStringWidth("Joystick Database" + ELLIPSIS) + fontWidth * 2.5;
+  myJoyDlgButton = new ButtonWidget(myTab, _font, HBORDER, ypos, lwidth, buttonHeight,
                                     "Joystick Database" + ELLIPSIS, kDBButtonPressed);
   wid.push_back(myJoyDlgButton);
 
   // Add EEPROM erase (part 1/2)
-  myEraseEEPROMButton = new ButtonWidget(myTab, _font, _w - HBORDER - 4 - fwidth, ypos,
-                                         fwidth, lineHeight+4,
+  myEraseEEPROMButton = new ButtonWidget(myTab, _font, _w - HBORDER - 2 - fwidth, ypos,
+                                         fwidth, buttonHeight,
                                         "Erase EEPROM", kEEButtonPressed);
   wid.push_back(myEraseEEPROMButton);
 
   // Add AtariVox serial port
   ypos += lineHeight + VGAP * 2;
   lwidth = _font.getStringWidth("AVox serial port ");
-  fwidth = _w - HBORDER * 2 - 4 - lwidth;
+  fwidth = _w - HBORDER * 2 - 2 - lwidth;
   new StaticTextWidget(myTab, _font, HBORDER, ypos + 2, "AVox serial port ");
   myAVoxPort = new EditTextWidget(myTab, _font, HBORDER + lwidth, ypos,
                                   fwidth, fontHeight);

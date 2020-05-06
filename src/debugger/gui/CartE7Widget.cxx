@@ -26,17 +26,18 @@ CartridgeE7Widget::CartridgeE7Widget(
   : CartridgeMNetworkWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
   ostringstream info;
-  info << "E7 cartridge, 8 2K slices ROM + 2 1K RAM\n"
+  info << "E7 cartridge, eight 2K banks ROM + 2K RAM,\n"
+       << "  mapped into three segments\n"
        << "Lower 2K accessible @ $F000 - $F7FF\n"
-       << "  Slice 0 - 6 of ROM (hotspots $FE0 to $FE6)\n"
-       << "  Slice 7 (1K) of RAM (hotspot $FE7)\n"
+       << "  ROM Banks 0 - 6 (hotspots $FFE0 to $FFE6)\n"
+       << "  1K RAM Bank 7 (hotspot $FFE7)\n"
        << "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
        << "256B RAM accessible @ $F800 - $F9FF\n"
-       << "  Hotspots $FE8 - $FEB (256B of RAM slice 1)\n"
+       << "  RAM banks 0 - 3 (hotspots $FFE8 - $FFEB)\n"
        << "    $F900 - $F9FF (R), $F800 - $F8FF (W)\n"
        << "Upper 1.5K ROM accessible @ $FA00 - $FFFF\n"
        << "  Always points to last 1.5K of ROM\n"
-       << "Startup slices = 0 / 0 or undetermined\n";
+       << "Startup segments = 0 / 0 or undetermined\n";
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler
@@ -52,8 +53,8 @@ CartridgeE7Widget::CartridgeE7Widget(
 const char* CartridgeE7Widget::getSpotLower(int idx)
 {
   static constexpr std::array<const char*, 8> spot_lower = {
-    "0 - ROM ($FFE0)", "1 - ROM ($FFE1)", "2 - ROM ($FFE2)", "3 - ROM ($FFE3)",
-    "4 - ROM ($FFE4)", "5 - ROM ($FFE5)", "6 - ROM ($FFE6)", "7 - RAM ($FFE7)"
+    "#0 - ROM ($FFE0)", "#1 - ROM ($FFE1)", "#2 - ROM ($FFE2)", "#3 - ROM ($FFE3)",
+    "#4 - ROM ($FFE4)", "#5 - ROM ($FFE5)", "#6 - ROM ($FFE6)", "#7 - RAM ($FFE7)"
   };
 
   return spot_lower[idx];
@@ -63,7 +64,7 @@ const char* CartridgeE7Widget::getSpotLower(int idx)
 const char* CartridgeE7Widget::getSpotUpper(int idx)
 {
   static constexpr std::array<const char*, 4> spot_upper = {
-    "0 - RAM ($FFE8)", "1 - RAM ($FFE9)", "2 - RAM ($FFEA)", "3 - RAM ($FFEB)"
+    "#0 - RAM ($FFE8)", "#1 - RAM ($FFE9)", "#2 - RAM ($FFEA)", "#3 - RAM ($FFEB)"
   };
 
   return spot_upper[idx];

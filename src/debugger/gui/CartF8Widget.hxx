@@ -21,9 +21,9 @@
 class CartridgeF8;
 class PopUpWidget;
 
-#include "CartDebugWidget.hxx"
+#include "CartEnhancedWidget.hxx"
 
-class CartridgeF8Widget : public CartDebugWidget
+class CartridgeF8Widget : public CartridgeEnhancedWidget
 {
   public:
     CartridgeF8Widget(GuiObject* boss, const GUI::Font& lfont,
@@ -33,17 +33,11 @@ class CartridgeF8Widget : public CartDebugWidget
     virtual ~CartridgeF8Widget() = default;
 
   private:
-    CartridgeF8& myCart;
-    PopUpWidget* myBank{nullptr};
+    string manufacturer() override { return "Atari"; }
 
-    enum { kBankChanged = 'bkCH' };
+    string description() override;
 
   private:
-    void loadConfig() override;
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
-
-    string bankState() override;
-
     // Following constructors and assignment operators not supported
     CartridgeF8Widget() = delete;
     CartridgeF8Widget(const CartridgeF8Widget&) = delete;

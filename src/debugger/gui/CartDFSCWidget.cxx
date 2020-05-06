@@ -15,185 +15,25 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "Debugger.hxx"
-#include "CartDebug.hxx"
 #include "CartDFSC.hxx"
-#include "PopUpWidget.hxx"
 #include "CartDFSCWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDFSCWidget::CartridgeDFSCWidget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, CartridgeDFSC& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
-  uInt32 size = 32 * 4096;
+  initialize();
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartridgeDFSCWidget::description()
+{
   ostringstream info;
-  info << "128K DFSC + RAM, 32 4K banks\n"
-       << "128 bytes RAM @ $F000 - $F0FF\n"
-       << "  $F080 - $F0FF (R), $F000 - $F07F (W)\n"
-       << "Startup bank = " << cart.startBank() << "\n";
 
-  // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFC0; i < 32; ++i, offset += 0x1000)
-  {
-    uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
-    start -= start % 0x1000;
-    info << "Bank " << std::dec << i << " @ $" << Common::Base::HEX4 << (start + 0x100)
-         << " - " << "$" << (start + 0xFFF) << " (hotspot = $F" << (spot+i) << ")\n";
-  }
+  info << "128K DFSC + RAM, 32 4K banks\n";
+  info << CartridgeEnhancedWidget::description();
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "CPUWIZ", info.str()) + myLineHeight;
-
-  VariantList items;
-  VarList::push_back(items, " 0 ($FFC0)");
-  VarList::push_back(items, " 1 ($FFC1)");
-  VarList::push_back(items, " 2 ($FFC2)");
-  VarList::push_back(items, " 3 ($FFC3)");
-  VarList::push_back(items, " 4 ($FFC4)");
-  VarList::push_back(items, " 5 ($FFC5)");
-  VarList::push_back(items, " 6 ($FFC6)");
-  VarList::push_back(items, " 7 ($FFC7)");
-  VarList::push_back(items, " 8 ($FFC8)");
-  VarList::push_back(items, " 9 ($FFC9)");
-  VarList::push_back(items, "10 ($FFCA)");
-  VarList::push_back(items, "11 ($FFCB)");
-  VarList::push_back(items, "12 ($FFCC)");
-  VarList::push_back(items, "13 ($FFCD)");
-  VarList::push_back(items, "14 ($FFCE)");
-  VarList::push_back(items, "15 ($FFCF)");
-  VarList::push_back(items, "16 ($FFD0)");
-  VarList::push_back(items, "17 ($FFD1)");
-  VarList::push_back(items, "18 ($FFD2)");
-  VarList::push_back(items, "19 ($FFD3)");
-  VarList::push_back(items, "20 ($FFD4)");
-  VarList::push_back(items, "21 ($FFD5)");
-  VarList::push_back(items, "22 ($FFD6)");
-  VarList::push_back(items, "23 ($FFD7)");
-  VarList::push_back(items, "24 ($FFD8)");
-  VarList::push_back(items, "25 ($FFD9)");
-  VarList::push_back(items, "26 ($FFDA)");
-  VarList::push_back(items, "27 ($FFDB)");
-  VarList::push_back(items, "28 ($FFDC)");
-  VarList::push_back(items, "29 ($FFDD)");
-  VarList::push_back(items, "30 ($FFDE)");
-  VarList::push_back(items, "31 ($FFDF)");
-
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("31 ($FFE0)"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
-  myBank->setTarget(this);
-  addFocusWidget(myBank);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDFSCWidget::saveOldState()
-{
-  myOldState.internalram.clear();
-
-  for(uInt32 i = 0; i < internalRamSize(); ++i)
-    myOldState.internalram.push_back(myCart.myRAM[i]);
-
-  myOldState.bank = myCart.getBank();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDFSCWidget::loadConfig()
-{
-  myBank->setSelectedIndex(myCart.getBank(), myCart.getBank() != myOldState.bank);
-
-  CartDebugWidget::loadConfig();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDFSCWidget::handleCommand(CommandSender* sender,
-                                      int cmd, int data, int id)
-{
-  if(cmd == kBankChanged)
-  {
-    myCart.unlockBank();
-    myCart.bank(myBank->getSelected());
-    myCart.lockBank();
-    invalidate();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeDFSCWidget::bankState()
-{
-  ostringstream& buf = buffer();
-
-  static constexpr std::array<const char*, 32> spot = {
-    "$FFC0", "$FFC1", "$FFC2", "$FFC3", "$FFC4", "$FFC5", "$FFC6", "$FFC7",
-    "$FFC8", "$FFC9", "$FFCA", "$FFCB", "$FFCC", "$FFCD", "$FFCE", "$FFCF",
-    "$FFD0", "$FFD1", "$FFD2", "$FFD3", "$FFD4", "$FFD5", "$FFD6", "$FFE7",
-    "$FFD8", "$FFD9", "$FFDA", "$FFDB", "$FFDC", "$FFDD", "$FFDE", "$FFDF"
-  };
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << spot[myCart.getBank()];
-
-  return buf.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeDFSCWidget::internalRamSize()
-{
-  return 128;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 CartridgeDFSCWidget::internalRamRPort(int start)
-{
-  return 0xF080 + start;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeDFSCWidget::internalRamDescription()
-{
-  ostringstream desc;
-  desc << "$F000 - $F07F used for Write Access\n"
-       << "$F080 - $F0FF used for Read Access";
-
-  return desc.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeDFSCWidget::internalRamOld(int start, int count)
-{
-  myRamOld.clear();
-  for(int i = 0; i < count; i++)
-    myRamOld.push_back(myOldState.internalram[start + i]);
-  return myRamOld;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const ByteArray& CartridgeDFSCWidget::internalRamCurrent(int start, int count)
-{
-  myRamCurrent.clear();
-  for(int i = 0; i < count; i++)
-    myRamCurrent.push_back(myCart.myRAM[start + i]);
-  return myRamCurrent;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDFSCWidget::internalRamSetValue(int addr, uInt8 value)
-{
-  myCart.myRAM[addr] = value;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeDFSCWidget::internalRamGetValue(int addr)
-{
-  return myCart.myRAM[addr];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartridgeDFSCWidget::internalRamLabel(int addr)
-{
-  CartDebug& dbg = instance().debugger().cartDebug();
-  return dbg.getLabel(addr + 0xF080, false);
+  return info.str();
 }

@@ -16,80 +16,25 @@
 //============================================================================
 
 #include "Cart0840.hxx"
-#include "PopUpWidget.hxx"
 #include "Cart0840Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge0840Widget::Cartridge0840Widget(
       GuiObject* boss, const GUI::Font& lfont, const GUI::Font& nfont,
       int x, int y, int w, int h, Cartridge0840& cart)
-  : CartDebugWidget(boss, lfont, nfont, x, y, w, h),
-    myCart(cart)
+  : CartridgeEnhancedWidget(boss, lfont, nfont, x, y, w, h, cart)
 {
-  uInt16 size = 2 * 4096;
+  myHotspotDelta = 0x40;
+  initialize();
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge0840Widget::description()
+{
   ostringstream info;
-  info << "0840 ECONObanking, two 4K banks\n"
-       << "Startup bank = " << cart.startBank() << "\n";
 
-  // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0x800; i < 2;
-      ++i, offset += 0x1000, spot += 0x40)
-  {
-    uInt16 start = uInt16((cart.myImage[offset+1] << 8) | cart.myImage[offset]);
-    start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << Common::Base::HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << spot << ")\n";
-  }
+  info << "0840 ECONObanking, two 4K banks\n";
+  info << CartridgeEnhancedWidget::description();
 
-  int xpos = 2,
-      ypos = addBaseInformation(size, "Fred X. Quimby", info.str()) + myLineHeight;
-
-  VariantList items;
-  VarList::push_back(items, "0 ($800)");
-  VarList::push_back(items, "1 ($840)");
-  myBank =
-    new PopUpWidget(boss, _font, xpos, ypos-2, _font.getStringWidth("0 ($800)"),
-                    myLineHeight, items, "Set bank     ",
-                    0, kBankChanged);
-  myBank->setTarget(this);
-  addFocusWidget(myBank);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge0840Widget::loadConfig()
-{
-  Debugger& dbg = instance().debugger();
-  CartDebug& cart = dbg.cartDebug();
-  const CartState& state = static_cast<const CartState&>(cart.getState());
-  const CartState& oldstate = static_cast<const CartState&>(cart.getOldState());
-
-  myBank->setSelectedIndex(myCart.getBank(), state.bank != oldstate.bank);
-
-  CartDebugWidget::loadConfig();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge0840Widget::handleCommand(CommandSender* sender,
-                                        int cmd, int data, int id)
-{
-  if(cmd == kBankChanged)
-  {
-    myCart.unlockBank();
-    myCart.bank(myBank->getSelected());
-    myCart.lockBank();
-    invalidate();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Cartridge0840Widget::bankState()
-{
-  ostringstream& buf = buffer();
-
-  static const std::array<string, 2> spot = { "$800", "$840" };
-  buf << "Bank = " << std::dec << myCart.getBank()
-      << ", hotspot = " << spot[myCart.getBank()];
-
-  return buf.str();
+  return info.str();
 }

@@ -163,7 +163,7 @@ uInt16 CartridgeCM::getBank(uInt16) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 CartridgeCM::bankCount() const
+uInt16 CartridgeCM::romBankCount() const
 {
   // We report 4 banks (of ROM), even though RAM can overlap the upper 2K
   // of cart address space at some times

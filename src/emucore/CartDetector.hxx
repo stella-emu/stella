@@ -107,7 +107,14 @@ class CartDetector
     */
     static bool searchForBytes(const uInt8* image, size_t imagesize,
                                const uInt8* signature, uInt32 sigsize,
-                               uInt32 minhits);
+                               uInt32 minhits = 1);
+
+    static bool searchForBytes(const ByteBuffer& image, size_t imagesize,
+                               const uInt8* signature, uInt32 sigsize,
+                               uInt32 minhits = 1)
+    {
+      return searchForBytes(image.get(), imagesize, signature, sigsize, minhits);
+    }
 
     /**
       Returns true if the image is probably a SuperChip (128 bytes RAM)
@@ -129,6 +136,11 @@ class CartDetector
       Returns true if the image is probably a 3E bankswitching cartridge
     */
     static bool isProbably3E(const ByteBuffer& image, size_t size);
+
+    /**
+    Returns true if the image is probably a 3EX bankswitching cartridge
+    */
+    static bool isProbably3EX(const ByteBuffer& image, size_t size);
 
     /**
       Returns true if the image is probably a 3E+ bankswitching cartridge
@@ -174,16 +186,6 @@ class CartDetector
       Returns true if the image is probably a CV bankswitching cartridge
     */
     static bool isProbablyCV(const ByteBuffer& image, size_t size);
-
-    /**
-      Returns true if the image is probably a CV+ bankswitching cartridge
-    */
-    static bool isProbablyCVPlus(const ByteBuffer& image, size_t size);
-
-    /**
-      Returns true if the image is probably a DASH bankswitching cartridge
-    */
-    static bool isProbablyDASH(const ByteBuffer& image, size_t size);
 
     /**
       Returns true if the image is probably a DF/DFSC bankswitching cartridge

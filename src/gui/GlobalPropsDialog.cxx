@@ -39,7 +39,6 @@ GlobalPropsDialog::GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
             buttonHeight = lineHeight * 1.25;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
   const int VGAP = fontHeight / 4;
 
   int xpos, ypos;

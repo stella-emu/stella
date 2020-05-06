@@ -574,7 +574,7 @@ void Console::toggleTurbo()
   initializeAudio();
 
   // update VSync
-  myOSystem.createFrameBuffer();
+  initializeVideo();
 
   ostringstream ss;
   ss << "Turbo mode " << (!enabled ? "enabled" : "disabled");
@@ -651,7 +651,7 @@ FBInitStatus Console::initializeVideo(bool full)
     bool devSettings = myOSystem.settings().getBool("dev.settings");
     const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(PropType::Cart_Name) + "\"";
-    fbstatus = myOSystem.frameBuffer().createDisplay(title,
+    fbstatus = myOSystem.frameBuffer().createDisplay(title, FrameBuffer::BufferType::Emulator,
         TIAConstants::viewableWidth, TIAConstants::viewableHeight, false);
     if(fbstatus != FBInitStatus::Success)
       return fbstatus;
