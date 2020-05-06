@@ -39,7 +39,7 @@ SOURCES_CXX := \
 	$(CORE_DIR)/emucore/Booster.cxx \
 	$(CORE_DIR)/emucore/Cart.cxx \
 	$(CORE_DIR)/emucore/CartDetector.cxx \
-	$(CORE_DIR)/emucore/CartEnhanced.o \
+	$(CORE_DIR)/emucore/CartEnhanced.cxx \
 	$(CORE_DIR)/emucore/Cart0840.cxx \
 	$(CORE_DIR)/emucore/Cart2K.cxx \
 	$(CORE_DIR)/emucore/Cart3E.cxx \
