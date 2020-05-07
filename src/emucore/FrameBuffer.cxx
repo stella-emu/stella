@@ -939,6 +939,8 @@ bool FrameBuffer::changeVidMode(int direction)
   else
     return false;
 
+  saveCurrentWindowPosition();
+
   // Changing the video mode can take some time, during which the last
   // sound played may get 'stuck'
   // So we mute the sound until the operation completes
