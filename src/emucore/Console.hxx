@@ -210,6 +210,11 @@ class Console : public Serializable, public ConsoleIO
     void togglePalette();
 
     /**
+      Generates a custom palette, based on user defined phase shifts.
+    */
+    void generateCustomPalette(int type);
+
+    /**
       Sets the palette according to the given palette name.
 
       @param palette  The palette to switch to.
@@ -282,6 +287,16 @@ class Console : public Serializable, public ConsoleIO
       @param direction +1 indicates increase, -1 indicates decrease.
     */
     void changeScanlineAdjust(int direction);
+
+    /**
+      Change the "phase shift" variable.
+      Note that there are two of these (NTSC and PAL).  The currently
+      active mode will determine which one is used.
+
+      @param direction +1 indicates increase, -1 indicates decrease.
+
+    */
+    void changeColorPhaseShift(int direction);
 
     /**
       Returns the current framerate.
@@ -377,10 +392,22 @@ class Console : public Serializable, public ConsoleIO
     */
     void generateColorLossPalette();
 
+    int getPaletteNum(const string& name) const;
+
+
     void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
     void toggleTIACollision(TIABit bit, const string& bitname, bool show = true) const;
 
   private:
+
+    enum PaletteType {
+      Standard,
+      Z26,
+      User,
+      Custom,
+      NumTypes
+    };
+
     // Reference to the osystem object
     OSystem& myOSystem;
 
@@ -461,6 +488,10 @@ class Console : public Serializable, public ConsoleIO
     static PaletteArray ourUserNTSCPalette;
     static PaletteArray ourUserPALPalette;
     static PaletteArray ourUserSECAMPalette;
+
+    // Table of RGB values for NTSC, PAL - custom-defined
+    static PaletteArray ourCustomNTSCPalette;
+    static PaletteArray ourCustomPALPalette;
 
   private:
     // Following constructors and assignment operators not supported

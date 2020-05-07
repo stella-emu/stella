@@ -46,6 +46,8 @@ Settings::Settings()
   setPermanent("windowedpos", Common::Point(50, 50));
   setPermanent("display", 0);
   setPermanent("palette", "standard");
+  setPermanent("phase_ntsc", "26.2");
+  setPermanent("phase_pal", "31.3");
   setPermanent("uimessages", "true");
 
   // TIA specific options
@@ -356,7 +358,7 @@ void Settings::validate()
   else if(i > 10)  setValue("ssinterval", "10");
 
   s = getString("palette");
-  if(s != "standard" && s != "z26" && s != "user")
+  if(s != "standard" && s != "z26" && s != "user" && s != "custom")
     setValue("palette", "standard");
 
   s = getString("launcherfont");
@@ -403,8 +405,10 @@ void Settings::usage() const
     << "  -windowedpos  <XxY>          Sets the window position in windowed emulator mode\n"
     << "  -display      <number>       Sets the display for Stella's emulator\n"
     << "  -palette      <standard|     Use the specified color palette\n"
-    << "                 z26|\n"
-    << "                 user>\n"
+    << "                 z26|user|\n"
+    << "                 custom>\n"
+    << "  -phase_ntsc   <number>       Phase shift for NTSC custom color palette\n"
+    << "  -phase_pal    <number>       Phase shift for PAL custom color palette\n"
     << "  -speed        <number>       Run emulation at the given speed\n"
     << "  -turbo        <1|0>          Enable 'Turbo' mode for maximum emulation speed\n"
     << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"

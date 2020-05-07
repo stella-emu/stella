@@ -264,8 +264,9 @@ void DeveloperDialog::addTiaTab(const GUI::Font& font)
   wid.push_back(myPFColorWidget);
   ypos += lineHeight + VGAP * 1;
 
-  mySwapLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1,
-                                     "Delayed VDEL" + ELLIPSIS + " swap for");
+  ostringstream ss;
+  ss << "Delayed VDEL" << ELLIPSIS << " swap for";
+  mySwapLabel = new StaticTextWidget(myTab, font, HBORDER + INDENT * 2, ypos + 1, ss.str());
   wid.push_back(mySwapLabel);
   ypos += lineHeight + VGAP * 1;
 

@@ -121,6 +121,7 @@ class Event
 
       // add new events from here to avoid that user remapped events get overwritten
       ToggleTurbo,
+      ColorShiftDecrease, ColorShiftIncrease,
 
       LastType
     };

@@ -492,6 +492,8 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ScanlinesIncrease,        KBDK_0, MOD3},
   {Event::ToggleColorLoss,          KBDK_L, KBDM_CTRL},
   {Event::TogglePalette,            KBDK_P, KBDM_CTRL},
+  {Event::ColorShiftDecrease,       KBDK_9, KBDM_SHIFT | KBDM_CTRL},
+  {Event::ColorShiftIncrease,       KBDK_9, KBDM_CTRL},
   {Event::ToggleInter,              KBDK_I, KBDM_CTRL},
   {Event::ToggleTurbo,              KBDK_T, KBDM_CTRL},
   {Event::ToggleJitter,             KBDK_J, MOD3},

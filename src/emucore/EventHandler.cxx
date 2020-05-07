@@ -435,6 +435,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed) myOSystem.console().changeScanlineAdjust(+1);
       return;
 
+    case Event::ColorShiftDecrease:
+      if (pressed) myOSystem.console().changeColorPhaseShift(-1);
+      return;
+
+    case Event::ColorShiftIncrease:
+      if (pressed) myOSystem.console().changeColorPhaseShift(+1);
+      return;
+
     case Event::ToggleFullScreen:
       if (pressed && !repeated) myOSystem.frameBuffer().toggleFullscreen();
       return;
@@ -1915,15 +1923,16 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::OverscanIncrease,        "Increase overscan in fullscreen mode",  "" },
   { Event::VidmodeDecrease,         "Previous zoom level",                   "" },
   { Event::VidmodeIncrease,         "Next zoom level",                       "" },
-  { Event::ScanlineAdjustIncrease,  "Increase vertical display size",        "" },
   { Event::ScanlineAdjustDecrease,  "Decrease vertical display size",        "" },
+  { Event::ScanlineAdjustIncrease,  "Increase vertical display size",        "" },
   { Event::VCenterDecrease,         "Move display up",                       "" },
   { Event::VCenterIncrease,         "Move display down",                     "" },
   { Event::FormatDecrease,          "Decrease display format",               "" },
   { Event::FormatIncrease,          "Increase display format",               "" },
-  { Event::TogglePalette,           "Switch palette (Standard/Z26/User)",    "" },
+  { Event::TogglePalette,           "Switch palette (Std./Z26/User/Cust.)",  "" },
+  { Event::ColorShiftDecrease,      "Decrease custom palette phase shift",   "" },
+  { Event::ColorShiftIncrease,      "Increase custom palette phase shift",   "" },
   { Event::ToggleInter,             "Toggle display interpolation",          "" },
-
   // TV effects:
   { Event::VidmodeStd,              "Disable TV effects",                    "" },
   { Event::VidmodeRGB,              "Select 'RGB' preset",                   "" },
@@ -2049,7 +2058,8 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::VCenterDecrease, Event::VCenterIncrease,
   Event::ScanlineAdjustDecrease, Event::ScanlineAdjustIncrease,
   Event::OverscanDecrease, Event::OverscanIncrease,
-  Event::TogglePalette, Event::ToggleInter
+  Event::TogglePalette, Event::ColorShiftDecrease, Event::ColorShiftIncrease,
+  Event::ToggleInter
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
