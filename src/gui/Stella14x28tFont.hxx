@@ -42,7 +42,72 @@ namespace GUI {
 // Font character bitmap data.
 static const uInt16 stella14x28t_font_bits[] = {  // NOLINT : too complicated to convert
 
-/* Character 32 (0x20):
+/* Character 28 (0x1c):
+   width 14
+   bbx ( 14, 28, 0, -6 )
+
+   +--------------+
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   |              |
+   +--------------+
+*/
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0b0000011110000000,
+0b0000111111000000,
+0b0001110011100000,
+0b0001100001100000,
+0b0001100001100000,
+0b0001110011100000,
+0b0000111111000000,
+0b0000011110000000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+
+
+/* Character 29 (0x1d):
    width 14
    bbx ( 14, 28, 0, -6 )
 
@@ -6322,8 +6387,8 @@ static const FontDesc stella14x28tDesc = {
   28,
   14, 28, 0, -6,
   22,
-  29,
-  98,
+  28,
+  99,
   stella14x28t_font_bits,
   nullptr,  /* no encode table*/
   nullptr,  /* fixed width*/

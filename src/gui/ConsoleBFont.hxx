@@ -42,6 +42,41 @@ namespace GUI {
 // Font character bitmap data.
 static const uInt16 consoleB_font_bits[] = {  // NOLINT : too complicated to convert
 
+  /* MODIFIED
+  Character 28 (0x1c):
+  width 8
+  bbx ( 8, 13, 0, -2 )
+
+  +--------+
+  |        |
+  |  XXXX  |
+  | XX  XX |
+  | XX  XX |
+  | XX  XX |
+  |  XXXX  |
+  |        |
+  |        |
+  |        |
+  |        |
+  |        |
+  |        |
+  |        |
+  +--------+
+  */
+  0x0000,
+  0b0011110000000000,
+  0b0110011000000000,
+  0b0110011000000000,
+  0b0110011000000000,
+  0b0011110000000000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+
 
   /* MODIFIED
   Character 29 (0x1d):
@@ -3386,8 +3421,8 @@ static const FontDesc consoleBDesc = {
   13,
   8, 13, 0, -2,
   11,
-  29,
-  98,
+  28,
+  99,
   consoleB_font_bits,
   nullptr,  /* no encode table*/
   nullptr,  /* fixed width*/

@@ -43,6 +43,45 @@ namespace GUI {
 static const uInt16 consoleMediumB_font_bits[] = {  // NOLINT : too complicated to convert
 
   /* MODIFIED
+  Character 28 (0x1c): ellipsis
+  width 9
+  bbx ( 9, 15, 0, -3 )
+
+  +---------+
+  |         |
+  |         |
+  |  XXXX   |
+  | XX  XX  |
+  | XX  XX  |
+  | XX  XX  |
+  |  XXXX   |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  |         |
+  +---------+
+  */
+  0x0000,
+  0x0000,
+  0b0011110000000000,
+  0b0110011000000000,
+  0b0110011000000000,
+  0b0110011000000000,
+  0b0011110000000000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+  0x0000,
+
+  /* MODIFIED
   Character 29 (0x1d): ellipsis
   width 9
   bbx ( 9, 15, 0, -3 )
@@ -3777,8 +3816,8 @@ static const FontDesc consoleMediumBDesc = {
   15,
   9, 15, 0, -3,
   12,
-  29,
-  98,
+  28,
+  99,
   consoleMediumB_font_bits,
   nullptr,  /* no encode table*/
   nullptr,  /* fixed width*/
