@@ -62,7 +62,6 @@
 #include "AudioSettings.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "frame-manager/FrameLayoutDetector.hxx"
-#include "GuiObject.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
