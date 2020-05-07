@@ -514,19 +514,14 @@ void Console::togglePalette()
     }
     else
     {
-      palette = "standard";
-      message = "Standard Stella palette";
+      palette = "custom";
+      message = "Custom palette";
     }
   }
   else if(palette == "user")  // switch to custom
   {
     palette = "custom";
     message = "Custom palette";
-  }
-  else if(palette == "custom")  // switch to standard
-  {
-    palette = "standard";
-    message = "Standard Stella palette";
   }
   else  // switch to standard mode if we get this far
   {
