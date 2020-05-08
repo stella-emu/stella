@@ -1120,45 +1120,46 @@ void Console::loadUserPalette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::generateCustomPalette(int type)
 {
-  const int NUM_CHROMA = 16;
-  const int NUM_LUMA = 8;
-  const double SATURATION = 0.25;
+  constexpr int NUM_CHROMA = 16;
+  constexpr int NUM_LUMA = 8;
+  constexpr float SATURATION = 0.25F;
 
-  double color[NUM_CHROMA][2] = {{0.0}};
+  float color[NUM_CHROMA][2] = {{0.0F}};
 
   if(type == 0)
   {
     // YIQ is YUV shifted by 33°
-    const double offset = 33 * (2 * M_PI / 360);
-    const double shift = myOSystem.settings().getFloat("phase_ntsc") * (2 * M_PI / 360);
+    constexpr float offset = 33 * (2 * BSPF::PI_f / 360);
+    const float shift = myOSystem.settings().getFloat("phase_ntsc") *
+                        (2 * BSPF::PI_f / 360);
 
     // color 0 is grayscale
     for(int chroma = 1; chroma < NUM_CHROMA; chroma++)
     {
       color[chroma][0] = SATURATION * sin(offset + shift * (chroma - 1));
-      color[chroma][1] = SATURATION * sin(offset + shift * (chroma - 1 - M_PI));
+      color[chroma][1] = SATURATION * sin(offset + shift * (chroma - 1 - BSPF::PI_f));
     }
 
     for(int chroma = 0; chroma < NUM_CHROMA; chroma++)
     {
-      const double I = color[chroma][0];
-      const double Q = color[chroma][1];
+      const float I = color[chroma][0];
+      const float Q = color[chroma][1];
 
       for(int luma = 0; luma < NUM_LUMA; luma++)
       {
-        const double Y = 0.05 + luma / 8.24; // 0.05..~0.90
+        const float Y = 0.05F + luma / 8.24F; // 0.05..~0.90
 
-        double R = Y + 0.956 * I + 0.621 * Q;
-        double G = Y - 0.272 * I - 0.647 * Q;
-        double B = Y - 1.106 * I + 1.703 * Q;
+        float R = Y + 0.956F * I + 0.621F * Q;
+        float G = Y - 0.272F * I - 0.647F * Q;
+        float B = Y - 1.106F * I + 1.703F * Q;
 
         if(R < 0) R = 0;
         if(G < 0) G = 0;
         if(B < 0) B = 0;
 
-        R = pow(R, 0.9);
-        G = pow(G, 0.9);
-        B = pow(B, 0.9);
+        R = powf(R, 0.9F);
+        G = powf(G, 0.9F);
+        B = powf(B, 0.9F);
 
         if(R > 1) R = 1;
         if(G > 1) G = 1;
@@ -1174,47 +1175,48 @@ void Console::generateCustomPalette(int type)
   }
   else
   {
-    const double offset = 180 * (2 * M_PI / 360);
-    const double shift = myOSystem.settings().getFloat("phase_pal") * (2 * M_PI / 360);
-    const double fixedShift = 22.5 * (2 * M_PI / 360);
+    constexpr float offset = 180 * (2 * BSPF::PI_f / 360);
+    float shift = myOSystem.settings().getFloat("phase_pal") *
+                        (2 * BSPF::PI_f / 360);
+    constexpr float fixedShift = 22.5F * (2 * BSPF::PI_f / 360);
 
     // colors 0, 1, 14 and 15 are grayscale
     for(int chroma = 2; chroma < NUM_CHROMA - 2; chroma++)
     {
       int idx = NUM_CHROMA - 1 - chroma;
-      color[idx][0] = SATURATION * sin(offset - fixedShift * chroma);
+      color[idx][0] = SATURATION * sinf(offset - fixedShift * chroma);
       if ((idx & 1) == 0)
-        color[idx][1] = SATURATION * sin(offset - shift * (chroma - 3.5) / 2.F);
+        color[idx][1] = SATURATION * sinf(offset - shift * (chroma - 3.5F) / 2.F);
       else
-        color[idx][1] = SATURATION * -sin(offset - shift * chroma / 2.F);
+        color[idx][1] = SATURATION * -sinf(offset - shift * chroma / 2.F);
     }
 
     for(int chroma = 0; chroma < NUM_CHROMA; chroma++)
     {
-      const double U = color[chroma][0];
-      const double V = color[chroma][1];
+      const float U = color[chroma][0];
+      const float V = color[chroma][1];
 
       for(int luma = 0; luma < NUM_LUMA; luma++)
       {
-        const double Y = 0.05 + luma / 8.24; // 0.05..~0.90
+        const float Y = 0.05F + luma / 8.24F; // 0.05..~0.90
 
         // Most sources
-        double R = Y + 1.403 * V;
-        double G = Y - 0.344 * U - 0.714 * V;
-        double B = Y + 1.770 * U;
+        float R = Y + 1.403F * V;
+        float G = Y - 0.344F * U - 0.714F * V;
+        float B = Y + 1.770F * U;
 
         // German Wikipedia, huh???
-        //double B = Y + 1 / 0.493 * U;
-        //double R = Y + 1 / 0.877 * V;
-        //double G = 1.704 * Y - 0.590 * R - 0.194   * B;
+        //float B = Y + 1 / 0.493 * U;
+        //float R = Y + 1 / 0.877 * V;
+        //float G = 1.704 * Y - 0.590 * R - 0.194   * B;
 
         if(R < 0) R = 0.0;
         if(G < 0) G = 0.0;
         if(B < 0) B = 0.0;
 
-        R = pow(R, 1.2);
-        G = pow(G, 1.2);
-        B = pow(B, 1.2);
+        R = powf(R, 1.2);
+        G = powf(G, 1.2);
+        B = powf(B, 1.2);
 
         if(R > 1) R = 1;
         if(G > 1) G = 1;
