@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "Console.hxx"
+#include "PaletteHandler.hxx"
 #include "TIA.hxx"
 #include "Switches.hxx"
 #include "Dialog.hxx"
@@ -203,7 +204,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPaletteCmd:
-      instance().console().togglePalette();
+      instance().console().paletteHandler().changePalette();
       updatePalette();
       break;
 

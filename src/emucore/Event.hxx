@@ -100,7 +100,7 @@ class Event
       Unwind1Menu, Unwind10Menu, UnwindAllMenu,
       RewindPause, UnwindPause,
 
-      FormatDecrease, FormatIncrease, TogglePalette, ToggleColorLoss,
+      FormatDecrease, FormatIncrease, PaletteIncrease, ToggleColorLoss,
       ToggleFullScreen, VidmodeDecrease, VidmodeIncrease,
       VCenterDecrease, VCenterIncrease, ScanlineAdjustDecrease, ScanlineAdjustIncrease,
       OverscanDecrease, OverscanIncrease,
@@ -120,7 +120,7 @@ class Event
       ToggleFrameStats, ToggleSAPortOrder, ExitGame,
 
       // add new events from here to avoid that user remapped events get overwritten
-      ToggleTurbo,
+      ToggleTurbo, PaletteDecrease,
       ColorShiftDecrease, ColorShiftIncrease,
 
       LastType
