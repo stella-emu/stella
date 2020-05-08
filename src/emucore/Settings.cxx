@@ -64,12 +64,12 @@ Settings::Settings()
   setPermanent("tv.phosphor", "byrom");
   setPermanent("tv.phosblend", "50");
   setPermanent("tv.scanlines", "25");
-  // TV options when using 'custom' mode
   setPermanent("tv.contrast", "0.0");
   setPermanent("tv.brightness", "0.0");
   setPermanent("tv.hue", "0.0");
   setPermanent("tv.saturation", "0.0");
   setPermanent("tv.gamma", "0.0");
+  // TV options when using 'custom' mode
   setPermanent("tv.sharpness", "0.0");
   setPermanent("tv.resolution", "0.0");
   setPermanent("tv.artifacts", "0.0");

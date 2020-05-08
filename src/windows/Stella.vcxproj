@@ -503,6 +503,7 @@
     <ClCompile Include="..\common\Logger.cxx" />
     <ClCompile Include="..\common\main.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
+    <ClCompile Include="..\common\PaletteHandler.cxx" />
     <ClCompile Include="..\common\PhosphorHandler.cxx" />
     <ClCompile Include="..\common\PhysicalJoystick.cxx" />
     <ClCompile Include="..\common\PJoystickHandler.cxx" />
@@ -1503,6 +1504,7 @@
     <ClInclude Include="..\common\Logger.hxx" />
     <ClInclude Include="..\common\MediaFactory.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
+    <ClInclude Include="..\common\PaletteHandler.hxx" />
     <ClInclude Include="..\common\PhosphorHandler.hxx" />
     <ClInclude Include="..\common\PhysicalJoystick.hxx" />
     <ClInclude Include="..\common\PJoystickHandler.hxx" />

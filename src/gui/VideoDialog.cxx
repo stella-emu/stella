@@ -25,6 +25,7 @@
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "Console.hxx"
+#include "PaletteHandler.hxx"
 #include "TIA.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
@@ -519,8 +520,8 @@ void VideoDialog::saveConfig()
 
     if(instance().settings().getString("palette") == "custom")
     {
-      instance().console().generateCustomPalette(0);
-      instance().console().generateCustomPalette(1);
+      instance().console().paletteHandler().generateCustomPalette(ConsoleTiming::ntsc);
+      instance().console().paletteHandler().generateCustomPalette(ConsoleTiming::pal);
     }
 
     if(vsizeChanged)

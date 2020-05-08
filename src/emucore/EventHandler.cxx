@@ -22,6 +22,7 @@
 
 #include "Base.hxx"
 #include "Console.hxx"
+#include "PaletteHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FSNode.hxx"
 #include "OSystem.hxx"
@@ -436,11 +437,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::ColorShiftDecrease:
-      if (pressed) myOSystem.console().changeColorPhaseShift(-1);
+      if (pressed) myOSystem.console().paletteHandler().changeColorPhaseShift(false);
       return;
 
     case Event::ColorShiftIncrease:
-      if (pressed) myOSystem.console().changeColorPhaseShift(+1);
+      if (pressed) myOSystem.console().paletteHandler().changeColorPhaseShift();
       return;
 
     case Event::ToggleFullScreen:
@@ -539,8 +540,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed && !repeated) myOSystem.console().toggleColorLoss();
       return;
 
-    case Event::TogglePalette:
-      if (pressed && !repeated) myOSystem.console().togglePalette();
+    case Event::PaletteDecrease:
+      if (pressed && !repeated) myOSystem.console().paletteHandler().changePalette(false);
+      return;
+
+    case Event::PaletteIncrease:
+      if (pressed && !repeated) myOSystem.console().paletteHandler().changePalette();
       return;
 
     case Event::ToggleInter:
@@ -1929,7 +1934,8 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::VCenterIncrease,         "Move display down",                     "" },
   { Event::FormatDecrease,          "Decrease display format",               "" },
   { Event::FormatIncrease,          "Increase display format",               "" },
-  { Event::TogglePalette,           "Switch palette (Std./Z26/User/Cust.)",  "" },
+  { Event::PaletteDecrease,         "Switch to previous palette",            "" },
+  { Event::PaletteIncrease,         "Switch to next palette",                "" },
   { Event::ColorShiftDecrease,      "Decrease custom palette phase shift",   "" },
   { Event::ColorShiftIncrease,      "Increase custom palette phase shift",   "" },
   { Event::ToggleInter,             "Toggle display interpolation",          "" },
@@ -2058,7 +2064,8 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::VCenterDecrease, Event::VCenterIncrease,
   Event::ScanlineAdjustDecrease, Event::ScanlineAdjustIncrease,
   Event::OverscanDecrease, Event::OverscanIncrease,
-  Event::TogglePalette, Event::ColorShiftDecrease, Event::ColorShiftIncrease,
+  Event::PaletteDecrease, Event::PaletteIncrease,
+  Event::ColorShiftDecrease, Event::ColorShiftIncrease,
   Event::ToggleInter
 };
 
