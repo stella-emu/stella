@@ -98,20 +98,22 @@ void PaletteHandler::changePalette(bool increase)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::selectAdjustable(bool next)
 {
-  if(next)
-  {
-    if(myCurrentAdjustable == NUM_ADJUSTABLES - 1)
-      myCurrentAdjustable = 0;
-    else
+  bool isCustomPalette = "custom" == myOSystem.settings().getString("palette");
+
+  do {
+    if(next)
+    {
       myCurrentAdjustable++;
-  }
-  else
-  {
-    if(myCurrentAdjustable == 0)
-      myCurrentAdjustable = NUM_ADJUSTABLES - 1;
+      myCurrentAdjustable %= NUM_ADJUSTABLES;
+    }
     else
-      myCurrentAdjustable--;
-  }
+    {
+      if(myCurrentAdjustable == 0)
+        myCurrentAdjustable = NUM_ADJUSTABLES - 1;
+      else
+        myCurrentAdjustable--;
+    }
+  } while(!isCustomPalette && myAdjustables[myCurrentAdjustable].value == nullptr);
 
   ostringstream buf;
   buf << "Palette adjustable '" << myAdjustables[myCurrentAdjustable].type
@@ -123,8 +125,7 @@ void PaletteHandler::selectAdjustable(bool next)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::changeAdjustable(bool increase)
 {
-
-  if(myCurrentAdjustable == NUM_ADJUSTABLES - 1)
+  if(myAdjustables[myCurrentAdjustable].value == nullptr)
     changeColorPhaseShift(increase);
   else
   {

@@ -96,8 +96,8 @@ class PaletteHandler
       MaxType = Custom
     };
 
-    float scaleFrom100(float x) const { return (x / 100.F) - 1.F; }
-    uInt32 scaleTo100(float x) const { return uInt32(100 * (x + 1.F)); }
+    float scaleFrom100(float x) const { return (x / 50.F) - 1.F; }
+    uInt32 scaleTo100(float x) const { return uInt32(50 * (x + 1.F)); }
 
     PaletteType toPaletteType(const string& name) const;
     string toPaletteName(PaletteType type) const;
@@ -125,12 +125,12 @@ class PaletteHandler
     };
     const std::array<AdjustableTag, NUM_ADJUSTABLES> myAdjustables =
     { {
-      { "contrast", &myContrast },
-      { "brightness", &myBrightness },
+      { "phase shift", nullptr },
       { "hue", &myHue },
       { "saturation", &mySaturation },
+      { "contrast", &myContrast },
+      { "brightness", &myBrightness },
       { "gamma", &myGamma },
-      { "phase shift", nullptr },
     } };
 
     // range -1.0 to +1.0 (as in AtariNTSC)
