@@ -25,6 +25,7 @@ class OSystem;
 class MouseControl;
 class DialogContainer;
 class PhysicalJoystick;
+class Variant;
 
 namespace GUI {
   class Font;
@@ -36,7 +37,6 @@ namespace GUI {
 #include "StellaKeys.hxx"
 #include "PKeyboardHandler.hxx"
 #include "PJoystickHandler.hxx"
-#include "Variant.hxx"
 #include "bspf.hxx"
 
 /**
@@ -468,7 +468,7 @@ class EventHandler
     #else
       PNG_SIZE             = 0,
     #endif
-      EMUL_ACTIONLIST_SIZE = 150 + PNG_SIZE + COMBO_SIZE,
+      EMUL_ACTIONLIST_SIZE = 154 + PNG_SIZE + COMBO_SIZE,
       MENU_ACTIONLIST_SIZE = 18
     ;
 

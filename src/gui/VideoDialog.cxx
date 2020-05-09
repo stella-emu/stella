@@ -367,8 +367,8 @@ void VideoDialog::loadConfig()
     instance().settings().getString("palette"), "standard");
 
   // Custom Palette
-  myPhaseShiftNtsc->setValue(instance().settings().getFloat("phase_ntsc") * 10);
-  myPhaseShiftPal->setValue(instance().settings().getFloat("phase_pal") * 10);
+  myPhaseShiftNtsc->setValue(instance().settings().getFloat("tv.phase_ntsc") * 10);
+  myPhaseShiftPal->setValue(instance().settings().getFloat("tv.phase_pal") * 10);
   handlePaletteChange();
 
   // TIA interpolation
@@ -413,6 +413,15 @@ void VideoDialog::loadConfig()
   int preset = instance().settings().getInt("tv.filter");
   handleTVModeChange(NTSCFilter::Preset(preset));
 
+  // Palette adjustables
+  PaletteHandler::Adjustable paletteAdj;
+  instance().frameBuffer().tiaSurface().paletteHandler().getAdjustables(paletteAdj);
+  myTVHue->setValue(paletteAdj.hue);
+  myTVBright->setValue(paletteAdj.brightness);
+  myTVContrast->setValue(paletteAdj.contrast);
+  myTVSatur->setValue(paletteAdj.saturation);
+  myTVGamma->setValue(paletteAdj.gamma);
+
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
 
@@ -444,8 +453,8 @@ void VideoDialog::saveConfig()
                                  myTIAPalette->getSelectedTag().toString());
 
   // Custom Palette
-  instance().settings().setValue("phase_ntsc", myPhaseShiftNtsc->getValue() / 10.0);
-  instance().settings().setValue("phase_pal", myPhaseShiftPal->getValue() / 10.0);
+  instance().settings().setValue("tv.phase_ntsc", myPhaseShiftNtsc->getValue() / 10.0);
+  instance().settings().setValue("tv.phase_pal", myPhaseShiftPal->getValue() / 10.0);
 
   // TIA interpolation
   instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
@@ -490,19 +499,23 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tv.filter",
                                  myTVMode->getSelectedTag().toString());
 
+  // Palette adjustables
+  PaletteHandler::Adjustable paletteAdj;
+  paletteAdj.hue = myTVHue->getValue();
+  paletteAdj.saturation = myTVSatur->getValue();
+  paletteAdj.contrast = myTVContrast->getValue();
+  paletteAdj.brightness = myTVBright->getValue();
+  paletteAdj.gamma = myTVGamma->getValue();
+  instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(paletteAdj);
+
   // TV Custom adjustables
-  NTSCFilter::Adjustable adj;
-  adj.hue = myTVHue->getValue();
-  adj.saturation = myTVSatur->getValue();
-  adj.contrast = myTVContrast->getValue();
-  adj.brightness = myTVBright->getValue();
-  adj.sharpness = myTVSharp->getValue();
-  adj.gamma = myTVGamma->getValue();
-  adj.resolution = myTVRes->getValue();
-  adj.artifacts = myTVArtifacts->getValue();
-  adj.fringing = myTVFringe->getValue();
-  adj.bleed = myTVBleed->getValue();
-  instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(adj);
+  NTSCFilter::Adjustable ntscAdj;
+  ntscAdj.sharpness = myTVSharp->getValue();
+  ntscAdj.resolution = myTVRes->getValue();
+  ntscAdj.artifacts = myTVArtifacts->getValue();
+  ntscAdj.fringing = myTVFringe->getValue();
+  ntscAdj.bleed = myTVBleed->getValue();
+  instance().frameBuffer().tiaSurface().ntsc().setCustomAdjustables(ntscAdj);
 
   // TV phosphor mode
   instance().settings().setValue("tv.phosphor",
@@ -520,8 +533,8 @@ void VideoDialog::saveConfig()
 
     if(instance().settings().getString("palette") == "custom")
     {
-      instance().console().paletteHandler().generateCustomPalette(ConsoleTiming::ntsc);
-      instance().console().paletteHandler().generateCustomPalette(ConsoleTiming::pal);
+      instance().frameBuffer().tiaSurface().paletteHandler().generateCustomPalette(ConsoleTiming::ntsc);
+      instance().frameBuffer().tiaSurface().paletteHandler().generateCustomPalette(ConsoleTiming::pal);
     }
 
     if(vsizeChanged)
@@ -595,15 +608,10 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
   bool enable = preset == NTSCFilter::Preset::CUSTOM;
 
   myTVSharp->setEnabled(enable);
-  myTVHue->setEnabled(enable);
   myTVRes->setEnabled(enable);
   myTVArtifacts->setEnabled(enable);
   myTVFringe->setEnabled(enable);
   myTVBleed->setEnabled(enable);
-  myTVBright->setEnabled(enable);
-  myTVContrast->setEnabled(enable);
-  myTVSatur->setEnabled(enable);
-  myTVGamma->setEnabled(enable);
   myCloneComposite->setEnabled(enable);
   myCloneSvideo->setEnabled(enable);
   myCloneRGB->setEnabled(enable);
@@ -618,15 +626,10 @@ void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
   instance().frameBuffer().tiaSurface().ntsc().getAdjustables(
       adj, NTSCFilter::Preset(preset));
   myTVSharp->setValue(adj.sharpness);
-  myTVHue->setValue(adj.hue);
   myTVRes->setValue(adj.resolution);
   myTVArtifacts->setValue(adj.artifacts);
   myTVFringe->setValue(adj.fringing);
   myTVBleed->setValue(adj.bleed);
-  myTVBright->setValue(adj.brightness);
-  myTVContrast->setValue(adj.contrast);
-  myTVSatur->setValue(adj.saturation);
-  myTVGamma->setValue(adj.gamma);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -26,10 +26,6 @@ PaletteHandler::PaletteHandler(OSystem& system)
 {
   // Load user-defined palette for this ROM
   loadUserPalette();
-
-  //// Generate custom palette
-  //generateCustomPalette(ConsoleTiming::ntsc);
-  //generateCustomPalette(ConsoleTiming::pal);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,27 +96,118 @@ void PaletteHandler::changePalette(bool increase)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::generatePalettes()
+void PaletteHandler::selectAdjustable(bool next)
 {
-  generateCustomPalette(ConsoleTiming::ntsc);
-  generateCustomPalette(ConsoleTiming::pal);
-  generateColorLossPalette();
+  if(next)
+  {
+    if(myCurrentAdjustable == NUM_ADJUSTABLES - 1)
+      myCurrentAdjustable = 0;
+    else
+      myCurrentAdjustable++;
+  }
+  else
+  {
+    if(myCurrentAdjustable == 0)
+      myCurrentAdjustable = NUM_ADJUSTABLES - 1;
+    else
+      myCurrentAdjustable--;
+  }
+
+  ostringstream buf;
+  buf << "Palette adjustable '" << myAdjustables[myCurrentAdjustable].type
+    << "' selected";
+
+  myOSystem.frameBuffer().showMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::changeAdjustable(bool increase)
+{
+
+  if(myCurrentAdjustable == NUM_ADJUSTABLES - 1)
+    changeColorPhaseShift(increase);
+  else
+  {
+    float newVal = (*myAdjustables[myCurrentAdjustable].value);
+
+    if(increase)
+    {
+      newVal += 0.05F;
+      if(newVal > 1.0F)
+        newVal = 1.0F;
+    }
+    else
+    {
+      newVal -= 0.05F;
+      if(newVal < -1.0F)
+        newVal = -1.0F;
+    }
+    *myAdjustables[myCurrentAdjustable].value = newVal;
+
+    ostringstream buf;
+    buf << "Custom '" << myAdjustables[myCurrentAdjustable].type
+      << "' set to " << int((newVal + 1.0F) * 100.0F + 0.5F) << "%";
+
+    myOSystem.frameBuffer().showMessage(buf.str());
+    setPalette();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::loadConfig(const Settings& settings)
+{
+  // Load adjustables
+  myHue         = BSPF::clamp(settings.getFloat("tv.hue"), -1.0F, 1.0F);
+  mySaturation  = BSPF::clamp(settings.getFloat("tv.saturation"), -1.0F, 1.0F);
+  myContrast    = BSPF::clamp(settings.getFloat("tv.contrast"), -1.0F, 1.0F);
+  myBrightness  = BSPF::clamp(settings.getFloat("tv.brightness"), -1.0F, 1.0F);
+  myGamma       = BSPF::clamp(settings.getFloat("tv.gamma"), -1.0F, 1.0F);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::saveConfig(Settings& settings) const
+{
+  // Save adjustables
+  settings.setValue("tv.hue", myHue);
+  settings.setValue("tv.saturation", mySaturation);
+  settings.setValue("tv.contrast", myContrast);
+  settings.setValue("tv.brightness", myBrightness);
+  settings.setValue("tv.gamma", myGamma);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::setAdjustables(Adjustable& adjustable)
+{
+  myHue         = scaleFrom100(adjustable.hue);
+  mySaturation  = scaleFrom100(adjustable.saturation);
+  myContrast    = scaleFrom100(adjustable.contrast);
+  myBrightness  = scaleFrom100(adjustable.brightness);
+  myGamma       = scaleFrom100(adjustable.gamma);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::getAdjustables(Adjustable& adjustable) const
+{
+  adjustable.hue         = scaleTo100(myHue);
+  adjustable.saturation  = scaleTo100(mySaturation);
+  adjustable.contrast    = scaleTo100(myContrast);
+  adjustable.brightness  = scaleTo100(myBrightness);
+  adjustable.gamma       = scaleTo100(myGamma);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::changeColorPhaseShift(bool increase)
 {
-  const char DEGREE = 0x1c;
-  const float NTSC_SHIFT = 26.2F;
-  const float PAL_SHIFT = 31.3F; // 360 / 11.5
   const ConsoleTiming timing = myOSystem.console().timing();
-  const bool isNTSC = timing == ConsoleTiming::ntsc;
-  const bool isPAL  = timing == ConsoleTiming::pal;
 
   // SECAM is not supported
-  if(isNTSC || isPAL)
+  if(timing != ConsoleTiming::secam)
   {
-    const string key = isNTSC ? "phase_ntsc" : "phase_pal";
+    const char DEGREE = 0x1c;
+    const float NTSC_SHIFT = 26.2F;
+    const float PAL_SHIFT = 31.3F; // 360 / 11.5
+    const bool isNTSC = timing == ConsoleTiming::ntsc;
+    const string key = isNTSC ? "tv.phase_ntsc" : "tv.phase_pal";
     const float shift = isNTSC ? NTSC_SHIFT : PAL_SHIFT;
     float phase = myOSystem.settings().getFloat(key);
 
@@ -175,6 +262,9 @@ void PaletteHandler::setPalette()
   // Now consider the current display format
   const PaletteArray* palette = palettes[paletteType][int(timing)];
 
+  if(paletteType == PaletteType::Custom)
+    generateCustomPalette(timing);
+
   myOSystem.frameBuffer().setTIAPalette(adjustPalette(*palette));
 }
 
@@ -212,15 +302,7 @@ PaletteArray PaletteHandler::adjustPalette(const PaletteArray& palette)
     // TOOD: adjust hue (different for NTSC and PAL?)
 
     // adjust saturation
-    float P = sqrt(r * r * PR + g * g * PG + b * b * PB) ;
-
-    r = P + (r - P) * saturation;
-    g = P + (g - P) * saturation;
-    b = P + (b - P) * saturation;
-
-    r = BSPF::clamp(r, 0, 255);
-    g = BSPF::clamp(g, 0, 255);
-    b = BSPF::clamp(b, 0, 255);
+    changeSaturation(r, g, b, saturation);
 
     // adjust contrast, brightness, gamma
     r = adjust[r];
@@ -235,6 +317,7 @@ PaletteArray PaletteHandler::adjustPalette(const PaletteArray& palette)
 
     // Fill the odd numbered palette entries with gray values (calculated
     // using the standard RGB -> grayscale conversion formula)
+    // Used for PAL color-loss data and 'greying out' the frame in the debugger.
     const uInt8 lum = static_cast<uInt8>((r * PR) + (g * PG) + (b * PB));
 
     destPalette[i + 1] = (lum << 16) + (lum << 8) + lum;
@@ -299,7 +382,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
   {
     // YIQ is YUV shifted by 33°
     constexpr float offset = 33 * (2 * BSPF::PI_f / 360);
-    const float shift = myOSystem.settings().getFloat("phase_ntsc") *
+    const float shift = myOSystem.settings().getFloat("tv.phase_ntsc") *
       (2 * BSPF::PI_f / 360);
 
     // color 0 is grayscale
@@ -342,10 +425,10 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
       }
     }
   }
-  else
+  else if(timing == ConsoleTiming::pal)
   {
     constexpr float offset = 180 * (2 * BSPF::PI_f / 360);
-    float shift = myOSystem.settings().getFloat("phase_pal") *
+    float shift = myOSystem.settings().getFloat("tv.phase_pal") *
       (2 * BSPF::PI_f / 360);
     constexpr float fixedShift = 22.5F * (2 * BSPF::PI_f / 360);
 
@@ -430,63 +513,6 @@ void PaletteHandler::changeSaturation(int& R, int& G, int& B, float change)
   R = BSPF::clamp(R, 0, 255);
   G = BSPF::clamp(G, 0, 255);
   B = BSPF::clamp(B, 0, 255);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::changeSaturation(float& R, float& G, float& B, float change)
-{
-  constexpr float PR = .2989F;
-  constexpr float PG = .5870F;
-  constexpr float PB = .1140F;
-
-  float P = sqrt(R * R * PR + G * G * PG + B * B * PB) ;
-
-  R = P + (R - P) * change;
-  G = P + (G - P) * change;
-  B = P + (B - P) * change;
-
-  if(R < 0) R = 0;
-  if(G < 0) G = 0;
-  if(B < 0) B = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::generateColorLossPalette()
-{
-  // Look at all the palettes, since we don't know which one is
-  // currently active
-  std::array<uInt32*, int(ConsoleTiming::numTimings) * PaletteType::NumTypes> palette = {
-    ourNTSCPalette.data(),       ourPALPalette.data(),       ourSECAMPalette.data(),
-    ourNTSCPaletteZ26.data(),    ourPALPaletteZ26.data(),    ourSECAMPaletteZ26.data(),
-    nullptr, nullptr, nullptr,
-    ourCustomNTSCPalette.data(), ourCustomPALPalette.data(), ourSECAMPalette.data(),
-  };
-
-  if(myUserPaletteDefined)
-  {
-    int idx = PaletteType::User * int(ConsoleTiming::numTimings);
-    palette[idx + int(ConsoleTiming::ntsc)]  = ourUserNTSCPalette.data();
-    palette[idx + int(ConsoleTiming::pal)]   = ourUserPALPalette.data();
-    palette[idx + int(ConsoleTiming::secam)] = ourUserSECAMPalette.data();
-  }
-
-  for(int i = 0; i < int(ConsoleTiming::numTimings) * PaletteType::NumTypes; ++i)
-  {
-    if(palette[i] == nullptr)
-      continue;
-
-    // Fill the odd numbered palette entries with gray values (calculated
-    // using the standard RGB -> grayscale conversion formula)
-    for(int j = 0; j < 128; ++j)
-    {
-      const uInt32 pixel = palette[i][(j<<1)];
-      const uInt8 r = (pixel >> 16) & 0xff;
-      const uInt8 g = (pixel >> 8)  & 0xff;
-      const uInt8 b = (pixel >> 0)  & 0xff;
-      const uInt8 sum = static_cast<uInt8>((r * 0.2989) + (g * 0.5870) + (b * 0.1140));
-      palette[i][(j<<1)+1] = (sum << 16) + (sum << 8) + sum;
-    }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

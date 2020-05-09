@@ -46,6 +46,8 @@
 #include "FrameBufferConstants.hxx"
 #include "bspf.hxx"
 
+//#define BLARGG_PALETTE // also modify contrast, brightness, saturation, gamma and hue when defined
+
 class AtariNTSC
 {
   public:
@@ -57,14 +59,18 @@ class AtariNTSC
     struct Setup
     {
       // Basic parameters
+    #ifdef BLARGG_PALETTE
       float hue{0.F};        // -1 = -180 degrees     +1 = +180 degrees
       float saturation{0.F}; // -1 = grayscale (0.0)  +1 = oversaturated colors (2.0)
       float contrast{0.F};   // -1 = dark (0.5)       +1 = light (1.5)
       float brightness{0.F}; // -1 = dark (0.5)       +1 = light (1.5)
+    #endif
       float sharpness{0.F};  // edge contrast enhancement/blurring
 
       // Advanced parameters
+    #ifdef BLARGG_PALETTE
       float gamma{0.F};      // -1 = dark (1.5)       +1 = light (0.5)
+    #endif
       float resolution{0.F}; // image resolution
       float artifacts{0.F};  // artifacts caused by color changes
       float fringing{0.F};   // color artifacts caused by brightness changes
@@ -127,7 +133,9 @@ class AtariNTSC
       burst_size  = entry_size / burst_count,
       kernel_half = 16,
       kernel_size = kernel_half * 2 + 1,
+    #ifdef BLARGG_PALETTE
       gamma_size  = 256,
+    #endif
 
       rgb_builder = ((1 << 21) | (1 << 11) | (1 << 1)),
       rgb_kernel_size = burst_size / alignment_count,
@@ -162,16 +170,20 @@ class AtariNTSC
     struct init_t
     {
       std::array<float, burst_count * 6> to_rgb{0.F};
+    #ifdef BLARGG_PALETTE
       std::array<float, gamma_size> to_float{0.F};
       float contrast{0.F};
       float brightness{0.F};
+    #endif
       float artifacts{0.F};
       float fringing{0.F};
       std::array<float, rescale_out * kernel_size * 2> kernel{0.F};
 
       init_t() {
         to_rgb.fill(0.0);
+      #ifdef BLARGG_PALETTE
         to_float.fill(0.0);
+      #endif
         kernel.fill(0.0);
       }
     };

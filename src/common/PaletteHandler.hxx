@@ -36,6 +36,9 @@ class PaletteHandler
       NumDisplayTypes
     };
 
+    struct Adjustable {
+      uInt32 hue, saturation, contrast, brightness, gamma;
+    };
 
   public:
     PaletteHandler(OSystem& system);
@@ -46,6 +49,14 @@ class PaletteHandler
     */
     void changePalette(bool increase = true);
 
+    void selectAdjustable(bool next = true);
+    void changeAdjustable(bool increase = true);
+
+
+    void loadConfig(const Settings& settings);
+    void saveConfig(Settings& settings) const;
+    void setAdjustables(Adjustable& adjustable);
+    void getAdjustables(Adjustable& adjustable) const;
 
     /**
       Change the "phase shift" variable.
@@ -55,9 +66,6 @@ class PaletteHandler
       @param increase increase if true, else decrease.
     */
     void changeColorPhaseShift(bool increase = true);
-
-    void changeSaturation(int& R, int& G, int& B, float change);
-    void changeSaturation(float& R, float& G, float& B, float change);
 
     /**
       Sets the palette according to the given palette name.
@@ -71,17 +79,6 @@ class PaletteHandler
       Sets the palette from current settings.
     */
     void setPalette();
-
-
-    void generatePalettes();
-
-    /**
-      Loads all defined palettes with PAL color-loss data, even those that
-      normally can't have it enabled (NTSC), since it's also used for
-      'greying out' the frame in the debugger.
-    */
-    void generateColorLossPalette();
-
 
     /**
       Generates a custom palette, based on user defined phase shifts.
@@ -99,10 +96,15 @@ class PaletteHandler
       MaxType = Custom
     };
 
+    float scaleFrom100(float x) const { return (x / 100.F) - 1.F; }
+    uInt32 scaleTo100(float x) const { return uInt32(100 * (x + 1.F)); }
+
     PaletteType toPaletteType(const string& name) const;
     string toPaletteName(PaletteType type) const;
 
     PaletteArray adjustPalette(const PaletteArray& source);
+
+    void changeSaturation(int& R, int& G, int& B, float change);
 
     /**
       Loads a user-defined palette file (from OSystem::paletteFile), filling the
@@ -112,14 +114,33 @@ class PaletteHandler
 
 
   private:
+    static const int NUM_ADJUSTABLES = 6;
+
     OSystem& myOSystem;
 
+    uInt32 myCurrentAdjustable{0};
+    struct AdjustableTag {
+      const char* const type{nullptr};
+      float* value{nullptr};
+    };
+    const std::array<AdjustableTag, NUM_ADJUSTABLES> myAdjustables =
+    { {
+      { "contrast", &myContrast },
+      { "brightness", &myBrightness },
+      { "hue", &myHue },
+      { "saturation", &mySaturation },
+      { "gamma", &myGamma },
+      { "phase shift", nullptr },
+    } };
+
     // range -1.0 to +1.0 (as in AtariNTSC)
-    float myContrast{0.0F};
-    float myBrightness{0.0F};
-    float myHue{0.0F};
-    float mySaturation{0.0F};
-    float myGamma{0.0F};
+    // Basic parameters
+    float myContrast{0.0F};   // -1 = dark (0.5)       +1 = light (1.5)
+    float myHue{0.0F};        // -1 = -180 degrees     +1 = +180 degrees
+    float mySaturation{0.0F}; // -1 = grayscale (0.0)  +1 = oversaturated colors (2.0)
+    float myBrightness{0.0F}; // -1 = dark (0.5)       +1 = light (1.5)
+    // Advanced parameters
+    float myGamma{0.0F};      // -1 = dark (1.5)       +1 = light (0.5)
 
     // Indicates whether an external palette was found and
     // successfully loaded

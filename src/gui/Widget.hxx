@@ -31,6 +31,7 @@ namespace GUI {
 
 #include "bspf.hxx"
 #include "Event.hxx"
+#include "StellaKeys.hxx"
 #include "GuiObject.hxx"
 #include "Font.hxx"
 

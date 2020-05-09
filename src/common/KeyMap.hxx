@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include "Event.hxx"
 #include "EventHandlerConstants.hxx"
+#include "StellaKeys.hxx"
 
 /**
   This class handles keyboard mappings in Stella.

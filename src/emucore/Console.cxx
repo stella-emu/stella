@@ -62,7 +62,6 @@
 #include "AudioSettings.hxx"
 #include "frame-manager/FrameManager.hxx"
 #include "frame-manager/FrameLayoutDetector.hxx"
-#include "PaletteHandler.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
@@ -88,7 +87,6 @@ Console::Console(OSystem& osystem, unique_ptr<Cartridge>& cart,
   myTIA  = make_unique<TIA>(*this, [this]() { return timing(); },  myOSystem.settings());
   myFrameManager = make_unique<FrameManager>();
   mySwitches = make_unique<Switches>(myEvent, myProperties, myOSystem.settings());
-  myPaletteHandler = make_unique<PaletteHandler>(myOSystem);
 
   myTIA->setFrameManager(myFrameManager.get());
 
@@ -436,7 +434,6 @@ void Console::setFormat(uInt32 format)
 
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
-  myPaletteHandler->setPalette();
   setTIAProperties();
   initializeVideo();  // takes care of refreshing the screen
   initializeAudio(); // ensure that audio synthesis is set up to match emulation speed
@@ -582,10 +579,7 @@ FBInitStatus Console::initializeVideo(bool full)
 
     myOSystem.frameBuffer().showFrameStats(
       myOSystem.settings().getBool(devSettings ? "dev.stats" : "plr.stats"));
-    myPaletteHandler->generatePalettes();
   }
-  myPaletteHandler->setPalette();
-
   return fbstatus;
 }
 

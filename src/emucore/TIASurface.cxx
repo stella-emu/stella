@@ -23,6 +23,7 @@
 #include "Console.hxx"
 #include "TIA.hxx"
 #include "PNGLibrary.hxx"
+#include "PaletteHandler.hxx"
 #include "TIASurface.hxx"
 
 namespace {
@@ -76,6 +77,9 @@ TIASurface::TIASurface(OSystem& system)
 
   // Enable/disable threading in the NTSC TV effects renderer
   myNTSCFilter.enableThreading(myOSystem.settings().getBool("threads"));
+
+  myPaletteHandler = make_unique<PaletteHandler>(myOSystem);
+  myPaletteHandler->loadConfig(myOSystem.settings());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,6 +92,8 @@ void TIASurface::initialize(const Console& console,
   myTiaSurface->setDstSize(mode.image.w(), mode.image.h());
   mySLineSurface->setDstPos(mode.image.x(), mode.image.y());
   mySLineSurface->setDstSize(mode.image.w(), mode.image.h());
+
+  myPaletteHandler->setPalette();
 
   // Phosphor mode can be enabled either globally or per-ROM
   int p_blend = 0;
@@ -186,6 +192,32 @@ void TIASurface::setNTSC(NTSCFilter::Preset preset, bool show)
   myOSystem.settings().setValue("tv.filter", int(preset));
 
   if(show) myFB.showMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::changeNTSC(bool next, bool show)
+{
+  constexpr NTSCFilter::Preset PRESETS[] = {
+    NTSCFilter::Preset::OFF, NTSCFilter::Preset::RGB, NTSCFilter::Preset::SVIDEO,
+    NTSCFilter::Preset::COMPOSITE, NTSCFilter::Preset::BAD, NTSCFilter::Preset::CUSTOM
+  };
+  int preset = myOSystem.settings().getInt("tv.filter");
+
+  if(next)
+  {
+    if(preset == int(NTSCFilter::Preset::CUSTOM))
+      preset = int(NTSCFilter::Preset::OFF);
+    else
+      preset++;
+  }
+  else
+  {
+    if(preset == int(NTSCFilter::Preset::OFF))
+      preset = int(NTSCFilter::Preset::CUSTOM);
+    else
+      preset--;
+  }
+  setNTSC(PRESETS[preset], show);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

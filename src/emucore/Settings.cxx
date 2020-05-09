@@ -46,8 +46,6 @@ Settings::Settings()
   setPermanent("windowedpos", Common::Point(50, 50));
   setPermanent("display", 0);
   setPermanent("palette", "standard");
-  setPermanent("phase_ntsc", "26.2");
-  setPermanent("phase_pal", "31.3");
   setPermanent("uimessages", "true");
 
   // TIA specific options
@@ -64,6 +62,8 @@ Settings::Settings()
   setPermanent("tv.phosphor", "byrom");
   setPermanent("tv.phosblend", "50");
   setPermanent("tv.scanlines", "25");
+  setPermanent("tv.phase_ntsc", "26.2");
+  setPermanent("tv.phase_pal", "31.3");
   setPermanent("tv.contrast", "0.0");
   setPermanent("tv.brightness", "0.0");
   setPermanent("tv.hue", "0.0");
