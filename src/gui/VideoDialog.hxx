@@ -43,6 +43,9 @@ class VideoDialog : public Dialog
     void saveConfig() override;
     void setDefaults() override;
 
+    void addGeneralTab();
+    void addPaletteTab();
+    void addTVEffectsTab();
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
     void handlePaletteChange();

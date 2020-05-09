@@ -77,7 +77,12 @@ string NTSCFilter::setNextAdjustable()
   if(myPreset != Preset::CUSTOM)
     return "'Custom' TV mode not selected";
 
+#ifdef BLARGG_PALETTE
   myCurrentAdjustable = (myCurrentAdjustable + 1) % 10;
+#else
+  myCurrentAdjustable = (myCurrentAdjustable + 1) % 5;
+#endif
+
   ostringstream buf;
   buf << "Custom adjustable '" << ourCustomAdjustables[myCurrentAdjustable].type
       << "' selected";
@@ -91,7 +96,11 @@ string NTSCFilter::setPreviousAdjustable()
   if(myPreset != Preset::CUSTOM)
     return "'Custom' TV mode not selected";
 
+#ifdef BLARGG_PALETTE
   if(myCurrentAdjustable == 0) myCurrentAdjustable = 9;
+#else
+  if(myCurrentAdjustable == 0) myCurrentAdjustable = 4;
+#endif
   else                         --myCurrentAdjustable;
   ostringstream buf;
   buf << "Custom adjustable '" << ourCustomAdjustables[myCurrentAdjustable].type

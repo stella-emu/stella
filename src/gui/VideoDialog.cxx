@@ -79,21 +79,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, font, "Video settings")
 {
-  const int lineHeight   = font.getLineHeight(),
-            fontHeight   = font.getFontHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            buttonHeight = font.getLineHeight() * 1.25;
+  const int lineHeight   = _font.getLineHeight(),
+            fontHeight   = _font.getFontHeight(),
+            fontWidth    = _font.getMaxCharWidth(),
+            buttonHeight = _font.getLineHeight() * 1.25;
   const int VGAP = fontHeight / 4;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-
-  int xpos, ypos, tabID;
-  int lwidth = font.getStringWidth("V-Size adjust "),
-      pwidth = font.getStringWidth("XXXXxXXXX");
-
-  WidgetArray wid;
-  VariantList items;
+  int xpos, ypos;
 
   // Set real dimensions
   setSize(57 * fontWidth + HBORDER * 2 + PopUpWidget::dropDownWidth(font) * 2,
@@ -107,65 +100,69 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                         _h - _th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
-  xpos = HBORDER;  ypos = VBORDER;
-  //////////////////////////////////////////////////////////
-  // 1) General options
+  addGeneralTab();
+  addPaletteTab();
+  addTVEffectsTab();
+
+  // Add Defaults, OK and Cancel buttons
+  WidgetArray wid;
+  addDefaultsOKCancelBGroup(wid, _font);
+  addBGroupToFocusList(wid);
+
+  // Activate the first tab
+  myTab->setActiveTab(0);
+
+  // Disable certain functions when we know they aren't present
+#ifndef WINDOWED_SUPPORT
+  myFullscreen->clearFlags(Widget::FLAG_ENABLED);
+  myCenter->clearFlags(Widget::FLAG_ENABLED);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::addGeneralTab()
+{
+  const int lineHeight   = _font.getLineHeight(),
+            fontHeight   = _font.getFontHeight(),
+            fontWidth    = _font.getMaxCharWidth(),
+            buttonHeight = _font.getLineHeight() * 1.25;
+  const int VGAP = fontHeight / 4;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+
+  int xpos, ypos, tabID;
+  int lwidth = _font.getStringWidth("V-Size adjust "),
+      pwidth = _font.getStringWidth("XXXXxXXXX"),
+      swidth = fontWidth * 8 - fontWidth / 2;
+  WidgetArray wid;
+  VariantList items;
+
   tabID = myTab->addTab(" General ");
+  xpos = HBORDER;  ypos = VBORDER;
 
   // Video renderer
-  myRenderer = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+  myRenderer = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
                                instance().frameBuffer().supportedRenderers(),
                                "Renderer ", lwidth);
   wid.push_back(myRenderer);
   ypos += lineHeight + VGAP;
 
-  // TIA Palette
-  items.clear();
-  VarList::push_back(items, "Standard", "standard");
-  VarList::push_back(items, "z26", "z26");
-  if (instance().checkUserPalette())
-    VarList::push_back(items, "User", "user");
-  VarList::push_back(items, "Custom", "custom");
-  myTIAPalette = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                                 lineHeight, items, "Palette ", lwidth, kPaletteChanged);
-  wid.push_back(myTIAPalette);
-  ypos += lineHeight + VGAP;
-
-  int swidth = myTIAPalette->getWidth() - lwidth;
-  int plWidth = font.getStringWidth("NTSC phase  ");
-  int pswidth = swidth - INDENT + lwidth - plWidth;
-
-  myPhaseShiftNtsc =
-    new SliderWidget(myTab, font, xpos + INDENT, ypos-1, pswidth, lineHeight,
-                     "NTSC phase", plWidth, kNtscShiftChanged, fontWidth * 5);
-  myPhaseShiftNtsc->setMinValue(262 - 45); myPhaseShiftNtsc->setMaxValue(262 + 45);
-  myPhaseShiftNtsc->setTickmarkIntervals(4);
-  wid.push_back(myPhaseShiftNtsc);
-  ypos += lineHeight + VGAP;
-
-  myPhaseShiftPal =
-    new SliderWidget(myTab, font, xpos + INDENT, ypos-1, pswidth, lineHeight,
-                     "PAL phase", plWidth, kPalShiftChanged, fontWidth * 5);
-  myPhaseShiftPal->setMinValue(313 - 45); myPhaseShiftPal->setMaxValue(313 + 45);
-  myPhaseShiftPal->setTickmarkIntervals(4);
-  wid.push_back(myPhaseShiftPal);
-  ypos += lineHeight + VGAP * 4;
-
   // TIA interpolation
-  myTIAInterpolate = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Interpolation ");
+  myTIAInterpolate = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Interpolation ");
   wid.push_back(myTIAInterpolate);  ypos += lineHeight + VGAP;
 
 
   // TIA zoom levels (will be dynamically filled later)
-  myTIAZoom = new SliderWidget(myTab, font, xpos, ypos - 1, swidth, lineHeight,
-    "Zoom ", lwidth, 0, fontWidth * 4, "%");
+  myTIAZoom = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+                               "Zoom ", lwidth, 0, fontWidth * 4, "%");
   myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
   wid.push_back(myTIAZoom);
   ypos += lineHeight + VGAP;
 
   // Aspect ratio (NTSC mode)
   myVSizeAdjust =
-    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,
                      "V-Size adjust", lwidth, kVSizeChanged, fontWidth * 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
@@ -174,7 +171,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Speed
   mySpeed =
-    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,
+    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,
                      "Emul. speed ", lwidth, kSpeedupChanged, fontWidth * 5, "%");
   mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
   mySpeed->setStepValue(SPEED_STEP);
@@ -183,7 +180,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;
 
   // Use sync to vblank
-  myUseVSync = new CheckboxWidget(myTab, font, xpos, ypos + 1, "VSync");
+  myUseVSync = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "VSync");
   wid.push_back(myUseVSync);
 
   // Move over to the next column
@@ -191,7 +188,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos = VBORDER;
 
   // Fullscreen
-  myFullscreen = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fullscreen", kFullScreenChanged);
+  myFullscreen = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Fullscreen", kFullScreenChanged);
   wid.push_back(myFullscreen);
   ypos += lineHeight + VGAP;
 
@@ -202,13 +199,13 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   ypos += lineHeight + VGAP;*/
 
   // FS stretch
-  myUseStretch = new CheckboxWidget(myTab, font, xpos + INDENT, ypos + 1, "Stretch");
+  myUseStretch = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Stretch");
   wid.push_back(myUseStretch);
   ypos += lineHeight + VGAP;
 
   // FS overscan
-  myTVOverscan = new SliderWidget(myTab, font, xpos + INDENT, ypos - 1, swidth, lineHeight,
-    "Overscan", font.getStringWidth("Overscan "), kOverscanChanged, fontWidth * 3, "%");
+  myTVOverscan = new SliderWidget(myTab, _font, xpos + INDENT, ypos - 1, swidth, lineHeight,
+                                  "Overscan", _font.getStringWidth("Overscan "), kOverscanChanged, fontWidth * 3, "%");
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
@@ -216,36 +213,120 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Skip progress load bars for SuperCharger ROMs
   // Doesn't really belong here, but I couldn't find a better place for it
-  myFastSCBios = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Fast SuperCharger load");
+  myFastSCBios = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Fast SuperCharger load");
   wid.push_back(myFastSCBios);
   ypos += lineHeight + VGAP;
 
   // Show UI messages onscreen
-  myUIMessages = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Show UI messages");
+  myUIMessages = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Show UI messages");
   wid.push_back(myUIMessages);
   ypos += lineHeight + VGAP;
 
   // Center window (in windowed mode)
-  myCenter = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Center window");
+  myCenter = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Center window");
   wid.push_back(myCenter);
   ypos += (lineHeight + VGAP) * 2;
 
   // Use multi-threading
-  myUseThreads = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Multi-threading");
+  myUseThreads = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Multi-threading");
   wid.push_back(myUseThreads);
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
+}
 
-  //////////////////////////////////////////////////////////
-  // 2) TV effects options
-  wid.clear();
-  tabID = myTab->addTab(" TV Effects ");
-  xpos = HBORDER;
-  ypos = VBORDER;
-  swidth = fontWidth * 8 - fontWidth / 2;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::addPaletteTab()
+{
+  const int lineHeight = _font.getLineHeight(),
+            fontHeight = _font.getFontHeight(),
+            fontWidth = _font.getMaxCharWidth(),
+            buttonHeight = _font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+  int xpos = HBORDER,
+      ypos = VBORDER;
+  int swidth = fontWidth * 8 - fontWidth / 2;
+  int lwidth = _font.getStringWidth("Saturation ");
+  int pwidth = _font.getStringWidth("Standard");
+  WidgetArray wid;
+  VariantList items;
 
-  // TV Mode
+  int tabID = myTab->addTab(" Palettes ");
+
+  // TIA Palette
+  items.clear();
+  VarList::push_back(items, "Standard", "standard");
+  VarList::push_back(items, "z26", "z26");
+  if (instance().checkUserPalette())
+    VarList::push_back(items, "User", "user");
+  VarList::push_back(items, "Custom", "custom");
+  myTIAPalette = new PopUpWidget(myTab, _font, xpos, ypos, pwidth,
+                                 lineHeight, items, "Palette ", lwidth, kPaletteChanged);
+  wid.push_back(myTIAPalette);
+  ypos += lineHeight + VGAP;
+
+  swidth = myTIAPalette->getWidth() - lwidth;
+  int plWidth = _font.getStringWidth("NTSC phase ");
+  int pswidth = swidth - INDENT + lwidth - plWidth;
+
+  myPhaseShiftNtsc =
+    new SliderWidget(myTab, _font, xpos + INDENT, ypos-1, pswidth, lineHeight,
+                     "NTSC phase", plWidth, kNtscShiftChanged, fontWidth * 5);
+  myPhaseShiftNtsc->setMinValue(262 - 45); myPhaseShiftNtsc->setMaxValue(262 + 45);
+  myPhaseShiftNtsc->setTickmarkIntervals(4);
+  wid.push_back(myPhaseShiftNtsc);
+  ypos += lineHeight + VGAP;
+
+  myPhaseShiftPal =
+    new SliderWidget(myTab, _font, xpos + INDENT, ypos-1, pswidth, lineHeight,
+                     "PAL phase", plWidth, kPalShiftChanged, fontWidth * 5);
+  myPhaseShiftPal->setMinValue(313 - 45); myPhaseShiftPal->setMaxValue(313 + 45);
+  myPhaseShiftPal->setTickmarkIntervals(4);
+  wid.push_back(myPhaseShiftPal);
+  ypos += lineHeight + VGAP;
+
+#define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
+  myTV ## obj =                                                          \
+    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,     \
+                     desc, lwidth, cmd, fontWidth*4, "%");               \
+  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
+  myTV ## obj->setTickmarkIntervals(2);                                  \
+  wid.push_back(myTV ## obj);                                            \
+  ypos += lineHeight + VGAP;
+
+  CREATE_CUSTOM_SLIDERS(Hue, "Hue ", 0)
+  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ", 0)
+  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", 0)
+  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ", 0)
+  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", 0)
+
+  // Add items for tab 2
+  addToFocusList(wid, myTab, tabID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::addTVEffectsTab()
+{
+  const int lineHeight = _font.getLineHeight(),
+            fontHeight = _font.getFontHeight(),
+            fontWidth = _font.getMaxCharWidth(),
+            buttonHeight = _font.getLineHeight() * 1.25;
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = fontWidth * 2;
+  const int VGAP = fontHeight / 4;
+  int xpos = HBORDER,
+      ypos = VBORDER;
+  int swidth = fontWidth * 8 - fontWidth / 2;
+  int lwidth = _font.getStringWidth("TV Mode ");
+  int pwidth = _font.getStringWidth("Bad adjust");
+  WidgetArray wid;
+  VariantList items;
+  int tabID = myTab->addTab(" TV Effects ");
+
   items.clear();
   VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
   VarList::push_back(items, "RGB", static_cast<uInt32>(NTSCFilter::Preset::RGB));
@@ -253,32 +334,25 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
   VarList::push_back(items, "Custom", static_cast<uInt32>(NTSCFilter::Preset::CUSTOM));
-  lwidth = font.getStringWidth("TV Mode ");
-  pwidth = font.getStringWidth("Bad adjust");
   myTVMode =
-    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+    new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
                     items, "TV mode ", lwidth, kTVModeChanged);
   wid.push_back(myTVMode);
   ypos += lineHeight + VGAP;
 
   // Custom adjustables (using macro voodoo)
   xpos += INDENT - 2; ypos += 0;
-  lwidth = font.getStringWidth("Saturation ");
+  lwidth = _font.getStringWidth("Saturation ");
 
 #define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
   myTV ## obj =                                                          \
-    new SliderWidget(myTab, font, xpos, ypos-1, swidth, lineHeight,      \
+    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,     \
                      desc, lwidth, cmd, fontWidth*4, "%");               \
   myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
   myTV ## obj->setTickmarkIntervals(2);                                  \
   wid.push_back(myTV ## obj);                                            \
   ypos += lineHeight + VGAP;
 
-  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", 0)
-  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ", 0)
-  CREATE_CUSTOM_SLIDERS(Hue, "Hue ", 0)
-  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ", 0)
-  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", 0)
   CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness ", 0)
   CREATE_CUSTOM_SLIDERS(Res, "Resolution ", 0)
   CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts ", 0)
@@ -288,22 +362,22 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   xpos += myTVContrast->getWidth() + fontWidth * 6;
   ypos = VBORDER;
 
-  lwidth = font.getStringWidth("Intensity ");
+  lwidth = _font.getStringWidth("Intensity ");
 
   // TV Phosphor effect
-  myTVPhosphor = new CheckboxWidget(myTab, font, xpos, ypos + 1, "Phosphor for all ROMs", kPhosphorChanged);
+  myTVPhosphor = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Phosphor for all ROMs", kPhosphorChanged);
   wid.push_back(myTVPhosphor);
   ypos += lineHeight + VGAP / 2;
 
   // TV Phosphor blend level
   xpos += INDENT;
-  swidth = font.getMaxCharWidth() * 10;
+  swidth = _font.getMaxCharWidth() * 10;
   CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend     ", kPhosBlendChanged)
-  ypos += VGAP * 2;
+    ypos += VGAP * 2;
 
   // Scanline intensity and interpolation
   xpos -= INDENT;
-  myTVScanLabel = new StaticTextWidget(myTab, font, xpos, ypos, "Scanlines:");
+  myTVScanLabel = new StaticTextWidget(myTab, _font, xpos, ypos, "Scanlines:");
   ypos += lineHeight + VGAP / 2;
 
   xpos += INDENT;
@@ -312,10 +386,10 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 
   // Adjustable presets
   xpos -= INDENT;
-  int cloneWidth = font.getStringWidth("Clone Bad Adjust") + 20;
+  int cloneWidth = _font.getStringWidth("Clone Bad Adjust") + 20;
 #define CREATE_CLONE_BUTTON(obj, desc)                                 \
   myClone ## obj =                                                     \
-    new ButtonWidget(myTab, font, xpos, ypos, cloneWidth, buttonHeight,\
+    new ButtonWidget(myTab, _font, xpos, ypos, cloneWidth, buttonHeight,\
                      desc, kClone ## obj ##Cmd);                       \
   wid.push_back(myClone ## obj);                                       \
   ypos += buttonHeight + VGAP;
@@ -327,22 +401,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   CREATE_CLONE_BUTTON(Bad, "Clone Bad adjust")
   CREATE_CLONE_BUTTON(Custom, "Revert")
 
-  // Add items for tab 2
+  // Add items for tab 3
   addToFocusList(wid, myTab, tabID);
-
-  // Activate the first tab
-  myTab->setActiveTab(0);
-
-  // Add Defaults, OK and Cancel buttons
-  wid.clear();
-  addDefaultsOKCancelBGroup(wid, font);
-  addBGroupToFocusList(wid);
-
-  // Disable certain functions when we know they aren't present
-#ifndef WINDOWED_SUPPORT
-  myFullscreen->clearFlags(Widget::FLAG_ENABLED);
-  myCenter->clearFlags(Widget::FLAG_ENABLED);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -531,12 +591,6 @@ void VideoDialog::saveConfig()
   {
     instance().console().setTIAProperties();
 
-    if(instance().settings().getString("palette") == "custom")
-    {
-      instance().frameBuffer().tiaSurface().paletteHandler().generateCustomPalette(ConsoleTiming::ntsc);
-      instance().frameBuffer().tiaSurface().paletteHandler().generateCustomPalette(ConsoleTiming::pal);
-    }
-
     if(vsizeChanged)
     {
       instance().console().tia().clearFrameBuffer();
@@ -560,9 +614,6 @@ void VideoDialog::setDefaults()
     {
       myRenderer->setSelectedIndex(0);
       myTIAZoom->setValue(300);
-      myTIAPalette->setSelected("standard", "");
-      myPhaseShiftNtsc->setValue(262);
-      myPhaseShiftPal->setValue(313);
       myTIAInterpolate->setState(false);
       myVSizeAdjust->setValue(0);
       mySpeed->setValue(0);
@@ -580,7 +631,18 @@ void VideoDialog::setDefaults()
       break;
     }
 
-    case 1:  // TV effects
+    case 1:  // Palettes
+      myTIAPalette->setSelected("standard", "");
+      myPhaseShiftNtsc->setValue(262);
+      myPhaseShiftPal->setValue(313);
+      myTVHue->setValue(50);
+      myTVSatur->setValue(50);
+      myTVContrast->setValue(50);
+      myTVBright->setValue(50);
+      myTVGamma->setValue(50);
+      break;
+
+    case 2:  // TV effects
     {
       myTVMode->setSelected("0", "0");
 
