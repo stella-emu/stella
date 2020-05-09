@@ -52,7 +52,8 @@ void CartridgeEnhanced::install(System& system)
   myCurrentSegOffset = make_unique<uInt32[]>(myBankSegs);
 
   // Allocate array for the RAM area
-  myRAM = make_unique<uInt8[]>(myRamSize);
+  if(myRamSize > 0)
+    myRAM = make_unique<uInt8[]>(myRamSize);
 
   mySystem = &system;
 
@@ -101,7 +102,8 @@ void CartridgeEnhanced::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEnhanced::reset()
 {
-  initializeRAM(myRAM.get(), myRamSize);
+  if(myRamSize > 0)
+    initializeRAM(myRAM.get(), myRamSize);
 
   initializeStartBank(getStartBank());
 
