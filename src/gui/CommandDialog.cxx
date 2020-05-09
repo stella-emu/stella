@@ -204,7 +204,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPaletteCmd:
-      instance().console().paletteHandler().changePalette();
+      instance().frameBuffer().tiaSurface().paletteHandler().changePalette();
       updatePalette();
       break;
 

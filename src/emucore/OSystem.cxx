@@ -49,6 +49,7 @@
 #include "CartDetector.hxx"
 #include "FrameBuffer.hxx"
 #include "TIASurface.hxx"
+#include "PaletteHandler.hxx"
 #include "TIAConstants.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
@@ -243,6 +244,8 @@ void OSystem::saveConfig()
 
     Logger::debug("Saving TV effects options ...");
     myFrameBuffer->tiaSurface().ntsc().saveConfig(settings());
+    Logger::debug("Saving palette settings...");
+    myFrameBuffer->tiaSurface().paletteHandler().saveConfig(settings());
   }
 
   Logger::debug("Saving config options ...");

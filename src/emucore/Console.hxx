@@ -29,7 +29,6 @@ class CompuMate;
 class Debugger;
 class AudioQueue;
 class AudioSettings;
-class PaletteHandler;
 
 #include "bspf.hxx"
 #include "ConsoleIO.hxx"
@@ -40,7 +39,6 @@ class PaletteHandler;
 #include "FrameBufferConstants.hxx"
 #include "Serializable.hxx"
 #include "EventHandlerConstants.hxx"
-#include "NTSCFilter.hxx"
 #include "EmulationTiming.hxx"
 #include "ConsoleTiming.hxx"
 #include "frame-manager/AbstractFrameManager.hxx"
@@ -186,11 +184,6 @@ class Console : public Serializable, public ConsoleIO
       Retrieve emulation timing provider.
      */
     EmulationTiming& emulationTiming() { return myEmulationTiming; }
-
-    /**
-      Retrieve palette handler.
-    */
-    PaletteHandler& paletteHandler() const { return *myPaletteHandler; }
 
   public:
     /**
@@ -423,9 +416,6 @@ class Console : public Serializable, public ConsoleIO
 
     // The audio settings
     AudioSettings& myAudioSettings;
-
-    // The palette handling
-    unique_ptr<PaletteHandler>myPaletteHandler;
 
   private:
     // Following constructors and assignment operators not supported
