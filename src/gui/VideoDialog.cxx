@@ -18,12 +18,14 @@
 #include <cmath>
 
 #include "bspf.hxx"
+#include "Base.hxx"
 #include "Control.hxx"
 #include "Dialog.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
+#include "ColorWidget.hxx"
 #include "Console.hxx"
 #include "PaletteHandler.hxx"
 #include "TIA.hxx"
@@ -103,6 +105,14 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   addGeneralTab();
   addPaletteTab();
   addTVEffectsTab();
+
+  //const int req_w = std::max(myFastSCBios->getRight(), myCloneBad->getRight()) + HBORDER + 1;
+  //const int req_h = _th + VGAP * 3
+  //  + std::max(myUseVSync->getBottom(), myTVScanIntense->getBottom())
+  //  + buttonHeight + VBORDER * 2;
+  //// Set real dimensions
+  //setSize(req_w, req_h, max_w, max_h);
+
 
   // Add Defaults, OK and Cancel buttons
   WidgetArray wid;
@@ -266,7 +276,8 @@ void VideoDialog::addPaletteTab()
   myPhaseShiftNtsc =
     new SliderWidget(myTab, _font, xpos + INDENT, ypos-1, pswidth, lineHeight,
                      "NTSC phase", plWidth, kNtscShiftChanged, fontWidth * 5);
-  myPhaseShiftNtsc->setMinValue(262 - 45); myPhaseShiftNtsc->setMaxValue(262 + 45);
+  myPhaseShiftNtsc->setMinValue((PaletteHandler::DEF_NTSC_SHIFT - PaletteHandler::MAX_SHIFT) * 10);
+  myPhaseShiftNtsc->setMaxValue((PaletteHandler::DEF_NTSC_SHIFT + PaletteHandler::MAX_SHIFT) * 10);
   myPhaseShiftNtsc->setTickmarkIntervals(4);
   wid.push_back(myPhaseShiftNtsc);
   ypos += lineHeight + VGAP;
@@ -274,7 +285,8 @@ void VideoDialog::addPaletteTab()
   myPhaseShiftPal =
     new SliderWidget(myTab, _font, xpos + INDENT, ypos-1, pswidth, lineHeight,
                      "PAL phase", plWidth, kPalShiftChanged, fontWidth * 5);
-  myPhaseShiftPal->setMinValue(313 - 45); myPhaseShiftPal->setMaxValue(313 + 45);
+  myPhaseShiftPal->setMinValue((PaletteHandler::DEF_PAL_SHIFT - PaletteHandler::MAX_SHIFT) * 10);
+  myPhaseShiftPal->setMaxValue((PaletteHandler::DEF_PAL_SHIFT + PaletteHandler::MAX_SHIFT) * 10);
   myPhaseShiftPal->setTickmarkIntervals(4);
   wid.push_back(myPhaseShiftPal);
   ypos += lineHeight + VGAP;
@@ -288,11 +300,15 @@ void VideoDialog::addPaletteTab()
   wid.push_back(myTV ## obj);                                            \
   ypos += lineHeight + VGAP;
 
-  CREATE_CUSTOM_SLIDERS(Hue, "Hue ", 0)
-  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ", 0)
-  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", 0)
-  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ", 0)
-  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", 0)
+  CREATE_CUSTOM_SLIDERS(Hue, "Hue ", kPaletteUpdated)
+  CREATE_CUSTOM_SLIDERS(Satur, "Saturation ", kPaletteUpdated)
+  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", kPaletteUpdated)
+  CREATE_CUSTOM_SLIDERS(Bright, "Brightness ", kPaletteUpdated)
+  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", kPaletteUpdated)
+
+  // The resulting palette
+  addPalette(myPhaseShiftNtsc->getRight() + fontWidth * 2, VBORDER,
+             fontWidth * 2 * 8, myTVGamma->getBottom() -  myTIAPalette->getTop());
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
@@ -412,13 +428,20 @@ void VideoDialog::loadConfig()
   myTIAZoom->setValue(instance().settings().getFloat("tia.zoom") * 100);
 
   // TIA Palette
-  myTIAPalette->setSelected(
-    instance().settings().getString("palette"), "standard");
+  myPalette = instance().settings().getString("palette");
+  myTIAPalette->setSelected(myPalette, "standard");
 
-  // Custom Palette
-  myPhaseShiftNtsc->setValue(instance().settings().getFloat("tv.phase_ntsc") * 10);
-  myPhaseShiftPal->setValue(instance().settings().getFloat("tv.phase_pal") * 10);
+  // Palette adjustables
+  instance().frameBuffer().tiaSurface().paletteHandler().getAdjustables(myPaletteAdj);
+  myPhaseShiftNtsc->setValue(myPaletteAdj.phaseNtsc);
+  myPhaseShiftPal->setValue(myPaletteAdj.phasePal);
+  myTVHue->setValue(myPaletteAdj.hue);
+  myTVBright->setValue(myPaletteAdj.brightness);
+  myTVContrast->setValue(myPaletteAdj.contrast);
+  myTVSatur->setValue(myPaletteAdj.saturation);
+  myTVGamma->setValue(myPaletteAdj.gamma);
   handlePaletteChange();
+  colorPalette();
 
   // TIA interpolation
   myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
@@ -459,15 +482,6 @@ void VideoDialog::loadConfig()
   int preset = instance().settings().getInt("tv.filter");
   handleTVModeChange(NTSCFilter::Preset(preset));
 
-  // Palette adjustables
-  PaletteHandler::Adjustable paletteAdj;
-  instance().frameBuffer().tiaSurface().paletteHandler().getAdjustables(paletteAdj);
-  myTVHue->setValue(paletteAdj.hue);
-  myTVBright->setValue(paletteAdj.brightness);
-  myTVContrast->setValue(paletteAdj.contrast);
-  myTVSatur->setValue(paletteAdj.saturation);
-  myTVGamma->setValue(paletteAdj.gamma);
-
   // TV Custom adjustables
   loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
 
@@ -491,31 +505,12 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("video",
                                  myRenderer->getSelectedTag().toString());
 
-  // TIA zoom levels
-  instance().settings().setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
-
-  // TIA Palette
-  instance().settings().setValue("palette",
-                                 myTIAPalette->getSelectedTag().toString());
-
-  // Custom Palette
-  instance().settings().setValue("tv.phase_ntsc", myPhaseShiftNtsc->getValue() / 10.0);
-  instance().settings().setValue("tv.phase_pal", myPhaseShiftPal->getValue() / 10.0);
-
   // TIA interpolation
   instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
 
-  // Aspect ratio setting (NTSC and PAL)
-  int oldAdjust = instance().settings().getInt("tia.vsizeadjust");
-  int newAdjust = myVSizeAdjust->getValue();
-  bool vsizeChanged = oldAdjust != newAdjust;
 
-  instance().settings().setValue("tia.vsizeadjust", newAdjust);
+  // Note: Palette values are saved directly when changed!
 
-  // Speed
-  int speedup = mySpeed->getValue();
-  instance().settings().setValue("speed", unmapSpeed(speedup));
-  if (instance().hasConsole()) instance().console().initializeAudio();
 
   // Fullscreen
   instance().settings().setValue("fullscreen", myFullscreen->getState());
@@ -523,6 +518,22 @@ void VideoDialog::saveConfig()
   instance().settings().setValue("tia.fs_stretch", myUseStretch->getState());
   // Fullscreen overscan
   instance().settings().setValue("tia.fs_overscan", myTVOverscan->getValueLabel());
+
+  // TIA zoom levels
+  instance().settings().setValue("tia.zoom", myTIAZoom->getValue() / 100.0);
+
+  // Aspect ratio setting (NTSC and PAL)
+  const int oldAdjust = instance().settings().getInt("tia.vsizeadjust");
+  const int newAdjust = myVSizeAdjust->getValue();
+  const bool vsizeChanged = oldAdjust != newAdjust;
+
+  instance().settings().setValue("tia.vsizeadjust", newAdjust);
+
+  // Speed
+  const int speedup = mySpeed->getValue();
+  instance().settings().setValue("speed", unmapSpeed(speedup));
+  if (instance().hasConsole())
+    instance().console().initializeAudio();
 
   // Use sync to vertical blank
   instance().settings().setValue("vsync", myUseVSync->getState());
@@ -541,16 +552,6 @@ void VideoDialog::saveConfig()
   // TV Mode
   instance().settings().setValue("tv.filter",
                                  myTVMode->getSelectedTag().toString());
-
-  // Palette adjustables
-  PaletteHandler::Adjustable paletteAdj;
-  paletteAdj.hue = myTVHue->getValue();
-  paletteAdj.saturation = myTVSatur->getValue();
-  paletteAdj.contrast = myTVContrast->getValue();
-  paletteAdj.brightness = myTVBright->getValue();
-  paletteAdj.gamma = myTVGamma->getValue();
-  instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(paletteAdj);
-
   // TV Custom adjustables
   NTSCFilter::Adjustable ntscAdj;
   ntscAdj.sharpness = myTVSharp->getValue();
@@ -596,32 +597,36 @@ void VideoDialog::setDefaults()
     case 0:  // General
     {
       myRenderer->setSelectedIndex(0);
-      myTIAZoom->setValue(300);
       myTIAInterpolate->setState(false);
-      myVSizeAdjust->setValue(0);
-      mySpeed->setValue(0);
-
+      // screen size
       myFullscreen->setState(false);
       //myFullScreenMode->setSelectedIndex(0);
       myUseStretch->setState(false);
+      myTVOverscan->setValue(0);
+      myTIAZoom->setValue(300);
+      myVSizeAdjust->setValue(0);
+      // speed
+      mySpeed->setValue(0);
       myUseVSync->setState(true);
+      // misc
       myUIMessages->setState(true);
       myFastSCBios->setState(true);
       myUseThreads->setState(false);
 
-      handlePaletteChange();
+      handleFullScreenChange();
       break;
     }
 
     case 1:  // Palettes
       myTIAPalette->setSelected("standard", "");
-      myPhaseShiftNtsc->setValue(262);
-      myPhaseShiftPal->setValue(313);
+      myPhaseShiftNtsc->setValue(PaletteHandler::DEF_NTSC_SHIFT * 10);
+      myPhaseShiftPal->setValue(PaletteHandler::DEF_PAL_SHIFT * 10);
       myTVHue->setValue(50);
       myTVSatur->setValue(50);
       myTVContrast->setValue(50);
       myTVBright->setValue(50);
       myTVGamma->setValue(50);
+      handlePaletteChange();
       break;
 
     case 2:  // TV effects
@@ -686,6 +691,27 @@ void VideoDialog::handlePaletteChange()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handlePaletteUpdate()
+{
+  // TIA Palette
+  instance().settings().setValue("palette",
+                                  myTIAPalette->getSelectedTag().toString());
+  // Palette adjustables
+  PaletteHandler::Adjustable paletteAdj;
+  paletteAdj.phaseNtsc  = myPhaseShiftNtsc->getValue();
+  paletteAdj.phasePal   = myPhaseShiftPal->getValue();
+  paletteAdj.hue        = myTVHue->getValue();
+  paletteAdj.saturation = myTVSatur->getValue();
+  paletteAdj.contrast   = myTVContrast->getValue();
+  paletteAdj.brightness = myTVBright->getValue();
+  paletteAdj.gamma      = myTVGamma->getValue();
+  instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(paletteAdj);
+
+  if(instance().hasConsole())
+    instance().frameBuffer().tiaSurface().paletteHandler().setPalette();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::handleFullScreenChange()
 {
   bool enable = myFullscreen->getState();
@@ -722,12 +748,24 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       close();
       break;
 
+    case GuiObject::kCloseCmd:
+      // restore palette settings
+      instance().frameBuffer().tiaSurface().paletteHandler().setAdjustables(myPaletteAdj);
+      instance().frameBuffer().tiaSurface().paletteHandler().setPalette(myPalette);
+      Dialog::handleCommand(sender, cmd, data, 0);
+      break;
+
     case GuiObject::kDefaultsCmd:
       setDefaults();
       break;
 
     case kPaletteChanged:
       handlePaletteChange();
+      handlePaletteUpdate();
+      break;
+
+    case kPaletteUpdated:
+      handlePaletteUpdate();
       break;
 
     case kNtscShiftChanged:
@@ -737,6 +775,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       ss << std::setw(4) << std::fixed << std::setprecision(1)
         << (0.1 * abs(myPhaseShiftNtsc->getValue())) << DEGREE;
       myPhaseShiftNtsc->setValueLabel(ss.str());
+      handlePaletteUpdate();
       break;
     }
     case kPalShiftChanged:
@@ -746,6 +785,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       ss << std::setw(4) << std::fixed << std::setprecision(1)
         << (0.1 * abs(myPhaseShiftPal->getValue())) << DEGREE;
       myPhaseShiftPal->setValueLabel(ss.str());
+      handlePaletteUpdate();
       break;
     }
     case kVSizeChanged:
@@ -816,5 +856,59 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::addPalette(int x, int y, int w, int h)
+{
+  if(instance().hasConsole())
+  {
+    constexpr int NUM_LUMA = 8;
+    constexpr int NUM_CHROMA = 16;
+    const GUI::Font& ifont = instance().frameBuffer().infoFont();
+    const int lwidth = ifont.getMaxCharWidth() * 1.5;
+    const float COLW = float(w - lwidth) / NUM_LUMA;
+    const float COLH = float(h) / NUM_CHROMA;
+    const int yofs = (COLH - ifont.getFontHeight() + 1) / 2;
+
+    for(int idx = 0; idx < NUM_CHROMA; ++idx)
+    {
+      myColorLbl[idx] = new StaticTextWidget(myTab, ifont, x, y + yofs + idx * COLH, " ");
+      for(int lum = 0; lum < NUM_LUMA; ++lum)
+      {
+        myColor[idx][lum] = new ColorWidget(myTab, _font, x + lwidth + lum * COLW, y + idx * COLH,
+                                            COLW + 1, COLH + 1, 0, false);
+      }
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::colorPalette()
+{
+  if(instance().hasConsole())
+  {
+    constexpr int NUM_LUMA = 8;
+    constexpr int NUM_CHROMA = 16;
+    const int order[2][NUM_CHROMA] =
+    {
+      {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+      {0, 1, 2, 4, 6, 8, 10, 12, 13, 11, 9, 7, 5, 3, 14, 15}
+    };
+    const int type = instance().console().timing() == ConsoleTiming::pal ? 1 : 0;
+
+    for(int idx = 0; idx < NUM_CHROMA; ++idx)
+    {
+      ostringstream ss;
+      const int color = order[type][idx];
+
+      ss << Common::Base::HEX1 << std::uppercase << color;
+      myColorLbl[idx]->setLabel(ss.str());
+      for(int lum = 0; lum < NUM_LUMA; ++lum)
+      {
+        myColor[idx][lum]->setColor(color * NUM_CHROMA + lum * 2); // skip grayscale colors
+      }
+    }
   }
 }

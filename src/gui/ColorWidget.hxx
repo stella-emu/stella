@@ -36,7 +36,7 @@ class ColorWidget : public Widget, public CommandSender
 
   public:
     ColorWidget(GuiObject* boss, const GUI::Font& font,
-                int x, int y, int w, int h, int cmd = 0);
+                int x, int y, int w, int h, int cmd = 0, bool framed = true);
     virtual ~ColorWidget() = default;
 
     void setColor(ColorId color);
@@ -49,6 +49,7 @@ class ColorWidget : public Widget, public CommandSender
 
   protected:
     ColorId _color{kNone};
+    bool _framed{true};
     int	_cmd{0};
 
     bool _crossGrid{false};

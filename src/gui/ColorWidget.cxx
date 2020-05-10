@@ -25,10 +25,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ColorWidget::ColorWidget(GuiObject* boss, const GUI::Font& font,
-                         int x, int y, int w, int h, int cmd)
+                         int x, int y, int w, int h, int cmd, bool framed)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    _cmd(cmd)
+    _cmd(cmd),
+    _framed(framed)
 {
   _flags = Widget::FLAG_ENABLED | Widget::FLAG_CLEARBG | Widget::FLAG_RETAIN_FOCUS;
 }
@@ -46,11 +47,18 @@ void ColorWidget::drawWidget(bool hilite)
   FBSurface& s = dialog().surface();
   bool onTop = _boss->dialog().isOnTop();
 
+  if(_framed)
+  {
   // Draw a thin frame around us.
-  s.frameRect(_x, _y, _w, _h + 1, kColor);
+    s.frameRect(_x, _y, _w, _h + 1, kColor);
 
-  // Show the currently selected color
-  s.fillRect(_x+1, _y+1, _w-2, _h-1, onTop ? isEnabled() ? _color : kWidColor : kBGColorLo);
+    // Show the currently selected color
+    s.fillRect(_x + 1, _y + 1, _w - 2, _h - 1, onTop ? isEnabled() ? _color : kWidColor : kBGColorLo);
+  }
+  else
+  {
+    s.fillRect(_x, _y, _w, _h, onTop ? isEnabled() ? _color : kWidColor : kBGColorLo);
+  }
 
   // Cross out the grid?
   if(_crossGrid)
