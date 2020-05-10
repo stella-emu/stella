@@ -22,6 +22,7 @@ class CommandSender;
 class CheckboxWidget;
 class DialogContainer;
 class PopUpWidget;
+class RadioButtonGroup;
 class SliderWidget;
 class StaticTextWidget;
 class TabWidget;
@@ -67,13 +68,13 @@ class VideoDialog : public Dialog
     SliderWidget*     myVSizeAdjust{nullptr};
     SliderWidget*     mySpeed{nullptr};
 
+    RadioButtonGroup* myZoomGroup{nullptr};
     CheckboxWidget*   myFullscreen{nullptr};
     //PopUpWidget*      myFullScreenMode;
     CheckboxWidget*   myUseStretch{nullptr};
     SliderWidget*     myTVOverscan{nullptr};
     CheckboxWidget*   myUseVSync{nullptr};
     CheckboxWidget*   myUIMessages{nullptr};
-    CheckboxWidget*   myCenter{nullptr};
     CheckboxWidget*   myFastSCBios{nullptr};
     CheckboxWidget*   myUseThreads{nullptr};
 
@@ -112,6 +113,7 @@ class VideoDialog : public Dialog
       kSpeedupChanged     = 'VDSp',
       kVSizeChanged       = 'VDVs',
       kFullScreenChanged  = 'VDFs',
+      kZoomChanged        = 'VDZo',
       kOverscanChanged    = 'VDOv',
 
       kTVModeChanged      = 'VDtv',
