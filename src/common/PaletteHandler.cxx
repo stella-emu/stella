@@ -294,6 +294,7 @@ PaletteArray PaletteHandler::adjustPalette(const PaletteArray& palette)
   constexpr int ADJUST_SIZE = 256;
   constexpr int RGB_UNIT = 1 << 8;
   constexpr float RGB_OFFSET = 0.5F;
+  const float hue = myHue;
   const float brightness = myBrightness * (0.5F * RGB_UNIT) + RGB_OFFSET;
   const float contrast = myContrast * (0.5F * RGB_UNIT) + RGB_UNIT;
   const float saturation = mySaturation + 1;
@@ -313,10 +314,11 @@ PaletteArray PaletteHandler::adjustPalette(const PaletteArray& palette)
     int g = (pixel >> 8)  & 0xff;
     int b = (pixel >> 0)  & 0xff;
 
-    // TOOD: adjust hue (different for NTSC and PAL?)
+    // adjust hue (different for NTSC and PAL?)
+    adjustHue(r, g, b, hue);
 
     // adjust saturation
-    changeSaturation(r, g, b, saturation);
+    adustSaturation(r, g, b, saturation);
 
     // adjust contrast, brightness, gamma
     r = adjust[r];
@@ -496,7 +498,25 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::changeSaturation(int& R, int& G, int& B, float change)
+void PaletteHandler::adjustHue(int& R, int& G, int& B, float change)
+{
+  const float U = cos(-change * BSPF::PI_f);
+  const float W = sin(-change * BSPF::PI_f);
+  const float R_out = (.299 + .701 * U + .168 * W) * R
+    + (.587 - .587 * U + .330 * W) * G
+    + (.114 - .114 * U - .497 * W) * B;
+  const float G_out = (.299 - .299 * U - .328 * W) * R
+    + (.587 + .413 * U + .035 * W) * G
+    + (.114 - .114 * U + .292 * W) * B;
+  const float B_out = (.299 - .3 * U + 1.25 * W) * R
+    + (.587 - .588 * U - 1.05 * W) * G
+    + (.114 + .886 * U - .203 * W) * B;
+
+  R = R_out; G = G_out; B = B_out;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::adustSaturation(int& R, int& G, int& B, float change)
 {
   //  public-domain function by Darel Rex Finley
   //

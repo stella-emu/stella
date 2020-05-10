@@ -76,6 +76,16 @@ namespace {
   }
 }
 
+#define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
+  myTV ## obj =                                                          \
+    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,     \
+                     desc, lwidth, cmd, fontWidth*4, "%");               \
+  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
+  myTV ## obj->setStepValue(2);                                          \
+  myTV ## obj->setTickmarkIntervals(2);                                  \
+  wid.push_back(myTV ## obj);                                            \
+  ypos += lineHeight + VGAP;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
@@ -291,15 +301,6 @@ void VideoDialog::addPaletteTab()
   wid.push_back(myPhaseShiftPal);
   ypos += lineHeight + VGAP;
 
-#define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
-  myTV ## obj =                                                          \
-    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,     \
-                     desc, lwidth, cmd, fontWidth*4, "%");               \
-  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
-  myTV ## obj->setTickmarkIntervals(2);                                  \
-  wid.push_back(myTV ## obj);                                            \
-  ypos += lineHeight + VGAP;
-
   CREATE_CUSTOM_SLIDERS(Hue, "Hue ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Satur, "Saturation ", kPaletteUpdated)
   CREATE_CUSTOM_SLIDERS(Contrast, "Contrast ", kPaletteUpdated)
@@ -348,15 +349,6 @@ void VideoDialog::addTVEffectsTab()
   // Custom adjustables (using macro voodoo)
   const int swidth = myTVMode->getWidth() - INDENT - lwidth;
   xpos += INDENT;
-
-#define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
-  myTV ## obj =                                                          \
-    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,     \
-                     desc, lwidth, cmd, fontWidth*4, "%");               \
-  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
-  myTV ## obj->setTickmarkIntervals(2);                                  \
-  wid.push_back(myTV ## obj);                                            \
-  ypos += lineHeight + VGAP;
 
   CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness ", 0)
   CREATE_CUSTOM_SLIDERS(Res, "Resolution ", 0)
