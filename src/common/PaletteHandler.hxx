@@ -110,7 +110,8 @@ class PaletteHandler
 
     PaletteArray adjustPalette(const PaletteArray& source);
 
-    void changeSaturation(int& R, int& G, int& B, float change);
+    void adjustHue(int& R, int& G, int& B, float change);
+    void adustSaturation(int& R, int& G, int& B, float change);
 
     /**
       Loads a user-defined palette file (from OSystem::paletteFile), filling the
