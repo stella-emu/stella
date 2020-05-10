@@ -20,6 +20,7 @@
 
 class CommandSender;
 class CheckboxWidget;
+class ColorWidget;
 class DialogContainer;
 class PopUpWidget;
 class RadioButtonGroup;
@@ -29,6 +30,7 @@ class TabWidget;
 class OSystem;
 
 #include "Dialog.hxx"
+#include "PaletteHandler.hxx"
 #include "NTSCFilter.hxx"
 #include "bspf.hxx"
 
@@ -50,10 +52,13 @@ class VideoDialog : public Dialog
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
     void handlePaletteChange();
+    void handlePaletteUpdate();
     void handleFullScreenChange();
     void handleOverscanChange();
     void handlePhosphorChange();
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
+    void addPalette(int x, int y, int h, int w);
+    void colorPalette();
 
   private:
     TabWidget* myTab;
@@ -77,6 +82,9 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myUIMessages{nullptr};
     CheckboxWidget*   myFastSCBios{nullptr};
     CheckboxWidget*   myUseThreads{nullptr};
+    std::array<StaticTextWidget*, 16> myColorLbl{nullptr};
+    //std::array<ColorWidget*, 16> myColor{nullptr};
+    ColorWidget*      myColor[16][8]{nullptr};
 
     // TV effects adjustables (custom mode)
     PopUpWidget*      myTVMode{nullptr};
@@ -106,10 +114,14 @@ class VideoDialog : public Dialog
     ButtonWidget*     myCloneBad{nullptr};
     ButtonWidget*     myCloneCustom{nullptr};
 
+    string            myPalette;
+    PaletteHandler::Adjustable myPaletteAdj{0.0F};
+
     enum {
       kPaletteChanged     = 'VDpl',
       kNtscShiftChanged   = 'VDns',
       kPalShiftChanged    = 'VDps',
+      kPaletteUpdated     = 'VDpu',
       kSpeedupChanged     = 'VDSp',
       kVSizeChanged       = 'VDVs',
       kFullScreenChanged  = 'VDFs',

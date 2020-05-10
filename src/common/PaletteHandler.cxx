@@ -46,7 +46,7 @@ PaletteHandler::PaletteType PaletteHandler::toPaletteType(const string& name) co
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string PaletteHandler::toPaletteName(PaletteType type) const
 {
-  string SETTING_NAMES[int(PaletteType::NumTypes)] = {
+  const string SETTING_NAMES[int(PaletteType::NumTypes)] = {
     SETTING_STANDARD, SETTING_Z26, SETTING_USER, SETTING_CUSTOM
   };
 
@@ -56,7 +56,7 @@ string PaletteHandler::toPaletteName(PaletteType type) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::changePalette(bool increase)
 {
-  string MESSAGES[PaletteType::NumTypes] = {
+  const string MESSAGES[PaletteType::NumTypes] = {
     "Standard Stella", "Z26", "User-defined", "Custom"
   };
 
@@ -98,7 +98,7 @@ void PaletteHandler::changePalette(bool increase)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::selectAdjustable(bool next)
 {
-  bool isCustomPalette = "custom" == myOSystem.settings().getString("palette");
+  const bool isCustomPalette = "custom" == myOSystem.settings().getString("palette");
 
   do {
     if(next)
@@ -155,9 +155,53 @@ void PaletteHandler::changeAdjustable(bool increase)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::changeColorPhaseShift(bool increase)
+{
+  const ConsoleTiming timing = myOSystem.console().timing();
+
+  // SECAM is not supported
+  if(timing != ConsoleTiming::secam)
+  {
+    constexpr char DEGREE = 0x1c;
+    const bool isNTSC = timing == ConsoleTiming::ntsc;
+    const float shift = isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT;
+    float phase = isNTSC ? myPhaseNTSC : myPhasePAL;
+
+    if(increase)        // increase color phase shift
+    {
+      phase += 0.3F;
+      phase = std::min(phase, shift + MAX_SHIFT);
+    }
+    else                // decrease color phase shift
+    {
+      phase -= 0.3F;
+      phase = std::max(phase, shift - MAX_SHIFT);
+    }
+    if(isNTSC)
+      myPhaseNTSC = phase;
+    else
+      myPhasePAL = phase;
+
+    generateCustomPalette(timing);
+    setPalette("custom");
+
+    ostringstream ss;
+    ss << "Color phase shift at "
+      << std::fixed << std::setprecision(1) << phase << DEGREE;
+
+    myOSystem.frameBuffer().showMessage(ss.str());
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::loadConfig(const Settings& settings)
 {
   // Load adjustables
+  myPhaseNTSC   = BSPF::clamp(settings.getFloat("tv.phase_ntsc"),
+                              DEF_NTSC_SHIFT - MAX_SHIFT, DEF_NTSC_SHIFT + MAX_SHIFT);
+  myPhasePAL    = BSPF::clamp(settings.getFloat("tv.phase_pal"),
+                              DEF_PAL_SHIFT - MAX_SHIFT, DEF_PAL_SHIFT + MAX_SHIFT);
+
   myHue         = BSPF::clamp(settings.getFloat("tv.hue"), -1.0F, 1.0F);
   mySaturation  = BSPF::clamp(settings.getFloat("tv.saturation"), -1.0F, 1.0F);
   myContrast    = BSPF::clamp(settings.getFloat("tv.contrast"), -1.0F, 1.0F);
@@ -169,6 +213,9 @@ void PaletteHandler::loadConfig(const Settings& settings)
 void PaletteHandler::saveConfig(Settings& settings) const
 {
   // Save adjustables
+  settings.setValue("tv.phase_ntsc", myPhaseNTSC);
+  settings.setValue("tv.phase_pal", myPhasePAL);
+
   settings.setValue("tv.hue", myHue);
   settings.setValue("tv.saturation", mySaturation);
   settings.setValue("tv.contrast", myContrast);
@@ -177,8 +224,11 @@ void PaletteHandler::saveConfig(Settings& settings) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::setAdjustables(Adjustable& adjustable)
+void PaletteHandler::setAdjustables(const Adjustable& adjustable)
 {
+  myPhaseNTSC   = adjustable.phaseNtsc / 10.F;
+  myPhasePAL    = adjustable.phasePal / 10.F;
+
   myHue         = scaleFrom100(adjustable.hue);
   mySaturation  = scaleFrom100(adjustable.saturation);
   myContrast    = scaleFrom100(adjustable.contrast);
@@ -189,52 +239,15 @@ void PaletteHandler::setAdjustables(Adjustable& adjustable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::getAdjustables(Adjustable& adjustable) const
 {
+  adjustable.phaseNtsc   = myPhaseNTSC * 10.F;
+  adjustable.phasePal    = myPhasePAL * 10.F;
+
   adjustable.hue         = scaleTo100(myHue);
   adjustable.saturation  = scaleTo100(mySaturation);
   adjustable.contrast    = scaleTo100(myContrast);
   adjustable.brightness  = scaleTo100(myBrightness);
   adjustable.gamma       = scaleTo100(myGamma);
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::changeColorPhaseShift(bool increase)
-{
-  const ConsoleTiming timing = myOSystem.console().timing();
-
-  // SECAM is not supported
-  if(timing != ConsoleTiming::secam)
-  {
-    const char DEGREE = 0x1c;
-    const float NTSC_SHIFT = 26.2F;
-    const float PAL_SHIFT = 31.3F; // 360 / 11.5
-    const bool isNTSC = timing == ConsoleTiming::ntsc;
-    const string key = isNTSC ? "tv.phase_ntsc" : "tv.phase_pal";
-    const float shift = isNTSC ? NTSC_SHIFT : PAL_SHIFT;
-    float phase = myOSystem.settings().getFloat(key);
-
-    if(increase)        // increase color phase shift
-    {
-      phase += 0.3F;
-      phase = std::min(phase, shift + 4.5F);
-    }
-    else                // decrease color phase shift
-    {
-      phase -= 0.3F;
-      phase = std::max(phase, shift - 4.5F);
-    }
-    myOSystem.settings().setValue(key, phase);
-    generateCustomPalette(timing);
-
-    setPalette("custom");
-
-    ostringstream ss;
-    ss << "Color phase shift at "
-      << std::fixed << std::setprecision(1) << phase << DEGREE;
-
-    myOSystem.frameBuffer().showMessage(ss.str());
-  }
-}
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::setPalette(const string& name)
@@ -251,7 +264,7 @@ void PaletteHandler::setPalette()
 
   // Look at all the palettes, since we don't know which one is
   // currently active
-  static constexpr BSPF::array2D<PaletteArray*, PaletteType::NumTypes, int(ConsoleTiming::numTimings)> palettes = {{
+  static constexpr BSPF::array2D<const PaletteArray*, PaletteType::NumTypes, int(ConsoleTiming::numTimings)> palettes = {{
     { &ourNTSCPalette,       &ourPALPalette,       &ourSECAMPalette     },
     { &ourNTSCPaletteZ26,    &ourPALPaletteZ26,    &ourSECAMPaletteZ26  },
     { &ourUserNTSCPalette,   &ourUserPALPalette,   &ourUserSECAMPalette },
@@ -274,19 +287,19 @@ PaletteArray PaletteHandler::adjustPalette(const PaletteArray& palette)
 {
   PaletteArray destPalette;
   // Constants for saturation and gray scale calculation
-  const float PR = .2989F;
-  const float PG = .5870F;
-  const float PB = .1140F;
+  constexpr float PR = .2989F;
+  constexpr float PG = .5870F;
+  constexpr float PB = .1140F;
   // Generate adjust table
-  const int ADJUST_SIZE = 256;
-  const int RGB_UNIT = 1 << 8;
-  const float RGB_OFFSET = 0.5F;
+  constexpr int ADJUST_SIZE = 256;
+  constexpr int RGB_UNIT = 1 << 8;
+  constexpr float RGB_OFFSET = 0.5F;
   const float brightness = myBrightness * (0.5F * RGB_UNIT) + RGB_OFFSET;
   const float contrast = myContrast * (0.5F * RGB_UNIT) + RGB_UNIT;
   const float saturation = mySaturation + 1;
   const float gamma = 1.1333F - myGamma * 0.5F;
   /* match common PC's 2.2 gamma to TV's 2.65 gamma */
-  const float toFloat = 1.F / (ADJUST_SIZE - 1);
+  constexpr float toFloat = 1.F / (ADJUST_SIZE - 1);
   std::array<float, ADJUST_SIZE> adjust;
 
   for(int i = 0; i < ADJUST_SIZE; i++)
@@ -341,13 +354,13 @@ void PaletteHandler::loadUserPalette()
   for(int i = 0; i < 128; i++)  // NTSC palette
   {
     in.read(reinterpret_cast<char*>(pixbuf.data()), 3);
-    uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
+    const uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     ourUserNTSCPalette[(i<<1)] = pixel;
   }
   for(int i = 0; i < 128; i++)  // PAL palette
   {
     in.read(reinterpret_cast<char*>(pixbuf.data()), 3);
-    uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
+    const uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     ourUserPALPalette[(i<<1)] = pixel;
   }
 
@@ -355,7 +368,7 @@ void PaletteHandler::loadUserPalette()
   for(int i = 0; i < 8; i++)     // SECAM palette
   {
     in.read(reinterpret_cast<char*>(pixbuf.data()), 3);
-    uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
+    const uInt32 pixel = (int(pixbuf[0]) << 16) + (int(pixbuf[1]) << 8) + int(pixbuf[2]);
     secam[(i<<1)]   = pixel;
     secam[(i<<1)+1] = 0;
   }
@@ -383,8 +396,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
   {
     // YIQ is YUV shifted by 33°
     constexpr float offset = 33 * (2 * BSPF::PI_f / 360);
-    const float shift = myOSystem.settings().getFloat("tv.phase_ntsc") *
-      (2 * BSPF::PI_f / 360);
+    const float shift = myPhaseNTSC * (2 * BSPF::PI_f / 360);
 
     // color 0 is grayscale
     for(int chroma = 1; chroma < NUM_CHROMA; chroma++)
@@ -429,8 +441,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
   else if(timing == ConsoleTiming::pal)
   {
     constexpr float offset = 180 * (2 * BSPF::PI_f / 360);
-    float shift = myOSystem.settings().getFloat("tv.phase_pal") *
-      (2 * BSPF::PI_f / 360);
+    const float shift = myPhasePAL * (2 * BSPF::PI_f / 360);
     constexpr float fixedShift = 22.5F * (2 * BSPF::PI_f / 360);
 
     // colors 0, 1, 14 and 15 are grayscale
@@ -453,11 +464,10 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
       {
         const float Y = 0.05F + luma / 8.24F; // 0.05..~0.90
 
-                                              // Most sources
+        // Most sources
         float R = Y + 1.403F * V;
         float G = Y - 0.344F * U - 0.714F * V;
         float B = Y + 1.770F * U;
-
         // German Wikipedia, huh???
         //float B = Y + 1 / 0.493 * U;
         //float R = Y + 1 / 0.877 * V;
@@ -504,8 +514,7 @@ void PaletteHandler::changeSaturation(int& R, int& G, int& B, float change)
   constexpr float PR = .2989F;
   constexpr float PG = .5870F;
   constexpr float PB = .1140F;
-
-  float P = sqrt(R * R * PR + G * G * PG + B * B * PB) ;
+  const float P = sqrt(R * R * PR + G * G * PG + B * B * PB) ;
 
   R = P + (R - P) * change;
   G = P + (G - P) * change;
@@ -517,7 +526,7 @@ void PaletteHandler::changeSaturation(int& R, int& G, int& B, float change)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteArray PaletteHandler::ourNTSCPalette = {
+const PaletteArray PaletteHandler::ourNTSCPalette = {
   0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,
   0xaaaaaa, 0, 0xc0c0c0, 0, 0xd6d6d6, 0, 0xececec, 0,
   0x484800, 0, 0x69690f, 0, 0x86861d, 0, 0xa2a22a, 0,
@@ -553,7 +562,7 @@ PaletteArray PaletteHandler::ourNTSCPalette = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteArray PaletteHandler::ourPALPalette = {
+const PaletteArray PaletteHandler::ourPALPalette = {
   0x000000, 0, 0x121212, 0, 0x242424, 0, 0x484848, 0, // 180 0
   0x6c6c6c, 0, 0x909090, 0, 0xb4b4b4, 0, 0xd8d8d8, 0, // was 0x111111..0xcccccc
   0x000000, 0, 0x121212, 0, 0x242424, 0, 0x484848, 0, // 198 1
@@ -589,7 +598,7 @@ PaletteArray PaletteHandler::ourPALPalette = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteArray PaletteHandler::ourSECAMPalette = {
+const PaletteArray PaletteHandler::ourSECAMPalette = {
   0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0,
   0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0,
   0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0,
@@ -625,7 +634,7 @@ PaletteArray PaletteHandler::ourSECAMPalette = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteArray PaletteHandler::ourNTSCPaletteZ26 = {
+const PaletteArray PaletteHandler::ourNTSCPaletteZ26 = {
   0x000000, 0, 0x505050, 0, 0x646464, 0, 0x787878, 0,
   0x8c8c8c, 0, 0xa0a0a0, 0, 0xb4b4b4, 0, 0xc8c8c8, 0,
   0x445400, 0, 0x586800, 0, 0x6c7c00, 0, 0x809000, 0,
@@ -661,7 +670,7 @@ PaletteArray PaletteHandler::ourNTSCPaletteZ26 = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteArray PaletteHandler::ourPALPaletteZ26 = {
+const PaletteArray PaletteHandler::ourPALPaletteZ26 = {
   0x000000, 0, 0x4c4c4c, 0, 0x606060, 0, 0x747474, 0,
   0x888888, 0, 0x9c9c9c, 0, 0xb0b0b0, 0, 0xc4c4c4, 0,
   0x000000, 0, 0x4c4c4c, 0, 0x606060, 0, 0x747474, 0,
@@ -697,7 +706,7 @@ PaletteArray PaletteHandler::ourPALPaletteZ26 = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteArray PaletteHandler::ourSECAMPaletteZ26 = {
+const PaletteArray PaletteHandler::ourSECAMPaletteZ26 = {
   0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0,
   0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0,
   0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0,

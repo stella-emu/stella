@@ -20,6 +20,7 @@
 
 #include "bspf.hxx"
 #include "OSystem.hxx"
+#include "ConsoleTiming.hxx"
 
 class PaletteHandler
 {
@@ -29,6 +30,10 @@ class PaletteHandler
     static constexpr const char* SETTING_USER = "user";
     static constexpr const char* SETTING_CUSTOM = "custom";
 
+    static constexpr float DEF_NTSC_SHIFT = 26.2F;
+    static constexpr float DEF_PAL_SHIFT = 31.3F; // 360 / 11.5
+    static constexpr float MAX_SHIFT = 4.5F;
+
     enum DisplayType {
       NTSC,
       PAL,
@@ -37,6 +42,7 @@ class PaletteHandler
     };
 
     struct Adjustable {
+      float phaseNtsc, phasePal;
       uInt32 hue, saturation, contrast, brightness, gamma;
     };
 
@@ -55,7 +61,7 @@ class PaletteHandler
 
     void loadConfig(const Settings& settings);
     void saveConfig(Settings& settings) const;
-    void setAdjustables(Adjustable& adjustable);
+    void setAdjustables(const Adjustable& adjustable);
     void getAdjustables(Adjustable& adjustable) const;
 
     /**
@@ -114,7 +120,7 @@ class PaletteHandler
 
 
   private:
-    static const int NUM_ADJUSTABLES = 6;
+    static constexpr int NUM_ADJUSTABLES = 6;
 
     OSystem& myOSystem;
 
@@ -133,11 +139,13 @@ class PaletteHandler
       { "gamma", &myGamma },
     } };
 
+    float myPhaseNTSC{0.0F};
+    float myPhasePAL{0.0F};
     // range -1.0 to +1.0 (as in AtariNTSC)
     // Basic parameters
-    float myContrast{0.0F};   // -1 = dark (0.5)       +1 = light (1.5)
     float myHue{0.0F};        // -1 = -180 degrees     +1 = +180 degrees
     float mySaturation{0.0F}; // -1 = grayscale (0.0)  +1 = oversaturated colors (2.0)
+    float myContrast{0.0F};   // -1 = dark (0.5)       +1 = light (1.5)
     float myBrightness{0.0F}; // -1 = dark (0.5)       +1 = light (1.5)
     // Advanced parameters
     float myGamma{0.0F};      // -1 = dark (1.5)       +1 = light (0.5)
@@ -147,14 +155,14 @@ class PaletteHandler
     bool myUserPaletteDefined{false};
 
     // Table of RGB values for NTSC, PAL and SECAM
-    static PaletteArray ourNTSCPalette;
-    static PaletteArray ourPALPalette;
-    static PaletteArray ourSECAMPalette;
+    static const PaletteArray ourNTSCPalette;
+    static const PaletteArray ourPALPalette;
+    static const PaletteArray ourSECAMPalette;
 
     // Table of RGB values for NTSC, PAL and SECAM - Z26 version
-    static PaletteArray ourNTSCPaletteZ26;
-    static PaletteArray ourPALPaletteZ26;
-    static PaletteArray ourSECAMPaletteZ26;
+    static const PaletteArray ourNTSCPaletteZ26;
+    static const PaletteArray ourPALPaletteZ26;
+    static const PaletteArray ourSECAMPaletteZ26;
 
     // Table of RGB values for NTSC, PAL and SECAM - user-defined
     static PaletteArray ourUserNTSCPalette;
