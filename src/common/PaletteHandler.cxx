@@ -314,11 +314,8 @@ PaletteArray PaletteHandler::adjustPalette(const PaletteArray& palette)
     int g = (pixel >> 8)  & 0xff;
     int b = (pixel >> 0)  & 0xff;
 
-    // adjust hue (different for NTSC and PAL?)
-    adjustHue(r, g, b, hue);
-
-    // adjust saturation
-    adustSaturation(r, g, b, saturation);
+    // adjust hue (different for NTSC and PAL?) and saturation
+    adjustHueSaturation(r, g, b, hue, saturation);
 
     // adjust contrast, brightness, gamma
     r = adjust[r];
@@ -498,51 +495,26 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::adjustHue(int& R, int& G, int& B, float change)
+void PaletteHandler::adjustHueSaturation(int& R, int& G, int& B, float H, float S)
 {
-  const float U = cos(-change * BSPF::PI_f);
-  const float W = sin(-change * BSPF::PI_f);
-  const float R_out = (.299 + .701 * U + .168 * W) * R
-    + (.587 - .587 * U + .330 * W) * G
-    + (.114 - .114 * U - .497 * W) * B;
-  const float G_out = (.299 - .299 * U - .328 * W) * R
-    + (.587 + .413 * U + .035 * W) * G
-    + (.114 - .114 * U + .292 * W) * B;
-  const float B_out = (.299 - .3 * U + 1.25 * W) * R
-    + (.587 - .588 * U - 1.05 * W) * G
-    + (.114 + .886 * U - .203 * W) * B;
+  // Adapted from http://beesbuzz.biz/code/16-hsv-color-transforms
+  // (C) J. “Fluffy” Shagam
+  // License: CC BY-SA 4.0
+  const float su = S * cos(-H * BSPF::PI_f);
+  const float sw = S * sin(-H * BSPF::PI_f);
+  const float r = (.299 + .701 * su + .168 * sw) * R
+                + (.587 - .587 * su + .330 * sw) * G
+                + (.114 - .114 * su - .497 * sw) * B;
+  const float g = (.299 - .299 * su - .328 * sw) * R
+                + (.587 + .413 * su + .035 * sw) * G
+                + (.114 - .114 * su + .292 * sw) * B;
+  const float b = (.299 - .300 * su + 1.25 * sw) * R
+                + (.587 - .588 * su - 1.05 * sw) * G
+                + (.114 + .886 * su - .203 * sw) * B;
 
-  R = R_out; G = G_out; B = B_out;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::adustSaturation(int& R, int& G, int& B, float change)
-{
-  //  public-domain function by Darel Rex Finley
-  //
-  //  The passed-in RGB values can be on any desired scale, such as 0 to
-  //  to 1, or 0 to 255.  (But use the same scale for all three!)
-  //
-  //  The "change" parameter works like this:
-  //    0.0 creates a black-and-white image.
-  //    0.5 reduces the color saturation by half.
-  //    1.0 causes no change.
-  //    2.0 doubles the color saturation.
-  //  Note:  A "change" value greater than 1.0 may project your RGB values
-  //  beyond their normal range, in which case you probably should truncate
-  //  them to the desired range before trying to use them in an image.
-  constexpr float PR = .2989F;
-  constexpr float PG = .5870F;
-  constexpr float PB = .1140F;
-  const float P = sqrt(R * R * PR + G * G * PG + B * B * PB) ;
-
-  R = P + (R - P) * change;
-  G = P + (G - P) * change;
-  B = P + (B - P) * change;
-
-  R = BSPF::clamp(R, 0, 255);
-  G = BSPF::clamp(G, 0, 255);
-  B = BSPF::clamp(B, 0, 255);
+  R = BSPF::clamp(r, 0.F, 255.F);
+  G = BSPF::clamp(g, 0.F, 255.F);
+  B = BSPF::clamp(b, 0.F, 255.F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
