@@ -115,7 +115,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   // Disable certain functions when we know they aren't present
 #ifndef WINDOWED_SUPPORT
   myFullscreen->clearFlags(Widget::FLAG_ENABLED);
-  myCenter->clearFlags(Widget::FLAG_ENABLED);
+  myUseStretch->clearFlags(Widget::FLAG_ENABLED);
+  myTVOverscan->clearFlags(Widget::FLAG_ENABLED);
 #endif
 }
 
@@ -129,17 +130,14 @@ void VideoDialog::addGeneralTab()
   const int VGAP = fontHeight / 4;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
-
-  int xpos, ypos, tabID;
-  int lwidth = _font.getStringWidth("V-Size adjust "),
-      pwidth = _font.getStringWidth("XXXXxXXXX"),
-      swidth = fontWidth * 8 - fontWidth / 2;
+  const int INDENT = CheckboxWidget::prefixSize(_font);
+  const int lwidth = _font.getStringWidth("V-Size adjust "),
+            pwidth = _font.getStringWidth("XXXXxXXXX");
+  int xpos = HBORDER,
+      ypos = VBORDER;
   WidgetArray wid;
   VariantList items;
-
-  tabID = myTab->addTab(" General ");
-  xpos = HBORDER;  ypos = VBORDER;
+  const int tabID = myTab->addTab(" General ");
 
   // Video renderer
   myRenderer = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
@@ -150,8 +148,32 @@ void VideoDialog::addGeneralTab()
 
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Interpolation ");
-  wid.push_back(myTIAInterpolate);  ypos += lineHeight + VGAP;
+  wid.push_back(myTIAInterpolate);  ypos += lineHeight + VGAP * 4;
 
+  // Fullscreen
+  myFullscreen = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Fullscreen", kFullScreenChanged);
+  wid.push_back(myFullscreen);
+  ypos += lineHeight + VGAP;
+
+  /*pwidth = font.getStringWidth("0: 3840x2860@120Hz");
+  myFullScreenMode = new PopUpWidget(myTab, font, xpos + INDENT + 2, ypos, pwidth, lineHeight,
+  instance().frameBuffer().supportedScreenModes(), "Mode ");
+  wid.push_back(myFullScreenMode);
+  ypos += lineHeight + VGAP;*/
+
+  // FS stretch
+  myUseStretch = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Stretch");
+  wid.push_back(myUseStretch);
+  ypos += lineHeight + VGAP;
+
+  // FS overscan
+  const int swidth = myRenderer->getWidth() - lwidth;
+  myTVOverscan = new SliderWidget(myTab, _font, xpos + INDENT, ypos - 1, swidth, lineHeight,
+                                  "Overscan", lwidth - INDENT, kOverscanChanged, fontWidth * 3, "%");
+  myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
+  myTVOverscan->setTickmarkIntervals(2);
+  wid.push_back(myTVOverscan);
+  ypos += lineHeight + VGAP;
 
   // TIA zoom levels (will be dynamically filled later)
   myTIAZoom = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
@@ -160,14 +182,14 @@ void VideoDialog::addGeneralTab()
   wid.push_back(myTIAZoom);
   ypos += lineHeight + VGAP;
 
-  // Aspect ratio (NTSC mode)
+  // Vertical size
   myVSizeAdjust =
     new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,
                      "V-Size adjust", lwidth, kVSizeChanged, fontWidth * 7, "%", 0, true);
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
   wid.push_back(myVSizeAdjust);
-  ypos += lineHeight + VGAP;
+  ypos += lineHeight + VGAP * 4;
 
   // Speed
   mySpeed =
@@ -187,30 +209,6 @@ void VideoDialog::addGeneralTab()
   xpos = myVSizeAdjust->getRight() + fontWidth * 3;
   ypos = VBORDER;
 
-  // Fullscreen
-  myFullscreen = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Fullscreen", kFullScreenChanged);
-  wid.push_back(myFullscreen);
-  ypos += lineHeight + VGAP;
-
-  /*pwidth = font.getStringWidth("0: 3840x2860@120Hz");
-  myFullScreenMode = new PopUpWidget(myTab, font, xpos + INDENT + 2, ypos, pwidth, lineHeight,
-  instance().frameBuffer().supportedScreenModes(), "Mode ");
-  wid.push_back(myFullScreenMode);
-  ypos += lineHeight + VGAP;*/
-
-  // FS stretch
-  myUseStretch = new CheckboxWidget(myTab, _font, xpos + INDENT, ypos + 1, "Stretch");
-  wid.push_back(myUseStretch);
-  ypos += lineHeight + VGAP;
-
-  // FS overscan
-  myTVOverscan = new SliderWidget(myTab, _font, xpos + INDENT, ypos - 1, swidth, lineHeight,
-                                  "Overscan", _font.getStringWidth("Overscan "), kOverscanChanged, fontWidth * 3, "%");
-  myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
-  myTVOverscan->setTickmarkIntervals(2);
-  wid.push_back(myTVOverscan);
-  ypos += (lineHeight + VGAP) * 2;
-
   // Skip progress load bars for SuperCharger ROMs
   // Doesn't really belong here, but I couldn't find a better place for it
   myFastSCBios = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Fast SuperCharger load");
@@ -221,11 +219,6 @@ void VideoDialog::addGeneralTab()
   myUIMessages = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Show UI messages");
   wid.push_back(myUIMessages);
   ypos += lineHeight + VGAP;
-
-  // Center window (in windowed mode)
-  myCenter = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Center window");
-  wid.push_back(myCenter);
-  ypos += (lineHeight + VGAP) * 2;
 
   // Use multi-threading
   myUseThreads = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Multi-threading");
@@ -246,15 +239,13 @@ void VideoDialog::addPaletteTab()
   const int HBORDER = fontWidth * 1.25;
   const int INDENT = fontWidth * 2;
   const int VGAP = fontHeight / 4;
+  const int lwidth = _font.getStringWidth("  NTSC phase ");
+  const int pwidth = _font.getStringWidth("Standard");
   int xpos = HBORDER,
       ypos = VBORDER;
-  int swidth = fontWidth * 8 - fontWidth / 2;
-  int lwidth = _font.getStringWidth("Saturation ");
-  int pwidth = _font.getStringWidth("Standard");
   WidgetArray wid;
   VariantList items;
-
-  int tabID = myTab->addTab(" Palettes ");
+  const int tabID = myTab->addTab(" Palettes ");
 
   // TIA Palette
   items.clear();
@@ -268,9 +259,9 @@ void VideoDialog::addPaletteTab()
   wid.push_back(myTIAPalette);
   ypos += lineHeight + VGAP;
 
-  swidth = myTIAPalette->getWidth() - lwidth;
-  int plWidth = _font.getStringWidth("NTSC phase ");
-  int pswidth = swidth - INDENT + lwidth - plWidth;
+  const int swidth = myTIAPalette->getWidth() - lwidth;
+  const int plWidth = _font.getStringWidth("NTSC phase ");
+  const int pswidth = swidth - INDENT + lwidth - plWidth;
 
   myPhaseShiftNtsc =
     new SliderWidget(myTab, _font, xpos + INDENT, ypos-1, pswidth, lineHeight,
@@ -316,16 +307,15 @@ void VideoDialog::addTVEffectsTab()
             buttonHeight = _font.getLineHeight() * 1.25;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  const int INDENT = fontWidth * 2;
+  const int INDENT = CheckboxWidget::prefixSize(_font);// fontWidth * 2;
   const int VGAP = fontHeight / 4;
   int xpos = HBORDER,
       ypos = VBORDER;
-  int swidth = fontWidth * 8 - fontWidth / 2;
-  int lwidth = _font.getStringWidth("TV Mode ");
-  int pwidth = _font.getStringWidth("Bad adjust");
+  const int lwidth = _font.getStringWidth("Saturation ");
+  const int pwidth = _font.getStringWidth("Bad adjust  ");
   WidgetArray wid;
   VariantList items;
-  int tabID = myTab->addTab(" TV Effects ");
+  const int tabID = myTab->addTab(" TV Effects ");
 
   items.clear();
   VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
@@ -334,15 +324,14 @@ void VideoDialog::addTVEffectsTab()
   VarList::push_back(items, "Composite", static_cast<uInt32>(NTSCFilter::Preset::COMPOSITE));
   VarList::push_back(items, "Bad adjust", static_cast<uInt32>(NTSCFilter::Preset::BAD));
   VarList::push_back(items, "Custom", static_cast<uInt32>(NTSCFilter::Preset::CUSTOM));
-  myTVMode =
-    new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
-                    items, "TV mode ", lwidth, kTVModeChanged);
+  myTVMode = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
+                             items, "TV mode ", 0, kTVModeChanged);
   wid.push_back(myTVMode);
   ypos += lineHeight + VGAP;
 
   // Custom adjustables (using macro voodoo)
-  xpos += INDENT - 2; ypos += 0;
-  lwidth = _font.getStringWidth("Saturation ");
+  const int swidth = myTVMode->getWidth() - INDENT - lwidth;
+  xpos += INDENT;
 
 #define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
   myTV ## obj =                                                          \
@@ -359,10 +348,9 @@ void VideoDialog::addTVEffectsTab()
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing ", 0)
   CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding ", 0)
 
-  xpos += myTVContrast->getWidth() + fontWidth * 6;
-  ypos = VBORDER;
+  ypos += VGAP * 3;
 
-  lwidth = _font.getStringWidth("Intensity ");
+  xpos = HBORDER;
 
   // TV Phosphor effect
   myTVPhosphor = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Phosphor for all ROMs", kPhosphorChanged);
@@ -371,9 +359,8 @@ void VideoDialog::addTVEffectsTab()
 
   // TV Phosphor blend level
   xpos += INDENT;
-  swidth = _font.getMaxCharWidth() * 10;
-  CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend     ", kPhosBlendChanged)
-    ypos += VGAP * 2;
+  CREATE_CUSTOM_SLIDERS(PhosLevel, "Blend", kPhosBlendChanged)
+  ypos += VGAP;
 
   // Scanline intensity and interpolation
   xpos -= INDENT;
@@ -381,12 +368,14 @@ void VideoDialog::addTVEffectsTab()
   ypos += lineHeight + VGAP / 2;
 
   xpos += INDENT;
-  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity ", kScanlinesChanged)
-  ypos += VGAP * 3;
+  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity", kScanlinesChanged)
+
+  // Create buttons in 2nd column
+  xpos = myTVSharp->getRight() + fontWidth * 2;
+  ypos = VBORDER - VGAP / 2;
 
   // Adjustable presets
-  xpos -= INDENT;
-  int cloneWidth = _font.getStringWidth("Clone Bad Adjust") + 20;
+  int cloneWidth = _font.getStringWidth("Clone Bad Adjust") + fontWidth * 2.5;
 #define CREATE_CLONE_BUTTON(obj, desc)                                 \
   myClone ## obj =                                                     \
     new ButtonWidget(myTab, _font, xpos, ypos, cloneWidth, buttonHeight,\
@@ -457,9 +446,6 @@ void VideoDialog::loadConfig()
 
   // Show UI messages
   myUIMessages->setState(instance().settings().getBool("uimessages"));
-
-  // Center window
-  myCenter->setState(instance().settings().getBool("center"));
 
   // Fast loading of Supercharger BIOS
   myFastSCBios->setState(instance().settings().getBool("fastscbios"));
@@ -544,9 +530,6 @@ void VideoDialog::saveConfig()
   // Show UI messages
   instance().settings().setValue("uimessages", myUIMessages->getState());
 
-  // Center window
-  instance().settings().setValue("center", myCenter->getState());
-
   // Fast loading of Supercharger BIOS
   instance().settings().setValue("fastscbios", myFastSCBios->getState());
 
@@ -623,7 +606,6 @@ void VideoDialog::setDefaults()
       myUseStretch->setState(false);
       myUseVSync->setState(true);
       myUIMessages->setState(true);
-      myCenter->setState(false);
       myFastSCBios->setState(true);
       myUseThreads->setState(false);
 
