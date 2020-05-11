@@ -437,11 +437,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::PreviousPaletteAttribute:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().selectAdjustable(false);
+      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(false);
       return;
 
     case Event::NextPaletteAttribute:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().selectAdjustable(true);
+      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(true);
       return;
 
     case Event::PaletteAttributeDecrease:
@@ -450,14 +450,6 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     case Event::PaletteAttributeIncrease:
       if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(true);
-      return;
-
-    case Event::ColorShiftDecrease:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().changeColorPhaseShift(false);
-      return;
-
-    case Event::ColorShiftIncrease:
-      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().changeColorPhaseShift(true);
       return;
 
     case Event::ToggleFullScreen:
@@ -565,11 +557,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::PaletteDecrease:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().paletteHandler().changePalette(false);
+      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(false);
       return;
 
     case Event::PaletteIncrease:
-      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().paletteHandler().changePalette(true);
+      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(true);
       return;
 
     case Event::ToggleInter:
@@ -1965,8 +1957,6 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::NextPaletteAttribute,    "Select next palette attribute",         "" },
   { Event::PaletteAttributeDecrease,"Decrease selected palette attribute",   "" },
   { Event::PaletteAttributeIncrease,"Increase selected palette attribute",   "" },
-  { Event::ColorShiftDecrease,      "Decrease custom palette phase shift",   "" },
-  { Event::ColorShiftIncrease,      "Increase custom palette phase shift",   "" },
   { Event::ToggleInter,             "Toggle display interpolation",          "" },
   // Blargg TV effects:
   { Event::VidmodeStd,              "Disable TV effects",                    "" },
@@ -2097,7 +2087,6 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::ScanlineAdjustDecrease, Event::ScanlineAdjustIncrease,
   Event::OverscanDecrease, Event::OverscanIncrease,
   Event::PaletteDecrease, Event::PaletteIncrease,
-  Event::ColorShiftDecrease, Event::ColorShiftIncrease,
   Event::PreviousVideoMode, Event::NextVideoMode,
   Event::PreviousPaletteAttribute, Event::NextPaletteAttribute,
   Event::PaletteAttributeDecrease, Event::PaletteAttributeIncrease,

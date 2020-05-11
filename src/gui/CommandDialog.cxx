@@ -204,7 +204,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPaletteCmd:
-      instance().frameBuffer().tiaSurface().paletteHandler().changePalette();
+      instance().frameBuffer().tiaSurface().paletteHandler().cyclePalette();
       updatePalette();
       break;
 
@@ -270,11 +270,11 @@ void CommandDialog::updatePalette()
   string palette, label;
 
   palette = instance().settings().getString("palette");
-  if(BSPF::equalsIgnoreCase(palette, "standard"))
+  if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_STANDARD))
     label = "Stella Palette";
-  else if(BSPF::equalsIgnoreCase(palette, "z26"))
+  else if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_Z26))
     label = "Z26 Palette";
-  else if(BSPF::equalsIgnoreCase(palette, "user"))
+  else if(BSPF::equalsIgnoreCase(palette, PaletteHandler::SETTING_USER))
     label = "User Palette";
   else
     label = "Custom Palette";

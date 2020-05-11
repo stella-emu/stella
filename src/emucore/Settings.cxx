@@ -21,6 +21,7 @@
 #include "Version.hxx"
 #include "Logger.hxx"
 #include "AudioSettings.hxx"
+#include "PaletteHandler.hxx"
 #include "Paddles.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -45,7 +46,7 @@ Settings::Settings()
   setPermanent("center", "true");
   setPermanent("windowedpos", Common::Point(50, 50));
   setPermanent("display", 0);
-  setPermanent("palette", "standard");
+  setPermanent("palette", PaletteHandler::SETTING_STANDARD);
   setPermanent("uimessages", "true");
 
   // TIA specific options
@@ -358,8 +359,11 @@ void Settings::validate()
   else if(i > 10)  setValue("ssinterval", "10");
 
   s = getString("palette");
-  if(s != "standard" && s != "z26" && s != "user" && s != "custom")
-    setValue("palette", "standard");
+  if(s != PaletteHandler::SETTING_STANDARD
+     && s != PaletteHandler::SETTING_Z26
+     && s != PaletteHandler::SETTING_USER
+     && s != PaletteHandler::SETTING_CUSTOM)
+    setValue("palette", PaletteHandler::SETTING_STANDARD);
 
   s = getString("launcherfont");
   if(s != "small" && s != "low_medium" && s != "medium" && s != "large"

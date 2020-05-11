@@ -74,8 +74,8 @@ string NTSCFilter::getPreset() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setNextAdjustable()
 {
-  if(myPreset != Preset::CUSTOM)
-    return "'Custom' TV mode not selected";
+  //if(myPreset != Preset::CUSTOM)
+  //  return "'Custom' TV mode not selected";
 
 #ifdef BLARGG_PALETTE
   myCurrentAdjustable = (myCurrentAdjustable + 1) % 10;
@@ -85,7 +85,8 @@ string NTSCFilter::setNextAdjustable()
 
   ostringstream buf;
   buf << "Custom adjustable '" << ourCustomAdjustables[myCurrentAdjustable].type
-      << "' selected";
+      << "' selected ("
+      << scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value) << "%)";
 
   return buf.str();
 }
@@ -93,8 +94,8 @@ string NTSCFilter::setNextAdjustable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setPreviousAdjustable()
 {
-  if(myPreset != Preset::CUSTOM)
-    return "'Custom' TV mode not selected";
+  //if(myPreset != Preset::CUSTOM)
+  //  return "'Custom' TV mode not selected";
 
 #ifdef BLARGG_PALETTE
   if(myCurrentAdjustable == 0) myCurrentAdjustable = 9;
@@ -104,7 +105,8 @@ string NTSCFilter::setPreviousAdjustable()
   else                         --myCurrentAdjustable;
   ostringstream buf;
   buf << "Custom adjustable '" << ourCustomAdjustables[myCurrentAdjustable].type
-      << "' selected";
+      << "' selected ("
+      << scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value) << "%)";
 
   return buf.str();
 }
@@ -112,8 +114,8 @@ string NTSCFilter::setPreviousAdjustable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::increaseAdjustable()
 {
-  if(myPreset != Preset::CUSTOM)
-    return "'Custom' TV mode not selected";
+  //if(myPreset != Preset::CUSTOM)
+  //  return "'Custom' TV mode not selected";
 
   uInt32 newval = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
   newval += 2;  if(newval > 100) newval = 100;
@@ -121,7 +123,7 @@ string NTSCFilter::increaseAdjustable()
 
   ostringstream buf;
   buf << "Custom '" << ourCustomAdjustables[myCurrentAdjustable].type
-      << "' set to " << newval;
+      << "' set to " << newval << "%";
 
   setPreset(myPreset);
   return buf.str();
@@ -130,8 +132,8 @@ string NTSCFilter::increaseAdjustable()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::decreaseAdjustable()
 {
-  if(myPreset != Preset::CUSTOM)
-    return "'Custom' TV mode not selected";
+  //if(myPreset != Preset::CUSTOM)
+  //  return "'Custom' TV mode not selected";
 
   uInt32 newval = scaleTo100(*ourCustomAdjustables[myCurrentAdjustable].value);
   if(newval < 2) newval = 0;
@@ -140,7 +142,7 @@ string NTSCFilter::decreaseAdjustable()
 
   ostringstream buf;
   buf << "Custom '" << ourCustomAdjustables[myCurrentAdjustable].type
-      << "' set to " << newval;
+      << "' set to " << newval << "%";
 
   setPreset(myPreset);
   return buf.str();
