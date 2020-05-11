@@ -33,14 +33,16 @@ class TiaOutputWidget;
 class TiaZoomWidget;
 class CartDebugWidget;
 class CartRamWidget;
+class OptionsDialog;
 
+namespace GUI {
+  class MessageBox;
+}
 namespace Common {
   struct Rect;
 }
 
 #include "Dialog.hxx"
-#include "MessageBox.hxx"
-#include "OptionsDialog.hxx"
 
 class DebuggerDialog : public Dialog
 {
@@ -55,7 +57,7 @@ class DebuggerDialog : public Dialog
 
     DebuggerDialog(OSystem& osystem, DialogContainer& parent,
                    int x, int y, int w, int h);
-    virtual ~DebuggerDialog() = default;
+    virtual ~DebuggerDialog();
 
     const GUI::Font& lfont() const     { return *myLFont;        }
     const GUI::Font& nfont() const     { return *myNFont;        }

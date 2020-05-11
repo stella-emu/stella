@@ -22,13 +22,13 @@ class TIA;
 class Console;
 class OSystem;
 class FBSurface;
+class PaletteHandler;
 
 #include <thread>
 
 #include "Rect.hxx"
 #include "FrameBuffer.hxx"
 #include "NTSCFilter.hxx"
-#include "PaletteHandler.hxx"
 #include "PhosphorHandler.hxx"
 #include "bspf.hxx"
 #include "TIAConstants.hxx"
@@ -49,8 +49,7 @@ class TIASurface
       Creates a new TIASurface object
     */
     explicit TIASurface(OSystem& system);
-
-    virtual ~TIASurface() = default;
+    virtual ~TIASurface();
 
     /**
       Set the TIA object, which is needed for actually rendering the TIA image.

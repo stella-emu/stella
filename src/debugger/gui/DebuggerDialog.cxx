@@ -69,6 +69,11 @@ DebuggerDialog::DebuggerDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DebuggerDialog::~DebuggerDialog()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::loadConfig()
 {
   if(myFocusedWidget == nullptr)
