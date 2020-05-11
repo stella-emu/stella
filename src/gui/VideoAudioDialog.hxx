@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#ifndef VIDEO_DIALOG_HXX
-#define VIDEO_DIALOG_HXX
+#ifndef VIDEOAUDIO_DIALOG_HXX
+#define VIDEOAUDIO_DIALOG_HXX
 
 class CommandSender;
 class CheckboxWidget;
@@ -34,21 +34,22 @@ class OSystem;
 #include "NTSCFilter.hxx"
 #include "bspf.hxx"
 
-class VideoDialog : public Dialog
+class VideoAudioDialog : public Dialog
 {
   public:
-    VideoDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
+    VideoAudioDialog(OSystem& osystem, DialogContainer& parent, const GUI::Font& font,
                 int max_w, int max_h);
-    virtual ~VideoDialog() = default;
+    virtual ~VideoAudioDialog() = default;
 
   private:
     void loadConfig() override;
     void saveConfig() override;
     void setDefaults() override;
 
-    void addGeneralTab();
+    void addDisplayTab();
     void addPaletteTab();
     void addTVEffectsTab();
+    void addAudioTab();
     void handleTVModeChange(NTSCFilter::Preset);
     void loadTVAdjustables(NTSCFilter::Preset preset);
     void handlePaletteChange();
@@ -59,45 +60,30 @@ class VideoDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
     void addPalette(int x, int y, int h, int w);
     void colorPalette();
+    void updatePreset();
+    void updateEnabledState();
+    void updateSettingsWithPreset(AudioSettings&);
 
   private:
     TabWidget* myTab;
 
     // General options
     PopUpWidget*      myRenderer{nullptr};
-    SliderWidget*     myTIAZoom{nullptr};
-    PopUpWidget*      myTIAPalette{nullptr};
-    SliderWidget*     myPhaseShiftNtsc{nullptr};
-    SliderWidget*     myPhaseShiftPal{nullptr};
     CheckboxWidget*   myTIAInterpolate{nullptr};
-    SliderWidget*     myVSizeAdjust{nullptr};
-    SliderWidget*     mySpeed{nullptr};
-
-    RadioButtonGroup* myZoomGroup{nullptr};
     CheckboxWidget*   myFullscreen{nullptr};
     //PopUpWidget*      myFullScreenMode;
     CheckboxWidget*   myUseStretch{nullptr};
     SliderWidget*     myTVOverscan{nullptr};
-    CheckboxWidget*   myUseVSync{nullptr};
-    CheckboxWidget*   myUIMessages{nullptr};
-    CheckboxWidget*   myFastSCBios{nullptr};
-    CheckboxWidget*   myUseThreads{nullptr};
-    std::array<StaticTextWidget*, 16> myColorLbl{nullptr};
-    //std::array<ColorWidget*, 16> myColor{nullptr};
-    ColorWidget*      myColor[16][8]{nullptr};
+    SliderWidget*     myTIAZoom{nullptr};
+    SliderWidget*     myVSizeAdjust{nullptr};
 
     // TV effects adjustables (custom mode)
     PopUpWidget*      myTVMode{nullptr};
     SliderWidget*     myTVSharp{nullptr};
-    SliderWidget*     myTVHue{nullptr};
     SliderWidget*     myTVRes{nullptr};
     SliderWidget*     myTVArtifacts{nullptr};
     SliderWidget*     myTVFringe{nullptr};
     SliderWidget*     myTVBleed{nullptr};
-    SliderWidget*     myTVBright{nullptr};
-    SliderWidget*     myTVContrast{nullptr};
-    SliderWidget*     myTVSatur{nullptr};
-    SliderWidget*     myTVGamma{nullptr};
 
     // TV phosphor effect
     CheckboxWidget*   myTVPhosphor{nullptr};
@@ -114,19 +100,43 @@ class VideoDialog : public Dialog
     ButtonWidget*     myCloneBad{nullptr};
     ButtonWidget*     myCloneCustom{nullptr};
 
+    // Palettes
+    PopUpWidget*      myTIAPalette{nullptr};
+    SliderWidget*     myPhaseShiftNtsc{nullptr};
+    SliderWidget*     myPhaseShiftPal{nullptr};
+    SliderWidget*     myTVHue{nullptr};
+    SliderWidget*     myTVSatur{nullptr};
+    SliderWidget*     myTVBright{nullptr};
+    SliderWidget*     myTVContrast{nullptr};
+    SliderWidget*     myTVGamma{nullptr};
+    std::array<StaticTextWidget*, 16> myColorLbl{nullptr};
+    ColorWidget*      myColor[16][8]{nullptr};
+
+    // Audio
+    CheckboxWidget*   mySoundEnableCheckbox{nullptr};
+    SliderWidget*     myVolumeSlider{nullptr};
+    CheckboxWidget*   myStereoSoundCheckbox{nullptr};
+    PopUpWidget*      myModePopup{nullptr};
+    PopUpWidget*      myFragsizePopup{nullptr};
+    PopUpWidget*      myFreqPopup{nullptr};
+    PopUpWidget*      myResamplingPopup{nullptr};
+    SliderWidget*     myHeadroomSlider{nullptr};
+    SliderWidget*     myBufferSizeSlider{nullptr};
+    SliderWidget*     myDpcPitch{nullptr};
+
     string            myPalette;
     PaletteHandler::Adjustable myPaletteAdj{0.0F};
 
     enum {
+      kZoomChanged        = 'VDZo',
+      kVSizeChanged       = 'VDVs',
+      kFullScreenChanged  = 'VDFs',
+      kOverscanChanged    = 'VDOv',
+
       kPaletteChanged     = 'VDpl',
       kNtscShiftChanged   = 'VDns',
       kPalShiftChanged    = 'VDps',
       kPaletteUpdated     = 'VDpu',
-      kSpeedupChanged     = 'VDSp',
-      kVSizeChanged       = 'VDVs',
-      kFullScreenChanged  = 'VDFs',
-      kZoomChanged        = 'VDZo',
-      kOverscanChanged    = 'VDOv',
 
       kTVModeChanged      = 'VDtv',
       kCloneCompositeCmd  = 'CLcp',
@@ -136,16 +146,21 @@ class VideoDialog : public Dialog
       kCloneCustomCmd     = 'CLcu',
       kPhosphorChanged    = 'VDph',
       kPhosBlendChanged   = 'VDbl',
-      kScanlinesChanged   = 'VDsc'
+      kScanlinesChanged   = 'VDsc',
+
+      kSoundEnableChanged = 'ADse',
+      kModeChanged        = 'ADmc',
+      kHeadroomChanged    = 'ADhc',
+      kBufferSizeChanged  = 'ADbc'
     };
 
   private:
     // Following constructors and assignment operators not supported
-    VideoDialog() = delete;
-    VideoDialog(const VideoDialog&) = delete;
-    VideoDialog(VideoDialog&&) = delete;
-    VideoDialog& operator=(const VideoDialog&) = delete;
-    VideoDialog& operator=(VideoDialog&&) = delete;
+    VideoAudioDialog() = delete;
+    VideoAudioDialog(const VideoAudioDialog&) = delete;
+    VideoAudioDialog(VideoAudioDialog&&) = delete;
+    VideoAudioDialog& operator=(const VideoAudioDialog&) = delete;
+    VideoAudioDialog& operator=(VideoAudioDialog&&) = delete;
 };
 
 #endif

@@ -70,7 +70,6 @@ class UIDialog : public Dialog, public CommandSender
     CheckboxWidget*   myHidpiWidget{nullptr};
     PopUpWidget*      myPositionPopup{nullptr};
     CheckboxWidget*   myCenter{nullptr};
-    CheckboxWidget*   myConfirmExitWidget{nullptr};
     SliderWidget*     myListDelaySlider{nullptr};
     SliderWidget*     myWheelLinesSlider{nullptr};
     SliderWidget*     myControllerRateSlider{nullptr};

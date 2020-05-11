@@ -33,6 +33,7 @@ class TiaOutputWidget;
 class TiaZoomWidget;
 class CartDebugWidget;
 class CartRamWidget;
+class OptionsDialog;
 
 namespace Common {
   struct Rect;
@@ -40,7 +41,6 @@ namespace Common {
 
 #include "Dialog.hxx"
 #include "MessageBox.hxx"
-#include "OptionsDialog.hxx"
 
 class DebuggerDialog : public Dialog
 {
