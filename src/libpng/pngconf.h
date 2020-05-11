@@ -230,7 +230,7 @@
     * the type.
     */
 #    ifndef PNG_EXPORT_TYPE
-#      define PNG_EXPORT_TYPE(type) type PNG_IMPEXP
+#      define PNG_EXPORT_TYPE(name) name PNG_IMPEXP
 #    endif
 #    define PNG_DLL_EXPORT __export
 #  else /* newer compiler */
@@ -450,7 +450,7 @@
 #     define PNG_FP_EXPORT(ordinal, type, name, args)\
          PNG_EXPORT(ordinal, type, name, args);
 #  else                   /* No floating point APIs */
-#     define PNG_FP_EXPORT(ordinal, type, name, args)
+#     define PNG_FP_EXPORT(ordinal, name, name, args)
 #  endif
 #endif
 #ifndef PNG_FIXED_EXPORT  /* A fixed point API. */
@@ -458,7 +458,7 @@
 #     define PNG_FIXED_EXPORT(ordinal, type, name, args)\
          PNG_EXPORT(ordinal, type, name, args);
 #  else                   /* No fixed point APIs */
-#     define PNG_FIXED_EXPORT(ordinal, type, name, args)
+#     define PNG_FIXED_EXPORT(ordinal, name, name, args)
 #  endif
 #endif
 

@@ -20,6 +20,8 @@
 #include "bspf.hxx"
 #include "Base.hxx"
 #include "Control.hxx"
+#include "Cart.hxx"
+#include "CartDPC.hxx"
 #include "Dialog.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
@@ -30,51 +32,15 @@
 #include "PaletteHandler.hxx"
 #include "TIA.hxx"
 #include "Settings.hxx"
+#include "Sound.hxx"
+#include "AudioSettings.hxx"
 #include "Widget.hxx"
 #include "Font.hxx"
 #include "TabWidget.hxx"
 #include "NTSCFilter.hxx"
 #include "TIASurface.hxx"
 
-#include "VideoDialog.hxx"
-
-namespace {
-  // Emulation speed is a positive float that multiplies the framerate. However, the UI controls
-  // adjust speed in terms of a speedup factor (1/10, 1/9 .. 1/2, 1, 2, 3, .., 10). The following
-  // mapping and formatting functions implement this conversion. The speedup factor is represented
-  // by an integer value between -900 and 900 (0 means no speedup).
-
-  constexpr int MAX_SPEED = 900;
-  constexpr int MIN_SPEED = -900;
-  constexpr int SPEED_STEP = 10;
-
-  int mapSpeed(float speed)
-  {
-    speed = std::abs(speed);
-
-    return BSPF::clamp(
-      static_cast<int>(round(100 * (speed >= 1 ? speed - 1 : -1 / speed + 1))),
-      MIN_SPEED, MAX_SPEED
-    );
-  }
-
-  float unmapSpeed(int speed)
-  {
-    float f_speed = static_cast<float>(speed) / 100;
-
-    return speed < 0 ? -1 / (f_speed - 1) : 1 + f_speed;
-  }
-
-  string formatSpeed(int speed) {
-    stringstream ss;
-
-    ss
-      << std::setw(3) << std::fixed << std::setprecision(0)
-      << (unmapSpeed(speed) * 100);
-
-    return ss.str();
-  }
-}
+#include "VideoAudioDialog.hxx"
 
 #define CREATE_CUSTOM_SLIDERS(obj, desc, cmd)                            \
   myTV ## obj =                                                          \
@@ -87,9 +53,9 @@ namespace {
   ypos += lineHeight + VGAP;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
+VideoAudioDialog::VideoAudioDialog(OSystem& osystem, DialogContainer& parent,
                          const GUI::Font& font, int max_w, int max_h)
-  : Dialog(osystem, parent, font, "Video settings")
+  : Dialog(osystem, parent, font, "Video & Audio settings")
 {
   const int lineHeight   = _font.getLineHeight(),
             fontHeight   = _font.getFontHeight(),
@@ -101,8 +67,8 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
   int xpos, ypos;
 
   // Set real dimensions
-  setSize(57 * fontWidth + HBORDER * 2 + PopUpWidget::dropDownWidth(font) * 2,
-          _th + VGAP * 3 + lineHeight + 11 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
+  setSize(44 * fontWidth + HBORDER * 2 + PopUpWidget::dropDownWidth(font) * 2,
+          _th + VGAP * 6 + lineHeight + 10 * (lineHeight + VGAP) + buttonHeight + VBORDER * 3,
           max_w, max_h);
 
   // The tab widget
@@ -112,9 +78,10 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
                         _h - _th - VGAP - buttonHeight - VBORDER * 2);
   addTabWidget(myTab);
 
-  addGeneralTab();
+  addDisplayTab();
   addPaletteTab();
   addTVEffectsTab();
+  addAudioTab();
 
   //const int req_w = std::max(myFastSCBios->getRight(), myCloneBad->getRight()) + HBORDER + 1;
   //const int req_h = _th + VGAP * 3
@@ -141,7 +108,7 @@ VideoDialog::VideoDialog(OSystem& osystem, DialogContainer& parent,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::addGeneralTab()
+void VideoAudioDialog::addDisplayTab()
 {
   const int lineHeight   = _font.getLineHeight(),
             fontHeight   = _font.getFontHeight(),
@@ -152,23 +119,31 @@ void VideoDialog::addGeneralTab()
   const int HBORDER = fontWidth * 1.25;
   const int INDENT = CheckboxWidget::prefixSize(_font);
   const int lwidth = _font.getStringWidth("V-Size adjust "),
-            pwidth = _font.getStringWidth("XXXXxXXXX");
+            pwidth = _font.getStringWidth("OpenGLES2");
   int xpos = HBORDER,
       ypos = VBORDER;
   WidgetArray wid;
   VariantList items;
-  const int tabID = myTab->addTab(" General ");
+  const int tabID = myTab->addTab(" Display ", TabWidget::AUTO_WIDTH);
 
   // Video renderer
   myRenderer = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight,
                                instance().frameBuffer().supportedRenderers(),
                                "Renderer ", lwidth);
   wid.push_back(myRenderer);
+  const int swidth = myRenderer->getWidth() - lwidth;
   ypos += lineHeight + VGAP;
 
   // TIA interpolation
   myTIAInterpolate = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Interpolation ");
   wid.push_back(myTIAInterpolate);  ypos += lineHeight + VGAP * 4;
+
+  // TIA zoom levels (will be dynamically filled later)
+  myTIAZoom = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
+                               "Zoom ", lwidth, 0, fontWidth * 4, "%");
+  myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
+  wid.push_back(myTIAZoom);
+  ypos += lineHeight + VGAP;
 
   // Fullscreen
   myFullscreen = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Fullscreen", kFullScreenChanged);
@@ -187,19 +162,11 @@ void VideoDialog::addGeneralTab()
   ypos += lineHeight + VGAP;
 
   // FS overscan
-  const int swidth = myRenderer->getWidth() - lwidth;
   myTVOverscan = new SliderWidget(myTab, _font, xpos + INDENT, ypos - 1, swidth, lineHeight,
                                   "Overscan", lwidth - INDENT, kOverscanChanged, fontWidth * 3, "%");
   myTVOverscan->setMinValue(0); myTVOverscan->setMaxValue(10);
   myTVOverscan->setTickmarkIntervals(2);
   wid.push_back(myTVOverscan);
-  ypos += lineHeight + VGAP;
-
-  // TIA zoom levels (will be dynamically filled later)
-  myTIAZoom = new SliderWidget(myTab, _font, xpos, ypos - 1, swidth, lineHeight,
-                               "Zoom ", lwidth, 0, fontWidth * 4, "%");
-  myTIAZoom->setMinValue(200); myTIAZoom->setStepValue(FrameBuffer::ZOOM_STEPS * 100);
-  wid.push_back(myTIAZoom);
   ypos += lineHeight + VGAP;
 
   // Vertical size
@@ -209,47 +176,13 @@ void VideoDialog::addGeneralTab()
   myVSizeAdjust->setMinValue(-5); myVSizeAdjust->setMaxValue(5);
   myVSizeAdjust->setTickmarkIntervals(2);
   wid.push_back(myVSizeAdjust);
-  ypos += lineHeight + VGAP * 4;
-
-  // Speed
-  mySpeed =
-    new SliderWidget(myTab, _font, xpos, ypos-1, swidth, lineHeight,
-                     "Emul. speed ", lwidth, kSpeedupChanged, fontWidth * 5, "%");
-  mySpeed->setMinValue(MIN_SPEED); mySpeed->setMaxValue(MAX_SPEED);
-  mySpeed->setStepValue(SPEED_STEP);
-  mySpeed->setTickmarkIntervals(2);
-  wid.push_back(mySpeed);
-  ypos += lineHeight + VGAP;
-
-  // Use sync to vblank
-  myUseVSync = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "VSync");
-  wid.push_back(myUseVSync);
-
-  // Move over to the next column
-  xpos = myVSizeAdjust->getRight() + fontWidth * 3;
-  ypos = VBORDER;
-
-  // Skip progress load bars for SuperCharger ROMs
-  // Doesn't really belong here, but I couldn't find a better place for it
-  myFastSCBios = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Fast SuperCharger load");
-  wid.push_back(myFastSCBios);
-  ypos += lineHeight + VGAP;
-
-  // Show UI messages onscreen
-  myUIMessages = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Show UI messages");
-  wid.push_back(myUIMessages);
-  ypos += lineHeight + VGAP;
-
-  // Use multi-threading
-  myUseThreads = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Multi-threading");
-  wid.push_back(myUseThreads);
 
   // Add items for tab 0
   addToFocusList(wid, myTab, tabID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::addPaletteTab()
+void VideoAudioDialog::addPaletteTab()
 {
   const int lineHeight = _font.getLineHeight(),
             fontHeight = _font.getFontHeight(),
@@ -265,7 +198,7 @@ void VideoDialog::addPaletteTab()
       ypos = VBORDER;
   WidgetArray wid;
   VariantList items;
-  const int tabID = myTab->addTab(" Palettes ");
+  const int tabID = myTab->addTab(" Palettes ", TabWidget::AUTO_WIDTH);
 
   // TIA Palette
   items.clear();
@@ -308,15 +241,16 @@ void VideoDialog::addPaletteTab()
   CREATE_CUSTOM_SLIDERS(Gamma, "Gamma ", kPaletteUpdated)
 
   // The resulting palette
-  addPalette(myPhaseShiftNtsc->getRight() + fontWidth * 2, VBORDER,
-             fontWidth * 2 * 8, myTVGamma->getBottom() -  myTIAPalette->getTop());
+  xpos = myPhaseShiftNtsc->getRight() + fontWidth * 2;
+  addPalette(xpos, VBORDER, _w - 2 * 2 - HBORDER - xpos,
+             myTVGamma->getBottom() -  myTIAPalette->getTop());
 
   // Add items for tab 2
   addToFocusList(wid, myTab, tabID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::addTVEffectsTab()
+void VideoAudioDialog::addTVEffectsTab()
 {
   const int lineHeight = _font.getLineHeight(),
             fontHeight = _font.getFontHeight(),
@@ -332,7 +266,7 @@ void VideoDialog::addTVEffectsTab()
   const int pwidth = _font.getStringWidth("Bad adjust  ");
   WidgetArray wid;
   VariantList items;
-  const int tabID = myTab->addTab(" TV Effects ");
+  const int tabID = myTab->addTab(" TV Effects ", TabWidget::AUTO_WIDTH);
 
   items.clear();
   VarList::push_back(items, "Disabled", static_cast<uInt32>(NTSCFilter::Preset::OFF));
@@ -403,10 +337,137 @@ void VideoDialog::addTVEffectsTab()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::loadConfig()
+void VideoAudioDialog::addAudioTab()
 {
+  const int lineHeight   = _font.getLineHeight(),
+            fontHeight   = _font.getFontHeight(),
+            fontWidth    = _font.getMaxCharWidth();
+  const int VBORDER = fontHeight / 2;
+  const int HBORDER = fontWidth * 1.25;
+  const int INDENT = CheckboxWidget::prefixSize(_font);
+  const int VGAP = fontHeight / 4;
+
+  int xpos, ypos;
+  int lwidth = _font.getStringWidth("Volume "),
+    pwidth;
+  WidgetArray wid;
+  VariantList items;
+  const int tabID = myTab->addTab("  Audio  ", TabWidget::AUTO_WIDTH);
+
+  xpos = HBORDER;  ypos = VBORDER;
+
+  // Enable sound
+  mySoundEnableCheckbox = new CheckboxWidget(myTab, _font, xpos, ypos,
+                                             "Enable sound", kSoundEnableChanged);
+  wid.push_back(mySoundEnableCheckbox);
+  ypos += lineHeight + VGAP;
+  xpos += CheckboxWidget::prefixSize(_font);
+
+  // Volume
+  myVolumeSlider = new SliderWidget(myTab, _font, xpos, ypos,
+                                    "Volume", lwidth, 0, 4 * fontWidth, "%");
+  myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
+  myVolumeSlider->setTickmarkIntervals(4);
+  wid.push_back(myVolumeSlider);
+  ypos += lineHeight + VGAP;
+
+  // Mode
+  items.clear();
+  VarList::push_back(items, "Low quality, medium lag", static_cast<int>(AudioSettings::Preset::lowQualityMediumLag));
+  VarList::push_back(items, "High quality, medium lag", static_cast<int>(AudioSettings::Preset::highQualityMediumLag));
+  VarList::push_back(items, "High quality, low lag", static_cast<int>(AudioSettings::Preset::highQualityLowLag));
+  VarList::push_back(items, "Ultra quality, minimal lag", static_cast<int>(AudioSettings::Preset::ultraQualityMinimalLag));
+  VarList::push_back(items, "Custom", static_cast<int>(AudioSettings::Preset::custom));
+  myModePopup = new PopUpWidget(myTab, _font, xpos, ypos,
+                                _font.getStringWidth("Ultry quality, minimal lag"), lineHeight,
+                                items, "Mode", lwidth, kModeChanged);
+  wid.push_back(myModePopup);
+  ypos += lineHeight + VGAP;
+  xpos += INDENT;
+
+  // Fragment size
+  lwidth = _font.getStringWidth("Resampling quality ");
+  pwidth = myModePopup->getRight() - xpos - lwidth - PopUpWidget::dropDownWidth(_font);
+  items.clear();
+  VarList::push_back(items, "128 samples", 128);
+  VarList::push_back(items, "256 samples", 256);
+  VarList::push_back(items, "512 samples", 512);
+  VarList::push_back(items, "1k samples", 1024);
+  VarList::push_back(items, "2k samples", 2048);
+  VarList::push_back(items, "4K samples", 4096);
+  myFragsizePopup = new PopUpWidget(myTab, _font, xpos, ypos,
+                                    pwidth, lineHeight,
+                                    items, "Fragment size", lwidth);
+  wid.push_back(myFragsizePopup);
+  ypos += lineHeight + VGAP;
+
+  // Output frequency
+  items.clear();
+  VarList::push_back(items, "44100 Hz", 44100);
+  VarList::push_back(items, "48000 Hz", 48000);
+  VarList::push_back(items, "96000 Hz", 96000);
+  myFreqPopup = new PopUpWidget(myTab, _font, xpos, ypos,
+                                pwidth, lineHeight,
+                                items, "Sample rate", lwidth);
+  wid.push_back(myFreqPopup);
+  ypos += lineHeight + VGAP;
+
+  // Resampling quality
+  items.clear();
+  VarList::push_back(items, "Low", static_cast<int>(AudioSettings::ResamplingQuality::nearestNeightbour));
+  VarList::push_back(items, "High", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_2));
+  VarList::push_back(items, "Ultra", static_cast<int>(AudioSettings::ResamplingQuality::lanczos_3));
+  myResamplingPopup = new PopUpWidget(myTab, _font, xpos, ypos,
+                                      pwidth, lineHeight,
+                                      items, "Resampling quality ", lwidth);
+  wid.push_back(myResamplingPopup);
+  ypos += lineHeight + VGAP;
+
+  // Param 1
+  int swidth = pwidth + PopUpWidget::dropDownWidth(_font);
+  myHeadroomSlider = new SliderWidget(myTab, _font, xpos, ypos, swidth, lineHeight,
+                                      "Headroom           ", 0, kHeadroomChanged, 10 * fontWidth);
+  myHeadroomSlider->setMinValue(0); myHeadroomSlider->setMaxValue(AudioSettings::MAX_HEADROOM);
+  myHeadroomSlider->setTickmarkIntervals(5);
+  wid.push_back(myHeadroomSlider);
+  ypos += lineHeight + VGAP;
+
+  // Param 2
+  myBufferSizeSlider = new SliderWidget(myTab, _font, xpos, ypos, swidth, lineHeight,
+                                        "Buffer size        ", 0, kBufferSizeChanged, 10 * fontWidth);
+  myBufferSizeSlider->setMinValue(0); myBufferSizeSlider->setMaxValue(AudioSettings::MAX_BUFFER_SIZE);
+  myBufferSizeSlider->setTickmarkIntervals(5);
+  wid.push_back(myBufferSizeSlider);
+  ypos += lineHeight + VGAP;
+
+  // Stereo sound
+  xpos -= INDENT;
+  myStereoSoundCheckbox = new CheckboxWidget(myTab, _font, xpos, ypos,
+                                             "Stereo for all ROMs");
+  wid.push_back(myStereoSoundCheckbox);
+  ypos += lineHeight + VGAP;
+
+  swidth += INDENT - fontWidth * 4;
+  myDpcPitch = new SliderWidget(myTab, _font, xpos, ypos, swidth, lineHeight,
+                                "Pitfall II music pitch ", 0, 0, 5 * fontWidth);
+  myDpcPitch->setMinValue(10000); myDpcPitch->setMaxValue(30000);
+  myDpcPitch->setStepValue(100);
+  myDpcPitch->setTickmarkIntervals(2);
+  wid.push_back(myDpcPitch);
+
+  // Add items for tab 4
+  addToFocusList(wid, myTab, tabID);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::loadConfig()
+{
+  // Display tab
   // Renderer settings
   myRenderer->setSelected(instance().settings().getString("video"), "default");
+
+  // TIA interpolation
+  myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
 
   // TIA zoom levels
   // These are dynamically loaded, since they depend on the size of
@@ -419,6 +480,21 @@ void VideoDialog::loadConfig()
   myTIAZoom->setTickmarkIntervals((maxZoom - minZoom) * 2); // every ~50%
   myTIAZoom->setValue(instance().settings().getFloat("tia.zoom") * 100);
 
+  // Fullscreen
+  myFullscreen->setState(instance().settings().getBool("fullscreen"));
+  /*string mode = instance().settings().getString("fullscreenmode");
+  myFullScreenMode->setSelected(mode);*/
+  // Fullscreen stretch setting
+  myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
+  // Fullscreen overscan setting
+  myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
+  handleFullScreenChange();
+
+  // Aspect ratio setting (NTSC and PAL)
+  myVSizeAdjust->setValue(instance().settings().getInt("tia.vsizeadjust"));
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Palettes tab
   // TIA Palette
   myPalette = instance().settings().getString("palette");
   myTIAPalette->setSelected(myPalette, PaletteHandler::SETTING_STANDARD);
@@ -435,39 +511,8 @@ void VideoDialog::loadConfig()
   handlePaletteChange();
   colorPalette();
 
-  // TIA interpolation
-  myTIAInterpolate->setState(instance().settings().getBool("tia.inter"));
-
-  // Aspect ratio setting (NTSC and PAL)
-  myVSizeAdjust->setValue(instance().settings().getInt("tia.vsizeadjust"));
-
-  // Emulation speed
-  int speed = mapSpeed(instance().settings().getFloat("speed"));
-  mySpeed->setValue(speed);
-  mySpeed->setValueLabel(formatSpeed(speed));
-
-  // Fullscreen
-  myFullscreen->setState(instance().settings().getBool("fullscreen"));
-  /*string mode = instance().settings().getString("fullscreenmode");
-  myFullScreenMode->setSelected(mode);*/
-  // Fullscreen stretch setting
-  myUseStretch->setState(instance().settings().getBool("tia.fs_stretch"));
-  // Fullscreen overscan setting
-  myTVOverscan->setValue(instance().settings().getInt("tia.fs_overscan"));
-  handleFullScreenChange();
-
-  // Use sync to vertical blank
-  myUseVSync->setState(instance().settings().getBool("vsync"));
-
-  // Show UI messages
-  myUIMessages->setState(instance().settings().getBool("uimessages"));
-
-  // Fast loading of Supercharger BIOS
-  myFastSCBios->setState(instance().settings().getBool("fastscbios"));
-
-  // Multi-threaded rendering
-  myUseThreads->setState(instance().settings().getBool("threads"));
-
+  /////////////////////////////////////////////////////////////////////////////
+  // TV Effects tab
   // TV Mode
   myTVMode->setSelected(
     instance().settings().getString("tv.filter"), "0");
@@ -487,22 +532,66 @@ void VideoDialog::loadConfig()
   // TV scanline intensity and interpolation
   myTVScanIntense->setValue(instance().settings().getInt("tv.scanlines"));
 
+  /////////////////////////////////////////////////////////////////////////////
+  // Audio tab
+  AudioSettings& audioSettings = instance().audioSettings();
+
+  // Enable sound
+#ifndef SOUND_SUPPORT
+  mySoundEnableCheckbox->setState(audioSettings.enabled());
+#else
+  mySoundEnableCheckbox->setState(false);
+#endif
+
+  // Volume
+  myVolumeSlider->setValue(audioSettings.volume());
+
+  // Stereo
+  myStereoSoundCheckbox->setState(audioSettings.stereo());
+
+  // DPC Pitch
+  myDpcPitch->setValue(audioSettings.dpcPitch());
+
+  // Preset / mode
+  myModePopup->setSelected(static_cast<int>(audioSettings.preset()));
+
+  updateSettingsWithPreset(instance().audioSettings());
+
+  updateEnabledState();
+
   myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::saveConfig()
+void VideoAudioDialog::updateSettingsWithPreset(AudioSettings& audioSettings)
 {
+  // Fragsize
+  myFragsizePopup->setSelected(audioSettings.fragmentSize());
+
+  // Output frequency
+  myFreqPopup->setSelected(audioSettings.sampleRate());
+
+  // Headroom
+  myHeadroomSlider->setValue(audioSettings.headroom());
+
+  // Buffer size
+  myBufferSizeSlider->setValue(audioSettings.bufferSize());
+
+  // Resampling quality
+  myResamplingPopup->setSelected(static_cast<int>(audioSettings.resamplingQuality()));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::saveConfig()
+{
+  /////////////////////////////////////////////////////////////////////////////
+  // Display tab
   // Renderer setting
   instance().settings().setValue("video",
                                  myRenderer->getSelectedTag().toString());
 
   // TIA interpolation
   instance().settings().setValue("tia.inter", myTIAInterpolate->getState());
-
-
-  // Note: Palette values are saved directly when changed!
-
 
   // Fullscreen
   instance().settings().setValue("fullscreen", myFullscreen->getState());
@@ -521,26 +610,12 @@ void VideoDialog::saveConfig()
 
   instance().settings().setValue("tia.vsizeadjust", newAdjust);
 
-  // Speed
-  const int speedup = mySpeed->getValue();
-  instance().settings().setValue("speed", unmapSpeed(speedup));
-  if (instance().hasConsole())
-    instance().console().initializeAudio();
 
-  // Use sync to vertical blank
-  instance().settings().setValue("vsync", myUseVSync->getState());
+  // Note: Palette values are saved directly when changed!
 
-  // Show UI messages
-  instance().settings().setValue("uimessages", myUIMessages->getState());
 
-  // Fast loading of Supercharger BIOS
-  instance().settings().setValue("fastscbios", myFastSCBios->getState());
-
-  // Multi-threaded rendering
-  instance().settings().setValue("threads", myUseThreads->getState());
-  if (instance().hasConsole())
-    instance().frameBuffer().tiaSurface().ntsc().enableThreading(myUseThreads->getState());
-
+  /////////////////////////////////////////////////////////////////////////////
+  // TV Effects tab
   // TV Mode
   instance().settings().setValue("tv.filter",
                                  myTVMode->getSelectedTag().toString());
@@ -579,10 +654,51 @@ void VideoDialog::saveConfig()
 
   // ... and apply potential setting changes to the TIA surface
   instance().frameBuffer().tiaSurface().updateSurfaceSettings();
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Audio tab
+  AudioSettings& audioSettings = instance().audioSettings();
+
+  // Enabled
+  audioSettings.setEnabled(mySoundEnableCheckbox->getState());
+  instance().sound().setEnabled(mySoundEnableCheckbox->getState());
+
+  // Volume
+  audioSettings.setVolume(myVolumeSlider->getValue());
+  instance().sound().setVolume(myVolumeSlider->getValue());
+
+  // Stereo
+  audioSettings.setStereo(myStereoSoundCheckbox->getState());
+
+  // DPC Pitch
+  audioSettings.setDpcPitch(myDpcPitch->getValue());
+  // update if current cart is Pitfall II
+  if (instance().hasConsole() && instance().console().cartridge().name() == "CartridgeDPC")
+  {
+    CartridgeDPC& cart = static_cast<CartridgeDPC&>(instance().console().cartridge());
+    cart.setDpcPitch(myDpcPitch->getValue());
+  }
+
+  AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  audioSettings.setPreset(preset);
+
+  if (preset == AudioSettings::Preset::custom) {
+    // Fragsize
+    audioSettings.setFragmentSize(myFragsizePopup->getSelectedTag().toInt());
+    audioSettings.setSampleRate(myFreqPopup->getSelectedTag().toInt());
+    audioSettings.setHeadroom(myHeadroomSlider->getValue());
+    audioSettings.setBufferSize(myBufferSizeSlider->getValue());
+    audioSettings.setResamplingQuality(static_cast<AudioSettings::ResamplingQuality>(myResamplingPopup->getSelectedTag().toInt()));
+  }
+
+  // Only force a re-initialization when necessary, since it can
+  // be a time-consuming operation
+  if(instance().hasConsole())
+    instance().console().initializeAudio();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::setDefaults()
+void VideoAudioDialog::setDefaults()
 {
   switch(myTab->getActiveTab())
   {
@@ -597,13 +713,6 @@ void VideoDialog::setDefaults()
       myTVOverscan->setValue(0);
       myTIAZoom->setValue(300);
       myVSizeAdjust->setValue(0);
-      // speed
-      mySpeed->setValue(0);
-      myUseVSync->setState(true);
-      // misc
-      myUIMessages->setState(true);
-      myFastSCBios->setState(true);
-      myUseThreads->setState(false);
 
       handleFullScreenChange();
       break;
@@ -640,11 +749,29 @@ void VideoDialog::setDefaults()
       loadTVAdjustables(NTSCFilter::Preset::CUSTOM);
       break;
     }
+    case 3:  // Audio
+      mySoundEnableCheckbox->setState(AudioSettings::DEFAULT_ENABLED);
+      myVolumeSlider->setValue(AudioSettings::DEFAULT_VOLUME);
+      myStereoSoundCheckbox->setState(AudioSettings::DEFAULT_STEREO);
+      myDpcPitch->setValue(AudioSettings::DEFAULT_DPC_PITCH);
+      myModePopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_PRESET));
+
+      if (AudioSettings::DEFAULT_PRESET == AudioSettings::Preset::custom) {
+        myResamplingPopup->setSelected(static_cast<int>(AudioSettings::DEFAULT_RESAMPLING_QUALITY));
+        myFragsizePopup->setSelected(AudioSettings::DEFAULT_FRAGMENT_SIZE);
+        myFreqPopup->setSelected(AudioSettings::DEFAULT_SAMPLE_RATE);
+        myHeadroomSlider->setValue(AudioSettings::DEFAULT_HEADROOM);
+        myBufferSizeSlider->setValue(AudioSettings::DEFAULT_BUFFER_SIZE);
+      }
+      else updatePreset();
+
+      updateEnabledState();
+      break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
+void VideoAudioDialog::handleTVModeChange(NTSCFilter::Preset preset)
 {
   bool enable = preset == NTSCFilter::Preset::CUSTOM;
 
@@ -661,7 +788,7 @@ void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
+void VideoAudioDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 {
   NTSCFilter::Adjustable adj;
   instance().frameBuffer().tiaSurface().ntsc().getAdjustables(
@@ -674,7 +801,7 @@ void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handlePaletteChange()
+void VideoAudioDialog::handlePaletteChange()
 {
   bool enable = myTIAPalette->getSelectedTag().toString() == "custom";
 
@@ -683,7 +810,7 @@ void VideoDialog::handlePaletteChange()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handlePaletteUpdate()
+void VideoAudioDialog::handlePaletteUpdate()
 {
   // TIA Palette
   instance().settings().setValue("palette",
@@ -704,7 +831,7 @@ void VideoDialog::handlePaletteUpdate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleFullScreenChange()
+void VideoAudioDialog::handleFullScreenChange()
 {
   bool enable = myFullscreen->getState();
   myUseStretch->setEnabled(enable);
@@ -712,7 +839,7 @@ void VideoDialog::handleFullScreenChange()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleOverscanChange()
+void VideoAudioDialog::handleOverscanChange()
 {
   if (myTVOverscan->getValue() == 0)
   {
@@ -724,13 +851,13 @@ void VideoDialog::handleOverscanChange()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handlePhosphorChange()
+void VideoAudioDialog::handlePhosphorChange()
 {
   myTVPhosLevel->setEnabled(myTVPhosphor->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleCommand(CommandSender* sender, int cmd,
+void VideoAudioDialog::handleCommand(CommandSender* sender, int cmd,
                                 int data, int id)
 {
   switch (cmd)
@@ -793,11 +920,6 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
         myVSizeAdjust->setValueUnit("%");
       break;
     }
-
-    case kSpeedupChanged:
-      mySpeed->setValueLabel(formatSpeed(mySpeed->getValue()));
-      break;
-
     case kFullScreenChanged:
       handleFullScreenChange();
       break;
@@ -845,6 +967,30 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
         myTVPhosLevel->setValueUnit("%");
       break;
 
+    case kSoundEnableChanged:
+      updateEnabledState();
+      break;
+
+    case kModeChanged:
+      updatePreset();
+      updateEnabledState();
+      break;
+
+    case kHeadroomChanged:
+    {
+      std::ostringstream ss;
+      ss << std::fixed << std::setprecision(1) << (0.5 * myHeadroomSlider->getValue()) << " frames";
+      myHeadroomSlider->setValueLabel(ss.str());
+      break;
+    }
+    case kBufferSizeChanged:
+    {
+      std::ostringstream ss;
+      ss << std::fixed << std::setprecision(1) << (0.5 * myBufferSizeSlider->getValue()) << " frames";
+      myBufferSizeSlider->setValueLabel(ss.str());
+      break;
+    }
+
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
       break;
@@ -852,7 +998,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::addPalette(int x, int y, int w, int h)
+void VideoAudioDialog::addPalette(int x, int y, int w, int h)
 {
   if(instance().hasConsole())
   {
@@ -877,7 +1023,7 @@ void VideoDialog::addPalette(int x, int y, int w, int h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::colorPalette()
+void VideoAudioDialog::colorPalette()
 {
   if(instance().hasConsole())
   {
@@ -903,4 +1049,38 @@ void VideoDialog::colorPalette()
       }
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::updateEnabledState()
+{
+  bool active = mySoundEnableCheckbox->getState();
+  AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+  bool userMode = preset == AudioSettings::Preset::custom;
+
+  myVolumeSlider->setEnabled(active);
+  myStereoSoundCheckbox->setEnabled(active);
+  myModePopup->setEnabled(active);
+  // enable only for Pitfall II cart
+  myDpcPitch->setEnabled(active && instance().hasConsole() && instance().console().cartridge().name() == "CartridgeDPC");
+
+  myFragsizePopup->setEnabled(active && userMode);
+  myFreqPopup->setEnabled(active && userMode);
+  myResamplingPopup->setEnabled(active && userMode);
+  myHeadroomSlider->setEnabled(active && userMode);
+  myBufferSizeSlider->setEnabled(active && userMode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoAudioDialog::updatePreset()
+{
+  AudioSettings::Preset preset = static_cast<AudioSettings::Preset>(myModePopup->getSelectedTag().toInt());
+
+  // Make a copy that does not affect the actual settings...
+  AudioSettings audioSettings = instance().audioSettings();
+  audioSettings.setPersistent(false);
+  // ... and set the requested preset
+  audioSettings.setPreset(preset);
+
+  updateSettingsWithPreset(audioSettings);
 }

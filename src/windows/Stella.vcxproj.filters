@@ -342,9 +342,6 @@
     <ClCompile Include="..\gui\AboutDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
-    <ClCompile Include="..\gui\AudioDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
     <ClCompile Include="..\gui\BrowserDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
@@ -436,9 +433,6 @@
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\gui\UIDialog.cxx">
-      <Filter>Source Files\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gui\VideoDialog.cxx">
       <Filter>Source Files\gui</Filter>
     </ClCompile>
     <ClCompile Include="..\gui\Widget.cxx">
@@ -1005,6 +999,12 @@
     <ClCompile Include="..\common\PaletteHandler.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\EmulationDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gui\VideoAudioDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\bspf.hxx">
@@ -1316,9 +1316,6 @@
     <ClInclude Include="..\gui\AboutDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\gui\AudioDialog.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
     <ClInclude Include="..\gui\BrowserDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
@@ -1422,9 +1419,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\UIDialog.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\gui\VideoDialog.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="..\gui\Widget.hxx">
@@ -2062,6 +2056,12 @@
     </ClInclude>
     <ClInclude Include="..\common\PaletteHandler.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\EmulationDialog.hxx">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\VideoAudioDialog.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -127,13 +127,8 @@ UIDialog::UIDialog(OSystem& osystem, DialogContainer& parent,
   myCenter = new CheckboxWidget(myTab, _font, xpos, ypos + 1, "Center windows");
   wid.push_back(myCenter);
 
-  // Confirm dialog when exiting emulation
-  xpos = HBORDER; ypos += lineHeight + VGAP * 2;
-  myConfirmExitWidget = new CheckboxWidget(myTab, font, xpos, ypos, "Confirm exiting emulation");
-  wid.push_back(myConfirmExitWidget);
-  ypos += lineHeight + VGAP * 3;
-
   // Delay between quick-selecting characters in ListWidget
+  xpos = HBORDER; ypos += lineHeight + VGAP * 4;
   int swidth = myPalettePopup->getWidth() - lwidth;
   myListDelaySlider = new SliderWidget(myTab, font, xpos, ypos, swidth, lineHeight,
                                       "List input delay        ", 0, kListDelay,
@@ -384,9 +379,6 @@ void UIDialog::loadConfig()
   // Center window
   myCenter->setState(settings.getBool("center"));
 
-  // Confirm dialog when exiting emulation
-  myConfirmExitWidget->setState(settings.getBool("confirmexit"));
-
   // Listwidget quick delay
   int delay = settings.getInt("listdelay");
   myListDelaySlider->setValue(delay);
@@ -462,9 +454,6 @@ void UIDialog::saveConfig()
   // Center window
   settings.setValue("center", myCenter->getState());
 
-  // Confirm dialog when exiting emulation
-  settings.setValue("confirmexit", myConfirmExitWidget->getState());
-
   // Listwidget quick delay
   settings.setValue("listdelay", myListDelaySlider->getValue());
   FileListWidget::setQuickSelectDelay(myListDelaySlider->getValue());
@@ -501,7 +490,6 @@ void UIDialog::setDefaults()
       myHidpiWidget->setState(false);
       myPositionPopup->setSelected("0");
       myCenter->setState(false);
-      myConfirmExitWidget->setState(false);
       myListDelaySlider->setValue(300);
       myWheelLinesSlider->setValue(4);
       myDoubleClickSlider->setValue(500);
