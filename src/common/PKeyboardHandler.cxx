@@ -17,13 +17,7 @@
 
 #include "OSystem.hxx"
 #include "Console.hxx"
-#include "Settings.hxx"
 #include "EventHandler.hxx"
-#include "Sound.hxx"
-#include "StateManager.hxx"
-#include "StellaKeys.hxx"
-#include "TIASurface.hxx"
-#include "PNGLibrary.hxx"
 #include "PKeyboardHandler.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -475,25 +469,30 @@ PhysicalKeyboardHandler::EventMappingArray PhysicalKeyboardHandler::DefaultCommo
   {Event::ToggleFullScreen,         KBDK_RETURN, MOD3},
   {Event::OverscanDecrease,         KBDK_PAGEDOWN, KBDM_SHIFT},
   {Event::OverscanIncrease,         KBDK_PAGEUP, KBDM_SHIFT},
-  {Event::VidmodeStd,               KBDK_1, MOD3},
-  {Event::VidmodeRGB,               KBDK_2, MOD3},
-  {Event::VidmodeSVideo,            KBDK_3, MOD3},
-  {Event::VidModeComposite,         KBDK_4, MOD3},
-  {Event::VidModeBad,               KBDK_5, MOD3},
-  {Event::VidModeCustom,            KBDK_6, MOD3},
-  {Event::PreviousAttribute,        KBDK_7, KBDM_SHIFT | MOD3},
-  {Event::NextAttribute,            KBDK_7, MOD3},
-  {Event::DecreaseAttribute,        KBDK_8, KBDM_SHIFT | MOD3},
-  {Event::IncreaseAttribute,        KBDK_8, MOD3},
+  //{Event::VidmodeStd,               KBDK_1, MOD3},
+  //{Event::VidmodeRGB,               KBDK_2, MOD3},
+  //{Event::VidmodeSVideo,            KBDK_3, MOD3},
+  //{Event::VidModeComposite,         KBDK_4, MOD3},
+  //{Event::VidModeBad,               KBDK_5, MOD3},
+  //{Event::VidModeCustom,            KBDK_6, MOD3},
+  {Event::PreviousVideoMode,        KBDK_1, KBDM_SHIFT | MOD3},
+  {Event::NextVideoMode,            KBDK_1, MOD3},
+  {Event::PreviousAttribute,        KBDK_2, KBDM_SHIFT | MOD3},
+  {Event::NextAttribute,            KBDK_2, MOD3},
+  {Event::DecreaseAttribute,        KBDK_3, KBDM_SHIFT | MOD3},
+  {Event::IncreaseAttribute,        KBDK_3, MOD3},
+  {Event::PreviousPaletteAttribute, KBDK_4, KBDM_SHIFT | MOD3},
+  {Event::NextPaletteAttribute,     KBDK_4, MOD3},
+  {Event::PaletteAttributeDecrease, KBDK_5, KBDM_SHIFT | MOD3},
+  {Event::PaletteAttributeIncrease, KBDK_5, MOD3},
   {Event::PhosphorDecrease,         KBDK_9, KBDM_SHIFT | MOD3},
   {Event::PhosphorIncrease,         KBDK_9, MOD3},
   {Event::TogglePhosphor,           KBDK_P, MOD3},
   {Event::ScanlinesDecrease,        KBDK_0, KBDM_SHIFT | MOD3},
   {Event::ScanlinesIncrease,        KBDK_0, MOD3},
   {Event::ToggleColorLoss,          KBDK_L, KBDM_CTRL},
-  {Event::TogglePalette,            KBDK_P, KBDM_CTRL},
-  {Event::ColorShiftDecrease,       KBDK_9, KBDM_SHIFT | KBDM_CTRL},
-  {Event::ColorShiftIncrease,       KBDK_9, KBDM_CTRL},
+  {Event::PaletteDecrease,          KBDK_P, KBDM_SHIFT | KBDM_CTRL},
+  {Event::PaletteIncrease,          KBDK_P, KBDM_CTRL},
   {Event::ToggleInter,              KBDK_I, KBDM_CTRL},
   {Event::ToggleTurbo,              KBDK_T, KBDM_CTRL},
   {Event::ToggleJitter,             KBDK_J, MOD3},

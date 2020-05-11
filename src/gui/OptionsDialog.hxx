@@ -22,8 +22,8 @@ class CommandSender;
 class DialogContainer;
 class GuiObject;
 class OSystem;
-class VideoDialog;
-class AudioDialog;
+class EmulationDialog;
+class VideoAudioDialog;
 class InputDialog;
 class UIDialog;
 class SnapshotDialog;
@@ -52,8 +52,8 @@ class OptionsDialog : public Dialog
     void handleCommand(CommandSender* sender, int cmd, int data, int id) override;
 
   private:
-    unique_ptr<VideoDialog>      myVideoDialog;
-    unique_ptr<AudioDialog>      myAudioDialog;
+    unique_ptr<VideoAudioDialog>      myVideoDialog;
+    unique_ptr<EmulationDialog>  myEmulationDialog;
     unique_ptr<InputDialog>      myInputDialog;
     unique_ptr<UIDialog>         myUIDialog;
     unique_ptr<SnapshotDialog>   mySnapshotDialog;
@@ -78,7 +78,7 @@ class OptionsDialog : public Dialog
     enum {
       kBasSetCmd   = 'BAST',
       kVidCmd      = 'VIDO',
-      kAudCmd      = 'AUDO',
+      kEmuCmd      = 'EMUO',
       kInptCmd     = 'INPT',
       kUsrIfaceCmd = 'URIF',
       kSnapCmd     = 'SNAP',

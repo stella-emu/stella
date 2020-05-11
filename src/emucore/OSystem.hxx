@@ -41,7 +41,7 @@ class AudioSettings;
   class Menu;
   class MessageMenu;
   class TimeMachine;
-  class VideoDialog;
+  class VideoAudioDialog;
 #endif
 #ifdef PNG_SUPPORT
   class PNGLibrary;

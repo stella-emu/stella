@@ -17,6 +17,8 @@
 
 
 #include "PopUpWidget.hxx"
+#include "Debugger.hxx"
+#include "CartDebug.hxx"
 #include "CartEnhanced.hxx"
 #include "CartEnhancedWidget.hxx"
 

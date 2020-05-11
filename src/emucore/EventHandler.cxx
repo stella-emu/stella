@@ -22,6 +22,7 @@
 
 #include "Base.hxx"
 #include "Console.hxx"
+#include "PaletteHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "FSNode.hxx"
 #include "OSystem.hxx"
@@ -435,12 +436,20 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed) myOSystem.console().changeScanlineAdjust(+1);
       return;
 
-    case Event::ColorShiftDecrease:
-      if (pressed) myOSystem.console().changeColorPhaseShift(-1);
+    case Event::PreviousPaletteAttribute:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(false);
       return;
 
-    case Event::ColorShiftIncrease:
-      if (pressed) myOSystem.console().changeColorPhaseShift(+1);
+    case Event::NextPaletteAttribute:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().cycleAdjustable(true);
+      return;
+
+    case Event::PaletteAttributeDecrease:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(false);
+      return;
+
+    case Event::PaletteAttributeIncrease:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().paletteHandler().changeAdjustable(true);
       return;
 
     case Event::ToggleFullScreen:
@@ -453,6 +462,14 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
 
     case Event::OverscanIncrease:
       if (pressed) myOSystem.frameBuffer().changeOverscan(1);
+      return;
+
+    case Event::PreviousVideoMode:
+      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().changeNTSC(false);
+      return;
+
+    case Event::NextVideoMode:
+      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().changeNTSC(true);
       return;
 
     case Event::VidmodeStd:
@@ -539,8 +556,12 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed && !repeated) myOSystem.console().toggleColorLoss();
       return;
 
-    case Event::TogglePalette:
-      if (pressed && !repeated) myOSystem.console().togglePalette();
+    case Event::PaletteDecrease:
+      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(false);
+      return;
+
+    case Event::PaletteIncrease:
+      if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().paletteHandler().cyclePalette(true);
       return;
 
     case Event::ToggleInter:
@@ -1929,21 +1950,28 @@ EventHandler::EmulActionList EventHandler::ourEmulActionList = { {
   { Event::VCenterIncrease,         "Move display down",                     "" },
   { Event::FormatDecrease,          "Decrease display format",               "" },
   { Event::FormatIncrease,          "Increase display format",               "" },
-  { Event::TogglePalette,           "Switch palette (Std./Z26/User/Cust.)",  "" },
-  { Event::ColorShiftDecrease,      "Decrease custom palette phase shift",   "" },
-  { Event::ColorShiftIncrease,      "Increase custom palette phase shift",   "" },
+    // Palette settings
+  { Event::PaletteDecrease,         "Switch to previous palette",            "" },
+  { Event::PaletteIncrease,         "Switch to next palette",                "" },
+  { Event::PreviousPaletteAttribute,"Select previous palette attribute",     "" },
+  { Event::NextPaletteAttribute,    "Select next palette attribute",         "" },
+  { Event::PaletteAttributeDecrease,"Decrease selected palette attribute",   "" },
+  { Event::PaletteAttributeIncrease,"Increase selected palette attribute",   "" },
   { Event::ToggleInter,             "Toggle display interpolation",          "" },
-  // TV effects:
+  // Blargg TV effects:
   { Event::VidmodeStd,              "Disable TV effects",                    "" },
   { Event::VidmodeRGB,              "Select 'RGB' preset",                   "" },
   { Event::VidmodeSVideo,           "Select 'S-Video' preset",               "" },
   { Event::VidModeComposite,        "Select 'Composite' preset",             "" },
   { Event::VidModeBad,              "Select 'Badly adjusted' preset",        "" },
   { Event::VidModeCustom,           "Select 'Custom' preset",                "" },
+  { Event::PreviousVideoMode,       "Select previous TV effect mode preset", "" },
+  { Event::NextVideoMode,           "Select next TV effect mode preset",     "" },
   { Event::PreviousAttribute,       "Select previous 'Custom' attribute",    "" },
   { Event::NextAttribute,           "Select next 'Custom' attribute",        "" },
   { Event::DecreaseAttribute,       "Decrease selected 'Custom' attribute",  "" },
   { Event::IncreaseAttribute,       "Increase selected 'Custom' attribute",  "" },
+  // Other TV effects
   { Event::TogglePhosphor,          "Toggle 'phosphor' effect",              "" },
   { Event::PhosphorDecrease,        "Decrease 'phosphor' blend",             "" },
   { Event::PhosphorIncrease,        "Increase 'phosphor' blend",             "" },
@@ -2058,7 +2086,10 @@ const Event::EventSet EventHandler::AudioVideoEvents = {
   Event::VCenterDecrease, Event::VCenterIncrease,
   Event::ScanlineAdjustDecrease, Event::ScanlineAdjustIncrease,
   Event::OverscanDecrease, Event::OverscanIncrease,
-  Event::TogglePalette, Event::ColorShiftDecrease, Event::ColorShiftIncrease,
+  Event::PaletteDecrease, Event::PaletteIncrease,
+  Event::PreviousVideoMode, Event::NextVideoMode,
+  Event::PreviousPaletteAttribute, Event::NextPaletteAttribute,
+  Event::PaletteAttributeDecrease, Event::PaletteAttributeIncrease,
   Event::ToggleInter
 };
 

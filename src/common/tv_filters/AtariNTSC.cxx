@@ -57,9 +57,15 @@ void AtariNTSC::generateKernels()
   const uInt8* ptr = myRGBPalette.data();
   for(size_t entry = 0; entry < myRGBPalette.size() / 3; ++entry)
   {
+  #ifdef BLARGG_PALETTE
     float r = myImpl.to_float[*ptr++],
           g = myImpl.to_float[*ptr++],
           b = myImpl.to_float[*ptr++];
+  #else
+    float r = (*ptr++) / 255.F * rgb_unit + rgb_offset,
+          g = (*ptr++) / 255.F * rgb_unit + rgb_offset,
+          b = (*ptr++) / 255.F * rgb_unit + rgb_offset;
+  #endif
     float y, i, q;  RGB_TO_YIQ( r, g, b, y, i, q );
 
     // Generate kernel
@@ -319,8 +325,10 @@ void AtariNTSC::renderWithPhosphorThread(const uInt8* atari_in, const uInt32 in_
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariNTSC::init(init_t& impl, const Setup& setup)
 {
+#ifdef BLARGG_PALETTE
   impl.brightness = setup.brightness * (0.5F * rgb_unit) + rgb_offset;
   impl.contrast   = setup.contrast   * (0.5F * rgb_unit) + rgb_unit;
+#endif
 
   impl.artifacts = setup.artifacts;
   if ( impl.artifacts > 0 )
@@ -334,6 +342,7 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
 
   initFilters(impl, setup);
 
+#ifdef BLARGG_PALETTE
   /* generate gamma table */
   if (true)  /* was (gamma_size > 1) */
   {
@@ -341,19 +350,22 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
     float const gamma = 1.1333F - setup.gamma * 0.5F;
     /* match common PC's 2.2 gamma to TV's 2.65 gamma */
     int i;
-    for ( i = 0; i < gamma_size; i++ )
-      impl.to_float [i] =
-          powf( i * to_float, gamma ) * impl.contrast + impl.brightness;
+    for(i = 0; i < gamma_size; i++)
+      impl.to_float[i] =
+        powf(i * to_float, gamma) * impl.contrast + impl.brightness;
   }
+#endif
 
   /* setup decoder matricies */
   {
+  #ifdef BLARGG_PALETTE
     float hue = setup.hue * BSPF::PI_f + BSPF::PI_f / 180 * ext_decoder_hue;
     float sat = setup.saturation + 1;
     hue += BSPF::PI_f / 180 * (std_decoder_hue - ext_decoder_hue);
 
-    float s = sinf( hue ) * sat;
-    float c = cosf( hue ) * sat;
+    float s = sinf(hue)*sat;
+    float c = cosf(hue)*sat;
+  #endif
     float* out = impl.to_rgb.data();
     int n;
 
@@ -366,8 +378,13 @@ void AtariNTSC::init(init_t& impl, const Setup& setup)
       {
         float i = *in++;
         float q = *in++;
+      #ifdef BLARGG_PALETTE
         *out++ = i * c - q * s;
         *out++ = i * s + q * c;
+      #else
+        *out++ = i ;
+        *out++ = q;
+      #endif
       }
       while ( --n2 );
     #if 0  // burst_count is always 0
@@ -544,16 +561,32 @@ void AtariNTSC::genKernel(init_t& impl, float y, float i, float q, uInt32* out)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const AtariNTSC::Setup AtariNTSC::TV_Composite = {
+#ifdef BLARGG_PALETTE
   0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.15F, 0.0F, 0.0F, 0.0F
+#else
+  0.0F, 0.15F, 0.0F, 0.0F, 0.0F
+#endif
 };
 const AtariNTSC::Setup AtariNTSC::TV_SVideo = {
+#ifdef BLARGG_PALETTE
   0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.45F, -1.0F, -1.0F, 0.0F
+#else
+  0.0F, 0.45F, -1.0F, -1.0F, 0.0F
+#endif
 };
 const AtariNTSC::Setup AtariNTSC::TV_RGB = {
+#ifdef BLARGG_PALETTE
   0.0F, 0.0F, 0.0F, 0.0F, 0.2F, 0.0F, 0.70F, -1.0F, -1.0F, -1.0F
+#else
+  0.2F, 0.70F, -1.0F, -1.0F, -1.0F
+#endif
 };
 const AtariNTSC::Setup AtariNTSC::TV_Bad = {
+#ifdef BLARGG_PALETTE
   0.1F, -0.3F, 0.3F, 0.25F, 0.2F, 0.0F, 0.1F, 0.5F, 0.5F, 0.5F
+#else
+  0.2F, 0.1F, 0.5F, 0.5F, 0.5F
+#endif
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

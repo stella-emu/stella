@@ -16,6 +16,8 @@
 //============================================================================
 
 #include "CartAR.hxx"
+#include "Debugger.hxx"
+#include "CartDebug.hxx"
 #include "PopUpWidget.hxx"
 #include "CartARWidget.hxx"
 
