@@ -83,6 +83,11 @@ TIASurface::TIASurface(OSystem& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+TIASurface::~TIASurface()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::initialize(const Console& console,
                             const FrameBuffer::VideoMode& mode)
 {
