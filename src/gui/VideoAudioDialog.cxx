@@ -112,8 +112,7 @@ void VideoAudioDialog::addDisplayTab()
 {
   const int lineHeight   = _font.getLineHeight(),
             fontHeight   = _font.getFontHeight(),
-            fontWidth    = _font.getMaxCharWidth(),
-            buttonHeight = _font.getLineHeight() * 1.25;
+            fontWidth    = _font.getMaxCharWidth();
   const int VGAP = fontHeight / 4;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
@@ -186,8 +185,7 @@ void VideoAudioDialog::addPaletteTab()
 {
   const int lineHeight = _font.getLineHeight(),
             fontHeight = _font.getFontHeight(),
-            fontWidth = _font.getMaxCharWidth(),
-            buttonHeight = _font.getLineHeight() * 1.25;
+            fontWidth = _font.getMaxCharWidth();
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
   const int INDENT = fontWidth * 2;

@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include <cmath>
 
 #include "Console.hxx"
 #include "FrameBuffer.hxx"
@@ -303,7 +304,7 @@ PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette)
     adjust[i] = powf(i * toFloat, gamma) * contrast + brightness;
 
   // Transform original palette into destination palette
-  for(int i = 0; i < destPalette.size(); i += 2)
+  for(size_t i = 0; i < destPalette.size(); i += 2)
   {
     const uInt32 pixel = palette[i];
     int r = (pixel >> 16) & 0xff;
@@ -396,8 +397,8 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
     // color 0 is grayscale
     for(int chroma = 1; chroma < NUM_CHROMA; chroma++)
     {
-      color[chroma][0] = SATURATION * sin(offset + shift * (chroma - 1));
-      color[chroma][1] = SATURATION * sin(offset + shift * (chroma - 1 - BSPF::PI_f));
+      color[chroma][0] = SATURATION * sinf(offset + shift * (chroma - 1));
+      color[chroma][1] = SATURATION * sinf(offset + shift * (chroma - 1 - BSPF::PI_f));
     }
 
     for(int chroma = 0; chroma < NUM_CHROMA; chroma++)
@@ -488,17 +489,17 @@ void PaletteHandler::adjustHueSaturation(int& R, int& G, int& B, float H, float 
   // Adapted from http://beesbuzz.biz/code/16-hsv-color-transforms
   // (C) J. “Fluffy” Shagam
   // License: CC BY-SA 4.0
-  const float su = S * cos(-H * BSPF::PI_f);
-  const float sw = S * sin(-H * BSPF::PI_f);
-  const float r = (.299 + .701 * su + .168 * sw) * R
-                + (.587 - .587 * su + .330 * sw) * G
-                + (.114 - .114 * su - .497 * sw) * B;
-  const float g = (.299 - .299 * su - .328 * sw) * R
-                + (.587 + .413 * su + .035 * sw) * G
-                + (.114 - .114 * su + .292 * sw) * B;
-  const float b = (.299 - .300 * su + 1.25 * sw) * R
-                + (.587 - .588 * su - 1.05 * sw) * G
-                + (.114 + .886 * su - .203 * sw) * B;
+  const float su = S * cosf(-H * BSPF::PI_f);
+  const float sw = S * sinf(-H * BSPF::PI_f);
+  const float r = (.299F + .701F * su + .168F * sw) * R
+                + (.587F - .587F * su + .330F * sw) * G
+                + (.114F - .114F * su - .497F * sw) * B;
+  const float g = (.299F - .299F * su - .328F * sw) * R
+                + (.587F + .413F * su + .035F * sw) * G
+                + (.114F - .114F * su + .292F * sw) * B;
+  const float b = (.299F - .300F * su + 1.25F * sw) * R
+                + (.587F - .588F * su - 1.05F * sw) * G
+                + (.114F + .886F * su - .203F * sw) * B;
 
   R = BSPF::clamp(r, 0.F, 255.F);
   G = BSPF::clamp(g, 0.F, 255.F);
@@ -724,14 +725,14 @@ const PaletteArray PaletteHandler::ourSECAMPaletteZ26 = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteArray PaletteHandler::ourUserNTSCPalette  = { 0 }; // filled from external file
 
-                                                   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteArray PaletteHandler::ourUserPALPalette   = { 0 }; // filled from external file
 
-                                                   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteArray PaletteHandler::ourUserSECAMPalette = { 0 }; // filled from external file
 
-                                                   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteArray PaletteHandler::ourCustomNTSCPalette = { 0 }; // filled by function
 
-                                                    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PaletteArray PaletteHandler::ourCustomPALPalette  = { 0 }; // filled by function
