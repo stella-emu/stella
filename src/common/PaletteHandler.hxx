@@ -25,22 +25,18 @@
 class PaletteHandler
 {
   public:
+    // Setting names of palette types
     static constexpr const char* SETTING_STANDARD = "standard";
     static constexpr const char* SETTING_Z26 = "z26";
     static constexpr const char* SETTING_USER = "user";
     static constexpr const char* SETTING_CUSTOM = "custom";
 
+    // Phase shift default and limits
     static constexpr float DEF_NTSC_SHIFT = 26.2F;
-    static constexpr float DEF_PAL_SHIFT = 31.3F; // 360 / 11.5
+    static constexpr float DEF_PAL_SHIFT = 31.3F; // ~= 360 / 11.5
     static constexpr float MAX_SHIFT = 4.5F;
 
-    enum DisplayType {
-      NTSC,
-      PAL,
-      SECAM,
-      NumDisplayTypes
-    };
-
+    // Externally used adjustment parameters
     struct Adjustable {
       float phaseNtsc, phasePal;
       uInt32 hue, saturation, contrast, brightness, gamma;
@@ -51,27 +47,37 @@ class PaletteHandler
     virtual ~PaletteHandler() = default;
 
     /**
-      Switch between the available palettes.
-    */
-    void changePalette(bool increase = true);
+      Cycle through available palettes.
 
-    void selectAdjustable(bool next = true);
+      @param next  Select next palette, else previous one
+    */
+    void cyclePalette(bool next = true);
+
+    /*
+      Cycle through each palette adjustable
+
+      @param next  Select next adjustable, else previous one
+    */
+    void cycleAdjustable(bool next = true);
+
+    /*
+      Increase or decrease current palette adjustable
+
+      @param increase  Increase adjustable if true, else decrease
+    */
     void changeAdjustable(bool increase = true);
 
-
+    // Load adjustables from settings
     void loadConfig(const Settings& settings);
+
+    // Save adjustables to settings
     void saveConfig(Settings& settings) const;
+
+    // Set adjustables
     void setAdjustables(const Adjustable& adjustable);
+
+    // Retrieve current adjustables
     void getAdjustables(Adjustable& adjustable) const;
-
-    /**
-      Change the "phase shift" variable.
-      Note that there are two of these (NTSC and PAL).  The currently
-      active mode will determine which one is used.
-
-      @param increase increase if true, else decrease.
-    */
-    void changeColorPhaseShift(bool increase = true);
 
     /**
       Sets the palette according to the given palette name.
@@ -80,18 +86,14 @@ class PaletteHandler
     */
     void setPalette(const string& name);
 
-
     /**
       Sets the palette from current settings.
     */
     void setPalette();
 
-    /**
-      Generates a custom palette, based on user defined phase shifts.
-    */
-    void generateCustomPalette(ConsoleTiming timing);
-
   private:
+    static constexpr char DEGREE = 0x1c;
+
     enum PaletteType {
       Standard,
       Z26,
@@ -102,14 +104,64 @@ class PaletteHandler
       MaxType = Custom
     };
 
+    /**
+      Convert adjustables from/to 100% scale
+    */
     float scaleFrom100(float x) const { return (x / 50.F) - 1.F; }
     uInt32 scaleTo100(float x) const { return uInt32(50 * (x + 1.F)); }
 
+    /**
+      Convert palette settings name to enumeration
+
+      @param name  The given palette's settings name
+
+      @return  The palette type
+    */
     PaletteType toPaletteType(const string& name) const;
+
+    /**
+      Convert enumeration to palette settings name
+
+      @param type  The given palette type
+
+      @return  The palette's settings name
+    */
     string toPaletteName(PaletteType type) const;
 
-    PaletteArray adjustPalette(const PaletteArray& source);
+    /**
+      Change the "phase shift" variable.
+      Note that there are two of these (NTSC and PAL).  The currently
+      active mode will determine which one is used.
 
+      @param increase  Increase if true, else decrease.
+    */
+    void changeColorPhaseShift(bool increase = true);
+
+    /**
+      Generates a custom palette, based on user defined phase shifts.
+
+      @param timing  Use NTSC or PAL phase shift and generate according palette
+    */
+    void generateCustomPalette(ConsoleTiming timing);
+
+    /**
+      Create new palette by applying palette adjustments on given palette
+
+      @param type  The palette which should be adjusted
+
+      @return  An adjusted palette
+    */
+    PaletteArray adjustedPalette(const PaletteArray& source);
+
+    /**
+      Adjust hue and saturation for given RGB values
+
+      @param R  The red value to adjust
+      @param G  The green value to adjust
+      @param B  The blue value to adjust
+      @param H  The hue adjustment value
+      @param S  The saturation
+    */
     void adjustHueSaturation(int& R, int& G, int& B, float H, float S);
 
     /**
@@ -118,15 +170,16 @@ class PaletteHandler
     */
     void loadUserPalette();
 
-
   private:
     static constexpr int NUM_ADJUSTABLES = 6;
 
     OSystem& myOSystem;
 
+    // The currently selected adjustable
     uInt32 myCurrentAdjustable{0};
+
     struct AdjustableTag {
-      const char* const type{nullptr};
+      const char* const name{nullptr};
       float* value{nullptr};
     };
     const std::array<AdjustableTag, NUM_ADJUSTABLES> myAdjustables =
@@ -139,8 +192,9 @@ class PaletteHandler
       { "gamma", &myGamma },
     } };
 
-    float myPhaseNTSC{0.0F};
-    float myPhasePAL{0.0F};
+    // NTSC and PAL color phase shifts
+    float myPhaseNTSC{DEF_NTSC_SHIFT};
+    float myPhasePAL{DEF_PAL_SHIFT};
     // range -1.0 to +1.0 (as in AtariNTSC)
     // Basic parameters
     float myHue{0.0F};        // -1 = -180 degrees     +1 = +180 degrees
@@ -169,7 +223,7 @@ class PaletteHandler
     static PaletteArray ourUserPALPalette;
     static PaletteArray ourUserSECAMPalette;
 
-    // Table of RGB values for NTSC, PAL - custom-defined
+    // Table of RGB values for NTSC, PAL - custom-defined and generated
     static PaletteArray ourCustomNTSCPalette;
     static PaletteArray ourCustomPALPalette;
 

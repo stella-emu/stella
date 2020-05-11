@@ -269,11 +269,11 @@ void VideoDialog::addPaletteTab()
 
   // TIA Palette
   items.clear();
-  VarList::push_back(items, "Standard", "standard");
-  VarList::push_back(items, "z26", "z26");
+  VarList::push_back(items, "Standard", PaletteHandler::SETTING_STANDARD);
+  VarList::push_back(items, "z26", PaletteHandler::SETTING_Z26);
   if (instance().checkUserPalette())
-    VarList::push_back(items, "User", "user");
-  VarList::push_back(items, "Custom", "custom");
+    VarList::push_back(items, "User", PaletteHandler::SETTING_USER);
+  VarList::push_back(items, "Custom", PaletteHandler::SETTING_CUSTOM);
   myTIAPalette = new PopUpWidget(myTab, _font, xpos, ypos, pwidth,
                                  lineHeight, items, "Palette ", lwidth, kPaletteChanged);
   wid.push_back(myTIAPalette);
@@ -421,7 +421,7 @@ void VideoDialog::loadConfig()
 
   // TIA Palette
   myPalette = instance().settings().getString("palette");
-  myTIAPalette->setSelected(myPalette, "standard");
+  myTIAPalette->setSelected(myPalette, PaletteHandler::SETTING_STANDARD);
 
   // Palette adjustables
   instance().frameBuffer().tiaSurface().paletteHandler().getAdjustables(myPaletteAdj);
@@ -610,7 +610,7 @@ void VideoDialog::setDefaults()
     }
 
     case 1:  // Palettes
-      myTIAPalette->setSelected("standard", "");
+      myTIAPalette->setSelected(PaletteHandler::SETTING_STANDARD);
       myPhaseShiftNtsc->setValue(PaletteHandler::DEF_NTSC_SHIFT * 10);
       myPhaseShiftPal->setValue(PaletteHandler::DEF_PAL_SHIFT * 10);
       myTVHue->setValue(50);

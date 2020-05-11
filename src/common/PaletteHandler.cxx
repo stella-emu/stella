@@ -54,19 +54,14 @@ string PaletteHandler::toPaletteName(PaletteType type) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::changePalette(bool increase)
+void PaletteHandler::cyclePalette(bool next)
 {
   const string MESSAGES[PaletteType::NumTypes] = {
     "Standard Stella", "Z26", "User-defined", "Custom"
   };
-
-  string palette, message;
-  palette = myOSystem.settings().getString("palette");
-
-
   int type = toPaletteType(myOSystem.settings().getString("palette"));
 
-  if(increase)
+  if(next)
   {
     if(type == PaletteType::MaxType)
       type = PaletteType::Standard;
@@ -87,8 +82,8 @@ void PaletteHandler::changePalette(bool increase)
       type--;
   }
 
-  palette = toPaletteName(PaletteType(type));
-  message = MESSAGES[type] + " palette";
+  const string palette = toPaletteName(PaletteType(type));
+  const string message = MESSAGES[type] + " palette";
 
   myOSystem.frameBuffer().showMessage(message);
 
@@ -96,9 +91,10 @@ void PaletteHandler::changePalette(bool increase)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PaletteHandler::selectAdjustable(bool next)
+void PaletteHandler::cycleAdjustable(bool next)
 {
-  const bool isCustomPalette = "custom" == myOSystem.settings().getString("palette");
+  const bool isCustomPalette = SETTING_CUSTOM == myOSystem.settings().getString("palette");
+  bool isPhaseShift;
 
   do {
     if(next)
@@ -113,11 +109,19 @@ void PaletteHandler::selectAdjustable(bool next)
       else
         myCurrentAdjustable--;
     }
-  } while(!isCustomPalette && myAdjustables[myCurrentAdjustable].value == nullptr);
+    isPhaseShift = myAdjustables[myCurrentAdjustable].value == nullptr;
+
+    // skip phase shift when 'Custom' palette is not selected
+  } while(isPhaseShift && !isCustomPalette);
 
   ostringstream buf;
-  buf << "Palette adjustable '" << myAdjustables[myCurrentAdjustable].type
-    << "' selected";
+  buf << "Palette adjustable '" << myAdjustables[myCurrentAdjustable].name
+    << "' selected (";
+  if(isPhaseShift)
+    buf << (myOSystem.console().timing() == ConsoleTiming::pal ? myPhasePAL : myPhaseNTSC)
+      << DEGREE << ")";
+  else
+    buf << scaleTo100(*myAdjustables[myCurrentAdjustable].value) << "%)";
 
   myOSystem.frameBuffer().showMessage(buf.str());
 }
@@ -129,25 +133,19 @@ void PaletteHandler::changeAdjustable(bool increase)
     changeColorPhaseShift(increase);
   else
   {
-    float newVal = (*myAdjustables[myCurrentAdjustable].value);
+    int newVal = scaleTo100(*myAdjustables[myCurrentAdjustable].value);
 
     if(increase)
-    {
-      newVal += 0.05F;
-      if(newVal > 1.0F)
-        newVal = 1.0F;
-    }
+      newVal += 2;    // += 2%
     else
-    {
-      newVal -= 0.05F;
-      if(newVal < -1.0F)
-        newVal = -1.0F;
-    }
-    *myAdjustables[myCurrentAdjustable].value = newVal;
+      newVal -= 2;    // -= 2%
+    newVal = BSPF::clamp(newVal, 0, 100);
+
+    *myAdjustables[myCurrentAdjustable].value = scaleFrom100(newVal);
 
     ostringstream buf;
-    buf << "Custom '" << myAdjustables[myCurrentAdjustable].type
-      << "' set to " << int((newVal + 1.0F) * 100.0F + 0.5F) << "%";
+    buf << "Custom '" << myAdjustables[myCurrentAdjustable].name
+        << "' set to " << newVal << "%";
 
     myOSystem.frameBuffer().showMessage(buf.str());
     setPalette();
@@ -162,32 +160,27 @@ void PaletteHandler::changeColorPhaseShift(bool increase)
   // SECAM is not supported
   if(timing != ConsoleTiming::secam)
   {
-    constexpr char DEGREE = 0x1c;
     const bool isNTSC = timing == ConsoleTiming::ntsc;
     const float shift = isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT;
-    float phase = isNTSC ? myPhaseNTSC : myPhasePAL;
+    float newPhase = isNTSC ? myPhaseNTSC : myPhasePAL;
 
     if(increase)        // increase color phase shift
-    {
-      phase += 0.3F;
-      phase = std::min(phase, shift + MAX_SHIFT);
-    }
+      newPhase += 0.3F;
     else                // decrease color phase shift
-    {
-      phase -= 0.3F;
-      phase = std::max(phase, shift - MAX_SHIFT);
-    }
+      newPhase -= 0.3F;
+    newPhase = BSPF::clamp(newPhase, shift - MAX_SHIFT, shift + MAX_SHIFT);
+
     if(isNTSC)
-      myPhaseNTSC = phase;
+      myPhaseNTSC = newPhase;
     else
-      myPhasePAL = phase;
+      myPhasePAL = newPhase;
 
     generateCustomPalette(timing);
-    setPalette("custom");
+    setPalette(SETTING_CUSTOM);
 
     ostringstream ss;
     ss << "Color phase shift at "
-      << std::fixed << std::setprecision(1) << phase << DEGREE;
+      << std::fixed << std::setprecision(1) << newPhase << DEGREE;
 
     myOSystem.frameBuffer().showMessage(ss.str());
   }
@@ -260,30 +253,33 @@ void PaletteHandler::setPalette(const string& name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::setPalette()
 {
-  const string& name = myOSystem.settings().getString("palette");
+  if(myOSystem.hasConsole())
+  {
+    const string& name = myOSystem.settings().getString("palette");
 
-  // Look at all the palettes, since we don't know which one is
-  // currently active
-  static constexpr BSPF::array2D<const PaletteArray*, PaletteType::NumTypes, int(ConsoleTiming::numTimings)> palettes = {{
-    { &ourNTSCPalette,       &ourPALPalette,       &ourSECAMPalette     },
-    { &ourNTSCPaletteZ26,    &ourPALPaletteZ26,    &ourSECAMPaletteZ26  },
-    { &ourUserNTSCPalette,   &ourUserPALPalette,   &ourUserSECAMPalette },
-    { &ourCustomNTSCPalette, &ourCustomPALPalette, &ourSECAMPalette     }
-    }};
-  // See which format we should be using
-  const ConsoleTiming timing = myOSystem.console().timing();
-  const PaletteType paletteType = toPaletteType(name);
-  // Now consider the current display format
-  const PaletteArray* palette = palettes[paletteType][int(timing)];
+    // Look at all the palettes, since we don't know which one is
+    // currently active
+    static constexpr BSPF::array2D<const PaletteArray*, PaletteType::NumTypes, int(ConsoleTiming::numTimings)> palettes = {{
+      { &ourNTSCPalette,       &ourPALPalette,       &ourSECAMPalette     },
+      { &ourNTSCPaletteZ26,    &ourPALPaletteZ26,    &ourSECAMPaletteZ26  },
+      { &ourUserNTSCPalette,   &ourUserPALPalette,   &ourUserSECAMPalette },
+      { &ourCustomNTSCPalette, &ourCustomPALPalette, &ourSECAMPalette     }
+      }};
+    // See which format we should be using
+    const ConsoleTiming timing = myOSystem.console().timing();
+    const PaletteType paletteType = toPaletteType(name);
+    // Now consider the current display format
+    const PaletteArray* palette = palettes[paletteType][int(timing)];
 
-  if(paletteType == PaletteType::Custom)
-    generateCustomPalette(timing);
+    if(paletteType == PaletteType::Custom)
+      generateCustomPalette(timing);
 
-  myOSystem.frameBuffer().setTIAPalette(adjustPalette(*palette));
+    myOSystem.frameBuffer().setTIAPalette(adjustedPalette(*palette));
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-PaletteArray PaletteHandler::adjustPalette(const PaletteArray& palette)
+PaletteArray PaletteHandler::adjustedPalette(const PaletteArray& palette)
 {
   PaletteArray destPalette;
   // Constants for saturation and gray scale calculation
@@ -387,15 +383,15 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
 {
   constexpr int NUM_CHROMA = 16;
   constexpr int NUM_LUMA = 8;
-  constexpr float SATURATION = 0.25F;
+  constexpr float SATURATION = 0.25F; // default saturation
 
   float color[NUM_CHROMA][2] = {{0.0F}};
 
   if(timing == ConsoleTiming::ntsc)
   {
     // YIQ is YUV shifted by 33°
-    constexpr float offset = 33 * (2 * BSPF::PI_f / 360);
-    const float shift = myPhaseNTSC * (2 * BSPF::PI_f / 360);
+    constexpr float offset = 33 * BSPF::PI_f / 180;
+    const float shift = myPhaseNTSC * BSPF::PI_f / 180;
 
     // color 0 is grayscale
     for(int chroma = 1; chroma < NUM_CHROMA; chroma++)
@@ -425,13 +421,9 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
         G = powf(G, 0.9F);
         B = powf(B, 0.9F);
 
-        if(R > 1) R = 1;
-        if(G > 1) G = 1;
-        if(B > 1) B = 1;
-
-        int r = R * 255.F;
-        int g = G * 255.F;
-        int b = B * 255.F;
+        int r = BSPF::clamp(R * 255.F, 0.F, 255.F);
+        int g = BSPF::clamp(G * 255.F, 0.F, 255.F);
+        int b = BSPF::clamp(B * 255.F, 0.F, 255.F);
 
         ourCustomNTSCPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
       }
@@ -439,9 +431,9 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
   }
   else if(timing == ConsoleTiming::pal)
   {
-    constexpr float offset = 180 * (2 * BSPF::PI_f / 360);
-    const float shift = myPhasePAL * (2 * BSPF::PI_f / 360);
-    constexpr float fixedShift = 22.5F * (2 * BSPF::PI_f / 360);
+    constexpr float offset = BSPF::PI_f;
+    const float shift = myPhasePAL * BSPF::PI_f / 180;
+    constexpr float fixedShift = 22.5F * BSPF::PI_f / 180;
 
     // colors 0, 1, 14 and 15 are grayscale
     for(int chroma = 2; chroma < NUM_CHROMA - 2; chroma++)
@@ -470,7 +462,7 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
         // German Wikipedia, huh???
         //float B = Y + 1 / 0.493 * U;
         //float R = Y + 1 / 0.877 * V;
-        //float G = 1.704 * Y - 0.590 * R - 0.194   * B;
+        //float G = 1.704 * Y - 0.590 * R - 0.194 * B;
 
         if(R < 0) R = 0.0;
         if(G < 0) G = 0.0;
@@ -480,13 +472,9 @@ void PaletteHandler::generateCustomPalette(ConsoleTiming timing)
         G = powf(G, 1.2F);
         B = powf(B, 1.2F);
 
-        if(R > 1) R = 1;
-        if(G > 1) G = 1;
-        if(B > 1) B = 1;
-
-        int r = R * 255.F;
-        int g = G * 255.F;
-        int b = B * 255.F;
+        int r = BSPF::clamp(R * 255.F, 0.F, 255.F);
+        int g = BSPF::clamp(G * 255.F, 0.F, 255.F);
+        int b = BSPF::clamp(B * 255.F, 0.F, 255.F);
 
         ourCustomPALPalette[(chroma * NUM_LUMA + luma) << 1] = (r << 16) + (g << 8) + b;
       }
