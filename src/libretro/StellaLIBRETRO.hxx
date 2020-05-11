@@ -104,7 +104,7 @@ class StellaLIBRETRO
     void   setVideoAspectPAL(uInt32 value) { video_aspect_pal = value; };
 
     void   setVideoFilter(NTSCFilter::Preset mode);
-    void   setVideoPalette(uInt32 mode);
+    void   setVideoPalette(const string& mode);
     void   setVideoPhosphor(uInt32 mode, uInt32 blend);
 
     void   setAudioStereo(int mode);

@@ -15,6 +15,7 @@
 #include "StellaLIBRETRO.hxx"
 #include "Event.hxx"
 #include "NTSCFilter.hxx"
+#include "PaletteHandler.hxx"
 #include "Version.hxx"
 
 
@@ -30,11 +31,12 @@ static retro_audio_sample_batch_t audio_batch_cb;
 
 // libretro UI settings
 static int setting_ntsc, setting_pal;
-static int setting_stereo, setting_palette;
+static int setting_stereo;
 static int setting_phosphor, setting_console, setting_phosphor_blend;
 static int stella_paddle_joypad_sensitivity;
 static int setting_crop_hoverscan, crop_left;
 static NTSCFilter::Preset setting_filter;
+static const char* setting_palette;
 
 static bool system_reset;
 
@@ -275,17 +277,11 @@ static void update_variables(bool init = false)
 
   RETRO_GET("stella_palette")
   {
-    int value = 0;
-
-    if(!strcmp(var.value, "standard")) value = 0;
-    else if(!strcmp(var.value, "z26")) value = 1;
-    else if(!strcmp(var.value, "user")) value = 2;
-
-    if(setting_palette != value)
+    if(setting_palette != var.value)
     {
-      stella.setVideoPalette(value);
+      stella.setVideoPalette(var.value);
 
-      setting_palette = value;
+      setting_palette = var.value;
     }
   }
 
@@ -494,7 +490,7 @@ void retro_set_environment(retro_environment_t cb)
   static struct retro_variable variables[] = {
     // Adding more variables and rearranging them is safe.
     { "stella_console", "Console display; auto|ntsc|pal|secam|ntsc50|pal60|secam60" },
-    { "stella_palette", "Palette colors; standard|z26|user" },
+    { "stella_palette", "Palette colors; standard|z26|user|custom" },
     { "stella_filter", "TV effects; disabled|composite|s-video|rgb|badly adjusted" },
     { "stella_ntsc_aspect", "NTSC aspect %; par|100|101|102|103|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85|86|87|88|89|90|91|92|93|94|95|96|97|98|99" },
     { "stella_pal_aspect", "PAL aspect %; par|100|101|102|103|104|105|106|107|108|109|110|111|112|113|114|115|116|117|118|119|120|121|122|123|124|125|50|75|76|77|78|79|80|81|82|83|84|85|86|87|88|89|90|91|92|93|94|95|96|97|98|99" },

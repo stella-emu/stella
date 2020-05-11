@@ -121,7 +121,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
     case 2:
       title = "Special commands";
       ADD_EVENT(Event::FormatIncrease,      "Switch between NTSC/PAL/SECAM");
-      ADD_EVENT(Event::TogglePalette,       "Switch palette");
+      ADD_EVENT(Event::PaletteIncrease,     "Switch to next palette");
       ADD_EVENT(Event::TogglePhosphor,      "Toggle 'phosphor' effect");
       ADD_LINE();
       ADD_EVENT(Event::ToggleGrabMouse,     "Grab mouse (keep in window)");

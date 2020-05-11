@@ -171,9 +171,8 @@ void FrameBuffer::setupFonts()
     //  However, we have to make sure all Dialogs are sized using the fontsize.
     int zoom_h = (fd.height * 4 * 2) / GUI::stellaMediumDesc.height;
     int zoom_w = (fd.maxwidth * 4 * 2) / GUI::stellaMediumDesc.maxwidth;
-    myTIAMinZoom = std::max(zoom_w, zoom_h) / 4.F; // round to 25% steps
+    myTIAMinZoom = std::max(std::max(zoom_w, zoom_h) / 4.F, 2.F); // round to 25% steps, >= 200%
   }
-
 
   // The font used by the ROM launcher
   const string& lf = myOSystem.settings().getString("launcherfont");
@@ -310,7 +309,7 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   }
 
   if(!myMsg.surface)
-    myMsg.surface = allocateSurface(FBMinimum::Width, font().getFontHeight() * 1.5);
+    myMsg.surface = allocateSurface(font().getMaxCharWidth() * 56, font().getFontHeight() * 1.5);
 #endif
 
   // Print initial usage message, but only print it later if the status has changed

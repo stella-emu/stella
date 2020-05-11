@@ -22,6 +22,7 @@ class TIA;
 class Console;
 class OSystem;
 class FBSurface;
+class PaletteHandler;
 
 #include <thread>
 
@@ -48,6 +49,7 @@ class TIASurface
       Creates a new TIASurface object
     */
     explicit TIASurface(OSystem& system);
+    virtual ~TIASurface();
 
     /**
       Set the TIA object, which is needed for actually rendering the TIA image.
@@ -88,6 +90,16 @@ class TIASurface
     void setNTSC(NTSCFilter::Preset preset, bool show = true);
 
     /**
+      Switch to next/previous NTSC filtering effect.
+    */
+    void changeNTSC(bool next, bool show = true);
+
+    /**
+      Retrieve palette handler.
+    */
+    PaletteHandler& paletteHandler() const { return *myPaletteHandler; }
+
+    /**
       Increase/decrease current scanline intensity by given relative amount.
     */
     void setScanlineIntensity(int relative);
@@ -100,7 +112,6 @@ class TIASurface
       @return  New current intensity
     */
     uInt32 enableScanlines(int relative, int absolute = 50);
-    void enableScanlineInterpolation(bool enable);
 
     /**
       Enable/disable/query phosphor effect.
@@ -182,6 +193,9 @@ class TIASurface
 
     // Flag for saving a snapshot
     bool mySaveSnapFlag{false};
+
+    // The palette handler
+    unique_ptr<PaletteHandler>myPaletteHandler;
 
   private:
     // Following constructors and assignment operators not supported

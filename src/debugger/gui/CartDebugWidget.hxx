@@ -19,7 +19,6 @@
 #define CART_DEBUG_WIDGET_HXX
 
 class GuiObject;
-class ButtonWidget;
 class StringListWidget;
 
 namespace GUI {
@@ -29,8 +28,6 @@ namespace GUI {
 #include "Base.hxx"  // not needed here, but all child classes need it
 #include "Command.hxx"
 #include "Widget.hxx"
-#include "Debugger.hxx"
-#include "CartDebug.hxx"
 
 class CartDebugWidget : public Widget, public CommandSender
 {
