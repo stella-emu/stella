@@ -110,7 +110,7 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myTVContrast{nullptr};
     SliderWidget*     myTVGamma{nullptr};
     std::array<StaticTextWidget*, 16> myColorLbl{nullptr};
-    ColorWidget*      myColor[16][8]{nullptr};
+    ColorWidget*      myColor[16][8]{{nullptr}};
 
     // Audio
     CheckboxWidget*   mySoundEnableCheckbox{nullptr};
@@ -125,7 +125,7 @@ class VideoAudioDialog : public Dialog
     SliderWidget*     myDpcPitch{nullptr};
 
     string            myPalette;
-    PaletteHandler::Adjustable myPaletteAdj{0.0F};
+    PaletteHandler::Adjustable myPaletteAdj;
 
     enum {
       kZoomChanged        = 'VDZo',

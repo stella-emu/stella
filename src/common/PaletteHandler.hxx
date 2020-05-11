@@ -38,8 +38,8 @@ class PaletteHandler
 
     // Externally used adjustment parameters
     struct Adjustable {
-      float phaseNtsc, phasePal;
-      uInt32 hue, saturation, contrast, brightness, gamma;
+      float phaseNtsc{0.F}, phasePal{0.F};
+      uInt32 hue{0}, saturation{0}, contrast{0}, brightness{0}, gamma{0};
     };
 
   public:
@@ -54,14 +54,14 @@ class PaletteHandler
     void cyclePalette(bool next = true);
 
     /*
-      Cycle through each palette adjustable
+      Cycle through each palette adjustable.
 
       @param next  Select next adjustable, else previous one
     */
     void cycleAdjustable(bool next = true);
 
     /*
-      Increase or decrease current palette adjustable
+      Increase or decrease current palette adjustable.
 
       @param increase  Increase adjustable if true, else decrease
     */
@@ -82,7 +82,7 @@ class PaletteHandler
     /**
       Sets the palette according to the given palette name.
 
-      @param palette  The palette to switch to.
+      @param name  The palette to switch to
     */
     void setPalette(const string& name);
 
@@ -107,11 +107,11 @@ class PaletteHandler
     /**
       Convert adjustables from/to 100% scale
     */
-    float scaleFrom100(float x) const { return (x / 50.F) - 1.F; }
-    uInt32 scaleTo100(float x) const { return uInt32(50 * (x + 1.F)); }
+    constexpr float scaleFrom100(float x) const { return (x / 50.F) - 1.F; }
+    constexpr uInt32 scaleTo100(float x) const { return uInt32(50 * (x + 1.F)); }
 
     /**
-      Convert palette settings name to enumeration
+      Convert palette settings name to enumeration.
 
       @param name  The given palette's settings name
 
@@ -120,7 +120,7 @@ class PaletteHandler
     PaletteType toPaletteType(const string& name) const;
 
     /**
-      Convert enumeration to palette settings name
+      Convert enumeration to palette settings name.
 
       @param type  The given palette type
 
@@ -133,7 +133,7 @@ class PaletteHandler
       Note that there are two of these (NTSC and PAL).  The currently
       active mode will determine which one is used.
 
-      @param increase  Increase if true, else decrease.
+      @param increase  Increase if true, else decrease
     */
     void changeColorPhaseShift(bool increase = true);
 
@@ -145,16 +145,16 @@ class PaletteHandler
     void generateCustomPalette(ConsoleTiming timing);
 
     /**
-      Create new palette by applying palette adjustments on given palette
+      Create new palette by applying palette adjustments on given palette.
 
-      @param type  The palette which should be adjusted
+      @param source  The palette which should be adjusted
 
       @return  An adjusted palette
     */
     PaletteArray adjustedPalette(const PaletteArray& source);
 
     /**
-      Adjust hue and saturation for given RGB values
+      Adjust hue and saturation for given RGB values.
 
       @param R  The red value to adjust
       @param G  The green value to adjust

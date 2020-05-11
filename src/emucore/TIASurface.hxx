@@ -22,13 +22,13 @@ class TIA;
 class Console;
 class OSystem;
 class FBSurface;
-class PaletteHandler;
 
 #include <thread>
 
 #include "Rect.hxx"
 #include "FrameBuffer.hxx"
 #include "NTSCFilter.hxx"
+#include "PaletteHandler.hxx"
 #include "PhosphorHandler.hxx"
 #include "bspf.hxx"
 #include "TIAConstants.hxx"
