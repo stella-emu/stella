@@ -537,7 +537,7 @@ void VideoAudioDialog::loadConfig()
   AudioSettings& audioSettings = instance().audioSettings();
 
   // Enable sound
-#ifndef SOUND_SUPPORT
+#ifdef SOUND_SUPPORT
   mySoundEnableCheckbox->setState(audioSettings.enabled());
 #else
   mySoundEnableCheckbox->setState(false);
