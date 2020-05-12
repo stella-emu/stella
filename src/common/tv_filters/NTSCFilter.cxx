@@ -172,11 +172,11 @@ void NTSCFilter::saveConfig(Settings& settings) const
 {
   // Save adjustables for custom mode
 #ifdef BLARGG_PALETTE
-  //settings.setValue("tv.hue", myCustomSetup.hue);
-  //settings.setValue("tv.saturation", myCustomSetup.saturation);
-  //settings.setValue("tv.contrast", myCustomSetup.contrast);
-  //settings.setValue("tv.brightness", myCustomSetup.brightness);
-  //settings.setValue("tv.gamma", myCustomSetup.gamma);
+  settings.setValue("tv.hue", myCustomSetup.hue);
+  settings.setValue("tv.saturation", myCustomSetup.saturation);
+  settings.setValue("tv.contrast", myCustomSetup.contrast);
+  settings.setValue("tv.brightness", myCustomSetup.brightness);
+  settings.setValue("tv.gamma", myCustomSetup.gamma);
 #endif
   settings.setValue("tv.sharpness", myCustomSetup.sharpness);
   settings.setValue("tv.resolution", myCustomSetup.resolution);

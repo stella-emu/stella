@@ -191,30 +191,30 @@ void PaletteHandler::changeColorPhaseShift(bool increase)
 void PaletteHandler::loadConfig(const Settings& settings)
 {
   // Load adjustables
-  myPhaseNTSC   = BSPF::clamp(settings.getFloat("tv.phase_ntsc"),
+  myPhaseNTSC   = BSPF::clamp(settings.getFloat("pal.phase_ntsc"),
                               DEF_NTSC_SHIFT - MAX_SHIFT, DEF_NTSC_SHIFT + MAX_SHIFT);
-  myPhasePAL    = BSPF::clamp(settings.getFloat("tv.phase_pal"),
+  myPhasePAL    = BSPF::clamp(settings.getFloat("pal.phase_pal"),
                               DEF_PAL_SHIFT - MAX_SHIFT, DEF_PAL_SHIFT + MAX_SHIFT);
 
-  myHue         = BSPF::clamp(settings.getFloat("tv.hue"), -1.0F, 1.0F);
-  mySaturation  = BSPF::clamp(settings.getFloat("tv.saturation"), -1.0F, 1.0F);
-  myContrast    = BSPF::clamp(settings.getFloat("tv.contrast"), -1.0F, 1.0F);
-  myBrightness  = BSPF::clamp(settings.getFloat("tv.brightness"), -1.0F, 1.0F);
-  myGamma       = BSPF::clamp(settings.getFloat("tv.gamma"), -1.0F, 1.0F);
+  myHue         = BSPF::clamp(settings.getFloat("pal.hue"), -1.0F, 1.0F);
+  mySaturation  = BSPF::clamp(settings.getFloat("pal.saturation"), -1.0F, 1.0F);
+  myContrast    = BSPF::clamp(settings.getFloat("pal.contrast"), -1.0F, 1.0F);
+  myBrightness  = BSPF::clamp(settings.getFloat("pal.brightness"), -1.0F, 1.0F);
+  myGamma       = BSPF::clamp(settings.getFloat("pal.gamma"), -1.0F, 1.0F);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::saveConfig(Settings& settings) const
 {
   // Save adjustables
-  settings.setValue("tv.phase_ntsc", myPhaseNTSC);
-  settings.setValue("tv.phase_pal", myPhasePAL);
+  settings.setValue("pal.phase_ntsc", myPhaseNTSC);
+  settings.setValue("pal.phase_pal", myPhasePAL);
 
-  settings.setValue("tv.hue", myHue);
-  settings.setValue("tv.saturation", mySaturation);
-  settings.setValue("tv.contrast", myContrast);
-  settings.setValue("tv.brightness", myBrightness);
-  settings.setValue("tv.gamma", myGamma);
+  settings.setValue("pal.hue", myHue);
+  settings.setValue("pal.saturation", mySaturation);
+  settings.setValue("pal.contrast", myContrast);
+  settings.setValue("pal.brightness", myBrightness);
+  settings.setValue("pal.gamma", myGamma);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
