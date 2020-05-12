@@ -91,9 +91,7 @@ class InputDialog : public Dialog
     EventMappingWidget* myEmulEventMapper{nullptr};
     EventMappingWidget* myMenuEventMapper{nullptr};
 
-    CheckboxWidget* mySAPort{nullptr};
-    PopUpWidget* myMouseControl{nullptr};
-    PopUpWidget* myCursorState{nullptr};
+    CheckboxWidget*   mySAPort{nullptr};
 
     EditTextWidget*   myAVoxPort{nullptr};
 
@@ -102,15 +100,19 @@ class InputDialog : public Dialog
     SliderWidget*     myDejitterBase{nullptr};
     SliderWidget*     myDejitterDiff{nullptr};
     SliderWidget*     myDPaddleSpeed{nullptr};
-    SliderWidget*     myMPaddleSpeed{nullptr};
-    SliderWidget*     myTrackBallSpeed{nullptr};
-    SliderWidget*     myDrivingSpeed{nullptr};
     CheckboxWidget*   myAllowAll4{nullptr};
-    CheckboxWidget*   myGrabMouse{nullptr};
     CheckboxWidget*   myModCombo{nullptr};
 
     ButtonWidget*     myJoyDlgButton{nullptr};
     ButtonWidget*     myEraseEEPROMButton{nullptr};
+
+    PopUpWidget*      myMouseControl{nullptr};
+    StaticTextWidget* myMouseSensitivity{nullptr};
+    SliderWidget*     myMPaddleSpeed{nullptr};
+    SliderWidget*     myTrackBallSpeed{nullptr};
+    SliderWidget*     myDrivingSpeed{nullptr};
+    PopUpWidget*      myCursorState{nullptr};
+    CheckboxWidget*   myGrabMouse{nullptr};
 
     // Show the list of joysticks that the eventhandler knows about
     unique_ptr<JoystickDialog> myJoyDialog;
