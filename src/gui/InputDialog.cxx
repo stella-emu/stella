@@ -127,10 +127,9 @@ void InputDialog::addDevicePortTab()
                                 "Joystick deadzone size", lwidth, kDeadzoneChanged, 5 * fontWidth);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   myDeadzone->setTickmarkIntervals(4);
-  xpos = HBORDER + myDeadzone->getWidth() + 5;
   wid.push_back(myDeadzone);
 
-  xpos = HBORDER; ypos += lineHeight + VGAP * 2;
+  xpos = HBORDER; ypos += lineHeight + VGAP * 4;
   new StaticTextWidget(myTab, _font, xpos, ypos+1, "Analog paddle:");
   xpos += fontWidth * 2;
 
@@ -165,7 +164,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myDejitterDiff);
 
   // Add paddle speed (digital emulation)
-  ypos += lineHeight + VGAP * 3;
+  ypos += lineHeight + VGAP * 4;
   myDPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
                                     "Digital paddle sensitivity",
                                     lwidth, kDPSpeedChanged, 4 * fontWidth, "%");
@@ -173,26 +172,8 @@ void InputDialog::addDevicePortTab()
   myDPaddleSpeed->setTickmarkIntervals(4);
   wid.push_back(myDPaddleSpeed);
 
-  // Add trackball speed
-  ypos += lineHeight + VGAP;
-  myTrackBallSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
-                                      "Trackball sensitivity",
-                                      lwidth, kTBSpeedChanged, 4 * fontWidth, "%");
-  myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
-  myTrackBallSpeed->setTickmarkIntervals(4);
-  wid.push_back(myTrackBallSpeed);
-
-  // Add driving controller speed
-  ypos += lineHeight + VGAP;
-  myDrivingSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
-                                      "Driving contr. sensitivity",
-                                      lwidth, kDCSpeedChanged, 4 * fontWidth, "%");
-  myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
-  myDrivingSpeed->setTickmarkIntervals(4);
-  wid.push_back(myDrivingSpeed);
-
   // Add 'allow all 4 directions' for joystick
-  ypos += lineHeight + VGAP * 3;
+  ypos += lineHeight + VGAP * 4;
   myAllowAll4 = new CheckboxWidget(myTab, _font, HBORDER, ypos,
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
@@ -231,7 +212,7 @@ void InputDialog::addDevicePortTab()
   wid.push_back(myEraseEEPROMButton);
 
   // Add AtariVox serial port
-  ypos += lineHeight + VGAP * 2;
+  ypos += lineHeight + VGAP * 3;
   lwidth = _font.getStringWidth("AVox serial port ");
   fwidth = _w - HBORDER * 2 - 2 - lwidth;
   new StaticTextWidget(myTab, _font, HBORDER, ypos + 2, "AVox serial port ");
@@ -252,7 +233,8 @@ void InputDialog::addMouseTab()
   const int VGAP = fontHeight / 4;
   const int VBORDER = fontHeight / 2;
   const int HBORDER = fontWidth * 1.25;
-  int ypos, lwidth, pwidth, tabID;
+  const int INDENT = fontWidth * 2;
+  int xpos = HBORDER, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
   VariantList items;
 
@@ -267,21 +249,43 @@ void InputDialog::addMouseTab()
   VarList::push_back(items, "Always", "always");
   VarList::push_back(items, "Analog devices", "analog");
   VarList::push_back(items, "Never", "never");
-  myMouseControl = new PopUpWidget(myTab, _font, HBORDER, ypos, pwidth, lineHeight, items,
+  myMouseControl = new PopUpWidget(myTab, _font, xpos, ypos, pwidth, lineHeight, items,
                                    "Use mouse as a controller ", lwidth, kMouseCtrlChanged);
   wid.push_back(myMouseControl);
 
-  // Add paddle speed (mouse emulation)
   ypos += lineHeight + VGAP;
-  myMPaddleSpeed = new SliderWidget(myTab, _font, HBORDER, ypos - 1, 13 * fontWidth, lineHeight,
-                                    "Mouse paddle sensitivity ",
+  myMouseSensitivity = new StaticTextWidget(myTab, _font, xpos, ypos + 1, "Sensitivity:");
+
+  // Add paddle speed (mouse emulation)
+  xpos += INDENT;  ypos += lineHeight + VGAP;
+  lwidth -= INDENT;
+  myMPaddleSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                    "Paddle",
                                     lwidth, kMPSpeedChanged, 4 * fontWidth, "%");
   myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(20);
   myMPaddleSpeed->setTickmarkIntervals(4);
   wid.push_back(myMPaddleSpeed);
 
+  // Add trackball speed
+  ypos += lineHeight + VGAP;
+  myTrackBallSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                      "Trackball",
+                                      lwidth, kTBSpeedChanged, 4 * fontWidth, "%");
+  myTrackBallSpeed->setMinValue(1); myTrackBallSpeed->setMaxValue(20);
+  myTrackBallSpeed->setTickmarkIntervals(4);
+  wid.push_back(myTrackBallSpeed);
+
+  // Add driving controller speed
+  ypos += lineHeight + VGAP;
+  myDrivingSpeed = new SliderWidget(myTab, _font, xpos, ypos - 1, 13 * fontWidth, lineHeight,
+                                    "Driving controller",
+                                    lwidth, kDCSpeedChanged, 4 * fontWidth, "%");
+  myDrivingSpeed->setMinValue(1); myDrivingSpeed->setMaxValue(20);
+  myDrivingSpeed->setTickmarkIntervals(4);
+  wid.push_back(myDrivingSpeed);
 
   // Mouse cursor state
+  lwidth += INDENT;
   ypos += lineHeight + VGAP * 4;
   items.clear();
   VarList::push_back(items, "-UI, -Emulation", "0");
@@ -473,9 +477,6 @@ void InputDialog::setDefaults()
       myDejitterBase->setValue(0);
       myDejitterDiff->setValue(0);
     #endif
-      myDrivingSpeed->setValue(10);
-      myTrackBallSpeed->setValue(10);
-
       // AtariVox serial port
       myAVoxPort->setText("");
 
@@ -491,14 +492,16 @@ void InputDialog::setDefaults()
       // Use mouse as a controller
       myMouseControl->setSelected("analog");
 
+      // Paddle speed (mouse)
+      myMPaddleSpeed->setValue(10);
+      myTrackBallSpeed->setValue(10);
+      myDrivingSpeed->setValue(10);
+
       // Mouse cursor state
       myCursorState->setSelected("2");
 
       // Grab mouse
       myGrabMouse->setState(true);
-
-      // Paddle speed (mouse)
-      myMPaddleSpeed->setValue(10);
 
       handleMouseControlState();
       handleCursorState();
@@ -691,6 +694,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kMouseCtrlChanged:
       handleMouseControlState();
+      handleCursorState();
       break;
 
     case kCursorStateChanged:
@@ -725,14 +729,19 @@ void InputDialog::updateDejitterReaction()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleMouseControlState()
 {
-  myMPaddleSpeed->setEnabled(myMouseControl->getSelected() != 2);
+  bool enable = myMouseControl->getSelected() != 2;
+
+  myMouseSensitivity->setEnabled(enable);
+  myMPaddleSpeed->setEnabled(enable);
+  myTrackBallSpeed->setEnabled(enable);
+  myDrivingSpeed->setEnabled(enable);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleCursorState()
 {
   int state = myCursorState->getSelected();
-  bool enableGrab = state != 1 && state != 3;
+  bool enableGrab = state != 1 && state != 3 && myMouseControl->getSelected() != 2;
 
   myGrabMouse->setEnabled(enableGrab);
 }
