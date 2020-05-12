@@ -24,12 +24,12 @@ class OSystem;
 class AudioQueue;
 class EmulationTiming;
 class AudioSettings;
+class Resampler;
 
 #include "SDL_lib.hxx"
 
 #include "bspf.hxx"
 #include "Sound.hxx"
-#include "audio/Resampler.hxx"
 
 /**
   This class implements the sound API for SDL.

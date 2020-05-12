@@ -18,11 +18,11 @@
 #ifndef TIA_AUDIO_HXX
 #define TIA_AUDIO_HXX
 
+class AudioQueue;
+
 #include "bspf.hxx"
 #include "AudioChannel.hxx"
 #include "Serializable.hxx"
-
-class AudioQueue;
 
 class Audio : public Serializable
 {

@@ -24,6 +24,7 @@
 #include "Cart.hxx"
 #include "Control.hxx"
 #include "Cart.hxx"
+#include "CartCM.hxx"
 #include "Driving.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"

@@ -15,8 +15,8 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-
 #include "PopUpWidget.hxx"
+#include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "CartEnhanced.hxx"

@@ -27,7 +27,6 @@ class AudioSettings;
 
 #include "bspf.hxx"
 #include "Sound.hxx"
-#include "AudioQueue.hxx"
 
 /**
   This class implements the sound API for LIBRTRO.

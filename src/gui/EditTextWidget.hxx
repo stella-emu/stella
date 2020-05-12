@@ -21,7 +21,6 @@
 #include "Rect.hxx"
 #include "EditableWidget.hxx"
 
-
 /* EditTextWidget */
 class EditTextWidget : public EditableWidget
 {

@@ -20,6 +20,7 @@
 #include "Font.hxx"
 #include "StellaKeys.hxx"
 #include "Version.hxx"
+#include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"

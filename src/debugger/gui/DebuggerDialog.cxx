@@ -47,6 +47,8 @@
 #include "OptionsDialog.hxx"
 #include "StateManager.hxx"
 #include "FrameManager.hxx"
+#include "OSystem.hxx"
+#include "Console.hxx"
 #include "DebuggerDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

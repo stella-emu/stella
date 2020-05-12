@@ -18,6 +18,7 @@
 #include <cmath>
 
 #include "OSystem.hxx"
+#include "Console.hxx"
 #include "Serializer.hxx"
 #include "StateManager.hxx"
 #include "TIA.hxx"

@@ -32,6 +32,9 @@ class EditTextWidget;
 class FileListWidget;
 class RomInfoWidget;
 class StaticTextWidget;
+namespace Common {
+  struct Size;
+}
 namespace GUI {
   class MessageBox;
 }
@@ -41,7 +44,6 @@ namespace GUI {
 #include "bspf.hxx"
 #include "Dialog.hxx"
 #include "FSNode.hxx"
-#include "Stack.hxx"
 
 class LauncherDialog : public Dialog
 {

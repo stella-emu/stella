@@ -15,6 +15,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
+#include "OSystem.hxx"
 #include "Console.hxx"
 #include "EventHandler.hxx"
 #include "Launcher.hxx"
@@ -86,6 +87,11 @@ StellaSettingsDialog::StellaSettingsDialog(OSystem& osystem, DialogContainer& pa
   addDefaultsOKCancelBGroup(wid, _font);
 
   addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StellaSettingsDialog::~StellaSettingsDialog()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

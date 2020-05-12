@@ -19,7 +19,9 @@
 #define CARTRIDGE3EX_HXX
 
 class System;
+class Settings;
 
+#include "bspf.hxx"
 #include "Cart3E.hxx"
 
 /**
@@ -30,39 +32,38 @@ class System;
 
 class Cartridge3EX : public Cartridge3E
 {
+  public:
+    /**
+      Create a new cartridge using the specified image and size
 
-public:
-  /**
-    Create a new cartridge using the specified image and size
+      @param image     Pointer to the ROM image
+      @param size      The size of the ROM image
+      @param md5       The md5sum of the ROM image
+      @param settings  A reference to the various settings (read-only)
+    */
+    Cartridge3EX(const ByteBuffer& image, size_t size, const string& md5,
+                 const Settings& settings);
+    virtual ~Cartridge3EX() = default;
 
-    @param image     Pointer to the ROM image
-    @param size      The size of the ROM image
-    @param md5       The md5sum of the ROM image
-    @param settings  A reference to the various settings (read-only)
-  */
-  Cartridge3EX(const ByteBuffer& image, size_t size, const string& md5,
-              const Settings& settings);
-  virtual ~Cartridge3EX() = default;
+  public:
+    /**
+      Get a descriptor for the device name (used in error checking).
 
-public:
-  /**
-    Get a descriptor for the device name (used in error checking).
+      @return The name of the object
+    */
+    string name() const override { return "Cartridge3EX"; }
 
-    @return The name of the object
-  */
-  string name() const override { return "Cartridge3EX"; }
+  private:
+    // RAM size
+    static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 256K = 0x40000;
 
-private:
-  // RAM size
-  static constexpr size_t RAM_SIZE = RAM_BANKS << (BANK_SHIFT - 1); // = 256K = 0x40000;
-
-private:
-  // Following constructors and assignment operators not supported
-  Cartridge3EX() = delete;
-  Cartridge3EX(const Cartridge3EX&) = delete;
-  Cartridge3EX(Cartridge3EX&&) = delete;
-  Cartridge3EX& operator=(const Cartridge3EX&) = delete;
-  Cartridge3EX& operator=(Cartridge3EX&&) = delete;
+  private:
+    // Following constructors and assignment operators not supported
+    Cartridge3EX() = delete;
+    Cartridge3EX(const Cartridge3EX&) = delete;
+    Cartridge3EX(Cartridge3EX&&) = delete;
+    Cartridge3EX& operator=(const Cartridge3EX&) = delete;
+    Cartridge3EX& operator=(Cartridge3EX&&) = delete;
 };
 
 #endif

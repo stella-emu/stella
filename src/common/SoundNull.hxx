@@ -18,12 +18,13 @@
 #ifndef SOUND_NULL_HXX
 #define SOUND_NULL_HXX
 
+class OSystem;
+class AudioQueue;
+class EmulationTiming;
+
 #include "bspf.hxx"
 #include "Logger.hxx"
 #include "Sound.hxx"
-#include "OSystem.hxx"
-#include "AudioQueue.hxx"
-#include "EmulationTiming.hxx"
 
 /**
   This class implements a Null sound object, where-by sound generation

@@ -18,8 +18,8 @@
 #ifndef TIA_FRAME_LAYOUT_DETECTOR
 #define TIA_FRAME_LAYOUT_DETECTOR
 
-#include "AbstractFrameManager.hxx"
 #include "FrameLayout.hxx"
+#include "AbstractFrameManager.hxx"
 
 /**
  * This frame manager performs frame layout autodetection. It counts the scanlines

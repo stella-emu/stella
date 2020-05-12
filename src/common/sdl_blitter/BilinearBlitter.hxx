@@ -18,8 +18,9 @@
 #ifndef BILINEAR_BLITTER_HXX
 #define BILINEAR_BLITTER_HXX
 
+class FrameBufferSDL2;
+
 #include "Blitter.hxx"
-#include "FrameBufferSDL2.hxx"
 #include "SDL_lib.hxx"
 
 class BilinearBlitter : public Blitter {

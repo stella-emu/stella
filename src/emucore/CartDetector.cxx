@@ -62,6 +62,7 @@
 #include "MD5.hxx"
 #include "Props.hxx"
 #include "Logger.hxx"
+#include "OSystem.hxx"
 
 #include "CartDetector.hxx"
 

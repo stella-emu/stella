@@ -18,11 +18,11 @@
 #ifndef TIA_BALL
 #define TIA_BALL
 
-#include "Serializable.hxx"
+class TIA;
+
 #include "bspf.hxx"
 #include "TIAConstants.hxx"
-
-class TIA;
+#include "Serializable.hxx"
 
 class Ball : public Serializable
 {
