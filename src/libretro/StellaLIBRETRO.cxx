@@ -23,13 +23,11 @@
 #include "AtariNTSC.hxx"
 #include "PaletteHandler.hxx"
 #include "AudioSettings.hxx"
-#include "PaletteHandler.hxx"
 #include "Serializer.hxx"
 #include "StateManager.hxx"
 #include "Switches.hxx"
 #include "TIA.hxx"
 #include "TIASurface.hxx"
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StellaLIBRETRO::StellaLIBRETRO()
