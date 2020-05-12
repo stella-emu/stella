@@ -20,10 +20,10 @@
 
 class Cartridge;
 class Properties;
+class Settings;
 
 #include "Bankswitch.hxx"
 #include "bspf.hxx"
-#include "Settings.hxx"
 
 /**
   Auto-detect cart type based on various attributes (file size, signatures,

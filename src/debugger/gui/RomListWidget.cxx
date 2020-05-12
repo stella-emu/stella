@@ -16,6 +16,7 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "OSystem.hxx"
 #include "Debugger.hxx"
 #include "DiStella.hxx"
 #include "Widget.hxx"

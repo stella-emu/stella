@@ -37,6 +37,11 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AtariVox::~AtariVox()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AtariVox::read(DigitalPin pin)
 {
   // We need to override the Controller::read() method, since the timing

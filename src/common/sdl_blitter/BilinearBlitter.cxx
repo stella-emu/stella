@@ -15,9 +15,9 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //============================================================================
 
-#include "BilinearBlitter.hxx"
-
+#include "FrameBufferSDL2.hxx"
 #include "ThreadDebugging.hxx"
+#include "BilinearBlitter.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BilinearBlitter::BilinearBlitter(FrameBufferSDL2& fb, bool interpolate)

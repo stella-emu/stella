@@ -23,14 +23,12 @@
 
 class Dialog;
 
-namespace GUI {
-  class Font;
-}
-
 #include <cassert>
 
 #include "bspf.hxx"
 #include "Event.hxx"
+#include "EventHandlerConstants.hxx"
+#include "FrameBufferConstants.hxx"
 #include "StellaKeys.hxx"
 #include "GuiObject.hxx"
 #include "Font.hxx"

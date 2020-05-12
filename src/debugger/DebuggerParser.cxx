@@ -30,6 +30,7 @@
 #include "M6502.hxx"
 #include "Expression.hxx"
 #include "FSNode.hxx"
+#include "OSystem.hxx"
 #include "Settings.hxx"
 #include "PromptWidget.hxx"
 #include "RomWidget.hxx"

@@ -25,8 +25,8 @@ class System;
 
 #include <functional>
 
-#include "Serializable.hxx"
 #include "bspf.hxx"
+#include "Serializable.hxx"
 
 /**
   A controller is a device that plugs into either the left or right

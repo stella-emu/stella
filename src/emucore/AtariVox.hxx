@@ -19,10 +19,10 @@
 #define ATARIVOX_HXX
 
 class OSystem;
+class SerialPort;
 
 #include "Control.hxx"
 #include "SaveKey.hxx"
-#include "SerialPort.hxx"
 
 /**
   Richard Hutchinson's AtariVox "controller": A speech synthesizer and
@@ -49,7 +49,7 @@ class AtariVox : public SaveKey
     AtariVox(Jack jack, const Event& event, const System& system,
              const string& portname, const string& eepromfile,
              const onMessageCallback& callback);
-    virtual ~AtariVox() = default;
+    virtual ~AtariVox();
 
   public:
     using Controller::read;

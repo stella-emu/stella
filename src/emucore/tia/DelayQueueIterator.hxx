@@ -19,8 +19,6 @@
 #define TIA_DELAY_QUEUE_ITERATOR
 
 #include "bspf.hxx"
-#include "DelayQueue.hxx"
-#include "DelayQueueMember.hxx"
 
 class DelayQueueIterator
 {
