@@ -293,9 +293,10 @@ void Debugger::loadAllStates()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::step()
+int Debugger::step(bool save)
 {
-  saveOldState();
+  if(save)
+    saveOldState();
 
   uInt64 startCycle = mySystem.cycles();
 
@@ -303,7 +304,8 @@ int Debugger::step()
   myOSystem.console().tia().updateScanlineByStep().flushLineCache();
   lockSystem();
 
-  addState("step");
+  if(save)  
+    addState("step");
   return int(mySystem.cycles() - startCycle);
 }
 
