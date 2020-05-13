@@ -309,7 +309,12 @@ FBInitStatus FrameBuffer::createDisplay(const string& title, BufferType type,
   }
 
   if(!myMsg.surface)
-    myMsg.surface = allocateSurface(font().getMaxCharWidth() * 56, font().getFontHeight() * 1.5);
+  {
+    const int fontWidth = font().getMaxCharWidth(),
+              HBORDER = fontWidth * 1.25 / 2.0;
+    myMsg.surface = allocateSurface(fontWidth * MESSAGE_WIDTH + HBORDER * 2,
+                                    font().getFontHeight() * 1.5);
+  }
 #endif
 
   // Print initial usage message, but only print it later if the status has changed
@@ -500,19 +505,62 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   const int VBORDER = fontHeight / 4;
   const int HBORDER = fontWidth * 1.25 / 2.0;
 
-  // Precompute the message coordinates
-  myMsg.text    = message;
-  myMsg.counter = uInt32(myOSystem.frameRate()) << 1; // Show message for 2 seconds
-  if(myMsg.counter == 0)  myMsg.counter = 60;
-  myMsg.color   = kBtnTextColor;
+  myMsg.counter = uInt32(myOSystem.frameRate()) * 2; // Show message for 2 seconds
+  if(myMsg.counter == 0)
+    myMsg.counter = 120;
 
-  myMsg.w = font().getStringWidth(myMsg.text) + HBORDER * 2;
-  myMsg.h = fontHeight + VBORDER * 2;
+  // Precompute the message coordinates
+  myMsg.text      = message;
+  myMsg.color     = kBtnTextColor;
+  myMsg.showGauge = false;
+  myMsg.w         = font().getStringWidth(myMsg.text) + HBORDER * 2;
+  myMsg.h         = fontHeight + VBORDER * 2;
+  myMsg.position  = position;
+  myMsg.enabled   = true;
 
   myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
   myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
-  myMsg.position = position;
-  myMsg.enabled = true;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::showMessage(const string& message, const string& valueText,
+                              float value, float minValue, float maxValue)
+{
+#ifdef GUI_SUPPORT
+  // Only show messages if they've been enabled
+  if(myMsg.surface == nullptr || !myOSystem.settings().getBool("uimessages"))
+    return;
+
+  const int fontWidth  = font().getMaxCharWidth(),
+            fontHeight = font().getFontHeight();
+  const int VBORDER = fontHeight / 4;
+  const int HBORDER = fontWidth * 1.25 / 2.0;
+
+  myMsg.counter = uInt32(myOSystem.frameRate()) * 5; // Show message for 5 seconds
+  if(myMsg.counter == 0)
+    myMsg.counter = 120;
+
+  // Precompute the message coordinates
+  myMsg.text       = message;
+  myMsg.color      = kBtnTextColor;
+  myMsg.showGauge  = true;
+  if(maxValue - minValue != 0)
+    myMsg.value = (value - minValue) / (maxValue - minValue) * 100.F;
+  else
+    myMsg.value = 100.F;
+  myMsg.valueText  = valueText;
+  myMsg.w          = std::min(fontWidth * MESSAGE_WIDTH,
+                       font().getStringWidth(myMsg.text)
+                         + fontWidth * (GAUGEBAR_WIDTH + 2)
+                         + font().getStringWidth(myMsg.valueText))
+                     + HBORDER * 2;
+  myMsg.h          = fontHeight + VBORDER * 2;
+  myMsg.position   = MessagePosition::BottomCenter;
+  myMsg.enabled    = true;
+
+  myMsg.surface->setSrcSize(myMsg.w, myMsg.h);
+  myMsg.surface->setDstSize(myMsg.w * hidpiScaleFactor(), myMsg.h * hidpiScaleFactor());
 #endif
 }
 
@@ -631,6 +679,7 @@ inline bool FrameBuffer::drawMessage()
             fontHeight = font().getFontHeight();
   const int VBORDER = fontHeight / 4;
   const int HBORDER = fontWidth * 1.25 / 2.0;
+  constexpr int BORDER = 1;
 
   switch(myMsg.position)
   {
@@ -681,10 +730,44 @@ inline bool FrameBuffer::drawMessage()
   }
 
   myMsg.surface->setDstPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
-  myMsg.surface->fillRect(1, 1, myMsg.w - 2, myMsg.h - 2, kBtnColor);
-  myMsg.surface->frameRect(0, 0, myMsg.w, myMsg.h, kColor);
+  myMsg.surface->fillRect(0, 0, myMsg.w, myMsg.h, kColor);
+  myMsg.surface->fillRect(BORDER, BORDER, myMsg.w - BORDER * 2, myMsg.h - BORDER * 2, kBtnColor);
   myMsg.surface->drawString(font(), myMsg.text, HBORDER, VBORDER,
                             myMsg.w, myMsg.color);
+
+  if(myMsg.showGauge)
+  {
+    constexpr int NUM_TICKMARKS = 4;
+    // limit gauge bar width if texts are too long
+    const int swidth = std::min(fontWidth * GAUGEBAR_WIDTH,
+                                fontWidth * (MESSAGE_WIDTH - 2)
+                                - font().getStringWidth(myMsg.text)
+                                - font().getStringWidth(myMsg.valueText));
+    const int bwidth = swidth * myMsg.value / 100.F;
+    const int bheight = fontHeight >> 1;
+    const int x = HBORDER + font().getStringWidth(myMsg.text) + fontWidth;
+    // align bar with bottom of text
+    const int y = VBORDER + font().desc().ascent - bheight;
+
+    // draw bar gauge
+    myMsg.surface->fillRect(x - BORDER, y, swidth + BORDER * 2, bheight, kSliderBGColor);
+    myMsg.surface->fillRect(x, y + BORDER, bwidth, bheight - BORDER * 2, kSliderColor);
+    // draw tickmark in the middle of the bar
+    for(int i = 1; i < NUM_TICKMARKS; ++i)
+    {
+      ColorId color;
+      int xt = x + swidth * i / NUM_TICKMARKS;
+      if(bwidth < xt - x)
+        color = kCheckColor; // kSliderColor;
+      else
+        color = kSliderBGColor;
+      myMsg.surface->vLine(xt, y + bheight / 2, y + bheight - 1, color);
+    }
+    // draw value text
+    myMsg.surface->drawString(font(), myMsg.valueText,
+                              x + swidth + fontWidth, VBORDER,
+                              myMsg.w, myMsg.color);
+  }
   myMsg.surface->render();
   myMsg.counter--;
 #endif
@@ -900,12 +983,12 @@ void FrameBuffer::toggleFullscreen()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::changeOverscan(int direction)
+void FrameBuffer::changeOverscan(bool increase)
 {
   if (fullScreen())
   {
     int oldOverscan = myOSystem.settings().getInt("tia.fs_overscan");
-    int overscan = BSPF::clamp(oldOverscan + direction, 0, 10);
+    int overscan = BSPF::clamp(oldOverscan + (increase ? 1 : -1), 0, 10);
 
     if (overscan != oldOverscan)
     {
@@ -914,14 +997,15 @@ void FrameBuffer::changeOverscan(int direction)
       // issue a complete framebuffer re-initialization
       myOSystem.createFrameBuffer();
     }
-    ostringstream msg;
-    msg << "Overscan at " << overscan << "%";
-    showMessage(msg.str());
+
+    ostringstream val;
+    val << (overscan ? overscan > 0 ? "+" : "" : " ") << overscan << "%";
+    myOSystem.frameBuffer().showMessage("Overscan", val.str(), overscan, 0, 10);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::changeVidMode(int direction)
+bool FrameBuffer::selectVidMode(bool next)
 {
   EventHandlerState state = myOSystem.eventHandler().state();
   bool tiaMode = (state != EventHandlerState::DEBUGGER &&
@@ -931,12 +1015,10 @@ bool FrameBuffer::changeVidMode(int direction)
   if(!tiaMode)
     return false;
 
-  if(direction == +1)
+  if(next)
     myCurrentModeList->next();
-  else if(direction == -1)
-    myCurrentModeList->previous();
   else
-    return false;
+    myCurrentModeList->previous();
 
   saveCurrentWindowPosition();
 
@@ -956,7 +1038,7 @@ bool FrameBuffer::changeVidMode(int direction)
     myTIASurface->initialize(myOSystem.console(), mode);
 
     resetSurfaces();
-    showMessage(mode.description);
+    showMessage("Zoom", mode.description, mode.zoom, supportedTIAMinZoom(), myTIAMaxZoom);
     myOSystem.sound().mute(oldMuteState);
 
     if(fullScreen())
@@ -1077,7 +1159,7 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     for(float zoom = minZoom; zoom <= myTIAMaxZoom; zoom += ZOOM_STEPS)
     {
       ostringstream desc;
-      desc << "Zoom " << zoom << "x";
+      desc << (zoom * 100) << "%";
 
       VideoMode mode(baseWidth*zoom, baseHeight*zoom, baseWidth*zoom, baseHeight*zoom,
                      VideoMode::Stretch::Fill, 1.0, desc.str(), zoom);

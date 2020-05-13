@@ -217,7 +217,6 @@ void SoundSDL2::setVolume(uInt32 percent)
 void SoundSDL2::adjustVolume(Int8 direction)
 {
   ostringstream strval;
-  string message;
 
   Int32 percent = myVolume;
 
@@ -225,9 +224,7 @@ void SoundSDL2::adjustVolume(Int8 direction)
     percent -= 2;
   else if(direction == 1)
     percent += 2;
-
-  if((percent < 0) || (percent > 100))
-    return;
+  percent = BSPF::clamp(percent, 0, 100);
 
   setVolume(percent);
 
@@ -241,11 +238,8 @@ void SoundSDL2::adjustVolume(Int8 direction)
   }
 
   // Now show an onscreen message
-  strval << percent;
-  message = "Volume set to ";
-  message += strval.str();
-
-  myOSystem.frameBuffer().showMessage(message);
+  strval << percent << "%";
+  myOSystem.frameBuffer().showMessage("Volume", strval.str(), percent);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

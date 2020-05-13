@@ -147,6 +147,17 @@ class FrameBuffer
     void showMessage(const string& message,
                      MessagePosition position = MessagePosition::BottomCenter,
                      bool force = false);
+    /**
+      Shows a message with a bar gauge onscreen.
+
+      @param message    The message to be shown
+      @param valueText  The value of the bar gauge as text
+      @param value      The bar gauge percentage
+      @param minValue   The minimal value of the bar gauge
+      @param maxValue   The maximal value of the bar gauge
+    */
+    void showMessage(const string& message, const string& valueText,
+                     float value, float minValue = 0.F, float maxValue = 100.F);
 
     /**
       Toggles showing or hiding framerate statistics.
@@ -251,10 +262,10 @@ class FrameBuffer
 
     /**
       Changes the fullscreen overscan.
-        direction = -1 means less overscan
-        direction = +1 means more overscan
+
+      @param increase  Increase if true, else decrease
     */
-    void changeOverscan(int direction);
+    void changeOverscan(bool increase = true);
 
     /**
       This method is called when the user wants to switch to the next
@@ -264,9 +275,9 @@ class FrameBuffer
         direction = -1 means go to the next lower video mode
         direction = +1 means go to the next higher video mode
 
-      @param direction  Described above
+      @param next  Select next if true, else previous
     */
-    bool changeVidMode(int direction);
+    bool selectVidMode(bool next = true);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -502,6 +513,11 @@ class FrameBuffer
     OSystem& myOSystem;
 
   private:
+    // Maximum message width [chars]
+    static constexpr int MESSAGE_WIDTH = 56;
+    // Maximum gauge bar width [chars]
+    static constexpr int GAUGEBAR_WIDTH = 30;
+
     /**
       Draw pending messages.
 
@@ -648,6 +664,9 @@ class FrameBuffer
       ColorId color{kNone};
       shared_ptr<FBSurface> surface;
       bool enabled{false};
+      bool showGauge{false};
+      float value{0.0F};
+      string valueText;
     };
     Message myMsg;
     Message myStatsMsg;

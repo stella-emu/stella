@@ -217,7 +217,7 @@ void MinUICommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     // Column 3
     case kFormatCmd:
-      instance().console().toggleFormat();
+      instance().console().selectFormat();
       updateTVFormat();
       break;
 
