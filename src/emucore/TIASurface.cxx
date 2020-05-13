@@ -226,6 +226,29 @@ void TIASurface::changeNTSC(bool next, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::setNTSCAdjustable(bool next)
+{
+  string text, valueText;
+  Int32 value;
+
+  setNTSC(NTSCFilter::Preset::CUSTOM);
+  ntsc().selectAdjustable(next, text, valueText, value);
+  myOSystem.frameBuffer().showMessage(text, valueText, value);
+
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIASurface::changeNTSCAdjustable(bool increase)
+{
+  string text, valueText;
+  Int32 newValue;
+
+  setNTSC(NTSCFilter::Preset::CUSTOM);
+  ntsc().changeAdjustable(increase, text, valueText, newValue);
+  myOSystem.frameBuffer().showMessage(text, valueText, newValue);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASurface::setScanlineIntensity(int amount)
 {
   ostringstream buf;

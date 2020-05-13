@@ -95,6 +95,16 @@ class TIASurface
     void changeNTSC(bool next, bool show = true);
 
     /**
+      Switch to next/previous NTSC filtering adjustable.
+    */
+    void setNTSCAdjustable(bool next = true);
+
+    /**
+      Increase/decrease current NTSC filtering adjustable.
+    */
+    void changeNTSCAdjustable(bool increase = true);
+
+    /**
       Retrieve palette handler.
     */
     PaletteHandler& paletteHandler() const { return *myPaletteHandler; }

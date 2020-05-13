@@ -92,6 +92,31 @@ void PaletteHandler::cyclePalette(bool next)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PaletteHandler::showAdjustableMessage()
+{
+  const bool isPhaseShift = myAdjustables[myCurrentAdjustable].value == nullptr;
+  ostringstream msg, buf;
+
+  msg << "Palette " << myAdjustables[myCurrentAdjustable].name;
+  if(isPhaseShift)
+  {
+    const ConsoleTiming timing = myOSystem.console().timing();
+    const bool isNTSC = timing == ConsoleTiming::ntsc;
+    const float value = myOSystem.console().timing() == ConsoleTiming::pal ? myPhasePAL : myPhaseNTSC;
+    buf << std::fixed << std::setprecision(1) << value << DEGREE;
+    myOSystem.frameBuffer().showMessage("Palette phase shift", buf.str(), value,
+                                        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) - MAX_SHIFT,
+                                        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) + MAX_SHIFT);
+  }
+  else
+  {
+    const int value = scaleTo100(*myAdjustables[myCurrentAdjustable].value);
+    buf << value << "%";
+    myOSystem.frameBuffer().showMessage(msg.str(), buf.str(), value);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PaletteHandler::cycleAdjustable(bool next)
 {
   const bool isCustomPalette = SETTING_CUSTOM == myOSystem.settings().getString("palette");
@@ -115,16 +140,7 @@ void PaletteHandler::cycleAdjustable(bool next)
     // skip phase shift when 'Custom' palette is not selected
   } while(isPhaseShift && !isCustomPalette);
 
-  ostringstream buf;
-  buf << "Palette adjustable '" << myAdjustables[myCurrentAdjustable].name
-    << "' selected (";
-  if(isPhaseShift)
-    buf << (myOSystem.console().timing() == ConsoleTiming::pal ? myPhasePAL : myPhaseNTSC)
-      << DEGREE << ")";
-  else
-    buf << scaleTo100(*myAdjustables[myCurrentAdjustable].value) << "%)";
-
-  myOSystem.frameBuffer().showMessage(buf.str());
+  showAdjustableMessage();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,10 +160,7 @@ void PaletteHandler::changeAdjustable(bool increase)
 
     *myAdjustables[myCurrentAdjustable].value = scaleFrom100(newVal);
 
-    ostringstream msg, val;
-    msg << "Palette " << myAdjustables[myCurrentAdjustable].name;
-    val << newVal << "%";
-    myOSystem.frameBuffer().showMessage(msg.str(), val.str(), newVal);
+    showAdjustableMessage();
     setPalette();
   }
 }
@@ -178,11 +191,7 @@ void PaletteHandler::changeColorPhaseShift(bool increase)
     generateCustomPalette(timing);
     setPalette(SETTING_CUSTOM);
 
-    ostringstream val;
-    val << std::fixed << std::setprecision(1) << newPhase << DEGREE;
-    myOSystem.frameBuffer().showMessage("Palette phase shift", val.str(), newPhase,
-                                        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) - MAX_SHIFT,
-                                        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) + MAX_SHIFT);
+    showAdjustableMessage();
   }
 }
 

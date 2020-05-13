@@ -496,54 +496,28 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       if (pressed && !repeated) myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
       return;
 
+    case Event::PreviousAttribute:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(false);
+      return;
+
+    case Event::NextAttribute:
+      if (pressed) myOSystem.frameBuffer().tiaSurface().setNTSCAdjustable(true);
+      return;
+
+    case Event::DecreaseAttribute:
+      if(pressed) myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(false);
+      return;
+
+    case Event::IncreaseAttribute:
+      if(pressed) myOSystem.frameBuffer().tiaSurface().changeNTSCAdjustable(true);
+      return;
+
     case Event::ScanlinesDecrease:
       if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(-2);
       return;
 
     case Event::ScanlinesIncrease:
       if (pressed) myOSystem.frameBuffer().tiaSurface().setScanlineIntensity(+2);
-      return;
-
-    case Event::PreviousAttribute:
-      if (pressed)
-      {
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
-        myOSystem.frameBuffer().showMessage(
-          myOSystem.frameBuffer().tiaSurface().ntsc().setPreviousAdjustable());
-      }
-      return;
-
-    case Event::NextAttribute:
-      if (pressed)
-      {
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
-        myOSystem.frameBuffer().showMessage(
-          myOSystem.frameBuffer().tiaSurface().ntsc().setNextAdjustable());
-      }
-      return;
-
-    case Event::DecreaseAttribute:
-      if (pressed)
-      {
-        string text, valueText;
-        Int32 newVal;
-
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
-        myOSystem.frameBuffer().tiaSurface().ntsc().changeAdjustable(false, text, valueText, newVal);
-        myOSystem.frameBuffer().showMessage(text, valueText, newVal);
-      }
-      return;
-
-    case Event::IncreaseAttribute:
-      if (pressed)
-      {
-        string text, valueText;
-        Int32 newVal;
-
-        myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
-        myOSystem.frameBuffer().tiaSurface().ntsc().changeAdjustable(true, text, valueText, newVal);
-        myOSystem.frameBuffer().showMessage(text, valueText, newVal);
-      }
       return;
 
     case Event::PhosphorDecrease:
