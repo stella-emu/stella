@@ -200,7 +200,8 @@ void RomWidget::runtoPC(int disasm_line)
   {
     ostringstream command;
     command << "runtopc #" << list[disasm_line].address;
-    instance().debugger().run(command.str());
+    string msg = instance().debugger().run(command.str());
+    instance().frameBuffer().showMessage(msg);
   }
 }
 
