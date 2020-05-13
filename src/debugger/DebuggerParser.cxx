@@ -1941,9 +1941,23 @@ void DebuggerParser::executeStepwhile()
   }
   Expression* expr = YaccParser::getResult();
   int ncycles = 0;
+  uInt32 count = 0;
+  constexpr uInt32 max_iterations = 1000000;
+
+  // Create a progress dialog box to show the progress searching through the
+  // disassembly, since this may be a time-consuming operation
+  ostringstream buf;
+  buf << "stepwhile running through " << max_iterations << " disassembled instructions";
+  ProgressDialog progress(debugger.baseDialog(), debugger.lfont(), buf.str());
+  progress.setRange(0, max_iterations, 5);
+
   do {
-    ncycles += debugger.step();
-  } while (expr->evaluate());
+    ncycles += debugger.step(false);
+
+    progress.setProgress(count);
+  } while (expr->evaluate() && ++count < max_iterations);
+
+  progress.close();
   commandResult << "executed " << ncycles << " cycles";
 }
 
