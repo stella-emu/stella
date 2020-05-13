@@ -90,9 +90,8 @@ class NTSCFilter
     // Changes are made this way since otherwise 20 key-combinations
     // would be needed to dynamically change each setting, and now
     // only 4 combinations are necessary
-    string setNextAdjustable();
-    string setPreviousAdjustable();
-    void changeAdjustable(bool increase, string& text, string& valueText, Int32& value);
+    void selectAdjustable(bool next, string& text, string& valueText, Int32& value);
+    void changeAdjustable(bool increase, string& text, string& valueText, Int32& newValue);
 
     // Load and save NTSC-related settings
     void loadConfig(const Settings& settings);

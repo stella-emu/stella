@@ -129,6 +129,11 @@ class PaletteHandler
     string toPaletteName(PaletteType type) const;
 
     /**
+      Display current adjustable with bar gauge message
+    */
+    void showAdjustableMessage();
+
+    /**
       Change the "phase shift" variable.
       Note that there are two of these (NTSC and PAL).  The currently
       active mode will determine which one is used.
