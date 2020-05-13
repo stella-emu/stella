@@ -40,7 +40,10 @@ void CartridgeEnhanced::install(System& system)
   // calculate bank switching and RAM sizes and masks
   myBankSize = 1 << myBankShift;                    // e.g. = 2 ^ 12 = 4K = 0x1000
   myBankMask = myBankSize - 1;                      // e.g. = 0x0FFF
-  myBankSegs = 1 << (MAX_BANK_SHIFT - myBankShift); // e.g. = 1
+  // Either the bankswitching supports multiple segments
+  //  or the ROM is < 4K (-> 1 segment)
+  myBankSegs = std::min(1 << (MAX_BANK_SHIFT - myBankShift),
+                        int(mySize) / myBankSize);  // e.g. = 1
   myRomOffset = myRamBankCount > 0 ? 0 : uInt32(myRamSize) * 2;
   myRamMask = ramSize - 1;                          // e.g. = 0xFFFF (doesn't matter for RAM size 0)
   myWriteOffset = myRamWpHigh ? ramSize : 0;        // e.g. = 0x0000
