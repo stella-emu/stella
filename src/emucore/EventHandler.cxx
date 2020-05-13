@@ -413,27 +413,27 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::VidmodeDecrease:
-      if(pressed) myOSystem.frameBuffer().changeVidMode(-1);
+      if(pressed) myOSystem.frameBuffer().selectVidMode(false);
       return;
 
     case Event::VidmodeIncrease:
-      if(pressed) myOSystem.frameBuffer().changeVidMode(+1);
+      if(pressed) myOSystem.frameBuffer().selectVidMode(true);
       return;
 
     case Event::VCenterDecrease:
-      if (pressed) myOSystem.console().changeVerticalCenter(-1);
+      if (pressed) myOSystem.console().changeVerticalCenter(false);
       return;
 
     case Event::VCenterIncrease:
-      if (pressed) myOSystem.console().changeVerticalCenter(+1);
+      if (pressed) myOSystem.console().changeVerticalCenter(true);
       return;
 
     case Event::ScanlineAdjustDecrease:
-      if (pressed) myOSystem.console().changeScanlineAdjust(-1);
+      if (pressed) myOSystem.console().changeScanlineAdjust(false);
       return;
 
     case Event::ScanlineAdjustIncrease:
-      if (pressed) myOSystem.console().changeScanlineAdjust(+1);
+      if (pressed) myOSystem.console().changeScanlineAdjust(true);
       return;
 
     case Event::PreviousPaletteAttribute:
@@ -457,11 +457,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::OverscanDecrease:
-      if (pressed) myOSystem.frameBuffer().changeOverscan(-1);
+      if (pressed) myOSystem.frameBuffer().changeOverscan(false);
       return;
 
     case Event::OverscanIncrease:
-      if (pressed) myOSystem.frameBuffer().changeOverscan(1);
+      if (pressed) myOSystem.frameBuffer().changeOverscan(true);
       return;
 
     case Event::PreviousVideoMode:
@@ -525,27 +525,33 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
     case Event::DecreaseAttribute:
       if (pressed)
       {
+        string text, valueText;
+        Int32 newVal;
+
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
-        myOSystem.frameBuffer().showMessage(
-          myOSystem.frameBuffer().tiaSurface().ntsc().decreaseAdjustable());
+        myOSystem.frameBuffer().tiaSurface().ntsc().changeAdjustable(false, text, valueText, newVal);
+        myOSystem.frameBuffer().showMessage(text, valueText, newVal);
       }
       return;
 
     case Event::IncreaseAttribute:
       if (pressed)
       {
+        string text, valueText;
+        Int32 newVal;
+
         myOSystem.frameBuffer().tiaSurface().setNTSC(NTSCFilter::Preset::CUSTOM);
-        myOSystem.frameBuffer().showMessage(
-          myOSystem.frameBuffer().tiaSurface().ntsc().increaseAdjustable());
+        myOSystem.frameBuffer().tiaSurface().ntsc().changeAdjustable(true, text, valueText, newVal);
+        myOSystem.frameBuffer().showMessage(text, valueText, newVal);
       }
       return;
 
     case Event::PhosphorDecrease:
-      if (pressed) myOSystem.console().changePhosphor(-1);
+      if (pressed) myOSystem.console().changePhosphor(false);
       return;
 
     case Event::PhosphorIncrease:
-      if (pressed) myOSystem.console().changePhosphor(1);
+      if (pressed) myOSystem.console().changePhosphor(true);
       return;
 
     case Event::TogglePhosphor:
@@ -603,11 +609,11 @@ void EventHandler::handleEvent(Event::Type event, Int32 value, bool repeated)
       return;
 
     case Event::FormatDecrease:
-      if (pressed) myOSystem.console().toggleFormat(-1);
+      if (pressed) myOSystem.console().selectFormat(false);
       return;
 
     case Event::FormatIncrease:
-      if (pressed) myOSystem.console().toggleFormat(1);
+      if (pressed) myOSystem.console().selectFormat(true);
       return;
 
     case Event::ToggleGrabMouse:

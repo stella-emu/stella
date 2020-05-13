@@ -144,11 +144,10 @@ void PaletteHandler::changeAdjustable(bool increase)
 
     *myAdjustables[myCurrentAdjustable].value = scaleFrom100(newVal);
 
-    ostringstream buf;
-    buf << "Custom '" << myAdjustables[myCurrentAdjustable].name
-        << "' set to " << newVal << "%";
-
-    myOSystem.frameBuffer().showMessage(buf.str());
+    ostringstream msg, val;
+    msg << "Palette " << myAdjustables[myCurrentAdjustable].name;
+    val << newVal << "%";
+    myOSystem.frameBuffer().showMessage(msg.str(), val.str(), newVal);
     setPalette();
   }
 }
@@ -179,11 +178,11 @@ void PaletteHandler::changeColorPhaseShift(bool increase)
     generateCustomPalette(timing);
     setPalette(SETTING_CUSTOM);
 
-    ostringstream ss;
-    ss << "Color phase shift at "
-      << std::fixed << std::setprecision(1) << newPhase << DEGREE;
-
-    myOSystem.frameBuffer().showMessage(ss.str());
+    ostringstream val;
+    val << std::fixed << std::setprecision(1) << newPhase << DEGREE;
+    myOSystem.frameBuffer().showMessage("Palette phase shift", val.str(), newPhase,
+                                        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) - MAX_SHIFT,
+                                        (isNTSC ? DEF_NTSC_SHIFT : DEF_PAL_SHIFT) + MAX_SHIFT);
   }
 }
 

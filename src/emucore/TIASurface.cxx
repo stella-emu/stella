@@ -231,21 +231,11 @@ void TIASurface::setScanlineIntensity(int amount)
   ostringstream buf;
   uInt32 intensity = enableScanlines(amount);
 
-  if(intensity == 0)
-    buf << "Scanlines disabled";
-  else
-  {
-    buf << "Scanline intensity at ";
-    if(intensity < 100)
-      buf << intensity << "%";
-    else
-      buf << "maximum";
-  }
   myOSystem.settings().setValue("tv.scanlines", intensity);
-
   enableNTSC(ntscEnabled());
 
-  myFB.showMessage(buf.str());
+  buf << intensity << "%";
+  myFB.showMessage("Scanline intensity", buf.str(), intensity);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -189,9 +189,9 @@ class Console : public Serializable, public ConsoleIO
     /**
       Toggle between NTSC/PAL/SECAM (and variants) display format.
 
-      @param direction +1 indicates increase, -1 indicates decrease.
+      @param next  Select next if true, else previous
     */
-    void toggleFormat(int direction = 1);
+    void selectFormat(bool next = true);
 
     /**
       Set NTSC/PAL/SECAM (and variants) display format.
@@ -222,9 +222,9 @@ class Console : public Serializable, public ConsoleIO
     /**
       Change the "Display.PPBlend" variable.
 
-      @param direction +1 indicates increase, -1 indicates decrease.
+      @param increase  Increase if true, else decrease
     */
-    void changePhosphor(int direction);
+    void changePhosphor(bool increase = true);
 
     /**
       Toggles the PAL color-loss effect.
@@ -257,18 +257,18 @@ class Console : public Serializable, public ConsoleIO
     /**
       Change the "Display.VCenter" variable.
 
-      @param direction +1 indicates increase, -1 indicates decrease.
+      @param increase  Increase if true, else decrease
     */
-    void changeVerticalCenter(int direction);
+    void changeVerticalCenter(bool increase = true);
 
     /**
       Change the "TIA scanline adjust" variable.
       Note that there are currently two of these (NTSC and PAL).  The currently
       active mode will determine which one is used.
 
-      @param direction +1 indicates increase, -1 indicates decrease.
+      @param increase  Increase if true, else decrease
     */
-    void changeScanlineAdjust(int direction);
+    void changeScanlineAdjust(bool increase = true);
 
     /**
       Returns the current framerate.

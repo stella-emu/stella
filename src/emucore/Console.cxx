@@ -349,14 +349,14 @@ bool Console::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleFormat(int direction)
+void Console::selectFormat(bool next)
 {
   string saveformat, message;
   uInt32 format = myCurrentFormat;
 
-  if(direction == 1)
+  if(next)
     format = (myCurrentFormat + 1) % 7;
-  else if(direction == -1)
+  else
     format = myCurrentFormat > 0 ? (myCurrentFormat - 1) : 6;
 
   setFormat(format);
@@ -521,39 +521,20 @@ void Console::togglePhosphor()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changePhosphor(int direction)
+void Console::changePhosphor(bool increase)
 {
   int blend = BSPF::stringToInt(myProperties.get(PropType::Display_PPBlend));
 
-  if(direction == +1)       // increase blend
-  {
-    if(blend >= 100)
-    {
-      myOSystem.frameBuffer().showMessage("Phosphor blend at maximum");
-      myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, 100);
-      return;
-    }
-    else
-      blend = std::min(blend+2, 100);
-  }
-  else if(direction == -1)  // decrease blend
-  {
-    if(blend <= 2)
-    {
-      myOSystem.frameBuffer().showMessage("Phosphor blend at minimum");
-      myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, 0);
-      return;
-    }
-    else
-      blend = std::max(blend-2, 0);
-  }
-  else
-    return;
+  if(increase)      // increase blend
+    blend += 2;
+  else              // decrease blend
+    blend -= 2;
+  blend = BSPF::clamp(blend, 0, 100);
 
   ostringstream val;
   val << blend;
   myProperties.set(PropType::Display_PPBlend, val.str());
-  myOSystem.frameBuffer().showMessage("Phosphor blend " + val.str());
+  myOSystem.frameBuffer().showMessage("Phosphor blend", val.str() + "%", blend);
   myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
 }
 
@@ -631,45 +612,25 @@ void Console::fry() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeVerticalCenter(int direction)
+void Console::changeVerticalCenter(bool increase)
 {
   Int32 vcenter = myTIA->vcenter();
 
-  if(direction == +1)       // increase vcenter
-  {
-    if(vcenter >= myTIA->maxVcenter())
-    {
-      myOSystem.frameBuffer().showMessage("V-Center at maximum");
-      return;
-    }
+  if(increase)      // increase vcenter
     ++vcenter;
-  }
-  else if(direction == -1)  // decrease vcenter
-  {
-    if (vcenter <= myTIA->minVcenter())
-    {
-      myOSystem.frameBuffer().showMessage("V-Center at minimum");
-      return;
-    }
+  else              // decrease vcenter
     --vcenter;
-  }
-  else
-    return;
+  vcenter = BSPF::clamp(vcenter, myTIA->minVcenter(), myTIA->maxVcenter());
 
-  ostringstream ss;
+  ostringstream ss, val;
   ss << vcenter;
 
   myProperties.set(PropType::Display_VCenter, ss.str());
   if (vcenter != myTIA->vcenter()) myTIA->setVcenter(vcenter);
 
-  ss.str("");
-  ss << "V-Center ";
-  if (!vcenter)
-    ss << "default";
-  else
-    ss << (vcenter > 0 ? "+" : "") << vcenter << "px";
-
-  myOSystem.frameBuffer().showMessage(ss.str());
+  val << (vcenter ? vcenter > 0 ? "+" : "" : " ") << vcenter << "px";
+  myOSystem.frameBuffer().showMessage("V-Center", val.str(), vcenter,
+                                      myTIA->minVcenter(), myTIA->maxVcenter());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -682,30 +643,15 @@ void Console::updateVcenter(Int32 vcenter)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeScanlineAdjust(int direction)
+void Console::changeScanlineAdjust(bool increase)
 {
   Int32 newAdjustVSize = myTIA->adjustVSize();
 
-  if (direction != -1 && direction != +1) return;
-
-  if(direction == +1)       // increase scanline adjustment
-  {
-    if (newAdjustVSize >= 5)
-    {
-      myOSystem.frameBuffer().showMessage("V-Size at maximum");
-      return;
-    }
+  if(increase)      // increase scanline adjustment
     newAdjustVSize++;
-  }
-  else if(direction == -1)  // decrease scanline adjustment
-  {
-    if (newAdjustVSize <= -5)
-    {
-      myOSystem.frameBuffer().showMessage("V-Size at minimum");
-      return;
-    }
+  else              // decrease scanline adjustment
     newAdjustVSize--;
-  }
+  newAdjustVSize = BSPF::clamp(newAdjustVSize, -5, 5);
 
   if (newAdjustVSize != myTIA->adjustVSize()) {
       myTIA->setAdjustVSize(newAdjustVSize);
@@ -713,15 +659,10 @@ void Console::changeScanlineAdjust(int direction)
       initializeVideo();
   }
 
-  ostringstream ss;
+  ostringstream val;
 
-  ss << "V-Size ";
-  if (!newAdjustVSize)
-    ss << "default";
-  else
-    ss << (newAdjustVSize > 0 ? "+" : "") << newAdjustVSize << "%";
-
-  myOSystem.frameBuffer().showMessage(ss.str());
+  val << (newAdjustVSize ? newAdjustVSize > 0 ? "+" : "" : " ") << newAdjustVSize << "%";
+  myOSystem.frameBuffer().showMessage("V-Size", val.str(), newAdjustVSize, -5, 5);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
