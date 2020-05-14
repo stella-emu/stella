@@ -238,7 +238,10 @@ void SoundSDL2::adjustVolume(Int8 direction)
   }
 
   // Now show an onscreen message
-  strval << percent << "%";
+  if(percent)
+    strval << percent << "%";
+  else
+    strval << "Off";
   myOSystem.frameBuffer().showMessage("Volume", strval.str(), percent);
 }
 

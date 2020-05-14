@@ -534,7 +534,14 @@ void Console::changePhosphor(bool increase)
   ostringstream val;
   val << blend;
   myProperties.set(PropType::Display_PPBlend, val.str());
-  myOSystem.frameBuffer().showMessage("Phosphor blend", val.str() + "%", blend);
+  if(blend)
+    val << "%";
+  else
+  {
+    val.str("");
+    val << "Off";
+  }
+  myOSystem.frameBuffer().showMessage("Phosphor blend", val.str(), blend);
   myOSystem.frameBuffer().tiaSurface().enablePhosphor(true, blend);
 }
 
@@ -643,7 +650,7 @@ void Console::updateVcenter(Int32 vcenter)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeScanlineAdjust(bool increase)
+void Console::changeVSizeAdjust(bool increase)
 {
   Int32 newAdjustVSize = myTIA->adjustVSize();
 
